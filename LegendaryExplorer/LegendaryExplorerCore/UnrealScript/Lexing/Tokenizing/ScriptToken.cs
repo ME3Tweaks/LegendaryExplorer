@@ -4,23 +4,23 @@ using LegendaryExplorerCore.UnrealScript.Utilities;
 
 namespace LegendaryExplorerCore.UnrealScript.Lexing.Tokenizing
 {
-    public class Token<T> where T : class
+    public class ScriptToken
     {
         #region Members
-        public virtual T Value { get; }
+        public virtual string Value { get; }
 
-        public TokenType Type { get; }
+        public readonly TokenType Type;
 
         public EF SyntaxType { get; set; } 
 
         public ASTNode AssociatedNode { get; set; }
 
-        public SourcePosition StartPos { get; }
-        public SourcePosition EndPos { get; }
+        public readonly SourcePosition StartPos;
+        public readonly SourcePosition EndPos;
         #endregion
 
         #region Methods
-        public Token(TokenType type, T value, SourcePosition start, SourcePosition end)
+        public ScriptToken(TokenType type, string value, SourcePosition start, SourcePosition end)
         {
             Value = value;
             Type = type;

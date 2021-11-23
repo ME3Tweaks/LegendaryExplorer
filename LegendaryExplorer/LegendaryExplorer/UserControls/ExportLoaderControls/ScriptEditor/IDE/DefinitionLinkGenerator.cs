@@ -29,10 +29,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
             }
         }
 
-        public void SetTokens(TokenStream<string> tokens)
+        public void SetTokens(TokenStream tokens)
         {
             Reset();
-            foreach (Token<string> token in tokens)
+            foreach (ScriptToken token in tokens)
             {
                 if (token.AssociatedNode is not null && token.EndPos.Line == token.StartPos.Line)
                 {

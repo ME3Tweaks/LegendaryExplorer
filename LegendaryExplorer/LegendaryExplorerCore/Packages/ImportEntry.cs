@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Buffers.Binary;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
+using System.IO;
+using System.Runtime.InteropServices;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Unreal;
@@ -12,7 +13,7 @@ namespace LegendaryExplorerCore.Packages
 {
     [DebuggerDisplay("ImportEntry | {UIndex} = {InstancedFullPath}")]
     [DoNotNotify] //disable Fody/PropertyChanged for this class. Do notification manually
-    public class ImportEntry : INotifyPropertyChanged, IEntry
+    public sealed class ImportEntry : INotifyPropertyChanged, IEntry
     {
         public MEGame Game => FileRef.Game;
 
@@ -20,24 +21,27 @@ namespace LegendaryExplorerCore.Packages
         {
             HeaderOffset = importData.Position;
             FileRef = pccFile;
-            Header = new byte[headerSize];
-            importData.Read(Header, 0, Header.Length);
+            Span<byte> headerBytes = stackalloc byte[HeaderLength];
+            importData.Read(headerBytes);
+            _header = MemoryMarshal.Read<ImportHeader>(headerBytes);
+            if (!pccFile.Endian.IsNative)
+            {
+                _header.ReverseEndianness();
+            }
         }
 
         public ImportEntry(IMEPackage pccFile)
         {
             FileRef = pccFile;
-            Header = new byte[headerSize];
         }
 
         public ImportEntry(IMEPackage pccFile, IEntry parent, NameReference name) : this(pccFile, parent?.UIndex ?? 0, name) { }
         public ImportEntry(IMEPackage pccFile, int parentUindex, NameReference name)
         {
             FileRef = pccFile;
-            Header = new byte[headerSize];
-            EndianBitConverter.WriteAsBytes(parentUindex, _header.AsSpan(OFFSET_idxLink), FileRef.Endian);
-            EndianBitConverter.WriteAsBytes(FileRef.FindNameOrAdd(name.Name), _header.AsSpan(OFFSET_idxObjectName), FileRef.Endian);
-            EndianBitConverter.WriteAsBytes(name.Number, _header.AsSpan(OFFSET_indexValue), FileRef.Endian);
+            _header.Link = parentUindex;
+            _header.ObjectNameIndex = FileRef.FindNameOrAdd(name.Name);
+            _header.ObjectNameNumber = name.Number;
         }
 
         public long HeaderOffset { get; set; }
@@ -45,31 +49,70 @@ namespace LegendaryExplorerCore.Packages
         public int Index { private get; set; }
         public int UIndex => -Index - 1;
 
-        public IMEPackage FileRef { get; protected set; }
+        public IMEPackage FileRef { get; }
 
-        public const int headerSize = 28;
+        public const int HeaderLength = 28;
 
-        protected byte[] _header;
+        [StructLayout(LayoutKind.Sequential)]
+        private struct ImportHeader
+        {
+            public int PackageFileNameIndex;
+            public int PackageFileNameNumber;
+            public int ClassNameIndex;
+            public int ClassNameNumber;
+            public int Link;
+            public int ObjectNameIndex;
+            public int ObjectNameNumber;
+
+            public void ReverseEndianness()
+            {
+                PackageFileNameIndex = BinaryPrimitives.ReverseEndianness(PackageFileNameIndex);
+                PackageFileNameNumber = BinaryPrimitives.ReverseEndianness(PackageFileNameNumber);
+                ClassNameIndex = BinaryPrimitives.ReverseEndianness(ClassNameIndex);
+                ClassNameNumber = BinaryPrimitives.ReverseEndianness(ClassNameNumber);
+                Link = BinaryPrimitives.ReverseEndianness(Link);
+                ObjectNameIndex = BinaryPrimitives.ReverseEndianness(ObjectNameIndex);
+                ObjectNameNumber = BinaryPrimitives.ReverseEndianness(ObjectNameNumber);
+            }
+        }
+
+        private ImportHeader _header;
+
+        /// <summary>
+        /// Get generates the header, Set deserializes all the header values from the provided byte array
+        /// </summary>
         public byte[] Header
         {
-            get => _header;
-            set
+            get => GenerateHeader();
+            set => SetHeaderValuesFromByteArray(value);
+        }
+        
+        public void SetHeaderValuesFromByteArray(byte[] value)
+        {
+            if (value is null)
             {
-                bool isFirstLoad = _header == null;
-                if (_header != null && value != null && _header.AsSpan().SequenceEqual(value))
-                {
-                    return; //if the data is the same don't write it and trigger the side effects
-                }
-                _header = value;
-                if (!isFirstLoad)
-                {
-                    //new header may have changed link or name
-                    FileRef.InvalidateLookupTable();
-
-                    FileRef.IsModified = true; // mark package as modified if the existing header is changing.
-                    HeaderChanged = true;
-                }
+                throw new ArgumentNullException(nameof(value), "Cannot set Header to a null value");
             }
+            if (value.Length != HeaderLength)
+            {
+                throw new ArgumentException(nameof(value), $"Import header must be exactly {HeaderLength} bytes");
+            }
+            var existingHeader = GenerateHeader();
+            if (existingHeader.AsSpan().SequenceEqual(value))
+            {
+                return; //if the data is the same don't write it and trigger the side effects
+            }
+
+            _header = MemoryMarshal.Read<ImportHeader>(value);
+            if (!FileRef.Endian.IsNative)
+            {
+                _header.ReverseEndianness();
+            }
+            //new header may have changed link or name
+            FileRef.InvalidateLookupTable();
+
+            FileRef.IsModified = true; // mark package as modified if the existing header is changing.
+            HeaderChanged = true;
         }
 
         public const int OFFSET_idxPackageFile = 0;
@@ -79,12 +122,30 @@ namespace LegendaryExplorerCore.Packages
         public const int OFFSET_indexValue = 24;
 
         /// <summary>
-        /// Returns a clone of the header for modifying
+        /// Generates the header byte array
         /// </summary>
         /// <returns></returns>
-        public byte[] GetHeader()
+        public byte[] GenerateHeader()
         {
-            return _header.ArrayClone();
+            var buff = new byte[HeaderLength];
+            if (FileRef.Endian.IsNative)
+            {
+                MemoryMarshal.Write(buff, ref _header);
+            }
+            else
+            {
+                var reversedHeader = _header;
+                reversedHeader.ReverseEndianness();
+                MemoryMarshal.Write(buff, ref _header);
+            }
+            return buff;
+        }
+
+        public void SerializeHeader(Stream stream)
+        {
+            Span<byte> buff = stackalloc byte[HeaderLength];
+            MemoryMarshal.Write(buff, ref _header);
+            stream.Write(buff);
         }
 
         public bool HasParent => FileRef.IsEntry(idxLink);
@@ -97,57 +158,72 @@ namespace LegendaryExplorerCore.Packages
 
         private int idxPackageFile
         {
-            get => EndianReader.ToInt32(_header.AsSpan(OFFSET_idxPackageFile), FileRef.Endian);
+            get => _header.PackageFileNameIndex;
             set
             {
-                EndianBitConverter.WriteAsBytes(value, _header.AsSpan(OFFSET_idxPackageFile), FileRef.Endian);
-                HeaderChanged = true;
+                if (_header.PackageFileNameIndex != value)
+                {
+                    _header.PackageFileNameIndex = value;
+                    HeaderChanged = true;
+                }
             }
         }
         //int PackageNameNumber
         private int idxClassName
         {
-            get => EndianReader.ToInt32(_header.AsSpan(OFFSET_idxClassName), FileRef.Endian);
+            get => _header.ClassNameIndex;
             set
             {
-                EndianBitConverter.WriteAsBytes(value, _header.AsSpan(OFFSET_idxClassName), FileRef.Endian);
-                HeaderChanged = true;
+                if (_header.ClassNameIndex != value)
+                {
+                    _header.ClassNameIndex = value;
+                    HeaderChanged = true;
+                }
             }
         }
         //int ClassNameNumber
         public int idxLink
         {
-            get => EndianReader.ToInt32(_header.AsSpan(OFFSET_idxLink), FileRef.Endian);
+            get => _header.Link;
             set
             {
-                // HeaderOffset = 0 means this was instantiated and not read in from a stream
-                if (value == UIndex && HeaderOffset != 0)
+                if (_header.Link != value)
                 {
-                    throw new Exception("Cannot set import link to itself, this will cause infinite recursion");
+                    // HeaderOffset = 0 means this was instantiated and not read in from a stream
+                    if (value == UIndex && HeaderOffset != 0)
+                    {
+                        throw new Exception("Cannot set import link to itself, this will cause infinite recursion");
+                    }
+                    _header.Link = value;
+                    HeaderChanged = true;
+                    FileRef.InvalidateLookupTable();
                 }
-                EndianBitConverter.WriteAsBytes(value, _header.AsSpan(OFFSET_idxLink), FileRef.Endian);
-                HeaderChanged = true;
-                FileRef.InvalidateLookupTable();
             }
         }
         private int idxObjectName
         {
-            get => EndianReader.ToInt32(_header.AsSpan(OFFSET_idxObjectName), FileRef.Endian);
+            get => _header.ObjectNameIndex;
             set
             {
-                EndianBitConverter.WriteAsBytes(value, _header.AsSpan(OFFSET_idxObjectName), FileRef.Endian);
-                HeaderChanged = true;
-                FileRef.InvalidateLookupTable();
+                if (_header.ObjectNameIndex != value)
+                {
+                    _header.ObjectNameIndex = value;
+                    HeaderChanged = true;
+                    FileRef.InvalidateLookupTable();
+                }
             }
         }
         public int indexValue
         {
-            get => EndianReader.ToInt32(_header.AsSpan(OFFSET_indexValue), FileRef.Endian);
+            get => _header.ObjectNameNumber;
             set
             {
-                EndianBitConverter.WriteAsBytes(value, _header.AsSpan(OFFSET_indexValue), FileRef.Endian);
-                HeaderChanged = true;
-                FileRef.InvalidateLookupTable();
+                if (_header.ObjectNameNumber != value)
+                {
+                    _header.ObjectNameNumber = value;
+                    HeaderChanged = true;
+                    FileRef.InvalidateLookupTable();
+                }
             }
         }
 
@@ -158,7 +234,7 @@ namespace LegendaryExplorerCore.Packages
             set => idxClassName = FileRef.FindNameOrAdd(value);
         }
 
-        private string ObjectNameString
+        public string ObjectNameString
         {
             get => FileRef.Names[idxObjectName];
             set => idxObjectName = FileRef.FindNameOrAdd(value);
@@ -180,7 +256,7 @@ namespace LegendaryExplorerCore.Packages
 
         public string ParentFullPath => FileRef.GetEntry(idxLink)?.FullPath ?? "";
 
-        public string FullPath => FileRef.IsEntry(idxLink) ? $"{ParentFullPath}.{ObjectName.Name}" : ObjectName.Name;
+        public string FullPath => FileRef.IsEntry(idxLink) ? $"{ParentFullPath}.{ObjectNameString}" : ObjectNameString;
 
         public string ParentInstancedFullPath => FileRef.GetEntry(idxLink)?.InstancedFullPath ?? "";
         public string InstancedFullPath => FileRef.IsEntry(idxLink) ? ObjectName.AddToPath(ParentInstancedFullPath) : ObjectName.Instanced;
@@ -217,10 +293,9 @@ namespace LegendaryExplorerCore.Packages
         public ImportEntry Clone(int newIndex = -1)
         {
             ImportEntry newImport = (ImportEntry)MemberwiseClone();
-            newImport.Header = Header.ArrayClone();
             if (newIndex >= 0)
             {
-                EndianBitConverter.WriteAsBytes(newIndex, _header.AsSpan(OFFSET_indexValue), FileRef.Endian);
+                _header.ObjectNameIndex = newIndex;
             }
             return newImport;
         }

@@ -18,7 +18,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
         protected override void Serialize(SerializingContainer2 sc)
         {
-            sc.Serialize(ref CollisionVertices, SCExt.Serialize);
+            sc.Serialize(ref CollisionVertices);
             sc.Serialize(ref BVTree, SCExt.Serialize);
             sc.Serialize(ref PatchBounds, SCExt.Serialize);
             sc.Serialize(ref LightMap);

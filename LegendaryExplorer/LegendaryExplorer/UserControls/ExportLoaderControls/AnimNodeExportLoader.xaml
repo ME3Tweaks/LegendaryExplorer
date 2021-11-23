@@ -1,0 +1,29 @@
+﻿<exportLoaderControls:ExportLoaderControl x:Class="LegendaryExplorer.UserControls.ExportLoaderControls.AnimNodeExportLoader"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:exportLoaderControls="clr-namespace:LegendaryExplorer.UserControls.ExportLoaderControls"
+             DataContext="{Binding RelativeSource={RelativeSource Self}}"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <TreeView ItemsSource="{Binding AnimNodes}">
+        <TreeView.Resources>
+            <HierarchicalDataTemplate DataType="{x:Type exportLoaderControls:AnimNodeExportLoader+AnimNode}" ItemsSource="{Binding Children}">
+                <TextBlock Text="{Binding Header}">
+                    <TextBlock.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Open in Package Editor (this instance)" ToolTip="Navigates this package editor to this object"
+                                      Command="{Binding NavigateToEntryCommandInternal, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=exportLoaderControls:AnimNodeExportLoader}}"
+                                      CommandParameter="{Binding Entry.UIndex}"/>
+                            <MenuItem Header="Open in Package Editor" ToolTip="Opens a new Package Editor window, navigated to this object"
+                                      Command="{Binding OpenExportInPECommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=exportLoaderControls:AnimNodeExportLoader}}"
+                                      CommandParameter="{Binding Entry.UIndex}"/>
+                            <MenuItem Header="{Binding Entry.UIndex}"/>
+                        </ContextMenu>
+                    </TextBlock.ContextMenu>
+                </TextBlock>
+            </HierarchicalDataTemplate>
+        </TreeView.Resources>
+    </TreeView>
+</exportLoaderControls:ExportLoaderControl>

@@ -289,7 +289,7 @@ namespace LegendaryExplorer.ToolsetDev
             inStream.Seek(pcc.ExportOffset, SeekOrigin.Begin);
             foreach (ExportEntry exp in pcc.Exports)
             {
-                inStream.Position += exp.Header.Length;
+                inStream.Position += exp.HeaderLength;
             }
 
             used.Add(new UsedSpace

@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Misc;
 using Newtonsoft.Json;
 
 namespace LegendaryExplorerCore.PlotDatabase
@@ -83,11 +82,7 @@ namespace LegendaryExplorerCore.PlotDatabase
         [JsonIgnore]
         public PlotElement Parent { get; set; }
 
-        [JsonIgnore] public List<PlotElement> Children { get; } = new List<PlotElement>();
-
-        [JsonIgnore] public bool IsSelected { get; set; }
-
-        [JsonIgnore] public bool IsExpanded { get; set; }
+        [JsonIgnore] public ObservableCollectionExtended<PlotElement> Children { get; } = new ();
 
         [JsonIgnore]
         public string Path

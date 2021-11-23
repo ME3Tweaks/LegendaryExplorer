@@ -108,55 +108,82 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
             //script type intrinsics
             var fieldType = new Class("Field", objectClass, objectClass, intrinsicClassFlags | EClassFlags.Abstract);
             table.AddType(fieldType);
-            var structType = new Class(STRUCT, fieldType, objectClass, intrinsicClassFlags);
-            table.AddType(structType);
-            var scriptStructType = new Class("ScriptStruct", structType, objectClass, intrinsicClassFlags);
-            table.AddType(scriptStructType);
-            var stateType = new Class(STATE, structType, objectClass, intrinsicClassFlags);
-            table.AddType(stateType);
-            var functionType = new Class(FUNCTION, structType, stateType, intrinsicClassFlags);
-            table.AddType(functionType);
-            var enumType = new Class(ENUM, fieldType, structType, intrinsicClassFlags);
-            table.AddType(enumType);
-            var constType = new Class(CONST, fieldType, structType, intrinsicClassFlags);
-            table.AddType(constType);
-            var classType = new Class(CLASS, stateType, packageType, intrinsicClassFlags);
-            table.AddType(classType);
+            table.PushScope(fieldType.Name);
+                var structType = new Class(STRUCT, fieldType, objectClass, intrinsicClassFlags);
+                table.AddType(structType);
+                table.PushScope(structType.Name);
+                    var stateType = new Class(STATE, structType, objectClass, intrinsicClassFlags);
+                    table.AddType(stateType);
+                    table.PushScope(stateType.Name);
+                        var classType = new Class(CLASS, stateType, packageType, intrinsicClassFlags);
+                        table.AddType(classType);
+                        table.PushScope(classType.Name); table.PopScope();
+                    table.PopScope();
+                    var scriptStructType = new Class("ScriptStruct", structType, objectClass, intrinsicClassFlags);
+                    table.AddType(scriptStructType);
+                    table.PushScope(scriptStructType.Name); table.PopScope();
+                    var functionType = new Class(FUNCTION, structType, stateType, intrinsicClassFlags);
+                    table.AddType(functionType);
+                    table.PushScope(functionType.Name); table.PopScope();
+                table.PopScope();
+                var enumType = new Class(ENUM, fieldType, structType, intrinsicClassFlags);
+                table.AddType(enumType);
+                table.PushScope(enumType.Name); table.PopScope();
+                var constType = new Class(CONST, fieldType, structType, intrinsicClassFlags);
+                table.AddType(constType);
+                table.PushScope(enumType.Name); table.PopScope();
 
-            //property intrinsics
-            var propertyType = new Class("Property", fieldType, objectClass, intrinsicClassFlags);
-            table.AddType(propertyType);
-            var bytePropertyType = new Class("ByteProperty", propertyType, objectClass, intrinsicClassFlags);
-            table.AddType(bytePropertyType);
-            var intPropertyType = new Class("IntProperty", propertyType, objectClass, intrinsicClassFlags);
-            table.AddType(intPropertyType);
-            var boolPropertyType = new Class("BoolProperty", propertyType, objectClass, intrinsicClassFlags);
-            table.AddType(boolPropertyType);
-            var floatPropertyType = new Class("FloatProperty", propertyType, objectClass, intrinsicClassFlags);
-            table.AddType(floatPropertyType);
-            var objectPropertyType = new Class("ObjectProperty", propertyType, objectClass, intrinsicClassFlags);
-            table.AddType(objectPropertyType);
-            var componentPropertyType = new Class("ComponentProperty", propertyType, objectClass, intrinsicClassFlags);
-            table.AddType(componentPropertyType);
-            var classPropertyType = new Class("ClassProperty", propertyType, objectClass, intrinsicClassFlags);
-            table.AddType(classPropertyType);
-            var interfacePropertyType = new Class("InterfaceProperty", propertyType, objectClass, intrinsicClassFlags);
-            table.AddType(interfacePropertyType);
-            var namePropertyType = new Class("NameProperty", propertyType, objectClass, intrinsicClassFlags);
-            table.AddType(namePropertyType);
-            var strPropertyType = new Class("StrProperty", propertyType, objectClass, intrinsicClassFlags);
-            table.AddType(strPropertyType);
-            var arrayPropertyType = new Class("ArrayProperty", propertyType, objectClass, intrinsicClassFlags);
-            table.AddType(arrayPropertyType);
-            var mapPropertyType = new Class("MapProperty", propertyType, objectClass, intrinsicClassFlags);
-            table.AddType(mapPropertyType);
-            var structPropertyType = new Class("StructProperty", propertyType, objectClass, intrinsicClassFlags);
-            table.AddType(structPropertyType);
-            var delegatePropertyType = new Class("DelegateProperty", propertyType, objectClass, intrinsicClassFlags);
-            table.AddType(delegatePropertyType);
-            var stringRefPropertyType = new Class("StringRefProperty", propertyType, objectClass, intrinsicClassFlags);
-            table.AddType(stringRefPropertyType);
-
+                //property intrinsics
+                var propertyType = new Class("Property", fieldType, objectClass, intrinsicClassFlags);
+                table.AddType(propertyType);
+                table.PushScope(propertyType.Name);
+                    var bytePropertyType = new Class("ByteProperty", propertyType, objectClass, intrinsicClassFlags);
+                    table.AddType(bytePropertyType);
+                    table.PushScope(bytePropertyType.Name); table.PopScope();
+                    var intPropertyType = new Class("IntProperty", propertyType, objectClass, intrinsicClassFlags);
+                    table.AddType(intPropertyType);
+                    table.PushScope(intPropertyType.Name); table.PopScope();
+                    var boolPropertyType = new Class("BoolProperty", propertyType, objectClass, intrinsicClassFlags);
+                    table.AddType(boolPropertyType);
+                    table.PushScope(boolPropertyType.Name); table.PopScope();
+                    var floatPropertyType = new Class("FloatProperty", propertyType, objectClass, intrinsicClassFlags);
+                    table.AddType(floatPropertyType);
+                    table.PushScope(floatPropertyType.Name); table.PopScope();
+                    var objectPropertyType = new Class("ObjectProperty", propertyType, objectClass, intrinsicClassFlags);
+                    table.AddType(objectPropertyType);
+                    table.PushScope(objectPropertyType.Name); table.PopScope();
+                    var componentPropertyType = new Class("ComponentProperty", propertyType, objectClass, intrinsicClassFlags);
+                    table.AddType(componentPropertyType);
+                    table.PushScope(componentPropertyType.Name); table.PopScope();
+                    var classPropertyType = new Class("ClassProperty", propertyType, objectClass, intrinsicClassFlags);
+                    table.AddType(classPropertyType);
+                    table.PushScope(classPropertyType.Name); table.PopScope();
+                    var interfacePropertyType = new Class("InterfaceProperty", propertyType, objectClass, intrinsicClassFlags);
+                    table.AddType(interfacePropertyType);
+                    table.PushScope(interfacePropertyType.Name); table.PopScope();
+                    var namePropertyType = new Class("NameProperty", propertyType, objectClass, intrinsicClassFlags);
+                    table.AddType(namePropertyType);
+                    table.PushScope(namePropertyType.Name); table.PopScope();
+                    var strPropertyType = new Class("StrProperty", propertyType, objectClass, intrinsicClassFlags);
+                    table.AddType(strPropertyType);
+                    table.PushScope(strPropertyType.Name); table.PopScope();
+                    var arrayPropertyType = new Class("ArrayProperty", propertyType, objectClass, intrinsicClassFlags);
+                    table.AddType(arrayPropertyType);
+                    table.PushScope(arrayPropertyType.Name); table.PopScope();
+                    var mapPropertyType = new Class("MapProperty", propertyType, objectClass, intrinsicClassFlags);
+                    table.AddType(mapPropertyType);
+                    table.PushScope(mapPropertyType.Name); table.PopScope();
+                    var structPropertyType = new Class("StructProperty", propertyType, objectClass, intrinsicClassFlags);
+                    table.AddType(structPropertyType);
+                    table.PushScope(structPropertyType.Name); table.PopScope();
+                    var delegatePropertyType = new Class("DelegateProperty", propertyType, objectClass, intrinsicClassFlags);
+                    table.AddType(delegatePropertyType);
+                    table.PushScope(delegatePropertyType.Name); table.PopScope();
+                    var stringRefPropertyType = new Class("StringRefProperty", propertyType, objectClass, intrinsicClassFlags);
+                    table.AddType(stringRefPropertyType);
+                    table.PushScope(stringRefPropertyType.Name); table.PopScope();
+            table.PopScope();
+            table.PopScope();
             #endregion
 
             #region ENGINE 
@@ -174,62 +201,79 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
                 }
             };
             table.AddType(clientType);
+            table.PushScope(clientType.Name);
+                foreach (VariableDeclaration clientClassVarDecl in clientType.VariableDeclarations)
+                {
+                    table.AddSymbol(clientClassVarDecl.Name, clientClassVarDecl);
+                }
+            table.PopScope();
             var staticMeshType = new Class("StaticMesh", objectClass, objectClass, intrinsicClassFlags | EClassFlags.SafeReplace | EClassFlags.CollapseCategories);
             table.AddType(staticMeshType);
-            var fracturedStaticMeshType = new Class("FracturedStaticMesh", staticMeshType, objectClass, intrinsicClassFlags | EClassFlags.SafeReplace | EClassFlags.CollapseCategories)
-            {
-                VariableDeclarations =
+            table.PushScope(staticMeshType.Name);
+                var fracturedStaticMeshType = new Class("FracturedStaticMesh", staticMeshType, objectClass, intrinsicClassFlags | EClassFlags.SafeReplace | EClassFlags.CollapseCategories)
                 {
-                    new VariableDeclaration(staticMeshType, default, "SourceStaticMesh"),
-                    new VariableDeclaration(staticMeshType, default, "SourceCoreMesh"),
-                    new VariableDeclaration(FloatType, default, "CoreMeshScale"),
-                    new VariableDeclaration(new VariableType("Vector"), default, "CoreMeshScale3D"),
-                    new VariableDeclaration(new VariableType("Vector"), default, "CoreMeshOffset"),
-                    new VariableDeclaration(new VariableType("Rotator"), default, "CoreMeshRotation"),
-                    new VariableDeclaration(new VariableType("Vector"), default, "PlaneBias"),
-                    new VariableDeclaration(BoolType, default, "bSliceUsingCoreCollision"),
-                    new VariableDeclaration(new VariableType("ParticleSystem"), default, "FragmentDestroyEffect"),
-                    new VariableDeclaration(new DynamicArrayType(new VariableType("ParticleSystem")), default, "FragmentDestroyEffects"),
-                    new VariableDeclaration(FloatType, default, "FragmentDestroyEffectScale"),
-                    new VariableDeclaration(FloatType, default, "FragmentHealthScale"),
-                    new VariableDeclaration(FloatType, default, "FragmentMinHealth"),
-                    new VariableDeclaration(FloatType, default, "FragmentMaxHealth"),
-                    new VariableDeclaration(BoolType, default, "bUniformFragmentHealth"),
-                    new VariableDeclaration(FloatType, default, "ChunkLinVel"),
-                    new VariableDeclaration(FloatType, default, "ChunkAngVel"),
-                    new VariableDeclaration(FloatType, default, "ChunkLinHorizontalScale"),
-                    new VariableDeclaration(FloatType, default, "ExplosionVelScale"),
-                    new VariableDeclaration(BoolType, default, "bCompositeChunksExplodeOnImpact"),
-                    new VariableDeclaration(BoolType, default, "bFixIsolatedChunks"),
-                    new VariableDeclaration(BoolType, default, "bAlwaysBreakOffIsolatedIslands"),
-                    new VariableDeclaration(BoolType, default, "bSpawnPhysicsChunks"),
-                    new VariableDeclaration(FloatType, default, "ChanceOfPhysicsChunk"),
-                    new VariableDeclaration(FloatType, default, "ExplosionChanceOfPhysicsChunk"),
-                    new VariableDeclaration(FloatType, default, "NormalPhysicsChunkScaleMin"),
-                    new VariableDeclaration(FloatType, default, "NormalPhysicsChunkScaleMax"),
-                    new VariableDeclaration(FloatType, default, "ExplosionPhysicsChunkScaleMin"),
-                    new VariableDeclaration(FloatType, default, "ExplosionPhysicsChunkScaleMax"),
-                    new VariableDeclaration(FloatType, default, "MinConnectionSupportArea"),
-                    new VariableDeclaration(new VariableType("MaterialInterface"), default, "DynamicOutsideMaterial"),
-                    new VariableDeclaration(new VariableType("MaterialInterface"), default, "LoseChunkOutsideMaterial"),
-                    new VariableDeclaration(IntType, default, "OutsideMaterialIndex"),
-                }
-            };
-            table.AddType(fracturedStaticMeshType);
+                    VariableDeclarations =
+                    {
+                        new VariableDeclaration(staticMeshType, default, "SourceStaticMesh"),
+                        new VariableDeclaration(staticMeshType, default, "SourceCoreMesh"),
+                        new VariableDeclaration(FloatType, default, "CoreMeshScale"),
+                        new VariableDeclaration(new VariableType("Vector"), default, "CoreMeshScale3D"),
+                        new VariableDeclaration(new VariableType("Vector"), default, "CoreMeshOffset"),
+                        new VariableDeclaration(new VariableType("Rotator"), default, "CoreMeshRotation"),
+                        new VariableDeclaration(new VariableType("Vector"), default, "PlaneBias"),
+                        new VariableDeclaration(BoolType, default, "bSliceUsingCoreCollision"),
+                        new VariableDeclaration(new VariableType("ParticleSystem"), default, "FragmentDestroyEffect"),
+                        new VariableDeclaration(new DynamicArrayType(new VariableType("ParticleSystem")), default, "FragmentDestroyEffects"),
+                        new VariableDeclaration(FloatType, default, "FragmentDestroyEffectScale"),
+                        new VariableDeclaration(FloatType, default, "FragmentHealthScale"),
+                        new VariableDeclaration(FloatType, default, "FragmentMinHealth"),
+                        new VariableDeclaration(FloatType, default, "FragmentMaxHealth"),
+                        new VariableDeclaration(BoolType, default, "bUniformFragmentHealth"),
+                        new VariableDeclaration(FloatType, default, "ChunkLinVel"),
+                        new VariableDeclaration(FloatType, default, "ChunkAngVel"),
+                        new VariableDeclaration(FloatType, default, "ChunkLinHorizontalScale"),
+                        new VariableDeclaration(FloatType, default, "ExplosionVelScale"),
+                        new VariableDeclaration(BoolType, default, "bCompositeChunksExplodeOnImpact"),
+                        new VariableDeclaration(BoolType, default, "bFixIsolatedChunks"),
+                        new VariableDeclaration(BoolType, default, "bAlwaysBreakOffIsolatedIslands"),
+                        new VariableDeclaration(BoolType, default, "bSpawnPhysicsChunks"),
+                        new VariableDeclaration(FloatType, default, "ChanceOfPhysicsChunk"),
+                        new VariableDeclaration(FloatType, default, "ExplosionChanceOfPhysicsChunk"),
+                        new VariableDeclaration(FloatType, default, "NormalPhysicsChunkScaleMin"),
+                        new VariableDeclaration(FloatType, default, "NormalPhysicsChunkScaleMax"),
+                        new VariableDeclaration(FloatType, default, "ExplosionPhysicsChunkScaleMin"),
+                        new VariableDeclaration(FloatType, default, "ExplosionPhysicsChunkScaleMax"),
+                        new VariableDeclaration(FloatType, default, "MinConnectionSupportArea"),
+                        new VariableDeclaration(new VariableType("MaterialInterface"), default, "DynamicOutsideMaterial"),
+                        new VariableDeclaration(new VariableType("MaterialInterface"), default, "LoseChunkOutsideMaterial"),
+                        new VariableDeclaration(IntType, default, "OutsideMaterialIndex"),
+                    }
+                };
+                table.AddType(fracturedStaticMeshType);
+                table.PushScope(fracturedStaticMeshType.Name); table.PopScope();
+            table.PopScope();
             var shadowMap1DType = new Class("ShadowMap1D", objectClass, objectClass, intrinsicClassFlags);
             table.AddType(shadowMap1DType);
+            table.PushScope(shadowMap1DType.Name); table.PopScope();
             var levelBase = new Class("LevelBase", objectClass, objectClass, intrinsicClassFlags | EClassFlags.Abstract);
             table.AddType(levelBase);
-            var levelType = new Class("Level", levelBase, objectClass, intrinsicClassFlags);
-            table.AddType(levelType);
-            var pendingLevel = new Class("PendingLevel", levelBase, objectClass, intrinsicClassFlags | EClassFlags.Abstract);
-            table.AddType(pendingLevel);
+            table.PushScope(levelBase.Name);
+                var levelType = new Class("Level", levelBase, objectClass, intrinsicClassFlags);
+                table.AddType(levelType);
+                table.PushScope(levelType.Name); table.PopScope();
+                var pendingLevel = new Class("PendingLevel", levelBase, objectClass, intrinsicClassFlags | EClassFlags.Abstract);
+                table.AddType(pendingLevel);
+                table.PushScope(pendingLevel.Name); table.PopScope();
+            table.PopScope();
             var modelType = new Class("Model", objectClass, objectClass, intrinsicClassFlags);
             table.AddType(modelType);
+            table.PushScope(modelType.Name); table.PopScope();
             var worldType = new Class("World", objectClass, objectClass, intrinsicClassFlags);
             table.AddType(worldType);
+            table.PushScope(worldType.Name); table.PopScope();
             var polysType = new Class("Polys", objectClass, objectClass, intrinsicClassFlags);
             table.AddType(polysType);
+            table.PushScope(polysType.Name); table.PopScope();
 
             //NetConnection and ChildConnection are also intrinsic, but are added in the AddType function because they subclass the non-instrinsic class 'Player'
             #endregion
@@ -499,7 +543,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
                 scope = new ASTNodeDict();
             }
 
-            if (secondaryScope != null)
+            if (secondaryScope != null && secondaryScope != fullName)
             {
                 scope.SecondaryScope = secondaryScope;
             }
@@ -743,7 +787,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
             }
         }
 
-        private void ClearScope(string symbol)
+        public void ClearScope(string symbol)
         {
             PushScope(symbol);
 
@@ -795,12 +839,18 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
                     var objClass = Types[OBJECT];
                     var netConType = new Class("NetConnection", node, objClass, EClassFlags.Intrinsic | EClassFlags.Abstract | EClassFlags.Transient | EClassFlags.Config) { ConfigName = "Engine" };
                     AddType(netConType);
-                    var childConType = new Class("ChildConnection", netConType, objClass, EClassFlags.Intrinsic | EClassFlags.Transient | EClassFlags.Config, vars: new List<VariableDeclaration>
-                    {
-                        new(netConType, default, "Parent")
-                    }) { ConfigName = "Engine" };
-                    AddType(childConType);
-                    netConType.VariableDeclarations.Add(new VariableDeclaration(new DynamicArrayType(childConType), default, "Children"));
+                    PushScope(netConType.Name);
+                        var childConType = new Class("ChildConnection", netConType, objClass, EClassFlags.Intrinsic | EClassFlags.Transient | EClassFlags.Config, vars: new List<VariableDeclaration>
+                        {
+                            new(netConType, default, "Parent")
+                        }) { ConfigName = "Engine" };
+                        AddType(childConType);
+                        PushScope(childConType.Name);
+                            AddSymbol("Parent", childConType.VariableDeclarations[0]);
+                        PopScope();
+                        netConType.VariableDeclarations.Add(new VariableDeclaration(new DynamicArrayType(childConType), default, "Children"));
+                        AddSymbol("Children", netConType.VariableDeclarations[0]);
+                    PopScope();
                     break;
                 }
             }
@@ -813,11 +863,15 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
             return true;
         }
 
-        public void RemoveType(string name)
+        public void RemoveTypeAndChildTypes(VariableType type)
         {
-            if (Types.ContainsKey(name))
+            Types.Remove(type.Name);
+            if (type is ObjectType objectType)
             {
-                Types.Remove(name);
+                foreach (VariableType innerType in objectType.TypeDeclarations)
+                {
+                    RemoveTypeAndChildTypes(innerType);
+                }
             }
         }
 

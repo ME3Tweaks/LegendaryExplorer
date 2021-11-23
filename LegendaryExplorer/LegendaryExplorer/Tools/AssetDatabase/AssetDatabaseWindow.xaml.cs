@@ -565,7 +565,12 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                 menu_SaveXEmptyLines.IsEnabled = true;
             }
             IsGettingTLKs = false;
+            if (CurrentDataBase.Lines.Count == 0)
+            {
+                MessageBox.Show("Line list is empty! Make sure you have TLKs loaded in TLK Manager.");
+            }
 #if DEBUG
+            System.Diagnostics.Debug.WriteLine($"ADB: {emptylines.Count} empty lines");
             System.Diagnostics.Debug.WriteLine("Line worker done");
 #endif
         }
@@ -1104,9 +1109,10 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             var record = GetSelectedPlotRecord();
             var plotElement = PlotDatabases.FindPlotElementFromID(record.ElementID, record.ElementType.ToPlotElementType(),
                 CurrentGame);
-            var plotDB = new PlotManager.PlotManagerWindow();
+            var plotDB = new PlotManager.PlotManagerWindow(CurrentGame.ToLEVersion(), plotElement);
             plotDB.Show();
             plotDB.SelectPlotElement(plotElement, CurrentGame.ToLEVersion());
+            //plotDB.NoAutoSelection = false;
         }
 
         private void OpenPEDefinitionInToolset()

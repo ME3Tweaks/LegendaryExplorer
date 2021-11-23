@@ -546,6 +546,12 @@
                         </TabItem.Header>
                         <exportLoaderControls:ParticleModuleExportLoader x:Name="ParticleModuleTab_ParticleModuleLoader"/>
                     </TabItem>
+                    <TabItem Name="AnimNode_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                        <TabItem.Header>
+                            <TextBlock Text="AnimNode" ToolTip="AnimNode viewer"/>
+                        </TabItem.Header>
+                        <exportLoaderControls:AnimNodeExportLoader x:Name="AnimNodeTab_AnimNodeLoader" NavigateToEntryCommand="{Binding NavigateToEntryCommand, RelativeSource={RelativeSource AncestorType=Window}}"/>
+                    </TabItem>
                 </TabControl>
             </Grid>
         </DockPanel>

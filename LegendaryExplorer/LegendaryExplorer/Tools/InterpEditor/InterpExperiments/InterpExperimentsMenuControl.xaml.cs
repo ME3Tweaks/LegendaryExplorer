@@ -1,10 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using LegendaryExplorer.Tools.InterpEditor;
-using LegendaryExplorer.Tools.InterpEditor.InterpExperiments;
-using LegendaryExplorerCore.Packages;
 
-namespace LegendaryExplorer.UserControls.InterpEditorControls
+namespace LegendaryExplorer.Tools.InterpEditor.InterpExperiments
 {
     /// <summary>
     /// Class that holds toolset development experiments. Actual experiment code should be in the Experiments classes

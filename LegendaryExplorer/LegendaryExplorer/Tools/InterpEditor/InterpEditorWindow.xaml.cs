@@ -191,6 +191,10 @@ namespace LegendaryExplorer.Tools.InterpEditor
                 if (Properties_InterpreterWPF.CurrentLoadedExport == changedExport)
                 {
                     Properties_InterpreterWPF.LoadExport(changedExport);
+                    if (LoadedExportIsCurve)
+                    {
+                        CurveTab_CurveEditor.LoadExport(changedExport);
+                    }
                 }
             }
         }

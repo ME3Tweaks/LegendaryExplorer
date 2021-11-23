@@ -91,6 +91,10 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                             {
                                 return Error($"No outer class named '{nodeInterface.Name}' found!", nodeInterface.StartPos, nodeInterface.EndPos);
                             }
+                            if (!node.IsNative && ((Class)nodeInterface).IsNative)
+                            {
+                                return Error($"Only a native class can implement a native interface!", nodeInterface.StartPos, nodeInterface.EndPos);
+                            }
                             node.Interfaces[i] = nodeInterface;
                         }
 
@@ -141,11 +145,16 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                     {
                         if (((Class)node.Parent).SameAsOrSubClassOf(node)) // TODO: not needed due to no forward declarations?
                         {
-                            return Error($"Extending from '{node.Parent.Name}' causes circular extension!", node.Parent.StartPos, node.Parent.EndPos);
+                            return Error($"Extending from '{node.Parent.Name}' causes circular extension!", node.StartPos);
                         }
                         if (!((Class)node.OuterClass).SameAsOrSubClassOf(((Class)node.Parent).OuterClass.Name))
                         {
-                            return Error("Outer class must be a sub-class of the parents outer class!", node.OuterClass.StartPos, node.OuterClass.EndPos);
+                            return Error("Outer class must be a sub-class of the parents outer class!", node.StartPos);
+                        }
+                        if (node.SameAsOrSubClassOf("Interface"))
+                        {
+                            node.Flags |= EClassFlags.Interface;
+                            node.PropertyType = EPropertyType.Interface;
                         }
                         Symbols.GoDirectlyToStack(((Class)node.Parent).GetInheritanceString());
                         string outerScope = null;
@@ -169,7 +178,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                         decl.Outer = node;
                         Success &= decl.AcceptVisitor(this);
 
-                        if (node.Name != "Object" && Symbols.TryGetSymbolInScopeStack<ASTNode>(decl.Name, out _, node.GetScope()))
+                        if (node.Name != "Object" && Symbols.TryGetSymbolInScopeStack<ASTNode>(decl.Name, out _, node.Parent.GetScope()))
                         {
                             Log.LogWarning($"A symbol named '{decl.Name}' exists in a parent class. Are you sure you want to shadow it?", decl.StartPos, decl.EndPos);
                         }
@@ -207,10 +216,22 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 }
                 case ValidationPass.BodyPass:
                 {
-                    if (node.SameAsOrSubClassOf("Interface"))
+                    //from UDN: "Implementing multiple interface classes which have a common base is not supported and will result in incorrect vtable offsets"
+                    if (node.Interfaces.Count > 1)
                     {
-                        node.Flags |= EClassFlags.Interface;
-                        node.PropertyType = EPropertyType.Interface;
+                        var interfaceParents = new HashSet<string>();
+                        foreach (VariableType interfaceClass in node.Interfaces)
+                        {
+                            var parentInterface = (interfaceClass as Class)?.Parent as Class;
+                            while (parentInterface is not null && !parentInterface.Name.CaseInsensitiveEquals("Interface"))
+                            {
+                                if (interfaceParents.Contains(parentInterface.Name))
+                                {
+                                    return Error("Cannot implement two interfaces that have a common base interface lower than the Interface class", node.StartPos);
+                                }
+                                parentInterface = parentInterface.Parent as Class;
+                            }
+                        }
                     }
 
                     //third pass over structs to check for circular inheritance chains
@@ -247,7 +268,14 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                         {
                             node.Flags |= EClassFlags.Config;
                         }
-                        //TODO: instanced object properties?
+                        if (decl.Flags.Has(EPropertyFlags.Localized))
+                        {
+                            node.Flags |= EClassFlags.Localized;
+                        }
+                        if (decl.IsOrHasInstancedObjectProperty())
+                        {
+                            node.Flags |= EClassFlags.HasInstancedProps;
+                        }
                     }
 
                     return Success;

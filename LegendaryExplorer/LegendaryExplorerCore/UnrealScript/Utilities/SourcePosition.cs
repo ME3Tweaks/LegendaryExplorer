@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace LegendaryExplorerCore.UnrealScript.Utilities
 {
-    public class SourcePosition: IComparable<SourcePosition>, IComparable
+    public sealed class SourcePosition: IComparable<SourcePosition>, IComparable
     {
-        public int Line { get; }
-        public int Column { get; }
-        public int CharIndex { get; }
+        public readonly int Line;
+        public readonly int Column;
+        public readonly int CharIndex;
 
         public SourcePosition(int ln, int col, int index)
         {

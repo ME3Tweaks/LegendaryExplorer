@@ -1,11 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using LegendaryExplorerCore.UnrealScript.Language.Tree;
 using LegendaryExplorerCore.UnrealScript.Utilities;
 
 namespace LegendaryExplorerCore.UnrealScript.Compiling.Errors
 {
     public class MessageLog
     {
+        public bool HasErrors { get; private set; }
+
+        public Class CurrentClass;
+
+        public Class Filter; 
+
         private readonly List<LogMessage> content;
         public IReadOnlyList<LogMessage> Content => content.AsReadOnly();
 
@@ -24,7 +31,6 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling.Errors
         public IReadOnlyList<LogMessage> AllErrors => content.Where(m => m is Error or LineError).ToList();
         public IReadOnlyList<LogMessage> AllWarnings => content.Where(m => m is Warning or LineWarning).ToList();
 
-        public bool HasErrors { get; private set; }
 
         public MessageLog()
         {
@@ -33,6 +39,10 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling.Errors
 
         public void LogMessage(string msg, SourcePosition start = null, SourcePosition end = null)
         {
+            if (Filter is not null && CurrentClass is not null && Filter != CurrentClass)
+            {
+                return;
+            }
             if (start == null && end == null)
                 content.Add(new LogMessage(msg));
             else if (end == null)
@@ -44,6 +54,11 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling.Errors
         public void LogError(string msg, SourcePosition start = null, SourcePosition end = null)
         {
             HasErrors = true;
+            if (Filter is not null && CurrentClass is not null && Filter != CurrentClass)
+            {
+                content.Add(new ExternalError(msg, CurrentClass, start));
+                return;
+            }
             if (start == null && end == null)
                 content.Add(new Error(msg));
             else if (end == null)
@@ -54,6 +69,10 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling.Errors
 
         public void LogWarning(string msg, SourcePosition start = null, SourcePosition end = null)
         {
+            if (Filter is not null && CurrentClass is not null && Filter != CurrentClass)
+            {
+                return;
+            }
             if (start == null && end == null)
                 content.Add(new Warning(msg));
             else if (end == null)

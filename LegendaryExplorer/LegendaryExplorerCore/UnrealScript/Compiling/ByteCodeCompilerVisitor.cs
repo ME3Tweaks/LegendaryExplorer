@@ -84,7 +84,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             bytecodeCompiler.Compile(func);
         }
 
-        public void Compile(Function func)
+        private void Compile(Function func)
         {
             if (Target is UFunction uFunction)
             {
@@ -117,35 +117,48 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     }
                 }
 
-                foreach (FunctionParameter parameter in func.Parameters.Where(param => param.IsOptional))
-                {
-                    if (parameter.DefaultParameter is Expression expr)
-                    {
-                        WriteOpCode(OpCodes.DefaultParmValue);
 
-                        using (WriteSkipPlaceholder())
+                if (func.IsNative)
+                {
+                    foreach (FunctionParameter functionParameter in func.Parameters)
+                    {
+                        WriteOpCode(OpCodes.NativeParm);
+                        WriteObjectRef(ResolveSymbol(functionParameter));
+                    }
+                    WriteOpCode(OpCodes.Nothing);
+                }
+                else
+                {
+                    foreach (FunctionParameter parameter in func.Parameters.Where(param => param.IsOptional))
+                    {
+                        if (parameter.DefaultParameter is Expression expr)
                         {
-                            Emit(AddConversion(parameter.VarType, expr));
-                            WriteOpCode(OpCodes.EndParmValue);
+                            WriteOpCode(OpCodes.DefaultParmValue);
+
+                            using (WriteSkipPlaceholder())
+                            {
+                                Emit(AddConversion(parameter.VarType, expr));
+                                WriteOpCode(OpCodes.EndParmValue);
+                            }
                         }
+                        else
+                        {
+                            WriteOpCode(OpCodes.Nothing);
+                        }
+                    }
+
+                    Emit(func.Body);
+
+                    WriteOpCode(OpCodes.Return);
+                    if (returnValue != null)
+                    {
+                        WriteOpCode(OpCodes.ReturnNullValue);
+                        WriteObjectRef(returnValue.Export);
                     }
                     else
                     {
                         WriteOpCode(OpCodes.Nothing);
                     }
-                }
-
-                Emit(func.Body);
-
-                WriteOpCode(OpCodes.Return);
-                if (returnValue != null)
-                {
-                    WriteOpCode(OpCodes.ReturnNullValue);
-                    WriteObjectRef(returnValue.Export);
-                }
-                else
-                {
-                    WriteOpCode(OpCodes.Nothing);
                 }
 
                 WriteOpCode(OpCodes.EndOfScript);
@@ -160,7 +173,6 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
                 Target.ScriptBytecodeSize = GetMemLength();
                 Target.ScriptBytes = GetByteCode();
-                Target.Export.WriteBinary(Target);
             }
             else
             {
@@ -175,7 +187,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             bytecodeCompiler.Compile(state);
         }
 
-        public void Compile(State state)
+        private void Compile(State state)
         {
             if (Target is UState uState)
             {
@@ -215,7 +227,6 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
                 Target.ScriptBytecodeSize = GetMemLength();
                 Target.ScriptBytes = GetByteCode();
-                Target.Export.WriteBinary(Target);
             }
             else
             {
@@ -691,7 +702,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         public bool VisitNode(FunctionCall node)
         {
-            Function func = (Function)node.Function.Node;
+            var func = (Function)node.Function.Node;
             if (func.NativeIndex > 0)
             {
                 WriteNativeOpCode(func.NativeIndex);
@@ -715,13 +726,13 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             {
                 WriteOpCode(OpCodes.NamedFunction);
                 WriteName(func.Name);
-                if (NodeUtils.GetContainingClass(func).VirtualFunctionLookup.TryGetValue(func.Name, out ushort idx))
+                if (NodeUtils.GetContainingClass(func).VirtualFunctionNames.IndexOf(func.Name) is var idx and >= 0)
                 {
-                    WriteUShort(idx);
+                    WriteUShort((ushort)idx);
                 }
                 else
                 {
-                    throw new Exception($"Line {node.StartPos.Line}: Could not find '{func.Name}' in #{ContainingClass.UIndex} {ContainingClass.ObjectName}'s FullFunctions list!");
+                    throw new Exception($"Line {node.StartPos.Line}: Could not find '{func.Name}' in #{ContainingClass.UIndex} {ContainingClass.ObjectName}'s Virtual Function Table!");
                 }
             }
             CompileArguments(node.Arguments, func.Parameters);

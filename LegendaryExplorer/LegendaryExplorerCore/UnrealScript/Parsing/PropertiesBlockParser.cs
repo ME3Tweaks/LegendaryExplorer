@@ -17,7 +17,7 @@ using static LegendaryExplorerCore.UnrealScript.Utilities.Keywords;
 namespace LegendaryExplorerCore.UnrealScript.Parsing
 {
     //WIP
-    public class PropertiesBlockParser : StringParserBase
+    public sealed class PropertiesBlockParser : StringParserBase
     {
         private readonly Stack<string> ExpressionScopes;
         private readonly Stack<Class> SubObjectClasses;
@@ -25,6 +25,21 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
         private readonly bool IsStructDefaults;
         private readonly ObjectType Outer;
         private bool InSubOject;
+
+        public static void ParseStructDefaults(Struct s, IMEPackage pcc, SymbolTable symbols, MessageLog log)
+        {
+            symbols.PushScope(s.Name);
+            foreach (Struct innerStruct in s.TypeDeclarations.OfType<Struct>())
+            {
+                ParseStructDefaults(innerStruct, pcc, symbols, log);
+            }
+            var defaults = s.DefaultProperties;
+            if (defaults.Tokens is not null)
+            {
+                Parse(defaults, pcc, symbols, log);
+            }
+            symbols.PopScope();
+        }
 
         public static void Parse(DefaultPropertiesBlock propsBlock, IMEPackage pcc, SymbolTable symbols, MessageLog log)
         {
@@ -99,7 +114,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 var subSubObjects = new List<Subobject>();
                 var statements = currentSubObj.Statements;
                 var objectClass = currentSubObj.Class;
-                var objectName = currentSubObj.Name.Name;
+                var objectName = currentSubObj.NameDeclaration.Name;
                 ExpressionScopes.Push(objectClass.GetInheritanceString());
                 SubObjectClasses.Push(objectClass);
                 Symbols.PushScope(objectName);
@@ -179,6 +194,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
             var bodyStartPos = CurrentToken.StartPos;
             int nestedLevel = 1;
+            var tokens = new List<ScriptToken>();
             while (true)
             {
                 if (CurrentTokenType == TokenType.EOF)
@@ -189,12 +205,12 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     nestedLevel++;
                 else if (CurrentIs("END") && (NextIs("Object") || NextIs("Template")))
                     nestedLevel--;
-                if (nestedLevel > 0)
+                if (nestedLevel <= 0)
                 {
-                    Tokens.Advance();
-                    continue;
+                    break;
                 }
-                break;
+                tokens.Add(CurrentToken);
+                Tokens.Advance();
             }
             var bodyEndPos = PrevToken.EndPos;
             //END
@@ -206,7 +222,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
             var subObj = new Subobject(new VariableDeclaration(objectClass, default, objectName), objectClass, new List<Statement>(), isTemplate, startPos, PrevToken.EndPos)
             {
-                Tokens = new TokenStream<string>(() => bodyEndPos > bodyStartPos ? Tokens.GetTokensInRange(bodyStartPos, bodyEndPos).ToList() : new List<Token<string>>())
+                Tokens = new TokenStream(tokens)
             };
             if (!Symbols.TryAddSymbol(objectName, subObj))
             {
@@ -233,7 +249,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
         private AssignStatement ParseAssignment(bool inStruct)
         {
-            if (Consume(TokenType.Word) is Token<string> propName)
+            if (Consume(TokenType.Word) is ScriptToken propName)
             {
                 SymbolReference target = ParsePropName(propName, inStruct);
                 if (InSubOject && target.Node is VariableDeclaration {IsTransient: true})
@@ -370,7 +386,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
         private StructLiteral FinishStructLiteral(Struct targetStruct)
         {
-            Token<string> openingBracket = PrevToken;
+            ScriptToken openingBracket = PrevToken;
             var statements = new List<Statement>();
 
             if (!Matches(TokenType.RightBracket))
@@ -401,7 +417,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
         private DynamicArrayLiteral FinishDynamicArrayLiteral(DynamicArrayType arrayType)
         {
-            Token<string> openingParen = PrevToken;
+            ScriptToken openingParen = PrevToken;
             var values = new List<Expression>();
 
             if (!Matches(TokenType.RightParenth))
@@ -478,7 +494,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     {
                         if (literal is not SymbolReference {Node: Function func})
                         {
-                            if (literal is ObjectLiteral {Class: ClassType {ClassLimiter: Class containingclass}} && Matches(TokenType.Dot) && Consume(TokenType.Word) is Token<string> funcNameToken 
+                            if (literal is ObjectLiteral {Class: ClassType {ClassLimiter: Class containingclass}} && Matches(TokenType.Dot) && Consume(TokenType.Word) is ScriptToken funcNameToken 
                                 && Symbols.TryGetSymbolInScopeStack(funcNameToken.Value, out func, containingclass.GetScope()))
                             {
                                 literal = new CompositeSymbolRef(literal, NewSymbolReference(func, funcNameToken, false), true, literal.StartPos, funcNameToken.EndPos);
@@ -509,7 +525,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                             var prevToken = PrevToken;
                             //this handles the case where a property has the same name as the Enumeration, and reparses it as an enumvalue
                             if (Symbols.TryGetType(prevToken.Value, out Enumeration enum2) && enum2 == enumeration 
-                                && Matches(TokenType.Dot) && Consume(TokenType.Word) is Token<string> enumValueToken)
+                                                                                           && Matches(TokenType.Dot) && Consume(TokenType.Word) is ScriptToken enumValueToken)
                             {
                                 prevToken.SyntaxType = EF.Enum;
                                 prevToken.AssociatedNode = enum2;
@@ -602,7 +618,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             }
         }
 
-        private SymbolReference ParsePropName(Token<string> token, bool inStruct)
+        private SymbolReference ParsePropName(ScriptToken token, bool inStruct)
         {
             string specificScope = ExpressionScopes.Peek();
             if (!Symbols.TryGetSymbolInScopeStack(token.Value, out ASTNode symbol, specificScope) 
@@ -621,7 +637,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             return NewSymbolReference(symbol, token, false);
         }
 
-        private SymbolReference ParseBasicRef(Token<string> token)
+        private SymbolReference ParseBasicRef(ScriptToken token)
         {
             string specificScope = Symbols.CurrentScopeName;
             if (!Symbols.TryGetSymbolInScopeStack(token.Value, out ASTNode symbol, specificScope))

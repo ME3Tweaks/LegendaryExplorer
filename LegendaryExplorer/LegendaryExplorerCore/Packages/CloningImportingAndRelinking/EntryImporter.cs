@@ -522,7 +522,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
 
             //takes care of slight header differences between ME1/2 and ME3
-            byte[] newHeader = sourceExport.GenerateHeader(destPackage.Game, false); //The header needs relinked or it will be wrong if it has a component map!
+            byte[] newHeader = sourceExport.GenerateHeader(destPackage, false); //The header needs relinked or it will be wrong if it has a component map!
 
             ////for supported classes, this will add any names in binary to the Name table, as well as take care of binary differences for cross-game importing
             ////for unsupported classes, this will just copy over the binary
@@ -635,7 +635,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             using var res = new EndianReader(MemoryManager.GetMemoryStream()) { Endian = targetExport.FileRef.Endian };
             if (incomingExport.HasStack)
             {
-                res.Writer.WriteFromBuffer(incomingExport.DataReadOnly.Slice(0, 8));
+                res.Writer.Write(incomingExport.DataReadOnly.Slice(0, 8));
                 res.Writer.WriteFromBuffer(GetStackDummy(targetExport.Game));
             }
             else

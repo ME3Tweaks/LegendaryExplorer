@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using DocumentFormat.OpenXml.Drawing;
 using DocumentFormat.OpenXml.Wordprocessing;
@@ -35,9 +37,13 @@ namespace LegendaryExplorer.Tools.TextureStudio
     /// </summary>
     public partial class TextureStudioWindow : NotifyPropertyChangedWindowBase, IRecents, IBusyUIHost
     {
-        public ObservableCollectionExtendedWPF<TextureMapMemoryEntry> AllTreeViewNodes { get; } = new();
+        public ObservableCollectionExtendedWPF<TextureMapMemoryEntry> AllRootTreeViewNodes { get; } = new();
         public ObservableCollectionExtendedWPF<string> ME1MasterTexturePackages { get; } = new();
         private Dictionary<uint, MEMTextureMap.TextureMapEntry> VanillaTextureMap { get; set; }
+        /// <summary>
+        /// Can produce tokens for cancelling things.
+        /// </summary>
+        private CancellationTokenSource CancellationSource = new CancellationTokenSource();
 
         private string _tfcSuffix;
         public string TFCSuffix { get => _tfcSuffix; set => SetProperty(ref _tfcSuffix, value); }
@@ -160,11 +166,22 @@ namespace LegendaryExplorer.Tools.TextureStudio
             InitializeComponent();
             RecentsController.InitRecentControl(Toolname, Recents_MenuItem, fileName =>
             {
-                SelectedFolder = fileName;
-                BeginScan();
+                InitWorkspace(fileName);
             });
             MessageBox.Show(
                 @"Texture Studio is in development and is not finished. It will have usability problems AND IT MAY POTENTIALLY HAVE MOD BREAKING BUGS. TAKE FULL BACKUPS OF YOUR MOD FOLDER BEFORE USING THIS TOOL!");
+        }
+
+        private void InitWorkspace(string workspacepath)
+        {
+            SelectedFolder = workspacepath;
+            BeginScan();
+
+
+            if (SelectedFolder != null && Path.GetFileNameWithoutExtension(SelectedFolder).StartsWith("DLC_MOD_"))
+            {
+                TFCSuffix = Path.GetFileNameWithoutExtension(SelectedFolder);
+            }
         }
 
         #region Command loading
@@ -213,7 +230,7 @@ namespace LegendaryExplorer.Tools.TextureStudio
             p.Activate(); //bring to front   
         }
 
-        private bool CanChangeAllInstances() => SelectedItem != null && SelectedItem.Instances.Any();
+        private bool CanChangeAllInstances() => SelectedItem != null && SelectedItem.Instances.Any() && TFCSuffix != null && TFCSuffix.StartsWith("DLC_MOD_");
 
         private void ChangeAllInstances()
         {
@@ -300,49 +317,83 @@ namespace LegendaryExplorer.Tools.TextureStudio
                     // Copy the properties and binary to the others
 
                     //uint crc = 0;
-                    var generateMips = SelectedItem.Instances.Any(x => x.NumMips > 1);
-                    if (generateMips)
+                    Task.Run(() =>
                     {
-                        // It has mips. Generate mips for our new texture
-                        //crc = (uint)~ParallelCRC.Compute(image.mipMaps[0].data); //crc will change on non argb... not sure how to deal with this
-                        image.correctMips(SelectedItem.Instances[0].PixelFormat);
-                    }
-
-                    PackageCache pc = new PackageCache();
-                    Texture2D firstInstance = null;
-                    UTexture2D fiBin = null;
-                    for (int i = 0; i < SelectedItem.Instances.Count; i++)
-                    {
-                        var instance = SelectedItem.Instances[i];
-                        var lPackage = pc.GetCachedPackage(Path.Combine(SelectedFolder, instance.RelativePackagePath));
-                        var textureExp = lPackage.FindExport(instance.ExportPath);
-                        if (i == 0)
+                        BusyText = "Replacing textures";
+                        BusyProgressValue = 0;
+                        BusyProgressMaximum = SelectedItem.Instances.Count;
+                        BusyProgressIndeterminate = false;
+                        IsBusy = true;
+                        var generateMips = SelectedItem.Instances.Any(x => x.NumMips > 1);
+                        if (generateMips)
                         {
-                            // First instance
-                            firstInstance = new Texture2D(textureExp);
-                            firstInstance.Replace(image, textureExp.GetProperties(), selectDDS.FileName, $"Textures_{TFCSuffix}"); // This is placeholder name for TFC name
-                            fiBin = ObjectBinary.From<UTexture2D>(textureExp);
+                            // It has mips. Generate mips for our new texture
+                            //crc = (uint)~ParallelCRC.Compute(image.mipMaps[0].data); //crc will change on non argb... not sure how to deal with this
+                            image.correctMips(SelectedItem.Instances[0].PixelFormat);
                         }
-                        else
+
+                        PackageCache pc = new PackageCache();
+                        Texture2D firstInstance = null;
+                        UTexture2D fiBin = null;
+                        for (int i = 0; i < SelectedItem.Instances.Count; i++)
                         {
-                            // others, just copy from first
-                            textureExp.WriteProperties(firstInstance.Export.GetProperties());
-                            textureExp.WriteBinary(fiBin);
+                            var instance = SelectedItem.Instances[i];
+                            var lPackage = pc.GetCachedPackage(Path.Combine(SelectedFolder, instance.RelativePackagePath));
+                            var textureExp = lPackage.FindExport(instance.ExportPath);
+                            if (i == 0)
+                            {
+                                // First instance
+                                firstInstance = new Texture2D(textureExp);
+                                firstInstance.Replace(image, textureExp.GetProperties(), selectDDS.FileName, $"Textures_{TFCSuffix}", forcedTFCPath: GetTFCPath()); // This is placeholder name for TFC name
+                                fiBin = ObjectBinary.From<UTexture2D>(textureExp);
+                            }
+                            else
+                            {
+                                // others, just copy from first
+                                textureExp.WriteProperties(firstInstance.Export.GetProperties());
+                                textureExp.WriteBinary(fiBin);
+                            }
+                            BusyProgressValue++;
                         }
-                    }
 
-                    foreach (var p in pc.Cache.Values)
+                        BusyProgressValue = 0;
+                        BusyProgressMaximum = pc.Cache.Count;
+                        BusyText = "Saving packages";
+                        foreach (var p in pc.Cache.Values)
+                        {
+                            if (p.IsModified)
+                                p.Save();
+                            BusyProgressValue++;
+                        }
+                    }).ContinueWithOnUIThread(x =>
                     {
-                        if (p.IsModified)
-                            p.Save();
-                    }
-
-                    TextureMapMemoryEntry tme = SelectedItem;
-                    while (tme.Parent != null)
-                        tme = tme.Parent;
-                    BeginScanInternal(new List<TextureMapMemoryEntry>(new[] { tme }));
+                        IsBusy = false;
+                        TextureMapMemoryEntry tme = SelectedItem;
+                        while (tme.Parent != null)
+                            tme = tme.Parent;
+                        BeginScanInternal(new List<TextureMapMemoryEntry>(new[] { tme }), SelectedItem.InstancedFullPath);
+                    });
                 }
             }
+        }
+
+        /// <summary>
+        /// Gets path to where the TFC should be saved. This is a best effort system. Can return null if the folder can't be determined.
+        /// </summary>
+        /// <returns></returns>
+        private string GetTFCPath()
+        {
+            if (SelectedFolder != null)
+            {
+                var allSubDirs = Directory.GetDirectories(SelectedFolder, "*", SearchOption.AllDirectories);
+                var subDirToUse = allSubDirs.FirstOrDefault(x => x.EndsWith("CookedPCConsole") || x.EndsWith("CookedPC"));
+                if (subDirToUse != null)
+                {
+                    return Path.Combine(subDirToUse, $"Textures_{TFCSuffix}.tfc");
+                }
+            }
+            return null;
+
         }
 
         /// <summary>
@@ -364,11 +415,11 @@ namespace LegendaryExplorer.Tools.TextureStudio
                 // Must be created
                 masterPackageExport = ExportCreator.CreatePackageExport(sPackage, requiredTopLevelPackageExportName);
                 masterPackageNode = new TextureMapMemoryEntryWPF(masterPackageExport);
-                AllTreeViewNodes.Add(masterPackageNode);
+                AllRootTreeViewNodes.Add(masterPackageNode);
             }
             else
             {
-                masterPackageNode = AllTreeViewNodes.OfType<TextureMapMemoryEntryWPF>().FirstOrDefault(x => x.ObjectName == inst.MasterPackageName);
+                masterPackageNode = AllRootTreeViewNodes.OfType<TextureMapMemoryEntryWPF>().FirstOrDefault(x => x.ObjectName == inst.MasterPackageName);
             }
 
             if (sExp.idxLink != masterPackageExport.UIndex && masterPackageNode != null)
@@ -489,7 +540,7 @@ namespace LegendaryExplorer.Tools.TextureStudio
             BackgroundWorker bw = new BackgroundWorker();
             bw.DoWork += (sender, args) =>
             {
-                var allPackages = AllTreeViewNodes.OfType<TextureMapMemoryEntryWPF>().SelectMany(x => x.GetAllTextureEntries()).SelectMany(y => y.Instances.Select(z => z.RelativePackagePath)).Distinct().ToList();
+                var allPackages = AllRootTreeViewNodes.OfType<TextureMapMemoryEntryWPF>().SelectMany(x => x.GetAllTextureEntries()).SelectMany(y => y.Instances.Select(z => z.RelativePackagePath)).Distinct().ToList();
                 BusyProgressValue = 0;
                 BusyProgressMaximum = allPackages.Count;
                 BusyProgressIndeterminate = false;
@@ -542,7 +593,7 @@ namespace LegendaryExplorer.Tools.TextureStudio
             bw.DoWork += (sender, args) =>
             {
                 var masterCache = new Dictionary<string, IMEPackage>();
-                var refsToUpdate = AllTreeViewNodes.OfType<TextureMapMemoryEntryWPF>()
+                var refsToUpdate = AllRootTreeViewNodes.OfType<TextureMapMemoryEntryWPF>()
                     .SelectMany(x => x.GetAllTextureEntries())
                     .SelectMany(x => x.Instances.Where(y => y.HasExternalReferences && y.MasterPackageName != null && y.MasterPackageName.StartsWith(TextureMapGenerator.ME1_MOD_MASTER_TEXTURE_PACKAGE_PREFIX)))
                     .OrderBy(x => x.RelativePackagePath).ToList();
@@ -592,7 +643,7 @@ namespace LegendaryExplorer.Tools.TextureStudio
 
         private void CancelScan()
         {
-            ScanCanceled = true;
+            CancellationSource.Cancel();
         }
 
 
@@ -625,14 +676,12 @@ namespace LegendaryExplorer.Tools.TextureStudio
 
                 if (dlg.ShowDialog(this) == CommonFileDialogResult.Ok)
                 {
-                    SelectedFolder = dlg.FileName;
-                    BeginScan();
+                    InitWorkspace(dlg.FileName);
                 }
             }
             else
             {
-                SelectedFolder = path;
-                BeginScan();
+                InitWorkspace(path);
             }
         }
 
@@ -642,7 +691,7 @@ namespace LegendaryExplorer.Tools.TextureStudio
             BeginScanInternal();
         }
 
-        private void BeginScanInternal(List<TextureMapMemoryEntry> entriesToReload = null)
+        private void BeginScanInternal(List<TextureMapMemoryEntry> entriesToReload = null, string nodeToSelect = null)
         {
             BackgroundWorker bw = new BackgroundWorker();
             bw.DoWork += ScanFolderThread;
@@ -650,6 +699,21 @@ namespace LegendaryExplorer.Tools.TextureStudio
             {
                 ScanCanceled = false;
                 IsBusy = false;
+
+                if (nodeToSelect != null && entriesToReload != null && entriesToReload.Count == 1)
+                {
+                    var root = AllRootTreeViewNodes.FirstOrDefault(x => x.InstancedFullPath == entriesToReload[0].InstancedFullPath);
+                    if (root != null)
+                    {
+                        // it's gonna be under here
+                        var node = root.GetAllTextureEntries().FirstOrDefault(x => x.InstancedFullPath == nodeToSelect);
+                        if (node != null && node is TextureMapMemoryEntryWPF twpf)
+                        {
+                            SelectEntry(twpf);
+                        }
+                    }
+
+                }
             };
             IsBusy = true;
             if (entriesToReload == null)
@@ -658,15 +722,21 @@ namespace LegendaryExplorer.Tools.TextureStudio
             }
             else
             {
-                AllTreeViewNodes.RemoveRange(entriesToReload);
+                AllRootTreeViewNodes.RemoveRange(entriesToReload);
             }
 
             bw.RunWorkerAsync(entriesToReload);
         }
 
+        private void SelectEntry(TextureMapMemoryEntryWPF twpf)
+        {
+            twpf.ExpandParents();
+            twpf.IsSelected = true;
+        }
+
         private void ResetUI()
         {
-            AllTreeViewNodes.ClearEx();
+            AllRootTreeViewNodes.ClearEx();
             CurrentStudioGame = MEGame.Unknown;
             VanillaTextureMap = null;
         }
@@ -679,7 +749,7 @@ namespace LegendaryExplorer.Tools.TextureStudio
 
         private void ScanFolderThread(object sender, DoWorkEventArgs e)
         {
-
+            CancellationSource = new CancellationTokenSource(); // Make new so it doesn't have old request
             //// Mapping of full paths to their entries
             //BusyHeader = @"Calculating texture map";
             //Dictionary<string, TextureMapMemoryEntry> entries = new Dictionary<string, TextureMapMemoryEntry>();
@@ -694,25 +764,27 @@ namespace LegendaryExplorer.Tools.TextureStudio
             if (e.Argument is List<TextureMapMemoryEntry> entriesToRefresh)
             {
                 var entries = new Dictionary<string, TextureMapMemoryEntry>();
-                TextureMapGenerator.RegenerateEntries(SelectedFolder, entriesToRefresh, entries, new Dictionary<string, uint>(), new List<string>(), MemoryEntryGeneratorWPF, addTopLevelNode);
+                TextureMapGenerator.RegenerateEntries(SelectedFolder, entriesToRefresh, entries, new Dictionary<string, uint>(), new List<string>(), MemoryEntryGeneratorWPF, addTopLevelNode, CancellationSource.Token);
             }
             else
             {
                 // Generate the whole thing
-                TextureMapGenerator.GenerateMapForFolder(SelectedFolder, MemoryEntryGeneratorWPF, addTopLevelNode, textureMapProgress);
+                TextureMapGenerator.GenerateMapForFolder(SelectedFolder, MemoryEntryGeneratorWPF, addTopLevelNode, textureMapProgress, CancellationSource.Token);
             }
 
             // Pass 4: Sort
             BusyText = "Sorting tree";
-            foreach (var t in AllTreeViewNodes.OfType<TextureMapMemoryEntryWPF>())
+            foreach (var t in AllRootTreeViewNodes.OfType<TextureMapMemoryEntryWPF>())
             {
                 // Collapse the top branches
                 t.IsExpanded = false;
             }
-            SortNodes(AllTreeViewNodes);
+            SortNodes(AllRootTreeViewNodes);
+
+            // 
 
             // Attempt to determine TFC Suffix
-            foreach (var v in AllTreeViewNodes)
+            foreach (var v in AllRootTreeViewNodes)
             {
                 var textureInstances = v.GetAllTextureEntries();
                 foreach (var memoryInstance in textureInstances)
@@ -741,13 +813,12 @@ namespace LegendaryExplorer.Tools.TextureStudio
 
 
             Thread.Sleep(1000); //UI will take a few moments to update so we will stall this busy overlay
-
             BusyProgressIndeterminate = true;
         }
 
         private void addTopLevelNode(TextureMapMemoryEntry obj)
         {
-            AllTreeViewNodes.Add(obj);
+            AllRootTreeViewNodes.Add(obj);
         }
 
         private void textureMapProgress(string text, int done, int total)

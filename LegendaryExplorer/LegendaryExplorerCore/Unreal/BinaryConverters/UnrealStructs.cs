@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Numerics;
+using System.Runtime.InteropServices;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 
@@ -72,6 +73,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 #endif
     }
 
+    [StructLayout(LayoutKind.Sequential)]
     public readonly struct Vector2DHalf
     {
         public readonly ushort Xbits;
@@ -102,6 +104,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             return new Vector2(vec2DHalf.X, vec2DHalf.Y);
         }
     }
+    [StructLayout(LayoutKind.Sequential)]
     public readonly struct Rotator
     {
         public readonly int Pitch;
@@ -149,6 +152,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     }
 
 // -1 to 1 converted to 0-255
+    [StructLayout(LayoutKind.Sequential)]
     public readonly struct PackedNormal
     {
         public readonly byte X;
@@ -189,6 +193,33 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 vec.Z.PackToByte(),
                 vec.W.PackToByte());
         }
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public readonly struct Influences
+    {
+        private readonly byte _0;
+        private readonly byte _1;
+        private readonly byte _2;
+        private readonly byte _3;
+
+        public Influences(byte a, byte b, byte c, byte d)
+        {
+            _0 = a;
+            _1 = b;
+            _2 = c;
+            _3 = d;
+        }
+
+        public byte this[int i] =>
+            i switch
+            {
+                0 => _0,
+                1 => _1,
+                2 => _2,
+                3 => _3,
+                _ => throw new IndexOutOfRangeException()
+            };
     }
 
     public class Box
@@ -245,94 +276,210 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         }
         public static void Serialize(this SerializingContainer2 sc, ref Vector3 vec)
         {
-            if (sc.IsLoading)
+            if (sc.ms.Endian.IsNative)
             {
-                vec = new Vector3(sc.ms.ReadFloat(), sc.ms.ReadFloat(), sc.ms.ReadFloat());
+                Span<byte> span = stackalloc byte[12];
+                if (sc.IsLoading)
+                {
+                    sc.ms.Read(span);
+                    vec = MemoryMarshal.Read<Vector3>(span);
+                }
+                else
+                {
+                    MemoryMarshal.Write(span, ref vec);
+                    sc.ms.Writer.Write(span);
+                }
             }
             else
             {
-                sc.ms.Writer.WriteFloat(vec.X);
-                sc.ms.Writer.WriteFloat(vec.Y);
-                sc.ms.Writer.WriteFloat(vec.Z);
+                if (sc.IsLoading)
+                {
+                    vec = new Vector3(sc.ms.ReadFloat(), sc.ms.ReadFloat(), sc.ms.ReadFloat());
+                }
+                else
+                {
+                    sc.ms.Writer.WriteFloat(vec.X);
+                    sc.ms.Writer.WriteFloat(vec.Y);
+                    sc.ms.Writer.WriteFloat(vec.Z);
+                }
             }
         }
         public static void Serialize(this SerializingContainer2 sc, ref Plane plane)
         {
-            if (sc.IsLoading)
+            if (sc.ms.Endian.IsNative)
             {
-                plane = new Plane(sc.ms.ReadFloat(), sc.ms.ReadFloat(), sc.ms.ReadFloat(), sc.ms.ReadFloat());
+                Span<byte> span = stackalloc byte[16];
+                if (sc.IsLoading)
+                {
+                    sc.ms.Read(span);
+                    plane = MemoryMarshal.Read<Plane>(span);
+                }
+                else
+                {
+                    MemoryMarshal.Write(span, ref plane);
+                    sc.ms.Writer.Write(span);
+                }
             }
             else
             {
-                sc.ms.Writer.WriteFloat(plane.Normal.X);
-                sc.ms.Writer.WriteFloat(plane.Normal.Y);
-                sc.ms.Writer.WriteFloat(plane.Normal.Z);
-                sc.ms.Writer.WriteFloat(plane.D);
+                if (sc.IsLoading)
+                {
+                    plane = new Plane(sc.ms.ReadFloat(), sc.ms.ReadFloat(), sc.ms.ReadFloat(), sc.ms.ReadFloat());
+                }
+                else
+                {
+                    sc.ms.Writer.WriteFloat(plane.Normal.X);
+                    sc.ms.Writer.WriteFloat(plane.Normal.Y);
+                    sc.ms.Writer.WriteFloat(plane.Normal.Z);
+                    sc.ms.Writer.WriteFloat(plane.D);
+                }
             }
         }
         public static void Serialize(this SerializingContainer2 sc, ref Rotator rot)
         {
-            if (sc.IsLoading)
+            if (sc.ms.Endian.IsNative)
             {
-                rot = new Rotator(sc.ms.ReadInt32(), sc.ms.ReadInt32(), sc.ms.ReadInt32());
+                Span<byte> span = stackalloc byte[12];
+                if (sc.IsLoading)
+                {
+                    sc.ms.Read(span);
+                    rot = MemoryMarshal.Read<Rotator>(span);
+                }
+                else
+                {
+                    MemoryMarshal.Write(span, ref rot);
+                    sc.ms.Writer.Write(span);
+                }
             }
             else
             {
-                sc.ms.Writer.WriteInt32(rot.Pitch);
-                sc.ms.Writer.WriteInt32(rot.Yaw);
-                sc.ms.Writer.WriteInt32(rot.Roll);
+                if (sc.IsLoading)
+                {
+                    rot = new Rotator(sc.ms.ReadInt32(), sc.ms.ReadInt32(), sc.ms.ReadInt32());
+                }
+                else
+                {
+                    sc.ms.Writer.WriteInt32(rot.Pitch);
+                    sc.ms.Writer.WriteInt32(rot.Yaw);
+                    sc.ms.Writer.WriteInt32(rot.Roll);
+                }
             }
         }
         public static void Serialize(this SerializingContainer2 sc, ref Quaternion quat)
         {
-            if (sc.IsLoading)
+            if (sc.ms.Endian.IsNative)
             {
-                quat = new Quaternion(sc.ms.ReadFloat(), sc.ms.ReadFloat(), sc.ms.ReadFloat(), sc.ms.ReadFloat());
+                Span<byte> span = stackalloc byte[16];
+                if (sc.IsLoading)
+                {
+                    sc.ms.Read(span);
+                    quat = MemoryMarshal.Read<Quaternion>(span);
+                }
+                else
+                {
+                    MemoryMarshal.Write(span, ref quat);
+                    sc.ms.Writer.Write(span);
+                }
             }
             else
             {
-                sc.ms.Writer.WriteFloat(quat.X);
-                sc.ms.Writer.WriteFloat(quat.Y);
-                sc.ms.Writer.WriteFloat(quat.Z);
-                sc.ms.Writer.WriteFloat(quat.W);
+                if (sc.IsLoading)
+                {
+                    quat = new Quaternion(sc.ms.ReadFloat(), sc.ms.ReadFloat(), sc.ms.ReadFloat(), sc.ms.ReadFloat());
+                }
+                else
+                {
+                    sc.ms.Writer.WriteFloat(quat.X);
+                    sc.ms.Writer.WriteFloat(quat.Y);
+                    sc.ms.Writer.WriteFloat(quat.Z);
+                    sc.ms.Writer.WriteFloat(quat.W);
+                }
             }
         }
         public static void Serialize(this SerializingContainer2 sc, ref Vector2 vec)
         {
-            if (sc.IsLoading)
+            if (sc.ms.Endian.IsNative)
             {
-                vec = new Vector2(sc.ms.ReadFloat(), sc.ms.ReadFloat());
+                Span<byte> span = stackalloc byte[8];
+                if (sc.IsLoading)
+                {
+                    sc.ms.Read(span);
+                    vec = MemoryMarshal.Read<Vector2>(span);
+                }
+                else
+                {
+                    MemoryMarshal.Write(span, ref vec);
+                    sc.ms.Writer.Write(span);
+                }
             }
             else
             {
-                sc.ms.Writer.WriteFloat(vec.X);
-                sc.ms.Writer.WriteFloat(vec.Y);
+                if (sc.IsLoading)
+                {
+                    vec = new Vector2(sc.ms.ReadFloat(), sc.ms.ReadFloat());
+                }
+                else
+                {
+                    sc.ms.Writer.WriteFloat(vec.X);
+                    sc.ms.Writer.WriteFloat(vec.Y);
+                }
             }
         }
         public static void Serialize(this SerializingContainer2 sc, ref Vector2DHalf vec)
         {
-            if (sc.IsLoading)
+            if (sc.ms.Endian.IsNative)
             {
-                vec = new Vector2DHalf(sc.ms.ReadUInt16(), sc.ms.ReadUInt16());
+                Span<byte> span = stackalloc byte[4];
+                if (sc.IsLoading)
+                {
+                    sc.ms.Read(span);
+                    vec = MemoryMarshal.Read<Vector2DHalf>(span);
+                }
+                else
+                {
+                    MemoryMarshal.Write(span, ref vec);
+                    sc.ms.Writer.Write(span);
+                }
             }
             else
             {
-                sc.ms.Writer.WriteUInt16(vec.Xbits);
-                sc.ms.Writer.WriteUInt16(vec.Ybits);
+                if (sc.IsLoading)
+                {
+                    vec = new Vector2DHalf(sc.ms.ReadUInt16(), sc.ms.ReadUInt16());
+                }
+                else
+                {
+                    sc.ms.Writer.WriteUInt16(vec.Xbits);
+                    sc.ms.Writer.WriteUInt16(vec.Ybits);
+                }
             }
         }
         public static void Serialize(this SerializingContainer2 sc, ref PackedNormal norm)
         {
+            Span<byte> span = stackalloc byte[4];
             if (sc.IsLoading)
             {
-                norm = new PackedNormal((byte)sc.ms.ReadByte(), (byte)sc.ms.ReadByte(), (byte)sc.ms.ReadByte(), (byte)sc.ms.ReadByte());
+                sc.ms.Read(span);
+                norm = MemoryMarshal.Read<PackedNormal>(span);
             }
             else
             {
-                sc.ms.Writer.WriteByte(norm.X);
-                sc.ms.Writer.WriteByte(norm.Y);
-                sc.ms.Writer.WriteByte(norm.Z);
-                sc.ms.Writer.WriteByte(norm.W);
+                MemoryMarshal.Write(span, ref norm);
+                sc.ms.Writer.Write(span);
+            }
+        }
+        public static void Serialize(this SerializingContainer2 sc, ref Influences influences)
+        {
+            Span<byte> span = stackalloc byte[4];
+            if (sc.IsLoading)
+            {
+                sc.ms.Read(span);
+                influences = MemoryMarshal.Read<Influences>(span);
+            }
+            else
+            {
+                MemoryMarshal.Write(span, ref influences);
+                sc.ms.Writer.Write(span);
             }
         }
         public static void Serialize(this SerializingContainer2 sc, ref BoxSphereBounds bounds)

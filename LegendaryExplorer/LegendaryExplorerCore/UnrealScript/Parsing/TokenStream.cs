@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
@@ -8,70 +9,25 @@ using LegendaryExplorerCore.UnrealScript.Utilities;
 
 namespace LegendaryExplorerCore.UnrealScript.Parsing
 {
-    internal struct ASTCacheEntry
+    public sealed class TokenStream : IEnumerable<ScriptToken>
     {
-        public ASTNode AST;
-        public int EndIndex;
-    }
+        private readonly List<ScriptToken> Data;
+        private readonly Stack<int> Snapshots;
+        private readonly ScriptToken EndToken;
+        private int CurrentIndex;
 
-    public class TokenStream<T> : TokenizableDataStream<Token<T>> 
-        where T : class
-    {
-        private readonly Dictionary<int, ASTCacheEntry> Cache;
-
-        private readonly Token<T> EndToken;
-
-        public TokenStream(Func<List<Token<T>>> provider) : base(provider)
+        public TokenStream(List<ScriptToken> tokens)
         {
-            Cache = new Dictionary<int, ASTCacheEntry>();
-            var endPos = Data.Count > 0 ? Data[^1].EndPos : new SourcePosition(0, 0, 0);
-            EndToken = new Token<T>(TokenType.EOF, default, endPos, endPos);
+            CurrentIndex = 0;
+            Snapshots = new Stack<int>();
+            Data = tokens;
+            SourcePosition endPos = Data.Count > 0 ? Data[^1].EndPos : new SourcePosition(0, 0, 0);
+            EndToken = new ScriptToken(TokenType.EOF, default, endPos, endPos);
         }
 
-        public TokenStream(LexerBase<T> lexer) : this (() => lexer.LexData().ToList())
+        public ScriptToken ConsumeToken(TokenType type)
         {
-        }
-
-        public TokenStream(LexerBase<T> lexer, SourcePosition start, SourcePosition end) : this(() => lexer.LexSubData(start, end).ToList())
-        {
-        }
-
-        public bool TryRoute(Func<ASTNode> nodeParser)
-        {
-            PushSnapshot();
-            bool valid = false;
-
-            var startIndex = CurrentIndex;
-            var tree = nodeParser();
-            if (tree != null)
-            {
-                valid = true;
-                Cache[startIndex] = new ASTCacheEntry { AST = tree, EndIndex = CurrentIndex };
-            }
-
-            PopSnapshot();
-            return valid;
-        }
-
-        public ASTNode GetTree(Func<ASTNode> nodeParser)
-        {
-            if (Cache.TryGetValue(CurrentIndex, out ASTCacheEntry entry))
-            {
-                CurrentIndex = entry.EndIndex;
-                return entry.AST;
-            }
-
-            return nodeParser();
-        }
-
-        public ASTNode TryGetTree(Func<ASTNode> nodeParser)
-        {
-            return TryRoute(nodeParser) ? GetTree(nodeParser) : null;
-        }
-
-        public Token<T> ConsumeToken(TokenType type)
-        {
-            Token<T> token = null;
+            ScriptToken token = null;
             if (CurrentItem.Type == type)
             {
                 token = CurrentItem;
@@ -80,27 +36,75 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             return token;
         }
 
-        public override Token<T> LookAhead(int reach)
+        public ScriptToken LookAhead(int reach)
         {
-            return base.LookAhead(reach) ?? EndToken;
+            return EndOfStream(reach) ? EndToken : Data[CurrentIndex + reach];
         }
 
-        public override Token<T> CurrentItem => AtEnd() ? EndToken : base.CurrentItem;
+        public ScriptToken CurrentItem => CurrentIndex >= Data.Count ? EndToken : Data[CurrentIndex];
 
-        public IEnumerable<Token<T>> GetTokensInRange(SourcePosition start, SourcePosition end)
+        public List<ScriptToken> GetTokensInRange(SourcePosition start, SourcePosition end)
         {
-            foreach (Token<T> token in Data)
+            var tokens = new List<ScriptToken>();
+            for (int i = 0; i < Data.Count; i++)
             {
+                ScriptToken token = Data[i];
                 if (token.StartPos.CharIndex >= start.CharIndex)
                 {
-                    yield return token;
+                    tokens.Add(token);
 
                     if (token.EndPos.CharIndex >= end.CharIndex)
                     {
-                        yield break;
+                        break;
                     }
                 }
             }
+            return tokens;
+        }
+
+        public void PushSnapshot()
+        {
+            Snapshots.Push(CurrentIndex);
+        }
+
+        public void DiscardSnapshot()
+        {
+            Snapshots.Pop();
+        }
+
+        public void PopSnapshot()
+        {
+            CurrentIndex = Snapshots.Pop();
+        }
+
+        public ScriptToken Prev(int lookBack = 1)
+        {
+            return CurrentIndex - lookBack < 0 ? null : Data[CurrentIndex - lookBack];
+        }
+
+        public void Advance(int num = 1)
+        {
+            CurrentIndex += num;
+        }
+
+        public bool AtEnd()
+        {
+            return CurrentIndex >= Data.Count;
+        }
+
+        private bool EndOfStream(int ahead = 0)
+        {
+            return CurrentIndex + ahead >= Data.Count;
+        }
+
+        public IEnumerator<ScriptToken> GetEnumerator()
+        {
+            return Data.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return Data.GetEnumerator();
         }
     }
 }

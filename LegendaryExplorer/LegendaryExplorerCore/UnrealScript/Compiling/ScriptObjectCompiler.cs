@@ -12,9 +12,9 @@ using static LegendaryExplorerCore.Unreal.UnrealFlags;
 
 namespace LegendaryExplorerCore.UnrealScript.Compiling
 {
-    public static class ScriptObjectCompiler
+    internal static class ScriptObjectCompiler
     {
-        public static void Compile(ASTNode node, IEntry parent, UField existingObject = null, PackageCache packageCache = null)
+        public static void Compile(ASTNode node, IMEPackage pcc, IEntry parent, UField existingObject = null, PackageCache packageCache = null)
         {
             switch (node)
             {
@@ -22,7 +22,8 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     if (existingObject is null or UClass)
                     {
                         UClass uClass = (UClass)existingObject;
-                        Compile(classAST, parent, ref uClass);
+                        CompileClass(classAST, pcc, parent, ref uClass, packageCache);
+                        uClass.Export.WriteBinary(uClass);
                         return;
                     }
                     else
@@ -33,7 +34,8 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     if (existingObject is null or UConst)
                     {
                         UConst uConst = (UConst)existingObject;
-                        Compile(constAST, parent, ref uConst);
+                        CompileConst(constAST, parent, ref uConst);
+                        uConst.Export.WriteBinary(uConst);
                         return;
                     }
                     else
@@ -44,7 +46,8 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     if (existingObject is null or UEnum)
                     {
                         UEnum uEnum = (UEnum)existingObject;
-                        Compile(enumAST, parent, ref uEnum);
+                        CompileEnum(enumAST, parent, ref uEnum);
+                        uEnum.Export.WriteBinary(uEnum);
                         return;
                     }
                     else
@@ -55,7 +58,8 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     if (existingObject is null or UFunction)
                     {
                         UFunction uFunction = (UFunction)existingObject;
-                        Compile(funcAST, parent, ref uFunction);
+                        CompileFunction(funcAST, parent, ref uFunction);
+                        uFunction.Export.WriteBinary(uFunction);
                         return;
                     }
                     else
@@ -66,7 +70,8 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     if (existingObject is null or UState)
                     {
                         UState uState = (UState)existingObject;
-                        Compile(stateAST, parent, ref uState);
+                        CompileState(stateAST, parent, ref uState);
+                        uState.Export.WriteBinary(uState);
                         return;
                     }
                     else
@@ -77,7 +82,8 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     if (existingObject is null or UScriptStruct)
                     {
                         UScriptStruct uScriptStruct = (UScriptStruct)existingObject;
-                        Compile(structAST, parent, ref uScriptStruct);
+                        CompileStruct(structAST, parent, ref uScriptStruct, packageCache);
+                        uScriptStruct.Export.WriteBinary(uScriptStruct);
                         return;
                     }
                     else
@@ -88,7 +94,8 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     if (existingObject is null or UProperty)
                     {
                         UProperty uProp = (UProperty)existingObject;
-                        Compile(varDeclAST, parent, ref uProp);
+                        CompileProperty(varDeclAST, parent, ref uProp);
+                        uProp.Export.WriteBinary(uProp);
                         return;
                     }
                     else
@@ -99,11 +106,8 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             throw new ArgumentOutOfRangeException(nameof(node));
         }
 
-        public static void Compile(Class classAST, IEntry parent, ref UClass classObj)
+        private static void CompileClass(Class classAST, IMEPackage pcc, IEntry parent, ref UClass classObj, PackageCache packageCache = null)
         {
-            throw new NotImplementedException();
-            IMEPackage pcc = parent.FileRef;
-
             var className = NameReference.FromInstancedString(classAST.Name);
             IEntry superClass = classAST.Parent is Class super ? CompilerUtils.ResolveClass(super, pcc) : null;
             ExportEntry classExport;
@@ -119,72 +123,221 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 classExport.SuperClass = superClass;
             }
             classObj.SuperClass = superClass?.UIndex ?? 0;
-            classObj.ScriptBytecodeSize = 0;
-            classObj.ScriptBytes = Array.Empty<byte>();
-            classObj.ProbeMask = 0;
             classObj.IgnoreMask = (EProbeFunctions)ulong.MaxValue;
             classObj.LabelTableOffset = ushort.MaxValue;
             classObj.StateFlags = EStateFlags.Auto;
-            classObj.ClassFlags = classAST.Flags;
             classObj.OuterClass = classAST.OuterClass is Class outerClass ? CompilerUtils.ResolveClass(outerClass, pcc).UIndex : 0;
             classObj.ClassConfigName = NameReference.FromInstancedString(classAST.ConfigName);
 
-            (CaseInsensitiveDictionary<UConst> existingConsts, CaseInsensitiveDictionary<UEnum> existingEnums,
-                CaseInsensitiveDictionary<UScriptStruct> existingStructs, CaseInsensitiveDictionary<UProperty> existingProperties, 
-                CaseInsensitiveDictionary<UFunction> existingFunctions, CaseInsensitiveDictionary<UState> existingStates) = GetClassMembers(classObj);
+            classObj.ClassFlags = classAST.Flags;
+            if (classAST.Parent is Class parentClass)
+            {
+                classObj.ClassFlags |= parentClass.Flags & EClassFlags.Inherit;
+            }
+
+            //calculate probemask
+            classObj.ProbeMask = 0;
+            Class curClass = classAST;
+            while (curClass is not null)
+            {
+                foreach (Function func in curClass.Functions)
+                {
+                    if (func.IsDefined && Enum.TryParse(func.Name, true, out EProbeFunctions enumVal))
+                    {
+                        classObj.ProbeMask |= enumVal;
+                    }
+                }
+                curClass = curClass.Parent as Class;
+            }
+
+            //leave these untouched to preserve existing replication blocks, since compilation of those is not yet supported
+            //classObj.ScriptBytecodeSize = 0;
+            //classObj.ScriptBytes = Array.Empty<byte>();
+
+            (CaseInsensitiveDictionary<UConst> existingConsts, CaseInsensitiveDictionary<UEnum> existingEnums, CaseInsensitiveDictionary<UScriptStruct> existingStructs,
+                CaseInsensitiveDictionary<UProperty> existingProperties, CaseInsensitiveDictionary<UFunction> existingFunctions, CaseInsensitiveDictionary<UState> existingStates, 
+                List<UField> allMembers) = GetClassMembers(classObj);
 
 
+            //Stub out all the child exports, and trash existing ones that don't get re-used
 
-            //classObj.LocalFunctionMap
-            //classObj.unkNameList1
-            //classObj.ComponentNameToDefaultObjectMap
-            //classObj.Interfaces
-            //classObj.unkName2
-            //classObj.unk2
-            //classObj.le2ps3me2Unknown
-            //classObj.unkNameList2
-            //classObj.Defaults
+            var completions = new List<Action>();
+            var compiledConsts = new List<UConst>();
+            var compiledEnums = new List<UEnum>();
+            var compiledStructs = new List<UScriptStruct>();
+            bool childrenHaveBeenTrashed = false;
+            bool childrenHaveBeenAdded = false;
+            foreach (VariableType typeDeclaration in classAST.TypeDeclarations)
+            {
+                switch (typeDeclaration)
+                {
+                    case Const @const:
+                        existingConsts.Remove(@const.Name, out UConst uConst);
+                        childrenHaveBeenAdded |= uConst is null;
+                        CompileConst(@const, classExport, ref uConst);
+                        compiledConsts.Add(uConst);
+                        break;
+                    case Enumeration enumeration:
+                        existingEnums.Remove(enumeration.Name, out UEnum uEnum);
+                        childrenHaveBeenAdded |= uEnum is null;
+                        CompileEnum(enumeration, classExport, ref uEnum);
+                        compiledEnums.Add(uEnum);
+                        break;
+                    case Struct @struct:
+                        existingStructs.Remove(@struct.Name, out UScriptStruct uScriptStruct);
+                        childrenHaveBeenAdded |= uScriptStruct is null;
+                        completions.Add(CreateStructStub(@struct, classExport, ref uScriptStruct, packageCache));
+                        compiledStructs.Add(uScriptStruct);
+                        break;
+                }
+            }
+            foreach (UField unusedField in existingConsts.Values.Cast<UField>().Concat(existingEnums.Values).Concat(existingStructs.Values))
+            {
+                childrenHaveBeenTrashed = true;
+                EntryPruner.TrashEntryAndDescendants(unusedField.Export);
+            }
+
+            var compiledProperties = new OrderedMultiValueDictionary<string, UProperty>();
+            foreach (VariableDeclaration property in classAST.VariableDeclarations)
+            {
+                existingProperties.Remove(property.Name, out UProperty uProperty);
+                childrenHaveBeenAdded |= uProperty is null;
+                completions.Add(CreatePropertyStub(property, classExport, ref uProperty));
+                compiledProperties.Add(property.Name, uProperty);
+            }
+            foreach (UProperty unusedField in existingProperties.Values)
+            {
+                childrenHaveBeenTrashed = true;
+                EntryPruner.TrashEntryAndDescendants(unusedField.Export);
+            }
+
+            var compiledFunctions = new List<UFunction>();
+            classObj.LocalFunctionMap.Clear();
+            foreach (Function function in classAST.Functions)
+            {
+                existingFunctions.Remove(function.Name, out UFunction uFunction);
+                childrenHaveBeenAdded |= uFunction is null;
+                completions.Add(CreateFunctionStub(function, classExport, ref uFunction));
+                compiledFunctions.Add(uFunction);
+                classObj.LocalFunctionMap.Add(uFunction.Export.ObjectName, uFunction.Export.UIndex);
+            }
+            foreach (UFunction unusedField in existingFunctions.Values)
+            {
+                childrenHaveBeenTrashed = true;
+                EntryPruner.TrashEntryAndDescendants(unusedField.Export);
+            }
+
+            var compiledStates = new List<UState>();
+            foreach (State state in classAST.States)
+            {
+                existingStates.Remove(state.Name, out UState uState);
+                childrenHaveBeenAdded |= uState is null;
+                completions.Add(CreateStateStub(state, classExport, ref uState));
+                compiledStates.Add(uState);
+            }
+            foreach (UState unusedField in existingStates.Values)
+            {
+                childrenHaveBeenTrashed = true;
+                EntryPruner.TrashEntryAndDescendants(unusedField.Export);
+            }
+
             if (pcc.Game.IsGame3())
             {
-                //classObj.VirtualFunctionTable
+                classObj.VirtualFunctionTable = classAST.VirtualFunctionTable.Select(func => new UIndex(CompilerUtils.ResolveFunction(func, pcc).UIndex)).ToArray();
             }
+
+            //finish compiling all the stubs
+            foreach (Action completion in completions)
+            {
+                completion();
+            }
+
+            if (childrenHaveBeenAdded || childrenHaveBeenTrashed)
+            {
+                classObj.Children = 0;
+                UField prev = null;
+                foreach (UField current in compiledProperties.Values().Cast<UField>().Concat(compiledFunctions).Concat(compiledStates).Concat(compiledStructs).Concat(compiledEnums).Concat(compiledConsts))
+                {
+                    AdvanceField(ref prev, current, classObj);
+                }
+                if (prev is not null)
+                {
+                    prev.Next = 0;
+                    prev.Export.WriteBinary(prev);
+                }
+            }
+            
+            //todo: figure out what these are. Might be able to get away with not touching them. Existing classes will retain their values, and custom ones will be 0/empty
+            //classObj.unk2
+            //classObj.le2ps3me2Unknown
+            //I think these two are editor information. Categories of properties to automatically hide/expand?
+            //classObj.unkNameList1
+            //classObj.unkNameList2
+
+
+            classObj.Interfaces.Clear();
+            foreach (Class interfaceClass in classAST.Interfaces.OfType<Class>())
+            {
+                var vfTablePropertyUIndex = 0;
+                if (interfaceClass.IsNative)
+                {
+                    if (!compiledProperties.TryGetValue($"VfTable_{interfaceClass.Name}", out UProperty vfTableProperty))
+                    {
+                        throw new Exception($"Missing VfTable_{interfaceClass.Name} property for native interface '{interfaceClass.Name}' in class '{className}'");
+                    }
+                    vfTablePropertyUIndex = vfTableProperty.Export.UIndex;
+                }
+                classObj.Interfaces.Add(CompilerUtils.ResolveClass(interfaceClass, pcc).UIndex, vfTablePropertyUIndex);
+            }
+
+            classObj.DLLBindName = "None";
+
+            var defaultsExport = classObj.Defaults.GetEntry(pcc) as ExportEntry;
+            ScriptPropertiesCompiler.CompileDefault__Object(classAST.DefaultProperties, classExport, ref defaultsExport, packageCache);
+            classObj.Defaults = defaultsExport;
+
+            //classObj.ComponentNameToDefaultObjectMap.Clear();
+            //foreach (Subobject subobject in classAST.DefaultProperties.Statements.OfType<Subobject>())
+            //{
+            //    if (subobject.Class.IsComponent)
+            //    {
+            //        var componentName = NameReference.FromInstancedString(subobject.NameDeclaration.Name);
+            //        classObj.ComponentNameToDefaultObjectMap.Add(componentName, pcc.FindExport($"{defaultsExport.InstancedFullPath}.{componentName}"));
+            //    }
+            //}
 
             classExport.WriteBinary(classObj);
         }
 
-        public static void Compile(State stateAST, IEntry parent, ref UState stateObj)
+        private static void CompileState(State stateAST, IEntry parent, ref UState stateObj)
         {
-            IEntry super = null;
-            if (stateAST.Parent is not null)
-            {
-                super = CompilerUtils.ResolveState(stateAST.Parent, parent.FileRef);
-            }
+            var finishStateCompilation = CreateStateStub(stateAST, parent, ref stateObj);
 
+            finishStateCompilation();
+        }
+
+        private static Action CreateStateStub(State stateAST, IEntry parent, ref UState refStateObj)
+        {
             var stateName = NameReference.FromInstancedString(stateAST.Name);
             ExportEntry stateExport;
-            if (stateObj is null)
+            if (refStateObj is null)
             {
-                stateExport = CreateNewExport(stateName, "State", parent, new UState { ScriptBytes = Array.Empty<byte>(), LocalFunctionMap = new()}, super);
-                stateObj = stateExport.GetBinaryData<UState>();
+                stateExport = CreateNewExport(stateName, "State", parent, UState.Create());
+                refStateObj = stateExport.GetBinaryData<UState>();
             }
             else
             {
-                stateExport = stateObj.Export;
-                if (stateExport.SuperClass != super)
-                {
-                    stateExport.SuperClass = super;
-                }
+                stateExport = refStateObj.Export;
                 if (stateExport.ObjectName != stateName)
                 {
                     stateExport.ObjectName = stateName;
                 }
             }
+            UState stateObj = refStateObj;
 
             stateObj.StateFlags = stateAST.Flags;
             stateObj.ProbeMask = 0;
             stateObj.IgnoreMask = stateAST.IgnoreMask;
-            stateObj.SuperClass = super?.UIndex ?? 0;
-
 
             //calculate probemask
             State curState = stateAST;
@@ -202,14 +355,15 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
             stateObj.LocalFunctionMap.Clear();
 
-            UField prevFunc = null;
             var existingFuncs = GetMembers<UFunction>(stateObj).ToDictionary(uFunc => uFunc.Export.ObjectName.Instanced);
             stateObj.Children = 0;
+            var functionCompletions = new List<Action>();
+            var functions = new List<UFunction>();
             foreach (Function member in stateAST.Functions)
             {
                 existingFuncs.Remove(member.Name, out UFunction childFunc);
-                Compile(member, stateExport, ref childFunc);
-                prevFunc = AdvanceField(prevFunc, childFunc, stateObj);
+                functionCompletions.Add(CreateFunctionStub(member, stateObj.Export, ref childFunc));
+                functions.Add(childFunc);
                 stateObj.LocalFunctionMap.Add(childFunc.Export.ObjectName, childFunc.Export.UIndex);
             }
             foreach (UFunction removedFunc in existingFuncs.Values)
@@ -217,16 +371,47 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 EntryPruner.TrashEntryAndDescendants(removedFunc.Export);
             }
 
-            if (prevFunc is not null)
-            {
-                prevFunc.Next = 0;
-                prevFunc.Export.WriteBinary(prevFunc);
-            }
 
-            ByteCodeCompilerVisitor.Compile(stateAST, stateObj);
+            return FinishStateCompilation;
+
+            void FinishStateCompilation()
+            {
+                IEntry super = null;
+                if (stateAST.Parent is not null)
+                {
+                    super = CompilerUtils.ResolveState(stateAST.Parent, stateObj.Export.FileRef);
+                }
+                stateObj.SuperClass = super?.UIndex ?? 0;
+                stateObj.Export.SuperClass = super;
+
+                foreach (Action functionCompletion in functionCompletions)
+                {
+                    functionCompletion();
+                }
+
+                UField prevFunc = null;
+                foreach (UFunction childFunc in functions)
+                {
+                    AdvanceField(ref prevFunc, childFunc, stateObj);
+                }
+                if (prevFunc is not null)
+                {
+                    prevFunc.Next = 0; 
+                    prevFunc.Export.WriteBinary(prevFunc);
+                }
+
+                ByteCodeCompilerVisitor.Compile(stateAST, stateObj);
+            }
         }
 
-        public static void Compile(Function funcAST, IEntry parent, ref UFunction funcObj)
+        private static void CompileFunction(Function funcAST, IEntry parent, ref UFunction funcObj)
+        {
+            Action finishFunctionCompilation = CreateFunctionStub(funcAST, parent, ref funcObj);
+
+            finishFunctionCompilation();
+        }
+
+        private static Action CreateFunctionStub(Function funcAST, IEntry parent, ref UFunction refFuncObj)
         {
             IEntry super = null;
             if (funcAST.SuperFunction is not null)
@@ -236,14 +421,14 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
             var functionName = NameReference.FromInstancedString(funcAST.Name);
             ExportEntry funcExport;
-            if (funcObj is null)
+            if (refFuncObj is null)
             {
-                funcExport = CreateNewExport(functionName, "Function", parent, new UFunction { ScriptBytes = Array.Empty<byte>(), FriendlyName = functionName}, super);
-                funcObj = funcExport.GetBinaryData<UFunction>();
+                funcExport = CreateNewExport(functionName, "Function", parent, new UFunction { ScriptBytes = Array.Empty<byte>(), FriendlyName = functionName }, super);
+                refFuncObj = funcExport.GetBinaryData<UFunction>();
             }
             else
             {
-                funcExport = funcObj.Export;
+                funcExport = refFuncObj.Export;
                 if (funcExport.SuperClass != super)
                 {
                     funcExport.SuperClass = super;
@@ -253,6 +438,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     funcExport.ObjectName = functionName;
                 }
             }
+            UFunction funcObj = refFuncObj;
 
             funcObj.FriendlyName = functionName;
             funcObj.FunctionFlags = funcAST.Flags;
@@ -268,7 +454,9 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             }
             newMembers.AddRange(funcAST.Locals);
 
-            UField prevProp = null;
+            var properties = new List<UProperty>();
+            var propertyCompletions = new List<Action>();
+
             using (var existingEnumerator = GetMembers<UField>(funcObj).GetEnumerator())
             {
                 funcObj.Children = 0;
@@ -285,8 +473,8 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                         }
                         EntryPruner.TrashEntryAndDescendants(current.Export);
                     }
-                    Compile(member, funcExport, ref childProp);
-                    prevProp = AdvanceField(prevProp, childProp, funcObj);
+                    propertyCompletions.Add(CreatePropertyStub(member, funcObj.Export, ref childProp));
+                    properties.Add(childProp);
                 }
                 while (existingEnumerator.MoveNext())
                 {
@@ -294,63 +482,73 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 }
             }
 
-            if (prevProp is not null)
-            {
-                prevProp.Next = 0;
-                prevProp.Export.WriteBinary(prevProp);
-            }
+            return FinishFunctionCompilation;
 
-            ByteCodeCompilerVisitor.Compile(funcAST, funcObj);
+            void FinishFunctionCompilation()
+            {
+
+                UField prevProp = null;
+
+                foreach (Action propertyCompletion in propertyCompletions)
+                {
+                    propertyCompletion();
+                }
+
+                foreach (UProperty childProp in properties)
+                {
+                    AdvanceField(ref prevProp, childProp, funcObj);
+                }
+
+                if (prevProp is not null)
+                {
+                    prevProp.Next = 0;
+                    prevProp.Export.WriteBinary(prevProp);
+                }
+
+                ByteCodeCompilerVisitor.Compile(funcAST, funcObj);
+            }
         }
 
-        public static void Compile(Struct structAST, IEntry parent, ref UScriptStruct structObj, PackageCache packageCache = null)
+        private static void CompileStruct(Struct structAST, IEntry parent, ref UScriptStruct structObj, PackageCache packageCache = null)
         {
-            IMEPackage pcc = parent.FileRef;
-            IEntry super = null;
-            if (structAST.Parent is Struct parentStruct)
-            {
-                super = CompilerUtils.ResolveStruct(parentStruct, pcc);
-            }
+            Action finishStructCompilation = CreateStructStub(structAST, parent, ref structObj, packageCache);
 
+            finishStructCompilation();
+        }
+
+        private static Action CreateStructStub(Struct structAST, IEntry parent, ref UScriptStruct refStructObj, PackageCache packageCache = null)
+        {
             var structName = NameReference.FromInstancedString(structAST.Name);
             ExportEntry structExport;
-            if (structObj is null)
+            if (refStructObj is null)
             {
-                structExport = CreateNewExport(structName, "ScriptStruct", parent, UScriptStruct.Create(), super);
-                structObj = structExport.GetBinaryData<UScriptStruct>();
+                structExport = CreateNewExport(structName, "ScriptStruct", parent, UScriptStruct.Create());
+                refStructObj = structExport.GetBinaryData<UScriptStruct>();
             }
             else
             {
-                structExport = structObj.Export;
-                structExport.SuperClass = super;
+                structExport = refStructObj.Export;
                 structExport.ObjectName = structName;
             }
-            structObj.StructFlags = structAST.Flags;
-            structObj.SuperClass = super?.UIndex ?? 0;
+            refStructObj.StructFlags = structAST.Flags;
+            UScriptStruct structObj = refStructObj;
 
             (CaseInsensitiveDictionary<UScriptStruct> existingSubStructs, CaseInsensitiveDictionary<UProperty> existingProps) = GetMembers<UScriptStruct, UProperty>(structObj);
             structObj.Children = 0;
 
-            var subStructs = new List<UScriptStruct>();
+            var subStructs = new List<UField>();
+            var compilationCompletions = new List<Action>();
             foreach (Struct subStructAST in structAST.TypeDeclarations.OfType<Struct>())
             {
                 existingSubStructs.Remove(subStructAST.Name, out UScriptStruct subStruct);
-                Compile(subStructAST, structExport, ref subStruct);
+                compilationCompletions.Add(CreateStructStub(subStructAST, structObj.Export, ref subStruct, packageCache));
                 subStructs.Add(subStruct);
             }
             foreach (UScriptStruct removedSubStruct in existingSubStructs.Values)
             {
                 EntryPruner.TrashEntryAndDescendants(removedSubStruct.Export);
             }
-
-            UField prevField = null;
-            if (pcc.Game <= MEGame.ME2)
-            {
-                foreach (UScriptStruct current in subStructs)
-                {
-                    prevField = AdvanceField(prevField, current, structObj);
-                }
-            }
+            var properties = new List<UField>();
             foreach (VariableDeclaration member in structAST.VariableDeclarations)
             {
                 existingProps.Remove(member.Name, out UProperty current);
@@ -359,65 +557,66 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     EntryPruner.TrashEntryAndDescendants(current.Export);
                     current = null;
                 }
-                Compile(member, structExport, ref current);
-                prevField = AdvanceField(prevField, current, structObj);
-            }
-            if (pcc.Game > MEGame.ME2)
-            {
-                foreach (UScriptStruct current in subStructs)
-                {
-                    prevField = AdvanceField(prevField, current, structObj);
-                }
-            }
-            if (prevField is not null)
-            {
-                prevField.Next = 0;
-                prevField.Export.WriteBinary(prevField);
+                compilationCompletions.Add(CreatePropertyStub(member, structObj.Export, ref current));
+                properties.Add(current);
             }
             foreach (UProperty removedProp in existingProps.Values)
             {
                 EntryPruner.TrashEntryAndDescendants(removedProp.Export);
             }
 
-            PropertyCollection fullDefaults = structAST.GetDefaultPropertyCollection(pcc, false, packageCache);
-            //normal structs have all their properties in their defaults
-            if (structAST.Parent is null)
+            return FinishStructCompilation;
+
+            void FinishStructCompilation()
             {
-                structObj.Defaults = fullDefaults;
+                IMEPackage pcc = structObj.Export.FileRef;
+                IEntry super = null;
+                if (structAST.Parent is Struct parentStruct)
+                {
+                    super = CompilerUtils.ResolveStruct(parentStruct, pcc);
+                }
+                structObj.SuperClass = super?.UIndex ?? 0;
+                structObj.Export.SuperClass = super;
+                
+                foreach (Action completion in compilationCompletions)
+                {
+                    completion();
+                }
+
+                UField prevField = null;
+                var allfields = pcc.Game <= MEGame.ME2 ? subStructs.Concat(properties) : properties.Concat(subStructs);
+                foreach (UField currentField in allfields)
+                {
+                    AdvanceField(ref prevField, currentField, structObj);
+                }
+                if (prevField is not null)
+                {
+                    prevField.Next = 0;
+                    prevField.Export.WriteBinary(prevField);
+                }
+
+                PropertyCollection fullDefaults = structAST.GetDefaultPropertyCollection(pcc, false, packageCache);
+                //normal structs have all their properties in their defaults
+                if (structAST.Parent is null)
+                {
+                    structObj.Defaults = fullDefaults;
+                }
+                //structs with a parent have only the properties which differ from their default values
+                //(for StructProperties, the difference is calculated from the default values of their members, NOT the structdefaultproperties values)
+                else
+                {
+                    var baseDefaults = structAST.MakeBaseProps(pcc, packageCache, false);
+                    structObj.Defaults = fullDefaults.Diff(baseDefaults);
+                }
             }
-            //structs with a parent have only the properties which differ from their default values
-            //(for StructProperties, the difference is calculated from the default values of their members, NOT the structdefaultproperties values)
-            else
-            {
-                var baseDefaults = structAST.MakeBaseProps(pcc, packageCache, false);
-                structObj.Defaults = fullDefaults.Diff(baseDefaults);
-            }
-            structObj.Export.WriteBinary(structObj);
         }
 
-        public static void Compile(Enumeration enumAST, IEntry parent, ref UEnum enumObj)
+        private static void CompileProperty(VariableDeclaration varDeclAST, IEntry parent, ref UProperty propObj)
         {
-            IMEPackage pcc = parent.FileRef;
-
-            var enumName = NameReference.FromInstancedString(enumAST.Name);
-            ExportEntry enumExport;
-            if (enumObj is null)
-            {
-                enumExport = CreateNewExport(enumName, "Enum", parent, UEnum.Create());
-                enumObj = enumExport.GetBinaryData<UEnum>();
-            }
-            else
-            {
-                enumExport = enumObj.Export;
-                enumExport.ObjectName = enumName;
-            }
-            var values = enumAST.Values.Select(ev => NameReference.FromInstancedString(ev.Name)).ToList();
-            values.Add(enumAST.GenerateMaxName());
-            enumObj.Names = values.ToArray();
-            enumExport.WriteBinary(enumObj);
+            CreatePropertyStub(varDeclAST, parent, ref propObj);
         }
 
-        public static void Compile(VariableDeclaration varDeclAST, IEntry parent, ref UProperty propObj)
+        private static Action CreatePropertyStub(VariableDeclaration varDeclAST, IEntry parent, ref UProperty refPropObj)
         {
             IMEPackage pcc = parent.FileRef;
             VariableType varType = varDeclAST.VarType;
@@ -426,8 +625,8 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 varType = staticArrayType.ElementType;
             }
 
-            NameReference propName = NameReference.FromInstancedString(varDeclAST.Name);
-            if (propObj is null)
+            var propName = NameReference.FromInstancedString(varDeclAST.Name);
+            if (refPropObj is null)
             {
                 string className = ByteCodeCompilerVisitor.PropertyTypeName(varType);
                 UProperty tmp = className switch
@@ -451,103 +650,129 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     _ => throw new ArgumentOutOfRangeException(nameof(className), className, "")
                 };
                 tmp.Category = "None";
-                propObj = (UProperty)ObjectBinary.From(CreateNewExport(propName, className, parent, tmp));
+                refPropObj = (UProperty)ObjectBinary.From(CreateNewExport(propName, className, parent, tmp));
             }
             else
             {
-                if (propObj.Export.ObjectName != propName)
+                if (refPropObj.Export.ObjectName != propName)
                 {
-                    propObj.Export.ObjectName = propName;
+                    refPropObj.Export.ObjectName = propName;
                 }
             }
+            UProperty propObj = refPropObj;
 
             propObj.ArraySize = varDeclAST.ArrayLength;
             propObj.PropertyFlags = varDeclAST.Flags;
             propObj.Category = NameReference.FromInstancedString(varDeclAST.Category);
 
 
-            switch (propObj)
+            return FinishPropertyCompilation;
+
+            void FinishPropertyCompilation()
             {
-                case UByteProperty uByteProperty:
-                    uByteProperty.Enum = varType is Enumeration ? CompilerUtils.ResolveSymbol(varType, pcc).UIndex : 0;
-                    break;
-                case UClassProperty uClassProperty:
-                    uClassProperty.ObjectRef = pcc.getEntryOrAddImport("Core.Class").UIndex;
-                    uClassProperty.ClassRef = CompilerUtils.ResolveSymbol(((ClassType)varType).ClassLimiter, pcc).UIndex;
-                    break;
-                case UDelegateProperty uDelegateProperty:
-                    uDelegateProperty.Function = CompilerUtils.ResolveFunction(((DelegateType)varType).DefaultFunction, pcc).UIndex;
-                    string parentClassName = parent.ClassName;
-                    if (parentClassName.CaseInsensitiveEquals("ArrayProperty"))
-                    {
-                        parentClassName = parent.Parent.ClassName;
-                    }
-                    uDelegateProperty.Delegate = parentClassName.CaseInsensitiveEquals("Function") || parentClassName.CaseInsensitiveEquals("ScriptStruct") ? uDelegateProperty.Function : 0;
-                    break;
-                case UMapProperty uMapProperty:
-                    uMapProperty.KeyType = 0;
-                    uMapProperty.ValueType = 0;
-                    break;
-                case UObjectProperty uObjectProperty:
-                    if (propObj.PropertyFlags.Has(EPropertyFlags.EditInline) && propObj.PropertyFlags.Has(EPropertyFlags.ExportObject) && !propObj.PropertyFlags.Has(EPropertyFlags.Component))
-                    {
-                        propObj.PropertyFlags |= EPropertyFlags.NeedCtorLink;
-                    }
-                    uObjectProperty.ObjectRef = CompilerUtils.ResolveSymbol(varType, pcc).UIndex;
-                    break;
-                case UStructProperty uStructProperty:
-                    uStructProperty.Struct = CompilerUtils.ResolveSymbol(varType, pcc).UIndex;
-                    break;
-                case UArrayProperty uArrayProperty:
-                    UProperty child = null;
-                    var dynArrType = (DynamicArrayType)varType;
-                    VariableType elementType = dynArrType.ElementType;
-                    if (pcc.TryGetUExport(uArrayProperty.ElementType ?? 0, out ExportEntry childExp))
-                    {
-                        if (childExp.ClassName == ByteCodeCompilerVisitor.PropertyTypeName(elementType))
+                switch (propObj)
+                {
+                    case UByteProperty uByteProperty:
+                        uByteProperty.Enum = varType is Enumeration ? CompilerUtils.ResolveSymbol(varType, pcc).UIndex : 0;
+                        break;
+                    case UClassProperty uClassProperty:
+                        uClassProperty.ObjectRef = pcc.getEntryOrAddImport("Core.Class").UIndex;
+                        uClassProperty.ClassRef = CompilerUtils.ResolveSymbol(((ClassType)varType).ClassLimiter, pcc).UIndex;
+                        break;
+                    case UDelegateProperty uDelegateProperty:
+                        uDelegateProperty.Function = CompilerUtils.ResolveFunction(((DelegateType)varType).DefaultFunction, pcc).UIndex;
+                        string parentClassName = parent.ClassName;
+                        if (parentClassName.CaseInsensitiveEquals("ArrayProperty"))
                         {
-                            child = (UProperty)ObjectBinary.From(pcc.GetUExport(uArrayProperty.ElementType));
+                            parentClassName = parent.Parent.ClassName;
                         }
-                        else
+                        uDelegateProperty.Delegate = parentClassName.CaseInsensitiveEquals("Function") || parentClassName.CaseInsensitiveEquals("ScriptStruct") ? uDelegateProperty.Function : 0;
+                        break;
+                    case UMapProperty uMapProperty:
+                        uMapProperty.KeyType = 0;
+                        uMapProperty.ValueType = 0;
+                        break;
+                    case UObjectProperty uObjectProperty:
+                        if (propObj.PropertyFlags.Has(EPropertyFlags.EditInline) && propObj.PropertyFlags.Has(EPropertyFlags.ExportObject) && !propObj.PropertyFlags.Has(EPropertyFlags.Component))
                         {
-                            EntryPruner.TrashEntryAndDescendants(childExp);
+                            propObj.PropertyFlags |= EPropertyFlags.NeedCtorLink;
                         }
-                    }
-                    Compile(new VariableDeclaration(elementType, dynArrType.ElementPropertyFlags, propName), uArrayProperty.Export, ref child);
-                    //propogate certain flags to inner prop
-                    child.PropertyFlags |= uArrayProperty.PropertyFlags & (EPropertyFlags.ExportObject | EPropertyFlags.EditInline | EPropertyFlags.EditInlineUse | EPropertyFlags.Localized 
-                                                                           | EPropertyFlags.Component | EPropertyFlags.Config | EPropertyFlags.EditConst | EPropertyFlags.AlwaysInit
-                                                                           | EPropertyFlags.Deprecated | EPropertyFlags.SerializeText | EPropertyFlags.CrossLevel);
-                    child.Export.WriteBinary(child);
-                    uArrayProperty.ElementType = child.Export.UIndex;
-                    break;
+                        uObjectProperty.ObjectRef = CompilerUtils.ResolveSymbol(varType, pcc).UIndex;
+                        break;
+                    case UStructProperty uStructProperty:
+                        uStructProperty.Struct = CompilerUtils.ResolveSymbol(varType, pcc).UIndex;
+                        break;
+                    case UArrayProperty uArrayProperty:
+                        UProperty child = null;
+                        var dynArrType = (DynamicArrayType)varType;
+                        VariableType elementType = dynArrType.ElementType;
+                        if (pcc.TryGetUExport(uArrayProperty.ElementType ?? 0, out ExportEntry childExp))
+                        {
+                            if (childExp.ClassName == ByteCodeCompilerVisitor.PropertyTypeName(elementType))
+                            {
+                                child = (UProperty)ObjectBinary.From(pcc.GetUExport(uArrayProperty.ElementType));
+                            }
+                            else
+                            {
+                                EntryPruner.TrashEntryAndDescendants(childExp);
+                            }
+                        }
+                        CompileProperty(new VariableDeclaration(elementType, dynArrType.ElementPropertyFlags, propName), uArrayProperty.Export, ref child);
+                        //propogate certain flags to inner prop
+                        child.PropertyFlags |= uArrayProperty.PropertyFlags & (EPropertyFlags.ExportObject | EPropertyFlags.EditInline | EPropertyFlags.EditInlineUse | EPropertyFlags.Localized
+                                                                               | EPropertyFlags.Component | EPropertyFlags.Config | EPropertyFlags.EditConst | EPropertyFlags.AlwaysInit
+                                                                               | EPropertyFlags.Deprecated | EPropertyFlags.SerializeText | EPropertyFlags.CrossLevel);
+                        child.Export.WriteBinary(child);
+                        uArrayProperty.ElementType = child.Export.UIndex;
+                        break;
 
-                //have no properties beyond the base class
-                //case UIntProperty uIntProperty:
-                //    break;
-                //case UBoolProperty uBoolProperty:
-                //    break;
-                //case UFloatProperty uFloatProperty:
-                //    break;
-                //case UNameProperty uNameProperty:
-                //    break;
-                //case UStringRefProperty uStringRefProperty:
-                //    break;
-                //case UStrProperty uStrProperty:
-                //    break;
+                    //have no properties beyond the base class
+                    //case UIntProperty uIntProperty:
+                    //    break;
+                    //case UBoolProperty uBoolProperty:
+                    //    break;
+                    //case UFloatProperty uFloatProperty:
+                    //    break;
+                    //case UNameProperty uNameProperty:
+                    //    break;
+                    //case UStringRefProperty uStringRefProperty:
+                    //    break;
+                    //case UStrProperty uStrProperty:
+                    //    break;
 
-                //have no properties of their own, handled by their base classes above
-                //case UComponentProperty uComponentProperty:
-                //    break;
-                //case UInterfaceProperty uInterfaceProperty:
-                //    break;
-                //case UBioMask4Property uBioMask4Property:
-                //    break;
+                    //have no properties of their own, handled by their base classes above
+                    //case UComponentProperty uComponentProperty:
+                    //    break;
+                    //case UInterfaceProperty uInterfaceProperty:
+                    //    break;
+                    //case UBioMask4Property uBioMask4Property:
+                    //    break;
+                }
             }
-
         }
 
-        public static void Compile(Const constAST, IEntry parent, ref UConst constObj)
+        private static void CompileEnum(Enumeration enumAST, IEntry parent, ref UEnum enumObj)
+        {
+            IMEPackage pcc = parent.FileRef;
+
+            var enumName = NameReference.FromInstancedString(enumAST.Name);
+            ExportEntry enumExport;
+            if (enumObj is null)
+            {
+                enumExport = CreateNewExport(enumName, "Enum", parent, UEnum.Create());
+                enumObj = enumExport.GetBinaryData<UEnum>();
+            }
+            else
+            {
+                enumExport = enumObj.Export;
+                enumExport.ObjectName = enumName;
+            }
+            var values = enumAST.Values.Select(ev => NameReference.FromInstancedString(ev.Name)).ToList();
+            values.Add(enumAST.GenerateMaxName());
+            enumObj.Names = values.ToArray();
+        }
+
+        private static void CompileConst(Const constAST, IEntry parent, ref UConst constObj)
         {
             var constName = NameReference.FromInstancedString(constAST.Name);
             ExportEntry constExport;
@@ -562,10 +787,9 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 constExport.ObjectName = constName;
             }
             constObj.Value = constAST.Value;
-            constExport.WriteBinary(constObj);
         }
 
-        private static UField AdvanceField(UField field, UField current, UStruct uStruct)
+        private static void AdvanceField(ref UField field, UField current, UStruct uStruct)
         {
             if (field is null)
             {
@@ -576,10 +800,10 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 field.Next = current.Export;
                 field.Export.WriteBinary(field);
             }
-            return current;
+            field = current;
         }
 
-        public static List<T> GetMembers<T>(UStruct obj) where T : UField
+        private static List<T> GetMembers<T>(UStruct obj) where T : UField
         {
             IMEPackage pcc = obj.Export.FileRef;
 
@@ -607,7 +831,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             return members;
         }
 
-        public static (CaseInsensitiveDictionary<T>, CaseInsensitiveDictionary<U>) GetMembers<T, U>(UStruct obj) where T : UField where U : UField
+        private static (CaseInsensitiveDictionary<T>, CaseInsensitiveDictionary<U>) GetMembers<T, U>(UStruct obj) where T : UField where U : UField
         {
             IMEPackage pcc = obj.Export.FileRef;
 
@@ -640,8 +864,8 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             return (membersT, membersU);
         }
 
-        public static (CaseInsensitiveDictionary<UConst>, CaseInsensitiveDictionary<UEnum>, CaseInsensitiveDictionary<UScriptStruct>, 
-            CaseInsensitiveDictionary<UProperty>, CaseInsensitiveDictionary<UFunction>, CaseInsensitiveDictionary<UState>) 
+        private static (CaseInsensitiveDictionary<UConst>, CaseInsensitiveDictionary<UEnum>, CaseInsensitiveDictionary<UScriptStruct>,
+            CaseInsensitiveDictionary<UProperty>, CaseInsensitiveDictionary<UFunction>, CaseInsensitiveDictionary<UState>, List<UField>)
             GetClassMembers(UClass obj)
         {
             IMEPackage pcc = obj.Export.FileRef;
@@ -652,6 +876,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             var propMembers = new CaseInsensitiveDictionary<UProperty>();
             var funcMembers = new CaseInsensitiveDictionary<UFunction>();
             var stateMembers = new CaseInsensitiveDictionary<UState>();
+            var allMembers = new List<UField>();
 
             var nextItem = obj.Children;
 
@@ -659,38 +884,38 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             {
                 var objBin = ObjectBinary.From(nextChild);
                 string objName = objBin?.Export.ObjectName.Instanced;
-                switch (objBin)
+                if (objBin is UField uField)
                 {
-                    case UConst uConst:
-                        nextItem = uConst.Next;
-                        constMembers.Add(objName, uConst);
-                        break;
-                    case UEnum uEnum:
-                        nextItem = uEnum.Next;
-                        enumMembers.Add(objName, uEnum);
-                        break;
-                    case UScriptStruct uScriptStruct:
-                        nextItem = uScriptStruct.Next;
-                        structMembers.Add(objName, uScriptStruct);
-                        break;
-                    case UProperty uProperty:
-                        nextItem = uProperty.Next;
-                        propMembers.Add(objName, uProperty);
-                        break;
-                    case UFunction uFunction:
-                        nextItem = uFunction.Next;
-                        funcMembers.Add(objName, uFunction);
-                        break;
-                    case UState uState:
-                        nextItem = uState.Next;
-                        stateMembers.Add(objName, uState);
-                        break;
-                    default:
-                        nextItem = null;
-                        break;
+                    allMembers.Add(uField);
+                    nextItem = uField.Next;
+                    switch (objBin)
+                    {
+                        case UConst uConst:
+                            constMembers.Add(objName, uConst);
+                            break;
+                        case UEnum uEnum:
+                            enumMembers.Add(objName, uEnum);
+                            break;
+                        case UScriptStruct uScriptStruct:
+                            structMembers.Add(objName, uScriptStruct);
+                            break;
+                        case UProperty uProperty:
+                            propMembers.Add(objName, uProperty);
+                            break;
+                        case UFunction uFunction:
+                            funcMembers.Add(objName, uFunction);
+                            break;
+                        case UState uState:
+                            stateMembers.Add(objName, uState);
+                            break;
+                    }
+                }
+                else
+                {
+                    break;
                 }
             }
-            return (constMembers, enumMembers, structMembers, propMembers, funcMembers, stateMembers);
+            return (constMembers, enumMembers, structMembers, propMembers, funcMembers, stateMembers, allMembers);
         }
 
         private static ExportEntry CreateNewExport(NameReference name, string className, IEntry parent, UField binary = null, IEntry super = null)

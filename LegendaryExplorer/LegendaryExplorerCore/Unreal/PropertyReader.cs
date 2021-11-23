@@ -13,39 +13,44 @@ namespace LegendaryExplorerCore.Unreal
     [DebuggerDisplay("NameReference - Name: {Name} Number: {Number} Instanced: {Instanced}")]
     public readonly struct NameReference : IEquatable<NameReference>, IComparable<NameReference>, IComparable
     {
-        public string Name { get; }
-        public int Number { get; }
+        private readonly int _number;
+        private readonly string _name;
+        
+        // ReSharper disable once ConvertToAutoPropertyWhenPossible
+        public string Name => _name;
+        // ReSharper disable once ConvertToAutoPropertyWhenPossible
+        public int Number => _number;
 
         public NameReference(string name, int number = 0)
         {
-            Name = name;
-            Number = number;
+            _name = name;
+            _number = number;
         }
 
         //https://api.unrealengine.com/INT/API/Runtime/Core/UObject/FName/index.html
-        //heavily optimized version of this: Number > 0 ? $"{Name}_{Number - 1}" : Name;
+        //heavily optimized version of this: _number > 0 ? $"{_name}_{_number - 1}" : _name;
         [JsonIgnore]
         public string Instanced
         {
             get
             {
-                if (Number > 0)
+                if (_number > 0)
                 {
-                    int n = Number - 1;
-                    int numChars = Name.Length + 1 + 
+                    int n = _number - 1;
+                    int numChars = _name.Length + 1 + 
                                    //determines the number of digits in n, assuming n >= 0
                                    (n < 100000 ? n < 100 ? n < 10 ? 1 : 2 : n < 1000 ? 3 : n < 10000 ? 4 : 5 : n < 10000000 ? n < 1000000 ? 6 : 7 : n < 100000000 ? 8 : n < 1000000000 ? 9 : 10);
                     return string.Create(numChars, this, (span, nameRef) =>
                     {
-                        ReadOnlySpan<char> nameSpan = nameRef.Name.AsSpan();
+                        ReadOnlySpan<char> nameSpan = nameRef._name.AsSpan();
                         nameSpan.CopyTo(span);
                         int nameLength = nameSpan.Length;
                         span[nameLength] = '_';
-                        ((uint)nameRef.Number - 1).ToStrInPlace(span.Slice(nameLength + 1));
+                        ((uint)nameRef._number - 1).ToStrInPlace(span.Slice(nameLength + 1));
                     });
                 }
 
-                return Name;
+                return _name;
             }
         }
 
@@ -56,19 +61,19 @@ namespace LegendaryExplorerCore.Unreal
         /// <returns></returns>
         public string AddToPath(string parentPath)
         {
-            int n = Number - 1;
-            int length = parentPath.Length + Name.Length + 1;
-            if (Number > 0)
+            int n = _number - 1;
+            int length = parentPath.Length + _name.Length + 1;
+            if (_number > 0)
             {
                 length += 1 + (n < 100000 ? n < 100 ? n < 10 ? 1 : 2 : n < 1000 ? 3 : n < 10000 ? 4 : 5 : n < 10000000 ? n < 1000000 ? 6 : 7 : n < 100000000 ? 8 : n < 1000000000 ? 9 : 10);
             }
-            return string.Create(length, (parentPath, Name, n), (span, tuple) =>
+            return string.Create(length, (parentPath, _name, n), (span, tuple) =>
             {
                 ReadOnlySpan<char> parentSpan = tuple.parentPath.AsSpan();
                 int parentLength = parentSpan.Length;
                 parentSpan.CopyTo(span);
                 span[parentLength] = '.';
-                ReadOnlySpan<char> nameSpan = tuple.Name.AsSpan();
+                ReadOnlySpan<char> nameSpan = tuple._name.AsSpan();
                 nameSpan.CopyTo(span.Slice(parentLength + 1));
                 int nameLength = parentLength + 1 + nameSpan.Length;
                 if (tuple.n >= 0)
@@ -86,33 +91,33 @@ namespace LegendaryExplorerCore.Unreal
 
         public static implicit operator string(NameReference n)
         {
-            return n.Name;
+            return n._name;
         }
 
         public override string ToString()
         {
-            return Name ?? string.Empty;
+            return _name ?? string.Empty;
         }
 
         public static bool operator ==(NameReference r, string s)
         {
-            return string.Equals(s, r.Name, StringComparison.OrdinalIgnoreCase);
+            return string.Equals(s, r._name, StringComparison.OrdinalIgnoreCase);
         }
 
         public static bool operator !=(NameReference r, string s)
         {
-            return !string.Equals(s, r.Name, StringComparison.OrdinalIgnoreCase);
+            return !string.Equals(s, r._name, StringComparison.OrdinalIgnoreCase);
         }
 
 
         public static bool operator ==(string s, NameReference r)
         {
-            return string.Equals(s, r.Name, StringComparison.OrdinalIgnoreCase);
+            return string.Equals(s, r._name, StringComparison.OrdinalIgnoreCase);
         }
 
         public static bool operator !=(string s, NameReference r)
         {
-            return !string.Equals(s, r.Name, StringComparison.OrdinalIgnoreCase);
+            return !string.Equals(s, r._name, StringComparison.OrdinalIgnoreCase);
         }
 
         public static NameReference FromInstancedString(string s)
@@ -145,7 +150,7 @@ namespace LegendaryExplorerCore.Unreal
         }
         public bool Equals(NameReference other)
         {
-            return string.Equals(Name, other.Name, StringComparison.OrdinalIgnoreCase) && Number == other.Number;
+            return string.Equals(_name, other._name, StringComparison.OrdinalIgnoreCase) && _number == other._number;
         }
 
         public override bool Equals(object obj)
@@ -157,7 +162,7 @@ namespace LegendaryExplorerCore.Unreal
         {
             unchecked
             {
-                return (Name.GetHashCode() * 397) ^ Number;
+                return (_name.GetHashCode() * 397) ^ _number;
             }
         }
         #endregion
@@ -165,9 +170,9 @@ namespace LegendaryExplorerCore.Unreal
         #region IComparable
         public int CompareTo(NameReference other)
         {
-            int nameComparison = string.Compare(Name, other.Name, StringComparison.OrdinalIgnoreCase);
+            int nameComparison = string.Compare(_name, other._name, StringComparison.OrdinalIgnoreCase);
             if (nameComparison != 0) return nameComparison;
-            return Number.CompareTo(other.Number);
+            return _number.CompareTo(other._number);
         }
 
         public int CompareTo(object obj)

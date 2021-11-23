@@ -125,7 +125,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
             return true;
         }
 
-        private bool MeshSearch((string, MeshRecord) tuple)
+        public static bool MeshSearch((string, MeshRecord) tuple)
         {
             var (text, mr) = tuple;
             if (mr.IsSkeleton && text.ToLower().StartsWith("bones:") && text.Length > 6 && int.TryParse(text.Remove(0, 6).ToLower(), out int bonecount))

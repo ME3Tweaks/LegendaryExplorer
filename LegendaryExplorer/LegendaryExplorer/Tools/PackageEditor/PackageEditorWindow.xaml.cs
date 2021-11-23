@@ -2053,12 +2053,11 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     for (int i = 0; i < Pcc.ImportCount; i++)
                     {
                         ImportEntry imp = Pcc.Imports[i];
-                        if (offsetDec >= imp.HeaderOffset && offsetDec < imp.HeaderOffset + imp.Header.Length)
+                        if (offsetDec >= imp.HeaderOffset && offsetDec < imp.HeaderOffset + ImportEntry.HeaderLength)
                         {
                             GoToNumber(imp.UIndex);
                             Metadata_Tab.IsSelected = true;
-                            MetadataTab_MetadataEditor.SetHexboxSelectedOffset(imp.HeaderOffset + imp.Header.Length -
-                                                                               offsetDec);
+                            MetadataTab_MetadataEditor.SetHexboxSelectedOffset(imp.HeaderOffset + ImportEntry.HeaderLength - offsetDec);
                             return;
                         }
                     }
@@ -2066,12 +2065,11 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     foreach (ExportEntry exp in Pcc.Exports)
                     {
                         //header
-                        if (offsetDec >= exp.HeaderOffset && offsetDec < exp.HeaderOffset + exp.Header.Length)
+                        if (offsetDec >= exp.HeaderOffset && offsetDec < exp.HeaderOffset + exp.HeaderLength)
                         {
                             GoToNumber(exp.UIndex);
                             Metadata_Tab.IsSelected = true;
-                            MetadataTab_MetadataEditor.SetHexboxSelectedOffset(exp.HeaderOffset + exp.Header.Length -
-                                                                               offsetDec);
+                            MetadataTab_MetadataEditor.SetHexboxSelectedOffset(exp.HeaderOffset + exp.HeaderLength - offsetDec);
                             return;
                         }
 
@@ -2487,6 +2485,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
             ExportLoaders[MaterialViewerTab_MaterialExportLoader] = MaterialViewer_Tab;
             ExportLoaders[ScriptTab_UnrealScriptIDE] = Script_Tab;
             ExportLoaders[RADLauncherTab_BIKLauncher] = RADLaunch_Tab;
+            ExportLoaders[AnimNodeTab_AnimNodeLoader] = AnimNode_Tab;
 
 
             InterpreterTab_Interpreter.SetParentNameList(NamesList); //reference to this control for name editor set
@@ -2840,7 +2839,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 }
             }
 
-            if (updates.Any(x => x.Change == PackageChange.ExportRemove || x.Change == PackageChange.ImportRemove))
+            if (updates.Any(x => x.Change is PackageChange.ExportRemove or PackageChange.ImportRemove))
             {
                 InitializeTreeView();
                 InitClassDropDown();
@@ -2875,12 +2874,6 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 InitClassDropDown();
                 MetadataTab_MetadataEditor.RefreshAllEntriesList(Pcc);
                 //Find nodes that haven't been generated and added yet
-
-                //filter to only nodes that don't exist yet (created by external tools)
-                foreach (TreeViewEntry tvi in treeViewItems)
-                {
-                    addedChanges.RemoveAll(x => x.Index == tvi.UIndex);
-                }
 
                 List<IEntry> entriesToAdd = addedChanges.Select(change => Pcc.GetEntry(change.Index)).ToList();
 

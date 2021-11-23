@@ -15,6 +15,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
         {
             Search = new SearchSpecification<MaterialRecord>(MaterialSearch);
             PopulateFilterOptions(fileList);
+            UpdateFilterCache();
         }
 
         public void LoadFromDatabase(AssetDB currentDb)

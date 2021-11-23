@@ -12,229 +12,12 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
     public abstract class ObjectBinary
     {
-        public ExportEntry Export { get; set; }
+        public ExportEntry Export { get; init; }
         public static T From<T>(ExportEntry export, PackageCache packageCache = null) where T : ObjectBinary, new()
         {
             var t = new T { Export = export };
             t.Serialize(new SerializingContainer2(export.GetReadOnlyBinaryStream(), export.FileRef, true, export.DataOffset + export.propsEnd(), packageCache));
             return t;
-        }
-
-        public static T FromDEBUG<T>(ExportEntry export, PackageCache packageCache) where T : ObjectBinary, new()
-        {
-            var t = new T { Export = export };
-            var dataStartPosition = export.DataOffset;
-            var binaryStartPos = dataStartPosition + export.propsEnd();
-            var serializer = new SerializingContainer2(export.GetReadOnlyBinaryStream(), export.FileRef, true, binaryStartPos);
-            t.Serialize(serializer);
-            if (serializer.FileOffset - dataStartPosition != export.DataSize)
-            {
-                Debug.WriteLine($@"Serial size mismatch on {export.InstancedFullPath}! Parsing stopped at {serializer.FileOffset - dataStartPosition} bytes, but export is {export.DataSize} bytes");
-                Debugger.Break();
-            }
-
-            return t;
-        }
-
-        public static ObjectBinary FromDEBUG(ExportEntry export, PackageCache packageCache = null)
-        {
-            if (export.IsDefaultObject)
-            {
-                //DefaultObjects don't have binary
-                return null;
-            }
-            string className = export.ClassName;
-            if (export.IsA("BioPawn"))
-            {
-                //way, waaay too many subclasses of BioPawn to put in the switch statement, so we take care of it here
-                className = "BioPawn";
-            }
-            else if (export.IsA("BioActorBehavior"))
-            {
-                className = "BioActorBehavior";
-            }
-            switch (className)
-            {
-                case "AnimSequence":
-                    return FromDEBUG<AnimSequence>(export, packageCache);
-                case "BioStage":
-                    return FromDEBUG<BioStage>(export, packageCache);
-                case "Level":
-                    return FromDEBUG<Level>(export, packageCache);
-                case "World":
-                    return FromDEBUG<World>(export, packageCache);
-                case "Model":
-                    return FromDEBUG<Model>(export, packageCache);
-                case "Polys":
-                    return FromDEBUG<Polys>(export, packageCache);
-                case "DecalMaterial":
-                case "Material":
-                    return FromDEBUG<Material>(export, packageCache);
-                case "MaterialInstanceConstant":
-                case "MaterialInstanceTimeVarying":
-                    if (export.GetProperty<BoolProperty>("bHasStaticPermutationResource")?.Value == true)
-                    {
-                        return FromDEBUG<MaterialInstance>(export, packageCache);
-                    }
-                    return Array.Empty<byte>();
-                case "FracturedStaticMesh":
-                    return FromDEBUG<FracturedStaticMesh>(export, packageCache);
-                case "StaticMesh":
-                    return FromDEBUG<StaticMesh>(export, packageCache);
-                case "SkeletalMesh":
-                case "BioSocketSupermodel":
-                    return FromDEBUG<SkeletalMesh>(export, packageCache);
-                case "CoverMeshComponent":
-                case "InteractiveFoliageComponent":
-                case "SplineMeshComponent":
-                case "FracturedStaticMeshComponent":
-                case "FracturedSkinnedMeshComponent":
-                case "StaticMeshComponent":
-                    return FromDEBUG<StaticMeshComponent>(export, packageCache);
-                case "DecalComponent":
-                    return FromDEBUG<DecalComponent>(export, packageCache);
-                case "Terrain":
-                    return FromDEBUG<Terrain>(export, packageCache);
-                case "TerrainComponent":
-                    return FromDEBUG<TerrainComponent>(export, packageCache);
-                case "FluidSurfaceComponent":
-                    return FromDEBUG<FluidSurfaceComponent>(export, packageCache);
-                case "ModelComponent":
-                    return FromDEBUG<ModelComponent>(export, packageCache);
-                case "BioDynamicAnimSet":
-                    return FromDEBUG<BioDynamicAnimSet>(export, packageCache);
-                case "BioPawn":
-                    return FromDEBUG<BioPawn>(export, packageCache);
-                case "PrefabInstance":
-                    return FromDEBUG<PrefabInstance>(export, packageCache);
-                case "Class":
-                    return FromDEBUG<UClass>(export, packageCache);
-                case "State":
-                    return FromDEBUG<UState>(export, packageCache);
-                case "Function":
-                    return FromDEBUG<UFunction>(export, packageCache);
-                case "Enum":
-                    return FromDEBUG<UEnum>(export, packageCache);
-                case "Const":
-                    return FromDEBUG<UConst>(export, packageCache);
-                case "ScriptStruct":
-                    return FromDEBUG<UScriptStruct>(export, packageCache);
-                case "IntProperty":
-                    return FromDEBUG<UIntProperty>(export, packageCache);
-                case "BoolProperty":
-                    return FromDEBUG<UBoolProperty>(export, packageCache);
-                case "FloatProperty":
-                    return FromDEBUG<UFloatProperty>(export, packageCache);
-                case "NameProperty":
-                    return FromDEBUG<UNameProperty>(export, packageCache);
-                case "StrProperty":
-                    return FromDEBUG<UStrProperty>(export, packageCache);
-                case "StringRefProperty":
-                    return FromDEBUG<UStringRefProperty>(export, packageCache);
-                case "ByteProperty":
-                    return FromDEBUG<UByteProperty>(export, packageCache);
-                case "ObjectProperty":
-                    return FromDEBUG<UObjectProperty>(export, packageCache);
-                case "ComponentProperty":
-                    return FromDEBUG<UComponentProperty>(export, packageCache);
-                case "InterfaceProperty":
-                    return FromDEBUG<UInterfaceProperty>(export, packageCache);
-                case "ArrayProperty":
-                    return FromDEBUG<UArrayProperty>(export, packageCache);
-                case "StructProperty":
-                    return FromDEBUG<UStructProperty>(export, packageCache);
-                case "BioMask4Property":
-                    return FromDEBUG<UBioMask4Property>(export, packageCache);
-                case "MapProperty":
-                    return FromDEBUG<UMapProperty>(export, packageCache);
-                case "ClassProperty":
-                    return FromDEBUG<UClassProperty>(export, packageCache);
-                case "DelegateProperty":
-                    return FromDEBUG<UDelegateProperty>(export, packageCache);
-                case "ShaderCache":
-                    return FromDEBUG<ShaderCache>(export, packageCache);
-                case "StaticMeshCollectionActor":
-                    return FromDEBUG<StaticMeshCollectionActor>(export, packageCache);
-                case "StaticLightCollectionActor":
-                    return FromDEBUG<StaticLightCollectionActor>(export, packageCache);
-                case "WwiseEvent":
-                    return FromDEBUG<WwiseEvent>(export, packageCache);
-                case "WwiseStream":
-                    return FromDEBUG<WwiseStream>(export, packageCache);
-                case "WwiseBank":
-                    return FromDEBUG<WwiseBank>(export, packageCache);
-                case "BioGestureRuntimeData":
-                    return FromDEBUG<BioGestureRuntimeData>(export, packageCache);
-                case "LightMapTexture2D":
-                    return FromDEBUG<LightMapTexture2D>(export, packageCache);
-                case "Texture2D":
-                case "ShadowMapTexture2D":
-                case "TerrainWeightMapTexture":
-                case "TextureFlipBook":
-                    return FromDEBUG<UTexture2D>(export, packageCache);
-                case "GuidCache":
-                    return FromDEBUG<GuidCache>(export, packageCache);
-                case "FaceFXAnimSet":
-                    return FromDEBUG<FaceFXAnimSet>(export, packageCache);
-                case "Bio2DA":
-                case "Bio2DANumberedRows":
-                    return FromDEBUG<Bio2DABinary>(export, packageCache);
-                case "BioMorphFace":
-                    return FromDEBUG<BioMorphFace>(export, packageCache);
-                case "MorphTarget":
-                    return FromDEBUG<MorphTarget>(export, packageCache);
-                case "SFXMorphFaceFrontEndDataSource":
-                    return FromDEBUG<SFXMorphFaceFrontEndDataSource>(export, packageCache);
-                case "PhysicsAssetInstance":
-                    return FromDEBUG<PhysicsAssetInstance>(export, packageCache);
-                case "DirectionalLightComponent":
-                case "PointLightComponent":
-                case "SkyLightComponent":
-                case "SphericalHarmonicLightComponent":
-                case "SpotLightComponent":
-                case "DominantSpotLightComponent":
-                case "DominantPointLightComponent":
-                case "DominantDirectionalLightComponent":
-                    return FromDEBUG<LightComponent>(export, packageCache);
-                case "ShadowMap1D":
-                    return FromDEBUG<ShadowMap1D>(export, packageCache);
-                case "BioTlkFileSet":
-                    return FromDEBUG<BioTlkFileSet>(export, packageCache);
-                case "RB_BodySetup":
-                    return FromDEBUG<RB_BodySetup>(export, packageCache);
-                case "BrushComponent":
-                    return FromDEBUG<BrushComponent>(export, packageCache);
-                case "ForceFeedbackWaveform":
-                    return FromDEBUG<ForceFeedbackWaveform>(export, packageCache);
-                case "SoundCue":
-                    return FromDEBUG<SoundCue>(export, packageCache);
-                case "SoundNodeWave":
-                    return FromDEBUG<SoundNodeWave>(export, packageCache);
-                case "ObjectRedirector":
-                    return FromDEBUG<ObjectRedirector>(export, packageCache);
-                case "TextureMovie":
-                    return FromDEBUG<TextureMovie>(export, packageCache);
-                case "BioSoundNodeWaveStreamingData":
-                    return FromDEBUG<BioSoundNodeWaveStreamingData>(export, packageCache);
-                case "BioInert":
-                    return FromDEBUG<BioInert>(export, packageCache);
-                case "BioSquadCombat":
-                    return FromDEBUG<BioSquadCombat>(export, packageCache);
-                case "BioGestureAnimSetMgr":
-                    return FromDEBUG<BioGestureAnimSetMgr>(export, packageCache);
-                case "BioQuestProgressionMap":
-                    return FromDEBUG<BioQuestProgressionMap>(export, packageCache);
-                case "BioDiscoveredCodexMap":
-                    return FromDEBUG<BioDiscoveredCodexMap>(export, packageCache);
-                case "SpeedTreeComponent":
-                    return FromDEBUG<SpeedTreeComponent>(export, packageCache);
-                case "BioGamePropertyEventDispatcher":
-                    return FromDEBUG<BioGamePropertyEventDispatcher>(export, packageCache);
-                case "BioActorBehavior":
-                    return FromDEBUG<BioActorBehavior>(export, packageCache);
-                default:
-                    return null;
-            }
         }
 
         public static ObjectBinary From(ExportEntry export, PackageCache packageCache = null)
@@ -245,14 +28,18 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 return null;
             }
             string className = export.ClassName;
-            if (export.IsA("BioPawn"))
+            if (IsEither(className, export.Game, "BioPawn", "BioActorBehavior"))
             {
-                //way, waaay too many subclasses of BioPawn to put in the switch statement, so we take care of it here
-                className = "BioPawn";
-            }
-            else if (export.IsA("BioActorBehavior"))
-            {
-                className = "BioActorBehavior";
+                //export actually being a subclass of BioPawn or BioActorBehavior is rare, so it's simpler and not very costly to just do the lookup again
+                if (export.IsA("BioPawn"))
+                {
+                    //way, waaay too many subclasses of BioPawn to put in the switch statement, so we take care of it here
+                    className = "BioPawn";
+                }
+                else if (export.IsA("BioActorBehavior"))
+                {
+                    className = "BioActorBehavior";
+                }
             }
             switch (className)
             {
@@ -446,6 +233,39 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 default:
                     return null;
             }
+        }
+
+        //special purpose version of IsA used to avoid multiple lookups
+        private static bool IsEither(string className, MEGame game, string baseClass1, string baseClass2)
+        {
+            if (className == baseClass1 || className == baseClass2) return true;
+            var classes = game switch
+            {
+                MEGame.ME1 => ME1UnrealObjectInfo.Classes,
+                MEGame.ME2 => ME2UnrealObjectInfo.Classes,
+                MEGame.ME3 => ME3UnrealObjectInfo.Classes,
+                MEGame.UDK => ME3UnrealObjectInfo.Classes,
+                MEGame.LE1 => LE1UnrealObjectInfo.Classes,
+                MEGame.LE2 => LE2UnrealObjectInfo.Classes,
+                MEGame.LE3 => LE3UnrealObjectInfo.Classes,
+                _ => throw new ArgumentOutOfRangeException(nameof(game), game, null)
+            };
+            while (true)
+            {
+                if (className == baseClass1 || className == baseClass2)
+                {
+                    return true;
+                }
+                if (classes.TryGetValue(className, out ClassInfo info))
+                {
+                    className = info.baseClass;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            return false;
         }
 
         public static ObjectBinary Create(string className, MEGame game, PropertyCollection props = null)

@@ -105,7 +105,7 @@ namespace LegendaryExplorerCore.Tests
                     {
                         var importCCP = reopenedCCP.Imports[i];
                         var importUCP = reopenedUCP.Imports[i];
-                        Assert.IsTrue(importCCP.Header.AsSpan().SequenceEqual(importUCP.Header),
+                        Assert.IsTrue(importCCP.GenerateHeader().AsSpan().SequenceEqual(importUCP.GenerateHeader()),
                             $"Header data for import {-(i + 1)} are not identical between compressed/uncompressed packages");
                     }
 
@@ -113,7 +113,7 @@ namespace LegendaryExplorerCore.Tests
                     {
                         var exportCCP = reopenedCCP.Exports[i];
                         var exportUCP = reopenedUCP.Exports[i];
-                        Assert.IsTrue(exportCCP.Header.AsSpan().SequenceEqual(exportUCP.Header),
+                        Assert.IsTrue(exportCCP.GenerateHeader().AsSpan().SequenceEqual(exportUCP.GenerateHeader()),
                             $"Header data for xport {i + 1} are not identical between compressed/uncompressed packages");
                     }
                 }

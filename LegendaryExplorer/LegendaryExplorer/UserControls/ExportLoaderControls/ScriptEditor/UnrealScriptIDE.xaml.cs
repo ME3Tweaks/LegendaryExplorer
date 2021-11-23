@@ -350,6 +350,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                 {
                     switch (CurrentLoadedExport.ClassName)
                     {
+                        //case "Class":
+                        //    {
+                        //        (_, MessageLog log) = UnrealScriptCompiler.CompileClass(Pcc, CurrentLoadedExport, ScriptText, CurrentFileLib);
+                        //        outputListBox.ItemsSource = log?.Content;
+                        //        break;
+                        //    }
                         case "Function":
                         {
                             (_, MessageLog log) = UnrealScriptCompiler.CompileFunction(CurrentLoadedExport, ScriptText, CurrentFileLib);
@@ -413,15 +419,20 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                 _definitionLinkGenerator.Reset();
                 Dispatcher.Invoke(() =>
                 {
-                    if (ast is Function or State or Struct or Enumeration or DefaultPropertiesBlock && FullyInitialized)
+                    if (FullyInitialized)
                     {
                         try
                         {
-                            (ASTNode astNode, MessageLog log, TokenStream<string> tokens) = UnrealScriptCompiler.CompileAST(text, CurrentLoadedExport.ClassName, Pcc.Game, ast is DefaultPropertiesBlock);
+                            var log = new MessageLog();
+                            (ASTNode astNode, TokenStream tokens) = UnrealScriptCompiler.CompileOutlineAST(text, CurrentLoadedExport.ClassName, log, Pcc.Game, ast is DefaultPropertiesBlock);
 
                             if (!log.HasErrors)
                             {
                                 //compile body to ast so that symbol tokens will be associated with their definitions
+                                if (astNode is Class cls)
+                                {
+                                    UnrealScriptCompiler.CompileNewClassAST(Pcc, cls, log, CurrentFileLib, out _);
+                                }
                                 if (astNode is Function function && CurrentLoadedExport?.Parent is ExportEntry funcParent)
                                 {
                                     UnrealScriptCompiler.CompileNewFunctionBodyAST(funcParent, function, log, CurrentFileLib);
@@ -448,13 +459,13 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                         }
                         catch (Exception e)
                         {
-                            //
+                            _definitionLinkGenerator.Reset();
                         }
                     }
 
                     RootNode = ast;
                     ScriptText = text;
-                    textEditor.IsReadOnly = RootNode is not (Function or State or Struct or Enumeration or DefaultPropertiesBlock);
+                    textEditor.IsReadOnly = RootNode is Class;
                 });
 
             }
@@ -467,28 +478,36 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
         private void TextChanged(object sender, EventArgs e)
         {
             bool needsTokensReset = true;
-            (ASTNode ast, MessageLog log, TokenStream<string> tokens) = UnrealScriptCompiler.CompileAST(ScriptText, CurrentLoadedExport.ClassName, Pcc.Game, CurrentLoadedExport.IsDefaultObject);
+            var log = new MessageLog();
             try
             {
+                (ASTNode ast, TokenStream tokens) = UnrealScriptCompiler.CompileOutlineAST(ScriptText, CurrentLoadedExport.ClassName, log, Pcc.Game, CurrentLoadedExport.IsDefaultObject);
 
-                if (ast != null && !log.HasErrors && FullyInitialized && (ast is Function or State or Struct or Enumeration && CurrentLoadedExport.Parent is ExportEntry || ast is DefaultPropertiesBlock && CurrentLoadedExport.Class is ExportEntry))
+                if (ast != null && !log.HasErrors && FullyInitialized)
                 {
                     switch (ast)
                     {
-                        case Function func:
-                            ast = UnrealScriptCompiler.CompileNewFunctionBodyAST((ExportEntry)CurrentLoadedExport.Parent, func, log, CurrentFileLib);
+                        case Class cls:
+                            ast = UnrealScriptCompiler.CompileNewClassAST(Pcc, cls, log, CurrentFileLib, out bool vfTableChanged);
+                            if (vfTableChanged)
+                            {
+                                log.LogWarning("Compiling will cause Virtual Function Table to change! All classes that depends on this one will need recompilation to work properly!");
+                            }
                             break;
-                        case State state:
-                            ast = UnrealScriptCompiler.CompileNewStateBodyAST((ExportEntry)CurrentLoadedExport.Parent, state, log, CurrentFileLib);
+                        case Function func when CurrentLoadedExport.Parent is ExportEntry funcParent:
+                            ast = UnrealScriptCompiler.CompileNewFunctionBodyAST(funcParent, func, log, CurrentFileLib);
                             break;
-                        case Struct strct:
-                            ast = UnrealScriptCompiler.CompileNewStructAST((ExportEntry)CurrentLoadedExport.Parent, strct, log, CurrentFileLib);
+                        case State state when CurrentLoadedExport.Parent is ExportEntry stateParent:
+                            ast = UnrealScriptCompiler.CompileNewStateBodyAST(stateParent, state, log, CurrentFileLib);
                             break;
-                        case Enumeration enumeration:
-                            ast = UnrealScriptCompiler.CompileNewEnumAST((ExportEntry)CurrentLoadedExport.Parent, enumeration, log, CurrentFileLib);
+                        case Struct strct when CurrentLoadedExport.Parent is ExportEntry structParent:
+                            ast = UnrealScriptCompiler.CompileNewStructAST(structParent, strct, log, CurrentFileLib);
                             break;
-                        case DefaultPropertiesBlock propertiesBlock:
-                            ast = UnrealScriptCompiler.CompileDefaultPropertiesAST((ExportEntry) CurrentLoadedExport.Class, propertiesBlock, log, CurrentFileLib);
+                        case Enumeration enumeration when CurrentLoadedExport.Parent is ExportEntry enumParent:
+                            ast = UnrealScriptCompiler.CompileNewEnumAST(enumParent, enumeration, log, CurrentFileLib);
+                            break;
+                        case DefaultPropertiesBlock propertiesBlock when CurrentLoadedExport.Class is ExportEntry classExport:
+                            ast = UnrealScriptCompiler.CompileDefaultPropertiesAST(classExport, propertiesBlock, log, CurrentFileLib);
                             break;
                         default:
                             return;
@@ -509,7 +528,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
 
                         int currentLine = firstLine;
                         int currentPos = 0;
-                        foreach (Token<string> token in tokens)
+                        foreach (ScriptToken token in tokens)
                         {
                             int tokLine = token.StartPos.Line - 1;
                             if (tokLine > currentLine)
@@ -579,8 +598,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
         {
             if (ScriptText != null)
             {
-                MessageLog log;
-                (RootNode, log, _) = UnrealScriptCompiler.CompileAST(ScriptText, CurrentLoadedExport.ClassName, Pcc.Game, CurrentLoadedExport.IsDefaultObject);
+                var log = new MessageLog();
+                (RootNode, _) = UnrealScriptCompiler.CompileOutlineAST(ScriptText, CurrentLoadedExport.ClassName, log, Pcc.Game, CurrentLoadedExport.IsDefaultObject);
 
                 if (RootNode != null && !log.HasErrors)
                 {
@@ -591,6 +610,14 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                             if (CurrentLoadedExport.Class is ExportEntry classExport)
                             {
                                 RootNode = UnrealScriptCompiler.CompileDefaultPropertiesAST(classExport, propBlock, log, CurrentFileLib);
+                            }
+                        }
+                        else if (RootNode is Class cls)
+                        {
+                            RootNode = UnrealScriptCompiler.CompileNewClassAST(Pcc, cls, log, CurrentFileLib, out bool vfTableChanged);
+                            if (vfTableChanged)
+                            {
+                                log.LogWarning("Virtual function table changed!");
                             }
                         }
                         else if (CurrentLoadedExport.Parent is ExportEntry parentExport)
@@ -606,7 +633,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                         }
                     }
                     var codeBuilder = new CodeBuilderVisitor<SyntaxInfoCodeFormatter, (string, SyntaxInfo)>();
-                    RootNode.AcceptVisitor(codeBuilder);
+                    RootNode?.AcceptVisitor(codeBuilder);
                     (string text, SyntaxInfo syntaxInfo) = codeBuilder.GetOutput();
                     ScriptText = text;
                     textEditor.SyntaxHighlighting = syntaxInfo;

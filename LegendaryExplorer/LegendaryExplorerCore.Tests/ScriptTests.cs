@@ -35,7 +35,6 @@ namespace LegendaryExplorerCore.Tests
                 var shortName = Path.GetRelativePath(testDataDirectory, testFile);
                 compileTest(testFile, shortName, true);
             }
-            FileLib.FreeLibs();
             MemoryAnalyzer.ForceFullGC(true);
             //foreach (var testFile in testFiles)
             //{

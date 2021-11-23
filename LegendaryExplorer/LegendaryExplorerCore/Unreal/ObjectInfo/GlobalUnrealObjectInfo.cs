@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -37,33 +38,52 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             };
 
         public static bool IsA(this ClassInfo info, string baseClass, MEGame game, Dictionary<string, ClassInfo> customClassInfos = null) => IsA(info.ClassName, baseClass, game, customClassInfos);
-        public static bool IsA(this IEntry entry, string baseClass, Dictionary<string, ClassInfo> customClassInfos = null) => IsA(entry.ClassName, baseClass, entry.FileRef.Game, customClassInfos);
-        public static bool IsA(string className, string baseClass, MEGame game, Dictionary<string, ClassInfo> customClassInfos = null) =>
-            className == baseClass || game switch
+        public static bool IsA(this IEntry entry, string baseClass, Dictionary<string, ClassInfo> customClassInfos = null) => IsA(entry.ClassName, baseClass, entry.Game, customClassInfos);
+        public static bool IsA(string className, string baseClass, MEGame game, Dictionary<string, ClassInfo> customClassInfos = null, string knownSuperClass = null)
+        {
+            if (className == baseClass) return true;
+            if (baseClass == @"Object") return true; //Everything inherits from Object
+            if (knownSuperClass != null && baseClass == knownSuperClass) return true; // We already know it's a direct descendant
+            var classes = game switch
             {
-                MEGame.ME1 => ME1UnrealObjectInfo.InheritsFrom(className, baseClass, customClassInfos),
-                MEGame.ME2 => ME2UnrealObjectInfo.InheritsFrom(className, baseClass, customClassInfos),
-                MEGame.ME3 => ME3UnrealObjectInfo.InheritsFrom(className, baseClass, customClassInfos),
-                MEGame.UDK => ME3UnrealObjectInfo.InheritsFrom(className, baseClass, customClassInfos),
-                MEGame.LE1 => LE1UnrealObjectInfo.InheritsFrom(className, baseClass, customClassInfos),
-                MEGame.LE2 => LE2UnrealObjectInfo.InheritsFrom(className, baseClass, customClassInfos),
-                MEGame.LE3 => LE3UnrealObjectInfo.InheritsFrom(className, baseClass, customClassInfos),
-                _ => false
+                MEGame.ME1 => ME1UnrealObjectInfo.Classes,
+                MEGame.ME2 => ME2UnrealObjectInfo.Classes,
+                MEGame.ME3 => ME3UnrealObjectInfo.Classes,
+                MEGame.UDK => ME3UnrealObjectInfo.Classes,
+                MEGame.LE1 => LE1UnrealObjectInfo.Classes,
+                MEGame.LE2 => LE2UnrealObjectInfo.Classes,
+                MEGame.LE3 => LE3UnrealObjectInfo.Classes,
+                _ => throw new ArgumentOutOfRangeException(nameof(game), game, null)
             };
+            while (true)
+            {
+                if (className == baseClass)
+                {
+                    return true;
+                }
 
-        public static bool InheritsFrom(this IEntry entry, string baseClass, Dictionary<string, ClassInfo> customClassInfos = null) => InheritsFrom(entry.ObjectName.Name, baseClass, entry.FileRef.Game, customClassInfos, (entry as ExportEntry)?.SuperClassName);
-        public static bool InheritsFrom(string className, string baseClass, MEGame game, Dictionary<string, ClassInfo> customClassInfos = null, string knownSuperClass = null) =>
-            className == baseClass || game switch
-            {
-                MEGame.ME1 => ME1UnrealObjectInfo.InheritsFrom(className, baseClass, customClassInfos, knownSuperClass),
-                MEGame.ME2 => ME2UnrealObjectInfo.InheritsFrom(className, baseClass, customClassInfos, knownSuperClass),
-                MEGame.ME3 => ME3UnrealObjectInfo.InheritsFrom(className, baseClass, customClassInfos, knownSuperClass),
-                MEGame.UDK => ME3UnrealObjectInfo.InheritsFrom(className, baseClass, customClassInfos),
-                MEGame.LE1 => LE1UnrealObjectInfo.InheritsFrom(className, baseClass, customClassInfos, knownSuperClass),
-                MEGame.LE2 => LE2UnrealObjectInfo.InheritsFrom(className, baseClass, customClassInfos, knownSuperClass),
-                MEGame.LE3 => LE3UnrealObjectInfo.InheritsFrom(className, baseClass, customClassInfos, knownSuperClass),
-                _ => false
-            };
+                if (customClassInfos != null && customClassInfos.TryGetValue(className, out ClassInfo info))
+                {
+                    className = info.baseClass;
+                }
+                else if (classes.TryGetValue(className, out info))
+                {
+                    className = info.baseClass;
+                }
+                else if (knownSuperClass != null && classes.TryGetValue(knownSuperClass, out info))
+                {
+                    // We don't have this class in DB but we have super class (e.g. this is custom class without custom class info generated).
+                    // We will just ignore this class and jump to our known super class
+                    className = info.baseClass;
+                    knownSuperClass = null; // Don't use it again
+                }
+                else
+                {
+                    break;
+                }
+            }
+            return false;
+        }
 
         /// <summary>
         /// Checks if the full path name of this entry is known to be defined in native only
@@ -370,15 +390,15 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             }
             var defaultStructValues = game switch
             {
-                MEGame.ME1 => ME1UnrealObjectInfo.defaultStructValuesME1,
-                MEGame.ME2 => ME2UnrealObjectInfo.defaultStructValuesME2,
-                MEGame.ME3 => ME3UnrealObjectInfo.defaultStructValuesME3,
-                MEGame.LE1 => LE1UnrealObjectInfo.defaultStructValuesLE1,
-                MEGame.LE2 => LE2UnrealObjectInfo.defaultStructValuesLE2,
-                MEGame.LE3 => LE3UnrealObjectInfo.defaultStructValuesLE3,
+                MEGame.ME1 => stripTransients ? ME1UnrealObjectInfo.defaultStructValuesME1 : DefaultStructValuesWithTransientsME1,
+                MEGame.ME2 => stripTransients ? ME2UnrealObjectInfo.defaultStructValuesME2 : DefaultStructValuesWithTransientsME2,
+                MEGame.ME3 => stripTransients ? ME3UnrealObjectInfo.defaultStructValuesME3 : DefaultStructValuesWithTransientsME3,
+                MEGame.LE1 => stripTransients ? LE1UnrealObjectInfo.defaultStructValuesLE1 : DefaultStructValuesWithTransientsLE1,
+                MEGame.LE2 => stripTransients ? LE2UnrealObjectInfo.defaultStructValuesLE2 : DefaultStructValuesWithTransientsLE2,
+                MEGame.LE3 => stripTransients ? LE3UnrealObjectInfo.defaultStructValuesLE3 : DefaultStructValuesWithTransientsLE3,
                 _ => throw new ArgumentOutOfRangeException(nameof(game), game, null)
             };
-            if (stripTransients && defaultStructValues.TryGetValue(structName, out var cachedProps))
+            if (defaultStructValues.TryGetValue(structName, out var cachedProps))
             {
                 return shouldReturnClone ? cachedProps.DeepClone() : cachedProps;
             }
@@ -479,10 +499,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                     }
                     props.Add(new NoneProperty());
 
-                    if (stripTransients)
-                    {
-                        defaultStructValues.TryAdd(structName, props);
-                    }
+                    defaultStructValues.TryAdd(structName, props);
                     return shouldReturnClone ? props.DeepClone() : props;
                 }
                 catch (Exception e)
@@ -506,6 +523,13 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 }
             }
         }
+
+        private static readonly ConcurrentDictionary<string, PropertyCollection> DefaultStructValuesWithTransientsME1 = new();
+        private static readonly ConcurrentDictionary<string, PropertyCollection> DefaultStructValuesWithTransientsME2 = new();
+        private static readonly ConcurrentDictionary<string, PropertyCollection> DefaultStructValuesWithTransientsME3 = new();
+        private static readonly ConcurrentDictionary<string, PropertyCollection> DefaultStructValuesWithTransientsLE1 = new();
+        private static readonly ConcurrentDictionary<string, PropertyCollection> DefaultStructValuesWithTransientsLE2 = new();
+        private static readonly ConcurrentDictionary<string, PropertyCollection> DefaultStructValuesWithTransientsLE3 = new();
 
         public static OrderedMultiValueDictionary<NameReference, PropertyInfo> GetAllProperties(MEGame game, string typeName)
         {

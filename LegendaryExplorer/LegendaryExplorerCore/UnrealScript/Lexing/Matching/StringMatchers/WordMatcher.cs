@@ -6,24 +6,19 @@ using LegendaryExplorerCore.UnrealScript.Utilities;
 
 namespace LegendaryExplorerCore.UnrealScript.Lexing.Matching.StringMatchers
 {
-    public class WordMatcher : TokenMatcherBase<string>
+    public sealed class WordMatcher : TokenMatcherBase
     {
-        private readonly List<KeywordMatcher> Delimiters;
-
-        public WordMatcher(List<KeywordMatcher> delimiters)
+        public override ScriptToken Match(CharDataStream data, ref SourcePosition streamPos, MessageLog log)
         {
-            Delimiters = delimiters ?? new List<KeywordMatcher>();
+            return MatchWord(data, ref streamPos);
         }
 
-        protected override Token<string> Match(TokenizableDataStream<string> data, ref SourcePosition streamPos, MessageLog log)
+        public static ScriptToken MatchWord(CharDataStream data, ref SourcePosition streamPos)
         {
-            var start = new SourcePosition(streamPos);
-            string peek = data.CurrentItem;
+            char peek = data.CurrentItem;
             string word = null;
             loopStart:
-            while (!data.AtEnd() && !string.IsNullOrWhiteSpace(peek) 
-                && Delimiters.All(d => d.Keyword != peek)
-                && peek != "\"" && peek != "'")
+            while (!data.AtEnd() && !char.IsWhiteSpace(peek) && !GlobalLists.IsDelimiterChar(peek) && peek != '"' && peek != '\'')
             {
                 word += peek;
                 data.Advance();
@@ -31,7 +26,7 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing.Matching.StringMatchers
             }
 
             //HACK: there are variable names that include the c++ scope operator '::' for some godforsaken reason
-            if (peek == ":" && data.LookAhead(1) == ":")
+            if (peek == ':' && data.LookAhead(1) == ':')
             {
                 word += peek;
                 data.Advance();
@@ -44,9 +39,10 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing.Matching.StringMatchers
 
             if (word != null)
             {
+                var start = new SourcePosition(streamPos);
                 streamPos = streamPos.GetModifiedPosition(0, data.CurrentIndex - start.CharIndex, data.CurrentIndex - start.CharIndex);
                 var end = new SourcePosition(streamPos);
-                return new Token<string>(TokenType.Word, word, start, end);
+                return new ScriptToken(TokenType.Word, word, start, end);
             }
             return null;
         }

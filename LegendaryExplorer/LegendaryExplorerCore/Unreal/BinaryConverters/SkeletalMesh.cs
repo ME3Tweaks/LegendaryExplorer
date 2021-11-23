@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Numerics;
-using LegendaryExplorerCore.Gammtek;
-using LegendaryExplorerCore.Gammtek.Extensions;
-using LegendaryExplorerCore.Helpers;
+using System.Runtime.InteropServices;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 
@@ -187,8 +183,8 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public Vector2 UV3; //UDK
         public Vector2 UV4; //UDK
         public SharpDX.Color BoneColor; //UDK
-        public byte[] InfluenceBones = new byte[4];
-        public byte[] InfluenceWeights = new byte[4];
+        public Influences InfluenceBones;
+        public Influences InfluenceWeights;
     }
 
     public class SkeletalMeshVertexBuffer
@@ -201,12 +197,13 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public GPUSkinVertex[] VertexData; //BulkSerialized
     }
 
-    public class GPUSkinVertex
+    [StructLayout(LayoutKind.Sequential, Pack = 4, Size = 32)]
+    public struct GPUSkinVertex
     {
         public PackedNormal TangentX;
         public PackedNormal TangentZ;
-        public byte[] InfluenceBones = new byte[4];
-        public byte[] InfluenceWeights = new byte[4];
+        public Influences InfluenceBones;
+        public Influences InfluenceWeights;
         public Vector3 Position; //serialized first in ME2
         public Vector2DHalf UV;
     }
@@ -312,14 +309,8 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             {
                 ssv.BoneColor = new SharpDX.Color(255, 255, 255, 255);
             }
-            for (int i = 0; i < 4; i++)
-            {
-                sc.Serialize(ref ssv.InfluenceBones[i]);
-            }
-            for (int i = 0; i < 4; i++)
-            {
-                sc.Serialize(ref ssv.InfluenceWeights[i]);
-            }
+            sc.Serialize(ref ssv.InfluenceBones);
+            sc.Serialize(ref ssv.InfluenceWeights);
         }
         public static void Serialize(this SerializingContainer2 sc, ref SkelMeshChunk smc)
         {
@@ -330,38 +321,12 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref smc.BaseVertexIndex);
             sc.Serialize(ref smc.RigidVertices, Serialize);
             sc.Serialize(ref smc.SoftVertices, Serialize);
-            sc.Serialize(ref smc.BoneMap, SCExt.Serialize);
+            sc.Serialize(ref smc.BoneMap);
             sc.Serialize(ref smc.NumRigidVertices);
             sc.Serialize(ref smc.NumSoftVertices);
             sc.Serialize(ref smc.MaxBoneInfluences);
         }
-        public static void Serialize(this SerializingContainer2 sc, ref GPUSkinVertex gsv)
-        {
-            if (sc.IsLoading)
-            {
-                gsv = new GPUSkinVertex();
-            }
 
-            if (sc.Game == MEGame.ME2)
-            {
-                sc.Serialize(ref gsv.Position);
-            }
-            sc.Serialize(ref gsv.TangentX);
-            sc.Serialize(ref gsv.TangentZ);
-            for (int i = 0; i < 4; i++)
-            {
-                sc.Serialize(ref gsv.InfluenceBones[i]);
-            }
-            for (int i = 0; i < 4; i++)
-            {
-                sc.Serialize(ref gsv.InfluenceWeights[i]);
-            }
-            if (sc.Game >= MEGame.ME3)
-            {
-                sc.Serialize(ref gsv.Position);
-            }
-            sc.Serialize(ref gsv.UV);
-        }
         public static void Serialize(this SerializingContainer2 sc, ref SkeletalMeshVertexBuffer svb)
         {
             if (sc.IsLoading)
@@ -406,81 +371,64 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 svb.VertexData = new GPUSkinVertex[count];
             }
 
-            for (int j = 0; j < count; j++)
+            //slow path
+            if (sc.Game is MEGame.ME2 || svb.bUseFullPrecisionUVs || svb.NumTexCoords > 1 || !sc.ms.Endian.IsNative)
             {
-                ref GPUSkinVertex gsv = ref svb.VertexData[j];
-                if (sc.IsLoading)
+                for (int j = 0; j < count; j++)
                 {
-                    gsv = new GPUSkinVertex();
-                }
-
-                if (sc.Game == MEGame.ME2)
-                {
-                    sc.Serialize(ref gsv.Position);
-                }
-                sc.Serialize(ref gsv.TangentX);
-                sc.Serialize(ref gsv.TangentZ);
-                for (int i = 0; i < 4; i++)
-                {
-                    sc.Serialize(ref gsv.InfluenceBones[i]);
-                }
-                for (int i = 0; i < 4; i++)
-                {
-                    sc.Serialize(ref gsv.InfluenceWeights[i]);
-                }
-                if (sc.Game >= MEGame.ME3)
-                {
-                    if (false)
+                    ref GPUSkinVertex gsv = ref svb.VertexData[j];
+                    if (sc.IsLoading)
                     {
-                        if (sc.IsLoading)
-                        {
-                            uint packedPos = sc.ms.ReadUInt32();
-                            gsv.Position = new Vector3(packedPos.bits(31, 21) / 1023f,
-                                packedPos.bits(20, 10) / 1023f,
-                                packedPos.bits(9, 0) / 1023f) * svb.MeshExtension + svb.MeshOrigin;
-                        }
-                        else
-                        {
-                            Vector3 pos = (gsv.Position - svb.MeshOrigin) - svb.MeshExtension; //puts values in -1.0 to 1.0 range
-                            uint x;
-                            uint y;
-                            uint z;
-                            unchecked
-                            {
-                                x = (uint)Math.Truncate(pos.X * 1023.0).ToInt32().Clamp(-1023, 1023) << 21;
-                                y = (uint)Math.Truncate(pos.Y * 1023.0).ToInt32().Clamp(-1023, 1023) << 21 >> 11;
-                                z = (uint)Math.Truncate(pos.Z * 1023.0).ToInt32().Clamp(-1023, 1023) << 22 >> 22;
-                            }
-                            sc.ms.Writer.WriteUInt32(x | y | z);
-                        }
+                        gsv = new GPUSkinVertex();
                     }
-                    else
+
+                    if (sc.Game == MEGame.ME2)
                     {
                         sc.Serialize(ref gsv.Position);
                     }
-                }
-
-                if (svb.bUseFullPrecisionUVs)
-                {
-                    Vector2 fullUV = gsv.UV;
-                    sc.Serialize(ref fullUV);
-                    gsv.UV = fullUV;
-                }
-                else
-                {
-                    sc.Serialize(ref gsv.UV);
-                }
-
-                if (svb.NumTexCoords > 1)
-                {
-                    if (sc.IsLoading)
+                    sc.Serialize(ref gsv.TangentX);
+                    sc.Serialize(ref gsv.TangentZ);
+                    sc.Serialize(ref gsv.InfluenceBones);
+                    sc.Serialize(ref gsv.InfluenceWeights);
+                    if (sc.Game >= MEGame.ME3)
                     {
-                        sc.ms.Skip((svb.NumTexCoords - 1) * (svb.bUseFullPrecisionUVs ? 8 : 4));
+                        sc.Serialize(ref gsv.Position);
+                    }
+
+                    if (svb.bUseFullPrecisionUVs)
+                    {
+                        Vector2 fullUV = gsv.UV;
+                        sc.Serialize(ref fullUV);
+                        gsv.UV = fullUV;
                     }
                     else
                     {
-                        throw new Exception("Should never be saving more than one UV! Num UVs (NumTexCoords): "+svb.NumTexCoords);
+                        sc.Serialize(ref gsv.UV);
                     }
+
+                    if (svb.NumTexCoords > 1)
+                    {
+                        if (sc.IsLoading)
+                        {
+                            sc.ms.Skip((svb.NumTexCoords - 1) * (svb.bUseFullPrecisionUVs ? 8 : 4));
+                        }
+                        else
+                        {
+                            throw new Exception("Should never be saving more than one UV! Num UVs (NumTexCoords): "+svb.NumTexCoords);
+                        }
+                    }
+                }
+            }
+            //fast path
+            else
+            {
+                if (sc.IsLoading)
+                {
+                    sc.ms.Read(MemoryMarshal.AsBytes<GPUSkinVertex>(svb.VertexData));
+                }
+                else
+                {
+                    sc.ms.Writer.Write(MemoryMarshal.AsBytes<GPUSkinVertex>(svb.VertexData));
                 }
             }
 
@@ -532,13 +480,13 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
             else
             {
-                sc.Serialize(ref slm.IndexBuffer, SCExt.Serialize);
+                sc.Serialize(ref slm.IndexBuffer);
             }
             if (sc.Game != MEGame.UDK)
             {
-                sc.Serialize(ref slm.ShadowIndices, SCExt.Serialize);
+                sc.Serialize(ref slm.ShadowIndices);
             }
-            sc.Serialize(ref slm.ActiveBoneIndices, SCExt.Serialize);
+            sc.Serialize(ref slm.ActiveBoneIndices);
             if (sc.Game != MEGame.UDK)
             {
                 sc.Serialize(ref slm.ShadowTriangleDoubleSided);
@@ -591,8 +539,8 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                             TangentY = (PackedNormal)(new Vector4(Vector3.Cross((Vector3)vert.TangentZ, (Vector3)vert.TangentX), normal.W * tangent.W) * normal.W),
                             TangentZ = vert.TangentZ,
                             UV = new Vector2(vert.UV.X, vert.UV.Y),
-                            InfluenceBones = vert.InfluenceBones.ArrayClone(),
-                            InfluenceWeights = vert.InfluenceWeights.ArrayClone()
+                            InfluenceBones = vert.InfluenceBones,
+                            InfluenceWeights = vert.InfluenceWeights
                         };
                     }
                 }
@@ -620,8 +568,8 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                             TangentX = vert.TangentX,
                             TangentZ = vert.TangentZ,
                             UV = new Vector2DHalf(vert.UV.X, vert.UV.Y),
-                            InfluenceBones = vert.InfluenceBones.ArrayClone(),
-                            InfluenceWeights = vert.InfluenceWeights.ArrayClone()
+                            InfluenceBones = vert.InfluenceBones,
+                            InfluenceWeights = vert.InfluenceWeights
                         };
                     }
                 }
@@ -700,7 +648,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 sc.Serialize(ref bcd.kDOPTreeME1ME2);
             }
 
-            sc.Serialize(ref bcd.CollisionVerts, Serialize);
+            sc.Serialize(ref bcd.CollisionVerts);
         }
     }
 }

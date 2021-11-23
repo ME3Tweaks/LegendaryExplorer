@@ -370,7 +370,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     {
                         var origExp = restorePackage.GetUExport(exp.UIndex);
                         sourcePackage.GetUExport(exp.UIndex).Data = origExp.Data;
-                        sourcePackage.GetUExport(exp.UIndex).Header = origExp.Header;
+                        sourcePackage.GetUExport(exp.UIndex).SetHeaderValuesFromByteArray(origExp.GenerateHeader());
                     }
                 }
             });
@@ -1446,7 +1446,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     var origImp = restorePackage.FindImport(imp.InstancedFullPath);
                     if (origImp != null)
                     {
-                        imp.Header = origImp.Header;
+                        imp.SetHeaderValuesFromByteArray(origImp.GenerateHeader());
                     }
                 }
 
@@ -1456,7 +1456,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     if (origExp != null)
                     {
                         exp.Data = origExp.Data;
-                        exp.Header = origExp.GetHeader();
+                        exp.SetHeaderValuesFromByteArray(origExp.GenerateHeader());
                     }
                 }
             });

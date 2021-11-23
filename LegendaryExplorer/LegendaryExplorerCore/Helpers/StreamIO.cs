@@ -86,24 +86,11 @@ namespace LegendaryExplorerCore.Helpers
             stream.Write(buffer);
         }
 
-        public static Guid ReadGuid(this EndianReader stream)
-        {
-            var a = stream.ReadInt32();
-            var b = stream.ReadInt16();
-            var c = stream.ReadInt16();
-            var d = stream.ReadBytes(8);
-
-            return new Guid(a, b, c, d);
-        }
-
         public static Guid ReadGuid(this Stream stream)
         {
-            var a = stream.ReadInt32();
-            var b = stream.ReadInt16();
-            var c = stream.ReadInt16();
-            var d = stream.ReadToBuffer(8);
-
-            return new Guid(a, b, c, d);
+            Span<byte> guidBytes = stackalloc byte[16];
+            stream.Read(guidBytes);
+            return new Guid(guidBytes);
         }
 
         public static void WriteGuid(this Stream stream, Guid value)

@@ -220,3 +220,5 @@ Release_x64/
 # Ignore dll as it's auto built into this dir
 /LegendaryExplorer/LegendaryExplorerCore/Libraries/Windows/TexConverter.dll
 /LegendaryExplorer/.idea
+/LegendaryExplorer/.editorconfig
+/LegendaryExplorer/global.json

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
@@ -40,6 +39,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
             };
             Filters.AddRange(SingleSelectionSizes);
             SetupLodGroups();
+            UpdateFilterCache();
         }
 
         private void SetupLodGroups()
@@ -73,7 +73,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
             return new[] {new OrSpecification<TextureRecord>(GeneratedLodFilters)};
         }
 
-        private bool TextureSearch((string search, TextureRecord record) t)
+        public bool TextureSearch((string search, TextureRecord record) t)
         {
             var (text, tr) = t;
             text = text.ToLower();
@@ -89,29 +89,5 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
             }
             return showThis;
         }
-    }
-
-    /// <summary>
-    /// Specification that always returns true, cannot be selected, and invokes an action when you attempt to select it.
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    public class ActionSpecification<T> : AssetSpecification<T>
-    {
-        // This class feels kinda like an abuse of the filter system, it only implements this interface so it can be bound in the UI without extra work. Meh.
-        private readonly Action _onSelection;
-        public override bool IsSelected
-        {
-            get => false;
-            set => _onSelection?.Invoke();
-        }
-
-        public ActionSpecification(string name, Action actionOnSelection, string description = null)
-        {
-            FilterName = name;
-            Description = description;
-            _onSelection = actionOnSelection;
-        }
-
-        public override bool MatchesSpecification(T item) => true;
     }
 }

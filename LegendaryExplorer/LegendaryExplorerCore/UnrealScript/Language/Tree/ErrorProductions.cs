@@ -8,14 +8,14 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
     {
         public Statement InnerStatement;
 
-        public Token<string>[] ErrorTokens; 
+        public ScriptToken[] ErrorTokens; 
 
         public ErrorStatement(Statement innerStatement) : base(ASTNodeType.INVALID, innerStatement.StartPos, innerStatement.EndPos)
         {
             InnerStatement = innerStatement;
         }
 
-        public ErrorStatement(SourcePosition start, SourcePosition end, params Token<string>[] tokens) : base(ASTNodeType.INVALID, start, end)
+        public ErrorStatement(SourcePosition start, SourcePosition end, params ScriptToken[] tokens) : base(ASTNodeType.INVALID, start, end)
         {
             ErrorTokens = tokens;
         }
@@ -30,17 +30,17 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
     {
         public Expression InnerExpression;
 
-        public Token<string>[] ErrorTokens;
+        public ScriptToken[] ErrorTokens;
 
         public ErrorExpression(Expression innerExpression) : base(ASTNodeType.INVALID, innerExpression.StartPos, innerExpression.EndPos)
         {
             InnerExpression = innerExpression;
         }
 
-        public ErrorExpression(SourcePosition start, SourcePosition end, params Token<string>[] tokens) : base(ASTNodeType.INVALID, start, end)
+        public ErrorExpression(SourcePosition start, SourcePosition end, params ScriptToken[] tokens) : base(ASTNodeType.INVALID, start, end)
         {
             ErrorTokens = tokens;
-            foreach (Token<string> token in tokens)
+            foreach (ScriptToken token in tokens)
             {
                 token.SyntaxType = EF.ERROR;
             }

@@ -16,11 +16,11 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
     public abstract class StringParserBase
     {
         protected MessageLog Log;
-        protected TokenStream<string> Tokens;
+        protected TokenStream Tokens;
         protected TokenType CurrentTokenType => Tokens.CurrentItem.Type;
 
-        protected Token<string> CurrentToken => Tokens.CurrentItem;
-        protected Token<string> PrevToken => Tokens.Prev();
+        protected ScriptToken CurrentToken => Tokens.CurrentItem;
+        protected ScriptToken PrevToken => Tokens.Prev();
 
         protected SourcePosition CurrentPosition => Tokens.CurrentItem.StartPos ?? new SourcePosition(-1, -1, -1);
 
@@ -47,7 +47,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
         protected SymbolTable Symbols;
 
-        protected ParseException ParseError(string msg, Token<string> token)
+        protected ParseException ParseError(string msg, ScriptToken token)
         {
             token.SyntaxType = EF.ERROR;
             return ParseError(msg, token.StartPos, token.EndPos);
@@ -61,7 +61,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             return new ParseException(msg);
         }
 
-        protected void TypeError(string msg, Token<string> token)
+        protected void TypeError(string msg, ScriptToken token)
         {
             token.SyntaxType = EF.ERROR;
             TypeError(msg, token.StartPos, token.EndPos);
@@ -76,7 +76,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
         public VariableIdentifier ParseVariableName()
         {
-            VariableIdentifier var = TryParseVariable();
+            VariableIdentifier var = ParseVariableIdentifier();
             if (var == null)
             {
                 Log.LogError("Expected a variable name!", CurrentPosition);
@@ -85,131 +85,122 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             return var;
         }
 
-        public VariableIdentifier TryParseVariable()
+        public VariableIdentifier ParseVariableIdentifier()
         {
-            return (VariableIdentifier)Tokens.TryGetTree(VariableParser);
-            ASTNode VariableParser()
+            var name = Consume(TokenType.Word);
+            if (name == null) return null;
+            if (name.Value.CaseInsensitiveEquals("None"))
             {
-                var name = Consume(TokenType.Word);
-                if (name == null) return null;
-                if (name.Value.CaseInsensitiveEquals("None"))
-                {
-                    TypeError("'None' cannot be used as a variable name!", name);
-                }
-
-                if (Consume(TokenType.LeftSqrBracket) != null)
-                {
-                    var size = Consume(TokenType.IntegerNumber);
-                    if (size == null)
-                    {
-                        throw ParseError("Expected an integer number for size!", CurrentPosition);
-                    }
-
-                    if (Consume(TokenType.RightSqrBracket) == null)
-                    {
-                        throw ParseError("Expected ']'!", CurrentPosition);
-                    }
-
-                    return new VariableIdentifier(name.Value, name.StartPos, name.EndPos, int.Parse(size.Value));
-                }
-
-                return new VariableIdentifier(name.Value, name.StartPos, name.EndPos);
+                TypeError("'None' cannot be used as a variable name!", name);
             }
+
+            if (Consume(TokenType.LeftSqrBracket) != null)
+            {
+                var size = Consume(TokenType.IntegerNumber);
+                if (size == null)
+                {
+                    throw ParseError("Expected an integer number for size!", CurrentPosition);
+                }
+
+                if (Consume(TokenType.RightSqrBracket) == null)
+                {
+                    throw ParseError("Expected ']'!", CurrentPosition);
+                }
+
+                return new VariableIdentifier(name.Value, name.StartPos, name.EndPos, int.Parse(size.Value));
+            }
+
+            return new VariableIdentifier(name.Value, name.StartPos, name.EndPos);
         }
 
-        public VariableType TryParseType()
+        public VariableType ParseTypeRef()
         {
-            return (VariableType)Tokens.TryGetTree(TypeParser);
-            ASTNode TypeParser()
+            if (Matches(ARRAY, EF.Keyword))
             {
-                if (Matches(ARRAY, EF.Keyword))
+                var arrayToken = Tokens.Prev();
+                if (Consume(TokenType.LeftArrow) is null)
                 {
-                    var arrayToken = Tokens.Prev();
-                    if (Consume(TokenType.LeftArrow) is null)
-                    {
-                        throw ParseError("Expected '<' after 'array'!", CurrentPosition);
-                    }
-                    var elementType = TryParseType();
-                    if (elementType == null)
-                    {
-                        throw ParseError("Expected element type for array!", CurrentPosition);
-                    }
-
-                    if (elementType is DynamicArrayType)
-                    {
-                        throw ParseError("Arrays of Arrays are not supported!", elementType.StartPos, elementType.EndPos);
-                    }
-                    if (Consume(TokenType.RightArrow) is null)
-                    {
-                        throw ParseError("Expected '>' after array type!", CurrentPosition);
-                    }
-                    return new DynamicArrayType(elementType, arrayToken.StartPos, CurrentPosition);
+                    throw ParseError("Expected '<' after 'array'!", CurrentPosition);
+                }
+                var elementType = ParseTypeRef();
+                if (elementType == null)
+                {
+                    throw ParseError("Expected element type for array!", CurrentPosition);
                 }
 
-                if (Matches(DELEGATE, EF.Keyword))
+                if (elementType is DynamicArrayType)
                 {
-                    var delegateToken = Tokens.Prev();
-                    if (Consume(TokenType.LeftArrow) is null)
-                    {
-                        throw ParseError("Expected '<' after 'delegate'!", CurrentPosition);
-                    }
-
-                    string functionName = "";
-                    do
-                    {
-                        if (Consume(TokenType.Word) is Token<string> identifier)
-                        {
-                            identifier.SyntaxType = EF.Function;
-                            if (functionName.Length > 0)
-                            {
-                                functionName += ".";
-                            }
-                            functionName += identifier.Value;
-                        }
-                        else
-                        {
-                            throw ParseError("Expected function name for delegate!", CurrentPosition);
-                        }
-                    } while (Matches(TokenType.Dot, EF.Function));
-                    if (Consume(TokenType.RightArrow) is null)
-                    {
-                        throw ParseError("Expected '>' after function name!", CurrentPosition);
-                    }
-                    return new DelegateType(new Function(functionName, default, null, null, null), delegateToken.StartPos, CurrentPosition);
+                    throw ParseError("Arrays of Arrays are not supported!", elementType.StartPos, elementType.EndPos);
                 }
-
-                if (Consume(CLASS) is {} classToken)
+                if (Consume(TokenType.RightArrow) is null)
                 {
-                    classToken.SyntaxType = EF.Keyword;
-                    if (Consume(TokenType.LeftArrow) is null)
-                    {
-                        return new ClassType(new VariableType(OBJECT));
-                    }
-
-                    if (!(Consume(TokenType.Word) is {} classNameToken))
-                    {
-                        throw ParseError("Expected class name!", CurrentPosition);
-                    }
-
-                    classNameToken.SyntaxType = EF.TypeName;
-
-                    if (Consume(TokenType.RightArrow) is null)
-                    {
-                        throw ParseError("Expected '>' after class name!", CurrentPosition);
-                    }
-                    return new ClassType(new VariableType(classNameToken.Value), classToken.StartPos, PrevToken.EndPos);
+                    throw ParseError("Expected '>' after array type!", CurrentPosition);
                 }
-
-                Token<string> type = Consume(TokenType.Word);
-                if (type == null)
-                {
-                    return null;
-                }
-
-                type.SyntaxType = type.Value is INT or FLOAT or BOOL or BYTE or BIOMASK4 or STRING or STRINGREF or NAME ? EF.Keyword : EF.TypeName;
-                return new VariableType(type.Value, type.StartPos, type.EndPos);
+                return new DynamicArrayType(elementType, arrayToken.StartPos, CurrentPosition);
             }
 
+            if (Matches(DELEGATE, EF.Keyword))
+            {
+                var delegateToken = Tokens.Prev();
+                if (Consume(TokenType.LeftArrow) is null)
+                {
+                    throw ParseError("Expected '<' after 'delegate'!", CurrentPosition);
+                }
+
+                string functionName = "";
+                do
+                {
+                    if (Consume(TokenType.Word) is ScriptToken identifier)
+                    {
+                        identifier.SyntaxType = EF.Function;
+                        if (functionName.Length > 0)
+                        {
+                            functionName += ".";
+                        }
+                        functionName += identifier.Value;
+                    }
+                    else
+                    {
+                        throw ParseError("Expected function name for delegate!", CurrentPosition);
+                    }
+                } while (Matches(TokenType.Dot, EF.Function));
+                if (Consume(TokenType.RightArrow) is null)
+                {
+                    throw ParseError("Expected '>' after function name!", CurrentPosition);
+                }
+                return new DelegateType(new Function(functionName, default, null, null, null), delegateToken.StartPos, CurrentPosition);
+            }
+
+            if (Consume(CLASS) is { } classToken)
+            {
+                classToken.SyntaxType = EF.Keyword;
+                if (Consume(TokenType.LeftArrow) is null)
+                {
+                    return new ClassType(new VariableType(OBJECT));
+                }
+
+                if (!(Consume(TokenType.Word) is { } classNameToken))
+                {
+                    throw ParseError("Expected class name!", CurrentPosition);
+                }
+
+                classNameToken.SyntaxType = EF.TypeName;
+
+                if (Consume(TokenType.RightArrow) is null)
+                {
+                    throw ParseError("Expected '>' after class name!", CurrentPosition);
+                }
+                return new ClassType(new VariableType(classNameToken.Value), classToken.StartPos, PrevToken.EndPos);
+            }
+
+            ScriptToken type = Consume(TokenType.Word);
+            if (type == null)
+            {
+                return null;
+            }
+
+            type.SyntaxType = type.Value is INT or FLOAT or BOOL or BYTE or BIOMASK4 or STRING or STRINGREF or NAME ? EF.Keyword : EF.TypeName;
+            return new VariableType(type.Value, type.StartPos, type.EndPos);
         }
 
         #region Helpers
@@ -271,14 +262,14 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
         public bool CurrentIs(params TokenType[] tokenTypes) => tokenTypes.Any(CurrentIs);
 
-        public Token<string> Consume(TokenType tokenType) => Tokens.ConsumeToken(tokenType);
+        public ScriptToken Consume(TokenType tokenType) => Tokens.ConsumeToken(tokenType);
 
-        public Token<string> Consume(params TokenType[] tokenTypes) => tokenTypes.Select(Consume).NonNull().FirstOrDefault();
+        public ScriptToken Consume(params TokenType[] tokenTypes) => tokenTypes.Select(Consume).NonNull().FirstOrDefault();
 
-        public Token<string> Consume(string str)
+        public ScriptToken Consume(string str)
         {
 
-            Token<string> token = null;
+            ScriptToken token = null;
             if (CurrentIs(str))
             {
                 token = CurrentToken;
@@ -287,7 +278,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             return token;
         }
 
-        public Token<string> Consume(params string[] strs) => strs.Select(Consume).NonNull().FirstOrDefault();
+        public ScriptToken Consume(params string[] strs) => strs.Select(Consume).NonNull().FirstOrDefault();
 
 
         public static bool TypeCompatible(VariableType dest, VariableType src, bool coerce = false)
@@ -360,7 +351,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
         public Expression ParseLiteral()
         {
-            Token<string> token = CurrentToken;
+            ScriptToken token = CurrentToken;
             if (Matches(TokenType.IntegerNumber))
             {
                 int val = int.Parse(token.Value, CultureInfo.InvariantCulture);
@@ -507,7 +498,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             return isNegative ? -val : val;
         }
 
-        protected Expression ParseObjectLiteral(Token<string> className, Token<string> objName, bool noActors = true)
+        protected Expression ParseObjectLiteral(ScriptToken className, ScriptToken objName, bool noActors = true)
         {
             className.SyntaxType = EF.TypeName;
             bool isClassLiteral = className.Value.CaseInsensitiveEquals(CLASS);
@@ -542,7 +533,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             throw ParseError($"'{classType.Name}' is not a class!", className);
         }
 
-        protected SymbolReference NewSymbolReference(ASTNode symbol, Token<string> token, bool isDefaultRef)
+        protected SymbolReference NewSymbolReference(ASTNode symbol, ScriptToken token, bool isDefaultRef)
         {
             SymbolReference symRef;
             if (isDefaultRef)
@@ -583,7 +574,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             Expression literal = ParseLiteral();
             if (literal is null)
             {
-                throw ParseError("Expected a literal value for the constant!", CurrentPosition);
+                TypeError("Expected a literal value for the constant!", CurrentPosition);
             }
 
             if (isNegative)
@@ -597,7 +588,8 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                         integerLiteral.Value *= -1;
                         break;
                     default:
-                        throw ParseError("Malformed constant value!", CurrentPosition);
+                        TypeError("Malformed constant value!", CurrentPosition);
+                        break;
                 }
             }
 

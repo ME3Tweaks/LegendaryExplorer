@@ -20,7 +20,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
         protected override void Serialize(SerializingContainer2 sc)
         {
-            sc.Serialize(ref Heights, SCExt.Serialize);
+            sc.Serialize(ref Heights);
             sc.Serialize(ref InfoData, SCExt.Serialize);
             sc.Serialize(ref AlphaMaps, SCExt.Serialize);
             sc.Serialize(ref WeightedTextureMaps, SCExt.Serialize);

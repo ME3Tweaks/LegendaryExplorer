@@ -5,7 +5,6 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using LegendaryExplorerCore.Helpers;
-using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.UnrealScript.Analysis.Symbols;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
 using LegendaryExplorerCore.UnrealScript.Lexing.Tokenizing;
@@ -135,10 +134,6 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             if (flags.Has(EClassFlags.PerObjectConfig))
             {
                 Write("perobjectconfig", EF.Specifier);
-            }
-            if (flags.Has(EClassFlags.Localized))
-            {
-                Write("localized", EF.Specifier);
             }
             if (flags.Has(EClassFlags.Abstract))
             {
@@ -737,9 +732,9 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             Append("=", EF.Operator);
             Append(node.Class.Name, EF.TypeName);
             Space();
-            Append(NAME, EF.Keyword);
+            Append("Name", EF.Keyword);
             Append("=", EF.Operator);
-            Append(node.Name.Name);
+            Append(node.NameDeclaration.Name);
 
             NestingLevel++;
             foreach (Statement s in node.Statements)
@@ -976,7 +971,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             }
             else if (node.ErrorTokens != null)
             {
-                foreach (Token<string> errorToken in node.ErrorTokens)
+                foreach (ScriptToken errorToken in node.ErrorTokens)
                 {
                     Append(errorToken.Value, EF.ERROR);
                 }
@@ -1000,7 +995,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             }
             else if (node.ErrorTokens != null)
             {
-                foreach (Token<string> errorToken in node.ErrorTokens)
+                foreach (ScriptToken errorToken in node.ErrorTokens)
                 {
                     Append(errorToken.Value, EF.ERROR);
                 }

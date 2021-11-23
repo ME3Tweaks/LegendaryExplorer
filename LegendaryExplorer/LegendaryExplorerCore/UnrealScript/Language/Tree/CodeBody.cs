@@ -8,7 +8,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
     public class CodeBody : Statement
     {
         public List<Statement> Statements;
-        public TokenStream<string> Tokens;
+        public TokenStream Tokens;
 
         public CodeBody(List<Statement> contents = null, SourcePosition start = null, SourcePosition end = null)
             : base(ASTNodeType.CodeBody, start, end) 

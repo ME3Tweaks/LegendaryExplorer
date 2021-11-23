@@ -295,7 +295,7 @@ namespace LegendaryExplorerCore.Packages
             ImportCount = imports.Count;
             foreach (ImportEntry e in imports)
             {
-                ms.WriteFromBuffer(e.Header);
+                e.SerializeHeader(ms);
             }
 
             //export table
@@ -304,7 +304,7 @@ namespace LegendaryExplorerCore.Packages
             foreach (ExportEntry e in exports)
             {
                 e.HeaderOffset = (int)ms.Position;
-                ms.WriteFromBuffer(e.Header);
+                e.SerializeHeader(ms);
             }
 
             //dependency table

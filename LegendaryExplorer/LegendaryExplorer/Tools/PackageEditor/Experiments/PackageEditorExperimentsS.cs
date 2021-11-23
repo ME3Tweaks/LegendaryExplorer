@@ -30,7 +30,6 @@ using Microsoft.WindowsAPICodePack.Dialogs;
 using Newtonsoft.Json;
 using SharpDX.D3DCompiler;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
-using Function = LegendaryExplorerCore.UnrealScript.Language.Tree.Function;
 
 namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 {
@@ -688,6 +687,13 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         }
         public static void ScanStuff(PackageEditorWindow pewpf)
         {
+            ////test pcc deserialization time
+            //string pccPath = MELoadedFiles.GetFilesLoadedInGame(MEGame.LE3)["SFXGame.pcc"];
+            //for (int i = 0; i < 200; i++)
+            //{
+            //    MEPackageHandler.OpenMEPackage(pccPath, forceLoadFromDisk: true);
+            //}
+            //return;
             //var game = MEGame.LE3;
             //var filePaths = MELoadedFiles.GetOfficialFiles(game);//.Concat(MELoadedFiles.GetOfficialFiles(MEGame.ME2));//.Concat(MELoadedFiles.GetOfficialFiles(MEGame.ME1));
             //var filePaths = MELoadedFiles.GetAllFiles(game);
@@ -722,7 +728,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         baseFiles.Add(MEPackageHandler.OpenMEPackage(Path.Combine(ME3Directory.CookedPCPath, "BIOP_MP_COMMON.pcc")));
                     }
 
-                    foreach (string filePath in EnumerateOfficialFiles(game))
+                    foreach (string filePath in baseFiles.Select(x => x.FilePath))// EnumerateOfficialFiles(game))
                     {
                         //ScanShaderCache(filePath);
                         //ScanMaterials(filePath);
@@ -736,12 +742,13 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         //RecompileAllStates(filePath);
                         //RecompileAllDefaults(filePath, packageCache);
                         //RecompileAllStructs(filePath, packageCache);
-                        RecompileAllEnums(filePath, packageCache);
+                        //RecompileAllEnums(filePath, packageCache);
+                        RecompileAllClasses(filePath, packageCache);
                     }
-                    //if (interestingExports.Any())
-                    //{
-                    //    break;
-                    //}
+                    if (interestingExports.Any())
+                    {
+                        break;
+                    }
                 }
             }).ContinueWithOnUIThread(prevTask =>
             {
@@ -1263,6 +1270,65 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                                 if (exp.EntryHasPendingChanges)
                                 {
                                     interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {filePath}\nRecompilation does not match!"));
+                                }
+                            }
+                            else
+                            {
+                                interestingExports.Add(new EntryStringPair($"{pcc.FilePath} failed to compile!"));
+                                return;
+                            }
+                        }
+                        catch (Exception exception)
+                        {
+                            Console.WriteLine(exception);
+                            interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {filePath}\n{exception}"));
+                            return;
+                        }
+                    }
+                }
+            }
+
+            void RecompileAllClasses(string filePath, PackageCache packageCache = null)
+            {
+                using IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath);
+                var fileLib = new FileLib(pcc);
+
+                for (int i = 0; i < pcc.ExportCount; i++)
+                {
+                    ExportEntry exp = pcc.Exports[i];
+                    if (exp.IsClass)
+                    {
+                        string instancedFullPath = exp.InstancedFullPath;
+                        if (foundClasses.Contains(instancedFullPath))
+                        {
+                            continue;
+                        }
+
+                        try
+                        {
+                            if (fileLib.Initialize())
+                            {
+                                (ASTNode decompiledClassNode, string script) = UnrealScriptCompiler.DecompileExport(exp, fileLib);
+                                if (!((Class)decompiledClassNode).IsFullyDefined)
+                                {
+                                    continue;
+                                }
+                                foundClasses.Add(instancedFullPath);
+                                (ASTNode ast, MessageLog log) = UnrealScriptCompiler.CompileClass(pcc, exp, script, fileLib, packageCache);
+                                if (ast is not Class || log.HasErrors)
+                                {
+                                    interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {pcc.FilePath}\nfailed to parse class!"));
+                                    return;
+                                }
+
+                                if (exp.EntryHasPendingChanges )//|| exp.GetAllDescendants().Any(entry => entry.EntryHasPendingChanges))
+                                {
+                                    interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {filePath}\nRecompilation does not match!"));
+                                }
+                                if (pcc.FindEntry(UnrealPackageFile.TrashPackageName) is not null)
+                                {
+                                    interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {filePath}\nTrashed an export! Aborting compilation for file."));
+                                    return;
                                 }
                             }
                             else
