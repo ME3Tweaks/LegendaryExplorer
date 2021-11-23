@@ -180,7 +180,7 @@ namespace LegendaryExplorerCore.PlotDatabase
         public static PlotDatabaseBase GetDatabaseContainingElement(PlotElement el, MEGame game)
         {
             PlotElement e = el;
-            while (e.Parent != null)
+            while (e != null && e.Parent != null)
             {
                 if (e is PlotModElement pme)
                 {

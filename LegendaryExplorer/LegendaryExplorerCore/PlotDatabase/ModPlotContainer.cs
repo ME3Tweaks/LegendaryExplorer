@@ -32,10 +32,17 @@ namespace LegendaryExplorerCore.PlotDatabase
             Mods.Add(mod);
         }
 
-        public void RemoveMod(ModPlotDatabase mod)
+        public void RemoveMod(ModPlotDatabase mod, bool deleteFile = false, string appDataFolder = "")
         {
             mod.ModRoot.RemoveFromParent();
             Mods.Remove(mod);
+
+            var saveFolder = Path.Combine(appDataFolder, LocalModFolderName);
+            if (deleteFile && Directory.Exists(saveFolder))
+            {
+                var dbPath = Path.Combine(saveFolder, $"{mod.ModRoot.Label}.json");
+                File.Delete(dbPath);
+            }
         }
 
         public int GetNextElementId()

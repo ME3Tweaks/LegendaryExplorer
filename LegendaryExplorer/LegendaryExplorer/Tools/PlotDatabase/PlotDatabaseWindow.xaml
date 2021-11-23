@@ -111,8 +111,11 @@
                                     <Image Source="\Resources\Images\excel.png"/>
                                 </MenuItem.Icon>
                             </MenuItem>
+                            <MenuItem Header="Migrate Data from Old Format" Command="{Binding MigrateCommand}"
+                                      ToolTip="Imports saved mod data from the old format (pre-6.1) to the new format."/>
                             <MenuItem Header="Exit" Command="{Binding ExitCommand}"/>
                         </MenuItem>
+
                         <MenuItem Header="Tools" Padding="4">
                             <MenuItem Header="Show Bool States" Command="{Binding FilterCommand}" IsCheckable="True" IsChecked="{Binding ShowBoolStates}"/>
                             <MenuItem Header="Show Integers" Command="{Binding FilterCommand}" IsCheckable="True" IsChecked="{Binding ShowInts}"/>

@@ -20,12 +20,14 @@ using System.Threading;
 using Newtonsoft.Json;
 using System.Globalization;
 using System.ComponentModel;
+using System.IO;
 using Microsoft.Win32;
 using ClosedXML.Excel;
 using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.SharedUI.Bases;
 using LegendaryExplorerCore.PlotDatabase.Databases;
 using LegendaryExplorerCore.PlotDatabase.PlotElements;
+using LegendaryExplorerCore.PlotDatabase.Serialization;
 
 namespace LegendaryExplorer.Tools.PlotManager
 {
@@ -122,11 +124,13 @@ namespace LegendaryExplorer.Tools.PlotManager
         public ICommand XLImportCommand { get; set; }
         public ICommand XLExportCommand { get; set; }
 
-        public bool IsModRoot() => SelectedNode?.ElementId == 100000;
+        public ICommand MigrateCommand { get; set; }
+
+        public bool IsModRoot() => SelectedNode?.ElementId == ModPlotContainer.StartingModId;
         public bool IsMod() => SelectedNode?.Type == PlotElementType.Mod;
         public bool CanAddCategory() => SelectedNode?.Type == PlotElementType.Mod || SelectedNode?.Type == PlotElementType.Category;
-        public bool CanEditItem() => SelectedNode?.ElementId > 100000;
-        public bool CanDeleteItem() => SelectedNode?.ElementId > 100000 && SelectedNode.Children.IsEmpty();
+        public bool CanEditItem() => !PlotDatabases.GetDatabaseContainingElement(SelectedNode, CurrentGame).IsBioware;
+        public bool CanDeleteItem() => !PlotDatabases.GetDatabaseContainingElement(SelectedNode, CurrentGame).IsBioware;
         public bool CanAddItem() => SelectedNode?.Type == PlotElementType.Category;
         public bool CanExportTable() => SelectedNode != null;
         #endregion
@@ -170,6 +174,7 @@ namespace LegendaryExplorer.Tools.PlotManager
             EditModItemCommand = new GenericCommand(EditNewModData, CanEditItem);
             XLImportCommand = new GenericCommand(ImportModDataFromExcel);
             XLExportCommand = new GenericCommand(ExportDataToExcel, CanExportTable);
+            MigrateCommand = new GenericCommand(MigrateFromOldFormat);
         }
 
         private void PlotDB_Loaded(object sender, RoutedEventArgs e)
@@ -681,7 +686,8 @@ namespace LegendaryExplorer.Tools.PlotManager
                 var mdb = PlotDatabases.GetDatabaseContainingElement(SelectedNode, CurrentGame) as ModPlotDatabase;
 
                 int newElementId = SelectedNode.ElementId;
-                if (!isEditing || SelectedNode.Type != newItemTypes[newItem_Type.SelectedIndex])
+                var newItemSelectedIndex = newItem_Type.SelectedIndex == -1 ? 0 : newItem_Type.SelectedIndex;
+                if (!isEditing || SelectedNode.Type != newItemTypes[newItemSelectedIndex])
                 {
                     newElementId = modContainer.GetNextElementId();
                 }
@@ -729,7 +735,10 @@ namespace LegendaryExplorer.Tools.PlotManager
                         }
                         else
                         {
+                            // This renames the file on disk
+                            modContainer.RemoveMod(mdb, true, AppDirectories.AppDataFolder);
                             mdb.Root.Label = newMod_Name.Text;
+                            modContainer.AddMod(mdb);
                         }
 
                         NeedsSave = true;
@@ -955,6 +964,17 @@ namespace LegendaryExplorer.Tools.PlotManager
                 return;
             }
 
+            if (node == mdb.Root && mdb is ModPlotDatabase mpdb)
+            {
+                var mpc = PlotDatabases.GetModPlotContainerForGame(CurrentGame);
+                var modDelDlg =
+                    MessageBox.Show($"Are you sure you wish to delete mod {node.Label}? This is irreversible.");
+                if (modDelDlg == MessageBoxResult.Cancel) return;
+
+                mpc.RemoveMod(mpdb, true, AppDirectories.AppDataFolder);
+                return;
+            }
+
             var dlg = MessageBox.Show($"Are you sure you wish to delete this item?\nType: {node.Type}\nPlotId: {node.PlotId}\nPath: {node.Path}", "Plot Database", MessageBoxButton.OKCancel);
             if (dlg == MessageBoxResult.Cancel)
                 return;
@@ -968,6 +988,55 @@ namespace LegendaryExplorer.Tools.PlotManager
 
             mdb.RemoveElement(node, true);
             NeedsSave = true;
+        }
+
+        private void MigrateFromOldFormat()
+        {
+            OpenFileDialog jsonFileDialog = new () {
+                Title = "Select PlotDBMods file to migrate",
+                Filter = "*.json|*.json",
+                InitialDirectory = AppDirectories.AppDataFolder
+            };
+            var result = jsonFileDialog.ShowDialog();
+            if (!result.HasValue || !result.Value) return;
+            StreamReader sr = new StreamReader(jsonFileDialog.FileName);
+            var db = JsonConvert.DeserializeObject<SerializedPlotDatabase>(sr.ReadToEnd(), new JsonSerializerSettings(){NullValueHandling = NullValueHandling.Ignore});
+            if (db is null)
+            {
+                MessageBox.Show("Unable to deserialize PlotDBMods file!");
+                return;
+            }
+            db.BuildTree();
+            var mods = (db.Organizational.FirstOrDefault(d => d.ElementId == 100000)?.Children ?? new()).ToList();
+            var dlg = MessageBox.Show($"Migrating {mods.Count} mods to new format for game {CurrentGame}. Proceed?");
+            if (dlg == MessageBoxResult.Cancel) return;
+            var mpc = PlotDatabases.GetModPlotContainerForGame(CurrentGame);
+
+            foreach (var oldModRoot in mods)
+            {
+                if (oldModRoot.Type != PlotElementType.Mod) continue;
+                var mod = new ModPlotDatabase(oldModRoot.Label, oldModRoot.ElementId);
+                oldModRoot.RemoveFromParent();
+
+                Queue<PlotElement> elQueue = new();
+                foreach(var ch in oldModRoot.Children) elQueue.Enqueue(ch);
+                while (elQueue.TryDequeue(out var pe))
+                {
+                    foreach(var ch in pe.Children) elQueue.Enqueue(ch);
+                    var parent = pe.Parent == oldModRoot ? mod.ModRoot : pe.Parent;
+                    mod.AddElement(pe, parent);
+                }
+
+                foreach (var m in mpc.Mods)
+                {
+                    if (m.ModRoot.Label == mod.ModRoot.Label)
+                    {
+                        mpc.RemoveMod(m);
+                    }
+                }
+                mpc.AddMod(mod);
+            }
+            mpc.SaveModsToDisk(AppDirectories.AppDataFolder);
         }
 
         private void form_KeyUp(object sender, KeyEventArgs e)
