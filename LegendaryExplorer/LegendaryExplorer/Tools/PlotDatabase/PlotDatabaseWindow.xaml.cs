@@ -24,6 +24,7 @@ using Microsoft.Win32;
 using ClosedXML.Excel;
 using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.SharedUI.Bases;
+using LegendaryExplorerCore.PlotDatabase.PlotElements;
 
 namespace LegendaryExplorer.Tools.PlotManager
 {

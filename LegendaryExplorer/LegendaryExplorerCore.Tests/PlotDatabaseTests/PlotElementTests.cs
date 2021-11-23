@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.PlotDatabase;
+using LegendaryExplorerCore.PlotDatabase.PlotElements;
 
 namespace LegendaryExplorerCore.Tests
 {

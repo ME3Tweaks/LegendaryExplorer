@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.PlotDatabase.PlotElements;
 using Newtonsoft.Json;
 
 namespace LegendaryExplorerCore.PlotDatabase
@@ -24,15 +26,6 @@ namespace LegendaryExplorerCore.PlotDatabase
 
         internal static JsonSerializerSettings _jsonSerializerSettings = new JsonSerializerSettings
             {NullValueHandling = NullValueHandling.Ignore};
-
-        public PlotDatabaseBase(MEGame refgame, bool isbioware)
-        {
-            this.Game = refgame;
-        }
-
-        public PlotDatabaseBase()
-        {
-        }
 
         internal void ImportPlots(SerializedPlotDatabase pdb)
         {
@@ -81,6 +74,107 @@ namespace LegendaryExplorerCore.PlotDatabase
             if (sorted.ContainsKey(elementId)) return sorted[elementId];
 
             return null;
+        }
+
+        /// <summary>
+        /// Assigns a plot element to the given parent, and inserts it into the appropriate lookup table for it's type
+        /// </summary>
+        /// <param name="element"></param>
+        /// <param name="parent"></param>
+        public void AddElement(PlotElement element, PlotElement parent)
+        {
+            // This method does not check if the parent is already in the database!
+            if (parent != null)
+            {
+                element.AssignParent(parent);
+            }
+            else if (element.Parent is null)
+                throw new Exception("Element must already have parent, or parent element must be supplied!");
+
+            switch (element.Type)
+            {
+                case PlotElementType.Integer:
+                    Ints.Add(element.PlotId, element);
+                    return;
+                case PlotElementType.Float:
+                    Floats.Add(element.PlotId, element);
+                    return;
+                case PlotElementType.Conditional when element is PlotConditional pc:
+                    Conditionals.Add(pc.PlotId, pc);
+                    return;
+                case PlotElementType.Transition when element is PlotTransition pe:
+                    Transitions.Add(pe.PlotId, pe);
+                    return;
+            }
+
+            if (element is PlotBool pb)
+            {
+                Bools.Add(pb.PlotId, pb);
+            }
+            else
+            {
+                Organizational.Add(element.ElementId, element);
+            }
+        }
+
+        /// <summary>
+        /// Removes an element from the database, including it's parent and all lookup tables
+        /// </summary>
+        /// <param name="element">Element to remove</param>
+        /// <param name="removeAllChildren">Recursively remove the element's children from the database?</param>
+        /// <exception cref="ArgumentException"></exception>
+        public void RemoveElement(PlotElement element, bool removeAllChildren = false)
+        {
+            if (element == Root) throw new ArgumentException("Cannot remove root element from database!");
+            if (element.Children.Any())
+            {
+                if (removeAllChildren)
+                {
+                    var children = element.Children.ToList();
+                    foreach (var child in children)
+                    {
+                        RemoveElement(child, true);
+                    }
+                }
+                else
+                {
+                    throw new ArgumentException("Cannot remove an element with children.");
+                }
+            }
+
+            element.RemoveFromParent();
+            switch (element.Type)
+            {
+                case PlotElementType.Integer:
+                    TryRemoveFromDictionary(element, Ints);
+                    return;
+                case PlotElementType.Float:
+                    TryRemoveFromDictionary(element, Floats);
+                    return;
+                case PlotElementType.Conditional when element is PlotConditional pc:
+                    TryRemoveFromDictionary(pc, Conditionals);
+                    return;
+                case PlotElementType.Transition when element is PlotTransition pe:
+                    TryRemoveFromDictionary(pe, Transitions);
+                    return;
+            }
+
+            if (element is PlotBool pb)
+            {
+                TryRemoveFromDictionary(pb, Bools);
+            }
+            else
+            {
+                TryRemoveFromDictionary(element, Organizational);
+            }
+
+            void TryRemoveFromDictionary<T>(T el, Dictionary<int, T> dict) where T : PlotElement
+            {
+                if (dict.TryGetValue(el.RelevantId, out var value) && el == value)
+                {
+                    dict.Remove(el.RelevantId);
+                }
+            }
         }
 
         public int GetNextElementId()

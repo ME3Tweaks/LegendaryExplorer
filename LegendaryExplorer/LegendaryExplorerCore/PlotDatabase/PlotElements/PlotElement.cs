@@ -9,7 +9,9 @@ using Newtonsoft.Json;
 
 namespace LegendaryExplorerCore.PlotDatabase.PlotElements
 {
-
+    /// <summary>
+    /// Base class for all Plot Elements, implements notify property changed and can be serialized to JSON
+    /// </summary>
     [DebuggerDisplay("{Type} {PlotId}: {Path}")]
     public class PlotElement : INotifyPropertyChanged
     {

@@ -11,6 +11,7 @@
         xmlns:plotDatabase="clr-namespace:LegendaryExplorerCore.PlotDatabase;assembly=LegendaryExplorerCore"
         xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:bases="clr-namespace:LegendaryExplorer.SharedUI.Bases"
+        xmlns:plotElements="clr-namespace:LegendaryExplorerCore.PlotDatabase.PlotElements;assembly=LegendaryExplorerCore"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         Loaded="PlotDB_Loaded"
         Closing="PlotDB_Closing"
@@ -131,7 +132,7 @@
                               Loaded="TreeView_OnLoaded"
                               VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
                             <TreeView.Resources>
-                                <HierarchicalDataTemplate DataType="{x:Type plotDatabase:PlotElement}" ItemsSource="{Binding Children}">
+                                <HierarchicalDataTemplate DataType="{x:Type plotElements:PlotElement}" ItemsSource="{Binding Children}">
                                     <StackPanel Orientation="Horizontal">
                                         <Image Width="12" Height="12" Margin="0,0,3,0" Source="{Binding Type, Converter={StaticResource PlotElementTypeConverter}}"/>
                                         <TextBlock><Run Text="  "/><Run Text="{Binding Path=Label, Mode=OneWay}"/></TextBlock>
@@ -161,7 +162,7 @@
                               Loaded="TreeView_OnLoaded"
                               VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
                             <TreeView.Resources>
-                                <HierarchicalDataTemplate DataType="{x:Type plotDatabase:PlotElement}" ItemsSource="{Binding Children}">
+                                <HierarchicalDataTemplate DataType="{x:Type plotElements:PlotElement}" ItemsSource="{Binding Children}">
                                     <StackPanel Orientation="Horizontal">
                                         <Image Width="12" Height="12" Margin="0,0,3,0" Source="{Binding Type, Converter={StaticResource PlotElementTypeConverter}}"/>
                                         <TextBlock><Run Text="  "/><Run Text="{Binding Path=Label, Mode=OneWay}"/></TextBlock>
@@ -191,7 +192,7 @@
                               Loaded="TreeView_OnLoaded"
                               VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
                             <TreeView.Resources>
-                                <HierarchicalDataTemplate DataType="{x:Type plotDatabase:PlotElement}" ItemsSource="{Binding Children}">
+                                <HierarchicalDataTemplate DataType="{x:Type plotElements:PlotElement}" ItemsSource="{Binding Children}">
                                     <StackPanel Orientation="Horizontal">
                                         <Image Width="12" Height="12" Margin="0,0,3,0" Source="{Binding Type, Converter={StaticResource PlotElementTypeConverter}}"/>
                                         <TextBlock><Run Text="  "/><Run Text="{Binding Path=Label, Mode=OneWay}"/></TextBlock>
@@ -228,7 +229,7 @@
                                 <ContentControl x:Name="TreeContent" Margin="5" BorderThickness="1" 
                                     Content="{Binding SelectedNode}" >
                                     <ContentControl.Resources>
-                                        <DataTemplate DataType="{x:Type plotDatabase:PlotElement}">
+                                        <DataTemplate DataType="{x:Type plotElements:PlotElement}">
                                             <StackPanel>
                                                 <TextBlock FontWeight="Bold"><Run Text="{Binding Type}"/> <Run Text="{Binding RelevantId, Mode=OneWay}"/>:</TextBlock>
                                                 <TextBlock Text="{Binding Path, Mode=OneWay}"/>
@@ -236,7 +237,7 @@
                                                 <TextBlock>Sequence: <Run Text="{Binding Sequence}"/></TextBlock>
                                             </StackPanel>
                                         </DataTemplate>
-                                        <DataTemplate DataType="{x:Type plotDatabase:PlotBool}">
+                                        <DataTemplate DataType="{x:Type plotElements:PlotBool}">
                                             <StackPanel>
                                                 <TextBlock FontWeight="Bold"><Run Text="{Binding Type}"/> <Run Text="{Binding PlotId}"/>:</TextBlock>
                                                 <TextBlock Text="{Binding Path, Mode=OneWay}"/>
@@ -248,7 +249,7 @@
                                                 <TextBlock>Galaxy At War: <Run Text="{Binding GalaxyAtWar}"/></TextBlock>
                                             </StackPanel>
                                         </DataTemplate>
-                                        <DataTemplate DataType="{x:Type plotDatabase:PlotConditional}">
+                                        <DataTemplate DataType="{x:Type plotElements:PlotConditional}">
                                             <StackPanel>
                                                 <TextBlock FontWeight="Bold"><Run Text="{Binding Type}"/> <Run Text="{Binding PlotId}"/>:</TextBlock>
                                                 <TextBlock Text="{Binding Path, Mode=OneWay}"/>
@@ -257,7 +258,7 @@
                                                 <TextBlock>Code: <Run Text="{Binding Code}"/></TextBlock>
                                             </StackPanel>
                                         </DataTemplate>
-                                        <DataTemplate DataType="{x:Type plotDatabase:PlotTransition}">
+                                        <DataTemplate DataType="{x:Type plotElements:PlotTransition}">
                                             <StackPanel>
                                                 <TextBlock FontWeight="Bold"><Run Text="{Binding Type}"/> <Run Text="{Binding PlotId}"/>:</TextBlock>
                                                 <TextBlock Text="{Binding Path, Mode=OneWay}"/>

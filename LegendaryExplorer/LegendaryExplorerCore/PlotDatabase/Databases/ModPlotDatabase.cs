@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.PlotDatabase.PlotElements;
 using Newtonsoft.Json;
 
 namespace LegendaryExplorerCore.PlotDatabase
@@ -35,6 +36,7 @@ namespace LegendaryExplorerCore.PlotDatabase
         public void ImportPlotsFromJSON(string json)
         {
             var pdb = JsonConvert.DeserializeObject<SerializedModPlotDatabase>(json, _jsonSerializerSettings);
+            if (pdb is null) throw new Exception("Cannot deserialize mod plot database.");
             pdb.BuildTree();
             ImportPlots(pdb);
             Root = pdb.ModRoot;
@@ -48,23 +50,8 @@ namespace LegendaryExplorerCore.PlotDatabase
             var serializationObj = new SerializedModPlotDatabase(this);
             var json = JsonConvert.SerializeObject(serializationObj);
 
-            var dbPath = Path.Combine(folder, $"PlotDBMods{Game}.json");
+            var dbPath = Path.Combine(folder, $"{ModRoot.Label}.json");
             File.WriteAllText(dbPath, json);
-        }
-
-        public static ModPlotDatabase CreateModPlotDatabase(MEGame game)
-        {
-            if (!game.IsLEGame()) throw new ArgumentException("Cannot create mod database for non-LE game");
-            var modDb = new ModPlotDatabase()
-            {
-                Game = game
-            };
-            var modsRoot = new PlotElement(0, StartingModId, $"{game.ToLEVersion()}/{game.ToOTVersion()} Mods", PlotElementType.Region, 0,
-                new List<PlotElement>());
-            modDb.Organizational.Add(StartingModId, modsRoot);
-            modDb.Root = modsRoot;
-
-            return modDb;
         }
     }
 }
