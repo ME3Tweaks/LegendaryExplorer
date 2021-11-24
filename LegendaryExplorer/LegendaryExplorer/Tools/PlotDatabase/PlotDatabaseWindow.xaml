@@ -1,17 +1,17 @@
-﻿<bases:TrackingNotifyPropertyChangedWindowBase x:Class="LegendaryExplorer.Tools.PlotManager.PlotManagerWindow"
+﻿<bases:TrackingNotifyPropertyChangedWindowBase x:Class="LegendaryExplorer.Tools.PlotDatabase.PlotManagerWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:misc="clr-namespace:LegendaryExplorer.Misc"
-        xmlns:local="clr-namespace:LegendaryExplorer.Tools.PlotManager"
         xmlns:sharedToolControls="clr-namespace:LegendaryExplorer.UserControls.SharedToolControls"
         xmlns:converters="clr-namespace:LegendaryExplorer.SharedUI.Converters"
         xmlns:plotDatabase="clr-namespace:LegendaryExplorerCore.PlotDatabase;assembly=LegendaryExplorerCore"
         xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:bases="clr-namespace:LegendaryExplorer.SharedUI.Bases"
         xmlns:plotElements="clr-namespace:LegendaryExplorerCore.PlotDatabase.PlotElements;assembly=LegendaryExplorerCore"
+        xmlns:plotDatabase1="clr-namespace:LegendaryExplorer.Tools.PlotDatabase"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         Loaded="PlotDB_Loaded"
         Closing="PlotDB_Closing"
@@ -19,7 +19,7 @@
         Icon="pack://application:,,,/Tools/Icons/16x16/PlotDatabase_Icon_16.ico"
         Title="Plot Database" Height="900" Width="1500">
     <Window.Resources>
-        <local:PlotElementTypeConverter x:Key="PlotElementTypeConverter"/>
+        <plotDatabase1:PlotElementTypeConverter x:Key="PlotElementTypeConverter"/>
         <Style x:Key="FileLVHeader" TargetType="{x:Type GridViewColumnHeader}">
             <Setter Property="HorizontalContentAlignment" Value="Left" />
         </Style>

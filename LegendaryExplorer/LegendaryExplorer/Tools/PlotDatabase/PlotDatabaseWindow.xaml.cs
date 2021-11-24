@@ -1,35 +1,30 @@
-﻿using LegendaryExplorer.Misc;
-using LegendaryExplorer.SharedUI.Interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Globalization;
+using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using LegendaryExplorerCore;
-using LegendaryExplorerCore.PlotDatabase;
-using LegendaryExplorerCore.Packages;
-using LegendaryExplorerCore.Helpers;
-using LegendaryExplorer.SharedUI;
-using LegendaryExplorerCore.Misc;
-using System.Threading;
-using Newtonsoft.Json;
-using System.Globalization;
-using System.ComponentModel;
-using System.IO;
-using Microsoft.Win32;
 using ClosedXML.Excel;
 using LegendaryExplorer.Dialogs;
+using LegendaryExplorer.Misc;
+using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Bases;
+using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Misc;
+using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.PlotDatabase;
 using LegendaryExplorerCore.PlotDatabase.Databases;
 using LegendaryExplorerCore.PlotDatabase.PlotElements;
 using LegendaryExplorerCore.PlotDatabase.Serialization;
+using Microsoft.Win32;
+using Newtonsoft.Json;
 
-namespace LegendaryExplorer.Tools.PlotManager
+namespace LegendaryExplorer.Tools.PlotDatabase
 {
     /// <summary>
     /// Interaction logic for PlotManagerWindow.xaml
@@ -566,7 +561,7 @@ namespace LegendaryExplorer.Tools.PlotManager
         private async void SaveModDB()
         {
             bwLink.Visibility = Visibility.Collapsed;
-            var statustxt = CurrentOverallOperationText.ToString();
+            var statustxt = CurrentOverallOperationText;
             CurrentOverallOperationText = "Saving...";
             ModPlotContainer mdb = PlotDatabases.GetModPlotContainerForGame(CurrentGame);
             mdb.SaveModsToDisk(AppDirectories.AppDataFolder);
@@ -746,9 +741,12 @@ namespace LegendaryExplorer.Tools.PlotManager
                         else
                         {
                             // This renames the file on disk
-                            modContainer.RemoveMod(mdb, true, AppDirectories.AppDataFolder);
-                            mdb.Root.Label = newMod_Name.Text;
-                            modContainer.AddMod(mdb);
+                            if (mdb != null)
+                            {
+                                modContainer.RemoveMod(mdb, true, AppDirectories.AppDataFolder);
+                                mdb.Root.Label = newMod_Name.Text;
+                                modContainer.AddMod(mdb);
+                            }
                         }
 
                         NeedsSave = true;

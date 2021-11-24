@@ -9,6 +9,9 @@ using LegendaryExplorerCore.PlotDatabase.PlotElements;
 
 namespace LegendaryExplorerCore.PlotDatabase
 {
+    /// <summary>
+    /// Manages loading, saving, and accessing of multiple mod plot databases for a single game
+    /// </summary>
     public class ModPlotContainer
     {
         public static int StartingModId = 100000;
@@ -19,7 +22,7 @@ namespace LegendaryExplorerCore.PlotDatabase
 
         public string LocalModFolderName => $"ModPlots{Game}";
 
-        private int highestModId = StartingModId + 1;
+        private int _highestModId = StartingModId + 1;
 
         public ModPlotContainer(MEGame game)
         {
@@ -31,7 +34,7 @@ namespace LegendaryExplorerCore.PlotDatabase
         public void AddMod(ModPlotDatabase mod)
         {
             mod.ModRoot.AssignParent(GameHeader);
-            highestModId = mod.ReindexElements(highestModId);
+            _highestModId = mod.ReindexElements(_highestModId);
             Mods.Add(mod);
         }
 
@@ -50,9 +53,7 @@ namespace LegendaryExplorerCore.PlotDatabase
 
         public int GetNextElementId()
         {
-            var id = highestModId;
-            highestModId++;
-            return id;
+            return _highestModId++;
         }
 
         /// <summary>
@@ -94,7 +95,7 @@ namespace LegendaryExplorerCore.PlotDatabase
         public void LoadModFromDisk(FileInfo file)
         {
             if (!file.Exists || file.Extension != ".json") throw new Exception("Input path is not a JSON file");
-            var newMod = new ModPlotDatabase();
+            var newMod = new ModPlotDatabase() {Game = Game};
             newMod.LoadPlotsFromFile(file.FullName);
             foreach (var oldMod in Mods.Where(m => m.ModRoot.Label == newMod.ModRoot.Label))
             {

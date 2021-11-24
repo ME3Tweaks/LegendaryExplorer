@@ -8,6 +8,9 @@ using Newtonsoft.Json;
 
 namespace LegendaryExplorerCore.PlotDatabase.Databases
 {
+    /// <summary>
+    /// A database of Plot Elements for a single mod
+    /// </summary>
     public class ModPlotDatabase : PlotDatabaseBase
     {
         public PlotModElement ModRoot { get; set; }

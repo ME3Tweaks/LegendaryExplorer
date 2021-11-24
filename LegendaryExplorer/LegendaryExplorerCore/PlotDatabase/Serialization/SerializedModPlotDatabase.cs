@@ -19,7 +19,7 @@ namespace LegendaryExplorerCore.PlotDatabase.Serialization
 
         protected override Dictionary<int, PlotElement> GetMasterPlotDictionary()
         {
-            return Bools.Concat<PlotElement>(Ints)
+            return Bools.Concat(Ints)
                 .Concat(Floats).Concat(Conditionals)
                 .Concat(Transitions).Concat(Organizational).Append(ModRoot)
                 .ToDictionary((e) => e.ElementId);

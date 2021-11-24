@@ -67,7 +67,7 @@ namespace LegendaryExplorerCore.PlotDatabase.Serialization
 
         protected virtual Dictionary<int, PlotElement> GetMasterPlotDictionary()
         {
-            return Bools.Concat<PlotElement>(Ints)
+            return Bools.Concat(Ints)
                 .Concat(Floats).Concat(Conditionals)
                 .Concat(Transitions).Concat(Organizational)
                 .ToDictionary((e) => e.ElementId);
