@@ -270,7 +270,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
             {
                 return existing;
             }
-            if (RowCount < Cells.GetLength(0))
+            if (RowCount == Cells.GetLength(0))
             {
                 Expand2DA(true);
             }
@@ -290,7 +290,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
             {
                 return existing;
             }
-            if (ColumnCount < Cells.GetLength(1))
+            if (ColumnCount == Cells.GetLength(1))
             {
                 Expand2DA(false);
             }
