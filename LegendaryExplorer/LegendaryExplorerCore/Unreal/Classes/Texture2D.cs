@@ -823,6 +823,8 @@ namespace LegendaryExplorerCore.Unreal.Classes
                     type = StorageTypes.extOodle; // Compress external unc to Oodle
                 if (type is StorageTypes.pccUnc && !isPackageStored) //Moving texture to store externally. make sure bottom 6 are pcc stored
                     type = StorageTypes.extOodle;
+                if (type is StorageTypes.pccOodle && isPackageStored)
+                    type = StorageTypes.pccUnc; // We always store LE packages as compressed. So do not compress the textures stored locally
             }
 
             // Force storage type to either ext or pcc. Does not handle LZMA or empty
@@ -830,7 +832,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
             {
                 type = type switch
                 {
-                    StorageTypes.extOodle => StorageTypes.pccOodle,
+                    StorageTypes.extOodle => StorageTypes.pccUnc, // We do not compress package stored in LE as all packages are compressed
                     StorageTypes.extLZO => StorageTypes.pccLZO,
                     StorageTypes.extUnc => StorageTypes.pccUnc,
                     StorageTypes.extZlib => StorageTypes.pccZlib,
