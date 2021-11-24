@@ -93,6 +93,7 @@
                             <MenuItem Header="Refresh" Command="{Binding RefreshLocalCommand}"/>
                             <MenuItem Header="Load Database Locally" Command="{Binding LoadLocalCommand}" InputGestureText="Ctrl + L"/>
                             <MenuItem Header="Save Database Locally" Command="{Binding SaveLocalCommand}" InputGestureText="Ctrl + S"/>
+                            <MenuItem Header="Open Local Database Folder" Command="{Binding OpenModPlotFolderInExplorerCommand}"/>
                             <!-- <MenuItem Header="Sync Database to ME3Tweaks" IsEnabled="False"/> -->
                             <Separator/>
                             <MenuItem Header="Add New Mod" Command="{Binding AddNewModCommand}" CommandParameter="NewMod" />

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using LegendaryExplorerCore.PlotDatabase.PlotElements;
 using LegendaryExplorerCore.PlotDatabase.Serialization;
 using Newtonsoft.Json;
@@ -59,6 +60,38 @@ namespace LegendaryExplorerCore.PlotDatabase.Databases
 
             var dbPath = Path.Combine(folder, $"{ModRoot.Label}.json");
             File.WriteAllText(dbPath, json);
+        }
+
+        /// <summary>
+        /// Updates ElementIds for all elements in this database, starting from the input ID
+        /// </summary>
+        /// <param name="startingId"></param>
+        /// <returns>Next usable ID</returns>
+        public int ReindexElements(int startingId)
+        {
+            int idx = startingId;
+            var elements = new List<PlotElement> {ModRoot};
+            elements.AddRange(Bools.Values);
+            elements.AddRange(Ints.Values);
+            elements.AddRange(Floats.Values);
+            elements.AddRange(Transitions.Values);
+            elements.AddRange(Conditionals.Values);
+            foreach (var el in elements)
+            {
+                el.SetElementId(idx);
+                idx++;
+            }
+
+            var organizational = Organizational.Values.ToList();
+            Organizational.Clear();
+            foreach (var el in organizational)
+            {
+                el.SetElementId(idx);
+                idx++;
+                Organizational.Add(el.ElementId, el);
+            }
+
+            return idx;
         }
     }
 }

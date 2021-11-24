@@ -57,7 +57,26 @@ namespace LegendaryExplorerCore.PlotDatabase.PlotElements
         }
 
         [JsonIgnore]
-        public int RelevantId => PlotId <= 0 ? ElementId : PlotId;
+        public int RelevantId
+        {
+            get
+            {
+                switch (Type)
+                {
+                    case PlotElementType.Conditional:
+                    case PlotElementType.Consequence:
+                    case PlotElementType.Flag:
+                    case PlotElementType.Float:
+                    case PlotElementType.Integer:
+                    case PlotElementType.State:
+                    case PlotElementType.SubState:
+                    case PlotElementType.Transition:
+                        return PlotId;
+                    default:
+                        return ElementId;
+                }
+            }
+        }
 
         [JsonIgnore]
         public bool IsAGameState

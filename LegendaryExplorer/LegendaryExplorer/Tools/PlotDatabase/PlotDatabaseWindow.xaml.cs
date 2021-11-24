@@ -123,8 +123,8 @@ namespace LegendaryExplorer.Tools.PlotManager
         public ICommand DeleteModItemCommand { get; set; }
         public ICommand XLImportCommand { get; set; }
         public ICommand XLExportCommand { get; set; }
-
         public ICommand MigrateCommand { get; set; }
+        public ICommand OpenModPlotFolderInExplorerCommand { get; set; }
 
         public bool IsModRoot() => SelectedNode?.ElementId == ModPlotContainer.StartingModId;
         public bool IsMod() => SelectedNode?.Type == PlotElementType.Mod;
@@ -175,6 +175,7 @@ namespace LegendaryExplorer.Tools.PlotManager
             XLImportCommand = new GenericCommand(ImportModDataFromExcel);
             XLExportCommand = new GenericCommand(ExportDataToExcel, CanExportTable);
             MigrateCommand = new GenericCommand(MigrateFromOldFormat);
+            OpenModPlotFolderInExplorerCommand = new GenericCommand(OpenModPlotFolder);
         }
 
         private void PlotDB_Loaded(object sender, RoutedEventArgs e)
@@ -470,6 +471,16 @@ namespace LegendaryExplorer.Tools.PlotManager
             }
         }
 
+        private void OpenModPlotFolder()
+        {
+            var mpc = PlotDatabases.GetModPlotContainerForGame(CurrentGame);
+            var path = Path.Combine(AppDirectories.AppDataFolder, mpc.LocalModFolderName);
+            if (Directory.Exists(path))
+            {
+                System.Diagnostics.Process.Start("explorer.exe", path);
+            }
+        }
+
         private void list_ColumnHeader_Click(object sender, RoutedEventArgs e)
         {
             if (e.OriginalSource is GridViewColumnHeader headerClicked)
@@ -550,7 +561,6 @@ namespace LegendaryExplorer.Tools.PlotManager
 
             var modContainer = PlotDatabases.GetModPlotContainerForGame(CurrentGame);
             modContainer.LoadModsFromDisk(AppDirectories.AppDataFolder);
-            RefreshTrees();
         }
 
         private async void SaveModDB()

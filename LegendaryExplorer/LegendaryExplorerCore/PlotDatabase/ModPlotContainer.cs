@@ -17,7 +17,9 @@ namespace LegendaryExplorerCore.PlotDatabase
 
         public List<ModPlotDatabase> Mods { get; } = new List<ModPlotDatabase>();
 
-        private string LocalModFolderName => $"ModPlots{Game}";
+        public string LocalModFolderName => $"ModPlots{Game}";
+
+        private int highestModId = StartingModId + 1;
 
         public ModPlotContainer(MEGame game)
         {
@@ -29,6 +31,7 @@ namespace LegendaryExplorerCore.PlotDatabase
         public void AddMod(ModPlotDatabase mod)
         {
             mod.ModRoot.AssignParent(GameHeader);
+            highestModId = mod.ReindexElements(highestModId);
             Mods.Add(mod);
         }
 
@@ -47,11 +50,15 @@ namespace LegendaryExplorerCore.PlotDatabase
 
         public int GetNextElementId()
         {
-            var max = Mods.Select((m) => m.GetNextElementId()).ToList();
-            if (max.Count == 0) return StartingModId + 1;
-            else return max.Max();
+            var id = highestModId;
+            highestModId++;
+            return id;
         }
 
+        /// <summary>
+        /// Loads all mods for this game from the input AppData folder
+        /// </summary>
+        /// <param name="appDataFolder"></param>
         public void LoadModsFromDisk(string appDataFolder)
         {
             var saveFolder = Path.Combine(appDataFolder, LocalModFolderName);
@@ -61,19 +68,39 @@ namespace LegendaryExplorerCore.PlotDatabase
             {
                 try
                 {
-                    var newMod = new ModPlotDatabase();
-                    newMod.LoadPlotsFromFile(file.FullName);
-                    foreach (var oldMod in Mods.Where(m => m.ModRoot.Label == newMod.ModRoot.Label))
-                    {
-                        RemoveMod(oldMod);
-                    }
-                    AddMod(newMod);
+                    LoadModFromDisk(file);
                 }
                 catch
                 {
                     Debug.WriteLine($"Unable to load Mod Plot Database at {file.FullName}");
                 }
             }
+        }
+
+        /// <summary>
+        /// Load an individual mod from disk
+        /// </summary>
+        /// <param name="modJsonPath">Path to mod .json file</param>
+        public void LoadModFromDisk(string modJsonPath)
+        {
+            LoadModFromDisk(new FileInfo(modJsonPath));
+        }
+
+        /// <summary>
+        /// Load an individual mod from disk
+        /// </summary>
+        /// <param name="file">FileInfo of mod .json file</param>
+        /// <exception cref="Exception"></exception>
+        public void LoadModFromDisk(FileInfo file)
+        {
+            if (!file.Exists || file.Extension != ".json") throw new Exception("Input path is not a JSON file");
+            var newMod = new ModPlotDatabase();
+            newMod.LoadPlotsFromFile(file.FullName);
+            foreach (var oldMod in Mods.Where(m => m.ModRoot.Label == newMod.ModRoot.Label))
+            {
+                RemoveMod(oldMod);
+            }
+            AddMod(newMod);
         }
 
         public void SaveModsToDisk(string appDataFolder)
