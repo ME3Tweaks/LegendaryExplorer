@@ -6,13 +6,14 @@ using System.Threading.Tasks;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Unreal.Classes;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
     public class Bio2DABinary : ObjectBinary
     {
         public bool IsIndexed;
-        public OrderedMultiValueDictionary<int, Cell> Cells;
+        public OrderedMultiValueDictionary<int, Bio2DACell> Cells;
         public List<NameReference> ColumnNames;
 
         protected override void Serialize(SerializingContainer2 sc)
@@ -72,55 +73,71 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             return new()
             {
-                Cells = new OrderedMultiValueDictionary<int, Cell>(),
+                Cells = new OrderedMultiValueDictionary<int, Bio2DACell>(),
                 ColumnNames = new List<NameReference>()
             };
         }
 
         public override List<(NameReference, string)> GetNames(MEGame game) => ColumnNames.Select((n, i) => (n, $"{ColumnNames}[{i}]")).ToList();
 
-        public enum DataType : byte
-        {
-            INT = 0,
-            NAME = 1,
-            FLOAT = 2
-        }
 
-        public class Cell
-        {
+        //public enum DataType : byte
+        //{
+        //    INT = 0,
+        //    NAME = 1,
+        //    FLOAT = 2
+        //}
 
-            public DataType Type;
-            public int IntValue;
-            public NameReference NameValue;
-            public float FloatValue;
-        }
+        //public class Cell
+        //{
+
+        //    public DataType Type;
+        //    public int IntValue;
+        //    public NameReference NameValue;
+        //    public float FloatValue;
+        //}
     }
 
     public static partial class SCExt
     {
-        public static void Serialize(this SerializingContainer2 sc, ref Bio2DABinary.Cell cell)
+        public static void Serialize(this SerializingContainer2 sc, ref Bio2DACell cell)
         {
             if (sc.IsLoading)
             {
-                cell = new Bio2DABinary.Cell
+                cell = new Bio2DACell
                 {
-                    Type = (Bio2DABinary.DataType)sc.ms.ReadByte()
+                    Type = (Bio2DACell.Bio2DADataType)sc.ms.ReadByte()
                 };
             }
             else
             {
+                if (cell.Type == Bio2DACell.Bio2DADataType.TYPE_NULL) return; // DO NOT SERIALIZE!
                 sc.ms.Writer.WriteByte((byte)cell.Type);
             }
             switch (cell.Type)
             {
-                case Bio2DABinary.DataType.INT:
-                    sc.Serialize(ref cell.IntValue);
+                case Bio2DACell.Bio2DADataType.TYPE_INT:
+                    int intV = cell.IntValue;
+                    sc.Serialize(ref intV);
+                    if (sc.IsLoading)
+                        cell.IntValue = intV;
                     break;
-                case Bio2DABinary.DataType.NAME:
-                    sc.Serialize(ref cell.NameValue);
+                case Bio2DACell.Bio2DADataType.TYPE_NAME:
+                    NameReference nameV = cell.NameValue;
+                    sc.Serialize(ref nameV);
+                    if (sc.IsLoading)
+                        cell.NameValue = nameV;
                     break;
-                case Bio2DABinary.DataType.FLOAT:
-                    sc.Serialize(ref cell.FloatValue);
+                case Bio2DACell.Bio2DADataType.TYPE_FLOAT:
+                    float floatV = cell.FloatValue;
+                    sc.Serialize(ref floatV);
+                    if (sc.IsLoading)
+                        cell.FloatValue = floatV;
+                    break;
+                case Bio2DACell.Bio2DADataType.TYPE_NULL:
+                    // THIS CELL TYPE IS NOT SERIALIZED AND IS LEC INTERNAL ONLY (so it cell can be populated)
+                    if (sc.IsLoading)
+                        throw new Exception("Malformed 2DA: NULL cell was written at some point in the past!");
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

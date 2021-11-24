@@ -13,6 +13,7 @@ using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Unreal.Classes;
 using static LegendaryExplorer.Tools.TlkManagerNS.TLKManagerWPF;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
 
