@@ -69,13 +69,10 @@ namespace LegendaryExplorerCore.Unreal.Classes
         /// </summary>
         public ExportEntry Export;
 
-        public Bio2DA(ExportEntry export)
+        public Bio2DA(ExportEntry export) : this()
         {
             //Console.WriteLine("Loading " + export.ObjectName);
             Export = export;
-
-            _rowNames = new List<string>();
-            RowNamesUI = new List<string>();
             if (export.ClassName == "Bio2DA")
             {
                 const string rowLabelsVar = "m_sRowLabel";
@@ -114,32 +111,32 @@ namespace LegendaryExplorerCore.Unreal.Classes
 
             var binary = export.GetBinaryData<Bio2DABinary>();
 
-            _columnNames = new List<string>(binary.ColumnNames.Select(n => n.Name));
-            mappedColumnNames = new CaseInsensitiveDictionary<int>(ColumnNames.Count);
             for (int i = 0; i < ColumnCount; i++)
             {
                 mappedColumnNames[ColumnNames[i]] = i;
             }
 
-            mappedRowNames = new CaseInsensitiveDictionary<int>(RowCount);
             for (int i = 0; i < RowCount; i++)
             {
                 mappedRowNames[RowNames[i]] = i;
             }
 
             Cells = new Bio2DACell[RowCount, ColumnCount];
-            foreach ((int index, Bio2DACell cell) in binary.Cells)
+            if (ColumnCount > 0) // Prevents division by zero
             {
-                int row = index / ColumnCount;
-                int col = index % ColumnCount;
-                this[row, col] = cell.Type switch
+                foreach ((int index, Bio2DACell cell) in binary.Cells)
                 {
-                    Bio2DACell.Bio2DADataType.TYPE_INT => new Bio2DACell(cell.IntValue),
-                    Bio2DACell.Bio2DADataType.TYPE_NAME => new Bio2DACell(cell.NameValue, export.FileRef),
-                    Bio2DACell.Bio2DADataType.TYPE_FLOAT => new Bio2DACell(cell.FloatValue),
-                    // Null populated later
-                    _ => throw new ArgumentOutOfRangeException()
-                };
+                    int row = index / ColumnCount;
+                    int col = index % ColumnCount;
+                    this[row, col] = cell.Type switch
+                    {
+                        Bio2DACell.Bio2DADataType.TYPE_INT => new Bio2DACell(cell.IntValue),
+                        Bio2DACell.Bio2DADataType.TYPE_NAME => new Bio2DACell(cell.NameValue, export.FileRef),
+                        Bio2DACell.Bio2DADataType.TYPE_FLOAT => new Bio2DACell(cell.FloatValue),
+                        // Null populated later
+                        _ => throw new ArgumentOutOfRangeException()
+                    };
+                }
             }
 
             // Populate null cells with TYPE_NULL cells
@@ -157,6 +154,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
             IsIndexed = binary.IsIndexed;
         }
 
+
         /// <summary>
         /// Initializes a blank Bio2DA. Cells is not initialized, the caller must set up this Bio2DA.
         /// </summary>
@@ -166,6 +164,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
             _rowNames = new List<string>();
             mappedRowNames = new CaseInsensitiveDictionary<int>();
             mappedColumnNames = new CaseInsensitiveDictionary<int>();
+            RowNamesUI = new List<string>();
         }
 
         /// <summary>
