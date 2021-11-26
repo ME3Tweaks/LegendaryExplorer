@@ -946,17 +946,19 @@ namespace LegendaryExplorer.Tools.PackageEditor
         private void NewLevelFile()
         {
             string gameString = InputComboBoxDialog.GetValue(this, "Choose game to create a level file for:",
-                                                          "Create new level file", new[] { "LE3", "LE1", "ME3", "ME2" }, "ME3");
-            if (Enum.TryParse(gameString, out MEGame game) && game is MEGame.ME3 or MEGame.ME2 or MEGame.LE3 or MEGame.LE1)
+                                                          "Create new level file", new[] { "LE3", "LE2", "LE1", "ME3", "ME2", "ME1" }, "LE3");
+            if (Enum.TryParse(gameString, out MEGame game) && (game.IsLEGame() || game.IsOTGame()))
             {
                 var dlg = new SaveFileDialog
                 {
-                    
                     Filter = GameFileFilters.ME3ME2SaveFileFilter,
                     OverwritePrompt = true
                 };
                 if (game.IsLEGame())
                     dlg.Filter = GameFileFilters.LESaveFileFilter;
+                if (game == MEGame.ME1)
+                    dlg.Filter = GameFileFilters.ME1SaveFileFilter;
+
                 if (dlg.ShowDialog() == true)
                 {
                     if (File.Exists(dlg.FileName))
@@ -966,11 +968,14 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     string emptyLevelName = game switch
                     {
                         MEGame.LE1 => "LE1EmptyLevel",
+                        MEGame.LE2 => "LE2EmptyLevel",
                         MEGame.LE3 => "LE3EmptyLevel",
+                        MEGame.ME3 => "ME3EmptyLevel",
                         MEGame.ME2 => "ME2EmptyLevel",
+                        MEGame.ME1 => "ME1EmptyLevel",
                         _ => "ME3EmptyLevel"
                     };
-                    File.Copy(Path.Combine(AppDirectories.ExecFolder, $"{emptyLevelName}.pcc"), dlg.FileName);
+                    File.Copy(Path.Combine(AppDirectories.ExecFolder, $"{emptyLevelName}.{(game is MEGame.ME1?"SFM":"pcc")}"), dlg.FileName);
                     LoadFile(dlg.FileName);
                     for (int i = 0; i < Pcc.Names.Count; i++)
                     {
@@ -985,9 +990,12 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     var packguid = Guid.NewGuid();
                     var package = Pcc.GetUExport(game switch
                     {
-                        MEGame.LE1 => 4,
                         MEGame.LE3 => 6,
+                        MEGame.LE2 => 6,
+                        MEGame.LE1 => 4,
+                        MEGame.ME3 => 1,
                         MEGame.ME2 => 7,
+                        MEGame.ME1 => 13,
                         _ => 1
                     });
                     package.PackageGUID = packguid;
