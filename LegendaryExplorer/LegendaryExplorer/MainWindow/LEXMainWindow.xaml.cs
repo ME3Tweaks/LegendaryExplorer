@@ -31,6 +31,12 @@ namespace LegendaryExplorer.MainWindow
     /// </summary>
     public partial class LEXMainWindow : Window
     {
+#if NIGHTLY
+        public string LEXLogo => "/Resources/Images/Legendary_Explorer_Graphic2_Nightly.png";
+#else
+        public string LEXLogo => "/Resources/Images/Legendary_Explorer_Graphic2.png";
+#endif
+
         public LEXMainWindow()
         {
             InitializeComponent();

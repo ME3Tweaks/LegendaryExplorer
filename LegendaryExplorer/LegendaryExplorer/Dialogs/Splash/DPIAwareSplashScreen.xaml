@@ -5,6 +5,7 @@
                                  Title="SplashScreenView"
                                  Width="912"
                                  Height="400"
+                                 DataContext="{Binding RelativeSource={RelativeSource Self}}"
                                  AllowsTransparency="True"
                                  WindowStartupLocation="CenterScreen" WindowStyle="None" 
                                  ShowInTaskbar="False" ResizeMode="NoResize">
@@ -13,7 +14,7 @@
             <RowDefinition Height="*"/>
             <!--<RowDefinition Height="38"/>-->
         </Grid.RowDefinitions>
-        <Image Grid.Row="0" Source="pack://application:,,,/Resources/Images/LEX_Splash.png"/>
+        <Image Grid.Row="0" Source="{Binding SplashImagePath}"/>
         <!--<TextBlock Text="{Binding SplashScreenText}" Margin="9,0" Grid.Row="1"/>-->
     </Grid>
 </bases:TrackingNotifyPropertyChangedWindowBase>
