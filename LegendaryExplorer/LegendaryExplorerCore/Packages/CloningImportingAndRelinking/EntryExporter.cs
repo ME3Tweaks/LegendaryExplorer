@@ -207,6 +207,9 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     // Point under package so it matches how it would be
                     // if it was cooked into a non-master file
                     refX.idxLink = fileRefExp.UIndex;
+
+                    // Set as ForcedExport as we are now 'forced' into subpackage export
+                    refX.ExportFlags |= UnrealFlags.EExportFlags.ForcedExport;
                 }
             }
 
