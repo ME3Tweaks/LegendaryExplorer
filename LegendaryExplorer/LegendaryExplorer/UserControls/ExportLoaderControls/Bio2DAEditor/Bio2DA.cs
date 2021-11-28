@@ -116,6 +116,16 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
             //Populate the Bio2DA now that we know the size
             bio2da.Cells = new Bio2DACell[rowNames.Count, colNames.Count];
+            
+            // Fill with null blanks initially so we have full coverage.
+            for (int i = 0; i < rowNames.Count; i++)
+            {
+                for (int j = 0; j < colNames.Count; j++)
+                {
+                    bio2da.Cells[i, j] = new Bio2DACell(); 
+                }
+            }
+
 
             // Add the columns and names to the 2DA.
             foreach (var col in colNames)
