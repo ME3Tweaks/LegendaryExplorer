@@ -94,11 +94,13 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
             //Column names
             IXLRow hRow = iWorksheet.Row(1);
+            var colNames = new List<string>();
+            var rowNames = new List<string>();
             foreach (IXLCell cell in hRow.Cells(hRow.FirstCellUsed().Address.ColumnNumber, hRow.LastCellUsed().Address.ColumnNumber))
             {
                 if (cell.Address.ColumnNumber > 1) //ignore excel column 1
                 {
-                    bio2da.AddColumn(cell.Value.ToString());
+                    colNames.Add(cell.Value.ToString());
                 }
             }
 
@@ -108,12 +110,18 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 if (cell.Address.RowNumber > 1) //ignore excel row 1
                 {
-                    bio2da.AddRow(cell.Value.ToString());
+                    rowNames.Add(cell.Value.ToString());
                 }
             }
 
             //Populate the Bio2DA now that we know the size
-            bio2da.Cells = new Bio2DACell[bio2da.RowCount, bio2da.ColumnCount];
+            bio2da.Cells = new Bio2DACell[rowNames.Count, colNames.Count];
+
+            // Add the columns and names to the 2DA.
+            foreach (var col in colNames)
+                bio2da.AddColumn(col);
+            foreach (var row in rowNames)
+                bio2da.AddRow(row);
 
 
             //Step 3 Populate the table.

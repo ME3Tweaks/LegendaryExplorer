@@ -11,8 +11,7 @@ using PropertyChanged;
 
 namespace LegendaryExplorerCore.Unreal.Classes
 {
-    [AddINotifyPropertyChangedInterface]
-    public class Bio2DA
+    public class Bio2DA : INotifyPropertyChanged
     {
         public bool IsIndexed = false;
         private List<string> _rowNames;
@@ -73,6 +72,8 @@ namespace LegendaryExplorerCore.Unreal.Classes
         {
             //Console.WriteLine("Loading " + export.ObjectName);
             Export = export;
+
+            // GET ROW NAMES
             if (export.ClassName == "Bio2DA")
             {
                 const string rowLabelsVar = "m_sRowLabel";
@@ -111,9 +112,10 @@ namespace LegendaryExplorerCore.Unreal.Classes
 
             var binary = export.GetBinaryData<Bio2DABinary>();
 
-            for (int i = 0; i < ColumnCount; i++)
+            for (int i = 0; i < binary.ColumnNames.Count; i++)
             {
-                mappedColumnNames[ColumnNames[i]] = i;
+                _columnNames.Add(binary.ColumnNames[i]);
+                mappedColumnNames[binary.ColumnNames[i]] = i;
             }
 
             for (int i = 0; i < RowCount; i++)
@@ -276,6 +278,9 @@ namespace LegendaryExplorerCore.Unreal.Classes
             }
             mappedRowNames[rowName] = _rowNames.Count; // 0 based
             _rowNames.Add(rowName);
+
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(RowNames)));
+
             return _rowNames.Count - 1;
         }
 
@@ -296,6 +301,9 @@ namespace LegendaryExplorerCore.Unreal.Classes
             }
             mappedColumnNames[columnName] = _columnNames.Count; // 0 based
             _columnNames.Add(columnName);
+
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ColumnNames)));
+
             return _columnNames.Count - 1;
         }
 
@@ -462,5 +470,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
         }
 
         #endregion
+
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 }
