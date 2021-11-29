@@ -10,6 +10,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
     public class FaceFXAnimSet : ObjectBinary
     {
+        public int Version;
         private FaceFXAsset.HNode[] HNodes;
         public List<string> Names;
         public List<FaceFXLine> Lines;
@@ -25,7 +26,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             int int1 = 1;
             short short1 = 1;
 
-            sc.SerializeFaceFXHeader();
+            sc.SerializeFaceFXHeader(ref Version);
 
             if (sc.Game != MEGame.ME2)
             {
@@ -162,7 +163,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
         }
 
-        public static void SerializeFaceFXHeader(this SerializingContainer2 sc)
+        public static void SerializeFaceFXHeader(this SerializingContainer2 sc, ref int version)
         {
             int int0 = 0;
             int int1 = 1;
@@ -170,25 +171,25 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
             uint FACE = 1162035526U;
             sc.Serialize(ref FACE);
-            int version = sc.Game switch
+            version = sc.Game switch
             {
                 MEGame.ME1 => 1710,
                 MEGame.ME2 => 1610,
                 _ => 1731
             };
             sc.Serialize(ref version);
-            if (sc.Game == MEGame.ME3 || sc.Game.IsLEGame())
+            if (version == 1731)
             {
                 sc.Serialize(ref int0);
             }
-            else if (sc.Game == MEGame.ME2)
+            else if (version == 1610)
             {
                 sc.Serialize(ref short1);
             }
 
             string licensee = "Unreal Engine 3 Licensee";
             string project = "Unreal Engine 3 Project";
-            if (sc.IsSaving && (sc.Game == MEGame.ME3 || sc.Game.IsLEGame()))
+            if (sc.IsSaving && version == 1610)
             {
                 licensee += '\0';
                 project += '\0';
