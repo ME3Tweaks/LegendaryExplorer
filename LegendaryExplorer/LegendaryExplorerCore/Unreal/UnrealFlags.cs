@@ -52,8 +52,18 @@ namespace LegendaryExplorerCore.Unreal
             PerObjectLocalized = 0x40000000,
             HasCrossLevelRefs = 0x80000000,
 
-            Inherit = Transient | Config | Localized | SafeReplace | PerObjectConfig | PerObjectLocalized | Placeable
-                    | HasComponents | Deprecated | Intrinsic | HasInstancedProps | HasCrossLevelRefs
+            Inherit = //Transient |
+                      Config |
+                      Localized |
+                      SafeReplace |
+                      PerObjectConfig |
+                      PerObjectLocalized |
+                      Placeable |
+                      HasComponents |
+                      Deprecated |
+                      Intrinsic |
+                      HasInstancedProps |
+                      HasCrossLevelRefs
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

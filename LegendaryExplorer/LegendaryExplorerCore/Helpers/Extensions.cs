@@ -499,6 +499,7 @@ namespace LegendaryExplorerCore.Helpers
             return source?.IndexOf(toCheck, comp) >= 0;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool CaseInsensitiveEquals(this string left, string right) => string.Equals(left, right, StringComparison.OrdinalIgnoreCase);
         public static string GetPathWithoutInvalids(this string filename)
         {

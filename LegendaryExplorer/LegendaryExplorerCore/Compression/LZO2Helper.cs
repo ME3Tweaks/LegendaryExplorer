@@ -77,7 +77,7 @@ namespace LegendaryExplorerCore.Compression
                 {
                     int status = LZOCompress(inPtr, (uint)src.Length, tmpBuf, ref dstLen);
                     if (status != 0)
-                        return new byte[0];
+                        return Array.Empty<byte>();
                 }
             }
 

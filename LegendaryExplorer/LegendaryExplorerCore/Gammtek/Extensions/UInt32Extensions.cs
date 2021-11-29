@@ -135,7 +135,7 @@ namespace LegendaryExplorerCore.Gammtek.Extensions
             }
             while (p > 0);
 
-			//JIT should turn this into a single 
+			//the JIT _should_ turn this into a single instruction. 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             static uint DivRem(uint a, uint b, out uint result)
             {

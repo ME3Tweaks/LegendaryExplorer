@@ -281,9 +281,9 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 var vfTablePropertyUIndex = 0;
                 if (interfaceClass.IsNative)
                 {
-                    if (!compiledProperties.TryGetValue($"VfTable_{interfaceClass.Name}", out UProperty vfTableProperty))
+                    if (!compiledProperties.TryGetValue($"VfTable_I{interfaceClass.Name}", out UProperty vfTableProperty))
                     {
-                        throw new Exception($"Missing VfTable_{interfaceClass.Name} property for native interface '{interfaceClass.Name}' in class '{className}'");
+                        throw new Exception($"Missing VfTable_I{interfaceClass.Name} property for native interface '{interfaceClass.Name}' in class '{className}'");
                     }
                     vfTablePropertyUIndex = vfTableProperty.Export.UIndex;
                 }

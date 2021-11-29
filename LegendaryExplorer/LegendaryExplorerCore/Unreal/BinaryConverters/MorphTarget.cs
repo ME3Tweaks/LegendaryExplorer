@@ -58,9 +58,10 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             if (sc.ms.Endian.IsNative)
             {
-                Span<byte> span = stackalloc byte[sizeof(MorphTarget.MorphVertex)];
+                Span<byte> span = stackalloc byte[20];
                 if (sc.IsLoading)
                 {
+                    span.Clear();
                     sc.ms.Read(span[..18]);
                     vert = MemoryMarshal.Read<MorphTarget.MorphVertex>(span);
                 }

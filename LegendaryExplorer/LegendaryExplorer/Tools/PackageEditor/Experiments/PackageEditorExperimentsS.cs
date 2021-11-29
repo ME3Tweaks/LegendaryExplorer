@@ -737,8 +737,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 //the base files will have been in memory for so long at this point that they take a looong time to clear out automatically, so force it.
                 MemoryAnalyzer.ForceFullGC();
                 pewpf.IsBusy = false;
-                interestingExports.Add(new EntryStringPair(null, string.Join("\n", extraInfo)));
-                var listDlg = new ListDialog(interestingExports, "Interesting Exports", "", pewpf)
+                if (extraInfo.Count > 0)
+                {
+                    interestingExports.Add(new EntryStringPair(string.Join("\n", extraInfo)));
+                }
+                var listDlg = new ListDialog(interestingExports, $" {interestingExports.Count} Interesting Exports", "", pewpf)
                 {
                     DoubleClickEntryHandler = entryItem =>
                     {
@@ -748,6 +751,9 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                             p.Show();
                             p.LoadFile(entryToSelect.FileRef.FilePath, entryToSelect.UIndex);
                             p.Activate();
+                            p = new PackageEditorWindow();
+                            p.Show();
+                            p.LoadFile(entryToSelect.FileRef.FilePath, entryToSelect.UIndex);
                             if (comparisonDict.TryGetValue($"{entryToSelect.UIndex} {entryToSelect.FileRef.FilePath}", out (byte[] original, byte[] newData) val))
                             {
                                 File.WriteAllBytes(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "original.bin"), val.original);
