@@ -72,7 +72,7 @@ namespace LegendaryExplorerCore.Tests
                     // Do not use package caching in tests
                     Console.WriteLine($"Opening package {p}");
                     var package = MEPackageHandler.OpenMEPackage(p, forceLoadFromDisk: true);
-                    foreach (var twoDAExp in package.Exports.Where(x => !x.IsDefaultObject && x.ClassName == "Bio2DA" || x.ClassName == "Bio2DANumberedRows"))
+                    foreach (var twoDAExp in package.Exports.Where(x => !x.IsDefaultObject && (x.ClassName == "Bio2DA" || x.ClassName == "Bio2DANumberedRows")))
                     {
                         Console.WriteLine($"Test modifying {twoDAExp.InstancedFullPath}");
                         // Tests reserialization of data via the Bio2DA WriteToExport method.
