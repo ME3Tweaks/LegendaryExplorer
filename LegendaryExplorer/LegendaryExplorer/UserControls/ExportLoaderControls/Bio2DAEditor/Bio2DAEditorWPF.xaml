@@ -61,10 +61,12 @@
                                         <DataTemplate>
                                             <DockPanel>
                                                 <!-- Number -->
-                                                <TextBox Text="{Binding Path=NameIndex}" DockPanel.Dock="Right" MinWidth="25"/>
+                                                <TextBox Text="{Binding Path=NameNumber}" DockPanel.Dock="Right" MinWidth="25"/>
 
                                                 <!-- Name -->
-                                                <ComboBox FocusManager.FocusedElement="{Binding RelativeSource={RelativeSource Self}}" ItemsSource="{Binding ParentNameList,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type exportLoaderControls:Bio2DAEditorWPF}}}" SelectedIndex="{Binding ValueAsName}">
+                                                <ComboBox FocusManager.FocusedElement="{Binding RelativeSource={RelativeSource Self}}" 
+                                                          ItemsSource="{Binding ParentNameList,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type exportLoaderControls:Bio2DAEditorWPF}}}" 
+                                                          SelectedIndex="{Binding NameIndex}">
                                                     <ComboBox.ItemsPanel>
                                                         <ItemsPanelTemplate>
                                                             <VirtualizingStackPanel />

@@ -7,6 +7,12 @@ namespace LegendaryExplorerCore.Unreal.Classes
     [AddINotifyPropertyChangedInterface]
     public class Bio2DACell
     {
+        /// <summary>
+        /// Package that is used for name lookups so the correct name index can be determined.
+        /// </summary>
+        public IMEPackage package { get; init; }
+
+
         // Fody weaves setters for these below
         [AlsoNotifyFor(nameof(DisplayableValue))]
         public int IntValue { get; set; }
@@ -16,6 +22,25 @@ namespace LegendaryExplorerCore.Unreal.Classes
 
         [AlsoNotifyFor(nameof(DisplayableValue))]
         public NameReference NameValue { get; set; }
+
+        public int NameIndex
+        {
+            get
+            {
+                if (package == null)
+                    return 0;
+                var result = package.findName(NameValue);
+                if (result < 0)
+                    return 0; // This is to prevent index out of bounds
+                return result;
+            }
+            set
+            {
+                if (package == null)
+                    return; // Do nothing.
+                NameValue = package.GetNameEntry(value);
+            }
+        }
 
         /// <summary>
         /// If the cell has been populated once (loaded)
@@ -100,9 +125,9 @@ namespace LegendaryExplorerCore.Unreal.Classes
         }
 
         /// <summary>
-        /// This is a string because that's what the UI passes here
+        /// The numerical portion of the Name reference. This is a string because that's what the UI passes here (as it's done via a text editor field)
         /// </summary>
-        public string NameIndex
+        public string NameNumber
         {
             get => Type != Bio2DADataType.TYPE_NAME ? "-1" : NameValue.Number.ToString();
             set
@@ -111,7 +136,6 @@ namespace LegendaryExplorerCore.Unreal.Classes
                 if (int.TryParse(value, out int parsed) && parsed >= 0)
                 {
                     NameValue = new NameReference(NameValue.Name, parsed);
-                    IsModified = true;
                     //OnPropertyChanged(nameof(DisplayableValue));
                 }
             }

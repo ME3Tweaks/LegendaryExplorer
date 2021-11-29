@@ -122,7 +122,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 for (int j = 0; j < colNames.Count; j++)
                 {
-                    bio2da.Cells[i, j] = new Bio2DACell(); 
+                    bio2da.Cells[i, j] = new Bio2DACell() { package = export.FileRef}; 
                 }
             }
 
@@ -147,15 +147,15 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         Bio2DACell newCell;
                         if (int.TryParse(xlCellContents, out int intVal))
                         {
-                            newCell = new Bio2DACell(intVal);
+                            newCell = new Bio2DACell(intVal) { package = export.FileRef };
                         }
                         else if (float.TryParse(xlCellContents, out float floatVal))
                         {
-                            newCell = new Bio2DACell(floatVal);
+                            newCell = new Bio2DACell(floatVal) { package = export.FileRef };
                         }
                         else
                         {
-                            newCell = new Bio2DACell(xlCellContents, export.FileRef);
+                            newCell = new Bio2DACell(xlCellContents, export.FileRef) { package = export.FileRef };
                         }
                         bio2da[rowIndex - 2, columnIndex - 2] = newCell;
                     }

@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LegendaryExplorerCore.DebugTools;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
@@ -32,7 +33,11 @@ namespace LegendaryExplorerCore.Tests
                     // Do not use package caching in tests
                     Console.WriteLine($"Opening package {p}");
                     var package = MEPackageHandler.OpenMEPackage(p, forceLoadFromDisk: true);
-                    foreach (var twoDAExp in package.Exports.Where(x => !x.IsDefaultObject && x.ClassName == "Bio2DA" || x.ClassName == "Bio2DANumberedRows"))
+                    //if (package.Platform != MEPackage.GamePlatform.PC)
+                    //    continue;
+                    //if (package.Game != MEGame.ME2)
+                    //    continue;
+                    foreach (var twoDAExp in package.Exports.Where(x => !x.IsDefaultObject && (x.ClassName == "Bio2DA" || x.ClassName == "Bio2DANumberedRows")))
                     {
                         Console.WriteLine($"Test Bio2DA reserialization {twoDAExp.InstancedFullPath}");
 
@@ -41,11 +46,12 @@ namespace LegendaryExplorerCore.Tests
                         var twoDA = new Bio2DA(twoDAExp);
                         twoDA.Write2DAToExport();
                         var newData = twoDAExp.Data;
-                        if (data.SequenceEqual(newData))
+                        if (!data.SequenceEqual(newData))
                         {
+                            //package.Save(@"C:\users\mgame\desktop\2da.pcc");
+                            DebugUtilities.CompareByteArrays(data, newData);
                             Assert.Fail($"Reserialization of 2DA {twoDA.Export.InstancedFullPath} in {p} failed via Bio2DA.Write2DAToExport(): Before and after data was different");
                         }
-
                     }
                 }
             }
