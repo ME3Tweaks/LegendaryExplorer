@@ -189,7 +189,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
             string licensee = "Unreal Engine 3 Licensee";
             string project = "Unreal Engine 3 Project";
-            if (sc.IsSaving && version == 1610)
+            if (sc.IsSaving && version == 1731)
             {
                 licensee += '\0';
                 project += '\0';
