@@ -4491,7 +4491,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         /// <param name="data"></param>
         /// <param name="binaryStart"></param>
         /// <param name="tree"></param>
-        private MEGame ReadFaceFXHeader(EndianReader bin, List<ITreeItem> subnodes)
+        private (int version, MEGame game) ReadFaceFXHeader(EndianReader bin, List<ITreeItem> subnodes)
         {
             var archiveSize = bin.ReadInt32();
             subnodes.Add(new BinInterpNode(bin.Position - 4, $"Archive size: {archiveSize} ({FileSize.FormatSize(archiveSize)})"));
@@ -4504,7 +4504,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             var vIdStr = versionID.ToString();
             var vers = new Version(vIdStr[0] - '0', vIdStr[1] - '0', vIdStr[2] - '0', vIdStr[3] - '0'); //Mega hack
             subnodes.Add(new BinInterpNode(bin.Position - 4, $"SDK Version: {versionID} ({vers})") { Length = 4 });
-            if (game == MEGame.ME3 || game.IsLEGame())
+            if (versionID == 1731)
             {
                 subnodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt32():X8}") { Length = 4 });
             }
@@ -4517,7 +4517,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             vers = new Version(vIdStr[0] - '0', vIdStr[1] - '0', vIdStr[2] - '0', vIdStr[3] - '0'); //Mega hack
             subnodes.Add(new BinInterpNode(bin.Position - 4, $"Licensee version: {vIdStr} ({vers})") { Length = 4 });
 
-            return game;
+            return (versionID, game);
         }
 
         private List<ITreeItem> StartFaceFXAnimSetScan(byte[] data, ref int binarystart)
@@ -4692,7 +4692,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
                 bin.JumpTo(binarystart);
-                var game = ReadFaceFXHeader(bin, subnodes);
+                var (version, game) = ReadFaceFXHeader(bin, subnodes);
 
                 if (game == MEGame.ME2)
                 {
@@ -4840,7 +4840,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         {
                             var unameVal = bin.ReadInt32();
                             var unkNameList1items = new List<ITreeItem>();
-                            unkNameList1.Add(new BinInterpNode(bin.Position - 4, $"Name {b}: {unameVal} {nameTable[unameVal]}")
+                            unkNameList1.Add(new BinInterpNode(bin.Position - 4, $"{b},{unameVal}")
                             {
                                 Items = unkNameList1items
                             });
@@ -4963,6 +4963,24 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         {
                             var unkStringLength = bin.ReadInt32();
                             fxaInfoItem.Add(new BinInterpNode(bin.Position - 4, $"Parameter Value: {bin.BaseStream.ReadStringLatin1(unkStringLength)}"));
+                        }
+                    }
+                }
+
+                // Fix names for bone node functions now that we've parsed combiner table - this is terrible code
+                foreach (var bone in bonesList)
+                {
+                    var functions = (bone as BinInterpNode).Items.Last();
+                    if (functions is BinInterpNode functionNode && functionNode.Header.Contains("Function"))
+                    {
+                        foreach (var funcItem in functionNode.Items)
+                        {
+                            if (funcItem is BinInterpNode func)
+                            {
+                                var ints = func.Header.Split(',', ' ').Where(str => Int32.TryParse(str, out _)).Select(str => Convert.ToInt32(str)).ToArray();
+                                if (ints.Length != 2) break;
+                                func.Header = $"{ints[0]}: Combiner Node {ints[1]} ({combinerListNames[ints[1]]})";
+                            }
                         }
                     }
                 }

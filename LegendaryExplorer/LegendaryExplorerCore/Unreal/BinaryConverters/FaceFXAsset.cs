@@ -9,6 +9,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
     public class FaceFXAsset : ObjectBinary
     {
+        public int Version;
         private List<HNode> HNodes;
         public List<string> Names;
         public List<FaceFXBoneNode> BoneNodes;
@@ -31,7 +32,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             int length = 0;
             sc.Serialize(ref length);
 
-            sc.SerializeFaceFXHeader();
+            sc.SerializeFaceFXHeader(ref Version);
 
             sc.Serialize(ref HNodes, SCExt.Serialize);
             sc.Serialize(ref Names, SCExt.SerializeFaceFXString);
@@ -154,7 +155,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
     public class FaceFXBoneNodeChild
     {
-        public int LinkName;
+        public int CombinerIndex; // Index into combiner node table - I think?
         public int ParentName;
         public float[] unkFloats = new float[10];
     }
@@ -298,7 +299,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             {
                 node = new FaceFXBoneNodeChild();
             }
-            sc.Serialize(ref node.LinkName);
+            sc.Serialize(ref node.CombinerIndex);
             sc.Serialize(ref node.ParentName);
 
             for (int i = 0; i < node.unkFloats.Length; i++)
