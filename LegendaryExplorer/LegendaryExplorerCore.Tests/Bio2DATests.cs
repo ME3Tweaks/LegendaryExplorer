@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using LegendaryExplorerCore.DebugTools;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
@@ -49,7 +48,9 @@ namespace LegendaryExplorerCore.Tests
                         if (!data.SequenceEqual(newData))
                         {
                             //package.Save(@"C:\users\mgame\desktop\2da.pcc");
+#if DEBUG
                             DebugUtilities.CompareByteArrays(data, newData);
+#endif
                             Assert.Fail($"Reserialization of 2DA {twoDA.Export.InstancedFullPath} in {p} failed via Bio2DA.Write2DAToExport(): Before and after data was different");
                         }
                     }
