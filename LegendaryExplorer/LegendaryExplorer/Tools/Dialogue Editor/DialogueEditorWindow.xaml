@@ -1306,7 +1306,7 @@
                         <ListBox.ContextMenu>
                             <ContextMenu>
                                 <MenuItem Header="Open in Package Editor" Command="{Binding OpenInCommand}"
-                                          CommandParameter="PackEdNode">
+                                          CommandParameter="PackEdConv">
                                     <MenuItem.Icon>
                                         <Image Source="{StaticResource iconPackageEditor16}" Width="64"/>
                                     </MenuItem.Icon>
