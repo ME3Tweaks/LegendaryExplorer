@@ -21,6 +21,22 @@
 std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> StringConverter;
 ID3D11Device* D3DDevice = nullptr;
 
+// Helper function for reconstructing the Z channel (blue) of normal maps from the X and Y channels
+void ReconstructNormalMapZChannel(TextureBuffer* texture) {
+	for (size_t pix = 0; pix < texture->_ScratchImage->GetMetadata().width * texture->_ScratchImage->GetMetadata().height; pix++) {
+		// Why these odd if statements? Check the docs here: https://docs.microsoft.com/en-us/windows/win32/direct3d10/d3d10-graphics-programming-guide-resources-data-conversion
+		// Specifically, in the SNORM section, "In addition, the second-minimum number maps to -1.0f (e.g. the 5-bit value 10001 maps to -1.0f). There are thus two integer representations for -1.0f."
+		float x = ((int32_t)texture->_ScratchImage->GetPixels()[pix * 4 + 2] - 128) / 127.0f;
+		if (x < -1.0f)
+			x = -1.0f;
+		float y = ((int32_t)texture->_ScratchImage->GetPixels()[pix * 4 + 1] - 128) / 127.0f;
+		if (y < -1.0f)
+			y = -1.0f;
+		float z = sqrtf(1.0f - x * x - y * y);
+		texture->_ScratchImage->GetPixels()[pix * 4 + 0] = (int32_t)(z * 127.0f) + 128;
+	}
+}
+
 const char* FindExtension(const char* filename) {
 	const char* result = nullptr;
 	const char* character = filename;
@@ -68,6 +84,15 @@ HRESULT ConvertTexture(const TextureBuffer* inputBuffer, TextureBuffer* outputBu
 			// Decompression
 
 			hr = DirectX::Decompress(sourceImage, outputBuffer->Format, *outputBuffer->_ScratchImage);
+
+			// SPECIAL CASE ALERT:
+			// If we converted from BC5 to four channels, reconstruct in the third channel for normals maps
+			if ((inputBuffer->Format == DXGI_FORMAT_BC5_UNORM
+				|| inputBuffer->Format == DXGI_FORMAT_BC5_SNORM)
+				&& (outputBuffer->Format == DXGI_FORMAT_B8G8R8A8_UNORM || outputBuffer->Format == DXGI_FORMAT_R8G8B8A8_UNORM)) {
+
+				ReconstructNormalMapZChannel(outputBuffer);
+			}
 		}
 	}
 	else {
@@ -91,22 +116,11 @@ HRESULT ConvertTexture(const TextureBuffer* inputBuffer, TextureBuffer* outputBu
 			hr = DirectX::Convert(sourceImage, outputBuffer->Format, DirectX::TEX_FILTER_FLAGS::TEX_FILTER_DEFAULT, DirectX::TEX_THRESHOLD_DEFAULT, *outputBuffer->_ScratchImage);
 
 			// SPECIAL CASE ALERT:
-			// If we converted from two signed channels to four channels, fill in the third channel for normals maps
+			// If we converted from two signed channels to four channels, reconstruct in the third channel for normals maps
 			if (inputBuffer->Format == DXGI_FORMAT_R8G8_SNORM
 				&& (outputBuffer->Format == DXGI_FORMAT_B8G8R8A8_UNORM || outputBuffer->Format == DXGI_FORMAT_R8G8B8A8_UNORM)) {
 
-				for (size_t pix = 0; pix < inputBuffer->Width * inputBuffer->Height; pix++) {
-					// Why these odd if statements? Check the docs here: https://docs.microsoft.com/en-us/windows/win32/direct3d10/d3d10-graphics-programming-guide-resources-data-conversion
-					// Specifically, in the SNORM section, "In addition, the second-minimum number maps to -1.0f (e.g. the 5-bit value 10001 maps to -1.0f). There are thus two integer representations for -1.0f."
-					float x = ((int32_t)outputBuffer->_ScratchImage->GetPixels()[pix * 4 + 2] - 128) / 127.0f;
-					if (x < -1.0f)
-						x = -1.0f;
-					float y = ((int32_t)outputBuffer->_ScratchImage->GetPixels()[pix * 4 + 1] - 128) / 127.0f;
-					if (y < -1.0f)
-						y = -1.0f;
-					float z = sqrtf(1.0f - x * x - y * y);
-					outputBuffer->_ScratchImage->GetPixels()[pix * 4 + 0] = (int32_t)(z * 127.0f) + 128;
-				}
+				ReconstructNormalMapZChannel(outputBuffer);
 			}
 		}
 	}
