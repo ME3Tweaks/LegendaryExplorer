@@ -101,7 +101,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private ModelPreview Preview;
 
-        private bool HasLoaded;
+        /// <summary>
+        /// Value is true after _Loaded is called. False after _Unloaded (which if in tab control, is called when different tab is selected)
+        /// </summary>
+        private bool ControlIsLoaded;
         private WorldMesh STMCollisionMesh;
         private Action ViewportLoadAction = null;
 
@@ -406,6 +409,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             UnloadExport();
             // Get rid of old objects.
+            // NEEDS RE-IMPLEMENTED
             //SceneViewer?.Context?.TextureCache?.ExpungeStaleCacheItems();
             //SceneViewer.InitializeD3D();
             //OnPropertyChanged(nameof(SceneViewerProperty));
@@ -960,18 +964,25 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         private void MeshRenderer_Unloaded(object sender, RoutedEventArgs e)
         {
             Debug.WriteLine("MESHRENDERER UNLOADED");
+            if (Parent is TabItem { Parent: TabControl tc })
+            {
+                tc.SelectionChanged -= MeshRendererWPF_HostingTabSelectionChanged;
+            }
+            SceneContext.UpdateScene -= SceneContext_UpdateScene;
+            SceneContext.RenderScene -= SceneContext_RenderScene;
+            ControlIsLoaded = false;
         }
 
         private void MeshRenderer_Loaded(object sender, RoutedEventArgs e)
         {
-            Debug.WriteLine("MESHRENDERER ONLOADED");
-            if (!HasLoaded)
+            if (!ControlIsLoaded)
             {
+                Debug.WriteLine("MESHRENDERER ONLOADED");
                 if (Parent is TabItem { Parent: TabControl tc })
                 {
                     tc.SelectionChanged += MeshRendererWPF_HostingTabSelectionChanged;
                 }
-                HasLoaded = true;
+                ControlIsLoaded = true;
                 SceneContext.UpdateScene += SceneContext_UpdateScene;
                 SceneContext.RenderScene += SceneContext_RenderScene;
             }
@@ -979,7 +990,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void SceneContext_UpdateScene(object sender, float timeStep)
         {
-            if (Rotating)
+            if (ControlIsLoaded && Rotating)
             {
                 SceneContext.Camera.Yaw += 0.05f * timeStep;
                 if (SceneContext.Camera.Yaw > 6.28) //It's in radians 
