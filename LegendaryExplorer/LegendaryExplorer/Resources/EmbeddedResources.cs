@@ -12,6 +12,17 @@ namespace LegendaryExplorer.Resources
     {
         private static Assembly Assembly => typeof(EmbeddedResources).GetTypeInfo().Assembly;
 
+        private static string GetResourceString(string location)
+        {
+            using Stream resourceStream = Assembly.GetManifestResourceStream(location);
+            if (resourceStream is null)
+            {
+                throw new ArgumentException($"Could not load {location}", nameof(location));
+            }
+            using var reader = new StreamReader(resourceStream);
+            return reader.ReadToEnd();
+        }
+
         public static byte[] KismetFont
         {
             get
@@ -27,20 +38,9 @@ namespace LegendaryExplorer.Resources
                 return tmpStream.ToArray();
             }
         }
-        
-        public static string StandardShader
-        {
-            get
-            {
-                const string resourceLocation = "LegendaryExplorer.Resources.StandardShader.hlsl";
-                using Stream resourceStream = Assembly.GetManifestResourceStream(resourceLocation);
-                if (resourceStream is null)
-                {
-                    throw new Exception($"Could not load {resourceLocation}");
-                }
-                using var reader = new StreamReader(resourceStream);
-                return reader.ReadToEnd();
-            }
-        }
+
+        public static string StandardShader => GetResourceString("LegendaryExplorer.Resources.StandardShader.hlsl");
+
+        public static string TextureShader => GetResourceString("LegendaryExplorer.Resources.TextureShader.hlsl");
     }
 }

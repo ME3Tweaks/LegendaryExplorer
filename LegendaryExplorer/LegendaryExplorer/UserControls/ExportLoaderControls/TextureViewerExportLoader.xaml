@@ -7,6 +7,7 @@
              xmlns:exportLoaderControls="clr-namespace:LegendaryExplorer.UserControls.ExportLoaderControls"
              xmlns:Converters="clr-namespace:LegendaryExplorer.SharedUI.Converters"
              xmlns:sharedUi="clr-namespace:LegendaryExplorer.SharedUI"
+             xmlns:scene3D="clr-namespace:LegendaryExplorer.UserControls.SharedToolControls.Scene3D"
              mc:Ignorable="d" 
              DataContext="{Binding RelativeSource={RelativeSource Self}}"
              d:DesignHeight="450" d:DesignWidth="800">
@@ -65,11 +66,22 @@
                 <StackPanel Orientation="Horizontal">
                 </StackPanel>
             </StackPanel>
-            <DockPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+
+            <!-- BETA BRANCH -->
+            <!--             <DockPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                 <TextBlock Name="TextureStatus_TextBlock" Text="{Binding CannotShowTextureText, FallbackValue=Select a mip}" Visibility="{Binding CannotShowTextureTextVisibility}" TextAlignment="Center"/>
                 <!--<Button Name="TFCSelect_Button" Margin="10,0,0,0" Content="Select TFC"/>-->
+            <!--
                 <Image Name="TextureImage" Stretch="{Binding ImageStretchOption}" RenderOptions.BitmapScalingMode="HighQuality"/>
-            </DockPanel>
+            </DockPanel>-->
+            
+            <!-- DIRECT X BRANCH -->
+            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <TextBlock Name="TextureStatus_TextBlock" Text="{Binding CannotShowTextureText, FallbackValue=Select a mip}" Visibility="{Binding CannotShowTextureTextVisibility}" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <!--<Button Name="TFCSelect_Button" Margin="10,0,0,0" Content="Select TFC"/>-->
+                <!--<Image Name="TextureImage" Stretch="{Binding ImageStretchOption}" RenderOptions.BitmapScalingMode="NearestNeighbor"/>-->
+                <scene3D:SceneRenderControl x:Name="PreviewRenderer" />
+            </Grid>
         </DockPanel>
     </DockPanel>
 </exportLoaderControls:ExportLoaderControl>

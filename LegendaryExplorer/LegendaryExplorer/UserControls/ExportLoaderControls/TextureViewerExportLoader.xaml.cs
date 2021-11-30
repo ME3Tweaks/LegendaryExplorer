@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -16,6 +17,7 @@ using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Interfaces;
 using LegendaryExplorer.UnrealExtensions.Classes;
 using LegendaryExplorer.Tools.TFCCompactor;
+using LegendaryExplorer.UserControls.SharedToolControls.Scene3D;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
@@ -26,6 +28,7 @@ using LegendaryExplorerCore.Unreal.Classes;
 using Microsoft.Win32;
 using Image = LegendaryExplorerCore.Textures.Image;
 using LegendaryExplorerCore.Helpers;
+using SharpDX.Direct3D11;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls
 {
@@ -34,6 +37,133 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
     /// </summary>
     public partial class TextureViewerExportLoader : ExportLoaderControl
     {
+        #region Texture Preview
+        private class TextureRenderContext : RenderContext
+        {
+            private struct TextureViewConstants
+            {
+                public Matrix4x4 Projection;
+                public Matrix4x4 View;
+                public int Mip;
+                private Vector3 Padding;
+            }
+
+            private RenderTargetView BackbufferRTV = null;
+            private SamplerState TextureSampler = null;
+            private VertexShader TextureVertexShader = null;
+            private PixelShader TexturePixelShader = null;
+            private ShaderResourceView TextureRTV = null;
+            private TextureViewConstants Constants = new TextureViewConstants();
+            private SharpDX.Direct3D11.Buffer ConstantBuffer = null;
+
+            private SharpDX.Direct3D11.Texture2D _texture = null;
+            public SharpDX.Direct3D11.Texture2D Texture
+            {
+                get => this._texture;
+                set
+                {
+                    if (this.TextureRTV != null)
+                    {
+                        this.TextureRTV.Dispose();
+                        this.TextureRTV = null;
+                    }
+                    this._texture = value;
+                    if (this.Texture != null)
+                    {
+                        this.TextureRTV = new ShaderResourceView(this.Device, this.Texture);
+                    }
+                }
+            }
+            public float CameraScale { get; set; } = 1.0f;
+            public Vector2 CameraCenter { get; set; } = Vector2.Zero;
+            public int CurrentMip // NOTE: The texture export loader passes each mip as its own texture, meaning that we always want mip 0 of the given texture.
+            {
+                get => this.Constants.Mip;
+                set => this.Constants.Mip = value;
+            }
+            public Vector4 BackgroundColor { get; set; } = new Vector4(0.0f, 0.0f, 0.0f, 1.0f);
+
+            public override void CreateResources()
+            {
+                base.CreateResources();
+                this.TextureSampler = new SamplerState(this.Device, new SamplerStateDescription() { AddressU = TextureAddressMode.Wrap, AddressV = TextureAddressMode.Wrap, AddressW = TextureAddressMode.Wrap, Filter = Filter.MinLinearMagMipPoint, MaximumLod = Single.MaxValue, MinimumLod = 0, MipLodBias = 0 });
+                this.ConstantBuffer = new SharpDX.Direct3D11.Buffer(this.Device, SharpDX.Utilities.SizeOf<TextureViewConstants>(), ResourceUsage.Dynamic, BindFlags.ConstantBuffer, CpuAccessFlags.Write, ResourceOptionFlags.None, 0);
+                
+                // Load shaders
+                string textureShader = LegendaryExplorer.Resources.EmbeddedResources.TextureShader;
+                SharpDX.D3DCompiler.CompilationResult result = SharpDX.D3DCompiler.ShaderBytecode.Compile(textureShader, "VSMain", "vs_4_0");
+                SharpDX.D3DCompiler.ShaderBytecode vsbytecode = result.Bytecode;
+                this.TextureVertexShader = new VertexShader(Device, vsbytecode);
+                vsbytecode.Dispose();
+
+                // Load pixel shader
+                result = SharpDX.D3DCompiler.ShaderBytecode.Compile(textureShader, "PSMain", "ps_4_0");
+                SharpDX.D3DCompiler.ShaderBytecode psbytecode = result.Bytecode;
+                this.TexturePixelShader = new PixelShader(Device, psbytecode);
+                psbytecode.Dispose();
+
+                // Set render state (this is a pretty simple D3D component so we can set it once and forget it)
+                this.ImmediateContext.PixelShader.SetSampler(0, this.TextureSampler);
+                this.ImmediateContext.PixelShader.SetShader(this.TexturePixelShader, null, 0);
+                this.ImmediateContext.VertexShader.SetShader(this.TextureVertexShader, null, 0);
+                this.ImmediateContext.InputAssembler.PrimitiveTopology = SharpDX.Direct3D.PrimitiveTopology.TriangleStrip;
+            }
+
+            public override void CreateSizeDependentResources(int width, int height, SharpDX.Direct3D11.Texture2D newBackbuffer)
+            {
+                base.CreateSizeDependentResources(width, height, newBackbuffer);
+                this.BackbufferRTV = new RenderTargetView(this.Device, this.Backbuffer);
+
+                if (width >= height)
+                {
+                    float ratio = (float)width / height;
+                    this.Constants.Projection = Matrix4x4.CreateOrthographic(ratio, 1.0f, -1.0f, 1.0f);
+                }
+                else
+                {
+                    float ratio = (float)height / width;
+                    this.Constants.Projection = Matrix4x4.CreateOrthographic(1.0f, ratio, -1.0f, 1.0f);
+                }
+                this.ImmediateContext.Rasterizer.SetViewport(new SharpDX.Mathematics.Interop.RawViewportF() { X = 0, Y = 0, Width = width, Height = height, MinDepth = 0.0f, MaxDepth = 1.0f });
+            }
+
+            public override void Render()
+            {
+                this.ImmediateContext.OutputMerger.SetRenderTargets(this.BackbufferRTV);
+                this.ImmediateContext.ClearRenderTargetView(this.BackbufferRTV, new SharpDX.Mathematics.Interop.RawColor4(this.BackgroundColor.X, this.BackgroundColor.Y, this.BackgroundColor.Z, this.BackgroundColor.W));
+
+                this.Constants.View = Matrix4x4.CreateTranslation(-this.CameraCenter.X, -this.CameraCenter.Y, 0.0f) * Matrix4x4.CreateScale(this.CameraScale);
+                SharpDX.DataBox constantBox = this.ImmediateContext.MapSubresource(this.ConstantBuffer, 0, MapMode.WriteDiscard, MapFlags.None);
+                System.Runtime.InteropServices.Marshal.StructureToPtr(this.Constants, constantBox.DataPointer, false);
+                this.ImmediateContext.UnmapSubresource(this.ConstantBuffer, 0);
+                this.ImmediateContext.PixelShader.SetShaderResource(0, this.TextureRTV);
+                this.ImmediateContext.VertexShader.SetConstantBuffer(0, this.ConstantBuffer);
+                this.ImmediateContext.Draw(4, 0);
+
+                base.Render();
+            }
+
+            public override void Update(float timestep)
+            {
+                // Nothing to do here
+            }
+
+            public override void DisposeSizeDependentResources()
+            {
+                this.BackbufferRTV.Dispose();
+                base.DisposeSizeDependentResources();
+            }
+
+            public override void DisposeResources()
+            {
+                this.ConstantBuffer.Dispose();
+                this.TextureSampler.Dispose();
+                base.DisposeResources();
+            }
+        }
+
+        private TextureRenderContext TextureContext { get; } = new TextureRenderContext();
+        #endregion
         public ObservableCollectionExtended<Texture2DMipInfo> MipList { get; } = new ObservableCollectionExtended<Texture2DMipInfo>();
         private string CurrentLoadedFormat;
         private string CurrentLoadedCacheName;
@@ -122,6 +252,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             CannotShowTextureTextVisibility = Visibility.Visible;
             LoadCommands();
             InitializeComponent();
+            this.PreviewRenderer.Context = this.TextureContext;
+            this.TextureContext.BackgroundColor = new Vector4(0.5f, 0.5f, 0.5f, 1.0f);
+            this.PreviewRenderer.Loaded += (sender, args) => MipList_SelectedItemChanged(sender, null);
         }
 
         public ICommand ExportToPNGCommand { get; set; }
@@ -298,7 +431,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             };
             if (d.ShowDialog() == true)
             {
-                Texture2D t2d = new Texture2D(CurrentLoadedExport);
+                LegendaryExplorerCore.Unreal.Classes.Texture2D t2d = new LegendaryExplorerCore.Unreal.Classes.Texture2D(CurrentLoadedExport);
 #if WINDOWS
                 t2d.ExportToFile(d.FileName);
 #else
@@ -333,7 +466,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         public override void LoadExport(ExportEntry exportEntry)
         {
-            TextureImage.Source = null;
+            TextureContext.Texture = null;
             try
             {
                 MipList.ClearEx();
@@ -410,7 +543,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
                     CurrentLoadedFormat = format.Value.Name;
                     MipList.ReplaceAll(mips);
-                    TextureCRC = Texture2D.GetTextureCRC(exportEntry);
+                    TextureCRC = LegendaryExplorerCore.Unreal.Classes.Texture2D.GetTextureCRC(exportEntry);
                     if (Settings.TextureViewer_AutoLoadMip || ViewerModeOnly)
                     {
                         Mips_ListBox.SelectedIndex = MipList.IndexOf(topmip);
@@ -431,7 +564,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             if (mipToLoad == null)
             {
-                TextureImage.Source = null;
+                TextureContext.Texture = null;
                 if (!ViewerModeOnly)
                     CannotShowTextureText = "Select a mip to view";
                 CannotShowTextureTextVisibility = Visibility.Visible;
@@ -440,35 +573,37 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
             if (mipToLoad.storageType == StorageTypes.empty)
             {
-                TextureImage.Source = null;
+                TextureContext.Texture = null;
                 CannotShowTextureText = "Selected mip is null/empty";
                 CannotShowTextureTextVisibility = Visibility.Visible;
                 return;
             }
-            if (mipToLoad.width == 1 && mipToLoad.height == 1)
+            /*if (mipToLoad.width == 1 && mipToLoad.height == 1)
             {
-                TextureImage.Source = null;
+                TextureContext.Texture = null;
                 CannotShowTextureText = "Selected mip too small to display"; // This will crash the toolset if we show it
                 CannotShowTextureTextVisibility = Visibility.Visible;
                 return;
-            }
-            TextureImage.Source = null;
+            }*/
+            TextureContext.Texture = null;
             try
             {
-                var imagebytes = Texture2D.GetTextureData(mipToLoad, mipToLoad.Export.Game);
-                CannotShowTextureTextVisibility = Visibility.Collapsed;
+                // ORIGINAL CODE
+                //var imagebytes = Texture2D.GetTextureData(mipToLoad, mipToLoad.Export.Game);
+                //CannotShowTextureTextVisibility = Visibility.Collapsed;
 
-                // NOTE: Set 'ClearAlpha' to false to make image support transparency!
-                var bitmap = Image.convertRawToBitmapARGB(imagebytes, mipToLoad.width, mipToLoad.height, Image.getPixelFormatType(CurrentLoadedFormat), SetAlphaToBlack);
-                //var bitmap = DDSImage.ToBitmap(imagebytes, fmt, mipToLoad.width, mipToLoad.height, CurrentLoadedExport.FileRef.Platform.ToString());
-                var memory = new MemoryStream(bitmap.Height * bitmap.Width * 4 + 54);
-                bitmap.Save(memory, ImageFormat.Png);
-                memory.Position = 0;
-                TextureImage.Source = (BitmapSource)new ImageSourceConverter().ConvertFrom(memory);
+                //// NOTE: Set 'ClearAlpha' to false to make image support transparency!
+                //var bitmap = Image.convertRawToBitmapARGB(imagebytes, mipToLoad.width, mipToLoad.height, Image.getPixelFormatType(CurrentLoadedFormat), SetAlphaToBlack);
+                ////var bitmap = DDSImage.ToBitmap(imagebytes, fmt, mipToLoad.width, mipToLoad.height, CurrentLoadedExport.FileRef.Platform.ToString());
+                //var memory = new MemoryStream(bitmap.Height * bitmap.Width * 4 + 54);
+                //bitmap.Save(memory, ImageFormat.Png);
+                //memory.Position = 0;
+                //TextureImage.Source = (BitmapSource)new ImageSourceConverter().ConvertFrom(memory);
+                TextureContext.Texture = TextureContext.LoadUnrealMip(mipToLoad, Image.getPixelFormatType(CurrentLoadedFormat));
             }
             catch (Exception e)
             {
-                TextureImage.Source = null;
+                TextureContext.Texture = null;
                 CannotShowTextureText = e.Message;
                 CannotShowTextureTextVisibility = Visibility.Visible;
             }
@@ -476,7 +611,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         public override void UnloadExport()
         {
-            TextureImage.Source = null;
+            TextureContext.Texture = null;
             CurrentLoadedFormat = null;
             MipList.ClearEx();
             CurrentLoadedExport = null;
@@ -486,8 +621,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             if (MipList.Count > 0 && Mips_ListBox.SelectedIndex >= 0)
             {
-                Debug.WriteLine($"Loading mip: {Mips_ListBox.SelectedIndex}");
-                LoadMip(MipList[Mips_ListBox.SelectedIndex]);
+                if (this.TextureContext.IsReady)
+                {
+                    Debug.WriteLine($"Loading mip: {Mips_ListBox.SelectedIndex}");
+                    LoadMip(MipList[Mips_ListBox.SelectedIndex]);
+                }
             }
         }
 
