@@ -13,18 +13,17 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
 {
     public class TalkFile
     {
-        public struct TLKHeader
+        public readonly struct TLKHeader
         {
-            public int magic;
-            public int ver;
-            public int min_ver;
-            public int MaleEntryCount;
-            public int FemaleEntryCount;
-            public int treeNodeCount;
-            public int dataLen;
+            public readonly int magic;
+            public readonly int ver;
+            public readonly int min_ver;
+            public readonly int MaleEntryCount;
+            public readonly int FemaleEntryCount;
+            public readonly int treeNodeCount;
+            public readonly int dataLen;
 
             public TLKHeader(EndianReader r)
-                : this()
             {
                 magic = r.ReadInt32();
                 ver = r.ReadInt32();
@@ -36,13 +35,12 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
             }
         };
 
-        public struct HuffmanNode
+        private readonly struct HuffmanNode
         {
-            public int LeftNodeID;
-            public int RightNodeID;
+            public readonly int LeftNodeID;
+            public readonly int RightNodeID;
 
             public HuffmanNode(BinaryReader r)
-                : this()
             {
                 LeftNodeID = r.ReadInt32();
                 RightNodeID = r.ReadInt32();
@@ -93,6 +91,7 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
             r.Position = 0;
             Header = new TLKHeader(r);
 
+            int strRefCount = Header.MaleEntryCount + Header.FemaleEntryCount;
             //DebugTools.PrintHeader(Header);
 
             /* **************** STEP TWO ****************
@@ -100,20 +99,17 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
              */
             /* jumping to the beginning of Huffmann Tree stored in TLK file */
             long pos = r.BaseStream.Position;
-            r.BaseStream.Seek(pos + (Header.MaleEntryCount + Header.FemaleEntryCount) * 8, SeekOrigin.Begin);
+            r.BaseStream.Seek(pos + strRefCount * 8, SeekOrigin.Begin);
 
 
-            var characterTree = new List<HuffmanNode>(Header.treeNodeCount);
+            var characterTree = new HuffmanNode[Header.treeNodeCount];
             for (int i = 0; i < Header.treeNodeCount; i++)
-                characterTree.Add(new HuffmanNode(r));
+                characterTree[i] = new HuffmanNode(r);
 
             /* **************** STEP THREE ****************
              *  -- read all of coded data into memory -- 
-             */
-            byte[] data = new byte[Header.dataLen];
-            r.BaseStream.Read(data, 0, data.Length);
-            /* and store it as raw bits for further processing */
-            var bits = new BitArray(data);
+             * and store it as raw bits for further processing */
+            var bits = new TLKBitArray(r.BaseStream, Header.dataLen);
 
             /* rewind BinaryReader just after the Header
              * at the beginning of TLK Entries data */
@@ -125,7 +121,7 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
              *   int: bit offset of the beginning of data (offset starting at 0 and counted for Bits array)
              *        so offset == 0 means the first bit in Bits array
              *   string: actual decoded string */
-            var rawStrings = new Dictionary<int, string>();
+            var rawStrings = new Dictionary<int, string>(strRefCount); //strRefCount will be either the correct capacity or a slight overestimate, due to the possibility of duplicate strings
             int offset = 0;
             // int maxOffset = 0;
             var builder = new StringBuilder(); //reuse the same stringbuilder to avoid allocations
@@ -148,7 +144,6 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
              * Sometimes there's no such key, in that case, our String ID is probably a substring
              * of another String present in rawStrings. 
              */
-            int strRefCount = Header.MaleEntryCount + Header.FemaleEntryCount;
             StringRefs = new List<TLKStringRef>(strRefCount);
             MaleStringRefsTable = new Dictionary<int, string>(Header.MaleEntryCount);
             FemaleStringRefsTable = new Dictionary<int, string>(Header.FemaleEntryCount);
@@ -297,23 +292,28 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
         /// </summary>
         /// <param name="bitOffset"></param>
         /// <param name="builder"></param>
+        /// <param name="bits"></param>
+        /// <param name="characterTree"></param>
         /// <returns>
         /// decoded string or null if there's an error (last string's bit code is incomplete)
         /// </returns>
-        private static string GetString(ref int bitOffset, StringBuilder builder, BitArray bits, List<HuffmanNode> characterTree)
+        private static string GetString(ref int bitOffset, StringBuilder builder, TLKBitArray bits, HuffmanNode[] characterTree)
         {
             HuffmanNode root = characterTree[0];
             HuffmanNode curNode = root;
             builder.Clear();
             int i;
-            for (i = bitOffset; i < bits.Length; i++)
+            int bitsLength = bits.Length;
+            for (i = bitOffset; i < bitsLength; i++)
             {
                 /* reading bits' sequence and decoding it to Strings while traversing Huffman Tree */
                 int nextNodeID;
-                if (bits[i])
+                if (bits.Get(i))
                     nextNodeID = curNode.RightNodeID;
                 else
                     nextNodeID = curNode.LeftNodeID;
+
+                
 
                 /* it's an internal node - keep looking for a leaf */
                 if (nextNodeID >= 0)

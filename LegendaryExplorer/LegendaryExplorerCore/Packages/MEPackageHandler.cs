@@ -201,7 +201,8 @@ namespace LegendaryExplorerCore.Packages
                     }
                     else
                     {
-                        return LoadPackage(ReadAllFileBytesIntoMemoryStream(fpath), fpath, true);
+                        using var fs = new FileStream(pathToFile, FileMode.Open, FileAccess.Read);
+                        return LoadPackage(fs, fpath, true);
                     }
                 });
             }
@@ -231,8 +232,8 @@ namespace LegendaryExplorerCore.Packages
         internal static IMEPackage UnsafePartialLoad(string pathToFile, Func<ExportEntry, bool> exportPredicate)
         {
             Debug.WriteLine($"Partially loading package {pathToFile}");
-            //using var fs = new FileStream(pathToFile, FileMode.Open, FileAccess.Read);
-            return LoadPackage(ReadAllFileBytesIntoMemoryStream(pathToFile), pathToFile, false, false, exportPredicate);
+            using var fs = new FileStream(pathToFile, FileMode.Open, FileAccess.Read);
+            return LoadPackage(fs, pathToFile, false, false, exportPredicate);
         }
 
         /// <summary>

@@ -46,12 +46,15 @@ namespace LegendaryExplorerCore.TLK.ME1
 
             public int BitOffset
             {
-                get => Flags;
+                get { return Flags; }
                 //use same variable to save memory as flags is not used in me2/3, but bitoffset is.
-                set => Flags = value;
+                set { Flags = value; }
             }
 
-            public int CalculatedID => StringID >= 0 ? StringID : -(int.MinValue - StringID);
+            public int CalculatedID
+            {
+                get { return StringID >= 0 ? StringID : -(int.MinValue - StringID); }
+            }
 
             /// <summary>
             /// This is used by huffman compression
@@ -109,7 +112,7 @@ namespace LegendaryExplorerCore.TLK.ME1
         }
         #endregion
 
-        private List<HuffmanNode> nodes;
+        private HuffmanNode[] nodes;
 
         public TLKStringRef[] StringRefs;
         public int UIndex;
@@ -202,17 +205,17 @@ namespace LegendaryExplorerCore.TLK.ME1
 
             //Huffman tree
             int nodeCount = r.ReadInt32();
-            nodes = new List<HuffmanNode>(nodeCount);
+            nodes = new HuffmanNode[nodeCount];
             for (int i = 0; i < nodeCount; i++)
             {
                 bool leaf = r.ReadBoolean();
                 if (leaf)
                 {
-                    nodes.Add(new HuffmanNode(r.ReadChar()));
+                    nodes[i] = new HuffmanNode(r.ReadChar());
                 }
                 else
                 {
-                    nodes.Add(new HuffmanNode(r.ReadInt16(), r.ReadInt16()));
+                    nodes[i] = new HuffmanNode(r.ReadInt16(), r.ReadInt16());
                 }
             }
             //TraverseHuffmanTree(nodes[0], new List<bool>());
@@ -221,7 +224,7 @@ namespace LegendaryExplorerCore.TLK.ME1
             int stringCount = r.ReadInt32();
             byte[] data = new byte[r.BaseStream.Length - r.BaseStream.Position];
             r.Read(data, 0, data.Length);
-            var bits = new BitArray(data);
+            var bits = new TLKBitArray(data);
 
             //decompress encoded data with huffman tree
             int offset = 4;
@@ -245,17 +248,22 @@ namespace LegendaryExplorerCore.TLK.ME1
             }
         }
 
-        private string GetString(int bitOffset, BitArray bits)
+        private string GetString(int bitOffset, TLKBitArray bits)
         {
             HuffmanNode root = nodes[0];
             HuffmanNode curNode = root;
 
             var builder = new StringBuilder();
             int i;
-            for (i = bitOffset; i < bits.Length; i++)
+            int bitsLength = bits.Length;
+            for (i = bitOffset; i < bitsLength; i++)
             {
                 /* reading bits' sequence and decoding it to Strings while traversing Huffman Tree */
-                int nextNodeID = bits[i] ? curNode.RightNodeID : curNode.LeftNodeID;
+                int nextNodeID;
+                if (bits.Get(i))
+                    nextNodeID = curNode.RightNodeID;
+                else
+                    nextNodeID = curNode.LeftNodeID;
 
                 /* it's an internal node - keep looking for a leaf */
                 if (nextNodeID >= 0)
@@ -307,7 +315,7 @@ namespace LegendaryExplorerCore.TLK.ME1
             /* check if both sons are null */
             if (node.LeftNodeID == node.RightNodeID)
             {
-                BitArray ba = new BitArray(code.ToArray());
+                var ba = new BitArray(code.ToArray());
                 string c = "";
                 foreach (bool b in ba)
                 {
