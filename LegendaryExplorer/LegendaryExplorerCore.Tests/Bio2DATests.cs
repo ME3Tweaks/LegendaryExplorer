@@ -49,7 +49,7 @@ namespace LegendaryExplorerCore.Tests
                         {
                             //package.Save(@"C:\users\mgame\desktop\2da.pcc");
 #if DEBUG
-                            DebugUtilities.CompareByteArrays(data, newData);
+                            LegendaryExplorerCore.DebugTools.DebugUtilities.CompareByteArrays(data, newData);
 #endif
                             Assert.Fail($"Reserialization of 2DA {twoDA.Export.InstancedFullPath} in {p} failed via Bio2DA.Write2DAToExport(): Before and after data was different");
                         }
