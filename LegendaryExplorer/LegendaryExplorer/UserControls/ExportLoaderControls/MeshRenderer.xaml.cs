@@ -957,8 +957,14 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             //}
         }
 
+        private void MeshRenderer_Unloaded(object sender, RoutedEventArgs e)
+        {
+            Debug.WriteLine("MESHRENDERER UNLOADED");
+        }
+
         private void MeshRenderer_Loaded(object sender, RoutedEventArgs e)
         {
+            Debug.WriteLine("MESHRENDERER ONLOADED");
             if (!HasLoaded)
             {
                 if (Parent is TabItem { Parent: TabControl tc })
