@@ -40,7 +40,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
                     return prefixes.Any(pr => cr.Class.ToLower().StartsWith(pr)) || contains.Any(pr => cr.Class.ToLower().Contains(pr));
                 }),
 
-            }, searchPredicate: t => t.Record.Class.ToLower().Contains(t.SearchText.ToLower()));
+            }, searchPredicate: ClassSearch);
 
             AnimationFilter = new SingleOptionFilter<AnimationRecord>(new IAssetSpecification<AnimationRecord>[]
             {
@@ -136,6 +136,25 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
             {
                 return mr.MeshName.ToLower().Contains(text.ToLower());
             }
+        }
+
+        public static bool ClassSearch((string, ClassRecord) tuple)
+        {
+            var (text, cr) = tuple;
+            text = text.ToLower();
+            bool matches = false;
+            
+            var textSplit = text.Split(' ');
+            foreach (var t in textSplit)
+            {
+                if (t.StartsWith("prop:"))
+                {
+                    var propName = t.Substring(5);
+                    matches |= cr.PropertyRecords.Any(kvp => kvp.Key.ToLower().Contains(propName));
+                }
+            }
+            matches |= cr.Class.ToLower().Contains(text);
+            return matches;
         }
     }
 }
