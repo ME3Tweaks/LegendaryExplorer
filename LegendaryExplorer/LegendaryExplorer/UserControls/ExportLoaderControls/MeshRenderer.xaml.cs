@@ -400,15 +400,15 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         /// <summary>
         /// Used for debugging by listing the used instances
         /// </summary>
-        public ObservableCollectionExtended<PreviewTextureCache.PreviewTextureEntry> SceneViewerProperty => SceneViewer?.Context?.TextureCache?.AssetCache;
+        //public ObservableCollectionExtended<PreviewTextureCache.PreviewTextureEntry> SceneViewerProperty => SceneViewer?.Context?.TextureCache?.AssetCache;
 
         public override void LoadExport(ExportEntry exportEntry)
         {
             UnloadExport();
             // Get rid of old objects.
-            SceneViewer?.Context?.TextureCache?.ExpungeStaleCacheItems();
-            SceneViewer.InitializeD3D();
-            OnPropertyChanged(nameof(SceneViewerProperty));
+            //SceneViewer?.Context?.TextureCache?.ExpungeStaleCacheItems();
+            //SceneViewer.InitializeD3D();
+            //OnPropertyChanged(nameof(SceneViewerProperty));
 
             //SceneViewer.Context.BackgroundColor = new SharpDX.Color(128, 128, 128);
             alreadyLoadedImportMaterials.Clear();
@@ -926,6 +926,35 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     texturePreviewMaterials.Add(preloadedTextureData);
                 }
             }
+        }
+
+        private void SceneViewer_Render(object sender, EventArgs e)
+        {
+            // BETA BRANCH
+            //if (Preview != null && Preview.LODs.Count > 0)
+            //{
+
+            //    if (CurrentLOD < 0) { CurrentLOD = 0; }
+            //    if (Solid && CurrentLOD < Preview.LODs.Count)
+            //    {
+            //        SceneViewer.Wireframe = false;
+            //        Preview.Render(SceneViewer.Context, CurrentLOD, Matrix4x4.Identity);
+            //    }
+            //    if (Wireframe)
+            //    {
+            //        SceneViewer.Context.Wireframe = true;
+            //        var ViewConstants = new SceneRenderContext.WorldConstants(Matrix4x4.Transpose(SceneViewer.Context.Camera.ProjectionMatrix), Matrix4x4.Transpose(SceneViewer.Context.Camera.ViewMatrix), Matrix4x4.Identity);
+            //        SceneViewer.Context.DefaultEffect.PrepDraw(SceneViewer.Context.ImmediateContext);
+            //        SceneViewer.Context.DefaultEffect.RenderObject(SceneViewer.Context.ImmediateContext, ViewConstants, Preview.LODs[CurrentLOD].Mesh, new SharpDX.Direct3D11.ShaderResourceView[] { null });
+            //    }
+            //    if (IsStaticMesh && ShowCollisionMesh && STMCollisionMesh != null)
+            //    {
+            //        SceneViewer.Context.Wireframe = true;
+            //        var ViewConstants = new SceneRenderContext.WorldConstants(Matrix4x4.Transpose(SceneViewer.Context.Camera.ProjectionMatrix), Matrix4x4.Transpose(SceneViewer.Context.Camera.ViewMatrix), Matrix4x4.Identity);
+            //        SceneViewer.Context.DefaultEffect.PrepDraw(SceneViewer.Context.ImmediateContext);
+            //        SceneViewer.Context.DefaultEffect.RenderObject(SceneViewer.Context.ImmediateContext, ViewConstants, STMCollisionMesh, new SharpDX.Direct3D11.ShaderResourceView[] { null });
+            //    }
+            //}
         }
 
         private void MeshRenderer_Loaded(object sender, RoutedEventArgs e)

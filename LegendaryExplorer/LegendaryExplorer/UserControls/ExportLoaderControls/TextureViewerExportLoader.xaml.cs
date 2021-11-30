@@ -493,7 +493,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     AvailableTFCNames.Add(CREATE_NEW_TFC_STRING);
                 }
 
-                List<Texture2DMipInfo> mips = Texture2D.GetTexture2DMipInfos(exportEntry, CurrentLoadedCacheName);
+                List<Texture2DMipInfo> mips = LegendaryExplorerCore.Unreal.Classes.Texture2D.GetTexture2DMipInfos(exportEntry, CurrentLoadedCacheName);
                 CurrentLoadedExport = exportEntry;
 
                 if (mips.Any())
@@ -631,7 +631,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         public string ReplaceTextures(Image image, PropertyCollection props, string fileSourcePath = null, string forcedTFCName = null, bool isPackageStored = false)
         {
-            var texture = new Texture2D(CurrentLoadedExport);
+            var texture = new LegendaryExplorerCore.Unreal.Classes.Texture2D(CurrentLoadedExport);
             return texture.Replace(image, props, fileSourcePath, forcedTFCName, isPackageStored: isPackageStored);
         }
 

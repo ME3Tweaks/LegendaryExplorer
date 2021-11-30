@@ -68,12 +68,11 @@
             </StackPanel>
 
             <!-- BETA BRANCH -->
-            <!--             <DockPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+            <!--             
+            <DockPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                 <TextBlock Name="TextureStatus_TextBlock" Text="{Binding CannotShowTextureText, FallbackValue=Select a mip}" Visibility="{Binding CannotShowTextureTextVisibility}" TextAlignment="Center"/>
-                <!--<Button Name="TFCSelect_Button" Margin="10,0,0,0" Content="Select TFC"/>-->
-            <!--
                 <Image Name="TextureImage" Stretch="{Binding ImageStretchOption}" RenderOptions.BitmapScalingMode="HighQuality"/>
-            </DockPanel>-->
+            </DockPanel> -->
             
             <!-- DIRECT X BRANCH -->
             <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">

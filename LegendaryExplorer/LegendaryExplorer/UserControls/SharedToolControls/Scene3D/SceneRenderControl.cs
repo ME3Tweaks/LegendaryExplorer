@@ -258,6 +258,9 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             }
         }
 
+
+
+        public event EventHandler Render;
         private void D3DImage_OnRender(IntPtr surface, bool isNewSurface)
         {
             if (isNewSurface)
@@ -287,6 +290,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
                 RenderDoc.StartCapture(this.Context.Device.NativePointer, this.D3DImage.WindowOwner);
             }
             Context.Render();
+            Render?.Invoke(this, new EventArgs());
             if (capturing)
             {
                 RenderDoc.EndCapture(this.Context.Device.NativePointer, this.D3DImage.WindowOwner);
