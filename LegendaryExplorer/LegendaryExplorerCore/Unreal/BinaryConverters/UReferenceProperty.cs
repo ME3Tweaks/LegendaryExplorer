@@ -183,7 +183,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
     public class UBioMask4Property : UByteProperty
     {
-        public static UBioMask4Property Create()
+        public new static UBioMask4Property Create()
         {
             return new()
             {

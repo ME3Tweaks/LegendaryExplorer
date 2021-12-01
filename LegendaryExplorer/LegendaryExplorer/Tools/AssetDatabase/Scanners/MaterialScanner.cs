@@ -233,15 +233,11 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Scanners
 
                     break;
                 case DelegateProperty pdelg:
-                    if (pdelg.Value != null)
+                    var pscrdel = pdelg.Value.Object;
+                    if (pscrdel != 0)
                     {
-                        var pscrdel = pdelg.Value.Object;
-                        if (pscrdel != 0)
-                        {
-                            pValue = pcc.GetEntry(pscrdel).ClassName;
-                        }
+                        pValue = pcc.GetEntry(pscrdel).ClassName;
                     }
-
                     break;
                 default:
                     pValue = p.ToString();

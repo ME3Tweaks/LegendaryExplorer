@@ -392,8 +392,6 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
 
         public void FixStackHeaders(ListBoxTask task = null)
         {
-            int numUpdated = 0;
-
             var mpIDs = new Dictionary<int, List<int>>();
             Debug.WriteLine("Start of header fix scan===================");
 
@@ -435,7 +433,6 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                     continue;
                 }
 
-                int idOffset = 0;
                 if (exportEntry.HasStack)
                 {
                     byte[] exportData = exportEntry.Data;

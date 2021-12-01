@@ -256,7 +256,7 @@ namespace LegendaryExplorer.Tools.TextureStudio
             if (entry.Entry.IsTexture()) return true;
             foreach (var t in entry.Sublinks)
             {
-                if (HasAnyTextureLeaves(t)) ;
+                if (HasAnyTextureLeaves(t))
                 {
                     return true;
                 }

@@ -1273,7 +1273,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     }
                 }
             }
-            catch (Exception e)
+            catch
             {
 
             }
@@ -1667,8 +1667,6 @@ namespace LegendaryExplorer.Tools.PackageEditor
                             Filter = $"*{extension}|*{extension}"
                         };
 
-                        string embeddedICBf = null;
-                        string embeddedISBf = null;
                         if (d.ShowDialog() == true)
                         {
                             var baseName = Path.GetFileNameWithoutExtension(d.FileName);

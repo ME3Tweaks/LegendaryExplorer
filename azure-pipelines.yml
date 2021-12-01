@@ -102,6 +102,7 @@ steps:
 
 # Build TexConverter in Release mode
 - task: MSBuild@1
+  displayName: 'Build TexConverter'
   inputs:
     solution: 'LegendaryExplorer\TexConverter\TexConverter.vcxproj'
     msbuildArchitecture: 'x64'

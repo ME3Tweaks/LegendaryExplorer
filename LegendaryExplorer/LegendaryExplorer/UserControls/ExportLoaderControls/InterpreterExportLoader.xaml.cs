@@ -1481,7 +1481,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         NameProperty prop = exportEntry.GetProperty<NameProperty>("PackageName");
                         return $"({prop.Value.Instanced})";
                     }
-                    break;
                 case "StaticMeshComponent":
                     {
                         ObjectProperty smprop = exportEntry.GetProperty<ObjectProperty>("StaticMesh");
@@ -1527,7 +1526,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         NameProperty prop = exportEntry.GetProperty<NameProperty>("AnimSeqName");
                         return $"({prop?.Value.Instanced ?? "No Name"})";
                     }
-                    break;
             }
             return "";
         }

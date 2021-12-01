@@ -56,7 +56,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                 this.AddChild(comment);
                 this.Pickable = true;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 Debugger.Break();
             }

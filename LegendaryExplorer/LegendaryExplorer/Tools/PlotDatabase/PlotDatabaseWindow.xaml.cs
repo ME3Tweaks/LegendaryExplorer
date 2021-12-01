@@ -1546,10 +1546,10 @@ namespace LegendaryExplorer.Tools.PlotDatabase
 
             public ModPlotDatabase ModDb { get; set; }
             public PlotElementType Type { get; set; }
-            public string? ParentPath { get; set; }
+            public string ParentPath { get; set; }
             public string Label { get; set; }
             public int PlotID { get; set; }
-            public string? Code { get; set; }
+            public string Code { get; set; }
             public string Argument { get; set; }
             public PlotElementType SubType { get; set; } = PlotElementType.None;
             public int GamerVariable { get; set; } = -1;

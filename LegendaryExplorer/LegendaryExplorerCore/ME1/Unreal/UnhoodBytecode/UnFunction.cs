@@ -125,7 +125,7 @@ namespace LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode
             }
 #if !DEBUG && !AZURE
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 Debug.WriteLine("Exception..");
             }
