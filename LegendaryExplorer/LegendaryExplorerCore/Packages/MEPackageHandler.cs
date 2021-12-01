@@ -152,7 +152,6 @@ namespace LegendaryExplorerCore.Packages
                     // Quickload: Don't read entire file.
                     if (diskIOSyncLock != null)
                     {
-                        MemoryStream ms;
                         lock (diskIOSyncLock)
                         {
                             using (FileStream fs = new FileStream(pathToFile, FileMode.Open, FileAccess.Read))

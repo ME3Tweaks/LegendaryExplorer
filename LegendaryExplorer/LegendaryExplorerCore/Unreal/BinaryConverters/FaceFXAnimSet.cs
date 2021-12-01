@@ -24,7 +24,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             #region  Header
             int int0 = 0;
             int int1 = 1;
-            short short1 = 1;
 
             sc.SerializeFaceFXHeader(ref Version);
 
@@ -166,7 +165,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public static void SerializeFaceFXHeader(this SerializingContainer2 sc, ref int version)
         {
             int int0 = 0;
-            int int1 = 1;
             short short1 = 1;
 
             uint FACE = 1162035526U;

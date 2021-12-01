@@ -1010,7 +1010,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 }
                 return result;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 //remove added entries
                 var entriesToRemove = new List<IEntry>();

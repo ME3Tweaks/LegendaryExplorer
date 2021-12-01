@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
-using LegendaryExplorerCore.Unreal.ObjectInfo;
 
 namespace LegendaryExplorerCore.Kismet
 {
@@ -34,7 +32,7 @@ namespace LegendaryExplorerCore.Kismet
         /// <summary>
         /// Changes a single output link to a new target.
         /// </summary>
-        /// <param name="export">The export properties list to operate on</param>
+        /// <param name="props">The export properties list to operate on</param>
         /// <param name="outputLinkIndex">The index of the item in 'OutputLinks'</param>
         /// <param name="linksIndex">The index of the item in the Links array</param>
         /// <param name="newTarget">The UIndex of the new target</param>
@@ -47,6 +45,7 @@ namespace LegendaryExplorerCore.Kismet
         /// Removes a sequence element from the graph, by repointing incoming references to the ones referenced by outgoing items on this export. This is a very basic utility, only use it for items with one input and potentially multiple outputs.
         /// </summary>
         /// <param name="elementToSkip">Th sequence object to skip</param>
+        /// <param name="outboundLinkName">The name of the outbound link that should be attached to the preceding entry element, must have either this or the next argument</param>
         /// <param name="outboundLinkIdx">The 0-indexed outbound link that should be attached the preceding entry element, as if this one had fired that link.</param>
         public static void SkipSequenceElement(ExportEntry elementToSkip, string outboundLinkName = null, int outboundLinkIdx = -1)
         {
@@ -147,7 +146,7 @@ namespace LegendaryExplorerCore.Kismet
 
         public class OutboundLink
         {
-            public IEntry? LinkedOp { get; set; }
+            public IEntry LinkedOp { get; set; }
             public int InputLinkIdx { get; set; }
 
             public static OutboundLink FromStruct(StructProperty sp, IMEPackage package)
