@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using LegendaryExplorerCore.PlotDatabase.Databases;
+using LegendaryExplorerCore.PlotDatabase.PlotElements;
 using Newtonsoft.Json;
 
-namespace LegendaryExplorerCore.PlotDatabase
+namespace LegendaryExplorerCore.PlotDatabase.Serialization
 {
     /// <summary>
     /// A class representing the JSON serialized plot database file
@@ -30,7 +29,7 @@ namespace LegendaryExplorerCore.PlotDatabase
         {
         }
 
-        public SerializedPlotDatabase(PlotDatabase plotDatabase)
+        public SerializedPlotDatabase(PlotDatabaseBase plotDatabase)
         {
             Bools = plotDatabase.Bools.Values.ToList();
             Ints = plotDatabase.Ints.Values.ToList();
@@ -46,11 +45,7 @@ namespace LegendaryExplorerCore.PlotDatabase
         /// </summary>
         public void BuildTree()
         {
-            Dictionary<int, PlotElement> table =
-                Bools.Concat<PlotElement>(Ints)
-                    .Concat(Floats).Concat(Conditionals)
-                    .Concat(Transitions).Concat(Organizational)
-                    .ToDictionary((e) => e.ElementId);
+            Dictionary<int, PlotElement> table = GetMasterPlotDictionary();
 
             foreach (var element in table)
             {
@@ -58,9 +53,24 @@ namespace LegendaryExplorerCore.PlotDatabase
                 var parentId = plot.ParentElementId;
                 if (parentId > 0)
                 {
-                    plot.AssignParent(table[parentId]);
+                    if (table.TryGetValue(parentId, out var parent))
+                    {
+                        plot.AssignParent(parent);
+                    }
+                    else if (element.Value is not PlotModElement)
+                    {
+                        throw new Exception("Cannot assign parent");
+                    }
                 }
             }
+        }
+
+        protected virtual Dictionary<int, PlotElement> GetMasterPlotDictionary()
+        {
+            return Bools.Concat(Ints)
+                .Concat(Floats).Concat(Conditionals)
+                .Concat(Transitions).Concat(Organizational)
+                .ToDictionary((e) => e.ElementId);
         }
     }
 }

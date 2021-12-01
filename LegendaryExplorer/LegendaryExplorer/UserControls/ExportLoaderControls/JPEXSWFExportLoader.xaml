@@ -14,11 +14,11 @@
     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
         <StackPanel MaxWidth="500" VerticalAlignment="Center">
             <TextBlock Text="Scaleform/Adobe Flash Editor" FontWeight="Bold" FontSize="22"  TextAlignment="Center"/>
-            <Image Source="Resources/Images/jpex.png" MaxWidth="320" Cursor="Hand"/>
-            <TextBlock Text="Open this export's SWF file in JPEXs with the button below and make your edits.&#10;After saving your file, press Import saved file to automatically import the saved file back into this export." FontWeight="Bold" TextAlignment="Center" TextWrapping="Wrap"/>
+            <Image Source="/Resources/Images/jpex.png" MaxWidth="320" Cursor="Hand"/>
+            <TextBlock Text="Open this export's SWF file in JPEXS with the button below and make your edits.&#10;After saving your file, press Import saved file to automatically import the saved file back into this export." FontWeight="Bold" TextAlignment="Center" TextWrapping="Wrap"/>
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,30">
-                <Button Content="Open in JPEX" FontWeight="Bold" HorizontalAlignment="Left" Command="{Binding OpenFileInJPEXCommand}" Padding="7" Margin="5,0,0,0"/>
+                <Button Content="Open in JPEXS" FontWeight="Bold" HorizontalAlignment="Left" Command="{Binding OpenFileInJPEXCommand}" Padding="7" Margin="5,0,0,0"/>
                 <Button Content="Import saved file" FontWeight="Bold" HorizontalAlignment="Left" Command="{Binding ImportJPEXSavedFileCommand}" Margin="5,0,0,0" Padding="7"/>
             </StackPanel>
             <TextBlock Foreground="Red" Text="JPEXS Flash Decompiler is not installed. Click the image above to download it." Visibility="{Binding JPEXNotInstalled, Converter={StaticResource BoolToVisibilityConverter}}" FontWeight="Bold" TextAlignment="Center" TextWrapping="Wrap"/>

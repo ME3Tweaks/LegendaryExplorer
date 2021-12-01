@@ -31,6 +31,7 @@ using Microsoft.WindowsAPICodePack.Taskbar;
 using BinaryPack;
 using LegendaryExplorer.SharedUI.Controls;
 using LegendaryExplorer.Tools.AssetDatabase.Filters;
+using LegendaryExplorer.Tools.PlotDatabase;
 using LegendaryExplorerCore.Memory;
 using LegendaryExplorerCore.PlotDatabase;
 
@@ -1109,7 +1110,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             var record = GetSelectedPlotRecord();
             var plotElement = PlotDatabases.FindPlotElementFromID(record.ElementID, record.ElementType.ToPlotElementType(),
                 CurrentGame);
-            var plotDB = new PlotManager.PlotManagerWindow(CurrentGame.ToLEVersion(), plotElement);
+            var plotDB = new PlotManagerWindow(CurrentGame.ToLEVersion(), plotElement);
             plotDB.Show();
             plotDB.SelectPlotElement(plotElement, CurrentGame.ToLEVersion());
             //plotDB.NoAutoSelection = false;

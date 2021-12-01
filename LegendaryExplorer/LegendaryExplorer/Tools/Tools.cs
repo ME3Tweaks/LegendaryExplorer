@@ -29,6 +29,7 @@ using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Packages;
 using System.Text;
 using LegendaryExplorer.Tools.ClassViewer;
+using LegendaryExplorer.Tools.PlotDatabase;
 
 namespace LegendaryExplorer
 {
@@ -534,11 +535,11 @@ namespace LegendaryExplorer
             set.Add(new Tool
             {
                 name = "Plot Database",
-                type = typeof(Tools.PlotManager.PlotManagerWindow),
+                type = typeof(PlotManagerWindow),
                 icon = Application.Current.FindResource("iconPlotDatabase") as ImageSource,
                 open = () =>
                 {
-                    var plotMan = new Tools.PlotManager.PlotManagerWindow();
+                    var plotMan = new PlotManagerWindow();
                     plotMan.Show();
                 },
                 tags = new List<string> { "developer", "codex", "state transition", "quest", "plots", "database", "conditional" },

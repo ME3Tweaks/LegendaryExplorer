@@ -73,7 +73,7 @@
                 
                 <DockPanel Margin="5,5,5,0" LastChildFill="True">
                     <!-- Logo -->
-                    <Image DockPanel.Dock="Left" Source="../Resources/Images/Legendary_Explorer_Graphic2.png" Height="110"
+                    <Image DockPanel.Dock="Left" Source="{Binding LEXLogo}" Height="110"
                            RenderOptions.BitmapScalingMode="HighQuality" MouseDown="BackgroundMouseDown"/>
 
                     <!-- Top bar settings buttons -->

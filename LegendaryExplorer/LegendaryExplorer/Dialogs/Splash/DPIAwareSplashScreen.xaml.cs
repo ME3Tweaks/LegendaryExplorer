@@ -15,6 +15,12 @@ namespace LegendaryExplorer.Dialogs.Splash
             get => _splashScreenText;
             set => SetProperty(ref _splashScreenText, value);
         }
+
+#if NIGHTLY
+        public string SplashImagePath => "/Resources/Images/LEX_Splash_Nightly.png";
+#else
+        public string SplashImagePath => "/Resources/Images/LEX_Splash.png";
+#endif
         public DPIAwareSplashScreen() : base("DPIAwareSplashScreen", false)
         {
             InitializeComponent();

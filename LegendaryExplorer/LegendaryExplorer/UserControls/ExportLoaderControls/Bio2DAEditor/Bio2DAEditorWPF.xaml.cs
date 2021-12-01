@@ -7,6 +7,8 @@ using LegendaryExplorer.Tools.TlkManagerNS;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.PlotDatabase;
+using LegendaryExplorerCore.Unreal;
+using LegendaryExplorerCore.Unreal.Classes;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls
 {
@@ -25,6 +27,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         }
 
         public ICommand CommitCommand { get; set; }
+
+        public RelayCommand SetCellTypeCommand { get; private set; }
 
         public Bio2DAEditorWPF() : base("Bio2DA Editor")
         {
@@ -123,6 +127,38 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         private void LoadCommands()
         {
             CommitCommand = new GenericCommand(Commit2DA, CanCommit2DA);
+            SetCellTypeCommand = new RelayCommand(SetCellType, SingleCellSelected);
+        }
+
+        private void SetCellType(object obj)
+        {
+            if (obj is string newCellType)
+            {
+                int columnIndex = Bio2DA_DataGrid.SelectedCells[0].Column.DisplayIndex;
+                int rowIndex = Bio2DA_DataGrid.Items.IndexOf(Bio2DA_DataGrid.SelectedCells[0].Item);
+                var item = Table2DA[rowIndex, columnIndex];
+                switch (newCellType)
+                {
+                    case "INT":
+                        item.Type = Bio2DACell.Bio2DADataType.TYPE_INT;
+                        break;
+                    case "NAME":
+                        // Type will change on assignment
+                        item.NameValue = new NameReference(CurrentLoadedExport.FileRef.Names[0], 0);
+                        break;
+                    case "FLOAT":
+                        item.Type = Bio2DACell.Bio2DADataType.TYPE_FLOAT;
+                        break;
+                    case "NULL":
+                        item.Type = Bio2DACell.Bio2DADataType.TYPE_NULL;
+                        break;
+                }
+            }
+        }
+
+        private bool SingleCellSelected(object obj)
+        {
+            return Bio2DA_DataGrid != null && Bio2DA_DataGrid.SelectedCells.Count == 1;
         }
 
         private void Commit2DA()
@@ -170,7 +206,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 if (MessageBox.Show("This will overwrite the existing 2DA table.", "WARNING", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
                 {
-                    Bio2DA resulting2DA = Bio2DA.ReadExcelTo2DA(CurrentLoadedExport, oDlg.FileName);
+                    Bio2DA resulting2DA = Bio2DAExtended.ReadExcelTo2DA(CurrentLoadedExport, oDlg.FileName);
                     if (resulting2DA != null)
                     {
                         if (resulting2DA.IsIndexed != Table2DA.IsIndexed)

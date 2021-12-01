@@ -29,14 +29,14 @@
   <PropertyGroup Condition="'$(Configuration)'=='WinAzureRelease'">
     <DebugType>embedded</DebugType>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-	<DefineConstants>WINDOWS;NIGHTLY</DefineConstants>
+    <DefineConstants>WINDOWS;NIGHTLY</DefineConstants>
   </PropertyGroup>
 
   <!-- Azure flags allow special code to make tests work on azure since game won't exist there. It should never be used locally -->
   <PropertyGroup Condition="'$(Configuration)'=='WinAzureTest'">
     <DebugType>embedded</DebugType>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-	<DefineConstants>WINDOWS;AZURE</DefineConstants>
+    <DefineConstants>WINDOWS;AZURE</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
@@ -138,6 +138,17 @@
     <Resource Include="Resources\Images\*.png" />
     <Resource Include="Tools\PackageEditor\ExportIcons\*" />
   </ItemGroup>
+
+  <!--The following reduces executable size by not including the other build's images.-->
+  <ItemGroup Condition="'$(Configuration)'=='WinAzureRelease' Or '$(Configuration)'=='WinAzureTest'">
+    <Resource Remove="Resources\Images\Legendary_Explorer_Graphic2.png"/>
+    <Resource Remove="Resources\Images\LEX_Splash.png"/>
+  </ItemGroup>
+  <ItemGroup Condition="'$(Configuration)'!='WinAzureRelease' And '$(Configuration)'!='WinAzureTest'">
+    <Resource Remove="Resources\Images\Legendary_Explorer_Graphic2_Nightly.png"/>
+    <Resource Remove="Resources\Images\LEX_Splash_Nightly.png"/>
+  </ItemGroup>
+
   <ItemGroup>
     <EmbeddedResource Include="Resources\StandardShader.hlsl" />
   </ItemGroup>

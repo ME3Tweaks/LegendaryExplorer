@@ -7,6 +7,7 @@ using BinaryPack.Attributes;
 using LegendaryExplorer.Tools.AssetDatabase.Filters;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.PlotDatabase;
+using LegendaryExplorerCore.PlotDatabase.PlotElements;
 
 namespace LegendaryExplorer.Tools.AssetDatabase
 {
