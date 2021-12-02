@@ -37,9 +37,10 @@ namespace LegendaryExplorerCore.Audio
         {
             if (File.Exists(pathToWwiseExe) && WwiseVersion(game) != null)
             {
+                var fileInfo = new FileInfo(pathToWwiseExe);
                 var versionInfo = FileVersionInfo.GetVersionInfo(pathToWwiseExe);
                 string version = versionInfo.ProductVersion;
-                return version == WwiseFullVersion(game);
+                return version == WwiseFullVersion(game) && fileInfo.Name.Equals("WwiseCLI.exe", StringComparison.CurrentCultureIgnoreCase);
             }
 
             return false;
