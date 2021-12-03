@@ -122,6 +122,8 @@ namespace LegendaryExplorer.UnrealExtensions
         /// </summary>
         /// <param name="riffPath">Path to RIFF RAW data</param>
         /// <param name="fullSetup">Full setup flag - use for ME2</param>
+        /// <param name="useAlternateCodebook">Alternate PCB - use for LE</param>
+        ///
         public static MemoryStream ConvertRIFFToWwiseOGG(string riffPath, bool fullSetup, bool useAlternateCodebook)
         {
             //convert RIFF to WwiseOGG
@@ -132,17 +134,18 @@ namespace LegendaryExplorer.UnrealExtensions
                 Debug.WriteLine("Error: input file does not exist");
             }
 
-            ProcessStartInfo procStartInfo = null;
             var alternatePcbFile = Path.Combine(AppDirectories.ExecFolder, "packed_codebooks_aoTuV_603.bin");
 
-            procStartInfo = new ProcessStartInfo(Path.Combine(AppDirectories.ExecFolder, "ww2ogg.exe"), $@"{(useAlternateCodebook ? @$"--pcb {alternatePcbFile}" : "")} {(fullSetup ? "--full-setup" : "")} --stdout {riffPath}");
+            var ww2oggArguments = $@"{(useAlternateCodebook ? @$"--pcb {alternatePcbFile}" : "")} {(fullSetup ? "--full-setup" : "")} --stdout {riffPath}";
+            var procStartInfo = new ProcessStartInfo(Path.Combine(AppDirectories.ExecFolder, "ww2ogg.exe"), ww2oggArguments)
+                {
+                    WorkingDirectory = AppDirectories.ExecFolder,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
 
-            procStartInfo.WorkingDirectory = AppDirectories.ExecFolder;
-            procStartInfo.RedirectStandardOutput = true;
-            procStartInfo.RedirectStandardError = true;
-
-            procStartInfo.UseShellExecute = false;
-            procStartInfo.CreateNoWindow = true;
             Process proc = new Process { StartInfo = procStartInfo };
             proc.Start();
 
