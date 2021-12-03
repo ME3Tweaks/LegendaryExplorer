@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 
 namespace LegendaryExplorerCore.TLK
 {
-    internal sealed class TLKBitArray
+    public sealed class TLKBitArray
     {
         public readonly int Length;
         private readonly int[] intArray;
@@ -23,6 +23,7 @@ namespace LegendaryExplorerCore.TLK
 
         public TLKBitArray(Stream reader, int bytesLength) : this(bytesLength)
         {
+            //reinterpret the intArray as a byte array, then slice it to the bytesLength (since it might not be a multiple of four)
             reader.Read(MemoryMarshal.AsBytes(intArray.AsSpan())[..bytesLength]);
         }
 

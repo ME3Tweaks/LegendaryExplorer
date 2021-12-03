@@ -14,7 +14,8 @@ namespace LegendaryExplorerCore.TLK.ME1
     public class ME1TalkFile : IEquatable<ME1TalkFile>
     {
         #region structs
-        public struct HuffmanNode
+
+        private struct HuffmanNode
         {
             public int LeftNodeID;
             public int RightNodeID;
