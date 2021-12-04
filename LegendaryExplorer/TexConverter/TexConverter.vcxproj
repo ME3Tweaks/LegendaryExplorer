@@ -57,7 +57,7 @@
     <GenerateManifest>true</GenerateManifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WinRelease|X64'">
-    <OutDir>..\LegendaryExplorerCore\Libraries\Windows</OutDir>
+    <OutDir>..\LegendaryExplorerCore\Libraries\Windows\</OutDir>
     <IntDir>bin\$(Platform)\$(Configuration)\</IntDir>
     <TargetName>TexConverter</TargetName>
     <GenerateManifest>true</GenerateManifest>

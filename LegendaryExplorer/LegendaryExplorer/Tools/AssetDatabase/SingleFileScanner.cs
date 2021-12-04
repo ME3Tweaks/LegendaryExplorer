@@ -142,7 +142,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                             }
                         }
                     }
-                    catch (Exception e) when (!App.IsDebug)
+                    catch (Exception) when (!App.IsDebug)
                     {
                         MessageBox.Show($"Exception Bug detected in single file: {entry.FileRef.FilePath} Export:{entry.UIndex}");
                     }

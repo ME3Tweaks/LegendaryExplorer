@@ -440,7 +440,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             }
             catch (Exception e)
             {
-                Console.WriteLine("Error ParseDB");
+                Console.WriteLine($"Error parsing DB: {e.Message}");
             }
             return null;
         }

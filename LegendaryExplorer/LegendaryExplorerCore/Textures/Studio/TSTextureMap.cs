@@ -322,7 +322,7 @@ namespace LegendaryExplorerCore.Textures.Studio
                 }
 
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 // CRC could not be calculated
             }

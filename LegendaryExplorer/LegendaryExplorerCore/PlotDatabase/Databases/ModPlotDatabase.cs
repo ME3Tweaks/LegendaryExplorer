@@ -13,6 +13,14 @@ namespace LegendaryExplorerCore.PlotDatabase.Databases
     /// </summary>
     public class ModPlotDatabase : PlotDatabaseBase
     {
+        public enum ModPlotSource
+        {
+            Unknown,
+            LocalFile,
+            Server,
+        }
+
+        public ModPlotSource Source { get; set; }
         public PlotModElement ModRoot { get; set; }
         public override PlotElement Root
         {
@@ -42,6 +50,7 @@ namespace LegendaryExplorerCore.PlotDatabase.Databases
             StreamReader sr = new StreamReader(dbPath);
             string json = sr.ReadToEnd();
             ImportPlotsFromJSON(json);
+            Source = ModPlotSource.LocalFile;
         }
 
         public void ImportPlotsFromJSON(string json)
@@ -53,9 +62,9 @@ namespace LegendaryExplorerCore.PlotDatabase.Databases
             Root = pdb.ModRoot;
         }
 
-        public void SaveDatabaseToFile(string folder)
+        public void SaveDatabaseToFile(string folder, bool forceSave = false)
         {
-            if (!CanSave() || !Directory.Exists(folder))
+            if (!CanSave() || !Directory.Exists(folder) || (Source != ModPlotSource.LocalFile && !forceSave))
                 return;
 
             var serializationObj = new SerializedModPlotDatabase(this);

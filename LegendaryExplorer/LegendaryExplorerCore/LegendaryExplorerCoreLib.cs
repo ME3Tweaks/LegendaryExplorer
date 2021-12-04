@@ -17,7 +17,7 @@ namespace LegendaryExplorerCore
     public static class LegendaryExplorerCoreLib
 
     {
-        public static string RepositoryURL => "http://github.com/ME3Tweaks/ME3Explorer/";
+        public static string RepositoryURL => "http://github.com/ME3Tweaks/LegendaryExplorer/";
         public static string BugReportURL => $"{RepositoryURL}issues/";
         public static TaskScheduler SYNCHRONIZATION_CONTEXT { get; private set; }
 

@@ -1006,7 +1006,6 @@ namespace LegendaryExplorerCore.Unreal
                 int startUncompPosition = 0;
                 var totalEntryUncompSize = entry.RealUncompressedSize;
                 bool hasBegunReading = false;
-                bool stopReading = false;
 
                 // Seek to data start
                 fs.Seek(entry.BlockOffsets[0], SeekOrigin.Begin);

@@ -4231,15 +4231,15 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                         {
                             foreach (var qds in lm1.DirectionalSamples)
                             {
-                                if (qds.Coefficient1 != null)
+                                if (qds.Coefficient1 != default)
                                 {
                                     qds.Coefficient1 = AdjustColors(qds.Coefficient1, brightscalar);
                                 }
-                                if (qds.Coefficient2 != null)
+                                if (qds.Coefficient2 != default)
                                 {
                                     qds.Coefficient2 = AdjustColors(qds.Coefficient2, brightscalar);
                                 }
-                                if (qds.Coefficient3 != null)
+                                if (qds.Coefficient3 != default)
                                 {
                                     qds.Coefficient3 = AdjustColors(qds.Coefficient3, brightscalar);
                                 }
@@ -4249,15 +4249,15 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                         {
                             foreach (var qds in lm3.DirectionalSamples)
                             {
-                                if (qds.Coefficient1 != null)
+                                if (qds.Coefficient1 != default)
                                 {
                                     qds.Coefficient1 = AdjustColors(qds.Coefficient1, brightscalar);
                                 }
-                                if (qds.Coefficient2 != null)
+                                if (qds.Coefficient2 != default)
                                 {
                                     qds.Coefficient2 = AdjustColors(qds.Coefficient2, brightscalar);
                                 }
-                                if (qds.Coefficient3 != null)
+                                if (qds.Coefficient3 != default)
                                 {
                                     qds.Coefficient3 = AdjustColors(qds.Coefficient3, brightscalar);
                                 }

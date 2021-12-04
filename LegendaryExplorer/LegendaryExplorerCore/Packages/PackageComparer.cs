@@ -501,7 +501,6 @@ namespace LegendaryExplorerCore.Packages
             var uindices2 = objBin2.GetUIndexes(exp2.FileRef.Game);
 
             // Now we iterate through written binary looking for values
-            int misMatchStart = -1;
             for (int pos = 0; pos < originalWrittenBin1.Length; pos++)
             {
                 if (isDebug && pos == 0x171)

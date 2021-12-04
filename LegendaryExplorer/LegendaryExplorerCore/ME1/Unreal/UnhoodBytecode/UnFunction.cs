@@ -125,7 +125,7 @@ namespace LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode
             }
 #if !DEBUG && !AZURE
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 Debug.WriteLine("Exception..");
             }
@@ -205,7 +205,7 @@ namespace LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode
                         }
                     }
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     Debug.WriteLine(@"Exception parsing parameters of function - if relinking this is expected as values have not been corrected yet");
                 }
