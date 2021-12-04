@@ -1064,6 +1064,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
                         EnumerateChildNetIndexes(funcbin.Children);
                         EnumerateChildNetIndexes(funcbin.Next);
                     }
+                    else if(childbin is UState statebin)
+                    {
+                        EnumerateChildNetIndexes(statebin.Children);
+                        EnumerateChildNetIndexes(statebin.Next);
+                    }
                     else if (childbin is UProperty propbin)
                     {
                         if(childbin is UArrayProperty arraybin)
