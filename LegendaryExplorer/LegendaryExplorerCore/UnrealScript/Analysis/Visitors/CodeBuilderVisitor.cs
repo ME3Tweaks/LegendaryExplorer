@@ -263,23 +263,23 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         {
             switch (node)
             {
-                case StaticArrayType _:
-                case DynamicArrayType _:
-                case DelegateType _:
-                case ClassType _:
+                case StaticArrayType:
+                case DynamicArrayType:
+                case DelegateType:
+                case ClassType:
                     node.AcceptVisitor(this);
                     break;
-                case Enumeration _:
+                case Enumeration:
                     Append(node.Name, EF.Enum);
                     break;
-                case Const _:
+                case Const:
                     Append(node.Name);
                     break;
-                case VariableType v when SymbolTable.IsPrimitive(v):
+                case PrimitiveType:
                     Append(node.Name, EF.Keyword);
                     break;
-                case Class _:
-                case Struct _:
+                case Class:
+                case Struct:
                 default:
                     Append(node.Name, EF.TypeName);
                     break;
