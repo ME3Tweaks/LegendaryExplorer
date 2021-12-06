@@ -785,11 +785,9 @@ namespace LegendaryExplorer.DialogueEditor
                 }
                 node.TransitionPlotPath = PlotDatabases.FindPlotTransitionByID(node.Transition, Pcc.Game)?.Path;
             }
-            catch (Exception e)
+            catch (Exception e) when (App.IsDebug)
             {
-#if DEBUG
                 throw new Exception("DiagNodeParse Failed.", e);
-#endif
             }
         }
         

@@ -394,7 +394,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 case "GuidCache":
                     return GuidCache.Create();
                 case "FaceFXAnimSet":
-                    return FaceFXAnimSet.Create();
+                    return FaceFXAnimSet.Create(game);
                 case "Bio2DA":
                 case "Bio2DANumberedRows":
                     return Bio2DABinary.Create();
@@ -444,7 +444,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 case "FaceFXAsset":
                     if (game != MEGame.ME2)
                     {
-                        return FaceFXAsset.Create();
+                        return FaceFXAsset.Create(game);
                     }
                     break;
                 case "BioInert":

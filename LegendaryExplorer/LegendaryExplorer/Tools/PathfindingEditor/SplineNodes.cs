@@ -21,7 +21,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
 {
     public class SplineNode : PathfindingNodeMaster
     {
-        static readonly Color commentColor = Color.FromArgb(74, 63, 190);
+        new static readonly Color commentColor = Color.FromArgb(74, 63, 190);
         public static Pen splineconnnectorPen = Pens.DeepPink;
         protected SplineNode(int idx, IMEPackage p, PathingGraphEditor grapheditor)
         {

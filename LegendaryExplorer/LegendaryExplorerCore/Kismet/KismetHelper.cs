@@ -1,6 +1,5 @@
 ﻿using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -248,7 +247,7 @@ namespace LegendaryExplorerCore.Kismet
 
         public class OutboundLink
         {
-            public IEntry? LinkedOp { get; set; }
+            public IEntry LinkedOp { get; set; }
             public int InputLinkIdx { get; set; }
 
             public static OutboundLink FromStruct(StructProperty sp, IMEPackage package)

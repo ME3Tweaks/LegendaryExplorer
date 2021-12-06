@@ -1305,7 +1305,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     }
                 }
             }
-            catch (Exception e)
+            catch
             {
 
             }

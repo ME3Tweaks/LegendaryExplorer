@@ -24,7 +24,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             #region  Header
             int int0 = 0;
             int int1 = 1;
-            short short1 = 1;
 
             sc.SerializeFaceFXHeader(ref Version);
 
@@ -86,11 +85,15 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             #endregion
 
             sc.Serialize(ref Lines, SCExt.Serialize);
-            length = (int)(sc.ms.Position - startPos - 4);
-            int zero = 0;
-            sc.Serialize(ref zero);
+
+            var endingPosition = sc.ms.Position;
+            length = (int)(endingPosition - startPos - 4);
             sc.ms.JumpTo(startPos);
             sc.Serialize(ref length);
+
+            sc.ms.JumpTo(endingPosition);
+            int zero = 0;
+            sc.Serialize(ref zero);
 
             if (sc.IsLoading)
             {
@@ -101,13 +104,19 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
         }
 
-        public static FaceFXAnimSet Create()
+        public static FaceFXAnimSet Create(MEGame game)
         {
             return new()
             {
                 HNodes = FaceFXAsset.HNode.GetFXANodeTable(),
                 Names = new List<string>(),
-                Lines = new List<FaceFXLine>()
+                Lines = new List<FaceFXLine>(),
+                Version = game switch
+                {
+                    MEGame.ME1 => 1710,
+                    MEGame.ME2 => 1610,
+                    _ => 1731
+                }
             };
         }
 
@@ -166,17 +175,10 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public static void SerializeFaceFXHeader(this SerializingContainer2 sc, ref int version)
         {
             int int0 = 0;
-            int int1 = 1;
             short short1 = 1;
 
             uint FACE = 1162035526U;
             sc.Serialize(ref FACE);
-            version = sc.Game switch
-            {
-                MEGame.ME1 => 1710,
-                MEGame.ME2 => 1610,
-                _ => 1731
-            };
             sc.Serialize(ref version);
             if (version == 1731)
             {

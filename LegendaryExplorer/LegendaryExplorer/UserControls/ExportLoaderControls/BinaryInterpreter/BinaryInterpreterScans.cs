@@ -142,7 +142,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
                         bin.JumpTo(shaderEndOffset - dataOffset);
                     }
-                    catch (Exception e)
+                    catch (Exception)
                     {
                         embeddedShaderCount.Items.Add(shaderNode);
                         break;
@@ -6118,7 +6118,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             {
                                 Bio2DACell.Bio2DADataType.TYPE_INT => MakeInt32Node(bin, "Value"),
                                 Bio2DACell.Bio2DADataType.TYPE_NAME => MakeNameNode(bin, "Value"),
-                                Bio2DACell.Bio2DADataType.TYPE_FLOAT => MakeFloatNode(bin, "Value")
+                                Bio2DACell.Bio2DADataType.TYPE_FLOAT => MakeFloatNode(bin, "Value"),
+                                Bio2DACell.Bio2DADataType.TYPE_NULL => new BinInterpNode("Value: NULL"),
+                                _ => throw new ArgumentOutOfRangeException()
                             }
                         }
                     });

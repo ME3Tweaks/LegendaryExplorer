@@ -748,7 +748,9 @@ namespace LegendaryExplorerCore.Packages
                             break;
                     }
                 }
-                foreach (var item in Users.Concat(WeakUsers))
+                //WeakUsers needs to come before Users so that FileLib will invalidate BEFORE ScriptEditor refreshes.
+                //This is hacky, and some sort of User priority system should be implemented in the future
+                foreach (var item in WeakUsers.Concat(Users))
                 {
                     item.handleUpdate(pendingUpdatesList);
                 }

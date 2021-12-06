@@ -94,9 +94,9 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             };
         }
 
-        public void UpdateProps(PropertyCollection props, MEGame newGame, AnimationCompressionFormat newRotationCompression = AnimationCompressionFormat.ACF_Float96NoW)
+        public void UpdateProps(PropertyCollection props, MEGame newGame, AnimationCompressionFormat newRotationCompression = AnimationCompressionFormat.ACF_Float96NoW, bool forceUpdate = false)
         {
-            if (compressedDataSource == MEGame.Unknown || (newGame != compressedDataSource && !(newGame != MEGame.UDK && compressedDataSource != MEGame.UDK)))
+            if (forceUpdate || compressedDataSource == MEGame.Unknown || (newGame != compressedDataSource && !(newGame != MEGame.UDK && compressedDataSource != MEGame.UDK)))
             {
                 CompressAnimationData(newGame, newRotationCompression);
                 props.RemoveNamedProperty("KeyEncodingFormat");
@@ -428,7 +428,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                                 //omit the largest component, and store its index
                                 int wPos = 0;
                                 float max = 0f; 
-                                float[] rotArr = {rot.X, rot.Y, rot.Z};
+                                float[] rotArr = {rot.X, rot.Y, rot.Z, rot.W};
                                 for (int k = 0; k < 4; k++)
                                 {
                                     if (Math.Abs(rotArr[k]) > max)
@@ -508,6 +508,13 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     ms.WriteByte(0x55);
                 }
             }
+        }
+
+        public PropertyCollection CompressAnimationDataAndUpdateProperties()
+        {
+            var props = Export.GetProperties();
+            UpdateProps(props, Export.Game, rotCompression, true);
+            return props;
         }
     }
 

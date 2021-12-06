@@ -35,6 +35,8 @@ namespace LegendaryExplorer.Dialogs
         public ICommand Select3773Command { get; set; }
         public ICommand Select7110Command { get; set; }
 
+        public bool PathCorrect { get; set; }
+
         public SetWwisePathDialog() : base()
         {
             DataContext = this;
@@ -62,6 +64,7 @@ namespace LegendaryExplorer.Dialogs
 
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {
+            PathCorrect = false;
             Close();
         }
 
@@ -72,6 +75,7 @@ namespace LegendaryExplorer.Dialogs
                 if(File.Exists(Wwise3773Path)) Misc.AppSettings.Settings.Wwise_3773Path = Wwise3773Path;
                 if(File.Exists(Wwise7110Path)) Misc.AppSettings.Settings.Wwise_7110Path = Wwise7110Path;
                 Misc.AppSettings.Settings.Save();
+                PathCorrect = true;
                 Close();
             }
         }

@@ -132,6 +132,7 @@ namespace LegendaryExplorerCore.GameFilesystem
             }
             else
             {
+#pragma warning disable CA1416
 #if WINDOWS
                 string hkey32 = @"HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\";
                 string hkey64 = @"HKEY_LOCAL_MACHINE\SOFTWARE\";
@@ -152,9 +153,9 @@ namespace LegendaryExplorerCore.GameFilesystem
                 {
                     DefaultGamePath += Path.DirectorySeparatorChar;
                     LegendaryExplorerCoreLibSettings.Instance.ME2Directory = DefaultGamePath;
-                    return;
                 }
 #endif
+#pragma warning restore CA1416
             }
         }
 

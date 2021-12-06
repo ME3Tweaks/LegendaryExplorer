@@ -7,7 +7,6 @@ using System.Linq;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
-using LegendaryExplorerCore.Memory;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Textures;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
@@ -867,7 +866,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
                 {
                     imageBytes = Texture2D.GetTextureData(info, Export.Game);
                 }
-                catch (FileNotFoundException e)
+                catch (FileNotFoundException)
                 {
                     Debug.WriteLine("External cache not found. Defaulting to internal mips.");
                     //External archive not found - using built in mips (will be hideous, but better than nothing)
@@ -901,16 +900,16 @@ namespace LegendaryExplorerCore.Unreal.Classes
                 byte[] imageBytes = null;
                 try
                 {
-                    imageBytes = Texture2D.GetTextureData(info, Export.Game);
+                    imageBytes = GetTextureData(info, Export.Game);
                 }
-                catch (FileNotFoundException e)
+                catch (FileNotFoundException)
                 {
                     Debug.WriteLine("External cache not found. Defaulting to internal mips.");
                     //External archive not found - using built in mips (will be hideous, but better than nothing)
                     info = Mips.FirstOrDefault(x => x.storageType == StorageTypes.pccUnc);
                     if (info != null)
                     {
-                        imageBytes = Texture2D.GetTextureData(info, Export.Game);
+                        imageBytes = GetTextureData(info, Export.Game);
                     }
                 }
 
@@ -941,16 +940,16 @@ namespace LegendaryExplorerCore.Unreal.Classes
                 byte[] imageBytes = null;
                 try
                 {
-                    imageBytes = Texture2D.GetTextureData(info, Export.Game);
+                    imageBytes = GetTextureData(info, Export.Game);
                 }
-                catch (FileNotFoundException e)
+                catch (FileNotFoundException)
                 {
                     Debug.WriteLine("External cache not found. Defaulting to internal mips.");
                     //External archive not found - using built in mips (will be hideous, but better than nothing)
                     info = Mips.FirstOrDefault(x => x.storageType == StorageTypes.pccUnc);
                     if (info != null)
                     {
-                        imageBytes = Texture2D.GetTextureData(info, Export.Game);
+                        imageBytes = GetTextureData(info, Export.Game);
                     }
                 }
 
@@ -979,7 +978,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
         public byte[] GetPNG(Texture2DMipInfo info)
         {
             PixelFormat format = Image.getPixelFormatType(TextureFormat);
-            return Image.convertToPng(Texture2D.GetTextureData(info, Export.Game), info.width, info.height, format)
+            return Image.convertToPng(GetTextureData(info, Export.Game), info.width, info.height, format)
                 .ToArray();
         }
     }

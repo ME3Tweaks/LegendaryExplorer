@@ -15,9 +15,9 @@ variables:
   solution: 'LegendaryExplorer\LegendaryExplorer.sln'
   buildPlatform: 'x64'
   buildConfiguration: 'WinAzureRelease'
-  appMajorMin: '6.0'
+  appMajorMin: '6.1'
   appMajor: '6'
-  appMinor: '0'
+  appMinor: '1'
   appPatch: '0'
   netVersion: '5'
   disable.coverage.autogenerate: 'true'
@@ -102,6 +102,7 @@ steps:
 
 # Build TexConverter in Release mode
 - task: MSBuild@1
+  displayName: 'Build TexConverter'
   inputs:
     solution: 'LegendaryExplorer\TexConverter\TexConverter.vcxproj'
     msbuildArchitecture: 'x64'

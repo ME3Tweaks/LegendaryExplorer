@@ -8,7 +8,6 @@ using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Audio;
 using WwiseStream = LegendaryExplorerCore.Unreal.BinaryConverters.WwiseStream;
-using LegendaryExplorerCore.Audio;
 
 namespace LegendaryExplorer.Tools.Soundplorer
 {

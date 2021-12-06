@@ -1314,6 +1314,16 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     {
                         parsedValue = $"{sp.GetProp<NameProperty>("m_nmTag").Value}";
                     }
+                    else if (sp.StructType == "BioPropertyInfo")
+                    {
+                        var propertyName = sp.GetProp<NameProperty>("PropertyName")?.Value ?? "";
+                        var actualPropertyName = sp.GetProp<NameProperty>("ActualPropertyName")?.Value ?? "";
+                        parsedValue = $"{propertyName} ({actualPropertyName})";
+                    }
+                    else if (sp.StructType == "PropertyInfo")
+                    {
+                        parsedValue = $"{sp.GetProp<NameProperty>("PropertyName").Value}";
+                    }
                     else
                     {
                         parsedValue = sp.StructType;
@@ -1480,7 +1490,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         NameProperty prop = exportEntry.GetProperty<NameProperty>("PackageName");
                         return $"({prop.Value.Instanced})";
                     }
-                    break;
                 case "StaticMeshComponent":
                     {
                         ObjectProperty smprop = exportEntry.GetProperty<ObjectProperty>("StaticMesh");
@@ -1526,7 +1535,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         NameProperty prop = exportEntry.GetProperty<NameProperty>("AnimSeqName");
                         return $"({prop?.Value.Instanced ?? "No Name"})";
                     }
-                    break;
             }
             return "";
         }

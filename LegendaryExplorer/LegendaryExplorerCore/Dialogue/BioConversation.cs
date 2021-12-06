@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
-using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Kismet;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
@@ -133,10 +132,10 @@ namespace LegendaryExplorerCore.Dialogue
                     r.SpeakerTag = spkrtag;
             }
         }
+
         /// <summary>
         /// Gets the interpdata for each node in conversation
         /// </summary>
-        /// <param name="conv"></param>
         private void ParseLinesInterpData()
         {
             if (Sequence == null || Sequence.UIndex < 1)
@@ -225,7 +224,6 @@ namespace LegendaryExplorerCore.Dialogue
         /// <summary>
         /// Gets the interpdata for a single node
         /// </summary>
-        /// <param name="conv"></param>
         public ExportEntry ParseSingleNodeInterpData(DialogueNodeExtended node, Dictionary<int, ExportEntry> convStarts = null)
         {
             if (Sequence == null || node == null || Sequence.UIndex < 1)
@@ -703,7 +701,6 @@ namespace LegendaryExplorerCore.Dialogue
         /// <summary>
         /// Returns the IEntry of FaceFXAnimSet
         /// </summary>
-        /// <param name="conv"></param>
         /// <param name="speakerID">SpeakerID: -1 = Owner, -2 = Player</param>
         /// <param name="isMale">will pull female by default</param>
         public IEntry GetFaceFX(int speakerID, bool isMale = false)

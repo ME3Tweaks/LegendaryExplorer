@@ -559,18 +559,18 @@ namespace LegendaryExplorerCore.Gammtek.Collections.ObjectModel
 
 		[Serializable]
 		[StructLayout(LayoutKind.Sequential)]
-		public struct Enumerator<TKey, TValue> : IEnumerator<KeyValuePair<TKey, TValue>>, IDictionaryEnumerator
+		public struct Enumerator<TKey1, TValue1> : IEnumerator<KeyValuePair<TKey1, TValue1>>, IDictionaryEnumerator
 		{
-			internal Enumerator(ObservableDictionary<TKey, TValue> dictionary, bool isDictionaryEntryEnumerator)
+			internal Enumerator(ObservableDictionary<TKey1, TValue1> dictionary, bool isDictionaryEntryEnumerator)
 			{
 				_dictionary = dictionary;
 				_version = dictionary._version;
 				_index = -1;
 				_isDictionaryEntryEnumerator = isDictionaryEntryEnumerator;
-				_current = new KeyValuePair<TKey, TValue>();
+				_current = new KeyValuePair<TKey1, TValue1>();
 			}
 
-			public KeyValuePair<TKey, TValue> Current
+			public KeyValuePair<TKey1, TValue1> Current
 			{
 				get
 				{
@@ -589,13 +589,13 @@ namespace LegendaryExplorerCore.Gammtek.Collections.ObjectModel
 
 				if (_index < _dictionary.KeyedEntryCollection.Count)
 				{
-					_current = new KeyValuePair<TKey, TValue>((TKey) _dictionary.KeyedEntryCollection[_index].Key,
-						(TValue) _dictionary.KeyedEntryCollection[_index].Value);
+					_current = new KeyValuePair<TKey1, TValue1>((TKey1) _dictionary.KeyedEntryCollection[_index].Key,
+						(TValue1) _dictionary.KeyedEntryCollection[_index].Value);
 					return true;
 				}
 
 				_index = -2;
-				_current = new KeyValuePair<TKey, TValue>();
+				_current = new KeyValuePair<TKey1, TValue1>();
 				return false;
 			}
 
@@ -628,7 +628,7 @@ namespace LegendaryExplorerCore.Gammtek.Collections.ObjectModel
 					{
 						return new DictionaryEntry(_current.Key, _current.Value);
 					}
-					return new KeyValuePair<TKey, TValue>(_current.Key, _current.Value);
+					return new KeyValuePair<TKey1, TValue1>(_current.Key, _current.Value);
 				}
 			}
 
@@ -636,7 +636,7 @@ namespace LegendaryExplorerCore.Gammtek.Collections.ObjectModel
 			{
 				ValidateVersion();
 				_index = -1;
-				_current = new KeyValuePair<TKey, TValue>();
+				_current = new KeyValuePair<TKey1, TValue1>();
 			}
 
 			DictionaryEntry IDictionaryEnumerator.Entry
@@ -666,23 +666,23 @@ namespace LegendaryExplorerCore.Gammtek.Collections.ObjectModel
 				}
 			}
 
-			private readonly ObservableDictionary<TKey, TValue> _dictionary;
+			private readonly ObservableDictionary<TKey1, TValue1> _dictionary;
 			private readonly int _version;
 			private int _index;
-			private KeyValuePair<TKey, TValue> _current;
+			private KeyValuePair<TKey1, TValue1> _current;
 			private readonly bool _isDictionaryEntryEnumerator;
 		}
 
-		protected class KeyedDictionaryEntryCollection<TKey> : KeyedCollection<TKey, DictionaryEntry>
+		protected class KeyedDictionaryEntryCollection<TKey1> : KeyedCollection<TKey1, DictionaryEntry>
 		{
 			public KeyedDictionaryEntryCollection() {}
 
-			public KeyedDictionaryEntryCollection(IEqualityComparer<TKey> comparer)
+			public KeyedDictionaryEntryCollection(IEqualityComparer<TKey1> comparer)
 				: base(comparer) {}
 
-			protected override TKey GetKeyForItem(DictionaryEntry entry)
+			protected override TKey1 GetKeyForItem(DictionaryEntry entry)
 			{
-				return (TKey) entry.Key;
+				return (TKey1) entry.Key;
 			}
 		}
 	}
