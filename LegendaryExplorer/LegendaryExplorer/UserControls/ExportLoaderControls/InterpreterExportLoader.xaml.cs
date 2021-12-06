@@ -1315,6 +1315,16 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     {
                         parsedValue = $"{sp.GetProp<NameProperty>("m_nmTag").Value}";
                     }
+                    else if (sp.StructType == "BioPropertyInfo")
+                    {
+                        var propertyName = sp.GetProp<NameProperty>("PropertyName")?.Value ?? "";
+                        var actualPropertyName = sp.GetProp<NameProperty>("ActualPropertyName")?.Value ?? "";
+                        parsedValue = $"{propertyName} ({actualPropertyName})";
+                    }
+                    else if (sp.StructType == "PropertyInfo")
+                    {
+                        parsedValue = $"{sp.GetProp<NameProperty>("PropertyName").Value}";
+                    }
                     else
                     {
                         parsedValue = sp.StructType;
