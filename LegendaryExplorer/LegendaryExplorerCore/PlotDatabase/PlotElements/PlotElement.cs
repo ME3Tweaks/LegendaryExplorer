@@ -9,34 +9,46 @@ using Newtonsoft.Json;
 namespace LegendaryExplorerCore.PlotDatabase.PlotElements
 {
     /// <summary>
-    /// Base class for all Plot Elements, implements notify property changed and can be serialized to JSON
+    /// Base class representing an element in a plot database. Can be serialized to JSON
     /// </summary>
     [DebuggerDisplay("{Type} {PlotId}: {Path}")]
     public class PlotElement : INotifyPropertyChanged
     {
+        /// <summary>The in-game id for this element, -1 if not applicable</summary>
         [JsonProperty("plotid")]
         public int PlotId { get; set; }
 
+        /// <summary>The database id for this element</summary>
+        /// <remarks>ElementIds should be unique within a database</remarks>
         [JsonProperty("elementid")]
         public int ElementId { get; set; }
 
+        /// <summary>The element id of this element's parent</summary>
         [JsonProperty("parentelementid")]
         public int ParentElementId { get; set; }
 
+        /// <summary>The name or label associated with this element</summary>
         [JsonProperty("label")]
         public string Label { get; set; }
 
+        /// <summary>A value that likely associates this element to something in an internal BioWare system</summary>
         [JsonProperty("sequence")]
         public float Sequence { get; set; }
 
+        /// <summary>The type of data this element represents</summary>
         [JsonProperty("type")]
         public PlotElementType Type { get; set; }
 
+        /// <summary>Gets the <see cref="PlotElement"/> that is this element's parent</summary>
+        /// <remarks>Use <see cref="AssignParent"/> to set parent. This property is not used during serialization.</remarks>
         [JsonIgnore]
-        public PlotElement Parent { get; set; }
+        public PlotElement Parent { get; private set; }
 
+        /// <summary>A bindable collection of this element's children</summary>
+        /// <remarks>Use <see cref="AssignParent"/> on children elements to set children. This property is not used during serialization.</remarks>
         [JsonIgnore] public ObservableCollectionExtended<PlotElement> Children { get; } = new ();
 
+        /// <summary>Gets a string displaying the path through the tree to this element</summary>
         [JsonIgnore]
         public string Path
         {
@@ -55,6 +67,7 @@ namespace LegendaryExplorerCore.PlotDatabase.PlotElements
             }
         }
 
+        /// <summary>Gets the most relevant id based on type, either <see cref="PlotId"/> for in-game elements or <see cref="ElementId"/></summary>
         [JsonIgnore]
         public int RelevantId
         {
@@ -77,6 +90,7 @@ namespace LegendaryExplorerCore.PlotDatabase.PlotElements
             }
         }
 
+        /// <summary>Gets whether this element represents something in-game, based on element type</summary>
         [JsonIgnore]
         public bool IsAGameState
         {
@@ -102,9 +116,21 @@ namespace LegendaryExplorerCore.PlotDatabase.PlotElements
             }
         }
 
+        /// <summary>
+        /// Initializes a new <see cref=""/>
+        /// </summary>
         public PlotElement()
         { }
 
+        /// <summary>
+        /// Initializes a new PlotElement
+        /// </summary>
+        /// <param name="plotid">PlotID of new element</param>
+        /// <param name="elementid">ElementID of new element</param>
+        /// <param name="label">Label of new element</param>
+        /// <param name="type">Type of new element</param>
+        /// <param name="parentelementId">ParentElementID of new element</param>
+        /// <param name="children">Children of new element</param>
         public PlotElement(int plotid, int elementid, string label, PlotElementType type, int parentelementId, List<PlotElement> children = null)
         {
             PlotId = plotid;
@@ -115,12 +141,26 @@ namespace LegendaryExplorerCore.PlotDatabase.PlotElements
             Children.AddRange(children ?? new List<PlotElement>());
         }
 
+        /// <summary>
+        /// Initializes a new PlotElement
+        /// </summary>
+        /// <param name="plotid">PlotID of new element</param>
+        /// <param name="elementid">ElementID of new element</param>
+        /// <param name="label">Label of new element</param>
+        /// <param name="type">Type of new element</param>
+        /// <param name="parent">Parent PlotElement of new element</param>
+        /// <param name="children">Children of new element</param>
         public PlotElement(int plotid, int elementid, string label, PlotElementType type, PlotElement parent, List<PlotElement> children = null)
             : this(plotid, elementid, label, type, -1, children)
         {
             AssignParent(parent);
         }
 
+        /// <summary>
+        /// Assigns this element to a new parent.
+        /// Removes it from an existing parent and handles <see cref="ParentElementId"/> and <see cref="Children"/> arrays as needed
+        /// </summary>
+        /// <param name="parent">New parent plot element</param>
         public void AssignParent(PlotElement parent)
         {
             if (Parent != parent && Parent != null)
@@ -135,6 +175,10 @@ namespace LegendaryExplorerCore.PlotDatabase.PlotElements
             }
         }
 
+        /// <summary>
+        /// Removes the parent for this element
+        /// </summary>
+        /// <returns><c>true</c> if a parent was removed, <c>false</c> otherwise</returns>
         public bool RemoveFromParent()
         {
             if (Parent != null)
@@ -148,6 +192,10 @@ namespace LegendaryExplorerCore.PlotDatabase.PlotElements
             return false;
         }
 
+        /// <summary>
+        /// Sets the <see cref="ElementId"/>, handling <see cref="ParentElementId"/> of any children
+        /// </summary>
+        /// <param name="id">New element id</param>
         public void SetElementId(int id)
         {
             this.ElementId = id;
