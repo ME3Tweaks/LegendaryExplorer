@@ -1,0 +1,30 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  DOXYGEN_DIR: '$(Pipeline.Workspace)/doxygen'
+  DOXYGEN_OUTPUT: '$(Pipeline.Workspace)'
+steps:
+# - task: Cache@2
+#   displayName: "Cache Doxygen Install"
+#   inputs:
+#     key: '"$(doxygenUrl)" | $(DOXYGEN_DIR)'
+#     path: $(DOXYGEN_DIR)
+#     cacheHitVar: 'CACHE_RESTORED'
+    
+- task: PowerShell@2
+  displayName: "Install Doxygen"
+  #condition: ne(variables.CACHE_RESTORED, 'true')
+  inputs:
+    filePath: '$(Build.SourcesDirectory)/LegendaryExplorer/LegendaryExplorer/BuildTools/InstallDoxygen.ps1'
+    arguments: $(DOXYGEN_DIR)
+- task: PowerShell@2
+  inputs:
+    targetType: 'inline'
+    script: |
+      $(DOXYGEN_DIR)/doxygen.exe $(Build.SourcesDirectory)/DoxygenConfigLEC
