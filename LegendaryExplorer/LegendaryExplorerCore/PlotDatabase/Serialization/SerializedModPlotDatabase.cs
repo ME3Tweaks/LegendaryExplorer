@@ -6,17 +6,25 @@ using Newtonsoft.Json;
 
 namespace LegendaryExplorerCore.PlotDatabase.Serialization
 {
+    /// <summary>
+    /// Represents a JSON serialized plot database for a single mod
+    /// </summary>
     public class SerializedModPlotDatabase : SerializedPlotDatabase
     {
-        [JsonProperty("modroot")] public PlotModElement ModRoot { get; set; }
+        /// <summary>The ModPlotElement root of this database</summary>
+        [JsonProperty("modroot")]
+        public PlotModElement ModRoot { get; set; }
 
+        /// <inheritdoc/>
         public SerializedModPlotDatabase() { }
 
+        /// <inheritdoc/>
         public SerializedModPlotDatabase(ModPlotDatabase plotDatabase) : base(plotDatabase)
         {
             ModRoot = plotDatabase.ModRoot;
         }
 
+        /// <inheritdoc/>
         protected override Dictionary<int, PlotElement> GetMasterPlotDictionary()
         {
             return Bools.Concat(Ints)

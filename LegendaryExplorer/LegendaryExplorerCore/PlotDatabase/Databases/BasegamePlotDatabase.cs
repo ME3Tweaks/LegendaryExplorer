@@ -5,11 +5,24 @@ using Newtonsoft.Json;
 
 namespace LegendaryExplorerCore.PlotDatabase.Databases
 {
+    /// <summary>
+    /// Represents a table of plot elements for a single game created from the BioWare-provided plot databases
+    /// </summary>
     public class BasegamePlotDatabase : PlotDatabaseBase
     {
         public override bool IsBioware => true;
 
-        public void LoadPlotsFromLEC(MEGame game)
+        /// <summary>
+        /// Initializes a new <see cref="BasegamePlotDatabase"/> and loads it with the BioWare plot data that ships with LEC
+        /// </summary>
+        /// <param name="game">Game to load data for</param>
+        public BasegamePlotDatabase(MEGame game)
+        {
+            Game = game;
+            LoadPlotsFromLEC(game);
+        }
+
+        private void LoadPlotsFromLEC(MEGame game)
         {
             Game = game;
 
@@ -23,13 +36,6 @@ namespace LegendaryExplorerCore.PlotDatabase.Databases
                 ImportPlots(pdb);
                 Root = Organizational[1];
             }
-        }
-
-        public static BasegamePlotDatabase CreateBasegamePlotDatabase(MEGame game)
-        {
-            var db = new BasegamePlotDatabase();
-            db.LoadPlotsFromLEC(game);
-            return db;
         }
     }
 }
