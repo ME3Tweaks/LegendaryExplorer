@@ -3042,24 +3042,30 @@ namespace LegendaryExplorer.Tools.PackageEditor
             Metadata_Tab.Visibility = Visibility.Visible;
             Intro_Tab.Visibility = Visibility.Collapsed;
             //Debug.WriteLine("New selection: " + n);
-            if (CurrentView == CurrentViewMode.Imports || CurrentView == CurrentViewMode.Exports ||
-                CurrentView == CurrentViewMode.Tree)
+            if (CurrentView is CurrentViewMode.Imports or CurrentViewMode.Exports or CurrentViewMode.Tree)
             {
                 Interpreter_Tab.IsEnabled = selectedEntry is ExportEntry;
                 if (selectedEntry is ExportEntry exportEntry)
                 {
                     foreach ((ExportLoaderControl exportLoader, TabItem tab) in ExportLoaders)
                     {
-                        if (exportLoader.CanParse(exportEntry))
+                        try
                         {
-                            exportLoader.LoadExport(exportEntry);
-                            tab.Visibility = Visibility.Visible;
+                            if (exportLoader.CanParse(exportEntry))
+                            {
+                                exportLoader.LoadExport(exportEntry);
+                                tab.Visibility = Visibility.Visible;
 
+                            }
+                            else
+                            {
+                                tab.Visibility = Visibility.Collapsed;
+                                exportLoader.UnloadExport();
+                            }
                         }
-                        else
+                        catch (Exception e)
                         {
-                            tab.Visibility = Visibility.Collapsed;
-                            exportLoader.UnloadExport();
+                            new ExceptionHandlerDialog(e).ShowDialog();
                         }
                     }
 
@@ -3068,7 +3074,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                         //We are on interpreter tab, selecting class. Switch to binary interpreter as interpreter will never be useful
                         BinaryInterpreter_Tab.IsSelected = true;
                     }
-                    if (Interpreter_Tab.IsSelected && exportEntry.ClassName == "Function" && Bytecode_Tab.IsVisible)
+                    if (Interpreter_Tab.IsSelected && Bytecode_Tab.IsVisible)
                     {
                         Bytecode_Tab.IsSelected = true;
                     }
@@ -3089,7 +3095,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 }
 
                 //CHECK THE CURRENT TAB IS VISIBLE/ENABLED. IF NOT, CHOOSE FIRST TAB THAT IS 
-                TabItem currentTab = (TabItem)EditorTabs.Items[EditorTabs.SelectedIndex];
+                var currentTab = (TabItem)EditorTabs.Items[EditorTabs.SelectedIndex];
                 if (!currentTab.IsEnabled || !currentTab.IsVisible)
                 {
                     int index = 0;

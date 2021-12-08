@@ -11,7 +11,7 @@ using LegendaryExplorerCore.Packages;
 
 namespace LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode
 {
-    public class UE3FunctionReader
+    public static class UE3FunctionReader
     {
         public static readonly FlagSet _flagSet = new FlagSet("Final", "Defined", "Iterator", "Latent",
             "PreOperator", "Singular", "Net", "NetReliable",
@@ -43,7 +43,7 @@ namespace LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode
             using var reader = new EndianReader(memoryStream) { Endian = export.FileRef.Endian };
             if (dataOverride is not null)
             {
-                reader.ReadBytes(12); //netindex?, none
+                reader.ReadBytes(export.IsClass ? 4 : 12); //netindex?, none
             }
             int super = reader.ReadInt32();
             int nextCompilingChainItem = reader.ReadInt32();

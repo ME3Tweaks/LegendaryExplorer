@@ -725,12 +725,12 @@ namespace LegendaryExplorerCore.Unreal
 
         public static (List<Token>, List<BytecodeSingularToken>) ParseBytecode(byte[] raw, ExportEntry export, int pos = 0x20)
         {
-            var parser = new Bytecode(raw);
+            var parser = new Bytecode(raw, export.IsClass ? 0x18 : 0x20);
 
             List<Token> tokens = parser.ReadAll(0, export);
 
             //calculate padding width.
-            int totalLength = 32 + tokens.Sum(tok => tok.raw.Length);
+            int totalLength = pos + tokens.Sum(tok => tok.raw.Length);
 
             //calculate block position and assign paddingwidth.
             int paddingSize = totalLength.ToString().Length;
@@ -744,18 +744,20 @@ namespace LegendaryExplorerCore.Unreal
             return (tokens, parser.SingularTokens);
         }
 
-        private Bytecode(byte[] mem)
+        private Bytecode(byte[] mem, int byteCodeStart)
         {
             memory = mem;
             memsize = memory.Length;
             DebugCounter = 0;
             SingularTokens = new List<BytecodeSingularToken>();
+            ByteCodeStart = byteCodeStart;
         }
 
         private readonly byte[] memory;
         private readonly int memsize;
         private readonly List<BytecodeSingularToken> SingularTokens;
         private int DebugCounter;
+        private readonly int ByteCodeStart;
 
         private List<Token> ReadAll(int start, ExportEntry export)
         {
@@ -1346,13 +1348,12 @@ namespace LegendaryExplorerCore.Unreal
             }
 
             string op = $"[0x{t:X2}] {opname}";
-            string tokenpos = "0x" + (start + 32).ToString("X");
             string data = res.text;
             msg.OpCode = t < 0x66 ? t : newTok.op;
             msg.OpCodeString = op;
             msg.CurrentStack = data;
             msg.TokenIndex = thiscount;
-            msg.StartPos = start + 0x20; //start of script data in ME3
+            msg.StartPos = start + ByteCodeStart;
             SingularTokens.Add(msg);
             return res;
         }

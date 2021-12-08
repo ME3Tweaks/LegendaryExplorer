@@ -971,6 +971,15 @@ namespace LegendaryExplorerCore.Packages
             return Clone();
         }
 
+        //only for temporary use! Do not add the export returned by this to the file
+        internal ExportEntry CreateTempCopyWithNewData(byte[] newData)
+        {
+            var clone = (ExportEntry)MemberwiseClone();
+            clone._data = newData;
+            clone.DataSize = newData.Length;
+            return clone;
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
