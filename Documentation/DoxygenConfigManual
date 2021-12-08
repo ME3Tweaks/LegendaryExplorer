@@ -1,0 +1,18 @@
+# Doxyfile 1.9.2
+
+# Use this Doxygen configuration file to build documentation manually. 
+# This configuration will use all values from the AzurePipelines file, and override it with anything defined here
+# Run Doxygen from the folder containing this file to build it correctly
+
+@INCLUDE               = DoxygenConfigAzurePipelines
+
+PROJECT_NUMBER         = 6.1
+OUTPUT_DIRECTORY       = .\Output
+INPUT                  = ..\LegendaryExplorer\LegendaryExplorerCore
+
+# This file needs to be in the INPUT folder (LegendaryExplorer\LegendaryExplorerCore project folder) - Relative paths don't seem to work
+USE_MDFILE_AS_MAINPAGE = documentation_homepage.md
+
+# Uncomment the following line to include the entire source code as part of the documentation. Docs will be around 100mb with this enabled. 
+# Seems like we should include it for stable releases so we have an accessible reference of what the state of the code was.
+# SOURCE_BROWSER         = YES
