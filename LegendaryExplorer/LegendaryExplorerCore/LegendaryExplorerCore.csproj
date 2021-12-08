@@ -86,9 +86,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Embedded\GameResources.zip" />
-    <None Remove="Embedded\Infos.zip" />
-    <None Remove="Embedded\PlotDatabases.zip" />
+    <None Remove="Embedded\*.zip" />
     <None Remove="Embedded\udkdefaultthumb.png" />
     <None Remove="Embedded\Precomputed\TextureMap\vanillaME1Map.bin" />
     <None Remove="Libraries\Windows\TexConverter.exp" />
@@ -167,6 +165,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Embedded\Packages\EmptyLevels\" />
     <Folder Include="Textures\Studio\PrecomputedMaps\" />
   </ItemGroup>
 

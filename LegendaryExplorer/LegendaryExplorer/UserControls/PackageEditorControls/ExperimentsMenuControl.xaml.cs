@@ -375,11 +375,6 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
 
         #region Mgamerz's Experiments
 
-        private async void VTest_Click(object sender, RoutedEventArgs e)
-        {
-            VTestExperiment.VTest(GetPEWindow());
-        }
-        
         private async void MakeVTestDonor_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.ConvertMaterialToVtestDonor(GetPEWindow());
@@ -399,10 +394,10 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             PackageEditorExperimentsM.ConvertSLCALightToNonSLCA(GetPEWindow());
         }
 
-        private void MakeLE1MakoMap_Click(object sender, RoutedEventArgs e)
-        {
-            PackageEditorExperimentsM.MakeMakoLevel(GetPEWindow());
-        }
+        //private void MakeLE1MakoMap_Click(object sender, RoutedEventArgs e)
+        //{
+        //    PackageEditorExperimentsM.MakeMakoLevel(GetPEWindow());
+        //}
 
         private void ImportUDKTerrain_Click(object sender, RoutedEventArgs e)
         {

@@ -1847,10 +1847,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 }
                 donorPackage.Save();
 
-                if (MessageBox.Show(pe, "Run VTest?", "", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) == MessageBoxResult.Yes)
-                {
-                    VTestExperiment.VTest(pe);
-                }
+                // VTest was moved to the CrossGenV repository
+                //if (MessageBox.Show(pe, "Run VTest?", "", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) == MessageBoxResult.Yes)
+                //{
+                //    VTestExperiment.VTest(pe);
+                //}
             }
         }
 
@@ -2260,66 +2261,67 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
         }
 
-        public static void TerrainLevelMaker(PackageEditorWindow pe)
-        {
-            // Open base
-            using var terrainBaseP = MEPackageHandler.OpenMEPackage(Path.Combine(LE1Directory.CookedPCPath, "BIOA_TERRAINTEST_BASE.pcc"));
-            var tbpPL = terrainBaseP.FindExport("TheWorld.PersistentLevel");
+        // This depended on CrossGenV which was removed. Might see if there is way we can support it in the future at some point...
+        //public static void TerrainLevelMaker(PackageEditorWindow pe)
+        //{
+        //    // Open base
+        //    using var terrainBaseP = MEPackageHandler.OpenMEPackage(Path.Combine(LE1Directory.CookedPCPath, "BIOA_TERRAINTEST_BASE.pcc"));
+        //    var tbpPL = terrainBaseP.FindExport("TheWorld.PersistentLevel");
 
-            // SET STARTING LOCATION
-            PathEdUtils.SetLocation(terrainBaseP.FindExport("TheWorld.PersistentLevel.PlayerStart_0"), 62863, -91054, -7000);
-            PathEdUtils.SetLocation(terrainBaseP.FindExport("TheWorld.PersistentLevel.BlockingVolume_21"), 62863, -91054, -7200); // -200 Z from player start to make base
+        //    // SET STARTING LOCATION
+        //    PathEdUtils.SetLocation(terrainBaseP.FindExport("TheWorld.PersistentLevel.PlayerStart_0"), 62863, -91054, -7000);
+        //    PathEdUtils.SetLocation(terrainBaseP.FindExport("TheWorld.PersistentLevel.BlockingVolume_21"), 62863, -91054, -7200); // -200 Z from player start to make base
 
-            // DONOR TERRAIN TO TEST
-            using var meTerrainP = MEPackageHandler.OpenMEPackage(Path.Combine(ME1Directory.CookedPCPath, @"Maps\LAV\LAY\BIOA_LAV70_01_LAY.sfm"));
-            var meTerrain = meTerrainP.FindExport("TheWorld.PersistentLevel.Terrain_1");
+        //    // DONOR TERRAIN TO TEST
+        //    using var meTerrainP = MEPackageHandler.OpenMEPackage(Path.Combine(ME1Directory.CookedPCPath, @"Maps\LAV\LAY\BIOA_LAV70_01_LAY.sfm"));
+        //    var meTerrain = meTerrainP.FindExport("TheWorld.PersistentLevel.Terrain_1");
 
-            // Precorrect and port
-            VTestExperiment.PrePortingCorrections(meTerrainP, null);
-            EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, meTerrain, tbpPL.FileRef, tbpPL, true, new RelinkerOptionsPackage(), out var newTerrain);
-            VTestExperiment.RebuildPersistentLevelChildren(tbpPL, null);
-            terrainBaseP.Save(Path.Combine(LE1Directory.CookedPCPath, "BIOA_TERRAINTEST.pcc"));
+        //    // Precorrect and port
+        //    VTestExperiment.PrePortingCorrections(meTerrainP, null);
+        //    EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, meTerrain, tbpPL.FileRef, tbpPL, true, new RelinkerOptionsPackage(), out var newTerrain);
+        //    VTestExperiment.RebuildPersistentLevelChildren(tbpPL, null);
+        //    terrainBaseP.Save(Path.Combine(LE1Directory.CookedPCPath, "BIOA_TERRAINTEST.pcc"));
 
-            // Check values...
-            using var leSameTerrainP = MEPackageHandler.OpenMEPackage(Path.Combine(LE1Directory.CookedPCPath, @"BIOA_LAV70_00_ART.pcc"));
-            var leSameTerrain = leSameTerrainP.FindExport("TheWorld.PersistentLevel.Terrain_1");
-            var leSameTerrainComponents = leSameTerrain.GetProperty<ArrayProperty<ObjectProperty>>("TerrainComponents");
-            var portTerrainComponents = (newTerrain as ExportEntry).GetProperty<ArrayProperty<ObjectProperty>>("TerrainComponents");
+        //    // Check values...
+        //    using var leSameTerrainP = MEPackageHandler.OpenMEPackage(Path.Combine(LE1Directory.CookedPCPath, @"BIOA_LAV70_00_ART.pcc"));
+        //    var leSameTerrain = leSameTerrainP.FindExport("TheWorld.PersistentLevel.Terrain_1");
+        //    var leSameTerrainComponents = leSameTerrain.GetProperty<ArrayProperty<ObjectProperty>>("TerrainComponents");
+        //    var portTerrainComponents = (newTerrain as ExportEntry).GetProperty<ArrayProperty<ObjectProperty>>("TerrainComponents");
 
-            for (int i = 0; i < leSameTerrainComponents.Count; i++)
-            {
-                var leTC = leSameTerrainP.GetUExport(leSameTerrainComponents[i].Value);
-                var portedTC = terrainBaseP.GetUExport(portTerrainComponents[i].Value);
+        //    for (int i = 0; i < leSameTerrainComponents.Count; i++)
+        //    {
+        //        var leTC = leSameTerrainP.GetUExport(leSameTerrainComponents[i].Value);
+        //        var portedTC = terrainBaseP.GetUExport(portTerrainComponents[i].Value);
 
-                var leC = ObjectBinary.From<TerrainComponent>(leTC);
-                var portedC = ObjectBinary.From<TerrainComponent>(portedTC);
+        //        var leC = ObjectBinary.From<TerrainComponent>(leTC);
+        //        var portedC = ObjectBinary.From<TerrainComponent>(portedTC);
 
-                for (int j = 0; j < leC.CollisionVertices.Length; j++)
-                {
-                    var leCol = leC.CollisionVertices[j];
-                    var portedCol = portedC.CollisionVertices[j];
-                    if (leCol.X != portedCol.X || leCol.Y != portedCol.Y || leCol.Z != portedCol.Z)
-                        Debug.WriteLine($"{i}-{j}\t({leCol.X}, {leCol.Y}, {leCol.Z}) | ({portedCol.X}, {portedCol.Y} ,{portedCol.Z}) | DIFF [LE-PORTED]: ({leCol.X - portedCol.X}, {leCol.Y - portedCol.Y}, {leCol.Z - portedCol.Z})");
-                }
+        //        for (int j = 0; j < leC.CollisionVertices.Length; j++)
+        //        {
+        //            var leCol = leC.CollisionVertices[j];
+        //            var portedCol = portedC.CollisionVertices[j];
+        //            if (leCol.X != portedCol.X || leCol.Y != portedCol.Y || leCol.Z != portedCol.Z)
+        //                Debug.WriteLine($"{i}-{j}\t({leCol.X}, {leCol.Y}, {leCol.Z}) | ({portedCol.X}, {portedCol.Y} ,{portedCol.Z}) | DIFF [LE-PORTED]: ({leCol.X - portedCol.X}, {leCol.Y - portedCol.Y}, {leCol.Z - portedCol.Z})");
+        //        }
 
-                // Bounding volume
-                for (int j = 0; j < leC.BVTree.Length; j++)
-                {
-                    var leColMin = leC.BVTree[j].BoundingVolume.Min;
-                    var leColMax = leC.BVTree[j].BoundingVolume.Max;
-                    var portedColMin = portedC.BVTree[j].BoundingVolume.Min;
-                    var portedColMax = portedC.BVTree[j].BoundingVolume.Max;
+        //        // Bounding volume
+        //        for (int j = 0; j < leC.BVTree.Length; j++)
+        //        {
+        //            var leColMin = leC.BVTree[j].BoundingVolume.Min;
+        //            var leColMax = leC.BVTree[j].BoundingVolume.Max;
+        //            var portedColMin = portedC.BVTree[j].BoundingVolume.Min;
+        //            var portedColMax = portedC.BVTree[j].BoundingVolume.Max;
 
-                    if (leColMin.X != portedColMin.X || leColMin.Y != portedColMin.Y || leColMin.Z != portedColMin.Z)
-                        Debug.WriteLine($"{i}-{j} MIN\t({leColMin.X}, {leColMin.Y}, {leColMin.Z}) | ({portedColMin.X}, {portedColMin.Y} ,{portedColMin.Z}) | DIFF [LE-PORTED]: ({leColMin.X - portedColMin.X}, {leColMin.Y - portedColMin.Y}, {leColMin.Z - portedColMin.Z})");
+        //            if (leColMin.X != portedColMin.X || leColMin.Y != portedColMin.Y || leColMin.Z != portedColMin.Z)
+        //                Debug.WriteLine($"{i}-{j} MIN\t({leColMin.X}, {leColMin.Y}, {leColMin.Z}) | ({portedColMin.X}, {portedColMin.Y} ,{portedColMin.Z}) | DIFF [LE-PORTED]: ({leColMin.X - portedColMin.X}, {leColMin.Y - portedColMin.Y}, {leColMin.Z - portedColMin.Z})");
 
-                    if (leColMax.X != portedColMax.X || leColMax.Y != portedColMax.Y || leColMax.Z != portedColMax.Z)
-                        Debug.WriteLine($"{i}-{j} MAX\t({leColMax.X}, {leColMax.Y}, {leColMax.Z}) | ({portedColMax.X}, {portedColMax.Y} ,{portedColMax.Z}) | DIFF [LE-PORTED]: ({leColMax.X - portedColMax.X}, {leColMax.Y - portedColMax.Y}, {leColMax.Z - portedColMax.Z})");
+        //            if (leColMax.X != portedColMax.X || leColMax.Y != portedColMax.Y || leColMax.Z != portedColMax.Z)
+        //                Debug.WriteLine($"{i}-{j} MAX\t({leColMax.X}, {leColMax.Y}, {leColMax.Z}) | ({portedColMax.X}, {portedColMax.Y} ,{portedColMax.Z}) | DIFF [LE-PORTED]: ({leColMax.X - portedColMax.X}, {leColMax.Y - portedColMax.Y}, {leColMax.Z - portedColMax.Z})");
 
 
-                }
-            }
-        }
+        //        }
+        //    }
+        //}
 
         public static void CreatePowerMaster()
         {
@@ -2720,6 +2722,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
         }
 
+        // This method depended on VTest which was moved to CrossGenV. It may be re-instated later if we ever want to make mako maps again
+        /*
         public static void MakeMakoLevel(PackageEditorWindow pe)
         {
             //if (pe.Pcc == null)
@@ -2733,7 +2737,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             //}
 
             var outputFile = Path.Combine(LE1Directory.CookedPCPath, @"BIOA_TERRAINTEST.pcc");
-            VTestExperiment.CreateEmptyLevel(outputFile, MEGame.LE1);
+            MEPackageHandler.CreateEmptyLevel(outputFile, MEGame.LE1);
             using var destPackage = MEPackageHandler.OpenMEPackage(outputFile);
             var destLevel = destPackage.FindExport("TheWorld.PersistentLevel");
 
@@ -2844,7 +2848,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             //EntryExporter.ExportExportToPackage(psStart, destPackage, out var newPStart);
 
             // Map already has a player start, just port it in too
-            string[] otherClassesToPortIn = new[] { "PlayerStart", "HeightFog", /*"DominantDirectionalLight"*/};
+            string[] otherClassesToPortIn = new[] { "PlayerStart", "HeightFog"};
             Point3D startLoc = null;
             foreach (var exp in udkP.Exports.Where(x => otherClassesToPortIn.Contains(x.ClassName)))
             {
@@ -2888,7 +2892,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             VTestExperiment.RebuildPersistentLevelChildren(destLevel, null);
             destPackage.Save();
         }
-
+        */
         public static void TestCurrentPackageForUnknownBinary(PackageEditorWindow pe)
         {
             if (pe.Pcc == null)

@@ -996,43 +996,10 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     {
                         File.Delete(dlg.FileName);
                     }
-                    string emptyLevelName = game switch
-                    {
-                        MEGame.LE1 => "LE1EmptyLevel",
-                        MEGame.LE2 => "LE2EmptyLevel",
-                        MEGame.LE3 => "LE3EmptyLevel",
-                        MEGame.ME3 => "ME3EmptyLevel",
-                        MEGame.ME2 => "ME2EmptyLevel",
-                        MEGame.ME1 => "ME1EmptyLevel",
-                        _ => "ME3EmptyLevel"
-                    };
-                    File.Copy(Path.Combine(AppDirectories.ExecFolder, $"{emptyLevelName}.{(game is MEGame.ME1?"SFM":"pcc")}"), dlg.FileName);
-                    LoadFile(dlg.FileName);
-                    for (int i = 0; i < Pcc.Names.Count; i++)
-                    {
-                        string name = Pcc.Names[i];
-                        if (name.Equals(emptyLevelName))
-                        {
-                            var newName = name.Replace(emptyLevelName, Path.GetFileNameWithoutExtension(dlg.FileName));
-                            Pcc.replaceName(i, newName);
-                        }
-                    }
 
-                    var packguid = Guid.NewGuid();
-                    var package = Pcc.GetUExport(game switch
-                    {
-                        MEGame.LE3 => 6,
-                        MEGame.LE2 => 6,
-                        MEGame.LE1 => 4,
-                        MEGame.ME3 => 1,
-                        MEGame.ME2 => 7,
-                        MEGame.ME1 => 13,
-                        _ => 1
-                    });
-                    package.PackageGUID = packguid;
-                    Pcc.PackageGuid = packguid;
-                    //Pcc.Flags |= UnrealFlags.EPackageFlags.Map;
-                    SaveFile();
+                    MEPackageHandler.CreateEmptyLevel(dlg.FileName, game);
+
+                    LoadFile(dlg.FileName);
                 }
             }
         }
@@ -2509,8 +2476,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
         public void LoadFile(string s, int goToIndex = 0, string goToEntry = null)
         {
-
-            Debug.WriteLine(Directory.GetCurrentDirectory());
+            // Todo: Maybe prompt if there are pending changes to the current package?
             try
             {
                 preloadPackage(Path.GetFileName(s), new FileInfo(s).Length);

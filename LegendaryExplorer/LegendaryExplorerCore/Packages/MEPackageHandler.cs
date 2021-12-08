@@ -342,8 +342,8 @@ namespace LegendaryExplorerCore.Packages
         /// <summary>
         /// Creates and saves a package. A package is not returned as the saving code will add data that must be re-read for a package to be properly used.
         /// </summary>
-        /// <param name="path"></param>
-        /// <param name="game"></param>
+        /// <param name="path">Where to save the package</param>
+        /// <param name="game">What game the package is for</param>
         public static void CreateAndSavePackage(string path, MEGame game)
         {
             switch (game)
@@ -361,6 +361,42 @@ namespace LegendaryExplorerCore.Packages
                     package.Save();
                     break;
             }
+        }
+
+        /// <summary>
+        /// Generates a new empty level package file.
+        /// </summary>
+        /// <param name="outpath">Where to save the package</param>
+        /// <param name="game">What game the package is for</param>
+        public static void CreateEmptyLevel(string outpath, MEGame game)
+        {
+            if (!game.IsOTGame() && !game.IsLEGame())
+                throw new Exception(@"Cannot create a level for a game that is not ME1/2/3 or LE1/2/3");
+
+            var emptyLevelName = $"{game}EmptyLevel";
+            var packageStream = LegendaryExplorerCoreUtilities.LoadEmbeddedFile($@"Packages.EmptyLevels.{emptyLevelName}.{(game == MEGame.ME1 ? ".SFM" : "pcc")}");
+            using var pcc = MEPackageHandler.OpenMEPackageFromStream(packageStream);
+            for (int i = 0; i < pcc.Names.Count; i++)
+            {
+                string name = pcc.Names[i];
+                if (name.Equals(emptyLevelName))
+                {
+                    var newName = name.Replace(emptyLevelName, Path.GetFileNameWithoutExtension(outpath));
+                    pcc.replaceName(i, newName);
+                }
+            }
+
+            var packguid = Guid.NewGuid();
+            var packageExport = pcc.GetUExport(game switch
+            {
+                MEGame.LE1 => 4,
+                MEGame.LE3 => 6,
+                MEGame.ME2 => 7,
+                _ => 1
+            });
+            packageExport.PackageGUID = packguid;
+            pcc.PackageGuid = packguid;
+            pcc.Save(outpath); // You must pass the path here as this file was loaded from memory
         }
 
         private static void Package_noLongerUsed(UnrealPackageFile sender)
