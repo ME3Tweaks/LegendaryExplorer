@@ -1,5 +1,9 @@
 Welcome to the Legendary Explorer Core API Documentation. This site is generated after every commit to the [Beta branch](https://github.com/ME3Tweaks/LegendaryExplorer) to reflect the current state of the LEC API. Use the Class List or Namespace List sections on the sidebar to browse the functionality of the Legendary Explorer Core library.
 
+This website serves as the documentation for Legendary Explorer Core, a .NET library that can modify Unreal Engine 3 package files used in the Mass Effect Trilogy and the Mass Effect Legendary Edition. This library is used in many different tools, such as Legendary Explorer, ME3Tweaks Mod Manager, and ALOT Installer. 
+
+This site has no documentation for Legendary Explorer, the actual application that is used to create Mass Effect mods. That documentation can be found on the [Legendary Explorer Wiki](https://github.com/ME3Tweaks/LegendaryExplorer/wiki).
+
 If class names or namespaces change, any existing links or bookmarks to this site may become broken. In the future, static versions of this site will be created for each stable release of the library.
 
 ## New to modding?
