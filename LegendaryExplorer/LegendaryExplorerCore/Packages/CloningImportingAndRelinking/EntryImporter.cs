@@ -886,11 +886,20 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 if (foundImp != null) return foundImp;
                 //if (matchingSourceExport.ObjectName == "Metal_Cube")
                 //    Debugger.Break();
-                var pf = matchingSourceExport.Class.GetRootName(); // This is correct 'most' times but not always
-                // Try to determine what file the class is defined out of
-                if (pf != "Engine" && pf != "Core" && pf != "SFXGame" && pf != "BIOC_Base")
+                string pf = Path.GetFileNameWithoutExtension(matchingSourceExport.FileRef.FilePath); // Not 100% sure this is good idea since they can load from stream...
+                if (matchingSourceExport.Class != null)
                 {
-                    Debug.WriteLine($@"Converting export to import in global file, unknown base class root {pf} for {matchingSourceExport.InstancedFullPath}. We are going to convert it to 'Core'");
+                    pf = matchingSourceExport.Class.GetRootName(); // This is correct 'most' times but not always
+                    // Try to determine what file the class is defined out of
+                    if (pf != "Engine" && pf != "Core" && pf != "SFXGame" && pf != "BIOC_Base")
+                    {
+                        Debug.WriteLine($@"Converting export to import in global file, unknown base class root {pf} for {matchingSourceExport.InstancedFullPath}. We are going to convert it to 'Core'");
+                        pf = "Core";
+                    }
+                }
+                else
+                {
+                    // It's a class. Class is defined in core, I hope
                     pf = "Core";
                 }
 
