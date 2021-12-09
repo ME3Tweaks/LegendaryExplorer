@@ -742,7 +742,16 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
         public bool VisitNode(DelegateCall node)
         {
             WriteOpCode(OpCodes.DelegateFunction);
-            Emit(node.DelegateReference);
+            var varDecl = (VariableDeclaration)node.DelegateReference.Node;
+            if (varDecl.Outer is Function)
+            {
+                WriteByte(1);
+            }
+            else
+            {
+                WriteByte(0);
+            }
+            WriteObjectRef(ResolveSymbol(varDecl));
             WriteName(node.DefaultFunction.Name);
             CompileArguments(node.Arguments, node.DefaultFunction.Parameters);
             return true;
@@ -886,7 +895,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     return true;
             }
 
-            VariableDeclaration varDecl = (VariableDeclaration)node.Node;
+            var varDecl = (VariableDeclaration)node.Node;
             if (varDecl.Name == "Self")
             {
                 WriteOpCode(OpCodes.Self);
