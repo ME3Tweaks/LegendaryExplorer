@@ -76,7 +76,7 @@ namespace LegendaryExplorerCore.Compression
 
             int status = SevenZipDecompress(src, (uint)src.Length, dst, ref len);
             if (status != 0)
-                return new byte[0];
+                return Array.Empty<byte>();
 
             return dst;
         }
@@ -88,7 +88,7 @@ namespace LegendaryExplorerCore.Compression
 
             int status = SevenZipCompress(compressionLevel, src, (uint)src.Length, tmpbuf, ref dstLen);
             if (status != 0)
-                return new byte[0];
+                return Array.Empty<byte>();
 
             byte[] dst = new byte[dstLen];
             Array.Copy(tmpbuf, dst, (int)dstLen);

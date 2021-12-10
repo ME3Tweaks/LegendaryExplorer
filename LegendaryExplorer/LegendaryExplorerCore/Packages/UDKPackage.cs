@@ -66,37 +66,27 @@ namespace LegendaryExplorerCore.Packages
         private List<Thumbnail> ThumbnailTable = new List<Thumbnail>();
         #endregion
 
-        static bool isLoaderRegistered;
-        internal static Func<string, bool, UDKPackage> RegisterLoader()
+        private static bool _isBlankPackageCreatorRegistered;
+        internal static Func<string, UDKPackage> RegisterBlankPackageCreator()
         {
-            if (isLoaderRegistered)
+            if (_isBlankPackageCreatorRegistered)
             {
                 throw new Exception(nameof(UDKPackage) + " can only be initialized once");
             }
-            else
-            {
-                isLoaderRegistered = true;
-                return (fileName, shouldCreate) =>
-                {
-                    if (shouldCreate)
-                    {
-                        return new UDKPackage(fileName);
-                    }
-                    return new UDKPackage(new MemoryStream(File.ReadAllBytes(fileName)), fileName);
-                };
-            }
+            _isBlankPackageCreatorRegistered = true;
+            return fileName => new UDKPackage(fileName);
         }
 
-        private static bool isStreamLoaderRegistered;
+        private static bool _isStreamLoaderRegistered;
         internal static Func<Stream, string, UDKPackage> RegisterStreamLoader()
         {
 
-            if (isStreamLoaderRegistered)
+            if (_isStreamLoaderRegistered)
             {
                 throw new Exception(nameof(UDKPackage) + " streamloader can only be initialized once");
             }
 
-            isStreamLoaderRegistered = true;
+            _isStreamLoaderRegistered = true;
             return (s, associatedFilePath) => new UDKPackage(s, associatedFilePath);
         }
 

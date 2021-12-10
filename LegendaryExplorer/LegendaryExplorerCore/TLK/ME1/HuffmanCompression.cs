@@ -13,10 +13,10 @@ namespace LegendaryExplorerCore.TLK.ME1
 {
     public class HuffmanCompression
     {
-        private List<TLKStringRef> _inputData = new List<TLKStringRef>();
-        private Dictionary<char, int> frequencyCount = new Dictionary<char, int>();
-        private List<HuffmanNode> _huffmanTree = new List<HuffmanNode>();
-        private Dictionary<char, BitArray> _huffmanCodes = new Dictionary<char, BitArray>();
+        private List<TLKStringRef> _inputData = new();
+        private readonly Dictionary<char, int> frequencyCount = new();
+        private readonly List<HuffmanNode> _huffmanTree = new();
+        private readonly Dictionary<char, BitArray> _huffmanCodes = new();
 
         //private class TLKEntry
         //{
@@ -260,7 +260,7 @@ namespace LegendaryExplorerCore.TLK.ME1
             /* check if both sons are null */
             if (node.Left == node.Right)
             {
-                BitArray ba = new BitArray(code.ToArray());
+                var ba = new BitArray(code.ToArray());
                 _huffmanCodes.Add(node.Data, ba);
             }
             else
@@ -352,7 +352,7 @@ namespace LegendaryExplorerCore.TLK.ME1
 
                 while (bitpos < bits.Length)
                 {
-                    if (bits[bitpos])
+                    if (bits.Get(bitpos))
                     {
                         value += significance;
                     }

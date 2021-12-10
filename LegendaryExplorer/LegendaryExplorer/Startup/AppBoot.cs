@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms.Integration;
+using FontAwesome5;
+using FontAwesome5.Extensions;
 using LegendaryExplorer.Dialogs.Splash;
 using LegendaryExplorer.GameInterop;
 using LegendaryExplorer.MainWindow;
@@ -67,6 +69,9 @@ namespace LegendaryExplorer.Startup
 
             // WPF setup
             ToolTipService.ShowDurationProperty.OverrideMetadata(typeof(DependencyObject), new FrameworkPropertyMetadata(int.MaxValue));
+
+            //force fontawesome's icons into memory, so that it won't need to happen when the main window is opening 
+            EFontAwesomeIcon.None.GetUnicode();
 
             // Initialize VLC
             LibVLCSharp.Shared.Core.Initialize();

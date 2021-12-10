@@ -13,12 +13,12 @@ namespace LegendaryExplorerCore.ME1
         public static List<ME1TalkFile> tlkList = new();
         public static Dictionary<ME1TalkFile, string> localtlkList = new();
         
-        public static void LoadTlkData(string fileName, int index)
+        public static void LoadTlkData(string fileName, int uIndex)
         {
             if (File.Exists(fileName))
             {
-                using IMEPackage pcc = MEPackageHandler.OpenLE1Package(fileName, forceLoadFromDisk: true); //do not cache this in the packages list.
-                tlkList.Add(new ME1TalkFile(pcc, index));
+                using IMEPackage pcc = MEPackageHandler.UnsafePartialLoad(fileName, exp => exp.UIndex == uIndex);
+                tlkList.Add(new ME1TalkFile(pcc, uIndex));
             }
         }
 

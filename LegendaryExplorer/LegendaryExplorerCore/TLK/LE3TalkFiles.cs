@@ -1,19 +1,18 @@
 ﻿using System.IO;
 using System.Collections.Generic;
 using LegendaryExplorerCore.TLK.ME2ME3;
-using LegendaryExplorerCore.Unreal;
 
 namespace LegendaryExplorerCore.TLK
 {
     public static class LE3TalkFiles
     {
-        public static List<TalkFile> tlkList = new();
+        public static readonly List<ME2ME3LazyTLK> tlkList = new();
 
         public static void LoadTlkData(string fileName)
         {
             if (File.Exists(fileName))
             {
-                var tlk = new TalkFile();
+                var tlk = new ME2ME3LazyTLK();
                 tlk.LoadTlkData(fileName);
                 tlkList.Add(tlk);
             }
@@ -22,7 +21,7 @@ namespace LegendaryExplorerCore.TLK
         public static string findDataById(int strRefID, bool withFileName = false)
         {
             string s = "No Data";
-            foreach (TalkFile tlk in tlkList)
+            foreach (ME2ME3LazyTLK tlk in tlkList)
             {
                 s = tlk.findDataById(strRefID, withFileName);
                 if (s != "No Data")
