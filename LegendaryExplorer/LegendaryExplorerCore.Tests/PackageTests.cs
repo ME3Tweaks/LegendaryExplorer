@@ -8,6 +8,7 @@ using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.Classes;
+using LegendaryExplorerCore.Unreal.ObjectInfo;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
 
@@ -412,5 +413,34 @@ namespace LegendaryExplorerCore.Tests
                 }
             }
         }
+
+        [TestMethod]
+        public void TestPartialPackageLoad()
+        {
+            bool ExportPredicate(ExportEntry exp) => exp.IsA("Texture") && exp.ObjectNameString.StartsWith("Holomod", StringComparison.OrdinalIgnoreCase);
+
+            GlobalTest.Init();
+
+            var le2StartupPackagePath = Path.Combine(GlobalTest.GetTestMiniGamePath(MEGame.LE2), @"BioGame\CookedPCConsole\Startup_INT.pcc");
+            var partialPackage = MEPackageHandler.UnsafePartialLoad(le2StartupPackagePath, ExportPredicate);
+            int numExportsLoaded = 0;
+            foreach (ExportEntry export in partialPackage.Exports)
+            {
+                if (ExportPredicate(export))
+                {
+                    Assert.IsNotNull(export.Data);
+                    numExportsLoaded++;
+                }
+                else
+                {
+                    Assert.ThrowsException<NullReferenceException>(() =>
+                    {
+                        byte[] _ = export.Data;
+                    });
+                }
+            }
+            Assert.AreEqual(2, numExportsLoaded);
+        }
+
     }
 }

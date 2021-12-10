@@ -229,7 +229,7 @@ namespace LegendaryExplorerCore.Packages
         /// <param name="pathToFile"></param>
         /// <param name="exportPredicate"></param>
         /// <returns></returns>
-        internal static IMEPackage UnsafePartialLoad(string pathToFile, Func<ExportEntry, bool> exportPredicate)
+        public static IMEPackage UnsafePartialLoad(string pathToFile, Func<ExportEntry, bool> exportPredicate)
         {
             Debug.WriteLine($"Partially loading package {pathToFile}");
             using var fs = new FileStream(pathToFile, FileMode.Open, FileAccess.Read);
