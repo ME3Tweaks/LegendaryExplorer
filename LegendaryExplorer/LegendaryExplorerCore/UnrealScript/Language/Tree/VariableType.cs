@@ -8,7 +8,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 {
     public class VariableType : ASTNode, IHasFileReference
     {
-        public string Name { get; }
+        public readonly string Name;
         public ASTNode Declaration;
         public virtual ASTNodeType NodeType => Declaration?.Type ?? ASTNodeType.INVALID;
 
@@ -72,5 +72,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
             builder.AppendTypeName(this);
             return builder.GetOutput();
         }
+
+        string IHasFileReference.Name => Name;
     }
 }

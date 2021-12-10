@@ -1,14 +1,10 @@
 ﻿using Microsoft.IO;
 using System;
 using System.Buffers;
-using System.Collections.Generic;
 using System.IO;
 using System.Runtime;
-using System.Text;
 using System.Threading;
 using LegendaryExplorerCore.Helpers;
-using LegendaryExplorerCore.Misc;
-using Newtonsoft.Json;
 
 namespace LegendaryExplorerCore.Memory
 {
