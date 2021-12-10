@@ -66,7 +66,7 @@ namespace LegendaryExplorer.Tools.TlkManagerNS
                 //TODO: Need to find a way for the export loader to register usage of the pcc.
                 IMEPackage pcc = MEPackageHandler.OpenMEPackage(tlk.tlkPath);
                 var export = pcc.GetUExport(tlk.exportNumber);
-                var elhw = new ExportLoaderHostedWindow(new TLKEditor(), export)
+                var elhw = new ExportLoaderHostedWindow(new TLKEditorExportLoader(), export)
                 {
                     Title = $"TLK Editor - {export.UIndex} {export.InstancedFullPath} - {export.FileRef.FilePath}"
                 };

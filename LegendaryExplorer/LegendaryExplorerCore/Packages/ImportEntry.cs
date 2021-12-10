@@ -310,6 +310,20 @@ namespace LegendaryExplorerCore.Packages
             return Clone();
         }
 
+        /// <summary>
+        /// Gets the top level object by following the idxLink up the chain. Typically this is the file that will contain the export (unless it is a ForcedExport) if it's an import, or the original package before forcing the export into the file.
+        /// </summary>
+        /// <returns></returns>
+        public string GetRootName()
+        {
+            IEntry current = this;
+            while (current.Parent != null)
+            {
+                current = current.Parent;
+            }
+            return current.InstancedFullPath;
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
     }
 }

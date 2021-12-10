@@ -56,7 +56,7 @@ namespace LegendaryExplorer.GameInterop
 
             EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, liveEditorSequence,
                 pcc, mainSequence,
-                true, out var clonedEditorSequence);
+                true, new RelinkerOptionsPackage(), out var clonedEditorSequence);
             KismetHelper.AddObjectToSequence((ExportEntry)clonedEditorSequence, mainSequence);
         }
     }

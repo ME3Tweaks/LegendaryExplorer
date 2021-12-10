@@ -51,6 +51,18 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             Header = header;
         }
 
+        /// <summary>
+        /// Recursively removes null nodes, which may happen due to conditional adds
+        /// </summary>
+        public void Finalize()
+        {
+            Items.RemoveAll(x => x == null);
+            foreach (var item in Items.OfType<BinInterpNode>())
+            {
+                item.Finalize();
+            }
+        }
+
         public BinInterpNode(long pos, string text, BinaryInterpreterWPF.NodeType nodeType = BinaryInterpreterWPF.NodeType.Unknown) : this()
         {
             Header = pos >= 0 ? $"0x{pos:X8}: {text}" : text;

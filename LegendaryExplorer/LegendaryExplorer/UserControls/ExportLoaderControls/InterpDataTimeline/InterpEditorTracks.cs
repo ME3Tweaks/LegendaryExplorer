@@ -62,7 +62,7 @@ namespace LegendaryExplorer.Tools.InterpEditor
                     {
                         Tracks.Add(new BioEvtSysTrackGesture(trackExport));
                     }
-                    else if(trackExport.IsA("BioInterpTrack"))
+                    else if (trackExport.IsA("BioInterpTrack"))
                     {
                         Tracks.Add(new BioInterpTrack(trackExport));
                     }
@@ -202,7 +202,7 @@ namespace LegendaryExplorer.Tools.InterpEditor
         {
             Keys.ClearEx();
             var floatTrackProp = Export.GetProperty<StructProperty>("FloatTrack");
-            if (floatTrackProp?.GetProp<ArrayProperty<StructProperty>>("Points") is {} pointsArray)
+            if (floatTrackProp?.GetProp<ArrayProperty<StructProperty>>("Points") is { } pointsArray)
             {
                 foreach (var curvePoint in pointsArray)
                 {
@@ -276,7 +276,7 @@ namespace LegendaryExplorer.Tools.InterpEditor
             {
                 foreach (var trackKey in trackKeys)
                 {
-                    Keys.Add(new Key(trackKey.GetProp<FloatProperty>("StartTime"), trackKey.GetProp<NameProperty>("EventName").Value.Name));
+                    Keys.Add(new Key(trackKey.GetProp<FloatProperty>(Export.Game.IsGame1() ? "Time" : "StartTime"), trackKey.GetProp<NameProperty>("EventName").Value.Name));
                 }
             }
         }

@@ -922,7 +922,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
         {
             IMEPackage pcc = parent.FileRef;
 
-            IEntry classEntry = className.CaseInsensitiveEquals("Class") ? null : EntryImporter.EnsureClassIsInFile(pcc, className);
+            IEntry classEntry = className.CaseInsensitiveEquals("Class") ? null : EntryImporter.EnsureClassIsInFile(pcc, className, new RelinkerOptionsPackage());
 
             //reuse trash exports
             if (pcc.TryGetTrash(out ExportEntry trashExport))

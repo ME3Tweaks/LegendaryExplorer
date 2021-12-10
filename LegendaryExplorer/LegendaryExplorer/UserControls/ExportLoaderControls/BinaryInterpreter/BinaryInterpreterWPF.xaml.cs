@@ -391,8 +391,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         public override bool CanParse(ExportEntry exportEntry)
         {
-            return exportEntry.HasStack || ((ParsableBinaryClasses.Contains(exportEntry.ClassName) || exportEntry.IsA("BioPawn")) && !exportEntry.IsDefaultObject)
-                || exportEntry.TemplateOwnerClassIdx >= 0;
+            //return exportEntry.HasStack || ((ParsableBinaryClasses.Contains(exportEntry.ClassName) || exportEntry.IsA("BioPawn")) && !exportEntry.IsDefaultObject)
+            //    || exportEntry.TemplateOwnerClassIdx >= 0;
+
+            // crossgen 9/24/2021
+            return exportEntry.HasStack || exportEntry.TemplateOwnerClassIdx >= 0 || exportEntry.propsEnd() < exportEntry.DataSize;
         }
 
         public override void PopOut()
@@ -604,6 +607,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         break;
                     case "BioDynamicAnimSet":
                         subNodes.AddRange(StartBioDynamicAnimSetScan(data, ref binarystart));
+                        break;
+                    case "BioSquadCombat":
+                        if (CurrentLoadedExport != null && CurrentLoadedExport.Game.IsGame1()) // Only game 1 has binary data
+                        {
+                            subNodes.AddRange(StartBioSquadCombatScan(data, ref binarystart));
+                        }
                         break;
                     case "ObjectRedirector":
                         subNodes.AddRange(StartObjectRedirectorScan(data, ref binarystart));
@@ -839,6 +848,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 {
                     if (o is BinInterpNode b)
                     {
+                        b.Finalize();
                         b.Parent = topLevelTree;
                     }
                 }

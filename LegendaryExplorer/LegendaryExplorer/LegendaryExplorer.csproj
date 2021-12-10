@@ -405,7 +405,7 @@
     <Page Update="Tools\TextureStudio\PlotManagerWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="UserControls\ExportLoaderControls\TLKEditor.xaml">
+    <Page Update="UserControls\ExportLoaderControls\TLKEditorExportLoader.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Tools\Meshplorer\MeshplorerWindow.xaml">

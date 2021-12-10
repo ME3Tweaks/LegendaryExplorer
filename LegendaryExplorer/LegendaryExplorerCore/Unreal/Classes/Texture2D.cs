@@ -59,10 +59,15 @@ namespace LegendaryExplorerCore.Unreal.Classes
         {
             PropertyCollection properties = export.GetProperties();
             var format = properties.GetProp<EnumProperty>("Format");
-            var cache = properties.GetProp<NameProperty>("TextureFileCacheName");
-            List<Texture2DMipInfo> mips = Texture2D.GetTexture2DMipInfos(export, cache?.Value);
-            var topmip = mips.FirstOrDefault(x => x.storageType != StorageTypes.empty);
-            return Texture2D.GetMipCRC(topmip, format.Value, additionalTFCs: additionalTFCs);
+            if (format != null)
+            {
+                var cache = properties.GetProp<NameProperty>("TextureFileCacheName");
+                List<Texture2DMipInfo> mips = Texture2D.GetTexture2DMipInfos(export, cache?.Value);
+                var topmip = mips.FirstOrDefault(x => x.storageType != StorageTypes.empty);
+                return Texture2D.GetMipCRC(topmip, format.Value, additionalTFCs: additionalTFCs);
+            }
+
+            return 0; // BIOA_GLO_00_B_Sovereign_T.upk in ME1 has a Texture2D export in it that is completely blank, no props, no binary. no idea how this compiled
         }
 
         public void RemoveEmptyMipsFromMipList()

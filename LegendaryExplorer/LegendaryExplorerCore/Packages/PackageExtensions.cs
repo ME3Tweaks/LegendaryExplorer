@@ -362,7 +362,7 @@ namespace LegendaryExplorerCore.Packages
                     var exp = pcc.GetUExport(ent.UIndex);
 
                     //find header references only if doing non-actors
-                    if(!getactorrefs)
+                    if (!getactorrefs)
                     {
                         if ((exp.Archetype?.UIndex ?? 0) != 0)
                         {
@@ -494,10 +494,9 @@ namespace LegendaryExplorerCore.Packages
     }
     public static class ExportEntryExtensions
     {
-
-        public static T GetProperty<T>(this ExportEntry export, string name) where T : Property
+        public static T GetProperty<T>(this ExportEntry export, string name, PackageCache cache = null) where T : Property
         {
-            return export.GetProperties().GetProp<T>(name);
+            return export.GetProperties(packageCache: cache).GetProp<T>(name);
         }
 
         public static void WriteProperty(this ExportEntry export, Property prop)
@@ -546,15 +545,15 @@ namespace LegendaryExplorerCore.Packages
         }
 
         public static bool IsTexture(this IEntry entry) =>
-            entry.ClassName 
-                is "Texture2D" 
-                or "LightMapTexture2D" 
+            entry.ClassName
+                is "Texture2D"
+                or "LightMapTexture2D"
                 or "ShadowMapTexture2D"
-                or "TerrainWeightMapTexture" 
+                or "TerrainWeightMapTexture"
                 or "TextureFlipBook";
 
         public static bool IsPartOfClassDefinition(this ExportEntry entry) =>
-            entry.ClassName 
+            entry.ClassName
                 is "Class"
                 or "Function"
                 or "State"

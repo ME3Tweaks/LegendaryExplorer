@@ -3139,7 +3139,7 @@ namespace LegendaryExplorer.DialogueEditor
 
             var p = new InterpEditorWindow();
             p.Show();
-            p.LoadFile(Pcc.FilePath);
+            p.LoadFile(exportEntry.FileRef.FilePath);
             if (exportEntry.ObjectName == "InterpData")
             {
                 p.SelectedInterpData = exportEntry;
@@ -3160,7 +3160,7 @@ namespace LegendaryExplorer.DialogueEditor
                     OpenInToolkit("PackageEditor", SelectedConv.ExportUID);
                     break;
                 case "PackEdLine":
-                    OpenInToolkit("PackageEditor", SelectedDialogueNode.Interpdata.UIndex);
+                    OpenInToolkit("PackageEditor", SelectedDialogueNode.Interpdata.UIndex, Path.GetFileName(SelectedDialogueNode.Interpdata.FileRef.FilePath));
                     break;
                 case "PackEd_StreamM":
                     if (SelectedDialogueNode.WwiseStream_Male != null)
@@ -3188,7 +3188,7 @@ namespace LegendaryExplorer.DialogueEditor
                     }
                     break;
                 case "SeqEdLine":
-                    OpenInToolkit("SequenceEditor", SelectedDialogueNode.Interpdata.UIndex);
+                    OpenInToolkit("SequenceEditor", SelectedDialogueNode.Interpdata.UIndex, Path.GetFileName(SelectedDialogueNode.Interpdata.FileRef.FilePath));
                     break;
                 case "FaceFXNS":
                     OpenInToolkit("FaceFXEditor", SelectedConv.NonSpkrFFX.UIndex);
@@ -3317,13 +3317,13 @@ namespace LegendaryExplorer.DialogueEditor
                 case "PackageEditor":
                     var packEditor = new PackageEditorWindow();
                     packEditor.Show();
-                    if (Pcc.IsUExport(uIndex))
+                    if (Pcc.IsUExport(uIndex) && filePath == Pcc.FilePath)
                     {
                         packEditor.LoadFile(Pcc.FilePath, uIndex);
                     }
                     else
                     {
-                        packEditor.LoadFile(filePath);
+                        packEditor.LoadFile(filePath, uIndex);
                     }
                     break;
                 case "SoundplorerWPF":
@@ -3339,15 +3339,19 @@ namespace LegendaryExplorer.DialogueEditor
                     }
                     break;
                 case "SequenceEditor":
-                    if (Pcc.IsUExport(uIndex))
+                    if (Pcc.IsUExport(uIndex) && filePath == Pcc.FilePath)
                     {
                         new SequenceEditorWPF(Pcc.GetUExport(uIndex)).Show();
                     }
                     else
                     {
                         var seqEditor = new SequenceEditorWPF();
-                        seqEditor.LoadFile(filePath);
                         seqEditor.Show();
+                        if (uIndex != 0)
+                        {
+                            seqEditor.LoadFile(filePath, uIndex);
+                        }
+                        else seqEditor.LoadFile(filePath);
                     }
                     break;
             }
@@ -3671,7 +3675,7 @@ namespace LegendaryExplorer.DialogueEditor
         #endregion Helpers
 
         #region IRecents interface
-        public void PropogateRecentsChange(IEnumerable<RecentsControl.RecentItem> newRecents)
+        public void PropogateRecentsChange(string propogationSource, IEnumerable<RecentsControl.RecentItem> newRecents)
         {
             RecentsController.PropogateRecentsChange(false, newRecents);
         }

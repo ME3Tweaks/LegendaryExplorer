@@ -349,11 +349,11 @@ namespace LegendaryExplorer
             set.Add(new Tool
             {
                 name = "TLK Editor",
-                type = typeof(TLKEditor),
+                type = typeof(TLKEditorExportLoader),
                 icon = Application.Current.FindResource("iconTLKEditor") as ImageSource,
                 open = () =>
                 {
-                    var elhw = new ExportLoaderHostedWindow(new TLKEditor())
+                    var elhw = new ExportLoaderHostedWindow(new TLKEditorExportLoader())
                     {
                         Title = $"TLK Editor"
                     };

@@ -181,6 +181,35 @@ namespace LegendaryExplorerCore.Kismet
             newObject.Parent = sequenceExport;
         }
 
+        public static void AddObjectsToSequence(ExportEntry sequenceExport, bool removeLinks, params ExportEntry[] exports)
+        {
+            if (sequenceExport.ClassName is not "SequenceReference")
+            {
+                ArrayProperty<ObjectProperty> seqObjs = sequenceExport.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects") ?? new ArrayProperty<ObjectProperty>("SequenceObjects");
+                foreach (var export in exports)
+                {
+                    // Should this check it's not already in the sequence?
+                    seqObjs.Add(new ObjectProperty(export));
+                }
+                sequenceExport.WriteProperty(seqObjs);
+            }
+
+            foreach (var export in exports)
+            {
+                PropertyCollection newObjectProps = export.GetProperties();
+                newObjectProps.AddOrReplaceProp(new ObjectProperty(sequenceExport, "ParentSequence"));
+                newObjectProps.RemoveNamedProperty("ObjPosX");
+                newObjectProps.RemoveNamedProperty("ObjPosY");
+                export.WriteProperties(newObjectProps);
+                if (removeLinks)
+                {
+                    RemoveAllLinks(export);
+                }
+
+                export.Parent = sequenceExport;
+            }
+        }
+
         #region Links
 
         /// <summary>

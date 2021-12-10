@@ -251,6 +251,13 @@ namespace LegendaryExplorerCore.Packages
 
             if (!lookupTableNeedsToBeRegenerated)
             {
+                // CROSSGEN-V: CHECK BEFORE ADDING TO MAKE SURE WE DON'T GOOF IT UP
+                if (EntryLookupTable.TryGetValue(exportEntry.InstancedFullPath, out _))
+                {
+                    Debug.WriteLine($"ENTRY LOOKUP TABLE ALREADY HAS ITEM BEING ADDED!!! ITEM: {exportEntry.InstancedFullPath}");
+                    //Debugger.Break(); // This already exists!
+                }
+                // END CROSSGEN-V
                 EntryLookupTable[exportEntry.InstancedFullPath] = exportEntry;
                 tree.Add(exportEntry);
             }
@@ -325,6 +332,11 @@ namespace LegendaryExplorerCore.Packages
         {
             if (importEntry.FileRef != this)
                 throw new Exception("you cannot add a new import entry from another package file, it has invalid references!");
+
+            // If you need to catch a certain import being added
+            // uncomment the following
+            //if (importEntry.InstancedFullPath == "BIOC_Materials")
+            //    Debugger.Break();
 
             importEntry.Index = imports.Count;
             importEntry.PropertyChanged += importChanged;

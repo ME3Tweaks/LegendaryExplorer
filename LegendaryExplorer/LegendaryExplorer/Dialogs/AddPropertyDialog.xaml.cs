@@ -19,6 +19,13 @@ namespace LegendaryExplorer.Dialogs
     /// </summary>
     public partial class AddPropertyDialog : TrackingNotifyPropertyChangedWindowBase
     {
+        private bool _showTransients;
+        public bool ShowTransients
+        {
+            get => _showTransients;
+            set => SetProperty(ref _showTransients, value);
+        }
+
         public class AddPropertyItem
         {
             public AddPropertyItem() { }
@@ -85,7 +92,7 @@ namespace LegendaryExplorer.Dialogs
         {
             if (obj is AddPropertyItem api)
             {
-                if (api.PropInfo.Transient) return false; //Don't show transient props
+                if (api.PropInfo.Transient && !ShowTransients) return false; //Don't show transient props
                 if (existingProperties.Contains(new PropNameStaticArrayIdxPair(api.PropertyName, api.StaticArrayIndex))) return false; //Don't show existing properties
                 if (string.IsNullOrWhiteSpace(FilterText)) return true; //no filter
                 if (api.PropertyName.Instanced.Contains(FilterText, StringComparison.InvariantCultureIgnoreCase)) 
@@ -176,7 +183,7 @@ namespace LegendaryExplorer.Dialogs
                 if (SelectedClassName != null)
                 {
                     _availableProperties.ReplaceAll(classToClassPropertyMap[SelectedClassName]
-                        .Where(x => !x.PropInfo.Transient && !existingProperties.Contains(new PropNameStaticArrayIdxPair(x.PropertyName, x.StaticArrayIndex)))
+                        .Where(x => (!x.PropInfo.Transient || ShowTransients) && !existingProperties.Contains(new PropNameStaticArrayIdxPair(x.PropertyName, x.StaticArrayIndex)))
                         .OrderBy(x => new PropNameStaticArrayIdxPair(x.PropertyName, x.StaticArrayIndex)));
                 }
                 else

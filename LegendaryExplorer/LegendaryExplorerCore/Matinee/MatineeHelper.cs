@@ -57,7 +57,7 @@ namespace LegendaryExplorerCore.Matinee
             IMEPackage pcc = parent.FileRef;
             var group = new ExportEntry(pcc, parent, pcc.GetNextIndexedName(className), properties: properties)
             {
-                Class = EntryImporter.EnsureClassIsInFile(pcc, className)
+                Class = EntryImporter.EnsureClassIsInFile(pcc, className, new RelinkerOptionsPackage() {ImportExportDependencies = true})
             };
             group.ObjectFlags |= UnrealFlags.EObjectFlags.Transactional;
             pcc.AddExport(group);

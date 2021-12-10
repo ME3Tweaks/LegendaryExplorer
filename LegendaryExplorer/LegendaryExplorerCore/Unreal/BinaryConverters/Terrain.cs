@@ -15,8 +15,8 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public UIndex[] WeightedTextureMaps;
         public TerrainMaterialResource[] CachedTerrainMaterials;
         public TerrainMaterialResource[] CachedTerrainMaterials2;//not ME1
-        public byte[] CachedDisplacements;//not ME1
-        public float MaxCollisionDisplacement;//not ME1
+        public byte[] CachedDisplacements;//not ME1 and not UDK
+        public float MaxCollisionDisplacement;//not ME1 and not UDK
 
         protected override void Serialize(SerializingContainer2 sc)
         {
@@ -28,6 +28,9 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             if (sc.Game != MEGame.ME1)
             {
                 sc.Serialize(ref CachedTerrainMaterials2, SCExt.Serialize);
+            }
+            if (sc.Game != MEGame.ME1 && sc.Game != MEGame.UDK)
+            {
                 sc.Serialize(ref CachedDisplacements);
                 sc.Serialize(ref MaxCollisionDisplacement);
             }
@@ -56,7 +59,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             {
                 return mat.GetUIndexes(game).Select(tuple => (tuple.Item1, $"CachedTerrainMaterials[{i}].{tuple.Item2}"));
             }));
-            if (game != MEGame.ME1)
+            if (game != MEGame.ME1 && game != MEGame.UDK)
             {
                 uIndexes.AddRange(CachedTerrainMaterials2.SelectMany((mat, i) =>
                 {

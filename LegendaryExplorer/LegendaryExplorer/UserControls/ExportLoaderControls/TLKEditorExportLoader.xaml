@@ -1,0 +1,77 @@
+﻿<exportLoaderControls:FileExportLoaderControl
+             x:Class="LegendaryExplorer.UserControls.ExportLoaderControls.TLKEditorExportLoader"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:exportLoaderControls="clr-namespace:LegendaryExplorer.UserControls.ExportLoaderControls"
+             xmlns:converters="clr-namespace:LegendaryExplorer.SharedUI.Converters"
+             mc:Ignorable="d" 
+             d:DataContext="{Binding RelativeSource={RelativeSource Self}}"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <exportLoaderControls:FileExportLoaderControl.Resources>
+        <converters:NullVisibilityConverter x:Key="NullVisibilityConveter"/>
+    </exportLoaderControls:FileExportLoaderControl.Resources>
+    <DockPanel MinWidth="10" MinHeight="10">
+        <ToolBar ToolBarTray.IsLocked="True" DockPanel.Dock="Top">
+            <!-- Commit button saves edits. disabled by default. Enabled when editing. Ends edit mode with saving to object -->
+            <Button Name="btnCommit" Command="{Binding CommitCommand}" Content="Commit" ToolTip="Commit changes to this TLK file back to the export" VerticalAlignment="Stretch" Padding="7,0"
+                    Visibility="{Binding CurrentLoadedExport, Converter={StaticResource NullVisibilityConveter}}">
+                <Button.Style>
+                    <Style TargetType="{x:Type Button}">
+                        <Style.Triggers>
+                            <Trigger Property="IsEnabled" Value="True">
+                                <Setter Property="FontWeight" Value="Bold"/>
+                                <Setter Property="Foreground" Value="Red"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
+            <TextBox Name="boxSearch" Height="26" Width="160" TextWrapping="Wrap" HorizontalAlignment="Left" KeyUp="Evt_KeyUp" VerticalAlignment="Stretch"/>
+            <Button Name="btnSearch" Command="{Binding SearchCommand}" Content="Search" ToolTip="Search strings" Padding="5,0" VerticalAlignment="Stretch"/>
+            <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
+            <Button Name="btnAddNew" Command="{Binding AddStringCommand}" Content="Add String" ToolTip="Add a new string"  Padding="5,0" VerticalAlignment="Stretch"/>
+            <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
+            <Button Name="btnSetID" Command="{Binding SetIDCommand}" Content="Change ID" ToolTip="Set StringRef ID"  Padding="5,0" VerticalAlignment="Stretch"/>
+            <Button Name="btnDelete" Command="{Binding DeleteStringCommand}" Content="Delete String" ToolTip="Delete selected string"  Padding="5,0" VerticalAlignment="Stretch"/>
+            <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
+            <Button Name="btnExportXML" Command="{Binding ExportXmlCommand}" Content="Export" ToolTip="Export to XML"  Padding="5,0" VerticalAlignment="Stretch"/>
+            <Button Name="btnImportXML" Command="{Binding ImportXmlCommand}" Content="Import" ToolTip="Import from XML"  Padding="5,0" VerticalAlignment="Stretch"/>
+            <Button Name="btnViewXML" Command="{Binding ViewXmlCommand}" Content="View XML" ToolTip="View as XML"  Padding="5,0" VerticalAlignment="Stretch"/>
+        </ToolBar>
+        <DockPanel Name="LowerDock" DockPanel.Dock="Bottom" MinHeight="120" MaxHeight="450">
+            <Button Name="btnSaveEdit" Content="Save" DockPanel.Dock="Right" Width="50"  Command="{Binding SaveCommand}"/>
+            <TextBlock Text="Press enter to save the string. Press Shift+Enter to enter a newline." DockPanel.Dock="Bottom" Background="LightGray"/>
+            <TextBox Name="editBox" Text="No string selected" FontFamily="Courier New" FontSize="14" Focusable="True" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Visible" IsEnabled="{Binding StringSelected, FallbackValue=False}" TextWrapping="Wrap" Visibility="Visible" AcceptsReturn="True" PreviewKeyDown="TlkStrField_PreviewKeyDown" />
+        </DockPanel>
+        <Popup Name="popupDlg" Placement="Center" VerticalOffset="15" Width="640" Height="800" Margin="0,12,0,0" Closed="Evt_CloseXML" StaysOpen="false">
+            <Border BorderBrush = "Black" BorderThickness="2" Background="AliceBlue" >
+                <TextBox Name="popoutXmlBox" Text="No xml loaded" Margin="15,0,15,0" VerticalAlignment = "Center" FontFamily = "Courier New" FontSize = "14" Focusable = "True" ScrollViewer.CanContentScroll = "True" ScrollViewer.VerticalScrollBarVisibility = "Visible" IsReadOnly = "True" TextWrapping = "Wrap" LostFocus="CloseViewAsXml"/>
+            </Border>
+        </Popup>
+        <ListBox Name="DisplayedString_ListBox" ItemsSource="{Binding CleanedStrings}" HorizontalContentAlignment="Stretch" SelectionChanged="DisplayedString_ListBox_SelectionChanged" IsTextSearchEnabled="True" TextSearch.TextPath="StringID" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="90" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{Binding StringID}" Grid.Column="0" TextAlignment="Center"></TextBlock>
+                        <TextBlock Text="{Binding Data}" Grid.Column="1" TextWrapping="Wrap" ></TextBlock>
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem">
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True" >
+                            <Setter Property="FontWeight" Value="Bold" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </ListBox.ItemContainerStyle>
+        </ListBox>
+    </DockPanel>
+</exportLoaderControls:FileExportLoaderControl>

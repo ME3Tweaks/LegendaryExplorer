@@ -28,5 +28,11 @@ namespace LegendaryExplorerCore.Packages
         bool HasParent { get; }
         IEntry Parent { get; set; }
         IEntry Clone(bool incrementIndex);
+
+        /// <summary>
+        /// Gets the top level object by following the idxLink up the chain. Typically this is the file that will contain the export (unless it is a ForcedExport) if it's an import, or the original package before forcing the export into the file.
+        /// </summary>
+        /// <returns></returns>
+        public string GetRootName();
     }
 }

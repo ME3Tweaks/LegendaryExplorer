@@ -88,7 +88,7 @@ namespace LegendaryExplorer.Tools.FaceFXEditor
             package.PackageGUID = packguid;
             LiveFile.PackageGuid = packguid;
 
-            EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, SourceAnimSet.Export.Parent, LiveFile, null, true, out _);
+            EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, SourceAnimSet.Export.Parent, LiveFile, null, true, new RelinkerOptionsPackage(), out _);
 
             var gender = SourceAnimSet.Export.ObjectNameString.Last() switch
             {
@@ -115,7 +115,7 @@ namespace LegendaryExplorer.Tools.FaceFXEditor
                         using (IMEPackage soldierFile = MEPackageHandler.OpenME3Package(Path.Combine(ME3Directory.CookedPCPath, "SFXCharacterClass_Soldier.pcc")))
                         {
                             EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, soldierFile.GetUExport(isFemale ? 10327 : 10330),
-                                                             LiveFile, LiveFile.GetUExport(3), true, out ent);
+                                                             LiveFile, LiveFile.GetUExport(3), true, new RelinkerOptionsPackage(), out ent);
 
                         }
                         ExportEntry actor = (ExportEntry)ent;
@@ -124,9 +124,9 @@ namespace LegendaryExplorer.Tools.FaceFXEditor
                         
                         using (IMEPackage clothingFile = MEPackageHandler.OpenME3Package(Path.Combine(ME3Directory.CookedPCPath, $"BIOG_HM{(isFemale ? "F" : "M")}_ARM_CTH_R.pcc")))
                         {
-                            var clothingPackage = EntryImporter.GetOrAddCrossImportOrPackage("CTHa", clothingFile, LiveFile);
+                            var clothingPackage = EntryImporter.GetOrAddCrossImportOrPackage("CTHa", clothingFile, LiveFile, new RelinkerOptionsPackage());
                             EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, clothingFile.GetUExport(isFemale ? 1625 : 1966),
-                                                                 LiveFile, clothingPackage, true, out ent);
+                                                                 LiveFile, clothingPackage, true, new RelinkerOptionsPackage(), out ent);
                         }
 
                         ExportEntry bodyComponent = LiveFile.GetUExport(actor.GetProperty<ObjectProperty>("BodyMesh").Value);
@@ -152,9 +152,7 @@ namespace LegendaryExplorer.Tools.FaceFXEditor
                                 }
                                 else
                                 {
-                                    EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies,
-                                                                         parentFile.GetUExport(seqVar.GetProperty<ObjectProperty>("ObjValue").Value),
-                                                                         LiveFile, LiveFile.GetUExport(3), true, out var ent);
+                                    EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, parentFile.GetUExport(seqVar.GetProperty<ObjectProperty>("ObjValue").Value), LiveFile, LiveFile.GetUExport(3), true, new RelinkerOptionsPackage(), out var ent);
                                     ExportEntry actor = (ExportEntry)ent;
                                     LiveFile.AddToLevelActorsIfNotThere(actor);
                                     ActorTag = actor.GetProperty<NameProperty>("Tag")?.Value.Name;
@@ -190,12 +188,12 @@ namespace LegendaryExplorer.Tools.FaceFXEditor
             }
 
             var mainSeq = LiveFile.GetUExport(9);
-            var interp = SequenceObjectCreator.CreateSequenceObject(LiveFile, "SeqAct_Interp", MEGame.ME3);
+            var interp = SequenceObjectCreator.CreateSequenceObject(LiveFile, "SeqAct_Interp");
             KismetHelper.AddObjectToSequence(interp, mainSeq);
-            var interpData = SequenceObjectCreator.CreateSequenceObject(LiveFile, "InterpData", MEGame.ME3);
+            var interpData = SequenceObjectCreator.CreateSequenceObject(LiveFile, "InterpData");
             KismetHelper.AddObjectToSequence(interpData, mainSeq);
             KismetHelper.CreateVariableLink(interp, "Data", interpData);
-            var playEvent = SequenceObjectCreator.CreateSequenceObject(LiveFile, "SeqEvent_Console", MEGame.ME3);
+            var playEvent = SequenceObjectCreator.CreateSequenceObject(LiveFile, "SeqEvent_Console");
             playEvent.WriteProperty(new NameProperty("playfacefx", "ConsoleEventName"));
             KismetHelper.AddObjectToSequence(playEvent, mainSeq);
             KismetHelper.CreateOutputLink(playEvent, "Out", interp);
@@ -223,7 +221,7 @@ namespace LegendaryExplorer.Tools.FaceFXEditor
             {
                 var stuntActor = parentFile.Exports.FirstOrDefault(exp => exp.ClassName == "SFXStuntActor" &&
                                                                           ActorTag.CaseInsensitiveEquals(exp.GetProperty<NameProperty>("Tag")?.Value.Name));
-                EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, stuntActor, LiveFile, LiveFile.GetUExport(3), true, out var ent);
+                EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, stuntActor, LiveFile, LiveFile.GetUExport(3), true, new RelinkerOptionsPackage(), out var ent);
                 LiveFile.AddToLevelActorsIfNotThere((ExportEntry)ent);
             }
         }

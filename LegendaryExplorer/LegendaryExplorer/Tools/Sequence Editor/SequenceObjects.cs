@@ -125,6 +125,17 @@ namespace LegendaryExplorer.Tools.SequenceObjects
                 var properties = export.GetProperties();
                 switch (export.ClassName)
                 {
+                    case "BioSeqAct_ScalarMathUnit":
+                        var op = properties.GetProp<EnumProperty>("Operation");
+                        if (op == null)
+                        {
+                            res += "Operation: OP_Add"; // is this right? The class doesn't define anything as default
+                        }
+                        else
+                        {
+                            res += $"Operation: {op.Value}";
+                        }
+                        break;
                     case "BioSeqAct_AreaTransition":
                         var newMap = properties.GetProp<NameProperty>("AreaName");
                         var startPoint = properties.GetProp<NameProperty>("startPoint");
@@ -463,6 +474,18 @@ namespace LegendaryExplorer.Tools.SequenceObjects
                                             return $"#{entry.UIndex}\n{entry.ObjectName.Instanced}";
                                         }
                                     }
+                                case ArrayProperty<ObjectProperty> objList when objList.Name == "ObjList":
+                                    {
+                                        string text = $"ObjList: {objList.Count} item (s)";
+                                        if (objList.Count > 0)
+                                            text += $"\n0: {objList[0].ResolveToEntry(export.FileRef)?.ObjectName.Instanced}";
+                                        if (objList.Count > 1)
+                                            text += $"\n1: {objList[1].ResolveToEntry(export.FileRef)?.ObjectName.Instanced}";
+                                        if (objList.Count > 2)
+                                            text += "\n...";
+
+                                        return text;
+                                    }
                             }
                         }
                         return unknownValue;
@@ -514,6 +537,7 @@ namespace LegendaryExplorer.Tools.SequenceObjects
                             return CommonStructs.GetRotator(rotStruct).ToString();
                         }
                         return unknownValue;
+
                     default:
                         return unknownValue;
                 }
@@ -838,6 +862,15 @@ namespace LegendaryExplorer.Tools.SequenceObjects
                             Desc = props.GetProp<StrProperty>("LinkDesc"),
                             type = getType(pcc.getObjectName(props.GetProp<ObjectProperty>("ExpectedType").Value))
                         };
+
+                        // CROSSGEN - TRYING TO FIGURE OUT WHATS UP
+                        //if (props.GetProp<NameProperty>("PropertyName").Value.Instanced is string str && str != l.Desc)
+                        //{
+                        //    l.Desc += $" (PN: {str})";
+                        //}
+
+                        // ENDCROSSGEN
+
                         foreach (var objProp in linkedVars)
                         {
                             l.Links.Add(objProp.Value);
@@ -1687,7 +1720,7 @@ namespace LegendaryExplorer.Tools.SequenceObjects
                     CreateInputLink(inputLinksProp[i].GetProp<StrProperty>("LinkDesc"), i);
                 }
             }
-            else 
+            else
             {
                 try
                 {

@@ -133,7 +133,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
         private void CreateSubObject(Subobject subObject, ExportEntry parent, ref ExportEntry subExport)
         {
             var objName = NameReference.FromInstancedString(subObject.NameDeclaration.Name);
-            IEntry classEntry = EntryImporter.EnsureClassIsInFile(Pcc, subObject.Class.Name);
+            IEntry classEntry = EntryImporter.EnsureClassIsInFile(Pcc, subObject.Class.Name, new RelinkerOptionsPackage());
             if (subExport is null)
             {
                 if (Pcc.TryGetTrash(out subExport))

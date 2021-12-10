@@ -204,7 +204,7 @@ namespace LegendaryExplorer.Tools.PackageDumper
             if (m.ShowDialog(this) == CommonFileDialogResult.Ok)
             {
                 string outputDir = m.FileName;
-                await DumpPackages(MELoadedFiles.GetFilesLoadedInGame(game).Values.ToList(), outputDir);
+                await DumpPackages(MELoadedFiles.GetFilesLoadedInGame(game, true).Values.ToList(), outputDir);
             }
         }
 
