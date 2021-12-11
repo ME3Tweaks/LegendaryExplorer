@@ -1,0 +1,3 @@
+# Ignore Doxygen working folder and Doxygen output
+/Documentation/Output
+/Documentation/Doxygen
