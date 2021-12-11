@@ -161,7 +161,7 @@ steps:
 
 - task: PowerShell@2
   displayName: "Download Doxygen"
-  condition: and(succeeded(), and(eq(variables['Build.SourceBranchName'], 'Beta'), ne(variables.CACHE_RESTORED, 'true')))
+  condition: and(succeeded(), and(eq(variables['Build.SourceBranchName'], 'Beta'), ne(variables.doxygenCacheRestored, 'true')))
   inputs:
     targetType: 'inline'
     script: |
