@@ -3,6 +3,9 @@ using Newtonsoft.Json;
 
 namespace LegendaryExplorerCore.PlotDatabase.PlotElements
 {
+    /// <summary>
+    /// Represents a plot transition element in a Plot Database
+    /// </summary>
     public class PlotTransition : PlotElement
     {
         /// <summary>An argument to this transition</summary>

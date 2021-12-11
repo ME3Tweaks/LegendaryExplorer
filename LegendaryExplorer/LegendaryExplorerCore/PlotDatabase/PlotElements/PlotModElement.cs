@@ -4,6 +4,9 @@ using Newtonsoft.Json;
 
 namespace LegendaryExplorerCore.PlotDatabase.PlotElements
 {
+    /// <summary>
+    /// Element representing a mod in a Plot Database
+    /// </summary>
     public class PlotModElement : PlotElement
     {
         /// <summary>The name of the mod this element represents</summary>

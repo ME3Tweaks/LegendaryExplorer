@@ -3,6 +3,9 @@ using Newtonsoft.Json;
 
 namespace LegendaryExplorerCore.PlotDatabase.PlotElements
 {
+    /// <summary>
+    /// Represents a boolean plot variable element in a Plot Database
+    /// </summary>
     public class PlotBool : PlotElement
     {
         /// <summary>The bool subtype of this element</summary>

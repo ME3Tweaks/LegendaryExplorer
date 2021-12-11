@@ -3,6 +3,9 @@ using Newtonsoft.Json;
 
 namespace LegendaryExplorerCore.PlotDatabase.PlotElements
 {
+    /// <summary>
+    /// Represents a plot conditional element in a Plot Database
+    /// </summary>
     public class PlotConditional : PlotElement
     {
         /// <summary>The code of this conditional</summary>

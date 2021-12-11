@@ -27,7 +27,7 @@ namespace LegendaryExplorerCore.PlotDatabase.Databases
             Game = game;
 
             string json = LegendaryExplorerCoreUtilities.LoadStringFromCompressedResource("PlotDatabases.zip",
-                LegendaryExplorerCoreLib.CustomPlotFileName(game));
+                BasegamePlotFileName(game));
 
             var pdb = JsonConvert.DeserializeObject<SerializedPlotDatabase>(json, _jsonSerializerSettings);
             if (pdb != null)
@@ -37,5 +37,21 @@ namespace LegendaryExplorerCore.PlotDatabase.Databases
                 Root = Organizational[1];
             }
         }
+
+        /// <summary>
+        /// Gets the filename of the BioWare plot database .json file that is shipped with the LEC library
+        /// </summary>
+        /// <param name="game">Game to get filename for</param>
+        /// <returns>Name of a .json file</returns>
+        public static string BasegamePlotFileName(MEGame game) => game switch
+        {
+            MEGame.ME3 => "le3.json",
+            MEGame.ME2 => "le2.json",
+            MEGame.ME1 => "le1.json",
+            MEGame.LE3 => "le3.json",
+            MEGame.LE2 => "le2.json",
+            MEGame.LE1 => "le1.json",
+            _ => "le3.json"
+        };
     }
 }
