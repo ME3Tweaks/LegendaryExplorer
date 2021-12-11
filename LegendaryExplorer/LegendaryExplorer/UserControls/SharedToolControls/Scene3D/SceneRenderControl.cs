@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows.Media;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -153,7 +154,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
     /// <summary>
     /// Hosts a <see cref="RenderContext"/> in a WPF control.
     /// </summary>
-    public class SceneRenderControl : System.Windows.Controls.ContentControl
+    public class SceneRenderControl : System.Windows.Controls.ContentControl, IDisposable
     {
         private Microsoft.Wpf.Interop.DirectX.D3D11Image D3DImage = null;
         private Image Image;
@@ -178,50 +179,63 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             this.Loaded += SceneRenderControl_Loaded;
         }
 
+        private bool InitiallyLoaded = false;
         private void SceneRenderControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
-            if (this.Context.Device != null)
-                return;
-
-            D3DImage = new Microsoft.Wpf.Interop.DirectX.D3D11Image
+            if (!InitiallyLoaded)
             {
-                OnRender = this._shouldRender ? this.D3DImage_OnRender : null
-            };
-            Image = new Image
-            {
-                HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch,
-                VerticalAlignment = System.Windows.VerticalAlignment.Stretch,
-                Source = D3DImage
-            };
-            this.Content = Image;
+                Debug.WriteLine("SceneRenderControl_Loaded");
+                D3DImage = new Microsoft.Wpf.Interop.DirectX.D3D11Image
+                {
+                    OnRender = D3DImage_OnRender
+                };
+                Image = new Image
+                {
+                    HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch,
+                    VerticalAlignment = System.Windows.VerticalAlignment.Stretch,
+                    Source = D3DImage
+                };
+                this.Content = Image;
 
-            this.D3DImage.WindowOwner = (new System.Windows.Interop.WindowInteropHelper(System.Windows.Window.GetWindow(this))).Handle;
-            Context.CreateResources();
+                this.D3DImage.WindowOwner = (new System.Windows.Interop.WindowInteropHelper(System.Windows.Window.GetWindow(this))).Handle;
+                this.Unloaded += SceneRenderControlWPF_Unloaded;
 
-            CompositionTarget.Rendering += CompositionTarget_Rendering;
+                Context.CreateResources();
 
+                CompositionTarget.Rendering += CompositionTarget_Rendering;
+                InitiallyLoaded = true;
+
+            }
             this.SizeChanged += SceneRenderControlWPF_SizeChanged;
             this.PreviewMouseDown += SceneRenderControlWPF_PreviewMouseDown;
             this.PreviewMouseMove += SceneRenderControlWPF_PreviewMouseMove;
             this.PreviewMouseUp += SceneRenderControlWPF_PreviewMouseUp;
             this.PreviewMouseWheel += SceneRenderControlWPF_PreviewMouseWheel;
-            this.Unloaded += SceneRenderControlWPF_Unloaded;
             this.KeyDown += OnKeyDown;
             this.KeyUp += OnKeyUp;
+            SetShouldRender(true);
         }
 
         private void SceneRenderControlWPF_Unloaded(object sender, System.Windows.RoutedEventArgs e)
         {
-            CompositionTarget.Rendering -= CompositionTarget_Rendering;
-            this.SizeChanged -= SceneRenderControlWPF_SizeChanged;
+            SetShouldRender(false);
             this.PreviewMouseDown -= SceneRenderControlWPF_PreviewMouseDown;
             this.PreviewMouseMove -= SceneRenderControlWPF_PreviewMouseMove;
             this.PreviewMouseUp -= SceneRenderControlWPF_PreviewMouseUp;
             this.PreviewMouseWheel -= SceneRenderControlWPF_PreviewMouseWheel;
-            this.Unloaded -= SceneRenderControlWPF_Unloaded;
             this.KeyUp -= OnKeyUp;
             this.KeyDown -= OnKeyDown;
-            
+            this.SizeChanged -= SceneRenderControlWPF_SizeChanged;
+        }
+
+        /// <summary>
+        /// Called when this Scene Render Control is disposed from memory.
+        /// </summary>
+        public void Dispose()
+        {
+            CompositionTarget.Rendering -= CompositionTarget_Rendering;
+            this.Unloaded -= SceneRenderControlWPF_Unloaded;
+
             if (this.Context.Backbuffer != null)
                 this.Context.DisposeSizeDependentResources();
 
@@ -261,39 +275,45 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
 
 
         public event EventHandler Render;
+
         private void D3DImage_OnRender(IntPtr surface, bool isNewSurface)
         {
-            if (isNewSurface)
+            if (_shouldRender)
             {
-                if (Context.Backbuffer != null)
+                if (isNewSurface)
                 {
-                    Context.DisposeSizeDependentResources();
+                    if (Context.Backbuffer != null)
+                    {
+                        Context.DisposeSizeDependentResources();
+                    }
+
+                    // Yikes - from https://github.com/microsoft/WPFDXInterop/blob/master/samples/D3D11Image/D3D11Visualization/D3DVisualization.cpp#L384
+                    ComObject res = CppObject.FromPointer<ComObject>(surface);
+                    SharpDX.DXGI.Resource resource = res.QueryInterface<SharpDX.DXGI.Resource>();
+                    IntPtr sharedHandle = resource.SharedHandle;
+                    resource.Dispose();
+                    SharpDX.Direct3D11.Resource d3dres = Context.Device.OpenSharedResource<SharpDX.Direct3D11.Resource>(sharedHandle);
+                    Context.CreateSizeDependentResources(RenderWidth, RenderHeight, d3dres.QueryInterface<Texture2D>());
+                    d3dres.Dispose();
+
                 }
 
-                // Yikes - from https://github.com/microsoft/WPFDXInterop/blob/master/samples/D3D11Image/D3D11Visualization/D3DVisualization.cpp#L384
-                ComObject res = CppObject.FromPointer<ComObject>(surface);
-                SharpDX.DXGI.Resource resource = res.QueryInterface<SharpDX.DXGI.Resource>();
-                IntPtr sharedHandle = resource.SharedHandle;
-                resource.Dispose();
-                SharpDX.Direct3D11.Resource d3dres = Context.Device.OpenSharedResource<SharpDX.Direct3D11.Resource>(sharedHandle);
-                Context.CreateSizeDependentResources(RenderWidth, RenderHeight, d3dres.QueryInterface<Texture2D>());
-                d3dres.Dispose();
+                Context.Update((float) Stopwatch.Elapsed.TotalSeconds);
+                Stopwatch.Restart();
+                bool capturing = false;
+                if (this.CaptureNextFrame && RenderDoc.IsRenderDocAttached())
+                {
+                    this.CaptureNextFrame = false;
+                    capturing = true;
+                    RenderDoc.StartCapture(this.Context.Device.NativePointer, this.D3DImage.WindowOwner);
+                }
 
-            }
-            Context.Update((float)Stopwatch.Elapsed.TotalSeconds);
-            Stopwatch.Restart();
-            bool capturing = false;
-            if (this.CaptureNextFrame && RenderDoc.IsRenderDocAttached())
-            {
-                this.CaptureNextFrame = false;
-                capturing = true;
-                RenderDoc.StartCapture(this.Context.Device.NativePointer, this.D3DImage.WindowOwner);
-            }
-            Context.Render();
-            Render?.Invoke(this, new EventArgs());
-            if (capturing)
-            {
-                RenderDoc.EndCapture(this.Context.Device.NativePointer, this.D3DImage.WindowOwner);
+                Context.Render();
+                Render?.Invoke(this, new EventArgs());
+                if (capturing)
+                {
+                    RenderDoc.EndCapture(this.Context.Device.NativePointer, this.D3DImage.WindowOwner);
+                }
             }
         }
 

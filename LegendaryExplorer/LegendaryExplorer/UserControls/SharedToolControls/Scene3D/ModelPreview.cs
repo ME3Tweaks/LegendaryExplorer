@@ -560,7 +560,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
                 var uniqueMaterials = preloadedData.texturePreviewMaterials.Select(x => x.MaterialExport).Distinct();
                 foreach (var mat in uniqueMaterials)
                 {
-                    var material = new TexturedPreviewMaterial(texcache, new MaterialInstanceConstant(mat), assetCache, preloadedData.texturePreviewMaterials);
+                    var material = new TexturedPreviewMaterial(texcache, new MaterialInstanceConstant(mat, assetCache), assetCache, preloadedData.texturePreviewMaterials);
                     AddMaterial(mat.ObjectName.Name, material);
 
                 }

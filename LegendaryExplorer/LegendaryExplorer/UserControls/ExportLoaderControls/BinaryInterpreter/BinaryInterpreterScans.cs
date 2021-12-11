@@ -4907,7 +4907,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     combinerNode.Add(new BinInterpNode(bin.Position, $"Unknown float: {bin.ReadSingle()}") { Length = 4 });
                     var inputOp = bin.ReadInt32();
                     combinerNode.Add(new BinInterpNode(bin.Position - 4, $"Input Operation: {inputOp} - {(FxInputOperation)inputOp}"));
-                    
+
                     // Parent links section
                     var parentLinks = new List<ITreeItem>(); //Name list to Bones and other facefx phenomes?
                     var parentLinksCount = bin.ReadInt32();
@@ -4933,7 +4933,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             parentLinkItems.Add(new BinInterpNode(bin.Position, $"Function Parameter {n3}: {bin.ReadSingle()}") { Length = 4 });
                         }
                     }
-                    
+
                     // Parameters section
                     int parameterCount = bin.ReadInt32();
                     var fxaParameter = new List<ITreeItem>(parameterCount);
@@ -5124,7 +5124,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 subnodes.Add(MakeInt32Node(bin, "Unknown"));
                 if (game is MEGame.LE1 or MEGame.LE2)
                 {
-                    subnodes.Add(MakeArrayNode(bin, "Unknown Ints", i =>  new BinInterpNode(bin.Position, $"Unknown: {nameTable[bin.ReadInt32()]}") { Length = 4 }));
+                    subnodes.Add(MakeArrayNode(bin, "Unknown Ints", i => new BinInterpNode(bin.Position, $"Unknown: {nameTable[bin.ReadInt32()]}") { Length = 4 }));
                 }
 
             }
@@ -6048,7 +6048,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             var subnodes = new List<ITreeItem>();
             try
             {
-                var bin = new EndianReader(data) {Endian = Pcc.Endian};
+                var bin = new EndianReader(data) { Endian = Pcc.Endian };
                 bin.JumpTo(CurrentLoadedExport.propsEnd());
 
                 bool isIndexed = !bin.ReadBoolInt();
@@ -6323,7 +6323,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             var probeFuncs = (EProbeFunctions)bin.ReadUInt64();
             var probeMaskNode = new BinInterpNode(probeMaskPos, $"ProbeMask: {(ulong)probeFuncs:X16}")
             {
-                Length = 8, 
+                Length = 8,
                 IsExpanded = true
             };
             foreach (EProbeFunctions flag in probeFuncs.MaskToList())
@@ -7430,7 +7430,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             var game = CurrentLoadedExport.FileRef.Game;
             try
             {
-
+                PackageCache cache = new PackageCache();
                 var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
                 bin.JumpTo(binarystart);
 
@@ -7443,7 +7443,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         var value = bin.Skip(-4).ReadInt32();
                         if (value != 0 && Pcc.GetEntry(value) is ExportEntry matExport)
                         {
-                            foreach (IEntry texture in new MaterialInstanceConstant(matExport).Textures)
+                            foreach (IEntry texture in new MaterialInstanceConstant(matExport, cache).Textures)
                             {
                                 matNode.Items.Add(new BinInterpNode(-1, $"#{texture.UIndex} {texture.FileRef.GetEntryString(texture.UIndex)}", NodeType.StructLeafObject) { UIndexValue = texture.UIndex });
                             }
@@ -8524,7 +8524,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 {
                     subnodes.Add(MakeInt32Node(bin, "Unknown Int ME3/LE"));
                 }
-                
+
                 if (Pcc.Game >= MEGame.ME3 && CurrentLoadedExport.ClassName == "LightMapTexture2D")
                 {
                     subnodes.Add(new BinInterpNode(bin.Position, $"LightMapFlags: {(ELightMapFlags)bin.ReadInt32()}"));
