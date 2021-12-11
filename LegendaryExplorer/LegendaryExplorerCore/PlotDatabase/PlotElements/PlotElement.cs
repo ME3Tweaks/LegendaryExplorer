@@ -11,6 +11,10 @@ namespace LegendaryExplorerCore.PlotDatabase.PlotElements
     /// <summary>
     /// Base class representing an element in a plot database. Can be serialized to JSON
     /// </summary>
+    /// <remarks>
+    /// This class does not affect or represent anything in-game. Instances of this class are intended as supplementary reference material
+    /// for in-game plot variables. The existence of a plot element in a database does not ensure the existence of anything in-game.
+    /// </remarks>
     [DebuggerDisplay("{Type} {PlotId}: {Path}")]
     public class PlotElement : INotifyPropertyChanged
     {
@@ -24,6 +28,8 @@ namespace LegendaryExplorerCore.PlotDatabase.PlotElements
         public int ElementId { get; set; }
 
         /// <summary>The element id of this element's parent</summary>
+        /// <remarks>This property is used during deserialization to determine the hierarchical structure of plot elements.
+        /// It should always match the id of the <see cref="Parent"/> element. <see cref="AssignParent"/> should always be used to modify hierarchical plot relationships. </remarks>
         [JsonProperty("parentelementid")]
         public int ParentElementId { get; set; }
 
@@ -48,7 +54,8 @@ namespace LegendaryExplorerCore.PlotDatabase.PlotElements
         /// <remarks>Use <see cref="AssignParent"/> on children elements to set children. This property is not used during serialization.</remarks>
         [JsonIgnore] public ObservableCollectionExtended<PlotElement> Children { get; } = new ();
 
-        /// <summary>Gets a string displaying the path through the tree to this element</summary>
+        /// <summary>Gets a string displaying the full path through the tree to this element</summary>
+        /// <example><c>LE3.Global.Game_Progress.Gth002_Completed</c></example>
         [JsonIgnore]
         public string Path
         {
@@ -91,6 +98,9 @@ namespace LegendaryExplorerCore.PlotDatabase.PlotElements
         }
 
         /// <summary>Gets whether this element represents something in-game, based on element type</summary>
+        /// <remarks>No plot element in the database ever affects anything in game. This property merely reflects if there
+        /// is something in the game files that this element type should represent. An element existing in the database does not ensure
+        /// a corresponding in-game representation.</remarks>
         [JsonIgnore]
         public bool IsAGameState
         {
@@ -117,7 +127,7 @@ namespace LegendaryExplorerCore.PlotDatabase.PlotElements
         }
 
         /// <summary>
-        /// Initializes a new <see cref=""/>
+        /// Initializes a new <see cref="PlotElement"/>
         /// </summary>
         public PlotElement()
         { }

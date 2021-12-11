@@ -43,14 +43,17 @@ namespace LegendaryExplorerCore.PlotDatabase.PlotElements
         Category = 16
     }
 
+    /// <summary>
+    /// Extension methods for the <see cref="PlotElementType"/> enum
+    /// </summary>
     public static class PlotElementTypeExtensions
     {
         /// <summary>
         /// Gets a textual description of a PlotElementType, as found in the BioWare plot databases
         /// </summary>
         /// <param name="plotType">Type to get description of</param>
-        /// <returns>Description</returns>
-        /// <exception cref="ArgumentException">Plot type has no descriptions</exception>
+        /// <returns>Description text</returns>
+        /// <exception cref="ArgumentException">Plot type has no description</exception>
         public static string GetDescription(this PlotElementType plotType) => plotType switch
         {
             PlotElementType.None => "No plot element type set",

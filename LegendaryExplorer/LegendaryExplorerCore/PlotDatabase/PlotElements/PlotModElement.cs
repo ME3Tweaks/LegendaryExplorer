@@ -29,13 +29,21 @@ namespace LegendaryExplorerCore.PlotDatabase.PlotElements
         [JsonProperty("game")]
         public MEGame Game { get; set; }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Initializes a new <see cref="PlotMod"/>
+        /// </summary>
         PlotModElement()
-        {
+        { }
 
-        }
-
-        /// <inheritdoc />
+        /// <summary>
+        /// Initializes a new PlotElement
+        /// </summary>
+        /// <param name="plotid">PlotID of new element</param>
+        /// <param name="elementid">ElementID of new element</param>
+        /// <param name="label">Label of new element</param>
+        /// <param name="type">Type of new element</param>
+        /// <param name="parent">Parent PlotElement of new element</param>
+        /// <param name="children">Children of new element</param>
         public PlotModElement(int plotid, int elementid, string label, PlotElementType type, PlotElement parent,
             List<PlotElement> children = null)
             : base(plotid, elementid, label, type, parent, children)
