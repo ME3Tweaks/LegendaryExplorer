@@ -100,25 +100,31 @@ $(document).ready(function(){initNavTree('class_legendary_explorer_core_1_1_lege
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a0e1fd13eb12808fdff9ba69503c1db6f"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_legendary_explorer_core_lib.html#a0e1fd13eb12808fdff9ba69503c1db6f">CustomResourceFileName</a> (<a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game)</td></tr>
+<tr class="memdesc:a0e1fd13eb12808fdff9ba69503c1db6f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maps a game to its custom resources filename in the GameResources.zip embedded file  <a href="class_legendary_explorer_core_1_1_legendary_explorer_core_lib.html#a0e1fd13eb12808fdff9ba69503c1db6f">More...</a><br /></td></tr>
 <tr class="separator:a0e1fd13eb12808fdff9ba69503c1db6f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a22a6f67fb49988bbc8dd91be3e6fc98a"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_legendary_explorer_core_lib.html#a22a6f67fb49988bbc8dd91be3e6fc98a">SetSynchronizationContext</a> (TaskScheduler scheduler)</td></tr>
-<tr class="memdesc:a22a6f67fb49988bbc8dd91be3e6fc98a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allows you to specify the synchronization context, for example, if you want to use ContinueWithOnUIThread() before the library has been initialized.  <a href="class_legendary_explorer_core_1_1_legendary_explorer_core_lib.html#a22a6f67fb49988bbc8dd91be3e6fc98a">More...</a><br /></td></tr>
+<tr class="memdesc:a22a6f67fb49988bbc8dd91be3e6fc98a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allows you to specify the synchronization context, for example, if you want to use <code>Task.ContinueWithOnUIThread()</code> before the library has been initialized.  <a href="class_legendary_explorer_core_1_1_legendary_explorer_core_lib.html#a22a6f67fb49988bbc8dd91be3e6fc98a">More...</a><br /></td></tr>
 <tr class="separator:a22a6f67fb49988bbc8dd91be3e6fc98a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8442b920674cd736613a43712444e86e"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_legendary_explorer_core_lib.html#a8442b920674cd736613a43712444e86e">InitLib</a> (TaskScheduler uiThreadScheduler, Action&lt; string &gt; packageSavingFailed=null, ILogger logger=null)</td></tr>
-<tr class="memdesc:a8442b920674cd736613a43712444e86e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call this before using anything in this library. It registers things such as package loaders  <a href="class_legendary_explorer_core_1_1_legendary_explorer_core_lib.html#a8442b920674cd736613a43712444e86e">More...</a><br /></td></tr>
-<tr class="separator:a8442b920674cd736613a43712444e86e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aff979365a101282befcd41b3888d9b14"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_legendary_explorer_core_lib.html#aff979365a101282befcd41b3888d9b14">InitLib</a> (TaskScheduler uiSyncContext, Action&lt; string &gt; packageSavingFailed=null, ILogger logger=null)</td></tr>
+<tr class="memdesc:aff979365a101282befcd41b3888d9b14"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes the <a class="el" href="namespace_legendary_explorer_core.html">LegendaryExplorerCore</a> library for use. Call this before using anything in this library. It registers things such as package loaders, initializes the object databases, and other startup tasks  <a href="class_legendary_explorer_core_1_1_legendary_explorer_core_lib.html#aff979365a101282befcd41b3888d9b14">More...</a><br /></td></tr>
+<tr class="separator:aff979365a101282befcd41b3888d9b14"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a44c9bc7d94a47abbb1ee60021165a1ca"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_legendary_explorer_core_lib.html#a44c9bc7d94a47abbb1ee60021165a1ca">CustomPlotFileName</a> (<a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game)</td></tr>
+<tr class="memdesc:a44c9bc7d94a47abbb1ee60021165a1ca"><td class="mdescLeft">&#160;</td><td class="mdescRight">????? NEEDS DOCUMENTED  <a href="class_legendary_explorer_core_1_1_legendary_explorer_core_lib.html#a44c9bc7d94a47abbb1ee60021165a1ca">More...</a><br /></td></tr>
 <tr class="separator:a44c9bc7d94a47abbb1ee60021165a1ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="properties" name="properties"></a>
 Properties</h2></td></tr>
 <tr class="memitem:ad7e6caec9e939a843ad3fbb9c0b87bf6"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_legendary_explorer_core_lib.html#ad7e6caec9e939a843ad3fbb9c0b87bf6">RepositoryURL</a><code> [get]</code></td></tr>
+<tr class="memdesc:ad7e6caec9e939a843ad3fbb9c0b87bf6"><td class="mdescLeft">&#160;</td><td class="mdescRight">The URL to the repository for Legendary Explorer (Core)  <a href="class_legendary_explorer_core_1_1_legendary_explorer_core_lib.html#ad7e6caec9e939a843ad3fbb9c0b87bf6">More...</a><br /></td></tr>
 <tr class="separator:ad7e6caec9e939a843ad3fbb9c0b87bf6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abc580656caf24a904c25973344861efe"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_legendary_explorer_core_lib.html#abc580656caf24a904c25973344861efe">BugReportURL</a><code> [get]</code></td></tr>
+<tr class="memdesc:abc580656caf24a904c25973344861efe"><td class="mdescLeft">&#160;</td><td class="mdescRight">The URL to send users to for support for Legendary Explorer (Core)  <a href="class_legendary_explorer_core_1_1_legendary_explorer_core_lib.html#abc580656caf24a904c25973344861efe">More...</a><br /></td></tr>
 <tr class="separator:abc580656caf24a904c25973344861efe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa607c2b89f2c97adc5d5e371e9fc19c8"><td class="memItemLeft" align="right" valign="top">static TaskScheduler&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_legendary_explorer_core_lib.html#aa607c2b89f2c97adc5d5e371e9fc19c8">SYNCHRONIZATION_CONTEXT</a><code> [get]</code></td></tr>
+<tr class="memdesc:aa607c2b89f2c97adc5d5e371e9fc19c8"><td class="mdescLeft">&#160;</td><td class="mdescRight">The synchronization context used when calling <code>Task.ContinueWithOnUIThread()</code> [<a class="el" href="class_legendary_explorer_core_1_1_helpers_1_1_task_extensions.html#ae7cc59d92653a3531a6cc779ff3a149c">Helpers.TaskExtensions.ContinueWithOnUIThread</a>]. This may need to be set via <a class="el" href="class_legendary_explorer_core_1_1_legendary_explorer_core_lib.html#a22a6f67fb49988bbc8dd91be3e6fc98a" title="Allows you to specify the synchronization context, for example, if you want to use Task....">SetSynchronizationContext</a> before the library is initialized if you use the <code>ContinueWithOnUIThread</code> extension before initializing the library.  <a href="class_legendary_explorer_core_1_1_legendary_explorer_core_lib.html#aa607c2b89f2c97adc5d5e371e9fc19c8">More...</a><br /></td></tr>
 <tr class="separator:aa607c2b89f2c97adc5d5e371e9fc19c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a49a54e47226c6ba2d3596cfd83c42e32"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_legendary_explorer_core_lib.html#a49a54e47226c6ba2d3596cfd83c42e32">IsDebug</a><code> [get]</code></td></tr>
+<tr class="memdesc:a49a54e47226c6ba2d3596cfd83c42e32"><td class="mdescLeft">&#160;</td><td class="mdescRight">Always true in debug builds. Always false in non-debug builds.  <a href="class_legendary_explorer_core_1_1_legendary_explorer_core_lib.html#a49a54e47226c6ba2d3596cfd83c42e32">More...</a><br /></td></tr>
 <tr class="separator:a49a54e47226c6ba2d3596cfd83c42e32"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -148,6 +154,15 @@ Properties</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Maps a game to its custom resources filename in the GameResources.zip embedded file </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">game</td><td>Game to lookup the custom resource for</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The resources package filename for supported games. Unsupported games default to returning ME3Resources.pcc.</dd></dl>
+
 </div>
 </div>
 <a id="a22a6f67fb49988bbc8dd91be3e6fc98a" name="a22a6f67fb49988bbc8dd91be3e6fc98a"></a>
@@ -174,18 +189,19 @@ Properties</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Allows you to specify the synchronization context, for example, if you want to use ContinueWithOnUIThread() before the library has been initialized. </p>
+<p>Allows you to specify the synchronization context, for example, if you want to use <code>Task.ContinueWithOnUIThread()</code> before the library has been initialized. </p>
+<p >If your application has a UI thread, you must obtain a task scheduler from the UI thread. For WPF, you can call TaskScheduler.FromCurrentSynchronizationContext from a UI thread, and then pass that object to this method. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">scheduler</td><td></td></tr>
+    <tr><td class="paramname">scheduler</td><td>TaskScheduler generated from a UI thread. If your application doesn't have a UI thread, passing in any task scheduler should be fine.</td></tr>
   </table>
   </dd>
 </dl>
 
 </div>
 </div>
-<a id="a8442b920674cd736613a43712444e86e" name="a8442b920674cd736613a43712444e86e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8442b920674cd736613a43712444e86e">&#9670;&nbsp;</a></span>InitLib()</h2>
+<a id="aff979365a101282befcd41b3888d9b14" name="aff979365a101282befcd41b3888d9b14"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aff979365a101282befcd41b3888d9b14">&#9670;&nbsp;</a></span>InitLib()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -197,7 +213,7 @@ Properties</h2></td></tr>
           <td class="memname">static void LegendaryExplorerCore.LegendaryExplorerCoreLib.InitLib </td>
           <td>(</td>
           <td class="paramtype">TaskScheduler&#160;</td>
-          <td class="paramname"><em>uiThreadScheduler</em>, </td>
+          <td class="paramname"><em>uiSyncContext</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -224,7 +240,15 @@ Properties</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Call this before using anything in this library. It registers things such as package loaders </p>
+<p>Initializes the <a class="el" href="namespace_legendary_explorer_core.html">LegendaryExplorerCore</a> library for use. Call this before using anything in this library. It registers things such as package loaders, initializes the object databases, and other startup tasks </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">uiSyncContext</td><td>Synchronization context for use with <code>Task.ContineWithOnUIThread()</code>. See <a class="el" href="class_legendary_explorer_core_1_1_legendary_explorer_core_lib.html#a22a6f67fb49988bbc8dd91be3e6fc98a" title="Allows you to specify the synchronization context, for example, if you want to use Task....">SetSynchronizationContext</a> for more information. If a synchronization context was already specified before this library was initialized, this value is ignored. </td></tr>
+    <tr><td class="paramname">packageSavingFailed</td><td>Delegate that invoked when a package fails to save</td></tr>
+    <tr><td class="paramname">logger</td><td>Serilog logger to use for logging operations. If null, no logging is performed.</td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -252,6 +276,15 @@ Properties</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>????? NEEDS DOCUMENTED </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">game</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
 </div>
 </div>
 <h2 class="groupheader">Property Documentation</h2>
@@ -275,6 +308,8 @@ Properties</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>The URL to the repository for Legendary Explorer (Core) </p>
+
 </div>
 </div>
 <a id="abc580656caf24a904c25973344861efe" name="abc580656caf24a904c25973344861efe"></a>
@@ -296,6 +331,8 @@ Properties</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>The URL to send users to for support for Legendary Explorer (Core) </p>
 
 </div>
 </div>
@@ -319,6 +356,8 @@ Properties</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>The synchronization context used when calling <code>Task.ContinueWithOnUIThread()</code> [<a class="el" href="class_legendary_explorer_core_1_1_helpers_1_1_task_extensions.html#ae7cc59d92653a3531a6cc779ff3a149c">Helpers.TaskExtensions.ContinueWithOnUIThread</a>]. This may need to be set via <a class="el" href="class_legendary_explorer_core_1_1_legendary_explorer_core_lib.html#a22a6f67fb49988bbc8dd91be3e6fc98a" title="Allows you to specify the synchronization context, for example, if you want to use Task....">SetSynchronizationContext</a> before the library is initialized if you use the <code>ContinueWithOnUIThread</code> extension before initializing the library. </p>
+
 </div>
 </div>
 <a id="a49a54e47226c6ba2d3596cfd83c42e32" name="a49a54e47226c6ba2d3596cfd83c42e32"></a>
@@ -340,6 +379,8 @@ Properties</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Always true in debug builds. Always false in non-debug builds. </p>
 
 </div>
 </div>
