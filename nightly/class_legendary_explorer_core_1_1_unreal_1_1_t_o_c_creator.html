@@ -124,6 +124,7 @@ Static Public Member Functions</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-attribs" name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
 <tr class="memitem:a2fc02b82e169a3daa8896987a8ca96f5"><td class="memItemLeft" align="right" valign="top">static readonly string[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_t_o_c_creator.html#a2fc02b82e169a3daa8896987a8ca96f5">TOCableFilePatterns</a> = { &quot;*.pcc&quot;, &quot;*.afc&quot;, &quot;*.bik&quot;, &quot;*.bin&quot;, &quot;*.tlk&quot;, &quot;*.cnd&quot;, &quot;*.upk&quot;, &quot;*.tfc&quot;, &quot;*.isb&quot;, &quot;*.usf&quot;, &quot;*.ini&quot;, &quot;*.txt&quot;, &quot;*.dlc&quot; }</td></tr>
+<tr class="memdesc:a2fc02b82e169a3daa8896987a8ca96f5"><td class="mdescLeft">&#160;</td><td class="mdescRight">File extensions that are supported by the game in TOC files  <a href="class_legendary_explorer_core_1_1_unreal_1_1_t_o_c_creator.html#a2fc02b82e169a3daa8896987a8ca96f5">More...</a><br /></td></tr>
 <tr class="separator:a2fc02b82e169a3daa8896987a8ca96f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -160,7 +161,7 @@ Static Public Attributes</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>A list (as IEnumerable&lt;string&gt;) of full file paths that can be included in a TOC&lt;/string&gt;</dd></dl>
 
 </div>
 </div>
@@ -206,7 +207,7 @@ Static Public Attributes</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>True if any files were found that could be included in a TOC, false otherwise</dd></dl>
 <p>TODO: Is there an easy way to make this not iterate over all files? </p>
 
 </div>
@@ -256,7 +257,7 @@ Static Public Attributes</h2></td></tr>
   <table class="params">
     <tr><td class="paramname">game</td><td>Game to create TOCs for, cannot be <a class="el" href="namespace_legendary_explorer_core_1_1_m_e1.html">ME1</a> or ME2</td></tr>
     <tr><td class="paramname">percentDoneCallback</td><td>Invoked after every TOC file with the percent completed</td></tr>
-    <tr><td class="paramname">gameRootOverride</td><td>Optional: Specify game root folder</td></tr>
+    <tr><td class="paramname">gameRootOverride</td><td>Optional: Specify game root folder. If null, the default game path is used</td></tr>
   </table>
   </dd>
 </dl>
@@ -432,7 +433,7 @@ Static Public Attributes</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>memorystream of TOC, null if list is empty</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>MemoryStream of TOC binary, null if list is empty</dd></dl>
 
 </div>
 </div>
@@ -456,6 +457,8 @@ Static Public Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>File extensions that are supported by the game in TOC files </p>
 
 </div>
 </div>
