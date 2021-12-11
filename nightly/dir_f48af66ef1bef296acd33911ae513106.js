@@ -6,6 +6,7 @@ var dir_f48af66ef1bef296acd33911ae513106 =
     [ "ModPlotContainer.cs", "_mod_plot_container_8cs.html", [
       [ "LegendaryExplorerCore.PlotDatabase.ModPlotContainer", "class_legendary_explorer_core_1_1_plot_database_1_1_mod_plot_container.html", "class_legendary_explorer_core_1_1_plot_database_1_1_mod_plot_container" ]
     ] ],
+    [ "NSDoc.cs", "_n_s_doc_8cs.html", null ],
     [ "PlotDatabases.cs", "_plot_databases_8cs.html", [
       [ "LegendaryExplorerCore.PlotDatabase.PlotDatabases", "class_legendary_explorer_core_1_1_plot_database_1_1_plot_databases.html", "class_legendary_explorer_core_1_1_plot_database_1_1_plot_databases" ]
     ] ]

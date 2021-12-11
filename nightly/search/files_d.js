@@ -9,5 +9,6 @@ var searchData=
   ['nodetype_2ecs_6',['NodeType.cs',['../_node_type_8cs.html',1,'']]],
   ['nodeutils_2ecs_7',['NodeUtils.cs',['../_node_utils_8cs.html',1,'']]],
   ['noneliteral_2ecs_8',['NoneLiteral.cs',['../_none_literal_8cs.html',1,'']]],
-  ['numbermatcher_2ecs_9',['NumberMatcher.cs',['../_number_matcher_8cs.html',1,'']]]
+  ['nsdoc_2ecs_9',['NSDoc.cs',['../_n_s_doc_8cs.html',1,'']]],
+  ['numbermatcher_2ecs_10',['NumberMatcher.cs',['../_number_matcher_8cs.html',1,'']]]
 ];

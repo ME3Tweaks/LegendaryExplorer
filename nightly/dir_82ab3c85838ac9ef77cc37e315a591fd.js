@@ -24,6 +24,8 @@ var dir_82ab3c85838ac9ef77cc37e315a591fd =
     [ "IPackageUser.cs", "_i_package_user_8cs.html", [
       [ "LegendaryExplorerCore.Packages.IPackageUser", "interface_legendary_explorer_core_1_1_packages_1_1_i_package_user.html", "interface_legendary_explorer_core_1_1_packages_1_1_i_package_user" ]
     ] ],
+    [ "MEGame.cs", "_m_e_game_8cs.html", "_m_e_game_8cs" ],
+    [ "MELocalization.cs", "_m_e_localization_8cs.html", "_m_e_localization_8cs" ],
     [ "MEPackage.cs", "_m_e_package_8cs.html", "_m_e_package_8cs" ],
     [ "MEPackageHandler.cs", "_m_e_package_handler_8cs.html", [
       [ "LegendaryExplorerCore.Packages.MEPackageHandler", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler" ],

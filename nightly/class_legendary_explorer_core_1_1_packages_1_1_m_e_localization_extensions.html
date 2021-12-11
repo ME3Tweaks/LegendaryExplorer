@@ -92,16 +92,22 @@ $(document).ready(function(){initNavTree('class_legendary_explorer_core_1_1_pack
   <div class="headertitle"><div class="title">LegendaryExplorerCore.Packages.MELocalizationExtensions Class Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Extension methods for the <a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#aefbc0ecf962a8819f213240cc7553d90" title="Represents the localization of a package file">MELocalization</a> enum  
+ <a href="class_legendary_explorer_core_1_1_packages_1_1_m_e_localization_extensions.html#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a054fcf0d2062f3b2b3a23f588d8c489c"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_m_e_localization_extensions.html#a054fcf0d2062f3b2b3a23f588d8c489c">ToLocaleString</a> (this <a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#aefbc0ecf962a8819f213240cc7553d90">MELocalization</a> localization, <a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game)</td></tr>
+<tr class="memdesc:a054fcf0d2062f3b2b3a23f588d8c489c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the suffix used by a localization for "LOC_" file names  <a href="class_legendary_explorer_core_1_1_packages_1_1_m_e_localization_extensions.html#a054fcf0d2062f3b2b3a23f588d8c489c">More...</a><br /></td></tr>
 <tr class="separator:a054fcf0d2062f3b2b3a23f588d8c489c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae9b524265ef0910947d77c37d504e2ce"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#aefbc0ecf962a8819f213240cc7553d90">MELocalization</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_m_e_localization_extensions.html#ae9b524265ef0910947d77c37d504e2ce">GetFileLocalizationFromFilePath</a> (this string filePath)</td></tr>
 <tr class="memdesc:ae9b524265ef0910947d77c37d504e2ce"><td class="mdescLeft">&#160;</td><td class="mdescRight">Given a filename, returns the localization of it.  <a href="class_legendary_explorer_core_1_1_packages_1_1_m_e_localization_extensions.html#ae9b524265ef0910947d77c37d504e2ce">More...</a><br /></td></tr>
 <tr class="separator:ae9b524265ef0910947d77c37d504e2ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Function Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p >Extension methods for the <a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#aefbc0ecf962a8819f213240cc7553d90" title="Represents the localization of a package file">MELocalization</a> enum </p>
+</div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a054fcf0d2062f3b2b3a23f588d8c489c" name="a054fcf0d2062f3b2b3a23f588d8c489c"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a054fcf0d2062f3b2b3a23f588d8c489c">&#9670;&nbsp;</a></span>ToLocaleString()</h2>
 
@@ -136,6 +142,17 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Returns the suffix used by a localization for "LOC_" file names </p>
+<p >This should only be used for "LOC_" filenames, there are more options for <a class="el" href="namespace_legendary_explorer_core_1_1_t_l_k.html">TLK</a> localizations. Does not handle PL suffix or Game 1.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">localization</td><td>Input localization</td></tr>
+    <tr><td class="paramname">game</td><td>Game of localization</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>"LOC_" suffix. Example: <code>DEU</code></dd></dl>
+
 </div>
 </div>
 <a id="ae9b524265ef0910947d77c37d504e2ce" name="ae9b524265ef0910947d77c37d504e2ce"></a>
@@ -163,12 +180,13 @@ Static Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Given a filename, returns the localization of it. </p>
-<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+<p >Should work on ME1/LE1 files</p>
+<dl class="section return"><dt>Returns</dt><dd>MELocalization of the file</dd></dl>
 
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>LegendaryExplorer/LegendaryExplorerCore/Packages/<a class="el" href="_i_m_e_package_8cs.html">IMEPackage.cs</a></li>
+<li>LegendaryExplorer/LegendaryExplorerCore/Packages/<a class="el" href="_m_e_localization_8cs.html">MELocalization.cs</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

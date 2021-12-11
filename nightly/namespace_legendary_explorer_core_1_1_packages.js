@@ -24,6 +24,18 @@ var namespace_legendary_explorer_core_1_1_packages =
     [ "PropertyInfo", "class_legendary_explorer_core_1_1_packages_1_1_property_info.html", "class_legendary_explorer_core_1_1_packages_1_1_property_info" ],
     [ "UDKPackage", "class_legendary_explorer_core_1_1_packages_1_1_u_d_k_package.html", "class_legendary_explorer_core_1_1_packages_1_1_u_d_k_package" ],
     [ "UnrealPackageFile", "class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html", "class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file" ],
+    [ "ArrayType", "namespace_legendary_explorer_core_1_1_packages.html#a01ab7fe2b35882890ba5f989fefef344", [
+      [ "Object", "namespace_legendary_explorer_core_1_1_packages.html#a01ab7fe2b35882890ba5f989fefef344a497031794414a552435f90151ac3b54b", null ],
+      [ "Name", "namespace_legendary_explorer_core_1_1_packages.html#a01ab7fe2b35882890ba5f989fefef344a49ee3087348e8d44e1feda1917443987", null ],
+      [ "Enum", "namespace_legendary_explorer_core_1_1_packages.html#a01ab7fe2b35882890ba5f989fefef344acf20423ed48998082c20099488a0917c", null ],
+      [ "Struct", "namespace_legendary_explorer_core_1_1_packages.html#a01ab7fe2b35882890ba5f989fefef344a886ef5dbd655a6c97726d7091c6b173e", null ],
+      [ "Bool", "namespace_legendary_explorer_core_1_1_packages.html#a01ab7fe2b35882890ba5f989fefef344ac26f15e86e3de4c398a8273272aba034", null ],
+      [ "String", "namespace_legendary_explorer_core_1_1_packages.html#a01ab7fe2b35882890ba5f989fefef344a27118326006d3829667a400ad23d5d98", null ],
+      [ "Float", "namespace_legendary_explorer_core_1_1_packages.html#a01ab7fe2b35882890ba5f989fefef344a22ae0e2b89e5e3d477f988cc36d3272b", null ],
+      [ "Int", "namespace_legendary_explorer_core_1_1_packages.html#a01ab7fe2b35882890ba5f989fefef344a1686a6c336b71b36d77354cea19a8b52", null ],
+      [ "Byte", "namespace_legendary_explorer_core_1_1_packages.html#a01ab7fe2b35882890ba5f989fefef344aa245c3230debe5c956484ecc6fa93877", null ],
+      [ "StringRef", "namespace_legendary_explorer_core_1_1_packages.html#a01ab7fe2b35882890ba5f989fefef344a8606ab14796aee0be93ca1edb9150fa1", null ]
+    ] ],
     [ "MEGame", "namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8", [
       [ "Unknown", "namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8a88183b946cc5f0e8c96b2e66e1c74a7e", null ],
       [ "ME1", "namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8a9736c246bfd27cfa9ce0756a03d47514", null ],
@@ -45,18 +57,6 @@ var namespace_legendary_explorer_core_1_1_packages =
       [ "JPN", "namespace_legendary_explorer_core_1_1_packages.html#aefbc0ecf962a8819f213240cc7553d90a730f0fc3e23a706211e6e9567af0b2a7", null ],
       [ "POL", "namespace_legendary_explorer_core_1_1_packages.html#aefbc0ecf962a8819f213240cc7553d90a6f805bc5bbdb2ab10d849672c309a6cc", null ],
       [ "RUS", "namespace_legendary_explorer_core_1_1_packages.html#aefbc0ecf962a8819f213240cc7553d90a0c445f5c8f996e0807744f0a036c7521", null ]
-    ] ],
-    [ "ArrayType", "namespace_legendary_explorer_core_1_1_packages.html#a01ab7fe2b35882890ba5f989fefef344", [
-      [ "Object", "namespace_legendary_explorer_core_1_1_packages.html#a01ab7fe2b35882890ba5f989fefef344a497031794414a552435f90151ac3b54b", null ],
-      [ "Name", "namespace_legendary_explorer_core_1_1_packages.html#a01ab7fe2b35882890ba5f989fefef344a49ee3087348e8d44e1feda1917443987", null ],
-      [ "Enum", "namespace_legendary_explorer_core_1_1_packages.html#a01ab7fe2b35882890ba5f989fefef344acf20423ed48998082c20099488a0917c", null ],
-      [ "Struct", "namespace_legendary_explorer_core_1_1_packages.html#a01ab7fe2b35882890ba5f989fefef344a886ef5dbd655a6c97726d7091c6b173e", null ],
-      [ "Bool", "namespace_legendary_explorer_core_1_1_packages.html#a01ab7fe2b35882890ba5f989fefef344ac26f15e86e3de4c398a8273272aba034", null ],
-      [ "String", "namespace_legendary_explorer_core_1_1_packages.html#a01ab7fe2b35882890ba5f989fefef344a27118326006d3829667a400ad23d5d98", null ],
-      [ "Float", "namespace_legendary_explorer_core_1_1_packages.html#a01ab7fe2b35882890ba5f989fefef344a22ae0e2b89e5e3d477f988cc36d3272b", null ],
-      [ "Int", "namespace_legendary_explorer_core_1_1_packages.html#a01ab7fe2b35882890ba5f989fefef344a1686a6c336b71b36d77354cea19a8b52", null ],
-      [ "Byte", "namespace_legendary_explorer_core_1_1_packages.html#a01ab7fe2b35882890ba5f989fefef344aa245c3230debe5c956484ecc6fa93877", null ],
-      [ "StringRef", "namespace_legendary_explorer_core_1_1_packages.html#a01ab7fe2b35882890ba5f989fefef344a8606ab14796aee0be93ca1edb9150fa1", null ]
     ] ],
     [ "PackageChange", "namespace_legendary_explorer_core_1_1_packages.html#a3e0df23952f452387a53678322854238", [
       [ "Export", "namespace_legendary_explorer_core_1_1_packages.html#a3e0df23952f452387a53678322854238a0095a9fa74d1713e43e370a7d7846224", null ],
