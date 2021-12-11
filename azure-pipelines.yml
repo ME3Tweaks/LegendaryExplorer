@@ -21,8 +21,14 @@ variables:
   appPatch: '0'
   netVersion: '5'
   disable.coverage.autogenerate: 'true'
+  doxygenUrl: "https://www.doxygen.nl/files/doxygen-1.9.2.windows.x64.bin.zip"
+  doxygenWorkingDir: '$(Pipeline.Workspace)\Documentation\Doxygen'
+  doxygenOutputDir: '$(Pipeline.Workspace)\Documentation\Output'
 
 steps:
+- checkout: self
+  clean: true
+  persistCredentials: true
 # DEBUG for Find Text Transform
 #- task: CmdLine@2
 #  inputs:
@@ -194,3 +200,48 @@ steps:
         "url": "https://dev.azure.com/ME3Tweaks/LegendaryExplorer/_build/results?buildId=$(Build.BuildId)&view=artifacts",
         "timestamp": "$(time)"
       }]
+
+- task: Cache@2
+  displayName: "Cache Doxygen install"
+  condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'Beta'))
+  inputs:
+    key: '"$(doxygenUrl)"'
+    path: $(doxygenWorkingDir)
+    cacheHitVar: 'doxygenCacheRestored'
+
+- task: PowerShell@2
+  displayName: "Download Doxygen"
+  condition: and(succeeded(), and(eq(variables['Build.SourceBranchName'], 'Beta'), ne(variables.CACHE_RESTORED, 'true')))
+  inputs:
+    targetType: 'inline'
+    script: |
+      $doxygenUrl = ${env:doxygenUrl}
+      $outpath = ${env:doxygenWorkingDir}
+      
+      if(!(Test-Path $outpath))
+      {
+      	Write-Host "Creating $outpath";
+      	New-Item -ItemType Directory -Force -Path $outpath
+      }
+      $zipDownloadPath = "$outpath\" + $(Split-Path -Path $doxygenUrl -Leaf)
+      Write-Host "Downloading from $doxygenUrl to $zipDownloadPath"
+      
+      Invoke-WebRequest -Uri $doxygenUrl -OutFile $zipDownloadPath
+      Expand-Archive -LiteralPath $zipDownloadPath -DestinationPath $outpath
+      Remove-Item $zipDownloadPath
+
+- task: PowerShell@2
+  displayName: "Build documentation, commit to GitHub Pages"
+  condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'Beta'))
+  inputs:
+    targetType: 'inline'
+    script: |
+      git config user.email "me3tweaks-auto@me3tweaks.com"
+      git config user.name "ME3Tweaks-LEC-Documentation"
+      $(doxygenWorkingDir)\doxygen.exe $(Build.SourcesDirectory)\Documentation\DoxygenConfigAzurePipelines
+      git checkout gh-pages
+      Remove-Item .\nightly\* -Recurse
+      Copy-Item -Path "$(doxygenOutputDir)\html\*" -Destination .\nightly -Recurse
+      git add .\nightly\
+      git commit -m "Update documentation [skip ci]"
+      git push origin gh-pages
