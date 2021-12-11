@@ -7,7 +7,7 @@ var searchData=
   ['saveasync_4',['SaveAsync',['../class_legendary_explorer_core_1_1_packages_1_1_package_saver.html#ab45ae66b693dba5ab1603267b35ad8f4',1,'LegendaryExplorerCore::Packages::PackageSaver']]],
   ['savedatabasetofile_5',['SaveDatabaseToFile',['../class_legendary_explorer_core_1_1_plot_database_1_1_databases_1_1_mod_plot_database.html#a4ca0f380028ecbc5148f11d79ff4af91',1,'LegendaryExplorerCore::PlotDatabase::Databases::ModPlotDatabase']]],
   ['savemodstodisk_6',['SaveModsToDisk',['../class_legendary_explorer_core_1_1_plot_database_1_1_mod_plot_container.html#ab4016ccecf0bb28180a632dfe379fc70',1,'LegendaryExplorerCore::PlotDatabase::ModPlotContainer']]],
-  ['savesettings_7',['SaveSettings',['../class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_directories.html#abf9051bba118f81c274e852afe0dc2ef',1,'LegendaryExplorerCore::GameFilesystem::MEDirectories']]],
+  ['savesettings_7',['SaveSettings',['../class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_directories.html#afe5fa394497566be4b0a6809ba14f1c4',1,'LegendaryExplorerCore::GameFilesystem::MEDirectories']]],
   ['savetexture_8',['SaveTexture',['../class_legendary_explorer_core_1_1_textures_1_1_tex_converter.html#a7bbc1fd79f821e6fd3f5f6b9d5a885dc',1,'LegendaryExplorerCore::Textures::TexConverter']]],
   ['savetofile_9',['saveToFile',['../class_legendary_explorer_core_1_1_t_l_k_1_1_m_e1_1_1_m_e1_talk_file.html#a79daaa618a302656cb2a5ba17b245c6e',1,'LegendaryExplorerCore::TLK::ME1::ME1TalkFile']]],
   ['savetofile_10',['SaveToFile',['../class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_huffman_compression.html#a460852e9ce6457284a1721371fc769c6',1,'LegendaryExplorerCore::TLK::ME2ME3::HuffmanCompression']]],

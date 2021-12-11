@@ -15,13 +15,13 @@ var class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_directories =
     [ "CookedName", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_directories.html#aea0b44af5ce27261dc335acd5cde38a4", null ],
     [ "GetTOCFile", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_directories.html#a2c000cc44fbea2730dd5fca31f6dc8e5", null ],
     [ "OfficialDLC", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_directories.html#aab291cbb8c227ff2986433e554d60dd3", null ],
+    [ "OfficialDLCNames", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_directories.html#aa4a6a58a129db79a1b74b0894a35224c", null ],
     [ "IsInBasegame", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_directories.html#a464043cf3716e63a166a0c6673857f99", null ],
     [ "IsInBasegame", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_directories.html#a0c3077702f7a90f58986deea757bdf07", null ],
     [ "IsInOfficialDLC", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_directories.html#a92d9a11c31efcc904a4f9d2ba1653cf1", null ],
     [ "IsInOfficialDLC", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_directories.html#a0c8d77bf132b36db26b3e875488a69fe", null ],
     [ "ReloadGamePaths", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_directories.html#ab390e9a2e1b19c2d28f42b928929509a", null ],
-    [ "SaveSettings", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_directories.html#abf9051bba118f81c274e852afe0dc2ef", null ],
+    [ "SaveSettings", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_directories.html#afe5fa394497566be4b0a6809ba14f1c4", null ],
     [ "EnumerateGameFiles", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_directories.html#a439141456a97e8e3b0d933f08db7fba8", null ],
-    [ "EnumerateGameFiles", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_directories.html#a0df17743a54364c6500069593d6590fb", null ],
-    [ "OfficialDLCNames", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_directories.html#aa4a6a58a129db79a1b74b0894a35224c", null ]
+    [ "EnumerateGameFiles", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_directories.html#a0df17743a54364c6500069593d6590fb", null ]
 ];
