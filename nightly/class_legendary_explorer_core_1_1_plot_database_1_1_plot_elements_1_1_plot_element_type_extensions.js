@@ -1,0 +1,4 @@
+var class_legendary_explorer_core_1_1_plot_database_1_1_plot_elements_1_1_plot_element_type_extensions =
+[
+    [ "GetDescription", "class_legendary_explorer_core_1_1_plot_database_1_1_plot_elements_1_1_plot_element_type_extensions.html#a90b144d37003ecb31ccb176750718eb3", null ]
+];

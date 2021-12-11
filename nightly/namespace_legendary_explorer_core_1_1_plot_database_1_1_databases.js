@@ -1,0 +1,6 @@
+var namespace_legendary_explorer_core_1_1_plot_database_1_1_databases =
+[
+    [ "BasegamePlotDatabase", "class_legendary_explorer_core_1_1_plot_database_1_1_databases_1_1_basegame_plot_database.html", "class_legendary_explorer_core_1_1_plot_database_1_1_databases_1_1_basegame_plot_database" ],
+    [ "ModPlotDatabase", "class_legendary_explorer_core_1_1_plot_database_1_1_databases_1_1_mod_plot_database.html", "class_legendary_explorer_core_1_1_plot_database_1_1_databases_1_1_mod_plot_database" ],
+    [ "PlotDatabaseBase", "class_legendary_explorer_core_1_1_plot_database_1_1_databases_1_1_plot_database_base.html", "class_legendary_explorer_core_1_1_plot_database_1_1_databases_1_1_plot_database_base" ]
+];

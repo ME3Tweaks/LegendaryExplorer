@@ -1,0 +1,25 @@
+var namespace_legendary_explorer_core_1_1_gammtek_1_1_extensions =
+[
+    [ "Collections", "namespace_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_collections.html", "namespace_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_collections" ],
+    [ "IO", "namespace_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_i_o.html", "namespace_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_i_o" ],
+    [ "Linq", "namespace_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_linq.html", "namespace_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_linq" ],
+    [ "Reflection", "namespace_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_reflection.html", "namespace_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_reflection" ],
+    [ "BooleanExtensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_boolean_extensions.html", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_boolean_extensions" ],
+    [ "ByteExtensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_byte_extensions.html", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_byte_extensions" ],
+    [ "CharExtensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_char_extensions.html", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_char_extensions" ],
+    [ "DoubleExtensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_double_extensions.html", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_double_extensions" ],
+    [ "EnumExtensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_enum_extensions.html", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_enum_extensions" ],
+    [ "Int16Extensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_int16_extensions.html", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_int16_extensions" ],
+    [ "Int32Extensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_int32_extensions.html", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_int32_extensions" ],
+    [ "Int64Extensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_int64_extensions.html", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_int64_extensions" ],
+    [ "IntPtrExtensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_int_ptr_extensions.html", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_int_ptr_extensions" ],
+    [ "ObjectExtensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_object_extensions.html", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_object_extensions" ],
+    [ "SByteExtensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_s_byte_extensions.html", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_s_byte_extensions" ],
+    [ "SingleExtensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_single_extensions.html", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_single_extensions" ],
+    [ "StringComparisonExtensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_string_comparison_extensions.html", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_string_comparison_extensions" ],
+    [ "StringExtensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_string_extensions.html", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_string_extensions" ],
+    [ "UInt16Extensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_u_int16_extensions.html", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_u_int16_extensions" ],
+    [ "UInt32Extensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_u_int32_extensions.html", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_u_int32_extensions" ],
+    [ "UInt64Extensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_u_int64_extensions.html", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_u_int64_extensions" ],
+    [ "UIntPtrExtensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_u_int_ptr_extensions.html", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_u_int_ptr_extensions" ]
+];

@@ -1,0 +1,8 @@
+var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_gesture_runtime_data_1_1_bio_prop_client_effect_params =
+[
+    [ "vHitLocation", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_gesture_runtime_data_1_1_bio_prop_client_effect_params.html#abe470bddea1cb410e73f3d526c3bf900", null ],
+    [ "vHitNormal", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_gesture_runtime_data_1_1_bio_prop_client_effect_params.html#a61855aded7dee3192611bdcc034062ae", null ],
+    [ "nmHitBone", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_gesture_runtime_data_1_1_bio_prop_client_effect_params.html#a1197b63921e222f1d0a76d13b65b1712", null ],
+    [ "vRayDir", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_gesture_runtime_data_1_1_bio_prop_client_effect_params.html#a5f8f9713aa1c5517160ccc581a3c018c", null ],
+    [ "vSpawnValue", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_gesture_runtime_data_1_1_bio_prop_client_effect_params.html#a06ca5284e86508f50c1535cb2540a4fe", null ]
+];

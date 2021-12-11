@@ -1,0 +1,13 @@
+var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_gesture_runtime_data_1_1_bio_mesh_prop_action_data =
+[
+    [ "nmActionName", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_gesture_runtime_data_1_1_bio_mesh_prop_action_data.html#a9cdf13d87b92a2eb46f9af8b38c56f7c", null ],
+    [ "bActivate", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_gesture_runtime_data_1_1_bio_mesh_prop_action_data.html#a63cfee148d375e8602d89c861870b2b5", null ],
+    [ "nmAttachTo", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_gesture_runtime_data_1_1_bio_mesh_prop_action_data.html#a48b94daa44b5a4e05369a9ff077f79c6", null ],
+    [ "vOffsetLocation", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_gesture_runtime_data_1_1_bio_mesh_prop_action_data.html#ad595fe2551b72a59f57115ead917b4be", null ],
+    [ "rOffsetRotation", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_gesture_runtime_data_1_1_bio_mesh_prop_action_data.html#a80617b266d2f11271ae3685bdecff00f", null ],
+    [ "vOffsetScale", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_gesture_runtime_data_1_1_bio_mesh_prop_action_data.html#a742198e0c9fb6fee17cf3ee82f8a9a0d", null ],
+    [ "sParticleSys", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_gesture_runtime_data_1_1_bio_mesh_prop_action_data.html#aed412d478262655998b65fb6ab5a09a8", null ],
+    [ "sClientEffect", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_gesture_runtime_data_1_1_bio_mesh_prop_action_data.html#ab530025e237e4ef97e350bc1b85004b7", null ],
+    [ "bCooldown", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_gesture_runtime_data_1_1_bio_mesh_prop_action_data.html#a8abf0503b7de515cce0b375479fc23e1", null ],
+    [ "TSpawnParams", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_gesture_runtime_data_1_1_bio_mesh_prop_action_data.html#a923ae6eacb7ab37c9efd4932790caa38", null ]
+];

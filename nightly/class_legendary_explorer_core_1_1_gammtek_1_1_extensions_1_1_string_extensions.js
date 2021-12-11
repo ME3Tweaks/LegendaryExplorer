@@ -1,0 +1,27 @@
+var class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_string_extensions =
+[
+    [ "ToGameNum", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_string_extensions.html#a46537269da6249b0bc3f4a8398bc547d", null ],
+    [ "ToGameName", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_string_extensions.html#ac88bb4bcd545426824f92f78f3e1f102", null ],
+    [ "Left", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_string_extensions.html#a48365a8be31dfae8c0ff166700cac55f", null ],
+    [ "RemoveLeft", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_string_extensions.html#a178f2af9b56eb06e2ccb4b6da427defd", null ],
+    [ "RemoveRight", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_string_extensions.html#a2951e44be79647f048113440fcb6aa55", null ],
+    [ "Right", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_string_extensions.html#a62f9b2ce22f1424c5f293ad236beb98e", null ],
+    [ "ToBoolean", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_string_extensions.html#aec95fe0624b24669bc42c4723246e778", null ],
+    [ "ToByte", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_string_extensions.html#af3eaf456d80a0a4fc1db01f1f3da82d5", null ],
+    [ "ToChar", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_string_extensions.html#a5a69a3105d7ec26fedef483925936740", null ],
+    [ "ToDateTime", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_string_extensions.html#ab7e6432d17bdfed925fbc6df5c57e37f", null ],
+    [ "ToDecimal", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_string_extensions.html#ac629f57a642c2ee871553d140c8d927b", null ],
+    [ "ToDouble", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_string_extensions.html#a03494ddda6c1d0a8bf78ce5dde895783", null ],
+    [ "ToInt16", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_string_extensions.html#a51e30aba20efc03e881ab8007577c441", null ],
+    [ "ToInt32", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_string_extensions.html#acfe328fab62fed14d4a89667c4222e0f", null ],
+    [ "ToInt64", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_string_extensions.html#aefa5bdd60d8a2f00938c7e25978fa675", null ],
+    [ "ToSByte", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_string_extensions.html#a7673ad00f3a7de1c77c936cb41dd2a6b", null ],
+    [ "ToSingle", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_string_extensions.html#aab8fd844d258b43d24c8600eb2a40f21", null ],
+    [ "ToUInt16", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_string_extensions.html#a2560c255daa911bb55b4e3d56df6eeda", null ],
+    [ "ToUInt32", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_string_extensions.html#a359bae9e1e74d2084d59267af9b06116", null ],
+    [ "ToUInt64", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_string_extensions.html#a74e258b6aafb4ee0432488a6f2d78817", null ],
+    [ "Truncate", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_string_extensions.html#aaea06a23459800b23655aa283bd195a7", null ],
+    [ "TruncCenter", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_string_extensions.html#a96e539939729ba6ce919f4d25a605596", null ],
+    [ "WordWrap", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_string_extensions.html#a1128da7fc1c99ce19c539e129f0d164a", null ],
+    [ "WrapLines", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_string_extensions.html#aac3bd12942b74e66889998adb418a7f6", null ]
+];

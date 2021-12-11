@@ -1,0 +1,8 @@
+var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_static_mesh_vertex_buffer_1_1_static_mesh_full_vertex =
+[
+    [ "TangentX", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_static_mesh_vertex_buffer_1_1_static_mesh_full_vertex.html#ab51261b61255ae2366156e0d39b54948", null ],
+    [ "TangentZ", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_static_mesh_vertex_buffer_1_1_static_mesh_full_vertex.html#a7f20445546a68047486f2f0f4ebfb288", null ],
+    [ "Color", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_static_mesh_vertex_buffer_1_1_static_mesh_full_vertex.html#a30fe92b775ea1c9280eed90b6d2373ee", null ],
+    [ "FullPrecisionUVs", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_static_mesh_vertex_buffer_1_1_static_mesh_full_vertex.html#a1e6615403c2fc90599b792d19573e86c", null ],
+    [ "HalfPrecisionUVs", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_static_mesh_vertex_buffer_1_1_static_mesh_full_vertex.html#add66b18380eb6e8832a684a2e9954636", null ]
+];

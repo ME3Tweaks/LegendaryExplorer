@@ -1,0 +1,4 @@
+var class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_reflection_1_1_assembly_extensions =
+[
+    [ "GetAssemblyName", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_reflection_1_1_assembly_extensions.html#ad9d673e851564e915cea6f18299f79f9", null ]
+];

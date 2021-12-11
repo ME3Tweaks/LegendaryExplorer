@@ -1,0 +1,8 @@
+var namespace_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_specialized =
+[
+    [ "EnumInitializationException", "class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_specialized_1_1_enum_initialization_exception.html", "class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_specialized_1_1_enum_initialization_exception" ],
+    [ "EnumSet", "class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_specialized_1_1_enum_set.html", "class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_specialized_1_1_enum_set" ],
+    [ "Incrementer", "class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_specialized_1_1_incrementer.html", "class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_specialized_1_1_incrementer" ],
+    [ "PolymorphicEnum", "class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_specialized_1_1_polymorphic_enum.html", "class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_specialized_1_1_polymorphic_enum" ],
+    [ "UnregisteredEnumException", "class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_specialized_1_1_unregistered_enum_exception.html", "class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_specialized_1_1_unregistered_enum_exception" ]
+];

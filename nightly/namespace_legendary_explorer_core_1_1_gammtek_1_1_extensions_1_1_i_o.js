@@ -1,0 +1,6 @@
+var namespace_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_i_o =
+[
+    [ "BinaryReaderExtensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_i_o_1_1_binary_reader_extensions.html", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_i_o_1_1_binary_reader_extensions" ],
+    [ "PathWrapper", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_i_o_1_1_path_wrapper.html", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_i_o_1_1_path_wrapper" ],
+    [ "StreamExtensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_i_o_1_1_stream_extensions.html", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_i_o_1_1_stream_extensions" ]
+];

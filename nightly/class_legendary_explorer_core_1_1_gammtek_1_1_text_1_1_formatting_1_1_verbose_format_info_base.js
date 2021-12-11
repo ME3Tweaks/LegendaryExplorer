@@ -1,0 +1,28 @@
+var class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_formatting_1_1_verbose_format_info_base =
+[
+    [ "VerboseFormatInfoBase", "class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_formatting_1_1_verbose_format_info_base.html#a0ac9c517d6ab8a6ff77030993c87ad60", null ],
+    [ "VerboseFormatInfoBase", "class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_formatting_1_1_verbose_format_info_base.html#aafe974a8c42e19672a22e48ae453bf8a", null ],
+    [ "Clone", "class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_formatting_1_1_verbose_format_info_base.html#a4138b646249aac1b9ff843e64dc4736d", null ],
+    [ "Format", "class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_formatting_1_1_verbose_format_info_base.html#ab7b2ea3f8930757e20ab0efdf8239b9b", null ],
+    [ "GetFormat", "class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_formatting_1_1_verbose_format_info_base.html#af9fdb9ff6f0f3217380bd0af64906d48", null ],
+    [ "Format", "class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_formatting_1_1_verbose_format_info_base.html#a7d5e7bf46434ae4eaa14a38d6ad63817", null ],
+    [ "GetInstanceType", "class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_formatting_1_1_verbose_format_info_base.html#ab0299b9fd64b148a8c368c370433a36a", null ],
+    [ "CombineMaximumFormattedLength", "class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_formatting_1_1_verbose_format_info_base.html#a684c7361816dd4a74e6adf224a349cd7", null ],
+    [ "ToString", "class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_formatting_1_1_verbose_format_info_base.html#a276566cf192c4b29ba7bd3c040f9d3a1", null ],
+    [ "PushCurrentObject", "class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_formatting_1_1_verbose_format_info_base.html#a432a405986f0593ae98eec025fe7b623", null ],
+    [ "PopCurrentObject", "class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_formatting_1_1_verbose_format_info_base.html#af4fb63d96940317c2406727d508eba70", null ],
+    [ "InstanceDataType", "class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_formatting_1_1_verbose_format_info_base.html#af2094df3501ad2b4bedfc7cf78789c9d", null ],
+    [ "InstanceName", "class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_formatting_1_1_verbose_format_info_base.html#ac0967be7f359f4cb35d82d1fc96656a8", null ],
+    [ "FirstContainedValuePrefix", "class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_formatting_1_1_verbose_format_info_base.html#a5cd2c446d756ff4f1765fba74e59280d", null ],
+    [ "LastContainedValueSuffix", "class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_formatting_1_1_verbose_format_info_base.html#a952e35d0f5f78ee86831bf7acf38c949", null ],
+    [ "FieldDelimiter", "class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_formatting_1_1_verbose_format_info_base.html#a3530145601efa07cd5da51223cce20a8", null ],
+    [ "LinePrefix", "class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_formatting_1_1_verbose_format_info_base.html#ab304f8bd6e9acb15a77e87514a135ece", null ],
+    [ "IndentationString", "class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_formatting_1_1_verbose_format_info_base.html#a2c743142a5aaf1fc711c06ebed7872d6", null ],
+    [ "RightMostIndentationString", "class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_formatting_1_1_verbose_format_info_base.html#a49dfc2fe116566e4de3b5ae8d8cb5692", null ],
+    [ "LastIndentationString", "class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_formatting_1_1_verbose_format_info_base.html#ad860c4faeec87a5a27f1071605a3274e", null ],
+    [ "LastRightMostIndentationString", "class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_formatting_1_1_verbose_format_info_base.html#a90d7de33f2979ffb033c7ad5f2fa9c79", null ],
+    [ "MaximumDepth", "class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_formatting_1_1_verbose_format_info_base.html#a813c38173a67737bcd27fb19631895bc", null ],
+    [ "MaximumFormattedLength", "class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_formatting_1_1_verbose_format_info_base.html#a4bd5df764e19018ea78265cfbccffe65", null ],
+    [ "RawMaximumFormattedLength", "class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_formatting_1_1_verbose_format_info_base.html#a021e0e3eb8a2d753b80aec58edd1b7dc", null ],
+    [ "ValueOnly", "class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_formatting_1_1_verbose_format_info_base.html#a7e3aa93c0c38f8d43df3281bc1f2a8b9", null ]
+];

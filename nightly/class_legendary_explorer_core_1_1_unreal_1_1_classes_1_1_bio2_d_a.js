@@ -1,0 +1,25 @@
+var class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio2_d_a =
+[
+    [ "Bio2DA", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio2_d_a.html#a6ce4e6c04a55f716b0a90bfab445bad9", null ],
+    [ "Bio2DA", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio2_d_a.html#ac6155e9a8a5589e9c56706d18eb8458b", null ],
+    [ "MarkAsUnmodified", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio2_d_a.html#afffa9629565ed8ae7128da3dbc5699b8", null ],
+    [ "Write2DAToExport", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio2_d_a.html#aae8314f4f9270e4dfa77b3f886f20463", null ],
+    [ "GetColumnIndexByName", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio2_d_a.html#a7510453f069c14c495d933e7ea2b49c6", null ],
+    [ "GetRowIndexByName", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio2_d_a.html#a5c054fbc9aba7bfd34f565d7d891d550", null ],
+    [ "AddRow", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio2_d_a.html#a00a6a5fae0036978765055e5e60387c3", null ],
+    [ "AddColumn", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio2_d_a.html#a49c32aab99f82f83fb6f3f215b52260a", null ],
+    [ "IsIndexed", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio2_d_a.html#afed7f9e12745ad5127eba976f6c2ede3", null ],
+    [ "Export", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio2_d_a.html#a53ecef86facd8cc6ff3fc9a122617ae1", null ],
+    [ "Cells", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio2_d_a.html#acc54e4bf6cfa75ef06e52df0a33a25b9", null ],
+    [ "RowNames", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio2_d_a.html#abb745b88ddc649cb3da8ee692b22c12e", null ],
+    [ "ColumnNames", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio2_d_a.html#a072b7c2a2615665ced8c8edb607ab4b1", null ],
+    [ "RowNamesUI", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio2_d_a.html#a85777f87f8aa943f2e347675ce94a274", null ],
+    [ "RowCount", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio2_d_a.html#a46e746872dae022c50762d45ff2e2f71", null ],
+    [ "ColumnCount", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio2_d_a.html#a7e8837f8ccdac7be22647cc491fdaeed", null ],
+    [ "IsModified", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio2_d_a.html#acceed6d45328b70fde453ffacad3be67", null ],
+    [ "this[int rowindex, int colindex]", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio2_d_a.html#af467a94457eba3b18fc7e1837d26da2c", null ],
+    [ "this[string rowname, int colindex]", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio2_d_a.html#a457f96097047795a0a56f27814f5ead3", null ],
+    [ "this[int rowindex, string columnname]", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio2_d_a.html#aa0b4c13697ed2dab02e7d6cf9221d873", null ],
+    [ "this[string rowname, string columnname]", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio2_d_a.html#aa755b1cb63b59fa9421cdce5794d5826", null ],
+    [ "PropertyChanged", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio2_d_a.html#ac580b277b13904c540bb177cbeb42f5d", null ]
+];

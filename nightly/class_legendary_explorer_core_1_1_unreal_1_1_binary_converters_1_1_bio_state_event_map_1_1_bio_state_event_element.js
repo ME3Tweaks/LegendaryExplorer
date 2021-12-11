@@ -1,0 +1,5 @@
+var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_state_event_map_1_1_bio_state_event_element =
+[
+    [ "InstanceVersion", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_state_event_map_1_1_bio_state_event_element.html#a104908f8d7fbca1d0866b839069f4df1", null ],
+    [ "Type", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_state_event_map_1_1_bio_state_event_element.html#a68d7328e2807848225e470b1258f7f18", null ]
+];

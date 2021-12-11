@@ -1,0 +1,4 @@
+var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_quantized_simple_light_sample =
+[
+    [ "Coefficient", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_quantized_simple_light_sample.html#ae355b76e67bd7aa6c1a2923169c03db9", null ]
+];

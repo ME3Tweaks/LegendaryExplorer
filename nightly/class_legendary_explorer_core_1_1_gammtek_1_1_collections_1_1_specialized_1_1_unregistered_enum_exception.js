@@ -1,0 +1,4 @@
+var class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_specialized_1_1_unregistered_enum_exception =
+[
+    [ "UnregisteredEnumException", "class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_specialized_1_1_unregistered_enum_exception.html#adcc83e0efe5be12009d8cc9f2e7af416", null ]
+];

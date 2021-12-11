@@ -1,0 +1,4 @@
+var class_legendary_explorer_core_1_1_misc_1_1_observable_collection_extended_threading =
+[
+    [ "EnableCrossThreadUpdatesDelegate", "class_legendary_explorer_core_1_1_misc_1_1_observable_collection_extended_threading.html#a571648b3058416ecbee1ce4fdde1747e", null ]
+];

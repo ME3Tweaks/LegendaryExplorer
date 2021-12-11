@@ -1,0 +1,27 @@
+var class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler =
+[
+    [ "Initialize", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#ae4b736ee8af5fbc3035c9deb95167772", null ],
+    [ "GetOpenPackages", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#a537b5b333f3a5c92a1052e8802fcf1b7", null ],
+    [ "OpenMEPackageFromStream", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#ab865267772876c45d5720bf84c8ee5e1", null ],
+    [ "ForcePackageIntoCache", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#a0d178e2ee3dc58968a63dc0373aac1aa", null ],
+    [ "OpenMEPackage", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#aa16f945ad6f0dc436798cd62400f2ccc", null ],
+    [ "OpenMEPackage", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#a4244a5bcd64521a8433b547445761c7f", null ],
+    [ "UnsafePartialLoad", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#a47e5b996712d47dcdb5aae972b86a36d", null ],
+    [ "ReadAllFileBytesIntoMemoryStream", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#a840441fef52dc11709093e33b2cda89d", null ],
+    [ "QuickOpenMEPackage", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#ac007f1091e08996f7dc161007d78e69b", null ],
+    [ "CreateAndSavePackage", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#ae9a59f95e465ec9327224ebf04f44f58", null ],
+    [ "CreateEmptyLevel", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#a2631b772bd54bd50bd7293e3e01bc5e1", null ],
+    [ "OpenUDKPackage", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#a2d5307b4bd191a289ca6cf828f88648a", null ],
+    [ "OpenME3Package", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#a3100a7abe445c6ba7133ecc98f4fe676", null ],
+    [ "OpenME2Package", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#a90540da175ae4b55aa2739c5a290e3cc", null ],
+    [ "OpenME1Package", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#a41d0564468b457a8a1a79504cf29c6f4", null ],
+    [ "OpenLE3Package", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#accffe76fda8fb7d356a1fabb78a665c7", null ],
+    [ "OpenLE2Package", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#a3d84fe2034c2a41011ed709cfe71666e", null ],
+    [ "OpenLE1Package", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#ab554efbde997d0c364f9eb0c5c876328", null ],
+    [ "IsPackageInUse", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#aa89a92c4f34046d72ced1e2bbfae2e0f", null ],
+    [ "PrintOpenPackages", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#abb178b5944951ac1259b53a4b82dbf0a", null ],
+    [ "TryGetPackageFromCache", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#a9a3610d045c65fe4e1b84ed74f8a67ad", null ],
+    [ "OpenMEPackages", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#a1098084e34b864edf29c0bd34bb83c71", null ],
+    [ "GlobalSharedCacheEnabled", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#a25504fe78951f44b245fa7332e567d67", null ],
+    [ "packagesInTools", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#a3f365ada8a348938a6cd9bda6c34ae4b", null ]
+];

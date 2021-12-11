@@ -1,0 +1,13 @@
+var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_gesture_runtime_data =
+[
+    [ "BioGestCharOverride", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_gesture_runtime_data_1_1_bio_gest_char_override.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_gesture_runtime_data_1_1_bio_gest_char_override" ],
+    [ "BioMeshPropActionData", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_gesture_runtime_data_1_1_bio_mesh_prop_action_data.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_gesture_runtime_data_1_1_bio_mesh_prop_action_data" ],
+    [ "BioMeshPropData", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_gesture_runtime_data_1_1_bio_mesh_prop_data.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_gesture_runtime_data_1_1_bio_mesh_prop_data" ],
+    [ "BioPropClientEffectParams", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_gesture_runtime_data_1_1_bio_prop_client_effect_params.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_gesture_runtime_data_1_1_bio_prop_client_effect_params" ],
+    [ "Serialize", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_gesture_runtime_data.html#a689ca3e0eb4eba2e8445eec9f088e647", null ],
+    [ "Create", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_gesture_runtime_data.html#abe8c6e58f90447eb2e0230d29e2f3a90", null ],
+    [ "GetNames", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_gesture_runtime_data.html#a756c61c9f3ff70290756452b5a8d47b7", null ],
+    [ "m_mapAnimSetOwners", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_gesture_runtime_data.html#a6b8e282c83851ea196fde724c06bb0e5", null ],
+    [ "m_mapMeshProps", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_gesture_runtime_data.html#a9bf2395bedcb98a369de0e421015c0e7", null ],
+    [ "m_mapCharTypeOverrides", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_gesture_runtime_data.html#a2bc2561e19db6f0a97ce339579225f32", null ]
+];

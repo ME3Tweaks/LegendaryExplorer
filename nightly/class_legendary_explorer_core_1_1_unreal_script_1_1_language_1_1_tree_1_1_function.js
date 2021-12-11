@@ -1,0 +1,28 @@
+var class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function =
+[
+    [ "Function", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function.html#ad55a385c993df38a5a70a17c81ddb0f4", null ],
+    [ "SignatureEquals", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function.html#a3947283b7f855bc1001a240382ff077c", null ],
+    [ "AcceptVisitor", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function.html#a5b8da85e7161bd459a1ca49e083f95a4", null ],
+    [ "ReturnValueDeclaration", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function.html#aa8eba3107c10ab35d2c5a28440423553", null ],
+    [ "Flags", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function.html#ad0c956514034f230e1252b51f8e536d1", null ],
+    [ "Parameters", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function.html#a949539c5913b2c590052dfe0145a7e5e", null ],
+    [ "NativeIndex", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function.html#a8d1c5cd90c0ca814048087483ba3362a", null ],
+    [ "VarType", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function.html#add368f09f8a1ecf8085aac1b127c6006", null ],
+    [ "RetValNeedsDestruction", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function.html#a5a28a290c92680ed74eef62f5c864a72", null ],
+    [ "OperatorPrecedence", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function.html#a8e4e1d08a5f683da65c2a84287fc2734", null ],
+    [ "FriendlyName", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function.html#aec487d41a3b1d792c2f132bc1b93c60c", null ],
+    [ "SuperFunction", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function.html#a2a83573cdc2f12a71e079914cb183a7e", null ],
+    [ "Name", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function.html#a8a63527c0c117cf8d354f01abfcfec4f", null ],
+    [ "Body", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function.html#a5b7ac33d05b41b2959a53c1f6c2a6929", null ],
+    [ "Locals", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function.html#a2569d5e00c47785242123fdb77767687", null ],
+    [ "ReturnType", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function.html#a494bc95e3164479586929374f4dc483f", null ],
+    [ "CoerceReturn", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function.html#a5535fa395ef5a7d655e6483dbe76fa2d", null ],
+    [ "IsNative", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function.html#a6fba0b416e53759233d323fa4f748f64", null ],
+    [ "IsDefined", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function.html#a8d402312ef6b6dbbe0511d8b55a07243", null ],
+    [ "IsOperator", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function.html#a40ccd37cc903f087baf758f0e936c4df", null ],
+    [ "IsVirtual", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function.html#ae730cce9b1963e522feb9aa48b6569c7", null ],
+    [ "HasOptionalParms", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function.html#acdd259e81adf2f2717cf1fdabe95b3c4", null ],
+    [ "ChildNodes", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function.html#a7a4b6c40ac0cb483de56ced197d9fdb7", null ],
+    [ "FilePath", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function.html#aa34fa35175f2cfc03ad3ca90a2a91f9b", null ],
+    [ "UIndex", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function.html#a5bc064cc129e92fb6ea7f74397c98ad4", null ]
+];

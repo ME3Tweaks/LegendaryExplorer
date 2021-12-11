@@ -1,0 +1,6 @@
+var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_state_management_1_1_custom_transition_time =
+[
+    [ "FromStateID", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_state_management_1_1_custom_transition_time.html#a9af6aa6fe9e446d9687e4830a734d44a", null ],
+    [ "ToStateID", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_state_management_1_1_custom_transition_time.html#ab50060004afa596b5c2512312605554b", null ],
+    [ "TransitionTime", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_state_management_1_1_custom_transition_time.html#a4a3d752c7b71777f36f9d79dababb8f5", null ]
+];

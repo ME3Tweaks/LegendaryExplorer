@@ -1,0 +1,9 @@
+var namespace_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_string_matching =
+[
+    [ "CombinedStringMatcher", "class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_string_matching_1_1_combined_string_matcher.html", "class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_string_matching_1_1_combined_string_matcher" ],
+    [ "DefaultStringMatcher", "class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_string_matching_1_1_default_string_matcher.html", "class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_string_matching_1_1_default_string_matcher" ],
+    [ "ExactMatcher", "class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_string_matching_1_1_exact_matcher.html", "class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_string_matching_1_1_exact_matcher" ],
+    [ "IStringMatcher", "interface_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_string_matching_1_1_i_string_matcher.html", "interface_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_string_matching_1_1_i_string_matcher" ],
+    [ "RegexMatcher", "class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_string_matching_1_1_regex_matcher.html", "class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_string_matching_1_1_regex_matcher" ],
+    [ "WildcardMatcher", "class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_string_matching_1_1_wildcard_matcher.html", "class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_string_matching_1_1_wildcard_matcher" ]
+];
