@@ -239,7 +239,8 @@ steps:
       git config user.email "me3tweaks-auto@me3tweaks.com"
       git config user.name "ME3Tweaks-LEC-Documentation"
       $(doxygenWorkingDir)\doxygen.exe $(Build.SourcesDirectory)\Documentation\DoxygenConfigAzurePipelines
-      git checkout -f gh-pages
+      git restore $(Build.SourcesDirectory)\LegendaryExplorer\LegendaryExplorerCore\Libraries\Windows\TexConverter.dll
+      git checkout gh-pages
       if(Test-Path .\nightly\)
       {
         Remove-Item .\nightly\* -Recurse
