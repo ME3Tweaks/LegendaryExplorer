@@ -40,12 +40,20 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         #region Texture Preview
         private class TextureRenderContext : RenderContext
         {
-            private struct TextureViewConstants
+            [Flags]
+            public enum TextureViewFlags : int
+            {
+                None = 0,
+                ReconstructNormalZ = 1 << 0,
+            }
+
+            public struct TextureViewConstants
             {
                 public Matrix4x4 Projection;
                 public Matrix4x4 View;
                 public int Mip;
-                private Vector3 Padding;
+                public TextureViewFlags Flags;
+                private Vector2 Padding; // Constant buffers must be a multiple of 16 bytes long
             }
 
             private RenderTargetView BackbufferRTV = null;
@@ -53,7 +61,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             private VertexShader TextureVertexShader = null;
             private PixelShader TexturePixelShader = null;
             private ShaderResourceView TextureRTV = null;
-            private TextureViewConstants Constants = new TextureViewConstants();
+            public TextureViewConstants Constants = new TextureViewConstants();
             private SharpDX.Direct3D11.Buffer ConstantBuffer = null;
 
             private SharpDX.Direct3D11.Texture2D _texture = null;
@@ -138,6 +146,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 this.ImmediateContext.UnmapSubresource(this.ConstantBuffer, 0);
                 this.ImmediateContext.PixelShader.SetShaderResource(0, this.TextureRTV);
                 this.ImmediateContext.VertexShader.SetConstantBuffer(0, this.ConstantBuffer);
+                this.ImmediateContext.PixelShader.SetConstantBuffer(0, this.ConstantBuffer);
                 this.ImmediateContext.Draw(4, 0);
 
                 base.Render();
@@ -599,7 +608,13 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 //bitmap.Save(memory, ImageFormat.Png);
                 //memory.Position = 0;
                 //TextureImage.Source = (BitmapSource)new ImageSourceConverter().ConvertFrom(memory);
-                TextureContext.Texture = TextureContext.LoadUnrealMip(mipToLoad, Image.getPixelFormatType(CurrentLoadedFormat));
+                LegendaryExplorerCore.Textures.PixelFormat pixelFormat = Image.getPixelFormatType(CurrentLoadedFormat);
+                TextureContext.Texture = TextureContext.LoadUnrealMip(mipToLoad, pixelFormat);
+                bool needsReconstruction = pixelFormat == LegendaryExplorerCore.Textures.PixelFormat.ATI2
+                    || pixelFormat == LegendaryExplorerCore.Textures.PixelFormat.BC5
+                    || pixelFormat == LegendaryExplorerCore.Textures.PixelFormat.V8U8;
+                this.TextureContext.Constants.Flags = needsReconstruction ? TextureRenderContext.TextureViewFlags.ReconstructNormalZ : TextureRenderContext.TextureViewFlags.None;
+
             }
             catch (Exception e)
             {

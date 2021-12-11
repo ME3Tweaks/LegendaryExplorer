@@ -1,4 +1,6 @@
 ﻿
+#define FLAG_RECONSTRUCTNORMALZ (1 << 0)
+
 struct VS_OUT {
     float4 Position : SV_Position;
     float2 TexCoord : TEXCOORD0;
@@ -7,7 +9,9 @@ struct VS_OUT {
 cbuffer Constants {
     float4x4 Projection;
     float4x4 View;
-    int4 Mip;
+    int Mip;
+    int Flags;
+    int2 _Padding;
 };
 
 Texture2D Texture : register(t0);
@@ -23,6 +27,12 @@ VS_OUT VSMain(uint vertexID : SV_VertexID) {
 }
 
 float4 PSMain(VS_OUT input) : SV_Target0 {
-    float4 textureValue = Texture.SampleLevel(Sampler, input.TexCoord, Mip.x);
+    float4 textureValue = Texture.SampleLevel(Sampler, float2(input.TexCoord.x, 1.0f - input.TexCoord.y), Mip);
+
+    if (Flags & FLAG_RECONSTRUCTNORMALZ != 0) {
+        float2 normalVector = textureValue.xy * 2.0f - 1.0f; // The texture uses values in 0.0 to 1.0 (0 to 255) to represent floats from -1.0 to 1.0
+        textureValue.z = sqrt(1.0f - pow(normalVector.x, 2.0f) - pow(normalVector.y, 2.0f)) * 0.5f + 0.5f; // Pythagorean theorem solved for Z, then rescale from -1.0 to 1.0 to the 0.0 to 1.0 range
+    }
+
     return textureValue;
 }

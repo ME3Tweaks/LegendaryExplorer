@@ -316,6 +316,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
         #region Input Events
         private void SceneRenderControlWPF_PreviewMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
+            this.Focus();
             MouseButtons buttons;
             if (e.ChangedButton == System.Windows.Input.MouseButton.Left)
                 buttons = MouseButtons.Left;
