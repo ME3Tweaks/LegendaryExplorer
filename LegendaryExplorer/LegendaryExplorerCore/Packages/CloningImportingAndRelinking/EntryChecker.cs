@@ -378,7 +378,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 // Can't access idx vars so we have to do this
                 var pf = getName();
             }
-            catch (Exception e)
+            catch (Exception)
             {
 
                 item.AddBlockingError(localizationDelegate(ME3XL.string_interp_refCheckInvalidNameValue, relativePath ?? fName, nameBeingChecked, itemBeingChecked), entry);

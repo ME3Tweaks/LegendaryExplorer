@@ -10,6 +10,7 @@ using Microsoft.Win32;
 
 namespace LegendaryExplorerCore.GameFilesystem
 {
+    /// <todo>Add documentation to this class</todo>
     public static class LE1Directory
     {
         public static string BioGamePath => GetBioGamePath();

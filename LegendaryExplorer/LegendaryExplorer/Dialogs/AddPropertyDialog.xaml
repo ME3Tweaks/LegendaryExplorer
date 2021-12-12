@@ -11,6 +11,7 @@
         MinWidth="450"
         MinHeight="200"
         Title="Add Property" Height="400" Width="650"
+        FocusManager.FocusedElement="{Binding ElementName=SearchBox}"
         DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <Grid Margin="5">
         <Grid.ColumnDefinitions>
@@ -65,10 +66,13 @@
             <Button Name="AddButton" Content="Add Property" Width="90" Height="27" Margin="0,0,5,0" IsDefault="True"
                     DockPanel.Dock="Right" Command="{Binding AddPropertyCommand}"/>
             <Button Name="CancelButton" Content="Cancel"  Width="70" Height="27" IsCancel="True" DockPanel.Dock="Right"/>
+            <CheckBox Content="Show Transient Properties" IsChecked="{Binding ShowTransients}" HorizontalAlignment="Left" VerticalAlignment="Center" DockPanel.Dock="Right" Margin="5,0" />
+
             <xctk:WatermarkTextBox Watermark="Type to filter" 
                                    Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}" 
                                    HorizontalAlignment="Left" 
-                                   Width="200"/>
+                                   Width="200"
+                                   Name="SearchBox"/>
         </DockPanel>
     </Grid>
 

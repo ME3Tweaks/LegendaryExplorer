@@ -86,7 +86,7 @@ namespace LegendaryExplorerCore.Gammtek.IO
 		/// <returns>Absolute path to the executing assembly including the assembly filename.</returns>
 		public static string GetExecutingAssemblyLocation()
 		{
-			return new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath;
+			return new Uri(Assembly.GetExecutingAssembly().Location).LocalPath;
 		}
 
 		/// <summary>

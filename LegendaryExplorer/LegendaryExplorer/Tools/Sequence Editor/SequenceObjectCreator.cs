@@ -67,7 +67,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             return classes;
         }
 
-        public static PropertyCollection GetSequenceObjectDefaults(IMEPackage pcc, string className, MEGame game) => GetSequenceObjectDefaults(pcc, GlobalUnrealObjectInfo.GetClassOrStructInfo(game, className));
+        public static PropertyCollection GetSequenceObjectDefaults(IMEPackage pcc, string className, MEGame game, PackageCache pc = null) => GetSequenceObjectDefaults(pcc, GlobalUnrealObjectInfo.GetClassOrStructInfo(game, className), pc);
 
         public static PropertyCollection GetSequenceObjectDefaults(IMEPackage pcc, ClassInfo info, PackageCache pc = null)
         {
@@ -169,10 +169,11 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                     while (classInfo != null && (varLinksProp is null || outLinksProp is null || eventLinksProp is null || inLinksProp is null))
                     {
                         string filepath = Path.Combine(MEDirectories.GetBioGamePath(game), classInfo.pccPath);
+                        string loadPath = null;
                         Stream loadStream = null;
                         if (File.Exists(classInfo.pccPath))
                         {
-                            loadStream = MEPackageHandler.ReadAllFileBytesIntoMemoryStream(classInfo.pccPath);
+                            loadPath = classInfo.pccPath;
                         }
                         else if (classInfo.pccPath == GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName)
                         {
@@ -180,22 +181,32 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                         }
                         else if (File.Exists(filepath))
                         {
-                            loadStream = MEPackageHandler.ReadAllFileBytesIntoMemoryStream(filepath);
+                            loadPath = filepath;
                         }
                         else if (game == MEGame.ME1)
                         {
                             filepath = Path.Combine(ME1Directory.DefaultGamePath, classInfo.pccPath); //for files from ME1 DLC
                             if (File.Exists(filepath))
                             {
-                                loadStream = MEPackageHandler.ReadAllFileBytesIntoMemoryStream(filepath);
+                                loadPath = filepath;
                             }
                         }
-                        if (loadStream != null)
+                        if (loadStream != null || loadPath != null)
                         {
-                            using IMEPackage importPCC = MEPackageHandler.OpenMEPackageFromStream(loadStream);
+                            IMEPackage importPCC;
+                            if (loadStream is null)
+                            {
+                                pc.TryGetCachedPackage(loadPath, true, out importPCC);
+                            }
+                            else
+                            {
+                                importPCC = MEPackageHandler.OpenMEPackageFromStream(loadStream);
+                            }
                             ExportEntry classExport = importPCC.GetUExport(classInfo.exportIndex);
                             UClass classBin = ObjectBinary.From<UClass>(classExport);
                             ExportEntry classDefaults = importPCC.GetUExport(classBin.Defaults);
+
+                            RelinkerOptionsPackage rop = new RelinkerOptionsPackage() { Cache = pc ?? new PackageCache() };
 
                             foreach (var prop in classDefaults.GetProperties())
                             {
@@ -203,11 +214,13 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                                 {
                                     varLinksProp = vlp;
                                     //relink ExpectedType
+
                                     foreach (StructProperty varLink in varLinksProp)
                                     {
+
                                         if (varLink.GetProp<ObjectProperty>("ExpectedType") is ObjectProperty expectedTypeProp &&
                                             importPCC.TryGetEntry(expectedTypeProp.Value, out IEntry expectedVar) &&
-                                            EntryImporter.EnsureClassIsInFile(pcc, expectedVar.ObjectName, RelinkResultsAvailable: EntryImporterExtended.ShowRelinkResults) is IEntry portedExpectedVar)
+                                            EntryImporter.EnsureClassIsInFile(pcc, expectedVar.ObjectName, rop) is IEntry portedExpectedVar)
                                         {
                                             expectedTypeProp.Value = portedExpectedVar.UIndex;
                                         }
@@ -226,7 +239,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                                     {
                                         if (eventLink.GetProp<ObjectProperty>("ExpectedType") is ObjectProperty expectedTypeProp &&
                                             importPCC.TryGetEntry(expectedTypeProp.Value, out IEntry expectedVar) &&
-                                            EntryImporter.EnsureClassIsInFile(pcc, expectedVar.ObjectName, RelinkResultsAvailable: EntryImporterExtended.ShowRelinkResults) is IEntry portedExpectedVar)
+                                            EntryImporter.EnsureClassIsInFile(pcc, expectedVar.ObjectName, rop) is IEntry portedExpectedVar)
                                         {
                                             expectedTypeProp.Value = portedExpectedVar.UIndex;
                                         }
@@ -241,6 +254,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                                     inLinksProp = ilp;
                                 }
                             }
+                            if (!pc.TryGetCachedPackage(loadPath, false, out _)) importPCC.Dispose(); // Can't do a using statement because of the pc out var - not good enough at c# to fix
                         }
                         classes.TryGetValue(classInfo.baseClass, out classInfo);
                         switch (classInfo.ClassName)
@@ -257,7 +271,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
 
                         }
                     }
-                    loopend: ;
+                loopend:;
                 }
                 catch
                 {
@@ -305,12 +319,14 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             return defaults;
         }
 
-        public static ExportEntry CreateSequenceObject(IMEPackage pcc, string className, MEGame game)
+        public static ExportEntry CreateSequenceObject(IMEPackage pcc, string className, PackageCache cache = null)
         {
-            var seqObj = new ExportEntry(pcc, 0, pcc.GetNextIndexedName(className), properties: GetSequenceObjectDefaults(pcc, className, game))
+            var rop = new RelinkerOptionsPackage() { Cache = cache ?? new PackageCache() };
+            var seqObj = new ExportEntry(pcc, 0, pcc.GetNextIndexedName(className), properties: GetSequenceObjectDefaults(pcc, className, pcc.Game, cache))
             {
-                Class = EntryImporter.EnsureClassIsInFile(pcc, className, RelinkResultsAvailable: EntryImporterExtended.ShowRelinkResults)
+                Class = EntryImporter.EnsureClassIsInFile(pcc, className, rop)
             };
+            EntryImporterExtended.ShowRelinkResultsIfAny(rop);
             seqObj.ObjectFlags |= UnrealFlags.EObjectFlags.Transactional;
             pcc.AddExport(seqObj);
             return seqObj;

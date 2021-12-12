@@ -194,7 +194,7 @@ namespace LegendaryExplorerCore.Packages
 
         private static void UDKSave(UDKPackage pcc, string path, object diskIOSyncLock = null)
         {
-            bool isSaveAs = path != pcc.FilePath;
+            bool isSaveAs = path != null && path != pcc.FilePath;
             try
             {
                 UDKSaveDelegate(pcc, path, isSaveAs, diskIOSyncLock);

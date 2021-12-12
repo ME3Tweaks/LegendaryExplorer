@@ -29,6 +29,7 @@ using LegendaryExplorer.SharedUI.Bases;
 using LegendaryExplorer.SharedUI.Interfaces;
 using LegendaryExplorer.SharedUI.PeregrineTreeView;
 using LegendaryExplorer.Tools.PlotEditor;
+using LegendaryExplorer.Tools.Sequence_Editor.Experiments;
 using LegendaryExplorer.Tools.SequenceObjects;
 using LegendaryExplorer.UserControls.SharedToolControls;
 using LegendaryExplorerCore.GameFilesystem;
@@ -58,6 +59,19 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
         public ObservableCollectionExtended<TreeViewEntry> TreeViewRootNodes { get; set; } = new();
         public string CurrentFile;
         public string JSONpath;
+
+        private bool _useSavedViews = true; // Should probably be a global setting
+        public bool UseSavedViews
+        {
+            get => _useSavedViews;
+            set
+            {
+                if (SetProperty(ref _useSavedViews, value) && SelectedSequence != null)
+                {
+                    LoadSequence(SelectedSequence);
+                }
+            }
+        }
 
         private ExportEntry _selectedSequence;
         public ExportEntry SelectedSequence
@@ -120,7 +134,10 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
         public ICommand SaveImageCommand { get; set; }
         public ICommand SaveViewCommand { get; set; }
         public ICommand AutoLayoutCommand { get; set; }
+        public ICommand UseSavedViewsCommand { get; set; }
         public ICommand ScanFolderForLoopsCommand { get; set; }
+        public ICommand CheckSequenceSetsCommand { get; set; }
+        public ICommand ConvertSeqActLogCommentCommand { get; set; }
         public ICommand GotoCommand { get; set; }
         public ICommand KismetLogCommand { get; set; }
         public ICommand KismetLogCurrentSequenceCommand { get; set; }
@@ -139,7 +156,15 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             GotoCommand = new GenericCommand(GoTo, PackageIsLoaded);
             KismetLogCommand = new RelayCommand(OpenKismetLogParser, CanOpenKismetLog);
             ScanFolderForLoopsCommand = new GenericCommand(ScanFolderPackagesForTightLoops);
+            CheckSequenceSetsCommand = new GenericCommand(() => SequenceEditorExperimentsM.CheckSequenceSets(this), () => CurrentObjects.Any);
+            ConvertSeqActLogCommentCommand = new GenericCommand(() => SequenceEditorExperimentsM.ConvertSeqAct_Log_objComments(Pcc), () => SequenceExports.Any);
             SearchCommand = new GenericCommand(SearchDialogue, () => CurrentObjects.Any);
+            UseSavedViewsCommand = new GenericCommand(ToggleSavedViews, () => Pcc != null && Pcc is { Game: MEGame.ME1 } || Pcc.Game.IsLEGame());
+        }
+
+        private void ToggleSavedViews()
+        {
+            UseSavedViews = !UseSavedViews;
         }
 
         private bool CanForceReload() => App.IsDebug && PackageIsLoaded();
@@ -253,12 +278,20 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             if (Pcc.Exports.Any(exp => exp.ObjectName == info.ClassName) || Pcc.Imports.Any(imp => imp.ObjectName == info.ClassName) ||
                 GlobalUnrealObjectInfo.GetClassOrStructInfo(Pcc.Game, info.ClassName) is { } classInfo && EntryImporter.IsSafeToImportFrom(classInfo.pccPath, Pcc.Game))
             {
-                classEntry = EntryImporter.EnsureClassIsInFile(Pcc, info.ClassName, RelinkResultsAvailable: EntryImporterExtended.ShowRelinkResults);
+                var rop = new RelinkerOptionsPackage();
+                classEntry = EntryImporter.EnsureClassIsInFile(Pcc, info.ClassName, rop);
+                EntryImporterExtended.ShowRelinkResultsIfAny(rop);
             }
             else
             {
                 SetBusy($"Adding {info.ClassName}");
-                classEntry = await Task.Run(() => EntryImporter.EnsureClassIsInFile(Pcc, info.ClassName, RelinkResultsAvailable: EntryImporterExtended.ShowRelinkResults)).ConfigureAwait(true);
+                classEntry = await Task.Run(() =>
+                {
+                    var rop = new RelinkerOptionsPackage();
+                    var result = EntryImporter.EnsureClassIsInFile(Pcc, info.ClassName, rop);
+                    EntryImporterExtended.ShowRelinkResultsIfAny(rop);
+                    return result;
+                }).ConfigureAwait(true);
             }
             if (classEntry is null)
             {
@@ -470,11 +503,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 Title = $"Sequence Editor - {filePath}";
                 StatusText = null; //no status
 
-                commonToolBox.Classes = SequenceObjectCreator.GetCommonObjects(Pcc.Game).OrderBy(info => info.ClassName).ToList();
-                eventsToolBox.Classes = SequenceObjectCreator.GetSequenceEvents(Pcc.Game).OrderBy(info => info.ClassName).ToList();
-                actionsToolBox.Classes = SequenceObjectCreator.GetSequenceActions(Pcc.Game).OrderBy(info => info.ClassName).ToList();
-                conditionsToolBox.Classes = SequenceObjectCreator.GetSequenceConditions(Pcc.Game).OrderBy(info => info.ClassName).ToList();
-                variablesToolBox.Classes = SequenceObjectCreator.GetSequenceVariables(Pcc.Game).OrderBy(info => info.ClassName).ToList();
+                RefreshToolboxItems();
             }
             catch (Exception ex) when (!App.IsDebug)
             {
@@ -482,6 +511,26 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 Title = "Sequence Editor";
                 CurrentFile = null;
                 UnLoadMEPackage();
+            }
+        }
+
+        /// <summary>
+        /// Reloads the toolbox data
+        /// </summary>
+        public void RefreshToolboxItems()
+        {
+            if (Pcc != null)
+            {
+                commonToolBox.Classes = SequenceObjectCreator.GetCommonObjects(Pcc.Game).OrderBy(info => info.ClassName)
+                    .ToList();
+                eventsToolBox.Classes = SequenceObjectCreator.GetSequenceEvents(Pcc.Game).OrderBy(info => info.ClassName)
+                    .ToList();
+                actionsToolBox.Classes = SequenceObjectCreator.GetSequenceActions(Pcc.Game).OrderBy(info => info.ClassName)
+                    .ToList();
+                conditionsToolBox.Classes = SequenceObjectCreator.GetSequenceConditions(Pcc.Game)
+                    .OrderBy(info => info.ClassName).ToList();
+                variablesToolBox.Classes = SequenceObjectCreator.GetSequenceVariables(Pcc.Game)
+                    .OrderBy(info => info.ClassName).ToList();
             }
         }
 
@@ -662,7 +711,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             Properties_InterpreterWPF.LoadExport(seqExport);
             if (fromFile)
             {
-                if (File.Exists(JSONpath))
+                if (UseSavedViews && File.Exists(JSONpath))
                 {
                     SavedView = JsonConvert.DeserializeObject<SavedViewData>(File.ReadAllText(JSONpath));
                 }
@@ -1216,9 +1265,14 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                                 {
                                     outputLinksMenuItem.Visibility = Visibility.Visible;
                                     hasLinks = true;
+                                    string targetStr = null;
+                                    if (Pcc.TryGetEntry(sBox.Outlinks[i].Links[j], out var target))
+                                    {
+                                        targetStr = target.ObjectName.Instanced;
+                                    }
                                     var temp = new MenuItem
                                     {
-                                        Header = $"Break link from {sBox.Outlinks[i].Desc} to {sBox.Outlinks[i].Links[j]}"
+                                        Header = $"Break link from {sBox.Outlinks[i].Desc} to {sBox.Outlinks[i].Links[j]} {targetStr}"
                                     };
                                     int linkConnection = i;
                                     int linkIndex = j;
@@ -1244,10 +1298,17 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                                 {
                                     varLinksMenuItem.Visibility = Visibility.Visible;
                                     hasLinks = true;
+
+                                    string targetStr = null;
+                                    if (Pcc.TryGetEntry(sBox.Varlinks[i].Links[j], out var target))
+                                    {
+                                        targetStr = target.ObjectName.Instanced;
+                                    }
                                     var temp = new MenuItem
                                     {
-                                        Header = $"Break link from {sBox.Varlinks[i].Desc} to {sBox.Varlinks[i].Links[j]}"
+                                        Header = $"Break link from {sBox.Varlinks[i].Desc} to {sBox.Varlinks[i].Links[j]} {targetStr}"
                                     };
+
                                     int linkConnection = i;
                                     int linkIndex = j;
                                     temp.Click += (o, args) => { sBox.RemoveVarlink(linkConnection, linkIndex); };
@@ -1430,13 +1491,66 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 if (contextMenu.GetChild("sequenceRefGotoMenuItem") is MenuItem sequenceRefGotoMenuItem)
                 {
 
-                    if (obj is SAction sAction && sAction.Export != null && sAction.Export.ClassName == "SequenceReference")
+                    if (obj is SAction sAction && sAction.Export != null && (sAction.Export.ClassName is "SequenceReference" or "Sequence"))
                     {
                         sequenceRefGotoMenuItem.Visibility = Visibility.Visible;
                     }
                     else
                     {
                         sequenceRefGotoMenuItem.Visibility = Visibility.Collapsed;
+                    }
+                }
+
+                if (contextMenu.GetChild("seqLogAddItemMenuItem") is MenuItem seqLogAddItemMenuItem)
+                {
+
+                    if (obj is SAction sAction && sAction.Export != null && sAction.Export.ClassName == "SeqAct_Log")
+                    {
+                        seqLogAddItemMenuItem.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        seqLogAddItemMenuItem.Visibility = Visibility.Collapsed;
+                    }
+                }
+
+                if (contextMenu.GetChild("seqLogLogObjectMenuItem") is MenuItem seqLogLogObjectMenuItem)
+                {
+
+                    if (obj is SVar sVar && sVar.Export != null)
+                    {
+                        seqLogLogObjectMenuItem.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        seqLogLogObjectMenuItem.Visibility = Visibility.Collapsed;
+                    }
+                }
+
+                if (contextMenu.GetChild("seqLogLogOutlinkFiringMenuItem") is MenuItem seqLogLogOutlinkFiringMenuItem)
+                {
+                    if (obj is SBox sAction && sAction.Export != null && sAction.Outlinks.Any())
+                    {
+                        seqLogLogOutlinkFiringMenuItem.Visibility = Visibility.Visible;
+
+                        seqLogLogOutlinkFiringMenuItem.Items.Clear();
+                        for (int i = 0; i < sAction.Outlinks.Count; i++)
+                        {
+                            int tempIdx = i; // Captured
+                            var temp = new MenuItem
+                            {
+                                Header = $"Log when {sAction.Outlinks[i].Desc} fires"
+                            };
+                            temp.Click += (o, args) =>
+                            {
+                                SeqLogLogOutlink(sAction, sAction.Outlinks[tempIdx].Desc);
+                            };
+                            seqLogLogOutlinkFiringMenuItem.Items.Add(temp);
+                        }
+                    }
+                    else
+                    {
+                        seqLogLogOutlinkFiringMenuItem.Visibility = Visibility.Collapsed;
                     }
                 }
 
@@ -1493,7 +1607,21 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             export.WriteProperty(eventLinksProp);
         }
 
+        private void RemoveFromSequence_Click(object sender, RoutedEventArgs e)
+        {
+            RemoveFromSequence(false);
+        }
+
         private void TrashAndRemoveFromSequence_Click(object sender, RoutedEventArgs e)
+        {
+            RemoveFromSequence(true);
+        }
+
+        /// <summary>
+        /// Removes an object from a sequence.
+        /// </summary>
+        /// <param name="trash">If the object should be trashed. Most times this is desirable, however if an object is being moved to another sequence, this is not desirable.</param>
+        private void RemoveFromSequence(bool trash)
         {
             if (CurrentObjects_ListBox.SelectedItem is SObj sObj)
             {
@@ -1535,9 +1663,11 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                     SelectedSequence.WriteProperty(seqObjs);
                 }
 
-                //Trash
-                EntryPruner.TrashEntryAndDescendants(sObj.Export);
-
+                if (trash)
+                {
+                    //Trash
+                    EntryPruner.TrashEntryAndDescendants(sObj.Export);
+                }
             }
         }
 
@@ -2312,18 +2442,174 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             }
         }
 
-        public void PropogateRecentsChange(IEnumerable<RecentsControl.RecentItem> newRecents)
+        public void PropogateRecentsChange(string propogationSource, IEnumerable<RecentsControl.RecentItem> newRecents)
         {
             RecentsController.PropogateRecentsChange(false, newRecents);
         }
 
         private void GotoSequenceReference_Clicked(object sender, RoutedEventArgs e)
         {
-            if (CurrentObjects_ListBox.SelectedItem is SAction sAction &&
-                sAction.Export.ClassName == "SequenceReference")
+            if (CurrentObjects_ListBox.SelectedItem is SAction sAction && (sAction.Export.ClassName is "SequenceReference" or "Sequence"))
             {
                 GoToExport(sAction.Export); // GoToExport should probably go to the export, not the data in it
             }
+        }
+
+        private void AddToLogString_Click(object sender, RoutedEventArgs e)
+        {
+            if (CurrentObjects_ListBox.SelectedItem is SAction sAction &&
+                sAction.Export.ClassName == "SeqAct_Log")
+            {
+                var result = PromptDialog.Prompt(this, "Enter the string to log", "Enter string");
+                if (!string.IsNullOrWhiteSpace(result))
+                {
+                    var newSeqObj = SequenceObjectCreator.CreateSequenceObject(Pcc, "SeqVar_String");
+                    newSeqObj.WriteProperty(new StrProperty(result, "StrValue"));
+                    KismetHelper.AddObjectToSequence(newSeqObj, SelectedSequence);
+                    var varLinks = SeqTools.GetVariableLinksOfNode(sAction.Export);
+                    var stringVarLink = varLinks.First(x => x.LinkDesc == "String");
+                    stringVarLink.LinkedNodes.Add(newSeqObj);
+                    SeqTools.WriteVariableLinksToNode(sAction.Export, varLinks);
+                }
+            }
+        }
+
+        private void CreateSeqLogForObject_Click(object sender, RoutedEventArgs e)
+        {
+            if (CurrentObjects_ListBox.SelectedItem is SVar sVar)
+            {
+                var result = PromptDialog.Prompt(this, "Enter the string to log alongside this", "Enter string");
+                if (!string.IsNullOrWhiteSpace(result))
+                {
+                    // Create the log object and add it to the sequence
+                    var seqLogObj = SequenceObjectCreator.CreateSequenceObject(Pcc, "SeqAct_Log");
+                    KismetHelper.AddObjectToSequence(seqLogObj, SelectedSequence);
+
+                    // Create user string SeqVar
+                    var newSeqObj = SequenceObjectCreator.CreateSequenceObject(Pcc, "SeqVar_String");
+                    newSeqObj.WriteProperty(new StrProperty(result, "StrValue"));
+                    KismetHelper.AddObjectToSequence(newSeqObj, SelectedSequence);
+
+                    // Attach the user string SeqVar and the selected item to the log.
+
+                    // String
+                    var varLinks = SeqTools.GetVariableLinksOfNode(seqLogObj);
+                    var stringVarLink = varLinks.First(x => x.LinkDesc == "String");
+                    stringVarLink.LinkedNodes.Add(newSeqObj);
+
+
+                    SeqTools.VarLinkInfo linkToAttachTo = null;
+                    if (sVar.Export.IsA("SeqVar_String"))
+                    {
+                        linkToAttachTo = varLinks.First(x => x.LinkDesc == "String");
+                    }
+                    else if (sVar.Export.IsA("SeqVar_Float"))
+                    {
+                        linkToAttachTo = varLinks.First(x => x.LinkDesc == "Float");
+                    }
+                    else if (sVar.Export.IsA("SeqVar_Bool"))
+                    {
+                        linkToAttachTo = varLinks.First(x => x.LinkDesc == "Bool");
+                    }
+                    else if (sVar.Export.IsA("SeqVar_Object"))
+                    {
+                        linkToAttachTo = varLinks.First(x => x.LinkDesc == "Object");
+                    }
+                    else if (sVar.Export.IsA("SeqVar_Int"))
+                    {
+                        linkToAttachTo = varLinks.First(x => x.LinkDesc == "Int");
+                    }
+                    else if (sVar.Export.IsA("SeqVar_Name"))
+                    {
+                        linkToAttachTo = varLinks.First(x => x.LinkDesc == "Name");
+                    }
+                    else if (sVar.Export.IsA("SeqVar_Vector"))
+                    {
+                        linkToAttachTo = varLinks.First(x => x.LinkDesc == "Vector");
+                    }
+                    else if (sVar.Export.IsA("SeqVar_ObjectList"))
+                    {
+                        linkToAttachTo = varLinks.First(x => x.LinkDesc == "Obj List");
+                    }
+                    else if (sVar.Export.IsA("SeqVar_External"))
+                    {
+                        // Just use Object
+                        linkToAttachTo = varLinks.First(x => x.LinkDesc == "Object");
+                    }
+
+
+                    if (linkToAttachTo == null)
+                    {
+                        Debugger.Break();
+                    }
+                    else
+                    {
+                        linkToAttachTo.LinkedNodes.Add(sVar.Export);
+                    }
+
+                    // Write the links
+                    SeqTools.WriteVariableLinksToNode(seqLogObj, varLinks);
+                }
+            }
+        }
+
+        private void SeqLogLogOutlink(SBox sourceAction, string outLinkName)
+        {
+            var result = PromptDialog.Prompt(this, $"Enter the string to log when the outlink '{outLinkName}' is fired.", "Enter string", $"Outlink {outLinkName} fired from {sourceAction.Export.UIndex} {sourceAction.Export.ObjectName.Instanced}", true);
+            if (!string.IsNullOrWhiteSpace(result))
+            {
+                // Create the log object and add it to the sequence
+                var seqLogObj = SequenceObjectCreator.CreateSequenceObject(Pcc, "SeqAct_Log");
+                KismetHelper.AddObjectToSequence(seqLogObj, SelectedSequence);
+
+                // Create user string SeqVar
+                var newSeqObj = SequenceObjectCreator.CreateSequenceObject(Pcc, "SeqVar_String");
+                newSeqObj.WriteProperty(new StrProperty(result, "StrValue"));
+                KismetHelper.AddObjectToSequence(newSeqObj, SelectedSequence);
+
+                // Attach the user string SeqVar and the selected item to the log.
+                KismetHelper.CreateVariableLink(seqLogObj, "String", newSeqObj);
+
+                // Add an outlink to the new object
+                KismetHelper.CreateOutputLink(sourceAction.Export, outLinkName, seqLogObj);
+            }
+        }
+
+        private void OpenClassDefinitionInPackageEditor_Clicked(object sender, RoutedEventArgs e)
+        {
+            if (CurrentObjects_ListBox.SelectedItem is SObj obj && obj.Export != null)
+            {
+                // Get class of the object
+                var objClass = obj.Export.Class;
+                string className = objClass.ClassName;
+                if (objClass is ImportEntry imp)
+                {
+                    objClass = EntryImporter.ResolveImport(imp);
+                }
+
+                if (objClass != null)
+                {
+                    AllowWindowRefocus = false; //prevents flicker effect when windows try to focus and then package editor activates
+                    var p = new PackageEditor.PackageEditorWindow();
+                    p.Show();
+                    p.LoadFile(objClass.FileRef.FilePath, objClass.UIndex);
+                    p.Activate(); //bring to front
+                }
+                else
+                {
+                    MessageBox.Show($"Could not determine where class '{className}' is defined.", "Cannot locate class");
+                }
+            }
+        }
+
+        private void LoadCustomClasses_Clicked(object sender, RoutedEventArgs e)
+        {
+            SequenceEditorExperimentsM.LoadCustomClasses(this);
+        }
+
+        private void CommitObjectPositions_Clicked(object sender, RoutedEventArgs e)
+        {
+            SequenceEditorExperimentsM.CommitSequenceObjectPositions(this);
         }
 
         public string Toolname => "SequenceEditor";

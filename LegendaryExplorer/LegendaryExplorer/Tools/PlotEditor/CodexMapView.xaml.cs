@@ -25,15 +25,7 @@ namespace LegendaryExplorer.Tools.PlotEditor
 		/// </summary>
 		public CodexMapView()
 		{
-            try
-            {
-                InitializeComponent();
-            }
-            catch (Exception e)
-            {
-
-                 throw;
-            }
+            InitializeComponent();
             SetFromCodexMap(new BioCodexMap());
         }
 

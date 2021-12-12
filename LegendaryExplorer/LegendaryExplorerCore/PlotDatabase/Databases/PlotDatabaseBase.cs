@@ -8,28 +8,47 @@ using Newtonsoft.Json;
 
 namespace LegendaryExplorerCore.PlotDatabase.Databases
 {
+    /// <summary>
+    /// Abstract base class representing a database of game plot information
+    /// </summary>
     public abstract class PlotDatabaseBase
     {
+        /// <summary>Gets the root element of the plot tree</summary>
         public virtual PlotElement Root { get; protected set; }
+        /// <summary>A table of boolean plot variables, ordered by in-game variable id</summary>
         public Dictionary<int, PlotBool> Bools { get; set; } = new Dictionary<int, PlotBool>();
+        /// <summary>A table of integer plot variables, ordered by in-game variable id</summary>
         public Dictionary<int, PlotElement> Ints { get; set; } = new Dictionary<int, PlotElement>();
+        /// <summary>A table of float plot variables, ordered by in-game variable id</summary>
         public Dictionary<int, PlotElement> Floats { get; set; } = new Dictionary<int, PlotElement>();
+        /// <summary>A table of conditional functions, ordered by in-game conditional id</summary>
         public Dictionary<int, PlotConditional> Conditionals { get; set; } = new Dictionary<int, PlotConditional>();
+        /// <summary>A table of plot transitions, ordered by in-game transition id</summary>
         public Dictionary<int, PlotTransition> Transitions { get; set; } = new Dictionary<int, PlotTransition>();
+        /// <summary>A table of organizational plot elements, ordered by plot element id</summary>
         public Dictionary<int, PlotElement> Organizational { get; set; } = new Dictionary<int, PlotElement>();
 
+        /// <summary>Gets or sets the MEGame associated with this database</summary>
         public MEGame Game { get; set; }
 
+        /// <summary>Gets a value indicating whether this database was created from the BioWare plot databases</summary>
         public abstract bool IsBioware { get; }
 
+        /// <summary>Indicates whether this database should be allowed to be saved to disk</summary>
+        /// <returns><c>true</c> if database can save</returns>
         public bool CanSave() => !IsBioware;
 
         internal static JsonSerializerSettings _jsonSerializerSettings = new JsonSerializerSettings
             {NullValueHandling = NullValueHandling.Ignore};
 
+        /// <summary>
+        /// Copies all tables from the input database to this one, overwriting existing tables
+        /// </summary>
+        /// <param name="pdb">Database to import from</param>
+        /// <exception cref="ArgumentNullException"><paramref name="pdb"/> is null</exception>
         internal void ImportPlots(SerializedPlotDatabase pdb)
         {
-            if (pdb == null) throw new Exception("Plot Database was null.");
+            if (pdb == null) throw new ArgumentNullException(nameof(pdb), "Plot Database was null");
 
             Bools = pdb.Bools.ToDictionary((b) => b.PlotId);
             Ints = pdb.Ints.ToDictionary((b) => b.PlotId);
@@ -40,9 +59,9 @@ namespace LegendaryExplorerCore.PlotDatabase.Databases
         }
 
         /// <summary>
-        /// Turns the plot database into a single dictionary, with the key being ElementID
+        /// Creates a dictionary of all plot elements in the database, with the key being the element ID
         /// </summary>
-        /// <returns></returns>
+        /// <returns>A dictionary of all plot elements</returns>
         public SortedDictionary<int, PlotElement> GetMasterDictionary()
         {
             try
@@ -77,10 +96,10 @@ namespace LegendaryExplorerCore.PlotDatabase.Databases
         }
 
         /// <summary>
-        /// Assigns a plot element to the given parent, and inserts it into the appropriate lookup table for it's type
+        /// Inserts a plot element into the appropriate lookup table for it's type, and assigns it the given parent
         /// </summary>
-        /// <param name="element"></param>
-        /// <param name="parent"></param>
+        /// <param name="element">Element to add</param>
+        /// <param name="parent">Parent to assign element to, can be null if element already has parent</param>
         public void AddElement(PlotElement element, PlotElement parent)
         {
             // This method does not check if the parent is already in the database!
@@ -177,6 +196,10 @@ namespace LegendaryExplorerCore.PlotDatabase.Databases
             }
         }
 
+        /// <summary>
+        /// Calculates the highest element id used in the database + 1
+        /// </summary>
+        /// <returns>The next available element id</returns>
         public int GetNextElementId()
         {
             var keys = GetMasterDictionary().Keys;

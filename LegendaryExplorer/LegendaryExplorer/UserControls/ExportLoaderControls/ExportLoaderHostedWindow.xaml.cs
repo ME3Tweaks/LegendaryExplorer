@@ -8,6 +8,8 @@ using System.Windows.Threading;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Bases;
+using LegendaryExplorer.SharedUI.Interfaces;
+using LegendaryExplorer.UserControls.SharedToolControls;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
@@ -18,7 +20,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
     /// <summary>
     /// Interaction logic for ExportLoaderHostedWindow.xaml
     /// </summary>
-    public partial class ExportLoaderHostedWindow : WPFBase
+    public partial class ExportLoaderHostedWindow : WPFBase, IRecents
     {
         public ExportEntry LoadedExport { get; private set; }
         public readonly ExportLoaderControl HostedControl;
@@ -65,8 +67,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             NamesList.ReplaceAll(LoadedExport.FileRef.Names.Select((name, i) => new IndexedName(i, name))); //we replaceall so we don't add one by one and trigger tons of notifications
             LoadCommands();
             InitializeComponent();
-            HostedControl.PoppedOut(Recents_MenuItem);
-            RootPanel.Children.Add(HostedControl);
+            ContentGrid.Children.Add(HostedControl);
+            HostedControl.PoppedOut(this);
             switch (HostedControl)
             {
                 case BinaryInterpreterWPF binaryInterpreterWpf:
@@ -82,12 +84,21 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     interpreterExportLoader.bind(InterpreterExportLoader.SubstituteImageForHexBoxProperty, this, nameof(IsBusy));
                     break;
             }
+
+            ConfigureRecents();
+        }
+
+        private void ConfigureRecents()
+        {
+            RecentsController.InitRecentControl(Toolname, Recents_MenuItem, HostedControl is FileExportLoaderControl felc ? felc.LoadFile : null);
         }
 
         private void NotifyPendingChangesStatusChanged(object sender, EventArgs e)
         {
             OnPropertyChanged(nameof(IsModifiedProxy));
         }
+
+
 
         /// <summary>
         /// Opens ELFH with a file loader and an optional file.
@@ -98,17 +109,40 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             DataContext = this;
             this.HostedControl = hostedControl;
+            hostedControl.FileLoaded += FELCFileLoaded;
             hostedControl.ModifiedStatusChanging += NotifyPendingChangesStatusChanged;
             //NamesList.ReplaceAll(LoadedExport.FileRef.Names.Select((name, i) => new IndexedName(i, name))); //we replaceall so we don't add one by one and trigger tons of notifications
             LoadCommands();
             InitializeComponent();
-            HostedControl.PoppedOut(Recents_MenuItem);
-            RootPanel.Children.Add(hostedControl);
+            HostedControl.PoppedOut(this);
+            ContentGrid.Children.Add(hostedControl);
+            RecentsController.InitRecentControl(hostedControl.Toolname, Recents_MenuItem, hostedControl.LoadFile);
             if (file != null)
             {
                 hostedControl.LoadFile(file);
             }
         }
+
+        /// <summary>
+        /// Invoked when a FELC file is loaded
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void FELCFileLoaded(object sender, EventArgs e)
+        {
+            if (HostedControl is FileExportLoaderControl felc)
+            {
+                OnPropertyChanged(nameof(ShouldShowRecentsController));
+                if (felc.Toolname != null)
+                {
+                    // Update recents
+                    RecentsController.AddRecent(felc.LoadedFile, false, null); // If we ever support games in FELC we should change the EventArgs
+                    RecentsController.PropogateRecentsChange(true, RecentsController.RecentItems);
+                }
+            }
+        }
+
+        public bool ShouldShowRecentsController => HostedControl is FileExportLoaderControl felc && felc.LoadedFile == null; // Only File Export Loaders support Recents
 
         public ICommand SaveCommand { get; set; }
         public ICommand SaveAsCommand { get; set; }
@@ -232,7 +266,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 {
                     // This will register the tool and assign a reference to it.
                     // Since this export is already in memory we will just reference the existing package instead.
-                    RegisterPackage(LoadedExport.FileRef); 
+                    RegisterPackage(LoadedExport.FileRef);
                     HostedControl.LoadExport(LoadedExport);
                     OnPropertyChanged(nameof(CurrentFile));
                 }
@@ -250,6 +284,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 }
                 if (HostedControl is FileExportLoaderControl felc)
                 {
+                    felc.FileLoaded -= FELCFileLoaded;
                     felc.ModifiedStatusChanging -= NotifyPendingChangesStatusChanged;
                 }
 
@@ -287,6 +322,22 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     e.Handled = true;
                 }
             }
+        }
+
+        public void PropogateRecentsChange(string propogationSource, IEnumerable<RecentsControl.RecentItem> newRecents)
+        {
+            if (HostedControl is FileExportLoaderControl felc && felc.Toolname != null && felc.Toolname == propogationSource)
+            {
+                RecentsController.PropogateRecentsChange(false, newRecents);
+            }
+        }
+
+        public string Toolname => HostedControl is FileExportLoaderControl felc ? felc.Toolname : null;
+
+        private void ExportLoaderHostedWindow_OnContentRendered(object? sender, EventArgs e)
+        {
+            // If popped open with a file we should do this here
+            OnPropertyChanged(nameof(ShouldShowRecentsController));
         }
     }
 }

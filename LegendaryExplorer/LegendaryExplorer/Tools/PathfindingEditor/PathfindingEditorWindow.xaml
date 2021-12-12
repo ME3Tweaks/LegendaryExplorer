@@ -192,6 +192,7 @@
                               ToolTip="Toggles the size of nodes being listed beneath their UIndex. BS = Boss, MB = Miniboss, M = Mooks." />
                 </MenuItem>
                 <MenuItem Header="Experiments" Padding="4">
+                    <MenuItem Header="Connect GPS (requires interop)" Click="ConnectGPS_Clicked"/>
                     <MenuItem Header="Flip level upside down" Command="{Binding FlipLevelCommand}" />
                     <MenuItem Header="Build linear pathfinding chain from path logger (ASI)"
                               Command="{Binding BuildPathfindingChainCommand}" />

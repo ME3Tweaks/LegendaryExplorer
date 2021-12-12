@@ -10,9 +10,9 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
     public partial class StatusBarGameIDIndicator : NotifyPropertyChangedControlBase
     {
 
-        public object GameType
+        public string GameType
         {
-            get => (object)GetValue(GameTypeProperty);
+            get => (string)GetValue(GameTypeProperty);
             set
             {
                 SetValue(GameTypeProperty, value);
@@ -24,7 +24,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
 
         // Using a DependencyProperty as the backing store for GameType.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty GameTypeProperty =
-            DependencyProperty.Register(nameof(GameType), typeof(object), typeof(StatusBarGameIDIndicator), new PropertyMetadata(MEGame.Unknown));
+            DependencyProperty.Register(nameof(GameType), typeof(string), typeof(StatusBarGameIDIndicator), new PropertyMetadata(nameof(MEGame.Unknown)));
 
         //private static void OnGameTypeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         //{

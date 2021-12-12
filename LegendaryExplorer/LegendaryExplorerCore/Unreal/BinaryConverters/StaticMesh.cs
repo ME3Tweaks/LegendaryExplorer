@@ -119,7 +119,14 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 }
                 if (sc.Game >= MEGame.ME3)
                 {
-                    sc.Serialize(ref HighResSourceMeshName);
+                    if (HighResSourceMeshName != null)
+                        sc.Serialize(ref HighResSourceMeshName);
+                    else
+                    {
+                        // When porting ME1, ME2 to ME3 or LE
+                        string blank = "";
+                        sc.Serialize(ref blank);
+                    }
                     sc.Serialize(ref HighResSourceMeshCRC);
                     sc.Serialize(ref LightingGuid);
                 }
@@ -160,7 +167,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
         public override List<(UIndex, string)> GetUIndexes(MEGame game)
         {
-            var uIndexes = new List<(UIndex, string)> {(BodySetup, "BodySetup")};
+            var uIndexes = new List<(UIndex, string)> { (BodySetup, "BodySetup") };
 
             for (int i = 0; i < LODModels.Length; i++)
             {
@@ -272,7 +279,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     public class StaticMeshTriangle
     {
         public Vector3[] Vertices = new Vector3[3];
-        public Vector2[,] UVs = new Vector2[3,8];
+        public Vector2[,] UVs = new Vector2[3, 8];
         public SharpDX.Color[] Colors = new SharpDX.Color[3];
         public int MaterialIndex;
         public int FragmentIndex; //ME3/UDK

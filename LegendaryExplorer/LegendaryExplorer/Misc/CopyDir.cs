@@ -96,14 +96,7 @@ namespace LegendaryExplorer.Misc
                 string displayName = fi.Name;
                 string path = Path.Combine(target.FullName, fi.Name);
                 worker.ReportProgress(done, new ThreadCommand(UPDATE_CURRENT_FILE_TEXT, displayName));
-                try
-                {
-                    fi.CopyTo(Path.Combine(target.FullName, fi.Name), true);
-                }
-                catch (Exception e)
-                {
-                    throw e;
-                }
+                fi.CopyTo(Path.Combine(target.FullName, fi.Name), true);
                 // Log.Information(@"Copying {0}\{1}", target.FullName, fi.Name);
                 numdone++;
                 worker.ReportProgress(0, new ThreadCommand(UPDATE_PROGRESSBAR_VALUE, numdone));

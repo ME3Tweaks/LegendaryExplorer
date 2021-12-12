@@ -15,13 +15,17 @@ namespace LegendaryExplorerCore.Unreal
     /// </summary>
     public static class TOCCreator
     {
+        // .txt are used by WiiU TOC
+        /// <summary>
+        /// File extensions that are supported by the game in TOC files
+        /// </summary>
         public static readonly string[] TOCableFilePatterns = { "*.pcc", "*.afc", "*.bik", "*.bin", "*.tlk", "*.cnd", "*.upk", "*.tfc", "*.isb", "*.usf", "*.ini", "*.txt", "*.dlc" };
 
         /// <summary>
         /// Returns the files in a given directory that match the pattern of a TOCable file
         /// </summary>
         /// <param name="path">Path to search for files in</param>
-        /// <returns></returns>
+        /// <returns>A list (as IEnumerable<string>) of full file paths that can be included in a TOC</string></returns>
         public static IEnumerable<string> GetTocableFiles(string path)
         {
             var res = new List<string>();
@@ -31,11 +35,11 @@ namespace LegendaryExplorerCore.Unreal
         }
 
         /// <summary>
-        /// Recursively finds all TOCable files in a directory and it's subfolders
+        /// Recursively finds all TOCable files in a directory and its subfolders
         /// </summary>
         /// <param name="baseFolder">Folder path to search for files in</param>
         /// <param name="isLE2LE3">Is this game LE2 or LE3?</param>
-        /// <returns></returns>
+        /// <returns>A list of strings that can be TOCd</returns>
         private static List<string> GetFiles(string baseFolder, bool isLE2LE3)
         {
             var res = new List<string>();
@@ -105,7 +109,7 @@ namespace LegendaryExplorerCore.Unreal
         /// </summary>
         /// <param name="directory">Directory to check</param>
         /// <param name="isLE2LE3">Is this game LE2 or LE3?</param>
-        /// <returns></returns>
+        /// <returns>True if any files were found that could be included in a TOC, false otherwise</returns>
         /// TODO: Is there an easy way to make this not iterate over all files?
         public static bool IsTOCableFolder(string directory, bool isLE2LE3) => GetFiles(directory, isLE2LE3).Any();
 
@@ -114,7 +118,7 @@ namespace LegendaryExplorerCore.Unreal
         /// </summary>
         /// <param name="game">Game to create TOCs for, cannot be ME1 or ME2</param>
         /// <param name="percentDoneCallback">Invoked after every TOC file with the percent completed</param>
-        /// <param name="gameRootOverride">Optional: Specify game root folder</param>
+        /// <param name="gameRootOverride">Optional: Specify game root folder. If null, the default game path is used</param>
         public static void CreateTOCForGame(MEGame game, Action<int> percentDoneCallback = null, string gameRootOverride = null)
         {
             if (game is MEGame.ME1 or MEGame.ME2)
@@ -288,7 +292,7 @@ namespace LegendaryExplorerCore.Unreal
         /// Creates the binary for a TOC file for a specified list of filenames and sizes. The filenames should already be in the format that will be used in the TOC itself.
         /// </summary>
         /// <param name="filesystemInfo">list of filenames and sizes for the TOC</param>
-        /// <returns>memorystream of TOC, null if list is empty</returns>
+        /// <returns><see cref="MemoryStream"/> of TOC binary, null if list is empty</returns>
         public static MemoryStream CreateTOCForEntries(List<(string relativeFilename, int size)> filesystemInfo)
         {
             if (filesystemInfo.Count != 0)

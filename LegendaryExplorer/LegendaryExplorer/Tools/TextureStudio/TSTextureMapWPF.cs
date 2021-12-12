@@ -11,7 +11,6 @@ using LegendaryExplorer.SharedUI;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Textures.Studio;
-using PropertyChanged;
 
 namespace LegendaryExplorer.Tools.TextureStudio
 {

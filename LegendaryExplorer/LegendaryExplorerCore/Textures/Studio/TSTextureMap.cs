@@ -322,7 +322,7 @@ namespace LegendaryExplorerCore.Textures.Studio
                 }
 
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 // CRC could not be calculated
             }
@@ -495,7 +495,7 @@ namespace LegendaryExplorerCore.Textures.Studio
                     vanillaMap = MEMTextureMap.LoadTextureMap(game);
                 }
 
-                var textures = package.Exports.Where(x => x.IsTexture());
+                var textures = package.Exports.Where(x => !x.IsDefaultObject && x.IsTexture());
                 foreach (var t in textures)
                 {
                     if (cts.IsCancellationRequested) break;

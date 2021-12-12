@@ -35,7 +35,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     // port it in
                     //Debug.WriteLine($"Porting in: {mapping.Key.InstancedFullPath}");
                     var parent = PortParents(mapping.Value, targetPackage);
-                    var relinkResults1 = EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, mapping.Value, targetPackage, parent, true, out _);
+                    var relinkResults1 = EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, mapping.Value, targetPackage, parent, true, new RelinkerOptionsPackage() { ImportExportDependencies = true }, out _);
                     issues.AddRange(relinkResults1);
                 }
                 else
@@ -51,7 +51,8 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             var newEntry = targetPackage.FindEntry(sourceExport.InstancedFullPath);
             if (newEntry == null)
             {
-                var relinkResults2 = EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, sourceExport, targetPackage, lParent, true, out newEntry);
+
+                var relinkResults2 = EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, sourceExport, targetPackage, lParent, true, new RelinkerOptionsPackage() { ImportExportDependencies = true }, out newEntry);
                 issues.AddRange(relinkResults2);
             }
 
@@ -83,7 +84,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         }
 
         /// <summary>
-        /// Exporst the export and all rqeuired dependencies to a package file located at the specified path. The package is saved to disk.
+        /// Exports the export and all required dependencies to a package file located at the specified path. The package is saved to disk.
         /// </summary>
         /// <param name="sourceExport"></param>
         /// <param name="newPackagePath"></param>
@@ -150,13 +151,13 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         }
                         else
                         {
-                            EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.AddSingularAsChild, pEntry, target, parent, false, out parent);
+                            EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.AddSingularAsChild, pEntry, target, parent, false, new RelinkerOptionsPackage() { ImportExportDependencies = false }, out parent);
                         }
                     }
                     else
                     {
                         // Port in with relink... this could get really ugly performance wise
-                        EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.AddSingularAsChild, pEntry, target, parent, true, out parent);
+                        EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.AddSingularAsChild, pEntry, target, parent, true, new RelinkerOptionsPackage() { ImportExportDependencies = true }, out parent);
                     }
                     var entriesAC = target.ExportCount;
                     if (entriesAC - entriesBC > parentCount)

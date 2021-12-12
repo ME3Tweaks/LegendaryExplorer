@@ -79,7 +79,7 @@ namespace LegendaryExplorer.SharedUI.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (Settings.PackageEditor_ShowExportTypeIcons && value is ExportEntry {IsDefaultObject: false} exp && PackageEditorWindow.ExportIconTypes.Contains(exp.ClassName))
+            if (Settings.PackageEditor_ShowExportTypeIcons && value is ExportEntry { IsDefaultObject: false } exp && PackageEditorWindow.ExportIconTypes.Contains(exp.ClassName))
             {
                 switch (exp.ClassName)
                 {
@@ -115,9 +115,12 @@ namespace LegendaryExplorer.SharedUI.Converters
                         return "/Tools/PackageEditor/ExportIcons/icon_material.png";
                     case "State":
                         return "/Tools/PackageEditor/ExportIcons/icon_state.png";
+                    case "Bio2DA":
+                    case "Bio2DANumberedRows":
+                        return "/Tools/PackageEditor/ExportIcons/icon_2da.png";
                 }
             }
-            else if (Settings.PackageEditor_ShowExportTypeIcons && value is ExportEntry {IsDefaultObject: true})
+            else if (Settings.PackageEditor_ShowExportTypeIcons && value is ExportEntry { IsDefaultObject: true })
             {
                 return "/Tools/PackageEditor/ExportIcons/icon_default.png";
             }

@@ -11,7 +11,7 @@
     <RunPostBuildEvent>Always</RunPostBuildEvent>
     <PreserveCompilationContext>false</PreserveCompilationContext>
     <ValidateExecutableReferencesMatchSelfContained>false</ValidateExecutableReferencesMatchSelfContained>
-    <Version>6.0.1</Version>
+    <Version>6.1.0</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='WinDebug'">
@@ -414,7 +414,7 @@
     <Page Update="Tools\TextureStudio\PlotManagerWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="UserControls\ExportLoaderControls\TLKEditor.xaml">
+    <Page Update="UserControls\ExportLoaderControls\TLKEditorExportLoader.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Tools\Meshplorer\MeshplorerWindow.xaml">

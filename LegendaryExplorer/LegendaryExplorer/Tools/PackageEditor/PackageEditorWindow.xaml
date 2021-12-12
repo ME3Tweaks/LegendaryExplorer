@@ -20,6 +20,7 @@
         xmlns:appsettings="clr-namespace:LegendaryExplorer.Misc.AppSettings"
         xmlns:misc="clr-namespace:LegendaryExplorer.Misc"
         xmlns:scriptEditor="clr-namespace:LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor"
+        xmlns:packageEditor="clr-namespace:LegendaryExplorer.Tools.PackageEditor"
         Icon="pack://application:,,,/Tools/Icons/16x16/PackageEditor_Icon_16.ico"
         Title="Package Editor" Height="720" Width="1100"
         DragOver="Window_DragOver"
@@ -75,13 +76,13 @@
             <MenuItem Header="Set all object indexes in this tree to 0 " Command="{Binding SetIndicesInTreeToZeroCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
             <MenuItem Header="Export..." IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                 <MenuItem Header="Embedded file(s)" Command="{Binding ExportEmbeddedFileCommand}" ToolTip="{Binding Converter={StaticResource EmbeddedFileToolTipConverter}, ConverterParameter='Export'}" SharedUI:Bindings.VisibilityToEnabled="True"/>
-                <MenuItem Header="Complete export data"  Command="{Binding ExportAllDataCommand}" ToolTip="Export all export data (properties + binary) to a .bin file"/>
-                <MenuItem Header="Binary data only"   Command="{Binding ExportBinaryDataCommand}" ToolTip="Export only binary data (bytes after properties) to a .bin file"/>
+                <MenuItem Header="Complete export data"  Command="{Binding ExportAllDataCommand}" ToolTip="Export all export data (properties + binary) to a .bin file. This is not for porting data across files, this is for advanced users only!"/>
+                <MenuItem Header="Binary data only"   Command="{Binding ExportBinaryDataCommand}" ToolTip="Export only binary data (bytes after properties) to a .bin file. This is not for porting data across files, this is for advanced users only!"/>
             </MenuItem>
             <MenuItem Header="Import..." IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
-                <MenuItem Header="Embedded file" Command="{Binding ImportEmbeddedFileCommand}" ToolTip="{Binding Converter={StaticResource EmbeddedFileToolTipConverter}, ConverterParameter='Import'}" SharedUI:Bindings.VisibilityToEnabled="True"/>
-                <MenuItem Header="Complete export data"  Command="{Binding ImportAllDataCommand}" ToolTip="Import a .bin file and replace the contents of this export"/>
-                <MenuItem Header="Binary data only"  Command="{Binding ImportBinaryDataCommand}" ToolTip="Import a .bin file and replace only the binary section of this export"/>
+                <MenuItem Header="Embedded file*" Command="{Binding ImportEmbeddedFileCommand}" ToolTip="{Binding Converter={StaticResource EmbeddedFileToolTipConverter}, ConverterParameter='Import'}" SharedUI:Bindings.VisibilityToEnabled="True"/>
+                <MenuItem Header="Complete export data*"  Command="{Binding ImportAllDataCommand}" ToolTip="Import a .bin file and replace the contents of this export. This does NOT relink the data - this is for advanced users only!"/>
+                <MenuItem Header="Binary data only*"  Command="{Binding ImportBinaryDataCommand}" ToolTip="Import a .bin file and replace only the binary section of this export. This does NOT relink the data - this is for advanced users only!"/>
             </MenuItem>
             <Separator Visibility="{Binding ShowExperiments, Converter={StaticResource BoolToVisibilityConverter}}"/>
             <MenuItem 
@@ -235,7 +236,7 @@
                     <MenuItem Header="Resolve imports*" ToolTip="Attempts to resolve the imports and show the source of them in the treeview" Command="{Binding ResolveImportsTreeViewCommand}"/>
                     <MenuItem Header="Enable experiments (Warning: dangerous)" ToolTip="Enables experiments used by toolset developers. These features are not tested, not supported, and can easily break the toolset and/or games without warning" IsChecked="{Binding ShowExperiments}" IsCheckable="True" StaysOpenOnClick="True"/>
                 </MenuItem>
-                <packageEditorControls:ExperimentsMenuControl x:Name="ExperimentsMenu"  Visibility="{Binding ShowExperiments, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                <packageEditorControls:ExperimentsMenuControl x:Name="ExperimentsMenu"  Visibility="{Binding ShowExperiments, RelativeSource={RelativeSource FindAncestor, AncestorType=packageEditor:PackageEditorWindow},Converter={StaticResource BoolToVisibilityConverter}}"/>
             </Menu>
             <StatusBar Height="23" DockPanel.Dock="Bottom">
                 <sharedToolControls:StatusBarGameIDIndicator GameType="{Binding Pcc.Game}" Margin="0,-4"/>
@@ -330,7 +331,7 @@
                             <Border ContextMenu="{StaticResource EntryContextMenu}" Background="Transparent"  Padding="{Binding Path=(SharedUI:TouchComfySettings.TreeViewMargin)}">
                                 <DockPanel>
 
-                                    <TextBlock DockPanel.Dock="Bottom" Text="{Binding SubText}" FontSize="10" Foreground="{Binding Path=ForegroundColor}" TextWrapping="Wrap" VerticalAlignment="Center" Visibility="{Binding SubText, Converter={StaticResource NullVisibilityConverter}}" >
+                                    <TextBlock DockPanel.Dock="Bottom" Text="{Binding SubText}"  FontSize="10" Foreground="{Binding Path=ForegroundColor}" TextWrapping="Wrap" VerticalAlignment="Center" MaxWidth="300" HorizontalAlignment="Left"  Visibility="{Binding SubText, Converter={StaticResource NullVisibilityConverter}}" >
                                         <TextBlock.Style>
                                             <Style TargetType="{x:Type TextBlock}">
                                                 <Style.Triggers>
@@ -513,7 +514,7 @@
                         <TabItem.Header>
                             <TextBlock Text="Talktable" ToolTip="Edit entries in this BioTLKFile"/>
                         </TabItem.Header>
-                        <exportLoaderControls:TLKEditor x:Name="TlkEditorTab_TlkEditor"/>
+                        <exportLoaderControls:TLKEditorExportLoader x:Name="TlkEditorTab_TlkEditor"/>
                     </TabItem>
                     <TabItem Name="MaterialViewer_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <TabItem.Header>

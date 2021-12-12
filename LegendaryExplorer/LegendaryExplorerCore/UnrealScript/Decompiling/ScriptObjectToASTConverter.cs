@@ -390,16 +390,6 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             };
         }
 
-        //stub copies of the primitive types from SymbolTable. These need to be seperate so that the actual primitives don't get edited during class validation
-        private static readonly VariableType IntType = new(Keywords.INT) { PropertyType = EPropertyType.Int };
-        private static readonly VariableType FloatType = new(Keywords.FLOAT) { PropertyType = EPropertyType.Float };
-        private static readonly VariableType BoolType = new(Keywords.BOOL) { PropertyType = EPropertyType.Bool };
-        private static readonly VariableType ByteType = new(Keywords.BYTE) { PropertyType = EPropertyType.Byte };
-        private static readonly VariableType BioMask4Type = new(Keywords.BIOMASK4) { PropertyType = EPropertyType.Byte };
-        private static readonly VariableType StringType = new(Keywords.STRING) { PropertyType = EPropertyType.String };
-        private static readonly VariableType StringRefType = new(Keywords.STRINGREF) { PropertyType = EPropertyType.StringRef };
-        private static readonly VariableType NameType = new(Keywords.NAME) { PropertyType = EPropertyType.Name };
-
         private static VariableType GetPropertyType(UProperty obj, FileLib fileLib, PackageCache packageCache = null)
         {
             string typeStr = "UNKNOWN";
@@ -408,9 +398,9 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 case UArrayProperty arrayProperty:
                     return new DynamicArrayType(GetPropertyType(fileLib.GetCachedObjectBinary(obj.Export.FileRef.GetUExport(arrayProperty.ElementType), packageCache) as UProperty, fileLib, packageCache));
                 case UBioMask4Property:
-                    return BioMask4Type;
+                    return SymbolTable.BioMask4Type;
                 case UBoolProperty:
-                    return BoolType;
+                    return SymbolTable.BoolType;
                 case UByteProperty byteProperty:
                     if (byteProperty.IsEnum)
                     {
@@ -423,7 +413,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                     }
                     else
                     {
-                        return ByteType;
+                        return SymbolTable.ByteType;
                     }
                     break;
                 case UClassProperty classProp:
@@ -458,15 +448,15 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                         return new DelegateType(new Function(qualifiedFunctionName, default, null, null, null));
                     }
                 case UFloatProperty:
-                    return FloatType;
+                    return SymbolTable.FloatType;
                 case UIntProperty:
-                    return IntType;
+                    return SymbolTable.IntType;
                 case UNameProperty:
-                    return NameType;
+                    return SymbolTable.NameType;
                 case UStringRefProperty:
-                    return StringRefType;
+                    return SymbolTable.StringRefType;
                 case UStrProperty:
-                    return StringType;
+                    return SymbolTable.StringType;
                 case UStructProperty structProperty:
                     typeStr = structProperty.Struct.GetEntry(obj.Export.FileRef)?.ObjectName.Instanced ?? typeStr;
                     break;

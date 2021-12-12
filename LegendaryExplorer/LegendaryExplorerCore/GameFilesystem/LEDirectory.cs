@@ -4,9 +4,6 @@ using System.IO;
 
 #if WINDOWS
 using Microsoft.Win32;
-using System;
-using System.Collections.ObjectModel;
-using System.IO;
 #endif
 
 namespace LegendaryExplorerCore.GameFilesystem
@@ -22,6 +19,7 @@ namespace LegendaryExplorerCore.GameFilesystem
         /// <returns></returns>
         public static bool LookupDefaultPath()
         {
+#pragma warning disable CA1416
 #if WINDOWS
             RegistryKey biowareKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\BioWare", false);
             RegistryKey leKey;
@@ -56,6 +54,7 @@ namespace LegendaryExplorerCore.GameFilesystem
                 }
             }
             return false;
+#pragma warning restore CA1416
 #else
             return false; // NOT IMPLEMENTED ON OTHER PLATFORMS
 #endif

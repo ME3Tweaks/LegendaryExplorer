@@ -116,7 +116,7 @@ namespace LegendaryExplorerCore.Packages
 
         public Endian Endian { get; }
         public MEGame Game { get; private set; } //can only be ME1, ME2, ME3, LE1, LE2, LE3. UDK is a separate class
-        public GamePlatform Platform { get; private set; } = GamePlatform.Unknown;
+        public GamePlatform Platform { get; private set; }
 
         public enum GamePlatform
         {
@@ -149,63 +149,28 @@ namespace LegendaryExplorerCore.Packages
         private int unknown6;
         #endregion
 
-        private static bool isLoaderRegistered;
-        private static bool isStreamLoaderRegistered;
-        private static bool isQuickStreamLoaderRegistered;
-        private static bool isQuickLoaderRegistered;
-        public static Func<string, MEGame, MEPackage> RegisterLoader()
+        private static bool _isBlankPackageCreatorRegistered;
+        private static bool _isStreamLoaderRegistered;
+        public static Func<string, MEGame, MEPackage> RegisterBlankPackageCreator()
         {
-            if (isLoaderRegistered)
+            if (_isBlankPackageCreatorRegistered)
             {
                 throw new Exception(nameof(MEPackage) + " can only be initialized once");
             }
 
-            isLoaderRegistered = true;
-            return (f, g) =>
-            {
-                if (g != MEGame.Unknown)
-                {
-                    return new MEPackage(g, f);
-                }
-                return new MEPackage(new MemoryStream(File.ReadAllBytes(f)), f);
-            };
+            _isBlankPackageCreatorRegistered = true;
+            return (f, g) => new MEPackage(g, f);
         }
 
-        public static Func<string, MEPackage> RegisterQuickLoader()
+        public static Func<Stream, string, bool, Func<ExportEntry, bool>, MEPackage> RegisterStreamLoader()
         {
-            if (isQuickLoaderRegistered)
-            {
-                throw new Exception(nameof(MEPackage) + " quickloader can only be initialized once");
-            }
-
-            isQuickLoaderRegistered = true;
-            return f =>
-            {
-                using var fs = File.OpenRead(f); //This is faster than reading whole package file in
-                return new MEPackage(fs, f, onlyHeader: true);
-            };
-        }
-
-        public static Func<Stream, string, MEPackage> RegisterQuickStreamLoader()
-        {
-            if (isQuickStreamLoaderRegistered)
-            {
-                throw new Exception(nameof(MEPackage) + " quickstreamloader can only be initialized once");
-            }
-
-            isQuickStreamLoaderRegistered = true;
-            return (s, associatedFilePath) => new MEPackage(s, associatedFilePath, onlyHeader: true);
-        }
-
-        public static Func<Stream, string, MEPackage> RegisterStreamLoader()
-        {
-            if (isStreamLoaderRegistered)
+            if (_isStreamLoaderRegistered)
             {
                 throw new Exception(nameof(MEPackage) + " streamloader can only be initialized once");
             }
 
-            isStreamLoaderRegistered = true;
-            return (s, associatedFilePath) => new MEPackage(s, associatedFilePath);
+            _isStreamLoaderRegistered = true;
+            return (s, associatedFilePath, onlyheader, dataLoadPredicate) => new MEPackage(s, associatedFilePath, onlyheader, dataLoadPredicate);
         }
 
         /// <summary>
@@ -236,6 +201,7 @@ namespace LegendaryExplorerCore.Packages
             exports = new List<ExportEntry>();
             //new Package
             Game = game;
+            Platform = GamePlatform.PC; //Platform must be set or saving code will throw exception (cannot save non-PC platforms)
             //reasonable defaults?
             Flags = EPackageFlags.Cooked | EPackageFlags.AllowDownload | EPackageFlags.DisallowLazyLoading | EPackageFlags.RequireImportsAlreadyLoaded;
             EntryLookupTable = new CaseInsensitiveDictionary<IEntry>();
@@ -247,7 +213,7 @@ namespace LegendaryExplorerCore.Packages
         /// <param name="fs"></param>
         /// <param name="filePath"></param>
         /// <param name="onlyHeader">Only read header data. Do not load the tables or decompress</param>
-        private MEPackage(Stream fs, string filePath = null, bool onlyHeader = false) : base(filePath != null ? File.Exists(filePath) ? Path.GetFullPath(filePath) : filePath : null)
+        private MEPackage(Stream fs, string filePath = null, bool onlyHeader = false, Func<ExportEntry, bool> dataLoadPredicate = null) : base(filePath != null ? File.Exists(filePath) ? Path.GetFullPath(filePath) : filePath : null)
         {
             //MemoryStream fs = new MemoryStream(File.ReadAllBytes(filePath));
             //Debug.WriteLine($"Reading MEPackage from stream starting at position 0x{fs.Position:X8}");
@@ -507,15 +473,10 @@ namespace LegendaryExplorerCore.Packages
 
             packageReader.Position = savedPos; //restore position to chunk table
             Stream inStream = fs;
-            bool readExportDataInConstructor = true;
             if (IsCompressed && NumCompressedChunksAtLoad > 0)
             {
                 inStream = CompressionHelper.DecompressPackage(packageReader, compressionFlagPosition, game: Game, platform: Platform,
                                                                canUseLazyDecompression: tablesInOrder && !platformNeedsResolved);
-                if (inStream is CompressionHelper.PackageDecompressionStream)
-                {
-                    readExportDataInConstructor = false;
-                }
             }
             #endregion
 
@@ -546,12 +507,12 @@ namespace LegendaryExplorerCore.Packages
                 imports.Add(imp);
             }
 
-            //read exportTable (ExportEntry constructor reads export data if readExportDataInConstructor is true)
+            //read exportTable
             inStream.JumpTo(ExportOffset);
             exports = new List<ExportEntry>(ExportCount);
             for (int i = 0; i < ExportCount; i++)
             {
-                var e = new ExportEntry(this, packageReader, readExportDataInConstructor) { Index = i };
+                var e = new ExportEntry(this, packageReader, false) { Index = i };
                 if (MEPackageHandler.GlobalSharedCacheEnabled)
                     e.PropertyChanged += exportChanged; // If packages are not shared there is no point to attaching this
                 exports.Add(e);
@@ -588,17 +549,14 @@ namespace LegendaryExplorerCore.Packages
                 }
             }
 
-            if (!readExportDataInConstructor)
+            foreach (ExportEntry export in dataLoadPredicate is null ? exports : exports.Where(dataLoadPredicate))
             {
-                foreach (var export in Exports)
-                {
-                    inStream.JumpTo(export.DataOffset);
-                    export.Data = packageReader.ReadBytes(export.DataSize);
-                }
+                inStream.JumpTo(export.DataOffset);
+                export.Data = packageReader.ReadBytes(export.DataSize);
             }
 
             packageReader.Dispose();
-            if (Game.IsGame1() && Platform == GamePlatform.PC)
+            if (dataLoadPredicate is null && Game.IsGame1() && Platform == GamePlatform.PC)
             {
                 ReadLocalTLKs();
             }
@@ -606,52 +564,7 @@ namespace LegendaryExplorerCore.Packages
 
             if (filePath != null)
             {
-
-                string localizationName = Path.GetFileNameWithoutExtension(filePath).ToUpper();
-                if (localizationName.Length > 8)
-                {
-                    var loc = localizationName.LastIndexOf("LOC_", StringComparison.OrdinalIgnoreCase);
-                    if (loc > 0)
-                    {
-                        localizationName = localizationName.Substring(loc);
-                    }
-                }
-                switch (localizationName)
-                {
-                    case "LOC_DEU":
-                    case "LOC_DE":
-                        Localization = MELocalization.DEU;
-                        break;
-                    case "LOC_ESN":
-                        Localization = MELocalization.ESN;
-                        break;
-                    case "LOC_FRA":
-                    case "LOC_FR":
-                        Localization = MELocalization.FRA;
-                        break;
-                    case "LOC_INT":
-                        Localization = MELocalization.INT;
-                        break;
-                    case "LOC_ITA":
-                    case "LOC_IT":
-                        Localization = MELocalization.ITA;
-                        break;
-                    case "LOC_JPN":
-                        Localization = MELocalization.JPN;
-                        break;
-                    case "LOC_POL":
-                    case "LOC_PLPC":
-                    case "LOC_PL":
-                        Localization = MELocalization.POL;
-                        break;
-                    case "LOC_RUS":
-                    case "LOC_RA":
-                        Localization = MELocalization.RUS;
-                        break;
-                    default:
-                        Localization = MELocalization.None;
-                        break;
-                }
+                Localization = filePath.GetFileLocalizationFromFilePath();
             }
 
             EntryLookupTable = new CaseInsensitiveDictionary<IEntry>(ExportCount + ImportCount);

@@ -53,8 +53,15 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
         public static IEntry ResolveFunction(Function f, IMEPackage pcc) => pcc.getEntryOrAddImport($"{ResolveSymbol(f.Outer, pcc).InstancedFullPath}.{f.Name}", "Function");
         public static IEntry ResolveState(State s, IMEPackage pcc) => pcc.getEntryOrAddImport($"{ResolveSymbol(s.Outer, pcc).InstancedFullPath}.{s.Name}", "State");
 
-        public static IEntry ResolveClass(Class c, IMEPackage pcc) =>
-            EntryImporter.EnsureClassIsInFile(pcc, c.Name, RelinkResultsAvailable: relinkResults =>
-                throw new Exception($"Unable to resolve class '{c.Name}'! There were relinker errors: {string.Join("\n\t", relinkResults.Select(pair => pair.Message))}"));
+        public static IEntry ResolveClass(Class c, IMEPackage pcc)
+        {
+            var rop = new RelinkerOptionsPackage() { ImportExportDependencies = true }; // Might need to disable cache here depending on if that is desirable
+            var entry = EntryImporter.EnsureClassIsInFile(pcc, c.Name, rop);
+            if (rop.RelinkReport.Any())
+            {
+                throw new Exception($"Unable to resolve class '{c.Name}'! There were relinker errors: {string.Join("\n\t", rop.RelinkReport.Select(pair => pair.Message))}");
+            }
+            return entry;
+        }
     }
 }

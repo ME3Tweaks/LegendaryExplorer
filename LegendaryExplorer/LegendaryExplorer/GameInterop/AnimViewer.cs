@@ -34,9 +34,9 @@ namespace LegendaryExplorer.GameInterop
 
                     ExportEntry sourceAnimSeq = animSourceFile.GetUExport(animSequenceUIndex);
 
-                    IEntry parent = EntryImporter.GetOrAddCrossImportOrPackage(sourceAnimSeq.ParentFullPath, animSourceFile, pcc);
+                    IEntry parent = EntryImporter.GetOrAddCrossImportOrPackage(sourceAnimSeq.ParentFullPath, animSourceFile, pcc, new RelinkerOptionsPackage());
 
-                    EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, sourceAnimSeq, pcc, parent, true, out IEntry ent);
+                    EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, sourceAnimSeq, pcc, parent, true, new RelinkerOptionsPackage(),out IEntry ent);
                     ExportEntry importedAnimSeq = (ExportEntry)ent;
 
                     NameReference seqName = importedAnimSeq.GetProperty<NameProperty>("SequenceName").Value;

@@ -85,7 +85,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 EntryPruner.TrashEntriesAndDescendants(shadowMapsToTrash);
 
                 using IMEPackage otPcc = MEPackageHandler.OpenME3Package(otFilePath);
-                var relinkMap = new Dictionary<IEntry, IEntry>();
                 foreach (UIndex uIndex in levelBin.Actors)
                 {
                     if (uIndex.GetEntry(pcc) is ExportEntry actor)
@@ -96,11 +95,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                             PortShadowMap(otsmcExp, smcExp);
                         }
-                        else if (actor.ClassName.CaseInsensitiveEquals("StaticMeshCollectionActor") && actor.GetProperty<ArrayProperty<ObjectProperty>>("StaticMeshComponents") is {} smcArray)
+                        else if (actor.ClassName.CaseInsensitiveEquals("StaticMeshCollectionActor") && actor.GetProperty<ArrayProperty<ObjectProperty>>("StaticMeshComponents") is { } smcArray)
                         {
                             foreach (ObjectProperty objProp in smcArray)
                             {
-                                if (objProp.ResolveToEntry(pcc) is ExportEntry {ObjectName: {Instanced: var smcName}} smcExport && otPcc.Exports.FirstOrDefault(exp => exp.ObjectName.Instanced.CaseInsensitiveEquals(smcName)) is ExportEntry otsmcExport)
+                                if (objProp.ResolveToEntry(pcc) is ExportEntry { ObjectName: { Instanced: var smcName } } smcExport && otPcc.Exports.FirstOrDefault(exp => exp.ObjectName.Instanced.CaseInsensitiveEquals(smcName)) is ExportEntry otsmcExport)
                                 {
                                     PortShadowMap(otsmcExport, smcExport);
                                 }
@@ -125,7 +124,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                 void PortShadowMap(ExportEntry otsmcExp, ExportEntry smcExp)
                 {
-                    if (otsmcExp.GetProperty<ArrayProperty<StructProperty>>("IrrelevantLights") is {} irrelevantLightsProp)
+                    if (otsmcExp.GetProperty<ArrayProperty<StructProperty>>("IrrelevantLights") is { } irrelevantLightsProp)
                     {
                         smcExp.WriteProperty(irrelevantLightsProp);
                     }
@@ -158,14 +157,20 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         EntryPruner.TrashEntryAndDescendants(shadowMaps[0].GetEntry(pcc));
                     }
 
+                    RelinkerOptionsPackage rop = new RelinkerOptionsPackage()
+                    {
+                        Cache = null, // Maintains original behavior of this func (09/30/2021: Change to RelinkerOptionsPackage)
+                        ImportExportDependencies = true,
+                    };
+
                     var results = EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies,
-                        otShadowMaps[0].GetEntry(otPcc), pcc, smcExp, true, out IEntry leShadowMap, relinkMap);
+                        otShadowMaps[0].GetEntry(otPcc), pcc, smcExp, true, rop, out IEntry leShadowMap);
                     if (results?.Count > 0)
                     {
                         Debugger.Break();
                     }
 
-                    smcBin.LODData[0].ShadowMaps = new UIndex[] {leShadowMap.UIndex};
+                    smcBin.LODData[0].ShadowMaps = new UIndex[] { leShadowMap.UIndex };
                     smcExp.WriteBinary(smcBin);
                 }
             }).ContinueWithOnUIThread(prevTask =>
@@ -264,9 +269,10 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             pewpf.BusyText = "Re-serializing all binary in LE2 and LE3";
             var interestingExports = new List<EntryStringPair>();
             var comparisonDict = new Dictionary<string, (byte[] original, byte[] newData)>();
+            var classesMissingObjBin = new List<string>();
             Task.Run(() =>
             {
-                foreach (string filePath in EnumerateOfficialFiles(MEGame.LE1, MEGame.LE2, MEGame.LE3))
+                foreach (string filePath in EnumerateOfficialFiles(MEGame.LE1/*, MEGame.LE2, MEGame.LE3*/))
                 {
                     using IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath);
                     foreach (ExportEntry export in pcc.Exports)
@@ -283,6 +289,17 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                                     comparisonDict.Add($"{export.UIndex} {export.FileRef.FilePath}", (original, export.Data));
                                 }
                             }
+                            else
+                            {
+                                // Binary class is not defined for this
+                                // Check to make sure there is in fact no binary so 
+                                // we aren't missing anything
+                                if (export.propsEnd() != export.DataSize && !classesMissingObjBin.Contains(export.ClassName))
+                                {
+                                    classesMissingObjBin.Add(export.ClassName);
+                                    interestingExports.Add(new EntryStringPair($"{export.ClassName} Export has data after properties but no objectbinary class exists for this "));
+                                }
+                            }
                         }
                         catch (Exception e)
                         {
@@ -290,10 +307,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         }
                     }
 
-                    if (interestingExports.Count >= 2)
-                    {
-                        return;
-                    }
+                    // Uncomment this if you don't want it to do a lot before stopping
+                    //if (interestingExports.Count >= 2)
+                    //{
+                    //    return;
+                    //}
                 }
             }).ContinueWithOnUIThread(prevTask =>
             {
@@ -388,7 +406,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             var oodleData = new List<CompressionData>();
             Task.Run(() =>
             {
-                foreach (MEGame game in new []{MEGame.LE1, MEGame.LE2, MEGame.LE3})//, MEGame.ME1, MEGame.ME2, MEGame.ME3})
+                foreach (MEGame game in new[] { MEGame.LE1, MEGame.LE2, MEGame.LE3 })//, MEGame.ME1, MEGame.ME2, MEGame.ME3})
                 {
                     var filePaths = MELoadedFiles.GetOfficialFiles(game);
                     foreach (string filePath in filePaths)
@@ -400,7 +418,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                         raw.SkipInt32(); //skip magic as we have already read it
                         var versionLicenseePacked = raw.ReadUInt32();
-                        
+
                         raw.ReadInt32();
                         int foldernameStrLen = raw.ReadInt32();
                         if (foldernameStrLen > 0)
@@ -409,7 +427,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                             fs.ReadStringUnicodeNull(foldernameStrLen * -2);
 
                         var Flags = (UnrealFlags.EPackageFlags)raw.ReadUInt32();
-                        
+
                         if ((game == MEGame.ME3 || game == MEGame.LE3)
                          && Flags.HasFlag(UnrealFlags.EPackageFlags.Cooked))
                         {
@@ -448,7 +466,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         }
                         //should never be more than 1 generation, but just in case
                         raw.Skip(generationsTableCount * 12);
-                        
+
                         raw.SkipInt32(); //engineVersion          Like unrealVersion and licenseeVersion, these 2 are determined by what game this is,
                         raw.SkipInt32(); //cookedContentVersion   so we don't have to read them in
 
@@ -480,7 +498,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                         var NumChunks = raw.ReadInt32();
                         int compressedSize = 0;
-                        int uncompressedSize = 0; 
+                        int uncompressedSize = 0;
                         for (int i = 0; i < NumChunks; i++)
                         {
                             raw.ReadInt32();
@@ -508,7 +526,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 var oodleWS = xl.AddWorksheet("Oodle");
                 var lzoWS = xl.AddWorksheet("lzo");
                 var zlibWS = xl.AddWorksheet("zlib");
-                foreach ((List<CompressionData> data, IXLWorksheet ws) in new []{oodleData, lzoData, zLibData}.Zip(new []{oodleWS, lzoWS, zlibWS}))
+                foreach ((List<CompressionData> data, IXLWorksheet ws) in new[] { oodleData, lzoData, zLibData }.Zip(new[] { oodleWS, lzoWS, zlibWS }))
                 {
                     ws.Cell(1, 1).SetValue("Compressed Size");
                     ws.Cell(1, 2).SetValue("Uncompressed Size");
@@ -652,7 +670,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }).ContinueWithOnUIThread(prevTask =>
             {
                 pewpf.IsBusy = false;
-                new ListDialog(new []
+                new ListDialog(new[]
                 {
                     $"build:\n {string.Join('\n', prevTask.Result.buildData.Select(kvp => $"{kvp.Key}: {string.Join(',', kvp.Value)}"))}",
                     $"branc:\n {string.Join('\n', prevTask.Result.branchData.Select(kvp => $"{kvp.Key}: {string.Join(',', kvp.Value)}"))}",
@@ -737,8 +755,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 //the base files will have been in memory for so long at this point that they take a looong time to clear out automatically, so force it.
                 MemoryAnalyzer.ForceFullGC();
                 pewpf.IsBusy = false;
-                interestingExports.Add(new EntryStringPair(null, string.Join("\n", extraInfo)));
-                var listDlg = new ListDialog(interestingExports, "Interesting Exports", "", pewpf)
+                if (extraInfo.Count > 0)
+                {
+                    interestingExports.Add(new EntryStringPair(string.Join("\n", extraInfo)));
+                }
+                var listDlg = new ListDialog(interestingExports, $" {interestingExports.Count} Interesting Exports", "", pewpf)
                 {
                     DoubleClickEntryHandler = entryItem =>
                     {
@@ -748,6 +769,9 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                             p.Show();
                             p.LoadFile(entryToSelect.FileRef.FilePath, entryToSelect.UIndex);
                             p.Activate();
+                            p = new PackageEditorWindow();
+                            p.Show();
+                            p.LoadFile(entryToSelect.FileRef.FilePath, entryToSelect.UIndex);
                             if (comparisonDict.TryGetValue($"{entryToSelect.UIndex} {entryToSelect.FileRef.FilePath}", out (byte[] original, byte[] newData) val))
                             {
                                 File.WriteAllBytes(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "original.bin"), val.original);
@@ -1373,9 +1397,9 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             #endregion
         }
 
-        public static void CreateDynamicLighting(IMEPackage Pcc)
+        public static void CreateDynamicLighting(IMEPackage Pcc, bool silent = false)
         {
-            foreach (ExportEntry exp in Pcc.Exports.Where(exp => exp.IsA("MeshComponent") || exp.IsA("BrushComponent")))
+            foreach (ExportEntry exp in Pcc.Exports.Where(exp => (exp.IsA("MeshComponent") && exp.Parent.IsA("StaticMeshActorBase")) || (exp.IsA("BrushComponent") && !exp.Parent.IsA("Volume"))))
             {
                 PropertyCollection props = exp.GetProperties();
                 if (props.GetProp<ObjectProperty>("StaticMesh")?.Value != 11483 &&
@@ -1388,11 +1412,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                 props.AddOrReplaceProp(new BoolProperty(false, "bUsePreComputedShadows"));
                 props.AddOrReplaceProp(new BoolProperty(false, "bBioForcePreComputedShadows"));
-                //props.AddOrReplaceProp(new BoolProperty(true, "bCastDynamicShadow"));
+                props.AddOrReplaceProp(new BoolProperty(false, "bCastDynamicShadow"));
                 //props.AddOrReplaceProp(new BoolProperty(true, "CastShadow"));
                 //props.AddOrReplaceProp(new BoolProperty(true, "bAcceptsDynamicDominantLightShadows"));
                 props.AddOrReplaceProp(new BoolProperty(true, "bAcceptsLights"));
-                //props.AddOrReplaceProp(new BoolProperty(true, "bAcceptsDynamicLights"));
+                //props.AddOrReplaceProp(new BoolProperty(false, "bAcceptsDynamicLights"));
 
                 var lightingChannels = props.GetProp<StructProperty>("LightingChannels") ??
                                        new StructProperty("LightingChannelContainer", false,
@@ -1403,6 +1427,32 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 lightingChannels.Properties.AddOrReplaceProp(new BoolProperty(true, "Static"));
                 lightingChannels.Properties.AddOrReplaceProp(new BoolProperty(true, "Dynamic"));
                 lightingChannels.Properties.AddOrReplaceProp(new BoolProperty(true, "CompositeDynamic"));
+                props.AddOrReplaceProp(lightingChannels);
+
+                exp.WriteProperties(props);
+            }
+            //fix interpactors to be dynamic
+            foreach (ExportEntry exp in Pcc.Exports.Where(exp => exp.IsA("MeshComponent") && exp.Parent.IsA("DynamicSMActor")))
+            {
+                PropertyCollection props = exp.GetProperties();
+                if (props.GetProp<ObjectProperty>("StaticMesh")?.Value != 11483 &&
+                    (props.GetProp<BoolProperty>("bAcceptsLights")?.Value == false ||
+                     props.GetProp<BoolProperty>("CastShadow")?.Value == false))
+                {
+                    // shadows/lighting has been explicitly forbidden, don't mess with it.
+                    continue;
+                }
+
+                props.AddOrReplaceProp(new BoolProperty(false, "bUsePreComputedShadows"));
+                props.AddOrReplaceProp(new BoolProperty(false, "bBioForcePreComputedShadows"));
+
+                var lightingChannels = props.GetProp<StructProperty>("LightingChannels") ??
+                                       new StructProperty("LightingChannelContainer", false,
+                                           new BoolProperty(true, "bIsInitialized"))
+                                       {
+                                           Name = "LightingChannels"
+                                       };
+                lightingChannels.Properties.AddOrReplaceProp(new BoolProperty(true, "Dynamic"));
                 props.AddOrReplaceProp(lightingChannels);
 
                 exp.WriteProperties(props);
@@ -1428,7 +1478,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 exp.WriteProperties(props);
             }
 
-            MessageBox.Show("Done!");
+            if (!silent)
+                MessageBox.Show("Done!");
         }
 
         public static void ConvertAllDialogueToSkippable(PackageEditorWindow pewpf)

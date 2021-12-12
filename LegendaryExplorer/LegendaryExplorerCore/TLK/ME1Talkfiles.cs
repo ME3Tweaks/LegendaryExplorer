@@ -17,16 +17,7 @@ namespace LegendaryExplorerCore.ME1
         {
             if (File.Exists(fileName))
             {
-                using IMEPackage pcc = MEPackageHandler.OpenME1Package(fileName, forceLoadFromDisk: true); //do not cache this in the packages list.
-                foreach (ME1TalkFile localTalkFile in pcc.LocalTalkFiles)
-                {
-                    if (localTalkFile.UIndex == uIndex)
-                    {
-                        tlkList.Add(localTalkFile);
-                        return;
-                    }
-                }
-                //wasn't in LocalTalkFiles? should never happen
+                using IMEPackage pcc = MEPackageHandler.UnsafePartialLoad(fileName, exp => exp.UIndex == uIndex);
                 tlkList.Add(new ME1TalkFile(pcc, uIndex));
             }
         }

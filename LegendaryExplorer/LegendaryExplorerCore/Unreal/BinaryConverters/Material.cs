@@ -790,7 +790,11 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             {
                 sc.Serialize(ref mres.TextureLookups, Serialize);
                 sc.Serialize(ref mres.unkUint1);
-                if (sc.Game == MEGame.UDK)
+                
+                
+                // If we are porting a terrain, these are NOT used in it's CachedMaterials!
+                // This will break porting from UDK
+                if (sc.Game == MEGame.UDK) // These are not used in Terrain Cached Materials!
                 {
                     sc.Serialize(ref mres.udkUnk2);
                     sc.Serialize(ref mres.udkUnk3);

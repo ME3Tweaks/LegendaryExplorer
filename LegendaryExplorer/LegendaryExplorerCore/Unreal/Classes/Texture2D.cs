@@ -7,7 +7,6 @@ using System.Linq;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
-using LegendaryExplorerCore.Memory;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Textures;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
@@ -60,10 +59,15 @@ namespace LegendaryExplorerCore.Unreal.Classes
         {
             PropertyCollection properties = export.GetProperties();
             var format = properties.GetProp<EnumProperty>("Format");
-            var cache = properties.GetProp<NameProperty>("TextureFileCacheName");
-            List<Texture2DMipInfo> mips = Texture2D.GetTexture2DMipInfos(export, cache?.Value);
-            var topmip = mips.FirstOrDefault(x => x.storageType != StorageTypes.empty);
-            return Texture2D.GetMipCRC(topmip, format.Value, additionalTFCs: additionalTFCs);
+            if (format != null)
+            {
+                var cache = properties.GetProp<NameProperty>("TextureFileCacheName");
+                List<Texture2DMipInfo> mips = Texture2D.GetTexture2DMipInfos(export, cache?.Value);
+                var topmip = mips.FirstOrDefault(x => x.storageType != StorageTypes.empty);
+                return Texture2D.GetMipCRC(topmip, format.Value, additionalTFCs: additionalTFCs);
+            }
+
+            return 0; // BIOA_GLO_00_B_Sovereign_T.upk in ME1 has a Texture2D export in it that is completely blank, no props, no binary. no idea how this compiled
         }
 
         public void RemoveEmptyMipsFromMipList()
@@ -862,7 +866,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
                 {
                     imageBytes = Texture2D.GetTextureData(info, Export.Game);
                 }
-                catch (FileNotFoundException e)
+                catch (FileNotFoundException)
                 {
                     Debug.WriteLine("External cache not found. Defaulting to internal mips.");
                     //External archive not found - using built in mips (will be hideous, but better than nothing)
@@ -896,16 +900,16 @@ namespace LegendaryExplorerCore.Unreal.Classes
                 byte[] imageBytes = null;
                 try
                 {
-                    imageBytes = Texture2D.GetTextureData(info, Export.Game);
+                    imageBytes = GetTextureData(info, Export.Game);
                 }
-                catch (FileNotFoundException e)
+                catch (FileNotFoundException)
                 {
                     Debug.WriteLine("External cache not found. Defaulting to internal mips.");
                     //External archive not found - using built in mips (will be hideous, but better than nothing)
                     info = Mips.FirstOrDefault(x => x.storageType == StorageTypes.pccUnc);
                     if (info != null)
                     {
-                        imageBytes = Texture2D.GetTextureData(info, Export.Game);
+                        imageBytes = GetTextureData(info, Export.Game);
                     }
                 }
 
@@ -936,16 +940,16 @@ namespace LegendaryExplorerCore.Unreal.Classes
                 byte[] imageBytes = null;
                 try
                 {
-                    imageBytes = Texture2D.GetTextureData(info, Export.Game);
+                    imageBytes = GetTextureData(info, Export.Game);
                 }
-                catch (FileNotFoundException e)
+                catch (FileNotFoundException)
                 {
                     Debug.WriteLine("External cache not found. Defaulting to internal mips.");
                     //External archive not found - using built in mips (will be hideous, but better than nothing)
                     info = Mips.FirstOrDefault(x => x.storageType == StorageTypes.pccUnc);
                     if (info != null)
                     {
-                        imageBytes = Texture2D.GetTextureData(info, Export.Game);
+                        imageBytes = GetTextureData(info, Export.Game);
                     }
                 }
 
@@ -974,7 +978,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
         public byte[] GetPNG(Texture2DMipInfo info)
         {
             PixelFormat format = Image.getPixelFormatType(TextureFormat);
-            return Image.convertToPng(Texture2D.GetTextureData(info, Export.Game), info.width, info.height, format)
+            return Image.convertToPng(GetTextureData(info, Export.Game), info.width, info.height, format)
                 .ToArray();
         }
     }

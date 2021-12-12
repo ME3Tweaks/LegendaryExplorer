@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
-using System.Text;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal;
@@ -17,7 +15,7 @@ namespace LegendaryExplorerCore.Matinee
 
         public static ExportEntry AddNewGroupDirectorToInterpData(ExportEntry interpData) => InternalAddGroup("InterpGroupDirector", interpData, null);
 
-        public static ExportEntry AddPreset(string preset, ExportEntry export, MEGame game, string? param1 = null) => InternalAddPreset(preset, export, game, param1);
+        public static ExportEntry AddPreset(string preset, ExportEntry export, MEGame game, string param1 = null) => InternalAddPreset(preset, export, game, param1);
 
         private static ExportEntry InternalAddGroup(string className, ExportEntry interpData, string groupName)
         {
@@ -59,7 +57,7 @@ namespace LegendaryExplorerCore.Matinee
             IMEPackage pcc = parent.FileRef;
             var group = new ExportEntry(pcc, parent, pcc.GetNextIndexedName(className), properties: properties)
             {
-                Class = EntryImporter.EnsureClassIsInFile(pcc, className)
+                Class = EntryImporter.EnsureClassIsInFile(pcc, className, new RelinkerOptionsPackage() {ImportExportDependencies = true})
             };
             group.ObjectFlags |= UnrealFlags.EObjectFlags.Transactional;
             pcc.AddExport(group);
@@ -273,7 +271,7 @@ namespace LegendaryExplorerCore.Matinee
             return group;
         }
 
-        private static void PresetAddTracks(string preset, ExportEntry interpGroup, MEGame game, string? param1 = null)
+        private static void PresetAddTracks(string preset, ExportEntry interpGroup, MEGame game, string param1 = null)
         {
             switch (preset)
             {

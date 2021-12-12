@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
-using LegendaryExplorerCore.Unreal.ObjectInfo;
 
 namespace LegendaryExplorerCore.Kismet
 {
@@ -34,7 +32,7 @@ namespace LegendaryExplorerCore.Kismet
         /// <summary>
         /// Changes a single output link to a new target.
         /// </summary>
-        /// <param name="export">The export properties list to operate on</param>
+        /// <param name="props">The export properties list to operate on</param>
         /// <param name="outputLinkIndex">The index of the item in 'OutputLinks'</param>
         /// <param name="linksIndex">The index of the item in the Links array</param>
         /// <param name="newTarget">The UIndex of the new target</param>
@@ -47,6 +45,7 @@ namespace LegendaryExplorerCore.Kismet
         /// Removes a sequence element from the graph, by repointing incoming references to the ones referenced by outgoing items on this export. This is a very basic utility, only use it for items with one input and potentially multiple outputs.
         /// </summary>
         /// <param name="elementToSkip">Th sequence object to skip</param>
+        /// <param name="outboundLinkName">The name of the outbound link that should be attached to the preceding entry element, must have either this or the next argument</param>
         /// <param name="outboundLinkIdx">The 0-indexed outbound link that should be attached the preceding entry element, as if this one had fired that link.</param>
         public static void SkipSequenceElement(ExportEntry elementToSkip, string outboundLinkName = null, int outboundLinkIdx = -1)
         {
@@ -127,27 +126,14 @@ namespace LegendaryExplorerCore.Kismet
         /// <param name="linkSet"></param>
         public static void WriteOutboundLinksToNode(ExportEntry node, List<List<OutboundLink>> linkSet)
         {
-            var outlinksProp = node.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
-
-            if (linkSet.Count != outlinksProp.Count)
-            {
-                Debug.WriteLine("Sets are out of sync for WriteLinksToNode()!");
-                return; // Sets are not compatible with this code
-            }
-
-            for (int i = 0; i < linkSet.Count; i++)
-            {
-                var oldL = outlinksProp[i].GetProp<ArrayProperty<StructProperty>>("Links");
-                var newL = linkSet[i];
-                oldL.ReplaceAll(newL.Select(x => x.GenerateStruct()));
-            }
-
-            node.WriteProperty(outlinksProp);
+            var properties = node.GetProperties();
+            WriteOutboundLinksToProperties(linkSet, properties);
+            node.WriteProperties(properties);
         }
 
         public class OutboundLink
         {
-            public IEntry? LinkedOp { get; set; }
+            public IEntry LinkedOp { get; set; }
             public int InputLinkIdx { get; set; }
 
             public static OutboundLink FromStruct(StructProperty sp, IMEPackage package)
@@ -276,15 +262,33 @@ namespace LegendaryExplorerCore.Kismet
             }
         }
 
+        /// <summary>
+        /// Gets the list of VarLinks that can be attached to by the specified sequence object export. Note you cannot ADD new varlinks this way as
+        /// the serialization does not include all types.
+        /// </summary>
+        /// <param name="export"></param>
+        /// <returns></returns>
         public static List<VarLinkInfo> GetVariableLinksOfNode(ExportEntry export)
         {
+            var props = export.GetProperties();
+            return GetVariableLinks(props, export.FileRef);
+        }
+
+        /// <summary>
+        /// Get's the list of variable links from the collection of properties. If there is no VariableLinks property, this returns an empty list.
+        /// </summary>
+        /// <param name="props"></param>
+        /// <param name="pcc"></param>
+        /// <returns></returns>
+        public static List<VarLinkInfo> GetVariableLinks(PropertyCollection props, IMEPackage pcc)
+        {
             var varLinks = new List<VarLinkInfo>();
-            var variableLinks = export.GetProperty<ArrayProperty<StructProperty>>("VariableLinks");
+            var variableLinks = props.GetProp<ArrayProperty<StructProperty>>("VariableLinks");
             if (variableLinks != null)
             {
                 foreach (var vl in variableLinks)
                 {
-                    varLinks.Add(VarLinkInfo.FromStruct(vl, export.FileRef));
+                    varLinks.Add(VarLinkInfo.FromStruct(vl, pcc));
                 }
             }
 
@@ -298,7 +302,14 @@ namespace LegendaryExplorerCore.Kismet
         /// <param name="varLinks"></param>
         public static void WriteVariableLinksToNode(ExportEntry export, List<VarLinkInfo> varLinks)
         {
-            var variableLinks = export.GetProperty<ArrayProperty<StructProperty>>("VariableLinks");
+            var properties = export.GetProperties();
+            WriteVariableLinksToProperties(varLinks, properties);
+            export.WriteProperties(properties);
+        }
+
+        public static void WriteVariableLinksToProperties(List<VarLinkInfo> varLinks, PropertyCollection props)
+        {
+            var variableLinks = props.GetProp<ArrayProperty<StructProperty>>("VariableLinks");
             if (variableLinks != null && varLinks.Count == variableLinks.Count)
             {
                 for (int i = 0; i < variableLinks.Count; i++)
@@ -307,8 +318,23 @@ namespace LegendaryExplorerCore.Kismet
                     linkedVarList?.ReplaceAll(varLinks[i].LinkedNodes.Select(x => new ObjectProperty(x)));
                 }
             }
+        }
 
-            export.WriteProperty(variableLinks);
+        public static void WriteOutboundLinksToProperties(List<List<OutboundLink>> linkSet, PropertyCollection props)
+        {
+            var outlinksProp = props.GetProp<ArrayProperty<StructProperty>>("OutputLinks");
+            if (linkSet.Count != outlinksProp.Count)
+            {
+                Debug.WriteLine("Sets are out of sync for WriteOutboundLinksToProperties()! You can't add a new outbound named link using this method.");
+                return; // Sets are not compatible with this code
+            }
+
+            for (int i = 0; i < linkSet.Count; i++)
+            {
+                var oldL = outlinksProp[i].GetProp<ArrayProperty<StructProperty>>("Links");
+                var newL = linkSet[i];
+                oldL.ReplaceAll(newL.Select(x => x.GenerateStruct()));
+            }
         }
 
         /// <summary>

@@ -26,17 +26,16 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
 
         #region Primitives
 
-        public static readonly VariableType IntType = new(INT) { PropertyType = EPropertyType.Int};
-        public static readonly VariableType FloatType = new(FLOAT) { PropertyType = EPropertyType.Float };
-        public static readonly VariableType BoolType = new(BOOL) { PropertyType = EPropertyType.Bool };
-        public static readonly VariableType ByteType = new(BYTE) { PropertyType = EPropertyType.Byte };
-        public static readonly VariableType BioMask4Type = new(BIOMASK4) { PropertyType = EPropertyType.Byte };
-        public static readonly VariableType StringType = new(STRING) { PropertyType = EPropertyType.String };
-        public static readonly VariableType StringRefType = new(STRINGREF) { PropertyType = EPropertyType.StringRef };
-        public static readonly VariableType NameType = new(NAME) { PropertyType = EPropertyType.Name };
+        public static readonly PrimitiveType IntType = new(INT, EPropertyType.Int);
+        public static readonly PrimitiveType FloatType = new(FLOAT, EPropertyType.Float);
+        public static readonly PrimitiveType BoolType = new(BOOL, EPropertyType.Bool);
+        public static readonly PrimitiveType ByteType = new(BYTE, EPropertyType.Byte);
+        public static readonly PrimitiveType BioMask4Type = new(BIOMASK4, EPropertyType.Byte);
+        public static readonly PrimitiveType StringType = new(STRING, EPropertyType.String);
+        public static readonly PrimitiveType StringRefType = new(STRINGREF, EPropertyType.StringRef);
+        public static readonly PrimitiveType NameType = new(NAME, EPropertyType.Name);
 
-        public static bool IsPrimitive(VariableType vt) =>
-            vt.PropertyType is EPropertyType.Int or EPropertyType.Float or EPropertyType.Bool or EPropertyType.Byte or EPropertyType.String or EPropertyType.StringRef or EPropertyType.Name;
+        public static bool IsPrimitive(VariableType vt) => vt is PrimitiveType;
         #endregion
 
         private readonly CaseInsensitiveDictionary<ASTNodeDict> Cache;
@@ -580,6 +579,10 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
             {
                 case StaticArrayType staticArrayType:
                 {
+                    if (staticArrayType.ElementType is PrimitiveType)
+                    {
+                        return true;
+                    }
                     staticArrayType.ElementType.Outer = staticArrayType;
                     return TryResolveType(ref staticArrayType.ElementType, globalOnly);
                 }
@@ -589,6 +592,10 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
                 }
                 case DynamicArrayType dynArr:
                 {
+                    if (dynArr.ElementType is PrimitiveType)
+                    {
+                        return true;
+                    }
                     dynArr.ElementType.Outer = dynArr;
                     return TryResolveType(ref dynArr.ElementType, globalOnly);
                 }
@@ -636,9 +643,15 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
         private VariableType InternalResolveType(VariableType stub, ObjectType containingClass)
         {
             //first check the containing class (needed for structs that don't have globally unique names)
-            if (containingClass?.TypeDeclarations.FirstOrDefault(decl => decl.Name.CaseInsensitiveEquals(stub.Name)) is VariableType typeDecl)
+            if (containingClass is not null)
             {
-                return typeDecl;
+                foreach (VariableType decl in containingClass.TypeDeclarations)
+                {
+                    if (decl.Name.CaseInsensitiveEquals(stub.Name))
+                    {
+                        return decl;
+                    }
+                }
             }
 
             if (Types.TryGetValue(stub.Name, out VariableType temp))

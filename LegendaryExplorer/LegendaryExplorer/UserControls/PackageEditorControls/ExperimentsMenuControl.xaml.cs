@@ -96,7 +96,9 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         }
 
         // EXPERIMENTS: GENERAL--------------------------------------------------------------------
+
         #region General Toolset experiments/debug stuff
+
         private void RefreshProperties_Clicked(object sender, RoutedEventArgs e)
         {
             var exp = GetPEWindow().InterpreterTab_Interpreter.CurrentLoadedExport;
@@ -142,16 +144,10 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
 
             void setProgress(int done, int total)
             {
-                Application.Current.Dispatcher.InvokeAsync(() =>
-                {
-                    pew.BusyText = $"Building LE1 Object Info [{done}/{total}]";
-                });
+                Application.Current.Dispatcher.InvokeAsync(() => { pew.BusyText = $"Building LE1 Object Info [{done}/{total}]"; });
             }
 
-            Task.Run(() =>
-            {
-                LE1UnrealObjectInfo.generateInfo(Path.Combine(AppDirectories.ExecFolder, "LE1ObjectInfo.json"), true, setProgress);
-            }).ContinueWithOnUIThread(x =>
+            Task.Run(() => { LE1UnrealObjectInfo.generateInfo(Path.Combine(AppDirectories.ExecFolder, "LE1ObjectInfo.json"), true, setProgress); }).ContinueWithOnUIThread(x =>
             {
                 pew.IsBusy = false;
                 pew.RestoreAndBringToFront();
@@ -168,16 +164,10 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
 
             void setProgress(int done, int total)
             {
-                Application.Current.Dispatcher.InvokeAsync(() =>
-                {
-                    pew.BusyText = $"Building LE2 Object Info [{done}/{total}]";
-                });
+                Application.Current.Dispatcher.InvokeAsync(() => { pew.BusyText = $"Building LE2 Object Info [{done}/{total}]"; });
             }
 
-            Task.Run(() =>
-            {
-                LE2UnrealObjectInfo.generateInfo(Path.Combine(AppDirectories.ExecFolder, "LE2ObjectInfo.json"), true, setProgress);
-            }).ContinueWithOnUIThread(x =>
+            Task.Run(() => { LE2UnrealObjectInfo.generateInfo(Path.Combine(AppDirectories.ExecFolder, "LE2ObjectInfo.json"), true, setProgress); }).ContinueWithOnUIThread(x =>
             {
                 pew.IsBusy = false;
                 pew.RestoreAndBringToFront();
@@ -193,16 +183,10 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
 
             void setProgress(int done, int total)
             {
-                Application.Current.Dispatcher.InvokeAsync(() =>
-                {
-                    pew.BusyText = $"Building LE3 Object Info [{done}/{total}]";
-                });
+                Application.Current.Dispatcher.InvokeAsync(() => { pew.BusyText = $"Building LE3 Object Info [{done}/{total}]"; });
             }
 
-            Task.Run(() =>
-            {
-                LE3UnrealObjectInfo.generateInfo(Path.Combine(AppDirectories.ExecFolder, "LE3ObjectInfo.json"), true, setProgress);
-            }).ContinueWithOnUIThread(x =>
+            Task.Run(() => { LE3UnrealObjectInfo.generateInfo(Path.Combine(AppDirectories.ExecFolder, "LE3ObjectInfo.json"), true, setProgress); }).ContinueWithOnUIThread(x =>
             {
                 pew.IsBusy = false;
                 pew.RestoreAndBringToFront();
@@ -217,13 +201,12 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             pew.IsBusy = true;
 
             MEGame currentGame = MEGame.LE1;
+
             void setProgress(int done, int total)
             {
-                Application.Current.Dispatcher.InvokeAsync(() =>
-                {
-                    pew.BusyText = $"Building {currentGame} Object Info [{done}/{total}]";
-                });
+                Application.Current.Dispatcher.InvokeAsync(() => { pew.BusyText = $"Building {currentGame} Object Info [{done}/{total}]"; });
             }
+
             Stopwatch sw = new Stopwatch();
 
             Task.Run(() =>
@@ -284,78 +267,17 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
                 pew.RestoreAndBringToFront();
                 MessageBox.Show(GetPEWindow(), $"Done. Took {sw.Elapsed.TotalSeconds} seconds");
             });
-
-
-
-
         }
         private void ObjectInfosSearch_Click(object sender, RoutedEventArgs e)
         {
-            var searchTerm = PromptDialog.Prompt(GetPEWindow(), "Enter key value to search", "ObjectInfos Search");
-            if (searchTerm != null)
-            {
-                string searchResult = "";
+            PackageEditorExperimentsM.SearchObjectInfos(GetPEWindow());
+        }
 
-                //ME1
-                if (ME1UnrealObjectInfo.Classes.TryGetValue(searchTerm, out ClassInfo _))
-                {
-                    searchResult += "Key found in ME1 Classes\n";
-                }
 
-                if (ME1UnrealObjectInfo.Structs.TryGetValue(searchTerm, out ClassInfo _))
-                {
-                    searchResult += "Key found in ME1 Structs\n";
-                }
-
-                if (ME1UnrealObjectInfo.Enums.TryGetValue(searchTerm, out _))
-                {
-                    searchResult += "Key found in ME1 Enums\n";
-                }
-
-                //ME2
-                if (ME2UnrealObjectInfo.Classes.TryGetValue(searchTerm, out ClassInfo _))
-                {
-                    searchResult += "Key found in ME2 Classes\n";
-                }
-
-                if (ME2UnrealObjectInfo.Structs.TryGetValue(searchTerm, out ClassInfo _))
-                {
-                    searchResult += "Key found in ME2 Structs\n";
-                }
-
-                if (ME2UnrealObjectInfo.Enums.TryGetValue(searchTerm, out _))
-                {
-                    searchResult += "Key found in ME2 Enums\n";
-                }
-
-                //ME3
-                if (ME3UnrealObjectInfo.Classes.TryGetValue(searchTerm, out ClassInfo _))
-                {
-                    searchResult += "Key found in ME3 Classes\n";
-                }
-
-                if (ME3UnrealObjectInfo.Structs.TryGetValue(searchTerm, out ClassInfo _))
-                {
-                    searchResult += "Key found in ME3 Structs\n";
-                }
-
-                if (ME3UnrealObjectInfo.Enums.TryGetValue(searchTerm, out _))
-                {
-                    searchResult += "Key found in ME3 Enums\n";
-                }
-
-                if (searchResult == "")
-                {
-                    searchResult = "Key " + searchTerm +
-                                   " not found in any ObjectInfo Structs/Classes/Enums dictionaries";
-                }
-                else
-                {
-                    searchResult = "Key " + searchTerm + " found in the following:\n" + searchResult;
-                }
-
-                MessageBox.Show(searchResult);
-            }
+        private void ReInventoryCustomClasses_Click(object sender, RoutedEventArgs e)
+        {
+            // Todo: Move this into a 'general' class
+            PackageEditorExperimentsM.RebuildInternalResourceClassInformations(GetPEWindow());
         }
 
 
@@ -446,14 +368,85 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             File.WriteAllText(System.IO.Path.Combine(AppDirectories.ExecFolder, "Diff.json"),
                 JsonConvert.SerializeObject(new { enumsDiff, structsDiff, classesDiff }, Formatting.Indented));
         }
+
         #endregion
 
         // EXPERIMENTS: MGAMERZ---------------------------------------------------
+
         #region Mgamerz's Experiments
 
-        private async void RepointTexturesToGame_Click(object sender, RoutedEventArgs e)
+        private async void MakeVTestDonor_Click(object sender, RoutedEventArgs e)
         {
-            PackageEditorExperimentsM.UpdateTexturesMatsToGame(GetPEWindow());
+            PackageEditorExperimentsM.ConvertMaterialToVtestDonor(GetPEWindow());
+        }
+        private void RunMaterialInstanceScreenshot_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.StartMatScreenshot(GetPEWindow());
+        }
+
+        private void OrganizeParticleSystemExports_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.OrganizeParticleSystems(GetPEWindow());
+        }
+
+        private async void ConvertSLCALightToNonSLCA(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.ConvertSLCALightToNonSLCA(GetPEWindow());
+        }
+
+        //private void MakeLE1MakoMap_Click(object sender, RoutedEventArgs e)
+        //{
+        //    PackageEditorExperimentsM.MakeMakoLevel(GetPEWindow());
+        //}
+
+        private void ImportUDKTerrain_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.ImportUDKTerrain(GetPEWindow());
+        }
+
+        /// <summary>
+        /// If this proves useful, will graduate out of experiments
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void FindAppErrorFLocation_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.FindBadReference(GetPEWindow());
+        }
+
+        private void MScanner_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.MScanner(GetPEWindow());
+        }
+
+        private void TestCurrentPackageBinary(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.TestCurrentPackageForUnknownBinary(GetPEWindow());
+        }
+
+        private void TestCrossGenClassPort_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.TestCrossGenClassPorting(GetPEWindow());
+        }
+
+        private async void CheckNeverStream_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.CheckNeverstream(GetPEWindow());
+        }
+
+        private async void GenerateMaterialInstanceConstant_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.GenerateMaterialInstanceConstantFromMaterial(GetPEWindow());
+        }
+
+        private async void PrintTextureFormats_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.ShowTextureFormats(GetPEWindow());
+        }
+
+        private async void MapMaterialIDs_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.MapMaterialIDs(GetPEWindow());
         }
 
         private async void ForceVignetteOff_Click(object sender, RoutedEventArgs e)
@@ -461,6 +454,10 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             PackageEditorExperimentsM.OverrideVignettes(GetPEWindow());
         }
 
+        private void RebuildSelectedMaterialExpressions(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.UpdateMaterialExpressionsList(GetPEWindow());
+        }
 
         private async void SavePackageUnCompressed_Click(object sender, RoutedEventArgs e)
         {
@@ -471,9 +468,15 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         {
             await GetPEWindow().Pcc.SaveAsync(compress: true);
         }
+
         private void FindEmptyMips_Clicked(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.FindEmptyMips(GetPEWindow());
+        }
+
+        private void ExportTerrainCollisionDataToUDK_Clicked(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.ExpertTerrainDataToUDK(GetPEWindow());
         }
 
         private void DumpLE1TLK_Clicked(object sender, RoutedEventArgs e)
@@ -600,6 +603,7 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         {
             PackageEditorExperimentsM.FindAllME3PowerCustomActions();
         }
+
         private void FindAllME2PowerCustomAction_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.FindAllME2Powers();
@@ -621,6 +625,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         private void MakeAllGrenadesAmmoRespawn_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.MakeAllGrenadesAndAmmoRespawn(GetPEWindow());
+        }
+
+        private void PrintTerrainsBySize_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.PrintTerrainsBySize(GetPEWindow());
         }
 
         private void SetAllWwiseEventDurations_Click(object sender, RoutedEventArgs e)
@@ -653,19 +662,13 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         private void ResolveAllImports_Clicked(object sender, RoutedEventArgs e)
         {
             var pew = GetPEWindow();
-            Task.Run(() => PackageEditorExperimentsM.CheckImports(pew.Pcc)).ContinueWithOnUIThread(prevTask =>
-            {
-                pew.IsBusy = false;
-            });
+            Task.Run(() => PackageEditorExperimentsM.CheckImports(pew.Pcc)).ContinueWithOnUIThread(prevTask => { pew.IsBusy = false; });
         }
 
         private void ResolveAllGameImports_Clicked(object sender, RoutedEventArgs e)
         {
             var pew = GetPEWindow();
-            Task.Run(() => PackageEditorExperimentsM.CheckAllGameImports(pew.Pcc)).ContinueWithOnUIThread(prevTask =>
-            {
-                pew.IsBusy = false;
-            });
+            Task.Run(() => PackageEditorExperimentsM.CheckAllGameImports(pew.Pcc)).ContinueWithOnUIThread(prevTask => { pew.IsBusy = false; });
         }
 
         private void CreateTestPatchDelta_Click(object sender, RoutedEventArgs e)
@@ -692,6 +695,7 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         {
             PackageEditorExperimentsS.BuildNativeTable(GetPEWindow());
         }
+
         private void ExtractPackageTextures_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.DumpPackageTextures(GetPEWindow().Pcc, GetPEWindow());
@@ -765,7 +769,9 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         #endregion
 
         // EXPERIMENTS: SIRCXYRTYX-----------------------------------------------------
+
         #region SirCxyrtyx's Experiments
+
         private void CalculateProbeFuncs_OnClick(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsS.CalculateProbeNames(GetPEWindow());
@@ -936,22 +942,27 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         {
             PackageEditorExperimentsS.DumpSound(GetPEWindow());
         }
+
         private void ScanStuff_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsS.ScanStuff(GetPEWindow());
         }
+
         private void ReSerializeAllProperties_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsS.ReSerializeAllProperties(GetPEWindow());
         }
+
         private void CompileCompressionStats_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsS.CompileCompressionStats(GetPEWindow());
         }
+
         private void ReSerializeAllObjectBinary_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsS.ReSerializeAllObjectBinary(GetPEWindow());
         }
+
         private void ConvertFileToME3(object sender, RoutedEventArgs e)
         {
             // TODO: IMPLEMENT IN LEX
@@ -991,6 +1002,7 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
                 {
                     return;
                 }
+
                 var exportsWithOpcode = new List<EntryStringPair>();
                 foreach (ExportEntry export in pew.Pcc.Exports.Where(exp => exp.ClassName == "Function"))
                 {
@@ -1026,18 +1038,23 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         {
             PackageEditorExperimentsS.DumpShaderTypes(GetPEWindow());
         }
+
         private void ScanHeaders_OnCLick(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsS.ScanPackageHeader(GetPEWindow());
         }
+
         private void PortShadowMaps_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsS.PortShadowMaps(GetPEWindow());
         }
+
         #endregion
 
         // EXPERIMENTS: KINKOJIRO ------------------------------------------------------------
+
         #region Kinkojiro's Experiments
+
         public void AutoEnumerateClassNetIndex(object sender, RoutedEventArgs e)
         {
             int baseindex = 0;
@@ -1064,12 +1081,18 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
                         EnumerateChildNetIndexes(funcbin.Children);
                         EnumerateChildNetIndexes(funcbin.Next);
                     }
+                    else if(childbin is UState statebin)
+                    {
+                        EnumerateChildNetIndexes(statebin.Children);
+                        EnumerateChildNetIndexes(statebin.Next);
+                    }
                     else if (childbin is UProperty propbin)
                     {
-                        if(childbin is UArrayProperty arraybin)
+                        if (childbin is UArrayProperty arraybin)
                         {
                             EnumerateChildNetIndexes(arraybin.ElementType);
                         }
+
                         EnumerateChildNetIndexes(propbin.Next);
                     }
                 }
@@ -1077,6 +1100,7 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
                 return;
             }
         }
+
         private void TransferLevelBetweenGames(object sender, RoutedEventArgs e)
         {
             var pew = GetPEWindow();
@@ -1110,17 +1134,17 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
                     Task.Run(() =>
                         PackageEditorExperimentsK.ConvertLevelToGame(MEGame.ME3, pcc, o.FileName, tfc,
                             newText => pew.BusyText = newText)).ContinueWithOnUIThread(prevTask =>
-                            {
-                                if (Pcc != null)
-                                    pew.LoadFile(Pcc.FilePath);
-                                pew.IsBusy = false;
-                                var dlg = new ListDialog(prevTask.Result, $"Conversion errors: ({prevTask?.Result.Count})", "",
-                                    GetPEWindow())
-                                {
-                                    DoubleClickEntryHandler = pew.GetEntryDoubleClickAction()
-                                };
-                                dlg.Show();
-                            });
+                    {
+                        if (Pcc != null)
+                            pew.LoadFile(Pcc.FilePath);
+                        pew.IsBusy = false;
+                        var dlg = new ListDialog(prevTask.Result, $"Conversion errors: ({prevTask?.Result.Count})", "",
+                            GetPEWindow())
+                        {
+                            DoubleClickEntryHandler = pew.GetEntryDoubleClickAction()
+                        };
+                        dlg.Show();
+                    });
 
                 }
 
@@ -1171,7 +1195,7 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         {
             PackageEditorExperimentsK.ChangeClassesGlobally(GetPEWindow());
         }
-        
+
         private void BlowMeUp(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsK.ShaderDestroyer(GetPEWindow());
@@ -1268,6 +1292,17 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         }
         #endregion
 
+        // EXPERIMENTS: CHONKY DB---------------------------------------------------------
+        // This is for cross-game porting
+        private void ChonkyDB_BuildLE1GameDB(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.BuildAllObjectsGameDB(MEGame.LE1, GetPEWindow());
+        }
+
+        private void ChonkyDB_BuildME1GameDB(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.BuildAllObjectsGameDB(MEGame.ME1, GetPEWindow());
+        }
 
         // PLEASE MOVE YOUR EXPERIMENT HANDLER INTO YOUR SECTION ABOVE
     }

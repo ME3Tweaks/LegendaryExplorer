@@ -296,10 +296,13 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             {
                 if (needsAdd)
                 {
-                    node.VarType.Outer = node;
-                    if (!Symbols.TryResolveType(ref node.VarType))
+                    if (node.VarType is not PrimitiveType)
                     {
-                        return Error($"No type named '{node.VarType.Name}' exists!", node.VarType.StartPos, node.VarType.EndPos);
+                        node.VarType.Outer = node;
+                        if (!Symbols.TryResolveType(ref node.VarType))
+                        {
+                            return Error($"No type named '{node.VarType.Name}' exists!", node.VarType.StartPos, node.VarType.EndPos);
+                        }
                     }
 
                     if (Symbols.SymbolExistsInCurrentScope(node.Name))

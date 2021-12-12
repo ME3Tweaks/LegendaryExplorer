@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
@@ -21,6 +22,8 @@ namespace LegendaryExplorer.SharedUI
     [DebuggerDisplay("TreeViewEntry {" + nameof(DisplayName) + "}")]
     public class TreeViewEntry : NotifyPropertyChangedBase
     {
+        private static PackageCache defaultsLookupCache = new PackageCache() { CacheMaxSize = 3 }; // Don't let cache get big.
+
         public bool IsProgramaticallySelecting;
 
         private bool isSelected;
@@ -137,6 +140,25 @@ namespace LegendaryExplorer.SharedUI
             Sublinks = new ObservableCollectionExtended<TreeViewEntry>();
             if (Entry != null)
                 Game = Entry.Game;
+
+            // Events don't work in interface without method to raise changes
+            // so we just attach to each
+            if (Entry is ImportEntry imp)
+            {
+                imp.PropertyChanged += TVEntryPropertyChanged;
+            }
+            else if (Entry is ExportEntry exp)
+            {
+                exp.PropertyChanged += TVEntryPropertyChanged;
+            }
+        }
+
+        private void TVEntryPropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (Settings.PackageEditor_ShowTreeEntrySubText)
+            {
+                RefreshSubText();
+            }
         }
 
         public void RefreshDisplayName()
@@ -186,9 +208,7 @@ namespace LegendaryExplorer.SharedUI
                 {
                     if (loadedSubtext) return _subtext;
                     if (Entry == null) return null;
-                    var ee = Entry as ExportEntry;
-
-                    if (ee != null)
+                    if (Entry is ExportEntry ee)
                     {
                         //Parse as export
                         switch (ee.ClassName)
@@ -257,7 +277,7 @@ namespace LegendaryExplorer.SharedUI
                                     }
 
                                     if (Entry.ObjectName.Name.StartsWith("F") &&
-                                        Entry.ParentName.Equals("BioAutoConditionals", StringComparison.OrdinalIgnoreCase) && 
+                                        Entry.ParentName.Equals("BioAutoConditionals", StringComparison.OrdinalIgnoreCase) &&
                                         int.TryParse(Entry.ObjectName.Name.Substring(1), out int id))
                                     {
                                         _subtext = PlotDatabases.FindPlotConditionalByID(id, Entry.Game)?.Path;
@@ -305,8 +325,17 @@ namespace LegendaryExplorer.SharedUI
                                     _subtext = $"{sizeX?.Value}x{sizeY?.Value}";
                                     break;
                                 }
+                            case "ParticleSpriteEmitter":
+                                {
+                                    var emitterName = ee.GetProperty<NameProperty>("EmitterName");
+                                    if (emitterName != null)
+                                    {
+                                        _subtext = emitterName.Value.Instanced;
+                                    }
+                                }
+                                break;
                         }
-                        
+
                         if (BinaryInterpreterWPF.IsNativePropertyType(Entry.ClassName))
                         {
                             var objectFlags = ee.GetPropertyFlags();
@@ -326,7 +355,7 @@ namespace LegendaryExplorer.SharedUI
                             }
                             else
                             {
-                                var bin = ObjectBinary.From<UBoolProperty>(Entry as ExportEntry);
+                                var bin = ObjectBinary.From<UBoolProperty>(ee);
                                 if (bin.PropertyFlags.HasFlag(UnrealFlags.EPropertyFlags.Config))
                                 {
                                     if (_subtext != null)
@@ -342,7 +371,8 @@ namespace LegendaryExplorer.SharedUI
                         }
                         else
                         {
-                            var tag = ee.GetProperty<NameProperty>("Tag");
+                            var tag = ee.GetProperty<NameProperty>("Tag", defaultsLookupCache); // Todo: Pass a package cache through here so hits to Engine.pcc aren't as costly. We will need a global shared package cache (maybe just for this treeview), but one that is not
+                            // using the LEX cache as we don't want the package actually open.
                             if (tag != null && tag.Value.Name != Entry.ObjectName)
                             {
                                 _subtext = tag.Value.Name;
@@ -400,6 +430,27 @@ namespace LegendaryExplorer.SharedUI
 
                                     break;
                                 }
+                            case "SoundNodeWave":
+                            case "SoundCue":
+                            {
+                                //parse out tlk id?
+                                var splits = Entry.ObjectName.Name.Split('_', ',');
+                                for (int i = splits.Length - 1; i > 0; i--)
+                                {
+                                    //backwards is faster
+                                    if (int.TryParse(splits[i], out var parsed))
+                                    {
+                                        //Lookup TLK
+                                        var data = TLKManagerWPF.GlobalFindStrRefbyID(parsed, Entry.FileRef);
+                                        if (data != "No Data")
+                                        {
+                                            _subtext = data;
+                                        }
+                                    }
+                                }
+
+                                break;
+                            }
                         }
                     }
 

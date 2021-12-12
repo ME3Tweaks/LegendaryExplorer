@@ -1934,7 +1934,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                             {
                                 TypeError("Index variable must be an int!", indexArg);
                             }
-                            if (!(indexArg is SymbolReference))
+                            if (indexArg is not SymbolReference)
                             {
                                 TypeError("Index variable must be an lvalue!", valueArg);
                             }
@@ -2524,17 +2524,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
         }
 
         #endregion
-
-        private bool IsPrimitiveType(VariableType type) =>
-            type == SymbolTable.ByteType ||
-            type == SymbolTable.BioMask4Type ||
-            type == SymbolTable.BoolType ||
-            type == SymbolTable.FloatType ||
-            type == SymbolTable.IntType ||
-            type == SymbolTable.NameType ||
-            type == SymbolTable.StringRefType ||
-            type == SymbolTable.StringType;
-
+        
         private static bool IsLValue(Expression expr)
         {
             //TODO: is this correct?

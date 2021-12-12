@@ -71,7 +71,9 @@ namespace LegendaryExplorerCore.Packages
             var ms = new EndianWriter { Endian = file.Endian };
             if (prePropBinary == null)
             {
-                ms.Write(stackalloc byte[4]);
+                Span<byte> span = stackalloc byte[4];
+                span.Clear();
+                ms.Write(span);
             }
             else
             {
@@ -113,7 +115,9 @@ namespace LegendaryExplorerCore.Packages
             var ms = new EndianWriter { Endian = file.Endian };
             if (prePropBinary == null)
             {
-                ms.Write(stackalloc byte[4]);
+                Span<byte> span = stackalloc byte[4];
+                span.Clear();
+                ms.Write(span);
             }
             else
             {
@@ -786,6 +790,9 @@ namespace LegendaryExplorerCore.Packages
 
         public void WritePrePropsAndProperties(byte[] prePropBytes, PropertyCollection props, int binStart = -1)
         {
+            // This does not properly work when porting assets across games
+            // if the binary format significantly changes! An example is porting Texture2D across games, binStart could be wrong, which
+            // leads to wrong branch taken
             var m = new EndianReader { Endian = _fileRef.Endian };
             m.Writer.WriteBytes(prePropBytes);
             props.WriteTo(m.Writer, _fileRef);
@@ -968,6 +975,15 @@ namespace LegendaryExplorerCore.Packages
             return Clone();
         }
 
+        //only for temporary use! Do not add the export returned by this to the file
+        internal ExportEntry CreateTempCopyWithNewData(byte[] newData)
+        {
+            var clone = (ExportEntry)MemberwiseClone();
+            clone._data = newData;
+            clone.DataSize = newData.Length;
+            return clone;
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
@@ -984,39 +1000,17 @@ namespace LegendaryExplorerCore.Packages
         }
 
         /// <summary>
-        /// Gets preprops binary, properties, and binary, all without having to do multiple passes on the export
+        /// Gets the top level container export by following the idxLink up the chain. Typically this is the file that will contain the export (unless it is a ForcedExport) if it's an import, or the original package before forcing the export into the file.
         /// </summary>
         /// <returns></returns>
-        public ExportDatas GetExportDatasForPorting(IMEPackage destPackage)
+        public string GetRootName()
         {
-            ExportDatas ed = new ExportDatas();
-            if (IsClass)
+            IEntry current = this;
+            while (current.Parent != null)
             {
-                ed.prePropsBinary = Array.Empty<byte>();
-                ed.Properties = null;
-                ed.IsClass = true;
+                current = current.Parent;
             }
-            else
-            {
-                ed.PropStartOffset = GetPropertyStart();
-                ed.prePropsBinary = _data.Slice(0, ed.PropStartOffset);
-                ed.Properties = GetProperties(propStartPos: ed.PropStartOffset);
-            }
-
-            //for supported classes, this will add any names in binary to the Name table, as well as take care of binary differences for cross-game importing
-            //for unsupported classes, this will just copy over the binary
-            //sometimes converting binary requires altering the properties as well
-            ed.postPropsBinary = ExportBinaryConverter.ConvertPostPropBinary(this, destPackage.Game, ed.Properties);
-            return ed;
-        }
-
-        public class ExportDatas
-        {
-            public bool IsClass { get; set; }
-            public byte[] prePropsBinary { get; set; }
-            public PropertyCollection Properties { get; set; }
-            public ObjectBinary postPropsBinary { get; set; }
-            public int PropStartOffset { get; set; }
+            return current.InstancedFullPath;
         }
     }
 }

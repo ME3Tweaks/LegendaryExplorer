@@ -34,7 +34,21 @@
         <converters:GameTypeConverter x:Key="GameTypeConverter"/>
         <ContextMenu x:Key="nodeContextMenu" Closed="ContextMenu_Closed">
             <MenuItem Header="Goto sequence" Name="sequenceRefGotoMenuItem" Click="GotoSequenceReference_Clicked" />
+
+            <!-- SeqAct_Log Right Click -->
+            <MenuItem Header="Add to log..." Name="seqLogAddItemMenuItem">
+                <MenuItem Header="String" Click="AddToLogString_Click"/>
+            </MenuItem>
+
+            <!-- Right click on a SeqVar -->
+            <MenuItem Header="Create SeqAct_Log for this object" Name="seqLogLogObjectMenuItem" Click="CreateSeqLogForObject_Click"/>
+
+            <!-- Right click on a SeqAction -->
+            <MenuItem Header="Create SeqAct_Log for outlink" Name="seqLogLogOutlinkFiringMenuItem"/>
+
+
             <MenuItem Header="Open in Package Editor" Click="OpenInPackageEditor_Clicked" />
+            <MenuItem Header="Open class definition in Package Editor" Click="OpenClassDefinitionInPackageEditor_Clicked" Visibility="{x:Static global:App.IsDebugVisibility}" />
             <MenuItem Header="Open Referenced Object in Package Editor" Click="OpenReferencedObjectInPackageEditor_Clicked" Name="openRefInPackEdMenuItem"/>
             <MenuItem Header="Open in Interp Editor" Click="OpenInInterpViewer_Clicked" Name="interpViewerMenuItem"/>
             <MenuItem Header="Open in Dialogue Editor" Click="OpenInDialogueEditor_Clicked" Name="dialogueEditorMenuItem"/>
@@ -51,7 +65,8 @@
             </MenuItem>
             <MenuItem Header="Skip sequence element" Name="skipObjMenuItem"/>
             <MenuItem Header="Repoint incoming references" Name="repointIncomingReferences" Click="RepointIncomingReferences_Click"/>
-            <MenuItem Header="Trash and remove from sequence" Name="removeFromSequenceMenuItem" Click="TrashAndRemoveFromSequence_Click"/>
+            <MenuItem Header="Remove from sequence" Name="removeFromSequenceMenuItem" Click="RemoveFromSequence_Click"/>
+            <MenuItem Header="Trash and remove from sequence" Name="trashAndRemoveFromSequenceMenuItem" Click="TrashAndRemoveFromSequence_Click"/>
         </ContextMenu>
         <ContextMenu x:Key="backContextMenu">
             <MenuItem Header="Add Existing Object" Click="AddObject_Clicked" ToolTip="Add existing Sequence Object to this Sequence"/>
@@ -139,11 +154,21 @@
                     <MenuItem Header="Re-Run Auto Layout" Command="{Binding AutoLayoutCommand}"
                                 InputGestureText="Ctrl+L"
                                 ToolTip="Attempt to layout sequence objects in a comprehensible fashion" />
+                    <MenuItem Header="Use saved views" Command="{Binding UseSavedViewsCommand}"
+                              ToolTip="Use saved user layouts for sequences as it was viewed in Sequence Editor. Turning this off will use the BioWare layout. Only works on ME1 and Legendary Edition games." />
                 </MenuItem>
                 <MenuItem Header="Experiments" Padding="4">
                     <MenuItem Header="Force reload package*" Command="{Binding ForceReloadPackageCommand}" sharedUi:Bindings.VisibilityToEnabled="True" InputGestureText="Ctrl+Shift+R" ToolTip="Forcibly reloads this package file, if it was loaded from disk.&#10;This operation will drop this package out of the package sharing system across tools, be careful as edits will not sync across tools!"/>
                     <MenuItem Header="Scan folder for sequence object loops" Command="{Binding ScanFolderForLoopsCommand}"
                               ToolTip="Scans a folder of package files for sequence objects that have an output that leads to itself&#10;These types of loops severely harm game performance" />
+                    <MenuItem Header="Check current sequence Sets" Command="{Binding CheckSequenceSetsCommand}"
+                              ToolTip="Checks the VarLinks of SetInt/Float...etc to make sure their PropertyName is on the target class of the recipient object." />
+                    <MenuItem Header="Make all SeqAct__Log m__aObjComment's into SeqVar_String" Command="{Binding ConvertSeqActLogCommentCommand}"
+                              ToolTip="Converts the m_aObjComment's on SeqAct_Log's into a String var that is attached to it, so it can be logged by the SeqAct logger ASI" />
+                    <MenuItem Header="Load custom sequence objects from package" Click="LoadCustomClasses_Clicked"
+                              ToolTip="Reads an input package and parses the information required for them to be viewed correctly in Sequence Editor. Only works for this session" />
+                    <MenuItem Header="Commit object positions to objects" Click="CommitObjectPositions_Clicked"
+                              ToolTip="Writes the node positions of all nodes to the properties for ObjPosX and ObjPosY" />
                 </MenuItem>
             </Menu>
             <StatusBar Height="23" DockPanel.Dock="Bottom">
@@ -231,7 +256,7 @@
                                 Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}">
                         <TextBlock Margin="5" Text="Welcome to Sequence Editor" FontWeight="Bold" />
                         <TextBlock Margin="5">
-                            Sequence Editor is the toolsets editor for Kismet sequencencing, which is heavily utilized in Mass Effect games.
+                            Sequence Editor is the toolsets editor for Kismet sequencing, which is heavily utilized in Mass Effect games.
                             <LineBreak />
                             Package files that contain sequences are ones that contain levels, which for ME1 are nearly everything in the
                             <LineBreak/>
@@ -257,7 +282,9 @@
                     <sharedToolControls:RecentsControl x:Name="RecentsController" Grid.Column="3" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}"/>
                     <TreeView x:Name="Sequences_TreeView" Grid.Row="0" Grid.Column="0" FontFamily="Consolas"
                                 Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}"
-                                ItemsSource="{Binding TreeViewRootNodes}" FocusManager.IsFocusScope="True">
+                                ItemsSource="{Binding TreeViewRootNodes}" 
+                                FocusManager.IsFocusScope="True"
+                                SelectedValuePath="IsSelected">
                         <TreeView.Resources>
                             <HierarchicalDataTemplate DataType="{x:Type sharedUi:TreeViewEntry}"
                                                         ItemsSource="{Binding Sublinks}">

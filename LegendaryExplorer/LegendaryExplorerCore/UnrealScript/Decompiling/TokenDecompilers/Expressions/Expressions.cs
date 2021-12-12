@@ -816,9 +816,11 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
 
         public Expression DecompileDelegateFunction()
         {
-            PopByte();
-            var delegateProp = DecompileExpression();
-            if (!(delegateProp is SymbolReference symRef)) return null;
+            PopByte(); //opcode
+            PopByte(); //IsLocalVariable. irrelevant to decompilation
+            StartPositions.Push((ushort)Position);
+            var delegateProp = DecompileObjectLookup();
+            if (delegateProp is not SymbolReference symRef) return null;
 
             var delegateTypeName = ReadNameReference();
 

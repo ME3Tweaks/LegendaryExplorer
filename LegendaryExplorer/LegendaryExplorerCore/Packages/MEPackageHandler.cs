@@ -19,28 +19,22 @@ namespace LegendaryExplorerCore.Packages
         public static bool GlobalSharedCacheEnabled = true;
 
         static readonly ConcurrentDictionary<string, IMEPackage> openPackages = new(StringComparer.OrdinalIgnoreCase);
-        public static ObservableCollection<IMEPackage> packagesInTools = new();
+        public static readonly ObservableCollection<IMEPackage> packagesInTools = new();
 
         // Package loading for UDK 2014/2015
-        static Func<string, bool, UDKPackage> UDKConstructorDelegate;
+        static Func<string, UDKPackage> UDKConstructorDelegate;
         static Func<Stream, string, UDKPackage> UDKStreamConstructorDelegate;
 
         // Package loading for ME games
-        static Func<string, MEGame, MEPackage> MEConstructorDelegate;
-        static Func<Stream, string, MEPackage> MEStreamConstructorDelegate;
-
-        // Header only loaders. Meant for when you just need to get info about a package without caring about the contents.
-        //static Func<string, MEPackage> MEConstructorQuickDelegate;
-        static Func<Stream, string, MEPackage> MEConstructorQuickStreamDelegate;
+        static Func<string, MEGame, MEPackage> MEBlankPackageCreatorDelegate;
+        static Func<Stream, string, bool, Func<ExportEntry, bool>, MEPackage> MEStreamConstructorDelegate;
 
         public static void Initialize()
         {
-            UDKConstructorDelegate = UDKPackage.RegisterLoader();
+            UDKConstructorDelegate = UDKPackage.RegisterBlankPackageCreator();
             UDKStreamConstructorDelegate = UDKPackage.RegisterStreamLoader();
-            MEConstructorDelegate = MEPackage.RegisterLoader();
+            MEBlankPackageCreatorDelegate = MEPackage.RegisterBlankPackageCreator();
             MEStreamConstructorDelegate = MEPackage.RegisterStreamLoader();
-            //MEConstructorQuickDelegate = MEPackage.RegisterQuickLoader();
-            MEConstructorQuickStreamDelegate = MEPackage.RegisterQuickStreamLoader();
         }
 
         public static IReadOnlyList<string> GetOpenPackages() => openPackages.Select(x => x.Key).ToList();
@@ -135,10 +129,12 @@ namespace LegendaryExplorerCore.Packages
         /// <param name="pathToFile">Path to the file to open</param>
         /// <param name="user">????</param>
         /// <param name="forceLoadFromDisk">If the package being opened should skip the shared package cache and forcibly load from disk. </param>
+        /// <param name="quickLoad">Only load the header. Meant for when you just need to get info about a package without caring about the contents.</param>
+        /// <param name="diskIOSyncLock"></param>
         /// <returns></returns>
         public static IMEPackage OpenMEPackage(string pathToFile, IPackageUser user = null, bool forceLoadFromDisk = false, bool quickLoad = false, object diskIOSyncLock = null)
         {
-            Debug.WriteLine($"Opening package {pathToFile}");
+            //Debug.WriteLine($"Opening package {pathToFile}");
             if (File.Exists(pathToFile))
             {
                 pathToFile = Path.GetFullPath(pathToFile); //STANDARDIZE INPUT IF FILE EXISTS (it might be a memory file!)
@@ -152,21 +148,16 @@ namespace LegendaryExplorerCore.Packages
                     // Quickload: Don't read entire file.
                     if (diskIOSyncLock != null)
                     {
-                        MemoryStream ms;
                         lock (diskIOSyncLock)
                         {
-                            using (FileStream fs = new FileStream(pathToFile, FileMode.Open, FileAccess.Read))
-                            {
-                                package = LoadPackage(fs, pathToFile, false, quickLoad);
-                            }
+                            using var fs = new FileStream(pathToFile, FileMode.Open, FileAccess.Read);
+                            package = LoadPackage(fs, pathToFile, false, true);
                         }
                     }
                     else
                     {
-                        using (FileStream fs = new FileStream(pathToFile, FileMode.Open, FileAccess.Read))
-                        {
-                            package = LoadPackage(fs, pathToFile, false, quickLoad);
-                        }
+                        using var fs = new FileStream(pathToFile, FileMode.Open, FileAccess.Read);
+                        package = LoadPackage(fs, pathToFile, false, true);
                     }
 
                 }
@@ -210,7 +201,8 @@ namespace LegendaryExplorerCore.Packages
                     }
                     else
                     {
-                        return LoadPackage(ReadAllFileBytesIntoMemoryStream(fpath), fpath, true);
+                        using var fs = new FileStream(pathToFile, FileMode.Open, FileAccess.Read);
+                        return LoadPackage(fs, fpath, true);
                     }
                 });
             }
@@ -227,6 +219,21 @@ namespace LegendaryExplorerCore.Packages
                 package.RegisterUse();
             }
             return package;
+        }
+
+        /// <summary>
+        /// Partially opens an ME package file. Name, Export, and Import tables will be fully read, but export data will only be loaded for <see cref="ExportEntry"/>s that match <paramref name="exportPredicate"/>.
+        /// Attempting to access the Data for any other <see cref="ExportEntry"/> will cause a <see cref="NullReferenceException"/>. Use with caution in performance critical situations only!
+        /// The file is loaded from disk, and does not participate in package sharing.
+        /// </summary>
+        /// <param name="pathToFile"></param>
+        /// <param name="exportPredicate"></param>
+        /// <returns></returns>
+        public static IMEPackage UnsafePartialLoad(string pathToFile, Func<ExportEntry, bool> exportPredicate)
+        {
+            Debug.WriteLine($"Partially loading package {pathToFile}");
+            using var fs = new FileStream(pathToFile, FileMode.Open, FileAccess.Read);
+            return LoadPackage(fs, pathToFile, false, false, exportPredicate);
         }
 
         /// <summary>
@@ -257,7 +264,7 @@ namespace LegendaryExplorerCore.Packages
             return LoadPackage(fs, pathToFile, false, true);
         }
 
-        private static IMEPackage LoadPackage(Stream stream, string filePath = null, bool useSharedCache = false, bool quickLoad = false)
+        private static IMEPackage LoadPackage(Stream stream, string filePath = null, bool useSharedCache = false, bool quickLoad = false, Func<ExportEntry, bool> dataLoadPredicate = null)
         {
 #if DEBUG && !AZURE
             // This is only for net5-packagecache branch to trace package opening
@@ -298,7 +305,7 @@ namespace LegendaryExplorerCore.Packages
 
             IMEPackage pkg;
             if (fullyCompressed ||
-                (version == MEPackage.ME3UnrealVersion && (licenseVersion == MEPackage.ME3LicenseeVersion || licenseVersion == MEPackage.ME3Xenon2011DemoLicenseeVersion)) ||
+                version == MEPackage.ME3UnrealVersion && licenseVersion is MEPackage.ME3LicenseeVersion or MEPackage.ME3Xenon2011DemoLicenseeVersion ||
                 version == MEPackage.ME3WiiUUnrealVersion && licenseVersion == MEPackage.ME3LicenseeVersion ||
                 version == MEPackage.ME2UnrealVersion && licenseVersion == MEPackage.ME2LicenseeVersion || //PC and Xbox share this
                 version == MEPackage.ME2PS3UnrealVersion && licenseVersion == MEPackage.ME2PS3LicenseeVersion ||
@@ -317,7 +324,7 @@ namespace LegendaryExplorerCore.Packages
                 )
             {
                 stream.Position -= 8; //reset to start
-                pkg = quickLoad ? MEConstructorQuickStreamDelegate(stream, filePath) : MEStreamConstructorDelegate(stream, filePath);
+                pkg = MEStreamConstructorDelegate(stream, filePath, quickLoad, dataLoadPredicate);
                 MemoryAnalyzer.AddTrackedMemoryItem($"MEPackage {Path.GetFileName(filePath)}", new WeakReference(pkg));
             }
             else if (version == UDKPackage.UDKUnrealVersion || version == 867 && licenseVersion == 0)
@@ -343,25 +350,59 @@ namespace LegendaryExplorerCore.Packages
         /// <summary>
         /// Creates and saves a package. A package is not returned as the saving code will add data that must be re-read for a package to be properly used.
         /// </summary>
-        /// <param name="path"></param>
-        /// <param name="game"></param>
+        /// <param name="path">Where to save the package</param>
+        /// <param name="game">What game the package is for</param>
         public static void CreateAndSavePackage(string path, MEGame game)
         {
             switch (game)
             {
                 case MEGame.UDK:
-                    UDKConstructorDelegate(path, true).Save();
+                    UDKConstructorDelegate(path).Save();
                     break;
                 case MEGame.LELauncher:
                     throw new ArgumentException("Cannot create a package for LELauncher, it doesn't use packages");
                 case MEGame.Unknown:
                     throw new ArgumentException("Cannot create a package file for an Unknown game!", nameof(game));
                 default:
-                    var package = MEConstructorDelegate(path, game);
-                    package.setPlatform(MEPackage.GamePlatform.PC); //Platform must be set or saving code will throw exception (cannot save non-PC platforms)
-                    package.Save();
+                    MEBlankPackageCreatorDelegate(path, game).Save();
                     break;
             }
+        }
+
+        /// <summary>
+        /// Generates a new empty level package file.
+        /// </summary>
+        /// <param name="outpath">Where to save the package</param>
+        /// <param name="game">What game the package is for</param>
+        public static void CreateEmptyLevel(string outpath, MEGame game)
+        {
+            if (!game.IsOTGame() && !game.IsLEGame())
+                throw new Exception(@"Cannot create a level for a game that is not ME1/2/3 or LE1/2/3");
+
+            var emptyLevelName = $"{game}EmptyLevel";
+            var packageStream = LegendaryExplorerCoreUtilities.LoadEmbeddedFile($@"Packages.EmptyLevels.{emptyLevelName}.{(game == MEGame.ME1 ? ".SFM" : "pcc")}");
+            using var pcc = MEPackageHandler.OpenMEPackageFromStream(packageStream);
+            for (int i = 0; i < pcc.Names.Count; i++)
+            {
+                string name = pcc.Names[i];
+                if (name.Equals(emptyLevelName))
+                {
+                    var newName = name.Replace(emptyLevelName, Path.GetFileNameWithoutExtension(outpath));
+                    pcc.replaceName(i, newName);
+                }
+            }
+
+            var packguid = Guid.NewGuid();
+            var packageExport = pcc.GetUExport(game switch
+            {
+                MEGame.LE1 => 4,
+                MEGame.LE3 => 6,
+                MEGame.ME2 => 7,
+                _ => 1
+            });
+            packageExport.PackageGUID = packguid;
+            pcc.PackageGuid = packguid;
+            pcc.Save(outpath); // You must pass the path here as this file was loaded from memory
         }
 
         private static void Package_noLongerUsed(UnrealPackageFile sender)
@@ -371,7 +412,7 @@ namespace LegendaryExplorerCore.Packages
             {
                 if (openPackages.TryRemove(packagePath, out IMEPackage _))
                 {
-                    Debug.WriteLine($"Released from package cache: {packagePath}");
+                    //Debug.WriteLine($"Released from package cache: {packagePath}");
                 }
                 else
                 {

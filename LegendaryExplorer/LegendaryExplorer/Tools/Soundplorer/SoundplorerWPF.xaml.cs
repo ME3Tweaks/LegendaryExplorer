@@ -853,7 +853,8 @@ namespace LegendaryExplorer.Tools.Soundplorer
             WwiseCliHandler.DeleteTemplateProjectDirectory();
 
             // Shows wwise path dialog if no paths are set
-            Soundpanel.CheckWwisePathForGame(Pcc?.Game ?? MEGame.ME3);
+            var pathCorrect = WwiseCliHandler.CheckWwisePathForGame(Pcc?.Game ?? MEGame.ME3);
+            if (!pathCorrect) return;
 
             var dlg = new CommonOpenFileDialog("Select folder containing .wav files") { IsFolderPicker = true };
             if (dlg.ShowDialog(this) != CommonFileDialogResult.Ok) { return; }
@@ -1109,7 +1110,7 @@ namespace LegendaryExplorer.Tools.Soundplorer
             }
         }
 
-        public void PropogateRecentsChange(IEnumerable<RecentsControl.RecentItem> newRecents)
+        public void PropogateRecentsChange(string propogationSource, IEnumerable<RecentsControl.RecentItem> newRecents)
         {
             RecentsController.PropogateRecentsChange(false, newRecents);
         }

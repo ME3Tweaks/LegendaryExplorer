@@ -91,7 +91,10 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref node.NodeIndex1);
             sc.Serialize(ref node.NodeIndex2);
             sc.Serialize(ref node.NodeIndex3);
-            sc.Serialize(ref node.unk);
+            if (sc.Game != MEGame.UDK)
+            {
+                sc.Serialize(ref node.unk);
+            }
         }
         public static void Serialize(this SerializingContainer2 sc, ref TerrainPatchBounds bounds)
         {

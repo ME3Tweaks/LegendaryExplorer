@@ -75,6 +75,9 @@
             </StatusBar>
             <Grid>
                 <DockPanel HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding SelectedFolder, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}">
+                    <TextBlock MaxWidth="600" TextAlignment="Center" FontWeight="Bold" DockPanel.Dock="Top" Text="Welcome to Texture Studio"/>
+                    <TextBlock MaxWidth="600" TextAlignment="Center" DockPanel.Dock="Top" TextWrapping="Wrap"  Text="Texture Studio is Legendary Explorer's texturing tool, designed around the concept of changing all instances of the same texture (defined by having the same instanced full path) in a 'workspace', which is a folder of packages. This folder should be your mod folder, including any alternate files you are shipping in the mod. This tools is NOT for swapping textures in the entire game, for that, use Mass Effect Modder."/>
+
                     <Button 
                             DockPanel.Dock="Bottom"
                             Content="Open workspace"

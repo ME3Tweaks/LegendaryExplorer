@@ -49,6 +49,17 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             else
             {
                 sc.Serialize(ref unkNameList2, SCExt.Serialize);
+                if (sc.IsLoading)
+                {
+                    // This doesn't compile after merge from Beta -> CrossGen-vtest
+                    // 11/22/2021. Unsure if it matters here. Was it DLLBindName to ensure 
+                    // it was properly populated?
+                    // unkName2 = "None";
+
+                    // 11/22/2021 - Load "None" to make sure when porting cross games this is populated
+                    DLLBindName = "None";
+                    unk2 = 0;
+                }
             }
 
             if (sc.Game is MEGame.LE2 || sc.Game == MEGame.ME2 && sc.Pcc.Platform == MEPackage.GamePlatform.PS3) //ME2 PS3 has extra integer here for some reason

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows;
+using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.Misc;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
@@ -29,8 +30,22 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         /// <param name="pew">Instance of Package Editor</param>
         public static void BuildME1SuperTLKFile (PackageEditorWindow pew)
         {
-            string myBasePath = ME1Directory.DefaultGamePath;
-            string searchDir = ME1Directory.CookedPCPath;
+            string gameString = InputComboBoxDialog.GetValue(pew, "Choose game to create SuperTLK for:",
+                "Create SuperTLK file", new[] { "LE1", "ME1" }, "LE1");
+            var game = Enum.Parse<MEGame>(gameString);
+            if(!game.IsGame1()) return;
+
+            var locPrompt = new PromptDialog("Enter file localization suffix to scan",
+                "Create SuperTLK file", "_INT")
+            {
+                Owner = pew
+            };
+            locPrompt.ShowDialog();
+            if (locPrompt.DialogResult == false) return;
+            var locSuffix = locPrompt.ResponseText;
+
+            string myBasePath = MEDirectories.GetDefaultGamePath(game);
+            string searchDir = MEDirectories.GetCookedPath(game);
 
             CommonOpenFileDialog d = new CommonOpenFileDialog { Title = "Select folder to search", IsFolderPicker = true, InitialDirectory = myBasePath };
             if (d.ShowDialog() == CommonFileDialogResult.Ok)
@@ -38,9 +53,10 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 searchDir = d.FileName;
             }
 
+            var filter = game is MEGame.LE1 ? "*.pcc|*.pcc" : "*.upk|*.upk";
             Microsoft.Win32.OpenFileDialog outputFileDialog = new () { 
                 Title = "Select GlobalTlk file to output to (GlobalTlk exports will be completely overwritten)", 
-                Filter = "*.upk|*.upk" };
+                Filter = filter };
             bool? result = outputFileDialog.ShowDialog();
             if (!result.HasValue || !result.Value)
             {
@@ -49,7 +65,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
             string outputFilePath = outputFileDialog.FileName;
 
-            string[] extensions = { ".u", ".upk" };
+            string[] extensions = { ".u", ".upk", ".pcc" };
 
             pew.IsBusy = true;
 
@@ -67,6 +83,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 {
                     pew.BusyText = $"[{i}/{files.Length}] Scanning Packages for TLK Exports";
                     int basePathLen = myBasePath.Length;
+                    if ((f.Name.Contains("LOC") || f.Name.Contains("Startup")) && !f.Name.Contains(locSuffix))
+                    {
+                        i++;
+                        continue;
+                    }
                     using (IMEPackage pack = MEPackageHandler.OpenMEPackage(f.FullName))
                     {
                         List<ExportEntry> tlkExports = pack.Exports.Where(x =>
@@ -126,10 +147,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                 return total;
 
-            }).ContinueWithOnUIThread((total) =>
+            }).ContinueWithOnUIThread(async (total) =>
             {
+                var actualTotal = await total;
                 pew.IsBusy = false;
-                pew.StatusBar_LeftMostText.Text = $"Wrote {total} lines to {outputFilePath}";
+                pew.StatusBar_LeftMostText.Text = $"Wrote {actualTotal} lines to {outputFilePath}";
             });
 
         }
@@ -249,6 +271,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 pew.IsBusy = true;
                 pew.BusyText = "Applying MorphFace to head mesh...";
                 var morphFace = new BioMorphFace(export);
+                var rop = new RelinkerOptionsPackage();
 
                 // Create a new file containing only the headmesh
                 var tempFilePath = Path.Combine(Path.GetTempPath(), "HeadMeshExport.pcc");
@@ -256,7 +279,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 MEPackageHandler.CreateAndSavePackage(tempFilePath, export.Game);
                 using var tempFile = MEPackageHandler.OpenMEPackage(tempFilePath);
                 EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies,
-                    morphFace.m_oBaseHead, tempFile, null, true, out var clonedHeadEntry);
+                    morphFace.m_oBaseHead, tempFile, null, true, rop, out var clonedHeadEntry);
                 var clonedHead = clonedHeadEntry as ExportEntry;
                 var appliedHead = morphFace.Apply();
 
@@ -265,7 +288,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 {
                     var originalMat = export.FileRef.GetEntry(appliedHead.Materials[i].value);
                     EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies,
-                        originalMat, tempFile, null, true, out var clonedMat);
+                        originalMat, tempFile, null, true, rop, out var clonedMat);
                     appliedHead.Materials[i] = new UIndex(clonedMat.UIndex);
                 }
                 clonedHead.WriteBinary(appliedHead);

@@ -155,6 +155,8 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     return From<BioGestureRuntimeData>(export, packageCache);
                 case "LightMapTexture2D":
                     return From<LightMapTexture2D>(export, packageCache);
+                case "TextureCube":
+                    return From<UTextureCube>(export, packageCache);
                 case "Texture2D":
                 case "ShadowMapTexture2D":
                 case "TerrainWeightMapTexture":
@@ -214,6 +216,8 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     return From<FaceFXAsset>(export, packageCache);
                 case "BioInert":
                     return From<BioInert>(export, packageCache);
+                case "BioSquadCombat":
+                    return From<BioSquadCombat>(export, packageCache);
                 case "BioGestureAnimSetMgr":
                     return From<BioGestureAnimSetMgr>(export, packageCache);
                 case "BioQuestProgressionMap":
@@ -390,7 +394,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 case "GuidCache":
                     return GuidCache.Create();
                 case "FaceFXAnimSet":
-                    return FaceFXAnimSet.Create();
+                    return FaceFXAnimSet.Create(game);
                 case "Bio2DA":
                 case "Bio2DANumberedRows":
                     return Bio2DABinary.Create();
@@ -440,7 +444,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 case "FaceFXAsset":
                     if (game != MEGame.ME2)
                     {
-                        return FaceFXAsset.Create();
+                        return FaceFXAsset.Create(game);
                     }
                     break;
                 case "BioInert":

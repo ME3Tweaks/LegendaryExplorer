@@ -10,6 +10,9 @@ using LegendaryExplorerCore.Packages;
 
 namespace LegendaryExplorerCore.GameFilesystem
 {
+    /// <summary>
+    /// Flags that can be set in a Game 2 Mount.dlc file to represent DLC loading options
+    /// </summary>
     [Flags]
     public enum EME2MountFileFlag
     {
@@ -30,6 +33,9 @@ namespace LegendaryExplorerCore.GameFilesystem
         SaveFileDependency = 0x2,
     }
 
+    /// <summary>
+    /// Flags that can be set in a Game 3 Mount.dlc file to represent DLC loading options
+    /// </summary>
     [Flags]
     public enum EME3MountFileFlag
     {
@@ -51,7 +57,7 @@ namespace LegendaryExplorerCore.GameFilesystem
         /// </summary>
         LoadsInMultiplayer = 0x04,
         /// <summary>
-        /// This DLC loads in singeplayer
+        /// This DLC loads in singleplayer
         /// </summary>
         LoadsInSingleplayer = 0x08,
         /// <summary>
@@ -97,6 +103,11 @@ namespace LegendaryExplorerCore.GameFilesystem
         private EME2MountFileFlag ME2Flag;
         private EME3MountFileFlag ME3Flag;
 
+        /// <summary>
+        /// Instantiates a mount flag with the input value for either Game 2 or Game 3
+        /// </summary>
+        /// <param name="flag">Initial flag</param>
+        /// <param name="isME2">True for Game 2, false for Game 3</param>
         public MountFlag(int flag, bool isME2)
         {
             IsME2 = isME2;
@@ -106,19 +117,27 @@ namespace LegendaryExplorerCore.GameFilesystem
                 ME3Flag = (EME3MountFileFlag)flag;
         }
 
+        /// <summary>
+        /// Instantiates a mount flag for Game 2 with the given <see cref="EME2MountFileFlag"/> value
+        /// </summary>
+        /// <param name="flag">Mount flag</param>
         public MountFlag(EME2MountFileFlag flag)
         {
             IsME2 = true;
             ME2Flag = flag;
         }
 
+        /// <summary>
+        /// Instantiates a mount flag for Game 3 with the given <see cref="EME3MountFileFlag"/> value
+        /// </summary>
+        /// <param name="flag">Mount flag</param>
         public MountFlag(EME3MountFileFlag flag)
         {
             ME3Flag = flag;
         }
 
         /// <summary>
-        /// Bit-set flag value
+        /// Gets the bit-set flag value
         /// </summary>
         public int FlagValue
         {
@@ -129,17 +148,29 @@ namespace LegendaryExplorerCore.GameFilesystem
             }
         }
 
+        /// <summary>
+        /// Sets the specified flag bit for the current game
+        /// </summary>
+        /// <param name="flag">Flag to set</param>
         public void SetFlagBit(int flag)
         {
             if (IsME2) ME2Flag |= (EME2MountFileFlag)flag;
             else ME3Flag |= (EME3MountFileFlag)flag;
         }
 
+        /// <summary>
+        /// Sets the specified flag bit from a <see cref="EME2MountFileFlag"/>
+        /// </summary>
+        /// <param name="flag">Flag to set</param>
         public void SetFlagBit(EME2MountFileFlag flag)
         {
             ME2Flag |= flag;
         }
 
+        /// <summary>
+        /// Sets the specified flag bit from a <see cref="EME3MountFileFlag"/>
+        /// </summary>
+        /// <param name="flag">Flag to set</param>
         public void SetFlagBit(EME3MountFileFlag flag)
         {
             ME3Flag |= flag;
@@ -147,6 +178,9 @@ namespace LegendaryExplorerCore.GameFilesystem
 
         public bool IsUISelected { get; set; }
 
+        /// <summary>
+        /// Gets the single name of this flag. Do not use if this flag has multiple bits set
+        /// </summary>
         public string DisplayString => ToString();
 
         /// <summary>
@@ -194,21 +228,30 @@ namespace LegendaryExplorerCore.GameFilesystem
 #pragma warning restore
     }
 
+    /// <summary>
+    /// Represents a Mount.dlc file for a Game2 or Game3 DLC
+    /// </summary>
     public class MountFile
     {
+        /// <summary>Game that this mount file is for</summary>
         public MEGame Game { get; set; }
+        /// <summary>Mount priority of this DLC. This number controls when this DLC will be loaded in comparison to other DLCs.</summary>
         public int MountPriority { get; set; }
+        /// <summary>DLC folder name</summary>
+        /// <remarks>This field is only used in Game 2</remarks>
         public string ME2Only_DLCFolderName { get; set; }
+        /// <summary>Internal name of DLC</summary>
+        /// <remarks>This field is only used in Game 2</remarks>
         public string ME2Only_DLCHumanName { get; set; }
+        /// <summary>TLK string ref for internal name of DLC</summary>
         public int TLKID { get; set; }
+        /// <summary>Mount flags for this DLC</summary>
         public MountFlag MountFlags { get; set; }
         /// <summary>
         /// Instantiates an empty mount file. Used for creating a new mount.
         /// </summary>
         public MountFile()
-        {
-
-        }
+        { }
 
         /// <summary>
         /// Instantiates a mount file from a mount file on disk.
@@ -235,7 +278,11 @@ namespace LegendaryExplorerCore.GameFilesystem
                     break;
             }
         }
-
+        /// <summary>
+        /// Static method to get the mount priority of the Mount.dlc file at the given filepath
+        /// </summary>
+        /// <param name="filepath">Path to a Mount.dlc file</param>
+        /// <returns>Mount priority</returns>
         public static int GetMountPriority(string filepath) => new MountFile(filepath).MountPriority;
 
         private void LoadMountFileME2(MemoryStream ms)

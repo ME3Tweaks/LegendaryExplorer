@@ -17,7 +17,7 @@ using LegendaryExplorerCore.Audio;
 
 namespace LegendaryExplorer.UnrealExtensions
 {
-    class WwiseCliHandler
+    public static class WwiseCliHandler
     {
         public static string GetWwiseCliPath(MEGame game) => game switch
         {
@@ -36,43 +36,66 @@ namespace LegendaryExplorer.UnrealExtensions
         };
 
         /// <summary>
+        /// Checks the Wwise path from settings for the selected game, and shows the WwisePathDialog if it is incorrect
+        /// </summary>
+        /// <param name="game">Game to check path for</param>
+        /// <returns>True if the Wwise path is correctly set</returns>
+        public static bool CheckWwisePathForGame(MEGame game)
+        {
+            var path = WwiseCliHandler.GetWwiseCliPath(game);
+            if (string.IsNullOrEmpty(path) || !WwiseVersions.IsCorrectWwiseVersion(game, path))
+            {
+                SetWwisePathDialog swpd = new ();
+                swpd.ShowDialog();
+                return swpd.PathCorrect;
+            }
+            return true;
+        }
+
+        /// <summary>
         /// Returns true if the specified WwiseCLI paths are of the correct version,
         /// Shows a dialog box if they are not
         /// </summary>
         /// <param name="Wwise7110">Optional: path to WwiseCLI v7110</param>
         /// <param name="Wwise3773">Optional: path to WwiseCLI v3773</param>
-        /// <returns></returns>
+        /// <returns>True if all installed versions are correct</returns>
         public static bool EnsureWwiseVersions(string Wwise7110 = "", string Wwise3773 = "")
         {
-            if (File.Exists(Wwise3773))
-            {
-                //check that it's a supported version...
-                var versionInfo = FileVersionInfo.GetVersionInfo(Wwise3773);
-                string version = versionInfo.ProductVersion;
-                if (version != WwiseVersions.WwiseFullVersion(MEGame.ME3))
-                {
-                    //wrong version
-                    MessageBox.Show("WwiseCLI.exe found, but it's the wrong version:" + version +
-                                    ".\nInstall Wwise Build 3773 64bit to use this feature.");
-                    return false;
-                }
-            }
+            var result3773 = CheckWwiseCLIVersion(Wwise3773, MEGame.ME3);
+            if (result3773 is false) return false;
 
-            if (File.Exists(Wwise7110))
-            {
-                //check that it's a supported version...
-                var versionInfo = FileVersionInfo.GetVersionInfo(Wwise7110);
-                string version = versionInfo.ProductVersion;
-                if (version != WwiseVersions.WwiseFullVersion(MEGame.LE3))
-                {
-                    //wrong version
-                    MessageBox.Show("WwiseCLI.exe found, but it's the wrong version:" + version +
-                                    ".\nInstall Wwise Build 7110 64bit to use this feature.");
-                    return false;
-                }
-            }
+            var result7110 = CheckWwiseCLIVersion(Wwise7110, MEGame.LE3);
+            if (result7110 is false) return false;
 
             return true;
+
+            bool CheckWwiseCLIVersion(string path, MEGame game)
+            {
+                // Return true if file does not exist - we want to continue if user does not have Wwise installed
+                if (File.Exists(path))
+                {
+                    var wwiseVersion = WwiseVersions.WwiseVersion(game);
+                    var wwiseFullVersion = WwiseVersions.WwiseFullVersion(game);
+
+                    var fileInfo = new FileInfo(path);
+                    var versionInfo = FileVersionInfo.GetVersionInfo(path);
+                    string version = versionInfo.ProductVersion;
+                    if (!fileInfo.Name.Equals("WwiseCLI.exe", StringComparison.CurrentCultureIgnoreCase))
+                    {
+                        MessageBox.Show($"The selected executable is not WwiseCLI.exe. \nPlease select WwiseCLI.exe build {wwiseVersion} to use this feature.");
+                        return false;
+                    }
+
+                    if (version != wwiseFullVersion)
+                    {
+                        //wrong version
+                        MessageBox.Show($"WwiseCLI.exe found, but it's the wrong version: {version}" +
+                                        $".\nInstall Wwise Build {wwiseVersion} 64bit to use this feature.");
+                        return false;
+                    }
+                }
+                return true;
+            }
         }
 
         /// <summary>

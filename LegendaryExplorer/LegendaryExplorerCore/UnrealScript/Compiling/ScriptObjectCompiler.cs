@@ -281,9 +281,9 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 var vfTablePropertyUIndex = 0;
                 if (interfaceClass.IsNative)
                 {
-                    if (!compiledProperties.TryGetValue($"VfTable_{interfaceClass.Name}", out UProperty vfTableProperty))
+                    if (!compiledProperties.TryGetValue($"VfTable_I{interfaceClass.Name}", out UProperty vfTableProperty))
                     {
-                        throw new Exception($"Missing VfTable_{interfaceClass.Name} property for native interface '{interfaceClass.Name}' in class '{className}'");
+                        throw new Exception($"Missing VfTable_I{interfaceClass.Name} property for native interface '{interfaceClass.Name}' in class '{className}'");
                     }
                     vfTablePropertyUIndex = vfTableProperty.Export.UIndex;
                 }
@@ -922,7 +922,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
         {
             IMEPackage pcc = parent.FileRef;
 
-            IEntry classEntry = className.CaseInsensitiveEquals("Class") ? null : EntryImporter.EnsureClassIsInFile(pcc, className);
+            IEntry classEntry = className.CaseInsensitiveEquals("Class") ? null : EntryImporter.EnsureClassIsInFile(pcc, className, new RelinkerOptionsPackage());
 
             //reuse trash exports
             if (pcc.TryGetTrash(out ExportEntry trashExport))

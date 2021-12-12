@@ -405,7 +405,7 @@ namespace LegendaryExplorer.Tools.TlkManagerNS
             BusyText = "Reloading Mass Effect 3 TLK strings";
             IsBusy = true;
             bSaveNeededME3 = false;
-            ME3TalkFiles.tlkList.Clear();
+            ME3TalkFiles.ClearLoadedTlks();
             await Task.Run(() => ME3ReloadTLKStringsAsync(ME3TLKItems.Where(x => x.selectedForLoad).ToList()));
             IsBusy = false;
         }
@@ -415,7 +415,7 @@ namespace LegendaryExplorer.Tools.TlkManagerNS
             BusyText = "Reloading Mass Effect 2 TLK strings";
             bSaveNeededME2 = false;
             IsBusy = true;
-            ME2TalkFiles.tlkList.Clear();
+            ME2TalkFiles.ClearLoadedTlks();
             await Task.Run(() => ME2ReloadTLKStringsAsync(ME2TLKItems.Where(x => x.selectedForLoad).ToList()));
             IsBusy = false;
         }
@@ -425,7 +425,7 @@ namespace LegendaryExplorer.Tools.TlkManagerNS
             BusyText = "Reloading Mass Effect TLK strings";
             bSaveNeededME1 = false;
             IsBusy = true;
-            ME1TalkFiles.tlkList.Clear();
+            ME1TalkFiles.ClearLoadedTlks();
             await Task.Run(() => ME1ReloadTLKStringsAsync(ME1TLKItems.Where(x => x.selectedForLoad).ToList()));
             IsBusy = false;
         }
@@ -435,7 +435,7 @@ namespace LegendaryExplorer.Tools.TlkManagerNS
             BusyText = "Reloading Mass Effect 3 Legendary Edition TLK strings";
             IsBusy = true;
             bSaveNeededLE3 = false;
-            LE3TalkFiles.tlkList.Clear();
+            LE3TalkFiles.ClearLoadedTlks();
             await Task.Run(() => LE3ReloadTLKStringsAsync(LE3TLKItems.Where(x => x.selectedForLoad).ToList()));
             IsBusy = false;
         }
@@ -445,7 +445,7 @@ namespace LegendaryExplorer.Tools.TlkManagerNS
             BusyText = "Reloading Mass Effect 2 Legendary Edition TLK strings";
             bSaveNeededLE2 = false;
             IsBusy = true;
-            LE2TalkFiles.tlkList.Clear();
+            LE2TalkFiles.ClearLoadedTlks();
             await Task.Run(() => LE2ReloadTLKStringsAsync(LE2TLKItems.Where(x => x.selectedForLoad).ToList()));
             IsBusy = false;
         }
@@ -455,7 +455,7 @@ namespace LegendaryExplorer.Tools.TlkManagerNS
             BusyText = "Reloading Mass Effect 1 Legendary Edition TLK strings";
             bSaveNeededLE1 = false;
             IsBusy = true;
-            LE1TalkFiles.tlkList.Clear();
+            LE1TalkFiles.ClearLoadedTlks();
             await Task.Run(() => LE1ReloadTLKStringsAsync(LE1TLKItems.Where(x => x.selectedForLoad).ToList()));
             IsBusy = false;
         }
