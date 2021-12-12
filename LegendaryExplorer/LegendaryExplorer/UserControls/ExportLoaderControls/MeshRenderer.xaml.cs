@@ -992,7 +992,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             if (ControlIsLoaded && Rotating)
             {
-                SceneContext.Camera.Yaw += 0.05f * timeStep;
+                SceneContext.Camera.Yaw += 0.3f * timeStep;
                 if (SceneContext.Camera.Yaw > 6.28) //It's in radians 
                     SceneContext.Camera.Yaw -= 6.28f; // Subtract so we don't overflow if this is open too long
             }
