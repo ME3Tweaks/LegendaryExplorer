@@ -208,9 +208,15 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             set
             {
                 SetProperty(ref _setAlphaToBlack, value);
-                if (Mips_ListBox.SelectedIndex >= 0)
+                if (value)
                 {
-                    LoadMip(MipList[Mips_ListBox.SelectedIndex]); // reload
+                    TextureContext.BackgroundColor = new Vector4(0, 0, 0, 1);
+                    this.TextureContext.Constants.Flags |= TextureRenderContext.TextureViewFlags.AlphaAsBlack;
+                }
+                else
+                {
+                    TextureContext.BackgroundColor = new Vector4(0, 0, 0, 0);
+                    this.TextureContext.Constants.Flags &= ~TextureRenderContext.TextureViewFlags.AlphaAsBlack;
                 }
             }
         }
@@ -629,10 +635,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     or LegendaryExplorerCore.Textures.PixelFormat.BC5 
                     or LegendaryExplorerCore.Textures.PixelFormat.V8U8;
                 this.TextureContext.Constants.Flags = needsReconstruction ? TextureRenderContext.TextureViewFlags.ReconstructNormalZ : TextureRenderContext.TextureViewFlags.None;
-                if (SetAlphaToBlack)
-                {
-                    this.TextureContext.Constants.Flags |= TextureRenderContext.TextureViewFlags.AlphaAsBlack;
-                }
             }
             catch (Exception e)
             {

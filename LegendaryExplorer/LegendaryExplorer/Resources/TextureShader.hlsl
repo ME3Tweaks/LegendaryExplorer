@@ -30,12 +30,12 @@ VS_OUT VSMain(uint vertexID : SV_VertexID) {
 float4 PSMain(VS_OUT input) : SV_Target0 {
     float4 textureValue = Texture.SampleLevel(Sampler, float2(input.TexCoord.x, 1.0f - input.TexCoord.y), Mip);
 
-    if (Flags & FLAG_RECONSTRUCTNORMALZ != 0) {
+    if ((Flags & FLAG_RECONSTRUCTNORMALZ) != 0) {
         float2 normalVector = textureValue.xy * 2.0f - 1.0f; // The texture uses values in 0.0 to 1.0 (0 to 255) to represent floats from -1.0 to 1.0
         textureValue.z = sqrt(1.0f - pow(normalVector.x, 2.0f) - pow(normalVector.y, 2.0f)) * 0.5f + 0.5f; // Pythagorean theorem solved for Z, then rescale from -1.0 to 1.0 to the 0.0 to 1.0 range
     }
 
-    if (Flags & FLAG_ALPHAASBLACK != 0)
+    if ((Flags & FLAG_ALPHAASBLACK) != 0)
     {
         // Blend from black to the texture color according to the texture's alpha
         textureValue = lerp(float4(0.0f, 0.0f, 0.0f, 1.0f) /* black */, float4(textureValue.rgb, 1.0f) /* make the result opaque */, textureValue.a);
