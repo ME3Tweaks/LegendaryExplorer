@@ -875,8 +875,8 @@ namespace LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode
 
             string text = _package.Game switch
             {
-                MEGame.ME1 => ME1TalkFiles.findDataById(index, _package),
-                MEGame.ME2 => ME2TalkFiles.findDataById(index),
+                MEGame.ME1 => ME1TalkFiles.FindDataById(index, _package),
+                MEGame.ME2 => ME2TalkFiles.FindDataById(index),
                 _ => "ME3Explorer message: N/A"
             };
 

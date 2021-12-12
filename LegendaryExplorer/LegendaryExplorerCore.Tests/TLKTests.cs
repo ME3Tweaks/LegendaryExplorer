@@ -37,7 +37,7 @@ namespace LegendaryExplorerCore.Tests
                     foreach (var stringId in me1Tf.StringRefs)
                     {
                         var expected = stringId.Data;
-                        var found = me1Tf.findDataById(stringId.StringID);
+                        var found = me1Tf.FindDataById(stringId.StringID);
 
                         // Strip single pair of quotes off. Trim() does multiple so if string ends with " it ruins it
                         if (found.StartsWith('\"')) found = found.Substring(1);
@@ -60,7 +60,7 @@ namespace LegendaryExplorerCore.Tests
                 foreach (var stringId in tf.StringRefs)
                 {
                     var expected = stringId.Data;
-                    var found = tf.findDataById(stringId.StringID);
+                    var found = tf.FindDataById(stringId.StringID);
                     var testcache = found;
                     // Strip single pair of quotes off. Trim() does multiple so if string ends with " it ruins it
                     if (found.StartsWith('\"')) found = found.Substring(1);

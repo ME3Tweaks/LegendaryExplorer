@@ -1,32 +1,42 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml;
 using LegendaryExplorerCore.Gammtek.IO;
-using static LegendaryExplorerCore.TLK.ME1.ME1TalkFile;
 
 namespace LegendaryExplorerCore.TLK.ME2ME3
 {
+    /// <summary>
+    /// Represents a .tlk file, as used by ME2/ME3/LE2/LE3. Used for reading from .tlk files, and writing an xml representation. 
+    /// </summary>
+    /// <remarks>Writing a .tlk file is done with the <see cref="HuffmanCompression"/> class</remarks>
     public sealed class TalkFile : ME2ME3TLKBase
     {
         private Dictionary<int, string> MaleStringRefsTable;
         private Dictionary<int, string> FemaleStringRefsTable;
+
+        /// <summary>
+        /// The stringrefs contained in the file
+        /// </summary>
         public List<TLKStringRef> StringRefs;
 
+        /// <summary>
+        /// A delegate used for reporting progress
+        /// </summary>
+        /// <param name="percentProgress">What percent is finished</param>
         public delegate void ProgressChangedEventHandler(int percentProgress);
+
+        /// <summary>
+        /// Reports progress of writing to XML
+        /// </summary>
         public event ProgressChangedEventHandler ProgressChanged;
         private void OnProgressChanged(int percentProgress)
         {
             ProgressChanged?.Invoke(percentProgress);
         }
 
-        /// <summary>
-        /// Loads TLK data from a stream. The position must be properly set.
-        /// </summary>
-        /// <param name="fs"></param>
+        /// <inheritdoc/>
         public override void LoadTlkDataFromStream(Stream fs)
         {
             //Magic: "Tlk " on Little Endian
@@ -133,7 +143,16 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
             r.Close();
         }
 
-        public string findDataById(int strRefID, bool withFileName = false, bool returnNullIfNotFound = false, bool noQuotes = false, bool male = true)
+        /// <summary>
+        /// Gets the string corresponding to the <paramref name="strRefID"/> (wrapped in quotes), if it exists in this file. If it does not, returns <c>"No Data"</c>
+        /// </summary>
+        /// <param name="strRefID"></param>
+        /// <param name="withFileName">Optional: Should the filename be appended to the returned string</param>
+        /// <param name="returnNullIfNotFound">Optional: return <c>null</c> instead of <c>"No Data"</c></param>
+        /// <param name="noQuotes">Optional: do not wrap the returned string in quotation marks</param>
+        /// <param name="male">Optional: if false, gets the female version of the string</param>
+        /// <returns></returns>
+        public string FindDataById(int strRefID, bool withFileName = false, bool returnNullIfNotFound = false, bool noQuotes = false, bool male = true)
         {
             string data;
             if (male && MaleStringRefsTable.TryGetValue(strRefID, out data) || !male && FemaleStringRefsTable.TryGetValue(strRefID, out data))
@@ -144,7 +163,7 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
                 var retdata = "\"" + data + "\"";
                 if (withFileName)
                 {
-                    retdata += " (" + name + ")";
+                    retdata += " (" + FileName + ")";
                 }
                 return retdata;
             }
@@ -153,7 +172,7 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
         }
 
         /// <summary>
-        /// Writes data stored in memory to an appriopriate text format.
+        /// Writes TLK data to an xml file
         /// </summary>
         /// <param name="fileName"></param>
         public void DumpToFile(string fileName)
@@ -166,13 +185,16 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
             WriteXML(xr);
         }
 
+        /// <summary>
+        /// Writes TLK data to XML, and returns it as a string
+        /// </summary>
         public string WriteXMLString()
         {
-            var InputTLK = new StringBuilder();
-            using var stringWriter = new StringWriter(InputTLK);
+            var inputTLK = new StringBuilder();
+            using var stringWriter = new StringWriter(inputTLK);
             using var writer = new XmlTextWriter(stringWriter);
             WriteXML(writer);
-            return InputTLK.ToString();
+            return inputTLK.ToString();
         }
 
         private void WriteXML(XmlTextWriter xr)
@@ -185,7 +207,7 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
 
             xr.WriteStartDocument();
             xr.WriteStartElement("tlkFile");
-            xr.WriteAttributeString("TLKToolVersion", LegendaryExplorerCoreLib.GetVersion());
+            xr.WriteAttributeString("TLKToolVersion", LegendaryExplorerCoreLib.GetTLKToolVersion());
 
             xr.WriteComment("Male entries section begin");
 
@@ -229,7 +251,7 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
         }
 
         /// <summary>
-        /// If the TLK instance has been modified by the ReplaceString method.
+        /// If the TLK instance has been modified by <see cref="ReplaceString"/> or <see cref="AddString"/>
         /// </summary>
         public bool IsModified { get; private set; }
 
@@ -255,7 +277,7 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
             else if (addIfNotFound)
             {
                 IsModified = true;
-                AddString(new TLKStringRef(stringID, 0, newText));
+                AddString(new TLKStringRef(stringID, newText, 0));
                 return false; // Was not found, but was added.
             }
             else

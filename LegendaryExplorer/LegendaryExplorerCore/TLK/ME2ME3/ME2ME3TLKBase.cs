@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 using System.Text;
-using System.Threading.Tasks;
 using LegendaryExplorerCore.Gammtek.IO;
 
 namespace LegendaryExplorerCore.TLK.ME2ME3
 {
+    /// <summary>
+    /// Contains functionality shared between <see cref="TalkFile"/> and <see cref="ME2ME3LazyTLK"/> 
+    /// </summary>
     public abstract class ME2ME3TLKBase
     {
-        public readonly struct TLKHeader
+        protected readonly struct TLKHeader
         {
             public readonly int magic;
             public readonly int ver;
@@ -45,41 +44,45 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
         }
 
         protected TLKHeader Header;
-        public string name;
-        public string path;
+        /// <summary>
+        /// Filename without extension
+        /// </summary>
+        public string FileName;
+        /// <summary>
+        /// File path
+        /// </summary>
+        public string FilePath;
 
 
 
         /// <summary>
-        /// Loads a TLK file into memory.
+        /// Loads TLK data from a file
         /// </summary>
-        /// <param name="fileName"></param>
-        public void LoadTlkData(string fileName)
+        /// <param name="filePath">Path of the file to load</param>
+        public void LoadTlkData(string filePath)
         {
-            path = fileName;
-            name = Path.GetFileNameWithoutExtension(fileName);
-            /* **************** STEP ONE ****************
-             *          -- load TLK file header --
-             * 
-             * reading first 28 (4 * 7) bytes 
-             */
-
-            using Stream fs = File.OpenRead(fileName);
+            FilePath = filePath;
+            FileName = Path.GetFileNameWithoutExtension(filePath);
+            using Stream fs = File.OpenRead(filePath);
             LoadTlkDataFromStream(fs);
         }
 
+        /// <summary>
+        /// Loads TLK data from a stream. The position must be properly set.
+        /// </summary>
+        /// <param name="fs"></param>
         public abstract void LoadTlkDataFromStream(Stream fs);
 
 
         /// <summary>
-        /// Starts reading 'Bits' array at position 'bitOffset'. Read data is
+        /// Starts reading <paramref name="bits"/> array at position <paramref name="bitOffset"/>. Read data is
         /// used on a Huffman Tree to decode read bits into real strings.
-        /// 'bitOffset' variable is updated with last read bit PLUS ONE (first unread bit).
+        /// <paramref name="bitOffset"/> variable is updated with last read bit PLUS ONE (first unread bit).
         /// </summary>
         /// <param name="bitOffset"></param>
-        /// <param name="builder"></param>
+        /// <param name="builder">Provide an existing <see cref="StringBuilder"/> to re-use (will be cleared before use)</param>
         /// <param name="bits"></param>
-        /// <param name="characterTree"></param>
+        /// <param name="characterTree">The huffman tree used to decode bits into a string</param>
         /// <returns>
         /// decoded string or null if there's an error (last string's bit code is incomplete)
         /// </returns>

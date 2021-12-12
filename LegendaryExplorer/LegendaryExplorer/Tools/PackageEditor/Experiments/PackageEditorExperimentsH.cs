@@ -13,6 +13,7 @@ using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
+using LegendaryExplorerCore.TLK;
 using LegendaryExplorerCore.TLK.ME1;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
@@ -129,16 +130,16 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         {
                             var stringMapping = (exp.ObjectName == "GlobalTlk_tlk" ? tlkLines : tlkLines_m);
                             var talkFile = new ME1TalkFile(exp);
-                            var LoadedStrings = new List<ME1TalkFile.TLKStringRef>();
+                            var LoadedStrings = new List<TLKStringRef>();
                             foreach (var tlkString in stringMapping)
                             {
                                 // Do the important part
-                                LoadedStrings.Add(new ME1TalkFile.TLKStringRef(tlkString.Key, 1, tlkString.Value));
+                                LoadedStrings.Add(new TLKStringRef(tlkString.Key, tlkString.Value, 1));
                             }
 
                             HuffmanCompression huff = new HuffmanCompression();
                             huff.LoadInputData(LoadedStrings);
-                            huff.serializeTalkfileToExport(exp);
+                            huff.SerializeTalkfileToExport(exp);
                         }
                     }
                     o.Save();

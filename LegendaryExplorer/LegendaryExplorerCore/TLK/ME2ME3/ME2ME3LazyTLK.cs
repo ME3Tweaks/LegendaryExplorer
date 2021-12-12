@@ -9,16 +9,20 @@ using LegendaryExplorerCore.TLK.ME1;
 
 namespace LegendaryExplorerCore.TLK.ME2ME3
 {
+    /// <summary>
+    /// Like <see cref="TalkFile"/>, but does not decompress the strings when loaded. Only decompresses a string when it's requested.
+    /// </summary>
     public class ME2ME3LazyTLK : ME2ME3TLKBase
     {
         private TLKBitArray Bits;
         private HuffmanNode[] Nodes;
         private StringBuilder _builder;
-        //StringID -> BitOffset
-        private Dictionary<int, int> LazyStringRefs;
+        private Dictionary<int, int> LazyStringRefs; //StringID -> BitOffset
 
+        /// <inheritdoc/>
         public override void LoadTlkDataFromStream(Stream fs)
-        {//Magic: "Tlk " on Little Endian
+        {
+            //Magic: "Tlk " on Little Endian
             var r = EndianReader.SetupForReading(fs, 0x006B6C54, out int _);
             r.Position = 0;
             Header = new TLKHeader(r);
@@ -41,14 +45,20 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
             r.Close();
         }
 
-        public string findDataById(int strRefID, bool withFileName = false, bool returnNullIfNotFound = false, bool noQuotes = false, bool male = true)
+        /// <summary>
+        /// Gets the string corresponding to the <paramref name="strRefID"/> (wrapped in quotes), if it exists in this file. If it does not, returns <c>"No Data"</c>
+        /// </summary>
+        /// <param name="strRefID"></param>
+        /// <param name="withFileName">Optional: Should the filename be appended to the returned string</param>
+        /// <returns></returns>
+        public string FindDataById(int strRefID, bool withFileName = false)
         {
             if (LazyStringRefs.TryGetValue(strRefID, out int bitOffset) && bitOffset >= 0)
             {
                 var retdata = "\"" + GetString(ref bitOffset, _builder ??= new StringBuilder(), Bits, Nodes) + "\"";
                 if (withFileName)
                 {
-                    retdata += " (" + name + ")";
+                    retdata += " (" + FileName + ")";
                 }
                 return retdata;
             }

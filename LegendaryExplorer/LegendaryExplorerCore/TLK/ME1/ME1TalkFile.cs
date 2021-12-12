@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
@@ -11,130 +10,82 @@ using LegendaryExplorerCore.Packages;
 
 namespace LegendaryExplorerCore.TLK.ME1
 {
+    /// <summary>
+    /// Represents the tlk embedded in a BioTalkFile export
+    /// </summary>
     public class ME1TalkFile : IEquatable<ME1TalkFile>
     {
         #region structs
 
-        private struct HuffmanNode
+        private readonly struct HuffmanNode
         {
-            public int LeftNodeID;
-            public int RightNodeID;
-            public char data;
+            public readonly int LeftNodeID;
+            public readonly int RightNodeID;
+            public readonly char Data;
 
             public HuffmanNode(int r, int l)
-                : this()
             {
                 RightNodeID = r;
                 LeftNodeID = l;
+                Data = default;
             }
 
             public HuffmanNode(char c)
-                : this()
             {
-                data = c;
+                Data = c;
                 LeftNodeID = -1;
                 RightNodeID = -1;
             }
         }
 
-        [DebuggerDisplay("TLKStringRef {StringID} {Data}")]
-        public class TLKStringRef : INotifyPropertyChanged, IEquatable<TLKStringRef>, IComparable
-        {
-            public int StringID { get; set; }
-            public string Data { get; set; }
-            public int Flags { get; set; }
-            public int Index { get; set; }
-
-            public int BitOffset
-            {
-                get { return Flags; }
-                //use same variable to save memory as flags is not used in me2/3, but bitoffset is.
-                set { Flags = value; }
-            }
-
-            public int CalculatedID
-            {
-                get { return StringID >= 0 ? StringID : -(int.MinValue - StringID); }
-            }
-
-            /// <summary>
-            /// This is used by huffman compression
-            /// </summary>
-            public string ASCIIData
-            {
-                get
-                {
-                    if (Data == null)
-                    {
-                        return "-1\0";
-                    }
-                    if (Data.EndsWith("\0", StringComparison.Ordinal))
-                    {
-                        return Data;
-                    }
-                    return Data + '\0';
-                }
-            }
-
-            public TLKStringRef(BinaryReader r, bool me1)
-            {
-                StringID = r.ReadInt32();
-                if (me1)
-                {
-                    Flags = r.ReadInt32();
-                    Index = r.ReadInt32();
-                }
-                else
-                {
-                    BitOffset = r.ReadInt32();
-                }
-            }
-
-            public TLKStringRef(int id, int flags, string data, int index = -1)
-            {
-                StringID = id;
-                Flags = flags;
-                Data = data;
-                Index = index;
-            }
-
-            public bool Equals(TLKStringRef other)
-            {
-                return StringID == other.StringID && ASCIIData == other.ASCIIData && Flags == other.Flags /*&& Index == other.Index*/;
-            }
-            public int CompareTo(object obj)
-            {
-                TLKStringRef entry = (TLKStringRef)obj;
-                return Index.CompareTo(entry.Index);
-            }
-#pragma warning disable
-            public event PropertyChangedEventHandler PropertyChanged;
-#pragma warning restore
-        }
         #endregion
 
         private HuffmanNode[] nodes;
 
+        /// <summary>
+        /// All the <see cref="TLKStringRef"/>s in the TLK
+        /// </summary>
         public TLKStringRef[] StringRefs;
-        public int UIndex;
 
-        public string language;
-        public bool male;
+        /// <summary>
+        /// The UIndex of the BioTLKFile export
+        /// </summary>
+        public readonly int UIndex;
+
+        /// <summary>
+        /// The path of the file this was in
+        /// </summary>
         public readonly string FilePath;
 
-        public string Name;
-        public string BioTlkSetName;
+        /// <summary>
+        /// The name of the BioTalkFile export
+        /// </summary>
+        public readonly string Name;
+
+        /// <summary>
+        /// The name of the BioTlkSet this BioTalkFile is in. (Probably. Not gauranteed to be accurate)
+        /// </summary>
+        public readonly string BioTlkSetName;
 
 
         #region Constructors
+        /// <summary>
+        /// Creates a new <see cref="ME1TalkFile"/> from the export at <paramref name="uIndex"/> in <paramref name="pcc"/>
+        /// </summary>
+        /// <param name="pcc">The ME1/LE1 package file the BioTalkFile export is in</param>
+        /// <param name="uIndex">The uIndex in <paramref name="pcc"/> of the BioTalkFile export</param>
         public ME1TalkFile(IMEPackage pcc, int uIndex) : this(pcc, pcc.GetUExport(uIndex))
         {
         }
 
+        /// <summary>
+        /// Creates a new <see cref="ME1TalkFile"/> from the <paramref name="export"/>
+        /// </summary>
+        /// <param name="export">A BioTalkFile export</param>
         public ME1TalkFile(ExportEntry export) : this(export.FileRef, export)
         {
         }
-
+        
         private ME1TalkFile(IMEPackage pcc, ExportEntry export)
         {
             if (!pcc.Game.IsGame1())
@@ -149,8 +100,13 @@ namespace LegendaryExplorerCore.TLK.ME1
         }
         #endregion
 
-        //ITalkFile
-        public string findDataById(int strRefID, bool withFileName = false)
+
+        /// <summary>
+        /// Gets the string corresponding to the <paramref name="strRefID"/> (wrapped in quotes), if it exists in this tlk. If it does not, returns <c>"No Data"</c>
+        /// </summary>
+        /// <param name="strRefID"></param>
+        /// <param name="withFileName">Optional: Should the filename be appended to the returned string</param>
+        public string FindDataById(int strRefID, bool withFileName = false)
         {
             string data = "No Data";
             foreach (TLKStringRef tlkStringRef in StringRefs)
@@ -185,8 +141,12 @@ namespace LegendaryExplorerCore.TLK.ME1
 
         public override int GetHashCode()
         {
-            return 1;
+            var hashCode = new HashCode();
+            hashCode.Add(UIndex);
+            hashCode.Add(FilePath, StringComparer.OrdinalIgnoreCase);
+            return hashCode.ToHashCode();
         }
+
         #endregion
 
         #region Load Data
@@ -272,7 +232,7 @@ namespace LegendaryExplorerCore.TLK.ME1
                 else
                 /* it's a leaf! */
                 {
-                    char c = curNode.data;
+                    char c = curNode.Data;
                     if (c != '\0')
                     {
                         /* it's not NULL */
@@ -291,7 +251,7 @@ namespace LegendaryExplorerCore.TLK.ME1
 
             if (curNode.LeftNodeID == curNode.RightNodeID)
             {
-                char c = curNode.data;
+                char c = curNode.Data;
                 //We hit edge case where final bit is on a byte boundary and there is nothing left to read. This is a leaf node.
                 if (c != '\0')
                 {
@@ -339,12 +299,12 @@ namespace LegendaryExplorerCore.TLK.ME1
         #endregion
 
         /// <summary>
-        /// Saves this TLK object to XML
+        /// Saves this TLK object to an XML file
         /// </summary>
-        /// <param name="fileName"></param>
-        public void saveToFile(string fileName)
+        /// <param name="filePath">path to write an XML file to</param>
+        public void SaveToXMLFile(string filePath)
         {
-            using var xr = new XmlTextWriter(fileName, Encoding.UTF8);
+            using var xr = new XmlTextWriter(filePath, Encoding.UTF8);
             WriteXML(StringRefs, Name, xr);
         }
 
@@ -375,6 +335,12 @@ namespace LegendaryExplorerCore.TLK.ME1
             writer.WriteEndElement(); // </tlkFile>
         }
 
+        /// <summary>
+        /// Writes the provided <see cref="TLKStringRef"/>s to XML, returned as a string.
+        /// </summary>
+        /// <param name="name">Tlk name</param>
+        /// <param name="tlkStringRefs"><see cref="TLKStringRef"/>s to write to xml</param>
+        /// <returns></returns>
         public static string TLKtoXmlstring(string name, IEnumerable<TLKStringRef> tlkStringRefs)
         {
             var InputTLK = new StringBuilder();
@@ -383,7 +349,5 @@ namespace LegendaryExplorerCore.TLK.ME1
             WriteXML(tlkStringRefs, name, writer);
             return InputTLK.ToString();
         }
-
-
     }
 }

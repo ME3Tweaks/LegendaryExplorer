@@ -13,6 +13,7 @@ using LegendaryExplorer.SharedUI;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.TLK;
 using LegendaryExplorerCore.TLK.ME1;
 using TalkFile = LegendaryExplorerCore.TLK.ME2ME3.TalkFile;
 using ME2ME3HuffmanCompression = LegendaryExplorerCore.TLK.ME2ME3.HuffmanCompression;
@@ -25,8 +26,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
     public partial class TLKEditorExportLoader : FileExportLoaderControl
     {
         private TalkFile CurrentME2ME3TalkFile;
-        public List<ME1TalkFile.TLKStringRef> LoadedStrings; //Loaded TLK
-        public ObservableCollectionExtended<ME1TalkFile.TLKStringRef> CleanedStrings { get; } = new(); // Displayed
+        public List<TLKStringRef> LoadedStrings; //Loaded TLK
+        public ObservableCollectionExtended<TLKStringRef> CleanedStrings { get; } = new(); // Displayed
         private bool xmlUp;
 
         private const string NO_STRING_SELECTED = "No string selected";
@@ -78,7 +79,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void DeleteString(object obj)
         {
-            var selectedItem = DisplayedString_ListBox.SelectedItem as ME1TalkFile.TLKStringRef;
+            var selectedItem = DisplayedString_ListBox.SelectedItem as TLKStringRef;
             CleanedStrings.Remove(selectedItem);
             LoadedStrings.Remove(selectedItem);
             FileModified = true;
@@ -115,13 +116,13 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             var huff = new HuffmanCompression();
             huff.LoadInputData(LoadedStrings);
-            huff.serializeTalkfileToExport(CurrentLoadedExport);
+            huff.SerializeTalkfileToExport(CurrentLoadedExport);
             FileModified = false;
         }
 
         private void SaveString(object obj)
         {
-            if (DisplayedString_ListBox.SelectedItem is ME1TalkFile.TLKStringRef selectedItem)
+            if (DisplayedString_ListBox.SelectedItem is TLKStringRef selectedItem)
             {
                 selectedItem.Data = EditorString;
                 FileModified = true;
@@ -133,7 +134,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         private bool CanSaveString(object obj)
         {
             if (DisplayedString_ListBox == null) return false;
-            var selectedItem = DisplayedString_ListBox.SelectedItem as ME1TalkFile.TLKStringRef;
+            var selectedItem = DisplayedString_ListBox.SelectedItem as TLKStringRef;
             return selectedItem?.Data != null && EditorString != selectedItem.Data;
         }
 
@@ -181,7 +182,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void DisplayedString_ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (DisplayedString_ListBox.SelectedItem is ME1TalkFile.TLKStringRef selectedItem)
+            if (DisplayedString_ListBox.SelectedItem is TLKStringRef selectedItem)
             {
                 editBox.Text = selectedItem.Data;
             }
@@ -225,7 +226,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void AddString()
         {
-            var blankstringref = new ME1TalkFile.TLKStringRef(100, 1, "New Blank Line");
+            var blankstringref = new TLKStringRef(100, "New Blank Line", 1);
             LoadedStrings.Add(blankstringref);
             CleanedStrings.Add(blankstringref);
             DisplayedString_ListBox.SelectedIndex = CleanedStrings.Count() - 1; //Set focus to new line (which is the last one)
@@ -249,7 +250,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 if (CurrentLoadedExport != null)
                 {
                     var talkfile = new ME1TalkFile(CurrentLoadedExport);
-                    talkfile.saveToFile(saveFileDialog.FileName);
+                    talkfile.SaveToXMLFile(saveFileDialog.FileName);
                 } 
                 else if (CurrentME2ME3TalkFile is not null)
                 {
@@ -276,7 +277,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 {
                     var compressor = new HuffmanCompression();
                     compressor.LoadInputData(openFileDialog.FileName);
-                    compressor.serializeTalkfileToExport(CurrentLoadedExport);
+                    compressor.SerializeTalkfileToExport(CurrentLoadedExport);
                 }
                 else if (CurrentME2ME3TalkFile is not null)
                 {
@@ -326,7 +327,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void SetNewID()
         {
-            if (DisplayedString_ListBox.SelectedItem is ME1TalkFile.TLKStringRef selectedItem)
+            if (DisplayedString_ListBox.SelectedItem is TLKStringRef selectedItem)
             {
                 var stringRefNewID = DlgStringID(selectedItem.StringID); //Run popout box to set tlkstring id
                 if (selectedItem.StringID != stringRefNewID)
@@ -355,7 +356,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             for (int i = 0; i < CleanedStrings.Count; i++)
             {
                 int curIndex = (i + pos) % CleanedStrings.Count;
-                ME1TalkFile.TLKStringRef node = CleanedStrings[curIndex];
+                TLKStringRef node = CleanedStrings[curIndex];
 
                 if (node.StringID.ToString().Contains(searchTerm))
                 {
@@ -447,7 +448,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     return;
                 }
                 // CurrentME2ME3TalkFile.
-                ME2ME3HuffmanCompression.SaveToTlkFile(CurrentME2ME3TalkFile.path, LoadedStrings);
+                ME2ME3HuffmanCompression.SaveToTlkFile(CurrentME2ME3TalkFile.FilePath, LoadedStrings);
                 CurrentME2ME3TalkFile = new TalkFile();
                 CurrentME2ME3TalkFile.LoadTlkData(CurrentLoadedFile);
                 FileModified = false; //you can only commit to file, not to export and then file in file mode.

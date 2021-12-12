@@ -586,16 +586,16 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                         //Shouldn't be called in ME1/LE1
                         break;
                     case MEGame.ME2:
-                        ol.Line = ME2TalkFiles.findDataById(ol.StrRef);
+                        ol.Line = ME2TalkFiles.FindDataById(ol.StrRef);
                         break;
                     case MEGame.ME3:
-                        ol.Line = ME3TalkFiles.findDataById(ol.StrRef);
+                        ol.Line = ME3TalkFiles.FindDataById(ol.StrRef);
                         break;
                     case MEGame.LE2:
-                        ol.Line = LE2TalkFiles.findDataById(ol.StrRef);
+                        ol.Line = LE2TalkFiles.FindDataById(ol.StrRef);
                         break;
                     case MEGame.LE3:
-                        ol.Line = LE3TalkFiles.findDataById(ol.StrRef);
+                        ol.Line = LE3TalkFiles.FindDataById(ol.StrRef);
                         break;
                 }
                 GeneratedDB.GeneratedLines.TryAdd(ol.StrRef.ToString(), ol);
