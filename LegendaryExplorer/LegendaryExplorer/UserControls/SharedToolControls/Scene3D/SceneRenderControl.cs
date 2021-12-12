@@ -19,7 +19,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
 
     public static class RenderContextExtensions
     {
-        public unsafe static Texture2D LoadTexture(this RenderContext renderContext, uint width, uint height, SharpDX.DXGI.Format format, byte[] pixelData)
+        public static unsafe Texture2D LoadTexture(this RenderContext renderContext, uint width, uint height, SharpDX.DXGI.Format format, byte[] pixelData)
         {
             fixed (byte* pixelDataPointer = pixelData)
             {
@@ -35,20 +35,34 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
                     }
                     pitch = (int)(Math.Max(1, ((width + 3) / 4)) * blockSize);
                 }
-                return new Texture2D(renderContext.Device, new Texture2DDescription { Width = (int)width, Height = (int)height, ArraySize = 1, BindFlags = BindFlags.ShaderResource, Usage = ResourceUsage.Immutable, CpuAccessFlags = CpuAccessFlags.None, Format = format, MipLevels = 1, OptionFlags = ResourceOptionFlags.None, SampleDescription = new SharpDX.DXGI.SampleDescription(1, 0) }, new DataRectangle((IntPtr)pixelDataPointer, pitch));
+                return new Texture2D(renderContext.Device, new Texture2DDescription
+                {
+                    Width = (int)width,
+                    Height = (int)height,
+                    ArraySize = 1,
+                    BindFlags = BindFlags.ShaderResource,
+                    Usage = ResourceUsage.Immutable,
+                    
+                    CpuAccessFlags = CpuAccessFlags.None,
+                    Format = format,
+                    MipLevels = 1,
+                    OptionFlags = ResourceOptionFlags.None,
+                    SampleDescription = new SharpDX.DXGI.SampleDescription(1, 0)
+                }, new DataRectangle((IntPtr)pixelDataPointer, pitch));
             }
         }
 
-        public unsafe static Texture2D LoadFile(this RenderContext renderContext, string filename)
+        public static unsafe Texture2D LoadFile(this RenderContext renderContext, string filename, bool alphaAsBlack)
         {
             LegendaryExplorerCore.Textures.PixelFormat pixelFormat = LegendaryExplorerCore.Textures.PixelFormat.ARGB;
-            byte[] pixelData = LegendaryExplorerCore.Textures.TexConverter.LoadTexture(filename, out uint width, out uint height, ref pixelFormat);
+            byte[] pixelData = LegendaryExplorerCore.Textures.TexConverter.LoadTexture(filename, out uint width, out uint height, ref pixelFormat); // NEEDS WAY TO HAVE ALPHA AS BLACK!
             SharpDX.DXGI.Format format = (SharpDX.DXGI.Format)LegendaryExplorerCore.Textures.TexConverter.GetDXGIFormatForPixelFormat(pixelFormat);
             return renderContext.LoadTexture(width, height, format, pixelData);
         }
 
-        public static Texture2D LoadUnrealMip(this RenderContext renderContext, LegendaryExplorerCore.Unreal.Classes.Texture2DMipInfo mip, LegendaryExplorerCore.Textures.PixelFormat pixelFormat)
+        public static Texture2D LoadUnrealMip(this RenderContext renderContext, LegendaryExplorerCore.Unreal.Classes.Texture2DMipInfo mip, LegendaryExplorerCore.Textures.PixelFormat pixelFormat, bool alphaAsBlack)
         {
+            // Todo: Needs way to set black alpha
             var imagebytes = LegendaryExplorerCore.Unreal.Classes.Texture2D.GetTextureData(mip, mip.Export.Game);
             uint mipWidth = (uint)mip.width;
             uint mipHeight = (uint)mip.height;
@@ -61,9 +75,9 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             return renderContext.LoadTexture(mipWidth, mipHeight, mipFormat, imagebytes);
         }
 
-        public static Texture2D LoadUnrealTexture(this RenderContext renderContext, LegendaryExplorerCore.Unreal.Classes.Texture2D unrealTexture)
+        public static Texture2D LoadUnrealTexture(this RenderContext renderContext, LegendaryExplorerCore.Unreal.Classes.Texture2D unrealTexture, bool alphaAsBlack)
         {
-            return renderContext.LoadUnrealMip(unrealTexture.GetTopMip(), LegendaryExplorerCore.Textures.Image.getPixelFormatType(unrealTexture.Export.GetProperties().GetProp<EnumProperty>("Format").Value.Name));
+            return renderContext.LoadUnrealMip(unrealTexture.GetTopMip(), LegendaryExplorerCore.Textures.Image.getPixelFormatType(unrealTexture.Export.GetProperties().GetProp<EnumProperty>("Format").Value.Name), alphaAsBlack);
         }
     }
 
@@ -74,6 +88,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
         public Device Device { get; private set; }
         public DeviceContext ImmediateContext { get; private set; }
         public Texture2D Backbuffer { get; private set; }
+        public BlendState AlphaBlendState { get; private set; } // A BlendState that uses standard alpha blending
         public bool IsReady => Device != null;
 
         public virtual void CreateResources()
@@ -84,6 +99,10 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
 #endif
             this.Device = new Device(DriverType.Hardware, deviceFlags);
             this.ImmediateContext = this.Device.ImmediateContext;
+
+            BlendStateDescription alphaBlendDesc = new BlendStateDescription();
+            alphaBlendDesc.RenderTarget[0] = new RenderTargetBlendDescription() { RenderTargetWriteMask = ColorWriteMaskFlags.All, BlendOperation = BlendOperation.Add, AlphaBlendOperation = BlendOperation.Add, SourceBlend = BlendOption.SourceAlpha, DestinationBlend = BlendOption.InverseSourceAlpha, SourceAlphaBlend = BlendOption.SourceAlpha, DestinationAlphaBlend = BlendOption.InverseSourceAlpha, IsBlendEnabled = true };
+            this.AlphaBlendState = new BlendState(this.Device, alphaBlendDesc);
         }
 
         public virtual void CreateSizeDependentResources(int width, int height, Texture2D newBackbuffer)
@@ -101,6 +120,8 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
 
         public virtual void DisposeResources()
         {
+            this.AlphaBlendState.Dispose();
+            this.AlphaBlendState = null;
             this.ImmediateContext.Dispose();
             this.ImmediateContext = null;
 
@@ -298,7 +319,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
 
                 }
 
-                Context.Update((float) Stopwatch.Elapsed.TotalSeconds);
+                Context.Update((float)Stopwatch.Elapsed.TotalSeconds);
                 Stopwatch.Restart();
                 bool capturing = false;
                 if (this.CaptureNextFrame && RenderDoc.IsRenderDocAttached())

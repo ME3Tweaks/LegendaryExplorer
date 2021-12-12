@@ -8,6 +8,7 @@
              xmlns:Converters="clr-namespace:LegendaryExplorer.SharedUI.Converters"
              xmlns:sharedUi="clr-namespace:LegendaryExplorer.SharedUI"
              xmlns:scene3D="clr-namespace:LegendaryExplorer.UserControls.SharedToolControls.Scene3D"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              mc:Ignorable="d" 
              DataContext="{Binding RelativeSource={RelativeSource Self}}"
              d:DesignHeight="450" d:DesignWidth="800">
@@ -52,9 +53,6 @@
                     <ColumnDefinition Width="47*"/>
                     <ColumnDefinition Width="48*"/>
                 </Grid.ColumnDefinitions>
-                <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding TextureCRC, StringFormat='CRC: 0x{0:X8}', FallbackValue=CRC: 0x00000000}" 
-                           VerticalAlignment="Center" Margin="3,6" Background="Transparent" BorderThickness="0" IsReadOnly="True" TextWrapping="Wrap"
-                           MouseDown="CRC_MouseDown" ToolTip="Double click to copy CRC" />
                 <ComboBox x:Name="ScaleComboBox" Grid.Row="1" Grid.Column="1" Margin="3" SelectionChanged="ScaleComboBox_SelectionChanged" SelectedIndex="0" VerticalContentAlignment="Center">
                     <ComboBoxItem Content="Scale to Fit" />
                     <ComboBoxItem Content="0.25x" />
@@ -65,9 +63,19 @@
                 </ComboBox>
                 <Button Grid.Row="0" Grid.Column="2" Content="Export to File" Command="{Binding ExportToPNGCommand}" Padding="5,2" Margin="3"/>
                 <Button Grid.Row="1" Grid.Column="2" Content="Import from File" Command="{Binding ReplaceFromPNGCommand}" Padding="5,2" Margin="3" />
-                <TextBlock Grid.Row="0" Grid.Column="3" Text="Texture Cache:" VerticalAlignment="Center" Margin="3,6" Visibility="{Binding CurrentLoadedExport, Converter={StaticResource EntryGameMatchVisibilityConverter}, ConverterParameter=ME1_Not}"/>
-                <ComboBox Grid.Row="1" Grid.Column="3" Width="200" VerticalContentAlignment="Center" Margin="3" ItemsSource="{Binding AvailableTFCNames}"  ToolTip="Changing the texture cache requires changing the texture" Name="TextureCacheComboBox" Visibility="{Binding CurrentLoadedExport, Converter={StaticResource EntryGameMatchVisibilityConverter}, ConverterParameter=ME1_Not}" IsEnabled="{Binding ViewerModeOnly, Converter={StaticResource InverseBooleanConverter}}"/>
-                <CheckBox Grid.Row="2" Grid.Column="1" Content="Alpha as black" IsChecked="{Binding SetAlphaToBlack}" VerticalContentAlignment="Center" Margin="3"/>
+                <TextBlock Grid.Row="0" Grid.Column="3" Text="{Binding TextureCacheName, StringFormat='Texture Cache: {0}'}" VerticalAlignment="Center" Margin="3,6" Visibility="{Binding CurrentLoadedExport, Converter={StaticResource EntryGameMatchVisibilityConverter}, ConverterParameter=ME1_Not}"/>
+                <TextBox Grid.Row="1" Grid.Column="3" Text="{Binding TextureCRC, StringFormat='CRC: 0x{0:X8}', FallbackValue=CRC: 0x00000000}" 
+                         VerticalAlignment="Center" Margin="3,6" Background="Transparent" BorderThickness="0" IsReadOnly="True" TextWrapping="Wrap"
+                         MouseDown="CRC_MouseDown" ToolTip="Double click to copy CRC" />
+
+
+                <!--<ComboBox Grid.Row="1" Grid.Column="3" Width="200" VerticalContentAlignment="Center" Margin="3" ItemsSource="{Binding AvailableTFCNames}"  ToolTip="Changing the texture cache requires changing the texture" Name="TextureCacheComboBox" Visibility="{Binding CurrentLoadedExport, Converter={StaticResource EntryGameMatchVisibilityConverter}, ConverterParameter=ME1_Not}" IsEnabled="{Binding ViewerModeOnly, Converter={StaticResource InverseBooleanConverter}}"/>-->
+                <xctk:DropDownButton Content="View options" Grid.Row="0" Grid.Column="1" Margin="0,3">
+<xctk:DropDownButton.DropDownContent>
+    <scene3D:SceneControlOptionsControl/>
+</xctk:DropDownButton.DropDownContent>
+                    </xctk:DropDownButton>
+                <!--<CheckBox Grid.Row="2" Grid.Column="1" Content="Alpha as black" IsChecked="{Binding SetAlphaToBlack}" VerticalContentAlignment="Center" Margin="3"/>-->
             </Grid>
             <StackPanel DockPanel.Dock="Bottom" HorizontalAlignment="Center" Orientation="Horizontal" Margin="10">
                 <StackPanel Orientation="Horizontal">
@@ -80,13 +88,13 @@
                 <TextBlock Name="TextureStatus_TextBlock" Text="{Binding CannotShowTextureText, FallbackValue=Select a mip}" Visibility="{Binding CannotShowTextureTextVisibility}" TextAlignment="Center"/>
                 <Image Name="TextureImage" Stretch="{Binding ImageStretchOption}" RenderOptions.BitmapScalingMode="HighQuality"/>
             </DockPanel> -->
-            
+
             <!-- DIRECT X BRANCH -->
             <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                 <TextBlock Name="TextureStatus_TextBlock" Text="{Binding CannotShowTextureText, FallbackValue=Select a mip}" Visibility="{Binding CannotShowTextureTextVisibility}" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 <!--<Button Name="TFCSelect_Button" Margin="10,0,0,0" Content="Select TFC"/>-->
                 <!--<Image Name="TextureImage" Stretch="{Binding ImageStretchOption}" RenderOptions.BitmapScalingMode="NearestNeighbor"/>-->
-                <scene3D:SceneRenderControl x:Name="PreviewRenderer" />
+                <scene3D:SceneRenderControl x:Name="PreviewRenderer" DataContext="{Binding}" />
             </Grid>
         </DockPanel>
     </DockPanel>
