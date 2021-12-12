@@ -5,6 +5,7 @@ namespace LegendaryExplorerCore.Packages
     /// <summary>
     /// Indicates a game in the Mass Effect series
     /// </summary>
+    /// <remarks><see cref="MEGameExtensions">Extension Methods</see></remarks>
     public enum MEGame
     {
         /// <summary>Unknown game</summary>

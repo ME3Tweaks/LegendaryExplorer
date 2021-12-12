@@ -328,7 +328,7 @@ namespace LegendaryExplorerCore.GameFilesystem
         }
 
         /// <summary>
-        /// Gets a mapping of DLC folder names to human readable names
+        /// Gets a mapping of official DLC folder names to human readable names
         /// </summary>
         /// <param name="game">Game to get DLC mappings for</param>
         /// <returns>Dictionary of DLC folders</returns>

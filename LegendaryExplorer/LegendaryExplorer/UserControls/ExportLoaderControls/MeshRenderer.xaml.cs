@@ -41,6 +41,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         #region 3D
 
+        public SceneRenderContext SceneContext { get; }
+
         private bool _rotating = Settings.Meshplorer_ViewRotating;
         private bool _wireframe;
         private bool _solid = true;
@@ -78,7 +80,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 if (SetProperty(ref _firstperson, value))
                 {
-                    SceneViewer.Context.Camera.FirstPerson = value;
+                    SceneContext.Camera.FirstPerson = value;
                 }
             }
         }
@@ -91,7 +93,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 if (SetProperty(ref _currentLOD, value))
                 {
-                    SceneViewer.Context.RenderScene();
+                    //SceneViewer.Context.RenderScene();
                 }
             }
         }
@@ -99,10 +101,14 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private ModelPreview Preview;
 
-        private bool HasLoaded;
+        /// <summary>
+        /// Value is true after _Loaded is called. False after _Unloaded (which if in tab control, is called when different tab is selected)
+        /// </summary>
+        private bool ControlIsLoaded;
         private WorldMesh STMCollisionMesh;
+        private Action ViewportLoadAction = null;
 
-        private void SceneViewer_Render(object sender, EventArgs e)
+        private void SceneContext_RenderScene(object sender, EventArgs e)
         {
             if (Preview != null && Preview.LODs.Count > 0)
             {
@@ -110,22 +116,22 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 if (CurrentLOD < 0) { CurrentLOD = 0; }
                 if (Solid && CurrentLOD < Preview.LODs.Count)
                 {
-                    SceneViewer.Context.Wireframe = false;
-                    Preview.Render(SceneViewer.Context, CurrentLOD, Matrix4x4.Identity);
+                    SceneContext.Wireframe = false;
+                    Preview.Render(SceneContext, CurrentLOD, Matrix4x4.Identity);
                 }
                 if (Wireframe)
                 {
-                    SceneViewer.Context.Wireframe = true;
-                    var ViewConstants = new SceneRenderContext.WorldConstants(Matrix4x4.Transpose(SceneViewer.Context.Camera.ProjectionMatrix), Matrix4x4.Transpose(SceneViewer.Context.Camera.ViewMatrix), Matrix4x4.Identity);
-                    SceneViewer.Context.DefaultEffect.PrepDraw(SceneViewer.Context.ImmediateContext);
-                    SceneViewer.Context.DefaultEffect.RenderObject(SceneViewer.Context.ImmediateContext, ViewConstants, Preview.LODs[CurrentLOD].Mesh, new SharpDX.Direct3D11.ShaderResourceView[] { null });
+                    SceneContext.Wireframe = true;
+                    var ViewConstants = new SceneRenderContext.WorldConstants(Matrix4x4.Transpose(SceneContext.Camera.ProjectionMatrix), Matrix4x4.Transpose(SceneContext.Camera.ViewMatrix), Matrix4x4.Identity);
+                    SceneContext.DefaultEffect.PrepDraw(SceneViewer.Context.ImmediateContext);
+                    SceneContext.DefaultEffect.RenderObject(SceneViewer.Context.ImmediateContext, ViewConstants, Preview.LODs[CurrentLOD].Mesh, new SharpDX.Direct3D11.ShaderResourceView[] { null });
                 }
                 if (IsStaticMesh && ShowCollisionMesh && STMCollisionMesh != null)
                 {
-                    SceneViewer.Context.Wireframe = true;
-                    var ViewConstants = new SceneRenderContext.WorldConstants(Matrix4x4.Transpose(SceneViewer.Context.Camera.ProjectionMatrix), Matrix4x4.Transpose(SceneViewer.Context.Camera.ViewMatrix), Matrix4x4.Identity);
-                    SceneViewer.Context.DefaultEffect.PrepDraw(SceneViewer.Context.ImmediateContext);
-                    SceneViewer.Context.DefaultEffect.RenderObject(SceneViewer.Context.ImmediateContext, ViewConstants, STMCollisionMesh, new SharpDX.Direct3D11.ShaderResourceView[] { null });
+                    SceneContext.Wireframe = true;
+                    var ViewConstants = new SceneRenderContext.WorldConstants(Matrix4x4.Transpose(SceneContext.Camera.ProjectionMatrix), Matrix4x4.Transpose(SceneContext.Camera.ViewMatrix), Matrix4x4.Identity);
+                    SceneContext.DefaultEffect.PrepDraw(SceneViewer.Context.ImmediateContext);
+                    SceneContext.DefaultEffect.RenderObject(SceneViewer.Context.ImmediateContext, ViewConstants, STMCollisionMesh, new SharpDX.Direct3D11.ShaderResourceView[] { null });
                 }
 
             }
@@ -138,18 +144,18 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 if (Preview != null && Preview.LODs.Count > 0)
                 {
                     WorldMesh m = Preview.LODs[CurrentLOD].Mesh;
-                    SceneViewer.Context.Camera.Position = m.AABBCenter;
-                    SceneViewer.Context.Camera.Pitch = -(float)Math.PI / 7.0f;
-                    if (SceneViewer.Context.Camera.FirstPerson)
+                    SceneContext.Camera.Position = m.AABBCenter;
+                    SceneContext.Camera.Pitch = -(float)Math.PI / 7.0f;
+                    if (SceneContext.Camera.FirstPerson)
                     {
-                        SceneViewer.Context.Camera.Position -= SceneViewer.Context.Camera.CameraForward * SceneViewer.Context.Camera.FocusDepth;
+                        SceneContext.Camera.Position -= SceneContext.Camera.CameraForward * SceneContext.Camera.FocusDepth;
                     }
                 }
                 else
                 {
-                    SceneViewer.Context.Camera.Position = Vector3.Zero;
-                    SceneViewer.Context.Camera.Pitch = -(float)Math.PI / 5.0f;
-                    SceneViewer.Context.Camera.Yaw = (float)Math.PI / 4.0f;
+                    SceneContext.Camera.Position = Vector3.Zero;
+                    SceneContext.Camera.Pitch = -(float)Math.PI / 5.0f;
+                    SceneContext.Camera.Yaw = (float)Math.PI / 4.0f;
                 }
             }
         }
@@ -298,7 +304,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 if (SetProperty(ref _cameraFOV, value))
                 {
-                    SceneViewer.Context.Camera.FOV = LegendaryExplorerCore.SharpDX.MathUtil.DegreesToRadians(value);
+                    SceneContext.Camera.FOV = LegendaryExplorerCore.SharpDX.MathUtil.DegreesToRadians(value);
                 }
             }
         }
@@ -310,7 +316,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 if (SetProperty(ref _cameraZNear, value))
                 {
-                    SceneViewer.Context.Camera.ZNear = value;
+                    SceneContext.Camera.ZNear = value;
                 }
             }
         }
@@ -322,7 +328,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 if (SetProperty(ref _cameraZFar, value))
                 {
-                    SceneViewer.Context.Camera.ZFar = value;
+                    SceneContext.Camera.ZFar = value;
                 }
             }
         }
@@ -358,7 +364,14 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             InitializeComponent();
             var color = ColorConverter.ConvertFromString(Settings.Meshplorer_BackgroundColor) as System.Windows.Media.Color?;
             Background_ColorPicker.SelectedColor = color;
-            SceneViewer.Context.BackgroundColor = color is not null ? new Color(color.Value.R, color.Value.G, color.Value.B) : Color.FromRgba(0x999999);
+            SceneContext = new SceneRenderContext();
+            SceneViewer.Context = SceneContext;
+            SceneContext.BackgroundColor = color is not null ? new Color(color.Value.R, color.Value.G, color.Value.B) : Color.FromRgba(0x999999);
+            SceneViewer.Loaded += (sender, args) => 
+            { 
+                this.ViewportLoadAction?.Invoke(); 
+                this.ViewportLoadAction = null; 
+            };
 
             startingUp = false;
         }
@@ -390,15 +403,16 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         /// <summary>
         /// Used for debugging by listing the used instances
         /// </summary>
-        public ObservableCollectionExtended<PreviewTextureCache.PreviewTextureEntry> SceneViewerProperty => SceneViewer?.Context?.TextureCache?.AssetCache;
+        //public ObservableCollectionExtended<PreviewTextureCache.PreviewTextureEntry> SceneViewerProperty => SceneViewer?.Context?.TextureCache?.AssetCache;
 
         public override void LoadExport(ExportEntry exportEntry)
         {
             UnloadExport();
             // Get rid of old objects.
-            SceneViewer?.Context?.TextureCache?.ExpungeStaleCacheItems();
-            SceneViewer.InitializeD3D();
-            OnPropertyChanged(nameof(SceneViewerProperty));
+            // NEEDS RE-IMPLEMENTED
+            //SceneViewer?.Context?.TextureCache?.ExpungeStaleCacheItems();
+            //SceneViewer.InitializeD3D();
+            //OnPropertyChanged(nameof(SceneViewerProperty));
 
             //SceneViewer.Context.BackgroundColor = new SharpDX.Color(128, 128, 128);
             alreadyLoadedImportMaterials.Clear();
@@ -631,39 +645,52 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     }
                     if (prevTask.Result is ModelPreview.PreloadedModelData pmd)
                     {
-                        switch (pmd.meshObject)
+                        Action loadPreviewAction = () =>
                         {
-                            case StaticMesh statM:
-                                STMCollisionMesh = GetMeshFromAggGeom(statM.GetCollisionMeshProperty(Pcc));
-                                Preview = new ModelPreview(SceneViewer.Context.Device, statM, CurrentLOD, SceneViewer.Context.TextureCache, assetCache, pmd);
-                                SceneViewer.Context.Camera.FocusDepth = statM.Bounds.SphereRadius * 1.2f;
-                                break;
-                            case SkeletalMesh skm:
-                                Preview = new ModelPreview(SceneViewer.Context.Device, skm, SceneViewer.Context.TextureCache, assetCache, pmd);
-                                SceneViewer.Context.Camera.FocusDepth = skm.Bounds.SphereRadius * 1.2f;
-                                break;
-                            case StructProperty structProp: //BrushComponent
-                                Preview = new ModelPreview(SceneViewer.Context.Device, GetMeshFromAggGeom(structProp), SceneViewer.Context.TextureCache, assetCache, pmd);
-                                SceneViewer.Context.Camera.FocusDepth = Preview.LODs[0].Mesh.AABBHalfSize.Length() * 1.2f;
-                                break;
-                            case ModelComponent mc:
-                                Preview = new ModelPreview(SceneViewer.Context.Device, GetMeshFromModelComponent(mc), SceneViewer.Context.TextureCache, assetCache, pmd);
-                                //SceneViewer.Context.Camera.FocusDepth = Preview.LODs[0].Mesh.AABBHalfSize.Length() * 1.2f;
-                                break;
-                            case Model m:
-                                var sections = new List<ModelPreviewSection>();
-                                WorldMesh mesh = GetMeshFromModelSubcomponents(m, sections);
-                                pmd.sections = sections;
-                                if (mesh.Vertices.Any())
-                                {
-                                    SceneViewer.Context.Camera.Position = mesh.Vertices[0].Position;
-                                }
+                            switch (pmd.meshObject)
+                            {
+                                case StaticMesh statM:
+                                    STMCollisionMesh = GetMeshFromAggGeom(statM.GetCollisionMeshProperty(Pcc));
+                                    Preview = new ModelPreview(SceneContext.Device, statM, CurrentLOD, SceneContext.TextureCache, assetCache, pmd);
+                                    SceneContext.Camera.FocusDepth = statM.Bounds.SphereRadius * 1.2f;
+                                    break;
+                                case SkeletalMesh skm:
+                                    Preview = new ModelPreview(SceneContext.Device, skm, SceneContext.TextureCache, assetCache, pmd);
+                                    SceneContext.Camera.FocusDepth = skm.Bounds.SphereRadius * 1.2f;
+                                    break;
+                                case StructProperty structProp: //BrushComponent
+                                    Preview = new ModelPreview(SceneContext.Device, GetMeshFromAggGeom(structProp), SceneContext.TextureCache, assetCache, pmd);
+                                    SceneContext.Camera.FocusDepth = Preview.LODs[0].Mesh.AABBHalfSize.Length() * 1.2f;
+                                    break;
+                                case ModelComponent mc:
+                                    Preview = new ModelPreview(SceneContext.Device, GetMeshFromModelComponent(mc), SceneContext.TextureCache, assetCache, pmd);
+                                    //SceneViewer.Context.Camera.FocusDepth = Preview.LODs[0].Mesh.AABBHalfSize.Length() * 1.2f;
+                                    break;
+                                case Model m:
+                                    var sections = new List<ModelPreviewSection>();
+                                    WorldMesh mesh = GetMeshFromModelSubcomponents(m, sections);
+                                    pmd.sections = sections;
+                                    if (mesh.Vertices.Any())
+                                    {
+                                        SceneContext.Camera.Position = mesh.Vertices[0].Position;
+                                    }
 
-                                Preview = new ModelPreview(SceneViewer.Context.Device, mesh, SceneViewer.Context.TextureCache, assetCache, pmd);
-                                //SceneViewer.Context.Camera.FocusDepth = Preview.LODs[0].Mesh.AABBHalfSize.Length() * 1.2f;
-                                break;
+                                    Preview = new ModelPreview(SceneContext.Device, mesh, SceneContext.TextureCache, assetCache, pmd);
+                                    //SceneViewer.Context.Camera.FocusDepth = Preview.LODs[0].Mesh.AABBHalfSize.Length() * 1.2f;
+                                    break;
+                            }
+                            assetCache.Dispose();
+                        };
+
+                        // We can't call graphics methods until the render control has been loaded by WPF - only then will it have initialized D3D.
+                        if (this.SceneContext.IsReady)
+                        {
+                            loadPreviewAction.Invoke();
                         }
-                        assetCache.Dispose();
+                        else
+                        {
+                            this.ViewportLoadAction = loadPreviewAction;
+                        }
 
                         CenterView();
                         LODPicker.ClearEx();
@@ -905,55 +932,98 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
         }
 
+        private void SceneViewer_Render(object sender, EventArgs e)
+        {
+            // BETA BRANCH
+            //if (Preview != null && Preview.LODs.Count > 0)
+            //{
+
+            //    if (CurrentLOD < 0) { CurrentLOD = 0; }
+            //    if (Solid && CurrentLOD < Preview.LODs.Count)
+            //    {
+            //        SceneViewer.Wireframe = false;
+            //        Preview.Render(SceneViewer.Context, CurrentLOD, Matrix4x4.Identity);
+            //    }
+            //    if (Wireframe)
+            //    {
+            //        SceneViewer.Context.Wireframe = true;
+            //        var ViewConstants = new SceneRenderContext.WorldConstants(Matrix4x4.Transpose(SceneViewer.Context.Camera.ProjectionMatrix), Matrix4x4.Transpose(SceneViewer.Context.Camera.ViewMatrix), Matrix4x4.Identity);
+            //        SceneViewer.Context.DefaultEffect.PrepDraw(SceneViewer.Context.ImmediateContext);
+            //        SceneViewer.Context.DefaultEffect.RenderObject(SceneViewer.Context.ImmediateContext, ViewConstants, Preview.LODs[CurrentLOD].Mesh, new SharpDX.Direct3D11.ShaderResourceView[] { null });
+            //    }
+            //    if (IsStaticMesh && ShowCollisionMesh && STMCollisionMesh != null)
+            //    {
+            //        SceneViewer.Context.Wireframe = true;
+            //        var ViewConstants = new SceneRenderContext.WorldConstants(Matrix4x4.Transpose(SceneViewer.Context.Camera.ProjectionMatrix), Matrix4x4.Transpose(SceneViewer.Context.Camera.ViewMatrix), Matrix4x4.Identity);
+            //        SceneViewer.Context.DefaultEffect.PrepDraw(SceneViewer.Context.ImmediateContext);
+            //        SceneViewer.Context.DefaultEffect.RenderObject(SceneViewer.Context.ImmediateContext, ViewConstants, STMCollisionMesh, new SharpDX.Direct3D11.ShaderResourceView[] { null });
+            //    }
+            //}
+        }
+
+        private void MeshRenderer_Unloaded(object sender, RoutedEventArgs e)
+        {
+            Debug.WriteLine("MESHRENDERER UNLOADED");
+            if (Parent is TabItem { Parent: TabControl tc })
+            {
+                tc.SelectionChanged -= MeshRendererWPF_HostingTabSelectionChanged;
+            }
+            SceneContext.UpdateScene -= SceneContext_UpdateScene;
+            SceneContext.RenderScene -= SceneContext_RenderScene;
+            ControlIsLoaded = false;
+        }
+
         private void MeshRenderer_Loaded(object sender, RoutedEventArgs e)
         {
-            if (!HasLoaded)
+            if (!ControlIsLoaded)
             {
+                Debug.WriteLine("MESHRENDERER ONLOADED");
                 if (Parent is TabItem { Parent: TabControl tc })
                 {
                     tc.SelectionChanged += MeshRendererWPF_HostingTabSelectionChanged;
                 }
-                HasLoaded = true;
-                SceneViewer.Context.Update += MeshRenderer_ViewUpdate;
+                ControlIsLoaded = true;
+                SceneContext.UpdateScene += SceneContext_UpdateScene;
+                SceneContext.RenderScene += SceneContext_RenderScene;
             }
         }
 
-        private void MeshRenderer_ViewUpdate(object sender, float timeStep)
+        private void SceneContext_UpdateScene(object sender, float timeStep)
         {
-            if (Rotating)
+            if (ControlIsLoaded && Rotating)
             {
-                SceneViewer.Context.Camera.Yaw += 0.05f * timeStep;
-                if (SceneViewer.Context.Camera.Yaw > 6.28) //It's in radians 
-                    SceneViewer.Context.Camera.Yaw -= 6.28f; // Subtract so we don't overflow if this is open too long
+                SceneContext.Camera.Yaw += 0.3f * timeStep;
+                if (SceneContext.Camera.Yaw > 6.28) //It's in radians 
+                    SceneContext.Camera.Yaw -= 6.28f; // Subtract so we don't overflow if this is open too long
             }
 
-            Matrix4x4.Invert(SceneViewer.Context.Camera.ViewMatrix, out Matrix4x4 viewMatrix);
+            Matrix4x4.Invert(SceneContext.Camera.ViewMatrix, out Matrix4x4 viewMatrix);
             Vector3 eyePosition = viewMatrix.Translation;
 
             if (UseDegrees)
             {
-                CameraPitch = MathUtil.RadiansToDegrees(SceneViewer.Context.Camera.Pitch);
-                CameraYaw = MathUtil.RadiansToDegrees(SceneViewer.Context.Camera.Yaw);
+                CameraPitch = MathUtil.RadiansToDegrees(SceneContext.Camera.Pitch);
+                CameraYaw = MathUtil.RadiansToDegrees(SceneContext.Camera.Yaw);
             }
             else if (UseRadians)
             {
 
-                CameraPitch = SceneViewer.Context.Camera.Pitch;
-                CameraYaw = SceneViewer.Context.Camera.Yaw;
+                CameraPitch = SceneContext.Camera.Pitch;
+                CameraYaw = SceneContext.Camera.Yaw;
             }
             else if (UseUnreal)
             {
-                CameraPitch = SceneViewer.Context.Camera.Pitch.RadiansToUnrealRotationUnits();
-                CameraYaw = SceneViewer.Context.Camera.Yaw.RadiansToUnrealRotationUnits();
+                CameraPitch = SceneContext.Camera.Pitch.RadiansToUnrealRotationUnits();
+                CameraYaw = SceneContext.Camera.Yaw.RadiansToUnrealRotationUnits();
             }
             
             CameraX = eyePosition.X;
             CameraY = eyePosition.Z; // Z and Y are switched to put the UI coordinates into Unreal Z-up coords
             CameraZ = eyePosition.Y;
 
-            CameraFOV = MathUtil.RadiansToDegrees(SceneViewer.Context.Camera.FOV);
-            CameraZNear = SceneViewer.Context.Camera.ZNear;
-            CameraZFar = SceneViewer.Context.Camera.ZFar;
+            CameraFOV = MathUtil.RadiansToDegrees(SceneContext.Camera.FOV);
+            CameraZNear = SceneContext.Camera.ZNear;
+            CameraZFar = SceneContext.Camera.ZFar;
         }
 
         private void BackgroundColorPicker_Changed(object sender, RoutedPropertyChangedEventArgs<System.Windows.Media.Color?> e)
@@ -963,7 +1033,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 var s = e.NewValue.Value.ToString();
                 Settings.Meshplorer_BackgroundColor = s;
                 Settings.Save();
-                SceneViewer.Context.BackgroundColor = new Color(e.NewValue.Value.R, e.NewValue.Value.G, e.NewValue.Value.B);
+                SceneContext.BackgroundColor = new Color(e.NewValue.Value.R, e.NewValue.Value.G, e.NewValue.Value.B);
             }
         }
 
@@ -1003,9 +1073,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 if (SceneViewer.Context != null)
                 {
-                    SceneViewer.Context.Update -= MeshRenderer_ViewUpdate;
+                    SceneContext.RenderScene -= SceneContext_RenderScene;
+                    SceneContext.UpdateScene -= SceneContext_UpdateScene;
                 }
-                SceneViewer.Dispose();
             }
             CurrentLoadedExport = null;
             SceneViewer = null;

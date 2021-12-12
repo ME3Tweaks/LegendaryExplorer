@@ -59,18 +59,15 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             }
         }
 
-        /// <summary>
-        /// The DIrect3D11 device to create textures and resource views with.
-        /// </summary>
-        public Device Device { get; }
+        public RenderContext RenderContext { get; }
 
         /// <summary>
         /// Creates a new PreviewTextureCache.
         /// </summary>
-        /// <param name="device">The DIrect3D11 device to create textures and resource views with.</param>
-        public PreviewTextureCache(Device device)
+        /// <param name="renderContext">The <see cref="RenderContext"/> to create texture and views for.</param>
+        public PreviewTextureCache(RenderContext renderContext)
         {
-            Device = device;
+            this.RenderContext = renderContext;
         }
 
         /// <summary>
@@ -157,8 +154,8 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             try
             {
                 if (preloadedMipInfo != null && metex.Export != preloadedMipInfo.Export) throw new Exception();
-                entry.Texture = metex.generatePreviewTexture(Device, out Texture2DDescription _, preloadedMipInfo, decompressedTextureData);
-                entry.TextureView = new ShaderResourceView(Device, entry.Texture);
+                entry.Texture = SharedToolControls.Scene3D.RenderContextExtensions.LoadUnrealTexture(this.RenderContext, new LegendaryExplorerCore.Unreal.Classes.Texture2D(export));
+                entry.TextureView = new ShaderResourceView(this.RenderContext.Device, entry.Texture);
                 AssetCache.Add(entry);
                 return entry;
             }

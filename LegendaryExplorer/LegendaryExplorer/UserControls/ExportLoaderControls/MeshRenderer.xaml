@@ -11,6 +11,7 @@
              xmlns:legendaryExplorer="clr-namespace:LegendaryExplorer"
              mc:Ignorable="d" 
              Loaded="MeshRenderer_Loaded"
+             Unloaded="MeshRenderer_Unloaded"
              d:DesignHeight="450" d:DesignWidth="800"
              KeyDown="MeshRendererWPF_OnKeyDown"
              KeyUp="MeshRendererWPF_OnKeyUp"

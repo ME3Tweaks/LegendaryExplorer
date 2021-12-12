@@ -19,8 +19,8 @@ namespace LegendaryExplorer.UnrealExtensions.Classes
     public static class Texture2DExtensions
     {
 
-        
 
+        /*
         /// <summary>
         /// Creates a Direct 3D 11 textured based off the top mip of this Texture2D export
         /// </summary>
@@ -76,11 +76,11 @@ namespace LegendaryExplorer.UnrealExtensions.Classes
 
             byte[] compressedData = extractRawData(info, pccRef);
             Bitmap bmp = DDSImage.ToBitmap(compressedData, format, width, height); */
-
-            // Load the decompressed data into an array
-            System.Drawing.Imaging.BitmapData data = bmp.LockBits(new System.Drawing.Rectangle(0, 0, width, height), System.Drawing.Imaging.ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-            var pixels = new byte[data.Stride * data.Height];
-            System.Runtime.InteropServices.Marshal.Copy(data.Scan0, pixels, 0, pixels.Length);
+        /*
+        // Load the decompressed data into an array
+        System.Drawing.Imaging.BitmapData data = bmp.LockBits(new System.Drawing.Rectangle(0, 0, width, height), System.Drawing.Imaging.ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+        var pixels = new byte[data.Stride * data.Height];
+        System.Runtime.InteropServices.Marshal.Copy(data.Scan0, pixels, 0, pixels.Length);
             bmp.UnlockBits(data);
 
             // Create description of texture
@@ -98,15 +98,15 @@ namespace LegendaryExplorer.UnrealExtensions.Classes
 
             // Set up the texture data
             int stride = width * 4;
-            var ds = new SharpDX.DataStream(height * stride, true, true);
-            ds.Write(pixels, 0, height * stride);
-            ds.Position = 0;
+        var ds = new SharpDX.DataStream(height * stride, true, true);
+        ds.Write(pixels, 0, height* stride);
+        ds.Position = 0;
             // Create texture
             var tex = new SharpDX.Direct3D11.Texture2D(device, description, new SharpDX.DataRectangle(ds.DataPointer, stride));
-            ds.Dispose();
+        ds.Dispose();
 
             return tex;
         }
-
+    */
     }
 }

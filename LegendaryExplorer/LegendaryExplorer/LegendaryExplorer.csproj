@@ -38,6 +38,12 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DefineConstants>WINDOWS;AZURE</DefineConstants>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WinDebug|x64'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WinRelease|x64'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
 
   <ItemGroup>
     <None Remove="Resources\Images\bink.jpg" />
@@ -149,6 +155,9 @@
     <Resource Remove="Resources\Images\LEX_Splash_Nightly.png"/>
   </ItemGroup>
 
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\TextureShader.hlsl" />
+  </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\StandardShader.hlsl" />
   </ItemGroup>

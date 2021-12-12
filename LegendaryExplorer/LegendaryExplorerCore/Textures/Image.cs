@@ -42,25 +42,42 @@ using SixLabors.ImageSharp.PixelFormats;
 
 namespace LegendaryExplorerCore.Textures
 {
-    // For passing to another project.
-    public enum GamePlatform
-    {
-        PC,
-        Xenon,
-        PS3,
-        WiiU
-    }
+    ///// <summary>
+    ///// GamePlatform enumeration, which can be passed to other projects
+    ///// </summary>
+    //public enum GamePlatform
+    //{
+    //    PC,
+    //    Xenon,
+    //    PS3,
+    //    WiiU
+    //}
 
+    /// <summary>
+    /// The available formats for pixels of a texture
+    /// </summary>
     public enum PixelFormat
     {
         Unknown, DXT1, DXT3, DXT5, ATI2, V8U8, ARGB, RGB, G8, BC7, BC5
     }
 
+    /// <summary>
+    /// Describes a texture MipMap for use with texturing tools.
+    /// </summary>
     [DebuggerDisplay("MEM MipMap {width}x{height}")]
     public class MipMap
     {
+        /// <summary>
+        /// The raw data of the mip
+        /// </summary>
         public byte[] data { get; private set; }
+        /// <summary>
+        /// The width of the mip
+        /// </summary>
         public int width { get; private set; }
+        /// <summary>
+        /// The height of the mip
+        /// </summary>
         public int height { get; private set; }
         public int origWidth { get; private set; }
         public int origHeight { get; private set; }
@@ -556,6 +573,14 @@ namespace LegendaryExplorerCore.Textures
             return tmpData;
         }
 
+        /// <summary>
+        /// Converts raw texture data to a PNG file
+        /// </summary>
+        /// <param name="src">Raw, uncompressed pixel data</param>
+        /// <param name="w">The width of the source texture's data</param>
+        /// <param name="h">The height of the source texture's data</param>
+        /// <param name="format">The format of the uncompressed pixel data</param>
+        /// <returns><see cref="MemoryStream"/> of the PNG that was converted. If written to disk, this would be a PNG file.</returns>
         public static MemoryStream convertToPng(byte[] src, int w, int h, PixelFormat format)
         {
             byte[] tmpData = convertRawToARGB(src, ref w, ref h, format);
@@ -779,8 +804,19 @@ namespace LegendaryExplorerCore.Textures
             }
         }
 
+        /// <summary>
+        /// Checks if a number is a power of two.
+        /// </summary>
+        /// <param name="n">The number to check</param>
+        /// <returns>True if the number is a power of two, false otherwise</returns>
         public static bool IsPowerOfTwo(int n) => (n & (n - 1)) == 0;
 
+        /// <summary>
+        /// Returns the... power of two of the number?
+        /// </summary>
+        /// <todo>NOT SURE HOW THIS CODE WORKS!</todo>
+        /// <param name="n"></param>
+        /// <returns></returns>
         public static int returnPowerOfTwo(int n)
         {
             n--;
@@ -793,6 +829,12 @@ namespace LegendaryExplorerCore.Textures
             return n;
         }
 
+        /// <summary>
+        /// Loads an image from disk and converts it internally to the specified pixel format
+        /// </summary>
+        /// <param name="filename">Full file path on disk to the image</param>
+        /// <param name="targetFormat">The destination image pixel format</param>
+        /// <returns>Image with the specified pixel format</returns>
         public static Image LoadFromFile(string filename, PixelFormat targetFormat)
         {
             var mips = new List<MipMap>();

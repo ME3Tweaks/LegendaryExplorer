@@ -4951,7 +4951,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     combinerNode.Add(new BinInterpNode(bin.Position, $"Unknown float: {bin.ReadSingle()}") { Length = 4 });
                     var inputOp = bin.ReadInt32();
                     combinerNode.Add(new BinInterpNode(bin.Position - 4, $"Input Operation: {inputOp} - {(FxInputOperation)inputOp}"));
-                    
+
                     // Parent links section
                     var parentLinks = new List<ITreeItem>(); //Name list to Bones and other facefx phenomes?
                     var parentLinksCount = bin.ReadInt32();
@@ -4977,7 +4977,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             parentLinkItems.Add(new BinInterpNode(bin.Position, $"Function Parameter {n3}: {bin.ReadSingle()}") { Length = 4 });
                         }
                     }
-                    
+
                     // Parameters section
                     int parameterCount = bin.ReadInt32();
                     var fxaParameter = new List<ITreeItem>(parameterCount);
@@ -6093,7 +6093,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             var subnodes = new List<ITreeItem>();
             try
             {
-                var bin = new EndianReader(data) {Endian = Pcc.Endian};
+                var bin = new EndianReader(data) { Endian = Pcc.Endian };
                 bin.JumpTo(CurrentLoadedExport.propsEnd());
 
                 bool isIndexed = !bin.ReadBoolInt();
@@ -7552,7 +7552,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             var game = CurrentLoadedExport.FileRef.Game;
             try
             {
-
+                PackageCache cache = new PackageCache();
                 var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
                 bin.JumpTo(binarystart);
 
@@ -7565,7 +7565,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         var value = bin.Skip(-4).ReadInt32();
                         if (value != 0 && Pcc.GetEntry(value) is ExportEntry matExport)
                         {
-                            foreach (IEntry texture in new MaterialInstanceConstant(matExport).Textures)
+                            foreach (IEntry texture in new MaterialInstanceConstant(matExport, cache).Textures)
                             {
                                 matNode.Items.Add(new BinInterpNode(-1, $"#{texture.UIndex} {texture.FileRef.GetEntryString(texture.UIndex)}", NodeType.StructLeafObject) { UIndexValue = texture.UIndex });
                             }

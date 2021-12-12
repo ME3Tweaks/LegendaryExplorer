@@ -48,7 +48,7 @@ namespace LegendaryExplorerCore.Audio
                 {
                     debugOut?.Invoke($@" >> Found Basegame AFC {oafc}");
                 }
-                inventory.OfficialDLCAFCFiles = MELoadedFiles.GetOfficialDLCFolders(game).SelectMany(x => Directory.GetFiles(x, "*.afc", SearchOption.AllDirectories)).ToList();
+                inventory.OfficialDLCAFCFiles = MELoadedDLC.GetOfficialDLCFolders(game).SelectMany(x => Directory.GetFiles(x, "*.afc", SearchOption.AllDirectories)).ToList();
                 foreach (var oafc in inventory.OfficialDLCAFCFiles)
                 {
                     debugOut?.Invoke($@" >> Found AFC in DLC directory {oafc}");
