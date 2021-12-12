@@ -52,7 +52,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             }
         }
 
-        public static unsafe Texture2D LoadFile(this RenderContext renderContext, string filename, bool alphaAsBlack)
+        public static unsafe Texture2D LoadFile(this RenderContext renderContext, string filename)
         {
             LegendaryExplorerCore.Textures.PixelFormat pixelFormat = LegendaryExplorerCore.Textures.PixelFormat.ARGB;
             byte[] pixelData = LegendaryExplorerCore.Textures.TexConverter.LoadTexture(filename, out uint width, out uint height, ref pixelFormat); // NEEDS WAY TO HAVE ALPHA AS BLACK!
@@ -60,7 +60,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             return renderContext.LoadTexture(width, height, format, pixelData);
         }
 
-        public static Texture2D LoadUnrealMip(this RenderContext renderContext, LegendaryExplorerCore.Unreal.Classes.Texture2DMipInfo mip, LegendaryExplorerCore.Textures.PixelFormat pixelFormat, bool alphaAsBlack)
+        public static Texture2D LoadUnrealMip(this RenderContext renderContext, LegendaryExplorerCore.Unreal.Classes.Texture2DMipInfo mip, LegendaryExplorerCore.Textures.PixelFormat pixelFormat)
         {
             // Todo: Needs way to set black alpha
             var imagebytes = LegendaryExplorerCore.Unreal.Classes.Texture2D.GetTextureData(mip, mip.Export.Game);
@@ -75,9 +75,9 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             return renderContext.LoadTexture(mipWidth, mipHeight, mipFormat, imagebytes);
         }
 
-        public static Texture2D LoadUnrealTexture(this RenderContext renderContext, LegendaryExplorerCore.Unreal.Classes.Texture2D unrealTexture, bool alphaAsBlack)
+        public static Texture2D LoadUnrealTexture(this RenderContext renderContext, LegendaryExplorerCore.Unreal.Classes.Texture2D unrealTexture)
         {
-            return renderContext.LoadUnrealMip(unrealTexture.GetTopMip(), LegendaryExplorerCore.Textures.Image.getPixelFormatType(unrealTexture.Export.GetProperties().GetProp<EnumProperty>("Format").Value.Name), alphaAsBlack);
+            return renderContext.LoadUnrealMip(unrealTexture.GetTopMip(), LegendaryExplorerCore.Textures.Image.getPixelFormatType(unrealTexture.Export.GetProperties().GetProp<EnumProperty>("Format").Value.Name));
         }
     }
 
