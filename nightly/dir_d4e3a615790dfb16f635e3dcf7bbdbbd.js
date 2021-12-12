@@ -18,8 +18,12 @@ var dir_d4e3a615790dfb16f635e3dcf7bbdbbd =
     [ "MEDirectories.cs", "_m_e_directories_8cs.html", [
       [ "LegendaryExplorerCore.GameFilesystem.MEDirectories", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_directories.html", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_directories" ]
     ] ],
+    [ "MELoadedDLC.cs", "_m_e_loaded_d_l_c_8cs.html", [
+      [ "LegendaryExplorerCore.GameFilesystem.MELoadedDLC", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_loaded_d_l_c.html", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_loaded_d_l_c" ]
+    ] ],
     [ "MELoadedFiles.cs", "_m_e_loaded_files_8cs.html", [
       [ "LegendaryExplorerCore.GameFilesystem.MELoadedFiles", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_loaded_files.html", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_loaded_files" ]
     ] ],
-    [ "MountFile.cs", "_mount_file_8cs.html", "_mount_file_8cs" ]
+    [ "MountFile.cs", "_mount_file_8cs.html", "_mount_file_8cs" ],
+    [ "NSDoc.cs", "_game_filesystem_2_n_s_doc_8cs.html", null ]
 ];

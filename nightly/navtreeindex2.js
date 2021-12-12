@@ -54,6 +54,7 @@ var NAVTREEINDEX2 =
 "_function_call_8cs.html":[2,0,0,0,21,3,1,34],
 "_function_parameter_8cs.html":[2,0,0,0,21,3,1,35],
 "_game_file_filters_8cs.html":[2,0,0,0,7,5],
+"_game_filesystem_2_n_s_doc_8cs.html":[2,0,0,0,5,11],
 "_gammtek_utilities_8cs.html":[2,0,0,0,6,15],
 "_general_format_info_8cs.html":[2,0,0,0,6,8,0,7],
 "_general_member_description_8cs.html":[2,0,0,0,6,8,0,8],
@@ -248,6 +249,5 @@ var NAVTREEINDEX2 =
 "_m_e3_enums_8cs.html#a02bba84089a181666f5734a342392964ac15ee4162769aa31f7052d5a322271ff":[2,0,0,0,20,11,551,5],
 "_m_e3_enums_8cs.html#a02bba84089a181666f5734a342392964ad0fee4e03ea73a027c570112702538d8":[2,0,0,0,20,11,551,18],
 "_m_e3_enums_8cs.html#a02bba84089a181666f5734a342392964ad9fffdd34053c6280275fb926bb2f956":[2,0,0,0,20,11,551,16],
-"_m_e3_enums_8cs.html#a02bba84089a181666f5734a342392964adccc179f3fd57448990803e9dbcbf868":[2,0,0,0,20,11,551,10],
-"_m_e3_enums_8cs.html#a02bba84089a181666f5734a342392964aff3560dcfeb70baee31e80636371b470":[2,0,0,0,20,11,551,14]
+"_m_e3_enums_8cs.html#a02bba84089a181666f5734a342392964adccc179f3fd57448990803e9dbcbf868":[2,0,0,0,20,11,551,10]
 };

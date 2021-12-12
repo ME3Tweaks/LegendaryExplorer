@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.2"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Legendary Explorer Core: LegendaryExplorer/LegendaryExplorerCore/GameFilesystem/MountFile.cs File Reference</title>
+<title>Legendary Explorer Core: LegendaryExplorer/LegendaryExplorerCore/GameFilesystem/MELoadedDLC.cs File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -67,7 +67,7 @@ $(function() {
 </div>
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
-$(document).ready(function(){initNavTree('_mount_file_8cs.html',''); initResizable(); });
+$(document).ready(function(){initNavTree('_m_e_loaded_d_l_c_8cs.html',''); initResizable(); });
 /* @license-end */
 </script>
 <div id="doc-content">
@@ -88,19 +88,15 @@ $(document).ready(function(){initNavTree('_mount_file_8cs.html',''); initResizab
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
-<a href="#namespaces">Namespaces</a> &#124;
-<a href="#enum-members">Enumerations</a>  </div>
-  <div class="headertitle"><div class="title">MountFile.cs File Reference</div></div>
+<a href="#namespaces">Namespaces</a>  </div>
+  <div class="headertitle"><div class="title">MELoadedDLC.cs File Reference</div></div>
 </div><!--header-->
 <div class="contents">
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_game_filesystem_1_1_mount_flag.html">LegendaryExplorerCore.GameFilesystem.MountFlag</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Interposer for the mount flag enum types  <a href="class_legendary_explorer_core_1_1_game_filesystem_1_1_mount_flag.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_game_filesystem_1_1_mount_file.html">LegendaryExplorerCore.GameFilesystem.MountFile</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Represents a Mount.dlc file for a Game2 or Game3 DLC  <a href="class_legendary_explorer_core_1_1_game_filesystem_1_1_mount_file.html#details">More...</a><br /></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_loaded_d_l_c.html">LegendaryExplorerCore.GameFilesystem.MELoadedDLC</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Static methods to get information on DLC installed in a game  <a href="class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_loaded_d_l_c.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
@@ -110,26 +106,6 @@ Namespaces</h2></td></tr>
 <tr class="memitem:namespace_legendary_explorer_core_1_1_game_filesystem"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespace_legendary_explorer_core_1_1_game_filesystem.html">LegendaryExplorerCore.GameFilesystem</a></td></tr>
 <tr class="memdesc:namespace_legendary_explorer_core_1_1_game_filesystem"><td class="mdescLeft">&#160;</td><td class="mdescRight">Game directories, loaded files, loaded DLC, mount files<br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
-Enumerations</h2></td></tr>
-<tr class="memitem:aa23133fea72a60ea6401786fd5a6381b"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespace_legendary_explorer_core_1_1_game_filesystem.html#aa23133fea72a60ea6401786fd5a6381b">LegendaryExplorerCore.GameFilesystem.EME2MountFileFlag</a> { <a class="el" href="namespace_legendary_explorer_core_1_1_game_filesystem.html#aa23133fea72a60ea6401786fd5a6381ba07fa975399df505630e4ef89acfd1786">LegendaryExplorerCore.GameFilesystem.CerberusNetworkRequired</a> = 0x1
-, <a class="el" href="namespace_legendary_explorer_core_1_1_game_filesystem.html#aa23133fea72a60ea6401786fd5a6381baf1f842bd6ce7f7268e852c901a09cce6">LegendaryExplorerCore.GameFilesystem.SaveFileDependency</a> = 0x2
- }</td></tr>
-<tr class="memdesc:aa23133fea72a60ea6401786fd5a6381b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flags that can be set in a Game 2 Mount.dlc file to represent DLC loading options  <a href="namespace_legendary_explorer_core_1_1_game_filesystem.html#aa23133fea72a60ea6401786fd5a6381b">More...</a><br /></td></tr>
-<tr class="separator:aa23133fea72a60ea6401786fd5a6381b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a43f479aacbaa9f3944b3581287be5f53"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespace_legendary_explorer_core_1_1_game_filesystem.html#a43f479aacbaa9f3944b3581287be5f53">LegendaryExplorerCore.GameFilesystem.EME3MountFileFlag</a> { <br />
-&#160;&#160;<a class="el" href="namespace_legendary_explorer_core_1_1_game_filesystem.html#a43f479aacbaa9f3944b3581287be5f53af1f842bd6ce7f7268e852c901a09cce6">LegendaryExplorerCore.GameFilesystem.SaveFileDependency</a> = 0x01
-, <a class="el" href="namespace_legendary_explorer_core_1_1_game_filesystem.html#a43f479aacbaa9f3944b3581287be5f53a0ba87809bd425495d3cdc6248b1de175">LegendaryExplorerCore.GameFilesystem.DLCSetupCanMisMatch</a> = 0x02
-, <a class="el" href="namespace_legendary_explorer_core_1_1_game_filesystem.html#a43f479aacbaa9f3944b3581287be5f53a8cfccaa80412ab13f5bfed3dda52787f">LegendaryExplorerCore.GameFilesystem.LoadsInMultiplayer</a> = 0x04
-, <a class="el" href="namespace_legendary_explorer_core_1_1_game_filesystem.html#a43f479aacbaa9f3944b3581287be5f53af1df0846b837d79d3fbee7fc06ac725d">LegendaryExplorerCore.GameFilesystem.LoadsInSingleplayer</a> = 0x08
-, <br />
-&#160;&#160;<a class="el" href="namespace_legendary_explorer_core_1_1_game_filesystem.html#a43f479aacbaa9f3944b3581287be5f53adb3de5306eab8a487dc91cef634a20c6">LegendaryExplorerCore.GameFilesystem.UsedInMatchMaking</a> = 0x10
-, <a class="el" href="namespace_legendary_explorer_core_1_1_game_filesystem.html#a43f479aacbaa9f3944b3581287be5f53a313cce250e2838225a7e98d037f2675c">LegendaryExplorerCore.GameFilesystem.UsesGoBigFeatures</a> = 0x20
-<br />
- }</td></tr>
-<tr class="memdesc:a43f479aacbaa9f3944b3581287be5f53"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flags that can be set in a Game 3 Mount.dlc file to represent DLC loading options  <a href="namespace_legendary_explorer_core_1_1_game_filesystem.html#a43f479aacbaa9f3944b3581287be5f53">More...</a><br /></td></tr>
-<tr class="separator:a43f479aacbaa9f3944b3581287be5f53"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 </div><!-- contents -->
 </div><!-- doc-content -->
@@ -137,7 +113,7 @@ Enumerations</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_6b467221cb8c52609cb7bd37220827a8.html">LegendaryExplorer</a></li><li class="navelem"><a class="el" href="dir_099f5db2eb2e797c115034d844f5b234.html">LegendaryExplorerCore</a></li><li class="navelem"><a class="el" href="dir_d4e3a615790dfb16f635e3dcf7bbdbbd.html">GameFilesystem</a></li><li class="navelem"><a class="el" href="_mount_file_8cs.html">MountFile.cs</a></li>
+    <li class="navelem"><a class="el" href="dir_6b467221cb8c52609cb7bd37220827a8.html">LegendaryExplorer</a></li><li class="navelem"><a class="el" href="dir_099f5db2eb2e797c115034d844f5b234.html">LegendaryExplorerCore</a></li><li class="navelem"><a class="el" href="dir_d4e3a615790dfb16f635e3dcf7bbdbbd.html">GameFilesystem</a></li><li class="navelem"><a class="el" href="_m_e_loaded_d_l_c_8cs.html">MELoadedDLC.cs</a></li>
     <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.2 </li>
   </ul>
 </div>

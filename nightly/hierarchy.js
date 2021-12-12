@@ -758,6 +758,7 @@ var hierarchy =
     [ "LegendaryExplorerCore.Packages.CloningImportingAndRelinking.ME3XL", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_m_e3_x_l.html", null ],
     [ "LegendaryExplorerCore.GameFilesystem.MEDirectories", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_directories.html", null ],
     [ "LegendaryExplorerCore.Packages.MEGameExtensions", "class_legendary_explorer_core_1_1_packages_1_1_m_e_game_extensions.html", null ],
+    [ "LegendaryExplorerCore.GameFilesystem.MELoadedDLC", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_loaded_d_l_c.html", null ],
     [ "LegendaryExplorerCore.GameFilesystem.MELoadedFiles", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_loaded_files.html", null ],
     [ "LegendaryExplorerCore.Packages.MELocalizationExtensions", "class_legendary_explorer_core_1_1_packages_1_1_m_e_localization_extensions.html", null ],
     [ "LegendaryExplorerCore.Gammtek.Extensions.Reflection.MemberInfoExtensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_reflection_1_1_member_info_extensions.html", null ],
