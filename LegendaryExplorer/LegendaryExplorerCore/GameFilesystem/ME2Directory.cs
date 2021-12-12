@@ -312,7 +312,7 @@ namespace LegendaryExplorerCore.GameFilesystem
         public static readonly string[] BasegameTFCs = { "Textures" };
 
         /// <summary>
-        /// Determines if a Mass Effect 3 folder is a valid game directory by checking for the game executable
+        /// Determines if a Mass Effect 1 folder is a valid game directory by checking for the game executable
         /// </summary>
         /// <param name="rootPath">Path to check</param>
         /// <returns>True if directory is valid, false otherwise</returns>
