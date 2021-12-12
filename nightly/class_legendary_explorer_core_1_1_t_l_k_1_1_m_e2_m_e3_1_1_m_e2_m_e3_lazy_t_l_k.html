@@ -92,43 +92,52 @@ $(document).ready(function(){initNavTree('class_legendary_explorer_core_1_1_t_l_
   <div class="headertitle"><div class="title">LegendaryExplorerCore.TLK.ME2ME3.ME2ME3LazyTLK Class Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Like <a class="el" href="class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_talk_file.html" title="Represents a .tlk file, as used by ME2/ME3/LE2/LE3. Used for reading from .tlk files,...">TalkFile</a>, but does not decompress the strings when loaded. Only decompresses a string when it's requested.  
+ <a href="class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_lazy_t_l_k.html#details">More...</a></p>
 <div class="dynheader">
 Inheritance diagram for LegendaryExplorerCore.TLK.ME2ME3.ME2ME3LazyTLK:</div>
 <div class="dyncontent">
  <div class="center">
   <img src="class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_lazy_t_l_k.png" usemap="#LegendaryExplorerCore.TLK.ME2ME3.ME2ME3LazyTLK_map" alt=""/>
   <map id="LegendaryExplorerCore.TLK.ME2ME3.ME2ME3LazyTLK_map" name="LegendaryExplorerCore.TLK.ME2ME3.ME2ME3LazyTLK_map">
-<area href="class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base.html" alt="LegendaryExplorerCore.TLK.ME2ME3.ME2ME3TLKBase" shape="rect" coords="0,0,337,24"/>
+<area href="class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base.html" title="Contains functionality shared between TalkFile and ME2ME3LazyTLK" alt="LegendaryExplorerCore.TLK.ME2ME3.ME2ME3TLKBase" shape="rect" coords="0,0,337,24"/>
   </map>
 </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a6963845a09a0a14e46e834fd9b43bd72"><td class="memItemLeft" align="right" valign="top">override void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_lazy_t_l_k.html#a6963845a09a0a14e46e834fd9b43bd72">LoadTlkDataFromStream</a> (Stream fs)</td></tr>
+<tr class="memdesc:a6963845a09a0a14e46e834fd9b43bd72"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads <a class="el" href="namespace_legendary_explorer_core_1_1_t_l_k.html">TLK</a> data from a stream. The position must be properly set.   <a href="class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_lazy_t_l_k.html#a6963845a09a0a14e46e834fd9b43bd72">More...</a><br /></td></tr>
 <tr class="separator:a6963845a09a0a14e46e834fd9b43bd72"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab453237ac87d6516761f088f25bd451e"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_lazy_t_l_k.html#ab453237ac87d6516761f088f25bd451e">findDataById</a> (int strRefID, bool withFileName=false, bool returnNullIfNotFound=false, bool noQuotes=false, bool male=true)</td></tr>
-<tr class="separator:ab453237ac87d6516761f088f25bd451e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a11d3241d1960e295e0ee1d155bca0512"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_lazy_t_l_k.html#a11d3241d1960e295e0ee1d155bca0512">FindDataById</a> (int strRefID, bool withFileName=false)</td></tr>
+<tr class="memdesc:a11d3241d1960e295e0ee1d155bca0512"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the string corresponding to the <em>strRefID</em>  (wrapped in quotes), if it exists in this file. If it does not, returns <code>"No Data"</code>  <a href="class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_lazy_t_l_k.html#a11d3241d1960e295e0ee1d155bca0512">More...</a><br /></td></tr>
+<tr class="separator:a11d3241d1960e295e0ee1d155bca0512"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base.html">LegendaryExplorerCore.TLK.ME2ME3.ME2ME3TLKBase</a></td></tr>
-<tr class="memitem:afed81c243446ff20ae5910b208583aef inherit pub_methods_class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base.html#afed81c243446ff20ae5910b208583aef">LoadTlkData</a> (string fileName)</td></tr>
-<tr class="memdesc:afed81c243446ff20ae5910b208583aef inherit pub_methods_class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads a <a class="el" href="namespace_legendary_explorer_core_1_1_t_l_k.html">TLK</a> file into memory.  <a href="class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base.html#afed81c243446ff20ae5910b208583aef">More...</a><br /></td></tr>
-<tr class="separator:afed81c243446ff20ae5910b208583aef inherit pub_methods_class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a919809ed17d335b2ccd886f61ed4eb22 inherit pub_methods_class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base.html#a919809ed17d335b2ccd886f61ed4eb22">LoadTlkData</a> (string filePath)</td></tr>
+<tr class="memdesc:a919809ed17d335b2ccd886f61ed4eb22 inherit pub_methods_class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads <a class="el" href="namespace_legendary_explorer_core_1_1_t_l_k.html">TLK</a> data from a file  <a href="class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base.html#a919809ed17d335b2ccd886f61ed4eb22">More...</a><br /></td></tr>
+<tr class="separator:a919809ed17d335b2ccd886f61ed4eb22 inherit pub_methods_class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
 <tr class="inherit_header pub_attribs_class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base"><td colspan="2" onclick="javascript:toggleInherit('pub_attribs_class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base')"><img src="closed.png" alt="-"/>&#160;Public Attributes inherited from <a class="el" href="class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base.html">LegendaryExplorerCore.TLK.ME2ME3.ME2ME3TLKBase</a></td></tr>
-<tr class="memitem:ae1a326c24e9c1fb47f261dc1b19d0a38 inherit pub_attribs_class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base.html#ae1a326c24e9c1fb47f261dc1b19d0a38">name</a></td></tr>
-<tr class="separator:ae1a326c24e9c1fb47f261dc1b19d0a38 inherit pub_attribs_class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a86a86668858f8b48be39066c5b6fdb37 inherit pub_attribs_class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base.html#a86a86668858f8b48be39066c5b6fdb37">path</a></td></tr>
-<tr class="separator:a86a86668858f8b48be39066c5b6fdb37 inherit pub_attribs_class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1af91041c6e2a7dd29c93ab460be5fdd inherit pub_attribs_class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base.html#a1af91041c6e2a7dd29c93ab460be5fdd">FileName</a></td></tr>
+<tr class="memdesc:a1af91041c6e2a7dd29c93ab460be5fdd inherit pub_attribs_class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base"><td class="mdescLeft">&#160;</td><td class="mdescRight">Filename without extension  <a href="class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base.html#a1af91041c6e2a7dd29c93ab460be5fdd">More...</a><br /></td></tr>
+<tr class="separator:a1af91041c6e2a7dd29c93ab460be5fdd inherit pub_attribs_class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a31d28af4f2268bc71fda766b8d5440e9 inherit pub_attribs_class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base.html#a31d28af4f2268bc71fda766b8d5440e9">FilePath</a></td></tr>
+<tr class="memdesc:a31d28af4f2268bc71fda766b8d5440e9 inherit pub_attribs_class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base"><td class="mdescLeft">&#160;</td><td class="mdescRight">File path  <a href="class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base.html#a31d28af4f2268bc71fda766b8d5440e9">More...</a><br /></td></tr>
+<tr class="separator:a31d28af4f2268bc71fda766b8d5440e9 inherit pub_attribs_class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_static_methods_class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base"><td colspan="2" onclick="javascript:toggleInherit('pro_static_methods_class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base')"><img src="closed.png" alt="-"/>&#160;Static Protected Member Functions inherited from <a class="el" href="class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base.html">LegendaryExplorerCore.TLK.ME2ME3.ME2ME3TLKBase</a></td></tr>
 <tr class="memitem:a435796e8ad9b8e5ce5766d20986baee9 inherit pro_static_methods_class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base.html#a435796e8ad9b8e5ce5766d20986baee9">GetString</a> (ref int bitOffset, StringBuilder builder, <a class="el" href="class_legendary_explorer_core_1_1_t_l_k_1_1_t_l_k_bit_array.html">TLKBitArray</a> bits, <a class="el" href="struct_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base_1_1_huffman_node.html">HuffmanNode</a>[] characterTree)</td></tr>
-<tr class="memdesc:a435796e8ad9b8e5ce5766d20986baee9 inherit pro_static_methods_class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base"><td class="mdescLeft">&#160;</td><td class="mdescRight">Starts reading 'Bits' array at position 'bitOffset'. Read data is used on a Huffman Tree to decode read bits into real strings. 'bitOffset' variable is updated with last read bit PLUS ONE (first unread bit).  <a href="class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base.html#a435796e8ad9b8e5ce5766d20986baee9">More...</a><br /></td></tr>
+<tr class="memdesc:a435796e8ad9b8e5ce5766d20986baee9 inherit pro_static_methods_class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base"><td class="mdescLeft">&#160;</td><td class="mdescRight">Starts reading <em>bits</em>  array at position <em>bitOffset</em> . Read data is used on a Huffman Tree to decode read bits into real strings. <em>bitOffset</em>  variable is updated with last read bit PLUS ONE (first unread bit).  <a href="class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base.html#a435796e8ad9b8e5ce5766d20986baee9">More...</a><br /></td></tr>
 <tr class="separator:a435796e8ad9b8e5ce5766d20986baee9 inherit pro_static_methods_class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_attribs_class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base.html">LegendaryExplorerCore.TLK.ME2ME3.ME2ME3TLKBase</a></td></tr>
 <tr class="memitem:aa031433a447b9b99123fb9c6cfe0d8c5 inherit pro_attribs_class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base"><td class="memItemLeft" align="right" valign="top"><a class="el" href="struct_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base_1_1_t_l_k_header.html">TLKHeader</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base.html#aa031433a447b9b99123fb9c6cfe0d8c5">Header</a></td></tr>
 <tr class="separator:aa031433a447b9b99123fb9c6cfe0d8c5 inherit pro_attribs_class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Function Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p >Like <a class="el" href="class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_talk_file.html" title="Represents a .tlk file, as used by ME2/ME3/LE2/LE3. Used for reading from .tlk files,...">TalkFile</a>, but does not decompress the strings when loaded. Only decompresses a string when it's requested. </p>
+</div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a6963845a09a0a14e46e834fd9b43bd72" name="a6963845a09a0a14e46e834fd9b43bd72"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a6963845a09a0a14e46e834fd9b43bd72">&#9670;&nbsp;</a></span>LoadTlkDataFromStream()</h2>
 
@@ -153,12 +162,14 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Loads <a class="el" href="namespace_legendary_explorer_core_1_1_t_l_k.html">TLK</a> data from a stream. The position must be properly set.  </p>
+
 <p>Implements <a class="el" href="class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base.html#a9b24494fd8f6cd2abfb69a123b4b8547">LegendaryExplorerCore.TLK.ME2ME3.ME2ME3TLKBase</a>.</p>
 
 </div>
 </div>
-<a id="ab453237ac87d6516761f088f25bd451e" name="ab453237ac87d6516761f088f25bd451e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab453237ac87d6516761f088f25bd451e">&#9670;&nbsp;</a></span>findDataById()</h2>
+<a id="a11d3241d1960e295e0ee1d155bca0512" name="a11d3241d1960e295e0ee1d155bca0512"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a11d3241d1960e295e0ee1d155bca0512">&#9670;&nbsp;</a></span>FindDataById()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -167,7 +178,7 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">string LegendaryExplorerCore.TLK.ME2ME3.ME2ME3LazyTLK.findDataById </td>
+          <td class="memname">string LegendaryExplorerCore.TLK.ME2ME3.ME2ME3LazyTLK.FindDataById </td>
           <td>(</td>
           <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>strRefID</em>, </td>
@@ -176,25 +187,7 @@ Additional Inherited Members</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>withFileName</em> = <code>false</code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>returnNullIfNotFound</em> = <code>false</code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>noQuotes</em> = <code>false</code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>male</em> = <code>true</code>&#160;</td>
+          <td class="paramname"><em>withFileName</em> = <code>false</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -208,6 +201,16 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Gets the string corresponding to the <em>strRefID</em>  (wrapped in quotes), if it exists in this file. If it does not, returns <code>"No Data"</code> </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">strRefID</td><td></td></tr>
+    <tr><td class="paramname">withFileName</td><td>Optional: Should the filename be appended to the returned string</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
 
 </div>
 </div>

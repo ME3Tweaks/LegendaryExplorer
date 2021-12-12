@@ -28,6 +28,5 @@ var dir_099f5db2eb2e797c115034d844f5b234 =
     [ "LegendaryExplorerCoreLibSettings.cs", "_legendary_explorer_core_lib_settings_8cs.html", [
       [ "LegendaryExplorerCore.LegendaryExplorerCoreLibSettings", "class_legendary_explorer_core_1_1_legendary_explorer_core_lib_settings.html", "class_legendary_explorer_core_1_1_legendary_explorer_core_lib_settings" ]
     ] ],
-    [ "NetFrameworkPolyfills.cs", "_net_framework_polyfills_8cs.html", null ],
     [ "SkipLocalsInit.cs", "_skip_locals_init_8cs.html", null ]
 ];

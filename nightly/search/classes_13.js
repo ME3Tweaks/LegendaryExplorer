@@ -30,7 +30,7 @@ var searchData=
   ['throwhelper_27',['ThrowHelper',['../class_legendary_explorer_core_1_1_gammtek_1_1_throw_helper.html',1,'LegendaryExplorerCore::Gammtek']]],
   ['tlkbitarray_28',['TLKBitArray',['../class_legendary_explorer_core_1_1_t_l_k_1_1_t_l_k_bit_array.html',1,'LegendaryExplorerCore::TLK']]],
   ['tlkheader_29',['TLKHeader',['../struct_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base_1_1_t_l_k_header.html',1,'LegendaryExplorerCore::TLK::ME2ME3::ME2ME3TLKBase']]],
-  ['tlkstringref_30',['TLKStringRef',['../class_legendary_explorer_core_1_1_t_l_k_1_1_m_e1_1_1_m_e1_talk_file_1_1_t_l_k_string_ref.html',1,'LegendaryExplorerCore::TLK::ME1::ME1TalkFile']]],
+  ['tlkstringref_30',['TLKStringRef',['../class_legendary_explorer_core_1_1_t_l_k_1_1_t_l_k_string_ref.html',1,'LegendaryExplorerCore::TLK']]],
   ['tocbinfile_31',['TOCBinFile',['../class_legendary_explorer_core_1_1_unreal_1_1_t_o_c_bin_file.html',1,'LegendaryExplorerCore::Unreal']]],
   ['toccreator_32',['TOCCreator',['../class_legendary_explorer_core_1_1_unreal_1_1_t_o_c_creator.html',1,'LegendaryExplorerCore::Unreal']]],
   ['tochashtableentry_33',['TOCHashTableEntry',['../class_legendary_explorer_core_1_1_unreal_1_1_t_o_c_bin_file_1_1_t_o_c_hash_table_entry.html',1,'LegendaryExplorerCore::Unreal::TOCBinFile']]],

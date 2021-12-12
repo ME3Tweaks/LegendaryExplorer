@@ -39,7 +39,7 @@ var searchData=
   ['staticarrayindex_36',['StaticArrayIndex',['../class_legendary_explorer_core_1_1_unreal_1_1_property.html#a19dcb2cfcdb9c6230d492edcfcde8201',1,'LegendaryExplorerCore::Unreal::Property']]],
   ['staticarraylength_37',['StaticArrayLength',['../class_legendary_explorer_core_1_1_packages_1_1_property_info.html#a2acac731ccaf72eb02ff1e528e22abe7',1,'LegendaryExplorerCore::Packages::PropertyInfo']]],
   ['storagetype_38',['StorageType',['../class_legendary_explorer_core_1_1_textures_1_1_studio_1_1_m_e_m_texture_map_1_1_compressed_mip_info.html#af92a4de1b820d73fab4e7e40be9c9b5f',1,'LegendaryExplorerCore::Textures::Studio::MEMTextureMap::CompressedMipInfo']]],
-  ['stringid_39',['StringID',['../class_legendary_explorer_core_1_1_t_l_k_1_1_m_e1_1_1_m_e1_talk_file_1_1_t_l_k_string_ref.html#a7511efb1c858fcc518ed916b23de1f58',1,'LegendaryExplorerCore::TLK::ME1::ME1TalkFile::TLKStringRef']]],
+  ['stringid_39',['StringID',['../class_legendary_explorer_core_1_1_t_l_k_1_1_t_l_k_string_ref.html#a767ac4c9cb6b90525053f1a42578dbd7',1,'LegendaryExplorerCore::TLK::TLKStringRef']]],
   ['strrefid_40',['StrRefID',['../class_legendary_explorer_core_1_1_dialogue_1_1_speaker_extended.html#a2e7d63dc76a4b78f3e46d3caaba181a1',1,'LegendaryExplorerCore::Dialogue::SpeakerExtended']]],
   ['structtype_41',['StructType',['../class_legendary_explorer_core_1_1_unreal_1_1_struct_property.html#a3b84987d6a4a95a38b910875856b1339',1,'LegendaryExplorerCore::Unreal::StructProperty']]],
   ['subnamespaces_42',['Subnamespaces',['../class_legendary_explorer_core_1_1_coalesced_1_1_namespace.html#ab227c2196b9078128bc2d3490b891ea7',1,'LegendaryExplorerCore::Coalesced::Namespace']]],

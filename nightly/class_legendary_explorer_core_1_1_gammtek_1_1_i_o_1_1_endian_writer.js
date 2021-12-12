@@ -29,6 +29,7 @@ var class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_endian_writer =
     [ "WriteBoolInt", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_endian_writer.html#aecb9c32b1bc04167a91ca4beab5857a5", null ],
     [ "WriteBoolByte", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_endian_writer.html#a560f4e466bf836d53fc7fe47b016eca5", null ],
     [ "WriteZeros", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_endian_writer.html#a02a137a81ae91363af990fcd52f067ab", null ],
+    [ "WriteGuid", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_endian_writer.html#a92b30c842ab0604a9dd2b01e44a6b753", null ],
     [ "ToArray", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_endian_writer.html#a9238ec8be2dc07e242c5ae90dbece0aa", null ],
     [ "Endian", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_endian_writer.html#a80e1aa9ae25db880c3850a81d9859f1c", null ]
 ];

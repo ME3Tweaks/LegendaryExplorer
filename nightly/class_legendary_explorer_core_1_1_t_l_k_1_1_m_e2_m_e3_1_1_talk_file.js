@@ -2,7 +2,7 @@ var class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_talk_file =
 [
     [ "ProgressChangedEventHandler", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_talk_file.html#a2c30330829a701f9c3122ef35835d5f2", null ],
     [ "LoadTlkDataFromStream", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_talk_file.html#a2a8b8b08d6365cddce5e690ca980b935", null ],
-    [ "findDataById", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_talk_file.html#a2a22933e5c9c170820df0ad9df60c3e5", null ],
+    [ "FindDataById", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_talk_file.html#a4dd6be34a05ccb1edc6590564c1c23d4", null ],
     [ "DumpToFile", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_talk_file.html#a6b3ab417eed30f94ddd9ab68e296d559", null ],
     [ "WriteXMLString", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_talk_file.html#afd459678c40d06ba55151cdf165c01b9", null ],
     [ "ReplaceString", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_talk_file.html#a379f9cedebb98b648ae0c048eea24e94", null ],

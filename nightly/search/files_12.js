@@ -12,13 +12,14 @@ var searchData=
   ['tfccompactor_2ecs_9',['TFCCompactor.cs',['../_t_f_c_compactor_8cs.html',1,'']]],
   ['throwhelper_2ecs_10',['ThrowHelper.cs',['../_throw_helper_8cs.html',1,'']]],
   ['tlkbitarray_2ecs_11',['TLKBitArray.cs',['../_t_l_k_bit_array_8cs.html',1,'']]],
-  ['tocbinfile_2ecs_12',['TOCBinFile.cs',['../_t_o_c_bin_file_8cs.html',1,'']]],
-  ['toccreator_2ecs_13',['TOCCreator.cs',['../_t_o_c_creator_8cs.html',1,'']]],
-  ['tokenmatcherbase_2ecs_14',['TokenMatcherBase.cs',['../_token_matcher_base_8cs.html',1,'']]],
-  ['tokenstream_2ecs_15',['TokenStream.cs',['../_token_stream_8cs.html',1,'']]],
-  ['treenode_2ecs_16',['TreeNode.cs',['../_tree_node_8cs.html',1,'']]],
-  ['tstexturemap_2ecs_17',['TSTextureMap.cs',['../_t_s_texture_map_8cs.html',1,'']]],
-  ['typeextensions_2ecs_18',['TypeExtensions.cs',['../_type_extensions_8cs.html',1,'']]],
-  ['typeinfoextensions_2ecs_19',['TypeInfoExtensions.cs',['../_type_info_extensions_8cs.html',1,'']]],
-  ['typeswitch_2ecs_20',['TypeSwitch.cs',['../_type_switch_8cs.html',1,'']]]
+  ['tlkstringref_2ecs_12',['TLKStringRef.cs',['../_t_l_k_string_ref_8cs.html',1,'']]],
+  ['tocbinfile_2ecs_13',['TOCBinFile.cs',['../_t_o_c_bin_file_8cs.html',1,'']]],
+  ['toccreator_2ecs_14',['TOCCreator.cs',['../_t_o_c_creator_8cs.html',1,'']]],
+  ['tokenmatcherbase_2ecs_15',['TokenMatcherBase.cs',['../_token_matcher_base_8cs.html',1,'']]],
+  ['tokenstream_2ecs_16',['TokenStream.cs',['../_token_stream_8cs.html',1,'']]],
+  ['treenode_2ecs_17',['TreeNode.cs',['../_tree_node_8cs.html',1,'']]],
+  ['tstexturemap_2ecs_18',['TSTextureMap.cs',['../_t_s_texture_map_8cs.html',1,'']]],
+  ['typeextensions_2ecs_19',['TypeExtensions.cs',['../_type_extensions_8cs.html',1,'']]],
+  ['typeinfoextensions_2ecs_20',['TypeInfoExtensions.cs',['../_type_info_extensions_8cs.html',1,'']]],
+  ['typeswitch_2ecs_21',['TypeSwitch.cs',['../_type_switch_8cs.html',1,'']]]
 ];

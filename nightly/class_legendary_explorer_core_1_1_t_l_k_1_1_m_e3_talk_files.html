@@ -93,24 +93,33 @@ $(document).ready(function(){initNavTree('class_legendary_explorer_core_1_1_t_l_
   <div class="headertitle"><div class="title">LegendaryExplorerCore.TLK.ME3TalkFiles Class Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Manages stringref lookup for ME3 tlks  
+ <a href="class_legendary_explorer_core_1_1_t_l_k_1_1_m_e3_talk_files.html#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a20adff4f765d2e63b66d8256b823e00c"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_t_l_k_1_1_m_e3_talk_files.html#a20adff4f765d2e63b66d8256b823e00c">LoadTlkData</a> (string fileName)</td></tr>
-<tr class="separator:a20adff4f765d2e63b66d8256b823e00c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa38a0526d9f25b0a89c41e79f048184e"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_t_l_k_1_1_m_e3_talk_files.html#aa38a0526d9f25b0a89c41e79f048184e">findDataById</a> (int strRefID, bool withFileName=false)</td></tr>
-<tr class="separator:aa38a0526d9f25b0a89c41e79f048184e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab4b30c8d37b5ea21da30578b0f03737e"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_t_l_k_1_1_m_e3_talk_files.html#ab4b30c8d37b5ea21da30578b0f03737e">LoadTlkData</a> (string filePath)</td></tr>
+<tr class="memdesc:ab4b30c8d37b5ea21da30578b0f03737e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds the .tlk file at <em>filePath</em>  to the loaded tlks.  <a href="class_legendary_explorer_core_1_1_t_l_k_1_1_m_e3_talk_files.html#ab4b30c8d37b5ea21da30578b0f03737e">More...</a><br /></td></tr>
+<tr class="separator:ab4b30c8d37b5ea21da30578b0f03737e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8a748e7ecb09a537eba368391f270bd8"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_t_l_k_1_1_m_e3_talk_files.html#a8a748e7ecb09a537eba368391f270bd8">FindDataById</a> (int strRefID, bool withFileName=false)</td></tr>
+<tr class="memdesc:a8a748e7ecb09a537eba368391f270bd8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the string corresponding to the <em>strRefID</em>  (wrapped in quotes), if it exists in the loaded tlks. If it does not, returns <code>"No Data"</code>  <a href="class_legendary_explorer_core_1_1_t_l_k_1_1_m_e3_talk_files.html#a8a748e7ecb09a537eba368391f270bd8">More...</a><br /></td></tr>
+<tr class="separator:a8a748e7ecb09a537eba368391f270bd8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa5c8e0980f4b212b0f91b4d71cfa7439"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_t_l_k_1_1_m_e3_talk_files.html#aa5c8e0980f4b212b0f91b4d71cfa7439">ClearLoadedTlks</a> ()</td></tr>
+<tr class="memdesc:aa5c8e0980f4b212b0f91b4d71cfa7439"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clears the loaded Tlks.  <a href="class_legendary_explorer_core_1_1_t_l_k_1_1_m_e3_talk_files.html#aa5c8e0980f4b212b0f91b4d71cfa7439">More...</a><br /></td></tr>
 <tr class="separator:aa5c8e0980f4b212b0f91b4d71cfa7439"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-attribs" name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
-<tr class="memitem:a99a3f6b42c4a356122da72a4396aad70"><td class="memItemLeft" align="right" valign="top">static readonly List&lt; <a class="el" href="class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_lazy_t_l_k.html">ME2ME3LazyTLK</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_t_l_k_1_1_m_e3_talk_files.html#a99a3f6b42c4a356122da72a4396aad70">tlkList</a> = new()</td></tr>
-<tr class="separator:a99a3f6b42c4a356122da72a4396aad70"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae009fa6facd5a09eb6ac8b9c57552be0"><td class="memItemLeft" align="right" valign="top">static readonly List&lt; <a class="el" href="class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_lazy_t_l_k.html">ME2ME3LazyTLK</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_t_l_k_1_1_m_e3_talk_files.html#ae009fa6facd5a09eb6ac8b9c57552be0">LoadedTlks</a> = new()</td></tr>
+<tr class="memdesc:ae009fa6facd5a09eb6ac8b9c57552be0"><td class="mdescLeft">&#160;</td><td class="mdescRight">The tlks that will be searched by <a class="el" href="class_legendary_explorer_core_1_1_t_l_k_1_1_m_e3_talk_files.html#a8a748e7ecb09a537eba368391f270bd8" title="Gets the string corresponding to the strRefID  (wrapped in quotes), if it exists in the loaded tlks....">FindDataById</a>  <a href="class_legendary_explorer_core_1_1_t_l_k_1_1_m_e3_talk_files.html#ae009fa6facd5a09eb6ac8b9c57552be0">More...</a><br /></td></tr>
+<tr class="separator:ae009fa6facd5a09eb6ac8b9c57552be0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Function Documentation</h2>
-<a id="a20adff4f765d2e63b66d8256b823e00c" name="a20adff4f765d2e63b66d8256b823e00c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a20adff4f765d2e63b66d8256b823e00c">&#9670;&nbsp;</a></span>LoadTlkData()</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p >Manages stringref lookup for ME3 tlks </p>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="ab4b30c8d37b5ea21da30578b0f03737e" name="ab4b30c8d37b5ea21da30578b0f03737e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab4b30c8d37b5ea21da30578b0f03737e">&#9670;&nbsp;</a></span>LoadTlkData()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -122,7 +131,7 @@ Static Public Attributes</h2></td></tr>
           <td class="memname">static void LegendaryExplorerCore.TLK.ME3TalkFiles.LoadTlkData </td>
           <td>(</td>
           <td class="paramtype">string&#160;</td>
-          <td class="paramname"><em>fileName</em></td><td>)</td>
+          <td class="paramname"><em>filePath</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -133,10 +142,18 @@ Static Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Adds the .tlk file at <em>filePath</em>  to the loaded tlks. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">filePath</td><td>Path of the .tlk file to load</td></tr>
+  </table>
+  </dd>
+</dl>
+
 </div>
 </div>
-<a id="aa38a0526d9f25b0a89c41e79f048184e" name="aa38a0526d9f25b0a89c41e79f048184e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa38a0526d9f25b0a89c41e79f048184e">&#9670;&nbsp;</a></span>findDataById()</h2>
+<a id="a8a748e7ecb09a537eba368391f270bd8" name="a8a748e7ecb09a537eba368391f270bd8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8a748e7ecb09a537eba368391f270bd8">&#9670;&nbsp;</a></span>FindDataById()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -145,7 +162,7 @@ Static Public Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static string LegendaryExplorerCore.TLK.ME3TalkFiles.findDataById </td>
+          <td class="memname">static string LegendaryExplorerCore.TLK.ME3TalkFiles.FindDataById </td>
           <td>(</td>
           <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>strRefID</em>, </td>
@@ -168,6 +185,15 @@ Static Public Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Gets the string corresponding to the <em>strRefID</em>  (wrapped in quotes), if it exists in the loaded tlks. If it does not, returns <code>"No Data"</code> </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">strRefID</td><td></td></tr>
+    <tr><td class="paramname">withFileName</td><td>Optional: Should the filename be appended to the returned string</td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -194,11 +220,13 @@ Static Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Clears the loaded Tlks. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="a99a3f6b42c4a356122da72a4396aad70" name="a99a3f6b42c4a356122da72a4396aad70"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a99a3f6b42c4a356122da72a4396aad70">&#9670;&nbsp;</a></span>tlkList</h2>
+<a id="ae009fa6facd5a09eb6ac8b9c57552be0" name="ae009fa6facd5a09eb6ac8b9c57552be0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae009fa6facd5a09eb6ac8b9c57552be0">&#9670;&nbsp;</a></span>LoadedTlks</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -207,7 +235,7 @@ Static Public Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">readonly List&lt;<a class="el" href="class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_lazy_t_l_k.html">ME2ME3LazyTLK</a>&gt; LegendaryExplorerCore.TLK.ME3TalkFiles.tlkList = new()</td>
+          <td class="memname">readonly List&lt;<a class="el" href="class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_lazy_t_l_k.html">ME2ME3LazyTLK</a>&gt; LegendaryExplorerCore.TLK.ME3TalkFiles.LoadedTlks = new()</td>
         </tr>
       </table>
   </td>
@@ -216,6 +244,8 @@ Static Public Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>The tlks that will be searched by <a class="el" href="class_legendary_explorer_core_1_1_t_l_k_1_1_m_e3_talk_files.html#a8a748e7ecb09a537eba368391f270bd8" title="Gets the string corresponding to the strRefID  (wrapped in quotes), if it exists in the loaded tlks....">FindDataById</a> </p>
 
 </div>
 </div>

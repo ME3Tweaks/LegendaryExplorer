@@ -22,7 +22,7 @@ var searchData=
   ['matineehelper_19',['MatineeHelper',['../class_legendary_explorer_core_1_1_matinee_1_1_matinee_helper.html',1,'LegendaryExplorerCore::Matinee']]],
   ['me1materialuniformexpressionselement_20',['ME1MaterialUniformExpressionsElement',['../class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_m_e1_material_uniform_expressions_element.html',1,'LegendaryExplorerCore::Unreal::BinaryConverters']]],
   ['me1talkfile_21',['ME1TalkFile',['../class_legendary_explorer_core_1_1_t_l_k_1_1_m_e1_1_1_m_e1_talk_file.html',1,'LegendaryExplorerCore::TLK::ME1']]],
-  ['me1talkfiles_22',['ME1TalkFiles',['../class_legendary_explorer_core_1_1_m_e1_1_1_m_e1_talk_files.html',1,'LegendaryExplorerCore::ME1']]],
+  ['me1talkfiles_22',['ME1TalkFiles',['../class_legendary_explorer_core_1_1_t_l_k_1_1_m_e1_talk_files.html',1,'LegendaryExplorerCore::TLK']]],
   ['me1unrealobjectinfo_23',['ME1UnrealObjectInfo',['../class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_m_e1_unreal_object_info.html',1,'LegendaryExplorerCore::Unreal::ObjectInfo']]],
   ['me2me3lazytlk_24',['ME2ME3LazyTLK',['../class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_lazy_t_l_k.html',1,'LegendaryExplorerCore::TLK::ME2ME3']]],
   ['me2me3tlkbase_25',['ME2ME3TLKBase',['../class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base.html',1,'LegendaryExplorerCore::TLK::ME2ME3']]],

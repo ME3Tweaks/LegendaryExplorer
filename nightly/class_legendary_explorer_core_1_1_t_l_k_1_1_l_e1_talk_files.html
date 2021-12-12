@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.2"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Legendary Explorer Core: LegendaryExplorerCore.ME1.ME1TalkFiles Class Reference</title>
+<title>Legendary Explorer Core: LegendaryExplorerCore.TLK.LE1TalkFiles Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -67,7 +67,7 @@ $(function() {
 </div>
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
-$(document).ready(function(){initNavTree('class_legendary_explorer_core_1_1_m_e1_1_1_m_e1_talk_files.html',''); initResizable(); });
+$(document).ready(function(){initNavTree('class_legendary_explorer_core_1_1_t_l_k_1_1_l_e1_talk_files.html',''); initResizable(); });
 /* @license-end */
 </script>
 <div id="doc-content">
@@ -89,30 +89,37 @@ $(document).ready(function(){initNavTree('class_legendary_explorer_core_1_1_m_e1
   <div class="summary">
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="#pub-static-attribs">Static Public Attributes</a> &#124;
-<a href="class_legendary_explorer_core_1_1_m_e1_1_1_m_e1_talk_files-members.html">List of all members</a>  </div>
-  <div class="headertitle"><div class="title">LegendaryExplorerCore.ME1.ME1TalkFiles Class Reference</div></div>
+<a href="class_legendary_explorer_core_1_1_t_l_k_1_1_l_e1_talk_files-members.html">List of all members</a>  </div>
+  <div class="headertitle"><div class="title">LegendaryExplorerCore.TLK.LE1TalkFiles Class Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Manages stringref lookup for LE1 tlks  
+ <a href="class_legendary_explorer_core_1_1_t_l_k_1_1_l_e1_talk_files.html#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a9220d5879469ead054a81fcf2b6baf7b"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_m_e1_1_1_m_e1_talk_files.html#a9220d5879469ead054a81fcf2b6baf7b">LoadTlkData</a> (string fileName, int uIndex)</td></tr>
-<tr class="separator:a9220d5879469ead054a81fcf2b6baf7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a72c6f16c9c3367de20d5be3b5d8fa5a1"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_m_e1_1_1_m_e1_talk_files.html#a72c6f16c9c3367de20d5be3b5d8fa5a1">findDataById</a> (int strRefID, <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> package, bool withFileName=false)</td></tr>
-<tr class="separator:a72c6f16c9c3367de20d5be3b5d8fa5a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6d9d98277ec61e444f0440019527c351"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_m_e1_1_1_m_e1_talk_files.html#a6d9d98277ec61e444f0440019527c351">ClearLoadedTlks</a> ()</td></tr>
-<tr class="separator:a6d9d98277ec61e444f0440019527c351"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a25cd72c23c8eb57786edec297d76a033"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_t_l_k_1_1_l_e1_talk_files.html#a25cd72c23c8eb57786edec297d76a033">LoadTlkData</a> (string filePath, int uIndex)</td></tr>
+<tr class="memdesc:a25cd72c23c8eb57786edec297d76a033"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds the BioTalkFile at <em>uIndex</em>  in the LE1 package file at <em>filePath</em>  to the loaded tlks.  <a href="class_legendary_explorer_core_1_1_t_l_k_1_1_l_e1_talk_files.html#a25cd72c23c8eb57786edec297d76a033">More...</a><br /></td></tr>
+<tr class="separator:a25cd72c23c8eb57786edec297d76a033"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab3a49f54dac6dae7b75f5eb1dfbd4bd2"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_t_l_k_1_1_l_e1_talk_files.html#ab3a49f54dac6dae7b75f5eb1dfbd4bd2">FindDataById</a> (int strRefID, <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> package, bool withFileName=false)</td></tr>
+<tr class="memdesc:ab3a49f54dac6dae7b75f5eb1dfbd4bd2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the string corresponding to the <em>strRefID</em>  (wrapped in quotes), if it exists in the tlks in <em>package</em>  or in the loaded tlks. If not found, returns <code>"No Data"</code>  <a href="class_legendary_explorer_core_1_1_t_l_k_1_1_l_e1_talk_files.html#ab3a49f54dac6dae7b75f5eb1dfbd4bd2">More...</a><br /></td></tr>
+<tr class="separator:ab3a49f54dac6dae7b75f5eb1dfbd4bd2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a879ccdd14e6da204cf08f4644bd45ba1"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_t_l_k_1_1_l_e1_talk_files.html#a879ccdd14e6da204cf08f4644bd45ba1">ClearLoadedTlks</a> ()</td></tr>
+<tr class="memdesc:a879ccdd14e6da204cf08f4644bd45ba1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clears the loaded Tlks.  <a href="class_legendary_explorer_core_1_1_t_l_k_1_1_l_e1_talk_files.html#a879ccdd14e6da204cf08f4644bd45ba1">More...</a><br /></td></tr>
+<tr class="separator:a879ccdd14e6da204cf08f4644bd45ba1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-attribs" name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
-<tr class="memitem:a2e8af05efffbb6a0609eff034451eb18"><td class="memItemLeft" align="right" valign="top">static List&lt; <a class="el" href="class_legendary_explorer_core_1_1_t_l_k_1_1_m_e1_1_1_m_e1_talk_file.html">ME1TalkFile</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_m_e1_1_1_m_e1_talk_files.html#a2e8af05efffbb6a0609eff034451eb18">tlkList</a> = new()</td></tr>
-<tr class="separator:a2e8af05efffbb6a0609eff034451eb18"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8efc878167db908a256e557c5c35e8b6"><td class="memItemLeft" align="right" valign="top">static Dictionary&lt; <a class="el" href="class_legendary_explorer_core_1_1_t_l_k_1_1_m_e1_1_1_m_e1_talk_file.html">ME1TalkFile</a>, string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_m_e1_1_1_m_e1_talk_files.html#a8efc878167db908a256e557c5c35e8b6">localtlkList</a> = new()</td></tr>
-<tr class="separator:a8efc878167db908a256e557c5c35e8b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a538df5f682b8b1dbc728beb59bed63b5"><td class="memItemLeft" align="right" valign="top">static readonly List&lt; <a class="el" href="class_legendary_explorer_core_1_1_t_l_k_1_1_m_e1_1_1_m_e1_talk_file.html">ME1TalkFile</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_t_l_k_1_1_l_e1_talk_files.html#a538df5f682b8b1dbc728beb59bed63b5">LoadedTlks</a> = new()</td></tr>
+<tr class="memdesc:a538df5f682b8b1dbc728beb59bed63b5"><td class="mdescLeft">&#160;</td><td class="mdescRight">The tlks that will be searched by <a class="el" href="class_legendary_explorer_core_1_1_t_l_k_1_1_l_e1_talk_files.html#ab3a49f54dac6dae7b75f5eb1dfbd4bd2" title="Gets the string corresponding to the strRefID  (wrapped in quotes), if it exists in the tlks in packa...">FindDataById</a>  <a href="class_legendary_explorer_core_1_1_t_l_k_1_1_l_e1_talk_files.html#a538df5f682b8b1dbc728beb59bed63b5">More...</a><br /></td></tr>
+<tr class="separator:a538df5f682b8b1dbc728beb59bed63b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Function Documentation</h2>
-<a id="a9220d5879469ead054a81fcf2b6baf7b" name="a9220d5879469ead054a81fcf2b6baf7b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9220d5879469ead054a81fcf2b6baf7b">&#9670;&nbsp;</a></span>LoadTlkData()</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p >Manages stringref lookup for LE1 tlks </p>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="a25cd72c23c8eb57786edec297d76a033" name="a25cd72c23c8eb57786edec297d76a033"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a25cd72c23c8eb57786edec297d76a033">&#9670;&nbsp;</a></span>LoadTlkData()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -121,10 +128,10 @@ Static Public Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static void LegendaryExplorerCore.ME1.ME1TalkFiles.LoadTlkData </td>
+          <td class="memname">static void LegendaryExplorerCore.TLK.LE1TalkFiles.LoadTlkData </td>
           <td>(</td>
           <td class="paramtype">string&#160;</td>
-          <td class="paramname"><em>fileName</em>, </td>
+          <td class="paramname"><em>filePath</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -145,10 +152,19 @@ Static Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Adds the BioTalkFile at <em>uIndex</em>  in the LE1 package file at <em>filePath</em>  to the loaded tlks. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">filePath</td><td>Path of the LE1 package file to look in</td></tr>
+    <tr><td class="paramname">uIndex</td><td>Uindex of the BioTalkFile export to load</td></tr>
+  </table>
+  </dd>
+</dl>
+
 </div>
 </div>
-<a id="a72c6f16c9c3367de20d5be3b5d8fa5a1" name="a72c6f16c9c3367de20d5be3b5d8fa5a1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a72c6f16c9c3367de20d5be3b5d8fa5a1">&#9670;&nbsp;</a></span>findDataById()</h2>
+<a id="ab3a49f54dac6dae7b75f5eb1dfbd4bd2" name="ab3a49f54dac6dae7b75f5eb1dfbd4bd2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab3a49f54dac6dae7b75f5eb1dfbd4bd2">&#9670;&nbsp;</a></span>FindDataById()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -157,7 +173,7 @@ Static Public Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static string LegendaryExplorerCore.ME1.ME1TalkFiles.findDataById </td>
+          <td class="memname">static string LegendaryExplorerCore.TLK.LE1TalkFiles.FindDataById </td>
           <td>(</td>
           <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>strRefID</em>, </td>
@@ -187,10 +203,20 @@ Static Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Gets the string corresponding to the <em>strRefID</em>  (wrapped in quotes), if it exists in the tlks in <em>package</em>  or in the loaded tlks. If not found, returns <code>"No Data"</code> </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">strRefID</td><td></td></tr>
+    <tr><td class="paramname">package</td><td>If not null, looks through the tlks in this package first</td></tr>
+    <tr><td class="paramname">withFileName</td><td>Optional: Should the filename be appended to the returned string</td></tr>
+  </table>
+  </dd>
+</dl>
+
 </div>
 </div>
-<a id="a6d9d98277ec61e444f0440019527c351" name="a6d9d98277ec61e444f0440019527c351"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6d9d98277ec61e444f0440019527c351">&#9670;&nbsp;</a></span>ClearLoadedTlks()</h2>
+<a id="a879ccdd14e6da204cf08f4644bd45ba1" name="a879ccdd14e6da204cf08f4644bd45ba1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a879ccdd14e6da204cf08f4644bd45ba1">&#9670;&nbsp;</a></span>ClearLoadedTlks()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -199,7 +225,7 @@ Static Public Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static void LegendaryExplorerCore.ME1.ME1TalkFiles.ClearLoadedTlks </td>
+          <td class="memname">static void LegendaryExplorerCore.TLK.LE1TalkFiles.ClearLoadedTlks </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -212,11 +238,13 @@ Static Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Clears the loaded Tlks. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="a2e8af05efffbb6a0609eff034451eb18" name="a2e8af05efffbb6a0609eff034451eb18"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2e8af05efffbb6a0609eff034451eb18">&#9670;&nbsp;</a></span>tlkList</h2>
+<a id="a538df5f682b8b1dbc728beb59bed63b5" name="a538df5f682b8b1dbc728beb59bed63b5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a538df5f682b8b1dbc728beb59bed63b5">&#9670;&nbsp;</a></span>LoadedTlks</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -225,7 +253,7 @@ Static Public Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">List&lt;<a class="el" href="class_legendary_explorer_core_1_1_t_l_k_1_1_m_e1_1_1_m_e1_talk_file.html">ME1TalkFile</a>&gt; LegendaryExplorerCore.ME1.ME1TalkFiles.tlkList = new()</td>
+          <td class="memname">readonly List&lt;<a class="el" href="class_legendary_explorer_core_1_1_t_l_k_1_1_m_e1_1_1_m_e1_talk_file.html">ME1TalkFile</a>&gt; LegendaryExplorerCore.TLK.LE1TalkFiles.LoadedTlks = new()</td>
         </tr>
       </table>
   </td>
@@ -235,32 +263,12 @@ Static Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-</div>
-</div>
-<a id="a8efc878167db908a256e557c5c35e8b6" name="a8efc878167db908a256e557c5c35e8b6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8efc878167db908a256e557c5c35e8b6">&#9670;&nbsp;</a></span>localtlkList</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">Dictionary&lt;<a class="el" href="class_legendary_explorer_core_1_1_t_l_k_1_1_m_e1_1_1_m_e1_talk_file.html">ME1TalkFile</a>, string&gt; LegendaryExplorerCore.ME1.ME1TalkFiles.localtlkList = new()</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
+<p>The tlks that will be searched by <a class="el" href="class_legendary_explorer_core_1_1_t_l_k_1_1_l_e1_talk_files.html#ab3a49f54dac6dae7b75f5eb1dfbd4bd2" title="Gets the string corresponding to the strRefID  (wrapped in quotes), if it exists in the tlks in packa...">FindDataById</a> </p>
 
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>LegendaryExplorer/LegendaryExplorerCore/TLK/<a class="el" href="_m_e1_talkfiles_8cs.html">ME1Talkfiles.cs</a></li>
+<li>LegendaryExplorer/LegendaryExplorerCore/TLK/<a class="el" href="_l_e1_talkfiles_8cs.html">LE1Talkfiles.cs</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
@@ -268,7 +276,7 @@ Static Public Attributes</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="namespace_legendary_explorer_core.html">LegendaryExplorerCore</a></li><li class="navelem"><a class="el" href="namespace_legendary_explorer_core_1_1_m_e1.html">ME1</a></li><li class="navelem"><a class="el" href="class_legendary_explorer_core_1_1_m_e1_1_1_m_e1_talk_files.html">ME1TalkFiles</a></li>
+    <li class="navelem"><a class="el" href="namespace_legendary_explorer_core.html">LegendaryExplorerCore</a></li><li class="navelem"><a class="el" href="namespace_legendary_explorer_core_1_1_t_l_k.html">TLK</a></li><li class="navelem"><a class="el" href="class_legendary_explorer_core_1_1_t_l_k_1_1_l_e1_talk_files.html">LE1TalkFiles</a></li>
     <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.2 </li>
   </ul>
 </div>

@@ -212,7 +212,6 @@ var NAVTREEINDEX25 =
 "_name_literal_8cs.html":[2,0,0,0,21,3,1,44],
 "_name_literal_matcher_8cs.html":[2,0,0,0,21,4,0,0,0],
 "_namespace_8cs.html":[2,0,0,0,1,14],
-"_net_framework_polyfills_8cs.html":[2,0,0,0,24],
 "_new_operator_8cs.html":[2,0,0,0,21,3,1,45],
 "_node_8cs.html":[2,0,0,0,1,0,2],
 "_node_type_8cs.html":[2,0,0,0,6,3,6],
@@ -249,5 +248,6 @@ var NAVTREEINDEX25 =
 "_package_extensions_8cs.html":[2,0,0,0,14,15],
 "_package_saver_8cs.html":[2,0,0,0,14,16],
 "_pair_8cs.html":[2,0,0,0,1,0,3],
-"_parallel_c_r_c_8cs.html":[2,0,0,0,7,7]
+"_parallel_c_r_c_8cs.html":[2,0,0,0,7,7],
+"_path_char_type_8cs.html":[2,0,0,0,6,9,1]
 };

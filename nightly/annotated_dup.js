@@ -380,9 +380,7 @@ var annotated_dup =
             [ "UnContainer", "class_legendary_explorer_core_1_1_m_e1_1_1_unreal_1_1_unhood_bytecode_1_1_un_container.html", "class_legendary_explorer_core_1_1_m_e1_1_1_unreal_1_1_unhood_bytecode_1_1_un_container" ],
             [ "UnFunction", "class_legendary_explorer_core_1_1_m_e1_1_1_unreal_1_1_unhood_bytecode_1_1_un_function.html", "class_legendary_explorer_core_1_1_m_e1_1_1_unreal_1_1_unhood_bytecode_1_1_un_function" ]
           ] ]
-        ] ],
-        [ "LE1TalkFiles", "class_legendary_explorer_core_1_1_m_e1_1_1_l_e1_talk_files.html", "class_legendary_explorer_core_1_1_m_e1_1_1_l_e1_talk_files" ],
-        [ "ME1TalkFiles", "class_legendary_explorer_core_1_1_m_e1_1_1_m_e1_talk_files.html", "class_legendary_explorer_core_1_1_m_e1_1_1_m_e1_talk_files" ]
+        ] ]
       ] ],
       [ "Memory", "namespace_legendary_explorer_core_1_1_memory.html", [
         [ "MemoryManager", "class_legendary_explorer_core_1_1_memory_1_1_memory_manager.html", "class_legendary_explorer_core_1_1_memory_1_1_memory_manager" ]
@@ -503,11 +501,14 @@ var annotated_dup =
           [ "ME2ME3TLKBase", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base.html", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base" ],
           [ "TalkFile", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_talk_file.html", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_talk_file" ]
         ] ],
+        [ "LE1TalkFiles", "class_legendary_explorer_core_1_1_t_l_k_1_1_l_e1_talk_files.html", "class_legendary_explorer_core_1_1_t_l_k_1_1_l_e1_talk_files" ],
         [ "LE2TalkFiles", "class_legendary_explorer_core_1_1_t_l_k_1_1_l_e2_talk_files.html", "class_legendary_explorer_core_1_1_t_l_k_1_1_l_e2_talk_files" ],
         [ "LE3TalkFiles", "class_legendary_explorer_core_1_1_t_l_k_1_1_l_e3_talk_files.html", "class_legendary_explorer_core_1_1_t_l_k_1_1_l_e3_talk_files" ],
+        [ "ME1TalkFiles", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e1_talk_files.html", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e1_talk_files" ],
         [ "ME2TalkFiles", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_talk_files.html", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_talk_files" ],
         [ "ME3TalkFiles", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e3_talk_files.html", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e3_talk_files" ],
-        [ "TLKBitArray", "class_legendary_explorer_core_1_1_t_l_k_1_1_t_l_k_bit_array.html", "class_legendary_explorer_core_1_1_t_l_k_1_1_t_l_k_bit_array" ]
+        [ "TLKBitArray", "class_legendary_explorer_core_1_1_t_l_k_1_1_t_l_k_bit_array.html", "class_legendary_explorer_core_1_1_t_l_k_1_1_t_l_k_bit_array" ],
+        [ "TLKStringRef", "class_legendary_explorer_core_1_1_t_l_k_1_1_t_l_k_string_ref.html", "class_legendary_explorer_core_1_1_t_l_k_1_1_t_l_k_string_ref" ]
       ] ],
       [ "Unreal", "namespace_legendary_explorer_core_1_1_unreal.html", [
         [ "BinaryConverters", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html", [

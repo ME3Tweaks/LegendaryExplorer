@@ -9,7 +9,6 @@ var class_legendary_explorer_core_1_1_helpers_1_1_stream_helpers =
     [ "WriteFromBuffer", "class_legendary_explorer_core_1_1_helpers_1_1_stream_helpers.html#a4244d6bb0f27163538eac5faf467e81b", null ],
     [ "ReadGuid", "class_legendary_explorer_core_1_1_helpers_1_1_stream_helpers.html#a0794ed9c651a591b04c2d4549afb2784", null ],
     [ "WriteGuid", "class_legendary_explorer_core_1_1_helpers_1_1_stream_helpers.html#a946def429f9c92034e52b095ef911908", null ],
-    [ "WriteGuid", "class_legendary_explorer_core_1_1_helpers_1_1_stream_helpers.html#a58ecb208ce80333499df0b1efbc493df", null ],
     [ "WriteToFile", "class_legendary_explorer_core_1_1_helpers_1_1_stream_helpers.html#a2274af6572a02af297b87114ec07e288", null ],
     [ "WriteToFile", "class_legendary_explorer_core_1_1_helpers_1_1_stream_helpers.html#a4fecb311ab8879d88275239f5627a2f1", null ],
     [ "WriteFromStream", "class_legendary_explorer_core_1_1_helpers_1_1_stream_helpers.html#a8d8ea747b5f080c0ab35dabf686d852b", null ],

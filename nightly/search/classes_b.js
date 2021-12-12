@@ -4,7 +4,7 @@ var searchData=
   ['labeltableentry_1',['LabelTableEntry',['../struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_label_table_entry.html',1,'LegendaryExplorerCore::Unreal::BinaryConverters']]],
   ['labeltabletoken_2',['LabelTableToken',['../class_legendary_explorer_core_1_1_m_e1_1_1_unreal_1_1_unhood_bytecode_1_1_label_table_token.html',1,'LegendaryExplorerCore::ME1::Unreal::UnhoodBytecode']]],
   ['le1directory_3',['LE1Directory',['../class_legendary_explorer_core_1_1_game_filesystem_1_1_l_e1_directory.html',1,'LegendaryExplorerCore::GameFilesystem']]],
-  ['le1talkfiles_4',['LE1TalkFiles',['../class_legendary_explorer_core_1_1_m_e1_1_1_l_e1_talk_files.html',1,'LegendaryExplorerCore::ME1']]],
+  ['le1talkfiles_4',['LE1TalkFiles',['../class_legendary_explorer_core_1_1_t_l_k_1_1_l_e1_talk_files.html',1,'LegendaryExplorerCore::TLK']]],
   ['le1unrealobjectinfo_5',['LE1UnrealObjectInfo',['../class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_l_e1_unreal_object_info.html',1,'LegendaryExplorerCore::Unreal::ObjectInfo']]],
   ['le2directory_6',['LE2Directory',['../class_legendary_explorer_core_1_1_game_filesystem_1_1_l_e2_directory.html',1,'LegendaryExplorerCore::GameFilesystem']]],
   ['le2talkfiles_7',['LE2TalkFiles',['../class_legendary_explorer_core_1_1_t_l_k_1_1_l_e2_talk_files.html',1,'LegendaryExplorerCore::TLK']]],
