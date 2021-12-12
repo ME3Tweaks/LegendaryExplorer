@@ -148,22 +148,22 @@ namespace LegendaryExplorerCore.Textures
         }
 
         [DllImport(TEXCONVERTER_DLL_FILENAME, EntryPoint = "Initialize")]
-        private static unsafe extern int TCInitialize();
+        private static extern unsafe int TCInitialize();
 
         [DllImport(TEXCONVERTER_DLL_FILENAME, EntryPoint = "Dispose")]
-        private static unsafe extern int TCDispose();
+        private static extern unsafe int TCDispose();
 
         [DllImport(TEXCONVERTER_DLL_FILENAME, EntryPoint = "ConvertTexture")]
-        private static unsafe extern int TCConvertTexture(TextureBuffer* inputBuffer, TextureBuffer* outputBuffer);
+        private static extern unsafe int TCConvertTexture(TextureBuffer* inputBuffer, TextureBuffer* outputBuffer);
 
         [DllImport(TEXCONVERTER_DLL_FILENAME, EntryPoint = "SaveTexture", CharSet = CharSet.Ansi)]
-        private static unsafe extern int TCSaveTexture(TextureBuffer* inputBuffer, string outputFilename);
+        private static extern unsafe int TCSaveTexture(TextureBuffer* inputBuffer, string outputFilename);
 
         [DllImport(TEXCONVERTER_DLL_FILENAME, EntryPoint = "LoadTexture", CharSet = CharSet.Ansi)]
-        private static unsafe extern int TCLoadTexture(string inputFilename, TextureBuffer* outputBuffer);
+        private static extern unsafe int TCLoadTexture(string inputFilename, TextureBuffer* outputBuffer);
 
         [DllImport(TEXCONVERTER_DLL_FILENAME, EntryPoint = "FreePixelData")]
-        private static unsafe extern int TCFreePixelData(TextureBuffer* textureBuffer);
+        private static extern unsafe int TCFreePixelData(TextureBuffer* textureBuffer);
         #endregion
 
         private static bool IsInitialized = false;

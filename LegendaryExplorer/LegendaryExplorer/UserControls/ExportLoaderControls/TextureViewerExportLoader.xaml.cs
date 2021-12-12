@@ -44,7 +44,14 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             public enum TextureViewFlags : int
             {
                 None = 0,
+                /// <summary>
+                /// If normals should have the third color channel populated
+                /// </summary>
                 ReconstructNormalZ = 1 << 0,
+                /// <summary>
+                /// If alpha channel should be set to black, so textures can properly be viewed
+                /// </summary>
+                AlphaAsBlack = 1 << 1
             }
 
             public struct TextureViewConstants
@@ -615,13 +622,17 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 //bitmap.Save(memory, ImageFormat.Png);
                 //memory.Position = 0;
                 //TextureImage.Source = (BitmapSource)new ImageSourceConverter().ConvertFrom(memory);
-                LegendaryExplorerCore.Textures.PixelFormat pixelFormat = Image.getPixelFormatType(CurrentLoadedFormat);
-                TextureContext.Texture = TextureContext.LoadUnrealMip(mipToLoad, pixelFormat);
-                bool needsReconstruction = pixelFormat == LegendaryExplorerCore.Textures.PixelFormat.ATI2
-                    || pixelFormat == LegendaryExplorerCore.Textures.PixelFormat.BC5
-                    || pixelFormat == LegendaryExplorerCore.Textures.PixelFormat.V8U8;
-                this.TextureContext.Constants.Flags = needsReconstruction ? TextureRenderContext.TextureViewFlags.ReconstructNormalZ : TextureRenderContext.TextureViewFlags.None;
 
+                LegendaryExplorerCore.Textures.PixelFormat pixelFormat = Image.getPixelFormatType(CurrentLoadedFormat);
+                TextureContext.Texture = TextureContext.LoadUnrealMip(mipToLoad, pixelFormat, SetAlphaToBlack);
+                bool needsReconstruction = pixelFormat is LegendaryExplorerCore.Textures.PixelFormat.ATI2 
+                    or LegendaryExplorerCore.Textures.PixelFormat.BC5 
+                    or LegendaryExplorerCore.Textures.PixelFormat.V8U8;
+                this.TextureContext.Constants.Flags = needsReconstruction ? TextureRenderContext.TextureViewFlags.ReconstructNormalZ : TextureRenderContext.TextureViewFlags.None;
+                if (SetAlphaToBlack)
+                {
+                    this.TextureContext.Constants.Flags |= TextureRenderContext.TextureViewFlags.AlphaAsBlack;
+                }
             }
             catch (Exception e)
             {

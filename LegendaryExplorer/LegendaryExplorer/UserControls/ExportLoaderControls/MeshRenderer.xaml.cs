@@ -367,17 +367,17 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             SceneContext = new SceneRenderContext();
             SceneViewer.Context = SceneContext;
             SceneContext.BackgroundColor = color is not null ? new Color(color.Value.R, color.Value.G, color.Value.B) : Color.FromRgba(0x999999);
-            SceneViewer.Loaded += (sender, args) => 
-            { 
-                this.ViewportLoadAction?.Invoke(); 
-                this.ViewportLoadAction = null; 
+            SceneViewer.Loaded += (sender, args) =>
+            {
+                this.ViewportLoadAction?.Invoke();
+                this.ViewportLoadAction = null;
             };
 
             startingUp = false;
         }
 
         public ICommand UModelExportCommand { get; set; }
-        
+
         private void LoadCommands()
         {
             UModelExportCommand = new GenericCommand(EnsureUModelAndExport, CanExportViaUModel);
@@ -898,7 +898,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             Debug.WriteLine("Loading material assets for " + entry.InstancedFullPath);
             foreach (var tex in matinst.Textures)
             {
-
                 Debug.WriteLine("Preloading " + tex.InstancedFullPath);
                 if (tex.ClassName == "TextureCube" || tex.ClassName.StartsWith("TextureRender"))
                 {
@@ -1016,7 +1015,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 CameraPitch = SceneContext.Camera.Pitch.RadiansToUnrealRotationUnits();
                 CameraYaw = SceneContext.Camera.Yaw.RadiansToUnrealRotationUnits();
             }
-            
+
             CameraX = eyePosition.X;
             CameraY = eyePosition.Z; // Z and Y are switched to put the UI coordinates into Unreal Z-up coords
             CameraZ = eyePosition.Y;

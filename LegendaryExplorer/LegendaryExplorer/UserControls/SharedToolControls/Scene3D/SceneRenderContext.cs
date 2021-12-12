@@ -148,7 +148,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             ImmediateContext.PixelShader.SetSampler(0, SampleState);
 
             // Load the default texture
-            DefaultTexture = this.LoadFile(Path.Combine(AppDirectories.ExecFolder, "Default.png"));
+            DefaultTexture = this.LoadFile(Path.Combine(AppDirectories.ExecFolder, "Default.png"), true);
             DefaultTextureView = new ShaderResourceView(Device, DefaultTexture);
 
             // Load the default position-texture shader
