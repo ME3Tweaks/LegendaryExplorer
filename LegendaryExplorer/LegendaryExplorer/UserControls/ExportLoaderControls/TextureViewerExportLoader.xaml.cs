@@ -82,7 +82,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     }
                 }
             }
-            public float CameraScale { get; set; } = 1.0f;
+            public float ScaleFactor { get; set; } = -1.0f; // -1 means scale to fit
             public Vector2 CameraCenter { get; set; } = Vector2.Zero;
             public int CurrentMip // NOTE: The texture export loader passes each mip as its own texture, meaning that we always want mip 0 of the given texture.
             {
@@ -140,7 +140,14 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 this.ImmediateContext.OutputMerger.SetRenderTargets(this.BackbufferRTV);
                 this.ImmediateContext.ClearRenderTargetView(this.BackbufferRTV, new SharpDX.Mathematics.Interop.RawColor4(this.BackgroundColor.X, this.BackgroundColor.Y, this.BackgroundColor.Z, this.BackgroundColor.W));
 
-                this.Constants.View = Matrix4x4.CreateTranslation(-this.CameraCenter.X, -this.CameraCenter.Y, 0.0f) * Matrix4x4.CreateScale(this.CameraScale);
+                float smallSize = this.Width <= this.Height ? this.Width : this.Height;
+                float scale = 1.0f;
+                if (this.ScaleFactor > 0.0f)
+                {
+                    scale = this.Texture.Description.Height / smallSize * this.ScaleFactor;
+                }
+
+                this.Constants.View = Matrix4x4.CreateTranslation(-this.CameraCenter.X, -this.CameraCenter.Y, 0.0f) * Matrix4x4.CreateScale(scale);
                 SharpDX.DataBox constantBox = this.ImmediateContext.MapSubresource(this.ConstantBuffer, 0, MapMode.WriteDiscard, MapFlags.None);
                 System.Runtime.InteropServices.Marshal.StructureToPtr(this.Constants, constantBox.DataPointer, false);
                 this.ImmediateContext.UnmapSubresource(this.ConstantBuffer, 0);
@@ -655,20 +662,37 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             //Nothing to dispose
         }
 
-        private void ScalingTurnOff(object sender, RoutedEventArgs e)
-        {
-            ImageStretchOption = Stretch.None;
-        }
-
-        private void ScalingTurnOn(object sender, RoutedEventArgs e)
-        {
-            ImageStretchOption = Stretch.Uniform;
-        }
         private void CRC_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (TextureCRC != 0 && e.LeftButton == MouseButtonState.Pressed && e.ClickCount == 2)
             {
                 Clipboard.SetText(TextureCRC.ToString("X8"));
+            }
+        }
+
+        private void ScaleComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (this.ScaleComboBox.SelectedValue is ComboBoxItem item && item.Content is string inputString)
+            {
+                if (inputString == "Scale to Fit")
+                {
+                    this.TextureContext.ScaleFactor = -1.0f;
+                }
+                else
+                {
+                    if (inputString.EndsWith("x") && Single.TryParse(inputString.Substring(0, inputString.Length - 1), out float scaleFactor))
+                    {
+                        this.TextureContext.ScaleFactor = scaleFactor;
+                    }
+                    else
+                    {
+#if DEBUG
+                        throw new Exception("That's not a valid scale! Expected 'Scale to Fit' or '?.??x'");
+#else
+                        System.Diagnostics.Debug.WriteLine("[WARNING]: Invalid scale entered in TextureViewerExportLoader!");
+#endif
+                    }
+                }
             }
         }
     }
