@@ -10,5 +10,6 @@ var searchData=
   ['disabled_5fsave_5freason_7',['DISABLED_SAVE_REASON',['../namespace_legendary_explorer_core_1_1_unreal.html#a851514864c78b74c21a202382dce6b84',1,'LegendaryExplorerCore::Unreal']]],
   ['distributionparammode_8',['DistributionParamMode',['../namespace_legendary_explorer_core_1_1_unreal.html#a4b111aedead9f55c9910c3d43b015b02',1,'LegendaryExplorerCore::Unreal']]],
   ['dlctocupdateresult_9',['DLCTOCUpdateResult',['../class_legendary_explorer_core_1_1_unreal_1_1_d_l_c_package.html#aa21c23bcb3f6678869a0ee806866265b',1,'LegendaryExplorerCore::Unreal::DLCPackage']]],
-  ['dummyfireobjectcyclingmethod_10',['DummyFireObjectCyclingMethod',['../namespace_legendary_explorer_core_1_1_unreal.html#a9f71bb3c2b8151bec05ab7939d134e1f',1,'LegendaryExplorerCore::Unreal']]]
+  ['dummyfireobjectcyclingmethod_10',['DummyFireObjectCyclingMethod',['../namespace_legendary_explorer_core_1_1_unreal.html#a9f71bb3c2b8151bec05ab7939d134e1f',1,'LegendaryExplorerCore::Unreal']]],
+  ['dxgiformat_11',['DXGIFormat',['../class_legendary_explorer_core_1_1_textures_1_1_tex_converter.html#a57c89ca96294dcd014e918f87d10ab80',1,'LegendaryExplorerCore::Textures::TexConverter']]]
 ];
