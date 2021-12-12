@@ -55,7 +55,7 @@
                 <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding TextureCRC, StringFormat='CRC: 0x{0:X8}', FallbackValue=CRC: 0x00000000}" 
                            VerticalAlignment="Center" Margin="3,6" Background="Transparent" BorderThickness="0" IsReadOnly="True" TextWrapping="Wrap"
                            MouseDown="CRC_MouseDown" ToolTip="Double click to copy CRC" />
-                <ComboBox x:Name="ScaleComboBox" Grid.Row="1" Grid.Column="1" SelectionChanged="ScaleComboBox_SelectionChanged" SelectedIndex="0">
+                <ComboBox x:Name="ScaleComboBox" Grid.Row="1" Grid.Column="1" Margin="3" SelectionChanged="ScaleComboBox_SelectionChanged" SelectedIndex="0" VerticalContentAlignment="Center">
                     <ComboBoxItem Content="Scale to Fit" />
                     <ComboBoxItem Content="0.25x" />
                     <ComboBoxItem Content="0.5x" />
