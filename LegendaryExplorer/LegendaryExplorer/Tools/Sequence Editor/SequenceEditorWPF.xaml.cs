@@ -2297,32 +2297,32 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
 
                 if (Pcc.Game is MEGame.ME3 or MEGame.LE3)
                 {
-                    plotFiles = MELoadedFiles.GetEnabledDLCFolders(Pcc.Game).OrderByDescending(dir => MELoadedFiles.GetMountPriority(dir, Pcc.Game))
-                                                  .Select(dir => Path.Combine(dir, Pcc.Game.CookedDirName(), $"Startup_{MELoadedFiles.GetDLCNameFromDir(dir)}_INT.pcc"))
+                    plotFiles = MELoadedDLC.GetEnabledDLCFolders(Pcc.Game).OrderByDescending(dir => MELoadedDLC.GetMountPriority(dir, Pcc.Game))
+                                                  .Select(dir => Path.Combine(dir, Pcc.Game.CookedDirName(), $"Startup_{MELoadedDLC.GetDLCNameFromDir(dir)}_INT.pcc"))
                                                   .Append(Path.Combine(MEDirectories.GetCookedPath(Pcc.Game), "SFXGameInfoSP_SF.pcc"))
                                                   .Where(File.Exists);
                 }
 
                 if (Pcc.Game is MEGame.ME2 or MEGame.LE2)
                 {
-                    plotFiles = MELoadedFiles.GetEnabledDLCFolders(Pcc.Game).OrderByDescending(dir => MELoadedFiles.GetMountPriority(dir, Pcc.Game))
-                        .Select(dir => Path.Combine(dir, Pcc.Game.CookedDirName(), $"Startup_{MELoadedFiles.GetDLCNameFromDir(dir)}_INT.pcc"))
+                    plotFiles = MELoadedDLC.GetEnabledDLCFolders(Pcc.Game).OrderByDescending(dir => MELoadedDLC.GetMountPriority(dir, Pcc.Game))
+                        .Select(dir => Path.Combine(dir, Pcc.Game.CookedDirName(), $"Startup_{MELoadedDLC.GetDLCNameFromDir(dir)}_INT.pcc"))
                         .Append(Path.Combine(MEDirectories.GetCookedPath(Pcc.Game), "Startup_INT.pcc"))
                         .Where(File.Exists);
                 }
 
                 if (Pcc.Game is MEGame.LE1)
                 {
-                    plotFiles = MELoadedFiles.GetEnabledDLCFolders(Pcc.Game).OrderByDescending(dir => MELoadedFiles.GetMountPriority(dir, Pcc.Game))
-                        //.Select(dir => Path.Combine(dir, "CookedPCConsole", $"Startup_{MELoadedFiles.GetDLCNameFromDir(dir)}_INT.pcc")) // TODO: implement once ME1 DLC folders work
+                    plotFiles = MELoadedDLC.GetEnabledDLCFolders(Pcc.Game).OrderByDescending(dir => MELoadedDLC.GetMountPriority(dir, Pcc.Game))
+                        //.Select(dir => Path.Combine(dir, "CookedPCConsole", $"Startup_{MELoadedDLC.GetDLCNameFromDir(dir)}_INT.pcc")) // TODO: implement once ME1 DLC folders work
                         .Append(Path.Combine(MEDirectories.GetCookedPath(Pcc.Game), "BIOC_Materials.pcc"))
                         .Where(File.Exists);
                 }
 
                 if (Pcc.Game is MEGame.ME1)
                 {
-                    plotFiles = MELoadedFiles.GetEnabledDLCFolders(Pcc.Game).OrderByDescending(dir => MELoadedFiles.GetMountPriority(dir, Pcc.Game))
-                        .Select(dir => Path.Combine(dir, Pcc.Game.CookedDirName(), $@"Packages\PlotManagerAuto{MELoadedFiles.GetDLCNameFromDir(dir)}.upk"))
+                    plotFiles = MELoadedDLC.GetEnabledDLCFolders(Pcc.Game).OrderByDescending(dir => MELoadedDLC.GetMountPriority(dir, Pcc.Game))
+                        .Select(dir => Path.Combine(dir, Pcc.Game.CookedDirName(), $@"Packages\PlotManagerAuto{MELoadedDLC.GetDLCNameFromDir(dir)}.upk"))
                         .Append(Path.Combine(MEDirectories.GetCookedPath(Pcc.Game), @"Packages\PlotManagerAuto.upk"))
                         .Where(File.Exists);
                 }
