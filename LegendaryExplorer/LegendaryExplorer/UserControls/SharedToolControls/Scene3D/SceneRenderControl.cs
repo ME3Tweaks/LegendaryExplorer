@@ -88,6 +88,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
         public Device Device { get; private set; }
         public DeviceContext ImmediateContext { get; private set; }
         public Texture2D Backbuffer { get; private set; }
+        public BlendState AlphaBlendState { get; private set; } // A BlendState that uses standard alpha blending
         public bool IsReady => Device != null;
 
         public virtual void CreateResources()
@@ -98,6 +99,10 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
 #endif
             this.Device = new Device(DriverType.Hardware, deviceFlags);
             this.ImmediateContext = this.Device.ImmediateContext;
+
+            BlendStateDescription alphaBlendDesc = new BlendStateDescription();
+            alphaBlendDesc.RenderTarget[0] = new RenderTargetBlendDescription() { RenderTargetWriteMask = ColorWriteMaskFlags.All, BlendOperation = BlendOperation.Add, AlphaBlendOperation = BlendOperation.Add, SourceBlend = BlendOption.SourceAlpha, DestinationBlend = BlendOption.InverseSourceAlpha, SourceAlphaBlend = BlendOption.SourceAlpha, DestinationAlphaBlend = BlendOption.InverseSourceAlpha, IsBlendEnabled = true };
+            this.AlphaBlendState = new BlendState(this.Device, alphaBlendDesc);
         }
 
         public virtual void CreateSizeDependentResources(int width, int height, Texture2D newBackbuffer)
@@ -115,6 +120,8 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
 
         public virtual void DisposeResources()
         {
+            this.AlphaBlendState.Dispose();
+            this.AlphaBlendState = null;
             this.ImmediateContext.Dispose();
             this.ImmediateContext = null;
 

@@ -1,6 +1,10 @@
 ﻿
 #define FLAG_RECONSTRUCTNORMALZ (1 << 0)
 #define FLAG_ALPHAASBLACK (1 << 1)
+#define FLAG_ENABLEREDCHANNEL (1 << 2)
+#define FLAG_ENABLEGREENCHANNEL (1 << 3)
+#define FLAG_ENABLEBLUECHANNEL (1 << 4)
+#define FLAG_ENABLEALPHACHANNEL (1 << 5)
 
 struct VS_OUT {
     float4 Position : SV_Position;
@@ -35,8 +39,27 @@ float4 PSMain(VS_OUT input) : SV_Target0 {
         textureValue.z = sqrt(1.0f - pow(normalVector.x, 2.0f) - pow(normalVector.y, 2.0f)) * 0.5f + 0.5f; // Pythagorean theorem solved for Z, then rescale from -1.0 to 1.0 to the 0.0 to 1.0 range
     }
 
-    if ((Flags & FLAG_ALPHAASBLACK) != 0)
-    {
+    // If only the alpha flag is enabled, show the alpha as a black-and-white image
+    if ((Flags & (FLAG_ENABLEALPHACHANNEL | FLAG_ENABLEREDCHANNEL | FLAG_ENABLEGREENCHANNEL | FLAG_ENABLEBLUECHANNEL)) == FLAG_ENABLEALPHACHANNEL) {
+        textureValue = float4(textureValue.a, textureValue.a, textureValue.a, 1.0f);
+    }
+    else {
+        // Mask out channels that don't have flags set for them
+        if ((Flags & FLAG_ENABLEALPHACHANNEL) == 0) {
+            textureValue.a = 1.0f; // Disabling the alpha channel means making it fully opaque
+        }
+        if ((Flags & FLAG_ENABLEREDCHANNEL) == 0) {
+            textureValue.r = 0.0f;
+        }
+        if ((Flags & FLAG_ENABLEGREENCHANNEL) == 0) {
+            textureValue.g = 0.0f;
+        }
+        if ((Flags & FLAG_ENABLEBLUECHANNEL) == 0) {
+            textureValue.b = 0.0f;
+        }
+    }
+
+    if ((Flags & FLAG_ALPHAASBLACK) != 0) {
         // Blend from black to the texture color according to the texture's alpha
         textureValue = lerp(float4(0.0f, 0.0f, 0.0f, 1.0f) /* black */, float4(textureValue.rgb, 1.0f) /* make the result opaque */, textureValue.a);
     }

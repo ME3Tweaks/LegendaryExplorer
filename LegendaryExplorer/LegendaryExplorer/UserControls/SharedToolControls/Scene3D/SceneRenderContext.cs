@@ -155,6 +155,8 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             DefaultEffect = new Effect<WorldConstants, WorldVertex>(Device, EmbeddedResources.StandardShader);
 
             TextureCache = new PreviewTextureCache(this);
+
+            this.ImmediateContext.OutputMerger.SetBlendState(this.AlphaBlendState);
         }
 
         public override void CreateSizeDependentResources(int width, int height, Texture2D newBackBuffer)

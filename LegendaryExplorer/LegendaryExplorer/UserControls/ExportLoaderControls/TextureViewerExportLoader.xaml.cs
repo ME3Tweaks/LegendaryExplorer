@@ -51,7 +51,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 /// <summary>
                 /// If alpha channel should be set to black, so textures can properly be viewed
                 /// </summary>
-                AlphaAsBlack = 1 << 1
+                AlphaAsBlack = 1 << 1,
+                EnableRedChannel = 1 << 2,
+                EnableGreenChannel = 1 << 3,
+                EnableBlueChannel = 1 << 4,
+                EnableAlphaChannel = 1 << 5,
             }
 
             public struct TextureViewConstants
@@ -68,7 +72,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             private VertexShader TextureVertexShader = null;
             private PixelShader TexturePixelShader = null;
             private ShaderResourceView TextureRTV = null;
-            public TextureViewConstants Constants = new TextureViewConstants();
+            public TextureViewConstants Constants = new TextureViewConstants() { Flags = TextureViewFlags.EnableRedChannel | TextureViewFlags.EnableGreenChannel | TextureViewFlags.EnableBlueChannel | TextureViewFlags.EnableAlphaChannel };
             private SharpDX.Direct3D11.Buffer ConstantBuffer = null;
 
             private SharpDX.Direct3D11.Texture2D _texture = null;
@@ -122,6 +126,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 this.ImmediateContext.PixelShader.SetShader(this.TexturePixelShader, null, 0);
                 this.ImmediateContext.VertexShader.SetShader(this.TextureVertexShader, null, 0);
                 this.ImmediateContext.InputAssembler.PrimitiveTopology = SharpDX.Direct3D.PrimitiveTopology.TriangleStrip;
+                this.ImmediateContext.OutputMerger.SetBlendState(this.AlphaBlendState);
             }
 
             public override void CreateSizeDependentResources(int width, int height, SharpDX.Direct3D11.Texture2D newBackbuffer)
@@ -210,12 +215,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 SetProperty(ref _setAlphaToBlack, value);
                 if (value)
                 {
-                    TextureContext.BackgroundColor = new Vector4(0, 0, 0, 1);
+                    TextureContext.BackgroundColor = new Vector4(0.0f, 0.0f, 0.0f, 1.0f);
                     this.TextureContext.Constants.Flags |= TextureRenderContext.TextureViewFlags.AlphaAsBlack;
                 }
                 else
                 {
-                    TextureContext.BackgroundColor = new Vector4(0, 0, 0, 0);
+                    TextureContext.BackgroundColor = new Vector4(0.5f, 0.5f, 0.5f, 1.0f);
                     this.TextureContext.Constants.Flags &= ~TextureRenderContext.TextureViewFlags.AlphaAsBlack;
                 }
             }
@@ -634,7 +639,14 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 bool needsReconstruction = pixelFormat is LegendaryExplorerCore.Textures.PixelFormat.ATI2 
                     or LegendaryExplorerCore.Textures.PixelFormat.BC5 
                     or LegendaryExplorerCore.Textures.PixelFormat.V8U8;
-                this.TextureContext.Constants.Flags = needsReconstruction ? TextureRenderContext.TextureViewFlags.ReconstructNormalZ : TextureRenderContext.TextureViewFlags.None;
+                if (needsReconstruction)
+                {
+                    this.TextureContext.Constants.Flags |= TextureRenderContext.TextureViewFlags.ReconstructNormalZ;
+                }
+                else
+                {
+                    this.TextureContext.Constants.Flags &= ~TextureRenderContext.TextureViewFlags.ReconstructNormalZ;
+                }
             }
             catch (Exception e)
             {
