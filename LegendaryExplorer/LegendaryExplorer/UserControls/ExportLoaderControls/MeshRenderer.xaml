@@ -47,8 +47,11 @@
                               SelectedIndex="{Binding CurrentLOD, Mode=TwoWay}" ToolTip="Change the visible LOD" Margin="2,0" FontStretch="UltraCondensed"/>
                     <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="2,0"/>
 
-                    <TextBlock Text="Background color:" VerticalAlignment="Center" Margin="2,0"/>
-                    <xctk:ColorPicker Name="Background_ColorPicker" Width="40" UsingAlphaChannel="False" SelectedColorChanged="BackgroundColorPicker_Changed" Margin="2,0"/>
+                    <xctk:DropDownButton Content="View options" Margin="0,3">
+                        <xctk:DropDownButton.DropDownContent>
+                            <scene3D:SceneControlOptionsControl/>
+                        </xctk:DropDownButton.DropDownContent>
+                    </xctk:DropDownButton>
                     <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="2,0"/>
                     <Button Command="{Binding UModelExportCommand}"  ToolTip="Export with umodel" Margin="2,0"
                             sharedUi:Bindings.VisibilityToEnabled="true">

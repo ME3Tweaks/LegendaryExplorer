@@ -4,6 +4,8 @@ using System.Windows.Input;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Resources;
 using System.Numerics;
+using System.Windows.Media;
+using LegendaryExplorer.UserControls.ExportLoaderControls.TextureViewer;
 using SharpDX.DXGI;
 using SharpDX.Direct3D11;
 using SharpDX.Direct3D;
@@ -11,23 +13,37 @@ using SharpDX.Mathematics.Interop;
 
 namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
 {
-    public class SceneRenderContext : RenderContext
+    /// <summary>
+    /// Handles rendering of mesh data
+    /// </summary>
+    public class MeshRenderContext : RenderContext
     {
+        /// <summary>
+        /// The current flags for rendering textures. This renderer does not support 'SetAlphaAsBlack' or 'ReconstructZ'
+        /// </summary>
+        public TextureRenderContext.TextureViewFlags CurrentTextureViewFlags = TextureRenderContext.TextureViewFlags.EnableRedChannel | TextureRenderContext.TextureViewFlags.EnableGreenChannel | TextureRenderContext.TextureViewFlags.EnableBlueChannel | TextureRenderContext.TextureViewFlags.EnableAlphaChannel;
+
         public struct WorldConstants
         {
             public Matrix4x4 Projection;
             public Matrix4x4 View;
             public Matrix4x4 Model;
+            public TextureRenderContext.TextureViewFlags Flags;
+            public int Padding1;
+            public int Padding2;
+            public int Padding3; // Aligns on 16 byte boundary
 
-            public WorldConstants(Matrix4x4 Projection, Matrix4x4 View, Matrix4x4 Model)
+            public WorldConstants(Matrix4x4 Projection, Matrix4x4 View, Matrix4x4 Model, TextureRenderContext.TextureViewFlags flags)
             {
                 this.Projection = Projection;
                 this.View = View;
                 this.Model = Model;
+                this.Flags = flags;
+                Padding1 = Padding2 = Padding3 = 0;
             }
         }
 
-        public LegendaryExplorerCore.SharpDX.Color BackgroundColor = new(1.0f, 1.0f, 1.0f); //Default
+        public Color BackgroundColor = Color.FromArgb(255,255,255,255); //Default
 
         public RenderTargetView BackbufferView { get; private set; }
         public Texture2D DepthBuffer { get; private set; } // also called Depth-Stencil, but we don't use stencil at the moment.
@@ -66,7 +82,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
         public event EventHandler<float> UpdateScene;
         public event EventHandler RenderScene;
 
-        public SceneRenderContext()
+        public MeshRenderContext()
         {
             this.Camera.FocusDepth = 100.0f;
         }
