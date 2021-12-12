@@ -17,6 +17,7 @@ using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Interfaces;
 using LegendaryExplorer.UnrealExtensions.Classes;
 using LegendaryExplorer.Tools.TFCCompactor;
+using LegendaryExplorer.UserControls.Interfaces;
 using LegendaryExplorer.UserControls.SharedToolControls.Scene3D;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Misc;
@@ -35,7 +36,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
     /// <summary>
     /// Interaction logic for TextureViewerExportLoader.xaml
     /// </summary>
-    public partial class TextureViewerExportLoader : ExportLoaderControl
+    public partial class TextureViewerExportLoader : ExportLoaderControl, ISceneRenderContextConfigurable
     {
         #region Texture Preview
         private class TextureRenderContext : RenderContext
@@ -107,7 +108,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 base.CreateResources();
                 this.TextureSampler = new SamplerState(this.Device, new SamplerStateDescription() { AddressU = TextureAddressMode.Wrap, AddressV = TextureAddressMode.Wrap, AddressW = TextureAddressMode.Wrap, Filter = Filter.MinLinearMagMipPoint, MaximumLod = Single.MaxValue, MinimumLod = 0, MipLodBias = 0 });
                 this.ConstantBuffer = new SharpDX.Direct3D11.Buffer(this.Device, SharpDX.Utilities.SizeOf<TextureViewConstants>(), ResourceUsage.Dynamic, BindFlags.ConstantBuffer, CpuAccessFlags.Write, ResourceOptionFlags.None, 0);
-                
+
                 // Load shaders
                 string textureShader = LegendaryExplorer.Resources.EmbeddedResources.TextureShader;
                 SharpDX.D3DCompiler.CompilationResult result = SharpDX.D3DCompiler.ShaderBytecode.Compile(textureShader, "VSMain", "vs_4_0");
@@ -197,7 +198,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         private string CurrentLoadedCacheName;
         private string CurrentLoadedBasePackageName;
 
-        public ObservableCollectionExtended<string> AvailableTFCNames { get; } = new ObservableCollectionExtended<string>();
+        //public ObservableCollectionExtended<string> AvailableTFCNames { get; } = new ObservableCollectionExtended<string>();
 
         private string _cannotShowTextureText;
         public string CannotShowTextureText
@@ -206,6 +207,14 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             set => SetProperty(ref _cannotShowTextureText, value);
         }
 
+        private string _textureCacheName;
+        public string TextureCacheName
+        {
+            get => _textureCacheName;
+            set => SetProperty(ref _textureCacheName, value);
+        }
+
+        #region DISPLAY OPTIONS
         private bool _setAlphaToBlack = true;
         public bool SetAlphaToBlack
         {
@@ -215,16 +224,102 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 SetProperty(ref _setAlphaToBlack, value);
                 if (value)
                 {
-                    TextureContext.BackgroundColor = new Vector4(0.0f, 0.0f, 0.0f, 1.0f);
                     this.TextureContext.Constants.Flags |= TextureRenderContext.TextureViewFlags.AlphaAsBlack;
                 }
                 else
                 {
-                    TextureContext.BackgroundColor = new Vector4(0.5f, 0.5f, 0.5f, 1.0f);
                     this.TextureContext.Constants.Flags &= ~TextureRenderContext.TextureViewFlags.AlphaAsBlack;
                 }
             }
         }
+
+        private bool _showRedChannel = true;
+        public bool ShowRedChannel
+        {
+            get => _showRedChannel;
+            set
+            {
+                SetProperty(ref _showRedChannel, value);
+                if (value)
+                {
+                    this.TextureContext.Constants.Flags |= TextureRenderContext.TextureViewFlags.EnableRedChannel;
+                }
+                else
+                {
+                    this.TextureContext.Constants.Flags &= ~TextureRenderContext.TextureViewFlags.EnableRedChannel;
+                }
+            }
+        }
+
+        private bool _showGreenChannel = true;
+        public bool ShowGreenChannel
+        {
+            get => _showGreenChannel;
+            set
+            {
+                SetProperty(ref _showGreenChannel, value);
+                if (value)
+                {
+                    this.TextureContext.Constants.Flags |= TextureRenderContext.TextureViewFlags.EnableGreenChannel;
+                }
+                else
+                {
+                    this.TextureContext.Constants.Flags &= ~TextureRenderContext.TextureViewFlags.EnableGreenChannel;
+                }
+            }
+        }
+
+
+
+        private bool _showBlueChannel = true;
+        public bool ShowBlueChannel
+        {
+            get => _showBlueChannel;
+            set
+            {
+                SetProperty(ref _showBlueChannel, value);
+                if (value)
+                {
+                    this.TextureContext.Constants.Flags |= TextureRenderContext.TextureViewFlags.EnableBlueChannel;
+                }
+                else
+                {
+                    this.TextureContext.Constants.Flags &= ~TextureRenderContext.TextureViewFlags.EnableBlueChannel;
+                }
+            }
+        }
+
+
+
+        private bool _showAlphaChannel = true;
+        public bool ShowAlphaChannel
+        {
+            get => _showAlphaChannel;
+            set
+            {
+                SetProperty(ref _showAlphaChannel, value);
+                if (value)
+                {
+                    this.TextureContext.Constants.Flags |= TextureRenderContext.TextureViewFlags.EnableAlphaChannel;
+                }
+                else
+                {
+                    this.TextureContext.Constants.Flags &= ~TextureRenderContext.TextureViewFlags.EnableAlphaChannel;
+                }
+            }
+        }
+
+        private Color _backgroundColor = Colors.White;
+        public Color BackgroundColor
+        {
+            get => _backgroundColor;
+            set
+            {
+                SetProperty(ref _backgroundColor, value);
+                TextureContext.BackgroundColor = new Vector4(value.R / 255.0f, value.G / 255.0f, value.B / 255.0f, value.A / 255.0f);
+            }
+        }
+        #endregion
 
         private Visibility _cannotShowTextureTextVisibility;
         public Visibility CannotShowTextureTextVisibility
@@ -233,12 +328,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             set => SetProperty(ref _cannotShowTextureTextVisibility, value);
         }
 
-        private Stretch _imageStretchOption = Stretch.Uniform;
-        public Stretch ImageStretchOption
-        {
-            get => _imageStretchOption;
-            set => SetProperty(ref _imageStretchOption, value);
-        }
 
         private uint _textureCRC;
         public uint TextureCRC
@@ -330,7 +419,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void ReplaceFromFile()
         {
-            var selectedTFCName = (string)TextureCacheComboBox.SelectedItem;
+            var selectedTFCName = GetDestinationTFCName();
             if (MEDirectories.BasegameTFCs(CurrentLoadedExport.Game).Contains(selectedTFCName, StringComparer.InvariantCultureIgnoreCase) || MEDirectories.OfficialDLC(CurrentLoadedExport.Game).Any(x => $"Textures_{x}".Equals(selectedTFCName, StringComparison.InvariantCultureIgnoreCase)))
             {
                 MessageBox.Show("Cannot replace textures into a TFC provided by BioWare. Choose a different target TFC from the list.");
@@ -452,6 +541,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
         }
 
+        private string GetDestinationTFCName()
+        {
+            // TODO: IMPLEMENT UI FOR THIS
+            return "Textures";
+        }
+
         private void ExportToPNG()
         {
             SaveFileDialog d = new SaveFileDialog
@@ -504,7 +599,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             try
             {
                 MipList.ClearEx();
-                AvailableTFCNames.ClearEx();
                 PropertyCollection properties = exportEntry.GetProperties();
                 var format = properties.GetProp<EnumProperty>("Format");
                 var cache = properties.GetProp<NameProperty>("TextureFileCacheName");
@@ -514,17 +608,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 }
 
                 var neverStream = properties.GetProp<BoolProperty>("NeverStream") ?? false;
-                AvailableTFCNames.AddRange(exportEntry.FileRef.Names.Where(x => x.StartsWith("Textures_DLC_")));
 
                 //Populate list first in event loading fails, so user has way to still try to fix texture.
                 if (cache != null)
                 {
-                    if (!AvailableTFCNames.Contains(cache.Value))
-                    {
-                        AvailableTFCNames.Add(cache.Value);
-                    }
-                    TextureCacheComboBox.SelectedIndex = AvailableTFCNames.IndexOf(cache.Value);
-                    AvailableTFCNames.Add(CREATE_NEW_TFC_STRING);
+                    TextureCacheName = cache.Value.Instanced;
                 }
 
                 List<Texture2DMipInfo> mips = LegendaryExplorerCore.Unreal.Classes.Texture2D.GetTexture2DMipInfos(exportEntry, CurrentLoadedCacheName);
@@ -536,17 +624,15 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
                     // Some textures list a tfc but are stored locally still
                     // so the tfc is never actually used
-                    AvailableTFCNames.Insert(0, PACKAGE_STORED_STRING);
 
                     if (topmip is { storageType: StorageTypes.pccLZO or StorageTypes.pccZlib or StorageTypes.pccOodle or StorageTypes.pccUnc })
                     {
-                        TextureCacheComboBox.SelectedIndex = 0; // Set to Package Stored
+                        TextureCacheName = "Package stored";
                     }
 
                     if (cache == null && exportEntry.Game > MEGame.ME1)
                     {
-                        AvailableTFCNames.Add(STORE_EXTERNALLY_STRING);
-                        TextureCacheComboBox.SelectedIndex = 0; // Set to Package Stored
+                        TextureCacheName = "Package stored";
                     }
 
 
@@ -636,8 +722,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
                 LegendaryExplorerCore.Textures.PixelFormat pixelFormat = Image.getPixelFormatType(CurrentLoadedFormat);
                 TextureContext.Texture = TextureContext.LoadUnrealMip(mipToLoad, pixelFormat, SetAlphaToBlack);
-                bool needsReconstruction = pixelFormat is LegendaryExplorerCore.Textures.PixelFormat.ATI2 
-                    or LegendaryExplorerCore.Textures.PixelFormat.BC5 
+                bool needsReconstruction = pixelFormat is LegendaryExplorerCore.Textures.PixelFormat.ATI2
+                    or LegendaryExplorerCore.Textures.PixelFormat.BC5
                     or LegendaryExplorerCore.Textures.PixelFormat.V8U8;
                 if (needsReconstruction)
                 {
@@ -647,6 +733,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 {
                     this.TextureContext.Constants.Flags &= ~TextureRenderContext.TextureViewFlags.ReconstructNormalZ;
                 }
+                CannotShowTextureTextVisibility = Visibility.Collapsed;
             }
             catch (Exception e)
             {
