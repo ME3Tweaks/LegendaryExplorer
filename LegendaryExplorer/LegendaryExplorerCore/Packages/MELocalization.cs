@@ -6,7 +6,7 @@ namespace LegendaryExplorerCore.Packages
     /// <summary>
     /// Represents the localization of a package file
     /// </summary>
-    /// <remarks>This does not work for ME1/LE1 as it uses two character non-int localizations</remarks>
+    /// <remarks><see cref="MELocalizationExtensions">Extension methods</see>. This does not work for ME1/LE1 as it uses two character non-int localizations.</remarks>
     public enum MELocalization
     {
         /// <summary>No localization</summary>

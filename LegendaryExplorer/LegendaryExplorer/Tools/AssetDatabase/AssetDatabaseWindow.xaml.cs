@@ -715,7 +715,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                     }
                     else
                     {
-                        var dlcs = MELoadedFiles.GetDLCNamesWithMounts(CurrentGame);
+                        var dlcs = MELoadedDLC.GetDLCNamesWithMounts(CurrentGame);
                         dlcs.Add("BioGame", 0);
                         foreach ((string fileName, int directoryKey) in CurrentDataBase.FileList)
                         {
@@ -2196,7 +2196,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             //Add and sort Classes
             CurrentDataBase.AddRecords(pdb);
 
-            var dlcs = MELoadedFiles.GetDLCNamesWithMounts(CurrentGame);
+            var dlcs = MELoadedDLC.GetDLCNamesWithMounts(CurrentGame);
             dlcs.Add("BioGame", 0);
             foreach ((string fileName, int directoryKey) in CurrentDataBase.FileList)
             {
