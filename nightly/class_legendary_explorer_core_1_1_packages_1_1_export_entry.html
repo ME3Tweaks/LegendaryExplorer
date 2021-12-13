@@ -162,6 +162,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a1b31b5d1bc3af6dfc1dd42864ecf889b"><td class="memItemLeft" align="right" valign="top">EPropertyFlags?&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#a1b31b5d1bc3af6dfc1dd42864ecf889b">GetPropertyFlags</a> ()</td></tr>
 <tr class="memdesc:a1b31b5d1bc3af6dfc1dd42864ecf889b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the property flags for this export. Returns null if this export does not have stack.  <a href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#a1b31b5d1bc3af6dfc1dd42864ecf889b">More...</a><br /></td></tr>
 <tr class="separator:a1b31b5d1bc3af6dfc1dd42864ecf889b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a66d884794e0e079ba20f416526c73107"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#a66d884794e0e079ba20f416526c73107">SetPropertyFlags</a> (EPropertyFlags flags)</td></tr>
+<tr class="memdesc:a66d884794e0e079ba20f416526c73107"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the property flags for this export to the ones specified. Exports that do not have a stack will not be modified, as they don't have property flags.  <a href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#a66d884794e0e079ba20f416526c73107">More...</a><br /></td></tr>
+<tr class="separator:a66d884794e0e079ba20f416526c73107"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a87f5047ebded7789e5fbc3520f39826a"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#a87f5047ebded7789e5fbc3520f39826a">GetRootName</a> ()</td></tr>
 <tr class="memdesc:a87f5047ebded7789e5fbc3520f39826a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the top level container export by following the idxLink up the chain. Typically this is the file that will contain the export (unless it is a ForcedExport) if it's an import, or the original package before forcing the export into the file.  <a href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#a87f5047ebded7789e5fbc3520f39826a">More...</a><br /></td></tr>
 <tr class="separator:a87f5047ebded7789e5fbc3520f39826a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1221,6 +1224,35 @@ Events</h2></td></tr>
 
 <p>Gets the property flags for this export. Returns null if this export does not have stack. </p>
 <dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+</div>
+</div>
+<a id="a66d884794e0e079ba20f416526c73107" name="a66d884794e0e079ba20f416526c73107"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a66d884794e0e079ba20f416526c73107">&#9670;&nbsp;</a></span>SetPropertyFlags()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool LegendaryExplorerCore.Packages.ExportEntry.SetPropertyFlags </td>
+          <td>(</td>
+          <td class="paramtype">EPropertyFlags&#160;</td>
+          <td class="paramname"><em>flags</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Sets the property flags for this export to the ones specified. Exports that do not have a stack will not be modified, as they don't have property flags. </p>
+<dl class="section return"><dt>Returns</dt><dd>True if the export has a stack, false otherwise</dd></dl>
 
 </div>
 </div>

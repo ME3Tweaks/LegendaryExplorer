@@ -23,6 +23,7 @@ var class_legendary_explorer_core_1_1_packages_1_1_export_entry =
     [ "WritePrePropsAndPropertiesAndBinary", "class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#afba8b28543c40dc796e5162afe8956ac", null ],
     [ "Clone", "class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#aa5c1eff685b8f0a44eed72f2647991bb", null ],
     [ "GetPropertyFlags", "class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#a1b31b5d1bc3af6dfc1dd42864ecf889b", null ],
+    [ "SetPropertyFlags", "class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#a66d884794e0e079ba20f416526c73107", null ],
     [ "GetRootName", "class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#a87f5047ebded7789e5fbc3520f39826a", null ],
     [ "OFFSET_idxClass", "class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#aa87732011e47ef8a45a374d9730b9a99", null ],
     [ "OFFSET_idxSuperClass", "class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#ab66ffbd9ef0b9f77ee01605a723134b5", null ],
