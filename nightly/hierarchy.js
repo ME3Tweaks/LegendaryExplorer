@@ -658,6 +658,10 @@ var hierarchy =
       [ "LegendaryExplorerCore.Gammtek.Text.StringMatching.RegexMatcher", "class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_string_matching_1_1_regex_matcher.html", null ],
       [ "LegendaryExplorerCore.Gammtek.Text.StringMatching.WildcardMatcher", "class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_string_matching_1_1_wildcard_matcher.html", null ]
     ] ],
+    [ "LegendaryExplorerCore.TLK.ITalkFile", "interface_legendary_explorer_core_1_1_t_l_k_1_1_i_talk_file.html", [
+      [ "LegendaryExplorerCore.TLK.ME1.ME1TalkFile", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e1_1_1_m_e1_talk_file.html", null ],
+      [ "LegendaryExplorerCore.TLK.ME2ME3.ME2ME3TalkFile", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_talk_file.html", null ]
+    ] ],
     [ "LegendaryExplorerCore.Gammtek.Data.IValueValidator< in in TValue >", "interface_legendary_explorer_core_1_1_gammtek_1_1_data_1_1_i_value_validator.html", null ],
     [ "LegendaryExplorerCore.UnrealScript.Compiling.BytecodeWriter.JumpPlaceholder", "class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_bytecode_writer_1_1_jump_placeholder.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.KCachedConvexData", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_k_cached_convex_data.html", null ],
@@ -748,7 +752,7 @@ var hierarchy =
     [ "LegendaryExplorerCore.Unreal.ObjectInfo.ME1UnrealObjectInfo", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_m_e1_unreal_object_info.html", null ],
     [ "LegendaryExplorerCore.TLK.ME2ME3.ME2ME3TLKBase", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base.html", [
       [ "LegendaryExplorerCore.TLK.ME2ME3.ME2ME3LazyTLK", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_lazy_t_l_k.html", null ],
-      [ "LegendaryExplorerCore.TLK.ME2ME3.TalkFile", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_talk_file.html", null ]
+      [ "LegendaryExplorerCore.TLK.ME2ME3.ME2ME3TalkFile", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_talk_file.html", null ]
     ] ],
     [ "LegendaryExplorerCore.TLK.ME2TalkFiles", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_talk_files.html", null ],
     [ "LegendaryExplorerCore.Unreal.ObjectInfo.ME2UnrealObjectInfo", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_m_e2_unreal_object_info.html", null ],

@@ -498,9 +498,10 @@ var annotated_dup =
         [ "ME2ME3", "namespace_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3.html", [
           [ "HuffmanCompression", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_huffman_compression.html", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_huffman_compression" ],
           [ "ME2ME3LazyTLK", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_lazy_t_l_k.html", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_lazy_t_l_k" ],
-          [ "ME2ME3TLKBase", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base.html", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base" ],
-          [ "TalkFile", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_talk_file.html", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_talk_file" ]
+          [ "ME2ME3TalkFile", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_talk_file.html", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_talk_file" ],
+          [ "ME2ME3TLKBase", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base.html", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base" ]
         ] ],
+        [ "ITalkFile", "interface_legendary_explorer_core_1_1_t_l_k_1_1_i_talk_file.html", "interface_legendary_explorer_core_1_1_t_l_k_1_1_i_talk_file" ],
         [ "LE1TalkFiles", "class_legendary_explorer_core_1_1_t_l_k_1_1_l_e1_talk_files.html", "class_legendary_explorer_core_1_1_t_l_k_1_1_l_e1_talk_files" ],
         [ "LE2TalkFiles", "class_legendary_explorer_core_1_1_t_l_k_1_1_l_e2_talk_files.html", "class_legendary_explorer_core_1_1_t_l_k_1_1_l_e2_talk_files" ],
         [ "LE3TalkFiles", "class_legendary_explorer_core_1_1_t_l_k_1_1_l_e3_talk_files.html", "class_legendary_explorer_core_1_1_t_l_k_1_1_l_e3_talk_files" ],

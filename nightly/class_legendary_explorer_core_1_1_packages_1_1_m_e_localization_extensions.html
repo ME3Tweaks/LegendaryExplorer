@@ -101,9 +101,9 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a054fcf0d2062f3b2b3a23f588d8c489c"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_m_e_localization_extensions.html#a054fcf0d2062f3b2b3a23f588d8c489c">ToLocaleString</a> (this <a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#aefbc0ecf962a8819f213240cc7553d90">MELocalization</a> localization, <a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game)</td></tr>
 <tr class="memdesc:a054fcf0d2062f3b2b3a23f588d8c489c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the suffix used by a localization for "LOC_" file names  <a href="class_legendary_explorer_core_1_1_packages_1_1_m_e_localization_extensions.html#a054fcf0d2062f3b2b3a23f588d8c489c">More...</a><br /></td></tr>
 <tr class="separator:a054fcf0d2062f3b2b3a23f588d8c489c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae9b524265ef0910947d77c37d504e2ce"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#aefbc0ecf962a8819f213240cc7553d90">MELocalization</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_m_e_localization_extensions.html#ae9b524265ef0910947d77c37d504e2ce">GetFileLocalizationFromFilePath</a> (this string filePath)</td></tr>
-<tr class="memdesc:ae9b524265ef0910947d77c37d504e2ce"><td class="mdescLeft">&#160;</td><td class="mdescRight">Given a filename, returns the localization of it.  <a href="class_legendary_explorer_core_1_1_packages_1_1_m_e_localization_extensions.html#ae9b524265ef0910947d77c37d504e2ce">More...</a><br /></td></tr>
-<tr class="separator:ae9b524265ef0910947d77c37d504e2ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9fbd376ee684a06dcbe9e3683a3120ba"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#aefbc0ecf962a8819f213240cc7553d90">MELocalization</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_m_e_localization_extensions.html#a9fbd376ee684a06dcbe9e3683a3120ba">GetUnrealLocalization</a> (this string str)</td></tr>
+<tr class="memdesc:a9fbd376ee684a06dcbe9e3683a3120ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Attempts to determine the localization of the given string. Localizations end with either LOC_[LANG] or just _[LANG].  <a href="class_legendary_explorer_core_1_1_packages_1_1_m_e_localization_extensions.html#a9fbd376ee684a06dcbe9e3683a3120ba">More...</a><br /></td></tr>
+<tr class="separator:a9fbd376ee684a06dcbe9e3683a3120ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Extension methods for the <a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#aefbc0ecf962a8819f213240cc7553d90" title="Represents the localization of a package file">MELocalization</a> enum </p>
@@ -155,8 +155,8 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="ae9b524265ef0910947d77c37d504e2ce" name="ae9b524265ef0910947d77c37d504e2ce"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae9b524265ef0910947d77c37d504e2ce">&#9670;&nbsp;</a></span>GetFileLocalizationFromFilePath()</h2>
+<a id="a9fbd376ee684a06dcbe9e3683a3120ba" name="a9fbd376ee684a06dcbe9e3683a3120ba"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9fbd376ee684a06dcbe9e3683a3120ba">&#9670;&nbsp;</a></span>GetUnrealLocalization()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -165,10 +165,10 @@ Static Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static <a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#aefbc0ecf962a8819f213240cc7553d90">MELocalization</a> LegendaryExplorerCore.Packages.MELocalizationExtensions.GetFileLocalizationFromFilePath </td>
+          <td class="memname">static <a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#aefbc0ecf962a8819f213240cc7553d90">MELocalization</a> LegendaryExplorerCore.Packages.MELocalizationExtensions.GetUnrealLocalization </td>
           <td>(</td>
           <td class="paramtype">this string&#160;</td>
-          <td class="paramname"><em>filePath</em></td><td>)</td>
+          <td class="paramname"><em>str</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -179,9 +179,14 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Given a filename, returns the localization of it. </p>
-<p >Should work on ME1/LE1 files</p>
-<dl class="section return"><dt>Returns</dt><dd>MELocalization of the file</dd></dl>
+<p>Attempts to determine the localization of the given string. Localizations end with either LOC_[LANG] or just _[LANG]. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">str</td><td>The string to check against</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The MELocalization enum that corresponds to the matchingl ocalization. If none match, <a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#aefbc0ecf962a8819f213240cc7553d90a6adf97f83acf6453d4a6a4b1070f3754" title="No localization">MELocalization.None</a> is returned</dd></dl>
 
 </div>
 </div>
