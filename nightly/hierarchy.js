@@ -988,6 +988,7 @@ var hierarchy =
     [ "LegendaryExplorerCore.UnrealScript.Lexing.Tokenizing.ScriptToken", "class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_tokenizing_1_1_script_token.html", null ],
     [ "LegendaryExplorerCore.Misc.DuplicatingIni.Section", "class_legendary_explorer_core_1_1_misc_1_1_duplicating_ini_1_1_section.html", null ],
     [ "LegendaryExplorerCore.Kismet.SeqTools", "class_legendary_explorer_core_1_1_kismet_1_1_seq_tools.html", null ],
+    [ "LegendaryExplorerCore.Kismet.SequenceObjectCreator", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html", null ],
     [ "LegendaryExplorerCore.Unreal.ObjectInfo.SequenceObjectInfo", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_sequence_object_info.html", null ],
     [ "LegendaryExplorerCore.PlotDatabase.Serialization.SerializedPlotDatabase", "class_legendary_explorer_core_1_1_plot_database_1_1_serialization_1_1_serialized_plot_database.html", [
       [ "LegendaryExplorerCore.PlotDatabase.Serialization.SerializedModPlotDatabase", "class_legendary_explorer_core_1_1_plot_database_1_1_serialization_1_1_serialized_mod_plot_database.html", null ]
