@@ -21,6 +21,7 @@
         xmlns:misc="clr-namespace:LegendaryExplorer.Misc"
         xmlns:scriptEditor="clr-namespace:LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor"
         xmlns:packageEditor="clr-namespace:LegendaryExplorer.Tools.PackageEditor"
+        xmlns:fa5="http://schemas.fontawesome.com/icons/"
         Icon="pack://application:,,,/Tools/Icons/16x16/PackageEditor_Icon_16.ico"
         Title="Package Editor" Height="720" Width="1100"
         DragOver="Window_DragOver"
@@ -260,6 +261,16 @@
                     <ColumnDefinition Width="6*" />
                 </Grid.ColumnDefinitions>
                 <ToolBar ToolBarTray.IsLocked="True" Grid.Row="0" Grid.ColumnSpan="3">
+                    <Button Padding="7,0" VerticalAlignment="Stretch" ToolTip="Navigate to previous (historically) selected entry.  You can also press the back button on your mouse" Command="{Binding NavigateBackCommand}">
+                    <Button.Content>
+                        <fa5:FontAwesome Icon="Solid_ArrowLeft" Height="12" />
+                    </Button.Content>
+                    </Button>
+                    <Button Padding="7,0" VerticalAlignment="Stretch" ToolTip="Navigate to the next (historically) selected entry. You can also press the forward button on your mouse" Command="{Binding NavigateForwardCommand}">
+                        <Button.Content>
+                            <fa5:FontAwesome Icon="Solid_ArrowRight" Height="12" />
+                        </Button.Content>
+                    </Button>
                     <Button Content="Names" Padding="7,0" VerticalAlignment="Stretch" ToolTip="View Name table" Click="NamesView_Click" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}" Background="{Binding CurrentView, Converter={StaticResource PackageEditorWPFActiveViewHighlightConverter}, ConverterParameter='Names'}" />
                     <Button Content="Imports" Padding="7,0" VerticalAlignment="Stretch" Click="ImportsView_Click" ToolTip="View Imports table" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"  Background="{Binding CurrentView, Converter={StaticResource PackageEditorWPFActiveViewHighlightConverter}, ConverterParameter='Imports'}"/>
                     <Button Content="Exports" Padding="7,0" VerticalAlignment="Stretch" Click="ExportsView_Click" ToolTip="View Exports Table" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"  Background="{Binding CurrentView, Converter={StaticResource PackageEditorWPFActiveViewHighlightConverter}, ConverterParameter='Exports'}"/>

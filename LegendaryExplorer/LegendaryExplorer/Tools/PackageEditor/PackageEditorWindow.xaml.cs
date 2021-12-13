@@ -177,6 +177,8 @@ namespace LegendaryExplorer.Tools.PackageEditor
         }
 
         #region Commands
+        public ICommand NavigateBackCommand { get; set; }
+        public ICommand NavigateForwardCommand { get; set; }
         public ICommand ForceReloadPackageCommand { get; set; }
         public ICommand ComparePackagesCommand { get; set; }
         public ICommand OpenLEVersionCommand { get; set; }
@@ -299,6 +301,9 @@ namespace LegendaryExplorer.Tools.PackageEditor
             OpenOTVersionCommand = new GenericCommand(() => OpenOtherVersion(false), IsLoadedPackageLE);
 
             ForceReloadPackageCommand = new GenericCommand(() => ExperimentsMenu.ForceReloadPackageWithoutSharing(), () => ShowExperiments && ExperimentsMenu.CanForceReload());
+
+            NavigateForwardCommand = new GenericCommand(NavigateToNextEntry, () => CurrentView == CurrentViewMode.Tree && ForwardsIndexes != null && ForwardsIndexes.Any());
+            NavigateBackCommand = new GenericCommand(NavigateToPreviousEntry, () => CurrentView == CurrentViewMode.Tree && BackwardsIndexes != null && BackwardsIndexes.Any());
         }
 
         private void CalculateExportMD5()
