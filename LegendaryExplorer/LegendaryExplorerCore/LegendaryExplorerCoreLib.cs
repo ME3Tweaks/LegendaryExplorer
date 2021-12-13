@@ -48,7 +48,7 @@ namespace LegendaryExplorerCore
         };
 
         [Obsolete("This method is scheduled for removal in future builds")]
-        internal static string GetVersion()
+        internal static string GetTLKToolVersion()
         {
             return "4.0.0.0"; //This is used by the TLK tool. We should probably change this to be more proper
         }

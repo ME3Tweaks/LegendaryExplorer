@@ -134,7 +134,7 @@ namespace LegendaryExplorerCore.GameFilesystem
         private static List<string> cachedLE3TargetFiles;
 
         /// <summary>
-        /// Gets a list of all loaded files in the given game. Key is the filename, value is file path
+        /// Gets a list of all loaded files in the given game.
         /// </summary>
         /// <remarks>
         /// How does this differ from <see cref="GetFilesLoadedInGame"/>.Values.ToList()?

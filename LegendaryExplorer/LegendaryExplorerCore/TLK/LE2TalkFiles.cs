@@ -5,26 +5,41 @@ using LegendaryExplorerCore.Unreal;
 
 namespace LegendaryExplorerCore.TLK
 {
+    /// <summary>
+    /// Manages stringref lookup for LE2 tlks
+    /// </summary>
     public static class LE2TalkFiles
     {
-        public static readonly List<ME2ME3LazyTLK> tlkList = new();
+        /// <summary>
+        /// The tlks that will be searched by <see cref="FindDataById"/>
+        /// </summary>
+        public static readonly List<ME2ME3LazyTLK> LoadedTlks = new();
 
-        public static void LoadTlkData(string fileName)
+        /// <summary>
+        /// Adds the .tlk file at <paramref name="filePath"/> to the loaded tlks.
+        /// </summary>
+        /// <param name="filePath">Path of the .tlk file to load</param>
+        public static void LoadTlkData(string filePath)
         {
-            if (File.Exists(fileName))
+            if (File.Exists(filePath))
             {
                 var tlk = new ME2ME3LazyTLK();
-                tlk.LoadTlkData(fileName);
-                tlkList.Add(tlk);
+                tlk.LoadTlkData(filePath);
+                LoadedTlks.Add(tlk);
             }
         }
 
-        public static string findDataById(int strRefID, bool withFileName = false)
+        /// <summary>
+        /// Gets the string corresponding to the <paramref name="strRefID"/> (wrapped in quotes), if it exists in the loaded tlks. If it does not, returns <c>"No Data"</c>
+        /// </summary>
+        /// <param name="strRefID"></param>
+        /// <param name="withFileName">Optional: Should the filename be appended to the returned string</param>
+        public static string FindDataById(int strRefID, bool withFileName = false)
         {
             string s = "No Data";
-            foreach (ME2ME3LazyTLK tlk in tlkList)
+            foreach (ME2ME3LazyTLK tlk in LoadedTlks)
             {
-                s = tlk.findDataById(strRefID, withFileName);
+                s = tlk.FindDataById(strRefID, withFileName);
                 if (s != "No Data")
                 {
                     return s;
@@ -33,9 +48,12 @@ namespace LegendaryExplorerCore.TLK
             return s;
         }
 
+        /// <summary>
+        /// Clears the loaded Tlks.
+        /// </summary>
         public static void ClearLoadedTlks()
         {
-            tlkList.Clear();
+            LoadedTlks.Clear();
         }
     }
 }

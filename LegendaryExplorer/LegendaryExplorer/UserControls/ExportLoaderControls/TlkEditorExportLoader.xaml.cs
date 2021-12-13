@@ -13,8 +13,10 @@ using LegendaryExplorer.SharedUI;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.TLK;
 using LegendaryExplorerCore.TLK.ME1;
-using TalkFile = LegendaryExplorerCore.TLK.ME2ME3.TalkFile;
+using LegendaryExplorerCore.TLK.ME2ME3;
+using HuffmanCompression = LegendaryExplorerCore.TLK.ME1.HuffmanCompression;
 using ME2ME3HuffmanCompression = LegendaryExplorerCore.TLK.ME2ME3.HuffmanCompression;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls
@@ -24,9 +26,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
     /// </summary>
     public partial class TLKEditorExportLoader : FileExportLoaderControl
     {
-        private TalkFile CurrentME2ME3TalkFile;
-        public List<ME1TalkFile.TLKStringRef> LoadedStrings; //Loaded TLK
-        public ObservableCollectionExtended<ME1TalkFile.TLKStringRef> CleanedStrings { get; } = new(); // Displayed
+        private ME2ME3TalkFile _currentMe2Me3Me2Me3TalkFile;
+        public List<TLKStringRef> LoadedStrings; //Loaded TLK
+        public ObservableCollectionExtended<TLKStringRef> CleanedStrings { get; } = new(); // Displayed
         private bool xmlUp;
 
         private const string NO_STRING_SELECTED = "No string selected";
@@ -78,7 +80,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void DeleteString(object obj)
         {
-            var selectedItem = DisplayedString_ListBox.SelectedItem as ME1TalkFile.TLKStringRef;
+            var selectedItem = DisplayedString_ListBox.SelectedItem as TLKStringRef;
             CleanedStrings.Remove(selectedItem);
             LoadedStrings.Remove(selectedItem);
             FileModified = true;
@@ -115,13 +117,13 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             var huff = new HuffmanCompression();
             huff.LoadInputData(LoadedStrings);
-            huff.serializeTalkfileToExport(CurrentLoadedExport);
+            huff.SerializeTalkfileToExport(CurrentLoadedExport);
             FileModified = false;
         }
 
         private void SaveString(object obj)
         {
-            if (DisplayedString_ListBox.SelectedItem is ME1TalkFile.TLKStringRef selectedItem)
+            if (DisplayedString_ListBox.SelectedItem is TLKStringRef selectedItem)
             {
                 selectedItem.Data = EditorString;
                 FileModified = true;
@@ -133,7 +135,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         private bool CanSaveString(object obj)
         {
             if (DisplayedString_ListBox == null) return false;
-            var selectedItem = DisplayedString_ListBox.SelectedItem as ME1TalkFile.TLKStringRef;
+            var selectedItem = DisplayedString_ListBox.SelectedItem as TLKStringRef;
             return selectedItem?.Data != null && EditorString != selectedItem.Data;
         }
 
@@ -153,7 +155,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public override void Dispose()
         {
             CurrentLoadedExport = null;
-            CurrentME2ME3TalkFile = null;
+            _currentMe2Me3Me2Me3TalkFile = null;
             LoadedStrings?.Clear();
             CleanedStrings?.ClearEx();
         }
@@ -181,7 +183,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void DisplayedString_ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (DisplayedString_ListBox.SelectedItem is ME1TalkFile.TLKStringRef selectedItem)
+            if (DisplayedString_ListBox.SelectedItem is TLKStringRef selectedItem)
             {
                 editBox.Text = selectedItem.Data;
             }
@@ -225,7 +227,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void AddString()
         {
-            var blankstringref = new ME1TalkFile.TLKStringRef(100, 1, "New Blank Line");
+            var blankstringref = new TLKStringRef(100, "New Blank Line", 1);
             LoadedStrings.Add(blankstringref);
             CleanedStrings.Add(blankstringref);
             DisplayedString_ListBox.SelectedIndex = CleanedStrings.Count() - 1; //Set focus to new line (which is the last one)
@@ -249,15 +251,15 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 if (CurrentLoadedExport != null)
                 {
                     var talkfile = new ME1TalkFile(CurrentLoadedExport);
-                    talkfile.saveToFile(saveFileDialog.FileName);
+                    talkfile.SaveToXML(saveFileDialog.FileName);
                 } 
-                else if (CurrentME2ME3TalkFile is not null)
+                else if (_currentMe2Me3Me2Me3TalkFile is not null)
                 {
                     if (FileModified)
                     {
-                        CurrentME2ME3TalkFile.LoadTlkDataFromStream(ME2ME3HuffmanCompression.SaveToTlkStream(LoadedStrings).SeekBegin());
+                        _currentMe2Me3Me2Me3TalkFile.LoadTlkDataFromStream(ME2ME3HuffmanCompression.SaveToTlkStream(LoadedStrings).SeekBegin());
                     }
-                    CurrentME2ME3TalkFile?.DumpToFile(saveFileDialog.FileName);
+                    _currentMe2Me3Me2Me3TalkFile?.SaveToXML(saveFileDialog.FileName);
                 }
             }
 
@@ -276,13 +278,13 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 {
                     var compressor = new HuffmanCompression();
                     compressor.LoadInputData(openFileDialog.FileName);
-                    compressor.serializeTalkfileToExport(CurrentLoadedExport);
+                    compressor.SerializeTalkfileToExport(CurrentLoadedExport);
                 }
-                else if (CurrentME2ME3TalkFile is not null)
+                else if (_currentMe2Me3Me2Me3TalkFile is not null)
                 {
                     ME2ME3HuffmanCompression compressor = new ();
                     compressor.LoadInputData(openFileDialog.FileName);
-                    CurrentME2ME3TalkFile.LoadTlkDataFromStream(compressor.SaveToStream().SeekBegin());
+                    _currentMe2Me3Me2Me3TalkFile.LoadTlkDataFromStream(compressor.SaveToStream().SeekBegin());
                     RefreshME2ME3TLK();
                 }
                 FileModified = true; //this is not always technically true, but we'll assume it is
@@ -298,13 +300,13 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 {
                     xmlString = ME1TalkFile.TLKtoXmlstring(CurrentLoadedExport.InstancedFullPath, LoadedStrings);
                 }
-                else if (CurrentME2ME3TalkFile is not null)
+                else if (_currentMe2Me3Me2Me3TalkFile is not null)
                 {
                     if (FileModified)
                     {
-                        CurrentME2ME3TalkFile.LoadTlkDataFromStream(ME2ME3HuffmanCompression.SaveToTlkStream(LoadedStrings).SeekBegin());
+                        _currentMe2Me3Me2Me3TalkFile.LoadTlkDataFromStream(ME2ME3HuffmanCompression.SaveToTlkStream(LoadedStrings).SeekBegin());
                     }
-                    xmlString = CurrentME2ME3TalkFile.WriteXMLString();
+                    xmlString = _currentMe2Me3Me2Me3TalkFile.WriteXMLString();
                 }
                 popoutXmlBox.Text = xmlString;
 
@@ -326,7 +328,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void SetNewID()
         {
-            if (DisplayedString_ListBox.SelectedItem is ME1TalkFile.TLKStringRef selectedItem)
+            if (DisplayedString_ListBox.SelectedItem is TLKStringRef selectedItem)
             {
                 var stringRefNewID = DlgStringID(selectedItem.StringID); //Run popout box to set tlkstring id
                 if (selectedItem.StringID != stringRefNewID)
@@ -355,7 +357,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             for (int i = 0; i < CleanedStrings.Count; i++)
             {
                 int curIndex = (i + pos) % CleanedStrings.Count;
-                ME1TalkFile.TLKStringRef node = CleanedStrings[curIndex];
+                TLKStringRef node = CleanedStrings[curIndex];
 
                 if (node.StringID.ToString().Contains(searchTerm))
                 {
@@ -378,8 +380,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             UnloadExport();
             CurrentLoadedFile = filepath;
-            CurrentME2ME3TalkFile = new TalkFile();
-            CurrentME2ME3TalkFile.LoadTlkData(filepath);
+            _currentMe2Me3Me2Me3TalkFile = new ME2ME3TalkFile();
+            _currentMe2Me3Me2Me3TalkFile.LoadTlkData(filepath);
             LoadedFile = filepath;
             RefreshME2ME3TLK();
             FileModified = false;
@@ -389,7 +391,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void RefreshME2ME3TLK()
         {
-            LoadedStrings = CurrentME2ME3TalkFile.StringRefs.ToList(); //This is not bound to so reassigning is fine
+            LoadedStrings = _currentMe2Me3Me2Me3TalkFile.StringRefs.ToList(); //This is not bound to so reassigning is fine
             CleanedStrings.ReplaceAll(LoadedStrings.Where(x => x.StringID > 0).ToList()); //remove 0 or null strings.
             editBox.Text = NO_STRING_SELECTED; //Reset ability to save, reset edit box if export changed.
         }
@@ -398,8 +400,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             UnloadExport();
             CurrentLoadedFile = null;
-            CurrentME2ME3TalkFile = new TalkFile();
-            CurrentME2ME3TalkFile.LoadTlkDataFromStream(stream);
+            _currentMe2Me3Me2Me3TalkFile = new ME2ME3TalkFile();
+            _currentMe2Me3Me2Me3TalkFile.LoadTlkDataFromStream(stream);
 
             // Need way to load a file without having it show up in the recents
 
@@ -439,7 +441,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 CurrentLoadedExport.FileRef.Save();
             }
-            else if (CurrentME2ME3TalkFile is not null)
+            else if (_currentMe2Me3Me2Me3TalkFile is not null)
             {
                 if (CurrentLoadedFile is null)
                 {
@@ -447,9 +449,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     return;
                 }
                 // CurrentME2ME3TalkFile.
-                ME2ME3HuffmanCompression.SaveToTlkFile(CurrentME2ME3TalkFile.path, LoadedStrings);
-                CurrentME2ME3TalkFile = new TalkFile();
-                CurrentME2ME3TalkFile.LoadTlkData(CurrentLoadedFile);
+                ME2ME3HuffmanCompression.SaveToTlkFile(_currentMe2Me3Me2Me3TalkFile.FilePath, LoadedStrings);
+                _currentMe2Me3Me2Me3TalkFile = new ME2ME3TalkFile();
+                _currentMe2Me3Me2Me3TalkFile.LoadTlkData(CurrentLoadedFile);
                 FileModified = false; //you can only commit to file, not to export and then file in file mode.
             }
             //throw new NotImplementedException();
@@ -466,7 +468,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     CurrentLoadedExport.FileRef.Save(d.FileName);
                 }
             }
-            else if (CurrentME2ME3TalkFile is not null)
+            else if (_currentMe2Me3Me2Me3TalkFile is not null)
             {
                 SaveFileDialog d = new() { Filter = "ME2/ME3/LE2/LE3 talk files|*.tlk" };
                 if (d.ShowDialog() == true)
@@ -478,7 +480,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
         }
 
-        public override bool CanSave() => CurrentLoadedExport is not null || CurrentME2ME3TalkFile is not null;
+        public override bool CanSave() => CurrentLoadedExport is not null || _currentMe2Me3Me2Me3TalkFile is not null;
 
         //internal override void RecentFile_click(object sender, RoutedEventArgs e)
         //{

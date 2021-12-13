@@ -17,8 +17,7 @@ namespace LegendaryExplorerCore.Tests
         public void TestCoalescedSerialization()
         {
             GlobalTest.Init();
-
-            // TODO: Make LE1/LE2 coalesced format support compile and decompile to memory using streams so we don't have to write to disk here.
+            
             var bins = Directory.GetFiles(GlobalTest.GetTestCoalescedDirectory(), "Coalesced*.bin", SearchOption.AllDirectories);
             foreach (var coalBin in bins)
             {

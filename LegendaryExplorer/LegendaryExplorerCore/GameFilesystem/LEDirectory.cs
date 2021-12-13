@@ -63,7 +63,7 @@ namespace LegendaryExplorerCore.GameFilesystem
         }
 
         /// <summary>
-        /// Gets the path of the Legendary Edition folder in the users Documents/BioWare folder. This is where savegames and some configuration files are stored.
+        /// Gets the path of the Legendary Edition folder in the user's Documents/BioWare folder. This is where savegames and some configuration files are stored.
         /// </summary>
         /// <remarks>Only useful if executable is run with -NoHomeDir. Otherwise this folder won't exist and will be worthless.</remarks>
         public static string BioWareDocumentsPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), @"BioWare", @"Mass Effect Legendary Edition");
@@ -82,7 +82,7 @@ namespace LegendaryExplorerCore.GameFilesystem
         /// <summary>
         /// Proxy for <see cref="GetExecutableDirectory"/> with no arguments
         /// </summary>
-        /// <remarks>Some external tools use thus.</remarks>
+        /// <remarks>Some external tools use this.</remarks>
         public static string ExecutableFolder => GetExecutableDirectory();
 
         /// <summary>

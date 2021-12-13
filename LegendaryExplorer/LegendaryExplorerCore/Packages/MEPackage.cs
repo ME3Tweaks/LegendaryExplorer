@@ -564,7 +564,7 @@ namespace LegendaryExplorerCore.Packages
 
             if (filePath != null)
             {
-                Localization = filePath.GetFileLocalizationFromFilePath();
+                Localization = filePath.GetUnrealLocalization();
             }
 
             EntryLookupTable = new CaseInsensitiveDictionary<IEntry>(ExportCount + ImportCount);

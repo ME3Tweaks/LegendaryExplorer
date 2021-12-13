@@ -147,12 +147,12 @@
 
   <!--The following reduces executable size by not including the other build's images.-->
   <ItemGroup Condition="'$(Configuration)'=='WinAzureRelease' Or '$(Configuration)'=='WinAzureTest'">
-    <Resource Remove="Resources\Images\Legendary_Explorer_Graphic2.png"/>
-    <Resource Remove="Resources\Images\LEX_Splash.png"/>
+    <Resource Remove="Resources\Images\Legendary_Explorer_Graphic2.png" />
+    <Resource Remove="Resources\Images\LEX_Splash.png" />
   </ItemGroup>
   <ItemGroup Condition="'$(Configuration)'!='WinAzureRelease' And '$(Configuration)'!='WinAzureTest'">
-    <Resource Remove="Resources\Images\Legendary_Explorer_Graphic2_Nightly.png"/>
-    <Resource Remove="Resources\Images\LEX_Splash_Nightly.png"/>
+    <Resource Remove="Resources\Images\Legendary_Explorer_Graphic2_Nightly.png" />
+    <Resource Remove="Resources\Images\LEX_Splash_Nightly.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -498,6 +498,7 @@
     <Folder Include="Resources\FileAssocIcons\" />
     <Folder Include="Tools\PlotEditor\SFXGame\biodefine\" />
     <Folder Include="UserControls\ExportLoaderControls\ScriptEditor\" />
+    <Folder Include="UserControls\SharedToolControls\DirectX\" />
   </ItemGroup>
 
   <Target Name="Date" BeforeTargets="BeforeBuild">

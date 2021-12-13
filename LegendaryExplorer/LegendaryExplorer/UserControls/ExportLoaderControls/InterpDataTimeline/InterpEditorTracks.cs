@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Linq;
 using LegendaryExplorer.Misc;
+using LegendaryExplorer.Tools.TlkManagerNS;
 using LegendaryExplorerCore.Helpers;
-using LegendaryExplorerCore.ME1;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
@@ -470,7 +469,7 @@ namespace LegendaryExplorer.Tools.InterpEditor
                 foreach (var trackKey in trackKeys)
                 {
                     int strRef = subtitleData?[keyindex]?.GetProp<IntProperty>("nStrRefID");
-                    Keys.Add(new Key(trackKey.GetProp<FloatProperty>("fTime"), ME1TalkFiles.findDataById(strRef, Export.FileRef)));
+                    Keys.Add(new Key(trackKey.GetProp<FloatProperty>("fTime"), TLKManagerWPF.GlobalFindStrRefbyID(strRef, Export.FileRef)));
                 }
             }
         }

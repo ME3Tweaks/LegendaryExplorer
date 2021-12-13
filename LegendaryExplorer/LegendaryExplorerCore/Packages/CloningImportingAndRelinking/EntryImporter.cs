@@ -371,7 +371,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         if (sourceExport.FileRef.Localization != MELocalization.None)
                         {
                             // Localization must match
-                            var dfLoc = df.GetFileLocalizationFromFilePath();
+                            var dfLoc = df.GetUnrealLocalization();
                             if (sourceExport.FileRef.Localization != dfLoc)
                             {
                                 //Debug.WriteLine($"Rejecting donor file {Path.GetFileName(df)}, localization doesn't match source {sourceExport.FileRef.Localization}");

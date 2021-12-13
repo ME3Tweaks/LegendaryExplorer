@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
+using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Memory;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
@@ -11,28 +12,15 @@ using static LegendaryExplorerCore.TLK.ME1.ME1TalkFile;
 
 namespace LegendaryExplorerCore.TLK.ME1
 {
+    /// <summary>
+    /// ME1/LE1 TLK compressor
+    /// </summary>
     public class HuffmanCompression
     {
         private List<TLKStringRef> _inputData = new();
         private readonly Dictionary<char, int> frequencyCount = new();
         private readonly List<HuffmanNode> _huffmanTree = new();
         private readonly Dictionary<char, BitArray> _huffmanCodes = new();
-
-        //private class TLKEntry
-        //{
-        //    public int StringID;
-        //    public int Flags;
-        //    public string data;
-        //    public int index;
-
-        //    public TLKEntry(int StringID, int flags, string data)
-        //    {
-        //        this.StringID = StringID;
-        //        this.Flags = flags;
-        //        this.data = data;
-        //        index = -1;
-        //    }
-        //}
 
         private class HuffmanNode
         {
@@ -77,21 +65,30 @@ namespace LegendaryExplorerCore.TLK.ME1
         /// <summary>
         /// Loads a file into memory and prepares for compressing it to TLK
         /// </summary>
-        /// <param name="fileName"></param>
-        public void LoadInputData(string fileName)
+        /// <param name="filePath">Path of the file to open</param>
+        public void LoadInputData(string filePath)
         {
             _inputData.Clear();
-            LoadXmlInputData(fileName);
+            LoadXmlInputData(filePath);
             PrepareHuffmanCoding();
         }
 
+        /// <summary>
+        /// Loads <see cref="TLKStringRef"/>s and prepares for compressing them to a TLK
+        /// </summary>
+        /// <param name="tlkEntries">All the <see cref="TLKStringRef"/>s to add to the TLK</param>
         public void LoadInputData(List<TLKStringRef> tlkEntries)
         {
             _inputData = tlkEntries;
             PrepareHuffmanCoding();
         }
 
-        public void serializeTalkfileToExport(ExportEntry export, bool savePackage = false)
+        /// <summary>
+        /// Compresses loaded tlk data to a BioTlkFile export
+        /// </summary>
+        /// <param name="export">The BioTlkFile export to write the data to</param>
+        /// <param name="savePackage">Optional: Should the file the export is is be saved to disk</param>
+        public void SerializeTalkfileToExport(ExportEntry export, bool savePackage = false)
         {
             /* converts Huffmann Tree to binary form */
             byte[] treeBuffer = ConvertHuffmanTreeToBuffer();
@@ -134,9 +131,9 @@ namespace LegendaryExplorerCore.TLK.ME1
             m.Write(BitConverter.GetBytes(_inputData.Count), 0, 4);
             foreach (TLKStringRef entry in _inputData)
             {
-                m.Write(BitConverter.GetBytes(entry.StringID), 0, 4);
-                m.Write(BitConverter.GetBytes(entry.Flags), 0, 4);
-                m.Write(BitConverter.GetBytes(entry.Index), 0, 4);
+                m.WriteInt32(entry.StringID);
+                m.WriteInt32(entry.Flags);
+                m.WriteInt32(entry.Index);
             }
 
             /* writing HuffmanTree */
@@ -146,8 +143,8 @@ namespace LegendaryExplorerCore.TLK.ME1
             m.Write(BitConverter.GetBytes(encodedStrings.Count), 0, 4);
             foreach (EncodedString enc in encodedStrings)
             {
-                m.Write(BitConverter.GetBytes(enc.stringLength), 0, 4);
-                m.Write(BitConverter.GetBytes(enc.encodedLength), 0, 4);
+                m.WriteInt32(enc.stringLength);
+                m.WriteInt32(enc.encodedLength);
                 m.Write(enc.binaryData, 0, enc.encodedLength);
             }
 
@@ -160,12 +157,12 @@ namespace LegendaryExplorerCore.TLK.ME1
         }
 
         /// <summary>
-        /// Loads data from XML file into memory
+        /// Loads tlk data from an XML file
         /// </summary>
-        /// <param name="fileName"></param>
-        private void LoadXmlInputData(string fileName)
+        /// <param name="filePath">Path of the xml file</param>
+        private void LoadXmlInputData(string filePath)
         {
-            var xmlReader = new XmlTextReader(fileName);
+            var xmlReader = new XmlTextReader(filePath);
 
             while (xmlReader.Read())
             {
@@ -188,7 +185,7 @@ namespace LegendaryExplorerCore.TLK.ME1
                     /* every string should be NULL-terminated */
                     if (id > 0)
                         data += '\0';
-                    _inputData.Add(new TLKStringRef(id, flags, data));
+                    _inputData.Add(new TLKStringRef(id, data, flags));
                 }
             }
             xmlReader.Close();

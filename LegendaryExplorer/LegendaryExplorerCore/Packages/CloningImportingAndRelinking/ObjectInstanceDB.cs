@@ -85,7 +85,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             if (nameIdx >= 0)
             {
                 if (ObjectRecords.TryGetValue(nameIdx, out var result))
-                    return result.Select(x => NameTable[x]).Where(x => localization == MELocalization.None || x.GetFileLocalizationFromFilePath() == localization).ToList();
+                    return result.Select(x => NameTable[x]).Where(x => localization == MELocalization.None || x.GetUnrealLocalization() == localization).ToList();
                 return null; // NOT FOUND IN NOBJECT LIST
             }
 
