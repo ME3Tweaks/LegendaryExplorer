@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.Misc.AppSettings;
 using LegendaryExplorer.SharedUI;
+using LegendaryExplorer.SharedUI.Controls;
 using LegendaryExplorer.SharedUI.Interfaces;
 using LegendaryExplorer.UnrealExtensions.Classes;
 using LegendaryExplorer.Tools.TFCCompactor;
@@ -360,23 +361,23 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     {
                         MessageBox.Show("The width and height of a texture must both be a power of 2\n" +
                                         "(1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192 (LE only))", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                        return;
+                        return null;
                     }
                     catch (Exception e)
                     {
                         MessageBox.Show($"Error: {e.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                        return;
+                        return null;
                     }
 
                     if (image.mipMaps[0].origWidth / image.mipMaps[0].origHeight != listedWidth / listedHeight)
                     {
                         MessageBox.Show("Cannot replace texture: Aspect ratios must be the same.");
-                        return;
+                        return null;
                     }
 
                     bool isPackageStored = selectedTFCName == PACKAGE_STORED_STRING;
                     if (isPackageStored) selectedTFCName = null;
-                    ReplaceTextures(image, props, selectDDS.FileName, selectedTFCName, isPackageStored);
+                    return ReplaceTextures(image, props, selectDDS.FileName, selectedTFCName, isPackageStored);
 
                     // MER: Dump to disk
                     //var binName = Path.Combine(Directory.GetParent(selectDDS.FileName).FullName, Path.GetFileNameWithoutExtension(selectDDS.FileName) + ".bin");
@@ -385,15 +386,31 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 .ContinueWithOnUIThread((a) =>
                 {
                     if (HostingControl != null) HostingControl.IsBusy = false;
-
+                    if (a.Exception == null && a.Result != null && a.Result.Any())
+                    {
+                        var ld = new ListDialog(a.Result, "Textures replaced", "The following messages were generated during replacement of textures.", Window.GetWindow(this));
+                        ld.Show();
+                    }
                 });
             }
         }
 
         private string GetDestinationTFCName()
         {
-            // TODO: IMPLEMENT UI FOR THIS
-            return "Textures";
+            // This might need updated if we need to stuff textures into UDK for some reason
+            var options = new List<string>();
+            if (CurrentLoadedExport.Game > MEGame.ME1)
+            {
+                // TFCs
+                options.AddRange(CurrentLoadedExport.FileRef.Names.Where(x => x.StartsWith("Textures_DLC_MOD_")));
+                options.Add(CREATE_NEW_TFC_STRING);
+            }
+
+            options.Add(PACKAGE_STORED_STRING);
+            
+            return InputComboBoxWPF.GetValue(Window.GetWindow(this),
+                "Select where the new texture should be stored. TFCs are better for game performance.",
+                "Select storage location", options, options.First());
         }
 
         private void ExportToPNG()
@@ -570,7 +587,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 //TextureImage.Source = (BitmapSource)new ImageSourceConverter().ConvertFrom(memory);
 
                 LegendaryExplorerCore.Textures.PixelFormat pixelFormat = Image.getPixelFormatType(CurrentLoadedFormat);
-                TextureContext.Texture = TextureContext.LoadUnrealMip(mipToLoad, pixelFormat, SetAlphaToBlack);
+                TextureContext.Texture = TextureContext.LoadUnrealMip(mipToLoad, pixelFormat);
                 bool needsReconstruction = pixelFormat is LegendaryExplorerCore.Textures.PixelFormat.ATI2
                     or LegendaryExplorerCore.Textures.PixelFormat.BC5
                     or LegendaryExplorerCore.Textures.PixelFormat.V8U8;
@@ -612,7 +629,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
         }
 
-        public string ReplaceTextures(Image image, PropertyCollection props, string fileSourcePath = null, string forcedTFCName = null, bool isPackageStored = false)
+        public List<string> ReplaceTextures(Image image, PropertyCollection props, string fileSourcePath = null, string forcedTFCName = null, bool isPackageStored = false)
         {
             var texture = new LegendaryExplorerCore.Unreal.Classes.Texture2D(CurrentLoadedExport);
             return texture.Replace(image, props, fileSourcePath, forcedTFCName, isPackageStored: isPackageStored);

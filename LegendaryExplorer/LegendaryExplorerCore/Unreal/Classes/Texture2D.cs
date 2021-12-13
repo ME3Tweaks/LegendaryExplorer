@@ -384,9 +384,9 @@ namespace LegendaryExplorerCore.Unreal.Classes
         /// <param name="forcedTFCPath"></param>
         /// <param name="isPackageStored"></param>
         /// <returns></returns>
-        public string Replace(Image image, PropertyCollection props, string fileSourcePath = null, string forcedTFCName = null, string forcedTFCPath = null, bool isPackageStored = false)
+        public List<string> Replace(Image image, PropertyCollection props, string fileSourcePath = null, string forcedTFCName = null, string forcedTFCPath = null, bool isPackageStored = false)
         {
-            string errors = "";
+            var messages = new List<string>();
             var textureCache = forcedTFCName ?? GetTopMip().TextureCacheName;
             if (isPackageStored) textureCache = null;
             string fmt = TextureFormat;
@@ -400,12 +400,12 @@ namespace LegendaryExplorerCore.Unreal.Classes
             {
                 bool dxt1HasAlpha = false;
                 byte dxt1Threshold = 128;
-                if (pixelFormat == PixelFormat.DXT1 && props.GetProp<EnumProperty>("CompressionSettings") is { Value: { Name: "TC_OneBitAlpha" } })
+                if (pixelFormat == PixelFormat.DXT1 && (image.HasFullAlpha() || props.GetProp<EnumProperty>("CompressionSettings") is { Value: { Name: "TC_OneBitAlpha" } }))
                 {
                     dxt1HasAlpha = true;
                     if (image.pixelFormat is PixelFormat.ARGB or PixelFormat.DXT3 or PixelFormat.DXT5)
                     {
-                        errors += "Warning: Texture was converted from full alpha to binary alpha." + Environment.NewLine;
+                        messages.Add("Texture was converted from full alpha to binary alpha. DXT1 does not support more than 1-bit alpha");
                     }
                 }
 
@@ -771,7 +771,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
             //}
 
 
-            return errors;
+            return messages;
         }
         
         /// <summary>
