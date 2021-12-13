@@ -103,7 +103,7 @@ namespace LegendaryExplorer.Tools.TlkManagerNS
                             if (!pcc.Game.IsGame1())
                                 throw new Exception($@"ME1/LE1 pacakges are the only ones that contain TLK exports. The selected package is for {pcc.Game}");
                             var talkfile = new ME1TalkFile(pcc, tlk.exportNumber);
-                            talkfile.saveToFile(saveFileDialog.FileName);
+                            talkfile.SaveToXMLFile(saveFileDialog.FileName);
                         };
                     }
                     else
@@ -148,7 +148,7 @@ namespace LegendaryExplorer.Tools.TlkManagerNS
                             LegendaryExplorerCore.TLK.ME1.HuffmanCompression compressor = new();
                             compressor.LoadInputData(openFileDialog.FileName);
                             using IMEPackage pcc = MEPackageHandler.OpenME1Package(tlk.tlkPath);
-                            compressor.serializeTalkfileToExport(pcc.GetUExport(tlk.exportNumber), true);
+                            compressor.SerializeTalkfileToExport(pcc.GetUExport(tlk.exportNumber), true);
                         };
                     }
                     else

@@ -37,7 +37,7 @@ namespace LegendaryExplorerCore.Packages
         /// <summary>
         /// Returns the suffix used by a localization for "LOC_" file names
         /// </summary>
-        /// <remarks>This should only be used for "LOC_" filenames, there are more options for TLK localizations. Does not handle PL suffix or Game 1.</remarks>
+        /// <remarks>This should only be used for "LOC_" filenames, there are more options for TLK localizations. Does not handle PL suffix</remarks>
         /// <param name="localization">Input localization</param>
         /// <param name="game">Game of localization</param>
         /// <returns>"LOC_" suffix. Example: <c>DEU</c></returns>

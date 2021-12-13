@@ -1,28 +1,41 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.TLK.ME1;
-using Newtonsoft.Json;
 
-namespace LegendaryExplorerCore.ME1
+namespace LegendaryExplorerCore.TLK
 {
+    /// <summary>
+    /// Manages stringref lookup for LE1 tlks
+    /// </summary>
     public static class LE1TalkFiles
     {
-        public static List<ME1TalkFile> tlkList = new();
-        public static Dictionary<ME1TalkFile, string> localtlkList = new();
+        /// <summary>
+        /// The tlks that will be searched by <see cref="FindDataById"/>
+        /// </summary>
+        public static readonly List<ME1TalkFile> LoadedTlks = new();
         
-        public static void LoadTlkData(string fileName, int uIndex)
+        /// <summary>
+        /// Adds the BioTalkFile at <paramref name="uIndex"/> in the LE1 package file at <paramref name="filePath"/> to the loaded tlks.
+        /// </summary>
+        /// <param name="filePath">Path of the LE1 package file to look in</param>
+        /// <param name="uIndex">Uindex of the BioTalkFile export to load</param>
+        public static void LoadTlkData(string filePath, int uIndex)
         {
-            if (File.Exists(fileName))
+            if (File.Exists(filePath))
             {
-                using IMEPackage pcc = MEPackageHandler.UnsafePartialLoad(fileName, exp => exp.UIndex == uIndex);
-                tlkList.Add(new ME1TalkFile(pcc, uIndex));
+                using IMEPackage pcc = MEPackageHandler.UnsafePartialLoad(filePath, exp => exp.UIndex == uIndex);
+                LoadedTlks.Add(new ME1TalkFile(pcc, uIndex));
             }
         }
 
-        public static string findDataById(int strRefID, IMEPackage package, bool withFileName = false)
+        /// <summary>
+        /// Gets the string corresponding to the <paramref name="strRefID"/> (wrapped in quotes), if it exists in the tlks in <paramref name="package"/> or in the loaded tlks. If not found, returns <c>"No Data"</c>
+        /// </summary>
+        /// <param name="strRefID"></param>
+        /// <param name="package">If not null, looks through the tlks in this package first</param>
+        /// <param name="withFileName">Optional: Should the filename be appended to the returned string</param>
+        public static string FindDataById(int strRefID, IMEPackage package, bool withFileName = false)
         {
             string s = "No Data";
 
@@ -31,7 +44,7 @@ namespace LegendaryExplorerCore.ME1
             {
                 foreach (ME1TalkFile tlk in package.LocalTalkFiles)
                 {
-                    s = tlk.findDataById(strRefID, withFileName);
+                    s = tlk.FindDataById(strRefID, withFileName);
                     if (s != "No Data")
                     {
                         return s;
@@ -40,9 +53,9 @@ namespace LegendaryExplorerCore.ME1
             }
 
             //Look in loaded list
-            foreach (ME1TalkFile tlk in tlkList)
+            foreach (ME1TalkFile tlk in LoadedTlks)
             {
-                s = tlk.findDataById(strRefID, withFileName);
+                s = tlk.FindDataById(strRefID, withFileName);
                 if (s != "No Data")
                 {
                     return s;
@@ -51,9 +64,12 @@ namespace LegendaryExplorerCore.ME1
             return s;
         }
 
+        /// <summary>
+        /// Clears the loaded Tlks.
+        /// </summary>
         public static void ClearLoadedTlks()
         {
-            tlkList.Clear();
+            LoadedTlks.Clear();
         }
     }
 }

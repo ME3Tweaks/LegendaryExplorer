@@ -3666,7 +3666,7 @@ namespace LegendaryExplorerCore.Unreal
             Token t = new Token();
             int index = EndianReader.ToInt32(memory, start + 1, export.FileRef.Endian);
             int pos = start + 5;
-            t.text = $"${index}({ME3TalkFiles.findDataById(index)})";
+            t.text = $"${index}({ME3TalkFiles.FindDataById(index)})";
 
             int len = pos - start;
             t.raw = new byte[len];

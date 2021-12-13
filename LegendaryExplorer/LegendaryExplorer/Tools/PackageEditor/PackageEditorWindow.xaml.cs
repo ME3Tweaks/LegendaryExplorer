@@ -1519,7 +1519,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                             if (d.ShowDialog() == true)
                             {
                                 var exportingTalk = new ME1TalkFile(exp);
-                                exportingTalk.saveToFile(d.FileName);
+                                exportingTalk.SaveToXMLFile(d.FileName);
                                 MessageBox.Show("Done");
                             }
                             break;
@@ -1658,7 +1658,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                             {
                                 HuffmanCompression compressor = new HuffmanCompression();
                                 compressor.LoadInputData(d.FileName);
-                                compressor.serializeTalkfileToExport(exp, false);
+                                compressor.SerializeTalkfileToExport(exp, false);
                             }
                             break;
                         }
