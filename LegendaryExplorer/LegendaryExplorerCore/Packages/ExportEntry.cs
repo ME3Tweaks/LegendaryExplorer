@@ -1000,6 +1000,25 @@ namespace LegendaryExplorerCore.Packages
         }
 
         /// <summary>
+        /// Sets the property flags for this export to the ones specified. Exports that do not have a stack will not be modified, as they don't have property flags.
+        /// </summary>
+        /// <returns>True if the export has a stack, false otherwise</returns>
+        public bool SetPropertyFlags(EPropertyFlags flags)
+        {
+            if (FileRef.Platform != MEPackage.GamePlatform.PC) throw new Exception("Cannot call SetPropertyFlags() on non PC platform");
+            if (HasStack)
+            {
+                // This might be able to be optimized. Have to go through .Data as it needs to call the side effects
+                var data = Data;
+                data.OverwriteRange(0x18, BitConverter.GetBytes((UInt64)flags));
+                Data = data;
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
         /// Gets the top level container export by following the idxLink up the chain. Typically this is the file that will contain the export (unless it is a ForcedExport) if it's an import, or the original package before forcing the export into the file.
         /// </summary>
         /// <returns></returns>
