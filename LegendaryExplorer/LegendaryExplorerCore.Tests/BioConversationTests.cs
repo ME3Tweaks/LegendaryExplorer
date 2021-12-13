@@ -39,11 +39,15 @@ namespace LegendaryExplorerCore.Tests
                             ce.SerializeNodes();
                             var endData = bioConv.Data;
 
-                            if (!startData.SequenceEqual(endData))
+                            var areEqual = !startData.SequenceEqual(endData);
+
+#if DEBUG
+                            if (!areEqual)
                             {
                                 DebugTools.DebugUtilities.CompareByteArrays(startData,endData);
                             }
-
+#endif
+                            Assert.IsTrue(areEqual, $"Reserialization of conversation {bioConv.InstancedFullPath} yielded different export data");
                         }
                     }
                 }
