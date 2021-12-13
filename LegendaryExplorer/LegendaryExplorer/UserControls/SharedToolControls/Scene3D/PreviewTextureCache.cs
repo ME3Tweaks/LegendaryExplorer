@@ -154,7 +154,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             try
             {
                 if (preloadedMipInfo != null && metex.Export != preloadedMipInfo.Export) throw new Exception();
-                entry.Texture = SharedToolControls.Scene3D.RenderContextExtensions.LoadUnrealTexture(this.RenderContext, new LegendaryExplorerCore.Unreal.Classes.Texture2D(export), true);
+                entry.Texture = this.RenderContext.LoadUnrealTexture(new LegendaryExplorerCore.Unreal.Classes.Texture2D(export));
                 entry.TextureView = new ShaderResourceView(this.RenderContext.Device, entry.Texture);
                 AssetCache.Add(entry);
                 return entry;

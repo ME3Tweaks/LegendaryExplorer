@@ -841,7 +841,7 @@ namespace LegendaryExplorerCore.Textures
 
             byte[] pixelData = TexConverter.LoadTexture(filename, out uint width, out uint height, ref targetFormat);
             mips.Add(new MipMap(pixelData, (int)width, (int)height, targetFormat));
-
+            //TexConverter.SaveTexture(pixelData, width, height, PixelFormat.ARGB, @"C:\users\mgamerz\desktop.id.png");
             return new Image(mips, targetFormat);
         }
 

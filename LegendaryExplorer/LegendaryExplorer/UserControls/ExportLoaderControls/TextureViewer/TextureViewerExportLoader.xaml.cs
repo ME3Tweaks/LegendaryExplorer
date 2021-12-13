@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.Misc.AppSettings;
 using LegendaryExplorer.SharedUI;
+using LegendaryExplorer.SharedUI.Controls;
 using LegendaryExplorer.SharedUI.Interfaces;
 using LegendaryExplorer.UnrealExtensions.Classes;
 using LegendaryExplorer.Tools.TFCCompactor;
@@ -396,8 +397,20 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private string GetDestinationTFCName()
         {
-            // TODO: IMPLEMENT UI FOR THIS
-            return "Textures";
+            // This might need updated if we need to stuff textures into UDK for some reason
+            var options = new List<string>();
+            if (CurrentLoadedExport.Game > MEGame.ME1)
+            {
+                // TFCs
+                options.AddRange(CurrentLoadedExport.FileRef.Names.Where(x => x.StartsWith("Textures_DLC_MOD_")));
+                options.Add(CREATE_NEW_TFC_STRING);
+            }
+
+            options.Add(PACKAGE_STORED_STRING);
+            
+            return InputComboBoxWPF.GetValue(Window.GetWindow(this),
+                "Select where the new texture should be stored. TFCs are better for game performance.",
+                "Select storage location", options, options.First());
         }
 
         private void ExportToPNG()
@@ -574,7 +587,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 //TextureImage.Source = (BitmapSource)new ImageSourceConverter().ConvertFrom(memory);
 
                 LegendaryExplorerCore.Textures.PixelFormat pixelFormat = Image.getPixelFormatType(CurrentLoadedFormat);
-                TextureContext.Texture = TextureContext.LoadUnrealMip(mipToLoad, pixelFormat, SetAlphaToBlack);
+                TextureContext.Texture = TextureContext.LoadUnrealMip(mipToLoad, pixelFormat);
                 bool needsReconstruction = pixelFormat is LegendaryExplorerCore.Textures.PixelFormat.ATI2
                     or LegendaryExplorerCore.Textures.PixelFormat.BC5
                     or LegendaryExplorerCore.Textures.PixelFormat.V8U8;
