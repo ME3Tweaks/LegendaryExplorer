@@ -51,7 +51,6 @@ namespace LegendaryExplorerCore.Tests
                             using MemoryStream ms = MemoryManager.GetMemoryStream();
                             t2d.SerializeNewData(ms);
                         }
-
                     }
                 }
             }

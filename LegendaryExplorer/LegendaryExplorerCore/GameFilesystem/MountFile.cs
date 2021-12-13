@@ -308,33 +308,42 @@ namespace LegendaryExplorerCore.GameFilesystem
         }
 
         /// <summary>
+        /// Writes this mount object to the specified stream
+        /// </summary>
+        /// <param name="stream">The stream to write to</param>
+        public void WriteMountFileToStream(Stream stream)
+        {
+            switch (Game)
+            {
+                case MEGame.ME2:
+                    WriteME2Mount(stream);
+                    break;
+                case MEGame.ME3:
+                    WriteME3Mount(stream);
+                    break;
+                case MEGame.LE2:
+                    WriteLE2Mount(stream);
+                    break;
+                case MEGame.LE3:
+                    WriteLE3Mount(stream);
+                    break;
+                default:
+                    throw new Exception($"Cannot write a mount file for {Game}!");
+            }
+        }
+
+        /// <summary>
         /// Writes this Mountfile to the specified path.
         /// </summary>
         /// <param name="path">Path to write mount file to</param>
         public void WriteMountFile(string path)
         {
             using MemoryStream ms = MemoryManager.GetMemoryStream();
-            switch (Game)
-            {
-                case MEGame.ME2:
-                    WriteME2Mount(ms);
-                    break;
-                case MEGame.ME3:
-                    WriteME3Mount(ms);
-                    break;
-                case MEGame.LE2:
-                    WriteLE2Mount(ms);
-                    break;
-                case MEGame.LE3:
-                    WriteLE3Mount(ms);
-                    break;
-                default:
-                    throw new Exception($"Cannot write a mount file for {Game}!");
-            }
+            WriteMountFileToStream(ms);
             ms.WriteToFile(path);
         }
 
-        private void WriteLE3Mount(MemoryStream ms)
+        private void WriteLE3Mount(Stream ms)
         {
             ms.WriteInt32(0x1); // MountingInfoVersion
             ms.WriteInt32(0x2AD); // PackageFileVersion
@@ -356,7 +365,7 @@ namespace LegendaryExplorerCore.GameFilesystem
             ms.WriteZeros(0x48); // Build version, GUIDs
         }
 
-        private void WriteME3Mount(MemoryStream ms)
+        private void WriteME3Mount(Stream ms)
         {
             ms.WriteInt32(0x1); //MountingInfoVersion
             ms.WriteInt32(0x2AC); // PackageFileVersion
@@ -385,7 +394,7 @@ namespace LegendaryExplorerCore.GameFilesystem
             ms.WriteZeros(0x40); // 4 GUIDs
         }
 
-        private void WriteLE2Mount(MemoryStream ms)
+        private void WriteLE2Mount(Stream ms)
         {
             ms.WriteInt32(0x2AC); // 0x0 Version Package
             ms.WriteInt32(0xA8); // 0x4 Version Licensee
@@ -421,7 +430,7 @@ namespace LegendaryExplorerCore.GameFilesystem
             ms.WriteInt32(TLKID); // Package Name
         }
 
-        private void WriteME2Mount(MemoryStream ms)
+        private void WriteME2Mount(Stream ms)
         {
             // Todo: Update, check if same as LE2 except for versions
             ms.WriteByte(0x0);

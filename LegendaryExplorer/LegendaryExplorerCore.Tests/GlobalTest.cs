@@ -69,6 +69,7 @@ namespace LegendaryExplorerCore.Tests
         public static string GetTestCRCDirectory() => Path.Combine(GetTestDataMiscDirectory(), "crc");
         public static string GetTestTexturesDirectory() => Path.Combine(GetTestDataDirectory(), "textures");
         public static string GetTestCoalescedDirectory() => Path.Combine(GetTestDataDirectory(), "coalesced");
+        public static string GetTestISBDirectory() => Path.Combine(GetTestDataDirectory(), "isb");
 
         /// <summary>
         /// Gets the expected game for a file based on the name of the containing directory. It be an MEGame Enum.
