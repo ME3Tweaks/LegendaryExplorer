@@ -1,14 +1,22 @@
 ﻿using System.IO;
 using System.Text;
 using LegendaryExplorerCore.Gammtek.IO;
+using LegendaryExplorerCore.Packages;
 
 namespace LegendaryExplorerCore.TLK.ME2ME3
 {
     /// <summary>
-    /// Contains functionality shared between <see cref="TalkFile"/> and <see cref="ME2ME3LazyTLK"/> 
+    /// Contains functionality shared between <see cref="ME2ME3TalkFile"/> and <see cref="ME2ME3LazyTLK"/> 
     /// </summary>
     public abstract class ME2ME3TLKBase
     {
+        // This is part of ITalkFile in subclasses. This class does not implement it 
+        // as only subclasses have the methods
+        /// <summary>
+        /// The localization of this TLK
+        /// </summary>
+        public MELocalization Localization { get; set; }
+
         protected readonly struct TLKHeader
         {
             public readonly int magic;
@@ -53,10 +61,8 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
         /// </summary>
         public string FilePath;
 
-
-
         /// <summary>
-        /// Loads TLK data from a file
+        /// Loads TLK data from a .tlk file
         /// </summary>
         /// <param name="filePath">Path of the file to load</param>
         public void LoadTlkData(string filePath)
@@ -65,12 +71,13 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
             FileName = Path.GetFileNameWithoutExtension(filePath);
             using Stream fs = File.OpenRead(filePath);
             LoadTlkDataFromStream(fs);
+            Localization = filePath.GetUnrealLocalization();
         }
 
         /// <summary>
         /// Loads TLK data from a stream. The position must be properly set.
         /// </summary>
-        /// <param name="fs"></param>
+        /// <param name="fs">Stream to read from</param>
         public abstract void LoadTlkDataFromStream(Stream fs);
 
 

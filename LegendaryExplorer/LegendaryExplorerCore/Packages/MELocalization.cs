@@ -62,49 +62,75 @@ namespace LegendaryExplorerCore.Packages
         }
 
         /// <summary>
-        /// Given a filename, returns the localization of it.
+        /// Attempts to determine the localization of the given string. Localizations end with either LOC_[LANG] or just _[LANG].
         /// </summary>
-        /// <remarks>Should work on ME1/LE1 files</remarks>
-        /// <returns>MELocalization of the file</returns>
-        public static MELocalization GetFileLocalizationFromFilePath(this string filePath)
+        /// <param name="str">The string to check against</param>
+        /// <returns>The MELocalization enum that corresponds to the matchingl ocalization. If none match, <see cref="MELocalization.None"/> is returned</returns>
+        public static MELocalization GetUnrealLocalization(this string str)
         {
-            string localizationName = Path.GetFileNameWithoutExtension(filePath).ToUpper();
-            if (localizationName.Length > 8)
-            {
+            string localizationName = Path.GetFileNameWithoutExtension(str).ToUpper();
+            //if (localizationName.Length > 8)
+            //{
                 var loc = localizationName.LastIndexOf("LOC_", StringComparison.OrdinalIgnoreCase);
                 if (loc > 0)
                 {
                     localizationName = localizationName.Substring(loc);
                 }
-            }
+                else
+                {
+                    loc = localizationName.LastIndexOf("_", StringComparison.OrdinalIgnoreCase);
+                    if (loc > 0 && localizationName.Length > loc + 1)
+                    {
+                        // End of file might be RA, like Startup_RA, or salarian_ss_FR.pcc
+                        localizationName = localizationName.Substring(loc + 1);
+                    }
+                }
+            //}
+
+            // Combined basegame startup files don't use the _LOC_ extension.
+            // ME1/LE1 files also don't always adhere to this...
             switch (localizationName)
             {
+                case "DE":
+                case "GE":
+                case "DEU":
                 case "LOC_DEU":
                 case "LOC_DE":
-                    //case "LOC_GE": // German text, English audio
                     return MELocalization.DEU;
+                case "ES":
+                case "ESN":
                 case "LOC_ESN":
                     return MELocalization.ESN;
+                case "FR":
+                case "FE":
+                case "FRA":
                 case "LOC_FRA":
                 case "LOC_FR":
-                    //case "LOC_FE": French text, English Audio
                     return MELocalization.FRA;
+                case "INT":
                 case "LOC_INT":
                     return MELocalization.INT;
+                case "IT":
+                case "IE":
+                case "ITA":
                 case "LOC_ITA":
                 case "LOC_IT":
-                    //case "LOC_IE": // LE1 Italian text, English Audio
                     return MELocalization.ITA;
+                case "JA":
+                case "JPN":
                 case "LOC_JPN":
-                case "LOC_JA": //LE1 Japanese text, English Audio
                     return MELocalization.JPN;
+                case "PL":
+                case "PLPC":
                 case "LOC_POL":
                 case "LOC_PLPC":
                 case "LOC_PL":
                     return MELocalization.POL;
+                case "RA":
+                case "RU":
+                case "RUS":
                 case "LOC_RUS":
                 case "LOC_RA":
-                    //case "LOC_RU": // LE1 Russian text Russian audio ?
                     return MELocalization.RUS;
                 default:
                     return MELocalization.None;

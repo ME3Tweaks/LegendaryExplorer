@@ -1810,7 +1810,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                             var outPath = Path.Combine(dlg.FileName,
                                 $"{Path.GetFileNameWithoutExtension(f.Key)}.{package.GetEntry(v.UIndex).InstancedFullPath}.xml");
-                            v.SaveToXMLFile(outPath);
+                            v.SaveToXML(outPath);
                         }
 
                     }

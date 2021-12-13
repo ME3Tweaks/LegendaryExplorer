@@ -3,18 +3,30 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Xml;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.TLK.ME2ME3;
 
 namespace LegendaryExplorerCore.TLK.ME1
 {
     /// <summary>
-    /// Represents the tlk embedded in a BioTalkFile export
+    /// Represents the tlk embedded in a BioTalkFile export, which is used in ME1/LE1. For ME2/ME3/LE2/LE3TLK, use <see cref="ME2ME3TalkFile"/>.
     /// </summary>
-    public class ME1TalkFile : IEquatable<ME1TalkFile>
+    public class ME1TalkFile : IEquatable<ME1TalkFile>, ITalkFile
     {
+        /// <summary>
+        /// The localization of the TLK
+        /// </summary>
+        public MELocalization Localization { get; set; }
+
+        /// <summary>
+        /// If TLK is modified. This should not be trusted as you can directly edit StringRefs. Only use if your own code sets it.
+        /// </summary>
+        public bool IsModified { get; set; }
+
         #region structs
 
         private readonly struct HuffmanNode
@@ -45,7 +57,7 @@ namespace LegendaryExplorerCore.TLK.ME1
         /// <summary>
         /// All the <see cref="TLKStringRef"/>s in the TLK
         /// </summary>
-        public TLKStringRef[] StringRefs;
+        public List<TLKStringRef> StringRefs { get; set; }
 
         /// <summary>
         /// The UIndex of the BioTLKFile export
@@ -85,7 +97,7 @@ namespace LegendaryExplorerCore.TLK.ME1
         public ME1TalkFile(ExportEntry export) : this(export.FileRef, export)
         {
         }
-        
+
         private ME1TalkFile(IMEPackage pcc, ExportEntry export)
         {
             if (!pcc.Game.IsGame1())
@@ -97,31 +109,121 @@ namespace LegendaryExplorerCore.TLK.ME1
             FilePath = pcc.FilePath;
             Name = export.ObjectName.Instanced;
             BioTlkSetName = export.ParentName; //Not technically the tlkset name, but should be about the same
+
+            // ME1 localizations for TLK are... fun
+            Localization = getTlkLocalization(export);
+
         }
+
+        private MELocalization getTlkLocalization(ExportEntry exportEntry)
+        {
+            var testLoc = Name.GetUnrealLocalization();
+            if (testLoc != MELocalization.None) return testLoc;
+
+            if (Name is "tlk" or "tlk_M") return MELocalization.INT;
+            if (Name is "GlobalTlk_tlk" or "GlobalTlk_tlk_M")
+            {
+                // If the package doesn't have a localization, we just default to INT.
+                // An example of this is GlobalTlk.upk in ME1 which has no LOC designations 
+                // but is INT.
+                return exportEntry.FileRef.Localization != MELocalization.None
+                    ? exportEntry.FileRef.Localization
+                    : MELocalization.INT;
+            }
+            return MELocalization.None; // We have no idea
+        }
+
         #endregion
 
 
         /// <summary>
+        /// Replaces a string in the list of StringRefs.
+        /// </summary>
+        /// <param name="stringID">The ID of the string to replace.</param>
+        /// <param name="newText">The new text of the string.</param>
+        /// <param name="addIfNotFound">If the string should be added as new stringref if it is not found. Default is false.</param>
+        /// <returns>True if the string was found, false otherwise.</returns>
+        public bool ReplaceString(int stringID, string newText, bool addIfNotFound = false)
+        {
+            var strRef = StringRefs.Find(x => x.StringID == stringID);
+            if (strRef != null)
+            {
+                strRef.Data = newText;
+                return true; // Was found and updated.
+            }
+
+            if (addIfNotFound)
+            {
+                IsModified = true;
+                AddString(new TLKStringRef(stringID, newText));
+                return false; // Was not found, but was added.
+            }
+            else
+            {
+                // Not found, not added
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Adds a new string reference to the TLK. Marks the TLK as modified.
+        /// </summary>
+        /// <param name="sref"></param>
+        public void AddString(TLKStringRef sref)
+        {
+            StringRefs.Add(sref);
+            IsModified = true;
+        }
+
+        /// <summary>
         /// Gets the string corresponding to the <paramref name="strRefID"/> (wrapped in quotes), if it exists in this tlk. If it does not, returns <c>"No Data"</c>
         /// </summary>
-        /// <param name="strRefID"></param>
-        /// <param name="withFileName">Optional: Should the filename be appended to the returned string</param>
-        public string FindDataById(int strRefID, bool withFileName = false)
+        /// <param name="strRefID">The ID to lookup</param>
+        /// <param name="withFileName">Optional: If true, the filename will be appended to the returned string</param>
+        /// <param name="returnNullIfNotFound">Optional: If TLK string is not found, setting this to true will return null rather than "No Data"</param>
+        /// <param name="noQuotes">Optional: If the returned string data should be in quotes or not. Setting this to false makes the string return the exact TLK string</param>
+        /// <param name="male">Optional: Unused in Game 1 as TLKs are fully split.</param>
+        /// 
+        public string FindDataById(int strRefID, bool withFileName = false, bool returnNullIfNotFound = false, bool noQuotes = false, bool male = true)
         {
-            string data = "No Data";
+            // Todo: Find way to do this faster if possible, maybe like binary search (if TLKs are in order?)
             foreach (TLKStringRef tlkStringRef in StringRefs)
             {
                 if (tlkStringRef.StringID == strRefID)
                 {
-                    data = $"\"{tlkStringRef.Data}\"";
+                    string data = "";
+                    if (noQuotes)
+                    {
+                        data = tlkStringRef.Data ?? "";
+                    }
+                    else
+                    {
+                        data = $"\"{(tlkStringRef.Data ?? "")}\"";
+                    }
                     if (withFileName)
                     {
                         data += $" ({Path.GetFileName(FilePath)} -> {BioTlkSetName}.{Name})";
                     }
-                    break;
+
+                    return data;
                 }
             }
-            return data;
+            return returnNullIfNotFound ? null : "No Data";
+        }
+
+
+        /// <summary>
+        /// Find the matching string id for the specified string. Returns -1 if not found. The male parameter is not used.
+        /// </summary>
+        /// <param name="value">The text value to find, without quotes.</param>
+        /// <param name="male">Optional: Not used in Game 1</param>
+        /// <returns></returns>
+        public int FindIdByData(string value, bool male = true)
+        {
+            // Male is not used
+            var matching = StringRefs.FirstOrDefault(x => x.Data == value);
+            if (matching != null) return matching.StringID;
+            return -1;
         }
 
         #region IEquatable
@@ -158,10 +260,10 @@ namespace LegendaryExplorerCore.TLK.ME1
             };
             //hashtable
             int entryCount = r.ReadInt32();
-            StringRefs = new TLKStringRef[entryCount];
+            StringRefs = new List<TLKStringRef>(entryCount);
             for (int i = 0; i < entryCount; i++)
             {
-                StringRefs[i] = new TLKStringRef(r, true);
+                StringRefs.Add(new TLKStringRef(r, true));
             }
 
             //Huffman tree
@@ -302,7 +404,7 @@ namespace LegendaryExplorerCore.TLK.ME1
         /// Saves this TLK object to an XML file
         /// </summary>
         /// <param name="filePath">path to write an XML file to</param>
-        public void SaveToXMLFile(string filePath)
+        public void SaveToXML(string filePath)
         {
             using var xr = new XmlTextWriter(filePath, Encoding.UTF8);
             WriteXML(StringRefs, Name, xr);

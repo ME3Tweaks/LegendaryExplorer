@@ -10,7 +10,7 @@ using LegendaryExplorerCore.TLK.ME1;
 namespace LegendaryExplorerCore.TLK.ME2ME3
 {
     /// <summary>
-    /// Like <see cref="TalkFile"/>, but does not decompress the strings when loaded. Only decompresses a string when it's requested.
+    /// Like <see cref="ME2ME3TalkFile"/>, but does not decompress the strings when loaded. Only decompresses a string when it's requested.
     /// </summary>
     public class ME2ME3LazyTLK : ME2ME3TLKBase
     {
