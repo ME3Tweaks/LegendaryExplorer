@@ -763,7 +763,15 @@ namespace LegendaryExplorerCore.Dialogue
                     var speakerStruct = new StructProperty("BioDialogSpeaker", ssProps);
                     newSpeakerList.Add(speakerStruct);
                 }
-                BioConvo.AddOrReplaceProp(newSpeakerList);
+
+                if (newSpeakerList.Count > 0)
+                {
+                    BioConvo.AddOrReplaceProp(newSpeakerList);
+                }
+                else
+                {
+                    BioConvo.RemoveNamedProperty(newSpeakerList.Name); // This ensures this property is removed so it reserializes the same as vanilla
+                }
             }
 
 
@@ -777,7 +785,7 @@ namespace LegendaryExplorerCore.Dialogue
                 BioConvo.AddOrReplaceProp(newentryList);
             }
 
-            if (newreplyList.Count >= 0)
+            if (newreplyList.Count > 0)
             {
                 BioConvo.AddOrReplaceProp(newreplyList);
             }

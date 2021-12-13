@@ -12,6 +12,7 @@ namespace LegendaryExplorerCore.DebugTools
     {
         public static void CompareByteArrays(byte[] arr1, byte[] arr2)
         {
+            Debug.WriteLine($"Lengths: {arr1.Length} vs {arr2.Length}");
             int maxCount = Math.Min(arr1.Length, arr2.Length);
             for (int i = 0; i < maxCount; i++)
             {

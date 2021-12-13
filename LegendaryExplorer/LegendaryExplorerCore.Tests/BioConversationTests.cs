@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -34,17 +35,26 @@ namespace LegendaryExplorerCore.Tests
                         {
                             Console.WriteLine($"Testing reserialization of {bioConv.InstancedFullPath}");
                             var startData = bioConv.Data;
+                            var startProps = bioConv.GetProperties();
                             ConversationExtended ce = new ConversationExtended(bioConv);
                             ce.LoadConversation(null, true); // no tlk lookup
                             ce.SerializeNodes();
                             var endData = bioConv.Data;
+                            var endProps = bioConv.GetProperties();
 
-                            var areEqual = !startData.SequenceEqual(endData);
+                            var areEqual = startData.SequenceEqual(endData);
 
 #if DEBUG
                             if (!areEqual)
                             {
-                                DebugTools.DebugUtilities.CompareByteArrays(startData,endData);
+                                Debug.WriteLine($"Prop count at root: {startProps.Count} vs {endProps.Count}");
+                                var propNames = endProps.Select(x => x.Name.Name).ToList();
+                                propNames = propNames.Except(startProps.Select(x => x.Name.Name)).ToList();
+                                Debug.WriteLine("Extra props:");
+                                foreach(var v in propNames) Debug.WriteLine(v);
+
+
+                                DebugTools.DebugUtilities.CompareByteArrays(startData, endData);
                             }
 #endif
                             Assert.IsTrue(areEqual, $"Reserialization of conversation {bioConv.InstancedFullPath} yielded different export data");
