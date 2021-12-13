@@ -10,7 +10,7 @@ var class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d =
     [ "ReplaceMips", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d.html#adc963b6444b27f664abe0f9e70bf29a0", null ],
     [ "GetTextureData", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d.html#a5f7210f8ecd0ca6b7c4f2a90ee54db84", null ],
     [ "GetMipCRC", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d.html#a60be7ae3c5a3349968f06ef912bfd8c7", null ],
-    [ "Replace", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d.html#ae1fbdab8b7388efaf5449303509160bf", null ],
+    [ "Replace", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d.html#a254959df4df8b6893db22e11778b3a3a", null ],
     [ "CalculateStorageType", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d.html#a564243e740d452cb14db5b4de9a81701", null ],
     [ "ExportToFile", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d.html#a6f087520c6a38317bf60810be1e6c848", null ],
     [ "ExportToARGB", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d.html#a93b9176a83802ffec2afd66bf2f5cf04", null ],
