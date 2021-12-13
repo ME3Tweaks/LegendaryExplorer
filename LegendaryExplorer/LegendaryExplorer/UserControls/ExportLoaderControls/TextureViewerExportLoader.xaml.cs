@@ -404,23 +404,23 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     {
                         MessageBox.Show("The width and height of a texture must both be a power of 2\n" +
                                         "(1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192 (LE only))", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                        return;
+                        return null;
                     }
                     catch (Exception e)
                     {
                         MessageBox.Show($"Error: {e.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                        return;
+                        return null;
                     }
 
                     if (image.mipMaps[0].origWidth / image.mipMaps[0].origHeight != listedWidth / listedHeight)
                     {
                         MessageBox.Show("Cannot replace texture: Aspect ratios must be the same.");
-                        return;
+                        return null;
                     }
 
                     bool isPackageStored = selectedTFCName == PACKAGE_STORED_STRING;
                     if (isPackageStored) selectedTFCName = null;
-                    ReplaceTextures(image, props, selectDDS.FileName, selectedTFCName, isPackageStored);
+                    return ReplaceTextures(image, props, selectDDS.FileName, selectedTFCName, isPackageStored);
 
                     // MER: Dump to disk
                     //var binName = Path.Combine(Directory.GetParent(selectDDS.FileName).FullName, Path.GetFileNameWithoutExtension(selectDDS.FileName) + ".bin");
@@ -429,7 +429,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 .ContinueWithOnUIThread((a) =>
                 {
                     if (HostingControl != null) HostingControl.IsBusy = false;
-
+                    if (a.Exception == null && a.Result != null && a.Result.Any())
+                    {
+                        var ld = new ListDialog(a.Result, "Textures replaced", "The following messages were generated during replacement of textures.", Window.GetWindow(this));
+                        ld.Show();
+                    }
                 });
             }
         }
@@ -651,7 +655,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
         }
 
-        public string ReplaceTextures(Image image, PropertyCollection props, string fileSourcePath = null, string forcedTFCName = null, bool isPackageStored = false)
+        public List<string> ReplaceTextures(Image image, PropertyCollection props, string fileSourcePath = null, string forcedTFCName = null, bool isPackageStored = false)
         {
             var texture = new LegendaryExplorerCore.Unreal.Classes.Texture2D(CurrentLoadedExport);
             return texture.Replace(image, props, fileSourcePath, forcedTFCName, isPackageStored: isPackageStored);

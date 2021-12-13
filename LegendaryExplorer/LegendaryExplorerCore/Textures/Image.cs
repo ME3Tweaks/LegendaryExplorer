@@ -188,7 +188,7 @@ namespace LegendaryExplorerCore.Textures
         /// <summary>
         /// Only use if you know what you're doing
         /// </summary>
-        private Image() {}
+        private Image() { }
 
         public Image(List<MipMap> mipmaps, PixelFormat pixelFmt)
         {
@@ -844,5 +844,28 @@ namespace LegendaryExplorerCore.Textures
 
             return new Image(mips, targetFormat);
         }
+
+        /// <summary>
+        /// Checks if the top mip has any pixels that don't have an alpha of 0 or 1. Only works on ARGB images.
+        /// </summary>
+        /// <returns>True if any pixel is not 0 or 1 alpha and is in ARGB format, false otherwise</returns>
+        internal bool HasFullAlpha()
+        {
+            if (!mipMaps.Any())
+                return false;
+
+            // We can really only check ARGB...
+            if (pixelFormat == PixelFormat.ARGB)
+            {
+                var mip = mipMaps[0];
+                for (int i = 0; i < mip.data.Length; i += 4) // A R G B
+                {
+                    if (mip.data[i] != 0 && mip.data[i] != 255) return true; // Not 0 or 1
+                }
+            }
+
+            return false;
+        }
+
     }
 }
