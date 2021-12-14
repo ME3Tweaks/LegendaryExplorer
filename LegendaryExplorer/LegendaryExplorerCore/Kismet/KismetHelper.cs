@@ -1,4 +1,5 @@
-﻿using LegendaryExplorerCore.Packages;
+﻿using System;
+using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
 using System.Collections.Generic;
 using System.Linq;
@@ -199,71 +200,9 @@ namespace LegendaryExplorerCore.Kismet
         /// </summary>
         /// <param name="node">Sequence object to get outbound links from</param>
         /// <returns>Outer list represents OutputLinks, inner lists represent the different sequence objects that link goes to</returns>
-        public static List<List<OutboundLink>> GetOutboundLinksOfNode(ExportEntry node)
-        {
-            var outputLinksMapping = new List<List<OutboundLink>>();
-            var outlinksProp = node.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
-            if (outlinksProp != null)
-            {
-                int i = 0;
-                foreach (var ol in outlinksProp)
-                {
-                    List<OutboundLink> oLinks = new List<OutboundLink>();
-                    outputLinksMapping.Add(oLinks);
-
-                    var links = ol.GetProp<ArrayProperty<StructProperty>>("Links");
-                    if (links != null)
-                    {
-                        foreach (var l in links)
-                        {
-                            oLinks.Add(OutboundLink.FromStruct(l, node.FileRef));
-                        }
-                    }
-
-                    i++;
-                }
-            }
-
-            return outputLinksMapping;
-        }
-
-        /// <summary>
-        /// Represents an outbound link from a sequence object
-        /// </summary>
-        public class OutboundLink
-        {
-            /// <summary>The sequence object that this link goes to</summary>
-            public IEntry LinkedOp { get; set; }
-            /// <summary>The InputLinkIdx property of this link</summary>
-            public int InputLinkIdx { get; set; }
-
-            /// <summary>
-            /// Factory method to create an <see cref="OutboundLink"/> from a SeqOpOutputInputLink StructProperty
-            /// </summary>
-            /// <param name="sp">SeqOpOutputInputLink StructProperty</param>
-            /// <param name="package">Package file that contains this sequence</param>
-            /// <returns>New OutboundLink</returns>
-            public static OutboundLink FromStruct(StructProperty sp, IMEPackage package)
-            {
-                return new OutboundLink()
-                {
-                    LinkedOp = sp.GetProp<ObjectProperty>("LinkedOp")?.ResolveToEntry(package),
-                    InputLinkIdx = sp.GetProp<IntProperty>("InputLinkIdx")
-                };
-            }
-
-            /// <summary>
-            /// Generates a SeqOpInputOutputLink StructProperty from this OutboundLink
-            /// </summary>
-            /// <returns>Created StructProperty</returns>
-            public StructProperty GenerateStruct()
-            {
-                return new StructProperty("SeqOpOutputInputLink", false,
-                    new ObjectProperty(LinkedOp.UIndex, "LinkedOp"),
-                    new IntProperty(InputLinkIdx, "InputLInkIdx"),
-                    new NoneProperty());
-            }
-        }
+        [Obsolete("Duplication: Use SeqTools.GetOutboundLinksOfNode instead")]
+        public static List<List<SeqTools.OutboundLink>> GetOutboundLinksOfNode(ExportEntry node) =>
+            SeqTools.GetOutboundLinksOfNode(node);
 
         #endregion
 

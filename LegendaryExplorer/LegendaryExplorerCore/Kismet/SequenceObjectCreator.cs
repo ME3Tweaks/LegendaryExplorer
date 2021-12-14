@@ -370,7 +370,7 @@ namespace LegendaryExplorerCore.Kismet
         /// <summary>
         /// Creates a new sequence object in a package file
         /// </summary>
-        /// <param name="pcc">Package to add neq sequence object to</param>
+        /// <param name="pcc">Package to add new sequence object to</param>
         /// <param name="className">Class of new sequence object</param>
         /// <param name="cache">PackageCache for relinker</param>
         /// <param name="handleRelinkResults">Invoked when relinking is complete and the export has been added. You can inspect the object for failed relink operations, for example.</param>

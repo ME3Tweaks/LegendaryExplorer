@@ -9,9 +9,12 @@ using LegendaryExplorerCore.Unreal;
 namespace LegendaryExplorerCore.Kismet
 {
     /// <summary>
-    /// Ported from ME2 Randomizer. Contains utility methods that might be useful for seq ed
+    /// Static methods to obtain information on sequence objects, and perform common sequence editing operations
     /// </summary>
-
+    /// <remarks>
+    /// Ported from ME2Randomizer, and may have significant overlap with <see cref="KismetHelper"/>.
+    /// This should be merged with KismetHelper and integrated with the toolset in the future, but doing so would break M3 and ME2R
+    /// </remarks>
     // TODO: INTEGRATE BETTER WITH LEX
     public class SeqTools
     {
@@ -42,9 +45,10 @@ namespace LegendaryExplorerCore.Kismet
         }
 
         /// <summary>
-        /// Removes a sequence element from the graph, by repointing incoming references to the ones referenced by outgoing items on this export. This is a very basic utility, only use it for items with one input and potentially multiple outputs.
+        /// Removes a sequence element from the graph, by repointing incoming references to the ones referenced by outgoing items on this export.
+        /// This is a very basic utility, only use it for items with one input and potentially multiple outputs.
         /// </summary>
-        /// <param name="elementToSkip">Th sequence object to skip</param>
+        /// <param name="elementToSkip">The sequence object to skip</param>
         /// <param name="outboundLinkName">The name of the outbound link that should be attached to the preceding entry element, must have either this or the next argument</param>
         /// <param name="outboundLinkIdx">The 0-indexed outbound link that should be attached the preceding entry element, as if this one had fired that link.</param>
         public static void SkipSequenceElement(ExportEntry elementToSkip, string outboundLinkName = null, int outboundLinkIdx = -1)
@@ -87,10 +91,10 @@ namespace LegendaryExplorerCore.Kismet
         }
 
         /// <summary>
-        /// Builds a list of OutputLinkIdx => [List of nodes pointed to]
+        /// Builds a jagged 2D list of OutboundLinks for each output link.
         /// </summary>
-        /// <param name="node"></param>
-        /// <returns></returns>
+        /// <param name="node">Sequence object to get outbound links from</param>
+        /// <returns>Outer list represents OutputLinks, inner lists represent the different sequence objects that link goes to</returns>
         public static List<List<OutboundLink>> GetOutboundLinksOfNode(ExportEntry node)
         {
             var outputLinksMapping = new List<List<OutboundLink>>();
@@ -122,8 +126,8 @@ namespace LegendaryExplorerCore.Kismet
         /// <summary>
         /// Writes a list of outbound links to a sequence node. Note that this cannot add output link points (like an additional output param), but only existing connections.
         /// </summary>
-        /// <param name="node"></param>
-        /// <param name="linkSet"></param>
+        /// <param name="node">Sequence object node to write outbound links to</param>
+        /// <param name="linkSet">Link set to write to the export</param>
         public static void WriteOutboundLinksToNode(ExportEntry node, List<List<OutboundLink>> linkSet)
         {
             var properties = node.GetProperties();
@@ -131,11 +135,57 @@ namespace LegendaryExplorerCore.Kismet
             node.WriteProperties(properties);
         }
 
+        /// <summary>
+        /// Writes a set of outbound links to a property collection. This cannot be used to add output link points, only to overwrite the links of existing outputs.
+        /// </summary>
+        /// <remarks>Returns early if <see cref="linkSet"/> is not of correct length. 'Links' ArrayProperty must already exist in collection.</remarks>
+        /// <param name="linkSet">Link set to write to properties</param>
+        /// <param name="props">Properties to write links to</param>
+        public static void WriteOutboundLinksToProperties(List<List<OutboundLink>> linkSet, PropertyCollection props)
+        {
+            var outlinksProp = props.GetProp<ArrayProperty<StructProperty>>("OutputLinks");
+            if (linkSet.Count != outlinksProp.Count)
+            {
+                Debug.WriteLine("Sets are out of sync for WriteOutboundLinksToProperties()! You can't add a new outbound named link using this method.");
+                return; // Sets are not compatible with this code
+            }
+
+            for (int i = 0; i < linkSet.Count; i++)
+            {
+                var oldL = outlinksProp[i].GetProp<ArrayProperty<StructProperty>>("Links");
+                var newL = linkSet[i];
+                oldL.ReplaceAll(newL.Select(x => x.GenerateStruct()));
+            }
+        }
+
+        /// <summary>
+        /// Represents an outbound link from a sequence object
+        /// </summary>
         public class OutboundLink
         {
+            /// <summary>The sequence object that this links to</summary>
             public IEntry LinkedOp { get; set; }
+            /// <summary>The InputLinkIdx property of this link</summary>
             public int InputLinkIdx { get; set; }
 
+            /// <summary>
+            /// Generates a SeqOpInputOutputLink StructProperty from this OutboundLink
+            /// </summary>
+            /// <returns>Created StructProperty</returns>
+            public StructProperty GenerateStruct()
+            {
+                return new StructProperty("SeqOpOutputInputLink", false,
+                    new ObjectProperty(LinkedOp.UIndex, "LinkedOp"),
+                    new IntProperty(InputLinkIdx, "InputLInkIdx"),
+                    new NoneProperty());
+            }
+
+            /// <summary>
+            /// Factory method to create an <see cref="OutboundLink"/> from a SeqOpOutputInputLink StructProperty
+            /// </summary>
+            /// <param name="sp">SeqOpOutputInputLink StructProperty</param>
+            /// <param name="package">Package file that contains this sequence</param>
+            /// <returns>New OutboundLink</returns>
             public static OutboundLink FromStruct(StructProperty sp, IMEPackage package)
             {
                 return new OutboundLink()
@@ -145,16 +195,15 @@ namespace LegendaryExplorerCore.Kismet
                 };
             }
 
-            public StructProperty GenerateStruct()
-            {
-                return new StructProperty("SeqOpOutputInputLink", false,
-                    new ObjectProperty(LinkedOp.UIndex, "LinkedOp"),
-                    new IntProperty(InputLinkIdx, "InputLInkIdx"),
-                    new NoneProperty());
-            }
-
+            /// <summary>
+            /// Factory method to create an OutboundLink
+            /// </summary>
+            /// <param name="exportEntry">Sequence object to create link to</param>
+            /// <param name="inputLinkIdx">Link index</param>
+            /// <returns>New OutboundLink</returns>
             public static OutboundLink FromTargetExport(ExportEntry exportEntry, int inputLinkIdx)
             {
+                //HB 12/14/21: Why is this not just a constructor?
                 return new OutboundLink()
                 {
                     LinkedOp = exportEntry,
@@ -164,11 +213,11 @@ namespace LegendaryExplorerCore.Kismet
         }
 
         /// <summary>
-        /// Finds outbound connections that come to this node.
+        /// Finds sequence objects with outbound connections that come to this node
         /// </summary>
-        /// <param name="node"></param>
-        /// <param name="sequenceElements"></param>
-        /// <returns></returns>
+        /// <param name="node">Node to find outbound connections to</param>
+        /// <param name="sequenceElements">Sequence objects to search for connections</param>
+        /// <returns>List of any sequence objects that link to this node</returns>
         public static List<ExportEntry> FindOutboundConnectionsToNode(ExportEntry node, IEnumerable<ExportEntry> sequenceElements)
         {
             List<ExportEntry> referencingNodes = new List<ExportEntry>();
@@ -188,11 +237,11 @@ namespace LegendaryExplorerCore.Kismet
 
 
         /// <summary>
-        /// Finds variable connections that come to this node.
+        /// Finds sequence objects with variable connections that come to this node
         /// </summary>
-        /// <param name="node"></param>
-        /// <param name="sequenceElements"></param>
-        /// <returns></returns>
+        /// <param name="node">Sequence variable to find connections to</param>
+        /// <param name="sequenceElements">Sequence objects to search for connections</param>
+        /// <returns>List of any sequence objects that link to this node</returns>
         public static List<ExportEntry> FindVariableConnectionsToNode(ExportEntry node, List<ExportEntry> sequenceElements)
         {
             List<ExportEntry> referencingNodes = new List<ExportEntry>();
@@ -211,10 +260,11 @@ namespace LegendaryExplorerCore.Kismet
         }
 
         /// <summary>
-        /// Gets a list of all entries that are referenced by this sequence. If the passed in object is not a Sequence, the parent sequence is used. Returns null if there is no parent sequence.
+        /// Gets a list of all sequence elements that are referenced by this sequence's SequenceObjects property
+        /// If the passed in object is not a Sequence, the parent sequence is used. Returns null if there is no parent sequence.
         /// </summary>
-        /// <param name="export"></param>
-        /// <returns></returns>
+        /// <param name="export">Export to get referenced elements for</param>
+        /// <returns>List of referenced sequence elements</returns>
         public static List<IEntry> GetAllSequenceElements(ExportEntry export)
         {
             if (export.ClassName == "Sequence")
@@ -239,17 +289,28 @@ namespace LegendaryExplorerCore.Kismet
         }
 
         /// <summary>
-        /// Basic description of a VarLink (bottom of kismet action - this includes all links)
+        /// Basic description of a single VarLink (bottom of kismet action - this includes all links)
         /// </summary>
         [DebuggerDisplay("VarLink {LinkDesc}, ExpectedType: {ExpectedTypeName}")]
         public class VarLinkInfo
         {
+            /// <summary>LinkDesc property value</summary>
             public string LinkDesc { get; set; }
+            /// <summary>PropertyName property value</summary>
             public string PropertyName { get; set; }
+            /// <summary>Expected type of variable</summary>
             public IEntry ExpectedType { get; set; }
+            /// <summary>Expected type name of variable</summary>
             public string ExpectedTypeName => ExpectedType.ObjectName;
+            /// <summary>Sequence objects that are linked to this var link</summary>
             public List<IEntry> LinkedNodes { get; set; }
 
+            /// <summary>
+            /// Factory method to create a <see cref="VarLinkInfo"/> from a SeqVarLink struct
+            /// </summary>
+            /// <param name="sp">SeqVarLink struct property</param>
+            /// <param name="package">Package containing sequence object</param>
+            /// <returns>New VarLinkInfo</returns>
             public static VarLinkInfo FromStruct(StructProperty sp, IMEPackage package)
             {
                 return new VarLinkInfo()
@@ -263,11 +324,11 @@ namespace LegendaryExplorerCore.Kismet
         }
 
         /// <summary>
-        /// Gets the list of VarLinks that can be attached to by the specified sequence object export. Note you cannot ADD new varlinks this way as
-        /// the serialization does not include all types.
+        /// Gets the list of VarLinks that can be attached to by the specified sequence object export.
         /// </summary>
-        /// <param name="export"></param>
-        /// <returns></returns>
+        /// <remarks>You cannot ADD new varlinks this way as the serialization does not include all types.</remarks>
+        /// <param name="export">Export to get variable links for</param>
+        /// <returns>List of variable link infos</returns>
         public static List<VarLinkInfo> GetVariableLinksOfNode(ExportEntry export)
         {
             var props = export.GetProperties();
@@ -275,11 +336,11 @@ namespace LegendaryExplorerCore.Kismet
         }
 
         /// <summary>
-        /// Get's the list of variable links from the collection of properties. If there is no VariableLinks property, this returns an empty list.
+        /// Gets the list of variable links from a collection of properties. If there is no VariableLinks property, this returns an empty list.
         /// </summary>
-        /// <param name="props"></param>
-        /// <param name="pcc"></param>
-        /// <returns></returns>
+        /// <param name="props">Properties to get variable links from</param>
+        /// <param name="pcc">Package containing the property collection</param>
+        /// <returns>List of any variable links</returns>
         public static List<VarLinkInfo> GetVariableLinks(PropertyCollection props, IMEPackage pcc)
         {
             var varLinks = new List<VarLinkInfo>();
@@ -296,10 +357,12 @@ namespace LegendaryExplorerCore.Kismet
         }
 
         /// <summary>
-        /// Writes the list of variable links to the node. Only the linked objects are written. The list MUST be in order and be the same length as the current list.
+        /// Writes the list of variable links to the node. Only the linked objects are written.
+        /// The list MUST be in the same order and be the same length as the current variable links on the export.
         /// </summary>
-        /// <param name="export"></param>
-        /// <param name="varLinks"></param>
+        /// <remarks>This can't be used to add any new variable link points.</remarks>
+        /// <param name="export">Export to write links to</param>
+        /// <param name="varLinks">Variable links to write</param>
         public static void WriteVariableLinksToNode(ExportEntry export, List<VarLinkInfo> varLinks)
         {
             var properties = export.GetProperties();
@@ -307,6 +370,13 @@ namespace LegendaryExplorerCore.Kismet
             export.WriteProperties(properties);
         }
 
+        /// <summary>
+        /// Writes the list of variable links to the given property collection. Only writes the linked variables.
+        /// The list MUST be in the same order and be the same length as the current variable links in the collection.
+        /// </summary>
+        /// <remarks>This can't be used to add any new variable link points. LinkedVariables property must already exist.</remarks>
+        /// <param name="varLinks">Variable links to write</param>
+        /// <param name="props">Properties to write links to</param>
         public static void WriteVariableLinksToProperties(List<VarLinkInfo> varLinks, PropertyCollection props)
         {
             var variableLinks = props.GetProp<ArrayProperty<StructProperty>>("VariableLinks");
@@ -320,32 +390,18 @@ namespace LegendaryExplorerCore.Kismet
             }
         }
 
-        public static void WriteOutboundLinksToProperties(List<List<OutboundLink>> linkSet, PropertyCollection props)
-        {
-            var outlinksProp = props.GetProp<ArrayProperty<StructProperty>>("OutputLinks");
-            if (linkSet.Count != outlinksProp.Count)
-            {
-                Debug.WriteLine("Sets are out of sync for WriteOutboundLinksToProperties()! You can't add a new outbound named link using this method.");
-                return; // Sets are not compatible with this code
-            }
-
-            for (int i = 0; i < linkSet.Count; i++)
-            {
-                var oldL = outlinksProp[i].GetProp<ArrayProperty<StructProperty>>("Links");
-                var newL = linkSet[i];
-                oldL.ReplaceAll(newL.Select(x => x.GenerateStruct()));
-            }
-        }
-
         /// <summary>
-        /// Gets the containing sequence of the specified export. Performed by looking for ParentSequence object property. Pass true to continue up the chain.
+        /// Gets the containing sequence of the specified export.
+        /// Performed by looking for ParentSequence object property.
         /// </summary>
-        /// <param name="export"></param>
-        /// <returns></returns>
-        public static ExportEntry GetParentSequence(ExportEntry export, bool lookup = false)
+        /// <remarks>Use the <see cref="recurseUp"/> parameter to get the top level sequence.</remarks>
+        /// <param name="export">Export to get containing sequence of</param>
+        /// <param name="recurseUp">If true, will continue getting parent sequences until it reaches the top of the chain.</param>
+        /// <returns>Parent sequence export</returns>
+        public static ExportEntry GetParentSequence(ExportEntry export, bool recurseUp = false)
         {
             var result = export?.GetProperty<ObjectProperty>("ParentSequence")?.ResolveToEntry(export.FileRef) as ExportEntry;
-            while (lookup && result != null && result.ClassName != "Sequence")
+            while (recurseUp && result != null && result.ClassName != "Sequence")
             {
                 result = result.GetProperty<ObjectProperty>("ParentSequence")?.ResolveToEntry(export.FileRef) as ExportEntry;
             }
@@ -353,17 +409,31 @@ namespace LegendaryExplorerCore.Kismet
             return result;
         }
 
+        /// <summary>
+        /// Writes the Originator property on a sequence object
+        /// </summary>
+        /// <param name="export">Sequence object to write property on</param>
+        /// <param name="originator">Originator entry to write</param>
         public static void WriteOriginator(ExportEntry export, IEntry originator)
         {
             export.WriteProperty(new ObjectProperty(originator.UIndex, "Originator"));
         }
 
+        /// <summary>
+        /// Writes the ObjValue property on a sequence object
+        /// </summary>
+        /// <param name="export">Sequence object to write property on</param>
+        /// <param name="objValue">ObjValue entry to write</param>
         public static void WriteObjValue(ExportEntry export, IEntry objValue)
         {
             export.WriteProperty(new ObjectProperty(objValue.UIndex, "ObjValue"));
         }
 
 #if DEBUG
+        /// <summary>
+        /// DEBUG: Writes info about a series of <see cref="VarLinkInfo"/>s to the debug console
+        /// </summary>
+        /// <param name="seqLinks">Variable links to write</param>
         public static void PrintVarLinkInfo(List<VarLinkInfo> seqLinks)
         {
             foreach (var link in seqLinks)
