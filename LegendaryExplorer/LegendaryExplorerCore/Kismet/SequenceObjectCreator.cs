@@ -13,6 +13,9 @@ using StructProperty = LegendaryExplorerCore.Unreal.StructProperty;
 
 namespace LegendaryExplorerCore.Kismet
 {
+    /// <summary>
+    /// Static methods to handle sequence variable creation
+    /// </summary>
     public static class SequenceObjectCreator
     {
         private const string SequenceEventName = "SequenceEvent";
@@ -20,6 +23,11 @@ namespace LegendaryExplorerCore.Kismet
         private const string SequenceActionName = "SequenceAction";
         private const string SequenceVariableName = "SequenceVariable";
 
+        /// <summary>
+        /// Gets the class info for some common sequence object classes
+        /// </summary>
+        /// <param name="game">Game to get sequence objects for</param>
+        /// <returns>ClassInfos for common objects</returns>
         public static List<ClassInfo> GetCommonObjects(MEGame game)
         {
             return new List<string>
@@ -42,6 +50,12 @@ namespace LegendaryExplorerCore.Kismet
             }.Select(className => GlobalUnrealObjectInfo.GetClassOrStructInfo(game, className)).NonNull().ToList();
         }
 
+        /// <summary>
+        /// Gets the class info for most sequence variable classes in the ObjectInfo
+        /// </summary>
+        /// <remarks>Some SeqVar classes are excluded</remarks>
+        /// <param name="game">Game to get class info for</param>
+        /// <returns>ClassInfos for SeqVar classes</returns>
         public static List<ClassInfo> GetSequenceVariables(MEGame game)
         {
             List<ClassInfo> classes = GlobalUnrealObjectInfo.GetNonAbstractDerivedClassesOf(SequenceVariableName, game);
@@ -49,26 +63,60 @@ namespace LegendaryExplorerCore.Kismet
             return classes;
         }
 
+        /// <summary>
+        /// Gets the class info for all sequence action classes in the ObjectInfo
+        /// </summary>
+        /// <param name="game">Game to get class info for</param>
+        /// <returns>ClassInfos for SeqAct classes</returns>
         public static List<ClassInfo> GetSequenceActions(MEGame game)
         {
             List<ClassInfo> classes = GlobalUnrealObjectInfo.GetNonAbstractDerivedClassesOf(SequenceActionName, game);
             return classes;
         }
 
+        /// <summary>
+        /// Gets the class info for all sequence event classes in the ObjectInfo
+        /// </summary>
+        /// <param name="game">Game to get class info for</param>
+        /// <returns>ClassInfos for SeqEvt classes</returns>
         public static List<ClassInfo> GetSequenceEvents(MEGame game)
         {
             List<ClassInfo> classes = GlobalUnrealObjectInfo.GetNonAbstractDerivedClassesOf(SequenceEventName, game);
             return classes;
         }
 
+        /// <summary>
+        /// Gets the class info for all sequence condition classes in the ObjectInfo
+        /// </summary>
+        /// <param name="game">Game to get class info for</param>
+        /// <returns>ClassInfos for SeqCond classes</returns>
         public static List<ClassInfo> GetSequenceConditions(MEGame game)
         {
             List<ClassInfo> classes = GlobalUnrealObjectInfo.GetNonAbstractDerivedClassesOf(SequenceConditionName, game);
             return classes;
         }
 
+        /// <summary>
+        /// Creates the default sequence object properties that should be on a new sequence object
+        /// </summary>
+        /// <param name="pcc">Package file new sequence object is in</param>
+        /// <param name="className">Sequence object class to get defaults for</param>
+        /// <param name="game">Game that defaults should be for</param>
+        /// <param name="pc">Optional: PackageCache for relinker</param>
+        /// <returns>PropertyCollection of default props</returns>
         public static PropertyCollection GetSequenceObjectDefaults(IMEPackage pcc, string className, MEGame game, PackageCache pc = null) => GetSequenceObjectDefaults(pcc, GlobalUnrealObjectInfo.GetClassOrStructInfo(game, className), pc);
 
+        /// <summary>
+        /// Creates the default sequence object properties that should be on a new sequence object
+        /// </summary>
+        /// <remarks>
+        /// This method will handle porting in imports needed to set up links properly.
+        /// Will add default value properties for most SeqVar types.
+        /// </remarks>
+        /// <param name="pcc">Package file sequence object is in</param>
+        /// <param name="info">ClassInfo of sequence object class to get defaults for</param>
+        /// <param name="pc">Optional: PackageCache for relinker</param>
+        /// <returns>PropertyCollection of default props</returns>
         public static PropertyCollection GetSequenceObjectDefaults(IMEPackage pcc, ClassInfo info, PackageCache pc = null)
         {
             pc ??= new PackageCache();
@@ -320,11 +368,11 @@ namespace LegendaryExplorerCore.Kismet
         }
 
         /// <summary>
-        /// Creates a sequence object. 
+        /// Creates a new sequence object in a package file
         /// </summary>
-        /// <param name="pcc"></param>
-        /// <param name="className"></param>
-        /// <param name="cache"></param>
+        /// <param name="pcc">Package to add neq sequence object to</param>
+        /// <param name="className">Class of new sequence object</param>
+        /// <param name="cache">PackageCache for relinker</param>
         /// <param name="handleRelinkResults">Invoked when relinking is complete and the export has been added. You can inspect the object for failed relink operations, for example.</param>
         /// <returns></returns>
 
