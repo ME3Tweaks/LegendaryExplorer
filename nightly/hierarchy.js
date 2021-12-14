@@ -917,7 +917,6 @@ var hierarchy =
       [ "LegendaryExplorerCore.UnrealScript.Language.Tree.PostOpDeclaration", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_post_op_declaration.html", null ],
       [ "LegendaryExplorerCore.UnrealScript.Language.Tree.PreOpDeclaration", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_pre_op_declaration.html", null ]
     ] ],
-    [ "LegendaryExplorerCore.Kismet.KismetHelper.OutboundLink", "class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper_1_1_outbound_link.html", null ],
     [ "LegendaryExplorerCore.Kismet.SeqTools.OutboundLink", "class_legendary_explorer_core_1_1_kismet_1_1_seq_tools_1_1_outbound_link.html", null ],
     [ "LegendaryExplorerCore.Packages.PackageSaver", "class_legendary_explorer_core_1_1_packages_1_1_package_saver.html", null ],
     [ "LegendaryExplorerCore.Packages.PackageUpdate", "struct_legendary_explorer_core_1_1_packages_1_1_package_update.html", null ],
