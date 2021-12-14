@@ -93,50 +93,67 @@ $(document).ready(function(){initNavTree('class_legendary_explorer_core_1_1_kism
   <div class="headertitle"><div class="title">LegendaryExplorerCore.Kismet.KismetHelper Class Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Static methods to perform common sequence editing operations  
+ <a href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper_1_1_outbound_link.html">OutboundLink</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Represents an outbound link from a sequence object  <a href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper_1_1_outbound_link.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a3efecf70002fee47bdb03309eca3e21c"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a3efecf70002fee47bdb03309eca3e21c">CreateOutputLink</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> source, string outLinkDescription, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> destExport, int inputIndex=0)</td></tr>
+<tr class="memdesc:a3efecf70002fee47bdb03309eca3e21c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds an output link from one sequence object to another. Will not create a new output link, will only add to an existing output  <a href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a3efecf70002fee47bdb03309eca3e21c">More...</a><br /></td></tr>
 <tr class="separator:a3efecf70002fee47bdb03309eca3e21c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a88dc78f242e2e66a9563d2d18338835a"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a88dc78f242e2e66a9563d2d18338835a">CreateNewOutputLink</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> source, string outLinkDescription, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> destExport, int inputIndex=0)</td></tr>
-<tr class="memdesc:a88dc78f242e2e66a9563d2d18338835a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a NEW output link with the given description, does not overwrite any existing output link.  <a href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a88dc78f242e2e66a9563d2d18338835a">More...</a><br /></td></tr>
+<tr class="memdesc:a88dc78f242e2e66a9563d2d18338835a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a new output link from one sequence object to another, does not overwrite or add to any existing output link.  <a href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a88dc78f242e2e66a9563d2d18338835a">More...</a><br /></td></tr>
 <tr class="separator:a88dc78f242e2e66a9563d2d18338835a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab4707637fb24f3d44f2b4e5933dd58f2"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#ab4707637fb24f3d44f2b4e5933dd58f2">CreateVariableLink</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> src, string linkDescription, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> dest)</td></tr>
-<tr class="separator:ab4707637fb24f3d44f2b4e5933dd58f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a29db478cf46a6e84183cac9d52b220ee"><td class="memItemLeft" align="right" valign="top">static List&lt; <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a29db478cf46a6e84183cac9d52b220ee">GetSequenceObjects</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> sequence)</td></tr>
-<tr class="memdesc:a29db478cf46a6e84183cac9d52b220ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets a list of non-null objects in the sequence. Returns IEntry, as some sequences are referenced as imports.  <a href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a29db478cf46a6e84183cac9d52b220ee">More...</a><br /></td></tr>
-<tr class="separator:a29db478cf46a6e84183cac9d52b220ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0ed65724ff5fc309909aaaea3b28d081"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a0ed65724ff5fc309909aaaea3b28d081">CreateVariableLink</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> source, string linkDescription, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> dest)</td></tr>
+<tr class="memdesc:a0ed65724ff5fc309909aaaea3b28d081"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a variable link from a source sequence object to a variable. This will not create a new variable link, only adding a new variable to an existing link.  <a href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a0ed65724ff5fc309909aaaea3b28d081">More...</a><br /></td></tr>
+<tr class="separator:a0ed65724ff5fc309909aaaea3b28d081"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a52e5835e63aede6f59b98f44d83b2d5c"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a52e5835e63aede6f59b98f44d83b2d5c">CreateEventLink</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> src, string linkDescription, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> dest)</td></tr>
+<tr class="memdesc:a52e5835e63aede6f59b98f44d83b2d5c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds an event link from a source sequence object to an event. This will not create a new event link, only adding an event to an existing link.  <a href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a52e5835e63aede6f59b98f44d83b2d5c">More...</a><br /></td></tr>
 <tr class="separator:a52e5835e63aede6f59b98f44d83b2d5c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6e4ede028ec767e85b2b0023c36f59ca"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a6e4ede028ec767e85b2b0023c36f59ca">RemoveOutputLinks</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> export)</td></tr>
+<tr class="memdesc:a6e4ede028ec767e85b2b0023c36f59ca"><td class="mdescLeft">&#160;</td><td class="mdescRight">Removes all output links from the given sequence object. This leaves all link slots intact, it just removes the actual links to other sequence objects.  <a href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a6e4ede028ec767e85b2b0023c36f59ca">More...</a><br /></td></tr>
 <tr class="separator:a6e4ede028ec767e85b2b0023c36f59ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5901a821f889936ee53fd25627e2378a"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a5901a821f889936ee53fd25627e2378a">RemoveVariableLinks</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> export)</td></tr>
+<tr class="memdesc:a5901a821f889936ee53fd25627e2378a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Removes all variable links from the given sequence object.  <a href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a5901a821f889936ee53fd25627e2378a">More...</a><br /></td></tr>
 <tr class="separator:a5901a821f889936ee53fd25627e2378a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa175dd33e5f4a9f0f153e952144f7876"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#aa175dd33e5f4a9f0f153e952144f7876">RemoveEventLinks</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> export)</td></tr>
+<tr class="memdesc:aa175dd33e5f4a9f0f153e952144f7876"><td class="mdescLeft">&#160;</td><td class="mdescRight">Removes all event links from the given sequence object.  <a href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#aa175dd33e5f4a9f0f153e952144f7876">More...</a><br /></td></tr>
 <tr class="separator:aa175dd33e5f4a9f0f153e952144f7876"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1248b2d365c66ac4c634928b918dac14"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a1248b2d365c66ac4c634928b918dac14">RemoveAllLinks</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> export, bool outlinks=true, bool variablelinks=true, bool eventlinks=true)</td></tr>
+<tr class="memdesc:a1248b2d365c66ac4c634928b918dac14"><td class="mdescLeft">&#160;</td><td class="mdescRight">Removes all links to other sequence objects from the given object. Use the optional parameters to specify which types of links can be removed.  <a href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a1248b2d365c66ac4c634928b918dac14">More...</a><br /></td></tr>
 <tr class="separator:a1248b2d365c66ac4c634928b918dac14"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8eb2f72e95bf18f5bcd284612e6a358b"><td class="memItemLeft" align="right" valign="top">static List&lt; List&lt; <a class="el" href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper_1_1_outbound_link.html">OutboundLink</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a8eb2f72e95bf18f5bcd284612e6a358b">GetOutboundLinksOfNode</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> node)</td></tr>
+<tr class="memdesc:a8eb2f72e95bf18f5bcd284612e6a358b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Builds a jagged 2D list of OutboundLinks for each output link.  <a href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a8eb2f72e95bf18f5bcd284612e6a358b">More...</a><br /></td></tr>
+<tr class="separator:a8eb2f72e95bf18f5bcd284612e6a358b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a29db478cf46a6e84183cac9d52b220ee"><td class="memItemLeft" align="right" valign="top">static List&lt; <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a29db478cf46a6e84183cac9d52b220ee">GetSequenceObjects</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> sequence)</td></tr>
+<tr class="memdesc:a29db478cf46a6e84183cac9d52b220ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets a list of non-null objects in the sequence. Returns IEntry, as some sequences are referenced as imports. This only gets the immediate children objects of the given sequence.  <a href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a29db478cf46a6e84183cac9d52b220ee">More...</a><br /></td></tr>
+<tr class="separator:a29db478cf46a6e84183cac9d52b220ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3f4b612304add2581613642b0c4cc5e6"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a3f4b612304add2581613642b0c4cc5e6">AddObjectToSequence</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> newObject, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> sequenceExport, bool removeLinks=false)</td></tr>
+<tr class="memdesc:a3f4b612304add2581613642b0c4cc5e6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a sequence object export to the given sequence, handling the ParentSequence and SequenceObjects properties.  <a href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a3f4b612304add2581613642b0c4cc5e6">More...</a><br /></td></tr>
 <tr class="separator:a3f4b612304add2581613642b0c4cc5e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8ec6f516132d99595217c98c9e640e9a"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a8ec6f516132d99595217c98c9e640e9a">AddObjectsToSequence</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> sequenceExport, bool removeLinks, params <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>[] exports)</td></tr>
+<tr class="memdesc:a8ec6f516132d99595217c98c9e640e9a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds multiple sequence objects to the given sequence.  <a href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a8ec6f516132d99595217c98c9e640e9a">More...</a><br /></td></tr>
 <tr class="separator:a8ec6f516132d99595217c98c9e640e9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8eb2f72e95bf18f5bcd284612e6a358b"><td class="memItemLeft" align="right" valign="top">static List&lt; List&lt; <a class="el" href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper_1_1_outbound_link.html">OutboundLink</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a8eb2f72e95bf18f5bcd284612e6a358b">GetOutboundLinksOfNode</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> node)</td></tr>
-<tr class="memdesc:a8eb2f72e95bf18f5bcd284612e6a358b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Builds a list of OutputLinkIdx =&gt; [List of nodes pointed to]  <a href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a8eb2f72e95bf18f5bcd284612e6a358b">More...</a><br /></td></tr>
-<tr class="separator:a8eb2f72e95bf18f5bcd284612e6a358b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a959bad8531fa8b6fd9aa1f720f9fd0fd"><td class="memItemLeft" align="right" valign="top">static List&lt; string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a959bad8531fa8b6fd9aa1f720f9fd0fd">GetOutboundLinkNames</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> export)</td></tr>
-<tr class="memdesc:a959bad8531fa8b6fd9aa1f720f9fd0fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets list of link names for the outbound links of the node  <a href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a959bad8531fa8b6fd9aa1f720f9fd0fd">More...</a><br /></td></tr>
+<tr class="memdesc:a959bad8531fa8b6fd9aa1f720f9fd0fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets a list of link names for the outbound links of the node  <a href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a959bad8531fa8b6fd9aa1f720f9fd0fd">More...</a><br /></td></tr>
 <tr class="separator:a959bad8531fa8b6fd9aa1f720f9fd0fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a62dea70614c1add0fafe28939be4e640"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a62dea70614c1add0fafe28939be4e640">SetComment</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> export, IEnumerable&lt; string &gt; comments)</td></tr>
+<tr class="memdesc:a62dea70614c1add0fafe28939be4e640"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the m_aObjComment for a sequence object  <a href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a62dea70614c1add0fafe28939be4e640">More...</a><br /></td></tr>
 <tr class="separator:a62dea70614c1add0fafe28939be4e640"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2285539ddaf104adb50342db6dd2f295"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a2285539ddaf104adb50342db6dd2f295">SetComment</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> export, string comment)</td></tr>
+<tr class="memdesc:a2285539ddaf104adb50342db6dd2f295"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the m_aObjComment for a sequence object  <a href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a2285539ddaf104adb50342db6dd2f295">More...</a><br /></td></tr>
 <tr class="separator:a2285539ddaf104adb50342db6dd2f295"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Function Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p >Static methods to perform common sequence editing operations </p>
+</div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a3efecf70002fee47bdb03309eca3e21c" name="a3efecf70002fee47bdb03309eca3e21c"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a3efecf70002fee47bdb03309eca3e21c">&#9670;&nbsp;</a></span>CreateOutputLink()</h2>
 
@@ -182,6 +199,17 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Adds an output link from one sequence object to another. Will not create a new output link, will only add to an existing output </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">source</td><td>Source sequence export</td></tr>
+    <tr><td class="paramname">outLinkDescription</td><td>Description of existing link</td></tr>
+    <tr><td class="paramname">destExport</td><td>Export to create new link to</td></tr>
+    <tr><td class="paramname">inputIndex</td><td>InputLinkIdx property value of the new link</td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -231,21 +259,21 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Creates a NEW output link with the given description, does not overwrite any existing output link. </p>
+<p>Creates a new output link from one sequence object to another, does not overwrite or add to any existing output link. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">source</td><td></td></tr>
-    <tr><td class="paramname">outLinkDescription</td><td></td></tr>
-    <tr><td class="paramname">destExport</td><td></td></tr>
-    <tr><td class="paramname">inputIndex</td><td></td></tr>
+    <tr><td class="paramname">source</td><td>Source sequence export</td></tr>
+    <tr><td class="paramname">outLinkDescription</td><td>Description of new link</td></tr>
+    <tr><td class="paramname">destExport</td><td>Export to create new link to</td></tr>
+    <tr><td class="paramname">inputIndex</td><td>InputLinkIdx property value of new link</td></tr>
   </table>
   </dd>
 </dl>
 
 </div>
 </div>
-<a id="ab4707637fb24f3d44f2b4e5933dd58f2" name="ab4707637fb24f3d44f2b4e5933dd58f2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab4707637fb24f3d44f2b4e5933dd58f2">&#9670;&nbsp;</a></span>CreateVariableLink()</h2>
+<a id="a0ed65724ff5fc309909aaaea3b28d081" name="a0ed65724ff5fc309909aaaea3b28d081"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0ed65724ff5fc309909aaaea3b28d081">&#9670;&nbsp;</a></span>CreateVariableLink()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -257,7 +285,7 @@ Static Public Member Functions</h2></td></tr>
           <td class="memname">static void LegendaryExplorerCore.Kismet.KismetHelper.CreateVariableLink </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td>
-          <td class="paramname"><em>src</em>, </td>
+          <td class="paramname"><em>source</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -284,40 +312,15 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-</div>
-</div>
-<a id="a29db478cf46a6e84183cac9d52b220ee" name="a29db478cf46a6e84183cac9d52b220ee"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a29db478cf46a6e84183cac9d52b220ee">&#9670;&nbsp;</a></span>GetSequenceObjects()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static List&lt; <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a> &gt; LegendaryExplorerCore.Kismet.KismetHelper.GetSequenceObjects </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td>
-          <td class="paramname"><em>sequence</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Gets a list of non-null objects in the sequence. Returns IEntry, as some sequences are referenced as imports. </p>
+<p>Adds a variable link from a source sequence object to a variable. This will not create a new variable link, only adding a new variable to an existing link. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">sequence</td><td></td></tr>
+    <tr><td class="paramname">source</td><td>Source sequence object, this is the SeqAct the link will be added to</td></tr>
+    <tr><td class="paramname">linkDescription</td><td>Variable link description</td></tr>
+    <tr><td class="paramname">dest</td><td>Variable sequence object</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd></dd></dl>
 
 </div>
 </div>
@@ -361,6 +364,16 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Adds an event link from a source sequence object to an event. This will not create a new event link, only adding an event to an existing link. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">source</td><td>Source sequence object, this is the SeqAct the link will be added to</td></tr>
+    <tr><td class="paramname">linkDescription</td><td>Event link description</td></tr>
+    <tr><td class="paramname">dest</td><td>Event sequence object</td></tr>
+  </table>
+  </dd>
+</dl>
+
 </div>
 </div>
 <a id="a6e4ede028ec767e85b2b0023c36f59ca" name="a6e4ede028ec767e85b2b0023c36f59ca"></a>
@@ -386,6 +399,14 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Removes all output links from the given sequence object. This leaves all link slots intact, it just removes the actual links to other sequence objects. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">export</td><td>Sequence object to remove links from</td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -413,6 +434,14 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Removes all variable links from the given sequence object. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">export</td><td>Sequence object to remove links from</td></tr>
+  </table>
+  </dd>
+</dl>
+
 </div>
 </div>
 <a id="aa175dd33e5f4a9f0f153e952144f7876" name="aa175dd33e5f4a9f0f153e952144f7876"></a>
@@ -438,6 +467,14 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Removes all event links from the given sequence object. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">export</td><td>Sequence object to remove links from</td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -487,6 +524,87 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Removes all links to other sequence objects from the given object. Use the optional parameters to specify which types of links can be removed. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">export</td><td>Sequence object to remove all links from</td></tr>
+    <tr><td class="paramname">outlinks</td><td>If true, output links will be removed. Default: True</td></tr>
+    <tr><td class="paramname">variablelinks</td><td>If true, variable links will be removed. Default: True</td></tr>
+    <tr><td class="paramname">eventlinks</td><td>If true, event links will be removed. Default: True</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a8eb2f72e95bf18f5bcd284612e6a358b" name="a8eb2f72e95bf18f5bcd284612e6a358b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8eb2f72e95bf18f5bcd284612e6a358b">&#9670;&nbsp;</a></span>GetOutboundLinksOfNode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static List&lt; List&lt; <a class="el" href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper_1_1_outbound_link.html">OutboundLink</a> &gt; &gt; LegendaryExplorerCore.Kismet.KismetHelper.GetOutboundLinksOfNode </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td>
+          <td class="paramname"><em>node</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Builds a jagged 2D list of OutboundLinks for each output link. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">node</td><td>Sequence object to get outbound links from</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Outer list represents OutputLinks, inner lists represent the different sequence objects that link goes to</dd></dl>
+
+</div>
+</div>
+<a id="a29db478cf46a6e84183cac9d52b220ee" name="a29db478cf46a6e84183cac9d52b220ee"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a29db478cf46a6e84183cac9d52b220ee">&#9670;&nbsp;</a></span>GetSequenceObjects()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static List&lt; <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a> &gt; LegendaryExplorerCore.Kismet.KismetHelper.GetSequenceObjects </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td>
+          <td class="paramname"><em>sequence</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Gets a list of non-null objects in the sequence. Returns IEntry, as some sequences are referenced as imports. This only gets the immediate children objects of the given sequence. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sequence</td><td>Sequence export to get elements from</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>List of IEntrys in the sequence</dd></dl>
+
 </div>
 </div>
 <a id="a3f4b612304add2581613642b0c4cc5e6" name="a3f4b612304add2581613642b0c4cc5e6"></a>
@@ -528,6 +646,17 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Adds a sequence object export to the given sequence, handling the ParentSequence and SequenceObjects properties. </p>
+<p >This method will change the parent of the new export to the parent sequence.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">newObject</td><td>Sequence object to add to a sequence</td></tr>
+    <tr><td class="paramname">sequenceExport</td><td>Sequence to add it to</td></tr>
+    <tr><td class="paramname">removeLinks</td><td>If true, all links will be removed from the new object after adding</td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -571,40 +700,16 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-</div>
-</div>
-<a id="a8eb2f72e95bf18f5bcd284612e6a358b" name="a8eb2f72e95bf18f5bcd284612e6a358b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8eb2f72e95bf18f5bcd284612e6a358b">&#9670;&nbsp;</a></span>GetOutboundLinksOfNode()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static List&lt; List&lt; <a class="el" href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper_1_1_outbound_link.html">OutboundLink</a> &gt; &gt; LegendaryExplorerCore.Kismet.KismetHelper.GetOutboundLinksOfNode </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td>
-          <td class="paramname"><em>node</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Builds a list of OutputLinkIdx =&gt; [List of nodes pointed to] </p>
+<p>Adds multiple sequence objects to the given sequence. </p>
+<p >Handles the ParentSequence and SequenceObjects properties, and sets the parent of all added objects.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">node</td><td></td></tr>
+    <tr><td class="paramname">sequenceExport</td><td>Sequence export to add sequence objects to</td></tr>
+    <tr><td class="paramname">removeLinks</td><td>If true, all links will be removed from the new objects after adding</td></tr>
+    <tr><td class="paramname">exports</td><td>Sequence objects to add to the sequence</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd></dd></dl>
 
 </div>
 </div>
@@ -632,8 +737,8 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Gets list of link names for the outbound links of the node </p>
-<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+<p>Gets a list of link names for the outbound links of the node </p>
+<dl class="section return"><dt>Returns</dt><dd>A list of LinkDesc values</dd></dl>
 
 </div>
 </div>
@@ -671,6 +776,15 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Sets the m_aObjComment for a sequence object </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">export</td><td>Sequence object to set comments for</td></tr>
+    <tr><td class="paramname">comments</td><td>Object comment lines</td></tr>
+  </table>
+  </dd>
+</dl>
+
 </div>
 </div>
 <a id="a2285539ddaf104adb50342db6dd2f295" name="a2285539ddaf104adb50342db6dd2f295"></a>
@@ -706,6 +820,15 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Sets the m_aObjComment for a sequence object </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">export</td><td>Sequence object to set comments for</td></tr>
+    <tr><td class="paramname">comment</td><td>Object comment</td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

@@ -1,5 +1,6 @@
 var NAVTREEINDEX26 =
 {
+"_path_char_type_8cs.html":[2,0,0,0,6,9,1],
 "_path_char_type_8cs.html#a036f04d7460dd96fbdf6dba1681c3f60":[2,0,0,0,6,9,1,0],
 "_path_char_type_8cs.html#a036f04d7460dd96fbdf6dba1681c3f60a04b2e4188d4ef8051e4699da8af01335":[2,0,0,0,6,9,1,0,4],
 "_path_char_type_8cs.html#a036f04d7460dd96fbdf6dba1681c3f60a4bbb8f967da6d1a610596d7257179c2b":[2,0,0,0,6,9,1,0,0],
@@ -154,9 +155,9 @@ var NAVTREEINDEX26 =
 "_script_token_8cs.html#a474bc360809b2d99e18c94859cceefd9ae927fa33248f8bb98a2b6c58f2a89970":[2,0,0,0,21,4,1,0,1,56],
 "_script_token_8cs.html#a474bc360809b2d99e18c94859cceefd9afae8a9257e154175da4193dbf6552ef6":[2,0,0,0,21,4,1,0,1,44],
 "_script_token_8cs.html#a474bc360809b2d99e18c94859cceefd9afb5201b0af9f09b8f695d8af9a5227b5":[2,0,0,0,21,4,1,0,1,49],
-"_seq_tools_8cs.html":[2,0,0,0,8,1],
-"_sequence_object_creator_8cs.html":[2,0,0,0,8,2],
-"_sequence_object_creator_8cs.html#aa72cbed1bdc777925c63a8a345d8e919":[2,0,0,0,8,2,1],
+"_seq_tools_8cs.html":[2,0,0,0,8,2],
+"_sequence_object_creator_8cs.html":[2,0,0,0,8,3],
+"_sequence_object_creator_8cs.html#aa72cbed1bdc777925c63a8a345d8e919":[2,0,0,0,8,3,1],
 "_sequence_object_info_8cs.html":[2,0,0,0,20,2,9],
 "_serialized_mod_plot_database_8cs.html":[2,0,0,0,15,2,0],
 "_serialized_plot_database_8cs.html":[2,0,0,0,15,2,1],
@@ -248,6 +249,5 @@ var NAVTREEINDEX26 =
 "_standard_tokens_8cs.html#ae19214b48ec3c2534c36d25e2ac4595fa9d8f68fd7599efd10174c632439368a5":[2,0,0,0,21,3,0,0,0,80],
 "_standard_tokens_8cs.html#ae19214b48ec3c2534c36d25e2ac4595fa9e50614ad6579a22f1760f87748d482f":[2,0,0,0,21,3,0,0,0,85],
 "_standard_tokens_8cs.html#ae19214b48ec3c2534c36d25e2ac4595faa081f041e666a28acfe17f0b1884c445":[2,0,0,0,21,3,0,0,0,26],
-"_standard_tokens_8cs.html#ae19214b48ec3c2534c36d25e2ac4595faa1d774f6bfa07c44453ebd454a650ec4":[2,0,0,0,21,3,0,0,0,44],
-"_standard_tokens_8cs.html#ae19214b48ec3c2534c36d25e2ac4595faad4e206408c1c59bfb8a057ba7857446":[2,0,0,0,21,3,0,0,0,24]
+"_standard_tokens_8cs.html#ae19214b48ec3c2534c36d25e2ac4595faa1d774f6bfa07c44453ebd454a650ec4":[2,0,0,0,21,3,0,0,0,44]
 };
