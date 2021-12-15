@@ -101,15 +101,15 @@
                                     <RowDefinition Height="auto"/>
                                     <RowDefinition Height="auto"/>
                                 </Grid.RowDefinitions>
-                                <TextBlock  Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding uiOriginatingExportName}" FontWeight="Bold"/>
-                                <TextBlock  Grid.Row="0" Grid.Column="1" Text="{Binding uiAFCSourceType}" HorizontalAlignment="Right"/>
+                                <TextBlock  Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding OriginatingExportName}" FontWeight="Bold"/>
+                                <TextBlock  Grid.Row="0" Grid.Column="1" Text="{Binding AFCSourceType}" HorizontalAlignment="Right"/>
 
 
                                 <TextBlock  Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
                                     <TextBlock.Text>
                                         <MultiBinding StringFormat="{}{0} @ 0x{1}">
-                                            <Binding Path="afcName" />
-                                            <Binding Path="audioOffset" />
+                                            <Binding Path="AFCName" />
+                                            <Binding Path="AudioOffset" />
                                         </MultiBinding>
                                     </TextBlock.Text>
                                 </TextBlock>

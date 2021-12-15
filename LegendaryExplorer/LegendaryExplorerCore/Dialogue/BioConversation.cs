@@ -302,7 +302,7 @@ namespace LegendaryExplorerCore.Dialogue
                     nodesSearched.Add(searchingExport);
                 }
 
-                var outLinks = KismetHelper.GetOutboundLinksOfNode(searchingExport);
+                var outLinks = SeqTools.GetOutboundLinksOfNode(searchingExport);
                 foreach(var outbound in outLinks)
                 {
                     nextNodesToSearch.AddRange(outbound.Where(x => x.LinkedOp is ExportEntry).Select(x=>x.LinkedOp as ExportEntry));

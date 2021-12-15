@@ -1,16 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using LegendaryExplorerCore.Packages;
 
 namespace LegendaryExplorerCore.Audio
 {
+    /// <summary>
+    /// Contains info on the Wwise version for each game
+    /// </summary>
     public static class WwiseVersions
     {
+        /// <summary>
+        /// Gets the full Wwise version string for a game, as found in the Wwise executable's version info
+        /// </summary>
+        /// <param name="game">Game to get version for</param>
+        /// <returns>Wwise version string, or null if game does not use Wwise</returns>
         public static string WwiseFullVersion(MEGame game) => game switch
         {
             MEGame.ME1 => null,
@@ -22,6 +26,11 @@ namespace LegendaryExplorerCore.Audio
             _ => null
         };
 
+        /// <summary>
+        /// Gets the 4-digit Wwise version number for a game
+        /// </summary>
+        /// <param name="game">Game to get version for</param>
+        /// <returns>Wwise version, or null if game does not use Wwise</returns>
         public static int? WwiseVersion(MEGame game) => game switch
         {
             MEGame.ME1 => null,
@@ -33,6 +42,14 @@ namespace LegendaryExplorerCore.Audio
             _ => null
         };
 
+        /// <summary>
+        /// Checks if a WwiseCLI.exe file is of the correct version.
+        /// This method checks that the filename is WwiseCLI.exe, and that the Product Version is correct
+        /// </summary>
+        /// <remarks>This method returns false if file does not exist, or game does not use Wwise</remarks>
+        /// <param name="game">Game to check version against</param>
+        /// <param name="pathToWwiseExe">Path to a WwiseCLI.exe executable</param>
+        /// <returns>True if version is correct, false otherwise</returns>
         public static bool IsCorrectWwiseVersion(MEGame game, string pathToWwiseExe)
         {
             if (File.Exists(pathToWwiseExe) && WwiseVersion(game) != null)
