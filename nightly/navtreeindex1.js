@@ -1,5 +1,6 @@
 var NAVTREEINDEX1 =
 {
+"_coalesce_asset_8cs.html#a79038b10f66a78754f0e114f0aa52be9a6adf97f83acf6453d4a6a4b1070f3754":[2,0,0,0,1,2,1,2],
 "_coalesce_asset_8cs.html#a79038b10f66a78754f0e114f0aa52be9a88183b946cc5f0e8c96b2e66e1c74a7e":[2,0,0,0,1,2,1,3],
 "_coalesce_asset_8cs.html#a79038b10f66a78754f0e114f0aa52be9af4d72a64acd8929c0cc9ed96a7a336cc":[2,0,0,0,1,2,1,1],
 "_coalesce_file_8cs.html":[2,0,0,0,1,5],
@@ -248,6 +249,5 @@ var NAVTREEINDEX1 =
 "_export_entry_8cs.html":[2,0,0,0,14,4],
 "_expression_8cs.html":[2,0,0,0,21,3,1,28],
 "_expression_extensions_8cs.html":[2,0,0,0,6,4,2,0],
-"_expression_only_statement_8cs.html":[2,0,0,0,21,3,1,29],
-"_expressions_8cs.html":[2,0,0,0,21,2,0,0,2]
+"_expression_only_statement_8cs.html":[2,0,0,0,21,3,1,29]
 };

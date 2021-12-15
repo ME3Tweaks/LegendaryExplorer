@@ -1,5 +1,6 @@
 var NAVTREEINDEX98 =
 {
+"namespace_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking.html":[0,5,0,13,0],
 "namespace_legendary_explorer_core_1_1_plot_database.html":[0,5,0,14],
 "namespace_legendary_explorer_core_1_1_plot_database_1_1_databases.html":[0,5,0,14,0],
 "namespace_legendary_explorer_core_1_1_plot_database_1_1_plot_elements.html":[0,5,0,14,1],
@@ -248,6 +249,5 @@ var NAVTREEINDEX98 =
 "namespace_legendary_explorer_core_1_1_unreal.html#a0944bd7e210c7dd60ae4f7febee5b793a6265ccc4527c4c63080820cc8bc2eb7c":[0,5,0,19,353,8],
 "namespace_legendary_explorer_core_1_1_unreal.html#a0944bd7e210c7dd60ae4f7febee5b793a70bff07eb47fcf0ad182a47467bf1768":[0,5,0,19,353,4],
 "namespace_legendary_explorer_core_1_1_unreal.html#a0944bd7e210c7dd60ae4f7febee5b793a88f9a8ff2785843d4df2303763099bdc":[0,5,0,19,353,6],
-"namespace_legendary_explorer_core_1_1_unreal.html#a0944bd7e210c7dd60ae4f7febee5b793ab869b8deff3a45e5a094f17703f061d4":[0,5,0,19,353,5],
-"namespace_legendary_explorer_core_1_1_unreal.html#a0944bd7e210c7dd60ae4f7febee5b793ad0c6e038500a15d5bd70c54da37432a8":[0,5,0,19,353,1]
+"namespace_legendary_explorer_core_1_1_unreal.html#a0944bd7e210c7dd60ae4f7febee5b793ab869b8deff3a45e5a094f17703f061d4":[0,5,0,19,353,5]
 };

@@ -13,6 +13,7 @@ var dir_01ff7ddd80ea74f589ef32eed6a6fd24 =
     [ "ISBankEntry.cs", "_i_s_bank_entry_8cs.html", [
       [ "LegendaryExplorerCore.Audio.ISBankEntry", "class_legendary_explorer_core_1_1_audio_1_1_i_s_bank_entry.html", "class_legendary_explorer_core_1_1_audio_1_1_i_s_bank_entry" ]
     ] ],
+    [ "NSDoc.cs", "_audio_2_n_s_doc_8cs.html", null ],
     [ "WwiseStreamExt.cs", "_wwise_stream_ext_8cs.html", [
       [ "LegendaryExplorerCore.Unreal.BinaryConverters.WwiseStream", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_stream.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_stream" ]
     ] ],

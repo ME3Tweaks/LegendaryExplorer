@@ -97,6 +97,7 @@ var NAVTREEINDEX0 =
 "_assembly_extensions_8cs.html":[2,0,0,0,6,4,3,0],
 "_assert_statement_8cs.html":[2,0,0,0,21,3,1,1],
 "_assign_statement_8cs.html":[2,0,0,0,21,3,1,2],
+"_audio_2_n_s_doc_8cs.html":[2,0,0,0,0,4],
 "_audio_info_8cs.html":[2,0,0,0,0,1],
 "_auto_complete_8cs.html":[2,0,0,0,6,9,0],
 "_auto_complete_8cs.html#aad31b11c95640fc56a900dbcdcdbe0f9":[2,0,0,0,6,9,0,0],
@@ -248,6 +249,5 @@ var NAVTREEINDEX0 =
 "_classes_2_skeletal_mesh_8cs.html":[2,0,0,0,20,1,4],
 "_coalesce_asset_8cs.html":[2,0,0,0,1,2],
 "_coalesce_asset_8cs.html#a79038b10f66a78754f0e114f0aa52be9":[2,0,0,0,1,2,1],
-"_coalesce_asset_8cs.html#a79038b10f66a78754f0e114f0aa52be9a26e9054be7f40079575582b7ad3f7363":[2,0,0,0,1,2,1,0],
-"_coalesce_asset_8cs.html#a79038b10f66a78754f0e114f0aa52be9a6adf97f83acf6453d4a6a4b1070f3754":[2,0,0,0,1,2,1,2]
+"_coalesce_asset_8cs.html#a79038b10f66a78754f0e114f0aa52be9a26e9054be7f40079575582b7ad3f7363":[2,0,0,0,1,2,1,0]
 };

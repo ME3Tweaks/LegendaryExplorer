@@ -94,10 +94,14 @@ $(document).ready(function(){initNavTree('class_legendary_explorer_core_1_1_audi
   <div class="headertitle"><div class="title">LegendaryExplorerCore.Audio.AFCCompactor Class Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Tools to scan for AFCs and references to AFCs, and perform AFC compaction of DLC mods  
+ <a href="class_legendary_explorer_core_1_1_audio_1_1_a_f_c_compactor.html#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_audio_1_1_a_f_c_compactor_1_1_referenced_audio.html">ReferencedAudio</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Represents a reference to a piece of audio in an AFC  <a href="class_legendary_explorer_core_1_1_audio_1_1_a_f_c_compactor_1_1_referenced_audio.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
@@ -110,9 +114,12 @@ Static Public Member Functions</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-attribs" name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
 <tr class="memitem:aa10c5105113e95212ac7780513c2300c"><td class="memItemLeft" align="right" valign="top">static List&lt; <a class="el" href="class_legendary_explorer_core_1_1_audio_1_1_a_f_c_compactor_1_1_referenced_audio.html">ReferencedAudio</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_audio_1_1_a_f_c_compactor.html#aa10c5105113e95212ac7780513c2300c">missingAFCReferences</a></td></tr>
+<tr class="memdesc:aa10c5105113e95212ac7780513c2300c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compiles <a class="el" href="class_legendary_explorer_core_1_1_audio_1_1_a_f_c_compactor_1_1_referenced_audio.html" title="Represents a reference to a piece of audio in an AFC">ReferencedAudio</a> for every WwiseStream export in a given folder of package files  <a href="class_legendary_explorer_core_1_1_audio_1_1_a_f_c_compactor.html#aa10c5105113e95212ac7780513c2300c">More...</a><br /></td></tr>
 <tr class="separator:aa10c5105113e95212ac7780513c2300c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Function Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p >Tools to scan for AFCs and references to AFCs, and perform AFC compaction of DLC mods </p>
+</div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="ae4c9273a4a58ed9c4e6913b47d26af4e" name="ae4c9273a4a58ed9c4e6913b47d26af4e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae4c9273a4a58ed9c4e6913b47d26af4e">&#9670;&nbsp;</a></span>GetReferencedAudio()</h2>
 
@@ -265,6 +272,20 @@ Static Public Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Compiles <a class="el" href="class_legendary_explorer_core_1_1_audio_1_1_a_f_c_compactor_1_1_referenced_audio.html" title="Represents a reference to a piece of audio in an AFC">ReferencedAudio</a> for every WwiseStream export in a given folder of package files </p>
+<p >This method will look for AFCs in the game's basegame folder, all official DLC folders, and the input folder</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">game</td><td>Game you are operating on</td></tr>
+    <tr><td class="paramname">inputPath</td><td>Path to folder to scan for WwiseStreams. All subdirectories will be searched for .pcc files</td></tr>
+    <tr><td class="paramname">notifyProgress</td><td>Callback invoked after every package file is opened with (currentFileIndex, totalFileCount)</td></tr>
+    <tr><td class="paramname">currentScanningFileCallback</td><td>Callback invoked after every package file is opened with the path to the current file</td></tr>
+    <tr><td class="paramname">debugOut</td><td>Callback invoked with debug information on every export scanned and every AFC found</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A tuple of ReferencedAudios for which no AFC was able to be found, and ReferencedAudios with verified AFCs</dd></dl>
 
 </div>
 </div>

@@ -92,17 +92,25 @@ $(document).ready(function(){initNavTree('class_legendary_explorer_core_1_1_audi
   <div class="headertitle"><div class="title">LegendaryExplorerCore.Audio.WwiseVersions Class Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Contains info on the Wwise version for each game  
+ <a href="class_legendary_explorer_core_1_1_audio_1_1_wwise_versions.html#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a40902754f148fd5441326c58bf4b01a1"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_audio_1_1_wwise_versions.html#a40902754f148fd5441326c58bf4b01a1">WwiseFullVersion</a> (<a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game)</td></tr>
+<tr class="memdesc:a40902754f148fd5441326c58bf4b01a1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the full Wwise version string for a game, as found in the Wwise executable's version info  <a href="class_legendary_explorer_core_1_1_audio_1_1_wwise_versions.html#a40902754f148fd5441326c58bf4b01a1">More...</a><br /></td></tr>
 <tr class="separator:a40902754f148fd5441326c58bf4b01a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac98c4d126aae0fe58675231735174164"><td class="memItemLeft" align="right" valign="top">static ? int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_audio_1_1_wwise_versions.html#ac98c4d126aae0fe58675231735174164">WwiseVersion</a> (<a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game)</td></tr>
+<tr class="memdesc:ac98c4d126aae0fe58675231735174164"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the 4-digit Wwise version number for a game  <a href="class_legendary_explorer_core_1_1_audio_1_1_wwise_versions.html#ac98c4d126aae0fe58675231735174164">More...</a><br /></td></tr>
 <tr class="separator:ac98c4d126aae0fe58675231735174164"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a88dbac4606f0087537be2761c0664d5d"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_audio_1_1_wwise_versions.html#a88dbac4606f0087537be2761c0664d5d">IsCorrectWwiseVersion</a> (<a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game, string pathToWwiseExe)</td></tr>
+<tr class="memdesc:a88dbac4606f0087537be2761c0664d5d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks if a WwiseCLI.exe file is of the correct version. This method checks that the filename is WwiseCLI.exe, and that the Product Version is correct  <a href="class_legendary_explorer_core_1_1_audio_1_1_wwise_versions.html#a88dbac4606f0087537be2761c0664d5d">More...</a><br /></td></tr>
 <tr class="separator:a88dbac4606f0087537be2761c0664d5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Function Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p >Contains info on the Wwise version for each game </p>
+</div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a40902754f148fd5441326c58bf4b01a1" name="a40902754f148fd5441326c58bf4b01a1"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a40902754f148fd5441326c58bf4b01a1">&#9670;&nbsp;</a></span>WwiseFullVersion()</h2>
 
@@ -126,6 +134,15 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Gets the full Wwise version string for a game, as found in the Wwise executable's version info </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">game</td><td>Game to get version for</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Wwise version string, or null if game does not use Wwise</dd></dl>
 
 </div>
 </div>
@@ -152,6 +169,15 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Gets the 4-digit Wwise version number for a game </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">game</td><td>Game to get version for</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Wwise version, or null if game does not use Wwise</dd></dl>
 
 </div>
 </div>
@@ -188,6 +214,17 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Checks if a WwiseCLI.exe file is of the correct version. This method checks that the filename is WwiseCLI.exe, and that the Product Version is correct </p>
+<p >This method returns false if file does not exist, or game does not use Wwise</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">game</td><td>Game to check version against</td></tr>
+    <tr><td class="paramname">pathToWwiseExe</td><td>Path to a WwiseCLI.exe executable</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True if version is correct, false otherwise</dd></dl>
 
 </div>
 </div>
