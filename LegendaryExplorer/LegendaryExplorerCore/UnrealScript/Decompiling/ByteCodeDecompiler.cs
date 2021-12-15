@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
@@ -89,7 +90,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             ReturnType = returnType;
             FileLib = lib;
             Game = dataContainer.Export.Game;
-            extNativeIndex = (byte) (Game.IsGame3() ? 0x70 : 0x60);
+            extNativeIndex = (byte)(Game.IsGame3() ? 0x70 : 0x60);
         }
 
         public CodeBody Decompile()

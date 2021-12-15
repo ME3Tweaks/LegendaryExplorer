@@ -82,7 +82,7 @@ namespace LegendaryExplorerCore.UnrealScript
         /// Initializes the FileLib on the current thread. This may take some time.
         /// </summary>
         /// <returns></returns>
-        public bool Initialize(PackageCache packageCache = null, string gameRootPath = null)
+        public bool Initialize(PackageCache packageCache = null, string gameRootPath = null, bool canUseBinaryCache = true)
         {
             if (IsInitialized) return true;
 
@@ -94,7 +94,7 @@ namespace LegendaryExplorerCore.UnrealScript
                     return true;
                 }
 
-                if (InternalInitialize(packageCache, gameRootPath))
+                if (InternalInitialize(packageCache, gameRootPath, canUseBinaryCache))
                 {
                     HadInitializationError = false;
                     _isInitialized = true;
@@ -117,13 +117,13 @@ namespace LegendaryExplorerCore.UnrealScript
         }
 
         //only use from within _initializationLock!
-        private bool InternalInitialize(PackageCache packageCache, string gameRootPath = null)
+        private bool InternalInitialize(PackageCache packageCache, string gameRootPath = null, bool canUseCache = true)
         {
             try
             {
                 LECLog.Information($@"Game Root Path for FileLib Init: {gameRootPath}. Has package cache: {packageCache != null}");
                 InitializationLog = new MessageLog();
-                _cacheEnabled = false;
+                _cacheEnabled = false; // defaults to false, can be enabled if init works.
                 _baseSymbols = null;
                 var gameFiles = MELoadedFiles.GetFilesLoadedInGame(Pcc.Game, gameRootOverride: gameRootPath);
                 string[] baseFileNames = BaseFileNames(Pcc.Game);
@@ -187,7 +187,7 @@ namespace LegendaryExplorerCore.UnrealScript
                     }
                 }
                 _symbols = _baseSymbols?.Clone();
-                _cacheEnabled = true;
+                _cacheEnabled = canUseCache;
                 return ResolveAllClassesInPackage(Pcc, ref _symbols, InitializationLog, packageCache);
             }
             catch when (!LegendaryExplorerCoreLib.IsDebug)
@@ -447,16 +447,17 @@ namespace LegendaryExplorerCore.UnrealScript
         }
 
         private bool _cacheEnabled;
-        private readonly Dictionary<int, ObjectBinary> objBinCache = new();
+        private readonly Dictionary<string, ObjectBinary> objBinCache = new();
 
         public ObjectBinary GetCachedObjectBinary(ExportEntry export, PackageCache packageCache = null)
         {
-            if (_cacheEnabled)
+            // packages without filepaths cannot be uniquely fingerprinted and will not use this this system
+            if (_cacheEnabled && export.FileRef.FilePath != null) 
             {
-                if (!objBinCache.TryGetValue(export.UIndex, out ObjectBinary bin))
+                if (!objBinCache.TryGetValue($"{export.FileRef.FilePath}-{export.UIndex}", out ObjectBinary bin))
                 {
                     bin = ObjectBinary.From(export, packageCache);
-                    objBinCache[export.UIndex] = bin;
+                    objBinCache[$"{export.FileRef.FilePath}-{export.UIndex}"] = bin;
                 }
                 return bin;
             }
@@ -465,12 +466,13 @@ namespace LegendaryExplorerCore.UnrealScript
 
         public T GetCachedObjectBinary<T>(ExportEntry export, PackageCache packageCache = null) where T : ObjectBinary, new()
         {
-            if (_cacheEnabled)
+            // packages without filepaths cannot be uniquely fingerprinted and will not use this this system
+            if (_cacheEnabled && export.FileRef.FilePath != null)
             {
-                if (!objBinCache.TryGetValue(export.UIndex, out ObjectBinary bin))
+                if (!objBinCache.TryGetValue($"{export.FileRef.FilePath}-{export.UIndex}", out ObjectBinary bin))
                 {
                     bin = ObjectBinary.From(export, packageCache);
-                    objBinCache[export.UIndex] = bin;
+                    objBinCache[$"{export.FileRef.FilePath}-{export.UIndex}"] = bin;
                 }
                 return (T)bin;
             }
