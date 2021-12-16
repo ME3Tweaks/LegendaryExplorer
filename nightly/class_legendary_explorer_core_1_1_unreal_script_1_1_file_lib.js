@@ -3,7 +3,7 @@ var class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib =
     [ "FileLib", "class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#aff70d7c9df7cca405afbcb6e59342170", null ],
     [ "GetSymbolTable", "class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#a17af511dce820e73810b7d8a3c662af2", null ],
     [ "InitializeAsync", "class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#a47beaad7648d69b1353d6826a8b7e412", null ],
-    [ "Initialize", "class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#ad97e2492287d445f4403cf04c3a8d059", null ],
+    [ "Initialize", "class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#ab7fef497ffdd9579cdb14773740811d6", null ],
     [ "ReInitializeFile", "class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#a261d4ecb0c2225e8c28a704df126c9ed", null ],
     [ "CreateSymbolTableWithClass", "class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#a55c53ae2c93101575b3ce8b20f760182", null ],
     [ "HandleSaveStateChange", "class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#ac8a8de9e46cb7d3ebd22c85a6f105f6c", null ],

@@ -113,9 +113,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a47beaad7648d69b1353d6826a8b7e412"><td class="memItemLeft" align="right" valign="top">async Task&lt; bool &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#a47beaad7648d69b1353d6826a8b7e412">InitializeAsync</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a> packageCache=null, string gameRootPath=null)</td></tr>
 <tr class="memdesc:a47beaad7648d69b1353d6826a8b7e412"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes the <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html">FileLib</a> asynchronously.  <a href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#a47beaad7648d69b1353d6826a8b7e412">More...</a><br /></td></tr>
 <tr class="separator:a47beaad7648d69b1353d6826a8b7e412"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad97e2492287d445f4403cf04c3a8d059"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#ad97e2492287d445f4403cf04c3a8d059">Initialize</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a> packageCache=null, string gameRootPath=null)</td></tr>
-<tr class="memdesc:ad97e2492287d445f4403cf04c3a8d059"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes the <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html">FileLib</a> on the current thread. This may take some time.  <a href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#ad97e2492287d445f4403cf04c3a8d059">More...</a><br /></td></tr>
-<tr class="separator:ad97e2492287d445f4403cf04c3a8d059"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab7fef497ffdd9579cdb14773740811d6"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#ab7fef497ffdd9579cdb14773740811d6">Initialize</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a> packageCache=null, string gameRootPath=null, bool canUseBinaryCache=true)</td></tr>
+<tr class="memdesc:ab7fef497ffdd9579cdb14773740811d6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes the <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html">FileLib</a> on the current thread. This may take some time.  <a href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#ab7fef497ffdd9579cdb14773740811d6">More...</a><br /></td></tr>
+<tr class="separator:ab7fef497ffdd9579cdb14773740811d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a261d4ecb0c2225e8c28a704df126c9ed"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#a261d4ecb0c2225e8c28a704df126c9ed">ReInitializeFile</a> ()</td></tr>
 <tr class="separator:a261d4ecb0c2225e8c28a704df126c9ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a55c53ae2c93101575b3ce8b20f760182"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_symbols_1_1_symbol_table.html">SymbolTable</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#a55c53ae2c93101575b3ce8b20f760182">CreateSymbolTableWithClass</a> (<a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_class.html">Class</a> classOverride, <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_errors_1_1_message_log.html">MessageLog</a> logOverride)</td></tr>
@@ -258,8 +258,8 @@ Events</h2></td></tr>
 
 </div>
 </div>
-<a id="ad97e2492287d445f4403cf04c3a8d059" name="ad97e2492287d445f4403cf04c3a8d059"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad97e2492287d445f4403cf04c3a8d059">&#9670;&nbsp;</a></span>Initialize()</h2>
+<a id="ab7fef497ffdd9579cdb14773740811d6" name="ab7fef497ffdd9579cdb14773740811d6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab7fef497ffdd9579cdb14773740811d6">&#9670;&nbsp;</a></span>Initialize()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -277,7 +277,13 @@ Events</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">string&#160;</td>
-          <td class="paramname"><em>gameRootPath</em> = <code>null</code>&#160;</td>
+          <td class="paramname"><em>gameRootPath</em> = <code>null</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>canUseBinaryCache</em> = <code>true</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
