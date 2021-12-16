@@ -345,6 +345,11 @@ namespace LegendaryExplorerCore.Packages
 
             if (!lookupTableNeedsToBeRegenerated)
             {
+                if (EntryLookupTable.TryGetValue(importEntry.InstancedFullPath, out _))
+                {
+                    Debug.WriteLine($"ENTRY LOOKUP TABLE ALREADY HAS ITEM BEING ADDED!!! ITEM: {importEntry.InstancedFullPath}");
+                    //Debugger.Break(); // This already exists!
+                }
                 EntryLookupTable[importEntry.InstancedFullPath] = importEntry;
                 tree.Add(importEntry);
             }

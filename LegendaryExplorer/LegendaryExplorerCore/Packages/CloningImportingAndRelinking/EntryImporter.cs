@@ -540,7 +540,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 case ExportEntry sourceClassExport:
                     if (IsSafeToImportFrom(sourceExport.FileRef.FilePath, destPackage.Game))
                     {
-                        classValue = GetOrAddCrossImportOrPackageFromGlobalFile(sourceClassExport.InstancedFullPath, sourceExport.FileRef, destPackage, rop);
+                        classValue = GenerateEntryForGlobalFileExport(sourceClassExport.InstancedFullPath, sourceExport.FileRef, destPackage, rop);
                         break;
                     }
                     classValue = destPackage.FindExport(sourceClassExport.InstancedFullPath);
@@ -563,7 +563,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 case ExportEntry sourceSuperClassExport:
                     if (IsSafeToImportFrom(sourceExport.FileRef.FilePath, destPackage.Game))
                     {
-                        superclass = GetOrAddCrossImportOrPackageFromGlobalFile(sourceSuperClassExport.InstancedFullPath, sourceExport.FileRef, destPackage, rop);
+                        superclass = GenerateEntryForGlobalFileExport(sourceSuperClassExport.InstancedFullPath, sourceExport.FileRef, destPackage, rop);
                         break;
                     }
                     superclass = destPackage.FindExport(sourceSuperClassExport.InstancedFullPath);
@@ -585,7 +585,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 case ExportEntry sourceArchetypeExport:
                     if (IsSafeToImportFrom(sourceExport.FileRef.FilePath, destPackage.Game))
                     {
-                        archetype = GetOrAddCrossImportOrPackageFromGlobalFile(sourceArchetypeExport.InstancedFullPath, sourceExport.FileRef, destPackage, rop);
+                        archetype = GenerateEntryForGlobalFileExport(sourceArchetypeExport.InstancedFullPath, sourceExport.FileRef, destPackage, rop);
                         break;
                     }
                     archetype = destPackage.FindExport(sourceArchetypeExport.InstancedFullPath);
@@ -791,74 +791,78 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// <param name="destinationPCC">PCC to add imports to</param>
         /// <param name="objectMapping"></param>
         /// <returns></returns>
-        public static IEntry GetOrAddCrossImportOrPackageFromGlobalFile(string importFullNameInstanced, IMEPackage sourcePcc, IMEPackage destinationPCC, RelinkerOptionsPackage rop, Action<EntryStringPair> doubleClickCallback = null)
+        public static IEntry GenerateEntryForGlobalFileExport(string importFullNameInstanced, IMEPackage sourcePcc, IMEPackage destinationPCC, RelinkerOptionsPackage rop, Action<EntryStringPair> doubleClickCallback = null)
         {
             string packageName = sourcePcc.FileNameNoExtension;
-            if (string.IsNullOrEmpty(importFullNameInstanced)) // This doesn't work for ForcedExports in global packages. You don't use the filename as a base unless it's not a package at the root.
+            if (string.IsNullOrEmpty(importFullNameInstanced)) // If passing in an empty string, we're generating an import for the package file itself
             {
                 return destinationPCC.getEntryOrAddImport(packageName, "Package");
             }
 
-            string localSearchPath = $"{packageName}.{importFullNameInstanced}";
+            string properImportInstancedFullPath = importFullNameInstanced;
 
-            // cache no longer necessary but left here until we're sure it's no longer necessary
-            //see if this import exists locally
-            //if (relinkerCache != null)
-            //{
-            //    if (relinkerCache.destFullPathToEntryMap.TryGetValue(importFullName, out var entry))
-            //    {
-            //        return entry;
-            //    }
-            //}
-            //else
-            //{
-            //    foreach (ImportEntry imp in destinationPCC.Imports)
-            //    {
-            //        if (imp.FullPath == localSearchPath)
-            //        {
-            //            return imp;
-            //        }
-            //    }
+            // We check if package name is same as the import being generated, as this export won't actually exist
+            // in a global file
+            if (sourcePcc.FileNameNoExtension != importFullNameInstanced && importFullNameInstanced.IndexOf('.') == -1)
+            {
+                // We might be passed in the expected import
+                // We need to strip off the filename if the export is not marked as ForcedExport.
+                var exportToBuildImportFor = sourcePcc.FindExport(importFullNameInstanced);
+                if (exportToBuildImportFor == null && importFullNameInstanced.StartsWith($"{packageName}."))
+                {
+                    exportToBuildImportFor = sourcePcc.FindExport(importFullNameInstanced.Substring($"{packageName}.".Length));
+                }
+
+                if ((exportToBuildImportFor.ExportFlags & UnrealFlags.EExportFlags.ForcedExport) == 0)
+                {
+                    // NOT FORCED EXPORT - Look for entry nested under the proper path
+                    properImportInstancedFullPath = $"{packageName}.{importFullNameInstanced}";
+                }
+            }
 
             //see if this export exists locally in the package, under a class of same name (Engine class in Engine.pcc for example)
-            var foundEntry = destinationPCC.FindEntry(localSearchPath);
+            var foundEntry = destinationPCC.FindEntry(properImportInstancedFullPath);
             if (foundEntry != null)
             {
                 return foundEntry;
             }
 
-            // Try the name directly
-            foundEntry = destinationPCC.FindEntry(importFullNameInstanced);
-            if (foundEntry != null)
-            {
-                return foundEntry;
-            }
+            //// Try the name directly
+            //foundEntry = destinationPCC.FindEntry(importFullNameInstanced);
+            //if (foundEntry != null)
+            //{
+            //    return foundEntry;
+            //}
 
-            string[] importParts = importFullNameInstanced.Split('.');
+            string[] importParts = properImportInstancedFullPath.Split('.');
 
             //recursively ensure parent exists
             var importName = string.Join(".", importParts.Take(importParts.Length - 1));
             IEntry parent = null;
             if (importName == "")
             {
-                // Todo: We need a DB or something to know if we need to prepend the parent or not here.
-                // TODO: THIS IS A HACK FOR CROSSGEN. WE NEED A BETTER SOLUTION THAN THIS TO TELL IF WE
-                // NEED TO PREPEND THE PACKAGE FILENAME OR NOT BASED ON IF THE REFERENCED EXPORT IS 
-                // A FORCED EXPORT (in which case, we should not) OR NOT (in which case, we should)
-                if (importParts[0].StartsWith("BIOG", StringComparison.InvariantCultureIgnoreCase))
+                //// Todo: We need a DB or something to know if we need to prepend the parent or not here.
+                //// TODO: THIS IS A HACK FOR CROSSGEN. WE NEED A BETTER SOLUTION THAN THIS TO TELL IF WE
+                //// NEED TO PREPEND THE PACKAGE FILENAME OR NOT BASED ON IF THE REFERENCED EXPORT IS 
+                //// A FORCED EXPORT (in which case, we should not) OR NOT (in which case, we should)
+                //if (importParts[0] == importFullNameInstanced.StartsWith("BIOG", StringComparison.InvariantCultureIgnoreCase))
+                //{
+                //    // This is the root we want
+                //    // Do not add another parent
+                //}
+                //else
+                //{
+                //// Generate import for the package file itself.
+                if (packageName == importParts[0])
                 {
-                    // This is the root we want
-                    // Do not add another parent
+                    return GenerateEntryForGlobalFileExport(importName, sourcePcc, destinationPCC, rop, doubleClickCallback);
                 }
-                else
-                {
-                    // Prepend
-                    parent = GetOrAddCrossImportOrPackageFromGlobalFile(importName, sourcePcc, destinationPCC, rop, doubleClickCallback);
-                }
+                // No parent otherwise, I think?
+                //}
             }
             else
             {
-                parent = GetOrAddCrossImportOrPackageFromGlobalFile(importName, sourcePcc, destinationPCC, rop, doubleClickCallback);
+                parent = GenerateEntryForGlobalFileExport(importName, sourcePcc, destinationPCC, rop, doubleClickCallback);
             }
 
             ImportEntry matchingSourceImport = sourcePcc.FindImport(importFullNameInstanced);
@@ -882,7 +886,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             ExportEntry matchingSourceExport = sourcePcc.FindExport(importFullNameInstanced);
             if (matchingSourceExport != null)
             {
-                var foundImp = destinationPCC.FindImport(importFullNameInstanced);
+                var foundImp = destinationPCC.FindImport(properImportInstancedFullPath);
                 if (foundImp != null) return foundImp;
                 //if (matchingSourceExport.ObjectName == "Metal_Cube")
                 //    Debugger.Break();
@@ -996,11 +1000,10 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// <param name="entry">The import to resolve</param>
         /// <param name="localCache">Package cache if you wish to keep packages held open, for example if you're resolving many imports</param>
         /// <param name="localization">Three letter localization code, all upper case. Defaults to INT.</param>
-        /// <param name="clipRootLevelPackage">Add an additional attempt to resolve an import by not clipping the first part off of the package as a filename.</param>
-        /// <returns></returns>
-        public static ExportEntry ResolveImport(ImportEntry entry, PackageCache localCache = null, string localization = "INT", bool clipRootLevelPackage = true)
+        /// <returns>The resolved export, or null if the referenced import could not be found</returns>
+        public static ExportEntry ResolveImport(ImportEntry entry, PackageCache localCache = null, string localization = "INT")
         {
-            return ResolveImport(entry, null, localCache, localization, clipRootLevelPackage);
+            return ResolveImport(entry, null, localCache, localization);
         }
 
         /// <summary>
@@ -1011,7 +1014,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// <param name="lookupCache">Package cache if you wish to keep packages held open, for example if you're resolving many imports</param>
         /// <param name="localization">Three letter localization code, all upper case. Defaults to INT.</param>
         /// <returns></returns>
-        public static ExportEntry ResolveImport(ImportEntry entry, PackageCache globalCache, PackageCache lookupCache, string localization = "INT", bool clipRootLevelPackage = true)
+        public static ExportEntry ResolveImport(ImportEntry entry, PackageCache globalCache, PackageCache lookupCache, string localization = "INT")
         {
             var entryFullPath = entry.InstancedFullPath;
 
@@ -1091,7 +1094,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             {
                 if (gameFiles.TryGetValue(fileName, out var fullgamepath) && File.Exists(fullgamepath))
                 {
-                    var export = containsImportedExport(fullgamepath, !clipRootLevelPackage);
+                    var export = containsImportedExport(fullgamepath);
                     if (export != null)
                     {
                         return export;
@@ -1102,7 +1105,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 var localPath = Path.Combine(containingDirectory, fileName);
                 if (!localPath.Equals(fullgamepath, StringComparison.InvariantCultureIgnoreCase) && File.Exists(localPath))
                 {
-                    var export = containsImportedExport(localPath, !clipRootLevelPackage);
+                    var export = containsImportedExport(localPath);
                     if (export != null)
                     {
                         return export;
@@ -1112,7 +1115,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             return null;
 
             //Perform check and lookup
-            ExportEntry containsImportedExport(string packagePath, bool tryWithoutClipping = false)
+            ExportEntry containsImportedExport(string packagePath)
             {
                 //Debug.WriteLine($"Checking file {packagePath} for {entryFullPath}");
                 IMEPackage package = null;
@@ -1127,11 +1130,11 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 var packageParts = entryFullPath.Split('.').ToList();
 
                 // Coded a bit weird for optimization on allocations
-                string entryClippedPath = null;
-                if (packageParts.Count > 1 && packName == packageParts[0])
+                string forcedExportPath = null;
+                if (packageParts.Count > 1 && packName == packageParts[0]) // Remove 'SFXGame' from 'SFXGame.BioSeqAct...'
                 {
                     packageParts.RemoveAt(0);
-                    entryClippedPath = string.Join(".", packageParts);
+                    forcedExportPath = string.Join(".", packageParts);
                 }
                 else if (packName == packageParts[0])
                 {
@@ -1139,11 +1142,22 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     return package.Exports.FirstOrDefault(x => x.idxLink == 0); //this will be at top of the tree
                 }
 
-                if (tryWithoutClipping && entryClippedPath != null)
+                if (forcedExportPath != null)
                 {
-                    return package.FindExport(entryClippedPath) ?? package.FindExport(entryFullPath);
+                    // We will try both with stripped header and non-stripped
+                    // ForcedExport does not use package name as root (e.g. does not use 'SFXGame')
+                    // Non-ForcedExport are native to the package (e.g. does use 'SFXGame')
+                    var clippedExport = package.FindExport(forcedExportPath);
+                    if (clippedExport != null)
+                    {
+                        if ((clippedExport.ExportFlags & UnrealFlags.EExportFlags.ForcedExport) != 0)
+                        {
+                            return null; // This import should not resolve! ForcedExport cannot use the packagename as the root of the import.
+                        }
+                        return clippedExport; // The export is not marked ForcedExport so this is fine to resolve
+                    }
                 }
-                return package.FindExport(entryClippedPath ?? entryFullPath);
+                return package.FindExport(entryFullPath);
             }
         }
         public static List<string> GetPossibleAssociatedFiles(IMEPackage package, string localization = "INT", bool includeNonBioPRelated = true)

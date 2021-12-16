@@ -376,6 +376,18 @@ namespace LegendaryExplorerCore.Packages
         /// <param name="game">What game the package is for</param>
         public static void CreateEmptyLevel(string outpath, MEGame game)
         {
+            var pcc = CreateEmptyLevelStream(Path.GetFileNameWithoutExtension(outpath), game);
+            pcc.WriteToFile(outpath); // You must pass the path here as this file was loaded from memory
+        }
+
+        /// <summary>
+        /// Generates an empty level package and serializes it to a stream, ready for writing to disk or loading as a package.
+        /// </summary>
+        /// <param name="game">Game to generate for</param>
+        /// <param name="levelPackageName">The name of the level package in the file. Typically this is just the expected filename without an extension</param>
+        /// <returns>MemoryStream of generated package file</returns>
+        public static MemoryStream CreateEmptyLevelStream(string levelPackageName, MEGame game)
+        {
             if (!game.IsOTGame() && !game.IsLEGame())
                 throw new Exception(@"Cannot create a level for a game that is not ME1/2/3 or LE1/2/3");
 
@@ -387,7 +399,7 @@ namespace LegendaryExplorerCore.Packages
                 string name = pcc.Names[i];
                 if (name.Equals(emptyLevelName))
                 {
-                    var newName = name.Replace(emptyLevelName, Path.GetFileNameWithoutExtension(outpath));
+                    var newName = name.Replace(emptyLevelName, levelPackageName);
                     pcc.replaceName(i, newName);
                 }
             }
@@ -402,7 +414,9 @@ namespace LegendaryExplorerCore.Packages
             });
             packageExport.PackageGUID = packguid;
             pcc.PackageGuid = packguid;
-            pcc.Save(outpath); // You must pass the path here as this file was loaded from memory
+            var ms = pcc.SaveToStream(game.IsLEGame());
+            ms.Position = 0; // Set position to beginning so users of this can open package immediately.
+            return ms;
         }
 
         private static void Package_noLongerUsed(UnrealPackageFile sender)

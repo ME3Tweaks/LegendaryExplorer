@@ -393,7 +393,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                         }
                         else
                         {
-                            var resolvedExp = EntryImporter.ResolveImport(impTV.Entry as ImportEntry, null, cache, clipRootLevelPackage: false);
+                            var resolvedExp = EntryImporter.ResolveImport(impTV.Entry as ImportEntry, null, cache);
                             if (resolvedExp == null)
                             {
                                 unresolvableImports.Add(new EntryStringPair(impTV.Entry, $"Unresolvable import: {impTV.Entry.InstancedFullPath}"));
@@ -573,7 +573,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
             {
                 BusyText = "Attempting to find source of import...";
                 IsBusy = true;
-                Task.Run(() => EntryImporter.ResolveImport(curImport, clipRootLevelPackage: false)).ContinueWithOnUIThread(prevTask =>
+                Task.Run(() => EntryImporter.ResolveImport(curImport)).ContinueWithOnUIThread(prevTask =>
                 {
                     IsBusy = false;
                     if (prevTask.Result is ExportEntry res)

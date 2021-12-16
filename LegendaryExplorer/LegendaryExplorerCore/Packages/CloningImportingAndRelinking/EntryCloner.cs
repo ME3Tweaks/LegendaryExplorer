@@ -27,7 +27,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         
         public static T CloneEntry<T>(T entry, IDictionary<IEntry, IEntry> objectMap = null, bool incrementIndex = true) where T : IEntry
         {
-            bool shouldIncrement = incrementIndex && entry is ExportEntry;
+            bool shouldIncrement = incrementIndex && entry is ExportEntry; // Why is this only for exports?
             IEntry newEntry = entry.Clone(shouldIncrement);
 
             switch (newEntry)

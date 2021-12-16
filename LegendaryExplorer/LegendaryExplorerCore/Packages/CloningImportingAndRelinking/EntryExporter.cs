@@ -22,7 +22,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             Dictionary<ImportEntry, ExportEntry> impToExpMap = new Dictionary<ImportEntry, ExportEntry>();
 
             // Check and resolve all imports upstream in the level
-            var unresolvableImports = RecursiveGetAllLevelImportsAsExports(sourceExport, impToExpMap, globalCache, pc, true);
+            var unresolvableImports = RecursiveGetAllLevelImportsAsExports(sourceExport, impToExpMap, globalCache, pc);
             issues.AddRange(unresolvableImports);
 
             // Imports are resolvable. We should port in level imports then port in the rest
@@ -223,7 +223,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// <param name="globalCache">Global cache that will not have it's contents modified. Should contain things like SFXGame, Startup, etc.</param>
         /// <param name="cache">Cache for the local operation, such as the localization files, the upstream level files. This cache will be modified as packages are opened</param>
         /// <returns></returns>
-        private static List<EntryStringPair> RecursiveGetAllLevelImportsAsExports(ExportEntry sourceExport, Dictionary<ImportEntry, ExportEntry> resolutionMap, PackageCache globalCache, PackageCache cache, bool clipRootLevelPackgesOnImports = true)
+        private static List<EntryStringPair> RecursiveGetAllLevelImportsAsExports(ExportEntry sourceExport, Dictionary<ImportEntry, ExportEntry> resolutionMap, PackageCache globalCache, PackageCache cache)
         {
             List<EntryStringPair> unresolvableImports = new List<EntryStringPair>();
             var references = EntryImporter.GetAllReferencesOfExport(sourceExport);
@@ -238,7 +238,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     continue; // This texture for some reason is not stored in package files... not sure where, or how it is loaded into memory
                 if (import.IsAKnownNativeClass())
                     continue; // Known native items can never be imported
-                var resolved = EntryImporter.ResolveImport(import, globalCache, cache, clipRootLevelPackage: clipRootLevelPackgesOnImports);
+                var resolved = EntryImporter.ResolveImport(import, globalCache, cache);
                 if (resolved == null)
                 {
                     unresolvableImports.Add(new EntryStringPair(import, $"Import {import.InstancedFullPath} could not be resolved - cannot be safely used"));
@@ -251,7 +251,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 {
 
                     resolutionMap[import] = resolved;
-                    RecursiveGetAllLevelImportsAsExports(resolved, resolutionMap, globalCache, cache, clipRootLevelPackgesOnImports);
+                    RecursiveGetAllLevelImportsAsExports(resolved, resolutionMap, globalCache, cache);
                 }
             }
 

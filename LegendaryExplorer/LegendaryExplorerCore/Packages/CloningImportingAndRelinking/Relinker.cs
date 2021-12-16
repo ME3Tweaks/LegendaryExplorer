@@ -634,7 +634,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             {
                 if (importingFromGlobalFile)
                 {
-                    uIndex = EntryImporter.GetOrAddCrossImportOrPackageFromGlobalFile(sourceExport.InstancedFullPath, importingPCC, relinkingExport.FileRef, rop).UIndex;
+                    uIndex = EntryImporter.GenerateEntryForGlobalFileExport(sourceExport.InstancedFullPath, importingPCC, relinkingExport.FileRef, rop).UIndex;
                 }
                 else
                 {
