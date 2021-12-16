@@ -25,6 +25,13 @@ namespace LegendaryExplorerCore.Tests
                 var expectedCount = getExpectedData(isbPath);
                 var isb = new ISBank(isbPath);
                 Assert.AreEqual(expectedCount, isb.BankEntries.Count);
+
+                // Have code from other methods execute just to make sure they don't throw exceptions.
+                foreach (var isEntry in isb.BankEntries)
+                {
+                    var _ = isEntry.DisplayString;
+                    isEntry.GetLength();
+                }
             }
         }
 

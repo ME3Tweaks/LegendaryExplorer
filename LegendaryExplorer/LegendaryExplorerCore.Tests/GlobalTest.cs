@@ -15,7 +15,9 @@ namespace LegendaryExplorerCore.Tests
     public static class GlobalTest
     {
         private static bool initialized;
-
+        /// <summary>
+        /// Initializes the game paths for use in a testing environment
+        /// </summary>
         public static void Init()
         {
             if (initialized) return;
