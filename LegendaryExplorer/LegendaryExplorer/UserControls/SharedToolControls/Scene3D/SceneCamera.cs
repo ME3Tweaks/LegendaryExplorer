@@ -11,7 +11,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
         public float Yaw = 0;
         // Ignore Roll for now. Who would ever roll their preview camera?
         public float aspect = 1.0f;
-        public float FOV = (float)Math.PI / 3; // 60 degrees.
+        public float FOV = MathF.PI / 3; // 60 degrees.
         public float ZNear = 0.1f;
         public float ZFar = 40000;
         public bool FirstPerson = false;

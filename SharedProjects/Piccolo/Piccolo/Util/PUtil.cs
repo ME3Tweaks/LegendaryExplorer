@@ -164,7 +164,7 @@ namespace UMD.HCIL.Piccolo.Util {
 		/// <param name="p2">The second point.</param>
 		/// <returns>The distance between p1 and p2.</returns>
 		public static float DistanceBetweenPoints(PointF p1, PointF p2) {
-			return (float)Math.Sqrt(Math.Pow(p1.X - p2.X, 2) + Math.Pow(p1.Y - p2.Y, 2));
+			return MathF.Sqrt(MathF.Pow(p1.X - p2.X, 2) + MathF.Pow(p1.Y - p2.Y, 2));
 		}
 
 		/// <summary>

@@ -657,7 +657,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                     case DelegateProperty delegateProperty:
                         string funcName = delegateProperty.Value.FunctionName.Instanced;
                         var symRef = new SymbolReference(null, funcName);
-                        if (pcc.TryGetEntry(delegateProperty.Value.Object, out IEntry containingObject))
+                        if (pcc.TryGetEntry(delegateProperty.Value.ContainingObjectUIndex, out IEntry containingObject))
                         {
                             symRef = new CompositeSymbolRef(new ObjectLiteral(new NameLiteral(containingObject.ClassName), new VariableType("Class")), symRef);
                         }

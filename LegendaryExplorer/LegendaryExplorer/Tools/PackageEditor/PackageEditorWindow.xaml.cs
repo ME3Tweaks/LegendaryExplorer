@@ -808,7 +808,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                                 string dataPropName = matchingExport.ClassName == "GFxMovieInfo" ? "RawData" : "Data";
                                 var rawData = props.GetProp<ImmutableByteArrayProperty>(dataPropName);
                                 //Write SWF data
-                                rawData.bytes = bytes;
+                                rawData.Bytes = bytes;
 
                                 //Write SWF metadata
                                 if (matchingExport.FileRef.Game == MEGame.ME1 ||
@@ -1482,7 +1482,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                                 var props = exp.GetProperties();
                                 string dataPropName = exp.FileRef.Game != MEGame.ME1 ? "RawData" : "Data";
                                 var DataProp = props.GetProp<ImmutableByteArrayProperty>(dataPropName);
-                                byte[] data = DataProp.bytes;
+                                byte[] data = DataProp.Bytes;
 
                                 if (savePath == null)
                                 {
@@ -1617,7 +1617,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                                     string dataPropName = exp.FileRef.Game != MEGame.ME1 ? "RawData" : "Data";
                                     var rawData = props.GetProp<ImmutableByteArrayProperty>(dataPropName);
                                     //Write SWF data
-                                    rawData.bytes = bytes;
+                                    rawData.Bytes = bytes;
 
                                     //Write SWF metadata
                                     if (exp.FileRef.Game.IsGame1() || exp.FileRef.Game.IsGame2())

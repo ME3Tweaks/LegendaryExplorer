@@ -762,7 +762,7 @@ namespace LegendaryExplorerCore.Packages
         {
             if (IsClass)
             {
-                return new PropertyCollection { endOffset = 4, IsImmutable = true };
+                return new PropertyCollection { EndOffset = 4, IsImmutable = true };
             } //no properties
 
             IEntry parsingClass = this;
@@ -886,7 +886,7 @@ namespace LegendaryExplorerCore.Packages
         /// <returns></returns>
         public int propsEnd()
         {
-            propsEndOffset ??= GetProperties(true, true).endOffset;
+            propsEndOffset ??= GetProperties(true, true).EndOffset;
             if (propsEndOffset.Value < 4) throw new Exception("Props end is less than 4!");
             return propsEndOffset.Value;
         }

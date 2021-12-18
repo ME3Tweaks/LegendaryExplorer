@@ -257,7 +257,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 {
                     WorldMesh m = Preview.LODs[CurrentLOD].Mesh;
                     MeshContext.Camera.Position = m.AABBCenter;
-                    MeshContext.Camera.Pitch = -(float)Math.PI / 7.0f;
+                    MeshContext.Camera.Pitch = -MathF.PI / 7.0f;
                     if (MeshContext.Camera.FirstPerson)
                     {
                         MeshContext.Camera.Position -= MeshContext.Camera.CameraForward * MeshContext.Camera.FocusDepth;
@@ -266,8 +266,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 else
                 {
                     MeshContext.Camera.Position = Vector3.Zero;
-                    MeshContext.Camera.Pitch = -(float)Math.PI / 5.0f;
-                    MeshContext.Camera.Yaw = (float)Math.PI / 4.0f;
+                    MeshContext.Camera.Pitch = -MathF.PI / 5.0f;
+                    MeshContext.Camera.Yaw = MathF.PI / 4.0f;
                 }
             }
         }

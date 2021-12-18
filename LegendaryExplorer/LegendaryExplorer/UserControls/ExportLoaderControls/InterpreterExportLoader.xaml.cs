@@ -644,7 +644,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         newProperty = new ObjectProperty(0, propName);
                         break;
                     case PropertyType.DelegateProperty:
-                        newProperty = new DelegateProperty(0, "None", propName);
+                        newProperty = new DelegateProperty("None", 0, propName);
                         break;
                     case PropertyType.StructProperty:
                         PropertyCollection structProps = GlobalUnrealObjectInfo.getDefaultStructValue(Pcc.Game, propInfo.Reference, true);
@@ -1014,7 +1014,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     break;
                 case DelegateProperty dp:
                     {
-                        int index = dp.Value.Object;
+                        int index = dp.Value.ContainingObjectUIndex;
                         var entry = parsingExport.FileRef.GetEntry(index);
                         editableValue = index.ToString();
                         if (entry != null)
@@ -1664,7 +1664,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         Value_ComboBox.SelectedIndex = Pcc.findName(dp.Value.FunctionName.Name);
                         NameIndex_TextBox.Text = dp.Value.FunctionName.Number.ToString();
 
-                        Value_TextBox.Text = dp.Value.Object.ToString();
+                        Value_TextBox.Text = dp.Value.ContainingObjectUIndex.ToString();
                         UpdateParsedEditorValue(newSelectedItem);
                         SupportedEditorSetElements.Add(Value_TextBox);
                         SupportedEditorSetElements.Add(ParsedValue_TextBlock);
@@ -2303,7 +2303,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         aop.Insert(insertIndex, new ObjectProperty(0));
                         break;
                     case ArrayProperty<DelegateProperty> aop:
-                        aop.Insert(insertIndex, new DelegateProperty(0, "None"));
+                        aop.Insert(insertIndex, new DelegateProperty("None", 0));
                         break;
                     case ArrayProperty<EnumProperty> aep:
                         {

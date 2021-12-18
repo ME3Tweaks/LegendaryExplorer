@@ -201,17 +201,19 @@ namespace LegendaryExplorerCore.Unreal
             return left.CompareTo(right) >= 0;
         } 
         #endregion
+
+        public static readonly NameReference None = new("None");
     }
 
 
     public readonly struct ScriptDelegate : IEquatable<ScriptDelegate>
     {
-        public int Object { get; }
+        public int ContainingObjectUIndex { get; }
         public NameReference FunctionName { get; }
 
-        public ScriptDelegate(int _object, NameReference functionName)
+        public ScriptDelegate(int containingObjectUIndex, NameReference functionName)
         {
-            Object = _object;
+            ContainingObjectUIndex = containingObjectUIndex;
             FunctionName = functionName;
         }
 
@@ -219,7 +221,7 @@ namespace LegendaryExplorerCore.Unreal
 
         public bool Equals(ScriptDelegate other)
         {
-            return Object == other.Object && FunctionName.Equals(other.FunctionName);
+            return ContainingObjectUIndex == other.ContainingObjectUIndex && FunctionName.Equals(other.FunctionName);
         }
 
         public override bool Equals(object obj)
@@ -231,7 +233,7 @@ namespace LegendaryExplorerCore.Unreal
         {
             unchecked
             {
-                return (Object * 397) ^ FunctionName.GetHashCode();
+                return (ContainingObjectUIndex * 397) ^ FunctionName.GetHashCode();
             }
         }
 
@@ -408,7 +410,7 @@ namespace LegendaryExplorerCore.Unreal
         public static void WriteDelegateProperty(this EndianWriter stream, IMEPackage pcc, NameReference propName, ScriptDelegate value, int staticArrayIndex)
         {
             stream.WritePropHeader(pcc, propName, PropertyType.DelegateProperty, 12, staticArrayIndex);
-            stream.WriteInt32(value.Object);
+            stream.WriteInt32(value.ContainingObjectUIndex);
             stream.WriteNameReference(value.FunctionName, pcc);
         }
 

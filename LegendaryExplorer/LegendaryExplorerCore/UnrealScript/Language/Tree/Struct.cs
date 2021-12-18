@@ -267,7 +267,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
                             prop = new ObjectProperty(0, propName);
                             break;
                         case DelegateType delegateType:
-                            prop = new DelegateProperty(0, "None", propName);
+                            prop = new DelegateProperty("None", 0, propName);
                             break;
                         case DynamicArrayType dynArrType:
                             var elementType = dynArrType.ElementType;

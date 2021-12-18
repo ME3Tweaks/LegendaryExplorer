@@ -3022,7 +3022,7 @@ namespace Be.Windows.Forms
             {
                 charSize = this.CreateGraphics().MeasureString("A", Font, 100, _stringFormat);
             }
-            CharSize = new SizeF((float)Math.Ceiling(charSize.Width), (float)Math.Ceiling(charSize.Height));
+            CharSize = new SizeF(MathF.Ceiling(charSize.Width), MathF.Ceiling(charSize.Height));
 
             int requiredWidth = 0;
 

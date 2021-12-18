@@ -1514,7 +1514,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             }
             else if (prop is ArrayProperty<StructProperty> asp)
             {
-                foreach (var p in asp.Properties)
+                foreach (var p in asp)
                 {
                     RecursiveGetPropDependencies(p, addReference);
                 }
@@ -1528,7 +1528,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             }
             else if (prop is DelegateProperty dp)
             {
-                addReference(dp.Value.Object);
+                addReference(dp.Value.ContainingObjectUIndex);
             }
         }
     }

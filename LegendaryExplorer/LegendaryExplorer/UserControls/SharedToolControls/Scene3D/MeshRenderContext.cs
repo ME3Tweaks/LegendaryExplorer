@@ -274,7 +274,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             if (Orbiting)
             {
                 Camera.Yaw += (x - lastMouse.X) * -0.01f;
-                Camera.Pitch = (float)Math.Min(Math.PI / 2, Math.Max(-Math.PI / 2, Camera.Pitch + (y - lastMouse.Y) * -0.01f));
+                Camera.Pitch = MathF.Min(MathF.PI / 2, MathF.Max(-MathF.PI / 2, Camera.Pitch + (y - lastMouse.Y) * -0.01f));
                 handled = true;
             }
             if (Panning)
@@ -295,7 +295,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
 
         public override bool MouseScroll(int delta)
         {
-            Camera.FocusDepth *= (float)Math.Pow(1.2, -Math.Sign(delta)); // kinda hacky because this moves in constant increments regardless of how far the user scrolls.
+            Camera.FocusDepth *= MathF.Pow(1.2f, -Math.Sign(delta)); // kinda hacky because this moves in constant increments regardless of how far the user scrolls.
             return true;
         }
 

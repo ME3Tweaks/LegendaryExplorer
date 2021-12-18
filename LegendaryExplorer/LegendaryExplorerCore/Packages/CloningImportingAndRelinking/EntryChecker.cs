@@ -544,7 +544,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             }
             else if (property is DelegateProperty dp)
             {
-                if (dp.Value.Object != 0 && !entry.FileRef.IsEntry(dp.Value.Object))
+                if (dp.Value.ContainingObjectUIndex != 0 && !entry.FileRef.IsEntry(dp.Value.ContainingObjectUIndex))
                 {
                     item.AddSignificantIssue(localizationDelegate(ME3XL.string_interp_warningDelegatePropertyIsOutsideOfExportTable, prefix, dp.Name.Name), entry);
                 }

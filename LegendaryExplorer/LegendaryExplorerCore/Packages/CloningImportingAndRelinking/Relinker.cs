@@ -377,7 +377,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 }
                 else if (prop is DelegateProperty delegateProp)
                 {
-                    int uIndex = delegateProp.Value.Object;
+                    int uIndex = delegateProp.Value.ContainingObjectUIndex;
                     var result = relinkUIndex(importingPCC, relinkingExport, ref uIndex, delegateProp.Name, prefix, rop);
                     delegateProp.Value = new ScriptDelegate(uIndex, delegateProp.Value.FunctionName);
                     if (result != null)
