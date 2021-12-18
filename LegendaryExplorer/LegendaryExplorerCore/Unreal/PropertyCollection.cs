@@ -128,6 +128,9 @@ namespace LegendaryExplorerCore.Unreal
         {
             entry ??= export;
             var stream = new EndianReader(rawStream) { Endian = export.FileRef.Endian };
+
+            long startPosition = stream.Position;//used in the non-DEBUG block at the end of this method!
+
             var props = new PropertyCollection();
             IMEPackage pcc = export.FileRef;
             try
@@ -316,7 +319,7 @@ namespace LegendaryExplorerCore.Unreal
                     return props;
 #else
                     stream.Seek(startPosition, SeekOrigin.Begin);
-                    return new PropertyCollection { endOffset = (int)stream.Position };
+                    return new PropertyCollection { EndOffset = (int)stream.Position };
 #endif
                 }
                 //remove None Property
