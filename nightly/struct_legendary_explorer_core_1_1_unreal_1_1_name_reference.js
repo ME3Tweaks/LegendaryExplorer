@@ -21,6 +21,7 @@ var struct_legendary_explorer_core_1_1_unreal_1_1_name_reference =
     [ "operator>", "struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html#af88bee56705dff4d7fae93cb2a8f28b3", null ],
     [ "operator<=", "struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html#aae9864073d9abec33335240086246e88", null ],
     [ "operator>=", "struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html#a3f52be5335c6b35e12cd0d92f6576843", null ],
+    [ "None", "struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html#a4b8e4087f20299cbfe41a14692591596", null ],
     [ "Name", "struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html#abbffa510b9de9fdc009ac5ff7bd25ca1", null ],
     [ "Number", "struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html#ad8d9f79a220e808ad5c132638cf4f3c7", null ],
     [ "Instanced", "struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html#a388badbc30b3b01e711e0f70069d70d6", null ]

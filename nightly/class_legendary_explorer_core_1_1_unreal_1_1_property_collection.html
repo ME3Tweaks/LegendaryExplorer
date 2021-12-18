@@ -94,6 +94,9 @@ $(document).ready(function(){initNavTree('class_legendary_explorer_core_1_1_unre
   <div class="headertitle"><div class="title">LegendaryExplorerCore.Unreal.PropertyCollection Class Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Collection of <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property.html" title="Base class for all the Unreal property types that go in PropertyCollection">Property</a>s  
+ <a href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html#details">More...</a></p>
 <div class="dynheader">
 Inheritance diagram for LegendaryExplorerCore.Unreal.PropertyCollection:</div>
 <div class="dyncontent">
@@ -103,77 +106,51 @@ Inheritance diagram for LegendaryExplorerCore.Unreal.PropertyCollection:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a83317fa4cbb378f7f20d978c6c8d6cca"><td class="memItemLeft" align="right" valign="top">T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html#a83317fa4cbb378f7f20d978c6c8d6cca">GetProp&lt; T &gt;</a> (<a class="el" href="struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html">NameReference</a> name, int staticArrayIdx=0)</td></tr>
-<tr class="memdesc:a83317fa4cbb378f7f20d978c6c8d6cca"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the UProperty with the specified name and optionally a static array index, returns null if not found. The property name is checked case insensitively. Ensure the generic type matches the result you want or you will receive a null object back.  <a href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html#a83317fa4cbb378f7f20d978c6c8d6cca">More...</a><br /></td></tr>
-<tr class="separator:a83317fa4cbb378f7f20d978c6c8d6cca"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a78479e6469256cd3730516b2a3c5cf51"><td class="memItemLeft" align="right" valign="top">T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html#a78479e6469256cd3730516b2a3c5cf51">GetProp&lt; T &gt;</a> (<a class="el" href="struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html">NameReference</a> name, int staticArrayIndex=0)</td></tr>
+<tr class="memdesc:a78479e6469256cd3730516b2a3c5cf51"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property.html" title="Base class for all the Unreal property types that go in PropertyCollection">Property</a> with the specified name and optionally a static array index. The property name is checked case insensitively.  <a href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html#a78479e6469256cd3730516b2a3c5cf51">More...</a><br /></td></tr>
+<tr class="separator:a78479e6469256cd3730516b2a3c5cf51"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a01c726c93704ba6937fbbf1d3d107b79"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html#a01c726c93704ba6937fbbf1d3d107b79">TryReplaceProp</a> (<a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property.html">Property</a> prop)</td></tr>
+<tr class="memdesc:a01c726c93704ba6937fbbf1d3d107b79"><td class="mdescLeft">&#160;</td><td class="mdescRight">If a property exists in the collection with the same <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property.html#af71e59036b9ff90609309d1fc4bfa0d0" title="The name of this property">Property.Name</a> and <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property.html#a19dcb2cfcdb9c6230d492edcfcde8201" title="Some properties are defined as static arrays. Eeach element will be a seperate Property,...">Property.StaticArrayIndex</a> as <em>prop</em> , replace it, Otherwise do nothing.  <a href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html#a01c726c93704ba6937fbbf1d3d107b79">More...</a><br /></td></tr>
 <tr class="separator:a01c726c93704ba6937fbbf1d3d107b79"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aadace20a8c359c01ce374673dc4dd636"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html#aadace20a8c359c01ce374673dc4dd636">AddOrReplaceProp</a> (<a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property.html">Property</a> prop)</td></tr>
+<tr class="memdesc:aadace20a8c359c01ce374673dc4dd636"><td class="mdescLeft">&#160;</td><td class="mdescRight">If a property exists in the collection with the same <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property.html#af71e59036b9ff90609309d1fc4bfa0d0" title="The name of this property">Property.Name</a> and <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property.html#a19dcb2cfcdb9c6230d492edcfcde8201" title="Some properties are defined as static arrays. Eeach element will be a seperate Property,...">Property.StaticArrayIndex</a> as <em>prop</em> , replace it, Otherwise add <em>prop</em>  to the collection.  <a href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html#aadace20a8c359c01ce374673dc4dd636">More...</a><br /></td></tr>
 <tr class="separator:aadace20a8c359c01ce374673dc4dd636"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab016bd67ee46b2a3751665fa2ff0b079"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html#ab016bd67ee46b2a3751665fa2ff0b079">WriteTo</a> (<a class="el" href="class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_endian_writer.html">EndianWriter</a> stream, <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> pcc, bool requireNoneAtEnd=true)</td></tr>
-<tr class="separator:ab016bd67ee46b2a3751665fa2ff0b079"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad94ba25358bc445647a562351d815680"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html#ad94ba25358bc445647a562351d815680">WriteTo</a> (<a class="el" href="class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_endian_writer.html">EndianWriter</a> writer, <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> pcc, bool requireNoneAtEnd=true)</td></tr>
+<tr class="memdesc:ad94ba25358bc445647a562351d815680"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serializes the properties in this collection to an EndianWriter  <a href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html#ad94ba25358bc445647a562351d815680">More...</a><br /></td></tr>
+<tr class="separator:ad94ba25358bc445647a562351d815680"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2bc91a99ca17e1ede0beb00ba4f5f06e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html#a2bc91a99ca17e1ede0beb00ba4f5f06e">ContainsNamedProp</a> (<a class="el" href="struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html">NameReference</a> name)</td></tr>
 <tr class="memdesc:a2bc91a99ca17e1ede0beb00ba4f5f06e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks if a property with the specified name exists in this property collection  <a href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html#a2bc91a99ca17e1ede0beb00ba4f5f06e">More...</a><br /></td></tr>
 <tr class="separator:a2bc91a99ca17e1ede0beb00ba4f5f06e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a89645349bdd909827fd8df3b58b7c356"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html#a89645349bdd909827fd8df3b58b7c356">PropertyCollection</a> ()</td></tr>
-<tr class="separator:a89645349bdd909827fd8df3b58b7c356"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afe4721333ff1c719c939bb74ec2c4f2a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html#afe4721333ff1c719c939bb74ec2c4f2a">RemoveNamedProperty</a> (string propname)</td></tr>
 <tr class="memdesc:afe4721333ff1c719c939bb74ec2c4f2a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Removes the first matching property name from the collection.  <a href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html#afe4721333ff1c719c939bb74ec2c4f2a">More...</a><br /></td></tr>
 <tr class="separator:afe4721333ff1c719c939bb74ec2c4f2a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae0204cf4f2bc26c2e40922034dbc2439"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html">PropertyCollection</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html#ae0204cf4f2bc26c2e40922034dbc2439">DeepClone</a> ()</td></tr>
+<tr class="memdesc:ae0204cf4f2bc26c2e40922034dbc2439"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a deep copy of the <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html" title="Collection of Propertys">PropertyCollection</a>  <a href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html#ae0204cf4f2bc26c2e40922034dbc2439">More...</a><br /></td></tr>
 <tr class="separator:ae0204cf4f2bc26c2e40922034dbc2439"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9543b7276d9cad780b9f3b948204a108"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html#a9543b7276d9cad780b9f3b948204a108">Equivalent</a> (<a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html">PropertyCollection</a> other)</td></tr>
 <tr class="memdesc:a9543b7276d9cad780b9f3b948204a108"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks to see if the two collections have the same properties (defined by <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property.html#a39f142a4552b8578eb9f830ed0d07e29" title="Checks if this represents the same property (Name and StaticArrayIndex), and has the same value.">Property.Equivalent</a>). Order does not matter  <a href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html#a9543b7276d9cad780b9f3b948204a108">More...</a><br /></td></tr>
 <tr class="separator:a9543b7276d9cad780b9f3b948204a108"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a63678d111b37180e88154feb14966fdf"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html">PropertyCollection</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html#a63678d111b37180e88154feb14966fdf">Diff</a> (<a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html">PropertyCollection</a> other, bool structDiff=false)</td></tr>
-<tr class="memdesc:a63678d111b37180e88154feb14966fdf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a new <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html">PropertyCollection</a> containing clones of all properties in this collection that are not <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property.html#a39f142a4552b8578eb9f830ed0d07e29" title="Checks if this represents the same property (Name and StaticArrayIndex), and has the same value.">Property.Equivalent</a> to ones in <em>other</em>   <a href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html#a63678d111b37180e88154feb14966fdf">More...</a><br /></td></tr>
+<tr class="memdesc:a63678d111b37180e88154feb14966fdf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a new <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html" title="Collection of Propertys">PropertyCollection</a> containing deep clones of all properties in this collection that are not <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property.html#a39f142a4552b8578eb9f830ed0d07e29" title="Checks if this represents the same property (Name and StaticArrayIndex), and has the same value.">Property.Equivalent</a> to ones in <em>other</em>   <a href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html#a63678d111b37180e88154feb14966fdf">More...</a><br /></td></tr>
 <tr class="separator:a63678d111b37180e88154feb14966fdf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a73a0812e09a6786a54a24f95ee421c94"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html">PropertyCollection</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html#a73a0812e09a6786a54a24f95ee421c94">ReadProps</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> export, Stream rawStream, string typeName, bool includeNoneProperty=false, bool requireNoneAtEnd=true, <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a> entry=null, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a> packageCache=null)</td></tr>
+<tr class="memdesc:a73a0812e09a6786a54a24f95ee421c94"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deserializes properties from <em>rawStream</em> .  <a href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html#a73a0812e09a6786a54a24f95ee421c94">More...</a><br /></td></tr>
 <tr class="separator:a73a0812e09a6786a54a24f95ee421c94"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0afa5654d772203a654f98ac1800211d"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html">PropertyCollection</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html#a0afa5654d772203a654f98ac1800211d">ReadImmutableStruct</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> export, <a class="el" href="class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_endian_reader.html">EndianReader</a> stream, string structType, int size, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a> packageCache, <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a> parsingEntry=null)</td></tr>
-<tr class="separator:a0afa5654d772203a654f98ac1800211d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a53bf3719dd4ec74a49ae014c414abda9"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property.html">Property</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html#a53bf3719dd4ec74a49ae014c414abda9">ReadArrayProperty</a> (<a class="el" href="class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_endian_reader.html">EndianReader</a> stream, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> export, string enclosingType, <a class="el" href="struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html">NameReference</a> name, bool IsInImmutable=false, bool IncludeNoneProperties=false, <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a> parsingEntry=null, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a> packageCache=null)</td></tr>
-<tr class="separator:a53bf3719dd4ec74a49ae014c414abda9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:afe08bc70efe5819d6dd6ac77a8e3f856"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html#afe08bc70efe5819d6dd6ac77a8e3f856">endOffset</a></td></tr>
-<tr class="separator:afe08bc70efe5819d6dd6ac77a8e3f856"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4e97dcfa6d0ae47630a356a13487cf09"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html#a4e97dcfa6d0ae47630a356a13487cf09">IsImmutable</a></td></tr>
+<tr class="memdesc:a4e97dcfa6d0ae47630a356a13487cf09"><td class="mdescLeft">&#160;</td><td class="mdescRight">Indicates that when serialized, the properties in this collection should use value-only serialization and that there should not be a <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_none_property.html" title="Property that marks the end of a collection of properties.">NoneProperty</a> at the end.  <a href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html#a4e97dcfa6d0ae47630a356a13487cf09">More...</a><br /></td></tr>
 <tr class="separator:a4e97dcfa6d0ae47630a356a13487cf09"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a89645349bdd909827fd8df3b58b7c356" name="a89645349bdd909827fd8df3b58b7c356"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a89645349bdd909827fd8df3b58b7c356">&#9670;&nbsp;</a></span>PropertyCollection()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">LegendaryExplorerCore.Unreal.PropertyCollection.PropertyCollection </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<h2 class="groupheader">Member Function Documentation</h2>
-<a id="a83317fa4cbb378f7f20d978c6c8d6cca" name="a83317fa4cbb378f7f20d978c6c8d6cca"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a83317fa4cbb378f7f20d978c6c8d6cca">&#9670;&nbsp;</a></span>GetProp&lt; T &gt;()</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p >Collection of <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property.html" title="Base class for all the Unreal property types that go in PropertyCollection">Property</a>s </p>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="a78479e6469256cd3730516b2a3c5cf51" name="a78479e6469256cd3730516b2a3c5cf51"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a78479e6469256cd3730516b2a3c5cf51">&#9670;&nbsp;</a></span>GetProp&lt; T &gt;()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -191,7 +168,7 @@ Public Attributes</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>staticArrayIdx</em> = <code>0</code>&#160;</td>
+          <td class="paramname"><em>staticArrayIndex</em> = <code>0</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -206,15 +183,16 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Gets the UProperty with the specified name and optionally a static array index, returns null if not found. The property name is checked case insensitively. Ensure the generic type matches the result you want or you will receive a null object back. </p>
+<p>Gets the <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property.html" title="Base class for all the Unreal property types that go in PropertyCollection">Property</a> with the specified name and optionally a static array index. The property name is checked case insensitively. </p>
+<p >Ensure the generic type matches the result you want or it will return null</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">name</td><td>Name of property to find</td></tr>
-    <tr><td class="paramname">staticArrayIdx</td><td></td></tr>
+    <tr><td class="paramname">staticArrayIndex</td><td>Optional: If the named property is a static array (not an ArrayProperty&lt;T&gt;!), you can specify a specific element.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>specified UProperty or null if not found</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>specified <em>T</em>  or null if not found</dd></dl>
 <div class="typeconstraint">
 <dl><dt><b>Type Constraints</b></dt><dd>
 <table border="0" cellspacing="2" cellpadding="0">
@@ -250,6 +228,15 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>If a property exists in the collection with the same <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property.html#af71e59036b9ff90609309d1fc4bfa0d0" title="The name of this property">Property.Name</a> and <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property.html#a19dcb2cfcdb9c6230d492edcfcde8201" title="Some properties are defined as static arrays. Eeach element will be a seperate Property,...">Property.StaticArrayIndex</a> as <em>prop</em> , replace it, Otherwise do nothing. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">prop</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True if a property was replaced</dd></dl>
+
 </div>
 </div>
 <a id="aadace20a8c359c01ce374673dc4dd636" name="aadace20a8c359c01ce374673dc4dd636"></a>
@@ -276,10 +263,18 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>If a property exists in the collection with the same <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property.html#af71e59036b9ff90609309d1fc4bfa0d0" title="The name of this property">Property.Name</a> and <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property.html#a19dcb2cfcdb9c6230d492edcfcde8201" title="Some properties are defined as static arrays. Eeach element will be a seperate Property,...">Property.StaticArrayIndex</a> as <em>prop</em> , replace it, Otherwise add <em>prop</em>  to the collection. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">prop</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+
 </div>
 </div>
-<a id="ab016bd67ee46b2a3751665fa2ff0b079" name="ab016bd67ee46b2a3751665fa2ff0b079"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab016bd67ee46b2a3751665fa2ff0b079">&#9670;&nbsp;</a></span>WriteTo()</h2>
+<a id="ad94ba25358bc445647a562351d815680" name="ad94ba25358bc445647a562351d815680"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad94ba25358bc445647a562351d815680">&#9670;&nbsp;</a></span>WriteTo()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -291,7 +286,7 @@ Public Attributes</h2></td></tr>
           <td class="memname">void LegendaryExplorerCore.Unreal.PropertyCollection.WriteTo </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_endian_writer.html">EndianWriter</a>&#160;</td>
-          <td class="paramname"><em>stream</em>, </td>
+          <td class="paramname"><em>writer</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -317,6 +312,16 @@ Public Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Serializes the properties in this collection to an EndianWriter </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">writer</td><td></td></tr>
+    <tr><td class="paramname">pcc</td><td>The IMEPackage that these properties are in.</td></tr>
+    <tr><td class="paramname">requireNoneAtEnd</td><td>Optional: Write a <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_none_property.html" title="Property that marks the end of a collection of properties.">NoneProperty</a> at the end if there isn't one. Ignored when <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html#a4e97dcfa6d0ae47630a356a13487cf09" title="Indicates that when serialized, the properties in this collection should use value-only serialization...">IsImmutable</a> is true</td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -419,137 +424,21 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-</div>
-</div>
-<a id="a0afa5654d772203a654f98ac1800211d" name="a0afa5654d772203a654f98ac1800211d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0afa5654d772203a654f98ac1800211d">&#9670;&nbsp;</a></span>ReadImmutableStruct()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html">PropertyCollection</a> LegendaryExplorerCore.Unreal.PropertyCollection.ReadImmutableStruct </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td>
-          <td class="paramname"><em>export</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_endian_reader.html">EndianReader</a>&#160;</td>
-          <td class="paramname"><em>stream</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">string&#160;</td>
-          <td class="paramname"><em>structType</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>size</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a>&#160;</td>
-          <td class="paramname"><em>packageCache</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a>&#160;</td>
-          <td class="paramname"><em>parsingEntry</em> = <code>null</code>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a53bf3719dd4ec74a49ae014c414abda9" name="a53bf3719dd4ec74a49ae014c414abda9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a53bf3719dd4ec74a49ae014c414abda9">&#9670;&nbsp;</a></span>ReadArrayProperty()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property.html">Property</a> LegendaryExplorerCore.Unreal.PropertyCollection.ReadArrayProperty </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_endian_reader.html">EndianReader</a>&#160;</td>
-          <td class="paramname"><em>stream</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td>
-          <td class="paramname"><em>export</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">string&#160;</td>
-          <td class="paramname"><em>enclosingType</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html">NameReference</a>&#160;</td>
-          <td class="paramname"><em>name</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>IsInImmutable</em> = <code>false</code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>IncludeNoneProperties</em> = <code>false</code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a>&#160;</td>
-          <td class="paramname"><em>parsingEntry</em> = <code>null</code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a>&#160;</td>
-          <td class="paramname"><em>packageCache</em> = <code>null</code>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
+<p>Deserializes properties from <em>rawStream</em> . </p>
+<p >For advanced use. You should almost always just call ExportEntry.GetProperties</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">export</td><td>The ExportEntry these props are from</td></tr>
+    <tr><td class="paramname">rawStream</td><td>The stream to read the props from. This is assumed to taken from <em>export</em> 's data.</td></tr>
+    <tr><td class="paramname">typeName</td><td>The ClassName of the export, or the Name of the Struct being read.</td></tr>
+    <tr><td class="paramname">includeNoneProperty</td><td>Optional: Should the returned <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html" title="Collection of Propertys">PropertyCollection</a> include the ending <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_none_property.html" title="Property that marks the end of a collection of properties.">NoneProperty</a></td></tr>
+    <tr><td class="paramname">requireNoneAtEnd</td><td>Optional: Should this return an empty collection if there is no <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_none_property.html" title="Property that marks the end of a collection of properties.">NoneProperty</a> at the end</td></tr>
+    <tr><td class="paramname">entry</td><td>Optional: The object these properties are logically in. Defaults to <em>export</em> , but when parsing a DefaultObject or ScriptStruct defaults it should be the Class definition they belong to</td></tr>
+    <tr><td class="paramname">packageCache</td><td>Optional: A cache that will be used for any neccesary lookups (such as default struct values)</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A collection of properties read from <em>rawStream</em>  until a <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_none_property.html" title="Property that marks the end of a collection of properties.">NoneProperty</a> was found, or until the end of the stream if <em>requireNoneAtEnd</em>  is false</dd></dl>
 
 </div>
 </div>
@@ -580,7 +469,7 @@ Public Attributes</h2></td></tr>
 <p>Removes the first matching property name from the collection. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">propname</td><td><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property.html">Property</a> name to remove</td></tr>
+    <tr><td class="paramname">propname</td><td><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property.html" title="Base class for all the Unreal property types that go in PropertyCollection">Property</a> name to remove</td></tr>
   </table>
   </dd>
 </dl>
@@ -609,6 +498,9 @@ Public Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Creates a deep copy of the <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html" title="Collection of Propertys">PropertyCollection</a> </p>
+<dl class="section return"><dt>Returns</dt><dd>A deep copy of the <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html" title="Collection of Propertys">PropertyCollection</a></dd></dl>
 
 </div>
 </div>
@@ -639,11 +531,11 @@ Public Attributes</h2></td></tr>
 <p>Checks to see if the two collections have the same properties (defined by <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property.html#a39f142a4552b8578eb9f830ed0d07e29" title="Checks if this represents the same property (Name and StaticArrayIndex), and has the same value.">Property.Equivalent</a>). Order does not matter </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">other</td><td></td></tr>
+    <tr><td class="paramname">other</td><td>The <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html" title="Collection of Propertys">PropertyCollection</a> to compare to.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>True if the <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html" title="Collection of Propertys">PropertyCollection</a>s are equivalent, false if not</dd></dl>
 
 </div>
 </div>
@@ -681,7 +573,7 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Returns a new <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html">PropertyCollection</a> containing clones of all properties in this collection that are not <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property.html#a39f142a4552b8578eb9f830ed0d07e29" title="Checks if this represents the same property (Name and StaticArrayIndex), and has the same value.">Property.Equivalent</a> to ones in <em>other</em>  </p>
+<p>Returns a new <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html" title="Collection of Propertys">PropertyCollection</a> containing deep clones of all properties in this collection that are not <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property.html#a39f142a4552b8578eb9f830ed0d07e29" title="Checks if this represents the same property (Name and StaticArrayIndex), and has the same value.">Property.Equivalent</a> to ones in <em>other</em>  </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">other</td><td></td></tr>
@@ -694,20 +586,6 @@ Public Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="afe08bc70efe5819d6dd6ac77a8e3f856" name="afe08bc70efe5819d6dd6ac77a8e3f856"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afe08bc70efe5819d6dd6ac77a8e3f856">&#9670;&nbsp;</a></span>endOffset</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int LegendaryExplorerCore.Unreal.PropertyCollection.endOffset</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="a4e97dcfa6d0ae47630a356a13487cf09" name="a4e97dcfa6d0ae47630a356a13487cf09"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a4e97dcfa6d0ae47630a356a13487cf09">&#9670;&nbsp;</a></span>IsImmutable</h2>
 
@@ -719,6 +597,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Indicates that when serialized, the properties in this collection should use value-only serialization and that there should not be a <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_none_property.html" title="Property that marks the end of a collection of properties.">NoneProperty</a> at the end. </p>
 
 </div>
 </div>
