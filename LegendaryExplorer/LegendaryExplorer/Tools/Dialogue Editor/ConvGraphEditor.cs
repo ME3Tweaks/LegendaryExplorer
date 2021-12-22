@@ -91,7 +91,7 @@ namespace LegendaryExplorer.DialogueEditor
             start.X += node1.GlobalBounds.Width;
             start.Y += node1.GlobalBounds.Height * 0.5f;
             end.Y += node2.GlobalBounds.Height * 0.5f;
-            h1x = h2x = end.X > start.X ? 200 * (float)Math.Log10((end.X - start.X) / 200 + 1) : 200 * (float)Math.Log10((start.X - end.X) / 100 + 1);
+            h1x = h2x = end.X > start.X ? 200 * MathF.Log10((end.X - start.X) / 200 + 1) : 200 * MathF.Log10((start.X - end.X) / 100 + 1);
             if (h1x < 15)
             {
                 h1x = h2x = 15;
@@ -142,7 +142,7 @@ namespace LegendaryExplorer.DialogueEditor
                     {
                         foreach (PNode node in g.nodeLayer)
                         {
-                            if (node is DObj obj && obj.IsSelected && obj != e.PickedNode)
+                            if (node is DObj { IsSelected: true } obj && obj != e.PickedNode)
                             {
                                 SizeF s = e.GetDeltaRelativeTo(obj);
                                 s = obj.LocalToParent(s);

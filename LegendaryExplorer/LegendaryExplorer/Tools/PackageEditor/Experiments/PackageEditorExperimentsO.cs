@@ -78,7 +78,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         {
             StreamWriter Writer = new StreamWriter(Filename, true);
 
-            Vector3 Rotator = new Vector3((float)Math.Atan2(m.M32, m.M33), (float)Math.Asin(-1 * m.M31), (float)Math.Atan2(-1 * m.M21, m.M11));
+            Vector3 Rotator = new Vector3(MathF.Atan2(m.M32, m.M33), MathF.Asin(-1 * m.M31), MathF.Atan2(-1 * m.M21, m.M11));
             float RotatorX = Rotator.X;
             RotatorX = RadianToDegrees(RotatorX);
             float RotatorY = Rotator.Y;
@@ -121,7 +121,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         {
             StreamWriter Writer = new StreamWriter(Filename, true);
 
-            Vector3 Rotator = new Vector3((float)Math.Atan2(m.M32, m.M33), (float)Math.Asin(-1 * m.M31), (float)Math.Atan2(-1 * m.M21, m.M11));
+            Vector3 Rotator = new Vector3(MathF.Atan2(m.M32, m.M33), MathF.Asin(-1 * m.M31), MathF.Atan2(-1 * m.M21, m.M11));
             float RotatorX = Rotator.X;
             RotatorX = RadianToUnrealDegrees(RotatorX);
             float RotatorY = Rotator.Y;
@@ -175,7 +175,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         {
             StreamWriter Writer = new StreamWriter(Filename, true);
 
-            Vector3 Rotator = new Vector3((float)Math.Atan2(m.M32, m.M33), (float)Math.Asin(-1 * m.M31), (float)Math.Atan2(-1 * m.M21, m.M11));
+            Vector3 Rotator = new Vector3(MathF.Atan2(m.M32, m.M33), MathF.Asin(-1 * m.M31), MathF.Atan2(-1 * m.M21, m.M11));
             float RotatorX = Rotator.X;
             RotatorX = RadianToDegrees(RotatorX);
             float RotatorY = Rotator.Y;

@@ -462,9 +462,9 @@ namespace LegendaryExplorerCore.Packages
                             }
                             break;
                         case DelegateProperty delegateProperty:
-                            if (delegateProperty.Value.Object != 0 && delegateProperty.Value.Object != exp.UIndex)
+                            if (delegateProperty.Value.ContainingObjectUIndex != 0 && delegateProperty.Value.ContainingObjectUIndex != exp.UIndex)
                             {
-                                theserefs.Add(pcc.GetEntry(delegateProperty.Value.Object));
+                                theserefs.Add(pcc.GetEntry(delegateProperty.Value.ContainingObjectUIndex));
                             }
                             break;
                         case StructProperty structProperty:
@@ -707,7 +707,7 @@ namespace LegendaryExplorerCore.Packages
                             }
                             break;
                         case DelegateProperty delegateProperty:
-                            if (delegateProperty.Value.Object == baseUIndex)
+                            if (delegateProperty.Value.ContainingObjectUIndex == baseUIndex)
                             {
                                 result.AddToListAt(exp, $"{prefix} {delegateProperty.Name}");
                             }
@@ -825,7 +825,7 @@ namespace LegendaryExplorerCore.Packages
                             }
                             break;
                         case DelegateProperty delegateProperty:
-                            if (delegateProperty.Value.Object == targetUIndex)
+                            if (delegateProperty.Value.ContainingObjectUIndex == targetUIndex)
                             {
                                 delegateProperty.Value = new ScriptDelegate(replaceUIndex, delegateProperty.Value.FunctionName);
                                 replacementCount++;

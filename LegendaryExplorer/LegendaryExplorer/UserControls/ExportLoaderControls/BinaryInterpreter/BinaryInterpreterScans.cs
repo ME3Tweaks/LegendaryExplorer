@@ -6308,7 +6308,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                 subnodes.AddRange(topLevelTree.ChildrenProperties);
 
                                 //finish writing function here
-                                pos = props.endOffset;
+                                pos = (int)stream.Position;
 
                             }
                         }

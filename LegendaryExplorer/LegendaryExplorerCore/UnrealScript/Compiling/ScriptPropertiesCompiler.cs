@@ -270,7 +270,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
                         funcName = NameReference.FromInstancedString(((SymbolReference) literal).Name);
                     }
-                    prop = new DelegateProperty(objUIndex, funcName, propName);
+                    prop = new DelegateProperty(funcName, objUIndex, propName);
                     break;
                 case DynamicArrayType dynamicArrayType:
                     VariableType elementType = dynamicArrayType.ElementType;

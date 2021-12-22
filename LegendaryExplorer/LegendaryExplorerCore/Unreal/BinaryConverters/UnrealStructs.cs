@@ -130,18 +130,18 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             float x = dirVec.X;
             float y = dirVec.Y;
             float z = dirVec.Z;
-            var pitch = Math.Atan2(z, Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2)));
-            var yaw = Math.Atan2(y, x);
-            return new Rotator(((float)pitch).RadiansToUnrealRotationUnits(), ((float)yaw).RadiansToUnrealRotationUnits(), 0);
+            var pitch = MathF.Atan2(z, MathF.Sqrt(MathF.Pow(x, 2) + MathF.Pow(y, 2)));
+            var yaw = MathF.Atan2(y, x);
+            return new Rotator(pitch.RadiansToUnrealRotationUnits(), yaw.RadiansToUnrealRotationUnits(), 0);
         }
 
         public Vector3 GetDirectionalVector()
         {
-            var cp = Math.Cos(Pitch.UnrealRotationUnitsToRadians());
-            var cy = Math.Cos(Yaw.UnrealRotationUnitsToRadians());
-            var sp = Math.Sin(Pitch.UnrealRotationUnitsToRadians());
-            var sy = Math.Sin(Yaw.UnrealRotationUnitsToRadians());
-            return new Vector3((float)(cp * cy), (float)(cp * sy), (float)sp);
+            var cp = MathF.Cos(Pitch.UnrealRotationUnitsToRadians());
+            var cy = MathF.Cos(Yaw.UnrealRotationUnitsToRadians());
+            var sp = MathF.Sin(Pitch.UnrealRotationUnitsToRadians());
+            var sy = MathF.Sin(Yaw.UnrealRotationUnitsToRadians());
+            return new Vector3((cp * cy), (cp * sy), sp);
         }
 
         public bool IsZero => Pitch == 0 && Yaw == 0 && Roll == 0; 

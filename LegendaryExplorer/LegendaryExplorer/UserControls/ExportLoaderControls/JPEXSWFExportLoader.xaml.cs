@@ -92,7 +92,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             Debug.WriteLine($"Extracting {export.InstancedFullPath} to {destination}");
             var props = export.GetProperties();
             string dataPropName = export.ClassName == "GFxMovieInfo" ? "RawData" : "Data";
-            byte[] data = props.GetProp<ImmutableByteArrayProperty>(dataPropName).bytes;
+            byte[] data = props.GetProp<ImmutableByteArrayProperty>(dataPropName).Bytes;
             File.WriteAllBytes(destination, data);
         }
 
@@ -163,7 +163,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 string dataPropName = CurrentLoadedExport.ClassName == "GFxMovieInfo" ? "RawData" : "Data";
                 var rawData = props.GetProp<ImmutableByteArrayProperty>(dataPropName);
                 //Write SWF data
-                rawData.bytes = bytes;
+                rawData.Bytes = bytes;
 
                 //Write SWF metadata
                 if (CurrentLoadedExport.FileRef.Game.IsGame1() || CurrentLoadedExport.FileRef.Game.IsGame2())

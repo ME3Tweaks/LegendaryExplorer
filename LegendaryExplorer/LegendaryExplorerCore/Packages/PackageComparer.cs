@@ -669,8 +669,8 @@ namespace LegendaryExplorerCore.Packages
             else if (dProp is DelegateProperty dDelP && pProp is DelegateProperty pDelP)
             {
                 // Ensure they resolve to same variable
-                var d = exp1.FileRef.GetEntry(dDelP.Value.Object);
-                var p = exp2.FileRef.GetEntry(pDelP.Value.Object);
+                var d = exp1.FileRef.GetEntry(dDelP.Value.ContainingObjectUIndex);
+                var p = exp2.FileRef.GetEntry(pDelP.Value.ContainingObjectUIndex);
 
                 if (d != null && p != null)
                 {

@@ -29,16 +29,16 @@ namespace LegendaryExplorerCore.Unreal
         //inverse of this method is Matrix4x4::UnrealDecompose
         public static Matrix4x4 ComposeLocalToWorld(Vector3 location, Rotator rotation, Vector3 scale, Vector3 pivot = default)
         {
-            double pitch = rotation.Pitch.UnrealRotationUnitsToRadians();
-            double yaw = rotation.Yaw.UnrealRotationUnitsToRadians();
-            double roll = rotation.Roll.UnrealRotationUnitsToRadians();
+            float pitch = rotation.Pitch.UnrealRotationUnitsToRadians();
+            float yaw = rotation.Yaw.UnrealRotationUnitsToRadians();
+            float roll = rotation.Roll.UnrealRotationUnitsToRadians();
 
-            float sp = (float)Math.Sin(pitch);
-            float sy = (float)Math.Sin(yaw);
-            float sr = (float)Math.Sin(roll);
-            float cp = (float)Math.Cos(pitch);
-            float cy = (float)Math.Cos(yaw);
-            float cr = (float)Math.Cos(roll);
+            float sp = MathF.Sin(pitch);
+            float sy = MathF.Sin(yaw);
+            float sr = MathF.Sin(roll);
+            float cp = MathF.Cos(pitch);
+            float cy = MathF.Cos(yaw);
+            float cr = MathF.Cos(roll);
 
             (float x, float y, float z) = (location.X, location.Y, location.Z);
             (float sX, float sY, float sZ) = (scale.X, scale.Y, scale.Z);
@@ -93,16 +93,16 @@ namespace LegendaryExplorerCore.Unreal
 
         public static Matrix4x4 InverseRotation(Rotator rot)
         {
-            double pitch = rot.Pitch.UnrealRotationUnitsToRadians();
-            double yaw = rot.Yaw.UnrealRotationUnitsToRadians();
-            double roll = rot.Roll.UnrealRotationUnitsToRadians();
+            float pitch = rot.Pitch.UnrealRotationUnitsToRadians();
+            float yaw = rot.Yaw.UnrealRotationUnitsToRadians();
+            float roll = rot.Roll.UnrealRotationUnitsToRadians();
 
-            float sp = (float)Math.Sin(pitch);
-            float sy = (float)Math.Sin(yaw);
-            float sr = (float)Math.Sin(roll);
-            float cp = (float)Math.Cos(pitch);
-            float cy = (float)Math.Cos(yaw);
-            float cr = (float)Math.Cos(roll);
+            float sp = MathF.Sin(pitch);
+            float sy = MathF.Sin(yaw);
+            float sr = MathF.Sin(roll);
+            float cp = MathF.Cos(pitch);
+            float cy = MathF.Cos(yaw);
+            float cr = MathF.Cos(roll);
 
             return new Matrix4x4(+cy, -sy, 0f, 0f,
                               +sy, +cy, 0f, 0f,

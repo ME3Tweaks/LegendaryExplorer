@@ -233,7 +233,7 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
         /// <summary>
         /// Creates Huffman Tree based on data from memory.
         /// For every character in text data, a corresponding Huffman Code is prepared.
-        /// Source: http://en.wikipedia.org/wiki/Huffman_coding
+        /// Source: <see href="http://en.wikipedia.org/wiki/Huffman_coding"/>
         /// </summary>
         private void PrepareHuffmanCoding()
         {

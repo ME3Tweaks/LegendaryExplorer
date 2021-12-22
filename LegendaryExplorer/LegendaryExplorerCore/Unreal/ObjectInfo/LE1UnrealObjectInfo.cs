@@ -291,7 +291,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 case PropertyType.FloatProperty:
                     return new FloatProperty(0f, propName);
                 case PropertyType.DelegateProperty:
-                    return new DelegateProperty(0, "None");
+                    return new DelegateProperty("None", 0);
                 case PropertyType.ObjectProperty:
                     return new ObjectProperty(0, propName);
                 case PropertyType.NameProperty:
