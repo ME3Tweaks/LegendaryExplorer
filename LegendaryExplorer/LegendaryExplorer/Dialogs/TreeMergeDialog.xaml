@@ -100,6 +100,7 @@
         </StackPanel>
 
         <CheckBox Content="Port using donors" IsChecked="{Binding PortUsingDonors}" Visibility="{Binding IsCrossGamePort, Converter={StaticResource BoolToVisibilityConverter}}"/>
+        <CheckBox Content="Port global entries as imports" IsChecked="{Binding PortGlobalsAsImports}" Visibility="{Binding IsGlobalFile, Converter={StaticResource BoolToVisibilityConverter}}"/>
         <TextBlock Text="The Clone All References option is typically the preferred option, as it includes all dependencies for an export to work." HorizontalAlignment="Center" Foreground="DimGray" Margin="0" TextWrapping="Wrap"/>
         <Button Content="Cancel" HorizontalContentAlignment="Center" HorizontalAlignment="Center" Margin="5,5,5,0" Padding="8" Click="CancelButton_Click"/>
     </StackPanel>

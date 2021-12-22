@@ -654,6 +654,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             PackageEditorExperimentsM.ResetTexturesInFile(GetPEWindow().Pcc, GetPEWindow());
         }
 
+        private void CramLevelFullOfEverything_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.CramLevelFullOfStuff(GetPEWindow().Pcc, GetPEWindow());
+        }
+
         private void ResetVanillaPackagePart_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.ResetPackageVanillaPart(GetPEWindow().Pcc, GetPEWindow());

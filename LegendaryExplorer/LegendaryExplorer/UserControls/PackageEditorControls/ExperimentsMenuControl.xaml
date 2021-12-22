@@ -39,6 +39,7 @@
     </MenuItem>
     <MenuItem Header="Mgamerz's Programming Circus">
         <MenuItem Header="Make current material a VTest Donor" Click="MakeVTestDonor_Click" Visibility="{x:Static global:App.IsDebugVisibility}"/>
+        <MenuItem Header="Cram current LE3 BioP full of stuff that will take up lotsa memory" Click="CramLevelFullOfEverything_Click"/>
         <MenuItem Header="Test current package binary against LEX serializer" Click="TestCurrentPackageBinary"/>
         <MenuItem Header="Run MaterialInstanceScreenshot" Click="RunMaterialInstanceScreenshot_Click"/>
         <MenuItem Header="Generate MaterialInstanceConstant from Material" Click="GenerateMaterialInstanceConstant_Click"/>

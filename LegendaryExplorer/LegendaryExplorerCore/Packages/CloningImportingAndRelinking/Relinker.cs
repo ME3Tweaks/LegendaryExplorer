@@ -53,9 +53,22 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         public PackageCache Cache { get; set; } = new();
 
         /// <summary>
+        /// When porting out of globally loaded files (like SFXGame), imports will be generated for relinked objects instead of porting exports.
+        /// </summary>
+        public bool GenerateImportsForGlobalFiles { get; set; } = true;
+
+        /// <summary>
         /// Invoked when an error occurs during porting. Can be null.
         /// </summary>
         public Action<string> ErrorOccurredCallback;
+
+        /// <summary>
+        /// Blank constructor (left here for breakpoints)
+        /// </summary>
+        public RelinkerOptionsPackage()
+        {
+
+        }
     }
 
     public static class Relinker
@@ -610,7 +623,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
             // Typically global files are not ForceExport'd 
             // which means objects in them will sit at the root instead of under a package export
-            if (EntryImporter.IsSafeToImportFrom(sourceFilePath, relinkingExport.FileRef.Game))
+            if (rop.GenerateImportsForGlobalFiles && EntryImporter.IsSafeToImportFrom(sourceFilePath, relinkingExport.FileRef.Game))
             {
                 importingFromGlobalFile = true;
                 instancedFullPath = $"{Path.GetFileNameWithoutExtension(sourceFilePath)}.{instancedFullPath}";

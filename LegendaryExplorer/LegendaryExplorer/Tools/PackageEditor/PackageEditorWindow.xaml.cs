@@ -3299,15 +3299,15 @@ namespace LegendaryExplorer.Tools.PackageEditor
             if (dropInfo.TargetItem is TreeViewEntry targetItem && dropInfo.Data is TreeViewEntry sourceItem &&
                 sourceItem.Parent != null)
             {
-                //if (targetItem.Entry != null && sourceItem.Entry != null &&
-                //    ////!App.IsDebug &&
-                //    sourceItem.Entry.Game != MEGame.UDK && // allow UDK -> OT and LE
-                //    targetItem.Game.IsLEGame() != sourceItem.Entry.Game.IsLEGame())
-                //{
-                //    MessageBox.Show(
-                //        "Cannot port assets between Original Trilogy (OT) games and  Legendary Edition (LE) games at this time.", "Cannot port asset", MessageBoxButton.OK, MessageBoxImage.Error);
-                //    return;
-                //}
+                if (targetItem.Entry != null && sourceItem.Entry != null &&
+                    ////!App.IsDebug &&
+                    sourceItem.Entry.Game != MEGame.UDK && // allow UDK -> OT and LE
+                    targetItem.Game.IsLEGame() != sourceItem.Entry.Game.IsLEGame())
+                {
+                    MessageBox.Show(
+                        "Cannot port assets between Original Trilogy (OT) games and  Legendary Edition (LE) games at this time.", "Cannot port asset", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
 
                 //Check if the path of the target and the source is the same. If so, offer to merge instead
                 if (sourceItem == targetItem || (targetItem.Entry != null && sourceItem.Entry.FileRef == targetItem.Entry.FileRef))
@@ -3330,8 +3330,6 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
                 IEntry sourceEntry = sourceItem.Entry;
                 IEntry targetLinkEntry = targetItem.Entry;
-
-
 
                 int originalIndex = -1;
                 bool hadChanges = false;
@@ -3377,7 +3375,8 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     TargetGameDonorDB = objectDB,
                     Cache = null, // Disable cache as we want to pull from open files in LEX. Will reduce performance
                     ImportExportDependencies = portingOption.PortingOptionChosen is EntryImporter.PortingOption.CloneAllDependencies
-                        or EntryImporter.PortingOption.ReplaceSingularWithRelink
+                        or EntryImporter.PortingOption.ReplaceSingularWithRelink,
+                    GenerateImportsForGlobalFiles = portingOption.PortGlobalsAsImports
                 };
 
                 var relinkResults = EntryImporter.ImportAndRelinkEntries(portingOption.PortingOptionChosen, sourceEntry, Pcc,

@@ -32,6 +32,11 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// If the porting should use donors. This option only does stuff if porting between games
         /// </summary>
         public bool PortUsingDonors { get; set; }
+
+        /// <summary>
+        /// Configures <see cref="RelinkerOptionsPackage.GenerateImportsForGlobalFiles"/> to force porting exports when porting out of a global file (when set to false), rather than imports.
+        /// </summary>
+        public bool PortGlobalsAsImports { get; set; } = true;
     }
     public static class EntryImporter
     {
@@ -259,28 +264,6 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             }
         }
 
-        ///// <summary>
-        ///// Imports <paramref name="sourceEntry"/> (and possibly its children) to <paramref name="destPcc"/> in a manner defined by <paramref name="portingOption"/>
-        ///// If no <paramref name="relinkMap"/> is provided, method will create one
-        ///// </summary>
-        ///// <param name="portingOption"></param>
-        ///// <param name="sourceEntry"></param>
-        ///// <param name="destPcc"></param>
-        ///// <param name="targetLinkEntry">Can be null if cloning as a top-level entry</param>
-        ///// <param name="shouldRelink"></param>
-        ///// <param name="newEntry"></param>
-        ///// <param name="relinkMap"></param>
-        ///// <param name="importExportDependencies">Import dependencies when relinking. Requires shouldRelink = true. If portingOption is CloneAllDependencies this value is ignored</param>
-        ///// <returns></returns>
-        //public static List<EntryStringPair> ImportAndRelinkEntries(PortingOption portingOption, IEntry sourceEntry, IMEPackage destPcc, IEntry targetLinkEntry, bool shouldRelink,
-        //                                                                out IEntry newEntry, ListenableDictionary<IEntry, IEntry> relinkMap = null,
-        //                                                                Action<string> errorOccuredCallback = null, bool importExportDependencies = false, ObjectInstanceDB targetGameDonorDB = null,
-        //                                                                PackageCache cache = null)
-        //{
-
-
-        //}
-
         public static void ReindexExportEntriesWithSamePath(ExportEntry entry)
         {
             string prefixToReindex = entry.ParentInstancedFullPath;
@@ -302,12 +285,18 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
         // CROSSGEN-V HACKS!
         public static List<string> NonDonorItems = new List<string>();
+
+        // TODO: FIND WAY TO HANDLE DUPLICATE NAMED OBJECTS IN GAMES
+        // 1: Identify badly named objects
+        // 2: Probably have to find some hack or warning for entry lookups when these paths are encountered.
+        // Note: The following list is not complete for ME1.
         private static string[] badlyNamedME1Assets = new[]
         {
             "BIOA_JUG80_T.JUG80_SAIL",
             "BIOA_ICE60_T.checker",
         };
         // END CROSSGEN-V HACKS
+
 
         /// <summary>
         /// Imports an export from another package file. Does not perform a relink, if you want to relink, use ImportAndRelinkEntries().
@@ -538,7 +527,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     classValue = GetOrAddCrossImportOrPackage(sourceClassImport.InstancedFullPath, sourceExport.FileRef, destPackage, rop);
                     break;
                 case ExportEntry sourceClassExport:
-                    if (IsSafeToImportFrom(sourceExport.FileRef.FilePath, destPackage.Game))
+                    if (rop.GenerateImportsForGlobalFiles && IsSafeToImportFrom(sourceExport.FileRef.FilePath, destPackage.Game))
                     {
                         classValue = GenerateEntryForGlobalFileExport(sourceClassExport.InstancedFullPath, sourceExport.FileRef, destPackage, rop);
                         break;
@@ -561,7 +550,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     superclass = GetOrAddCrossImportOrPackage(sourceSuperClassImport.InstancedFullPath, sourceExport.FileRef, destPackage, rop);
                     break;
                 case ExportEntry sourceSuperClassExport:
-                    if (IsSafeToImportFrom(sourceExport.FileRef.FilePath, destPackage.Game))
+                    if (rop.GenerateImportsForGlobalFiles && IsSafeToImportFrom(sourceExport.FileRef.FilePath, destPackage.Game))
                     {
                         superclass = GenerateEntryForGlobalFileExport(sourceSuperClassExport.InstancedFullPath, sourceExport.FileRef, destPackage, rop);
                         break;
@@ -583,7 +572,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     archetype = GetOrAddCrossImportOrPackage(sourceArchetypeImport.InstancedFullPath, sourceExport.FileRef, destPackage, rop);
                     break;
                 case ExportEntry sourceArchetypeExport:
-                    if (IsSafeToImportFrom(sourceExport.FileRef.FilePath, destPackage.Game))
+                    if (rop.GenerateImportsForGlobalFiles && IsSafeToImportFrom(sourceExport.FileRef.FilePath, destPackage.Game))
                     {
                         archetype = GenerateEntryForGlobalFileExport(sourceArchetypeExport.InstancedFullPath, sourceExport.FileRef, destPackage, rop);
                         break;
@@ -1295,7 +1284,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 // No cache and not testpatch. Can this be imported?
                 // Not actually sure if you can import testpatch since I think it just
                 // patches on object load but who knows
-                if (loadStream == null && IsSafeToImportFrom(info.pccPath, pcc.Game))
+                if (loadStream == null && rop.GenerateImportsForGlobalFiles && IsSafeToImportFrom(info.pccPath, pcc.Game))
                 {
                     string package = Path.GetFileNameWithoutExtension(info.pccPath);
                     return pcc.getEntryOrAddImport($"{package}.{className}");

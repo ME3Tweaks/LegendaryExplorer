@@ -33,6 +33,14 @@ namespace LegendaryExplorer.Dialogs
         private bool _portUsingDonors;
         public bool PortUsingDonors { get => _portUsingDonors; set => SetProperty(ref _portUsingDonors, value); }
 
+        /// <summary>
+        /// Is the source file a global file?
+        /// </summary>
+        public bool IsGlobalFile => EntryImporter.IsSafeToImportFrom(sourceEntry.FileRef.FilePath, sourceEntry.Game);
+
+        private bool _portGlobalsAsImports = true;
+        public bool PortGlobalsAsImports { get => _portGlobalsAsImports; set => SetProperty(ref _portGlobalsAsImports, value); }
+
         public TreeMergeDialog(IEntry sourceEntry, IEntry targetEntry, MEGame targetGame)
         {
             this.sourceEntry = sourceEntry;
@@ -144,6 +152,7 @@ namespace LegendaryExplorer.Dialogs
             tmd.ShowDialog(); //modal
 
             tmd.PortingOption.PortUsingDonors = tmd.PortUsingDonors;
+            tmd.PortingOption.PortGlobalsAsImports = tmd.PortGlobalsAsImports;
             return tmd.PortingOption;
         }
 
