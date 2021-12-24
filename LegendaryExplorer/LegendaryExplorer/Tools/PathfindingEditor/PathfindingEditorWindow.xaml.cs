@@ -4926,7 +4926,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
 
                     }
 
-                    client = new NamedPipeClientStream("LEX_LE1_COMM_PIPE");
+                    client = new NamedPipeClientStream($"LEX_{Pcc.Game}_COMM_PIPE");
                     client.Connect();
                     pipeReader = new StreamReader(client);
                     pipeWriter = new StreamWriter(client);
@@ -4939,7 +4939,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                 }
                 else
                 {
-                    client = new NamedPipeClientStream("LEX_LE1_COMM_PIPE");
+                    client = new NamedPipeClientStream($"LEX_{Pcc.Game}_COMM_PIPE");
                     client.Connect();
                     pipeReader = new StreamReader(client);
                     pipeWriter = new StreamWriter(client);
