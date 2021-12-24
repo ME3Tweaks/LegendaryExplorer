@@ -23,8 +23,9 @@ namespace LegendaryExplorer.GameInterop
         private static readonly Dictionary<MEGame, InteropTarget> Targets = new()
         {
             {MEGame.LE1, new LE1InteropTarget()},
+            {MEGame.LE3, new LE3InteropTarget()},
             {MEGame.ME2, new ME2InteropTarget()},
-            {MEGame.ME3, new ME3InteropTarget()}
+            { MEGame.ME3, new ME3InteropTarget()}
         };
 
         public static InteropTarget GetInteropTargetForGame(MEGame game)
