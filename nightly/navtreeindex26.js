@@ -1,5 +1,6 @@
 var NAVTREEINDEX26 =
 {
+"_pair_8cs.html":[2,0,0,0,1,0,3],
 "_parallel_c_r_c_8cs.html":[2,0,0,0,7,7],
 "_path_char_type_8cs.html":[2,0,0,0,6,9,1],
 "_path_char_type_8cs.html#a036f04d7460dd96fbdf6dba1681c3f60":[2,0,0,0,6,9,1,0],
@@ -85,7 +86,7 @@ var NAVTREEINDEX26 =
 "_regex_matcher_8cs.html":[2,0,0,0,6,8,1,4],
 "_relinker_8cs.html":[2,0,0,0,14,0,5],
 "_replication_statement_8cs.html":[2,0,0,0,21,3,1,55],
-"_reply_choice_node_8cs.html":[2,0,0,0,4,2],
+"_reply_choice_node_8cs.html":[2,0,0,0,4,3],
 "_return_nothing_statement_8cs.html":[2,0,0,0,21,3,1,56],
 "_return_statement_8cs.html":[2,0,0,0,21,3,1,57],
 "_rotator_literal_8cs.html":[2,0,0,0,21,3,1,58],
@@ -181,9 +182,9 @@ var NAVTREEINDEX26 =
 "_sound_cue_8cs.html":[2,0,0,0,20,0,49],
 "_sound_node_wave_8cs.html":[2,0,0,0,20,0,50],
 "_source_position_8cs.html":[2,0,0,0,21,6,4],
-"_speaker_extended_8cs.html":[2,0,0,0,4,3],
+"_speaker_extended_8cs.html":[2,0,0,0,4,4],
 "_speed_tree_component_8cs.html":[2,0,0,0,20,0,51],
-"_stage_direction_8cs.html":[2,0,0,0,4,4],
+"_stage_direction_8cs.html":[2,0,0,0,4,5],
 "_standard_tokens_8cs.html":[2,0,0,0,21,3,0,0],
 "_standard_tokens_8cs.html#ae19214b48ec3c2534c36d25e2ac4595f":[2,0,0,0,21,3,0,0,0],
 "_standard_tokens_8cs.html#ae19214b48ec3c2534c36d25e2ac4595fa0199426d23e91e74d9781e6b81094108":[2,0,0,0,21,3,0,0,0,87],
@@ -248,6 +249,5 @@ var NAVTREEINDEX26 =
 "_standard_tokens_8cs.html#ae19214b48ec3c2534c36d25e2ac4595fa9d3afea73e90192d96dda8d38c87a4fe":[2,0,0,0,21,3,0,0,0,65],
 "_standard_tokens_8cs.html#ae19214b48ec3c2534c36d25e2ac4595fa9d88f15b543fc84743289c0be1a17dfa":[2,0,0,0,21,3,0,0,0,43],
 "_standard_tokens_8cs.html#ae19214b48ec3c2534c36d25e2ac4595fa9d8f68fd7599efd10174c632439368a5":[2,0,0,0,21,3,0,0,0,80],
-"_standard_tokens_8cs.html#ae19214b48ec3c2534c36d25e2ac4595fa9e50614ad6579a22f1760f87748d482f":[2,0,0,0,21,3,0,0,0,85],
-"_standard_tokens_8cs.html#ae19214b48ec3c2534c36d25e2ac4595faa081f041e666a28acfe17f0b1884c445":[2,0,0,0,21,3,0,0,0,26]
+"_standard_tokens_8cs.html#ae19214b48ec3c2534c36d25e2ac4595fa9e50614ad6579a22f1760f87748d482f":[2,0,0,0,21,3,0,0,0,85]
 };

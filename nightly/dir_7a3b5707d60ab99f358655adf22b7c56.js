@@ -6,6 +6,7 @@ var dir_7a3b5707d60ab99f358655adf22b7c56 =
     [ "DialogueNodeExtended.cs", "_dialogue_node_extended_8cs.html", [
       [ "LegendaryExplorerCore.Dialogue.DialogueNodeExtended", "class_legendary_explorer_core_1_1_dialogue_1_1_dialogue_node_extended.html", "class_legendary_explorer_core_1_1_dialogue_1_1_dialogue_node_extended" ]
     ] ],
+    [ "NSDoc.cs", "_dialogue_2_n_s_doc_8cs.html", null ],
     [ "ReplyChoiceNode.cs", "_reply_choice_node_8cs.html", [
       [ "LegendaryExplorerCore.Dialogue.ReplyChoiceNode", "class_legendary_explorer_core_1_1_dialogue_1_1_reply_choice_node.html", "class_legendary_explorer_core_1_1_dialogue_1_1_reply_choice_node" ]
     ] ],

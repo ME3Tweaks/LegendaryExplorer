@@ -200,6 +200,7 @@ var NAVTREEINDEX1 =
 "_delegate_call_8cs.html":[2,0,0,0,21,3,1,18],
 "_delegate_comparison_8cs.html":[2,0,0,0,21,3,1,19],
 "_delegate_type_8cs.html":[2,0,0,0,21,3,1,20],
+"_dialogue_2_n_s_doc_8cs.html":[2,0,0,0,4,2],
 "_dialogue_node_extended_8cs.html":[2,0,0,0,4,1],
 "_dictionary_extensions_8cs.html":[2,0,0,0,6,4,0,0,1],
 "_dictionary_format_info_8cs.html":[2,0,0,0,6,8,0,4],
@@ -248,6 +249,5 @@ var NAVTREEINDEX1 =
 "_export_creator_8cs.html":[2,0,0,0,14,3],
 "_export_entry_8cs.html":[2,0,0,0,14,4],
 "_expression_8cs.html":[2,0,0,0,21,3,1,28],
-"_expression_extensions_8cs.html":[2,0,0,0,6,4,2,0],
-"_expression_only_statement_8cs.html":[2,0,0,0,21,3,1,29]
+"_expression_extensions_8cs.html":[2,0,0,0,6,4,2,0]
 };
