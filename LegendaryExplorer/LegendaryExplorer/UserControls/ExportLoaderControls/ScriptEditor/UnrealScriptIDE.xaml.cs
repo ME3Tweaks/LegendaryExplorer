@@ -75,7 +75,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
         }
 
         public override bool CanParse(ExportEntry exportEntry) =>
-            exportEntry.Game != MEGame.UDK && exportEntry.FileRef.Platform == MEPackage.GamePlatform.PC && (exportEntry.ClassName switch
+            exportEntry.Game != MEGame.UDK 
+            && (exportEntry.FileRef.Platform == MEPackage.GamePlatform.PC || exportEntry.Game.IsLEGame()) // LE games all should have identical bytecode, but we do not support it (but some users might try anyways)
+            && (exportEntry.ClassName switch
             {
                 "Class" => true,
                 "State" => true,
