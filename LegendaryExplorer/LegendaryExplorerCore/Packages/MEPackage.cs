@@ -91,6 +91,7 @@ namespace LegendaryExplorerCore.Packages
         public const ushort LE2UnrealVersion = 684;
         public const ushort LE2LicenseeVersion = 168;
 
+        // PS4 Orbis uses this version information too
         public const ushort LE3UnrealVersion = 685;
         public const ushort LE3LicenseeVersion = 205;
 
@@ -342,6 +343,14 @@ namespace LegendaryExplorerCore.Packages
                 default:
                     throw new FormatException("Not a Mass Effect Package!");
             }
+
+            if (Game.IsLEGame() && filePath != null && Path.GetExtension(filePath) == ".xxx")
+            {
+                // There is no way to differentiate Orbis vs Durango so we will just mark it as 
+                // Orbis.
+                Platform = GamePlatform.PS3; // Just use PS3 flag for now.
+            }
+
             FullHeaderSize = packageReader.ReadInt32();
             int foldernameStrLen = packageReader.ReadInt32();
             //always "None", so don't bother saving result
