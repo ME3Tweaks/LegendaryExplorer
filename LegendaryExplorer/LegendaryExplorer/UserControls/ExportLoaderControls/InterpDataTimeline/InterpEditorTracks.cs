@@ -15,7 +15,11 @@ namespace LegendaryExplorer.Tools.InterpEditor
     {
         public ExportEntry Export { get; }
 
-        public string GroupName { get; set; }
+        private string _groupName;
+        public string GroupName {
+            get => _groupName;
+            set => SetProperty(ref _groupName, value);
+        }
 
         public Color GroupColor { get; set; } = Color.FromArgb(0, 0, 0, 0);
 
@@ -142,7 +146,12 @@ namespace LegendaryExplorer.Tools.InterpEditor
     {
         public ExportEntry Export { get; }
 
-        public string TrackTitle { get; set; }
+        private string _trackTitle;
+        public string TrackTitle
+        {
+            get => _trackTitle;
+            set => SetProperty(ref _trackTitle, value);
+        }
 
         public ObservableCollectionExtended<Key> Keys { get; } = new();
 

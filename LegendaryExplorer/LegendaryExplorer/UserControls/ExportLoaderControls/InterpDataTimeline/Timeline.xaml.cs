@@ -9,6 +9,7 @@ using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.Tools.InterpEditor;
 using LegendaryExplorer.Tools.PackageEditor;
 using LegendaryExplorer.Tools.TlkManagerNS;
+using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using LegendaryExplorerCore.Matinee;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
@@ -78,6 +79,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public ICommand OpenInterpData { get; set; }
         public ICommand AddInterpGroupCmd { get; set; }
         public ICommand AddTrackCmd { get; set; }
+        public ICommand RenameTrackCommand { get; set; }
 
         private void LoadCommands()
         {
@@ -85,6 +87,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             OpenInterpData = new RelayCommand(OpenInToolkit, HasData);
             AddInterpGroupCmd = new RelayCommand(AddInterpGroup, CanAddInterpGroup);
             AddTrackCmd = new GenericCommand(AddTrack, CanAddTrack);
+            RenameTrackCommand = new GenericCommand(RenameTrack, CanRenameTrack);
         }
 
         private void AddTrack()
@@ -100,6 +103,35 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         }
 
         private bool CanAddTrack() => MatineeTree.SelectedItem is InterpGroup;
+
+        public void RenameTrack()
+        {
+            if (MatineeTree.SelectedItem is InterpGroup group)
+            {
+                var result = NamePromptDialog.Prompt(this, "Rename Group:", "Rename InterpGroup", Pcc,
+                    out var newGroupName, Pcc.Names.IndexOf(group.GroupName));
+                if (!result || string.IsNullOrEmpty(newGroupName) || newGroupName == group.GroupName) return;
+                group.Export.WriteProperty(new NameProperty(newGroupName, "GroupName"));
+                group.GroupName = newGroupName;
+            }
+            else if (MatineeTree.SelectedItem is InterpTrack track)
+            {
+                var newTitle = PromptDialog.Prompt(this, "Rename Track:", "Rename InterpTrack", track.TrackTitle);
+                if (newTitle is null || newTitle == track.TrackTitle) return;
+                if (newTitle != "")
+                {
+                    track.Export.WriteProperty(new StrProperty(newTitle, "TrackTitle"));
+                    track.TrackTitle = newTitle;
+                }
+                else // Hitting 'OK' on an empty string removes the name
+                {
+                    track.Export.RemoveProperty("TrackTitle");
+                    track.TrackTitle = track.Export.ObjectName.Instanced;
+                }
+            }
+        }
+
+        public bool CanRenameTrack() => MatineeTree.SelectedItem is InterpGroup or InterpTrack;
 
         private void AddInterpGroup(object obj)
         {

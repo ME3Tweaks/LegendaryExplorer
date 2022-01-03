@@ -78,7 +78,7 @@ namespace LegendaryExplorer.Tools.InterpEditor.InterpExperiments
 
         private static (int strRef, ConversationExtended conv)? GetConversationFromSelectedTrack(InterpEditorWindow iew)
         {
-            if (iew.timelineControl.MatineeTree.SelectedItem is InterpTrack track && track.Export.ClassName == "SFXInterpTrackPlayFaceOnlyVO")
+            if (iew.TimelineControl.MatineeTree.SelectedItem is InterpTrack track && track.Export.ClassName == "SFXInterpTrackPlayFaceOnlyVO")
             {
                 var keys = track.Export.GetProperty<ArrayProperty<StructProperty>>("m_aFOVOKeys");
                 if (keys is null || keys.Count == 0) return null;
