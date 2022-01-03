@@ -8,5 +8,7 @@ var class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_ba
     [ "Header", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base.html#aa031433a447b9b99123fb9c6cfe0d8c5", null ],
     [ "FileName", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base.html#a1af91041c6e2a7dd29c93ab460be5fdd", null ],
     [ "FilePath", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base.html#a31d28af4f2268bc71fda766b8d5440e9", null ],
-    [ "Localization", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base.html#ae839011cb4b7c6a50c219fb1d8fb9317", null ]
+    [ "Localization", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base.html#ae839011cb4b7c6a50c219fb1d8fb9317", null ],
+    [ "MaleEntryCount", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base.html#a826e06588c8905f480eaf8c71b9811bf", null ],
+    [ "FemaleEntryCount", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base.html#acb75681c098e35a2b4c40bfa7a78591e", null ]
 ];

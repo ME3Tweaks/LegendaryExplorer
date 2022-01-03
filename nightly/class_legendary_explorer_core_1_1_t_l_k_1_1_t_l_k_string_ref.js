@@ -6,5 +6,6 @@ var class_legendary_explorer_core_1_1_t_l_k_1_1_t_l_k_string_ref =
     [ "StringID", "class_legendary_explorer_core_1_1_t_l_k_1_1_t_l_k_string_ref.html#a767ac4c9cb6b90525053f1a42578dbd7", null ],
     [ "Data", "class_legendary_explorer_core_1_1_t_l_k_1_1_t_l_k_string_ref.html#a9f6177b88d45f1ddda5f735a106f3816", null ],
     [ "Flags", "class_legendary_explorer_core_1_1_t_l_k_1_1_t_l_k_string_ref.html#a846830ac42bdcaf184887224a74239a0", null ],
+    [ "CalculatedID", "class_legendary_explorer_core_1_1_t_l_k_1_1_t_l_k_string_ref.html#af31c4b8a8d27e011aa529814869462e2", null ],
     [ "PropertyChanged", "class_legendary_explorer_core_1_1_t_l_k_1_1_t_l_k_string_ref.html#a05a818e565049bcd13721c3aa4dd16a0", null ]
 ];
