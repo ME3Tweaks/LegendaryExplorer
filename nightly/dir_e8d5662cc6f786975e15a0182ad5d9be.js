@@ -33,6 +33,9 @@ var dir_e8d5662cc6f786975e15a0182ad5d9be =
       [ "LegendaryExplorerCore.Unreal.ME3ConditionalsCompiler.Compiler.Token", "struct_legendary_explorer_core_1_1_unreal_1_1_m_e3_conditionals_compiler_1_1_compiler_1_1_token.html", "struct_legendary_explorer_core_1_1_unreal_1_1_m_e3_conditionals_compiler_1_1_compiler_1_1_token" ]
     ] ],
     [ "ME3Enums.cs", "_m_e3_enums_8cs.html", "_m_e3_enums_8cs" ],
+    [ "NameReference.cs", "_name_reference_8cs.html", [
+      [ "LegendaryExplorerCore.Unreal.NameReference", "struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html", "struct_legendary_explorer_core_1_1_unreal_1_1_name_reference" ]
+    ] ],
     [ "PropertyCollection.cs", "_property_collection_8cs.html", [
       [ "LegendaryExplorerCore.Unreal.PropertyCollection", "class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html", "class_legendary_explorer_core_1_1_unreal_1_1_property_collection" ],
       [ "LegendaryExplorerCore.Unreal.Property", "class_legendary_explorer_core_1_1_unreal_1_1_property.html", "class_legendary_explorer_core_1_1_unreal_1_1_property" ],

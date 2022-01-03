@@ -214,6 +214,7 @@ var NAVTREEINDEX25 =
 "_mutable_byte_8cs.html":[2,0,0,0,6,6,23],
 "_name_literal_8cs.html":[2,0,0,0,21,3,1,44],
 "_name_literal_matcher_8cs.html":[2,0,0,0,21,4,0,0,0],
+"_name_reference_8cs.html":[2,0,0,0,20,12],
 "_namespace_8cs.html":[2,0,0,0,1,14],
 "_new_operator_8cs.html":[2,0,0,0,21,3,1,45],
 "_node_8cs.html":[2,0,0,0,1,0,2],
@@ -244,10 +245,9 @@ var NAVTREEINDEX25 =
 "_oodle_helper_8cs.html":[2,0,0,0,2,2],
 "_operator_declaration_8cs.html":[2,0,0,0,21,3,1,48],
 "_ordered_dictionary_8cs.html":[2,0,0,0,12,7],
-"_p_s_a_8cs.html":[2,0,0,0,20,14],
-"_p_s_k_8cs.html":[2,0,0,0,20,15],
+"_p_s_a_8cs.html":[2,0,0,0,20,15],
+"_p_s_k_8cs.html":[2,0,0,0,20,16],
 "_package_cache_8cs.html":[2,0,0,0,14,13],
 "_package_comparer_8cs.html":[2,0,0,0,14,14],
-"_package_extensions_8cs.html":[2,0,0,0,14,15],
-"_package_saver_8cs.html":[2,0,0,0,14,16]
+"_package_extensions_8cs.html":[2,0,0,0,14,15]
 };
