@@ -41,10 +41,11 @@ namespace LegendaryExplorerCore.TLK
             private init => Flags = value;
         }
 
+        // Public so Mod Manager can check TLK ordering
         /// <summary>
         /// Version of <see cref="StringID"/> only used during compression.
         /// </summary>
-        internal int CalculatedID => StringID >= 0 ? StringID : -(int.MinValue - StringID);
+        public int CalculatedID => StringID >= 0 ? StringID : -(int.MinValue - StringID);
 
         /// <summary>
         /// Zero-terminated string that will be written to compressed file. Only used during compression.

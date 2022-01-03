@@ -51,6 +51,16 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
             }
         }
 
+        /// <summary>
+        /// The number of male TLK strings in this TLK
+        /// </summary>
+        public int MaleEntryCount => Header.MaleEntryCount;
+
+        /// <summary>
+        /// The number of female TLK strings in this TLK
+        /// </summary>
+        public int FemaleEntryCount => Header.FemaleEntryCount;
+
         protected TLKHeader Header;
         /// <summary>
         /// Filename without extension
