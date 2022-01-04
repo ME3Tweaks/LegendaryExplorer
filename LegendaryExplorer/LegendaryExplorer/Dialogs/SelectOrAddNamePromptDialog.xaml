@@ -1,0 +1,43 @@
+﻿<bases:TrackingNotifyPropertyChangedWindowBase xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    x:Class="LegendaryExplorer.Dialogs.SelectOrAddNamePromptDialog"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+    xmlns:bases="clr-namespace:LegendaryExplorer.SharedUI.Bases"
+    xmlns:sharedUi="clr-namespace:LegendaryExplorer.SharedUI"
+    WindowStartupLocation="CenterOwner" 
+    SizeToContent="WidthAndHeight"
+    MinWidth="300"
+    MinHeight="100"
+    WindowStyle="SingleBorderWindow"
+    ResizeMode="CanMinimize">
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type sharedUi:IndexedName}">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding Path=Index}" Foreground="Gray"/>
+                <TextBlock Text="{Binding Path=Name.Name}" Foreground="Black" Margin="5,0,0,0"/>
+            </StackPanel>
+        </DataTemplate>
+    </Window.Resources>
+    <StackPanel Margin="5" MaxWidth="350">
+        <TextBlock Name="txtQuestion" Margin="5" TextWrapping="Wrap"/>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Name="numberColumn" Width="50"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <ComboBox Name="answerChoicesCombobox" Margin="5" IsTextSearchEnabled="True" TextSearch.TextPath="Name"
+                      ItemsSource="{Binding NameList}" HorizontalAlignment="Stretch" IsEditable="True" KeyUp="Name_ComboBox_KeyUp">
+                <ComboBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <VirtualizingStackPanel />
+                    </ItemsPanelTemplate>
+                </ComboBox.ItemsPanel>
+            </ComboBox>
+            <xctk:IntegerUpDown Grid.Column="1" Minimum="0" Width="50" Text="{Binding Number}"/>
+        </Grid>
+        <StackPanel Orientation="Horizontal" Margin="5" HorizontalAlignment="Right">
+            <Button Content="_OK" IsDefault="True" Margin="5" Width="40" Height="25" Name="btnOk" Click="btnOk_Click" />
+            <Button Content="_Cancel" IsCancel="True" Margin="5" Width="50" Height="25" Name="btnCancel" Click="btnCancel_Click" />
+        </StackPanel>
+    </StackPanel>
+</bases:TrackingNotifyPropertyChangedWindowBase>

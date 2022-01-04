@@ -2253,9 +2253,8 @@ namespace LegendaryExplorer.DialogueEditor
 
         private void Script_Add()
         {
-            if (NamePromptDialog.Prompt(this, "Enter the new script name", "Add a script", Pcc, out NameReference result))
+            if (SelectOrAddNamePromptDialog.Prompt(this, "Enter the new script name", "Add a script", Pcc, out NameReference result))
             {
-                Pcc.FindNameOrAdd(result);
                 SelectedConv.ScriptList.Add(result);
                 SaveScriptsToProperties(SelectedConv);
             }

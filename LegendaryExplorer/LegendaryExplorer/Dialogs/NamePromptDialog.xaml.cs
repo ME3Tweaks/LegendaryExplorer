@@ -4,15 +4,15 @@ using System.Windows;
 using System.Windows.Controls;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Bases;
-using LegendaryExplorer.Tools.PackageEditor;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
 
 namespace LegendaryExplorer.Dialogs
 {
     /// <summary>
-    /// Interaction logic for NamePromptDialogPromptDialog.xaml
+    /// Dialog to select a name in a package file.
     /// </summary>
+    /// <remarks>Cannot be used to add a new name, use <see cref="SelectOrAddNamePromptDialog"/> to do that.</remarks>
     public partial class NamePromptDialog : TrackingNotifyPropertyChangedWindowBase
     {
         private List<IndexedName> _nameList;

@@ -108,11 +108,22 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             if (MatineeTree.SelectedItem is InterpGroup group)
             {
-                var result = NamePromptDialog.Prompt(this, "Rename Group:", "Rename InterpGroup", Pcc,
-                    out var newGroupName, Pcc.Names.IndexOf(group.GroupName));
-                if (!result || string.IsNullOrEmpty(newGroupName) || newGroupName == group.GroupName) return;
-                group.Export.WriteProperty(new NameProperty(newGroupName, "GroupName"));
-                group.GroupName = newGroupName;
+                var groupNameProp = group.Export.GetProperty<NameProperty>("GroupName") ?? new NameProperty("GroupName");
+                var result = SelectOrAddNamePromptDialog.Prompt(this, "Rename Group:", "Rename InterpGroup", Pcc,
+                    out var newGroupName, groupNameProp.Value);
+
+                if (!result || newGroupName == groupNameProp.Value) return;
+                if (newGroupName == NameReference.None || newGroupName == "")
+                {
+                    group.Export.RemoveProperty("GroupName");
+                    group.GroupName = group.Export.ObjectName.Instanced;
+                }
+                else
+                {
+                    groupNameProp.Value = newGroupName;
+                    group.Export.WriteProperty(groupNameProp);
+                    group.GroupName = newGroupName.Instanced;
+                }
             }
             else if (MatineeTree.SelectedItem is InterpTrack track)
             {
@@ -193,7 +204,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 InterpGroups.AddRange(groupExports.Select(exp => new InterpGroup(exp)));
             }
 
-            int? strRef = InterpGroups.Select(g => g.StrRefId).FirstOrDefault(id => id != null);
+            int? strRef = InterpGroups.Select(g => g.TryGetStrRefId()).FirstOrDefault(id => id != null);
             if (strRef != null)
             {
                 var me1PackageOrNull = CurrentLoadedExport?.Game.IsGame1() ?? false ? CurrentLoadedExport?.FileRef : null;
@@ -221,7 +232,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         IsSelected = group.IsSelected
                     };
                     InterpGroups.Insert(idx, newGroup);
-                    if(group.StrRefId != null) LineStrRef = TLKManagerWPF.GlobalFindStrRefbyID(group.StrRefId.GetValueOrDefault(), CurrentLoadedExport.Game);
+                    var strRef = group.TryGetStrRefId();
+                    if (strRef != null)
+                    {
+                        LineStrRef = TLKManagerWPF.GlobalFindStrRefbyID(strRef.Value, CurrentLoadedExport.Game);
+                    }
                 }
                 else
                 {
