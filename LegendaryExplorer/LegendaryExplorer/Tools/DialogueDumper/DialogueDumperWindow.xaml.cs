@@ -3,6 +3,7 @@ using Microsoft.WindowsAPICodePack.Dialogs;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -20,6 +21,7 @@ using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorer.SharedUI.Bases;
+using LegendaryExplorerCore;
 using static LegendaryExplorer.Tools.TlkManagerNS.TLKManagerWPF;
 
 namespace LegendaryExplorer.Tools.DialogueDumper
@@ -33,6 +35,23 @@ namespace LegendaryExplorer.Tools.DialogueDumper
         /// Items show in the list that are currently being processed
         /// </summary>
         public ObservableCollectionExtended<DialogueDumperSingleFileTask> CurrentDumpingItems { get; set; } = new ObservableCollectionExtended<DialogueDumperSingleFileTask>();
+
+        public ObservableCollectionExtended<MEGame> SupportedGames { get; } = new ObservableCollectionExtended<MEGame>()
+        {
+            MEGame.ME1,
+            MEGame.ME2,
+            MEGame.ME3,
+            MEGame.LE1,
+            MEGame.LE2,
+            MEGame.LE3
+        };
+
+        private MEGame _selectedGame = MEGame.ME3;
+        public MEGame SelectedGame
+        {
+            get => _selectedGame;
+            set => SetProperty(ref _selectedGame, value);
+        }
 
         /// <summary>
         /// All items in the queue
@@ -55,9 +74,7 @@ namespace LegendaryExplorer.Tools.DialogueDumper
         private void LoadCommands()
         {
             // Player commands
-            DumpME1Command = new RelayCommand(DumpGameME1, CanDumpGameME1);
-            DumpME2Command = new RelayCommand(DumpGameME2, CanDumpGameME2);
-            DumpME3Command = new RelayCommand(DumpGameME3, CanDumpGameME3);
+            DumpGameCommand = new RelayCommand(DumpSelectedGame, CanDumpGame);
             DumpSpecificFilesCommand = new RelayCommand(DumpSpecificFiles, CanDumpSpecificFiles);
             CancelDumpCommand = new RelayCommand(CancelDump, CanCancelDump);
             ManageTLKsCommand = new RelayCommand(ManageTLKs);
@@ -73,7 +90,7 @@ namespace LegendaryExplorer.Tools.DialogueDumper
             };
             dlg.Filters.Add(new CommonFileDialogFilter("All supported files", "*.pcc;*.sfm;*.u;*.upk"));
             dlg.Filters.Add(new CommonFileDialogFilter("Mass Effect package files", "*.sfm;*.u;*.upk"));
-            dlg.Filters.Add(new CommonFileDialogFilter("Mass Effect 2/3 package files", "*.pcc"));
+            dlg.Filters.Add(new CommonFileDialogFilter("Mass Effect 2/3/LE package files", "*.pcc"));
 
 
             if (dlg.ShowDialog(this) == CommonFileDialogResult.Ok)
@@ -110,10 +127,8 @@ namespace LegendaryExplorer.Tools.DialogueDumper
         /// </summary>
         public bool shouldDoDebugOutput;
 
-        #region commands
-        public ICommand DumpME1Command { get; set; }
-        public ICommand DumpME2Command { get; set; }
-        public ICommand DumpME3Command { get; set; }
+        #region Commands
+        public ICommand DumpGameCommand { get; set; }
         public ICommand DumpSpecificFilesCommand { get; set; }
         public ICommand CancelDumpCommand { get; set; }
         public ICommand ManageTLKsCommand { get; set; }
@@ -144,19 +159,19 @@ namespace LegendaryExplorer.Tools.DialogueDumper
             return (ProcessingQueue == null || ProcessingQueue.Completion.Status != TaskStatus.WaitingForActivation) && !isProcessing;
         }
 
-        private bool CanDumpGameME1(object obj)
+        private bool CanDumpGame(object obj)
         {
-            return ME1Directory.DefaultGamePath != null && Directory.Exists(ME1Directory.DefaultGamePath) && (ProcessingQueue == null || ProcessingQueue.Completion.Status != TaskStatus.WaitingForActivation) && !isProcessing;
+            var gameDir = MEDirectories.GetDefaultGamePath(SelectedGame);
+            var gameExists = gameDir != null && Directory.Exists(gameDir);
+            return gameExists &&
+                   (ProcessingQueue == null ||
+                    ProcessingQueue.Completion.Status != TaskStatus.WaitingForActivation)
+                   && !isProcessing;
         }
 
-        private bool CanDumpGameME2(object obj)
+        private void DumpSelectedGame(object obj)
         {
-            return ME2Directory.DefaultGamePath != null && Directory.Exists(ME2Directory.DefaultGamePath) && (ProcessingQueue == null || ProcessingQueue.Completion.Status != TaskStatus.WaitingForActivation) && !isProcessing;
-        }
-
-        private bool CanDumpGameME3(object obj)
-        {
-            return ME3Directory.DefaultGamePath != null && Directory.Exists(ME3Directory.DefaultGamePath) && (ProcessingQueue == null || ProcessingQueue.Completion.Status != TaskStatus.WaitingForActivation) && !isProcessing;
+            DumpGame(SelectedGame);
         }
 
         private bool CanCancelDump(object obj)
@@ -169,21 +184,6 @@ namespace LegendaryExplorer.Tools.DialogueDumper
             DumpCanceled = true;
             AllDumpingItems?.ForEach(x => x.DumpCanceled = true);
             CommandManager.InvalidateRequerySuggested(); //Refresh commands
-        }
-
-        private void DumpGameME1(object obj)
-        {
-            DumpGame(MEGame.ME1);
-        }
-
-        private void DumpGameME2(object obj)
-        {
-            DumpGame(MEGame.ME2);
-        }
-
-        private void DumpGameME3(object obj)
-        {
-            DumpGame(MEGame.ME3);
         }
 
         private static void ManageTLKs(object obj)
@@ -821,7 +821,7 @@ namespace LegendaryExplorer.Tools.DialogueDumper
                         {
                             string tag = null;
                             int strref = -1;
-                            if (GameBeingDumped == MEGame.ME1 && className == "BioPawn")
+                            if (GameBeingDumped.IsGame1() && className == "BioPawn")
                             {
                                 var tagprop = exp.GetProperty<NameProperty>("Tag");
                                 tag = tagprop.ToString();
@@ -833,7 +833,7 @@ namespace LegendaryExplorer.Tools.DialogueDumper
                                     strref = strrefprop.Value;
                                 }
                             }
-                            else if (GameBeingDumped == MEGame.ME2 && className == "BioPawn")
+                            else if (GameBeingDumped.IsGame2() && className == "BioPawn")
                             {
                                 var tagprop = exp.GetProperty<NameProperty>("Tag");
                                 tag = tagprop.ToString();
