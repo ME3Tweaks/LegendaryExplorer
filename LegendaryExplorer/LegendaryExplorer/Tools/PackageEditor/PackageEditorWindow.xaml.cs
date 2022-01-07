@@ -1290,37 +1290,74 @@ namespace LegendaryExplorer.Tools.PackageEditor
         {
             if (TreeEntryIsSelected())
             {
-                TreeViewEntry selected = (TreeViewEntry)LeftSide_TreeView.SelectedItem;
-
-                var itemsToTrash = selected.FlattenTree().OrderByDescending(x => x.UIndex)
-                    .Select(tvEntry => tvEntry.Entry);
-
+                var selected = (TreeViewEntry)LeftSide_TreeView.SelectedItem;
                 if (selected.Entry is IEntry ent && ent.FullPath.StartsWith(UnrealPackageFile.TrashPackageName))
                 {
                     MessageBox.Show("Cannot trash an already trashed item.");
                     return;
                 }
 
-                int parentEntry = selected.Entry.Parent?.UIndex ?? 0;
-
-                if (!GoToNumber(parentEntry))
+                BusyText = "Performing reference check...";
+                IsBusy = true;
+                Task.Run(() =>
                 {
-                    AllTreeViewNodesX[0].IsProgramaticallySelecting = true;
-                    SelectedItem = AllTreeViewNodesX[0];
-                }
 
-                bool removedFromLevel = selected.Entry is ExportEntry exp && exp.ParentName == "PersistentLevel" &&
-                                        exp.IsA("Actor") && Pcc.RemoveFromLevelActors(exp);
+                    List<IEntry> itemsToTrash = selected.FlattenTree().OrderByDescending(x => x.UIndex).Select(tvEntry => tvEntry.Entry).ToList();
+                    var itemsToTrashSet = new HashSet<IEntry>(itemsToTrash);
 
-                EntryPruner.TrashEntries(Pcc, itemsToTrash);
+                    IEntry entryWithReferences = itemsToTrash.FirstOrDefault(entry => entry.GetEntriesThatReferenceThisOne().Any(kvp =>
+                    {
+                        (IEntry referencedEntry, List<string> referenceDescriptors) = kvp;
 
-                if (removedFromLevel)
+                        //referenced from another entry that we are trashing, so it doesn't matter
+                        if (itemsToTrashSet.Contains(referencedEntry)) return false;
+
+                        //referenced from the level's actor list, which will be automatically cleaned up, so it doesn't matter
+                        if (referenceDescriptors.Count == 1 && referencedEntry.ClassName == "Level" && entry is ExportEntry exp && exp.IsA("Actor") && Pcc.LevelContainsActor(exp))
+                        {
+                            return false;
+                        }
+                        //dangerous reference detected!
+                        return true;
+                    }));
+                    return (itemsToTrash, entryWithReferences);
+                }).ContinueWithOnUIThread(prevTask =>
                 {
-                    MessageBox.Show(this, "Trashed and removed from level!");
-                }
+                    IsBusy = false;
+                    (List<IEntry> itemsToTrash, IEntry entryWithReferences) = prevTask.Result;
+                    if (entryWithReferences is not null)
+                    {
+                        MessageBoxResult messageBoxResult = MessageBox.Show(this,
+                            $"#{entryWithReferences.UIndex} {entryWithReferences.InstancedFullPath} is referenced by other entries! (Use the \"{FindReferencesMenuText}\" option in the context menu to see the references.)" +
+                            "These references will be broken if you trash it! Are you sure you want to proceed?",
+                            "Trash warning", MessageBoxButton.YesNo);
+                        if (messageBoxResult != MessageBoxResult.Yes)
+                        {
+                            return;
+                        }
+                    }
+                    int parentEntry = selected.Entry.Parent?.UIndex ?? 0;
+
+                    if (!GoToNumber(parentEntry))
+                    {
+                        AllTreeViewNodesX[0].IsProgramaticallySelecting = true;
+                        SelectedItem = AllTreeViewNodesX[0];
+                    }
+
+                    bool removedFromLevel = selected.Entry is ExportEntry { ParentName: "PersistentLevel" } exp && exp.IsA("Actor") && Pcc.RemoveFromLevelActors(exp);
+
+                    EntryPruner.TrashEntries(Pcc, itemsToTrash);
+
+                    if (removedFromLevel)
+                    {
+                        MessageBox.Show(this, "Trashed and removed from level!");
+                    }
+                });
             }
         }
-
+        
+        // ReSharper disable once MemberCanBePrivate.Global
+        public static string FindReferencesMenuText => "Find references";
         private void FindReferencesToObject()
         {
             if (TryGetSelectedEntry(out IEntry entry))

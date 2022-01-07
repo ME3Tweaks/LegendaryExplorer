@@ -78,10 +78,9 @@ namespace LegendaryExplorerCore.Packages
         public static bool AddToLevelActorsIfNotThere(this IMEPackage pcc, params ExportEntry[] actors)
         {
             bool added = false;
-            var levelE = pcc.FindExport("TheWorld.PersistentLevel");
-            if (levelE != null && levelE.ClassName == "Level")
+            if (pcc.FindExport("TheWorld.PersistentLevel") is ExportEntry { ClassName: "Level" } levelExport)
             {
-                Level level = ObjectBinary.From<Level>(levelE);
+                var level = ObjectBinary.From<Level>(levelExport);
                 foreach (ExportEntry actor in actors)
                 {
                     if (!level.Actors.Contains(actor.UIndex))
@@ -90,7 +89,7 @@ namespace LegendaryExplorerCore.Packages
                         level.Actors.Add(actor.UIndex);
                     }
                 }
-                levelE.WriteBinary(level);
+                levelExport.WriteBinary(level);
             }
 
             return added;
@@ -98,12 +97,25 @@ namespace LegendaryExplorerCore.Packages
 
         public static bool RemoveFromLevelActors(this IMEPackage pcc, ExportEntry actor)
         {
-            if (pcc.Exports.FirstOrDefault(exp => exp.ClassName == "Level") is ExportEntry levelExport)
+            if (pcc.FindExport("TheWorld.PersistentLevel") is ExportEntry { ClassName: "Level" } levelExport)
             {
-                Level level = ObjectBinary.From<Level>(levelExport);
+                var level = ObjectBinary.From<Level>(levelExport);
                 if (level.Actors.Remove(actor.UIndex))
                 {
                     levelExport.WriteBinary(level);
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public static bool LevelContainsActor(this IMEPackage pcc, ExportEntry actor)
+        {
+            if (pcc.FindExport("TheWorld.PersistentLevel") is ExportEntry { ClassName: "Level" } levelExport)
+            {
+                var level = ObjectBinary.From<Level>(levelExport);
+                if (level.Actors.Contains(actor.UIndex))
+                {
                     return true;
                 }
             }
@@ -664,7 +676,7 @@ namespace LegendaryExplorerCore.Packages
                             result.AddToListAt(exp, "Stack");
                         }
                     }
-                    else if (exp.TemplateOwnerClassIdx is var toci && toci >= 0 && baseUIndex == EndianReader.ToInt32(exp.DataReadOnly, toci, exp.FileRef.Endian))
+                    else if (exp.TemplateOwnerClassIdx is var toci and >= 0 && baseUIndex == EndianReader.ToInt32(exp.DataReadOnly, toci, exp.FileRef.Endian))
                     {
                         result.AddToListAt(exp, $"TemplateOwnerClass (Data offset 0x{toci:X})");
                     }
