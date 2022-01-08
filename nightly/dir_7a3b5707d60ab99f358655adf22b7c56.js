@@ -1,6 +1,6 @@
 var dir_7a3b5707d60ab99f358655adf22b7c56 =
 [
-    [ "BioConversation.cs", "_bio_conversation_8cs.html", [
+    [ "ConversationExtended.cs", "_conversation_extended_8cs.html", [
       [ "LegendaryExplorerCore.Dialogue.ConversationExtended", "class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html", "class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended" ]
     ] ],
     [ "DialogueNodeExtended.cs", "_dialogue_node_extended_8cs.html", [

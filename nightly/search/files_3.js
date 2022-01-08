@@ -50,6 +50,7 @@ var searchData=
   ['constanttable_2ecs_47',['ConstantTable.cs',['../_constant_table_8cs.html',1,'']]],
   ['constvalues_2ecs_48',['ConstValues.cs',['../_const_values_8cs.html',1,'']]],
   ['continuestatement_2ecs_49',['ContinueStatement.cs',['../_continue_statement_8cs.html',1,'']]],
-  ['convertextensions_2ecs_50',['ConvertExtensions.cs',['../_convert_extensions_8cs.html',1,'']]],
-  ['crc32_2ecs_51',['Crc32.cs',['../_crc32_8cs.html',1,'']]]
+  ['conversationextended_2ecs_50',['ConversationExtended.cs',['../_conversation_extended_8cs.html',1,'']]],
+  ['convertextensions_2ecs_51',['ConvertExtensions.cs',['../_convert_extensions_8cs.html',1,'']]],
+  ['crc32_2ecs_52',['Crc32.cs',['../_crc32_8cs.html',1,'']]]
 ];

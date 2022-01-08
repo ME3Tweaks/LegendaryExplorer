@@ -125,7 +125,6 @@ var NAVTREEINDEX0 =
 "_bio2_d_a_cell_8cs.html":[2,0,0,0,20,1,1],
 "_bio_actor_behavior_8cs.html":[2,0,0,0,20,0,2],
 "_bio_codex_map_8cs.html":[2,0,0,0,20,0,3],
-"_bio_conversation_8cs.html":[2,0,0,0,4,0],
 "_bio_discovered_codex_map_8cs.html":[2,0,0,0,20,0,4],
 "_bio_dynamic_anim_set_8cs.html":[2,0,0,0,20,0,5],
 "_bio_game_property_event_dispatcher_8cs.html":[2,0,0,0,20,0,6],
@@ -249,5 +248,6 @@ var NAVTREEINDEX0 =
 "_classes_2_skeletal_mesh_8cs.html":[2,0,0,0,20,1,4],
 "_coalesce_asset_8cs.html":[2,0,0,0,1,2],
 "_coalesce_asset_8cs.html#a79038b10f66a78754f0e114f0aa52be9":[2,0,0,0,1,2,1],
-"_coalesce_asset_8cs.html#a79038b10f66a78754f0e114f0aa52be9a26e9054be7f40079575582b7ad3f7363":[2,0,0,0,1,2,1,0]
+"_coalesce_asset_8cs.html#a79038b10f66a78754f0e114f0aa52be9a26e9054be7f40079575582b7ad3f7363":[2,0,0,0,1,2,1,0],
+"_coalesce_asset_8cs.html#a79038b10f66a78754f0e114f0aa52be9a6adf97f83acf6453d4a6a4b1070f3754":[2,0,0,0,1,2,1,2]
 };

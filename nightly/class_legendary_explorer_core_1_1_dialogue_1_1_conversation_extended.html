@@ -94,6 +94,9 @@ $(document).ready(function(){initNavTree('class_legendary_explorer_core_1_1_dial
   <div class="headertitle"><div class="title">LegendaryExplorerCore.Dialogue.ConversationExtended Class Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Contains the nested conversation structure of a BioConversation export, with extended parsing of most elements  
+ <a href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#details">More...</a></p>
 <div class="dynheader">
 Inheritance diagram for LegendaryExplorerCore.Dialogue.ConversationExtended:</div>
 <div class="dyncontent">
@@ -104,90 +107,123 @@ Inheritance diagram for LegendaryExplorerCore.Dialogue.ConversationExtended:</di
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a22003474e11fca343ae66a4fcc1e0275"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a22003474e11fca343ae66a4fcc1e0275">ConversationExtended</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> export)</td></tr>
+<tr class="memdesc:a22003474e11fca343ae66a4fcc1e0275"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a <a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html" title="Contains the nested conversation structure of a BioConversation export, with extended parsing of most...">ConversationExtended</a> from a BioConversation export  <a href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a22003474e11fca343ae66a4fcc1e0275">More...</a><br /></td></tr>
 <tr class="separator:a22003474e11fca343ae66a4fcc1e0275"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a75e0032b73b5fcfafa4c0ec35308211d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a75e0032b73b5fcfafa4c0ec35308211d">ConversationExtended</a> (<a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html">ConversationExtended</a> other)</td></tr>
+<tr class="memdesc:a75e0032b73b5fcfafa4c0ec35308211d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy constructor  <a href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a75e0032b73b5fcfafa4c0ec35308211d">More...</a><br /></td></tr>
 <tr class="separator:a75e0032b73b5fcfafa4c0ec35308211d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0bfd4c309a4d0147272e30e6b2ca6585"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a0bfd4c309a4d0147272e30e6b2ca6585">LoadConversation</a> (Func&lt; int, <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a>, string &gt; tlkLookup=null, bool detailedLoad=false)</td></tr>
-<tr class="separator:a0bfd4c309a4d0147272e30e6b2ca6585"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8fedf48f2918638e961ae89f9dbbed35"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a8fedf48f2918638e961ae89f9dbbed35">LoadConversation</a> (Func&lt; int, <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a>, string &gt; tlkLookup=null, bool detailedParse=false)</td></tr>
+<tr class="memdesc:a8fedf48f2918638e961ae89f9dbbed35"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parses all conversation data from the export into this class instance  <a href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a8fedf48f2918638e961ae89f9dbbed35">More...</a><br /></td></tr>
+<tr class="separator:a8fedf48f2918638e961ae89f9dbbed35"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:add747da7a93f4bb6844dde0d6e83a075"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#add747da7a93f4bb6844dde0d6e83a075">DetailedParse</a> ()</td></tr>
+<tr class="memdesc:add747da7a93f4bb6844dde0d6e83a075"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs a detailed parse of the BioConversation export, parsing FaceFX, InterpDatas, AudioStreams, and speaker tags  <a href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#add747da7a93f4bb6844dde0d6e83a075">More...</a><br /></td></tr>
 <tr class="separator:add747da7a93f4bb6844dde0d6e83a075"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a53ca9f556a62c78d3f549c9bbb74d216"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a53ca9f556a62c78d3f549c9bbb74d216">ParseSingleNodeInterpData</a> (<a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_dialogue_node_extended.html">DialogueNodeExtended</a> node, Dictionary&lt; int, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> &gt; convStarts=null)</td></tr>
-<tr class="memdesc:a53ca9f556a62c78d3f549c9bbb74d216"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the interpdata for a single node  <a href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a53ca9f556a62c78d3f549c9bbb74d216">More...</a><br /></td></tr>
+<tr class="memdesc:a53ca9f556a62c78d3f549c9bbb74d216"><td class="mdescLeft">&#160;</td><td class="mdescRight">Finds the InterpData export for a given DialogueNode  <a href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a53ca9f556a62c78d3f549c9bbb74d216">More...</a><br /></td></tr>
 <tr class="separator:a53ca9f556a62c78d3f549c9bbb74d216"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaf3be1cd7933592a65dec403e2ccb047"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#aaf3be1cd7933592a65dec403e2ccb047">ParseEntryList</a> (Func&lt; int, <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a>, string &gt; tlkLookup=null)</td></tr>
+<tr class="memdesc:aaf3be1cd7933592a65dec403e2ccb047"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parses the <a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#aeb8f0387a052a6cc7f6f9f7852a7af99" title="The entry (non-player) dialogue nodes in this conversation, in correct order">EntryList</a> collection from the export's m_EntryList property  <a href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#aaf3be1cd7933592a65dec403e2ccb047">More...</a><br /></td></tr>
 <tr class="separator:aaf3be1cd7933592a65dec403e2ccb047"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad9f3e1cb53f7c7ee135ce25fa3ae047d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#ad9f3e1cb53f7c7ee135ce25fa3ae047d">ParseReplyList</a> (Func&lt; int, <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a>, string &gt; tlkLookup=null)</td></tr>
+<tr class="memdesc:ad9f3e1cb53f7c7ee135ce25fa3ae047d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parses the <a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a04e85437f2aebc259650efb587a0caa1" title="The reply (player) dialogue nodes in this conversation, in correct order">ReplyList</a> collection from the export's m_ReplyList property  <a href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#ad9f3e1cb53f7c7ee135ce25fa3ae047d">More...</a><br /></td></tr>
 <tr class="separator:ad9f3e1cb53f7c7ee135ce25fa3ae047d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a876a940ffbf65914a1d941fbbd701bdd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_dialogue_node_extended.html">DialogueNodeExtended</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a876a940ffbf65914a1d941fbbd701bdd">ParseSingleLine</a> (<a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_struct_property.html">StructProperty</a> Node, int count, bool isReply, Func&lt; int, <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a>, string &gt; tlkLookupFunc=null)</td></tr>
-<tr class="separator:a876a940ffbf65914a1d941fbbd701bdd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af3e1330ca65535a3f67767243c32cec2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_dialogue_node_extended.html">DialogueNodeExtended</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#af3e1330ca65535a3f67767243c32cec2">ParseSingleLine</a> (<a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_struct_property.html">StructProperty</a> node, int count, bool isReply, Func&lt; int, <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a>, string &gt; tlkLookupFunc=null)</td></tr>
+<tr class="memdesc:af3e1330ca65535a3f67767243c32cec2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a single <a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_dialogue_node_extended.html" title="Represents a node in a BioConversation with it&#39;s StructProperty values and other useful information p...">DialogueNodeExtended</a> from a node's StructProperty  <a href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#af3e1330ca65535a3f67767243c32cec2">More...</a><br /></td></tr>
+<tr class="separator:af3e1330ca65535a3f67767243c32cec2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaefe0544e3e3c11a228481b9a74f7f88"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#aaefe0544e3e3c11a228481b9a74f7f88">ParseStartingList</a> ()</td></tr>
-<tr class="memdesc:aaefe0544e3e3c11a228481b9a74f7f88"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets dictionary of starting list and position  <a href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#aaefe0544e3e3c11a228481b9a74f7f88">More...</a><br /></td></tr>
+<tr class="memdesc:aaefe0544e3e3c11a228481b9a74f7f88"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parses the <a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#ae073312b9f7affd03b30c4ea0bc3b97c" title="A dictionary of starting entry nodes. The m_StartingList property">StartingList</a> dictionary from the m_StartingList ArrayProperty in the export  <a href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#aaefe0544e3e3c11a228481b9a74f7f88">More...</a><br /></td></tr>
 <tr class="separator:aaefe0544e3e3c11a228481b9a74f7f88"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a30ee0d88a494070e8e3fc4a78d63a55e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a30ee0d88a494070e8e3fc4a78d63a55e">ParseSpeakers</a> ()</td></tr>
+<tr class="memdesc:a30ee0d88a494070e8e3fc4a78d63a55e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Populates the <a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a16d844964109d66ea07e5e13e60f8113" title="The speakers defined in this conversation, including player and owner. Parsed from the m_SpeakerList ...">Speakers</a> collection from the speaker list ArrayProperty in the export  <a href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a30ee0d88a494070e8e3fc4a78d63a55e">More...</a><br /></td></tr>
 <tr class="separator:a30ee0d88a494070e8e3fc4a78d63a55e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a738e0df0e51348bf3aa2be79bd7c4ad0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a738e0df0e51348bf3aa2be79bd7c4ad0">ParseScripts</a> ()</td></tr>
+<tr class="memdesc:a738e0df0e51348bf3aa2be79bd7c4ad0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Populates the <a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a520539e6a7174a910cf35d9ed5f08974" title="The scripted events defined for use by this BioConversation. The m_aScriptList property">ScriptList</a> property from the scripted events defined in the export  <a href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a738e0df0e51348bf3aa2be79bd7c4ad0">More...</a><br /></td></tr>
 <tr class="separator:a738e0df0e51348bf3aa2be79bd7c4ad0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4b7493823fbdc189cf7de5f1110786e0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a4b7493823fbdc189cf7de5f1110786e0">ParseNSFFX</a> ()</td></tr>
-<tr class="memdesc:a4b7493823fbdc189cf7de5f1110786e0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the IEntry of NonSpeaker FaceFX  <a href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a4b7493823fbdc189cf7de5f1110786e0">More...</a><br /></td></tr>
+<tr class="memdesc:a4b7493823fbdc189cf7de5f1110786e0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets this object's <a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#ad07cfdd2c4ca160aacea8db8a67e66f4" title="Reference to the NonSpeaker FaceFXAnimset for this BioConversation">NonSpkrFFX</a> property based on the contents of the export  <a href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a4b7493823fbdc189cf7de5f1110786e0">More...</a><br /></td></tr>
 <tr class="separator:a4b7493823fbdc189cf7de5f1110786e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afce88858701b33907793962a4c68eef7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#afce88858701b33907793962a4c68eef7">ParseWwiseBank</a> ()</td></tr>
-<tr class="memdesc:afce88858701b33907793962a4c68eef7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the Uindex of WwiseBank  <a href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#afce88858701b33907793962a4c68eef7">More...</a><br /></td></tr>
+<tr class="memdesc:afce88858701b33907793962a4c68eef7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets this object's <a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a18cfe4d876ba62b9eb3aaadc2da01148" title="Reference to the WwiseBank export for this BioConversation">WwiseBank</a> property based on the contents of the export  <a href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#afce88858701b33907793962a4c68eef7">More...</a><br /></td></tr>
 <tr class="separator:afce88858701b33907793962a4c68eef7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeece74ecea24f7f2b5ae475f580772b6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#aeece74ecea24f7f2b5ae475f580772b6">ParseSequence</a> ()</td></tr>
-<tr class="memdesc:aeece74ecea24f7f2b5ae475f580772b6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the IEntry of appropriate sequence  <a href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#aeece74ecea24f7f2b5ae475f580772b6">More...</a><br /></td></tr>
+<tr class="memdesc:aeece74ecea24f7f2b5ae475f580772b6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets this object's <a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a3de4397ccb7eb9e0cb62cfa66c8c0a17" title="Reference to the matinee sequence for this BioConversation">Sequence</a> property based on the contents of the export  <a href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#aeece74ecea24f7f2b5ae475f580772b6">More...</a><br /></td></tr>
 <tr class="separator:aeece74ecea24f7f2b5ae475f580772b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aad0bca82548b1abc09c3e0ba99055c90"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#aad0bca82548b1abc09c3e0ba99055c90">ParseStageDirections</a> (Func&lt; int, <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a>, string &gt; tlkLookup=null)</td></tr>
+<tr class="memdesc:aad0bca82548b1abc09c3e0ba99055c90"><td class="mdescLeft">&#160;</td><td class="mdescRight">Populates the <a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a2a8a06ff812aee3cf128baa492ecec0e" title="The stage directions defined in this conversation">StageDirections</a> property from the m_aStageDirections property in the export. This property only exists in Game 3.  <a href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#aad0bca82548b1abc09c3e0ba99055c90">More...</a><br /></td></tr>
 <tr class="separator:aad0bca82548b1abc09c3e0ba99055c90"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7c81a649d91e6d5e678a3a528a6def25"><td class="memItemLeft" align="right" valign="top"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a7c81a649d91e6d5e678a3a528a6def25">GetFaceFX</a> (int speakerID, bool isMale=false)</td></tr>
-<tr class="memdesc:a7c81a649d91e6d5e678a3a528a6def25"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the IEntry of FaceFXAnimSet  <a href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a7c81a649d91e6d5e678a3a528a6def25">More...</a><br /></td></tr>
+<tr class="memdesc:a7c81a649d91e6d5e678a3a528a6def25"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the FaceFXAnimset entry from the export for a given speaker ID  <a href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a7c81a649d91e6d5e678a3a528a6def25">More...</a><br /></td></tr>
 <tr class="separator:a7c81a649d91e6d5e678a3a528a6def25"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5339b0251908731f2187e5dde2f348d1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a5339b0251908731f2187e5dde2f348d1">SerializeNodes</a> (bool commitToExport=true)</td></tr>
+<tr class="memdesc:a5339b0251908731f2187e5dde2f348d1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serializes the <a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#ae073312b9f7affd03b30c4ea0bc3b97c" title="A dictionary of starting entry nodes. The m_StartingList property">StartingList</a>, <a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#aeb8f0387a052a6cc7f6f9f7852a7af99" title="The entry (non-player) dialogue nodes in this conversation, in correct order">EntryList</a>, <a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a04e85437f2aebc259650efb587a0caa1" title="The reply (player) dialogue nodes in this conversation, in correct order">ReplyList</a>, and <a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a16d844964109d66ea07e5e13e60f8113" title="The speakers defined in this conversation, including player and owner. Parsed from the m_SpeakerList ...">Speakers</a> list to a StructProperty, optionally written to the conversation export  <a href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a5339b0251908731f2187e5dde2f348d1">More...</a><br /></td></tr>
 <tr class="separator:a5339b0251908731f2187e5dde2f348d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2f9719ae1260878c026aaacf1148c79b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a2f9719ae1260878c026aaacf1148c79b">AutoGenerateSpeakerArrays</a> ()</td></tr>
+<tr class="memdesc:a2f9719ae1260878c026aaacf1148c79b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Traverses the conversation graph, setting the aSpeakerList ArrayProperty for each starting node  <a href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a2f9719ae1260878c026aaacf1148c79b">More...</a><br /></td></tr>
 <tr class="separator:a2f9719ae1260878c026aaacf1148c79b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="properties" name="properties"></a>
 Properties</h2></td></tr>
-<tr class="memitem:aae9805fc67078b934cc83975f3e16422"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#aae9805fc67078b934cc83975f3e16422">ExportUID</a><code> [getset]</code></td></tr>
+<tr class="memitem:aae9805fc67078b934cc83975f3e16422"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#aae9805fc67078b934cc83975f3e16422">ExportUID</a><code> [get]</code></td></tr>
+<tr class="memdesc:aae9805fc67078b934cc83975f3e16422"><td class="mdescLeft">&#160;</td><td class="mdescRight">The UIndex of this BioConversation <a href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#aae9805fc67078b934cc83975f3e16422">More...</a><br /></td></tr>
 <tr class="separator:aae9805fc67078b934cc83975f3e16422"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af0e31b32880967da37936f56e81ea636"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html">PropertyCollection</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#af0e31b32880967da37936f56e81ea636">BioConvo</a><code> [getset]</code></td></tr>
+<tr class="memitem:af0e31b32880967da37936f56e81ea636"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html">PropertyCollection</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#af0e31b32880967da37936f56e81ea636">BioConvo</a><code> [get]</code></td></tr>
+<tr class="memdesc:af0e31b32880967da37936f56e81ea636"><td class="mdescLeft">&#160;</td><td class="mdescRight">The properties of this BioConversation <a href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#af0e31b32880967da37936f56e81ea636">More...</a><br /></td></tr>
 <tr class="separator:af0e31b32880967da37936f56e81ea636"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a86340273f644e2e9ed8adbc0559508ec"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a86340273f644e2e9ed8adbc0559508ec">Export</a><code> [getset]</code></td></tr>
+<tr class="memitem:a86340273f644e2e9ed8adbc0559508ec"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a86340273f644e2e9ed8adbc0559508ec">Export</a><code> [get]</code></td></tr>
+<tr class="memdesc:a86340273f644e2e9ed8adbc0559508ec"><td class="mdescLeft">&#160;</td><td class="mdescRight">The export for the BioConversation <a href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a86340273f644e2e9ed8adbc0559508ec">More...</a><br /></td></tr>
 <tr class="separator:a86340273f644e2e9ed8adbc0559508ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aad69671d02d18c6f56201f3d17e88519"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#aad69671d02d18c6f56201f3d17e88519">ConvName</a><code> [getset]</code></td></tr>
+<tr class="memitem:aad69671d02d18c6f56201f3d17e88519"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#aad69671d02d18c6f56201f3d17e88519">ConvName</a><code> [get]</code></td></tr>
+<tr class="memdesc:aad69671d02d18c6f56201f3d17e88519"><td class="mdescLeft">&#160;</td><td class="mdescRight">The object name of the BioConversation <a href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#aad69671d02d18c6f56201f3d17e88519">More...</a><br /></td></tr>
 <tr class="separator:aad69671d02d18c6f56201f3d17e88519"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a02787385c6380961a979929458247cb7"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a02787385c6380961a979929458247cb7">IsParsed</a><code> [getset]</code></td></tr>
+<tr class="memdesc:a02787385c6380961a979929458247cb7"><td class="mdescLeft">&#160;</td><td class="mdescRight">If true, this conversation has completed a detailed parse <a href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a02787385c6380961a979929458247cb7">More...</a><br /></td></tr>
 <tr class="separator:a02787385c6380961a979929458247cb7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab3aaf4fe4d8667c64df87e166e11b6b3"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#ab3aaf4fe4d8667c64df87e166e11b6b3">IsFirstParsed</a><code> [getset]</code></td></tr>
+<tr class="memdesc:ab3aaf4fe4d8667c64df87e166e11b6b3"><td class="mdescLeft">&#160;</td><td class="mdescRight">If true, this conversation has had an initial (non-detailed) parse completed <a href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#ab3aaf4fe4d8667c64df87e166e11b6b3">More...</a><br /></td></tr>
 <tr class="separator:ab3aaf4fe4d8667c64df87e166e11b6b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae073312b9f7affd03b30c4ea0bc3b97c"><td class="memItemLeft" align="right" valign="top">SortedDictionary&lt; int, int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#ae073312b9f7affd03b30c4ea0bc3b97c">StartingList</a> = new()<code> [getset]</code></td></tr>
+<tr class="memitem:ae073312b9f7affd03b30c4ea0bc3b97c"><td class="memItemLeft" align="right" valign="top">SortedDictionary&lt; int, int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#ae073312b9f7affd03b30c4ea0bc3b97c">StartingList</a> = new()<code> [get]</code></td></tr>
+<tr class="memdesc:ae073312b9f7affd03b30c4ea0bc3b97c"><td class="mdescLeft">&#160;</td><td class="mdescRight">A dictionary of starting entry nodes. The m_StartingList property  <a href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#ae073312b9f7affd03b30c4ea0bc3b97c">More...</a><br /></td></tr>
 <tr class="separator:ae073312b9f7affd03b30c4ea0bc3b97c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a16d844964109d66ea07e5e13e60f8113"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_observable_collection_extended.html">ObservableCollectionExtended</a>&lt; <a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_speaker_extended.html">SpeakerExtended</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a16d844964109d66ea07e5e13e60f8113">Speakers</a><code> [getset]</code></td></tr>
+<tr class="memdesc:a16d844964109d66ea07e5e13e60f8113"><td class="mdescLeft">&#160;</td><td class="mdescRight">The speakers defined in this conversation, including player and owner. Parsed from the m_SpeakerList or m_aSpeakerList property <a href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a16d844964109d66ea07e5e13e60f8113">More...</a><br /></td></tr>
 <tr class="separator:a16d844964109d66ea07e5e13e60f8113"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aeb8f0387a052a6cc7f6f9f7852a7af99"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_observable_collection_extended.html">ObservableCollectionExtended</a>&lt; <a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_dialogue_node_extended.html">DialogueNodeExtended</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#aeb8f0387a052a6cc7f6f9f7852a7af99">EntryList</a><code> [getset]</code></td></tr>
+<tr class="memitem:aeb8f0387a052a6cc7f6f9f7852a7af99"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_observable_collection_extended.html">ObservableCollectionExtended</a>&lt; <a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_dialogue_node_extended.html">DialogueNodeExtended</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#aeb8f0387a052a6cc7f6f9f7852a7af99">EntryList</a><code> [get]</code></td></tr>
+<tr class="memdesc:aeb8f0387a052a6cc7f6f9f7852a7af99"><td class="mdescLeft">&#160;</td><td class="mdescRight">The entry (non-player) dialogue nodes in this conversation, in correct order <a href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#aeb8f0387a052a6cc7f6f9f7852a7af99">More...</a><br /></td></tr>
 <tr class="separator:aeb8f0387a052a6cc7f6f9f7852a7af99"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a04e85437f2aebc259650efb587a0caa1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_observable_collection_extended.html">ObservableCollectionExtended</a>&lt; <a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_dialogue_node_extended.html">DialogueNodeExtended</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a04e85437f2aebc259650efb587a0caa1">ReplyList</a><code> [getset]</code></td></tr>
+<tr class="memitem:a04e85437f2aebc259650efb587a0caa1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_observable_collection_extended.html">ObservableCollectionExtended</a>&lt; <a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_dialogue_node_extended.html">DialogueNodeExtended</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a04e85437f2aebc259650efb587a0caa1">ReplyList</a><code> [get]</code></td></tr>
+<tr class="memdesc:a04e85437f2aebc259650efb587a0caa1"><td class="mdescLeft">&#160;</td><td class="mdescRight">The reply (player) dialogue nodes in this conversation, in correct order <a href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a04e85437f2aebc259650efb587a0caa1">More...</a><br /></td></tr>
 <tr class="separator:a04e85437f2aebc259650efb587a0caa1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2a8a06ff812aee3cf128baa492ecec0e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_observable_collection_extended.html">ObservableCollectionExtended</a>&lt; <a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_stage_direction.html">StageDirection</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a2a8a06ff812aee3cf128baa492ecec0e">StageDirections</a> = new()<code> [get]</code></td></tr>
+<tr class="memdesc:a2a8a06ff812aee3cf128baa492ecec0e"><td class="mdescLeft">&#160;</td><td class="mdescRight">The stage directions defined in this conversation <a href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a2a8a06ff812aee3cf128baa492ecec0e">More...</a><br /></td></tr>
 <tr class="separator:a2a8a06ff812aee3cf128baa492ecec0e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a520539e6a7174a910cf35d9ed5f08974"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_observable_collection_extended.html">ObservableCollectionExtended</a>&lt; <a class="el" href="struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html">NameReference</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a520539e6a7174a910cf35d9ed5f08974">ScriptList</a> = new()<code> [get]</code></td></tr>
+<tr class="memdesc:a520539e6a7174a910cf35d9ed5f08974"><td class="mdescLeft">&#160;</td><td class="mdescRight">The scripted events defined for use by this BioConversation. The m_aScriptList property <a href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a520539e6a7174a910cf35d9ed5f08974">More...</a><br /></td></tr>
+<tr class="separator:a520539e6a7174a910cf35d9ed5f08974"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a18cfe4d876ba62b9eb3aaadc2da01148"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a18cfe4d876ba62b9eb3aaadc2da01148">WwiseBank</a><code> [getset]</code></td></tr>
-<tr class="memdesc:a18cfe4d876ba62b9eb3aaadc2da01148"><td class="mdescLeft">&#160;</td><td class="mdescRight">WwiseBank Reference Export  <a href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a18cfe4d876ba62b9eb3aaadc2da01148">More...</a><br /></td></tr>
+<tr class="memdesc:a18cfe4d876ba62b9eb3aaadc2da01148"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reference to the WwiseBank export for this BioConversation <a href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a18cfe4d876ba62b9eb3aaadc2da01148">More...</a><br /></td></tr>
 <tr class="separator:a18cfe4d876ba62b9eb3aaadc2da01148"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3de4397ccb7eb9e0cb62cfa66c8c0a17"><td class="memItemLeft" align="right" valign="top"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a3de4397ccb7eb9e0cb62cfa66c8c0a17">Sequence</a><code> [getset]</code></td></tr>
-<tr class="memdesc:a3de4397ccb7eb9e0cb62cfa66c8c0a17"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sequence Reference UIndex  <a href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a3de4397ccb7eb9e0cb62cfa66c8c0a17">More...</a><br /></td></tr>
+<tr class="memdesc:a3de4397ccb7eb9e0cb62cfa66c8c0a17"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reference to the matinee sequence for this BioConversation <a href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a3de4397ccb7eb9e0cb62cfa66c8c0a17">More...</a><br /></td></tr>
 <tr class="separator:a3de4397ccb7eb9e0cb62cfa66c8c0a17"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad07cfdd2c4ca160aacea8db8a67e66f4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#ad07cfdd2c4ca160aacea8db8a67e66f4">NonSpkrFFX</a><code> [getset]</code></td></tr>
-<tr class="memdesc:ad07cfdd2c4ca160aacea8db8a67e66f4"><td class="mdescLeft">&#160;</td><td class="mdescRight">NonSpkrFaceFX IEntry  <a href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#ad07cfdd2c4ca160aacea8db8a67e66f4">More...</a><br /></td></tr>
+<tr class="memdesc:ad07cfdd2c4ca160aacea8db8a67e66f4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reference to the NonSpeaker FaceFXAnimset for this BioConversation <a href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#ad07cfdd2c4ca160aacea8db8a67e66f4">More...</a><br /></td></tr>
 <tr class="separator:ad07cfdd2c4ca160aacea8db8a67e66f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a520539e6a7174a910cf35d9ed5f08974"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_observable_collection_extended.html">ObservableCollectionExtended</a>&lt; <a class="el" href="struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html">NameReference</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a520539e6a7174a910cf35d9ed5f08974">ScriptList</a> = new()<code> [get]</code></td></tr>
-<tr class="separator:a520539e6a7174a910cf35d9ed5f08974"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="events" name="events"></a>
 Events</h2></td></tr>
 <tr class="memitem:adce66b02302ef48eba2da10d5562205f"><td class="memItemLeft" align="right" valign="top">PropertyChangedEventHandler&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#adce66b02302ef48eba2da10d5562205f">PropertyChanged</a></td></tr>
 <tr class="separator:adce66b02302ef48eba2da10d5562205f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p >Contains the nested conversation structure of a BioConversation export, with extended parsing of most elements </p>
+<p >Contains nested conversation structure</p><ul>
+<li>InterpData Extended Nested Collections:<ul>
+<li>Speakers have FaceFX Objects</li>
+<li><a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_dialogue_node_extended.html" title="Represents a node in a BioConversation with it&#39;s StructProperty values and other useful information p...">DialogueNodeExtended</a> has InterpData, WwiseStream_M, WwiseStream_F, FaceFX_ID_M, FaceFX_ID_F </li>
+</ul>
+</li>
+</ul>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a22003474e11fca343ae66a4fcc1e0275" name="a22003474e11fca343ae66a4fcc1e0275"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a22003474e11fca343ae66a4fcc1e0275">&#9670;&nbsp;</a></span>ConversationExtended() <span class="overload">[1/2]</span></h2>
 
@@ -211,6 +247,14 @@ Events</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Creates a <a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html" title="Contains the nested conversation structure of a BioConversation export, with extended parsing of most...">ConversationExtended</a> from a BioConversation export </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">export</td><td>Export to parse properties from</td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -238,11 +282,19 @@ Events</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Copy constructor </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">other</td><td>Conversation to copy properties from</td></tr>
+  </table>
+  </dd>
+</dl>
+
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a0bfd4c309a4d0147272e30e6b2ca6585" name="a0bfd4c309a4d0147272e30e6b2ca6585"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0bfd4c309a4d0147272e30e6b2ca6585">&#9670;&nbsp;</a></span>LoadConversation()</h2>
+<a id="a8fedf48f2918638e961ae89f9dbbed35" name="a8fedf48f2918638e961ae89f9dbbed35"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8fedf48f2918638e961ae89f9dbbed35">&#9670;&nbsp;</a></span>LoadConversation()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -260,7 +312,7 @@ Events</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>detailedLoad</em> = <code>false</code>&#160;</td>
+          <td class="paramname"><em>detailedParse</em> = <code>false</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -274,6 +326,15 @@ Events</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Parses all conversation data from the export into this class instance </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">tlkLookup</td><td>Lambda function used to perform <a class="el" href="namespace_legendary_explorer_core_1_1_t_l_k.html">TLK</a> lookups</td></tr>
+    <tr><td class="paramname">detailedParse</td><td>If true, a detailed parse will be performed</td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -299,6 +360,8 @@ Events</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Performs a detailed parse of the BioConversation export, parsing FaceFX, InterpDatas, AudioStreams, and speaker tags </p>
 
 </div>
 </div>
@@ -336,7 +399,15 @@ Events</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Gets the interpdata for a single node </p>
+<p>Finds the InterpData export for a given DialogueNode </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">node</td><td>Node to find InterpData for</td></tr>
+    <tr><td class="paramname">convStarts</td><td>Dictionary of node <a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_dialogue_node_extended.html#a8f516f13ebb5992c5b871b2ac022f186" title="The nExportID property of this node. A unique number tying this dialogue node to a ConvNode sequence ...">DialogueNodeExtended.ExportID</a> to SeqEvt_ConvNode exports. If null, this will be calculated.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>InterpData export for node, null if not found</dd></dl>
 
 </div>
 </div>
@@ -364,6 +435,14 @@ Events</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Parses the <a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#aeb8f0387a052a6cc7f6f9f7852a7af99" title="The entry (non-player) dialogue nodes in this conversation, in correct order">EntryList</a> collection from the export's m_EntryList property </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">tlkLookup</td><td>Lambda function to use for <a class="el" href="namespace_legendary_explorer_core_1_1_t_l_k.html">TLK</a> lookup</td></tr>
+  </table>
+  </dd>
+</dl>
+
 </div>
 </div>
 <a id="ad9f3e1cb53f7c7ee135ce25fa3ae047d" name="ad9f3e1cb53f7c7ee135ce25fa3ae047d"></a>
@@ -390,10 +469,18 @@ Events</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Parses the <a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a04e85437f2aebc259650efb587a0caa1" title="The reply (player) dialogue nodes in this conversation, in correct order">ReplyList</a> collection from the export's m_ReplyList property </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">tlkLookup</td><td>Lambda function to use for <a class="el" href="namespace_legendary_explorer_core_1_1_t_l_k.html">TLK</a> lookup</td></tr>
+  </table>
+  </dd>
+</dl>
+
 </div>
 </div>
-<a id="a876a940ffbf65914a1d941fbbd701bdd" name="a876a940ffbf65914a1d941fbbd701bdd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a876a940ffbf65914a1d941fbbd701bdd">&#9670;&nbsp;</a></span>ParseSingleLine()</h2>
+<a id="af3e1330ca65535a3f67767243c32cec2" name="af3e1330ca65535a3f67767243c32cec2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af3e1330ca65535a3f67767243c32cec2">&#9670;&nbsp;</a></span>ParseSingleLine()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -405,7 +492,7 @@ Events</h2></td></tr>
           <td class="memname"><a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_dialogue_node_extended.html">DialogueNodeExtended</a> LegendaryExplorerCore.Dialogue.ConversationExtended.ParseSingleLine </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_struct_property.html">StructProperty</a>&#160;</td>
-          <td class="paramname"><em>Node</em>, </td>
+          <td class="paramname"><em>node</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -438,6 +525,24 @@ Events</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Creates a single <a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_dialogue_node_extended.html" title="Represents a node in a BioConversation with it&#39;s StructProperty values and other useful information p...">DialogueNodeExtended</a> from a node's StructProperty </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">node</td><td>StructProperty of dialogue node, must be BioDialogReplyNode or BioDialogEntryNode</td></tr>
+    <tr><td class="paramname">count</td><td>The array index of this node</td></tr>
+    <tr><td class="paramname">isReply</td><td>True if node is reply (player) node, false if entry (non-player) node</td></tr>
+    <tr><td class="paramname">tlkLookupFunc</td><td>Lambda function used to perform <a class="el" href="namespace_legendary_explorer_core_1_1_t_l_k.html">TLK</a> lookups</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>New dialogue node created from the struct values</dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">Exception</td><td>Parse failed, likely on property lookup</td></tr>
+  </table>
+  </dd>
+</dl>
+
 </div>
 </div>
 <a id="aaefe0544e3e3c11a228481b9a74f7f88" name="aaefe0544e3e3c11a228481b9a74f7f88"></a>
@@ -463,8 +568,7 @@ Events</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Gets dictionary of starting list and position </p>
-<dl class="section return"><dt>Returns</dt><dd>Key = position on list, Value = Outlink</dd></dl>
+<p>Parses the <a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#ae073312b9f7affd03b30c4ea0bc3b97c" title="A dictionary of starting entry nodes. The m_StartingList property">StartingList</a> dictionary from the m_StartingList ArrayProperty in the export </p>
 
 </div>
 </div>
@@ -491,6 +595,8 @@ Events</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Populates the <a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a16d844964109d66ea07e5e13e60f8113" title="The speakers defined in this conversation, including player and owner. Parsed from the m_SpeakerList ...">Speakers</a> collection from the speaker list ArrayProperty in the export </p>
+
 </div>
 </div>
 <a id="a738e0df0e51348bf3aa2be79bd7c4ad0" name="a738e0df0e51348bf3aa2be79bd7c4ad0"></a>
@@ -515,6 +621,8 @@ Events</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Populates the <a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a520539e6a7174a910cf35d9ed5f08974" title="The scripted events defined for use by this BioConversation. The m_aScriptList property">ScriptList</a> property from the scripted events defined in the export </p>
 
 </div>
 </div>
@@ -541,7 +649,7 @@ Events</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Sets the IEntry of NonSpeaker FaceFX </p>
+<p>Sets this object's <a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#ad07cfdd2c4ca160aacea8db8a67e66f4" title="Reference to the NonSpeaker FaceFXAnimset for this BioConversation">NonSpkrFFX</a> property based on the contents of the export </p>
 
 </div>
 </div>
@@ -568,7 +676,7 @@ Events</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Sets the Uindex of WwiseBank </p>
+<p>Sets this object's <a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a18cfe4d876ba62b9eb3aaadc2da01148" title="Reference to the WwiseBank export for this BioConversation">WwiseBank</a> property based on the contents of the export </p>
 
 </div>
 </div>
@@ -595,7 +703,7 @@ Events</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Sets the IEntry of appropriate sequence </p>
+<p>Sets this object's <a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a3de4397ccb7eb9e0cb62cfa66c8c0a17" title="Reference to the matinee sequence for this BioConversation">Sequence</a> property based on the contents of the export </p>
 
 </div>
 </div>
@@ -622,6 +730,20 @@ Events</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Populates the <a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a2a8a06ff812aee3cf128baa492ecec0e" title="The stage directions defined in this conversation">StageDirections</a> property from the m_aStageDirections property in the export. This property only exists in Game 3. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">tlkLookup</td><td>Lambda function used to perform <a class="el" href="namespace_legendary_explorer_core_1_1_t_l_k.html">TLK</a> lookups</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">Exception</td><td>Unable to parse stage direction</td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -659,11 +781,11 @@ Events</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Returns the IEntry of FaceFXAnimSet </p>
+<p>Gets the FaceFXAnimset entry from the export for a given speaker ID </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">speakerID</td><td>SpeakerID: -1 = Owner, -2 = Player</td></tr>
-    <tr><td class="paramname">isMale</td><td>will pull female by default</td></tr>
+    <tr><td class="paramname">speakerID</td><td>ID of speaker to get animset for. -1 = Owner, -2 = Player</td></tr>
+    <tr><td class="paramname">isMale</td><td>If true, get the male animset, otherwise get the female animset</td></tr>
   </table>
   </dd>
 </dl>
@@ -694,6 +816,14 @@ Events</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Serializes the <a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#ae073312b9f7affd03b30c4ea0bc3b97c" title="A dictionary of starting entry nodes. The m_StartingList property">StartingList</a>, <a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#aeb8f0387a052a6cc7f6f9f7852a7af99" title="The entry (non-player) dialogue nodes in this conversation, in correct order">EntryList</a>, <a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a04e85437f2aebc259650efb587a0caa1" title="The reply (player) dialogue nodes in this conversation, in correct order">ReplyList</a>, and <a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a16d844964109d66ea07e5e13e60f8113" title="The speakers defined in this conversation, including player and owner. Parsed from the m_SpeakerList ...">Speakers</a> list to a StructProperty, optionally written to the conversation export </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">commitToExport</td><td>If true, serialized StructProperty will be written to the export</td></tr>
+  </table>
+  </dd>
+</dl>
+
 </div>
 </div>
 <a id="a2f9719ae1260878c026aaacf1148c79b" name="a2f9719ae1260878c026aaacf1148c79b"></a>
@@ -719,6 +849,10 @@ Events</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Traverses the conversation graph, setting the aSpeakerList ArrayProperty for each starting node </p>
+<p >Properties are set in the node's <a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_dialogue_node_extended.html#a40dacde1de3f810764b4395511659f1f" title="The original StructProperty of this dialogue node">DialogueNodeExtended.NodeProp</a> </p>
+<dl class="section return"><dt>Returns</dt><dd>True if conversation has looping paths, false otherwise</dd></dl>
+
 </div>
 </div>
 <h2 class="groupheader">Property Documentation</h2>
@@ -737,10 +871,12 @@ Events</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">get</span><span class="mlabel">set</span></span>  </td>
+<span class="mlabels"><span class="mlabel">get</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>The UIndex of this BioConversation</p>
 
 </div>
 </div>
@@ -759,10 +895,12 @@ Events</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">get</span><span class="mlabel">set</span></span>  </td>
+<span class="mlabels"><span class="mlabel">get</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>The properties of this BioConversation</p>
 
 </div>
 </div>
@@ -781,10 +919,12 @@ Events</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">get</span><span class="mlabel">set</span></span>  </td>
+<span class="mlabels"><span class="mlabel">get</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>The export for the BioConversation</p>
 
 </div>
 </div>
@@ -803,10 +943,12 @@ Events</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">get</span><span class="mlabel">set</span></span>  </td>
+<span class="mlabels"><span class="mlabel">get</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>The object name of the BioConversation</p>
 
 </div>
 </div>
@@ -830,6 +972,8 @@ Events</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>If true, this conversation has completed a detailed parse</p>
+
 </div>
 </div>
 <a id="ab3aaf4fe4d8667c64df87e166e11b6b3" name="ab3aaf4fe4d8667c64df87e166e11b6b3"></a>
@@ -852,6 +996,9 @@ Events</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>If true, this conversation has had an initial (non-detailed) parse completed</p>
+<p >At the moment, this property is not set when running <a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a8fedf48f2918638e961ae89f9dbbed35" title="Parses all conversation data from the export into this class instance">LoadConversation()</a>, only by the DialogueEditor class in LEX</p>
+
 </div>
 </div>
 <a id="ae073312b9f7affd03b30c4ea0bc3b97c" name="ae073312b9f7affd03b30c4ea0bc3b97c"></a>
@@ -869,10 +1016,13 @@ Events</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">get</span><span class="mlabel">set</span></span>  </td>
+<span class="mlabels"><span class="mlabel">get</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>A dictionary of starting entry nodes. The m_StartingList property </p>
+<p >Key: Index into m_StartingList array. Value: Index into <a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#aeb8f0387a052a6cc7f6f9f7852a7af99" title="The entry (non-player) dialogue nodes in this conversation, in correct order">EntryList</a> collection </p>
 
 </div>
 </div>
@@ -896,6 +1046,8 @@ Events</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>The speakers defined in this conversation, including player and owner. Parsed from the m_SpeakerList or m_aSpeakerList property</p>
+
 </div>
 </div>
 <a id="aeb8f0387a052a6cc7f6f9f7852a7af99" name="aeb8f0387a052a6cc7f6f9f7852a7af99"></a>
@@ -913,10 +1065,12 @@ Events</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">get</span><span class="mlabel">set</span></span>  </td>
+<span class="mlabels"><span class="mlabel">get</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>The entry (non-player) dialogue nodes in this conversation, in correct order</p>
 
 </div>
 </div>
@@ -935,10 +1089,12 @@ Events</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">get</span><span class="mlabel">set</span></span>  </td>
+<span class="mlabels"><span class="mlabel">get</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>The reply (player) dialogue nodes in this conversation, in correct order</p>
 
 </div>
 </div>
@@ -962,77 +1118,7 @@ Events</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-</div>
-</div>
-<a id="a18cfe4d876ba62b9eb3aaadc2da01148" name="a18cfe4d876ba62b9eb3aaadc2da01148"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a18cfe4d876ba62b9eb3aaadc2da01148">&#9670;&nbsp;</a></span>WwiseBank</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> LegendaryExplorerCore.Dialogue.ConversationExtended.WwiseBank</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">get</span><span class="mlabel">set</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>WwiseBank Reference Export </p>
-
-</div>
-</div>
-<a id="a3de4397ccb7eb9e0cb62cfa66c8c0a17" name="a3de4397ccb7eb9e0cb62cfa66c8c0a17"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3de4397ccb7eb9e0cb62cfa66c8c0a17">&#9670;&nbsp;</a></span>Sequence</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a> LegendaryExplorerCore.Dialogue.ConversationExtended.Sequence</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">get</span><span class="mlabel">set</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Sequence Reference UIndex </p>
-
-</div>
-</div>
-<a id="ad07cfdd2c4ca160aacea8db8a67e66f4" name="ad07cfdd2c4ca160aacea8db8a67e66f4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad07cfdd2c4ca160aacea8db8a67e66f4">&#9670;&nbsp;</a></span>NonSpkrFFX</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a> LegendaryExplorerCore.Dialogue.ConversationExtended.NonSpkrFFX</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">get</span><span class="mlabel">set</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>NonSpkrFaceFX IEntry </p>
+<p>The stage directions defined in this conversation</p>
 
 </div>
 </div>
@@ -1056,6 +1142,80 @@ Events</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>The scripted events defined for use by this BioConversation. The m_aScriptList property</p>
+
+</div>
+</div>
+<a id="a18cfe4d876ba62b9eb3aaadc2da01148" name="a18cfe4d876ba62b9eb3aaadc2da01148"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a18cfe4d876ba62b9eb3aaadc2da01148">&#9670;&nbsp;</a></span>WwiseBank</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> LegendaryExplorerCore.Dialogue.ConversationExtended.WwiseBank</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">get</span><span class="mlabel">set</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Reference to the WwiseBank export for this BioConversation</p>
+
+</div>
+</div>
+<a id="a3de4397ccb7eb9e0cb62cfa66c8c0a17" name="a3de4397ccb7eb9e0cb62cfa66c8c0a17"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3de4397ccb7eb9e0cb62cfa66c8c0a17">&#9670;&nbsp;</a></span>Sequence</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a> LegendaryExplorerCore.Dialogue.ConversationExtended.Sequence</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">get</span><span class="mlabel">set</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Reference to the matinee sequence for this BioConversation</p>
+
+</div>
+</div>
+<a id="ad07cfdd2c4ca160aacea8db8a67e66f4" name="ad07cfdd2c4ca160aacea8db8a67e66f4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad07cfdd2c4ca160aacea8db8a67e66f4">&#9670;&nbsp;</a></span>NonSpkrFFX</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a> LegendaryExplorerCore.Dialogue.ConversationExtended.NonSpkrFFX</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">get</span><span class="mlabel">set</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Reference to the NonSpeaker FaceFXAnimset for this BioConversation</p>
+
 </div>
 </div>
 <h2 class="groupheader">Event Documentation</h2>
@@ -1074,7 +1234,7 @@ Events</h2></td></tr>
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>LegendaryExplorer/LegendaryExplorerCore/Dialogue/<a class="el" href="_bio_conversation_8cs.html">BioConversation.cs</a></li>
+<li>LegendaryExplorer/LegendaryExplorerCore/Dialogue/<a class="el" href="_conversation_extended_8cs.html">ConversationExtended.cs</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

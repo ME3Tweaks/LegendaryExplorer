@@ -66,7 +66,7 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "_a_f_c_compactor_8cs.html",
-"_coalesce_asset_8cs.html#a79038b10f66a78754f0e114f0aa52be9a6adf97f83acf6453d4a6a4b1070f3754",
+"_coalesce_asset_8cs.html#a79038b10f66a78754f0e114f0aa52be9a88183b946cc5f0e8c96b2e66e1c74a7e",
 "_expression_only_statement_8cs.html",
 "_m_e3_enums_8cs.html#a02bba84089a181666f5734a342392964ad0fee4e03ea73a027c570112702538d8",
 "_m_e3_enums_8cs.html#a0fdd39cb8cb01d192d80c5f11ecec948a2e5bafc25073418fe1e496704013a188",
