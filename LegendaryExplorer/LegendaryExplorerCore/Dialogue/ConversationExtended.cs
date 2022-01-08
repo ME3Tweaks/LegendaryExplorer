@@ -12,42 +12,63 @@ using LegendaryExplorerCore.Unreal.BinaryConverters;
 
 namespace LegendaryExplorerCore.Dialogue
 {
-    //Contains nested conversation structure.
-    // - InterpData
-    //Extended Nested Collections:
-    // - Speakers have FaceFX Objects
-    // - DialogueNodeExtended has InterpData, WwiseStream_M, Wwisestream_F, FaceFX_ID_M, FaceFX_ID_F.
-
-
+    /// <summary>
+    /// Contains the nested conversation structure of a BioConversation export, with extended parsing of most elements
+    /// </summary>
+    /// <remarks>
+    /// Contains nested conversation structure
+    /// - InterpData
+    /// Extended Nested Collections:
+    ///  - Speakers have FaceFX Objects
+    ///  - DialogueNodeExtended has InterpData, WwiseStream_M, WwiseStream_F, FaceFX_ID_M, FaceFX_ID_F
+    /// </remarks>
     [DebuggerDisplay("ConversationExtended {ExportUID} {ConvName}")]
     public class ConversationExtended : INotifyPropertyChanged
     {
-        public int ExportUID { get; set; }
-        public PropertyCollection BioConvo { get; set; }
-        public ExportEntry Export { get; set; }
-        public string ConvName { get; set; }
+        /// <summary>The UIndex of this BioConversation</summary>
+        public int ExportUID { get; init; }
+        /// <summary>The properties of this BioConversation</summary>
+        public PropertyCollection BioConvo { get; }
+        /// <summary>The export for the BioConversation</summary>
+        public ExportEntry Export { get; }
+        /// <summary>The object name of the BioConversation</summary>
+        public string ConvName { get; init; }
+        /// <summary>If true, this conversation has completed a detailed parse</summary>
         public bool IsParsed { get; set; }
+        /// <summary>If true, this conversation has had an initial (non-detailed) parse completed</summary>
+        /// <remarks>At the moment, this property is not set when running LoadConversation(), only by the DialogueEditor class in LEX</remarks>
         public bool IsFirstParsed { get; set; }
-        public SortedDictionary<int, int> StartingList { get; set; } = new();
-        public ObservableCollectionExtended<SpeakerExtended> Speakers { get; set; }
-        public ObservableCollectionExtended<DialogueNodeExtended> EntryList { get; set; }
-        public ObservableCollectionExtended<DialogueNodeExtended> ReplyList { get; set; }
 
+        /// <summary>
+        /// A dictionary of starting entry nodes. The m_StartingList property
+        /// </summary>
+        /// <remarks>
+        /// Key: Index into m_StartingList array.
+        /// Value: Index into <see cref="EntryList"/> collection
+        /// </remarks>
+        public SortedDictionary<int, int> StartingList { get; private set; } = new();
+        /// <summary>The speakers defined in this conversation, including player and owner. Parsed from the m_SpeakerList or m_aSpeakerList property</summary>
+        public ObservableCollectionExtended<SpeakerExtended> Speakers { get; set; }
+        /// <summary>The entry (non-player) dialogue nodes in this conversation, in correct order</summary>
+        public ObservableCollectionExtended<DialogueNodeExtended> EntryList { get; private set; }
+        /// <summary>The reply (player) dialogue nodes in this conversation, in correct order</summary>
+        public ObservableCollectionExtended<DialogueNodeExtended> ReplyList { get; private set; }
+        /// <summary>The stage directions defined in this conversation</summary>
         public ObservableCollectionExtended<StageDirection> StageDirections { get; } = new();
-        /// <summary>
-        /// WwiseBank Reference Export
-        /// </summary>
+        /// <summary>The scripted events defined for use by this BioConversation. The m_aScriptList property</summary>
+        public ObservableCollectionExtended<NameReference> ScriptList { get; } = new();
+
+        /// <summary>Reference to the WwiseBank export for this BioConversation</summary>
         public ExportEntry WwiseBank { get; set; }
-        /// <summary>
-        /// Sequence Reference UIndex
-        /// </summary>
+        /// <summary>Reference to the matinee sequence for this BioConversation</summary>
         public IEntry Sequence { get; set; }
-        /// <summary>
-        /// NonSpkrFaceFX IEntry
-        /// </summary>
+        /// <summary>Reference to the NonSpeaker FaceFXAnimset for this BioConversation</summary>
         public IEntry NonSpkrFFX { get; set; }
 
-        public ObservableCollectionExtended<NameReference> ScriptList { get; } = new();
+        /// <summary>
+        /// Creates a ConversationExtended from a BioConversation export
+        /// </summary>
+        /// <param name="export">Export to parse properties from</param>
         public ConversationExtended(ExportEntry export)
         {
             Export = export;
@@ -59,6 +80,10 @@ namespace LegendaryExplorerCore.Dialogue
             ReplyList = new ObservableCollectionExtended<DialogueNodeExtended>();
         }
 
+        /// <summary>
+        /// Copy constructor
+        /// </summary>
+        /// <param name="other">Conversation to copy properties from</param>
         public ConversationExtended(ConversationExtended other)
         {
             ExportUID = other.ExportUID;
@@ -78,11 +103,15 @@ namespace LegendaryExplorerCore.Dialogue
             StageDirections.AddRange(other.StageDirections);
         }
 
-        public void LoadConversation(Func<int, IMEPackage, string> tlkLookup = null, bool detailedLoad = false)
+        /// <summary>
+        /// Parses all conversation data from the export into this class instance
+        /// </summary>
+        /// <param name="tlkLookup">Lambda function used to perform TLK lookups</param>
+        /// <param name="detailedParse">If true, a detailed parse will be performed</param>
+        public void LoadConversation(Func<int, IMEPackage, string> tlkLookup = null, bool detailedParse = false)
         {
             ParseStartingList();
             ParseSpeakers();
-            //GenerateSpeakerList();
             ParseEntryList(tlkLookup);
             ParseReplyList(tlkLookup);
             ParseScripts();
@@ -91,12 +120,15 @@ namespace LegendaryExplorerCore.Dialogue
             ParseWwiseBank();
             ParseStageDirections(tlkLookup);
 
-            if (detailedLoad)
+            if (detailedParse)
             {
                 DetailedParse();
             }
         }
 
+        /// <summary>
+        /// Performs a detailed parse of the BioConversation export, parsing FaceFX, InterpDatas, AudioStreams, and speaker tags
+        /// </summary>
         public void DetailedParse()
         {
 
@@ -105,16 +137,20 @@ namespace LegendaryExplorerCore.Dialogue
                 spkr.FaceFX_Male = GetFaceFX(spkr.SpeakerID, true);
                 spkr.FaceFX_Female = GetFaceFX(spkr.SpeakerID, false);
             }
-            GenerateSpeakerTags();
-            ParseLinesInterpData();
-            ParseLinesFaceFX();
-            ParseLinesAudioStreams();
-            ParseLinesScripts();
+            generateSpeakerTags();
+            parseLinesInterpData();
+            parseLinesFaceFX();
+            parseLinesAudioStreams();
+            parseLinesScripts();
 
             IsParsed = true;
         }
 
-        private void GenerateSpeakerTags()
+        /// <summary>
+        /// Sets the <see cref="DialogueNodeExtended.SpeakerTag"/> property on for each dialogue node in the conversation
+        /// </summary>
+        /// <remarks>Entry list, reply list, and speaker list should already be populated before calling</remarks>
+        private void generateSpeakerTags()
         {
             foreach (var e in EntryList)
             {
@@ -134,9 +170,10 @@ namespace LegendaryExplorerCore.Dialogue
         }
 
         /// <summary>
-        /// Gets the interpdata for each node in conversation
+        /// Finds and sets the <see cref="DialogueNodeExtended.Interpdata"/> for each dialogue node in the conversation
         /// </summary>
-        private void ParseLinesInterpData()
+        /// <remarks>Entry list and reply list should already be populated before calling</remarks>
+        private void parseLinesInterpData()
         {
             if (Sequence == null || Sequence.UIndex < 1)
                 return;
@@ -189,8 +226,11 @@ namespace LegendaryExplorerCore.Dialogue
             }
         }
 
-
-        private void ParseLinesFaceFX()
+        /// <summary>
+        /// Sets the FaceFX line names for each dialogue node in the conversation
+        /// </summary>
+        /// <remarks>Entry list and reply list should already be populated before calling</remarks>
+        private void parseLinesFaceFX()
         {
             foreach (var entry in EntryList)
             {
@@ -222,8 +262,11 @@ namespace LegendaryExplorerCore.Dialogue
         }
 
         /// <summary>
-        /// Gets the interpdata for a single node
+        /// Finds the InterpData export for a given DialogueNode
         /// </summary>
+        /// <param name="node">Node to find InterpData for</param>
+        /// <param name="convStarts">Dictionary of node <see cref="DialogueNodeExtended.ExportID"/> to SeqEvt_ConvNode exports. If null, this will be calculated.</param>
+        /// <returns>InterpData export for node, null if not found</returns>
         public ExportEntry ParseSingleNodeInterpData(DialogueNodeExtended node, Dictionary<int, ExportEntry> convStarts = null)
         {
             if (Sequence == null || node == null || Sequence.UIndex < 1)
@@ -249,15 +292,14 @@ namespace LegendaryExplorerCore.Dialogue
 
             //Match to export id => SeqAct_Interp => Interpdata
             node.ExportID = node.NodeProp.GetProp<IntProperty>("nExportID");
-            if (node.ExportID != 0)
+            if (node.ExportID != 0 && convStarts != null)
             {
                 var convstart = convStarts.FirstOrDefault(s => s.Key == node.ExportID).Value;
                 if (convstart != null)
                 {
                     // Find the interp data
-                    List<ExportEntry> searchingExports = new List<ExportEntry>();
-                    searchingExports.Add(convstart);
-                    var seqActInterp = RecursiveFindSeqActInterp(searchingExports, new List<ExportEntry>(), 10);
+                    var searchingExports = new List<ExportEntry> {convstart};
+                    var seqActInterp = recursiveFindSeqActInterp(searchingExports, new List<ExportEntry>(), 10);
 
                     var varLinksProp = seqActInterp.GetProperty<ArrayProperty<StructProperty>>("VariableLinks");
                     if (varLinksProp != null)
@@ -283,7 +325,14 @@ namespace LegendaryExplorerCore.Dialogue
             return null;
         }
 
-        private ExportEntry RecursiveFindSeqActInterp(List<ExportEntry> nodesToSearch, List<ExportEntry> nodesSearched, int searchDepthRemaining)
+        /// <summary>
+        /// Recursively searches a kismet sequence for an export of class SeqAct_Interp
+        /// </summary>
+        /// <param name="nodesToSearch">List of nodes to search</param>
+        /// <param name="nodesSearched">List of nodes already visited</param>
+        /// <param name="searchDepthRemaining">How many layers deep should be searched</param>
+        /// <returns>Export of class SeqAct_Interp, or null if not found</returns>
+        private ExportEntry recursiveFindSeqActInterp(List<ExportEntry> nodesToSearch, List<ExportEntry> nodesSearched, int searchDepthRemaining)
         {
             if (searchDepthRemaining <= 0)
                 return null; // NOT FOUND, NO FURTHER SEARCH
@@ -309,17 +358,16 @@ namespace LegendaryExplorerCore.Dialogue
                 }
             }
 
-            return RecursiveFindSeqActInterp(nextNodesToSearch, nodesSearched, --searchDepthRemaining);
+            return recursiveFindSeqActInterp(nextNodesToSearch, nodesSearched, --searchDepthRemaining);
         }
 
         /// <summary>
-        /// Parses for male and female wwisestream IEntry for every line in the conversation.
+        /// Finds the stream exports and sets the WwiseStream properties for each dialogue node in the conversation
         /// </summary>
-        private void ParseLinesAudioStreams()
+        private void parseLinesAudioStreams()
         {
             try
             {
-
                 if (Export.FileRef.Game is not (MEGame.LE1 or MEGame.ME1))
                 {
                     Dictionary<string, ExportEntry> streams = Export.FileRef.Exports.Where(x => x.ClassName == "WwiseStream").ToDictionary(x => $"{x.ObjectName.Name.ToLower()}_{x.UIndex}");
@@ -348,7 +396,16 @@ namespace LegendaryExplorerCore.Dialogue
 #endif
             }
         }
-        private void ParseLinesScripts()
+
+        /// <summary>
+        /// Parses each dialogue node's <see cref="DialogueNodeExtended.Script"/> property from the node's struct.
+        /// Conversation entries, replies, and scripted events should be populated first
+        /// </summary>
+        /// <remarks>
+        /// Will return early if <see cref="IsFirstParsed"/> is false
+        /// </remarks>
+        /// <exception cref="Exception">Parse failure on script list</exception>
+        private void parseLinesScripts()
         {
             if (IsFirstParsed)
             {
@@ -374,18 +431,27 @@ namespace LegendaryExplorerCore.Dialogue
             }
         }
 
+        /// <summary>
+        /// Parses the <see cref="EntryList"/> collection from the export's m_EntryList property
+        /// </summary>
+        /// <param name="tlkLookup">Lambda function to use for TLK lookup</param>
         public void ParseEntryList(Func<int, IMEPackage, string> tlkLookup = null)
         {
             EntryList = new ObservableCollectionExtended<DialogueNodeExtended>();
             var entryprop = BioConvo.GetProp<ArrayProperty<StructProperty>>("m_EntryList");
             int cnt = 0;
 
-            foreach (StructProperty Node in entryprop)
+            foreach (StructProperty node in entryprop)
             {
-                EntryList.Add(ParseSingleLine(Node, cnt, false, tlkLookup));
+                EntryList.Add(ParseSingleLine(node, cnt, false, tlkLookup));
                 cnt++;
             }
         }
+
+        /// <summary>
+        /// Parses the <see cref="ReplyList"/> collection from the export's m_ReplyList property
+        /// </summary>
+        /// <param name="tlkLookup">Lambda function to use for TLK lookup</param>
         public void ParseReplyList(Func<int, IMEPackage, string> tlkLookup = null)
         {
             ReplyList = new ObservableCollectionExtended<DialogueNodeExtended>();
@@ -393,15 +459,24 @@ namespace LegendaryExplorerCore.Dialogue
             if (replyprop != null)
             {
                 int cnt = 0;
-                foreach (StructProperty Node in replyprop)
+                foreach (StructProperty node in replyprop)
                 {
-                    ReplyList.Add(ParseSingleLine(Node, cnt, true, tlkLookup));
+                    ReplyList.Add(ParseSingleLine(node, cnt, true, tlkLookup));
                     cnt++;
                 }
             }
         }
 
-        public DialogueNodeExtended ParseSingleLine(StructProperty Node, int count, bool isReply, Func<int, IMEPackage, string> tlkLookupFunc = null)
+        /// <summary>
+        /// Creates a single <see cref="DialogueNodeExtended"/> from a node's StructProperty
+        /// </summary>
+        /// <param name="node">StructProperty of dialogue node, must be BioDialogReplyNode or BioDialogEntryNode</param>
+        /// <param name="count">The array index of this node</param>
+        /// <param name="isReply">True if node is reply (player) node, false if entry (non-player) node</param>
+        /// <param name="tlkLookupFunc">Lambda function used to perform TLK lookups</param>
+        /// <returns>New dialogue node created from the struct values</returns>
+        /// <exception cref="Exception">Parse failed, likely on property lookup</exception>
+        public DialogueNodeExtended ParseSingleLine(StructProperty node, int count, bool isReply, Func<int, IMEPackage, string> tlkLookupFunc = null)
         {
             int linestrref = 0;
             int spkridx = -2;
@@ -412,35 +487,34 @@ namespace LegendaryExplorerCore.Dialogue
             EReplyTypes eReply = EReplyTypes.REPLY_STANDARD;
             try
             {
-                linestrref = Node.GetProp<StringRefProperty>("srText")?.Value ?? 0;
+                linestrref = node.GetProp<StringRefProperty>("srText")?.Value ?? 0;
                 line = tlkLookupFunc?.Invoke(linestrref, Export.FileRef);
-                cond = Node.GetProp<IntProperty>("nConditionalFunc")?.Value ?? -1;
-                stevent = Node.GetProp<IntProperty>("nStateTransition")?.Value ?? -1;
-                bcond = Node.GetProp<BoolProperty>("bFireConditional");
+                cond = node.GetProp<IntProperty>("nConditionalFunc")?.Value ?? -1;
+                stevent = node.GetProp<IntProperty>("nStateTransition")?.Value ?? -1;
+                bcond = node.GetProp<BoolProperty>("bFireConditional");
                 if (isReply)
                 {
-                    Enum.TryParse(Node.GetProp<EnumProperty>("ReplyType").Value.Name, out eReply);
+                    Enum.TryParse(node.GetProp<EnumProperty>("ReplyType").Value.Name, out eReply);
                 }
                 else
                 {
-                    spkridx = Node.GetProp<IntProperty>("nSpeakerIndex");
+                    spkridx = node.GetProp<IntProperty>("nSpeakerIndex");
                 }
 
-                return new DialogueNodeExtended(Node, isReply, count, spkridx, linestrref, line, bcond, cond, stevent, eReply);
+                return new DialogueNodeExtended(node, isReply, count, spkridx, linestrref, line, bcond, cond, stevent, eReply);
             }
             catch (Exception e)
             {
 #if DEBUG
                 throw new Exception($"List Parse failed: N{count} Reply?:{isReply}, {linestrref}, {line}, {cond}, {stevent}, {bcond.ToString()}, {eReply.ToString()}", e);  //Note some convos don't have replies.
 #endif
-                return new DialogueNodeExtended(Node, isReply, count, spkridx, linestrref, line, bcond, cond, stevent, eReply);
+                return new DialogueNodeExtended(node, isReply, count, spkridx, linestrref, line, bcond, cond, stevent, eReply);
             }
         }
 
         /// <summary>
-        /// Gets dictionary of starting list and position
+        /// Parses the <see cref="StartingList"/> dictionary from the m_StartingList ArrayProperty in the export
         /// </summary>
-        /// <returns>Key = position on list, Value = Outlink</returns>
         public void ParseStartingList()
         {
             StartingList = new SortedDictionary<int, int>();
@@ -456,6 +530,9 @@ namespace LegendaryExplorerCore.Dialogue
             }
         }
 
+        /// <summary>
+        /// Populates the <see cref="Speakers"/> collection from the speaker list ArrayProperty in the export
+        /// </summary>
         public void ParseSpeakers()
         {
             Speakers = new ObservableCollectionExtended<SpeakerExtended>
@@ -500,6 +577,9 @@ namespace LegendaryExplorerCore.Dialogue
             }
         }
 
+        /// <summary>
+        /// Populates the <see cref="ScriptList"/> property from the scripted events defined in the export
+        /// </summary>
         public void ParseScripts() 
         {
             ScriptList.Add("None");
@@ -530,7 +610,7 @@ namespace LegendaryExplorerCore.Dialogue
         }
 
         /// <summary>
-        /// Sets the IEntry of NonSpeaker FaceFX
+        /// Sets this object's <see cref="NonSpkrFFX"/> property based on the contents of the export
         /// </summary>
         public void ParseNSFFX()
         {
@@ -551,7 +631,7 @@ namespace LegendaryExplorerCore.Dialogue
             }
         }
         /// <summary>
-        /// Sets the Uindex of WwiseBank
+        /// Sets this object's <see cref="WwiseBank"/> property based on the contents of the export
         /// </summary>
         public void ParseWwiseBank()
         {
@@ -633,7 +713,7 @@ namespace LegendaryExplorerCore.Dialogue
         }
 
         /// <summary>
-        /// Sets the IEntry of appropriate sequence
+        /// Sets this object's <see cref="Sequence"/> property based on the contents of the export
         /// </summary>
         public void ParseSequence()
         {
@@ -659,6 +739,12 @@ namespace LegendaryExplorerCore.Dialogue
             }
         }
 
+        /// <summary>
+        /// Populates the <see cref="StageDirections"/> property from the m_aStageDirections property in the export.
+        /// This property only exists in Game 3.
+        /// </summary>
+        /// <param name="tlkLookup">Lambda function used to perform TLK lookups</param>
+        /// <exception cref="Exception">Unable to parse stage direction</exception>
         public void ParseStageDirections(Func<int, IMEPackage, string> tlkLookup = null)
         {
             if (Export.FileRef.Game.IsGame3())
@@ -699,10 +785,10 @@ namespace LegendaryExplorerCore.Dialogue
 
 
         /// <summary>
-        /// Returns the IEntry of FaceFXAnimSet
+        /// Gets the FaceFXAnimset entry from the export for a given speaker ID
         /// </summary>
-        /// <param name="speakerID">SpeakerID: -1 = Owner, -2 = Player</param>
-        /// <param name="isMale">will pull female by default</param>
+        /// <param name="speakerID">ID of speaker to get animset for. -1 = Owner, -2 = Player</param>
+        /// <param name="isMale">If true, get the male animset, otherwise get the female animset</param>
         public IEntry GetFaceFX(int speakerID, bool isMale = false)
         {
             string ffxPropName = "m_aFemaleFaceSets"; //ME2/M£3
@@ -719,6 +805,11 @@ namespace LegendaryExplorerCore.Dialogue
             return null;
         }
 
+        /// <summary>
+        /// Serializes the <see cref="StartingList"/>, <see cref="EntryList"/>, <see cref="ReplyList"/>, and <see cref="Speakers"/> list
+        /// to a StructProperty, optionally written to the conversation export
+        /// </summary>
+        /// <param name="commitToExport">If true, serialized StructProperty will be written to the export</param>
         public void SerializeNodes(bool commitToExport = true)
         {
             AutoGenerateSpeakerArrays();
@@ -794,6 +885,13 @@ namespace LegendaryExplorerCore.Dialogue
                 Export.WriteProperties(BioConvo);
         }
 
+        /// <summary>
+        /// Traverses the conversation graph, setting the aSpeakerList ArrayProperty for each starting node
+        /// </summary>
+        /// <remarks>
+        /// Properties are set in the node's <see cref="DialogueNodeExtended.NodeProp"/>
+        /// </remarks>
+        /// <returns>True if conversation has looping paths, false otherwise</returns>
         public bool AutoGenerateSpeakerArrays()
         {
             bool hasLoopingPaths = false;
