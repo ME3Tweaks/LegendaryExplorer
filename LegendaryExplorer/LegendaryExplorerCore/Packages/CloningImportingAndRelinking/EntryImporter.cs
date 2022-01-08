@@ -1151,14 +1151,18 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         }
         public static List<string> GetPossibleAssociatedFiles(IMEPackage package, string localization = "INT", bool includeNonBioPRelated = true)
         {
-            string filenameWithoutExtension = Path.GetFileNameWithoutExtension(package.FilePath).ToLower();
+            // This method doesn't really work for files loaded from a stream as they have null FilePath - like certain files in M3
+            string filenameWithoutExtension = Path.GetFileNameWithoutExtension(package.FilePath)?.ToLower();
             var associatedFiles = new List<string>();
             string bioFileExt = package.Game == MEGame.ME1 ? ".sfm" : ".pcc";
             if (includeNonBioPRelated)
             {
                 associatedFiles.Add($"{filenameWithoutExtension}_LOC_{localization}{bioFileExt}"); //todo: support users setting preferred language of game files
             }
-            var isBioXfile = filenameWithoutExtension.Length > 5 && filenameWithoutExtension.StartsWith("bio") && filenameWithoutExtension[4] == '_';
+            var isBioXfile = filenameWithoutExtension is not null &&
+                             filenameWithoutExtension.Length > 5 &&
+                             filenameWithoutExtension.StartsWith("bio") &&
+                             filenameWithoutExtension[4] == '_';
             if (isBioXfile)
             {
                 // Do not include extensions in the results of this, they will be appended in resulting file
