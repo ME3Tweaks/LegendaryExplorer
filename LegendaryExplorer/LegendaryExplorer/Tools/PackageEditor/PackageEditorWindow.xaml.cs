@@ -1024,6 +1024,22 @@ namespace LegendaryExplorer.Tools.PackageEditor
             }
         }
 
+        /// <summary>
+        /// Same as <see cref="entryDoubleClick"/>, but navigates to the TreeView first if you're on the names tab
+        /// Used in the "Find Usages of Name" list dialog
+        /// </summary>
+        /// <param name="clickedItem"></param>
+        private void entryDoubleClickToTreeview(EntryStringPair clickedItem)
+        {
+            if (CurrentView is CurrentViewMode.Names)
+            {
+                SearchHintText = "Object name";
+                GotoHintText = "UIndex";
+                CurrentView = CurrentViewMode.Tree;
+            }
+            entryDoubleClick(clickedItem);
+        }
+
         private void PopoutCurrentView()
         {
             if (EditorTabs.SelectedItem is TabItem { Content: ExportLoaderControl exportLoader })
@@ -1474,7 +1490,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                                     $"#{kvp.Key.UIndex} {kvp.Key.ObjectName.Instanced}: {refName}"))).ToList(),
                             $"{prevTask.Result.Count} Objects that use '{name}'",
                             "There may be additional usages of this name in the unparsed binary of some objects", this)
-                    { DoubleClickEntryHandler = entryDoubleClick };
+                    { DoubleClickEntryHandler = entryDoubleClickToTreeview };
                     dlg.Show();
                 });
             }

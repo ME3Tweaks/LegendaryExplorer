@@ -107,7 +107,7 @@ namespace LegendaryExplorerCore.Dialogue
         /// Parses all conversation data from the export into this class instance
         /// </summary>
         /// <param name="tlkLookup">Lambda function used to perform TLK lookups</param>
-        /// <param name="detailedParse">If true, a detailed parse will be performed</param>
+        /// <param name="detailedParse">If true, a detailed parse will be performed. This parses additional properties, such as InterpData, for each node.</param>
         public void LoadConversation(Func<int, IMEPackage, string> tlkLookup = null, bool detailedParse = false)
         {
             ParseStartingList();
@@ -127,7 +127,8 @@ namespace LegendaryExplorerCore.Dialogue
         }
 
         /// <summary>
-        /// Performs a detailed parse of the BioConversation export, parsing FaceFX, InterpDatas, AudioStreams, and speaker tags
+        /// Performs a detailed parse of the BioConversation export and references. This primarily sets properties like
+        /// FaceFX and InterpData on the individual <see cref="DialogueNodeExtended"/>s in the conversation.
         /// </summary>
         public void DetailedParse()
         {
@@ -147,7 +148,7 @@ namespace LegendaryExplorerCore.Dialogue
         }
 
         /// <summary>
-        /// Sets the <see cref="DialogueNodeExtended.SpeakerTag"/> property on for each dialogue node in the conversation
+        /// Sets the <see cref="DialogueNodeExtended.SpeakerTag"/> property for each dialogue node in the conversation
         /// </summary>
         /// <remarks>Entry list, reply list, and speaker list should already be populated before calling</remarks>
         private void generateSpeakerTags()

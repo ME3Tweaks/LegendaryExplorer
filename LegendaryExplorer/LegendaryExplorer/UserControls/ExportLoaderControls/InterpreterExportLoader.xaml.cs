@@ -1103,7 +1103,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     break;
                 case StructProperty sp:
                     // CUSTOM UI TEMPLATES GO HERE
-                    if (sp.StructType is "Vector" or "Rotator" or "Cylinder" or "PlotStreamingElement")
+                    if (sp.StructType is "Vector" or "Rotator" or "Cylinder" or "PlotStreamingElement" or "RwVector3" or "Plane")
                     {
                         string parsedText = string.Join(", ", sp.Properties.Where(x => !(x is NoneProperty)).Select(p =>
                          {
@@ -1323,6 +1323,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     else if (sp.StructType == "PropertyInfo")
                     {
                         parsedValue = $"{sp.GetProp<NameProperty>("PropertyName").Value}";
+                    }
+                    else if (sp.StructType is "LightingChannelContainer" or "RBCollisionChannelContainer")
+                    {
+                        var channels = sp.Properties.Where(p => p is BoolProperty {Value: true});
+                        parsedValue = string.Join(", ", channels.Select(p => p.Name.Instanced));
                     }
                     else
                     {
