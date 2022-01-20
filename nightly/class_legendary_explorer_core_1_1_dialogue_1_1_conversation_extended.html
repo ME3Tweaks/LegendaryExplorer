@@ -116,7 +116,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a8fedf48f2918638e961ae89f9dbbed35"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parses all conversation data from the export into this class instance  <a href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a8fedf48f2918638e961ae89f9dbbed35">More...</a><br /></td></tr>
 <tr class="separator:a8fedf48f2918638e961ae89f9dbbed35"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:add747da7a93f4bb6844dde0d6e83a075"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#add747da7a93f4bb6844dde0d6e83a075">DetailedParse</a> ()</td></tr>
-<tr class="memdesc:add747da7a93f4bb6844dde0d6e83a075"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs a detailed parse of the BioConversation export, parsing FaceFX, InterpDatas, AudioStreams, and speaker tags  <a href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#add747da7a93f4bb6844dde0d6e83a075">More...</a><br /></td></tr>
+<tr class="memdesc:add747da7a93f4bb6844dde0d6e83a075"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs a detailed parse of the BioConversation export and references. This primarily sets properties like FaceFX and InterpData on the individual <a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_dialogue_node_extended.html" title="Represents a node in a BioConversation with it&#39;s StructProperty values and other useful information p...">DialogueNodeExtended</a>s in the conversation.  <a href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#add747da7a93f4bb6844dde0d6e83a075">More...</a><br /></td></tr>
 <tr class="separator:add747da7a93f4bb6844dde0d6e83a075"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a53ca9f556a62c78d3f549c9bbb74d216"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a53ca9f556a62c78d3f549c9bbb74d216">ParseSingleNodeInterpData</a> (<a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_dialogue_node_extended.html">DialogueNodeExtended</a> node, Dictionary&lt; int, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> &gt; convStarts=null)</td></tr>
 <tr class="memdesc:a53ca9f556a62c78d3f549c9bbb74d216"><td class="mdescLeft">&#160;</td><td class="mdescRight">Finds the InterpData export for a given DialogueNode  <a href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a53ca9f556a62c78d3f549c9bbb74d216">More...</a><br /></td></tr>
@@ -331,7 +331,7 @@ Events</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">tlkLookup</td><td>Lambda function used to perform <a class="el" href="namespace_legendary_explorer_core_1_1_t_l_k.html">TLK</a> lookups</td></tr>
-    <tr><td class="paramname">detailedParse</td><td>If true, a detailed parse will be performed</td></tr>
+    <tr><td class="paramname">detailedParse</td><td>If true, a detailed parse will be performed. This parses additional properties, such as InterpData, for each node.</td></tr>
   </table>
   </dd>
 </dl>
@@ -361,7 +361,7 @@ Events</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Performs a detailed parse of the BioConversation export, parsing FaceFX, InterpDatas, AudioStreams, and speaker tags </p>
+<p>Performs a detailed parse of the BioConversation export and references. This primarily sets properties like FaceFX and InterpData on the individual <a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_dialogue_node_extended.html" title="Represents a node in a BioConversation with it&#39;s StructProperty values and other useful information p...">DialogueNodeExtended</a>s in the conversation. </p>
 
 </div>
 </div>
