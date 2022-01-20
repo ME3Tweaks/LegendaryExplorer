@@ -894,7 +894,15 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             {
                 caseLit.NumType = INT;
             }
-            if (!(switchType is Enumeration && value is IntegerLiteral) && !NodeUtils.TypeEqual(switchType, value.ResolveType()))
+            if (switchType == SymbolTable.ByteType && value is IntegerLiteral possibleByteLiteral)
+            {
+                if (possibleByteLiteral.Value is < byte.MinValue or > byte.MaxValue)
+                {
+                    TypeError("Since the switch expression is of type 'byte', this number must be in the range 0-255.", value);
+                }
+                //AddConversion will auto-convert it to a byte literal
+            }
+            else if (!(switchType is Enumeration && value is IntegerLiteral) && !NodeUtils.TypeEqual(switchType, value.ResolveType()))
             {
                 TypeError("Case expression must evaluate to the same type as the switch expression!", value);
             }
