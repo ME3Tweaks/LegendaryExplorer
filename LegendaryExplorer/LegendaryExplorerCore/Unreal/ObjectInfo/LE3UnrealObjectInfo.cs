@@ -351,6 +351,8 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             foreach (string filePath in allFiles)
             {
                 using IMEPackage pcc = MEPackageHandler.OpenLE3Package(filePath);
+                if (pcc.Localization != MELocalization.None && pcc.Localization != MELocalization.INT)
+                    continue; // DO NOT LOOK AT NON-INT AS SOME GAMES WILL BE MISSING THESE FILES (due to backup/storage)
                 for (int i = 1; i <= pcc.ExportCount; i++)
                 {
                     ExportEntry exportEntry = pcc.GetUExport(i);
@@ -380,6 +382,8 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             foreach (string filePath in allFiles)
             {
                 using IMEPackage pcc = MEPackageHandler.OpenLE3Package(filePath);
+                if (pcc.Localization != MELocalization.None && pcc.Localization != MELocalization.INT)
+                    continue; // DO NOT LOOK AT NON-INT AS SOME GAMES WILL BE MISSING THESE FILES (due to backup/storage)
                 foreach (ExportEntry exportEntry in pcc.Exports)
                 {
                     if (exportEntry.IsA("SequenceObject"))
