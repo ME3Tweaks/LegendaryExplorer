@@ -375,7 +375,7 @@ namespace LegendaryExplorer.SharedUI
                             // using the LEX cache as we don't want the package actually open.
                             if (tag != null && tag.Value.Name != Entry.ObjectName)
                             {
-                                _subtext = tag.Value.Name;
+                                _subtext = tag.Value.Instanced;
                             }
                         }
                     }
