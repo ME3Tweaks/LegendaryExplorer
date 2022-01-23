@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Windows;
 using System.Windows.Media;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -7,6 +8,7 @@ using SharpDX;
 using SharpDX.Direct3D11;
 using SharpDX.Direct3D;
 using LegendaryExplorerCore.Unreal;
+using PropertyChanged;
 
 namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
 {
@@ -175,7 +177,8 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
     /// <summary>
     /// Hosts a <see cref="RenderContext"/> in a WPF control.
     /// </summary>
-    public class SceneRenderControl : System.Windows.Controls.ContentControl, IDisposable
+    [AddINotifyPropertyChangedInterface]
+    public class SceneRenderControl : System.Windows.Controls.ContentControl
     {
         private Microsoft.Wpf.Interop.DirectX.D3D11Image D3DImage = null;
         private Image Image;
@@ -190,6 +193,12 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
         public SceneRenderControl()
         {
             InitializeComponent();
+            Loaded += (s, e) =>
+            {
+                // only at this point the control is ready
+                Window.GetWindow(this) // get the parent window
+                    .Closing += (s1, e1) => FullyDispose(); //disposing logic here
+            };
         }
 
         private void InitializeComponent()
@@ -218,23 +227,26 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
                 };
                 this.Content = Image;
 
-                this.D3DImage.WindowOwner = (new System.Windows.Interop.WindowInteropHelper(System.Windows.Window.GetWindow(this))).Handle;
+                this.D3DImage.WindowOwner = new System.Windows.Interop.WindowInteropHelper(System.Windows.Window.GetWindow(this)).Handle; // This needs to be cleared when disposing or it will hold a reference
                 this.Unloaded += SceneRenderControlWPF_Unloaded;
 
                 Context.CreateResources();
 
                 CompositionTarget.Rendering += CompositionTarget_Rendering;
                 InitiallyLoaded = true;
-
             }
-            this.SizeChanged += SceneRenderControlWPF_SizeChanged;
+            else
+            {
+                // We are now becoming visible (e.g. tab selection)
+                SetShouldRender(true);
+            }
             this.PreviewMouseDown += SceneRenderControlWPF_PreviewMouseDown;
             this.PreviewMouseMove += SceneRenderControlWPF_PreviewMouseMove;
             this.PreviewMouseUp += SceneRenderControlWPF_PreviewMouseUp;
             this.PreviewMouseWheel += SceneRenderControlWPF_PreviewMouseWheel;
             this.KeyDown += OnKeyDown;
             this.KeyUp += OnKeyUp;
-            SetShouldRender(true);
+            this.SizeChanged += SceneRenderControlWPF_SizeChanged;
         }
 
         private void SceneRenderControlWPF_Unloaded(object sender, System.Windows.RoutedEventArgs e)
@@ -247,6 +259,31 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             this.KeyUp -= OnKeyUp;
             this.KeyDown -= OnKeyDown;
             this.SizeChanged -= SceneRenderControlWPF_SizeChanged;
+        }
+
+        /// <summary>
+        /// This is called when the window closes, as we have to dispose of resources that can't be disposed during unload
+        /// </summary>
+        private void FullyDispose()
+        {
+            CompositionTarget.Rendering -= CompositionTarget_Rendering;
+            this.Unloaded -= SceneRenderControlWPF_Unloaded;
+
+            if (this.Context.Backbuffer != null)
+                this.Context.DisposeSizeDependentResources();
+
+            if (this.Context.Device != null)
+                this.Context.DisposeResources();
+
+            this.D3DImage?.Dispose();
+            this.D3DImage = null;
+            this.Image = null;
+            this.Content = null;
+            
+            //Image.Source = null; // Lose reference to D3DImage
+            //this.D3DImage.WindowOwner = IntPtr.Zero; // dunno if this is a good idea
+            //D3DImage.Dispose();
+            //Context = null;
         }
 
         /// <summary>
@@ -287,8 +324,9 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
 
         private void CompositionTarget_Rendering(object sender, EventArgs e)
         {
-            if (Context.IsReady)
+            if (_shouldRender && Context != null && Context.IsReady)
             {
+                Debug.WriteLine("Rendering");
                 D3DImage.RequestRender();
             }
         }
@@ -338,7 +376,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             }
         }
 
-        private bool _shouldRender = true;
+        private bool _shouldRender = false;
 
         public void SetShouldRender(bool shouldRender)
         {
@@ -415,5 +453,11 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             e.Handled = Context.KeyUp(e.Key);
         }
         #endregion
+
+        // MEMORY GC
+        ~SceneRenderControl()
+        {
+
+        }
     }
 }

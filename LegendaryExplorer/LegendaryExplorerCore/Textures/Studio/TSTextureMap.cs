@@ -482,7 +482,8 @@ namespace LegendaryExplorerCore.Textures.Studio
 
                 if (cts.IsCancellationRequested) 
                     break;
-                using var package = MEPackageHandler.OpenMEPackage(p);
+                //using var package = MEPackageHandler.OpenMEPackage(p);
+                using var package = MEPackageHandler.UnsafePartialLoad(p, x=> !x.IsDefaultObject && x.IsTexture());
 
                 if (game != MEGame.Unknown && game != package.Game)
                 {

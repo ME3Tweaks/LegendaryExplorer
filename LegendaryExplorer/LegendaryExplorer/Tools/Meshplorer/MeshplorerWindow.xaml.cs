@@ -458,7 +458,7 @@ namespace LegendaryExplorer.Tools.Meshplorer
         private bool IsMeshSelected() => Mesh3DViewer.IsStaticMesh || Mesh3DViewer.IsSkeletalMesh;
         private bool IsSkeletalMeshSelected() => Mesh3DViewer.IsSkeletalMesh;
 
-        private bool CanConvertToStaticMesh() => Mesh3DViewer.IsSkeletalMesh && Pcc.Game == MEGame.ME3;
+        private bool CanConvertToStaticMesh() => Mesh3DViewer.IsSkeletalMesh && Pcc.Game.IsGame3();
 
         private void ConvertToStaticMesh()
         {
@@ -551,6 +551,7 @@ namespace LegendaryExplorer.Tools.Meshplorer
                     CurrentExport = MeshExports.FirstOrDefault(x => x.UIndex == goToIndex);
                     ExportQueuedForFocusing = CurrentExport;
                 }
+                Mesh3DViewer.SceneViewer.SetShouldRender(true); // Set it to enable rendering
             }
             catch (Exception e)
             {

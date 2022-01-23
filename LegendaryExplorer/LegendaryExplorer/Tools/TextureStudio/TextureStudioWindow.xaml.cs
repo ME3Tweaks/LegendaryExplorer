@@ -92,7 +92,7 @@ namespace LegendaryExplorer.Tools.TextureStudio
             }
             else
             {
-                using var package = MEPackageHandler.OpenMEPackage(Path.Combine(SelectedFolder, SelectedInstance.RelativePackagePath));
+                using var package = MEPackageHandler.UnsafePartialLoad(Path.Combine(SelectedFolder, SelectedInstance.RelativePackagePath), x=>x.InstancedFullPath == SelectedInstance.ExportPath); // do not open the full package
                 TextureViewer_ExportLoader.LoadExport(package.FindExport(SelectedInstance.ExportPath));
             }
         }
@@ -177,11 +177,12 @@ namespace LegendaryExplorer.Tools.TextureStudio
             SelectedFolder = workspacepath;
             BeginScan();
 
-
             if (SelectedFolder != null && Path.GetFileNameWithoutExtension(SelectedFolder).StartsWith("DLC_MOD_"))
             {
                 TFCSuffix = Path.GetFileNameWithoutExtension(SelectedFolder);
             }
+
+            TextureViewer_ExportLoader?.PreviewRenderer?.SetShouldRender(true); // turn on rendering
         }
 
         #region Command loading
