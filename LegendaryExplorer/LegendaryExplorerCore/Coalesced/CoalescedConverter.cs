@@ -27,6 +27,7 @@ namespace LegendaryExplorerCore.Coalesced
                 "BioDifficulty",
                 "BioEngine",
                 "BioGame",
+                "BioGuiResources", // PC Main Menu PC New Character
                 "BioInput",
                 "BioLightmass",
                 "BioTest",

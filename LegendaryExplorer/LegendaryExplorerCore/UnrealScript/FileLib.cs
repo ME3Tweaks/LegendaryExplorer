@@ -121,7 +121,7 @@ namespace LegendaryExplorerCore.UnrealScript
         {
             try
             {
-                LECLog.Information($@"Game Root Path for FileLib Init: {gameRootPath}. Has package cache: {packageCache != null}");
+                LECLog.Information($@"Game Root Path for FileLib Init: {gameRootPath ?? "null"}. Has package cache: {packageCache != null}");
                 InitializationLog = new MessageLog();
                 _cacheEnabled = false; // defaults to false, can be enabled if init works.
                 _baseSymbols = null;
