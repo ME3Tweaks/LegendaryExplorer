@@ -613,7 +613,9 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         private static void CompileProperty(VariableDeclaration varDeclAST, IEntry parent, ref UProperty propObj)
         {
-            CreatePropertyStub(varDeclAST, parent, ref propObj);
+            Action finishPropertyCompilation = CreatePropertyStub(varDeclAST, parent, ref propObj);
+
+            finishPropertyCompilation();
         }
 
         private static Action CreatePropertyStub(VariableDeclaration varDeclAST, IEntry parent, ref UProperty refPropObj)
@@ -931,7 +933,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 trashExport.Class = classEntry;
                 trashExport.SuperClass = super;
                 trashExport.Parent = parent;
-                trashExport.WritePrePropsAndPropertiesAndBinary(new byte[4], new PropertyCollection(), (ObjectBinary)binary ?? new GenericObjectBinary(new byte[0]));
+                trashExport.WritePrePropsAndPropertiesAndBinary(new byte[4], new PropertyCollection(), (ObjectBinary)binary ?? new GenericObjectBinary(Array.Empty<byte>()));
                 return trashExport;
             }
 
