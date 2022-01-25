@@ -73,7 +73,7 @@ namespace LegendaryExplorer.SharedUI.Converters
         // parameter is allowed class type for visibility
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (parameter != null)
+            if (parameter != null && value != null)
             {
                 int iparameter = int.Parse((string)parameter);
                 HIRCDisplayObject ho = (HIRCDisplayObject)value;

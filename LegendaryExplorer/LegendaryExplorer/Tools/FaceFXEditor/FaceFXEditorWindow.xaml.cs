@@ -243,6 +243,7 @@ namespace LegendaryExplorer.Tools.FaceFXEditor
             SelectedExport = null;
             AnimSets.ClearEx();
             UnLoadMEPackage();
+            editorControl?.Dispose();
         }
 
         private void Window_DragOver(object sender, DragEventArgs e)

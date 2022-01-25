@@ -83,9 +83,33 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 {
                     SelectedLineEntry.UpdateLength();
                     UpdateAnimListBox();
+                    UpdateAudioPlayer();
                     treeView.Nodes.Clear();
                     treeView.Nodes.AddRange(DataToTree(FaceFX, SelectedLineEntry.Line));
                 }
+            }
+        }
+
+        private void UpdateAudioPlayer()
+        {
+            if (SelectedLineEntry == null)
+            {
+                audioPlayer.StopPlaying();
+                audioPlayer.UnloadExport();
+                return;
+            }
+            // Find voice line in file
+            if (CurrentLoadedExport.Game.IsGame2() || CurrentLoadedExport.Game.IsGame3())
+            {
+                var audioExport = FindVoiceStreamFromExport(SelectedLineEntry);
+                if (audioExport != null)
+                {
+                    audioPlayer.LoadExport(audioExport);
+                }
+            }
+            else if (CurrentLoadedExport.Game.IsGame1())
+            {
+                // I'm not entirely sure how we would load this given that it's in an ISB and we don't really know how they're linked...
             }
         }
 
@@ -131,6 +155,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         public override void UnloadExport()
         {
+            audioPlayer?.StopPlaying();
+            audioPlayer?.UnloadExport();
             CurrentLoadedExport = null;
             FaceFX = null;
             Lines.Clear();
@@ -167,6 +193,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 treeView_WinFormsHost = null;
             }
             graph.Dispose();
+            audioPlayer?.Dispose();
         }
 
         #endregion
@@ -190,20 +217,63 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 var LineEntry = new FaceFXLineEntry(faceFXLine);
                 var idStr = LineEntry.Line.ID;
                 var voPos = idStr.IndexOf("VO_");
+                bool isMale = true;
                 if (voPos > 0)
                 {
                     // Cut off the start of the string
                     idStr = idStr.Substring(voPos + 3);
+
+                    // Not sure if this is enough for non-gendered lines, if those exist.
+                    if (idStr.EndsWith("_F"))
+                        isMale = false;
+
                     idStr = idStr.TrimEnd('M', 'F').TrimEnd('_'); // Hack
+                    LineEntry.IsMale = isMale;
                 }
                 if (int.TryParse(idStr, out int tlkID))
                 {
                     LineEntry.TLKString = TLKManagerWPF.GlobalFindStrRefbyID(tlkID, Pcc);
+                    LineEntry.TLKID = tlkID;
                 }
                 Lines.Add(LineEntry);
             }
+
             treeView.Nodes.Clear();
             graph.Clear();
+        }
+
+        private ExportEntry FindVoiceStreamFromExport(FaceFXLineEntry selectedLine)
+        {
+            if (CurrentLoadedExport != null && selectedLine.TLKID > 0)
+            {
+                var wwiseEventSearchName = $"VO_{selectedLine.TLKID:D6}_{(selectedLine.IsMale ? "m" : "f")}";
+                var wwiseStreamSearchNameGendered = $"{selectedLine.TLKID:D8}_{(selectedLine.IsMale ? "m" : "f")}";
+                var wwiseEventExp = CurrentLoadedExport.FileRef.Exports.FirstOrDefault(x => x.ClassName == "WwiseEvent" && x.ObjectName.Name.Contains(wwiseEventSearchName, StringComparison.InvariantCultureIgnoreCase));
+                if (wwiseEventExp != null)
+                {
+                    var wwiseEvent = ObjectBinary.From<WwiseEvent>(wwiseEventExp);
+                    foreach (var link in wwiseEvent.Links)
+                    {
+                        // Look through these exports
+                        ExportEntry possible = null;
+                        var possibleExports = link.WwiseStreams.Where(x => CurrentLoadedExport.FileRef.IsUExport(x)).Select(x => CurrentLoadedExport.FileRef.GetUExport(x)).ToList();
+                        
+                        // Female ones are unique since all lines have male version. Try female first if we know this is female line
+                        if (!selectedLine.IsMale)
+                        {
+                            possible = possibleExports.FirstOrDefault(x => x.ObjectName.Name.Contains(wwiseStreamSearchNameGendered, StringComparison.InvariantCultureIgnoreCase));
+                            if (possible != null) return possible;
+                        }
+
+                        // Try male version. Sometimes if line has same thing (e.g. nonplayer line) it'll just use male version as there's only one gender
+                        // Should only be one version for this TLK...
+                        possible = possibleExports.FirstOrDefault(x => x.ObjectName.Name.Contains($"{selectedLine.TLKID:D8}", StringComparison.InvariantCultureIgnoreCase));
+                        if (possible != null)
+                            return possible;
+                    }
+                }
+            }
+            return null;
         }
 
         private void animationListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -856,6 +926,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 AnimSet = export.GetBinaryData<FaceFXAnimSet>();
             }
         }
+
+        private void FaceFXAnimSetEditorControl_OnUnloaded(object sender, RoutedEventArgs e)
+        {
+            // Called when the control is no longer visible.
+            audioPlayer?.StopPlaying();
+        }
     }
 
     public class Animation : NotifyPropertyChangedBase
@@ -887,6 +963,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         }
     }
 
+    /// <summary>
+    /// UI wrapper for FaceFXLine
+    /// </summary>
     public class FaceFXLineEntry : NotifyPropertyChangedBase
     {
         private FaceFXLine _line;
@@ -930,6 +1009,15 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 }
             }
         }
+
+        /// <summary>
+        /// The ID of the TLK, which is used for some lookups by name
+        /// </summary>
+        public int TLKID { get; set; }
+        /// <summary>
+        /// If the line is _M or _F
+        /// </summary>
+        public bool IsMale { get; set; }
 
         public FaceFXLineEntry(FaceFXLine faceFX)
         {

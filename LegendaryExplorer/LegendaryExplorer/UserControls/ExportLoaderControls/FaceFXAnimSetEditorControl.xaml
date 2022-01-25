@@ -8,6 +8,7 @@
              xmlns:Converters="clr-namespace:LegendaryExplorer.SharedUI.Converters"
              xmlns:forms="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
              mc:Ignorable="d" 
+             Unloaded="FaceFXAnimSetEditorControl_OnUnloaded"
              d:DataContext="{Binding RelativeSource={RelativeSource Self}}"
              d:DesignHeight="450" d:DesignWidth="800">
     <exportLoaderControls:ExportLoaderControl.Resources>
@@ -26,10 +27,11 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Label Content="Lines"/>
-        <Grid Grid.Row="1" Grid.Column="0">
+        <Grid Grid.Row="1" Grid.Column="0" Grid.RowSpan="2">
             <Grid.RowDefinitions>
                 <RowDefinition/>
                 <RowDefinition Height="155"/>
@@ -80,7 +82,7 @@
         </Grid>
         <GridSplitter Grid.Row="1" Grid.RowSpan="2" Width="5" HorizontalAlignment="Stretch" Grid.Column="1"/>
         <Label Content="Animations" Grid.Row="0" Grid.Column="2"/>
-        <ListBox x:Name="animationListBox" Grid.Column="2" Grid.Row="1" ItemsSource="{Binding Animations}"
+        <ListBox x:Name="animationListBox" Grid.Column="2" Grid.Row="1" Grid.RowSpan="2" ItemsSource="{Binding Animations}"
                     SelectionChanged="animationListBox_SelectionChanged" 
                      AllowDrop="True" PreviewMouseLeftButtonDown="animationListBox_PreviewMouseLeftButtonDown" MouseMove="animationListBox_MouseMove"
                      DragEnter="animationListBox_DragEnter" Drop="animationListBox_Drop" HorizontalContentAlignment="Stretch"
@@ -110,8 +112,7 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-
-        <GridSplitter Width="5" HorizontalAlignment="Stretch" Grid.Row="0" Grid.RowSpan="2" Grid.Column="3"/>
+        <GridSplitter Width="5" HorizontalAlignment="Stretch" Grid.Row="0" Grid.RowSpan="3" Grid.Column="3"/>
         <Grid Grid.Column="4" Grid.Row="0" Grid.RowSpan="2">
             <Grid.RowDefinitions>
                 <RowDefinition/>
@@ -120,5 +121,6 @@
             <sharedToolControls:CurveGraph x:Name="graph" DockPanel.Dock="Right" KeyDown="Graph_KeyDown"/>
             <TextBlock Text="{Binding SelectedLineEntry.TLKString}" Grid.Row="1" TextWrapping="Wrap"/>
         </Grid>
+        <exportLoaderControls:Soundpanel x:Name="audioPlayer" Grid.Row="2" Grid.Column="4" MiniPlayerMode="True" GenerateWaveformGraph="True"/>
     </Grid>
 </exportLoaderControls:ExportLoaderControl>

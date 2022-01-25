@@ -29,39 +29,44 @@
         <KeyBinding Key="S" Modifiers="Control+Shift" Command="{Binding SaveAsCommand}"/>
     </Window.InputBindings>
     <xctk:BusyIndicator IsBusy="{Binding Path=IsBusy}" BusyContent="{Binding BusyText}">
-    <DockPanel>
-        <Menu DockPanel.Dock="Top">
-            <MenuItem Header="_File" Padding="4">
-                <MenuItem Header="_Open" Command="{Binding OpenCommand}" InputGestureText="Ctrl+O" ToolTip="Open a package file"/>
-                <MenuItem Header="_Save"  Command="{Binding SaveCommand}" InputGestureText="Ctrl+S" ToolTip="Save package file in-place"/>
-                <MenuItem Header="Save as" Command="{Binding SaveAsCommand}" InputGestureText="Ctrl+Shift+S" ToolTip="Save package file to another location"/>
-                <MenuItem Name="Recents_MenuItem" Header="Recent" IsEnabled="false"/>
-            </MenuItem>
-        </Menu>
-        <StatusBar Height="23" DockPanel.Dock="Bottom">
-            <sharedToolControls:StatusBarGameIDIndicator GameType="{Binding Pcc.Game}" Margin="0,-4"/>
-            <StatusBarItem>
-                <TextBlock Name="StatusBar_LeftMostText" Text="{Binding CurrentFile}"/>
-            </StatusBarItem>
-            <StatusBarItem HorizontalAlignment="Right">
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Name="StatusBar_RightSide_LastSaved" Text="{Binding Pcc.LastSaved, StringFormat='Last saved at {0}'}" Foreground="Gray"/>
-                </StackPanel>
-            </StatusBarItem>
-        </StatusBar>
-        <Grid>
-            <Grid Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
-                <StackPanel Grid.Column="0" Margin="50">
-                    <TextBlock Margin="5" Text="Welcome to FaceFX Editor" FontWeight="Bold" />
-                    <TextBlock Margin="5">
+        <DockPanel>
+            <Menu DockPanel.Dock="Top">
+                <MenuItem Header="_File" Padding="4">
+                    <MenuItem Header="_Open" Command="{Binding OpenCommand}" InputGestureText="Ctrl+O" ToolTip="Open a package file"/>
+                    <MenuItem Header="_Save"  Command="{Binding SaveCommand}" InputGestureText="Ctrl+S" ToolTip="Save package file in-place"/>
+                    <MenuItem Header="Save as" Command="{Binding SaveAsCommand}" InputGestureText="Ctrl+Shift+S" ToolTip="Save package file to another location"/>
+                    <MenuItem Name="Recents_MenuItem" Header="Recent" IsEnabled="false"/>
+                </MenuItem>
+            </Menu>
+            <StatusBar Height="23" DockPanel.Dock="Bottom">
+                <sharedToolControls:StatusBarGameIDIndicator GameType="{Binding Pcc.Game}" Margin="0,-4"/>
+                <StatusBarItem>
+                    <TextBlock Name="StatusBar_LeftMostText" Text="{Binding CurrentFile}"/>
+                </StatusBarItem>
+                <StatusBarItem HorizontalAlignment="Right">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Name="StatusBar_RightSide_LastSaved" Text="{Binding Pcc.LastSaved, StringFormat='Last saved at {0}'}" Foreground="Gray"/>
+                    </StackPanel>
+                </StatusBarItem>
+            </StatusBar>
+            <Grid>
+                <Grid Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0" Margin="50">
+                        <TextBlock Margin="5" Text="Welcome to FaceFX Editor" FontWeight="Bold" />
+                        <TextBlock Margin="5">
                         FaceFX Editor is a tool for editing facial animation data.
                         <LineBreak />
-                        Read this tutorial for more details: 
-                        <Hyperlink NavigateUri="https://github.com/ME3Tweaks/ME3Explorer/wiki/Creating-Custom-FaceFX-using-FaceFX-Editor"
+                        Read these tutorials for more details: 
+                        <Hyperlink NavigateUri="https://github.com/ME3Tweaks/LegendaryExplorer/wiki/Principles-of-Facial-Animation-in-LE3"
+                                   Foreground="#FF182574" misc:HyperlinkExtensions.IsExternal="True">
+                            <Run Text="Principles of Facial Animation" />
+                        </Hyperlink>
+                        <LineBreak />
+                        <Hyperlink NavigateUri="https://github.com/ME3Tweaks/LegendaryExplorer/wiki/Creating-Custom-FaceFX-using-FaceFX-Editor"
                                    Foreground="#FF182574" misc:HyperlinkExtensions.IsExternal="True">
                             <Run Text="Creating Custom FaceFX using FaceFX Editor" />
                         </Hyperlink>
@@ -80,29 +85,28 @@
                                    Foreground="#FF182574" misc:HyperlinkExtensions.IsExternal="True">
                             <Run Text="{Binding Source={x:Static misc:AppLinks.BugReportURL}, Mode=OneTime}" />
                         </Hyperlink>
-                    </TextBlock>
-                </StackPanel>
-                <sharedToolControls:RecentsControl x:Name="RecentsController" Grid.Column="1" Margin="50"/>
-            </Grid>
-            <DockPanel Margin="5" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}">
-                <ToolBar x:Name="toolBar" Background="#FFF7F7F7" DockPanel.Dock="Top">
-                    <ComboBox x:Name="FaceFXAnimSetComboBox" Margin="0" Width="463" ItemsSource="{Binding AnimSets}"
+                        </TextBlock>
+                    </StackPanel>
+                    <sharedToolControls:RecentsControl x:Name="RecentsController" Grid.Column="1" Margin="50"/>
+                </Grid>
+                <DockPanel Margin="5" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}">
+                    <ToolBar x:Name="toolBar" Background="#FFF7F7F7" DockPanel.Dock="Top">
+                        <ComboBox x:Name="FaceFXAnimSetComboBox" Margin="0" Width="463" ItemsSource="{Binding AnimSets}"
                               SelectedItem="{Binding SelectedExport}"
                               Style="{StaticResource {x:Static ToolBar.ComboBoxStyleKey}}">
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate DataType="{x:Type packages:ExportEntry}">
-                                <TextBlock Text="{Binding InstancedFullPath}" />
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                    </ComboBox>
-                    <Button Content="Load" Command="{Binding LoadAnimsetCommand}"
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate DataType="{x:Type packages:ExportEntry}">
+                                    <TextBlock Text="{Binding InstancedFullPath}" />
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                        <Button Content="Load" Command="{Binding LoadAnimsetCommand}"
                             Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" />
-                    <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Width="1" />
-                </ToolBar>
-                <exportLoaderControls:FaceFXAnimSetEditorControl x:Name="editorControl" />
-            </DockPanel>
-        </Grid>
-    </DockPanel>
+                        <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Width="1" />
+                    </ToolBar>
+                    <exportLoaderControls:FaceFXAnimSetEditorControl x:Name="editorControl" />
+                </DockPanel>
+            </Grid>
+        </DockPanel>
     </xctk:BusyIndicator>
-
 </bases:WPFBase>
