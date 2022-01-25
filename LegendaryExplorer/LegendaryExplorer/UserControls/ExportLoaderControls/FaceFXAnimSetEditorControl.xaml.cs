@@ -5,12 +5,14 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using ClosedXML.Excel;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.UserControls.SharedToolControls.Curves;
 using LegendaryExplorer.Tools.TlkManagerNS;
+using LegendaryExplorer.UserControls.SharedToolControls;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Misc;
@@ -114,6 +116,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         }
 
         public FaceFXLine SelectedLine => SelectedLineEntry?.Line;
+
+        /// <summary>
+        /// The extra playhead position line in the curve graph
+        /// </summary>
+        private ExtraCurveGraphLine PlayheadPositionLine = new ExtraCurveGraphLine() { Label = "Playhead", LabelOffset = 15, Color = new SolidColorBrush(Colors.Aqua)};
 
         public ObservableCollectionExtended<Animation> Animations { get; } = new();
 
@@ -257,7 +264,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         // Look through these exports
                         ExportEntry possible = null;
                         var possibleExports = link.WwiseStreams.Where(x => CurrentLoadedExport.FileRef.IsUExport(x)).Select(x => CurrentLoadedExport.FileRef.GetUExport(x)).ToList();
-                        
+
                         // Female ones are unique since all lines have male version. Try female first if we know this is female line
                         if (!selectedLine.IsMale)
                         {
@@ -930,7 +937,28 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         private void FaceFXAnimSetEditorControl_OnUnloaded(object sender, RoutedEventArgs e)
         {
             // Called when the control is no longer visible.
+            graph?.ExtraXLines.Remove(PlayheadPositionLine);
+
+            if (audioPlayer != null)
+                audioPlayer.SeekbarPositionChanged -= AudioPositionChanged;
             audioPlayer?.StopPlaying();
+        }
+
+        private void FaceFXAnimSetEditorControl_OnLoaded(object sender, RoutedEventArgs e)
+        {
+            if (graph != null && !graph.ExtraXLines.Contains(PlayheadPositionLine))
+            {
+                graph.ExtraXLines.Add(PlayheadPositionLine);
+            }
+
+            if (audioPlayer != null)
+                audioPlayer.SeekbarPositionChanged += AudioPositionChanged;
+        }
+
+        private void AudioPositionChanged(object? sender, AudioPlayheadEventArgs e)
+        {
+            PlayheadPositionLine.Position = e.PlayheadTime;
+            graph.Paint();
         }
     }
 

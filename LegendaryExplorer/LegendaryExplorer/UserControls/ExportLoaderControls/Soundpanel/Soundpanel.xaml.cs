@@ -62,7 +62,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         /// <summary>
         /// Notified when the seekbar position has changed.
         /// </summary>
-        public event EventHandler SeekbarPositionChanged;
+        public event EventHandler<AudioPlayheadEventArgs> SeekbarPositionChanged;
 
         public ISBankEntry CurrentLoadedISACTEntry { get; private set; }
         public AFCFileEntry CurrentLoadedAFCFileEntry { get; private set; }
@@ -138,6 +138,22 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public static readonly DependencyProperty HexBoxMaxWidthProperty = DependencyProperty.Register(
             nameof(HexBoxMaxWidth), typeof(int), typeof(Soundpanel), new PropertyMetadata(default(int)));
 
+        public int SeekbarUpdatePeriod
+        {
+            get => (int)GetValue(SeekbarUpdatePeriodProperty);
+            set => SetValue(SeekbarUpdatePeriodProperty, value);
+        }
+        public static readonly DependencyProperty SeekbarUpdatePeriodProperty = DependencyProperty.Register(
+            nameof(SeekbarUpdatePeriod), typeof(int), typeof(Soundpanel), new PropertyMetadata(250, SeekbarUpdatePeriodChanged));
+
+        private static void SeekbarUpdatePeriodChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is Soundpanel sp)
+            {
+                sp.seekbarUpdateTimer.Interval = new TimeSpan(0, 0, 0, 0, (int) e.NewValue);
+            }
+        }
+
 
         public bool MiniPlayerMode
         {
@@ -157,7 +173,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private static void GenerateWaveFormChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            // TODO: IMPLEMENT
+            if (d is Soundpanel sp)
+            {
+
+            }
         }
 
         private static void MiniPlayerModeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -919,8 +938,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 CurrentTrackPosition = _audioPlayer?.GetPositionInSeconds() ?? 0;
             }
 
-            // TODO: POSITIONS
-            SeekbarPositionChanged?.Invoke(this, new EventArgs());
+            SeekbarPositionChanged?.Invoke(this, new AudioPlayheadEventArgs(CurrentTrackPosition));
         }
 
 
@@ -968,6 +986,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public void StopPlaying()
         {
             seekbarUpdateTimer.Stop();
+            CurrentTrackPosition = 0;
+            UpdateSeekBarPos(null, null);
             if (_audioPlayer != null)
             {
 
@@ -2074,6 +2094,19 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             waveformImage.Source = image.ToBitmapImage(ImageFormat.Png);
         }
         #endregion
+    }
+
+    public class AudioPlayheadEventArgs : EventArgs
+    {
+        /// <summary>
+        /// The position of the playhead
+        /// </summary>
+        public double PlayheadTime;
+
+        public AudioPlayheadEventArgs(double position)
+        {
+            PlayheadTime = position;
+        }
     }
 
     public class EmbeddedWEMFile

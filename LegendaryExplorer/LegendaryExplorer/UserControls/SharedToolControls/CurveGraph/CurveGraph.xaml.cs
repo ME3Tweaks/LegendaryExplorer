@@ -15,6 +15,14 @@ using BezierSegment = LegendaryExplorer.UserControls.SharedToolControls.Curves.B
 
 namespace LegendaryExplorer.UserControls.SharedToolControls
 {
+    public class ExtraCurveGraphLine
+    {
+        public double Position { get; set; }
+        public string Label { get; set; }
+        public SolidColorBrush Color { get; set; }
+        public double LabelOffset { get; set; }
+    }
+
     /// <summary>
     /// Interaction logic for CurveGraph.xaml
     /// </summary>
@@ -90,6 +98,9 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
             set => SetValue(VerticalScaleProperty, value);
         }
 
+        public List<ExtraCurveGraphLine> ExtraXLines { get; } = new List<ExtraCurveGraphLine>();
+        public List<ExtraCurveGraphLine> ExtraYLines { get; } = new List<ExtraCurveGraphLine>();
+
         // Using a DependencyProperty as the backing store for VerticalScale.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty VerticalScaleProperty =
             DependencyProperty.Register(nameof(VerticalScale), typeof(double), typeof(CurveGraph), new PropertyMetadata(50.0, OnVerticalScaleChanged));
@@ -131,7 +142,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
 
         private static void OnVerticalScaleChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            
+
         }
 
         private static void OnVerticalOffsetChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -243,6 +254,13 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
                 RenderYGridLine(FirstVerticalLine + (lineYSpacing * i));
             }
 
+            // Extra lines
+            for (int i = 0; i < ExtraXLines.Count; i++)
+            {
+                var extraLine = ExtraXLines[i];
+                RenderXGridLine(extraLine.Position, extraLine.Label, extraLine.LabelOffset, extraLine.Color);
+            }
+
             if (ShowReferenceCurve && ComparisonCurve != null && ComparisonCurve.CurvePoints.Count > 0)
             {
                 graph.Children.Add(new StaticCurve(this, ComparisonCurve.CurvePoints, true, true)
@@ -256,18 +274,19 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
             TrackLoading = false;
         }
 
-        private void RenderXGridLine(double position)
+        private void RenderXGridLine(double position, string content = null, double yoffset = 0, SolidColorBrush color = null)
         {
             var line = new Line();
             Canvas.SetLeft(line, toLocalX(position));
             line.Style = FindResource("VerticalLine") as Style;
-            if (position == 0.0) line.Stroke = FindResource("ZeroGridLineStroke") as SolidColorBrush;
+            if (color != null) line.Stroke = color;
+            else if (position == 0.0) line.Stroke = FindResource("ZeroGridLineStroke") as SolidColorBrush;
             graph.Children.Add(line);
 
             var label = new Label();
             Canvas.SetLeft(label, toLocalX(position));
-            Canvas.SetBottom(label, 0);
-            label.Content = position.ToString("0.00");
+            Canvas.SetBottom(label, yoffset);
+            label.Content = content ?? position.ToString("0.00");
             graph.Children.Add(label);
         }
 
@@ -406,7 +425,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
         private void UserControl_MouseWheel(object sender, MouseWheelEventArgs e)
         {
             scrolling = true;
-            if(Keyboard.Modifiers == ModifierKeys.Shift)
+            if (Keyboard.Modifiers == ModifierKeys.Shift)
             {
                 if (UseFixedTimeSpan)
                 {
@@ -492,7 +511,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
                         node.Value.InVal += delta;
                         node = node.Next;
                     }
-                    Paint(true); 
+                    Paint(true);
                 }
             }
         }
@@ -548,7 +567,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
             if (dragging)
             {
                 Point newPos = e.GetPosition(graph);
-                if(Keyboard.Modifiers == ModifierKeys.Shift)
+                if (Keyboard.Modifiers == ModifierKeys.Shift)
                 {
                     double xDiff = newPos.X - dragPos.X;
                     if (UseFixedTimeSpan)
@@ -662,7 +681,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
 
         private void UpdateScalingFromFixedTimeSpan()
         {
-            if(UseFixedTimeSpan)
+            if (UseFixedTimeSpan)
             {
                 HorizontalOffset = FixedStartTime;
                 float diff = Math.Abs(FixedEndTime - FixedStartTime); //No negative values!
