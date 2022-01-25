@@ -107,5 +107,30 @@ namespace LegendaryExplorer.Misc
                 bw.RunWorkerAsync();
             }
         }
+
+        /// <summary>
+        /// Downloads and caches UModel. Returns error message string if error, null if OK
+        /// </summary>
+        public static string EnsureUModel(Action setDownloading, Action<int> setMaxProgress, Action<int> setCurrentProgress, Action<string> setText)
+        {
+            if (UModelHelper.GetLocalUModelVersion() < UModelHelper.SupportedUModelBuildNum)
+            {
+                void progressCallback(long bytesDownloaded, long bytesToDownload)
+                {
+                    setMaxProgress?.Invoke((int)bytesToDownload);
+                    setCurrentProgress?.Invoke((int)bytesDownloaded);
+                }
+
+                setDownloading?.Invoke();
+                setText?.Invoke("Downloading umodel");
+                setCurrentProgress?.Invoke(0);
+                return OnlineContent.EnsureStaticZippedExecutable("umodel_win32.zip", "umodel", "umodel.exe",
+                        progressCallback, forceDownload: true);
+            }
+            else
+            {
+                return null; // OK
+            }
+        }
     }
 }

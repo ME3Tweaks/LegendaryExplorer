@@ -871,27 +871,13 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         public void EnsureUModel_BackgroundThread(object sender, DoWorkEventArgs args)
         {
-            if (UModelHelper.GetLocalUModelVersion() < UModelHelper.SupportedUModelBuildNum)
-            {
-                void progressCallback(long bytesDownloaded, long bytesToDownload)
-                {
-                    BusyProgressBarMax = (int)bytesToDownload;
-                    BusyProgressBarValue = (int)bytesDownloaded;
-                }
-
-                //try{
-                BusyText = "Downloading umodel";
-                BusyProgressIndeterminate = false;
-                BusyProgressBarValue = 0;
-                IsBusy = true;
-                args.Result =
-                    OnlineContent.EnsureStaticZippedExecutable("umodel_win32.zip", "umodel", "umodel.exe",
-                        progressCallback, forceDownload: true);
-            }
-            else
-            {
-                args.Result = null; // OK
-            }
+            // Pass error message back
+            args.Result = UModelHelper.EnsureUModel(
+                () => IsBusy = true,
+                maxProgress => BusyProgressBarMax = maxProgress,
+                currentProgress => BusyProgressBarValue = currentProgress,
+                busyText => BusyText = busyText
+                );
         }
 
 
