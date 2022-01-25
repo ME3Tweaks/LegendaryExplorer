@@ -77,9 +77,16 @@
                     </Style>
                 </ListBox.Style>
             </ListBox>
-            <WindowsFormsHost Grid.Row="1" Margin="0,5,0,0"  Name="treeView_WinFormsHost">
+            <TreeView Name="treeView" ItemsSource="{Binding TreeNodes}" DisplayMemberPath="Header" Grid.Row="1" Margin="0,5,0,0">
+                <TreeView.ItemContainerStyle>
+                    <Style TargetType="{x:Type TreeViewItem}">
+                        <EventSetter Event="MouseDoubleClick" Handler="OnTreeItemMouseDoubleClick" />
+                    </Style>
+                </TreeView.ItemContainerStyle>
+            </TreeView>
+            <!--<WindowsFormsHost Grid.Row="1" Margin="0,5,0,0"  Name="treeView_WinFormsHost">
                 <forms:TreeView x:Name="treeView"/>
-            </WindowsFormsHost>
+            </WindowsFormsHost>-->
         </Grid>
         <GridSplitter Grid.Row="1" Grid.RowSpan="2" Width="5" HorizontalAlignment="Stretch" Grid.Column="1"/>
         <Label Content="Animations" Grid.Row="0" Grid.Column="2"/>

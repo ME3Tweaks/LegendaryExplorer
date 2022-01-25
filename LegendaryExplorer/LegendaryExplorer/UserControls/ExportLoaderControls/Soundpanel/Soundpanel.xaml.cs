@@ -937,8 +937,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 CurrentTrackPosition = _audioPlayer?.GetPositionInSeconds() ?? 0;
             }
-
-            SeekbarPositionChanged?.Invoke(this, new AudioPlayheadEventArgs(CurrentTrackPosition));
         }
 
 
@@ -1088,6 +1086,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void Seekbar_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
+            SeekbarPositionChanged?.Invoke(this, new AudioPlayheadEventArgs(CurrentTrackPosition));
             if (!SeekUpdatingDueToTimer && !SeekDragging)
             {
                 PlayFromCurrentTrackPosition();
@@ -1963,9 +1962,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public override void Dispose()
         {
             FreeAudioResources();
+            waveformImage.Source = null;
+            SoundpanelHIRC_Hexbox?.Dispose();
             SoundpanelHIRC_Hexbox = null;
-            HIRC_Hexbox_Host.Child.Dispose();
-            HIRC_Hexbox_Host.Dispose();
+            HIRC_Hexbox_Host?.Child?.Dispose();
+            HIRC_Hexbox_Host?.Dispose();
             CurrentLoadedWwisebank = null;
         }
 
