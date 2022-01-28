@@ -148,7 +148,7 @@ namespace LegendaryExplorer.Tools.TextureStudio
             InitializeTreeView();
         }
 
-        public override void handleUpdate(List<PackageUpdate> updates)
+        public override void HandleUpdate(List<PackageUpdate> updates)
         {
 
         }

@@ -21,6 +21,10 @@ namespace LegendaryExplorerCore.UnrealScript
     {
         public static (ASTNode node, string text) DecompileExport(ExportEntry export, FileLib lib, PackageCache packageCache = null)
         {
+            if (!ReferenceEquals(lib.Pcc, export.FileRef))
+            {
+                throw new InvalidOperationException("FileLib can only be used with exports from the same file it was created for.");
+            }
             try
             {
                 ASTNode astNode = ExportToAstNode(export, lib, packageCache);
@@ -42,6 +46,10 @@ namespace LegendaryExplorerCore.UnrealScript
 
         public static ASTNode ExportToAstNode(ExportEntry export, FileLib lib, PackageCache packageCache)
         {
+            if (!ReferenceEquals(lib.Pcc, export.FileRef))
+            {
+                throw new InvalidOperationException("FileLib can only be used with exports from the same file it was created for.");
+            }
             ASTNode astNode;
             switch (export.ClassName)
             {
@@ -101,6 +109,10 @@ namespace LegendaryExplorerCore.UnrealScript
 
         public static (ASTNode astNode, MessageLog log) CompileClass(IMEPackage pcc, ExportEntry export, string scriptText, FileLib lib, PackageCache packageCache = null)
         {
+            if (!ReferenceEquals(lib.Pcc, export.FileRef))
+            {
+                throw new InvalidOperationException("FileLib can only be used with exports from the same file it was created for.");
+            }
             var log = new MessageLog();
             (ASTNode astNode, _) = CompileOutlineAST(scriptText, "Class", log, export.Game);
             if (!log.HasErrors)
@@ -154,6 +166,10 @@ namespace LegendaryExplorerCore.UnrealScript
         //Used by M3. Do not change signature without good cause
         public static (ASTNode astNode, MessageLog log) CompileFunction(ExportEntry export, string scriptText, FileLib lib)
         {
+            if (!ReferenceEquals(lib.Pcc, export.FileRef))
+            {
+                throw new InvalidOperationException("FileLib can only be used with exports from the same file it was created for.");
+            }
             var log = new MessageLog();
             (ASTNode astNode, _) = CompileOutlineAST(scriptText, export.ClassName, log, export.Game);
             if (astNode != null && !log.HasErrors)
@@ -207,6 +223,10 @@ namespace LegendaryExplorerCore.UnrealScript
 
         public static (ASTNode astNode, MessageLog log) CompileState(ExportEntry export, string scriptText, FileLib lib)
         {
+            if (!ReferenceEquals(lib.Pcc, export.FileRef))
+            {
+                throw new InvalidOperationException("FileLib can only be used with exports from the same file it was created for.");
+            }
             var log = new MessageLog();
             (ASTNode astNode, _) = CompileOutlineAST(scriptText, export.ClassName, log, export.Game);
             if (!log.HasErrors)
@@ -264,6 +284,10 @@ namespace LegendaryExplorerCore.UnrealScript
 
         public static (ASTNode astNode, MessageLog log) CompileEnum(ExportEntry export, string scriptText, FileLib lib, PackageCache packageCache = null)
         {
+            if (!ReferenceEquals(lib.Pcc, export.FileRef))
+            {
+                throw new InvalidOperationException("FileLib can only be used with exports from the same file it was created for.");
+            }
             var log = new MessageLog();
             (ASTNode astNode, _) = CompileOutlineAST(scriptText, export.ClassName, log, export.Game);
             if (!log.HasErrors)
@@ -321,6 +345,10 @@ namespace LegendaryExplorerCore.UnrealScript
 
         public static (ASTNode astNode, MessageLog log) CompileStruct(ExportEntry export, string scriptText, FileLib lib, PackageCache packageCache = null)
         {
+            if (!ReferenceEquals(lib.Pcc, export.FileRef))
+            {
+                throw new InvalidOperationException("FileLib can only be used with exports from the same file it was created for.");
+            }
             var log = new MessageLog();
             (ASTNode astNode, _) = CompileOutlineAST(scriptText, export.ClassName, log, export.Game);
             if (!log.HasErrors)
@@ -378,6 +406,10 @@ namespace LegendaryExplorerCore.UnrealScript
 
         public static (ASTNode astNode, MessageLog log) CompileDefaultProperties(ExportEntry export, string scriptText, FileLib lib, PackageCache packageCache = null)
         {
+            if (!ReferenceEquals(lib.Pcc, export.FileRef))
+            {
+                throw new InvalidOperationException("FileLib can only be used with exports from the same file it was created for.");
+            }
             var log = new MessageLog();
             (ASTNode astNode, _) = CompileOutlineAST(scriptText, export.ClassName, log, export.Game, true);
             if (!log.HasErrors)
@@ -435,6 +467,10 @@ namespace LegendaryExplorerCore.UnrealScript
 
         public static Class CompileNewClassAST(IMEPackage pcc, Class cls, MessageLog log, FileLib lib, out bool vfTableChanged)
         {
+            if (!ReferenceEquals(lib.Pcc, pcc))
+            {
+                throw new InvalidOperationException("FileLib can only be used with exports from the same file it was created for.");
+            }
             if (cls.Name.CaseInsensitiveEquals("Object"))
             {
                 throw new Exception("Cannot compile the root Object class!");
@@ -520,6 +556,10 @@ namespace LegendaryExplorerCore.UnrealScript
 
         public static Function CompileNewFunctionBodyAST(ExportEntry parentExport, Function func, MessageLog log, FileLib lib)
         {
+            if (!ReferenceEquals(lib.Pcc, parentExport.FileRef))
+            {
+                throw new InvalidOperationException("FileLib can only be used with exports from the same file it was created for.");
+            }
             var symbols = lib.GetSymbolTable();
             symbols.RevertToObjectStack();
 
@@ -574,6 +614,10 @@ namespace LegendaryExplorerCore.UnrealScript
 
         public static State CompileNewStateBodyAST(ExportEntry parentExport, State state, MessageLog log, FileLib lib)
         {
+            if (!ReferenceEquals(lib.Pcc, parentExport.FileRef))
+            {
+                throw new InvalidOperationException("FileLib can only be used with exports from the same file it was created for.");
+            }
             var symbols = lib.GetSymbolTable();
             symbols.RevertToObjectStack();
 
@@ -608,6 +652,10 @@ namespace LegendaryExplorerCore.UnrealScript
 
         public static Enumeration CompileNewEnumAST(ExportEntry parentExport, Enumeration enumeration, MessageLog log, FileLib lib)
         {
+            if (!ReferenceEquals(lib.Pcc, parentExport.FileRef))
+            {
+                throw new InvalidOperationException("FileLib can only be used with exports from the same file it was created for.");
+            }
             var symbols = lib.GetSymbolTable();
             symbols.RevertToObjectStack();
             if (symbols.TryGetType(parentExport.ObjectName.Instanced, out ObjectType containingObject))
@@ -640,6 +688,10 @@ namespace LegendaryExplorerCore.UnrealScript
 
         public static Struct CompileNewStructAST(ExportEntry parentExport, Struct strct, MessageLog log, FileLib lib)
         {
+            if (!ReferenceEquals(lib.Pcc, parentExport.FileRef))
+            {
+                throw new InvalidOperationException("FileLib can only be used with exports from the same file it was created for.");
+            }
             var symbols = lib.GetSymbolTable();
             symbols.RevertToObjectStack();
             if (symbols.TryGetType(parentExport.ObjectName.Instanced, out ObjectType containingObject))
@@ -672,6 +724,10 @@ namespace LegendaryExplorerCore.UnrealScript
 
         public static DefaultPropertiesBlock CompileDefaultPropertiesAST(ExportEntry classExport, DefaultPropertiesBlock propBlock, MessageLog log, FileLib lib)
         {
+            if (!ReferenceEquals(lib.Pcc, classExport.FileRef))
+            {
+                throw new InvalidOperationException("FileLib can only be used with exports from the same file it was created for.");
+            }
             SymbolTable symbols = lib.GetSymbolTable();
             symbols.RevertToObjectStack();
 

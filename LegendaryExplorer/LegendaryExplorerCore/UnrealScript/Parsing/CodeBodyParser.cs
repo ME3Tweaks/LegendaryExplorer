@@ -5,13 +5,11 @@ using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
-using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.UnrealScript.Analysis.Symbols;
 using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
 using LegendaryExplorerCore.UnrealScript.Compiling.Errors;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
 using LegendaryExplorerCore.UnrealScript.Language.Util;
-using LegendaryExplorerCore.UnrealScript.Lexing;
 using LegendaryExplorerCore.UnrealScript.Lexing.Tokenizing;
 using LegendaryExplorerCore.UnrealScript.Utilities;
 using static LegendaryExplorerCore.UnrealScript.Utilities.Keywords;
@@ -19,10 +17,9 @@ using static LegendaryExplorerCore.Unreal.UnrealFlags;
 
 namespace LegendaryExplorerCore.UnrealScript.Parsing
 {
-    public sealed class CodeBodyParser : StringParserBase
+    internal sealed class CodeBodyParser : StringParserBase
     {
         private const int NOPRECEDENCE = int.MaxValue;
-        private readonly string OuterClassScope;
         private readonly ASTNode Node;
         private readonly CodeBody Body;
         private readonly Class Self;
@@ -158,7 +155,6 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             Node = containingNode;
             Body = body;
             Self = NodeUtils.GetContainingClass(body);
-            OuterClassScope = NodeUtils.GetOuterClassScope(containingNode);
 
 
             ExpressionScopes = new();

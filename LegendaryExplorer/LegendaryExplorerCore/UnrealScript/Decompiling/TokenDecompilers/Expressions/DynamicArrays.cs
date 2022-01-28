@@ -3,9 +3,9 @@ using LegendaryExplorerCore.UnrealScript.Language.Tree;
 
 namespace LegendaryExplorerCore.UnrealScript.Decompiling
 {
-    public partial class ByteCodeDecompiler
+    internal partial class ByteCodeDecompiler
     {
-        public DynArrayLength DecompileDynArrLength()
+        private DynArrayLength DecompileDynArrLength()
         {
             PopByte();
             var arr = DecompileExpression();
@@ -16,7 +16,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             return new DynArrayLength(arr);
         }
 
-        public DynArrayRemove DecompileDynArrayRemove()
+        private DynArrayRemove DecompileDynArrayRemove()
         {
 
             PopByte();
@@ -37,7 +37,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             return new DynArrayRemove(arr, indexArg, countArg);
         }
 
-        public DynArrayAdd DecompileDynArrayAdd()
+        private DynArrayAdd DecompileDynArrayAdd()
         {
 
             PopByte();
@@ -55,7 +55,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             return new DynArrayAdd(arr, countArg);
         }
 
-        public DynArrayInsert DecompileDynArrayInsert()
+        private DynArrayInsert DecompileDynArrayInsert()
         {
 
             PopByte();
@@ -76,7 +76,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             return new DynArrayInsert(arr, indexArg, countArg);
         }
 
-        public DynArrayFindStructMember DecompileDynArrayFindStructMember()
+        private DynArrayFindStructMember DecompileDynArrayFindStructMember()
         {
 
             PopByte();
@@ -98,7 +98,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             return new DynArrayFindStructMember(arr, memberNameArg, valueArg);
         }
 
-        public DynArrayInsertItem DecompileDynArrayInsertItem()
+        private DynArrayInsertItem DecompileDynArrayInsertItem()
         {
 
             PopByte();
@@ -120,7 +120,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             return new DynArrayInsertItem(arr, indexArg, valueArg);
         }
 
-        public DynArrayFind DecompileDynArrayFind()
+        private DynArrayFind DecompileDynArrayFind()
         {
 
             PopByte();
@@ -139,7 +139,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             return new DynArrayFind(arr, valueArg);
         }
 
-        public DynArrayAddItem DecompileDynArrayAddItem()
+        private DynArrayAddItem DecompileDynArrayAddItem()
         {
 
             PopByte();
@@ -161,7 +161,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             return new DynArrayAddItem(arr, valueArg);
         }
 
-        public DynArrayRemoveItem DecompileDynArrayRemoveItem()
+        private DynArrayRemoveItem DecompileDynArrayRemoveItem()
         {
 
             PopByte();
@@ -183,7 +183,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             return new DynArrayRemoveItem(arr, valueArg);
         }
 
-        public DynArraySort DecompileDynArraySort()
+        private DynArraySort DecompileDynArraySort()
         {
 
             PopByte();

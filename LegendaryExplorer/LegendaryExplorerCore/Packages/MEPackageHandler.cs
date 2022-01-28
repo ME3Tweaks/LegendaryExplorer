@@ -19,7 +19,7 @@ namespace LegendaryExplorerCore.Packages
         public static bool GlobalSharedCacheEnabled = true;
 
         static readonly ConcurrentDictionary<string, IMEPackage> openPackages = new(StringComparer.OrdinalIgnoreCase);
-        public static readonly ObservableCollection<IMEPackage> packagesInTools = new();
+        public static readonly ObservableCollection<IMEPackage> PackagesInTools = new();
 
         // Package loading for UDK 2014/2015
         static Func<string, UDKPackage> UDKConstructorDelegate;
@@ -341,7 +341,7 @@ namespace LegendaryExplorerCore.Packages
 
             if (useSharedCache)
             {
-                pkg.noLongerUsed += Package_noLongerUsed;
+                pkg.NoLongerUsed += Package_noLongerUsed;
             }
 
             return pkg;
@@ -437,18 +437,18 @@ namespace LegendaryExplorerCore.Packages
 
         private static void addToPackagesInTools(IMEPackage package)
         {
-            if (!packagesInTools.Contains(package))
+            if (!PackagesInTools.Contains(package))
             {
-                packagesInTools.Add(package);
-                package.noLongerOpenInTools += Package_noLongerOpenInTools;
+                PackagesInTools.Add(package);
+                package.NoLongerOpenInTools += Package_noLongerOpenInTools;
             }
         }
 
         private static void Package_noLongerOpenInTools(UnrealPackageFile sender)
         {
             IMEPackage package = sender as IMEPackage;
-            packagesInTools.Remove(package);
-            sender.noLongerOpenInTools -= Package_noLongerOpenInTools;
+            PackagesInTools.Remove(package);
+            sender.NoLongerOpenInTools -= Package_noLongerOpenInTools;
 
         }
 

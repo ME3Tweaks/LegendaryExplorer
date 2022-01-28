@@ -13,7 +13,7 @@ using static LegendaryExplorerCore.UnrealScript.Utilities.Keywords;
 
 namespace LegendaryExplorerCore.UnrealScript.Parsing
 {
-    public abstract class StringParserBase
+    internal abstract class StringParserBase
     {
         protected MessageLog Log;
         protected TokenStream Tokens;

@@ -165,7 +165,7 @@ namespace LegendaryExplorer.Tools.PlotEditor
             SaveFile(dlg.FileName);
         }
 
-        public override void handleUpdate(List<PackageUpdate> updates)
+        public override void HandleUpdate(List<PackageUpdate> updates)
         {
             //TODO: implement handleUpdate
         }

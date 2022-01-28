@@ -397,7 +397,7 @@ namespace LegendaryExplorer.Tools.Soundplorer
             }
         }
 
-        public override void handleUpdate(List<PackageUpdate> updates)
+        public override void HandleUpdate(List<PackageUpdate> updates)
         {
             if (LoadedISBFile != null || LoadedAFCFile != null)
             {

@@ -1,23 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.UnrealScript.Analysis.Symbols;
 using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
 using LegendaryExplorerCore.UnrealScript.Compiling.Errors;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
-using LegendaryExplorerCore.UnrealScript.Language.Util;
 using LegendaryExplorerCore.UnrealScript.Lexing.Tokenizing;
 using LegendaryExplorerCore.UnrealScript.Utilities;
 using static LegendaryExplorerCore.UnrealScript.Utilities.Keywords;
 
 namespace LegendaryExplorerCore.UnrealScript.Parsing
 {
-    //WIP
-    public sealed class PropertiesBlockParser : StringParserBase
+    internal sealed class PropertiesBlockParser : StringParserBase
     {
         private readonly Stack<string> ExpressionScopes;
         private readonly Stack<Class> SubObjectClasses;

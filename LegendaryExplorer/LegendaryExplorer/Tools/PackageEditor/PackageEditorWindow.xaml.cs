@@ -2854,7 +2854,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
             return false;
         }
 
-        public override void handleUpdate(List<PackageUpdate> updates)
+        public override void HandleUpdate(List<PackageUpdate> updates)
         {
             List<PackageChange> changes = updates.Select(x => x.Change).ToList();
             if (changes.Any(x => x.HasFlag(PackageChange.Name)))

@@ -6,7 +6,7 @@ using static LegendaryExplorerCore.UnrealScript.Utilities.Keywords;
 
 namespace LegendaryExplorerCore.UnrealScript.Decompiling
 {
-    public enum NativeType
+    internal enum NativeType
     {
         Function,
         Operator,
@@ -14,14 +14,14 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
         PostOperator
     }
 
-    public struct NativeTableEntry
+    internal struct NativeTableEntry
     {
         public string Name;
         public NativeType Type;
         public int Precedence;
     }
 
-    public partial class ByteCodeDecompiler
+    internal partial class ByteCodeDecompiler
     {
         private Dictionary<int, NativeTableEntry> NativeTable => Game switch
         {
@@ -34,7 +34,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             _ => throw new Exception($"Native table does not exist for {Game}!")
         };
 
-        public static readonly Dictionary<int, NativeTableEntry> ME3NativeTable = new() 
+        private static readonly Dictionary<int, NativeTableEntry> ME3NativeTable = new() 
         {
             { 0x81, new NativeTableEntry { Name = "!", Type = NativeType.PreOperator } },
             { 0x82, new NativeTableEntry { Name = "&&", Type = NativeType.Operator, Precedence = 30 } },
@@ -241,7 +241,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             { 0xF83, new NativeTableEntry { Name = "AutonomousPhysics", Type = NativeType.Function } },
         };
 
-        public static readonly Dictionary<int, NativeTableEntry> ME2NativeTable = new()
+        private static readonly Dictionary<int, NativeTableEntry> ME2NativeTable = new()
         {
             { 0x70, new NativeTableEntry { Name = "$", Type = NativeType.Operator, Precedence = 40 } },
             { 0x71, new NativeTableEntry { Name = "GotoState", Type = NativeType.Function } },
@@ -449,7 +449,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             { 0xF83, new NativeTableEntry { Name = "AutonomousPhysics", Type = NativeType.Function } },
         };
 
-        public static readonly Dictionary<int, NativeTableEntry> ME1NativeTable = new()
+        private static readonly Dictionary<int, NativeTableEntry> ME1NativeTable = new()
         {
             { 0x70, new NativeTableEntry { Name = "$", Type = NativeType.Operator, Precedence = 40 } },
             { 0x71, new NativeTableEntry { Name = "GotoState", Type = NativeType.Function } },
@@ -656,8 +656,8 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             { 0xF82, new NativeTableEntry { Name = "SetPhysics", Type = NativeType.Function } },
             { 0xF83, new NativeTableEntry { Name = "AutonomousPhysics", Type = NativeType.Function } },
         };
-        
-        public static readonly Dictionary<int, NativeTableEntry> LE3NativeTable = new()
+
+        private static readonly Dictionary<int, NativeTableEntry> LE3NativeTable = new()
         {
             { 0x81, new NativeTableEntry { Name = "!", Type = NativeType.PreOperator } },
             { 0x82, new NativeTableEntry { Name = "&&", Type = NativeType.Operator, Precedence = 30 } },
@@ -864,7 +864,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             { 0xF83, new NativeTableEntry { Name = "AutonomousPhysics", Type = NativeType.Function } },
         };
 
-        public static readonly Dictionary<int, NativeTableEntry> LE2NativeTable = new()
+        private static readonly Dictionary<int, NativeTableEntry> LE2NativeTable = new()
         {
             { 0x70, new NativeTableEntry { Name = "$", Type = NativeType.Operator, Precedence = 40 } },
             { 0x71, new NativeTableEntry { Name = "GotoState", Type = NativeType.Function } },
@@ -1073,7 +1073,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             { 0xF83, new NativeTableEntry { Name = "AutonomousPhysics", Type = NativeType.Function } },
         };
 
-        public static readonly Dictionary<int, NativeTableEntry> LE1NativeTable = new()
+        private static readonly Dictionary<int, NativeTableEntry> LE1NativeTable = new()
         {
             { 0x70, new NativeTableEntry { Name = "$", Type = NativeType.Operator, Precedence = 40 } },
             { 0x71, new NativeTableEntry { Name = "GotoState", Type = NativeType.Function } },
@@ -1283,7 +1283,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             { 0xF83, new NativeTableEntry { Name = "AutonomousPhysics", Type = NativeType.Function } },
         };
 
-        public static readonly Dictionary<int, string> PrimitiveCastTable = new()
+        private static readonly Dictionary<int, string> PrimitiveCastTable = new()
         {
             { 0x36, OBJECT }, // InterfaceToObject
             { 0x37, STRING }, // InterfaceToString
@@ -1330,7 +1330,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
         };
 
         //TODO: investigate this for LE
-        public static readonly Dictionary<string, InOpDeclaration> NonNativeOperators = new()
+        private static readonly Dictionary<string, InOpDeclaration> NonNativeOperators = new()
         {
             ["EqualEqual_InterfaceInterface"] = new InOpDeclaration("==", 24, 0, null, null, null),
             ["NotEqual_InterfaceInterface"] = new InOpDeclaration("!=", 26, 0, null, null, null),

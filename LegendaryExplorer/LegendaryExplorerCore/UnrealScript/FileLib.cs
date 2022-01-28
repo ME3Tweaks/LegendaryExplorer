@@ -18,10 +18,16 @@ using LegendaryExplorerCore.UnrealScript.Language.Tree;
 
 namespace LegendaryExplorerCore.UnrealScript
 {
-    public class FileLib : IPackageUser, IDisposable
+    /// <summary>
+    /// Contains a symbol table for an IMEPackage that is used for compilation and decompilation of UnrealScript.
+    /// Must be initialized before use (with <see cref="Initialize"/> or <see cref="InitializeAsync"/>).
+    /// Once initialized, it will automatically update itself when changes are made to the IMEPackage.
+    /// A <see cref="FileLib"/> can only be used in the compilation or decompilation of objects in the same IMEPackage that is was created for.
+    /// </summary>
+    public class FileLib : IWeakPackageUser, IDisposable
     {
         private SymbolTable _symbols;
-        public SymbolTable GetSymbolTable()
+        internal SymbolTable GetSymbolTable()
         {
             lock (_initializationLock)
             {
@@ -29,7 +35,7 @@ namespace LegendaryExplorerCore.UnrealScript
             }
         }
 
-        public SymbolTable ReadonlySymbolTable
+        internal SymbolTable ReadonlySymbolTable
         {
             get
             {
@@ -40,7 +46,14 @@ namespace LegendaryExplorerCore.UnrealScript
             }
         }
 
+        private readonly object _initializationLock = new();
+
+        private SymbolTable _baseSymbols;
+
         private bool _isInitialized;
+        /// <summary>
+        /// If this is false, the <see cref="FileLib"/> cannot be used.
+        /// </summary>
         public bool IsInitialized
         {
             get
@@ -52,36 +65,60 @@ namespace LegendaryExplorerCore.UnrealScript
             }
         }
 
+        /// <summary>
+        /// True if initialization failed. Can, in combination wtih <see cref="IsInitialized"/>, be used to distinguish between a <see cref="FileLib"/> that hasn't been initialized, and one that failed to initialize.
+        /// </summary>
         public bool HadInitializationError { get; private set; }
 
+        /// <summary>
+        /// A log of warnings or errors that occured during initialization.
+        /// </summary>
         public MessageLog InitializationLog;
 
         public event Action<bool> InitializationStatusChange;
 
-        private readonly object _initializationLock = new();
-        
-        private SymbolTable _baseSymbols;
+        /// <summary>
+        /// The <see cref="IMEPackage"/> that this <see cref="FileLib"/> is associated with.
+        /// </summary>
+        public IMEPackage Pcc { get; private set; }
+
+        /// <summary>
+        /// Creates a <see cref="FileLib"/> for an <see cref="IMEPackage"/>.
+        /// </summary>
+        /// <param name="pcc">The <see cref="IMEPackage"/> this <see cref="FileLib"/> is for.</param>
+        public FileLib(IMEPackage pcc)
+        {
+            Pcc = pcc;
+            pcc.WeakUsers.Add(this);
+            if (!pcc.Game.IsLEGame() && !pcc.Game.IsOTGame())
+            {
+                throw new ArgumentOutOfRangeException(nameof(pcc), $"Cannot compile scripts for this game version: {pcc.Game}");
+            }
+        }
 
         /// <summary>
         /// Initializes the FileLib asynchronously.
         /// </summary>
-        /// <param name="packageCache"></param>
-        /// <param name="gameRootPath"></param>
-        /// <returns></returns>
-        public async Task<bool> InitializeAsync(PackageCache packageCache = null, string gameRootPath = null)
+        /// <returns>A Task that represents the asynchronous initialization operation and wraps a <see cref="bool"/> indicating whether initialization was succesful.</returns>
+        /// <inheritdoc cref="Initialize"/>
+        public async Task<bool> InitializeAsync(PackageCache packageCache = null, string gameRootPath = null, bool canUseBinaryCache = true)
         {
             if (IsInitialized)
             {
                 return true;
             }
 
-            return await Task.Run(() => Initialize(packageCache, gameRootPath));
+            return await Task.Run(() => Initialize(packageCache, gameRootPath, canUseBinaryCache));
         }
 
         /// <summary>
-        /// Initializes the FileLib on the current thread. This may take some time.
+        /// Initializes the FileLib. This can potentially take a few seconds.
         /// </summary>
-        /// <returns></returns>
+        /// <param name="packageCache">Optional: A <see cref="PackageCache"/> that will be used during initialization.</param>
+        /// <param name="gameRootPath">Optional: Use a custom path to look up core files.</param>
+        /// <param name="canUseBinaryCache">Optional: Cache <see cref="ObjectBinary"/>s during initialization. Defaults to <c>true</c>.
+        /// Caching speeds up initialization and any decompilation operations using this <see cref="FileLib"/>, at the cost of greater memory usage.</param>
+        /// <returns>A <see cref="bool"/> indicating whether initialization was succesful. This value will also be in <see cref="IsInitialized"/>.</returns>
         public bool Initialize(PackageCache packageCache = null, string gameRootPath = null, bool canUseBinaryCache = true)
         {
             if (IsInitialized) return true;
@@ -115,6 +152,29 @@ namespace LegendaryExplorerCore.UnrealScript
             InitializationStatusChange?.Invoke(true);
             return success;
         }
+
+        /// <summary>
+        /// Disposes this <see cref="FileLib"/>. Non-critical, nothing will leak if this isn't disposed.
+        /// </summary>
+        public void Dispose()
+        {
+            Pcc?.WeakUsers.Remove(this);
+            objBinCache.Clear();
+        }
+
+        private static string[] BaseFileNames(MEGame game) => game switch
+        {
+            MEGame.ME3 => new[] { "Core.pcc", "Engine.pcc", "GameFramework.pcc", "GFxUI.pcc", "WwiseAudio.pcc", "SFXOnlineFoundation.pcc", "SFXGame.pcc" },
+            MEGame.ME2 => new[] { "Core.pcc", "Engine.pcc", "GameFramework.pcc", "GFxUI.pcc", "WwiseAudio.pcc", "SFXOnlineFoundation.pcc", "PlotManagerMap.pcc", "SFXGame.pcc", "Startup_INT.pcc" },
+            MEGame.ME1 => new[] { "Core.u", "Engine.u", "GameFramework.u", "PlotManagerMap.u", "BIOC_Base.u" },
+            MEGame.LE3 => new[] { "Core.pcc", "Engine.pcc", "GameFramework.pcc", "GFxUI.pcc", "WwiseAudio.pcc", "SFXOnlineFoundation.pcc", "SFXGame.pcc" },
+            MEGame.LE2 => new[] { "Core.pcc", "Engine.pcc", "GFxUI.pcc", "WwiseAudio.pcc", "SFXOnlineFoundation.pcc", "PlotManagerMap.pcc", "SFXGame.pcc", "Startup_INT.pcc" },
+            MEGame.LE1 => new[] { "Core.pcc", "Engine.pcc", "GFxUI.pcc", "PlotManagerMap.pcc", "SFXOnlineFoundation.pcc", "SFXGame.pcc", "SFXStrategicAI.pcc" },
+            _ => throw new ArgumentOutOfRangeException(nameof(game))
+        };
+
+        [Obsolete("Filelib architecture has changed, and this no longer does anything.")]
+        public static void FreeLibs() { }
 
         //only use from within _initializationLock!
         private bool InternalInitialize(PackageCache packageCache, string gameRootPath = null, bool canUseCache = true)
@@ -196,7 +256,7 @@ namespace LegendaryExplorerCore.UnrealScript
             }
         }
 
-        public void ReInitializeFile()
+        private void ReInitializeFile()
         {
             lock (_initializationLock)
             {
@@ -218,24 +278,12 @@ namespace LegendaryExplorerCore.UnrealScript
             InitializationStatusChange?.Invoke(true);
         }
 
-        public SymbolTable CreateSymbolTableWithClass(Class classOverride, MessageLog logOverride)
+        internal SymbolTable CreateSymbolTableWithClass(Class classOverride, MessageLog logOverride)
         {
             SymbolTable symbols = _baseSymbols?.Clone();
             var packageCache = new PackageCache();
             ResolveAllClassesInPackage(Pcc, ref symbols, logOverride, packageCache, classOverride);
             return symbols;
-        }
-
-        public IMEPackage Pcc { get; }
-
-        public FileLib(IMEPackage pcc)
-        {
-            Pcc = pcc;
-            pcc.WeakUsers.Add(this);
-            if (!pcc.Game.IsLEGame() && !Pcc.Game.IsOTGame())
-            {
-                throw new ArgumentOutOfRangeException(nameof(pcc), $"Cannot compile scripts for this game version: {pcc.Game}");
-            }
         }
 
         private static bool IsScriptExport(ExportEntry exp)
@@ -270,7 +318,7 @@ namespace LegendaryExplorerCore.UnrealScript
             }
         }
 
-        void IPackageUser.handleUpdate(List<PackageUpdate> updates)
+        void IWeakPackageUser.HandleUpdate(List<PackageUpdate> updates)
         {
             if (_symbols is null)
             {
@@ -286,138 +334,110 @@ namespace LegendaryExplorerCore.UnrealScript
             }
         }
 
-        void IPackageUser.RegisterClosed(Action handler)
-        {
-        }
-
-        void IPackageUser.ReleaseUse()
-        {
-        }
-
-        public void HandleSaveStateChange(bool isSaving)
-        {
-        }
-
-        public void Dispose()
-        {
-            Pcc?.WeakUsers.Remove(this);
-            objBinCache.Clear();
-        }
-
-
-        public static string[] BaseFileNames(MEGame game) => game switch
-        {
-            MEGame.ME3 => new[] { "Core.pcc", "Engine.pcc", "GameFramework.pcc", "GFxUI.pcc", "WwiseAudio.pcc", "SFXOnlineFoundation.pcc", "SFXGame.pcc" },
-            MEGame.ME2 => new[] { "Core.pcc", "Engine.pcc", "GameFramework.pcc", "GFxUI.pcc", "WwiseAudio.pcc", "SFXOnlineFoundation.pcc", "PlotManagerMap.pcc", "SFXGame.pcc", "Startup_INT.pcc" },
-            MEGame.ME1 => new[] { "Core.u", "Engine.u", "GameFramework.u", "PlotManagerMap.u", "BIOC_Base.u" },
-            MEGame.LE3 => new[] { "Core.pcc", "Engine.pcc", "GameFramework.pcc", "GFxUI.pcc", "WwiseAudio.pcc", "SFXOnlineFoundation.pcc", "SFXGame.pcc" },
-            MEGame.LE2 => new[] { "Core.pcc", "Engine.pcc", "GFxUI.pcc", "WwiseAudio.pcc", "SFXOnlineFoundation.pcc", "PlotManagerMap.pcc", "SFXGame.pcc", "Startup_INT.pcc" },
-            MEGame.LE1 => new[] { "Core.pcc", "Engine.pcc", "GFxUI.pcc", "PlotManagerMap.pcc", "SFXOnlineFoundation.pcc", "SFXGame.pcc", "SFXStrategicAI.pcc" },
-            _ => throw new ArgumentOutOfRangeException(nameof(game))
-        };
-
-        [Obsolete("Filelib architecture has changed, and this no longer does anything.")]
-        public static void FreeLibs() { }
-
         private bool ResolveAllClassesInPackage(IMEPackage pcc, ref SymbolTable symbols, MessageLog log, PackageCache packageCache = null, Class classOverride = null)
         {
-            string fileName = Path.GetFileNameWithoutExtension(pcc.FilePath);
+            objBinCache.Clear();
+            var realPcc = Pcc;
+            Pcc = pcc;
+            try
+            {
+                string fileName = Path.GetFileNameWithoutExtension(pcc.FilePath);
 #if DEBUGSCRIPT
                 string dumpFolderPath = Path.Combine(MEDirectories.GetDefaultGamePath(pcc.Game), "ScriptDump", fileName);
                 Directory.CreateDirectory(dumpFolderPath);
 #endif
-            LECLog.Debug($"{fileName}: Beginning Parse.");
-            var classes = new List<(Class ast, string scriptText)>();
-            foreach (ExportEntry export in pcc.Exports.Where(exp => exp.IsClass))
-            {
-                Class cls;
-                if (classOverride != null && export.ObjectNameString.CaseInsensitiveEquals(classOverride.Name))
+                LECLog.Debug($"{fileName}: Beginning Parse.");
+                var classes = new List<(Class ast, string scriptText)>();
+                foreach (ExportEntry export in pcc.Exports.Where(exp => exp.IsClass))
                 {
-                    cls = classOverride;
-                }
-                else
-                {
-                    cls = ScriptObjectToASTConverter.ConvertClass(GetCachedObjectBinary<UClass>(export, packageCache), false, this, packageCache);
-                }
-                log.CurrentClass = cls;
-                if (!cls.IsFullyDefined)
-                {
-                    continue;
-                }
-                string scriptText = "";
-                try
-                {
-#if DEBUGSCRIPT
-                        var codeBuilder = new CodeBuilderVisitor();
-                        cls.AcceptVisitor(codeBuilder);
-                        scriptText = codeBuilder.GetOutput();
-                        File.WriteAllText(Path.Combine(dumpFolderPath, $"{cls.Name}.uc"), scriptText);
-                        var parser = new ClassOutlineParser(new TokenStream<string>(new StringLexer(scriptText, log)), log);
-                        cls = parser.TryParseClass();
-                        if (cls == null || log.Content.Any())
-                        {
-                            DisplayError(scriptText, log.ToString());
-                            return false;
-                        }
-#endif
-                    if (pcc.Game <= MEGame.ME2 && export.ObjectName == "Package")
-                    {
-                        symbols.TryGetType("Class", out Class classClass);
-                        classClass.OuterClass = cls;
-                    }
-                    if (export.ObjectName == "Object")
-                    {
-                        symbols = SymbolTable.CreateIntrinsicTable(cls, pcc.Game);
-                    }
-                    else if (!symbols.AddType(cls))
-                    {
-                        continue; //class already defined
-                    }
-
-                    classes.Add(cls, scriptText);
-                }
-                catch (Exception e)// when (!LegendaryExplorerCoreLib.IsDebug)
-                {
-                    log.LogError(e.FlattenException());
-                    DisplayError(scriptText, log.ToString());
-                    return false;
-                }
-            }
-            LECLog.Debug($"{fileName}: Finished parse.");
-            foreach (var validationPass in Enums.GetValues<ValidationPass>())
-            {
-                foreach ((Class cls, string scriptText) in classes)
-                {
-                    log.CurrentClass = cls;
+                    string scriptText = "";
                     try
                     {
-                        var validator = new ClassValidationVisitor(log, symbols, validationPass);
-                        cls.AcceptVisitor(validator);
-                        if (log.HasErrors)
+                        Class cls;
+                        if (classOverride != null && export.ObjectNameString.CaseInsensitiveEquals(classOverride.Name))
                         {
-                            DisplayError(scriptText, log.ToString());
-                            return false;
+                            cls = classOverride;
                         }
+                        else
+                        {
+                            cls = ScriptObjectToASTConverter.ConvertClass(GetCachedObjectBinary<UClass>(export, packageCache), false, this, packageCache);
+                        }
+                        log.CurrentClass = cls;
+                        if (!cls.IsFullyDefined)
+                        {
+                            continue;
+                        }
+#if DEBUGSCRIPT
+                    var codeBuilder = new CodeBuilderVisitor();
+                    cls.AcceptVisitor(codeBuilder);
+                    scriptText = codeBuilder.GetOutput();
+                    File.WriteAllText(Path.Combine(dumpFolderPath, $"{cls.Name}.uc"), scriptText);
+                    var parser = new ClassOutlineParser(new TokenStream<string>(new StringLexer(scriptText, log)), log);
+                    cls = parser.TryParseClass();
+                    if (cls == null || log.Content.Any())
+                    {
+                        DisplayError(scriptText, log.ToString());
+                        return false;
                     }
-                    catch (Exception e)// when(!ME3ExplorerCoreLib.IsDebug)
+#endif
+                        if (pcc.Game <= MEGame.ME2 && export.ObjectName == "Package")
+                        {
+                            symbols.TryGetType("Class", out Class classClass);
+                            classClass.OuterClass = cls;
+                        }
+                        if (export.ObjectName == "Object")
+                        {
+                            symbols = SymbolTable.CreateIntrinsicTable(cls, pcc.Game);
+                        }
+                        else if (!symbols.AddType(cls))
+                        {
+                            continue; //class already defined
+                        }
+
+                        classes.Add(cls, scriptText);
+                    }
+                    catch (Exception e)// when (!LegendaryExplorerCoreLib.IsDebug)
                     {
                         log.LogError(e.FlattenException());
                         DisplayError(scriptText, log.ToString());
                         return false;
                     }
                 }
-                LECLog.Debug($"{fileName}: Finished validation pass {validationPass}.");
-            }
+                LECLog.Debug($"{fileName}: Finished parse.");
+                foreach (var validationPass in Enums.GetValues<ValidationPass>())
+                {
+                    foreach ((Class cls, string scriptText) in classes)
+                    {
+                        log.CurrentClass = cls;
+                        try
+                        {
+                            var validator = new ClassValidationVisitor(log, symbols, validationPass);
+                            cls.AcceptVisitor(validator);
+                            if (log.HasErrors)
+                            {
+                                DisplayError(scriptText, log.ToString());
+                                return false;
+                            }
+                        }
+                        catch (Exception e)// when(!ME3ExplorerCoreLib.IsDebug)
+                        {
+                            log.LogError(e.FlattenException());
+                            DisplayError(scriptText, log.ToString());
+                            return false;
+                        }
+                    }
+                    LECLog.Debug($"{fileName}: Finished validation pass {validationPass}.");
+                }
 
-            switch (fileName)
-            {
-                case "Core" when pcc.Game.IsGame3():
-                    symbols.InitializeME3LE3Operators();
-                    break;
-                case "Engine":
-                    symbols.ValidateIntrinsics();
-                    break;
-            }
+                switch (fileName)
+                {
+                    case "Core" when pcc.Game.IsGame3():
+                        symbols.InitializeME3LE3Operators();
+                        break;
+                    case "Engine":
+                        symbols.ValidateIntrinsics();
+                        break;
+                }
 
 #if DEBUGSCRIPT
                 //parse function bodies for testing purposes
@@ -441,38 +461,51 @@ namespace LegendaryExplorerCore.UnrealScript
                 }
 #endif
 
-            symbols.RevertToObjectStack();
+                symbols.RevertToObjectStack();
 
-            return true;
+                return true;
+            }
+            finally
+            {
+                Pcc = realPcc;
+            }
         }
 
         private bool _cacheEnabled;
-        private readonly Dictionary<string, ObjectBinary> objBinCache = new();
+        private readonly Dictionary<int, ObjectBinary> objBinCache = new();
 
-        public ObjectBinary GetCachedObjectBinary(ExportEntry export, PackageCache packageCache = null)
+        internal ObjectBinary GetCachedObjectBinary(ExportEntry export, PackageCache packageCache = null)
         {
+            if (!ReferenceEquals(Pcc, export.FileRef))
+            {
+                throw new InvalidOperationException("FileLib can only be used with exports from the same file it was created for.");
+            }
             // packages without filepaths cannot be uniquely fingerprinted and will not use this this system
             if (_cacheEnabled && export.FileRef.FilePath != null) 
             {
-                if (!objBinCache.TryGetValue($"{export.FileRef.FilePath}-{export.UIndex}", out ObjectBinary bin))
+                if (!objBinCache.TryGetValue(export.UIndex, out ObjectBinary bin))
                 {
                     bin = ObjectBinary.From(export, packageCache);
-                    objBinCache[$"{export.FileRef.FilePath}-{export.UIndex}"] = bin;
+                    objBinCache[export.UIndex] = bin;
                 }
                 return bin;
             }
             return ObjectBinary.From(export, packageCache);
         }
 
-        public T GetCachedObjectBinary<T>(ExportEntry export, PackageCache packageCache = null) where T : ObjectBinary, new()
+        internal T GetCachedObjectBinary<T>(ExportEntry export, PackageCache packageCache = null) where T : ObjectBinary, new()
         {
+            if (!ReferenceEquals(Pcc, export.FileRef))
+            {
+                throw new InvalidOperationException("FileLib can only be used with exports from the same file it was created for.");
+            }
             // packages without filepaths cannot be uniquely fingerprinted and will not use this this system
             if (_cacheEnabled && export.FileRef.FilePath != null)
             {
-                if (!objBinCache.TryGetValue($"{export.FileRef.FilePath}-{export.UIndex}", out ObjectBinary bin))
+                if (!objBinCache.TryGetValue(export.UIndex, out ObjectBinary bin))
                 {
                     bin = ObjectBinary.From(export, packageCache);
-                    objBinCache[$"{export.FileRef.FilePath}-{export.UIndex}"] = bin;
+                    objBinCache[export.UIndex] = bin;
                 }
                 return (T)bin;
             }

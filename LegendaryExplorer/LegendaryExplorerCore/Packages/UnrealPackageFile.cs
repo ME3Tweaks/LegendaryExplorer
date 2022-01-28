@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using LegendaryExplorerCore.Gammtek.Collections.Specialized;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.TLK.ME1;
@@ -136,7 +137,7 @@ namespace LegendaryExplorerCore.Packages
                 nameLookupTable[name] = names.Count - 1;
                 NameCount = names.Count;
 
-                updateTools(PackageChange.NameAdd, NameCount - 1);
+                UpdateTools(PackageChange.NameAdd, NameCount - 1);
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NameCount)));
                 IsModified = true;
             }
@@ -155,7 +156,7 @@ namespace LegendaryExplorerCore.Packages
                 names[idx] = newName;
                 nameLookupTable[newName] = idx;
                 IsModified = true; // Package has become modified
-                updateTools(PackageChange.NameEdit, idx);
+                UpdateTools(PackageChange.NameEdit, idx);
                 InvalidateLookupTable(); //If name of object was changed this could change all instanced paths
             }
         }
@@ -265,7 +266,7 @@ namespace LegendaryExplorerCore.Packages
             //Debug.WriteLine($@" >> Added export {exportEntry.InstancedFullPath}");
 
 
-            updateTools(PackageChange.ExportAdd, exportEntry.UIndex);
+            UpdateTools(PackageChange.ExportAdd, exportEntry.UIndex);
             //PropertyChanged?.Invoke(this, new PropertyChangedEventArgs((nameof(ExportCount));
         }
 
@@ -357,7 +358,7 @@ namespace LegendaryExplorerCore.Packages
             importEntry.EntryHasPendingChanges = true;
             ImportCount = imports.Count;
 
-            updateTools(PackageChange.ImportAdd, importEntry.UIndex);
+            UpdateTools(PackageChange.ImportAdd, importEntry.UIndex);
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ImportCount)));
         }
 
@@ -517,7 +518,7 @@ namespace LegendaryExplorerCore.Packages
 
                 lastImport.PropertyChanged -= importChanged;
                 imports.RemoveAt(i);
-                updateTools(PackageChange.ImportRemove, lastImport.UIndex);
+                UpdateTools(PackageChange.ImportRemove, lastImport.UIndex);
                 IsModified = true;
             }
             if (ImportCount != imports.Count)
@@ -538,7 +539,7 @@ namespace LegendaryExplorerCore.Packages
 
                 lastExport.PropertyChanged -= importChanged;
                 exports.RemoveAt(i);
-                updateTools(PackageChange.ExportRemove, lastExport.UIndex);
+                UpdateTools(PackageChange.ExportRemove, lastExport.UIndex);
                 IsModified = true;
             }
             if (ExportCount != exports.Count)
@@ -553,7 +554,7 @@ namespace LegendaryExplorerCore.Packages
                 {
                     trashPackage.PropertyChanged -= importChanged;
                     exports.Remove(trashPackage);
-                    updateTools(PackageChange.ExportRemove, trashPackage.UIndex);
+                    UpdateTools(PackageChange.ExportRemove, trashPackage.UIndex);
                     IsModified = true;
                 }
             }
@@ -628,15 +629,17 @@ namespace LegendaryExplorerCore.Packages
         }
 
         #region packageHandler stuff
-        public ObservableCollection<IPackageUser> Users { get; } = new();
-        public List<IPackageUser> WeakUsers { get; } = new();
+
+        private readonly List<IPackageUser> _users = new();
+        public IReadOnlyCollection<IPackageUser> Users => _users;
+        public WeakCollection<IWeakPackageUser> WeakUsers { get; } = new();
 
         public void RegisterTool(IPackageUser user)
         {
             // DEBUGGING MEMORY LEAK CODE
             //Debug.WriteLine($"{FilePath} RefCount incrementing from {RefCount} to {RefCount + 1} due to RegisterTool()");
             RefCount++;
-            Users.Add(user);
+            _users.Add(user);
             user.RegisterClosed(() =>
             {
                 ReleaseUser(user);
@@ -648,7 +651,7 @@ namespace LegendaryExplorerCore.Packages
         {
             if (user != null)
             {
-                user = Users.FirstOrDefault(x => x == user);
+                user = _users.FirstOrDefault(x => x == user);
                 if (user != null)
                 {
                     ReleaseUser(user);
@@ -663,16 +666,16 @@ namespace LegendaryExplorerCore.Packages
 
         private void ReleaseUser(IPackageUser user)
         {
-            Users.Remove(user);
-            if (Users.Count == 0)
+            _users.Remove(user);
+            if (_users.Count == 0)
             {
-                noLongerOpenInTools?.Invoke(this);
+                NoLongerOpenInTools?.Invoke(this);
             }
             user.ReleaseUse();
         }
 
         public delegate void MEPackageEventHandler(UnrealPackageFile sender);
-        public event MEPackageEventHandler noLongerOpenInTools;
+        public event MEPackageEventHandler NoLongerOpenInTools;
 
         protected void exportChanged(object sender, PropertyChangedEventArgs e)
         {
@@ -684,10 +687,10 @@ namespace LegendaryExplorerCore.Packages
                 switch (e.PropertyName)
                 {
                     case nameof(ExportEntry.DataChanged):
-                        updateTools(PackageChange.ExportData, exp.UIndex);
+                        UpdateTools(PackageChange.ExportData, exp.UIndex);
                         break;
                     case nameof(ExportEntry.HeaderChanged):
-                        updateTools(PackageChange.ExportHeader, exp.UIndex);
+                        UpdateTools(PackageChange.ExportHeader, exp.UIndex);
                         break;
                 }
             }
@@ -697,13 +700,15 @@ namespace LegendaryExplorerCore.Packages
         {
             if (MEPackageHandler.GlobalSharedCacheEnabled && sender is ImportEntry imp && e.PropertyName == nameof(ImportEntry.HeaderChanged))
             {
-                updateTools(PackageChange.ImportHeader, imp.UIndex);
+                UpdateTools(PackageChange.ImportHeader, imp.UIndex);
             }
         }
 
         private readonly object _updatelock = new();
-        readonly HashSet<PackageUpdate> pendingUpdates = new();
-        const int queuingDelay = 50;
+        private readonly HashSet<PackageUpdate> pendingUpdates = new();
+
+        //Once this many milliseconds have gone by without a new change being queued, all the pending updates will be broadcast to the Users and WeakUsers
+        private const int QUEUING_DELAY = 50;
         private Timer updateTimer;
 
         private void UpdateToolsCallback(object _)
@@ -713,6 +718,8 @@ namespace LegendaryExplorerCore.Packages
                 updateTimer.Dispose();
                 updateTimer = null;
             }
+
+            //Runs update handling on the UI thread (or whatever thread the sync context is associated with if this is used in a non-GUI app)
             new TaskFactory(LegendaryExplorerCoreLib.SYNCHRONIZATION_CONTEXT).StartNew(() =>
             {
                 List<PackageUpdate> updates;
@@ -755,16 +762,16 @@ namespace LegendaryExplorerCore.Packages
                 }
                 //WeakUsers needs to come before Users so that FileLib will invalidate BEFORE ScriptEditor refreshes.
                 //This is hacky, and some sort of User priority system should be implemented in the future
-                foreach (var item in WeakUsers.Concat(Users))
+                foreach (var item in WeakUsers.Concat(_users))
                 {
-                    item.handleUpdate(pendingUpdatesList);
+                    item.HandleUpdate(pendingUpdatesList);
                 }
             });
         }
 
-        protected void updateTools(PackageChange change, int index)
+        private void UpdateTools(PackageChange change, int index)
         {
-            if (Users.Count == 0 && WeakUsers.Count == 0)
+            if (_users.Count == 0 && WeakUsers.Count == 0)
             {
                 return;
             }
@@ -773,11 +780,11 @@ namespace LegendaryExplorerCore.Packages
             {
                 pendingUpdates.Add(update);
                 updateTimer ??= new Timer(UpdateToolsCallback);
-                updateTimer.Change(queuingDelay, Timeout.Infinite);
+                updateTimer.Change(QUEUING_DELAY, Timeout.Infinite);
             }
         }
 
-        public event MEPackageEventHandler noLongerUsed;
+        public event MEPackageEventHandler NoLongerUsed;
         /// <summary>
         /// Amount of known tracked references to this object that were acquired through OpenMEPackage(). Manual references are not tracked
         /// </summary>
@@ -804,7 +811,7 @@ namespace LegendaryExplorerCore.Packages
 
             if (RefCount == 0)
             {
-                noLongerUsed?.Invoke(this);
+                NoLongerUsed?.Invoke(this);
             }
         }
         #endregion

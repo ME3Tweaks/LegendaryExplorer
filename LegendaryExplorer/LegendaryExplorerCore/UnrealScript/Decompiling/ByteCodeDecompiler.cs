@@ -15,7 +15,7 @@ using static LegendaryExplorerCore.Unreal.UnrealFlags;
 
 namespace LegendaryExplorerCore.UnrealScript.Decompiling
 {
-    public partial class ByteCodeDecompiler : ObjectReader 
+    internal partial class ByteCodeDecompiler : ObjectReader 
     {
         private readonly UStruct DataContainer;
         private readonly UClass ContainingClass;
@@ -50,7 +50,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
 
         private bool isInContextExpression; // For super lookups
 
-        public Dictionary<ushort, List<string>> ReplicatedProperties; //for decompiling Class replication blocks
+        private Dictionary<ushort, List<string>> ReplicatedProperties; //for decompiling Class replication blocks
 
         private bool CurrentIs(OpCodes val)
         {
@@ -75,12 +75,13 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
 
             return Pcc.GetEntry(index);
         }
-        public NameReference ReadNameReference()
+
+        private NameReference ReadNameReference()
         {
             return new NameReference(Pcc.GetNameEntry(ReadInt32()), ReadInt32());
         }
 
-        public ByteCodeDecompiler(UStruct dataContainer, UClass containingClass, FileLib lib, List<FunctionParameter> parameters = null, VariableType returnType = null)
+        public ByteCodeDecompiler(UStruct dataContainer, UClass containingClass, FileLib lib, List<FunctionParameter> parameters = null, VariableType returnType = null, Dictionary<ushort, List<string>> replicatedProperties = null)
             :base(new byte[dataContainer.ScriptBytecodeSize])
         {
             Buffer.BlockCopy(dataContainer.ScriptBytes, 0, _data, 0, dataContainer.ScriptStorageSize);
@@ -91,6 +92,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             FileLib = lib;
             Game = dataContainer.Export.Game;
             extNativeIndex = (byte)(Game.IsGame3() ? 0x70 : 0x60);
+            ReplicatedProperties = replicatedProperties;
         }
 
         public CodeBody Decompile()

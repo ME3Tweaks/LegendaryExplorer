@@ -986,7 +986,7 @@ namespace LegendaryExplorer.DialogueEditor
         #endregion RecreateToFile
 
         #region Handling-updates
-        public override void handleUpdate(List<PackageUpdate> updates)
+        public override void HandleUpdate(List<PackageUpdate> updates)
         {
             if (Pcc == null || IsLocalUpdate)
             {

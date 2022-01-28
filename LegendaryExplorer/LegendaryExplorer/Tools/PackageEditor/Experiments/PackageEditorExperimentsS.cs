@@ -1835,100 +1835,98 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
         public static void BuildNativeTable(PackageEditorWindow pewpf)
         {
-            pewpf.IsBusy = true;
-            pewpf.BusyText = "Building Native Tables";
-            Task.Run(() =>
-            {
-                foreach (MEGame game in new[] { MEGame.LE1, MEGame.LE2, MEGame.LE3 })
-                {
-                    string cookedPath = MEDirectories.GetCookedPath(game);
-                    var entries = new List<(int, string)>();
-                    foreach (string fileName in FileLib.BaseFileNames(game))
-                    {
-                        using IMEPackage pcc = MEPackageHandler.OpenMEPackage(Path.Combine(cookedPath, fileName));
-                        foreach (ExportEntry export in pcc.Exports.Where(exp => exp.ClassName == "Function"))
-                        {
-                            var func = export.GetBinaryData<UFunction>();
-                            ushort nativeIndex = func.NativeIndex;
-                            if (nativeIndex > 0)
-                            {
-                                NativeType type = NativeType.Function;
-                                if (func.FunctionFlags.Has(EFunctionFlags.PreOperator))
-                                {
-                                    type = NativeType.PreOperator;
-                                }
-                                else if (func.FunctionFlags.Has(EFunctionFlags.Operator))
-                                {
-                                    var nextItem = func.Children;
-                                    int paramCount = 0;
-                                    while (export.FileRef.TryGetUExport(nextItem, out ExportEntry nextChild))
-                                    {
-                                        var objBin = ObjectBinary.From(nextChild);
-                                        switch (objBin)
-                                        {
-                                            case UProperty uProperty:
-                                                if (uProperty.PropertyFlags.HasFlag(UnrealFlags.EPropertyFlags.ReturnParm))
-                                                {
-                                                }
-                                                else if (uProperty.PropertyFlags.HasFlag(UnrealFlags.EPropertyFlags.Parm))
-                                                {
-                                                    paramCount++;
-                                                }
-                                                nextItem = uProperty.Next;
-                                                break;
-                                            default:
-                                                nextItem = 0;
-                                                break;
-                                        }
-                                    }
+            //pewpf.IsBusy = true;
+            //pewpf.BusyText = "Building Native Tables";
+            //Task.Run(() =>
+            //{
+            //    foreach (MEGame game in new[] { MEGame.LE1, MEGame.LE2, MEGame.LE3 })
+            //    {
+            //        string cookedPath = MEDirectories.GetCookedPath(game);
+            //        var entries = new List<(int, string)>();
+            //        foreach (string fileName in FileLib.BaseFileNames(game))
+            //        {
+            //            using IMEPackage pcc = MEPackageHandler.OpenMEPackage(Path.Combine(cookedPath, fileName));
+            //            foreach (ExportEntry export in pcc.Exports.Where(exp => exp.ClassName == "Function"))
+            //            {
+            //                var func = export.GetBinaryData<UFunction>();
+            //                ushort nativeIndex = func.NativeIndex;
+            //                if (nativeIndex > 0)
+            //                {
+            //                    NativeType type = NativeType.Function;
+            //                    if (func.FunctionFlags.Has(EFunctionFlags.PreOperator))
+            //                    {
+            //                        type = NativeType.PreOperator;
+            //                    }
+            //                    else if (func.FunctionFlags.Has(EFunctionFlags.Operator))
+            //                    {
+            //                        var nextItem = func.Children;
+            //                        int paramCount = 0;
+            //                        while (export.FileRef.TryGetUExport(nextItem, out ExportEntry nextChild))
+            //                        {
+            //                            var objBin = ObjectBinary.From(nextChild);
+            //                            switch (objBin)
+            //                            {
+            //                                case UProperty uProperty:
+            //                                    if (uProperty.PropertyFlags.HasFlag(UnrealFlags.EPropertyFlags.ReturnParm))
+            //                                    {
+            //                                    }
+            //                                    else if (uProperty.PropertyFlags.HasFlag(UnrealFlags.EPropertyFlags.Parm))
+            //                                    {
+            //                                        paramCount++;
+            //                                    }
+            //                                    nextItem = uProperty.Next;
+            //                                    break;
+            //                                default:
+            //                                    nextItem = 0;
+            //                                    break;
+            //                            }
+            //                        }
 
-                                    type = paramCount == 1 ? NativeType.PostOperator : NativeType.Operator;
-                                }
+            //                        type = paramCount == 1 ? NativeType.PostOperator : NativeType.Operator;
+            //                    }
 
-                                string name = func.FriendlyName;
-                                if (game is MEGame.ME3 or MEGame.LE3)
-                                {
-                                    name = export.ObjectName;
-                                }
-                                entries.Add(nativeIndex, $"{{ 0x{nativeIndex:X}, new {nameof(NativeTableEntry)} {{ {nameof(NativeTableEntry.Name)}=\"{name}\", " +
-                                                         $"{nameof(NativeTableEntry.Type)}={nameof(NativeType)}.{type}, {nameof(NativeTableEntry.Precedence)}={func.OperatorPrecedence}}} }},");
-                            }
-                        }
-                    }
+            //                    string name = func.FriendlyName;
+            //                    if (game is MEGame.ME3 or MEGame.LE3)
+            //                    {
+            //                        name = export.ObjectName;
+            //                    }
+            //                    entries.Add(nativeIndex, $"{{ 0x{nativeIndex:X}, new {nameof(NativeTableEntry)} {{ {nameof(NativeTableEntry.Name)}=\"{name}\", " +
+            //                                             $"{nameof(NativeTableEntry.Type)}={nameof(NativeType)}.{type}, {nameof(NativeTableEntry.Precedence)}={func.OperatorPrecedence}}} }},");
+            //                }
+            //            }
+            //        }
 
-                    using var fileStream = new FileStream(Path.Combine(AppDirectories.ExecFolder, $"{game}NativeTable.cs"), FileMode.Create);
-                    using var writer = new CodeWriter(fileStream);
-                    writer.WriteLine("using System.Collections.Generic;");
-                    writer.WriteLine();
-                    writer.WriteBlock("namespace LegendaryExplorerCore.UnrealScript.Decompiling", () =>
-                    {
-                        writer.WriteBlock($"public partial class {nameof(ByteCodeDecompiler)}", () =>
-                        {
-                            if (game is MEGame.ME3 or MEGame.LE3)
-                            {
-                                writer.WriteLine("//TODO: Names need fixing for operators with symbols in name");
-                            }
-                            writer.WriteLine($"public static readonly Dictionary<int, {nameof(NativeTableEntry)}> {game}NativeTable = new() ");
-                            writer.WriteLine("{");
-                            writer.IncreaseIndent();
+            //        using var fileStream = new FileStream(Path.Combine(AppDirectories.ExecFolder, $"{game}NativeTable.cs"), FileMode.Create);
+            //        using var writer = new CodeWriter(fileStream);
+            //        writer.WriteLine("using System.Collections.Generic;");
+            //        writer.WriteLine();
+            //        writer.WriteBlock("namespace LegendaryExplorerCore.UnrealScript.Decompiling", () =>
+            //        {
+            //            writer.WriteBlock($"public partial class {nameof(ByteCodeDecompiler)}", () =>
+            //            {
+            //                if (game is MEGame.ME3 or MEGame.LE3)
+            //                {
+            //                    writer.WriteLine("//TODO: Names need fixing for operators with symbols in name");
+            //                }
+            //                writer.WriteLine($"public static readonly Dictionary<int, {nameof(NativeTableEntry)}> {game}NativeTable = new() ");
+            //                writer.WriteLine("{");
+            //                writer.IncreaseIndent();
 
-                            foreach ((_, string entry) in entries.OrderBy(tup => tup.Item1))
-                            {
-                                writer.WriteLine(entry);
-                            }
+            //                foreach ((_, string entry) in entries.OrderBy(tup => tup.Item1))
+            //                {
+            //                    writer.WriteLine(entry);
+            //                }
 
-                            writer.DecreaseIndent();
-                            writer.WriteLine("};");
-                        });
+            //                writer.DecreaseIndent();
+            //                writer.WriteLine("};");
+            //            });
 
-                    });
-                }
-            }).ContinueWithOnUIThread(_ =>
-            {
-                pewpf.IsBusy = false;
-            });
-
-
+            //        });
+            //    }
+            //}).ContinueWithOnUIThread(_ =>
+            //{
+            //    pewpf.IsBusy = false;
+            //});
         }
         class CodeWriter : IDisposable
         {

@@ -14,7 +14,7 @@ using static LegendaryExplorerCore.UnrealScript.Utilities.Keywords;
 
 namespace LegendaryExplorerCore.UnrealScript.Parsing
 {
-    public sealed class ClassOutlineParser : StringParserBase
+    internal sealed class ClassOutlineParser : StringParserBase
     {
         private readonly MEGame Game;
 

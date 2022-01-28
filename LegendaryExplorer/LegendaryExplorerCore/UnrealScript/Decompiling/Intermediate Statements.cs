@@ -8,7 +8,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
 
     public abstract class Jump : Statement
     {
-        public ushort JumpLoc;
+        public readonly ushort JumpLoc;
 
         protected Jump(ushort jumpLoc) : base(ASTNodeType.INVALID, null, null)
         {
@@ -23,7 +23,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
         }
     }
 
-    public abstract class ConditionalJump : Jump
+    internal abstract class ConditionalJump : Jump
     {
         public Expression Condition;
         public int SizeOfExpression;
@@ -34,7 +34,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
         }
     }
 
-    public class IfNotJump : ConditionalJump
+    internal class IfNotJump : ConditionalJump
     {
 
         public IfNotJump(ushort jumpLoc, Expression condition, int sizeOfExpression) : base(jumpLoc, condition)
@@ -43,7 +43,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
         }
     }
 
-    public class NullJump : ConditionalJump
+    internal class NullJump : ConditionalJump
     {
         public NullJump(ushort jumpLoc, Expression condition, bool not) : base(jumpLoc, condition)
         {
@@ -51,21 +51,21 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
         }
     }
 
-    public class InEditorJump : ConditionalJump
+    internal class InEditorJump : ConditionalJump
     {
         public InEditorJump(ushort jumpLoc) : base(jumpLoc, new SymbolReference(null, "__IN_EDITOR"))
         {
         }
     }
 
-    public class IteratorNext : Statement
+    internal class IteratorNext : Statement
     {
         public IteratorNext() : base(ASTNodeType.INVALID, null, null)
         {
         }
     }
 
-    public class IteratorPop : Statement
+    internal class IteratorPop : Statement
     {
         public IteratorPop() : base(ASTNodeType.INVALID, null, null)
         {

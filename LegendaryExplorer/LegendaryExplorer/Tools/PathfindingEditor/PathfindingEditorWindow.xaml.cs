@@ -1674,7 +1674,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
         #endregion
 
         #region EditNodes
-        public override void handleUpdate(List<PackageUpdate> updates)
+        public override void HandleUpdate(List<PackageUpdate> updates)
         {
             List<PackageChange> changes = updates.Select(x => x.Change).ToList();
             bool hasExportNonDataChanges = changes.Any(x => x != PackageChange.ExportData && x.HasFlag(PackageChange.Export));

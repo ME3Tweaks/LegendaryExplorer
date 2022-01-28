@@ -14,7 +14,7 @@ using static LegendaryExplorerCore.UnrealScript.Utilities.Keywords;
 namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
 {
 
-    public class SymbolTable
+    internal class SymbolTable
     {
         private class OperatorDefinitions
         {

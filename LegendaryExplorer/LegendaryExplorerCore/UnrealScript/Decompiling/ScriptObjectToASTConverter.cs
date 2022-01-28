@@ -1,24 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using LegendaryExplorerCore.Helpers;
-using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
 using LegendaryExplorerCore.UnrealScript.Analysis.Symbols;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
-using LegendaryExplorerCore.UnrealScript.Lexing;
-using LegendaryExplorerCore.UnrealScript.Parsing;
 using LegendaryExplorerCore.UnrealScript.Utilities;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
 
 namespace LegendaryExplorerCore.UnrealScript.Decompiling
 {
-    public static class ScriptObjectToASTConverter
+    internal static class ScriptObjectToASTConverter
     {
 
         public static Class ConvertClass(UClass uClass, bool decompileBytecodeAndDefaults, FileLib fileLib, PackageCache packageCache = null)
@@ -104,10 +100,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 defaultProperties = ConvertDefaultProperties(propExport, fileLib, packageCache);
                 if (uClass.ScriptBytecodeSize > 0)
                 {
-                    replicationBlock = new ByteCodeDecompiler(uClass, uClass, fileLib)
-                    {
-                        ReplicatedProperties = replicatedProperties
-                    }.Decompile();
+                    replicationBlock = new ByteCodeDecompiler(uClass, uClass, fileLib, replicatedProperties: replicatedProperties).Decompile();
                 }
             }
 

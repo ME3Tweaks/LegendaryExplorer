@@ -12,14 +12,14 @@ using static LegendaryExplorerCore.Unreal.UnrealFlags;
 
 namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 {
-    public enum ValidationPass
+    internal enum ValidationPass
     {
         TypesAndFunctionNamesAndStateNames,
         ClassAndStructMembersAndFunctionParams,
         BodyPass
     }
 
-    public class ClassValidationVisitor : IASTVisitor
+    internal class ClassValidationVisitor : IASTVisitor
     {
 
         private readonly SymbolTable Symbols;

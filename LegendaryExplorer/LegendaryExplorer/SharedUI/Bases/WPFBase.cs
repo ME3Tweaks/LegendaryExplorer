@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using LegendaryExplorer.Misc;
-using LegendaryExplorer.Misc.AppSettings;
 using LegendaryExplorer.SharedUI.Interfaces;
 using LegendaryExplorer.ToolsetDev.MemoryAnalyzer;
 using LegendaryExplorerCore.Misc;
@@ -31,7 +30,7 @@ namespace LegendaryExplorer.SharedUI.Bases
 
         protected WPFBase(string memoryTrackerName, bool submitTelemetry = true)
         {
-            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended($"[WPFBase] {memoryTrackerName}", new WeakReference(this)));
+            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended($"[{nameof(WPFBase)}] {memoryTrackerName}", new WeakReference(this)));
             if (submitTelemetry)
             {
                 Analytics.TrackEvent("Opened tool", new Dictionary<string, string>
@@ -62,19 +61,19 @@ namespace LegendaryExplorer.SharedUI.Bases
         /// This is the same as LoadMEPackage, but the package is already loaded
         /// </summary>
         /// <param name="package"></param>
-        public void RegisterPackage(IMEPackage package)
+        protected void RegisterPackage(IMEPackage package)
         {
             UnLoadMEPackage();
             Pcc = MEPackageHandler.OpenMEPackage(package, this);
         }
 
-        public void LoadMEPackage(string s)
+        protected void LoadMEPackage(string s)
         {
             UnLoadMEPackage();
             Pcc = MEPackageHandler.OpenMEPackage(s, this);
         }
 
-        public void LoadMEPackage(Stream stream, string associatedFilePath = null)
+        protected void LoadMEPackage(Stream stream, string associatedFilePath = null)
         {
             UnLoadMEPackage();
             Pcc = MEPackageHandler.OpenMEPackageFromStream(stream, associatedFilePath, user: this);
@@ -86,9 +85,9 @@ namespace LegendaryExplorer.SharedUI.Bases
             Pcc = null;
         }
 
-        public abstract void handleUpdate(List<PackageUpdate> updates);
+        public abstract void HandleUpdate(List<PackageUpdate> updates);
 
-        EventHandler wpfClosed;
+        private EventHandler wpfClosed;
         public void RegisterClosed(Action handler)
         {
             wpfClosed = (obj, args) =>
@@ -106,11 +105,11 @@ namespace LegendaryExplorer.SharedUI.Bases
 
         public static bool TryOpenInExisting<T>(string filePath, out T tool) where T : WPFBase
         {
-            foreach (IMEPackage pcc in MEPackageHandler.packagesInTools)
+            foreach (IMEPackage pcc in MEPackageHandler.PackagesInTools)
             {
                 if (pcc.FilePath == filePath)
                 {
-                    foreach (var user in pcc.Users.OfType<T>())
+                    foreach (T user in pcc.Users.OfType<T>())
                     {
                         tool = user;
                         tool.RestoreAndBringToFront();

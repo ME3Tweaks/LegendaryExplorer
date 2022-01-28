@@ -9,9 +9,9 @@ using LegendaryExplorerCore.UnrealScript.Language.Tree;
 
 namespace LegendaryExplorerCore.UnrealScript.Decompiling
 {
-    public partial class ByteCodeDecompiler
+    internal partial class ByteCodeDecompiler
     {
-        public Statement DecompileStatement(ushort? startPosition = null)
+        private Statement DecompileStatement(ushort? startPosition = null)
         {
             StartPositions.Push(startPosition ?? (ushort)Position);
             var token = PeekByte;
@@ -189,7 +189,8 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
         }
 
         #region Decompilers
-        public ReturnStatement DecompileReturn()
+
+        private ReturnStatement DecompileReturn()
         {
             PopByte();
 
@@ -223,7 +224,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             return statement;
         }
 
-        public Statement DecompileForEach(bool isDynArray = false)
+        private Statement DecompileForEach(bool isDynArray = false)
         {
             PopByte();
             var scopeStatements = new List<Statement>();
@@ -279,7 +280,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             return statement;
         }
 
-        public SwitchStatement DecompileSwitch()
+        private SwitchStatement DecompileSwitch()
         {
             PopByte();
             if (Game >= MEGame.ME3)
@@ -325,7 +326,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             return statement;
         }
 
-        public Statement DecompileCase()
+        private Statement DecompileCase()
         {
             PopByte();
             var offs = ReadUInt16(); // MemOff
@@ -348,7 +349,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             return statement;
         }
 
-        public AssignStatement DecompileAssign()
+        private AssignStatement DecompileAssign()
         {
             PopByte();
 
@@ -365,22 +366,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             return statement;
         }
 
-        public Statement DecompileJump()
-        {
-            PopByte();
-            var jumpOffs = ReadUInt16(); // discard jump destination
-            Statement statement;
-
-            if (ForEachScopes.Count != 0 && jumpOffs == ForEachScopes.Peek()) // A jump to the IteratorPop of a ForEach means break afaik.
-                statement = new BreakStatement(null, null);
-            else
-                statement = new ContinueStatement(null, null);
-
-            StatementLocations.Add(StartPositions.Pop(), statement);
-            return statement;
-        }
-
-        public Statement DecompileAssert()
+        private Statement DecompileAssert()
         {
             PopByte();
             ReadUInt16(); // source line
@@ -390,21 +376,6 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             var statement = new AssertStatement(expr);
             StatementLocations.Add(StartPositions.Pop(), statement);
             return statement;
-        }
-
-        public Statement DecompileIteratorPop()
-        {
-            PopByte();
-            if (CurrentIs(OpCodes.Return)) // Any return inside a ForEach seems to call IteratorPop before the return, maybe breaks the loop?
-            {
-                return DecompileReturn();
-            }
-            else
-            {
-                var statement = new BreakStatement();
-                StatementLocations.Add(StartPositions.Pop(), statement);
-                return statement;
-            }
         }
 
         #endregion
