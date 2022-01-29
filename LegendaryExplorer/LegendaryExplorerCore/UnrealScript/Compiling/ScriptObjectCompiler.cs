@@ -113,7 +113,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             ExportEntry classExport;
             if (classObj is null)
             {
-                classExport = CreateNewExport(className, "Class", parent, UClass.Create(), superClass);
+                classExport = CreateNewExport(pcc, className, "Class", parent, UClass.Create(), superClass);
                 classObj = classExport.GetBinaryData<UClass>();
             }
             else
@@ -322,7 +322,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             ExportEntry stateExport;
             if (refStateObj is null)
             {
-                stateExport = CreateNewExport(stateName, "State", parent, UState.Create());
+                stateExport = CreateNewExport(parent.FileRef, stateName, "State", parent,  UState.Create());
                 refStateObj = stateExport.GetBinaryData<UState>();
             }
             else
@@ -423,7 +423,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             ExportEntry funcExport;
             if (refFuncObj is null)
             {
-                funcExport = CreateNewExport(functionName, "Function", parent, new UFunction { ScriptBytes = Array.Empty<byte>(), FriendlyName = functionName }, super);
+                funcExport = CreateNewExport(parent.FileRef, functionName, "Function", parent, new UFunction { ScriptBytes = Array.Empty<byte>(), FriendlyName = functionName }, super);
                 refFuncObj = funcExport.GetBinaryData<UFunction>();
             }
             else
@@ -522,7 +522,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             ExportEntry structExport;
             if (refStructObj is null)
             {
-                structExport = CreateNewExport(structName, "ScriptStruct", parent, UScriptStruct.Create());
+                structExport = CreateNewExport(parent.FileRef, structName, "ScriptStruct", parent, UScriptStruct.Create());
                 refStructObj = structExport.GetBinaryData<UScriptStruct>();
             }
             else
@@ -652,7 +652,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     _ => throw new ArgumentOutOfRangeException(nameof(className), className, "")
                 };
                 tmp.Category = "None";
-                refPropObj = (UProperty)ObjectBinary.From(CreateNewExport(propName, className, parent, tmp));
+                refPropObj = (UProperty)ObjectBinary.From(CreateNewExport(parent.FileRef, propName, className, parent, tmp));
             }
             else
             {
@@ -761,7 +761,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             ExportEntry enumExport;
             if (enumObj is null)
             {
-                enumExport = CreateNewExport(enumName, "Enum", parent, UEnum.Create());
+                enumExport = CreateNewExport(parent.FileRef, enumName, "Enum", parent, UEnum.Create());
                 enumObj = enumExport.GetBinaryData<UEnum>();
             }
             else
@@ -780,7 +780,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             ExportEntry constExport;
             if (constObj is null)
             {
-                constExport = CreateNewExport(constName, "Const", parent, UConst.Create());
+                constExport = CreateNewExport(parent.FileRef, constName, "Const", parent, UConst.Create());
                 constObj = constExport.GetBinaryData<UConst>();
             }
             else
@@ -920,9 +920,8 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             return (constMembers, enumMembers, structMembers, propMembers, funcMembers, stateMembers, allMembers);
         }
 
-        private static ExportEntry CreateNewExport(NameReference name, string className, IEntry parent, UField binary = null, IEntry super = null)
+        private static ExportEntry CreateNewExport(IMEPackage pcc, NameReference name, string className, IEntry parent, UField binary = null, IEntry super = null)
         {
-            IMEPackage pcc = parent.FileRef;
 
             IEntry classEntry = className.CaseInsensitiveEquals("Class") ? null : EntryImporter.EnsureClassIsInFile(pcc, className, new RelinkerOptionsPackage());
 

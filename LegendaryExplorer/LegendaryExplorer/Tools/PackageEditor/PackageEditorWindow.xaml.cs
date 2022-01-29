@@ -39,6 +39,8 @@ using LegendaryExplorerCore.TLK.ME1;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
+using LegendaryExplorerCore.UnrealScript;
+using LegendaryExplorerCore.UnrealScript.Compiling.Errors;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Newtonsoft.Json;
@@ -236,6 +238,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
         public ICommand ReindexDuplicateIndexesCommand { get; set; }
         public ICommand ReplaceReferenceLinksCommand { get; set; }
         public ICommand CalculateExportMD5Command { get; set; }
+        public ICommand CreateClassCommand { get; set; }
 
         private void LoadCommands()
         {
@@ -304,6 +307,66 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
             NavigateForwardCommand = new GenericCommand(NavigateToNextEntry, () => CurrentView == CurrentViewMode.Tree && ForwardsIndexes != null && ForwardsIndexes.Any());
             NavigateBackCommand = new GenericCommand(NavigateToPreviousEntry, () => CurrentView == CurrentViewMode.Tree && BackwardsIndexes != null && BackwardsIndexes.Any());
+
+            CreateClassCommand = new GenericCommand(CreateClass, IsLoadedPackageME);
+        }
+
+        private void CreateClass()
+        {
+            IEntry parent = null;
+            string fileName = Path.GetFileName(Pcc.FilePath);
+            if (fileName.CaseInsensitiveEquals("Startup_INT.pcc") || !FileLib.BaseFileNames(Pcc.Game).Contains(fileName, StringComparer.OrdinalIgnoreCase))
+            {
+                //not a base file, so classes must be within a package.
+
+                var existingPackages = new List<ExportEntry>();
+                foreach (TreeNode<IEntry, int> root in Pcc.Tree.Roots)
+                {
+                    if (root.Data is ExportEntry exp && exp.ClassName.CaseInsensitiveEquals("Package"))
+                    {
+                        existingPackages.Add(exp);
+                    }
+                }
+
+                if (existingPackages.Count is 0)
+                {
+                    MessageBox.Show(this, "Classes must be children of a Package export. Add one to the file first.");
+                    return;
+                }
+                parent = EntrySelector.GetEntry<ExportEntry>(this, Pcc, "Pick a Package export your class should be a child of.", exp => existingPackages.Contains(exp));
+                if (parent is null)
+                {
+                    return;
+                }
+            }
+            var className = PromptDialog.Prompt(this, "Enter the name of your class:", "Class Name", "MyClass", true);
+            if (string.IsNullOrWhiteSpace(className))
+            {
+                return;
+            }
+            string fullPath = parent is null ? className : $"{parent.InstancedFullPath}.{className}";
+            if (Pcc.FindEntry(fullPath) is not null)
+            {
+                MessageBox.Show(this, $"'{fullPath}' already exists in this file!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            var fileLib = new FileLib(Pcc);
+            if (!fileLib.Initialize())
+            {
+                var dlg = new ListDialog(fileLib.InitializationLog.Content.Select(msg => msg.ToString()), "Script Error", "Could not build script database for this file!", this);
+                dlg.Show();
+                return;
+            }
+            (_, MessageLog log) = UnrealScriptCompiler.CompileClass(Pcc, $"class {className};", fileLib, parent: parent);
+            if (log.HasErrors)
+            {
+                var dlg = new ListDialog(fileLib.InitializationLog.Content.Select(msg => msg.ToString()), "Script Error", "Could not create class!", this);
+                dlg.Show();
+                return;
+            }
+            CurrentView = CurrentViewMode.Tree;
+            GoToNumber(Pcc.FindEntry(fullPath)?.UIndex ?? 0);
         }
 
         private void CalculateExportMD5()
@@ -321,6 +384,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
         private bool IsLoadedPackageOT() => Pcc != null && Pcc.Game.IsOTGame();
         private bool IsLoadedPackageLE() => Pcc != null && Pcc.Game.IsLEGame();
+        private bool IsLoadedPackageME() => Pcc != null && (Pcc.Game.IsLEGame() || Pcc.Game.IsOTGame());
 
         private void OpenOtherVersion(bool openLegendaryVersion)
         {

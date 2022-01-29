@@ -162,7 +162,7 @@ namespace LegendaryExplorerCore.UnrealScript
             objBinCache.Clear();
         }
 
-        private static string[] BaseFileNames(MEGame game) => game switch
+        public static string[] BaseFileNames(MEGame game) => game switch
         {
             MEGame.ME3 => new[] { "Core.pcc", "Engine.pcc", "GameFramework.pcc", "GFxUI.pcc", "WwiseAudio.pcc", "SFXOnlineFoundation.pcc", "SFXGame.pcc" },
             MEGame.ME2 => new[] { "Core.pcc", "Engine.pcc", "GameFramework.pcc", "GFxUI.pcc", "WwiseAudio.pcc", "SFXOnlineFoundation.pcc", "PlotManagerMap.pcc", "SFXGame.pcc", "Startup_INT.pcc" },
@@ -357,6 +357,7 @@ namespace LegendaryExplorerCore.UnrealScript
                         if (classOverride != null && export.ObjectNameString.CaseInsensitiveEquals(classOverride.Name))
                         {
                             cls = classOverride;
+                            classOverride = null;
                         }
                         else
                         {
@@ -368,17 +369,17 @@ namespace LegendaryExplorerCore.UnrealScript
                             continue;
                         }
 #if DEBUGSCRIPT
-                    var codeBuilder = new CodeBuilderVisitor();
-                    cls.AcceptVisitor(codeBuilder);
-                    scriptText = codeBuilder.GetOutput();
-                    File.WriteAllText(Path.Combine(dumpFolderPath, $"{cls.Name}.uc"), scriptText);
-                    var parser = new ClassOutlineParser(new TokenStream<string>(new StringLexer(scriptText, log)), log);
-                    cls = parser.TryParseClass();
-                    if (cls == null || log.Content.Any())
-                    {
-                        DisplayError(scriptText, log.ToString());
-                        return false;
-                    }
+                        var codeBuilder = new CodeBuilderVisitor();
+                        cls.AcceptVisitor(codeBuilder);
+                        scriptText = codeBuilder.GetOutput();
+                        File.WriteAllText(Path.Combine(dumpFolderPath, $"{cls.Name}.uc"), scriptText);
+                        var parser = new ClassOutlineParser(new TokenStream<string>(new StringLexer(scriptText, log)), log);
+                        cls = parser.TryParseClass();
+                        if (cls == null || log.Content.Any())
+                        {
+                            DisplayError(scriptText, log.ToString());
+                            return false;
+                        }
 #endif
                         if (pcc.Game <= MEGame.ME2 && export.ObjectName == "Package")
                         {
@@ -402,6 +403,10 @@ namespace LegendaryExplorerCore.UnrealScript
                         DisplayError(scriptText, log.ToString());
                         return false;
                     }
+                }
+                if (classOverride is not null)
+                {
+                    classes.Add(classOverride, "");
                 }
                 LECLog.Debug($"{fileName}: Finished parse.");
                 foreach (var validationPass in Enums.GetValues<ValidationPass>())

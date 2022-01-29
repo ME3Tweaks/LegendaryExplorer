@@ -1320,7 +1320,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                                     continue;
                                 }
                                 foundClasses.Add(instancedFullPath);
-                                (ASTNode ast, MessageLog log) = UnrealScriptCompiler.CompileClass(pcc, exp, script, fileLib, packageCache);
+                                (ASTNode ast, MessageLog log) = UnrealScriptCompiler.CompileClass(pcc, script, fileLib, exp, exp.Parent, packageCache);
                                 if (ast is not Class || log.HasErrors)
                                 {
                                     interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {pcc.FilePath}\nfailed to parse class!"));

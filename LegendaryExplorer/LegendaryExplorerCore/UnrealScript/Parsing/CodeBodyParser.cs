@@ -1182,6 +1182,10 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             {
                 preFixToken.SyntaxType = EF.Operator;
                 expr = CompositeRef();
+                if (expr is null)
+                {
+                    return null;
+                }
                 if (expr is DynArrayLength)
                 {
                     ParseError($"The {LENGTH} property of a dynamic array can only be changed by direct assignment!", expr);
@@ -1201,6 +1205,10 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             if (Matches(TokenType.ExclamationMark, EF.Operator))
             {
                 expr = Unary();
+                if (expr is null)
+                {
+                    return null;
+                }
                 VariableType exprType = expr.ResolveType();
                 if (exprType != SymbolTable.BoolType)
                 {
@@ -1214,6 +1222,10 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             if (Matches(TokenType.MinusSign, EF.Operator))
             {
                 expr = Unary();
+                if (expr is null)
+                {
+                    return null;
+                }
                 VariableType exprType = expr.ResolveType();
                 if (exprType == SymbolTable.ByteType)
                 {
@@ -1240,6 +1252,10 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             if (Matches(TokenType.Complement, EF.Operator))
             {
                 expr = Unary();
+                if (expr is null)
+                {
+                    return null;
+                }
                 if (expr is IntegerLiteral intLit)
                 {
                     intLit.NumType = INT;
@@ -1256,6 +1272,10 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             }
 
             expr = CompositeRef();
+            if (expr is null)
+            {
+                return null;
+            }
 
             if (Consume(TokenType.Increment, TokenType.Decrement) is {} postFixToken)
             {

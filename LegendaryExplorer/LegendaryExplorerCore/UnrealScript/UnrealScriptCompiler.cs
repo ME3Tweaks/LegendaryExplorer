@@ -99,6 +99,11 @@ namespace LegendaryExplorerCore.UnrealScript
                 }
                 return (ast, tokens);
             }
+            catch (ParseException)
+            {
+                log.LogError("Parse failed!");
+                return (null, tokens);
+            }
             catch (Exception e)
             {
                 log.LogError($"Parse failed! Exception: {e}");
@@ -107,14 +112,14 @@ namespace LegendaryExplorerCore.UnrealScript
 
         }
 
-        public static (ASTNode astNode, MessageLog log) CompileClass(IMEPackage pcc, ExportEntry export, string scriptText, FileLib lib, PackageCache packageCache = null)
+        public static (ASTNode astNode, MessageLog log) CompileClass(IMEPackage pcc, string scriptText, FileLib lib, ExportEntry export = null, IEntry parent = null, PackageCache packageCache = null)
         {
-            if (!ReferenceEquals(lib.Pcc, export.FileRef))
+            if (!ReferenceEquals(lib.Pcc, pcc))
             {
                 throw new InvalidOperationException("FileLib can only be used with exports from the same file it was created for.");
             }
             var log = new MessageLog();
-            (ASTNode astNode, _) = CompileOutlineAST(scriptText, "Class", log, export.Game);
+            (ASTNode astNode, _) = CompileOutlineAST(scriptText, "Class", log, pcc.Game);
             if (!log.HasErrors)
             {
                 if (astNode is not Class cls)
@@ -130,7 +135,7 @@ namespace LegendaryExplorerCore.UnrealScript
 
                 try
                 {
-                    astNode = CompileNewClassAST(export.FileRef, cls, log, lib, out bool vfTableChanged);
+                    astNode = CompileNewClassAST(pcc, cls, log, lib, out bool vfTableChanged);
                     if (astNode is null || log.HasErrors)
                     {
                         log.LogError("Parse failed!");
@@ -149,7 +154,7 @@ namespace LegendaryExplorerCore.UnrealScript
                 }
                 try
                 {
-                    ScriptObjectCompiler.Compile(astNode, pcc, null, export.GetBinaryData<UClass>(), packageCache);
+                    ScriptObjectCompiler.Compile(astNode, pcc, parent, export?.GetBinaryData<UClass>(), packageCache);
                     log.LogMessage("Compiled!");
                     return (astNode, log);
                 }
