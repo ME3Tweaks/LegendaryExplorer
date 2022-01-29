@@ -49,7 +49,6 @@ var class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file =
     [ "MEPackageEventHandler", "class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#adb4e1a9d15834b58292687192cf0dc16", null ],
     [ "exportChanged", "class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#a2770a6193203e54f629765d14ed2538f", null ],
     [ "importChanged", "class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#a35a10f6d8ea9751b1078e159a9a1afa7", null ],
-    [ "updateTools", "class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#ab805fa5341be628b2a3c3400cf95c012", null ],
     [ "RegisterUse", "class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#ae83e0bcc45c9fc275bead15f93a8c0bb", null ],
     [ "Dispose", "class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#a091dcc6176cd12e736bcc37ce6072bb1", null ],
     [ "packageTagLittleEndian", "class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#a4ee3ec574d48654acdbdf52f7f6f4f40", null ],
@@ -84,10 +83,10 @@ var class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file =
     [ "Imports", "class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#a46c029c5e926fa9fe81fa300c715cdcd", null ],
     [ "LastSaved", "class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#a4e2af5d416c47f846fbfba6da2bc2c0f", null ],
     [ "FileSize", "class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#ab4b6e419bf8e5e82924c123fe9c95327", null ],
-    [ "Users", "class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#af07b070d9a5377ca339bcb926dc77298", null ],
-    [ "WeakUsers", "class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#a7fe5de6c7c07ba2cce35bb6146553fe6", null ],
+    [ "Users", "class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#a918fce8df40787297ad0404396cb6d73", null ],
+    [ "WeakUsers", "class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#ae2c65fe708382180f738387e5d82b19c", null ],
     [ "RefCount", "class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#af01365428d585db924f5a53169e2a63d", null ],
-    [ "noLongerOpenInTools", "class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#a1d392a578e5c30f2b4dc6e9687e4f8cc", null ],
-    [ "noLongerUsed", "class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#a044ca172fe04c93f44cf3b7825b3b67c", null ],
+    [ "NoLongerOpenInTools", "class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#aa7eaf191ac4d65ecd91e2badf47a78b6", null ],
+    [ "NoLongerUsed", "class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#ab19cea8b557fcc0f46446f7fc837279f", null ],
     [ "PropertyChanged", "class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#a614c6824d4e358259b692afaeccc4c48", null ]
 ];

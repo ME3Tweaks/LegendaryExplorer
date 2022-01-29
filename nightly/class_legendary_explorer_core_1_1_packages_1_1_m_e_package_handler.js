@@ -24,5 +24,5 @@ var class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler =
     [ "TryGetPackageFromCache", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#a9a3610d045c65fe4e1b84ed74f8a67ad", null ],
     [ "OpenMEPackages", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#a1098084e34b864edf29c0bd34bb83c71", null ],
     [ "GlobalSharedCacheEnabled", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#a25504fe78951f44b245fa7332e567d67", null ],
-    [ "packagesInTools", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#a3f365ada8a348938a6cd9bda6c34ae4b", null ]
+    [ "PackagesInTools", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#ab4d1206ace15e447b15edc2d7e95cb5c", null ]
 ];

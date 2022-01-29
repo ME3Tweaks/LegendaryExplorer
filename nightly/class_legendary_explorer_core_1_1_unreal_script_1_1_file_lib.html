@@ -96,62 +96,55 @@ $(document).ready(function(){initNavTree('class_legendary_explorer_core_1_1_unre
   <div class="headertitle"><div class="title">LegendaryExplorerCore.UnrealScript.FileLib Class Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Contains a symbol table for an IMEPackage that is used for compilation and decompilation of <a class="el" href="namespace_legendary_explorer_core_1_1_unreal_script.html">UnrealScript</a>. Must be initialized before use (with <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#ab7fef497ffdd9579cdb14773740811d6" title="Initializes the FileLib. This can potentially take a few seconds.">Initialize</a> or <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#a03d07f7318fe0c70f69e2ac5a9a0913d" title="Initializes the FileLib asynchronously.">InitializeAsync</a>). Once initialized, it will automatically update itself when changes are made to the IMEPackage. A <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html" title="Contains a symbol table for an IMEPackage that is used for compilation and decompilation of UnrealScr...">FileLib</a> can only be used in the compilation or decompilation of objects in the same IMEPackage that is was created for.  
+ <a href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#details">More...</a></p>
 <div class="dynheader">
 Inheritance diagram for LegendaryExplorerCore.UnrealScript.FileLib:</div>
 <div class="dyncontent">
  <div class="center">
   <img src="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.png" usemap="#LegendaryExplorerCore.UnrealScript.FileLib_map" alt=""/>
   <map id="LegendaryExplorerCore.UnrealScript.FileLib_map" name="LegendaryExplorerCore.UnrealScript.FileLib_map">
-<area href="interface_legendary_explorer_core_1_1_packages_1_1_i_package_user.html" alt="LegendaryExplorerCore.Packages.IPackageUser" shape="rect" coords="0,0,290,24"/>
+<area href="interface_legendary_explorer_core_1_1_packages_1_1_i_weak_package_user.html" alt="LegendaryExplorerCore.Packages.IWeakPackageUser" shape="rect" coords="0,0,321,24"/>
   </map>
 </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a17af511dce820e73810b7d8a3c662af2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_symbols_1_1_symbol_table.html">SymbolTable</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#a17af511dce820e73810b7d8a3c662af2">GetSymbolTable</a> ()</td></tr>
-<tr class="separator:a17af511dce820e73810b7d8a3c662af2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a47beaad7648d69b1353d6826a8b7e412"><td class="memItemLeft" align="right" valign="top">async Task&lt; bool &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#a47beaad7648d69b1353d6826a8b7e412">InitializeAsync</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a> packageCache=null, string gameRootPath=null)</td></tr>
-<tr class="memdesc:a47beaad7648d69b1353d6826a8b7e412"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes the <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html">FileLib</a> asynchronously.  <a href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#a47beaad7648d69b1353d6826a8b7e412">More...</a><br /></td></tr>
-<tr class="separator:a47beaad7648d69b1353d6826a8b7e412"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab7fef497ffdd9579cdb14773740811d6"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#ab7fef497ffdd9579cdb14773740811d6">Initialize</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a> packageCache=null, string gameRootPath=null, bool canUseBinaryCache=true)</td></tr>
-<tr class="memdesc:ab7fef497ffdd9579cdb14773740811d6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes the <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html">FileLib</a> on the current thread. This may take some time.  <a href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#ab7fef497ffdd9579cdb14773740811d6">More...</a><br /></td></tr>
-<tr class="separator:ab7fef497ffdd9579cdb14773740811d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a261d4ecb0c2225e8c28a704df126c9ed"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#a261d4ecb0c2225e8c28a704df126c9ed">ReInitializeFile</a> ()</td></tr>
-<tr class="separator:a261d4ecb0c2225e8c28a704df126c9ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a55c53ae2c93101575b3ce8b20f760182"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_symbols_1_1_symbol_table.html">SymbolTable</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#a55c53ae2c93101575b3ce8b20f760182">CreateSymbolTableWithClass</a> (<a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_class.html">Class</a> classOverride, <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_errors_1_1_message_log.html">MessageLog</a> logOverride)</td></tr>
-<tr class="separator:a55c53ae2c93101575b3ce8b20f760182"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aff70d7c9df7cca405afbcb6e59342170"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#aff70d7c9df7cca405afbcb6e59342170">FileLib</a> (<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> pcc)</td></tr>
+<tr class="memdesc:aff70d7c9df7cca405afbcb6e59342170"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html" title="Contains a symbol table for an IMEPackage that is used for compilation and decompilation of UnrealScr...">FileLib</a> for an IMEPackage.  <a href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#aff70d7c9df7cca405afbcb6e59342170">More...</a><br /></td></tr>
 <tr class="separator:aff70d7c9df7cca405afbcb6e59342170"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac8a8de9e46cb7d3ebd22c85a6f105f6c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#ac8a8de9e46cb7d3ebd22c85a6f105f6c">HandleSaveStateChange</a> (bool isSaving)</td></tr>
-<tr class="separator:ac8a8de9e46cb7d3ebd22c85a6f105f6c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a03d07f7318fe0c70f69e2ac5a9a0913d"><td class="memItemLeft" align="right" valign="top">async Task&lt; bool &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#a03d07f7318fe0c70f69e2ac5a9a0913d">InitializeAsync</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a> packageCache=null, string gameRootPath=null, bool canUseBinaryCache=true)</td></tr>
+<tr class="memdesc:a03d07f7318fe0c70f69e2ac5a9a0913d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes the <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html" title="Contains a symbol table for an IMEPackage that is used for compilation and decompilation of UnrealScr...">FileLib</a> asynchronously.  <a href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#a03d07f7318fe0c70f69e2ac5a9a0913d">More...</a><br /></td></tr>
+<tr class="separator:a03d07f7318fe0c70f69e2ac5a9a0913d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab7fef497ffdd9579cdb14773740811d6"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#ab7fef497ffdd9579cdb14773740811d6">Initialize</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a> packageCache=null, string gameRootPath=null, bool canUseBinaryCache=true)</td></tr>
+<tr class="memdesc:ab7fef497ffdd9579cdb14773740811d6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes the <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html" title="Contains a symbol table for an IMEPackage that is used for compilation and decompilation of UnrealScr...">FileLib</a>. This can potentially take a few seconds.  <a href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#ab7fef497ffdd9579cdb14773740811d6">More...</a><br /></td></tr>
+<tr class="separator:ab7fef497ffdd9579cdb14773740811d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a91eeb7aa39b24ec19703c70db39bf5ba"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#a91eeb7aa39b24ec19703c70db39bf5ba">Dispose</a> ()</td></tr>
+<tr class="memdesc:a91eeb7aa39b24ec19703c70db39bf5ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Disposes this <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html" title="Contains a symbol table for an IMEPackage that is used for compilation and decompilation of UnrealScr...">FileLib</a>. Non-critical, nothing will leak if this isn't disposed.  <a href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#a91eeb7aa39b24ec19703c70db39bf5ba">More...</a><br /></td></tr>
 <tr class="separator:a91eeb7aa39b24ec19703c70db39bf5ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a990b5c3ed594e744b9d8307ff360dac0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_object_binary.html">ObjectBinary</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#a990b5c3ed594e744b9d8307ff360dac0">GetCachedObjectBinary</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> export, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a> packageCache=null)</td></tr>
-<tr class="separator:a990b5c3ed594e744b9d8307ff360dac0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad6a38cc1e4e2f1c608452c94f4c5ea66"><td class="memItemLeft" align="right" valign="top">T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#ad6a38cc1e4e2f1c608452c94f4c5ea66">GetCachedObjectBinary&lt; T &gt;</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> export, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a> packageCache=null)</td></tr>
-<tr class="separator:ad6a38cc1e4e2f1c608452c94f4c5ea66"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:aef689e5b0f6776f8f33ce86c558c4a42"><td class="memItemLeft" align="right" valign="top">static string[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#aef689e5b0f6776f8f33ce86c558c4a42">BaseFileNames</a> (<a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game)</td></tr>
-<tr class="separator:aef689e5b0f6776f8f33ce86c558c4a42"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a87a8d93d094794e4b3b5d62baf6f461e"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#a87a8d93d094794e4b3b5d62baf6f461e">FreeLibs</a> ()</td></tr>
 <tr class="separator:a87a8d93d094794e4b3b5d62baf6f461e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:ad744eacc9a5c05756594286faaaf854b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_errors_1_1_message_log.html">MessageLog</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#ad744eacc9a5c05756594286faaaf854b">InitializationLog</a></td></tr>
+<tr class="memdesc:ad744eacc9a5c05756594286faaaf854b"><td class="mdescLeft">&#160;</td><td class="mdescRight">A log of warnings or errors that occured during initialization.  <a href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#ad744eacc9a5c05756594286faaaf854b">More...</a><br /></td></tr>
 <tr class="separator:ad744eacc9a5c05756594286faaaf854b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="properties" name="properties"></a>
 Properties</h2></td></tr>
-<tr class="memitem:a27af126d9ca63062bfdc71cdc4b20d35"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_symbols_1_1_symbol_table.html">SymbolTable</a>?&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#a27af126d9ca63062bfdc71cdc4b20d35">ReadonlySymbolTable</a><code> [get]</code></td></tr>
-<tr class="separator:a27af126d9ca63062bfdc71cdc4b20d35"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac65ab2633786c3f845e98e89581700cb"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#ac65ab2633786c3f845e98e89581700cb">IsInitialized</a><code> [get]</code></td></tr>
+<tr class="memdesc:ac65ab2633786c3f845e98e89581700cb"><td class="mdescLeft">&#160;</td><td class="mdescRight">If this is false, the <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html" title="Contains a symbol table for an IMEPackage that is used for compilation and decompilation of UnrealScr...">FileLib</a> cannot be used.  <a href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#ac65ab2633786c3f845e98e89581700cb">More...</a><br /></td></tr>
 <tr class="separator:ac65ab2633786c3f845e98e89581700cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1264046bd77342f245fb676718309cc5"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#a1264046bd77342f245fb676718309cc5">HadInitializationError</a><code> [get]</code></td></tr>
+<tr class="memdesc:a1264046bd77342f245fb676718309cc5"><td class="mdescLeft">&#160;</td><td class="mdescRight">True if initialization failed. Can, in combination wtih <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#ac65ab2633786c3f845e98e89581700cb" title="If this is false, the FileLib cannot be used.">IsInitialized</a>, be used to distinguish between a <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html" title="Contains a symbol table for an IMEPackage that is used for compilation and decompilation of UnrealScr...">FileLib</a> that hasn't been initialized, and one that failed to initialize.  <a href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#a1264046bd77342f245fb676718309cc5">More...</a><br /></td></tr>
 <tr class="separator:a1264046bd77342f245fb676718309cc5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad81c3d1b678cb849a25551a09288f05d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#ad81c3d1b678cb849a25551a09288f05d">Pcc</a><code> [get]</code></td></tr>
+<tr class="memdesc:ad81c3d1b678cb849a25551a09288f05d"><td class="mdescLeft">&#160;</td><td class="mdescRight">The IMEPackage that this <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html" title="Contains a symbol table for an IMEPackage that is used for compilation and decompilation of UnrealScr...">FileLib</a> is associated with.  <a href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#ad81c3d1b678cb849a25551a09288f05d">More...</a><br /></td></tr>
 <tr class="separator:ad81c3d1b678cb849a25551a09288f05d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="events" name="events"></a>
@@ -159,7 +152,9 @@ Events</h2></td></tr>
 <tr class="memitem:a523356a6442ff2bce6e37fd520527766"><td class="memItemLeft" align="right" valign="top">Action&lt; bool &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#a523356a6442ff2bce6e37fd520527766">InitializationStatusChange</a></td></tr>
 <tr class="separator:a523356a6442ff2bce6e37fd520527766"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p >Contains a symbol table for an IMEPackage that is used for compilation and decompilation of <a class="el" href="namespace_legendary_explorer_core_1_1_unreal_script.html">UnrealScript</a>. Must be initialized before use (with <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#ab7fef497ffdd9579cdb14773740811d6" title="Initializes the FileLib. This can potentially take a few seconds.">Initialize</a> or <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#a03d07f7318fe0c70f69e2ac5a9a0913d" title="Initializes the FileLib asynchronously.">InitializeAsync</a>). Once initialized, it will automatically update itself when changes are made to the IMEPackage. A <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html" title="Contains a symbol table for an IMEPackage that is used for compilation and decompilation of UnrealScr...">FileLib</a> can only be used in the compilation or decompilation of objects in the same IMEPackage that is was created for. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="aff70d7c9df7cca405afbcb6e59342170" name="aff70d7c9df7cca405afbcb6e59342170"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aff70d7c9df7cca405afbcb6e59342170">&#9670;&nbsp;</a></span>FileLib()</h2>
 
@@ -184,36 +179,19 @@ Events</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Creates a <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html" title="Contains a symbol table for an IMEPackage that is used for compilation and decompilation of UnrealScr...">FileLib</a> for an IMEPackage. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">pcc</td><td>The IMEPackage this <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html" title="Contains a symbol table for an IMEPackage that is used for compilation and decompilation of UnrealScr...">FileLib</a> is for.</td></tr>
+  </table>
+  </dd>
+</dl>
+
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a17af511dce820e73810b7d8a3c662af2" name="a17af511dce820e73810b7d8a3c662af2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a17af511dce820e73810b7d8a3c662af2">&#9670;&nbsp;</a></span>GetSymbolTable()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_symbols_1_1_symbol_table.html">SymbolTable</a> LegendaryExplorerCore.UnrealScript.FileLib.GetSymbolTable </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a47beaad7648d69b1353d6826a8b7e412" name="a47beaad7648d69b1353d6826a8b7e412"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a47beaad7648d69b1353d6826a8b7e412">&#9670;&nbsp;</a></span>InitializeAsync()</h2>
+<a id="a03d07f7318fe0c70f69e2ac5a9a0913d" name="a03d07f7318fe0c70f69e2ac5a9a0913d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a03d07f7318fe0c70f69e2ac5a9a0913d">&#9670;&nbsp;</a></span>InitializeAsync()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -231,7 +209,13 @@ Events</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">string&#160;</td>
-          <td class="paramname"><em>gameRootPath</em> = <code>null</code>&#160;</td>
+          <td class="paramname"><em>gameRootPath</em> = <code>null</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>canUseBinaryCache</em> = <code>true</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -246,15 +230,8 @@ Events</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Initializes the <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html">FileLib</a> asynchronously. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">packageCache</td><td></td></tr>
-    <tr><td class="paramname">gameRootPath</td><td></td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+<p>Initializes the <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html" title="Contains a symbol table for an IMEPackage that is used for compilation and decompilation of UnrealScr...">FileLib</a> asynchronously. </p>
+<dl class="section return"><dt>Returns</dt><dd>A Task that represents the asynchronous initialization operation and wraps a bool indicating whether initialization was succesful.</dd></dl>
 
 </div>
 </div>
@@ -298,97 +275,16 @@ Events</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Initializes the <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html">FileLib</a> on the current thread. This may take some time. </p>
-<dl class="section return"><dt>Returns</dt><dd></dd></dl>
-
-</div>
-</div>
-<a id="a261d4ecb0c2225e8c28a704df126c9ed" name="a261d4ecb0c2225e8c28a704df126c9ed"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a261d4ecb0c2225e8c28a704df126c9ed">&#9670;&nbsp;</a></span>ReInitializeFile()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void LegendaryExplorerCore.UnrealScript.FileLib.ReInitializeFile </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a55c53ae2c93101575b3ce8b20f760182" name="a55c53ae2c93101575b3ce8b20f760182"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a55c53ae2c93101575b3ce8b20f760182">&#9670;&nbsp;</a></span>CreateSymbolTableWithClass()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_symbols_1_1_symbol_table.html">SymbolTable</a> LegendaryExplorerCore.UnrealScript.FileLib.CreateSymbolTableWithClass </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_class.html">Class</a>&#160;</td>
-          <td class="paramname"><em>classOverride</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_errors_1_1_message_log.html">MessageLog</a>&#160;</td>
-          <td class="paramname"><em>logOverride</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ac8a8de9e46cb7d3ebd22c85a6f105f6c" name="ac8a8de9e46cb7d3ebd22c85a6f105f6c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac8a8de9e46cb7d3ebd22c85a6f105f6c">&#9670;&nbsp;</a></span>HandleSaveStateChange()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void LegendaryExplorerCore.UnrealScript.FileLib.HandleSaveStateChange </td>
-          <td>(</td>
-          <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>isSaving</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Implements <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_package_user.html#a8eca4dae5ae0bc4183547dbac6bb8230">LegendaryExplorerCore.Packages.IPackageUser</a>.</p>
+<p>Initializes the <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html" title="Contains a symbol table for an IMEPackage that is used for compilation and decompilation of UnrealScr...">FileLib</a>. This can potentially take a few seconds. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">packageCache</td><td>Optional: A PackageCache that will be used during initialization.</td></tr>
+    <tr><td class="paramname">gameRootPath</td><td>Optional: Use a custom path to look up core files.</td></tr>
+    <tr><td class="paramname">canUseBinaryCache</td><td>Optional: Cache ObjectBinarys during initialization. Defaults to <code>true</code>. Caching speeds up initialization and any decompilation operations using this <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html" title="Contains a symbol table for an IMEPackage that is used for compilation and decompilation of UnrealScr...">FileLib</a>, at the cost of greater memory usage.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A bool indicating whether initialization was succesful. This value will also be in <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#ac65ab2633786c3f845e98e89581700cb" title="If this is false, the FileLib cannot be used.">IsInitialized</a>.</dd></dl>
 
 </div>
 </div>
@@ -415,31 +311,7 @@ Events</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-</div>
-</div>
-<a id="aef689e5b0f6776f8f33ce86c558c4a42" name="aef689e5b0f6776f8f33ce86c558c4a42"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aef689e5b0f6776f8f33ce86c558c4a42">&#9670;&nbsp;</a></span>BaseFileNames()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static string[] LegendaryExplorerCore.UnrealScript.FileLib.BaseFileNames </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a>&#160;</td>
-          <td class="paramname"><em>game</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
+<p>Disposes this <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html" title="Contains a symbol table for an IMEPackage that is used for compilation and decompilation of UnrealScr...">FileLib</a>. Non-critical, nothing will leak if this isn't disposed. </p>
 
 </div>
 </div>
@@ -468,87 +340,6 @@ Events</h2></td></tr>
 
 </div>
 </div>
-<a id="a990b5c3ed594e744b9d8307ff360dac0" name="a990b5c3ed594e744b9d8307ff360dac0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a990b5c3ed594e744b9d8307ff360dac0">&#9670;&nbsp;</a></span>GetCachedObjectBinary()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_object_binary.html">ObjectBinary</a> LegendaryExplorerCore.UnrealScript.FileLib.GetCachedObjectBinary </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td>
-          <td class="paramname"><em>export</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a>&#160;</td>
-          <td class="paramname"><em>packageCache</em> = <code>null</code>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ad6a38cc1e4e2f1c608452c94f4c5ea66" name="ad6a38cc1e4e2f1c608452c94f4c5ea66"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad6a38cc1e4e2f1c608452c94f4c5ea66">&#9670;&nbsp;</a></span>GetCachedObjectBinary&lt; T &gt;()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">T <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#a990b5c3ed594e744b9d8307ff360dac0">LegendaryExplorerCore.UnrealScript.FileLib.GetCachedObjectBinary</a>&lt; T &gt; </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td>
-          <td class="paramname"><em>export</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a>&#160;</td>
-          <td class="paramname"><em>packageCache</em> = <code>null</code>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<div class="typeconstraint">
-<dl><dt><b>Type Constraints</b></dt><dd>
-<table border="0" cellspacing="2" cellpadding="0">
-<tr><td valign="top"><em>T</em></td><td>&#160;:</td><td valign="top"><em>ObjectBinary</em></td><td>&#160;</td></tr>
-<tr><td valign="top"><em>T</em></td><td>&#160;:</td><td valign="top"><em>new()</em></td><td>&#160;</td></tr>
-</table>
-</dd>
-</dl>
-</div>
-
-</div>
-</div>
 <h2 class="groupheader">Member Data Documentation</h2>
 <a id="ad744eacc9a5c05756594286faaaf854b" name="ad744eacc9a5c05756594286faaaf854b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad744eacc9a5c05756594286faaaf854b">&#9670;&nbsp;</a></span>InitializationLog</h2>
@@ -562,31 +353,11 @@ Events</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>A log of warnings or errors that occured during initialization. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Property Documentation</h2>
-<a id="a27af126d9ca63062bfdc71cdc4b20d35" name="a27af126d9ca63062bfdc71cdc4b20d35"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a27af126d9ca63062bfdc71cdc4b20d35">&#9670;&nbsp;</a></span>ReadonlySymbolTable</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_symbols_1_1_symbol_table.html">SymbolTable</a>? LegendaryExplorerCore.UnrealScript.FileLib.ReadonlySymbolTable</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">get</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="ac65ab2633786c3f845e98e89581700cb" name="ac65ab2633786c3f845e98e89581700cb"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ac65ab2633786c3f845e98e89581700cb">&#9670;&nbsp;</a></span>IsInitialized</h2>
 
@@ -606,6 +377,8 @@ Events</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>If this is false, the <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html" title="Contains a symbol table for an IMEPackage that is used for compilation and decompilation of UnrealScr...">FileLib</a> cannot be used. </p>
 
 </div>
 </div>
@@ -629,6 +402,8 @@ Events</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>True if initialization failed. Can, in combination wtih <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#ac65ab2633786c3f845e98e89581700cb" title="If this is false, the FileLib cannot be used.">IsInitialized</a>, be used to distinguish between a <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html" title="Contains a symbol table for an IMEPackage that is used for compilation and decompilation of UnrealScr...">FileLib</a> that hasn't been initialized, and one that failed to initialize. </p>
+
 </div>
 </div>
 <a id="ad81c3d1b678cb849a25551a09288f05d" name="ad81c3d1b678cb849a25551a09288f05d"></a>
@@ -650,6 +425,8 @@ Events</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>The IMEPackage that this <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html" title="Contains a symbol table for an IMEPackage that is used for compilation and decompilation of UnrealScr...">FileLib</a> is associated with. </p>
 
 </div>
 </div>

@@ -100,7 +100,8 @@ var annotated_dup =
             [ "EnumSet", "class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_specialized_1_1_enum_set.html", "class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_specialized_1_1_enum_set" ],
             [ "Incrementer", "class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_specialized_1_1_incrementer.html", "class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_specialized_1_1_incrementer" ],
             [ "PolymorphicEnum", "class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_specialized_1_1_polymorphic_enum.html", "class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_specialized_1_1_polymorphic_enum" ],
-            [ "UnregisteredEnumException", "class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_specialized_1_1_unregistered_enum_exception.html", "class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_specialized_1_1_unregistered_enum_exception" ]
+            [ "UnregisteredEnumException", "class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_specialized_1_1_unregistered_enum_exception.html", "class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_specialized_1_1_unregistered_enum_exception" ],
+            [ "WeakCollection", "class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_specialized_1_1_weak_collection.html", "class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_specialized_1_1_weak_collection" ]
           ] ]
         ] ],
         [ "ComponentModel", "namespace_legendary_explorer_core_1_1_gammtek_1_1_component_model.html", [
@@ -424,6 +425,7 @@ var annotated_dup =
         [ "IMEPackage", "interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html", "interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package" ],
         [ "ImportEntry", "class_legendary_explorer_core_1_1_packages_1_1_import_entry.html", "class_legendary_explorer_core_1_1_packages_1_1_import_entry" ],
         [ "IPackageUser", "interface_legendary_explorer_core_1_1_packages_1_1_i_package_user.html", "interface_legendary_explorer_core_1_1_packages_1_1_i_package_user" ],
+        [ "IWeakPackageUser", "interface_legendary_explorer_core_1_1_packages_1_1_i_weak_package_user.html", "interface_legendary_explorer_core_1_1_packages_1_1_i_weak_package_user" ],
         [ "MEGameExtensions", "class_legendary_explorer_core_1_1_packages_1_1_m_e_game_extensions.html", "class_legendary_explorer_core_1_1_packages_1_1_m_e_game_extensions" ],
         [ "MELocalizationExtensions", "class_legendary_explorer_core_1_1_packages_1_1_m_e_localization_extensions.html", "class_legendary_explorer_core_1_1_packages_1_1_m_e_localization_extensions" ],
         [ "MEPackage", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package" ],
@@ -782,11 +784,9 @@ var annotated_dup =
       [ "UnrealScript", "namespace_legendary_explorer_core_1_1_unreal_script.html", [
         [ "Analysis", "namespace_legendary_explorer_core_1_1_unreal_script_1_1_analysis.html", [
           [ "Symbols", "namespace_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_symbols.html", [
-            [ "ASTNodeDict", "class_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_symbols_1_1_a_s_t_node_dict.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_symbols_1_1_a_s_t_node_dict" ],
-            [ "SymbolTable", "class_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_symbols_1_1_symbol_table.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_symbols_1_1_symbol_table" ]
+            [ "ASTNodeDict", "class_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_symbols_1_1_a_s_t_node_dict.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_symbols_1_1_a_s_t_node_dict" ]
           ] ],
           [ "Visitors", "namespace_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_visitors.html", [
-            [ "ClassValidationVisitor", "class_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_visitors_1_1_class_validation_visitor.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_visitors_1_1_class_validation_visitor" ],
             [ "CodeBuilderVisitor", "class_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_visitors_1_1_code_builder_visitor.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_visitors_1_1_code_builder_visitor" ],
             [ "HTMLCodeFormatter", "class_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_visitors_1_1_h_t_m_l_code_formatter.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_visitors_1_1_h_t_m_l_code_formatter" ],
             [ "IAcceptASTVisitor", "interface_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_visitors_1_1_i_accept_a_s_t_visitor.html", "interface_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_visitors_1_1_i_accept_a_s_t_visitor" ],
@@ -812,16 +812,7 @@ var annotated_dup =
           [ "ScriptPropertiesCompiler", "class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_script_properties_compiler.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_script_properties_compiler" ]
         ] ],
         [ "Decompiling", "namespace_legendary_explorer_core_1_1_unreal_script_1_1_decompiling.html", [
-          [ "ByteCodeDecompiler", "class_legendary_explorer_core_1_1_unreal_script_1_1_decompiling_1_1_byte_code_decompiler.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_decompiling_1_1_byte_code_decompiler" ],
-          [ "ConditionalJump", "class_legendary_explorer_core_1_1_unreal_script_1_1_decompiling_1_1_conditional_jump.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_decompiling_1_1_conditional_jump" ],
-          [ "IfNotJump", "class_legendary_explorer_core_1_1_unreal_script_1_1_decompiling_1_1_if_not_jump.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_decompiling_1_1_if_not_jump" ],
-          [ "InEditorJump", "class_legendary_explorer_core_1_1_unreal_script_1_1_decompiling_1_1_in_editor_jump.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_decompiling_1_1_in_editor_jump" ],
-          [ "IteratorNext", "class_legendary_explorer_core_1_1_unreal_script_1_1_decompiling_1_1_iterator_next.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_decompiling_1_1_iterator_next" ],
-          [ "IteratorPop", "class_legendary_explorer_core_1_1_unreal_script_1_1_decompiling_1_1_iterator_pop.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_decompiling_1_1_iterator_pop" ],
           [ "Jump", "class_legendary_explorer_core_1_1_unreal_script_1_1_decompiling_1_1_jump.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_decompiling_1_1_jump" ],
-          [ "NativeTableEntry", "struct_legendary_explorer_core_1_1_unreal_script_1_1_decompiling_1_1_native_table_entry.html", "struct_legendary_explorer_core_1_1_unreal_script_1_1_decompiling_1_1_native_table_entry" ],
-          [ "NullJump", "class_legendary_explorer_core_1_1_unreal_script_1_1_decompiling_1_1_null_jump.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_decompiling_1_1_null_jump" ],
-          [ "ScriptObjectToASTConverter", "class_legendary_explorer_core_1_1_unreal_script_1_1_decompiling_1_1_script_object_to_a_s_t_converter.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_decompiling_1_1_script_object_to_a_s_t_converter" ],
           [ "UnconditionalJump", "class_legendary_explorer_core_1_1_unreal_script_1_1_decompiling_1_1_unconditional_jump.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_decompiling_1_1_unconditional_jump" ]
         ] ],
         [ "Language", "namespace_legendary_explorer_core_1_1_unreal_script_1_1_language.html", [
@@ -943,11 +934,7 @@ var annotated_dup =
           [ "StringLexer", "class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_string_lexer.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_string_lexer" ]
         ] ],
         [ "Parsing", "namespace_legendary_explorer_core_1_1_unreal_script_1_1_parsing.html", [
-          [ "ClassOutlineParser", "class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_class_outline_parser.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_class_outline_parser" ],
-          [ "CodeBodyParser", "class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_code_body_parser.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_code_body_parser" ],
           [ "ParseException", "class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_parse_exception.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_parse_exception" ],
-          [ "PropertiesBlockParser", "class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_properties_block_parser.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_properties_block_parser" ],
-          [ "StringParserBase", "class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_string_parser_base.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_string_parser_base" ],
           [ "TokenStream", "class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_token_stream.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_token_stream" ]
         ] ],
         [ "Utilities", "namespace_legendary_explorer_core_1_1_unreal_script_1_1_utilities.html", [

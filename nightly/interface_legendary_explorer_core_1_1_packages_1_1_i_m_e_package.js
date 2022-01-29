@@ -54,11 +54,11 @@ var interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package =
     [ "FileNameNoExtension", "interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#af06e23af5a9cfc2bfa9897d102284f22", null ],
     [ "LastSaved", "interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#ab0f97d7eb626c9d8c4d61dc4ec65c947", null ],
     [ "FileSize", "interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#ac45d21665548ab4ba75e437fb1acada4", null ],
-    [ "Users", "interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#af6e120b660fc72eb9dc94eb24e1487c3", null ],
-    [ "WeakUsers", "interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#a03e576c760b18141972ba5903473ad8a", null ],
+    [ "Users", "interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#ac298a2f38181f0ca0cb50b902168d8f8", null ],
+    [ "WeakUsers", "interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#a5acf313fe89fe6dab52f151068ca2c72", null ],
     [ "LocalTalkFiles", "interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#aab3237a219666daedc1cc28952c26d9a", null ],
     [ "IsModified", "interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#ad0dfc44a03c8519bfe7f13c8a8688671", null ],
     [ "Tree", "interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#acb1a3956076c4048044045c9e4ad23e0", null ],
-    [ "noLongerOpenInTools", "interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#a05ea8245d0c7299249cd94cfaa95e2a1", null ],
-    [ "noLongerUsed", "interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#a82508aca30185f518dd3a01354df8d69", null ]
+    [ "NoLongerOpenInTools", "interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#a533fea21c616fde6e573c9eb8b82aec6", null ],
+    [ "NoLongerUsed", "interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#af53706e7e91c68dc29673eb829e39d07", null ]
 ];

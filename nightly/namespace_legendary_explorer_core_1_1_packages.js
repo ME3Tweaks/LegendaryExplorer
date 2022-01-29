@@ -13,6 +13,7 @@ var namespace_legendary_explorer_core_1_1_packages =
     [ "IMEPackage", "interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html", "interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package" ],
     [ "ImportEntry", "class_legendary_explorer_core_1_1_packages_1_1_import_entry.html", "class_legendary_explorer_core_1_1_packages_1_1_import_entry" ],
     [ "IPackageUser", "interface_legendary_explorer_core_1_1_packages_1_1_i_package_user.html", "interface_legendary_explorer_core_1_1_packages_1_1_i_package_user" ],
+    [ "IWeakPackageUser", "interface_legendary_explorer_core_1_1_packages_1_1_i_weak_package_user.html", "interface_legendary_explorer_core_1_1_packages_1_1_i_weak_package_user" ],
     [ "MEGameExtensions", "class_legendary_explorer_core_1_1_packages_1_1_m_e_game_extensions.html", "class_legendary_explorer_core_1_1_packages_1_1_m_e_game_extensions" ],
     [ "MELocalizationExtensions", "class_legendary_explorer_core_1_1_packages_1_1_m_e_localization_extensions.html", "class_legendary_explorer_core_1_1_packages_1_1_m_e_localization_extensions" ],
     [ "MEPackage", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package" ],

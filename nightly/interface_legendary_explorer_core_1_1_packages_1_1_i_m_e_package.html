@@ -238,10 +238,12 @@ Properties</h2></td></tr>
 <tr class="separator:ab0f97d7eb626c9d8c4d61dc4ec65c947"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac45d21665548ab4ba75e437fb1acada4"><td class="memItemLeft" align="right" valign="top">long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#ac45d21665548ab4ba75e437fb1acada4">FileSize</a><code> [get]</code></td></tr>
 <tr class="separator:ac45d21665548ab4ba75e437fb1acada4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af6e120b660fc72eb9dc94eb24e1487c3"><td class="memItemLeft" align="right" valign="top">ObservableCollection&lt; <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_package_user.html">IPackageUser</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#af6e120b660fc72eb9dc94eb24e1487c3">Users</a><code> [get]</code></td></tr>
-<tr class="separator:af6e120b660fc72eb9dc94eb24e1487c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a03e576c760b18141972ba5903473ad8a"><td class="memItemLeft" align="right" valign="top">List&lt; <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_package_user.html">IPackageUser</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#a03e576c760b18141972ba5903473ad8a">WeakUsers</a><code> [get]</code></td></tr>
-<tr class="separator:a03e576c760b18141972ba5903473ad8a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac298a2f38181f0ca0cb50b902168d8f8"><td class="memItemLeft" align="right" valign="top">IReadOnlyCollection&lt; <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_package_user.html">IPackageUser</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#ac298a2f38181f0ca0cb50b902168d8f8">Users</a><code> [get]</code></td></tr>
+<tr class="memdesc:ac298a2f38181f0ca0cb50b902168d8f8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Collection of <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_package_user.html">IPackageUser</a>s that are using this <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a>. Use <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#a1815f088b1953d28d4dfd1bdd8b31242">RegisterTool</a> and <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#a3066bdc3c581f5ebd173b42608d1e44b">Release</a> to modify this collection.  <a href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#ac298a2f38181f0ca0cb50b902168d8f8">More...</a><br /></td></tr>
+<tr class="separator:ac298a2f38181f0ca0cb50b902168d8f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5acf313fe89fe6dab52f151068ca2c72"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_specialized_1_1_weak_collection.html">WeakCollection</a>&lt; <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_weak_package_user.html">IWeakPackageUser</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#a5acf313fe89fe6dab52f151068ca2c72">WeakUsers</a><code> [get]</code></td></tr>
+<tr class="memdesc:a5acf313fe89fe6dab52f151068ca2c72"><td class="mdescLeft">&#160;</td><td class="mdescRight">Collection of <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_weak_package_user.html">IWeakPackageUser</a>s. This is for users that want to subscribe to package change notifications as long as the package is open, but don't want to cause it to stay open if there are no other users. Unlike <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#ac298a2f38181f0ca0cb50b902168d8f8" title="Collection of IPackageUsers that are using this IMEPackage. Use RegisterTool and Release to modify th...">Users</a>, this collection should be modified directly, and since it only keeps weak references, users don't need to remove themselves before they fall out of scope.  <a href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#a5acf313fe89fe6dab52f151068ca2c72">More...</a><br /></td></tr>
+<tr class="separator:a5acf313fe89fe6dab52f151068ca2c72"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aab3237a219666daedc1cc28952c26d9a"><td class="memItemLeft" align="right" valign="top">List&lt; <a class="el" href="class_legendary_explorer_core_1_1_t_l_k_1_1_m_e1_1_1_m_e1_talk_file.html">ME1TalkFile</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#aab3237a219666daedc1cc28952c26d9a">LocalTalkFiles</a><code> [get]</code></td></tr>
 <tr class="separator:aab3237a219666daedc1cc28952c26d9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad0dfc44a03c8519bfe7f13c8a8688671"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#ad0dfc44a03c8519bfe7f13c8a8688671">IsModified</a><code> [getset]</code></td></tr>
@@ -251,10 +253,12 @@ Properties</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="events" name="events"></a>
 Events</h2></td></tr>
-<tr class="memitem:a05ea8245d0c7299249cd94cfaa95e2a1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#adb4e1a9d15834b58292687192cf0dc16">UnrealPackageFile.MEPackageEventHandler</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#a05ea8245d0c7299249cd94cfaa95e2a1">noLongerOpenInTools</a></td></tr>
-<tr class="separator:a05ea8245d0c7299249cd94cfaa95e2a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a82508aca30185f518dd3a01354df8d69"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#adb4e1a9d15834b58292687192cf0dc16">UnrealPackageFile.MEPackageEventHandler</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#a82508aca30185f518dd3a01354df8d69">noLongerUsed</a></td></tr>
-<tr class="separator:a82508aca30185f518dd3a01354df8d69"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a533fea21c616fde6e573c9eb8b82aec6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#adb4e1a9d15834b58292687192cf0dc16">UnrealPackageFile.MEPackageEventHandler</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#a533fea21c616fde6e573c9eb8b82aec6">NoLongerOpenInTools</a></td></tr>
+<tr class="memdesc:a533fea21c616fde6e573c9eb8b82aec6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Invoked when <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#ac298a2f38181f0ca0cb50b902168d8f8" title="Collection of IPackageUsers that are using this IMEPackage. Use RegisterTool and Release to modify th...">Users</a> becomes empty.  <a href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#a533fea21c616fde6e573c9eb8b82aec6">More...</a><br /></td></tr>
+<tr class="separator:a533fea21c616fde6e573c9eb8b82aec6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af53706e7e91c68dc29673eb829e39d07"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#adb4e1a9d15834b58292687192cf0dc16">UnrealPackageFile.MEPackageEventHandler</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#af53706e7e91c68dc29673eb829e39d07">NoLongerUsed</a></td></tr>
+<tr class="memdesc:af53706e7e91c68dc29673eb829e39d07"><td class="mdescLeft">&#160;</td><td class="mdescRight">Invoked when usages drop tp 0. Every call to <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#a1815f088b1953d28d4dfd1bdd8b31242">RegisterTool</a> or <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#a4be18d1e4d61b28ffde3fa6e0efd4bda">RegisterUse</a> adds a usage, and every call to <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#a3066bdc3c581f5ebd173b42608d1e44b">Release</a> or IDisposable.Dispose subtracts a usage.  <a href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#af53706e7e91c68dc29673eb829e39d07">More...</a><br /></td></tr>
+<tr class="separator:af53706e7e91c68dc29673eb829e39d07"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
 <a id="a2643884eea591c770049b369f74e51bd" name="a2643884eea591c770049b369f74e51bd"></a>
@@ -1521,8 +1525,8 @@ Events</h2></td></tr>
 
 </div>
 </div>
-<a id="af6e120b660fc72eb9dc94eb24e1487c3" name="af6e120b660fc72eb9dc94eb24e1487c3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af6e120b660fc72eb9dc94eb24e1487c3">&#9670;&nbsp;</a></span>Users</h2>
+<a id="ac298a2f38181f0ca0cb50b902168d8f8" name="ac298a2f38181f0ca0cb50b902168d8f8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac298a2f38181f0ca0cb50b902168d8f8">&#9670;&nbsp;</a></span>Users</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1531,7 +1535,7 @@ Events</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">ObservableCollection&lt;<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_package_user.html">IPackageUser</a>&gt; LegendaryExplorerCore.Packages.IMEPackage.Users</td>
+          <td class="memname">IReadOnlyCollection&lt;<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_package_user.html">IPackageUser</a>&gt; LegendaryExplorerCore.Packages.IMEPackage.Users</td>
         </tr>
       </table>
   </td>
@@ -1541,10 +1545,12 @@ Events</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Collection of <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_package_user.html">IPackageUser</a>s that are using this <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a>. Use <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#a1815f088b1953d28d4dfd1bdd8b31242">RegisterTool</a> and <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#a3066bdc3c581f5ebd173b42608d1e44b">Release</a> to modify this collection. </p>
+
 </div>
 </div>
-<a id="a03e576c760b18141972ba5903473ad8a" name="a03e576c760b18141972ba5903473ad8a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a03e576c760b18141972ba5903473ad8a">&#9670;&nbsp;</a></span>WeakUsers</h2>
+<a id="a5acf313fe89fe6dab52f151068ca2c72" name="a5acf313fe89fe6dab52f151068ca2c72"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5acf313fe89fe6dab52f151068ca2c72">&#9670;&nbsp;</a></span>WeakUsers</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1553,7 +1559,7 @@ Events</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">List&lt;<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_package_user.html">IPackageUser</a>&gt; LegendaryExplorerCore.Packages.IMEPackage.WeakUsers</td>
+          <td class="memname"><a class="el" href="class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_specialized_1_1_weak_collection.html">WeakCollection</a>&lt;<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_weak_package_user.html">IWeakPackageUser</a>&gt; LegendaryExplorerCore.Packages.IMEPackage.WeakUsers</td>
         </tr>
       </table>
   </td>
@@ -1562,6 +1568,8 @@ Events</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Collection of <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_weak_package_user.html">IWeakPackageUser</a>s. This is for users that want to subscribe to package change notifications as long as the package is open, but don't want to cause it to stay open if there are no other users. Unlike <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#ac298a2f38181f0ca0cb50b902168d8f8" title="Collection of IPackageUsers that are using this IMEPackage. Use RegisterTool and Release to modify th...">Users</a>, this collection should be modified directly, and since it only keeps weak references, users don't need to remove themselves before they fall out of scope. </p>
 
 </div>
 </div>
@@ -1632,31 +1640,35 @@ Events</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Event Documentation</h2>
-<a id="a05ea8245d0c7299249cd94cfaa95e2a1" name="a05ea8245d0c7299249cd94cfaa95e2a1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a05ea8245d0c7299249cd94cfaa95e2a1">&#9670;&nbsp;</a></span>noLongerOpenInTools</h2>
+<a id="a533fea21c616fde6e573c9eb8b82aec6" name="a533fea21c616fde6e573c9eb8b82aec6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a533fea21c616fde6e573c9eb8b82aec6">&#9670;&nbsp;</a></span>NoLongerOpenInTools</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#adb4e1a9d15834b58292687192cf0dc16">UnrealPackageFile.MEPackageEventHandler</a> LegendaryExplorerCore.Packages.IMEPackage.noLongerOpenInTools</td>
+          <td class="memname"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#adb4e1a9d15834b58292687192cf0dc16">UnrealPackageFile.MEPackageEventHandler</a> LegendaryExplorerCore.Packages.IMEPackage.NoLongerOpenInTools</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
+<p>Invoked when <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#ac298a2f38181f0ca0cb50b902168d8f8" title="Collection of IPackageUsers that are using this IMEPackage. Use RegisterTool and Release to modify th...">Users</a> becomes empty. </p>
+
 </div>
 </div>
-<a id="a82508aca30185f518dd3a01354df8d69" name="a82508aca30185f518dd3a01354df8d69"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a82508aca30185f518dd3a01354df8d69">&#9670;&nbsp;</a></span>noLongerUsed</h2>
+<a id="af53706e7e91c68dc29673eb829e39d07" name="af53706e7e91c68dc29673eb829e39d07"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af53706e7e91c68dc29673eb829e39d07">&#9670;&nbsp;</a></span>NoLongerUsed</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#adb4e1a9d15834b58292687192cf0dc16">UnrealPackageFile.MEPackageEventHandler</a> LegendaryExplorerCore.Packages.IMEPackage.noLongerUsed</td>
+          <td class="memname"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#adb4e1a9d15834b58292687192cf0dc16">UnrealPackageFile.MEPackageEventHandler</a> LegendaryExplorerCore.Packages.IMEPackage.NoLongerUsed</td>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Invoked when usages drop tp 0. Every call to <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#a1815f088b1953d28d4dfd1bdd8b31242">RegisterTool</a> or <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#a4be18d1e4d61b28ffde3fa6e0efd4bda">RegisterUse</a> adds a usage, and every call to <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#a3066bdc3c581f5ebd173b42608d1e44b">Release</a> or IDisposable.Dispose subtracts a usage. </p>
 
 </div>
 </div>

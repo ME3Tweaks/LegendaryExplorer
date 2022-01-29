@@ -1,9 +1,5 @@
 var NAVTREEINDEX1 =
 {
-"_coalesce_asset_8cs.html#a79038b10f66a78754f0e114f0aa52be9a88183b946cc5f0e8c96b2e66e1c74a7e":[2,0,0,0,1,2,1,3],
-"_coalesce_asset_8cs.html#a79038b10f66a78754f0e114f0aa52be9af4d72a64acd8929c0cc9ed96a7a336cc":[2,0,0,0,1,2,1,1],
-"_coalesce_file_8cs.html":[2,0,0,0,1,5],
-"_coalesce_include_8cs.html":[2,0,0,0,1,1,0],
 "_coalesce_include_8cs.html#aa38b1ec2e0404cc31b15cc3c6b5b2a9b":[2,0,0,0,1,1,0,1],
 "_coalesce_include_8cs.html#aa38b1ec2e0404cc31b15cc3c6b5b2a9ba6adf97f83acf6453d4a6a4b1070f3754":[2,0,0,0,1,1,0,1,0],
 "_coalesce_include_8cs.html#aa38b1ec2e0404cc31b15cc3c6b5b2a9ba88183b946cc5f0e8c96b2e66e1c74a7e":[2,0,0,0,1,1,0,1,3],
@@ -249,5 +245,9 @@ var NAVTREEINDEX1 =
 "_export_creator_8cs.html":[2,0,0,0,14,3],
 "_export_entry_8cs.html":[2,0,0,0,14,4],
 "_expression_8cs.html":[2,0,0,0,21,3,1,28],
-"_expression_extensions_8cs.html":[2,0,0,0,6,4,2,0]
+"_expression_extensions_8cs.html":[2,0,0,0,6,4,2,0],
+"_expression_only_statement_8cs.html":[2,0,0,0,21,3,1,29],
+"_expressions_8cs.html":[2,0,0,0,21,2,0,0,2],
+"_extended_native_table_8cs.html":[2,0,0,0,21,2,2],
+"_extensions_8cs.html":[2,0,0,0,7,1]
 };
