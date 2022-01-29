@@ -3,7 +3,7 @@ var class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler =
     [ "DecompileExport", "class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#aa937532e62bad6fbd398695bdc0a267a", null ],
     [ "ExportToAstNode", "class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#a8b9abfd6c7ee56a2f7addd2a9da04d12", null ],
     [ "CompileOutlineAST", "class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#a11381f02e383aa0b5671889fb7db7545", null ],
-    [ "CompileClass", "class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#a064edc0030dc1a579c1729b6cea0865f", null ],
+    [ "CompileClass", "class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#aeade51937f367fb762927641628e4953", null ],
     [ "CompileFunction", "class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#ac81349ee3370b1ac6b4cb6db7a493195", null ],
     [ "CompileState", "class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#a97635b8ef240099fa23f15b71940adf5", null ],
     [ "CompileEnum", "class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#aae34c93f03e0eda712c0a02f0632830a", null ],
