@@ -255,11 +255,33 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 if (wwiseEventExp != null)
                 {
                     var wwiseEvent = ObjectBinary.From<WwiseEvent>(wwiseEventExp);
-                    foreach (var link in wwiseEvent.Links)
+                    if (wwiseEvent.Links != null)
                     {
-                        // Look through these exports
+                        foreach (var link in wwiseEvent.Links)
+                        {
+                            // Look through these exports instead of all exports (faster)
+                            ExportEntry possible = null;
+                            var possibleExports = link.WwiseStreams.Where(x => CurrentLoadedExport.FileRef.IsUExport(x)).Select(x => CurrentLoadedExport.FileRef.GetUExport(x)).ToList();
+
+                            // Female ones are unique since all lines have male version. Try female first if we know this is female line
+                            if (!selectedLine.IsMale)
+                            {
+                                possible = possibleExports.FirstOrDefault(x => x.ObjectName.Name.Contains(wwiseStreamSearchNameGendered, StringComparison.InvariantCultureIgnoreCase));
+                                if (possible != null) return possible;
+                            }
+
+                            // Try male version. Sometimes if line has same thing (e.g. nonplayer line) it'll just use male version as there's only one gender
+                            // Should only be one version for this TLK...
+                            possible = possibleExports.FirstOrDefault(x => x.ObjectName.Name.Contains($"{selectedLine.TLKID:D8}", StringComparison.InvariantCultureIgnoreCase));
+                            if (possible != null)
+                                return possible;
+                        }
+                    }
+                    else
+                    {
+                        // Look through all the exports I guess.
                         ExportEntry possible = null;
-                        var possibleExports = link.WwiseStreams.Where(x => CurrentLoadedExport.FileRef.IsUExport(x)).Select(x => CurrentLoadedExport.FileRef.GetUExport(x)).ToList();
+                        var possibleExports = CurrentLoadedExport.FileRef.Exports.Where(x => x.ClassName == "WwiseStream").ToList();
 
                         // Female ones are unique since all lines have male version. Try female first if we know this is female line
                         if (!selectedLine.IsMale)
