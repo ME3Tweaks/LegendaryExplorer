@@ -271,7 +271,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Curves
         private void FlattenTangents_Click(object sender, RoutedEventArgs e)
         {
             point.Value.LeaveTangent = point.Value.ArriveTangent = 0;
-            point.Value.InterpMode = CurveMode.CIM_CurveAutoClamped;
+            point.Value.InterpMode = CurveMode.CIM_CurveUser;
             graph.invokeSelectedPointChanged();
             graph.Paint();
         }

@@ -315,10 +315,8 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
                 {
                     case CurveMode.CIM_CurveAuto:
                     case CurveMode.CIM_CurveUser:
-                        node.Value.LeaveTangent = node.Value.ArriveTangent;
-                        break;
                     case CurveMode.CIM_CurveAutoClamped:
-                        node.Value.ArriveTangent = node.Value.LeaveTangent = 0f;
+                        node.Value.LeaveTangent = node.Value.ArriveTangent;
                         break;
                     case CurveMode.CIM_CurveBreak:
                     case CurveMode.CIM_Constant:
