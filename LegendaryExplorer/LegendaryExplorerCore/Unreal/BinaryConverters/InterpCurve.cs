@@ -111,6 +111,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
 
             #endregion
+
             #region GenericSpecializationFramework
 
             public static readonly Specializations Inst = new Specializations();
@@ -147,7 +148,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     //ONLY WORKS WHEN T is float, System.Numerics.Vector3 or System.Numerics.Vector2
     public class InterpCurve<T>
     {
-        public List<InterpCurvePoint<T>> Points = new();
+        public readonly List<InterpCurvePoint<T>> Points = new();
         public EInterpMethodType InterpMethod = EInterpMethodType.IMT_UseFixedTangentEvalAndNewAutoTangents;
 
         public int AddPoint(float inVal, T outVal)
@@ -187,31 +188,85 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
             for (int i = 1; i < len; i++)
             {
-                if (inVal >= Points[i].InVal) continue;
+                InterpCurvePoint<T> cur = Points[i];
+                if (inVal >= cur.InVal) continue;
 
-                float diff = Points[i].InVal - Points[i - 1].InVal;
+                InterpCurvePoint<T> prev = Points[i - 1];
+                float diff = cur.InVal - prev.InVal;
 
-                if (diff == 0f  || Points[i - 1].InterpMode == EInterpCurveMode.CIM_Constant)
+                if (diff == 0f  || prev.InterpMode == EInterpCurveMode.CIM_Constant)
                 {
-                    return Points[i - 1].OutVal;
+                    return prev.OutVal;
                 }
 
-                float amount = (inVal - Points[i - 1].InVal) / diff;
+                float amount = (inVal - prev.InVal) / diff;
 
-                if (Points[i - 1].InterpMode == EInterpCurveMode.CIM_Linear)
+                if (prev.InterpMode == EInterpCurveMode.CIM_Linear)
                 {
-                    return Lerp(Points[i - 1].OutVal, Points[i].OutVal, amount);
+                    return Lerp(prev.OutVal, cur.OutVal, amount);
                 }
 
                 if (InterpMethod == EInterpMethodType.IMT_UseBrokenTangentEval)
                 {
-                    return CubicInterp(Points[i - 1].OutVal, Points[i - 1].LeaveTangent, Points[i].OutVal, Points[i].ArriveTangent, amount);
+                    return CubicInterp(prev.OutVal, prev.LeaveTangent, cur.OutVal, cur.ArriveTangent, amount);
                 }
 
-                return CubicInterp(Points[i - 1].OutVal, Mul(Points[i - 1].LeaveTangent, diff), Points[i].OutVal, Mul(Points[i].ArriveTangent, diff), amount);
+                return CubicInterp(prev.OutVal, Mul(diff, prev.LeaveTangent), cur.OutVal, Mul(diff, cur.ArriveTangent), amount);
             }
 
             return Points[len - 1].OutVal;
+        }
+
+        public void ReCalculateTangents(float tension = 0f)
+        {
+            var zero = Zero<T>();
+            tension = 1f - tension;
+            if (Points.Count == 1)
+            {
+                Points[0].ArriveTangent = Points[0].LeaveTangent = zero;
+            }
+            else if (Points.Count > 1)
+            {
+                if (Points[0].InterpMode is EInterpCurveMode.CIM_CurveAuto or EInterpCurveMode.CIM_CurveAutoClamped)
+                {
+                    Points[0].ArriveTangent = Points[0].LeaveTangent = zero;
+                }
+                if (Points[^1].InterpMode is EInterpCurveMode.CIM_CurveAuto or EInterpCurveMode.CIM_CurveAutoClamped)
+                {
+                    Points[^1].ArriveTangent = Points[^1].LeaveTangent = zero;
+                }
+                for (int i = 1; i < Points.Count - 1; i++)
+                {
+                    InterpCurvePoint<T> cur = Points[i];
+                    if (cur.InterpMode is EInterpCurveMode.CIM_CurveAuto or EInterpCurveMode.CIM_CurveAutoClamped)
+                    {
+                        InterpCurvePoint<T> prev = Points[i - 1];
+                        if (prev.InterpMode is EInterpCurveMode.CIM_Constant)
+                        {
+                            cur.ArriveTangent = cur.LeaveTangent = zero;
+                        }
+                        else if (prev.InterpMode is not EInterpCurveMode.CIM_Linear)
+                        {
+                            InterpCurvePoint<T> next = Points[i + 1];
+                            if (InterpMethod is EInterpMethodType.IMT_UseFixedTangentEvalAndNewAutoTangents)
+                            {
+                                if (cur.InterpMode is EInterpCurveMode.CIM_CurveAutoClamped)
+                                {
+                                    cur.ArriveTangent = cur.LeaveTangent = Mul(tension, ClampedTangent(prev.OutVal, prev.InVal, cur.OutVal, cur.InVal, next.OutVal, next.InVal));
+                                }
+                                else
+                                {
+                                    cur.ArriveTangent = cur.LeaveTangent = Mul(1 / MathF.Max(next.InVal - prev.InVal, TOLERANCE) * tension, Tangent(prev.OutVal, cur.OutVal, next.OutVal));
+                                }
+                            }
+                            else
+                            {
+                                cur.ArriveTangent = cur.LeaveTangent = Mul(0.5f * tension, Tangent(prev.OutVal, cur.OutVal, next.OutVal));
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         public StructProperty ToStructProperty(MEGame game, NameReference? name = null)
@@ -253,6 +308,53 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 return val * multiplier;
             }
 
+            float ISpec<float>.Tangent(float prev, float cur, float next)
+            {
+                return cur - prev + (next - cur);
+            }
+
+            public float ClampedTangent(float prevVal, float prevTime, float curVal, float curTime, float nextVal, float nextTime)
+            {
+                float prevToNextHeightDiff = nextVal - prevVal;
+                float prevToCurHeightDiff = curVal - prevVal;
+                float curToNextHeightDiff = nextVal - curVal;
+
+                if (prevToCurHeightDiff >= 0.0f && curToNextHeightDiff <= 0.0f ||
+                    prevToCurHeightDiff <= 0.0f && curToNextHeightDiff >= 0.0f)
+                {
+                    //Either a local max or min, so tangent should be flat
+                    return 0f;
+                }
+
+                const float clampThreshold = 0.333f;
+                const float upperClampThreshold = 1.0f - clampThreshold;
+                float curHeightAlpha = prevToCurHeightDiff / prevToNextHeightDiff;
+                Func<float, float, float> minOrMax = prevToNextHeightDiff > 0f ? MathF.Min : MathF.Max;
+                float prevToNextTangent = prevToNextHeightDiff / MathF.Max(TOLERANCE, nextTime - prevTime);
+
+                switch (curHeightAlpha)
+                {
+                    case < clampThreshold:
+                    {
+                        float prevToCurTangent = prevToCurHeightDiff / MathF.Max(TOLERANCE, curTime - prevTime);
+                        float lerpAmount = 1.0f - curHeightAlpha / clampThreshold;
+                        float clampedTangent = Lerp(prevToNextTangent, prevToCurTangent, lerpAmount);
+                        return minOrMax(prevToNextTangent, clampedTangent);
+                    }
+                    case > upperClampThreshold:
+                    {
+                        float curToNextTangent = curToNextHeightDiff / MathF.Max(TOLERANCE, nextTime - curTime);
+                        float lerpAmount = (curHeightAlpha - upperClampThreshold) / clampThreshold;
+                        float clampedTangent = Lerp(prevToNextTangent, curToNextTangent, lerpAmount);
+                        return minOrMax(prevToNextTangent, clampedTangent);
+                    }
+                    default:
+                        return prevToNextTangent;
+                }
+            }
+
+            float ISpec<float>.Zero() => 0f;
+
             string ISpec<float>.VectorType() => "InterpCurveFloat";
             #endregion
 
@@ -274,6 +376,21 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             {
                 return val * multiplier;
             }
+
+            Vector3 ISpec<Vector3>.Tangent(Vector3 prev, Vector3 cur, Vector3 next)
+            {
+                return cur - prev + (next - cur);
+            }
+
+            Vector3 ISpec<Vector3>.ClampedTangent(Vector3 prevVal, float prevTime, Vector3 curVal, float curTime, Vector3 nextVal, float nextTime)
+            {
+                return new Vector3(
+                    ClampedTangent(prevVal.X, prevTime, curVal.X, curTime, nextVal.X, nextTime), 
+                    ClampedTangent(prevVal.Y, prevTime, curVal.Y, curTime, nextVal.Y, nextTime), 
+                    ClampedTangent(prevVal.Z, prevTime, curVal.Z, curTime, nextVal.Z, nextTime));
+            }
+
+            Vector3 ISpec<Vector3>.Zero() => Vector3.Zero;
 
             string ISpec<Vector3>.VectorType() => "InterpCurveVector";
             #endregion
@@ -297,12 +414,26 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 return val * multiplier;
             }
 
+            Vector2 ISpec<Vector2>.Tangent(Vector2 prev, Vector2 cur, Vector2 next)
+            {
+                return cur - prev + (next - cur);
+            }
+
+            Vector2 ISpec<Vector2>.ClampedTangent(Vector2 prevVal, float prevTime, Vector2 curVal, float curTime, Vector2 nextVal, float nextTime)
+            {
+                return new Vector2(
+                    ClampedTangent(prevVal.X, prevTime, curVal.X, curTime, nextVal.X, nextTime), 
+                    ClampedTangent(prevVal.Y, prevTime, curVal.Y, curTime, nextVal.Y, nextTime));
+            }
+
+            Vector2 ISpec<Vector2>.Zero() => Vector2.Zero;
+
             string ISpec<Vector2>.VectorType() => "InterpCurveVector2D";
             #endregion
 
             #region GenericSpecializationFramework
 
-            public static readonly Specializations Inst = new Specializations();
+            public static readonly Specializations Inst = new();
             private Specializations() { }
         }
 
@@ -310,7 +441,10 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         //generic specialization code is based on https://stackoverflow.com/a/29379250
         private static U Lerp<U>(U start, U end, float amount) => Specialization<U>.Inst.Lerp(start, end, amount);
         private static U CubicInterp<U>(U point0, U tan0, U point1, U tan1, float amount) => Specialization<U>.Inst.CubicInterp(point0, tan0, point1, tan1, amount);
-        private static U Mul<U>(U val, float multiplier) => Specialization<U>.Inst.Mul(val, multiplier);
+        private static U Mul<U>(float multiplier, U val) => Specialization<U>.Inst.Mul(val, multiplier);
+        private static U Tangent<U>(U prev, U cur, U next) => Specialization<U>.Inst.Tangent(prev, cur, next);
+        private static U ClampedTangent<U>(U prevVal, float prevTime, U curVal, float curTime, U nextVal, float nextTime) => Specialization<U>.Inst.ClampedTangent(prevVal, prevTime, curVal, curTime, nextVal, nextTime);
+        private static U Zero<U>() => Specialization<U>.Inst.Zero();
         private static string VectorType<U>() => Specialization<U>.Inst.VectorType();
 
         private interface ISpec<U>
@@ -318,19 +452,27 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             U Lerp(U start, U end, float amount);
             U CubicInterp(U point0, U tan0, U point1, U tan1, float amount);
             U Mul(U val, float multiplier);
+            U Tangent(U prev, U cur, U next);
+            U ClampedTangent(U prevVal, float prevTime, U curVal, float curTime, U nextVal, float nextTime);
+            U Zero();
             string VectorType();
         }
 
         private class Specialization<U> : ISpec<U>
         {
-            //When U is specialized, this will be a working implementation, for all other U, it will bethe defaults below.
+            //When U is specialized, this will be a working implementation, for all other U, it will be the defaults below.
             public static readonly ISpec<U> Inst = Specializations.Inst as ISpec<U> ?? new Specialization<U>();
             U ISpec<U>.Lerp(U start, U end, float amount) => throw new NotSupportedException();
             U ISpec<U>.CubicInterp(U point0, U tan0, U point1, U tan1, float amount) => throw new NotSupportedException();
             U ISpec<U>.Mul(U val, float multiplier) => throw new NotSupportedException();
+            U ISpec<U>.Tangent(U prev, U cur, U next) => throw new NotSupportedException();
+            U ISpec<U>.ClampedTangent(U prevVal, float prevTime, U curVal, float curTime, U nextVal, float nextTime) => throw new NotSupportedException();
+            U ISpec<U>.Zero() => throw new NotSupportedException();
             string ISpec<U>.VectorType() => throw new NotSupportedException();
 
             #endregion
         }
+
+        private const float TOLERANCE = 0.0001f;
     }
 }

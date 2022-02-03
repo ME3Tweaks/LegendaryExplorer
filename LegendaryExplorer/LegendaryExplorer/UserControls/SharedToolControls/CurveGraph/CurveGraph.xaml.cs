@@ -543,12 +543,12 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
             if (pointBefore is not null)
             {
                 node = SelectedCurve.CurvePoints.Find(pointBefore);
-                SelectedCurve.AddPoint(new CurvePoint(time, y, 0, 0, node.Value.InterpMode), node);
+                SelectedCurve.AddPoint(new CurvePoint(time, y, 0, 0, pointBefore.InterpMode), node);
             }
             else
             {
                 node = SelectedCurve.CurvePoints.Last;
-                SelectedCurve.AddPoint(new CurvePoint(time, y, 0, 0, node?.Value.InterpMode ?? CurveMode.CIM_CurveUser), node, false);
+                SelectedCurve.AddPoint(new CurvePoint(time, y, 0, 0, node?.Value.InterpMode ?? CurveMode.CIM_CurveAutoClamped), node, false);
             }
 
             Paint(true);

@@ -104,6 +104,7 @@
                                 <MenuItem Header="Delete All Keys" Click="DeleteAnimKeys_Click"/>
                                 <MenuItem Header="Set As Reference Curve" Click="SelectForCompare_Click"/>
                                 <MenuItem Header="Clone" Click="CloneAnimation_Click"/>
+                                <MenuItem Header="Change Name" Click="ChangeAnimName_Click"></MenuItem>
                                 <MenuItem Header="Export Curve to Excel" Click="ExportToExcel_Click">
                                     <MenuItem.Icon>
                                         <Image Source="/Resources/Images/excel.png" Width="16" Height="16" Margin="0,0,2,0"/>

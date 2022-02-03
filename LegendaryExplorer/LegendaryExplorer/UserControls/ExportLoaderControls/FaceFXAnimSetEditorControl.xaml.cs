@@ -6,7 +6,10 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Xml;
+using System.Xml.Linq;
 using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Drawing.Diagrams;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.SharedUI;
@@ -21,6 +24,7 @@ using LegendaryExplorerCore.Unreal.BinaryConverters;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Newtonsoft.Json;
+using Point = System.Windows.Point;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls
 {
@@ -129,7 +133,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         /// <summary>
         /// The extra playhead position line in the curve graph
         /// </summary>
-        private ExtraCurveGraphLine PlayheadPositionLine = new ExtraCurveGraphLine() { Label = "Playhead", LabelOffset = 15, Color = new SolidColorBrush(Colors.Aqua) };
+        private readonly ExtraCurveGraphLine PlayheadPositionLine = new() { Label = "Playhead", LabelOffset = 15, Color = new SolidColorBrush(Colors.Aqua) };
 
         public ObservableCollectionExtended<Animation> Animations { get; } = new();
 
@@ -339,7 +343,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 var animationNames = new List<int>();
                 foreach (Animation anim in Animations)
                 {
-                    animationNames.Add(FaceFX.Names.IndexOf(anim.Name));
+                    animationNames.Add(FaceFX.Names.FindOrAdd(anim.Name));
                     curvePoints.AddRange(anim.Points);
                     numKeys.Add(anim.Points.Count);
                 }
@@ -641,13 +645,13 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void Graph_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Delete || e.Key == Key.Back)
+            if (e.Key is Key.Delete or Key.Back)
             {
                 graph.DeleteSelectedKey();
             }
         }
 
-        (float start, float end, float span) getTimeRange()
+        (float start, float end, float span) GetTimeRange()
         {
             string startS = PromptDialog.Prompt(this, "Please enter start time:");
             string endS = PromptDialog.Prompt(this, "Please enter end time:");
@@ -667,7 +671,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void DelLineSec_Click(object sender, RoutedEventArgs e)
         {
-            var (start, end, span) = getTimeRange();
+            var (start, end, span) = GetTimeRange();
             if (span < 0)
             {
                 return;
@@ -701,6 +705,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private struct LineSection
         {
+            //don't alter capitalization of these fields, since that will break deserialization.
             public float span;
             public Dictionary<string, List<FaceFXControlPoint>> animSecs;
         }
@@ -715,12 +720,79 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
             var ofd = new OpenFileDialog
             {
-                Filter = "*.json|*.json|All Files (*.*)|*.*",
+                Filter = "*.json;*.xml|*.json;*.xml",
                 CheckFileExists = true
             };
             if (ofd.ShowDialog() == true)
             {
-                var lineSec = JsonConvert.DeserializeObject<LineSection>(File.ReadAllText(ofd.FileName));
+                LineSection lineSec;
+                if (ofd.FileName.EndsWith(".xml", StringComparison.OrdinalIgnoreCase))
+                {
+                    var xmlDoc = XElement.Load(ofd.FileName);
+                    var animations = xmlDoc.Descendants("animation_groups").Descendants("animation_group").Descendants("animation").ToList();
+                    XElement animationElement;
+                    if (animations.Count is 0)
+                    {
+                        MessageBox.Show(Window.GetWindow(this), "No animations found in this xml file!");
+                        return;
+                    }
+                    if (animations.Count > 1)
+                    {
+                        var animNames = animations.Select((x, i) => x.Attribute("name")?.Value ?? i.ToString()).ToList();
+                        var chosenName = InputComboBoxDialog.GetValue(this, "Choose which to animation to import.", "Choose Animation", animNames, animNames[0]);
+                        if (chosenName is null)
+                        {
+                            return;
+                        }
+                        animationElement = animations.Find(x => x.Attribute("name")?.Value == chosenName);
+                    }
+                    else
+                    {
+                        animationElement = animations[0];
+                    }
+                    var curveNodes = animationElement.Descendants("curves").Descendants();
+                    lineSec = new LineSection{animSecs = new Dictionary<string, List<FaceFXControlPoint>>()};
+                    float firstTime = float.MaxValue;
+                    float lastTime = float.MinValue;
+                    foreach (XElement curveNode in curveNodes)
+                    {
+                        string curveName = curveNode.Attribute("name")?.Value;
+                        if (curveName is null)
+                        {
+                            continue;
+                        }
+                        if (curveNode.Value is string value)
+                        {
+                            var keys = value.Trim().Split(' ').Select(s =>
+                            {
+                                if (float.TryParse(s, out float result))
+                                {
+                                    return result;
+                                }
+                                return 0f;
+                            }).ToArray();
+                            var points = new List<FaceFXControlPoint>();
+                            for (int i = 0; i + 3 < keys.Length; i += 4)
+                            {
+                                firstTime = MathF.Min(firstTime, keys[i]);
+                                lastTime = MathF.Max(firstTime, keys[i]);
+                                points.Add(new FaceFXControlPoint
+                                {
+                                    time = keys[i],
+                                    weight = keys[i + 1],
+                                    inTangent = keys[i + 2],
+                                    leaveTangent = keys[i + 3]
+                                });
+                            }
+                            lineSec.animSecs.Add(curveName, points);
+                        }
+                    }
+                    lineSec.span = MathF.Max(0, lastTime - firstTime);
+                }
+                else
+                {
+                    lineSec = JsonConvert.DeserializeObject<LineSection>(File.ReadAllText(ofd.FileName));
+                }
                 var newPoints = new List<FaceFXControlPoint>();
                 for (int i = 0, j = 0; i < SelectedLine.AnimationNames.Count; i++)
                 {
@@ -772,7 +844,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void ExpLineSec_Click(object sender, RoutedEventArgs e)
         {
-            var (start, end, span) = getTimeRange();
+            var (start, end, span) = GetTimeRange();
             if (span < 0)
             {
                 return;
@@ -948,7 +1020,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         private void NameDoubleClick()
         {
             var result = PromptDialog.Prompt(this, "Please enter new value", "Legendary Explorer", FaceFX.Names.ElementAtOrDefault(SelectedLine.NameIndex), true);
-            if (result == string.Empty || result is null)
+            if (result is "" or null)
             {
                 return;
             }
@@ -1016,6 +1088,15 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }*/
 
 
+        }
+
+        private void ChangeAnimName_Click(object sender, RoutedEventArgs e)
+        {
+            if (PromptDialog.Prompt(this, "Enter new name", "Animation Name Change", SelectedAnimation.Name, true) is string newName && newName != "")
+            {
+                SelectedAnimation.Name = newName;
+                SaveChanges();
+            }
         }
     }
 
