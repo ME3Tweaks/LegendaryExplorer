@@ -104,6 +104,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a041ed7f1a4d11eaae3508d2376083f6e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a846fce8eecfadde386c1f6e8e7fa5e89"><td class="memItemLeft" align="right" valign="top">T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_interp_curve.html#a846fce8eecfadde386c1f6e8e7fa5e89">Eval</a> (float inVal, T defaultVal)</td></tr>
 <tr class="separator:a846fce8eecfadde386c1f6e8e7fa5e89"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af69e94030a5881be09238ffb68424bbd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_interp_curve.html#af69e94030a5881be09238ffb68424bbd">ReCalculateTangents</a> (float tension=0f)</td></tr>
+<tr class="separator:af69e94030a5881be09238ffb68424bbd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a68bdf3cf6c3ff215d5c2a58995efecab"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_struct_property.html">StructProperty</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_interp_curve.html#a68bdf3cf6c3ff215d5c2a58995efecab">ToStructProperty</a> (<a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game, <a class="el" href="struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html">NameReference</a>? name=null)</td></tr>
 <tr class="separator:a68bdf3cf6c3ff215d5c2a58995efecab"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -114,8 +116,8 @@ Static Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a34c3b50418dc1cd619651aadc16d83bb"><td class="memItemLeft" align="right" valign="top">List&lt; <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_interp_curve_point.html">InterpCurvePoint</a>&lt; T &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_interp_curve.html#a34c3b50418dc1cd619651aadc16d83bb">Points</a> = new()</td></tr>
-<tr class="separator:a34c3b50418dc1cd619651aadc16d83bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a14ea2cfb3019f1f6846bda4db98354e0"><td class="memItemLeft" align="right" valign="top">readonly List&lt; <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_interp_curve_point.html">InterpCurvePoint</a>&lt; T &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_interp_curve.html#a14ea2cfb3019f1f6846bda4db98354e0">Points</a> = new()</td></tr>
+<tr class="separator:a14ea2cfb3019f1f6846bda4db98354e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7925c61db49b69f4f12290b143da431e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespace_legendary_explorer_core_1_1_unreal.html#a99d61eda9457dfd2d1c7c86c82a1a91d">EInterpMethodType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_interp_curve.html#a7925c61db49b69f4f12290b143da431e">InterpMethod</a> = <a class="el" href="namespace_legendary_explorer_core_1_1_unreal.html#a99d61eda9457dfd2d1c7c86c82a1a91da65187c0c752fe1b5f5fa62992bc0e6c4">EInterpMethodType.IMT_UseFixedTangentEvalAndNewAutoTangents</a></td></tr>
 <tr class="separator:a7925c61db49b69f4f12290b143da431e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -246,6 +248,32 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="af69e94030a5881be09238ffb68424bbd" name="af69e94030a5881be09238ffb68424bbd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af69e94030a5881be09238ffb68424bbd">&#9670;&nbsp;</a></span>ReCalculateTangents()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_interp_curve.html">LegendaryExplorerCore.Unreal.BinaryConverters.InterpCurve</a>&lt; T &gt;.ReCalculateTangents </td>
+          <td>(</td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>tension</em> = <code>0f</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a68bdf3cf6c3ff215d5c2a58995efecab" name="a68bdf3cf6c3ff215d5c2a58995efecab"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a68bdf3cf6c3ff215d5c2a58995efecab">&#9670;&nbsp;</a></span>ToStructProperty()</h2>
 
@@ -309,14 +337,14 @@ Public Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="a34c3b50418dc1cd619651aadc16d83bb" name="a34c3b50418dc1cd619651aadc16d83bb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a34c3b50418dc1cd619651aadc16d83bb">&#9670;&nbsp;</a></span>Points</h2>
+<a id="a14ea2cfb3019f1f6846bda4db98354e0" name="a14ea2cfb3019f1f6846bda4db98354e0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a14ea2cfb3019f1f6846bda4db98354e0">&#9670;&nbsp;</a></span>Points</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">List&lt;<a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_interp_curve_point.html">InterpCurvePoint</a>&lt;T&gt; &gt; <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_interp_curve.html">LegendaryExplorerCore.Unreal.BinaryConverters.InterpCurve</a>&lt; T &gt;.Points = new()</td>
+          <td class="memname">readonly List&lt;<a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_interp_curve_point.html">InterpCurvePoint</a>&lt;T&gt; &gt; <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_interp_curve.html">LegendaryExplorerCore.Unreal.BinaryConverters.InterpCurve</a>&lt; T &gt;.Points = new()</td>
         </tr>
       </table>
 </div><div class="memdoc">
