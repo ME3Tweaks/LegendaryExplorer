@@ -550,7 +550,7 @@ namespace LegendaryExplorerCore.Dialogue
                     {
                         for (int id = 0; id < s_speakers.Count; id++)
                         {
-                            var spkr = new SpeakerExtended(id, s_speakers[id].GetProp<NameProperty>("sSpeakerTag").Value.Instanced);
+                            var spkr = new SpeakerExtended(id, s_speakers[id].GetProp<NameProperty>("sSpeakerTag").Value);
                             Speakers.Add(spkr);
                         }
                     }
@@ -563,7 +563,7 @@ namespace LegendaryExplorerCore.Dialogue
                         int id = 0;
                         foreach (NameProperty n in a_speakers)
                         {
-                            var spkr = new SpeakerExtended(id, n.Value.Instanced);
+                            var spkr = new SpeakerExtended(id, n.Value);
                             Speakers.Add(spkr);
                             id++;
                         }
