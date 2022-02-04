@@ -1,7 +1,5 @@
 var NAVTREEINDEX119 =
 {
-"namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#ae27c2393e97195af7eaa79df4634da7bab1e0640db873ee70290c92bed236fed4":[0,5,0,19,0,211,0],
-"namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#ae27c2393e97195af7eaa79df4634da7babd35b80cba1682f9a248289e8266cc2c":[0,5,0,19,0,211,6],
 "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#ae27c2393e97195af7eaa79df4634da7baceca9469004decfe30211ca89418ed9e":[0,5,0,19,0,211,5],
 "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#ae27c2393e97195af7eaa79df4634da7bad62252efb30601c2f429f6dd526f29eb":[0,5,0,19,0,211,1],
 "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#ae5f93ae0703348a981b4debf37c76c87":[0,5,0,19,0,210],
@@ -249,5 +247,7 @@ var NAVTREEINDEX119 =
 "namespace_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_tokenizing.html#a474bc360809b2d99e18c94859cceefd9accc0377a8afbf50e7094f5c23a8af223":[0,5,0,20,4,1,1,57],
 "namespace_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_tokenizing.html#a474bc360809b2d99e18c94859cceefd9ace08123a54b50b7871c962c0c2e14f52":[0,5,0,20,4,1,1,2],
 "namespace_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_tokenizing.html#a474bc360809b2d99e18c94859cceefd9ad0f8cd46a5472cbc5fadd339ee9e7158":[0,5,0,20,4,1,1,29],
-"namespace_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_tokenizing.html#a474bc360809b2d99e18c94859cceefd9ad15456fdaa85c1ea4edabc7854425c3e":[0,5,0,20,4,1,1,22]
+"namespace_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_tokenizing.html#a474bc360809b2d99e18c94859cceefd9ad15456fdaa85c1ea4edabc7854425c3e":[0,5,0,20,4,1,1,22],
+"namespace_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_tokenizing.html#a474bc360809b2d99e18c94859cceefd9ad38921762f8b4e63cd5ca943dfd148fb":[0,5,0,20,4,1,1,51],
+"namespace_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_tokenizing.html#a474bc360809b2d99e18c94859cceefd9ad8731982fd6963420e283265767e8083":[0,5,0,20,4,1,1,33]
 };

@@ -1,8 +1,7 @@
 var class_legendary_explorer_core_1_1_dialogue_1_1_speaker_extended =
 [
-    [ "SpeakerExtended", "class_legendary_explorer_core_1_1_dialogue_1_1_speaker_extended.html#a45ca40e7311123c9dc0df6d1518dbffd", null ],
     [ "SpeakerExtended", "class_legendary_explorer_core_1_1_dialogue_1_1_speaker_extended.html#a647377a425d1a2c933e8b653297aafce", null ],
-    [ "SpeakerExtended", "class_legendary_explorer_core_1_1_dialogue_1_1_speaker_extended.html#ad070b44a075035ab2216a3560417b6a0", null ],
+    [ "SpeakerExtended", "class_legendary_explorer_core_1_1_dialogue_1_1_speaker_extended.html#a7e3e153e272fbb08a96667f7791bd7e8", null ],
     [ "SpeakerID", "class_legendary_explorer_core_1_1_dialogue_1_1_speaker_extended.html#a9ff80188414f57fd62d08af6807d9bcc", null ],
     [ "SpeakerName", "class_legendary_explorer_core_1_1_dialogue_1_1_speaker_extended.html#aaa3437fe4d4a0b07cc3450b054c78c5e", null ],
     [ "FaceFX_Male", "class_legendary_explorer_core_1_1_dialogue_1_1_speaker_extended.html#a3eecccadabddaedaf88aa932bd016c74", null ],
