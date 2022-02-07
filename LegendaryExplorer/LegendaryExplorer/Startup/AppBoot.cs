@@ -120,6 +120,13 @@ namespace LegendaryExplorer.Startup
                     cliHandler.InvokeAsync(Arguments.Dequeue());
                 }
             });
+
+            var mpc1 = LegendaryExplorerCore.PlotDatabase.PlotDatabases.GetModPlotContainerForGame(MEGame.LE1);
+            if (mpc1.Mods.IsEmpty()) mpc1.LoadModsFromDisk(AppDirectories.AppDataFolder);
+            var mpc2 = LegendaryExplorerCore.PlotDatabase.PlotDatabases.GetModPlotContainerForGame(MEGame.LE2);
+            if (mpc2.Mods.IsEmpty()) mpc2.LoadModsFromDisk(AppDirectories.AppDataFolder);
+            var mpc3 = LegendaryExplorerCore.PlotDatabase.PlotDatabases.GetModPlotContainerForGame(MEGame.LE3);
+            if (mpc3.Mods.IsEmpty()) mpc3.LoadModsFromDisk(AppDirectories.AppDataFolder);
         }
 
         private static void initCoreLib()
