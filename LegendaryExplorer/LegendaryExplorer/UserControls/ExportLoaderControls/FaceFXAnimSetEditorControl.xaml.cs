@@ -720,79 +720,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
             var ofd = new OpenFileDialog
             {
-                Filter = "*.json;*.xml|*.json;*.xml",
+                Filter = "*.json|*.json",
                 CheckFileExists = true
             };
             if (ofd.ShowDialog() == true)
             {
-                LineSection lineSec;
-                if (ofd.FileName.EndsWith(".xml", StringComparison.OrdinalIgnoreCase))
-                {
-                    var xmlDoc = XElement.Load(ofd.FileName);
-                    var animations = xmlDoc.Descendants("animation_groups").Descendants("animation_group").Descendants("animation").ToList();
-                    XElement animationElement;
-                    if (animations.Count is 0)
-                    {
-                        MessageBox.Show(Window.GetWindow(this), "No animations found in this xml file!");
-                        return;
-                    }
-                    if (animations.Count > 1)
-                    {
-                        var animNames = animations.Select((x, i) => x.Attribute("name")?.Value ?? i.ToString()).ToList();
-                        var chosenName = InputComboBoxDialog.GetValue(this, "Choose which to animation to import.", "Choose Animation", animNames, animNames[0]);
-                        if (chosenName is null)
-                        {
-                            return;
-                        }
-                        animationElement = animations.Find(x => x.Attribute("name")?.Value == chosenName);
-                    }
-                    else
-                    {
-                        animationElement = animations[0];
-                    }
-                    var curveNodes = animationElement.Descendants("curves").Descendants();
-                    lineSec = new LineSection{animSecs = new Dictionary<string, List<FaceFXControlPoint>>()};
-                    float firstTime = float.MaxValue;
-                    float lastTime = float.MinValue;
-                    foreach (XElement curveNode in curveNodes)
-                    {
-                        string curveName = curveNode.Attribute("name")?.Value;
-                        if (curveName is null)
-                        {
-                            continue;
-                        }
-                        if (curveNode.Value is string value)
-                        {
-                            var keys = value.Trim().Split(' ').Select(s =>
-                            {
-                                if (float.TryParse(s, out float result))
-                                {
-                                    return result;
-                                }
-                                return 0f;
-                            }).ToArray();
-                            var points = new List<FaceFXControlPoint>();
-                            for (int i = 0; i + 3 < keys.Length; i += 4)
-                            {
-                                firstTime = MathF.Min(firstTime, keys[i]);
-                                lastTime = MathF.Max(firstTime, keys[i]);
-                                points.Add(new FaceFXControlPoint
-                                {
-                                    time = keys[i],
-                                    weight = keys[i + 1],
-                                    inTangent = keys[i + 2],
-                                    leaveTangent = keys[i + 3]
-                                });
-                            }
-                            lineSec.animSecs.Add(curveName, points);
-                        }
-                    }
-                    lineSec.span = MathF.Max(0, lastTime - firstTime);
-                }
-                else
-                {
-                    lineSec = JsonConvert.DeserializeObject<LineSection>(File.ReadAllText(ofd.FileName));
-                }
+                var lineSec = JsonConvert.DeserializeObject<LineSection>(File.ReadAllText(ofd.FileName));
                 var newPoints = new List<FaceFXControlPoint>();
                 for (int i = 0, j = 0; i < SelectedLine.AnimationNames.Count; i++)
                 {
@@ -1096,6 +1029,118 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 SelectedAnimation.Name = newName;
                 SaveChanges();
+            }
+        }
+
+        private void ImportTracksFromXML_Click(object sender, RoutedEventArgs e)
+        {
+            var ofd = new OpenFileDialog
+            {
+                Filter = "*.xml|*.xml",
+                CheckFileExists = true
+            };
+            if (ofd.ShowDialog() == true)
+            {
+                #region xml import
+
+                var xmlDoc = XElement.Load(ofd.FileName);
+                var animations = xmlDoc.Descendants("animation_groups").Descendants("animation_group").Descendants("animation").ToList();
+                XElement animationElement;
+                if (animations.Count is 0)
+                {
+                    MessageBox.Show(Window.GetWindow(this), "No animations found in this xml file!");
+                    return;
+                }
+                if (animations.Count > 1)
+                {
+                    var animNames = animations.Select((x, i) => x.Attribute("name")?.Value ?? i.ToString()).ToList();
+                    var chosenName = InputComboBoxDialog.GetValue(this, "Choose which to animation to import.", "Choose Animation", animNames, animNames[0]);
+                    if (chosenName is null)
+                    {
+                        return;
+                    }
+                    animationElement = animations.Find(x => x.Attribute("name")?.Value == chosenName);
+                }
+                else
+                {
+                    animationElement = animations[0];
+                }
+                var curveNodes = animationElement.Descendants("curves").Descendants();
+                var lineSec = new LineSection { animSecs = new Dictionary<string, List<FaceFXControlPoint>>() };
+                float firstTime = float.MaxValue;
+                float lastTime = float.MinValue;
+                foreach (XElement curveNode in curveNodes)
+                {
+                    string curveName = curveNode.Attribute("name")?.Value;
+                    if (curveName is null)
+                    {
+                        continue;
+                    }
+                    if (curveNode.Value is string value)
+                    {
+                        var keys = value.Trim().Split(' ').Select(s =>
+                        {
+                            if (float.TryParse(s, out float result))
+                            {
+                                return result;
+                            }
+                            return 0f;
+                        }).ToArray();
+                        var points = new List<FaceFXControlPoint>();
+                        for (int i = 0; i + 3 < keys.Length; i += 4)
+                        {
+                            firstTime = MathF.Min(firstTime, keys[i]);
+                            lastTime = MathF.Max(firstTime, keys[i]);
+                            points.Add(new FaceFXControlPoint
+                            {
+                                time = keys[i],
+                                weight = keys[i + 1],
+                                inTangent = keys[i + 2],
+                                leaveTangent = keys[i + 3]
+                            });
+                        }
+                        lineSec.animSecs.Add(curveName, points);
+                    }
+                }
+                lineSec.span = MathF.Max(0, lastTime - firstTime);
+
+                #endregion
+
+                var newPoints = new List<FaceFXControlPoint>();
+                for (int i = 0, j = 0; i < SelectedLine.AnimationNames.Count; i++)
+                {
+                    int newNumPoints = 0;
+                    string animName = FaceFX.Names[SelectedLine.AnimationNames[i]];
+                    if (lineSec.animSecs.TryGetValue(animName, out List<FaceFXControlPoint> points))
+                    {
+                        newPoints.AddRange(points);
+                        newNumPoints += points.Count;
+                        lineSec.animSecs.Remove(animName);
+                    }
+                    else
+                    {
+                        for (int k = 0; k < SelectedLine.NumKeys[i]; k++)
+                        {
+                            newPoints.Add(SelectedLine.Points[j + k]);
+                            newNumPoints++;
+                        }
+                    }
+                    j += SelectedLine.NumKeys[i];
+                    SelectedLine.NumKeys[i] = newNumPoints;
+                }
+                //add new animations
+                if (lineSec.animSecs.Count > 0)
+                {
+                    foreach ((string name, List<FaceFXControlPoint> points) in lineSec.animSecs)
+                    {
+                        SelectedLine.AnimationNames.Add(FaceFX.Names.FindOrAdd(name));
+                        SelectedLine.NumKeys.Add(points.Count);
+                        newPoints.AddRange(points);
+                    }
+                }
+                SelectedLineEntry.Points = newPoints;
+                CurrentLoadedExport?.WriteBinary(FaceFX.Binary);
+                UpdateAnimListBox();
             }
         }
     }

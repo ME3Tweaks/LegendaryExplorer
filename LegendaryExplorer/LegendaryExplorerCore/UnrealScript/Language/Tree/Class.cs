@@ -30,7 +30,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 
         public bool IsInterface => Flags.Has(UnrealFlags.EClassFlags.Interface);
 
-        public bool IsComponent => SameAsOrSubClassOf("Component");
+        public bool IsComponent => SameAsOrSubClassOf("Component") || SameAsOrSubClassOf("BioBaseComponent");
 
         public bool IsNative => Flags.Has(UnrealFlags.EClassFlags.Native);
 
