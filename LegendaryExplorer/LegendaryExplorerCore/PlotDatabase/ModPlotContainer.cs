@@ -135,12 +135,12 @@ namespace LegendaryExplorerCore.PlotDatabase
         /// Saves all loaded mods to the given appdata folder
         /// </summary>
         /// <param name="appDataFolder">Application AppData folder to save mods to</param>
-        public void SaveModsToDisk(string appDataFolder)
+        public void SaveModsToDisk(string appDataFolder, bool forceSave = false)
         {
             var saveFolder = Path.Combine(appDataFolder, LocalModFolderName);
             foreach (var mod in Mods)
             {
-                mod.SaveDatabaseToFile(saveFolder);
+                mod.SaveDatabaseToFile(saveFolder, forceSave);
             }
         }
     }

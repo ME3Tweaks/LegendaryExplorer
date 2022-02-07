@@ -1044,7 +1044,7 @@ namespace LegendaryExplorer.Tools.PlotDatabase
                 }
                 mpc.AddMod(mod);
             }
-            mpc.SaveModsToDisk(AppDirectories.AppDataFolder);
+            mpc.SaveModsToDisk(AppDirectories.AppDataFolder, true);
         }
 
         private void form_KeyUp(object sender, KeyEventArgs e)
