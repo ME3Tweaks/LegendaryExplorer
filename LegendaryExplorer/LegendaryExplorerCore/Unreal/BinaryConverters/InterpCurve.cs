@@ -194,7 +194,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 InterpCurvePoint<T> prev = Points[i - 1];
                 float diff = cur.InVal - prev.InVal;
 
-                if (diff == 0f  || prev.InterpMode == EInterpCurveMode.CIM_Constant)
+                if (diff == 0f || prev.InterpMode == EInterpCurveMode.CIM_Constant)
                 {
                     return prev.OutVal;
                 }
@@ -271,18 +271,35 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
         public StructProperty ToStructProperty(MEGame game, NameReference? name = null)
         {
-            return new StructProperty(VectorType<T>(), new PropertyCollection
+            var props = new PropertyCollection
             {
                 new ArrayProperty<StructProperty>(Points.Select(p => p.ToStructProperty(game)), "Points"),
-            }, name);
+            };
+            EInterpMethodType defaultInterpMethod = game is MEGame.ME1 or MEGame.ME2
+                ? EInterpMethodType.IMT_UseFixedTangentEval
+                : EInterpMethodType.IMT_UseFixedTangentEvalAndNewAutoTangents;
+            if (InterpMethod != defaultInterpMethod)
+            {
+                props.AddOrReplaceProp(new EnumProperty(InterpMethod.ToString(), "EInterpMethodType", game, "InterpMethod"));
+            }
+            return new StructProperty(VectorType<T>(), props, name);
         }
 
-        public static InterpCurve<T> FromStructProperty(StructProperty prop)
+        public static InterpCurve<T> FromStructProperty(StructProperty prop, MEGame game)
         {
             var result = new InterpCurve<T>();
             if (prop.GetProp<ArrayProperty<StructProperty>>("Points") is { } pointProps)
             {
                 result.Points.AddRange(pointProps.Select(InterpCurvePoint<T>.FromStructProperty));
+            }
+            if (prop.GetProp<EnumProperty>("InterpMethod") is { } interpMethodProp 
+                && Enum.TryParse(interpMethodProp.Value.Name, out EInterpMethodType interpMethodType))
+            {
+                result.InterpMethod = interpMethodType;
+            }
+            else if (game is MEGame.ME1 or MEGame.ME2) //pre-ME3 engine versions did not have IMT_UseFixedTangentEvalAndNewAutoTangents
+            {
+                result.InterpMethod = EInterpMethodType.IMT_UseFixedTangentEval;
             }
 
             return result;
@@ -313,44 +330,9 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 return cur - prev + (next - cur);
             }
 
-            public float ClampedTangent(float prevVal, float prevTime, float curVal, float curTime, float nextVal, float nextTime)
+            float ISpec<float>.ClampedTangent(float prevVal, float prevTime, float curVal, float curTime, float nextVal, float nextTime)
             {
-                float prevToNextHeightDiff = nextVal - prevVal;
-                float prevToCurHeightDiff = curVal - prevVal;
-                float curToNextHeightDiff = nextVal - curVal;
-
-                if (prevToCurHeightDiff >= 0.0f && curToNextHeightDiff <= 0.0f ||
-                    prevToCurHeightDiff <= 0.0f && curToNextHeightDiff >= 0.0f)
-                {
-                    //Either a local max or min, so tangent should be flat
-                    return 0f;
-                }
-
-                const float clampThreshold = 0.333f;
-                const float upperClampThreshold = 1.0f - clampThreshold;
-                float curHeightAlpha = prevToCurHeightDiff / prevToNextHeightDiff;
-                Func<float, float, float> minOrMax = prevToNextHeightDiff > 0f ? MathF.Min : MathF.Max;
-                float prevToNextTangent = prevToNextHeightDiff / MathF.Max(TOLERANCE, nextTime - prevTime);
-
-                switch (curHeightAlpha)
-                {
-                    case < clampThreshold:
-                    {
-                        float prevToCurTangent = prevToCurHeightDiff / MathF.Max(TOLERANCE, curTime - prevTime);
-                        float lerpAmount = 1.0f - curHeightAlpha / clampThreshold;
-                        float clampedTangent = Lerp(prevToNextTangent, prevToCurTangent, lerpAmount);
-                        return minOrMax(prevToNextTangent, clampedTangent);
-                    }
-                    case > upperClampThreshold:
-                    {
-                        float curToNextTangent = curToNextHeightDiff / MathF.Max(TOLERANCE, nextTime - curTime);
-                        float lerpAmount = (curHeightAlpha - upperClampThreshold) / clampThreshold;
-                        float clampedTangent = Lerp(prevToNextTangent, curToNextTangent, lerpAmount);
-                        return minOrMax(prevToNextTangent, clampedTangent);
-                    }
-                    default:
-                        return prevToNextTangent;
-                }
+                return ClampedTangent(prevVal, prevTime, curVal, curTime, nextVal, nextTime);
             }
 
             float ISpec<float>.Zero() => 0f;
@@ -474,5 +456,45 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         }
 
         private const float TOLERANCE = 0.0001f;
+
+        public static float ClampedTangent(float prevVal, float prevTime, float curVal, float curTime, float nextVal, float nextTime)
+        {
+            float prevToNextHeightDiff = nextVal - prevVal;
+            float prevToCurHeightDiff = curVal - prevVal;
+            float curToNextHeightDiff = nextVal - curVal;
+
+            if (prevToCurHeightDiff >= 0.0f && curToNextHeightDiff <= 0.0f ||
+                prevToCurHeightDiff <= 0.0f && curToNextHeightDiff >= 0.0f)
+            {
+                //Either a local max or min, so tangent should be flat
+                return 0f;
+            }
+
+            const float clampThreshold = 0.333f;
+            const float upperClampThreshold = 1.0f - clampThreshold;
+            float curHeightAlpha = prevToCurHeightDiff / prevToNextHeightDiff;
+            Func<float, float, float> minOrMax = prevToNextHeightDiff > 0f ? MathF.Min : MathF.Max;
+            float prevToNextTangent = prevToNextHeightDiff / MathF.Max(TOLERANCE, nextTime - prevTime);
+
+            switch (curHeightAlpha)
+            {
+                case < clampThreshold:
+                    {
+                        float prevToCurTangent = prevToCurHeightDiff / MathF.Max(TOLERANCE, curTime - prevTime);
+                        float lerpAmount = 1.0f - curHeightAlpha / clampThreshold;
+                        float clampedTangent = Lerp(prevToNextTangent, prevToCurTangent, lerpAmount);
+                        return minOrMax(prevToNextTangent, clampedTangent);
+                    }
+                case > upperClampThreshold:
+                    {
+                        float curToNextTangent = curToNextHeightDiff / MathF.Max(TOLERANCE, nextTime - curTime);
+                        float lerpAmount = (curHeightAlpha - upperClampThreshold) / clampThreshold;
+                        float clampedTangent = Lerp(prevToNextTangent, curToNextTangent, lerpAmount);
+                        return minOrMax(prevToNextTangent, clampedTangent);
+                    }
+                default:
+                    return prevToNextTangent;
+            }
+        }
     }
 }

@@ -4,13 +4,13 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.SharedUI.Converters;
 using LegendaryExplorer.UserControls.SharedToolControls.Curves;
+using LegendaryExplorerCore.Unreal;
 using BezierSegment = LegendaryExplorer.UserControls.SharedToolControls.Curves.BezierSegment;
 
 namespace LegendaryExplorer.UserControls.SharedToolControls
@@ -76,7 +76,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
 
         // Using a DependencyProperty as the backing store for SelectedPoint.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty SelectedPointProperty =
-            DependencyProperty.Register(nameof(SelectedPoint), typeof(CurvePoint), typeof(CurveGraph), new PropertyMetadata(new CurvePoint(0, 0, 0, 0, CurveMode.CIM_Linear), OnSelectedPointChanged));
+            DependencyProperty.Register(nameof(SelectedPoint), typeof(CurvePoint), typeof(CurveGraph), new PropertyMetadata(new CurvePoint(0, 0, 0, 0, EInterpCurveMode.CIM_Linear), OnSelectedPointChanged));
 
         private static void OnSelectedPointChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
@@ -84,7 +84,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
             {
                 foreach (Anchor a in c.Anchors)
                 {
-                    if (a.point.Value != e.NewValue as CurvePoint)
+                    if (a.Point.Value != e.NewValue as CurvePoint)
                     {
                         a.IsSelected = false;
                     }
@@ -98,8 +98,8 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
             set => SetValue(VerticalScaleProperty, value);
         }
 
-        public List<ExtraCurveGraphLine> ExtraXLines { get; } = new List<ExtraCurveGraphLine>();
-        public List<ExtraCurveGraphLine> ExtraYLines { get; } = new List<ExtraCurveGraphLine>();
+        public List<ExtraCurveGraphLine> ExtraXLines { get; } = new();
+        public List<ExtraCurveGraphLine> ExtraYLines { get; } = new();
 
         // Using a DependencyProperty as the backing store for VerticalScale.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty VerticalScaleProperty =
@@ -242,22 +242,21 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
             int yGranularity = lineYSpacing > 0.75 ? 1 : (lineYSpacing > 0.25 ? 2 : 10);
             lineYSpacing = Math.Ceiling(lineYSpacing * yGranularity) / yGranularity;
 
-            double FirstHorizontalLine = HorizontalOffset - (HorizontalOffset % lineXSpacing);
+            double firstHorizontalLine = HorizontalOffset - (HorizontalOffset % lineXSpacing);
             for (int i = 0; i < numXLines; i++)
             {
-                RenderXGridLine(FirstHorizontalLine + (lineXSpacing * i));
+                RenderXGridLine(firstHorizontalLine + (lineXSpacing * i));
             }
 
-            double FirstVerticalLine = VerticalOffset - (VerticalOffset % lineYSpacing);
+            double firstVerticalLine = VerticalOffset - (VerticalOffset % lineYSpacing);
             for (int i = 0; i < numYLines; i++)
             {
-                RenderYGridLine(FirstVerticalLine + (lineYSpacing * i));
+                RenderYGridLine(firstVerticalLine + (lineYSpacing * i));
             }
 
             // Extra lines
-            for (int i = 0; i < ExtraXLines.Count; i++)
+            foreach (ExtraCurveGraphLine extraLine in ExtraXLines)
             {
-                var extraLine = ExtraXLines[i];
                 RenderXGridLine(extraLine.Position, extraLine.Label, extraLine.LabelOffset, extraLine.Color);
             }
 
@@ -304,7 +303,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
             graph.Children.Add(label);
         }
 
-        private readonly List<Anchor> Anchors = new();
+        internal readonly List<Anchor> Anchors = new();
         private void RenderCurve(LinkedList<CurvePoint> points)
         {
             Anchor lastAnchor = null;
@@ -313,14 +312,14 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
             {
                 switch (node.Value.InterpMode)
                 {
-                    case CurveMode.CIM_CurveAuto:
-                    case CurveMode.CIM_CurveUser:
-                    case CurveMode.CIM_CurveAutoClamped:
+                    case EInterpCurveMode.CIM_CurveAuto:
+                    case EInterpCurveMode.CIM_CurveUser:
+                    case EInterpCurveMode.CIM_CurveAutoClamped:
                         node.Value.LeaveTangent = node.Value.ArriveTangent;
                         break;
-                    case CurveMode.CIM_CurveBreak:
-                    case CurveMode.CIM_Constant:
-                    case CurveMode.CIM_Linear:
+                    case EInterpCurveMode.CIM_CurveBreak:
+                    case EInterpCurveMode.CIM_Constant:
+                    case EInterpCurveMode.CIM_Linear:
                     default:
                         break;
                 }
@@ -331,6 +330,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
                     a.IsSelected = true;
                 }
 
+                a.AnchorIndex = Anchors.Count;
                 Anchors.Add(a);
                 graph.Children.Add(a);
 
@@ -361,12 +361,12 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
             }
         }
 
-        private void PathBetween(Anchor a1, Anchor a2, CurveMode interpMode = CurveMode.CIM_Linear)
+        private void PathBetween(Anchor a1, Anchor a2, EInterpCurveMode interpMode = EInterpCurveMode.CIM_Linear)
         {
             Line line;
             switch (interpMode)
             {
-                case CurveMode.CIM_Linear:
+                case EInterpCurveMode.CIM_Linear:
                     line = new Line();
                     line.bind(Line.X1Property, a1, nameof(Anchor.X));
                     line.bind(Line.Y1Property, a1, nameof(Anchor.Y), CurveEdSubtractionConverter.Instance, ActualHeight);
@@ -374,7 +374,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
                     line.bind(Line.Y2Property, a2, nameof(Anchor.Y), CurveEdSubtractionConverter.Instance, ActualHeight);
                     graph.Children.Add(line);
                     break;
-                case CurveMode.CIM_Constant:
+                case EInterpCurveMode.CIM_Constant:
                     line = new Line();
                     line.bind(Line.X1Property, a1, nameof(Anchor.X));
                     line.bind(Line.Y1Property, a1, nameof(Anchor.Y), CurveEdSubtractionConverter.Instance, ActualHeight);
@@ -388,22 +388,22 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
                     line.bind(Line.Y2Property, a2, nameof(Anchor.Y), CurveEdSubtractionConverter.Instance, ActualHeight);
                     graph.Children.Add(line);
                     break;
-                case CurveMode.CIM_CurveAuto:
-                case CurveMode.CIM_CurveUser:
-                case CurveMode.CIM_CurveBreak:
-                case CurveMode.CIM_CurveAutoClamped:
+                case EInterpCurveMode.CIM_CurveAuto:
+                case EInterpCurveMode.CIM_CurveUser:
+                case EInterpCurveMode.CIM_CurveBreak:
+                case EInterpCurveMode.CIM_CurveAutoClamped:
                     var bez = new BezierSegment(this)
                     {
-                        Slope1 = a1.point.Value.LeaveTangent,
-                        Slope2 = a2.point.Value.ArriveTangent
+                        Slope1 = a1.Point.Value.LeaveTangent,
+                        Slope2 = a2.Point.Value.ArriveTangent
                     };
                     bez.bind(BezierSegment.X1Property, a1, nameof(Anchor.X));
                     bez.bind(BezierSegment.Y1Property, a1, nameof(Anchor.Y));
                     bez.bind(BezierSegment.X2Property, a2, nameof(Anchor.X));
                     bez.bind(BezierSegment.Y2Property, a2, nameof(Anchor.Y));
                     graph.Children.Add(bez);
-                    a1.rightBez = bez;
-                    a2.leftBez = bez;
+                    a1.RightBez = bez;
+                    a2.LeftBez = bez;
                     break;
                 default:
                     break;
@@ -548,7 +548,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
             else
             {
                 node = SelectedCurve.CurvePoints.Last;
-                SelectedCurve.AddPoint(new CurvePoint(time, y, 0, 0, node?.Value.InterpMode ?? CurveMode.CIM_CurveAutoClamped), node, false);
+                SelectedCurve.AddPoint(new CurvePoint(time, y, 0, 0, node?.Value.InterpMode ?? EInterpCurveMode.CIM_CurveAutoClamped), node, false);
             }
 
             Paint(true);
@@ -607,18 +607,18 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
                 e.Handled = true;
             }
         }
-
+        
         private void PointTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             var b = (TextBox)sender;
             //SirCxyrtyx: doing a stack trace to resolve a circular calling situation is horrible, I know. I'm so sorry about this.
             if (double.TryParse(b.Text, out double d) && b.IsFocused && b.IsKeyboardFocused && !FindInStack(nameof(Anchor)))
             {
-                Anchor a = graph.Children.OfType<Anchor>().FirstOrDefault(x => x.IsSelected);
+                Anchor a = Anchors.FirstOrDefault(x => x.IsSelected);
                 if (a != null && b.Name == nameof(xTextBox))
                 {
-                    float next = a.point.Next?.Value.InVal ?? float.MaxValue;
-                    float prev = a.point.Previous?.Value.InVal ?? float.MinValue;
+                    float next = a.Point.Next?.Value.InVal ?? float.MaxValue;
+                    float prev = a.Point.Previous?.Value.InVal ?? float.MinValue;
                     if (d > prev && d < next)
                     {
                         a.X = toLocalX(d);

@@ -419,7 +419,7 @@ namespace LegendaryExplorerCore.Helpers
             return false;
         }
 
-        public static bool isNumericallyEqual(this string first, string second)
+        public static bool IsNumericallyEqual(this string first, string second)
         {
             return double.TryParse(first, out double a)
                 && double.TryParse(second, out double b)

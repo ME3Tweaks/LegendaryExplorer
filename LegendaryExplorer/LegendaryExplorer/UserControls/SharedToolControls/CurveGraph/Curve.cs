@@ -3,26 +3,17 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using LegendaryExplorer.Misc; 
 using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Unreal;
 
 namespace LegendaryExplorer.UserControls.SharedToolControls.Curves
 {
-    public enum CurveMode : byte
-    {
-        CIM_Linear,
-        CIM_CurveAuto,
-        CIM_Constant,
-        CIM_CurveUser,
-        CIM_CurveBreak,
-        CIM_CurveAutoClamped,
-    }
-
     public class CurvePoint : NotifyPropertyChangedBase
     {
         private float inVal;
         private float outVal;
         private float arriveTangent;
         private float leaveTangent;
-        private CurveMode interpMode;
+        private EInterpCurveMode interpMode;
 
         public float InVal
         {
@@ -30,7 +21,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Curves
             set => SetProperty(ref inVal, value);
         }
 
-        public CurveMode InterpMode
+        public EInterpCurveMode InterpMode
         {
             get => interpMode;
             set => SetProperty(ref interpMode, value);
@@ -54,7 +45,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Curves
             set => SetProperty(ref leaveTangent, value);
         }
 
-        public CurvePoint(float inVal, float outVal, float arriveTangent, float leaveTangent, CurveMode interpMode)
+        public CurvePoint(float inVal, float outVal, float arriveTangent, float leaveTangent, EInterpCurveMode interpMode)
         {
             InVal = inVal;
             OutVal = outVal;
@@ -63,20 +54,20 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Curves
             InterpMode = interpMode;
         }
 
-        public CurvePoint(float _inVal, float _outVal, float _arriveTangent, float _leaveTangent)
+        public CurvePoint(float inVal, float outVal, float arriveTangent, float leaveTangent)
         {
-            InVal = _inVal;
-            OutVal = _outVal;
-            ArriveTangent = _arriveTangent;
-            LeaveTangent = _leaveTangent;
+            InVal = inVal;
+            OutVal = outVal;
+            ArriveTangent = arriveTangent;
+            LeaveTangent = leaveTangent;
             //accurate float comparison ( == )
-            if (Math.Abs(_arriveTangent - _leaveTangent) < float.Epsilon)
+            if (Math.Abs(arriveTangent - leaveTangent) < float.Epsilon)
             {
-                interpMode = CurveMode.CIM_CurveUser;
+                interpMode = EInterpCurveMode.CIM_CurveUser;
             }
             else
             {
-                interpMode = CurveMode.CIM_CurveBreak;
+                interpMode = EInterpCurveMode.CIM_CurveBreak;
             }
         }
     }
@@ -105,15 +96,21 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Curves
             }
         }
 
+        private bool updating;
         private void Point_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
+            if (updating)
+            {
+                return;
+            }
+            updating = true;
             if (e.PropertyName is nameof(CurvePoint.InVal) or nameof(CurvePoint.InterpMode))
             {
                 SharedValueChanged?.Invoke(this, e);
             }
 
             SaveChanges?.Invoke();
-
+            updating = false;
         }
 
         public void RemovePoint(LinkedListNode<CurvePoint> p)
