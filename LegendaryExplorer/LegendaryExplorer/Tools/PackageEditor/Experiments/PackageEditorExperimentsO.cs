@@ -1,52 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Numerics;
-using System.Runtime.InteropServices;
-using System.Windows;
-using System.Windows.Threading;
-using LegendaryExplorer.Dialogs;
-using LegendaryExplorer.Misc;
-using LegendaryExplorerCore.Helpers;
+﻿using LegendaryExplorer.Dialogs;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Matinee;
-using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
-using LegendaryExplorerCore.TLK.ME1;
-using LegendaryExplorerCore.TLK.ME2ME3;
-using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
-using LegendaryExplorerCore.Unreal.ObjectInfo;
-using Microsoft.WindowsAPICodePack.Dialogs;
-using Newtonsoft.Json;
-using HuffmanCompression = LegendaryExplorerCore.TLK.ME1.HuffmanCompression;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Numerics;
+using System.Windows;
 
-namespace LegendaryExplorer.Tools.PackageEditor.Experiments
-{
+namespace LegendaryExplorer.Tools.PackageEditor.Experiments {
     /// <summary>
     /// Class for 'Others' package experiments who aren't main devs
     /// </summary>
-    class PackageEditorExperimentsO
-    {
-        public static void DumpPackageToT3D(IMEPackage package)
-        {
+    class PackageEditorExperimentsO {
+        public static void DumpPackageToT3D(IMEPackage package) {
             var levelExport = package.Exports.FirstOrDefault(x => x.ObjectName == "Level" && x.ClassName == "PersistentLevel");
-            if (levelExport != null)
-            {
+            if (levelExport != null) {
                 var level = ObjectBinary.From<Level>(levelExport);
-                foreach (var actoruindex in level.Actors)
-                {
-                    if (package.TryGetUExport(actoruindex.value, out var actorExport))
-                    {
-                        switch (actorExport.ClassName)
-                        {
+                foreach (var actoruindex in level.Actors) {
+                    if (package.TryGetUExport(actoruindex.value, out var actorExport)) {
+                        switch (actorExport.ClassName) {
                             case "StaticMesh":
                                 var sm = ObjectBinary.From<StaticMesh>(actorExport);
-                                
+
                                 // Look at vars in sm to find what you need
                                 //ExportT3D(sm, "FILENAMEHERE.txt", null); //??
                                 break;
@@ -62,20 +40,17 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
         // Might already be in ME3EXP?
         //A function for converting radians to unreal rotation units (necessary for UDK)
-        private static float RadianToUnrealDegrees(float Angle)
-        {
+        private static float RadianToUnrealDegrees(float Angle) {
             return Angle * (32768 / 3.1415f);
         }
 
         // Might already be in ME3EXP?
         //A function for converting radians to degrees
-        private static float RadianToDegrees(float Angle)
-        {
+        private static float RadianToDegrees(float Angle) {
             return Angle * (180 / 3.1415f);
         }
 
-        public static void ExportT3D(StaticMesh staticMesh, string Filename, Matrix4x4 m, Vector3 IncScale3D)
-        {
+        public static void ExportT3D(StaticMesh staticMesh, string Filename, Matrix4x4 m, Vector3 IncScale3D) {
             StreamWriter Writer = new StreamWriter(Filename, true);
 
             Vector3 Rotator = new Vector3(MathF.Atan2(m.M32, m.M33), MathF.Asin(-1 * m.M31), MathF.Atan2(-1 * m.M21, m.M11));
@@ -91,8 +66,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             //Only rotation, location, scale, actor name and model name are needed for a level recreation, everything else is just a placeholder
             //Need to override ToString to use US CultureInfo to avoid "commas instead of dots" bug
             //Indexes here is just to make names unique
-            if (staticMesh != null)
-            {
+            if (staticMesh != null) {
                 Writer.WriteLine($"Begin Actor Class=StaticMeshActor Name={staticMesh.Export.ObjectName} Archetype=StaticMeshActor'/Script/Engine.Default__StaticMeshActor'");
                 Writer.WriteLine("        Begin Object Class=StaticMeshComponent Name=\"StaticMeshComponent0\" Archetype=StaticMeshComponent'/Script/Engine.Default__StaticMeshActor:StaticMeshComponent0'");
                 Writer.WriteLine("        End Object");
@@ -117,8 +91,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
 
         //UDK version, need to figure out how to apply rotation properly
-        public static void ExportT3D_UDK(StaticMesh STM, string Filename, Matrix4x4 m, Vector3 IncScale3D)
-        {
+        public static void ExportT3D_UDK(StaticMesh STM, string Filename, Matrix4x4 m, Vector3 IncScale3D) {
             StreamWriter Writer = new StreamWriter(Filename, true);
 
             Vector3 Rotator = new Vector3(MathF.Atan2(m.M32, m.M33), MathF.Asin(-1 * m.M31), MathF.Atan2(-1 * m.M21, m.M11));
@@ -131,8 +104,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             Vector3 Location = new Vector3(m.M41, m.M42, m.M43);
 
-            if (STM != null)
-            {
+            if (STM != null) {
                 Writer.WriteLine("      Begin Actor Class=StaticMeshActor Name=STMC_" + STM.Export.ObjectName.Number + " Archetype=StaticMeshActor'Engine.Default__StaticMeshActor'");
                 Writer.WriteLine("          Begin Object Class=StaticMeshComponent Name=STMC_" + STM.Export.ObjectName.Number + " ObjName=" + STM.Export.ObjectName.Instanced + " Archetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'");
                 Writer.WriteLine("              StaticMesh=StaticMesh'A_Cathedral.Static." + STM.Export.ObjectName + "'");
@@ -171,8 +143,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
         //an attempt to recreate the assembling process in MaxScript similar to unreal t3d
         //Rotation is buggy, doesn't properly for now
-        public static void ExportT3D_MS(StaticMesh STM, string Filename, Matrix4x4 m, Vector3 IncScale3D)
-        {
+        public static void ExportT3D_MS(StaticMesh STM, string Filename, Matrix4x4 m, Vector3 IncScale3D) {
             StreamWriter Writer = new StreamWriter(Filename, true);
 
             Vector3 Rotator = new Vector3(MathF.Atan2(m.M32, m.M33), MathF.Asin(-1 * m.M31), MathF.Atan2(-1 * m.M21, m.M11));
@@ -185,8 +156,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             Vector3 Location = new Vector3(m.M41, m.M42, m.M43);
 
-            if (STM != null)
-            {
+            if (STM != null) {
                 Writer.WriteLine($"{STM.Export.ObjectName} = instance ${STM.Export.ObjectName}");
                 Writer.WriteLine($"{STM.Export.ObjectName}.name = \"{STM.Export.ObjectName}\" --name the copy as \"{STM.Export.ObjectName}\"");
                 Writer.WriteLine("$" + STM.Export.ObjectName + ".Position=[" + Location.X.ToString("F3", System.Globalization.CultureInfo.GetCultureInfo("en-US")) +
@@ -222,20 +192,16 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             Writer.Close();
         }
 
-        public static void AddPresetGroup(string preset, PackageEditorWindow pew)
-        {
-            if (pew.SelectedItem != null && pew.SelectedItem.Entry != null && pew.Pcc != null)
-            {
+        public static void AddPresetGroup(string preset, PackageEditorWindow pew) {
+            if (pew.SelectedItem != null && pew.SelectedItem.Entry != null && pew.Pcc != null) {
                 var game = pew.Pcc.Game;
 
-                if (!(game.IsGame3() || game.IsGame2()))
-                {
+                if (!(game.IsGame3() || game.IsGame2())) {
                     MessageBox.Show("This experiment is not available for ME1/LE1 files.", "Warning", MessageBoxButton.OK);
                     return;
                 }
 
-                if (pew.SelectedItem.Entry.ClassName != "InterpData")
-                {
+                if (pew.SelectedItem.Entry.ClassName != "InterpData") {
                     MessageBox.Show("InterpData not selected.", "Warning", MessageBoxButton.OK);
                     return;
                 }
@@ -243,24 +209,21 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 if (pew.SelectedItem.Entry is not ExportEntry interp)
                     return;
 
-                switch (preset)
-                {
+                switch (preset) {
                     case "Director":
                         MatineeHelper.AddPreset(preset, interp, game);
                         break;
 
                     case "Camera":
                         var camActor = promptForActor("Name of camera actor:", "Not a valid camera actor name.");
-                        if (!string.IsNullOrEmpty(camActor))
-                        {
+                        if (!string.IsNullOrEmpty(camActor)) {
                             MatineeHelper.AddPreset(preset, interp, game, camActor);
                         }
                         break;
 
                     case "Actor":
                         var actActor = promptForActor("Name of actor:", "Not a valid actor name.");
-                        if (!string.IsNullOrEmpty(actActor))
-                        {
+                        if (!string.IsNullOrEmpty(actActor)) {
                             MatineeHelper.AddPreset(preset, interp, game, actActor);
                         }
                         break;
@@ -269,20 +232,16 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             return;
         }
 
-        public static void AddPresetTrack(string preset, PackageEditorWindow pew)
-        {
-            if (pew.SelectedItem != null && pew.SelectedItem.Entry != null && pew.Pcc != null)
-            {
+        public static void AddPresetTrack(string preset, PackageEditorWindow pew) {
+            if (pew.SelectedItem != null && pew.SelectedItem.Entry != null && pew.Pcc != null) {
                 var game = pew.Pcc.Game;
 
-                if (!(game.IsGame3() || game.IsGame2()))
-                {
+                if (!(game.IsGame3() || game.IsGame2())) {
                     MessageBox.Show("This experiment is not available for ME1/LE1 files.", "Warning", MessageBoxButton.OK);
                     return;
                 }
 
-                if (pew.SelectedItem.Entry.ClassName != "InterpGroup")
-                {
+                if (pew.SelectedItem.Entry.ClassName != "InterpGroup") {
                     MessageBox.Show("InterpGroup not selected.", "Warning", MessageBoxButton.OK);
                     return;
                 }
@@ -290,13 +249,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 if (pew.SelectedItem.Entry is not ExportEntry interp)
                     return;
 
-                switch (preset)
-                {
+                switch (preset) {
                     case "Gesture":
                     case "Gesture2":
                         var actor = promptForActor("Name of gesture actor:", "Not a valid gesture actor name.");
-                        if (!string.IsNullOrEmpty(actor))
-                        {
+                        if (!string.IsNullOrEmpty(actor)) {
                             MatineeHelper.AddPreset(preset, interp, game, actor);
                         }
                         break;
@@ -305,18 +262,101 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             return;
         }
 
-        private static string promptForActor(string msg, string err)
-        {
-            if (PromptDialog.Prompt(null, msg) is string actor)
-            {
-                if (string.IsNullOrEmpty(actor))
-                {
+        private static string promptForActor(string msg, string err) {
+            if (PromptDialog.Prompt(null, msg) is string actor) {
+                if (string.IsNullOrEmpty(actor)) {
                     MessageBox.Show(err, "Warning", MessageBoxButton.OK);
                     return null;
                 }
                 return actor;
             }
             return null;
+        }
+
+        private static void ShowError(string errMsg) {
+            MessageBox.Show(errMsg, "Warning", MessageBoxButton.OK);
+        }
+
+        /// <summary>
+        /// Batch patch parameters in a list of materials
+        /// </summary>
+        /// <param name="IsVector">Patch vector parameter</param>
+        /// <param name="pew">Current PE window</param>
+        public static void BatchPatchMaterialsParameters(bool IsVector, PackageEditorWindow pew) {
+            // Get game to patch
+            string gameString = InputComboBoxDialog.GetValue(null, "Choose game to patch a material for:", "Batch patch materials",
+                new[] { "LE3", "LE2", "LE1", "ME3", "ME2", "ME1" }, "LE3");
+            if (string.IsNullOrEmpty(gameString)) { return; }
+
+            if (Enum.TryParse(gameString, out MEGame game)) {
+                // Get DLC to patch
+                // The user must put the files to patch in the DLC folder. This helps avoid mount priority headaches
+                string dlc = PromptDialog.Prompt(null, "Write the name of the DLC containing the files to patch");
+                if (string.IsNullOrEmpty(dlc)) {
+                    ShowError("Invalid DLC name");
+                    return;
+                }
+                string dlcPath = Path.Combine(MEDirectories.GetDLCPath(game), $@"{dlc}\CookedPCConsole");
+                if (!Directory.Exists(dlcPath)) {
+                    ShowError($"The {dlc} DLC could not be found in the {game} directory.");
+                    return;
+                }
+
+                // Get materials to patch
+                string materialsString = PromptDialog.Prompt(null, "Write a comma separated list of materials to patch");
+                if (string.IsNullOrEmpty(dlc)) {
+                    ShowError("Invalid material list");
+                    return;
+                }
+                string[] materials = materialsString.Split(",");
+
+                // Get whether to patch vector or scalar parameters
+                string parameterType = InputComboBoxDialog.GetValue(null, "Patch vector or scalar parameters?", "Patch vector or scalar",
+                    new[] { "Vector", "Scalar" }, "Vector");
+                if (string.IsNullOrEmpty(gameString)) { return; }
+
+                // Get parameters and values to patch
+                // TODO: Add proper validation
+                string paramsAndValsString = PromptDialog.Prompt(null,
+                    "Write a list of parameters and values to patch, in the following form:\n" +
+                    "<paramName1>:<values(comma separated)>;<paramName2>:<values(comma separated)>...\n\n" +
+                    "Example: HighlightColor1: 1.2, 3, 4, 5.32; HED_HAIR_Colour_Vector: 1, 0.843, 1, 1\n" +
+                    "Use periods for decimals, not commas."
+                    );
+                if (string.IsNullOrEmpty(paramsAndValsString)) {
+                    ShowError("Invalid material list");
+                    return;
+                }
+
+                string[] paramsAndValsArr = paramsAndValsString.Split(";");
+                Dictionary<string, List<float>> paramsAndVals = new();
+
+                foreach (string s in paramsAndValsArr) { // Check that all strings are <parameter>:<values>
+                    if (!s.Contains(":")) {
+                        ShowError("Wrong formatting for parameter and values");
+                        return;
+                    }
+
+                    // Validate values
+                    string[] temp = s.Split(":");
+                    string param = temp[0].Trim();
+                    string[] valsString = temp[1].Split(",");
+                    List<float> vals = new();
+                    foreach (string val in valsString) {
+                        bool res = float.TryParse(val.Trim(), out float d);
+                        if (!res) {
+                            ShowError($"Error parsing the value \"{val.Trim()}\" for the \"{param}\" parameter");
+                            return;
+                        }
+                        vals.Add(d);
+                    }
+
+                    paramsAndVals.Add(param, vals);
+                }
+
+
+
+            }
         }
     }
 }
