@@ -326,7 +326,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
         {
             if (_shouldRender && Context != null && Context.IsReady)
             {
-                Debug.WriteLine("Rendering");
+                //Debug.WriteLine("Rendering");
                 D3DImage.RequestRender();
             }
         }
@@ -337,26 +337,25 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
 
         private void D3DImage_OnRender(IntPtr surface, bool isNewSurface)
         {
-            if (_shouldRender)
+            if (isNewSurface)
             {
-                if (isNewSurface)
+                if (Context.Backbuffer != null)
                 {
-                    if (Context.Backbuffer != null)
-                    {
-                        Context.DisposeSizeDependentResources();
-                    }
-
-                    // Yikes - from https://github.com/microsoft/WPFDXInterop/blob/master/samples/D3D11Image/D3D11Visualization/D3DVisualization.cpp#L384
-                    ComObject res = CppObject.FromPointer<ComObject>(surface);
-                    SharpDX.DXGI.Resource resource = res.QueryInterface<SharpDX.DXGI.Resource>();
-                    IntPtr sharedHandle = resource.SharedHandle;
-                    resource.Dispose();
-                    SharpDX.Direct3D11.Resource d3dres = Context.Device.OpenSharedResource<SharpDX.Direct3D11.Resource>(sharedHandle);
-                    Context.CreateSizeDependentResources(RenderWidth, RenderHeight, d3dres.QueryInterface<Texture2D>());
-                    d3dres.Dispose();
-
+                    Context.DisposeSizeDependentResources();
                 }
 
+                // Yikes - from https://github.com/microsoft/WPFDXInterop/blob/master/samples/D3D11Image/D3D11Visualization/D3DVisualization.cpp#L384
+                ComObject res = CppObject.FromPointer<ComObject>(surface);
+                SharpDX.DXGI.Resource resource = res.QueryInterface<SharpDX.DXGI.Resource>();
+                IntPtr sharedHandle = resource.SharedHandle;
+                resource.Dispose();
+                SharpDX.Direct3D11.Resource d3dres = Context.Device.OpenSharedResource<SharpDX.Direct3D11.Resource>(sharedHandle);
+                Context.CreateSizeDependentResources(RenderWidth, RenderHeight, d3dres.QueryInterface<Texture2D>());
+                d3dres.Dispose();
+            }
+
+            if (_shouldRender)
+            {
                 Context.Update((float)Stopwatch.Elapsed.TotalSeconds);
                 Stopwatch.Restart();
                 bool capturing = false;
@@ -380,14 +379,14 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
 
         public void SetShouldRender(bool shouldRender)
         {
-            if (!_shouldRender && shouldRender && D3DImage != null) // Not rendering, but we should start
-            {
-                D3DImage.OnRender = D3DImage_OnRender;
-            }
-            else if (_shouldRender && !shouldRender && D3DImage != null) // Currently rendering, but we should stop
-            {
-                D3DImage.OnRender = null;
-            }
+            //if (!_shouldRender && shouldRender && D3DImage != null) // Not rendering, but we should start
+            //{
+            //    D3DImage.OnRender = D3DImage_OnRender;
+            //}
+            //else if (_shouldRender && !shouldRender && D3DImage != null) // Currently rendering, but we should stop
+            //{
+            //    D3DImage.OnRender = null;
+            //}
 
             _shouldRender = shouldRender;
         }
