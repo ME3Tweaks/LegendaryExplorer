@@ -29,13 +29,15 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.TextureViewer
             EnableAlphaChannel = 1 << 5,
         }
 
+        // WARNING: Constant buffers must be a multiple of 16 bytes long
         public struct TextureViewConstants
         {
             public Matrix4x4 Projection;
             public Matrix4x4 View;
             public int Mip;
             public TextureViewFlags Flags;
-            private Vector2 Padding; // Constant buffers must be a multiple of 16 bytes long
+            public int TextureWidth;
+            public int TextureHeight;
         }
 
         private RenderTargetView BackbufferRTV = null;
@@ -61,6 +63,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.TextureViewer
                 if (this.Texture != null)
                 {
                     this.TextureRTV = new ShaderResourceView(this.Device, this.Texture);
+                    this.Constants.TextureWidth = value.Description.Width;
+                    this.Constants.TextureHeight = value.Description.Height;
                 }
             }
         }
@@ -104,30 +108,38 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.TextureViewer
         {
             base.CreateSizeDependentResources(width, height, newBackbuffer);
             this.BackbufferRTV = new RenderTargetView(this.Device, this.Backbuffer);
-
-            if (width >= height)
-            {
-                float ratio = (float)width / height;
-                this.Constants.Projection = Matrix4x4.CreateOrthographic(ratio, 1.0f, -1.0f, 1.0f);
-            }
-            else
-            {
-                float ratio = (float)height / width;
-                this.Constants.Projection = Matrix4x4.CreateOrthographic(1.0f, ratio, -1.0f, 1.0f);
-            }
             this.ImmediateContext.Rasterizer.SetViewport(new SharpDX.Mathematics.Interop.RawViewportF() { X = 0, Y = 0, Width = width, Height = height, MinDepth = 0.0f, MaxDepth = 1.0f });
         }
 
         public override void Render()
         {
+            float textureRatio = (float)this.Constants.TextureWidth / this.Constants.TextureHeight;
+            float viewportRatio = (float)this.Width / this.Height;
+            if (textureRatio > viewportRatio) // When the texture's aspect ratio is greater than the viewport, that means that the texture width is the limiting factor and so the image should be scaled to fit horizontally
+            {
+                this.Constants.Projection = Matrix4x4.CreateOrthographic(1.0f, 1.0f / viewportRatio, -1.0f, 1.0f);
+            }
+            else
+            {
+                this.Constants.Projection = Matrix4x4.CreateOrthographic(viewportRatio, 1.0f, -1.0f, 1.0f);
+            }
+
             this.ImmediateContext.OutputMerger.SetRenderTargets(this.BackbufferRTV);
             this.ImmediateContext.ClearRenderTargetView(this.BackbufferRTV, new SharpDX.Mathematics.Interop.RawColor4(this.BackgroundColor.X, this.BackgroundColor.Y, this.BackgroundColor.Z, this.BackgroundColor.W));
 
-            float smallSize = this.Width <= this.Height ? this.Width : this.Height;
             float scale = 1.0f;
             if (this.ScaleFactor > 0.0f)
             {
+                float smallSize = this.Width <= this.Height ? this.Width : this.Height;
                 scale = this.Texture.Description.Height / smallSize * this.ScaleFactor;
+            }
+            else
+            {
+                if (textureRatio > viewportRatio)
+                {
+                    scale = 1.0f / textureRatio;
+                }
+                // else leave scale at 1.0
             }
 
             this.Constants.View = Matrix4x4.CreateTranslation(-this.CameraCenter.X, -this.CameraCenter.Y, 0.0f) * Matrix4x4.CreateScale(scale);
