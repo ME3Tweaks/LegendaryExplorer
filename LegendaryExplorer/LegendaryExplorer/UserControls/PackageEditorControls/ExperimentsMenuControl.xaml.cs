@@ -1300,6 +1300,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         {
             PackageEditorExperimentsO.BatchPatchMaterialsParameters(GetPEWindow());
         }
+
+        private void BatchSetBoolPropVal_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.BatchSetBoolPropVal(GetPEWindow());
+        }
         #endregion
 
         // EXPERIMENTS: CHONKY DB---------------------------------------------------------

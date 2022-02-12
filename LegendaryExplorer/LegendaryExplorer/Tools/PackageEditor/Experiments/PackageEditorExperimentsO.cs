@@ -433,5 +433,9 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments {
 
             MessageBox.Show("All materials were patched succesfully", "Success", MessageBoxButton.OK);
         }
+
+        public static void BatchSetBoolPropVal(PackageEditorWindow pew) {
+
+        }
     }
 }
