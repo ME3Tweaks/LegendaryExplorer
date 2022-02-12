@@ -319,7 +319,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments {
                 if (string.IsNullOrEmpty(parameterType)) { return; }
 
                 // Get parameters and values to patch
-                // TODO: Add proper validation
                 string paramsAndValsString = PromptDialog.Prompt(null,
                     "Write a list of parameters and values to patch, in the following form:\n" +
                     "<paramName1>:<values(comma separated)>;<paramName2>:<values(comma separated)>...\n\n" +
@@ -435,7 +434,65 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments {
         }
 
         public static void BatchSetBoolPropVal(PackageEditorWindow pew) {
+            if (pew.Pcc == null) { return; }
 
+            // -- DATA GATHERING --
+            // Get game to patch
+            string gameString = InputComboBoxDialog.GetValue(null, "Choose game to set bools for:", "Batch set bools",
+                new[] { "LE3", "LE2", "LE1", "ME3", "ME2", "ME1" }, "LE3");
+            if (string.IsNullOrEmpty(gameString)) { return; }
+
+            if (Enum.TryParse(gameString, out MEGame game)) {
+                // Get DLC to patch
+                // The user must put the files to patch in the DLC folder. This helps avoid mount priority headaches
+                string dlc = PromptDialog.Prompt(null, "Write the name of the DLC containing the files to patch");
+                if (string.IsNullOrEmpty(dlc)) {
+                    ShowError("Invalid DLC name");
+                    return;
+                }
+                string dlcPath = Path.Combine(MEDirectories.GetDLCPath(game), $@"{dlc}\CookedPCConsole");
+                if (!Directory.Exists(dlcPath)) {
+                    ShowError($"The {dlc} DLC could not be found in the {game} directory.");
+                    return;
+                }
+
+                // Get bool property to patch
+                string className = PromptDialog.Prompt(null, "Write the name of the class containing the bool property. It is case sensitive");
+                if (string.IsNullOrEmpty(className)) {
+                    ShowError("Invalid class name");
+                    return;
+                }
+
+                // Get bool property to patch
+                string boolName = PromptDialog.Prompt(null, "Write the name of the bool property to modify. It is case sensitive");
+                if (string.IsNullOrEmpty(boolName)) {
+                    ShowError("Invalid bool property name");
+                    return;
+                }
+
+                // Get whether to patch vector or scalar parameters
+                string stateString = InputComboBoxDialog.GetValue(null, "State to set the bool to", "Bool State",
+                    new[] { "True", "False" }, "True");
+                if (string.IsNullOrEmpty(stateString)) { return; }
+                bool state = stateString.Equals("True");
+
+
+                // -- BATCH SETTING --
+                // Iterate through the files
+                foreach (string file in Directory.EnumerateFiles(dlcPath).Where(f => Path.GetExtension(f).Equals(".pcc"))) {
+                    using IMEPackage pcc = MEPackageHandler.OpenMEPackage(file);
+                    List<ExportEntry> exports = pcc.Exports.Where(export => export.ClassName.Equals(className)).ToList();
+
+                    foreach (ExportEntry export in exports) {
+                        BoolProperty currProp = export.GetProperty<BoolProperty>(boolName);
+                        if (currProp == null) { continue; }
+                        export.RemoveProperty(boolName);
+                        export.WriteProperty(new BoolProperty(state, boolName));
+                    }
+                    pcc.Save();
+                }
+            }
+            MessageBox.Show("All bools were set succesfully", "Success", MessageBoxButton.OK);
         }
     }
 }
