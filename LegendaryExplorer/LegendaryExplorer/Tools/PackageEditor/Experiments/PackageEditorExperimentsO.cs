@@ -284,10 +284,9 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments {
         /// </summary>
         /// <param name="pew">Current PE window</param>
         public static void BatchPatchMaterialsParameters(PackageEditorWindow pew) {
-            // -- DATA GATHERING --
-
+            // --DATA GATHERING--
             // Get game to patch
-            string gameString = InputComboBoxDialog.GetValue(null, "Choose game to patch a material for:", "Batch patch materials",
+            string gameString = InputComboBoxDialog.GetValue(null, "Choose game to patch a material for:", "Select game to patch",
                 new[] { "LE3", "LE2", "LE1", "ME3", "ME2", "ME1" }, "LE3");
             if (string.IsNullOrEmpty(gameString)) { return; }
 
@@ -330,10 +329,9 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments {
                     return;
                 }
 
-                string[] paramsAndValsArr = paramsAndValsString.Split(";");
                 Dictionary<string, List<float>> paramsAndVals = new();
 
-                foreach (string s in paramsAndValsArr) { // Check that all strings are <parameter>:<values>
+                foreach (string s in paramsAndValsString.Split(";")) { // Check that all strings are <parameter>:<values>
                     if (!s.Contains(":")) {
                         ShowError("Wrong formatting for parameter and values");
                         return;
@@ -364,7 +362,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments {
                     paramsAndVals.Add(param, vals);
                 }
 
-                // -- PATCHING --
+                // --PATCHING--
                 // Iterate through the files
                 foreach (string file in Directory.EnumerateFiles(dlcPath).Where(f => Path.GetExtension(f).Equals(".pcc"))) {
                     using IMEPackage pcc = MEPackageHandler.OpenMEPackage(file);
@@ -392,7 +390,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments {
                                     PropertyCollection props = new();
 
                                     // Generate and add the ExpressionGUID
-                                    PropertyCollection expressionGUIDprops = new PropertyCollection();
+                                    PropertyCollection expressionGUIDprops = new();
                                     expressionGUIDprops.Add(new IntProperty(0, "A"));
                                     expressionGUIDprops.Add(new IntProperty(0, "B"));
                                     expressionGUIDprops.Add(new IntProperty(0, "C"));
@@ -430,13 +428,16 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments {
                 }
             }
 
-            MessageBox.Show("All materials were patched succesfully", "Success", MessageBoxButton.OK);
+            MessageBox.Show("All materials were sucessfully patched", "Success", MessageBoxButton.OK);
         }
 
+        /// <summary>
+        /// Batch set the value of a property
+        /// </summary>
+        /// <param name="pew">Current PE window</param>
         public static void BatchSetBoolPropVal(PackageEditorWindow pew) {
             if (pew.Pcc == null) { return; }
 
-            // -- DATA GATHERING --
             // Get game to patch
             string gameString = InputComboBoxDialog.GetValue(null, "Choose game to set bools for:", "Batch set bools",
                 new[] { "LE3", "LE2", "LE1", "ME3", "ME2", "ME1" }, "LE3");
@@ -452,33 +453,31 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments {
                 }
                 string dlcPath = Path.Combine(MEDirectories.GetDLCPath(game), $@"{dlc}\CookedPCConsole");
                 if (!Directory.Exists(dlcPath)) {
-                    ShowError($"The {dlc} DLC could not be found in the {game} directory.");
+                    ShowError($"The {dlc} DLC could not be found in the {game} directory");
                     return;
                 }
 
-                // Get bool property to patch
+                // Get class name containing the property to set
                 string className = PromptDialog.Prompt(null, "Write the name of the class containing the bool property. It is case sensitive");
                 if (string.IsNullOrEmpty(className)) {
                     ShowError("Invalid class name");
                     return;
                 }
 
-                // Get bool property to patch
-                string boolName = PromptDialog.Prompt(null, "Write the name of the bool property to modify. It is case sensitive");
+                // Get name of bool property to set
+                string boolName = PromptDialog.Prompt(null, "Write the name of the bool property to set. It is case sensitive");
                 if (string.IsNullOrEmpty(boolName)) {
                     ShowError("Invalid bool property name");
                     return;
                 }
 
-                // Get whether to patch vector or scalar parameters
-                string stateString = InputComboBoxDialog.GetValue(null, "State to set the bool to", "Bool State",
+                // Get the state to set the booleans to
+                string stateString = InputComboBoxDialog.GetValue(null, "State to set the bools to", "Bool state",
                     new[] { "True", "False" }, "True");
                 if (string.IsNullOrEmpty(stateString)) { return; }
                 bool state = stateString.Equals("True");
 
 
-                // -- BATCH SETTING --
-                // Iterate through the files
                 foreach (string file in Directory.EnumerateFiles(dlcPath).Where(f => Path.GetExtension(f).Equals(".pcc"))) {
                     using IMEPackage pcc = MEPackageHandler.OpenMEPackage(file);
                     List<ExportEntry> exports = pcc.Exports.Where(export => export.ClassName.Equals(className)).ToList();
@@ -492,7 +491,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments {
                     pcc.Save();
                 }
             }
-            MessageBox.Show("All bools were set succesfully", "Success", MessageBoxButton.OK);
+            MessageBox.Show("All bools were sucessfully set", "Success", MessageBoxButton.OK);
         }
     }
 }
