@@ -156,8 +156,7 @@
         <MenuItem Header="Add Preset Actor InterpGroup" Click="AddPresetActorGroup_Click" ToolTip="Add an Actor InterpGroup with its actor set along with Move and Gesture tracks, as designed by Mentlegen."/>
         <MenuItem Header="Add Preset Gesture Track" Click="AddPresetGestureTrack_Click" ToolTip="Add a Gesture track with its actor set along with all the default properties."/>
         <MenuItem Header="Add Preset Gesture Track 2" Click="AddPresetGestureTrack2_Click" ToolTip="Alternate version of preset Gesture track, as designed by Lunk."/>
-        <MenuItem Header="Bath patch materials' vector parameters" Click="BatchPatchMaterialsVectorParameters_Click" ToolTip="Batch patch a list of vector parameters in a list of given materials."/>
-        <MenuItem Header="Bath patch materials' scalar parameters" Click="BatchPatchMaterialsScalarParameters_Click" ToolTip="Batch patch a list of scalar parameters in a list of given materials."/>
+        <MenuItem Header="Bath Patch Materials' Parameters" Click="BatchPatchMaterialsParameters_Click" ToolTip="Batch patch a list of vector or scalar parameters in a list of given materials."/>
     </MenuItem>
     <MenuItem Header="Object Database">
         <MenuItem Header="Build ME1 Object Database" Click="ChonkyDB_BuildME1GameDB"/>

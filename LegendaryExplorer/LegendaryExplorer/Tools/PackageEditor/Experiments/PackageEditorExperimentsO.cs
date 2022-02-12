@@ -2,12 +2,14 @@
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Matinee;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Numerics;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace LegendaryExplorer.Tools.PackageEditor.Experiments {
@@ -280,9 +282,10 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments {
         /// <summary>
         /// Batch patch parameters in a list of materials
         /// </summary>
-        /// <param name="IsVector">Patch vector parameter</param>
         /// <param name="pew">Current PE window</param>
-        public static void BatchPatchMaterialsParameters(bool IsVector, PackageEditorWindow pew) {
+        public static void BatchPatchMaterialsParameters(PackageEditorWindow pew) {
+            // -- DATA GATHERING --
+
             // Get game to patch
             string gameString = InputComboBoxDialog.GetValue(null, "Choose game to patch a material for:", "Batch patch materials",
                 new[] { "LE3", "LE2", "LE1", "ME3", "ME2", "ME1" }, "LE3");
@@ -304,7 +307,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments {
 
                 // Get materials to patch
                 string materialsString = PromptDialog.Prompt(null, "Write a comma separated list of materials to patch");
-                if (string.IsNullOrEmpty(dlc)) {
+                if (string.IsNullOrEmpty(materialsString)) {
                     ShowError("Invalid material list");
                     return;
                 }
@@ -313,7 +316,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments {
                 // Get whether to patch vector or scalar parameters
                 string parameterType = InputComboBoxDialog.GetValue(null, "Patch vector or scalar parameters?", "Patch vector or scalar",
                     new[] { "Vector", "Scalar" }, "Vector");
-                if (string.IsNullOrEmpty(gameString)) { return; }
+                if (string.IsNullOrEmpty(parameterType)) { return; }
 
                 // Get parameters and values to patch
                 // TODO: Add proper validation
@@ -341,6 +344,14 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments {
                     string[] temp = s.Split(":");
                     string param = temp[0].Trim();
                     string[] valsString = temp[1].Split(",");
+                    // Check that the values are correct
+                    if (parameterType.Equals("Vector") && valsString.Length != 4) {
+                        ShowError("Vector parameter values must be 4 per parameter, in the form of \"R,G,B,A\"");
+                        return;
+                    } else if (parameterType.Equals("Scalar") && valsString.Length != 1) {
+                        ShowError("Scalar parameter values must be 1 per parameter");
+                        return;
+                    }
                     List<float> vals = new();
                     foreach (string val in valsString) {
                         bool res = float.TryParse(val.Trim(), out float d);
@@ -354,9 +365,73 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments {
                     paramsAndVals.Add(param, vals);
                 }
 
+                // -- PATCHING --
+                // Iterate through the files
+                foreach (string file in Directory.EnumerateFiles(dlcPath).Where(f => Path.GetExtension(f).Equals(".pcc"))) {
+                    using IMEPackage pcc = MEPackageHandler.OpenMEPackage(file);
+                    // Check if it the file contains the materials to patch
+                    foreach (string mat in materials) {
+                        Dictionary<IEntry, List<string>> pccMats = pcc.FindUsagesOfName(mat.Trim());
 
+                        // Iterate through the usages of the material
+                        foreach (ExportEntry key in pccMats.Keys) {
+                            if (key.ClassName.Equals("MaterialInstanceConstant")) {
+                                string paramTypeName = $"{(parameterType.Equals("Vector") ? "VectorParameterValues" : "ScalarParameterValues")}";
+                                ArrayProperty<StructProperty> oldList = key.GetProperty<ArrayProperty<StructProperty>>(paramTypeName);
+                                key.RemoveProperty(paramTypeName);
 
+                                // Iterate through the parameters to patch
+                                foreach (KeyValuePair<string, List<float>> pAv in paramsAndVals) {
+                                    // Filter the parameter from the properties list
+                                    List<StructProperty> filtered = oldList.Where(property => {
+                                        NameProperty nameProperty = (NameProperty) property.Properties.Where(prop => prop.Name.Equals("ParameterName")).First();
+                                        string name = nameProperty.Value;
+                                        if (string.IsNullOrEmpty(name)) { return false; };
+                                        return !name.Equals(pAv.Key, StringComparison.OrdinalIgnoreCase);
+                                    }).ToList();
+
+                                    PropertyCollection props = new();
+
+                                    // Generate and add the ExpressionGUID
+                                    PropertyCollection expressionGUIDprops = new PropertyCollection();
+                                    expressionGUIDprops.Add(new IntProperty(0, "A"));
+                                    expressionGUIDprops.Add(new IntProperty(0, "B"));
+                                    expressionGUIDprops.Add(new IntProperty(0, "C"));
+                                    expressionGUIDprops.Add(new IntProperty(0, "D"));
+
+                                    props.Add(new StructProperty("Guid", expressionGUIDprops, "ExpressionGUID", true));
+                                    
+                                    if (parameterType.Equals("Vector")) {
+                                        PropertyCollection color = new();
+                                        color.Add(new FloatProperty(pAv.Value[0], "R"));
+                                        color.Add(new FloatProperty(pAv.Value[1], "G"));
+                                        color.Add(new FloatProperty(pAv.Value[2], "B"));
+                                        color.Add(new FloatProperty(pAv.Value[3], "A"));
+
+                                        props.Add(new StructProperty("LinearColor", color, "ParameterValue", true));
+                                        props.Add(new NameProperty(pAv.Key, "ParameterName"));
+
+                                        filtered.Add(new StructProperty("VectorParameterValue", props));
+                                    } else {
+                                        props.Add(new NameProperty(pAv.Key, "ParameterName"));
+                                        props.Add(new FloatProperty(pAv.Value[0], "ParameterValue"));
+
+                                        filtered.Add(new StructProperty("ScalarParameterValue", props));
+                                    }
+
+                                    ArrayProperty<StructProperty> newList = new(paramTypeName);
+                                    foreach (StructProperty prop in filtered) { newList.Add(prop); }
+                                    key.WriteProperty(newList);
+                                    oldList = newList;
+                                }
+                            }
+                        }
+                    }
+                    pcc.Save();
+                }
             }
+
+            MessageBox.Show("All materials were patched succesfully", "Success", MessageBoxButton.OK);
         }
     }
 }
