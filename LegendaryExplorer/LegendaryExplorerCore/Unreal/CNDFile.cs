@@ -34,7 +34,7 @@ namespace LegendaryExplorerCore.Unreal
 
             //count of serialized conditional bodies. Conditionals with identical bytecode can share the same serialized bytecode,
             //so this can be less than the entryCount. We don't need to know it for deserializing 
-            stream.SkipInt16(); 
+            stream.SkipInt16();
 
             int entryCount = stream.ReadInt16();
 
@@ -71,6 +71,8 @@ namespace LegendaryExplorerCore.Unreal
 
         private void Write(Stream stream)
         {
+            ConditionalEntries = ConditionalEntries.OrderBy(x=>x.ID).ToList();
+
             stream.WriteInt32(Magic);
             stream.WriteInt32(Version);
             stream.WriteUInt16((ushort)ConditionalEntries.Count); // Serialized count. We don't save like BW, so this will always be the same as the amount of conditionals.
