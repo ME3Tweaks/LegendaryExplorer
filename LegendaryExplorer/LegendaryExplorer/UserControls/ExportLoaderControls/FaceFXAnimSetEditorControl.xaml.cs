@@ -224,20 +224,17 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 var LineEntry = new FaceFXLineEntry(faceFXLine);
                 var idStr = LineEntry.Line.ID;
-                var voPos = idStr.IndexOf("VO_");
-                bool isMale = true;
+                var voPos = idStr.IndexOf("VO_", StringComparison.Ordinal);
+                bool isFemale = idStr.EndsWith("_F") || LineEntry.Line.NameAsString.EndsWith("_F");
                 if (voPos > 0)
                 {
                     // Cut off the start of the string
                     idStr = idStr.Substring(voPos + 3);
 
-                    // Not sure if this is enough for non-gendered lines, if those exist.
-                    if (idStr.EndsWith("_F"))
-                        isMale = false;
 
                     idStr = idStr.TrimEnd('M', 'F').TrimEnd('_'); // Hack
-                    LineEntry.IsMale = isMale;
                 }
+                LineEntry.IsMale = !isFemale;
                 if (int.TryParse(idStr, out int tlkID))
                 {
                     LineEntry.TLKString = TLKManagerWPF.GlobalFindStrRefbyID(tlkID, Pcc);
@@ -254,29 +251,27 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             if (CurrentLoadedExport != null && selectedLine.TLKID > 0)
             {
                 var wwiseEventSearchName = $"VO_{selectedLine.TLKID:D6}_{(selectedLine.IsMale ? "m" : "f")}";
-                var wwiseStreamSearchNameGendered = $"{selectedLine.TLKID:D8}_{(selectedLine.IsMale ? "m" : "f")}";
+                var wwiseStreamSearchName = $"{selectedLine.TLKID:D8}";
+                var wwiseStreamSearchNameGendered = $"{wwiseStreamSearchName}_{(selectedLine.IsMale ? "m" : "f")}";
                 var wwiseEventExp = CurrentLoadedExport.FileRef.Exports.FirstOrDefault(x => x.ClassName == "WwiseEvent" && x.ObjectName.Name.Contains(wwiseEventSearchName, StringComparison.InvariantCultureIgnoreCase));
                 if (wwiseEventExp != null)
                 {
+                    ExportEntry possible;
                     var wwiseEvent = ObjectBinary.From<WwiseEvent>(wwiseEventExp);
                     if (wwiseEvent.Links != null)
                     {
                         foreach (var link in wwiseEvent.Links)
                         {
                             // Look through these exports instead of all exports (faster)
-                            ExportEntry possible = null;
                             var possibleExports = link.WwiseStreams.Where(x => CurrentLoadedExport.FileRef.IsUExport(x)).Select(x => CurrentLoadedExport.FileRef.GetUExport(x)).ToList();
 
-                            // Female ones are unique since all lines have male version. Try female first if we know this is female line
-                            if (!selectedLine.IsMale)
-                            {
-                                possible = possibleExports.FirstOrDefault(x => x.ObjectName.Name.Contains(wwiseStreamSearchNameGendered, StringComparison.InvariantCultureIgnoreCase));
-                                if (possible != null) return possible;
-                            }
+                            //Do gendered search first
+                            possible = possibleExports.FirstOrDefault(x => x.ObjectName.Name.Contains(wwiseStreamSearchNameGendered, StringComparison.InvariantCultureIgnoreCase));
+                            if (possible != null) return possible;
 
-                            // Try male version. Sometimes if line has same thing (e.g. nonplayer line) it'll just use male version as there's only one gender
+                            // Fallback to non-gendered search. Sometimes if line has same thing (e.g. nonplayer line) it'll just use male version as there's only one gender
                             // Should only be one version for this TLK...
-                            possible = possibleExports.FirstOrDefault(x => x.ObjectName.Name.Contains($"{selectedLine.TLKID:D8}", StringComparison.InvariantCultureIgnoreCase));
+                            possible = possibleExports.FirstOrDefault(x => x.ObjectName.Name.Contains(wwiseStreamSearchName, StringComparison.InvariantCultureIgnoreCase));
                             if (possible != null)
                                 return possible;
                         }
@@ -284,19 +279,15 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     else
                     {
                         // Look through all the exports I guess.
-                        ExportEntry possible = null;
                         var possibleExports = CurrentLoadedExport.FileRef.Exports.Where(x => x.ClassName == "WwiseStream").ToList();
 
-                        // Female ones are unique since all lines have male version. Try female first if we know this is female line
-                        if (!selectedLine.IsMale)
-                        {
-                            possible = possibleExports.FirstOrDefault(x => x.ObjectName.Name.Contains(wwiseStreamSearchNameGendered, StringComparison.InvariantCultureIgnoreCase));
-                            if (possible != null) return possible;
-                        }
+                        //Do gendered search first
+                        possible = possibleExports.FirstOrDefault(x => x.ObjectName.Name.Contains(wwiseStreamSearchNameGendered, StringComparison.InvariantCultureIgnoreCase));
+                        if (possible != null) return possible;
 
-                        // Try male version. Sometimes if line has same thing (e.g. nonplayer line) it'll just use male version as there's only one gender
+                        // Fallback to non-gendered search. Sometimes if line has same thing (e.g. nonplayer line) it'll just use male version as there's only one gender
                         // Should only be one version for this TLK...
-                        possible = possibleExports.FirstOrDefault(x => x.ObjectName.Name.Contains($"{selectedLine.TLKID:D8}", StringComparison.InvariantCultureIgnoreCase));
+                        possible = possibleExports.FirstOrDefault(x => x.ObjectName.Name.Contains(wwiseStreamSearchName, StringComparison.InvariantCultureIgnoreCase));
                         if (possible != null)
                             return possible;
                     }

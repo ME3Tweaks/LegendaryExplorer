@@ -86,7 +86,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         }
         private bool CanSwitchFromLocalToExternal()
         {
-            return CurrentLoadedExport?.Game == MEGame.ME3 && IsLocallyCached;
+            return CurrentLoadedExport != null && CurrentLoadedExport.Game.IsGame3() && IsLocallyCached;
         }
         private bool IsMoviePlaying()
         {
@@ -247,7 +247,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             CurrentLoadedExport = exportEntry;
             AvailableTFCNames.ClearEx();
             AvailableTFCNames.Add(STORE_LOCAL_STRING);
-            if (CurrentLoadedExport.Game == MEGame.ME3)
+            if (CurrentLoadedExport.Game.IsGame3())
             {
                 AvailableTFCNames.Add(NEW_TFC_STRING);
                 AvailableTFCNames.Add(ADD_TFC_STRING);
@@ -360,9 +360,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 var tfcprop = props.GetProp<NameProperty>("TextureFileCacheName");
                 if (tfcprop == null)
                 {
-                    if (CurrentLoadedExport.Game == MEGame.ME3)
+                    if (CurrentLoadedExport.Game.IsGame3())
                     {
-
                         AvailableTFCNames.Insert(0, MOVE_TO_EXTERNAL_STRING);
                     }
                     IsLocallyCached = true;
@@ -699,9 +698,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
             else if (IsExternallyCached) //Append to tfc  NOT ME2/ME1
             {
-                if (Pcc.Game != MEGame.ME3)
+                if (!Pcc.Game.IsGame3())
                 {
-                    MessageBox.Show("Only ME3 can store movietextures in a cache file.");
+                    MessageBox.Show("Only Game 3 can store movietextures in a cache file.");
                     bikcontrols_Panel.IsEnabled = true;
                     return false;
                 }

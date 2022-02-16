@@ -8,14 +8,15 @@ using System.Windows.Input;
 using System.Windows.Shapes;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.SharedUI.Converters;
+using LegendaryExplorerCore.Unreal;
 
 namespace LegendaryExplorer.UserControls.SharedToolControls.Curves
 {
     internal class Handle : Thumb, INotifyPropertyChanged
     {
-        public const double HANDLE_LENGTH = 30f;
-        private const double angleCutoff = 90 * (Math.PI / 180);
-        public Anchor anchor;
+        private const double HANDLE_LENGTH = 30f;
+        private const double ANGLE_CUTOFF = 90 * (Math.PI / 180);
+        private Anchor anchor;
 
         private readonly Line line;
 
@@ -35,28 +36,30 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Curves
             set => SetProperty(ref _x, value);
         }
 
-        private double _slope;
-        public double Slope
+        private float _slope;
+
+        private float Slope
         {
             get => _slope;
             set
             {
-                if (SetProperty(ref _slope, value))
+                if (value != _slope)
                 {
+                    _slope = value;
                     if (Left)
                     {
-                        anchor.point.Value.ArriveTangent = Convert.ToSingle(value);
-                        if (anchor.leftBez != null)
+                        anchor.Point.Value.ArriveTangent = value;
+                        if (anchor.LeftBez != null)
                         {
-                            anchor.leftBez.Slope2 = value;
+                            anchor.LeftBez.Slope2 = value;
                         }
                     }
                     else
                     {
-                        anchor.point.Value.LeaveTangent = Convert.ToSingle(value);
-                        if (anchor.rightBez != null)
+                        anchor.Point.Value.LeaveTangent = value;
+                        if (anchor.RightBez != null)
                         {
-                            anchor.rightBez.Slope1 = value;
+                            anchor.RightBez.Slope1 = value;
                         }
                     }
                 }
@@ -67,19 +70,19 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Curves
         {
             anchor = a;
             Left = left;
-            _slope = Left ? a.point.Value.ArriveTangent : a.point.Value.LeaveTangent;
+            _slope = Left ? a.Point.Value.ArriveTangent : a.Point.Value.LeaveTangent;
             line = new Line();
             line.bind(Line.X1Property, a, nameof(X));
-            line.bind(Line.Y1Property, a, nameof(Y), CurveEdSubtractionConverter.Instance, a.graph.ActualHeight);
+            line.bind(Line.Y1Property, a, nameof(Y), CurveEdSubtractionConverter.Instance, a.Graph.ActualHeight);
             line.bind(Line.X2Property, this, nameof(X));
-            line.bind(Line.Y2Property, this, nameof(Y), CurveEdSubtractionConverter.Instance, a.graph.ActualHeight);
+            line.bind(Line.Y2Property, this, nameof(Y), CurveEdSubtractionConverter.Instance, a.Graph.ActualHeight);
             line.bind(VisibilityProperty, this, nameof(Visibility));
-            line.Style = a.graph.FindResource("HandleLine") as Style;
-            a.graph.graph.Children.Add(line); 
+            line.Style = a.Graph.FindResource("HandleLine") as Style;
+            a.Graph.graph.Children.Add(line); 
             this.DragDelta += OnDragDelta;
 
-            double hScale = a.graph.HorizontalScale;
-            double vScale = a.graph.VerticalScale;
+            double hScale = a.Graph.HorizontalScale;
+            double vScale = a.Graph.VerticalScale;
             double xLength = (HANDLE_LENGTH * (Left ? -1 : 1)) / Math.Sqrt(Math.Pow(hScale, 2) + Math.Pow(_slope, 2) * Math.Pow(vScale, 2));
             X = xLength * hScale + a.X;
             Y = _slope * xLength * vScale + a.Y;
@@ -87,39 +90,39 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Curves
 
         private void OnDragDelta(object sender, DragDeltaEventArgs e)
         {
-            switch (anchor.point.Value.InterpMode)
+            switch (anchor.Point.Value.InterpMode)
             {
-                case CurveMode.CIM_CurveAuto:
-                case CurveMode.CIM_CurveAutoClamped:
-                    anchor.point.Value.InterpMode = CurveMode.CIM_CurveUser;
-                    anchor.graph.invokeSelectedPointChanged();
+                case EInterpCurveMode.CIM_CurveAuto:
+                case EInterpCurveMode.CIM_CurveAutoClamped:
+                    anchor.Point.Value.InterpMode = EInterpCurveMode.CIM_CurveUser;
+                    anchor.Graph.invokeSelectedPointChanged();
                     break;
-                case CurveMode.CIM_CurveUser:
-                case CurveMode.CIM_CurveBreak:
-                case CurveMode.CIM_Linear:
-                case CurveMode.CIM_Constant:
+                case EInterpCurveMode.CIM_CurveUser:
+                case EInterpCurveMode.CIM_CurveBreak:
+                case EInterpCurveMode.CIM_Linear:
+                case EInterpCurveMode.CIM_Constant:
                 default:
                     break;
             }
-            Point pos = Mouse.GetPosition(anchor.graph);
-            double angle = Math.Atan2(anchor.graph.ActualHeight - pos.Y - anchor.Y, pos.X - anchor.X);
-            if (Left && Math.Abs(angle) < angleCutoff + 0.01)
+            Point pos = Mouse.GetPosition(anchor.Graph);
+            double angle = Math.Atan2(anchor.Graph.ActualHeight - pos.Y - anchor.Y, pos.X - anchor.X);
+            if (Left && Math.Abs(angle) < ANGLE_CUTOFF + 0.01)
             {
-                angle = (angleCutoff + 0.01) * Math.Sign(angle);
+                angle = (ANGLE_CUTOFF + 0.01) * Math.Sign(angle);
             }
-            else if (!Left && Math.Abs(angle) > angleCutoff - 0.01)
+            else if (!Left && Math.Abs(angle) > ANGLE_CUTOFF - 0.01)
             {
-                angle = (angleCutoff - 0.01) * Math.Sign(angle);
+                angle = (ANGLE_CUTOFF - 0.01) * Math.Sign(angle);
             }
             double rise = HANDLE_LENGTH * Math.Sin(angle);
             double run = HANDLE_LENGTH * Math.Cos(angle);
             Y = anchor.Y + rise;
             X = anchor.X + run;
-            Slope = (rise / anchor.graph.VerticalScale) / (run / anchor.graph.HorizontalScale);
+            Slope = (float)((rise / anchor.Graph.VerticalScale) / (run / anchor.Graph.HorizontalScale));
 
-            if (anchor.point.Value.InterpMode == CurveMode.CIM_CurveUser)
+            if (anchor.Point.Value.InterpMode == EInterpCurveMode.CIM_CurveUser)
             {
-                Handle otherHandle = Left ? anchor.rightHandle : anchor.leftHandle;
+                Handle otherHandle = Left ? anchor.RightHandle : anchor.LeftHandle;
                 if (otherHandle is not null)
                 {
                     otherHandle.X = anchor.X - run;
@@ -130,9 +133,19 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Curves
 
         }
 
+        public void TangentUpdate()
+        {
+            _slope = Left ? anchor.Point.Value.ArriveTangent : anchor.Point.Value.LeaveTangent;
+            double hScale = anchor.Graph.HorizontalScale;
+            double vScale = anchor.Graph.VerticalScale;
+            double xLength = (HANDLE_LENGTH * (Left ? -1 : 1)) / Math.Sqrt(Math.Pow(hScale, 2) + Math.Pow(_slope, 2) * Math.Pow(vScale, 2));
+            X = xLength * hScale + anchor.X;
+            Y = _slope * xLength * vScale + anchor.Y;
+        }
+
         public void Dispose()
         {
-            anchor.graph.graph.Children.Remove(line);
+            anchor.Graph.graph.Children.Remove(line);
             DragDelta -= OnDragDelta;
             anchor = null;
         }

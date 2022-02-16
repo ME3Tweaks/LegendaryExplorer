@@ -805,8 +805,8 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
                 var pov = (POV)((System.Windows.Controls.Button)sender).DataContext;
 
                 var props = interpTrackMove.GetProperties();
-                var interpCurvePos = InterpCurveVector.FromStructProperty(props.GetProp<StructProperty>("PosTrack"));
-                var interpCurveRot = InterpCurveVector.FromStructProperty(props.GetProp<StructProperty>("EulerTrack"));
+                var interpCurvePos = InterpCurveVector.FromStructProperty(props.GetProp<StructProperty>("PosTrack"), Game);
+                var interpCurveRot = InterpCurveVector.FromStructProperty(props.GetProp<StructProperty>("EulerTrack"), Game);
 
                 interpCurvePos.AddPoint(time, pov.Position, Vector3.Zero, Vector3.Zero, EInterpCurveMode.CIM_CurveUser);
                 interpCurveRot.AddPoint(time, pov.Rotation, Vector3.Zero, Vector3.Zero, EInterpCurveMode.CIM_CurveUser);
@@ -815,7 +815,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
                 props.AddOrReplaceProp(interpCurveRot.ToStructProperty(Game, "EulerTrack"));
                 interpTrackMove.WriteProperties(props);
 
-                var floatTrack = InterpCurveFloat.FromStructProperty(fovTrackExport.GetProperty<StructProperty>("FloatTrack"));
+                var floatTrack = InterpCurveFloat.FromStructProperty(fovTrackExport.GetProperty<StructProperty>("FloatTrack"), Game);
                 floatTrack.AddPoint(time, pov.FOV, 0, 0, EInterpCurveMode.CIM_CurveUser);
                 fovTrackExport.WriteProperty(floatTrack.ToStructProperty(Game, "FloatTrack"));
 
@@ -830,11 +830,11 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             if (MessageBoxResult.Yes == MessageBox.Show("Are you sure you want to clear all keys from the Curve Editors?", "Clear Keys confirmation", MessageBoxButton.YesNo, MessageBoxImage.Warning))
             {
                 var props = interpTrackMove.GetProperties();
-                props.AddOrReplaceProp(new InterpCurve<Vector3>().ToStructProperty(Game, "PosTrack"));
-                props.AddOrReplaceProp(new InterpCurve<Vector3>().ToStructProperty(Game, "EulerTrack"));
+                props.AddOrReplaceProp(new InterpCurveVector().ToStructProperty(Game, "PosTrack"));
+                props.AddOrReplaceProp(new InterpCurveVector().ToStructProperty(Game, "EulerTrack"));
                 interpTrackMove.WriteProperties(props);
 
-                fovTrackExport.WriteProperty(new InterpCurve<float>().ToStructProperty(Game, "FloatTrack"));
+                fovTrackExport.WriteProperty(new InterpCurveFloat().ToStructProperty(Game, "FloatTrack"));
 
                 ReloadCurveEdExports();
             }

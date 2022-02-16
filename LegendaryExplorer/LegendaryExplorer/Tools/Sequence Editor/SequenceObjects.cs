@@ -257,6 +257,15 @@ namespace LegendaryExplorer.Tools.SequenceObjects
                             res += "\n";
                         }
                         break;
+                    case "SFXSeqAct_AwardGAWAsset":
+                    case "SFXSeqAct_AwardGAWAsset_Silent":
+                        var asset = properties.GetProp<StrProperty>("AssetName");
+                        if (asset != null)
+                        {
+                            res += asset.ToString();
+                            res += "\n";
+                        }
+                        break;
                 }
             }
             return res;

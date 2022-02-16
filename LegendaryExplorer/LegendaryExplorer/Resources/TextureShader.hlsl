@@ -16,7 +16,8 @@ cbuffer Constants {
     float4x4 View;
     int Mip;
     int Flags;
-    int2 _Padding;
+    int TextureWidth;
+    int TextureHeight;
 };
 
 Texture2D Texture : register(t0);
@@ -25,8 +26,11 @@ SamplerState Sampler : register(s0);
 VS_OUT VSMain(uint vertexID : SV_VertexID) {
     VS_OUT output = (VS_OUT)0;
     
-    output.TexCoord = float2(uint2(vertexID << 1, vertexID) & 2) * float2(0.5f, -0.5f);
+    output.TexCoord = float2(uint2(vertexID << 1, vertexID) & 2) * float2(0.5f, -0.5f); // (we're too good for vertex buffers)
     output.Position = float4(mul(Projection, mul(View, float4(output.TexCoord + float2(-0.5f, 0.5f), 0.0f, 1.0f))).xyz, 1.0f);
+
+    // Stretch horizontally to match aspect ratio
+    output.Position.x *= ((float)TextureWidth / TextureHeight);
     
     return output;
 }
@@ -36,7 +40,7 @@ float4 PSMain(VS_OUT input) : SV_Target0 {
 
     if ((Flags & FLAG_RECONSTRUCTNORMALZ) != 0) {
         float2 normalVector = textureValue.xy * 2.0f - 1.0f; // The texture uses values in 0.0 to 1.0 (0 to 255) to represent floats from -1.0 to 1.0
-        textureValue.z = sqrt(1.0f - pow(normalVector.x, 2.0f) - pow(normalVector.y, 2.0f)) * 0.5f + 0.5f; // Pythagorean theorem solved for Z, then rescale from -1.0 to 1.0 to the 0.0 to 1.0 range
+        textureValue.z = sqrt(1.0f - pow(normalVector.x, 2.0f) - pow(normalVector.y, 2.0f)) * 0.5f + 0.5f; // Pythagorean theorem solved for Z, then rescaled from [-1.0, 1.0] to the [0.0, 1.0] range
     }
 
     // If only the alpha flag is enabled, show the alpha as a black-and-white image
