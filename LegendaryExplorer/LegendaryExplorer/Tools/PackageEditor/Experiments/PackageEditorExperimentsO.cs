@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Numerics;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace LegendaryExplorer.Tools.PackageEditor.Experiments {
@@ -364,63 +363,61 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments {
 
                 // --PATCHING--
                 // Iterate through the files
-                foreach (string file in Directory.EnumerateFiles(dlcPath).Where(f => Path.GetExtension(f).Equals(".pcc"))) {
+                foreach (string file in Directory.EnumerateFiles(dlcPath, "*", SearchOption.AllDirectories).Where(f => Path.GetExtension(f).Equals(".pcc"))) {
                     using IMEPackage pcc = MEPackageHandler.OpenMEPackage(file);
                     // Check if it the file contains the materials to patch
-                    foreach (string mat in materials) {
-                        Dictionary<IEntry, List<string>> pccMats = pcc.FindUsagesOfName(mat.Trim());
+                    foreach (string targetMat in materials) {
+                        List<ExportEntry> pccMats = pcc.Exports.Where(exp => exp.ClassName == "MaterialInstanceConstant" && exp.ObjectName == targetMat.Trim()).ToList();
 
                         // Iterate through the usages of the material
-                        foreach (ExportEntry key in pccMats.Keys) {
-                            if (key.ClassName.Equals("MaterialInstanceConstant")) {
-                                string paramTypeName = $"{(parameterType.Equals("Vector") ? "VectorParameterValues" : "ScalarParameterValues")}";
-                                ArrayProperty<StructProperty> oldList = key.GetProperty<ArrayProperty<StructProperty>>(paramTypeName);
-                                key.RemoveProperty(paramTypeName);
+                        foreach (ExportEntry mat in pccMats) {
+                            string paramTypeName = $"{(parameterType.Equals("Vector") ? "VectorParameterValues" : "ScalarParameterValues")}";
+                            ArrayProperty<StructProperty> oldList = mat.GetProperty<ArrayProperty<StructProperty>>(paramTypeName);
+                            mat.RemoveProperty(paramTypeName);
 
-                                // Iterate through the parameters to patch
-                                foreach (KeyValuePair<string, List<float>> pAv in paramsAndVals) {
-                                    // Filter the parameter from the properties list
-                                    List<StructProperty> filtered = oldList.Where(property => {
-                                        NameProperty nameProperty = (NameProperty) property.Properties.Where(prop => prop.Name.Equals("ParameterName")).First();
-                                        string name = nameProperty.Value;
-                                        if (string.IsNullOrEmpty(name)) { return false; };
-                                        return !name.Equals(pAv.Key, StringComparison.OrdinalIgnoreCase);
-                                    }).ToList();
+                            // Iterate through the parameters to patch
+                            foreach (KeyValuePair<string, List<float>> pAv in paramsAndVals) {
+                                // Filter the parameter from the properties list
+                                List<StructProperty> filtered = oldList.Where(property => {
+                                    NameProperty nameProperty = (NameProperty)property.Properties.Where(prop => prop.Name.Equals("ParameterName")).First();
+                                    string name = nameProperty.Value;
+                                    if (string.IsNullOrEmpty(name)) { return false; };
+                                    return !name.Equals(pAv.Key, StringComparison.OrdinalIgnoreCase);
+                                }).ToList();
 
-                                    PropertyCollection props = new();
+                                PropertyCollection props = new();
 
-                                    // Generate and add the ExpressionGUID
-                                    PropertyCollection expressionGUIDprops = new();
-                                    expressionGUIDprops.Add(new IntProperty(0, "A"));
-                                    expressionGUIDprops.Add(new IntProperty(0, "B"));
-                                    expressionGUIDprops.Add(new IntProperty(0, "C"));
-                                    expressionGUIDprops.Add(new IntProperty(0, "D"));
+                                // Generate and add the ExpressionGUID
+                                PropertyCollection expressionGUIDprops = new();
+                                expressionGUIDprops.Add(new IntProperty(0, "A"));
+                                expressionGUIDprops.Add(new IntProperty(0, "B"));
+                                expressionGUIDprops.Add(new IntProperty(0, "C"));
+                                expressionGUIDprops.Add(new IntProperty(0, "D"));
 
-                                    props.Add(new StructProperty("Guid", expressionGUIDprops, "ExpressionGUID", true));
-                                    
-                                    if (parameterType.Equals("Vector")) {
-                                        PropertyCollection color = new();
-                                        color.Add(new FloatProperty(pAv.Value[0], "R"));
-                                        color.Add(new FloatProperty(pAv.Value[1], "G"));
-                                        color.Add(new FloatProperty(pAv.Value[2], "B"));
-                                        color.Add(new FloatProperty(pAv.Value[3], "A"));
+                                props.Add(new StructProperty("Guid", expressionGUIDprops, "ExpressionGUID", true));
 
-                                        props.Add(new StructProperty("LinearColor", color, "ParameterValue", true));
-                                        props.Add(new NameProperty(pAv.Key, "ParameterName"));
+                                if (parameterType.Equals("Vector")) {
+                                    PropertyCollection color = new();
+                                    color.Add(new FloatProperty(pAv.Value[0], "R"));
+                                    color.Add(new FloatProperty(pAv.Value[1], "G"));
+                                    color.Add(new FloatProperty(pAv.Value[2], "B"));
+                                    color.Add(new FloatProperty(pAv.Value[3], "A"));
 
-                                        filtered.Add(new StructProperty("VectorParameterValue", props));
-                                    } else {
-                                        props.Add(new NameProperty(pAv.Key, "ParameterName"));
-                                        props.Add(new FloatProperty(pAv.Value[0], "ParameterValue"));
+                                    props.Add(new StructProperty("LinearColor", color, "ParameterValue", true));
+                                    props.Add(new NameProperty(pAv.Key, "ParameterName"));
 
-                                        filtered.Add(new StructProperty("ScalarParameterValue", props));
-                                    }
+                                    filtered.Add(new StructProperty("VectorParameterValue", props));
+                                } else {
+                                    props.Add(new NameProperty(pAv.Key, "ParameterName"));
+                                    props.Add(new FloatProperty(pAv.Value[0], "ParameterValue"));
 
-                                    ArrayProperty<StructProperty> newList = new(paramTypeName);
-                                    foreach (StructProperty prop in filtered) { newList.Add(prop); }
-                                    key.WriteProperty(newList);
-                                    oldList = newList;
+                                    filtered.Add(new StructProperty("ScalarParameterValue", props));
                                 }
+
+                                ArrayProperty<StructProperty> newList = new(paramTypeName);
+                                foreach (StructProperty prop in filtered) { newList.Add(prop); }
+                                mat.WriteProperty(newList);
+                                oldList = newList;
                             }
                         }
                     }
@@ -478,7 +475,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments {
                 bool state = stateString.Equals("True");
 
 
-                foreach (string file in Directory.EnumerateFiles(dlcPath).Where(f => Path.GetExtension(f).Equals(".pcc"))) {
+                foreach (string file in Directory.EnumerateFiles(dlcPath, "*", SearchOption.AllDirectories).Where(f => Path.GetExtension(f).Equals(".pcc"))) {
                     using IMEPackage pcc = MEPackageHandler.OpenMEPackage(file);
                     List<ExportEntry> exports = pcc.Exports.Where(export => export.ClassName.Equals(className)).ToList();
 
