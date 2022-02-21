@@ -231,7 +231,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
                     Buffer.BlockCopy(mipToLoad.Mip, 0, imagebytes, 0, mipToLoad.compressedSize);
                 }
             }
-            else if (((int)mipToLoad.storageType & (int)StorageFlags.externalFile) != 0)
+            else if (mipToLoad.storageType != StorageTypes.empty && ((int)mipToLoad.storageType & (int)StorageFlags.externalFile) != 0)
             {
                 // external 
                 string filename = null;
