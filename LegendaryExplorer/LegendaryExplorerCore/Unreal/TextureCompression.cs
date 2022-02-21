@@ -40,7 +40,7 @@ namespace LegendaryExplorerCore.Unreal
         extUnc = StorageFlags.externalFile,                                // ME3 (DLC TFC archive)
         extLZO = StorageFlags.externalFile | StorageFlags.compressedLZO,   // ME1 (Reference to PCC), ME2 (TFC archive)
         extZlib = StorageFlags.externalFile | StorageFlags.compressedZlib, // ME3 (non-DLC TFC archive)
-        extLZMA = StorageFlags.externalFile | StorageFlags.compressedLZMA, // ME3 (non-DLC TFC archive)
+        extLZMA = StorageFlags.externalFile | StorageFlags.compressedLZMA, // ME3 WiiU, PS3 (non-DLC TFC archive)
         extOodle = StorageFlags.externalFile | StorageFlags.compressedOodle, // LE TFC
         empty = StorageFlags.externalFile | StorageFlags.unused,           // ME1, ME2, ME3
     }
