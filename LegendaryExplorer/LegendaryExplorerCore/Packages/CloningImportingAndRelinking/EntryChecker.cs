@@ -550,5 +550,55 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 }
             }
         }
+
+        /// <summary>
+        /// Returns a list of duplicate indexes in a package file. Trash exports are ignored.
+        /// </summary>
+        /// <param name="Pcc">Package file to check against</param>
+        /// <returns>A list of <see cref="EntryStringPair"/> objects that detail the second or further duplicate. If this list is empty, there are no duplicates detected.</returns>
+        public static List<EntryStringPair> CheckForDuplicateIndices(IMEPackage Pcc)
+        {
+            var duplicates = new List<EntryStringPair>();
+            var duplicatesPackagePathIndexMapping = new Dictionary<string, List<int>>();
+            foreach (ExportEntry exp in Pcc.Exports)
+            {
+                string key = exp.InstancedFullPath;
+                if (key.StartsWith(UnrealPackageFile.TrashPackageName))
+                    continue; //Do not report these as requiring re-indexing.
+                if (!duplicatesPackagePathIndexMapping.TryGetValue(key, out List<int> indexList))
+                {
+                    indexList = new List<int>();
+                    duplicatesPackagePathIndexMapping[key] = indexList;
+                }
+                else
+                {
+                    duplicates.Add(new EntryStringPair(exp,
+                        $"{exp.UIndex} {exp.InstancedFullPath} has duplicate index (index value {exp.indexValue})"));
+                }
+
+                indexList.Add(exp.UIndex);
+            }
+
+            // IMPORTS TOO
+            foreach (ImportEntry imp in Pcc.Imports)
+            {
+                string key = imp.InstancedFullPath;
+                if (key.StartsWith(UnrealPackageFile.TrashPackageName))
+                    continue; //Do not report these as requiring re-indexing.
+                if (!duplicatesPackagePathIndexMapping.TryGetValue(key, out List<int> indexList))
+                {
+                    indexList = new List<int>();
+                    duplicatesPackagePathIndexMapping[key] = indexList;
+                }
+                else
+                {
+                    duplicates.Add(new EntryStringPair(imp, $"{imp.UIndex} {imp.InstancedFullPath} has duplicate index (index value {imp.indexValue})"));
+                }
+
+                indexList.Add(imp.UIndex);
+            }
+
+            return duplicates;
+        }
     }
 }
