@@ -100,7 +100,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                 IsBusy = true;
                 BusyText = "Compiling local classes";
                 UnloadFileLib();
-                CurrentFileLib = new FileLib(Pcc);
+                CurrentFileLib = new FileLib(Pcc, true);
                 CurrentFileLib.InitializationStatusChange += CurrentFileLibOnInitialized;
                 if (IsVisible)
                 {
