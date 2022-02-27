@@ -674,6 +674,20 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             {
                 ObjInstanceVersion = 1
             };
+            classes["SFXSeqAct_AwardWeaponByName"] = new ClassInfo
+            {
+                baseClass = "SequenceAction",
+                //pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                //exportIndex = 0, not in LE3Resources.pcc
+                properties =
+                {
+                    new KeyValuePair<NameReference, PropertyInfo>("WeaponClassName", new PropertyInfo(PropertyType.NameProperty))
+                }
+            };
+            sequenceObjects["SFXSeqAct_AwardWeaponByName"] = new SequenceObjectInfo
+            {
+                ObjInstanceVersion = 1
+            };
 
             //Kinkojiro - New GM Classes - only used in EGM
             classes["SFXClusterEGM"] = new ClassInfo
@@ -689,7 +703,9 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 baseClass = "SFXSystem",
                 properties =
                 {
-                    new KeyValuePair<NameReference, PropertyInfo>("m_bCerberusSystem", new PropertyInfo(PropertyType.BoolProperty))
+                    new KeyValuePair<NameReference, PropertyInfo>("m_bCerberusSystem", new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("ShipChasePlayEvent", new PropertyInfo(PropertyType.ObjectProperty, "WwiseEvent")),
+                    new KeyValuePair<NameReference, PropertyInfo>("ShipChaseStopEvent", new PropertyInfo(PropertyType.ObjectProperty, "WwiseEvent"))
                 }
             };
             classes["SFXPlanet_Invaded"] = new ClassInfo
