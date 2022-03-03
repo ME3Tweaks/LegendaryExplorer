@@ -70,8 +70,8 @@ namespace LegendaryExplorerCore.Coalesced.Xml
 			if (!File.Exists(sourcePath))
 			{
 				Console.WriteLine(@"Warning: {0} not found!", path);
-				return null;
-			}
+                throw new FileNotFoundException($"Unable to include file '{sourcePath}'. The system cannot find the specified file.", sourcePath);
+            }
 
             XDocument doc;
             try

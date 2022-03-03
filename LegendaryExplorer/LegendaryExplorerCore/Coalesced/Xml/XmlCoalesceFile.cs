@@ -103,8 +103,7 @@ namespace LegendaryExplorerCore.Coalesced.Xml
 			foreach (var include in includes)
 			{
 				var asset = XmlCoalesceAsset.Load(include.Source);
-
-				//TODO: if the file isn't found, some feedback should be given to the user instead of just silently failing
+				
 				if (asset != null && !string.IsNullOrEmpty(asset.Source))
 				{
 					Assets.Add(asset);
