@@ -83,31 +83,33 @@ namespace LegendaryExplorerCore.Coalesced.Huffman
 
 		private static int GetTotalBits(Node root)
 		{
-			var queue = new Queue<Node>();
-			queue.Enqueue(root);
-
-			var totalBits = 0;
-
-			while (queue.Count > 0)
+            var totalBits = 0;
+            if (root is not null)
 			{
-				var node = queue.Dequeue();
+				var queue = new Queue<Node>();
+                queue.Enqueue(root);
 
-				if (node.Left == null && node.Right == null)
-				{
-					continue;
-				}
+                while (queue.Count > 0)
+                {
+                    var node = queue.Dequeue();
 
-				totalBits += node.Frequency;
+                    if (node.Left == null && node.Right == null)
+                    {
+                        continue;
+                    }
 
-				if (node.Left?.Left != null && node.Left.Right != null)
-				{
-					queue.Enqueue(node.Left);
-				}
+                    totalBits += node.Frequency;
 
-				if (node.Right?.Left != null && node.Right.Right != null)
-				{
-					queue.Enqueue(node.Right);
-				}
+                    if (node.Left?.Left != null && node.Left.Right != null)
+                    {
+                        queue.Enqueue(node.Left);
+                    }
+
+                    if (node.Right?.Left != null && node.Right.Right != null)
+                    {
+                        queue.Enqueue(node.Right);
+                    }
+                }
 			}
 
 			return totalBits;
@@ -187,6 +189,11 @@ namespace LegendaryExplorerCore.Coalesced.Huffman
 
 		public Pair[] GetPairs()
 		{
+            if (_root is null)
+            {
+                return Array.Empty<Pair>();
+            }
+
 			var pairs = new List<Pair>();
 			var mapping = new Dictionary<Node, Pair>();
 

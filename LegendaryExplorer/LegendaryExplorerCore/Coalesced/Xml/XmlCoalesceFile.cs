@@ -93,6 +93,7 @@ namespace LegendaryExplorerCore.Coalesced.Xml
 					continue;
 				}
 
+                source = source.Trim();
 				var sourcePath = Path.Combine(SourceDirectory, source);
 				sourcePath = Path.GetFullPath(sourcePath);
 
@@ -103,6 +104,7 @@ namespace LegendaryExplorerCore.Coalesced.Xml
 			{
 				var asset = XmlCoalesceAsset.Load(include.Source);
 
+				//TODO: if the file isn't found, some feedback should be given to the user instead of just silently failing
 				if (asset != null && !string.IsNullOrEmpty(asset.Source))
 				{
 					Assets.Add(asset);

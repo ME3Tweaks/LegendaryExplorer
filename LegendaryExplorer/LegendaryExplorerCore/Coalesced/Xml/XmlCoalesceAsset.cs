@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Xml;
 using System.Xml.Linq;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 
@@ -72,7 +73,15 @@ namespace LegendaryExplorerCore.Coalesced.Xml
 				return null;
 			}
 
-			var doc = XDocument.Load(path);
+            XDocument doc;
+            try
+            {
+                doc = XDocument.Load(path);
+            }
+            catch (XmlException e)
+            {
+                throw new XmlException($"{Path.GetFileName(sourcePath)}: {e.Message}", e, e.LineNumber, e.LinePosition);
+            }
 
 			var root = doc.Root;
 
