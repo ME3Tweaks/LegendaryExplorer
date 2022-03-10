@@ -78,9 +78,11 @@ namespace LegendaryExplorerCore.Packages
             var extension = Path.GetExtension(str);
 
             string localizationName = Path.GetFileNameWithoutExtension(str).ToUpper();
-            var locPosTemp = localizationName.LastIndexOf("LOC_");
-            if (locPosTemp < 0) locPosTemp = localizationName.LastIndexOf("_");
-
+            var locPosTemp = localizationName.LastIndexOf("_LOC_");
+            if (locPosTemp < 0)
+            {
+                locPosTemp = localizationName.LastIndexOf("_");
+            }
             // This shouldn't happen, so I'm not going to check for index here if it's not found
             localizationName = localizationName.Substring(0, locPosTemp) + extension;
 

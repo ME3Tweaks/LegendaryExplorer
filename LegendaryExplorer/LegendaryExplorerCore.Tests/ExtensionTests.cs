@@ -50,14 +50,14 @@ namespace LegendaryExplorerCore.Tests
                 { "Startup_INT", "Startup" },
                 { "C:\\Users\\OhNo.pcc", "C:\\Users\\OhNo.pcc" },
                 { "C:\\Users\\OhNo_LOC_DEU.pcc", "C:\\Users\\OhNo.pcc" },
-                { "C:\\Users\\OhNo_FR.pcc", "C:\\Users\\OhNo.pcc" },
+                { "C:\\Users\\OhNo_LOC_LOC_Gulp.pcc", "C:\\Users\\OhNo.pcc" },
                 { "C:\\Users\\OhNo_FR.pcc", "C:\\Users\\OhNo.pcc" },
                 { "C:\\Users\\OhNo_GE.ini", "C:\\Users\\OhNo.ini" },
             };
 
-            foreach (var v in testData)
+            foreach (var v in testStrings)
             {
-                Assert.AreEqual(v.Value, v.Key.StripUnrealLocalization(), @"StripUnrealLocalization() returned the wrong localization!");
+                Assert.AreEqual(v.Value, v.Key.StripUnrealLocalization(), @"StripUnrealLocalization() returned the wrong stripped string!");
             }
 
         }
