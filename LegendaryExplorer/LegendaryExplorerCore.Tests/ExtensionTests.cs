@@ -28,7 +28,6 @@ namespace LegendaryExplorerCore.Tests
                 { "LocTest1_LOC_JPN.pcc", MELocalization.JPN },
                 { "LocTest2_LOC_HERP.pcc", MELocalization.None },
                 { "LocTest2_LOC_INT.pcc", MELocalization.INT },
-                { "AhernsCrabShack_FR_JP.pcc", MELocalization.JPN },
                 { "C:\\Users\\CrabMan_FR\\Package_ITA.pcc", MELocalization.ITA },
                 { "C:\\Users\\CrabMan_FR\\Package_LOC_RUS.pcc", MELocalization.RUS },
             };
@@ -47,7 +46,7 @@ namespace LegendaryExplorerCore.Tests
                 { "Startup_Derp", "Startup" },
                 { "FR_DEU_JP_INT.pcc", "FR_DEU_JP.pcc" },
                 { "BioD_Level1_200_LOC_INT", "Startup" },
-                { "Startup_INT", "Startup" },
+                { "HerpAFlerpFlerp_LOC_DEU_LOC_FRA_RUS", "MyWifeIsWeird_LOC_DEU_LOC_FRA" },
                 { "C:\\Users\\OhNo.pcc", "C:\\Users\\OhNo.pcc" },
                 { "C:\\Users\\OhNo_LOC_DEU.pcc", "C:\\Users\\OhNo.pcc" },
                 { "C:\\Users\\OhNo_LOC_LOC_Gulp.pcc", "C:\\Users\\OhNo.pcc" },
