@@ -62,6 +62,38 @@ namespace LegendaryExplorerCore.Packages
         }
 
         /// <summary>
+        /// Strips the localized suffix off the input string. 
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        public static string StripUnrealLocalization(this string str)
+        {
+            var localization = str.GetUnrealLocalization();
+            if (localization == MELocalization.None) return str;
+
+            // Store where the new string should be written to
+            var locPos = str.IndexOf(Path.GetFileNameWithoutExtension(str));
+
+            // Store the extension, which may be empty.
+            var extension = Path.GetExtension(str);
+
+            string localizationName = Path.GetFileNameWithoutExtension(str).ToUpper();
+            var locPosTemp = localizationName.LastIndexOf("LOC_");
+            if (locPosTemp < 0) locPosTemp = localizationName.LastIndexOf("_");
+
+            // This shouldn't happen, so I'm not going to check for index here if it's not found
+            localizationName = localizationName.Substring(0, locPosTemp) + extension;
+
+            if (locPos > 0)
+            {
+                // prepend the original string (e.g. it's a path)
+                return str.Substring(0, locPos) + localizationName;
+            }
+            return localizationName;
+        }
+
+
+        /// <summary>
         /// Attempts to determine the localization of the given string. Localizations end with either LOC_[LANG] or just _[LANG].
         /// </summary>
         /// <param name="str">The string to check against</param>
