@@ -3377,13 +3377,12 @@ namespace LegendaryExplorer.Tools.PackageEditor
             if (dropInfo.TargetItem is TreeViewEntry targetItem && dropInfo.Data is TreeViewEntry sourceItem &&
                 sourceItem.Parent != null)
             {
-                if (targetItem.Entry != null && sourceItem.Entry != null &&
-                    ////!App.IsDebug &&
-                    sourceItem.Entry.Game != MEGame.UDK && // allow UDK -> OT and LE
-                    targetItem.Game.IsLEGame() != sourceItem.Entry.Game.IsLEGame())
+                if (targetItem.Game.IsLEGame() != sourceItem.Game.IsLEGame() &&
+                    !App.IsDebug && 
+                    sourceItem.Entry.Game != MEGame.UDK) // allow UDK -> OT and LE)
                 {
                     MessageBox.Show(
-                        "Cannot port assets between Original Trilogy (OT) games and  Legendary Edition (LE) games at this time.", "Cannot port asset", MessageBoxButton.OK, MessageBoxImage.Error);
+                        "Cannot port assets between Original Trilogy (OT) games and Legendary Edition (LE) games in release builds of Legendary Explorer.", "Cannot port asset", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
 

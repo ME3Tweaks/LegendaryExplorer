@@ -56,7 +56,7 @@
                     <MenuItem Header="Replace Mesh from UDK" ToolTip="Replaces an entire mesh from UDK (.upk file)" Command="{Binding ReplaceFromUDKCommand}"/>
                     <MenuItem Header="Replace single LOD from UDK" ToolTip="Replaces a single LOD from UDK (.upk file). Use this if full replacement is wonky"  Command="{Binding ReplaceLODFromUDKCommand}"/>
                     <MenuItem Header="Export Mesh to UDK" Command="{Binding ExportToUDKCommand}"/>
-                    <MenuItem Header="Convert ME3 Skeletal Mesh to ME3 Static Mesh" Command="{Binding ConvertToStaticMeshCommand}"/>
+                    <MenuItem Header="Convert Skeletal Mesh to Static Mesh" Command="{Binding ConvertToStaticMeshCommand}"/>
                     <MenuItem Header="Export Mesh to PSK with UModel" Command="{Binding ExportToPSKUModelCommand}"/>
                     <MenuItem Header="Export Mesh to PSK (Experimental)" Command="{Binding ExportToPSKCommand}"/>
                 </MenuItem>

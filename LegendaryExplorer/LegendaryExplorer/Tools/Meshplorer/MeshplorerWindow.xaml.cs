@@ -458,13 +458,13 @@ namespace LegendaryExplorer.Tools.Meshplorer
         private bool IsMeshSelected() => Mesh3DViewer.IsStaticMesh || Mesh3DViewer.IsSkeletalMesh;
         private bool IsSkeletalMeshSelected() => Mesh3DViewer.IsSkeletalMesh;
 
-        private bool CanConvertToStaticMesh() => Mesh3DViewer.IsSkeletalMesh && Pcc.Game.IsGame3();
+        private bool CanConvertToStaticMesh() => Mesh3DViewer.IsSkeletalMesh && (Pcc.Game is MEGame.ME3 || Pcc.Game.IsLEGame());
 
         private void ConvertToStaticMesh()
         {
             if (CurrentExport.ClassName == "SkeletalMesh")
             {
-                StaticMesh stm = CurrentExport.GetBinaryData<SkeletalMesh>().ConvertToME3StaticMesh();
+                StaticMesh stm = CurrentExport.GetBinaryData<SkeletalMesh>().ConvertToME3LEStaticMesh();
                 CurrentExport.Class = Pcc.getEntryOrAddImport("Engine.StaticMesh");
                 CurrentExport.WritePropertiesAndBinary(new PropertyCollection
                 {

@@ -1034,6 +1034,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                                 continue;
                             }
 
+                            if (!fileLib.ReInitializeFile())
+                            {
+                                interestingExports.Add(new EntryStringPair(exp, $"{pcc.FilePath} failed to re-initialize after compiling {$"#{exp.UIndex}",-9}"));
+                                return;
+                            }
                             if (!originalData.SequenceEqual(exp.Data))
                             {
                                 interestingExports.Add(exp);
@@ -1081,6 +1086,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                             {
                                 interestingExports.Add(exp);
                             }
+                            if (!fileLib.ReInitializeFile())
+                            {
+                                interestingExports.Add(new EntryStringPair(exp, $"{pcc.FilePath} failed to re-initialize after compiling {$"#{exp.UIndex}",-9}"));
+                                return;
+                            }
                         }
                         catch (Exception exception)
                         {
@@ -1126,6 +1136,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                                 comparisonDict[$"{exp.UIndex} {exp.FileRef.FilePath}"] = (originalData, exp.Data);
                                 interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {filePath}\nRecompilation does not match!"));
                             }
+                            if (!fileLib.ReInitializeFile())
+                            {
+                                interestingExports.Add(new EntryStringPair(exp, $"{pcc.FilePath} failed to re-initialize after compiling {$"#{exp.UIndex}",-9}"));
+                                return;
+                            }
                         }
                         else
                         {
@@ -1169,6 +1184,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                                 return;
                             }
 
+                            if (!fileLib.ReInitializeFile())
+                            {
+                                interestingExports.Add(new EntryStringPair(exp, $"{pcc.FilePath} failed to re-initialize after compiling {$"#{exp.UIndex}",-9}"));
+                                return;
+                            }
                             if (exp.EntryHasPendingChanges || exp.GetChildren().Any(entry => entry.EntryHasPendingChanges && entry.ClassName is not "ForceFeedbackWaveform") || pcc.FindEntry(UnrealPackageFile.TrashPackageName) is not null)
                             {
                                 interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {filePath}\nRecompilation does not match!"));
@@ -1223,6 +1243,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                                     return;
                                 }
 
+                                if (!fileLib.ReInitializeFile())
+                                {
+                                    interestingExports.Add(new EntryStringPair(exp, $"{pcc.FilePath} failed to re-initialize after compiling {$"#{exp.UIndex}",-9}"));
+                                    return;
+                                }
                                 if (exp.EntryHasPendingChanges || exp.GetAllDescendants().Any(entry => entry.EntryHasPendingChanges))
                                 {
                                     interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {filePath}\nRecompilation does not match!"));
@@ -1273,6 +1298,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                                     return;
                                 }
 
+                                if (!fileLib.ReInitializeFile())
+                                {
+                                    interestingExports.Add(new EntryStringPair(exp, $"{pcc.FilePath} failed to re-initialize after compiling {$"#{exp.UIndex}",-9}"));
+                                    return;
+                                }
                                 if (exp.EntryHasPendingChanges)
                                 {
                                     interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {filePath}\nRecompilation does not match!"));
@@ -1327,6 +1357,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                                     return;
                                 }
 
+                                if (!fileLib.ReInitializeFile())
+                                {
+                                    interestingExports.Add(new EntryStringPair(exp, $"{pcc.FilePath} failed to re-initialize after compiling {$"#{exp.UIndex}",-9}"));
+                                    return;
+                                }
                                 if (exp.EntryHasPendingChanges )//|| exp.GetAllDescendants().Any(entry => entry.EntryHasPendingChanges))
                                 {
                                     interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {filePath}\nRecompilation does not match!"));
@@ -2197,6 +2232,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                             if (ast is not Struct s || log.HasErrors)
                             {
                                 throw new Exception();
+                            }
+                            if (!fileLib.ReInitializeFile())
+                            {
+                                exportsWithDecompilationErrors.Add(new EntryStringPair(export, $"{pew.Pcc.FilePath} failed to re-initialize after compiling {$"#{export.UIndex}",-9}"));
+                                return;
                             }
                         }
                         catch (Exception e)

@@ -1078,11 +1078,24 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     if (streambin != null)
                     {
                         var duration = streambin.GetAudioInfo().GetLength();
-                        var durtnMS = wwevent.GetProperty<FloatProperty>("DurationMilliseconds");
-                        if (durtnMS != null && duration != null)
+                        switch(Pcc.Game)
                         {
-                            durtnMS.Value = (float)duration.TotalMilliseconds;
-                            wwevent.WriteProperty(durtnMS);
+                            case MEGame.ME3:
+                                var durtnMS = wwevent.GetProperty<FloatProperty>("DurationMilliseconds");
+                                if (durtnMS != null && duration != null)
+                                {
+                                    durtnMS.Value = (float)duration.TotalMilliseconds;
+                                    wwevent.WriteProperty(durtnMS);
+                                }
+                                break;
+                            case MEGame.LE3:
+                                var durtnSec = wwevent.GetProperty<FloatProperty>("DurationSeconds");
+                                if (durtnSec != null && duration != null)
+                                {
+                                    durtnSec.Value = (float)duration.TotalSeconds;
+                                    wwevent.WriteProperty(durtnSec);
+                                }
+                                break;
                         }
                     }
                 }

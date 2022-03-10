@@ -21,7 +21,7 @@ namespace LegendaryExplorerCore.UnrealScript
     /// <summary>
     /// Contains a symbol table for an IMEPackage that is used for compilation and decompilation of UnrealScript.
     /// Must be initialized before use (with <see cref="Initialize"/> or <see cref="InitializeAsync"/>).
-    /// Once initialized, it will automatically update itself when changes are made to the IMEPackage.
+    /// Once initialized, use <see cref="ReInitializeFile"/> to update the symbol table to reflect changes made to the IMEPackage.
     /// A <see cref="FileLib"/> can only be used in the compilation or decompilation of objects in the same IMEPackage that is was created for.
     /// </summary>
     public class FileLib : IWeakPackageUser, IDisposable
@@ -86,10 +86,15 @@ namespace LegendaryExplorerCore.UnrealScript
         /// Creates a <see cref="FileLib"/> for an <see cref="IMEPackage"/>.
         /// </summary>
         /// <param name="pcc">The <see cref="IMEPackage"/> this <see cref="FileLib"/> is for.</param>
-        public FileLib(IMEPackage pcc)
+        /// <param name="useAutoReinitialization">Optional: Use the <see cref="IWeakPackageUser"/> package change notification system
+        /// to automatically call <see cref="ReInitializeFile"/>. Should only be used in the context of a UI compiler. If in doubt, leave it false.</param>
+        public FileLib(IMEPackage pcc, bool useAutoReinitialization = false)
         {
             Pcc = pcc;
-            pcc.WeakUsers.Add(this);
+            if (useAutoReinitialization)
+            {
+                pcc.WeakUsers.Add(this);
+            }
             if (!pcc.Game.IsLEGame() && !pcc.Game.IsOTGame())
             {
                 throw new ArgumentOutOfRangeException(nameof(pcc), $"Cannot compile scripts for this game version: {pcc.Game}");
@@ -256,7 +261,14 @@ namespace LegendaryExplorerCore.UnrealScript
             }
         }
 
-        private void ReInitializeFile()
+        /// <summary>
+        /// Re-Initializes the <see cref="FileLib"/> to reflect changes made to the <see cref="IMEPackage"/> since Initialization.
+        /// If this <see cref="FileLib"/> is used for multiple compilation operations, this method should be called between each one.
+        /// (There are some situations where it may not be strictly neccesary to re-initialize between compilations,
+        /// but you should only do that if you understand the compiler well enough to have figured out what those situations are.)
+        /// </summary>
+        /// <returns>A <see cref="bool"/> indicating whether initialization was succesful. This value will also be in <see cref="IsInitialized"/>.</returns>
+        public bool ReInitializeFile()
         {
             lock (_initializationLock)
             {
@@ -276,6 +288,7 @@ namespace LegendaryExplorerCore.UnrealScript
                 }
             }
             InitializationStatusChange?.Invoke(true);
+            return IsInitialized;
         }
 
         internal SymbolTable CreateSymbolTableWithClass(Class classOverride, MessageLog logOverride)
@@ -486,7 +499,7 @@ namespace LegendaryExplorerCore.UnrealScript
                 throw new InvalidOperationException("FileLib can only be used with exports from the same file it was created for.");
             }
             // packages without filepaths cannot be uniquely fingerprinted and will not use this this system
-            if (_cacheEnabled && export.FileRef.FilePath != null) 
+            if (_cacheEnabled && export.FileRef.FilePath != null)
             {
                 if (!objBinCache.TryGetValue(export.UIndex, out ObjectBinary bin))
                 {

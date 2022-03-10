@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System;
+using System.Numerics;
 using LegendaryExplorerCore.Helpers;
 using System.Linq;
 using Guid = System.Guid;
@@ -7,7 +8,13 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
     public static class ConvertExtensions
     {
-        public static StaticMesh ConvertToME3StaticMesh(this SkeletalMesh skeletalMesh)
+        /// <summary>
+        /// Converts a <see cref="SkeletalMesh"/> into a <see cref="StaticMesh"/>. The resulting mesh can only be saved into an ME3 or LE file.
+        /// ME1 and ME2 have a different format for static meshes.
+        /// </summary>
+        /// <param name="skeletalMesh"></param>
+        /// <returns></returns>
+        public static StaticMesh ConvertToME3LEStaticMesh(this SkeletalMesh skeletalMesh)
         {
             StaticLODModel lodModel = skeletalMesh.LODModels[0];
             uint numVertices = lodModel.NumVertices;
@@ -19,15 +26,15 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 {
                     IndexBuffer = lodModel.IndexBuffer.ArrayClone(),
                     NumVertices = numVertices,
-                    Edges = new MeshEdge[0],
-                    RawTriangles = new StaticMeshTriangle[0],
+                    Edges = Array.Empty<MeshEdge>(),
+                    RawTriangles = Array.Empty<StaticMeshTriangle>(),
                     ColorVertexBuffer = new ColorVertexBuffer(),
-                    ShadowTriangleDoubleSided = new byte[0],
-                    WireframeIndexBuffer = new ushort[0],
+                    ShadowTriangleDoubleSided = Array.Empty<byte>(),
+                    WireframeIndexBuffer = Array.Empty<ushort>(),
                     ShadowExtrusionVertexBuffer = new ExtrusionVertexBuffer
                     {
                         Stride = 4,
-                        VertexData = new float[0]
+                        VertexData = Array.Empty<float>()
                     },
                     PositionVertexBuffer = new PositionVertexBuffer
                     {
@@ -54,7 +61,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                             NumTriangles = (uint)sec.NumTriangles,
                             MaterialIndex = sec.MaterialIndex,
                             Material = skeletalMesh.Materials[sec.MaterialIndex],
-                            Fragments = new FragmentRange[0],
+                            Fragments = Array.Empty<FragmentRange>(),
                             MinVertexIndex = indices.Min(),
                             MaxVertexIndex = indices.Max()
                         };
