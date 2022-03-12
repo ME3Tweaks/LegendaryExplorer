@@ -172,7 +172,7 @@ namespace LegendaryExplorer.Tools.ConditionalsEditor
                 try
                 {
                     string text = entry.Conditional.Decompile();
-                    string entryPlotPath = entry.PlotPath;
+                    string entryPlotPath = entry.PlotPath ?? "";
                     if (text.Contains(searchText, StringComparison.OrdinalIgnoreCase) || entryPlotPath.Contains(searchText, StringComparison.OrdinalIgnoreCase))
                     {
                         SelectedCond = entry;
