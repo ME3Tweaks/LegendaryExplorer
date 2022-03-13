@@ -722,7 +722,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             };
             if (fc != null)
             {
-                if (!(fc.Function.Node is Function func) || !func.Flags.Has(EFunctionFlags.Iterator))
+                if (fc.Function.Node is not Function func || !func.Flags.Has(EFunctionFlags.Iterator))
                 {
                     TypeError($"Expected an iterator function call or dynamic array iterator after '{FOREACH}'!", iterator);
                 }
@@ -733,6 +733,10 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                         TypeError("Second argument to iterator function must be the same class or a subclass of the class passed as the first argument!", fc.Arguments[1]);
                     }
                 }
+            }
+            else if (iterator is null)
+            {
+                throw ParseError("Expected an iterator expression after '{FOREACH}'!", CurrentPosition);
             }
             else if (iterator is not DynArrayIterator && iterator is not CompositeSymbolRef {InnerSymbol: DynArrayIterator})
             {
@@ -1933,7 +1937,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     Expression valueArg = CompositeRef() ?? throw ParseError("Expected argument to dynamic array iterator!", CurrentPosition);
                     if (!NodeUtils.TypeEqual(valueArg.ResolveType(), dynArrType.ElementType) && (Game.IsGame3() || 
                         //documentation says this shouldn't be allowed, but bioware code does this in ME2
-                        valueArg.ResolveType() is Class argClass && dynArrType.ElementType is Class dynArrClass && !dynArrClass.SameAsOrSubClassOf(argClass)))
+                        !(valueArg.ResolveType() is Class argClass && dynArrType.ElementType is Class dynArrClass && dynArrClass.SameAsOrSubClassOf(argClass))))
                     {
                         string elementType = dynArrType.ElementType.FullTypeName();
                         TypeError($"Iterator variable for an '{ARRAY}<{elementType}>' must be of type '{elementType}'", expr);

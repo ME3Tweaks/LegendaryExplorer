@@ -4290,7 +4290,7 @@ namespace LegendaryExplorerCore.Unreal
         private Token ReadIterNext(int start, ExportEntry export)
         {
             Token t = new Token();
-            t.text = "\\\\Next";
+            t.text = "\\\\foreach continue";
             t.raw = new byte[1];
             t.raw[0] = memory[start];
             return t;
@@ -4299,15 +4299,9 @@ namespace LegendaryExplorerCore.Unreal
         private Token ReadIterPop(int start, ExportEntry export)
         {
             Token t = new Token();
-            Token a = ReadToken(start + 1, export);
-            t.inPackageReferences.AddRange(a.inPackageReferences);
-
-            int len = a.raw.Length + 1;
-            t.text = a.text;
-            t.raw = new byte[len];
-            if (start + len <= memsize)
-                for (int i = 0; i < len; i++)
-                    t.raw[i] = memory[start + i];
+            t.text = "\\\\foreach pop";
+            t.raw = new byte[1];
+            t.raw[0] = memory[start];
             return t;
         }
 

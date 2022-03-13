@@ -476,9 +476,12 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         public bool VisitNode(ReturnStatement node)
         {
-            if (Nests.Any(n => n.Type == NestType.ForEach))
+            foreach (Nest nest in Nests)
             {
-                WriteOpCode(OpCodes.IteratorPop);
+                if (nest.Type is NestType.ForEach)
+                {
+                    WriteOpCode(OpCodes.IteratorPop);
+                }
             }
             WriteOpCode(OpCodes.Return);
             if (node.Value is null)

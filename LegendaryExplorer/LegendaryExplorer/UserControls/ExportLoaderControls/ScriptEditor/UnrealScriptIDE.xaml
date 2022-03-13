@@ -183,7 +183,7 @@
                 <StackPanel Orientation="Vertical">
                     <Button Content="Decompile" Click="Decompile_OnClick" />
                     <Button Content="Compile to AST" Click="CompileAST_OnClick" Visibility="{x:Static global:App.IsDebugVisibility}" IsEnabled="{Binding FullyInitialized}"/>
-                    <Button Content="Compile (EXPERIMENTAL!)" Click="Compile_OnClick" IsEnabled="{Binding FullyInitialized}"/>
+                    <Button Content="Compile" Click="Compile_OnClick" IsEnabled="{Binding FullyInitialized}"/>
                 </StackPanel>
                 <ListBox Grid.Column="1" Name="outputListBox" SelectionChanged="outputListBox_SelectionChanged" HorizontalContentAlignment="Left" >
                     <ListBox.Resources>
