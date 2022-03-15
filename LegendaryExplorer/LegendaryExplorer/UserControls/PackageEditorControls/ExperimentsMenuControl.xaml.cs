@@ -1295,6 +1295,16 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         {
             PackageEditorExperimentsO.AddPresetTrack("Gesture2", GetPEWindow());
         }
+
+        private void BatchPatchMaterialsParameters_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.BatchPatchMaterialsParameters(GetPEWindow());
+        }
+
+        private void BatchSetBoolPropVal_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.BatchSetBoolPropVal(GetPEWindow());
+        }
         #endregion
 
         // EXPERIMENTS: CHONKY DB---------------------------------------------------------
