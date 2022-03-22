@@ -311,7 +311,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     // Export the cloned headmesh
                     if (x != null)
                     {
-                        MessageBox.Show($"Couldn't export via umodel: {x}");
+                        MessageBox.Show($"Couldn't export via umodel: {x.Result}");
                     }
                     else
                     {
