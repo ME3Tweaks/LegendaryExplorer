@@ -36,6 +36,8 @@ namespace LegendaryExplorer
 
         public static DateTime BuildDateTime = new(App.CompileTime, DateTimeKind.Utc);
 
+        public static App Instance;
+
         #endregion
 
 
@@ -54,6 +56,7 @@ namespace LegendaryExplorer
 
             if(singleInstance.IsFirstInstance)
             {
+                Instance = this;
                 // Application bootup is handled in AppBoot class
                 singleInstance.ArgumentsReceived.Subscribe(OnInstanceInvoked);
                 singleInstance.ListenForArgumentsFromSuccessiveInstances();

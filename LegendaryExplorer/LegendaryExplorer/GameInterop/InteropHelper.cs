@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Security.Cryptography;
+using System.Windows;
 using System.Windows.Input;
 using LegendaryExplorer.GameInterop.InteropTargets;
 using LegendaryExplorer.Misc;
@@ -50,7 +51,7 @@ namespace LegendaryExplorer.GameInterop
             return interopASIWritePath;
         }
 
-        private static string GetAsiDir(MEGame game)
+        public static string GetAsiDir(MEGame game)
         {
             string asiDir = MEDirectories.GetASIPath(game);
             Directory.CreateDirectory(asiDir);
@@ -138,9 +139,21 @@ namespace LegendaryExplorer.GameInterop
             return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
         }
 
-        public static void OpenASILoaderDownload()
+        public static void OpenASILoaderDownload(MEGame game)
         {
-            HyperlinkExtensions.OpenURL("https://github.com/Erik-JS/masseffect-binkw32");
+            if (game.IsLEGame())
+            {
+                var result =MessageBox.Show("Install the ASI loader with ME3Tweaks Mod Manager, in the 'Tools > Bink Bypasses' menu. Click OK to open the Mod Manager download page.",
+                    "ASI Loader Installation Instructions", MessageBoxButton.OKCancel, MessageBoxImage.Information);
+                if (result == MessageBoxResult.OK)
+                {
+                    HyperlinkExtensions.OpenURL("https://me3tweaks.com/modmanager/");
+                }
+            }
+            else
+            {
+                HyperlinkExtensions.OpenURL("https://github.com/Erik-JS/masseffect-binkw32");
+            }
         }
 
         public static void OpenConsoleExtensionDownload()

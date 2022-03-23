@@ -65,7 +65,7 @@ namespace LegendaryExplorer.GameInterop.InteropTargets
 
         internal void RaiseReceivedMessage(string message)
         {
-            if (GameReceiveMessage != null) GameReceiveMessage.Invoke(message);
+            GameReceiveMessage?.Invoke(message);
         }
     }
 }
