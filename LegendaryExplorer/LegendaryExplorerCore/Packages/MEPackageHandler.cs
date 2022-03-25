@@ -127,10 +127,10 @@ namespace LegendaryExplorerCore.Packages
         /// Opens a Mass Effect package file. By default, this call will attempt to return an existing open (non-disposed) package at the same path if it is opened twice. Use the forceLoadFromDisk parameter to ignore this behavior.
         /// </summary>
         /// <param name="pathToFile">Path to the file to open</param>
-        /// <param name="user">????</param>
+        /// <param name="user">IPackageUser to register as a user of this package</param>
         /// <param name="forceLoadFromDisk">If the package being opened should skip the shared package cache and forcibly load from disk. </param>
         /// <param name="quickLoad">Only load the header. Meant for when you just need to get info about a package without caring about the contents.</param>
-        /// <param name="diskIOSyncLock"></param>
+        /// <param name="diskIOSyncLock">If provided, all I/O will be done inside a lock on this object</param>
         /// <returns></returns>
         public static IMEPackage OpenMEPackage(string pathToFile, IPackageUser user = null, bool forceLoadFromDisk = false, bool quickLoad = false, object diskIOSyncLock = null)
         {

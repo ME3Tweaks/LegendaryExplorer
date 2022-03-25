@@ -214,6 +214,7 @@ namespace LegendaryExplorerCore.Packages
         /// <param name="fs"></param>
         /// <param name="filePath"></param>
         /// <param name="onlyHeader">Only read header data. Do not load the tables or decompress</param>
+        /// <param name="dataLoadPredicate">If provided, export data will only be read for exports that match the predicate</param>
         private MEPackage(Stream fs, string filePath = null, bool onlyHeader = false, Func<ExportEntry, bool> dataLoadPredicate = null) : base(filePath != null ? File.Exists(filePath) ? Path.GetFullPath(filePath) : filePath : null)
         {
             //MemoryStream fs = new MemoryStream(File.ReadAllBytes(filePath));
