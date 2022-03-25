@@ -1,5 +1,7 @@
 var NAVTREEINDEX96 =
 {
+"namespace_legendary_explorer_core_1_1_unreal.html#a01ecdb26d6de57cec27f383ad7ac9abdaa39fa473f7fdbb2357b7b905d8e75cf9":[0,5,0,19,753,1],
+"namespace_legendary_explorer_core_1_1_unreal.html#a01ecdb26d6de57cec27f383ad7ac9abdab380e3497927a3db634555a66bb6dd5a":[0,5,0,19,753,0],
 "namespace_legendary_explorer_core_1_1_unreal.html#a01ecdb26d6de57cec27f383ad7ac9abdac7cdab68a06b2c75b4878d0b66b3829e":[0,5,0,19,753,2],
 "namespace_legendary_explorer_core_1_1_unreal.html#a01fe7eb1092f83aab4c271732c0fc05b":[0,5,0,19,196],
 "namespace_legendary_explorer_core_1_1_unreal.html#a01fe7eb1092f83aab4c271732c0fc05ba04c5cef41ef22ff20926d1eb06348b24":[0,5,0,19,196,1],
@@ -247,7 +249,5 @@ var NAVTREEINDEX96 =
 "namespace_legendary_explorer_core_1_1_unreal.html#a0fdc21a49044bd974bb81b7c684fd5a0a85e5932c5c8ebcdac9953ba58e91d733":[0,5,0,19,87,11],
 "namespace_legendary_explorer_core_1_1_unreal.html#a0fdc21a49044bd974bb81b7c684fd5a0a9327ff5e1a5283a47f3bed3a923edb6e":[0,5,0,19,87,8],
 "namespace_legendary_explorer_core_1_1_unreal.html#a0fdc21a49044bd974bb81b7c684fd5a0a9a2c5f84bed71020bcf7eba2e0bf3793":[0,5,0,19,87,9],
-"namespace_legendary_explorer_core_1_1_unreal.html#a0fdc21a49044bd974bb81b7c684fd5a0a9b790874643f5cbe02e413862771f791":[0,5,0,19,87,10],
-"namespace_legendary_explorer_core_1_1_unreal.html#a0fdc21a49044bd974bb81b7c684fd5a0a9e3c6f7e1eef6455094b0cab08e19c5e":[0,5,0,19,87,0],
-"namespace_legendary_explorer_core_1_1_unreal.html#a0fdc21a49044bd974bb81b7c684fd5a0aa4d85ab5eb68977e7394154cfcb7f07b":[0,5,0,19,87,5]
+"namespace_legendary_explorer_core_1_1_unreal.html#a0fdc21a49044bd974bb81b7c684fd5a0a9b790874643f5cbe02e413862771f791":[0,5,0,19,87,10]
 };

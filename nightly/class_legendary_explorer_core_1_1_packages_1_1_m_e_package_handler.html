@@ -409,10 +409,10 @@ Static Public Attributes</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">pathToFile</td><td>Path to the file to open</td></tr>
-    <tr><td class="paramname">user</td><td>????</td></tr>
+    <tr><td class="paramname">user</td><td><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_package_user.html">IPackageUser</a> to register as a user of this package</td></tr>
     <tr><td class="paramname">forceLoadFromDisk</td><td>If the package being opened should skip the shared package cache and forcibly load from disk. </td></tr>
     <tr><td class="paramname">quickLoad</td><td>Only load the header. Meant for when you just need to get info about a package without caring about the contents.</td></tr>
-    <tr><td class="paramname">diskIOSyncLock</td><td></td></tr>
+    <tr><td class="paramname">diskIOSyncLock</td><td>If provided, all I/O will be done inside a lock on this object</td></tr>
   </table>
   </dd>
 </dl>
