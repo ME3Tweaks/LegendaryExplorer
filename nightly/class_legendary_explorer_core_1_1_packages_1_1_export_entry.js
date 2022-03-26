@@ -34,7 +34,6 @@ var class_legendary_explorer_core_1_1_packages_1_1_export_entry =
     [ "OFFSET_ObjectFlags", "class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#ab538a103b706e73d715f26c06ee1b8fb", null ],
     [ "OFFSET_DataSize", "class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#a5c9bc8c1d21ef79f30f2ffb5d5449198", null ],
     [ "OFFSET_DataOffset", "class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#a8159b3c13637b800570048a987c3264d", null ],
-    [ "CommonHeaderFieldsLength", "class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#af4bf378d4bd24da52a80ec35c58fde62", null ],
     [ "FileRef", "class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#a98bfcd6d7aad3091e0df839d1611edfe", null ],
     [ "Game", "class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#ac7f4e66a382898d91e25e16b24ffe48f", null ],
     [ "Index", "class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#a6434e199b6828f60271d2190412fd559", null ],
