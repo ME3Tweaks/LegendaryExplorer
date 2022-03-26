@@ -304,7 +304,7 @@ namespace LegendaryExplorerCore.Packages
                 raw.Seek(nextChunkPos, SeekOrigin.Begin);
             }
 
-            if (canUseLazyDecompression && isMemoryStream)
+            if (canUseLazyDecompression && isMemoryStream && raw.Endian.IsNative)
             {
                 return new PackageDecompressionStream(chunks, maxUncompressedBlockSize, compressionType);
             }
@@ -400,7 +400,7 @@ namespace LegendaryExplorerCore.Packages
             protected int chunkIdx;
             protected int blockIdx = -1;
 
-            protected int SegmentPosition => (int)(_position - segStartPos);
+            private int SegmentPosition => (int)(_position - segStartPos);
 
             public override bool CanRead => true;
             public override bool CanSeek => true;
@@ -422,7 +422,6 @@ namespace LegendaryExplorerCore.Packages
                     //at end
                     return 0;
                 }
-                int segEndPos = segStartPos + SegmentLength;
                 if (_position < segStartPos)
                 {
                     //go to previous block (hopefully never happens)
@@ -430,6 +429,7 @@ namespace LegendaryExplorerCore.Packages
                     blockIdx = -1;
                     return DecompressNewBlockAndRead(buffer);
                 }
+                int segEndPos = segStartPos + SegmentLength;
                 if (_position >= segEndPos)
                 {
                     //go to next block
@@ -445,7 +445,7 @@ namespace LegendaryExplorerCore.Packages
                     return bytesRemainingInBlock + Read(buffer[bytesRemainingInBlock..]);
                 }
                 Segment.AsSpan(SegmentPosition, count).CopyTo(buffer);
-                Seek(count, SeekOrigin.Current);
+                _position += count; //Inlined Seek(count, SeekOrigin.Current); Can't be < firstChunkOffset since we're adding, can't be > length since that would go into the if above
                 return count;
             }
 
@@ -499,22 +499,21 @@ namespace LegendaryExplorerCore.Packages
 
             public override long Seek(long offset, SeekOrigin origin)
             {
-                var len = _length;
                 switch (origin)
                 {
-                    case SeekOrigin.Begin:
-                        _position = offset;
-                        break;
                     case SeekOrigin.Current:
                         _position += offset;
                         break;
+                    case SeekOrigin.Begin:
+                        _position = offset;
+                        break;
                     case SeekOrigin.End:
-                        _position = len - offset;
+                        _position = _length - offset;
                         break;
                 }
-                if (_position > len)
+                if (_position > _length)
                 {
-                    _position = len;
+                    _position = _length;
                 }
                 else if (_position < firstChunkOffset)
                 {

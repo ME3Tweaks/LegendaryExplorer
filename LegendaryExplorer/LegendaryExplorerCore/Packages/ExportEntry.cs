@@ -247,10 +247,11 @@ namespace LegendaryExplorerCore.Packages
         {
             get
             {
-                int length = CommonHeaderFieldsLength
+                int length = OFFSET_DataOffset
+                    + 4 //DataOffset
                     + 4 //ExportFlags
                     + 16 //PackageGUID
-                    + 4 //GenerationNetObjectCount count
+                    + 4 //GenerationNetObjectCountsLength
                     + 4 //PackageFlags
                     + _generationNetObjectCounts.Length * 4;
                 if (HasComponentMap)
@@ -270,7 +271,6 @@ namespace LegendaryExplorerCore.Packages
         public const int OFFSET_ObjectFlags = 24;
         public const int OFFSET_DataSize = 32;
         public const int OFFSET_DataOffset = 36;
-        public const int CommonHeaderFieldsLength = 40;
 
 
 
@@ -285,18 +285,25 @@ namespace LegendaryExplorerCore.Packages
         
         public byte[] GenerateHeader(IMEPackage pcc, bool clearComponentMap = false)
         {
+            if (pcc.Endian.IsNative && _fileRef.Game > MEGame.ME2 && _commonHeaderFields._generationNetObjectCountsLength == 0)
+            {
+                unsafe
+                {
+                    byte[] bytes = new byte[sizeof(CommonHeaderFields)];
+                    MemoryMarshal.Write(bytes.AsSpan(), ref _commonHeaderFields);
+                    return bytes;
+                }
+            }
             using var bin = new EndianWriter(MemoryManager.GetMemoryStream(HeaderLength)) { Endian = pcc.Endian };
-            if (pcc.Endian.IsNative)
-            {
-                bin.Write(MemoryMarshal.AsBytes(MemoryMarshal.CreateReadOnlySpan(ref _commonHeaderFields, 1)));
-            }
-            else
-            {
-                var reversedHeader = _commonHeaderFields;
-                reversedHeader.ReverseEndianness();
-                bin.Write(MemoryMarshal.AsBytes(MemoryMarshal.CreateReadOnlySpan(ref reversedHeader, 1)));
-            }
-            bin.Write(MemoryMarshal.AsBytes(MemoryMarshal.CreateReadOnlySpan(ref _commonHeaderFields, 1)));
+            bin.WriteInt32(_commonHeaderFields._idxClass);
+            bin.WriteInt32(_commonHeaderFields._idxSuperClass);
+            bin.WriteInt32(_commonHeaderFields._idxLink);
+            bin.WriteInt32(_commonHeaderFields._idxObjectName);
+            bin.WriteInt32(_commonHeaderFields._indexValue);
+            bin.WriteInt32(_commonHeaderFields._idxArchetype);
+            bin.WriteUInt64((ulong)_commonHeaderFields._objectFlags);
+            bin.WriteInt32(_commonHeaderFields._dataSize);
+            bin.WriteInt32(_commonHeaderFields._dataOffset);
             if (pcc.Game <= MEGame.ME2 && pcc.Platform != MEPackage.GamePlatform.PS3)
             {
                 if (clearComponentMap)
@@ -327,62 +334,95 @@ namespace LegendaryExplorerCore.Packages
 
         private void DeserializeHeader(EndianReader stream)
         {
-            stream.Read(MemoryMarshal.AsBytes(MemoryMarshal.CreateSpan(ref  _commonHeaderFields, 1)));
-            if (!stream.Endian.IsNative)
+            //happy path
+            if (stream.Endian.IsNative && _fileRef.Game > MEGame.ME2)
             {
-                _commonHeaderFields.ReverseEndianness();
+                stream.Read(MemoryMarshal.AsBytes(MemoryMarshal.CreateSpan(ref _commonHeaderFields, 1)));
+                
+                //rarely true. Only for ForcedExport packages I think?
+                if (_commonHeaderFields._generationNetObjectCountsLength > 0)
+                {
+                    const int SIZE_OF_PACKAGEGUID_AND_PACKAGEFLAGS = 20;
+                    stream.Seek(-SIZE_OF_PACKAGEGUID_AND_PACKAGEFLAGS, SeekOrigin.Current);
+                    goto GenNetObjsNotEmpty;
+                }
+                _generationNetObjectCounts = Array.Empty<int>();
+                return;
             }
+            //slower fallback :(
+
+            _commonHeaderFields._idxClass = stream.ReadInt32();
+            _commonHeaderFields._idxSuperClass = stream.ReadInt32();
+            _commonHeaderFields._idxLink = stream.ReadInt32();
+            _commonHeaderFields._idxObjectName = stream.ReadInt32();
+            _commonHeaderFields._indexValue = stream.ReadInt32();
+            _commonHeaderFields._idxArchetype = stream.ReadInt32();
+            _commonHeaderFields._objectFlags = (EObjectFlags)stream.ReadUInt64();
+            _commonHeaderFields._dataSize = stream.ReadInt32();
+            _commonHeaderFields._dataOffset = stream.ReadInt32();
 
             if (HasComponentMap)
             {
                 _componentMap = stream.ReadBytes(stream.ReadInt32() * 12);
             }
-            _exportFlags = (EExportFlags)stream.ReadUInt32();
-            int count = stream.ReadInt32();
+            _commonHeaderFields._exportFlags = (EExportFlags)stream.ReadUInt32();
+
+            _commonHeaderFields._generationNetObjectCountsLength = stream.ReadInt32();
+
+        GenNetObjsNotEmpty:
+
+            int count = _commonHeaderFields._generationNetObjectCountsLength;
             _generationNetObjectCounts = new int[count];
             for (int i = 0; i < count; i++)
             {
                 _generationNetObjectCounts[i] = stream.ReadInt32();
             }
-            _packageGuid = stream.ReadGuid();
+            _commonHeaderFields._packageGuid = stream.ReadGuid();
             if (Game != MEGame.ME1 || _fileRef.Platform != MEPackage.GamePlatform.Xenon)
             {
-                _packageFlags = (EPackageFlags)stream.ReadUInt32();
+                _commonHeaderFields._packageFlags = (EPackageFlags)stream.ReadUInt32();
             }
         }
 
         public void SerializeHeader(Stream bin)
         {
-            if (FileRef.Endian.IsNative)
+            if (_fileRef.Endian.IsNative && _fileRef.Game > MEGame.ME2 && _commonHeaderFields._generationNetObjectCountsLength == 0)
             {
                 bin.Write(MemoryMarshal.AsBytes(MemoryMarshal.CreateReadOnlySpan(ref _commonHeaderFields, 1)));
             }
             else
             {
-                var reversedHeader = _commonHeaderFields;
-                reversedHeader.ReverseEndianness();
-                bin.Write(MemoryMarshal.AsBytes(MemoryMarshal.CreateReadOnlySpan(ref reversedHeader, 1)));
+                bin.WriteInt32(_commonHeaderFields._idxClass);
+                bin.WriteInt32(_commonHeaderFields._idxSuperClass);
+                bin.WriteInt32(_commonHeaderFields._idxLink);
+                bin.WriteInt32(_commonHeaderFields._idxObjectName);
+                bin.WriteInt32(_commonHeaderFields._indexValue);
+                bin.WriteInt32(_commonHeaderFields._idxArchetype);
+                bin.WriteUInt64((ulong)_commonHeaderFields._objectFlags);
+                bin.WriteInt32(_commonHeaderFields._dataSize);
+                bin.WriteInt32(_commonHeaderFields._dataOffset);
+                if (HasComponentMap)
+                {
+                    bin.WriteInt32(_componentMap.Length / 12);
+                    bin.Write(_componentMap);
+                }
+                bin.WriteUInt32((uint)_commonHeaderFields._exportFlags);
+                int[] genobjCounts = _generationNetObjectCounts;
+                bin.WriteInt32(genobjCounts.Length);
+                for (int i = 0; i < genobjCounts.Length; i++)
+                {
+                    int count = genobjCounts[i];
+                    bin.WriteInt32(count);
+                }
+                bin.WriteGuid(_commonHeaderFields._packageGuid);
+                //doesn't exist on ME1 Xenon, but we don't support saving Xenon packages
+                bin.WriteUInt32((uint)_commonHeaderFields._packageFlags);
             }
-            if (HasComponentMap)
-            {
-                bin.WriteInt32(_componentMap.Length / 12);
-                bin.Write(_componentMap);
-            }
-            bin.WriteUInt32((uint)_exportFlags);
-            int[] genobjCounts = _generationNetObjectCounts;
-            bin.WriteInt32(genobjCounts.Length);
-            for (int i = 0; i < genobjCounts.Length; i++)
-            {
-                int count = genobjCounts[i];
-                bin.WriteInt32(count);
-            }
-            bin.WriteGuid(_packageGuid);
-            bin.WriteUInt32((uint)_packageFlags);
         }
 
         public int HeaderOffset { get; set; }
 
-        [StructLayout(LayoutKind.Sequential)]
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
         private struct CommonHeaderFields
         {
             public int _idxClass;
@@ -394,19 +434,10 @@ namespace LegendaryExplorerCore.Packages
             public EObjectFlags _objectFlags;
             public int _dataSize;
             public int _dataOffset;
-
-            public void ReverseEndianness()
-            {
-                _idxClass = BinaryPrimitives.ReverseEndianness(_idxClass);
-                _idxSuperClass = BinaryPrimitives.ReverseEndianness(_idxSuperClass);
-                _idxLink = BinaryPrimitives.ReverseEndianness(_idxLink);
-                _idxObjectName = BinaryPrimitives.ReverseEndianness(_idxObjectName);
-                _indexValue = BinaryPrimitives.ReverseEndianness(_indexValue);
-                _idxArchetype = BinaryPrimitives.ReverseEndianness(_idxArchetype);
-                _objectFlags = (EObjectFlags)BinaryPrimitives.ReverseEndianness((ulong)_objectFlags);
-                _dataSize = BinaryPrimitives.ReverseEndianness(_dataSize);
-                _dataOffset = BinaryPrimitives.ReverseEndianness(_dataOffset);
-            }
+            public EExportFlags _exportFlags;
+            public int _generationNetObjectCountsLength;
+            public Guid _packageGuid;
+            public EPackageFlags _packageFlags;
         }
 
         private CommonHeaderFields _commonHeaderFields;
@@ -570,15 +601,14 @@ namespace LegendaryExplorerCore.Packages
             }
         }
 
-        private EExportFlags _exportFlags;
         public EExportFlags ExportFlags
         {
-            get => _exportFlags;
+            get => _commonHeaderFields._exportFlags;
             set
             {
-                if (value != _exportFlags)
+                if (value != _commonHeaderFields._exportFlags)
                 {
-                    _exportFlags = value;
+                    _commonHeaderFields._exportFlags = value;
                     HeaderChanged = true;
                 }
             }
@@ -597,34 +627,33 @@ namespace LegendaryExplorerCore.Packages
                 if (!value.AsSpan().SequenceEqual(_generationNetObjectCounts))
                 {
                     _generationNetObjectCounts = value;
+                    _commonHeaderFields._generationNetObjectCountsLength = _generationNetObjectCounts.Length;
                     HeaderChanged = true;
                 }
             }
         }
 
-        private Guid _packageGuid;
         public Guid PackageGUID
         {
-            get => _packageGuid;
+            get => _commonHeaderFields._packageGuid;
             set
             {
-                if (value != _packageGuid)
+                if (value != _commonHeaderFields._packageGuid)
                 {
-                    _packageGuid = value;
+                    _commonHeaderFields._packageGuid = value;
                     HeaderChanged = true;
                 }
             }
         }
 
-        private EPackageFlags _packageFlags;
         public EPackageFlags PackageFlags
         {
-            get => _packageFlags;
+            get => _commonHeaderFields._packageFlags;
             set
             {
-                if (value != _packageFlags)
+                if (value != _commonHeaderFields._packageFlags)
                 {
-                    _packageFlags = value;
+                    _commonHeaderFields._packageFlags = value;
                     HeaderChanged = true;
                 }
             }
@@ -1035,12 +1064,12 @@ namespace LegendaryExplorerCore.Packages
         /// <returns>True if the export has a stack, false otherwise</returns>
         public bool SetPropertyFlags(EPropertyFlags flags)
         {
-            if (FileRef.Platform != MEPackage.GamePlatform.PC) throw new Exception("Cannot call SetPropertyFlags() on non PC platform");
+            if (_fileRef.Platform != MEPackage.GamePlatform.PC) throw new Exception("Cannot call SetPropertyFlags() on non PC platform");
             if (HasStack)
             {
                 // This might be able to be optimized. Have to go through .Data as it needs to call the side effects
                 var data = Data;
-                data.OverwriteRange(0x18, BitConverter.GetBytes((UInt64)flags));
+                data.OverwriteRange(0x18, BitConverter.GetBytes((ulong)flags));
                 Data = data;
                 return true;
             }

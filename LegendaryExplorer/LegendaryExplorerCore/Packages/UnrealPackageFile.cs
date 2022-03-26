@@ -42,7 +42,7 @@ namespace LegendaryExplorerCore.Packages
         /// ONLY WORKS properly if there are NO duplicate indexes (besides trash) in the package.
         /// </summary>
         protected CaseInsensitiveDictionary<IEntry> EntryLookupTable;
-        private EntryTree tree;
+        private EntryTree _tree;
         private bool lookupTableNeedsToBeRegenerated = true;
         public void InvalidateLookupTable() => lookupTableNeedsToBeRegenerated = true;
 
@@ -54,7 +54,7 @@ namespace LegendaryExplorerCore.Packages
                 {
                     RebuildLookupTable();
                 }
-                return tree;
+                return _tree;
             }
         }
 
@@ -260,7 +260,7 @@ namespace LegendaryExplorerCore.Packages
                 }
                 // END CROSSGEN-V
                 EntryLookupTable[exportEntry.InstancedFullPath] = exportEntry;
-                tree.Add(exportEntry);
+                _tree.Add(exportEntry);
             }
 
             //Debug.WriteLine($@" >> Added export {exportEntry.InstancedFullPath}");
@@ -352,7 +352,7 @@ namespace LegendaryExplorerCore.Packages
                     //Debugger.Break(); // This already exists!
                 }
                 EntryLookupTable[importEntry.InstancedFullPath] = importEntry;
-                tree.Add(importEntry);
+                _tree.Add(importEntry);
             }
 
             importEntry.EntryHasPendingChanges = true;
@@ -409,7 +409,7 @@ namespace LegendaryExplorerCore.Packages
                 }
             }
 
-            this.tree = tree;
+            this._tree = tree;
             lookupTableNeedsToBeRegenerated = false;
         }
 

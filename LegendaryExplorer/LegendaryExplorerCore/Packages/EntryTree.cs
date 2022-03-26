@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using LegendaryExplorerCore.Unreal.BinaryConverters;
 using EntryTreeNode = LegendaryExplorerCore.Unreal.BinaryConverters.TreeNode<LegendaryExplorerCore.Packages.IEntry, int>;
 
 namespace LegendaryExplorerCore.Packages
@@ -10,8 +9,18 @@ namespace LegendaryExplorerCore.Packages
     {
         public EntryTree(IMEPackage pcc)
         {
-            imports = pcc.Imports.Select(import => new EntryTreeNode(import)).ToList();
-            exports = pcc.Exports.Select(export => new EntryTreeNode(export)).ToList();
+            imports = new List<EntryTreeNode>(pcc.ImportCount);
+            foreach (ImportEntry import in pcc.Imports)
+            {
+                imports.Add(new EntryTreeNode(import));
+            }
+
+            exports = new List<EntryTreeNode>(pcc.ExportCount);
+            foreach (ExportEntry export in pcc.Exports)
+            {
+                exports.Add(new EntryTreeNode(export));
+            }
+
             root = new List<EntryTreeNode>();
 
             foreach (EntryTreeNode node in exports.Concat(imports))

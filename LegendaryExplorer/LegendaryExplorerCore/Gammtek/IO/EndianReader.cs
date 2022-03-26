@@ -189,7 +189,6 @@ namespace LegendaryExplorerCore.Gammtek.IO
         /// <summary>
         /// Reads an unreal-style prefixed string from the underlying stream.
         /// </summary>
-        /// <param name="stream"></param>
         /// <returns></returns>
         public string ReadUnrealString()
         {

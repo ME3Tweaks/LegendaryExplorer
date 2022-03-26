@@ -578,7 +578,13 @@ namespace LegendaryExplorerCore.Packages
             }
 
             EntryLookupTable = new CaseInsensitiveDictionary<IEntry>(ExportCount + ImportCount);
-            RebuildLookupTable(); // Builds the export/import lookup tables.
+
+            //If this is a partial load, we care about speed. RebuildLookupTable() will be about 1/3 of the ctor time, and might not even be needed.
+            //If it is needed, it will be called later anyway
+            if (dataLoadPredicate is null)
+            {
+                RebuildLookupTable(); // Builds the export/import lookup tables.
+            }
 #if AZURE
             if (platformNeedsResolved)
             {
