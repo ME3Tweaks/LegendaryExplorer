@@ -652,7 +652,7 @@ namespace LegendaryExplorerCore.Helpers
 
     public static class ByteArrayExtensions
     {
-        static readonly int[] Empty = new int[0];
+        private static readonly int[] Empty = Array.Empty<int>();
 
         public static int[] Locate(this byte[] self, byte[] candidate)
         {

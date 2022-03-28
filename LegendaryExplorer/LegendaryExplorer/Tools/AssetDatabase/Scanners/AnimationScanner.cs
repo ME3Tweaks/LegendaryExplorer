@@ -17,7 +17,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Scanners
         public override void ScanExport(ExportScanInfo e, ConcurrentAssetDB db, AssetDBScanOptions options)
         {
             if (e.IsDefault) return;
-            if (e.ClassName == "AnimSequence" || e.ClassName == "SFXAmbPerfGameData")
+            if (e.ClassName is "AnimSequence" or "SFXAmbPerfGameData")
             {
                 var animUsage = new AnimUsage(e.FileKey, e.Export.UIndex, e.IsMod);
                 if (db.GeneratedAnims.TryGetValue(e.AssetKey, out var anim))

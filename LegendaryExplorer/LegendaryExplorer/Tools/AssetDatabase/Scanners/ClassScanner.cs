@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Runtime.InteropServices;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
-using LegendaryExplorerCore.Unreal.ObjectInfo;
 
 namespace LegendaryExplorer.Tools.AssetDatabase.Scanners
 {
@@ -21,36 +15,72 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Scanners
         {
             if (e.ClassName != "Class")
             {
-                var pList = new List<PropertyRecord>();
-                foreach (var p in e.Properties)
-                {
-                    string pName = p.Name;
-                    string pType = p.PropType.ToString();
-
-                    var NewPropertyRecord = new PropertyRecord(pName, pType);
-                    pList.Add(NewPropertyRecord);
-                }
-
+                IMEPackage pcc = e.Export.FileRef;
+                var data = e.Export.DataReadOnly;
+                int pos = e.Export.GetPropertyStart();
+                bool modernEngineVersion = pcc.Game >= MEGame.ME3 || pcc.Platform == MEPackage.GamePlatform.PS3;
                 var classUsage = new ClassUsage(e.FileKey, e.Export.UIndex, e.IsDefault, e.IsMod);
                 lock (db.ClassLocks.GetOrAdd(e.ClassName, new object()))
                 {
-                    if (db.GeneratedClasses.TryGetValue(e.ClassName, out var oldVal))
+                    if (!db.GeneratedClasses.TryGetValue(e.ClassName, out ClassRecord classRecord))
                     {
-                        oldVal.Usages.Add(classUsage);
-                        foreach (var p in pList)
-                        {
-                            oldVal.PropertyRecords.TryAdd(p.Property, p);
-                        }
+                        classRecord = new ClassRecord { Class = e.ClassName, IsModOnly = e.IsMod };
+                        db.GeneratedClasses[e.ClassName] = classRecord;
                     }
-                    else
+                    classRecord.Usages.Add(classUsage);
+
+                    /* ExportScanInfo:Properties is lazy-loaded, since it is one of the most expensive parts of AssetDatabase generation.
+                     * But lazy-loading is pointless if we get properties here, since this is run on every non-Class export.
+                     * Luckily, we don't actually need the full PropertyCollection here, just the name and type of the top-level properties.
+                     * Those can be read with a simple manual parse.
+                     * This could be done outside the lock, but that would create a LOT of garbage,
+                     * since more than 99% of PropertyRecords will be repeats, and only within the lock can we check if they already exist.
+                     * This is a pretty fast loop, so avoiding the allocations is a greater performance boost than spending less time in the lock
+                     */
+                    while (pos + 8 < data.Length)
                     {
-                        var newVal = new ClassRecord { Class = e.ClassName, IsModOnly = e.IsMod };
-                        newVal.Usages.Add(classUsage);
-                        foreach (var p in pList)
+                        string propName = pcc.GetNameEntry(MemoryMarshal.Read<int>(data.Slice(pos)));
+                        pos += 4;
+                        if (propName == "")
                         {
-                            newVal.PropertyRecords.TryAdd(p.Property, p);
+                            //broken properties
+                            break;
                         }
-                        db.GeneratedClasses[e.ClassName] = newVal;
+                        if (propName == "None")
+                        {
+                            break;
+                        }
+                        int num = MemoryMarshal.Read<int>(data.Slice(pos));
+                        pos += 4;
+                        if (pos + 12 >= data.Length)
+                        {
+                            //broken properties
+                            break;
+                        }
+                        string propType = pcc.GetNameEntry(MemoryMarshal.Read<int>(data.Slice(pos)));
+                        pos += 8;
+                        int size = MemoryMarshal.Read<int>(data.Slice(pos));
+                        pos += 8 + size;
+                        switch (propType)
+                        {
+                            case "StructProperty":
+                                pos += 8;
+                                break;
+                            case "BoolProperty":
+                                pos += modernEngineVersion ? 1 : 4;
+                                break;
+                            case "ByteProperty":
+                                if (modernEngineVersion)
+                                {
+                                    pos += 8;
+                                }
+                                break;
+                        }
+                        string instancedPropName = new NameReference(propName, num).Instanced;
+                        if (!classRecord.PropertyRecords.ContainsKey(instancedPropName))
+                        {
+                            classRecord.PropertyRecords.Add(instancedPropName, new PropertyRecord(instancedPropName, propType));
+                        }
                     }
                 }
             }

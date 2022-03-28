@@ -91,6 +91,12 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 {
                     break;
                 }
+                //if baseClass were Object, this method would have already returned.
+                //That we're here means we're at the root of the hierarchy, no need to TryGet Object's ClassInfo
+                if (className == "Object")
+                {
+                    break;
+                }
             }
             return false;
         }

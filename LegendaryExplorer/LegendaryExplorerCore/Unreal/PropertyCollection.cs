@@ -178,7 +178,8 @@ namespace LegendaryExplorerCore.Unreal
                             int valOffset = (int)stream.Position;
                             if (GlobalUnrealObjectInfo.IsImmutable(structType, pcc.Game))
                             {
-                                PropertyCollection structProps = ReadImmutableStruct(export, stream, structType, size, packageCache, entry);
+                                PropertyCollection defaultProps = null;
+                                PropertyCollection structProps = ReadImmutableStruct(export, stream, structType, size, packageCache, ref defaultProps, entry);
                                 prop = new StructProperty(structType, structProps, nameRef, true) { ValueOffset = valOffset };
                             }
                             else
@@ -332,40 +333,44 @@ namespace LegendaryExplorerCore.Unreal
             return props;
         }
 
-        private static PropertyCollection ReadImmutableStruct(ExportEntry export, EndianReader stream, string structType, int size, PackageCache packageCache, IEntry parsingEntry = null)
+        private static PropertyCollection ReadImmutableStruct(ExportEntry export, EndianReader stream, string structType, int size, PackageCache packageCache, ref PropertyCollection defaultProps, IEntry parsingEntry = null)
         {
-            IMEPackage pcc = export.FileRef;
-            //strip transients unless this is a class definition
-            bool stripTransients = parsingEntry is not {ClassName: "Class" or "ScriptStruct"};
-
-            MEGame structValueLookupGame = pcc.Game;
             var props = new PropertyCollection();
-            switch (pcc.Game)
-            {
-                case MEGame.ME1 when parsingEntry != null && parsingEntry.FileRef.Platform == MEPackage.GamePlatform.PS3 && ME3UnrealObjectInfo.Structs.ContainsKey(structType):
-                case MEGame.ME2 when parsingEntry != null && parsingEntry.FileRef.Platform == MEPackage.GamePlatform.PS3 && ME3UnrealObjectInfo.Structs.ContainsKey(structType):
-                    structValueLookupGame = MEGame.ME3;
-                    break;
-                case MEGame.ME3 when ME3UnrealObjectInfo.Structs.ContainsKey(structType):
-                case MEGame.UDK when ME3UnrealObjectInfo.Structs.ContainsKey(structType):
-                case MEGame.ME2 when ME2UnrealObjectInfo.Structs.ContainsKey(structType):
-                case MEGame.ME1 when ME1UnrealObjectInfo.Structs.ContainsKey(structType):
-                case MEGame.LE3 when ME3UnrealObjectInfo.Structs.ContainsKey(structType):
-                case MEGame.LE2 when ME3UnrealObjectInfo.Structs.ContainsKey(structType):
-                case MEGame.LE1 when ME3UnrealObjectInfo.Structs.ContainsKey(structType):
-                    break;
-                default:
-                    Debug.WriteLine("Unknown struct type: " + structType);
-                    props.Add(new UnknownProperty(stream, size) { StartOffset = (int)stream.Position });
-                    return props;
-            }
 
-            PropertyCollection defaultProps = GlobalUnrealObjectInfo.getDefaultStructValue(structValueLookupGame, structType, stripTransients, packageCache, false);
-            if (defaultProps == null)
+            if (defaultProps is null)
             {
-                int startPos = (int)stream.Position;
-                props.Items.Add(new UnknownProperty(stream, size) { StartOffset = startPos });
-                return props;
+                IMEPackage pcc = export.FileRef;
+                //strip transients unless this is a class definition
+                bool stripTransients = parsingEntry is not {ClassName: "Class" or "ScriptStruct"};
+
+                MEGame structValueLookupGame = pcc.Game;
+                switch (pcc.Game)
+                {
+                    case MEGame.ME1 when parsingEntry != null && parsingEntry.FileRef.Platform == MEPackage.GamePlatform.PS3 && ME3UnrealObjectInfo.Structs.ContainsKey(structType):
+                    case MEGame.ME2 when parsingEntry != null && parsingEntry.FileRef.Platform == MEPackage.GamePlatform.PS3 && ME3UnrealObjectInfo.Structs.ContainsKey(structType):
+                        structValueLookupGame = MEGame.ME3;
+                        break;
+                    case MEGame.ME3 when ME3UnrealObjectInfo.Structs.ContainsKey(structType):
+                    case MEGame.UDK when ME3UnrealObjectInfo.Structs.ContainsKey(structType):
+                    case MEGame.ME2 when ME2UnrealObjectInfo.Structs.ContainsKey(structType):
+                    case MEGame.ME1 when ME1UnrealObjectInfo.Structs.ContainsKey(structType):
+                    case MEGame.LE3 when ME3UnrealObjectInfo.Structs.ContainsKey(structType):
+                    case MEGame.LE2 when ME3UnrealObjectInfo.Structs.ContainsKey(structType):
+                    case MEGame.LE1 when ME3UnrealObjectInfo.Structs.ContainsKey(structType):
+                        break;
+                    default:
+                        Debug.WriteLine("Unknown struct type: " + structType);
+                        props.Add(new UnknownProperty(stream, size) { StartOffset = (int)stream.Position });
+                        return props;
+                }
+
+                defaultProps = GlobalUnrealObjectInfo.getDefaultStructValue(structValueLookupGame, structType, stripTransients, packageCache, false);
+                if (defaultProps == null)
+                {
+                    int startPos = (int)stream.Position;
+                    props.Items.Add(new UnknownProperty(stream, size) { StartOffset = startPos });
+                    return props;
+                }
             }
 
             foreach (var prop in defaultProps)
@@ -414,7 +419,6 @@ namespace LegendaryExplorerCore.Unreal
                 case PropertyType.NameProperty:
                     return new NameProperty(stream, pcc, template.Name) { StartOffset = startPos };
                 case PropertyType.BoolProperty:
-                    //always say it's ME3 so that bools get read as 1 byte
                     return new BoolProperty(stream, pcc, template.Name, true) { StartOffset = startPos };
                 case PropertyType.ByteProperty:
                     if (template is EnumProperty)
@@ -433,7 +437,9 @@ namespace LegendaryExplorerCore.Unreal
                     return arrayProperty;//this implementation needs checked, as I am not 100% sure of it's validity.
                 case PropertyType.StructProperty:
                     int valuePos = (int)stream.Position;
-                    PropertyCollection structProps = ReadImmutableStruct(export, stream, GlobalUnrealObjectInfo.GetPropertyInfo(pcc.Game, template.Name, structType, containingExport: export).Reference, 0, packageCache, export);
+                    string reference = GlobalUnrealObjectInfo.GetPropertyInfo(pcc.Game, template.Name, structType, containingExport: export).Reference;
+                    PropertyCollection defaultProps = null;
+                    PropertyCollection structProps = ReadImmutableStruct(export, stream, reference, 0, packageCache, ref defaultProps, export);
                     var structProp = new StructProperty(nestedStructType ?? structType, structProps, template.Name, true)
                     {
                         StartOffset = startPos,
@@ -503,7 +509,6 @@ namespace LegendaryExplorerCore.Unreal
                     }
                 case ArrayType.Struct:
                     {
-                        int startPos = (int)stream.Position;
                         var props = new List<StructProperty>(count);
                         var propertyInfo = GlobalUnrealObjectInfo.GetPropertyInfo(pcc.Game, name, enclosingType, containingExport: parsingEntry as ExportEntry);
                         if (propertyInfo == null && parsingEntry is ExportEntry parsingExport)
@@ -523,12 +528,13 @@ namespace LegendaryExplorerCore.Unreal
                                 arraySize = stream.ReadInt32();
                                 stream.Seek(8, SeekOrigin.Current);
                             }
+                            PropertyCollection defaultProps = null;
                             for (int i = 0; i < count; i++)
                             {
                                 int offset = (int)stream.Position;
                                 try
                                 {
-                                    PropertyCollection structProps = ReadImmutableStruct(export, stream, arrayStructType, arraySize / count, parsingEntry: parsingEntry, packageCache: packageCache);
+                                    PropertyCollection structProps = ReadImmutableStruct(export, stream, arrayStructType, arraySize / count, packageCache, ref defaultProps, parsingEntry);
                                     props.Add(new StructProperty(arrayStructType, structProps, isImmutable: true)
                                     {
                                         StartOffset = offset,
@@ -721,7 +727,7 @@ namespace LegendaryExplorerCore.Unreal
         public abstract PropertyType PropType { get; }
 
         /// <summary>
-        /// Some properties are defined as static arrays. Eeach element will be a seperate <see cref="Property"/>, and this is the index.
+        /// Some properties are defined as static arrays. Each element will be a seperate <see cref="Property"/>, and this is the index.
         /// </summary>
         public int StaticArrayIndex { get; set; }
 

@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using LegendaryExplorerCore.Gammtek.Collections.Specialized;
@@ -68,7 +68,8 @@ namespace LegendaryExplorerCore.Packages
             OodleLeviathan = 0x400 // LE1?
         }
 
-        public List<ME1TalkFile> LocalTalkFiles { get; } = new();
+        private List<ME1TalkFile> localTlks;
+        public List<ME1TalkFile> LocalTalkFiles => localTlks ??= ReadLocalTLKs();
 
         public static ushort UnrealVersion(MEGame game) => game switch
         {
@@ -100,11 +101,12 @@ namespace LegendaryExplorerCore.Packages
 
         // Used to make name lookups quick when doing a contains operation as this method is called
         // quite often
-        protected CaseInsensitiveDictionary<int> nameLookupTable = new();
+        protected readonly CaseInsensitiveDictionary<int> nameLookupTable = new();
 
         protected List<string> names;
         public IReadOnlyList<string> Names => names;
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool IsName(int index) => index >= 0 && index < names.Count;
 
         public string GetNameEntry(int index) => IsName(index) ? names[index] : "";
@@ -626,6 +628,38 @@ namespace LegendaryExplorerCore.Packages
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(LastSaved)));
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FileSize)));
             IsModified = false;
+        }
+
+        private List<ME1TalkFile> ReadLocalTLKs()
+        {
+            var tlks = new List<ME1TalkFile>();
+            if (this is MEPackage mePackage && mePackage.Game.IsGame1() && mePackage.Platform == MEPackage.GamePlatform.PC)
+            {
+                var exportsToLoad = new List<ExportEntry>();
+                foreach (var tlkFileSet in Exports.Where(x => x.ClassName == "BioTlkFileSet" && !x.IsDefaultObject).Select(exp => exp.GetBinaryData<BioTlkFileSet>()))
+                {
+                    foreach ((NameReference lang, BioTlkFileSet.BioTlkSet bioTlkSet) in tlkFileSet.TlkSets)
+                    {
+                        if (LegendaryExplorerCoreLibSettings.Instance.TLKDefaultLanguage.Equals(lang, StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            exportsToLoad.Add(GetUExport(LegendaryExplorerCoreLibSettings.Instance.TLKGenderIsMale ? bioTlkSet.Male : bioTlkSet.Female));
+                            break;
+                        }
+                    }
+                }
+
+                // Global TLK
+                foreach (var tlk in Exports.Where(x => x.ClassName == "BioTlkFile" && !x.IsDefaultObject && !exportsToLoad.Contains(x)))
+                {
+                    exportsToLoad.Add(tlk);
+                }
+                foreach (var exp in exportsToLoad)
+                {
+                    //Debug.WriteLine("Loading local TLK: " + exp.GetIndexedFullPath);
+                    tlks.Add(new ME1TalkFile(exp));
+                }
+            }
+            return tlks;
         }
 
         #region packageHandler stuff

@@ -420,8 +420,10 @@ namespace LegendaryExplorerCore.Packages
             }
         }
 
-        public int HeaderOffset { get; set; }
+        public int HeaderOffset;
 
+        //Do not even think about touching this struct!
+        //It is read directly from memory, so it must _exactly_ match the serialized layout of the export header.
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
         private struct CommonHeaderFields
         {

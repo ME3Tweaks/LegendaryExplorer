@@ -129,20 +129,14 @@ namespace LegendaryExplorerCore.Gammtek.Extensions
         {
             int p = dest.Length;
             do
-            {
-                value = DivRem(value, 10, out uint remainder);
+			{
+				//TODO: .NET 6 has a uint overload for Math.Divrem. Use that once LEX is on .NET 6
+				uint div = value / 10;
+                uint remainder = value - (div * 10);
+                value = div;
                 dest[--p] = (char)(remainder + '0');
             }
             while (p > 0);
-
-			//the JIT _should_ turn this into a single instruction. 
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            static uint DivRem(uint a, uint b, out uint result)
-            {
-                uint div = a / b;
-                result = a - (div * b);
-                return div;
-            }
         }
 	}
 }
