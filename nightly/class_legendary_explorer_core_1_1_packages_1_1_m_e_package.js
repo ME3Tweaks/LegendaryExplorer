@@ -35,7 +35,7 @@ var class_legendary_explorer_core_1_1_packages_1_1_m_e_package =
     [ "LE2LicenseeVersion", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#ac42c352581b050911a598e4fb82a9b26", null ],
     [ "LE3UnrealVersion", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#ad39cb6530133bc817db4ff6ca67860d9", null ],
     [ "LE3LicenseeVersion", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#a7cbd89bbae0c7e72d57a1eb348a466c6", null ],
-    [ "AdditionalPackagesToCook", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#a712fc58790878cdf616729795b503272", null ],
+    [ "AdditionalPackagesToCook", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#ae0d8dd57d9b702485719d1e1e301c13c", null ],
     [ "PackageTypeId", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#a4526ff559d71680a44a7211ca6376c22", null ],
     [ "Endian", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#aea923a578e254f755afb331b76b577e3", null ],
     [ "Game", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#a4f4b00a25fc2001d86e3c461fa3539a2", null ],
