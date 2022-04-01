@@ -2303,6 +2303,7 @@ namespace LegendaryExplorer.DialogueEditor
         }
         private void DialogueNode_Selected(DiagNode obj)
         {
+            SetUIMode(2);
             foreach (var oldselection in SelectedObjects)
             {
                 oldselection.IsSelected = false;
@@ -2934,7 +2935,6 @@ namespace LegendaryExplorer.DialogueEditor
                         }
                     }
                     DialogueNode_Selected(dreply);
-                    SetUIMode(2, false);
                     contextMenu.DataContext = this;
                     contextMenu.IsOpen = true;
                     graphEditor.DisableDragging();
@@ -2990,7 +2990,6 @@ namespace LegendaryExplorer.DialogueEditor
                         }
                     }
                     DialogueNode_Selected(dentry);
-                    SetUIMode(2, false);
                     contextMenu.DataContext = this;
                     contextMenu.IsOpen = true;
                     graphEditor.DisableDragging();
