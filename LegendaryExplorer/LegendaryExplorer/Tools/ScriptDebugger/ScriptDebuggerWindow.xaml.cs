@@ -35,8 +35,25 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
         private string debuggerASIName => Game switch
         {
             MEGame.LE1 => "LE1UnrealscriptDebugger-v2.0.asi",
+            MEGame.LE2 => "LE2UnrealscriptDebugger-v2.0.asi",
             _ => throw new ArgumentOutOfRangeException(nameof(Game))
         };
+        private void GetDebuggerASI()
+        {
+            switch (Game)
+            {
+                case MEGame.LE1:
+                    HyperlinkExtensions.OpenURL("https://github.com/ME3Tweaks/LE1-ASI-Plugins/releases/tag/LE1UnrealScriptDebugger-v2.0");
+                    break;
+                case MEGame.LE2:
+                    HyperlinkExtensions.OpenURL("https://github.com/ME3Tweaks/LE2-ASI-Plugins/releases/tag/LE2UnrealscriptDebugger-v2.0");
+                    break;
+                case MEGame.LE3:
+                    throw new NotImplementedException();
+                    break;
+            }
+
+        }
 
         public static readonly string ScriptDebuggerDataFolder = Path.Combine(AppDirectories.AppDataFolder, @"ScriptDebugger\");
 
@@ -157,7 +174,7 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
         {
             GameInstalledRequirementCommand = new Requirement.RequirementCommand(IsGameInstalled, () => InteropHelper.SelectGamePath(Game));
             ASILoaderInstalledRequirementCommand = new Requirement.RequirementCommand(() => InteropHelper.IsASILoaderInstalled(Game), () => InteropHelper.OpenASILoaderDownload(Game));
-            DebuggerASIInstalledRequirementCommand = new Requirement.RequirementCommand(IsDebuggerASIInstalled, () => HyperlinkExtensions.OpenURL("https://github.com/ME3Tweaks/LE1-ASI-Plugins/releases/tag/LE1UnrealScriptDebugger-v2.0"));
+            DebuggerASIInstalledRequirementCommand = new Requirement.RequirementCommand(IsDebuggerASIInstalled, GetDebuggerASI);
             AttachDebuggerCommand = new GenericCommand(AttachDebugger, CanAttachDebugger);
             DetachDebuggerCommand = new GenericCommand(DetachDebugger, CanDetachDebugger);
             BreakAllCommand = new GenericCommand(BreakAll, CanBreakAll);
@@ -210,6 +227,10 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
                     StatusBarText = "Function Database Created";
                     functionList.ReplaceAll(scriptDatabase.GetEntries());
                     FunctionList.ReplaceAll(functionList);
+                    if (InBreakState && SelectedCallStackEntry is not null)
+                    {
+                        SetScriptViewFromCallStack();
+                    }
                 }
             });
         }
@@ -367,13 +388,18 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
                 Locals.ClearEx();
                 return;
             }
+            if (scriptDatabase is null)
+            {
+                Statements.Replace(new ScriptStatement("Waiting for the function database to finish generating...", -1));
+                return;
+            }
             if (scriptDatabase?.GetFunctionLocationFromPath(_selectedCallStackEntry.FunctionPathInFile, _selectedCallStackEntry.FunctionFilePath) is (int uIndex, bool forcedExport) 
                      && uIndex != 0)
             {
                 SelectedScriptDatabaseEntry = new ScriptDatabaseEntry(_selectedCallStackEntry.FunctionPathInFile, _selectedCallStackEntry.FunctionFilePath, uIndex, forcedExport);
                 return;
             }
-            Statements.Add(new ScriptStatement("Could not find function! (Have you edited files since starting the game?)", -1));
+            Statements.Replace(new ScriptStatement("Could not find function! (Have you edited files since starting the game?)", -1));
         }
 
         private void SetVisualCurrentStatement(ushort currentPosition)

@@ -209,7 +209,7 @@ namespace LegendaryExplorer
                 open = () =>
                 {
                     var gameStr = InputComboBoxWPF.GetValue(null, "Choose game you want to use Script Debugger with.", "Script Debugger game selector",
-                        new[] { "LE1" }, "LE1");
+                        new[] { "LE1", "LE2" }, "LE2");
 
                     if (Enum.TryParse(gameStr, out MEGame game))
                     {
@@ -225,7 +225,7 @@ namespace LegendaryExplorer
                 },
                 tags = new List<string> { "utility", "unrealscript" },
                 category = "Utilities",
-                description = "Script Debugger lets you debug your UnrealScript for Legendary Edition games (Only LE1 is supported so far). Set breakpoints, step through code, and inspect and change the values of local and instance variables"
+                description = "Script Debugger lets you debug your UnrealScript for Legendary Edition games. Set breakpoints, step through code, and inspect and change the values of local and instance variables"
             });
             set.Add(new Tool
             {
