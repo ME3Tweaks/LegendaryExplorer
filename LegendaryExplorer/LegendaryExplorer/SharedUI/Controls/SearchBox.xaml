@@ -34,7 +34,7 @@
             </Style>
         </Grid.Resources>
         <TextBox Name="searchBox" TextChanged="SearchBox_OnTextChanged"/>
-        <TextBlock Text="{Binding WatermarkText}" VerticalAlignment="Center" Margin="8,0,0,0" Foreground="#909090" Style="{StaticResource WaterMark}" MouseDown="SearchBox_OnMouseDown"/>
+        <TextBlock Text="{Binding Path=WatermarkText}" VerticalAlignment="Center" Margin="8,0,0,0" Foreground="#909090" Style="{StaticResource WaterMark}" MouseDown="SearchBox_OnMouseDown"/>
         <Image Source="/Resources/Images/search.ico" Height="14" HorizontalAlignment="Right" Margin="0,4,4,4" Style="{StaticResource WaterMark}"/>
         <Button Height="14" Width="14" HorizontalAlignment="Right" Margin="0,4,4,4" Style="{StaticResource VisibleWhenText}" Click="clearSearchTextButton_Clicked">
             <Button.Template>

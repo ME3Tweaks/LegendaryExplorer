@@ -54,7 +54,7 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
             switch (nClass.Name.Name)
             {
                 case "Class":
-                    return ReadClass(classPtr);
+                    return ReadClass(address);
                 case "State":
                     obj = new NState(address, nClass, Game switch
                     {
@@ -133,6 +133,9 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
                 case "ArrayProperty":
                     obj = new NArrayProperty(address, nClass, this);
                     break;
+                case "Package":
+                    obj = new NPackage(address, nClass, this);
+                    break;
                 default:
                     obj = new NObject(address, nClass, nClass.PropertySize, this);
                     break;
@@ -145,6 +148,7 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
 
         public class NObject
         {
+            private const int OFFSET_LINKER = 0x2C; //ULinkerLoad*
             private const int OFFSET_OUTER = 0x40; //UObject*
             private const int OFFSET_NAME = 0x48; //FName
             public const int OFFSET_CLASS = 0x50; //UClass*
@@ -162,10 +166,11 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
                 Address = address;
             }
 
+            public NLinker Linker => ReadObject<NLinker>(OFFSET_LINKER); //likely null
+            public NObject Outer => ReadObject<NObject>(OFFSET_OUTER);
+
             private NameReference? _name;
             public NameReference Name => _name ??= Debugger.GetNameReference(ReadValue<FName>(OFFSET_NAME));
-
-            public NObject Outer => ReadObject<NObject>(OFFSET_OUTER);
 
             public string GetFullPath()
             {
@@ -181,6 +186,36 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
             protected T ReadValue<T>(int offset) where T : unmanaged => MemoryMarshal.Read<T>(buff.AsSpan(offset));
             protected T ReadObject<T>(int offset) where T : NObject => (T)Debugger.ReadObject(ReadValue<IntPtr>(offset));
             protected NClass ReadClass(int offset) => Debugger.ReadClass(ReadValue<IntPtr>(offset));
+
+            protected string ReadFString(int offset)
+            {
+                var fString = ReadValue<TArray>(offset);
+                return Debugger.ReadUnicodeString(fString.Data, fString.Count - 1);
+            }
+        }
+
+        public class NPackage : NObject
+        {
+            private const int OFFSET_FORCEDEXPORTBASEPACKAGENAME = 0xA4; //for LE1. TODO: confirm for LE2 and LE3
+            private const int UPACKAGE_SIZE = 0xB0;
+            public NPackage(IntPtr address, NClass nClass, DebuggerInterface debugger) : base(address, nClass, UPACKAGE_SIZE, debugger)
+            {
+            }
+
+            public NameReference ForcedExportBasePackageName => Debugger.GetNameReference(ReadValue<FName>(OFFSET_FORCEDEXPORTBASEPACKAGENAME));
+        }
+
+        public class NLinker : NObject
+        {
+            private const int OFFSET_LINKERROOT = 0x60; //UPackage*
+            private const int OFFSET_FILENAME = 0x194; //FString
+            private const int ULINKER_SIZE = 0x1AC; //actually 0x1B0 for LE3
+            public NLinker(IntPtr address, NClass nClass, DebuggerInterface debugger) : base(address, nClass, ULINKER_SIZE, debugger)
+            {
+            }
+
+            public NPackage LinkerRoot => ReadObject<NPackage>(OFFSET_LINKERROOT);
+            public string Filename => ReadFString(OFFSET_FILENAME);
         }
 
         public abstract class NField : NObject
@@ -219,19 +254,27 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
                 if (properties is null)
                 {
                     properties = new List<PropertyValue>();
-                    for (NField child = FirstChild; child is not null; child = child.Next)
+                    
+                    for (NStruct curStruct = this; curStruct is not null && curStruct.Name.Name != "Class"; curStruct = curStruct.Super as NStruct)
                     {
-                        if (child is not NProperty prop || prop.PropertyFlags.Has(UnrealFlags.EPropertyFlags.ReturnParm))
+                        for (NField child = curStruct.FirstChild; child is not null; child = child.Next)
                         {
-                            continue;
-                        }
-                        IntPtr propAddr = address + prop.Offset;
+                            if (child is not NProperty prop || prop.PropertyFlags.Has(UnrealFlags.EPropertyFlags.ReturnParm))
+                            {
+                                continue;
+                            }
+                            IntPtr propAddr = address + prop.Offset;
 
-                        if (propAddr == IntPtr.Zero)
-                        {
-                            continue;
+                            if (propAddr == IntPtr.Zero)
+                            {
+                                continue;
+                            }
+                            prop.ReadProperty(propAddr, properties);
                         }
-                        prop.ReadProperty(propAddr, properties);
+                    }
+                    if (this is NClass)
+                    {
+                        properties.Sort((val1, val2) => string.CompareOrdinal(val1.PropName, val2.PropName));
                     }
                 }
                 return properties;
@@ -317,14 +360,7 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
             {
             }
 
-            public string Value
-            {
-                get
-                {
-                    var fString = ReadValue<TArray>(OFFSET_VALUE);
-                    return Debugger.ReadUnicodeString(fString.Data, fString.Count - 1);
-                }
-            }
+            public string Value => ReadFString(OFFSET_VALUE);
         }
 
         public abstract class NProperty : NField
@@ -411,7 +447,7 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
             public NStruct Struct => ReadObject<NStruct>(OFFSET_STRUCT);
             public override StructPropertyValue ReadSingleValue(IntPtr address, string name)
             {
-                return new StructPropertyValue(Debugger, address, name, Name.Instanced, Struct.GetProperties(address));
+                return new StructPropertyValue(Debugger, address, name, Name.Instanced, Struct);
             }
         }
 

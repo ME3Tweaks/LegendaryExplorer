@@ -25,9 +25,11 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'WinRelease'">
     <OutputPath>bin\x64\WinRelease\</OutputPath>
+	<Optimize>true</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'WinAzureRelease'">
     <OutputPath>bin\x64\WinAzureRelease\</OutputPath>
+	<Optimize>true</Optimize>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'WinAzureTest'">

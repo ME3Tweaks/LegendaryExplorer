@@ -22,12 +22,14 @@
 
   <PropertyGroup Condition="'$(Configuration)'=='WinRelease'">
     <DebugType>embedded</DebugType>
+	<Optimize>true</Optimize>
     <DefineConstants>WINDOWS;RELEASE</DefineConstants>
   </PropertyGroup>
 
   <!-- Nightly release from Azure-->
   <PropertyGroup Condition="'$(Configuration)'=='WinAzureRelease'">
     <DebugType>embedded</DebugType>
+	<Optimize>true</Optimize>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DefineConstants>WINDOWS;NIGHTLY</DefineConstants>
   </PropertyGroup>
@@ -92,7 +94,7 @@
 
   <ItemGroup>
     <PackageReference Include="AvalonEdit" Version="6.1.1" />
-    <PackageReference Include="BinaryPack" Version="1.0.1" />
+    <PackageReference Include="BinaryPack" Version="1.0.3" />
     <PackageReference Include="ClosedXML" Version="0.95.3" />
     <PackageReference Include="ConsoleAppLauncher" Version="2.0.0" />
     <PackageReference Include="FontAwesome5" Version="2.1.0" />

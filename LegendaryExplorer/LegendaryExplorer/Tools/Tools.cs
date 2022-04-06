@@ -201,12 +201,11 @@ namespace LegendaryExplorer
                 category = "Utilities",
                 description = "Live Level Editor allows you to preview the effect of property changes to Actors in game, to reduce iteration times. It also has a Camera Path Editor, which lets you make camera pans quickly."
             });
-#if DEBUG
             set.Add(new Tool
             {
                 name = "Script Debugger",
                 type = typeof(ScriptDebuggerWindow),
-                icon = Application.Current.FindResource("iconPlaceholder") as ImageSource,
+                icon = Application.Current.FindResource("iconScriptDebugger") as ImageSource,
                 open = () =>
                 {
                     var gameStr = InputComboBoxWPF.GetValue(null, "Choose game you want to use Script Debugger with.", "Script Debugger game selector",
@@ -226,9 +225,8 @@ namespace LegendaryExplorer
                 },
                 tags = new List<string> { "utility", "unrealscript" },
                 category = "Utilities",
-                description = "Script Debugger lets you debug your UnrealScript for Legendary Edition games. Set breakpoints, step through code, and inspect and change the values of local and instance variables"
+                description = "Script Debugger lets you debug your UnrealScript for Legendary Edition games (Only LE1 is supported so far). Set breakpoints, step through code, and inspect and change the values of local and instance variables"
             });
-#endif
             set.Add(new Tool
             {
                 name = "AFC Compactor",

@@ -15,7 +15,7 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
 
         public string PropName { get; }
 
-        public PropertyValue(DebuggerInterface debugger, IntPtr address, string propName)
+        protected PropertyValue(DebuggerInterface debugger, IntPtr address, string propName)
         {
             PropName = propName;
             Address = address;
@@ -141,12 +141,14 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
 
     public class StrPropertyValue : PropertyValue
     {
+        private string oldVal;
         private string _value;
         public string Value
         {
             get => _value;
             set
             {
+                oldVal = _value;
                 if (SetProperty(ref _value, value))
                 {
                     WriteValue();
@@ -159,7 +161,7 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
 
         public StrPropertyValue(DebuggerInterface debugger, IntPtr address, string propName, string value, int maxLen) : base(debugger, address, propName)
         {
-            _value = value;
+            oldVal =_value = value;
             MaxStringLength = maxLen;
         }
 
@@ -170,6 +172,11 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
             {
                 fString.Count = _value.Length + 1;
                 Debugger.WriteValue(Address, fString);
+            }
+            else
+            {
+                _value = oldVal;
+                OnPropertyChanged(nameof(Value));
             }
         }
     }
@@ -305,7 +312,7 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
             }
         }
 
-        private NObject Object;
+        private readonly NObject Object;
 
         public ObservableCollectionExtended<PropertyValue> Properties { get; } = new();
 
@@ -322,7 +329,11 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
         public void LoadProperties()
         {
             Properties.ClearEx();
-            Properties.ReplaceAll(Object.Class.GetProperties(Object.Address));
+            //class will be null if the object is a UClass
+            if (Object.Class is not null)
+            {
+                Properties.ReplaceAll(Object.Class.GetProperties(Object.Address));
+            }
         }
 
         private void WriteValue()
@@ -367,10 +378,22 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
 
         public ObservableCollectionExtended<PropertyValue> Properties { get; } = new();
 
-        public StructPropertyValue(DebuggerInterface debugger, IntPtr address, string propName, string structName, List<PropertyValue> elements) : base(debugger, address, propName)
+        private readonly NStruct NStruct;
+
+        public StructPropertyValue(DebuggerInterface debugger, IntPtr address, string propName, string structName, NStruct nStruct) : base(debugger, address, propName)
         {
             Value = structName;
-            Properties.AddRange(elements);
+            NStruct = nStruct;
+            if (nStruct.FirstChild is not null)
+            {
+                Properties.Add(new LoadingPropertyValue());
+            }
+        }
+
+        public void LoadProperties()
+        {
+            Properties.ClearEx();
+            Properties.ReplaceAll(NStruct.GetProperties(Address));
         }
     }
 

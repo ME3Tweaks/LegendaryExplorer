@@ -14,6 +14,8 @@
 		<GenerateDocumentationFile Condition=" '$(Configuration)' == 'Release' ">true</GenerateDocumentationFile>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<LangVersion>8.0</LangVersion>
+		<Optimize>true</Optimize>
+		<Platforms>x64</Platforms>
 	</PropertyGroup>
 
 	<ItemGroup>

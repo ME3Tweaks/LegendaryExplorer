@@ -18,7 +18,7 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
 {
     public partial class DebuggerInterface : IDisposable
     {
-        private readonly MEGame Game;
+        public readonly MEGame Game;
         private readonly uint windowsMessageFilter;
         private readonly IntPtr MEHandle;
         private IntPtr NamePool;
@@ -27,9 +27,9 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
 
         public event Action OnDetach;
         public event Action OnAttach;
-        public event Action<string> OnBreak;
-
-        public List<PropertyValue> Locals = new();
+        public event Action OnBreak;
+        
+        public readonly List<DebuggerFrame> CallStack = new();
 
         public DebuggerInterface(MEGame game, Process meProcess)
         {
@@ -143,7 +143,7 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
         {
             Task.Run(() =>
             {
-                using var client = new NamedPipeClientStream("LEX_LE1_SCRIPTDEBUG_PIPE");
+                using var client = new NamedPipeClientStream($"LEX_{Game}_SCRIPTDEBUG_PIPE");
                 client.Connect();
                 client.Write(bytes.AsSpan());
                 client.Flush();
@@ -178,55 +178,61 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
             ClassCache.Clear();
             ObjectCache.Clear();
             NameStringCache.Clear();
-            var stackFrames = new List<DebuggerFrame>();
+            CallStack.Clear();
             while (framePtr != IntPtr.Zero)
             {
                 var frame = ReadValue<DebuggerFrame>(framePtr);
-                stackFrames.Add(frame);
+                CallStack.Add(frame);
                 framePtr = frame.PreviousFrame;
             }
-            Locals.Clear();
-            if (stackFrames.Count > 0)
+
+            OnBreak?.Invoke();
+        }
+
+        public List<PropertyValue> LoadLocals(DebuggerFrame frame)
+        {
+            var locals = new List<PropertyValue>();
+            if (frame.NativeFunction == IntPtr.Zero && ReadObject(frame.Node) is NStruct func)
             {
-                var frame = stackFrames[0];
-                if (ReadObject(frame.Node) is NStruct func)
+                for (NField child = func.FirstChild; child is not null; child = child.Next)
                 {
-                    for (NField child = func.FirstChild; child is not null; child = child.Next)
+                    if (child is not NProperty prop || prop.PropertyFlags.Has(UnrealFlags.EPropertyFlags.ReturnParm))
                     {
-                        if (child is not NProperty prop || prop.PropertyFlags.Has(UnrealFlags.EPropertyFlags.ReturnParm))
+                        continue;
+                    }
+                    IntPtr propAddr = IntPtr.Zero;
+                    if (prop.PropertyFlags.Has(UnrealFlags.EPropertyFlags.OutParm))
+                    {
+                        OutParmInfo outParmInfo;
+                        for (IntPtr outParmInfoPtr = frame.OutParms; outParmInfoPtr != IntPtr.Zero; outParmInfoPtr = outParmInfo.Next)
                         {
-                            continue;
-                        }
-                        IntPtr propAddr = IntPtr.Zero;
-                        if (prop.PropertyFlags.Has(UnrealFlags.EPropertyFlags.OutParm))
-                        {
-                            OutParmInfo outParmInfo;
-                            for (IntPtr outParmInfoPtr = frame.OutParms; outParmInfoPtr != IntPtr.Zero; outParmInfoPtr = outParmInfo.Next)
+                            outParmInfo = ReadValue<OutParmInfo>(outParmInfoPtr);
+                            var outParmProp = ReadObject(outParmInfo.Prop);
+                            if (outParmProp == prop)
                             {
-                                outParmInfo = ReadValue<OutParmInfo>(outParmInfoPtr);
-                                var outParmProp = ReadObject(outParmInfo.Prop);
-                                if (outParmProp == prop)
-                                {
-                                    propAddr = outParmInfo.PropAddr;
-                                    break;
-                                }
+                                propAddr = outParmInfo.PropAddr;
+                                break;
                             }
                         }
-                        else
-                        {
-                            propAddr = frame.Locals + prop.Offset;
-                        }
-
-                        if (propAddr == IntPtr.Zero)
-                        {
-                            continue;
-                        }
-                        prop.ReadProperty(propAddr, Locals);
                     }
+                    else
+                    {
+                        propAddr = frame.Locals + prop.Offset;
+                    }
+
+                    if (propAddr == IntPtr.Zero)
+                    {
+                        continue;
+                    }
+                    prop.ReadProperty(propAddr, locals);
                 }
             }
-
-            OnBreak?.Invoke(string.Join('\n', stackFrames.Select(frame => $"0x{frame.CurrentPosition:X4}    {ReadASCIIString(frame.NodePath, frame.NodePathLength)}")));
+            locals.Sort((val1, val2) => string.CompareOrdinal(val1.PropName, val2.PropName));
+            if (frame.Object != IntPtr.Zero)
+            {
+                locals.Add(new ObjectPropertyValue(this, IntPtr.Zero, "Self", ReadObject(frame.Object)));
+            }
+            return locals;
         }
 
         [StructLayout(LayoutKind.Sequential)]
@@ -289,7 +295,7 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        struct DebuggerFrame
+        public struct DebuggerFrame
         {
             public IntPtr Node; //UStruct*
             public IntPtr Object; //UObject*
@@ -297,7 +303,10 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
             public IntPtr Locals; //byte*
             public IntPtr OutParms; //OutParmInfo*
             public IntPtr PreviousFrame; //DebuggerFrame*
+            public IntPtr NativeFunction; //UFunction*
             public IntPtr NodePath; //char*
+            public IntPtr FileName; //wchar_t*
+            public ushort FileNameLength;
             public ushort NodePathLength;
             public ushort CurrentPosition;
         }
@@ -401,6 +410,7 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
         //FName.Chunk is a three bit number, so there is a max of 8 chunk pointers
         private readonly IntPtr[] chunkPtrCache = new IntPtr[8];
         private readonly Dictionary<uint, string> NameStringCache = new();
+
         public unsafe NameReference GetNameReference(FName fName)
         {
             if (NameStringCache.TryGetValue(fName.OffsetAndChunkBitField, out string cachedString))
