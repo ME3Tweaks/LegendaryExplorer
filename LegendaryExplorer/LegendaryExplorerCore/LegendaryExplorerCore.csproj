@@ -29,7 +29,7 @@
   <PropertyGroup Condition="'$(Configuration)'=='WinRelease' or '$(Configuration)'=='WPFRelease'">
     <DebugType>embedded</DebugType>
     <DebugSymbols>true</DebugSymbols>
-	<Optimize>true</Optimize>
+	<Optimize>false</Optimize>
     <PlatformTarget>x64</PlatformTarget>
     <DefineConstants>WINDOWS</DefineConstants>
   </PropertyGroup>
@@ -38,7 +38,7 @@
   <PropertyGroup Condition="'$(Configuration)'=='WinAzureRelease'">
     <DebugType>embedded</DebugType>
     <DebugSymbols>true</DebugSymbols>
-	<Optimize>true</Optimize>
+	<Optimize>false</Optimize>
     <PlatformTarget>x64</PlatformTarget>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DefineConstants>WINDOWS;NIGHTLY</DefineConstants>
