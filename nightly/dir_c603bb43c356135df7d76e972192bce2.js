@@ -25,5 +25,8 @@ var dir_c603bb43c356135df7d76e972192bce2 =
     ] ],
     [ "OrderedDictionary.cs", "_ordered_dictionary_8cs.html", [
       [ "LegendaryExplorerCore.Misc.OrderedMultiValueDictionary< TKey, TValue >", "class_legendary_explorer_core_1_1_misc_1_1_ordered_multi_value_dictionary.html", "class_legendary_explorer_core_1_1_misc_1_1_ordered_multi_value_dictionary" ]
+    ] ],
+    [ "ValueTupleEqualityComparer.cs", "_value_tuple_equality_comparer_8cs.html", [
+      [ "LegendaryExplorerCore.Misc.ValueTupleEqualityComparer", "class_legendary_explorer_core_1_1_misc_1_1_value_tuple_equality_comparer.html", "class_legendary_explorer_core_1_1_misc_1_1_value_tuple_equality_comparer" ]
     ] ]
 ];

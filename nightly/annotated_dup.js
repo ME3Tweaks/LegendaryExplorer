@@ -398,7 +398,8 @@ var annotated_dup =
         [ "MemoryAnalyzerObject", "class_legendary_explorer_core_1_1_misc_1_1_memory_analyzer_object.html", "class_legendary_explorer_core_1_1_misc_1_1_memory_analyzer_object" ],
         [ "ObservableCollectionExtended", "class_legendary_explorer_core_1_1_misc_1_1_observable_collection_extended.html", "class_legendary_explorer_core_1_1_misc_1_1_observable_collection_extended" ],
         [ "ObservableCollectionExtendedThreading", "class_legendary_explorer_core_1_1_misc_1_1_observable_collection_extended_threading.html", "class_legendary_explorer_core_1_1_misc_1_1_observable_collection_extended_threading" ],
-        [ "OrderedMultiValueDictionary", "class_legendary_explorer_core_1_1_misc_1_1_ordered_multi_value_dictionary.html", "class_legendary_explorer_core_1_1_misc_1_1_ordered_multi_value_dictionary" ]
+        [ "OrderedMultiValueDictionary", "class_legendary_explorer_core_1_1_misc_1_1_ordered_multi_value_dictionary.html", "class_legendary_explorer_core_1_1_misc_1_1_ordered_multi_value_dictionary" ],
+        [ "ValueTupleEqualityComparer", "class_legendary_explorer_core_1_1_misc_1_1_value_tuple_equality_comparer.html", "class_legendary_explorer_core_1_1_misc_1_1_value_tuple_equality_comparer" ]
       ] ],
       [ "Packages", "namespace_legendary_explorer_core_1_1_packages.html", [
         [ "CloningImportingAndRelinking", "namespace_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking.html", [
