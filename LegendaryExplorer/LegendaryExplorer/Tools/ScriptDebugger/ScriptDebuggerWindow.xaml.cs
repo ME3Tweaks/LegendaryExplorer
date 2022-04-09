@@ -36,6 +36,7 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
         {
             MEGame.LE1 => "LE1UnrealscriptDebugger-v2.0.asi",
             MEGame.LE2 => "LE2UnrealscriptDebugger-v2.0.asi",
+            MEGame.LE3 => "UnrealscriptDebugger.asi",
             _ => throw new ArgumentOutOfRangeException(nameof(Game))
         };
         private void GetDebuggerASI()
@@ -366,8 +367,8 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
                     Statements.AddRange(statements);
                     foreach (CallStackEntry callStackEntry in CallStack)
                     {
-                        if (callStackEntry.FunctionPathInFile == functionPath
-                            && Path.GetFileNameWithoutExtension(callStackEntry.FunctionFilePath) == _selectedScriptDatabaseEntry.FileName)
+                        if (string.Equals(callStackEntry.FunctionPathInFile, functionPath, StringComparison.OrdinalIgnoreCase)
+                            && string.Equals(Path.GetFileNameWithoutExtension(callStackEntry.FunctionFilePath), _selectedScriptDatabaseEntry.FileName, StringComparison.OrdinalIgnoreCase))
                         {
                             Locals.ReplaceAll(Debugger.LoadLocals(callStackEntry.Frame));
                             SetVisualCurrentStatement(callStackEntry.Frame.CurrentPosition);

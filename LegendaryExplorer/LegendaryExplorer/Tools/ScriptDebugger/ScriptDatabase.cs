@@ -6,6 +6,7 @@ using System.Linq;
 using BinaryPack.Attributes;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.Classes;
@@ -15,8 +16,8 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
     public class ScriptDatabase
     {
         private readonly MEGame Game;
-        private readonly Dictionary<string, List<(string filePath, int uIndex, bool forcedExport)>> FuncPathToExportDict = new();
-        private readonly Dictionary<(string filePath, int uIndex), List<(string text, int position)>> ExportIdToTokensDict = new();
+        private readonly CaseInsensitiveDictionary<List<(string filePath, int uIndex, bool forcedExport)>> FuncPathToExportDict = new();
+        private readonly Dictionary<(string filePath, int uIndex), List<(string text, int position)>> ExportIdToTokensDict = new(ValueTupleEqualityComparer.Create(StringComparer.OrdinalIgnoreCase, EqualityComparer<int>.Default));
 
         private static readonly string LE3ScriptDatabasePath = Path.Combine(ScriptDebuggerWindow.ScriptDebuggerDataFolder, @"LE3ScriptDatabase.bin");
         private static readonly string LE2ScriptDatabasePath = Path.Combine(ScriptDebuggerWindow.ScriptDebuggerDataFolder, @"LE2ScriptDatabase.bin");
@@ -166,7 +167,7 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
             {
                 foreach ((string possibleFilePath, int uIndex, bool forcedExport) in possibleLocations)
                 {
-                    if (possibleFilePath == filePath)
+                    if (string.Equals(filePath, possibleFilePath, StringComparison.OrdinalIgnoreCase))
                     {
                         return (uIndex, forcedExport);
                     }
