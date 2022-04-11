@@ -20,6 +20,12 @@
         <converters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </Window.Resources>
+    <Window.InputBindings>
+        <KeyBinding Key="F5" Command="{Binding ResumeCommand}"/>
+        <KeyBinding Key="F11" Command="{Binding StepIntoCommand}"/>
+        <KeyBinding Key="F10" Command="{Binding StepOverCommand}"/>
+        <KeyBinding Key="F11" Modifiers="Shift" Command="{Binding StepOutCommand}"/>
+    </Window.InputBindings>
     <xctk:BusyIndicator IsBusy="{Binding Path=IsBusy}">
         <Grid>
             <DockPanel>
@@ -93,23 +99,23 @@
                                 <fa5:FontAwesome Icon="Solid_Pause" Height="12" />
                             </Button.Content>
                         </Button>
-                        <Button ToolTip="Resume" Command="{Binding ResumeCommand}">
+                        <Button ToolTip="Resume (F5)" Command="{Binding ResumeCommand}">
                             <Button.Content>
                                 <fa5:FontAwesome Icon="Solid_Play" Height="12" />
                             </Button.Content>
                         </Button>
                         <Separator />
-                        <Button ToolTip="Step Into" Command="{Binding StepIntoCommand}">
+                        <Button ToolTip="Step Into (F11)" Command="{Binding StepIntoCommand}">
                             <Button.Content>
                                 <fa5:FontAwesome Icon="Solid_LevelDownAlt" Height="12" />
                             </Button.Content>
                         </Button>
-                        <Button ToolTip="Step Over" Command="{Binding StepOverCommand}">
+                        <Button ToolTip="Step Over (F10)" Command="{Binding StepOverCommand}">
                             <Button.Content>
                                 <fa5:FontAwesome Icon="Solid_LongArrowAltRight" Height="12" />
                             </Button.Content>
                         </Button>
-                        <Button ToolTip="Step Out" Command="{Binding StepOutCommand}">
+                        <Button ToolTip="Step Out (Shift+F11)" Command="{Binding StepOutCommand}">
                             <Button.Content>
                                 <fa5:FontAwesome Icon="Solid_LevelUpAlt" Height="12" />
                             </Button.Content>
