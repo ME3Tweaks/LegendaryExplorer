@@ -247,35 +247,30 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
             public TArray Script => ReadValue<TArray>(OFFSET_SCRIPT);
             public int MinAlignment => ReadValue<int>(OFFSET_MINALIGNMENT);
 
-            private List<PropertyValue> properties;
-
             public List<PropertyValue> GetProperties(IntPtr address)
             {
-                if (properties is null)
-                {
-                    properties = new List<PropertyValue>();
-                    
-                    for (NStruct curStruct = this; curStruct is not null && curStruct.Name.Name != "Class"; curStruct = curStruct.Super as NStruct)
-                    {
-                        for (NField child = curStruct.FirstChild; child is not null; child = child.Next)
-                        {
-                            if (child is not NProperty prop || prop.PropertyFlags.Has(UnrealFlags.EPropertyFlags.ReturnParm))
-                            {
-                                continue;
-                            }
-                            IntPtr propAddr = address + prop.Offset;
+                var properties = new List<PropertyValue>();
 
-                            if (propAddr == IntPtr.Zero)
-                            {
-                                continue;
-                            }
-                            prop.ReadProperty(propAddr, properties);
-                        }
-                    }
-                    if (this is NClass)
+                for (NStruct curStruct = this; curStruct is not null && curStruct.Name.Name != "Class"; curStruct = curStruct.Super as NStruct)
+                {
+                    for (NField child = curStruct.FirstChild; child is not null; child = child.Next)
                     {
-                        properties.Sort((val1, val2) => string.CompareOrdinal(val1.PropName, val2.PropName));
+                        if (child is not NProperty prop || prop.PropertyFlags.Has(UnrealFlags.EPropertyFlags.ReturnParm))
+                        {
+                            continue;
+                        }
+                        IntPtr propAddr = address + prop.Offset;
+
+                        if (propAddr == IntPtr.Zero)
+                        {
+                            continue;
+                        }
+                        prop.ReadProperty(propAddr, properties);
                     }
+                }
+                if (this is NClass)
+                {
+                    properties.Sort((val1, val2) => string.Compare(val1.PropName, val2.PropName, StringComparison.OrdinalIgnoreCase));
                 }
                 return properties;
             }
