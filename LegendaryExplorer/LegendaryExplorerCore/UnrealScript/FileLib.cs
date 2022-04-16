@@ -178,6 +178,16 @@ namespace LegendaryExplorerCore.UnrealScript
             _ => throw new ArgumentOutOfRangeException(nameof(game))
         };
 
+        public static IEnumerable<string> PackagesWithTopLevelClasses(MEGame game)
+        {
+            var basefiles = BaseFileNames(game);
+            if (game is MEGame.LE1)
+            {
+                return basefiles.Concat(new[] { "SFXGameContent_Powers.pcc", "SFXVehicleResources.pcc", "SFXWorldResources.pcc" });
+            }
+            return basefiles;
+        }
+
         [Obsolete("Filelib architecture has changed, and this no longer does anything.")]
         public static void FreeLibs() { }
 
@@ -218,23 +228,23 @@ namespace LegendaryExplorerCore.UnrealScript
                     var associatedFiles = EntryImporter.GetPossibleAssociatedFiles(Pcc, includeNonBioPRelated: false);
                     if (Pcc.Game is MEGame.ME3)
                     {
-                        if (Pcc.FindEntry("SFXGameMPContent") is IEntry { ClassName: "Package" } && !associatedFiles.Contains("BIOP_MP_COMMON.pcc"))
+                        if (Pcc.FindEntry("SFXGameMPContent") is { ClassName: "Package" } && !associatedFiles.Contains("BIOP_MP_COMMON.pcc"))
                         {
                             associatedFiles.Add("BIOP_MP_COMMON.pcc");
                         }
-                        if (Pcc.FindEntry("SFXGameContentDLC_CON_MP2") is IEntry { ClassName: "Package" })
+                        if (Pcc.FindEntry("SFXGameContentDLC_CON_MP2") is { ClassName: "Package" })
                         {
                             associatedFiles.Add("Startup_DLC_CON_MP2_INT.pcc");
                         }
-                        if (Pcc.FindEntry("SFXGameContentDLC_CON_MP3") is IEntry { ClassName: "Package" })
+                        if (Pcc.FindEntry("SFXGameContentDLC_CON_MP3") is { ClassName: "Package" })
                         {
                             associatedFiles.Add("Startup_DLC_CON_MP3_INT.pcc");
                         }
-                        if (Pcc.FindEntry("SFXGameContentDLC_CON_MP4") is IEntry { ClassName: "Package" })
+                        if (Pcc.FindEntry("SFXGameContentDLC_CON_MP4") is { ClassName: "Package" })
                         {
                             associatedFiles.Add("Startup_DLC_CON_MP4_INT.pcc");
                         }
-                        if (Pcc.FindEntry("SFXGameContentDLC_CON_MP5") is IEntry { ClassName: "Package" })
+                        if (Pcc.FindEntry("SFXGameContentDLC_CON_MP5") is { ClassName: "Package" })
                         {
                             associatedFiles.Add("Startup_DLC_CON_MP5_INT.pcc");
                         }

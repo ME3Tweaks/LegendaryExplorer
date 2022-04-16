@@ -315,7 +315,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
         {
             IEntry parent = null;
             string fileName = Path.GetFileName(Pcc.FilePath);
-            if (fileName.CaseInsensitiveEquals("Startup_INT.pcc") || !FileLib.BaseFileNames(Pcc.Game).Contains(fileName, StringComparer.OrdinalIgnoreCase))
+            if (fileName.CaseInsensitiveEquals("Startup_INT.pcc") || !FileLib.PackagesWithTopLevelClasses(Pcc.Game).Contains(fileName, StringComparer.OrdinalIgnoreCase))
             {
                 //not a base file, so classes must be within a package.
 

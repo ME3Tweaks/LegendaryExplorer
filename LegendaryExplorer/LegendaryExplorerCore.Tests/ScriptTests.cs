@@ -53,7 +53,7 @@ namespace LegendaryExplorerCore.Tests
 
             Stopwatch sw = Stopwatch.StartNew();
             var testLib = new FileLib(testPackage);
-            bool fileLibInitialized = testLib.InitializeAsync(usePackageCache ? new PackageCache() : null).Result;
+            bool fileLibInitialized = testLib.Initialize(usePackageCache ? new PackageCache() : null);
             Assert.IsTrue(fileLibInitialized, $"{testPackage.Game} Script failed to compile {shortName} class definitions! Errors:\n{string.Join('\n', testLib.InitializationLog.Content)}");
             sw.Stop();
             Debug.WriteLine($"With {(usePackageCache ? "packagecache" : "globalcache")} took {sw.ElapsedMilliseconds}ms to initialize lib");

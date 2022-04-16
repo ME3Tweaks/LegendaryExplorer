@@ -103,7 +103,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     }
 
                     VariableType valueType = parsed.ResolveType();
-                    if (!TypeCompatible(param.VarType, valueType))
+                    if (!bodyParser.TypeCompatible(param.VarType, valueType, parsed.StartPos))
                     {
                         paramParser.TypeError($"Could not assign value of type '{valueType}' to variable of type '{param.VarType}'!", unparsedBody);
                     }
@@ -457,7 +457,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 if (value == null) throw ParseError("Assignments require an expression on the right! (RValue expected).", CurrentPosition);
 
                 VariableType exprType = expr.ResolveType();
-                if (!TypeCompatible(exprType, value.ResolveType()))
+                if (!TypeCompatible(exprType, value.ResolveType(), expr.StartPos))
                 {
                     TypeError($"Cannot assign a value of type '{value.ResolveType()?.FullTypeName() ?? "None"}' to a variable of type '{exprType?.FullTypeName()}'.", assign);
                 }
@@ -595,7 +595,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             {
                 ParseError("Function should not return a value!", token);
             }
-            else if (!TypeCompatible(func.ReturnType, type))
+            else if (!TypeCompatible(func.ReturnType, type, value.StartPos))
             {
                 TypeError($"Cannot return a value of type '{type?.Name ?? "None"}', function should return '{func.ReturnType.Name}'.", token);
             }
@@ -963,7 +963,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
             if (Matches(TokenType.QuestionMark))
             {
-                if (!TypeCompatible(SymbolTable.BoolType, expr.ResolveType()))
+                if (!TypeCompatible(SymbolTable.BoolType, expr.ResolveType(), expr.StartPos))
                 {
                     TypeError("Expected a boolean expression before a '?'!", expr);
                 }
@@ -1643,8 +1643,8 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 if (comparefunctionArg.ResolveType() is DelegateType delType)
                 {
                     Function delFunc = delType.DefaultFunction;
-                    if (delFunc.ReturnType == SymbolTable.IntType && delFunc.Parameters.Count == 2 && TypeCompatible(delFunc.Parameters[0].VarType, elementType)
-                                                                                                   && TypeCompatible(delFunc.Parameters[1].VarType, elementType))
+                    if (delFunc.ReturnType == SymbolTable.IntType && delFunc.Parameters.Count == 2 && TypeCompatible(delFunc.Parameters[0].VarType, elementType, comparefunctionArg.StartPos)
+                                                                                                   && TypeCompatible(delFunc.Parameters[1].VarType, elementType, comparefunctionArg.StartPos))
                     {
                         correctType = true;
                     }
@@ -1693,7 +1693,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     throw ParseError("Expected function argument!", CurrentPosition);
                 }
 
-                if (!TypeCompatible(expectedType, arg.ResolveType()))
+                if (!TypeCompatible(expectedType, arg.ResolveType(), arg.StartPos))
                 {
                     if (expectedType is not DelegateType) //seems wrong, but required to parse bioware classes, so...
                     {
@@ -1770,7 +1770,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 }
             }
 
-            if (!TypeCompatible(SymbolTable.IntType, arrIndex.ResolveType()))
+            if (!TypeCompatible(SymbolTable.IntType, arrIndex.ResolveType(), arrIndex.StartPos))
             {
                 TypeError("Array index must be or evaluate to an integer!");
             }
@@ -1852,7 +1852,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                         }
 
                         VariableType argType = currentArg.ResolveType();
-                        if (!TypeCompatible(p.VarType, argType, p.Flags.Has(EPropertyFlags.CoerceParm)))
+                        if (!TypeCompatible(p.VarType, argType, currentArg.StartPos, p.Flags.Has(EPropertyFlags.CoerceParm)))
                         {
                             TypeError($"Expected an argument of type '{p.VarType.FullTypeName()}'!", currentArg);
                         }
@@ -2354,7 +2354,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                         throw ParseError($"Expected 'name' argument to '{NEW}' expression!", CurrentPosition);
                     }
 
-                    if (!TypeCompatible(SymbolTable.StringType, objName.ResolveType()))
+                    if (!TypeCompatible(SymbolTable.StringType, objName.ResolveType(), objName.StartPos))
                     {
                         TypeError($"The 'name' argument to a '{NEW}' expression must be a string!", objName);
                     }
@@ -2367,7 +2367,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                             throw ParseError($"Expected 'flags' argument to '{NEW}' expression!", CurrentPosition);
                         }
 
-                        if (!TypeCompatible(SymbolTable.IntType, flags.ResolveType()))
+                        if (!TypeCompatible(SymbolTable.IntType, flags.ResolveType(), objName.StartPos))
                         {
                             TypeError($"The 'flags' argument to a '{NEW}' expression must be an int!", flags);
                         }
