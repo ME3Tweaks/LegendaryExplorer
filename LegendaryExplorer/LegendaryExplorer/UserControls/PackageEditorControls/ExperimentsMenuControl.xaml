@@ -162,9 +162,9 @@
     <MenuItem Header="Object Database">
         <MenuItem Header="Build ME1 Object Database" Click="ChonkyDB_BuildME1GameDB"/>
         <MenuItem Header="Build LE1 Object Database" Click="ChonkyDB_BuildLE1GameDB"/>
-        <MenuItem Header="Build ME2 Object Database" Click="ChonkyDB_BuildME1GameDB" IsEnabled="False"/>
-        <MenuItem Header="Build LE2 Object Database" Click="ChonkyDB_BuildME1GameDB" IsEnabled="False"/>
-        <MenuItem Header="Build ME3 Object Database" Click="ChonkyDB_BuildME1GameDB" IsEnabled="False"/>
-        <MenuItem Header="Build LE3 Object Database" Click="ChonkyDB_BuildME1GameDB" IsEnabled="False"/>
+        <MenuItem Header="Build ME2 Object Database" Click="ChonkyDB_BuildME2GameDB" />
+        <MenuItem Header="Build LE2 Object Database" Click="ChonkyDB_BuildLE2GameDB"/>
+        <MenuItem Header="Build ME3 Object Database" Click="ChonkyDB_BuildME3GameDB"/>
+        <MenuItem Header="Build LE3 Object Database" Click="ChonkyDB_BuildLE3GameDB"/>
     </MenuItem>
 </MenuItem>
