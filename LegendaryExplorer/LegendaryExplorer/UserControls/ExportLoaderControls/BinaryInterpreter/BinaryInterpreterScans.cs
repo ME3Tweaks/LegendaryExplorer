@@ -7105,7 +7105,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private static BinInterpNode MakeVector2DNodeEditable(EndianReader bin, string name, bool expanded = false)
         {
-            var node = new BinInterpNode(bin.Position, $"{name}: (X: {bin.ReadFloat()}, Y: {bin.ReadFloat()}") { Length = 8 };
+            var node = new BinInterpNode(bin.Position, $"{name}: (X: {bin.ReadFloat()}, Y: {bin.ReadFloat()})") { Length = 8 };
             bin.Position -= 8;
             node.Items.Add(MakeFloatNode(bin, "X"));
             node.Items.Add(MakeFloatNode(bin, "Y"));
