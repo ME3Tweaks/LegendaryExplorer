@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
@@ -160,6 +161,53 @@ namespace LegendaryExplorerCore.Shaders
             }
 
             destCacheExport.WriteBinary(destCache);
+        }
+
+        public static List<ExportEntry> GetBrokenMaterials(IMEPackage pcc)
+        {
+            var brokenMaterials = new List<ExportEntry>();
+            if (!pcc.Game.IsMEGame())
+            {
+                return brokenMaterials;
+            }
+            var staticParamSetsToMaterialsDict = new Dictionary<StaticParameterSet, List<ExportEntry>>();
+
+            foreach (ExportEntry export in pcc.Exports)
+            {
+                if (export.ClassName == "Material")
+                {
+                    staticParamSetsToMaterialsDict.AddToListAt((StaticParameterSet)ObjectBinary.From<Material>(export).SM3MaterialResource.ID, export);
+                }
+                else if (export.IsA("MaterialInstance") && export.GetProperty<BoolProperty>("bHasStaticPermutationResource"))
+                {
+                    staticParamSetsToMaterialsDict.AddToListAt(ObjectBinary.From<MaterialInstance>(export).SM3StaticParameterSet, export);
+                }
+            }
+            if (staticParamSetsToMaterialsDict.Count is 0)
+            {
+                return brokenMaterials;
+            }
+            HashSet<StaticParameterSet> staticParamSets = staticParamSetsToMaterialsDict.Keys.ToHashSet();
+            RefShaderCacheReader.RemoveStaticParameterSetsThatAreInTheGlobalCache(staticParamSets, pcc.Game);
+            if (staticParamSets.Count is 0)
+            {
+                return brokenMaterials;
+            }
+
+            if (pcc.FindExport("SeekFreeShaderCache") is ExportEntry localCacheExport)
+            {
+                var localCache = localCacheExport.GetBinaryData<ShaderCache>();
+                foreach ((StaticParameterSet key, _) in localCache.MaterialShaderMaps)
+                {
+                    staticParamSets.Remove(key);
+                }
+            }
+
+            foreach (StaticParameterSet staticParamSet in staticParamSets)
+            {
+                brokenMaterials.AddRange(staticParamSetsToMaterialsDict[staticParamSet]);
+            }
+            return brokenMaterials;
         }
     }
 }

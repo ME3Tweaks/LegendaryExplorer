@@ -198,6 +198,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
         public ICommand ResolveImportsTreeViewCommand { get; set; }
         public ICommand CheckForDuplicateIndexesCommand { get; set; }
         public ICommand CheckForInvalidObjectPropertiesCommand { get; set; }
+        public ICommand CheckForBrokenMaterialsCommand { get; set; }
         public ICommand EditNameCommand { get; set; }
         public ICommand AddNameCommand { get; set; }
         public ICommand CopyNameCommand { get; set; }
@@ -256,6 +257,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
             FindEntryViaOffsetCommand = new GenericCommand(FindEntryViaOffset, PackageIsLoaded);
             CheckForDuplicateIndexesCommand = new GenericCommand(CheckForDuplicateIndexes, PackageIsLoaded);
             CheckForInvalidObjectPropertiesCommand = new GenericCommand(CheckForBadObjectPropertyReferences, PackageIsLoaded);
+            CheckForBrokenMaterialsCommand = new GenericCommand(CheckForBrokenMaterials, IsLoadedPackageME);
             EditNameCommand = new GenericCommand(EditName, NameIsSelected);
             AddNameCommand = new RelayCommand(AddName, CanAddName);
             CopyNameCommand = new GenericCommand(CopyName, NameIsSelected);
@@ -384,7 +386,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
         private bool IsLoadedPackageOT() => Pcc != null && Pcc.Game.IsOTGame();
         private bool IsLoadedPackageLE() => Pcc != null && Pcc.Game.IsLEGame();
-        private bool IsLoadedPackageME() => Pcc != null && (Pcc.Game.IsLEGame() || Pcc.Game.IsOTGame());
+        private bool IsLoadedPackageME() => Pcc != null && Pcc.Game.IsMEGame();
 
         private void OpenOtherVersion(bool openLegendaryVersion)
         {
@@ -2019,6 +2021,29 @@ namespace LegendaryExplorer.Tools.PackageEditor
             {
                 MessageBox.Show(
                     "No referencing issues were found. Note that this is a best-effort check and may not be 100% accurate and does not account for imports being preloaded in memory before package load.",
+                    "Check complete");
+            }
+        }
+
+        private void CheckForBrokenMaterials()
+        {
+            if (Pcc == null)
+            {
+                return;
+            }
+
+            var brokenMaterials = ShaderCacheManipulator.GetBrokenMaterials(Pcc);
+            if (brokenMaterials.Any())
+            {
+                var lw = new ListDialog(brokenMaterials.Select(exp => new EntryStringPair(exp)), $"Broken Materials in {Pcc.FilePath}",
+                        "The following Materials or MaterialInstances have no corresponding entry in either the local or global shader cache.",
+                        this)
+                    { DoubleClickEntryHandler = entryDoubleClick };
+                lw.Show();
+            }
+            else
+            {
+                MessageBox.Show("No broken materials were found.",
                     "Check complete");
             }
         }

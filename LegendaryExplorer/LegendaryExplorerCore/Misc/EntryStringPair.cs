@@ -18,6 +18,9 @@ namespace LegendaryExplorerCore.Misc
             Entry = entry;
             Message = message;
         }
+        public EntryStringPair(IEntry entry) : this(entry, $"{$"#{entry.UIndex}",-9} {entry.FileRef.FilePath}")
+        {
+        }
 
         public IEntry Entry { get; set; }
         public string Message { get; set; }
@@ -26,12 +29,12 @@ namespace LegendaryExplorerCore.Misc
 
         public static implicit operator EntryStringPair(ExportEntry entry)
         {
-            return new EntryStringPair(entry, $"{$"#{entry.UIndex}",-9} {entry.FileRef.FilePath}");
+            return new EntryStringPair(entry);
         }
 
         public static implicit operator EntryStringPair(ImportEntry entry)
         {
-            return new EntryStringPair(entry, $"{$"#{entry.UIndex}",-9} {entry.FileRef.FilePath}");
+            return new EntryStringPair(entry);
         }
 #pragma warning disable
         public event PropertyChangedEventHandler PropertyChanged;
