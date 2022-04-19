@@ -1,5 +1,11 @@
 var NAVTREEINDEX95 =
 {
+"namespace_legendary_explorer_core_1_1_gammtek_1_1_data.html":[0,5,0,6,2],
+"namespace_legendary_explorer_core_1_1_gammtek_1_1_dynamic.html":[0,5,0,6,3],
+"namespace_legendary_explorer_core_1_1_gammtek_1_1_dynamic.html#a930c09d828d202c2c163aef271d40934":[0,5,0,6,3,7],
+"namespace_legendary_explorer_core_1_1_gammtek_1_1_dynamic.html#a930c09d828d202c2c163aef271d40934a231afe47f3f37d3808096b36c28b4ded":[0,5,0,6,3,7,0],
+"namespace_legendary_explorer_core_1_1_gammtek_1_1_dynamic.html#a930c09d828d202c2c163aef271d40934af2bbdf9f72c085adc4d0404e370f0f4c":[0,5,0,6,3,7,1],
+"namespace_legendary_explorer_core_1_1_gammtek_1_1_dynamic.html#acc340f85c51c82374bfd3856fec5471a":[0,5,0,6,3,6],
 "namespace_legendary_explorer_core_1_1_gammtek_1_1_dynamic.html#acc340f85c51c82374bfd3856fec5471aa9ec8e4e3ab4c7eeba097f27d7364d743":[0,5,0,6,3,6,0],
 "namespace_legendary_explorer_core_1_1_gammtek_1_1_dynamic.html#acc340f85c51c82374bfd3856fec5471aaeed8d85b888a6c015834240885ee6333":[0,5,0,6,3,6,1],
 "namespace_legendary_explorer_core_1_1_gammtek_1_1_dynamic_1_1_collections.html":[0,5,0,6,3,0],
@@ -243,11 +249,5 @@ var NAVTREEINDEX95 =
 "namespace_legendary_explorer_core_1_1_textures.html#a00a75c8a054cd63f64b7bbecc2d61e09aa3d1190cdb525c3e1c7c06c19005387e":[0,5,0,17,10,3],
 "namespace_legendary_explorer_core_1_1_textures.html#a00a75c8a054cd63f64b7bbecc2d61e09aaa51ef981f910b0ec9ed8b82c65be593":[0,5,0,17,10,9],
 "namespace_legendary_explorer_core_1_1_textures.html#a00a75c8a054cd63f64b7bbecc2d61e09ace789f624a22f7c5e6baafe4f4fe9e4d":[0,5,0,17,10,10],
-"namespace_legendary_explorer_core_1_1_textures.html#a00a75c8a054cd63f64b7bbecc2d61e09ae034278428deb1ad937eb98f2ad0217a":[0,5,0,17,10,8],
-"namespace_legendary_explorer_core_1_1_textures.html#a00a75c8a054cd63f64b7bbecc2d61e09ae192297ecf3602fabbec5f0a38ede758":[0,5,0,17,10,6],
-"namespace_legendary_explorer_core_1_1_textures_1_1_codecs.html":[0,5,0,17,0],
-"namespace_legendary_explorer_core_1_1_textures_1_1_studio.html":[0,5,0,17,1],
-"namespace_legendary_explorer_core_1_1_unreal.html":[0,5,0,19],
-"namespace_legendary_explorer_core_1_1_unreal.html#a0049d78fe44f6c159dd383f92fbed01c":[0,5,0,19,264],
-"namespace_legendary_explorer_core_1_1_unreal.html#a0049d78fe44f6c159dd383f92fbed01ca869474a422e26b3bc2ba303d3ace5746":[0,5,0,19,264,2]
+"namespace_legendary_explorer_core_1_1_textures.html#a00a75c8a054cd63f64b7bbecc2d61e09ae034278428deb1ad937eb98f2ad0217a":[0,5,0,17,10,8]
 };
