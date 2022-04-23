@@ -35,6 +35,10 @@ namespace LegendaryExplorer.Tools.Dialogue_Editor.DialogueEditorExperiments
             DialogueEditorExperimentsE.UpdateNativeNodeStringRef(GetDEWindow());
         }
 
+        private void CloneNodeAndSequence_Click(object sender, RoutedEventArgs e) {
+            DialogueEditorExperimentsE.CloneNodeAndSequence(GetDEWindow());
+        }
+
         #endregion
 
     }

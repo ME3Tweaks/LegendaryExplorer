@@ -13,6 +13,7 @@ namespace LegendaryExplorer.DialogueEditor.DialogueEditorExperiments
     /// </summary>
     class DialogueEditorExperimentsE
     {
+        #region Update Native Node String Ref
         // Changes the node's lineref and the parts of the FXA, WwiseStream, and referencing VOs that include it so it doesn't break
         public static void UpdateNativeNodeStringRef(DialogueEditorWindow dew)
         {
@@ -146,5 +147,16 @@ namespace LegendaryExplorer.DialogueEditor.DialogueEditorExperiments
             }
             return null;
         }
+        #endregion
+
+        #region Clone Node And Sequence
+        /// <summary>
+        /// Clones a Dialogue Node and its related Sequence, while giving it a unique id.
+        /// </summary>
+        /// <param name="dew">Dialogue Editor Window instance.</param>
+        public static void CloneNodeAndSequence(DialogueEditorWindow dew) {
+            MessageBox.Show("Hello", "test", MessageBoxButton.OK);
+        }
+        #endregion
     }
 }
