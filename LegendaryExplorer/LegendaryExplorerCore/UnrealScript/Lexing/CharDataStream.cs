@@ -61,6 +61,11 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
 
         public bool AtEnd() => _currentIndex >= Data.Length;
 
+        public string Slice(int startIndex, int length)
+        {
+            return Data.Substring(startIndex, length);
+        }
+
         #endregion
 
         #region Private Methods

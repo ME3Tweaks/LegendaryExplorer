@@ -16,10 +16,11 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing.Matching.StringMatchers
             bool whiteSpace = false;
             int newlines = 0;
             int column = streamPos.Column;
-            while (!data.AtEnd() && char.IsWhiteSpace(data.CurrentItem))
+            char peek = data.CurrentItem;
+            while (!data.AtEnd() && char.IsWhiteSpace(peek))
             {
                 whiteSpace = true;
-                if (data.CurrentItem == '\n')
+                if (peek == '\n')
                 {
                     newlines++;
                     column = 0;
@@ -29,6 +30,7 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing.Matching.StringMatchers
                     ++column;
                 }
                 data.Advance();
+                peek = data.CurrentItem;
             }
 
             if (whiteSpace)

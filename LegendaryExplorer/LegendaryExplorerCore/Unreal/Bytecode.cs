@@ -4289,10 +4289,12 @@ namespace LegendaryExplorerCore.Unreal
             return t;
         }
 
+        public const string IterNextText = "//foreach continue";
+        public const string IterPopText = "//foreach end";
         private Token ReadIterNext(int start, ExportEntry export)
         {
             Token t = new Token();
-            t.text = "\\\\foreach continue";
+            t.text = IterNextText;
             t.raw = new byte[1];
             t.raw[0] = memory[start];
             return t;
@@ -4301,7 +4303,7 @@ namespace LegendaryExplorerCore.Unreal
         private Token ReadIterPop(int start, ExportEntry export)
         {
             Token t = new Token();
-            t.text = "\\\\foreach pop";
+            t.text = IterPopText;
             t.raw = new byte[1];
             t.raw[0] = memory[start];
             return t;
@@ -4834,10 +4836,12 @@ namespace LegendaryExplorerCore.Unreal
             return t;
         }
 
+        public const string ReturnText = "Return (";
+
         private Token ReadReturn(int start, ExportEntry export)
         {
             Token t = new Token();
-            t.text = "Return (";
+            t.text = ReturnText;
             Token a = ReadToken(start + 1, export);
             t.inPackageReferences.AddRange(a.inPackageReferences);
 

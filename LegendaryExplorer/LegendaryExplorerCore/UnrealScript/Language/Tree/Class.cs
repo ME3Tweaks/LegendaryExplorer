@@ -32,6 +32,9 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 
         public bool IsComponent => SameAsOrSubClassOf("Component") || SameAsOrSubClassOf("BioBaseComponent");
 
+        //Despite being considered a component for most compiling purposes, descendants of BioBaseComponent do NOT have the component header before their properties
+        public bool HasComponentPropertiesHeader => SameAsOrSubClassOf("Component");
+
         public bool IsNative => Flags.Has(UnrealFlags.EClassFlags.Native);
 
         //Sometimes, a class Export will have its Default__ object as an import, and no children.

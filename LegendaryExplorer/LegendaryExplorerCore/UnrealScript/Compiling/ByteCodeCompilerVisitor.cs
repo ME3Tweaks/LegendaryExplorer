@@ -1449,7 +1449,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
                 WriteByte(0);
             }
-            else if (expr is InOpReference || expr is PreOpReference || expr is PostOpReference)
+            else if (expr is InOpReference or PreOpReference or PostOpReference)
             {
                 if (Game >= MEGame.ME3)
                 {
@@ -1477,7 +1477,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             {
                 if (Game >= MEGame.ME3)
                 {
-                    WriteObjectRef(!(expr is DynArrayOperation) || expr is DynArraySort ? ResolveSymbol(expr) : null);
+                    WriteObjectRef(expr is DynArraySort or not DynArrayOperation ? ResolveSymbol(expr) : null);
                 }
                 switch (expr)
                 {
