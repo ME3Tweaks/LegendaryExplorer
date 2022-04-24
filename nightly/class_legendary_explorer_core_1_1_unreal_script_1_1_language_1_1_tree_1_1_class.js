@@ -25,6 +25,7 @@ var class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_cl
     [ "NodeType", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_class.html#af106d42a82cc80e64bffaf190bb57291", null ],
     [ "IsInterface", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_class.html#afd22837be3845eaf593fbb6036957842", null ],
     [ "IsComponent", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_class.html#a441caaa321cc1db2353fb37eda2abbc9", null ],
+    [ "HasComponentPropertiesHeader", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_class.html#a5b8780995870dc408d4b0618b2276b45", null ],
     [ "IsNative", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_class.html#ad3884dea9ced6fbd689ae11ec0585d5a", null ],
     [ "ChildNodes", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_class.html#a0a15196517bdbf6cbb9ed0a35040f0ad", null ],
     [ "OuterClass", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_class.html#a51c0a7d14825d1c7c2d981d6ca4e1585", null ]

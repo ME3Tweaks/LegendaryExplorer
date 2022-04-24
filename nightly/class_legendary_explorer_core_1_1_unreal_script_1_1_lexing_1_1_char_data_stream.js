@@ -9,6 +9,7 @@ var class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_char_data_str
     [ "Advance", "class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_char_data_stream.html#a75d4cbb4aa5c6cca0e7fd4f39ee0b857", null ],
     [ "Advance", "class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_char_data_stream.html#a57fb760b565a0947c3af33734e58089f", null ],
     [ "AtEnd", "class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_char_data_stream.html#ab5fd2bddcf3986891d0e26fbd24821f1", null ],
+    [ "Slice", "class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_char_data_stream.html#a6513050c8d7d5634f771433fc8c3581f", null ],
     [ "CurrentIndex", "class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_char_data_stream.html#a508574b50035cc3bf380075995fd7731", null ],
     [ "CurrentItem", "class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_char_data_stream.html#a0d5233764f206e879356556bf4dfc328", null ]
 ];
