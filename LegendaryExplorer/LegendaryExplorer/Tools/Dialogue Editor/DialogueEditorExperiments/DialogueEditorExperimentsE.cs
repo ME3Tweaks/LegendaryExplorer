@@ -3,6 +3,7 @@ using LegendaryExplorer.UserControls.ExportLoaderControls;
 using LegendaryExplorerCore.Dialogue;
 using LegendaryExplorerCore.Kismet;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal;
 using System.Collections.Generic;
 using System.Linq;
@@ -173,6 +174,14 @@ namespace LegendaryExplorer.DialogueEditor.DialogueEditorExperiments {
                     else { return null; }
                 }).ToList().First();
 
+                ExportEntry sequence = SeqTools.GetParentSequence(oldInterpData);
+
+                // Clone the sequnece objects
+                ExportEntry newInterp = cloneObject(oldInterp, sequence);
+                ExportEntry newInterpData = EntryCloner.CloneTree(oldInterpData);
+                KismetHelper.AddObjectToSequence(newInterpData, sequence, true);
+                ExportEntry newConvNode = cloneObject(oldConvNode, sequence);
+                ExportEntry newEndNode = cloneObject(oldEndNode, sequence);
 
                 MessageBox.Show($"Node cloned and has been given the ExportID {newID}.", "Success", MessageBoxButton.OK);
             }
@@ -188,6 +197,17 @@ namespace LegendaryExplorer.DialogueEditor.DialogueEditorExperiments {
                 return ID.ToString();
             }
             return null;
+        }
+
+        // From SequenceEditorWPF.xaml.cs
+        private static ExportEntry cloneObject(ExportEntry old, ExportEntry sequence, bool topLevel = true, bool incrementIndex = true)
+        {
+            //SeqVar_External needs to have the same index to work properly
+            ExportEntry exp = EntryCloner.CloneEntry(old, incrementIndex: incrementIndex && old.ClassName != "SeqVar_External");
+
+            KismetHelper.AddObjectToSequence(exp, sequence, topLevel);
+            // cloneSequence(exp);
+            return exp;
         }
 
         #endregion
