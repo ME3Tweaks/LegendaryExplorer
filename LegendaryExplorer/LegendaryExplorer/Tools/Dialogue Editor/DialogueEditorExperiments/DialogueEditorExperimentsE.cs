@@ -1,8 +1,11 @@
 ﻿using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.UserControls.ExportLoaderControls;
 using LegendaryExplorerCore.Dialogue;
+using LegendaryExplorerCore.Kismet;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Unreal;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 
 namespace LegendaryExplorer.DialogueEditor.DialogueEditorExperiments {
@@ -130,8 +133,6 @@ namespace LegendaryExplorer.DialogueEditor.DialogueEditorExperiments {
         /// </summary>
         /// <param name="dew">Dialogue Editor Window instance.</param>
         public static void CloneNodeAndSequence(DialogueEditorWindow dew) {
-            MessageBox.Show("Hello", "test", MessageBoxButton.OK);
-
             DialogueNodeExtended selectedDialogueNode = dew.SelectedDialogueNode;
 
             if (dew.Pcc != null && selectedDialogueNode != null) {
@@ -151,11 +152,32 @@ namespace LegendaryExplorer.DialogueEditor.DialogueEditorExperiments {
                     return;
                 }
 
+                ExportEntry oldInterpData = selectedDialogueNode.Interpdata;
+
+                // Get the Interp linked to the InterpData
+                IEnumerable<KeyValuePair<IEntry, List<string>>> interpDataReferences = oldInterpData.GetEntriesThatReferenceThisOne()
+                    .Where(entry => entry.Key.ClassName == "SeqAct_Interp");
+                if (interpDataReferences.Count() > 1) {
+                    MessageBox.Show("The selected Node's InterpData is references by more than one Interp. Please ensure it's only references by one.", "Warning", MessageBoxButton.OK);
+                }
+                ExportEntry oldInterp = (ExportEntry)interpDataReferences.First().Key;
+
+                // Get the/a ConvNode linked to the Interp
+                ExportEntry oldConvNode = SeqTools.FindOutboundConnectionsToNode(oldInterp, SeqTools.GetAllSequenceElements(oldInterp).OfType<ExportEntry>())
+                    .Where(entry => entry.ClassName == "BioSeqEvt_ConvNode").ToList().First();
+
+                // Get the/a EndCurrentConvNode that the Interp outputs to
+                ExportEntry oldEndNode = SeqTools.GetOutboundLinksOfNode(oldInterp).Select(outboundLink => {
+                    IEnumerable<SeqTools.OutboundLink> links = outboundLink.Where(link => link.LinkedOp.ClassName == "BioSeqAct_EndCurrentConvNode");
+                    if (links.Any()) { return (ExportEntry)links.First().LinkedOp; }
+                    else { return null; }
+                }).ToList().First();
 
 
                 MessageBox.Show($"Node cloned and has been given the ExportID {newID}.", "Success", MessageBoxButton.OK);
             }
         }
+
         private static string promptForID(string msg, string err) {
             if (PromptDialog.Prompt(null, msg) is string strID) {
                 int ID;
