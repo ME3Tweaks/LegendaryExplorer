@@ -8,9 +8,9 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
     {
         public override ASTNode Node => (InnerSymbol as SymbolReference)?.Node ?? InnerSymbol;
 
-        public Expression InnerSymbol;
-        public Expression OuterSymbol;
-        public bool IsClassContext;
+        public readonly Expression InnerSymbol;
+        public readonly Expression OuterSymbol;
+        public readonly bool IsClassContext;
         public bool IsStructMemberExpression;
 
         public CompositeSymbolRef(Expression outer, Expression inner, bool isClassContext = false, SourcePosition start = null, SourcePosition end = null)

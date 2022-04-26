@@ -33,6 +33,8 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 
         public bool IsVirtual => !Flags.Has(EFunctionFlags.Final); //&& !Flags.Has(EFunctionFlags.Static);
 
+        public bool IsStatic => Flags.Has(EFunctionFlags.Static);
+
         public bool HasOptionalParms => Flags.Has(EFunctionFlags.HasOptionalParms) || Parameters.Any(parm => parm.IsOptional);
 
         public bool RetValNeedsDestruction;

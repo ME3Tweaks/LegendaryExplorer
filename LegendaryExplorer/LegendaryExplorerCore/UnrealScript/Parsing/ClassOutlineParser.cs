@@ -662,6 +662,10 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             Function func = TryParseFunction();
             while (func != null)
             {
+                if (func.IsStatic)
+                {
+                    TypeError($"States cannot have '{STATIC}' functions!", func);
+                }
                 funcs.Add(func);
                 func = TryParseFunction();
             }

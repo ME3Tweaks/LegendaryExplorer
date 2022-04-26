@@ -419,7 +419,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             return null;
         }
 
-        private Expression ParseRotatorLiteral()
+        private RotatorLiteral ParseRotatorLiteral()
         {
             var start = CurrentPosition;
             if (!Matches(TokenType.LeftParenth))
@@ -451,7 +451,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             return new RotatorLiteral(pitch, yaw, roll, start, Tokens.Prev().EndPos);
         }
 
-        private Expression ParseVectorLiteral()
+        private VectorLiteral ParseVectorLiteral()
         {
             var start = CurrentPosition;
             if (!Matches(TokenType.LeftParenth))
@@ -507,7 +507,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             return isNegative ? -val : val;
         }
 
-        protected Expression ParseObjectLiteral(ScriptToken className, ScriptToken objName, bool noActors = true)
+        protected ObjectLiteral ParseObjectLiteral(ScriptToken className, ScriptToken objName, bool noActors = true)
         {
             className.SyntaxType = EF.TypeName;
             bool isClassLiteral = className.Value.CaseInsensitiveEquals(CLASS);
