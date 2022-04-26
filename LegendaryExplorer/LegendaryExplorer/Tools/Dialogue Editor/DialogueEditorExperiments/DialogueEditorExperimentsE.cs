@@ -143,10 +143,8 @@ namespace LegendaryExplorer.DialogueEditor.DialogueEditorExperiments {
                     return;
                 }
 
-                var newID = promptForID("New node ExportID:", "Not a valid ExportID.");
-                if (string.IsNullOrEmpty(newID)) {
-                    return;
-                }
+                int newID = promptForID("New node ExportID:", "Not a valid ExportID.");
+                if (newID == 0) { return; }
 
                 if (selectedDialogueNode.ExportID.Equals(newID)) {
                     MessageBox.Show("New ExportID matches the existing one.", "Warning", MessageBoxButton.OK);
@@ -176,27 +174,38 @@ namespace LegendaryExplorer.DialogueEditor.DialogueEditorExperiments {
 
                 ExportEntry sequence = SeqTools.GetParentSequence(oldInterpData);
 
-                // Clone the sequnece objects
+                // Clone the sequence objects
                 ExportEntry newInterp = cloneObject(oldInterp, sequence);
                 ExportEntry newInterpData = EntryCloner.CloneTree(oldInterpData);
                 KismetHelper.AddObjectToSequence(newInterpData, sequence, true);
                 ExportEntry newConvNode = cloneObject(oldConvNode, sequence);
                 ExportEntry newEndNode = cloneObject(oldEndNode, sequence);
 
+                // Link the new objects
+                KismetHelper.CreateOutputLink(newConvNode, "Started", newInterp, 0);
+                KismetHelper.CreateOutputLink(newInterp, "Completed", newEndNode, 0);
+                KismetHelper.CreateOutputLink(newInterp, "Reversed", newEndNode, 0);
+                KismetHelper.CreateVariableLink(newInterp, "Data", newInterpData);
+
+                // Write the new nodeID
+                newConvNode.RemoveProperty("m_nNodeID");
+                IntProperty m_nNodeID = new(newID, "m_nNodeID");
+                newConvNode.WriteProperty(m_nNodeID);
+
                 MessageBox.Show($"Node cloned and has been given the ExportID {newID}.", "Success", MessageBoxButton.OK);
             }
         }
 
-        private static string promptForID(string msg, string err) {
+        private static int promptForID(string msg, string err) {
             if (PromptDialog.Prompt(null, msg) is string strID) {
                 int ID;
                 if (!int.TryParse(strID, out ID)) {
                     MessageBox.Show(err, "Warning", MessageBoxButton.OK);
-                    return null;
+                    return 0;
                 }
-                return ID.ToString();
+                return ID;
             }
-            return null;
+            return 0;
         }
 
         // From SequenceEditorWPF.xaml.cs
