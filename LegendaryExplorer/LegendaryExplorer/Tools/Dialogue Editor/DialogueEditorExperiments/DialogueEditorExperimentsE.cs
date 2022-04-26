@@ -185,6 +185,13 @@ namespace LegendaryExplorer.DialogueEditor.DialogueEditorExperiments {
                 KismetHelper.CreateOutputLink(newConvNode, "Started", newInterp, 0);
                 KismetHelper.CreateOutputLink(newInterp, "Completed", newEndNode, 0);
                 KismetHelper.CreateOutputLink(newInterp, "Reversed", newEndNode, 0);
+
+                // Save existing varLinks, minus the Data one
+                List<SeqTools.VarLinkInfo> varLinks = SeqTools.GetVariableLinksOfNode(oldInterp);
+                foreach (SeqTools.VarLinkInfo link in varLinks) {
+                    if (link.LinkDesc == "Data") { link.LinkedNodes = new(); }
+                }
+                SeqTools.WriteVariableLinksToNode(newInterp, varLinks);
                 KismetHelper.CreateVariableLink(newInterp, "Data", newInterpData);
 
                 // Write the new nodeID
