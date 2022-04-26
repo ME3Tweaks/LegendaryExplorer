@@ -188,11 +188,22 @@ namespace LegendaryExplorer.DialogueEditor.DialogueEditorExperiments {
                 KismetHelper.CreateVariableLink(newInterp, "Data", newInterpData);
 
                 // Write the new nodeID
-                newConvNode.RemoveProperty("m_nNodeID");
                 IntProperty m_nNodeID = new(newID, "m_nNodeID");
                 newConvNode.WriteProperty(m_nNodeID);
 
-                MessageBox.Show($"Node cloned and has been given the ExportID {newID}.", "Success", MessageBoxButton.OK);
+                // Clone and select the cloned node
+                dew.NodeAddCommand.Execute(selectedDialogueNode.IsReply ? "CloneReply" : "CloneEntry");
+                int index = selectedDialogueNode.IsReply ? dew.SelectedConv.ReplyList.Count : dew.SelectedConv.EntryList.Count;
+                DialogueNodeExtended node = selectedDialogueNode.IsReply ? dew.SelectedConv.ReplyList[index - 1] : dew.SelectedConv.EntryList[index - 1];
+
+                // Set the ExportID
+                StructProperty prop = node.NodeProp;
+                var nExportID = new IntProperty(newID, "nExportID");
+                prop.Properties.AddOrReplaceProp(nExportID);
+                dew.RecreateNodesToProperties(dew.SelectedConv);
+                dew.ForceRefreshCommand.Execute(null);
+
+                MessageBox.Show($"Node cloned and given the ExportID: {newID}.", "Success", MessageBoxButton.OK);
             }
         }
 
