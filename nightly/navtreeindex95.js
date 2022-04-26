@@ -1,5 +1,7 @@
 var NAVTREEINDEX95 =
 {
+"namespace_legendary_explorer_core_1_1_gammtek.html#abdb33e0d50e0ed925c43c19bf23e3aeca7a1920d61156abc05a60135aefe8bc67":[0,5,0,6,86,0],
+"namespace_legendary_explorer_core_1_1_gammtek.html#abdb33e0d50e0ed925c43c19bf23e3aecad24a614afd61a4a9097269b8a7225209":[0,5,0,6,86,1],
 "namespace_legendary_explorer_core_1_1_gammtek.html#abdb33e0d50e0ed925c43c19bf23e3aecaef53538ae41a651c7f72ab6cb1135d8c":[0,5,0,6,86,2],
 "namespace_legendary_explorer_core_1_1_gammtek_1_1_collections.html":[0,5,0,6,0],
 "namespace_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_component_model.html":[0,5,0,6,0,0],
@@ -247,7 +249,5 @@ var NAVTREEINDEX95 =
 "namespace_legendary_explorer_core_1_1_sharp_d_x.html":[0,5,0,16],
 "namespace_legendary_explorer_core_1_1_t_l_k.html":[0,5,0,18],
 "namespace_legendary_explorer_core_1_1_t_l_k_1_1_m_e1.html":[0,5,0,18,0],
-"namespace_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3.html":[0,5,0,18,1],
-"namespace_legendary_explorer_core_1_1_textures.html":[0,5,0,17],
-"namespace_legendary_explorer_core_1_1_textures.html#a00a75c8a054cd63f64b7bbecc2d61e09":[0,5,0,17,10]
+"namespace_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3.html":[0,5,0,18,1]
 };

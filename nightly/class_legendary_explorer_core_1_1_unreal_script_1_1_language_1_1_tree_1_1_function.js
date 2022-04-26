@@ -21,6 +21,7 @@ var class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_fu
     [ "IsDefined", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function.html#a8d402312ef6b6dbbe0511d8b55a07243", null ],
     [ "IsOperator", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function.html#a40ccd37cc903f087baf758f0e936c4df", null ],
     [ "IsVirtual", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function.html#ae730cce9b1963e522feb9aa48b6569c7", null ],
+    [ "IsStatic", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function.html#a4bc1698be618c615528e396d63237183", null ],
     [ "HasOptionalParms", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function.html#acdd259e81adf2f2717cf1fdabe95b3c4", null ],
     [ "ChildNodes", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function.html#a7a4b6c40ac0cb483de56ced197d9fdb7", null ],
     [ "FilePath", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function.html#aa34fa35175f2cfc03ad3ca90a2a91f9b", null ],
