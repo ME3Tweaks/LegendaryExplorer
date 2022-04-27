@@ -1,7 +1,7 @@
-﻿using System.Windows;
-using System.Windows.Controls;
-using LegendaryExplorer.DialogueEditor;
+﻿using LegendaryExplorer.DialogueEditor;
 using LegendaryExplorer.DialogueEditor.DialogueEditorExperiments;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace LegendaryExplorer.Tools.Dialogue_Editor.DialogueEditorExperiments
 {
@@ -17,7 +17,7 @@ namespace LegendaryExplorer.Tools.Dialogue_Editor.DialogueEditorExperiments
         }
 
         private void LoadCommands() { }
-        
+
         public DialogueEditorWindow GetDEWindow()
         {
             if (Window.GetWindow(this) is DialogueEditorWindow dew)
@@ -35,7 +35,8 @@ namespace LegendaryExplorer.Tools.Dialogue_Editor.DialogueEditorExperiments
             DialogueEditorExperimentsE.UpdateNativeNodeStringRef(GetDEWindow());
         }
 
-        private void CloneNodeAndSequence_Click(object sender, RoutedEventArgs e) {
+        private void CloneNodeAndSequence_Click(object sender, RoutedEventArgs e)
+        {
             DialogueEditorExperimentsE.CloneNodeAndSequence(GetDEWindow());
         }
 

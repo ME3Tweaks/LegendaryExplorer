@@ -9,30 +9,37 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 
-namespace LegendaryExplorer.DialogueEditor.DialogueEditorExperiments {
+namespace LegendaryExplorer.DialogueEditor.DialogueEditorExperiments
+{
     /// <summary>
     /// Class for Exkywor's preset buttons and stuff
     /// </summary>
-    class DialogueEditorExperimentsE {
+    class DialogueEditorExperimentsE
+    {
         #region Update Native Node String Ref
         // Changes the node's lineref and the parts of the FXA, WwiseStream, and referencing VOs that include it so it doesn't break
-        public static void UpdateNativeNodeStringRef(DialogueEditorWindow dew) {
+        public static void UpdateNativeNodeStringRef(DialogueEditorWindow dew)
+        {
             DialogueNodeExtended selectedDialogueNode = dew.SelectedDialogueNode;
 
-            if (dew.Pcc != null && selectedDialogueNode != null) {
+            if (dew.Pcc != null && selectedDialogueNode != null)
+            {
                 // Need to check if currStringRef exists
                 var currStringRef = selectedDialogueNode.LineStrRef.ToString();
-                if (string.IsNullOrEmpty(currStringRef)) {
+                if (string.IsNullOrEmpty(currStringRef))
+                {
                     MessageBox.Show("The selected node does not have a Line String Ref, which is required in order to programatically replace the required elements.", "Warning", MessageBoxButton.OK);
                     return;
                 }
 
                 var newStringRef = promptForRef("New line string ref:", "Not a valid line string ref.");
-                if (string.IsNullOrEmpty(newStringRef)) {
+                if (string.IsNullOrEmpty(newStringRef))
+                {
                     return;
                 }
 
-                if (currStringRef == newStringRef) {
+                if (currStringRef == newStringRef)
+                {
                     MessageBox.Show("New StringRef matches the existing one.", "Warning", MessageBoxButton.OK);
                     return;
                 }
@@ -55,16 +62,20 @@ namespace LegendaryExplorer.DialogueEditor.DialogueEditorExperiments {
             }
         }
 
-        private static void updateVOReferences(IMEPackage pcc, ExportEntry wwiseStream, string oldRef, string newRef) {
-            if (wwiseStream == null) {
+        private static void updateVOReferences(IMEPackage pcc, ExportEntry wwiseStream, string oldRef, string newRef)
+        {
+            if (wwiseStream == null)
+            {
                 return;
             }
 
             var entry = pcc.GetEntry(wwiseStream.UIndex);
 
             var references = entry.GetEntriesThatReferenceThisOne();
-            foreach (KeyValuePair<IEntry, List<string>> reference in references) {
-                if (reference.Key.ClassName != "WwiseEvent") {
+            foreach (KeyValuePair<IEntry, List<string>> reference in references)
+            {
+                if (reference.Key.ClassName != "WwiseEvent")
+                {
                     continue;
                 }
                 ExportEntry refEntry = (ExportEntry)pcc.GetEntry(reference.Key.UIndex);
@@ -73,8 +84,10 @@ namespace LegendaryExplorer.DialogueEditor.DialogueEditorExperiments {
 
         }
 
-        private static void updateWwiseStream(ExportEntry wwiseStream, string oldRef, string newRef) {
-            if (wwiseStream is null) {
+        private static void updateWwiseStream(ExportEntry wwiseStream, string oldRef, string newRef)
+        {
+            if (wwiseStream is null)
+            {
                 return;
             }
 
@@ -85,27 +98,35 @@ namespace LegendaryExplorer.DialogueEditor.DialogueEditorExperiments {
             wwiseStream.ObjectNameString = wwiseStream.ObjectNameString.Replace(oldRef, newRef);
         }
 
-        private static void updateFaceFX(FaceFXAnimSetEditorControl fxa, string oldRef, string newRef) {
-            if (fxa.SelectedLine == null || fxa == null) {
+        private static void updateFaceFX(FaceFXAnimSetEditorControl fxa, string oldRef, string newRef)
+        {
+            if (fxa.SelectedLine == null || fxa == null)
+            {
                 return;
             }
 
             var FaceFX = fxa.FaceFX;
             var SelectedLine = fxa.SelectedLine;
 
-            if (SelectedLine.Path != null) {
+            if (SelectedLine.Path != null)
+            {
                 SelectedLine.Path = SelectedLine.Path.Replace(oldRef, newRef);
             }
-            if (SelectedLine.ID != null) {
+            if (SelectedLine.ID != null)
+            {
                 SelectedLine.ID = newRef;
             }
             // Change FaceFX name
-            if (SelectedLine.NameAsString != null) {
+            if (SelectedLine.NameAsString != null)
+            {
                 string newName = SelectedLine.NameAsString.Replace(oldRef, newRef);
-                if (FaceFX.Names.Contains(newName)) {
+                if (FaceFX.Names.Contains(newName))
+                {
                     SelectedLine.NameIndex = FaceFX.Names.IndexOf(newName);
                     SelectedLine.NameAsString = newName;
-                } else {
+                }
+                else
+                {
                     FaceFX.Names.Add(newName);
                     SelectedLine.NameIndex = FaceFX.Names.Count - 1;
                     SelectedLine.NameAsString = newName;
@@ -115,10 +136,13 @@ namespace LegendaryExplorer.DialogueEditor.DialogueEditorExperiments {
             fxa.SaveChanges();
         }
 
-        private static string promptForRef(string msg, string err) {
-            if (PromptDialog.Prompt(null, msg) is string stringRef) {
+        private static string promptForRef(string msg, string err)
+        {
+            if (PromptDialog.Prompt(null, msg) is string stringRef)
+            {
                 int intRef;
-                if (string.IsNullOrEmpty(stringRef) || !int.TryParse(stringRef, out intRef)) {
+                if (string.IsNullOrEmpty(stringRef) || !int.TryParse(stringRef, out intRef))
+                {
                     MessageBox.Show(err, "Warning", MessageBoxButton.OK);
                     return null;
                 }
@@ -133,12 +157,15 @@ namespace LegendaryExplorer.DialogueEditor.DialogueEditorExperiments {
         /// Clones a Dialogue Node and its related Sequence, while giving it a unique id.
         /// </summary>
         /// <param name="dew">Dialogue Editor Window instance.</param>
-        public static void CloneNodeAndSequence(DialogueEditorWindow dew) {
+        public static void CloneNodeAndSequence(DialogueEditorWindow dew)
+        {
             DialogueNodeExtended selectedDialogueNode = dew.SelectedDialogueNode;
 
-            if (dew.Pcc != null && selectedDialogueNode != null) {
+            if (dew.Pcc != null && selectedDialogueNode != null)
+            {
                 // Need to check if the node has associated data
-                if (selectedDialogueNode.Interpdata == null) {
+                if (selectedDialogueNode.Interpdata == null)
+                {
                     MessageBox.Show("The selected node does not have an InterpData associated with it.", "Warning", MessageBoxButton.OK);
                     return;
                 }
@@ -146,7 +173,8 @@ namespace LegendaryExplorer.DialogueEditor.DialogueEditorExperiments {
                 int newID = promptForID("New node ExportID:", "Not a valid ExportID.");
                 if (newID == 0) { return; }
 
-                if (selectedDialogueNode.ExportID.Equals(newID)) {
+                if (selectedDialogueNode.ExportID.Equals(newID))
+                {
                     MessageBox.Show("New ExportID matches the existing one.", "Warning", MessageBoxButton.OK);
                     return;
                 }
@@ -156,47 +184,60 @@ namespace LegendaryExplorer.DialogueEditor.DialogueEditorExperiments {
                 // Get the Interp linked to the InterpData
                 IEnumerable<KeyValuePair<IEntry, List<string>>> interpDataReferences = oldInterpData.GetEntriesThatReferenceThisOne()
                     .Where(entry => entry.Key.ClassName == "SeqAct_Interp");
-                if (interpDataReferences.Count() > 1) {
-                    MessageBox.Show("The selected Node's InterpData is references by more than one Interp. Please ensure it's only references by one.", "Warning", MessageBoxButton.OK);
+                if (interpDataReferences.Count() > 1)
+                {
+                    MessageBox.Show("The selected Node's InterpData is linked to Interps. Please ensure it's only linked to one.", "Warning", MessageBoxButton.OK);
                 }
                 ExportEntry oldInterp = (ExportEntry)interpDataReferences.First().Key;
 
                 // Get the/a ConvNode linked to the Interp
                 ExportEntry oldConvNode = SeqTools.FindOutboundConnectionsToNode(oldInterp, SeqTools.GetAllSequenceElements(oldInterp).OfType<ExportEntry>())
-                    .Where(entry => entry.ClassName == "BioSeqEvt_ConvNode").ToList().First();
+                    .FirstOrDefault(entry => entry.ClassName == "BioSeqEvt_ConvNode");
 
                 // Get the/a EndCurrentConvNode that the Interp outputs to
-                ExportEntry oldEndNode = SeqTools.GetOutboundLinksOfNode(oldInterp).Select(outboundLink => {
+                ExportEntry oldEndNode = SeqTools.GetOutboundLinksOfNode(oldInterp).Select(outboundLink =>
+                {
                     IEnumerable<SeqTools.OutboundLink> links = outboundLink.Where(link => link.LinkedOp.ClassName == "BioSeqAct_EndCurrentConvNode");
-                    if (links.Any()) { return (ExportEntry)links.First().LinkedOp; }
-                    else { return null; }
-                }).ToList().First();
+                    if (links.Any()) { return (ExportEntry)links.First().LinkedOp; } else { return null; }
+                }).ToList().FirstOrDefault();
 
                 ExportEntry sequence = SeqTools.GetParentSequence(oldInterpData);
 
-                // Clone the sequence objects
+                // Clone the Intero and Interpdata objects
                 ExportEntry newInterp = cloneObject(oldInterp, sequence);
                 ExportEntry newInterpData = EntryCloner.CloneTree(oldInterpData);
                 KismetHelper.AddObjectToSequence(newInterpData, sequence, true);
-                ExportEntry newConvNode = cloneObject(oldConvNode, sequence);
-                ExportEntry newEndNode = cloneObject(oldEndNode, sequence);
 
-                // Link the new objects
-                KismetHelper.CreateOutputLink(newConvNode, "Started", newInterp, 0);
-                KismetHelper.CreateOutputLink(newInterp, "Completed", newEndNode, 0);
-                KismetHelper.CreateOutputLink(newInterp, "Reversed", newEndNode, 0);
+                // Clone and link the Conv and End objects, if they exist
+                ExportEntry newConvNode = null;
+                if (oldConvNode != null)
+                {
+                    newConvNode = cloneObject(oldConvNode, sequence);
+                    KismetHelper.CreateOutputLink(newConvNode, "Started", newInterp, 0);
+                }
+
+                if (oldEndNode != null)
+                {
+                    ExportEntry newEndNode = cloneObject(oldEndNode, sequence);
+                    KismetHelper.CreateOutputLink(newInterp, "Completed", newEndNode, 0);
+                    KismetHelper.CreateOutputLink(newInterp, "Reversed", newEndNode, 0);
+                }
 
                 // Save existing varLinks, minus the Data one
                 List<SeqTools.VarLinkInfo> varLinks = SeqTools.GetVariableLinksOfNode(oldInterp);
-                foreach (SeqTools.VarLinkInfo link in varLinks) {
+                foreach (SeqTools.VarLinkInfo link in varLinks)
+                {
                     if (link.LinkDesc == "Data") { link.LinkedNodes = new(); }
                 }
                 SeqTools.WriteVariableLinksToNode(newInterp, varLinks);
                 KismetHelper.CreateVariableLink(newInterp, "Data", newInterpData);
 
                 // Write the new nodeID
-                IntProperty m_nNodeID = new(newID, "m_nNodeID");
-                newConvNode.WriteProperty(m_nNodeID);
+                if (newConvNode != null)
+                {
+                    IntProperty m_nNodeID = new(newID, "m_nNodeID");
+                    newConvNode.WriteProperty(m_nNodeID);
+                }
 
                 // Clone and select the cloned node
                 dew.NodeAddCommand.Execute(selectedDialogueNode.IsReply ? "CloneReply" : "CloneEntry");
@@ -214,10 +255,13 @@ namespace LegendaryExplorer.DialogueEditor.DialogueEditorExperiments {
             }
         }
 
-        private static int promptForID(string msg, string err) {
-            if (PromptDialog.Prompt(null, msg) is string strID) {
+        private static int promptForID(string msg, string err)
+        {
+            if (PromptDialog.Prompt(null, msg) is string strID)
+            {
                 int ID;
-                if (!int.TryParse(strID, out ID)) {
+                if (!int.TryParse(strID, out ID))
+                {
                     MessageBox.Show(err, "Warning", MessageBoxButton.OK);
                     return 0;
                 }
