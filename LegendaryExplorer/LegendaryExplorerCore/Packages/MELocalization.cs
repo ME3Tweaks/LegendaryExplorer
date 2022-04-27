@@ -161,6 +161,7 @@ namespace LegendaryExplorerCore.Packages
                 case "LOC_JPN":
                     return MELocalization.JPN;
                 case "PL":
+                case "POL":
                 case "PLPC":
                 case "LOC_POL":
                 case "LOC_PLPC":
