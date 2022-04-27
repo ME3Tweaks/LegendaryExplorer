@@ -1,14 +1,4 @@
-﻿
-
-
-
-
-
-
-
-
-
-using System.IO;
+﻿using System.IO;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System;
@@ -274,7 +264,6 @@ namespace LegendaryExplorer.Misc.AppSettings
             set => SetProperty(ref _global_tlk_ismale, value);
         }
 
-
         // Settings converters
         public static int TryGetSetting(Dictionary<string, string> settings, string key, int defaultValue) => settings.TryGetValue(key, out var value) && int.TryParse(value, out var ivalue) ? ivalue : defaultValue;
         public static bool TryGetSetting(Dictionary<string, string> settings, string key, bool defaultValue) => settings.TryGetValue(key, out var value) && bool.TryParse(value, out var bvalue) ? bvalue : defaultValue;
@@ -297,167 +286,65 @@ namespace LegendaryExplorer.Misc.AppSettings
             //if the settings file has been corrupted somehow, the JSON deserializer will return null.
             settingsJson ??= new();
 
-
             MainWindow_DisableTransparencyAndAnimations = TryGetSetting(settingsJson, "mainwindow_disabletransparencyandanimations", false);
-
             MainWindow_Favorites = TryGetSetting(settingsJson, "mainwindow_favorites", "");
-
             MainWindow_CompletedInitialSetup = TryGetSetting(settingsJson, "mainwindow_completedinitialsetup", false);
-
             PackageEditor_HideInterpreterHexBox = TryGetSetting(settingsJson, "packageeditor_hideinterpreterhexbox", true);
-
             PackageEditor_TouchComfyMode = TryGetSetting(settingsJson, "packageeditor_touchcomfymode", false);
-
             PackageEditor_ShowImpExpPrefix = TryGetSetting(settingsJson, "packageeditor_showimpexpprefix", true);
-
             PackageEditor_ShowExportTypeIcons = TryGetSetting(settingsJson, "packageeditor_showexporttypeicons", true);
-
             PackageEditor_ShowTreeEntrySubText = TryGetSetting(settingsJson, "packageeditor_showtreeentrysubtext", true);
-
             PackageEditor_ShowExperiments = TryGetSetting(settingsJson, "packageeditor_showexperiments", false);
-
             SequenceEditor_MaxVarStringLength = TryGetSetting(settingsJson, "sequenceeditor_maxvarstringlength", 40);
-
             SequenceEditor_ShowParsedInfo = TryGetSetting(settingsJson, "sequenceeditor_showparsedinfo", true);
-
             SequenceEditor_AutoSaveViewV2 = TryGetSetting(settingsJson, "sequenceeditor_autosaveviewv2", true);
-
             SequenceEditor_ShowOutputNumbers = TryGetSetting(settingsJson, "sequenceeditor_showoutputnumbers", false);
-
             Soundplorer_ReverseIDDisplayEndianness = TryGetSetting(settingsJson, "soundplorer_reverseiddisplayendianness", false);
-
             Soundplorer_AutoplayEntriesOnSelection = TryGetSetting(settingsJson, "soundplorer_autoplayentriesonselection", false);
-
             Meshplorer_BackgroundColor = TryGetSetting(settingsJson, "meshplorer_backgroundcolor", "#999999");
-
             Meshplorer_ViewFirstPerson = TryGetSetting(settingsJson, "meshplorer_viewfirstperson", false);
-
             Meshplorer_ViewRotating = TryGetSetting(settingsJson, "meshplorer_viewrotating", false);
-
             Meshplorer_View_SolidEnabled = TryGetSetting(settingsJson, "meshplorer_view_solidenabled", true);
-
             Meshplorer_ViewWireframeEnabled = TryGetSetting(settingsJson, "meshplorer_viewwireframeenabled", false);
-
             PathfindingEditor_ShowNodeSizes = TryGetSetting(settingsJson, "pathfindingeditor_shownodesizes", false);
-
             PathfindingEditor_ShowPathfindingNodesLayer = TryGetSetting(settingsJson, "pathfindingeditor_showpathfindingnodeslayer", true);
-
             PathfindingEditor_ShowActorsLayer = TryGetSetting(settingsJson, "pathfindingeditor_showactorslayer", false);
-
             PathfindingEditor_ShowArtLayer = TryGetSetting(settingsJson, "pathfindingeditor_showartlayer", false);
-
             PathfindingEditor_ShowSplinesLayer = TryGetSetting(settingsJson, "pathfindingeditor_showsplineslayer", false);
-
             PathfindingEditor_ShowEverythingElseLayer = TryGetSetting(settingsJson, "pathfindingeditor_showeverythingelselayer", false);
-
             AssetDB_DefaultGame = TryGetSetting(settingsJson, "assetdb_defaultgame", "");
-
             AssetDBGame = TryGetSetting(settingsJson, "assetdbgame", "ME3");
-
             AssetDBPath = TryGetSetting(settingsJson, "assetdbpath", "");
-
             CoalescedEditor_SourcePath = TryGetSetting(settingsJson, "coalescededitor_sourcepath", "");
-
             CoalescedEditor_DestinationPath = TryGetSetting(settingsJson, "coalescededitor_destinationpath", "");
-
             WwiseGraphEditor_AutoSaveView = TryGetSetting(settingsJson, "wwisegrapheditor_autosaveview", false);
-
             BinaryInterpreter_SkipAutoParseSizeCheck = TryGetSetting(settingsJson, "binaryinterpreter_skipautoparsesizecheck", false);
-
             TextureViewer_AutoLoadMip = TryGetSetting(settingsJson, "textureviewer_autoloadmip", true);
-
             Interpreter_LimitArrayPropertySize = TryGetSetting(settingsJson, "interpreter_limitarraypropertysize", true);
-
             Interpreter_AdvancedDisplay = TryGetSetting(settingsJson, "interpreter_advanceddisplay", true);
-
             Interpreter_Colorize = TryGetSetting(settingsJson, "interpreter_colorize", true);
-
             Interpreter_ShowLinearColorWheel = TryGetSetting(settingsJson, "interpreter_showlinearcolorwheel", false);
-
             Soundpanel_LoopAudio = TryGetSetting(settingsJson, "soundpanel_loopaudio", false);
-
             Wwise_3773Path = TryGetSetting(settingsJson, "wwise_3773path", "");
-
             Wwise_7110Path = TryGetSetting(settingsJson, "wwise_7110path", "");
-
             TFCCompactor_LastStagingPath = TryGetSetting(settingsJson, "tfccompactor_laststagingpath", "");
-
             Global_PropertyParsing_ParseUnknownArrayTypeAsObject = TryGetSetting(settingsJson, "global_propertyparsing_parseunknownarraytypeasobject", false);
-
             Global_Analytics_Enabled = TryGetSetting(settingsJson, "global_analytics_enabled", true);
-
             Global_ME1Directory = TryGetSetting(settingsJson, "global_me1directory", "");
-
             Global_ME2Directory = TryGetSetting(settingsJson, "global_me2directory", "");
-
             Global_ME3Directory = TryGetSetting(settingsJson, "global_me3directory", "");
-
             Global_LEDirectory = TryGetSetting(settingsJson, "global_ledirectory", "");
-
             Global_TLK_Language = TryGetSetting(settingsJson, "global_tlk_language", "INT");
-
             Global_TLK_IsMale = TryGetSetting(settingsJson, "global_tlk_ismale", true);
 
-
             // Settings Bridge Init
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
             LegendaryExplorerCoreLibSettings.Instance.ParseUnknownArrayTypesAsObject = Global_PropertyParsing_ParseUnknownArrayTypeAsObject;
-
-
             LegendaryExplorerCoreLibSettings.Instance.ME1Directory = Global_ME1Directory;
-
             LegendaryExplorerCoreLibSettings.Instance.ME2Directory = Global_ME2Directory;
-
             LegendaryExplorerCoreLibSettings.Instance.ME3Directory = Global_ME3Directory;
-
             LegendaryExplorerCoreLibSettings.Instance.LEDirectory = Global_LEDirectory;
-
             LegendaryExplorerCoreLibSettings.Instance.TLKDefaultLanguage = Global_TLK_Language;
-
             LegendaryExplorerCoreLibSettings.Instance.TLKGenderIsMale = Global_TLK_IsMale;
-
-
 
             Loaded = true;
         }
@@ -468,107 +355,56 @@ namespace LegendaryExplorer.Misc.AppSettings
         public static void Save()
         {
             var settingsJson = new Dictionary<string,string>();
-
             settingsJson["mainwindow_disabletransparencyandanimations"] = MainWindow_DisableTransparencyAndAnimations.ToString();
-
             settingsJson["mainwindow_favorites"] = MainWindow_Favorites.ToString();
-
             settingsJson["mainwindow_completedinitialsetup"] = MainWindow_CompletedInitialSetup.ToString();
-
             settingsJson["packageeditor_hideinterpreterhexbox"] = PackageEditor_HideInterpreterHexBox.ToString();
-
             settingsJson["packageeditor_touchcomfymode"] = PackageEditor_TouchComfyMode.ToString();
-
             settingsJson["packageeditor_showimpexpprefix"] = PackageEditor_ShowImpExpPrefix.ToString();
-
             settingsJson["packageeditor_showexporttypeicons"] = PackageEditor_ShowExportTypeIcons.ToString();
-
             settingsJson["packageeditor_showtreeentrysubtext"] = PackageEditor_ShowTreeEntrySubText.ToString();
-
             settingsJson["packageeditor_showexperiments"] = PackageEditor_ShowExperiments.ToString();
-
             settingsJson["sequenceeditor_maxvarstringlength"] = SequenceEditor_MaxVarStringLength.ToString();
-
             settingsJson["sequenceeditor_showparsedinfo"] = SequenceEditor_ShowParsedInfo.ToString();
-
             settingsJson["sequenceeditor_autosaveviewv2"] = SequenceEditor_AutoSaveViewV2.ToString();
-
             settingsJson["sequenceeditor_showoutputnumbers"] = SequenceEditor_ShowOutputNumbers.ToString();
-
             settingsJson["soundplorer_reverseiddisplayendianness"] = Soundplorer_ReverseIDDisplayEndianness.ToString();
-
             settingsJson["soundplorer_autoplayentriesonselection"] = Soundplorer_AutoplayEntriesOnSelection.ToString();
-
             settingsJson["meshplorer_backgroundcolor"] = Meshplorer_BackgroundColor.ToString();
-
             settingsJson["meshplorer_viewfirstperson"] = Meshplorer_ViewFirstPerson.ToString();
-
             settingsJson["meshplorer_viewrotating"] = Meshplorer_ViewRotating.ToString();
-
             settingsJson["meshplorer_view_solidenabled"] = Meshplorer_View_SolidEnabled.ToString();
-
             settingsJson["meshplorer_viewwireframeenabled"] = Meshplorer_ViewWireframeEnabled.ToString();
-
             settingsJson["pathfindingeditor_shownodesizes"] = PathfindingEditor_ShowNodeSizes.ToString();
-
             settingsJson["pathfindingeditor_showpathfindingnodeslayer"] = PathfindingEditor_ShowPathfindingNodesLayer.ToString();
-
             settingsJson["pathfindingeditor_showactorslayer"] = PathfindingEditor_ShowActorsLayer.ToString();
-
             settingsJson["pathfindingeditor_showartlayer"] = PathfindingEditor_ShowArtLayer.ToString();
-
             settingsJson["pathfindingeditor_showsplineslayer"] = PathfindingEditor_ShowSplinesLayer.ToString();
-
             settingsJson["pathfindingeditor_showeverythingelselayer"] = PathfindingEditor_ShowEverythingElseLayer.ToString();
-
             settingsJson["assetdb_defaultgame"] = AssetDB_DefaultGame.ToString();
-
             settingsJson["assetdbgame"] = AssetDBGame.ToString();
-
             settingsJson["assetdbpath"] = AssetDBPath.ToString();
-
             settingsJson["coalescededitor_sourcepath"] = CoalescedEditor_SourcePath.ToString();
-
             settingsJson["coalescededitor_destinationpath"] = CoalescedEditor_DestinationPath.ToString();
-
             settingsJson["wwisegrapheditor_autosaveview"] = WwiseGraphEditor_AutoSaveView.ToString();
-
             settingsJson["binaryinterpreter_skipautoparsesizecheck"] = BinaryInterpreter_SkipAutoParseSizeCheck.ToString();
-
             settingsJson["textureviewer_autoloadmip"] = TextureViewer_AutoLoadMip.ToString();
-
             settingsJson["interpreter_limitarraypropertysize"] = Interpreter_LimitArrayPropertySize.ToString();
-
             settingsJson["interpreter_advanceddisplay"] = Interpreter_AdvancedDisplay.ToString();
-
             settingsJson["interpreter_colorize"] = Interpreter_Colorize.ToString();
-
             settingsJson["interpreter_showlinearcolorwheel"] = Interpreter_ShowLinearColorWheel.ToString();
-
             settingsJson["soundpanel_loopaudio"] = Soundpanel_LoopAudio.ToString();
-
             settingsJson["wwise_3773path"] = Wwise_3773Path.ToString();
-
             settingsJson["wwise_7110path"] = Wwise_7110Path.ToString();
-
             settingsJson["tfccompactor_laststagingpath"] = TFCCompactor_LastStagingPath.ToString();
-
             settingsJson["global_propertyparsing_parseunknownarraytypeasobject"] = Global_PropertyParsing_ParseUnknownArrayTypeAsObject.ToString();
-
             settingsJson["global_analytics_enabled"] = Global_Analytics_Enabled.ToString();
-
             settingsJson["global_me1directory"] = Global_ME1Directory.ToString();
-
             settingsJson["global_me2directory"] = Global_ME2Directory.ToString();
-
             settingsJson["global_me3directory"] = Global_ME3Directory.ToString();
-
             settingsJson["global_ledirectory"] = Global_LEDirectory.ToString();
-
             settingsJson["global_tlk_language"] = Global_TLK_Language.ToString();
-
             settingsJson["global_tlk_ismale"] = Global_TLK_IsMale.ToString();
-
 
             var settingsText = JsonConvert.SerializeObject(settingsJson, Formatting.Indented);
             try
@@ -582,6 +418,5 @@ namespace LegendaryExplorer.Misc.AppSettings
                 Debug.WriteLine($"Could not save settings: {e.Message}");
             }
         }
-
     }
 }
