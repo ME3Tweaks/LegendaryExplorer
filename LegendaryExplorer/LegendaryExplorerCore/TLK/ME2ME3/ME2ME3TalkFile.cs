@@ -27,6 +27,15 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
             LoadTlkData(filepath);
         }
 
+        /// <summary>
+        /// Loads a ME2ME3TalkFile from the specified <see cref="Stream"/>. The position must be properly set.
+        /// </summary>
+        /// <param name="stream">Stream to read from</param>
+        public ME2ME3TalkFile(Stream stream)
+        {
+            LoadTlkDataFromStream(stream);
+        }
+
         /// <inheritdoc/>
         public List<TLKStringRef> StringRefs { get; set; }
 
