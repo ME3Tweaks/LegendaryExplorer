@@ -14,5 +14,6 @@
     <MenuItem Header=" &gt;&gt; Text may not reflect actual functionality &lt;&lt;" IsEnabled="False"/>
     <MenuItem Header="Exkywor's buttons for lazy people">
         <MenuItem Header="Change Native Node StringRef" Click="UpdateNativeNodeStringRef_Click" ToolTip="Updates a native node's VOElements, FXA, and Wwisestream stringrefs."/>
+        <MenuItem Header="Clone Node and Sequence" Click="CloneNodeAndSequence_Click" ToolTip="Clones a dialogue node along with its linked sequence, and give it a unique ID."/>
     </MenuItem>
 </MenuItem>
