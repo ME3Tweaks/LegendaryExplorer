@@ -1,5 +1,7 @@
 var NAVTREEINDEX95 =
 {
+"namespace_legendary_explorer_core_1_1_gammtek.html#a9433cc61cc685d9cf964d6871ac7e091a05dd132ba23ff57c0ca5ec4100c31fdc":[0,5,0,6,88,3],
+"namespace_legendary_explorer_core_1_1_gammtek.html#a9433cc61cc685d9cf964d6871ac7e091a23cd5ba5c6eed3d82ba0c6c0526df429":[0,5,0,6,88,0],
 "namespace_legendary_explorer_core_1_1_gammtek.html#a9433cc61cc685d9cf964d6871ac7e091adbd9c38e0339e6c34bd48cafc59be388":[0,5,0,6,88,2],
 "namespace_legendary_explorer_core_1_1_gammtek.html#a9433cc61cc685d9cf964d6871ac7e091adeab83d56dee7ab418359a59b4ff2eb0":[0,5,0,6,88,1],
 "namespace_legendary_explorer_core_1_1_gammtek.html#abdb33e0d50e0ed925c43c19bf23e3aec":[0,5,0,6,86],
@@ -247,7 +249,5 @@ var NAVTREEINDEX95 =
 "namespace_legendary_explorer_core_1_1_shaders.html#accd69302e7e70eba62836205cdc1ab26a0832e369ba07823d01fb4da451183ce1":[0,5,0,15,11,2],
 "namespace_legendary_explorer_core_1_1_shaders.html#accd69302e7e70eba62836205cdc1ab26a87752381b583740610f1dfeb07fdad7e":[0,5,0,15,11,1],
 "namespace_legendary_explorer_core_1_1_shaders.html#accd69302e7e70eba62836205cdc1ab26a8eee8e217391199668cbac89472ace53":[0,5,0,15,11,4],
-"namespace_legendary_explorer_core_1_1_shaders.html#accd69302e7e70eba62836205cdc1ab26a8f3d9a4b6a7b7f2c7afa61ca113d0db9":[0,5,0,15,11,0],
-"namespace_legendary_explorer_core_1_1_shaders.html#accd69302e7e70eba62836205cdc1ab26a96a9b34b797454d8b292258ab9f1266c":[0,5,0,15,11,3],
-"namespace_legendary_explorer_core_1_1_shaders.html#accd69302e7e70eba62836205cdc1ab26ab8223be2455e0ea5a0e63e8f018d6fc3":[0,5,0,15,11,5]
+"namespace_legendary_explorer_core_1_1_shaders.html#accd69302e7e70eba62836205cdc1ab26a8f3d9a4b6a7b7f2c7afa61ca113d0db9":[0,5,0,15,11,0]
 };

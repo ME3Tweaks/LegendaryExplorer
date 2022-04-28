@@ -1,5 +1,6 @@
 var class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_talk_file =
 [
+    [ "ME2ME3TalkFile", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_talk_file.html#a09f4de06766e291c28aeee6d42c20795", null ],
     [ "ME2ME3TalkFile", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_talk_file.html#a1e33344c6343f27fa85abb024d79e744", null ],
     [ "ME2ME3TalkFile", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_talk_file.html#aee2e01ed1d8bfc03b3231441a93ca528", null ],
     [ "ProgressChangedEventHandler", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_talk_file.html#ad4585dfa06a051760569c9867635fcbb", null ],
