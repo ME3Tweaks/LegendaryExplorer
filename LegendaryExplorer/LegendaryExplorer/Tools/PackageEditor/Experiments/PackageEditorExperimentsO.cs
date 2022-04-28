@@ -490,5 +490,58 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments {
             }
             MessageBox.Show("All bools were sucessfully set", "Success", MessageBoxButton.OK);
         }
+
+        /// <summary>
+        /// Modify the hair morph targets of a male headmorph to make it bald
+        /// </summary>
+        /// <param name="pew">Current PE window</param>
+        public static void Baldinator(PackageEditorWindow pew)
+        {
+            if (pew.SelectedItem != null && pew.SelectedItem.Entry != null && pew.Pcc != null)
+            {
+                if (pew.SelectedItem.Entry.ClassName != "BioMorphFace")
+                {
+                    ShowError("Selected item is not a BioMorphFace");
+                    return;
+                }
+
+                MEGame game = pew.Pcc.Game;
+
+                // Get the export that we'll use to find the vertices to modify
+                string morphTargetsPccPath = Path.Combine(MEDirectories.GetCookedPath(game), "BIOG_HMM_HED_PROMorph.pcc");
+                if (!File.Exists(morphTargetsPccPath))
+                {
+                    ShowError("Could not find the BIOG_HMM_HED_PROMorph file. Please ensure the vanilla game files have not been modified.");
+                    return;
+                }
+                using IMEPackage morphTargetsPcc = MEPackageHandler.OpenMEPackage(morphTargetsPccPath);
+
+                ExportEntry morphTargets = morphTargetsPcc.FindExport("HMM_BaseMorphSet");
+                if (morphTargets == null || morphTargets.ClassName != "MorphTargetSet")
+                {
+                    ShowError("Could not find the morph targets in BIOG_HMM_HED_PROMorph. Please ensure the vanilla game files have not been modified.");
+                    return;
+                }
+
+                // Get the export that we'll use as the values to set the target like
+                string baldPccPath = Path.Combine(MEDirectories.GetCookedPath(game),
+                    game.IsGame3() ? "" : game.IsGame2() ? "" : "BIOA_FRE32_00_DSG.pcc" );
+                if (!File.Exists(baldPccPath))
+                {
+                    ShowError($"Could not find the {Path.GetFileNameWithoutExtension(baldPccPath)} file. Please ensure the vanilla game files have not been modified.");
+                    return;
+                }
+                using IMEPackage baldPcc = MEPackageHandler.OpenMEPackage(baldPccPath);
+
+                ExportEntry baldMorph = baldPcc.FindExport(game.IsGame3() ? "" : game.IsGame2() ? "" : "BIOA_UNC_FAC.HMM.Plot.FRE32_BioticLeader");
+                if (baldMorph == null || baldMorph.ClassName != "BioMorphFace")
+                {
+                    ShowError($"Could not find the bald headmorph. Please ensure the vanilla game files have not been modified.");
+                    return;
+                }
+
+                ExportEntry targetMorph = (ExportEntry) pew.SelectedItem.Entry;
+            }
+        }
     }
 }
