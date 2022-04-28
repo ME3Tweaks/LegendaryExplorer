@@ -19,6 +19,14 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
         private Dictionary<int, string> FemaleStringRefsTable;
 
         /// <summary>
+        /// Empty constructor (usable by external libraries)
+        /// </summary>
+        public ME2ME3TalkFile()
+        {
+
+        }
+
+        /// <summary>
         /// Loads a ME2ME3TalkFile from the specified file path.
         /// </summary>
         /// <param name="filepath">File on disk to read from.</param>
