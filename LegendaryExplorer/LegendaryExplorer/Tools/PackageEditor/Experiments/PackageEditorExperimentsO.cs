@@ -516,8 +516,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments {
                 }
                 using IMEPackage morphTargetsPcc = MEPackageHandler.OpenMEPackage(morphTargetsPccPath);
 
-                ExportEntry morphTargets = morphTargetsPcc.FindExport("HMM_BaseMorphSet");
-                if (morphTargets == null || morphTargets.ClassName != "MorphTargetSet")
+                ExportEntry morphTargetSet = morphTargetsPcc.FindExport("HMM_BaseMorphSet");
+                if (morphTargetSet == null || morphTargetSet.ClassName != "MorphTargetSet")
                 {
                     ShowError("Could not find the morph targets in BIOG_HMM_HED_PROMorph. Please ensure the vanilla game files have not been modified.");
                     return;
@@ -525,7 +525,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments {
 
                 // Get the export that we'll use as the values to set the target like
                 string baldPccPath = Path.Combine(MEDirectories.GetCookedPath(game),
-                    game.IsGame3() ? "" : game.IsGame2() ? "" : "BIOA_FRE32_00_DSG.pcc" );
+                    game.IsGame3() ? "BioD_CitHub_Underbelly.pcc" : game.IsGame2() ? "BioH_Wilson.pcc" : "BIOA_FRE32_00_DSG.pcc" );
                 if (!File.Exists(baldPccPath))
                 {
                     ShowError($"Could not find the {Path.GetFileNameWithoutExtension(baldPccPath)} file. Please ensure the vanilla game files have not been modified.");
@@ -533,7 +533,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments {
                 }
                 using IMEPackage baldPcc = MEPackageHandler.OpenMEPackage(baldPccPath);
 
-                ExportEntry baldMorph = baldPcc.FindExport(game.IsGame3() ? "" : game.IsGame2() ? "" : "BIOA_UNC_FAC.HMM.Plot.FRE32_BioticLeader");
+                ExportEntry baldMorph = baldPcc.FindExport(game.IsGame3() ? "BioChar_CitHub.Faces.HMM_Deco_1" :
+                    game.IsGame2() ? "BIOG_Hench_FAC.HMM.hench_wilson" : "BIOA_UNC_FAC.HMM.Plot.FRE32_BioticLeader");
                 if (baldMorph == null || baldMorph.ClassName != "BioMorphFace")
                 {
                     ShowError($"Could not find the bald headmorph. Please ensure the vanilla game files have not been modified.");
@@ -541,6 +542,52 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments {
                 }
 
                 ExportEntry targetMorph = (ExportEntry) pew.SelectedItem.Entry;
+
+                BioMorphFace baldMorphFace = ObjectBinary.From<BioMorphFace>(baldMorph);
+                BioMorphFace targetMorphFace = ObjectBinary.From<BioMorphFace>(targetMorph);
+
+                if (baldMorphFace.LODs[0].Length != targetMorphFace.LODs[0].Length)
+                {
+                    ShowError($"The selected headmorph differs from the expected one. This experiment only works for male human headmorphs.");
+                    return;
+                }
+
+                // Collect the vertex indices from the targets
+                List<int> indices = morphTargetSet.GetProperty<ArrayProperty<ObjectProperty>>("Targets")
+                    .Select(prop => morphTargetsPcc.GetUExport(prop.Value))
+                    .Where(entry =>
+                    {
+                        List<string> targets = new()
+                        {
+                            "Buzzcut",
+                            "BuzzCut_WidowsPeak",
+                            "HAIR_pulledbackslick",
+                            "HAIR_sidepart",
+                            "HAIR_slickWidowsPeak",
+                            "HAIR_pulledBackBig",
+                            "Hair_splitSide",
+                            "HAIR_centerPart",
+                            "Flattop",
+                            "flattop_widowspeak",
+                            "Eastwood",
+                            "deiter",
+                            "widowsPeak",
+                            "straightHairLine"
+                        };
+                        return targets.Exists(name => string.Equals(entry.ObjectName, name, StringComparison.OrdinalIgnoreCase));
+                    }).Aggregate(new List<int>(), (list, t) =>
+                    {
+                        MorphTarget target = ObjectBinary.From<MorphTarget>(t);
+                        foreach (MorphTarget.MorphVertex vertex in target.MorphLODModels[0].Vertices)
+                        {
+                            if (!list.Contains(vertex.SourceIdx))
+                            {
+                                list.Add(vertex.SourceIdx);
+                            }
+                        }
+                        return list;
+                    }).ToList();
+
             }
         }
     }
