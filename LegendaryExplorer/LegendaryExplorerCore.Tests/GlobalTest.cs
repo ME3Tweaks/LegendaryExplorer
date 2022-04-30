@@ -68,7 +68,6 @@ namespace LegendaryExplorerCore.Tests
         public static string GetTestMountsDirectory() => Path.Combine(GetTestDataDirectory(), "mounts");
         public static string GetTestTLKDirectory() => Path.Combine(GetTestDataDirectory(), "tlk");
         public static string GetTestDataMiscDirectory() => Path.Combine(GetTestDataDirectory(), "misc");
-        public static string GetTestCRCDirectory() => Path.Combine(GetTestDataMiscDirectory(), "crc");
         public static string GetTestTexturesDirectory() => Path.Combine(GetTestDataDirectory(), "textures");
         public static string GetTestCoalescedDirectory() => Path.Combine(GetTestDataDirectory(), "coalesced");
         public static string GetTestISBDirectory() => Path.Combine(GetTestDataDirectory(), "isb");

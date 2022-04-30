@@ -369,9 +369,9 @@ namespace LegendaryExplorerCore.Unreal.Classes
             if (textureFormat == "PF_NormalMap_HQ")
             {
                 // only ME1 and ME2
-                return (uint)~ParallelCRC.Compute(data, 0, data.Length / 2);
+                return TextureCRC.Compute(data, 0, data.Length / 2);
             }
-            return (uint)~ParallelCRC.Compute(data);
+            return TextureCRC.Compute(data);
         }
 
         /// <summary>
