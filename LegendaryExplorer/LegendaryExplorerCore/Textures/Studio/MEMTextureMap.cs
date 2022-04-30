@@ -11,32 +11,32 @@ namespace LegendaryExplorerCore.Textures.Studio
     /// <summary>
     /// Precomputed texture map info (from Mass EFfect Modder "MEM")
     /// </summary>
-    public class MEMTextureMap
+    public static class MEMTextureMap
     {
         public static Dictionary<uint, TextureMapEntry> LoadTextureMap(MEGame game)
         {
             // Read the vanilla file name table
-            List<string> packageNames = null;
+            List<string> packageNames;
+            using (MemoryStream vanillaInfoStream = LegendaryExplorerCoreUtilities.LoadEmbeddedFile($"Precomputed.FileTable.vanilla{game}.bin"))
             {
-                using var vanillaInfoStream = LegendaryExplorerCoreUtilities.LoadEmbeddedFile($"Precomputed.FileTable.vanilla{game}.bin");
                 if (vanillaInfoStream.ReadStringLatin1(4) != @"MD5T")
                 {
                     throw new Exception(@"Header of MD5 table doesn't match expected value!");
                 }
 
                 //Decompress
-                var decompressedSize = vanillaInfoStream.ReadInt32();
+                int decompressedSize = vanillaInfoStream.ReadInt32();
                 //var compressedSize = stream.Length - stream.Position;
 
-                var compressedBuffer = vanillaInfoStream.ReadToBuffer(vanillaInfoStream.Length - vanillaInfoStream.Position);
-                var decompressedBuffer = LZMA.Decompress(compressedBuffer, (uint)decompressedSize);
+                byte[] compressedBuffer = vanillaInfoStream.ReadToBuffer(vanillaInfoStream.Length - vanillaInfoStream.Position);
+                byte[] decompressedBuffer = LZMA.Decompress(compressedBuffer, (uint)decompressedSize);
                 if (decompressedBuffer.Length != decompressedSize)
                 {
                     throw new Exception(@"Vanilla database failed to decompress");
                 }
 
                 //Read
-                MemoryStream table = new MemoryStream(decompressedBuffer);
+                var table = new MemoryStream(decompressedBuffer);
                 int numEntries = table.ReadInt32();
                 packageNames = new List<string>(numEntries);
                 //Package names
@@ -54,17 +54,17 @@ namespace LegendaryExplorerCore.Textures.Studio
             // read the precomputed vanilla texture map.
             // this map will help identify vanilla textures
 
-            var magic = fs.ReadInt32();
+            int magic = fs.ReadInt32();
             if (magic != 0x504D5443)
                 throw new Exception(@"Invalid precomputed texture map! Wrong magic");
-            var decompSize = fs.ReadUInt32();
+            uint decompSize = fs.ReadUInt32();
             byte[] compresssed = fs.ReadToBuffer(fs.ReadInt32());
 
             var texMap = new MemoryStream(LZMA.Decompress(compresssed, decompSize));
             texMap.Seek(8, SeekOrigin.Begin); // skip magic, ???
 
-            var textureCount = texMap.ReadInt32();
-            Dictionary<uint, TextureMapEntry> map = new Dictionary<uint, TextureMapEntry>(textureCount);
+            int textureCount = texMap.ReadInt32();
+            var map = new Dictionary<uint, TextureMapEntry>(textureCount);
             for (int i = 0; i < textureCount; i++)
             {
                 var entry = TextureMapEntry.ReadTextureMapEntry(texMap, game, packageNames);
@@ -79,21 +79,24 @@ namespace LegendaryExplorerCore.Textures.Studio
         /// </summary>
         public class TextureMapEntry
         {
-
             public static TextureMapEntry ReadTextureMapEntry(MemoryStream texMap, MEGame game, List<string> packageNames)
             {
-                TextureMapEntry tme = new TextureMapEntry();
-                tme.Name = texMap.ReadStringLatin1(texMap.ReadByte());
-                tme.CRC = texMap.ReadUInt32();
-                tme.Width = texMap.ReadInt16();
-                tme.Height = texMap.ReadInt16();
-                tme.PixelFormat = (PixelFormat)texMap.ReadByte();
-                tme.Flags = texMap.ReadByte();
+                var tme = new TextureMapEntry
+                {
+                    Name = texMap.ReadStringLatin1(texMap.ReadByte()),
+                    CRC = texMap.ReadUInt32(),
+                    Width = texMap.ReadInt16(),
+                    Height = texMap.ReadInt16(),
+                    PixelFormat = (PixelFormat)texMap.ReadByte(),
+                    Flags = texMap.ReadByte()
+                };
                 int countPackages = texMap.ReadInt16();
                 for (int k = 0; k < countPackages; k++)
                 {
-                    var matched = new TextureMapPackageEntry();
-                    matched.UIndex = texMap.ReadInt32();
+                    var matched = new TextureMapPackageEntry
+                    {
+                        UIndex = texMap.ReadInt32()
+                    };
                     if (game == MEGame.ME1)
                     {
                         var isSlaveTexture = texMap.ReadInt16();
