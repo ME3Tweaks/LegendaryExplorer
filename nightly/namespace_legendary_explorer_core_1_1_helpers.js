@@ -14,10 +14,10 @@ var namespace_legendary_explorer_core_1_1_helpers =
     [ "LegendaryExplorerCoreUtilities", "class_legendary_explorer_core_1_1_helpers_1_1_legendary_explorer_core_utilities.html", "class_legendary_explorer_core_1_1_helpers_1_1_legendary_explorer_core_utilities" ],
     [ "ListInitHelper", "class_legendary_explorer_core_1_1_helpers_1_1_list_init_helper.html", "class_legendary_explorer_core_1_1_helpers_1_1_list_init_helper" ],
     [ "MiscExtensions", "class_legendary_explorer_core_1_1_helpers_1_1_misc_extensions.html", "class_legendary_explorer_core_1_1_helpers_1_1_misc_extensions" ],
-    [ "ParallelCRC", "class_legendary_explorer_core_1_1_helpers_1_1_parallel_c_r_c.html", "class_legendary_explorer_core_1_1_helpers_1_1_parallel_c_r_c" ],
     [ "StreamHelpers", "class_legendary_explorer_core_1_1_helpers_1_1_stream_helpers.html", "class_legendary_explorer_core_1_1_helpers_1_1_stream_helpers" ],
     [ "StringExtensions", "class_legendary_explorer_core_1_1_helpers_1_1_string_extensions.html", "class_legendary_explorer_core_1_1_helpers_1_1_string_extensions" ],
     [ "TaskExtensions", "class_legendary_explorer_core_1_1_helpers_1_1_task_extensions.html", "class_legendary_explorer_core_1_1_helpers_1_1_task_extensions" ],
+    [ "TextureCRC", "class_legendary_explorer_core_1_1_helpers_1_1_texture_c_r_c.html", "class_legendary_explorer_core_1_1_helpers_1_1_texture_c_r_c" ],
     [ "TypeExtension", "class_legendary_explorer_core_1_1_helpers_1_1_type_extension.html", "class_legendary_explorer_core_1_1_helpers_1_1_type_extension" ],
     [ "UnrealExtensions", "class_legendary_explorer_core_1_1_helpers_1_1_unreal_extensions.html", "class_legendary_explorer_core_1_1_helpers_1_1_unreal_extensions" ]
 ];
