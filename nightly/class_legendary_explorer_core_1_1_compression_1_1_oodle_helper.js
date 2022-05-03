@@ -1,16 +1,16 @@
 var class_legendary_explorer_core_1_1_compression_1_1_oodle_helper =
 [
-    [ "OodleCompressionLevel", "class_legendary_explorer_core_1_1_compression_1_1_oodle_helper.html#a4d34b186eab727067a95944ed5edea77", [
-      [ "None", "class_legendary_explorer_core_1_1_compression_1_1_oodle_helper.html#a4d34b186eab727067a95944ed5edea77a6adf97f83acf6453d4a6a4b1070f3754", null ],
-      [ "SuperFast", "class_legendary_explorer_core_1_1_compression_1_1_oodle_helper.html#a4d34b186eab727067a95944ed5edea77a4140a6a9047f86082259bc7d925d3db0", null ],
-      [ "VeryFast", "class_legendary_explorer_core_1_1_compression_1_1_oodle_helper.html#a4d34b186eab727067a95944ed5edea77ac3f886add2c17b5e2a344c3848e41a55", null ],
-      [ "Fast", "class_legendary_explorer_core_1_1_compression_1_1_oodle_helper.html#a4d34b186eab727067a95944ed5edea77ae16b5b7f26f54214445cbe38d72c2828", null ],
-      [ "Normal", "class_legendary_explorer_core_1_1_compression_1_1_oodle_helper.html#a4d34b186eab727067a95944ed5edea77a960b44c579bc2f6818d2daaf9e4c16f0", null ],
-      [ "Optimal1", "class_legendary_explorer_core_1_1_compression_1_1_oodle_helper.html#a4d34b186eab727067a95944ed5edea77aedf1aafb394085643231af42deed2cf6", null ],
-      [ "Optimal2", "class_legendary_explorer_core_1_1_compression_1_1_oodle_helper.html#a4d34b186eab727067a95944ed5edea77a4c3600428f02e4846879785014ee5e1d", null ],
-      [ "Optimal3", "class_legendary_explorer_core_1_1_compression_1_1_oodle_helper.html#a4d34b186eab727067a95944ed5edea77a5e3b2b62e9c62df67e90e0ff0689a5f6", null ],
-      [ "Optimal4", "class_legendary_explorer_core_1_1_compression_1_1_oodle_helper.html#a4d34b186eab727067a95944ed5edea77a1e6818421d596f92531e8e0970851aae", null ],
-      [ "Optimal5", "class_legendary_explorer_core_1_1_compression_1_1_oodle_helper.html#a4d34b186eab727067a95944ed5edea77a5590a359e848ea27be28e840dcd4ef76", null ]
+    [ "OodleCompressionLevel", "class_legendary_explorer_core_1_1_compression_1_1_oodle_helper.html#ac721753ca477012d12a75e14ec695908", [
+      [ "None", "class_legendary_explorer_core_1_1_compression_1_1_oodle_helper.html#ac721753ca477012d12a75e14ec695908a6adf97f83acf6453d4a6a4b1070f3754", null ],
+      [ "SuperFast", "class_legendary_explorer_core_1_1_compression_1_1_oodle_helper.html#ac721753ca477012d12a75e14ec695908a4140a6a9047f86082259bc7d925d3db0", null ],
+      [ "VeryFast", "class_legendary_explorer_core_1_1_compression_1_1_oodle_helper.html#ac721753ca477012d12a75e14ec695908ac3f886add2c17b5e2a344c3848e41a55", null ],
+      [ "Fast", "class_legendary_explorer_core_1_1_compression_1_1_oodle_helper.html#ac721753ca477012d12a75e14ec695908ae16b5b7f26f54214445cbe38d72c2828", null ],
+      [ "Normal", "class_legendary_explorer_core_1_1_compression_1_1_oodle_helper.html#ac721753ca477012d12a75e14ec695908a960b44c579bc2f6818d2daaf9e4c16f0", null ],
+      [ "Optimal1", "class_legendary_explorer_core_1_1_compression_1_1_oodle_helper.html#ac721753ca477012d12a75e14ec695908aedf1aafb394085643231af42deed2cf6", null ],
+      [ "Optimal2", "class_legendary_explorer_core_1_1_compression_1_1_oodle_helper.html#ac721753ca477012d12a75e14ec695908a4c3600428f02e4846879785014ee5e1d", null ],
+      [ "Optimal3", "class_legendary_explorer_core_1_1_compression_1_1_oodle_helper.html#ac721753ca477012d12a75e14ec695908a5e3b2b62e9c62df67e90e0ff0689a5f6", null ],
+      [ "Optimal4", "class_legendary_explorer_core_1_1_compression_1_1_oodle_helper.html#ac721753ca477012d12a75e14ec695908a1e6818421d596f92531e8e0970851aae", null ],
+      [ "Optimal5", "class_legendary_explorer_core_1_1_compression_1_1_oodle_helper.html#ac721753ca477012d12a75e14ec695908a5590a359e848ea27be28e840dcd4ef76", null ]
     ] ],
     [ "OodleFormat", "class_legendary_explorer_core_1_1_compression_1_1_oodle_helper.html#afd3464963f9bf82db7f7f152ecbf9513", [
       [ "LZH", "class_legendary_explorer_core_1_1_compression_1_1_oodle_helper.html#afd3464963f9bf82db7f7f152ecbf9513a3439e3d132f7f12845f1ecc4343dc514", null ],
@@ -31,7 +31,7 @@ var class_legendary_explorer_core_1_1_compression_1_1_oodle_helper =
     [ "LoadOodleDll", "class_legendary_explorer_core_1_1_compression_1_1_oodle_helper.html#a043aafaf8fd9128d740ffd4ad24a2e46", null ],
     [ "EnsureOodleDll", "class_legendary_explorer_core_1_1_compression_1_1_oodle_helper.html#aa6351ba773d345e171a91ef33f64dac3", null ],
     [ "Compress", "class_legendary_explorer_core_1_1_compression_1_1_oodle_helper.html#a80e2e417ba64eadfe773ddc790010738", null ],
-    [ "Compress", "class_legendary_explorer_core_1_1_compression_1_1_oodle_helper.html#a6d3a7ac5b694e1e168f5add50d6514f5", null ],
+    [ "Compress", "class_legendary_explorer_core_1_1_compression_1_1_oodle_helper.html#abcc13491466c716bbe377033e4127fb3", null ],
     [ "GetCompressionBound", "class_legendary_explorer_core_1_1_compression_1_1_oodle_helper.html#aa786e81269272b7dbe32ab597b2d5aef", null ],
     [ "Decompress", "class_legendary_explorer_core_1_1_compression_1_1_oodle_helper.html#a2a32b32ad6797649e7aac5d5492fe728", null ]
 ];
