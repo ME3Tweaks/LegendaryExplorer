@@ -21,18 +21,17 @@ namespace LegendaryExplorerCore.Compression
     public static class OodleHelper
     {
         [DllImport(CompressionHelper.OODLE_DLL_NAME)]
-        private static extern int OodleLZ_Compress(OodleFormat format, in byte buffer, long bufferSize, byte[] outputBuffer, OodleCompressionLevel level,
-            uint unused1, uint unused2, uint unused3,
-            uint unused4, uint unused, uint unused6);
-        [DllImport(CompressionHelper.OODLE_DLL_NAME)]
-        private static extern int OodleLZ_Compress(OodleFormat format, in byte buffer, long bufferSize, in byte outputBuffer, OodleCompressionLevel level,
-            uint unused1, uint unused2, uint unused3,
-            uint unused4, uint unused, uint unused6);
+        private static extern unsafe int OodleLZ_Compress(OodleFormat format, byte* buffer, long bufferSize, byte* outputBuffer, OodleCompressionLevel level,
+            ulong unused1, ulong unused2, ulong unused3,
+            ulong unused4, ulong unused);
 
 
         [DllImport(CompressionHelper.OODLE_DLL_NAME)]
         private static extern unsafe int OodleLZ_Decompress(byte* buffer, long bufferSize, byte* outputBuffer, long outputBufferSize,
-            uint a, uint b, ulong c, uint d, uint e, uint f, uint g, uint h, uint i, uint threadModule);
+            uint a, uint b, uint c, ulong d, ulong e, ulong f, ulong g, ulong h, ulong i, ulong threadModule);
+
+        [DllImport(CompressionHelper.OODLE_DLL_NAME)]
+        private static extern long OodleLZ_GetCompressedBufferSizeNeeded(byte format, long bufferSize);
 
 
         [DllImport("kernel32.dll")]
@@ -61,7 +60,7 @@ namespace LegendaryExplorerCore.Compression
             }
         }
 
-        public enum OodleCompressionLevel : ulong
+        public enum OodleCompressionLevel : uint
         {
             None,
             SuperFast,
@@ -202,29 +201,22 @@ namespace LegendaryExplorerCore.Compression
             int compressedCount;
             unsafe
             {
-                fixed (byte* inPtr = &MemoryMarshal.GetReference(inputBuffer))
-                fixed (byte* outPtr = &MemoryMarshal.GetReference(outputBuffer))
+                fixed (byte* inPtr = inputBuffer)
+                fixed (byte* outPtr = outputBuffer)
                 {
-                    compressedCount = OodleLZ_Compress(OodleFormat.Leviathan, Unsafe.AsRef<byte>(inPtr), inputBuffer.Length, Unsafe.AsRef<byte>(outPtr), OodleCompressionLevel.Normal,
-                                                       0, 0, 0, 0, 0, 0);
+                    compressedCount = OodleLZ_Compress(OodleFormat.Leviathan, inPtr, inputBuffer.Length, outPtr, OodleCompressionLevel.Normal,
+                                                       0, 0, 0, 0, 0);
                 }
             }
             return compressedCount;
         }
 
-        public static byte[] Compress(ReadOnlySpan<byte> buffer, int size, OodleFormat format, OodleCompressionLevel level)
+        public static byte[] Compress(ReadOnlySpan<byte> buffer)
         {
-            int compressedBufferSize = GetCompressionBound(size);
+            int compressedBufferSize = GetCompressionBound(buffer.Length);
             byte[] compressedBuffer = MemoryManager.GetByteArray(compressedBufferSize); // we will not use all of this. someday we will want to improve this i think
 
-            int compressedCount;
-            unsafe
-            {
-                fixed (byte* ptr = &MemoryMarshal.GetReference(buffer))
-                {
-                    compressedCount = OodleLZ_Compress(format, Unsafe.AsRef<byte>(ptr), buffer.Length, compressedBuffer, level, 0, 0, 0, 0, 0, 0);
-                }
-            }
+            int compressedCount = Compress(buffer, compressedBuffer.AsSpan());
 
 
             byte[] outputBuffer = new byte[compressedCount];
@@ -234,11 +226,7 @@ namespace LegendaryExplorerCore.Compression
             return outputBuffer;
         }
 
-        public static int GetCompressionBound(int bufferSize)
-        {
-            // Not sure how to do this
-            return bufferSize + 274 * ((bufferSize + 0x3FFFF) / 0x40000);
-        }
+        public static int GetCompressionBound(int bufferSize) => (int)OodleLZ_GetCompressedBufferSizeNeeded((byte)OodleFormat.Leviathan, bufferSize);
 
         public static int Decompress(ReadOnlySpan<byte> buffer, Span<byte> decompressedBuffer)
         {

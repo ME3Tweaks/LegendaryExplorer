@@ -131,7 +131,7 @@ namespace LegendaryExplorerCore.Unreal
                         break;
                     case StorageTypes.extOodle:
                     case StorageTypes.pccOodle:
-                        block.compressedBuffer = OodleHelper.Compress(uncompressedSpan, uncompressedSpan.Length, OodleHelper.OodleFormat.Leviathan, OodleHelper.OodleCompressionLevel.Normal);
+                        block.compressedBuffer = OodleHelper.Compress(uncompressedSpan);
                         break;
                     default:
                         throw new Exception("Compression type not expected!");

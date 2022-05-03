@@ -29,16 +29,13 @@
   <PropertyGroup Condition="'$(Configuration)'=='WinRelease' or '$(Configuration)'=='WPFRelease'">
     <DebugType>embedded</DebugType>
     <DebugSymbols>true</DebugSymbols>
-	  <!-- Do not turn on optimizations! It breaks Oodle decompression for some reason.
-	       If you really want to turn this on, and are prepared to try and debug the problem,
-		   you should add the follwing attribute to this assembly when debugging it,
-		   otherwise optimizations will be turned off when a debugger is attached,
-		   and any issues it causes will be obscured.
+	  <!-- If the Optimize flag is enabled, you should be aware that running it with the debugger attached disables optimizations!
+	  If you want to debug a problem that only occurs in an optimized build, you'll need to use this attribute:
 		   
 		   [assembly: Debuggable(true, false)]
 		   
 		   -->
-	<Optimize>false</Optimize>
+	<Optimize>true</Optimize>
     <PlatformTarget>x64</PlatformTarget>
     <DefineConstants>WINDOWS</DefineConstants>
   </PropertyGroup>
@@ -47,7 +44,7 @@
   <PropertyGroup Condition="'$(Configuration)'=='WinAzureRelease'">
     <DebugType>embedded</DebugType>
     <DebugSymbols>true</DebugSymbols>
-	<Optimize>false</Optimize>
+	<Optimize>true</Optimize>
     <PlatformTarget>x64</PlatformTarget>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DefineConstants>WINDOWS;NIGHTLY</DefineConstants>
