@@ -14,7 +14,7 @@ var searchData=
   ['texture2dmipinfo_11',['Texture2DMipInfo',['../class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d_mip_info.html',1,'LegendaryExplorerCore::Unreal::Classes']]],
   ['texture2dmipmap_12',['Texture2DMipMap',['../class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_texture2_d_1_1_texture2_d_mip_map.html',1,'LegendaryExplorerCore::Unreal::BinaryConverters::UTexture2D']]],
   ['texturecompression_13',['TextureCompression',['../class_legendary_explorer_core_1_1_unreal_1_1_texture_compression.html',1,'LegendaryExplorerCore::Unreal']]],
-  ['texturecrc_14',['TextureCRC',['../class_legendary_explorer_core_1_1_helpers_1_1_texture_c_r_c.html',1,'LegendaryExplorerCore::Helpers']]],
+  ['texturecrc_14',['TextureCRC',['../class_legendary_explorer_core_1_1_textures_1_1_texture_c_r_c.html',1,'LegendaryExplorerCore::Textures']]],
   ['texturelodinfo_15',['TextureLODInfo',['../class_legendary_explorer_core_1_1_textures_1_1_texture_l_o_d_info.html',1,'LegendaryExplorerCore::Textures']]],
   ['texturelookup_16',['TextureLookup',['../class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_resource_1_1_texture_lookup.html',1,'LegendaryExplorerCore::Unreal::BinaryConverters::MaterialResource']]],
   ['texturemap_17',['TextureMap',['../class_legendary_explorer_core_1_1_textures_1_1_studio_1_1_texture_map.html',1,'LegendaryExplorerCore::Textures::Studio']]],

@@ -35,8 +35,5 @@ var dir_4a316dfe5c6470fe61f78fdfec2d8dba =
     ] ],
     [ "StreamIO.cs", "_stream_i_o_8cs.html", [
       [ "LegendaryExplorerCore.Helpers.StreamHelpers", "class_legendary_explorer_core_1_1_helpers_1_1_stream_helpers.html", "class_legendary_explorer_core_1_1_helpers_1_1_stream_helpers" ]
-    ] ],
-    [ "TextureCRC.cs", "_texture_c_r_c_8cs.html", [
-      [ "LegendaryExplorerCore.Helpers.TextureCRC", "class_legendary_explorer_core_1_1_helpers_1_1_texture_c_r_c.html", "class_legendary_explorer_core_1_1_helpers_1_1_texture_c_r_c" ]
     ] ]
 ];

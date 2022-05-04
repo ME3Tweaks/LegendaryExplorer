@@ -1040,7 +1040,7 @@ var hierarchy =
     [ "LegendaryExplorerCore.Unreal.Classes.Texture2DMipInfo", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d_mip_info.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.UTexture2D.Texture2DMipMap", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_texture2_d_1_1_texture2_d_mip_map.html", null ],
     [ "LegendaryExplorerCore.Unreal.TextureCompression", "class_legendary_explorer_core_1_1_unreal_1_1_texture_compression.html", null ],
-    [ "LegendaryExplorerCore.Helpers.TextureCRC", "class_legendary_explorer_core_1_1_helpers_1_1_texture_c_r_c.html", null ],
+    [ "LegendaryExplorerCore.Textures.TextureCRC", "class_legendary_explorer_core_1_1_textures_1_1_texture_c_r_c.html", null ],
     [ "LegendaryExplorerCore.Textures.TextureLODInfo", "class_legendary_explorer_core_1_1_textures_1_1_texture_l_o_d_info.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.MaterialResource.TextureLookup", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_resource_1_1_texture_lookup.html", null ],
     [ "LegendaryExplorerCore.Textures.Studio.TextureMap", "class_legendary_explorer_core_1_1_textures_1_1_studio_1_1_texture_map.html", null ],

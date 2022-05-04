@@ -16,6 +16,9 @@ var dir_88d259683dc35125553e2d066a3628f9 =
     [ "TexConverter.cs", "_tex_converter_8cs.html", [
       [ "LegendaryExplorerCore.Textures.TexConverter", "class_legendary_explorer_core_1_1_textures_1_1_tex_converter.html", "class_legendary_explorer_core_1_1_textures_1_1_tex_converter" ]
     ] ],
+    [ "TextureCRC.cs", "_texture_c_r_c_8cs.html", [
+      [ "LegendaryExplorerCore.Textures.TextureCRC", "class_legendary_explorer_core_1_1_textures_1_1_texture_c_r_c.html", "class_legendary_explorer_core_1_1_textures_1_1_texture_c_r_c" ]
+    ] ],
     [ "TextureLODInfo.cs", "_texture_l_o_d_info_8cs.html", [
       [ "LegendaryExplorerCore.Textures.TextureLODInfo", "class_legendary_explorer_core_1_1_textures_1_1_texture_l_o_d_info.html", "class_legendary_explorer_core_1_1_textures_1_1_texture_l_o_d_info" ]
     ] ],
