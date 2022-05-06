@@ -613,30 +613,43 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     return;
                 }
 
+                // Get a list of the hair morph targets that exist in the targetMorph morphFeatures property.
+                // If the property does not exist, we'll use all the default hair targets.
+                List<string> targetsInMorph = new List<string>()
+                {
+                    "Afro"
+                    "Buzzcut",
+                    "BuzzCut_WidowsPeak",
+                    "Deiter",
+                    "HAIR_pulledbackslick",
+                    "HAIR_sidepart",
+                    "HAIR_slickWidowsPeak",
+                    "HAIR_pulledBackBig",
+                    "Hair_splitSide",
+                    "HAIR_centerPart",
+                    "Flattop",
+                    "flattop_widowspeak",
+                    "Eastwood",
+                    "deiter",
+                    "widowsPeak",
+                    "straightHairLine"
+                }.Where(targetName =>
+                {
+                    ArrayProperty<StructProperty> features = targetMorph.GetProperty<ArrayProperty<StructProperty>>("m_aMorphFeatures");
+                    if (features.Any())
+                    {
+                        // Compare the targetName against the names of the features
+                        List<string> featureNames = features.Select(feature => feature.GetProp<NameProperty>("sFeatureName").Value.Name).ToList();
+                        return featureNames.Exists(featureName => string.Equals(featureName, targetName, StringComparison.OrdinalIgnoreCase));
+                    }
+                    else { return true; }
+                }).ToList();
+
                 // Collect the vertex indices from the targets
                 List<int>[] indices = morphTargetSet.GetProperty<ArrayProperty<ObjectProperty>>("Targets")
                     .Select(prop => morphTargetsPcc.GetUExport(prop.Value))
-                    .Where(entry =>
-                    {
-                        List<string> targets = new()
-                        {
-                            "Buzzcut",
-                            "BuzzCut_WidowsPeak",
-                            "HAIR_pulledbackslick",
-                            "HAIR_sidepart",
-                            "HAIR_slickWidowsPeak",
-                            "HAIR_pulledBackBig",
-                            "Hair_splitSide",
-                            "HAIR_centerPart",
-                            "Flattop",
-                            "flattop_widowspeak",
-                            "Eastwood",
-                            "deiter",
-                            "widowsPeak",
-                            "straightHairLine"
-                        };
-                        return targets.Exists(name => string.Equals(entry.ObjectName, name, StringComparison.OrdinalIgnoreCase));
-                    }).Aggregate(new List<int>[2], (lods, t) =>
+                    .Where(entry => targetsInMorph.Exists(name => string.Equals(entry.ObjectName, name, StringComparison.OrdinalIgnoreCase)))
+                    .Aggregate(new List<int>[2], (lods, t) =>
                     {
                         MorphTarget target = ObjectBinary.From<MorphTarget>(t);
                         for (int i = 0; i < 2; i++) // Adds indices for two lods, since the morphTargets only have two lod models
@@ -644,7 +657,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                             List<int> lod = new();
                             foreach (MorphTarget.MorphVertex vertex in target.MorphLODModels[i].Vertices)
                             {
-                                if (!lod.Contains(vertex.SourceIdx))
+                                if (!lod.Contains(vertex.SourceIdx) && (vertex.SourceIdx != 495)) // 495 is a nose vertex
                                 {
                                     lod.Add(vertex.SourceIdx);
                                 }
