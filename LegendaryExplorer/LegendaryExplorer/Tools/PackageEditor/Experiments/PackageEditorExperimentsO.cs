@@ -617,7 +617,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 // If the property does not exist, we'll use all the default hair targets.
                 List<string> targetsInMorph = new List<string>()
                 {
-                    "Afro"
+                    "Afro",
                     "Buzzcut",
                     "BuzzCut_WidowsPeak",
                     "Deiter",
