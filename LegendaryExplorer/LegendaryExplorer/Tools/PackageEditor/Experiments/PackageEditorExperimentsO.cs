@@ -647,6 +647,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     }
                     else { return true; }
                 }).ToList();
+
                 if (targetsInMorph.Count == 0) { targetsInMorph = targetNames; }
 
                 // Collect the vertex indices from the targets
