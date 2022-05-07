@@ -613,14 +613,13 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     return;
                 }
 
-                // Get a list of the hair morph targets that exist in the targetMorph morphFeatures property.
-                // If the property does not exist, we'll use all the default hair targets.
-                List<string> targetsInMorph = new List<string>()
+                List<string> targetNames = new List<string>()
                 {
                     "Afro",
                     "Buzzcut",
                     "BuzzCut_WidowsPeak",
                     "Deiter",
+                    "Greezer",
                     "HAIR_pulledbackslick",
                     "HAIR_sidepart",
                     "HAIR_slickWidowsPeak",
@@ -630,10 +629,14 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     "Flattop",
                     "flattop_widowspeak",
                     "Eastwood",
-                    "deiter",
                     "widowsPeak",
-                    "straightHairLine"
-                }.Where(targetName =>
+                    "rollins",
+                    "straightHairLine",
+                };
+
+                // Get a list of the hair morph targets that exist in the targetMorph morphFeatures property.
+                // If the property does not exist or no feature matches the targetNames, we'll use all the default hair targets.
+                List<string> targetsInMorph = targetNames.Where(targetName =>
                 {
                     ArrayProperty<StructProperty> features = targetMorph.GetProperty<ArrayProperty<StructProperty>>("m_aMorphFeatures");
                     if (features.Any())
@@ -644,6 +647,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     }
                     else { return true; }
                 }).ToList();
+                if (targetsInMorph.Count == 0) { targetsInMorph = targetNames; }
 
                 // Collect the vertex indices from the targets
                 List<int>[] indices = morphTargetSet.GetProperty<ArrayProperty<ObjectProperty>>("Targets")
