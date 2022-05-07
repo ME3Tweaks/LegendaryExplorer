@@ -1305,6 +1305,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         {
             PackageEditorExperimentsO.BatchSetBoolPropVal(GetPEWindow());
         }
+
+        private void CopyProperty_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.CopyProperty(GetPEWindow());
+        }
         #endregion
 
         // EXPERIMENTS: CHONKY DB---------------------------------------------------------
