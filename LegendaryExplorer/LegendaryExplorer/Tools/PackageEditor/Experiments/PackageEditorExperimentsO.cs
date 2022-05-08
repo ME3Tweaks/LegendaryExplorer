@@ -610,7 +610,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         }
 
         /// <summary>
-        /// Copies the texture, vector, and scalar properties of a BioMaterialOverride into a MaterialInstanceConstant, or vice-versa.
+        /// Copies the texture, vector, and scalar properties of a BioMaterialOverride into [Bio]MaterialInstanceConstants, or vice-versa.
         /// </summary>
         /// <param name="pew">Current PE widow.</param>
         public static void CopyMatToBMOorMIC(PackageEditorWindow pew)
@@ -639,42 +639,59 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 return;
             }
 
-            int targetID;
-            string strID = PromptDialog.Prompt(null, "Export ID of the target export");
-            if (string.IsNullOrEmpty(strID) || !int.TryParse(strID, out targetID))
+            string strIDs = PromptDialog.Prompt(null, "Comma separated list of the Export ID of the target exports");
+            if (string.IsNullOrEmpty(strIDs))
             {
-                ShowError("Invalid ID");
+                ShowError("Invalid IDs");
                 return;
             }
 
-            ExportEntry targetExport;
-            if (!pew.Pcc.TryGetUExport(targetID, out targetExport))
+            // Validate and load the provided export IDs.
+            // We check first before running any operations on the actual properties.
+            List<ExportEntry> targetExports = new();
+            foreach (string id in strIDs.Split(","))
             {
-                ShowError("Target export not found");
-                return;
-            }
-            if (isBMO)
-            {
-                if (!(targetExport.ClassName is "MaterialInstanceConstant" or "BioMaterialInstanceConstant"))
+                int targetID;
+                if (!int.TryParse(id, out targetID))
                 {
-                    ShowError($"Target export's class is not MaterialInstanceConstant or BioMaterialInstanceConstant");
+                    ShowError($"ID {id} is invalid");
                     return;
 
                 }
-            }
-            else
-            {
-                if (targetExport.ClassName != "BioMaterialOverride")
+                ExportEntry targetExport;
+                if (!pew.Pcc.TryGetUExport(targetID, out targetExport))
                 {
-                    ShowError($"Target export's class is not BioMaterialOverride");
+                    ShowError($"Target export with ID {id} not found");
                     return;
-
                 }
+                if (isBMO)
+                {
+                    if (!(targetExport.ClassName is "MaterialInstanceConstant" or "BioMaterialInstanceConstant"))
+                    {
+                        ShowError($"Target export {id}'s class is not MaterialInstanceConstant or BioMaterialInstanceConstant");
+                        return;
+
+                    }
+                }
+                else
+                {
+                    if (targetExport.ClassName != "BioMaterialOverride")
+                    {
+                        ShowError($"Target export {id}'s class is not BioMaterialOverride");
+                        return;
+
+                    }
+                }
+                targetExports.Add(targetExport);
             }
+
+
+            ArrayProperty<StructProperty> TextureValues = new($"{(isBMO ? "TextureParameterValues" : "m_aTextureOverrides")}");
+            ArrayProperty<StructProperty> VectorValues = new($"{(isBMO ? "VectorParameterValues" : "m_aColorOverrides")}");
+            ArrayProperty<StructProperty> ScalarValues = new($"{(isBMO ? "ScalarParameterValues" : "m_aScalarOverrides")}");
 
             if (textureProperty != null)
             {
-                ArrayProperty<StructProperty> TextureValues = new($"{(isBMO ? "TextureParameterValues" : "m_aTextureOverrides")}");
                 textureProperty.ToList().ForEach(parameter =>
                 {
                     PropertyCollection props = new PropertyCollection();
@@ -685,12 +702,10 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         $"{(isBMO ? "ParameterValue" : "m_pTexture")}"));
                     TextureValues.Add(new StructProperty($"{(isBMO ? "TextureParameterValue" : "TextureParameter")}", props));
                 });
-                targetExport.WriteProperty(TextureValues);
             }
 
             if (vectorProperty != null)
             {
-                ArrayProperty<StructProperty> VectorValues = new($"{(isBMO ? "VectorParameterValues" : "m_aColorOverrides")}");
                 vectorProperty.ToList().ForEach(parameter =>
                 {
                     PropertyCollection props = new();
@@ -706,12 +721,10 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         $"{(isBMO ? "ParameterName" : "nName")}"));
                     VectorValues.Add(new StructProperty($"{(isBMO ? "VectorParameterValue" : "ColorParameter")}", props));
                 });
-                targetExport.WriteProperty(VectorValues);
             }
 
             if (scalarProperty != null)
             {
-                ArrayProperty<StructProperty> ScalarValues = new($"{(isBMO ? "ScalarParameterValues" : "m_aScalarOverrides")}");
                 scalarProperty.ToList().ForEach(parameter =>
                 {
                     PropertyCollection props = new();
@@ -722,7 +735,13 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         $"{(isBMO ? "ParameterValue" : "sValue")}"));
                     ScalarValues.Add(new StructProperty($"{(isBMO ? "ScalarParameterValue" : "ScalarParameter")}", props));
                 });
-                targetExport.WriteProperty(ScalarValues);
+            }
+
+            foreach (ExportEntry targetExport in targetExports)
+            {
+                if (textureProperty != null) { targetExport.WriteProperty(TextureValues); }
+                if (vectorProperty != null)  { targetExport.WriteProperty(VectorValues); }
+                if (scalarProperty != null)  { targetExport.WriteProperty(ScalarValues); }
             }
 
             MessageBox.Show("Properties copied successfully", "Success", MessageBoxButton.OK);
