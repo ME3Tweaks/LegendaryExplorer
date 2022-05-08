@@ -158,6 +158,7 @@
         <MenuItem Header="Add Preset Gesture Track 2" Click="AddPresetGestureTrack2_Click" ToolTip="Alternate version of preset Gesture track, as designed by Lunk."/>
         <MenuItem Header="Batch Add/Modify Materials' Parameters" Click="BatchPatchMaterialsParameters_Click" ToolTip="Batch add/modify a list of vector or scalar parameters in a list of given materials to all files in a given DLC folder."/>
         <MenuItem Header="Batch Set Bool Property Value" Click="BatchSetBoolPropVal_Click" ToolTip="Batch set the value of a boolean property to all given classes in a given DLC folder."/>
+        <MenuItem Header="Remove References to SkeletalMesh in Range" Click="SMRefRemover_Click" ToolTip="Removes SMC references to a SkeletalMesh within a given range"/>
     </MenuItem>
     <MenuItem Header="Object Database">
         <MenuItem Header="Build ME1 Object Database" Click="ChonkyDB_BuildME1GameDB"/>

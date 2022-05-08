@@ -490,5 +490,14 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments {
             }
             MessageBox.Show("All bools were sucessfully set", "Success", MessageBoxButton.OK);
         }
+
+        /// <summary>
+        /// Removes SMC references to a SkeletalMesh withing a given range.
+        /// </summary>
+        /// <param name="pew">Current PE instance.</param>
+        public static void SMRefRemover(PackageEditorWindow pew)
+        {
+
+        }
     }
 }

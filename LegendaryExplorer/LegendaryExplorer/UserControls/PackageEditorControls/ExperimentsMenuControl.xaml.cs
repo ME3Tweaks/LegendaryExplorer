@@ -1305,6 +1305,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         {
             PackageEditorExperimentsO.BatchSetBoolPropVal(GetPEWindow());
         }
+
+        private void SMRefRemover_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.SMRefRemover(GetPEWindow());
+        }
         #endregion
 
         // EXPERIMENTS: CHONKY DB---------------------------------------------------------
