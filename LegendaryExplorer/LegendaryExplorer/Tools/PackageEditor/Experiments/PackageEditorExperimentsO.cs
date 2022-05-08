@@ -617,9 +617,9 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         {
             if (pew.Pcc == null) { return; }
 
-            if (pew.SelectedItem == null || !(pew.SelectedItem.Entry.ClassName is "BioMaterialOverride" or "MaterialInstanceConstant"))
+            if (pew.SelectedItem == null || !(pew.SelectedItem.Entry.ClassName is "BioMaterialOverride" or "MaterialInstanceConstant" or "BioMaterialInstanceConstant"))
             {
-                ShowError("Invalid selection. Select a BioMaterialOverride or MaterialInstanceConstant to proceed");
+                ShowError("Invalid selection. Select a BioMaterialOverride, a BioMaterialInstanceConstant, or a MaterialInstanceConstant to proceed");
                 return;
             }
 
@@ -653,10 +653,23 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 ShowError("Target export not found");
                 return;
             }
-            if (targetExport.ClassName != $"{(isBMO ? "MaterialInstanceConstant" : "BioMaterialOverride")}")
+            if (isBMO)
             {
-                ShowError($"Target export's class is not {(isBMO ? "MaterialInstanceConstant" : "BioMaterialOverride")}");
-                return;
+                if (!(targetExport.ClassName is "MaterialInstanceConstant" or "BioMaterialInstanceConstant"))
+                {
+                    ShowError($"Target export's class is not MaterialInstanceConstant or BioMaterialInstanceConstant");
+                    return;
+
+                }
+            }
+            else
+            {
+                if (targetExport.ClassName != "BioMaterialOverride")
+                {
+                    ShowError($"Target export's class is not BioMaterialOverride");
+                    return;
+
+                }
             }
 
             if (textureProperty != null)
