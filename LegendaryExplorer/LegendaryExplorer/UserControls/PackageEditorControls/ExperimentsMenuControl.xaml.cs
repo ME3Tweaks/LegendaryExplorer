@@ -1310,6 +1310,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         {
             PackageEditorExperimentsO.CopyProperty(GetPEWindow());
         }
+
+        private void CopyMatToBMOorMIC_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.CopyMatToBMOorMIC(GetPEWindow());
+        }
         #endregion
 
         // EXPERIMENTS: CHONKY DB---------------------------------------------------------

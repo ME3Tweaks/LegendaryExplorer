@@ -608,5 +608,127 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             MessageBox.Show($"Property {sourcePropName} copied succesfully", "Success", MessageBoxButton.OK);
         }
+
+        /// <summary>
+        /// Copies the texture, vector, and scalar properties of a BioMaterialOverride into a MaterialInstanceConstant, or vice-versa.
+        /// </summary>
+        /// <param name="pew">Current PE widow.</param>
+        public static void CopyMatToBMOorMIC(PackageEditorWindow pew)
+        {
+            if (pew.Pcc == null) { return; }
+
+            if (pew.SelectedItem == null || !(pew.SelectedItem.Entry.ClassName is "BioMaterialOverride" or "MaterialInstanceConstant"))
+            {
+                ShowError("Invalid selection. Select a BioMaterialOverride or MaterialInstanceConstant to proceed");
+                return;
+            }
+
+            // True if we copy from BMO to MIC, false if we copy from MIC to BMO
+            bool isBMO = pew.SelectedItem.Entry.ClassName == "BioMaterialOverride";
+
+            ExportEntry selectedEntry = (ExportEntry)pew.SelectedItem.Entry;
+            ArrayProperty<StructProperty> textureProperty = selectedEntry.GetProperty<ArrayProperty<StructProperty>>
+                ($"{(isBMO ? "m_aTextureOverrides" : "TextureParameterValues")}");
+            ArrayProperty<StructProperty> vectorProperty = selectedEntry.GetProperty<ArrayProperty<StructProperty>>
+                ($"{(isBMO ? "m_aColorOverrides" : "VectorParameterValues")}");
+            ArrayProperty<StructProperty> scalarProperty = selectedEntry.GetProperty<ArrayProperty<StructProperty>>
+                ($"{(isBMO ? "m_aScalarOverrides" : "ScalarParameterValues")}");
+            if (textureProperty == null && vectorProperty == null && scalarProperty == null)
+            {
+                ShowError("No texture, vector, or scalar properties were found");
+                return;
+            }
+
+            int targetID;
+            string strID = PromptDialog.Prompt(null, "Export ID of the target export");
+            if (string.IsNullOrEmpty(strID) || !int.TryParse(strID, out targetID))
+            {
+                ShowError("Invalid ID");
+                return;
+            }
+
+            ExportEntry targetExport;
+            if (!pew.Pcc.TryGetUExport(targetID, out targetExport))
+            {
+                ShowError("Target export not found");
+                return;
+            }
+            if (targetExport.ClassName != $"{(isBMO ? "MaterialInstanceConstant" : "BioMaterialOverride")}")
+            {
+                ShowError($"Target export's class is not {(isBMO ? "MaterialInstanceConstant" : "BioMaterialOverride")}");
+                return;
+            }
+
+            if (textureProperty != null)
+            {
+                ArrayProperty<StructProperty> TextureValues = new($"{(isBMO ? "TextureParameterValues" : "m_aTextureOverrides")}");
+                textureProperty.ToList().ForEach(parameter =>
+                {
+                    PropertyCollection props = new PropertyCollection();
+                    if (isBMO) { props.Add(GenerateExpressionGUID()); }
+                    props.Add(new NameProperty(parameter.GetProp<NameProperty>($"{(isBMO ? "nName" : "ParameterName")}").Value,
+                        $"{(isBMO ? "ParameterName" : "nName")}"));
+                    props.Add(new ObjectProperty(parameter.GetProp<ObjectProperty>($"{(isBMO ? "m_pTexture" : "ParameterValue")}").Value,
+                        $"{(isBMO ? "ParameterValue" : "m_pTexture")}"));
+                    TextureValues.Add(new StructProperty($"{(isBMO ? "TextureParameterValue" : "TextureParameter")}", props));
+                });
+                targetExport.WriteProperty(TextureValues);
+            }
+
+            if (vectorProperty != null)
+            {
+                ArrayProperty<StructProperty> VectorValues = new($"{(isBMO ? "VectorParameterValues" : "m_aColorOverrides")}");
+                vectorProperty.ToList().ForEach(parameter =>
+                {
+                    PropertyCollection props = new();
+                    PropertyCollection color = new();
+                    color.Add(parameter.GetProp<StructProperty>($"{(isBMO ? "cValue" : "ParameterValue")}").GetProp<FloatProperty>("R"));
+                    color.Add(parameter.GetProp<StructProperty>($"{(isBMO ? "cValue" : "ParameterValue")}").GetProp<FloatProperty>("G"));
+                    color.Add(parameter.GetProp<StructProperty>($"{(isBMO ? "cValue" : "ParameterValue")}").GetProp<FloatProperty>("B"));
+                    color.Add(parameter.GetProp<StructProperty>($"{(isBMO ? "cValue" : "ParameterValue")}").GetProp<FloatProperty>("A"));
+                    StructProperty ParameterValue = new("LinearColor", color, $"{(isBMO ? "ParameterValue" : "cValue")}", true);
+                    if (isBMO) { props.Add(GenerateExpressionGUID()); }
+                    props.Add(ParameterValue);
+                    props.Add(new NameProperty(parameter.GetProp<NameProperty>($"{(isBMO ? "nName" : "ParameterName")}").Value,
+                        $"{(isBMO ? "ParameterName" : "nName")}"));
+                    VectorValues.Add(new StructProperty($"{(isBMO ? "VectorParameterValue" : "ColorParameter")}", props));
+                });
+                targetExport.WriteProperty(VectorValues);
+            }
+
+            if (scalarProperty != null)
+            {
+                ArrayProperty<StructProperty> ScalarValues = new($"{(isBMO ? "ScalarParameterValues" : "m_aScalarOverrides")}");
+                scalarProperty.ToList().ForEach(parameter =>
+                {
+                    PropertyCollection props = new();
+                    if (isBMO) { props.Add(GenerateExpressionGUID()); }
+                    props.Add(new NameProperty(parameter.GetProp<NameProperty>($"{(isBMO ? "nName" : "ParameterName")}").Value,
+                        $"{(isBMO ? "ParameterName" : "nName")}"));
+                    props.Add(new FloatProperty(parameter.GetProp<FloatProperty>($"{(isBMO ? "sValue" : "ParameterValue")}").Value,
+                        $"{(isBMO ? "ParameterValue" : "sValue")}"));
+                    ScalarValues.Add(new StructProperty($"{(isBMO ? "ScalarParameterValue" : "ScalarParameter")}", props));
+                });
+                targetExport.WriteProperty(ScalarValues);
+            }
+
+            MessageBox.Show("Properties copied successfully", "Success", MessageBoxButton.OK);
+        }
+
+        /// <summary>
+        /// Generate a default ExpressionGUID
+        /// </summary>
+        /// <returns>ExpressionGUID StructProperty</returns>
+        private static StructProperty GenerateExpressionGUID()
+        {
+            PropertyCollection props = new PropertyCollection();
+            props.Add(new IntProperty(0, "A"));
+            props.Add(new IntProperty(0, "B"));
+            props.Add(new IntProperty(0, "C"));
+            props.Add(new IntProperty(0, "D"));
+
+            return new StructProperty("Guid", props, "ExpressionGUID", true);
+        }
+
     }
 }
