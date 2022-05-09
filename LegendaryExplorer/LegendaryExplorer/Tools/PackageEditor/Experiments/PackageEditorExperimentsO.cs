@@ -559,7 +559,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         /// <param name="pew">Current PE instance.</param>
         public static void SMRefRemover(PackageEditorWindow pew)
         {
-            if ((pew.Pcc == null) || (pew.SelectedItem == null)) { return; }
+            if (pew.Pcc == null || pew.SelectedItem == null || pew.SelectedItem.Entry == null) { return; }
 
             if (!(pew.SelectedItem.Entry.ClassName is "SkeletalMesh" or "StaticMesh"))
             {
