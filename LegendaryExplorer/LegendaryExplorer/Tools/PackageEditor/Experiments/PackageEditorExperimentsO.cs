@@ -558,7 +558,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         /// <param name="pew">Current PE window.</param>
         public static void CopyProperty(PackageEditorWindow pew)
         {
-            if (pew.Pcc == null) { return; }
+            if (pew.Pcc == null || pew.SelectedItem == null || pew.SelectedItem.Entry == null) { return; }
 
             ExportEntry selectedEntry = (ExportEntry)pew.SelectedItem.Entry;
             if (selectedEntry == null)
@@ -615,7 +615,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         /// <param name="pew">Current PE widow.</param>
         public static void CopyMatToBMOorMIC(PackageEditorWindow pew)
         {
-            if (pew.Pcc == null) { return; }
+            if (pew.Pcc == null || pew.SelectedItem == null || pew.SelectedItem.Entry == null) { return; }
 
             if (pew.SelectedItem == null || !(pew.SelectedItem.Entry.ClassName is "BioMaterialOverride" or "MaterialInstanceConstant" or "BioMaterialInstanceConstant"))
             {
