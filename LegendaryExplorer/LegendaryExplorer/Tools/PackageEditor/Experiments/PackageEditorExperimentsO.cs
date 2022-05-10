@@ -665,7 +665,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     // Check if the component is within the given distance, and if so remove the reference
                     if (InDist(origins[0], location.GetProp<FloatProperty>("X"), dists[0])
                         && InDist(origins[1], location.GetProp<FloatProperty>("Y"), dists[1])
-                        && InDist(origins[2], location.GetProp<FloatProperty>(">"), dists[2]))
+                        && InDist(origins[2], location.GetProp<FloatProperty>("Z"), dists[2]))
                     {
                         ObjectProperty prop = new ObjectProperty(0, "SkeletalMesh");
                         reference.WriteProperty(prop);
