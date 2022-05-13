@@ -1305,6 +1305,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         {
             PackageEditorExperimentsO.BatchSetBoolPropVal(GetPEWindow());
         }
+
+        private void Baldinator_Click(object sender, RoutedEventArgs a)
+        {
+            PackageEditorExperimentsO.Baldinator(GetPEWindow());
+        }
         #endregion
 
         // EXPERIMENTS: CHONKY DB---------------------------------------------------------
