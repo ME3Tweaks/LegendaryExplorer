@@ -41,18 +41,9 @@ using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
 using LegendaryExplorerCore.UnrealScript;
 using LegendaryExplorerCore.UnrealScript.Compiling.Errors;
+using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Newtonsoft.Json;
-using Clipboard = System.Windows.Clipboard;
-using Control = System.Windows.Controls.Control;
-using DataFormats = System.Windows.DataFormats;
-using DragDropEffects = System.Windows.DragDropEffects;
-using DragEventArgs = System.Windows.DragEventArgs;
-using IDropTarget = GongSolutions.Wpf.DragDrop.IDropTarget;
-using KeyEventArgs = System.Windows.Input.KeyEventArgs;
-using MessageBox = System.Windows.MessageBox;
-using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
-using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
 
 namespace LegendaryExplorer.Tools.PackageEditor
 {
