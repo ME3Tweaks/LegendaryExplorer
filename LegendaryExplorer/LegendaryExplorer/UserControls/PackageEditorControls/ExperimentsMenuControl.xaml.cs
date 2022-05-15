@@ -1315,6 +1315,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         {
             PackageEditorExperimentsO.CopyMatToBMOorMIC(GetPEWindow());
         }
+
+        private void SMRefRemover_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.SMRefRemover(GetPEWindow());
+        }
         #endregion
 
         // EXPERIMENTS: CHONKY DB---------------------------------------------------------

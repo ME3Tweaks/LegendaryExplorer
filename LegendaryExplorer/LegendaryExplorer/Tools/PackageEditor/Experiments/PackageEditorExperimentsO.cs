@@ -1,5 +1,6 @@
 ﻿using LegendaryExplorer.Dialogs;
 using LegendaryExplorerCore.GameFilesystem;
+using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Matinee;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
@@ -551,6 +552,172 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
             MessageBox.Show("All bools were sucessfully set", "Success", MessageBoxButton.OK);
         }
+
+        /// <summary>
+        /// Removes SMC references to a SkeletalMesh or StaticMesh within a given distance.
+        /// </summary>
+        /// <param name="pew">Current PE instance.</param>
+        public static void SMRefRemover(PackageEditorWindow pew)
+        {
+            if (pew.Pcc == null || pew.SelectedItem == null || pew.SelectedItem.Entry == null) { return; }
+
+            if (!(pew.SelectedItem.Entry.ClassName is "SkeletalMesh" or "StaticMesh"))
+            {
+                ShowError("Selected export is not a SkeletalMesh or StaticMesh");
+                return;
+            }
+
+            // Prompt for and validate origin position
+            string promptOrigin = PromptDialog.Prompt(null, "Write the origin coordinates from which to remove references to the mesh. It must be a comma separated list: X, Y, Z");
+            if (string.IsNullOrEmpty(promptOrigin))
+            {
+                ShowError("Invalid origin");
+                return;
+            }
+
+            string[] strOrigins = promptOrigin.Split(",");
+            if (strOrigins.Length != 3)
+            {
+                ShowError("Wrong number of coordinates. You must provide 3 coordinates in the form of: X, Y, Z");
+                return;
+            }
+            List<float> origins = new();
+            foreach (string strOrigin in strOrigins)
+            {
+                float origin;
+                if (!float.TryParse(strOrigin, out origin))
+                {
+                    ShowError($"Distance {strOrigin} is not a valid decimal");
+                    return;
+                }
+                origins.Add(origin);
+            }
+
+            // Prompt for and validate distance
+            string promptDist = PromptDialog.Prompt(null, "Write the distance from each origin coordinate in which to remove references. It must be a comma separated list: distX, distY, distZ");
+            if (string.IsNullOrEmpty(promptDist))
+            {
+                ShowError("Invalid distance");
+                return;
+            }
+
+            string[] strDists = promptDist.Split(",");
+            if (strDists.Length != 3)
+            {
+                ShowError("Wrong number of distances. You must provide 3 distances, in the form of: distX, distY, distZ");
+                return;
+            }
+            List<float> dists = new();
+            foreach (string strDist in strDists)
+            {
+                float dist;
+                if (!float.TryParse(strDist, out dist))
+                {
+                    ShowError($"Distance {strDist} is not a valid decimal");
+                    return;
+                }
+                if (dist < 0)
+                {
+                    ShowError($"Distance {strDist} must be a positive value.");
+                    return;
+                }
+                dists.Add(dist);
+            }
+
+            ExportEntry mesh = (ExportEntry)pew.SelectedItem.Entry;
+            // Get a list of SMC/SMAs referencing the selected mesh
+            List<IEntry> references = mesh.GetEntriesThatReferenceThisOne()
+                .Where(kvp => kvp.Key.ClassName is "SkeletalMeshComponent" or "StaticMeshComponent")
+                .Select(kvp => kvp.Key).ToList();
+
+            if (references.Count == 0)
+            {
+                ShowError("Found no SMCs referencing the selected mesh");
+                return;
+            }
+
+            List<string> removedReferences = new();
+            foreach (ExportEntry reference in references)
+            {
+                if (reference.ClassName == "StaticMeshComponent")
+                {
+                    switch (reference.Parent.ClassName)
+                    {
+                        case "StatichMeshCollectionActor":
+                            StaticMeshCollectionActor parent = ObjectBinary.From<StaticMeshCollectionActor>((ExportEntry)reference.Parent);
+                            UIndex uindex = new(reference.UIndex);
+                            int smcaIndex = parent.Components.IndexOf(uindex);
+                            float destX, destY, destZ;
+                            ((destX, destY, destZ), _, _) = parent.LocalToWorldTransforms[smcaIndex].UnrealDecompose();
+
+                            // Check if the component is within the given distance, and if so remove the reference
+                            if (InDist(origins[0], destX, dists[0]) && InDist(origins[1], destY, dists[1]) && InDist(origins[2], destZ, dists[2]))
+                            {
+                                ObjectProperty prop = new ObjectProperty(0, "StaticMesh");
+                                reference.WriteProperty(prop);
+                                removedReferences.Add($"{reference.ObjectName}_{reference.indexValue}");
+                            }
+                            break;
+                        case "StaticMeshActor":
+                            StructProperty location = ((ExportEntry)reference.Parent).GetProperty<StructProperty>("location");
+                            if (location == null) { continue; }
+                            // Check if the component is within the given distance, and if so remove the reference
+                            if (InDist(origins[0], location.GetProp<FloatProperty>("X"), dists[0])
+                                && InDist(origins[1], location.GetProp<FloatProperty>("Y"), dists[1])
+                                && InDist(origins[2], location.GetProp<FloatProperty>("Z"), dists[2]))
+                            {
+                                ObjectProperty prop = new ObjectProperty(0, "StaticMesh");
+                                reference.WriteProperty(prop);
+                                removedReferences.Add($"{reference.ObjectName}_{reference.indexValue}");
+                            }
+                            break;
+                        default:
+                            continue;
+                    }
+                }
+
+                if (reference.ClassName == "SkeletalMeshComponent")
+                {
+                    ExportEntry parent = (ExportEntry)reference.Parent;
+                    StructProperty location = parent.GetProperty<StructProperty>("Location");
+                    if (location == null) { continue; }
+
+                    // Check if the component is within the given distance, and if so remove the reference
+                    if (InDist(origins[0], location.GetProp<FloatProperty>("X"), dists[0])
+                        && InDist(origins[1], location.GetProp<FloatProperty>("Y"), dists[1])
+                        && InDist(origins[2], location.GetProp<FloatProperty>("Z"), dists[2]))
+                    {
+                        ObjectProperty prop = new ObjectProperty(0, "SkeletalMesh");
+                        reference.WriteProperty(prop);
+                        removedReferences.Add($"{reference.ObjectName}_{reference.indexValue}");
+                    }
+                }
+            }
+
+            if (removedReferences.Count > 0)
+            {
+                MessageBox.Show($"Removed references to the mesh in the following objects: {string.Join(", ", removedReferences.ToArray())}",
+                    "Success", MessageBoxButton.OK);
+
+            }
+            else
+            {
+                MessageBox.Show("No references were found within the given distance");
+            }
+        }
+
+        /// <summary>
+        /// Checks if a dest position is within a given distance of the origin.
+        /// </summary>
+        /// <param name="origin">Origin position.</param>
+        /// <param name="dest">Dest position to check.</param>
+        /// <param name="dist">Max distance from origin.</param>
+        /// <returns>True if the dest is within dist</returns>
+        private static bool InDist(float origin, float dest, float dist)
+        {
+            return Math.Abs((dest - origin)) <= dist;
+        }
+
 
         /// <summary>
         /// Copy the selected property to another export of the same class.

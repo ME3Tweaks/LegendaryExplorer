@@ -160,6 +160,7 @@
         <MenuItem Header="Batch Set Bool Property Value" Click="BatchSetBoolPropVal_Click" ToolTip="Batch set the value of a boolean property to all given classes in a given DLC folder."/>
         <MenuItem Header="Copy Property" Click="CopyProperty_Click" ToolTip="Copy the selected property to another export of the same class."/>
         <MenuItem Header="Copy Material to BioMaterialOverrides or MaterialInstanceConstants" Click="CopyMatToBMOorMIC_Click" ToolTip="Copies the texture, vector, and scalar properties of a BioMaterialOverride into [Bio]MaterialInstanceConstants, or vice-versa."/>
+        <MenuItem Header="Remove References to SkeletalMesh or StaticMesh in Distance" Click="SMRefRemover_Click" ToolTip="Removes SMC references to a SkeletalMesh or StaticMesh within a given distance"/>
     </MenuItem>
     <MenuItem Header="Object Database">
         <MenuItem Header="Build ME1 Object Database" Click="ChonkyDB_BuildME1GameDB"/>
