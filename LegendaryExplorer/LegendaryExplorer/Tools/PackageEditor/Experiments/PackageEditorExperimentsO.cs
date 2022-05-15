@@ -692,7 +692,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             if (textureProperty != null)
             {
-                textureProperty.ToList().ForEach(parameter =>
+                foreach (StructProperty parameter in textureProperty)
                 {
                     PropertyCollection props = new PropertyCollection();
                     if (isBMO) { props.Add(GenerateExpressionGUID()); }
@@ -701,12 +701,12 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     props.Add(new ObjectProperty(parameter.GetProp<ObjectProperty>($"{(isBMO ? "m_pTexture" : "ParameterValue")}").Value,
                         $"{(isBMO ? "ParameterValue" : "m_pTexture")}"));
                     TextureValues.Add(new StructProperty($"{(isBMO ? "TextureParameterValue" : "TextureParameter")}", props));
-                });
+                }
             }
 
             if (vectorProperty != null)
             {
-                vectorProperty.ToList().ForEach(parameter =>
+                foreach (StructProperty parameter in vectorProperty)
                 {
                     PropertyCollection props = new();
                     PropertyCollection color = new();
@@ -720,12 +720,12 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     props.Add(new NameProperty(parameter.GetProp<NameProperty>($"{(isBMO ? "nName" : "ParameterName")}").Value,
                         $"{(isBMO ? "ParameterName" : "nName")}"));
                     VectorValues.Add(new StructProperty($"{(isBMO ? "VectorParameterValue" : "ColorParameter")}", props));
-                });
+                }
             }
 
             if (scalarProperty != null)
             {
-                scalarProperty.ToList().ForEach(parameter =>
+                foreach (StructProperty parameter in scalarProperty)
                 {
                     PropertyCollection props = new();
                     if (isBMO) { props.Add(GenerateExpressionGUID()); }
@@ -734,7 +734,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     props.Add(new FloatProperty(parameter.GetProp<FloatProperty>($"{(isBMO ? "sValue" : "ParameterValue")}").Value,
                         $"{(isBMO ? "ParameterValue" : "sValue")}"));
                     ScalarValues.Add(new StructProperty($"{(isBMO ? "ScalarParameterValue" : "ScalarParameter")}", props));
-                });
+                }
             }
 
             foreach (ExportEntry targetExport in targetExports)
