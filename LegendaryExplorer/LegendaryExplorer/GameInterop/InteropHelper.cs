@@ -30,6 +30,26 @@ namespace LegendaryExplorer.GameInterop
             File.Copy(Path.Combine(AppDirectories.ExecFolder, GameController.InteropAsiName(game)), interopASIWritePath);
         }*/
 
+        /// <summary>
+        /// Checks if an ASI with the matching md5 is installd in the specified folder.
+        /// </summary>
+        /// <param name="md5"></param>
+        /// <param name="asiPath"></param>
+        /// <returns></returns>
+        private static bool IsASIInstalled(string md5ToMatch, string asiFolder)
+        {
+            if (Directory.Exists(asiFolder))
+            {
+                var files = Directory.GetFiles(asiFolder, "*.asi", SearchOption.TopDirectoryOnly);
+                foreach (var f in files)
+                {
+                    var md5 = CalculateMD5(f);
+                    if (md5 == md5ToMatch) return true;
+                }
+            }
+            return false;
+        }
+
         private static void DeletePreLEXInteropASI(MEGame game)
         {
             string asiDir = GetAsiDir(game);
@@ -112,9 +132,9 @@ namespace LegendaryExplorer.GameInterop
                 return false;
             }
             string asiDir = GetAsiDir(game);
-            string asiPath = Path.Combine(asiDir, "ConsoleExtension-v1.0.asi");
-            const string asiMD5 = "bce3183d90af020768bb98f9539467bd";
-            return File.Exists(asiPath) && asiMD5 == CalculateMD5(asiPath);
+
+            // Using source generator this might be possible to parse from asi mods endpoint on ME3Tweaks
+            return IsASIInstalled("bce3183d90af020768bb98f9539467bd", asiDir);
         }
 
         public static bool IsInteropASIInstalled(MEGame game)
@@ -125,9 +145,17 @@ namespace LegendaryExplorer.GameInterop
             }
 
             DeletePreLEXInteropASI(game);
-            string asiPath = GetInteropAsiWritePath(game);
+
+            // 05/15/2022
+            // Change to scanning for matching md5
+            // This way you can install an asi with any name and it will determine if another same-asi
+            // is installed (this won't handle different builds/versions like mod manager but it's better
+            // than not doing any check at all)
+            // - Mgamerz
+
+            string asiDir = GetAsiDir(game);
             string asiMD5 = GameController.GetInteropTargetForGame(game).InteropASIMD5;
-            return File.Exists(asiPath) && asiMD5 == CalculateMD5(asiPath);
+            return IsASIInstalled(asiMD5, asiDir);
         }
 
         //https://stackoverflow.com/a/10520086
