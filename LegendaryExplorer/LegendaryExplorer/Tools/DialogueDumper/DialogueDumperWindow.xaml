@@ -79,6 +79,9 @@
                     <ComboBox Name="GameComboBox" Margin="0,2,2,2" Padding="6,2" Width="55" Height="20"
                               ItemsSource="{Binding SupportedGames}"
                               SelectedItem="{Binding SelectedGame}"/>
+                    <ComboBox Margin="0,2,2,2" Padding="6,2" Width="55" Height="20"
+                              ItemsSource="{Binding DumpableLocalizations}"
+                              SelectedItem="{Binding SelectedLocalization}"/>
                     <Button Command="{Binding DumpGameCommand}" Content="Dump Game" Width="79" Margin="2,5,0,5" HorizontalAlignment="Right"/>
                 </StackPanel>
             </DockPanel>

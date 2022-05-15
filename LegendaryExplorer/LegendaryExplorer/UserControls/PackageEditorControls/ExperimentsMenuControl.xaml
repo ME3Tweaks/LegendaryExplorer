@@ -161,6 +161,7 @@
         <MenuItem Header="Copy Property" Click="CopyProperty_Click" ToolTip="Copy the selected property to another export of the same class."/>
         <MenuItem Header="Copy Material to BioMaterialOverrides or MaterialInstanceConstants" Click="CopyMatToBMOorMIC_Click" ToolTip="Copies the texture, vector, and scalar properties of a BioMaterialOverride into [Bio]MaterialInstanceConstants, or vice-versa."/>
         <MenuItem Header="Remove References to SkeletalMesh or StaticMesh in Distance" Click="SMRefRemover_Click" ToolTip="Removes SMC references to a SkeletalMesh or StaticMesh within a given distance"/>
+        <MenuItem Header="The Baldinator" Click="Baldinator_Click" ToolTip="Modify the hair morph targets of a male headmorph to make it bald."/>
     </MenuItem>
     <MenuItem Header="Object Database">
         <MenuItem Header="Build ME1 Object Database" Click="ChonkyDB_BuildME1GameDB"/>

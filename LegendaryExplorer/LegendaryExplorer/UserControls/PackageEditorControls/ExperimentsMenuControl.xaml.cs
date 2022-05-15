@@ -1320,6 +1320,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         {
             PackageEditorExperimentsO.SMRefRemover(GetPEWindow());
         }
+
+        private void Baldinator_Click(object sender, RoutedEventArgs a)
+        {
+            PackageEditorExperimentsO.Baldinator(GetPEWindow());
+        }
         #endregion
 
         // EXPERIMENTS: CHONKY DB---------------------------------------------------------

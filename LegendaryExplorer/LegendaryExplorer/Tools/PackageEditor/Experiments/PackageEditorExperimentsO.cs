@@ -929,5 +929,140 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             return new StructProperty("Guid", props, "ExpressionGUID", true);
         }
 
+        /// Modify the hair morph targets of a male headmorph to make it bald
+        /// </summary>
+        /// <param name="pew">Current PE window</param>
+        public static void Baldinator(PackageEditorWindow pew)
+        {
+            if (pew.SelectedItem == null || pew.SelectedItem.Entry == null || pew.Pcc == null) { return; }
+
+            if (pew.SelectedItem.Entry.ClassName != "BioMorphFace")
+            {
+                ShowError("Selected item is not a BioMorphFace");
+                return;
+            }
+
+            MEGame game = pew.Pcc.Game;
+
+            // Get the export that we'll use to find the vertices to modify
+            string morphTargetsPccPath = Path.Combine(MEDirectories.GetCookedPath(game), "BIOG_HMM_HED_PROMorph.pcc");
+            if (!File.Exists(morphTargetsPccPath))
+            {
+                ShowError("Could not find the BIOG_HMM_HED_PROMorph file. Please ensure the vanilla game files have not been modified.");
+                return;
+            }
+            using IMEPackage morphTargetsPcc = MEPackageHandler.OpenMEPackage(morphTargetsPccPath);
+
+            ExportEntry morphTargetSet = morphTargetsPcc.FindExport("HMM_BaseMorphSet");
+            if (morphTargetSet == null || morphTargetSet.ClassName != "MorphTargetSet")
+            {
+                ShowError("Could not find the morph targets in BIOG_HMM_HED_PROMorph. Please ensure the vanilla game files have not been modified.");
+                return;
+            }
+
+            // Get the export that we'll use as the values to set the target like
+            string baldPccPath = Path.Combine(MEDirectories.GetCookedPath(game),
+                game.IsGame3() ? "BioD_CitHub_Underbelly.pcc" : game.IsGame2() ? "BioH_Wilson.pcc" : "BIOA_FRE32_00_DSG.pcc");
+            if (!File.Exists(baldPccPath))
+            {
+                ShowError($"Could not find the {Path.GetFileNameWithoutExtension(baldPccPath)} file. Please ensure the vanilla game files have not been modified.");
+                return;
+            }
+            using IMEPackage baldPcc = MEPackageHandler.OpenMEPackage(baldPccPath);
+
+            ExportEntry baldMorph = baldPcc.FindExport(game.IsGame3() ? "BioChar_CitHub.Faces.HMM_Deco_1" :
+                game.IsGame2() ? "BIOG_Hench_FAC.HMM.hench_wilson" : "BIOA_UNC_FAC.HMM.Plot.FRE32_BioticLeader");
+            if (baldMorph == null || baldMorph.ClassName != "BioMorphFace")
+            {
+                ShowError($"Could not find the bald headmorph. Please ensure the vanilla game files have not been modified.");
+                return;
+            }
+
+            ExportEntry targetMorph = (ExportEntry)pew.SelectedItem.Entry;
+
+            BioMorphFace baldMorphFace = ObjectBinary.From<BioMorphFace>(baldMorph);
+            BioMorphFace targetMorphFace = ObjectBinary.From<BioMorphFace>(targetMorph);
+
+            if (baldMorphFace.LODs[0].Length != targetMorphFace.LODs[0].Length)
+            {
+                ShowError($"The selected headmorph differs from the expected one. This experiment only works for male human headmorphs.");
+                return;
+            }
+
+            List<string> targetNames = new List<string>()
+                {
+                    "Afro",
+                    "Buzzcut",
+                    "BuzzCut_WidowsPeak",
+                    "Deiter",
+                    "Greezer",
+                    "HAIR_pulledbackslick",
+                    "HAIR_sidepart",
+                    "HAIR_slickWidowsPeak",
+                    "HAIR_pulledBackBig",
+                    "Hair_splitSide",
+                    "HAIR_centerPart",
+                    "Flattop",
+                    "flattop_widowspeak",
+                    "Eastwood",
+                    "widowsPeak",
+                    "rollins",
+                    "straightHairLine",
+                };
+
+            // Get a list of the hair morph targets that exist in the targetMorph morphFeatures property.
+            // If the property does not exist or no feature matches the targetNames, we'll use all the default hair targets.
+            List<string> targetsInMorph = targetNames.Where(targetName =>
+            {
+                ArrayProperty<StructProperty> features = targetMorph.GetProperty<ArrayProperty<StructProperty>>("m_aMorphFeatures");
+                if (features.Any())
+                {
+                        // Compare the targetName against the names of the features
+                        List<string> featureNames = features.Select(feature => feature.GetProp<NameProperty>("sFeatureName").Value.Name).ToList();
+                    return featureNames.Exists(featureName => string.Equals(featureName, targetName, StringComparison.OrdinalIgnoreCase));
+                }
+                else { return true; }
+            }).ToList();
+
+            if (targetsInMorph.Count == 0) { targetsInMorph = targetNames; }
+
+            // Collect the vertex indices from the targets
+            List<int>[] indices = morphTargetSet.GetProperty<ArrayProperty<ObjectProperty>>("Targets")
+                .Select(prop => morphTargetsPcc.GetUExport(prop.Value))
+                .Where(entry => targetsInMorph.Exists(name => string.Equals(entry.ObjectName, name, StringComparison.OrdinalIgnoreCase)))
+                .Aggregate(new List<int>[2], (lods, t) =>
+                {
+                    MorphTarget target = ObjectBinary.From<MorphTarget>(t);
+                    for (int i = 0; i < 2; i++) // Adds indices for two lods, since the morphTargets only have two lod models
+                        {
+                        List<int> lod = new();
+                        foreach (MorphTarget.MorphVertex vertex in target.MorphLODModels[i].Vertices)
+                        {
+                            if (!lod.Contains(vertex.SourceIdx) && (vertex.SourceIdx != 495)) // 495 is a nose vertex
+                                {
+                                lod.Add(vertex.SourceIdx);
+                            }
+                        }
+                        lods[i] = lod;
+                    }
+                    return lods;
+                });
+
+            // Modify the targetMorph based on the baldMorph
+            for (int l = 0; l < indices.Length; l++)
+            {
+                List<int> lod = indices[l];
+                foreach (int i in lod)
+                {
+                    targetMorphFace.LODs[l][i].X = baldMorphFace.LODs[l][i].X;
+                    targetMorphFace.LODs[l][i].Y = baldMorphFace.LODs[l][i].Y;
+                    targetMorphFace.LODs[l][i].Z = baldMorphFace.LODs[l][i].Z;
+                }
+
+            }
+
+            targetMorph.WriteBinary(targetMorphFace);
+            MessageBox.Show("The selected morph's hair has been cut and offered as a sacrifice to the Reape-- The morph is now bald.", "Success", MessageBoxButton.OK);
+        }
     }
 }

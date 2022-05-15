@@ -1379,6 +1379,9 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     return;
                 }
 
+                bool skipReferencesCheck =
+                    Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift); // Bypass the check if holding SHIFT
+
                 BusyText = "Performing reference check...";
                 IsBusy = true;
                 Task.Run(() =>
@@ -1387,7 +1390,15 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     List<IEntry> itemsToTrash = selected.FlattenTree().OrderByDescending(x => x.UIndex).Select(tvEntry => tvEntry.Entry).ToList();
                     var itemsToTrashSet = new HashSet<IEntry>(itemsToTrash);
 
-                    IEntry entryWithReferences = itemsToTrash.FirstOrDefault(entry => entry.GetEntriesThatReferenceThisOne().Any(kvp =>
+                    IEntry entryWithReferences =
+                        // Requested by Khaar 05/12/2022
+                        // Way to bypass references check as it significantly slows down mass
+                        // trashing of objects especially when the dev knows what they're doing
+                        // Might make sense to show this in a menu
+                        // of some kind? You have to hold shift (which is a typical windows power modifier, like
+                        // shift right click context menus) which means average person won't trigger it.
+                        // Implemented by Mgamerz 05/14/2022
+                        skipReferencesCheck ? null : itemsToTrash.FirstOrDefault(entry => entry.GetEntriesThatReferenceThisOne().Any(kvp =>
                     {
                         (IEntry referencedEntry, List<string> referenceDescriptors) = kvp;
 
