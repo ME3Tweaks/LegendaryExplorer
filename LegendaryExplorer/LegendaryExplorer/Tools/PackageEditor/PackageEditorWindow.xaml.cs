@@ -30,6 +30,7 @@ using LegendaryExplorer.UserControls.ExportLoaderControls;
 using LegendaryExplorer.UserControls.SharedToolControls;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
+using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
@@ -1379,8 +1380,8 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     return;
                 }
 
-                bool skipReferencesCheck =
-                    Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift); // Bypass the check if holding SHIFT
+                bool skipReferencesCheck = ShowExperiments &&
+                    (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift)); // Bypass the check if holding SHIFT
 
                 BusyText = "Performing reference check...";
                 IsBusy = true;
@@ -1388,31 +1389,13 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 {
 
                     List<IEntry> itemsToTrash = selected.FlattenTree().OrderByDescending(x => x.UIndex).Select(tvEntry => tvEntry.Entry).ToList();
-                    var itemsToTrashSet = new HashSet<IEntry>(itemsToTrash);
 
                     IEntry entryWithReferences =
                         // Requested by Khaar 05/12/2022
-                        // Way to bypass references check as it significantly slows down mass
+                        // Way to bypass references check as it slows down mass
                         // trashing of objects especially when the dev knows what they're doing
-                        // Might make sense to show this in a menu
-                        // of some kind? You have to hold shift (which is a typical windows power modifier, like
-                        // shift right click context menus) which means average person won't trigger it.
                         // Implemented by Mgamerz 05/14/2022
-                        skipReferencesCheck ? null : itemsToTrash.FirstOrDefault(entry => entry.GetEntriesThatReferenceThisOne().Any(kvp =>
-                    {
-                        (IEntry referencedEntry, List<string> referenceDescriptors) = kvp;
-
-                        //referenced from another entry that we are trashing, so it doesn't matter
-                        if (itemsToTrashSet.Contains(referencedEntry)) return false;
-
-                        //referenced from the level's actor list, which will be automatically cleaned up, so it doesn't matter
-                        if (referenceDescriptors.Count == 1 && referencedEntry.ClassName == "Level" && entry is ExportEntry exp && exp.IsA("Actor") && Pcc.LevelContainsActor(exp))
-                        {
-                            return false;
-                        }
-                        //dangerous reference detected!
-                        return true;
-                    }));
+                        skipReferencesCheck ? null : GetExternallyReferencedExport(itemsToTrash);
                     return (itemsToTrash, entryWithReferences);
                 }).ContinueWithOnUIThread(prevTask =>
                 {
@@ -1446,6 +1429,144 @@ namespace LegendaryExplorer.Tools.PackageEditor
                         MessageBox.Show(this, "Trashed and removed from level!");
                     }
                 });
+
+                static ExportEntry GetExternallyReferencedExport(List<IEntry> entriesToTrash)
+                {
+                    if (entriesToTrash.IsEmpty())
+                    {
+                        return null;
+                    }
+                    IMEPackage pcc = entriesToTrash[0].FileRef;
+                    MEGame pccGame = pcc.Game;
+                    var uIndexes = new HashSet<int>(entriesToTrash.Select(entry => entry.UIndex));
+
+                    foreach (ExportEntry exp in pcc.Exports.Except(entriesToTrash.OfType<ExportEntry>()))
+                    {
+                        try
+                        {
+                            //find header references
+                            if (uIndexes.Contains(exp.idxArchetype))
+                            {
+                                return pcc.GetUExport(exp.idxArchetype);
+                            }
+                            if (uIndexes.Contains(exp.idxClass))
+                            {
+                                return pcc.GetUExport(exp.idxClass);
+                            }
+                            if (uIndexes.Contains(exp.idxSuperClass))
+                            {
+                                return pcc.GetUExport(exp.idxSuperClass);
+                            }
+                            if (exp.HasComponentMap && exp.ComponentMap.Any(kvp => uIndexes.Contains(kvp.Value)))
+                            {
+                                return pcc.GetUExport(exp.ComponentMap.Values().First(uIdx => uIndexes.Contains(uIdx)));
+                            }
+
+                            //find stack references
+                            if (exp.HasStack)
+                            {
+                                if (uIndexes.TryGetValue(EndianReader.ToInt32(exp.DataReadOnly, 0, exp.FileRef.Endian), out int stack1))
+                                {
+                                    return pcc.GetUExport(stack1);
+                                }
+                                if (uIndexes.TryGetValue(EndianReader.ToInt32(exp.DataReadOnly, 4, exp.FileRef.Endian), out int stack2))
+                                {
+                                    return pcc.GetUExport(stack2);
+                                }
+                            }
+                            else if (exp.TemplateOwnerClassIdx is var toci and >= 0 && 
+                                     uIndexes.TryGetValue(EndianReader.ToInt32(exp.DataReadOnly, toci, exp.FileRef.Endian), out int tocuIdx))
+                            {
+                                return pcc.GetUExport(tocuIdx);
+                            }
+
+
+                            //find property references
+                            if (GetReferencedExportInProps(exp.GetProperties()) is ExportEntry export)
+                            {
+                                return exp;
+                            }
+
+                            //find binary references
+                            if (!exp.IsDefaultObject
+                                && exp.ClassName != "AnimSequence" //has no UIndexes, and is expensive to deserialize
+                                && ObjectBinary.From(exp) is ObjectBinary objBin)
+                            {
+                                List<(UIndex, string)> indices;
+                                if (objBin is Level levelBin)
+                                {
+                                    //trashing a level object will automatically remove it from the Actor list
+                                    //so we don't care if it's referenced there
+                                    indices = levelBin.GetUIndexesWithoutActorList(pccGame);
+                                }
+                                else
+                                {
+                                    indices = objBin.GetUIndexes(pccGame);
+                                }
+                                foreach ((UIndex uIndex, string _) in indices)
+                                {
+                                    if (uIndexes.Contains(uIndex.value))
+                                    {
+                                        return pcc.GetUExport(uIndex.value);
+                                    }
+                                }
+                            }
+                        }
+                        catch (Exception e) when (!App.IsDebug)
+                        {
+                            MessageBox.Show($"Exception occurred while reading export# {exp.UIndex}: {e.Message}");
+                        }
+                    }
+
+                    return null;
+
+                    ExportEntry GetReferencedExportInProps(PropertyCollection props)
+                    {
+                        foreach (Property prop in props)
+                        {
+                            switch (prop)
+                            {
+                                case ObjectProperty objectProperty:
+                                    if (uIndexes.Contains(objectProperty.Value))
+                                    {
+                                        return pcc.GetUExport(objectProperty.Value);
+                                    }
+                                    break;
+                                case DelegateProperty delegateProperty:
+                                    if (uIndexes.Contains(delegateProperty.Value.ContainingObjectUIndex))
+                                    {
+                                        return pcc.GetUExport(delegateProperty.Value.ContainingObjectUIndex);
+                                    }
+                                    break;
+                                case StructProperty structProperty:
+                                    if (GetReferencedExportInProps(structProperty.Properties) is ExportEntry export1)
+                                    {
+                                        return export1;
+                                    }
+                                    break;
+                                case ArrayProperty<ObjectProperty> arrayProperty:
+                                    foreach (ObjectProperty objProp in arrayProperty)
+                                    {
+                                        if (uIndexes.Contains(objProp.Value))
+                                        {
+                                            return pcc.GetUExport(objProp.Value);
+                                        }
+                                    }
+                                    break;
+                                case ArrayProperty<StructProperty> arrayProperty:
+                                    foreach (StructProperty structProp in arrayProperty)
+                                    {
+                                        if (GetReferencedExportInProps(structProp.Properties) is ExportEntry export2)
+                                        {
+                                            return export2;
+                                        }
+                                    }
+                                    break;
+                            }
+                        }
+                        return null;
+                    }
+                }
             }
         }
         
