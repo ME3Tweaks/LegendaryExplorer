@@ -1,5 +1,6 @@
 ﻿using LegendaryExplorer.Dialogs;
 using LegendaryExplorerCore.GameFilesystem;
+using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Matinee;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
@@ -687,6 +688,382 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             targetMorph.WriteBinary(targetMorphFace);
             MessageBox.Show("The selected morph's hair has been cut and offered as a sacrifice to the Reape-- The morph is now bald.", "Success", MessageBoxButton.OK);
+        }
+
+        /// <summary>
+        /// Removes SMC references to a SkeletalMesh or StaticMesh within a given distance.
+        /// </summary>
+        /// <param name="pew">Current PE instance.</param>
+        public static void SMRefRemover(PackageEditorWindow pew)
+        {
+            if (pew.Pcc == null || pew.SelectedItem == null || pew.SelectedItem.Entry == null) { return; }
+
+            if (!(pew.SelectedItem.Entry.ClassName is "SkeletalMesh" or "StaticMesh"))
+            {
+                ShowError("Selected export is not a SkeletalMesh or StaticMesh");
+                return;
+            }
+
+            // Prompt for and validate origin position
+            string promptOrigin = PromptDialog.Prompt(null, "Write the origin coordinates from which to remove references to the mesh. It must be a comma separated list: X, Y, Z");
+            if (string.IsNullOrEmpty(promptOrigin))
+            {
+                ShowError("Invalid origin");
+                return;
+            }
+
+            string[] strOrigins = promptOrigin.Split(",");
+            if (strOrigins.Length != 3)
+            {
+                ShowError("Wrong number of coordinates. You must provide 3 coordinates in the form of: X, Y, Z");
+                return;
+            }
+            List<float> origins = new();
+            foreach (string strOrigin in strOrigins)
+            {
+                float origin;
+                if (!float.TryParse(strOrigin, out origin))
+                {
+                    ShowError($"Distance {strOrigin} is not a valid decimal");
+                    return;
+                }
+                origins.Add(origin);
+            }
+
+            // Prompt for and validate distance
+            string promptDist = PromptDialog.Prompt(null, "Write the distance from each origin coordinate in which to remove references. It must be a comma separated list: distX, distY, distZ");
+            if (string.IsNullOrEmpty(promptDist))
+            {
+                ShowError("Invalid distance");
+                return;
+            }
+
+            string[] strDists = promptDist.Split(",");
+            if (strDists.Length != 3)
+            {
+                ShowError("Wrong number of distances. You must provide 3 distances, in the form of: distX, distY, distZ");
+                return;
+            }
+            List<float> dists = new();
+            foreach (string strDist in strDists)
+            {
+                float dist;
+                if (!float.TryParse(strDist, out dist))
+                {
+                    ShowError($"Distance {strDist} is not a valid decimal");
+                    return;
+                }
+                if (dist < 0)
+                {
+                    ShowError($"Distance {strDist} must be a positive value.");
+                    return;
+                }
+                dists.Add(dist);
+            }
+
+            ExportEntry mesh = (ExportEntry)pew.SelectedItem.Entry;
+            // Get a list of SMC/SMAs referencing the selected mesh
+            List<IEntry> references = mesh.GetEntriesThatReferenceThisOne()
+                .Where(kvp => kvp.Key.ClassName is "SkeletalMeshComponent" or "StaticMeshComponent")
+                .Select(kvp => kvp.Key).ToList();
+
+            if (references.Count == 0)
+            {
+                ShowError("Found no SMCs referencing the selected mesh");
+                return;
+            }
+
+            List<string> removedReferences = new();
+            foreach (ExportEntry reference in references)
+            {
+                if (reference.ClassName == "StaticMeshComponent")
+                {
+                    switch (reference.Parent.ClassName)
+                    {
+                        case "StatichMeshCollectionActor":
+                            StaticMeshCollectionActor parent = ObjectBinary.From<StaticMeshCollectionActor>((ExportEntry)reference.Parent);
+                            UIndex uindex = new(reference.UIndex);
+                            int smcaIndex = parent.Components.IndexOf(uindex);
+                            float destX, destY, destZ;
+                            ((destX, destY, destZ), _, _) = parent.LocalToWorldTransforms[smcaIndex].UnrealDecompose();
+
+                            // Check if the component is within the given distance, and if so remove the reference
+                            if (InDist(origins[0], destX, dists[0]) && InDist(origins[1], destY, dists[1]) && InDist(origins[2], destZ, dists[2]))
+                            {
+                                ObjectProperty prop = new ObjectProperty(0, "StaticMesh");
+                                reference.WriteProperty(prop);
+                                removedReferences.Add($"{reference.ObjectName}_{reference.indexValue}");
+                            }
+                            break;
+                        case "StaticMeshActor":
+                            StructProperty location = ((ExportEntry)reference.Parent).GetProperty<StructProperty>("location");
+                            if (location == null) { continue; }
+                            // Check if the component is within the given distance, and if so remove the reference
+                            if (InDist(origins[0], location.GetProp<FloatProperty>("X"), dists[0])
+                                && InDist(origins[1], location.GetProp<FloatProperty>("Y"), dists[1])
+                                && InDist(origins[2], location.GetProp<FloatProperty>("Z"), dists[2]))
+                            {
+                                ObjectProperty prop = new ObjectProperty(0, "StaticMesh");
+                                reference.WriteProperty(prop);
+                                removedReferences.Add($"{reference.ObjectName}_{reference.indexValue}");
+                            }
+                            break;
+                        default:
+                            continue;
+                    }
+                }
+
+                if (reference.ClassName == "SkeletalMeshComponent")
+                {
+                    ExportEntry parent = (ExportEntry)reference.Parent;
+                    StructProperty location = parent.GetProperty<StructProperty>("Location");
+                    if (location == null) { continue; }
+
+                    // Check if the component is within the given distance, and if so remove the reference
+                    if (InDist(origins[0], location.GetProp<FloatProperty>("X"), dists[0])
+                        && InDist(origins[1], location.GetProp<FloatProperty>("Y"), dists[1])
+                        && InDist(origins[2], location.GetProp<FloatProperty>("Z"), dists[2]))
+                    {
+                        ObjectProperty prop = new ObjectProperty(0, "SkeletalMesh");
+                        reference.WriteProperty(prop);
+                        removedReferences.Add($"{reference.ObjectName}_{reference.indexValue}");
+                    }
+                }
+            }
+
+            if (removedReferences.Count > 0)
+            {
+                MessageBox.Show($"Removed references to the mesh in the following objects: {string.Join(", ", removedReferences.ToArray())}",
+                    "Success", MessageBoxButton.OK);
+
+            }
+            else
+            {
+                MessageBox.Show("No references were found within the given distance");
+            }
+        }
+
+        /// <summary>
+        /// Checks if a dest position is within a given distance of the origin.
+        /// </summary>
+        /// <param name="origin">Origin position.</param>
+        /// <param name="dest">Dest position to check.</param>
+        /// <param name="dist">Max distance from origin.</param>
+        /// <returns>True if the dest is within dist</returns>
+        private static bool InDist(float origin, float dest, float dist)
+        {
+            return Math.Abs((dest - origin)) <= dist;
+        }
+
+
+        /// <summary>
+        /// Copy the selected property to another export of the same class.
+        /// </summary>
+        /// <param name="pew">Current PE window.</param>
+        public static void CopyProperty(PackageEditorWindow pew)
+        {
+            if (pew.Pcc == null || pew.SelectedItem == null || pew.SelectedItem.Entry == null) { return; }
+
+            ExportEntry selectedEntry = (ExportEntry)pew.SelectedItem.Entry;
+            if (selectedEntry == null)
+            {
+                ShowError("Invalid entry");
+                return;
+            }
+
+            // Get an array of available properties so the user can select one
+            string[] properties = selectedEntry.GetProperties().Select(property => property.Name.Name).ToArray();
+            if (properties.Length == 0)
+            {
+                ShowError("Export contains no properties");
+                return;
+            }
+
+            string sourcePropName = InputComboBoxDialog.GetValue(null, "Choose the property to copy:", "Copy property",
+                properties);
+            if (string.IsNullOrEmpty(sourcePropName))
+            {
+                ShowError("Invalid property");
+                return;
+            }
+
+            int targetID;
+            string strID = PromptDialog.Prompt(null, "Export ID of the export to copy into");
+            if (string.IsNullOrEmpty(strID) || !int.TryParse(strID, out targetID))
+            {
+                ShowError("Invalid ID");
+                return;
+            }
+
+            ExportEntry targetExport;
+            if (!pew.Pcc.TryGetUExport(targetID, out targetExport))
+            {
+                ShowError("Target export not found");
+                return;
+            }
+            if (targetExport.ClassName != selectedEntry.ClassName)
+            {
+                ShowError("Target export's class is different from the source");
+                return;
+            }
+
+            Property sourceProp = selectedEntry.GetProperty<Property>(sourcePropName);
+            targetExport.WriteProperty(sourceProp);
+
+            MessageBox.Show($"Property {sourcePropName} copied succesfully", "Success", MessageBoxButton.OK);
+        }
+
+        /// <summary>
+        /// Copies the texture, vector, and scalar properties of a BioMaterialOverride into [Bio]MaterialInstanceConstants, or vice-versa.
+        /// </summary>
+        /// <param name="pew">Current PE widow.</param>
+        public static void CopyMatToBMOorMIC(PackageEditorWindow pew)
+        {
+            if (pew.Pcc == null || pew.SelectedItem == null || pew.SelectedItem.Entry == null) { return; }
+
+            if (pew.SelectedItem == null || !(pew.SelectedItem.Entry.ClassName is "BioMaterialOverride" or "MaterialInstanceConstant" or "BioMaterialInstanceConstant"))
+            {
+                ShowError("Invalid selection. Select a BioMaterialOverride, a BioMaterialInstanceConstant, or a MaterialInstanceConstant to proceed");
+                return;
+            }
+
+            // True if we copy from BMO to MIC, false if we copy from MIC to BMO
+            bool isBMO = pew.SelectedItem.Entry.ClassName == "BioMaterialOverride";
+
+            ExportEntry selectedEntry = (ExportEntry)pew.SelectedItem.Entry;
+            ArrayProperty<StructProperty> textureProperty = selectedEntry.GetProperty<ArrayProperty<StructProperty>>
+                ($"{(isBMO ? "m_aTextureOverrides" : "TextureParameterValues")}");
+            ArrayProperty<StructProperty> vectorProperty = selectedEntry.GetProperty<ArrayProperty<StructProperty>>
+                ($"{(isBMO ? "m_aColorOverrides" : "VectorParameterValues")}");
+            ArrayProperty<StructProperty> scalarProperty = selectedEntry.GetProperty<ArrayProperty<StructProperty>>
+                ($"{(isBMO ? "m_aScalarOverrides" : "ScalarParameterValues")}");
+            if (textureProperty == null && vectorProperty == null && scalarProperty == null)
+            {
+                ShowError("No texture, vector, or scalar properties were found");
+                return;
+            }
+
+            string strIDs = PromptDialog.Prompt(null, "Comma separated list of the Export ID of the target exports");
+            if (string.IsNullOrEmpty(strIDs))
+            {
+                ShowError("Invalid IDs");
+                return;
+            }
+
+            // Validate and load the provided export IDs.
+            // We check first before running any operations on the actual properties.
+            List<ExportEntry> targetExports = new();
+            foreach (string id in strIDs.Split(","))
+            {
+                int targetID;
+                if (!int.TryParse(id, out targetID))
+                {
+                    ShowError($"ID {id} is invalid");
+                    return;
+
+                }
+                ExportEntry targetExport;
+                if (!pew.Pcc.TryGetUExport(targetID, out targetExport))
+                {
+                    ShowError($"Target export with ID {id} not found");
+                    return;
+                }
+                if (isBMO)
+                {
+                    if (!(targetExport.ClassName is "MaterialInstanceConstant" or "BioMaterialInstanceConstant"))
+                    {
+                        ShowError($"Target export {id}'s class is not MaterialInstanceConstant or BioMaterialInstanceConstant");
+                        return;
+
+                    }
+                }
+                else
+                {
+                    if (targetExport.ClassName != "BioMaterialOverride")
+                    {
+                        ShowError($"Target export {id}'s class is not BioMaterialOverride");
+                        return;
+
+                    }
+                }
+                targetExports.Add(targetExport);
+            }
+
+
+            ArrayProperty<StructProperty> TextureValues = new($"{(isBMO ? "TextureParameterValues" : "m_aTextureOverrides")}");
+            ArrayProperty<StructProperty> VectorValues = new($"{(isBMO ? "VectorParameterValues" : "m_aColorOverrides")}");
+            ArrayProperty<StructProperty> ScalarValues = new($"{(isBMO ? "ScalarParameterValues" : "m_aScalarOverrides")}");
+
+            if (textureProperty != null)
+            {
+                foreach (StructProperty parameter in textureProperty)
+                {
+                    PropertyCollection props = new PropertyCollection();
+                    if (isBMO) { props.Add(GenerateExpressionGUID()); }
+                    props.Add(new NameProperty(parameter.GetProp<NameProperty>($"{(isBMO ? "nName" : "ParameterName")}").Value,
+                        $"{(isBMO ? "ParameterName" : "nName")}"));
+                    props.Add(new ObjectProperty(parameter.GetProp<ObjectProperty>($"{(isBMO ? "m_pTexture" : "ParameterValue")}").Value,
+                        $"{(isBMO ? "ParameterValue" : "m_pTexture")}"));
+                    TextureValues.Add(new StructProperty($"{(isBMO ? "TextureParameterValue" : "TextureParameter")}", props));
+                }
+            }
+
+            if (vectorProperty != null)
+            {
+                foreach (StructProperty parameter in vectorProperty)
+                {
+                    PropertyCollection props = new();
+                    PropertyCollection color = new();
+                    color.Add(parameter.GetProp<StructProperty>($"{(isBMO ? "cValue" : "ParameterValue")}").GetProp<FloatProperty>("R"));
+                    color.Add(parameter.GetProp<StructProperty>($"{(isBMO ? "cValue" : "ParameterValue")}").GetProp<FloatProperty>("G"));
+                    color.Add(parameter.GetProp<StructProperty>($"{(isBMO ? "cValue" : "ParameterValue")}").GetProp<FloatProperty>("B"));
+                    color.Add(parameter.GetProp<StructProperty>($"{(isBMO ? "cValue" : "ParameterValue")}").GetProp<FloatProperty>("A"));
+                    StructProperty ParameterValue = new("LinearColor", color, $"{(isBMO ? "ParameterValue" : "cValue")}", true);
+                    if (isBMO) { props.Add(GenerateExpressionGUID()); }
+                    props.Add(ParameterValue);
+                    props.Add(new NameProperty(parameter.GetProp<NameProperty>($"{(isBMO ? "nName" : "ParameterName")}").Value,
+                        $"{(isBMO ? "ParameterName" : "nName")}"));
+                    VectorValues.Add(new StructProperty($"{(isBMO ? "VectorParameterValue" : "ColorParameter")}", props));
+                }
+            }
+
+            if (scalarProperty != null)
+            {
+                foreach (StructProperty parameter in scalarProperty)
+                {
+                    PropertyCollection props = new();
+                    if (isBMO) { props.Add(GenerateExpressionGUID()); }
+                    props.Add(new NameProperty(parameter.GetProp<NameProperty>($"{(isBMO ? "nName" : "ParameterName")}").Value,
+                        $"{(isBMO ? "ParameterName" : "nName")}"));
+                    props.Add(new FloatProperty(parameter.GetProp<FloatProperty>($"{(isBMO ? "sValue" : "ParameterValue")}").Value,
+                        $"{(isBMO ? "ParameterValue" : "sValue")}"));
+                    ScalarValues.Add(new StructProperty($"{(isBMO ? "ScalarParameterValue" : "ScalarParameter")}", props));
+                }
+            }
+
+            foreach (ExportEntry targetExport in targetExports)
+            {
+                if (textureProperty != null) { targetExport.WriteProperty(TextureValues); }
+                if (vectorProperty != null) { targetExport.WriteProperty(VectorValues); }
+                if (scalarProperty != null) { targetExport.WriteProperty(ScalarValues); }
+            }
+
+            MessageBox.Show("Properties copied successfully", "Success", MessageBoxButton.OK);
+        }
+
+        /// <summary>
+        /// Generate a default ExpressionGUID
+        /// </summary>
+        /// <returns>ExpressionGUID StructProperty</returns>
+        private static StructProperty GenerateExpressionGUID()
+        {
+            PropertyCollection props = new PropertyCollection();
+            props.Add(new IntProperty(0, "A"));
+            props.Add(new IntProperty(0, "B"));
+            props.Add(new IntProperty(0, "C"));
+            props.Add(new IntProperty(0, "D"));
+
+            return new StructProperty("Guid", props, "ExpressionGUID", true);
         }
     }
 }
