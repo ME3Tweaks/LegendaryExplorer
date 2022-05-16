@@ -125,14 +125,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         int RescanSelectionOffset;
         private readonly List<FrameworkElement> EditorSetElements = new();
-        public struct PropHeader
-        {
-            public int name;
-            public int type;
-            public int size;
-            public int index;
-            public int offset;
-        }
 
         private HexBox Interpreter_Hexbox;
         private bool isLoadingNewData;
@@ -166,14 +158,14 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private static void ForceSimpleModeChangedCallback(DependencyObject obj, DependencyPropertyChangedEventArgs e)
         {
-            InterpreterExportLoader i = (InterpreterExportLoader)obj;
+            var i = (InterpreterExportLoader)obj;
             i.OnPropertyChanged(nameof(AdvancedView));
             i.OnPropertyChanged(nameof(ShowPropOffsets));
         }
 
         private static void DisableHexBoxChangedCallback(DependencyObject obj, DependencyPropertyChangedEventArgs e)
         {
-            InterpreterExportLoader i = (InterpreterExportLoader)obj;
+            var i = (InterpreterExportLoader)obj;
             if ((bool)e.NewValue)
             {
                 i.hexBoxContainer.Visibility = i.HexProps_GridSplitter.Visibility = i.ToggleHexbox_Button.Visibility = i.SaveHexChange_Button.Visibility = i.HexInfoStatusBar.Visibility = Visibility.Collapsed;
@@ -1624,7 +1616,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     case IntProperty ip:
                         Value_TextBox.Text = ip.Value.ToString();
                         SupportedEditorSetElements.Add(Value_TextBox);
-                        if (newSelectedItem.Parent?.Property is StructProperty property && property.StructType == "Rotator")
+                        if (newSelectedItem.Parent?.Property is StructProperty { StructType: "Rotator" })
                         {
                             //we support editing rotators as degrees. We will preview the raw value and enter data in degrees instead.
                             SupportedEditorSetElements.Add(ParsedValue_TextBlock);
