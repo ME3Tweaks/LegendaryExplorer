@@ -1784,7 +1784,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                 PathfindingNodeMaster s = GraphNodes.First(o => o.UIndex == export.UIndex);
                 var currentlocation = PathEdUtils.GetLocation(export) ?? new Point3D(0, 0, 0);
                 PathEdUtils.SetLocation(export, s.GlobalBounds.X, s.GlobalBounds.Y, (float)currentlocation.Z);
-                MessageBox.Show($"Location set to {s.GlobalBounds.X}, { s.GlobalBounds.Y}");
+                MessageBox.Show($"Location set to {s.GlobalBounds.X}, {s.GlobalBounds.Y}");
             }
             else
             {
@@ -4923,31 +4923,14 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                     {
                         PlayerGPSObject = new PlayerGPSNode(0, 0, graphEditor);
                         graphEditor.addNode(PlayerGPSObject);
-
                     }
 
-                    client = new NamedPipeClientStream($"LEX_{Pcc.Game}_COMM_PIPE");
-                    client.Connect();
-                    pipeReader = new StreamReader(client);
-                    pipeWriter = new StreamWriter(client);
-
-                    pipeWriter.WriteLine("ACTIVATE_PLAYERGPS");
-                    pipeWriter.Flush();
-
-                    client.Dispose();
+                    InteropHelper.SendMessageToGame("ACTIVATE_PLAYERGPS", Pcc.Game);
                     gpsActive = true;
                 }
                 else
                 {
-                    client = new NamedPipeClientStream($"LEX_{Pcc.Game}_COMM_PIPE");
-                    client.Connect();
-                    pipeReader = new StreamReader(client);
-                    pipeWriter = new StreamWriter(client);
-
-                    pipeWriter.WriteLine("DEACTIVATE_PLAYERGPS");
-                    pipeWriter.Flush();
-
-                    client.Dispose();
+                    InteropHelper.SendMessageToGame("DEACTIVATE_PLAYERGPS", Pcc.Game);
                     gpsActive = false;
                 }
                 //pipeReader.Dispose();

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Pipes;
 using System.Security.Cryptography;
+using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using LegendaryExplorer.GameInterop.InteropTargets;
@@ -171,7 +173,7 @@ namespace LegendaryExplorer.GameInterop
         {
             if (game.IsLEGame())
             {
-                var result =MessageBox.Show("Install the ASI loader with ME3Tweaks Mod Manager, in the 'Tools > Bink Bypasses' menu. Click OK to open the Mod Manager download page.",
+                var result = MessageBox.Show("Install the ASI loader with ME3Tweaks Mod Manager, in the 'Tools > Bink Bypasses' menu. Click OK to open the Mod Manager download page.",
                     "ASI Loader Installation Instructions", MessageBoxButton.OKCancel, MessageBoxImage.Information);
                 if (result == MessageBoxResult.OK)
                 {
@@ -208,6 +210,39 @@ namespace LegendaryExplorer.GameInterop
             }
 
             return false;
+        }
+
+
+        private static NamedPipeClientStream client;
+        // private StreamReader pipeReader; // Reading pipes is way more complicated
+        private static StreamWriter pipeWriter;
+
+        /// <summary>
+        /// Sends a message to a game via a pipe. The game must have the LEX Interop ASI installed that handles the command for it to do anything.
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="game"></param>
+        public static void SendMessageToGame(string message, MEGame game)
+        {
+            if (IsGameClosed(game))
+            {
+                Debug.WriteLine($"{game} is not running! Cannot send command {message}");
+                return;
+            }
+
+            // We make new pipe and connect to game every command
+            client = new NamedPipeClientStream($"LEX_{game}_COMM_PIPE");
+            client.Connect();
+            //pipeReader = new StreamReader(client);
+            pipeWriter = new StreamWriter(client);
+
+            // For debugging
+            // Thread.Sleep(3000);
+            
+            pipeWriter.WriteLine(message); // Messages will end with \r\n when received in c++!
+            pipeWriter.Flush();
+
+            client.Dispose();
         }
     }
 }

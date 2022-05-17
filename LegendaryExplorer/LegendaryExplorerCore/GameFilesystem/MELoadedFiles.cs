@@ -35,7 +35,7 @@ namespace LegendaryExplorerCore.GameFilesystem
         private static CaseInsensitiveDictionary<string> cachedLE3LoadedFiles;
 
         /// <summary>
-        /// Gets a dictionary of all loaded files in the given game. Key is the filename, value is file path
+        /// Gets a dictionary of all loaded files in the given game. Key is the filename, value is file path. This data may be cached; to reload it, set the forceReload flag to true
         /// </summary>
         /// <param name="game">Game to get loaded files for</param>
         /// <param name="forceReload">If false, method may return a cache of loaded files. If true, cache will be regenerated</param>
