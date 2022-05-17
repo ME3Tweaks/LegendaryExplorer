@@ -692,7 +692,9 @@ namespace LegendaryExplorerCore.Packages
                     findPropertyReferences(exp.GetProperties(), exp, "Property:");
 
                     //find binary references
-                    if (!exp.IsDefaultObject && ObjectBinary.From(exp) is ObjectBinary objBin)
+                    if (!exp.IsDefaultObject
+                        && exp.ClassName != "AnimSequence" //has no UIndexes, and is expensive to deserialize
+                        && ObjectBinary.From(exp) is ObjectBinary objBin)
                     {
                         List<(UIndex, string)> indices = objBin.GetUIndexes(exp.FileRef.Game);
                         foreach ((UIndex uIndex, string propName) in indices)
