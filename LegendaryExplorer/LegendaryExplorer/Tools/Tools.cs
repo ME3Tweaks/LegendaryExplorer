@@ -211,7 +211,7 @@ namespace LegendaryExplorer
                 open = () =>
                 {
                     var gameStr = InputComboBoxWPF.GetValue(null, "Choose game you want to use Live Level Editor 2 with.", "Live Level Editor 2 game selector",
-                        new[] { "ME3", "ME2", "LE1" }, "ME3");
+                        new[] { "LE1" }, "LE1");
 
                     if (Enum.TryParse(gameStr, out MEGame game))
                     {
@@ -227,7 +227,7 @@ namespace LegendaryExplorer
                 },
                 tags = new List<string> { "utility" },
                 category = "Utilities",
-                description = "IN DEVELOPMENT: Live Level Editor allows you to preview the effect of property changes to Actors in game, to reduce iteration times. It also has a Camera Path Editor, which lets you make camera pans quickly."
+                description = "IN DEVELOPMENT (LE ONLY): Live Level Editor 2 allows you to preview the effect of property changes to Actors in game, to reduce iteration times. It also has a Camera Path Editor, which lets you make camera pans quickly."
             });
 #endif
 

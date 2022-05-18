@@ -232,7 +232,7 @@ namespace LegendaryExplorer.GameInterop
 
             // We make new pipe and connect to game every command
             client = new NamedPipeClientStream($"LEX_{game}_COMM_PIPE");
-            client.Connect();
+            client.Connect(3000); // 3 second timeout.
             //pipeReader = new StreamReader(client);
             pipeWriter = new StreamWriter(client);
 

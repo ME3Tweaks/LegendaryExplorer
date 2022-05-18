@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 using System.Numerics;
+using System.Threading;
 using FontAwesome5;
 using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.SharedUI;
@@ -59,9 +61,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             }
         }
 
-        public bool IsME3 => Game is MEGame.ME3;
-
-        public bool CamPathReadyToView => _readyToView && IsME3;
+        public bool CamPathReadyToView => _readyToView;
 
         private bool _readyToInitialize = true;
         public bool ReadyToInitialize
@@ -122,7 +122,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         {
             DisposeCamPath();
             DataContext = null;
-            GameTarget.GameReceiveMessage -= GameControllerOnReceiveMessage;
+            GameTarget.GameReceiveMessage -= GameControllerOnReceiveMessage2;
             Instances.Remove(Game);
         }
 
@@ -150,6 +150,8 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             OpenActorInPackEdCommand = new GenericCommand(OpenActorInPackEd, CanOpenInPackEd);
             RegenActorListCommand = new GenericCommand(RegenActorList);
         }
+
+        #endregion
 
         private void RegenActorList()
         {
@@ -199,11 +201,11 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         }
 
         private bool CanLoadLiveEditor() => ReadyToInitialize && gameInstalledReq.IsFullfilled && asiLoaderInstalledReq.IsFullfilled && supportFilesInstalledReq.IsFullfilled
-                                         && interopASIInstalledReq.IsFullfilled && (!IsME3 || consoleASIInstalledReq.IsFullfilled) && GameController.TryGetMEProcess(Game, out _);
+                                         && interopASIInstalledReq.IsFullfilled && GameController.TryGetMEProcess(Game, out _);
 
         private void LoadLiveEditor()
         {
-            SetBusy("Loading Live Editor", () => RetryLoadTimer.Stop());
+            SetBusy("Connecting to game", () => RetryLoadTimer.Stop());
             //GameTarget.ExecuteConsoleCommands("ce LoadLiveEditor");
             InteropHelper.SendMessageToGame("LLE_TEST_ACTIVE", Game); // If this response works, we will know we are ready and can now start
             RetryLoadTimer.Start();
@@ -216,147 +218,111 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
 
         private void InstallSupportFiles()
         {
-            SetBusy("Installing Support Files");
-            Task.Run(() =>
-            {
-                InteropModInstaller installer = Game is MEGame.LE1 ? new LE1InteropModInstaller(GameTarget, SelectLE1Map) : new InteropModInstaller(GameTarget);
-                installer.InstallDLC_MOD_Interop();
-                EndBusy();
-                CommandManager.InvalidateRequerySuggested();
-            });
+            //SetBusy("Installing Support Files");
+            //Task.Run(() =>
+            //{
+            //    InteropModInstaller installer = Game is MEGame.LE1 ? new LE1InteropModInstaller(GameTarget, SelectLE1Map) : new InteropModInstaller(GameTarget);
+            //    installer.InstallDLC_MOD_Interop();
+            //    EndBusy();
+            //    CommandManager.InvalidateRequerySuggested();
+            //});
         }
 
-        /// <summary>
-        /// Callback method for the user to select a map when installing the LE1 Interop Mod
-        /// </summary>
-        /// <param name="maps">List of LE1 Map files to be selectable in the dialog</param>
-        /// <returns>List of master file names to augment and install in interop mod</returns>
-        private IEnumerable<string> SelectLE1Map(IEnumerable<string> maps)
-        {
-            var selectedMaps = new List<string>();
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                var dropdownDialog = new DropdownPromptDialog("Please select the master file for the map you will be live editing.\nThe interop mod must be re-installed if you want to edit in a different map.", "Select LE1 Map to use in Interop Mod",
-                    "Select master file", maps, this);
-                dropdownDialog.ShowDialog();
-                if (dropdownDialog.DialogResult == true)
-                {
-                    if (dropdownDialog.Response == "CUSTOM")
-                    {
-                        var prompt = new PromptDialog("Enter custom master file name. (For advanced users only)",
-                            "Custom Master File")
-                        {
-                            Owner = this
-                        };
-                        prompt.ShowDialog();
-                        if (prompt.DialogResult == true) selectedMaps.Add(prompt.ResponseText);
-                    }
-                    else selectedMaps.Add(dropdownDialog.Response);
-                }
-            });
 
-            return selectedMaps;
-        }
-        #endregion
 
         // NOT USED
-        private void GameControllerOnReceiveMessage(string msg)
-        {
-            if (msg == LiveEditHelper.LoaderLoadedMessage)
-            {
-                ReadyToView = false;
-                ReadyToInitialize = true;
-                instructionsTab.IsSelected = true;
-                if (!GameOpenTimer.IsEnabled)
-                {
-                    GameOpenTimer.Start();
-                }
+        //private void GameControllerOnReceiveMessage(string msg)
+        //{
+        //    if (msg == LiveEditHelper.LoaderLoadedMessage)
+        //    {
+        //        ReadyToView = false;
+        //        ReadyToInitialize = true;
+        //        instructionsTab.IsSelected = true;
+        //        if (!GameOpenTimer.IsEnabled)
+        //        {
+        //            GameOpenTimer.Start();
+        //        }
 
-                ActorDict.Clear();
-            }
-            else if (msg == "LiveEditor string Loaded")
-            {
-                RetryLoadTimer.Stop();
-                BusyText = "Building Actor list";
-                ReadyToView = true;
-                actorTab.IsSelected = true;
-                InitializeCamPath();
-                EndBusy();
-            }
-            else if (msg == "LiveEditor string ActorsDumped")
-            {
-                BuildActorDict();
-                EndBusy();
-            }
-            else if (msg == "LiveEditCamPath string CamPathComplete")
-            {
-                playbackState = PlaybackState.Paused;
-                PlayPauseIcon = EFontAwesomeIcon.Solid_Play;
-            }
-            else if (msg.StartsWith("LiveEditor string ActorSelected"))
-            {
-                Vector3 pos = defaultPosition;
-                if (msg.IndexOf("vector") is int idx && idx > 0 &&
-                    msg.Substring(idx + 7).Split(' ') is string[] { Length: 3 } strings)
-                {
-                    var floats = new float[3];
-                    for (int i = 0; i < 3; i++)
-                    {
-                        if (float.TryParse(strings[i], out float f))
-                        {
-                            floats[i] = f;
-                        }
-                        else
-                        {
-                            defaultPosition.CopyTo(floats);
-                            break;
-                        }
-                    }
-                    pos = new Vector3(floats[0], floats[1], floats[2]);
+        //        ActorDict.Clear();
+        //    }
+        //    else if (msg == "LiveEditor string Loaded")
+        //    {
+        //        RetryLoadTimer.Stop();
+        //        BusyText = "Building Actor list";
+        //        ReadyToView = true;
+        //        actorTab.IsSelected = true;
+        //        InitializeCamPath();
+        //        EndBusy();
+        //    }
+        //    else if (msg == "LiveEditCamPath string CamPathComplete")
+        //    {
+        //        playbackState = PlaybackState.Paused;
+        //        PlayPauseIcon = EFontAwesomeIcon.Solid_Play;
+        //    }
+        //    else if (msg.StartsWith("LiveEditor string ActorSelected"))
+        //    {
+        //        Vector3 pos = defaultPosition;
+        //        if (msg.IndexOf("vector") is int idx && idx > 0 &&
+        //            msg.Substring(idx + 7).Split(' ') is string[] { Length: 3 } strings)
+        //        {
+        //            var floats = new float[3];
+        //            for (int i = 0; i < 3; i++)
+        //            {
+        //                if (float.TryParse(strings[i], out float f))
+        //                {
+        //                    floats[i] = f;
+        //                }
+        //                else
+        //                {
+        //                    defaultPosition.CopyTo(floats);
+        //                    break;
+        //                }
+        //            }
+        //            pos = new Vector3(floats[0], floats[1], floats[2]);
 
 
-                }
-                noUpdate = true;
-                XPos = (int)pos.X;
-                YPos = (int)pos.Y;
-                ZPos = (int)pos.Z;
-                noUpdate = false;
-                EndBusy();
-            }
-            else if (msg.StartsWith("LiveEditor string ActorRotation"))
-            {
-                Rotator rot = defaultRotation;
-                if (msg.IndexOf("vector") is int idx && idx > 0 &&
-                    msg.Substring(idx + 7).Split(' ') is string[] { Length: >= 3 } strings)
-                {
-                    var floats = new float[3];
-                    for (int i = 0; i < 3; i++)
-                    {
-                        if (float.TryParse(strings[i], out float f))
-                        {
-                            floats[i] = f;
-                        }
-                        else
-                        {
-                            defaultPosition.CopyTo(floats);
-                            break;
-                        }
-                    }
-                    rot = Rotator.FromDirectionVector(new Vector3(floats[0], floats[1], floats[2]));
-                    if (msg.IndexOf("int") is int rollIdx && rollIdx > 0 &&
-                        msg.Substring(rollIdx + 4).Split(' ') is string[] { Length: >= 1 } rollStrings &&  int.TryParse(rollStrings[0], out int roll))
-                    {
-                        rot = new Rotator(rot.Pitch, rot.Yaw, roll);
-                    }
-                }
-                noUpdate = true;
-                Yaw = (int)rot.Yaw.UnrealRotationUnitsToDegrees();
-                Pitch = (int)rot.Pitch.UnrealRotationUnitsToDegrees();
-                Roll = (int)rot.Roll.UnrealRotationUnitsToDegrees();
-                noUpdate = false;
-                EndBusy();
-            }
-        }
+        //        }
+        //        noUpdate = true;
+        //        XPos = (int)pos.X;
+        //        YPos = (int)pos.Y;
+        //        ZPos = (int)pos.Z;
+        //        noUpdate = false;
+        //        EndBusy();
+        //    }
+        //    else if (msg.StartsWith("LiveEditor string ActorRotation"))
+        //    {
+        //        Rotator rot = defaultRotation;
+        //        if (msg.IndexOf("vector") is int idx && idx > 0 &&
+        //            msg.Substring(idx + 7).Split(' ') is string[] { Length: >= 3 } strings)
+        //        {
+        //            var floats = new float[3];
+        //            for (int i = 0; i < 3; i++)
+        //            {
+        //                if (float.TryParse(strings[i], out float f))
+        //                {
+        //                    floats[i] = f;
+        //                }
+        //                else
+        //                {
+        //                    defaultPosition.CopyTo(floats);
+        //                    break;
+        //                }
+        //            }
+        //            rot = Rotator.FromDirectionVector(new Vector3(floats[0], floats[1], floats[2]));
+        //            if (msg.IndexOf("int") is int rollIdx && rollIdx > 0 &&
+        //                msg.Substring(rollIdx + 4).Split(' ') is string[] { Length: >= 1 } rollStrings &&  int.TryParse(rollStrings[0], out int roll))
+        //            {
+        //                rot = new Rotator(rot.Pitch, rot.Yaw, roll);
+        //            }
+        //        }
+        //        noUpdate = true;
+        //        Yaw = (int)rot.Yaw.UnrealRotationUnitsToDegrees();
+        //        Pitch = (int)rot.Pitch.UnrealRotationUnitsToDegrees();
+        //        Roll = (int)rot.Roll.UnrealRotationUnitsToDegrees();
+        //        noUpdate = false;
+        //        EndBusy();
+        //    }
+        //}
 
         private void GameControllerOnReceiveMessage2(string msg)
         {
@@ -366,22 +332,12 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             if (command[0] != "LIVELEVELEDITOR")
                 return; // Not for us
 
-            Debug.WriteLine($"LLE Command: {msg}");
+            // Debug.WriteLine($"LLE Command: {msg}");
             var verb = command[1]; // Message Info
             // "READY" is done on first initialize and will automatically 
             if (verb == "READY") // We polled game, and found LLE is available
             {
-                //ReadyToView = false;
-                //ReadyToInitialize = true;
-                //instructionsTab.IsSelected = true;
-                //if (!GameOpenTimer.IsEnabled)
-                //{
-                //    GameOpenTimer.Start();
-                //}
-
-                //ActorDict.Clear();
-
-                // Test: Dump actors
+                // Pull the initial list of actors
                 DumpActors();
             }
             else if (verb == "ACTORDUMPSTART") // We're about to receive a list of actors
@@ -391,6 +347,13 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             else if (verb == "ACTORINFO") // We're about to receive a list of this many actors
             {
                 BuildActor(string.Join("", command.Skip(2))); // Skip tool and verb
+            }
+            else if (verb == "ACTORSELECTED") // The game has processed our actor selection request
+            {
+                // It might be null (can't find actor) - but we're going to request it anyways, since it will just
+                // ignore it if not found.
+                InteropHelper.SendMessageToGame($"LLE_GET_ACTOR_POSDATA", Game);
+                // Maybe should have busy here...
             }
             else if (verb == "ACTORDUMPFINISHED") // Finished dumping actors
             {
@@ -404,64 +367,18 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             }
             else if (verb == "ACTORLOC" && command.Length == 5)
             {
-                Vector3 pos = defaultPosition;
-                pos.X = float.Parse(command[2]);
-                pos.Y = float.Parse(command[3]);
-                pos.Z = float.Parse(command[4]);
-                //if (msg.IndexOf("vector") is int idx && idx > 0 &&
-                //    msg.Substring(idx + 7).Split(' ') is string[] { Length: 3 } strings)
-                //{
-                //    var floats = new float[3];
-                //    for (int i = 0; i < 3; i++)
-                //    {
-                //        if (float.TryParse(strings[i], out float f))
-                //        {
-                //            floats[i] = f;
-                //        }
-                //        else
-                //        {
-                //            defaultPosition.CopyTo(floats);
-                //            break;
-                //        }
-                //    }
-                //    pos = new Vector3(floats[0], floats[1], floats[2]);
-
-
-                //}
                 noUpdate = true;
-                XPos = (int)pos.X;
-                YPos = (int)pos.Y;
-                ZPos = (int)pos.Z;
+                XPos = float.Parse(command[2]);
+                YPos = float.Parse(command[3]);
+                ZPos = float.Parse(command[4]);
                 noUpdate = false;
                 EndBusy();
             }
             else if (verb == "ACTORROT" && command.Length == 5)
             {
+                // Do we need to put this in a rot? (this was how it was originally)
                 Rotator rot = new Rotator(int.Parse(command[2]), int.Parse(command[3]), int.Parse(command[4]));
 
-                //if (msg.IndexOf("vector") is int idx && idx > 0 &&
-                //    msg.Substring(idx + 7).Split(' ') is string[] { Length: >= 3 } strings)
-                //{
-                //    var floats = new float[3];
-                //    for (int i = 0; i < 3; i++)
-                //    {
-                //        if (float.TryParse(strings[i], out float f))
-                //        {
-                //            floats[i] = f;
-                //        }
-                //        else
-                //        {
-                //            defaultPosition.CopyTo(floats);
-                //            break;
-                //        }
-                //    }
-                //    rot = Rotator.FromDirectionVector(new Vector3(floats[0], floats[1], floats[2]));
-                //    if (msg.IndexOf("int") is int rollIdx && rollIdx > 0 &&
-                //        msg.Substring(rollIdx + 4).Split(' ') is string[] { Length: >= 1 } rollStrings &&  int.TryParse(rollStrings[0], out int roll))
-                //    {
-                //        rot = new Rotator(rot.Pitch, rot.Yaw, roll);
-                //    }
-                //}
                 noUpdate = true;
                 Yaw = (int)rot.Yaw.UnrealRotationUnitsToDegrees();
                 Pitch = (int)rot.Pitch.UnrealRotationUnitsToDegrees();
@@ -469,17 +386,19 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
                 noUpdate = false;
                 EndBusy();
             }
-
-
-            else if (verb == "LiveEditor string Loaded")
+            else if (verb == "ACTORDS3D" && command.Length == 5)
             {
-                RetryLoadTimer.Stop();
-                BusyText = "Building Actor list";
-                ReadyToView = true;
-                actorTab.IsSelected = true;
-                InitializeCamPath();
+                noUpdate = true;
+                DrawScaleX = float.Parse(command[2]);
+                DrawScaleY = float.Parse(command[3]);
+                DrawScaleZ = float.Parse(command[4]);
+                noUpdate = false;
                 EndBusy();
             }
+
+
+
+            // Todo: @SirC
             else if (msg == "LiveEditCamPath string CamPathComplete")
             {
                 playbackState = PlaybackState.Paused;
@@ -520,13 +439,18 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
                 EndBusy();
                 RetryLoadTimer.Stop();
             }
-            else
-            {
-                GameTarget.ExecuteConsoleCommands("ce LoadLiveEditor");
-            }
+            //else
+            //{
+            //    GameTarget.ExecuteConsoleCommands("ce LoadLiveEditor");
+            //}
         }
 
         public ObservableDictionary<string, ObservableCollectionExtended<ActorEntry2>> ActorDict { get; } = new();
+
+        /// <summary>
+        /// Builds actor information based on what's sent from the Interop ASI
+        /// </summary>
+        /// <param name="actorInfoStr"></param>
         private void BuildActor(string actorInfoStr)
         {
             string[] parts = actorInfoStr.Split(':');
@@ -544,52 +468,6 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             else
             {
                 Debug.WriteLine($"SKIPPING {actorInfoStr}");
-            }
-        }
-
-        private void BuildActorDict()
-        {
-            ActorDict.Clear();
-            string actorDumpPath = Path.Combine(MEDirectories.GetExecutableFolderPath(Game), "ME3ExpActorDump.txt");
-            if (!File.Exists(actorDumpPath))
-            {
-                return;
-            }
-
-            var actors = new Dictionary<string, List<ActorEntry2>>();
-            string[] lines = File.ReadAllLines(actorDumpPath);
-            Dictionary<string, string> gameFiles = MELoadedFiles.GetFilesLoadedInGame(Game);
-            for (int i = 0; i < lines.Length; i++)
-            {
-                string[] parts = lines[i].Split(':');
-                if (parts.Length == 2 && gameFiles.ContainsKey($"{parts[0]}.pcc"))
-                {
-                    actors.AddToListAt($"{parts[0]}.pcc", new ActorEntry2
-                    {
-                        ActorName = parts[1],
-                        FileName = $"{parts[0]}.pcc",
-                        ActorListIndex = i
-                    });
-                }
-            }
-
-            foreach ((string fileName, List<ActorEntry2> actorEntries) in actors)
-            {
-                using IMEPackage pcc = MEPackageHandler.OpenMEPackage(gameFiles[fileName]);
-                if (pcc.Exports.FirstOrDefault(exp => exp.ClassName == "Level") is { } levelExport)
-                {
-                    Level levelBin = levelExport.GetBinaryData<Level>();
-                    var uIndices = levelBin.Actors.Where(uIndex => pcc.IsUExport(uIndex)).ToList();
-                    List<string> instancedNames = uIndices.Select(uIndex => pcc.GetUExport(uIndex).ObjectName.Instanced).ToList();
-                    foreach (ActorEntry2 actorEntry in actorEntries)
-                    {
-                        if (instancedNames.IndexOf(actorEntry.ActorName) is int idx && idx >= 0)
-                        {
-                            actorEntry.UIndex = uIndices[idx];
-                            ActorDict.AddToListAt(fileName, actorEntry);
-                        }
-                    }
-                }
             }
         }
 
@@ -655,16 +533,28 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
                 if (SetProperty(ref _selectedActor, value) && !noUpdate && value != null)
                 {
                     SetBusy($"Selecting {value.ActorName}", () => { });
-                    InteropHelper.SendMessageToGame($"LLE_GET_ACTOR_POSDATA {Path.GetFileNameWithoutExtension(value.FileName)} TheWorld.PersistentLevel.{value.ActorName}", Game);
+                    InteropHelper.SendMessageToGame($"LLE_SELECT_ACTOR {GetActorID(value)}", Game);
+
+                    // When actor is selected, we will receive a reply. We then process from there
                 }
             }
         }
 
-        #region Position/Rotation
-        private static readonly Vector3 defaultPosition = Vector3.Zero;
-        private readonly Rotator defaultRotation = new(0, 0, 0);
-        private int _xPos = (int)defaultPosition.X;
-        public int XPos
+        /// <summary>
+        /// Gets the string representation of an actor that the interop asi can use to find an actor.
+        /// </summary>
+        /// <param name=""></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        private string GetActorID(ActorEntry2 value)
+        {
+            return $"{Path.GetFileNameWithoutExtension(value.FileName)} TheWorld.PersistentLevel.{value.ActorName}";
+        }
+
+        #region Position/Rotation/DrawScale3D
+
+        private float _xPos;
+        public float XPos
         {
             get => _xPos;
             set
@@ -676,8 +566,8 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             }
         }
 
-        private int _yPos = (int)defaultPosition.Y;
-        public int YPos
+        private float _yPos;
+        public float YPos
         {
             get => _yPos;
             set
@@ -689,8 +579,8 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             }
         }
 
-        private int _zPos = (int)defaultPosition.Z;
-        public int ZPos
+        private float _zPos;
+        public float ZPos
         {
             get => _zPos;
             set
@@ -709,6 +599,8 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             set => SetProperty(ref _posIncrement, value);
         }
 
+
+        #region VARS - Rotation
         private int _pitch;
         public int Pitch
         {
@@ -754,37 +646,62 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             get => _rotIncrement;
             set => SetProperty(ref _rotIncrement, value);
         }
+        #endregion
 
-        private enum FloatVarIndexes
+        #region VARS - DrawScale3D
+        private float _drawScaleX;
+        public float DrawScaleX
         {
-            XPos = 1,
-            YPos = 2,
-            ZPos = 3,
-            XRotComponent = 4,
-            YRotComponent = 5,
-            ZRotComponent = 6,
+            get => _drawScaleX;
+            set
+            {
+                if (SetProperty(ref _drawScaleX, value))
+                {
+                    UpdateDrawScale3D();
+                }
+            }
         }
 
-        private enum BoolVarIndexes
+        private float _drawScaleY;
+        public float DrawScaleY
         {
+            get => _drawScaleY;
+            set
+            {
+                if (SetProperty(ref _drawScaleY, value))
+                {
+                    UpdateDrawScale3D();
+                }
+            }
         }
 
-        private enum IntVarIndexes
+        private float _drawScaleZ;
+        public float DrawScaleZ
         {
-            ActorArrayIndex = 1,
-            ME3Pitch = 2,
-            ME3Yaw = 3,
-            ME3Roll = 4,
+            get => _drawScaleZ;
+            set
+            {
+                if (SetProperty(ref _drawScaleZ, value))
+                {
+                    UpdateDrawScale3D();
+                }
+            }
         }
+
+        private float _drawScaleIncrement = 0.01f;
+        public float DrawScaleIncrement
+        {
+            get => _drawScaleIncrement;
+            set => SetProperty(ref _drawScaleIncrement, value);
+        }
+        #endregion
 
         private bool noUpdate;
         private void UpdateLocation()
         {
             if (noUpdate) return;
-            GameTarget.ExecuteConsoleCommands(VarCmd(XPos, FloatVarIndexes.XPos),
-                                                     VarCmd(YPos, FloatVarIndexes.YPos),
-                                                     VarCmd(ZPos, FloatVarIndexes.ZPos),
-                                                     "ce SetLocation");
+            // Make sure it doesn't send it with , if the locale uses , instead of .
+            InteropHelper.SendMessageToGame($"LLE_UPDATE_ACTOR_POS {XPos.ToString(CultureInfo.InvariantCulture)} {YPos.ToString(CultureInfo.InvariantCulture)} {ZPos.ToString(CultureInfo.InvariantCulture)}", Game);
         }
 
         private void UpdateRotation()
@@ -793,38 +710,36 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
 
             int pitch = ((float)Pitch).DegreesToUnrealRotationUnits();
             int yaw = ((float)Yaw).DegreesToUnrealRotationUnits();
-            if (Game is MEGame.ME3)
-            {
-                int roll = ((float)Roll).DegreesToUnrealRotationUnits();
-                GameTarget.ExecuteConsoleCommands(VarCmd(pitch, IntVarIndexes.ME3Pitch),
-                                                      VarCmd(yaw, IntVarIndexes.ME3Yaw),
-                                                      VarCmd(roll, IntVarIndexes.ME3Roll),
-                                                      "ce SetRotation");
-            }
-            else
-            {
-                var rot = new Rotator(pitch, yaw, 0).GetDirectionalVector();
-                GameTarget.ExecuteConsoleCommands(VarCmd(rot.X, FloatVarIndexes.XRotComponent),
-                                                      VarCmd(rot.Y, FloatVarIndexes.YRotComponent),
-                                                      VarCmd(rot.Z, FloatVarIndexes.ZRotComponent),
-                                                      "ce SetRotation");
-            }
+
+            // Should we support roll? What about a thing like a tipped over box?
+            var rot = new Rotator(pitch, yaw, 0).GetDirectionalVector();
+
+            InteropHelper.SendMessageToGame($"LLE_UPDATE_ACTOR_ROT {pitch} {yaw} 0", Game);
         }
 
-        private static string VarCmd(float value, FloatVarIndexes index)
+        private void UpdateDrawScale3D()
         {
-            return $"initplotmanagervaluebyindex {(int)index} float {value}";
+            if (noUpdate) return;
+            // Make sure it doesn't send it with , if the locale uses , instead of .
+            InteropHelper.SendMessageToGame($"LLE_SET_ACTOR_DRAWSCALE3D {DrawScaleX.ToString(CultureInfo.InvariantCulture)} {DrawScaleY.ToString(CultureInfo.InvariantCulture)} {DrawScaleZ.ToString(CultureInfo.InvariantCulture)}", Game);
         }
 
-        private static string VarCmd(bool value, BoolVarIndexes index)
-        {
-            return $"initplotmanagervaluebyindex {(int)index} bool {(value ? 1 : 0)}";
-        }
+        // This can probably be done with something else
+        // Like a console command or cause event or something.
+        //private static string VarCmd(float value, FloatVarIndexes index)
+        //{
+        //    return $"initplotmanagervaluebyindex {(int)index} float {value}";
+        //}
 
-        private static string VarCmd(int value, IntVarIndexes index)
-        {
-            return $"initplotmanagervaluebyindex {(int)index} int {value}";
-        }
+        //private static string VarCmd(bool value, BoolVarIndexes index)
+        //{
+        //    return $"initplotmanagervaluebyindex {(int)index} bool {(value ? 1 : 0)}";
+        //}
+
+        //private static string VarCmd(int value, IntVarIndexes index)
+        //{
+        //    return $"initplotmanagervaluebyindex {(int)index} int {value}";
+        //}
 
         #endregion
 

@@ -139,13 +139,31 @@
                                     <TextBlock Text=" Pitch:  " VerticalAlignment="Center" />
                                     <xctk:IntegerUpDown Name="pitchUpDown" Value="{Binding Pitch}" Increment="{Binding RotIncrement}"/>
                                     <TextBlock Text=" Roll:  " VerticalAlignment="Center" 
-                                               Visibility="{Binding IsME3, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                               />
                                     <xctk:IntegerUpDown Name="rollUpDown" Value="{Binding Roll}" Increment="{Binding RotIncrement}"
-                                                        Visibility="{Binding IsME3, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                                        />
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text=" Increment:  " VerticalAlignment="Center" />
                                     <xctk:IntegerUpDown Value="{Binding RotIncrement}" Minimum="0" />
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                        <Label Content="Actor DrawScale3D" Margin="10,0,0,0"/>
+                        <Border Margin="10,0,10,10" BorderBrush="#FFD8D8D8" BorderThickness="2" CornerRadius="5">
+                            <StackPanel Orientation="Vertical">
+                                <StackPanel Orientation="Horizontal">
+                                    <!--<Button Content=" Reset Rotation " Margin="5" Click="ResetRotation_Click" />-->
+                                    <TextBlock Text=" Scale X:  " VerticalAlignment="Center" />
+                                    <xctk:DoubleUpDown Name="ds3dXUpDown" Value="{Binding DrawScaleX}" Increment="{Binding DrawScaleIncrement}"/>
+                                    <TextBlock Text=" Scale Y:  " VerticalAlignment="Center" />
+                                    <xctk:DoubleUpDown Name="ds3dYUpDown" Value="{Binding DrawScaleY}" Increment="{Binding DrawScaleIncrement}"/>
+                                    <TextBlock Text=" Scale Z:  " VerticalAlignment="Center" />
+                                    <xctk:DoubleUpDown Name="ds3dZUpDown" Value="{Binding DrawScaleZ}" Increment="{Binding DrawScaleIncrement}"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text=" Increment:  " VerticalAlignment="Center" />
+                                    <xctk:DoubleUpDown Value="{Binding DrawScaleIncrement}" Minimum="0" />
                                 </StackPanel>
                             </StackPanel>
                         </Border>
