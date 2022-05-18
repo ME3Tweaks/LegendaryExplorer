@@ -155,15 +155,15 @@
                                 <StackPanel Orientation="Horizontal">
                                     <!--<Button Content=" Reset Rotation " Margin="5" Click="ResetRotation_Click" />-->
                                     <TextBlock Text=" Scale X:  " VerticalAlignment="Center" />
-                                    <xctk:DoubleUpDown Name="ds3dXUpDown" Value="{Binding DrawScaleX}" Increment="{Binding DrawScaleIncrement}"/>
+                                    <xctk:SingleUpDown Name="ds3dXUpDown" FormatString="F4" Value="{Binding DrawScaleX}" Increment="{Binding DrawScaleIncrement}"/>
                                     <TextBlock Text=" Scale Y:  " VerticalAlignment="Center" />
-                                    <xctk:DoubleUpDown Name="ds3dYUpDown" Value="{Binding DrawScaleY}" Increment="{Binding DrawScaleIncrement}"/>
+                                    <xctk:SingleUpDown Name="ds3dYUpDown" FormatString="F4" Value="{Binding DrawScaleY}" Increment="{Binding DrawScaleIncrement}"/>
                                     <TextBlock Text=" Scale Z:  " VerticalAlignment="Center" />
-                                    <xctk:DoubleUpDown Name="ds3dZUpDown" Value="{Binding DrawScaleZ}" Increment="{Binding DrawScaleIncrement}"/>
+                                    <xctk:SingleUpDown Name="ds3dZUpDown" FormatString="F4" Value="{Binding DrawScaleZ}" Increment="{Binding DrawScaleIncrement}"/>
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text=" Increment:  " VerticalAlignment="Center" />
-                                    <xctk:DoubleUpDown Value="{Binding DrawScaleIncrement}" Minimum="0" />
+                                    <xctk:SingleUpDown Value="{Binding DrawScaleIncrement}" Minimum="0" />
                                 </StackPanel>
                             </StackPanel>
                         </Border>
