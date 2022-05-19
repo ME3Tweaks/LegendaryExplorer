@@ -49,6 +49,7 @@ namespace LegendaryExplorer.Startup
 
             //Peregrine's Dispatcher (for WPF Treeview selecting on virtualized lists)
             DispatcherHelper.Initialize();
+
             Settings.LoadSettings();
             initCoreLib();
 
@@ -69,6 +70,8 @@ namespace LegendaryExplorer.Startup
 
             // WPF setup
             ToolTipService.ShowDurationProperty.OverrideMetadata(typeof(DependencyObject), new FrameworkPropertyMetadata(int.MaxValue));
+            //fixes bad WPF default. Users aren't going to not want to know what a button does just because it's disabled at the moment!
+            ToolTipService.ShowOnDisabledProperty.OverrideMetadata(typeof(FrameworkElement), new FrameworkPropertyMetadata(true));
 
             //force fontawesome's icons into memory, so that it won't need to happen when the main window is opening 
             EFontAwesomeIcon.None.GetUnicode();
