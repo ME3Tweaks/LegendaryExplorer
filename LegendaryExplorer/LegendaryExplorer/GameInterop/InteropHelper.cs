@@ -231,14 +231,14 @@ namespace LegendaryExplorer.GameInterop
             }
 
             // We make new pipe and connect to game every command
-            client = new NamedPipeClientStream($"LEX_{game}_COMM_PIPE");
+            client = new NamedPipeClientStream(".", $"LEX_{game}_COMM_PIPE", PipeDirection.Out);
             client.Connect(3000); // 3 second timeout.
             //pipeReader = new StreamReader(client);
             pipeWriter = new StreamWriter(client);
 
             // For debugging
             // Thread.Sleep(3000);
-            
+
             pipeWriter.WriteLine(message); // Messages will end with \r\n when received in c++!
             pipeWriter.Flush();
 

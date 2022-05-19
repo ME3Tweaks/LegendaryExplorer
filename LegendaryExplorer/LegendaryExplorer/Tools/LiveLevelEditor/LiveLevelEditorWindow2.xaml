@@ -97,7 +97,7 @@
                             <controls:ListBoxScroll x:Name="listBoxPackages" ItemsSource="{Binding ActorDict}" DisplayMemberPath="Key" SelectedValuePath="Value" ContextMenu="{StaticResource packagesContextMenu}"/>
                             <GridSplitter Width="5" HorizontalAlignment="Stretch" Grid.Column="1" />
                             <Border BorderBrush="LightSlateGray" BorderThickness="0.65" Grid.Column="2">
-                                <controls:ListBoxScroll ItemsSource="{Binding SelectedValue, ElementName=listBoxPackages}" DisplayMemberPath="ActorName" SelectedItem="{Binding SelectedActor}"
+                                <controls:ListBoxScroll ItemsSource="{Binding SelectedValue, ElementName=listBoxPackages}" DisplayMemberPath="DisplayString" SelectedItem="{Binding SelectedActor}"
                                                         ContextMenu="{StaticResource actorsContextMenu}"/>
                             </Border>
                         </Grid>

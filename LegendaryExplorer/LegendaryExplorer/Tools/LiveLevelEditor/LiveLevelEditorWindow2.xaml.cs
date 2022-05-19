@@ -165,7 +165,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         {
             if (SelectedActor != null)
             {
-                OpenInPackEd(SelectedActor.FileName, SelectedActor.UIndex);
+                OpenInPackEd($"{SelectedActor.FileName}.pcc", $"TheWorld.PersistentLevel.{SelectedActor.ActorName}");
             }
         }
 
@@ -175,28 +175,35 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         {
             if (listBoxPackages.SelectedItem is KeyValuePair<string, List<ActorEntry>> kvp)
             {
-                OpenInPackEd(kvp.Key);
+                OpenInPackEd(kvp.Key, null);
             }
         }
 
-        private void OpenInPackEd(string fileName, int uIndex = 0)
+        private void OpenInPackEd(string fileName, string exportToFind = null)
         {
             if (MELoadedFiles.GetFilesLoadedInGame(Game).TryGetValue(fileName, out string filePath))
             {
                 if (WPFBase.TryOpenInExisting(filePath, out PackageEditorWindow packEd))
                 {
-                    packEd.GoToNumber(uIndex);
+                    if (exportToFind != null && packEd.Pcc != null)
+                    {
+                        var exp = packEd.Pcc.FindExport(exportToFind);
+                        if (exp != null)
+                        {
+                            packEd.GoToNumber(exp.UIndex);
+                        }
+                    }
                 }
                 else
                 {
                     PackageEditorWindow p = new();
                     p.Show();
-                    p.LoadFile(filePath, uIndex);
+                    p.LoadFile(filePath, goToEntry: exportToFind);
                 }
             }
             else
             {
-                MessageBox.Show(this, $"Cannot Find pcc named {fileName}!");
+                MessageBox.Show(this, $"Cannot find pcc named {fileName}!");
             }
         }
 
@@ -455,15 +462,20 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         {
             string[] parts = actorInfoStr.Split(':');
 
+            ActorEntry2 ae = new ActorEntry2();
+            foreach (var part in parts)
+            {
+                var split = part.Split('=');
+                if (split[0] == "MAP") ae.FileName = split[1];
+                if (split[0] == "ACTORNAME") ae.ActorName = split[1];
+                if (split[0] == "TAG") ae.Tag = split[1];
+            }
+
             // We only care about actors that loaded from a package file directly (level files)
             // GetFilesLoadedInGame will return a cached result
-            if (parts.Length == 2  && MELoadedFiles.GetFilesLoadedInGame(Game).ContainsKey($"{parts[0]}.pcc"))
+            if (MELoadedFiles.GetFilesLoadedInGame(Game).ContainsKey($"{ae.FileName}.pcc"))
             {
-                ActorDict.AddToListAt($"{parts[0]}.pcc", new ActorEntry2
-                {
-                    ActorName = parts[1],
-                    FileName = $"{parts[0]}.pcc",
-                });
+                ActorDict.AddToListAt($"{ae.FileName}.pcc", ae);
             }
             else
             {
@@ -919,11 +931,24 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
     }
     public class ActorEntry2
     {
-        public int ActorListIndex;
         public string FileName;
         public string ActorName { get; set; }
+        public string Tag { get; set; }
 
         public int UIndex;
-        public bool Moveable;
+
+        public string DisplayString
+        {
+            get
+            {
+                string str = ActorName;
+                if (!string.IsNullOrWhiteSpace(Tag))
+                {
+                    str += $" (Tag: {Tag})";
+                }
+
+                return str;
+            }
+        }
     }
 }
