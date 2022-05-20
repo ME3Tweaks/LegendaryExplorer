@@ -708,6 +708,19 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         }
         #endregion
 
+        private bool _showTraceToActor = true;
+        public bool ShowTraceToActor
+        {
+            get => _showTraceToActor;
+            set
+            {
+                if (SetProperty(ref _showTraceToActor, value))
+                {
+                    InteropHelper.SendMessageToGame($"LLE_{(value ? "SHOW" : "HIDE")}_TRACE",Game);
+                }
+            }
+        }
+
         private bool noUpdate;
         private void UpdateLocation()
         {

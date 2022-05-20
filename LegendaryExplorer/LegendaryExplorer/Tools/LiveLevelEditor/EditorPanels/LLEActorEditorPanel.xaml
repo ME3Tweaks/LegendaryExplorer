@@ -1,0 +1,80 @@
+﻿<UserControl x:Class="LegendaryExplorer.Tools.LiveLevelEditor.EditorPanels.LLEActorEditorPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:LegendaryExplorer.Tools.LiveLevelEditor.EditorPanels"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:converters="clr-namespace:LegendaryExplorer.SharedUI.Converters"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
+    </UserControl.Resources>
+    <StackPanel Grid.Row="2" Grid.Column="2" IsEnabled="{Binding SelectedActor, Converter={StaticResource NullEnabledConverter}}">
+        <Label Content="Actor Position" Margin="10,0,0,0"/>
+        <CheckBox Content="Show trace to selected actor" IsChecked="{Binding ShowTraceToActor}" Margin="10,0,0,3"/>
+        <Border Margin="10,0,10,10" BorderBrush="#FFD8D8D8" BorderThickness="2" CornerRadius="5">
+            <StackPanel Orientation="Vertical">
+                <StackPanel Orientation="Horizontal">
+                    <!--<Button Content=" Reset Position " Margin="5" Click="SetDefaultPosition_Click" />-->
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text=" X:  " VerticalAlignment="Center" />
+                        <xctk:IntegerUpDown Name="xPosUpDown" Value="{Binding XPos}" Increment="{Binding PosIncrement}"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text=" Y:  " VerticalAlignment="Center"/>
+                        <xctk:IntegerUpDown Name="yPosUpDown" Value="{Binding YPos}" Increment="{Binding PosIncrement}"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text=" Z:  " VerticalAlignment="Center"/>
+                        <xctk:IntegerUpDown Name="zPosUpDown" Value="{Binding ZPos}" Increment="{Binding PosIncrement}"/>
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text=" Increment:  " VerticalAlignment="Center" />
+                    <xctk:IntegerUpDown Value="{Binding PosIncrement}" Minimum="0"/>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+        <Label Content="Actor Rotation" Margin="10,0,0,0"/>
+        <Border Margin="10,0,10,10" BorderBrush="#FFD8D8D8" BorderThickness="2" CornerRadius="5">
+            <StackPanel Orientation="Vertical">
+                <StackPanel Orientation="Horizontal">
+                    <!--<Button Content=" Reset Rotation " Margin="5" Click="ResetRotation_Click" />-->
+                    <TextBlock Text=" Yaw:  " VerticalAlignment="Center" />
+                    <xctk:IntegerUpDown Name="yawUpDown" Value="{Binding Yaw}" Increment="{Binding RotIncrement}"/>
+                    <TextBlock Text=" Pitch:  " VerticalAlignment="Center" />
+                    <xctk:IntegerUpDown Name="pitchUpDown" Value="{Binding Pitch}" Increment="{Binding RotIncrement}"/>
+                    <TextBlock Text=" Roll:  " VerticalAlignment="Center" 
+                                               />
+                    <xctk:IntegerUpDown Name="rollUpDown" Value="{Binding Roll}" Increment="{Binding RotIncrement}"
+                                                        />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text=" Increment:  " VerticalAlignment="Center" />
+                    <xctk:IntegerUpDown Value="{Binding RotIncrement}" Minimum="0" />
+                </StackPanel>
+            </StackPanel>
+        </Border>
+        <Label Content="Actor DrawScale3D" Margin="10,0,0,0"/>
+        <Border Margin="10,0,10,10" BorderBrush="#FFD8D8D8" BorderThickness="2" CornerRadius="5">
+            <StackPanel Orientation="Vertical">
+                <StackPanel Orientation="Horizontal">
+                    <!--<Button Content=" Reset Rotation " Margin="5" Click="ResetRotation_Click" />-->
+                    <TextBlock Text=" Scale X:  " VerticalAlignment="Center" />
+                    <xctk:SingleUpDown Name="ds3dXUpDown" FormatString="F4" Value="{Binding DrawScaleX}" Increment="{Binding DrawScaleIncrement}"/>
+                    <TextBlock Text=" Scale Y:  " VerticalAlignment="Center" />
+                    <xctk:SingleUpDown Name="ds3dYUpDown" FormatString="F4" Value="{Binding DrawScaleY}" Increment="{Binding DrawScaleIncrement}"/>
+                    <TextBlock Text=" Scale Z:  " VerticalAlignment="Center" />
+                    <xctk:SingleUpDown Name="ds3dZUpDown" FormatString="F4" Value="{Binding DrawScaleZ}" Increment="{Binding DrawScaleIncrement}"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text=" Increment:  " VerticalAlignment="Center" />
+                    <xctk:SingleUpDown Value="{Binding DrawScaleIncrement}" Minimum="0" />
+                </StackPanel>
+            </StackPanel>
+        </Border>
+    </StackPanel>
+</UserControl>
