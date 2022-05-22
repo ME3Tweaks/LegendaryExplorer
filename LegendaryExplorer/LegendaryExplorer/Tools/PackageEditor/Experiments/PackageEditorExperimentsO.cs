@@ -7,6 +7,7 @@ using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Numerics;
@@ -780,7 +781,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 {
                     switch (reference.Parent.ClassName)
                     {
-                        case "StatichMeshCollectionActor":
+                        case "StaticMeshCollectionActor":
                             StaticMeshCollectionActor parent = ObjectBinary.From<StaticMeshCollectionActor>((ExportEntry)reference.Parent);
                             UIndex uindex = new(reference.UIndex);
                             int smcaIndex = parent.Components.IndexOf(uindex);
