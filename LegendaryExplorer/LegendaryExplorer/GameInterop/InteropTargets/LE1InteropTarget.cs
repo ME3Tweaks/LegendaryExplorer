@@ -23,7 +23,8 @@ namespace LegendaryExplorer.GameInterop.InteropTargets
 
         public override InteropModInfo ModInfo { get; } = new InteropModInfo("DLC_MOD_InteropLE1", true)
         {
-            LiveEditorFilename = "LE1LiveEditor"
+            LiveEditorFilename = "LE1LiveEditor",
+            CanUseAnimViewer = true
         };
         public override string ProcessName => "MassEffect1";
         public override uint GameMessageSignature => 0x02AC00C7;

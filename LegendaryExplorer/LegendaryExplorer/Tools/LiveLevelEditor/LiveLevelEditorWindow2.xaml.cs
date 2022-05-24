@@ -73,22 +73,23 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         public MEGame Game { get; }
         public InteropTarget GameTarget { get; }
 
-        public LiveLevelEditorWindow2(MEGame game) : base("Live Level Editor", true)
+        public LiveLevelEditorWindow2(MEGame game) : base("Live Level Editor 2", true)
         {
+            if (Instance(game) is not null)
+            {
+                throw new Exception($"Can only have one instance of {game} Live Level Editor 2 open!");
+            }
+            Instances[game] = this;
+
+
             Game = game;
             GameTarget = GameController.GetInteropTargetForGame(game);
             if (GameTarget is null || !GameTarget.ModInfo.CanUseLLE)
             {
-                throw new Exception($"{game} does not support Live Level Editor!");
+                throw new Exception($"{game} does not support Live Level Editor 2!");
             }
 
             GameTarget.GameReceiveMessage += GameControllerOnReceiveMessage2; // Use pipe version
-
-            if (Instance(game) is not null)
-            {
-                throw new Exception($"Can only have one instance of {game} LiveLevelEditor open!");
-            }
-            Instances[game] = this;
 
             DataContext = this;
             LoadCommands();
@@ -213,8 +214,8 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         private void LoadLiveEditor()
         {
             SetBusy("Connecting to game", () => RetryLoadTimer.Stop());
-            //GameTarget.ExecuteConsoleCommands("ce LoadLiveEditor");
             InteropHelper.SendMessageToGame("LLE_TEST_ACTIVE", Game); // If this response works, we will know we are ready and can now start
+            //InteropHelper.SendMessageToGame("CHANGEPAWN TEST", Game); // If this response works, we will know we are ready and can now start
             RetryLoadTimer.Start();
         }
 

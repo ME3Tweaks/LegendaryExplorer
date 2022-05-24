@@ -27,11 +27,22 @@ using Path = System.IO.Path;
 namespace LegendaryExplorer.Tools.AnimationViewer
 {
     /// <summary>
-    /// Interaction logic for AnimationExplorerWPF.xaml
+    /// ASI-based Animation Viewer - Mgamerz
     /// </summary>
-    public partial class AnimationViewerWindow : TrackingNotifyPropertyChangedWindowBase
+    public partial class AnimationViewerWindow2 : TrackingNotifyPropertyChangedWindowBase
     {
-        public static AnimationViewerWindow Instance;
+        /// <summary>
+        /// Game this instance is for
+        /// </summary>
+        public MEGame Game { get; set; }
+        private static readonly Dictionary<MEGame, AnimationViewerWindow2> Instances = new();
+        public static AnimationViewerWindow2 Instance(MEGame game)
+        {
+            if (!GameController.GetInteropTargetForGame(game)?.ModInfo?.CanUseLLE ?? true)
+                throw new ArgumentException(@"Animation Viewer 2 does not support this game!", nameof(game));
+
+            return Instances.TryGetValue(game, out var lle) ? lle : null;
+        }
 
         public AnimationRecord AnimQueuedForFocus;
         private enum FloatVarIndexes
@@ -60,24 +71,24 @@ namespace LegendaryExplorer.Tools.AnimationViewer
 
         public InteropTarget GameTarget { get; private set; }
 
-        public AnimationViewerWindow() : base("Animation Viewer", true)
+        public AnimationViewerWindow2(MEGame game) : base("Animation Viewer 2", true)
         {
-            if (Instance != null)
+            if (Instance(game) is not null)
             {
-                throw new Exception("Can only have one instance of AnimViewer open!");
+                throw new Exception($"Can only have one instance of {game} Animation Viewer 2 open!");
             }
+            Instances[game] = this;
 
-            Instance = this;
-            DataContext = this;
-            GameTarget = GameController.GetInteropTargetForGame(MEGame.ME3);
+            Game = game;
+            GameTarget = GameController.GetInteropTargetForGame(game);
             InitializeComponent();
             LoadCommands();
-            GameTarget.GameReceiveMessage += GameController_RecieveME3Message;
-            ME3OpenTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
-            ME3OpenTimer.Tick += CheckIfME3Open;
+            GameTarget.GameReceiveMessage += ReceivedGameMessage;
+            GameOpenTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
+            GameOpenTimer.Tick += CheckIfGameOpen;
         }
 
-        public AnimationViewerWindow(AssetDB db, AnimationRecord AnimToFocus) : this()
+        public AnimationViewerWindow2(MEGame game, AssetDB db, AnimationRecord AnimToFocus) : this(game)
         {
             AnimQueuedForFocus = AnimToFocus;
             foreach ((string fileName, int dirIndex) in db.FileList)
@@ -92,7 +103,7 @@ namespace LegendaryExplorer.Tools.AnimationViewer
         {
             if (Animations.IsEmpty())
             {
-                string dbPath = AssetDatabaseWindow.GetDBPath(MEGame.ME3);
+                string dbPath = AssetDatabaseWindow.GetDBPath(Game);
                 if (File.Exists(dbPath))
                 {
                     LoadDatabase(dbPath);
@@ -114,25 +125,32 @@ namespace LegendaryExplorer.Tools.AnimationViewer
             //        File.Delete(asiPath);
             //    }
             //}
-            ME3OpenTimer.Stop();
-            ME3OpenTimer.Tick -= CheckIfME3Open;
-            GameTarget.GameReceiveMessage -= GameController_RecieveME3Message;
+            GameOpenTimer.Stop();
+            GameOpenTimer.Tick -= CheckIfGameOpen;
+            GameTarget.GameReceiveMessage -= ReceivedGameMessage;
             DataContext = null;
-            Instance = null;
+            Instances.Remove(Game);
         }
 
-        private void GameController_RecieveME3Message(string msg)
+        private void ReceivedGameMessage(string msg)
         {
-            if (msg == "AnimViewer string Loaded")
+            // Check message is for us
+            if (!msg.StartsWith("ANIMVIEWER"))
+                return;
+            Debug.WriteLine($"Message: {msg}");
+            if (msg == "ANIMVIEWER LOADED")
             {
-                if (GameController.TryGetMEProcess(MEGame.ME3, out Process me3Process))
+                InteropHelper.SendMessageToGame("ANIMV_DISALLOW_WINDOW_PAUSE",Game);
+                LoadAnimation(SelectedAnimation);
+
+                if (GameController.TryGetMEProcess(Game, out Process me3Process))
                 {
                     me3Process.MainWindowHandle.RestoreAndBringToFront();
                 }
 
                 this.RestoreAndBringToFront();
-                ME3OpenTimer.Start();
-                ME3StartingUp = false;
+                GameOpenTimer.Start();
+                GameStartingUp = false;
                 LoadingAnimation = false;
                 ReadyToView = true;
                 animTab.IsSelected = true;
@@ -148,6 +166,10 @@ namespace LegendaryExplorer.Tools.AnimationViewer
                     SelectedAnimation = Animations.FirstOrDefault(a => a.AnimSequence == AnimQueuedForFocus.AnimSequence);
                     AnimQueuedForFocus = null;
                 }
+            } else if (msg == "ANIMVIEWER ANIMSTARTED")
+            {
+                LoadingAnimation = false;
+                IsBusy = false; // Not busy
             }
             else if (msg.StartsWith("AnimViewer string AnimLoaded"))
             {
@@ -180,7 +202,7 @@ namespace LegendaryExplorer.Tools.AnimationViewer
                 playbackState = PlaybackState.Playing;
                 PlayPauseIcon = EFontAwesomeIcon.Solid_Pause;
                 noUpdate = false;
-                if (GameController.TryGetMEProcess(MEGame.ME3, out Process me3Process))
+                if (GameController.TryGetMEProcess(Game, out Process me3Process))
                 {
                     me3Process.MainWindowHandle.RestoreAndBringToFront();
                 }
@@ -194,18 +216,18 @@ namespace LegendaryExplorer.Tools.AnimationViewer
             }
         }
 
-        private readonly DispatcherTimer ME3OpenTimer;
-        private void CheckIfME3Open(object sender, EventArgs e)
+        private readonly DispatcherTimer GameOpenTimer;
+        private void CheckIfGameOpen(object sender, EventArgs e)
         {
-            if (!GameController.TryGetMEProcess(MEGame.ME3, out _))
+            if (!GameController.TryGetMEProcess(Game, out _))
             {
-                ME3StartingUp = false;
+                GameStartingUp = false;
                 LoadingAnimation = false;
                 EndBusy();
                 ReadyToView = false;
                 SelectedAnimation = null;
                 instructionsTab.IsSelected = true;
-                ME3OpenTimer.Stop();
+                GameOpenTimer.Stop();
             }
         }
 
@@ -234,7 +256,7 @@ namespace LegendaryExplorer.Tools.AnimationViewer
         }
 
         private bool _mE3StartingUp;
-        public bool ME3StartingUp
+        public bool GameStartingUp
         {
             get => _mE3StartingUp;
             set => SetProperty(ref _mE3StartingUp, value);
@@ -305,31 +327,33 @@ namespace LegendaryExplorer.Tools.AnimationViewer
         public Requirement.RequirementCommand ME3InstalledRequirementCommand { get; set; }
         public Requirement.RequirementCommand ASILoaderInstalledRequirementCommand { get; set; }
         public Requirement.RequirementCommand InteropASIInstalledRequirementCommand { get; set; }
-        public Requirement.RequirementCommand ME3ClosedRequirementCommand { get; set; }
+        public Requirement.RequirementCommand GameClosedRequirementCommand { get; set; }
         public Requirement.RequirementCommand DatabaseLoadedRequirementCommand { get; set; }
-        public ICommand StartME3Command { get; set; }
+        public ICommand StartGameCommand { get; set; }
         void LoadCommands()
         {
-            ME3InstalledRequirementCommand = new Requirement.RequirementCommand(() => InteropHelper.IsGameInstalled(MEGame.ME3), () => InteropHelper.SelectGamePath(MEGame.ME3));
-            ASILoaderInstalledRequirementCommand = new Requirement.RequirementCommand(() => InteropHelper.IsASILoaderInstalled(MEGame.ME3), () => InteropHelper.OpenASILoaderDownload(MEGame.ME3));
-            InteropASIInstalledRequirementCommand = new Requirement.RequirementCommand(() => InteropHelper.IsInteropASIInstalled(MEGame.ME3), () => InteropHelper.OpenInteropASIDownload(MEGame.ME3));
-            ME3ClosedRequirementCommand = new Requirement.RequirementCommand(() => InteropHelper.IsGameClosed(MEGame.ME3), () => InteropHelper.KillGame(MEGame.ME3));
+            ME3InstalledRequirementCommand = new Requirement.RequirementCommand(() => InteropHelper.IsGameInstalled(Game), () => InteropHelper.SelectGamePath(Game));
+            ASILoaderInstalledRequirementCommand = new Requirement.RequirementCommand(() => true /*InteropHelper.IsASILoaderInstalled(Game)*/, () => InteropHelper.OpenASILoaderDownload(Game));
+            InteropASIInstalledRequirementCommand = new Requirement.RequirementCommand(() => true /*InteropHelper.IsInteropASIInstalled(Game)*/, () => InteropHelper.OpenInteropASIDownload(Game));
+
+            // I don't think game even needs to be closed
+            GameClosedRequirementCommand = new Requirement.RequirementCommand(() => InteropHelper.IsGameClosed(Game), () => InteropHelper.KillGame(Game));
             DatabaseLoadedRequirementCommand = new Requirement.RequirementCommand(IsDatabaseLoaded, TryLoadDatabase);
-            StartME3Command = new GenericCommand(StartME3, AllRequirementsMet);
+            StartGameCommand = new GenericCommand(StartGame, AllRequirementsMet);
         }
 
         private bool IsDatabaseLoaded() => Enumerable.Any(Animations);
 
         private void TryLoadDatabase()
         {
-            string dbPath = AssetDatabaseWindow.GetDBPath(MEGame.ME3);
+            string dbPath = AssetDatabaseWindow.GetDBPath(Game);
             if (File.Exists(dbPath))
             {
                 LoadDatabase(dbPath);
             }
             else
             {
-                MessageBox.Show(this, "Generate an ME3 asset database in the Asset Database tool. This could take about 10 minutes.");
+                MessageBox.Show(this, $"Generate the asset database for {Game} in the Asset Database tool first.");
             }
         }
 
@@ -337,11 +361,11 @@ namespace LegendaryExplorer.Tools.AnimationViewer
         {
             SetBusy("Loading Database...");
             var db = new AssetDB();
-            AssetDatabaseWindow.LoadDatabase(dbPath, MEGame.ME3, db, CancellationToken.None).ContinueWithOnUIThread(prevTask =>
+            AssetDatabaseWindow.LoadDatabase(dbPath, Game, db, CancellationToken.None).ContinueWithOnUIThread(prevTask =>
             {
                 if (db.DatabaseVersion != AssetDatabaseWindow.dbCurrentBuild)
                 {
-                    MessageBox.Show(this, "ME3 Asset Database is out of date! Please regenerate it in the Asset Database tool. This could take about 10 minutes.");
+                    MessageBox.Show(this, $"{Game} Asset Database is out of date! Please regenerate it in the Asset Database tool. This could take about 10 minutes.");
                     EndBusy();
                     return;
                 }
@@ -359,21 +383,29 @@ namespace LegendaryExplorer.Tools.AnimationViewer
 
         private bool AllRequirementsMet() => me3InstalledReq.IsFullfilled && asiLoaderInstalledReq.IsFullfilled && me3ClosedReq.IsFullfilled && dbLoadedReq.IsFullfilled && interopASIInstalledReq.IsFullfilled;
 
-        private void StartME3()
+        private void StartGame()
         {
-            ME3StartingUp = true;
-            SetBusy("Creating AnimViewer Files...", () =>
-            {
-                ME3StartingUp = false;
-            });
+
+            // This doesn't work...
+            //InteropHelper.SendMessageToGame($"CACHEPACKAGE {animViewerStagePath}", Game);
+            //Thread.Sleep(50); // Give it a sec...
+            //GameTarget.ModernExecuteConsoleCommand($"at {animLevelBaseName}");
+
+            //GameStartingUp = true;
+            //SetBusy("Creating AnimViewer Files...", () =>
+            //{
+            //    GameStartingUp = false;
+            //});
             Task.Run(() =>
             {
-                string animViewerBaseFilePath = Path.Combine(AppDirectories.ExecFolder, "ME3AnimViewer.pcc");
+                var animLevelBaseName = $"{Game}LiveAnimViewerStage";
+                var animViewerStagePath = Path.Combine(AppDirectories.ExecFolder, $"{animLevelBaseName}.pcc");
 
-                using IMEPackage animViewerBase = MEPackageHandler.OpenMEPackage(animViewerBaseFilePath);
-                AnimViewer.SetUpAnimStreamFile(MEGame.ME3, null, 0, "AAAME3EXPAVS1"); //placeholder for tocing
-                AnimViewer.OpenMapInGame(animViewerBase, true, false);
-                BusyText = "Launching Mass Effect 3...";
+                using var mapPcc = MEPackageHandler.OpenMEPackage(animViewerStagePath);
+                AnimViewer.OpenMapInGame(mapPcc, true, false, animLevelBaseName);
+                BusyText = "Launching game...";
+
+                AnimViewer.SetUpAnimStreamFile(Game, null, 0, $"{Game}AnimViewer_StreamAnim"); //placeholder for making sure file is in TOC
             });
         }
 
@@ -382,7 +414,7 @@ namespace LegendaryExplorer.Tools.AnimationViewer
 
         public void LoadAnimation(AnimationRecord anim)
         {
-            if (!LoadingAnimation && GameController.TryGetMEProcess(MEGame.ME3, out Process me3Process))
+            if (!LoadingAnimation && GameController.TryGetMEProcess(Game, out Process me3Process))
             {
                 LoadingAnimation = true;
                 SetBusy("Loading Animation", () => LoadingAnimation = false);
@@ -395,16 +427,22 @@ namespace LegendaryExplorer.Tools.AnimationViewer
                     bool isMod;
                     (fileListIndex, animUIndex, isMod) = anim.Usages[0];
                     (string filename, string contentdir) = FileListExtended[fileListIndex];
-                    string rootPath = ME3Directory.DefaultGamePath;
-
+                    string rootPath = MEDirectories.GetDefaultGamePath(Game);
                     filename = $"{filename}.*";
                     filePath = Directory.GetFiles(rootPath, filename, SearchOption.AllDirectories).FirstOrDefault(f => f.Contains(contentdir));
                 }
-                Task.Run(() =>
+
+                if (filePath != null)
                 {
-                    AnimViewer.SetUpAnimStreamFile(MEGame.ME3, filePath, animUIndex, "AAAME3EXPAVS1");
-                    GameTarget.ExecuteConsoleCommands("ce LoadAnim1");
-                });
+                    Task.Run(() =>
+                    {
+                        var streamAnimFile = $"{Game}AnimViewer_StreamAnim";
+                        InteropHelper.SendMessageToGame($"STREAMLEVELOUT {streamAnimFile}", Game);
+                        AnimViewer.SetUpAnimStreamFile(Game, filePath, animUIndex, streamAnimFile);
+                        Thread.Sleep(50); // Give it just a tiny bit of time to stream out - this can probably be fixed with states and handshake from game - I'm kinda lazy
+                        InteropHelper.SendMessageToGame($"STREAMLEVELIN {streamAnimFile}", Game);
+                    });
+                }
             }
         }
 
@@ -580,7 +618,7 @@ namespace LegendaryExplorer.Tools.AnimationViewer
                 //    break;
                 case ECameraState.Fixed when prevCameraState == ECameraState.Free:
                 case ECameraState.Free:
-                    GameTarget.ExecuteConsoleCommands("toggledebugcamera");
+                    GameTarget.ExecuteConsoleCommands("toggledebugcamera"); // This will kill LE1
                     break;
                     //case ECameraState.Shepard when prevCameraState != ECameraState.Shepard:
                     //    LoadAnimation(SelectedAnimation, true);
@@ -590,7 +628,7 @@ namespace LegendaryExplorer.Tools.AnimationViewer
 
         private void QuitME3_Click(object sender, RoutedEventArgs e)
         {
-            InteropHelper.KillGame(MEGame.ME3);
+            InteropHelper.KillGame(Game);
         }
 
         #region Playback
@@ -746,24 +784,5 @@ namespace LegendaryExplorer.Tools.AnimationViewer
         }
 
         public static IEnumerable<ESquadMember> ESquadMemberValues => Enums.GetValues<ESquadMember>();
-    }
-
-    public enum ESquadMember : int
-    {
-        Liara = 1,
-        Ashley = 2,
-        EDI = 3,
-        Garrus = 4,
-        Kaidan = 5,
-        James = 6,
-        Javik = 7,
-        Tali = 8
-    }
-
-    public enum ECameraState
-    {
-        Fixed,
-        Free,
-        //Shepard
     }
 }
