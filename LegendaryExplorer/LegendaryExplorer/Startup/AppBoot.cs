@@ -4,6 +4,7 @@ using System.CommandLine;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -104,6 +105,13 @@ namespace LegendaryExplorer.Startup
                 {
                     Debug.WriteLine("Unable to determine core count from WMI, defaulting to 2");
                 }
+
+                // 05/22/2022 - If you let LEX run for a while and look at thread count in Performance Monitor it's almost always the highest (300+!)
+                // Not sure if LEX is cause but system has HUGE stalls when LEX is open, and at random. I think it's related to thread count of the process
+                // It's like something is not completing, maybe our use of Task.Run() ?
+                // - Mgamerz
+                ThreadPool.SetMaxThreads(App.CoreCount * 2, App.CoreCount);
+
             }).ContinueWithOnUIThread(x =>
             {
                 IsLoaded = true;
