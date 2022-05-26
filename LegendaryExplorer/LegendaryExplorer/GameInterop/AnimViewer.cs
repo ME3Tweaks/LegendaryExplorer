@@ -15,7 +15,7 @@ namespace LegendaryExplorer.GameInterop
 {
     public static class AnimViewer
     {
-        public static void SetUpAnimStreamFile(MEGame game,string animSourceFilePath, int animSequenceUIndex, string saveAsName)
+        public static void SetUpAnimStreamFile(MEGame game, string animSourceFilePath, int animSequenceUIndex, string saveAsName)
         {
             string animViewerAnimStreamFilePath = Path.Combine(AppDirectories.ExecFolder, $"{game}AnimViewer_StreamAnim.pcc");
 
@@ -24,7 +24,7 @@ namespace LegendaryExplorer.GameInterop
             {
                 try
                 {
-         
+
                     Debug.WriteLine($"AnimViewer Loading: {animSourceFilePath} #{animSequenceUIndex}");
 
                     using IMEPackage animSourceFile = MEPackageHandler.OpenMEPackage(animSourceFilePath);
@@ -46,6 +46,10 @@ namespace LegendaryExplorer.GameInterop
                     IEntry bioAnimSet = pcc.GetEntry(importedAnimSeq.GetProperty<ObjectProperty>("m_pBioAnimSetData").Value);
                     string setName = importedAnimSeq.ObjectName.Name.RemoveRight(seqName.Name.Length + 1);
 
+                    // This seems to come up on 'AnimSequence' (LE1)
+                    if (string.IsNullOrWhiteSpace(setName))
+                        setName = seqName.Name;
+
                     animInterpData.WriteProperty(new FloatProperty(seqLength, "InterpLength"));
 
                     var animSeqKeys = animTrack.GetProperty<ArrayProperty<StructProperty>>("AnimSeqs");
@@ -55,20 +59,20 @@ namespace LegendaryExplorer.GameInterop
                     dynamicAnimSet.WriteProperty(new ObjectProperty(bioAnimSet.UIndex, "m_pBioAnimSetData"));
                     dynamicAnimSet.WriteProperty(new NameProperty(setName, "m_nmOrigSetName"));
                     dynamicAnimSet.WriteProperty(new ArrayProperty<ObjectProperty>("Sequences")
-                    {
-                        new ObjectProperty(importedAnimSeq.UIndex)
-                    });
+                        {
+                            new ObjectProperty(importedAnimSeq.UIndex)
+                        });
                 }
                 catch
                 {
-                    MessageBox.Show($"Error Loading {animSourceFilePath} #{animSequenceUIndex}");
+                    MessageBox.Show($"Error loading {animSourceFilePath} #{animSequenceUIndex}");
                 }
 
             }
 
             string tempFilePath = Path.Combine(MEDirectories.GetCookedPath(pcc.Game), $"{saveAsName}.pcc");
             pcc.Save(tempFilePath);
-         
+
             // Only ME3 needs this
             if (pcc.Game == MEGame.ME3)
             {

@@ -142,7 +142,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         void LoadCommands()
         {
             GameInstalledRequirementCommand = new Requirement.RequirementCommand(() => InteropHelper.IsGameInstalled(Game), () => InteropHelper.SelectGamePath(Game));
-            ASILoaderInstalledRequirementCommand = new Requirement.RequirementCommand(() => InteropHelper.IsASILoaderInstalled(Game), () => InteropHelper.OpenASILoaderDownload(Game));
+            ASILoaderInstalledRequirementCommand = new Requirement.RequirementCommand(() => true /*InteropHelper.IsASILoaderInstalled(Game)*/, () => InteropHelper.OpenASILoaderDownload(Game));
             InteropASIInstalledRequirementCommand = new Requirement.RequirementCommand(() => true, /*InteropHelper.IsInteropASIInstalled(Game),*/ () => InteropHelper.OpenInteropASIDownload(Game));
             ConsoleASIInstalledRequirementCommand = new Requirement.RequirementCommand(InteropHelper.IsME3ConsoleExtensionInstalled, InteropHelper.OpenConsoleExtensionDownload);
             SupportFilesInstalledRequirementCommand = new Requirement.RequirementCommand(() => true/*AreSupportFilesInstalled*/, InstallSupportFiles);

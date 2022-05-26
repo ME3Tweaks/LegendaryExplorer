@@ -20,6 +20,7 @@ using LegendaryExplorer.SharedUI.Bases;
 using LegendaryExplorer.SharedUI.Controls;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using Path = System.IO.Path;
@@ -32,6 +33,10 @@ namespace LegendaryExplorer.Tools.AnimationViewer
     public partial class AnimationViewerWindow2 : TrackingNotifyPropertyChangedWindowBase
     {
         /// <summary>
+        /// If game has told us it's ready for anim commands
+        /// </summary>
+        private bool Initialized;
+        /// <summary>
         /// Game this instance is for
         /// </summary>
         public MEGame Game { get; set; }
@@ -43,6 +48,67 @@ namespace LegendaryExplorer.Tools.AnimationViewer
 
             return Instances.TryGetValue(game, out var lle) ? lle : null;
         }
+
+        /// <summary>
+        /// The bound list of actor options
+        /// </summary>
+        public ObservableCollectionExtended<string> ActorOptions { get; } = new();
+
+        private string _selectedActor;
+        public string SelectedActor
+        {
+            get => _selectedActor;
+            set
+            {
+                if (SetProperty(ref _selectedActor, value))
+                {
+                    // Change pawn.
+                    if (Game == MEGame.LE1)
+                    {
+                        PrepChangeLE1Actor(value);
+                        return;
+                    }
+
+                    Debug.WriteLine("Pawn change not implemented for this game");
+                }
+            }
+        }
+
+        private bool _greenScreenOn;
+
+        public bool GreenScreenOn
+        {
+            get => _greenScreenOn;
+            set
+            {
+                if (SetProperty(ref _greenScreenOn, value))
+                {
+                    if (value)
+                    {
+                        InteropHelper.SendMessageToGame("CAUSEEVENT GreenScreenOn", Game);
+                    }
+                    else
+                    {
+                        InteropHelper.SendMessageToGame("CAUSEEVENT GreenScreenOff",Game);
+                    }
+                }
+            }
+        }
+
+        #region LE1 SPECIFIC
+        private void PrepChangeLE1Actor(string actorFullPath)
+        {
+            if (!Initialized)
+                return; // We haven't received the init message yet
+            var packageName = actorFullPath.Split('.').FirstOrDefault(); // 1
+            var memoryName = string.Join('.', actorFullPath.Split('.').Skip(1)); // The rest
+
+            // Tell game to load package and change the pawn
+            InteropHelper.SendMessageToGame($"ANIMV_CHANGE_PAWN {packageName}.{memoryName}", Game);
+            InteropHelper.SendMessageToGame($"CAUSEEVENT ChangeActor", Game);
+        }
+
+        #endregion
 
         public AnimationRecord AnimQueuedForFocus;
         private enum FloatVarIndexes
@@ -140,8 +206,14 @@ namespace LegendaryExplorer.Tools.AnimationViewer
             Debug.WriteLine($"Message: {msg}");
             if (msg == "ANIMVIEWER LOADED")
             {
-                InteropHelper.SendMessageToGame("ANIMV_DISALLOW_WINDOW_PAUSE",Game);
-                LoadAnimation(SelectedAnimation);
+                Initialized = true;
+                InteropHelper.SendMessageToGame("ANIMV_DISALLOW_WINDOW_PAUSE", Game);
+
+                // Load the initial pawn.
+                if (Game == MEGame.LE1)
+                {
+                    SelectedActor = ActorOptions.FirstOrDefault();
+                }
 
                 if (GameController.TryGetMEProcess(Game, out Process me3Process))
                 {
@@ -166,7 +238,8 @@ namespace LegendaryExplorer.Tools.AnimationViewer
                     SelectedAnimation = Animations.FirstOrDefault(a => a.AnimSequence == AnimQueuedForFocus.AnimSequence);
                     AnimQueuedForFocus = null;
                 }
-            } else if (msg == "ANIMVIEWER ANIMSTARTED")
+            }
+            else if (msg == "ANIMVIEWER ANIMSTARTED")
             {
                 LoadingAnimation = false;
                 IsBusy = false; // Not busy
@@ -357,11 +430,11 @@ namespace LegendaryExplorer.Tools.AnimationViewer
             }
         }
 
-        private void LoadDatabase(string dbPath)
+        private async void LoadDatabase(string dbPath)
         {
             SetBusy("Loading Database...");
             var db = new AssetDB();
-            AssetDatabaseWindow.LoadDatabase(dbPath, Game, db, CancellationToken.None).ContinueWithOnUIThread(prevTask =>
+            await AssetDatabaseWindow.LoadDatabase(dbPath, Game, db, CancellationToken.None).ContinueWithOnUIThread(prevTask =>
             {
                 if (db.DatabaseVersion != AssetDatabaseWindow.dbCurrentBuild)
                 {
@@ -369,12 +442,48 @@ namespace LegendaryExplorer.Tools.AnimationViewer
                     EndBusy();
                     return;
                 }
+
                 foreach ((string fileName, int dirIndex) in db.FileList)
                 {
                     FileListExtended.Add((fileName, db.ContentDir[dirIndex]));
                 }
+
                 Animations.AddRange(db.Animations.Where(a => a.IsAmbPerf == false));
                 listBoxAnims.ItemsSource = Animations;
+            }).ContinueWith(x =>
+            {
+                if (Game == MEGame.LE1)
+                {
+                    // Object Instance DB doesn't include class name, and AssetDB doesn't store name of usage
+                    // Object -> Package containing it
+                    var foundActorTypes = new Dictionary<string, string>();
+                    foreach (var cr in db.ClassRecords)
+                    {
+                        if (cr.Class == "BioPawnChallengeScaledType")
+                        {
+                            // Types of actors that can be spawned
+                            foreach (var usage in cr.Usages)
+                            {
+
+                                var file = db.FileList[usage.FileKey];
+                                if (MELoadedFiles.GetFilesLoadedInGame(Game).TryGetValue(file.FileName, out var fullPath))
+                                {
+                                    using var p = MEPackageHandler.UnsafePartialLoad(fullPath, x => false); // Just load the tables
+                                    var exp = p.GetUExport(usage.UIndex);
+                                    if (!exp.IsDefaultObject && !foundActorTypes.ContainsKey(exp.InstancedFullPath))
+                                    {
+                                        foundActorTypes[exp.InstancedFullPath] = file.FileName; // Set in dictionary
+                                    }
+                                }
+                            }
+                        }
+                        // Must be done on UI thread
+                        Application.Current.Dispatcher.Invoke(() => ActorOptions.ReplaceAll(foundActorTypes.Select(x => $"{Path.GetFileNameWithoutExtension(x.Value)}.{x.Key}")));
+                    }
+                }
+            }).ContinueWithOnUIThread(x =>
+            {
+                // Todo: Other games.
                 CommandManager.InvalidateRequerySuggested();
                 EndBusy();
             });
