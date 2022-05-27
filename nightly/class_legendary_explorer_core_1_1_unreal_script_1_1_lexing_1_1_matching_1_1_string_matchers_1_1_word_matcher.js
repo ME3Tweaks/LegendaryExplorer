@@ -1,5 +1,4 @@
 var class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_matching_1_1_string_matchers_1_1_word_matcher =
 [
-    [ "Match", "class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_matching_1_1_string_matchers_1_1_word_matcher.html#ac6386471cad607a65ed3db7f828b2c3c", null ],
     [ "MatchWord", "class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_matching_1_1_string_matchers_1_1_word_matcher.html#a561b816332e46ce1e183843240a831a8", null ]
 ];

@@ -925,8 +925,7 @@ var annotated_dup =
               [ "SymbolMatcher", "class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_matching_1_1_string_matchers_1_1_symbol_matcher.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_matching_1_1_string_matchers_1_1_symbol_matcher" ],
               [ "WhiteSpaceMatcher", "class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_matching_1_1_string_matchers_1_1_white_space_matcher.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_matching_1_1_string_matchers_1_1_white_space_matcher" ],
               [ "WordMatcher", "class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_matching_1_1_string_matchers_1_1_word_matcher.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_matching_1_1_string_matchers_1_1_word_matcher" ]
-            ] ],
-            [ "TokenMatcherBase", "class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_matching_1_1_token_matcher_base.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_matching_1_1_token_matcher_base" ]
+            ] ]
           ] ],
           [ "Tokenizing", "namespace_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_tokenizing.html", [
             [ "ScriptToken", "class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_tokenizing_1_1_script_token.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_tokenizing_1_1_script_token" ]

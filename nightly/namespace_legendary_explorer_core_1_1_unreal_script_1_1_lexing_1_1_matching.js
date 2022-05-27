@@ -1,5 +1,4 @@
 var namespace_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_matching =
 [
-    [ "StringMatchers", "namespace_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_matching_1_1_string_matchers.html", "namespace_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_matching_1_1_string_matchers" ],
-    [ "TokenMatcherBase", "class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_matching_1_1_token_matcher_base.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_matching_1_1_token_matcher_base" ]
+    [ "StringMatchers", "namespace_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_matching_1_1_string_matchers.html", "namespace_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_matching_1_1_string_matchers" ]
 ];

@@ -1,5 +1,4 @@
 var class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_matching_1_1_string_matchers_1_1_string_ref_literal_matcher =
 [
-    [ "Match", "class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_matching_1_1_string_matchers_1_1_string_ref_literal_matcher.html#adf62511e99fd6a827d75c002db45afd6", null ],
     [ "MatchStringRef", "class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_matching_1_1_string_matchers_1_1_string_ref_literal_matcher.html#a8779e9c3fe1965d47c6df48cf75daa3d", null ]
 ];
