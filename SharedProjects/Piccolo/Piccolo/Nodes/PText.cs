@@ -105,13 +105,17 @@ namespace UMD.HCIL.Piccolo.Nodes {
 		/// </summary>
 		public PText() {
 			textBrush = Brushes.Black;
+            if (ReferenceEquals(Font, DEFAULT_FONT))
+            {
+                FontSizeInPoints = Font.SizeInPoints;
+            }
 		}
 
 		/// <summary>
 		/// Constructs a new PText with the given string.
 		/// </summary>
 		/// <param name="aText">The desired text string for this PText.</param>
-		public PText(String aText) : this() {
+		public PText(string aText) : this() {
 			Text = aText;
 		}
 		#endregion
@@ -244,14 +248,9 @@ namespace UMD.HCIL.Piccolo.Nodes {
 		/// Gets or sets the font to use when rendering this node's text.
 		/// </summary>
 		/// <value>The font to use when rendering this node's text.</value>
-		public virtual Font Font {
-			get {
-				if (font == null) {
-					font = DEFAULT_FONT;
-				}
-				return font;
-			}
-			set {
+		public Font Font {
+			get => font ??= DEFAULT_FONT;
+            set {
 				Font old = font;
 				font = value;
                 FontSizeInPoints = font.SizeInPoints;

@@ -212,25 +212,28 @@ namespace LegendaryExplorer.DialogueEditor
 
     public class ZoomController : IDisposable
     {
-        public static float MIN_SCALE = .005f;
-        public static float MAX_SCALE = 15;
+        public const float MIN_SCALE = .005f;
+        public const float MAX_SCALE = 15;
         private PCamera camera;
         private ConvGraphEditor ConvGraphEditor;
 
-        public ZoomController(ConvGraphEditor ConvGraphEditor)
+        public ZoomController(ConvGraphEditor convGraphEditor)
         {
-            this.ConvGraphEditor = ConvGraphEditor;
-            this.camera = ConvGraphEditor.Camera;
+            ConvGraphEditor = convGraphEditor;
+            camera = convGraphEditor.Camera;
             camera.Canvas.ZoomEventHandler = null;
             camera.MouseWheel += OnMouseWheel;
-            ConvGraphEditor.KeyDown += OnKeyDown;
+            convGraphEditor.KeyDown += OnKeyDown;
         }
 
         public void Dispose()
         {
             //Remove event handlers for memory cleanup
-            ConvGraphEditor.KeyDown -= OnKeyDown;
-            ConvGraphEditor.Camera.MouseWheel -= OnMouseWheel;
+            if (ConvGraphEditor != null)
+            {
+                ConvGraphEditor.KeyDown -= OnKeyDown;
+                ConvGraphEditor.Camera.MouseWheel -= OnMouseWheel;
+            }
             ConvGraphEditor = null;
             camera = null;
 
