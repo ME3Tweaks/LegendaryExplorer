@@ -159,63 +159,63 @@ namespace LegendaryExplorerCore.Unreal
         public enum EPropertyFlags : ulong
         {
             None = 0,
-            Editable =            0x0000000000000001U,
-            Const =               0x0000000000000002U,
-            Input =               0x0000000000000004U,
-            ExportObject =        0x0000000000000008U,
-            OptionalParm =        0x0000000000000010U,
-            Net =                 0x0000000000000020U,
-            EditFixedSize =       0x0000000000000040U, // also EditConstArray
-            Parm =                0x0000000000000080U,
-            OutParm =             0x0000000000000100U,
-            SkipParm =            0x0000000000000200U,
-            ReturnParm =          0x0000000000000400U,
-            CoerceParm =          0x0000000000000800U,
-            Native =              0x0000000000001000U,
-            Transient =           0x0000000000002000U,
-            Config =              0x0000000000004000U,
-            Localized =           0x0000000000008000U,
-            Travel =              0x0000000000010000U,
-            EditConst =           0x0000000000020000U,    
-            GlobalConfig =        0x0000000000040000U,
-            EditInline =          0x0000000000080000U,
-            AlwaysInit =          0x0000000000100000U,
-            DuplicateTransient =  0x0000000000200000U,
-            NeedCtorLink =        0x0000000000400000U,
-            NoExport =            0x0000000000800000U,
-            NoImport =            0x0000000001000000U,
-            NoClear =             0x0000000002000000U,
-            Component =           0x0000000004000000U,
-            EdFindable =          0x0000000008000000U,
-            EditInlineUse =       0x0000000010000000U,
-            Deprecated =          0x0000000020000000U,
-            DataBinding =         0x0000000040000000U, // also EditInlineNotify
-            SerializeText =       0x0000000080000000U,
-            RepNotify =           0x0000000100000000U,
-            Interp =              0x0000000200000000U,
-            NonTransactional =    0x0000000400000000U,
-            EditorOnly =          0x0000000800000000U,
-            NotForConsole =       0x0000001000000000U,
-            RepRetry =            0x0000002000000000U,
-            PrivateWrite =        0x0000004000000000U,
-            ProtectedWrite =      0x0000008000000000U,
-            Archetype =           0x0000010000000000U,
-            EditHide =            0x0000020000000000U,
-            EditTextBox =         0x0000040000000000U,
-            CrossLevelPassive =   0x0000100000000000U,
-            CrossLevelActive =    0x0000200000000000U,
+            Editable = 0x0000000000000001U,
+            Const = 0x0000000000000002U,
+            Input = 0x0000000000000004U,
+            ExportObject = 0x0000000000000008U,
+            OptionalParm = 0x0000000000000010U,
+            Net = 0x0000000000000020U,
+            EditFixedSize = 0x0000000000000040U, // also EditConstArray
+            Parm = 0x0000000000000080U,
+            OutParm = 0x0000000000000100U,
+            SkipParm = 0x0000000000000200U,
+            ReturnParm = 0x0000000000000400U,
+            CoerceParm = 0x0000000000000800U,
+            Native = 0x0000000000001000U,
+            Transient = 0x0000000000002000U,
+            Config = 0x0000000000004000U,
+            Localized = 0x0000000000008000U,
+            Travel = 0x0000000000010000U,
+            EditConst = 0x0000000000020000U,
+            GlobalConfig = 0x0000000000040000U,
+            EditInline = 0x0000000000080000U,
+            AlwaysInit = 0x0000000000100000U,
+            DuplicateTransient = 0x0000000000200000U,
+            NeedCtorLink = 0x0000000000400000U,
+            NoExport = 0x0000000000800000U,
+            NoImport = 0x0000000001000000U,
+            NoClear = 0x0000000002000000U,
+            Component = 0x0000000004000000U,
+            EdFindable = 0x0000000008000000U,
+            EditInlineUse = 0x0000000010000000U,
+            Deprecated = 0x0000000020000000U,
+            DataBinding = 0x0000000040000000U, // also EditInlineNotify
+            SerializeText = 0x0000000080000000U,
+            RepNotify = 0x0000000100000000U,
+            Interp = 0x0000000200000000U,
+            NonTransactional = 0x0000000400000000U,
+            EditorOnly = 0x0000000800000000U,
+            NotForConsole = 0x0000001000000000U,
+            RepRetry = 0x0000002000000000U,
+            PrivateWrite = 0x0000004000000000U,
+            ProtectedWrite = 0x0000008000000000U,
+            Archetype = 0x0000010000000000U,
+            EditHide = 0x0000020000000000U,
+            EditTextBox = 0x0000040000000000U,
+            CrossLevelPassive = 0x0000100000000000U,
+            CrossLevelActive = 0x0000200000000000U,
 
             // BioWare specific
-            RsxStorage =          0x0001000000000000U,        // Property can be moved into RSX memory on the PS3
-            UnkFlag1 =            0x0080000000000000U,
-            LoadForCooking =      0x0100000000000000U,        // property is editoronly or notforconsole but needs to be loaded during cooking
-            BioNonShip =          0x0200000000000000U,        // Property doesn't serialize to or from disk
-            BioIgnorePropertyAdd =0x0400000000000000U,        // ??????
-            SortBarrier =         0x0800000000000000U,        // Inserts a barrier between the marked property and the previous property to avoid sorting properties across. 
-            ClearCrossLevel =     0x1000000000000000U,        // Property should call BioClearCrossLevelReferences
-            BioSave =             0x2000000000000000U,        // Property should automagically synch with a save object
-            BioExpanded =         0x4000000000000000U,        // EDITOR ONLY Property should be initially expanded (arrays and structs).
-            BioAutoGrow =         0x8000000000000000U,        // EDITOR ONLY Property should auto grow the array when enter hit on last entry
+            RsxStorage = 0x0001000000000000U,        // Property can be moved into RSX memory on the PS3
+            UnkFlag1 = 0x0080000000000000U,
+            LoadForCooking = 0x0100000000000000U,        // property is editoronly or notforconsole but needs to be loaded during cooking
+            BioNonShip = 0x0200000000000000U,        // Property doesn't serialize to or from disk
+            BioIgnorePropertyAdd = 0x0400000000000000U,        // ??????
+            SortBarrier = 0x0800000000000000U,        // Inserts a barrier between the marked property and the previous property to avoid sorting properties across. 
+            ClearCrossLevel = 0x1000000000000000U,        // Property should call BioClearCrossLevelReferences
+            BioSave = 0x2000000000000000U,        // Property should automagically synch with a save object
+            BioExpanded = 0x4000000000000000U,        // EDITOR ONLY Property should be initially expanded (arrays and structs).
+            BioAutoGrow = 0x8000000000000000U,        // EDITOR ONLY Property should auto grow the array when enter hit on last entry
 
             CrossLevel = CrossLevelPassive | CrossLevelActive,
         }
@@ -289,44 +289,113 @@ namespace LegendaryExplorerCore.Unreal
         public enum EObjectFlags : ulong
         {
             InSingularFunc = 0x0000000000000002, // In a singular function.
+            StateChanged = 0x0000000000000004,   // Object did a state change.
+            DebugPostLoad = 0x0000000000000008,   // For debugging Serialize calls.
+            DebugSerialize = 0x0000000000000010,   // For debugging Serialize calls.
+            DebugFinishDestroy = 0x0000000000000020,   // For debugging FinishDestroy calls.
+            EdSelected = 0x0000000000000040,
+            ZombieComponent = 0x0000000000000080,
+            Protected = 0x0000000000000100, // Property can only be accessed by owning class or subclasses
             ClassDefaultObject = 0x0000000000000200, // this object is its class's default object
-            IsCrossLevelReferenced = 0x0000000000400000, // This object has been pointed to by a cross-level reference, and therefore requires additional cleanup upon deletion
             ArchetypeObject = 0x0000000000000400, // this object is a template for another object - treat like a class default object
+            ForceTagExp = 0x0000000000000800, //Force this object into the export table when saving
+            TokenStreamAssembled = 0x0000000000001000,
+            MisAlignedObject = 0x0000000000002000, // Object has desynced from c++ class (native classes, editor only)
+            RootSet = 0x0000000000004000, // This object should not be garbage collected
+            BeginDestroyed = 0x0000000000008000, // BeginDestroy has been called
+            FinishDestroyed = 0x0000000000010000, // FinishDestroy has been called
+            DebugBeginDestroyed = 0x0000000000020000, // If object is considered part of the root set (?)
+            MarkedByCooker = 0x0000000000040000,
             LocalizedResource = 0x0000000000080000, // Resource object is localized
+            InitializedProps = 0x0000000000100000, // have properties been initialized?
+            PendingFieldPatches = 0x0000000000200000, // ScriptPatch system (not used in ME)
+            IsCrossLevelReferenced = 0x0000000000400000, // This object has been pointed to by a cross-level reference, and therefore requires additional cleanup upon deletion
+
+            Saved = 0x0000000080000000,
             Transactional = 0x0000000100000000,   // Object is transactional.
-            Unreachable = 0x0000000200000000,	// Object is not reachable on the object graph.
-            Public = 0x0000000400000000,	// Object is visible outside its package.
-            TagImp = 0x0000000800000000,	// Temporary import tag in load/save.
-            TagExp = 0x0000001000000000,	// Temporary export tag in load/save.
+            Unreachable = 0x0000000200000000,   // Object is not reachable on the object graph.            
+            Public = 0x0000000400000000, // Object is visible outside its package.
+            TagImp = 0x0000000800000000, // Temporary import tag in load/save.
+            TagExp = 0x0000001000000000, // Temporary export tag in load/save.
             Obsolete = 0x0000002000000000,   // Object marked as obsolete and should be replaced.
-            TagGarbage = 0x0000004000000000,	// Check during garbage collection.
-            Final = 0x0000008000000000,	// Object is not visible outside of class.
-            PerObjectLocalized = 0x0000010000000000,	// Object is localized by instance name00000000, not by class.
-            NeedLoad = 0x0000020000000000,   // During load00000000, indicates object needs loading.
-            HighlightedName = 0x0000040000000000,	// A hardcoded name which should be syntax-highlighted.
-            EliminateObject = 0x0000040000000000,   // NULL out references to this during garbage collecion.
-            RemappedName = 0x0000080000000000,   // Name is remapped.
-            Suppress = 0x0000100000000000,	//warning: Mirrored in UnName.h. Suppressed log name.
-            StateChanged = 0x0000100000000000,   // Object did a state change.
+            TagGarbage = 0x0000004000000000, // Check during garbage collection.
+            DisregardForGC = 0x0000008000000000,// Object is considered static // REPLACED Final = 0x0000008000000000,	// Object is not visible outside of class.
+            PerObjectLocalized = 0x0000010000000000, // Object is localized by instance name, not by class.
+            NeedLoad = 0x0000020000000000,   // During loading, indicates object needs loading.
+            AsyncLoading = 0x0000040000000000, // Object is being async loaded
+            NeedPostLoadSubobjects = 0x0000080000000000, // During load, Subobjects also need instanced
+            Suppress = 0x0000100000000000,   //warning: Mirrored in UnName.h. Suppressed log name.
             InEndState = 0x0000200000000000,   // Within an EndState call.
-            Transient = 0x0000400000000000,	// Don't save object.
-            Preloading = 0x0000800000000000,   // Data is being preloaded from file.
-            LoadForClient = 0x0001000000000000,	// In-file load for client.
-            LoadForServer = 0x0002000000000000,	// In-file load for client.
-            LoadForEdit = 0x0004000000000000,	// In-file load for client.
+            Transient = 0x0000400000000000,  // Don't save object.
+            Cooked = 0x0000800000000000, // Content was cooked
+            LoadForClient = 0x0001000000000000,  // In-file load for client.
+            LoadForServer = 0x0002000000000000,  // In-file load for client.
+            LoadForEdit = 0x0004000000000000,    // In-file load for client.
             Standalone = 0x0008000000000000,   // Keep object around for editing even if unreferenced.
-            NotForClient = 0x0010000000000000,	// Don't load this object for the game client.
-            NotForServer = 0x0020000000000000,	// Don't load this object for the game server.
-            NotForEdit = 0x0040000000000000,	// Don't load this object for the editor.
-            Destroyed = 0x0080000000000000,	// Object Destroy has already been called.
+            NotForClient = 0x0010000000000000,   // Don't load this object for the game client.
+            NotForServer = 0x0020000000000000,   // Don't load this object for the game server.
+            NotForEdit = 0x0040000000000000, // Don't load this object for the editor.
+            // There is nothing in this slot.
             NeedPostLoad = 0x0100000000000000,   // Object needs to be postloaded.
-            HasStack = 0x0200000000000000,	// Has execution stack.
+            HasStack = 0x0200000000000000,   // Has execution stack.
             Native = 0x0400000000000000,   // Native (UClass only).
             Marked = 0x0800000000000000,   // Marked (for debugging).
-            ErrorShutdown = 0x1000000000000000,	// ShutdownAfterError called.
-            DebugPostLoad = 0x2000000000000000,   // For debugging Serialize calls.
-            DebugSerialize = 0x4000000000000000,   // For debugging Serialize calls.
-            DebugDestroy = 0x8000000000000000,   // For debugging Destroy calls.
+            ErrorShutdown = 0x1000000000000000, // ShutdownAfterError called.
+            PendingKill = 0x2000000000000000 // Object is pending destruction
+                                             // Not used
+                                             // Not used
+
+
+            // The following are not used with updated info
+            //HighlightedName = 0x0000040000000000,	// A hardcoded name which should be syntax-highlighted.
+            //EliminateObject = 0x0000040000000000,   // NULL out references to this during garbage collecion.
+            //RemappedName = 0x0000080000000000,   // Name is remapped.
+            //Preloading = 0x0000800000000000,   // Data is being preloaded from file.
+            //Destroyed = 0x0080000000000000,	// Object Destroy has already been called.
+
+
+
+
+            // ORIGINAL BELOW
+            //InSingularFunc = 0x0000000000000002, // In a singular function.
+            //ClassDefaultObject = 0x0000000000000200, // this object is its class's default object
+            //IsCrossLevelReferenced = 0x0000000000400000, // This object has been pointed to by a cross-level reference, and therefore requires additional cleanup upon deletion
+            //ArchetypeObject = 0x0000000000000400, // this object is a template for another object - treat like a class default object
+            //LocalizedResource = 0x0000000000080000, // Resource object is localized
+            //Transactional = 0x0000000100000000,   // Object is transactional.
+            //Unreachable = 0x0000000200000000,	// Object is not reachable on the object graph.
+            //Public = 0x0000000400000000,	// Object is visible outside its package.
+            //TagImp = 0x0000000800000000,	// Temporary import tag in load/save.
+            //TagExp = 0x0000001000000000,	// Temporary export tag in load/save.
+            //Obsolete = 0x0000002000000000,   // Object marked as obsolete and should be replaced.
+            //TagGarbage = 0x0000004000000000,	// Check during garbage collection.
+            //Final = 0x0000008000000000,	// Object is not visible outside of class.
+            //PerObjectLocalized = 0x0000010000000000,	// Object is localized by instance name00000000, not by class.
+            //NeedLoad = 0x0000020000000000,   // During load00000000, indicates object needs loading.
+            //HighlightedName = 0x0000040000000000,	// A hardcoded name which should be syntax-highlighted.
+            //EliminateObject = 0x0000040000000000,   // NULL out references to this during garbage collecion.
+            //RemappedName = 0x0000080000000000,   // Name is remapped.
+            //Suppress = 0x0000100000000000,	//warning: Mirrored in UnName.h. Suppressed log name.
+            //StateChanged = 0x0000100000000000,   // Object did a state change.
+            //InEndState = 0x0000200000000000,   // Within an EndState call.
+            //Transient = 0x0000400000000000,	// Don't save object.
+            //Preloading = 0x0000800000000000,   // Data is being preloaded from file.
+            //LoadForClient = 0x0001000000000000,	// In-file load for client.
+            //LoadForServer = 0x0002000000000000,	// In-file load for client.
+            //LoadForEdit = 0x0004000000000000,	// In-file load for client.
+            //Standalone = 0x0008000000000000,   // Keep object around for editing even if unreferenced.
+            //NotForClient = 0x0010000000000000,	// Don't load this object for the game client.
+            //NotForServer = 0x0020000000000000,	// Don't load this object for the game server.
+            //NotForEdit = 0x0040000000000000,	// Don't load this object for the editor.
+            //Destroyed = 0x0080000000000000,	// Object Destroy has already been called.
+            //NeedPostLoad = 0x0100000000000000,   // Object needs to be postloaded.
+            //HasStack = 0x0200000000000000,	// Has execution stack.
+            //Native = 0x0400000000000000,   // Native (UClass only).
+            //Marked = 0x0800000000000000,   // Marked (for debugging).
+            //ErrorShutdown = 0x1000000000000000,	// ShutdownAfterError called.
+            //DebugPostLoad = 0x2000000000000000,   // For debugging Serialize calls.
+            //DebugSerialize = 0x4000000000000000,   // For debugging Serialize calls.
+            //DebugDestroy = 0x8000000000000000,   // For debugging Destroy calls.
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

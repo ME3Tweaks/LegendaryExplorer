@@ -1,24 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text.RegularExpressions;
 using LegendaryExplorerCore.Gammtek.Extensions;
-using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
-using LegendaryExplorerCore.UnrealScript.Compiling.Errors;
 using LegendaryExplorerCore.UnrealScript.Lexing.Tokenizing;
 using LegendaryExplorerCore.UnrealScript.Utilities;
 
 namespace LegendaryExplorerCore.UnrealScript.Lexing.Matching.StringMatchers
 {
-    public sealed class NumberMatcher : TokenMatcherBase
+    public static class NumberMatcher
     {
-        public override ScriptToken Match(CharDataStream data, ref SourcePosition streamPos, MessageLog log)
-        {
-            return MatchNumber(data, ref streamPos);
-        }
-
         public static ScriptToken MatchNumber(CharDataStream data, ref SourcePosition streamPos)
         {
             string first = SubNumberDec(data);

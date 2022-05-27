@@ -1963,55 +1963,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
             if (InForEachIterator)
             {
-                //dynamic array iterator
-                if (expr.ResolveType() is DynamicArrayType dynArrType)
-                {
-                    ExpressionScopes.Push(ExpressionScopes.Last());
-
-                    Expression valueArg = CompositeRef() ?? throw ParseError("Expected argument to dynamic array iterator!", CurrentPosition);
-                    if (!NodeUtils.TypeEqual(valueArg.ResolveType(), dynArrType.ElementType) && (Game.IsGame3() || 
-                        //documentation says this shouldn't be allowed, but bioware code does this in ME2
-                        !(valueArg.ResolveType() is Class argClass && dynArrType.ElementType is Class dynArrClass && dynArrClass.SameAsOrSubClassOf(argClass))))
-                    {
-                        string elementType = dynArrType.ElementType.FullTypeName();
-                        TypeError($"Iterator variable for an '{ARRAY}<{elementType}>' must be of type '{elementType}'", expr);
-                    }
-                    if (valueArg is not SymbolReference)
-                    {
-                        TypeError("Iterator variable must be an lvalue!", valueArg);
-                    }
-
-                    Expression indexArg = null;
-                    if (!Matches(TokenType.RightParenth))
-                    {
-                        if (!Matches(TokenType.Comma))
-                        {
-                            throw ParseError("Expected either a ')' after the first argument, or a ',' before a second argument!", CurrentPosition);
-                        }
-
-                        if (!Matches(TokenType.RightParenth))
-                        {
-                            indexArg = CompositeRef() ?? throw ParseError("Expected argument to dynamic array iterator!", CurrentPosition);
-                            if (indexArg.ResolveType() != SymbolTable.IntType)
-                            {
-                                TypeError("Index variable must be an int!", indexArg);
-                            }
-                            if (indexArg is not SymbolReference)
-                            {
-                                TypeError("Index variable must be an lvalue!", valueArg);
-                            }
-
-                            if (!Matches(TokenType.RightParenth))
-                            {
-                                throw ParseError("Expected a ')' after second argument!", CurrentPosition);
-                            }
-                        }
-                    }
-                    ExpressionScopes.Pop();
-                    return new DynArrayIterator(expr, (SymbolReference)valueArg, (SymbolReference)indexArg, expr.StartPos, PrevToken.EndPos);
-                }
-
-                throw ParseError($"Expected an iterator function or dynamic array after {FOREACH}!", expr);
+                return Iterator(expr);
             }
 
             //bit hacky. dynamic cast when the typename is also a variable name in this scope
@@ -2044,6 +1996,58 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             }
 
             throw ParseError("Can only call functions and delegates!", expr);
+        }
+
+        private Expression Iterator(Expression expr)
+        {
+            if (expr.ResolveType() is DynamicArrayType dynArrType)
+            {
+                ExpressionScopes.Push(ExpressionScopes.Last());
+
+                Expression valueArg = CompositeRef() ?? throw ParseError("Expected argument to dynamic array iterator!", CurrentPosition);
+                if (!NodeUtils.TypeEqual(valueArg.ResolveType(), dynArrType.ElementType) && (Game.IsGame3() ||
+                    //documentation says this shouldn't be allowed, but bioware code does this in ME2
+                    !(valueArg.ResolveType() is Class argClass && dynArrType.ElementType is Class dynArrClass && dynArrClass.SameAsOrSubClassOf(argClass))))
+                {
+                    string elementType = dynArrType.ElementType.FullTypeName();
+                    TypeError($"Iterator variable for an '{ARRAY}<{elementType}>' must be of type '{elementType}'", expr);
+                }
+                if (valueArg is not SymbolReference)
+                {
+                    TypeError("Iterator variable must be an lvalue!", valueArg);
+                }
+
+                Expression indexArg = null;
+                if (!Matches(TokenType.RightParenth))
+                {
+                    if (!Matches(TokenType.Comma))
+                    {
+                        throw ParseError("Expected either a ')' after the first argument, or a ',' before a second argument!", CurrentPosition);
+                    }
+
+                    if (!Matches(TokenType.RightParenth))
+                    {
+                        indexArg = CompositeRef() ?? throw ParseError("Expected argument to dynamic array iterator!", CurrentPosition);
+                        if (indexArg.ResolveType() != SymbolTable.IntType)
+                        {
+                            TypeError("Index variable must be an int!", indexArg);
+                        }
+                        if (indexArg is not SymbolReference)
+                        {
+                            TypeError("Index variable must be an lvalue!", valueArg);
+                        }
+
+                        if (!Matches(TokenType.RightParenth))
+                        {
+                            throw ParseError("Expected a ')' after second argument!", CurrentPosition);
+                        }
+                    }
+                }
+                ExpressionScopes.Pop();
+                return new DynArrayIterator(expr, (SymbolReference)valueArg, (SymbolReference)indexArg, expr.StartPos, PrevToken.EndPos);
+            }
+
+            throw ParseError($"Expected an iterator function or dynamic array after {FOREACH}!", expr);
         }
 
         private Expression MetaCast()

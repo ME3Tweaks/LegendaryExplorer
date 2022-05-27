@@ -60,11 +60,12 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
             else if (GlobalLists.IsDelimiterChar(peek))
             {
                 //looping over every single one is a terrible way of doing this.
+                //TODO: use a Trie instead
                 foreach (SymbolMatcher matcher in GlobalLists.DelimitersAndOperators)
                 {
                     Data.PushSnapshot();
 
-                    result = matcher.Match(Data, ref StreamPosition, Log);
+                    result = matcher.Match(Data, ref StreamPosition);
                     if (result == null)
                     {
                         Data.PopSnapshot();

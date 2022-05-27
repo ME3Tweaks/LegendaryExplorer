@@ -89,7 +89,7 @@ namespace LegendaryExplorer.Tools.AnimationViewer
                     }
                     else
                     {
-                        InteropHelper.SendMessageToGame("CAUSEEVENT GreenScreenOff",Game);
+                        InteropHelper.SendMessageToGame("CAUSEEVENT GreenScreenOff", Game);
                     }
                 }
             }
@@ -111,6 +111,10 @@ namespace LegendaryExplorer.Tools.AnimationViewer
         #endregion
 
         public AnimationRecord AnimQueuedForFocus;
+
+        /// <summary>
+        /// Plot-indexes in kismet that can be changed to change stuff in-game. The value is the plot index for the specified type
+        /// </summary>
         private enum FloatVarIndexes
         {
             XPos = 1,
@@ -125,11 +129,17 @@ namespace LegendaryExplorer.Tools.AnimationViewer
             CamZRotComponent = 10,
         }
 
+        /// <summary>
+        /// Plot-indexes in kismet that can be changed to change stuff in-game. The value is the plot index for the specified type
+        /// </summary>
         private enum BoolVarIndexes
         {
             RemoveOffset = 1
         }
 
+        /// <summary>
+        /// Plot-indexes in kismet that can be changed to change stuff in-game. The value is the plot index for the specified type
+        /// </summary>
         private enum IntVarIndexes
         {
             SquadMember = 1
@@ -640,10 +650,12 @@ namespace LegendaryExplorer.Tools.AnimationViewer
         private void UpdateLocation()
         {
             if (noUpdate) return;
-            GameTarget.ExecuteConsoleCommands(VarCmd(XPos, FloatVarIndexes.XPos),
-                                                     VarCmd(YPos, FloatVarIndexes.YPos),
-                                                     VarCmd(ZPos, FloatVarIndexes.ZPos),
-                                                     "ce SetActorLocation");
+
+            // Set values and then call update
+            GameTarget.ModernExecuteConsoleCommand(VarCmd(XPos, FloatVarIndexes.XPos));
+            GameTarget.ModernExecuteConsoleCommand(VarCmd(YPos, FloatVarIndexes.YPos));
+            GameTarget.ModernExecuteConsoleCommand(VarCmd(ZPos, FloatVarIndexes.ZPos));
+            InteropHelper.CauseEvent("UpdateActorPos", Game);
         }
 
         private void UpdateRotation()
@@ -664,16 +676,34 @@ namespace LegendaryExplorer.Tools.AnimationViewer
             LoadAnimation(SelectedAnimation);
         }
 
+        /// <summary>
+        /// Sets a story float variable
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="index"></param>
+        /// <returns></returns>
         private static string VarCmd(float value, FloatVarIndexes index)
         {
             return $"initplotmanagervaluebyindex {(int)index} float {value}";
         }
 
+        /// <summary>
+        /// Sets a story boolean variable 
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="index"></param>
+        /// <returns></returns>
         private static string VarCmd(bool value, BoolVarIndexes index)
         {
             return $"initplotmanagervaluebyindex {(int)index} bool {(value ? 1 : 0)}";
         }
 
+        /// <summary>
+        /// Sets a story integer variable
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="index"></param>
+        /// <returns></returns>
         private static string VarCmd(int value, IntVarIndexes index)
         {
             return $"initplotmanagervaluebyindex {(int)index} int {value}";
@@ -727,7 +757,11 @@ namespace LegendaryExplorer.Tools.AnimationViewer
                 //    break;
                 case ECameraState.Fixed when prevCameraState == ECameraState.Free:
                 case ECameraState.Free:
-                    GameTarget.ExecuteConsoleCommands("toggledebugcamera"); // This will kill LE1
+                    if (Game != MEGame.LE1)
+                    {
+                        GameTarget.ModernExecuteConsoleCommand("toggledebugcamera"); // This will kill LE1
+                    }
+
                     break;
                     //case ECameraState.Shepard when prevCameraState != ECameraState.Shepard:
                     //    LoadAnimation(SelectedAnimation, true);
@@ -764,13 +798,13 @@ namespace LegendaryExplorer.Tools.AnimationViewer
                 case PlaybackState.Playing:
                     playbackState = PlaybackState.Paused;
                     PlayPauseIcon = EFontAwesomeIcon.Solid_Play;
-                    GameTarget.ExecuteConsoleCommands("ce PauseAnimation");
+                    InteropHelper.CauseEvent("re_PauseAnimation", Game);
                     break;
                 case PlaybackState.Stopped:
                 case PlaybackState.Paused:
                     playbackState = PlaybackState.Playing;
                     PlayPauseIcon = EFontAwesomeIcon.Solid_Pause;
-                    GameTarget.ExecuteConsoleCommands("ce PlayAnimation");
+                    InteropHelper.CauseEvent("re_StartAnimation", Game);
                     break;
             }
         }
@@ -781,12 +815,12 @@ namespace LegendaryExplorer.Tools.AnimationViewer
             if (noUpdate) return;
             playbackState = PlaybackState.Stopped;
             PlayPauseIcon = EFontAwesomeIcon.Solid_Play;
-            GameTarget.ExecuteConsoleCommands("ce StopAnimation");
+            InteropHelper.CauseEvent("re_StopAnimation", Game);
         }
 
-        private double _playRate = 1.0;
+        private float _playRate = 1.0f;
 
-        public double PlayRate
+        public float PlayRate
         {
             get => _playRate;
             set
@@ -794,7 +828,7 @@ namespace LegendaryExplorer.Tools.AnimationViewer
                 if (SetProperty(ref _playRate, value))
                 {
                     if (noUpdate) return;
-                    GameTarget.ExecuteConsoleCommands(VarCmd((float)value, FloatVarIndexes.PlayRate));
+                    GameTarget.ModernExecuteConsoleCommand(VarCmd(PlayRate, FloatVarIndexes.PlayRate));
                 }
             }
         }

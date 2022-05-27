@@ -141,7 +141,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             EditorSetElements.Add(NameIndexPrefix_TextBlock); //nameindex
             EditorSetElements.Add(NameIndex_TextBox); //nameindex
             EditorSetElements.Add(ParsedValue_TextBlock);
-            EditorSetElements.Add(EditorSet_ArraySetSeparator);
             Set_Button.Visibility = Visibility.Collapsed;
 
             //EditorSet_Separator.Visibility = Visibility.Collapsed;
@@ -359,14 +358,14 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void FireNavigateCallback()
         {
-            var objProp = (ObjectProperty)(SelectedItem as UPropertyTreeViewEntry).Property;
+            var objProp = (ObjectProperty)SelectedItem.Property;
             var entry = CurrentLoadedExport.FileRef.GetEntry(objProp.Value);
             NavigateToEntryCommand?.Execute(entry);
         }
 
         private bool CanFireNavigateCallback()
         {
-            if (CurrentLoadedExport != null && NavigateToEntryCommand != null && SelectedItem != null && SelectedItem.Property is ObjectProperty op)
+            if (CurrentLoadedExport != null && NavigateToEntryCommand != null && SelectedItem is { Property: ObjectProperty op })
             {
                 var entry = CurrentLoadedExport.FileRef.GetEntry(op.Value);
                 return NavigateToEntryCommand.CanExecute(entry);

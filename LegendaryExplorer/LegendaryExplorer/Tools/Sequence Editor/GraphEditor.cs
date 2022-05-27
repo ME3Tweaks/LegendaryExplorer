@@ -83,8 +83,8 @@ namespace UMD.HCIL.GraphEditor
             // because the nodes have non-identity transforms which must be included when
             // determining their position.
 
-            PNode node1 = edge.start;
-            PNode node2 = edge.end;
+            PNode node1 = edge.Start;
+            PNode node2 = edge.End;
             PointF start = node1.GlobalBounds.Location;
             PointF end = node2.GlobalBounds.Location;
             float h1x, h1y, h2x, h2y;

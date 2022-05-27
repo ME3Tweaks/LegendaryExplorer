@@ -1,22 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Xml;
 using System.Xml.Linq;
 using ClosedXML.Excel;
-using DocumentFormat.OpenXml.Drawing.Diagrams;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.UserControls.SharedToolControls.Curves;
 using LegendaryExplorer.Tools.TlkManagerNS;
 using LegendaryExplorer.UserControls.SharedToolControls;
-using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Misc;
@@ -1071,7 +1069,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     {
                         var keys = value.Trim().Split(' ').Select(s =>
                         {
-                            if (float.TryParse(s, out float result))
+                            if (float.TryParse(s, NumberStyles.Float, CultureInfo.InvariantCulture, out float result))
                             {
                                 return result;
                             }
