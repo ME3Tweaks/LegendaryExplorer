@@ -4,13 +4,8 @@ using LegendaryExplorerCore.UnrealScript.Utilities;
 
 namespace LegendaryExplorerCore.UnrealScript.Lexing.Matching.StringMatchers
 {
-    public sealed class WhiteSpaceMatcher : TokenMatcherBase
+    public static class WhiteSpaceMatcher
     {
-        public override ScriptToken Match(CharDataStream data, ref SourcePosition streamPos, MessageLog log)
-        {
-            return MatchWhiteSpace(data, ref streamPos);
-        }
-
         public static ScriptToken MatchWhiteSpace(CharDataStream data, ref SourcePosition streamPos)
         {
             bool whiteSpace = false;

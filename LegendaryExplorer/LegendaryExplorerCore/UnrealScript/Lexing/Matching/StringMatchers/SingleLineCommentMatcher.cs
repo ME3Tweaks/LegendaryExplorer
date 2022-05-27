@@ -5,13 +5,8 @@ using LegendaryExplorerCore.UnrealScript.Utilities;
 
 namespace LegendaryExplorerCore.UnrealScript.Lexing.Matching.StringMatchers
 {
-    public sealed class SingleLineCommentMatcher : TokenMatcherBase
+    public static class SingleLineCommentMatcher
     {
-        public override ScriptToken Match(CharDataStream data, ref SourcePosition streamPos, MessageLog log)
-        {
-            return MatchComment(data, ref streamPos);
-        }
-
         public static ScriptToken MatchComment(CharDataStream data, ref SourcePosition streamPos)
         {
             if (data.CurrentItem == '/')

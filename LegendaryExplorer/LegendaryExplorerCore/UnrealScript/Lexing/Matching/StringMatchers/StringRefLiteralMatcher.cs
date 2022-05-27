@@ -1,19 +1,12 @@
-﻿using System.Text.RegularExpressions;
-using LegendaryExplorerCore.Gammtek.Extensions;
+﻿using LegendaryExplorerCore.Gammtek.Extensions;
 using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
-using LegendaryExplorerCore.UnrealScript.Compiling.Errors;
 using LegendaryExplorerCore.UnrealScript.Lexing.Tokenizing;
 using LegendaryExplorerCore.UnrealScript.Utilities;
 
 namespace LegendaryExplorerCore.UnrealScript.Lexing.Matching.StringMatchers
 {
-    public sealed class StringRefLiteralMatcher : TokenMatcherBase
+    public static class StringRefLiteralMatcher
     {
-        public override ScriptToken Match(CharDataStream data, ref SourcePosition streamPos, MessageLog log)
-        {
-            return MatchStringRef(data, ref streamPos);
-        }
-
         public static ScriptToken MatchStringRef(CharDataStream data, ref SourcePosition streamPos)
         {
             char peek = data.CurrentItem;

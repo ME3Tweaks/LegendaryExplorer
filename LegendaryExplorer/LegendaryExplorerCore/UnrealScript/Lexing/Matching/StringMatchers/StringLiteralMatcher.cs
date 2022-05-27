@@ -5,14 +5,9 @@ using LegendaryExplorerCore.UnrealScript.Utilities;
 
 namespace LegendaryExplorerCore.UnrealScript.Lexing.Matching.StringMatchers
 {
-    public sealed class StringLiteralMatcher : TokenMatcherBase
+    public static class StringLiteralMatcher
     {
         private const char DELIMITER = '"';
-
-        public override ScriptToken Match(CharDataStream data, ref SourcePosition streamPos, MessageLog log)
-        {
-            return MatchString(data, ref streamPos, log);
-        }
 
         public static ScriptToken MatchString(CharDataStream data, ref SourcePosition streamPos, MessageLog log)
         {

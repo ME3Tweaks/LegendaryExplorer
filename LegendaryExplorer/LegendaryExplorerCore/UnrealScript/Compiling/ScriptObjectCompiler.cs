@@ -155,8 +155,8 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             //classObj.ScriptBytes = Array.Empty<byte>();
 
             (CaseInsensitiveDictionary<UConst> existingConsts, CaseInsensitiveDictionary<UEnum> existingEnums, CaseInsensitiveDictionary<UScriptStruct> existingStructs,
-                CaseInsensitiveDictionary<UProperty> existingProperties, CaseInsensitiveDictionary<UFunction> existingFunctions, CaseInsensitiveDictionary<UState> existingStates, 
-                List<UField> allMembers) = GetClassMembers(classObj);
+                CaseInsensitiveDictionary<UProperty> existingProperties, CaseInsensitiveDictionary<UFunction> existingFunctions, CaseInsensitiveDictionary<UState> existingStates)
+                = GetClassMembers(classObj);
 
 
             //Stub out all the child exports, and trash existing ones that don't get re-used
@@ -252,11 +252,12 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 completion();
             }
 
+            IEnumerable<UField> allChildren = compiledProperties.Values().Cast<UField>().Concat(compiledFunctions).Concat(compiledStates).Concat(compiledStructs).Concat(compiledEnums).Concat(compiledConsts);
             if (childrenHaveBeenAdded || childrenHaveBeenTrashed)
             {
                 classObj.Children = 0;
                 UField prev = null;
-                foreach (UField current in compiledProperties.Values().Cast<UField>().Concat(compiledFunctions).Concat(compiledStates).Concat(compiledStructs).Concat(compiledEnums).Concat(compiledConsts))
+                foreach (UField current in allChildren)
                 {
                     AdvanceField(ref prev, current, classObj);
                 }
@@ -264,6 +265,13 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 {
                     prev.Next = 0;
                     prev.Export.WriteBinary(prev);
+                }
+            }
+            else
+            {
+                foreach (UField field in allChildren)
+                {
+                    field.Export.WriteBinary(field);
                 }
             }
             
@@ -305,8 +313,6 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             //        classObj.ComponentNameToDefaultObjectMap.Add(componentName, pcc.FindExport($"{defaultsExport.InstancedFullPath}.{componentName}"));
             //    }
             //}
-
-            classExport.WriteBinary(classObj);
         }
 
         private static void CompileState(State stateAST, IEntry parent, ref UState stateObj)
@@ -867,7 +873,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
         }
 
         private static (CaseInsensitiveDictionary<UConst>, CaseInsensitiveDictionary<UEnum>, CaseInsensitiveDictionary<UScriptStruct>,
-            CaseInsensitiveDictionary<UProperty>, CaseInsensitiveDictionary<UFunction>, CaseInsensitiveDictionary<UState>, List<UField>)
+            CaseInsensitiveDictionary<UProperty>, CaseInsensitiveDictionary<UFunction>, CaseInsensitiveDictionary<UState>)
             GetClassMembers(UClass obj)
         {
             IMEPackage pcc = obj.Export.FileRef;
@@ -878,7 +884,6 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             var propMembers = new CaseInsensitiveDictionary<UProperty>();
             var funcMembers = new CaseInsensitiveDictionary<UFunction>();
             var stateMembers = new CaseInsensitiveDictionary<UState>();
-            var allMembers = new List<UField>();
 
             var nextItem = obj.Children;
 
@@ -888,7 +893,6 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 string objName = objBin?.Export.ObjectName.Instanced;
                 if (objBin is UField uField)
                 {
-                    allMembers.Add(uField);
                     nextItem = uField.Next;
                     switch (objBin)
                     {
@@ -917,7 +921,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     break;
                 }
             }
-            return (constMembers, enumMembers, structMembers, propMembers, funcMembers, stateMembers, allMembers);
+            return (constMembers, enumMembers, structMembers, propMembers, funcMembers, stateMembers);
         }
 
         private static ExportEntry CreateNewExport(IMEPackage pcc, NameReference name, string className, IEntry parent, UField binary = null, IEntry super = null)

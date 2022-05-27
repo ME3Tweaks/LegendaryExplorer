@@ -4,10 +4,10 @@ using LegendaryExplorerCore.UnrealScript.Utilities;
 
 namespace LegendaryExplorerCore.UnrealScript.Lexing.Tokenizing
 {
-    public class ScriptToken
+    public sealed class ScriptToken
     {
         #region Members
-        public virtual string Value { get; }
+        public string Value { get; }
 
         public readonly TokenType Type;
 

@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using LegendaryExplorerCore.Gammtek.Extensions;
-using LegendaryExplorerCore.UnrealScript.Compiling.Errors;
 using LegendaryExplorerCore.UnrealScript.Lexing.Tokenizing;
 using LegendaryExplorerCore.UnrealScript.Utilities;
 
 namespace LegendaryExplorerCore.UnrealScript.Lexing.Matching.StringMatchers
 {
-    public sealed class SymbolMatcher : TokenMatcherBase
+    public sealed class SymbolMatcher
     {
         public readonly string Keyword;
         private readonly TokenType Type;
@@ -20,7 +19,7 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing.Matching.StringMatchers
             Keyword = keyword;
         }
 
-        public override ScriptToken Match(CharDataStream data, ref SourcePosition streamPos, MessageLog log)
+        public ScriptToken Match(CharDataStream data, ref SourcePosition streamPos)
         {
             foreach (char c in Keyword)
             {
