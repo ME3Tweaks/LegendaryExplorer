@@ -1187,12 +1187,12 @@ namespace LegendaryExplorer.DialogueEditor
             if (shadowRendering && paintContext.Scale >= 1 && base.Text != null && base.TextBrush != null && base.Font != null)
             {
                 Graphics g = paintContext.Graphics;
-                float renderedFontSize = base.Font.SizeInPoints * paintContext.Scale;
+                float renderedFontSize = FontSizeInPoints * paintContext.Scale;
                 if (renderedFontSize >= PUtil.GreekThreshold && renderedFontSize < PUtil.MaxFontSize)
                 {
                     RectangleF shadowbounds = Bounds;
                     shadowbounds.Offset(1, 1);
-                    StringFormat stringformat = new StringFormat { Alignment = base.TextAlignment };
+                    var stringformat = new StringFormat { Alignment = base.TextAlignment };
                     g.DrawString(base.Text, base.Font, black, shadowbounds, stringformat);
                 }
             }

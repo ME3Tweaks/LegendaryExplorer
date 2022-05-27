@@ -1046,7 +1046,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 var vars = new List<SVar>();
                 foreach (var varLink in root.Varlinks)
                 {
-                    float dx = varLink.node.GlobalFullBounds.X - SVar.RADIUS;
+                    float dx = varLink.Node.GlobalFullBounds.X - SVar.RADIUS;
                     float dy = root.GlobalFullHeight + VAR_SPACING;
                     foreach (int uIndex in varLink.Links.Where(uIndex => !visitedNodes.Contains(uIndex)))
                     {
@@ -1629,9 +1629,9 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 switch (sObj)
                 {
                     case SVar sVar:
-                        foreach (VarEdge edge in sVar.connections)
+                        foreach (VarEdge edge in sVar.Connections)
                         {
-                            edge.originator.RemoveVarlink(edge);
+                            edge.Originator.RemoveVarlink(edge);
                         }
                         break;
                     case SAction sAction:
@@ -1639,14 +1639,14 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                         {
                             foreach (ActionEdge edge in inLink.Edges)
                             {
-                                edge.originator.RemoveOutlink(edge);
+                                edge.Originator.RemoveOutlink(edge);
                             }
                         }
                         break;
                     case SEvent sEvent:
-                        foreach (EventEdge edge in sEvent.connections)
+                        foreach (EventEdge edge in sEvent.Connections)
                         {
-                            edge.originator.RemoveEventlink(edge);
+                            edge.Originator.RemoveEventlink(edge);
                         }
                         break;
                 }
@@ -1675,7 +1675,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
         {
             if (sender is SObj obj)
             {
-                obj.posAtDragStart = obj.GlobalFullBounds;
+                obj.PosAtDragStart = obj.GlobalFullBounds;
                 if (e.Button == System.Windows.Forms.MouseButtons.Right)
                 {
                     panToSelection = false;
@@ -1712,7 +1712,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
         {
             if (sender is SObj obj)
             {
-                if (e.Button != System.Windows.Forms.MouseButtons.Left && obj.GlobalFullBounds == obj.posAtDragStart)
+                if (e.Button != System.Windows.Forms.MouseButtons.Left && obj.GlobalFullBounds == obj.PosAtDragStart)
                 {
                     if (!e.Shift && !e.Control)
                     {

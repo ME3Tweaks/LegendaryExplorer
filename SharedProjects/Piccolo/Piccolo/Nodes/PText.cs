@@ -236,6 +236,11 @@ namespace UMD.HCIL.Piccolo.Nodes {
 		}
 
 		/// <summary>
+		/// Use instead of Font.SizeInPoints, which is surprisingly expensive.
+		/// </summary>
+        public float FontSizeInPoints { get; private set; }
+
+		/// <summary>
 		/// Gets or sets the font to use when rendering this node's text.
 		/// </summary>
 		/// <value>The font to use when rendering this node's text.</value>
@@ -249,6 +254,7 @@ namespace UMD.HCIL.Piccolo.Nodes {
 			set {
 				Font old = font;
 				font = value;
+                FontSizeInPoints = font.SizeInPoints;
 				InvalidatePaint();
 				RecomputeBounds();
 				FirePropertyChangedEvent(PROPERTY_KEY_FONT, PROPERTY_CODE_FONT, old, font);
@@ -270,7 +276,7 @@ namespace UMD.HCIL.Piccolo.Nodes {
 			if (text != null && textBrush != null && font != null) {
 				Graphics g = paintContext.Graphics;
 
-				float renderedFontSize = font.SizeInPoints * paintContext.Scale;
+				float renderedFontSize = FontSizeInPoints * paintContext.Scale;
 				if (renderedFontSize < PUtil.GreekThreshold) {
 					
 					// .NET bug: DrawString throws a generic gdi+ exception when
