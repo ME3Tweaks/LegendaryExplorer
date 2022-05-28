@@ -1395,7 +1395,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                         // Way to bypass references check as it slows down mass
                         // trashing of objects especially when the dev knows what they're doing
                         // Implemented by Mgamerz 05/14/2022
-                        skipReferencesCheck ? null : GetExternallyReferencedExport(itemsToTrash);
+                        skipReferencesCheck ? null : GetExternallyReferencedEntry(itemsToTrash);
                     return (itemsToTrash, entryWithReferences);
                 }).ContinueWithOnUIThread(prevTask =>
                 {
@@ -1430,7 +1430,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     }
                 });
 
-                static ExportEntry GetExternallyReferencedExport(List<IEntry> entriesToTrash)
+                static IEntry GetExternallyReferencedEntry(List<IEntry> entriesToTrash)
                 {
                     if (entriesToTrash.IsEmpty())
                     {
@@ -1447,19 +1447,19 @@ namespace LegendaryExplorer.Tools.PackageEditor
                             //find header references
                             if (uIndexes.Contains(exp.idxArchetype))
                             {
-                                return pcc.GetUExport(exp.idxArchetype);
+                                return pcc.GetEntry(exp.idxArchetype);
                             }
                             if (uIndexes.Contains(exp.idxClass))
                             {
-                                return pcc.GetUExport(exp.idxClass);
+                                return pcc.GetEntry(exp.idxClass);
                             }
                             if (uIndexes.Contains(exp.idxSuperClass))
                             {
-                                return pcc.GetUExport(exp.idxSuperClass);
+                                return pcc.GetEntry(exp.idxSuperClass);
                             }
                             if (exp.HasComponentMap && exp.ComponentMap.Any(kvp => uIndexes.Contains(kvp.Value)))
                             {
-                                return pcc.GetUExport(exp.ComponentMap.Values().First(uIdx => uIndexes.Contains(uIdx)));
+                                return pcc.GetEntry(exp.ComponentMap.Values().First(uIdx => uIndexes.Contains(uIdx)));
                             }
 
                             //find stack references
@@ -1467,24 +1467,24 @@ namespace LegendaryExplorer.Tools.PackageEditor
                             {
                                 if (uIndexes.TryGetValue(EndianReader.ToInt32(exp.DataReadOnly, 0, exp.FileRef.Endian), out int stack1))
                                 {
-                                    return pcc.GetUExport(stack1);
+                                    return pcc.GetEntry(stack1);
                                 }
                                 if (uIndexes.TryGetValue(EndianReader.ToInt32(exp.DataReadOnly, 4, exp.FileRef.Endian), out int stack2))
                                 {
-                                    return pcc.GetUExport(stack2);
+                                    return pcc.GetEntry(stack2);
                                 }
                             }
                             else if (exp.TemplateOwnerClassIdx is var toci and >= 0 && 
                                      uIndexes.TryGetValue(EndianReader.ToInt32(exp.DataReadOnly, toci, exp.FileRef.Endian), out int tocuIdx))
                             {
-                                return pcc.GetUExport(tocuIdx);
+                                return pcc.GetEntry(tocuIdx);
                             }
 
 
                             //find property references
-                            if (GetReferencedExportInProps(exp.GetProperties()) is ExportEntry export)
+                            if (GetReferencedEntryInProps(exp.GetProperties()) is IEntry entry)
                             {
-                                return exp;
+                                return entry;
                             }
 
                             //find binary references
@@ -1507,12 +1507,12 @@ namespace LegendaryExplorer.Tools.PackageEditor
                                 {
                                     if (uIndexes.Contains(uIndex.value))
                                     {
-                                        return pcc.GetUExport(uIndex.value);
+                                        return pcc.GetEntry(uIndex.value);
                                     }
                                 }
                             }
                         }
-                        catch (Exception e) when (!App.IsDebug)
+                        catch (Exception e) //when (!App.IsDebug)
                         {
                             MessageBox.Show($"Exception occurred while reading export# {exp.UIndex}: {e.Message}");
                         }
@@ -1520,7 +1520,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
                     return null;
 
-                    ExportEntry GetReferencedExportInProps(PropertyCollection props)
+                    IEntry GetReferencedEntryInProps(PropertyCollection props)
                     {
                         foreach (Property prop in props)
                         {
@@ -1529,17 +1529,17 @@ namespace LegendaryExplorer.Tools.PackageEditor
                                 case ObjectProperty objectProperty:
                                     if (uIndexes.Contains(objectProperty.Value))
                                     {
-                                        return pcc.GetUExport(objectProperty.Value);
+                                        return pcc.GetEntry(objectProperty.Value);
                                     }
                                     break;
                                 case DelegateProperty delegateProperty:
                                     if (uIndexes.Contains(delegateProperty.Value.ContainingObjectUIndex))
                                     {
-                                        return pcc.GetUExport(delegateProperty.Value.ContainingObjectUIndex);
+                                        return pcc.GetEntry(delegateProperty.Value.ContainingObjectUIndex);
                                     }
                                     break;
                                 case StructProperty structProperty:
-                                    if (GetReferencedExportInProps(structProperty.Properties) is ExportEntry export1)
+                                    if (GetReferencedEntryInProps(structProperty.Properties) is ExportEntry export1)
                                     {
                                         return export1;
                                     }
@@ -1549,16 +1549,16 @@ namespace LegendaryExplorer.Tools.PackageEditor
                                     {
                                         if (uIndexes.Contains(objProp.Value))
                                         {
-                                            return pcc.GetUExport(objProp.Value);
+                                            return pcc.GetEntry(objProp.Value);
                                         }
                                     }
                                     break;
                                 case ArrayProperty<StructProperty> arrayProperty:
                                     foreach (StructProperty structProp in arrayProperty)
                                     {
-                                        if (GetReferencedExportInProps(structProp.Properties) is ExportEntry export2)
+                                        if (GetReferencedEntryInProps(structProp.Properties) is IEntry entry)
                                         {
-                                            return export2;
+                                            return entry;
                                         }
                                     }
                                     break;
