@@ -4,7 +4,6 @@ using System.Linq;
 using LegendaryExplorerCore.Gammtek.Extensions;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
-using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
 using LegendaryExplorerCore.UnrealScript.Compiling;
 using LegendaryExplorerCore.UnrealScript.Language.Util;
@@ -24,6 +23,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
         public bool IsAtomic => Flags.Has(ScriptStructFlags.Atomic) || Flags.Has(ScriptStructFlags.AtomicWhenCooked);
 
         public bool IsImmutable => Flags.Has(ScriptStructFlags.Immutable) || Flags.Has(ScriptStructFlags.ImmutableWhenCooked);
+        public bool IsNative => Flags.Has(ScriptStructFlags.Native);
 
         public Struct(string name, VariableType parent, ScriptStructFlags flags,
                       List<VariableDeclaration> variableDeclarations = null,

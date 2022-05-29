@@ -223,16 +223,16 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
                 if (CurrentLoadedExport.ClassName == "Function")
                 {
-                    int nativeBackOffset = 6; // ME3 (doesn't have friendlyname)
-                    if (CurrentLoadedExport.Game is MEGame.LE1 or MEGame.LE2)
-                    {
-                        nativeBackOffset = 14;
-                    } 
-
-                    pos = data.Length - nativeBackOffset;
-                    string flagStr = func.GetFlags();
+                    pos += 4 + diskSize;
                     ScriptFooterBlocks.Add(new ScriptHeaderItem("Native Index", EndianReader.ToInt16(data, pos, CurrentLoadedExport.FileRef.Endian), pos) { length = 2 });
                     pos += 2;
+
+                    if (CurrentLoadedExport.Game is MEGame.LE1 or MEGame.LE2)
+                    {
+                        ScriptFooterBlocks.Add(new ScriptHeaderItem("Operator Precedence", data[pos], pos));
+                        pos++;
+                    }
+
                     ScriptFooterBlocks.Add(new ScriptHeaderItem("Flags", $"0x{EndianReader.ToInt32(data, pos, CurrentLoadedExport.FileRef.Endian):X8} {func.GetFlags().Substring(6)}", pos));
 
                     if (CurrentLoadedExport.Game is MEGame.LE1 or MEGame.LE2)

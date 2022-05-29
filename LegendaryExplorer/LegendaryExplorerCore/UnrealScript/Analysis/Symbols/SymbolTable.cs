@@ -181,7 +181,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
                     var stringRefPropertyType = new Class("StringRefProperty", propertyType, objectClass, intrinsicClassFlags);
                     table.AddType(stringRefPropertyType);
                     table.PushScope(stringRefPropertyType.Name); table.PopScope();
-            table.PopScope();
+                table.PopScope();
             table.PopScope();
             #endregion
 
@@ -249,7 +249,12 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
                     }
                 };
                 table.AddType(fracturedStaticMeshType);
-                table.PushScope(fracturedStaticMeshType.Name); table.PopScope();
+                table.PushScope(fracturedStaticMeshType.Name); 
+                    foreach (VariableDeclaration fracturedStmVarDecl in fracturedStaticMeshType.VariableDeclarations)
+                    {
+                        table.AddSymbol(fracturedStmVarDecl.Name, fracturedStmVarDecl);
+                    }
+                table.PopScope();
             table.PopScope();
             var shadowMap1DType = new Class("ShadowMap1D", objectClass, objectClass, intrinsicClassFlags);
             table.AddType(shadowMap1DType);

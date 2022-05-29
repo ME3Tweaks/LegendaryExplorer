@@ -373,7 +373,11 @@ namespace LegendaryExplorerCore.UnrealScript
                     log.LogError(export.InstancedFullPath + " does not have a Class or ScriptStruct Export as a parent!");
                     return (null, log);
                 }
-
+                if (strct.IsNative)
+                {
+                    log.LogMessage("Cannot edit native structs!");
+                    return (astNode, log);
+                }
                 try
                 {
                     astNode = CompileNewStructAST(parent, strct, log, lib);

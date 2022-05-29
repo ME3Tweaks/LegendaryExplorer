@@ -385,7 +385,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                         default:
                             outputListBox.ItemsSource = new[]
                             {
-                                $"{CurrentLoadedExport.ClassName} compilation is not yet supported and will be added in a future update."
+                                $"{CurrentLoadedExport.ClassName} compilation is not supported."
                             };
                             break;
                     }
