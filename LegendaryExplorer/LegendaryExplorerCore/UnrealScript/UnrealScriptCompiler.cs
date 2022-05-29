@@ -485,8 +485,18 @@ namespace LegendaryExplorerCore.UnrealScript
                 throw new Exception("Cannot compile the root Object class!");
             }
             vfTableChanged = false;
-            //get the old version of this class, if it exists, for the purpose of determining whether the virtual function table has been changed
-            lib.ReadonlySymbolTable.TryGetType(cls.Name, out Class existingClass);
+            //get the old version of this class, if it exists
+            if (lib.ReadonlySymbolTable.TryGetType(cls.Name, out Class existingClass))
+            {
+                foreach (Struct existingNativeStruct in existingClass.TypeDeclarations.OfType<Struct>().Where(s => s.IsNative))
+                {
+                    if (cls.TypeDeclarations.FirstOrDefault(t => t.Name == existingNativeStruct.Name) is Struct newStruct 
+                        && !existingNativeStruct.IsNativeCompatibleWith(newStruct, pcc.Game))
+                    {
+                        log.LogError($"Cannot modify native struct: {existingNativeStruct.Name}", newStruct.StartPos, newStruct.EndPos);
+                    }
+                }
+            }
             log.Filter = cls;
             SymbolTable symbols = lib.CreateSymbolTableWithClass(cls, log);
             log.Filter = null;

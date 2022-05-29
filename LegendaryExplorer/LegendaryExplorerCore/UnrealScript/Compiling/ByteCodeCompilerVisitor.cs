@@ -118,6 +118,25 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 }
 
 
+                foreach (FunctionParameter parameter in func.Parameters.Where(param => param.IsOptional))
+                {
+                    if (parameter.DefaultParameter is Expression expr)
+                    {
+                        WriteOpCode(OpCodes.DefaultParmValue);
+
+                        using (WriteSkipPlaceholder())
+                        {
+                            Emit(AddConversion(parameter.VarType, expr));
+                            WriteOpCode(OpCodes.EndParmValue);
+                        }
+                    }
+                    else
+                    {
+                        WriteOpCode(OpCodes.Nothing);
+                    }
+                }
+
+
                 if (func.IsNative)
                 {
                     foreach (FunctionParameter functionParameter in func.Parameters)
@@ -129,24 +148,6 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 }
                 else
                 {
-                    foreach (FunctionParameter parameter in func.Parameters.Where(param => param.IsOptional))
-                    {
-                        if (parameter.DefaultParameter is Expression expr)
-                        {
-                            WriteOpCode(OpCodes.DefaultParmValue);
-
-                            using (WriteSkipPlaceholder())
-                            {
-                                Emit(AddConversion(parameter.VarType, expr));
-                                WriteOpCode(OpCodes.EndParmValue);
-                            }
-                        }
-                        else
-                        {
-                            WriteOpCode(OpCodes.Nothing);
-                        }
-                    }
-
                     Emit(func.Body);
 
                     WriteOpCode(OpCodes.Return);

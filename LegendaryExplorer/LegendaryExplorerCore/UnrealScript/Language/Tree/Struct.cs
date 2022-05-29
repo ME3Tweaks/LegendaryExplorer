@@ -388,5 +388,34 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
             }
             return props;
         }
+
+        public bool IsNativeCompatibleWith(Struct other, MEGame game)
+        {
+            if (VariableDeclarations.Count != other.VariableDeclarations.Count)
+            {
+                return false;
+            }
+            foreach ((VariableDeclaration ours, VariableDeclaration theirs) in VariableDeclarations.Zip(other.VariableDeclarations))
+            {
+                if (ours.Name != theirs.Name 
+                    || ours.VarType.Name != theirs.VarType.Name
+                    || ours.ArrayLength != theirs.ArrayLength)
+                {
+                    return false;
+                }
+            }
+            if (TypeDeclarations.Count != other.TypeDeclarations.Count)
+            {
+                return false;
+            }
+            foreach ((VariableType ours, VariableType theirs) in TypeDeclarations.Zip(other.TypeDeclarations))
+            {
+                if (!((Struct)ours).IsNativeCompatibleWith((Struct)theirs, game))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
     }
 }
