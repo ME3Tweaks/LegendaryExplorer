@@ -490,10 +490,16 @@ namespace LegendaryExplorer.Tools.SequenceObjects
                     case VarTypes.StrRef:
                         foreach (Property prop in props)
                         {
-                            if ((prop.Name == "m_srValue" || prop.Name == "m_srStringID")
-                                && prop is StringRefProperty strRefProp)
+                            if (prop.Name == "m_srValue" || prop.Name == "m_srStringID")
                             {
-                                return TLKManagerWPF.GlobalFindStrRefbyID(strRefProp.Value, export.FileRef.Game, export.FileRef);
+                                if (prop is StringRefProperty strRefProp)
+                                {
+                                    return TLKManagerWPF.GlobalFindStrRefbyID(strRefProp.Value, export.FileRef.Game, export.FileRef);
+                                }
+                                else if (prop is IntProperty intProp)
+                                {
+                                    return TLKManagerWPF.GlobalFindStrRefbyID(intProp.Value, export.FileRef.Game, export.FileRef);
+                                }
                             }
                         }
                         return unknownValue;

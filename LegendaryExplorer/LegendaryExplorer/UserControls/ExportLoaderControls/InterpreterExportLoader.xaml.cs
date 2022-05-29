@@ -1030,7 +1030,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         {
                             parsedValue = IntToString(prop.Name, ip.Value, parsingExport);
                         }
-                        if (ip.Name == "m_nStrRefID" || ip.Name == "nLineStrRef" || ip.Name == "nStrRefID" || ip.Name == "m_iStringRef" || ip.Name == "m_iDescriptionStringRef")
+                        if (ip.Name == "m_nStrRefID" || ip.Name == "nLineStrRef" || ip.Name == "nStrRefID" || ip.Name == "m_iStringRef" || ip.Name == "m_iDescriptionStringRef" || ip.Name == "m_srStringID")
                         {
                             parsedValue = IntToString(prop.Name, ip.Value, parsingExport);
                         }
@@ -1470,7 +1470,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
             }
 
-            if (name == "m_nStrRefID" || name == "nLineStrRef" || name == "nStrRefID" || name == "m_iStringRef" || name == "m_iDescriptionStringRef")
+            if (name == "m_nStrRefID" || name == "nLineStrRef" || name == "nStrRefID" || name == "m_iStringRef" || name == "m_iDescriptionStringRef" || name == "m_srStringID")
             {
                 return TLKManagerWPF.GlobalFindStrRefbyID(value, export.FileRef.Game, export.FileRef);
             }
