@@ -15,5 +15,6 @@ var class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_st
     [ "DefaultProperties", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_struct.html#a853acaf2caeee9c0848b7375dd555d2f", null ],
     [ "IsAtomic", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_struct.html#a3d01a86b3bf41e02457f40a59fccf665", null ],
     [ "IsImmutable", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_struct.html#a2cdc3b0edd328e1245c225fbe5975989", null ],
+    [ "IsNative", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_struct.html#af8ac4e5493e5c2a8363ec763b07e2f0d", null ],
     [ "ChildNodes", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_struct.html#ab3057d9962ae7dd0251415bdc301285a", null ]
 ];
