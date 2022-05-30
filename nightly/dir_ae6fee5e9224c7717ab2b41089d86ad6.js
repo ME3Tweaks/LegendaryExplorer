@@ -136,9 +136,6 @@ var dir_ae6fee5e9224c7717ab2b41089d86ad6 =
     [ "IntegerLiteral.cs", "_integer_literal_8cs.html", [
       [ "LegendaryExplorerCore.UnrealScript.Language.Tree.IntegerLiteral", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_integer_literal.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_integer_literal" ]
     ] ],
-    [ "IObjectType.cs", "_i_object_type_8cs.html", [
-      [ "LegendaryExplorerCore.UnrealScript.Language.Tree.ObjectType", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_object_type.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_object_type" ]
-    ] ],
     [ "Label.cs", "_label_8cs.html", [
       [ "LegendaryExplorerCore.UnrealScript.Language.Tree.Label", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_label.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_label" ]
     ] ],
@@ -153,6 +150,9 @@ var dir_ae6fee5e9224c7717ab2b41089d86ad6 =
     ] ],
     [ "ObjectLiteral.cs", "_object_literal_8cs.html", [
       [ "LegendaryExplorerCore.UnrealScript.Language.Tree.ObjectLiteral", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_object_literal.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_object_literal" ]
+    ] ],
+    [ "ObjectType.cs", "_object_type_8cs.html", [
+      [ "LegendaryExplorerCore.UnrealScript.Language.Tree.ObjectType", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_object_type.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_object_type" ]
     ] ],
     [ "OperatorDeclaration.cs", "_operator_declaration_8cs.html", [
       [ "LegendaryExplorerCore.UnrealScript.Language.Tree.OperatorDeclaration", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_operator_declaration.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_operator_declaration" ]

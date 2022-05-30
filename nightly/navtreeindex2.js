@@ -91,7 +91,6 @@ var NAVTREEINDEX2 =
 "_i_m_e_package_8cs.html#a01ab7fe2b35882890ba5f989fefef344aa245c3230debe5c956484ecc6fa93877":[2,0,0,0,14,6,3,8],
 "_i_m_e_package_8cs.html#a01ab7fe2b35882890ba5f989fefef344ac26f15e86e3de4c398a8273272aba034":[2,0,0,0,14,6,3,4],
 "_i_m_e_package_8cs.html#a01ab7fe2b35882890ba5f989fefef344acf20423ed48998082c20099488a0917c":[2,0,0,0,14,6,3,2],
-"_i_object_type_8cs.html":[2,0,0,0,21,3,1,42],
 "_i_package_user_8cs.html":[2,0,0,0,14,8],
 "_i_path_8cs.html":[2,0,0,0,6,7,15],
 "_i_priority_queue_8cs.html":[2,0,0,0,6,0,1,6],
@@ -163,7 +162,7 @@ var NAVTREEINDEX2 =
 "_l_e_directory_8cs.html":[2,0,0,0,5,3],
 "_l_z_o2_helper_8cs.html":[2,0,0,0,2,0],
 "_l_z_x_helper_8cs.html":[2,0,0,0,2,1],
-"_label_8cs.html":[2,0,0,0,21,3,1,43],
+"_label_8cs.html":[2,0,0,0,21,3,1,42],
 "_legendary_explorer_core_lib_8cs.html":[2,0,0,0,22],
 "_legendary_explorer_core_lib_settings_8cs.html":[2,0,0,0,23],
 "_legendary_explorer_core_utilities_8cs.html":[2,0,0,0,7,6],
@@ -249,5 +248,6 @@ var NAVTREEINDEX2 =
 "_m_e3_enums_8cs.html#a02d4c58c15a7937f3534a746f2592681aa580330848a70e0259ba420c98b22d29":[2,0,0,0,20,11,555,1],
 "_m_e3_enums_8cs.html#a02d4c58c15a7937f3534a746f2592681aaa5bfff8f094c677d5f0eb961aa51ad5":[2,0,0,0,20,11,555,2],
 "_m_e3_enums_8cs.html#a02d4c58c15a7937f3534a746f2592681add0d972564f86d4a5727280db63b5ddd":[2,0,0,0,20,11,555,0],
-"_m_e3_enums_8cs.html#a03b1b6bf3e7115626812a0fb18c4d1e5":[2,0,0,0,20,11,512]
+"_m_e3_enums_8cs.html#a03b1b6bf3e7115626812a0fb18c4d1e5":[2,0,0,0,20,11,512],
+"_m_e3_enums_8cs.html#a03b1b6bf3e7115626812a0fb18c4d1e5a1280f2a9c481de92be8401bbc81f59d2":[2,0,0,0,20,11,512,4]
 };
