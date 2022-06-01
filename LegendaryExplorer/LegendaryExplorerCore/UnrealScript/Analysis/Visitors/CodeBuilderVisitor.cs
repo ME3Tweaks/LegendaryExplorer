@@ -226,7 +226,9 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
         public bool VisitNode(VariableDeclaration node)
         {
-            if (node.Outer.Type is ASTNodeType.Class or ASTNodeType.Struct)
+            //node.Outer can be null if we have decompiled a single var and nothing else
+            //It only makes sense to have done that for a class field
+            if (node.Outer?.Type != ASTNodeType.Function)
             {
                 Write(VAR, EF.Keyword);
                 if (!string.IsNullOrEmpty(node.Category) && !node.Category.CaseInsensitiveEquals("None"))
@@ -234,13 +236,9 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                     Append($"({node.Category})");
                 }
             }
-            else if (node.Outer.Type == ASTNodeType.Function)
-            {
-                Write(LOCAL, EF.Keyword);
-            }
             else
             {
-                Write("ERROR", EF.ERROR);
+                Write(LOCAL, EF.Keyword);
             }
 
             Space();

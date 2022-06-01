@@ -21,87 +21,66 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 case Class classAST:
                     if (existingObject is null or UClass)
                     {
-                        UClass uClass = (UClass)existingObject;
+                        var uClass = (UClass)existingObject;
                         CompileClass(classAST, pcc, parent, ref uClass, packageCache);
                         uClass.Export.WriteBinary(uClass);
                         return;
                     }
-                    else
-                    {
-                        throw new ArgumentException($"Expected {nameof(existingObject)} to be of type {nameof(UClass)}!");
-                    }
+                    throw new ArgumentException($"Expected {nameof(existingObject)} to be of type {nameof(UClass)}!");
                 case Const constAST:
                     if (existingObject is null or UConst)
                     {
-                        UConst uConst = (UConst)existingObject;
+                        var uConst = (UConst)existingObject;
                         CompileConst(constAST, parent, ref uConst);
                         uConst.Export.WriteBinary(uConst);
                         return;
                     }
-                    else
-                    {
-                        throw new ArgumentException($"Expected {nameof(existingObject)} to be of type {nameof(UConst)}!");
-                    }
+                    throw new ArgumentException($"Expected {nameof(existingObject)} to be of type {nameof(UConst)}!");
                 case Enumeration enumAST:
                     if (existingObject is null or UEnum)
                     {
-                        UEnum uEnum = (UEnum)existingObject;
+                        var uEnum = (UEnum)existingObject;
                         CompileEnum(enumAST, parent, ref uEnum);
                         uEnum.Export.WriteBinary(uEnum);
                         return;
                     }
-                    else
-                    {
-                        throw new ArgumentException($"Expected {nameof(existingObject)} to be of type {nameof(UEnum)}!");
-                    }
+                    throw new ArgumentException($"Expected {nameof(existingObject)} to be of type {nameof(UEnum)}!");
                 case Function funcAST:
                     if (existingObject is null or UFunction)
                     {
-                        UFunction uFunction = (UFunction)existingObject;
+                        var uFunction = (UFunction)existingObject;
                         CompileFunction(funcAST, parent, ref uFunction);
                         uFunction.Export.WriteBinary(uFunction);
                         return;
                     }
-                    else
-                    {
-                        throw new ArgumentException($"Expected {nameof(existingObject)} to be of type {nameof(UFunction)}!");
-                    }
+                    throw new ArgumentException($"Expected {nameof(existingObject)} to be of type {nameof(UFunction)}!");
                 case State stateAST:
                     if (existingObject is null or UState)
                     {
-                        UState uState = (UState)existingObject;
+                        var uState = (UState)existingObject;
                         CompileState(stateAST, parent, ref uState);
                         uState.Export.WriteBinary(uState);
                         return;
                     }
-                    else
-                    {
-                        throw new ArgumentException($"Expected {nameof(existingObject)} to be of type {nameof(UState)}!");
-                    }
+                    throw new ArgumentException($"Expected {nameof(existingObject)} to be of type {nameof(UState)}!");
                 case Struct structAST:
                     if (existingObject is null or UScriptStruct)
                     {
-                        UScriptStruct uScriptStruct = (UScriptStruct)existingObject;
+                        var uScriptStruct = (UScriptStruct)existingObject;
                         CompileStruct(structAST, parent, ref uScriptStruct, packageCache);
                         uScriptStruct.Export.WriteBinary(uScriptStruct);
                         return;
                     }
-                    else
-                    {
-                        throw new ArgumentException($"Expected {nameof(existingObject)} to be of type {nameof(UScriptStruct)}!");
-                    }
+                    throw new ArgumentException($"Expected {nameof(existingObject)} to be of type {nameof(UScriptStruct)}!");
                 case VariableDeclaration varDeclAST:
                     if (existingObject is null or UProperty)
                     {
-                        UProperty uProp = (UProperty)existingObject;
+                        var uProp = (UProperty)existingObject;
                         CompileProperty(varDeclAST, parent, ref uProp);
                         uProp.Export.WriteBinary(uProp);
                         return;
                     }
-                    else
-                    {
-                        throw new ArgumentException($"Expected {nameof(existingObject)} to be of type {nameof(UProperty)}!");
-                    }
+                    throw new ArgumentException($"Expected {nameof(existingObject)} to be of type {nameof(UProperty)}!");
             }
             throw new ArgumentOutOfRangeException(nameof(node));
         }
