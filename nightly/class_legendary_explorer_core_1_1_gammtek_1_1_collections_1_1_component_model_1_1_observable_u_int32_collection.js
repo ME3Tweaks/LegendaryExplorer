@@ -1,6 +1,0 @@
-var class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_component_model_1_1_observable_u_int32_collection =
-[
-    [ "ObservableUInt32Collection", "class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_component_model_1_1_observable_u_int32_collection.html#a8a8bb76267204a346990edbc9cd7ba69", null ],
-    [ "ObservableUInt32Collection", "class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_component_model_1_1_observable_u_int32_collection.html#ac39bd2e4a7219648c25adbf9f28ad669", null ],
-    [ "ObservableUInt32Collection", "class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_component_model_1_1_observable_u_int32_collection.html#a9d6e2331582c25712c48dc6db6c2833b", null ]
-];

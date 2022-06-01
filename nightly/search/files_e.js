@@ -12,13 +12,7 @@ var searchData=
   ['objecttype_2ecs_9',['ObjectType.cs',['../_object_type_8cs.html',1,'']]],
   ['observablecollectionextended_2ecs_10',['ObservableCollectionExtended.cs',['../_observable_collection_extended_8cs.html',1,'']]],
   ['observabledictionary_2ecs_11',['ObservableDictionary.cs',['../_observable_dictionary_8cs.html',1,'']]],
-  ['observableint16collection_2ecs_12',['ObservableInt16Collection.cs',['../_observable_int16_collection_8cs.html',1,'']]],
-  ['observableint32collection_2ecs_13',['ObservableInt32Collection.cs',['../_observable_int32_collection_8cs.html',1,'']]],
-  ['observableint64collection_2ecs_14',['ObservableInt64Collection.cs',['../_observable_int64_collection_8cs.html',1,'']]],
-  ['observableuint16collection_2ecs_15',['ObservableUInt16Collection.cs',['../_observable_u_int16_collection_8cs.html',1,'']]],
-  ['observableuint32collection_2ecs_16',['ObservableUInt32Collection.cs',['../_observable_u_int32_collection_8cs.html',1,'']]],
-  ['observableuint64collection_2ecs_17',['ObservableUInt64Collection.cs',['../_observable_u_int64_collection_8cs.html',1,'']]],
-  ['oodlehelper_2ecs_18',['OodleHelper.cs',['../_oodle_helper_8cs.html',1,'']]],
-  ['operatordeclaration_2ecs_19',['OperatorDeclaration.cs',['../_operator_declaration_8cs.html',1,'']]],
-  ['ordereddictionary_2ecs_20',['OrderedDictionary.cs',['../_ordered_dictionary_8cs.html',1,'']]]
+  ['oodlehelper_2ecs_12',['OodleHelper.cs',['../_oodle_helper_8cs.html',1,'']]],
+  ['operatordeclaration_2ecs_13',['OperatorDeclaration.cs',['../_operator_declaration_8cs.html',1,'']]],
+  ['ordereddictionary_2ecs_14',['OrderedDictionary.cs',['../_ordered_dictionary_8cs.html',1,'']]]
 ];

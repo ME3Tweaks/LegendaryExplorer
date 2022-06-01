@@ -10,7 +10,7 @@ var dir_fcbaed6291bc34708fd86da8b1325ec6 =
     [ "Paths", "dir_107f128884cb822e6d413128683e0594.html", "dir_107f128884cb822e6d413128683e0594" ],
     [ "Text", "dir_24af5fe44ef0343453ea189458d3ff0d.html", "dir_24af5fe44ef0343453ea189458d3ff0d" ],
     [ "Windows", "dir_d390fea7657e5965f69422d5cd532f7b.html", "dir_d390fea7657e5965f69422d5cd532f7b" ],
-    [ "Annotations.cs", "_annotations_8cs.html", "_annotations_8cs" ],
+    [ "Annotations.cs", "_annotations_8cs.html", null ],
     [ "Argument.cs", "_argument_8cs.html", [
       [ "LegendaryExplorerCore.Gammtek.Argument", "class_legendary_explorer_core_1_1_gammtek_1_1_argument.html", "class_legendary_explorer_core_1_1_gammtek_1_1_argument" ]
     ] ],
