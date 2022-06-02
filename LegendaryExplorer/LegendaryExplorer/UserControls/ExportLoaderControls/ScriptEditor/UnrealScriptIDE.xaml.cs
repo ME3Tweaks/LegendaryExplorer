@@ -1,21 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
-using System.Xml;
-using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Document;
-using ICSharpCode.AvalonEdit.Editing;
 using ICSharpCode.AvalonEdit.Folding;
-using ICSharpCode.AvalonEdit.Highlighting;
-using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE;
-using LegendaryExplorerCore;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.UnrealScript;
@@ -451,6 +444,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                                 {
                                     UnrealScriptCompiler.CompileNewEnumAST(enumParent, enumeration, log, CurrentFileLib);
                                 }
+                                else if (astNode is VariableDeclaration varDecl && CurrentLoadedExport?.Parent is ExportEntry varParent)
+                                {
+                                    UnrealScriptCompiler.CompileNewVarDeclAST(varParent, varDecl, log, CurrentFileLib);
+                                }
                                 else if (astNode is DefaultPropertiesBlock propertiesBlock && CurrentLoadedExport?.Class is ExportEntry classExport)
                                 {
                                     UnrealScriptCompiler.CompileDefaultPropertiesAST(classExport, propertiesBlock, log, CurrentFileLib);
@@ -507,6 +504,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                             break;
                         case Enumeration enumeration when CurrentLoadedExport.Parent is ExportEntry enumParent:
                             ast = UnrealScriptCompiler.CompileNewEnumAST(enumParent, enumeration, log, CurrentFileLib);
+                            break;
+                        case VariableDeclaration varDecl when CurrentLoadedExport.Parent is ExportEntry varParent:
+                            ast = UnrealScriptCompiler.CompileNewVarDeclAST(varParent, varDecl, log, CurrentFileLib);
                             break;
                         case DefaultPropertiesBlock propertiesBlock when CurrentLoadedExport.Class is ExportEntry classExport:
                             ast = UnrealScriptCompiler.CompileDefaultPropertiesAST(classExport, propertiesBlock, log, CurrentFileLib);
@@ -630,6 +630,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                                 State state => UnrealScriptCompiler.CompileNewStateBodyAST(parentExport, state, log, CurrentFileLib),
                                 Struct strct => UnrealScriptCompiler.CompileNewStructAST(parentExport, strct, log, CurrentFileLib),
                                 Enumeration enumeration => UnrealScriptCompiler.CompileNewEnumAST(parentExport, enumeration, log, CurrentFileLib),
+                                VariableDeclaration varDecl => UnrealScriptCompiler.CompileNewVarDeclAST(parentExport, varDecl, log, CurrentFileLib),
                                 _ => RootNode
                             };
                         }

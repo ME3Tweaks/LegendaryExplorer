@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using JetBrains.Annotations;
 using LegendaryExplorerCore.Gammtek.Data;
 using LegendaryExplorerCore.Gammtek.Extensions.Reflection;
 

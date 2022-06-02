@@ -20,7 +20,10 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Scanners
                 int pos = e.Export.GetPropertyStart();
                 bool modernEngineVersion = pcc.Game >= MEGame.ME3 || pcc.Platform == MEPackage.GamePlatform.PS3;
                 var classUsage = new ClassUsage(e.FileKey, e.Export.UIndex, e.IsDefault, e.IsMod);
-                lock (db.ClassLocks.GetOrAdd(e.ClassName, new object()))
+
+                //providing a lambda that returns a new object prevents 100s of MBs of allocations
+                //since a static lambda is allocated once, then cached
+                lock (db.ClassLocks.GetOrAdd(e.ClassName, static _ => new object()))
                 {
                     if (!db.GeneratedClasses.TryGetValue(e.ClassName, out ClassRecord classRecord))
                     {

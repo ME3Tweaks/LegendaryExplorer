@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
-using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
 using LegendaryExplorerCore.UnrealScript.Compiling.Errors;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
@@ -25,7 +23,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             Tokens = tokens;
         }
 
-        public ASTNode ParseDocument(string parseUnit = "Class")
+        public ASTNode ParseDocument(string parseUnit)
         {
             return parseUnit switch
             {
@@ -40,10 +38,64 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             };
         }
 
+        public ASTNode ParseDocument()
+        {
+            if (CurrentIs(CLASS))
+            {
+                Class cls = TryParseClass();
+                if (cls is null) throw ParseError($"Malformed {CLASS} declaration!", CurrentPosition);
+                return cls;
+            }
+            if (CurrentIs(VAR))
+            {
+                VariableDeclaration variable = ParseVarDecl();
+                if (variable == null) throw ParseError("Malformed instance variable!", CurrentPosition);
+                return variable;
+            }
+            if (CurrentIs(STRUCT))
+            {
+                Struct strct = ParseStruct();
+                if (strct is null) throw ParseError($"Malformed {STRUCT} declaration!", CurrentPosition);
+                return strct;
+            }
+            if (CurrentIs(ENUM))
+            {
+                Enumeration enm = ParseEnum();
+                if (enm is null) throw ParseError($"Malformed {ENUM} declaration!", CurrentPosition);
+                return enm;
+            }
+            if (CurrentIs(CONST))
+            {
+                Const cnst = ParseConstant();
+                if (cnst is null) throw ParseError($"Malformed {CONST} declaration!", CurrentPosition);
+                return cnst;
+            }
+            if (CurrentIs(DEFAULTPROPERTIES))
+            {
+                DefaultPropertiesBlock propsBlock = ParseDefaultProperties();
+                if (propsBlock is null)
+                {
+                    throw ParseError($"Malformed {DEFAULTPROPERTIES} block!", CurrentPosition);
+                }
+                return propsBlock;
+            }
+            if (IsStartOfStateDeclaration())
+            {
+                State state = ParseState();
+                if (state is null) throw ParseError($"Malformed {STATE} declaration!", CurrentPosition);
+                return state;
+            }
+            if (TryParseFunction() is Function func)
+            {
+                return func;
+            }
+            throw ParseError($"Unable to parse a declaration at: {CurrentToken.Value}", CurrentToken);
+        }
+
         #region Parsers
         #region Statements
 
-        public Class TryParseClass()
+        private Class TryParseClass()
         {
             var startPos = CurrentPosition;
             if (!Matches(CLASS)) throw ParseError("Expected class declaration!");
@@ -52,9 +104,9 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             if (name == null) throw ParseError("Expected class name!");
             name.SyntaxType = EF.TypeName;
 
-            var parentClass = ParseExtends() ?? new VariableType("Object");
+            var parentClass = ParseTheExtendsSpecifier() ?? new VariableType("Object");
 
-            var outerClass = ParseWithin() ?? new VariableType("Object");
+            var outerClass = ParseTheWithinSpecifier() ?? new VariableType("Object");
 
             var interfaces = new List<VariableType>();
 
@@ -296,7 +348,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             throw ParseError("Expected name for constant!", CurrentPosition);
         }
 
-        public VariableDeclaration ParseVarDecl()
+        private VariableDeclaration ParseVarDecl()
         {
             var startPos = CurrentPosition;
             if (!Matches(VAR, EF.Keyword)) return null;
@@ -342,7 +394,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             return new VariableDeclaration(type, flags, var.Name, var.Size, category, startPos, semicolon.EndPos);
         }
 
-        public Struct ParseStruct()
+        private Struct ParseStruct()
         {
             if (!Matches(STRUCT, EF.Keyword)) return null;
 
@@ -391,7 +443,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             if (name == null) throw ParseError("Expected struct name!", CurrentPosition);
             name.SyntaxType = EF.TypeName;
 
-            var parent = ParseExtends();
+            var parent = ParseTheExtendsSpecifier();
 
             if (Consume(TokenType.LeftBracket) == null) throw ParseError("Expected '{'!", CurrentPosition);
 
@@ -450,7 +502,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             return new Struct(name.Value, parent, flags, vars, types, defaults, null, name.StartPos, name.EndPos);
         }
 
-        public Enumeration ParseEnum()
+        private Enumeration ParseEnum()
         {
             var startPos = CurrentToken.StartPos;
             if (!Matches(ENUM, EF.Keyword)) return null;
@@ -487,7 +539,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             return new Enumeration(name.Value, identifiers, startPos, PrevToken.EndPos);
         }
 
-        public Function TryParseFunction()
+        private Function TryParseFunction()
         {
             Tokens.PushSnapshot();
             var start = CurrentPosition;
@@ -597,7 +649,8 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                    CurrentIs("auto") ||
                    CurrentIs("simulated") && (NextIs("auto") || NextIs(STATE));
         }
-        public State ParseState()
+
+        private State ParseState()
         {
             var flags = EStateFlags.None;
             while (CurrentTokenType == TokenType.Word)
@@ -631,7 +684,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             if (name == null) throw ParseError("Expected state name!", CurrentPosition);
             name.SyntaxType = EF.State;
 
-            var parent = ParseExtends(true);
+            var parent = ParseTheExtendsSpecifier(true);
 
             if (Consume(TokenType.LeftBracket) == null) throw ParseError("Expected '{'!", CurrentPosition);
 
@@ -708,7 +761,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
         #region Misc
 
-        public FunctionParameter ParseParameter()
+        private FunctionParameter ParseParameter()
         {
             ParseVariableSpecifiers(out EPropertyFlags flags);
             if ((flags & ~(EPropertyFlags.CoerceParm | EPropertyFlags.OptionalParm | EPropertyFlags.OutParm | EPropertyFlags.SkipParm | EPropertyFlags.Component | EPropertyFlags.Const | EPropertyFlags.AlwaysInit)) != 0)
@@ -777,7 +830,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             return funcParam;
         }
 
-        public VariableType ParseExtends(bool state = false)
+        private VariableType ParseTheExtendsSpecifier(bool state = false)
         {
             if (!Matches(EXTENDS, EF.Keyword)) return null;
             var parentName = Consume(TokenType.Word);
@@ -791,7 +844,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             return new VariableType(parentName.Value, parentName.StartPos, parentName.EndPos);
         }
 
-        public VariableType ParseWithin()
+        private VariableType ParseTheWithinSpecifier()
         {
             if (!Matches(WITHIN)) return null;
             var outerName = Consume(TokenType.Word);
@@ -809,7 +862,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
         #endregion
         #region Helpers
 
-        public void ParseVariableSpecifiers(out EPropertyFlags flags)
+        private void ParseVariableSpecifiers(out EPropertyFlags flags)
         {
             flags = EPropertyFlags.None;
             while (CurrentTokenType == TokenType.Word)

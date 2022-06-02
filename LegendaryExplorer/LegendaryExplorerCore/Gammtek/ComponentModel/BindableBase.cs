@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
+using JetBrains.Annotations;
 using LegendaryExplorerCore.Gammtek.Extensions.Linq;
 
 namespace LegendaryExplorerCore.Gammtek.ComponentModel

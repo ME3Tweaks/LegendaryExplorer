@@ -881,9 +881,15 @@ namespace LegendaryExplorerCore.Packages
                     start += count * 2 + 4;
                 }
                 start += 4; //TemplateOwnerClass
-                if (ParentFullPath.Contains("Default__"))
+                IEntry parent = Parent;
+                while (parent is not null)
                 {
-                    start += 8; //TemplateName
+                    if (parent is ExportEntry {IsDefaultObject: true})
+                    {
+                        start += 8; //TemplateName
+                        break;
+                    }
+                    parent = parent.Parent;
                 }
             }
 

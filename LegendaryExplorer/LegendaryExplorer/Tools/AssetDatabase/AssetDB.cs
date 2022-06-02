@@ -106,7 +106,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
 
     public interface IAssetRecord
     {
-        public List<IAssetUsage> AssetUsages { get; }
+        public IEnumerable<IAssetUsage> AssetUsages { get; }
     }
 
     public interface IAssetUsage
@@ -175,7 +175,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
 
         public Dictionary<string, PropertyRecord> PropertyRecords { get; set; } = new();
 
-        [IgnoredMember] public List<IAssetUsage> AssetUsages => new (Usages);
+        [IgnoredMember] public IEnumerable<IAssetUsage> AssetUsages => Usages;
         public List<ClassUsage> Usages { get; set; } = new();
 
         public ClassRecord(string Class, int definitionFile, int Definition_UID, string SuperClass)
@@ -205,12 +205,12 @@ namespace LegendaryExplorer.Tools.AssetDatabase
 
         public bool IsMod { get; set; }
 
-        public ClassUsage(int FileKey, int uIndex, bool IsDefault, bool IsMod)
+        public ClassUsage(int fileKey, int uIndex, bool isDefault, bool isMod)
         {
-            this.FileKey = FileKey;
-            this.UIndex = uIndex;
-            this.IsDefault = IsDefault;
-            this.IsMod = IsMod;
+            FileKey = fileKey;
+            UIndex = uIndex;
+            IsDefault = isDefault;
+            IsMod = isMod;
         }
         public ClassUsage()
         { }
@@ -225,7 +225,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
 
         public bool IsDLCOnly { get; set; }
 
-        [IgnoredMember] public List<IAssetUsage> AssetUsages => new (Usages);
+        [IgnoredMember] public IEnumerable<IAssetUsage> AssetUsages => Usages;
         public List<MatUsage> Usages { get; set; } = new();
 
         public List<MatSetting> MatSettings { get; set; } = new();
@@ -274,7 +274,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
 
         public bool IsModOnly { get; set; }
 
-        [IgnoredMember] public List<IAssetUsage> AssetUsages => new (Usages);
+        [IgnoredMember] public IEnumerable<IAssetUsage> AssetUsages => Usages;
 
         public List<AnimUsage> Usages { get; set; } = new();
 
@@ -312,7 +312,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
 
         public bool IsModOnly { get; set; }
 
-        [IgnoredMember] public List<IAssetUsage> AssetUsages => new (Usages);
+        [IgnoredMember] public IEnumerable<IAssetUsage> AssetUsages => Usages;
         public List<MeshUsage> Usages { get; set; } = new();
 
         public MeshRecord(string MeshName, bool IsSkeleton, bool IsModOnly, int BoneCount)
@@ -355,7 +355,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
 
         public VFXClass VFXType { get; set; }
 
-        [IgnoredMember] public List<IAssetUsage> AssetUsages => new (Usages);
+        [IgnoredMember] public IEnumerable<IAssetUsage> AssetUsages => Usages;
         public List<ParticleSysUsage> Usages { get; set; } = new();
 
         public ParticleSysRecord(string PSName, string ParentPackage, bool IsDLCOnly, bool IsModOnly, int EffectCount, VFXClass VFXType)
@@ -399,7 +399,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
 
         public string CRC { get; set; }
 
-        [IgnoredMember] public List<IAssetUsage> AssetUsages => new (Usages);
+        [IgnoredMember] public IEnumerable<IAssetUsage> AssetUsages => Usages;
 
         public List<TextureUsage> Usages { get; set; } = new();
 
@@ -435,7 +435,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
 
         public bool IsModOnly { get; set; }
 
-        [IgnoredMember] public List<IAssetUsage> AssetUsages => new (Usages);
+        [IgnoredMember] public IEnumerable<IAssetUsage> AssetUsages => Usages;
 
         public List<GUIUsage> Usages { get; set; } = new(); //File reference then export
 
@@ -567,7 +567,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
 
         public int ElementID { get; set; }
 
-        [IgnoredMember] public List<IAssetUsage> AssetUsages => new (Usages);
+        [IgnoredMember] public IEnumerable<IAssetUsage> AssetUsages => Usages;
 
         public List<PlotUsage> Usages { get; set; } = new();
 
