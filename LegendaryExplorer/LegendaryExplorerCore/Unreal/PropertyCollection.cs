@@ -437,7 +437,7 @@ namespace LegendaryExplorerCore.Unreal
                     return arrayProperty;//this implementation needs checked, as I am not 100% sure of it's validity.
                 case PropertyType.StructProperty:
                     int valuePos = (int)stream.Position;
-                    string reference = GlobalUnrealObjectInfo.GetPropertyInfo(pcc.Game, template.Name, structType, containingExport: export).Reference;
+                    string reference = GlobalUnrealObjectInfo.GetPropertyInfo(pcc.Game, template.Name, structType, containingExport: export, packageCache: packageCache).Reference;
                     PropertyCollection defaultProps = null;
                     PropertyCollection structProps = ReadImmutableStruct(export, stream, reference, 0, packageCache, ref defaultProps, export);
                     var structProp = new StructProperty(nestedStructType ?? structType, structProps, template.Name, true)
@@ -510,11 +510,11 @@ namespace LegendaryExplorerCore.Unreal
                 case ArrayType.Struct:
                     {
                         var props = new List<StructProperty>(count);
-                        var propertyInfo = GlobalUnrealObjectInfo.GetPropertyInfo(pcc.Game, name, enclosingType, containingExport: parsingEntry as ExportEntry);
+                        var propertyInfo = GlobalUnrealObjectInfo.GetPropertyInfo(pcc.Game, name, enclosingType, containingExport: parsingEntry as ExportEntry, packageCache: packageCache);
                         if (propertyInfo == null && parsingEntry is ExportEntry parsingExport)
                         {
                             var currentInfo = GlobalUnrealObjectInfo.generateClassInfo(parsingExport);
-                            propertyInfo = GlobalUnrealObjectInfo.GetPropertyInfo(pcc.Game, name, enclosingType, currentInfo, parsingExport);
+                            propertyInfo = GlobalUnrealObjectInfo.GetPropertyInfo(pcc.Game, name, enclosingType, currentInfo, parsingExport, packageCache: packageCache);
                         }
 
                         string arrayStructType = propertyInfo?.Reference;

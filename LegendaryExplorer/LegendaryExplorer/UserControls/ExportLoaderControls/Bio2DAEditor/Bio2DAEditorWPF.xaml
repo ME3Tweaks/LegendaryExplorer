@@ -75,8 +75,8 @@
                                                     <ComboBox.Resources>
                                                         <DataTemplate DataType="{x:Type sharedUi:IndexedName}">
                                                             <StackPanel Orientation="Horizontal">
-                                                                <TextBlock Text="{Binding Path=Index}" Foreground="Gray"/>
-                                                                <TextBlock Text="{Binding Path=Name}" Foreground="Black" Margin="5,0,0,0"/>
+                                                                <TextBlock Text="{Binding Path=Index, Mode=OneTime}" Foreground="Gray"/>
+                                                                <TextBlock Text="{Binding Path=Name, Mode=OneTime}" Foreground="Black" Margin="5,0,0,0"/>
                                                             </StackPanel>
                                                         </DataTemplate>
                                                     </ComboBox.Resources>

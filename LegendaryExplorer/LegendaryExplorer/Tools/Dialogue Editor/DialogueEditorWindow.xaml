@@ -13,6 +13,7 @@
         xmlns:dialogueEditorExperiments="clr-namespace:LegendaryExplorer.Tools.Dialogue_Editor.DialogueEditorExperiments"
         xmlns:exportLoaderControls="clr-namespace:LegendaryExplorer.UserControls.ExportLoaderControls"
         xmlns:dialogueEditor="clr-namespace:LegendaryExplorer.DialogueEditor"
+        xmlns:sharedUi="clr-namespace:LegendaryExplorer.SharedUI"
         mc:Ignorable="d"
         Loaded="DialogueEditorWPF_Loaded"
         Closing="DialogueEditorWPF_Closing"
@@ -1393,9 +1394,9 @@
                         </TabItem>
                     </TabControl>
                 </Grid>
-                <WindowsFormsHost Grid.Column="0" Grid.Row="0" Name="GraphHost" VerticalAlignment="Stretch">
+                <sharedUi:WindowsFormsHostEx Grid.Column="0" Grid.Row="0" x:Name="GraphHost" VerticalAlignment="Stretch">
                     <dialogueEditor:ConvGraphEditor />
-                </WindowsFormsHost>
+                </sharedUi:WindowsFormsHostEx>
                 <GridSplitter Grid.Row="3" Height="5" HorizontalAlignment="Stretch" Grid.Column="0" Grid.ColumnSpan="3" />
             </Grid>
         </DockPanel>

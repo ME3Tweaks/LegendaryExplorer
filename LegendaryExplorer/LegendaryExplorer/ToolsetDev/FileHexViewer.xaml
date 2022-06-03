@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:hb1="clr-namespace:Be.Windows.Forms;assembly=Be.Windows.Forms.HexBox"
         xmlns:misc="clr-namespace:LegendaryExplorer.Misc"
+        xmlns:sharedUi="clr-namespace:LegendaryExplorer.SharedUI"
         mc:Ignorable="d"
         d:DataContext="{Binding RelativeSource={RelativeSource Self}}"
         DragOver="Window_DragOver"
@@ -41,9 +42,9 @@
                 </Style>
             </ListView.ItemContainerStyle>
         </ListView>
-        <WindowsFormsHost Name="Interpreter_Hexbox_Host" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <sharedUi:WindowsFormsHostEx x:Name="Interpreter_Hexbox_Host" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <hb1:HexBox MinBytesPerLine="4" MaxBytesPerLine="16" ColumnInfoVisible="True" LineInfoVisible="True" Font="Courier New,10" BoldFont="Consolas,10" StringViewVisible="True" SelectionStartChanged="hb1_SelectionChanged" SelectionLengthChanged="hb1_SelectionChanged" VScrollBarVisible="True">
             </hb1:HexBox>
-        </WindowsFormsHost>
+        </sharedUi:WindowsFormsHostEx>
     </DockPanel>
 </misc:NotifyPropertyChangedWindowBase>

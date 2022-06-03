@@ -61,12 +61,8 @@ namespace UMD.HCIL.Piccolo.Util {
 	/// </remarks>
 	public class PPickPath {
 		#region Fields
-		/// <summary>
-		/// The current PPickPath.
-		/// </summary>
-		public static PPickPath CURRENT_PICK_PATH;
 
-		private Stack nodeStack;
+        private Stack nodeStack;
 		private Stack matrixStack;
 		private Stack pickBoundsStack;
 		private PCamera topCamera;
@@ -87,9 +83,7 @@ namespace UMD.HCIL.Piccolo.Util {
 			nodeStack = new Stack();
 			matrixStack = new Stack();
 			pickBoundsStack.Push(aScreenPickBounds);
-
-			CURRENT_PICK_PATH = this;
-		}
+        }
 		#endregion
 
 		#region Picked Nodes

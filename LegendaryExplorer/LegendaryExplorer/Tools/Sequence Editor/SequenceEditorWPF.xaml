@@ -348,11 +348,11 @@
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <WindowsFormsHost Grid.Column="1" Name="GraphHost" VerticalAlignment="Stretch"
-                                        HorizontalAlignment="Stretch"
-                                        Visibility="{Binding Visibility, ElementName=graphImageSub, Converter={StaticResource InverseVisibilityConverter}}">
+                    <sharedUi:WindowsFormsHostEx Grid.Column="1" x:Name="GraphHost" VerticalAlignment="Stretch"
+                                                 HorizontalAlignment="Stretch"
+                                                 Visibility="{Binding Visibility, ElementName=graphImageSub, Converter={StaticResource InverseVisibilityConverter}}">
                         <grapheditor:GraphEditor />
-                    </WindowsFormsHost>
+                    </sharedUi:WindowsFormsHostEx>
                     <Expander Grid.Column="0" Name="toolBoxExpander" HorizontalAlignment="Left"
                                 IsEnabled="{Binding SelectedSequence, Converter={StaticResource NullEnabledConverter}}"
                                 ExpandDirection="Right" IsExpanded="False" Background="Orange"

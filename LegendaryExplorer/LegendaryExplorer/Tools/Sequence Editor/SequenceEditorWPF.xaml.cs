@@ -56,7 +56,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
         public ObservableCollectionExtended<SObj> CurrentObjects { get; } = new();
         public ObservableCollectionExtended<SObj> SelectedObjects { get; } = new();
         public ObservableCollectionExtended<ExportEntry> SequenceExports { get; } = new();
-        public ObservableCollectionExtended<TreeViewEntry> TreeViewRootNodes { get; set; } = new();
+        public ObservableCollectionExtended<TreeViewEntry> TreeViewRootNodes { get; } = new();
         public string CurrentFile;
         public string JSONpath;
 
@@ -590,7 +590,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
 
         private void LoadSequences()
         {
-            TreeViewRootNodes.ClearEx();
+            ResetTreeView();
             var prefabs = new Dictionary<string, TreeViewEntry>();
             foreach (var export in Pcc.Exports)
             {
@@ -636,6 +636,15 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                     }
                 }
             }
+        }
+
+        private void ResetTreeView()
+        {
+            foreach (TreeViewEntry tvi in TreeViewRootNodes.SelectMany(node => node.FlattenTree()))
+            {
+                tvi.Dispose();
+            }
+            TreeViewRootNodes.ClearEx();
         }
 
         private TreeViewEntry FindSequences(ExportEntry rootSeq, bool wantFullName = false)
@@ -1754,6 +1763,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 x.Dispose();
             });
             CurrentObjects.Clear();
+            ResetTreeView();
             graphEditor.Dispose();
             Properties_InterpreterWPF.Dispose();
             GraphHost.Child = null; //This seems to be required to clear OnChildGotFocus handler from WinFormsHost

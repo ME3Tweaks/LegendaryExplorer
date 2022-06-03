@@ -1,8 +1,9 @@
-﻿using LegendaryExplorerCore.Unreal;
+﻿using System.ComponentModel;
+using LegendaryExplorerCore.Unreal;
 
 namespace LegendaryExplorerCore.Packages
 {
-    public interface IEntry
+    public interface IEntry : INotifyPropertyChanged
     {
         bool EntryHasPendingChanges { get; set; } //used to signal that this entry has uncommited changes
         bool HeaderChanged { get; set; }

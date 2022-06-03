@@ -18,7 +18,7 @@ namespace LegendaryExplorerCore.Packages
 {
     [DebuggerDisplay("{Game} ExportEntry | {UIndex} {ObjectName.Instanced}({ClassName}) in {System.IO.Path.GetFileName(_fileRef.FilePath)}")]
     [DoNotNotify]//disable Fody/PropertyChanged for this class. Do notification manually
-    public sealed class ExportEntry : INotifyPropertyChanged, IEntry
+    public sealed class ExportEntry :  IEntry
     {
         private readonly IMEPackage _fileRef;
         public IMEPackage FileRef => _fileRef;

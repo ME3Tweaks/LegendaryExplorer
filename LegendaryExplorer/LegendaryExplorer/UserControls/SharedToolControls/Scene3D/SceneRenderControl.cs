@@ -30,8 +30,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
                 {
                     // Pitch calculation for compressed formats from https://docs.microsoft.com/en-us/windows/win32/direct3ddds/dx-graphics-dds-pguide
                     int blockSize = 16;
-                    if (format == SharpDX.DXGI.Format.BC1_UNorm || format == SharpDX.DXGI.Format.BC1_UNorm_SRgb
-                        || format == SharpDX.DXGI.Format.BC4_SNorm || format == SharpDX.DXGI.Format.BC4_UNorm)
+                    if (format is SharpDX.DXGI.Format.BC1_UNorm or SharpDX.DXGI.Format.BC1_UNorm_SRgb or SharpDX.DXGI.Format.BC4_SNorm or SharpDX.DXGI.Format.BC4_UNorm)
                     {
                         blockSize = 8;
                     }
@@ -99,42 +98,52 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
 #if DEBUG
             deviceFlags |= DeviceCreationFlags.Debug;
 #endif
-            this.Device = new Device(DriverType.Hardware, deviceFlags);
-            this.ImmediateContext = this.Device.ImmediateContext;
+            Device = new Device(DriverType.Hardware, deviceFlags);
+            ImmediateContext = Device.ImmediateContext;
 
-            BlendStateDescription alphaBlendDesc = new BlendStateDescription();
-            alphaBlendDesc.RenderTarget[0] = new RenderTargetBlendDescription() { RenderTargetWriteMask = ColorWriteMaskFlags.All, BlendOperation = BlendOperation.Add, AlphaBlendOperation = BlendOperation.Add, SourceBlend = BlendOption.SourceAlpha, DestinationBlend = BlendOption.InverseSourceAlpha, SourceAlphaBlend = BlendOption.SourceAlpha, DestinationAlphaBlend = BlendOption.InverseSourceAlpha, IsBlendEnabled = true };
-            this.AlphaBlendState = new BlendState(this.Device, alphaBlendDesc);
+            var alphaBlendDesc = new BlendStateDescription();
+            alphaBlendDesc.RenderTarget[0] = new RenderTargetBlendDescription
+            {
+                RenderTargetWriteMask = ColorWriteMaskFlags.All, 
+                BlendOperation = BlendOperation.Add, 
+                AlphaBlendOperation = BlendOperation.Add, 
+                SourceBlend = BlendOption.SourceAlpha, 
+                DestinationBlend = BlendOption.InverseSourceAlpha, 
+                SourceAlphaBlend = BlendOption.SourceAlpha, 
+                DestinationAlphaBlend = BlendOption.InverseSourceAlpha, 
+                IsBlendEnabled = true
+            };
+            AlphaBlendState = new BlendState(Device, alphaBlendDesc);
         }
 
         public virtual void CreateSizeDependentResources(int width, int height, Texture2D newBackbuffer)
         {
-            this.Width = width;
-            this.Height = height;
-            this.Backbuffer = newBackbuffer;
+            Width = width;
+            Height = height;
+            Backbuffer = newBackbuffer;
         }
 
         public virtual void DisposeSizeDependentResources()
         {
-            this.Backbuffer.Dispose();
-            this.Backbuffer = null;
+            Backbuffer.Dispose();
+            Backbuffer = null;
         }
 
         public virtual void DisposeResources()
         {
-            this.AlphaBlendState.Dispose();
-            this.AlphaBlendState = null;
-            this.ImmediateContext.Dispose();
-            this.ImmediateContext = null;
+            AlphaBlendState.Dispose();
+            AlphaBlendState = null;
+            ImmediateContext.Dispose();
+            ImmediateContext = null;
 
 #if DEBUG
-            DeviceDebug debug = this.Device.QueryInterface<DeviceDebug>();
+            var debug = Device.QueryInterface<DeviceDebug>();
             debug.ReportLiveDeviceObjects(ReportingLevel.Detail);
             debug.Dispose();
 #endif
 
-            this.Device.Dispose();
-            this.Device = null;
+            Device.Dispose();
+            Device = null;
         }
 
         public abstract void Update(float timestep);
@@ -178,11 +187,11 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
     /// Hosts a <see cref="RenderContext"/> in a WPF control.
     /// </summary>
     [AddINotifyPropertyChangedInterface]
-    public class SceneRenderControl : System.Windows.Controls.ContentControl
+    public class SceneRenderControl : ContentControl, IDisposable
     {
-        private Microsoft.Wpf.Interop.DirectX.D3D11Image D3DImage = null;
+        private Microsoft.Wpf.Interop.DirectX.D3D11Image D3DImage;
         private Image Image;
-        private System.Diagnostics.Stopwatch Stopwatch = new System.Diagnostics.Stopwatch();
+        private readonly Stopwatch Stopwatch = new();
 
         public RenderContext Context { get; set; }
 
@@ -197,7 +206,13 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             {
                 // only at this point the control is ready
                 Window.GetWindow(this) // get the parent window
-                    .Closing += (s1, e1) => FullyDispose(); //disposing logic here
+                    .Closing += (s1, e1) =>
+                {
+                    if (!e1.Cancel)
+                    {
+                        Dispose();
+                    }
+                };
             };
         }
 
@@ -206,11 +221,11 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             if (System.ComponentModel.DesignerProperties.GetIsInDesignMode(this))
                 return;
 
-            this.Loaded += SceneRenderControl_Loaded;
+            Loaded += SceneRenderControl_Loaded;
         }
 
         private bool InitiallyLoaded = false;
-        private void SceneRenderControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        private void SceneRenderControl_Loaded(object sender, RoutedEventArgs e)
         {
             if (!InitiallyLoaded)
             {
@@ -221,14 +236,14 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
                 };
                 Image = new Image
                 {
-                    HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch,
-                    VerticalAlignment = System.Windows.VerticalAlignment.Stretch,
+                    HorizontalAlignment = HorizontalAlignment.Stretch,
+                    VerticalAlignment = VerticalAlignment.Stretch,
                     Source = D3DImage
                 };
-                this.Content = Image;
+                Content = Image;
 
-                this.D3DImage.WindowOwner = new System.Windows.Interop.WindowInteropHelper(System.Windows.Window.GetWindow(this)).Handle; // This needs to be cleared when disposing or it will hold a reference
-                this.Unloaded += SceneRenderControlWPF_Unloaded;
+                D3DImage.WindowOwner = new System.Windows.Interop.WindowInteropHelper(Window.GetWindow(this)).Handle; // This needs to be cleared when disposing or it will hold a reference
+                Unloaded += SceneRenderControlWPF_Unloaded;
 
                 Context.CreateResources();
 
@@ -240,70 +255,52 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
                 // We are now becoming visible (e.g. tab selection)
                 SetShouldRender(true);
             }
-            this.PreviewMouseDown += SceneRenderControlWPF_PreviewMouseDown;
-            this.PreviewMouseMove += SceneRenderControlWPF_PreviewMouseMove;
-            this.PreviewMouseUp += SceneRenderControlWPF_PreviewMouseUp;
-            this.PreviewMouseWheel += SceneRenderControlWPF_PreviewMouseWheel;
-            this.KeyDown += OnKeyDown;
-            this.KeyUp += OnKeyUp;
-            this.SizeChanged += SceneRenderControlWPF_SizeChanged;
+            PreviewMouseDown += SceneRenderControlWPF_PreviewMouseDown;
+            PreviewMouseMove += SceneRenderControlWPF_PreviewMouseMove;
+            PreviewMouseUp += SceneRenderControlWPF_PreviewMouseUp;
+            PreviewMouseWheel += SceneRenderControlWPF_PreviewMouseWheel;
+            KeyDown += OnKeyDown;
+            KeyUp += OnKeyUp;
+            SizeChanged += SceneRenderControlWPF_SizeChanged;
         }
 
-        private void SceneRenderControlWPF_Unloaded(object sender, System.Windows.RoutedEventArgs e)
+        private void SceneRenderControlWPF_Unloaded(object sender, RoutedEventArgs e)
         {
             SetShouldRender(false);
-            this.PreviewMouseDown -= SceneRenderControlWPF_PreviewMouseDown;
-            this.PreviewMouseMove -= SceneRenderControlWPF_PreviewMouseMove;
-            this.PreviewMouseUp -= SceneRenderControlWPF_PreviewMouseUp;
-            this.PreviewMouseWheel -= SceneRenderControlWPF_PreviewMouseWheel;
-            this.KeyUp -= OnKeyUp;
-            this.KeyDown -= OnKeyDown;
-            this.SizeChanged -= SceneRenderControlWPF_SizeChanged;
+            PreviewMouseDown -= SceneRenderControlWPF_PreviewMouseDown;
+            PreviewMouseMove -= SceneRenderControlWPF_PreviewMouseMove;
+            PreviewMouseUp -= SceneRenderControlWPF_PreviewMouseUp;
+            PreviewMouseWheel -= SceneRenderControlWPF_PreviewMouseWheel;
+            KeyUp -= OnKeyUp;
+            KeyDown -= OnKeyDown;
+            SizeChanged -= SceneRenderControlWPF_SizeChanged;
         }
 
         /// <summary>
         /// This is called when the window closes, as we have to dispose of resources that can't be disposed during unload
         /// </summary>
-        private void FullyDispose()
+        public void Dispose()
         {
             CompositionTarget.Rendering -= CompositionTarget_Rendering;
-            this.Unloaded -= SceneRenderControlWPF_Unloaded;
+            Unloaded -= SceneRenderControlWPF_Unloaded;
 
-            if (this.Context.Backbuffer != null)
-                this.Context.DisposeSizeDependentResources();
+            if (Context.Backbuffer != null)
+                Context.DisposeSizeDependentResources();
 
-            if (this.Context.Device != null)
-                this.Context.DisposeResources();
+            if (Context.Device != null)
+                Context.DisposeResources();
 
-            this.D3DImage?.Dispose();
-            this.D3DImage = null;
-            this.Image = null;
-            this.Content = null;
+            D3DImage?.Dispose();
+            D3DImage = null;
+            Image = null;
+            Content = null;
             
             //Image.Source = null; // Lose reference to D3DImage
             //this.D3DImage.WindowOwner = IntPtr.Zero; // dunno if this is a good idea
             //D3DImage.Dispose();
             //Context = null;
-        }
 
-        /// <summary>
-        /// Called when this Scene Render Control is disposed from memory.
-        /// </summary>
-        public void Dispose()
-        {
-            CompositionTarget.Rendering -= CompositionTarget_Rendering;
-            this.Unloaded -= SceneRenderControlWPF_Unloaded;
-
-            if (this.Context.Backbuffer != null)
-                this.Context.DisposeSizeDependentResources();
-
-            if (this.Context.Device != null)
-                this.Context.DisposeResources();
-
-            this.D3DImage.Dispose();
-            this.D3DImage = null;
-            this.Image = null;
-            this.Content = null;
+            GC.SuppressFinalize(this);
         }
 
         /// <summary>
@@ -317,14 +314,14 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             Context.CreateResources();
         }*/
 
-        private void SceneRenderControlWPF_SizeChanged(object sender, System.Windows.SizeChangedEventArgs e)
+        private void SceneRenderControlWPF_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             D3DImage.SetPixelSize(RenderWidth, RenderHeight);
         }
 
         private void CompositionTarget_Rendering(object sender, EventArgs e)
         {
-            if (_shouldRender && Context != null && Context.IsReady)
+            if (_shouldRender && Context is { IsReady: true })
             {
                 //Debug.WriteLine("Rendering");
                 D3DImage.RequestRender();
@@ -345,11 +342,11 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
                 }
 
                 // Yikes - from https://github.com/microsoft/WPFDXInterop/blob/master/samples/D3D11Image/D3D11Visualization/D3DVisualization.cpp#L384
-                ComObject res = CppObject.FromPointer<ComObject>(surface);
-                SharpDX.DXGI.Resource resource = res.QueryInterface<SharpDX.DXGI.Resource>();
+                var res = CppObject.FromPointer<ComObject>(surface);
+                var resource = res.QueryInterface<SharpDX.DXGI.Resource>();
                 IntPtr sharedHandle = resource.SharedHandle;
                 resource.Dispose();
-                SharpDX.Direct3D11.Resource d3dres = Context.Device.OpenSharedResource<SharpDX.Direct3D11.Resource>(sharedHandle);
+                var d3dres = Context.Device.OpenSharedResource<Resource>(sharedHandle);
                 Context.CreateSizeDependentResources(RenderWidth, RenderHeight, d3dres.QueryInterface<Texture2D>());
                 d3dres.Dispose();
             }
@@ -359,18 +356,18 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
                 Context.Update((float)Stopwatch.Elapsed.TotalSeconds);
                 Stopwatch.Restart();
                 bool capturing = false;
-                if (this.CaptureNextFrame && RenderDoc.IsRenderDocAttached())
+                if (CaptureNextFrame && RenderDoc.IsRenderDocAttached())
                 {
-                    this.CaptureNextFrame = false;
+                    CaptureNextFrame = false;
                     capturing = true;
-                    RenderDoc.StartCapture(this.Context.Device.NativePointer, this.D3DImage.WindowOwner);
+                    RenderDoc.StartCapture(Context.Device.NativePointer, D3DImage.WindowOwner);
                 }
 
                 Context.Render();
-                Render?.Invoke(this, new EventArgs());
+                Render?.Invoke(this, EventArgs.Empty);
                 if (capturing)
                 {
-                    RenderDoc.EndCapture(this.Context.Device.NativePointer, this.D3DImage.WindowOwner);
+                    RenderDoc.EndCapture(Context.Device.NativePointer, D3DImage.WindowOwner);
                 }
             }
         }
@@ -392,44 +389,44 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
         }
 
         #region Input Events
-        private void SceneRenderControlWPF_PreviewMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void SceneRenderControlWPF_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            this.Focus();
+            Focus();
             MouseButtons buttons;
-            if (e.ChangedButton == System.Windows.Input.MouseButton.Left)
+            if (e.ChangedButton == MouseButton.Left)
                 buttons = MouseButtons.Left;
-            else if (e.ChangedButton == System.Windows.Input.MouseButton.Middle)
+            else if (e.ChangedButton == MouseButton.Middle)
                 buttons = MouseButtons.Middle;
-            else if (e.ChangedButton == System.Windows.Input.MouseButton.Right)
+            else if (e.ChangedButton == MouseButton.Right)
                 buttons = MouseButtons.Right;
             else
                 return;
-            System.Windows.Point position = e.GetPosition(this);
+            Point position = e.GetPosition(this);
             e.Handled = Context.MouseDown(buttons, (int)position.X, (int)position.Y);
         }
 
-        private void SceneRenderControlWPF_PreviewMouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void SceneRenderControlWPF_PreviewMouseUp(object sender, MouseButtonEventArgs e)
         {
             MouseButtons buttons;
-            if (e.ChangedButton == System.Windows.Input.MouseButton.Left)
+            if (e.ChangedButton == MouseButton.Left)
                 buttons = MouseButtons.Left;
-            else if (e.ChangedButton == System.Windows.Input.MouseButton.Middle)
+            else if (e.ChangedButton == MouseButton.Middle)
                 buttons = MouseButtons.Middle;
-            else if (e.ChangedButton == System.Windows.Input.MouseButton.Right)
+            else if (e.ChangedButton == MouseButton.Right)
                 buttons = MouseButtons.Right;
             else
                 return;
-            System.Windows.Point position = e.GetPosition(this);
+            Point position = e.GetPosition(this);
             e.Handled = Context.MouseUp(buttons, (int)position.X, (int)position.Y);
         }
 
-        private void SceneRenderControlWPF_PreviewMouseMove(object sender, System.Windows.Input.MouseEventArgs e)
+        private void SceneRenderControlWPF_PreviewMouseMove(object sender, MouseEventArgs e)
         {
-            System.Windows.Point position = e.GetPosition(this);
+            Point position = e.GetPosition(this);
             e.Handled = Context.MouseMove((int)position.X, (int)position.Y);
         }
 
-        private void SceneRenderControlWPF_PreviewMouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
+        private void SceneRenderControlWPF_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
             e.Handled = Context.MouseScroll(e.Delta);
         }
@@ -438,7 +435,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
         {
             if (e.Key == Key.F11 && RenderDoc.IsRenderDocAttached())
             {
-                this.CaptureNextFrame = true;
+                CaptureNextFrame = true;
                 e.Handled = true;
             }
             else
@@ -456,7 +453,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
         // MEMORY GC
         ~SceneRenderControl()
         {
-
+            Dispose();
         }
     }
 }

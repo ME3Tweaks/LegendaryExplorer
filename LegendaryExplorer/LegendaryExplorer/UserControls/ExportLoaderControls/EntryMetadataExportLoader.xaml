@@ -5,38 +5,38 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:hb1="clr-namespace:Be.Windows.Forms;assembly=Be.Windows.Forms.HexBox"
-    xmlns:System="clr-namespace:System;assembly=mscorlib"
+    xmlns:system="clr-namespace:System;assembly=mscorlib"
     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
     mc:Ignorable="d" 
     d:DataContext="{Binding RelativeSource={RelativeSource Self}}"
     Loaded="MetadataEditor_Loaded"
-    xmlns:Packages="clr-namespace:LegendaryExplorerCore.Packages;assembly=LegendaryExplorerCore"
+    xmlns:packages="clr-namespace:LegendaryExplorerCore.Packages;assembly=LegendaryExplorerCore"
     xmlns:exportLoaderControls="clr-namespace:LegendaryExplorer.UserControls.ExportLoaderControls"
-    xmlns:SharedUI="clr-namespace:LegendaryExplorer.SharedUI"
-    xmlns:Converters="clr-namespace:LegendaryExplorer.SharedUI.Converters"
+    xmlns:sharedUi="clr-namespace:LegendaryExplorer.SharedUI"
+    xmlns:converters="clr-namespace:LegendaryExplorer.SharedUI.Converters"
     d:DesignHeight="730" d:DesignWidth="800">
     <exportLoaderControls:ExportLoaderControl.Resources>
-        <System:Int32 x:Key="InfoTab_TopMargins">24</System:Int32>
-        <System:Int32 x:Key="InfoTab_MaxWidth">700</System:Int32>
-        <DataTemplate DataType="{x:Type SharedUI:IndexedName}">
+        <system:Int32 x:Key="InfoTab_TopMargins">24</system:Int32>
+        <system:Int32 x:Key="InfoTab_MaxWidth">700</system:Int32>
+        <DataTemplate DataType="{x:Type sharedUi:IndexedName}">
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="{Binding Path=Index}" Foreground="Gray"/>
-                <TextBlock Text="{Binding Path=Name.Name}" Margin="5,0,0,0"/>
+                <TextBlock Text="{Binding Path=Index, Mode=OneTime}" Foreground="Gray"/>
+                <TextBlock Text="{Binding Path=Name, Mode=OneTime}" Margin="5,0,0,0"/>
             </StackPanel>
         </DataTemplate>
-        <DataTemplate DataType="{x:Type Packages:ImportEntry}">
+        <DataTemplate DataType="{x:Type packages:ImportEntry}">
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="{Binding Path=UIndex}" Foreground="Gray"/>
-                <TextBlock Text="{Binding Path=InstancedFullPath}" Margin="5,0,0,0" Foreground="Gray"/>
+                <TextBlock Text="{Binding Path=UIndex, Mode=OneTime}" Foreground="Gray"/>
+                <TextBlock Text="{Binding Path=InstancedFullPath, Mode=OneTime}" Margin="5,0,0,0" Foreground="Gray"/>
             </StackPanel>
         </DataTemplate>
-        <DataTemplate DataType="{x:Type Packages:ExportEntry}">
+        <DataTemplate DataType="{x:Type packages:ExportEntry}">
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="{Binding Path=UIndex}" Foreground="Gray"/>
+                <TextBlock Text="{Binding Path=UIndex, Mode=OneTime}" Foreground="Gray"/>
                 <TextBlock Margin="5,0,0,0" Text="{Binding InstancedFullPath}"/>
             </StackPanel>
         </DataTemplate>
-        <Converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
     </exportLoaderControls:ExportLoaderControl.Resources>
     <Grid Margin="5" HorizontalAlignment="Stretch">
         <Grid.RowDefinitions>
@@ -113,7 +113,7 @@
 
         <!--rightside-->
         <ComboBox Name="InfoTab_Objectname_ComboBox" VerticalAlignment="Center" Grid.Row="0" Grid.Column="1" 
-                  ItemsSource="{Binding NamesList, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" 
+                  ItemsSource="{Binding NamesList, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Mode=OneTime}" 
                   ItemsPanel="{StaticResource VSP}" KeyUp="InfoTab_Objectname_ComboBox_KeyUp" 
                   GotFocus="InfoTab_Objectname_ComboBox_GotFocus" SelectionChanged="Info_ObjectNameComboBox_SelectionChanged" 
                   IsTextSearchEnabled="True" TextSearch.TextPath="Name" IsEditable="True"
@@ -133,10 +133,10 @@
                   ItemsPanel="{StaticResource VSP}" GotFocus="InfoTab_Class_ComboBox_GotFocus" 
                   SelectionChanged="Info_ClassComboBox_SelectionChanged" IsTextSearchEnabled="True" TextSearch.TextPath="UIndex" 
                   ToolTip="Class for this entry&#10;Type a UIndex value to automatically select it"
-                  ItemsSource="{Binding AllEntriesList}"/>
+                  ItemsSource="{Binding AllEntriesList, Mode=OneTime}"/>
         
         <ComboBox Name="InfoTab_ImpClass_ComboBox" VerticalAlignment="Center" Grid.Row="4" Grid.Column="1" 
-                  ItemsSource="{Binding NamesList, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" 
+                  ItemsSource="{Binding NamesList, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Mode=OneTime}" 
                   ItemsPanel="{StaticResource VSP}" GotFocus="InfoTab_ImpClass_ComboBox_GotFocus" 
                   SelectionChanged="Info_ImpClassComboBox_SelectionChanged"
                   IsTextSearchEnabled="True" TextSearch.TextPath="Name"
@@ -147,17 +147,17 @@
                   SelectionChanged="Info_SuperClassComboBox_SelectionChanged"
                   IsTextSearchEnabled="True" TextSearch.TextPath="UIndex"
                   ToolTip="Superclass for this entry&#10;Type a UIndex value to automatically select it"
-                  ItemsSource="{Binding AllEntriesList}"/>
+                  ItemsSource="{Binding AllEntriesList, Mode=OneTime}"/>
 
         <ComboBox Name="InfoTab_PackageLink_ComboBox" VerticalAlignment="Center" Grid.Row="6" Grid.Column="1" 
                   ItemsPanel="{StaticResource VSP}" GotFocus="InfoTab_PackageLink_ComboBox_GotFocus" 
                   SelectionChanged="Info_PackageLinkClassComboBox_SelectionChanged"
                   IsTextSearchEnabled="True" TextSearch.TextPath="UIndex"
                   ToolTip="Parent for this entry&#10;Set to 0 to make this item a top level entry&#10;Type a UIndex value to automatically select it"
-                  ItemsSource="{Binding AllEntriesList}"/>
+                  ItemsSource="{Binding AllEntriesList, Mode=OneTime}"/>
         
         <ComboBox Name="InfoTab_PackageFile_ComboBox" VerticalAlignment="Center" Grid.Row="7" Grid.Column="1" 
-                  ItemsSource="{Binding NamesList, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" 
+                  ItemsSource="{Binding NamesList, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Mode=OneTime}" 
                   ItemsPanel="{StaticResource VSP}" 
                   GotFocus="InfoTab_PackageFile_ComboBox_GotFocus" SelectionChanged="Info_PackageFileComboBox_SelectionChanged"
                   IsTextSearchEnabled="True" TextSearch.TextPath="Name"
@@ -168,7 +168,7 @@
                   SelectionChanged="Info_ArchetypeComboBox_SelectionChanged"
                   IsTextSearchEnabled="True" TextSearch.TextPath="UIndex"
                   ToolTip="Archetype for this entry&#10;Set to 0 to indicate no archetype&#10;Type a UIndex value to automatically select it"
-                  ItemsSource="{Binding AllEntriesList}"/>
+                  ItemsSource="{Binding AllEntriesList, Mode=OneTime}"/>
 
         <xctk:CheckComboBox Name="InfoTab_Flags_ComboBox" IsEditable="False" Delimiter=" " VerticalAlignment="Center" Grid.Row="9" Grid.Column="1"
                             GotFocus="InfoTab_Flags_ComboBox_GotFocus" ItemSelectionChanged="InfoTab_Flags_ComboBox_ItemSelectionChanged"
@@ -189,12 +189,12 @@
         </StackPanel>
         <!--<StackPanel Grid.ColumnSpan="2" Orientation="Horizontal" Grid.Row="10"  Width="Auto" Height="Auto" Margin="0,5,0,0"  MaxWidth="650">-->
         <!--Grid.Row="10" Grid.ColumnSpan="2"-->
-        <WindowsFormsHost Name="Header_Hexbox_Host" Grid.Row="20" Grid.ColumnSpan="2" Margin="0,5,0,0"  MaxWidth="730" HorizontalAlignment="Stretch">
+        <sharedUi:WindowsFormsHostEx x:Name="Header_Hexbox_Host" Grid.Row="20" Grid.ColumnSpan="2" Margin="0,5,0,0"  MaxWidth="730" HorizontalAlignment="Stretch">
             <hb1:HexBox  MinBytesPerLine="4" MaxBytesPerLine="16" BytesPerLine="16" ColumnInfoVisible="True" 
                          LineInfoVisible="True" VScrollBarVisible="True" UseFixedBytesPerLine="True" Font="Courier New,10" BoldFont="Consolas,10" 
                          StringViewVisible="True">
             </hb1:HexBox>
-        </WindowsFormsHost>
+        </sharedUi:WindowsFormsHostEx>
         <Image Grid.Row="20" Grid.ColumnSpan="2" Margin="0,5,0,0"  MaxWidth="730" Visibility="Collapsed" Name="hexboxImageSub" Stretch="None" />
         <TextBlock Name="Header_Hexbox_SelectedBytesLabel" Grid.Row="21" Grid.ColumnSpan="2" Text="Selected item: " TextWrapping="Wrap"/>
         <TextBlock Name="Header_Hexbox_ComponentsLabel" Grid.Row="22" Grid.ColumnSpan="2" TextWrapping="Wrap"/>
