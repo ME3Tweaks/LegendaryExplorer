@@ -412,10 +412,6 @@ var hierarchy =
       [ "LegendaryExplorerCore.UnrealScript.FileLib", "class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html", null ]
     ] ],
     [ "LegendaryExplorerCore.Gammtek.Paths.IDriveLetter", "interface_legendary_explorer_core_1_1_gammtek_1_1_paths_1_1_i_drive_letter.html", null ],
-    [ "LegendaryExplorerCore.Packages.IEntry", "interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html", [
-      [ "LegendaryExplorerCore.Packages.ExportEntry", "class_legendary_explorer_core_1_1_packages_1_1_export_entry.html", null ],
-      [ "LegendaryExplorerCore.Packages.ImportEntry", "class_legendary_explorer_core_1_1_packages_1_1_import_entry.html", null ]
-    ] ],
     [ "LegendaryExplorerCore.Packages.IEntryExtensions", "class_legendary_explorer_core_1_1_packages_1_1_i_entry_extensions.html", null ],
     [ "IEnumerable", null, [
       [ "LegendaryExplorerCore.Gammtek.Collections.Generic.IPriorityQueue< T >", "interface_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_i_priority_queue.html", [
@@ -500,8 +496,10 @@ var hierarchy =
       [ "LegendaryExplorerCore.LegendaryExplorerCoreLibSettings", "class_legendary_explorer_core_1_1_legendary_explorer_core_lib_settings.html", null ],
       [ "LegendaryExplorerCore.Misc.EntryStringPair", "class_legendary_explorer_core_1_1_misc_1_1_entry_string_pair.html", null ],
       [ "LegendaryExplorerCore.Misc.MemoryAnalyzerObject", "class_legendary_explorer_core_1_1_misc_1_1_memory_analyzer_object.html", null ],
-      [ "LegendaryExplorerCore.Packages.ExportEntry", "class_legendary_explorer_core_1_1_packages_1_1_export_entry.html", null ],
-      [ "LegendaryExplorerCore.Packages.ImportEntry", "class_legendary_explorer_core_1_1_packages_1_1_import_entry.html", null ],
+      [ "LegendaryExplorerCore.Packages.IEntry", "interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html", [
+        [ "LegendaryExplorerCore.Packages.ExportEntry", "class_legendary_explorer_core_1_1_packages_1_1_export_entry.html", null ],
+        [ "LegendaryExplorerCore.Packages.ImportEntry", "class_legendary_explorer_core_1_1_packages_1_1_import_entry.html", null ]
+      ] ],
       [ "LegendaryExplorerCore.Packages.UnrealPackageFile", "class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html", [
         [ "LegendaryExplorerCore.Packages.MEPackage", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html", null ],
         [ "LegendaryExplorerCore.Packages.UDKPackage", "class_legendary_explorer_core_1_1_packages_1_1_u_d_k_package.html", null ]
