@@ -229,9 +229,13 @@ namespace LegendaryExplorer.DialogueEditor
         public void Dispose()
         {
             //Remove event handlers for memory cleanup
-            ConvGraphEditor.KeyDown -= OnKeyDown;
-            ConvGraphEditor.Camera.MouseWheel -= OnMouseWheel;
-            ConvGraphEditor = null;
+            if (ConvGraphEditor != null)
+            {
+                ConvGraphEditor.KeyDown -= OnKeyDown;
+                ConvGraphEditor.Camera.MouseWheel -= OnMouseWheel;
+                ConvGraphEditor = null;
+            }
+
             camera = null;
 
         }
