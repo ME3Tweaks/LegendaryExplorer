@@ -478,8 +478,8 @@ namespace LegendaryExplorerCore.Packages
             #region Decompression of package data
 
             //determine if tables are in order.
-            //The < 500 is just to check that the tables are all at the start of the file. (will never not be the case for unedited files, but for modded ones, all things are possible)
-            bool tablesInOrder = NameOffset < 500 && NameOffset < ImportOffset && ImportOffset < ExportOffset;
+            //The < 0x500 is just to check that the tables are all at the start of the file. (will never not be the case for unedited files, but for modded ones, all things are possible)
+            bool tablesInOrder = NameOffset < 0x500 && NameOffset < ImportOffset && ImportOffset < ExportOffset;
 
             packageReader.Position = savedPos; //restore position to chunk table
             Stream inStream = fs;

@@ -44,7 +44,7 @@ namespace LegendaryExplorer.SharedUI.Bases
 
         private void WPFBase_Closing(object sender, CancelEventArgs e)
         {
-            if (pcc != null && pcc.IsModified && pcc.Users.Count == 1 &&
+            if (pcc is { IsModified: true } && pcc.Users.Count == 1 &&
                 MessageBoxResult.No == MessageBox.Show($"{Path.GetFileName(pcc.FilePath)} has unsaved changes. Do you really want to close {Title}?", "Unsaved changes", MessageBoxButton.YesNo))
             {
                 e.Cancel = true;
@@ -93,6 +93,7 @@ namespace LegendaryExplorer.SharedUI.Bases
             wpfClosed = (obj, args) =>
             {
                 handler();
+                pcc = null;
             };
             Closed += wpfClosed;
         }

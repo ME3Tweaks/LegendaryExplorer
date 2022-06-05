@@ -692,6 +692,10 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
 #if DEBUG
                 //graphEditor.DebugEventHandlers();
 #endif
+                if (Pcc is not null)
+                {
+                    GameController.GetInteropTargetForGame(Pcc.Game).GameReceiveMessage -= ReceivedGameMessage;
+                }
             }
         }
         private void LoadFile(string fileName)

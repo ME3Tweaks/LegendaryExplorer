@@ -107,11 +107,12 @@ namespace LegendaryExplorer.Tools.PackageEditor
             }
         }
 
-        public ObservableCollectionExtended<object> LeftSideList_ItemsSource { get; set; } = new();
+        public ObservableCollectionExtended<object> LeftSideList_ItemsSource { get; } = new();
 
-        public ObservableCollectionExtended<IndexedName> NamesList { get; set; } = new();
+        //referenced by EntryMetaDataExportLoader's xaml, do not make private
+        public ObservableCollectionExtended<IndexedName> NamesList { get; } = new();
 
-        public ObservableCollectionExtended<string> ClassDropdownList { get; set; } = new();
+        public ObservableCollectionExtended<string> ClassDropdownList { get; } = new();
 
         public ObservableCollectionExtended<TreeViewEntry> AllTreeViewNodesX { get; } = new();
 
@@ -1124,8 +1125,8 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
             if (result != null)
             {
-                var searchTerm = result.Name.Name.ToLower();
-                var found = Pcc.Names.Any(x => x.ToLower() == searchTerm);
+                string searchTerm = result.Name;
+                bool found = Pcc.Names.Any(x => x.CaseInsensitiveEquals(searchTerm));
                 if (found)
                 {
                     foreach (ExportEntry exp in Pcc.Exports)
@@ -1676,7 +1677,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
         {
             if (LeftSide_ListView.SelectedItem is IndexedName iName)
             {
-                string name = iName.Name.Name;
+                string name = iName.Name;
                 BusyText = $"Finding usages of '{name}'...";
                 IsBusy = true;
                 Task.Run(() => Pcc.FindUsagesOfName(name)).ContinueWithOnUIThread(prevTask =>
@@ -2083,7 +2084,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
         {
             if (LeftSide_ListView.SelectedItem is IndexedName iName)
             {
-                var name = iName.Name;
+                string name = iName.Name;
                 string input = $"Enter a new name to replace this name ({name}) with.";
                 string result =
                     PromptDialog.Prompt(this, input, "Enter new name", defaultValue: name, selectText: true);
@@ -2778,7 +2779,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
             Intro_Tab.Visibility = Visibility.Visible;
             Intro_Tab.IsSelected = true;
 
-            AllTreeViewNodesX.ClearEx();
+            ResetTreeView();
             NamesList.ClearEx();
             ClassDropdownList.ClearEx();
             BackwardsIndexes = new Stack<int>();
@@ -2788,12 +2789,11 @@ namespace LegendaryExplorer.Tools.PackageEditor
             //Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
         }
 
-        private void InitializeTreeViewBackground_Completed(
-            Task<ObservableCollectionExtended<TreeViewEntry>> prevTask)
+        private void InitializeTreeViewBackground_Completed(Task<List<TreeViewEntry>> prevTask)
         {
             if (prevTask.Result != null)
             {
-                AllTreeViewNodesX.ClearEx();
+                ResetTreeView();
                 AllTreeViewNodesX.AddRange(prevTask.Result);
             }
 
@@ -2820,11 +2820,8 @@ namespace LegendaryExplorer.Tools.PackageEditor
             }
         }
 
-        private ObservableCollectionExtended<TreeViewEntry> InitializeTreeViewBackground()
+        private List<TreeViewEntry> InitializeTreeViewBackground()
         {
-            if (Thread.CurrentThread.Name == null)
-                Thread.CurrentThread.Name = "PackageEditorWPF TreeViewInitialization";
-
             BusyText = "Loading " + Path.GetFileName(Pcc.FilePath);
             if (Pcc == null)
             {
@@ -2865,7 +2862,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 }
             }
 
-            return new ObservableCollectionExtended<TreeViewEntry>(rootNodes.Except(itemsToRemove));
+            return new List<TreeViewEntry>(rootNodes.Except(itemsToRemove));
         }
 
         private void InitializeTreeView()
@@ -2983,6 +2980,11 @@ namespace LegendaryExplorer.Tools.PackageEditor
         /// <returns>True if an item was selected, false if nothing was selected.</returns>
         public bool GetSelected(out int n)
         {
+            n = 0;
+            if (Pcc is null)
+            {
+                return false;
+            }
             switch (CurrentView)
             {
                 case CurrentViewMode.Tree when SelectedItem is TreeViewEntry selected:
@@ -2994,8 +2996,8 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 case CurrentViewMode.Imports when LeftSide_ListView.SelectedItem != null:
                     n = -LeftSide_ListView.SelectedIndex - 1;
                     return true;
+                case CurrentViewMode.Names:
                 default:
-                    n = 0;
                     return false;
             }
         }
@@ -3067,17 +3069,15 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 changes.Any(x => x != PackageChange.ExportData && x.HasFlag(PackageChange.Export));
             bool hasSelection = GetSelected(out int selectedEntryUIndex);
 
-            List<PackageUpdate> addedChanges = updates.Where(x => x.Change.HasFlag(PackageChange.EntryAdd))
-                .OrderBy(x => x.Index).ToList();
-            var headerChanges = updates.Where(x => x.Change.HasFlag(PackageChange.EntryHeader)).Select(x => x.Index)
-                .ToHashSet();
+            List<PackageUpdate> addedChanges = updates.Where(x => x.Change.HasFlag(PackageChange.EntryAdd)).OrderBy(x => x.Index).ToList();
+            HashSet<int> headerChanges = updates.Where(x => x.Change.HasFlag(PackageChange.EntryHeader)).Select(x => x.Index).ToHashSet();
 
             // Reduces tree enumeration
-            var treeViewItems = AllTreeViewNodesX[0].FlattenTree();
-            Dictionary<int, TreeViewEntry> uindexMap = new Dictionary<int, TreeViewEntry>();
+            List<TreeViewEntry> treeViewItems = AllTreeViewNodesX[0].FlattenTree();
+            var uindexMap = new Dictionary<int, TreeViewEntry>();
             if (Enumerable.Any(addedChanges) || Enumerable.Any(headerChanges))
             {
-                foreach (var tv in treeViewItems)
+                foreach (TreeViewEntry tv in treeViewItems)
                 {
                     uindexMap[tv.UIndex] = tv;
                 }
@@ -3100,9 +3100,9 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     var orphans = new List<IEntry>();
                     foreach (IEntry entry in entriesToAdd)
                     {
-                        if (uindexMap.TryGetValue(entry.idxLink, out var parent))
+                        if (uindexMap.TryGetValue(entry.idxLink, out TreeViewEntry parent))
                         {
-                            TreeViewEntry newEntry = new TreeViewEntry(entry) { Parent = parent };
+                            var newEntry = new TreeViewEntry(entry) { Parent = parent };
                             parent.Sublinks.Add(newEntry);
                             treeViewItems.Add(newEntry); //used to find parents
                             nodesToSortChildrenFor.Add(parent);
@@ -3197,7 +3197,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 }
             }
 
-            if ((CurrentView == CurrentViewMode.Exports || CurrentView == CurrentViewMode.Tree) && hasSelection &&
+            if (CurrentView is CurrentViewMode.Exports or CurrentViewMode.Tree && hasSelection &&
                 updates.Contains(new PackageUpdate(PackageChange.ExportData, selectedEntryUIndex)))
             {
                 Preview(true);
@@ -3211,8 +3211,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 //initial loading
                 //we don't update the left side with this
                 NamesList.ReplaceAll(Pcc.Names.Select((name, i) =>
-                    new IndexedName(i,
-                        name))); //we replaceall so we don't add one by one and trigger tons of notifications
+                    new IndexedName(i, name))); //we replaceall so we don't add one by one and trigger tons of notifications
             }
             else
             {
@@ -3227,9 +3226,12 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
                     if (update.Change == PackageChange.NameAdd) //names are 0 indexed
                     {
-                        NameReference nr = Pcc.Names[update.Index];
+                        var nr = Pcc.Names[update.Index];
                         NamesList.Add(new IndexedName(update.Index, nr));
-                        LeftSideList_ItemsSource.Add(new IndexedName(update.Index, nr));
+                        if (CurrentView == CurrentViewMode.Names)
+                        {
+                            LeftSideList_ItemsSource.Add(new IndexedName(update.Index, nr));
+                        }
                     }
                     else if (update.Change == PackageChange.NameEdit)
                     {
@@ -3991,15 +3993,27 @@ namespace LegendaryExplorer.Tools.PackageEditor
             if (!e.Cancel)
             {
                 SoundTab_Soundpanel.FreeAudioResources();
-                foreach (var el in ExportLoaders.Keys)
+                foreach (ExportLoaderControl el in ExportLoaders.Keys)
                 {
                     el.Dispose(); //Remove hosted winforms references
                 }
 
                 LeftSideList_ItemsSource.ClearEx();
-                AllTreeViewNodesX.ClearEx();
+                ResetTreeView();
                 RecentsController?.Dispose();
             }
+        }
+
+        private void ResetTreeView()
+        {
+            if (AllTreeViewNodesX.Count > 0)
+            {
+                foreach (TreeViewEntry tv in AllTreeViewNodesX[0].FlattenTree())
+                {
+                    tv.Dispose();
+                }
+            }
+            AllTreeViewNodesX.ClearEx();
         }
 
         private void OpenIn_Clicked(object sender, RoutedEventArgs e)

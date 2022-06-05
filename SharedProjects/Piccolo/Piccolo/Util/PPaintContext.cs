@@ -64,12 +64,8 @@ namespace UMD.HCIL.Piccolo.Util {
 	/// </remarks>
 	public class PPaintContext {
 		#region Fields
-		/// <summary>
-		/// The current PPaintContext.
-		/// </summary>
-		public static PPaintContext CURRENT_PAINT_CONTEXT;
 
-		/// <summary>
+        /// <summary>
 		/// A temporary matrix used to calculate the scale.
 		/// </summary>
 		protected static PMatrix TEMP_MATRIX = new PMatrix();
@@ -77,7 +73,7 @@ namespace UMD.HCIL.Piccolo.Util {
 		/// <summary>
 		/// A temporary array of points used to calculate the scale.
 		/// </summary>
-		protected static PointF[] PTS = new PointF[2];
+        private static readonly PointF[] PTS = new PointF[2];
 
 		/// <summary>
 		/// The graphics object used for rendering.
@@ -137,9 +133,8 @@ namespace UMD.HCIL.Piccolo.Util {
 			cameraStack = new Stack();
 			transformStack = new Stack();
 			RenderQuality = RenderQuality.HighQuality;
-			CURRENT_PAINT_CONTEXT = this;
 
-			InitializeStacks();
+            InitializeStacks();
 		}
 
 		/// <summary>

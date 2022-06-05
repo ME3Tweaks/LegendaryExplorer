@@ -92,12 +92,8 @@ namespace UMD.HCIL.Piccolo {
 	[Serializable]
 	public class PCanvas : System.Windows.Forms.Control {
 		#region Fields
-		/// <summary>
-		/// The current canvas.
-		/// </summary>
-		public static PCanvas CURRENT_PCANVAS = null;
 
-		/// <summary>
+        /// <summary>
 		/// Used to specify what flags should be set for low quality rendering.
 		/// </summary>
 		public LowRenderQualityDelegate LowRenderQuality;
@@ -146,8 +142,7 @@ namespace UMD.HCIL.Piccolo {
 			// This call is required by the Windows.Forms Form Designer.
 			InitializeComponent();
 
-			CURRENT_PCANVAS = this;
-			cursorStack = new Stack();
+            cursorStack = new Stack();
 			Camera = CreateBasicScenegraph();
 			DefaultRenderQuality = RenderQuality.HighQuality;
 			AnimatingRenderQuality = RenderQuality.LowQuality;

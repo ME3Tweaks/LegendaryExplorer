@@ -36,7 +36,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
     /// </summary>
     public partial class InterpreterExportLoader : ExportLoaderControl
     {
-        public ObservableCollectionExtended<UPropertyTreeViewEntry> PropertyNodes { get; set; } = new();
+        public ObservableCollectionExtended<UPropertyTreeViewEntry> PropertyNodes { get; } = new();
         //Values in this list will cause the ExportToString() method to be called on an objectproperty in InterpreterExportLoader.
         //This is useful for end user when they want to view things in a list for example, but all of the items are of the 
         //same type and are not distinguishable without changing to another export, wasting a lot of time.
@@ -1057,7 +1057,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     {
                         ArrayType at = GlobalUnrealObjectInfo.GetArrayType(parsingExport.FileRef.Game, prop.Name, parent.Property is StructProperty sp ? sp.StructType : parsingExport.ClassName, parsingExport);
 
-                        if (at == ArrayType.Struct || at == ArrayType.Enum || at == ArrayType.Object)
+                        if (at is ArrayType.Struct or ArrayType.Enum or ArrayType.Object)
                         {
                             // Try to get the type of struct array
                             // This code doesn't work for nested structs as the containing class is different

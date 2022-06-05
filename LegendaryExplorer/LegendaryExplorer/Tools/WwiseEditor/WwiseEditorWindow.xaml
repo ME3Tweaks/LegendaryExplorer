@@ -192,11 +192,11 @@
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <WindowsFormsHost Grid.Column="1" Name="GraphHost" VerticalAlignment="Stretch"
-                                        HorizontalAlignment="Stretch"
-                                        Visibility="{Binding Visibility, ElementName=graphImageSub, Converter={StaticResource InverseVisibilityConverter}}">
+                    <sharedUi:WindowsFormsHostEx Grid.Column="1" x:Name="GraphHost" VerticalAlignment="Stretch"
+                                                 HorizontalAlignment="Stretch"
+                                                 Visibility="{Binding Visibility, ElementName=graphImageSub, Converter={StaticResource InverseVisibilityConverter}}">
                         <local:WwiseGraphEditor />
-                    </WindowsFormsHost>
+                    </sharedUi:WindowsFormsHostEx>
                     <Image Grid.Column="1" Visibility="Collapsed" Name="graphImageSub" Stretch="None" />
                 </Grid>
             </Grid>
