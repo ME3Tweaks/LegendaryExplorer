@@ -11,10 +11,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using UMD.HCIL.GraphEditor;
-using UMD.HCIL.Piccolo;
-using UMD.HCIL.Piccolo.Event;
-using UMD.HCIL.Piccolo.Nodes;
 using Color = System.Drawing.Color;
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
@@ -44,6 +40,9 @@ using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Kismet;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
+using Piccolo;
+using Piccolo.Event;
+using Piccolo.Nodes;
 
 namespace LegendaryExplorer.Tools.Sequence_Editor
 {
@@ -52,7 +51,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
     /// </summary>
     public partial class SequenceEditorWPF : WPFBase, IRecents
     {
-        private readonly GraphEditor graphEditor;
+        private readonly SequenceGraphEditor graphEditor;
         public ObservableCollectionExtended<SObj> CurrentObjects { get; } = new();
         public ObservableCollectionExtended<SObj> SelectedObjects { get; } = new();
         public ObservableCollectionExtended<ExportEntry> SequenceExports { get; } = new();
@@ -102,7 +101,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
 
             RecentsController.InitRecentControl(Toolname, Recents_MenuItem, LoadFile);
 
-            graphEditor = (GraphEditor)GraphHost.Child;
+            graphEditor = (SequenceGraphEditor)GraphHost.Child;
             graphEditor.BackColor = GraphEditorBackColor;
             graphEditor.Camera.MouseDown += backMouseDown_Handler;
             graphEditor.Camera.MouseUp += back_MouseUp;
@@ -966,7 +965,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 {
                     foreach (SeqEdEdge edge in graphEditor.edgeLayer)
                     {
-                        GraphEditor.UpdateEdge(edge);
+                        SequenceGraphEditor.UpdateEdge(edge);
                     }
                 }
             }
@@ -1032,7 +1031,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             if (firstNode != null) objsToLayout.OffsetBy(0, -firstNode.OffsetY);
 
             foreach (SeqEdEdge edge in graphEditor.edgeLayer)
-                GraphEditor.UpdateEdge(edge);
+                SequenceGraphEditor.UpdateEdge(edge);
 
 
             void LayoutTree(SBox sAction, float verticalSpacing)

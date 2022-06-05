@@ -6,13 +6,13 @@ using System.Drawing;
 using System.Drawing.Text;
 using System.Windows.Forms;
 using LegendaryExplorerCore.Dialogue;
-using UMD.HCIL.Piccolo;
-using UMD.HCIL.Piccolo.Nodes;
-using UMD.HCIL.Piccolo.Event;
-using UMD.HCIL.Piccolo.Util;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
+using Piccolo;
+using Piccolo.Event;
+using Piccolo.Nodes;
+using Piccolo.Util;
 using static LegendaryExplorer.Tools.TlkManagerNS.TLKManagerWPF;
 
 namespace LegendaryExplorer.DialogueEditor

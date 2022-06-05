@@ -218,9 +218,7 @@
     <Compile Update="Tools\AssetDatabase\AssetDatabaseWindow.xaml.cs">
       <DependentUpon>AssetDatabaseWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Update="Tools\Dialogue Editor\ConvGraphEditor.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Update="Tools\Dialogue Editor\ConvGraphEditor.cs" />
     <Compile Update="Tools\Dialogue Editor\LinkEditor.xaml.cs">
       <DependentUpon>LinkEditor.xaml</DependentUpon>
     </Compile>
@@ -251,18 +249,14 @@
     <Compile Update="Tools\TextureStudio\MasterTextureSelector.xaml.cs">
       <DependentUpon>MasterTextureSelector.xaml</DependentUpon>
     </Compile>
-    <Compile Update="Tools\PathfindingEditor\PathingGraphEditor.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Update="Tools\PathfindingEditor\PathingGraphEditor.cs" />
     <Compile Update="Tools\PathfindingEditor\ReachSpecsPanel.xaml.cs">
       <DependentUpon>ReachSpecsPanel.xaml</DependentUpon>
     </Compile>
     <Compile Update="Tools\PathfindingEditor\ValidationPanel.xaml.cs">
       <DependentUpon>ValidationPanel.xaml</DependentUpon>
     </Compile>
-    <Compile Update="Tools\WwiseEditor\WwiseGraphEditor.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Update="Tools\WwiseEditor\WwiseGraphEditor.cs" />
     <Compile Update="UserControls\ExportLoaderControls\InterpDataTimeline\Timeline.xaml.cs">
       <DependentUpon>Timeline.xaml</DependentUpon>
     </Compile>
@@ -272,9 +266,7 @@
     <Compile Update="UserControls\ExportLoaderControls\FaceFXAnimSetEditorControl.xaml.cs">
       <DependentUpon>FaceFXAnimSetEditorControl.xaml</DependentUpon>
     </Compile>
-    <Compile Update="Tools\Sequence Editor\GraphEditor.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Update="Tools\Sequence Editor\SequenceGraphEditor.cs" />
     <Compile Update="Tools\Sequence Editor\KismetLogParser.xaml.cs">
       <DependentUpon>KismetLogParser.xaml</DependentUpon>
     </Compile>
