@@ -147,7 +147,7 @@ var NAVTREEINDEX0 =
 "_bytecode_writer_8cs.html":[2,0,0,0,21,1,2],
 "_c_math_8cs.html":[2,0,0,0,6,13],
 "_c_n_d_file_8cs.html":[2,0,0,0,20,6],
-"_case_insensitive_dictionary_8cs.html":[2,0,0,0,12,0],
+"_case_insensitive_dictionary_8cs.html":[2,0,0,0,12,1],
 "_case_statement_8cs.html":[2,0,0,0,21,3,1,6],
 "_cast_expression_8cs.html":[2,0,0,0,21,3,1,7],
 "_cast_helper_8cs.html":[2,0,0,0,21,6,0],

@@ -1,5 +1,6 @@
 var namespace_legendary_explorer_core_1_1_misc =
 [
+    [ "ME3Tweaks", "namespace_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks.html", "namespace_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks" ],
     [ "CaseInsensitiveConcurrentDictionary", "class_legendary_explorer_core_1_1_misc_1_1_case_insensitive_concurrent_dictionary.html", "class_legendary_explorer_core_1_1_misc_1_1_case_insensitive_concurrent_dictionary" ],
     [ "CaseInsensitiveDictionary", "class_legendary_explorer_core_1_1_misc_1_1_case_insensitive_dictionary.html", "class_legendary_explorer_core_1_1_misc_1_1_case_insensitive_dictionary" ],
     [ "DictionaryChangedEvent", "class_legendary_explorer_core_1_1_misc_1_1_dictionary_changed_event.html", "class_legendary_explorer_core_1_1_misc_1_1_dictionary_changed_event" ],

@@ -312,6 +312,11 @@ var annotated_dup =
         [ "MemoryManager", "class_legendary_explorer_core_1_1_memory_1_1_memory_manager.html", "class_legendary_explorer_core_1_1_memory_1_1_memory_manager" ]
       ] ],
       [ "Misc", "namespace_legendary_explorer_core_1_1_misc.html", [
+        [ "ME3Tweaks", "namespace_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks.html", [
+          [ "ASIModIDs", "class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html", "class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds" ],
+          [ "ME3TweaksBackups", "class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_m_e3_tweaks_backups.html", "class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_m_e3_tweaks_backups" ],
+          [ "ModManagerIntegration", "class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_mod_manager_integration.html", "class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_mod_manager_integration" ]
+        ] ],
         [ "CaseInsensitiveConcurrentDictionary", "class_legendary_explorer_core_1_1_misc_1_1_case_insensitive_concurrent_dictionary.html", "class_legendary_explorer_core_1_1_misc_1_1_case_insensitive_concurrent_dictionary" ],
         [ "CaseInsensitiveDictionary", "class_legendary_explorer_core_1_1_misc_1_1_case_insensitive_dictionary.html", "class_legendary_explorer_core_1_1_misc_1_1_case_insensitive_dictionary" ],
         [ "DictionaryChangedEvent", "class_legendary_explorer_core_1_1_misc_1_1_dictionary_changed_event.html", "class_legendary_explorer_core_1_1_misc_1_1_dictionary_changed_event" ],

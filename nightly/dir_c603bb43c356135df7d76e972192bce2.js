@@ -1,5 +1,6 @@
 var dir_c603bb43c356135df7d76e972192bce2 =
 [
+    [ "ME3Tweaks", "dir_fc297f48b00bb058e25bce0d1d92428f.html", "dir_fc297f48b00bb058e25bce0d1d92428f" ],
     [ "CaseInsensitiveDictionary.cs", "_case_insensitive_dictionary_8cs.html", [
       [ "LegendaryExplorerCore.Misc.CaseInsensitiveDictionary< TValue >", "class_legendary_explorer_core_1_1_misc_1_1_case_insensitive_dictionary.html", "class_legendary_explorer_core_1_1_misc_1_1_case_insensitive_dictionary" ],
       [ "LegendaryExplorerCore.Misc.CaseInsensitiveConcurrentDictionary< V >", "class_legendary_explorer_core_1_1_misc_1_1_case_insensitive_concurrent_dictionary.html", "class_legendary_explorer_core_1_1_misc_1_1_case_insensitive_concurrent_dictionary" ]
