@@ -5407,7 +5407,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     }
                 }
 
-                if (CurrentLoadedExport.FileRef.Platform == MEPackage.GamePlatform.PC)
+                if (Pcc.Platform is MEPackage.GamePlatform.PC || (Pcc.Game is not MEGame.ME3 && Pcc.Platform is MEPackage.GamePlatform.Xenon))
                 {
                     // This seems missing on Xenon 2011. Not sure about others
                     subnodes.Add(MakeNameNode(bin, "Category"));

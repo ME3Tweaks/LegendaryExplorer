@@ -460,7 +460,7 @@ namespace LegendaryExplorerCore.Unreal
         {
             IMEPackage pcc = export.FileRef;
             long arrayOffset = IsInImmutable ? stream.Position : stream.Position - 24;
-            ArrayType arrayType = GlobalUnrealObjectInfo.GetArrayType(pcc.Game, name, enclosingType == "ScriptStruct" ? export.ObjectName : enclosingType , parsingEntry);
+            ArrayType arrayType = GlobalUnrealObjectInfo.GetArrayType(pcc.Game, name, enclosingType == "ScriptStruct" ? export.ObjectName : enclosingType , parsingEntry, packageCache);
             //Debug.WriteLine("Reading array length at 0x" + stream.Position.ToString("X5"));
             int count = stream.ReadInt32();
             switch (arrayType)
