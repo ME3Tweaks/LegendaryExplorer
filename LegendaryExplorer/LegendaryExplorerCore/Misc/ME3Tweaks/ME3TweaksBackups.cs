@@ -2,7 +2,7 @@
 using LegendaryExplorerCore.Packages;
 using Microsoft.Win32;
 
-namespace LegendaryExplorer.Misc.ME3Tweaks
+namespace LegendaryExplorerCore.Misc.ME3Tweaks
 {
     /// <summary>
     /// Contains information about backups provided by ME3Tweaks programs.

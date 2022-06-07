@@ -20,7 +20,7 @@ using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.DialogueEditor;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Misc.AppSettings;
-using LegendaryExplorer.Misc.ME3Tweaks;
+using LegendaryExplorerCore.Misc.ME3Tweaks;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Bases;
 using LegendaryExplorer.SharedUI.Interfaces;

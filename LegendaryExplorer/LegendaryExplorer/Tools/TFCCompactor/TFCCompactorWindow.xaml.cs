@@ -11,7 +11,6 @@ using System.Windows.Input;
 using DocumentFormat.OpenXml.Wordprocessing;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Dialogs;
-using LegendaryExplorer.Misc.ME3Tweaks;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Bases;
 using LegendaryExplorerCore.GameFilesystem;
