@@ -7,7 +7,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 {
     public class StructLiteral : Expression
     {
-        public List<Statement> Statements;
+        public readonly List<Statement> Statements;
 
         public readonly Struct StructType;
 

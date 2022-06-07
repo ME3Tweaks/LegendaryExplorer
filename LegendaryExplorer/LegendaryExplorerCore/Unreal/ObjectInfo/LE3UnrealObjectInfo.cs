@@ -128,7 +128,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 }
                 if (export.IsClass)
                 {
-                    ClassInfo currentInfo = generateClassInfo(export);
+                    ClassInfo currentInfo = GlobalUnrealObjectInfo.generateClassInfo(export);
                     currentInfo.baseClass = export.SuperClassName;
                     p = getPropertyInfo(className, propName, false, currentInfo, containingExport: export);
                     if (p == null)

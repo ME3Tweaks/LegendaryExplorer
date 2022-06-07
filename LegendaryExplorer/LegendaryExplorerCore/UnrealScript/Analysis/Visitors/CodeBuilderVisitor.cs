@@ -5,7 +5,6 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using LegendaryExplorerCore.Helpers;
-using LegendaryExplorerCore.UnrealScript.Analysis.Symbols;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
 using LegendaryExplorerCore.UnrealScript.Lexing.Tokenizing;
 using LegendaryExplorerCore.UnrealScript.Parsing;
@@ -1103,7 +1102,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             ExpressionPrescedence.Push(node.Operator.Precedence);
 
             if (scopeNeeded) Append("(");
-            if (node.Operator.OperatorKeyword switch { "@" => true, "$" => true, _ => false } && node.LeftOperand is PrimitiveCast lpc && lpc.CastType?.Name == "string")
+            if (node.Operator.OperatorKeyword switch { "@" => true, "$" => true, _ => false } && node.LeftOperand is PrimitiveCast { CastType: { Name: "string" } } lpc)
             {
                 lpc.CastTarget.AcceptVisitor(this);
             }
@@ -1114,7 +1113,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             Space();
             Append(node.Operator.OperatorKeyword, EF.Operator);
             Space();
-            if (node.Operator.OperatorKeyword switch { "@" => true, "$" => true, "@=" => true, "$=" => true, _ => false } && node.RightOperand is PrimitiveCast rpc && rpc.CastType?.Name == "string")
+            if (node.Operator.OperatorKeyword switch { "@" => true, "$" => true, "@=" => true, "$=" => true, _ => false } && node.RightOperand is PrimitiveCast { CastType: { Name: "string" } } rpc)
             {
                 rpc.CastTarget.AcceptVisitor(this);
             }
@@ -1522,11 +1521,11 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 if (floatString[0] == '-')
                 {
                     minus = "-";
-                    floatString = floatString.Substring(1, floatString.Length - 1);
+                    floatString = floatString[1..];
                 }
                 int ePos = floatString.IndexOf("E-");
-                int exponent = int.Parse(floatString.Substring(ePos + 2));
-                string digits = floatString.Substring(0, ePos).Replace(".", "");
+                int exponent = int.Parse(floatString[(ePos + 2)..]);
+                string digits = floatString[..ePos].Replace(".", "");
                 floatString = $"{minus}0.{new string('0', exponent - 1)}{digits}";
             }
             else if (!floatString.Contains(".") && !floatString.Contains("e"))
@@ -1663,7 +1662,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
         public bool VisitNode(DynamicArrayLiteral node)
         {
-            bool multiLine = !ForceNoNewLines && (node.Values.Any(expr => expr is StructLiteral or DynamicArrayLiteral) || node.Values.Count > 7);
+            bool multiLine = !ForceNoNewLines && (node.Values.Any(expr => expr is StructLiteral) || node.Values.Count > 7);
 
             bool oldForceNoNewLines = ForceNoNewLines;
             int oldForcedAlignment = ForcedAlignment;

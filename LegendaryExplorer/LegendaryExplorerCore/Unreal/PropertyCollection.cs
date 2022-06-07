@@ -229,7 +229,7 @@ namespace LegendaryExplorerCore.Unreal
                                         ClassInfo classInfo = null;
                                         if (enumname == null && entry is ExportEntry exp)
                                         {
-                                            classInfo = GlobalUnrealObjectInfo.generateClassInfo(exp);
+                                            classInfo = GlobalUnrealObjectInfo.generateClassInfo(exp, packageCache: packageCache);
                                         }
 
                                         //Use DB info or attempt lookup
@@ -493,7 +493,7 @@ namespace LegendaryExplorerCore.Unreal
                         ClassInfo classInfo = null;
                         if (enumname == null && parsingEntry is ExportEntry parsingExport)
                         {
-                            classInfo = GlobalUnrealObjectInfo.generateClassInfo(parsingExport);
+                            classInfo = GlobalUnrealObjectInfo.generateClassInfo(parsingExport, packageCache: packageCache);
                         }
 
                         //Use DB info or attempt lookup
@@ -513,7 +513,7 @@ namespace LegendaryExplorerCore.Unreal
                         var propertyInfo = GlobalUnrealObjectInfo.GetPropertyInfo(pcc.Game, name, enclosingType, containingExport: parsingEntry as ExportEntry, packageCache: packageCache);
                         if (propertyInfo == null && parsingEntry is ExportEntry parsingExport)
                         {
-                            var currentInfo = GlobalUnrealObjectInfo.generateClassInfo(parsingExport);
+                            var currentInfo = GlobalUnrealObjectInfo.generateClassInfo(parsingExport, packageCache: packageCache);
                             propertyInfo = GlobalUnrealObjectInfo.GetPropertyInfo(pcc.Game, name, enclosingType, currentInfo, parsingExport, packageCache: packageCache);
                         }
 

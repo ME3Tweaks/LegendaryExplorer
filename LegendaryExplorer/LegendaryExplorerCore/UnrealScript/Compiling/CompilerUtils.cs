@@ -2,6 +2,7 @@
 using System.Linq;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
+using LegendaryExplorerCore.Unreal.ObjectInfo;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
 
 namespace LegendaryExplorerCore.UnrealScript.Compiling
@@ -55,7 +56,12 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         public static IEntry ResolveClass(Class c, IMEPackage pcc)
         {
-            var rop = new RelinkerOptionsPackage() { ImportExportDependencies = true }; // Might need to disable cache here depending on if that is desirable
+            var rop = new RelinkerOptionsPackage { ImportExportDependencies = true }; // Might need to disable cache here depending on if that is desirable
+            if (!GlobalUnrealObjectInfo.GetClasses(pcc.Game).ContainsKey(c.Name) && c.FilePath is not null)
+            {
+                using IMEPackage classPcc = MEPackageHandler.OpenMEPackage(c.FilePath);
+                GlobalUnrealObjectInfo.generateClassInfo(classPcc.GetUExport(c.UIndex));
+            }
             var entry = EntryImporter.EnsureClassIsInFile(pcc, c.Name, rop);
             if (rop.RelinkReport.Any())
             {

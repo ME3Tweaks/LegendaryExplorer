@@ -36,7 +36,7 @@ namespace LegendaryExplorerCore.Packages
         /// <summary>
         /// The list of packages that will not be dropped from last access staleness
         /// </summary>
-        private List<string> ResidentPackages = new List<string>();
+        private List<string> ResidentPackages = new();
 
         /// <summary>
         /// The maximum amount of packages this cache can hold open at a time. The default is unlimited (0). Global packages like SFXGame, Core, etc do not count against this.
@@ -59,7 +59,7 @@ namespace LegendaryExplorerCore.Packages
             // May need way to set maximum size of dictionary so we don't hold onto too much memory.
             lock (syncObj)
             {
-                if (Cache.TryGetValue(packagePath, out var package))
+                if (Cache.TryGetValue(packagePath, out IMEPackage package))
                 {
                     //Debug.WriteLine($@"PackageCache hit: {packagePath}");
                     LastAccessMap[packagePath] = DateTime.Now; // Update access time
