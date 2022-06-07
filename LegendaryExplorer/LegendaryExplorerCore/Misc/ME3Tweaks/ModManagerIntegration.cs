@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.IO;
 using LegendaryExplorerCore.Packages;
 using Microsoft.Win32;
@@ -51,21 +52,23 @@ namespace LegendaryExplorerCore.Misc.ME3Tweaks
         }
 
         /// <summary>
-        /// Instructs Mod Manager to install the Bink ASI loader to the specified game.
+        /// Instructs Mod Manager to install the specified ASI group ASI loader to the specified game.
         /// </summary>
         /// <param name="game">Game to request installation for. In Mod Manager, this will select the default game target (which is what LEC uses, unless the user specifies otherwise)</param>
-        /// <param name="game">The updategroup of the ASI to install for.</param>
+        /// <param name="ASIid">The updategroup of the ASI to install for.</param>
+        /// <param name="version">The version of the ASI to install for. Can be used to hardcode against a known working version. Setting a value of 0 will install the latest from the ASI manifest.</param>
         /// <returns>True if request was made, false otherwise</returns>
-        public static bool RequestASIInstallation(MEGame game, int ASIid)
+        public static bool RequestASIInstallation(MEGame game, int ASIid, int version = 0)
         {
+            throw new Exception(@"NOT FULLY IMPLEMENTED YET");
             return InternalRequestModManagerTask($"--installasi {ASIid} --game {game}");
         }
 
         /// <summary>
         /// Invokes ME3Tweaks Mod Manager with the specified arguments.
         /// </summary>
-        /// <param name="arguments"></param>
-        /// <returns></returns>
+        /// <param name="arguments">Arguments to pass to M3 - invalid arguments will be ignored by M3</param>
+        /// <returns>True if the process was started, false otherwise</returns>
         private static bool InternalRequestModManagerTask(string arguments)
         {
             var m3ExecutableLocation = GetModManagerExecutableLocation();
