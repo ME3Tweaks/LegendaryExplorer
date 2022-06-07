@@ -21,7 +21,7 @@ var class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_global_unreal_o
     [ "GetClasses", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_global_unreal_object_info.html#a4e99cd9e3ff327097e782710613df312", null ],
     [ "GetStructs", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_global_unreal_object_info.html#af6e3f64d00703a5c589550ff5b00bbb9", null ],
     [ "GetEnums", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_global_unreal_object_info.html#a94e49646e836b1e7f295c7ee24c95efb", null ],
-    [ "generateClassInfo", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_global_unreal_object_info.html#a35d5bb549bc60d456207a0b2d03bed9f", null ],
+    [ "generateClassInfo", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_global_unreal_object_info.html#a4852c53faecd1fc6b3fdb5074fa788de", null ],
     [ "getDefaultProperty", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_global_unreal_object_info.html#a6d622574c78c55edf2a0772d6f2acecc", null ],
     [ "GetSequenceObjectInfoInputLinks", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_global_unreal_object_info.html#abb1dea270ec15f23a3ae494343cf82b9", null ],
     [ "GenerateSequenceObjectInfoForClassDefaults", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_global_unreal_object_info.html#a1a3442d002bbb8134d4a30e43e448708", null ],

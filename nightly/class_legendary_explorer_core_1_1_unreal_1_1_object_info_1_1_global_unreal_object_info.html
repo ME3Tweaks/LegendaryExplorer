@@ -145,8 +145,8 @@ Static Public Member Functions</h2></td></tr>
 <tr class="separator:af6e3f64d00703a5c589550ff5b00bbb9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a94e49646e836b1e7f295c7ee24c95efb"><td class="memItemLeft" align="right" valign="top">static Dictionary&lt; string, List&lt; <a class="el" href="struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html">NameReference</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_global_unreal_object_info.html#a94e49646e836b1e7f295c7ee24c95efb">GetEnums</a> (<a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game)</td></tr>
 <tr class="separator:a94e49646e836b1e7f295c7ee24c95efb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a35d5bb549bc60d456207a0b2d03bed9f"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_class_info.html">ClassInfo</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_global_unreal_object_info.html#a35d5bb549bc60d456207a0b2d03bed9f">generateClassInfo</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> export, bool isStruct=false)</td></tr>
-<tr class="separator:a35d5bb549bc60d456207a0b2d03bed9f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4852c53faecd1fc6b3fdb5074fa788de"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_class_info.html">ClassInfo</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_global_unreal_object_info.html#a4852c53faecd1fc6b3fdb5074fa788de">generateClassInfo</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> export, bool isStruct=false, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a> packageCache=null)</td></tr>
+<tr class="separator:a4852c53faecd1fc6b3fdb5074fa788de"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6d622574c78c55edf2a0772d6f2acecc"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property.html">Property</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_global_unreal_object_info.html#a6d622574c78c55edf2a0772d6f2acecc">getDefaultProperty</a> (<a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game, <a class="el" href="struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html">NameReference</a> propName, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_property_info.html">PropertyInfo</a> propInfo, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a> packageCache, bool stripTransients=true, bool isImmutable=false)</td></tr>
 <tr class="separator:a6d622574c78c55edf2a0772d6f2acecc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abb1dea270ec15f23a3ae494343cf82b9"><td class="memItemLeft" align="right" valign="top">static List&lt; string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_global_unreal_object_info.html#abb1dea270ec15f23a3ae494343cf82b9">GetSequenceObjectInfoInputLinks</a> (<a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game, string exportClassName)</td></tr>
@@ -1077,8 +1077,8 @@ Static Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a35d5bb549bc60d456207a0b2d03bed9f" name="a35d5bb549bc60d456207a0b2d03bed9f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a35d5bb549bc60d456207a0b2d03bed9f">&#9670;&nbsp;</a></span>generateClassInfo()</h2>
+<a id="a4852c53faecd1fc6b3fdb5074fa788de" name="a4852c53faecd1fc6b3fdb5074fa788de"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4852c53faecd1fc6b3fdb5074fa788de">&#9670;&nbsp;</a></span>generateClassInfo()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1096,7 +1096,13 @@ Static Public Attributes</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>isStruct</em> = <code>false</code>&#160;</td>
+          <td class="paramname"><em>isStruct</em> = <code>false</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a>&#160;</td>
+          <td class="paramname"><em>packageCache</em> = <code>null</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
