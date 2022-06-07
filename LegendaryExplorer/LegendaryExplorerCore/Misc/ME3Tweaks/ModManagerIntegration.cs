@@ -43,7 +43,7 @@ namespace LegendaryExplorerCore.Misc.ME3Tweaks
         /// <summary>
         /// Instructs Mod Manager to install the Bink ASI loader to the specified game root path (GameTarget)
         /// </summary>
-        /// <param name="game">Game to request installation for. In Mod Manager, this will select the default game target (which is what LEX uses)</param>
+        /// <param name="game">Game to request installation for. In Mod Manager, this will select the default game target (which is what LEC uses, unless the user specifies otherwise)</param>
         /// <returns>True if request was made, false otherwise</returns>
         public static bool RequestBinkInstallation(MEGame game)
         {
@@ -51,9 +51,9 @@ namespace LegendaryExplorerCore.Misc.ME3Tweaks
         }
 
         /// <summary>
-        /// Instructs Mod Manager to install the Bink ASI loader to the specified game root path (GameTarget)
+        /// Instructs Mod Manager to install the Bink ASI loader to the specified game.
         /// </summary>
-        /// <param name="game">Game to request installation for. In Mod Manager, this will select the default game target (which is what LEX uses)</param>
+        /// <param name="game">Game to request installation for. In Mod Manager, this will select the default game target (which is what LEC uses, unless the user specifies otherwise)</param>
         /// <param name="game">The updategroup of the ASI to install for.</param>
         /// <returns>True if request was made, false otherwise</returns>
         public static bool RequestASIInstallation(MEGame game, int ASIid)
