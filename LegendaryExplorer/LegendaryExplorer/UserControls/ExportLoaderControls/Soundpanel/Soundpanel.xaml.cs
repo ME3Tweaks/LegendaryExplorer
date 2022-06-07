@@ -1423,6 +1423,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
             }).ContinueWithOnUIThread((a) =>
             {
+                UpdateAudioStream();
                 if (HostingControl != null)
                 {
                     HostingControl.IsBusy = false;
@@ -1458,7 +1459,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
                 w.ImportFromFile(filePath, w.GetPathToAFC());
                 exportToWorkOn.WriteBinary(w);
-                UpdateAudioStream();
 
                 if (updateReferencedEvents)
                 {
@@ -1483,8 +1483,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
                 // Find referenced WwiseEvent exports and update the property
                 var referencedExports = wwiseStreamExport.GetEntriesThatReferenceThisOne();
-                foreach (ExportEntry re in referencedExports.Select(e => e.Key)
-                                                            .Where(e => e.ClassName == "WwiseEvent"))
+                foreach (var re in referencedExports.Select(e => e.Key)
+                                                            .Where(e => e.ClassName == "WwiseEvent")
+                                                            .OfType<ExportEntry>())
                 {
                     re.WriteProperty(durationProperty);
                 }
@@ -1525,7 +1526,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         }
                         else return splits[1] == tlkId.ToString();
                     });
-                foreach (ExportEntry re in referencedExports)
+                foreach (var re in referencedExports.OfType<ExportEntry>())
                 {
                     re.WriteProperty(durationProperty);
                 }

@@ -215,8 +215,9 @@ namespace LegendaryExplorer.UnrealExtensions
 
             foreach (string file in filesToConvert)
             {
-                string basename = Path.GetFileNameWithoutExtension(file);
-                File.Copy(Path.Combine(outputDirectory, basename + extension), Path.Combine(copyToDirectory, basename + extension), true);
+                string fileName = Path.GetFileName(Path.ChangeExtension(file, extension));
+                if (fileName is null) break;
+                File.Copy(Path.Combine(outputDirectory, fileName), Path.Combine(copyToDirectory, fileName), true);
             }
 
             var deleteResult = await TryDeleteDirectory(templatefolder);
