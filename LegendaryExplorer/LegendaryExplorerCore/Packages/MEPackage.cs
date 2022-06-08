@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -522,22 +523,32 @@ namespace LegendaryExplorerCore.Packages
             //read importTable
             inStream.JumpTo(ImportOffset);
             imports = new List<ImportEntry>(ImportCount);
+
+            //explicitly creating the delegate outside the loop avoids allocating a new delegate for every import
+            var importChangedHandler = new PropertyChangedEventHandler(importChanged);
             for (int i = 0; i < ImportCount; i++)
             {
                 var imp = new ImportEntry(this, packageReader) { Index = i };
                 if (MEPackageHandler.GlobalSharedCacheEnabled)
-                    imp.PropertyChanged += importChanged; // If packages are not shared there is no point to attaching this
+                {
+                    imp.PropertyChanged += importChangedHandler; // If packages are not shared there is no point to attaching this
+                }
                 imports.Add(imp);
             }
 
             //read exportTable
             inStream.JumpTo(ExportOffset);
             exports = new List<ExportEntry>(ExportCount);
+
+            //explicitly creating the delegate outside the loop avoids allocating a new delegate for every import
+            var exportChangedHandler = new PropertyChangedEventHandler(exportChanged);
             for (int i = 0; i < ExportCount; i++)
             {
                 var e = new ExportEntry(this, packageReader, false) { Index = i };
                 if (MEPackageHandler.GlobalSharedCacheEnabled)
-                    e.PropertyChanged += exportChanged; // If packages are not shared there is no point to attaching this
+                {
+                    e.PropertyChanged += exportChangedHandler; // If packages are not shared there is no point to attaching this
+                }
                 exports.Add(e);
                 if (platformNeedsResolved && e.ClassName == "ShaderCache")
                 {

@@ -23,7 +23,7 @@ namespace LegendaryExplorerCore.Unreal
     /// <summary>
     /// Collection of <see cref="Property"/>s
     /// </summary>
-    public sealed class PropertyCollection : Collection<Property>
+    public sealed class PropertyCollection : List<Property>
     {
         internal int EndOffset;
         
@@ -79,7 +79,7 @@ namespace LegendaryExplorerCore.Unreal
         {
             if (!TryReplaceProp(prop))
             {
-                this.Items.Add(prop);
+                Add(prop);
             }
         }
 
@@ -95,7 +95,7 @@ namespace LegendaryExplorerCore.Unreal
             {
                 prop.WriteTo(writer, pcc, IsImmutable);
             }
-            if (!IsImmutable && requireNoneAtEnd && (Count == 0 || Items[^1] is not NoneProperty))
+            if (!IsImmutable && requireNoneAtEnd && (Count == 0 || this[^1] is not NoneProperty))
             {
                 writer.WriteNoneProperty(pcc);
             }
@@ -147,7 +147,7 @@ namespace LegendaryExplorerCore.Unreal
                     string name = pcc.GetNameEntry(nameIdx);
                     if (name == "None")
                     {
-                        props.Items.Add(new NoneProperty(stream) { StartOffset = propertyStartPosition, ValueOffset = propertyStartPosition });
+                        props.Add(new NoneProperty(stream) { StartOffset = propertyStartPosition, ValueOffset = propertyStartPosition });
                         stream.Seek(4, SeekOrigin.Current);
                         break;
                     }
@@ -297,7 +297,7 @@ namespace LegendaryExplorerCore.Unreal
                     {
                         prop.StaticArrayIndex = staticArrayIndex;
                         prop.StartOffset = propertyStartPosition;
-                        props.Items.Add(prop);
+                        props.Add(prop);
                     }
                 }
             }
@@ -326,7 +326,7 @@ namespace LegendaryExplorerCore.Unreal
                 //remove None Property
                 if (props[^1].PropType == PropertyType.None && !includeNoneProperty)
                 {
-                    props.Items.RemoveAt(props.Count - 1);
+                    props.RemoveAt(props.Count - 1);
                 }
             }
             props.EndOffset = (int)stream.Position;
@@ -368,7 +368,7 @@ namespace LegendaryExplorerCore.Unreal
                 if (defaultProps == null)
                 {
                     int startPos = (int)stream.Position;
-                    props.Items.Add(new UnknownProperty(stream, size) { StartOffset = startPos });
+                    props.Add(new UnknownProperty(stream, size) { StartOffset = startPos });
                     return props;
                 }
             }
@@ -388,7 +388,7 @@ namespace LegendaryExplorerCore.Unreal
 
                 if (property.PropType != PropertyType.None)
                 {
-                    props.Items.Add(property);
+                    props.Add(property);
                 }
             }
             return props;

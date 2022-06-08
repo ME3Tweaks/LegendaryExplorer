@@ -636,7 +636,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 };
                 if (classExport is not null)
                 {
-                    return AddOrReplaceClassInDB(classExport.GetBinaryData<UClass>());
+                    return AddOrReplaceClassInDB(classExport.GetBinaryData<UClass>(packageCache), packageCache);
                 }
             }
 
@@ -655,7 +655,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             };
         }
 
-        internal static ClassInfo AddOrReplaceClassInDB(UClass uClass)
+        internal static ClassInfo AddOrReplaceClassInDB(UClass uClass, PackageCache packageCache = null)
         {
             ExportEntry export = uClass.Export;
             IMEPackage pcc = export.FileRef;
@@ -671,14 +671,30 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                     : pcc.FilePath
             };
 
+            Dictionary<string, ClassInfo> classInfos = GetClasses(game);
+            if (export.SuperClass is not null && !classInfos.ContainsKey(classInfo.baseClass))
+            {
+                ExportEntry classExport = export.SuperClass switch
+                {
+                    ExportEntry exportEntry => exportEntry,
+                    ImportEntry importEntry => EntryImporter.ResolveImport(importEntry, packageCache),
+                    _ => throw new ArgumentOutOfRangeException()
+                };
+                if (classExport is not null)
+                {
+                    return AddOrReplaceClassInDB(classExport.GetBinaryData<UClass>());
+                }
+            }
+
             ParseChildren(uClass, classInfo, GetStructs(game), GetEnums(game));
 
-            GetClasses(game)[classInfo.ClassName] = classInfo;
+            classInfos[classInfo.ClassName] = classInfo;
 
             return classInfo;
 
-            void ParseChildren(UStruct uStruct, ClassInfo info, Dictionary<string, ClassInfo> structs, Dictionary<string, List<NameReference>> enums)
+            static void ParseChildren(UStruct uStruct, ClassInfo info, Dictionary<string, ClassInfo> structs, Dictionary<string, List<NameReference>> enums)
             {
+                IMEPackage pcc = uStruct.Export.FileRef;
                 int childUIndex = uStruct.Children;
                 while (childUIndex > 0)
                 {

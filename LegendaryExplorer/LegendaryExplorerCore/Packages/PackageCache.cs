@@ -45,7 +45,14 @@ namespace LegendaryExplorerCore.Packages
         public int CacheMaxSize { get; set; }
 
         /// <summary>
-        /// Thread-safe package cache fetch. Can be passed to various methods to help expedite operations by preventing package reopening. Packages opened with this method do not use the global LegendaryExplorerCore caching system and will always load from disk if not in this local cache.
+        /// When the <see cref="PackageCache"/> opens a package, should it always load from disk, or should it acquire one from the global cache if possible.
+        /// Defaults to <value>true</value>
+        /// </summary>
+        public bool AlwaysOpenFromDisk { get; init; } = true;
+
+        /// <summary>
+        /// Thread-safe package cache fetch. Can be passed to various methods to help expedite operations by preventing package reopening.
+        /// If <see cref="AlwaysOpenFromDisk"/> is true, then packages opened with this method will not use the global LegendaryExplorerCore caching system and will always load from disk if not in this local cache.
         /// </summary>
         /// <param name="packagePath"></param>
         /// <param name="openIfNotInCache">Open the specified package if it is not in the cache, and add it to the cache</param>
@@ -71,7 +78,7 @@ namespace LegendaryExplorerCore.Packages
                     if (File.Exists(packagePath))
                     {
                         //Debug.WriteLine($@"PackageCache {guid} load: {packagePath}");
-                        package = MEPackageHandler.OpenMEPackage(packagePath, forceLoadFromDisk: true);
+                        package = MEPackageHandler.OpenMEPackage(packagePath, forceLoadFromDisk: AlwaysOpenFromDisk);
                         InsertIntoCache(package);
                         return package;
                     }

@@ -621,7 +621,7 @@ namespace LegendaryExplorerCore.Packages
                 segStartPos = firstChunkOffset = Chunks.MinBy(x => x.uncompressedOffset).uncompressedOffset;
                 var fullUncompressedSize = Chunks.Sum(x => x.uncompressedSize);
                 _length = fullUncompressedSize + firstChunkOffset;
-                Segment = MemoryManager.GetByteArray(maxBlockSize);
+                Segment = new byte[maxBlockSize];
             }
 
             protected override void MoveToNextBlockAndDecompress()
@@ -672,8 +672,8 @@ namespace LegendaryExplorerCore.Packages
                     UnrealPackageFile.CompressionType.LZMA => maxUncompressedBlockSize * 2,
                     _ => throw new ArgumentOutOfRangeException(nameof(compressionType), compressionType, null)
                 };
-                compressedBlock = MemoryManager.GetByteArray(maxCompressedBlockSize);
-                Segment = MemoryManager.GetByteArray(maxUncompressedBlockSize);
+                compressedBlock = new byte[maxCompressedBlockSize];
+                Segment = new byte[maxUncompressedBlockSize];
 
                 Chunks = new List<Chunk>(numChunks);
                 for (int i = 0; i < numChunks; i++)
@@ -746,15 +746,6 @@ namespace LegendaryExplorerCore.Packages
                 BaseStream.JumpTo(chunk.compressedOffset + blockstart);
                 BaseStream.Read(datain);
                 return datain;
-            }
-
-            protected override void Dispose(bool disposing)
-            {
-                base.Dispose(disposing);
-                if (disposing)
-                {
-                    MemoryManager.ReturnByteArray(compressedBlock);
-                }
             }
         }
     }

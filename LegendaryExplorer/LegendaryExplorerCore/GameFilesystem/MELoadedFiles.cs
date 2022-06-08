@@ -17,6 +17,8 @@ namespace LegendaryExplorerCore.GameFilesystem
         private const string ME23LEFilePattern = "*.pcc";
         private static readonly string[] ME23LEFilePatternIncludeTFC = { "*.pcc", "*.tfc" };
 
+        private static readonly string FauxStartupPath = Path.Combine("DLC_METR_Patch01", "CookedPCConsole", "Startup.pcc");
+
         /// <summary>
         /// Invalidates the cache of loaded files for all games
         /// </summary>
@@ -102,7 +104,7 @@ namespace LegendaryExplorerCore.GameFilesystem
                     foreach (string filePath in GetCookedFiles(game, directory, includeTFCs, includeAFCs))
                     {
                         string fileName = Path.GetFileName(filePath);
-                        if (game == MEGame.LE3 && filePath.EndsWith($@"DLC_METR_Patch01{Path.DirectorySeparatorChar}CookedPCConsole{Path.DirectorySeparatorChar}Startup.pcc"))
+                        if (game == MEGame.LE3 && filePath.EndsWith(FauxStartupPath))
                         {
                             continue; // This file is not used by game and will break lots of stuff if we don't filter it out. This is a bug in how LE3 was cooked
                         }
