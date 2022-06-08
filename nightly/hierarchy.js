@@ -119,9 +119,6 @@ var hierarchy =
       [ "LegendaryExplorerCore.UnrealScript.Analysis.Visitors.CodeBuilderVisitor< TFormatter >", "class_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_visitors_1_1_code_builder_visitor.html", null ]
     ] ],
     [ "LegendaryExplorerCore.Textures.Codecs.Codecs", "class_legendary_explorer_core_1_1_textures_1_1_codecs_1_1_codecs.html", null ],
-    [ "Collection", null, [
-      [ "LegendaryExplorerCore.Unreal.PropertyCollection", "class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html", null ]
-    ] ],
     [ "LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic.CollectionExtensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_collections_1_1_generic_1_1_collection_extensions.html", null ],
     [ "LegendaryExplorerCore.Gammtek.Helpers.CollectionHelper", "class_legendary_explorer_core_1_1_gammtek_1_1_helpers_1_1_collection_helper.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.ColorVertexBuffer", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_color_vertex_buffer.html", null ],
@@ -631,7 +628,8 @@ var hierarchy =
     [ "List", null, [
       [ "LegendaryExplorerCore.Helpers.ListInitHelper.InitCollection< T >", "class_legendary_explorer_core_1_1_helpers_1_1_list_init_helper_1_1_init_collection.html", null ],
       [ "LegendaryExplorerCore.Misc.OrderedMultiValueDictionary< TKey, TValue >", "class_legendary_explorer_core_1_1_misc_1_1_ordered_multi_value_dictionary.html", null ],
-      [ "LegendaryExplorerCore.Packages.DisposableCollection< T >", "class_legendary_explorer_core_1_1_packages_1_1_disposable_collection.html", null ]
+      [ "LegendaryExplorerCore.Packages.DisposableCollection< T >", "class_legendary_explorer_core_1_1_packages_1_1_disposable_collection.html", null ],
+      [ "LegendaryExplorerCore.Unreal.PropertyCollection", "class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html", null ]
     ] ],
     [ "LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic.ListExtensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_collections_1_1_generic_1_1_list_extensions.html", null ],
     [ "LegendaryExplorerCore.Helpers.ListInitHelper", "class_legendary_explorer_core_1_1_helpers_1_1_list_init_helper.html", null ],

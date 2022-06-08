@@ -17,5 +17,6 @@ var class_legendary_explorer_core_1_1_packages_1_1_package_cache =
     [ "guid", "class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a979a16005572513084c0ae5dc72d6d65", null ],
     [ "syncObj", "class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a5c6a5b140e8c446e1975bf90fa5b616d", null ],
     [ "Cache", "class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#ae8fe5ee541dc77fbf6f9af5fceaa8f73", null ],
-    [ "CacheMaxSize", "class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#af19e95963c4072b675dd32a244fa4e1b", null ]
+    [ "CacheMaxSize", "class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#af19e95963c4072b675dd32a244fa4e1b", null ],
+    [ "AlwaysOpenFromDisk", "class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#accede661db51e02040eaaa098b787005", null ]
 ];

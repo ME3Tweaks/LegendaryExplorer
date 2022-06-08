@@ -109,7 +109,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a75ef1d28ed357973ce1f6a582261330a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a75ef1d28ed357973ce1f6a582261330a">PackageCache</a> ()</td></tr>
 <tr class="separator:a75ef1d28ed357973ce1f6a582261330a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a214d8c918938d4bc14a3cb310138fcf2"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a214d8c918938d4bc14a3cb310138fcf2">GetCachedPackage</a> (string packagePath, bool openIfNotInCache=true)</td></tr>
-<tr class="memdesc:a214d8c918938d4bc14a3cb310138fcf2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Thread-safe package cache fetch. Can be passed to various methods to help expedite operations by preventing package reopening. <a class="el" href="namespace_legendary_explorer_core_1_1_packages.html">Packages</a> opened with this method do not use the global <a class="el" href="namespace_legendary_explorer_core.html">LegendaryExplorerCore</a> caching system and will always load from disk if not in this local cache.  <a href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a214d8c918938d4bc14a3cb310138fcf2">More...</a><br /></td></tr>
+<tr class="memdesc:a214d8c918938d4bc14a3cb310138fcf2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Thread-safe package cache fetch. Can be passed to various methods to help expedite operations by preventing package reopening. If <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#accede661db51e02040eaaa098b787005" title="When the PackageCache opens a package, should it always load from disk, or should it acquire one from...">AlwaysOpenFromDisk</a> is true, then packages opened with this method will not use the global <a class="el" href="namespace_legendary_explorer_core.html">LegendaryExplorerCore</a> caching system and will always load from disk if not in this local cache.  <a href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a214d8c918938d4bc14a3cb310138fcf2">More...</a><br /></td></tr>
 <tr class="separator:a214d8c918938d4bc14a3cb310138fcf2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a514fff2e78ac72d21ee7c404c3fe570d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a514fff2e78ac72d21ee7c404c3fe570d">InsertIntoCache</a> (<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> package)</td></tr>
 <tr class="separator:a514fff2e78ac72d21ee7c404c3fe570d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -162,6 +162,9 @@ Properties</h2></td></tr>
 <tr class="memitem:af19e95963c4072b675dd32a244fa4e1b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#af19e95963c4072b675dd32a244fa4e1b">CacheMaxSize</a><code> [getset]</code></td></tr>
 <tr class="memdesc:af19e95963c4072b675dd32a244fa4e1b"><td class="mdescLeft">&#160;</td><td class="mdescRight">The maximum amount of packages this cache can hold open at a time. The default is unlimited (0). Global packages like SFXGame, Core, etc do not count against this. When a new package is opened, the stalest package is dropped if the amount of open packages exceeds this number.  <a href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#af19e95963c4072b675dd32a244fa4e1b">More...</a><br /></td></tr>
 <tr class="separator:af19e95963c4072b675dd32a244fa4e1b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:accede661db51e02040eaaa098b787005"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#accede661db51e02040eaaa098b787005">AlwaysOpenFromDisk</a> = true<code> [get]</code></td></tr>
+<tr class="memdesc:accede661db51e02040eaaa098b787005"><td class="mdescLeft">&#160;</td><td class="mdescRight">When the <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html" title="Class that allows you to cache packages in memory for fast accessing, without having to use a global ...">PackageCache</a> opens a package, should it always load from disk, or should it acquire one from the global cache if possible. Defaults to true <a href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#accede661db51e02040eaaa098b787005">More...</a><br /></td></tr>
+<tr class="separator:accede661db51e02040eaaa098b787005"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Class that allows you to cache packages in memory for fast accessing, without having to use a global package cache like ME3Explorer's system. Can be subclassed for specific implementations. </p>
@@ -226,7 +229,7 @@ Properties</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Thread-safe package cache fetch. Can be passed to various methods to help expedite operations by preventing package reopening. <a class="el" href="namespace_legendary_explorer_core_1_1_packages.html">Packages</a> opened with this method do not use the global <a class="el" href="namespace_legendary_explorer_core.html">LegendaryExplorerCore</a> caching system and will always load from disk if not in this local cache. </p>
+<p>Thread-safe package cache fetch. Can be passed to various methods to help expedite operations by preventing package reopening. If <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#accede661db51e02040eaaa098b787005" title="When the PackageCache opens a package, should it always load from disk, or should it acquire one from...">AlwaysOpenFromDisk</a> is true, then packages opened with this method will not use the global <a class="el" href="namespace_legendary_explorer_core.html">LegendaryExplorerCore</a> caching system and will always load from disk if not in this local cache. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">packagePath</td><td></td></tr>
@@ -714,6 +717,30 @@ Properties</h2></td></tr>
 </div><div class="memdoc">
 
 <p>The maximum amount of packages this cache can hold open at a time. The default is unlimited (0). Global packages like SFXGame, Core, etc do not count against this. When a new package is opened, the stalest package is dropped if the amount of open packages exceeds this number. </p>
+
+</div>
+</div>
+<a id="accede661db51e02040eaaa098b787005" name="accede661db51e02040eaaa098b787005"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#accede661db51e02040eaaa098b787005">&#9670;&nbsp;</a></span>AlwaysOpenFromDisk</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool LegendaryExplorerCore.Packages.PackageCache.AlwaysOpenFromDisk = true</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">get</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>When the <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html" title="Class that allows you to cache packages in memory for fast accessing, without having to use a global ...">PackageCache</a> opens a package, should it always load from disk, or should it acquire one from the global cache if possible. Defaults to true</p>
 
 </div>
 </div>
