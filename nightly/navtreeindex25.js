@@ -186,7 +186,6 @@ var NAVTREEINDEX25 =
 "_multi_stream_8cs.html":[2,0,0,0,6,6,22],
 "_mutable_byte_8cs.html":[2,0,0,0,6,6,23],
 "_name_literal_8cs.html":[2,0,0,0,21,3,1,43],
-"_name_literal_matcher_8cs.html":[2,0,0,0,21,4,0,0,0],
 "_name_reference_8cs.html":[2,0,0,0,20,12],
 "_namespace_8cs.html":[2,0,0,0,1,14],
 "_new_operator_8cs.html":[2,0,0,0,21,3,1,44],
@@ -197,14 +196,13 @@ var NAVTREEINDEX25 =
 "_node_type_8cs.html#a930c09d828d202c2c163aef271d40934af2bbdf9f72c085adc4d0404e370f0f4c":[2,0,0,0,6,3,6,0,1],
 "_node_utils_8cs.html":[2,0,0,0,21,3,2,2],
 "_none_literal_8cs.html":[2,0,0,0,21,3,1,45],
-"_number_matcher_8cs.html":[2,0,0,0,21,4,0,0,1],
 "_object_binary_8cs.html":[2,0,0,0,20,0,38],
 "_object_extensions_8cs.html":[2,0,0,0,6,4,13],
 "_object_helper_8cs.html":[2,0,0,0,6,5,2],
 "_object_info_loader_8cs.html":[2,0,0,0,20,2,8],
 "_object_instance_d_b_8cs.html":[2,0,0,0,14,0,4],
 "_object_literal_8cs.html":[2,0,0,0,21,3,1,46],
-"_object_reader_8cs.html":[2,0,0,0,21,6,3],
+"_object_reader_8cs.html":[2,0,0,0,21,6,2],
 "_object_redirector_8cs.html":[2,0,0,0,20,0,39],
 "_object_to_string_helper_8cs.html":[2,0,0,0,6,5,3],
 "_object_type_8cs.html":[2,0,0,0,21,3,1,47],
@@ -249,5 +247,7 @@ var NAVTREEINDEX25 =
 "_plot_element_type_8cs.html#a20acd1cec2d6ae4f2a2ef1514f611ea0a36be98b843e778a6e7350354b6937cfe":[2,0,0,0,15,1,3,1,2],
 "_plot_element_type_8cs.html#a20acd1cec2d6ae4f2a2ef1514f611ea0a3adbdb3ac060038aa0e6e6c138ef9873":[2,0,0,0,15,1,3,1,16],
 "_plot_element_type_8cs.html#a20acd1cec2d6ae4f2a2ef1514f611ea0a46a2a41cc6e552044816a2d04634545d":[2,0,0,0,15,1,3,1,5],
-"_plot_element_type_8cs.html#a20acd1cec2d6ae4f2a2ef1514f611ea0a5aad20220e2659425b35295326ac2658":[2,0,0,0,15,1,3,1,8]
+"_plot_element_type_8cs.html#a20acd1cec2d6ae4f2a2ef1514f611ea0a5aad20220e2659425b35295326ac2658":[2,0,0,0,15,1,3,1,8],
+"_plot_element_type_8cs.html#a20acd1cec2d6ae4f2a2ef1514f611ea0a6adf97f83acf6453d4a6a4b1070f3754":[2,0,0,0,15,1,3,1,0],
+"_plot_element_type_8cs.html#a20acd1cec2d6ae4f2a2ef1514f611ea0a74ba39e81b75f3d7e1e256b81a749e29":[2,0,0,0,15,1,3,1,10]
 };

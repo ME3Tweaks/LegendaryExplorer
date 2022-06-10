@@ -1,4 +1,0 @@
-var class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_matching_1_1_string_matchers_1_1_white_space_matcher =
-[
-    [ "MatchWhiteSpace", "class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_matching_1_1_string_matchers_1_1_white_space_matcher.html#a47e7483079222401bf2d3851ec5478e0", null ]
-];

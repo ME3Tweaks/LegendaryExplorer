@@ -1,4 +1,0 @@
-var class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_matching_1_1_string_matchers_1_1_number_matcher =
-[
-    [ "MatchNumber", "class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_matching_1_1_string_matchers_1_1_number_matcher.html#acd3eb873a18554dcf3f5215a112c3f68", null ]
-];

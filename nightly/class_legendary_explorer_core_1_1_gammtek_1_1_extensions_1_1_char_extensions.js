@@ -17,6 +17,6 @@ var class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_char_extensions
     [ "ToUInt16", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_char_extensions.html#a050c868a2f78b59f3aa7a46a82a6c57d", null ],
     [ "ToUInt32", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_char_extensions.html#a71f6dd45805b589f00dcc1579f64ae9e", null ],
     [ "ToUInt64", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_char_extensions.html#a07ed00e8d58f88f912637ea9f8b442b2", null ],
-    [ "CaseInsensitiveEquals", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_char_extensions.html#a7e6d9e53f94bfd7e54b68c79a4c2074a", null ],
+    [ "AsciiCaseInsensitiveEquals", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_char_extensions.html#a040b92ea0217c19dc12dd15974ba57e7", null ],
     [ "IsNullOrWhiteSpace", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_char_extensions.html#ae1706905e1fb7aaf3425af062d5d169c", null ]
 ];

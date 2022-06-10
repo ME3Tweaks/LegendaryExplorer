@@ -1,6 +1,6 @@
 var class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function =
 [
-    [ "Function", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function.html#ad55a385c993df38a5a70a17c81ddb0f4", null ],
+    [ "Function", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function.html#a90c2f6b0596ec6adaf5b238d2e3d6d21", null ],
     [ "SignatureEquals", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function.html#a3947283b7f855bc1001a240382ff077c", null ],
     [ "AcceptVisitor", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function.html#a5b8da85e7161bd459a1ca49e083f95a4", null ],
     [ "ReturnValueDeclaration", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function.html#aa8eba3107c10ab35d2c5a28440423553", null ],
@@ -14,6 +14,7 @@ var class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_fu
     [ "SuperFunction", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function.html#a2a83573cdc2f12a71e079914cb183a7e", null ],
     [ "Name", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function.html#a8a63527c0c117cf8d354f01abfcfec4f", null ],
     [ "Body", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function.html#a5b7ac33d05b41b2959a53c1f6c2a6929", null ],
+    [ "Tokens", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function.html#af213eabe510fd1cee2079788472c9c99", null ],
     [ "Locals", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function.html#a2569d5e00c47785242123fdb77767687", null ],
     [ "ReturnType", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function.html#a494bc95e3164479586929374f4dc483f", null ],
     [ "CoerceReturn", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function.html#a5535fa395ef5a7d655e6483dbe76fa2d", null ],

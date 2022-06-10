@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.2"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Legendary Explorer Core: LegendaryExplorerCore.UnrealScript.Lexing.Matching.StringMatchers.SymbolMatcher Class Reference</title>
+<title>Legendary Explorer Core: LegendaryExplorerCore.UnrealScript.Parsing.LineLookup Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -67,7 +67,7 @@ $(function() {
 </div>
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
-$(document).ready(function(){initNavTree('class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_matching_1_1_string_matchers_1_1_symbol_matcher.html',''); initResizable(); });
+$(document).ready(function(){initNavTree('class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_line_lookup.html',''); initResizable(); });
 /* @license-end */
 </script>
 <div id="doc-content">
@@ -89,26 +89,28 @@ $(document).ready(function(){initNavTree('class_legendary_explorer_core_1_1_unre
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
-<a href="class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_matching_1_1_string_matchers_1_1_symbol_matcher-members.html">List of all members</a>  </div>
-  <div class="headertitle"><div class="title">LegendaryExplorerCore.UnrealScript.Lexing.Matching.StringMatchers.SymbolMatcher Class Reference</div></div>
+<a href="class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_line_lookup-members.html">List of all members</a>  </div>
+  <div class="headertitle"><div class="title">LegendaryExplorerCore.UnrealScript.Parsing.LineLookup Class Reference</div></div>
 </div><!--header-->
 <div class="contents">
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:af26e88172e00a7c80f57c1ba4f4510b3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_matching_1_1_string_matchers_1_1_symbol_matcher.html#af26e88172e00a7c80f57c1ba4f4510b3">SymbolMatcher</a> (string keyword, <a class="el" href="namespace_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_tokenizing.html#a474bc360809b2d99e18c94859cceefd9">TokenType</a> type)</td></tr>
-<tr class="separator:af26e88172e00a7c80f57c1ba4f4510b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab0197d593b1fc93ea2a5be10b62a6dce"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_tokenizing_1_1_script_token.html">ScriptToken</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_matching_1_1_string_matchers_1_1_symbol_matcher.html#ab0197d593b1fc93ea2a5be10b62a6dce">Match</a> (<a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_char_data_stream.html">CharDataStream</a> data, ref <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_utilities_1_1_source_position.html">SourcePosition</a> streamPos)</td></tr>
-<tr class="separator:ab0197d593b1fc93ea2a5be10b62a6dce"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae58816f002c2a900b69d33daa23caf37"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_line_lookup.html#ae58816f002c2a900b69d33daa23caf37">LineLookup</a> (List&lt; int &gt; lines)</td></tr>
+<tr class="separator:ae58816f002c2a900b69d33daa23caf37"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1e56df8c61cf0a456855f31cfa569d0f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_line_lookup.html#a1e56df8c61cf0a456855f31cfa569d0f">GetLineFromCharIndex</a> (int charIndex)</td></tr>
+<tr class="separator:a1e56df8c61cf0a456855f31cfa569d0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae8d53c43b5f392173f1e9be6f976e354"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_line_lookup.html#ae8d53c43b5f392173f1e9be6f976e354">GetColumnFromCharIndex</a> (int charIndex)</td></tr>
+<tr class="separator:ae8d53c43b5f392173f1e9be6f976e354"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a82384870bffc82d2903bcbe240ec52b5"><td class="memItemLeft" align="right" valign="top">readonly string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_matching_1_1_string_matchers_1_1_symbol_matcher.html#a82384870bffc82d2903bcbe240ec52b5">Keyword</a></td></tr>
-<tr class="separator:a82384870bffc82d2903bcbe240ec52b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a300ee1510d67af8e5d82dcf183d48b5b"><td class="memItemLeft" align="right" valign="top">readonly List&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_line_lookup.html#a300ee1510d67af8e5d82dcf183d48b5b">Lines</a></td></tr>
+<tr class="separator:a300ee1510d67af8e5d82dcf183d48b5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="af26e88172e00a7c80f57c1ba4f4510b3" name="af26e88172e00a7c80f57c1ba4f4510b3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af26e88172e00a7c80f57c1ba4f4510b3">&#9670;&nbsp;</a></span>SymbolMatcher()</h2>
+<a id="ae58816f002c2a900b69d33daa23caf37" name="ae58816f002c2a900b69d33daa23caf37"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae58816f002c2a900b69d33daa23caf37">&#9670;&nbsp;</a></span>LineLookup()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -117,21 +119,11 @@ Public Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">LegendaryExplorerCore.UnrealScript.Lexing.Matching.StringMatchers.SymbolMatcher.SymbolMatcher </td>
+          <td class="memname">LegendaryExplorerCore.UnrealScript.Parsing.LineLookup.LineLookup </td>
           <td>(</td>
-          <td class="paramtype">string&#160;</td>
-          <td class="paramname"><em>keyword</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
+          <td class="paramtype">List&lt; int &gt;&#160;</td>
+          <td class="paramname"><em>lines</em></td><td>)</td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespace_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_tokenizing.html#a474bc360809b2d99e18c94859cceefd9">TokenType</a>&#160;</td>
-          <td class="paramname"><em>type</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -144,8 +136,8 @@ Public Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="ab0197d593b1fc93ea2a5be10b62a6dce" name="ab0197d593b1fc93ea2a5be10b62a6dce"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab0197d593b1fc93ea2a5be10b62a6dce">&#9670;&nbsp;</a></span>Match()</h2>
+<a id="a1e56df8c61cf0a456855f31cfa569d0f" name="a1e56df8c61cf0a456855f31cfa569d0f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1e56df8c61cf0a456855f31cfa569d0f">&#9670;&nbsp;</a></span>GetLineFromCharIndex()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -154,21 +146,37 @@ Public Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_tokenizing_1_1_script_token.html">ScriptToken</a> LegendaryExplorerCore.UnrealScript.Lexing.Matching.StringMatchers.SymbolMatcher.Match </td>
+          <td class="memname">int LegendaryExplorerCore.UnrealScript.Parsing.LineLookup.GetLineFromCharIndex </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_char_data_stream.html">CharDataStream</a>&#160;</td>
-          <td class="paramname"><em>data</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>charIndex</em></td><td>)</td>
           <td></td>
-          <td class="paramtype">ref <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_utilities_1_1_source_position.html">SourcePosition</a>&#160;</td>
-          <td class="paramname"><em>streamPos</em>&#160;</td>
         </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae8d53c43b5f392173f1e9be6f976e354" name="ae8d53c43b5f392173f1e9be6f976e354"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae8d53c43b5f392173f1e9be6f976e354">&#9670;&nbsp;</a></span>GetColumnFromCharIndex()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
         <tr>
+          <td class="memname">int LegendaryExplorerCore.UnrealScript.Parsing.LineLookup.GetColumnFromCharIndex </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>charIndex</em></td><td>)</td>
           <td></td>
-          <td>)</td>
-          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -181,14 +189,14 @@ Public Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="a82384870bffc82d2903bcbe240ec52b5" name="a82384870bffc82d2903bcbe240ec52b5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a82384870bffc82d2903bcbe240ec52b5">&#9670;&nbsp;</a></span>Keyword</h2>
+<a id="a300ee1510d67af8e5d82dcf183d48b5b" name="a300ee1510d67af8e5d82dcf183d48b5b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a300ee1510d67af8e5d82dcf183d48b5b">&#9670;&nbsp;</a></span>Lines</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">readonly string LegendaryExplorerCore.UnrealScript.Lexing.Matching.StringMatchers.SymbolMatcher.Keyword</td>
+          <td class="memname">readonly List&lt;int&gt; LegendaryExplorerCore.UnrealScript.Parsing.LineLookup.Lines</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -196,7 +204,7 @@ Public Attributes</h2></td></tr>
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>LegendaryExplorer/LegendaryExplorerCore/UnrealScript/Lexing/Matching/StringMatchers/<a class="el" href="_symbol_matcher_8cs.html">SymbolMatcher.cs</a></li>
+<li>LegendaryExplorer/LegendaryExplorerCore/UnrealScript/Parsing/<a class="el" href="_line_lookup_8cs.html">LineLookup.cs</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
@@ -204,7 +212,7 @@ Public Attributes</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="namespace_legendary_explorer_core.html">LegendaryExplorerCore</a></li><li class="navelem"><a class="el" href="namespace_legendary_explorer_core_1_1_unreal_script.html">UnrealScript</a></li><li class="navelem"><a class="el" href="namespace_legendary_explorer_core_1_1_unreal_script_1_1_lexing.html">Lexing</a></li><li class="navelem"><a class="el" href="namespace_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_matching.html">Matching</a></li><li class="navelem"><a class="el" href="namespace_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_matching_1_1_string_matchers.html">StringMatchers</a></li><li class="navelem"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_matching_1_1_string_matchers_1_1_symbol_matcher.html">SymbolMatcher</a></li>
+    <li class="navelem"><a class="el" href="namespace_legendary_explorer_core.html">LegendaryExplorerCore</a></li><li class="navelem"><a class="el" href="namespace_legendary_explorer_core_1_1_unreal_script.html">UnrealScript</a></li><li class="navelem"><a class="el" href="namespace_legendary_explorer_core_1_1_unreal_script_1_1_parsing.html">Parsing</a></li><li class="navelem"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_line_lookup.html">LineLookup</a></li>
     <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.2 </li>
   </ul>
 </div>

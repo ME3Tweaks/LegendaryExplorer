@@ -845,34 +845,18 @@ var annotated_dup =
           ] ]
         ] ],
         [ "Lexing", "namespace_legendary_explorer_core_1_1_unreal_script_1_1_lexing.html", [
-          [ "Matching", "namespace_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_matching.html", [
-            [ "StringMatchers", "namespace_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_matching_1_1_string_matchers.html", [
-              [ "NameLiteralMatcher", "class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_matching_1_1_string_matchers_1_1_name_literal_matcher.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_matching_1_1_string_matchers_1_1_name_literal_matcher" ],
-              [ "NumberMatcher", "class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_matching_1_1_string_matchers_1_1_number_matcher.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_matching_1_1_string_matchers_1_1_number_matcher" ],
-              [ "SingleLineCommentMatcher", "class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_matching_1_1_string_matchers_1_1_single_line_comment_matcher.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_matching_1_1_string_matchers_1_1_single_line_comment_matcher" ],
-              [ "StringLiteralMatcher", "class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_matching_1_1_string_matchers_1_1_string_literal_matcher.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_matching_1_1_string_matchers_1_1_string_literal_matcher" ],
-              [ "StringRefLiteralMatcher", "class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_matching_1_1_string_matchers_1_1_string_ref_literal_matcher.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_matching_1_1_string_matchers_1_1_string_ref_literal_matcher" ],
-              [ "SymbolMatcher", "class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_matching_1_1_string_matchers_1_1_symbol_matcher.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_matching_1_1_string_matchers_1_1_symbol_matcher" ],
-              [ "WhiteSpaceMatcher", "class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_matching_1_1_string_matchers_1_1_white_space_matcher.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_matching_1_1_string_matchers_1_1_white_space_matcher" ],
-              [ "WordMatcher", "class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_matching_1_1_string_matchers_1_1_word_matcher.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_matching_1_1_string_matchers_1_1_word_matcher" ]
-            ] ]
-          ] ],
-          [ "Tokenizing", "namespace_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_tokenizing.html", [
-            [ "ScriptToken", "class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_tokenizing_1_1_script_token.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_tokenizing_1_1_script_token" ]
-          ] ],
-          [ "CharDataStream", "class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_char_data_stream.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_char_data_stream" ],
-          [ "StringLexer", "class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_string_lexer.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_string_lexer" ]
+          [ "Lexer", "class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_lexer.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_lexer" ],
+          [ "ScriptToken", "class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_script_token.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_script_token" ]
         ] ],
         [ "Parsing", "namespace_legendary_explorer_core_1_1_unreal_script_1_1_parsing.html", [
+          [ "LineLookup", "class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_line_lookup.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_line_lookup" ],
           [ "ParseException", "class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_parse_exception.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_parse_exception" ],
           [ "TokenStream", "class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_token_stream.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_token_stream" ]
         ] ],
         [ "Utilities", "namespace_legendary_explorer_core_1_1_unreal_script_1_1_utilities.html", [
           [ "CastHelper", "class_legendary_explorer_core_1_1_unreal_script_1_1_utilities_1_1_cast_helper.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_utilities_1_1_cast_helper" ],
-          [ "GlobalLists", "class_legendary_explorer_core_1_1_unreal_script_1_1_utilities_1_1_global_lists.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_utilities_1_1_global_lists" ],
           [ "Keywords", "class_legendary_explorer_core_1_1_unreal_script_1_1_utilities_1_1_keywords.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_utilities_1_1_keywords" ],
-          [ "ObjectReader", "class_legendary_explorer_core_1_1_unreal_script_1_1_utilities_1_1_object_reader.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_utilities_1_1_object_reader" ],
-          [ "SourcePosition", "class_legendary_explorer_core_1_1_unreal_script_1_1_utilities_1_1_source_position.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_utilities_1_1_source_position" ]
+          [ "ObjectReader", "class_legendary_explorer_core_1_1_unreal_script_1_1_utilities_1_1_object_reader.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_utilities_1_1_object_reader" ]
         ] ],
         [ "FileLib", "class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib" ],
         [ "UnrealScriptCompiler", "class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler" ]

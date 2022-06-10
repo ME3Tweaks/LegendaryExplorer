@@ -1,10 +1,8 @@
 var namespace_legendary_explorer_core_1_1_unreal_script_1_1_utilities =
 [
     [ "CastHelper", "class_legendary_explorer_core_1_1_unreal_script_1_1_utilities_1_1_cast_helper.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_utilities_1_1_cast_helper" ],
-    [ "GlobalLists", "class_legendary_explorer_core_1_1_unreal_script_1_1_utilities_1_1_global_lists.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_utilities_1_1_global_lists" ],
     [ "Keywords", "class_legendary_explorer_core_1_1_unreal_script_1_1_utilities_1_1_keywords.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_utilities_1_1_keywords" ],
     [ "ObjectReader", "class_legendary_explorer_core_1_1_unreal_script_1_1_utilities_1_1_object_reader.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_utilities_1_1_object_reader" ],
-    [ "SourcePosition", "class_legendary_explorer_core_1_1_unreal_script_1_1_utilities_1_1_source_position.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_utilities_1_1_source_position" ],
     [ "EPropertyType", "namespace_legendary_explorer_core_1_1_unreal_script_1_1_utilities.html#a3d927c811de46c923f979e6023a3d309", [
       [ "None", "namespace_legendary_explorer_core_1_1_unreal_script_1_1_utilities.html#a3d927c811de46c923f979e6023a3d309a6adf97f83acf6453d4a6a4b1070f3754", null ],
       [ "Byte", "namespace_legendary_explorer_core_1_1_unreal_script_1_1_utilities.html#a3d927c811de46c923f979e6023a3d309aa245c3230debe5c956484ecc6fa93877", null ],

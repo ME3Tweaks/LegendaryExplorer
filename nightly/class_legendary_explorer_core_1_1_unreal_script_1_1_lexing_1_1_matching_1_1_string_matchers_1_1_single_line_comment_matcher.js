@@ -1,4 +1,0 @@
-var class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_matching_1_1_string_matchers_1_1_single_line_comment_matcher =
-[
-    [ "MatchComment", "class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_matching_1_1_string_matchers_1_1_single_line_comment_matcher.html#a66230f374bf3490135f2be60f244eb99", null ]
-];
