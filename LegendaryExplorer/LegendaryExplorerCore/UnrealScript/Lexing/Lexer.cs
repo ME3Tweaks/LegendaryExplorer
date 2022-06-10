@@ -13,6 +13,7 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
 {
     public class Lexer
     {
+        private const int ASCII_TABLE_LENGTH = 128;
         private readonly MessageLog Log;
         private readonly StringBuilder Builder;
         private readonly List<int> Lines;
@@ -43,15 +44,16 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
             {
                 log.LineLookup = lexer.lineLookup;
             }
+
             List<ScriptToken> tokens = lexer.Lex();
+
             var tokenStream = new TokenStream(tokens, lexer.lineLookup);
             return tokenStream;
         }
 
         private List<ScriptToken> Lex()
         {
-            //probably an underestimate. should do some sort of analysis to determine a good guess
-            uint tokenGuess = (uint)Text.Length / 30;
+            uint tokenGuess = (uint)Text.Length / 20;
             //todo: replace with BitOperations.RoundUpToPowerOf2 after upgrade to .NET 6
             tokenGuess = (uint)(0x1_0000_0000ul >> BitOperations.LeadingZeroCount(tokenGuess - 1));
             var tokens = new List<ScriptToken>((int)Math.Min(tokenGuess, 2_097_152));
@@ -61,15 +63,24 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
 
             while (true)
             {
-                char peek = CurrentIndex >= Text.Length ? '\0' : Text[CurrentIndex];
-                while (char.IsWhiteSpace(peek))
+                char peek;
+
                 {
-                    ++CurrentIndex;
-                    if (peek == '\n')
-                    {
-                        Lines.Add(CurrentIndex);
-                    }
+                WhitespaceLoop:
+
+                    //whitespace will most commonly be spaces
+                    CurrentIndex = Text.SkipChars(' ', CurrentIndex);
+
                     peek = CurrentIndex >= Text.Length ? '\0' : Text[CurrentIndex];
+                    if (char.IsWhiteSpace(peek))
+                    {
+                        ++CurrentIndex;
+                        if (peek == '\n')
+                        {
+                            Lines.Add(CurrentIndex);
+                        }
+                        goto WhitespaceLoop;
+                    }
                 }
 
                 ScriptToken token = GetNextToken(peek);
@@ -87,10 +98,10 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
 
         private ScriptToken GetNextToken(char peek)
         {
+            int startPos = CurrentIndex;
+            char nextPeek = CurrentIndex + 1 >= Text.Length ? '\0' : Text[CurrentIndex + 1];
 
             ScriptToken result;
-            char nextPeek = LookAhead(1);
-            int startPos = CurrentIndex;
             switch (peek)
             {
                 case '\0':
@@ -110,7 +121,7 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
                 case '$' when (nextPeek.IsDigit() || nextPeek == '-' && LookAhead(2).IsDigit()):
                     result = MatchStringRef();
                     break;
-                case < (char)128 when DelimiterLookup[peek]:
+                case < (char)ASCII_TABLE_LENGTH when DelimiterLookup[peek]:
                     result = MatchSymbol(peek, nextPeek);
                     break;
                 default:
@@ -133,8 +144,8 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
         private ScriptToken MatchNumber()
         {
             int startPos = CurrentIndex;
-            string first = SubNumberDec();
-            if (first == null)
+            ReadOnlySpan<char> first = SubNumberDec();
+            if (first.IsEmpty)
                 return null;
 
             TokenType type;
@@ -157,7 +168,7 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
             else if (peek == '.' || peek.AsciiCaseInsensitiveEquals('e') || peek.AsciiCaseInsensitiveEquals('d'))
             {
                 type = TokenType.FloatingNumber;
-                string second = null;
+                ReadOnlySpan<char> second = default;
                 if (peek == '.')
                 {
                     Advance();
@@ -167,17 +178,24 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
                 if (peek.AsciiCaseInsensitiveEquals('e') || peek.AsciiCaseInsensitiveEquals('d'))
                 {
                     Advance();
-                    string exponent = SubNumberDec();
+                    ReadOnlySpan<char> exponent = SubNumberDec();
                     peek = GetCurrentChar();
                     if (exponent == null || peek is '.' or 'x')
                         return null;
-                    value = $"{first}.{second ?? "0"}e{exponent}";
+                    if (second.IsEmpty)
+                    {
+                        value = string.Concat(first, ".0e", exponent);
+                    }
+                    else
+                    {
+                        value = string.Concat(first, ".", second, "e") + exponent.ToString();
+                    }
                 }
                 else if (second == null && peek == 'f')
                 {
                     Advance();
                     peek = GetCurrentChar();
-                    value = $"{first}.0";
+                    value = string.Concat(first, ".0");
                 }
                 else
                 {
@@ -186,7 +204,7 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
                         return null;
                     }
 
-                    value = $"{first}.{second}";
+                    value = string.Concat(first, ".", second);
                 }
 
                 if (GetCurrentChar() == 'f')
@@ -198,7 +216,7 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
             else
             {
                 type = TokenType.IntegerNumber;
-                value = first;
+                value = first.ToString();
             }
 
             if (!peek.IsNullOrWhiteSpace() && !IsDelimiterChar(peek))
@@ -211,32 +229,26 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
 
         private string SubNumberHex()
         {
-            char peek = GetCurrentChar();
             int startIndex = CurrentIndex;
-            int length = 0;
-            while (Uri.IsHexDigit(peek))
+            
+            while (CurrentIndex < Text.Length && Uri.IsHexDigit(Text[CurrentIndex]))
             {
-                length++;
-                Advance();
-                peek = GetCurrentChar();
+                ++CurrentIndex;
             }
 
-            return length > 0 ? Slice(startIndex, length) : null;
+            return Text.Substring(startIndex, CurrentIndex - startIndex);
         }
 
-        private string SubNumberDec()
+        private ReadOnlySpan<char> SubNumberDec()
         {
-            char peek = GetCurrentChar();
             int startIndex = CurrentIndex;
-            int length = 0;
-            while (peek is >= '0' and <= '9')
+            
+            while (CurrentIndex < Text.Length && Text[CurrentIndex] is >= '0' and <= '9')
             {
-                length++;
-                Advance();
-                peek = GetCurrentChar();
+                ++CurrentIndex;
             }
 
-            return length > 0 ? Slice(startIndex, length) : null;
+            return Text.AsSpan(startIndex, CurrentIndex - startIndex);
         }
 
         private ScriptToken MatchStringRef()
@@ -259,7 +271,7 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
             int numLength = CurrentIndex - numStart;
             if (numLength != 0)
             {
-                return new ScriptToken(TokenType.StringRefLiteral, Slice(numStart, numLength), tokenStart, CurrentIndex) { SyntaxType = EF.Number };
+                return new ScriptToken(TokenType.StringRefLiteral, Text.Substring(numStart, numLength), tokenStart, CurrentIndex) { SyntaxType = EF.Number };
             }
             return null;
         }
@@ -267,11 +279,16 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
         private ScriptToken MatchWord(char peek)
         {
             int startIndex = CurrentIndex;
+
         loopStart:
-            while (!AtEnd() && !char.IsWhiteSpace(peek) && !IsDelimiterChar(peek) && peek != '"' && peek != '\'')
+            if (CurrentIndex < Text.Length)
             {
-                Advance();
-                peek = GetCurrentChar();
+                peek = Text[CurrentIndex];
+                if (!char.IsWhiteSpace(peek) && !(peek < ASCII_TABLE_LENGTH && DelimiterLookup[peek]) && peek != '"' && peek != '\'')
+                {
+                    ++CurrentIndex;
+                    goto loopStart;
+                }
             }
 
             //HACK: there are variable names that include the c++ scope operator '::' for some godforsaken reason
@@ -282,9 +299,9 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
                 goto loopStart;
             }
             int length = CurrentIndex - startIndex;
-            if (length != 0)
+            if (length > 0)
             {
-                return new ScriptToken(TokenType.Word, Slice(startIndex, length), startIndex, CurrentIndex);
+                return new ScriptToken(TokenType.Word, Text.Substring(startIndex, length), startIndex, CurrentIndex);
             }
             return null;
         }
@@ -524,11 +541,10 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
             
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private ScriptToken MakeSymbolToken(TokenType type, string symbol)
         {
-            int start = CurrentIndex;
-            Advance(symbol.Length);
-            return new ScriptToken(type, symbol, start, CurrentIndex);
+            return new ScriptToken(type, symbol, CurrentIndex, CurrentIndex += symbol.Length);
         }
 
         #endregion
@@ -562,12 +578,6 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private string Slice(int startIndex, int length)
-        {
-            return Text.Substring(startIndex, length);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private bool EndOfStream(int ahead = 0)
         {
             return CurrentIndex + ahead >= Text.Length;
@@ -576,14 +586,14 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
         #endregion
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool IsDelimiterChar(char c) => c is < (char)128 && DelimiterLookup[c];
+        private static bool IsDelimiterChar(char c) => c < ASCII_TABLE_LENGTH && DelimiterLookup[c];
 
         private static readonly bool[] DelimiterLookup;
 
         static Lexer()
         {
             Span<char> delimChars = stackalloc char[] { '{', '}', '[', ']', '(', ')', '=', '+', '-', '*', '/', '!', '~', '>', '<', '&', '|', '^', '%', '$', '@', '?', ':', ';', ',', '.', '#' };
-            DelimiterLookup = new bool[128];
+            DelimiterLookup = new bool[ASCII_TABLE_LENGTH];
             foreach (char c in delimChars)
             {
                 DelimiterLookup[c] = true;

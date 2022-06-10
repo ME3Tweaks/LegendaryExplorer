@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using LegendaryExplorerCore.Packages;
 
 namespace LegendaryExplorerCore.Gammtek.Extensions
@@ -269,5 +270,54 @@ namespace LegendaryExplorerCore.Gammtek.Extensions
             return lines;
         }
 
+        //adapted from .NET bcl IndexOf
+        public static unsafe int SkipChars(this string str, char value, int startIndex)
+        {
+            nint offset = startIndex;
+            if (startIndex < 0 || startIndex >= str.Length)
+            {
+                goto Found;
+            }
+            nint lengthToExamine = str.Length - startIndex;
+
+            fixed (char* strPointer = str)
+            {
+                ref char searchSpace = ref *strPointer;
+                while (lengthToExamine >= 4)
+                {
+                    ref char current = ref Unsafe.Add(ref searchSpace, offset);
+
+                    if (value != current)
+                        goto Found;
+                    if (value != Unsafe.Add(ref current, 1))
+                        goto Found1;
+                    if (value != Unsafe.Add(ref current, 2))
+                        goto Found2;
+                    if (value != Unsafe.Add(ref current, 3))
+                        goto Found3;
+
+                    offset += 4;
+                    lengthToExamine -= 4;
+                }
+
+                while (lengthToExamine > 0)
+                {
+                    if (value != Unsafe.Add(ref searchSpace, offset))
+                        goto Found;
+
+                    offset++;
+                    lengthToExamine--;
+                }
+            }
+            
+        Found:
+            return (int)(offset);
+        Found3:
+            return (int)(offset + 3);
+        Found2:
+            return (int)(offset + 2);
+        Found1:
+            return (int)(offset + 1);
+        }
     }
 }

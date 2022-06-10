@@ -6,13 +6,15 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
     public sealed class ScriptToken
     {
         #region Members
-        public string Value { get; }
+
+        public readonly string Value;
+
+        public ASTNode AssociatedNode;
 
         public readonly TokenType Type;
 
-        public EF SyntaxType { get; set; }
+        public EF SyntaxType;
 
-        public ASTNode AssociatedNode { get; set; }
 
         public readonly int StartPos;
         public readonly int EndPos;
