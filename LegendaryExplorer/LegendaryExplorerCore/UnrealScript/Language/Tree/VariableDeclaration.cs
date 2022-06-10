@@ -22,7 +22,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
         public bool IsTransient => Flags.Has(UnrealFlags.EPropertyFlags.Transient);
 
         public VariableDeclaration(VariableType type, UnrealFlags.EPropertyFlags flags,
-                                   string name, int arrayLength = 1, string category = "None", SourcePosition start = null, SourcePosition end = null)
+                                   string name, int arrayLength = 1, string category = "None", int start = -1, int end = -1)
             : base(ASTNodeType.VariableDeclaration, start, end)
         {
             Flags = flags;

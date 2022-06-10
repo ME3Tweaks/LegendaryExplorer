@@ -49,7 +49,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
                      List<Function> funcs = null,
                      List<State> states = null,
                      DefaultPropertiesBlock defaultProperties = null,
-                     SourcePosition start = null, SourcePosition end = null)
+                     int start = -1, int end = -1)
             : base(name, start, end, EPropertyType.Object)
         {
             Parent = parent;

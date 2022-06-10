@@ -6,7 +6,7 @@ using System.Net;
 using System.Text;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
-using LegendaryExplorerCore.UnrealScript.Lexing.Tokenizing;
+using LegendaryExplorerCore.UnrealScript.Lexing;
 using LegendaryExplorerCore.UnrealScript.Parsing;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
 using static LegendaryExplorerCore.UnrealScript.Utilities.Keywords;
@@ -975,7 +975,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             }
             else
             {
-                int len = node.EndPos.CharIndex - node.StartPos.CharIndex;
+                int len = node.EndPos - node.StartPos;
                 Append(new string('_', len), EF.ERROR);
             }
 
@@ -999,7 +999,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             }
             else
             {
-                int len = node.EndPos.CharIndex - node.StartPos.CharIndex;
+                int len = node.EndPos - node.StartPos;
                 Append(new string('_', len), EF.ERROR);
             }
 

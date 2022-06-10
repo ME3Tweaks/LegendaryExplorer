@@ -7,7 +7,7 @@ using LegendaryExplorerCore.UnrealScript.Analysis.Symbols;
 using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
 using LegendaryExplorerCore.UnrealScript.Compiling.Errors;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
-using LegendaryExplorerCore.UnrealScript.Lexing.Tokenizing;
+using LegendaryExplorerCore.UnrealScript.Lexing;
 using LegendaryExplorerCore.UnrealScript.Utilities;
 using static LegendaryExplorerCore.UnrealScript.Utilities.Keywords;
 
@@ -22,7 +22,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
         protected ScriptToken CurrentToken => Tokens.CurrentItem;
         protected ScriptToken PrevToken => Tokens.Prev();
 
-        protected SourcePosition CurrentPosition => Tokens.CurrentItem.StartPos ?? new SourcePosition(-1, -1, -1);
+        protected int CurrentPosition => Tokens.CurrentItem.StartPos;
 
         public static readonly List<ASTNodeType> SemiColonExceptions = new()
         {
@@ -55,7 +55,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
         protected ParseException ParseError(string msg, ASTNode node) => ParseError(msg, node.StartPos, node.EndPos);
 
-        protected ParseException ParseError(string msg, SourcePosition start = null, SourcePosition end = null)
+        protected ParseException ParseError(string msg, int start = -1, int end = -1)
         {
             Log.LogError(msg, start, end);
             return new ParseException(msg);
@@ -69,7 +69,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
         protected void TypeError(string msg, ASTNode node) => TypeError(msg, node.StartPos, node.EndPos);
 
-        protected void TypeError(string msg, SourcePosition start = null, SourcePosition end = null)
+        protected void TypeError(string msg, int start = -1, int end = -1)
         {
             Log.LogError(msg, start, end);
         }
@@ -281,7 +281,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
         public ScriptToken Consume(params string[] strs) => strs.Select(Consume).NonNull().FirstOrDefault();
 
 
-        protected bool TypeCompatible(VariableType dest, VariableType src, SourcePosition errorPosition, bool coerce = false)
+        protected bool TypeCompatible(VariableType dest, VariableType src, int errorPosition, bool coerce = false)
         {
             if (dest is DynamicArrayType destArr && src is DynamicArrayType srcArr)
             {

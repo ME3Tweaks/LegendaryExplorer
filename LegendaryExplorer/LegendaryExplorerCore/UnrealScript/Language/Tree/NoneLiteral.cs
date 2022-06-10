@@ -7,7 +7,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
     {
         public bool IsDelegateNone;
 
-        public NoneLiteral(SourcePosition start = null, SourcePosition end = null) : base(ASTNodeType.NoneLiteral, start, end)
+        public NoneLiteral(int start = -1, int end = -1) : base(ASTNodeType.NoneLiteral, start, end)
         {
         }
 

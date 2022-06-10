@@ -85,7 +85,7 @@ namespace LegendaryExplorerCore.UnrealScript
 
         public static (ASTNode ast, TokenStream tokens) CompileOutlineAST(string script, string type, MessageLog log, MEGame game, bool isDefaultObject = false)
         {
-            var tokens = new TokenStream(StringLexer.Lex(script, log));
+            var tokens = Lexer.Lex(script, log);
             var parser = new ClassOutlineParser(tokens, game, log);
             try
             {
@@ -146,7 +146,7 @@ namespace LegendaryExplorerCore.UnrealScript
 
             try
             {
-                var tokens = new TokenStream(StringLexer.Lex(scriptText, log));
+                var tokens = Lexer.Lex(scriptText, log);
                 var parser = new ClassOutlineParser(tokens, pcc.Game, log);
                 ASTNode astNode = parser.ParseDocument();
                 if (astNode is null || log.HasErrors)
@@ -285,7 +285,7 @@ namespace LegendaryExplorerCore.UnrealScript
                 {
                     if (func.IsNative)
                     {
-                        log.LogMessage("Cannot edit native functions!");
+                        log.LogError("Cannot edit native functions!");
                         return (astNode, log);
                     }
                     try

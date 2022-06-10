@@ -7,7 +7,7 @@ using LegendaryExplorerCore.UnrealScript.Analysis.Symbols;
 using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
 using LegendaryExplorerCore.UnrealScript.Compiling.Errors;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
-using LegendaryExplorerCore.UnrealScript.Lexing.Tokenizing;
+using LegendaryExplorerCore.UnrealScript.Lexing;
 using LegendaryExplorerCore.UnrealScript.Utilities;
 using static LegendaryExplorerCore.UnrealScript.Utilities.Keywords;
 
@@ -218,7 +218,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
             var subObj = new Subobject(new VariableDeclaration(objectClass, default, objectName), objectClass, new List<Statement>(), isTemplate, startPos, PrevToken.EndPos)
             {
-                Tokens = new TokenStream(tokens)
+                Tokens = new TokenStream(tokens, Tokens.LineLookup)
             };
             if (!Symbols.TryAddSymbol(objectName, subObj))
             {
@@ -258,7 +258,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     Expression expression = ParseLiteral();
                     if (expression is not IntegerLiteral intLit)
                     {
-                        throw ParseError("Expected an integer index!", expression?.StartPos ?? CurrentPosition, expression?.EndPos);
+                        throw ParseError("Expected an integer index!", expression?.StartPos ?? CurrentPosition, expression?.EndPos ?? -1);
                     }
                     
                     if (targetType is not StaticArrayType arrType)

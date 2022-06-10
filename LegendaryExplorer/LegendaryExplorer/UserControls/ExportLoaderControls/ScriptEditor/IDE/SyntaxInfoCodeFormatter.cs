@@ -9,7 +9,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
     public class SyntaxInfoCodeFormatter : PlainTextCodeFormatter , ICodeFormatter<(string, SyntaxInfo)>
     {
 
-        private readonly SyntaxInfo SyntaxInfo = new();
+        private readonly SyntaxInfo SyntaxInfo = new(0);
 
         public new (string, SyntaxInfo) GetOutput() => (base.GetOutput(), SyntaxInfo);
 
@@ -48,7 +48,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
 
     public class SyntaxInfo : List<List<SyntaxSpan>>, IHighlightingDefinition
     {
-        public SyntaxInfo()
+        public SyntaxInfo(int capacity) : base(capacity)
         {
             Name = "Unrealscript-Dark";
             Colors = new Dictionary<EF, HighlightingColor>

@@ -66,7 +66,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         private readonly Stack<Nest> Nests = new();
 
-        public ByteCodeCompilerVisitor(UStruct target) : base(target.Export.FileRef)
+        private ByteCodeCompilerVisitor(UStruct target) : base(target.Export.FileRef)
         {
             Target = target;
             IEntry containingClass = Target.Export;
@@ -385,7 +385,12 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
         public bool VisitNode(AssertStatement node)
         {
             WriteOpCode(OpCodes.Assert);
-            WriteUShort((ushort)node.StartPos.Line);
+            //why you would have a source file longer than 65,535 lines I truly do not know
+            //better for it to emit an incorrect line number in the assert than to crash the compiler though
+            unchecked
+            {
+                WriteUShort((ushort)CompilationUnit.Tokens.LineLookup.GetLineFromCharIndex(node.StartPos));
+            }
             WriteByte(0);//bool debug mode - true: crash, false: log warning
             Emit(node.Condition);
             return true;
@@ -537,13 +542,13 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
         public bool VisitNode(ErrorStatement node)
         {
             //an ast with errors should never be passed to the compiler
-            throw new Exception($"Line {node.StartPos.Line}: Cannot compile an error!");
+            throw new Exception($"Line {CompilationUnit.Tokens.LineLookup.GetLineFromCharIndex(node.StartPos)}: Cannot compile an error!");
         }
 
         public bool VisitNode(ErrorExpression node)
         {
             //an ast with errors should never be passed to the compiler
-            throw new Exception($"Line {node.StartPos.Line}: Cannot compile an error!");
+            throw new Exception($"Line {CompilationUnit.Tokens.LineLookup.GetLineFromCharIndex(node.StartPos)}: Cannot compile an error!");
         }
 
         private static Function GetAffector(Expression expr) =>
@@ -736,7 +741,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 }
                 else
                 {
-                    throw new Exception($"Line {node.StartPos.Line}: Could not find '{func.Name}' in #{ContainingClass.UIndex} {ContainingClass.ObjectName}'s Virtual Function Table!");
+                    throw new Exception($"Line {CompilationUnit.Tokens.LineLookup.GetLineFromCharIndex(node.StartPos)}: Could not find '{func.Name}' in #{ContainingClass.UIndex} {ContainingClass.ObjectName}'s Virtual Function Table!");
                 }
             }
             CompileArguments(node.Arguments, func.Parameters);
@@ -1262,12 +1267,12 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 IEntry entry = ResolveObject($"{ContainingClass.InstancedFullPath}.{node.Name.Value}") ?? ResolveObject(node.Name.Value);
                 if (entry is null)
                 {
-                    throw new Exception($"Line {node.StartPos.Line}: Could not find '{node.Name.Value}' in {Pcc.FilePath}!");
+                    throw new Exception($"Line {CompilationUnit.Tokens.LineLookup.GetLineFromCharIndex(node.StartPos)}: Could not find '{node.Name.Value}' in {Pcc.FilePath}!");
                 }
 
                 if (!entry.ClassName.CaseInsensitiveEquals(node.Class.Name))
                 {
-                    throw new Exception($"Line {node.StartPos.Line}: Expected '{node.Name.Value}' to be a '{node.Class.Name}'!");
+                    throw new Exception($"Line {CompilationUnit.Tokens.LineLookup.GetLineFromCharIndex(node.StartPos)}: Expected '{node.Name.Value}' to be a '{node.Class.Name}'!");
                 }
                 WriteObjectRef(entry);
             }

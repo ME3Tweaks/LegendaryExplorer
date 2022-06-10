@@ -1,8 +1,7 @@
 ﻿using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
-using LegendaryExplorerCore.UnrealScript.Utilities;
 
-namespace LegendaryExplorerCore.UnrealScript.Lexing.Tokenizing
+namespace LegendaryExplorerCore.UnrealScript.Lexing
 {
     public sealed class ScriptToken
     {
@@ -11,16 +10,16 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing.Tokenizing
 
         public readonly TokenType Type;
 
-        public EF SyntaxType { get; set; } 
+        public EF SyntaxType { get; set; }
 
         public ASTNode AssociatedNode { get; set; }
 
-        public readonly SourcePosition StartPos;
-        public readonly SourcePosition EndPos;
+        public readonly int StartPos;
+        public readonly int EndPos;
         #endregion
 
         #region Methods
-        public ScriptToken(TokenType type, string value, SourcePosition start, SourcePosition end)
+        public ScriptToken(TokenType type, string value, int start, int end)
         {
             Value = value;
             Type = type;
@@ -34,7 +33,7 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing.Tokenizing
         }
         #endregion
     }
-    
+
     public enum TokenType
     {
         #region Special Characters
@@ -75,7 +74,7 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing.Tokenizing
         BinaryAnd,      // &
         BinaryOr,       // |
         BinaryXor,      // ^
-        //RightShift,     // >>, also vector reverse rotate   //will have to be matched manually in the parser. conflicts with arrays of delegates: array<delegate<somefunc>>
+        //RightShift,     // >>, also vector reverse rotate   //is matched manually in the parser. conflicts with arrays of delegates: array<delegate<somefunc>>
         LeftShift,      // <<, also vector rotate
 
         QuestionMark,    // ?
@@ -94,7 +93,6 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing.Tokenizing
         NewLine,        // \n
 
         SingleLineComment,
-        MultiLineComment,
 
         StringLiteral,
         NameLiteral,
@@ -103,7 +101,7 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing.Tokenizing
         Word,
         IntegerNumber,
         FloatingNumber,
-        
+
 
         INVALID
     }

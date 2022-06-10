@@ -46,7 +46,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             Pass = pass;
         }
 
-        private bool Error(string msg, SourcePosition start = null, SourcePosition end = null)
+        private bool Error(string msg, int start = -1, int end = -1)
         {
             Log.LogError(msg, start, end);
             Success = false;

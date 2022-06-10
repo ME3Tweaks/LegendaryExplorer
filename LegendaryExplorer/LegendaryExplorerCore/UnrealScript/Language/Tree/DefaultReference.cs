@@ -5,7 +5,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 {
     public class DefaultReference : SymbolReference
     {
-        public DefaultReference(ASTNode symbol, string name = "", SourcePosition start = null, SourcePosition end = null) : base(symbol, name, start, end)
+        public DefaultReference(ASTNode symbol, string name = "", int start = -1, int end = -1) : base(symbol, name, start, end)
         {
         }
 

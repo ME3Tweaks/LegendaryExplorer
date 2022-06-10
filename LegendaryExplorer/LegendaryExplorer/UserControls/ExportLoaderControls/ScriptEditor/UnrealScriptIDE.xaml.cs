@@ -15,7 +15,7 @@ using LegendaryExplorerCore.UnrealScript;
 using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
 using LegendaryExplorerCore.UnrealScript.Compiling.Errors;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
-using LegendaryExplorerCore.UnrealScript.Lexing.Tokenizing;
+using LegendaryExplorerCore.UnrealScript.Lexing;
 using LegendaryExplorerCore.UnrealScript.Parsing;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
@@ -125,7 +125,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
             CurrentLoadedExport = null;
             ScriptText = string.Empty;
             RootNode = null;
-            outputListBox.ItemsSource = null;
+            OutputListBox.ItemsSource = null;
         }
 
         public override void PopOut()
@@ -327,19 +327,20 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
             if (e.AddedItems?.Count == 1 && e.AddedItems[0] is PositionedMessage msg)
             {
                 textEditor.Focus();
-                textEditor.Select(msg.Start.CharIndex, msg.End.CharIndex - msg.Start.CharIndex);
+                textEditor.Select(msg.Start, msg.End - msg.Start);
                 textEditor.ScrollToLine(msg.Line);
             }
         }
 
         private void Compile_OnClick(object sender, RoutedEventArgs e)
         {
-            if (ScriptText != null && CurrentLoadedExport != null)
+            string scriptText = ScriptText;
+            if (scriptText != null && CurrentLoadedExport != null)
             {
                 if (CurrentLoadedExport.IsDefaultObject)
                 {
-                    (_, MessageLog log) =  UnrealScriptCompiler.CompileDefaultProperties(CurrentLoadedExport, ScriptText, CurrentFileLib);
-                    outputListBox.ItemsSource = log?.Content;
+                    (_, MessageLog log) =  UnrealScriptCompiler.CompileDefaultProperties(CurrentLoadedExport, scriptText, CurrentFileLib);
+                    OutputListBox.ItemsSource = log?.Content;
                 }
                 else
                 {
@@ -347,36 +348,36 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                     {
                         case "Class":
                             {
-                                (_, MessageLog log) = UnrealScriptCompiler.CompileClass(Pcc, ScriptText, CurrentFileLib, CurrentLoadedExport, CurrentLoadedExport.Parent);
-                                outputListBox.ItemsSource = log?.Content;
+                                (_, MessageLog log) = UnrealScriptCompiler.CompileClass(Pcc, scriptText, CurrentFileLib, CurrentLoadedExport, CurrentLoadedExport.Parent);
+                                OutputListBox.ItemsSource = log?.Content;
                                 break;
                             }
                         case "Function":
                         {
-                            (_, MessageLog log) = UnrealScriptCompiler.CompileFunction(CurrentLoadedExport, ScriptText, CurrentFileLib);
-                            outputListBox.ItemsSource = log?.Content;
+                            (_, MessageLog log) = UnrealScriptCompiler.CompileFunction(CurrentLoadedExport, scriptText, CurrentFileLib);
+                            OutputListBox.ItemsSource = log?.Content;
                             break;
                         }
                         case "State":
                         {
-                            (_, MessageLog log) = UnrealScriptCompiler.CompileState(CurrentLoadedExport, ScriptText, CurrentFileLib);
-                            outputListBox.ItemsSource = log?.Content;
+                            (_, MessageLog log) = UnrealScriptCompiler.CompileState(CurrentLoadedExport, scriptText, CurrentFileLib);
+                            OutputListBox.ItemsSource = log?.Content;
                             break;
                         }
                         case "ScriptStruct":
                         {
-                            (_, MessageLog log) = UnrealScriptCompiler.CompileStruct(CurrentLoadedExport, ScriptText, CurrentFileLib);
-                            outputListBox.ItemsSource = log?.Content;
+                            (_, MessageLog log) = UnrealScriptCompiler.CompileStruct(CurrentLoadedExport, scriptText, CurrentFileLib);
+                            OutputListBox.ItemsSource = log?.Content;
                             break;
                         }
                         case "Enum":
                         {
-                            (_, MessageLog log) = UnrealScriptCompiler.CompileEnum(CurrentLoadedExport, ScriptText, CurrentFileLib);
-                            outputListBox.ItemsSource = log?.Content;
+                            (_, MessageLog log) = UnrealScriptCompiler.CompileEnum(CurrentLoadedExport, scriptText, CurrentFileLib);
+                            OutputListBox.ItemsSource = log?.Content;
                             break;
                         }
                         default:
-                            outputListBox.ItemsSource = new[]
+                            OutputListBox.ItemsSource = new[]
                             {
                                 $"{CurrentLoadedExport.ClassName} compilation is not supported."
                             };
@@ -453,7 +454,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                                     UnrealScriptCompiler.CompileDefaultPropertiesAST(classExport, propertiesBlock, log, CurrentFileLib);
                                 }
                                 _definitionLinkGenerator.SetTokens(tokens);
-                                outputListBox.ItemsSource = log.Content;
+                                OutputListBox.ItemsSource = log.Content;
                             }
                         }
                         catch (Exception e)
@@ -517,22 +518,33 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
 
                     _definitionLinkGenerator.SetTokens(tokens);
                     needsTokensReset = false;
-                    var syntaxInfo = new SyntaxInfo();
+
+                    //if (tokens.Any())
+                    //{
+                    //    List<int> lineLookup = tokens.LineLookup.Lines;
+
+                    //    var syntaxSpanLookup = new List<int>(lineLookup.Count);
+
+                    //    var tokensSpan = tokens.TokensSpan;
+
+                    //    var syntaxSpans = new List<SyntaxSpan>(tokensSpan.Length);
+
+                    //    for (int i = 0, j = 0; i < lineLookup.Count && j < tokensSpan.Length; i++)
+                    //    {
+                            
+                    //    }
+                    //}
+
+                    var syntaxInfo = new SyntaxInfo(tokens.LineLookup.Lines.Count);
                     if (tokens.Any())
                     {
-                        int firstLine = tokens.First().StartPos.Line - 1;
-                        int lastLine = tokens.Last().EndPos.Line - 1;
-                        //while (lastLine >= firstLine)
-                        //{
-                        //    syntaxInfo[lastLine].Clear();
-                        //    lastLine--;
-                        //}
+                        int firstLine = tokens.LineLookup.GetLineFromCharIndex(tokens.First().StartPos) - 1;
 
                         int currentLine = firstLine;
                         int currentPos = 0;
                         foreach (ScriptToken token in tokens)
                         {
-                            int tokLine = token.StartPos.Line - 1;
+                            int tokLine = tokens.LineLookup.GetLineFromCharIndex(token.StartPos) - 1;
                             if (tokLine > currentLine)
                             {
                                 currentLine = tokLine;
@@ -544,8 +556,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                                 syntaxInfo.Add(new List<SyntaxSpan>());
                             }
 
-                            int tokStart = token.StartPos.Column;
-                            int tokEnd = token.EndPos.Column;
+                            int tokStart = tokens.LineLookup.GetColumnFromCharIndex(token.StartPos);
+                            int tokEnd = tokens.LineLookup.GetColumnFromCharIndex(token.EndPos);
                             if (tokStart > currentPos)
                             {
                                 syntaxInfo[currentLine].Add(new SyntaxSpan(EF.None, tokStart - currentPos));
@@ -573,7 +585,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                 {
                     _definitionLinkGenerator.Reset();
                 }
-                outputListBox.ItemsSource = log.Content;
+                OutputListBox.ItemsSource = log.Content;
             }
 
         }
@@ -642,7 +654,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                     textEditor.SyntaxHighlighting = syntaxInfo;
                 }
 
-                outputListBox.ItemsSource = log.Content;
+                OutputListBox.ItemsSource = log.Content;
             }
         }
 

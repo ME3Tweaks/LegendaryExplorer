@@ -77,7 +77,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 // stop;
                 case (byte)OpCodes.Stop:
                     PopByte();
-                    var stopStatement = new StopStatement(null, null);
+                    var stopStatement = new StopStatement(-1, -1);
                     StatementLocations.Add(StartPositions.Pop(), stopStatement);
                     return stopStatement;
 
@@ -321,7 +321,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             //}
             //CurrentScope.Pop();
 
-            var statement = new SwitchStatement(expr, null, null, null);
+            var statement = new SwitchStatement(expr, null, -1, -1);
             StatementLocations.Add(StartPositions.Pop(), statement);
             return statement;
         }
@@ -334,7 +334,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
 
             if (offs == (ushort)0xFFFF)
             {
-                statement = new DefaultCaseStatement(null, null);
+                statement = new DefaultCaseStatement(-1, -1);
             }
             else 
             {
@@ -342,7 +342,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 if (expr == null)
                     return null; //ERROR ?
 
-                statement = new CaseStatement(expr, null, null);
+                statement = new CaseStatement(expr, -1, -1);
             }
 
             StatementLocations.Add(StartPositions.Pop(), statement);

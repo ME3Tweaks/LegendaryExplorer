@@ -9,7 +9,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
         public float Y;
         public float Z;
 
-        public VectorLiteral(float x, float y, float z, SourcePosition start = null, SourcePosition end = null) : base(ASTNodeType.VectorLiteral, start, end)
+        public VectorLiteral(float x, float y, float z, int start = -1, int end = -1) : base(ASTNodeType.VectorLiteral, start, end)
         {
             X = x;
             Y = y;

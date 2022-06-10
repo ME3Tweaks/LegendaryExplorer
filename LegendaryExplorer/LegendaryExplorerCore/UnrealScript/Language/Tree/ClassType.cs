@@ -8,7 +8,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
     {
         public VariableType ClassLimiter;
 
-        public ClassType(VariableType classLimiter, SourcePosition start = null, SourcePosition end = null) : base(CLASS, start, end, EPropertyType.Object)
+        public ClassType(VariableType classLimiter, int start = -1, int end = -1) : base(CLASS, start, end, EPropertyType.Object)
         {
             ClassLimiter = classLimiter;
         }

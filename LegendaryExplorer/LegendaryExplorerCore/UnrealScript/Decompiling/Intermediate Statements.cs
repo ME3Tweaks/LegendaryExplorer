@@ -10,7 +10,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
     {
         public readonly ushort JumpLoc;
 
-        protected Jump(ushort jumpLoc) : base(ASTNodeType.INVALID, null, null)
+        protected Jump(ushort jumpLoc) : base(ASTNodeType.INVALID, -1, -1)
         {
             JumpLoc = jumpLoc;
         }
@@ -60,14 +60,14 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
 
     internal class IteratorNext : Statement
     {
-        public IteratorNext() : base(ASTNodeType.INVALID, null, null)
+        public IteratorNext() : base(ASTNodeType.INVALID, -1, -1)
         {
         }
     }
 
     internal class IteratorPop : Statement
     {
-        public IteratorPop() : base(ASTNodeType.INVALID, null, null)
+        public IteratorPop() : base(ASTNodeType.INVALID, -1, -1)
         {
         }
     }

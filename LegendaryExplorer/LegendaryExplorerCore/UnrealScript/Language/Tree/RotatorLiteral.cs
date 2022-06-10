@@ -9,7 +9,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
         public int Yaw;
         public int Roll;
 
-        public RotatorLiteral(int pitch, int yaw, int roll, SourcePosition start = null, SourcePosition end = null) : base(ASTNodeType.RotatorLiteral, start, end)
+        public RotatorLiteral(int pitch, int yaw, int roll, int start = -1, int end = -1) : base(ASTNodeType.RotatorLiteral, start, end)
         {
             Pitch = pitch;
             Yaw = yaw;

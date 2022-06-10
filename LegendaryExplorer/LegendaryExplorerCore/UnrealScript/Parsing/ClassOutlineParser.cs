@@ -5,7 +5,7 @@ using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
 using LegendaryExplorerCore.UnrealScript.Compiling.Errors;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
-using LegendaryExplorerCore.UnrealScript.Lexing.Tokenizing;
+using LegendaryExplorerCore.UnrealScript.Lexing;
 using LegendaryExplorerCore.UnrealScript.Utilities;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
 using static LegendaryExplorerCore.UnrealScript.Utilities.Keywords;
@@ -268,7 +268,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 else if (Matches(REPLICATION, EF.Keyword))
                 {
                     //just skip the replication block for now. Not sure its worth compiling
-                    if (!ParseScopeSpan(TokenType.LeftBracket, TokenType.RightBracket, false, out SourcePosition _, out SourcePosition _, out List<ScriptToken> _))
+                    if (!ParseScopeSpan(false, out _, out _, out List<ScriptToken> _))
                     {
                         throw ParseError("Malformed replication block!", CurrentPosition);
                     }
@@ -298,7 +298,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             }
             defaultPropertiesBlock ??= new DefaultPropertiesBlock(new List<Statement>(), PrevToken.EndPos, CurrentToken.StartPos)
             {
-                Tokens = new TokenStream(new List<ScriptToken>())
+                Tokens = new TokenStream(new List<ScriptToken>(), Tokens.LineLookup)
             };
 
             // TODO: should AST-nodes accept null values? should they make sure they dont present any?
@@ -478,7 +478,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     {
                         TypeError($"In Structs, use '{STRUCTDEFAULTPROPERTIES}', not '{DEFAULTPROPERTIES}'.", CurrentToken);
                     }
-                    if (!ParseScopeSpan(TokenType.LeftBracket, TokenType.RightBracket, false, out SourcePosition bodyStart, out SourcePosition bodyEnd, out List<ScriptToken> scopeTokens))
+                    if (!ParseScopeSpan(false, out int bodyStart, out int bodyEnd, out List<ScriptToken> scopeTokens))
                     {
                         throw ParseError("Malformed defaultproperties body!", CurrentPosition);
                     }
@@ -488,7 +488,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     }
                     defaults = new DefaultPropertiesBlock(null, bodyStart, bodyEnd)
                     {
-                        Tokens = new TokenStream(scopeTokens)
+                        Tokens = new TokenStream(scopeTokens, Tokens.LineLookup)
                     };
                 }
                 else
@@ -614,14 +614,14 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             var body = new CodeBody(null, CurrentPosition, CurrentPosition);
             if (Consume(TokenType.SemiColon) is null)
             {
-                if (!ParseScopeSpan(TokenType.LeftBracket, TokenType.RightBracket, false, out SourcePosition bodyStart, out SourcePosition bodyEnd, out List<ScriptToken> scopeTokens))
+                if (!ParseScopeSpan(false, out int bodyStart, out int bodyEnd, out List<ScriptToken> scopeTokens))
                 {
                     throw ParseError("Malformed function body!", CurrentPosition);
                 }
 
                 body = new CodeBody(null, bodyStart, bodyEnd)
                 {
-                    Tokens = new TokenStream(scopeTokens)
+                    Tokens = new TokenStream(scopeTokens, Tokens.LineLookup)
                 };
                 flags |= EFunctionFlags.Defined;
             }
@@ -639,7 +639,8 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             }
             return new Function(name.Value, flags, returnDeclaration, body, parameters, start, body.EndPos)
             {
-                NativeIndex = nativeIndex
+                NativeIndex = nativeIndex,
+                Tokens = Tokens
             };
         }
 
@@ -724,7 +725,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             }
 
 
-            if (!ParseScopeSpan(TokenType.LeftBracket, TokenType.RightBracket, true, out SourcePosition bodyStart, out SourcePosition bodyEnd, out List<ScriptToken> scopeTokens))
+            if (!ParseScopeSpan(true, out int bodyStart, out int bodyEnd, out List<ScriptToken> scopeTokens))
             {
                 throw ParseError("Malformed state body!", CurrentPosition);
             }
@@ -732,13 +733,14 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
             var body = new CodeBody(new List<Statement>(), bodyStart, bodyEnd)
             {
-                Tokens = new TokenStream(scopeTokens)
+                Tokens = new TokenStream(scopeTokens, Tokens.LineLookup)
             };
 
             var parentState = parent != null ? new State(parent.Name, null, default, null, null, null, parent.StartPos, parent.EndPos) : null;
             return new State(name.Value, body, flags, parentState, funcs, null, name.StartPos, CurrentPosition)
             {
-                IgnoreMask = ignoreMask
+                IgnoreMask = ignoreMask,
+                Tokens = Tokens
             };
         }
 
@@ -746,14 +748,14 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
         {
             if (!Matches(DEFAULTPROPERTIES, EF.Keyword)) return null;
 
-            if (!ParseScopeSpan(TokenType.LeftBracket, TokenType.RightBracket, false, out SourcePosition bodyStart, out SourcePosition bodyEnd, out List<ScriptToken> scopeTokens))
+            if (!ParseScopeSpan(false, out int bodyStart, out int bodyEnd, out List<ScriptToken> scopeTokens))
             {
                 throw ParseError("Malformed defaultproperties body!", CurrentPosition);
             }
 
             return new DefaultPropertiesBlock(new List<Statement>(), bodyStart, bodyEnd)
             {
-                Tokens = new TokenStream(scopeTokens)
+                Tokens = new TokenStream(scopeTokens, Tokens.LineLookup)
             };
         }
 
@@ -791,7 +793,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     TypeError("optional out parameters cannot have default values!", CurrentPosition);
                 }
 
-                var defaultValueStart = CurrentPosition;
+                int defaultValueStart = CurrentPosition;
                 int parenNest = 0;
                 var defaultParamTokens = new List<ScriptToken>();
                 while (CurrentTokenType != TokenType.EOF)
@@ -819,11 +821,11 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     throw ParseError("Expected default parameter value after '='!", CurrentPosition);
                 }
 
-                SourcePosition bodyStart = defaultValueStart;
-                SourcePosition bodyEnd = CurrentPosition;
+                int bodyStart = defaultValueStart;
+                int bodyEnd = CurrentPosition;
                 funcParam.UnparsedDefaultParam = new CodeBody(null, bodyStart, bodyEnd)
                 {
-                    Tokens = new TokenStream(defaultParamTokens)
+                    Tokens = new TokenStream(defaultParamTokens, Tokens.LineLookup)
                 };
             }
 
@@ -1237,40 +1239,25 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             }
         }
 
-        private bool ParseScopeSpan(TokenType scopeStart, TokenType scopeEnd,
-                                    bool isPartialScope,
-                                    out SourcePosition startPos, out SourcePosition endPos, out List<ScriptToken> scopeTokens)
+        private bool ParseScopeSpan(bool isPartialScope, out int startPos, out int endPos, out List<ScriptToken> scopeTokens)
         {
             scopeTokens = new List<ScriptToken>();
-            startPos = null;
-            endPos = null;
-            if (!isPartialScope && Consume(scopeStart) == null)
+            startPos = -1;
+            endPos = -1;
+            if (!isPartialScope && Consume(TokenType.LeftBracket) == null)
             {
-                Log.LogError($"Expected '{scopeStart}'!", CurrentPosition);
+                Log.LogError($"Expected '{TokenType.LeftBracket}'!", CurrentPosition);
                 return false;
             }
             startPos = Tokens.CurrentItem.StartPos;
 
-            int nestedLevel = 1;
-            while (true)
+            var tokens = Tokens.GetRestOfScope();
+            if (tokens is null)
             {
-                if (CurrentTokenType == TokenType.EOF)
-                {
-                    Log.LogError("Scope ended prematurely, are your scopes unbalanced?", CurrentPosition);
-                    return false;
-                }
-                if (CurrentTokenType == scopeStart)
-                    nestedLevel++;
-                else if (CurrentTokenType == scopeEnd)
-                    nestedLevel--;
-                
-                if (nestedLevel <= 0)
-                {
-                    break;
-                }
-                scopeTokens.Add(CurrentToken);
-                Tokens.Advance();
+                Log.LogError("Scope ended prematurely, are your scopes unbalanced?", CurrentPosition);
+                return false;
             }
+            scopeTokens = tokens;
             endPos = Tokens.CurrentItem.StartPos;
             Tokens.Advance();
             return true;

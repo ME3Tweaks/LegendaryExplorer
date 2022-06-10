@@ -10,10 +10,10 @@ using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
 using LegendaryExplorerCore.UnrealScript.Compiling.Errors;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
 using LegendaryExplorerCore.UnrealScript.Language.Util;
-using LegendaryExplorerCore.UnrealScript.Lexing.Tokenizing;
 using LegendaryExplorerCore.UnrealScript.Utilities;
 using static LegendaryExplorerCore.UnrealScript.Utilities.Keywords;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
+using LegendaryExplorerCore.UnrealScript.Lexing;
 
 namespace LegendaryExplorerCore.UnrealScript.Parsing
 {
@@ -247,7 +247,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     {
                         if (Labels.ContainsKey(label.Name))
                         {
-                            ParseError($"Label '{label.Name}' already exists on line {Labels[label.Name].StartPos.Line}!", label);
+                            ParseError($"Label '{label.Name}' already exists on line {Tokens.LineLookup.GetLineFromCharIndex(Labels[label.Name].StartPos)}!", label);
                         }
                         else
                         {
@@ -300,7 +300,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             {
                 if (allowEmpty && Consume(TokenType.SemiColon) != null)
                 {
-                    body = new CodeBody(null, CurrentPosition.GetModifiedPosition(0, -1, -1), CurrentPosition);
+                    body = new CodeBody(null, CurrentPosition + -1, CurrentPosition);
                 }
                 else
                 {
@@ -2172,7 +2172,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     }
                     else
                     {
-                        throw ParseError($"Expected function name after '{GLOBAL}'!", basicRef?.StartPos ?? CurrentPosition, basicRef?.EndPos);
+                        throw ParseError($"Expected function name after '{GLOBAL}'!", basicRef?.StartPos ?? CurrentPosition, basicRef?.EndPos ?? -1);
                     }
 
                     basicRef.IsGlobal = true;

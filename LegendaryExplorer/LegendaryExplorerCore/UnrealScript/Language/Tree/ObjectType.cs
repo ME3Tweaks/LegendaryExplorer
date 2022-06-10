@@ -9,7 +9,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
         public abstract List<VariableType> TypeDeclarations { get; }
         public abstract DefaultPropertiesBlock DefaultProperties { get; set; }
 
-        protected ObjectType(string name, SourcePosition start = null, SourcePosition end = null, EPropertyType propType = EPropertyType.None) : base(name, start, end, propType)
+        protected ObjectType(string name, int start = -1, int end = -1, EPropertyType propType = EPropertyType.None) : base(name, start, end, propType)
         {
         }
     }

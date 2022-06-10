@@ -15,7 +15,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 
         public int Precedence => IsEqual ? 24 : 26;
 
-        public StructComparison(bool isEqual, Expression lhs, Expression rhs, SourcePosition start = null, SourcePosition end = null) : base(ASTNodeType.InfixOperator, start, end)
+        public StructComparison(bool isEqual, Expression lhs, Expression rhs, int start = -1, int end = -1) : base(ASTNodeType.InfixOperator, start, end)
         {
             IsEqual = isEqual;
             LeftOperand = lhs;

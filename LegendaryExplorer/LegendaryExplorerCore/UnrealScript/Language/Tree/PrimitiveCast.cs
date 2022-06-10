@@ -4,9 +4,9 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 {
     public class PrimitiveCast : CastExpression
     {
-        public ECast Cast;
+        public readonly ECast Cast;
 
-        public PrimitiveCast(ECast cast, VariableType castType, Expression expr, SourcePosition start, SourcePosition end) : base(castType, expr, start, end)
+        public PrimitiveCast(ECast cast, VariableType castType, Expression expr, int start, int end) : base(castType, expr, start, end)
         {
             Cast = cast;
         }

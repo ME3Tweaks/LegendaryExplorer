@@ -52,7 +52,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                         {
                             FilePath = pcc.FilePath,
                             UIndex = nextChild.UIndex,
-                            game = pcc.Game
+                            Game = pcc.Game
                         });
                         nextItem = uConst.Next;
                         break;
@@ -161,7 +161,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             if (obj.SuperClass != 0 && obj.SuperClass.GetEntry(obj.Export.FileRef) is IEntry parentState &&
                 !parentState.ObjectName.Instanced.CaseInsensitiveEquals(obj.Export.ObjectName.Instanced))
             {
-                parent = new State(parentState.ObjectName.Instanced, null, default, null, null, null, null, null);
+                parent = new State(parentState.ObjectName.Instanced, null, default, null, null, null, -1, -1);
             }
 
             var funcs = new List<Function>();
@@ -180,7 +180,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
 
             var body = decompileBytecode ? new ByteCodeDecompiler(obj, containingClass, fileLib).Decompile() : null;
 
-            return new State(obj.Export.ObjectName.Instanced, body, obj.StateFlags, parent, funcs, new List<Label>(), null, null)
+            return new State(obj.Export.ObjectName.Instanced, body, obj.StateFlags, parent, funcs, new List<Label>(), -1, -1)
             {
                 FilePath = obj.Export.FileRef.FilePath,
                 UIndex = obj.Export.UIndex,
@@ -361,7 +361,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 vals.Add(new EnumValue(val.Instanced, i));
             }
 
-            var node = new Enumeration(obj.Export.ObjectName.Instanced, vals, null, null)
+            var node = new Enumeration(obj.Export.ObjectName.Instanced, vals, -1, -1)
             {
                 FilePath = obj.Export.FileRef.FilePath,
                 UIndex = obj.Export.UIndex
@@ -621,12 +621,12 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
 
                     if (scope is not null && symbols.TryGetSymbolInScopeStack(prop.Name, out VariableDeclaration decl, scope) && decl.IsStaticArray)
                     {
-                        name = new ArraySymbolRef(name, new IntegerLiteral(prop.StaticArrayIndex), null, null);
+                        name = new ArraySymbolRef(name, new IntegerLiteral(prop.StaticArrayIndex), -1, -1);
                     }
                 }
                 else if (prop.StaticArrayIndex > 0)
                 {
-                    name = new ArraySymbolRef(name, new IntegerLiteral(prop.StaticArrayIndex), null, null);
+                    name = new ArraySymbolRef(name, new IntegerLiteral(prop.StaticArrayIndex), -1, -1);
                 }
                 var value = ConvertPropertyValue(prop);
                 statements.Add(new AssignStatement(name, value));
@@ -660,7 +660,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                         {
                             return new NoneLiteral();
                         }
-                        return new SymbolReference(new EnumValue(enumProperty.Value.Instanced, 0) {Enum = new Enumeration(enumProperty.EnumType.Instanced, new List<EnumValue>(), null, null)}, enumProperty.Value.Instanced);
+                        return new SymbolReference(new EnumValue(enumProperty.Value.Instanced, 0) {Enum = new Enumeration(enumProperty.EnumType.Instanced, new List<EnumValue>(), -1, -1) }, enumProperty.Value.Instanced);
                     case FloatProperty floatProperty:
                         return new FloatLiteral(floatProperty.Value);
                     case IntProperty intProperty:

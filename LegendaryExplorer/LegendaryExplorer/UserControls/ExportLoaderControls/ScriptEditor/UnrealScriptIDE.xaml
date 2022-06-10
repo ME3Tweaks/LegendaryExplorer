@@ -123,9 +123,7 @@
                                                                     CanContentScroll="True"
                                                                     CanHorizontallyScroll="True"
                                                                     CanVerticallyScroll="True"
-                                                                    Content="{Binding RelativeSource={RelativeSource AncestorType={x:Type avalonedit:TextEditor}}, Path=TextArea}"
-                                            />
-
+                                                                    Content="{Binding RelativeSource={RelativeSource AncestorType={x:Type avalonedit:TextEditor}}, Path=TextArea}"/>
                                                             <!-- Display Vertical Scrollbar to the right -->
                                                             <ScrollBar Name="PART_VerticalScrollBar"
                                                        Grid.Column="1"
@@ -185,7 +183,7 @@
                     <Button Content="Compile to AST" Click="CompileAST_OnClick" Visibility="{x:Static global:App.IsDebugVisibility}" IsEnabled="{Binding FullyInitialized}"/>
                     <Button Content="Compile" Click="Compile_OnClick" IsEnabled="{Binding FullyInitialized}"/>
                 </StackPanel>
-                <ListBox Grid.Column="1" Name="outputListBox" SelectionChanged="outputListBox_SelectionChanged" HorizontalContentAlignment="Left" >
+                <ListBox Grid.Column="1" Name="OutputListBox" SelectionChanged="outputListBox_SelectionChanged" HorizontalContentAlignment="Left" >
                     <ListBox.Resources>
                         <DataTemplate DataType="errors:LogMessage">
                             <Grid>

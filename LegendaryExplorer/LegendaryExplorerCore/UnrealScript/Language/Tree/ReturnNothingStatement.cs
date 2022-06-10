@@ -5,7 +5,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 {
     public class ReturnNothingStatement : ReturnStatement
     {
-        public ReturnNothingStatement(Expression value = null, SourcePosition start = null, SourcePosition end = null) : base(value, start, end)
+        public ReturnNothingStatement(Expression value = null, int start = -1, int end = -1) : base(value, start, end)
         {
         }
 

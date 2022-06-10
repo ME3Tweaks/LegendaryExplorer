@@ -30,7 +30,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
                       List<VariableType> typeDeclarations = null,
                       DefaultPropertiesBlock defaults = null,
                       PropertyCollection defaultPropertyCollection = null,
-                      SourcePosition start = null, SourcePosition end = null)
+                      int start = -1, int end = -1)
             : base(name, start, end, name switch
             {
                 "Vector" => EPropertyType.Vector,

@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ICSharpCode.AvalonEdit;
+﻿using System.Collections.Generic;
 using ICSharpCode.AvalonEdit.Rendering;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
-using LegendaryExplorerCore.UnrealScript.Lexing.Tokenizing;
+using LegendaryExplorerCore.UnrealScript.Lexing;
 using LegendaryExplorerCore.UnrealScript.Parsing;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
@@ -17,7 +11,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
         private readonly Dictionary<int, DefinitionLinkSpan> Spans = new();
         private readonly List<int> Offsets = new();
 
-        readonly struct DefinitionLinkSpan
+        private readonly struct DefinitionLinkSpan
         {
             public readonly ASTNode Node;
             public readonly int Length;
@@ -34,10 +28,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
             Reset();
             foreach (ScriptToken token in tokens)
             {
-                if (token.AssociatedNode is not null && token.EndPos.Line == token.StartPos.Line)
+                if (token.AssociatedNode is not null)
                 {
-                    int startPosCharIndex = token.StartPos.CharIndex;
-                    Spans[startPosCharIndex] = new DefinitionLinkSpan(token.AssociatedNode, token.EndPos.CharIndex - startPosCharIndex);
+                    int startPosCharIndex = token.StartPos;
+                    Spans[startPosCharIndex] = new DefinitionLinkSpan(token.AssociatedNode, token.EndPos - startPosCharIndex);
                     Offsets.Add(startPosCharIndex);
                 }
             }

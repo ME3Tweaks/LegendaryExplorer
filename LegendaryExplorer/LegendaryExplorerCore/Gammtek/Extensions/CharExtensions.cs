@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 
 namespace LegendaryExplorerCore.Gammtek.Extensions
 {
@@ -92,7 +93,8 @@ namespace LegendaryExplorerCore.Gammtek.Extensions
 			return Convert.ToUInt64(value);
 		}
 
-        public static bool CaseInsensitiveEquals(this char a, char b)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AsciiCaseInsensitiveEquals(this char a, char b)
         {
             if (a == b)
             {

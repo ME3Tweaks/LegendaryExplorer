@@ -13,7 +13,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
         public readonly bool IsClassContext;
         public bool IsStructMemberExpression;
 
-        public CompositeSymbolRef(Expression outer, Expression inner, bool isClassContext = false, SourcePosition start = null, SourcePosition end = null)
+        public CompositeSymbolRef(Expression outer, Expression inner, bool isClassContext = false, int start = -1, int end = -1)
             : base(inner, start: start, end: end)
         {
             InnerSymbol = inner;
