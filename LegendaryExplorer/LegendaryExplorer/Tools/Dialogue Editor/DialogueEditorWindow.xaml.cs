@@ -29,9 +29,6 @@ using LegendaryExplorer.Tools.Soundplorer;
 using LegendaryExplorer.Tools.TlkManagerNS;
 using LegendaryExplorer.UnrealExtensions;
 using LegendaryExplorer.UserControls.SharedToolControls;
-using UMD.HCIL.Piccolo;
-using UMD.HCIL.Piccolo.Event;
-using UMD.HCIL.Piccolo.Nodes;
 using static LegendaryExplorer.Tools.TlkManagerNS.TLKManagerWPF;
 using Key = System.Windows.Input.Key;
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
@@ -45,6 +42,9 @@ using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
 using LegendaryExplorerCore.PlotDatabase;
+using Piccolo;
+using Piccolo.Event;
+using Piccolo.Nodes;
 
 namespace LegendaryExplorer.DialogueEditor
 {

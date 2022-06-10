@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
-using UMD.HCIL.Piccolo;
-using UMD.HCIL.Piccolo.Event;
+using Piccolo;
+using Piccolo.Event;
 
 namespace LegendaryExplorer.DialogueEditor
 {

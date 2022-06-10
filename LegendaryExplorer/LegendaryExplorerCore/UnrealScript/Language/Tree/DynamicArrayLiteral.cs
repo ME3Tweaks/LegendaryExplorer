@@ -6,9 +6,9 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 {
     public class DynamicArrayLiteral : Expression
     {
-        public List<Expression> Values;
+        public readonly List<Expression> Values;
 
-        public DynamicArrayType ArrayType;
+        public readonly DynamicArrayType ArrayType;
         public DynamicArrayLiteral(DynamicArrayType arrayType, List<Expression> values, SourcePosition start = null, SourcePosition end = null) : base(ASTNodeType.DynamicArrayLiteral, start, end)
         {
             ArrayType = arrayType;

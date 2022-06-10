@@ -69,6 +69,26 @@ namespace LegendaryExplorerCore.Compression
             }
         }
 
+        /// <summary>
+        /// Decompresses the input block (as a span) to the specified output block
+        /// </summary>
+        /// <param name="src"></param>
+        /// <param name="dst"></param>
+        /// <returns></returns>
+        public static int Decompress(ReadOnlySpan<byte> src, byte[] dst)
+        {
+            var dstLen = (uint) dst.Length;
+            uint srcLen = (uint)src.Length;
+            unsafe
+            {
+                fixed (byte* inPtr = &MemoryMarshal.GetReference(src))
+                fixed (byte* outPtr = &MemoryMarshal.GetReference(dst.AsSpan()))
+                {
+                    return SevenZipDecompress(inPtr, srcLen, outPtr, ref dstLen);
+                }
+            }
+        }
+
         public static byte[] Decompress(byte[] src, uint dstLen)
         {
             uint len = dstLen;

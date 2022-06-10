@@ -13,7 +13,7 @@ namespace LegendaryExplorerCore.Packages
 {
     [DebuggerDisplay("ImportEntry | {UIndex} = {InstancedFullPath}")]
     [DoNotNotify] //disable Fody/PropertyChanged for this class. Do notification manually
-    public sealed class ImportEntry : INotifyPropertyChanged, IEntry
+    public sealed class ImportEntry : IEntry
     {
         public MEGame Game => FileRef.Game;
 

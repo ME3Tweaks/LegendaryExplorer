@@ -39,11 +39,11 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
         #endregion
 
         private readonly CaseInsensitiveDictionary<ASTNodeDict> Cache;
-        private readonly LinkedList<ASTNodeDict> Scopes;
-        private readonly LinkedList<string> ScopeNames;
+        private readonly Stack<ASTNodeDict> Scopes;
+        private readonly Stack<string> ScopeNames;
         private readonly CaseInsensitiveDictionary<VariableType> Types;
 
-        public string CurrentScopeName => ScopeNames.Count == 0 ? "" : ScopeNames.Last();
+        public string CurrentScopeName => ScopeNames.Count == 0 ? "" : ScopeNames.Peek();
 
         private readonly OperatorDefinitions Operators;
         public List<string> InFixOperatorSymbols => Operators.InFixOperatorSymbols;
@@ -53,14 +53,14 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
         private SymbolTable(MEGame game)
         {
             Operators = new OperatorDefinitions();
-            ScopeNames = new LinkedList<string>();
-            Scopes = new LinkedList<ASTNodeDict>();
+            ScopeNames = new Stack<string>();
+            Scopes = new Stack<ASTNodeDict>();
             Cache = new CaseInsensitiveDictionary<ASTNodeDict>();
             Types = new CaseInsensitiveDictionary<VariableType>();
             Game = game;
         }
 
-        private SymbolTable(LinkedList<string> scopeNames, LinkedList<ASTNodeDict> scopes, CaseInsensitiveDictionary<ASTNodeDict> cache, CaseInsensitiveDictionary<VariableType> types, OperatorDefinitions ops, MEGame game)
+        private SymbolTable(Stack<string> scopeNames, Stack<ASTNodeDict> scopes, CaseInsensitiveDictionary<ASTNodeDict> cache, CaseInsensitiveDictionary<VariableType> types, OperatorDefinitions ops, MEGame game)
         {
             Operators = ops;
             ScopeNames = scopeNames;
@@ -311,7 +311,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
             const EPropertyFlags skip = parm | EPropertyFlags.SkipParm;
             const EPropertyFlags coerce = parm | EPropertyFlags.CoerceParm;
 
-            ASTNodeDict objectScope = Scopes.First.Value;
+            ASTNodeDict objectScope = Scopes.Last();
 
             //primitive PostOperators
             AddOperator(new PostOpDeclaration("++", ByteType, 139, new FunctionParameter(ByteType, outFlags, "A")));
@@ -551,8 +551,8 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
             {
                 scope.SecondaryScope = secondaryScope;
             }
-            Scopes.AddLast(scope);
-            ScopeNames.AddLast(fullName);
+            Scopes.Push(scope);
+            ScopeNames.Push(fullName);
             
             if (useCache && !cached)
                 Cache.Add(fullName, scope);
@@ -563,8 +563,8 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
             if (Scopes.Count == 0)
                 throw new InvalidOperationException();
 
-            Scopes.RemoveLast();
-            ScopeNames.RemoveLast();
+            Scopes.Pop();
+            ScopeNames.Pop();
         }
 
         public bool TryGetSymbol<T>(string symbol, out T node) where T : ASTNode
@@ -678,17 +678,17 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
         {
             node = null;
 
-            return TryBuildSpecificScope(lowestScope, out LinkedList<ASTNodeDict> stack) && TryGetSymbolInternal(symbol, out node, stack);
+            return TryBuildSpecificScope(lowestScope, out Stack<ASTNodeDict> stack) && TryGetSymbolInternal(symbol, out node, stack);
         }
 
-        private bool TryBuildSpecificScope(string lowestScope, out LinkedList<ASTNodeDict> stack)
+        private bool TryBuildSpecificScope(string lowestScope, out Stack<ASTNodeDict> stack)
         {
             IEnumerable<string> names = lowestScope.Split('.');
             if (!names.FirstOrDefault().CaseInsensitiveEquals(OBJECT))
             {
                 names = names.Prepend(OBJECT);
             }
-            stack = new LinkedList<ASTNodeDict>();
+            stack = new Stack<ASTNodeDict>();
             string scopeName = null;
             foreach (string name in names)
             {
@@ -699,19 +699,18 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
 
                 scopeName += name;
                 if (Cache.TryGetValue(scopeName, out ASTNodeDict currentScope))
-                    stack.AddLast(currentScope);
+                    stack.Push(currentScope);
                 else
                     return false;
             }
             return stack.Count > 0;
         }
 
-        private bool TryGetSymbolInternal<T>(string symbol, out T outNode, LinkedList<ASTNodeDict> stack) where T : ASTNode
+        private bool TryGetSymbolInternal<T>(string symbol, out T outNode, Stack<ASTNodeDict> stack) where T : ASTNode
         {
-            LinkedListNode<ASTNodeDict> it;
-            for (it = stack.Last; it != null; it = it.Previous)
+            foreach (ASTNodeDict node in stack)
             {
-                ASTNodeDict nodeDict = it.Value;
+                ASTNodeDict nodeDict = node;
                 if (nodeDict.TryGetValue(symbol, out ASTNode tempNode) && tempNode is T)
                 {
                     outNode = (T)tempNode;
@@ -765,18 +764,18 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
 
         public bool SymbolExistsInCurrentScope(string symbol)
         {
-            return Scopes.Last().ContainsKey(symbol);
+            return Scopes.Peek().ContainsKey(symbol);
         }
 
         public bool SymbolExistsInParentScopes(string symbol)
         {
-            var parentScope = new LinkedList<ASTNodeDict>(Scopes.Take(Scopes.Count - 1));
+            var parentScope = new Stack<ASTNodeDict>(Scopes.Skip(1).Reverse());
             return TryGetSymbolInternal<ASTNode>(symbol, out _, parentScope);
         }
 
         public bool TryGetSymbolFromCurrentScope(string symbol, out ASTNode node)
         {
-            return Scopes.Last().TryGetValue(symbol, out node);
+            return Scopes.Peek().TryGetValue(symbol, out node);
         }
 
         public bool TryGetSymbolFromSpecificScope<T>(string symbol, out T node, string specificScope) where T : ASTNode
@@ -793,12 +792,12 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
 
         public void AddSymbol(string symbol, ASTNode node)
         {
-            Scopes.Last().Add(symbol, node);
+            Scopes.Peek().Add(symbol, node);
         }
 
         public void ReplaceSymbol(string symbol, ASTNode node, bool clearAssociatedScope)
         {
-            Scopes.Last()[symbol] = node;
+            Scopes.Peek()[symbol] = node;
             if (clearAssociatedScope)
             {
                 ClearScope(symbol);
@@ -823,7 +822,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
         public void RemoveSymbol(string symbol)
         {
             ClearScope(symbol);
-            Scopes.Last().Remove(symbol);
+            Scopes.Peek().Remove(symbol);
         }
 
         public bool AddType(VariableType node)
@@ -1025,10 +1024,22 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
 
         public SymbolTable Clone()
         {
+            var newScopeNames = new Stack<string>(ScopeNames.Count);
+            var newScopes = new Stack<ASTNodeDict>(Scopes.Count);
+            var newCache = new CaseInsensitiveDictionary<ASTNodeDict>(Cache.Count);
+            foreach ((string key, ASTNodeDict value) in Cache)
+            {
+                newCache.Add(key, new ASTNodeDict(value));
+            }
+            foreach (string scopeName in ScopeNames.Reverse())
+            {
+                newScopeNames.Push(scopeName);
+                newScopes.Push(Cache[scopeName]);
+            }
             return new(
-               new LinkedList<string>(ScopeNames), 
-                       new LinkedList<ASTNodeDict>(Scopes.Select(dict => new ASTNodeDict(dict))), 
-                       new CaseInsensitiveDictionary<ASTNodeDict>(Cache.ToDictionary(kvp => kvp.Key, kvp => new ASTNodeDict(kvp.Value))),
+                       newScopeNames, 
+                       newScopes, 
+                       newCache,
                        new CaseInsensitiveDictionary<VariableType>(Types),
                        Operators,
                        Game);

@@ -7,6 +7,7 @@ using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
+using LegendaryExplorerCore.Unreal.ObjectInfo;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
 
@@ -292,6 +293,8 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             //        classObj.ComponentNameToDefaultObjectMap.Add(componentName, pcc.FindExport($"{defaultsExport.InstancedFullPath}.{componentName}"));
             //    }
             //}
+
+            GlobalUnrealObjectInfo.AddOrReplaceClassInDB(classObj);
         }
 
         private static void CompileState(State stateAST, IEntry parent, ref UState stateObj)

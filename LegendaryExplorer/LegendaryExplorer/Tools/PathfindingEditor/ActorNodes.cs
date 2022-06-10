@@ -6,8 +6,8 @@ using LegendaryExplorer.Tools.SequenceObjects;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
-using UMD.HCIL.Piccolo;
-using UMD.HCIL.Piccolo.Nodes;
+using Piccolo;
+using Piccolo.Nodes;
 
 namespace LegendaryExplorer.Tools.PathfindingEditor
 {

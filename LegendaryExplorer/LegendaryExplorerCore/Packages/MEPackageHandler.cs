@@ -84,7 +84,7 @@ namespace LegendaryExplorerCore.Packages
             if (GlobalSharedCacheEnabled)
             {
                 Debug.WriteLine($@"Forcing package into cache: {package.FilePath}");
-                if (package is UnrealPackageFile upf && upf.RefCount < 1)
+                if (package is UnrealPackageFile { RefCount: < 1 })
                 {
                     // Package will immediately be dropped on first dispose
                     Debugger.Break();

@@ -13,9 +13,6 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using System.Numerics;
 using System.Threading;
-using UMD.HCIL.Piccolo;
-using UMD.HCIL.Piccolo.Event;
-using UMD.HCIL.Piccolo.Nodes;
 using DashStyle = System.Drawing.Drawing2D.DashStyle;
 using System.Threading.Tasks;
 using LegendaryExplorer.Dialogs;
@@ -38,6 +35,9 @@ using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
+using Piccolo;
+using Piccolo.Event;
+using Piccolo.Nodes;
 using RectangleF = System.Drawing.RectangleF;
 
 namespace LegendaryExplorer.Tools.PathfindingEditor
@@ -692,6 +692,10 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
 #if DEBUG
                 //graphEditor.DebugEventHandlers();
 #endif
+                if (Pcc is not null)
+                {
+                    GameController.GetInteropTargetForGame(Pcc.Game).GameReceiveMessage -= ReceivedGameMessage;
+                }
             }
         }
         private void LoadFile(string fileName)

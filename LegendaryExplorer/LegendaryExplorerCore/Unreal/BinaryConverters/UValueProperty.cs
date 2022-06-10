@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using LegendaryExplorerCore.Packages;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
@@ -21,7 +16,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             base.Serialize(sc);
             sc.Serialize(ref ArraySize);
             sc.Serialize(ref PropertyFlags);
-            if (sc.Pcc.Platform == MEPackage.GamePlatform.PC)
+            if (sc.Pcc.Platform is MEPackage.GamePlatform.PC || (sc.Game is not MEGame.ME3 && sc.Pcc.Platform is MEPackage.GamePlatform.Xenon))
             {
                 sc.Serialize(ref Category);
                 sc.Serialize(ref ArraySizeEnum);

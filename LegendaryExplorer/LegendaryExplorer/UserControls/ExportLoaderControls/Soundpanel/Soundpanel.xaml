@@ -14,6 +14,7 @@
              xmlns:hb1="clr-namespace:Be.Windows.Forms;assembly=Be.Windows.Forms.HexBox"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:audio1="clr-namespace:LegendaryExplorerCore.Audio;assembly=LegendaryExplorerCore"
+             xmlns:sharedUi="clr-namespace:LegendaryExplorer.SharedUI"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="400"
              DataContext="{Binding RelativeSource={RelativeSource Self}}">
@@ -258,10 +259,10 @@
                                 <Button Name="ToggleHexboxWidth_Button" Content="Toggle Hexbox Width" ToolTip="Toggle between 4 and 16 byte widths" Click="HIRC_ToggleHexboxWidth_Click"/>
                                 <Separator Name="SaveToggle_Separator" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
                             </ToolBar>
-                            <WindowsFormsHost Name="HIRC_Hexbox_Host" Grid.Row="1" Grid.Column="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                            <sharedUi:WindowsFormsHostEx x:Name="HIRC_Hexbox_Host" Grid.Row="1" Grid.Column="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                                 <hb1:HexBox MinBytesPerLine="4" MaxBytesPerLine="16" ColumnInfoVisible="True" LineInfoVisible="True" Font="Courier New,10" BoldFont="Consolas,10" StringViewVisible="True" SelectionStartChanged="Soundpanel_HIRCHexbox_SelectionChanged" VScrollBarVisible="True">
                                 </hb1:HexBox>
-                            </WindowsFormsHost>
+                            </sharedUi:WindowsFormsHostEx>
                             <GridSplitter Grid.Column="1" 
                       Grid.Row="1" HorizontalAlignment="Stretch" 
                       Margin="-5,0"

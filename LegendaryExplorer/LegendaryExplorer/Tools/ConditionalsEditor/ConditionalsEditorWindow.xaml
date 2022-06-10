@@ -151,12 +151,12 @@
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
                         <Button Grid.Row="0" Content="Save Hex Changes" Command="{Binding SaveHexChangesCommand}"/>
-                        <WindowsFormsHost Grid.Row="1" Name="hexbox_Host" HorizontalAlignment="Stretch"
-                                          VerticalAlignment="Stretch">
+                        <sharedUi:WindowsFormsHostEx Grid.Row="1" x:Name="hexbox_Host" HorizontalAlignment="Stretch"
+                                                     VerticalAlignment="Stretch">
                             <forms:HexBox MinBytesPerLine="4" MaxBytesPerLine="16" ColumnInfoVisible="True"
                                           LineInfoVisible="True" Font="Courier New,10" BoldFont="Consolas,10"
                                           StringViewVisible="True" VScrollBarVisible="True" />
-                        </WindowsFormsHost>
+                        </sharedUi:WindowsFormsHostEx>
                     </Grid>
                     <GridSplitter 
                         Name="HexProps_GridSplitter"

@@ -4,15 +4,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using LegendaryExplorerCore.DebugTools;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
-using LegendaryExplorerCore.UnrealScript.Language.Tree;
 
 namespace LegendaryExplorerCore.Unreal.ObjectInfo
 {
@@ -167,18 +165,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 _ => null
             };
 
-        public static bool IsValidEnum(MEGame game, string enumName) =>
-            game switch
-            {
-                MEGame.ME1 => ME1UnrealObjectInfo.Enums.ContainsKey(enumName),
-                MEGame.ME2 => ME2UnrealObjectInfo.Enums.ContainsKey(enumName),
-                MEGame.ME3 => ME3UnrealObjectInfo.Enums.ContainsKey(enumName),
-                MEGame.UDK => ME3UnrealObjectInfo.Enums.ContainsKey(enumName),
-                MEGame.LE1 => LE1UnrealObjectInfo.Enums.ContainsKey(enumName),
-                MEGame.LE2 => LE2UnrealObjectInfo.Enums.ContainsKey(enumName),
-                MEGame.LE3 => LE3UnrealObjectInfo.Enums.ContainsKey(enumName),
-                _ => false
-            };
+        public static bool IsValidEnum(MEGame game, string enumName) => GetEnums(game)?.ContainsKey(enumName) ?? false;
 
 
         /// <summary>
@@ -223,10 +210,10 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                         }
                         if (loadStream != null)
                         {
-                            using IMEPackage importPCC = MEPackageHandler.OpenMEPackageFromStream(loadStream);
-                            ExportEntry classExport = importPCC.GetUExport(info.exportIndex);
-                            UClass classBin = ObjectBinary.From<UClass>(classExport);
-                            ExportEntry defaults = importPCC.GetUExport(classBin.Defaults);
+                            using IMEPackage importPcc = MEPackageHandler.OpenMEPackageFromStream(loadStream);
+                            ExportEntry classExport = importPcc.GetUExport(info.exportIndex);
+                            var classBin = ObjectBinary.From<UClass>(classExport);
+                            ExportEntry defaults = importPcc.GetUExport(classBin.Defaults);
 
                             foreach (var prop in defaults.GetProperties())
                             {
@@ -256,59 +243,67 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
         /// <param name="propName">Name of the array property</param>
         /// <param name="className">Name of the class that should contain the information. If contained in a struct, this will be the name of the struct type</param>
         /// <param name="parsingEntry">Entry that is being parsed. Used for dynamic lookup if it's not in the DB</param>
+        /// <param name="packageCache"></param>
         /// <returns></returns>
-        public static ArrayType GetArrayType(MEGame game, NameReference propName, string className, IEntry parsingEntry = null)
+        public static ArrayType GetArrayType(MEGame game, NameReference propName, string className, IEntry parsingEntry = null, PackageCache packageCache = null)
         {
-            switch (game)
+            var export = parsingEntry as ExportEntry;
+            PropertyInfo p = GetPropertyInfo(game, propName, className, containingExport: export, packageCache: packageCache);
+            if (p is null && export is not null)
             {
-                case MEGame.ME1 when parsingEntry == null || parsingEntry.FileRef.Platform != MEPackage.GamePlatform.PS3:
-                    return ME1UnrealObjectInfo.getArrayType(className, propName, export: parsingEntry as ExportEntry);
-                case MEGame.ME2 when parsingEntry == null || parsingEntry.FileRef.Platform != MEPackage.GamePlatform.PS3:
-                    var res2 = ME2UnrealObjectInfo.getArrayType(className, propName, export: parsingEntry as ExportEntry);
-#if DEBUG
-                    //For debugging only!
-                    if (res2 == ArrayType.Int && ME2UnrealObjectInfo.ArrayTypeLookupJustFailed)
-                    {
-                        ME2UnrealObjectInfo.ArrayTypeLookupJustFailed = false;
-                        Debug.WriteLine($"[ME2] Array type lookup failed for {propName.Instanced} in class {className} in export {parsingEntry.FileRef.GetEntryString(parsingEntry.UIndex)} in {parsingEntry.FileRef.FilePath}");
-                    }
-#endif
-                    return res2;
-                case MEGame.ME1 when parsingEntry.FileRef.Platform == MEPackage.GamePlatform.PS3:
-                case MEGame.ME2 when parsingEntry.FileRef.Platform == MEPackage.GamePlatform.PS3:
-                case MEGame.ME3:
-                case MEGame.UDK:
-                    var res = ME3UnrealObjectInfo.getArrayType(className, propName, export: parsingEntry as ExportEntry);
-#if DEBUG
-                    //For debugging only!
-                    if (res == ArrayType.Int && ME3UnrealObjectInfo.ArrayTypeLookupJustFailed)
-                    {
-                        if (game == MEGame.UDK)
-                        {
-                            var ures = UDKUnrealObjectInfo.getArrayType(className, propName: propName, export: parsingEntry as ExportEntry);
-                            if (ures == ArrayType.Int && UDKUnrealObjectInfo.ArrayTypeLookupJustFailed)
-                            {
-                                Debug.WriteLine($"[UDK] Array type lookup failed for {propName.Instanced} in class {className} in export {parsingEntry.FileRef.GetEntryString(parsingEntry.UIndex)} in {parsingEntry.FileRef.FilePath}");
-                                UDKUnrealObjectInfo.ArrayTypeLookupJustFailed = false;
-                            }
-                            else
-                            {
-                                return ures;
-                            }
-                        }
-                        Debug.WriteLine($"[ME3] Array type lookup failed for {propName.Instanced} in class {className} in export {parsingEntry?.FileRef.GetEntryString(parsingEntry.UIndex)} in {parsingEntry?.FileRef.FilePath}");
-                        ME3UnrealObjectInfo.ArrayTypeLookupJustFailed = false;
-                    }
-#endif
-                    return res;
-                case MEGame.LE1:
-                    return LE1UnrealObjectInfo.getArrayType(className, propName, export: parsingEntry as ExportEntry);
-                case MEGame.LE2:
-                    return LE2UnrealObjectInfo.getArrayType(className, propName, export: parsingEntry as ExportEntry);
-                case MEGame.LE3:
-                    return LE3UnrealObjectInfo.getArrayType(className, propName, export: parsingEntry as ExportEntry);
+                if (!export.IsClass && export.Class is ExportEntry classExport)
+                {
+                    export = classExport;
+                }
+                if (export.IsClass)
+                {
+                    ClassInfo currentInfo = generateClassInfo(export, packageCache: packageCache);
+                    p = GetPropertyInfo(game, propName, className, currentInfo, export, packageCache);
+                }
             }
-            return ArrayType.Int;
+            if (p is null)
+            {
+                Debug.WriteLine($"[{game}] Array type lookup failed for {propName.Instanced} in class {className} in export {parsingEntry?.FileRef.GetEntryString(parsingEntry.UIndex)} in {parsingEntry?.FileRef.FilePath}");
+            }
+            return GetArrayType(game, p);
+        }
+
+        internal static ArrayType GetArrayType(MEGame game, PropertyInfo p)
+        {
+            if (p is not null)
+            {
+                switch (p.Reference)
+                {
+                    case "NameProperty":
+                        return ArrayType.Name;
+                    case "BoolProperty":
+                        return ArrayType.Bool;
+                    case "ByteProperty":
+                        return ArrayType.Byte;
+                    case "StrProperty":
+                        return ArrayType.String;
+                    case "FloatProperty":
+                        return ArrayType.Float;
+                    case "IntProperty":
+                        return ArrayType.Int;
+                    case "StringRefProperty":
+                        return ArrayType.StringRef;
+                }
+
+                if (GetEnums(game).ContainsKey(p.Reference))
+                {
+                    return ArrayType.Enum;
+                }
+
+                if (GetStructs(game).ContainsKey(p.Reference))
+                {
+                    return ArrayType.Struct;
+                }
+
+                return ArrayType.Object;
+            }
+            Debug.WriteLine("Array type lookup failed due to no info provided, defaulting to int");
+            return LegendaryExplorerCoreLibSettings.Instance.ParseUnknownArrayTypesAsObject ? ArrayType.Object : ArrayType.Int;
         }
 
         /// <summary>
@@ -418,16 +413,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             {
                 return shouldReturnClone ? cachedProps.DeepClone() : cachedProps;
             }
-            var structs = game switch
-            {
-                MEGame.ME1 => ME1UnrealObjectInfo.Structs,
-                MEGame.ME2 => ME2UnrealObjectInfo.Structs,
-                MEGame.ME3 => ME3UnrealObjectInfo.Structs,
-                MEGame.LE1 => LE1UnrealObjectInfo.Structs,
-                MEGame.LE2 => LE2UnrealObjectInfo.Structs,
-                MEGame.LE3 => LE3UnrealObjectInfo.Structs,
-                _ => throw new ArgumentOutOfRangeException(nameof(game), game, null)
-            };
+            var structs = GetStructs(game);
             bool isImmutable = IsImmutable(structName, game);
             if (structs.TryGetValue(structName, out ClassInfo info))
             {
@@ -487,7 +473,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                             filepath = info.pccPath;
                             loadStream = MEPackageHandler.ReadAllFileBytesIntoMemoryStream(info.pccPath);
                         }
-                        else if (info.pccPath == GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName)
+                        else if (info.pccPath == Me3ExplorerCustomNativeAdditionsName)
                         {
                             filepath = game switch
                             {
@@ -595,76 +581,63 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
 
         public static Dictionary<string, ClassInfo> GetClasses(MEGame game)
         {
-            switch (game)
+            return game switch
             {
-                case MEGame.ME1:
-                    return ME1UnrealObjectInfo.Classes;
-                case MEGame.ME2:
-                    return ME2UnrealObjectInfo.Classes;
-                case MEGame.UDK:
-                case MEGame.ME3:
-                    return ME3UnrealObjectInfo.Classes;
-                case MEGame.LE1:
-                    return LE1UnrealObjectInfo.Classes;
-                case MEGame.LE2:
-                    return LE2UnrealObjectInfo.Classes;
-                case MEGame.LE3:
-                    return LE3UnrealObjectInfo.Classes;
-                default:
-                    return null;
-            }
+                MEGame.ME1 => ME1UnrealObjectInfo.Classes,
+                MEGame.ME2 => ME2UnrealObjectInfo.Classes,
+                MEGame.UDK => ME3UnrealObjectInfo.Classes,
+                MEGame.ME3 => ME3UnrealObjectInfo.Classes,
+                MEGame.LE1 => LE1UnrealObjectInfo.Classes,
+                MEGame.LE2 => LE2UnrealObjectInfo.Classes,
+                MEGame.LE3 => LE3UnrealObjectInfo.Classes,
+                _ => null
+            };
         }
 
         public static Dictionary<string, ClassInfo> GetStructs(MEGame game)
         {
-            switch (game)
+            return game switch
             {
-                case MEGame.ME1:
-                    return ME1UnrealObjectInfo.Structs;
-                case MEGame.ME2:
-                    return ME2UnrealObjectInfo.Structs;
-                case MEGame.UDK:
-                case MEGame.ME3:
-                    return ME3UnrealObjectInfo.Structs;
-                case MEGame.LE1:
-                    return LE1UnrealObjectInfo.Structs;
-                case MEGame.LE2:
-                    return LE2UnrealObjectInfo.Structs;
-                case MEGame.LE3:
-                    return LE3UnrealObjectInfo.Structs;
-
-                default:
-                    return null;
-            }
+                MEGame.ME1 => ME1UnrealObjectInfo.Structs,
+                MEGame.ME2 => ME2UnrealObjectInfo.Structs,
+                MEGame.UDK => ME3UnrealObjectInfo.Structs,
+                MEGame.ME3 => ME3UnrealObjectInfo.Structs,
+                MEGame.LE1 => LE1UnrealObjectInfo.Structs,
+                MEGame.LE2 => LE2UnrealObjectInfo.Structs,
+                MEGame.LE3 => LE3UnrealObjectInfo.Structs,
+                _ => null
+            };
         }
 
         public static Dictionary<string, List<NameReference>> GetEnums(MEGame game)
         {
-            switch (game)
+            return game switch
             {
-                case MEGame.ME1:
-                    return ME1UnrealObjectInfo.Enums;
-                case MEGame.ME2:
-                    return ME2UnrealObjectInfo.Enums;
-                case MEGame.UDK:
-                case MEGame.ME3:
-                    return ME3UnrealObjectInfo.Enums;
-                case MEGame.LE1:
-                    return LE1UnrealObjectInfo.Enums;
-                case MEGame.LE2:
-                    return LE2UnrealObjectInfo.Enums;
-                case MEGame.LE3:
-                    return LE3UnrealObjectInfo.Enums;
-                default:
-                    return null;
-            }
+                MEGame.ME1 => ME1UnrealObjectInfo.Enums,
+                MEGame.ME2 => ME2UnrealObjectInfo.Enums,
+                MEGame.UDK => ME3UnrealObjectInfo.Enums,
+                MEGame.ME3 => ME3UnrealObjectInfo.Enums,
+                MEGame.LE1 => LE1UnrealObjectInfo.Enums,
+                MEGame.LE2 => LE2UnrealObjectInfo.Enums,
+                MEGame.LE3 => LE3UnrealObjectInfo.Enums,
+                _ => null
+            };
         }
 
-        public static ClassInfo generateClassInfo(ExportEntry export, bool isStruct = false)
+        public static ClassInfo generateClassInfo(ExportEntry export, bool isStruct = false, PackageCache packageCache = null)
         {
-            if (export.ClassName != "ScriptStruct" && !export.IsClass && export.Class is ExportEntry classExport)
+            if (export.ClassName != "ScriptStruct")
             {
-                export = classExport;
+                ExportEntry classExport = export.Class switch
+                {
+                    ExportEntry exportEntry => exportEntry,
+                    ImportEntry importEntry => EntryImporter.ResolveImport(importEntry, packageCache),
+                    _ => export
+                };
+                if (classExport is not null)
+                {
+                    return AddOrReplaceClassInDB(classExport.GetBinaryData<UClass>(packageCache), packageCache);
+                }
             }
 
             return export.FileRef.Game switch
@@ -680,6 +653,162 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 MEGame.LE3 => LE3UnrealObjectInfo.generateClassInfo(export, isStruct),
                 _ => null
             };
+        }
+
+        internal static ClassInfo AddOrReplaceClassInDB(UClass uClass, PackageCache packageCache = null)
+        {
+            ExportEntry export = uClass.Export;
+            IMEPackage pcc = export.FileRef;
+            MEGame game = pcc.Game;
+            var classInfo = new ClassInfo
+            {
+                baseClass = export.SuperClassName,
+                exportIndex = export.UIndex,
+                ClassName = export.ObjectName.Instanced,
+                isAbstract = uClass.ClassFlags.Has(UnrealFlags.EClassFlags.Abstract),
+                pccPath = pcc.FilePath.Contains("BioGame", StringComparison.InvariantCultureIgnoreCase)
+                    ? pcc.FilePath[(pcc.FilePath.LastIndexOf("BIOGame", StringComparison.InvariantCultureIgnoreCase) + 8)..]
+                    : pcc.FilePath
+            };
+
+            Dictionary<string, ClassInfo> classInfos = GetClasses(game);
+            if (export.SuperClass is not null && !classInfos.ContainsKey(classInfo.baseClass))
+            {
+                ExportEntry classExport = export.SuperClass switch
+                {
+                    ExportEntry exportEntry => exportEntry,
+                    ImportEntry importEntry => EntryImporter.ResolveImport(importEntry, packageCache),
+                    _ => throw new ArgumentOutOfRangeException()
+                };
+                if (classExport is not null)
+                {
+                    return AddOrReplaceClassInDB(classExport.GetBinaryData<UClass>());
+                }
+            }
+
+            ParseChildren(uClass, classInfo, GetStructs(game), GetEnums(game));
+
+            classInfos[classInfo.ClassName] = classInfo;
+
+            return classInfo;
+
+            static void ParseChildren(UStruct uStruct, ClassInfo info, Dictionary<string, ClassInfo> structs, Dictionary<string, List<NameReference>> enums)
+            {
+                IMEPackage pcc = uStruct.Export.FileRef;
+                int childUIndex = uStruct.Children;
+                while (childUIndex > 0)
+                {
+                    var childExport = pcc.GetUExport(childUIndex);
+                    var field = (UField)ObjectBinary.From(childExport);
+                    switch (field)
+                    {
+                        case UEnum uEnum:
+                            enums[childExport.ObjectName.Instanced] = uEnum.Names[..^1].ToList();
+                            break;
+                        case UScriptStruct uScriptStruct:
+                            var structInfo = new ClassInfo
+                            {
+                                baseClass = childExport.SuperClassName,
+                                exportIndex = childUIndex,
+                                ClassName = childExport.ObjectName.Instanced,
+                                pccPath = info.pccPath
+                            };
+                            ParseChildren(uScriptStruct, structInfo, structs, enums);
+                            structs[structInfo.ClassName] = structInfo;
+                            break;
+                        case UProperty uProperty:
+                            PropertyType? type = null;
+                            string reference = null;
+                            switch (uProperty)
+                            {
+                                case UBoolProperty:
+                                    type = PropertyType.BoolProperty;
+                                    break;
+                                case UFloatProperty:
+                                    type = PropertyType.FloatProperty;
+                                    break;
+                                case UIntProperty:
+                                    type = PropertyType.IntProperty;
+                                    break;
+                                case UStringRefProperty:
+                                    type = PropertyType.StringRefProperty;
+                                    break;
+                                case UStrProperty:
+                                    type = PropertyType.StrProperty;
+                                    break;
+                                case UNameProperty:
+                                    type = PropertyType.NameProperty;
+                                    break;
+                                case UDelegateProperty:
+                                    type = PropertyType.DelegateProperty;
+                                    break;
+                                //case UBioMask4Property:
+                                case UByteProperty uByteProperty:
+                                    type = PropertyType.ByteProperty;
+                                    reference = pcc.getObjectName(uByteProperty.Enum);
+                                    break;
+                                //case UClassProperty:
+                                //case UComponentProperty:
+                                //case UInterfaceProperty:
+                                case UObjectProperty uObjectProperty:
+                                    type = PropertyType.ObjectProperty;
+                                    reference = pcc.getObjectName(uObjectProperty.ObjectRef);
+                                    break;
+                                case UStructProperty uStructProperty:
+                                    type = PropertyType.StructProperty;
+                                    reference = pcc.getObjectName(uStructProperty.Struct);
+                                    break;
+                                case UArrayProperty uArrayProperty:
+                                    type = PropertyType.ArrayProperty;
+                                    switch (ObjectBinary.From(pcc.GetUExport(uArrayProperty.ElementType)))
+                                    {
+                                        case UBoolProperty:
+                                            reference = nameof(PropertyType.BoolProperty);
+                                            break;
+                                        case UDelegateProperty:
+                                            reference = nameof(PropertyType.DelegateProperty);
+                                            break;
+                                        case UFloatProperty:
+                                            reference = nameof(PropertyType.FloatProperty);
+                                            break;
+                                        case UIntProperty:
+                                            reference = nameof(PropertyType.IntProperty);
+                                            break;
+                                        case UNameProperty:
+                                            reference = nameof(PropertyType.NameProperty);
+                                            break;
+                                        case UStringRefProperty:
+                                            reference = nameof(PropertyType.StringRefProperty);
+                                            break;
+                                        case UStrProperty:
+                                            reference = nameof(PropertyType.StrProperty);
+                                            break;
+                                        case UByteProperty uByteProperty:
+                                            int enumUIdx = uByteProperty.Enum;
+                                            reference = enumUIdx == 0 ? nameof(PropertyType.ByteProperty) : pcc.getObjectName(enumUIdx);
+                                            break;
+                                        case UObjectProperty uObjectProperty:
+                                            reference = pcc.getObjectName(uObjectProperty.ObjectRef);
+                                            break;
+                                        case UStructProperty uStructProperty:
+                                            reference = pcc.getObjectName(uStructProperty.Struct);
+                                            break;
+                                        default:
+                                            throw new ArgumentOutOfRangeException();
+                                    }
+                                    break;
+                            }
+                            if (type is not null)
+                            {
+                                bool transient = uProperty.PropertyFlags.Has(UnrealFlags.EPropertyFlags.Transient);
+                                info.properties.Add(childExport.ObjectName.Instanced, new PropertyInfo((PropertyType)type, reference, transient, uProperty.ArraySize));
+                            }
+                            break;
+                    }
+
+                    childUIndex = field.Next;
+                }
+            }
         }
 
         public static Property getDefaultProperty(MEGame game, NameReference propName, PropertyInfo propInfo, PackageCache packageCache, bool stripTransients = true, bool isImmutable = false)

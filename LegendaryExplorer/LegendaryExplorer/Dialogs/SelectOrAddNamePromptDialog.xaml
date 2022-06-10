@@ -4,17 +4,21 @@
     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
     xmlns:bases="clr-namespace:LegendaryExplorer.SharedUI.Bases"
     xmlns:sharedUi="clr-namespace:LegendaryExplorer.SharedUI"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    mc:Ignorable="d"
     WindowStartupLocation="CenterOwner" 
     SizeToContent="WidthAndHeight"
     MinWidth="300"
     MinHeight="100"
     WindowStyle="SingleBorderWindow"
-    ResizeMode="CanMinimize">
+    ResizeMode="CanMinimize"
+    d:DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <Window.Resources>
         <DataTemplate DataType="{x:Type sharedUi:IndexedName}">
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="{Binding Path=Index}" Foreground="Gray"/>
-                <TextBlock Text="{Binding Path=Name.Name}" Foreground="Black" Margin="5,0,0,0"/>
+                <TextBlock Text="{Binding Path=Index, Mode=OneTime}" Foreground="Gray"/>
+                <TextBlock Text="{Binding Path=Name, Mode=OneTime}" Foreground="Black" Margin="5,0,0,0"/>
             </StackPanel>
         </DataTemplate>
     </Window.Resources>
@@ -26,7 +30,7 @@
                 <ColumnDefinition Name="numberColumn" Width="50"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <ComboBox Name="answerChoicesCombobox" Margin="5" IsTextSearchEnabled="True" TextSearch.TextPath="Name"
-                      ItemsSource="{Binding NameList}" HorizontalAlignment="Stretch" IsEditable="True" KeyUp="Name_ComboBox_KeyUp">
+                      ItemsSource="{Binding NameList, Mode=OneTime}" HorizontalAlignment="Stretch" IsEditable="True" KeyUp="Name_ComboBox_KeyUp">
                 <ComboBox.ItemsPanel>
                     <ItemsPanelTemplate>
                         <VirtualizingStackPanel />

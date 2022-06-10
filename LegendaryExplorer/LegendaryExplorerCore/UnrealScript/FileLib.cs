@@ -194,9 +194,15 @@ namespace LegendaryExplorerCore.UnrealScript
         //only use from within _initializationLock!
         private bool InternalInitialize(PackageCache packageCache, string gameRootPath = null, bool canUseCache = true)
         {
+            bool packageCacheIsLocal = false;
             try
             {
-                LECLog.Information($@"Game Root Path for FileLib Init: {gameRootPath ?? "null"}. Has package cache: {packageCache != null}");
+                if (packageCache == null)
+                {
+                    packageCache = new PackageCache{AlwaysOpenFromDisk = false};
+                    packageCacheIsLocal = true;
+                }
+                LECLog.Information($@"Game Root Path for FileLib Init: {gameRootPath ?? "null"}. Has package cache: {!packageCacheIsLocal}");
                 InitializationLog = new MessageLog();
                 _cacheEnabled = false; // defaults to false, can be enabled if init works.
                 _baseSymbols = null;
@@ -212,7 +218,7 @@ namespace LegendaryExplorerCore.UnrealScript
                 {
                     if (gameFiles.TryGetValue(fileName, out string path) && File.Exists(path))
                     {
-                        using var pcc = MEPackageHandler.OpenMEPackage(path);
+                        IMEPackage pcc = packageCache.GetCachedPackage(path, true);
                         if (!ResolveAllClassesInPackage(pcc, ref _baseSymbols, InitializationLog, packageCache))
                         {
                             return false;
@@ -249,11 +255,11 @@ namespace LegendaryExplorerCore.UnrealScript
                             associatedFiles.Add("Startup_DLC_CON_MP5_INT.pcc");
                         }
                     }
-                    foreach (var fileName in Enumerable.Reverse(associatedFiles))
+                    foreach (string fileName in Enumerable.Reverse(associatedFiles))
                     {
                         if (gameFiles.TryGetValue(fileName, out string path) && File.Exists(path))
                         {
-                            using var pcc = MEPackageHandler.OpenMEPackage(path);
+                            IMEPackage pcc = packageCache.GetCachedPackage(path, true);
                             if (!ResolveAllClassesInPackage(pcc, ref _baseSymbols, InitializationLog, packageCache))
                             {
                                 return false;
@@ -263,10 +269,19 @@ namespace LegendaryExplorerCore.UnrealScript
                 }
                 _symbols = _baseSymbols?.Clone();
                 _cacheEnabled = canUseCache;
-                return ResolveAllClassesInPackage(Pcc, ref _symbols, InitializationLog, packageCache);
+                bool hadError = ResolveAllClassesInPackage(Pcc, ref _symbols, InitializationLog, packageCache);
+                if (packageCacheIsLocal)
+                {
+                    packageCache.Dispose();
+                }
+                return hadError;
             }
             catch when (!LegendaryExplorerCoreLib.IsDebug)
             {
+                if (packageCacheIsLocal)
+                {
+                    packageCache.Dispose();
+                }
                 return false;
             }
         }

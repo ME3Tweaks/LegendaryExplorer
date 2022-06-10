@@ -978,7 +978,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                 var indexedList = new List<object>();
                                 for (int i = 0; i < CurrentLoadedExport.FileRef.Names.Count; i++)
                                 {
-                                    NameReference nr = CurrentLoadedExport.FileRef.Names[i];
+                                    string nr = CurrentLoadedExport.FileRef.Names[i];
                                     indexedList.Add(new IndexedName(i, nr));
                                 }
                                 Value_ComboBox.ItemsSource = indexedList;
@@ -1245,69 +1245,23 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                             }
                                             else
                                             {
-                                                //CurrentLoadedEntry.idxObjectName = idx;
-                                                //Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new Action(() => { })).Wait();
-                                                //Value_ComboBox.SelectedIndex = idx; //This may need to be deferred as the handleUpdate() may not have fired yet.
-                                                //MessageBox.Show($"{result} has been added as a name.\nName index: {idx} (0x{idx:X8})", "Name added");
-                                                //.SelectedIndex = idx; //This may need to be deferred as the handleUpdate() may not have fired yet.
-                                                //item = Value_ComboBox.SelectedItem as IndexedName;
                                                 item = new IndexedName(idx, result);
                                             }
-                                            //refresh should be triggered by hosting window
                                         }
                                     }
                                 }
                             }
-                            if (item != null && dataOffset != 0)
+                            bool nameindexok = int.TryParse(NameIndex_TextBox.Text, out int nameIndex);
+                            nameindexok &= nameIndex >= 0;
+                            if (item != null && dataOffset != 0 && nameindexok)
                             {
                                 byte[] data = CurrentLoadedExport.Data;
-                                data.OverwriteRange(dataOffset, BitConverter.GetBytes(CurrentLoadedExport.FileRef.findName(item.Name.Name)));
-                                data.OverwriteRange(dataOffset + 4, BitConverter.GetBytes(item.Name.Number));
+                                data.OverwriteRange(dataOffset, BitConverter.GetBytes(CurrentLoadedExport.FileRef.findName(item.Name)));
+                                data.OverwriteRange(dataOffset + 4, BitConverter.GetBytes(nameIndex));
                                 CurrentLoadedExport.Data = data;
                                 Debug.WriteLine("Set data");
                             }
                             break;
-                            /*
-                                TextSearch.SetTextPath(Value_ComboBox, "Name");
-                                Value_ComboBox.IsEditable = true;
-
-                                if (ParentNameList == null)
-                                {
-                                    var indexedList = new List<ITreeItem>();
-                                    for (int i = 0; i < CurrentLoadedExport.FileRef.Names.Count; i++)
-                                    {
-                                        NameReference nr = CurrentLoadedExport.FileRef.Names[i];
-                                        indexedList.Add(new IndexedName(i, nr));
-                                    }
-                                    Value_ComboBox.ItemsSource = indexedList;
-                                }
-                                else
-                                {
-                                    Value_ComboBox.ItemsSource = ParentNameList;
-                                }
-                                int nameIdx = BitConverter.ToInt32(CurrentLoadedExport.Data, dataOffset);
-                                int nameValueIndex = BitConverter.ToInt32(CurrentLoadedExport.Data, dataOffset + 4);
-                                string nameStr = CurrentLoadedExport.FileRef.getNameEntry(nameIdx);
-                                if (nameStr != "")
-                                {
-                                    Value_ComboBox.SelectedIndex = nameIdx;
-                                    NameIndex_TextBox.Text = nameValueIndex.ToString();
-                                }
-                                else
-                                {
-                                    Value_ComboBox.SelectedIndex = -1;
-                                    NameIndex_TextBox.Text = "";
-                                }
-                                SupportedEditorSetElements.Add(Value_ComboBox);
-                                SupportedEditorSetElements.Add(NameIndexPrefix_TextBlock);
-                                SupportedEditorSetElements.Add(NameIndex_TextBox);
-                                break;
-                            /*
-                                //Todo: We can add different nodeTypes to trigger different ParsedValue parsers, 
-                                //such as IntOffset. Enter in int, parse as hex
-                                Value_TextBox.Text = BitConverter.ToInt32(CurrentLoadedExport.Data, dataOffset).ToString();
-                                SupportedEditorSetElements.Add(Value_TextBox);
-                                break;*/
                     }
                     break;
                 case UPropertyTreeViewEntry uptve:

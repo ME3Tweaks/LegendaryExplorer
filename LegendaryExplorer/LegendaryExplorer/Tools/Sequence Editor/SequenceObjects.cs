@@ -3,18 +3,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Text;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Windows.Forms;
-using UMD.HCIL.Piccolo;
-using UMD.HCIL.Piccolo.Nodes;
-using UMD.HCIL.Piccolo.Event;
-using UMD.HCIL.Piccolo.Util;
-using UMD.HCIL.GraphEditor;
 using System.Runtime.InteropServices;
 using LegendaryExplorer.Misc.AppSettings;
 using LegendaryExplorer.Resources;
+using LegendaryExplorer.Tools.Sequence_Editor;
 using LegendaryExplorer.Tools.TlkManagerNS;
 using LegendaryExplorerCore.Gammtek.Extensions;
 using LegendaryExplorerCore.Kismet;
@@ -22,6 +16,10 @@ using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.PlotDatabase;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
+using Piccolo;
+using Piccolo.Event;
+using Piccolo.Nodes;
+using Piccolo.Util;
 
 namespace LegendaryExplorer.Tools.SequenceObjects
 {
@@ -71,7 +69,7 @@ namespace LegendaryExplorer.Tools.SequenceObjects
         public static bool OutputNumbers;
 
         protected IMEPackage Pcc;
-        protected GraphEditor g;
+        protected SequenceGraphEditor g;
         public RectangleF PosAtDragStart;
 
 
@@ -85,7 +83,7 @@ namespace LegendaryExplorer.Tools.SequenceObjects
 
         public string Comment => comment.Text;
 
-        protected SObj(ExportEntry entry, GraphEditor grapheditor)
+        protected SObj(ExportEntry entry, SequenceGraphEditor grapheditor)
         {
             Pcc = entry.FileRef;
             export = entry;
@@ -333,7 +331,7 @@ namespace LegendaryExplorer.Tools.SequenceObjects
             set => val.Text = value;
         }
 
-        public SVar(ExportEntry entry, GraphEditor grapheditor)
+        public SVar(ExportEntry entry, SequenceGraphEditor grapheditor)
             : base(entry, grapheditor)
         {
             string s = export.ObjectName;
@@ -615,7 +613,7 @@ namespace LegendaryExplorer.Tools.SequenceObjects
     [DebuggerDisplay("SFrame | #{UIndex}: {export.ObjectName.Instanced}")]
     public sealed class SFrame : SObj
     {
-        public SFrame(ExportEntry entry, GraphEditor grapheditor)
+        public SFrame(ExportEntry entry, SequenceGraphEditor grapheditor)
             : base(entry, grapheditor)
         {
             float w = 0;
@@ -730,7 +728,7 @@ namespace LegendaryExplorer.Tools.SequenceObjects
         protected static PPath CreateActionLinkBox() => PPath.CreateRectangle(0, -4, 10, 8);
         private static PPath CreateVarLinkBox() => PPath.CreateRectangle(-4, 0, 8, 10);
 
-        protected SBox(ExportEntry entry, GraphEditor grapheditor)
+        protected SBox(ExportEntry entry, SequenceGraphEditor grapheditor)
             : base(entry, grapheditor)
         {
             varDragHandler = new VarDragHandler(grapheditor, this);
@@ -973,9 +971,9 @@ namespace LegendaryExplorer.Tools.SequenceObjects
 
         private sealed class OutputDragHandler : PDragEventHandler
         {
-            private readonly GraphEditor graphEditor;
+            private readonly SequenceGraphEditor graphEditor;
             private readonly SBox sObj;
-            public OutputDragHandler(GraphEditor graph, SBox obj)
+            public OutputDragHandler(SequenceGraphEditor graph, SBox obj)
             {
                 graphEditor = graph;
                 sObj = obj;
@@ -1008,7 +1006,7 @@ namespace LegendaryExplorer.Tools.SequenceObjects
             {
                 base.OnDrag(sender, e);
                 e.Handled = true;
-                GraphEditor.UpdateEdge(((List<ActionEdge>)((PNode)sender).Tag)[0]);
+                SequenceGraphEditor.UpdateEdge(((List<ActionEdge>)((PNode)sender).Tag)[0]);
             }
 
             protected override void OnEndDrag(object sender, PInputEventArgs e)
@@ -1030,9 +1028,9 @@ namespace LegendaryExplorer.Tools.SequenceObjects
 
         private sealed class VarDragHandler : PDragEventHandler
         {
-            private readonly GraphEditor graphEditor;
+            private readonly SequenceGraphEditor graphEditor;
             private readonly SBox sObj;
-            public VarDragHandler(GraphEditor graph, SBox obj)
+            public VarDragHandler(SequenceGraphEditor graph, SBox obj)
             {
                 graphEditor = graph;
                 sObj = obj;
@@ -1067,7 +1065,7 @@ namespace LegendaryExplorer.Tools.SequenceObjects
             {
                 base.OnDrag(sender, e);
                 e.Handled = true;
-                GraphEditor.UpdateEdge(((List<VarEdge>)((PNode)sender).Tag)[0]);
+                SequenceGraphEditor.UpdateEdge(((List<VarEdge>)((PNode)sender).Tag)[0]);
             }
 
             protected override void OnEndDrag(object sender, PInputEventArgs e)
@@ -1089,9 +1087,9 @@ namespace LegendaryExplorer.Tools.SequenceObjects
 
         private sealed class EventDragHandler : PDragEventHandler
         {
-            private readonly GraphEditor graphEditor;
+            private readonly SequenceGraphEditor graphEditor;
             private readonly SBox sObj;
-            public EventDragHandler(GraphEditor graph, SBox obj)
+            public EventDragHandler(SequenceGraphEditor graph, SBox obj)
             {
                 graphEditor = graph;
                 sObj = obj;
@@ -1125,7 +1123,7 @@ namespace LegendaryExplorer.Tools.SequenceObjects
             {
                 base.OnDrag(sender, e);
                 e.Handled = true;
-                GraphEditor.UpdateEdge(((List<EventEdge>)((PNode)sender).Tag)[0]);
+                SequenceGraphEditor.UpdateEdge(((List<EventEdge>)((PNode)sender).Tag)[0]);
             }
 
             protected override void OnEndDrag(object sender, PInputEventArgs e)
@@ -1343,7 +1341,7 @@ namespace LegendaryExplorer.Tools.SequenceObjects
         public readonly List<EventEdge> Connections = new();
         public override IEnumerable<SeqEdEdge> Edges => Connections.Union(base.Edges);
 
-        public SEvent(ExportEntry entry, GraphEditor grapheditor)
+        public SEvent(ExportEntry entry, SequenceGraphEditor grapheditor)
             : base(entry, grapheditor)
         {
             OutlinePen = new Pen(EventColor);
@@ -1498,7 +1496,7 @@ namespace LegendaryExplorer.Tools.SequenceObjects
 
         private readonly InputDragHandler inputDragHandler = new();
 
-        public SAction(ExportEntry entry, GraphEditor grapheditor)
+        public SAction(ExportEntry entry, SequenceGraphEditor grapheditor)
             : base(entry, grapheditor)
         {
             GetVarLinks();

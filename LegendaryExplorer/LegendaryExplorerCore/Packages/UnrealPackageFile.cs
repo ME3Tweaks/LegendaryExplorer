@@ -539,7 +539,7 @@ namespace LegendaryExplorerCore.Packages
                     break;
                 }
 
-                lastExport.PropertyChanged -= importChanged;
+                lastExport.PropertyChanged -= exportChanged;
                 exports.RemoveAt(i);
                 UpdateTools(PackageChange.ExportRemove, lastExport.UIndex);
                 IsModified = true;
@@ -554,7 +554,7 @@ namespace LegendaryExplorerCore.Packages
             {
                 if (trashPackage.GetChildren().IsEmpty())
                 {
-                    trashPackage.PropertyChanged -= importChanged;
+                    trashPackage.PropertyChanged -= exportChanged;
                     exports.Remove(trashPackage);
                     UpdateTools(PackageChange.ExportRemove, trashPackage.UIndex);
                     IsModified = true;

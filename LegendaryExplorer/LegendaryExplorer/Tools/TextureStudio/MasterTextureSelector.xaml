@@ -11,6 +11,7 @@
         xmlns:Converters="clr-namespace:LegendaryExplorer.SharedUI.Converters"
         xmlns:peregrineTreeView="clr-namespace:LegendaryExplorer.SharedUI.PeregrineTreeView"
         mc:Ignorable="d"
+        Closing="MasterTextureSelector_OnClosing"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         Title="ME1 Master Texture Package Editor" Height="450" MinWidth="1000" >
     <Window.Resources>

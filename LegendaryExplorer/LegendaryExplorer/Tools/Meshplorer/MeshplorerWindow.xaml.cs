@@ -627,7 +627,7 @@ namespace LegendaryExplorer.Tools.Meshplorer
                 // Note that you can have more than one file.
                 var files = (string[])e.Data.GetData(DataFormats.FileDrop);
                 string ext = Path.GetExtension(files[0]).ToLower();
-                if (ext == ".upk" || ext == ".pcc" || ext == ".sfm")
+                if (ext is ".upk" or ".pcc" or ".sfm")
                 {
                     LoadFile(files[0]);
                 }

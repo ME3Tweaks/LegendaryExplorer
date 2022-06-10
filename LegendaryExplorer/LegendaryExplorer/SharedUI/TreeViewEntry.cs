@@ -20,9 +20,9 @@ using LegendaryExplorerCore.Unreal.BinaryConverters;
 namespace LegendaryExplorer.SharedUI
 {
     [DebuggerDisplay("TreeViewEntry {" + nameof(DisplayName) + "}")]
-    public class TreeViewEntry : NotifyPropertyChangedBase
+    public sealed class TreeViewEntry : NotifyPropertyChangedBase, IDisposable
     {
-        private static PackageCache defaultsLookupCache = new PackageCache() { CacheMaxSize = 3 }; // Don't let cache get big.
+        private static readonly PackageCache DefaultsLookupCache = new() { CacheMaxSize = 3 }; // Don't let cache get big.
 
         public bool IsProgramaticallySelecting;
 
@@ -153,7 +153,7 @@ namespace LegendaryExplorer.SharedUI
             }
         }
 
-        private void TVEntryPropertyChanged(object? sender, PropertyChangedEventArgs e)
+        private void TVEntryPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (Settings.PackageEditor_ShowTreeEntrySubText)
             {
@@ -172,7 +172,7 @@ namespace LegendaryExplorer.SharedUI
             SubText = null;
         }
 
-        private string _displayName;
+        private readonly string _displayName;
         public string DisplayName
         {
             get
@@ -194,7 +194,7 @@ namespace LegendaryExplorer.SharedUI
                     return "ERROR GETTING DISPLAY NAME!";
                 }
             }
-            set { _displayName = value; OnPropertyChanged(); }
+            init { _displayName = value; OnPropertyChanged(); }
         }
 
         private bool loadedSubtext = false;
@@ -221,7 +221,7 @@ namespace LegendaryExplorer.SharedUI
                                     {
                                         var flagOffset = Entry.Game.IsGame3() || Entry.FileRef.Platform == MEPackage.GamePlatform.PS3 ? 4 : 12;
                                         var flags = EndianReader.ToInt32(data, data.Length - flagOffset, ee.FileRef.Endian);
-                                        FlagValues fs = new FlagValues(flags, UE3FunctionReader._flagSet);
+                                        var fs = new FlagValues(flags, UE3FunctionReader._flagSet);
                                         _subtext = "";
                                         if (fs.HasFlag("Static"))
                                         {
@@ -252,7 +252,7 @@ namespace LegendaryExplorer.SharedUI
                                     {
                                         //This could be -14 if it's defined as Net... we would have to decompile the whole function to know though...
                                         var flags = EndianReader.ToInt32(data, data.Length - 12, ee.FileRef.Endian);
-                                        FlagValues fs = new FlagValues(flags, UE3FunctionReader._flagSet);
+                                        var fs = new FlagValues(flags, UE3FunctionReader._flagSet);
                                         if (fs.HasFlag("Exec"))
                                         {
                                             _subtext = "Exec - console command";
@@ -371,7 +371,7 @@ namespace LegendaryExplorer.SharedUI
                         }
                         else
                         {
-                            var tag = ee.GetProperty<NameProperty>("Tag", defaultsLookupCache); // Todo: Pass a package cache through here so hits to Engine.pcc aren't as costly. We will need a global shared package cache (maybe just for this treeview), but one that is not
+                            var tag = ee.GetProperty<NameProperty>("Tag", DefaultsLookupCache); // Todo: Pass a package cache through here so hits to Engine.pcc aren't as costly. We will need a global shared package cache (maybe just for this treeview), but one that is not
                             // using the LEX cache as we don't want the package actually open.
                             if (tag != null && tag.Value.Name != Entry.ObjectName)
                             {
@@ -486,7 +486,7 @@ namespace LegendaryExplorer.SharedUI
         /// <summary>
         /// Game this entry is for. This is mostly for the root node since it won't have an attached entry
         /// </summary>
-        public MEGame Game { get; set; }
+        public MEGame Game { get; init; }
 
         public override string ToString()
         {
@@ -504,6 +504,15 @@ namespace LegendaryExplorer.SharedUI
             exportNodes.AddRange(importNodes);
             Sublinks.ClearEx();
             Sublinks.AddRange(exportNodes);
+        }
+
+        public void Dispose()
+        {
+            if (Entry is not null)
+            {
+                Entry.PropertyChanged -= TVEntryPropertyChanged;
+                Entry = null;
+            }
         }
     }
 }

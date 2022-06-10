@@ -23,7 +23,7 @@ namespace LegendaryExplorerCore.Unreal
     /// <summary>
     /// Collection of <see cref="Property"/>s
     /// </summary>
-    public sealed class PropertyCollection : Collection<Property>
+    public sealed class PropertyCollection : List<Property>
     {
         internal int EndOffset;
         
@@ -79,7 +79,7 @@ namespace LegendaryExplorerCore.Unreal
         {
             if (!TryReplaceProp(prop))
             {
-                this.Items.Add(prop);
+                Add(prop);
             }
         }
 
@@ -95,7 +95,7 @@ namespace LegendaryExplorerCore.Unreal
             {
                 prop.WriteTo(writer, pcc, IsImmutable);
             }
-            if (!IsImmutable && requireNoneAtEnd && (Count == 0 || Items[^1] is not NoneProperty))
+            if (!IsImmutable && requireNoneAtEnd && (Count == 0 || this[^1] is not NoneProperty))
             {
                 writer.WriteNoneProperty(pcc);
             }
@@ -147,7 +147,7 @@ namespace LegendaryExplorerCore.Unreal
                     string name = pcc.GetNameEntry(nameIdx);
                     if (name == "None")
                     {
-                        props.Items.Add(new NoneProperty(stream) { StartOffset = propertyStartPosition, ValueOffset = propertyStartPosition });
+                        props.Add(new NoneProperty(stream) { StartOffset = propertyStartPosition, ValueOffset = propertyStartPosition });
                         stream.Seek(4, SeekOrigin.Current);
                         break;
                     }
@@ -229,7 +229,7 @@ namespace LegendaryExplorerCore.Unreal
                                         ClassInfo classInfo = null;
                                         if (enumname == null && entry is ExportEntry exp)
                                         {
-                                            classInfo = GlobalUnrealObjectInfo.generateClassInfo(exp);
+                                            classInfo = GlobalUnrealObjectInfo.generateClassInfo(exp, packageCache: packageCache);
                                         }
 
                                         //Use DB info or attempt lookup
@@ -297,7 +297,7 @@ namespace LegendaryExplorerCore.Unreal
                     {
                         prop.StaticArrayIndex = staticArrayIndex;
                         prop.StartOffset = propertyStartPosition;
-                        props.Items.Add(prop);
+                        props.Add(prop);
                     }
                 }
             }
@@ -326,7 +326,7 @@ namespace LegendaryExplorerCore.Unreal
                 //remove None Property
                 if (props[^1].PropType == PropertyType.None && !includeNoneProperty)
                 {
-                    props.Items.RemoveAt(props.Count - 1);
+                    props.RemoveAt(props.Count - 1);
                 }
             }
             props.EndOffset = (int)stream.Position;
@@ -368,7 +368,7 @@ namespace LegendaryExplorerCore.Unreal
                 if (defaultProps == null)
                 {
                     int startPos = (int)stream.Position;
-                    props.Items.Add(new UnknownProperty(stream, size) { StartOffset = startPos });
+                    props.Add(new UnknownProperty(stream, size) { StartOffset = startPos });
                     return props;
                 }
             }
@@ -388,7 +388,7 @@ namespace LegendaryExplorerCore.Unreal
 
                 if (property.PropType != PropertyType.None)
                 {
-                    props.Items.Add(property);
+                    props.Add(property);
                 }
             }
             return props;
@@ -437,7 +437,7 @@ namespace LegendaryExplorerCore.Unreal
                     return arrayProperty;//this implementation needs checked, as I am not 100% sure of it's validity.
                 case PropertyType.StructProperty:
                     int valuePos = (int)stream.Position;
-                    string reference = GlobalUnrealObjectInfo.GetPropertyInfo(pcc.Game, template.Name, structType, containingExport: export).Reference;
+                    string reference = GlobalUnrealObjectInfo.GetPropertyInfo(pcc.Game, template.Name, structType, containingExport: export, packageCache: packageCache).Reference;
                     PropertyCollection defaultProps = null;
                     PropertyCollection structProps = ReadImmutableStruct(export, stream, reference, 0, packageCache, ref defaultProps, export);
                     var structProp = new StructProperty(nestedStructType ?? structType, structProps, template.Name, true)
@@ -460,7 +460,7 @@ namespace LegendaryExplorerCore.Unreal
         {
             IMEPackage pcc = export.FileRef;
             long arrayOffset = IsInImmutable ? stream.Position : stream.Position - 24;
-            ArrayType arrayType = GlobalUnrealObjectInfo.GetArrayType(pcc.Game, name, enclosingType == "ScriptStruct" ? export.ObjectName : enclosingType , parsingEntry);
+            ArrayType arrayType = GlobalUnrealObjectInfo.GetArrayType(pcc.Game, name, enclosingType == "ScriptStruct" ? export.ObjectName : enclosingType , parsingEntry, packageCache);
             //Debug.WriteLine("Reading array length at 0x" + stream.Position.ToString("X5"));
             int count = stream.ReadInt32();
             switch (arrayType)
@@ -493,7 +493,7 @@ namespace LegendaryExplorerCore.Unreal
                         ClassInfo classInfo = null;
                         if (enumname == null && parsingEntry is ExportEntry parsingExport)
                         {
-                            classInfo = GlobalUnrealObjectInfo.generateClassInfo(parsingExport);
+                            classInfo = GlobalUnrealObjectInfo.generateClassInfo(parsingExport, packageCache: packageCache);
                         }
 
                         //Use DB info or attempt lookup
@@ -510,11 +510,11 @@ namespace LegendaryExplorerCore.Unreal
                 case ArrayType.Struct:
                     {
                         var props = new List<StructProperty>(count);
-                        var propertyInfo = GlobalUnrealObjectInfo.GetPropertyInfo(pcc.Game, name, enclosingType, containingExport: parsingEntry as ExportEntry);
+                        var propertyInfo = GlobalUnrealObjectInfo.GetPropertyInfo(pcc.Game, name, enclosingType, containingExport: parsingEntry as ExportEntry, packageCache: packageCache);
                         if (propertyInfo == null && parsingEntry is ExportEntry parsingExport)
                         {
-                            var currentInfo = GlobalUnrealObjectInfo.generateClassInfo(parsingExport);
-                            propertyInfo = GlobalUnrealObjectInfo.GetPropertyInfo(pcc.Game, name, enclosingType, currentInfo, parsingExport);
+                            var currentInfo = GlobalUnrealObjectInfo.generateClassInfo(parsingExport, packageCache: packageCache);
+                            propertyInfo = GlobalUnrealObjectInfo.GetPropertyInfo(pcc.Game, name, enclosingType, currentInfo, parsingExport, packageCache: packageCache);
                         }
 
                         string arrayStructType = propertyInfo?.Reference;

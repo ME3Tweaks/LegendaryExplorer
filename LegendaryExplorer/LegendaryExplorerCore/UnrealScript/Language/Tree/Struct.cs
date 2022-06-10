@@ -205,7 +205,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
                 specificScope += $".{string.Join(".", outerStructs)}";
             }
 
-            specificScope += $".{targetStruct.Name}";
+            specificScope += $".{Name}";
             return specificScope;
         }
 
