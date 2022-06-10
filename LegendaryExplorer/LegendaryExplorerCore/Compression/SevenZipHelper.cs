@@ -142,7 +142,7 @@ namespace LegendaryExplorerCore.Compression
             }
         }
 
-        public static void DecompressLZMAStream(MemoryStream compressedStream, MemoryStream decompressedStream)
+        public static void DecompressLZMAStream(Stream compressedStream, MemoryStream decompressedStream)
         {
             compressedStream.Seek(5, SeekOrigin.Begin);
             int len = compressedStream.ReadInt32();
