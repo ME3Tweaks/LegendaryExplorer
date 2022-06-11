@@ -15,7 +15,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 {
     public enum EF
     {
-        None,
+        None = 0,
         Keyword,
         Specifier,
         TypeName,
@@ -2054,7 +2054,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
         public string GetOutput() => string.Join("\n", Lines.Append(currentLine));
 
-        public void Write(string text, EF _)
+        public virtual void Write(string text, EF _)
         {
             if (!ForceNoNewLines)
             {

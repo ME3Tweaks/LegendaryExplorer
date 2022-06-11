@@ -518,57 +518,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
 
                     _definitionLinkGenerator.SetTokens(tokens);
                     needsTokensReset = false;
-
-                    //if (tokens.Any())
-                    //{
-                    //    List<int> lineLookup = tokens.LineLookup.Lines;
-
-                    //    var syntaxSpanLookup = new List<int>(lineLookup.Count);
-
-                    //    var tokensSpan = tokens.TokensSpan;
-
-                    //    var syntaxSpans = new List<SyntaxSpan>(tokensSpan.Length);
-
-                    //    for (int i = 0, j = 0; i < lineLookup.Count && j < tokensSpan.Length; i++)
-                    //    {
-                            
-                    //    }
-                    //}
-
-                    var syntaxInfo = new SyntaxInfo(tokens.LineLookup.Lines.Count);
-                    if (tokens.Any())
-                    {
-                        int firstLine = tokens.LineLookup.GetLineFromCharIndex(tokens.First().StartPos) - 1;
-
-                        int currentLine = firstLine;
-                        int currentPos = 0;
-                        foreach (ScriptToken token in tokens)
-                        {
-                            int tokLine = tokens.LineLookup.GetLineFromCharIndex(token.StartPos) - 1;
-                            if (tokLine > currentLine)
-                            {
-                                currentLine = tokLine;
-                                currentPos = 0;
-                            }
-
-                            while (syntaxInfo.Count <= currentLine + 1)
-                            {
-                                syntaxInfo.Add(new List<SyntaxSpan>());
-                            }
-
-                            int tokStart = tokens.LineLookup.GetColumnFromCharIndex(token.StartPos);
-                            int tokEnd = tokens.LineLookup.GetColumnFromCharIndex(token.EndPos);
-                            if (tokStart > currentPos)
-                            {
-                                syntaxInfo[currentLine].Add(new SyntaxSpan(EF.None, tokStart - currentPos));
-                            }
-
-                            syntaxInfo[currentLine].Add(new SyntaxSpan(token.SyntaxType, tokEnd - tokStart));
-                            currentPos = tokEnd;
-                        }
-                    }
-
-                    textEditor.SyntaxHighlighting = syntaxInfo;
+                    
+                    SetSyntaxHighlighting(tokens);
                 }
             }
             catch (ParseException)
@@ -588,6 +539,43 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                 OutputListBox.ItemsSource = log.Content;
             }
 
+        }
+
+        private void SetSyntaxHighlighting(TokenStream tokens)
+        {
+            List<int> lineLookup = tokens.LineLookup.Lines;
+            if (!tokens.Any() || lineLookup.Count <= 0)
+            {
+                textEditor.SyntaxHighlighting = new SyntaxInfo();
+                return;
+            }
+            var lineToIndex = new List<int>(lineLookup.Count);
+
+            var tokensSpan = tokens.TokensSpan;
+
+            var syntaxSpans = new List<SyntaxSpan>(tokensSpan.Length);
+
+            int i = 0, j = 0;
+            for (; i < lineLookup.Count - 1 && j < tokensSpan.Length; ++i)
+            {
+                int nextLine = lineLookup[i + 1];
+
+                lineToIndex.Add(j);
+                for (;j < tokensSpan.Length && tokensSpan[j].StartPos < nextLine; ++j)
+                {
+                    ScriptToken token = tokensSpan[j];
+                    syntaxSpans.Add(new SyntaxSpan(token.SyntaxType, token.EndPos - token.StartPos, token.StartPos));
+                }
+            }
+            //last line
+            lineToIndex.Add(j);
+            for (;j < tokensSpan.Length; ++j)
+            {
+                ScriptToken token = tokensSpan[j];
+                syntaxSpans.Add(new SyntaxSpan(token.SyntaxType, token.EndPos - token.StartPos, token.StartPos));
+            }
+
+            textEditor.SyntaxHighlighting = new SyntaxInfo(lineToIndex, syntaxSpans);
         }
 
 

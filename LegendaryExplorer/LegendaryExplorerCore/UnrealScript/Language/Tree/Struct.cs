@@ -192,21 +192,17 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
         public override string GetScope()
         {
             Struct targetStruct = this;
-            string specificScope = NodeUtils.GetContainingClass(targetStruct).GetInheritanceString();
-            var outerStructs = new Stack<string>();
+            string classScope = NodeUtils.GetContainingClass(targetStruct).GetInheritanceString();
+            var scopes = new Stack<string>();
+            scopes.Push(Name);
             while (targetStruct.Outer is Struct lhsStructOuter)
             {
-                outerStructs.Push(lhsStructOuter.Name);
+                scopes.Push(lhsStructOuter.Name);
                 targetStruct = lhsStructOuter;
             }
+            scopes.Push(classScope);
 
-            if (outerStructs.Any())
-            {
-                specificScope += $".{string.Join(".", outerStructs)}";
-            }
-
-            specificScope += $".{Name}";
-            return specificScope;
+            return string.Join(".", scopes);
         }
 
         private PropertyCollection DefaultPropertyCollection;

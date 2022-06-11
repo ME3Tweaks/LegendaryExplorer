@@ -242,13 +242,14 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
         private ReadOnlySpan<char> SubNumberDec()
         {
             int startIndex = CurrentIndex;
+            var text = Text.AsSpan();
             
-            while (CurrentIndex < Text.Length && Text[CurrentIndex] is >= '0' and <= '9')
+            while (CurrentIndex < text.Length && text[CurrentIndex] is >= '0' and <= '9')
             {
                 ++CurrentIndex;
             }
 
-            return Text.AsSpan(startIndex, CurrentIndex - startIndex);
+            return text.Slice(startIndex, CurrentIndex - startIndex);
         }
 
         private ScriptToken MatchStringRef()

@@ -42,22 +42,22 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
             Spans.Clear();
             Offsets.Clear();
         }
-
+        
         public override int GetFirstInterestedOffset(int startOffset)
         {
             //Debug.WriteLine($"Offset: {startOffset}");
             int endOffset = CurrentContext.VisualLine.FirstDocumentLine.EndOffset;
-            foreach (int offset in Offsets)
-            {
-                if (offset >= startOffset)
-                {
-                    if (offset < endOffset)
-                    {
-                        return offset;
-                    }
 
-                    break;
-                }
+            var offset = Offsets.BinarySearch(startOffset);
+
+            if (offset < 0)
+            {
+                offset = ~offset;
+            }
+
+            if (offset >= startOffset && offset < endOffset)
+            {
+                return offset;
             }
 
             return -1;
