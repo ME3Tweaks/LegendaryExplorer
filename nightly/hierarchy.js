@@ -391,6 +391,7 @@ var hierarchy =
       [ "LegendaryExplorerCore.Gammtek.Collections.ObjectModel.ObservableDictionary< TKey, TValue >.Enumerator< TKey1, TValue1 >", "struct_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_object_model_1_1_observable_dictionary_1_1_enumerator.html", null ]
     ] ],
     [ "IDisposable", null, [
+      [ "LegendaryExplorerCore.DebugTools.DebugStopWatch", "class_legendary_explorer_core_1_1_debug_tools_1_1_debug_stop_watch.html", null ],
       [ "LegendaryExplorerCore.Gammtek.IO.IBuffer", "interface_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_i_buffer.html", null ],
       [ "LegendaryExplorerCore.Packages.DisposableCollection< T >", "class_legendary_explorer_core_1_1_packages_1_1_disposable_collection.html", null ],
       [ "LegendaryExplorerCore.Packages.IMEPackage", "interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html", [

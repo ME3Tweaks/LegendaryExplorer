@@ -1,5 +1,16 @@
 var NAVTREEINDEX93 =
 {
+"namespace_legendary_explorer_core_1_1_coalesced.html#a3ab317d10ab0166386eba7fc66e745a1afd038fc7f319e48f3115d92bf5bdbef9":[0,5,1,1,22,2],
+"namespace_legendary_explorer_core_1_1_coalesced.html#a79038b10f66a78754f0e114f0aa52be9":[0,5,1,1,20],
+"namespace_legendary_explorer_core_1_1_coalesced.html#a79038b10f66a78754f0e114f0aa52be9a26e9054be7f40079575582b7ad3f7363":[0,5,1,1,20,0],
+"namespace_legendary_explorer_core_1_1_coalesced.html#a79038b10f66a78754f0e114f0aa52be9a6adf97f83acf6453d4a6a4b1070f3754":[0,5,1,1,20,2],
+"namespace_legendary_explorer_core_1_1_coalesced.html#a79038b10f66a78754f0e114f0aa52be9a88183b946cc5f0e8c96b2e66e1c74a7e":[0,5,1,1,20,3],
+"namespace_legendary_explorer_core_1_1_coalesced.html#a79038b10f66a78754f0e114f0aa52be9af4d72a64acd8929c0cc9ed96a7a336cc":[0,5,1,1,20,1],
+"namespace_legendary_explorer_core_1_1_coalesced.html#abe59b8809f45b7c71569b1c0f10668a5":[0,5,1,1,21],
+"namespace_legendary_explorer_core_1_1_coalesced.html#abe59b8809f45b7c71569b1c0f10668a5a03c2e7e41ffc181a4e84080b4710e81e":[0,5,1,1,21,2],
+"namespace_legendary_explorer_core_1_1_coalesced.html#abe59b8809f45b7c71569b1c0f10668a5a1063e38cb53d94d386f21227fcd84717":[0,5,1,1,21,4],
+"namespace_legendary_explorer_core_1_1_coalesced.html#abe59b8809f45b7c71569b1c0f10668a5a5e719b1545321d4eea94245323bea5bf":[0,5,1,1,21,1],
+"namespace_legendary_explorer_core_1_1_coalesced.html#abe59b8809f45b7c71569b1c0f10668a5a6adf97f83acf6453d4a6a4b1070f3754":[0,5,1,1,21,3],
 "namespace_legendary_explorer_core_1_1_coalesced.html#abe59b8809f45b7c71569b1c0f10668a5aa86bc8ea53be9d3cff809e9c6931247c":[0,5,1,1,21,5],
 "namespace_legendary_explorer_core_1_1_coalesced.html#abe59b8809f45b7c71569b1c0f10668a5aec211f7c20af43e742bf2570c3cb84f9":[0,5,1,1,21,0],
 "namespace_legendary_explorer_core_1_1_coalesced_1_1_exceptions.html":[0,5,1,1,0],
@@ -238,16 +249,5 @@ var NAVTREEINDEX93 =
 "namespace_legendary_explorer_core_1_1_shaders.html#a2e569c048ef2ec864d36d14fc39b1374abc2b7182190edd408d23b72c7e8407cf":[0,5,1,15,9,10],
 "namespace_legendary_explorer_core_1_1_shaders.html#a2e569c048ef2ec864d36d14fc39b1374ac69d8af54a5ccfb9ef1476c392b33d53":[0,5,1,15,9,16],
 "namespace_legendary_explorer_core_1_1_shaders.html#a2e569c048ef2ec864d36d14fc39b1374ae47961526b288cd916423909c280a3d4":[0,5,1,15,9,7],
-"namespace_legendary_explorer_core_1_1_shaders.html#a2e569c048ef2ec864d36d14fc39b1374ae9c57f970b06b5e4e71eb298eb76a70b":[0,5,1,15,9,3],
-"namespace_legendary_explorer_core_1_1_shaders.html#a5881cb041be3e9746dc2d6ea42102996":[0,5,1,15,15],
-"namespace_legendary_explorer_core_1_1_shaders.html#a5881cb041be3e9746dc2d6ea42102996a9b49197cf2fea5efc68ef8a88489e1b6":[0,5,1,15,15,2],
-"namespace_legendary_explorer_core_1_1_shaders.html#a5881cb041be3e9746dc2d6ea42102996aa2cabbab2c63611b2cd140ffa325c43b":[0,5,1,15,15,1],
-"namespace_legendary_explorer_core_1_1_shaders.html#a5881cb041be3e9746dc2d6ea42102996afbf427bdeb4244eecca41246de32b36d":[0,5,1,15,15,0],
-"namespace_legendary_explorer_core_1_1_shaders.html#a821f95ceba7386e31cc4e76743a46443":[0,5,1,15,13],
-"namespace_legendary_explorer_core_1_1_shaders.html#a821f95ceba7386e31cc4e76743a46443a04bd834032febb3fda8c6936ee140949":[0,5,1,15,13,10],
-"namespace_legendary_explorer_core_1_1_shaders.html#a821f95ceba7386e31cc4e76743a46443a1e23852820b9154316c7c06e2b7ba051":[0,5,1,15,13,3],
-"namespace_legendary_explorer_core_1_1_shaders.html#a821f95ceba7386e31cc4e76743a46443a2e6df916fd94fd74aec3434f9870bb7a":[0,5,1,15,13,7],
-"namespace_legendary_explorer_core_1_1_shaders.html#a821f95ceba7386e31cc4e76743a46443a4da56c3c2d4ee59a3461da5b2ad1a25d":[0,5,1,15,13,6],
-"namespace_legendary_explorer_core_1_1_shaders.html#a821f95ceba7386e31cc4e76743a46443a5e857ff049fccb3afdbf32ce243f957d":[0,5,1,15,13,1],
-"namespace_legendary_explorer_core_1_1_shaders.html#a821f95ceba7386e31cc4e76743a46443a60618ef0a33704682cae2174d85de01f":[0,5,1,15,13,2]
+"namespace_legendary_explorer_core_1_1_shaders.html#a2e569c048ef2ec864d36d14fc39b1374ae9c57f970b06b5e4e71eb298eb76a70b":[0,5,1,15,9,3]
 };

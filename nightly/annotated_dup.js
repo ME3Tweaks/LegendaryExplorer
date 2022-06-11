@@ -50,6 +50,7 @@ var annotated_dup =
         [ "Zlib", "class_legendary_explorer_core_1_1_compression_1_1_zlib.html", "class_legendary_explorer_core_1_1_compression_1_1_zlib" ]
       ] ],
       [ "DebugTools", "namespace_legendary_explorer_core_1_1_debug_tools.html", [
+        [ "DebugStopWatch", "class_legendary_explorer_core_1_1_debug_tools_1_1_debug_stop_watch.html", "class_legendary_explorer_core_1_1_debug_tools_1_1_debug_stop_watch" ],
         [ "LECLog", "class_legendary_explorer_core_1_1_debug_tools_1_1_l_e_c_log.html", "class_legendary_explorer_core_1_1_debug_tools_1_1_l_e_c_log" ]
       ] ],
       [ "Dialogue", "namespace_legendary_explorer_core_1_1_dialogue.html", [

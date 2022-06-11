@@ -49,6 +49,5 @@ var searchData=
   ['superclass_46',['SuperClass',['../class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#ab210ea767e5190bbecdffc2208d2084a',1,'LegendaryExplorerCore::Packages::ExportEntry']]],
   ['superclassname_47',['SuperClassName',['../class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#a0f1c59ca9944481e470c0ab9bdb4ec4f',1,'LegendaryExplorerCore::Packages::ExportEntry']]],
   ['switch_48',['Switch',['../struct_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_endian.html#ad8f061aeed7989e9f26004bd964dcf70',1,'LegendaryExplorerCore::Gammtek::IO::Endian']]],
-  ['synchronization_5fcontext_49',['SYNCHRONIZATION_CONTEXT',['../class_legendary_explorer_core_1_1_legendary_explorer_core_lib.html#aa607c2b89f2c97adc5d5e371e9fc19c8',1,'LegendaryExplorerCore::LegendaryExplorerCoreLib']]],
-  ['syntaxtype_50',['SyntaxType',['../class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_script_token.html#a015dcd03816fda7e1ca6ef8c4f9fc524',1,'LegendaryExplorerCore::UnrealScript::Lexing::ScriptToken']]]
+  ['synchronization_5fcontext_49',['SYNCHRONIZATION_CONTEXT',['../class_legendary_explorer_core_1_1_legendary_explorer_core_lib.html#aa607c2b89f2c97adc5d5e371e9fc19c8',1,'LegendaryExplorerCore::LegendaryExplorerCoreLib']]]
 ];
