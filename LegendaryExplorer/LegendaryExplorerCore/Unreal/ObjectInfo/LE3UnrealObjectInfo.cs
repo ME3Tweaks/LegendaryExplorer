@@ -912,6 +912,23 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             @"Engine.StaticMesh",
             @"Engine.World",
             @"Engine.ShaderCache",
+            "Core.Package",
+            "Core.ObjectProperty",
+            "Core.Function",
+            "Core.ClassProperty",
+            "Core.IntProperty",
+            "Core.Class",
+            "Core.BoolProperty",
+            "Core.FloatProperty",
+            "Core.ArrayProperty",
+            "Core.DelegateProperty",
+            "Core.StructProperty",
+            "Core.ScriptStruct",
+            "Core.StringRefProperty",
+            "Core.StrProperty",
+            "Core.NameProperty",
+            "Core.ByteProperty",
+            "Core.Enum",
         };
     }
 }
