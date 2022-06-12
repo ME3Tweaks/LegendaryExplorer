@@ -1375,7 +1375,9 @@ namespace LegendaryExplorer.Tools.PackageEditor
             if (TreeEntryIsSelected())
             {
                 var selected = (TreeViewEntry)LeftSide_TreeView.SelectedItem;
-                if (selected.Entry is IEntry ent && ent.FullPath.StartsWith(UnrealPackageFile.TrashPackageName))
+                // 06/12/2022 - Change from FullPath.StartsWith() because if somehow trashed object has children (old files, bad experiments, etc) 
+                // this prevents removing these items easily
+                if (selected.Entry is IEntry ent && ent.ClassName == @"Package" && ent.ObjectName.Name == UnrealPackageFile.TrashPackageName)
                 {
                     MessageBox.Show("Cannot trash an already trashed item.");
                     return;
