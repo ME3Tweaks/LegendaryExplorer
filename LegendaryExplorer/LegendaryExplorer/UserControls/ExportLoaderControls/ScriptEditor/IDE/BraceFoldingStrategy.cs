@@ -54,7 +54,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
             int lastNewLineOffset = 0;
             char openingBrace = OpeningBrace;
             char closingBrace = ClosingBrace;
-            for (int i = 0; i < document.TextLength; i++)
+            int textLength = document.TextLength;
+            for (int i = 0; i < textLength; i++)
             {
                 char c = document.GetCharAt(i);
                 if (c == openingBrace)

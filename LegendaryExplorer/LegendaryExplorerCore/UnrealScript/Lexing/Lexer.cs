@@ -61,39 +61,30 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
 
             Lines.Add(CurrentIndex);
 
-            while (true)
+            while (CurrentIndex < Text.Length)
             {
-                char peek;
-
+                char peek = Text[CurrentIndex];
+                if (char.IsWhiteSpace(peek))
                 {
-                WhitespaceLoop:
-
-                    //whitespace will most commonly be spaces
-                    CurrentIndex = Text.SkipChars(' ', CurrentIndex);
-
-                    peek = CurrentIndex >= Text.Length ? '\0' : Text[CurrentIndex];
-                    if (char.IsWhiteSpace(peek))
+                    ++CurrentIndex;
+                    if (peek == '\n')
                     {
-                        ++CurrentIndex;
-                        if (peek == '\n')
-                        {
-                            Lines.Add(CurrentIndex);
-                        }
-                        goto WhitespaceLoop;
+                        Lines.Add(CurrentIndex);
+
+                        //due to indentation, there will often be large numbers of spaces after a newline
+                        CurrentIndex = SkipSpaces(Text, CurrentIndex);
                     }
+                    continue;
                 }
 
                 ScriptToken token = GetNextToken(peek);
-
-                if (token.Type == TokenType.EOF)
-                {
-                    return tokens;
-                }
+                
                 if (token.Type != TokenType.SingleLineComment)
                 {
                     tokens.Add(token);
                 }
             }
+            return tokens;
         }
 
         private ScriptToken GetNextToken(char peek)
@@ -104,8 +95,6 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
             ScriptToken result;
             switch (peek)
             {
-                case '\0':
-                    return new ScriptToken(TokenType.EOF, null, CurrentIndex, CurrentIndex);
                 case '"':
                     result = MatchString();
                     break;
@@ -255,17 +244,17 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
         private ScriptToken MatchStringRef()
         {
             int tokenStart = CurrentIndex;
-            Advance();
+            ++CurrentIndex;
             int numStart = CurrentIndex;
             char peek = GetCurrentChar();
             if (peek == '-')
             {
-                Advance();
+                ++CurrentIndex;
                 peek = GetCurrentChar();
             }
             while (peek is >= '0' and <= '9')
             {
-                Advance();
+                ++CurrentIndex;
                 peek = GetCurrentChar();
             }
 
@@ -282,14 +271,14 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
             int startIndex = CurrentIndex;
 
         loopStart:
-            if (CurrentIndex < Text.Length)
+            while (CurrentIndex < Text.Length)
             {
                 peek = Text[CurrentIndex];
-                if (!char.IsWhiteSpace(peek) && !(peek < ASCII_TABLE_LENGTH && DelimiterLookup[peek]) && peek != '"' && peek != '\'')
+                if (peek >= ASCII_TABLE_LENGTH || !IdentifierCharLookup[peek])
                 {
-                    ++CurrentIndex;
-                    goto loopStart;
+                    break;
                 }
+                ++CurrentIndex;
             }
 
             //HACK: there are variable names that include the c++ scope operator '::' for some godforsaken reason
@@ -311,12 +300,12 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
         {
             int startPos = CurrentIndex;
             Builder.Clear();
-            Advance();
+            ++CurrentIndex;
             bool inEscape = false;
             char peek = '\0';
-            for (; !AtEnd(); Advance())
+            for (; CurrentIndex < Text.Length; ++CurrentIndex)
             {
-                peek = GetCurrentChar();
+                peek = Text[CurrentIndex];
                 if (inEscape)
                 {
                     inEscape = false;
@@ -352,7 +341,7 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
             string value = Builder.ToString();
             if (peek == '\'')
             {
-                Advance();
+                ++CurrentIndex;
                 if (value is "")
                 {
                     value = "None"; //empty name literals should be interpreted as 'None'
@@ -550,6 +539,57 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
 
         #endregion
 
+
+        //adapted from .NET bcl IndexOf
+        private static unsafe int SkipSpaces(string str, int startIndex)
+        {
+            nint offset = startIndex;
+            if (startIndex < 0 || startIndex >= str.Length)
+            {
+                goto Found;
+            }
+            nint lengthToExamine = str.Length - startIndex;
+
+            fixed (char* strPointer = str)
+            {
+                ref char searchSpace = ref *strPointer;
+                while (lengthToExamine >= 4)
+                {
+                    ref char current = ref Unsafe.Add(ref searchSpace, offset);
+
+                    if (' ' != current)
+                        goto Found;
+                    if (' ' != Unsafe.Add(ref current, 1))
+                        goto Found1;
+                    if (' ' != Unsafe.Add(ref current, 2))
+                        goto Found2;
+                    if (' ' != Unsafe.Add(ref current, 3))
+                        goto Found3;
+
+                    offset += 4;
+                    lengthToExamine -= 4;
+                }
+
+                while (lengthToExamine > 0)
+                {
+                    if (' ' != Unsafe.Add(ref searchSpace, offset))
+                        goto Found;
+
+                    offset++;
+                    lengthToExamine--;
+                }
+            }
+
+        Found:
+            return (int)(offset);
+        Found3:
+            return (int)(offset + 3);
+        Found2:
+            return (int)(offset + 2);
+        Found1:
+            return (int)(offset + 1);
+        }
+
         #region CharStream
 
         private char GetCurrentChar() => CurrentIndex >= Text.Length ? '\0' : Text[CurrentIndex];
@@ -589,6 +629,9 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool IsDelimiterChar(char c) => c < ASCII_TABLE_LENGTH && DelimiterLookup[c];
 
+
+        private static readonly bool[] IdentifierCharLookup;
+
         private static readonly bool[] DelimiterLookup;
 
         static Lexer()
@@ -598,6 +641,13 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
             foreach (char c in delimChars)
             {
                 DelimiterLookup[c] = true;
+            }
+
+
+            IdentifierCharLookup = new bool[ASCII_TABLE_LENGTH];
+            for (int i = 0; i < ASCII_TABLE_LENGTH; i++)
+            {
+                IdentifierCharLookup[i] = (char)i is '_' or (>= 'a' and <= 'z') or (>= 'A' and <= 'Z') or (>= '0' and <= '9');
             }
         }
     }
