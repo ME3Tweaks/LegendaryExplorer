@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -110,11 +111,18 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             graphEditor.DragDrop += SequenceEditor_DragDrop;
             graphEditor.DragEnter += SequenceEditor_DragEnter;
 
-            commonToolBox.DoubleClickCallback = CreateNewObject;
+            favoritesToolBox.DoubleClickCallback = CreateNewObject;
             eventsToolBox.DoubleClickCallback = CreateNewObject;
             actionsToolBox.DoubleClickCallback = CreateNewObject;
             conditionsToolBox.DoubleClickCallback = CreateNewObject;
             variablesToolBox.DoubleClickCallback = CreateNewObject;
+
+            favoritesToolBox.ShiftClickCallback = RemoveFavorite;
+            eventsToolBox.ShiftClickCallback = SetFavorite;
+            actionsToolBox.ShiftClickCallback = SetFavorite;
+            conditionsToolBox.ShiftClickCallback = SetFavorite;
+            variablesToolBox.ShiftClickCallback = SetFavorite;
+
 
             AutoSaveView_MenuItem.IsChecked = Settings.SequenceEditor_AutoSaveViewV2;
             ShowOutputNumbers_MenuItem.IsChecked = Settings.SequenceEditor_ShowOutputNumbers;
@@ -143,6 +151,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
         public ICommand SearchCommand { get; set; }
         public ICommand ForceReloadPackageCommand { get; set; }
 
+        public ICommand ResetFavoritesCommand { get; set; }
         private void LoadCommands()
         {
             ForceReloadPackageCommand = new GenericCommand(ForceReloadPackageWithoutSharing, CanForceReload);
@@ -159,6 +168,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             ConvertSeqActLogCommentCommand = new GenericCommand(() => SequenceEditorExperimentsM.ConvertSeqAct_Log_objComments(Pcc), () => SequenceExports.Any);
             SearchCommand = new GenericCommand(SearchDialogue, () => CurrentObjects.Any);
             UseSavedViewsCommand = new GenericCommand(ToggleSavedViews, () => Pcc != null && Pcc is { Game: MEGame.ME1 } || Pcc.Game.IsLEGame());
+            ResetFavoritesCommand = new GenericCommand(ResetFavorites, () => Pcc != null);
         }
 
         private void ToggleSavedViews()
@@ -520,17 +530,67 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
         {
             if (Pcc != null)
             {
-                commonToolBox.Classes = SequenceObjectCreator.GetCommonObjects(Pcc.Game).OrderBy(info => info.ClassName)
-                    .ToList();
-                eventsToolBox.Classes = SequenceObjectCreator.GetSequenceEvents(Pcc.Game).OrderBy(info => info.ClassName)
-                    .ToList();
-                actionsToolBox.Classes = SequenceObjectCreator.GetSequenceActions(Pcc.Game).OrderBy(info => info.ClassName)
-                    .ToList();
-                conditionsToolBox.Classes = SequenceObjectCreator.GetSequenceConditions(Pcc.Game)
-                    .OrderBy(info => info.ClassName).ToList();
-                variablesToolBox.Classes = SequenceObjectCreator.GetSequenceVariables(Pcc.Game)
-                    .OrderBy(info => info.ClassName).ToList();
+                favoritesToolBox.Classes.ClearEx();
+                favoritesToolBox.Classes.AddRange(GetSavedFavorites());
+                eventsToolBox.Classes.ClearEx();
+                eventsToolBox.Classes.AddRange(SequenceObjectCreator.GetSequenceEvents(Pcc.Game).OrderBy(info => info.ClassName));
+                actionsToolBox.Classes.ClearEx();
+                actionsToolBox.Classes.AddRange(SequenceObjectCreator.GetSequenceActions(Pcc.Game).OrderBy(info => info.ClassName));
+                conditionsToolBox.Classes.ClearEx();
+                conditionsToolBox.Classes.AddRange(SequenceObjectCreator.GetSequenceConditions(Pcc.Game).OrderBy(info => info.ClassName));
+                variablesToolBox.Classes.ClearEx();
+                variablesToolBox.Classes.AddRange(SequenceObjectCreator.GetSequenceVariables(Pcc.Game).OrderBy(info => info.ClassName));
             }
+        }
+
+        private IEnumerable<ClassInfo> GetSavedFavorites()
+        {
+            if (Pcc != null)
+            {
+                var setting = Settings.Get_SequenceEditor_Favorites(Pcc.Game);
+                var classes = setting.Split(";");
+                return classes.Select(className => GlobalUnrealObjectInfo.GetClassOrStructInfo(Pcc.Game, className)).NonNull().OrderBy(info => info.ClassName);
+            }
+            return Array.Empty<ClassInfo>();
+        }
+
+        private void SaveFavorites()
+        {
+            if (Pcc != null)
+            {
+                var classes = favoritesToolBox.Classes.Select(cl => cl.ClassName);
+                var favorites = new StringBuilder();
+                foreach (var cl in classes)
+                {
+                    favorites.Append(cl + ";");
+                }
+                if (favorites.Length > 0) favorites.Remove(favorites.Length - 1, 1);
+                Settings.Set_SequenceEditor_Favorites(Pcc.Game, favorites.ToString());
+            }
+        }
+
+        private void SetFavorite(ClassInfo classInfo)
+        {
+            if (!favoritesToolBox.Classes.Contains(classInfo))
+            {
+                favoritesToolBox.Classes.Add(classInfo);
+                favoritesToolBox.Classes.Sort(cl => cl.ClassName);
+                SaveFavorites();
+            }
+        }
+
+        private void RemoveFavorite(ClassInfo classInfo)
+        {
+            favoritesToolBox.Classes.Remove(classInfo);
+            SaveFavorites();
+        }
+
+        private void ResetFavorites()
+        {
+            favoritesToolBox.Classes.Clear();
+            favoritesToolBox.Classes.AddRange(SequenceObjectCreator.GetCommonObjects(Pcc.Game)
+                .OrderBy(info => info.ClassName));
+            SaveFavorites();
         }
 
         public void LoadFileFromStream(Stream stream, string associatedFilePath, int goToIndex = 0)

@@ -1,11 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using LegendaryExplorer.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Misc;
+using LegendaryExplorerCore.UnrealScript.Language.Tree;
 
 namespace LegendaryExplorer.SharedUI.Controls
 {
@@ -14,17 +20,8 @@ namespace LegendaryExplorer.SharedUI.Controls
     /// </summary>
     public partial class ToolBox : NotifyPropertyChangedControlBase
     {
-        private List<ClassInfo> _classes;
-        public List<ClassInfo> Classes
-        {
-            get => _classes;
-            set
-            {
-                _classes = value;
-                searchBox.Clear();
-                listView.ItemsSource = _classes;
-            }
-        }
+
+        public ObservableCollectionExtended<ClassInfo> Classes { get; set; } = new();
 
         private ClassInfo _selectedItem;
 
@@ -35,24 +32,40 @@ namespace LegendaryExplorer.SharedUI.Controls
         }
 
         public Action<ClassInfo> DoubleClickCallback;
+        public Action<ClassInfo> ShiftClickCallback;
 
         public ToolBox()
         {
             DataContext = this;
             InitializeComponent();
+            Classes.CollectionChanged += ClassCollection_Changed;
         }
 
         private void classInfo_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (e.ButtonState == MouseButtonState.Pressed && e.ClickCount == 2 && sender is TextBlock {DataContext: ClassInfo info})
+            if (sender is TextBlock {DataContext: ClassInfo info})
             {
-                DoubleClickCallback?.Invoke(info);
+                if ((Keyboard.Modifiers & ModifierKeys.Shift) == ModifierKeys.Shift)
+                {
+                    ShiftClickCallback?.Invoke(info);
+                }
+                else if (e.ButtonState == MouseButtonState.Pressed && e.ClickCount == 2)
+                {
+                    DoubleClickCallback?.Invoke(info);
+                }
             }
         }
 
-        private void SearchBox_OnTextChanged(SearchBox sender, string newtext)
+        private void SearchBox_OnTextChanged(SearchBox sender, string newText) {
+            listView.ItemsSource = Classes.Where(classInfo =>
+                classInfo.ClassName.Contains(newText, StringComparison.OrdinalIgnoreCase)).ToList();
+        }
+
+        private void ClassCollection_Changed(object sender,
+            NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
-            listView.ItemsSource = Classes.Where(classInfo => classInfo.ClassName.Contains(newtext, StringComparison.OrdinalIgnoreCase)).ToList();
+            listView.ItemsSource = Classes.Where(classInfo =>
+                classInfo.ClassName.Contains(searchBox.Text ?? "", StringComparison.OrdinalIgnoreCase)).ToList();
         }
     }
 }

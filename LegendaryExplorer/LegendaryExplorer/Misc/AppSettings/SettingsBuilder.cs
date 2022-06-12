@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System;
 using System.Diagnostics;
 using LegendaryExplorerCore;
+using LegendaryExplorerCore.Packages;
 
 namespace LegendaryExplorer.Misc.AppSettings
 {
@@ -77,6 +78,41 @@ namespace LegendaryExplorer.Misc.AppSettings
         public static bool SequenceEditor_ShowOutputNumbers {
             get => _sequenceeditor_showoutputnumbers; 
             set => SetProperty(ref _sequenceeditor_showoutputnumbers, value);
+        }
+        private static string _sequenceeditor_favorites_me1 = "Sequence;SeqAct_Interp;InterpData;BioSeqAct_EndCurrentConvNode;BioSeqEvt_ConvNode;BioSeqVar_ObjectFindByTag;SeqVar_Object;SeqAct_ActivateRemoteEvent;SeqEvent_SequenceActivated;SeqAct_Delay;SeqAct_Gate;BioSeqAct_PMCheckState;BioSeqAct_PMExecuteTransition;SeqAct_FinishSequence;SeqEvent_RemoteEvent"; 
+        public static string SequenceEditor_Favorites_ME1 {
+            get => _sequenceeditor_favorites_me1; 
+            set => SetProperty(ref _sequenceeditor_favorites_me1, value);
+        }
+        private static string _sequenceeditor_favorites_me2 = "Sequence;SeqAct_Interp;InterpData;BioSeqAct_EndCurrentConvNode;BioSeqEvt_ConvNode;BioSeqVar_ObjectFindByTag;SeqVar_Object;SeqAct_ActivateRemoteEvent;SeqEvent_SequenceActivated;SeqAct_Delay;SeqAct_Gate;BioSeqAct_PMCheckState;BioSeqAct_PMExecuteTransition;SeqAct_FinishSequence;SeqEvent_RemoteEvent"; 
+        public static string SequenceEditor_Favorites_ME2 {
+            get => _sequenceeditor_favorites_me2; 
+            set => SetProperty(ref _sequenceeditor_favorites_me2, value);
+        }
+        private static string _sequenceeditor_favorites_me3 = "Sequence;SeqAct_Interp;InterpData;BioSeqAct_EndCurrentConvNode;BioSeqEvt_ConvNode;BioSeqVar_ObjectFindByTag;SeqVar_Object;SeqAct_ActivateRemoteEvent;SeqEvent_SequenceActivated;SeqAct_Delay;SeqAct_Gate;BioSeqAct_PMCheckState;BioSeqAct_PMExecuteTransition;SeqAct_FinishSequence;SeqEvent_RemoteEvent"; 
+        public static string SequenceEditor_Favorites_ME3 {
+            get => _sequenceeditor_favorites_me3; 
+            set => SetProperty(ref _sequenceeditor_favorites_me3, value);
+        }
+        private static string _sequenceeditor_favorites_le1 = "Sequence;SeqAct_Interp;InterpData;BioSeqAct_EndCurrentConvNode;BioSeqEvt_ConvNode;BioSeqVar_ObjectFindByTag;SeqVar_Object;SeqAct_ActivateRemoteEvent;SeqEvent_SequenceActivated;SeqAct_Delay;SeqAct_Gate;BioSeqAct_PMCheckState;BioSeqAct_PMExecuteTransition;SeqAct_FinishSequence;SeqEvent_RemoteEvent"; 
+        public static string SequenceEditor_Favorites_LE1 {
+            get => _sequenceeditor_favorites_le1; 
+            set => SetProperty(ref _sequenceeditor_favorites_le1, value);
+        }
+        private static string _sequenceeditor_favorites_le2 = "Sequence;SeqAct_Interp;InterpData;BioSeqAct_EndCurrentConvNode;BioSeqEvt_ConvNode;BioSeqVar_ObjectFindByTag;SeqVar_Object;SeqAct_ActivateRemoteEvent;SeqEvent_SequenceActivated;SeqAct_Delay;SeqAct_Gate;BioSeqAct_PMCheckState;BioSeqAct_PMExecuteTransition;SeqAct_FinishSequence;SeqEvent_RemoteEvent"; 
+        public static string SequenceEditor_Favorites_LE2 {
+            get => _sequenceeditor_favorites_le2; 
+            set => SetProperty(ref _sequenceeditor_favorites_le2, value);
+        }
+        private static string _sequenceeditor_favorites_le3 = "Sequence;SeqAct_Interp;InterpData;BioSeqAct_EndCurrentConvNode;BioSeqEvt_ConvNode;BioSeqVar_ObjectFindByTag;SeqVar_Object;SeqAct_ActivateRemoteEvent;SeqEvent_SequenceActivated;SeqAct_Delay;SeqAct_Gate;BioSeqAct_PMCheckState;BioSeqAct_PMExecuteTransition;SeqAct_FinishSequence;SeqEvent_RemoteEvent"; 
+        public static string SequenceEditor_Favorites_LE3 {
+            get => _sequenceeditor_favorites_le3; 
+            set => SetProperty(ref _sequenceeditor_favorites_le3, value);
+        }
+        private static string _sequenceeditor_favorites_udk = "Sequence;SeqAct_Interp;InterpData;BioSeqAct_EndCurrentConvNode;BioSeqEvt_ConvNode;BioSeqVar_ObjectFindByTag;SeqVar_Object;SeqAct_ActivateRemoteEvent;SeqEvent_SequenceActivated;SeqAct_Delay;SeqAct_Gate;BioSeqAct_PMCheckState;BioSeqAct_PMExecuteTransition;SeqAct_FinishSequence;SeqEvent_RemoteEvent"; 
+        public static string SequenceEditor_Favorites_UDK {
+            get => _sequenceeditor_favorites_udk; 
+            set => SetProperty(ref _sequenceeditor_favorites_udk, value);
         }
         private static bool _soundplorer_reverseiddisplayendianness = false; 
         public static bool Soundplorer_ReverseIDDisplayEndianness {
@@ -264,6 +300,46 @@ namespace LegendaryExplorer.Misc.AppSettings
             set => SetProperty(ref _global_tlk_ismale, value);
         }
 
+        public static string Get_SequenceEditor_Favorites (MEGame game) => game switch
+        {
+            MEGame.ME1 => SequenceEditor_Favorites_ME1,
+            MEGame.ME2 => SequenceEditor_Favorites_ME2,
+            MEGame.ME3 => SequenceEditor_Favorites_ME3,
+            MEGame.LE1 => SequenceEditor_Favorites_LE1,
+            MEGame.LE2 => SequenceEditor_Favorites_LE2,
+            MEGame.LE3 => SequenceEditor_Favorites_LE3,
+            MEGame.UDK => SequenceEditor_Favorites_UDK,
+            _ => default
+        };
+
+        public static void Set_SequenceEditor_Favorites (MEGame game, string value)
+        {
+            switch (game)
+            {
+                case MEGame.ME1:
+                    SequenceEditor_Favorites_ME1 = value;
+                    break;
+                case MEGame.ME2:
+                    SequenceEditor_Favorites_ME2 = value;
+                    break;
+                case MEGame.ME3:
+                    SequenceEditor_Favorites_ME3 = value;
+                    break;
+                case MEGame.LE1:
+                    SequenceEditor_Favorites_LE1 = value;
+                    break;
+                case MEGame.LE2:
+                    SequenceEditor_Favorites_LE2 = value;
+                    break;
+                case MEGame.LE3:
+                    SequenceEditor_Favorites_LE3 = value;
+                    break;
+                case MEGame.UDK:
+                    SequenceEditor_Favorites_UDK = value;
+                    break;
+            }
+        }
+
         // Settings converters
         public static int TryGetSetting(Dictionary<string, string> settings, string key, int defaultValue) => settings.TryGetValue(key, out var value) && int.TryParse(value, out var ivalue) ? ivalue : defaultValue;
         public static bool TryGetSetting(Dictionary<string, string> settings, string key, bool defaultValue) => settings.TryGetValue(key, out var value) && bool.TryParse(value, out var bvalue) ? bvalue : defaultValue;
@@ -299,6 +375,13 @@ namespace LegendaryExplorer.Misc.AppSettings
             SequenceEditor_ShowParsedInfo = TryGetSetting(settingsJson, "sequenceeditor_showparsedinfo", true);
             SequenceEditor_AutoSaveViewV2 = TryGetSetting(settingsJson, "sequenceeditor_autosaveviewv2", true);
             SequenceEditor_ShowOutputNumbers = TryGetSetting(settingsJson, "sequenceeditor_showoutputnumbers", false);
+            SequenceEditor_Favorites_ME1 = TryGetSetting(settingsJson, "sequenceeditor_favorites_me1", "Sequence;SeqAct_Interp;InterpData;BioSeqAct_EndCurrentConvNode;BioSeqEvt_ConvNode;BioSeqVar_ObjectFindByTag;SeqVar_Object;SeqAct_ActivateRemoteEvent;SeqEvent_SequenceActivated;SeqAct_Delay;SeqAct_Gate;BioSeqAct_PMCheckState;BioSeqAct_PMExecuteTransition;SeqAct_FinishSequence;SeqEvent_RemoteEvent");
+            SequenceEditor_Favorites_ME2 = TryGetSetting(settingsJson, "sequenceeditor_favorites_me2", "Sequence;SeqAct_Interp;InterpData;BioSeqAct_EndCurrentConvNode;BioSeqEvt_ConvNode;BioSeqVar_ObjectFindByTag;SeqVar_Object;SeqAct_ActivateRemoteEvent;SeqEvent_SequenceActivated;SeqAct_Delay;SeqAct_Gate;BioSeqAct_PMCheckState;BioSeqAct_PMExecuteTransition;SeqAct_FinishSequence;SeqEvent_RemoteEvent");
+            SequenceEditor_Favorites_ME3 = TryGetSetting(settingsJson, "sequenceeditor_favorites_me3", "Sequence;SeqAct_Interp;InterpData;BioSeqAct_EndCurrentConvNode;BioSeqEvt_ConvNode;BioSeqVar_ObjectFindByTag;SeqVar_Object;SeqAct_ActivateRemoteEvent;SeqEvent_SequenceActivated;SeqAct_Delay;SeqAct_Gate;BioSeqAct_PMCheckState;BioSeqAct_PMExecuteTransition;SeqAct_FinishSequence;SeqEvent_RemoteEvent");
+            SequenceEditor_Favorites_LE1 = TryGetSetting(settingsJson, "sequenceeditor_favorites_le1", "Sequence;SeqAct_Interp;InterpData;BioSeqAct_EndCurrentConvNode;BioSeqEvt_ConvNode;BioSeqVar_ObjectFindByTag;SeqVar_Object;SeqAct_ActivateRemoteEvent;SeqEvent_SequenceActivated;SeqAct_Delay;SeqAct_Gate;BioSeqAct_PMCheckState;BioSeqAct_PMExecuteTransition;SeqAct_FinishSequence;SeqEvent_RemoteEvent");
+            SequenceEditor_Favorites_LE2 = TryGetSetting(settingsJson, "sequenceeditor_favorites_le2", "Sequence;SeqAct_Interp;InterpData;BioSeqAct_EndCurrentConvNode;BioSeqEvt_ConvNode;BioSeqVar_ObjectFindByTag;SeqVar_Object;SeqAct_ActivateRemoteEvent;SeqEvent_SequenceActivated;SeqAct_Delay;SeqAct_Gate;BioSeqAct_PMCheckState;BioSeqAct_PMExecuteTransition;SeqAct_FinishSequence;SeqEvent_RemoteEvent");
+            SequenceEditor_Favorites_LE3 = TryGetSetting(settingsJson, "sequenceeditor_favorites_le3", "Sequence;SeqAct_Interp;InterpData;BioSeqAct_EndCurrentConvNode;BioSeqEvt_ConvNode;BioSeqVar_ObjectFindByTag;SeqVar_Object;SeqAct_ActivateRemoteEvent;SeqEvent_SequenceActivated;SeqAct_Delay;SeqAct_Gate;BioSeqAct_PMCheckState;BioSeqAct_PMExecuteTransition;SeqAct_FinishSequence;SeqEvent_RemoteEvent");
+            SequenceEditor_Favorites_UDK = TryGetSetting(settingsJson, "sequenceeditor_favorites_udk", "Sequence;SeqAct_Interp;InterpData;BioSeqAct_EndCurrentConvNode;BioSeqEvt_ConvNode;BioSeqVar_ObjectFindByTag;SeqVar_Object;SeqAct_ActivateRemoteEvent;SeqEvent_SequenceActivated;SeqAct_Delay;SeqAct_Gate;BioSeqAct_PMCheckState;BioSeqAct_PMExecuteTransition;SeqAct_FinishSequence;SeqEvent_RemoteEvent");
             Soundplorer_ReverseIDDisplayEndianness = TryGetSetting(settingsJson, "soundplorer_reverseiddisplayendianness", false);
             Soundplorer_AutoplayEntriesOnSelection = TryGetSetting(settingsJson, "soundplorer_autoplayentriesonselection", false);
             Meshplorer_BackgroundColor = TryGetSetting(settingsJson, "meshplorer_backgroundcolor", "#999999");
@@ -368,6 +451,13 @@ namespace LegendaryExplorer.Misc.AppSettings
             settingsJson["sequenceeditor_showparsedinfo"] = SequenceEditor_ShowParsedInfo.ToString();
             settingsJson["sequenceeditor_autosaveviewv2"] = SequenceEditor_AutoSaveViewV2.ToString();
             settingsJson["sequenceeditor_showoutputnumbers"] = SequenceEditor_ShowOutputNumbers.ToString();
+            settingsJson["sequenceeditor_favorites_me1"] = SequenceEditor_Favorites_ME1.ToString();
+            settingsJson["sequenceeditor_favorites_me2"] = SequenceEditor_Favorites_ME2.ToString();
+            settingsJson["sequenceeditor_favorites_me3"] = SequenceEditor_Favorites_ME3.ToString();
+            settingsJson["sequenceeditor_favorites_le1"] = SequenceEditor_Favorites_LE1.ToString();
+            settingsJson["sequenceeditor_favorites_le2"] = SequenceEditor_Favorites_LE2.ToString();
+            settingsJson["sequenceeditor_favorites_le3"] = SequenceEditor_Favorites_LE3.ToString();
+            settingsJson["sequenceeditor_favorites_udk"] = SequenceEditor_Favorites_UDK.ToString();
             settingsJson["soundplorer_reverseiddisplayendianness"] = Soundplorer_ReverseIDDisplayEndianness.ToString();
             settingsJson["soundplorer_autoplayentriesonselection"] = Soundplorer_AutoplayEntriesOnSelection.ToString();
             settingsJson["meshplorer_backgroundcolor"] = Meshplorer_BackgroundColor.ToString();

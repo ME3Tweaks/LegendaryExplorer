@@ -107,6 +107,8 @@
                     <MenuItem Header="Save View" Command="{Binding SaveViewCommand}" ToolTip="Save the node layout" />
                     <MenuItem Header="Save Image" Command="{Binding SaveImageCommand}"
                                 ToolTip="Save image of full Sequence" />
+                    <MenuItem Header="Reset Default Favorites" Command="{Binding ResetFavoritesCommand}"
+                              ToolTip="Resets your saved favorite sequence objects to the default set" />
                     <MenuItem Header="Open Kismet Log (restricted to opened file)"
                                 Command="{Binding KismetLogCommand}"
                                 CommandParameter="{StaticResource True}" />
@@ -365,8 +367,11 @@
                             </TextBlock>
                         </Expander.Header>
                         <TabControl>
-                            <TabItem Header="Common">
-                                <controls:ToolBox x:Name="commonToolBox" />
+                            <TabItem>
+                                <TabItem.Header>
+                                    <TextBlock Text="Favorites" ToolTip="Shift-click on a sequence class to add or remove from favorites."/>
+                                </TabItem.Header>
+                                <controls:ToolBox x:Name="favoritesToolBox" />
                             </TabItem>
                             <TabItem Header="Events">
                                 <controls:ToolBox x:Name="eventsToolBox" />
