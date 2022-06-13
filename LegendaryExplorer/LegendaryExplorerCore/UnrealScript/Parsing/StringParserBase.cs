@@ -522,7 +522,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             {
                 if (isClassLiteral)
                 {
-                    objName.AssociatedNode = classType;
+                    Tokens.AddDefinitionLink(classType, objName);
                     classType = new ClassType(classType);
                 }
                 else
@@ -532,7 +532,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                         TypeError("Object constants must not be Actors!", className);
                     }
 
-                    className.AssociatedNode = classType;
+                    Tokens.AddDefinitionLink(classType, className);
                 }
                 
 
@@ -556,11 +556,11 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
             if (token.Value.CaseInsensitiveEquals("Outer") && symbol is VariableDeclaration fakeOuterVarDecl)
             {
-                token.AssociatedNode = fakeOuterVarDecl.VarType;
+                Tokens.AddDefinitionLink(fakeOuterVarDecl.VarType, token);
             }
             else
             {
-                token.AssociatedNode = symbol;
+                Tokens.AddDefinitionLink(symbol, token);
             }
             if (symRef.Node is Function)
             {

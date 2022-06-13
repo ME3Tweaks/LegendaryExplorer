@@ -569,12 +569,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
             }
             //last line
             lineToIndex.Add(j);
-            for (;j < tokensSpan.Length; ++j)
+            for (; j < tokensSpan.Length; ++j)
             {
                 ScriptToken token = tokensSpan[j];
                 syntaxSpans.Add(new SyntaxSpan(token.SyntaxType, token.EndPos - token.StartPos, token.StartPos));
             }
-            
+
             Dictionary<int, SyntaxSpan> commentSpans = null;
             if (tokens.Comments is not null)
             {

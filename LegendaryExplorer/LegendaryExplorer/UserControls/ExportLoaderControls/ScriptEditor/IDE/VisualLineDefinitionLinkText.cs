@@ -50,7 +50,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
 
                 if (filePath is null)
                 {
-                    MessageBox.Show($"Unable to navigate to definition of \"{name}\". This can happen if it is afunction parameter or local variable");
+                    MessageBox.Show($"Unable to navigate to definition of \"{name}\". This can happen if it is a function parameter or local variable");
                     e.Handled = true;
                     return;
                 }

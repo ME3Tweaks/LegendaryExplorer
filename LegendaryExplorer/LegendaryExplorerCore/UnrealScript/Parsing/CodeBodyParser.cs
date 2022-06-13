@@ -85,6 +85,12 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 body.Statements.RemoveAt(body.Statements.Count - 1);
             }
 
+            if (body.EndPos != body.StartPos //check if this is a defined function
+                && func.ReturnType is not null && body.Statements.LastOrDefault() is not ReturnStatement)
+            {
+                log.LogWarning($"Function '{func.Name}' might reach end without returning a value!");
+            }
+
             //parse default parameter values
             if (func.HasOptionalParms)
             {
@@ -504,15 +510,15 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             if (type is Enumeration)
             {
                 PrevToken.SyntaxType = EF.Enum;
-                PrevToken.AssociatedNode = type;
+                Tokens.AddDefinitionLink(type, PrevToken);
             }
             else if (PrevToken.Type == TokenType.RightArrow)
             {
-                Tokens.Prev(2).AssociatedNode = type;
+                Tokens.AddDefinitionLink(type, Tokens.Prev(2));
             }
             else
             {
-                PrevToken.AssociatedNode = type;
+                Tokens.AddDefinitionLink(type, PrevToken);
             }
 
             var var = ParseVariableName();
@@ -1976,7 +1982,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     {
                         typeToken = token;
                         typeToken.SyntaxType = EF.TypeName;
-                        typeToken.AssociatedNode = destType;
+                        Tokens.AddDefinitionLink(destType, typeToken);
                     }
                 }
                 return ParsePrimitiveOrDynamicCast(typeToken ?? new ScriptToken(TokenType.Word, destType.Name, expr.StartPos, expr.EndPos), destType);
@@ -2068,7 +2074,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     if (Symbols.TryGetType(limiter.Value, out VariableType destType) && destType is Class limiterType)
                     {
                         limiter.SyntaxType = EF.TypeName;
-                        limiter.AssociatedNode = limiterType;
+                        Tokens.AddDefinitionLink(limiterType, limiter);
                         if (!Matches(TokenType.LeftParenth))
                         {
                             throw ParseError("Expected '(' at start of cast!", CurrentPosition);
@@ -2127,7 +2133,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             {
                 if (Matches(SELF, EF.Keyword))
                 {
-                    PrevToken.AssociatedNode = Self;
+                    Tokens.AddDefinitionLink(Self, PrevToken);
                     if (InStaticFunction)
                     {
                         TypeError($"'{SELF}' cannot be used in a static function!");
@@ -2287,7 +2293,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                         throw ParseError($"'{vartype.Name}' is not a class!", className);
                     }
 
-                    className.AssociatedNode = super;
+                    Tokens.AddDefinitionLink(super, className);
                     superSpecifier = super;
                     superClass = super;
                     if (!Self.SameAsOrSubClassOf(superClass))
@@ -2344,8 +2350,8 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 specificScope = $"{stateClass.GetInheritanceString()}.{state.Name}";
                 if (Symbols.TryGetSymbolInScopeStack(functionName.Value, out ASTNode funcNode, specificScope) && funcNode is Function)
                 {
-                    functionName.AssociatedNode = funcNode;
-                    superToken.AssociatedNode = funcNode.Outer;
+                    Tokens.AddDefinitionLink(funcNode, functionName);
+                    Tokens.AddDefinitionLink(funcNode.Outer, superToken);
                     return new SymbolReference(funcNode, functionName.Value, functionName.StartPos, functionName.EndPos)
                     {
                         IsSuper = true
@@ -2370,8 +2376,8 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 TypeError($"Expected function name after '{SUPER}'!", functionName);
             }
 
-            functionName.AssociatedNode = symbol;
-            superToken.AssociatedNode = symbol.Outer;
+            Tokens.AddDefinitionLink(symbol, functionName);
+            Tokens.AddDefinitionLink(symbol.Outer, superToken);
             return new SymbolReference(symbol, functionName.Value, functionName.StartPos, functionName.EndPos)
             {
                 IsSuper = true,
@@ -2487,14 +2493,14 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 //primitive or dynamic cast, or enum
                 if (!isDefaultRef && Symbols.TryGetType(token.Value, out VariableType destType))
                 {
-                    token.AssociatedNode = destType;
+                    Tokens.AddDefinitionLink(destType, token);
                     if (destType is Enumeration enm && Matches(TokenType.Dot))
                     {
                         token.SyntaxType = EF.Enum;
                         if (Consume(TokenType.Word) is {} enumValName 
                          && enm.Values.FirstOrDefault(val => val.Name.CaseInsensitiveEquals(enumValName.Value)) is EnumValue enumValue)
                         {
-                            enumValName.AssociatedNode = enm;
+                            Tokens.AddDefinitionLink(enm, enumValName);
                             return NewSymbolReference(enumValue, enumValName, false);
                         }
                         throw ParseError("Expected valid enum value!", CurrentPosition);

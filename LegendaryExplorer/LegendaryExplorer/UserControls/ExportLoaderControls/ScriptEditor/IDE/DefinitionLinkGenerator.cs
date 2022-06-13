@@ -26,15 +26,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
         public void SetTokens(TokenStream tokens)
         {
             Reset();
-            foreach (ScriptToken token in tokens)
+            foreach ((ASTNode node, int offset, int length) in tokens.DefinitionLinks)
             {
-                if (token.AssociatedNode is not null)
-                {
-                    int startPosCharIndex = token.StartPos;
-                    Spans[startPosCharIndex] = new DefinitionLinkSpan(token.AssociatedNode, token.EndPos - startPosCharIndex);
-                    Offsets.Add(startPosCharIndex);
-                }
+                Spans[offset] = new DefinitionLinkSpan(node, length);
+                Offsets.Add(offset);
             }
+            Offsets.Sort();
         }
 
         public void Reset()
@@ -48,13 +45,18 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
             //Debug.WriteLine($"Offset: {startOffset}");
             int endOffset = CurrentContext.VisualLine.FirstDocumentLine.EndOffset;
 
-            var offset = Offsets.BinarySearch(startOffset);
+            var index = Offsets.BinarySearch(startOffset);
 
-            if (offset < 0)
+            if (index < 0)
             {
-                offset = ~offset;
+                index = ~index;
             }
 
+            if (index >= Offsets.Count)
+            {
+                return -1;
+            }
+            int offset = Offsets[index];
             if (offset >= startOffset && offset < endOffset)
             {
                 return offset;

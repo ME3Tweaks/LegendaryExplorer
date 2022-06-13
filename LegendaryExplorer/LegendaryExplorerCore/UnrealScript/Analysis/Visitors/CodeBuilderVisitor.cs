@@ -13,7 +13,7 @@ using static LegendaryExplorerCore.UnrealScript.Utilities.Keywords;
 
 namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 {
-    public enum EF
+    public enum EF : byte
     {
         None = 0,
         Keyword,

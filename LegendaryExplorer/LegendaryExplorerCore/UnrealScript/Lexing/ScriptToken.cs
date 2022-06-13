@@ -1,26 +1,18 @@
 ﻿using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
-using LegendaryExplorerCore.UnrealScript.Language.Tree;
 
 namespace LegendaryExplorerCore.UnrealScript.Lexing
 {
     public sealed class ScriptToken
     {
-        #region Members
-
         public readonly string Value;
 
-        public ASTNode AssociatedNode;
-
         public readonly TokenType Type;
-
         public EF SyntaxType;
-
-
         public readonly int StartPos;
         public readonly int EndPos;
-        #endregion
 
-        #region Methods
+        public int Length => EndPos - StartPos;
+
         public ScriptToken(TokenType type, string value, int start, int end)
         {
             Value = value;
@@ -33,10 +25,9 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
         {
             return "[" + Type + "] " + Value;
         }
-        #endregion
     }
 
-    public enum TokenType
+    public enum TokenType : byte
     {
         #region Special Characters
         LeftBracket,    // {

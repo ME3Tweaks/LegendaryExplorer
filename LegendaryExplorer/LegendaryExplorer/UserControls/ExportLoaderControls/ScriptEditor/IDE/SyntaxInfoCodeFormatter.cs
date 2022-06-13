@@ -49,9 +49,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
 
     public readonly struct SyntaxSpan
     {
-        public readonly EF FormatType;
-        public readonly int Length;
         public readonly int Offset;
+        public readonly int Length;
+        public readonly EF FormatType;
 
         public SyntaxSpan(EF formatType, int length, int offset)
         {

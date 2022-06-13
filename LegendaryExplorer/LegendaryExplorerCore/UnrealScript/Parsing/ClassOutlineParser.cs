@@ -298,7 +298,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             }
             defaultPropertiesBlock ??= new DefaultPropertiesBlock(new List<Statement>(), PrevToken.EndPos, CurrentToken.StartPos)
             {
-                Tokens = new TokenStream(new List<ScriptToken>(), Tokens.LineLookup)
+                Tokens = new TokenStream(new List<ScriptToken>(), Tokens)
             };
 
             // TODO: should AST-nodes accept null values? should they make sure they dont present any?
@@ -488,7 +488,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     }
                     defaults = new DefaultPropertiesBlock(null, bodyStart, bodyEnd)
                     {
-                        Tokens = new TokenStream(scopeTokens, Tokens.LineLookup)
+                        Tokens = new TokenStream(scopeTokens, Tokens)
                     };
                 }
                 else
@@ -621,7 +621,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
                 body = new CodeBody(null, bodyStart, bodyEnd)
                 {
-                    Tokens = new TokenStream(scopeTokens, Tokens.LineLookup)
+                    Tokens = new TokenStream(scopeTokens, Tokens)
                 };
                 flags |= EFunctionFlags.Defined;
             }
@@ -733,7 +733,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
             var body = new CodeBody(new List<Statement>(), bodyStart, bodyEnd)
             {
-                Tokens = new TokenStream(scopeTokens, Tokens.LineLookup)
+                Tokens = new TokenStream(scopeTokens, Tokens)
             };
 
             var parentState = parent != null ? new State(parent.Name, null, default, null, null, null, parent.StartPos, parent.EndPos) : null;
@@ -755,7 +755,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
             return new DefaultPropertiesBlock(new List<Statement>(), bodyStart, bodyEnd)
             {
-                Tokens = new TokenStream(scopeTokens, Tokens.LineLookup)
+                Tokens = new TokenStream(scopeTokens, Tokens)
             };
         }
 
@@ -825,7 +825,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 int bodyEnd = CurrentPosition;
                 funcParam.UnparsedDefaultParam = new CodeBody(null, bodyStart, bodyEnd)
                 {
-                    Tokens = new TokenStream(defaultParamTokens, Tokens.LineLookup)
+                    Tokens = new TokenStream(defaultParamTokens, Tokens)
                 };
             }
 

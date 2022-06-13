@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using LegendaryExplorerCore.UnrealScript.Language.Tree;
 using LegendaryExplorerCore.UnrealScript.Lexing;
 using Microsoft.Toolkit.HighPerformance;
 
@@ -14,18 +15,31 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
         private int CurrentIndex;
         public LineLookup LineLookup { get; }
         public Dictionary<int, ScriptToken> Comments;
+        public readonly List<(ASTNode node, int offset, int length)> DefinitionLinks;
 
         public ReadOnlySpan<ScriptToken> TokensSpan => Data.AsSpan();
 
-        public TokenStream(List<ScriptToken> tokens, LineLookup lineLookup)
+        private TokenStream(List<ScriptToken> tokens)
         {
             CurrentIndex = 0;
             Snapshots = new Stack<int>();
             Data = tokens;
-            LineLookup = lineLookup;
-
             int endPos = Data.Count > 0 ? Data[^1].EndPos : 0;
             EndToken = new ScriptToken(TokenType.EOF, default, endPos, endPos);
+        }
+
+        public TokenStream(List<ScriptToken> tokens, LineLookup lineLookup) : this(tokens)
+        {
+
+            LineLookup = lineLookup;
+
+            DefinitionLinks = new();
+        }
+
+        public TokenStream(List<ScriptToken> tokens, TokenStream parent) : this(tokens)
+        {
+            LineLookup = parent.LineLookup;
+            DefinitionLinks = parent.DefinitionLinks;
         }
 
         public ScriptToken ConsumeToken(TokenType type)
@@ -135,6 +149,16 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
         IEnumerator IEnumerable.GetEnumerator()
         {
             return Data.GetEnumerator();
+        }
+
+        public void AddDefinitionLink(ASTNode node, int offset, ushort length)
+        {
+            DefinitionLinks.Add((node, offset, length));
+        }
+
+        public void AddDefinitionLink(ASTNode node, ScriptToken token)
+        {
+            DefinitionLinks.Add((node, token.StartPos, token.Length));
         }
     }
 }

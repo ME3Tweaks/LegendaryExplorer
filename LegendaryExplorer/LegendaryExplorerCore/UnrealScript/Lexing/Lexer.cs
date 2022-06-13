@@ -424,7 +424,7 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
                 Log.LogError("String Literal was not terminated properly!", startPos, CurrentIndex);
                 return null;
             }
-            
+
             return new ScriptToken(TokenType.StringLiteral, Builder.ToString(), startPos, CurrentIndex) { SyntaxType = EF.String };
         }
 
@@ -535,8 +535,6 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
                 },
                 _ => default
             };
-
-            
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
