@@ -12,6 +12,7 @@ var class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_token_stream
     [ "Advance", "class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_token_stream.html#a591c5ba41a09a47c1e7e59d832f15e97", null ],
     [ "AtEnd", "class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_token_stream.html#a8365fe007237138813bdc49c868dc563", null ],
     [ "GetEnumerator", "class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_token_stream.html#ae2671ee923ff6a0fc3542ef06ec7eff8", null ],
+    [ "Comments", "class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_token_stream.html#af89a029cbf8b1266881a3f08ddd0941a", null ],
     [ "LineLookup", "class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_token_stream.html#addedbba850bf9a068810af39fae42d05", null ],
     [ "TokensSpan", "class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_token_stream.html#a46e1391aec3db2e3ac940b6a3fe5bafe", null ],
     [ "CurrentItem", "class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_token_stream.html#abd83f6e5f348599e7bdc4833422b5a50", null ]
