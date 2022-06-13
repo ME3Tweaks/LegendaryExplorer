@@ -5322,7 +5322,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             };
                             propActionsNode.Items.Add(node2);
                             node2.Items.Add(MakeNameNode(bin, "nmActionName"));
-                            if (CurrentLoadedExport.Game == MEGame.ME2)
+                            if (CurrentLoadedExport.Game.IsGame2())
                             {
                                 node2.Items.Add(MakeStringNode(bin, "sEffect"));
                             }
@@ -5332,7 +5332,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             node2.Items.Add(MakeVectorNode(bin, "vOffsetLocation"));
                             node2.Items.Add(MakeRotatorNode(bin, "rOffsetRotation"));
                             node2.Items.Add(MakeVectorNode(bin, "vOffsetScale"));
-                            if (CurrentLoadedExport.Game == MEGame.ME3)
+                            if (CurrentLoadedExport.Game.IsGame3())
                             {
                                 node2.Items.Add(MakeStringNode(bin, "sParticleSys"));
                                 node2.Items.Add(MakeStringNode(bin, "sClientEffect"));
