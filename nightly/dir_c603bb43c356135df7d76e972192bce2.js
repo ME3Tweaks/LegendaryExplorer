@@ -11,6 +11,7 @@ var dir_c603bb43c356135df7d76e972192bce2 =
       [ "LegendaryExplorerCore.Misc.DuplicatingIni.IniEntry", "class_legendary_explorer_core_1_1_misc_1_1_duplicating_ini_1_1_ini_entry.html", "class_legendary_explorer_core_1_1_misc_1_1_duplicating_ini_1_1_ini_entry" ]
     ] ],
     [ "EntryStringPair.cs", "_entry_string_pair_8cs.html", [
+      [ "LegendaryExplorerCore.Misc.LEXOpenable", "class_legendary_explorer_core_1_1_misc_1_1_l_e_x_openable.html", "class_legendary_explorer_core_1_1_misc_1_1_l_e_x_openable" ],
       [ "LegendaryExplorerCore.Misc.EntryStringPair", "class_legendary_explorer_core_1_1_misc_1_1_entry_string_pair.html", "class_legendary_explorer_core_1_1_misc_1_1_entry_string_pair" ]
     ] ],
     [ "ListenableDictionary.cs", "_listenable_dictionary_8cs.html", "_listenable_dictionary_8cs" ],

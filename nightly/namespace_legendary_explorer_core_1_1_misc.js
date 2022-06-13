@@ -6,6 +6,7 @@ var namespace_legendary_explorer_core_1_1_misc =
     [ "DictionaryChangedEvent", "class_legendary_explorer_core_1_1_misc_1_1_dictionary_changed_event.html", "class_legendary_explorer_core_1_1_misc_1_1_dictionary_changed_event" ],
     [ "DuplicatingIni", "class_legendary_explorer_core_1_1_misc_1_1_duplicating_ini.html", "class_legendary_explorer_core_1_1_misc_1_1_duplicating_ini" ],
     [ "EntryStringPair", "class_legendary_explorer_core_1_1_misc_1_1_entry_string_pair.html", "class_legendary_explorer_core_1_1_misc_1_1_entry_string_pair" ],
+    [ "LEXOpenable", "class_legendary_explorer_core_1_1_misc_1_1_l_e_x_openable.html", "class_legendary_explorer_core_1_1_misc_1_1_l_e_x_openable" ],
     [ "ListenableDictionary", "class_legendary_explorer_core_1_1_misc_1_1_listenable_dictionary.html", "class_legendary_explorer_core_1_1_misc_1_1_listenable_dictionary" ],
     [ "MemoryAnalyzer", "class_legendary_explorer_core_1_1_misc_1_1_memory_analyzer.html", "class_legendary_explorer_core_1_1_misc_1_1_memory_analyzer" ],
     [ "MemoryAnalyzerObject", "class_legendary_explorer_core_1_1_misc_1_1_memory_analyzer_object.html", "class_legendary_explorer_core_1_1_misc_1_1_memory_analyzer_object" ],

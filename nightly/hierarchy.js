@@ -609,6 +609,7 @@ var hierarchy =
     [ "LegendaryExplorerCore.Helpers.LegendaryExplorerCoreUtilities", "class_legendary_explorer_core_1_1_helpers_1_1_legendary_explorer_core_utilities.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.LevelViewportInfo", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_level_viewport_info.html", null ],
     [ "LegendaryExplorerCore.UnrealScript.Lexing.Lexer", "class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_lexer.html", null ],
+    [ "LegendaryExplorerCore.Misc.LEXOpenable", "class_legendary_explorer_core_1_1_misc_1_1_l_e_x_openable.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.LightMap", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_light_map.html", [
       [ "LegendaryExplorerCore.Unreal.BinaryConverters.LightMap_1D", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_light_map__1_d.html", null ],
       [ "LegendaryExplorerCore.Unreal.BinaryConverters.LightMap_2D", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_light_map__2_d.html", null ],
