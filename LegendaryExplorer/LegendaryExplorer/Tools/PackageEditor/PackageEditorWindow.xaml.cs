@@ -910,7 +910,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
                         if (importedFiles.Count == 0)
                         {
-                            importedFiles.Add(new EntryStringPair(null, "No matching filenames were found."));
+                            importedFiles.Add(new EntryStringPair((IEntry)null, "No matching filenames were found."));
                         }
 
                         eventArgs.Result = importedFiles;

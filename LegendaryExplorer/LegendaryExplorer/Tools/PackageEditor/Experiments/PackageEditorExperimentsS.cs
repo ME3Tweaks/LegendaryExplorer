@@ -882,7 +882,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                             binData.Skip(14);
                             if (binData.ReadInt32() != 1111577667) //CTAB
                             {
-                                interestingExports.Add(new EntryStringPair(null,
+                                interestingExports.Add(new EntryStringPair((IEntry)null,
                                     $"{binData.Position - 4}: {filePath}"));
                                 return;
                             }
@@ -913,7 +913,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                             int normalParams = binData.ReadInt32();
                             if (normalParams != 0)
                             {
-                                interestingExports.Add(new EntryStringPair(null, $"{i}: {filePath}"));
+                                interestingExports.Add(new EntryStringPair((IEntry)null, $"{i}: {filePath}"));
                                 return;
                             }
 
@@ -923,7 +923,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                             int licenseeVersion = binData.ReadInt32();
                             if (unrealVersion != 684 || licenseeVersion != 194)
                             {
-                                interestingExports.Add(new EntryStringPair(null,
+                                interestingExports.Add(new EntryStringPair((IEntry)null,
                                     $"{binData.Position - 8}: {filePath}"));
                                 return;
                             }
@@ -935,7 +935,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     catch (Exception exception)
                     {
                         Console.WriteLine(exception);
-                        interestingExports.Add(new EntryStringPair(null, $"{filePath}\n{exception}"));
+                        interestingExports.Add(new EntryStringPair((IEntry)null, $"{filePath}\n{exception}"));
                     }
                 }
             }
