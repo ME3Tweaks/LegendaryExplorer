@@ -13,6 +13,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
         private readonly ScriptToken EndToken;
         private int CurrentIndex;
         public LineLookup LineLookup { get; }
+        public Dictionary<int, ScriptToken> Comments;
 
         public ReadOnlySpan<ScriptToken> TokensSpan => Data.AsSpan();
 

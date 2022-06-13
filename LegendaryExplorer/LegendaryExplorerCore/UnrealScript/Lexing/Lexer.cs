@@ -20,8 +20,8 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
 
         private readonly string Text;
         private int CurrentIndex;
-
-        private readonly LineLookup lineLookup;
+        
+        private readonly Dictionary<int, ScriptToken> Comments;
 
 
         private Lexer(string code, MessageLog log = null)
@@ -34,20 +34,24 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
             //todo: replace with BitOperations.RoundUpToPowerOf2 after upgrade to .NET 6
             lineGuess = (uint)(0x1_0000_0000ul >> BitOperations.LeadingZeroCount(lineGuess - 1));
             Lines = new List<int>((int)Math.Min(lineGuess, 524_288));
-            lineLookup = new LineLookup(Lines);
+            Comments = new Dictionary<int, ScriptToken>();
         }
         
         public static TokenStream Lex(string code, MessageLog log = null)
         {
             var lexer = new Lexer(code, log);
+            var lineLookup = new LineLookup(lexer.Lines);
             if (log != null)
             {
-                log.LineLookup = lexer.lineLookup;
+                log.LineLookup = lineLookup;
             }
 
             List<ScriptToken> tokens = lexer.Lex();
 
-            var tokenStream = new TokenStream(tokens, lexer.lineLookup);
+            var tokenStream = new TokenStream(tokens, lineLookup)
+            {
+                Comments =  lexer.Comments
+            };
             return tokenStream;
         }
 
@@ -78,8 +82,12 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
                 }
 
                 ScriptToken token = GetNextToken(peek);
-                
-                if (token.Type != TokenType.SingleLineComment)
+
+                if (token.Type == TokenType.SingleLineComment)
+                {
+                    Comments[Lines.Count] = token;
+                }
+                else
                 {
                     tokens.Add(token);
                 }

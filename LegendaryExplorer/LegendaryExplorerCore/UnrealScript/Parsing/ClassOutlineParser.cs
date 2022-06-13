@@ -98,7 +98,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
         private Class TryParseClass()
         {
             var startPos = CurrentPosition;
-            if (!Matches(CLASS)) throw ParseError("Expected class declaration!");
+            if (!Matches(CLASS, EF.Keyword)) throw ParseError("Expected class declaration!");
 
             var name = Consume(TokenType.Word);
             if (name == null) throw ParseError("Expected class name!");
@@ -848,7 +848,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
         private VariableType ParseTheWithinSpecifier()
         {
-            if (!Matches(WITHIN)) return null;
+            if (!Matches(WITHIN, EF.Keyword)) return null;
             var outerName = Consume(TokenType.Word);
             if (outerName == null)
             {

@@ -65,12 +65,13 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
     {
         public readonly List<int> LineToIndex;
         public readonly List<SyntaxSpan> SyntaxSpans;
+        public readonly Dictionary<int, SyntaxSpan> CommentSpans; 
 
-
-        public SyntaxInfo(List<int> lineToIndex = null, List<SyntaxSpan> syntaxSpans = null)
+        public SyntaxInfo(List<int> lineToIndex = null, List<SyntaxSpan> syntaxSpans = null, Dictionary<int, SyntaxSpan> commentSpans = null)
         {
             LineToIndex = lineToIndex ?? new List<int>();
             SyntaxSpans = syntaxSpans ?? new List<SyntaxSpan>();
+            CommentSpans = commentSpans ?? new Dictionary<int, SyntaxSpan>();
         }
 
         public static readonly Dictionary<EF, HighlightingColor> Colors = new()

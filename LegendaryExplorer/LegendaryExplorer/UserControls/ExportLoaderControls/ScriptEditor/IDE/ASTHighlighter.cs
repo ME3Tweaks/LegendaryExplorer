@@ -72,6 +72,18 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
                     Color = SyntaxInfo.Colors[syntaxSpan.FormatType]
                 });
             }
+
+            if (SyntaxInfo.CommentSpans.TryGetValue(lineNumber, out SyntaxSpan commentSpan)
+                && commentSpan.Offset >= lineStart && commentSpan.Offset + commentSpan.Length <= lineEnd)
+            {
+                highlightedLine.Sections.Add(new HighlightedSection
+                {
+                    Offset = commentSpan.Offset,
+                    Length = commentSpan.Length,
+                    Color = SyntaxInfo.Colors[commentSpan.FormatType]
+                });
+            }
+
             return highlightedLine;
         }
 

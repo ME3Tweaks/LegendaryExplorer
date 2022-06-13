@@ -574,8 +574,18 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                 ScriptToken token = tokensSpan[j];
                 syntaxSpans.Add(new SyntaxSpan(token.SyntaxType, token.EndPos - token.StartPos, token.StartPos));
             }
+            
+            Dictionary<int, SyntaxSpan> commentSpans = null;
+            if (tokens.Comments is not null)
+            {
+                commentSpans = new Dictionary<int, SyntaxSpan>(tokens.Comments.Count);
+                foreach ((int line, ScriptToken token) in tokens.Comments)
+                {
+                    commentSpans.Add(line, new SyntaxSpan(token.SyntaxType, token.EndPos - token.StartPos, token.StartPos));
+                }
+            }
 
-            textEditor.SyntaxHighlighting = new SyntaxInfo(lineToIndex, syntaxSpans);
+            textEditor.SyntaxHighlighting = new SyntaxInfo(lineToIndex, syntaxSpans, commentSpans);
         }
 
 
