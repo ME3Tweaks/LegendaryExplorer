@@ -44,8 +44,9 @@ namespace LegendaryExplorerCore.GameFilesystem
         /// <param name="includeTFCs">If true, files with the .tfc extension will be included</param>
         /// <param name="includeAFCs">If true, files with the .afc extension will be included</param>
         /// <param name="gameRootOverride">Optional: override game path root</param>
+        /// <param name="forceUseCached">Optional: Set to true to forcibly use the cached version if available; ignoring the tfc/afc check for rebuilding. Only use if you know what you're doing; this is to improve performance in certain scenarios</param>
         /// <returns>Case insensitive dictionary where key is filename and value is file path</returns>
-        public static CaseInsensitiveDictionary<string> GetFilesLoadedInGame(MEGame game, bool forceReload = false, bool includeTFCs = false, bool includeAFCs = false, string gameRootOverride = null)
+        public static CaseInsensitiveDictionary<string> GetFilesLoadedInGame(MEGame game, bool forceReload = false, bool includeTFCs = false, bool includeAFCs = false, string gameRootOverride = null, bool forceUseCached = false)
         {
             //Override: Do not use cached items
             if (!forceReload && gameRootOverride == null)
@@ -54,35 +55,51 @@ namespace LegendaryExplorerCore.GameFilesystem
                 if (game == MEGame.ME2 && cachedME2LoadedFiles != null)
                 {
                     bool useCached = true;
-                    useCached &= !includeTFCs || !cachedME2LoadedFiles.Keys.Any(x => x.EndsWith(".tfc"));
-                    useCached &= !includeAFCs || !cachedME2LoadedFiles.Keys.Any(x => x.EndsWith(".afc"));
+                    if (!forceUseCached)
+                    {
+                        useCached &= !includeTFCs || !cachedME2LoadedFiles.Keys.Any(x => x.EndsWith(".tfc"));
+                        useCached &= !includeAFCs || !cachedME2LoadedFiles.Keys.Any(x => x.EndsWith(".afc"));
+                    }
+
                     if (useCached) return cachedME2LoadedFiles;
                 }
                 if (game == MEGame.ME3 && cachedME3LoadedFiles != null)
                 {
                     bool useCached = true;
-                    useCached &= !includeTFCs || !cachedME3LoadedFiles.Keys.Any(x => x.EndsWith(".tfc"));
-                    useCached &= !includeAFCs || !cachedME3LoadedFiles.Keys.Any(x => x.EndsWith(".afc"));
+                    if (!forceUseCached)
+                    {
+                        useCached &= !includeTFCs || !cachedME3LoadedFiles.Keys.Any(x => x.EndsWith(".tfc"));
+                        useCached &= !includeAFCs || !cachedME3LoadedFiles.Keys.Any(x => x.EndsWith(".afc"));
+                    }
                     if (useCached) return cachedME3LoadedFiles;
                 }
                 if (game == MEGame.LE1 && cachedLE1LoadedFiles != null)
                 {
                     bool useCached = true;
-                    useCached &= !includeTFCs || !cachedLE1LoadedFiles.Keys.Any(x => x.EndsWith(".tfc"));
+                    if (!forceUseCached)
+                    {
+                        useCached &= !includeTFCs || !cachedLE1LoadedFiles.Keys.Any(x => x.EndsWith(".tfc"));
+                    }
                     if (useCached) return cachedLE1LoadedFiles;
                 }
                 if (game == MEGame.LE2 && cachedLE2LoadedFiles != null)
                 {
                     bool useCached = true;
-                    useCached &= !includeTFCs || !cachedLE2LoadedFiles.Keys.Any(x => x.EndsWith(".tfc"));
-                    useCached &= !includeAFCs || !cachedLE2LoadedFiles.Keys.Any(x => x.EndsWith(".afc"));
+                    if (!forceUseCached)
+                    {
+                        useCached &= !includeTFCs || !cachedLE2LoadedFiles.Keys.Any(x => x.EndsWith(".tfc"));
+                        useCached &= !includeAFCs || !cachedLE2LoadedFiles.Keys.Any(x => x.EndsWith(".afc"));
+                    }
                     if (useCached) return cachedLE2LoadedFiles;
                 }
                 if (game == MEGame.LE3 && cachedLE3LoadedFiles != null)
                 {
                     bool useCached = true;
-                    useCached &= !includeTFCs || !cachedLE3LoadedFiles.Keys.Any(x => x.EndsWith(".tfc"));
-                    useCached &= !includeAFCs || !cachedLE3LoadedFiles.Keys.Any(x => x.EndsWith(".afc"));
+                    if (!forceUseCached)
+                    {
+                        useCached &= !includeTFCs || !cachedLE3LoadedFiles.Keys.Any(x => x.EndsWith(".tfc"));
+                        useCached &= !includeAFCs || !cachedLE3LoadedFiles.Keys.Any(x => x.EndsWith(".afc"));
+                    }
                     if (useCached) return cachedLE3LoadedFiles;
                 }
             }

@@ -57,7 +57,7 @@ namespace LegendaryExplorerCore.Packages
         /// <param name="packagePath"></param>
         /// <param name="openIfNotInCache">Open the specified package if it is not in the cache, and add it to the cache</param>
         /// <returns></returns>
-        public virtual IMEPackage GetCachedPackage(string packagePath, bool openIfNotInCache = true)
+        public virtual IMEPackage GetCachedPackage(string packagePath, bool openIfNotInCache = true, Func<string, IMEPackage> openPackageMethod = null)
         {
             // Cannot look up null paths
             if (packagePath == null)
@@ -77,8 +77,8 @@ namespace LegendaryExplorerCore.Packages
                 {
                     if (File.Exists(packagePath))
                     {
-                        //Debug.WriteLine($@"PackageCache {guid} load: {packagePath}");
-                        package = MEPackageHandler.OpenMEPackage(packagePath, forceLoadFromDisk: AlwaysOpenFromDisk);
+                        Debug.WriteLine($@"PackageCache {guid} load: {packagePath}");
+                        package = openPackageMethod?.Invoke(packagePath) ?? MEPackageHandler.OpenMEPackage(packagePath, forceLoadFromDisk: AlwaysOpenFromDisk);
                         InsertIntoCache(package);
                         return package;
                     }

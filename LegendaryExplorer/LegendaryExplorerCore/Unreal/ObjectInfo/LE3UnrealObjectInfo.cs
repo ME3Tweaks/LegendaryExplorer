@@ -929,6 +929,9 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             "Core.NameProperty",
             "Core.ByteProperty",
             "Core.Enum",
+            "Core.Const",
+            "Core.ComponentProperty",
+            "Core.State",
         };
     }
 }

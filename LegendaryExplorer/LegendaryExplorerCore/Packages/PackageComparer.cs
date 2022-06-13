@@ -162,7 +162,7 @@ namespace LegendaryExplorerCore.Packages
                         if (!name1.Equals(name2, StringComparison.InvariantCultureIgnoreCase))
 
                         {
-                            changedNames.Add(new EntryStringPair(null, $"Name {i} is different: {name1} |vs| {name2}"));
+                            changedNames.Add(new EntryStringPair((IEntry)null, $"Name {i} is different: {name1} |vs| {name2}"));
                         }
                     }
 
@@ -177,7 +177,7 @@ namespace LegendaryExplorerCore.Packages
                     for (int i = numNamesToEnumerate; i < enumerateExtras.NameCount; i++)
                     {
                         Debug.WriteLine($"Name only exists in {file}: {i} {enumerateExtras.Names[i]}");
-                        changedNames.Add(new EntryStringPair(null,
+                        changedNames.Add(new EntryStringPair((IEntry)null,
                             $"Name only exists in {file}: {i} {enumerateExtras.Names[i]}"));
                     }
                 }
