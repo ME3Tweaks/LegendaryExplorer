@@ -1,17 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.ComponentModel;
 using System.Linq;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Input;
 using LegendaryExplorer.Misc;
 using LegendaryExplorerCore.Packages;
-using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
-using LegendaryExplorerCore.UnrealScript.Language.Tree;
 
 namespace LegendaryExplorer.SharedUI.Controls
 {
