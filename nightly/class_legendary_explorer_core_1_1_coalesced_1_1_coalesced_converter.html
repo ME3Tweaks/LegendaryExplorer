@@ -95,6 +95,9 @@ $(document).ready(function(){initNavTree('class_legendary_explorer_core_1_1_coal
   <div class="headertitle"><div class="title">LegendaryExplorerCore.Coalesced.CoalescedConverter Class Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Class for converting to and from editable text versions of <a class="el" href="namespace_legendary_explorer_core_1_1_coalesced.html">Coalesced</a> files (Game3, LE1/LE2)  
+ <a href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-types" name="pub-types"></a>
 Public Types</h2></td></tr>
@@ -102,38 +105,50 @@ Public Types</h2></td></tr>
 , <a class="el" href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#a9f828aa5e7a667bedaee76b888d01400a9ec8e4e3ab4c7eeba097f27d7364d743">Xml</a>
 , <a class="el" href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#a9f828aa5e7a667bedaee76b888d01400a274fad6e8de9fd06930710f10982dde4">ExtractedBin</a>
  }</td></tr>
+<tr class="memdesc:a9f828aa5e7a667bedaee76b888d01400"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enum describing a type of <a class="el" href="namespace_legendary_explorer_core_1_1_coalesced.html">Coalesced</a> file  <a href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#a9f828aa5e7a667bedaee76b888d01400">More...</a><br /></td></tr>
 <tr class="separator:a9f828aa5e7a667bedaee76b888d01400"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a7eac45d1747f14cb27136367e24f9fbd"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_case_insensitive_dictionary.html">CaseInsensitiveDictionary</a>&lt; string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#a7eac45d1747f14cb27136367e24f9fbd">DecompileGame3ToMemory</a> (Stream ms)</td></tr>
-<tr class="separator:a7eac45d1747f14cb27136367e24f9fbd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aef3f1a229a220f244d01cc53df4c54d7"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_case_insensitive_dictionary.html">CaseInsensitiveDictionary</a>&lt; string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#aef3f1a229a220f244d01cc53df4c54d7">DecompileGame3ToMemory</a> (Stream inputStream)</td></tr>
+<tr class="memdesc:aef3f1a229a220f244d01cc53df4c54d7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Decompiles a Game3 <a class="el" href="namespace_legendary_explorer_core_1_1_coalesced.html">Coalesced</a> stream to a dictionary of strings that maps the filenames to their xml string contents  <a href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#aef3f1a229a220f244d01cc53df4c54d7">More...</a><br /></td></tr>
+<tr class="separator:aef3f1a229a220f244d01cc53df4c54d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a024b131606a9489934d153e862adba1f"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#a024b131606a9489934d153e862adba1f">Convert</a> (<a class="el" href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#a9f828aa5e7a667bedaee76b888d01400">CoalescedType</a> SourceType, string SourcePath, string DestinationPath)</td></tr>
+<tr class="memdesc:a024b131606a9489934d153e862adba1f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts a Game3 <a class="el" href="namespace_legendary_explorer_core_1_1_coalesced.html">Coalesced</a> file between its binary and decompiled text formats  <a href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#a024b131606a9489934d153e862adba1f">More...</a><br /></td></tr>
 <tr class="separator:a024b131606a9489934d153e862adba1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a64c4782842c30f634da2ab2cf398aac5"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#a64c4782842c30f634da2ab2cf398aac5">ConvertToXML</a> (string source, string destination)</td></tr>
-<tr class="separator:a64c4782842c30f634da2ab2cf398aac5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad6e2703d9478f7c0186a67e5d81be9f1"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#ad6e2703d9478f7c0186a67e5d81be9f1">ConvertToXML</a> (string source, string destinationDirectory)</td></tr>
+<tr class="memdesc:ad6e2703d9478f7c0186a67e5d81be9f1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts the Game3 <a class="el" href="namespace_legendary_explorer_core_1_1_coalesced.html">Coalesced</a> file to its XML representation (decompile)  <a href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#ad6e2703d9478f7c0186a67e5d81be9f1">More...</a><br /></td></tr>
+<tr class="separator:ad6e2703d9478f7c0186a67e5d81be9f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aee8b566beda07d82a9fc826b4d8a6842"><td class="memItemLeft" align="right" valign="top">static MemoryStream&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#aee8b566beda07d82a9fc826b4d8a6842">CompileFromMemory</a> (Dictionary&lt; string, string &gt; fileMapping)</td></tr>
+<tr class="memdesc:aee8b566beda07d82a9fc826b4d8a6842"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serializes a Game3 <a class="el" href="namespace_legendary_explorer_core_1_1_coalesced.html">Coalesced</a> file from a mapping of text xml strings  <a href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#aee8b566beda07d82a9fc826b4d8a6842">More...</a><br /></td></tr>
 <tr class="separator:aee8b566beda07d82a9fc826b4d8a6842"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acf1b912e49c59a9a547b55aba8c2c9c5"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#acf1b912e49c59a9a547b55aba8c2c9c5">ConvertToBin</a> (string source, string destination, XDocument preloadedDoc=null)</td></tr>
+<tr class="memdesc:acf1b912e49c59a9a547b55aba8c2c9c5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts the source coalesced manifest xml to a Game3 <a class="el" href="namespace_legendary_explorer_core_1_1_coalesced.html">Coalesced</a>  <a href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#acf1b912e49c59a9a547b55aba8c2c9c5">More...</a><br /></td></tr>
 <tr class="separator:acf1b912e49c59a9a547b55aba8c2c9c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6f2ac4ed00e3539a6e02bfab94bcbfed"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#a6f2ac4ed00e3539a6e02bfab94bcbfed">IsGame3Coalesced</a> (string sourceFile)</td></tr>
 <tr class="memdesc:a6f2ac4ed00e3539a6e02bfab94bcbfed"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns true if this is a ME3/LE3 coalesced file, false if LE1/LE2  <a href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#a6f2ac4ed00e3539a6e02bfab94bcbfed">More...</a><br /></td></tr>
 <tr class="separator:a6f2ac4ed00e3539a6e02bfab94bcbfed"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8a9675484b65f871682bd81d87adceb3"><td class="memItemLeft" align="right" valign="top">static Dictionary&lt; string, <a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_duplicating_ini.html">DuplicatingIni</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#a8a9675484b65f871682bd81d87adceb3">DecompileLE1LE2ToMemory</a> (Stream fs, string name)</td></tr>
-<tr class="separator:a8a9675484b65f871682bd81d87adceb3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0e96d2b0f4d68b94b8709cefc0c5ac78"><td class="memItemLeft" align="right" valign="top">static Dictionary&lt; string, <a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_duplicating_ini.html">DuplicatingIni</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#a0e96d2b0f4d68b94b8709cefc0c5ac78">DecompileLE1LE2ToMemory</a> (Stream inputStream, string name)</td></tr>
+<tr class="memdesc:a0e96d2b0f4d68b94b8709cefc0c5ac78"><td class="mdescLeft">&#160;</td><td class="mdescRight">Decompiles a LE1/LE2 <a class="el" href="namespace_legendary_explorer_core_1_1_coalesced.html">Coalesced</a> file to a memory map.  <a href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#a0e96d2b0f4d68b94b8709cefc0c5ac78">More...</a><br /></td></tr>
+<tr class="separator:a0e96d2b0f4d68b94b8709cefc0c5ac78"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adef9f4ddfaa2b809e6bddff3b7151e01"><td class="memItemLeft" align="right" valign="top">static MemoryStream&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#adef9f4ddfaa2b809e6bddff3b7151e01">CompileLE1LE2FromMemory</a> (Dictionary&lt; string, <a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_duplicating_ini.html">DuplicatingIni</a> &gt; iniFileMap)</td></tr>
+<tr class="memdesc:adef9f4ddfaa2b809e6bddff3b7151e01"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compiles a LE1/LE2 <a class="el" href="namespace_legendary_explorer_core_1_1_coalesced.html">Coalesced</a> file from a memory map.  <a href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#adef9f4ddfaa2b809e6bddff3b7151e01">More...</a><br /></td></tr>
 <tr class="separator:adef9f4ddfaa2b809e6bddff3b7151e01"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-attribs" name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
 <tr class="memitem:a2666e01a187841c834544f6d40dbfdc1"><td class="memItemLeft" align="right" valign="top">static readonly int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#a2666e01a187841c834544f6d40dbfdc1">CoalescedMagicNumber</a> = 1718448749</td></tr>
+<tr class="memdesc:a2666e01a187841c834544f6d40dbfdc1"><td class="mdescLeft">&#160;</td><td class="mdescRight">The magic number header for Game 3 <a class="el" href="namespace_legendary_explorer_core_1_1_coalesced.html">Coalesced</a> files  <a href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#a2666e01a187841c834544f6d40dbfdc1">More...</a><br /></td></tr>
 <tr class="separator:a2666e01a187841c834544f6d40dbfdc1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2a8c146b4be2b27198df86e4ce438934"><td class="memItemLeft" align="right" valign="top">static readonly SortedSet&lt; string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#a2a8c146b4be2b27198df86e4ce438934">ProperNames</a></td></tr>
+<tr class="memdesc:a2a8c146b4be2b27198df86e4ce438934"><td class="mdescLeft">&#160;</td><td class="mdescRight">The list of filenames supported by this compiler  <a href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#a2a8c146b4be2b27198df86e4ce438934">More...</a><br /></td></tr>
 <tr class="separator:a2a8c146b4be2b27198df86e4ce438934"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae13049de13de54370fde607f3b52d004"><td class="memItemLeft" align="right" valign="top">static readonly Dictionary&lt; string, string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#ae13049de13de54370fde607f3b52d004">SpecialCharacters</a></td></tr>
 <tr class="separator:ae13049de13de54370fde607f3b52d004"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Enumeration Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p >Class for converting to and from editable text versions of <a class="el" href="namespace_legendary_explorer_core_1_1_coalesced.html">Coalesced</a> files (Game3, LE1/LE2) </p>
+</div><h2 class="groupheader">Member Enumeration Documentation</h2>
 <a id="a9f828aa5e7a667bedaee76b888d01400" name="a9f828aa5e7a667bedaee76b888d01400"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a9f828aa5e7a667bedaee76b888d01400">&#9670;&nbsp;</a></span>CoalescedType</h2>
 
@@ -145,17 +160,22 @@ Static Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Enum describing a type of <a class="el" href="namespace_legendary_explorer_core_1_1_coalesced.html">Coalesced</a> file </p>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a9f828aa5e7a667bedaee76b888d01400a6ce976e8f061b2b5cfe4d0c50c3405dd" name="a9f828aa5e7a667bedaee76b888d01400a6ce976e8f061b2b5cfe4d0c50c3405dd"></a>Binary&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a9f828aa5e7a667bedaee76b888d01400a9ec8e4e3ab4c7eeba097f27d7364d743" name="a9f828aa5e7a667bedaee76b888d01400a9ec8e4e3ab4c7eeba097f27d7364d743"></a>Xml&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a9f828aa5e7a667bedaee76b888d01400a274fad6e8de9fd06930710f10982dde4" name="a9f828aa5e7a667bedaee76b888d01400a274fad6e8de9fd06930710f10982dde4"></a>ExtractedBin&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a9f828aa5e7a667bedaee76b888d01400a6ce976e8f061b2b5cfe4d0c50c3405dd" name="a9f828aa5e7a667bedaee76b888d01400a6ce976e8f061b2b5cfe4d0c50c3405dd"></a>Binary&#160;</td><td class="fielddoc"><p >Compiled <a class="el" href="namespace_legendary_explorer_core_1_1_coalesced.html">Coalesced</a> file </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a9f828aa5e7a667bedaee76b888d01400a9ec8e4e3ab4c7eeba097f27d7364d743" name="a9f828aa5e7a667bedaee76b888d01400a9ec8e4e3ab4c7eeba097f27d7364d743"></a>Xml&#160;</td><td class="fielddoc"><p >Decompiled Game 3 XML <a class="el" href="namespace_legendary_explorer_core_1_1_coalesced.html">Coalesced</a> manifest file </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a9f828aa5e7a667bedaee76b888d01400a274fad6e8de9fd06930710f10982dde4" name="a9f828aa5e7a667bedaee76b888d01400a274fad6e8de9fd06930710f10982dde4"></a>ExtractedBin&#160;</td><td class="fielddoc"><p >Unpacked LE1/LE2 <a class="el" href="namespace_legendary_explorer_core_1_1_coalesced.html">Coalesced</a> manifest file </p>
+</td></tr>
 </table>
 
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a7eac45d1747f14cb27136367e24f9fbd" name="a7eac45d1747f14cb27136367e24f9fbd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7eac45d1747f14cb27136367e24f9fbd">&#9670;&nbsp;</a></span>DecompileGame3ToMemory()</h2>
+<a id="aef3f1a229a220f244d01cc53df4c54d7" name="aef3f1a229a220f244d01cc53df4c54d7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aef3f1a229a220f244d01cc53df4c54d7">&#9670;&nbsp;</a></span>DecompileGame3ToMemory()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -167,7 +187,7 @@ Static Public Attributes</h2></td></tr>
           <td class="memname">static <a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_case_insensitive_dictionary.html">CaseInsensitiveDictionary</a>&lt; string &gt; LegendaryExplorerCore.Coalesced.CoalescedConverter.DecompileGame3ToMemory </td>
           <td>(</td>
           <td class="paramtype">Stream&#160;</td>
-          <td class="paramname"><em>ms</em></td><td>)</td>
+          <td class="paramname"><em>inputStream</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -177,6 +197,15 @@ Static Public Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Decompiles a Game3 <a class="el" href="namespace_legendary_explorer_core_1_1_coalesced.html">Coalesced</a> stream to a dictionary of strings that maps the filenames to their xml string contents </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">inputStream</td><td>Input stream</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Dictionary of files mapped to their xml files</dd></dl>
 
 </div>
 </div>
@@ -220,10 +249,27 @@ Static Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Converts a Game3 <a class="el" href="namespace_legendary_explorer_core_1_1_coalesced.html">Coalesced</a> file between its binary and decompiled text formats </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">SourceType</td><td>The type the <em>SourcePath</em>  file is in.</td></tr>
+    <tr><td class="paramname">SourcePath</td><td>The input file</td></tr>
+    <tr><td class="paramname">DestinationPath</td><td>The destination file or directory</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">FileNotFoundException</td><td>If input file is not found</td></tr>
+    <tr><td class="paramname">ArgumentOutOfRangeException</td><td>If invalid coalesced type is specified</td></tr>
+  </table>
+  </dd>
+</dl>
+
 </div>
 </div>
-<a id="a64c4782842c30f634da2ab2cf398aac5" name="a64c4782842c30f634da2ab2cf398aac5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a64c4782842c30f634da2ab2cf398aac5">&#9670;&nbsp;</a></span>ConvertToXML()</h2>
+<a id="ad6e2703d9478f7c0186a67e5d81be9f1" name="ad6e2703d9478f7c0186a67e5d81be9f1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad6e2703d9478f7c0186a67e5d81be9f1">&#9670;&nbsp;</a></span>ConvertToXML()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -241,7 +287,7 @@ Static Public Attributes</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">string&#160;</td>
-          <td class="paramname"><em>destination</em>&#160;</td>
+          <td class="paramname"><em>destinationDirectory</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -255,6 +301,15 @@ Static Public Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Converts the Game3 <a class="el" href="namespace_legendary_explorer_core_1_1_coalesced.html">Coalesced</a> file to its XML representation (decompile) </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">source</td><td>The input <a class="el" href="namespace_legendary_explorer_core_1_1_coalesced.html">Coalesced</a> file</td></tr>
+    <tr><td class="paramname">destinationDirectory</td><td>The output directory</td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -281,6 +336,15 @@ Static Public Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Serializes a Game3 <a class="el" href="namespace_legendary_explorer_core_1_1_coalesced.html">Coalesced</a> file from a mapping of text xml strings </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">fileMapping</td><td>Mapping of filenames to their contents</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Memorystream of the compiled Game3 <a class="el" href="namespace_legendary_explorer_core_1_1_coalesced.html">Coalesced</a> file</dd></dl>
 
 </div>
 </div>
@@ -324,6 +388,16 @@ Static Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Converts the source coalesced manifest xml to a Game3 <a class="el" href="namespace_legendary_explorer_core_1_1_coalesced.html">Coalesced</a> </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">source</td><td>The source input file. Can be null if you are passing in an already-parsed XDocument on the <em>preloadedDoc</em>  paremeter</td></tr>
+    <tr><td class="paramname">destination</td><td>Where the serialized file will be saved to</td></tr>
+    <tr><td class="paramname">preloadedDoc</td><td>A preloaded XDocument object, in the event the document was already loaded by the caller for other purposes. If this value is set, <em>source</em>  is not used.</td></tr>
+  </table>
+  </dd>
+</dl>
+
 </div>
 </div>
 <a id="a6f2ac4ed00e3539a6e02bfab94bcbfed" name="a6f2ac4ed00e3539a6e02bfab94bcbfed"></a>
@@ -361,8 +435,8 @@ Static Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a8a9675484b65f871682bd81d87adceb3" name="a8a9675484b65f871682bd81d87adceb3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8a9675484b65f871682bd81d87adceb3">&#9670;&nbsp;</a></span>DecompileLE1LE2ToMemory()</h2>
+<a id="a0e96d2b0f4d68b94b8709cefc0c5ac78" name="a0e96d2b0f4d68b94b8709cefc0c5ac78"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0e96d2b0f4d68b94b8709cefc0c5ac78">&#9670;&nbsp;</a></span>DecompileLE1LE2ToMemory()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -374,7 +448,7 @@ Static Public Attributes</h2></td></tr>
           <td class="memname">static Dictionary&lt; string, <a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_duplicating_ini.html">DuplicatingIni</a> &gt; LegendaryExplorerCore.Coalesced.CoalescedConverter.DecompileLE1LE2ToMemory </td>
           <td>(</td>
           <td class="paramtype">Stream&#160;</td>
-          <td class="paramname"><em>fs</em>, </td>
+          <td class="paramname"><em>inputStream</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -394,6 +468,16 @@ Static Public Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Decompiles a LE1/LE2 <a class="el" href="namespace_legendary_explorer_core_1_1_coalesced.html">Coalesced</a> file to a memory map. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">inputStream</td><td>The input stream to read from</td></tr>
+    <tr><td class="paramname">name</td><td>The name of the coalesced file - this is written to the manifest file and will be the name the file reserializes to (in tools such as M3)</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
 
 </div>
 </div>
@@ -421,6 +505,15 @@ Static Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Compiles a LE1/LE2 <a class="el" href="namespace_legendary_explorer_core_1_1_coalesced.html">Coalesced</a> file from a memory map. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">iniFileMap</td><td>Mapping of filenames to the ini object that represents the file contents.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Memorystream of the compiled <a class="el" href="namespace_legendary_explorer_core_1_1_coalesced.html">Coalesced</a> file</dd></dl>
+
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
@@ -443,6 +536,8 @@ Static Public Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>The magic number header for Game 3 <a class="el" href="namespace_legendary_explorer_core_1_1_coalesced.html">Coalesced</a> files </p>
 
 </div>
 </div>
@@ -496,6 +591,8 @@ Static Public Attributes</h2></td></tr>
 <div class="line">                <span class="stringliteral">&quot;XWindow&quot;</span></div>
 <div class="line">            }</div>
 </div><!-- fragment -->
+<p>The list of filenames supported by this compiler </p>
+
 </div>
 </div>
 <a id="ae13049de13de54370fde607f3b52d004" name="ae13049de13de54370fde607f3b52d004"></a>
