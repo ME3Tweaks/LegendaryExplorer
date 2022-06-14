@@ -11,6 +11,7 @@ var class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_errors_1_1
     [ "CurrentClass", "class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_errors_1_1_message_log.html#a35d29c3ae73d5162b96fdaab498fc8e9", null ],
     [ "Filter", "class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_errors_1_1_message_log.html#a1df2389be0fed863c386ad5ba4f57ecc", null ],
     [ "LineLookup", "class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_errors_1_1_message_log.html#af68f683abcc872ed2d4b489fceb3d90a", null ],
+    [ "Tokens", "class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_errors_1_1_message_log.html#a08f2d9ce915db2a016b61d017c15f084", null ],
     [ "HasErrors", "class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_errors_1_1_message_log.html#a93639a0fee3bffcdcce62468a9340d09", null ],
     [ "Content", "class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_errors_1_1_message_log.html#ae94d3ecce8bc11fb4ac064d08551a187", null ],
     [ "Messages", "class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_errors_1_1_message_log.html#a21b3c44372cf3a454c5b0c88f1772456", null ],

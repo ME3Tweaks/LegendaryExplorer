@@ -13,7 +13,7 @@ var class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_token_stream
     [ "Advance", "class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_token_stream.html#a591c5ba41a09a47c1e7e59d832f15e97", null ],
     [ "AtEnd", "class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_token_stream.html#a8365fe007237138813bdc49c868dc563", null ],
     [ "GetEnumerator", "class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_token_stream.html#ae2671ee923ff6a0fc3542ef06ec7eff8", null ],
-    [ "AddDefinitionLink", "class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_token_stream.html#ad7099033b13de28032961196687eb393", null ],
+    [ "AddDefinitionLink", "class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_token_stream.html#a01dac91f707dccd1fe972499bf910702", null ],
     [ "AddDefinitionLink", "class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_token_stream.html#a126410c2593c001eba601b8dae9429b4", null ],
     [ "Comments", "class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_token_stream.html#af89a029cbf8b1266881a3f08ddd0941a", null ],
     [ "DefinitionLinks", "class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_token_stream.html#ae98dc7c9307443e96260853c5866a04d", null ],
