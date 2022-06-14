@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using ICSharpCode.AvalonEdit.Rendering;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
-using LegendaryExplorerCore.UnrealScript.Lexing;
 using LegendaryExplorerCore.UnrealScript.Parsing;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
@@ -10,6 +10,13 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
     {
         private readonly Dictionary<int, DefinitionLinkSpan> Spans = new();
         private readonly List<int> Offsets = new();
+        private readonly Action<int, int> ScrollTo;
+
+        public DefinitionLinkGenerator(Action<int, int> scrollTo)
+        {
+            ScrollTo = scrollTo;
+        }
+
 
         private readonly struct DefinitionLinkSpan
         {
@@ -45,7 +52,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
             //Debug.WriteLine($"Offset: {startOffset}");
             int endOffset = CurrentContext.VisualLine.FirstDocumentLine.EndOffset;
 
-            var index = Offsets.BinarySearch(startOffset);
+            int index = Offsets.BinarySearch(startOffset);
 
             if (index < 0)
             {
@@ -71,7 +78,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
             if (Spans.TryGetValue(offset, out DefinitionLinkSpan span))
             {
                 //Debug.WriteLine($"Constructed at Offset: {offset}");
-                return new VisualLineDefinitionLinkText(CurrentContext.VisualLine, span.Node, span.Length);
+                return new VisualLineDefinitionLinkText(CurrentContext.VisualLine, span.Node, span.Length, ScrollTo);
             }
 
             return null;

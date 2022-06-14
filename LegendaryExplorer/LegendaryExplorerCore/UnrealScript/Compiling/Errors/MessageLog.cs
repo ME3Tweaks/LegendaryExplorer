@@ -2,7 +2,6 @@
 using System.Linq;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
 using LegendaryExplorerCore.UnrealScript.Parsing;
-using LegendaryExplorerCore.UnrealScript.Utilities;
 
 namespace LegendaryExplorerCore.UnrealScript.Compiling.Errors
 {
@@ -34,6 +33,9 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling.Errors
 
         public LineLookup LineLookup;
 
+        //This being here is a gross hack. Needed some way to make the TokenStream accesible to the ClassValidationVisitor,
+        //and the MessageLog is the one thing that gets passed through all the layers... bleh
+        public TokenStream Tokens;
 
         public MessageLog()
         {

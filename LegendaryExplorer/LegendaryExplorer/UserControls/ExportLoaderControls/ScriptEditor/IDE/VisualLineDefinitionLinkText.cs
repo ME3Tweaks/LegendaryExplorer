@@ -1,15 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media.TextFormatting;
-using ICSharpCode.AvalonEdit;
-using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Rendering;
-using ICSharpCode.AvalonEdit.Utils;
 using LegendaryExplorer.Misc;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
@@ -19,10 +11,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
     public class VisualLineDefinitionLinkText : VisualLineText
     {
         private readonly ASTNode Node;
+        private readonly Action<int, int> ScrollTo;
 
-        public VisualLineDefinitionLinkText(VisualLine parentVisualLine, ASTNode node, int length) : base(parentVisualLine, length)
+        public VisualLineDefinitionLinkText(VisualLine parentVisualLine, ASTNode node, int length, Action<int, int> scrollTo) : base(parentVisualLine, length)
         {
             Node = node;
+            ScrollTo = scrollTo;
         }
 
         protected override void OnQueryCursor(QueryCursorEventArgs e)
@@ -38,33 +32,44 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
         {
             if (e.ChangedButton == MouseButton.Left && !e.Handled && Keyboard.Modifiers.Has(ModifierKeys.Control))
             {
-                string filePath = null;
-                int uIndex = 0;
                 string name = "UNKNOWN";
-                if (Node is IHasFileReference hasFileReference)
+                ASTNode node = Node switch
                 {
-                    filePath = hasFileReference.FilePath;
-                    uIndex = hasFileReference.UIndex;
+                    StaticArrayType staticArrayType => staticArrayType.ElementType,
+                    ClassType classType => classType.ClassLimiter,
+                    DynamicArrayType dynArr => dynArr.ElementType,
+                    _ => Node
+                };
+                if (node is IHasFileReference hasFileReference)
+                {
+                    string filePath = hasFileReference.FilePath;
+                    int uIndex = hasFileReference.UIndex;
                     name = hasFileReference.Name;
-                }
 
-                if (filePath is null)
+                    if (filePath is not null)
+                    {
+                        var pwpf = new Tools.PackageEditor.PackageEditorWindow();
+                        pwpf.Show();
+                        pwpf.LoadFile(filePath, uIndex);
+                        pwpf.RestoreAndBringToFront();
+                        e.Handled = true;
+                        return;
+                    }
+                }
+                if (node.StartPos >= 0 && node.Length > 0)
                 {
-                    MessageBox.Show($"Unable to navigate to definition of \"{name}\". This can happen if it is a function parameter or local variable");
+                    ScrollTo(node.StartPos, node.Length);
                     e.Handled = true;
                     return;
                 }
-                var pwpf = new Tools.PackageEditor.PackageEditorWindow();
-                pwpf.Show();
-                pwpf.LoadFile(filePath, uIndex);
-                pwpf.RestoreAndBringToFront();
+                MessageBox.Show($"Unable to navigate to definition of \"{name}\". This can happen if it is defined in the script you are editing");
                 e.Handled = true;
             }
         }
 
         protected override VisualLineText CreateInstance(int length)
         {
-            return new VisualLineDefinitionLinkText(ParentVisualLine, Node, length);
+            return new VisualLineDefinitionLinkText(ParentVisualLine, Node, length, ScrollTo);
         }
     }
 }

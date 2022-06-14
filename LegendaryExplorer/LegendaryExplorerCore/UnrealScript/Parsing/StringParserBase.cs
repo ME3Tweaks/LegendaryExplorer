@@ -176,10 +176,10 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 classToken.SyntaxType = EF.Keyword;
                 if (Consume(TokenType.LeftArrow) is null)
                 {
-                    return new ClassType(new VariableType(OBJECT));
+                    return new ClassType(new VariableType(OBJECT), classToken.StartPos, classToken.EndPos);
                 }
 
-                if (!(Consume(TokenType.Word) is { } classNameToken))
+                if (Consume(TokenType.Word) is not { } classNameToken)
                 {
                     throw ParseError("Expected class name!", CurrentPosition);
                 }

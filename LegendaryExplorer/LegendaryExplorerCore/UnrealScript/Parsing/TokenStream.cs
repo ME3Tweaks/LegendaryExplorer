@@ -151,7 +151,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             return Data.GetEnumerator();
         }
 
-        public void AddDefinitionLink(ASTNode node, int offset, ushort length)
+        public void AddDefinitionLink(ASTNode node, int offset, int length)
         {
             DefinitionLinks.Add((node, offset, length));
         }
