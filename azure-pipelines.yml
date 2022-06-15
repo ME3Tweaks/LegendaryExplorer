@@ -165,13 +165,15 @@ steps:
       $headers.Add("x-apikey", $apikey)
       
       # Step 1: Get special upload endpoint
-      $response = Invoke-WebRequest -Uri 'https://www.virustotal.com/api/v3/files/upload_url' -Method GET -Headers $headers
+      Write-Host "Getting upload URL"
+      $response = Invoke-RestMethod -Uri 'https://www.virustotal.com/api/v3/files/upload_url' -Method GET -Headers $headers
       $endpoint = $response.data
       
       # Step 2: Upload to special endpoint
       $body=@{
           file = Get-Item $(Build.ArtifactStagingDirectory)/legendaryexplorer_nightly_cibuild_$(appMajorMin).$(appPatch).$(Build.BuildId).7z
       }
+      Write-Host "Uploading artifact to VirusTotal"
       $response = Invoke-RestMethod -Uri $endpoint -Method POST -Form $body -Headers $headers
       
       # Step 3: Wait for result to check it
@@ -188,7 +190,7 @@ steps:
               if ($attributes.status == "completed"){
                   if ($attributes.stats.malicious -ge 2 -or $attributes.stats.suspicious -ge 5) {
                       # We got a problem
-                      Write-Host "##vso[task.LogIssue type=error;]VirusTotal scan returned multiple malicious/suspicious detections!"
+                      Write-Host "##vso[task.LogIssue type=error;]VirusTotal scan returned multiple malicious/suspicious detections! Suspicious: $($attributes.stats.suspicious) Malicious: $($attributes.stats.malicious)"
                       exit 1
                   } else {
                       Write-Host "VirusTotal scan returned OK"
