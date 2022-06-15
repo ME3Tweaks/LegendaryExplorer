@@ -187,7 +187,7 @@ steps:
               $i = $i - 1
               $result = Invoke-RestMethod -Uri "https://www.virustotal.com/api/v3/analyses/$id" -Method GET -Headers $headers
               $attributes = $result.data.attributes
-              if ($attributes.status == "completed"){
+              if ($attributes.status -eq "completed"){
                   if ($attributes.stats.malicious -ge 2 -or $attributes.stats.suspicious -ge 5) {
                       # We got a problem
                       Write-Host "##vso[task.LogIssue type=error;]VirusTotal scan returned multiple malicious/suspicious detections! Suspicious: $($attributes.stats.suspicious) Malicious: $($attributes.stats.malicious)"
