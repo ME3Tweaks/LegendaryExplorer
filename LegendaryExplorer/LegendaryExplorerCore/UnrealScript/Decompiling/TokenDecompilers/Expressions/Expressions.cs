@@ -7,6 +7,7 @@ using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.UnrealScript.Language.ByteCode;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
+using LegendaryExplorerCore.UnrealScript.Lexing;
 using LegendaryExplorerCore.UnrealScript.Utilities;
 using static LegendaryExplorerCore.UnrealScript.Utilities.Keywords;
 
@@ -284,9 +285,6 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 case (byte)OpCodes.NativeParm: // is this even present anywhere?
                     return DecompileNativeParm();
 
-                case (byte)OpCodes.GoW_DefaultValue:
-                    return DecompileGoW_DefaultValue();
-
                 case (byte)OpCodes.InstanceDelegate:
                     return DecompileInstanceDelegate();
 
@@ -558,19 +556,19 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                     break;
 
                 case NativeType.Operator:
-                    var op = new InOpDeclaration(entry.Name, entry.Precedence, index, null, null, null);
+                    var op = new InOpDeclaration(OperatorHelper.FriendlyNameToTokenType(entry.Name), entry.Precedence, index, null, null, null);
                     var opRef = new InOpReference(op, parameters[0], parameters[1]);
                     DecompileEnumOperatorComparisons(opRef);
                     call = opRef;
                     break;
 
                 case NativeType.PreOperator:
-                    var preOp = new PreOpDeclaration(entry.Name, null, index, null);
+                    var preOp = new PreOpDeclaration(OperatorHelper.FriendlyNameToTokenType(entry.Name), null, index, null);
                     call = new PreOpReference(preOp, parameters[0]);
                     break;
 
                 case NativeType.PostOperator:
-                    var postOp = new PostOpDeclaration(entry.Name, null, index, null);
+                    var postOp = new PostOpDeclaration(OperatorHelper.FriendlyNameToTokenType(entry.Name), null, index, null);
                     call = new PostOpReference(postOp, parameters[0], -1, -1);
                     break;
             }
@@ -581,14 +579,14 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
 
         private static void DecompileEnumOperatorComparisons(InOpReference opRef)
         {
-            switch (opRef.Operator.OperatorKeyword)
+            switch (opRef.Operator.OperatorType)
             {
-                case "==":
-                case "!=":
-                case ">":
-                case "<":
-                case ">=":
-                case "<=":
+                case TokenType.Equals:
+                case TokenType.NotEquals:
+                case TokenType.RightArrow:
+                case TokenType.LeftArrow:
+                case TokenType.GreaterOrEquals:
+                case TokenType.LessOrEquals:
                     if (!ResolveEnumValues(ref opRef.LeftOperand, ref opRef.RightOperand))
                     {
                         ResolveEnumValues(ref opRef.RightOperand, ref opRef.LeftOperand);
@@ -853,18 +851,6 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
          * TODO: All of these need verification and changes
          * */
         #region UnsuportedDecompilers
-
-        private Expression DecompileGoW_DefaultValue()
-        {
-            PopByte();
-            var unkn = ReadByte();
-            var expr = DecompileExpression();
-
-            StartPositions.Pop();
-            var op = new InOpDeclaration("", 0, 0, null, null, null);
-            var objRef = new SymbolReference(null, "UNSUPPORTED: GoW_DefaultValue: Byte:" + unkn + " - ", -1, -1);
-            return new InOpReference(op, objRef, expr, -1, -1);
-        }
 
         private Expression DecompileNativeParm() // TODO: see code
         {

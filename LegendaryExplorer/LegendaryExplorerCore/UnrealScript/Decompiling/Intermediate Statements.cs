@@ -1,4 +1,5 @@
 ﻿using LegendaryExplorerCore.UnrealScript.Language.Tree;
+using LegendaryExplorerCore.UnrealScript.Lexing;
 
 namespace LegendaryExplorerCore.UnrealScript.Decompiling
 {
@@ -47,7 +48,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
     {
         public NullJump(ushort jumpLoc, Expression condition, bool not) : base(jumpLoc, condition)
         {
-            Condition = new InOpReference(new InOpDeclaration(not ? "!=" : "==", 0, 0, null, null, null), Condition, new NoneLiteral());
+            Condition = new InOpReference(new InOpDeclaration(not ? TokenType.NotEquals : TokenType.Equals, 0, 0, null, null, null), Condition, new NoneLiteral());
         }
     }
 

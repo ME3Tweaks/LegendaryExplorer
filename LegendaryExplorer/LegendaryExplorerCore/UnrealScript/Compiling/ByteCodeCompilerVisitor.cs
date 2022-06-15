@@ -13,6 +13,7 @@ using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
 using LegendaryExplorerCore.UnrealScript.Language.ByteCode;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
 using LegendaryExplorerCore.UnrealScript.Language.Util;
+using LegendaryExplorerCore.UnrealScript.Lexing;
 using LegendaryExplorerCore.UnrealScript.Utilities;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
 
@@ -446,15 +447,15 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             JumpPlaceholder jump;
             if (Game.IsGame3() && condition is InOpReference inOp && inOp.LeftOperand.ResolveType()?.PropertyType == EPropertyType.Object
                                                                       && inOp.LeftOperand.GetType() == typeof(SymbolReference) && inOp.RightOperand is NoneLiteral
-                                                                      && (inOp.Operator.OperatorKeyword == "==" || inOp.Operator.OperatorKeyword == "!="))
+                                                                      && inOp.Operator.OperatorType is TokenType.Equals or TokenType.NotEquals)
             {
                 SymbolReference symRef = (SymbolReference)inOp.LeftOperand;
                 WriteOpCode(symRef.Node.Outer is Function ? OpCodes.OptIfLocal : OpCodes.OptIfInstance);
                 WriteObjectRef(ResolveSymbol(symRef.Node));
-                WriteByte((byte)(inOp.Operator.OperatorKeyword == "!=" ? 1 : 0));
+                WriteByte((byte)(inOp.Operator.OperatorType is TokenType.NotEquals ? 1 : 0));
                 jump = WriteJumpPlaceholder(JumpType.Conditional);
             }
-            else if (Game.IsGame3() && condition is PreOpReference preOp && preOp.Operator.OperatorKeyword == "!"
+            else if (Game.IsGame3() && condition is PreOpReference preOp && preOp.Operator.OperatorType is TokenType.ExclamationMark
                                                                              && preOp.Operand.GetType() == typeof(SymbolReference) && preOp.Operand.ResolveType() == SymbolTable.BoolType)
             {
                 SymbolReference symRef = (SymbolReference)preOp.Operand;

@@ -100,31 +100,114 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
             int startPos = CurrentIndex;
             char nextPeek = CurrentIndex + 1 >= Text.Length ? '\0' : Text[CurrentIndex + 1];
 
-            ScriptToken result;
-            switch (peek)
+            ScriptToken result = peek switch
             {
-                case '"':
-                    result = MatchString();
-                    break;
-                case '\'':
-                    result = MatchName();
-                    break;
-                case <= '9' and >= '0':
-                    result = MatchNumber();
-                    break;
-                case '/' when nextPeek == '/':
-                    result = MatchSingleLineComment();
-                    break;
-                case '$' when (nextPeek.IsDigit() || nextPeek == '-' && LookAhead(2).IsDigit()):
-                    result = MatchStringRef();
-                    break;
-                case < (char)ASCII_TABLE_LENGTH when DelimiterLookup[peek]:
-                    result = MatchSymbol(peek, nextPeek);
-                    break;
-                default:
-                    result = MatchWord(peek);
-                    break;
-            }
+                '"' => MatchString(),
+                '\'' => MatchName(),
+                '0' => MatchNumber(),
+                '1' => MatchNumber(),
+                '2' => MatchNumber(),
+                '3' => MatchNumber(),
+                '4' => MatchNumber(),
+                '5' => MatchNumber(),
+                '6' => MatchNumber(),
+                '7' => MatchNumber(),
+                '8' => MatchNumber(),
+                '9' => MatchNumber(),
+                ',' => MakeSymbolToken(TokenType.Comma, ","),
+                '{' => MakeSymbolToken(TokenType.LeftBracket, "{"),
+                '}' => MakeSymbolToken(TokenType.RightBracket, "}"),
+                '[' => MakeSymbolToken(TokenType.LeftSqrBracket, "["),
+                ']' => MakeSymbolToken(TokenType.RightSqrBracket, "]"),
+                '(' => MakeSymbolToken(TokenType.LeftParenth, "("),
+                ')' => MakeSymbolToken(TokenType.RightParenth, ")"),
+                '=' => nextPeek switch
+                {
+                    '=' => MakeSymbolToken(TokenType.Equals, "=="),
+                    _ => MakeSymbolToken(TokenType.Assign, "=")
+                },
+                '-' => nextPeek switch
+                {
+                    '=' => MakeSymbolToken(TokenType.SubAssign, "-="),
+                    '-' => MakeSymbolToken(TokenType.Decrement, "--"),
+                    _ => MakeSymbolToken(TokenType.MinusSign, "-")
+                },
+                ';' => MakeSymbolToken(TokenType.SemiColon, ";"),
+                '.' => MakeSymbolToken(TokenType.Dot, "."),
+                '<' => nextPeek switch
+                {
+                    '=' => MakeSymbolToken(TokenType.LessOrEquals, "<="),
+                    '<' => MakeSymbolToken(TokenType.LeftShift, "<<"),
+                    _ => MakeSymbolToken(TokenType.LeftArrow, "<")
+                },
+                '+' => nextPeek switch
+                {
+                    '=' => MakeSymbolToken(TokenType.AddAssign, "+="),
+                    '+' => MakeSymbolToken(TokenType.Increment, "++"),
+                    _ => MakeSymbolToken(TokenType.PlusSign, "+")
+                },
+                '~' => nextPeek switch
+                {
+                    '=' => MakeSymbolToken(TokenType.ApproxEquals, "~="),
+                    _ => MakeSymbolToken(TokenType.Complement, "~")
+                },
+                '|' => nextPeek switch
+                {
+                    '|' => MakeSymbolToken(TokenType.Or, "||"),
+                    _ => MakeSymbolToken(TokenType.BinaryOr, "|")
+                },
+                '^' => nextPeek switch
+                {
+                    '^' => MakeSymbolToken(TokenType.Xor, "^^"),
+                    _ => MakeSymbolToken(TokenType.BinaryXor, "^")
+                },
+                '@' => nextPeek switch
+                {
+                    '=' => MakeSymbolToken(TokenType.StrConcAssSpace, "@="),
+                    _ => MakeSymbolToken(TokenType.AtSign, "@")
+                },
+                '?' => MakeSymbolToken(TokenType.QuestionMark, "?"),
+                ':' => MakeSymbolToken(TokenType.Colon, ":"),
+                '/' => nextPeek switch
+                {
+                    '=' => MakeSymbolToken(TokenType.DivAssign, "/="),
+                    '/' => MatchSingleLineComment(),
+                    _ => MakeSymbolToken(TokenType.Slash, "/")
+                },
+                '*' => nextPeek switch
+                {
+                    '=' => MakeSymbolToken(TokenType.MulAssign, "*="),
+                    '*' => MakeSymbolToken(TokenType.Power, "**"),
+                    _ => MakeSymbolToken(TokenType.StarSign, "*")
+                },
+                '&' => nextPeek switch
+                {
+                    '&' => MakeSymbolToken(TokenType.And, "&&"),
+                    _ => MakeSymbolToken(TokenType.BinaryAnd, "&")
+                },
+                '%' => MakeSymbolToken(TokenType.Modulo, "%"),
+                '$' => nextPeek switch
+                {
+                    '=' => MakeSymbolToken(TokenType.StrConcatAssign, "$="),
+                    >= '0' and <= '9' => MatchStringRef(),
+                    '-' when LookAhead(2).IsDigit() => MatchStringRef(),
+                    _ => MakeSymbolToken(TokenType.DollarSign, "$")
+                },
+                '#' => MakeSymbolToken(TokenType.Hash, "#"),
+                '!' => nextPeek switch
+                {
+                    '=' => MakeSymbolToken(TokenType.NotEquals, "!="),
+                    _ => MakeSymbolToken(TokenType.ExclamationMark, "!")
+                },
+                '>' => nextPeek switch
+                {
+                    '=' => MakeSymbolToken(TokenType.GreaterOrEquals, ">="),
+                    // >> is matched manually in the parser, as it conflicts with arrays of delegates: array<delegate<somefunc>>
+                    '>' when LookAhead(2) == '>' => MakeSymbolToken(TokenType.VectorTransform, ">>>"),
+                    _ => MakeSymbolToken(TokenType.RightArrow, ">")
+                },
+                _ => MatchWord(peek)
+            };
 
             if (result == null)
             {
@@ -439,105 +522,7 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
             
             return new ScriptToken(TokenType.SingleLineComment, null, startPos, CurrentIndex) { SyntaxType = EF.Comment };
         }
-
-        private ScriptToken MatchSymbol(char peek, char nextPeek)
-        {
-            return peek switch
-            {
-                ',' => MakeSymbolToken(TokenType.Comma, ","),
-                '{' => MakeSymbolToken(TokenType.LeftBracket, "{"),
-                '}' => MakeSymbolToken(TokenType.RightBracket, "}"),
-                '[' => MakeSymbolToken(TokenType.LeftSqrBracket, "["),
-                ']' => MakeSymbolToken(TokenType.RightSqrBracket, "]"),
-                '(' => MakeSymbolToken(TokenType.LeftParenth, "("),
-                ')' => MakeSymbolToken(TokenType.RightParenth, ")"),
-                '=' => nextPeek switch
-                {
-                    '=' => MakeSymbolToken(TokenType.Equals, "=="),
-                    _ => MakeSymbolToken(TokenType.Assign, "=")
-                },
-                '-' => nextPeek switch
-                {
-                    '=' => MakeSymbolToken(TokenType.SubAssign, "-="),
-                    '-' => MakeSymbolToken(TokenType.Decrement, "--"),
-                    _ => MakeSymbolToken(TokenType.MinusSign, "-")
-                },
-                ';' => MakeSymbolToken(TokenType.SemiColon, ";"),
-                '.' => MakeSymbolToken(TokenType.Dot, "."),
-                '<' => nextPeek switch
-                {
-                    '=' => MakeSymbolToken(TokenType.LessOrEquals, "<="),
-                    '<' => MakeSymbolToken(TokenType.LeftShift, "<<"),
-                    _ => MakeSymbolToken(TokenType.LeftArrow, "<")
-                },
-                '+' => nextPeek switch
-                {
-                    '=' => MakeSymbolToken(TokenType.AddAssign, "+="),
-                    '+' => MakeSymbolToken(TokenType.Increment, "++"),
-                    _ => MakeSymbolToken(TokenType.PlusSign, "+")
-                },
-                '~' => nextPeek switch
-                {
-                    '=' => MakeSymbolToken(TokenType.ApproxEquals, "~="),
-                    _ => MakeSymbolToken(TokenType.Complement, "~")
-                },
-                '|' => nextPeek switch
-                {
-                    '|' => MakeSymbolToken(TokenType.Or, "||"),
-                    _ => MakeSymbolToken(TokenType.BinaryOr, "|")
-                },
-                '^' => nextPeek switch
-                {
-                    '^' => MakeSymbolToken(TokenType.Xor, "^^"),
-                    _ => MakeSymbolToken(TokenType.BinaryXor, "^")
-                },
-                '@' => nextPeek switch
-                {
-                    '=' => MakeSymbolToken(TokenType.StrConcAssSpace, "@="),
-                    _ => MakeSymbolToken(TokenType.AtSign, "@")
-                },
-                '?' => MakeSymbolToken(TokenType.QuestionMark, "?"),
-                ':' => MakeSymbolToken(TokenType.Colon, ":"),
-                '/' => nextPeek switch
-                {
-                    '=' => MakeSymbolToken(TokenType.DivAssign, "/="),
-                    _ => MakeSymbolToken(TokenType.Slash, "/")
-                },
-                '*' => nextPeek switch
-                {
-                    '=' => MakeSymbolToken(TokenType.MulAssign, "*="),
-                    '*' => MakeSymbolToken(TokenType.Power, "**"),
-                    _ => MakeSymbolToken(TokenType.StarSign, "*")
-                },
-                '&' => nextPeek switch
-                {
-                    '&' => MakeSymbolToken(TokenType.And, "&&"),
-                    _ => MakeSymbolToken(TokenType.BinaryAnd, "&")
-                },
-                '%' => MakeSymbolToken(TokenType.Modulo, "%"),
-                '$' => nextPeek switch
-                {
-                    '=' => MakeSymbolToken(TokenType.StrConcatAssign, "$="),
-                    _ => MakeSymbolToken(TokenType.DollarSign, "$")
-                },
-                '#' => MakeSymbolToken(TokenType.Hash, "#"),
-                '!' => nextPeek switch
-                {
-                    '=' => MakeSymbolToken(TokenType.NotEquals, "!="),
-                    _ => MakeSymbolToken(TokenType.ExclamationMark, "!")
-                },
-                '>' => nextPeek switch
-                {
-                    '=' => MakeSymbolToken(TokenType.GreaterOrEquals, ">="),
-                    // >> is matched manually in the parser, as it conflicts with arrays of delegates: array<delegate<somefunc>>
-                    '>' when LookAhead(2) == '>' => MakeSymbolToken(TokenType.VectorTransform, ">>>"),
-                    _ => MakeSymbolToken(TokenType.RightArrow, ">")
-                },
-                _ => default
-            };
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         private ScriptToken MakeSymbolToken(TokenType type, string symbol)
         {
             return new ScriptToken(type, symbol, CurrentIndex, CurrentIndex += symbol.Length);

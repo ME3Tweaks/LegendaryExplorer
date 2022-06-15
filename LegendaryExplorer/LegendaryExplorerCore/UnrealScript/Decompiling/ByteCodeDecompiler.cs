@@ -8,6 +8,7 @@ using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.UnrealScript.Analysis.Symbols;
 using LegendaryExplorerCore.UnrealScript.Language.ByteCode;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
+using LegendaryExplorerCore.UnrealScript.Lexing;
 using LegendaryExplorerCore.UnrealScript.Utilities;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
 
@@ -45,7 +46,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
 
         private bool isInContextExpression; // For super lookups
 
-        private Dictionary<ushort, List<string>> ReplicatedProperties; //for decompiling Class replication blocks
+        private readonly Dictionary<ushort, List<string>> ReplicatedProperties; //for decompiling Class replication blocks
 
         private bool CurrentIs(OpCodes val)
         {
@@ -558,8 +559,8 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 {
                     switch (expStmnt.Value)
                     {
-                        case PreOpReference preOp when (preOp.Operator.OperatorKeyword is "++" or "--"):
-                        case PostOpReference postOp when (postOp.Operator.OperatorKeyword is "++" or "--"):
+                        case PreOpReference preOp when (preOp.Operator.OperatorType is TokenType.Increment or TokenType.Decrement):
+                        case PostOpReference postOp when (postOp.Operator.OperatorType is TokenType.Increment or TokenType.Decrement):
                             return true;
                     }
                 }

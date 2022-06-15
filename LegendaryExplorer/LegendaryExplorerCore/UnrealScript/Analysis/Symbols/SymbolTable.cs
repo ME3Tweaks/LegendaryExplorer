@@ -7,6 +7,7 @@ using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
 using LegendaryExplorerCore.UnrealScript.Language.Util;
+using LegendaryExplorerCore.UnrealScript.Lexing;
 using LegendaryExplorerCore.UnrealScript.Utilities;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
 using static LegendaryExplorerCore.UnrealScript.Utilities.Keywords;
@@ -18,10 +19,10 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
     {
         private class OperatorDefinitions
         {
-            public readonly CaseInsensitiveDictionary<List<PreOpDeclaration>> PrefixOperators = new();
-            public readonly CaseInsensitiveDictionary<List<InOpDeclaration>> InfixOperators = new();
-            public readonly CaseInsensitiveDictionary<List<PostOpDeclaration>> PostfixOperators = new();
-            public readonly List<string> InFixOperatorSymbols = new();
+            public readonly Dictionary<TokenType, List<PreOpDeclaration>> PrefixOperators = new();
+            public readonly Dictionary<TokenType, List<InOpDeclaration>> InfixOperators = new();
+            public readonly Dictionary<TokenType, List<PostOpDeclaration>> PostfixOperators = new();
+            public readonly List<TokenType> InFixOperatorSymbols = new();
         }
 
         #region Primitives
@@ -46,7 +47,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
         public string CurrentScopeName => ScopeNames.Count == 0 ? "" : ScopeNames.Peek();
 
         private readonly OperatorDefinitions Operators;
-        public List<string> InFixOperatorSymbols => Operators.InFixOperatorSymbols;
+        public List<TokenType> InFixOperatorSymbols => Operators.InFixOperatorSymbols;
 
         public readonly MEGame Game;
 
@@ -314,207 +315,207 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
             ASTNodeDict objectScope = Scopes.Last();
 
             //primitive PostOperators
-            AddOperator(new PostOpDeclaration("++", ByteType, 139, new FunctionParameter(ByteType, outFlags, "A")));
-            AddOperator(new PostOpDeclaration("--", ByteType, 140, new FunctionParameter(ByteType, outFlags, "A")));
+            AddOperator(new PostOpDeclaration(TokenType.Increment, ByteType, 139, new FunctionParameter(ByteType, outFlags, "A")));
+            AddOperator(new PostOpDeclaration(TokenType.Decrement, ByteType, 140, new FunctionParameter(ByteType, outFlags, "A")));
 
-            AddOperator(new PostOpDeclaration("++", IntType, 165, new FunctionParameter(IntType, outFlags, "A")));
-            AddOperator(new PostOpDeclaration("--", IntType, 166, new FunctionParameter(IntType, outFlags, "A")));
+            AddOperator(new PostOpDeclaration(TokenType.Increment, IntType, 165, new FunctionParameter(IntType, outFlags, "A")));
+            AddOperator(new PostOpDeclaration(TokenType.Decrement, IntType, 166, new FunctionParameter(IntType, outFlags, "A")));
 
             //primitive PreOperators
-            AddOperator(new PreOpDeclaration("!", BoolType, 129, new FunctionParameter(BoolType, parm, "A")));
+            AddOperator(new PreOpDeclaration(TokenType.ExclamationMark, BoolType, 129, new FunctionParameter(BoolType, parm, "A")));
 
-            AddOperator(new PreOpDeclaration("++", ByteType, 137, new FunctionParameter(ByteType, outFlags, "A")));
-            AddOperator(new PreOpDeclaration("--", ByteType, 138, new FunctionParameter(ByteType, outFlags, "A")));
+            AddOperator(new PreOpDeclaration(TokenType.Increment, ByteType, 137, new FunctionParameter(ByteType, outFlags, "A")));
+            AddOperator(new PreOpDeclaration(TokenType.Decrement, ByteType, 138, new FunctionParameter(ByteType, outFlags, "A")));
 
-            AddOperator(new PreOpDeclaration("~", IntType, 141, new FunctionParameter(IntType, parm, "A")));
-            AddOperator(new PreOpDeclaration("-", IntType, 143, new FunctionParameter(IntType, parm, "A")));
-            AddOperator(new PreOpDeclaration("++", IntType, 163, new FunctionParameter(IntType, outFlags, "A")));
-            AddOperator(new PreOpDeclaration("--", IntType, 164, new FunctionParameter(IntType, outFlags, "A")));
+            AddOperator(new PreOpDeclaration(TokenType.Complement, IntType, 141, new FunctionParameter(IntType, parm, "A")));
+            AddOperator(new PreOpDeclaration(TokenType.MinusSign, IntType, 143, new FunctionParameter(IntType, parm, "A")));
+            AddOperator(new PreOpDeclaration(TokenType.Increment, IntType, 163, new FunctionParameter(IntType, outFlags, "A")));
+            AddOperator(new PreOpDeclaration(TokenType.Decrement, IntType, 164, new FunctionParameter(IntType, outFlags, "A")));
 
-            AddOperator(new PreOpDeclaration("-", FloatType, 169, new FunctionParameter(FloatType, parm, "A")));
+            AddOperator(new PreOpDeclaration(TokenType.MinusSign, FloatType, 169, new FunctionParameter(FloatType, parm, "A")));
 
-            AddOperator(new PreOpDeclaration("-", vectorType, 211, new FunctionParameter(vectorType, parm, "A")));
+            AddOperator(new PreOpDeclaration(TokenType.MinusSign, vectorType, 211, new FunctionParameter(vectorType, parm, "A")));
 
             //primitive InfixOperators
-            AddOperator(new InOpDeclaration("==", 24, 242, BoolType, new FunctionParameter(BoolType, parm, "A"), new FunctionParameter(BoolType, parm, "B")));
-            AddOperator(new InOpDeclaration("!=", 26, 243, BoolType, new FunctionParameter(BoolType, parm, "A"), new FunctionParameter(BoolType, parm, "B")));
-            AddOperator(new InOpDeclaration("&&", 30, 130, BoolType, new FunctionParameter(BoolType, parm, "A"), new FunctionParameter(BoolType, skip, "B")));
-            AddOperator(new InOpDeclaration("^^", 30, 131, BoolType, new FunctionParameter(BoolType, parm, "A"), new FunctionParameter(BoolType, parm, "B")));
-            AddOperator(new InOpDeclaration("||", 32, 132, BoolType, new FunctionParameter(BoolType, parm, "A"), new FunctionParameter(BoolType, skip, "B")));
+            AddOperator(new InOpDeclaration(TokenType.Equals, 24, 242, BoolType, new FunctionParameter(BoolType, parm, "A"), new FunctionParameter(BoolType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.NotEquals, 26, 243, BoolType, new FunctionParameter(BoolType, parm, "A"), new FunctionParameter(BoolType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.And, 30, 130, BoolType, new FunctionParameter(BoolType, parm, "A"), new FunctionParameter(BoolType, skip, "B")));
+            AddOperator(new InOpDeclaration(TokenType.Xor, 30, 131, BoolType, new FunctionParameter(BoolType, parm, "A"), new FunctionParameter(BoolType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.Or, 32, 132, BoolType, new FunctionParameter(BoolType, parm, "A"), new FunctionParameter(BoolType, skip, "B")));
 
-            AddOperator(new InOpDeclaration("*=", 34, 133, ByteType, new FunctionParameter(ByteType, outFlags, "A"), new FunctionParameter(ByteType, parm, "B")));
-            AddOperator(new InOpDeclaration("*=", 34, 198, ByteType, new FunctionParameter(ByteType, outFlags, "A"), new FunctionParameter(FloatType, parm, "B")));
-            AddOperator(new InOpDeclaration("/=", 34, 134, ByteType, new FunctionParameter(ByteType, outFlags, "A"), new FunctionParameter(ByteType, parm, "B")));
-            AddOperator(new InOpDeclaration("+=", 34, 135, ByteType, new FunctionParameter(ByteType, outFlags, "A"), new FunctionParameter(ByteType, parm, "B")));
-            AddOperator(new InOpDeclaration("-=", 34, 136, ByteType, new FunctionParameter(ByteType, outFlags, "A"), new FunctionParameter(ByteType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.MulAssign, 34, 133, ByteType, new FunctionParameter(ByteType, outFlags, "A"), new FunctionParameter(ByteType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.MulAssign, 34, 198, ByteType, new FunctionParameter(ByteType, outFlags, "A"), new FunctionParameter(FloatType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.DivAssign, 34, 134, ByteType, new FunctionParameter(ByteType, outFlags, "A"), new FunctionParameter(ByteType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.AddAssign, 34, 135, ByteType, new FunctionParameter(ByteType, outFlags, "A"), new FunctionParameter(ByteType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.SubAssign, 34, 136, ByteType, new FunctionParameter(ByteType, outFlags, "A"), new FunctionParameter(ByteType, parm, "B")));
 
-            AddOperator(new InOpDeclaration("*", 16, 144, IntType, new FunctionParameter(IntType, parm, "A"), new FunctionParameter(IntType, parm, "B")));
-            AddOperator(new InOpDeclaration("/", 16, 145, IntType, new FunctionParameter(IntType, parm, "A"), new FunctionParameter(IntType, parm, "B")));
-            AddOperator(new InOpDeclaration("%", 18, 253, IntType, new FunctionParameter(IntType, parm, "A"), new FunctionParameter(IntType, parm, "B")));
-            AddOperator(new InOpDeclaration("+", 20, 146, IntType, new FunctionParameter(IntType, parm, "A"), new FunctionParameter(IntType, parm, "B")));
-            AddOperator(new InOpDeclaration("-", 20, 147, IntType, new FunctionParameter(IntType, parm, "A"), new FunctionParameter(IntType, parm, "B")));
-            AddOperator(new InOpDeclaration("<<", 22, 148, IntType, new FunctionParameter(IntType, parm, "A"), new FunctionParameter(IntType, parm, "B")));
-            AddOperator(new InOpDeclaration(">>", 22, 149, IntType, new FunctionParameter(IntType, parm, "A"), new FunctionParameter(IntType, parm, "B")));
-            AddOperator(new InOpDeclaration(">>>", 22, 196, IntType, new FunctionParameter(IntType, parm, "A"), new FunctionParameter(IntType, parm, "B")));
-            AddOperator(new InOpDeclaration("<", 24, 150, BoolType, new FunctionParameter(IntType, parm, "A"), new FunctionParameter(IntType, parm, "B")));
-            AddOperator(new InOpDeclaration(">", 24, 151, BoolType, new FunctionParameter(IntType, parm, "A"), new FunctionParameter(IntType, parm, "B")));
-            AddOperator(new InOpDeclaration("<=", 24, 152, BoolType, new FunctionParameter(IntType, parm, "A"), new FunctionParameter(IntType, parm, "B")));
-            AddOperator(new InOpDeclaration(">=", 24, 153, BoolType, new FunctionParameter(IntType, parm, "A"), new FunctionParameter(IntType, parm, "B")));
-            AddOperator(new InOpDeclaration("==", 24, 154, BoolType, new FunctionParameter(IntType, parm, "A"), new FunctionParameter(IntType, parm, "B")));
-            AddOperator(new InOpDeclaration("!=", 26, 155, BoolType, new FunctionParameter(IntType, parm, "A"), new FunctionParameter(IntType, parm, "B")));
-            AddOperator(new InOpDeclaration("&", 28, 156, IntType, new FunctionParameter(IntType, parm, "A"), new FunctionParameter(IntType, parm, "B")));
-            AddOperator(new InOpDeclaration("^", 28, 157, IntType, new FunctionParameter(IntType, parm, "A"), new FunctionParameter(IntType, parm, "B")));
-            AddOperator(new InOpDeclaration("|", 28, 158, IntType, new FunctionParameter(IntType, parm, "A"), new FunctionParameter(IntType, parm, "B")));
-            AddOperator(new InOpDeclaration("*=", 34, 159, IntType, new FunctionParameter(IntType, outFlags, "A"), new FunctionParameter(FloatType, parm, "B")));
-            AddOperator(new InOpDeclaration("/=", 34, 160, IntType, new FunctionParameter(IntType, outFlags, "A"), new FunctionParameter(FloatType, parm, "B")));
-            AddOperator(new InOpDeclaration("+=", 34, 161, IntType, new FunctionParameter(IntType, outFlags, "A"), new FunctionParameter(IntType, parm, "B")));
-            AddOperator(new InOpDeclaration("-=", 34, 162, IntType, new FunctionParameter(IntType, outFlags, "A"), new FunctionParameter(IntType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.StarSign, 16, 144, IntType, new FunctionParameter(IntType, parm, "A"), new FunctionParameter(IntType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.Slash, 16, 145, IntType, new FunctionParameter(IntType, parm, "A"), new FunctionParameter(IntType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.Modulo, 18, 253, IntType, new FunctionParameter(IntType, parm, "A"), new FunctionParameter(IntType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.PlusSign, 20, 146, IntType, new FunctionParameter(IntType, parm, "A"), new FunctionParameter(IntType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.MinusSign, 20, 147, IntType, new FunctionParameter(IntType, parm, "A"), new FunctionParameter(IntType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.LeftShift, 22, 148, IntType, new FunctionParameter(IntType, parm, "A"), new FunctionParameter(IntType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.RightShift, 22, 149, IntType, new FunctionParameter(IntType, parm, "A"), new FunctionParameter(IntType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.VectorTransform, 22, 196, IntType, new FunctionParameter(IntType, parm, "A"), new FunctionParameter(IntType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.LeftArrow, 24, 150, BoolType, new FunctionParameter(IntType, parm, "A"), new FunctionParameter(IntType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.RightArrow, 24, 151, BoolType, new FunctionParameter(IntType, parm, "A"), new FunctionParameter(IntType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.LessOrEquals, 24, 152, BoolType, new FunctionParameter(IntType, parm, "A"), new FunctionParameter(IntType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.GreaterOrEquals, 24, 153, BoolType, new FunctionParameter(IntType, parm, "A"), new FunctionParameter(IntType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.Equals, 24, 154, BoolType, new FunctionParameter(IntType, parm, "A"), new FunctionParameter(IntType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.NotEquals, 26, 155, BoolType, new FunctionParameter(IntType, parm, "A"), new FunctionParameter(IntType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.BinaryAnd, 28, 156, IntType, new FunctionParameter(IntType, parm, "A"), new FunctionParameter(IntType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.BinaryXor, 28, 157, IntType, new FunctionParameter(IntType, parm, "A"), new FunctionParameter(IntType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.BinaryOr, 28, 158, IntType, new FunctionParameter(IntType, parm, "A"), new FunctionParameter(IntType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.MulAssign, 34, 159, IntType, new FunctionParameter(IntType, outFlags, "A"), new FunctionParameter(FloatType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.DivAssign, 34, 160, IntType, new FunctionParameter(IntType, outFlags, "A"), new FunctionParameter(FloatType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.AddAssign, 34, 161, IntType, new FunctionParameter(IntType, outFlags, "A"), new FunctionParameter(IntType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.SubAssign, 34, 162, IntType, new FunctionParameter(IntType, outFlags, "A"), new FunctionParameter(IntType, parm, "B")));
 
 
-            AddOperator(new InOpDeclaration("**", 12, 170, FloatType, new FunctionParameter(FloatType, parm, "A"), new FunctionParameter(FloatType, parm, "B")));
-            AddOperator(new InOpDeclaration("*", 16, 171, FloatType, new FunctionParameter(FloatType, parm, "A"), new FunctionParameter(FloatType, parm, "B")));
-            AddOperator(new InOpDeclaration("/", 16, 172, FloatType, new FunctionParameter(FloatType, parm, "A"), new FunctionParameter(FloatType, parm, "B")));
-            AddOperator(new InOpDeclaration("%", 18, 173, FloatType, new FunctionParameter(FloatType, parm, "A"), new FunctionParameter(FloatType, parm, "B")));
-            AddOperator(new InOpDeclaration("+", 20, 174, FloatType, new FunctionParameter(FloatType, parm, "A"), new FunctionParameter(FloatType, parm, "B")));
-            AddOperator(new InOpDeclaration("-", 20, 175, FloatType, new FunctionParameter(FloatType, parm, "A"), new FunctionParameter(FloatType, parm, "B")));
-            AddOperator(new InOpDeclaration("<", 24, 176, BoolType, new FunctionParameter(FloatType, parm, "A"), new FunctionParameter(FloatType, parm, "B")));
-            AddOperator(new InOpDeclaration(">", 24, 177, BoolType, new FunctionParameter(FloatType, parm, "A"), new FunctionParameter(FloatType, parm, "B")));
-            AddOperator(new InOpDeclaration("<=", 24, 178, BoolType, new FunctionParameter(FloatType, parm, "A"), new FunctionParameter(FloatType, parm, "B")));
-            AddOperator(new InOpDeclaration(">=", 24, 179, BoolType, new FunctionParameter(FloatType, parm, "A"), new FunctionParameter(FloatType, parm, "B")));
-            AddOperator(new InOpDeclaration("==", 24, 180, BoolType, new FunctionParameter(FloatType, parm, "A"), new FunctionParameter(FloatType, parm, "B")));
-            AddOperator(new InOpDeclaration("~=", 24, 210, BoolType, new FunctionParameter(FloatType, parm, "A"), new FunctionParameter(FloatType, parm, "B")));
-            AddOperator(new InOpDeclaration("!=", 26, 181, BoolType, new FunctionParameter(FloatType, parm, "A"), new FunctionParameter(FloatType, parm, "B")));
-            AddOperator(new InOpDeclaration("*=", 34, 182, FloatType, new FunctionParameter(FloatType, outFlags, "A"), new FunctionParameter(FloatType, parm, "B")));
-            AddOperator(new InOpDeclaration("/=", 34, 183, FloatType, new FunctionParameter(FloatType, outFlags, "A"), new FunctionParameter(FloatType, parm, "B")));
-            AddOperator(new InOpDeclaration("+=", 34, 184, FloatType, new FunctionParameter(FloatType, outFlags, "A"), new FunctionParameter(FloatType, parm, "B")));
-            AddOperator(new InOpDeclaration("-=", 34, 185, FloatType, new FunctionParameter(FloatType, outFlags, "A"), new FunctionParameter(FloatType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.Power, 12, 170, FloatType, new FunctionParameter(FloatType, parm, "A"), new FunctionParameter(FloatType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.StarSign, 16, 171, FloatType, new FunctionParameter(FloatType, parm, "A"), new FunctionParameter(FloatType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.Slash, 16, 172, FloatType, new FunctionParameter(FloatType, parm, "A"), new FunctionParameter(FloatType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.Modulo, 18, 173, FloatType, new FunctionParameter(FloatType, parm, "A"), new FunctionParameter(FloatType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.PlusSign, 20, 174, FloatType, new FunctionParameter(FloatType, parm, "A"), new FunctionParameter(FloatType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.MinusSign, 20, 175, FloatType, new FunctionParameter(FloatType, parm, "A"), new FunctionParameter(FloatType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.LeftArrow, 24, 176, BoolType, new FunctionParameter(FloatType, parm, "A"), new FunctionParameter(FloatType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.RightArrow, 24, 177, BoolType, new FunctionParameter(FloatType, parm, "A"), new FunctionParameter(FloatType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.LessOrEquals, 24, 178, BoolType, new FunctionParameter(FloatType, parm, "A"), new FunctionParameter(FloatType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.GreaterOrEquals, 24, 179, BoolType, new FunctionParameter(FloatType, parm, "A"), new FunctionParameter(FloatType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.Equals, 24, 180, BoolType, new FunctionParameter(FloatType, parm, "A"), new FunctionParameter(FloatType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.ApproxEquals, 24, 210, BoolType, new FunctionParameter(FloatType, parm, "A"), new FunctionParameter(FloatType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.NotEquals, 26, 181, BoolType, new FunctionParameter(FloatType, parm, "A"), new FunctionParameter(FloatType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.MulAssign, 34, 182, FloatType, new FunctionParameter(FloatType, outFlags, "A"), new FunctionParameter(FloatType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.DivAssign, 34, 183, FloatType, new FunctionParameter(FloatType, outFlags, "A"), new FunctionParameter(FloatType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.AddAssign, 34, 184, FloatType, new FunctionParameter(FloatType, outFlags, "A"), new FunctionParameter(FloatType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.SubAssign, 34, 185, FloatType, new FunctionParameter(FloatType, outFlags, "A"), new FunctionParameter(FloatType, parm, "B")));
 
-            AddOperator(new InOpDeclaration("$", 40, 600, StringType, new FunctionParameter(StringType, coerce, "A"), new FunctionParameter(StringType, coerce, "B"))
+            AddOperator(new InOpDeclaration(TokenType.DollarSign, 40, 600, StringType, new FunctionParameter(StringType, coerce, "A"), new FunctionParameter(StringType, coerce, "B"))
             {
                 Implementer = (Function)objectScope["Concat_StrStr"]
             });
-            AddOperator(new InOpDeclaration("@", 40, 168, StringType, new FunctionParameter(StringType, coerce, "A"), new FunctionParameter(StringType, coerce, "B"))
+            AddOperator(new InOpDeclaration(TokenType.AtSign, 40, 168, StringType, new FunctionParameter(StringType, coerce, "A"), new FunctionParameter(StringType, coerce, "B"))
             {
                 Implementer = (Function)objectScope["At_StrStr"]
             });
-            AddOperator(new InOpDeclaration("<", 24, 601, BoolType, new FunctionParameter(StringType, parm, "A"), new FunctionParameter(StringType, parm, "B")));
-            AddOperator(new InOpDeclaration(">", 24, 602, BoolType, new FunctionParameter(StringType, parm, "A"), new FunctionParameter(StringType, parm, "B")));
-            AddOperator(new InOpDeclaration("<=", 24, 603, BoolType, new FunctionParameter(StringType, parm, "A"), new FunctionParameter(StringType, parm, "B")));
-            AddOperator(new InOpDeclaration(">=", 24, 604, BoolType, new FunctionParameter(StringType, parm, "A"), new FunctionParameter(StringType, parm, "B")));
-            AddOperator(new InOpDeclaration("==", 24, 605, BoolType, new FunctionParameter(StringType, parm, "A"), new FunctionParameter(StringType, parm, "B")));
-            AddOperator(new InOpDeclaration("!=", 26, 606, BoolType, new FunctionParameter(StringType, parm, "A"), new FunctionParameter(StringType, parm, "B")));
-            AddOperator(new InOpDeclaration("~=", 24, 607, BoolType, new FunctionParameter(StringType, parm, "A"), new FunctionParameter(StringType, parm, "B")));
-            AddOperator(new InOpDeclaration("$=", 44, 322, StringType, new FunctionParameter(StringType, outFlags, "A"), new FunctionParameter(StringType, coerce, "B"))
+            AddOperator(new InOpDeclaration(TokenType.LeftArrow, 24, 601, BoolType, new FunctionParameter(StringType, parm, "A"), new FunctionParameter(StringType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.RightArrow, 24, 602, BoolType, new FunctionParameter(StringType, parm, "A"), new FunctionParameter(StringType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.LessOrEquals, 24, 603, BoolType, new FunctionParameter(StringType, parm, "A"), new FunctionParameter(StringType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.GreaterOrEquals, 24, 604, BoolType, new FunctionParameter(StringType, parm, "A"), new FunctionParameter(StringType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.Equals, 24, 605, BoolType, new FunctionParameter(StringType, parm, "A"), new FunctionParameter(StringType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.NotEquals, 26, 606, BoolType, new FunctionParameter(StringType, parm, "A"), new FunctionParameter(StringType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.ApproxEquals, 24, 607, BoolType, new FunctionParameter(StringType, parm, "A"), new FunctionParameter(StringType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.StrConcatAssign, 44, 322, StringType, new FunctionParameter(StringType, outFlags, "A"), new FunctionParameter(StringType, coerce, "B"))
             {
                 Implementer = (Function)objectScope["ConcatEqual_StrStr"]
             });
-            AddOperator(new InOpDeclaration("@=", 44, 323, StringType, new FunctionParameter(StringType, outFlags, "A"), new FunctionParameter(StringType, coerce, "B"))
+            AddOperator(new InOpDeclaration(TokenType.StrConcAssSpace, 44, 323, StringType, new FunctionParameter(StringType, outFlags, "A"), new FunctionParameter(StringType, coerce, "B"))
             {
                 Implementer = (Function)objectScope["AtEqual_StrStr"]
             });
-            AddOperator(new InOpDeclaration("-=", 45, 324, StringType, new FunctionParameter(StringType, outFlags, "A"), new FunctionParameter(StringType, coerce, "B"))
+            AddOperator(new InOpDeclaration(TokenType.SubAssign, 45, 324, StringType, new FunctionParameter(StringType, outFlags, "A"), new FunctionParameter(StringType, coerce, "B"))
             {
                 Implementer = (Function)objectScope["SubtractEqual_StrStr"]
             });
 
-            AddOperator(new InOpDeclaration("==", 24, 640, BoolType, new FunctionParameter(objectType, parm, "A"), new FunctionParameter(objectType, parm, "B")));
-            AddOperator(new InOpDeclaration("!=", 26, 641, BoolType, new FunctionParameter(objectType, parm, "A"), new FunctionParameter(objectType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.Equals, 24, 640, BoolType, new FunctionParameter(objectType, parm, "A"), new FunctionParameter(objectType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.NotEquals, 26, 641, BoolType, new FunctionParameter(objectType, parm, "A"), new FunctionParameter(objectType, parm, "B")));
 
-            AddOperator(new InOpDeclaration("==", 24, 254, BoolType, new FunctionParameter(NameType, parm, "A"), new FunctionParameter(NameType, parm, "B")));
-            AddOperator(new InOpDeclaration("!=", 26, 255, BoolType, new FunctionParameter(NameType, parm, "A"), new FunctionParameter(NameType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.Equals, 24, 254, BoolType, new FunctionParameter(NameType, parm, "A"), new FunctionParameter(NameType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.NotEquals, 26, 255, BoolType, new FunctionParameter(NameType, parm, "A"), new FunctionParameter(NameType, parm, "B")));
 
-            AddOperator(new InOpDeclaration("==", 24, 1000, BoolType, new FunctionParameter(StringRefType, parm, "A"), new FunctionParameter(StringRefType, parm, "B")));
-            AddOperator(new InOpDeclaration("==", 24, 1001, BoolType, new FunctionParameter(StringRefType, parm, "A"), new FunctionParameter(IntType, parm, "B")));
-            AddOperator(new InOpDeclaration("==", 24, 1002, BoolType, new FunctionParameter(IntType, parm, "A"), new FunctionParameter(StringRefType, parm, "B")));
-            AddOperator(new InOpDeclaration("!=", 26, 1003, BoolType, new FunctionParameter(StringRefType, parm, "A"), new FunctionParameter(StringRefType, parm, "B")));
-            AddOperator(new InOpDeclaration("!=", 26, 1004, BoolType, new FunctionParameter(StringRefType, parm, "A"), new FunctionParameter(IntType, parm, "B")));
-            AddOperator(new InOpDeclaration("!=", 26, 1005, BoolType, new FunctionParameter(IntType, parm, "A"), new FunctionParameter(StringRefType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.Equals, 24, 1000, BoolType, new FunctionParameter(StringRefType, parm, "A"), new FunctionParameter(StringRefType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.Equals, 24, 1001, BoolType, new FunctionParameter(StringRefType, parm, "A"), new FunctionParameter(IntType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.Equals, 24, 1002, BoolType, new FunctionParameter(IntType, parm, "A"), new FunctionParameter(StringRefType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.NotEquals, 26, 1003, BoolType, new FunctionParameter(StringRefType, parm, "A"), new FunctionParameter(StringRefType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.NotEquals, 26, 1004, BoolType, new FunctionParameter(StringRefType, parm, "A"), new FunctionParameter(IntType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.NotEquals, 26, 1005, BoolType, new FunctionParameter(IntType, parm, "A"), new FunctionParameter(StringRefType, parm, "B")));
 
-            AddOperator(new InOpDeclaration("*", 16, 212, vectorType, new FunctionParameter(vectorType, parm, "A"), new FunctionParameter(FloatType, parm, "B")));
-            AddOperator(new InOpDeclaration("*", 16, 213, vectorType, new FunctionParameter(FloatType, parm, "A"), new FunctionParameter(vectorType, parm, "B")));
-            AddOperator(new InOpDeclaration("*", 16, 296, vectorType, new FunctionParameter(vectorType, parm, "A"), new FunctionParameter(vectorType, parm, "B")));
-            AddOperator(new InOpDeclaration("/", 16, 214, vectorType, new FunctionParameter(vectorType, parm, "A"), new FunctionParameter(FloatType, parm, "B")));
-            AddOperator(new InOpDeclaration("+", 20, 215, vectorType, new FunctionParameter(vectorType, parm, "A"), new FunctionParameter(vectorType, parm, "B")));
-            AddOperator(new InOpDeclaration("-", 20, 216, vectorType, new FunctionParameter(vectorType, parm, "A"), new FunctionParameter(vectorType, parm, "B")));
-            AddOperator(new InOpDeclaration("<<", 22, 275, vectorType, new FunctionParameter(vectorType, parm, "A"), new FunctionParameter(rotatorType, parm, "B")));
-            AddOperator(new InOpDeclaration(">>", 22, 276, vectorType, new FunctionParameter(vectorType, parm, "A"), new FunctionParameter(rotatorType, parm, "B")));
-            AddOperator(new InOpDeclaration("==", 24, 217, BoolType, new FunctionParameter(vectorType, parm, "A"), new FunctionParameter(vectorType, parm, "B")));
-            AddOperator(new InOpDeclaration("!=", 26, 218, BoolType, new FunctionParameter(vectorType, parm, "A"), new FunctionParameter(vectorType, parm, "B")));
-            AddOperator(new InOpDeclaration("Dot", 16, 219, FloatType, new FunctionParameter(vectorType, parm, "A"), new FunctionParameter(vectorType, parm, "B")));
-            AddOperator(new InOpDeclaration("Cross", 16, 220, vectorType, new FunctionParameter(vectorType, parm, "A"), new FunctionParameter(vectorType, parm, "B")));
-            AddOperator(new InOpDeclaration("*=", 34, 221, vectorType, new FunctionParameter(vectorType, outFlags, "A"), new FunctionParameter(FloatType, parm, "B")));
-            AddOperator(new InOpDeclaration("*=", 34, 297, vectorType, new FunctionParameter(vectorType, outFlags, "A"), new FunctionParameter(vectorType, parm, "B")));
-            AddOperator(new InOpDeclaration("/=", 34, 222, vectorType, new FunctionParameter(vectorType, outFlags, "A"), new FunctionParameter(FloatType, parm, "B")));
-            AddOperator(new InOpDeclaration("+=", 34, 223, vectorType, new FunctionParameter(vectorType, outFlags, "A"), new FunctionParameter(vectorType, parm, "B")));
-            AddOperator(new InOpDeclaration("-=", 34, 224, vectorType, new FunctionParameter(vectorType, outFlags, "A"), new FunctionParameter(vectorType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.StarSign, 16, 212, vectorType, new FunctionParameter(vectorType, parm, "A"), new FunctionParameter(FloatType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.StarSign, 16, 213, vectorType, new FunctionParameter(FloatType, parm, "A"), new FunctionParameter(vectorType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.StarSign, 16, 296, vectorType, new FunctionParameter(vectorType, parm, "A"), new FunctionParameter(vectorType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.Slash, 16, 214, vectorType, new FunctionParameter(vectorType, parm, "A"), new FunctionParameter(FloatType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.PlusSign, 20, 215, vectorType, new FunctionParameter(vectorType, parm, "A"), new FunctionParameter(vectorType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.MinusSign, 20, 216, vectorType, new FunctionParameter(vectorType, parm, "A"), new FunctionParameter(vectorType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.LeftShift, 22, 275, vectorType, new FunctionParameter(vectorType, parm, "A"), new FunctionParameter(rotatorType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.RightShift, 22, 276, vectorType, new FunctionParameter(vectorType, parm, "A"), new FunctionParameter(rotatorType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.Equals, 24, 217, BoolType, new FunctionParameter(vectorType, parm, "A"), new FunctionParameter(vectorType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.NotEquals, 26, 218, BoolType, new FunctionParameter(vectorType, parm, "A"), new FunctionParameter(vectorType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.DotProduct, 16, 219, FloatType, new FunctionParameter(vectorType, parm, "A"), new FunctionParameter(vectorType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.CrossProduct, 16, 220, vectorType, new FunctionParameter(vectorType, parm, "A"), new FunctionParameter(vectorType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.MulAssign, 34, 221, vectorType, new FunctionParameter(vectorType, outFlags, "A"), new FunctionParameter(FloatType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.MulAssign, 34, 297, vectorType, new FunctionParameter(vectorType, outFlags, "A"), new FunctionParameter(vectorType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.DivAssign, 34, 222, vectorType, new FunctionParameter(vectorType, outFlags, "A"), new FunctionParameter(FloatType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.AddAssign, 34, 223, vectorType, new FunctionParameter(vectorType, outFlags, "A"), new FunctionParameter(vectorType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.SubAssign, 34, 224, vectorType, new FunctionParameter(vectorType, outFlags, "A"), new FunctionParameter(vectorType, parm, "B")));
 
-            AddOperator(new InOpDeclaration("==", 24, 142, BoolType, new FunctionParameter(rotatorType, parm, "A"), new FunctionParameter(rotatorType, parm, "B")));
-            AddOperator(new InOpDeclaration("!=", 26, 203, BoolType, new FunctionParameter(rotatorType, parm, "A"), new FunctionParameter(rotatorType, parm, "B")));
-            AddOperator(new InOpDeclaration("*", 16, 287, rotatorType, new FunctionParameter(rotatorType, parm, "A"), new FunctionParameter(FloatType, parm, "B")));
-            AddOperator(new InOpDeclaration("*", 16, 288, rotatorType, new FunctionParameter(FloatType, parm, "A"), new FunctionParameter(rotatorType, parm, "B")));
-            AddOperator(new InOpDeclaration("/", 16, 289, rotatorType, new FunctionParameter(rotatorType, parm, "A"), new FunctionParameter(FloatType, parm, "B")));
-            AddOperator(new InOpDeclaration("*=", 34, 290, rotatorType, new FunctionParameter(rotatorType, outFlags, "A"), new FunctionParameter(FloatType, parm, "B")));
-            AddOperator(new InOpDeclaration("/=", 34, 291, rotatorType, new FunctionParameter(rotatorType, outFlags, "A"), new FunctionParameter(FloatType, parm, "B")));
-            AddOperator(new InOpDeclaration("+", 20, 316, rotatorType, new FunctionParameter(rotatorType, parm, "A"), new FunctionParameter(rotatorType, parm, "B")));
-            AddOperator(new InOpDeclaration("-", 20, 317, rotatorType, new FunctionParameter(rotatorType, parm, "A"), new FunctionParameter(rotatorType, parm, "B")));
-            AddOperator(new InOpDeclaration("+=", 34, 318, rotatorType, new FunctionParameter(rotatorType, outFlags, "A"), new FunctionParameter(rotatorType, parm, "B")));
-            AddOperator(new InOpDeclaration("-=", 34, 319, rotatorType, new FunctionParameter(rotatorType, outFlags, "A"), new FunctionParameter(rotatorType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.Equals, 24, 142, BoolType, new FunctionParameter(rotatorType, parm, "A"), new FunctionParameter(rotatorType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.NotEquals, 26, 203, BoolType, new FunctionParameter(rotatorType, parm, "A"), new FunctionParameter(rotatorType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.StarSign, 16, 287, rotatorType, new FunctionParameter(rotatorType, parm, "A"), new FunctionParameter(FloatType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.StarSign, 16, 288, rotatorType, new FunctionParameter(FloatType, parm, "A"), new FunctionParameter(rotatorType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.Slash, 16, 289, rotatorType, new FunctionParameter(rotatorType, parm, "A"), new FunctionParameter(FloatType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.MulAssign, 34, 290, rotatorType, new FunctionParameter(rotatorType, outFlags, "A"), new FunctionParameter(FloatType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.DivAssign, 34, 291, rotatorType, new FunctionParameter(rotatorType, outFlags, "A"), new FunctionParameter(FloatType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.PlusSign, 20, 316, rotatorType, new FunctionParameter(rotatorType, parm, "A"), new FunctionParameter(rotatorType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.MinusSign, 20, 317, rotatorType, new FunctionParameter(rotatorType, parm, "A"), new FunctionParameter(rotatorType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.AddAssign, 34, 318, rotatorType, new FunctionParameter(rotatorType, outFlags, "A"), new FunctionParameter(rotatorType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.SubAssign, 34, 319, rotatorType, new FunctionParameter(rotatorType, outFlags, "A"), new FunctionParameter(rotatorType, parm, "B")));
 
-            AddOperator(new InOpDeclaration("+", 16, 270, quatType, new FunctionParameter(quatType, parm, "A"), new FunctionParameter(quatType, parm, "B")));
-            AddOperator(new InOpDeclaration("-", 16, 271, quatType, new FunctionParameter(quatType, parm, "A"), new FunctionParameter(quatType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.PlusSign, 16, 270, quatType, new FunctionParameter(quatType, parm, "A"), new FunctionParameter(quatType, parm, "B")));
+            AddOperator(new InOpDeclaration(TokenType.MinusSign, 16, 271, quatType, new FunctionParameter(quatType, parm, "A"), new FunctionParameter(quatType, parm, "B")));
 
 
             //operators without a nativeIndex. must be linked directly to their function representations
-            AddOperator(new InOpDeclaration("ClockwiseFrom", 24, 0, BoolType, new FunctionParameter(IntType, parm, "A"), new FunctionParameter(IntType, parm, "B"))
+            AddOperator(new InOpDeclaration(TokenType.ClockwiseFrom, 24, 0, BoolType, new FunctionParameter(IntType, parm, "A"), new FunctionParameter(IntType, parm, "B"))
             {
                 Implementer = (Function)objectScope["ClockwiseFrom_IntInt"]
             });
 
-            AddOperator(new InOpDeclaration("==", 24, 0, BoolType, new FunctionParameter(interfaceType, parm, "A"), new FunctionParameter(interfaceType, parm, "B"))
+            AddOperator(new InOpDeclaration(TokenType.Equals, 24, 0, BoolType, new FunctionParameter(interfaceType, parm, "A"), new FunctionParameter(interfaceType, parm, "B"))
             {
                 Implementer = (Function)objectScope["EqualEqual_InterfaceInterface"]
             });
-            AddOperator(new InOpDeclaration("!=", 26, 0, BoolType, new FunctionParameter(interfaceType, parm, "A"), new FunctionParameter(interfaceType, parm, "B"))
+            AddOperator(new InOpDeclaration(TokenType.NotEquals, 26, 0, BoolType, new FunctionParameter(interfaceType, parm, "A"), new FunctionParameter(interfaceType, parm, "B"))
             {
                 Implementer = (Function)objectScope["NotEqual_InterfaceInterface"]
             });
 
-            AddOperator(new InOpDeclaration("*", 34, 0, matrixType, new FunctionParameter(matrixType, parm, "A"), new FunctionParameter(matrixType, parm, "B"))
+            AddOperator(new InOpDeclaration(TokenType.StarSign, 34, 0, matrixType, new FunctionParameter(matrixType, parm, "A"), new FunctionParameter(matrixType, parm, "B"))
             {
                 Implementer = (Function)objectScope["Multiply_MatrixMatrix"]
             });
 
-            AddOperator(new InOpDeclaration("+", 16, 0, vector2DType, new FunctionParameter(vector2DType, parm, "A"), new FunctionParameter(vector2DType, parm, "B"))
+            AddOperator(new InOpDeclaration(TokenType.PlusSign, 16, 0, vector2DType, new FunctionParameter(vector2DType, parm, "A"), new FunctionParameter(vector2DType, parm, "B"))
             {
                 Implementer = (Function)objectScope["Add_Vector2DVector2D"]
             });
-            AddOperator(new InOpDeclaration("-", 16, 0, vector2DType, new FunctionParameter(vector2DType, parm, "A"), new FunctionParameter(vector2DType, parm, "B"))
+            AddOperator(new InOpDeclaration(TokenType.MinusSign, 16, 0, vector2DType, new FunctionParameter(vector2DType, parm, "A"), new FunctionParameter(vector2DType, parm, "B"))
             {
                 Implementer = (Function)objectScope["Subtract_Vector2DVector2D"]
             });
 
-            AddOperator(new InOpDeclaration("-", 20, 0, colorType, new FunctionParameter(colorType, parm, "A"), new FunctionParameter(colorType, parm, "B"))
+            AddOperator(new InOpDeclaration(TokenType.MinusSign, 20, 0, colorType, new FunctionParameter(colorType, parm, "A"), new FunctionParameter(colorType, parm, "B"))
             {
                 Implementer = (Function)objectScope["Subtract_ColorColor"]
             });
-            AddOperator(new InOpDeclaration("*", 16, 0, colorType, new FunctionParameter(FloatType, parm, "A"), new FunctionParameter(colorType, parm, "B"))
+            AddOperator(new InOpDeclaration(TokenType.StarSign, 16, 0, colorType, new FunctionParameter(FloatType, parm, "A"), new FunctionParameter(colorType, parm, "B"))
             {
                 Implementer = (Function)objectScope["Multiply_FloatColor"]
             });
-            AddOperator(new InOpDeclaration("*", 16, 0, colorType, new FunctionParameter(colorType, parm, "A"), new FunctionParameter(FloatType, parm, "B"))
+            AddOperator(new InOpDeclaration(TokenType.StarSign, 16, 0, colorType, new FunctionParameter(colorType, parm, "A"), new FunctionParameter(FloatType, parm, "B"))
             {
                 Implementer = (Function)objectScope["Multiply_ColorFloat"]
             });
-            AddOperator(new InOpDeclaration("+", 20, 0, colorType, new FunctionParameter(colorType, parm, "A"), new FunctionParameter(colorType, parm, "B"))
+            AddOperator(new InOpDeclaration(TokenType.PlusSign, 20, 0, colorType, new FunctionParameter(colorType, parm, "A"), new FunctionParameter(colorType, parm, "B"))
             {
                 Implementer = (Function)objectScope["Add_ColorColor"]
             });
 
-            AddOperator(new InOpDeclaration("-", 20, 0, linearColorType, new FunctionParameter(linearColorType, parm, "A"), new FunctionParameter(linearColorType, parm, "B"))
+            AddOperator(new InOpDeclaration(TokenType.MinusSign, 20, 0, linearColorType, new FunctionParameter(linearColorType, parm, "A"), new FunctionParameter(linearColorType, parm, "B"))
             {
                 Implementer = (Function)objectScope["Subtract_LinearColorLinearColor"]
             });
-            AddOperator(new InOpDeclaration("*", 16, 0, linearColorType, new FunctionParameter(linearColorType, parm, "A"), new FunctionParameter(FloatType, parm, "B"))
+            AddOperator(new InOpDeclaration(TokenType.StarSign, 16, 0, linearColorType, new FunctionParameter(linearColorType, parm, "A"), new FunctionParameter(FloatType, parm, "B"))
             {
                 Implementer = (Function)objectScope["Multiply_LinearColorFloat"]
             });
@@ -943,20 +944,20 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
             switch (op)
             {
                 case PreOpDeclaration preOpDeclaration:
-                    Operators.PrefixOperators.AddToListAt(preOpDeclaration.OperatorKeyword, preOpDeclaration);
+                    Operators.PrefixOperators.AddToListAt(preOpDeclaration.OperatorType, preOpDeclaration);
                     break;
                 case InOpDeclaration inOpDeclaration:
-                    Operators.InfixOperators.AddToListAt(inOpDeclaration.OperatorKeyword, inOpDeclaration);
+                    Operators.InfixOperators.AddToListAt(inOpDeclaration.OperatorType, inOpDeclaration);
                     break;
                 case PostOpDeclaration postOpDeclaration:
-                    Operators.PostfixOperators.AddToListAt(postOpDeclaration.OperatorKeyword, postOpDeclaration);
+                    Operators.PostfixOperators.AddToListAt(postOpDeclaration.OperatorType, postOpDeclaration);
                     break;
             }
         }
 
-        public PreOpDeclaration GetPreOp(string name, VariableType type)
+        public PreOpDeclaration GetPreOp(TokenType opType, VariableType type)
         {
-            if (Operators.PrefixOperators.TryGetValue(name, out List<PreOpDeclaration> operators))
+            if (Operators.PrefixOperators.TryGetValue(opType, out List<PreOpDeclaration> operators))
             {
                 foreach (var preOpDeclaration in operators)
                 {
@@ -967,12 +968,12 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
                 }
             }
 
-            return new PreOpDeclaration(name, null, 0, null);
+            return new PreOpDeclaration(opType, null, 0, null);
         }
 
-        public IEnumerable<InOpDeclaration> GetInfixOperators(string name)
+        public IEnumerable<InOpDeclaration> GetInfixOperators(TokenType opType)
         {
-            if (Operators.InfixOperators.TryGetValue(name, out List<InOpDeclaration> operators))
+            if (Operators.InfixOperators.TryGetValue(opType, out List<InOpDeclaration> operators))
             {
                 foreach (InOpDeclaration inOpDeclaration in operators)
                 {
@@ -981,9 +982,9 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
             }
         }
 
-        public InOpDeclaration GetInOp(string name, VariableType lhs, VariableType rhs)
+        public InOpDeclaration GetInOp(TokenType opType, VariableType lhs, VariableType rhs)
         {
-            foreach (var inOpDeclaration in GetInfixOperators(name))
+            foreach (var inOpDeclaration in GetInfixOperators(opType))
             {
                 //TODO: do smarter comparison. This only finds exact matches. needs to find best fit given possible implicit conversions
                 if (inOpDeclaration.LeftOperand.VarType == lhs && inOpDeclaration.RightOperand.VarType == rhs)
@@ -994,9 +995,9 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
             return null;
         }
 
-        public PostOpDeclaration GetPostOp(string name, VariableType type)
+        public PostOpDeclaration GetPostOp(TokenType opType, VariableType type)
         {
-            if (Operators.PostfixOperators.TryGetValue(name, out List<PostOpDeclaration> operators))
+            if (Operators.PostfixOperators.TryGetValue(opType, out List<PostOpDeclaration> operators))
             {
                 foreach (var postOpDeclaration in operators)
                 {
@@ -1007,7 +1008,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
                 }
             }
 
-            return new PostOpDeclaration(name, null, 0, null);
+            return new PostOpDeclaration(opType, null, 0, null);
         }
 
         public bool TryGetType<T>(string nameValue, out T variableType) where T : VariableType

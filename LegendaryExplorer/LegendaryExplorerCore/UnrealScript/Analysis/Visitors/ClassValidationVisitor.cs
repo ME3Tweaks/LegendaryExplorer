@@ -7,6 +7,7 @@ using LegendaryExplorerCore.UnrealScript.Analysis.Symbols;
 using LegendaryExplorerCore.UnrealScript.Compiling.Errors;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
 using LegendaryExplorerCore.UnrealScript.Language.Util;
+using LegendaryExplorerCore.UnrealScript.Lexing;
 using LegendaryExplorerCore.UnrealScript.Utilities;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
 
@@ -641,27 +642,32 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 if (node.FriendlyName is not null //true in ME1, ME2, LE1, and LE2
                  && node.IsOperator)
                 {
+                    TokenType operatorType = OperatorHelper.FriendlyNameToTokenType(node.FriendlyName);
+                    if (operatorType is TokenType.INVALID)
+                    {
+                        return Error($"{node.FriendlyName} is not one of the allowed operator symbols!", node.StartPos, node.EndPos);
+                    }
                     if (node.Flags.Has(EFunctionFlags.PreOperator))
                     {
                         if (node.Parameters.Count != 1)
                         {
                             return Error($"{node.Name} is declared as a prefix operator, so it must have exactly one parameter!", node.StartPos, node.EndPos);
                         }
-                        Symbols.AddOperator(new PreOpDeclaration(node.FriendlyName, node.ReturnType, node.NativeIndex, node.Parameters[0]) { Implementer = node });
+                        Symbols.AddOperator(new PreOpDeclaration(operatorType, node.ReturnType, node.NativeIndex, node.Parameters[0]) { Implementer = node });
                     }
                     else
                     {
                         switch (node.Parameters.Count)
                         {
                             case 1:
-                                Symbols.AddOperator(new PostOpDeclaration(node.FriendlyName, node.ReturnType, node.NativeIndex, node.Parameters[0]) { Implementer = node });
+                                Symbols.AddOperator(new PostOpDeclaration(operatorType, node.ReturnType, node.NativeIndex, node.Parameters[0]) { Implementer = node });
                                 break;
                             case 2:
-                                Symbols.AddOperator(new InOpDeclaration(node.FriendlyName, node.OperatorPrecedence, node.NativeIndex, node.ReturnType, node.Parameters[0], node.Parameters[1])
+                                Symbols.AddOperator(new InOpDeclaration(operatorType, node.OperatorPrecedence, node.NativeIndex, node.ReturnType, node.Parameters[0], node.Parameters[1])
                                 {
                                     Implementer = node
                                 });
-                                Symbols.InFixOperatorSymbols.Add(node.FriendlyName);
+                                Symbols.InFixOperatorSymbols.Add(operatorType);
                                 break;
                             default:
                                 return Error($"{node.Name} is declared as an operator, so it must have either 1 or 2 parameters!", node.StartPos, node.EndPos);

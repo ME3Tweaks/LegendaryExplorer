@@ -1,16 +1,17 @@
 ﻿using System;
+using LegendaryExplorerCore.UnrealScript.Lexing;
 
 namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 {
-    public class PostOpDeclaration : OperatorDeclaration
+    public sealed class PostOpDeclaration : OperatorDeclaration
     {
-        public FunctionParameter Operand;
+        public readonly FunctionParameter Operand;
         public override bool HasOutParams => Operand.IsOut;
 
-        public PostOpDeclaration(string keyword,
+        public PostOpDeclaration(TokenType operatorType,
                                  VariableType returnType, int nativeIndex,
                                  FunctionParameter operand)
-            : base(keyword, returnType, nativeIndex)
+            : base(operatorType, returnType, nativeIndex)
         {
             Operand = operand;
         }

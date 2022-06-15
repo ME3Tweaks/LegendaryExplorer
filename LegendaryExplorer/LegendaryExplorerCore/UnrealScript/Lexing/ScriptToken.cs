@@ -36,6 +36,7 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
         RightParenth,   // )
         LeftSqrBracket, // [
         RightSqrBracket,// ]
+
         Assign,         // =
         AddAssign,      // +=
         SubAssign,      // -=
@@ -63,22 +64,24 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
         StrConcatAssign,// $=
         AtSign,         // @
         StrConcAssSpace,// @=
-        Complement,   // ~
+        Complement,     // ~
         BinaryAnd,      // &
         BinaryOr,       // |
         BinaryXor,      // ^
-        //RightShift,     // >>, also vector reverse rotate   //is matched manually in the parser. conflicts with arrays of delegates: array<delegate<somefunc>>
-        LeftShift,      // <<, also vector rotate
+        RightShift,     // >>  also vector reverse rotate   //is matched manually in the parser. conflicts with arrays of delegates: array<delegate<somefunc>>
+        LeftShift,      // <<  also vector rotate
+        ExclamationMark,// !
+        VectorTransform,// >>>
+        DotProduct,     //Dot
+        CrossProduct,   //Cross
+        ClockwiseFrom,  //ClockwiseFrom
 
         QuestionMark,    // ?
         Colon,          // :
         SemiColon,      // ;
         Comma,          // ,
         Dot,            // .
-        ExclamationMark,// !
         Hash,           // #
-        VectorTransform,  // >>>
-
 
         #endregion
 

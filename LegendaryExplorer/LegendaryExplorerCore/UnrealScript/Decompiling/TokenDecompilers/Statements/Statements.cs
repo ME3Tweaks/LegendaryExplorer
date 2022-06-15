@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.UnrealScript.Analysis.Symbols;
 using LegendaryExplorerCore.UnrealScript.Language.ByteCode;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
+using LegendaryExplorerCore.UnrealScript.Lexing;
 
 namespace LegendaryExplorerCore.UnrealScript.Decompiling
 {
@@ -129,7 +129,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                     if (obj.ClassName == "BoolProperty")
                     {
                         var ifJump = new IfNotJump(
-                            ReadUInt16(), not ? (Expression)condition : new PreOpReference(new PreOpDeclaration("!", SymbolTable.BoolType, 0, null), condition),
+                            ReadUInt16(), not ? (Expression)condition : new PreOpReference(new PreOpDeclaration(TokenType.ExclamationMark, SymbolTable.BoolType, 0, null), condition),
                             Position - StartPositions.Peek());
                         StatementLocations.Add(StartPositions.Pop(), ifJump);
                         return ifJump;
