@@ -170,11 +170,11 @@ steps:
       $endpoint = $response.data
       
       # Step 2: Upload to special endpoint
-      $artifactPath = $(Build.ArtifactStagingDirectory)/legendaryexplorer_nightly_cibuild_$(appMajorMin).$(appPatch).$(Build.BuildId).7z
+      $artifactPath = "$(Build.ArtifactStagingDirectory)/legendaryexplorer_nightly_cibuild_$(appMajorMin).$(appPatch).$(Build.BuildId).7z"
+      Write-Host "Uploading artifcact to VirusTotal: $artifactPath"
       $body=@{
           file = Get-Item $artifactPath
       }
-      Write-Host "Uploading artifact to VirusTotal"
       $response = Invoke-RestMethod -Uri $endpoint -Method POST -Form $body -Headers $headers
       
       # Step 3: Wait for result to check it
@@ -189,7 +189,7 @@ steps:
               $result = Invoke-RestMethod -Uri "https://www.virustotal.com/api/v3/analyses/$id" -Method GET -Headers $headers
               $attributes = $result.data.attributes
               if ($attributes.status -eq "completed"){
-                $sha256 = Get-FileHash -Algorithm SHA256 -Path $artifactPath
+                  $sha256 = Get-FileHash -Algorithm SHA256 -Path $artifactPath
                   Write-Host "VirusTotal result: https://www.virustotal.com/gui/file/$sha256"
                   if ($attributes.stats.malicious -ge 2 -or $attributes.stats.suspicious -ge 5) {
                       # We got a problem
