@@ -171,7 +171,7 @@ steps:
       
       # Step 2: Upload to special endpoint
       $artifactPath = "$(Build.ArtifactStagingDirectory)/legendaryexplorer_nightly_cibuild_$(appMajorMin).$(appPatch).$(Build.BuildId).7z"
-      Write-Host "Uploading artifcact to VirusTotal: $artifactPath"
+      Write-Host "Uploading artifact to VirusTotal: $artifactPath"
       $body=@{
           file = Get-Item $artifactPath
       }
@@ -190,7 +190,7 @@ steps:
               $attributes = $result.data.attributes
               if ($attributes.status -eq "completed"){
                   $sha256 = Get-FileHash -Algorithm SHA256 -Path $artifactPath
-                  Write-Host "VirusTotal result: https://www.virustotal.com/gui/file/$sha256"
+                  Write-Host "VirusTotal result: https://www.virustotal.com/gui/file/$($sha256.Hash)"
                   if ($attributes.stats.malicious -ge 2 -or $attributes.stats.suspicious -ge 5) {
                       # We got a problem
                       Write-Host "##vso[task.LogIssue type=error;]VirusTotal scan returned multiple malicious/suspicious detections! Suspicious: $($attributes.stats.suspicious) Malicious: $($attributes.stats.malicious)"
