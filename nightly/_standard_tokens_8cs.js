@@ -74,7 +74,6 @@ var _standard_tokens_8cs =
       [ "EmptyParmValue", "_standard_tokens_8cs.html#ae19214b48ec3c2534c36d25e2ac4595fac6c450a89f151918f651cbc1934e4665", null ],
       [ "InstanceDelegate", "_standard_tokens_8cs.html#ae19214b48ec3c2534c36d25e2ac4595fa246d84f43002d10dbc02903b5ef3933a", null ],
       [ "StringRefConst", "_standard_tokens_8cs.html#ae19214b48ec3c2534c36d25e2ac4595fa7a7239d2e55e506db2e6f98d961cfdf3", null ],
-      [ "GoW_DefaultValue", "_standard_tokens_8cs.html#ae19214b48ec3c2534c36d25e2ac4595fa75a0966224a2ab5e2688ce103b849db0", null ],
       [ "InterfaceContext", "_standard_tokens_8cs.html#ae19214b48ec3c2534c36d25e2ac4595fa9a5beb9bf5681c813a014e3f9c9a4b0c", null ],
       [ "InterfaceCast", "_standard_tokens_8cs.html#ae19214b48ec3c2534c36d25e2ac4595fa66bef6653cc4efacf2e33f157fc465a4", null ],
       [ "EndOfScript", "_standard_tokens_8cs.html#ae19214b48ec3c2534c36d25e2ac4595fa2f229ec0a40fd527e41ddb451a15c2a4", null ],

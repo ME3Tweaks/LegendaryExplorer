@@ -14,5 +14,6 @@ var searchData=
   ['observabledictionary_2ecs_11',['ObservableDictionary.cs',['../_observable_dictionary_8cs.html',1,'']]],
   ['oodlehelper_2ecs_12',['OodleHelper.cs',['../_oodle_helper_8cs.html',1,'']]],
   ['operatordeclaration_2ecs_13',['OperatorDeclaration.cs',['../_operator_declaration_8cs.html',1,'']]],
-  ['ordereddictionary_2ecs_14',['OrderedDictionary.cs',['../_ordered_dictionary_8cs.html',1,'']]]
+  ['operatorhelper_2ecs_14',['OperatorHelper.cs',['../_operator_helper_8cs.html',1,'']]],
+  ['ordereddictionary_2ecs_15',['OrderedDictionary.cs',['../_ordered_dictionary_8cs.html',1,'']]]
 ];
