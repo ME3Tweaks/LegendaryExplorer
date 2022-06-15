@@ -177,7 +177,7 @@ steps:
       $response = Invoke-RestMethod -Uri $endpoint -Method POST -Form $body -Headers $headers
       
       # Step 3: Wait for result to check it
-      if ($response.data.type == "analysis") {
+      if ($response.data.type -eq "analysis") {
           # Give virustotal a minute to analyze before we check and waste our api calls
           Start-Sleep -Seconds 60
           $id = $response.data.id
