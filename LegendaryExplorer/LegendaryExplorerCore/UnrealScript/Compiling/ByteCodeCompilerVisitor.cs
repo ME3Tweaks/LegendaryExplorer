@@ -449,7 +449,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                                                                       && inOp.LeftOperand.GetType() == typeof(SymbolReference) && inOp.RightOperand is NoneLiteral
                                                                       && inOp.Operator.OperatorType is TokenType.Equals or TokenType.NotEquals)
             {
-                SymbolReference symRef = (SymbolReference)inOp.LeftOperand;
+                var symRef = (SymbolReference)inOp.LeftOperand;
                 WriteOpCode(symRef.Node.Outer is Function ? OpCodes.OptIfLocal : OpCodes.OptIfInstance);
                 WriteObjectRef(ResolveSymbol(symRef.Node));
                 WriteByte((byte)(inOp.Operator.OperatorType is TokenType.NotEquals ? 1 : 0));
@@ -458,7 +458,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             else if (Game.IsGame3() && condition is PreOpReference preOp && preOp.Operator.OperatorType is TokenType.ExclamationMark
                                                                              && preOp.Operand.GetType() == typeof(SymbolReference) && preOp.Operand.ResolveType() == SymbolTable.BoolType)
             {
-                SymbolReference symRef = (SymbolReference)preOp.Operand;
+                var symRef = (SymbolReference)preOp.Operand;
                 WriteOpCode(symRef.Node.Outer is Function ? OpCodes.OptIfLocal : OpCodes.OptIfInstance);
                 WriteObjectRef(ResolveSymbol(symRef.Node));
                 WriteByte(0);
@@ -1214,22 +1214,22 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 WriteByte((byte)i);
             }
             else switch (i)
-                {
-                    case 0:
-                        WriteOpCode(OpCodes.IntZero);
-                        break;
-                    case 1:
-                        WriteOpCode(OpCodes.IntOne);
-                        break;
-                    case >= 0 and < 256:
-                        WriteOpCode(OpCodes.IntConstByte);
-                        WriteByte((byte)i);
-                        break;
-                    default:
-                        WriteOpCode(OpCodes.IntConst);
-                        WriteInt(i);
-                        break;
-                }
+            {
+                case 0:
+                    WriteOpCode(OpCodes.IntZero);
+                    break;
+                case 1:
+                    WriteOpCode(OpCodes.IntOne);
+                    break;
+                case >= 0 and < 256:
+                    WriteOpCode(OpCodes.IntConstByte);
+                    WriteByte((byte)i);
+                    break;
+                default:
+                    WriteOpCode(OpCodes.IntConst);
+                    WriteInt(i);
+                    break;
+            }
 
             return true;
         }

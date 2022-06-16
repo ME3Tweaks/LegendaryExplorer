@@ -712,9 +712,9 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
             foreach (ASTNodeDict node in stack)
             {
                 ASTNodeDict nodeDict = node;
-                if (nodeDict.TryGetValue(symbol, out ASTNode tempNode) && tempNode is T)
+                if (nodeDict.TryGetValue(symbol, out ASTNode tempNode) && tempNode is T typedTempNode)
                 {
-                    outNode = (T)tempNode;
+                    outNode = typedTempNode;
                     return true;
                 }
 
