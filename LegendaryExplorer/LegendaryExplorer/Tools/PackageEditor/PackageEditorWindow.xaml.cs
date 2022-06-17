@@ -7,14 +7,11 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
-using System.Xml.Linq;
-using System.Xml.XPath;
 using GongSolutions.Wpf.DragDrop;
 using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.DialogueEditor;
@@ -24,7 +21,6 @@ using LegendaryExplorerCore.Misc.ME3Tweaks;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Bases;
 using LegendaryExplorer.SharedUI.Interfaces;
-using LegendaryExplorer.Tools;
 using LegendaryExplorer.Tools.Meshplorer;
 using LegendaryExplorer.UserControls.ExportLoaderControls;
 using LegendaryExplorer.UserControls.SharedToolControls;
@@ -44,7 +40,6 @@ using LegendaryExplorerCore.UnrealScript;
 using LegendaryExplorerCore.UnrealScript.Compiling.Errors;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
-using Newtonsoft.Json;
 
 namespace LegendaryExplorer.Tools.PackageEditor
 {
@@ -337,7 +332,8 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     MessageBox.Show(this, "Classes must be children of a Package export. Add one to the file first.");
                     return;
                 }
-                parent = EntrySelector.GetEntry<ExportEntry>(this, Pcc, "Pick a Package export your class should be a child of.", exp => existingPackages.Contains(exp));
+                parent = EntrySelector.GetEntry<ExportEntry>(this, Pcc, "Pick a Package export your class should be a child of.",
+                    exp => existingPackages.Contains(exp), Pcc.Exports.FirstOrDefault(exp => exp.IsClass)?.Parent);
                 if (parent is null)
                 {
                     return;
@@ -358,14 +354,14 @@ namespace LegendaryExplorer.Tools.PackageEditor
             var fileLib = new FileLib(Pcc);
             if (!fileLib.Initialize())
             {
-                var dlg = new ListDialog(fileLib.InitializationLog.Content.Select(msg => msg.ToString()), "Script Error", "Could not build script database for this file!", this);
+                var dlg = new ListDialog(fileLib.InitializationLog.AllErrors.Select(msg => msg.ToString()), "Script Error", "Could not build script database for this file!", this);
                 dlg.Show();
                 return;
             }
             (_, MessageLog log) = UnrealScriptCompiler.CompileClass(Pcc, $"class {className};", fileLib, parent: parent);
             if (log.HasErrors)
             {
-                var dlg = new ListDialog(fileLib.InitializationLog.Content.Select(msg => msg.ToString()), "Script Error", "Could not create class!", this);
+                var dlg = new ListDialog(log.AllErrors.Select(msg => msg.ToString()), "Script Error", "Could not create class!", this);
                 dlg.Show();
                 return;
             }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
 using LegendaryExplorerCore.UnrealScript.Language.Util;
@@ -148,6 +149,38 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
         {
             get => _outerClass ?? (Parent as Class)?.OuterClass;
             set => _outerClass = value;
+        }
+
+        public State LookupState(string stateName, bool lookInParents = true)
+        {
+            foreach (State state in States)
+            {
+                if (state.Name.CaseInsensitiveEquals(stateName))
+                {
+                    return state;
+                }
+            }
+            if (lookInParents)
+            {
+                return (Parent as Class)?.LookupState(stateName);
+            }
+            return null;
+        }
+
+        public Function LookupFunction(string funcName, bool lookInParents = true)
+        {
+            foreach (Function func in Functions)
+            {
+                if (func.Name.CaseInsensitiveEquals(funcName))
+                {
+                    return func;
+                }
+            }
+            if (lookInParents)
+            {
+                return (Parent as Class)?.LookupFunction(funcName);
+            }
+            return null;
         }
     }
 }

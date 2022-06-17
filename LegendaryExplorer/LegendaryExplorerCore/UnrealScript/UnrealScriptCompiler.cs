@@ -652,7 +652,7 @@ namespace LegendaryExplorerCore.UnrealScript
                         var existingFuncDict = existingClass.Functions.Where(func => func.IsVirtual).ToDictionary(func => func.Name);
                         foreach (string funcName in parentVirtualFuncNames)
                         {
-                            if (existingFuncDict.Remove(funcName, out Function func))
+                            if (existingFuncDict.Remove(funcName))
                             {
                                 existingOverrides.Add(funcName);
                             }
@@ -669,7 +669,7 @@ namespace LegendaryExplorerCore.UnrealScript
                     }
                 }
 
-                cls.VirtualFunctionTable = cls.VirtualFunctionNames.Select(funcName => symbols.TryGetSymbol(funcName, out Function func) ? func : throw new Exception($"'{funcName}' not found on class!")).ToList();
+                cls.VirtualFunctionTable = cls.VirtualFunctionNames.Select(funcName => cls.LookupFunction(funcName) ?? throw new Exception($"'{funcName}' not found on class!")).ToList();
             }
 
             return cls;

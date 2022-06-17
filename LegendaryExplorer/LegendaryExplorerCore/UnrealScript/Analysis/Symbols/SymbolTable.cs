@@ -568,11 +568,6 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
             ScopeNames.Pop();
         }
 
-        public bool TryGetSymbol<T>(string symbol, out T node) where T : ASTNode
-        {
-            return TryGetSymbolInternal(symbol, out node, Scopes);
-        }
-
         public bool TryGetSymbol<T>(string symbol, out T node, string outerScope) where T : ASTNode
         {
             return TryGetSymbolInternal(symbol, out node, Scopes) ||
@@ -668,9 +663,15 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
             return null;
         }
 
-        public bool SymbolExists(string symbol, string outerScope)
+        public bool TryGetClass(string name, out Class cls)
         {
-            return TryGetSymbol<ASTNode>(symbol, out _, outerScope);
+            if (Types.TryGetValue(name, out VariableType type) && type is Class c)
+            {
+                cls = c;
+                return true;
+            }
+            cls = null;
+            return false;
         }
 
         public bool TypeExists(VariableType type, bool globalOnly = false) => TryResolveType(ref type, globalOnly);
