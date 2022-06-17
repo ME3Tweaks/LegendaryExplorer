@@ -154,6 +154,7 @@ steps:
 # Virus Total Scan - Since we send this to M3 and users can directly download it
 - task: PowerShell@2
   displayName: 'VirusTotal Scan'
+  condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'Beta'))
   env:
     virusTotalApiKey: $(virusTotalApiKey)
   inputs:

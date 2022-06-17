@@ -239,7 +239,7 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
                 Advance();
                 string hex = SubNumberHex();
                 peek = GetCurrentChar();
-                if (hex == null || peek is '.' or 'x')
+                if (string.IsNullOrEmpty(hex) || peek is '.' or 'x')
                     return null;
 
                 type = TokenType.IntegerNumber;
@@ -251,16 +251,16 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
                 ReadOnlySpan<char> second = default;
                 if (peek == '.')
                 {
-                    Advance();
+                    ++CurrentIndex;
                     second = SubNumberDec();
-                    peek = GetCurrentChar();
+                    peek = CurrentIndex >= Text.Length ? '\0' : Text[CurrentIndex];
                 }
                 if (peek.AsciiCaseInsensitiveEquals('e') || peek.AsciiCaseInsensitiveEquals('d'))
                 {
                     Advance();
                     ReadOnlySpan<char> exponent = SubNumberDec();
                     peek = GetCurrentChar();
-                    if (exponent == null || peek is '.' or 'x')
+                    if (exponent.IsEmpty || peek is '.' or 'x')
                         return null;
                     if (second.IsEmpty)
                     {
@@ -271,37 +271,33 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
                         value = string.Concat(first, ".", second, "e") + exponent.ToString();
                     }
                 }
-                else if (second == null && peek == 'f')
+                else if (second.IsEmpty)
                 {
-                    Advance();
-                    peek = GetCurrentChar();
-                    value = string.Concat(first, ".0");
+                    if (peek is 'f')
+                    {
+                        ++CurrentIndex;
+                        value = string.Concat(first, ".0");
+                    }
+                    else
+                    {
+                        Log.LogError("Incomplete number! Expected digit after '.'", CurrentIndex);
+                        return null;
+                    }
                 }
                 else
                 {
-                    if (second == null || peek is '.' or 'x')
-                    {
-                        return null;
-                    }
-
                     value = string.Concat(first, ".", second);
                 }
 
                 if (GetCurrentChar() == 'f')
                 {
-                    Advance();
-                    peek = GetCurrentChar();
+                    ++CurrentIndex;
                 }
             }
             else
             {
                 type = TokenType.IntegerNumber;
                 value = first.ToString();
-            }
-
-            if (!peek.IsNullOrWhiteSpace() && !IsDelimiterChar(peek))
-            {
-                return null;
             }
             
             return new ScriptToken(type, value, startPos, CurrentIndex) { SyntaxType = EF.Number };
@@ -322,7 +318,7 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
         private ReadOnlySpan<char> SubNumberDec()
         {
             int startIndex = CurrentIndex;
-            var text = Text.AsSpan();
+            ReadOnlySpan<char> text = Text.AsSpan();
             
             while (CurrentIndex < text.Length && text[CurrentIndex] is >= '0' and <= '9')
             {
@@ -350,11 +346,7 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
             }
 
             int numLength = CurrentIndex - numStart;
-            if (numLength != 0)
-            {
-                return new ScriptToken(TokenType.StringRefLiteral, Text.Substring(numStart, numLength), tokenStart, CurrentIndex) { SyntaxType = EF.Number };
-            }
-            return null;
+            return new ScriptToken(TokenType.StringRefLiteral, Text.Substring(numStart, numLength), tokenStart, CurrentIndex) { SyntaxType = EF.Number };
         }
 
         private ScriptToken MatchWord(char peek)
@@ -393,10 +385,9 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
             Builder.Clear();
             ++CurrentIndex;
             bool inEscape = false;
-            char peek = '\0';
             for (; CurrentIndex < Text.Length; ++CurrentIndex)
             {
-                peek = Text[CurrentIndex];
+                char peek = Text[CurrentIndex];
                 if (inEscape)
                 {
                     inEscape = false;
@@ -412,51 +403,43 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
                     }
                 }
 
-                if (peek == '\\')
+                switch (peek)
                 {
-                    inEscape = true;
-                    continue;
+                    case '\\':
+                        inEscape = true;
+                        continue;
+                    case '\'':
+                    {
+                        string value = Builder.ToString();
+                        ++CurrentIndex;
+                        if (value is "")
+                        {
+                            value = "None"; //empty name literals should be interpreted as 'None'
+                        }
+                        return new ScriptToken(TokenType.NameLiteral, value, startPos, CurrentIndex) { SyntaxType = EF.Name };
+                    }
+                    case '\n':
+                        Log.LogError("Name Literals can not contain line breaks!", startPos, CurrentIndex);
+                        return null;
+                    default:
+                        Builder.Append(peek);
+                        continue;
                 }
-                if (peek == '\'')
-                {
-                    break;
-                }
-                if (peek == '\n')
-                {
-                    Log.LogError("Name Literals can not contain line breaks!", startPos, CurrentIndex);
-                    return null;
-                }
-                Builder.Append(peek);
             }
 
-            string value = Builder.ToString();
-            if (peek == '\'')
-            {
-                ++CurrentIndex;
-                if (value is "")
-                {
-                    value = "None"; //empty name literals should be interpreted as 'None'
-                }
-            }
-            else
-            {
-                Log.LogError("Name Literal was not terminated properly!", startPos, CurrentIndex);
-                return null;
-            }
-            
-            return new ScriptToken(TokenType.NameLiteral, value, startPos, CurrentIndex) { SyntaxType = EF.Name };
+            Log.LogError("Name Literal was not terminated properly!", startPos, CurrentIndex);
+            return null;
         }
 
         private ScriptToken MatchString()
         {
             int startPos = CurrentIndex;
             Builder.Clear();
-            Advance();
+            ++CurrentIndex;
             bool inEscape = false;
-            char peek = '\0';
-            for (; !AtEnd(); Advance())
+            for (; CurrentIndex < Text.Length; ++CurrentIndex)
             {
-                peek = GetCurrentChar();
+                char peek = Text[CurrentIndex];
                 if (inEscape)
                 {
                     inEscape = false;
@@ -481,43 +464,34 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
                     }
                 }
 
-                if (peek == '\\')
+                switch (peek)
                 {
-                    inEscape = true;
-                    continue;
+                    case '\\':
+                        inEscape = true;
+                        continue;
+                    case '"':
+                        ++CurrentIndex;
+                        return new ScriptToken(TokenType.StringLiteral, Builder.ToString(), startPos, CurrentIndex) { SyntaxType = EF.String };
+                    case '\n':
+                        Log.LogError("String Literals can not contain line breaks!", startPos, CurrentIndex);
+                        return null;
+                    default:
+                        Builder.Append(peek);
+                        continue;
                 }
-                if (peek == '"')
-                {
-                    break;
-                }
-                if (peek == '\n')
-                {
-                    Log.LogError("String Literals can not contain line breaks!", startPos, CurrentIndex);
-                    return null;
-                }
-                Builder.Append(peek);
             }
-
-            if (peek == '"')
-            {
-                Advance();
-            }
-            else
-            {
-                Log.LogError("String Literal was not terminated properly!", startPos, CurrentIndex);
-                return null;
-            }
-
-            return new ScriptToken(TokenType.StringLiteral, Builder.ToString(), startPos, CurrentIndex) { SyntaxType = EF.String };
+            
+            Log.LogError("String Literal was not terminated properly!", startPos, CurrentIndex);
+            return null;
         }
 
         private ScriptToken MatchSingleLineComment()
         {
             int startPos = CurrentIndex;
-            Advance(2);
-            while (GetCurrentChar() is not '\n' or '\0')
+            CurrentIndex += 2;
+            while (CurrentIndex < Text.Length && Text[CurrentIndex] is not '\n')
             {
-                Advance();
+                ++CurrentIndex;
             }
             
             return new ScriptToken(TokenType.SingleLineComment, null, startPos, CurrentIndex) { SyntaxType = EF.Comment };
@@ -617,24 +591,10 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
 
         #endregion
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool IsDelimiterChar(char c) => c < ASCII_TABLE_LENGTH && DelimiterLookup[c];
-
-
         private static readonly bool[] IdentifierCharLookup;
-
-        private static readonly bool[] DelimiterLookup;
 
         static Lexer()
         {
-            Span<char> delimChars = stackalloc char[] { '{', '}', '[', ']', '(', ')', '=', '+', '-', '*', '/', '!', '~', '>', '<', '&', '|', '^', '%', '$', '@', '?', ':', ';', ',', '.', '#' };
-            DelimiterLookup = new bool[ASCII_TABLE_LENGTH];
-            foreach (char c in delimChars)
-            {
-                DelimiterLookup[c] = true;
-            }
-
-
             IdentifierCharLookup = new bool[ASCII_TABLE_LENGTH];
             for (int i = 0; i < ASCII_TABLE_LENGTH; i++)
             {

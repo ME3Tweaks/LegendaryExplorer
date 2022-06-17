@@ -444,6 +444,12 @@ namespace LegendaryExplorerCore.UnrealScript
                 }
                 if (classOverride is not null)
                 {
+                    if (symbols.TryGetClass(classOverride.Name, out Class existingClass))
+                    {
+                        log.CurrentClass = classOverride;
+                        log.LogError($"A class named '{existingClass.Name}' already exists: #{existingClass.UIndex} in {existingClass.FilePath}");
+                        return false;
+                    }
                     classes.Add(classOverride, "");
                 }
                 LECLog.Debug($"{fileName}: Finished parse.");
@@ -472,7 +478,7 @@ namespace LegendaryExplorerCore.UnrealScript
                     }
                     LECLog.Debug($"{fileName}: Finished validation pass {validationPass}.");
                 }
-
+                log.CurrentClass = null;
                 switch (fileName)
                 {
                     case "Core" when pcc.Game.IsGame3():

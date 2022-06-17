@@ -1830,9 +1830,10 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 }
             }
 
-            if (!TypeCompatible(SymbolTable.IntType, arrIndex.ResolveType(), arrIndex.StartPos))
+            VariableType arrIndexType = arrIndex.ResolveType();
+            if (arrIndexType != SymbolTable.IntType && arrIndexType != SymbolTable.ByteType)
             {
-                TypeError("Array index must be or evaluate to an integer!");
+                TypeError("Array index must be or evaluate to an integer!", arrIndex);
             }
 
             if (Consume(TokenType.RightSqrBracket) is {} endTok)

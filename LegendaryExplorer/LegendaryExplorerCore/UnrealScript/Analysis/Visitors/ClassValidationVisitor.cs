@@ -798,18 +798,14 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                     if (overrides)
                         Error("A state is not allowed to both override a parent class's state and extend another state at the same time!", node.StartPos, node.EndPos);
 
-                    if (!Symbols.TryGetSymbol(node.Parent.Name, out ASTNode parent))
+                    if ((node.Outer as Class)?.LookupState(node.Parent.Name) is State parent)
+                    {
+                        node.Parent = parent;
+                    }
+                    else
                     {
                         Error($"No parent state named '{node.Parent.Name}' found in the current class!", node.Parent.StartPos, node.Parent.EndPos);
                         node.Parent = null;
-                    }
-
-                    if (parent != null)
-                    {
-                        if (parent.Type != ASTNodeType.State)
-                            Error($"Parent named '{node.Parent.Name}' is not a state!", node.Parent.StartPos, node.Parent.EndPos);
-                        else
-                            node.Parent = parent as State;
                     }
                 }
                 
