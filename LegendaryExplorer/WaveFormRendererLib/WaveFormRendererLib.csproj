@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<Version>2.0.0</Version>
+		<Authors>Mark Heath</Authors>
+		<Description>WaveForm rendering component</Description>
+		<PackageProjectUrl>https://github.com/naudio/NAudio.WaveFormRenderer</PackageProjectUrl>
+		<PackageTags>C# .NET audio sound</PackageTags>
+		<RepositoryUrl>https://github.com/naudio/NAudio.WaveFormRenderer</RepositoryUrl>
+		<Copyright>© Mark Heath 2021</Copyright>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<RootNamespace>NAudio.WaveFormRenderer</RootNamespace>
+		<AssemblyName>NAudio.WaveFormRenderer</AssemblyName>
+		<GenerateDocumentationFile Condition=" '$(Configuration)' == 'Release' ">true</GenerateDocumentationFile>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<LangVersion>8.0</LangVersion>
+		<Optimize>true</Optimize>
+		<Platforms>x64</Platforms>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="NAudio.Core" Version="2.0.0" />
+		<PackageReference Include="System.Drawing.Common" Version="6.0.0" />
+	</ItemGroup>
+</Project>

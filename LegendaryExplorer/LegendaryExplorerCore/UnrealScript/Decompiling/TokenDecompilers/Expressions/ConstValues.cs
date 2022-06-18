@@ -2,9 +2,9 @@
 
 namespace LegendaryExplorerCore.UnrealScript.Decompiling
 {
-    public partial class ByteCodeDecompiler
+    internal partial class ByteCodeDecompiler
     {
-        public IntegerLiteral DecompileIntConst()
+        private IntegerLiteral DecompileIntConst()
         {
             PopByte();
 
@@ -13,7 +13,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             StartPositions.Pop();
             return new IntegerLiteral(value);
         }
-        public StringRefLiteral DecompileStringRefConst()
+        private StringRefLiteral DecompileStringRefConst()
         {
             PopByte();
 
@@ -23,7 +23,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             return new StringRefLiteral(value);
         }
 
-        public FloatLiteral DecompileFloatConst()
+        private FloatLiteral DecompileFloatConst()
         {
             PopByte();
 
@@ -33,7 +33,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             return new FloatLiteral(value);
         }
 
-        public StringLiteral DecompileStringConst()
+        private StringLiteral DecompileStringConst()
         {
             PopByte();
 
@@ -44,7 +44,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
         }
 
         
-        public ObjectLiteral DecompileObjectConst()
+        private ObjectLiteral DecompileObjectConst()
         {
             PopByte();
 
@@ -54,7 +54,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             return new ObjectLiteral(new NameLiteral(value.ClassName == "Class" || value.Parent == ContainingClass.Export ? value.ObjectName.Instanced : value.InstancedFullPath), new VariableType(value.ClassName));
         }
 
-        public VectorLiteral DecompileVectorConst()
+        private VectorLiteral DecompileVectorConst()
         {
             PopByte();
             var x = ReadFloat();
@@ -65,7 +65,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             return new VectorLiteral(x, y, z);
         }
 
-        public RotatorLiteral DecompileRotationConst()
+        private RotatorLiteral DecompileRotationConst()
         {
             PopByte();
             var pitch = ReadInt32();
@@ -76,7 +76,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             return new RotatorLiteral(pitch, yaw, roll);
         } 
 
-        public NameLiteral DecompileNameConst()
+        private NameLiteral DecompileNameConst()
         {
             PopByte();
 
@@ -86,7 +86,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             return new NameLiteral(value.Instanced);
         }
 
-        public IntegerLiteral DecompileByteConst(string numType)
+        private IntegerLiteral DecompileByteConst(string numType)
         {
             PopByte();
 
@@ -96,14 +96,14 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             return new IntegerLiteral(value) { NumType = numType };
         }
 
-        public IntegerLiteral DecompileIntConstVal(int val)
+        private IntegerLiteral DecompileIntConstVal(int val)
         {
             PopByte();
             StartPositions.Pop();
             return new IntegerLiteral(val);
         }
 
-        public BooleanLiteral DecompileBoolConstVal(bool val)
+        private BooleanLiteral DecompileBoolConstVal(bool val)
         {
             PopByte();
             StartPositions.Pop();

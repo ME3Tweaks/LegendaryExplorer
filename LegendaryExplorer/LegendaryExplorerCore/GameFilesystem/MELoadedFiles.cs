@@ -17,6 +17,8 @@ namespace LegendaryExplorerCore.GameFilesystem
         private const string ME23LEFilePattern = "*.pcc";
         private static readonly string[] ME23LEFilePatternIncludeTFC = { "*.pcc", "*.tfc" };
 
+        private static readonly string FauxStartupPath = Path.Combine("DLC_METR_Patch01", "CookedPCConsole", "Startup.pcc");
+
         /// <summary>
         /// Invalidates the cache of loaded files for all games
         /// </summary>
@@ -35,15 +37,16 @@ namespace LegendaryExplorerCore.GameFilesystem
         private static CaseInsensitiveDictionary<string> cachedLE3LoadedFiles;
 
         /// <summary>
-        /// Gets a dictionary of all loaded files in the given game. Key is the filename, value is file path
+        /// Gets a dictionary of all loaded files in the given game. Key is the filename, value is file path. This data may be cached; to reload it, set the forceReload flag to true
         /// </summary>
         /// <param name="game">Game to get loaded files for</param>
         /// <param name="forceReload">If false, method may return a cache of loaded files. If true, cache will be regenerated</param>
         /// <param name="includeTFCs">If true, files with the .tfc extension will be included</param>
         /// <param name="includeAFCs">If true, files with the .afc extension will be included</param>
         /// <param name="gameRootOverride">Optional: override game path root</param>
+        /// <param name="forceUseCached">Optional: Set to true to forcibly use the cached version if available; ignoring the tfc/afc check for rebuilding. Only use if you know what you're doing; this is to improve performance in certain scenarios</param>
         /// <returns>Case insensitive dictionary where key is filename and value is file path</returns>
-        public static CaseInsensitiveDictionary<string> GetFilesLoadedInGame(MEGame game, bool forceReload = false, bool includeTFCs = false, bool includeAFCs = false, string gameRootOverride = null)
+        public static CaseInsensitiveDictionary<string> GetFilesLoadedInGame(MEGame game, bool forceReload = false, bool includeTFCs = false, bool includeAFCs = false, string gameRootOverride = null, bool forceUseCached = false)
         {
             //Override: Do not use cached items
             if (!forceReload && gameRootOverride == null)
@@ -52,35 +55,51 @@ namespace LegendaryExplorerCore.GameFilesystem
                 if (game == MEGame.ME2 && cachedME2LoadedFiles != null)
                 {
                     bool useCached = true;
-                    useCached &= !includeTFCs || !cachedME2LoadedFiles.Keys.Any(x => x.EndsWith(".tfc"));
-                    useCached &= !includeAFCs || !cachedME2LoadedFiles.Keys.Any(x => x.EndsWith(".afc"));
+                    if (!forceUseCached)
+                    {
+                        useCached &= !includeTFCs || !cachedME2LoadedFiles.Keys.Any(x => x.EndsWith(".tfc"));
+                        useCached &= !includeAFCs || !cachedME2LoadedFiles.Keys.Any(x => x.EndsWith(".afc"));
+                    }
+
                     if (useCached) return cachedME2LoadedFiles;
                 }
                 if (game == MEGame.ME3 && cachedME3LoadedFiles != null)
                 {
                     bool useCached = true;
-                    useCached &= !includeTFCs || !cachedME3LoadedFiles.Keys.Any(x => x.EndsWith(".tfc"));
-                    useCached &= !includeAFCs || !cachedME3LoadedFiles.Keys.Any(x => x.EndsWith(".afc"));
+                    if (!forceUseCached)
+                    {
+                        useCached &= !includeTFCs || !cachedME3LoadedFiles.Keys.Any(x => x.EndsWith(".tfc"));
+                        useCached &= !includeAFCs || !cachedME3LoadedFiles.Keys.Any(x => x.EndsWith(".afc"));
+                    }
                     if (useCached) return cachedME3LoadedFiles;
                 }
                 if (game == MEGame.LE1 && cachedLE1LoadedFiles != null)
                 {
                     bool useCached = true;
-                    useCached &= !includeTFCs || !cachedLE1LoadedFiles.Keys.Any(x => x.EndsWith(".tfc"));
+                    if (!forceUseCached)
+                    {
+                        useCached &= !includeTFCs || !cachedLE1LoadedFiles.Keys.Any(x => x.EndsWith(".tfc"));
+                    }
                     if (useCached) return cachedLE1LoadedFiles;
                 }
                 if (game == MEGame.LE2 && cachedLE2LoadedFiles != null)
                 {
                     bool useCached = true;
-                    useCached &= !includeTFCs || !cachedLE2LoadedFiles.Keys.Any(x => x.EndsWith(".tfc"));
-                    useCached &= !includeAFCs || !cachedLE2LoadedFiles.Keys.Any(x => x.EndsWith(".afc"));
+                    if (!forceUseCached)
+                    {
+                        useCached &= !includeTFCs || !cachedLE2LoadedFiles.Keys.Any(x => x.EndsWith(".tfc"));
+                        useCached &= !includeAFCs || !cachedLE2LoadedFiles.Keys.Any(x => x.EndsWith(".afc"));
+                    }
                     if (useCached) return cachedLE2LoadedFiles;
                 }
                 if (game == MEGame.LE3 && cachedLE3LoadedFiles != null)
                 {
                     bool useCached = true;
-                    useCached &= !includeTFCs || !cachedLE3LoadedFiles.Keys.Any(x => x.EndsWith(".tfc"));
-                    useCached &= !includeAFCs || !cachedLE3LoadedFiles.Keys.Any(x => x.EndsWith(".afc"));
+                    if (!forceUseCached)
+                    {
+                        useCached &= !includeTFCs || !cachedLE3LoadedFiles.Keys.Any(x => x.EndsWith(".tfc"));
+                        useCached &= !includeAFCs || !cachedLE3LoadedFiles.Keys.Any(x => x.EndsWith(".afc"));
+                    }
                     if (useCached) return cachedLE3LoadedFiles;
                 }
             }
@@ -102,7 +121,7 @@ namespace LegendaryExplorerCore.GameFilesystem
                     foreach (string filePath in GetCookedFiles(game, directory, includeTFCs, includeAFCs))
                     {
                         string fileName = Path.GetFileName(filePath);
-                        if (game == MEGame.LE3 && filePath.EndsWith($@"DLC_METR_Patch01{Path.DirectorySeparatorChar}CookedPCConsole{Path.DirectorySeparatorChar}Startup.pcc"))
+                        if (game == MEGame.LE3 && filePath.EndsWith(FauxStartupPath))
                         {
                             continue; // This file is not used by game and will break lots of stuff if we don't filter it out. This is a bug in how LE3 was cooked
                         }

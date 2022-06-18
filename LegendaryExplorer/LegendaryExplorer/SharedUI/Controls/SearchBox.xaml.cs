@@ -33,6 +33,7 @@ namespace LegendaryExplorer.SharedUI.Controls
 
         public SearchBox()
         {
+            DataContext = this;
             InitializeComponent();
         }
 

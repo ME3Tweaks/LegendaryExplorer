@@ -7,11 +7,11 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 {
     public class StructLiteral : Expression
     {
-        public List<Statement> Statements;
+        public readonly List<Statement> Statements;
 
         public readonly Struct StructType;
 
-        public StructLiteral(Struct structType, List<Statement> statements, SourcePosition start = null, SourcePosition end = null) : base(ASTNodeType.StructLiteral, start, end)
+        public StructLiteral(Struct structType, List<Statement> statements, int start = -1, int end = -1) : base(ASTNodeType.StructLiteral, start, end)
         {
             Statements = statements;
             StructType = structType;

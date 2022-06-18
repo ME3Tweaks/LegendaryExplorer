@@ -5,18 +5,18 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using LegendaryExplorerCore.Helpers;
-using LegendaryExplorerCore.UnrealScript.Analysis.Symbols;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
-using LegendaryExplorerCore.UnrealScript.Lexing.Tokenizing;
+using LegendaryExplorerCore.UnrealScript.Lexing;
 using LegendaryExplorerCore.UnrealScript.Parsing;
+using LegendaryExplorerCore.UnrealScript.Utilities;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
 using static LegendaryExplorerCore.UnrealScript.Utilities.Keywords;
 
 namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 {
-    public enum EF
+    public enum EF : byte
     {
-        None,
+        None = 0,
         Keyword,
         Specifier,
         TypeName,
@@ -226,7 +226,9 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
         public bool VisitNode(VariableDeclaration node)
         {
-            if (node.Outer.Type is ASTNodeType.Class or ASTNodeType.Struct)
+            //node.Outer can be null if we have decompiled a single var and nothing else
+            //It only makes sense to have done that for a class field
+            if (node.Outer?.Type != ASTNodeType.Function)
             {
                 Write(VAR, EF.Keyword);
                 if (!string.IsNullOrEmpty(node.Category) && !node.Category.CaseInsensitiveEquals("None"))
@@ -234,13 +236,9 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                     Append($"({node.Category})");
                 }
             }
-            else if (node.Outer.Type == ASTNodeType.Function)
-            {
-                Write(LOCAL, EF.Keyword);
-            }
             else
             {
-                Write("ERROR", EF.ERROR);
+                Write(LOCAL, EF.Keyword);
             }
 
             Space();
@@ -978,7 +976,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             }
             else
             {
-                int len = node.EndPos.CharIndex - node.StartPos.CharIndex;
+                int len = node.EndPos - node.StartPos;
                 Append(new string('_', len), EF.ERROR);
             }
 
@@ -1002,7 +1000,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             }
             else
             {
-                int len = node.EndPos.CharIndex - node.StartPos.CharIndex;
+                int len = node.EndPos - node.StartPos;
                 Append(new string('_', len), EF.ERROR);
             }
 
@@ -1105,7 +1103,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             ExpressionPrescedence.Push(node.Operator.Precedence);
 
             if (scopeNeeded) Append("(");
-            if (node.Operator.OperatorKeyword switch { "@" => true, "$" => true, _ => false } && node.LeftOperand is PrimitiveCast lpc && lpc.CastType?.Name == "string")
+            if (node.Operator.OperatorType is TokenType.AtSign or TokenType.DollarSign && node.LeftOperand is PrimitiveCast { CastType: { Name: "string" } } lpc)
             {
                 lpc.CastTarget.AcceptVisitor(this);
             }
@@ -1114,9 +1112,9 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 node.LeftOperand.AcceptVisitor(this);
             }
             Space();
-            Append(node.Operator.OperatorKeyword, EF.Operator);
+            Append(OperatorHelper.OperatorTypeToString(node.Operator.OperatorType), EF.Operator);
             Space();
-            if (node.Operator.OperatorKeyword switch { "@" => true, "$" => true, "@=" => true, "$=" => true, _ => false } && node.RightOperand is PrimitiveCast rpc && rpc.CastType?.Name == "string")
+            if (node.Operator.OperatorType is TokenType.AtSign or TokenType.DollarSign or TokenType.StrConcAssSpace or TokenType.StrConcatAssign && node.RightOperand is PrimitiveCast { CastType: { Name: "string" } } rpc)
             {
                 rpc.CastTarget.AcceptVisitor(this);
             }
@@ -1134,7 +1132,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         {
             ExpressionPrescedence.Push(1);
             // operatorkeywordExpression
-            Append(node.Operator.OperatorKeyword, EF.Operator);
+            Append(OperatorHelper.OperatorTypeToString(node.Operator.OperatorType), EF.Operator);
             node.Operand.AcceptVisitor(this);
 
             ExpressionPrescedence.Pop();
@@ -1146,7 +1144,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             ExpressionPrescedence.Push(NOPRESCEDENCE);
             // ExpressionOperatorkeyword
             node.Operand.AcceptVisitor(this);
-            Append(node.Operator.OperatorKeyword, EF.Operator);
+            Append(OperatorHelper.OperatorTypeToString(node.Operator.OperatorType), EF.Operator);
 
             ExpressionPrescedence.Pop();
             return true;
@@ -1524,11 +1522,11 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 if (floatString[0] == '-')
                 {
                     minus = "-";
-                    floatString = floatString.Substring(1, floatString.Length - 1);
+                    floatString = floatString[1..];
                 }
                 int ePos = floatString.IndexOf("E-");
-                int exponent = int.Parse(floatString.Substring(ePos + 2));
-                string digits = floatString.Substring(0, ePos).Replace(".", "");
+                int exponent = int.Parse(floatString[(ePos + 2)..]);
+                string digits = floatString[..ePos].Replace(".", "");
                 floatString = $"{minus}0.{new string('0', exponent - 1)}{digits}";
             }
             else if (!floatString.Contains(".") && !floatString.Contains("e"))
@@ -1665,7 +1663,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
         public bool VisitNode(DynamicArrayLiteral node)
         {
-            bool multiLine = !ForceNoNewLines && (node.Values.Any(expr => expr is StructLiteral or DynamicArrayLiteral) || node.Values.Count > 7);
+            bool multiLine = !ForceNoNewLines && (node.Values.Any(expr => expr is StructLiteral) || node.Values.Count > 7);
 
             bool oldForceNoNewLines = ForceNoNewLines;
             int oldForcedAlignment = ForcedAlignment;
@@ -2057,7 +2055,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
         public string GetOutput() => string.Join("\n", Lines.Append(currentLine));
 
-        public void Write(string text, EF _)
+        public virtual void Write(string text, EF _)
         {
             if (!ForceNoNewLines)
             {

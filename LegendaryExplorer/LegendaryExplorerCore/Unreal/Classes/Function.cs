@@ -248,7 +248,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
         public void ParseFunction()
         {
             int byteCodeStartPos = export.IsClass ? 0x18 : 0x20;
-            var parsedData = Bytecode.ParseBytecode(script, export, byteCodeStartPos);
+            var parsedData = Bytecode.ParseBytecode(script, export);
             ScriptBlocks = parsedData.Item1;
             SingularTokenList = parsedData.Item2;
 

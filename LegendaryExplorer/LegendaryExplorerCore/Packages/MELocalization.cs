@@ -62,29 +62,69 @@ namespace LegendaryExplorerCore.Packages
         }
 
         /// <summary>
+        /// Strips the localized suffix off the input string. 
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        public static string StripUnrealLocalization(this string str)
+        {
+            var localization = str.GetUnrealLocalization();
+            if (localization == MELocalization.None) return str;
+
+            // Store where the new string should be written to
+            var filenamePos = str.LastIndexOf(Path.GetFileNameWithoutExtension(str), StringComparison.InvariantCultureIgnoreCase);
+
+            // Store the extension, which may be empty.
+            var extension = Path.GetExtension(str);
+
+            string localizationName = Path.GetFileNameWithoutExtension(str);
+            var locPosTemp = localizationName.LastIndexOf("_", StringComparison.InvariantCultureIgnoreCase); // This will not account for _LOC_ so we will trim that in a second pass.
+
+            // This shouldn't happen, so I'm not going to check for index here if it's not found
+            localizationName = localizationName.Substring(0, locPosTemp);
+
+            if (localizationName.EndsWith(@"_LOC", StringComparison.InvariantCultureIgnoreCase))
+            {
+                // Remove '_LOC_'
+                localizationName = localizationName.Substring(0, localizationName.Length - 4);
+            }
+
+            // Restore the extension
+            localizationName += extension;
+
+            if (filenamePos > 0)
+            {
+                // prepend the original string (e.g. it's a path)
+                return str.Substring(0, filenamePos) + localizationName;
+            }
+            return localizationName;
+        }
+
+
+        /// <summary>
         /// Attempts to determine the localization of the given string. Localizations end with either LOC_[LANG] or just _[LANG].
         /// </summary>
         /// <param name="str">The string to check against</param>
-        /// <returns>The MELocalization enum that corresponds to the matchingl ocalization. If none match, <see cref="MELocalization.None"/> is returned</returns>
+        /// <returns>The MELocalization enum that corresponds to the matching localization. If none match, <see cref="MELocalization.None"/> is returned</returns>
         public static MELocalization GetUnrealLocalization(this string str)
         {
             string localizationName = Path.GetFileNameWithoutExtension(str).ToUpper();
             //if (localizationName.Length > 8)
             //{
-                var loc = localizationName.LastIndexOf("LOC_", StringComparison.OrdinalIgnoreCase);
-                if (loc > 0)
+            var loc = localizationName.LastIndexOf("LOC_", StringComparison.OrdinalIgnoreCase);
+            if (loc > 0 && loc >= localizationName.Length - 6) // technically this is 7 for ME2/ME3 (ME1 uses 2 letter)
+            {
+                localizationName = localizationName.Substring(loc);
+            }
+            else
+            {
+                loc = localizationName.LastIndexOf("_", StringComparison.OrdinalIgnoreCase);
+                if (loc > 0 && localizationName.Length > loc + 1)
                 {
-                    localizationName = localizationName.Substring(loc);
+                    // End of file might be RA, like Startup_RA, or salarian_ss_FR.pcc
+                    localizationName = localizationName.Substring(loc + 1);
                 }
-                else
-                {
-                    loc = localizationName.LastIndexOf("_", StringComparison.OrdinalIgnoreCase);
-                    if (loc > 0 && localizationName.Length > loc + 1)
-                    {
-                        // End of file might be RA, like Startup_RA, or salarian_ss_FR.pcc
-                        localizationName = localizationName.Substring(loc + 1);
-                    }
-                }
+            }
             //}
 
             // Combined basegame startup files don't use the _LOC_ extension.
@@ -121,6 +161,7 @@ namespace LegendaryExplorerCore.Packages
                 case "LOC_JPN":
                     return MELocalization.JPN;
                 case "PL":
+                case "POL":
                 case "PLPC":
                 case "LOC_POL":
                 case "LOC_PLPC":

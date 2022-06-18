@@ -43,8 +43,7 @@ namespace LegendaryExplorerCore.Tests
             foreach (var tlkFilePath in tlks)
             {
                 Debug.WriteLine($"Opening TLK file {tlkFilePath}");
-                var tf = new ME2ME3TalkFile();
-                tf.LoadTlkData(tlkFilePath);
+                var tf = new ME2ME3TalkFile(tlkFilePath);
                 TestTalkFile(tf, null, tlkFilePath);
             }
         }

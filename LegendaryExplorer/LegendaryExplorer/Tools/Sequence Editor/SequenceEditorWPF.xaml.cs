@@ -7,14 +7,11 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using UMD.HCIL.GraphEditor;
-using UMD.HCIL.Piccolo;
-using UMD.HCIL.Piccolo.Event;
-using UMD.HCIL.Piccolo.Nodes;
 using Color = System.Drawing.Color;
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
@@ -44,6 +41,9 @@ using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Kismet;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
+using Piccolo;
+using Piccolo.Event;
+using Piccolo.Nodes;
 
 namespace LegendaryExplorer.Tools.Sequence_Editor
 {
@@ -52,11 +52,11 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
     /// </summary>
     public partial class SequenceEditorWPF : WPFBase, IRecents
     {
-        private readonly GraphEditor graphEditor;
+        private readonly SequenceGraphEditor graphEditor;
         public ObservableCollectionExtended<SObj> CurrentObjects { get; } = new();
         public ObservableCollectionExtended<SObj> SelectedObjects { get; } = new();
         public ObservableCollectionExtended<ExportEntry> SequenceExports { get; } = new();
-        public ObservableCollectionExtended<TreeViewEntry> TreeViewRootNodes { get; set; } = new();
+        public ObservableCollectionExtended<TreeViewEntry> TreeViewRootNodes { get; } = new();
         public string CurrentFile;
         public string JSONpath;
 
@@ -102,7 +102,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
 
             RecentsController.InitRecentControl(Toolname, Recents_MenuItem, LoadFile);
 
-            graphEditor = (GraphEditor)GraphHost.Child;
+            graphEditor = (SequenceGraphEditor)GraphHost.Child;
             graphEditor.BackColor = GraphEditorBackColor;
             graphEditor.Camera.MouseDown += backMouseDown_Handler;
             graphEditor.Camera.MouseUp += back_MouseUp;
@@ -111,11 +111,18 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             graphEditor.DragDrop += SequenceEditor_DragDrop;
             graphEditor.DragEnter += SequenceEditor_DragEnter;
 
-            commonToolBox.DoubleClickCallback = CreateNewObject;
+            favoritesToolBox.DoubleClickCallback = CreateNewObject;
             eventsToolBox.DoubleClickCallback = CreateNewObject;
             actionsToolBox.DoubleClickCallback = CreateNewObject;
             conditionsToolBox.DoubleClickCallback = CreateNewObject;
             variablesToolBox.DoubleClickCallback = CreateNewObject;
+
+            favoritesToolBox.ShiftClickCallback = RemoveFavorite;
+            eventsToolBox.ShiftClickCallback = SetFavorite;
+            actionsToolBox.ShiftClickCallback = SetFavorite;
+            conditionsToolBox.ShiftClickCallback = SetFavorite;
+            variablesToolBox.ShiftClickCallback = SetFavorite;
+
 
             AutoSaveView_MenuItem.IsChecked = Settings.SequenceEditor_AutoSaveViewV2;
             ShowOutputNumbers_MenuItem.IsChecked = Settings.SequenceEditor_ShowOutputNumbers;
@@ -144,6 +151,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
         public ICommand SearchCommand { get; set; }
         public ICommand ForceReloadPackageCommand { get; set; }
 
+        public ICommand ResetFavoritesCommand { get; set; }
         private void LoadCommands()
         {
             ForceReloadPackageCommand = new GenericCommand(ForceReloadPackageWithoutSharing, CanForceReload);
@@ -160,6 +168,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             ConvertSeqActLogCommentCommand = new GenericCommand(() => SequenceEditorExperimentsM.ConvertSeqAct_Log_objComments(Pcc), () => SequenceExports.Any);
             SearchCommand = new GenericCommand(SearchDialogue, () => CurrentObjects.Any);
             UseSavedViewsCommand = new GenericCommand(ToggleSavedViews, () => Pcc != null && Pcc is { Game: MEGame.ME1 } || Pcc.Game.IsLEGame());
+            ResetFavoritesCommand = new GenericCommand(ResetFavorites, () => Pcc != null);
         }
 
         private void ToggleSavedViews()
@@ -521,17 +530,67 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
         {
             if (Pcc != null)
             {
-                commonToolBox.Classes = SequenceObjectCreator.GetCommonObjects(Pcc.Game).OrderBy(info => info.ClassName)
-                    .ToList();
-                eventsToolBox.Classes = SequenceObjectCreator.GetSequenceEvents(Pcc.Game).OrderBy(info => info.ClassName)
-                    .ToList();
-                actionsToolBox.Classes = SequenceObjectCreator.GetSequenceActions(Pcc.Game).OrderBy(info => info.ClassName)
-                    .ToList();
-                conditionsToolBox.Classes = SequenceObjectCreator.GetSequenceConditions(Pcc.Game)
-                    .OrderBy(info => info.ClassName).ToList();
-                variablesToolBox.Classes = SequenceObjectCreator.GetSequenceVariables(Pcc.Game)
-                    .OrderBy(info => info.ClassName).ToList();
+                favoritesToolBox.Classes.ClearEx();
+                favoritesToolBox.Classes.AddRange(GetSavedFavorites());
+                eventsToolBox.Classes.ClearEx();
+                eventsToolBox.Classes.AddRange(SequenceObjectCreator.GetSequenceEvents(Pcc.Game).OrderBy(info => info.ClassName));
+                actionsToolBox.Classes.ClearEx();
+                actionsToolBox.Classes.AddRange(SequenceObjectCreator.GetSequenceActions(Pcc.Game).OrderBy(info => info.ClassName));
+                conditionsToolBox.Classes.ClearEx();
+                conditionsToolBox.Classes.AddRange(SequenceObjectCreator.GetSequenceConditions(Pcc.Game).OrderBy(info => info.ClassName));
+                variablesToolBox.Classes.ClearEx();
+                variablesToolBox.Classes.AddRange(SequenceObjectCreator.GetSequenceVariables(Pcc.Game).OrderBy(info => info.ClassName));
             }
+        }
+
+        private IEnumerable<ClassInfo> GetSavedFavorites()
+        {
+            if (Pcc != null)
+            {
+                var setting = Settings.Get_SequenceEditor_Favorites(Pcc.Game);
+                var classes = setting.Split(";");
+                return classes.Select(className => GlobalUnrealObjectInfo.GetClassOrStructInfo(Pcc.Game, className)).NonNull().OrderBy(info => info.ClassName);
+            }
+            return Array.Empty<ClassInfo>();
+        }
+
+        private void SaveFavorites()
+        {
+            if (Pcc != null)
+            {
+                var classes = favoritesToolBox.Classes.Select(cl => cl.ClassName);
+                var favorites = new StringBuilder();
+                foreach (var cl in classes)
+                {
+                    favorites.Append(cl + ";");
+                }
+                if (favorites.Length > 0) favorites.Remove(favorites.Length - 1, 1);
+                Settings.Set_SequenceEditor_Favorites(Pcc.Game, favorites.ToString());
+            }
+        }
+
+        private void SetFavorite(ClassInfo classInfo)
+        {
+            if (!favoritesToolBox.Classes.Contains(classInfo))
+            {
+                favoritesToolBox.Classes.Add(classInfo);
+                favoritesToolBox.Classes.Sort(cl => cl.ClassName);
+                SaveFavorites();
+            }
+        }
+
+        private void RemoveFavorite(ClassInfo classInfo)
+        {
+            favoritesToolBox.Classes.Remove(classInfo);
+            SaveFavorites();
+        }
+
+        private void ResetFavorites()
+        {
+            favoritesToolBox.Classes.Clear();
+            favoritesToolBox.Classes.AddRange(SequenceObjectCreator.GetCommonObjects(Pcc.Game)
+                .OrderBy(info => info.ClassName));
+            SaveFavorites();
         }
 
         public void LoadFileFromStream(Stream stream, string associatedFilePath, int goToIndex = 0)
@@ -590,7 +649,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
 
         private void LoadSequences()
         {
-            TreeViewRootNodes.ClearEx();
+            ResetTreeView();
             var prefabs = new Dictionary<string, TreeViewEntry>();
             foreach (var export in Pcc.Exports)
             {
@@ -636,6 +695,15 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                     }
                 }
             }
+        }
+
+        private void ResetTreeView()
+        {
+            foreach (TreeViewEntry tvi in TreeViewRootNodes.SelectMany(node => node.FlattenTree()))
+            {
+                tvi.Dispose();
+            }
+            TreeViewRootNodes.ClearEx();
         }
 
         private TreeViewEntry FindSequences(ExportEntry rootSeq, bool wantFullName = false)
@@ -957,7 +1025,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 {
                     foreach (SeqEdEdge edge in graphEditor.edgeLayer)
                     {
-                        GraphEditor.UpdateEdge(edge);
+                        SequenceGraphEditor.UpdateEdge(edge);
                     }
                 }
             }
@@ -1023,7 +1091,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             if (firstNode != null) objsToLayout.OffsetBy(0, -firstNode.OffsetY);
 
             foreach (SeqEdEdge edge in graphEditor.edgeLayer)
-                GraphEditor.UpdateEdge(edge);
+                SequenceGraphEditor.UpdateEdge(edge);
 
 
             void LayoutTree(SBox sAction, float verticalSpacing)
@@ -1046,7 +1114,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 var vars = new List<SVar>();
                 foreach (var varLink in root.Varlinks)
                 {
-                    float dx = varLink.node.GlobalFullBounds.X - SVar.RADIUS;
+                    float dx = varLink.Node.GlobalFullBounds.X - SVar.RADIUS;
                     float dy = root.GlobalFullHeight + VAR_SPACING;
                     foreach (int uIndex in varLink.Links.Where(uIndex => !visitedNodes.Contains(uIndex)))
                     {
@@ -1166,7 +1234,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             }
         }
 
-        public override void handleUpdate(List<PackageUpdate> updates)
+        public override void HandleUpdate(List<PackageUpdate> updates)
         {
             if (Pcc == null)
             {
@@ -1629,9 +1697,9 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 switch (sObj)
                 {
                     case SVar sVar:
-                        foreach (VarEdge edge in sVar.connections)
+                        foreach (VarEdge edge in sVar.Connections)
                         {
-                            edge.originator.RemoveVarlink(edge);
+                            edge.Originator.RemoveVarlink(edge);
                         }
                         break;
                     case SAction sAction:
@@ -1639,14 +1707,14 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                         {
                             foreach (ActionEdge edge in inLink.Edges)
                             {
-                                edge.originator.RemoveOutlink(edge);
+                                edge.Originator.RemoveOutlink(edge);
                             }
                         }
                         break;
                     case SEvent sEvent:
-                        foreach (EventEdge edge in sEvent.connections)
+                        foreach (EventEdge edge in sEvent.Connections)
                         {
-                            edge.originator.RemoveEventlink(edge);
+                            edge.Originator.RemoveEventlink(edge);
                         }
                         break;
                 }
@@ -1675,7 +1743,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
         {
             if (sender is SObj obj)
             {
-                obj.posAtDragStart = obj.GlobalFullBounds;
+                obj.PosAtDragStart = obj.GlobalFullBounds;
                 if (e.Button == System.Windows.Forms.MouseButtons.Right)
                 {
                     panToSelection = false;
@@ -1712,7 +1780,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
         {
             if (sender is SObj obj)
             {
-                if (e.Button != System.Windows.Forms.MouseButtons.Left && obj.GlobalFullBounds == obj.posAtDragStart)
+                if (e.Button != System.Windows.Forms.MouseButtons.Left && obj.GlobalFullBounds == obj.PosAtDragStart)
                 {
                     if (!e.Shift && !e.Control)
                     {
@@ -1754,6 +1822,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 x.Dispose();
             });
             CurrentObjects.Clear();
+            ResetTreeView();
             graphEditor.Dispose();
             Properties_InterpreterWPF.Dispose();
             GraphHost.Child = null; //This seems to be required to clear OnChildGotFocus handler from WinFormsHost

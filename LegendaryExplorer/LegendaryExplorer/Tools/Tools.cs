@@ -30,6 +30,7 @@ using LegendaryExplorerCore.Packages;
 using System.Text;
 using LegendaryExplorer.Tools.ClassViewer;
 using LegendaryExplorer.Tools.PlotDatabase;
+using LegendaryExplorer.Tools.ScriptDebugger;
 
 namespace LegendaryExplorer
 {
@@ -199,6 +200,62 @@ namespace LegendaryExplorer
                 tags = new List<string> { "utility" },
                 category = "Utilities",
                 description = "Live Level Editor allows you to preview the effect of property changes to Actors in game, to reduce iteration times. It also has a Camera Path Editor, which lets you make camera pans quickly."
+            });
+
+#if DEBUG
+            set.Add(new Tool
+            {
+                name = "Live Level Editor 2",
+                type = typeof(Tools.LiveLevelEditor.LiveLevelEditorWindow2),
+                icon = Application.Current.FindResource("iconLiveLevelEditor") as ImageSource,
+                open = () =>
+                {
+                    var gameStr = InputComboBoxWPF.GetValue(null, "Choose game you want to use Live Level Editor 2 with.", "Live Level Editor 2 game selector",
+                        new[] { "ME3", "ME2", "LE1" }, "ME3");
+
+                    if (Enum.TryParse(gameStr, out MEGame game))
+                    {
+                        if (Tools.LiveLevelEditor.LiveLevelEditorWindow2.Instance(game) is { } instance)
+                        {
+                            instance.RestoreAndBringToFront();
+                        }
+                        else
+                        {
+                            (new Tools.LiveLevelEditor.LiveLevelEditorWindow2(game)).Show();
+                        }
+                    }
+                },
+                tags = new List<string> { "utility" },
+                category = "Utilities",
+                description = "IN DEVELOPMENT: Live Level Editor allows you to preview the effect of property changes to Actors in game, to reduce iteration times. It also has a Camera Path Editor, which lets you make camera pans quickly."
+            });
+#endif
+
+            set.Add(new Tool
+            {
+                name = "Script Debugger",
+                type = typeof(ScriptDebuggerWindow),
+                icon = Application.Current.FindResource("iconScriptDebugger") as ImageSource,
+                open = () =>
+                {
+                    var gameStr = InputComboBoxWPF.GetValue(null, "Choose game you want to use Script Debugger with.", "Script Debugger game selector",
+                        new[] { "LE1", "LE2" }, "LE2");
+
+                    if (Enum.TryParse(gameStr, out MEGame game))
+                    {
+                        if (ScriptDebuggerWindow.Instance(game) is { } instance)
+                        {
+                            instance.RestoreAndBringToFront();
+                        }
+                        else
+                        {
+                            (new ScriptDebuggerWindow(game)).Show();
+                        }
+                    }
+                },
+                tags = new List<string> { "utility", "unrealscript" },
+                category = "Utilities",
+                description = "Script Debugger lets you debug your UnrealScript for Legendary Edition games. Set breakpoints, step through code, and inspect and change the values of local and instance variables"
             });
             set.Add(new Tool
             {

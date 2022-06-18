@@ -8,7 +8,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
     {
         public Expression Value;
 
-        public ReturnStatement(Expression value = null, SourcePosition start = null, SourcePosition end = null)
+        public ReturnStatement(Expression value = null, int start = -1, int end = -1)
             : base(ASTNodeType.ReturnStatement, start, end)
         {
             Value = value;

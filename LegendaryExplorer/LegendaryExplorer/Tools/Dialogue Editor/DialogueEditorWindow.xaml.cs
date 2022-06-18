@@ -29,9 +29,6 @@ using LegendaryExplorer.Tools.Soundplorer;
 using LegendaryExplorer.Tools.TlkManagerNS;
 using LegendaryExplorer.UnrealExtensions;
 using LegendaryExplorer.UserControls.SharedToolControls;
-using UMD.HCIL.Piccolo;
-using UMD.HCIL.Piccolo.Event;
-using UMD.HCIL.Piccolo.Nodes;
 using static LegendaryExplorer.Tools.TlkManagerNS.TLKManagerWPF;
 using Key = System.Windows.Input.Key;
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
@@ -45,6 +42,9 @@ using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
 using LegendaryExplorerCore.PlotDatabase;
+using Piccolo;
+using Piccolo.Event;
+using Piccolo.Nodes;
 
 namespace LegendaryExplorer.DialogueEditor
 {
@@ -862,34 +862,21 @@ namespace LegendaryExplorer.DialogueEditor
                     {
                         if (Pcc.Game.IsGame3())
                         {
-                            m_aSpeakerList.Add(new NameProperty(spkr.SpeakerName, "m_aSpeakerList"));
+                            m_aSpeakerList.Add(new NameProperty(spkr.SpeakerNameRef, "m_aSpeakerList"));
                         }
                         else
                         {
                             m_SpeakerList.Add(new StructProperty("BioDialogSpeaker", new PropertyCollection
                             {
-                                new NameProperty(spkr.SpeakerName, "sSpeakerTag"),
+                                new NameProperty(spkr.SpeakerNameRef, "sSpeakerTag"),
                                 new NoneProperty()
                             }));
                         }
                     }
 
-                    if (spkr.FaceFX_Male == null)
-                    {
-                        m_aMaleFaceSets.Add(new ObjectProperty(0));
-                    }
-                    else
-                    {
-                        m_aMaleFaceSets.Add(new ObjectProperty(spkr.FaceFX_Male));
-                    }
-                    if (spkr.FaceFX_Female == null)
-                    {
-                        m_aFemaleFaceSets.Add(new ObjectProperty(0));
-                    }
-                    else
-                    {
-                        m_aFemaleFaceSets.Add(new ObjectProperty(spkr.FaceFX_Female));
-                    }
+
+                    m_aMaleFaceSets.Add(new ObjectProperty(spkr.FaceFX_Male));
+                    m_aFemaleFaceSets.Add(new ObjectProperty(spkr.FaceFX_Female));
                 }
 
                 if (m_aSpeakerList.Count > 0 && Pcc.Game.IsGame3())
@@ -986,7 +973,7 @@ namespace LegendaryExplorer.DialogueEditor
         #endregion RecreateToFile
 
         #region Handling-updates
-        public override void handleUpdate(List<PackageUpdate> updates)
+        public override void HandleUpdate(List<PackageUpdate> updates)
         {
             if (Pcc == null || IsLocalUpdate)
             {
@@ -1904,7 +1891,7 @@ namespace LegendaryExplorer.DialogueEditor
                 Start_ListBoxUpdate();
 
                 ListenersList.ClearEx();
-                ListenersList.Add(new SpeakerExtended(-3, "none"));
+                ListenersList.Add(new SpeakerExtended(-3, "None"));
                 foreach (var spkr in SelectedSpeakerList)
                 {
                     ListenersList.Add(spkr);
@@ -2036,7 +2023,7 @@ namespace LegendaryExplorer.DialogueEditor
                 if (dlg != MessageBoxResult.No)
                 {
                     Keyboard.ClearFocus();
-                    SelectedSpeakerList[Speakers_ListBox.SelectedIndex].SpeakerName = SelectedSpeaker.SpeakerName;
+                    SelectedSpeakerList[Speakers_ListBox.SelectedIndex].SpeakerNameRef = SelectedSpeaker.SpeakerNameRef;
                     SelectedSpeaker.StrRefID = LookupTagRef(SelectedSpeaker.SpeakerName);
                     SelectedSpeaker.FriendlyName = GlobalFindStrRefbyID(SelectedSpeakerList[Speakers_ListBox.SelectedIndex].StrRefID, Pcc);
 
@@ -2049,10 +2036,11 @@ namespace LegendaryExplorer.DialogueEditor
             int maxID = SelectedSpeakerList.Max(x => x.SpeakerID);
             var ndlg = new PromptDialog("Enter the new actors tag", "Add a speaker", "Actor_Tag");
             ndlg.ShowDialog();
-            if (ndlg.ResponseText == null || ndlg.ResponseText == "Actor_Tag")
+            if (ndlg.ResponseText is null or "Actor_Tag")
                 return;
-            Pcc.FindNameOrAdd(ndlg.ResponseText);
-            SelectedSpeakerList.Add(new SpeakerExtended(maxID + 1, ndlg.ResponseText, null, null, 0, "No Data"));
+            var speakerName = NameReference.FromInstancedString(ndlg.ResponseText);
+            Pcc.FindNameOrAdd(speakerName.Name);
+            SelectedSpeakerList.Add(new SpeakerExtended(maxID + 1, speakerName, null, null, 0, "No Data"));
             SaveSpeakersToProperties(SelectedSpeakerList);
         }
         private void SpeakerDelete()
@@ -2315,6 +2303,7 @@ namespace LegendaryExplorer.DialogueEditor
         }
         private void DialogueNode_Selected(DiagNode obj)
         {
+            SetUIMode(2);
             foreach (var oldselection in SelectedObjects)
             {
                 oldselection.IsSelected = false;
@@ -2946,7 +2935,6 @@ namespace LegendaryExplorer.DialogueEditor
                         }
                     }
                     DialogueNode_Selected(dreply);
-                    SetUIMode(2, false);
                     contextMenu.DataContext = this;
                     contextMenu.IsOpen = true;
                     graphEditor.DisableDragging();
@@ -3002,7 +2990,6 @@ namespace LegendaryExplorer.DialogueEditor
                         }
                     }
                     DialogueNode_Selected(dentry);
-                    SetUIMode(2, false);
                     contextMenu.DataContext = this;
                     contextMenu.IsOpen = true;
                     graphEditor.DisableDragging();

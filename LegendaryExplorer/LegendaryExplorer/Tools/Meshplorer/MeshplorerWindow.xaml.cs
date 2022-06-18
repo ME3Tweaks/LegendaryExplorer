@@ -458,13 +458,13 @@ namespace LegendaryExplorer.Tools.Meshplorer
         private bool IsMeshSelected() => Mesh3DViewer.IsStaticMesh || Mesh3DViewer.IsSkeletalMesh;
         private bool IsSkeletalMeshSelected() => Mesh3DViewer.IsSkeletalMesh;
 
-        private bool CanConvertToStaticMesh() => Mesh3DViewer.IsSkeletalMesh && Pcc.Game == MEGame.ME3;
+        private bool CanConvertToStaticMesh() => Mesh3DViewer.IsSkeletalMesh && (Pcc.Game is MEGame.ME3 || Pcc.Game.IsLEGame());
 
         private void ConvertToStaticMesh()
         {
             if (CurrentExport.ClassName == "SkeletalMesh")
             {
-                StaticMesh stm = CurrentExport.GetBinaryData<SkeletalMesh>().ConvertToME3StaticMesh();
+                StaticMesh stm = CurrentExport.GetBinaryData<SkeletalMesh>().ConvertToME3LEStaticMesh();
                 CurrentExport.Class = Pcc.getEntryOrAddImport("Engine.StaticMesh");
                 CurrentExport.WritePropertiesAndBinary(new PropertyCollection
                 {
@@ -551,6 +551,7 @@ namespace LegendaryExplorer.Tools.Meshplorer
                     CurrentExport = MeshExports.FirstOrDefault(x => x.UIndex == goToIndex);
                     ExportQueuedForFocusing = CurrentExport;
                 }
+                Mesh3DViewer.SceneViewer.SetShouldRender(true); // Set it to enable rendering
             }
             catch (Exception e)
             {
@@ -562,7 +563,7 @@ namespace LegendaryExplorer.Tools.Meshplorer
             }
         }
 
-        public override void handleUpdate(List<PackageUpdate> updates)
+        public override void HandleUpdate(List<PackageUpdate> updates)
         {
             if (updates.Any(update => update.Change == PackageChange.ExportData && update.Index == CurrentExport.UIndex)
              && Mesh3DViewer.CanParse(CurrentExport))
@@ -626,7 +627,7 @@ namespace LegendaryExplorer.Tools.Meshplorer
                 // Note that you can have more than one file.
                 var files = (string[])e.Data.GetData(DataFormats.FileDrop);
                 string ext = Path.GetExtension(files[0]).ToLower();
-                if (ext == ".upk" || ext == ".pcc" || ext == ".sfm")
+                if (ext is ".upk" or ".pcc" or ".sfm")
                 {
                     LoadFile(files[0]);
                 }

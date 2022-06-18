@@ -22,6 +22,7 @@
   <PropertyGroup Condition="'$(Configuration)'=='WinRelease'">
     <DebugType>embedded</DebugType>
     <DebugSymbols>true</DebugSymbols>
+	<Optimize>false</Optimize>
     <DefineConstants>WINDOWS</DefineConstants>
   </PropertyGroup>
 
@@ -29,6 +30,7 @@
   <PropertyGroup Condition="'$(Configuration)'=='WinAzureRelease'">
     <DebugType>embedded</DebugType>
     <DebugSymbols>true</DebugSymbols>
+	<Optimize>true</Optimize>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DefineConstants>WINDOWS;NIGHTLY</DefineConstants>
   </PropertyGroup>

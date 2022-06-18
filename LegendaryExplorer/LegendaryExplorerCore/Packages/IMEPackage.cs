@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
+using LegendaryExplorerCore.Gammtek.Collections.Specialized;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.TLK.ME1;
@@ -220,13 +220,29 @@ namespace LegendaryExplorerCore.Packages
         void RemoveTrailingTrash();
 
         byte[] getHeader();
-        ObservableCollection<IPackageUser> Users { get; }
-        List<IPackageUser> WeakUsers { get; }
+
+        /// <summary>
+        /// Collection of <see cref="IPackageUser"/>s that are using this <see cref="IMEPackage"/>. Use <see cref="RegisterTool"/> and <see cref="Release"/> to modify this collection.
+        /// </summary>
+        IReadOnlyCollection<IPackageUser> Users { get; }
+        /// <summary>
+        /// Collection of <see cref="IWeakPackageUser"/>s. This is for users that want to subscribe to package change notifications as long as the package is open,
+        /// but don't want to cause it to stay open if there are no other users. Unlike <see cref="Users"/>, this collection should be modified directly,
+        /// and since it only keeps weak references, users don't need to remove themselves before they fall out of scope.
+        /// </summary>
+        WeakCollection<IWeakPackageUser> WeakUsers { get; }
         void RegisterTool(IPackageUser user);
         void Release(IPackageUser user = null);
-        event UnrealPackageFile.MEPackageEventHandler noLongerOpenInTools;
+        /// <summary>
+        /// Invoked when <see cref="Users"/> becomes empty.
+        /// </summary>
+        event UnrealPackageFile.MEPackageEventHandler NoLongerOpenInTools;
         void RegisterUse();
-        event UnrealPackageFile.MEPackageEventHandler noLongerUsed;
+        /// <summary>
+        /// Invoked when usages drop tp 0. Every call to <see cref="RegisterTool"/> or <see cref="RegisterUse"/> adds a usage,
+        /// and every call to <see cref="Release"/> or <see cref="IDisposable.Dispose"/> subtracts a usage.
+        /// </summary>
+        event UnrealPackageFile.MEPackageEventHandler NoLongerUsed;
         MemoryStream SaveToStream(bool compress, bool includeAdditionalPackagesToCook = true, bool includeDependencyTable = true);
         List<ME1TalkFile> LocalTalkFiles { get; }
         public bool IsModified { get; internal set; }

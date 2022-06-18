@@ -168,7 +168,7 @@ namespace LegendaryExplorer.Tools.FaceFXEditor
             }
         }
 
-        public override void handleUpdate(List<PackageUpdate> updates)
+        public override void HandleUpdate(List<PackageUpdate> updates)
         {
             IEnumerable<PackageUpdate> relevantUpdates = updates.Where(x => x.Change.HasFlag(PackageChange.Export));
             List<int> updatedExports = relevantUpdates.Select(x => x.Index).ToList();
@@ -243,6 +243,7 @@ namespace LegendaryExplorer.Tools.FaceFXEditor
             SelectedExport = null;
             AnimSets.ClearEx();
             UnLoadMEPackage();
+            editorControl?.Dispose();
         }
 
         private void Window_DragOver(object sender, DragEventArgs e)

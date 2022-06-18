@@ -12,7 +12,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 
         public VariableType ExpressionType;
 
-        public ConditionalExpression(Expression cond, Expression first, Expression second, SourcePosition start, SourcePosition end)
+        public ConditionalExpression(Expression cond, Expression first, Expression second, int start, int end)
             : base(ASTNodeType.ConditionalExpression, start, end)
         {
             Condition = cond;

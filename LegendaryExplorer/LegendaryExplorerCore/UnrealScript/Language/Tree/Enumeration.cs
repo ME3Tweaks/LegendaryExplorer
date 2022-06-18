@@ -8,9 +8,9 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 {
     public class Enumeration : VariableType
     {
-        public List<EnumValue> Values;
+        public readonly List<EnumValue> Values;
         public Enumeration(string name, List<EnumValue> values,
-            SourcePosition start, SourcePosition end)
+            int start, int end)
             : base(name, start, end, EPropertyType.Byte)
         {
             Type = ASTNodeType.Enumeration;

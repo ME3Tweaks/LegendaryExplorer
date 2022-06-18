@@ -882,7 +882,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                             binData.Skip(14);
                             if (binData.ReadInt32() != 1111577667) //CTAB
                             {
-                                interestingExports.Add(new EntryStringPair(null,
+                                interestingExports.Add(new EntryStringPair((IEntry)null,
                                     $"{binData.Position - 4}: {filePath}"));
                                 return;
                             }
@@ -913,7 +913,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                             int normalParams = binData.ReadInt32();
                             if (normalParams != 0)
                             {
-                                interestingExports.Add(new EntryStringPair(null, $"{i}: {filePath}"));
+                                interestingExports.Add(new EntryStringPair((IEntry)null, $"{i}: {filePath}"));
                                 return;
                             }
 
@@ -923,7 +923,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                             int licenseeVersion = binData.ReadInt32();
                             if (unrealVersion != 684 || licenseeVersion != 194)
                             {
-                                interestingExports.Add(new EntryStringPair(null,
+                                interestingExports.Add(new EntryStringPair((IEntry)null,
                                     $"{binData.Position - 8}: {filePath}"));
                                 return;
                             }
@@ -935,7 +935,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     catch (Exception exception)
                     {
                         Console.WriteLine(exception);
-                        interestingExports.Add(new EntryStringPair(null, $"{filePath}\n{exception}"));
+                        interestingExports.Add(new EntryStringPair((IEntry)null, $"{filePath}\n{exception}"));
                     }
                 }
             }
@@ -1034,6 +1034,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                                 continue;
                             }
 
+                            if (!fileLib.ReInitializeFile())
+                            {
+                                interestingExports.Add(new EntryStringPair(exp, $"{pcc.FilePath} failed to re-initialize after compiling {$"#{exp.UIndex}",-9}"));
+                                return;
+                            }
                             if (!originalData.SequenceEqual(exp.Data))
                             {
                                 interestingExports.Add(exp);
@@ -1081,6 +1086,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                             {
                                 interestingExports.Add(exp);
                             }
+                            if (!fileLib.ReInitializeFile())
+                            {
+                                interestingExports.Add(new EntryStringPair(exp, $"{pcc.FilePath} failed to re-initialize after compiling {$"#{exp.UIndex}",-9}"));
+                                return;
+                            }
                         }
                         catch (Exception exception)
                         {
@@ -1126,6 +1136,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                                 comparisonDict[$"{exp.UIndex} {exp.FileRef.FilePath}"] = (originalData, exp.Data);
                                 interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {filePath}\nRecompilation does not match!"));
                             }
+                            if (!fileLib.ReInitializeFile())
+                            {
+                                interestingExports.Add(new EntryStringPair(exp, $"{pcc.FilePath} failed to re-initialize after compiling {$"#{exp.UIndex}",-9}"));
+                                return;
+                            }
                         }
                         else
                         {
@@ -1169,6 +1184,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                                 return;
                             }
 
+                            if (!fileLib.ReInitializeFile())
+                            {
+                                interestingExports.Add(new EntryStringPair(exp, $"{pcc.FilePath} failed to re-initialize after compiling {$"#{exp.UIndex}",-9}"));
+                                return;
+                            }
                             if (exp.EntryHasPendingChanges || exp.GetChildren().Any(entry => entry.EntryHasPendingChanges && entry.ClassName is not "ForceFeedbackWaveform") || pcc.FindEntry(UnrealPackageFile.TrashPackageName) is not null)
                             {
                                 interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {filePath}\nRecompilation does not match!"));
@@ -1223,6 +1243,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                                     return;
                                 }
 
+                                if (!fileLib.ReInitializeFile())
+                                {
+                                    interestingExports.Add(new EntryStringPair(exp, $"{pcc.FilePath} failed to re-initialize after compiling {$"#{exp.UIndex}",-9}"));
+                                    return;
+                                }
                                 if (exp.EntryHasPendingChanges || exp.GetAllDescendants().Any(entry => entry.EntryHasPendingChanges))
                                 {
                                     interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {filePath}\nRecompilation does not match!"));
@@ -1273,6 +1298,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                                     return;
                                 }
 
+                                if (!fileLib.ReInitializeFile())
+                                {
+                                    interestingExports.Add(new EntryStringPair(exp, $"{pcc.FilePath} failed to re-initialize after compiling {$"#{exp.UIndex}",-9}"));
+                                    return;
+                                }
                                 if (exp.EntryHasPendingChanges)
                                 {
                                     interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {filePath}\nRecompilation does not match!"));
@@ -1320,13 +1350,18 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                                     continue;
                                 }
                                 foundClasses.Add(instancedFullPath);
-                                (ASTNode ast, MessageLog log) = UnrealScriptCompiler.CompileClass(pcc, exp, script, fileLib, packageCache);
+                                (ASTNode ast, MessageLog log) = UnrealScriptCompiler.CompileClass(pcc, script, fileLib, exp, exp.Parent, packageCache);
                                 if (ast is not Class || log.HasErrors)
                                 {
                                     interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {pcc.FilePath}\nfailed to parse class!"));
                                     return;
                                 }
 
+                                if (!fileLib.ReInitializeFile())
+                                {
+                                    interestingExports.Add(new EntryStringPair(exp, $"{pcc.FilePath} failed to re-initialize after compiling {$"#{exp.UIndex}",-9}"));
+                                    return;
+                                }
                                 if (exp.EntryHasPendingChanges )//|| exp.GetAllDescendants().Any(entry => entry.EntryHasPendingChanges))
                                 {
                                     interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {filePath}\nRecompilation does not match!"));
@@ -1835,100 +1870,98 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
         public static void BuildNativeTable(PackageEditorWindow pewpf)
         {
-            pewpf.IsBusy = true;
-            pewpf.BusyText = "Building Native Tables";
-            Task.Run(() =>
-            {
-                foreach (MEGame game in new[] { MEGame.LE1, MEGame.LE2, MEGame.LE3 })
-                {
-                    string cookedPath = MEDirectories.GetCookedPath(game);
-                    var entries = new List<(int, string)>();
-                    foreach (string fileName in FileLib.BaseFileNames(game))
-                    {
-                        using IMEPackage pcc = MEPackageHandler.OpenMEPackage(Path.Combine(cookedPath, fileName));
-                        foreach (ExportEntry export in pcc.Exports.Where(exp => exp.ClassName == "Function"))
-                        {
-                            var func = export.GetBinaryData<UFunction>();
-                            ushort nativeIndex = func.NativeIndex;
-                            if (nativeIndex > 0)
-                            {
-                                NativeType type = NativeType.Function;
-                                if (func.FunctionFlags.Has(EFunctionFlags.PreOperator))
-                                {
-                                    type = NativeType.PreOperator;
-                                }
-                                else if (func.FunctionFlags.Has(EFunctionFlags.Operator))
-                                {
-                                    var nextItem = func.Children;
-                                    int paramCount = 0;
-                                    while (export.FileRef.TryGetUExport(nextItem, out ExportEntry nextChild))
-                                    {
-                                        var objBin = ObjectBinary.From(nextChild);
-                                        switch (objBin)
-                                        {
-                                            case UProperty uProperty:
-                                                if (uProperty.PropertyFlags.HasFlag(UnrealFlags.EPropertyFlags.ReturnParm))
-                                                {
-                                                }
-                                                else if (uProperty.PropertyFlags.HasFlag(UnrealFlags.EPropertyFlags.Parm))
-                                                {
-                                                    paramCount++;
-                                                }
-                                                nextItem = uProperty.Next;
-                                                break;
-                                            default:
-                                                nextItem = 0;
-                                                break;
-                                        }
-                                    }
+            //pewpf.IsBusy = true;
+            //pewpf.BusyText = "Building Native Tables";
+            //Task.Run(() =>
+            //{
+            //    foreach (MEGame game in new[] { MEGame.LE1, MEGame.LE2, MEGame.LE3 })
+            //    {
+            //        string cookedPath = MEDirectories.GetCookedPath(game);
+            //        var entries = new List<(int, string)>();
+            //        foreach (string fileName in FileLib.BaseFileNames(game))
+            //        {
+            //            using IMEPackage pcc = MEPackageHandler.OpenMEPackage(Path.Combine(cookedPath, fileName));
+            //            foreach (ExportEntry export in pcc.Exports.Where(exp => exp.ClassName == "Function"))
+            //            {
+            //                var func = export.GetBinaryData<UFunction>();
+            //                ushort nativeIndex = func.NativeIndex;
+            //                if (nativeIndex > 0)
+            //                {
+            //                    NativeType type = NativeType.Function;
+            //                    if (func.FunctionFlags.Has(EFunctionFlags.PreOperator))
+            //                    {
+            //                        type = NativeType.PreOperator;
+            //                    }
+            //                    else if (func.FunctionFlags.Has(EFunctionFlags.Operator))
+            //                    {
+            //                        var nextItem = func.Children;
+            //                        int paramCount = 0;
+            //                        while (export.FileRef.TryGetUExport(nextItem, out ExportEntry nextChild))
+            //                        {
+            //                            var objBin = ObjectBinary.From(nextChild);
+            //                            switch (objBin)
+            //                            {
+            //                                case UProperty uProperty:
+            //                                    if (uProperty.PropertyFlags.HasFlag(UnrealFlags.EPropertyFlags.ReturnParm))
+            //                                    {
+            //                                    }
+            //                                    else if (uProperty.PropertyFlags.HasFlag(UnrealFlags.EPropertyFlags.Parm))
+            //                                    {
+            //                                        paramCount++;
+            //                                    }
+            //                                    nextItem = uProperty.Next;
+            //                                    break;
+            //                                default:
+            //                                    nextItem = 0;
+            //                                    break;
+            //                            }
+            //                        }
 
-                                    type = paramCount == 1 ? NativeType.PostOperator : NativeType.Operator;
-                                }
+            //                        type = paramCount == 1 ? NativeType.PostOperator : NativeType.Operator;
+            //                    }
 
-                                string name = func.FriendlyName;
-                                if (game is MEGame.ME3 or MEGame.LE3)
-                                {
-                                    name = export.ObjectName;
-                                }
-                                entries.Add(nativeIndex, $"{{ 0x{nativeIndex:X}, new {nameof(NativeTableEntry)} {{ {nameof(NativeTableEntry.Name)}=\"{name}\", " +
-                                                         $"{nameof(NativeTableEntry.Type)}={nameof(NativeType)}.{type}, {nameof(NativeTableEntry.Precedence)}={func.OperatorPrecedence}}} }},");
-                            }
-                        }
-                    }
+            //                    string name = func.FriendlyName;
+            //                    if (game is MEGame.ME3 or MEGame.LE3)
+            //                    {
+            //                        name = export.ObjectName;
+            //                    }
+            //                    entries.Add(nativeIndex, $"{{ 0x{nativeIndex:X}, new {nameof(NativeTableEntry)} {{ {nameof(NativeTableEntry.Name)}=\"{name}\", " +
+            //                                             $"{nameof(NativeTableEntry.Type)}={nameof(NativeType)}.{type}, {nameof(NativeTableEntry.Precedence)}={func.OperatorPrecedence}}} }},");
+            //                }
+            //            }
+            //        }
 
-                    using var fileStream = new FileStream(Path.Combine(AppDirectories.ExecFolder, $"{game}NativeTable.cs"), FileMode.Create);
-                    using var writer = new CodeWriter(fileStream);
-                    writer.WriteLine("using System.Collections.Generic;");
-                    writer.WriteLine();
-                    writer.WriteBlock("namespace LegendaryExplorerCore.UnrealScript.Decompiling", () =>
-                    {
-                        writer.WriteBlock($"public partial class {nameof(ByteCodeDecompiler)}", () =>
-                        {
-                            if (game is MEGame.ME3 or MEGame.LE3)
-                            {
-                                writer.WriteLine("//TODO: Names need fixing for operators with symbols in name");
-                            }
-                            writer.WriteLine($"public static readonly Dictionary<int, {nameof(NativeTableEntry)}> {game}NativeTable = new() ");
-                            writer.WriteLine("{");
-                            writer.IncreaseIndent();
+            //        using var fileStream = new FileStream(Path.Combine(AppDirectories.ExecFolder, $"{game}NativeTable.cs"), FileMode.Create);
+            //        using var writer = new CodeWriter(fileStream);
+            //        writer.WriteLine("using System.Collections.Generic;");
+            //        writer.WriteLine();
+            //        writer.WriteBlock("namespace LegendaryExplorerCore.UnrealScript.Decompiling", () =>
+            //        {
+            //            writer.WriteBlock($"public partial class {nameof(ByteCodeDecompiler)}", () =>
+            //            {
+            //                if (game is MEGame.ME3 or MEGame.LE3)
+            //                {
+            //                    writer.WriteLine("//TODO: Names need fixing for operators with symbols in name");
+            //                }
+            //                writer.WriteLine($"public static readonly Dictionary<int, {nameof(NativeTableEntry)}> {game}NativeTable = new() ");
+            //                writer.WriteLine("{");
+            //                writer.IncreaseIndent();
 
-                            foreach ((_, string entry) in entries.OrderBy(tup => tup.Item1))
-                            {
-                                writer.WriteLine(entry);
-                            }
+            //                foreach ((_, string entry) in entries.OrderBy(tup => tup.Item1))
+            //                {
+            //                    writer.WriteLine(entry);
+            //                }
 
-                            writer.DecreaseIndent();
-                            writer.WriteLine("};");
-                        });
+            //                writer.DecreaseIndent();
+            //                writer.WriteLine("};");
+            //            });
 
-                    });
-                }
-            }).ContinueWithOnUIThread(_ =>
-            {
-                pewpf.IsBusy = false;
-            });
-
-
+            //        });
+            //    }
+            //}).ContinueWithOnUIThread(_ =>
+            //{
+            //    pewpf.IsBusy = false;
+            //});
         }
         class CodeWriter : IDisposable
         {
@@ -2199,6 +2232,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                             if (ast is not Struct s || log.HasErrors)
                             {
                                 throw new Exception();
+                            }
+                            if (!fileLib.ReInitializeFile())
+                            {
+                                exportsWithDecompilationErrors.Add(new EntryStringPair(export, $"{pew.Pcc.FilePath} failed to re-initialize after compiling {$"#{export.UIndex}",-9}"));
+                                return;
                             }
                         }
                         catch (Exception e)

@@ -577,17 +577,25 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
             public override HIRCObject Clone()
             {
-                Event clone = (Event)MemberwiseClone();
+                var clone = (Event)MemberwiseClone();
                 clone.EventActions = EventActions.Clone();
                 return clone;
             }
-            public static Event Create(SerializingContainer2 sc, uint id) =>
-                new Event
+            public static Event Create(SerializingContainer2 sc, uint id)
+            {
+                var list = new List<uint>();
+                int count = sc.Game.IsLEGame() ? sc.ms.ReadByte() : sc.ms.ReadInt32();
+                for (int i = 0; i < count; i++)
+                {
+                    list.Add(sc.ms.ReadUInt32());
+                }
+                return new Event
                 {
                     Type = HIRCType.Event,
                     ID = id,
-                    EventActions = Enumerable.Range(0, sc.Game.IsLEGame() ? sc.ms.ReadByte() : sc.ms.ReadInt32()).Select(i => (uint)sc.ms.ReadUInt32()).ToList()
+                    EventActions = list
                 };
+            }
         }
 
         public enum EventActionScope : byte

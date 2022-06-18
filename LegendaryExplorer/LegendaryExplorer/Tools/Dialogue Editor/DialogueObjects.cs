@@ -6,13 +6,13 @@ using System.Drawing;
 using System.Drawing.Text;
 using System.Windows.Forms;
 using LegendaryExplorerCore.Dialogue;
-using UMD.HCIL.Piccolo;
-using UMD.HCIL.Piccolo.Nodes;
-using UMD.HCIL.Piccolo.Event;
-using UMD.HCIL.Piccolo.Util;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
+using Piccolo;
+using Piccolo.Event;
+using Piccolo.Nodes;
+using Piccolo.Util;
 using static LegendaryExplorer.Tools.TlkManagerNS.TLKManagerWPF;
 
 namespace LegendaryExplorer.DialogueEditor
@@ -1187,12 +1187,12 @@ namespace LegendaryExplorer.DialogueEditor
             if (shadowRendering && paintContext.Scale >= 1 && base.Text != null && base.TextBrush != null && base.Font != null)
             {
                 Graphics g = paintContext.Graphics;
-                float renderedFontSize = base.Font.SizeInPoints * paintContext.Scale;
+                float renderedFontSize = FontSizeInPoints * paintContext.Scale;
                 if (renderedFontSize >= PUtil.GreekThreshold && renderedFontSize < PUtil.MaxFontSize)
                 {
                     RectangleF shadowbounds = Bounds;
                     shadowbounds.Offset(1, 1);
-                    StringFormat stringformat = new StringFormat { Alignment = base.TextAlignment };
+                    var stringformat = new StringFormat { Alignment = base.TextAlignment };
                     g.DrawString(base.Text, base.Font, black, shadowbounds, stringformat);
                 }
             }

@@ -9,6 +9,7 @@ using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Memory;
+using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using Newtonsoft.Json;
@@ -17,9 +18,9 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
 {
     public static class ME1UnrealObjectInfo
     {
-        public static Dictionary<string, ClassInfo> Classes = new();
-        public static Dictionary<string, ClassInfo> Structs = new();
-        public static Dictionary<string, List<NameReference>> Enums = new();
+        public static CaseInsensitiveDictionary<ClassInfo> Classes = new();
+        public static CaseInsensitiveDictionary<ClassInfo> Structs = new();
+        public static CaseInsensitiveDictionary<List<NameReference>> Enums = new();
         public static Dictionary<string, SequenceObjectInfo> SequenceObjects = new();
 
         public static bool IsLoaded;
@@ -155,88 +156,13 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             return null;
         }
 
-        public static ArrayType getArrayType(string className, NameReference propName, ExportEntry export = null)
-        {
-            PropertyInfo p = getPropertyInfo(className, propName, false, containingExport: export)
-                          ?? getPropertyInfo(className, propName, true, containingExport: export);
-            if (p == null && export != null)
-            {
-                if (export.Class is ExportEntry classExport)
-                {
-                    export = classExport;
-                }
-                if (export.IsClass)
-                {
-                    ClassInfo currentInfo = generateClassInfo(export);
-                    currentInfo.baseClass = export.SuperClassName;
-                    p = getPropertyInfo(className, propName, false, currentInfo, containingExport: export)
-                     ?? getPropertyInfo(className, propName, true, currentInfo, containingExport: export);
-                }
-            }
-            return getArrayType(p);
-        }
-
-        public static ArrayType getArrayType(PropertyInfo p)
-        {
-            if (p != null)
-            {
-                if (p.Reference == "NameProperty")
-                {
-                    return ArrayType.Name;
-                }
-                else if (Enums.ContainsKey(p.Reference))
-                {
-                    return ArrayType.Enum;
-                }
-                else if (p.Reference == "BoolProperty")
-                {
-                    return ArrayType.Bool;
-                }
-                else if (p.Reference == "ByteProperty")
-                {
-                    return ArrayType.Byte;
-                }
-                else if (p.Reference == "StrProperty")
-                {
-                    return ArrayType.String;
-                }
-                else if (p.Reference == "FloatProperty")
-                {
-                    return ArrayType.Float;
-                }
-                else if (p.Reference == "IntProperty")
-                {
-                    return ArrayType.Int;
-                }
-                else if (p.Reference == "StringRefProperty")
-                {
-                    return ArrayType.StringRef;
-                }
-                else if (Structs.ContainsKey(p.Reference))
-                {
-                    return ArrayType.Struct;
-                }
-                else
-                {
-                    return ArrayType.Object;
-                }
-            }
-            else
-            {
-                // Todo: Make this work with me3explorer app setting somehow
-                // Maybe CoreLib option?
-                //if (ME3Explorer.Properties.Settings.Default.PropertyParsingME1UnknownArrayAsObject) return ArrayType.Object;
-                return ArrayType.Int;
-            }
-        }
-
         public static PropertyInfo getPropertyInfo(string className, NameReference propName, bool inStruct = false, ClassInfo nonVanillaClassInfo = null, bool reSearch = true, ExportEntry containingExport = null)
         {
             if (className.StartsWith("Default__", StringComparison.OrdinalIgnoreCase))
             {
                 className = className.Substring(9);
             }
-            Dictionary<string, ClassInfo> temp = inStruct ? Structs : Classes;
+            var temp = inStruct ? Structs : Classes;
             bool infoExists = temp.TryGetValue(className, out ClassInfo info);
             if (!infoExists && nonVanillaClassInfo != null)
             {
@@ -322,7 +248,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 case PropertyType.BioMask4Property:
                     return new BioMask4Property(0, propName);
                 case PropertyType.ArrayProperty:
-                    switch (getArrayType(propInfo))
+                    switch (GlobalUnrealObjectInfo.GetArrayType(MEGame.ME1, propInfo))
                     {
                         case ArrayType.Object:
                             return new ArrayProperty<ObjectProperty>(propName);
@@ -372,6 +298,8 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             foreach (var filePath in allFiles)
             {
                 using IMEPackage pcc = MEPackageHandler.OpenME1Package(filePath);
+                if (pcc.Localization != MELocalization.None && pcc.Localization != MELocalization.INT)
+                    continue; // DO NOT LOOK AT NON-INT AS SOME GAMES WILL BE MISSING THESE FILES (due to backup/storage)
                 for (int j = 1; j <= pcc.ExportCount; j++)
                 {
                     ExportEntry exportEntry = pcc.GetUExport(j);
@@ -405,6 +333,8 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             foreach (string filePath in allFiles)
             {
                 using IMEPackage pcc = MEPackageHandler.OpenME1Package(filePath);
+                if (pcc.Localization != MELocalization.None && pcc.Localization != MELocalization.INT)
+                    continue; // DO NOT LOOK AT NON-INT AS SOME GAMES WILL BE MISSING THESE FILES (due to backup/storage)
                 foreach (ExportEntry exportEntry in pcc.Exports)
                 {
                     if (exportEntry.IsA("SequenceObject"))

@@ -17,7 +17,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Scanners
         public override void ScanExport(ExportScanInfo e, ConcurrentAssetDB db, AssetDBScanOptions options)
         {
             if (e.IsDefault) return;
-            if (e.ClassName == "SkeletalMesh" || e.ClassName == "StaticMesh")
+            if (e.ClassName is "SkeletalMesh" or "StaticMesh")
             {
                 var meshUsage = new MeshUsage(e.FileKey, e.Export.UIndex, e.IsMod);
                 if (db.GeneratedMeshes.ContainsKey(e.AssetKey))

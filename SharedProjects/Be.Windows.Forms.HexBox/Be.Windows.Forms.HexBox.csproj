@@ -48,6 +48,7 @@
   <PropertyGroup Condition="'$(Configuration)'=='WinRelease'">
     <DebugType>embedded</DebugType>
     <PlatformTarget>x64</PlatformTarget>
+	<Optimize>true</Optimize>
     <DefineConstants>WINDOWS</DefineConstants>
   </PropertyGroup>
 
@@ -56,6 +57,7 @@
     <DebugType>embedded</DebugType>
     <PlatformTarget>x64</PlatformTarget>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	<Optimize>true</Optimize>
     <DefineConstants>WINDOWS;NIGHTLY</DefineConstants>
   </PropertyGroup>
 

@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Pipes;
 using System.Security.Cryptography;
+using System.Threading;
+using System.Windows;
 using System.Windows.Input;
 using LegendaryExplorer.GameInterop.InteropTargets;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Misc.AppSettings;
+using LegendaryExplorerCore.Misc.ME3Tweaks;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
@@ -29,6 +33,26 @@ namespace LegendaryExplorer.GameInterop
             File.Copy(Path.Combine(AppDirectories.ExecFolder, GameController.InteropAsiName(game)), interopASIWritePath);
         }*/
 
+        /// <summary>
+        /// Checks if an ASI with the matching md5 is installd in the specified folder.
+        /// </summary>
+        /// <param name="md5"></param>
+        /// <param name="asiPath"></param>
+        /// <returns></returns>
+        private static bool IsASIInstalled(string md5ToMatch, string asiFolder)
+        {
+            if (Directory.Exists(asiFolder))
+            {
+                var files = Directory.GetFiles(asiFolder, "*.asi", SearchOption.TopDirectoryOnly);
+                foreach (var f in files)
+                {
+                    var md5 = CalculateMD5(f);
+                    if (md5 == md5ToMatch) return true;
+                }
+            }
+            return false;
+        }
+
         private static void DeletePreLEXInteropASI(MEGame game)
         {
             string asiDir = GetAsiDir(game);
@@ -50,7 +74,7 @@ namespace LegendaryExplorer.GameInterop
             return interopASIWritePath;
         }
 
-        private static string GetAsiDir(MEGame game)
+        public static string GetAsiDir(MEGame game)
         {
             string asiDir = MEDirectories.GetASIPath(game);
             Directory.CreateDirectory(asiDir);
@@ -97,7 +121,7 @@ namespace LegendaryExplorer.GameInterop
 
                 return File.Exists(binkPath) && File.Exists(originalBinkPath)
                                              && target.OriginalBinkMD5 == CalculateMD5(originalBinkPath)
-                                             && binkProductName.StartsWith("LEBinkProxy")
+                                             && binkProductName.StartsWith("LEBinkProxy", StringComparison.CurrentCultureIgnoreCase)
                                              && binkVersionInfo.ProductMajorPart >= 2;
             }
             return false;
@@ -111,9 +135,9 @@ namespace LegendaryExplorer.GameInterop
                 return false;
             }
             string asiDir = GetAsiDir(game);
-            string asiPath = Path.Combine(asiDir, "ConsoleExtension-v1.0.asi");
-            const string asiMD5 = "bce3183d90af020768bb98f9539467bd";
-            return File.Exists(asiPath) && asiMD5 == CalculateMD5(asiPath);
+
+            // Using source generator this might be possible to parse from asi mods endpoint on ME3Tweaks
+            return IsASIInstalled("bce3183d90af020768bb98f9539467bd", asiDir);
         }
 
         public static bool IsInteropASIInstalled(MEGame game)
@@ -124,9 +148,17 @@ namespace LegendaryExplorer.GameInterop
             }
 
             DeletePreLEXInteropASI(game);
-            string asiPath = GetInteropAsiWritePath(game);
+
+            // 05/15/2022
+            // Change to scanning for matching md5
+            // This way you can install an asi with any name and it will determine if another same-asi
+            // is installed (this won't handle different builds/versions like mod manager but it's better
+            // than not doing any check at all)
+            // - Mgamerz
+
+            string asiDir = GetAsiDir(game);
             string asiMD5 = GameController.GetInteropTargetForGame(game).InteropASIMD5;
-            return File.Exists(asiPath) && asiMD5 == CalculateMD5(asiPath);
+            return IsASIInstalled(asiMD5, asiDir);
         }
 
         //https://stackoverflow.com/a/10520086
@@ -138,9 +170,34 @@ namespace LegendaryExplorer.GameInterop
             return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
         }
 
-        public static void OpenASILoaderDownload()
+        public static void OpenASILoaderDownload(MEGame game)
         {
-            HyperlinkExtensions.OpenURL("https://github.com/Erik-JS/masseffect-binkw32");
+            // 06/06/2022 
+            // Allow bink installation request from ME3TweaksModManager if 
+            // the build number is 126 or higher (ME3Tweaks Mod Manager 8.0 Beta 3 - June 06 2022)
+
+            bool requestedInstall = false;
+            if (ModManagerIntegration.GetModManagerBuildNumber() >= 126)
+            {
+                requestedInstall = ModManagerIntegration.RequestBinkInstallation(game);
+            }
+
+            if (!requestedInstall)
+            {
+                if (game.IsLEGame())
+                {
+                    var result = MessageBox.Show("Install the ASI loader with ME3Tweaks Mod Manager, in the 'Tools > Bink Bypasses' menu. Click OK to open the Mod Manager download page.",
+                        "ASI Loader Installation Instructions", MessageBoxButton.OKCancel, MessageBoxImage.Information);
+                    if (result == MessageBoxResult.OK)
+                    {
+                        HyperlinkExtensions.OpenURL("https://me3tweaks.com/modmanager/");
+                    }
+                }
+                else
+                {
+                    HyperlinkExtensions.OpenURL("https://github.com/Erik-JS/masseffect-binkw32");
+                }
+            }
         }
 
         public static void OpenConsoleExtensionDownload()
@@ -167,6 +224,39 @@ namespace LegendaryExplorer.GameInterop
             }
 
             return false;
+        }
+
+
+        private static NamedPipeClientStream client;
+        // private StreamReader pipeReader; // Reading pipes is way more complicated
+        private static StreamWriter pipeWriter;
+
+        /// <summary>
+        /// Sends a message to a game via a pipe. The game must have the LEX Interop ASI installed that handles the command for it to do anything.
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="game"></param>
+        public static void SendMessageToGame(string message, MEGame game)
+        {
+            if (IsGameClosed(game))
+            {
+                Debug.WriteLine($"{game} is not running! Cannot send command {message}");
+                return;
+            }
+
+            // We make new pipe and connect to game every command
+            client = new NamedPipeClientStream($"LEX_{game}_COMM_PIPE");
+            client.Connect();
+            //pipeReader = new StreamReader(client);
+            pipeWriter = new StreamWriter(client);
+
+            // For debugging
+            // Thread.Sleep(3000);
+
+            pipeWriter.WriteLine(message); // Messages will end with \r\n when received in c++!
+            pipeWriter.Flush();
+
+            client.Dispose();
         }
     }
 }

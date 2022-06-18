@@ -12,7 +12,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 
         public bool IsCalledOnInterface;
 
-        public FunctionCall(SymbolReference func, List<Expression> arguments, SourcePosition start, SourcePosition end)
+        public FunctionCall(SymbolReference func, List<Expression> arguments, int start, int end)
             : base(ASTNodeType.FunctionCall, start, end)
         {
             Function = func;

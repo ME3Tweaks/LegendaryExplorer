@@ -11,7 +11,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 
         public string NumType = INT;
 
-        public IntegerLiteral(int val, SourcePosition start = null, SourcePosition end = null) 
+        public IntegerLiteral(int val, int start = -1, int end = -1) 
             : base(ASTNodeType.IntegerLiteral, start, end)
         {
             Value = val;

@@ -210,9 +210,18 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public override List<(UIndex, string)> GetUIndexes(MEGame game)
         {
             var uIndexes = new List<(UIndex, string)>();
+            
+            uIndexes.AddRange(Actors.Select((u, i) => (u, $"{nameof(Actors)}[{i}]")));
+            uIndexes.AddRange(GetUIndexesWithoutActorList(game));
+
+            return uIndexes;
+        }
+
+        public List<(UIndex, string)> GetUIndexesWithoutActorList(MEGame game)
+        {
+            var uIndexes = new List<(UIndex, string)>();
 
             uIndexes.Add((Self, nameof(Self)));
-            uIndexes.AddRange(Actors.Select((u, i) => (u, $"{nameof(Actors)}[{i}]")));
             uIndexes.Add((Model, nameof(Model)));
             uIndexes.AddRange(ModelComponents.Select((u, i) => (u, $"{nameof(ModelComponents)}[{i}]")));
             uIndexes.AddRange(GameSequences.Select((u, i) => (u, $"{nameof(GameSequences)}[{i}]")));

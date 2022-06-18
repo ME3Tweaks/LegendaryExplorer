@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.UnrealScript.Analysis.Symbols;
 using LegendaryExplorerCore.UnrealScript.Language.ByteCode;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
+using LegendaryExplorerCore.UnrealScript.Lexing;
 
 namespace LegendaryExplorerCore.UnrealScript.Decompiling
 {
-    public partial class ByteCodeDecompiler
+    internal partial class ByteCodeDecompiler
     {
-        public Statement DecompileStatement(ushort? startPosition = null)
+        private Statement DecompileStatement(ushort? startPosition = null)
         {
             StartPositions.Push(startPosition ?? (ushort)Position);
             var token = PeekByte;
@@ -77,7 +77,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 // stop;
                 case (byte)OpCodes.Stop:
                     PopByte();
-                    var stopStatement = new StopStatement(null, null);
+                    var stopStatement = new StopStatement(-1, -1);
                     StatementLocations.Add(StartPositions.Pop(), stopStatement);
                     return stopStatement;
 
@@ -129,7 +129,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                     if (obj.ClassName == "BoolProperty")
                     {
                         var ifJump = new IfNotJump(
-                            ReadUInt16(), not ? (Expression)condition : new PreOpReference(new PreOpDeclaration("!", SymbolTable.BoolType, 0, null), condition),
+                            ReadUInt16(), not ? (Expression)condition : new PreOpReference(new PreOpDeclaration(TokenType.ExclamationMark, SymbolTable.BoolType, 0, null), condition),
                             Position - StartPositions.Peek());
                         StatementLocations.Add(StartPositions.Pop(), ifJump);
                         return ifJump;
@@ -189,7 +189,8 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
         }
 
         #region Decompilers
-        public ReturnStatement DecompileReturn()
+
+        private ReturnStatement DecompileReturn()
         {
             PopByte();
 
@@ -223,7 +224,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             return statement;
         }
 
-        public Statement DecompileForEach(bool isDynArray = false)
+        private Statement DecompileForEach(bool isDynArray = false)
         {
             PopByte();
             var scopeStatements = new List<Statement>();
@@ -279,7 +280,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             return statement;
         }
 
-        public SwitchStatement DecompileSwitch()
+        private SwitchStatement DecompileSwitch()
         {
             PopByte();
             if (Game >= MEGame.ME3)
@@ -320,12 +321,12 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             //}
             //CurrentScope.Pop();
 
-            var statement = new SwitchStatement(expr, null, null, null);
+            var statement = new SwitchStatement(expr, null, -1, -1);
             StatementLocations.Add(StartPositions.Pop(), statement);
             return statement;
         }
 
-        public Statement DecompileCase()
+        private Statement DecompileCase()
         {
             PopByte();
             var offs = ReadUInt16(); // MemOff
@@ -333,7 +334,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
 
             if (offs == (ushort)0xFFFF)
             {
-                statement = new DefaultCaseStatement(null, null);
+                statement = new DefaultCaseStatement(-1, -1);
             }
             else 
             {
@@ -341,14 +342,14 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 if (expr == null)
                     return null; //ERROR ?
 
-                statement = new CaseStatement(expr, null, null);
+                statement = new CaseStatement(expr, -1, -1);
             }
 
             StatementLocations.Add(StartPositions.Pop(), statement);
             return statement;
         }
 
-        public AssignStatement DecompileAssign()
+        private AssignStatement DecompileAssign()
         {
             PopByte();
 
@@ -365,22 +366,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             return statement;
         }
 
-        public Statement DecompileJump()
-        {
-            PopByte();
-            var jumpOffs = ReadUInt16(); // discard jump destination
-            Statement statement;
-
-            if (ForEachScopes.Count != 0 && jumpOffs == ForEachScopes.Peek()) // A jump to the IteratorPop of a ForEach means break afaik.
-                statement = new BreakStatement(null, null);
-            else
-                statement = new ContinueStatement(null, null);
-
-            StatementLocations.Add(StartPositions.Pop(), statement);
-            return statement;
-        }
-
-        public Statement DecompileAssert()
+        private Statement DecompileAssert()
         {
             PopByte();
             ReadUInt16(); // source line
@@ -390,21 +376,6 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             var statement = new AssertStatement(expr);
             StatementLocations.Add(StartPositions.Pop(), statement);
             return statement;
-        }
-
-        public Statement DecompileIteratorPop()
-        {
-            PopByte();
-            if (CurrentIs(OpCodes.Return)) // Any return inside a ForEach seems to call IteratorPop before the return, maybe breaks the loop?
-            {
-                return DecompileReturn();
-            }
-            else
-            {
-                var statement = new BreakStatement();
-                StatementLocations.Add(StartPositions.Pop(), statement);
-                return statement;
-            }
         }
 
         #endregion

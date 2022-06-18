@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -103,7 +104,7 @@ namespace LegendaryExplorerCore.Packages
         /// <summary>
         /// This is not useful for modding but we should not be changing the format of the package file.
         /// </summary>
-        public List<string> AdditionalPackagesToCook = new List<string>();
+        public readonly List<string> AdditionalPackagesToCook = new();
 
         /// <summary>
         /// Passthrough to UnrealPackageFile's IsModified
@@ -214,6 +215,7 @@ namespace LegendaryExplorerCore.Packages
         /// <param name="fs"></param>
         /// <param name="filePath"></param>
         /// <param name="onlyHeader">Only read header data. Do not load the tables or decompress</param>
+        /// <param name="dataLoadPredicate">If provided, export data will only be read for exports that match the predicate</param>
         private MEPackage(Stream fs, string filePath = null, bool onlyHeader = false, Func<ExportEntry, bool> dataLoadPredicate = null) : base(filePath != null ? File.Exists(filePath) ? Path.GetFullPath(filePath) : filePath : null)
         {
             //MemoryStream fs = new MemoryStream(File.ReadAllBytes(filePath));
@@ -477,8 +479,8 @@ namespace LegendaryExplorerCore.Packages
             #region Decompression of package data
 
             //determine if tables are in order.
-            //The < 500 is just to check that the tables are all at the start of the file. (will never not be the case for unedited files, but for modded ones, all things are possible)
-            bool tablesInOrder = NameOffset < 500 && NameOffset < ImportOffset && ImportOffset < ExportOffset;
+            //The < 0x500 is just to check that the tables are all at the start of the file. (will never not be the case for unedited files, but for modded ones, all things are possible)
+            bool tablesInOrder = NameOffset < 0x500 && NameOffset < ImportOffset && ImportOffset < ExportOffset;
 
             packageReader.Position = savedPos; //restore position to chunk table
             Stream inStream = fs;
@@ -494,36 +496,59 @@ namespace LegendaryExplorerCore.Packages
             //read namelist
             inStream.JumpTo(NameOffset);
             names = new List<string>(NameCount);
-            for (int i = 0; i < NameCount; i++)
+            nameLookupTable.EnsureCapacity(NameCount);
+            if (Game > MEGame.ME2 && inStream is CompressionHelper.PackageDecompressionStreamBase packageDecompressionStream)
             {
-                var name = packageReader.ReadUnrealString();
-                names.Add(name);
-                nameLookupTable[name] = i;
-                if (Game == MEGame.ME1 && Platform != GamePlatform.PS3)
-                    inStream.Skip(8);
-                else if (Game == MEGame.ME2 && Platform != GamePlatform.PS3)
-                    inStream.Skip(4);
+                for (int i = 0; i < NameCount; i++)
+                {
+                    string name = packageDecompressionStream.ReadUnrealStringLittleEndianFast();
+                    names.Add(name);
+                    nameLookupTable[name] = i;
+                }
+            }
+            else
+            {
+                for (int i = 0; i < NameCount; i++)
+                {
+                    string name = packageReader.ReadUnrealString();
+                    names.Add(name);
+                    nameLookupTable[name] = i;
+                    if (Game == MEGame.ME1 && Platform != GamePlatform.PS3)
+                        inStream.Skip(8);
+                    else if (Game == MEGame.ME2 && Platform != GamePlatform.PS3)
+                        inStream.Skip(4);
+                }
             }
 
             //read importTable
             inStream.JumpTo(ImportOffset);
             imports = new List<ImportEntry>(ImportCount);
+
+            //explicitly creating the delegate outside the loop avoids allocating a new delegate for every import
+            var importChangedHandler = new PropertyChangedEventHandler(importChanged);
             for (int i = 0; i < ImportCount; i++)
             {
                 var imp = new ImportEntry(this, packageReader) { Index = i };
                 if (MEPackageHandler.GlobalSharedCacheEnabled)
-                    imp.PropertyChanged += importChanged; // If packages are not shared there is no point to attaching this
+                {
+                    imp.PropertyChanged += importChangedHandler; // If packages are not shared there is no point to attaching this
+                }
                 imports.Add(imp);
             }
 
             //read exportTable
             inStream.JumpTo(ExportOffset);
             exports = new List<ExportEntry>(ExportCount);
+
+            //explicitly creating the delegate outside the loop avoids allocating a new delegate for every import
+            var exportChangedHandler = new PropertyChangedEventHandler(exportChanged);
             for (int i = 0; i < ExportCount; i++)
             {
                 var e = new ExportEntry(this, packageReader, false) { Index = i };
                 if (MEPackageHandler.GlobalSharedCacheEnabled)
-                    e.PropertyChanged += exportChanged; // If packages are not shared there is no point to attaching this
+                {
+                    e.PropertyChanged += exportChangedHandler; // If packages are not shared there is no point to attaching this
+                }
                 exports.Add(e);
                 if (platformNeedsResolved && e.ClassName == "ShaderCache")
                 {
@@ -561,14 +586,16 @@ namespace LegendaryExplorerCore.Packages
             foreach (ExportEntry export in dataLoadPredicate is null ? exports : exports.Where(dataLoadPredicate))
             {
                 inStream.JumpTo(export.DataOffset);
-                export.Data = packageReader.ReadBytes(export.DataSize);
+                var data = new byte[export.DataSize];
+                int bytesRead = inStream.Read(data.AsSpan());
+                if (bytesRead != data.Length)
+                {
+                    throw new EndOfStreamException("Attempted to read export data past the end of the stream!");
+                }
+                export.Data = data;
             }
 
             packageReader.Dispose();
-            if (dataLoadPredicate is null && Game.IsGame1() && Platform == GamePlatform.PC)
-            {
-                ReadLocalTLKs();
-            }
 
 
             if (filePath != null)
@@ -576,8 +603,8 @@ namespace LegendaryExplorerCore.Packages
                 Localization = filePath.GetUnrealLocalization();
             }
 
+            //Allocate the lookup table. It is initialized on an if-needed basis.
             EntryLookupTable = new CaseInsensitiveDictionary<IEntry>(ExportCount + ImportCount);
-            RebuildLookupTable(); // Builds the export/import lookup tables.
 #if AZURE
             if (platformNeedsResolved)
             {
@@ -1433,34 +1460,6 @@ namespace LegendaryExplorerCore.Packages
                 {
                     ms.WriteInt32(0);
                 }
-            }
-        }
-        private void ReadLocalTLKs()
-        {
-            LocalTalkFiles.Clear();
-            var exportsToLoad = new List<ExportEntry>();
-            foreach (var tlkFileSet in Exports.Where(x => x.ClassName == "BioTlkFileSet" && !x.IsDefaultObject).Select(exp => exp.GetBinaryData<BioTlkFileSet>()))
-            {
-                foreach ((NameReference lang, BioTlkFileSet.BioTlkSet bioTlkSet) in tlkFileSet.TlkSets)
-                {
-                    if (LegendaryExplorerCoreLibSettings.Instance.TLKDefaultLanguage.Equals(lang, StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        exportsToLoad.Add(GetUExport(LegendaryExplorerCoreLibSettings.Instance.TLKGenderIsMale ? bioTlkSet.Male : bioTlkSet.Female));
-                        break;
-                    }
-                }
-            }
-
-            // Global TLK
-            foreach (var tlk in Exports.Where(x => x.ClassName == "BioTlkFile" && !x.IsDefaultObject && !exportsToLoad.Contains(x)))
-            {
-                exportsToLoad.Add(tlk);
-            }
-
-            foreach (var exp in exportsToLoad)
-            {
-                //Debug.WriteLine("Loading local TLK: " + exp.GetIndexedFullPath);
-                LocalTalkFiles.Add(new ME1TalkFile(exp));
             }
         }
 

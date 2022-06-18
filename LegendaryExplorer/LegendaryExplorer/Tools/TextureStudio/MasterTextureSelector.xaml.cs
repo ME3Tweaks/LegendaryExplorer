@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
@@ -73,8 +73,7 @@ namespace LegendaryExplorer.Tools.TextureStudio
             }
         }
 
-        public ObservableCollectionExtended<TreeViewEntry> AllTreeViewNodesX { get; set; } =
-            new ObservableCollectionExtended<TreeViewEntry>();
+        public ObservableCollectionExtended<TreeViewEntry> AllTreeViewNodesX { get; } = new();
 
         #endregion
 
@@ -148,7 +147,7 @@ namespace LegendaryExplorer.Tools.TextureStudio
             InitializeTreeView();
         }
 
-        public override void handleUpdate(List<PackageUpdate> updates)
+        public override void HandleUpdate(List<PackageUpdate> updates)
         {
 
         }
@@ -166,11 +165,8 @@ namespace LegendaryExplorer.Tools.TextureStudio
                 .ContinueWithOnUIThread(InitializeTreeViewBackground_Completed);
         }
 
-        private ObservableCollectionExtendedWPF<TreeViewEntry> InitializeTreeViewBackground()
+        private List<TreeViewEntry> InitializeTreeViewBackground()
         {
-            if (Thread.CurrentThread.Name == null)
-                Thread.CurrentThread.Name = "ME1MasterPackageEditor TreeViewInitialization";
-
             //BusyText = "Loading " + Path.GetFileName(Pcc.FilePath);
             if (Pcc == null)
             {
@@ -217,7 +213,7 @@ namespace LegendaryExplorer.Tools.TextureStudio
             // Pass 3: Remove unused packages from tree by running a second trimming pass
             TrimTree(rootEntry, true);
 
-            return new ObservableCollectionExtendedWPF<TreeViewEntry>(rootNodes.Except(itemsToRemove));
+            return new List<TreeViewEntry>(rootNodes.Except(itemsToRemove));
         }
 
         public bool TrimTree(TreeViewEntry entry, bool removeEmpty)
@@ -268,11 +264,11 @@ namespace LegendaryExplorer.Tools.TextureStudio
         private int QueuedGotoNumber;
         private bool IsLoadingFile;
 
-        private void InitializeTreeViewBackground_Completed(Task<ObservableCollectionExtendedWPF<TreeViewEntry>> prevTask)
+        private void InitializeTreeViewBackground_Completed(Task<List<TreeViewEntry>> prevTask)
         {
             if (prevTask.Result != null)
             {
-                AllTreeViewNodesX.ClearEx();
+                ResetTreeView();
                 AllTreeViewNodesX.AddRange(prevTask.Result);
             }
 
@@ -297,6 +293,15 @@ namespace LegendaryExplorer.Tools.TextureStudio
             {
                 IsBusy = false;
             }
+        }
+
+        private void ResetTreeView()
+        {
+            foreach (TreeViewEntry tvi in AllTreeViewNodesX.SelectMany(node => node.FlattenTree()))
+            {
+                tvi.Dispose();
+            }
+            AllTreeViewNodesX.ClearEx();
         }
 
         /// <summary>
@@ -378,6 +383,14 @@ namespace LegendaryExplorer.Tools.TextureStudio
                     return MEPackageHandler.OpenMEPackage(Path.Combine(ME1Directory.CookedPCPath, @"BIOG_ASA_ARM_CTH_R.upk"), forceLoadFromDisk: true); //Force from disk will prevent refcount
             }
             throw new NotImplementedException();
+        }
+
+        private void MasterTextureSelector_OnClosing(object sender, CancelEventArgs e)
+        {
+            if (!e.Cancel)
+            {
+                ResetTreeView();
+            }
         }
     }
 }

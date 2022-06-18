@@ -11,7 +11,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
         public List<Expression> Arguments;
         public Function DefaultFunction => ((DelegateType)((VariableDeclaration)DelegateReference.Node).VarType).DefaultFunction;
 
-        public DelegateCall(SymbolReference del, List<Expression> arguments, SourcePosition start = null, SourcePosition end = null)
+        public DelegateCall(SymbolReference del, List<Expression> arguments, int start = -1, int end = -1)
             : base(ASTNodeType.FunctionCall, start, end)
         {
             DelegateReference = del;

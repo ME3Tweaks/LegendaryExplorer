@@ -140,7 +140,7 @@
 
                 </Grid>
             </TabItem>
-            <TabItem x:Name="LETab">
+            <TabItem x:Name="LETab" IsSelected="True">
                 <TabItem.Header>
                     Legendary Edition
                 </TabItem.Header>

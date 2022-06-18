@@ -9,7 +9,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
         public PostOpDeclaration Operator;
         public Expression Operand;
 
-        public PostOpReference(PostOpDeclaration op, Expression oper, SourcePosition start, SourcePosition end)
+        public PostOpReference(PostOpDeclaration op, Expression oper, int start, int end)
             : base(ASTNodeType.InOpRef, start, end)
         {
             Operator = op;

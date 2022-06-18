@@ -11,7 +11,6 @@ using System.Windows.Input;
 using DocumentFormat.OpenXml.Wordprocessing;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Dialogs;
-using LegendaryExplorer.Misc.ME3Tweaks;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Bases;
 using LegendaryExplorerCore.GameFilesystem;
@@ -230,6 +229,15 @@ namespace LegendaryExplorer.Tools.TFCCompactor
             {
                 DLCName = dirName;
             }
+            else
+            {
+                var dirs = Directory.GetDirectories(BaseFolder);
+                var candidates = dirs.Where(x => Path.GetFileName(x).StartsWith("DLC_MOD_")).ToList();
+                if (candidates.Count == 1 && string.IsNullOrWhiteSpace(DLCName))
+                {
+                    DLCName = Path.GetFileName(candidates[0]);
+                }
+            }
 
             backgroundWorker = new BackgroundWorker { WorkerReportsProgress = true };
 
@@ -398,6 +406,7 @@ namespace LegendaryExplorer.Tools.TFCCompactor
                 TFCType = "Textures",
                 StagingPath = StagingDirectory,
                 BaseCompactionPath = BaseFolder,
+                Game = LoadedTextureMap.Game,
                 GamePath = MEDirectories.GetDefaultGamePath(LoadedTextureMap.Game),
                 UseIndexing = LoadedTextureMap.Game == MEGame.LE2, //.IsLEGame(),
                 DLCName = DLCName,

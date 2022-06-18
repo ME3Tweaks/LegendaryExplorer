@@ -102,7 +102,7 @@
         </Border>
         <TreeView x:Name="TrackList" DockPanel.Dock="Left" Width="200" SelectedItemChanged="TrackList_SelectedItemChanged" Background="#FF888888" >
             <TreeView.Resources>
-                <HierarchicalDataTemplate DataType="{x:Type curves:InterpCurve}" ItemsSource="{Binding Curves}">
+                <HierarchicalDataTemplate DataType="{x:Type curves:CurveEdInterpCurve}" ItemsSource="{Binding Curves}">
                     <Label Content="{Binding Name}"/>
                 </HierarchicalDataTemplate>
                 <DataTemplate DataType="{x:Type curves:Curve}">

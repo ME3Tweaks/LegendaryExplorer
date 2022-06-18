@@ -6,7 +6,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 {
     public abstract class Statement : ASTNode
     {
-        protected Statement(ASTNodeType type,SourcePosition start, SourcePosition end) 
+        protected Statement(ASTNodeType type,int start, int end) 
             : base(type, start, end) { }
 
         public override bool AcceptVisitor(IASTVisitor visitor)

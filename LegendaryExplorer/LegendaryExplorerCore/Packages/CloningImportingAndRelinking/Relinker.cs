@@ -115,36 +115,51 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 i++;
             }
 
-            // If porting cross game, functions need recompiled (most times)
+            // If porting cross game, functions need to be recompiled
             if (rop.IsCrossGame)
             {
                 var functionsToRelink = rop.CrossPackageMap.Keys.OfType<ExportEntry>().Where(x => x.ClassName == "Function").ToList();
                 if (functionsToRelink.Any())
                 {
-                    var sourcePcc = functionsToRelink[0].FileRef;
-                    FileLib sourceFL = new FileLib(sourcePcc);
-                    var sourceOK = sourceFL.Initialize();
+                    //functionsToRelink has exports from potentially multiple files. This creates the minimum number of FileLibs needed
+                    var sourceFileLibs = new Dictionary<IMEPackage, FileLib>();
+                    bool sourceOK = true;
+                    foreach (ExportEntry funcToRelink in functionsToRelink)
+                    {
+                        if (!sourceFileLibs.ContainsKey(funcToRelink.FileRef))
+                        {
+                            var sourceLib = new FileLib(funcToRelink.FileRef);
+                            sourceOK &= sourceLib.Initialize(rop.Cache);
+                            if (!sourceOK)
+                            {
+                                break;
+                            }
+                            sourceFileLibs[funcToRelink.FileRef] = sourceLib;
+                        }
+                    }
 
                     var destPcc = rop.CrossPackageMap[functionsToRelink[0]].FileRef;
                     FileLib destFL = new FileLib(destPcc);
-                    var destOK = destFL.Initialize();
+                    var destOK = destFL.Initialize(rop.Cache);
 
                     if (sourceOK && destOK)
                     {
-                        // crossgen debug
-                        int origBCBIdx = -1;
-                        if (sourcePcc.Game == MEGame.ME1)
-                        {
-                            origBCBIdx = sourcePcc.findName("BIOC_Base");
-                            sourcePcc.replaceName(origBCBIdx, "SFXGame");
-
-                            // Todo: Other renamed packages like BIOG_Strategic"AI" -> SFXStratgic"AI"
-                        }
 
                         foreach (var f in functionsToRelink)
                         {
+                            // crossgen debug
+                            int origBCBIdx = -1;
+                            var sourcePcc = f.FileRef;
+                            if (sourcePcc.Game == MEGame.ME1)
+                            {
+                                origBCBIdx = sourcePcc.findName("BIOC_Base");
+                                sourcePcc.replaceName(origBCBIdx, "SFXGame");
+
+                                // Todo: Other renamed packages like BIOG_Strategic"AI" -> SFXStratgic"AI"
+                            }
+
                             var targetFuncExp = rop.CrossPackageMap[f] as ExportEntry;
-                            var sourceInfo = UnrealScriptCompiler.DecompileExport(f, sourceFL);
+                            var sourceInfo = UnrealScriptCompiler.DecompileExport(f, sourceFileLibs[f.FileRef]);
                             //    var targetFunc = ObjectBinary.From<UFunction>(targetFuncExp);
                             //    targetFunc.ScriptBytes = new byte[0]; // Zero out function
                             //    targetFuncExp.WriteBinary(targetFunc);
@@ -154,12 +169,12 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                             {
                                 rop.RelinkReport.Add(new EntryStringPair(targetFuncExp, $"{targetFuncExp.UIndex} {targetFuncExp.InstancedFullPath} binary relinking failed. Could not recompile function. Errors: {string.Join("\n", log.AllErrors.Select(x => x.Message))}"));
                             }
-                        }
 
-                        if (origBCBIdx >= 0)
-                        {
-                            // Restore BIOC_Base
-                            sourcePcc.replaceName(origBCBIdx, "BIOC_Base");
+                            if (origBCBIdx >= 0)
+                            {
+                                // Restore BIOC_Base
+                                sourcePcc.replaceName(origBCBIdx, "BIOC_Base");
+                            }
                         }
                     }
                 }

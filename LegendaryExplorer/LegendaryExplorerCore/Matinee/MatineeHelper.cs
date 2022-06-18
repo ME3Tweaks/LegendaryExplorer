@@ -9,12 +9,34 @@ using InterpCurveFloat = LegendaryExplorerCore.Unreal.BinaryConverters.InterpCur
 
 namespace LegendaryExplorerCore.Matinee
 {
+    /// <summary>
+    /// Static methods to perform common Matinee editing operations
+    /// </summary>
     public static class MatineeHelper
     {
+        /// <summary>
+        /// Adds a new InterpGroup to the given InterpData
+        /// </summary>
+        /// <param name="interpData">InterpData export to add group to</param>
+        /// <param name="groupName">Name of new group</param>
+        /// <returns>The created InterpGroup</returns>
         public static ExportEntry AddNewGroupToInterpData(ExportEntry interpData, string groupName) => InternalAddGroup("InterpGroup", interpData, groupName);
 
+        /// <summary>
+        /// Adds a new InterpGroupDirector to the given InterpData
+        /// </summary>
+        /// <param name="interpData">InterpData export to add director to</param>
+        /// <returns>The created InterpGroupDirector</returns>
         public static ExportEntry AddNewGroupDirectorToInterpData(ExportEntry interpData) => InternalAddGroup("InterpGroupDirector", interpData, null);
 
+        /// <summary>
+        /// Adds a preset interp export to the given InterpData or InterpGroup
+        /// </summary>
+        /// <param name="preset">Type of preset. Options: Camera, Actor, Director, Gesture, Gesture2</param>
+        /// <param name="export">Parent export of desired preset, either an InterpData or InterpGroup export</param>
+        /// <param name="game">Game you are working on</param>
+        /// <param name="param1">Typically actor tag name or gesture name</param>
+        /// <returns>Created preset export</returns>
         public static ExportEntry AddPreset(string preset, ExportEntry export, MEGame game, string param1 = null) => InternalAddPreset(preset, export, game, param1);
 
         private static ExportEntry InternalAddGroup(string className, ExportEntry interpData, string groupName)
@@ -64,8 +86,20 @@ namespace LegendaryExplorerCore.Matinee
             return group;
         }
 
+        /// <summary>
+        /// Gets all InterpTrack subclasses for a game
+        /// </summary>
+        /// <param name="game">Game to get track classes for</param>
+        /// <returns>InterpTrack and InterpTrack subclasses</returns>
         public static List<ClassInfo> GetInterpTracks(MEGame game) => GlobalUnrealObjectInfo.GetNonAbstractDerivedClassesOf("InterpTrack", game);
 
+        /// <summary>
+        /// Adds a new InterpTrack of the given class to an InterpGroup
+        /// </summary>
+        /// <example><c>AddNewTrackToGroup(myInterpGroup, "InterpTrackMove")</c></example>
+        /// <param name="interpGroup">InterpGroup to add track to</param>
+        /// <param name="trackClass">Class name of InterpTrack to add</param>
+        /// <returns>The created track</returns>
         public static ExportEntry AddNewTrackToGroup(ExportEntry interpGroup, string trackClass)
         {
             //should add the property that contains track keys at least
@@ -80,6 +114,10 @@ namespace LegendaryExplorerCore.Matinee
             return track;
         }
 
+        /// <summary>
+        /// Adds some pre-determined default properties to a given InterpTrack, based on class name
+        /// </summary>
+        /// <param name="trackExport">InterpTrack to add properties to</param>
         public static void AddDefaultPropertiesToTrack(ExportEntry trackExport)
         {
             if (trackExport.IsA("BioInterpTrack"))

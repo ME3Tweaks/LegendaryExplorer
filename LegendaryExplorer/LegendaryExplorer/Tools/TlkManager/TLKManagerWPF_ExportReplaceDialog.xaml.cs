@@ -111,8 +111,7 @@ namespace LegendaryExplorer.Tools.TlkManagerNS
                         //ME2,ME3
                         loadingWorker.DoWork += delegate
                         {
-                            var tf = new ME2ME3TalkFile();
-                            tf.LoadTlkData(tlk.tlkPath);
+                            var tf = new ME2ME3TalkFile(tlk.tlkPath);
                             tf.SaveToXML(saveFileDialog.FileName);
                         };
                     }

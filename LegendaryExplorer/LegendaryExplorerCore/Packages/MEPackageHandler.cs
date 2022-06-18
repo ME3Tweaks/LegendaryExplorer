@@ -19,7 +19,7 @@ namespace LegendaryExplorerCore.Packages
         public static bool GlobalSharedCacheEnabled = true;
 
         static readonly ConcurrentDictionary<string, IMEPackage> openPackages = new(StringComparer.OrdinalIgnoreCase);
-        public static readonly ObservableCollection<IMEPackage> packagesInTools = new();
+        public static readonly ObservableCollection<IMEPackage> PackagesInTools = new();
 
         // Package loading for UDK 2014/2015
         static Func<string, UDKPackage> UDKConstructorDelegate;
@@ -84,7 +84,7 @@ namespace LegendaryExplorerCore.Packages
             if (GlobalSharedCacheEnabled)
             {
                 Debug.WriteLine($@"Forcing package into cache: {package.FilePath}");
-                if (package is UnrealPackageFile upf && upf.RefCount < 1)
+                if (package is UnrealPackageFile { RefCount: < 1 })
                 {
                     // Package will immediately be dropped on first dispose
                     Debugger.Break();
@@ -127,10 +127,10 @@ namespace LegendaryExplorerCore.Packages
         /// Opens a Mass Effect package file. By default, this call will attempt to return an existing open (non-disposed) package at the same path if it is opened twice. Use the forceLoadFromDisk parameter to ignore this behavior.
         /// </summary>
         /// <param name="pathToFile">Path to the file to open</param>
-        /// <param name="user">????</param>
+        /// <param name="user">IPackageUser to register as a user of this package</param>
         /// <param name="forceLoadFromDisk">If the package being opened should skip the shared package cache and forcibly load from disk. </param>
         /// <param name="quickLoad">Only load the header. Meant for when you just need to get info about a package without caring about the contents.</param>
-        /// <param name="diskIOSyncLock"></param>
+        /// <param name="diskIOSyncLock">If provided, all I/O will be done inside a lock on this object</param>
         /// <returns></returns>
         public static IMEPackage OpenMEPackage(string pathToFile, IPackageUser user = null, bool forceLoadFromDisk = false, bool quickLoad = false, object diskIOSyncLock = null)
         {
@@ -341,7 +341,7 @@ namespace LegendaryExplorerCore.Packages
 
             if (useSharedCache)
             {
-                pkg.noLongerUsed += Package_noLongerUsed;
+                pkg.NoLongerUsed += Package_noLongerUsed;
             }
 
             return pkg;
@@ -437,18 +437,18 @@ namespace LegendaryExplorerCore.Packages
 
         private static void addToPackagesInTools(IMEPackage package)
         {
-            if (!packagesInTools.Contains(package))
+            if (!PackagesInTools.Contains(package))
             {
-                packagesInTools.Add(package);
-                package.noLongerOpenInTools += Package_noLongerOpenInTools;
+                PackagesInTools.Add(package);
+                package.NoLongerOpenInTools += Package_noLongerOpenInTools;
             }
         }
 
         private static void Package_noLongerOpenInTools(UnrealPackageFile sender)
         {
             IMEPackage package = sender as IMEPackage;
-            packagesInTools.Remove(package);
-            sender.noLongerOpenInTools -= Package_noLongerOpenInTools;
+            PackagesInTools.Remove(package);
+            sender.NoLongerOpenInTools -= Package_noLongerOpenInTools;
 
         }
 

@@ -15,7 +15,7 @@ namespace LegendaryExplorer.Dialogs
     /// </summary>
     public partial class SelectOrAddNamePromptDialog : TrackingNotifyPropertyChangedWindowBase
     {
-        private IMEPackage _pcc;
+        private readonly IMEPackage _pcc;
 
         public ObservableCollectionExtended<IndexedName> NameList { get; } = new();
 
@@ -45,7 +45,7 @@ namespace LegendaryExplorer.Dialogs
 
         public static IndexedName Prompt(Control owner, string question, string title, IMEPackage pcc, int defaultValue = 0)
         {
-            SelectOrAddNamePromptDialog inst = new SelectOrAddNamePromptDialog(question, title, pcc, defaultValue);
+            var inst = new SelectOrAddNamePromptDialog(question, title, pcc, defaultValue);
             if (owner != null)
             {
                 inst.Owner = owner as Window ?? GetWindow(owner);
@@ -63,7 +63,7 @@ namespace LegendaryExplorer.Dialogs
 
         public static bool Prompt(Control owner, string question, string title, IMEPackage pcc, out NameReference result, NameReference defaultValue = default)
         {
-            SelectOrAddNamePromptDialog inst = new SelectOrAddNamePromptDialog(question, title, pcc, defaultValue);
+            var inst = new SelectOrAddNamePromptDialog(question, title, pcc, defaultValue);
             if (owner != null)
             {
                 inst.Owner = owner as Window ?? GetWindow(owner);
@@ -72,10 +72,10 @@ namespace LegendaryExplorer.Dialogs
             inst.ShowDialog();
             if (inst.DialogResult == true)
             {
-                IndexedName name = (IndexedName)inst.answerChoicesCombobox.SelectedItem;
+                var name = (IndexedName)inst.answerChoicesCombobox.SelectedItem;
                 if (name is not null)
                 {
-                    result = new NameReference(name.Name.Name, inst.Number);
+                    result = new NameReference(name.Name, inst.Number);
                     return true;
                 }
             }
@@ -102,7 +102,7 @@ namespace LegendaryExplorer.Dialogs
         private bool CheckName()
         {
             // Check name - code copied from EntryMetadataExportLoader
-            var text = answerChoicesCombobox.Text;
+            string text = answerChoicesCombobox.Text;
             int index = _pcc.findName(text);
             if (index < 0 && !string.IsNullOrEmpty(text))
             {

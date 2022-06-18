@@ -299,8 +299,10 @@ namespace LegendaryExplorerCore.Textures
                         var exportToUpdate = package.FindExport(tu.ExportPath);
                         if (exportToUpdate == null)
                         {
-                            Debug.WriteLine($@"Could not find export {tu.ExportPath} in package {namedPackage}, skipping update");
+                            Debug.WriteLine($@"Could not find export {tu.ExportPath} in package {namedPackage}! Skipping update on this file");
+                            continue;
                         }
+
                         var t2d = ObjectBinary.From<UTexture2D>(exportToUpdate);
                         t2d.Mips.RemoveAll(x => x.StorageType == StorageTypes.empty); // Remove empty mips
 

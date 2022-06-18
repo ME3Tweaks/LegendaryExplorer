@@ -43,7 +43,7 @@ namespace LegendaryExplorer.Tools.TextureStudio
         /// <summary>
         /// Can produce tokens for cancelling things.
         /// </summary>
-        private CancellationTokenSource CancellationSource = new CancellationTokenSource();
+        private CancellationTokenSource CancellationSource = new();
 
         private string _tfcSuffix;
         public string TFCSuffix { get => _tfcSuffix; set => SetProperty(ref _tfcSuffix, value); }
@@ -67,7 +67,6 @@ namespace LegendaryExplorer.Tools.TextureStudio
                 {
                     OnSelectedItemChanged();
                 }
-
             }
         }
 
@@ -92,7 +91,7 @@ namespace LegendaryExplorer.Tools.TextureStudio
             }
             else
             {
-                using var package = MEPackageHandler.OpenMEPackage(Path.Combine(SelectedFolder, SelectedInstance.RelativePackagePath));
+                using var package = MEPackageHandler.UnsafePartialLoad(Path.Combine(SelectedFolder, SelectedInstance.RelativePackagePath), x=>x.InstancedFullPath == SelectedInstance.ExportPath); // do not open the full package
                 TextureViewer_ExportLoader.LoadExport(package.FindExport(SelectedInstance.ExportPath));
             }
         }
@@ -177,11 +176,12 @@ namespace LegendaryExplorer.Tools.TextureStudio
             SelectedFolder = workspacepath;
             BeginScan();
 
-
             if (SelectedFolder != null && Path.GetFileNameWithoutExtension(SelectedFolder).StartsWith("DLC_MOD_"))
             {
                 TFCSuffix = Path.GetFileNameWithoutExtension(SelectedFolder);
             }
+
+            TextureViewer_ExportLoader?.PreviewRenderer?.SetShouldRender(true); // turn on rendering
         }
 
         #region Command loading
@@ -700,14 +700,14 @@ namespace LegendaryExplorer.Tools.TextureStudio
                 ScanCanceled = false;
                 IsBusy = false;
 
-                if (nodeToSelect != null && entriesToReload != null && entriesToReload.Count == 1)
+                if (nodeToSelect != null && entriesToReload is { Count: 1 })
                 {
                     var root = AllRootTreeViewNodes.FirstOrDefault(x => x.InstancedFullPath == entriesToReload[0].InstancedFullPath);
                     if (root != null)
                     {
                         // it's gonna be under here
                         var node = root.GetAllTextureEntries().FirstOrDefault(x => x.InstancedFullPath == nodeToSelect);
-                        if (node != null && node is TextureMapMemoryEntryWPF twpf)
+                        if (node is TextureMapMemoryEntryWPF twpf)
                         {
                             SelectEntry(twpf);
                         }
@@ -812,7 +812,7 @@ namespace LegendaryExplorer.Tools.TextureStudio
             }
 
 
-            Thread.Sleep(1000); //UI will take a few moments to update so we will stall this busy overlay
+            Thread.Sleep(200); //UI will take a few moments to update so we will stall this busy overlay
             BusyProgressIndeterminate = true;
         }
 

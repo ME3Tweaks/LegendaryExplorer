@@ -167,7 +167,7 @@ namespace LegendaryExplorer.Tools.InterpEditor
             OnPropertyChanged(nameof(LoadedExportIsCurve));
         }
 
-        public override void handleUpdate(List<PackageUpdate> updates)
+        public override void HandleUpdate(List<PackageUpdate> updates)
         {
             IEnumerable<PackageUpdate> exportUpdates = updates.Where(update => update.Change.HasFlag(PackageChange.Export));
             foreach (var update in exportUpdates)

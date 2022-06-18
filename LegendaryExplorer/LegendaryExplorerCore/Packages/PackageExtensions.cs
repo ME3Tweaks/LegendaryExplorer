@@ -511,6 +511,12 @@ namespace LegendaryExplorerCore.Packages
             return export.GetProperties(packageCache: cache).GetProp<T>(name);
         }
 
+        /// <summary>
+        /// Writes a property to the export, replacing a property with the same <see cref="Property.Name"/> and <see cref="Property.StaticArrayIndex"/> if it exists,
+        /// otherwise adding a new one. 
+        /// </summary>
+        /// <param name="export"></param>
+        /// <param name="prop"></param>
         public static void WriteProperty(this ExportEntry export, Property prop)
         {
             var props = export.GetProperties();
@@ -686,7 +692,9 @@ namespace LegendaryExplorerCore.Packages
                     findPropertyReferences(exp.GetProperties(), exp, "Property:");
 
                     //find binary references
-                    if (!exp.IsDefaultObject && ObjectBinary.From(exp) is ObjectBinary objBin)
+                    if (!exp.IsDefaultObject
+                        && exp.ClassName != "AnimSequence" //has no UIndexes, and is expensive to deserialize
+                        && ObjectBinary.From(exp) is ObjectBinary objBin)
                     {
                         List<(UIndex, string)> indices = objBin.GetUIndexes(exp.FileRef.Game);
                         foreach ((UIndex uIndex, string propName) in indices)

@@ -311,7 +311,7 @@ namespace LegendaryExplorer.Tools.AnimationViewer
         void LoadCommands()
         {
             ME3InstalledRequirementCommand = new Requirement.RequirementCommand(() => InteropHelper.IsGameInstalled(MEGame.ME3), () => InteropHelper.SelectGamePath(MEGame.ME3));
-            ASILoaderInstalledRequirementCommand = new Requirement.RequirementCommand(() => InteropHelper.IsASILoaderInstalled(MEGame.ME3), InteropHelper.OpenASILoaderDownload);
+            ASILoaderInstalledRequirementCommand = new Requirement.RequirementCommand(() => InteropHelper.IsASILoaderInstalled(MEGame.ME3), () => InteropHelper.OpenASILoaderDownload(MEGame.ME3));
             InteropASIInstalledRequirementCommand = new Requirement.RequirementCommand(() => InteropHelper.IsInteropASIInstalled(MEGame.ME3), () => InteropHelper.OpenInteropASIDownload(MEGame.ME3));
             ME3ClosedRequirementCommand = new Requirement.RequirementCommand(() => InteropHelper.IsGameClosed(MEGame.ME3), () => InteropHelper.KillGame(MEGame.ME3));
             DatabaseLoadedRequirementCommand = new Requirement.RequirementCommand(IsDatabaseLoaded, TryLoadDatabase);

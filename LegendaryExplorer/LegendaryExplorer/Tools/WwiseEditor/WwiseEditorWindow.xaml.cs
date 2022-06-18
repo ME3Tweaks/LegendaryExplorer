@@ -22,12 +22,11 @@ using LegendaryExplorerCore.Unreal.BinaryConverters;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.Win32;
 using Newtonsoft.Json;
-using UMD.HCIL.GraphEditor;
-using UMD.HCIL.Piccolo;
-using UMD.HCIL.Piccolo.Event;
-using UMD.HCIL.Piccolo.Nodes;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
+using Piccolo;
+using Piccolo.Event;
+using Piccolo.Nodes;
 using Brushes = System.Drawing.Brushes;
 using Color = System.Drawing.Color;
 using Image = System.Drawing.Image;
@@ -636,7 +635,7 @@ namespace LegendaryExplorer.Tools.WwiseEditor
             LoadBank(CurrentExport, false);
         }
 
-        public override void handleUpdate(List<PackageUpdate> updates)
+        public override void HandleUpdate(List<PackageUpdate> updates)
         {
             if (Pcc == null)
             {

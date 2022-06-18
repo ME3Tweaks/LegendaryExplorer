@@ -14,7 +14,12 @@ namespace LegendaryExplorerCore.Dialogue
         /// <summary>The index of this speaker in the BioConversation's m_SpeakerList</summary>
         public int SpeakerID { get; set; }
         /// <summary>A string representation of this speaker's name. This is usually the actor's tag</summary>
-        public string SpeakerName { get; set; }
+        public string SpeakerName
+        {
+            get => SpeakerNameRef.Instanced;
+            set => SpeakerNameRef = NameReference.FromInstancedString(value);
+        }
+
         /// <summary>Reference to this speaker's male FaceFXAnimSet</summary>
         public IEntry FaceFX_Male { get; set; }
         /// <summary>Reference to this speaker's female FaceFXAnimSet</summary>
@@ -30,23 +35,10 @@ namespace LegendaryExplorerCore.Dialogue
         /// Creates a SpeakerExtended with just speaker name and index
         /// </summary>
         /// <param name="speakerID">Index into speaker array of this speaker</param>
-        /// <param name="speakerName">Name or tag of this speaker</param>
-        public SpeakerExtended(int speakerID, string speakerName)
-        {
-            SpeakerID = speakerID;
-            SpeakerName = speakerName;
-            SpeakerNameRef = speakerName;
-        }
-
-        /// <summary>
-        /// Creates a SpeakerExtended with just speaker name and index
-        /// </summary>
-        /// <param name="speakerID">Index into speaker array of this speaker</param>
         /// <param name="speakerName">Name or tag of this speaker, as a NameReference</param>
         public SpeakerExtended(int speakerID, NameReference speakerName)
         {
             SpeakerID = speakerID;
-            SpeakerName = speakerName;
             SpeakerNameRef = speakerName;
         }
 
@@ -59,10 +51,9 @@ namespace LegendaryExplorerCore.Dialogue
         /// <param name="faceFxFemale">Female FaceFXAnimSet for this speaker</param>
         /// <param name="strRefID">TLK string ID of speaker's in-game name</param>
         /// <param name="friendlyName">String of speaker's in-game name</param>
-        public SpeakerExtended(int speakerID, string speakerName, IEntry faceFxMale, IEntry faceFxFemale, int strRefID, string friendlyName)
+        public SpeakerExtended(int speakerID, NameReference speakerName, IEntry faceFxMale, IEntry faceFxFemale, int strRefID, string friendlyName)
         {
             SpeakerID = speakerID;
-            SpeakerName = speakerName;
             SpeakerNameRef = speakerName;
             FaceFX_Male = faceFxMale;
             FaceFX_Female = faceFxFemale;

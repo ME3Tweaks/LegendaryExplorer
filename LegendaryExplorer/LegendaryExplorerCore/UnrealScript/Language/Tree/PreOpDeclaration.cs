@@ -1,15 +1,16 @@
 ﻿using System;
+using LegendaryExplorerCore.UnrealScript.Lexing;
 
 namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 {
-    public class PreOpDeclaration : OperatorDeclaration
+    public sealed class PreOpDeclaration : OperatorDeclaration
     {
-        public FunctionParameter Operand;
+        public readonly FunctionParameter Operand;
 
-        public PreOpDeclaration(string keyword,
+        public PreOpDeclaration(TokenType operatorType,
                                 VariableType returnType, int nativeIndex,
                                 FunctionParameter operand) 
-            : base(keyword, returnType, nativeIndex) 
+            : base(operatorType, returnType, nativeIndex) 
         {
             Operand = operand;
         }

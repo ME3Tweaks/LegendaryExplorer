@@ -12,7 +12,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 
         public IfStatement(Expression cond, CodeBody then,
                            CodeBody optelse = null,
-                           SourcePosition start = null, SourcePosition end = null)
+                           int start = -1, int end = -1)
             : base(ASTNodeType.IfStatement, start, end) 
         {
             Condition = cond;

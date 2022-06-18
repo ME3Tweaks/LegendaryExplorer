@@ -49,6 +49,7 @@ namespace LegendaryExplorer.Startup
 
             //Peregrine's Dispatcher (for WPF Treeview selecting on virtualized lists)
             DispatcherHelper.Initialize();
+
             Settings.LoadSettings();
             initCoreLib();
 
@@ -69,6 +70,8 @@ namespace LegendaryExplorer.Startup
 
             // WPF setup
             ToolTipService.ShowDurationProperty.OverrideMetadata(typeof(DependencyObject), new FrameworkPropertyMetadata(int.MaxValue));
+            //fixes bad WPF default. Users aren't going to not want to know what a button does just because it's disabled at the moment!
+            ToolTipService.ShowOnDisabledProperty.OverrideMetadata(typeof(FrameworkElement), new FrameworkPropertyMetadata(true));
 
             //force fontawesome's icons into memory, so that it won't need to happen when the main window is opening 
             EFontAwesomeIcon.None.GetUnicode();
@@ -120,6 +123,13 @@ namespace LegendaryExplorer.Startup
                     cliHandler.InvokeAsync(Arguments.Dequeue());
                 }
             });
+
+            var mpc1 = LegendaryExplorerCore.PlotDatabase.PlotDatabases.GetModPlotContainerForGame(MEGame.LE1);
+            if (mpc1.Mods.IsEmpty()) mpc1.LoadModsFromDisk(AppDirectories.AppDataFolder);
+            var mpc2 = LegendaryExplorerCore.PlotDatabase.PlotDatabases.GetModPlotContainerForGame(MEGame.LE2);
+            if (mpc2.Mods.IsEmpty()) mpc2.LoadModsFromDisk(AppDirectories.AppDataFolder);
+            var mpc3 = LegendaryExplorerCore.PlotDatabase.PlotDatabases.GetModPlotContainerForGame(MEGame.LE3);
+            if (mpc3.Mods.IsEmpty()) mpc3.LoadModsFromDisk(AppDirectories.AppDataFolder);
         }
 
         private static void initCoreLib()

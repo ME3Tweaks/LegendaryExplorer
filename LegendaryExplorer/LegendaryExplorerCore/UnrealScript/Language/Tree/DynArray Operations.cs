@@ -8,7 +8,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
     {
         public Expression DynArrayExpression;
 
-        protected DynArrayOperation(Expression dynArrayExpression, SourcePosition start = null, SourcePosition end = null) : base(ASTNodeType.CompositeReference, start, end)
+        protected DynArrayOperation(Expression dynArrayExpression, int start = -1, int end = -1) : base(ASTNodeType.CompositeReference, start, end)
         {
             DynArrayExpression = dynArrayExpression;
         }
@@ -20,7 +20,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
     }
     public class DynArrayLength : DynArrayOperation
     {
-        public DynArrayLength(Expression dynArrayExpression, SourcePosition start = null, SourcePosition end = null) : base(dynArrayExpression, start, end){}
+        public DynArrayLength(Expression dynArrayExpression, int start = -1, int end = -1) : base(dynArrayExpression, start, end){}
 
         public override VariableType ResolveType()
         {
@@ -36,7 +36,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
     {
         public Expression CountArg;
 
-        public DynArrayAdd(Expression dynArrayExpression, Expression countArg, SourcePosition start = null, SourcePosition end = null) : base(dynArrayExpression, start, end)
+        public DynArrayAdd(Expression dynArrayExpression, Expression countArg, int start = -1, int end = -1) : base(dynArrayExpression, start, end)
         {
             CountArg = countArg;
         }
@@ -55,7 +55,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
     {
         public Expression ValueArg;
 
-        public DynArrayAddItem(Expression dynArrayExpression, Expression valueArg, SourcePosition start = null, SourcePosition end = null) : base(dynArrayExpression, start, end)
+        public DynArrayAddItem(Expression dynArrayExpression, Expression valueArg, int start = -1, int end = -1) : base(dynArrayExpression, start, end)
         {
             ValueArg = valueArg;
         }
@@ -75,7 +75,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
         public Expression IndexArg;
         public Expression CountArg;
 
-        public DynArrayInsert(Expression dynArrayExpression, Expression indexArg, Expression countArg, SourcePosition start = null, SourcePosition end = null) : base(dynArrayExpression, start, end)
+        public DynArrayInsert(Expression dynArrayExpression, Expression indexArg, Expression countArg, int start = -1, int end = -1) : base(dynArrayExpression, start, end)
         {
             IndexArg = indexArg;
             CountArg = countArg;
@@ -91,7 +91,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
         public Expression IndexArg;
         public Expression ValueArg;
 
-        public DynArrayInsertItem(Expression dynArrayExpression, Expression indexArg, Expression valueArg, SourcePosition start = null, SourcePosition end = null) : base(dynArrayExpression, start, end)
+        public DynArrayInsertItem(Expression dynArrayExpression, Expression indexArg, Expression valueArg, int start = -1, int end = -1) : base(dynArrayExpression, start, end)
         {
             IndexArg = indexArg;
             ValueArg = valueArg;
@@ -112,7 +112,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
         public Expression IndexArg;
         public Expression CountArg;
 
-        public DynArrayRemove(Expression dynArrayExpression, Expression indexArg, Expression countArg, SourcePosition start = null, SourcePosition end = null) : base(dynArrayExpression, start, end)
+        public DynArrayRemove(Expression dynArrayExpression, Expression indexArg, Expression countArg, int start = -1, int end = -1) : base(dynArrayExpression, start, end)
         {
             IndexArg = indexArg;
             CountArg = countArg;
@@ -127,7 +127,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
     {
         public Expression ValueArg;
 
-        public DynArrayRemoveItem(Expression dynArrayExpression, Expression valueArg, SourcePosition start = null, SourcePosition end = null) : base(dynArrayExpression, start, end)
+        public DynArrayRemoveItem(Expression dynArrayExpression, Expression valueArg, int start = -1, int end = -1) : base(dynArrayExpression, start, end)
         {
             ValueArg = valueArg;
         }
@@ -146,7 +146,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
     {
         public Expression ValueArg;
 
-        public DynArrayFind(Expression dynArrayExpression, Expression valueArg, SourcePosition start = null, SourcePosition end = null) : base(dynArrayExpression, start, end)
+        public DynArrayFind(Expression dynArrayExpression, Expression valueArg, int start = -1, int end = -1) : base(dynArrayExpression, start, end)
         {
             ValueArg = valueArg;
         }
@@ -167,7 +167,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
         public Expression ValueArg;
         public VariableType MemberType;
 
-        public DynArrayFindStructMember(Expression dynArrayExpression, Expression memberNameArg, Expression valueArg, SourcePosition start = null, SourcePosition end = null) : base(dynArrayExpression, start, end)
+        public DynArrayFindStructMember(Expression dynArrayExpression, Expression memberNameArg, Expression valueArg, int start = -1, int end = -1) : base(dynArrayExpression, start, end)
         {
             MemberNameArg = memberNameArg;
             ValueArg = valueArg;
@@ -187,7 +187,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
     {
         public Expression CompareFuncArg;
 
-        public DynArraySort(Expression dynArrayExpression, Expression comparefunctionArg, SourcePosition start = null, SourcePosition end = null) : base(dynArrayExpression, start, end)
+        public DynArraySort(Expression dynArrayExpression, Expression comparefunctionArg, int start = -1, int end = -1) : base(dynArrayExpression, start, end)
         {
             CompareFuncArg = comparefunctionArg;
         }
@@ -208,7 +208,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
         public Expression ValueArg;
         public Expression IndexArg;
 
-        public DynArrayIterator(Expression dynArrayExpression, Expression valueArg, Expression indexArg, SourcePosition start = null, SourcePosition end = null) : base(dynArrayExpression, start, end)
+        public DynArrayIterator(Expression dynArrayExpression, Expression valueArg, Expression indexArg, int start = -1, int end = -1) : base(dynArrayExpression, start, end)
         {
             ValueArg = valueArg;
             IndexArg = indexArg;

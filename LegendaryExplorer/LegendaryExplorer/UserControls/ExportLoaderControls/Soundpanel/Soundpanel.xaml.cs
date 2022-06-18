@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -31,9 +33,12 @@ using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using Microsoft.Win32;
+using NAudio.Wave;
+using NAudio.WaveFormRenderer;
 using AudioStreamHelper = LegendaryExplorer.UnrealExtensions.AudioStreamHelper;
 using WwiseStream = LegendaryExplorerCore.Unreal.BinaryConverters.WwiseStream;
 using AudioInfo = LegendaryExplorerCore.Audio.AudioInfo;
+using Color = System.Drawing.Color;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls
 {
@@ -53,6 +58,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         Stream audioStream;
         private HexBox SoundpanelHIRC_Hexbox;
         private ReadOptimizedByteProvider hircHexProvider;
+
+        /// <summary>
+        /// Notified when the seekbar position has changed.
+        /// </summary>
+        public event EventHandler<AudioPlayheadEventArgs> SeekbarPositionChanged;
 
         public ISBankEntry CurrentLoadedISACTEntry { get; private set; }
         public AFCFileEntry CurrentLoadedAFCFileEntry { get; private set; }
@@ -128,6 +138,22 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public static readonly DependencyProperty HexBoxMaxWidthProperty = DependencyProperty.Register(
             nameof(HexBoxMaxWidth), typeof(int), typeof(Soundpanel), new PropertyMetadata(default(int)));
 
+        public int SeekbarUpdatePeriod
+        {
+            get => (int)GetValue(SeekbarUpdatePeriodProperty);
+            set => SetValue(SeekbarUpdatePeriodProperty, value);
+        }
+        public static readonly DependencyProperty SeekbarUpdatePeriodProperty = DependencyProperty.Register(
+            nameof(SeekbarUpdatePeriod), typeof(int), typeof(Soundpanel), new PropertyMetadata(250, SeekbarUpdatePeriodChanged));
+
+        private static void SeekbarUpdatePeriodChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is Soundpanel sp)
+            {
+                sp.seekbarUpdateTimer.Interval = new TimeSpan(0, 0, 0, 0, (int) e.NewValue);
+            }
+        }
+
 
         public bool MiniPlayerMode
         {
@@ -136,6 +162,22 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         }
         public static readonly DependencyProperty MiniPlayerModeProperty = DependencyProperty.Register(
             nameof(MiniPlayerMode), typeof(bool), typeof(Soundpanel), new PropertyMetadata(default(bool), MiniPlayerModeChanged));
+
+        public bool GenerateWaveformGraph
+        {
+            get => (bool)GetValue(GenerateWaveformGraphProperty);
+            set => SetValue(GenerateWaveformGraphProperty, value);
+        }
+        public static readonly DependencyProperty GenerateWaveformGraphProperty = DependencyProperty.Register(
+            nameof(GenerateWaveformGraph), typeof(bool), typeof(Soundpanel), new PropertyMetadata(default(bool), GenerateWaveFormChanged));
+
+        private static void GenerateWaveFormChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is Soundpanel sp)
+            {
+
+            }
+        }
 
         private static void MiniPlayerModeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -147,7 +189,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     sp.ExportInfoListBox.Visibility = Visibility.Collapsed;
                     foreach (var item in sp.SoundPanel_TabsControl.Items)
                         (item as TabItem).Visibility = Visibility.Collapsed;
-                }   
+                }
                 else
                 {
                     // MiniPlayerMode disabled
@@ -278,7 +320,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             get => _searchStatusText;
             private set => SetProperty(ref _searchStatusText, value);
         }
-        
+
         #endregion
 
         #region Commands
@@ -317,7 +359,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             // HIRC commands
             PlayHIRCCommand = new RelayCommand(PlayHIRC, CanPlayHIRC);
         }
-        
+
         private bool CanCommitBankToFile() => HasPendingHIRCChanges;
 
         private void CommitBankToFile()
@@ -556,12 +598,13 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             //CurrentVorbisStream.Dispose();
             //_audioPlayer.Dispose();
             //infoTextBox.Text = "Select an export";
+            waveformImage.Source = null;
             CurrentLoadedExport = null;
         }
 
         public static bool CanParseStatic(ExportEntry exportEntry)
         {
-            return (exportEntry.FileRef.Game.IsGame1() && exportEntry.ClassName == "SoundNodeWave") || 
+            return (exportEntry.FileRef.Game.IsGame1() && exportEntry.ClassName == "SoundNodeWave") ||
                    (!exportEntry.FileRef.Game.IsGame1() && (exportEntry.ClassName == "WwiseBank" || exportEntry.ClassName == "WwiseStream"));
         }
 
@@ -645,7 +688,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
 
         }
-        
+
         internal void UnloadAFCEntry()
         {
             CurrentLoadedAFCFileEntry = null;
@@ -765,9 +808,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private bool CanPlayHIRC(object obj)
         {
-            return obj is HIRCDisplayObject {ObjType: 0x2} hirc && CurrentLoadedWwisebank != null && hirc.SourceID == CurrentLoadedWwisebank.ID;
+            return obj is HIRCDisplayObject { ObjType: 0x2 } hirc && CurrentLoadedWwisebank != null && hirc.SourceID == CurrentLoadedWwisebank.ID;
         }
-        
+
         private void StartPlayback()
         {
             StartOrPausePlaying();
@@ -884,6 +927,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         break;
                 }
             }
+
+            GenerateWaveform(audioStream);
         }
 
         private void UpdateSeekBarPos(object state, EventArgs e)
@@ -939,6 +984,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public void StopPlaying()
         {
             seekbarUpdateTimer.Stop();
+            CurrentTrackPosition = 0;
+            UpdateSeekBarPos(null, null);
             if (_audioPlayer != null)
             {
 
@@ -954,7 +1001,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         /// </summary>
         public void StartPlayingCurrentSelection()
         {
-            if(_playbackState == PlaybackState.Stopped)
+            if (_playbackState == PlaybackState.Stopped)
             {
                 StartOrPausePlaying();
             }
@@ -1039,6 +1086,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void Seekbar_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
+            SeekbarPositionChanged?.Invoke(this, new AudioPlayheadEventArgs(CurrentTrackPosition));
             if (!SeekUpdatingDueToTimer && !SeekDragging)
             {
                 PlayFromCurrentTrackPosition();
@@ -1200,13 +1248,13 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     case "WwiseBank":
                         return ExportInfoListBox.SelectedItem is EmbeddedWEMFile;
                     case "SoundNodeWave":
-                        return ExportInfoListBox.SelectedItem is ISBankEntry {DataAsStored: not null};
+                        return ExportInfoListBox.SelectedItem is ISBankEntry { DataAsStored: not null };
                 }
             }
 
             return false;
         }
-        
+
 
         #endregion
 
@@ -1375,6 +1423,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
             }).ContinueWithOnUIThread((a) =>
             {
+                UpdateAudioStream();
                 if (HostingControl != null)
                 {
                     HostingControl.IsBusy = false;
@@ -1410,9 +1459,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
                 w.ImportFromFile(filePath, w.GetPathToAFC());
                 exportToWorkOn.WriteBinary(w);
-                UpdateAudioStream();
 
-                if(updateReferencedEvents)
+                if (updateReferencedEvents)
                 {
                     var ms = (float)w.GetAudioInfo().GetLength().TotalMilliseconds;
                     UpdateReferencedWwiseEventLengths(exportToWorkOn, ms);
@@ -1435,8 +1483,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
                 // Find referenced WwiseEvent exports and update the property
                 var referencedExports = wwiseStreamExport.GetEntriesThatReferenceThisOne();
-                foreach (ExportEntry re in referencedExports.Select(e => e.Key)
-                                                            .Where(e => e.ClassName == "WwiseEvent"))
+                foreach (var re in referencedExports.Select(e => e.Key)
+                                                            .Where(e => e.ClassName == "WwiseEvent")
+                                                            .OfType<ExportEntry>())
                 {
                     re.WriteProperty(durationProperty);
                 }
@@ -1445,8 +1494,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             // so we have to look up the WwiseEvent by TLK ID
             else if (wwiseStreamExport.Game is MEGame.LE3)
             {
-                var durationProperty = new FloatProperty(streamLengthInMs/1000, "DurationSeconds");
-                
+                var durationProperty = new FloatProperty(streamLengthInMs / 1000, "DurationSeconds");
+
                 var splits = wwiseStreamExport.ObjectName.Name.Split('_', ',');
                 int tlkId = 0;
                 bool specifyByGender = false;
@@ -1477,7 +1526,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         }
                         else return splits[1] == tlkId.ToString();
                     });
-                foreach (ExportEntry re in referencedExports)
+                foreach (var re in referencedExports.OfType<ExportEntry>())
                 {
                     re.WriteProperty(durationProperty);
                 }
@@ -1541,7 +1590,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         }
 
         #endregion
-         
+
         #region HIRC Panel
 
         public event Action<uint> HIRCObjectSelected;
@@ -1914,9 +1963,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public override void Dispose()
         {
             FreeAudioResources();
+            waveformImage.Source = null;
+            SoundpanelHIRC_Hexbox?.Dispose();
             SoundpanelHIRC_Hexbox = null;
-            HIRC_Hexbox_Host.Child.Dispose();
-            HIRC_Hexbox_Host.Dispose();
+            HIRC_Hexbox_Host?.Child?.Dispose();
+            HIRC_Hexbox_Host?.Dispose();
             CurrentLoadedWwisebank = null;
         }
 
@@ -2011,6 +2062,53 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
         }
         #endregion
+
+        #region Waveform graph
+
+        /// <summary>
+        /// Generates a waveform from the given stream input (Not a wave stream!)
+        /// </summary>
+        /// <param name="waveStream">PCM data stream</param>
+        private void GenerateWaveform(Stream waveStream)
+        {
+            if (!GenerateWaveformGraph)
+                return;
+            waveStream.Position = 0;
+            var audioFileReader = new WaveFileReader(waveStream);
+
+
+            // 1. Configure Providers
+            MaxPeakProvider maxPeakProvider = new MaxPeakProvider();
+            RmsPeakProvider rmsPeakProvider = new RmsPeakProvider(200); // e.g. 200
+            SamplingPeakProvider samplingPeakProvider = new SamplingPeakProvider(200); // e.g. 200
+            AveragePeakProvider averagePeakProvider = new AveragePeakProvider(4); // e.g. 4
+
+            // 2. Configure the style of the audio wave image
+            StandardWaveFormRendererSettings myRendererSettings = new StandardWaveFormRendererSettings();
+            myRendererSettings.Width = 1200;
+            myRendererSettings.TopHeight = 32;
+            myRendererSettings.BottomHeight = 32;
+            myRendererSettings.BackgroundColor = Color.Transparent;
+
+            // 3. Define the audio file from which the audio wave will be created and define the providers and settings
+            WaveFormRenderer renderer = new WaveFormRenderer();
+            var image = renderer.Render(audioFileReader, averagePeakProvider, myRendererSettings);
+            waveformImage.Source = image.ToBitmapImage(ImageFormat.Png);
+        }
+        #endregion
+    }
+
+    public class AudioPlayheadEventArgs : EventArgs
+    {
+        /// <summary>
+        /// The position of the playhead
+        /// </summary>
+        public double PlayheadTime;
+
+        public AudioPlayheadEventArgs(double position)
+        {
+            PlayheadTime = position;
+        }
     }
 
     public class EmbeddedWEMFile
@@ -2076,8 +2174,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 {
                     this.DisplayString += $" ({ audioLen.Value.ToString(@"mm\:ss\:fff")})";
                 }
-                
-                if(App.IsDebug)
+
+                if (App.IsDebug)
                 {
                     var audioData = GetAudioInfo(WemData);
                     this.DisplayString += $" (Size { audioData.AudioDataSize.ToString()})";

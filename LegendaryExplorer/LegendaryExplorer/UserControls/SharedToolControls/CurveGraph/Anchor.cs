@@ -8,19 +8,21 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using LegendaryExplorer.Dialogs;
 using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Unreal;
 
 namespace LegendaryExplorer.UserControls.SharedToolControls.Curves
 {
     internal sealed class Anchor : Thumb, INotifyPropertyChanged
     {
-        public readonly CurveGraph graph;
-        public readonly LinkedListNode<CurvePoint> point;
+        public readonly CurveGraph Graph;
+        public readonly LinkedListNode<CurvePoint> Point;
+        public int AnchorIndex;
 
-        public Handle leftHandle;
-        public Handle rightHandle;
+        public Handle LeftHandle;
+        public Handle RightHandle;
 
-        public BezierSegment leftBez;
-        public BezierSegment rightBez;
+        public BezierSegment LeftBez;
+        public BezierSegment RightBez;
 
         private double _y;
         public double Y
@@ -28,15 +30,33 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Curves
             get => _y;
             set
             {
-                if (SetProperty(ref _y, value) && graph != null)
+                if (SetProperty(ref _y, value) && Graph != null)
                 {
-                    point.Value.OutVal = Convert.ToSingle(graph.toUnrealY(_y));
+                    Point.Value.OutVal = Convert.ToSingle(Graph.toUnrealY(_y));
                     if (IsSelected)
                     {
-                        string val = point.Value.OutVal.ToString("0.###");
-                        if (!graph.yTextBox.Text.isNumericallyEqual(val))
+                        if (Point.Value.InterpMode is EInterpCurveMode.CIM_CurveAuto or EInterpCurveMode.CIM_CurveAutoClamped)
                         {
-                            graph.yTextBox.Text = val;
+                            LeftHandle?.TangentUpdate();
+                            RightHandle?.TangentUpdate();
+                            if (LeftBez != null) LeftBez.Slope2 = Point.Value.ArriveTangent;
+                            if (RightBez != null) RightBez.Slope1 = Point.Value.LeaveTangent;
+                        }
+                        int i = AnchorIndex;
+                        if (i > 0 && Point.Previous is { } prevNode && prevNode.Value.InterpMode is EInterpCurveMode.CIM_CurveAuto or EInterpCurveMode.CIM_CurveAutoClamped)
+                        {
+                            if (Graph.Anchors[i - 1].LeftBez != null) Graph.Anchors[i - 1].LeftBez.Slope2 = prevNode.Value.ArriveTangent;
+                            if (Graph.Anchors[i - 1].RightBez != null) Graph.Anchors[i - 1].RightBez.Slope1 = prevNode.Value.LeaveTangent;
+                        }
+                        if (i < Graph.Anchors.Count - 1 && Point.Next is { } nextNode && nextNode.Value.InterpMode is EInterpCurveMode.CIM_CurveAuto or EInterpCurveMode.CIM_CurveAutoClamped)
+                        {
+                            if (Graph.Anchors[i + 1].LeftBez != null) Graph.Anchors[i + 1].LeftBez.Slope2 = nextNode.Value.ArriveTangent;
+                            if (Graph.Anchors[i + 1].RightBez != null) Graph.Anchors[i + 1].RightBez.Slope1 = nextNode.Value.LeaveTangent;
+                        }
+                        string val = Point.Value.OutVal.ToString("0.###");
+                        if (!Graph.yTextBox.Text.IsNumericallyEqual(val))
+                        {
+                            Graph.yTextBox.Text = val;
                         }
                     }
                 }
@@ -50,15 +70,15 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Curves
             get => _x;
             set
             {
-                if (SetProperty(ref _x, value) && graph != null)
+                if (SetProperty(ref _x, value) && Graph != null)
                 {
-                    point.Value.InVal = Convert.ToSingle(graph.toUnrealX(_x));
+                    Point.Value.InVal = Convert.ToSingle(Graph.toUnrealX(_x));
                     if (IsSelected)
                     {
-                        string val = point.Value.InVal.ToString("0.###");
-                        if (!graph.xTextBox.Text.isNumericallyEqual(val))
+                        string val = Point.Value.InVal.ToString("0.###");
+                        if (!Graph.xTextBox.Text.IsNumericallyEqual(val))
                         {
-                            graph.xTextBox.Text = val;
+                            Graph.xTextBox.Text = val;
                         }
                     }
                 }
@@ -82,89 +102,89 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Curves
                 //selected
                 if ((bool)e.NewValue)
                 {
-                    if (a.leftHandle is null)
+                    if (a.LeftHandle is null)
                     {
-                        a.leftHandle = new Handle(a, true);
-                        a.graph.graph.Children.Add(a.leftHandle);
+                        a.LeftHandle = new Handle(a, true);
+                        a.Graph.graph.Children.Add(a.LeftHandle);
                     }
 
-                    if (a.rightHandle is null)
+                    if (a.RightHandle is null)
                     {
-                        a.rightHandle = new Handle(a, false);
-                        a.graph.graph.Children.Add(a.rightHandle);
+                        a.RightHandle = new Handle(a, false);
+                        a.Graph.graph.Children.Add(a.RightHandle);
                     }
 
-                    string val = a.point.Value.InVal.ToString("0.###");
-                    if (!a.graph.xTextBox.Text.isNumericallyEqual(val))
+                    string val = a.Point.Value.InVal.ToString("0.###");
+                    if (!a.Graph.xTextBox.Text.IsNumericallyEqual(val))
                     {
-                        a.graph.xTextBox.Text = val;
+                        a.Graph.xTextBox.Text = val;
                     }
-                    val = a.point.Value.OutVal.ToString("0.###");
-                    if (!a.graph.yTextBox.Text.isNumericallyEqual(val))
+                    val = a.Point.Value.OutVal.ToString("0.###");
+                    if (!a.Graph.yTextBox.Text.IsNumericallyEqual(val))
                     {
-                        a.graph.yTextBox.Text = val;
+                        a.Graph.yTextBox.Text = val;
                     }
 
                     //left handle
-                    if (a.point.Previous != null)
+                    if (a.Point.Previous != null)
                     {
-                        switch (a.point.Previous.Value.InterpMode)
+                        switch (a.Point.Previous.Value.InterpMode)
                         {
-                            case CurveMode.CIM_CurveAuto:
-                            case CurveMode.CIM_CurveUser:
-                            case CurveMode.CIM_CurveBreak:
-                            case CurveMode.CIM_CurveAutoClamped:
-                                a.leftHandle.Visibility = Visibility.Visible;
+                            case EInterpCurveMode.CIM_CurveAuto:
+                            case EInterpCurveMode.CIM_CurveUser:
+                            case EInterpCurveMode.CIM_CurveBreak:
+                            case EInterpCurveMode.CIM_CurveAutoClamped:
+                                a.LeftHandle.Visibility = Visibility.Visible;
                                 break;
-                            case CurveMode.CIM_Linear:
-                            case CurveMode.CIM_Constant:
+                            case EInterpCurveMode.CIM_Linear:
+                            case EInterpCurveMode.CIM_Constant:
                             default:
-                                a.leftHandle.Visibility = Visibility.Hidden;
+                                a.LeftHandle.Visibility = Visibility.Hidden;
                                 break;
                         }
                     }
                     else
                     {
-                        a.leftHandle.Visibility = Visibility.Hidden;
+                        a.LeftHandle.Visibility = Visibility.Hidden;
                     }
 
                     //right handle
-                    if (a.point.Next != null)
+                    if (a.Point.Next != null)
                     {
-                        switch (a.point.Value.InterpMode)
+                        switch (a.Point.Value.InterpMode)
                         {
-                            case CurveMode.CIM_CurveAuto:
-                            case CurveMode.CIM_CurveUser:
-                            case CurveMode.CIM_CurveBreak:
-                            case CurveMode.CIM_CurveAutoClamped:
-                                a.rightHandle.Visibility = Visibility.Visible;
+                            case EInterpCurveMode.CIM_CurveAuto:
+                            case EInterpCurveMode.CIM_CurveUser:
+                            case EInterpCurveMode.CIM_CurveBreak:
+                            case EInterpCurveMode.CIM_CurveAutoClamped:
+                                a.RightHandle.Visibility = Visibility.Visible;
                                 break;
-                            case CurveMode.CIM_Linear:
-                            case CurveMode.CIM_Constant:
+                            case EInterpCurveMode.CIM_Linear:
+                            case EInterpCurveMode.CIM_Constant:
                             default:
-                                a.rightHandle.Visibility = Visibility.Hidden;
+                                a.RightHandle.Visibility = Visibility.Hidden;
                                 break;
                         }
                     }
                     else
                     {
-                        a.rightHandle.Visibility = Visibility.Hidden;
+                        a.RightHandle.Visibility = Visibility.Hidden;
                     }
                 }
                 //unselected
                 else
                 {
-                    if (a.rightHandle is not null)
+                    if (a.RightHandle is not null)
                     {
-                        a.graph.graph.Children.Remove(a.rightHandle);
-                        a.rightHandle.Dispose();
-                        a.rightHandle = null;
+                        a.Graph.graph.Children.Remove(a.RightHandle);
+                        a.RightHandle.Dispose();
+                        a.RightHandle = null;
                     }
-                    if (a.leftHandle is not null)
+                    if (a.LeftHandle is not null)
                     {
-                        a.graph.graph.Children.Remove(a.leftHandle);
-                        a.leftHandle.Dispose();
-                        a.leftHandle = null;
+                        a.Graph.graph.Children.Remove(a.LeftHandle);
+                        a.LeftHandle.Dispose();
+                        a.LeftHandle = null;
                     }
                 }
             }
@@ -176,16 +196,16 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Curves
 
         public Anchor(CurveGraph g, LinkedListNode<CurvePoint> p)
         {
-            graph = g;
-            point = p;
-            X = graph.toLocalX(point.Value.InVal);
-            Y = graph.toLocalY(point.Value.OutVal);
+            Graph = g;
+            Point = p;
+            X = Graph.toLocalX(Point.Value.InVal);
+            Y = Graph.toLocalY(Point.Value.OutVal);
             this.DragDelta += OnDragDelta;
             this.DragStarted += OnDragStarted;
             this.MouseDown += Anchor_MouseDown;
 
-            leftBez = null;
-            rightBez = null;
+            LeftBez = null;
+            RightBez = null;
         }
 
         private void Anchor_MouseDown(object sender, MouseButtonEventArgs e)
@@ -199,17 +219,17 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Curves
                 var setValue = new MenuItem {Header = "Set Value"};
                 setValue.Click += SetValue_Click;
                 cm.Items.Add(setValue);
-                switch (point.Value.InterpMode)
+                switch (Point.Value.InterpMode)
                 {
-                    case CurveMode.CIM_CurveAuto:
-                    case CurveMode.CIM_CurveUser:
-                    case CurveMode.CIM_CurveAutoClamped:
+                    case EInterpCurveMode.CIM_CurveAuto:
+                    case EInterpCurveMode.CIM_CurveUser:
+                    case EInterpCurveMode.CIM_CurveAutoClamped:
                         var breakTangents = new MenuItem();
                         breakTangents.Header = "Break Tangents";
                         breakTangents.Click += BreakTangents_Click;
                         cm.Items.Add(breakTangents);
                         break;
-                    case CurveMode.CIM_CurveBreak:
+                    case EInterpCurveMode.CIM_CurveBreak:
                         var flattenTangents = new MenuItem();
                         flattenTangents.Header = "Flatten Tangents";
                         flattenTangents.Click += FlattenTangents_Click;
@@ -228,79 +248,81 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Curves
 
         private void DeleteKey_Click(object sender, RoutedEventArgs e)
         {
-            if (point.Previous != null)
+            if (Point.Previous != null)
             {
-                graph.SelectedPoint = point.Previous.Value;
+                Graph.SelectedPoint = Point.Previous.Value;
             }
-            else if (point.Next != null)
+            else if (Point.Next != null)
             {
-                graph.SelectedPoint = point.Next.Value;
+                Graph.SelectedPoint = Point.Next.Value;
             }
-            graph.SelectedCurve.RemovePoint(point);
-            graph.Paint();
+            Graph.SelectedCurve.RemovePoint(Point);
+            Graph.Paint();
         }
 
         private void SetTime_Click(object sender, RoutedEventArgs e)
         {
-            float prev = point.Previous?.Value.InVal ?? float.MinValue;
-            float next = point.Next?.Value.InVal ?? float.MaxValue;
-            string res = PromptDialog.Prompt(this, $"Enter time between {prev} and {next}", "Set Time", point.Value.InVal.ToString());
+            float prev = Point.Previous?.Value.InVal ?? float.MinValue;
+            float next = Point.Next?.Value.InVal ?? float.MaxValue;
+            string res = PromptDialog.Prompt(this, $"Enter time between {prev} and {next}", "Set Time", Point.Value.InVal.ToString());
             if (float.TryParse(res, out float result) && result > prev && result < next)
             {
-                X = graph.toLocalX(result);
-                graph.Paint(true);
+                X = Graph.toLocalX(result);
+                Graph.Paint(true);
             }
         }
 
         private void SetValue_Click(object sender, RoutedEventArgs e)
         {
-            string res = PromptDialog.Prompt(this, "Enter new value", "Set Value", point.Value.OutVal.ToString());
+            string res = PromptDialog.Prompt(this, "Enter new value", "Set Value", Point.Value.OutVal.ToString());
             if (float.TryParse(res, out float result))
             {
-                Y = graph.toLocalY(result);
-                graph.Paint(true);
+                Y = Graph.toLocalY(result);
+                Graph.Paint(true);
             }
         }
 
         private void BreakTangents_Click(object sender, RoutedEventArgs e)
         {
-            point.Value.InterpMode = CurveMode.CIM_CurveBreak;
-            graph.invokeSelectedPointChanged();
+            Point.Value.InterpMode = EInterpCurveMode.CIM_CurveBreak;
+            Graph.invokeSelectedPointChanged();
         }
 
         private void FlattenTangents_Click(object sender, RoutedEventArgs e)
         {
-            point.Value.LeaveTangent = point.Value.ArriveTangent = 0;
-            point.Value.InterpMode = CurveMode.CIM_CurveAutoClamped;
-            graph.invokeSelectedPointChanged();
-            graph.Paint();
+            Point.Value.LeaveTangent = Point.Value.ArriveTangent = 0;
+            Point.Value.InterpMode = EInterpCurveMode.CIM_CurveUser;
+            Graph.invokeSelectedPointChanged();
+            Graph.Paint();
         }
 
         private void OnDragStarted(object sender, DragStartedEventArgs e)
         {
             IsSelected = true;
-            graph.SelectedPoint = point.Value;
+            Graph.SelectedPoint = Point.Value;
         }
 
         private void OnDragDelta(object sender, DragDeltaEventArgs e)
         {
             if(Keyboard.Modifiers is ModifierKeys.Shift or ModifierKeys.Control)
             {
-                double prev = graph.toLocalX(point.Previous?.Value.InVal ?? float.MinValue);
-                double next = graph.toLocalX(point.Next?.Value.InVal ?? float.MaxValue);
+                double prev = Graph.toLocalX(Point.Previous?.Value.InVal ?? float.MinValue);
+                double next = Graph.toLocalX(Point.Next?.Value.InVal ?? float.MaxValue);
                 double change = e.HorizontalChange;
                 if ((X + change) <= prev || (X + change) >= next) change = 0f;
 
                 X += change;
-                if (leftHandle != null) leftHandle.X += change;
-                if (rightHandle != null) rightHandle.X += change;
+                if (LeftHandle != null) LeftHandle.X += change;
+                if (RightHandle != null) RightHandle.X += change;
             }
 
             if (Keyboard.Modifiers != ModifierKeys.Shift)
             {
                 Y -= e.VerticalChange;
-                if (leftHandle != null) leftHandle.Y -= e.VerticalChange;
-                if (rightHandle != null) rightHandle.Y -= e.VerticalChange;
+                if (LeftHandle != null) LeftHandle.Y -= e.VerticalChange;
+                if (RightHandle != null) RightHandle.Y -= e.VerticalChange;
+
+
             }
         }
 

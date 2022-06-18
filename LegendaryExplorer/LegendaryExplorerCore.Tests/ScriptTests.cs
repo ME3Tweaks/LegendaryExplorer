@@ -45,22 +45,24 @@ namespace LegendaryExplorerCore.Tests
 
         private static void compileTest(string testFile, string shortName, bool usePackageCache)
         {
+            bool globalSharedCacheEnabled = MEPackageHandler.GlobalSharedCacheEnabled;
             MEPackageHandler.GlobalSharedCacheEnabled = !usePackageCache;
 
             using var testPackage = MEPackageHandler.OpenMEPackage(testFile);
             if (testPackage.Platform != MEPackage.GamePlatform.PC)
                 return; // Skip this file.
 
-            Stopwatch sw = Stopwatch.StartNew();
+            var sw = Stopwatch.StartNew();
             var testLib = new FileLib(testPackage);
-            bool fileLibInitialized = testLib.InitializeAsync(usePackageCache ? new PackageCache() : null).Result;
+            PackageCache packageCache = usePackageCache ? new PackageCache() : null;
+            bool fileLibInitialized = testLib.Initialize(packageCache);
             Assert.IsTrue(fileLibInitialized, $"{testPackage.Game} Script failed to compile {shortName} class definitions! Errors:\n{string.Join('\n', testLib.InitializationLog.Content)}");
             sw.Stop();
             Debug.WriteLine($"With {(usePackageCache ? "packagecache" : "globalcache")} took {sw.ElapsedMilliseconds}ms to initialize lib");
 
             foreach (ExportEntry export in testPackage.Exports.Where(exp => exp.IsClass))
             {
-                (ASTNode astNode, string text) = UnrealScriptCompiler.DecompileExport(export, testLib);
+                (ASTNode astNode, string text) = UnrealScriptCompiler.DecompileExport(export, testLib, packageCache);
 
                 Assert.IsInstanceOfType(astNode, typeof(Class), $"#{export.UIndex} {export.InstancedFullPath} in {shortName} did not decompile!");
 
@@ -74,6 +76,8 @@ namespace LegendaryExplorerCore.Tests
                 //    Assert.Fail($"#{funcExport.UIndex} {funcExport.InstancedFullPath} in {shortName} did not recompile!");
                 //}
             }
+            packageCache?.Dispose();
+            MEPackageHandler.GlobalSharedCacheEnabled = globalSharedCacheEnabled;
         }
     }
 }

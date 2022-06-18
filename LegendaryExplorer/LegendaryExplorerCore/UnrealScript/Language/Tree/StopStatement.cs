@@ -5,7 +5,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 {
     public class StopStatement : Statement
     {
-        public StopStatement(SourcePosition start, SourcePosition end)
+        public StopStatement(int start, int end)
             : base(ASTNodeType.StopStatement, start, end) { }
 
         public override bool AcceptVisitor(IASTVisitor visitor)

@@ -231,7 +231,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
                     Buffer.BlockCopy(mipToLoad.Mip, 0, imagebytes, 0, mipToLoad.compressedSize);
                 }
             }
-            else if (((int)mipToLoad.storageType & (int)StorageFlags.externalFile) != 0)
+            else if (mipToLoad.storageType != StorageTypes.empty && ((int)mipToLoad.storageType & (int)StorageFlags.externalFile) != 0)
             {
                 // external 
                 string filename = null;
@@ -369,9 +369,9 @@ namespace LegendaryExplorerCore.Unreal.Classes
             if (textureFormat == "PF_NormalMap_HQ")
             {
                 // only ME1 and ME2
-                return (uint)~ParallelCRC.Compute(data, 0, data.Length / 2);
+                return TextureCRC.Compute(data, 0, data.Length / 2);
             }
-            return (uint)~ParallelCRC.Compute(data);
+            return TextureCRC.Compute(data);
         }
 
         /// <summary>

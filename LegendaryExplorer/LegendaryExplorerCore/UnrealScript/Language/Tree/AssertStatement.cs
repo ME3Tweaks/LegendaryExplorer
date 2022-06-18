@@ -6,7 +6,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
     public class AssertStatement : Statement
     {
         public Expression Condition;
-        public AssertStatement(Expression condition, SourcePosition start = null, SourcePosition end = null) : base(ASTNodeType.AssertStatement, start, end)
+        public AssertStatement(Expression condition, int start = -1, int end = -1) : base(ASTNodeType.AssertStatement, start, end)
         {
             Condition = condition;
         }

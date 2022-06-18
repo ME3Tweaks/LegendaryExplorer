@@ -1,18 +1,19 @@
 ﻿using System;
+using LegendaryExplorerCore.UnrealScript.Lexing;
 
 namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 {
-    public class InOpDeclaration : OperatorDeclaration
+    public sealed class InOpDeclaration : OperatorDeclaration
     {
-        public FunctionParameter LeftOperand;
-        public FunctionParameter RightOperand;
-        public int Precedence;
+        public readonly FunctionParameter LeftOperand;
+        public readonly FunctionParameter RightOperand;
+        public readonly int Precedence;
         public override bool HasOutParams => LeftOperand.IsOut || RightOperand.IsOut;
 
-        public InOpDeclaration(string keyword, int precedence, int nativeIndex,
+        public InOpDeclaration(TokenType operatorType, int precedence, int nativeIndex,
                                VariableType returnType,
                                FunctionParameter leftOp, FunctionParameter rightOp)
-            : base(keyword, returnType, nativeIndex)
+            : base(operatorType, returnType, nativeIndex)
         {
             LeftOperand = leftOp;
             RightOperand = rightOp;

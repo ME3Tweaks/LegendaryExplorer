@@ -80,7 +80,7 @@
         InstanceDelegate = 0x4B,
         // 0x4C - 0x4E are unknown, probably invalid, throws assert failure by the looks of it, not defined in GNatives
         StringRefConst = 0x4F,
-        GoW_DefaultValue = 0x50,
+        //GoW_DefaultValue = 0x50, unused
         InterfaceContext = 0x51,
         InterfaceCast = 0x52,
         EndOfScript = 0x53,

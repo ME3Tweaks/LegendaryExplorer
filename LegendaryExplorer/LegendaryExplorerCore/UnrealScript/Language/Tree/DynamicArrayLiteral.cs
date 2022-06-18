@@ -6,10 +6,10 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 {
     public class DynamicArrayLiteral : Expression
     {
-        public List<Expression> Values;
+        public readonly List<Expression> Values;
 
-        public DynamicArrayType ArrayType;
-        public DynamicArrayLiteral(DynamicArrayType arrayType, List<Expression> values, SourcePosition start = null, SourcePosition end = null) : base(ASTNodeType.DynamicArrayLiteral, start, end)
+        public readonly DynamicArrayType ArrayType;
+        public DynamicArrayLiteral(DynamicArrayType arrayType, List<Expression> values, int start = -1, int end = -1) : base(ASTNodeType.DynamicArrayLiteral, start, end)
         {
             ArrayType = arrayType;
             Values = values;

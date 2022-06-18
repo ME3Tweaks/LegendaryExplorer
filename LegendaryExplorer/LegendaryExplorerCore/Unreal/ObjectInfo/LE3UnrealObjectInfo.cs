@@ -113,94 +113,6 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             return null;
         }
 
-        public static ArrayType getArrayType(string className, NameReference propName, ExportEntry export = null)
-        {
-            PropertyInfo p = getPropertyInfo(className, propName, false, containingExport: export);
-            if (p == null)
-            {
-                p = getPropertyInfo(className, propName, true, containingExport: export);
-            }
-            if (p == null && export != null)
-            {
-                if (!export.IsClass && export.Class is ExportEntry classExport)
-                {
-                    export = classExport;
-                }
-                if (export.IsClass)
-                {
-                    ClassInfo currentInfo = generateClassInfo(export);
-                    currentInfo.baseClass = export.SuperClassName;
-                    p = getPropertyInfo(className, propName, false, currentInfo, containingExport: export);
-                    if (p == null)
-                    {
-                        p = getPropertyInfo(className, propName, true, currentInfo, containingExport: export);
-                    }
-                }
-            }
-            return getArrayType(p);
-        }
-
-#if DEBUG
-        public static bool ArrayTypeLookupJustFailed;
-#endif
-
-        public static ArrayType getArrayType(PropertyInfo p)
-        {
-            if (p != null)
-            {
-                if (p.Reference == "NameProperty")
-                {
-                    return ArrayType.Name;
-                }
-
-                if (Enums.ContainsKey(p.Reference))
-                {
-                    return ArrayType.Enum;
-                }
-
-                if (p.Reference == "BoolProperty")
-                {
-                    return ArrayType.Bool;
-                }
-
-                if (p.Reference == "ByteProperty")
-                {
-                    return ArrayType.Byte;
-                }
-
-                if (p.Reference == "StrProperty")
-                {
-                    return ArrayType.String;
-                }
-
-                if (p.Reference == "FloatProperty")
-                {
-                    return ArrayType.Float;
-                }
-
-                if (p.Reference == "IntProperty")
-                {
-                    return ArrayType.Int;
-                }
-                if (p.Reference == "StringRefProperty")
-                {
-                    return ArrayType.StringRef;
-                }
-
-                if (Structs.ContainsKey(p.Reference))
-                {
-                    return ArrayType.Struct;
-                }
-
-                return ArrayType.Object;
-            }
-#if DEBUG
-            ArrayTypeLookupJustFailed = true;
-#endif
-            Debug.WriteLine("LE3 Array type lookup failed due to no info provided, defaulting to int");
-            return LegendaryExplorerCoreLibSettings.Instance.ParseUnknownArrayTypesAsObject ? ArrayType.Object : ArrayType.Int;
-        }
-
         public static PropertyInfo getPropertyInfo(string className, NameReference propName, bool inStruct = false, ClassInfo nonVanillaClassInfo = null, bool reSearch = true, ExportEntry containingExport = null)
         {
             if (className.StartsWith("Default__", StringComparison.OrdinalIgnoreCase))
@@ -301,7 +213,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 case PropertyType.BioMask4Property:
                     return new BioMask4Property(0, propName);
                 case PropertyType.ArrayProperty:
-                    switch (getArrayType(propInfo))
+                    switch (GlobalUnrealObjectInfo.GetArrayType(MEGame.LE3, propInfo))
                     {
                         case ArrayType.Object:
                             return new ArrayProperty<ObjectProperty>(propName);
@@ -556,7 +468,12 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 properties =
                 {
                     new KeyValuePair<NameReference, PropertyInfo>("m_aoTargets", new PropertyInfo(PropertyType.ArrayProperty, "Actor")),
-                    new KeyValuePair<NameReference, PropertyInfo>("bAutoLookAtPlayer", new PropertyInfo(PropertyType.BoolProperty))
+                    new KeyValuePair<NameReference, PropertyInfo>("bAutoLookAtPlayer", new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("NoticeEnableDistance", new PropertyInfo(PropertyType.FloatProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("NoticeDisableDistance", new PropertyInfo(PropertyType.FloatProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("ReNoticeMinTime", new PropertyInfo(PropertyType.IntProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("ReNoticeMaxTime", new PropertyInfo(PropertyType.IntProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("NoticeDuration", new PropertyInfo(PropertyType.FloatProperty))
                 }
             };
             sequenceObjects["SFXSeqAct_SetAutoLookAtPlayer"] = new SequenceObjectInfo
@@ -669,6 +586,20 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             {
                 ObjInstanceVersion = 1
             };
+            classes["SFXSeqAct_AwardWeaponByName"] = new ClassInfo
+            {
+                baseClass = "SequenceAction",
+                //pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                //exportIndex = 0, not in LE3Resources.pcc
+                properties =
+                {
+                    new KeyValuePair<NameReference, PropertyInfo>("WeaponClassName", new PropertyInfo(PropertyType.NameProperty))
+                }
+            };
+            sequenceObjects["SFXSeqAct_AwardWeaponByName"] = new SequenceObjectInfo
+            {
+                ObjInstanceVersion = 1
+            };
 
             //Kinkojiro - New GM Classes - only used in EGM
             classes["SFXClusterEGM"] = new ClassInfo
@@ -684,7 +615,9 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 baseClass = "SFXSystem",
                 properties =
                 {
-                    new KeyValuePair<NameReference, PropertyInfo>("m_bCerberusSystem", new PropertyInfo(PropertyType.BoolProperty))
+                    new KeyValuePair<NameReference, PropertyInfo>("m_bCerberusSystem", new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("ShipChasePlayEvent", new PropertyInfo(PropertyType.ObjectProperty, "WwiseEvent")),
+                    new KeyValuePair<NameReference, PropertyInfo>("ShipChaseStopEvent", new PropertyInfo(PropertyType.ObjectProperty, "WwiseEvent"))
                 }
             };
             classes["SFXPlanet_Invaded"] = new ClassInfo
@@ -979,6 +912,26 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             @"Engine.StaticMesh",
             @"Engine.World",
             @"Engine.ShaderCache",
+            "Core.Package",
+            "Core.ObjectProperty",
+            "Core.Function",
+            "Core.ClassProperty",
+            "Core.IntProperty",
+            "Core.Class",
+            "Core.BoolProperty",
+            "Core.FloatProperty",
+            "Core.ArrayProperty",
+            "Core.DelegateProperty",
+            "Core.StructProperty",
+            "Core.ScriptStruct",
+            "Core.StringRefProperty",
+            "Core.StrProperty",
+            "Core.NameProperty",
+            "Core.ByteProperty",
+            "Core.Enum",
+            "Core.Const",
+            "Core.ComponentProperty",
+            "Core.State",
         };
     }
 }

@@ -10,7 +10,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
         public Expression LeftOperand;
         public Expression RightOperand;
 
-        public InOpReference(InOpDeclaration op, Expression lhs, Expression rhs, SourcePosition start = null, SourcePosition end = null)
+        public InOpReference(InOpDeclaration op, Expression lhs, Expression rhs, int start = -1, int end = -1)
             : base(ASTNodeType.InOpRef, start, end) 
         {
             Operator = op;

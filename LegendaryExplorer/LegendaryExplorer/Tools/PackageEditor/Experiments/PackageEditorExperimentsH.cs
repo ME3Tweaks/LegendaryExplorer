@@ -296,11 +296,36 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 clonedHead.ObjectName = new NameReference(export.ObjectNameString);
                 tempFile.Save();
 
-                // Export the cloned headmesh
-                pew.BusyText = "Exporting via UModel...";
-                UModelHelper.ExportViaUModel(pew, clonedHead);
-                //File.Delete(tempFilePath);
-                pew.IsBusy = false;
+                // Ensure UModel
+                // Pass error message back
+                Task.Run(() =>
+                {
+                    return UModelHelper.EnsureUModel(
+                        () => pew.IsBusy = true,
+                        null,
+                        null,
+                        busyText => pew.BusyText = busyText
+                    );
+                }).ContinueWithOnUIThread(x =>
+                {
+                    // Export the cloned headmesh
+                    if (x != null)
+                    {
+                        MessageBox.Show($"Couldn't export via umodel: {x.Result}");
+                    }
+                    else
+                    {
+                        pew.BusyText = "Exporting via UModel...";
+                        UModelHelper.ExportViaUModel(pew, clonedHead);
+                        //File.Delete(tempFilePath);
+                    }
+                    pew.IsBusy = false;
+                });
+                
+            }
+            else
+            {
+                MessageBox.Show("Must have 'BioMorphFace' export selected in the tree view.");
             }
         }
     }

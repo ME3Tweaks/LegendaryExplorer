@@ -3,9 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d"
         xmlns:dd="urn:gong-wpf-dragdrop"
-        Closing="PackageEditorWPF_Closing"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:Packages="clr-namespace:LegendaryExplorerCore.Packages;assembly=LegendaryExplorerCore"
         xmlns:exportLoaderControls="clr-namespace:LegendaryExplorer.UserControls.ExportLoaderControls"
@@ -22,12 +20,14 @@
         xmlns:scriptEditor="clr-namespace:LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor"
         xmlns:packageEditor="clr-namespace:LegendaryExplorer.Tools.PackageEditor"
         xmlns:fa5="http://schemas.fontawesome.com/icons/"
+        mc:Ignorable="d"
         Icon="pack://application:,,,/Tools/Icons/16x16/PackageEditor_Icon_16.ico"
         Title="Package Editor" Height="720" Width="1100"
         DragOver="Window_DragOver"
         Drop="Window_Drop"
         AllowDrop="True"
         PreviewMouseUp="Window_MouseUp"
+        Closing="PackageEditorWPF_Closing"
         d:DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <Window.Resources>
         <ItemsPanelTemplate x:Key="VSP">
@@ -166,6 +166,8 @@
 
                     <MenuItem Header="Pop out current tab into new standalone window" ToolTip="Opens the panel on the right side in a new window" Command="{Binding PopoutCurrentViewCommand}" InputGestureText="CTRL+P"/>
                     <Separator/>
+                    <MenuItem Header="Create new Class" ToolTip="Adds a new UnrealScript class to this package" Command="{Binding CreateClassCommand}"/>
+                    <Separator/>
                     <MenuItem Header="Add name" ToolTip="Add a name to this package" Command="{Binding AddNameCommand}" InputGestureText="CTRL+Shift+A"/>
                     <MenuItem Header="Convenience tools" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <MenuItem Header="Rebuild BioWorld StreamingLevels"  Command="{Binding RebuildStreamingLevelsCommand}" ToolTip="Updates BioWorldInfo's list of StreamingLevels to include all LevelStreamingKismet"/>
@@ -235,6 +237,7 @@
                     <MenuItem Header="Find entry via Tag" ToolTip="Find entry with Tag NameProperty that matches the specified value." Command="{Binding FindEntryViaTagCommand}"/>
                     <MenuItem Header="Check for duplicate indexes" ToolTip="Tries to find duplicate indexes in this file" Command="{Binding CheckForDuplicateIndexesCommand}"/>
                     <MenuItem Header="Check for bad references" ToolTip="Checks imports and exports for references out of bounds of tables" Command="{Binding CheckForInvalidObjectPropertiesCommand}"/>
+                    <MenuItem Header="Check for broken Materials" ToolTip="Checks to see if all Materials, and all MaterialInstances that have a StaticPermutationResource, have a corresponding entry in either the local or global shader cache" Command="{Binding CheckForBrokenMaterialsCommand}"/>
                     <MenuItem Header="Resolve imports*" ToolTip="Attempts to resolve the imports and show the source of them in the treeview" Command="{Binding ResolveImportsTreeViewCommand}"/>
                     <MenuItem Header="Enable experiments (Warning: dangerous)" ToolTip="Enables experiments used by toolset developers. These features are not tested, not supported, and can easily break the toolset and/or games without warning" IsChecked="{Binding ShowExperiments}" IsCheckable="True" StaysOpenOnClick="True"/>
                 </MenuItem>
@@ -296,13 +299,13 @@
                     <controls:ListBoxScroll.Resources>
                         <DataTemplate DataType="{x:Type SharedUI:IndexedName}">
                             <StackPanel Orientation="Horizontal" ContextMenu="{StaticResource EntryContextMenu}" Background="Transparent">
-                                <TextBlock Text="{Binding Path=Index}" Foreground="Gray"/>
-                                <TextBlock Text="{Binding Path=Name.Name}" Margin="5,0,0,0"/>
+                                <TextBlock Text="{Binding Path=Index, Mode=OneTime}" Foreground="Gray"/>
+                                <TextBlock Text="{Binding Path=Name, Mode=OneTime}" Margin="5,0,0,0"/>
                             </StackPanel>
                         </DataTemplate>
                         <DataTemplate DataType="{x:Type Packages:ImportEntry}">
                             <StackPanel Orientation="Horizontal" ContextMenu="{StaticResource EntryContextMenu}" Background="Transparent">
-                                <TextBlock Text="{Binding Path=UIndex}" Foreground="Gray"/>
+                                <TextBlock Text="{Binding Path=UIndex, Mode=OneTime}" Foreground="Gray"/>
                                 <TextBlock Text="{Binding Path=InstancedFullPath}"  Margin="5,0,0,0"/>
                             </StackPanel>
                         </DataTemplate>
@@ -317,7 +320,7 @@
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" Text="{Binding Path=UIndex}" Foreground="Maroon" VerticalAlignment="Center"/>
+                                <TextBlock Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" Text="{Binding Path=UIndex, Mode=OneTime}" Foreground="Maroon" VerticalAlignment="Center"/>
                                 <TextBlock Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2" Text="{Binding InstancedFullPath}" Margin="5,0,0,0"/>
                                 <TextBlock Grid.Column="1" Grid.Row="1" Foreground="BlueViolet" Margin="5,0,0,0" FontWeight="Bold" FontFamily="Consolas">
                                     <TextBlock.Text>

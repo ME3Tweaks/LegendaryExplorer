@@ -227,7 +227,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             InitializeComponent();
             this.PreviewRenderer.Context = this.TextureContext;
             this.TextureContext.BackgroundColor = new Vector4(0.5f, 0.5f, 0.5f, 1.0f);
-            this.PreviewRenderer.Loaded += (sender, args) => MipList_SelectedItemChanged(sender, null);
+            this.PreviewRenderer.Loaded += RendererLoaded;
+        }
+
+        private void RendererLoaded(object sender, RoutedEventArgs e)
+        {
+            MipList_SelectedItemChanged(sender, null);
         }
 
         public ICommand ExportToPNGCommand { get; set; }
@@ -637,7 +642,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         public override void Dispose()
         {
-            //Nothing to dispose
+            PreviewRenderer.Loaded -= RendererLoaded;
         }
 
         private void CRC_MouseDown(object sender, MouseButtonEventArgs e)

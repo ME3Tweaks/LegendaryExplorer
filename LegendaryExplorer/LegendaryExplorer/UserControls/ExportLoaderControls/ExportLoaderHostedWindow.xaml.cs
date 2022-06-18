@@ -237,7 +237,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         }
 
         public string CurrentFile => Pcc != null ? Path.GetFileName(Pcc.FilePath) : "";
-        public override void handleUpdate(List<PackageUpdate> updates)
+        public override void HandleUpdate(List<PackageUpdate> updates)
         {
             if (updates.Any(x => x.Change.Has(PackageChange.Name)))
             {

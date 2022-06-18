@@ -53,7 +53,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 {
                     mapCount--;
                     int vertexMapCount = bin.ReadInt32();
-                    var mappingNode = new BinInterpNode(bin.Position - 4, $"{nameMappings[mapCount]}, { vertexMapCount } items");
+                    var mappingNode = new BinInterpNode(bin.Position - 4, $"{nameMappings[mapCount]}, {vertexMapCount} items");
                     subnodes.Add(mappingNode);
 
                     for (int i = 0; i < vertexMapCount; i++)
@@ -366,7 +366,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 {
                     mapCount--;
                     int vertexMapCount = bin.ReadInt32();
-                    var mappingNode = new BinInterpNode(bin.Position - 4, $"{nameMappings[mapCount]}, { vertexMapCount } items");
+                    var mappingNode = new BinInterpNode(bin.Position - 4, $"{nameMappings[mapCount]}, {vertexMapCount} items");
                     subnodes.Add(mappingNode);
 
                     for (int i = 0; i < vertexMapCount; i++)
@@ -425,16 +425,19 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         if (CurrentLoadedExport.Game.IsLEGame())
                         {
                             shaderNode.Items.Add(new BinInterpNode(bin.Position,
-                                $"Platform: {(EShaderPlatformLE) bin.ReadByte()}") {Length = 1});
+                                $"Platform: {(EShaderPlatformLE)bin.ReadByte()}")
+                            { Length = 1 });
                         }
                         else
                         {
                             shaderNode.Items.Add(new BinInterpNode(bin.Position,
-                                $"Platform: {(EShaderPlatformOT) bin.ReadByte()}") {Length = 1});
+                                $"Platform: {(EShaderPlatformOT)bin.ReadByte()}")
+                            { Length = 1 });
                         }
 
                         shaderNode.Items.Add(new BinInterpNode(bin.Position,
-                            $"Frequency: {(EShaderFrequency) bin.ReadByte()}") {Length = 1});
+                            $"Frequency: {(EShaderFrequency)bin.ReadByte()}")
+                        { Length = 1 });
                     }
 
                     int shaderSize = bin.ReadInt32();
@@ -3219,7 +3222,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                 int nSibling = BitConverter.ToInt32(data, offset);
                                 var nSiblings = new BinInterpNode
                                 {
-                                    Header = $"0x{offset:X5} Sibling: {s}  Bool: { nSibling }",
+                                    Header = $"0x{offset:X5} Sibling: {s}  Bool: {nSibling}",
                                     Name = "_" + offset,
                                     Tag = NodeType.StructLeafInt
                                 };
@@ -3312,7 +3315,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         }
                         var nGoalIDs = new BinInterpNode
                         {
-                            Header = $"0x{offset:X5} Goal start plot/cnd: {goalStart} { startType }",
+                            Header = $"0x{offset:X5} Goal start plot/cnd: {goalStart} {startType}",
                             Name = "_" + offset,
                             Tag = NodeType.StructLeafInt
                         };
@@ -3331,7 +3334,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         string gttlkLookup = GlobalFindStrRefbyID(gTitle, game, CurrentLoadedExport.FileRef);
                         nGoalIDs.Items.Add(new BinInterpNode
                         {
-                            Header = $"0x{offset:X5} Goal Name StrRef: {gTitle} { gttlkLookup }",
+                            Header = $"0x{offset:X5} Goal Name StrRef: {gTitle} {gttlkLookup}",
                             Name = "_" + offset,
                             Tag = NodeType.StructLeafObject
                         });
@@ -3341,7 +3344,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         string gdtlkLookup = GlobalFindStrRefbyID(gDescription, game, CurrentLoadedExport.FileRef);
                         nGoalIDs.Items.Add(new BinInterpNode
                         {
-                            Header = $"0x{offset:X5} Goal Description StrRef: {gDescription} { gdtlkLookup }",
+                            Header = $"0x{offset:X5} Goal Description StrRef: {gDescription} {gdtlkLookup}",
                             Name = "_" + offset,
                             Tag = NodeType.StructLeafObject
                         });
@@ -3400,7 +3403,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         bool bFinish = tFinish == 1;
                         nTaskIDs.Items.Add(new BinInterpNode
                         {
-                            Header = $"0x{offset:X5} Task Finishes Quest: {tFinish}  { bFinish }",
+                            Header = $"0x{offset:X5} Task Finishes Quest: {tFinish}  {bFinish}",
                             Name = "_" + offset,
                             Tag = NodeType.StructLeafObject
                         });
@@ -3410,7 +3413,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         string tttlkLookup = GlobalFindStrRefbyID(tTitle, game, CurrentLoadedExport.FileRef);
                         nTaskIDs.Items.Add(new BinInterpNode
                         {
-                            Header = $"0x{offset:X5} Task Name StrRef: {tTitle} { tttlkLookup }",
+                            Header = $"0x{offset:X5} Task Name StrRef: {tTitle} {tttlkLookup}",
                             Name = "_" + offset,
                             Tag = NodeType.StructLeafObject
                         });
@@ -3420,7 +3423,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         string tdtlkLookup = GlobalFindStrRefbyID(tDescription, game, CurrentLoadedExport.FileRef);
                         nTaskIDs.Items.Add(new BinInterpNode
                         {
-                            Header = $"0x{offset:X5} Task Description StrRef: {tDescription} { tdtlkLookup }",
+                            Header = $"0x{offset:X5} Task Description StrRef: {tDescription} {tdtlkLookup}",
                             Name = "_" + offset,
                             Tag = NodeType.StructLeafObject
                         });
@@ -3441,7 +3444,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             int iPlotItem = BitConverter.ToInt32(data, offset);  //Plot item index
                             var nPlotItems = new BinInterpNode
                             {
-                                Header = $"0x{offset:X5} Plot items: {pi}  Index: { iPlotItem }",
+                                Header = $"0x{offset:X5} Plot items: {pi}  Index: {iPlotItem}",
                                 Name = "_" + offset,
                                 Tag = NodeType.StructLeafInt
                             };
@@ -3514,7 +3517,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         string pitlkLookup = GlobalFindStrRefbyID(pTitle, game, CurrentLoadedExport.FileRef);
                         nPlotItemIDs.Items.Add(new BinInterpNode
                         {
-                            Header = $"0x{offset:X5} Goal Name StrRef: {pTitle} { pitlkLookup }",
+                            Header = $"0x{offset:X5} Goal Name StrRef: {pTitle} {pitlkLookup}",
                             Name = "_" + offset,
                             Tag = NodeType.StructLeafObject
                         });
@@ -3917,7 +3920,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     string ttlkLookup = GlobalFindStrRefbyID(sTitle, game, CurrentLoadedExport.FileRef);
                     SectionIDs.Items.Add(new BinInterpNode
                     {
-                        Header = $"0x{offset:X5} Section Title StrRef: {sTitle} { ttlkLookup }",
+                        Header = $"0x{offset:X5} Section Title StrRef: {sTitle} {ttlkLookup}",
                         Name = "_" + offset,
                         Tag = NodeType.StructLeafObject
                     });
@@ -3927,7 +3930,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     string dtlkLookup = GlobalFindStrRefbyID(sDescription, game, CurrentLoadedExport.FileRef);
                     SectionIDs.Items.Add(new BinInterpNode
                     {
-                        Header = $"0x{offset:X5} Section Description StrRef: {sDescription} { dtlkLookup }",
+                        Header = $"0x{offset:X5} Section Description StrRef: {sDescription} {dtlkLookup}",
                         Name = "_" + offset,
                         Tag = NodeType.StructLeafObject
                     });
@@ -3968,7 +3971,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     if (sPrimary == 1) { bPrimary = true; }
                     SectionIDs.Items.Add(new BinInterpNode
                     {
-                        Header = $"0x{offset:X5} Is Primary Codex: {sPrimary}  { bPrimary }",
+                        Header = $"0x{offset:X5} Is Primary Codex: {sPrimary}  {bPrimary}",
                         Name = "_" + offset,
                         Tag = NodeType.StructLeafObject
                     });
@@ -4011,7 +4014,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     string ttlkLookup = GlobalFindStrRefbyID(pTitle, game, CurrentLoadedExport.FileRef);
                     PageIDs.Items.Add(new BinInterpNode
                     {
-                        Header = $"0x{offset:X5} Page Title StrRef: {pTitle} { ttlkLookup }",
+                        Header = $"0x{offset:X5} Page Title StrRef: {pTitle} {ttlkLookup}",
                         Name = "_" + offset,
                         Tag = NodeType.StructLeafInt
                     });
@@ -4021,7 +4024,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     string dtlkLookup = GlobalFindStrRefbyID(pDescription, game, CurrentLoadedExport.FileRef);
                     PageIDs.Items.Add(new BinInterpNode
                     {
-                        Header = $"0x{offset:X5} Page Description StrRef: {pDescription} { dtlkLookup }",
+                        Header = $"0x{offset:X5} Page Description StrRef: {pDescription} {dtlkLookup}",
                         Name = "_" + offset,
                         Tag = NodeType.StructLeafInt
                     });
@@ -5319,7 +5322,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             };
                             propActionsNode.Items.Add(node2);
                             node2.Items.Add(MakeNameNode(bin, "nmActionName"));
-                            if (CurrentLoadedExport.Game == MEGame.ME2)
+                            if (CurrentLoadedExport.Game.IsGame2())
                             {
                                 node2.Items.Add(MakeStringNode(bin, "sEffect"));
                             }
@@ -5329,7 +5332,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             node2.Items.Add(MakeVectorNode(bin, "vOffsetLocation"));
                             node2.Items.Add(MakeRotatorNode(bin, "rOffsetRotation"));
                             node2.Items.Add(MakeVectorNode(bin, "vOffsetScale"));
-                            if (CurrentLoadedExport.Game == MEGame.ME3)
+                            if (CurrentLoadedExport.Game.IsGame3())
                             {
                                 node2.Items.Add(MakeStringNode(bin, "sParticleSys"));
                                 node2.Items.Add(MakeStringNode(bin, "sClientEffect"));
@@ -5404,7 +5407,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     }
                 }
 
-                if (CurrentLoadedExport.FileRef.Platform == MEPackage.GamePlatform.PC)
+                if (Pcc.Platform is MEPackage.GamePlatform.PC || (Pcc.Game is not MEGame.ME3 && Pcc.Platform is MEPackage.GamePlatform.Xenon))
                 {
                     // This seems missing on Xenon 2011. Not sure about others
                     subnodes.Add(MakeNameNode(bin, "Category"));
@@ -6360,7 +6363,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 try
                 {
-                    (List<Token> tokens, _) = Bytecode.ParseBytecode(scriptBytes, CurrentLoadedExport, (int)pos + 4);
+                    (List<Token> tokens, _) = Bytecode.ParseBytecode(scriptBytes, CurrentLoadedExport);
                     string scriptText = "";
                     foreach (Token t in tokens)
                     {
@@ -6449,7 +6452,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 long classFlagsPos = bin.Position;
                 var ClassFlags = (EClassFlags)bin.ReadUInt32();
 
-                var classFlagsNode = new BinInterpNode(classFlagsPos, $"ClassFlags: {(int)ClassFlags:X8}", NodeType.StructLeafInt);
+                var classFlagsNode = new BinInterpNode(classFlagsPos, $"ClassFlags: {(int)ClassFlags:X8}", NodeType.StructLeafInt) { IsExpanded = true };
                 subnodes.Add(classFlagsNode);
 
                 foreach (EClassFlags flag in ClassFlags.MaskToList())
@@ -7105,7 +7108,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private static BinInterpNode MakeVector2DNodeEditable(EndianReader bin, string name, bool expanded = false)
         {
-            var node = new BinInterpNode(bin.Position, $"{name}: (X: {bin.ReadFloat()}, Y: {bin.ReadFloat()}") { Length = 8 };
+            var node = new BinInterpNode(bin.Position, $"{name}: (X: {bin.ReadFloat()}, Y: {bin.ReadFloat()})") { Length = 8 };
             bin.Position -= 8;
             node.Items.Add(MakeFloatNode(bin, "X"));
             node.Items.Add(MakeFloatNode(bin, "Y"));

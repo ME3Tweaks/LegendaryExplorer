@@ -5,12 +5,10 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
-using System.Runtime.Serialization;
 using PropertyChanged;
 
 namespace LegendaryExplorerCore.Gammtek.Collections.ObjectModel
 {
-	[Serializable]
 	public class ObservableDictionary<TKey, TValue> :
 		IDictionary<TKey, TValue>,
 		ICollection<KeyValuePair<TKey, TValue>>,
@@ -18,18 +16,13 @@ namespace LegendaryExplorerCore.Gammtek.Collections.ObjectModel
 		IDictionary,
 		ICollection,
 		IEnumerable,
-		ISerializable,
-		IDeserializationCallback,
 		INotifyCollectionChanged,
 		INotifyPropertyChanged
 	{
 		protected KeyedDictionaryEntryCollection<TKey> KeyedEntryCollection;
 		private readonly Dictionary<TKey, TValue> _dictionaryCache = new Dictionary<TKey, TValue>();
 
-		[NonSerialized]
-		private readonly SerializationInfo _siInfo;
-
-		private int _countCache;
+        private int _countCache;
 		private int _dictionaryCacheVersion;
 		private int _version;
 
@@ -61,11 +54,6 @@ namespace LegendaryExplorerCore.Gammtek.Collections.ObjectModel
 			{
 				DoAddEntry(entry.Key, entry.Value);
 			}
-		}
-
-		protected ObservableDictionary(SerializationInfo info, StreamingContext context)
-		{
-			_siInfo = info;
 		}
 
 		protected virtual event NotifyCollectionChangedEventHandler CollectionChanged;
@@ -474,19 +462,6 @@ namespace LegendaryExplorerCore.Gammtek.Collections.ObjectModel
 			return DoRemoveEntry(kvp.Key);
 		}
 
-		public virtual void OnDeserialization(object sender)
-		{
-			if (_siInfo != null)
-			{
-				var entries = (Collection<DictionaryEntry>)
-					_siInfo.GetValue("entries", typeof (Collection<DictionaryEntry>));
-				foreach (var entry in entries)
-				{
-					AddEntry((TKey) entry.Key, (TValue) entry.Value);
-				}
-			}
-		}
-
 		void IDictionary.Add(object key, object value)
 		{
 			DoAddEntry((TKey) key, (TValue) value);
@@ -541,23 +516,7 @@ namespace LegendaryExplorerCore.Gammtek.Collections.ObjectModel
 		{
 			return new Enumerator<TKey, TValue>(this, false);
 		}
-
-		public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
-		{
-			if (info == null)
-			{
-				throw new ArgumentNullException(nameof(info));
-			}
-
-			var entries = new Collection<DictionaryEntry>();
-			foreach (var entry in KeyedEntryCollection)
-			{
-				entries.Add(entry);
-			}
-			info.AddValue("entries", entries);
-		}
-
-		[Serializable]
+		
 		[StructLayout(LayoutKind.Sequential)]
 		public struct Enumerator<TKey1, TValue1> : IEnumerator<KeyValuePair<TKey1, TValue1>>, IDictionaryEnumerator
 		{

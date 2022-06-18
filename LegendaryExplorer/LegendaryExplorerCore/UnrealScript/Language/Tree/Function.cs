@@ -5,6 +5,7 @@ using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
 using LegendaryExplorerCore.UnrealScript.Language.Util;
+using LegendaryExplorerCore.UnrealScript.Parsing;
 using LegendaryExplorerCore.UnrealScript.Utilities;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
 
@@ -14,6 +15,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
     {
         public string Name { get; }
         public CodeBody Body { get; set; }
+        public TokenStream Tokens { get; init; }
         public List<VariableDeclaration> Locals { get; set; }
         public VariableDeclaration ReturnValueDeclaration;
         public VariableType ReturnType => ReturnValueDeclaration?.VarType;
@@ -33,6 +35,8 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 
         public bool IsVirtual => !Flags.Has(EFunctionFlags.Final); //&& !Flags.Has(EFunctionFlags.Static);
 
+        public bool IsStatic => Flags.Has(EFunctionFlags.Static);
+
         public bool HasOptionalParms => Flags.Has(EFunctionFlags.HasOptionalParms) || Parameters.Any(parm => parm.IsOptional);
 
         public bool RetValNeedsDestruction;
@@ -45,7 +49,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
         public Function(string name, EFunctionFlags flags,
                         VariableDeclaration returnValueDeclaration, CodeBody body,
                         List<FunctionParameter> parameters = null,
-                        SourcePosition start = null, SourcePosition end = null)
+                        int start = -1, int end = -1)
             : base(ASTNodeType.Function, start, end)
         {
             Name = name;

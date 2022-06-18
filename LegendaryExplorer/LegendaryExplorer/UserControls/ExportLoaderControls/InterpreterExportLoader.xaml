@@ -33,24 +33,33 @@
         <ToolBar ToolBarTray.IsLocked="True" DockPanel.Dock="Top">
             <Button Name="SaveHexChange_Button" ToolTip="Commit hex changes to the export" Content="Save Hex Changes" Command="{Binding SaveHexChangesCommand}"
                     Foreground="{Binding HasUnsavedChanges, Converter={StaticResource UnsavedChangesForegroundConverter}}"/>
-            <Button Name="ToggleHexbox_Button" Content="Toggle Hexbox" Command="{Binding ToggleHexBoxCommand}"/>
+            <Button Name="ToggleHexbox_Button" ToolTip="Toggle Hexbox" Command="{Binding ToggleHexBoxCommand}">
+                <fa:ImageAwesome Icon="Solid_Microchip" Height="16" Width="16" Foreground="CornflowerBlue"/>
+            </Button>
             <Separator Name="SaveToggle_Separator" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
             <Button Content="Add Property" ToolTip="Add a property from this class or a superclass to this object" Command="{Binding AddPropertyCommand}"/>
-            <Separator Name="EditorSet_ArraySetSeparator" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
-            <Button Name="AddArrayElement_Button" ToolTip="Add a new element to the selected array" Content="Add Array Element" Command="{Binding AddArrayElementCommand}"
-                    SharedUI:Bindings.VisibilityToEnabled="True" VerticalAlignment="Center"/>
-            <Button Name="RemoveArrayElement_Button" ToolTip="Remove the selected element from the array" Content="Remove Array Element" Command="{Binding RemoveArrayElementCommand}"
-                    SharedUI:Bindings.VisibilityToEnabled="True" VerticalAlignment="Center"/>
+
+            <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
+            <Label IsEnabled="False">Array:</Label>
+            <Button Name="AddArrayElement_Button" ToolTip="Add a new element to the selected array"
+                    Command="{Binding AddArrayElementCommand}"
+                    VerticalAlignment="Center">
+                <fa:FontAwesome Icon="Solid_Plus"/>
+            </Button>
+            <Button Name="RemoveArrayElement_Button" ToolTip="Remove the selected element from the array"
+                    Command="{Binding RemoveArrayElementCommand}"
+                    VerticalAlignment="Center">
+                <fa:FontAwesome Icon="Solid_Minus"/>
+            </Button>
+            <Button Name="ArrayElement_MoveUp_Button" ToolTip="Move the selected array element up in the list" VerticalAlignment="Center" Width="22"
+                    Command="{Binding MoveArrayElementUpCommand}">
+                <fa:FontAwesome Icon="Solid_ArrowUp" />
+            </Button>
+            <Button Name="ArrayElement_MoveDown_Button" ToolTip="Move the selected array element down in the list" VerticalAlignment="Center"  Width="22"
+                    Command="{Binding MoveArrayElementDownCommand}" >
+                <fa:FontAwesome Icon="Solid_ArrowDown" />
+            </Button>
             <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}"/>
-            <Button Name="ArrayElement_MoveUp_Button" ToolTip="Move the selected array element up in the list" VerticalAlignment="Center" Width="30"
-                    Command="{Binding MoveArrayElementUpCommand}" SharedUI:Bindings.VisibilityToEnabled="True">
-                <fa:ImageAwesome Icon="Solid_ArrowUp" Height="16" Width="16" Foreground="CornflowerBlue"/>
-            </Button>
-            <Button Name="ArrayElement_MoveDown_Button" ToolTip="Move the selected array element down in the list" VerticalAlignment="Center"  Width="30"
-                    Command="{Binding MoveArrayElementDownCommand}" SharedUI:Bindings.VisibilityToEnabled="True">
-                <fa:ImageAwesome Icon="Solid_ArrowDown" Height="16" Width="16" Foreground="CornflowerBlue"/>
-            </Button>
-            <!--<Separator Name="EditorSet_Separator" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}"/>-->
             <TextBox Width="80" Name="Value_TextBox" VerticalAlignment="Center" ToolTip="Value for this property" KeyDown="ValueTextBox_KeyDown" TextChanged="Value_TextBox_TextChanged" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}" Margin="0" Style="{StaticResource {x:Type TextBox}}"/>
             <ComboBox Name="Value_ComboBox" MinWidth="80" VerticalAlignment="Center" ToolTip="Value for this property" Style="{StaticResource {x:Type ComboBox}}" IsTextSearchEnabled="True">
                 <ComboBox.ItemsPanel>
@@ -61,8 +70,8 @@
                 <ComboBox.Resources>
                     <DataTemplate DataType="{x:Type SharedUI:IndexedName}">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{Binding Path=Index}" Foreground="Gray"/>
-                            <TextBlock Text="{Binding Path=Name.Name}" Margin="5,0,0,0"/>
+                            <TextBlock Text="{Binding Path=Index, Mode=OneTime}" Foreground="Gray"/>
+                            <TextBlock Text="{Binding Path=Name, Mode=OneTime}" Margin="5,0,0,0"/>
                         </StackPanel>
                     </DataTemplate>
                     <DataTemplate DataType="{x:Type unreal:NameReference}">
@@ -92,12 +101,12 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <Grid Name="hexBoxContainer">
-                <WindowsFormsHost Grid.Row="0" Name="Interpreter_Hexbox_Host" HorizontalAlignment="Stretch"
+                <SharedUI:WindowsFormsHostEx Grid.Row="0" x:Name="Interpreter_Hexbox_Host" HorizontalAlignment="Stretch"
                                   VerticalAlignment="Stretch">
                     <hb1:HexBox MinBytesPerLine="4" MaxBytesPerLine="16" ColumnInfoVisible="True"
                                 LineInfoVisible="True" Font="Courier New,10" BoldFont="Consolas,10"
                                 StringViewVisible="True" VScrollBarVisible="True" />
-                </WindowsFormsHost>
+                </SharedUI:WindowsFormsHostEx>
                 <Image Grid.Column="0" Visibility="Collapsed" Name="hexboxImageSub" Stretch="None" />
             </Grid>
             <GridSplitter 
@@ -110,10 +119,10 @@
                       Panel.ZIndex="60"/>
             <controls:StretchingTreeView x:Name="Interpreter_TreeView" Grid.Row="0" Grid.Column="2" Width="Auto" 
                                          FontFamily="Consolas" SelectedItemChanged="Interpreter_TreeViewSelectedItemChanged" 
-                                         ItemsSource="{Binding PropertyNodes}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" 
+                                         ItemsSource="{Binding PropertyNodes, Mode=OneTime}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" 
                                          VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">
                 <controls:StretchingTreeView.Resources>
-                    <HierarchicalDataTemplate DataType="{x:Type global:UPropertyTreeViewEntry}" ItemsSource="{Binding ChildrenProperties}">
+                    <HierarchicalDataTemplate DataType="{x:Type global:UPropertyTreeViewEntry}" ItemsSource="{Binding ChildrenProperties, Mode=OneTime}">
                         <Border x:Name="PropertyItem_Container" Margin="1" Padding="{Binding Path=(SharedUI:TouchComfySettings.InterpreterWPFNodeMargin)}">
                             <Grid HorizontalAlignment="Stretch">
                                 <Grid.RowDefinitions>
@@ -121,16 +130,16 @@
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock x:Name="PropertyItem_Offset" Text="{Binding Property.StartOffset, StringFormat='{}{0:X5}:'}" VerticalAlignment="Top" Padding="0,0,4,0"
+                                    <TextBlock x:Name="PropertyItem_Offset" Text="{Binding Property.StartOffset, StringFormat='{}{0:X5}:', Mode=OneTime}" VerticalAlignment="Top" Padding="0,0,4,0"
                                                Visibility="{Binding ShowPropOffsets, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=global:InterpreterExportLoader}, Converter={StaticResource BoolToVisibilityConverter}}" />
-                                    <TextBlock x:Name="PropertyItem_DisplayName" Text="{Binding DisplayName}" VerticalAlignment="Top" Padding="2,0,0,0"/>
-                                    <TextBlock x:Name="PropertyItem_EditableValue" Margin="5,0,0,0" Text="{Binding EditableValue}" VerticalAlignment="Top" FontWeight="Bold" 
-                                               Visibility="{Binding EditableValue, Converter={StaticResource NullOrEmptyStringVisibilityConverter}}"/>
-                                    <TextBlock x:Name="PropertyItem_ParsedValue" Margin="5,0,0,0" Text="{Binding ParsedValue}" VerticalAlignment="Center" FontStyle="Italic"/>
-                                    <xctk:ColorPicker Margin="5,0,0,0" Visibility="{Binding Property, Converter={StaticResource UPropertyColorPickerVisibilityConverter}}" 
+                                    <TextBlock x:Name="PropertyItem_DisplayName" Text="{Binding DisplayName, Mode=OneTime}" VerticalAlignment="Top" Padding="2,0,0,0"/>
+                                    <TextBlock x:Name="PropertyItem_EditableValue" Margin="5,0,0,0" Text="{Binding EditableValue, Mode=OneTime}" VerticalAlignment="Top" FontWeight="Bold" 
+                                               Visibility="{Binding EditableValue, Converter={StaticResource NullOrEmptyStringVisibilityConverter}, Mode=OneTime}"/>
+                                    <TextBlock x:Name="PropertyItem_ParsedValue" Margin="5,0,0,0" Text="{Binding ParsedValue, Mode=OneTime}" VerticalAlignment="Center" FontStyle="Italic"/>
+                                    <xctk:ColorPicker Margin="5,0,0,0" Visibility="{Binding Property, Converter={StaticResource UPropertyColorPickerVisibilityConverter}, Mode=OneTime}" 
                                                       SelectedColor="{Binding ColorStructCode,Converter={StaticResource ColorCodeConverter}}" Width="60" Closed="ColorPicker_Closed"/>
                                 </StackPanel>
-                                <TextBlock Grid.Row="1" x:Name="PropertyItem_DisplayType" FontSize="10" Text="{Binding PropertyType}" VerticalAlignment="Center" Margin="5,0,0,0"
+                                <TextBlock Grid.Row="1" x:Name="PropertyItem_DisplayType" FontSize="10" Text="{Binding PropertyType, Mode=OneTime}" VerticalAlignment="Center" Margin="5,0,0,0"
                                            Visibility="{Binding AdvancedView, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=global:InterpreterExportLoader}, Converter={StaticResource BoolToVisibilityConverter}}"/>
                                 <b:Interaction.Triggers>
                                     <b:EventTrigger EventName="PreviewMouseRightButtonDown">

@@ -77,14 +77,16 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 
     public abstract class ASTNode : IAcceptASTVisitor
     {
-        public ASTNodeType Type { get; protected set; }
+        public ASTNodeType Type { get; protected init; }
 
         public ASTNode Outer;
 
-        public SourcePosition StartPos { get; set; }
-        public SourcePosition EndPos { get; set; }
+        public int StartPos;
+        public int EndPos;
 
-        protected ASTNode(ASTNodeType type, SourcePosition start, SourcePosition end)
+        public int Length => EndPos - StartPos;
+
+        protected ASTNode(ASTNodeType type, int start, int end)
         {
             Type = type;
             StartPos = start; 

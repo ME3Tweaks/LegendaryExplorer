@@ -419,7 +419,7 @@ namespace LegendaryExplorerCore.Helpers
             return false;
         }
 
-        public static bool isNumericallyEqual(this string first, string second)
+        public static bool IsNumericallyEqual(this string first, string second)
         {
             return double.TryParse(first, out double a)
                 && double.TryParse(second, out double b)
@@ -652,7 +652,7 @@ namespace LegendaryExplorerCore.Helpers
 
     public static class ByteArrayExtensions
     {
-        static readonly int[] Empty = new int[0];
+        private static readonly int[] Empty = Array.Empty<int>();
 
         public static int[] Locate(this byte[] self, byte[] candidate)
         {

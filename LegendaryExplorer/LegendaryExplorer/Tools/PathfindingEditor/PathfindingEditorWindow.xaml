@@ -781,10 +781,10 @@
                     <exportLoaderControls:InterpreterExportLoader x:Name="interpreterControl" HideHexBox="True" />
                 </DockPanel>
                 <Grid>
-                    <WindowsFormsHost Name="GraphHost" VerticalAlignment="Stretch">
+                    <sharedUi:WindowsFormsHostEx x:Name="GraphHost" VerticalAlignment="Stretch">
                         <pathfindingEditor:PathingGraphEditor DragEnter="GraphEditor_DragEnter"
                                                               DragDrop="GraphEditor_DragDrop" />
-                    </WindowsFormsHost>
+                    </sharedUi:WindowsFormsHostEx>
                     <Image Visibility="Collapsed" Name="graphImageSub" Stretch="None" />
                 </Grid>
             </DockPanel>

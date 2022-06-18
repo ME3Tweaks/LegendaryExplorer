@@ -49,8 +49,8 @@
                     <ComboBox.Resources>
                         <DataTemplate DataType="{x:Type sharedUi:IndexedName}">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{Binding Path=Index}" Foreground="Gray"/>
-                                <TextBlock Text="{Binding Path=Name.Name}" Foreground="Black" Margin="5,0,0,0"/>
+                                <TextBlock Text="{Binding Path=Index, Mode=OneTime}" Foreground="Gray"/>
+                                <TextBlock Text="{Binding Path=Name, Mode=OneTime}" Foreground="Black" Margin="5,0,0,0"/>
                             </StackPanel>
                         </DataTemplate>
                     </ComboBox.Resources>
@@ -101,14 +101,14 @@
                     </Grid.ColumnDefinitions>
 
                     <Grid Grid.Row="1" Grid.ColumnSpan="2" Name="hexBoxContainer">
-                        <WindowsFormsHost Name="BinaryInterpreter_Hexbox_Host" 
-                                          HorizontalAlignment="Stretch">
+                        <sharedUi:WindowsFormsHostEx x:Name="BinaryInterpreter_Hexbox_Host" 
+                                                     HorizontalAlignment="Stretch">
                             <hb1:HexBox MinBytesPerLine="4" MaxBytesPerLine="16" ColumnInfoVisible="True"
                                         LineInfoVisible="True" Font="Courier New,10" BoldFont="Consolas,10"
                                         StringViewVisible="True" SelectionLengthChanged="hb1_SelectionChanged"
                                         SelectionStartChanged="hb1_SelectionChanged" VScrollBarVisible="True">
                             </hb1:HexBox>
-                        </WindowsFormsHost>
+                        </sharedUi:WindowsFormsHostEx>
                         <Image Grid.Column="0" Visibility="Collapsed" Name="hexboxImageSub" Stretch="None" />
                     </Grid>
                     <GridSplitter Grid.Column="1" 

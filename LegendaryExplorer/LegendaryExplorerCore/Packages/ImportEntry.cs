@@ -13,7 +13,7 @@ namespace LegendaryExplorerCore.Packages
 {
     [DebuggerDisplay("ImportEntry | {UIndex} = {InstancedFullPath}")]
     [DoNotNotify] //disable Fody/PropertyChanged for this class. Do notification manually
-    public sealed class ImportEntry : INotifyPropertyChanged, IEntry
+    public sealed class ImportEntry : IEntry
     {
         public MEGame Game => FileRef.Game;
 
@@ -21,9 +21,7 @@ namespace LegendaryExplorerCore.Packages
         {
             HeaderOffset = importData.Position;
             FileRef = pccFile;
-            Span<byte> headerBytes = stackalloc byte[HeaderLength];
-            importData.Read(headerBytes);
-            _header = MemoryMarshal.Read<ImportHeader>(headerBytes);
+            importData.Read(MemoryMarshal.AsBytes(MemoryMarshal.CreateSpan(ref _header, 1)));
             if (!pccFile.Endian.IsNative)
             {
                 _header.ReverseEndianness();
@@ -143,9 +141,7 @@ namespace LegendaryExplorerCore.Packages
 
         public void SerializeHeader(Stream stream)
         {
-            Span<byte> buff = stackalloc byte[HeaderLength];
-            MemoryMarshal.Write(buff, ref _header);
-            stream.Write(buff);
+            stream.Write(MemoryMarshal.AsBytes(MemoryMarshal.CreateReadOnlySpan(ref _header, 1)));
         }
 
         public bool HasParent => FileRef.IsEntry(idxLink);

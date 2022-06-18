@@ -7,7 +7,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
     {
         public string Name;
         public int Size;
-        public VariableIdentifier(string name, SourcePosition start = null, SourcePosition end = null, int size = 1) 
+        public VariableIdentifier(string name, int start = -1, int end = -1, int size = 1) 
             : base(ASTNodeType.VariableIdentifier, start, end) 
         {
             Size = size;

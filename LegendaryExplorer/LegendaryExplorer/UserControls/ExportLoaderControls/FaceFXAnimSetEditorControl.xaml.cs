@@ -1,16 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Xml.Linq;
 using ClosedXML.Excel;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.UserControls.SharedToolControls.Curves;
 using LegendaryExplorer.Tools.TlkManagerNS;
+using LegendaryExplorer.UserControls.SharedToolControls;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Misc;
@@ -18,6 +22,7 @@ using LegendaryExplorerCore.Unreal.BinaryConverters;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Newtonsoft.Json;
+using Point = System.Windows.Point;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls
 {
@@ -26,6 +31,20 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
     /// </summary>
     public partial class FaceFXAnimSetEditorControl : ExportLoaderControl
     {
+        public class FaceFXEditorTreeNode
+        {
+            /// <summary>
+            /// Text to show
+            /// </summary>
+            public string Header { get; set; }
+
+            /// <summary>
+            /// Delegate to invoke on double click
+            /// </summary>
+            public Action DoubleClickAction { get; set; }
+        }
+
+        public ObservableCollectionExtended<FaceFXEditorTreeNode> TreeNodes { get; } = new();
 
         #region Single Line Mode
         public bool SingleLineMode
@@ -60,11 +79,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             InitializeComponent();
             DataContext = this;
-            if (treeView_WinFormsHost is { Child: { } })
-            {
-                treeView_WinFormsHost.Child.MouseDoubleClick += treeView_MouseDoubleClick;
-            }
-
             AddKeyWithZeroWeightCommand = new GenericCommand(() => graph.AddKeyAtZero_MousePosition());
         }
 
@@ -83,13 +97,41 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 {
                     SelectedLineEntry.UpdateLength();
                     UpdateAnimListBox();
-                    treeView.Nodes.Clear();
-                    treeView.Nodes.AddRange(DataToTree(FaceFX, SelectedLineEntry.Line));
+                    UpdateAudioPlayer();
+                    UpdateTreeItems(FaceFX, SelectedLineEntry.Line);
                 }
             }
         }
 
+        private void UpdateAudioPlayer()
+        {
+            if (SelectedLineEntry == null)
+            {
+                audioPlayer.StopPlaying();
+                audioPlayer.UnloadExport();
+                return;
+            }
+            // Find voice line in file
+            if (CurrentLoadedExport.Game.IsGame2() || CurrentLoadedExport.Game.IsGame3())
+            {
+                var audioExport = FindVoiceStreamFromExport(SelectedLineEntry);
+                if (audioExport != null)
+                {
+                    audioPlayer.LoadExport(audioExport);
+                }
+            }
+            else if (CurrentLoadedExport.Game.IsGame1())
+            {
+                // I'm not entirely sure how we would load this given that it's in an ISB and we don't really know how they're linked...
+            }
+        }
+
         public FaceFXLine SelectedLine => SelectedLineEntry?.Line;
+
+        /// <summary>
+        /// The extra playhead position line in the curve graph
+        /// </summary>
+        private readonly ExtraCurveGraphLine PlayheadPositionLine = new() { Label = "Playhead", LabelOffset = 15, Color = new SolidColorBrush(Colors.Aqua) };
 
         public ObservableCollectionExtended<Animation> Animations { get; } = new();
 
@@ -131,11 +173,13 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         public override void UnloadExport()
         {
+            audioPlayer?.StopPlaying();
+            audioPlayer?.UnloadExport();
             CurrentLoadedExport = null;
             FaceFX = null;
             Lines.Clear();
             Animations.Clear();
-            treeView?.Nodes.Clear();
+            TreeNodes.ClearEx();
             graph.Clear();
         }
 
@@ -154,19 +198,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public override void Dispose()
         {
             UnloadExport();
-            if (treeView_WinFormsHost != null)
-            {
-                if (treeView_WinFormsHost.Child != null)
-                {
-                    treeView_WinFormsHost.Child.MouseDoubleClick -= treeView_MouseDoubleClick;
-                    treeView_WinFormsHost.Child.Dispose();
-                    treeView_WinFormsHost.Child = null;
-                    treeView = null;
-                }
-                treeView_WinFormsHost.Dispose();
-                treeView_WinFormsHost = null;
-            }
             graph.Dispose();
+            audioPlayer?.Dispose();
         }
 
         #endregion
@@ -189,21 +222,76 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 var LineEntry = new FaceFXLineEntry(faceFXLine);
                 var idStr = LineEntry.Line.ID;
-                var voPos = idStr.IndexOf("VO_");
+                var voPos = idStr.IndexOf("VO_", StringComparison.Ordinal);
+                bool isFemale = idStr.EndsWith("_F") || LineEntry.Line.NameAsString.EndsWith("_F");
                 if (voPos > 0)
                 {
                     // Cut off the start of the string
                     idStr = idStr.Substring(voPos + 3);
+
+
                     idStr = idStr.TrimEnd('M', 'F').TrimEnd('_'); // Hack
                 }
+                LineEntry.IsMale = !isFemale;
                 if (int.TryParse(idStr, out int tlkID))
                 {
                     LineEntry.TLKString = TLKManagerWPF.GlobalFindStrRefbyID(tlkID, Pcc);
+                    LineEntry.TLKID = tlkID;
                 }
                 Lines.Add(LineEntry);
             }
-            treeView.Nodes.Clear();
+
             graph.Clear();
+        }
+
+        private ExportEntry FindVoiceStreamFromExport(FaceFXLineEntry selectedLine)
+        {
+            if (CurrentLoadedExport != null && selectedLine.TLKID > 0)
+            {
+                var wwiseEventSearchName = $"VO_{selectedLine.TLKID:D6}_{(selectedLine.IsMale ? "m" : "f")}";
+                var wwiseStreamSearchName = $"{selectedLine.TLKID:D8}";
+                var wwiseStreamSearchNameGendered = $"{wwiseStreamSearchName}_{(selectedLine.IsMale ? "m" : "f")}";
+                var wwiseEventExp = CurrentLoadedExport.FileRef.Exports.FirstOrDefault(x => x.ClassName == "WwiseEvent" && x.ObjectName.Name.Contains(wwiseEventSearchName, StringComparison.InvariantCultureIgnoreCase));
+                if (wwiseEventExp != null)
+                {
+                    ExportEntry possible;
+                    var wwiseEvent = ObjectBinary.From<WwiseEvent>(wwiseEventExp);
+                    if (wwiseEvent.Links != null)
+                    {
+                        foreach (var link in wwiseEvent.Links)
+                        {
+                            // Look through these exports instead of all exports (faster)
+                            var possibleExports = link.WwiseStreams.Where(x => CurrentLoadedExport.FileRef.IsUExport(x)).Select(x => CurrentLoadedExport.FileRef.GetUExport(x)).ToList();
+
+                            //Do gendered search first
+                            possible = possibleExports.FirstOrDefault(x => x.ObjectName.Name.Contains(wwiseStreamSearchNameGendered, StringComparison.InvariantCultureIgnoreCase));
+                            if (possible != null) return possible;
+
+                            // Fallback to non-gendered search. Sometimes if line has same thing (e.g. nonplayer line) it'll just use male version as there's only one gender
+                            // Should only be one version for this TLK...
+                            possible = possibleExports.FirstOrDefault(x => x.ObjectName.Name.Contains(wwiseStreamSearchName, StringComparison.InvariantCultureIgnoreCase));
+                            if (possible != null)
+                                return possible;
+                        }
+                    }
+                    else
+                    {
+                        // Look through all the exports I guess.
+                        var possibleExports = CurrentLoadedExport.FileRef.Exports.Where(x => x.ClassName == "WwiseStream").ToList();
+
+                        //Do gendered search first
+                        possible = possibleExports.FirstOrDefault(x => x.ObjectName.Name.Contains(wwiseStreamSearchNameGendered, StringComparison.InvariantCultureIgnoreCase));
+                        if (possible != null) return possible;
+
+                        // Fallback to non-gendered search. Sometimes if line has same thing (e.g. nonplayer line) it'll just use male version as there's only one gender
+                        // Should only be one version for this TLK...
+                        possible = possibleExports.FirstOrDefault(x => x.ObjectName.Name.Contains(wwiseStreamSearchName, StringComparison.InvariantCultureIgnoreCase));
+                        if (possible != null)
+                            return possible;
+                    }
+                }
+            }
+            return null;
         }
 
         private void animationListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -244,7 +332,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 var animationNames = new List<int>();
                 foreach (Animation anim in Animations)
                 {
-                    animationNames.Add(FaceFX.Names.IndexOf(anim.Name));
+                    animationNames.Add(FaceFX.Names.FindOrAdd(anim.Name));
                     curvePoints.AddRange(anim.Points);
                     numKeys.Add(anim.Points.Count);
                 }
@@ -484,109 +572,75 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             Lines.Add(newEntry);
         }
 
-        private void treeView_MouseDoubleClick(object sender, System.Windows.Forms.MouseEventArgs e)
-
+        private void UpdateTreeItems(IFaceFXBinary animSet, FaceFXLine d)
         {
-            var t = treeView.SelectedNode;
-            if (t == null)
-                return;
-            string result;
-            float f;
-            int subidx = t.Index;
-            switch (subidx)
-            {
-                case 0://Name
-                    result = PromptDialog.Prompt(this, "Please enter new value", "Legendary Explorer", FaceFX.Names.ElementAtOrDefault(SelectedLine.NameIndex), true);
-                    if (result == string.Empty || result is null)
-                    {
-                        return;
-                    }
-                    if (FaceFX.Names.Contains(result))
-                    {
-                        SelectedLine.NameIndex = FaceFX.Names.IndexOf(result);
-                        SelectedLine.NameAsString = result;
-                        break;
-                    }
-                    else if (MessageBoxResult.Yes == MessageBox.Show($"The names list does not contain the name \"{result}\", do you want to add it?", "", MessageBoxButton.YesNo))
-                    {
-                        FaceFX.Names.Add(result);
-                        SelectedLine.NameIndex = FaceFX.Names.Count - 1;
-                        SelectedLine.NameAsString = result;
-                        break;
-                    }
-                    return;
-                case 1://FadeInTime
-                    result = PromptDialog.Prompt(this, "Please enter new value", "Legendary Explorer", SelectedLine.FadeInTime.ToString(), true);
-                    if (float.TryParse(result, out f))
-                    {
-                        SelectedLine.FadeInTime = f;
-                        break;
-                    }
-                    return;
-                case 2://FadeInTime
-                    result = PromptDialog.Prompt(this, "Please enter new value", "Legendary Explorer", SelectedLine.FadeOutTime.ToString(), true);
-                    if (float.TryParse(result, out f))
-                    {
-                        SelectedLine.FadeOutTime = f;
-                        break;
-                    }
-                    return;
-                case 3://Path
-                    if (PromptDialog.Prompt(this, "Please enter new value", "Legendary Explorer", SelectedLine.Path, true) is string path)
-                    {
-                        SelectedLine.Path = path;
-                        break;
-                    }
-                    return;
-                case 4://ID
-                    if (PromptDialog.Prompt(this, "Please enter new value", "Legendary Explorer", SelectedLine.ID, true) is string id)
-                    {
-                        SelectedLine.ID = id;
-                        if (int.TryParse(id, out int tlkID))
-                        {
-                            SelectedLineEntry.TLKString = TLKManagerWPF.GlobalFindStrRefbyID(tlkID, Pcc);
-                        }
-                        break;
-                    }
-                    return;
-                case 5://index
-                    result = PromptDialog.Prompt(this, "Please enter new value", "Legendary Explorer", SelectedLine.Index.ToString(), true);
-                    if (int.TryParse(result, out int i))
-                    {
-                        SelectedLine.Index = i;
-                        break;
-                    }
-                    return;
-                default:
-                    return;
-            }
-            treeView.Nodes.Clear();
-            treeView.Nodes.AddRange(DataToTree(FaceFX, SelectedLine));
-            linesListBox.Focus();
-            SaveChanges();
+            TreeNodes.ClearEx();
+
+            TreeNodes.Add(new FaceFXEditorTreeNode() { Header = $"Name : 0x{d.NameIndex:X8} \"{animSet.Names[d.NameIndex].Trim()}\"", DoubleClickAction = NameDoubleClick });
+            TreeNodes.Add(new FaceFXEditorTreeNode() { Header = $"FadeInTime : {d.FadeInTime}", DoubleClickAction = FadeInDoubleClick});
+            TreeNodes.Add(new FaceFXEditorTreeNode() { Header = $"FadeOutTime : {d.FadeOutTime}", DoubleClickAction = FadeOutDoubleClick});
+            TreeNodes.Add(new FaceFXEditorTreeNode() { Header = $"Path : {d.Path}", DoubleClickAction = PathDoubleClick});
+            TreeNodes.Add(new FaceFXEditorTreeNode() { Header = $"ID : {d.ID}", DoubleClickAction = IDDoubleClick});
+            TreeNodes.Add(new FaceFXEditorTreeNode() { Header = $"Index : 0x{d.Index:X8}", DoubleClickAction = IndexDoubleClick});
+            TreeNodes.Add(new FaceFXEditorTreeNode() { Header = $"Class : {(animSet.Binary is FaceFXAnimSet ? "FaceFXAnimSet" : "FaceFXAsset")}", DoubleClickAction = null});
         }
 
-        static System.Windows.Forms.TreeNode[] DataToTree(IFaceFXBinary animSet, FaceFXLine d) =>
-            new[]
+        private void IndexDoubleClick()
+        {
+            var result = PromptDialog.Prompt(this, "Please enter new value", "Legendary Explorer", SelectedLine.Index.ToString(), true);
+            if (int.TryParse(result, out int i))
             {
-                new System.Windows.Forms.TreeNode($"Name : 0x{d.NameIndex:X8} \"{animSet.Names[d.NameIndex].Trim()}\""),
-                new System.Windows.Forms.TreeNode($"FadeInTime : {d.FadeInTime}"),
-                new System.Windows.Forms.TreeNode($"FadeOutTime : {d.FadeOutTime}"),
-                new System.Windows.Forms.TreeNode($"Path : {d.Path}"),
-                new System.Windows.Forms.TreeNode($"ID : {d.ID}"),
-                new System.Windows.Forms.TreeNode($"Index : 0x{d.Index:X8}"),
-                new System.Windows.Forms.TreeNode($"Class : {(animSet.Binary is FaceFXAnimSet anim ? "FaceFXAnimSet" : "FaceFXAsset")}")
-            };
+                SelectedLine.Index = i;
+            }
+        }
+
+        private void PathDoubleClick()
+        {
+            if (PromptDialog.Prompt(this, "Please enter new value", "Legendary Explorer", SelectedLine.Path, true) is string path)
+            {
+                SelectedLine.Path = path;
+            }
+        }
+
+        private void IDDoubleClick()
+        {
+            if (PromptDialog.Prompt(this, "Please enter new value", "Legendary Explorer", SelectedLine.ID, true) is string id)
+            {
+                SelectedLine.ID = id;
+                if (int.TryParse(id, out int tlkID))
+                {
+                    SelectedLineEntry.TLKString = TLKManagerWPF.GlobalFindStrRefbyID(tlkID, Pcc);
+                }
+            }
+        }
+
+        private void FadeOutDoubleClick()
+        {
+            var result = PromptDialog.Prompt(this, "Please enter new value", "Legendary Explorer", SelectedLine.FadeInTime.ToString(), true);
+            if (float.TryParse(result, out var f))
+            {
+                SelectedLine.FadeOutTime = f;
+            }
+        }
+
+        private void FadeInDoubleClick()
+        {
+            var result = PromptDialog.Prompt(this, "Please enter new value", "Legendary Explorer", SelectedLine.FadeInTime.ToString(), true);
+            if (float.TryParse(result, out var f))
+            {
+                SelectedLine.FadeInTime = f;
+            }
+        }
 
         private void Graph_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Delete || e.Key == Key.Back)
+            if (e.Key is Key.Delete or Key.Back)
             {
                 graph.DeleteSelectedKey();
             }
         }
 
-        (float start, float end, float span) getTimeRange()
+        (float start, float end, float span) GetTimeRange()
         {
             string startS = PromptDialog.Prompt(this, "Please enter start time:");
             string endS = PromptDialog.Prompt(this, "Please enter end time:");
@@ -606,7 +660,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void DelLineSec_Click(object sender, RoutedEventArgs e)
         {
-            var (start, end, span) = getTimeRange();
+            var (start, end, span) = GetTimeRange();
             if (span < 0)
             {
                 return;
@@ -640,6 +694,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private struct LineSection
         {
+            //don't alter capitalization of these fields, since that will break deserialization.
             public float span;
             public Dictionary<string, List<FaceFXControlPoint>> animSecs;
         }
@@ -654,7 +709,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
             var ofd = new OpenFileDialog
             {
-                Filter = "*.json|*.json|All Files (*.*)|*.*",
+                Filter = "*.json|*.json",
                 CheckFileExists = true
             };
             if (ofd.ShowDialog() == true)
@@ -711,7 +766,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void ExpLineSec_Click(object sender, RoutedEventArgs e)
         {
-            var (start, end, span) = getTimeRange();
+            var (start, end, span) = GetTimeRange();
             if (span < 0)
             {
                 return;
@@ -856,6 +911,227 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 AnimSet = export.GetBinaryData<FaceFXAnimSet>();
             }
         }
+
+        private void FaceFXAnimSetEditorControl_OnUnloaded(object sender, RoutedEventArgs e)
+        {
+            // Called when the control is no longer visible.
+            graph?.ExtraXLines.Remove(PlayheadPositionLine);
+
+            if (audioPlayer != null)
+                audioPlayer.SeekbarPositionChanged -= AudioPositionChanged;
+            audioPlayer?.StopPlaying();
+        }
+
+        private void FaceFXAnimSetEditorControl_OnLoaded(object sender, RoutedEventArgs e)
+        {
+            if (graph != null && !graph.ExtraXLines.Contains(PlayheadPositionLine))
+            {
+                graph.ExtraXLines.Add(PlayheadPositionLine);
+            }
+
+            if (audioPlayer != null)
+                audioPlayer.SeekbarPositionChanged += AudioPositionChanged;
+        }
+
+        private void AudioPositionChanged(object? sender, AudioPlayheadEventArgs e)
+        {
+            PlayheadPositionLine.Position = e.PlayheadTime;
+            graph.Paint();
+        }
+
+        private void NameDoubleClick()
+        {
+            var result = PromptDialog.Prompt(this, "Please enter new value", "Legendary Explorer", FaceFX.Names.ElementAtOrDefault(SelectedLine.NameIndex), true);
+            if (result is "" or null)
+            {
+                return;
+            }
+            if (FaceFX.Names.Contains(result))
+            {
+                SelectedLine.NameIndex = FaceFX.Names.IndexOf(result);
+                SelectedLine.NameAsString = result;
+            }
+            else if (MessageBoxResult.Yes == MessageBox.Show($"The names list does not contain the name \"{result}\", do you want to add it?", "", MessageBoxButton.YesNo))
+            {
+                FaceFX.Names.Add(result);
+                SelectedLine.NameIndex = FaceFX.Names.Count - 1;
+                SelectedLine.NameAsString = result;
+            }
+        }
+
+        private void OnTreeItemMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (treeView.SelectedItem is FaceFXEditorTreeNode ffetvn)
+            {
+                ffetvn.DoubleClickAction?.Invoke();
+            }
+
+            UpdateTreeItems(FaceFX, SelectedLine);
+            linesListBox.Focus();
+            SaveChanges();
+            /*
+            var t = treeView.Sele;
+            if (t == null)
+                return;
+            string result;
+            float f;
+            int subidx = t.Index;
+            switch (subidx)
+            {
+                
+                case 3://Path
+                    if (PromptDialog.Prompt(this, "Please enter new value", "Legendary Explorer", SelectedLine.Path, true) is string path)
+                    {
+                        SelectedLine.Path = path;
+                        break;
+                    }
+                    return;
+                case 4://ID
+                    if (PromptDialog.Prompt(this, "Please enter new value", "Legendary Explorer", SelectedLine.ID, true) is string id)
+                    {
+                        SelectedLine.ID = id;
+                        if (int.TryParse(id, out int tlkID))
+                        {
+                            SelectedLineEntry.TLKString = TLKManagerWPF.GlobalFindStrRefbyID(tlkID, Pcc);
+                        }
+                        break;
+                    }
+                    return;
+                case 5://index
+                    result = PromptDialog.Prompt(this, "Please enter new value", "Legendary Explorer", SelectedLine.Index.ToString(), true);
+                    if (int.TryParse(result, out int i))
+                    {
+                        SelectedLine.Index = i;
+                        break;
+                    }
+                    return;
+                default:
+                    return;
+            }*/
+
+
+        }
+
+        private void ChangeAnimName_Click(object sender, RoutedEventArgs e)
+        {
+            if (PromptDialog.Prompt(this, "Enter new name", "Animation Name Change", SelectedAnimation.Name, true) is string newName && newName != "")
+            {
+                SelectedAnimation.Name = newName;
+                SaveChanges();
+            }
+        }
+
+        private void ImportTracksFromXML_Click(object sender, RoutedEventArgs e)
+        {
+            var ofd = new OpenFileDialog
+            {
+                Filter = "*.xml|*.xml",
+                CheckFileExists = true
+            };
+            if (ofd.ShowDialog() == true)
+            {
+                #region xml import
+
+                var xmlDoc = XElement.Load(ofd.FileName);
+                var animations = xmlDoc.Descendants("animation_groups").Descendants("animation_group").Descendants("animation").ToList();
+                XElement animationElement;
+                if (animations.Count is 0)
+                {
+                    MessageBox.Show(Window.GetWindow(this), "No animations found in this xml file!");
+                    return;
+                }
+                if (animations.Count > 1)
+                {
+                    var animNames = animations.Select((x, i) => x.Attribute("name")?.Value ?? i.ToString()).ToList();
+                    var chosenName = InputComboBoxDialog.GetValue(this, "Choose which to animation to import.", "Choose Animation", animNames, animNames[0]);
+                    if (chosenName is null)
+                    {
+                        return;
+                    }
+                    animationElement = animations.Find(x => x.Attribute("name")?.Value == chosenName);
+                }
+                else
+                {
+                    animationElement = animations[0];
+                }
+                var curveNodes = animationElement.Descendants("curves").Descendants();
+                var lineSec = new LineSection { animSecs = new Dictionary<string, List<FaceFXControlPoint>>() };
+                float firstTime = float.MaxValue;
+                float lastTime = float.MinValue;
+                foreach (XElement curveNode in curveNodes)
+                {
+                    string curveName = curveNode.Attribute("name")?.Value;
+                    if (curveName is null)
+                    {
+                        continue;
+                    }
+                    if (curveNode.Value is string value)
+                    {
+                        var keys = value.Trim().Split(' ').Select(s =>
+                        {
+                            if (float.TryParse(s, NumberStyles.Float, CultureInfo.InvariantCulture, out float result))
+                            {
+                                return result;
+                            }
+                            return 0f;
+                        }).ToArray();
+                        var points = new List<FaceFXControlPoint>();
+                        for (int i = 0; i + 3 < keys.Length; i += 4)
+                        {
+                            firstTime = MathF.Min(firstTime, keys[i]);
+                            lastTime = MathF.Max(firstTime, keys[i]);
+                            points.Add(new FaceFXControlPoint
+                            {
+                                time = keys[i],
+                                weight = keys[i + 1],
+                                inTangent = keys[i + 2],
+                                leaveTangent = keys[i + 3]
+                            });
+                        }
+                        lineSec.animSecs.Add(curveName, points);
+                    }
+                }
+                lineSec.span = MathF.Max(0, lastTime - firstTime);
+
+                #endregion
+
+                var newPoints = new List<FaceFXControlPoint>();
+                for (int i = 0, j = 0; i < SelectedLine.AnimationNames.Count; i++)
+                {
+                    int newNumPoints = 0;
+                    string animName = FaceFX.Names[SelectedLine.AnimationNames[i]];
+                    if (lineSec.animSecs.TryGetValue(animName, out List<FaceFXControlPoint> points))
+                    {
+                        newPoints.AddRange(points);
+                        newNumPoints += points.Count;
+                        lineSec.animSecs.Remove(animName);
+                    }
+                    else
+                    {
+                        for (int k = 0; k < SelectedLine.NumKeys[i]; k++)
+                        {
+                            newPoints.Add(SelectedLine.Points[j + k]);
+                            newNumPoints++;
+                        }
+                    }
+                    j += SelectedLine.NumKeys[i];
+                    SelectedLine.NumKeys[i] = newNumPoints;
+                }
+                //add new animations
+                if (lineSec.animSecs.Count > 0)
+                {
+                    foreach ((string name, List<FaceFXControlPoint> points) in lineSec.animSecs)
+                    {
+                        SelectedLine.AnimationNames.Add(FaceFX.Names.FindOrAdd(name));
+                        SelectedLine.NumKeys.Add(points.Count);
+                        newPoints.AddRange(points);
+                    }
+                }
+                SelectedLineEntry.Points = newPoints;
+                CurrentLoadedExport?.WriteBinary(FaceFX.Binary);
+                UpdateAnimListBox();
+            }
+        }
     }
 
     public class Animation : NotifyPropertyChangedBase
@@ -887,6 +1163,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         }
     }
 
+    /// <summary>
+    /// UI wrapper for FaceFXLine
+    /// </summary>
     public class FaceFXLineEntry : NotifyPropertyChangedBase
     {
         private FaceFXLine _line;
@@ -930,6 +1209,15 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 }
             }
         }
+
+        /// <summary>
+        /// The ID of the TLK, which is used for some lookups by name
+        /// </summary>
+        public int TLKID { get; set; }
+        /// <summary>
+        /// If the line is _M or _F
+        /// </summary>
+        public bool IsMale { get; set; }
 
         public FaceFXLineEntry(FaceFXLine faceFX)
         {

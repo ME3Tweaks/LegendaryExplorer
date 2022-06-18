@@ -8,11 +8,10 @@ using LegendaryExplorerCore.Gammtek.Extensions;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
-using UMD.HCIL.GraphEditor;
-using UMD.HCIL.Piccolo;
-using UMD.HCIL.Piccolo.Event;
-using UMD.HCIL.Piccolo.Nodes;
 using LegendaryExplorerCore.Helpers;
+using Piccolo;
+using Piccolo.Event;
+using Piccolo.Nodes;
 using SText = LegendaryExplorer.Tools.SequenceObjects.SText;
 using WwiseStreamHelper = LegendaryExplorer.UnrealExtensions.AudioStreamHelper;
 

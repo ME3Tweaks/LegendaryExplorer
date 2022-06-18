@@ -54,6 +54,13 @@ namespace LegendaryExplorerCore.Packages
         public static bool IsOTGame(this MEGame game) => game is MEGame.ME1 or MEGame.ME2 or MEGame.ME3;
 
         /// <summary>
+        /// Is game a Mass Effect game (original trilogy or Legendary Edition)
+        /// </summary>
+        /// <param name="game">Input game</param>
+        /// <returns>True if game is OT</returns>
+        public static bool IsMEGame(this MEGame game) => game is MEGame.ME1 or MEGame.ME2 or MEGame.ME3 or MEGame.LE1 or MEGame.LE2 or MEGame.LE3;
+
+        /// <summary>
         /// Is game a version of Mass Effect 1
         /// </summary>
         /// <param name="game">Input game</param>

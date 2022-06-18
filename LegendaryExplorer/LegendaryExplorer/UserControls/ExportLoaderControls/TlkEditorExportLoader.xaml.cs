@@ -380,8 +380,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             UnloadExport();
             CurrentLoadedFile = filepath;
-            _currentMe2Me3Me2Me3TalkFile = new ME2ME3TalkFile();
-            _currentMe2Me3Me2Me3TalkFile.LoadTlkData(filepath);
+            _currentMe2Me3Me2Me3TalkFile = new ME2ME3TalkFile(filepath);
             LoadedFile = filepath;
             RefreshME2ME3TLK();
             FileModified = false;
@@ -400,8 +399,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             UnloadExport();
             CurrentLoadedFile = null;
-            _currentMe2Me3Me2Me3TalkFile = new ME2ME3TalkFile();
-            _currentMe2Me3Me2Me3TalkFile.LoadTlkDataFromStream(stream);
+            _currentMe2Me3Me2Me3TalkFile = new ME2ME3TalkFile(stream);
 
             // Need way to load a file without having it show up in the recents
 
@@ -450,8 +448,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 }
                 // CurrentME2ME3TalkFile.
                 ME2ME3HuffmanCompression.SaveToTlkFile(_currentMe2Me3Me2Me3TalkFile.FilePath, LoadedStrings);
-                _currentMe2Me3Me2Me3TalkFile = new ME2ME3TalkFile();
-                _currentMe2Me3Me2Me3TalkFile.LoadTlkData(CurrentLoadedFile);
+                _currentMe2Me3Me2Me3TalkFile = new ME2ME3TalkFile(CurrentLoadedFile);
                 FileModified = false; //you can only commit to file, not to export and then file in file mode.
             }
             //throw new NotImplementedException();

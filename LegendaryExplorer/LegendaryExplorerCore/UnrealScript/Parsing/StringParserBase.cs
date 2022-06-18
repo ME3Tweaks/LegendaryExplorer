@@ -7,13 +7,13 @@ using LegendaryExplorerCore.UnrealScript.Analysis.Symbols;
 using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
 using LegendaryExplorerCore.UnrealScript.Compiling.Errors;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
-using LegendaryExplorerCore.UnrealScript.Lexing.Tokenizing;
+using LegendaryExplorerCore.UnrealScript.Lexing;
 using LegendaryExplorerCore.UnrealScript.Utilities;
 using static LegendaryExplorerCore.UnrealScript.Utilities.Keywords;
 
 namespace LegendaryExplorerCore.UnrealScript.Parsing
 {
-    public abstract class StringParserBase
+    internal abstract class StringParserBase
     {
         protected MessageLog Log;
         protected TokenStream Tokens;
@@ -22,7 +22,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
         protected ScriptToken CurrentToken => Tokens.CurrentItem;
         protected ScriptToken PrevToken => Tokens.Prev();
 
-        protected SourcePosition CurrentPosition => Tokens.CurrentItem.StartPos ?? new SourcePosition(-1, -1, -1);
+        protected int CurrentPosition => Tokens.CurrentItem.StartPos;
 
         public static readonly List<ASTNodeType> SemiColonExceptions = new()
         {
@@ -55,7 +55,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
         protected ParseException ParseError(string msg, ASTNode node) => ParseError(msg, node.StartPos, node.EndPos);
 
-        protected ParseException ParseError(string msg, SourcePosition start = null, SourcePosition end = null)
+        protected ParseException ParseError(string msg, int start = -1, int end = -1)
         {
             Log.LogError(msg, start, end);
             return new ParseException(msg);
@@ -69,7 +69,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
         protected void TypeError(string msg, ASTNode node) => TypeError(msg, node.StartPos, node.EndPos);
 
-        protected void TypeError(string msg, SourcePosition start = null, SourcePosition end = null)
+        protected void TypeError(string msg, int start = -1, int end = -1)
         {
             Log.LogError(msg, start, end);
         }
@@ -176,10 +176,10 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 classToken.SyntaxType = EF.Keyword;
                 if (Consume(TokenType.LeftArrow) is null)
                 {
-                    return new ClassType(new VariableType(OBJECT));
+                    return new ClassType(new VariableType(OBJECT), classToken.StartPos, classToken.EndPos);
                 }
 
-                if (!(Consume(TokenType.Word) is { } classNameToken))
+                if (Consume(TokenType.Word) is not { } classNameToken)
                 {
                     throw ParseError("Expected class name!", CurrentPosition);
                 }
@@ -281,11 +281,11 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
         public ScriptToken Consume(params string[] strs) => strs.Select(Consume).NonNull().FirstOrDefault();
 
 
-        public static bool TypeCompatible(VariableType dest, VariableType src, bool coerce = false)
+        protected bool TypeCompatible(VariableType dest, VariableType src, int errorPosition, bool coerce = false)
         {
             if (dest is DynamicArrayType destArr && src is DynamicArrayType srcArr)
             {
-                return TypeCompatible(destArr.ElementType, srcArr.ElementType);
+                return TypeCompatible(destArr.ElementType, srcArr.ElementType, errorPosition);
             }
 
             if (dest is ClassType destClassType && src is ClassType srcClassType)
@@ -300,31 +300,40 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
             if (dest is DelegateType destDel && src is DelegateType srcDel)
             {
+                if (!destDel.DefaultFunction.SignatureEquals(srcDel.DefaultFunction))
+                {
+                    //should be en error, but there is bioware code that would have only compiled if all delegates are considered the same type
+                    Log.LogWarning("Incompatible delegate types! This will likely cause a runtime error.", errorPosition);
+                }
                 return true;
-                // this seems like how it ought to be done, but there is bioware code that would have only compiled if all delegates are considered the same type
-                // maybe log a warning here instead of an error?
-                //return destDel.DefaultFunction.SignatureEquals(srcDel.DefaultFunction);
             }
 
             if (dest is Class destClass)
             {
                 if (src is Class srcClass)
                 {
-                    bool sameAsOrSubClassOf = srcClass.SameAsOrSubClassOf(destClass);
+                    if (srcClass.SameAsOrSubClassOf(destClass))
+                    {
+                        return true;
+                    }
                     if (srcClass.IsInterface)
                     {
-                        return sameAsOrSubClassOf || destClass.Implements(srcClass);
+                        return destClass.Implements(srcClass);
                     }
 
                     if (destClass.IsInterface)
                     {
-                        return sameAsOrSubClassOf || srcClass.Implements(destClass);
+                        return srcClass.Implements(destClass);
                     }
-                    return sameAsOrSubClassOf
-                           //this seems super wrong obviously. A sane type system would require an explicit downcast.
-                           //But to make this work with existing bioware code, it's this, or write a control-flow analyzer that implicitly downcasts based on typecheck conditional gates
-                           //I have chosen the lazy path
-                           || destClass.SameAsOrSubClassOf(srcClass);
+                    //allow implicit downcasts. This seems super wrong obviously. A sane type system would require an explicit downcast.
+                    //But to make this work with existing bioware code, it's this, or write a control-flow analyzer that implicitly downcasts based on typecheck conditional gates
+                    //I have chosen the lazy path
+                    if (destClass.SameAsOrSubClassOf(srcClass))
+                    {
+                        Log.LogWarning("Dangerous implicit downcast! Use an explicit downcast.", errorPosition);
+                        return true;
+                    }
+                    return false;
                 }
 
                 if (destClass.Name.CaseInsensitiveEquals("Object") && src is ClassType)
@@ -410,7 +419,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             return null;
         }
 
-        private Expression ParseRotatorLiteral()
+        private RotatorLiteral ParseRotatorLiteral()
         {
             var start = CurrentPosition;
             if (!Matches(TokenType.LeftParenth))
@@ -442,7 +451,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             return new RotatorLiteral(pitch, yaw, roll, start, Tokens.Prev().EndPos);
         }
 
-        private Expression ParseVectorLiteral()
+        private VectorLiteral ParseVectorLiteral()
         {
             var start = CurrentPosition;
             if (!Matches(TokenType.LeftParenth))
@@ -498,7 +507,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             return isNegative ? -val : val;
         }
 
-        protected Expression ParseObjectLiteral(ScriptToken className, ScriptToken objName, bool noActors = true)
+        protected ObjectLiteral ParseObjectLiteral(ScriptToken className, ScriptToken objName, bool noActors = true)
         {
             className.SyntaxType = EF.TypeName;
             bool isClassLiteral = className.Value.CaseInsensitiveEquals(CLASS);
@@ -513,7 +522,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             {
                 if (isClassLiteral)
                 {
-                    objName.AssociatedNode = classType;
+                    Tokens.AddDefinitionLink(classType, objName);
                     classType = new ClassType(classType);
                 }
                 else
@@ -523,7 +532,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                         TypeError("Object constants must not be Actors!", className);
                     }
 
-                    className.AssociatedNode = classType;
+                    Tokens.AddDefinitionLink(classType, className);
                 }
                 
 
@@ -547,11 +556,11 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
             if (token.Value.CaseInsensitiveEquals("Outer") && symbol is VariableDeclaration fakeOuterVarDecl)
             {
-                token.AssociatedNode = fakeOuterVarDecl.VarType;
+                Tokens.AddDefinitionLink(fakeOuterVarDecl.VarType, token);
             }
             else
             {
-                token.AssociatedNode = symbol;
+                Tokens.AddDefinitionLink(symbol, token);
             }
             if (symRef.Node is Function)
             {

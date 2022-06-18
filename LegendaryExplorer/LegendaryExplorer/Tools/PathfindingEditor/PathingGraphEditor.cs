@@ -3,10 +3,10 @@ using System.Collections;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
-using UMD.HCIL.Piccolo;
-using UMD.HCIL.Piccolo.Event;
 using System.Reflection;
 using System.Collections.Generic;
+using Piccolo;
+using Piccolo.Event;
 
 namespace LegendaryExplorer.Tools.PathfindingEditor
 {

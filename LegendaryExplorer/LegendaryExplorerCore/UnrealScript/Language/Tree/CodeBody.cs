@@ -10,7 +10,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
         public List<Statement> Statements;
         public TokenStream Tokens;
 
-        public CodeBody(List<Statement> contents = null, SourcePosition start = null, SourcePosition end = null)
+        public CodeBody(List<Statement> contents = null, int start = -1, int end = -1)
             : base(ASTNodeType.CodeBody, start, end) 
         {
             Statements = contents ?? new List<Statement>();

@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Buffers.Binary;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Memory;
@@ -16,7 +18,7 @@ namespace LegendaryExplorerCore.Packages
 {
     [DebuggerDisplay("{Game} ExportEntry | {UIndex} {ObjectName.Instanced}({ClassName}) in {System.IO.Path.GetFileName(_fileRef.FilePath)}")]
     [DoNotNotify]//disable Fody/PropertyChanged for this class. Do notification manually
-    public sealed class ExportEntry : INotifyPropertyChanged, IEntry
+    public sealed class ExportEntry :  IEntry
     {
         private readonly IMEPackage _fileRef;
         public IMEPackage FileRef => _fileRef;
@@ -56,16 +58,16 @@ namespace LegendaryExplorerCore.Packages
             _fileRef = file;
 
             //these three must be written to the underlying values so as not to invalidate the lookuptable 
-            _idxLink = parent_uIndex;
-            _idxObjectName = _fileRef.FindNameOrAdd(name.Name);
-            _indexValue = name.Number;
+            _commonHeaderFields._idxLink = parent_uIndex;
+            _commonHeaderFields._idxObjectName = _fileRef.FindNameOrAdd(name.Name);
+            _commonHeaderFields._indexValue = name.Number;
             _generationNetObjectCounts = Array.Empty<int>();
             if (HasComponentMap)
             {
                 _componentMap = Array.Empty<byte>();
             }
 
-            DataOffset = 0;
+            _commonHeaderFields._dataOffset = 0;
             ObjectFlags = EObjectFlags.LoadForClient | EObjectFlags.LoadForServer | EObjectFlags.LoadForEdit; //sensible defaults?
 
             var ms = new EndianWriter { Endian = file.Endian };
@@ -94,9 +96,9 @@ namespace LegendaryExplorerCore.Packages
             binary?.WriteTo(ms, file);
 
             _data = ms.ToArray();
-            DataSize = _data.Length;
+            _commonHeaderFields._dataSize = _data.Length;
         }
-
+        
         /// <summary>
         /// Constructor for generating a new export entry
         /// </summary>
@@ -110,7 +112,7 @@ namespace LegendaryExplorerCore.Packages
         {
             _fileRef = file;
             DeserializeHeader(new EndianReader(header));
-            DataOffset = 0;
+            _commonHeaderFields._dataOffset = 0;
 
             var ms = new EndianWriter { Endian = file.Endian };
             if (prePropBinary == null)
@@ -138,7 +140,7 @@ namespace LegendaryExplorerCore.Packages
             binary?.WriteTo(ms, file);
 
             _data = ms.ToArray();
-            DataSize = _data.Length;
+            _commonHeaderFields._dataSize = _data.Length;
         }
 
         /// <summary>
@@ -156,13 +158,13 @@ namespace LegendaryExplorerCore.Packages
             {
                 long headerEnd = stream.Position;
 
-                stream.Seek(DataOffset, SeekOrigin.Begin);
-                _data = stream.ReadBytes(DataSize);
+                stream.Seek(_commonHeaderFields._dataOffset, SeekOrigin.Begin);
+                _data = stream.ReadBytes(_commonHeaderFields._dataSize);
                 stream.Seek(headerEnd, SeekOrigin.Begin);
             }
         }
 
-        public bool HasStack => _objectFlags.Has(EObjectFlags.HasStack);
+        public bool HasStack => _commonHeaderFields._objectFlags.Has(EObjectFlags.HasStack);
 
         public byte[] GetPrePropBinary()
         {
@@ -203,7 +205,7 @@ namespace LegendaryExplorerCore.Packages
             }
         }
         
-        public bool IsDefaultObject => _objectFlags.Has(EObjectFlags.ClassDefaultObject);
+        public bool IsDefaultObject => _commonHeaderFields._objectFlags.Has(EObjectFlags.ClassDefaultObject);
 
 
 
@@ -228,9 +230,9 @@ namespace LegendaryExplorerCore.Packages
                 return; //if the data is the same don't write it and trigger the side effects
             }
 
-            int dataSize = DataSize;
+            int dataSize = _commonHeaderFields._dataSize;
             DeserializeHeader(new EndianReader(value));
-            DataSize = dataSize; //should never be altered by Header overwrite
+            _commonHeaderFields._dataSize = dataSize; //should never be altered by Header overwrite
 
             //new header may have changed link or name
             _fileRef.InvalidateLookupTable();
@@ -249,7 +251,7 @@ namespace LegendaryExplorerCore.Packages
                     + 4 //DataOffset
                     + 4 //ExportFlags
                     + 16 //PackageGUID
-                    + 4 //GenerationNetObjectCount count
+                    + 4 //GenerationNetObjectCountsLength
                     + 4 //PackageFlags
                     + _generationNetObjectCounts.Length * 4;
                 if (HasComponentMap)
@@ -270,6 +272,8 @@ namespace LegendaryExplorerCore.Packages
         public const int OFFSET_DataSize = 32;
         public const int OFFSET_DataOffset = 36;
 
+
+
         /// <summary>
         /// Generates the header byte array
         /// </summary>
@@ -281,16 +285,25 @@ namespace LegendaryExplorerCore.Packages
         
         public byte[] GenerateHeader(IMEPackage pcc, bool clearComponentMap = false)
         {
+            if (pcc.Endian.IsNative && _fileRef.Game > MEGame.ME2 && _commonHeaderFields._generationNetObjectCountsLength == 0)
+            {
+                unsafe
+                {
+                    byte[] bytes = new byte[sizeof(CommonHeaderFields)];
+                    MemoryMarshal.Write(bytes.AsSpan(), ref _commonHeaderFields);
+                    return bytes;
+                }
+            }
             using var bin = new EndianWriter(MemoryManager.GetMemoryStream(HeaderLength)) { Endian = pcc.Endian };
-            bin.WriteInt32(idxClass);
-            bin.WriteInt32(idxSuperClass);
-            bin.WriteInt32(idxLink);
-            bin.WriteInt32(idxObjectName);
-            bin.WriteInt32(indexValue);
-            bin.WriteInt32(idxArchetype);
-            bin.WriteUInt64((ulong)_objectFlags);
-            bin.WriteInt32(DataSize);
-            bin.WriteInt32(DataOffset);
+            bin.WriteInt32(_commonHeaderFields._idxClass);
+            bin.WriteInt32(_commonHeaderFields._idxSuperClass);
+            bin.WriteInt32(_commonHeaderFields._idxLink);
+            bin.WriteInt32(_commonHeaderFields._idxObjectName);
+            bin.WriteInt32(_commonHeaderFields._indexValue);
+            bin.WriteInt32(_commonHeaderFields._idxArchetype);
+            bin.WriteUInt64((ulong)_commonHeaderFields._objectFlags);
+            bin.WriteInt32(_commonHeaderFields._dataSize);
+            bin.WriteInt32(_commonHeaderFields._dataOffset);
             if (pcc.Game <= MEGame.ME2 && pcc.Platform != MEPackage.GamePlatform.PS3)
             {
                 if (clearComponentMap)
@@ -321,177 +334,227 @@ namespace LegendaryExplorerCore.Packages
 
         private void DeserializeHeader(EndianReader stream)
         {
-            _idxClass = stream.ReadInt32();
-            _idxSuperClass = stream.ReadInt32();
-            _idxLink = stream.ReadInt32();
-            _idxObjectName = stream.ReadInt32();
-            _indexValue = stream.ReadInt32();
-            _idxArchetype = stream.ReadInt32();
-            _objectFlags = (EObjectFlags)stream.ReadUInt64();
-            DataSize = stream.ReadInt32();
-            DataOffset = stream.ReadInt32();
+            //happy path
+            if (stream.Endian.IsNative && _fileRef.Game > MEGame.ME2)
+            {
+                stream.Read(MemoryMarshal.AsBytes(MemoryMarshal.CreateSpan(ref _commonHeaderFields, 1)));
+                
+                //rarely true. Only for ForcedExport packages I think?
+                if (_commonHeaderFields._generationNetObjectCountsLength > 0)
+                {
+                    const int SIZE_OF_PACKAGEGUID_AND_PACKAGEFLAGS = 20;
+                    stream.Seek(-SIZE_OF_PACKAGEGUID_AND_PACKAGEFLAGS, SeekOrigin.Current);
+                    goto GenNetObjsNotEmpty;
+                }
+                _generationNetObjectCounts = Array.Empty<int>();
+                return;
+            }
+            //slower fallback :(
+
+            _commonHeaderFields._idxClass = stream.ReadInt32();
+            _commonHeaderFields._idxSuperClass = stream.ReadInt32();
+            _commonHeaderFields._idxLink = stream.ReadInt32();
+            _commonHeaderFields._idxObjectName = stream.ReadInt32();
+            _commonHeaderFields._indexValue = stream.ReadInt32();
+            _commonHeaderFields._idxArchetype = stream.ReadInt32();
+            _commonHeaderFields._objectFlags = (EObjectFlags)stream.ReadUInt64();
+            _commonHeaderFields._dataSize = stream.ReadInt32();
+            _commonHeaderFields._dataOffset = stream.ReadInt32();
+
             if (HasComponentMap)
             {
                 _componentMap = stream.ReadBytes(stream.ReadInt32() * 12);
             }
-            _exportFlags = (EExportFlags)stream.ReadUInt32();
-            int count = stream.ReadInt32();
+            _commonHeaderFields._exportFlags = (EExportFlags)stream.ReadUInt32();
+
+            _commonHeaderFields._generationNetObjectCountsLength = stream.ReadInt32();
+
+        GenNetObjsNotEmpty:
+
+            int count = _commonHeaderFields._generationNetObjectCountsLength;
             _generationNetObjectCounts = new int[count];
             for (int i = 0; i < count; i++)
             {
                 _generationNetObjectCounts[i] = stream.ReadInt32();
             }
-            _packageGuid = stream.ReadGuid();
+            _commonHeaderFields._packageGuid = stream.ReadGuid();
             if (Game != MEGame.ME1 || _fileRef.Platform != MEPackage.GamePlatform.Xenon)
             {
-                _packageFlags = (EPackageFlags)stream.ReadUInt32();
+                _commonHeaderFields._packageFlags = (EPackageFlags)stream.ReadUInt32();
             }
         }
 
         public void SerializeHeader(Stream bin)
         {
-            bin.WriteInt32(_idxClass);
-            bin.WriteInt32(_idxSuperClass);
-            bin.WriteInt32(_idxLink);
-            bin.WriteInt32(_idxObjectName);
-            bin.WriteInt32(_indexValue);
-            bin.WriteInt32(_idxArchetype);
-            bin.WriteUInt64((ulong)_objectFlags);
-            bin.WriteInt32(DataSize);
-            bin.WriteInt32(DataOffset);
-            if (HasComponentMap)
+            if (_fileRef.Endian.IsNative && _fileRef.Game > MEGame.ME2 && _commonHeaderFields._generationNetObjectCountsLength == 0)
             {
-                bin.WriteInt32(_componentMap.Length / 12);
-                bin.Write(_componentMap);
+                bin.Write(MemoryMarshal.AsBytes(MemoryMarshal.CreateReadOnlySpan(ref _commonHeaderFields, 1)));
             }
-            bin.WriteUInt32((uint)_exportFlags);
-            int[] genobjCounts = _generationNetObjectCounts;
-            bin.WriteInt32(genobjCounts.Length);
-            for (int i = 0; i < genobjCounts.Length; i++)
+            else
             {
-                int count = genobjCounts[i];
-                bin.WriteInt32(count);
+                bin.WriteInt32(_commonHeaderFields._idxClass);
+                bin.WriteInt32(_commonHeaderFields._idxSuperClass);
+                bin.WriteInt32(_commonHeaderFields._idxLink);
+                bin.WriteInt32(_commonHeaderFields._idxObjectName);
+                bin.WriteInt32(_commonHeaderFields._indexValue);
+                bin.WriteInt32(_commonHeaderFields._idxArchetype);
+                bin.WriteUInt64((ulong)_commonHeaderFields._objectFlags);
+                bin.WriteInt32(_commonHeaderFields._dataSize);
+                bin.WriteInt32(_commonHeaderFields._dataOffset);
+                if (HasComponentMap)
+                {
+                    bin.WriteInt32(_componentMap.Length / 12);
+                    bin.Write(_componentMap);
+                }
+                bin.WriteUInt32((uint)_commonHeaderFields._exportFlags);
+                int[] genobjCounts = _generationNetObjectCounts;
+                bin.WriteInt32(genobjCounts.Length);
+                for (int i = 0; i < genobjCounts.Length; i++)
+                {
+                    int count = genobjCounts[i];
+                    bin.WriteInt32(count);
+                }
+                bin.WriteGuid(_commonHeaderFields._packageGuid);
+                //doesn't exist on ME1 Xenon, but we don't support saving Xenon packages
+                bin.WriteUInt32((uint)_commonHeaderFields._packageFlags);
             }
-            bin.WriteGuid(_packageGuid);
-            bin.WriteUInt32((uint)_packageFlags);
         }
 
-        public int HeaderOffset { get; set; }
+        public int HeaderOffset;
 
-        private int _idxClass;
+        //Do not even think about touching this struct!
+        //It is read directly from memory, so it must _exactly_ match the serialized layout of the export header.
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
+        private struct CommonHeaderFields
+        {
+            public int _idxClass;
+            public int _idxSuperClass;
+            public int _idxLink;
+            public int _idxObjectName;
+            public int _indexValue;
+            public int _idxArchetype;
+            public EObjectFlags _objectFlags;
+            public int _dataSize;
+            public int _dataOffset;
+            public EExportFlags _exportFlags;
+            public int _generationNetObjectCountsLength;
+            public Guid _packageGuid;
+            public EPackageFlags _packageFlags;
+        }
+
+        private CommonHeaderFields _commonHeaderFields;
+
         public int idxClass
         {
-            get => _idxClass;
+            get => _commonHeaderFields._idxClass;
             private set
             {
-                if (value != _idxClass)
+                if (value != _commonHeaderFields._idxClass)
                 {
-                    _idxClass = value;
+                    _commonHeaderFields._idxClass = value;
                     HeaderChanged = true;
                 }
             }
         }
 
-        private int _idxSuperClass;
         public int idxSuperClass
         {
-            get => _idxSuperClass;
+            get => _commonHeaderFields._idxSuperClass;
             private set
             {
-                if (value != _idxSuperClass)
+                if (value != _commonHeaderFields._idxSuperClass)
                 {
                     // 0 check for setup
                     if (_uIndex != 0 && value == _uIndex)
                     {
                         throw new Exception("Cannot set export superclass to itself, this will cause infinite recursion");
                     }
-                    _idxSuperClass = value;
+                    _commonHeaderFields._idxSuperClass = value;
                     HeaderChanged = true;
                 }
             }
         }
 
-        private int _idxLink;
         public int idxLink
         {
-            get => _idxLink;
+            get => _commonHeaderFields._idxLink;
             set
             {
-                if (value != _idxLink)
+                if (value != _commonHeaderFields._idxLink)
                 {
                     // HeaderOffset = 0 means this was instantiated and not read in from a stream
                     if (value == _uIndex && HeaderOffset != 0)
                     {
                         throw new Exception("Cannot set import link to itself, this will cause infinite recursion");
                     }
-                    _idxLink = value;
+                    _commonHeaderFields._idxLink = value;
                     HeaderChanged = true;
                     _fileRef.InvalidateLookupTable();
                 }
             }
         }
 
-        private int _idxObjectName;
         private int idxObjectName
         {
-            get => _idxObjectName;
+            get => _commonHeaderFields._idxObjectName;
             set
             {
-                if (value != _idxObjectName)
+                if (value != _commonHeaderFields._idxObjectName)
                 {
-                    _idxObjectName = value;
+                    _commonHeaderFields._idxObjectName = value;
                     HeaderChanged = true;
                     _fileRef.InvalidateLookupTable();
                 }
             }
         }
 
-        private int _indexValue;
         public int indexValue
         {
-            get => _indexValue;
+            get => _commonHeaderFields._indexValue;
             set
             {
-                if (value != _indexValue)
+                if (value != _commonHeaderFields._indexValue)
                 {
-                    _indexValue = value;
+                    _commonHeaderFields._indexValue = value;
                     HeaderChanged = true;
                     _fileRef.InvalidateLookupTable();
                 }
             }
         }
 
-        private int _idxArchetype;
         public int idxArchetype
         {
-            get => _idxArchetype;
+            get => _commonHeaderFields._idxArchetype;
             private set
             {
-                if (value != _idxArchetype)
+                if (value != _commonHeaderFields._idxArchetype)
                 {
-                    _idxArchetype = value;
+                    _commonHeaderFields._idxArchetype = value;
                     HeaderChanged = true;
                 }
             }
         }
 
-        private EObjectFlags _objectFlags;
         public EObjectFlags ObjectFlags
         {
-            get => _objectFlags;
+            get => _commonHeaderFields._objectFlags;
             set
             {
-                if (value != _objectFlags)
+                if (value != _commonHeaderFields._objectFlags)
                 {
-                    _objectFlags = value;
+                    _commonHeaderFields._objectFlags = value;
                     HeaderChanged = true;
                 }
             }
         }
 
-        public int DataSize;
+        public int DataSize => _commonHeaderFields._dataSize;
 
-        public int DataOffset;
+        public int DataOffset
+        {
+            get => _commonHeaderFields._dataOffset;
+            set => _commonHeaderFields._dataOffset = value;
+        }
 
         public bool HasComponentMap => _fileRef.Game <= MEGame.ME2 && _fileRef.Platform != MEPackage.GamePlatform.PS3;
 
@@ -540,15 +603,14 @@ namespace LegendaryExplorerCore.Packages
             }
         }
 
-        private EExportFlags _exportFlags;
         public EExportFlags ExportFlags
         {
-            get => _exportFlags;
+            get => _commonHeaderFields._exportFlags;
             set
             {
-                if (value != _exportFlags)
+                if (value != _commonHeaderFields._exportFlags)
                 {
-                    _exportFlags = value;
+                    _commonHeaderFields._exportFlags = value;
                     HeaderChanged = true;
                 }
             }
@@ -567,34 +629,33 @@ namespace LegendaryExplorerCore.Packages
                 if (!value.AsSpan().SequenceEqual(_generationNetObjectCounts))
                 {
                     _generationNetObjectCounts = value;
+                    _commonHeaderFields._generationNetObjectCountsLength = _generationNetObjectCounts.Length;
                     HeaderChanged = true;
                 }
             }
         }
 
-        private Guid _packageGuid;
         public Guid PackageGUID
         {
-            get => _packageGuid;
+            get => _commonHeaderFields._packageGuid;
             set
             {
-                if (value != _packageGuid)
+                if (value != _commonHeaderFields._packageGuid)
                 {
-                    _packageGuid = value;
+                    _commonHeaderFields._packageGuid = value;
                     HeaderChanged = true;
                 }
             }
         }
 
-        private EPackageFlags _packageFlags;
         public EPackageFlags PackageFlags
         {
-            get => _packageFlags;
+            get => _commonHeaderFields._packageFlags;
             set
             {
-                if (value != _packageFlags)
+                if (value != _commonHeaderFields._packageFlags)
                 {
-                    _packageFlags = value;
+                    _commonHeaderFields._packageFlags = value;
                     HeaderChanged = true;
                 }
             }
@@ -602,13 +663,13 @@ namespace LegendaryExplorerCore.Packages
 
         public string ObjectNameString
         {
-            get => _fileRef.Names[_idxObjectName];
+            get => _fileRef.Names[_commonHeaderFields._idxObjectName];
             set => idxObjectName = _fileRef.FindNameOrAdd(value);
         }
 
         public NameReference ObjectName
         {
-            get => new NameReference(ObjectNameString, _indexValue);
+            get => new NameReference(ObjectNameString, _commonHeaderFields._indexValue);
             set => (ObjectNameString, indexValue) = value;
         }
 
@@ -616,44 +677,44 @@ namespace LegendaryExplorerCore.Packages
 
         public string SuperClassName => SuperClass?.ObjectNameString ?? "Class";
 
-        public string ParentName => _fileRef.GetEntry(_idxLink)?.ObjectName ?? "";
+        public string ParentName => _fileRef.GetEntry(_commonHeaderFields._idxLink)?.ObjectName ?? "";
 
-        public string ParentFullPath => _fileRef.GetEntry(_idxLink)?.FullPath ?? "";
+        public string ParentFullPath => _fileRef.GetEntry(_commonHeaderFields._idxLink)?.FullPath ?? "";
 
-        public string FullPath => _fileRef.IsEntry(_idxLink) ? $"{ParentFullPath}.{ObjectNameString}" : ObjectNameString;
+        public string FullPath => _fileRef.IsEntry(_commonHeaderFields._idxLink) ? $"{ParentFullPath}.{ObjectNameString}" : ObjectNameString;
 
-        public string ParentInstancedFullPath => _fileRef.GetEntry(_idxLink)?.InstancedFullPath ?? "";
-        public string InstancedFullPath => _fileRef.IsEntry(_idxLink) ? ObjectName.AddToPath(ParentInstancedFullPath) : ObjectName.Instanced;
+        public string ParentInstancedFullPath => _fileRef.GetEntry(_commonHeaderFields._idxLink)?.InstancedFullPath ?? "";
+        public string InstancedFullPath => _fileRef.IsEntry(_commonHeaderFields._idxLink) ? ObjectName.AddToPath(ParentInstancedFullPath) : ObjectName.Instanced;
 
-        public bool HasParent => _fileRef.IsEntry(_idxLink);
+        public bool HasParent => _fileRef.IsEntry(_commonHeaderFields._idxLink);
 
         public IEntry Parent
         {
-            get => _fileRef.GetEntry(_idxLink);
+            get => _fileRef.GetEntry(_commonHeaderFields._idxLink);
             set => idxLink = value?.UIndex ?? 0;
         }
 
-        public bool HasArchetype => _fileRef.IsEntry(_idxArchetype);
+        public bool HasArchetype => _fileRef.IsEntry(_commonHeaderFields._idxArchetype);
 
         public IEntry Archetype
         {
-            get => _fileRef.GetEntry(_idxArchetype);
+            get => _fileRef.GetEntry(_commonHeaderFields._idxArchetype);
             set => idxArchetype = value?.UIndex ?? 0;
         }
 
-        public bool HasSuperClass => _fileRef.IsEntry(_idxSuperClass);
+        public bool HasSuperClass => _fileRef.IsEntry(_commonHeaderFields._idxSuperClass);
 
         public IEntry SuperClass
         {
-            get => _fileRef.GetEntry(_idxSuperClass);
+            get => _fileRef.GetEntry(_commonHeaderFields._idxSuperClass);
             set => idxSuperClass = value?.UIndex ?? 0;
         }
         
-        public bool IsClass => _idxClass == 0;
+        public bool IsClass => _commonHeaderFields._idxClass == 0;
 
         public IEntry Class
         {
-            get => _fileRef.GetEntry(_idxClass);
+            get => _fileRef.GetEntry(_commonHeaderFields._idxClass);
             set => idxClass = value?.UIndex ?? 0;
         }
 
@@ -691,7 +752,7 @@ namespace LegendaryExplorerCore.Packages
                 }
 
                 _data = value;
-                DataSize = value.Length;
+                _commonHeaderFields._dataSize = value.Length;
                 DataChanged = true;
                 propsEndOffset = null;
                 EntryHasPendingChanges = true;
@@ -699,8 +760,8 @@ namespace LegendaryExplorerCore.Packages
             }
         }
 
+        private static readonly PropertyChangedEventArgs DataChangedEventArgs = new(nameof(DataChanged));
         bool dataChanged;
-
         public bool DataChanged
         {
             get => dataChanged;
@@ -714,13 +775,13 @@ namespace LegendaryExplorerCore.Packages
                 dataChanged = value;
                 //    if (value)
                 //    {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DataChanged)));
+                PropertyChanged?.Invoke(this, DataChangedEventArgs);
                 //    }
             }
         }
 
+        private static readonly PropertyChangedEventArgs HeaderChangedEventArgs = new(nameof(HeaderChanged));
         bool headerChanged;
-
         public bool HeaderChanged
         {
             get => headerChanged;
@@ -729,12 +790,12 @@ namespace LegendaryExplorerCore.Packages
             {
                 headerChanged = value;
                 EntryHasPendingChanges |= value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HeaderChanged)));
+                PropertyChanged?.Invoke(this, HeaderChangedEventArgs);
             }
         }
 
+        private static readonly PropertyChangedEventArgs EmptyPropertyChangedEventArgs = new("");
         private bool _entryHasPendingChanges;
-
         public bool EntryHasPendingChanges
         {
             get => _entryHasPendingChanges;
@@ -743,7 +804,7 @@ namespace LegendaryExplorerCore.Packages
                 if (value != _entryHasPendingChanges)
                 {
                     _entryHasPendingChanges = value;
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
+                    PropertyChanged?.Invoke(this, EmptyPropertyChangedEventArgs);
 
                     EntryModifiedChanged?.Invoke(this, EventArgs.Empty);
                 }
@@ -820,9 +881,15 @@ namespace LegendaryExplorerCore.Packages
                     start += count * 2 + 4;
                 }
                 start += 4; //TemplateOwnerClass
-                if (ParentFullPath.Contains("Default__"))
+                IEntry parent = Parent;
+                while (parent is not null)
                 {
-                    start += 8; //TemplateName
+                    if (parent is ExportEntry {IsDefaultObject: true})
+                    {
+                        start += 8; //TemplateName
+                        break;
+                    }
+                    parent = parent.Parent;
                 }
             }
 
@@ -873,7 +940,6 @@ namespace LegendaryExplorerCore.Packages
                     var data = Data;
                     data.OverwriteRange(GetPropertyStart() - 4, EndianBitConverter.GetBytes(value, _fileRef.Endian));
                     Data = data;
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
                 }
             }
         }
@@ -915,7 +981,7 @@ namespace LegendaryExplorerCore.Packages
         {
             var m = new EndianReader { Endian = _fileRef.Endian };
             m.Writer.Write(_data, 0, propsEnd());
-            bin.WriteTo(m.Writer, _fileRef, DataOffset);
+            bin.WriteTo(m.Writer, _fileRef, _commonHeaderFields._dataOffset);
             Data = m.ToArray();
         }
 
@@ -929,7 +995,7 @@ namespace LegendaryExplorerCore.Packages
             var m = new EndianReader { Endian = _fileRef.Endian };
             m.Writer.Write(_data, 0, GetPropertyStart());
             props?.WriteTo(m.Writer, _fileRef); //props could be null if this is a class
-            binary.WriteTo(m.Writer, _fileRef, DataOffset);
+            binary.WriteTo(m.Writer, _fileRef, _commonHeaderFields._dataOffset);
             Data = m.ToArray();
         }
 
@@ -943,7 +1009,7 @@ namespace LegendaryExplorerCore.Packages
             var m = new EndianReader { Endian = _fileRef.Endian };
             m.Writer.WriteBytes(preProps);
             props?.WriteTo(m.Writer, _fileRef); //props could be null if this is a class
-            binary.WriteTo(m.Writer, _fileRef, DataOffset);
+            binary.WriteTo(m.Writer, _fileRef, _commonHeaderFields._dataOffset);
             Data = m.ToArray();
         }
 
@@ -957,10 +1023,10 @@ namespace LegendaryExplorerCore.Packages
                 clone._componentMap = _componentMap.ArrayClone();
             }
             clone.HeaderOffset = 0;
-            clone.DataOffset = 0;
+            clone._commonHeaderFields._dataOffset = 0;
             if (newIndex >= 0)
             {
-                clone._indexValue = newIndex;
+                clone._commonHeaderFields._indexValue = newIndex;
             }
             return clone;
         }
@@ -980,7 +1046,7 @@ namespace LegendaryExplorerCore.Packages
         {
             var clone = (ExportEntry)MemberwiseClone();
             clone._data = newData;
-            clone.DataSize = newData.Length;
+            clone._commonHeaderFields._dataSize = newData.Length;
             return clone;
         }
 
@@ -1005,12 +1071,12 @@ namespace LegendaryExplorerCore.Packages
         /// <returns>True if the export has a stack, false otherwise</returns>
         public bool SetPropertyFlags(EPropertyFlags flags)
         {
-            if (FileRef.Platform != MEPackage.GamePlatform.PC) throw new Exception("Cannot call SetPropertyFlags() on non PC platform");
+            if (_fileRef.Platform != MEPackage.GamePlatform.PC) throw new Exception("Cannot call SetPropertyFlags() on non PC platform");
             if (HasStack)
             {
                 // This might be able to be optimized. Have to go through .Data as it needs to call the side effects
                 var data = Data;
-                data.OverwriteRange(0x18, BitConverter.GetBytes((UInt64)flags));
+                data.OverwriteRange(0x18, BitConverter.GetBytes((ulong)flags));
                 Data = data;
                 return true;
             }
