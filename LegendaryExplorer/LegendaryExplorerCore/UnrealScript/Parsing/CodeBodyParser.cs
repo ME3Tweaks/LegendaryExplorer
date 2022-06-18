@@ -306,7 +306,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             {
                 if (allowEmpty && Consume(TokenType.SemiColon) != null)
                 {
-                    body = new CodeBody(null, CurrentPosition + -1, CurrentPosition);
+                    body = new CodeBody(null, CurrentPosition - 1, CurrentPosition);
                 }
                 else
                 {
@@ -644,12 +644,39 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             CodeBody body = ParseBlockOrStatement();
             SwitchTypes.Pop();
             if (body == null) throw ParseError("Expected switch code block!", CurrentPosition);
-            if (body.Statements.Any())
+            List<Statement> statements = body.Statements;
+            if (statements.Any())
             {
-                Statement firstStatement = body.Statements[0];
+                Statement firstStatement = statements[0];
                 if (firstStatement is not CaseStatement && firstStatement is not DefaultCaseStatement)
                 {
                     ParseError($"First statement in a '{SWITCH}' body must be a '{CASE}' or '{DEFAULT}' statement!", firstStatement);
+                }
+                //switch must have a default case
+                if (!statements.Any(statement => statement is DefaultCaseStatement))
+                {
+                    statements.Add(new DefaultCaseStatement(body.EndPos, body.EndPos));
+                }
+                DefaultCaseStatement defaultCaseStatement = null;
+                for (int i = statements.Count - 1; i >= 0; i--)
+                {
+                    Statement statement = statements[i];
+                    if (defaultCaseStatement is null)
+                    {
+                        switch (statement)
+                        {
+                            case CaseStatement:
+                                TypeError("A case statement cannot come after the default case!", statement);
+                                break;
+                            case DefaultCaseStatement dcs:
+                                defaultCaseStatement = dcs;
+                                break;
+                        }
+                    }
+                    else if (statement is DefaultCaseStatement)
+                    {
+                        TypeError("Cannot have multiple default cases in a single switch!", defaultCaseStatement);
+                    }
                 }
             }
             else
@@ -909,23 +936,30 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             var value = ParseExpression();
             if (value == null) throw ParseError("Expected an expression specifying the case value", CurrentPosition);
             var switchType = SwitchTypes.Count > 0 ? SwitchTypes.Peek() : null;
-            if (switchType == SymbolTable.IntType && value is IntegerLiteral caseLit)
+            if (switchType is not null)
             {
-                caseLit.NumType = INT;
-            }
-            if (switchType == SymbolTable.ByteType && value is IntegerLiteral possibleByteLiteral)
-            {
-                if (possibleByteLiteral.Value is < byte.MinValue or > byte.MaxValue)
+                if (switchType == SymbolTable.IntType && value is IntegerLiteral caseLit)
                 {
-                    TypeError("Since the switch expression is of type 'byte', this number must be in the range 0-255.", value);
+                    caseLit.NumType = INT;
                 }
-                //AddConversion will auto-convert it to a byte literal
+                if (switchType == SymbolTable.ByteType && value is IntegerLiteral possibleByteLiteral)
+                {
+                    if (possibleByteLiteral.Value is < byte.MinValue or > byte.MaxValue)
+                    {
+                        TypeError("Since the switch expression is of type 'byte', this number must be in the range 0-255.", value);
+                    }
+                    //AddConversion will auto-convert it to a byte literal
+                }
+                else if (!(switchType is Enumeration && value is IntegerLiteral) && !NodeUtils.TypeEqual(switchType, value.ResolveType()))
+                {
+                    TypeError("Case expression must evaluate to the same type as the switch expression!", value);
+                }
+                AddConversion(switchType, ref value);
             }
-            else if (!(switchType is Enumeration && value is IntegerLiteral) && !NodeUtils.TypeEqual(switchType, value.ResolveType()))
+            else
             {
-                TypeError("Case expression must evaluate to the same type as the switch expression!", value);
+                TypeError("Could not resolve type of switch expression!", value);
             }
-            AddConversion(switchType, ref value);
             if (Consume(TokenType.Colon) == null) throw ParseError("Expected colon after case expression!", CurrentPosition);
 
             return new CaseStatement(value, token.StartPos, token.EndPos);
