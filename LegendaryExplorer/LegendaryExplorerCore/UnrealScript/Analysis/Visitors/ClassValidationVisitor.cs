@@ -349,7 +349,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 switch ((node.VarType as StaticArrayType)?.ElementType ?? node.VarType)
                 {
                     case DynamicArrayType {ElementType: VariableType elType} dynArrType:
-                        if (elType is Class {IsComponent: true})
+                        if (elType is Class {NeedsComponentFlag: true})
                         {
                             dynArrType.ElementPropertyFlags |= EPropertyFlags.Component;
                             node.Flags |= EPropertyFlags.Component;
@@ -361,7 +361,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                             dynArrType.ElementPropertyFlags |= EPropertyFlags.NeedCtorLink;
                         }
                         break;
-                    case Class {IsComponent: true}:
+                    case Class {NeedsComponentFlag: true}:
                         node.Flags |= EPropertyFlags.Component;
                         break;
                     case Struct strct:

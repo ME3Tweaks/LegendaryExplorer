@@ -415,7 +415,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 EndianBitConverter.WriteAsBytes(netIndex, preProps[16..], Pcc.Endian);
                 subExport.WritePrePropsAndPropertiesAndBinary(preProps.ToArray(), props, binary);
             }
-            else if (subObject.Class.HasComponentPropertiesHeader)
+            else if (subObject.Class.IsComponent)
             {
                 Span<byte> preProps = stackalloc byte[16];
                 const int templateOwnerClass = 0; //todo: When is this not 0?
