@@ -15,7 +15,6 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
     public sealed class Struct : ObjectType
     {
         public ScriptStructFlags Flags;
-        public VariableType Parent;
         public override List<VariableDeclaration> VariableDeclarations { get; }
         public override List<VariableType> TypeDeclarations { get; }
         public override DefaultPropertiesBlock DefaultProperties { get; set; }

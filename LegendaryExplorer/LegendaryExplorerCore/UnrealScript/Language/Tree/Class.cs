@@ -10,7 +10,6 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
     public sealed class Class : ObjectType, IContainsFunctions
     {
         public string Package;
-        public VariableType Parent;
         public VariableType _outerClass;
         public UnrealFlags.EClassFlags Flags;
         public string ConfigName;
@@ -80,18 +79,16 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 
         public bool SameAsOrSubClassOf(string name)
         {
-            string inputName = name.ToLower();
-            if (inputName == "object")
+            if (name.CaseInsensitiveEquals("Object"))
             {
                 return true;
             }
-            string nodeName = Name.ToLower();
-            if (nodeName == inputName)
+            if (name.CaseInsensitiveEquals(Name))
                 return true;
             Class current = this;
-            while (current.Parent != null && current.Parent.Name.ToLower() != "object")
+            while (current.Parent != null && !current.Parent.Name.CaseInsensitiveEquals("Object"))
             {
-                if (current.Parent.Name.ToLower() == inputName)
+                if (current.Parent.Name.CaseInsensitiveEquals(name))
                     return true;
                 current = (Class)current.Parent;
             }

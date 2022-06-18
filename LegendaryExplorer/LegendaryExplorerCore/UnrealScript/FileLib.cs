@@ -444,7 +444,7 @@ namespace LegendaryExplorerCore.UnrealScript
                 }
                 if (classOverride is not null)
                 {
-                    if (symbols.TryGetClass(classOverride.Name, out Class existingClass))
+                    if (symbols.TryGetType(classOverride.Name, out Class existingClass))
                     {
                         log.CurrentClass = classOverride;
                         log.LogError($"A class named '{existingClass.Name}' already exists: #{existingClass.UIndex} in {existingClass.FilePath}");

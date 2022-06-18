@@ -233,7 +233,7 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
             char peek = GetCurrentChar();
             if (peek == 'x')
             {
-                if (first != "0")
+                if (!first.Equals("0", StringComparison.Ordinal))
                     return null;
 
                 Advance();

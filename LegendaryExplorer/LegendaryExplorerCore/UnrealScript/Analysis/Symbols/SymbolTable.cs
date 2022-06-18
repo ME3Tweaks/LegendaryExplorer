@@ -662,18 +662,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
 
             return null;
         }
-
-        public bool TryGetClass(string name, out Class cls)
-        {
-            if (Types.TryGetValue(name, out VariableType type) && type is Class c)
-            {
-                cls = c;
-                return true;
-            }
-            cls = null;
-            return false;
-        }
-
+        
         public bool TypeExists(VariableType type, bool globalOnly = false) => TryResolveType(ref type, globalOnly);
 
         public bool TryGetSymbolInScopeStack<T>(string symbol, out T node, string lowestScope) where T : ASTNode
