@@ -14,8 +14,7 @@ namespace LegendaryExplorerCore.Coalesced.Xml
 		//private static readonly Regex WhitespacePattern = new Regex(@"\s+", RegexOptions.Compiled);
 		private static readonly Regex SpecialCharactersPattern = new Regex(@"[\r\n\t]+", RegexOptions.Compiled);
 
-		public XmlCoalesceAsset(string name = "", CoalesceSections sections = default, IList<CoalesceInclude> includes = null)
-			: base(name, sections)
+		public XmlCoalesceAsset(string name = "", CoalesceSections sections = default, IList<CoalesceInclude> includes = null) : base(name, sections)
 		{
 			Includes = includes ?? new List<CoalesceInclude>();
 		}
