@@ -615,7 +615,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             if (Pass == ValidationPass.TypesAndFunctionNamesAndStateNames)
             {
                 if (Symbols.SymbolExistsInCurrentScope(node.Name))
-                    return Error($"The name '{node.Name}' is already in use in this class!", node.StartPos, node.EndPos);
+                    return Error($"The name '{node.Name}' is already in use in this scope!", node.StartPos, node.EndPos);
 
                 Symbols.AddSymbol(node.Name, node);
                 return Success;
@@ -711,7 +711,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                     Class parentScopeClass = node.Outer is State ? containingClass : containingClass.Parent as Class;
                     if (parentScopeClass is not null)
                     {
-                        Symbols.TryGetSymbolInScopeStack(node.Name, out superFunc, parentScopeClass.GetInheritanceString());
+                        superFunc = parentScopeClass.LookupFunction(node.Name);
                     }
                 }
 
@@ -792,19 +792,21 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
             if (Pass == ValidationPass.ClassAndStructMembersAndFunctionParams)
             {
-                bool overrides = Symbols.TryGetSymbolInScopeStack(node.Name, out ASTNode overrideState, NodeUtils.GetParentClassScope(node))
-                              && overrideState.Type == ASTNodeType.State;
-
+                State overrideState = null;
+                if (((node.Outer as Class)?.Parent as Class)?.LookupState(node.Name) is State s)
+                {
+                    overrideState = s;
+                }
                 if (node.Parent is null)
                 {
-                    if (overrides)
+                    if (overrideState is not null)
                     {
-                        node.Parent = overrideState as State;
+                        node.Parent = overrideState;
                     }
                 }
                 else
                 {
-                    if (overrides)
+                    if (overrideState is not null)
                         Error("A state is not allowed to both override a parent class's state and extend another state at the same time!", node.StartPos, node.EndPos);
 
                     if ((node.Outer as Class)?.LookupState(node.Parent.Name) is State parent)

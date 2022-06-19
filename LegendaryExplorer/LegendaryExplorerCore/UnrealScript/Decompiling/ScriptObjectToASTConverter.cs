@@ -234,7 +234,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                     }
 
                     properties ??= RemoveDefaultValues(obj.Defaults.DeepClone(), pcc.Game);
-                    defaults = new DefaultPropertiesBlock(ConvertProperties(properties, obj.Export, structName, true, fileLib));
+                    defaults = new DefaultPropertiesBlock(new List<Statement>(ConvertProperties(properties, obj.Export, structName, true, fileLib)));
                 }
                 catch (Exception e)
                 {
@@ -578,9 +578,9 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             }
         }
 
-        private static List<Statement> ConvertProperties(PropertyCollection properties, ExportEntry defaultsExport, string objectName, bool isStruct, FileLib fileLib)
+        private static List<AssignStatement> ConvertProperties(PropertyCollection properties, ExportEntry defaultsExport, string objectName, bool isStruct, FileLib fileLib)
         {
-            var statements = new List<Statement>();
+            var statements = new List<AssignStatement>();
             foreach (var prop in properties)
             {
                 if (prop is NoneProperty)

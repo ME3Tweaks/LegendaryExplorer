@@ -1,22 +1,20 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
-using LegendaryExplorerCore.UnrealScript.Utilities;
 
 namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 {
     public class StructLiteral : Expression
     {
-        public readonly List<Statement> Statements;
+        public readonly List<AssignStatement> Statements;
 
         public readonly Struct StructType;
 
-        public StructLiteral(Struct structType, List<Statement> statements, int start = -1, int end = -1) : base(ASTNodeType.StructLiteral, start, end)
+        public StructLiteral(Struct structType, List<AssignStatement> statements, int start = -1, int end = -1) : base(ASTNodeType.StructLiteral, start, end)
         {
             Statements = statements;
             StructType = structType;
 
-            foreach (AssignStatement assignStatement in statements.OfType<AssignStatement>())
+            foreach (AssignStatement assignStatement in statements)
             {
                 assignStatement.Value.Outer = this;
             }

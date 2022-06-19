@@ -2,7 +2,6 @@
 using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
 using LegendaryExplorerCore.UnrealScript.Language.Util;
 using LegendaryExplorerCore.UnrealScript.Parsing;
-using LegendaryExplorerCore.UnrealScript.Utilities;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
 
 namespace LegendaryExplorerCore.UnrealScript.Language.Tree
@@ -11,7 +10,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
     {
         public TokenStream Tokens { get; init; }
 
-        public EStateFlags Flags;
+        public readonly EStateFlags Flags;
         public string Name { get; }
         public CodeBody Body { get; set; }
         public State Parent;
