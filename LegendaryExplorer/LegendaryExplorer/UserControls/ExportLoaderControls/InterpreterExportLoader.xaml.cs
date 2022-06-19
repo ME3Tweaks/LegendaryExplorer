@@ -1320,6 +1320,14 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         var channels = sp.Properties.Where(p => p is BoolProperty {Value: true});
                         parsedValue = string.Join(", ", channels.Select(p => p.Name.Instanced));
                     }
+                    else if (sp.StructType is "MorphFeature")
+                    {
+                        parsedValue = $"{sp.GetProp<NameProperty>("sFeatureName")?.Value}";
+                    }
+                    else if (sp.StructType is "OffsetBonePos")
+                    {
+                        parsedValue = $"{sp.GetProp<NameProperty>("nName")?.Value}";
+                    }
                     else
                     {
                         parsedValue = sp.StructType;

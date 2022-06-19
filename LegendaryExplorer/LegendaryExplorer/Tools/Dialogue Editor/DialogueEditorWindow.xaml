@@ -460,7 +460,7 @@
                                                ToolTip="Main conversation Wwisebank" DockPanel.Dock="Left"
                                                FontWeight="Normal" FontSize="15" />
                                     <Button Name="OpenWWbnk_Button" Padding="3" DockPanel.Dock="Right"
-                                            Command="{Binding OpenInCommand_Wwbank}" CommandParameter="SoundP_Bank"
+                                            Command="{Binding OpenInCommand}" CommandParameter="SoundP_Bank"
                                             ToolTip="Open In Sound Explorer">
                                         <Button.Content>
                                             <fa:ImageAwesome Icon="Solid_VolumeUp" Width="16" Height="16"
@@ -486,7 +486,7 @@
                                                ToolTip="Conversation animations for non-speakers" DockPanel.Dock="Left"
                                                FontWeight="Normal" FontSize="15" />
                                     <Button Name="OpenFFX_Button" Padding="3" DockPanel.Dock="Right"
-                                            Command="{Binding OpenInCommand_FFXNS}" CommandParameter="FaceFXNS"
+                                            Command="{Binding OpenInCommand}" CommandParameter="FaceFXNS"
                                             ToolTip="Open Non-speaker's AnimSet in FaceFX Editor">
                                         <Button.Content>
                                             <fa:ImageAwesome Icon="Solid_TheaterMasks" Width="16" Height="16"
@@ -797,7 +797,7 @@
                                                            VerticalAlignment="Center"
                                                            ToolTip="Matinee object for this line."
                                                            DockPanel.Dock="Left" FontSize="15" Margin="2" />
-                                                <Button Name="OpenLinePE_Button" Command="{Binding OpenInCommand_Line}"
+                                                <Button Name="OpenLinePE_Button" Command="{Binding OpenInCommand}"
                                                         CommandParameter="PackEdLine" Padding="3"
                                                         DockPanel.Dock="Right"
                                                         ToolTip="Open this line's interpdata in Package editor">
@@ -806,7 +806,7 @@
                                                                          Foreground="DarkBlue" />
                                                     </Button.Content>
                                                 </Button>
-                                                <Button Name="OpenLineSE_Button" Command="{Binding OpenInCommand_Line}"
+                                                <Button Name="OpenLineSE_Button" Command="{Binding OpenInCommand}"
                                                         CommandParameter="SeqEdLine" Padding="3" DockPanel.Dock="Right"
                                                         ToolTip="Open this line's sequence">
                                                     <Button.Content>
@@ -814,7 +814,7 @@
                                                                          Height="16" Foreground="DarkBlue" />
                                                     </Button.Content>
                                                 </Button>
-                                                <Button Name="OpenLineIE_Button" Command="{Binding OpenInCommand_Line}"
+                                                <Button Name="OpenLineIE_Button" Command="{Binding OpenInCommand}"
                                                         CommandParameter="InterpEdLine" Padding="3"
                                                         DockPanel.Dock="Right" ToolTip="Open this line in interpeditor">
                                                     <Button.Content>
@@ -958,7 +958,7 @@
                                                     </Button>
                                                     <Button Name="Open_WwStreamM_Button" Padding="3"
                                                             DockPanel.Dock="Right"
-                                                            Command="{Binding OpenInCommand_Wwbank}"
+                                                            Command="{Binding OpenInCommand}"
                                                             CommandParameter="SoundP_StreamM"
                                                             ToolTip="Open In Sound Explorer">
                                                         <Button.Content>
@@ -1012,7 +1012,7 @@
                                                     </Button>
                                                     <Button Name="Open_WwStreamF_Button" Padding="3"
                                                             DockPanel.Dock="Right"
-                                                            Command="{Binding OpenInCommand_Wwbank}"
+                                                            Command="{Binding OpenInCommand}"
                                                             CommandParameter="SoundP_StreamF"
                                                             ToolTip="Open this stream in Soundplorer">
                                                         <Button.Content>

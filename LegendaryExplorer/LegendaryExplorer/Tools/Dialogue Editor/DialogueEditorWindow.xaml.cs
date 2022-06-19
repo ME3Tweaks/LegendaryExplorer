@@ -165,9 +165,6 @@ namespace LegendaryExplorer.DialogueEditor
         public ICommand AutoLayoutCommand { get; set; }
         public ICommand LoadTLKManagerCommand { get; set; }
         public ICommand OpenInCommand { get; set; }
-        public ICommand OpenInCommand_Wwbank { get; set; }
-        public ICommand OpenInCommand_FFXNS { get; set; }
-        public ICommand OpenInCommand_Line { get; set; }
         public ICommand SpeakerMoveUpCommand { get; set; }
         public ICommand SpeakerMoveDownCommand { get; set; }
         public ICommand AddSpeakerCommand { get; set; }
@@ -392,10 +389,7 @@ namespace LegendaryExplorer.DialogueEditor
             AutoLayoutCommand = new GenericCommand(AutoLayout, () => CurrentObjects.Any);
             GoToCommand = new GenericCommand(GoToBoxOpen);
             LoadTLKManagerCommand = new GenericCommand(LoadTLKManager);
-            OpenInCommand = new RelayCommand(OpenInAction);
-            OpenInCommand_FFXNS = new RelayCommand(OpenInAction, HasFFXNS);
-            OpenInCommand_Wwbank = new RelayCommand(OpenInAction, HasWwbank);
-            OpenInCommand_Line = new RelayCommand(OpenInAction, LineHasInterpdata);
+            OpenInCommand = new RelayCommand(OpenInAction, CanOpenIn);
             SpeakerMoveUpCommand = new RelayCommand(SpeakerMoveAction, SpkrCanMoveUp);
             SpeakerMoveDownCommand = new RelayCommand(SpeakerMoveAction, SpkrCanMoveDown);
             AddSpeakerCommand = new GenericCommand(SpeakerAdd);
@@ -3135,7 +3129,6 @@ namespace LegendaryExplorer.DialogueEditor
 
         private void OpenInAction(object obj)
         {
-
             string tool = obj as string;
             switch (tool)
             {
@@ -3180,30 +3173,44 @@ namespace LegendaryExplorer.DialogueEditor
                     OpenInToolkit("FaceFXEditor", SelectedConv.NonSpkrFFX.UIndex);
                     break;
                 case "FaceFXSpkrM":
-                    if (Pcc.IsImport(SelectedSpeaker.FaceFX_Male.UIndex))
+                    if (SelectedSpeaker.FaceFX_Male != null)
                     {
-                        OpenInToolkit("FaceFXEditor", 0, Level); //CAN SEND TO THE CORRECT EXPORT IN THE NEW FILE LOAD?
-                    }
-                    else
-                    {
-                        OpenInToolkit("FaceFXEditor", SelectedSpeaker.FaceFX_Male.UIndex);
+                        if (Pcc.IsImport(SelectedSpeaker.FaceFX_Male.UIndex))
+                        {
+                            OpenInToolkit("FaceFXEditor", 0,
+                                Level); //CAN SEND TO THE CORRECT EXPORT IN THE NEW FILE LOAD?
+                        }
+                        else
+                        {
+                            OpenInToolkit("FaceFXEditor", SelectedSpeaker.FaceFX_Male.UIndex);
+                        }
                     }
                     break;
                 case "FaceFXSpkrF":
-                    if (Pcc.IsImport(SelectedSpeaker.FaceFX_Female.UIndex))
+                    if (SelectedSpeaker.FaceFX_Female != null)
                     {
-                        OpenInToolkit("FaceFXEditor", 0, Level);
-                    }
-                    else
-                    {
-                        OpenInToolkit("FaceFXEditor", SelectedSpeaker.FaceFX_Female.UIndex);
+                        if (Pcc.IsImport(SelectedSpeaker.FaceFX_Female.UIndex))
+                        {
+                            OpenInToolkit("FaceFXEditor", 0, Level);
+                        }
+                        else
+                        {
+                            OpenInToolkit("FaceFXEditor", SelectedSpeaker.FaceFX_Female.UIndex);
+                        }
                     }
                     break;
                 case "FaceFXLineM":
-                    OpenInToolkit("FaceFXEditor", SelectedDialogueNode.SpeakerTag.FaceFX_Male.UIndex, null, SelectedDialogueNode.FaceFX_Male);
+                    if (SelectedDialogueNode.SpeakerTag.FaceFX_Male != null)
+                    {
+                        OpenInToolkit("FaceFXEditor", SelectedDialogueNode.SpeakerTag.FaceFX_Male.UIndex, null, SelectedDialogueNode.FaceFX_Male);
+                    }
                     break;
                 case "FaceFXLineF":
-                    OpenInToolkit("FaceFXEditor", SelectedDialogueNode.SpeakerTag.FaceFX_Female.UIndex, null, SelectedDialogueNode.FaceFX_Female);
+                    if (SelectedDialogueNode.SpeakerTag.FaceFX_Female != null)
+                    {
+                        OpenInToolkit("FaceFXEditor", SelectedDialogueNode.SpeakerTag.FaceFX_Female.UIndex, null,
+                            SelectedDialogueNode.FaceFX_Female);
+                    }
                     break;
                 case "SoundP_Bank":
                     if (SelectedConv.WwiseBank != null)
@@ -3233,6 +3240,28 @@ namespace LegendaryExplorer.DialogueEditor
                     OpenInToolkit(tool);
                     break;
             }
+        }
+
+        private bool CanOpenIn(object obj)
+        {
+            string tool = obj as string;
+            return tool switch
+            {
+                "PackEdLine" => SelectedDialogueNode?.Interpdata != null,
+                "PackEd_StreamM" => SelectedDialogueNode?.WwiseStream_Male != null,
+                "PackEd_StreamF" => SelectedDialogueNode?.WwiseStream_Female != null,
+                "SeqEdLine" => SelectedDialogueNode?.Interpdata != null,
+                "FaceFXNS" => SelectedConv?.NonSpkrFFX != null,
+                "FaceFXSpkrM" => SelectedSpeaker?.FaceFX_Male != null,
+                "FaceFXSpkrF" => SelectedSpeaker?.FaceFX_Female != null,
+                "FaceFXLineM" => SelectedDialogueNode?.SpeakerTag.FaceFX_Male != null,
+                "FaceFXLineF" => SelectedDialogueNode?.SpeakerTag.FaceFX_Female != null,
+                "SoundP_Bank" => SelectedConv?.WwiseBank != null,
+                "SoundP_StreamM" => SelectedDialogueNode?.WwiseStream_Male != null,
+                "SoundP_StreamF" => SelectedDialogueNode?.WwiseStream_Female != null,
+                "InterpEdLine" => SelectedDialogueNode?.Interpdata != null,
+                _ => true
+            };
         }
         private void OpenInToolkit(string tool, int uIndex = 0, string filename = null, string param = null)
         {
