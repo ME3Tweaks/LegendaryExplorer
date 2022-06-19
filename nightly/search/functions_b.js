@@ -50,5 +50,6 @@ var searchData=
   ['lookupdefaultpath_47',['LookupDefaultPath',['../class_legendary_explorer_core_1_1_game_filesystem_1_1_l_e_directory.html#a97a64e84c33b547fcf6823515aa58bf4',1,'LegendaryExplorerCore::GameFilesystem::LEDirectory']]],
   ['lookupfunction_48',['LookupFunction',['../class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_class.html#af9ef7f215f6ee80ba8d5f1f04c1d84ae',1,'LegendaryExplorerCore::UnrealScript::Language::Tree::Class']]],
   ['lookupstate_49',['LookupState',['../class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_class.html#ab4b08cd4b98faee65525b13bc4b165ab',1,'LegendaryExplorerCore::UnrealScript::Language::Tree::Class']]],
-  ['lookupstruct_50',['LookupStruct',['../class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_object_type.html#ab1fea31348164c9c1e2bb5643c2cc956',1,'LegendaryExplorerCore::UnrealScript::Language::Tree::ObjectType']]]
+  ['lookupstruct_50',['LookupStruct',['../class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_object_type.html#ab1fea31348164c9c1e2bb5643c2cc956',1,'LegendaryExplorerCore::UnrealScript::Language::Tree::ObjectType']]],
+  ['lookupvariable_51',['LookupVariable',['../class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_object_type.html#a69000bb9871fe3a2bf4e319b78237da6',1,'LegendaryExplorerCore::UnrealScript::Language::Tree::ObjectType']]]
 ];
