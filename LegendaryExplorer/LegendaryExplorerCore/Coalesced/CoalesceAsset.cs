@@ -198,7 +198,7 @@ namespace LegendaryExplorerCore.Coalesced
 			var rootElement = new XElement("CoalesceAsset");
 			rootElement.SetAttributeValue("id", fileId);
 			rootElement.SetAttributeValue("name", Path.GetFileName(Name));
-			rootElement.SetAttributeValue("source", Name);
+			rootElement.SetAttributeValue("source", Source);
 
 			var sectionsElement = new XElement("Sections");
 
