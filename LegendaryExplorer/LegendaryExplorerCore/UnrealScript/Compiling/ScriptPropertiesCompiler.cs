@@ -335,9 +335,9 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 case Struct @struct:
                     //todo: Spec says that unspecified properties on a struct value should be inherited from base class's default for that property
                     var structProps = (IsStructDefaults || @struct.IsAtomic) ? @struct.GetDefaultPropertyCollection(Pcc, ShouldStripTransients, packageCache) : new PropertyCollection();
-                    foreach (Statement statement in ((StructLiteral)literal).Statements)
+                    foreach (AssignStatement statement in ((StructLiteral)literal).Statements)
                     {
-                        structProps.AddOrReplaceProp(ConvertToProperty((AssignStatement)statement, subObjectDict));
+                        structProps.AddOrReplaceProp(ConvertToProperty(statement, subObjectDict));
                     }
                     prop = new StructProperty(@struct.Name, structProps, propName, @struct.IsImmutable);
                     break;

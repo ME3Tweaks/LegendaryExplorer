@@ -30,5 +30,21 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
             }
             return null;
         }
+
+        public VariableDeclaration LookupVariable(string varName, bool lookInParents = true)
+        {
+            foreach (VariableDeclaration declaration in VariableDeclarations)
+            {
+                if (declaration.Name.CaseInsensitiveEquals(varName))
+                {
+                    return declaration;
+                }
+            }
+            if (lookInParents)
+            {
+                return (Parent as ObjectType)?.LookupVariable(varName);
+            }
+            return null;
+        }
     }
 }

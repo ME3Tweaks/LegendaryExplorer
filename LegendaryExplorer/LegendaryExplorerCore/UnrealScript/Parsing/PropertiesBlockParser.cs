@@ -15,7 +15,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 {
     internal sealed class PropertiesBlockParser : StringParserBase
     {
-        private readonly Stack<string> ExpressionScopes;
+        private readonly Stack<ObjectType> ExpressionScopes;
         private readonly Stack<Class> SubObjectClasses;
         private readonly IMEPackage Pcc;
         private readonly bool IsStructDefaults;
@@ -55,8 +55,8 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             IsStructDefaults = Outer is Struct;
 
             SubObjectClasses = new Stack<Class>();
-            ExpressionScopes = new Stack<string>();
-            ExpressionScopes.Push(Symbols.CurrentScopeName);
+            ExpressionScopes = new Stack<ObjectType>();
+            ExpressionScopes.Push(Outer);
         }
 
         private List<Statement> Parse(bool requireBrackets = true)
@@ -111,7 +111,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 var statements = currentSubObj.Statements;
                 var objectClass = currentSubObj.Class;
                 var objectName = currentSubObj.NameDeclaration.Name;
-                ExpressionScopes.Push(objectClass.GetInheritanceString());
+                ExpressionScopes.Push(objectClass);
                 SubObjectClasses.Push(objectClass);
                 Symbols.PushScope(objectName);
                 Tokens = currentSubObj.Tokens;
@@ -382,11 +382,11 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
         private StructLiteral FinishStructLiteral(Struct targetStruct)
         {
             ScriptToken openingBracket = PrevToken;
-            var statements = new List<Statement>();
+            var statements = new List<AssignStatement>();
 
             if (!Matches(TokenType.RightBracket))
             {
-                ExpressionScopes.Push(targetStruct.GetScope());
+                ExpressionScopes.Push(targetStruct);
                 try
                 {
                     var statement = ParseAssignment(true);
@@ -615,12 +615,15 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
         private SymbolReference ParsePropName(ScriptToken token, bool inStruct)
         {
-            string specificScope = ExpressionScopes.Peek();
-            if (!Symbols.TryGetSymbolInScopeStack(token.Value, out ASTNode symbol, specificScope) 
-                || inStruct && symbol.Outer is not Struct)
+            ObjectType scopeObject = ExpressionScopes.Peek();
+            ASTNode symbol;
+            if (scopeObject.LookupVariable(token.Value) is { } decl)
             {
-                //TODO: better error message
-                TypeError($"{specificScope} has no member named '{token.Value}'!", token);
+                symbol = decl;
+            }
+            else
+            {
+                TypeError($"{scopeObject.GetScope()} has no member named '{token.Value}'!", token);
                 symbol = new VariableType("ERROR");
             }
 

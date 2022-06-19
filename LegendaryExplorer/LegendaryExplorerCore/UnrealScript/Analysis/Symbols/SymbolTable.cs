@@ -540,7 +540,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
 
         public void PushScope(string name, string secondaryScope = null, bool useCache = true)
         {
-            string fullName = (CurrentScopeName == "" ? "" : $"{CurrentScopeName}.") + name;
+            string fullName = (ScopeNames.Count is 0 ? "" : (CurrentScopeName + ".")) + name;
             ASTNodeDict scope = null;
             bool cached = useCache && Cache.TryGetValue(fullName, out scope);
             if (!cached)
@@ -760,8 +760,19 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
 
         public bool SymbolExistsInParentScopes(string symbol)
         {
-            var parentScope = new Stack<ASTNodeDict>(Scopes.Skip(1).Reverse());
-            return TryGetSymbolInternal<ASTNode>(symbol, out _, parentScope);
+            if (Scopes.Count < 2)
+            {
+                return false;
+            }
+            ASTNodeDict temp = Scopes.Pop();
+            bool result = TryGetSymbolInternal<ASTNode>(symbol, out _, Scopes);
+            Scopes.Push(temp);
+            return result;
+        }
+
+        public bool TryGetSymbol<T>(string symbol, out T outNode) where T : ASTNode
+        {
+            return TryGetSymbolInternal(symbol, out outNode, Scopes);
         }
 
         public bool TryGetSymbolFromCurrentScope(string symbol, out ASTNode node)

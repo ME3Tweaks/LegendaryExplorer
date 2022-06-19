@@ -1623,7 +1623,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         }
         public bool VisitNode(StructLiteral node)
         {
-            bool multiLine = !ForceNoNewLines && (node.Statements.Count > 5 || node.Statements.Any(stmnt => (stmnt as AssignStatement)?.Value is StructLiteral or DynamicArrayLiteral));
+            bool multiLine = !ForceNoNewLines && (node.Statements.Count > 5 || node.Statements.Any(stmnt => stmnt.Value is StructLiteral or DynamicArrayLiteral));
 
             bool oldForceNoNewLines = ForceNoNewLines;
             int oldForcedAlignment = ForcedAlignment;

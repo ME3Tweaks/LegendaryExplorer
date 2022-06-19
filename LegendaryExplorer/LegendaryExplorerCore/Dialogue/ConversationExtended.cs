@@ -802,6 +802,23 @@ namespace LegendaryExplorerCore.Dialogue
             {
                 return Export.FileRef.GetEntry(ffxList[speakerID + 2].Value);
             }
+            else
+            {
+                if (!Export.Game.IsGame3() || !Export.ObjectNameString.EndsWith("_dlg", StringComparison.OrdinalIgnoreCase))
+                {
+                    return null;
+                }
+                // Some conversations in Game3 don't have the m_aFaceSets properties. This is a workaround.
+                var fxaName =
+                    $"FXA_{Export.ObjectNameString[..^4]}_{Speakers[speakerID + 2].SpeakerName}_{(isMale ? 'M' : 'F')}";
+                foreach (var entry in Export.FileRef.Exports)
+                {
+                    if (string.Equals(entry.ObjectName, fxaName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return entry;
+                    }
+                }
+            }
 
             return null;
         }
