@@ -534,10 +534,12 @@ namespace LegendaryExplorerCore.Packages
 
             protected override void Dispose(bool disposing)
             {
-                if (disposing)
-                {
-                    MemoryManager.ReturnByteArray(Segment);
-                }
+                // Segment is not rented from Memory Manager
+                // Disabled 06/18/2022 by Mgamerz
+                //if (disposing)
+                //{
+                //    MemoryManager.ReturnByteArray(Segment);
+                //}
             }
 
             public override void Write(byte[] buffer, int offset, int count) => throw new InvalidOperationException("This stream is read-only!");
