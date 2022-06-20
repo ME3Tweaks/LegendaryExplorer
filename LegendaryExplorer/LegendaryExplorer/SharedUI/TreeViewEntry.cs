@@ -334,6 +334,28 @@ namespace LegendaryExplorer.SharedUI
                                     }
                                 }
                                 break;
+                            case "SFXGalaxy":
+                            case "SFXSystem":
+                            case "SFXCluster":
+                                {
+                                    var objName = ee.GetProperty<StringRefProperty>("DisplayName");
+                                    if (objName != null)
+                                    {
+                                        var dispName = TLKManagerWPF.GlobalFindStrRefbyID(objName.Value, ee.Game);
+                                        if (dispName != @"No Data")
+                                        {
+                                            _subtext = dispName;
+                                        }
+                                    }
+                                }
+                                break;
+                        }
+
+                        // Short circuit
+                        if (_subtext != null)
+                        {
+                            loadedSubtext = true;
+                            return _subtext;
                         }
 
                         if (BinaryInterpreterWPF.IsNativePropertyType(Entry.ClassName))
@@ -372,7 +394,7 @@ namespace LegendaryExplorer.SharedUI
                         else
                         {
                             var tag = ee.GetProperty<NameProperty>("Tag", DefaultsLookupCache); // Todo: Pass a package cache through here so hits to Engine.pcc aren't as costly. We will need a global shared package cache (maybe just for this treeview), but one that is not
-                            // using the LEX cache as we don't want the package actually open.
+                                                                                                // using the LEX cache as we don't want the package actually open.
                             if (tag != null && tag.Value.Name != Entry.ObjectName)
                             {
                                 _subtext = tag.Value.Instanced;
@@ -432,25 +454,25 @@ namespace LegendaryExplorer.SharedUI
                                 }
                             case "SoundNodeWave":
                             case "SoundCue":
-                            {
-                                //parse out tlk id?
-                                var splits = Entry.ObjectName.Name.Split('_', ',');
-                                for (int i = splits.Length - 1; i > 0; i--)
                                 {
-                                    //backwards is faster
-                                    if (int.TryParse(splits[i], out var parsed))
+                                    //parse out tlk id?
+                                    var splits = Entry.ObjectName.Name.Split('_', ',');
+                                    for (int i = splits.Length - 1; i > 0; i--)
                                     {
-                                        //Lookup TLK
-                                        var data = TLKManagerWPF.GlobalFindStrRefbyID(parsed, Entry.FileRef);
-                                        if (data != "No Data")
+                                        //backwards is faster
+                                        if (int.TryParse(splits[i], out var parsed))
                                         {
-                                            _subtext = data;
+                                            //Lookup TLK
+                                            var data = TLKManagerWPF.GlobalFindStrRefbyID(parsed, Entry.FileRef);
+                                            if (data != "No Data")
+                                            {
+                                                _subtext = data;
+                                            }
                                         }
                                     }
-                                }
 
-                                break;
-                            }
+                                    break;
+                                }
                         }
                     }
 

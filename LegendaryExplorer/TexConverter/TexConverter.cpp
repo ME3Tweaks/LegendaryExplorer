@@ -266,6 +266,73 @@ HRESULT LoadTexture(const char* inputFilename, TextureBuffer* outputBuffer) {
 	}
 }
 
+HRESULT LoadTextureFromMemory(const void* inputDataBuffer, size_t bufferSize, int imageType, TextureBuffer* outputBuffer) {
+
+	if (inputDataBuffer == nullptr || outputBuffer == nullptr || outputBuffer->PixelData != nullptr) {
+		return E_INVALIDARG; // No filename, no output buffer, or output buffer already has data
+	}
+
+	outputBuffer->_ScratchImage = new DirectX::ScratchImage();
+
+	HRESULT hr = S_OK;
+
+	if (imageType == 0) {
+		hr = E_INVALIDARG; // Invalid value
+	}
+	else if (imageType == 1) { // DDS
+		hr = DirectX::LoadFromDDSMemory(inputDataBuffer, bufferSize, DirectX::DDS_FLAGS_NONE, nullptr, *outputBuffer->_ScratchImage);
+	}
+	else if (imageType == 2) { // PNG
+		hr = DirectX::LoadFromWICMemory(inputDataBuffer, bufferSize, DirectX::WIC_FLAGS::WIC_FLAGS_NONE, nullptr, *outputBuffer->_ScratchImage);
+	}
+	else if (imageType == 3) { // TGA
+		hr = DirectX::LoadFromTGAMemory(inputDataBuffer, bufferSize, nullptr, *outputBuffer->_ScratchImage);
+	}
+	else {
+		hr = E_INVALIDARG; // Unknown extension
+	}
+
+	if (FAILED(hr)) {
+		//outputBuffer->_ScratchImage->Release();
+		delete outputBuffer->_ScratchImage;
+		return hr;
+	}
+
+	// If the output buffer's format is UNKNOWN, then no conversion was requested
+	if (outputBuffer->Format == DXGI_FORMAT_UNKNOWN || outputBuffer->Format == outputBuffer->_ScratchImage->GetMetadata().format) {
+		outputBuffer->PixelData = outputBuffer->_ScratchImage->GetPixels();
+		outputBuffer->PixelDataLength = outputBuffer->_ScratchImage->GetPixelsSize();
+		outputBuffer->Width = outputBuffer->_ScratchImage->GetMetadata().width;
+		outputBuffer->Height = outputBuffer->_ScratchImage->GetMetadata().height;
+		outputBuffer->Format = outputBuffer->_ScratchImage->GetMetadata().format;
+		return S_OK;
+	}
+	else {
+		// Store the requested format before we overwrite the outputBuffer with the intermediate results
+		TextureBuffer convertedTexture = { };
+		convertedTexture.Format = outputBuffer->Format;
+
+		outputBuffer->PixelData = outputBuffer->_ScratchImage->GetPixels();
+		outputBuffer->PixelDataLength = outputBuffer->_ScratchImage->GetPixelsSize();
+		outputBuffer->Width = outputBuffer->_ScratchImage->GetMetadata().width;
+		outputBuffer->Height = outputBuffer->_ScratchImage->GetMetadata().height;
+		outputBuffer->Format = outputBuffer->_ScratchImage->GetMetadata().format;
+
+		hr = ConvertTexture(outputBuffer, &convertedTexture);
+		if (FAILED(hr)) {
+			// Destroy the intermediate image
+			FreePixelData(outputBuffer);
+			return hr;
+		}
+
+		// What the caller wanted is actually the converted image, so delete the intermediate image and return the converted image
+		FreePixelData(outputBuffer);
+		*outputBuffer = convertedTexture;
+
+		return hr;
+	}
+}
+
 HRESULT FreePixelData(TextureBuffer* textureBuffer) {
 	
 	if (textureBuffer == nullptr || textureBuffer->_ScratchImage == nullptr) {

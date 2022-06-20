@@ -162,6 +162,9 @@ namespace LegendaryExplorerCore.Textures
         [DllImport(TEXCONVERTER_DLL_FILENAME, EntryPoint = "LoadTexture", CharSet = CharSet.Ansi)]
         private static extern unsafe int TCLoadTexture(string inputFilename, TextureBuffer* outputBuffer);
 
+        [DllImport(TEXCONVERTER_DLL_FILENAME, EntryPoint = "LoadTextureFromMemory", CharSet = CharSet.Ansi)]
+        private static extern unsafe int TCLoadTextureFromMemory(byte* inputBuffer, int inputBufferLength, int imageType, TextureBuffer* outputBuffer);
+
         [DllImport(TEXCONVERTER_DLL_FILENAME, EntryPoint = "FreePixelData")]
         private static extern unsafe int TCFreePixelData(TextureBuffer* textureBuffer);
         #endregion
@@ -306,6 +309,38 @@ namespace LegendaryExplorerCore.Textures
             width = outputBuffer.Width;
             height = outputBuffer.Height;
             pixelFormat = GetPixelFormatForDXGIFormat(outputBuffer.Format);
+            return result;
+        }
+
+        public static unsafe byte[] LoadTextureFromMemory(ReadOnlySpan<byte> buffer, int imageType, out uint width, out uint height, ref PixelFormat pixelFormat)
+        {
+            TexConverter.EnsureInitialized();
+
+            var outputBuffer = new TextureBuffer
+            {
+                Format = GetDXGIFormatForPixelFormat(pixelFormat)
+            };
+
+            byte[] result = new byte[outputBuffer.PixelDataLength];
+            uint srcLen = (uint)buffer.Length;
+            unsafe
+            {
+                fixed (byte* inPtr = &MemoryMarshal.GetReference(buffer))
+                {
+                    int hr = TCLoadTextureFromMemory(inPtr, buffer.Length, imageType, &outputBuffer);
+                    Marshal.ThrowExceptionForHR(hr);
+
+                    Marshal.Copy((IntPtr)outputBuffer.PixelData, result, 0, (int)outputBuffer.PixelDataLength);
+
+                    hr = TCFreePixelData(&outputBuffer);
+                    Marshal.ThrowExceptionForHR(hr);
+
+                    width = outputBuffer.Width;
+                    height = outputBuffer.Height;
+                    pixelFormat = GetPixelFormatForDXGIFormat(outputBuffer.Format);
+
+                }
+            }
             return result;
         }
     }

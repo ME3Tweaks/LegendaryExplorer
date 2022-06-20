@@ -62,6 +62,19 @@ HRESULT EXPORT SaveTexture(const TextureBuffer* inputBuffer, const char* outputF
 HRESULT EXPORT LoadTexture(const char* inputFilename, TextureBuffer* outputBuffer);
 
 /**
+ * @brief Loads the texture data from the given buffer into the given output buffer.
+ *
+ * Note that the output `TextureBuffer` is overwritten, including a new pixel buffer that must must be freed using `FreePixelData(...)`.
+ *
+ * @param input buffer data array
+ * @param bufferSize The size of the buffer data array
+ * @param imageType 1 = DDS, 2 = PNG, 3 = TGA, all other values are invalid.
+ * @param outputBuffer The buffer to load the texture into. If the output buffer's `Format` is not `DXGI_FORMAT_UNKNOWN`, the data will be converted to the output buffer's `Format`.
+ */
+HRESULT EXPORT LoadTextureFromMemory(const void* inputDataBuffer, size_t bufferSize, int imageType, TextureBuffer* outputBuffer);
+
+
+/**
  * @brief Frees the pixel data that was created by `LoadTexture(...)` or `ConvertTexture(...)`.
  * 
  * @param textureBuffer The texture buffer containing the pixels to free.
