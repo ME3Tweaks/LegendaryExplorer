@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System.Runtime.CompilerServices;
 using LegendaryExplorerCore.Packages;
+using UIndex = System.Int32;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
     public class UByteProperty : UProperty
     {
-        public bool IsEnum => Enum.value != 0;
+        public bool IsEnum => Enum != 0;
 
         public UIndex Enum;
         protected override void Serialize(SerializingContainer2 sc)
@@ -18,19 +19,14 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             return new()
             {
-                SuperClass = 0,
-                Next = 0,
-                Category = "None",
-                ArraySizeEnum = 0,
-                Enum = 0
+                Category = "None"
             };
         }
-
-        public override List<(UIndex, string)> GetUIndexes(MEGame game)
+        
+        public override void ForEachUIndex<TAction>(MEGame game, in TAction action)
         {
-            List<(UIndex, string)> uIndices = base.GetUIndexes(game);
-            uIndices.Add((Enum, nameof(Enum)));
-            return uIndices;
+            base.ForEachUIndex(game, in action);
+            Unsafe.AsRef(action).Invoke(ref Enum, nameof(Enum));
         }
     }
 
@@ -47,19 +43,14 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             return new()
             {
-                SuperClass = 0,
-                Next = 0,
-                Category = "None",
-                ArraySizeEnum = 0,
-                ObjectRef = 0
+                Category = "None"
             };
         }
 
-        public override List<(UIndex, string)> GetUIndexes(MEGame game)
+        public override void ForEachUIndex<TAction>(MEGame game, in TAction action)
         {
-            List<(UIndex, string)> uIndices = base.GetUIndexes(game);
-            uIndices.Add((ObjectRef, nameof(ObjectRef)));
-            return uIndices;
+            base.ForEachUIndex(game, in action);
+            Unsafe.AsRef(action).Invoke(ref ObjectRef, nameof(ObjectRef));
         }
     }
 
@@ -69,11 +60,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             return new()
             {
-                SuperClass = 0,
-                Next = 0,
-                Category = "None",
-                ArraySizeEnum = 0,
-                ObjectRef = 0
+                Category = "None"
             };
         }
     }
@@ -91,20 +78,14 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             return new()
             {
-                SuperClass = 0,
-                Next = 0,
-                Category = "None",
-                ArraySizeEnum = 0,
-                ObjectRef = 0,
-                ClassRef = 0
+                Category = "None"
             };
         }
 
-        public override List<(UIndex, string)> GetUIndexes(MEGame game)
+        public override void ForEachUIndex<TAction>(MEGame game, in TAction action)
         {
-            List<(UIndex, string)> uIndices = base.GetUIndexes(game);
-            uIndices.Add((ClassRef, nameof(ClassRef)));
-            return uIndices;
+            base.ForEachUIndex(game, in action);
+            Unsafe.AsRef(action).Invoke(ref ClassRef, nameof(ClassRef));
         }
     }
 
@@ -114,11 +95,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             return new()
             {
-                SuperClass = 0,
-                Next = 0,
-                Category = "None",
-                ArraySizeEnum = 0,
-                ObjectRef = 0
+                Category = "None"
             };
         }
     }
@@ -136,19 +113,14 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             return new()
             {
-                SuperClass = 0,
-                Next = 0,
-                Category = "None",
-                ArraySizeEnum = 0,
-                ElementType = 0
+                Category = "None"
             };
         }
 
-        public override List<(UIndex, string)> GetUIndexes(MEGame game)
+        public override void ForEachUIndex<TAction>(MEGame game, in TAction action)
         {
-            List<(UIndex, string)> uIndices = base.GetUIndexes(game);
-            uIndices.Add((ElementType, nameof(ElementType)));
-            return uIndices;
+            base.ForEachUIndex(game, in action);
+            Unsafe.AsRef(action).Invoke(ref ElementType, nameof(ElementType));
         }
     }
 
@@ -165,19 +137,14 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             return new()
             {
-                SuperClass = 0,
-                Next = 0,
-                Category = "None",
-                ArraySizeEnum = 0,
-                Struct = 0
+                Category = "None"
             };
         }
 
-        public override List<(UIndex, string)> GetUIndexes(MEGame game)
+        public override void ForEachUIndex<TAction>(MEGame game, in TAction action)
         {
-            List<(UIndex, string)> uIndices = base.GetUIndexes(game);
-            uIndices.Add((Struct, nameof(Struct)));
-            return uIndices;
+            base.ForEachUIndex(game, in action);
+            Unsafe.AsRef(action).Invoke(ref Struct, nameof(Struct));
         }
     }
 
@@ -187,11 +154,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             return new()
             {
-                SuperClass = 0,
-                Next = 0,
-                Category = "None",
-                ArraySizeEnum = 0,
-                Enum = 0
+                Category = "None"
             };
         }
     }
@@ -211,21 +174,15 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             return new()
             {
-                SuperClass = 0,
-                Next = 0,
-                Category = "None",
-                ArraySizeEnum = 0,
-                KeyType = 0,
-                ValueType = 0
+                Category = "None"
             };
         }
-
-        public override List<(UIndex, string)> GetUIndexes(MEGame game)
+        
+        public override void ForEachUIndex<TAction>(MEGame game, in TAction action)
         {
-            List<(UIndex, string)> uIndices = base.GetUIndexes(game);
-            uIndices.Add((KeyType, nameof(KeyType)));
-            uIndices.Add((ValueType, nameof(ValueType)));
-            return uIndices;
+            base.ForEachUIndex(game, in action);
+            Unsafe.AsRef(action).Invoke(ref KeyType, nameof(KeyType));
+            Unsafe.AsRef(action).Invoke(ref ValueType, nameof(ValueType));
         }
     }
     public class UDelegateProperty : UProperty
@@ -243,21 +200,15 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             return new()
             {
-                SuperClass = 0,
-                Next = 0,
-                Category = "None",
-                ArraySizeEnum = 0,
-                Function = 0,
-                Delegate = 0
+                Category = "None"
             };
         }
-
-        public override List<(UIndex, string)> GetUIndexes(MEGame game)
+        
+        public override void ForEachUIndex<TAction>(MEGame game, in TAction action)
         {
-            List<(UIndex, string)> uIndices = base.GetUIndexes(game);
-            uIndices.Add((Function, nameof(Function)));
-            uIndices.Add((Delegate, nameof(Delegate)));
-            return uIndices;
+            base.ForEachUIndex(game, in action);
+            Unsafe.AsRef(action).Invoke(ref Function, nameof(Function));
+            Unsafe.AsRef(action).Invoke(ref Delegate, nameof(Delegate));
         }
     }
 }

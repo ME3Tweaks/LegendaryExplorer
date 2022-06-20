@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
@@ -32,9 +28,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             return new()
             {
-                SuperClass = 0,
-                Next = 0,
-                Children = 0,
                 ScriptBytes = Array.Empty<byte>(),
                 Defaults = new PropertyCollection()
             };

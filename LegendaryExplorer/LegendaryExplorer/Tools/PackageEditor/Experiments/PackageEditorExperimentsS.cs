@@ -66,7 +66,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             pewpf.BusyText = $"Porting Shadow Maps from OT file.";
             if (pcc?.Game is not MEGame.LE3)
             {
-                MessageBox.Show("This is only designed to work on LE3 BioA_CitSam_800Finalroom.pcc!");
+                MessageBox.Show("This is only designed to work on LE3!");
                 return;
             }
 
@@ -80,14 +80,14 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             {
                 var levelExport = pcc.FindExport("TheWorld.PersistentLevel");
                 var levelBin = levelExport.GetBinaryData<Level>();
-                levelBin.TextureToInstancesMap.RemoveAll(kvp => kvp.Key.GetEntry(pcc) is ExportEntry exp && exp.ClassName.CaseInsensitiveEquals("ShadowMapTexture2D"));
+                levelBin.TextureToInstancesMap.RemoveAll(kvp => pcc.GetEntry(kvp.Key) is ExportEntry exp && exp.ClassName.CaseInsensitiveEquals("ShadowMapTexture2D"));
                 var shadowMapsToTrash = pcc.Exports.Where(exp => exp.ClassName.CaseInsensitiveEquals("ShadowMapTexture2D")).ToList();
                 EntryPruner.TrashEntriesAndDescendants(shadowMapsToTrash);
 
                 using IMEPackage otPcc = MEPackageHandler.OpenME3Package(otFilePath);
-                foreach (UIndex uIndex in levelBin.Actors)
+                foreach (int uIndex in levelBin.Actors)
                 {
-                    if (uIndex.GetEntry(pcc) is ExportEntry actor)
+                    if (pcc.GetEntry(uIndex) is ExportEntry actor)
                     {
                         if (actor.ClassName.CaseInsensitiveEquals("StaticMeshActor") && actor.GetProperty<ObjectProperty>("StaticMeshComponent") is ObjectProperty smcProp && smcProp.ResolveToEntry(pcc) is ExportEntry smcExp)
                         {
@@ -110,9 +110,9 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                 var otLevelExport = otPcc.FindExport("TheWorld.PersistentLevel");
                 var otLevelTexToInst = otLevelExport.GetBinaryData<Level>().TextureToInstancesMap;
-                foreach ((UIndex key, StreamableTextureInstanceList value) in otLevelTexToInst)
+                foreach ((int key, StreamableTextureInstanceList value) in otLevelTexToInst)
                 {
-                    if (key.GetEntry(otPcc) is ExportEntry exp && exp.ClassName.CaseInsensitiveEquals("ShadowMapTexture2D"))
+                    if (otPcc.GetEntry(key) is ExportEntry exp && exp.ClassName.CaseInsensitiveEquals("ShadowMapTexture2D"))
                     {
                         levelBin.TextureToInstancesMap.Add(pcc.FindExport(exp.InstancedFullPath).UIndex, value);
                     }
@@ -154,23 +154,23 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                     if (shadowMaps.Length == 1)
                     {
-                        EntryPruner.TrashEntryAndDescendants(shadowMaps[0].GetEntry(pcc));
+                        EntryPruner.TrashEntryAndDescendants(pcc.GetEntry(shadowMaps[0]));
                     }
 
-                    RelinkerOptionsPackage rop = new RelinkerOptionsPackage()
+                    var rop = new RelinkerOptionsPackage
                     {
                         Cache = null, // Maintains original behavior of this func (09/30/2021: Change to RelinkerOptionsPackage)
                         ImportExportDependencies = true,
                     };
 
                     var results = EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies,
-                        otShadowMaps[0].GetEntry(otPcc), pcc, smcExp, true, rop, out IEntry leShadowMap);
+                        otPcc.GetEntry(otShadowMaps[0]), pcc, smcExp, true, rop, out IEntry leShadowMap);
                     if (results?.Count > 0)
                     {
                         Debugger.Break();
                     }
 
-                    smcBin.LODData[0].ShadowMaps = new UIndex[] { leShadowMap.UIndex };
+                    smcBin.LODData[0].ShadowMaps = new[] { leShadowMap.UIndex };
                     smcExp.WriteBinary(smcBin);
                 }
             }).ContinueWithOnUIThread(prevTask =>
@@ -189,7 +189,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         //Does not work!
         public static void CalculateProbeNames(PackageEditorWindow pewpf)
         {
-            var game = MEGame.LE3;
+            const MEGame game = MEGame.LE3;
             pewpf.IsBusy = true;
             pewpf.BusyText = $"Calculating Probe functions for {game}";
             Task.Run(() =>
@@ -210,7 +210,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                             ProbeMask = objBin.ProbeMask,
                             Functions = new HashSet<string>(objBin.VirtualFunctionTable.Length)
                         };
-                        foreach (UIndex uIndex in objBin.VirtualFunctionTable)
+                        foreach (int uIndex in objBin.VirtualFunctionTable)
                         {
                             if (pcc.GetEntry(uIndex) is IEntry entry)
                             {

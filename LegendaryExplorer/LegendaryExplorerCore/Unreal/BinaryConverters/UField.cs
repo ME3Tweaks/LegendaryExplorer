@@ -1,5 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System.Runtime.CompilerServices;
 using LegendaryExplorerCore.Packages;
+using UIndex = System.Int32;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
@@ -12,11 +13,11 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref SuperClass);
             sc.Serialize(ref Next);
         }
-        public override List<(UIndex, string)> GetUIndexes(MEGame game) =>
-            new()
-            {
-                (SuperClass, "SuperClass"),
-                (Next, "NextItemInCompilingChain"),
-            };
+
+        public override void ForEachUIndex<TAction>(MEGame game, in TAction action)
+        {
+            Unsafe.AsRef(action).Invoke(ref SuperClass, nameof(SuperClass));
+            Unsafe.AsRef(action).Invoke(ref Next, nameof(Next));
+        }
     }
 }

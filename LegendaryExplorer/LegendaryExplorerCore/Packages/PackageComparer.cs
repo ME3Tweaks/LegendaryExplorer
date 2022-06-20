@@ -251,8 +251,12 @@ namespace LegendaryExplorerCore.Packages
 
                     if (objBin1 != null && objBin2 != null)
                     {
-                        var ui1 = objBin1.GetUIndexes(otherPackage.Game); // Compare with same-game
-                        var ui2 = objBin2.GetUIndexes(otherPackage.Game);
+                        var ui1 = new List<(int uIndex, string propName)>(); 
+                        objBin1.ForEachUIndex(otherPackage.Game, new UIndexAndPropNameCollector(ui1)); // Compare with same-game
+
+                        var ui2 = new List<(int uIndex, string propName)>();
+                        objBin2.ForEachUIndex(otherPackage.Game, new UIndexAndPropNameCollector(ui2));
+
                         if (ui1.Count != ui2.Count)
                         {
                             Debug.WriteLine($"Different number of UIndexes on {exp1.UIndex} {exp1.InstancedFullPath}! Left: {ui1.Count} Right: {ui2.Count}");
@@ -266,20 +270,18 @@ namespace LegendaryExplorerCore.Packages
                             var u2 = ui2[i];
 
                             // Convert UIndex to variable
-                            IEntry i1 = null;
-                            IEntry i2 = null;
-                            if (u1.Item1 != 0 && u2.Item1 != 0)
+                            if (u1.uIndex != 0 && u2.uIndex != 0)
                             {
-                                i1 = exp1.FileRef.GetEntry(u1.Item1);
-                                i2 = exp2.FileRef.GetEntry(u2.Item1);
+                                IEntry i1 = exp1.FileRef.GetEntry(u1.uIndex);
+                                IEntry i2 = exp2.FileRef.GetEntry(u2.uIndex);
 
                                 if (i1.InstancedFullPath != i2.InstancedFullPath)
                                 {
-                                    Debug.WriteLine($@"Binary entry reference differs on {exp1.UIndex} {exp1.InstancedFullPath} ({u1.Item2})! Left: {i1.InstancedFullPath} Right: {i2.InstancedFullPath}");
+                                    Debug.WriteLine($@"Binary entry reference differs on {exp1.UIndex} {exp1.InstancedFullPath} ({u1.propName})! Left: {i1.InstancedFullPath} Right: {i2.InstancedFullPath}");
                                     //Debugger.Break();
                                 }
                             }
-                            else if (u1.Item1 != u2.Item1)
+                            else if (u1.uIndex != u2.uIndex)
                             {
                                 Debug.WriteLine(@"SET TO NULL DIFF!");
                             }
@@ -444,8 +446,6 @@ namespace LegendaryExplorerCore.Packages
             // Get package-references
             var names1 = objBin1.GetNames(exp1.FileRef.Game);
             var names2 = objBin2.GetNames(exp2.FileRef.Game);
-            var uindices1 = objBin1.GetUIndexes(exp1.FileRef.Game);
-            var uindices2 = objBin2.GetUIndexes(exp2.FileRef.Game);
 
             // Scrub the references
 
@@ -457,11 +457,8 @@ namespace LegendaryExplorerCore.Packages
             //    names2[i] = (exp2.FileRef.GetNameEntry(0), names2[i].Item2);
             //}
 
-            for (int i = 0; i < uindices1.Count; i++)
-            {
-                uindices1[i] = (0, uindices1[i].Item2);
-                uindices2[i] = (0, uindices2[i].Item2);
-            }
+            objBin1.ForEachUIndex(exp1.FileRef.Game, new UIndexZeroer());
+            objBin2.ForEachUIndex(exp2.FileRef.Game, new UIndexZeroer());
 
             // Write new binary with scrubbed entry refs
             EndianReader er1 = new EndianReader(new MemoryStream());
@@ -565,7 +562,7 @@ namespace LegendaryExplorerCore.Packages
                     var uindex1 = BitConverter.ToInt32(originalWrittenBin1, pos);
                     //var name2 = exp2.FileRef.GetNameEntry(BitConverter.ToInt32(originalWrittenBin2, pos));
 
-                    if (uindex1 != 0 && uindices1.Any(x => x.Item1.value == uindex1))
+                    if (uindex1 != 0 && uindices1.Any(x => x == uindex1))
                     {
                         // SCRUB
                         //if (isDebug)

@@ -287,10 +287,10 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 // Clone materials
                 for (var i = 0; i < appliedHead.Materials.Length; i++)
                 {
-                    var originalMat = export.FileRef.GetEntry(appliedHead.Materials[i].value);
+                    var originalMat = export.FileRef.GetEntry(appliedHead.Materials[i]);
                     EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies,
                         originalMat, tempFile, null, true, rop, out var clonedMat);
-                    appliedHead.Materials[i] = new UIndex(clonedMat.UIndex);
+                    appliedHead.Materials[i] = clonedMat.UIndex;
                 }
                 clonedHead.WriteBinary(appliedHead);
                 clonedHead.ObjectName = new NameReference(export.ObjectNameString);

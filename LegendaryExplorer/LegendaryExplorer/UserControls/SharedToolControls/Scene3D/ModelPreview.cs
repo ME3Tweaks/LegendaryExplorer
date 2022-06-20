@@ -524,18 +524,17 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             // STEP 1: MATERIALS
             if (preloadedData == null)
             {
-                for (int i = 0; i < m.Materials.Length; i++)
+                foreach (int materialUIndex in m.Materials)
                 {
-                    UIndex materialUIndex = m.Materials[i];
                     MaterialInstanceConstant mat = null;
-                    if (materialUIndex.value > 0)
+                    if (materialUIndex > 0)
                     {
-                        mat = new MaterialInstanceConstant(m.Export.FileRef.GetUExport(materialUIndex.value));
+                        mat = new MaterialInstanceConstant(m.Export.FileRef.GetUExport(materialUIndex));
                     }
-                    else if (materialUIndex.value < 0)
+                    else if (materialUIndex < 0)
                     {
                         // The material instance is an import!
-                        ImportEntry matImport = m.Export.FileRef.GetImport(materialUIndex.value);
+                        ImportEntry matImport = m.Export.FileRef.GetImport(materialUIndex);
                         var externalAsset = EntryImporter.ResolveImport(matImport, null, assetCache);
                         if (externalAsset != null)
                         {

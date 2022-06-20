@@ -416,22 +416,22 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             */
         }
 
-        public async static Task<List<string>> RecookTransferLevelsFromJSON(string jsonfile, Action<string> callbackAction, bool CreateTestLevel = false)
+        public async static Task<List<string>> RecookTransferLevelsFromJSON(string jsonfile, Action<string> callbackAction, bool createTestLevel = false)
         {
-            var OutputDir = Path.GetDirectoryName(jsonfile);
-            var conversionData = new LevelConversionData(MEGame.ME3, MEGame.ME2, null, null, null, new ConcurrentDictionary<string, string>(), new ConcurrentDictionary<string, (string, int)>(), new ConcurrentDictionary<string, (string, int, List<string>)>());
+            var outputDir = Path.GetDirectoryName(jsonfile);
+            LevelConversionData conversionData;
             IMEPackage sourcebiop = null;
             var fails = new List<string>();
             using (StreamReader file = File.OpenText(jsonfile))
             {
-                JsonSerializer serializer = new JsonSerializer();
+                var serializer = new JsonSerializer();
                 conversionData = (LevelConversionData)serializer.Deserialize(file, typeof(LevelConversionData));
             }
 
             switch (conversionData.SourceGame)
             {
                 case MEGame.ME2:
-                    sourcebiop = MEPackageHandler.OpenME2Package(Path.Combine(OutputDir, $"{conversionData.BioPSource}.pcc"));
+                    sourcebiop = MEPackageHandler.OpenME2Package(Path.Combine(outputDir, $"{conversionData.BioPSource}.pcc"));
                     if (sourcebiop.IsNull())
                     {
                         fails.Add("Source BioP not found. Aborting.");
@@ -443,7 +443,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     return fails;
             }
 
-            return await ConvertLevelToGame(conversionData.TargetGame, sourcebiop, OutputDir, conversionData.TargetTFCName, callbackAction, conversionData, true, CreateTestLevel);
+            return await ConvertLevelToGame(conversionData.TargetGame, sourcebiop, outputDir, conversionData.TargetTFCName, callbackAction, conversionData, true, createTestLevel);
         }
 
         public class LevelConversionData
@@ -453,9 +453,9 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             public string GameLevelName = null;
             public string BioPSource = null;
             public string TargetTFCName = "Textures_DLC_MOD_";
-            public ConcurrentDictionary<string, string> FilesToCopy = new ConcurrentDictionary<string, string>();
-            public ConcurrentDictionary<string, (string, int)> ActorsToMove = new ConcurrentDictionary<string, (string, int)>();
-            public ConcurrentDictionary<string, (string, int, List<string>)> AssetsToMove = new ConcurrentDictionary<string, (string, int, List<string>)>();
+            public ConcurrentDictionary<string, string> FilesToCopy = new();
+            public ConcurrentDictionary<string, (string, int)> ActorsToMove = new();
+            public ConcurrentDictionary<string, (string, int, List<string>)> AssetsToMove = new();
 
             public LevelConversionData(MEGame TargetGame, MEGame SourceGame, string GameLevelName, string BioPSource, string TargetTFCName, ConcurrentDictionary<string, string> FilesToCopy, ConcurrentDictionary<string, (string, int)> ActorsToMove, ConcurrentDictionary<string, (string, int, List<string>)> AssetsToMove)
             {
@@ -477,7 +477,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
         public static void RestartTransferFromJSON(PackageEditorWindow pewpf, Action<EntryStringPair> entryDoubleClick)
         {
-            CommonOpenFileDialog j = new CommonOpenFileDialog
+            var j = new CommonOpenFileDialog
             {
                 DefaultExtension = ".json",
                 EnsurePathExists = true,
@@ -509,7 +509,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
         public static void RecookLevelToTestFromJSON(PackageEditorWindow pewpf, Action<EntryStringPair> entryDoubleClick)
         {
-            CommonOpenFileDialog j = new CommonOpenFileDialog
+            var j = new CommonOpenFileDialog
             {
                 DefaultExtension = ".json",
                 EnsurePathExists = true,
@@ -579,8 +579,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                 }
 
-                Guid pkgguid = Guid.NewGuid();
-                var localpackage = p.Pcc.Exports.FirstOrDefault<ExportEntry>(x => x.ClassName == "Package" && x.ObjectNameString == newname);
+                var pkgguid = Guid.NewGuid();
+                var localpackage = p.Pcc.Exports.FirstOrDefault(x => x.ClassName == "Package" && x.ObjectNameString == newname);
                 if (localpackage != null)
                 {
                     localpackage.PackageGUID = pkgguid;
@@ -624,7 +624,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 references.Clear();
 
                 //Clean up Cached PhysSM Data && Rebuild Data Store
-                var newPhysSMmap = new OrderedMultiValueDictionary<UIndex, CachedPhysSMData>();
+                var newPhysSMmap = new OrderedMultiValueDictionary<int, CachedPhysSMData>();
                 var newPhysSMstore = new List<KCachedConvexData>();
                 foreach (var r in level.CachedPhysSMDataMap)
                 {
@@ -639,7 +639,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         var kvp = level.CachedPhysSMDataStore[oldidx];
                         map.CachedDataIndex = newPhysSMstore.Count;
                         newPhysSMstore.Add(level.CachedPhysSMDataStore[oldidx]);
-                        newPhysSMmap.Add(new KeyValuePair<UIndex, CachedPhysSMData>(reference, map));
+                        newPhysSMmap.Add(new KeyValuePair<int, CachedPhysSMData>(reference, map));
                     }
                 }
                 level.CachedPhysSMDataMap = newPhysSMmap;
@@ -647,7 +647,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 references.Clear();
 
                 //Clean up Cached PhysPerTri Data
-                var newPhysPerTrimap = new OrderedMultiValueDictionary<UIndex, CachedPhysSMData>();
+                var newPhysPerTrimap = new OrderedMultiValueDictionary<int, CachedPhysSMData>();
                 var newPhysPerTristore = new List<KCachedPerTriData>();
                 foreach (var s in level.CachedPhysPerTriSMDataMap)
                 {
@@ -662,7 +662,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         var kvp = level.CachedPhysPerTriSMDataStore[oldidx];
                         map.CachedDataIndex = newPhysPerTristore.Count;
                         newPhysPerTristore.Add(level.CachedPhysPerTriSMDataStore[oldidx]);
-                        newPhysPerTrimap.Add(new KeyValuePair<UIndex, CachedPhysSMData>(reference, map));
+                        newPhysPerTrimap.Add(new KeyValuePair<int, CachedPhysSMData>(reference, map));
                     }
                 }
                 level.CachedPhysPerTriSMDataMap = newPhysPerTrimap;
@@ -670,21 +670,20 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 references.Clear();
 
                 //Clean up NAV data - how to clean up Nav ints?  [Just null unwanted refs]
-                if (norefsList.Contains(level.NavListStart ?? 0))
+                if (norefsList.Contains(level.NavListStart))
                 {
                     level.NavListStart = 0;
                 }
-                if (norefsList.Contains(level.NavListEnd ?? 0))
+                if (norefsList.Contains(level.NavListEnd))
                 {
                     level.NavListEnd = 0;
                 }
-                var newNavArray = new List<UIndex>();
+                var newNavArray = new List<int>();
                 newNavArray.AddRange(level.NavPoints);
 
                 for (int n = 0; n < level.NavPoints.Count; n++)
                 {
-                    var navpoint = newNavArray[n].value;
-                    if (norefsList.Contains(navpoint))
+                    if (norefsList.Contains(newNavArray[n]))
                     {
                         newNavArray[n] = 0;
                     }
@@ -692,20 +691,19 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 level.NavPoints = newNavArray;
 
                 //Clean up Coverlink Lists => pare down guid2byte? table [Just null unwanted refs]
-                if (norefsList.Contains(level.CoverListStart ?? 0))
+                if (norefsList.Contains(level.CoverListStart))
                 {
                     level.CoverListStart = 0;
                 }
-                if (norefsList.Contains(level.CoverListEnd ?? 0))
+                if (norefsList.Contains(level.CoverListEnd))
                 {
                     level.CoverListEnd = 0;
                 }
-                var newCLArray = new List<UIndex>();
+                var newCLArray = new List<int>();
                 newCLArray.AddRange(level.CoverLinks);
                 for (int l = 0; l < level.CoverLinks.Count;l++)
                 {
-                    var coverlink = newCLArray[l].value;
-                    if (norefsList.Contains(coverlink))
+                    if (norefsList.Contains(newCLArray[l]))
                     {
                         newCLArray[l] = 0;
                     }
@@ -716,11 +714,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 if (pcc.Game.IsGame3())
                 {
                     //Clean up Pylon List
-                    if (norefsList.Contains(level.PylonListStart ?? 0))
+                    if (norefsList.Contains(level.PylonListStart))
                     {
                         level.PylonListStart = 0;
                     }
-                    if (norefsList.Contains(level.PylonListEnd ?? 0))
+                    if (norefsList.Contains(level.PylonListEnd))
                     {
                         level.PylonListEnd = 0;
                     }
@@ -728,14 +726,13 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                 //Cross Level Actors
                 level.CoverLinks = newCLArray;
-                var newXLArray = new List<UIndex>();
+                var newXLArray = new List<int>();
                 newXLArray.AddRange(level.CrossLevelActors);
-                foreach (var cla in level.CrossLevelActors)
+                foreach (int xlvlactor in level.CrossLevelActors)
                 {
-                    var xlvlactor = cla?.value ?? -1;
                     if (norefsList.Contains(xlvlactor) || xlvlactor == 0)
                     {
-                        newXLArray.Remove(cla);
+                        newXLArray.Remove(xlvlactor);
                     }
                 }
                 level.CrossLevelActors = newXLArray;
@@ -752,7 +749,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 levelExport.WriteBinary(level);
 
                 pewpf.BusyText = "Trashing unwanted items";
-                List<IEntry> itemsToTrash = new List<IEntry>();
+                var itemsToTrash = new List<IEntry>();
                 foreach (var export in pcc.Exports)
                 {
                     if (norefsList.Contains(export.UIndex))

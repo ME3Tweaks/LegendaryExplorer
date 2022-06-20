@@ -437,7 +437,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             if (classEntry is ExportEntry export)
             {
                 var classObj = export.GetBinaryData<UClass>(packageCache);
-                return classObj.Defaults.GetEntry(Pcc);
+                return Pcc.GetEntry(classObj.Defaults);
             }
             string parentPath = classEntry.ParentInstancedFullPath;
             return Pcc.getEntryOrAddImport($"{parentPath}.Default__{classEntry.ObjectName.Instanced}", classEntry.ObjectName.Instanced, classEntry.ParentName);

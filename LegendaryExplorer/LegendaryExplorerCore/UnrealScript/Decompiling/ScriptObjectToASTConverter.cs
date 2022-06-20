@@ -29,7 +29,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             // TODO: components
 
             var interfaces = new List<VariableType>();
-            foreach ((UIndex interfaceUIndex, UIndex _) in uClass.Interfaces)
+            foreach ((int interfaceUIndex, int _) in uClass.Interfaces)
             {
                 interfaces.Add(new VariableType(pcc.GetEntry(interfaceUIndex)?.ObjectName.Instanced ?? "UNK_INTERFACE"));
             }
@@ -85,9 +85,9 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                         break;
                 }
             }
-            foreach (UIndex uIndex in uClass.LocalFunctionMap.Values())
+            foreach (int uIndex in uClass.LocalFunctionMap.Values())
             {
-                if (uIndex.GetEntry(pcc) is ExportEntry funcExp && fileLib.GetCachedObjectBinary<UFunction>(funcExp, packageCache) is UFunction uFunction)
+                if (pcc.GetEntry(uIndex) is ExportEntry funcExp && fileLib.GetCachedObjectBinary<UFunction>(funcExp, packageCache) is UFunction uFunction)
                 {
                     Funcs.Add(ConvertFunction(uFunction, fileLib, uClass, decompileBytecodeAndDefaults, packageCache));
                 }
@@ -108,7 +108,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             {
                 ConfigName = uClass.ClassConfigName,
                 Package = uClassExport.Parent is null ? Path.GetFileNameWithoutExtension(pcc.FilePath) : uClassExport.ParentInstancedFullPath,
-                IsFullyDefined = nextItem.value == 0 && propEntry is ExportEntry,
+                IsFullyDefined = nextItem == 0 && propEntry is ExportEntry,
                 FilePath = pcc.FilePath,
                 UIndex = uClassExport.UIndex,
                 ReplicationBlock = replicationBlock
@@ -127,9 +127,9 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             var virtFuncLookup = new List<string>(uClass.VirtualFunctionTable?.Length ?? 0);
             if (pcc.Game.IsGame3())
             {
-                foreach (UIndex uIdx in uClass.VirtualFunctionTable)
+                foreach (int uIdx in uClass.VirtualFunctionTable)
                 {
-                    virtFuncLookup.Add(uIdx.GetEntry(pcc)?.ObjectName.Instanced);
+                    virtFuncLookup.Add(pcc.GetEntry(uIdx)?.ObjectName.Instanced);
                 }
             }
             ast.VirtualFunctionNames = virtFuncLookup;
@@ -158,7 +158,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
 
             State parent = null;
             //if the parent has the same name, then it's overriden, not extended
-            if (obj.SuperClass != 0 && obj.SuperClass.GetEntry(obj.Export.FileRef) is IEntry parentState &&
+            if (obj.SuperClass != 0 && obj.Export.FileRef.GetEntry(obj.SuperClass) is IEntry parentState &&
                 !parentState.ObjectName.Instanced.CaseInsensitiveEquals(obj.Export.ObjectName.Instanced))
             {
                 parent = new State(parentState.ObjectName.Instanced, null, default, null, null, null, -1, -1);
@@ -215,7 +215,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             }
 
             VariableType parent = obj.SuperClass != 0
-                ? new VariableType(obj.SuperClass.GetEntry(pcc).ObjectName.Instanced) : null;
+                ? new VariableType(pcc.GetEntry(obj.SuperClass).ObjectName.Instanced) : null;
 
             DefaultPropertiesBlock defaults = null;
             string structName = obj.Export.ObjectName.Instanced;
@@ -398,7 +398,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 case UByteProperty byteProperty:
                     if (byteProperty.IsEnum)
                     {
-                        IEntry enumDef = byteProperty.Enum.GetEntry(obj.Export.FileRef);
+                        IEntry enumDef = obj.Export.FileRef.GetEntry(byteProperty.Enum);
                         if (enumDef is ExportEntry enumExp)
                         {
                             return ConvertEnum(fileLib.GetCachedObjectBinary<UEnum>(enumExp, packageCache));
@@ -452,18 +452,18 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 case UStrProperty:
                     return SymbolTable.StringType;
                 case UStructProperty structProperty:
-                    typeStr = structProperty.Struct.GetEntry(obj.Export.FileRef)?.ObjectName.Instanced ?? typeStr;
+                    typeStr = obj.Export.FileRef.GetEntry(structProperty.Struct)?.ObjectName.Instanced ?? typeStr;
                     break;
                 //if we're just getting the name of the objectref, then Interface and Component are the same as Object
                 //Leave these here in case we do something fancier
                 //case UInterfaceProperty interfaceProperty:
-                //    typeStr = interfaceProperty.ObjectRef.GetEntry(obj.Export.FileRef)?.ObjectName.Instanced ?? typeStr; // ?
+                //    typeStr = obj.Export.FileRef.GetEntry(interfaceProperty.ObjectRef)?.ObjectName.Instanced ?? typeStr; // ?
                 //    break;
                 //case UComponentProperty componentProperty:
-                //    typeStr = componentProperty.ObjectRef.GetEntry(obj.Export.FileRef)?.ObjectName.Instanced ?? typeStr; // ?
+                //    typeStr = obj.Export.FileRef.GetEntry(componentProperty.ObjectRef)?.ObjectName.Instanced ?? typeStr; // ?
                 //    break;
                 case UObjectProperty objectProperty:
-                    typeStr = objectProperty.ObjectRef.GetEntry(obj.Export.FileRef)?.ObjectName.Instanced ?? typeStr; // ?
+                    typeStr = obj.Export.FileRef.GetEntry(objectProperty.ObjectRef)?.ObjectName.Instanced ?? typeStr; // ?
                     break;
                 default:
                     {

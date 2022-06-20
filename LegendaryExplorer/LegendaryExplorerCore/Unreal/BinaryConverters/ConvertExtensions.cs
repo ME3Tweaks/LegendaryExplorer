@@ -21,7 +21,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             var stm = new StaticMesh
             {
                 Bounds = skeletalMesh.Bounds,
-                BodySetup = new UIndex(0),
+                BodySetup = 0,
                 LODModels = new[] { new StaticMeshRenderData
                 {
                     IndexBuffer = lodModel.IndexBuffer.ArrayClone(),

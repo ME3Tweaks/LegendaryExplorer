@@ -1,5 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System.Runtime.CompilerServices;
 using LegendaryExplorerCore.Packages;
+using UIndex = System.Int32;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
@@ -18,7 +19,10 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 DestinationObject = 0
             };
         }
-
-        public override List<(UIndex, string)> GetUIndexes(MEGame game) => new List<(UIndex, string)>{(DestinationObject, nameof(DestinationObject))};
+        
+        public override void ForEachUIndex<TAction>(MEGame game, in TAction action)
+        {
+            Unsafe.AsRef(action).Invoke(ref DestinationObject, nameof(DestinationObject));
+        }
     }
 }

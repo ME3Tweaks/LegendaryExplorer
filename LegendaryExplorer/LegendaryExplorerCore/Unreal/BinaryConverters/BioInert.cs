@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using LegendaryExplorerCore.Misc;
+using System.Runtime.CompilerServices;
 using LegendaryExplorerCore.Packages;
+using UIndex = System.Int32;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
@@ -29,17 +30,15 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             };
         }
 
-        public override List<(UIndex, string)> GetUIndexes(MEGame game)
+        public override void ForEachUIndex<TAction>(MEGame game, in TAction action)
         {
-            List<(UIndex, string)> indices = new List<(UIndex, string)>(NameEntryGuidPairs.Length);
             if (game == MEGame.LE1)
             {
                 for (int i = 0; i < NameEntryGuidPairs.Length; i++)
                 {
-                    indices.Add((NameEntryGuidPairs[i].Entry, $"NameEntryGuid[{i}]")); // how to handle nulls?
+                    Unsafe.AsRef(action).Invoke(ref NameEntryGuidPairs[i].Entry, $"NameEntryGuid[{i}]");
                 }
             }
-            return indices;
         }
 
         public override List<(NameReference, string)> GetNames(MEGame game)

@@ -470,11 +470,11 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                 Level level = ObjectBinary.From<Level>(levelExport);
                 var validNodesInLevel = new List<ExportEntry>();
                 var validCoverlinksInLevel = new List<ExportEntry>();
-                foreach (var item in level.Actors)
+                foreach (int actorUIndex in level.Actors)
                 {
-                    if (Pcc.IsUExport(item.value))
+                    if (Pcc.IsUExport(actorUIndex))
                     {
-                        ExportEntry exportEntry = Pcc.GetUExport(item.value);
+                        ExportEntry exportEntry = Pcc.GetUExport(actorUIndex);
                         StructProperty navGuid = exportEntry.GetProperty<StructProperty>("NavGuid");
                         if (navGuid != null)
                         {
@@ -552,9 +552,9 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
             var navGuidLists = new Dictionary<string, List<FGuid>>();
             var duplicateGuids = new List<FGuid>();
 
-            foreach (UIndex itemexportid in PersistentLevel.GetBinaryData<Level>().Actors)
+            foreach (int actorUIndex in PersistentLevel.GetBinaryData<Level>().Actors)
             {
-                if (Pcc.TryGetUExport(itemexportid, out ExportEntry exportEntry) 
+                if (Pcc.TryGetUExport(actorUIndex, out ExportEntry exportEntry) 
                  && exportEntry.GetProperty<StructProperty>("NavGuid") is StructProperty navGuid)
                 {
                     var nav = new FGuid(navGuid)

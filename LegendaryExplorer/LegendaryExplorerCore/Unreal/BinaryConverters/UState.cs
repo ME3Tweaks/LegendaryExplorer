@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.CompilerServices;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
+using Microsoft.Toolkit.HighPerformance;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
+using UIndex = System.Int32;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
@@ -30,21 +31,12 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             return new()
             {
-                SuperClass = 0,
-                Next = 0,
-                Children = 0,
                 ScriptBytes = Array.Empty<byte>(),
                 IgnoreMask = (EProbeFunctions)ulong.MaxValue,
                 LocalFunctionMap = new OrderedMultiValueDictionary<NameReference, UIndex>()
             };
         }
-
-        public override List<(UIndex, string)> GetUIndexes(MEGame game)
-        {
-            List<(UIndex, string)> uIndices = base.GetUIndexes(game);
-            uIndices.AddRange(LocalFunctionMap.Select((kvp, i) => (kvp.Value, $"LocalFunctions[{i}]")));
-            return uIndices;
-        }
+        
         public override List<(NameReference, string)> GetNames(MEGame game)
         {
             var names = base.GetNames(game);
@@ -52,6 +44,23 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             names.AddRange(LocalFunctionMap.Select((kvp, i) => (kvp.Key, $"LocalFunctions[{i}]")));
 
             return names;
+        }
+
+        public override void ForEachUIndex<TAction>(MEGame game, in TAction action)
+        {
+            base.ForEachUIndex(game, in action);
+            var span = LocalFunctionMap.AsSpan();
+            for (int i = 0; i < span.Length; i++)
+            {
+                int value = span[i].Value;
+                int originalValue = value;
+                NameReference key = span[i].Key;
+                Unsafe.AsRef(action).Invoke(ref value, $"LocalFunctionMap[{key.Instanced}]");
+                if (value != originalValue)
+                {
+                    span[i] = new KeyValuePair<NameReference, int>(key, value);
+                }
+            }
         }
     }
 

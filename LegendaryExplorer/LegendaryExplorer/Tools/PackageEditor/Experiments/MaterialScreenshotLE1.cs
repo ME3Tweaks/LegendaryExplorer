@@ -122,7 +122,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             {
                 var matBin = ObjectBinary.From<Material>(entry);
                 // Check for self referencing. This is due to bad naming
-                if (matBin.SM3MaterialResource != null && matBin.SM3MaterialResource.Uniform2DTextureExpressions != null)
+                if (matBin.SM3MaterialResource?.Uniform2DTextureExpressions != null)
                 {
                     foreach (var tex in matBin.SM3MaterialResource.Uniform2DTextureExpressions)
                     {
@@ -142,9 +142,9 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             // ACTOR 1 (BioPawn)
             var actor1Mat = templatePackage.FindExport(@"biog_hmf_arm_cth_r.CTHc.HMF_ARM_CTHc_MDL");
             var actor1Bin = ObjectBinary.From<SkeletalMesh>(actor1Mat);
-            foreach (var elem in actor1Bin.Materials)
+            for (int i = 0; i < actor1Bin.Materials.Length; i++)
             {
-                elem.value = newMatEntry.UIndex;
+                actor1Bin.Materials[i] = newMatEntry.UIndex;
             }
             actor1Mat.WriteBinary(actor1Bin);
 

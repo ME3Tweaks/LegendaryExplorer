@@ -1025,18 +1025,18 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         /// Traverses the Level object's navigation point start to its end and finds which objecst are not in the NavList of the Level
         /// By Mgamerz
         /// </summary>
-        /// <param name="Pcc"></param>
-        public static void ValidateNavpointChain(IMEPackage Pcc)
+        /// <param name="pcc"></param>
+        public static void ValidateNavpointChain(IMEPackage pcc)
         {
-            var pl = Pcc.Exports.FirstOrDefault(x => x.ClassName == "Level" && x.ObjectName == "PersistentLevel");
+            var pl = pcc.Exports.FirstOrDefault(x => x.ClassName == "Level" && x.ObjectName == "PersistentLevel");
             if (pl != null)
             {
                 var persistentLevel = ObjectBinary.From<Level>(pl);
                 var nlSU = persistentLevel.NavListStart;
-                var nlS = Pcc.GetUExport(nlSU.value);
-                List<ExportEntry> navList = new List<ExportEntry>();
-                List<ExportEntry> itemsMissingFromWorldNPC = new List<ExportEntry>();
-                if (!persistentLevel.NavPoints.Any(x => x.value == nlS.UIndex))
+                var nlS = pcc.GetUExport(nlSU);
+                var navList = new List<ExportEntry>();
+                var itemsMissingFromWorldNPC = new List<ExportEntry>();
+                if (persistentLevel.NavPoints.All(x => x != nlS.UIndex))
                 {
                     itemsMissingFromWorldNPC.Add(nlS);
                 }
@@ -1046,9 +1046,9 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 Debug.WriteLine($"{nlS.UIndex} {nlS.InstancedFullPath}");
                 while (nnP != null)
                 {
-                    var nextNavigationPoint = nnP.ResolveToEntry(Pcc) as ExportEntry;
+                    var nextNavigationPoint = nnP.ResolveToEntry(pcc) as ExportEntry;
                     Debug.WriteLine($"{nextNavigationPoint.UIndex} {nextNavigationPoint.InstancedFullPath}");
-                    if (!persistentLevel.NavPoints.Any(x => x.value == nextNavigationPoint.UIndex))
+                    if (persistentLevel.NavPoints.All(x => x != nextNavigationPoint.UIndex))
                     {
                         itemsMissingFromWorldNPC.Add(nextNavigationPoint);
                     }
@@ -1065,20 +1065,20 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
         }
 
-        public static void SetAllWwiseEventDurations(IMEPackage Pcc)
+        public static void SetAllWwiseEventDurations(IMEPackage pcc)
         {
-            var wwevents = Pcc.Exports.Where(x => x.ClassName == "WwiseEvent").ToList();
+            var wwevents = pcc.Exports.Where(x => x.ClassName == "WwiseEvent").ToList();
             foreach (var wwevent in wwevents)
             {
                 var eventbin = wwevent.GetBinaryData<WwiseEvent>();
                 if (!eventbin.Links.IsEmpty() && !eventbin.Links[0].WwiseStreams.IsEmpty())
                 {
-                    var wwstream = Pcc.GetUExport(eventbin.Links[0].WwiseStreams[0]);
-                    var streambin = wwstream?.GetBinaryData<WwiseStream>() ?? null;
+                    var wwstream = pcc.GetUExport(eventbin.Links[0].WwiseStreams[0]);
+                    var streambin = wwstream?.GetBinaryData<WwiseStream>();
                     if (streambin != null)
                     {
                         var duration = streambin.GetAudioInfo().GetLength();
-                        switch(Pcc.Game)
+                        switch(pcc.Game)
                         {
                             case MEGame.ME3:
                                 var durtnMS = wwevent.GetProperty<FloatProperty>("DurationMilliseconds");
@@ -2350,12 +2350,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             if (pe.Pcc != null && pe.TryGetSelectedExport(out var exp) && exp.IsA("LightComponent") && exp.Parent.ClassName == "StaticLightCollectionActor")
             {
                 var parent = ObjectBinary.From<StaticLightCollectionActor>(exp.Parent as ExportEntry);
-                var uindex = new UIndex(exp.UIndex);
-                var slcaIndex = parent.Components.IndexOf(uindex);
+                var slcaIndex = parent.Components.IndexOf(exp.UIndex);
 
-                var PL = pe.Pcc.FindExport("TheWorld.PersistentLevel");
+                var pl = pe.Pcc.FindExport("TheWorld.PersistentLevel");
                 var lightType = exp.ObjectName.Name.Substring(0, exp.ObjectName.Name.IndexOf("_"));
-                var newExport = ExportCreator.CreateExport(pe.Pcc, lightType, lightType, PL);
+                var newExport = ExportCreator.CreateExport(pe.Pcc, lightType, lightType, pl);
 
                 var positioning = parent.LocalToWorldTransforms[slcaIndex].UnrealDecompose();
 

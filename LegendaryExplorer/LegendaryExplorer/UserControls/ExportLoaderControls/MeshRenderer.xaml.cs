@@ -536,7 +536,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             Func<ModelPreview.PreloadedModelData> loadMesh = null;
             var assetCache = new PackageCache();
 
-            if (CurrentLoadedExport.ClassName == "StaticMesh" || CurrentLoadedExport.ClassName == "FracturedStaticMesh")
+            if (CurrentLoadedExport.ClassName is "StaticMesh" or "FracturedStaticMesh")
             {
                 IsStaticMesh = true;
                 loadMesh = () =>
@@ -555,9 +555,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     IMEPackage meshFile = meshObject.Export.FileRef;
                     if (meshFile.Game != MEGame.UDK)
                     {
-                        foreach (var section in meshObject.LODModels[CurrentLOD].Elements)
+                        foreach (StaticMeshElement section in meshObject.LODModels[CurrentLOD].Elements)
                         {
-                            int matIndex = section.Material.value;
+                            int matIndex = section.Material;
                             if (meshFile.IsUExport(matIndex))
                             {
                                 ExportEntry entry = meshFile.GetUExport(matIndex);
@@ -603,13 +603,13 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     IMEPackage package = meshObject.Export.FileRef;
                     if (package.Game != MEGame.UDK)
                     {
-                        foreach (var material in meshObject.Materials)
+                        foreach (int material in meshObject.Materials)
                         {
-                            if (package.TryGetUExport(material.value, out var matExp))
+                            if (package.TryGetUExport(material, out ExportEntry matExp))
                             {
                                 AddMaterialBackgroundThreadTextures(pmd.texturePreviewMaterials, matExp, assetCache);
                             }
-                            else if (package.TryGetImport(material.value, out var matImp) && alreadyLoadedImportMaterials.All(x => x != matImp.InstancedFullPath))
+                            else if (package.TryGetImport(material, out ImportEntry matImp) && alreadyLoadedImportMaterials.All(x => x != matImp.InstancedFullPath))
                             {
                                 var extMaterialExport = EntryImporter.ResolveImport(matImp, assetCache);
                                 //var extMaterialExport = ModelPreview.FindExternalAsset(matImp, pmd.texturePreviewMaterials.Select(x => x.Mip.Export).ToList(), cachedPackages);
@@ -622,7 +622,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                 {
 
                                     Debug.WriteLine("Could not find import material from materials list.");
-                                    Debug.WriteLine("Import material: " + package.GetEntryString(material.value));
+                                    Debug.WriteLine("Import material: " + package.GetEntryString(material));
                                 }
                             }
                         }

@@ -5,6 +5,7 @@ using System.Numerics;
 using System.Runtime.InteropServices;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
+using UIndex = System.Int32;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
@@ -85,17 +86,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             };
         }
 
-        public override List<(UIndex, string)> GetUIndexes(MEGame game)
-        {
-            List<(UIndex t, string)> uIndexes = Materials.Select((t, i) => (t, $"Materials[{i}]")).ToList();
-
-            if (game == MEGame.ME3 || game.IsLEGame())
-            {
-                uIndexes.AddRange(ClothingAssets.Select((t, i) => (t, $"ClothingAssets[{i}]")));
-            }
-            return uIndexes;
-        }
-
         public override List<(NameReference, string)> GetNames(MEGame game)
         {
             var names = new List<(NameReference, string)>();
@@ -104,6 +94,15 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             names.AddRange(NameIndexMap.Select((kvp, i) => (kvp.Key, $"NameIndexMap[{i}]")));
 
             return names;
+        }
+
+        public override void ForEachUIndex<TAction>(MEGame game, in TAction action)
+        {
+            ForEachUIndexInSpan(action, Materials.AsSpan(), nameof(Materials));
+            if (game is MEGame.ME3 || game.IsLEGame())
+            {
+                ForEachUIndexInSpan(action, ClothingAssets.AsSpan(), nameof(ClothingAssets));
+            }
         }
     }
 

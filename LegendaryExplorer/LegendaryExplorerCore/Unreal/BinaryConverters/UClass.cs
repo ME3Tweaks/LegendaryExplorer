@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.CompilerServices;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
+using Microsoft.Toolkit.HighPerformance;
+using UIndex = System.Int32;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
@@ -51,11 +51,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 sc.Serialize(ref unkNameList2, SCExt.Serialize);
                 if (sc.IsLoading)
                 {
-                    // This doesn't compile after merge from Beta -> CrossGen-vtest
-                    // 11/22/2021. Unsure if it matters here. Was it DLLBindName to ensure 
-                    // it was properly populated?
-                    // unkName2 = "None";
-
                     // 11/22/2021 - Load "None" to make sure when porting cross games this is populated
                     DLLBindName = "None";
                     unk2 = 0;
@@ -77,39 +72,17 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             return new()
             {
-                SuperClass = 0,
-                Next = 0,
-                Children = 0,
                 ScriptBytes = Array.Empty<byte>(),
                 IgnoreMask = (UnrealFlags.EProbeFunctions)ulong.MaxValue,
                 LocalFunctionMap = new OrderedMultiValueDictionary<NameReference, UIndex>(),
-                OuterClass = 0,
                 ClassConfigName = "None",
                 unkNameList1 = Array.Empty<NameReference>(),
                 ComponentNameToDefaultObjectMap = new OrderedMultiValueDictionary<NameReference, UIndex>(),
                 Interfaces = new OrderedMultiValueDictionary<UIndex, UIndex>(),
                 DLLBindName = "None",
                 unkNameList2 = Array.Empty<NameReference>(),
-                Defaults = 0,
                 VirtualFunctionTable = Array.Empty<UIndex>()
             };
-        }
-
-        public override List<(UIndex, string)> GetUIndexes(MEGame game)
-        {
-            var uIndices = base.GetUIndexes(game);
-            uIndices.Add((OuterClass, "OuterClass"));
-            uIndices.AddRange(ComponentNameToDefaultObjectMap.Select((kvp, i) => (kvp.Value, $"ComponentMap[{i}]")));
-
-            uIndices.AddRange(Interfaces.SelectMany((kvp, i) => new[] { (kvp.Key, $"InterfacesMap[{i}]"), (kvp.Value, $"InterfacesMap[{i}].PropertyPointer") }));
-
-            uIndices.Add((Defaults, "Defaults"));
-            if (game is MEGame.UDK or MEGame.ME3 or MEGame.LE3)
-            {
-                uIndices.AddRange(VirtualFunctionTable.Select((u, i) => (u, $"FullFunctionsList[{i}]")));
-            }
-
-            return uIndices;
         }
 
         public override List<(NameReference, string)> GetNames(MEGame game)
@@ -132,6 +105,47 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
 
             return names;
+        }
+
+        public override void ForEachUIndex<TAction>(MEGame game, in TAction action)
+        {
+            base.ForEachUIndex(game, in action);
+            Unsafe.AsRef(action).Invoke(ref OuterClass, nameof(OuterClass));
+
+            var span = ComponentNameToDefaultObjectMap.AsSpan();
+            for (int i = 0; i < span.Length; i++)
+            {
+                int value = span[i].Value;
+                int originalValue = value;
+                NameReference key = span[i].Key;
+                Unsafe.AsRef(action).Invoke(ref value, $"ComponentNameToDefaultObjectMap[{key.Instanced}]");
+                if (value != originalValue)
+                {
+                    span[i] = new KeyValuePair<NameReference, int>(key, value);
+                }
+            }
+
+            var span2 = Interfaces.AsSpan();
+            for (int i = 0; i < span2.Length; i++)
+            {
+                UIndex value = span2[i].Value;
+                UIndex originalValue = value;
+                UIndex key = span2[i].Key;
+                UIndex originalKey = key;
+                Unsafe.AsRef(action).Invoke(ref key, $"Interfaces[{i}]");
+                Unsafe.AsRef(action).Invoke(ref value, $"Interfaces[{i}]");
+                if (value != originalValue || key != originalKey)
+                {
+                    span2[i] = new KeyValuePair<UIndex, UIndex>(key, value);
+                }
+            }
+
+
+            Unsafe.AsRef(action).Invoke(ref Defaults, nameof(Defaults));
+            if (game is MEGame.UDK or MEGame.ME3 or MEGame.LE3)
+            {
+                ForEachUIndexInSpan(action, VirtualFunctionTable.AsSpan(), nameof(VirtualFunctionTable));
+            }
         }
 
         /// <summary>

@@ -27,7 +27,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 var level = ObjectBinary.From<Level>(levelExport);
                 foreach (var actoruindex in level.Actors)
                 {
-                    if (package.TryGetUExport(actoruindex.value, out var actorExport))
+                    if (package.TryGetUExport(actoruindex, out var actorExport))
                     {
                         switch (actorExport.ClassName)
                         {
@@ -696,9 +696,9 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         /// <param name="pew">Current PE instance.</param>
         public static void SMRefRemover(PackageEditorWindow pew)
         {
-            if (pew.Pcc == null || pew.SelectedItem == null || pew.SelectedItem.Entry == null) { return; }
+            if (pew.Pcc == null || pew.SelectedItem?.Entry == null) { return; }
 
-            if (!(pew.SelectedItem.Entry.ClassName is "SkeletalMesh" or "StaticMesh"))
+            if (pew.SelectedItem.Entry.ClassName is not ("SkeletalMesh" or "StaticMesh"))
             {
                 ShowError("Selected export is not a SkeletalMesh or StaticMesh");
                 return;
@@ -721,8 +721,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             List<float> origins = new();
             foreach (string strOrigin in strOrigins)
             {
-                float origin;
-                if (!float.TryParse(strOrigin, out origin))
+                if (!float.TryParse(strOrigin, out float origin))
                 {
                     ShowError($"Distance {strOrigin} is not a valid decimal");
                     return;
@@ -747,8 +746,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             List<float> dists = new();
             foreach (string strDist in strDists)
             {
-                float dist;
-                if (!float.TryParse(strDist, out dist))
+                if (!float.TryParse(strDist, out float dist))
                 {
                     ShowError($"Distance {strDist} is not a valid decimal");
                     return;
@@ -761,7 +759,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 dists.Add(dist);
             }
 
-            ExportEntry mesh = (ExportEntry)pew.SelectedItem.Entry;
+            var mesh = (ExportEntry)pew.SelectedItem.Entry;
             // Get a list of SMC/SMAs referencing the selected mesh
             List<IEntry> references = mesh.GetEntriesThatReferenceThisOne()
                 .Where(kvp => kvp.Key.ClassName is "SkeletalMeshComponent" or "StaticMeshComponent")
@@ -774,16 +772,16 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
 
             List<string> removedReferences = new();
-            foreach (ExportEntry reference in references)
+            foreach (var entry in references)
             {
-                if (reference.ClassName == "StaticMeshComponent")
+                var reference = entry as ExportEntry;
+                if (reference?.ClassName == "StaticMeshComponent")
                 {
                     switch (reference.Parent.ClassName)
                     {
                         case "StaticMeshCollectionActor":
-                            StaticMeshCollectionActor parent = ObjectBinary.From<StaticMeshCollectionActor>((ExportEntry)reference.Parent);
-                            UIndex uindex = new(reference.UIndex);
-                            int smcaIndex = parent.Components.IndexOf(uindex);
+                            var parent = ObjectBinary.From<StaticMeshCollectionActor>((ExportEntry)reference.Parent);
+                            int smcaIndex = parent.Components.IndexOf(reference.UIndex);
                             float destX, destY, destZ;
                             ((destX, destY, destZ), _, _) = parent.LocalToWorldTransforms[smcaIndex].UnrealDecompose();
 
@@ -812,8 +810,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                             continue;
                     }
                 }
-
-                if (reference.ClassName == "SkeletalMeshComponent")
+                else if (reference?.ClassName == "SkeletalMeshComponent")
                 {
                     ExportEntry parent = (ExportEntry)reference.Parent;
                     StructProperty location = parent.GetProperty<StructProperty>("Location");

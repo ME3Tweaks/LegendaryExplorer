@@ -1,7 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
+using Microsoft.Toolkit.HighPerformance;
+using UIndex = System.Int32;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
@@ -21,11 +24,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             };
         }
 
-        public override List<(UIndex, string)> GetUIndexes(MEGame game)
-        {
-            return AnimationMap.Select((kvp, i) => (kvp.Value, $"AnimationMap[{i}]")).ToList();
-        }
-
         public override List<(NameReference, string)> GetNames(MEGame game)
         {
             var names = new List<(NameReference, string)>();
@@ -33,6 +31,22 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             names.AddRange(AnimationMap.Select((kvp, i) => (kvp.Key, $"AnimationMap[{i}]")));
 
             return names;
+        }
+
+        public override void ForEachUIndex<TAction>(MEGame game, in TAction action)
+        {
+            var span = AnimationMap.AsSpan();
+            for (int i = 0; i < span.Length; i++)
+            {
+                int value = span[i].Value;
+                int originalValue = value;
+                NameReference key = span[i].Key;
+                Unsafe.AsRef(action).Invoke(ref value, $"AnimationMap[{key.Instanced}]");
+                if (value != originalValue)
+                {
+                    span[i] = new KeyValuePair<NameReference, int>(key, value);
+                }
+            }
         }
     }
 }

@@ -296,25 +296,15 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     }
                     else if (relinkingExport.Game != sourcePcc.Game && objBin is UFunction uf)
                     {
-                        uf.ScriptBytes = new byte[0]; // This needs zero'd out so it doesn't try to relink anything. The relink will occur on the second pass
+                        uf.ScriptBytes = Array.Empty<byte>(); // This needs zero'd out so it doesn't try to relink anything. The relink will occur on the second pass
                     }
-
-                    List<(UIndex, string)> indices = objBin.GetUIndexes(relinkingExport.FileRef.Game);
+                    
+                    objBin.ForEachUIndex(relinkingExport.FileRef.Game, new RelinkingAction(sourcePcc, relinkingExport, rop));
                     if (relinkingExport.Game != sourcePcc.Game && objBin is UFunction uf2)
                     {
                         // This forces data to copy over that may have been referenced in the script data, such as another class in the same file. 
                         // It won't be relinked till later though
-                        indices.AddRange(ObjectBinary.From(sourceExport).GetUIndexes(sourceExport.FileRef.Game));
-                    }
-
-
-                    foreach ((UIndex uIndex, string propName) in indices)
-                    {
-                        var result = relinkUIndex(sourcePcc, relinkingExport, ref uIndex.value, $"(Binary Property: {propName})", "", rop);
-                        if (result != null)
-                        {
-                            rop.RelinkReport.Add(result);
-                        }
+                        ObjectBinary.From(sourceExport).ForEachUIndex(sourceExport.FileRef.Game, new RelinkingAction(sourcePcc, relinkingExport, rop));
                     }
 
                     //UStruct is abstract baseclass for Class, State, and Function, and can have script in it
@@ -361,6 +351,29 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             }
 
             relinkingExport.WritePrePropsAndProperties(prePropBinary, props, removedProperties || sourceExport.Game != relinkingExport.Game ? relinkingExport.propsEnd() : sourceExport.propsEnd());
+        }
+
+        private readonly struct RelinkingAction : IUIndexAction
+        {
+            private readonly IMEPackage ImportingPcc;
+            private readonly ExportEntry RelinkingExport;
+            private readonly RelinkerOptionsPackage Rop;
+
+            public RelinkingAction(IMEPackage importingPcc, ExportEntry relinkingExport, RelinkerOptionsPackage rop)
+            {
+                ImportingPcc = importingPcc;
+                RelinkingExport = relinkingExport;
+                Rop = rop;
+            }
+
+            public void Invoke(ref int uIndex, string propName)
+            {
+                var result = relinkUIndex(ImportingPcc, RelinkingExport, ref uIndex, $"(Binary Property: {propName})", "", Rop);
+                if (result != null)
+                {
+                    Rop.RelinkReport.Add(result);
+                }
+            }
         }
 
         private static void relinkPropertiesRecursive(IMEPackage importingPCC, ExportEntry relinkingExport, PropertyCollection transplantProps, string prefix, RelinkerOptionsPackage rop)

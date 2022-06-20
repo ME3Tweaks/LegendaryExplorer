@@ -689,7 +689,7 @@ namespace LegendaryExplorerCore.Dialogue
                         var wwiseEvent = Export.FileRef.GetUExport(wwevents[0].Value).GetBinaryData<WwiseEvent>();
                         foreach (var link in wwiseEvent.Links)
                         {
-                            if (link.WwiseBanks.FirstOrDefault() is UIndex bankIdx)
+                            if (link.WwiseBanks.FirstOrDefault() is int bankIdx and > 0)
                             {
                                 WwiseBank = Export.FileRef.GetUExport(bankIdx);
                                 break;

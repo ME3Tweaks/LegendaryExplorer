@@ -319,7 +319,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                             item.AddSignificantIssue(localizationDelegate(ME3XL.string_interp_warningExportStackElementOutsideTables, prefix, 1, stack2), exp);
                         }
                     }
-                    else if (exp.TemplateOwnerClassIdx is var toci && toci >= 0)
+                    else if (exp.TemplateOwnerClassIdx is var toci and >= 0)
                     {
                         var TemplateOwnerClassIdx = EndianReader.ToInt32(exp.DataReadOnly, toci, exp.FileRef.Endian);
                         if (TemplateOwnerClassIdx != 0 && !package.IsEntry(TemplateOwnerClassIdx))
@@ -345,20 +345,20 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 {
                     if (!exp.IsDefaultObject && ObjectBinary.From(exp) is ObjectBinary objBin)
                     {
-                        List<(UIndex, string)> indices = objBin.GetUIndexes(exp.FileRef.Game);
-                        foreach ((UIndex uIndex, string propName) in indices)
+                        List<int> indices = objBin.GetUIndexes(exp.FileRef.Game);
+                        foreach (int uIndex in indices)
                         {
-                            if (uIndex.value != 0 && !exp.FileRef.IsEntry(uIndex.value))
+                            if (uIndex != 0 && !exp.FileRef.IsEntry(uIndex))
                             {
-                                item.AddSignificantIssue(localizationDelegate(ME3XL.string_interp_warningBinaryReferenceOutsideTables, prefix, uIndex.value), exp);
+                                item.AddSignificantIssue(localizationDelegate(ME3XL.string_interp_warningBinaryReferenceOutsideTables, prefix, uIndex), exp);
                             }
-                            else if (exp.FileRef.GetEntry(uIndex.value)?.ObjectName.ToString() == @"Trash")
+                            else if (exp.FileRef.GetEntry(uIndex)?.ObjectName.ToString() == @"Trash")
                             {
-                                item.AddSignificantIssue(localizationDelegate(ME3XL.string_interp_warningBinaryReferenceTrashed, prefix, uIndex.value), exp);
+                                item.AddSignificantIssue(localizationDelegate(ME3XL.string_interp_warningBinaryReferenceTrashed, prefix, uIndex), exp);
                             }
-                            else if (exp.FileRef.GetEntry(uIndex.value)?.ObjectName.ToString() == @"ME3ExplorerTrashPackage")
+                            else if (exp.FileRef.GetEntry(uIndex)?.ObjectName.ToString() == @"ME3ExplorerTrashPackage")
                             {
-                                item.AddSignificantIssue(localizationDelegate(ME3XL.string_interp_warningBinaryReferenceTrashed, prefix, uIndex.value), exp);
+                                item.AddSignificantIssue(localizationDelegate(ME3XL.string_interp_warningBinaryReferenceTrashed, prefix, uIndex), exp);
                             }
                         }
 

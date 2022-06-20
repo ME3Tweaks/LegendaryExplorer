@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using LegendaryExplorerCore.Helpers;
+using System.Runtime.CompilerServices;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
+using UIndex = System.Int32;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
@@ -36,15 +36,13 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             };
         }
 
-        public override List<(UIndex, string)> GetUIndexes(MEGame game)
+        public override void ForEachUIndex<TAction>(MEGame game, in TAction action)
         {
-            var uIndexes = new List<(UIndex, string)>();
             foreach ((NameReference lang, BioTlkSet bioTlkSet) in TlkSets)
             {
-                uIndexes.Add(bioTlkSet.Male, $"{lang}: Male");
-                uIndexes.Add(bioTlkSet.Female, $"{lang}: Female");
+                Unsafe.AsRef(action).Invoke(ref bioTlkSet.Male, $"{lang}: Male");
+                Unsafe.AsRef(action).Invoke(ref bioTlkSet.Female, $"{lang}: Female");
             }
-            return uIndexes;
         }
 
         public class BioTlkSet

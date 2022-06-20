@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using LegendaryExplorerCore.Packages;
+﻿using LegendaryExplorerCore.Packages;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
@@ -23,6 +22,12 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             };
         }
 
-        public override List<(UIndex, string)> GetUIndexes(MEGame game) => game >= MEGame.ME3 ? LightMap.GetUIndexes(game) : new List<(UIndex, string)>();
+        public override void ForEachUIndex<TAction>(MEGame game, in TAction action)
+        {
+            if (game >= MEGame.ME3)
+            {
+                LightMap.ForEachUIndex(game, action);
+            }
+        }
     }
 }
