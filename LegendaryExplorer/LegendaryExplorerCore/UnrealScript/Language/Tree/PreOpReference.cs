@@ -9,7 +9,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
         public PreOpDeclaration Operator;
         public Expression Operand;
 
-        public PreOpReference(PreOpDeclaration op, Expression oper, SourcePosition start = null, SourcePosition end = null)
+        public PreOpReference(PreOpDeclaration op, Expression oper, int start = -1, int end = -1)
             : base(ASTNodeType.InOpRef, start, end)
         {
             Operator = op;

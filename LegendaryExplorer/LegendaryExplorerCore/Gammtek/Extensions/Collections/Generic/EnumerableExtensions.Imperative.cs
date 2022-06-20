@@ -10,12 +10,12 @@ namespace LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic
 		{
 			if (source == null)
 			{
-				ThrowHelper.ThrowArgumentNullException("source");
+				ThrowHelper.ThrowArgumentNullException(nameof(source));
 			}
 
 			if (action == null)
 			{
-				ThrowHelper.ThrowArgumentNullException("action");
+				ThrowHelper.ThrowArgumentNullException(nameof(action));
 			}
 
 			foreach (var item in source)
@@ -28,12 +28,12 @@ namespace LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic
 		{
 			if (source == null)
 			{
-				ThrowHelper.ThrowArgumentNullException("source");
+				ThrowHelper.ThrowArgumentNullException(nameof(source));
 			}
 
 			if (action == null)
 			{
-				ThrowHelper.ThrowArgumentNullException("action");
+				ThrowHelper.ThrowArgumentNullException(nameof(action));
 			}
 
 			var i = 0;

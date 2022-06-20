@@ -916,9 +916,21 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         //SirCxyrtyx: These are not exhaustive lists, just the ones that I'm sure about
         private static readonly string[] me1FilesSafeToImportFrom = { "Core.u", "Engine.u", "GameFramework.u", "PlotManagerMap.u", "BIOC_Base.u" };
 
+        private static readonly string[] me1FilesSafeToImportFromPostLoad =
+        {
+            // These files are safe to import from if the file doing the import is post-save (e.g. it is not a seekfree or startup file)
+            
+        };
+
         private static readonly string[] me2FilesSafeToImportFrom =
         {
             "Core.pcc", "Engine.pcc", "GameFramework.pcc", "GFxUI.pcc", "WwiseAudio.pcc", "SFXOnlineFoundation.pcc", "PlotManagerMap.pcc", "SFXGame.pcc", "Startup_INT.pcc"
+        };
+
+        private static readonly string[] me2FilesSafeToImportFromPostLoad =
+        {
+            // These files are safe to import from if the file doing the import is post-save (e.g. it is not a seekfree or startup file)
+            
         };
 
         private static readonly string[] me3FilesSafeToImportFrom =
@@ -929,6 +941,12 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             "Startup.pcc", "GesturesConfig.pcc", "BIOG_Humanoid_MASTER_MTR_R.pcc", "BIOG_HMM_HED_PROMorph.pcc"
         };
 
+        private static readonly string[] me3FilesSafeToImportFromPostLoad =
+        {
+            // These files are safe to import from if the file doing the import is post-save (e.g. it is not a seekfree or startup file)
+            "BIO_COMMON.pcc", 
+            "GesturesConfig.pcc" // Some animations
+        };
         //TODO: make LE lists more exhaustive
         private static readonly string[] le1FilesSafeToImportFrom =
         {
@@ -938,9 +956,22 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             // EXCEPT ON STA MAPS!!
         };
 
+        private static readonly string[] le1FilesSafeToImportFromPostLoad =
+        {
+            // These files are safe to import from if the file doing the import is post-save (e.g. it is not a seekfree or startup file)
+            
+        };
+
         private static readonly string[] le2FilesSafeToImportFrom =
         {
             "Core.pcc", "Engine.pcc", "GFxUI.pcc", "WwiseAudio.pcc", "SFXOnlineFoundation.pcc", "PlotManagerMap.pcc", "SFXGame.pcc", "Startup_INT.pcc"
+        };
+
+        private static readonly string[] le2FilesSafeToImportFromPostLoad =
+        {
+            // These files are safe to import from if the file doing the import is post-save (e.g. it is not a seekfree or startup file)
+
+            // Add DLC startup files here?
         };
 
         private static readonly string[] le3FilesSafeToImportFrom =
@@ -950,12 +981,86 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             "Core.pcc", "Engine.pcc", "Startup.pcc", "GameFramework.pcc", "GFxUI.pcc", "WwiseAudio.pcc", "SFXOnlineFoundation.pcc", "SFXGame.pcc",
         };
 
-        public static bool IsSafeToImportFrom(string path, MEGame game)
+        private static readonly string[] le3FilesSafeToImportFromPostLoad =
+        {
+            // These files are safe to import from if the file doing the import is post-save (e.g. it is not a seekfree or startup file)
+            "BIO_COMMON.pcc",
+            "GesturesConfig.pcc" // Some animations
+            
+            // Add DLC startup files here
+        };
+
+        /// <summary>
+        /// Determines if a file "should" be safe to import from. In order to test postload files, a sourceFilePath must be provided.
+        /// </summary>
+        /// <param name="path">Full instanced path of the import to test</param>
+        /// <param name="game">The game to check against</param>
+        /// <param name="sourceFilePath">The file path the import is in - if not provided, only global safe files will be included</param>
+        /// <returns></returns>
+        public static bool IsSafeToImportFrom(string path, MEGame game, string sourceFilePath = null)
         {
             string fileName = Path.GetFileName(path);
-            return FilesSafeToImportFrom(game).Any(f => fileName == f);
+
+            IEnumerable<string> fileList = FilesSafeToImportFrom(game);
+            if (sourceFilePath != null)
+            {
+                if (IsPostLoadFile(sourceFilePath, game))
+                    fileList = fileList.Concat(FilesSafeToImportFromPostLoad(game));
+            }
+
+            return fileList.Any(f => fileName == f);
         }
 
+        /// <summary>
+        /// If this file is used (according to BioWare naming rules) after save loads - e.g. BioA files
+        /// </summary>
+        /// <param name="sourceFilePath">Full path of the existing file</param>
+        /// <param name="game">Game to check</param>
+        /// <returns></returns>
+        public static bool IsPostLoadFile(string sourceFilePath, MEGame game)
+        {
+            var postLoadTest = Path.GetFileName(sourceFilePath);
+            if (game.IsGame1())
+            {
+                if (postLoadTest.StartsWith("BIOA_", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    return true;
+                }
+            }
+            else if (game.IsGame2() || game.IsGame3())
+            {
+                // DO NOT ADD BIOG
+                if (postLoadTest.StartsWith("BioA_", StringComparison.InvariantCultureIgnoreCase)||
+                    postLoadTest.StartsWith("BioD_", StringComparison.InvariantCultureIgnoreCase)||
+                    postLoadTest.StartsWith("BioS_", StringComparison.InvariantCultureIgnoreCase)||
+                    postLoadTest.StartsWith("BioP_", StringComparison.InvariantCultureIgnoreCase)||
+                    postLoadTest.StartsWith("BioS_", StringComparison.InvariantCultureIgnoreCase)||
+                    postLoadTest.StartsWith("BioH_", StringComparison.InvariantCultureIgnoreCase)||
+                    postLoadTest.StartsWith("SFXCharacterClass", StringComparison.InvariantCultureIgnoreCase)) // These load after. Technically in Game 2 one loads before (soldier) - not sure if we should filter that out
+                {
+                    return true;
+                }
+
+                if (game == MEGame.LE3)
+                {
+                    // BioNPC is used by LE3 framework. It will have a lot of these and might confuse devs so we mark it as a 
+                    // post load file since it will be common enough for devs.
+                    if (postLoadTest.StartsWith("BioNPC_", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Returns the global list of files that a game roots into memory on game startup and is typically safe to import from
+        /// </summary>
+        /// <param name="game">Game to pull files from</param>
+        /// <returns></returns>
+        /// <exception cref="Exception">If value is not an OT or LE Game 1/2/3. UDK will not throw an exception, just return an empty list</exception>
         public static string[] FilesSafeToImportFrom(MEGame game) =>
             game switch
             {
@@ -967,6 +1072,26 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 MEGame.LE3 => le3FilesSafeToImportFrom,
                 MEGame.UDK => Array.Empty<string>(),
                 _ => throw new Exception($"Cannot lookup safe files for {game}")
+            };
+
+        /// <summary>
+        /// Returns the list of files that a game roots into memory AFTER a save file has loaded - e.g. first level transition. These files are NOT safe to import from unless from specific "post-load"
+        /// files, such as BioP and BioD. This does not include global safe files.
+        /// </summary>
+        /// <param name="game">Game to pull files from</param>
+        /// <returns></returns>
+        /// <exception cref="Exception">If value is not an OT or LE Game 1/2/3. UDK will not throw an exception, just return an empty list</exception>
+        public static string[] FilesSafeToImportFromPostLoad(MEGame game) =>
+            game switch
+            {
+                MEGame.ME1 => me1FilesSafeToImportFromPostLoad,
+                MEGame.ME2 => me2FilesSafeToImportFromPostLoad,
+                MEGame.ME3 => me3FilesSafeToImportFromPostLoad,
+                MEGame.LE1 => le1FilesSafeToImportFromPostLoad,
+                MEGame.LE2 => le2FilesSafeToImportFromPostLoad,
+                MEGame.LE3 => le3FilesSafeToImportFromPostLoad,
+                MEGame.UDK => Array.Empty<string>(),
+                _ => throw new Exception($"Cannot lookup post-load safe files for {game}")
             };
 
 
@@ -996,92 +1121,44 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         }
 
         /// <summary>
+        /// Returns true if a import can be resolved using the LEC resolver code. This is not 100% accurate to the game. The passed in package cache may have empty (no data) loaded packages
+        /// inserted into it!
+        /// </summary>
+        /// <param name="entry"></param>
+        /// <param name="globalCache"></param>
+        /// <param name="lookupCache"></param>
+        /// <param name="localization"></param>
+        /// <param name="filesToCheck"></param>
+        /// <returns></returns>
+        public static bool CanResolveImport(ImportEntry entry, PackageCache globalCache, PackageCache lookupCache, string localization = "INT", IEnumerable<string> localDirFiles = null)
+        {
+            var exp = ResolveImport(entry, globalCache, lookupCache, localization, true, localDirFiles);
+            return exp != null;
+        }
+
+
+        /// <summary>
         /// Attempts to resolve the import by looking at associated files that are loaded before this one, and by looking at globally loaded files.
         /// </summary>
         /// <param name="entry">The import to resolve</param>
         /// <param name="globalCache">Package cache that contains global files like SFXGame, Startup, etc. The cache will not be modified but can be used to reduce disk I/O.</param>
         /// <param name="lookupCache">Package cache if you wish to keep packages held open, for example if you're resolving many imports</param>
         /// <param name="localization">Three letter localization code, all upper case. Defaults to INT.</param>
+        /// <param name="unsafeLoad">If we are only testing for existence; use unsafe partial load. DO NOT USE THE RESULTING VALUE IF YOU SET THIS TO TRUE</param>
         /// <returns></returns>
-        public static ExportEntry ResolveImport(ImportEntry entry, PackageCache globalCache, PackageCache lookupCache, string localization = "INT")
+        public static ExportEntry ResolveImport(ImportEntry entry, PackageCache globalCache, PackageCache lookupCache, string localization = "INT", bool unsafeLoad = false, IEnumerable<string> localDirFiles = null)
         {
             var entryFullPath = entry.InstancedFullPath;
 
+            CaseInsensitiveDictionary<string> gameFiles = MELoadedFiles.GetFilesLoadedInGame(entry.Game, forceUseCached: true);
 
-            string containingDirectory = Path.GetDirectoryName(entry.FileRef.FilePath);
-            var filesToCheck = new List<string>();
-            CaseInsensitiveDictionary<string> gameFiles = MELoadedFiles.GetFilesLoadedInGame(entry.Game);
+            var filesToCheck = GetPossibleImportFiles(entry, localization);
 
-            string upkOrPcc = entry.Game == MEGame.ME1 ? ".upk" : ".pcc";
-            // Check if there is package that has this name. This works for things like resolving SFXPawn_Banshee
-            bool addPackageFile = gameFiles.TryGetValue(entry.ObjectName + upkOrPcc, out var efxPath) && !filesToCheck.Contains(efxPath);
+            string containingDirectory = null;
 
-            // Let's see if there is same-named top level package folder file. This will resolve class imports from SFXGame, Engine, etc.
-            IEntry p = entry.Parent;
-            if (p != null)
+            foreach (var fileName in filesToCheck)
             {
-                while (p.Parent != null)
-                {
-                    p = p.Parent;
-                }
-
-                if (p.ClassName == "Package")
-                {
-                    if (gameFiles.TryGetValue($"{p.ObjectName}{upkOrPcc}", out var efPath) && !filesToCheck.Contains(efxPath))
-                    {
-                        filesToCheck.Add(Path.GetFileName(efPath));
-                    }
-                    else if (entry.Game == MEGame.ME1)
-                    {
-                        if (gameFiles.TryGetValue(p.ObjectName + ".u", out var path) && !filesToCheck.Contains(efxPath))
-                        {
-                            filesToCheck.Add(Path.GetFileName(path));
-                        }
-                    }
-                }
-            }
-
-            //add related files that will be loaded at the same time (eg. for BioD_Nor_310, check BioD_Nor_310_LOC_INT, BioD_Nor, and BioP_Nor)
-            filesToCheck.AddRange(GetPossibleAssociatedFiles(entry.FileRef, localization));
-
-            if (addPackageFile)
-            {
-                filesToCheck.Add(Path.GetFileName(efxPath));
-            }
-
-            //if (entry.Game == MEGame.ME3)
-            //{
-            //    // Look in BIOP_MP_Common. This is not a 'safe' file but it is always loaded in MP mode and will be commonly referenced by MP files
-            //    if (gameFiles.TryGetValue("BIOP_MP_COMMON.pcc", out var efPath))
-            //    {
-            //        filesToCheck.Add(Path.GetFileName(efPath));
-            //    }
-            //}
-
-
-            //add base definition files that are always loaded (Core, Engine, etc.)
-            foreach (var fileName in FilesSafeToImportFrom(entry.Game))
-            {
-                if (gameFiles.TryGetValue(fileName, out var efPath))
-                {
-                    filesToCheck.Add(Path.GetFileName(efPath));
-                }
-            }
-
-            //add startup files (always loaded)
-            IEnumerable<string> startups;
-            if (entry.Game.IsGame2() || entry.Game is MEGame.LE1)
-            {
-                startups = gameFiles.Keys.Where(x => x.Contains("Startup_", StringComparison.InvariantCultureIgnoreCase) && x.Contains($"_{localization}", StringComparison.InvariantCultureIgnoreCase)); //me2 this will unfortunately include the main startup file
-            }
-            else
-            {
-                startups = gameFiles.Keys.Where(x => x.Contains("Startup_", StringComparison.InvariantCultureIgnoreCase)); //me2 this will unfortunately include the main startup file
-            }
-
-            foreach (var fileName in filesToCheck.Concat(startups.Select(x => Path.GetFileName(gameFiles[x]))))
-            {
-                if (gameFiles.TryGetValue(fileName, out var fullgamepath) && File.Exists(fullgamepath))
+                if (gameFiles.TryGetValue(fileName, out var fullgamepath))
                 {
                     var export = containsImportedExport(fullgamepath);
                     if (export != null)
@@ -1091,8 +1168,11 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 }
 
                 //Try local.
+                containingDirectory ??= Path.GetDirectoryName(entry.FileRef.FilePath);
                 var localPath = Path.Combine(containingDirectory, fileName);
-                if (!localPath.Equals(fullgamepath, StringComparison.InvariantCultureIgnoreCase) && File.Exists(localPath))
+                if (!localPath.Equals(fullgamepath, StringComparison.InvariantCultureIgnoreCase) && (
+                        (localDirFiles != null && localDirFiles.Contains(localPath, StringComparer.InvariantCultureIgnoreCase))
+                                                                                                     || (localDirFiles == null && File.Exists(localPath))))
                 {
                     var export = containsImportedExport(localPath);
                     if (export != null)
@@ -1102,6 +1182,20 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 }
             }
             return null;
+
+
+            IMEPackage openPackageMethod(string packagePath)
+            {
+                if (unsafeLoad)
+                {
+                    // Load no export data - we only care about the table data
+                    return MEPackageHandler.UnsafePartialLoad(packagePath, x => false);
+                }
+                else
+                {
+                    return MEPackageHandler.OpenMEPackage(packagePath, forceLoadFromDisk: true);
+                }
+            }
 
             //Perform check and lookup
             ExportEntry containsImportedExport(string packagePath)
@@ -1113,7 +1207,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     package = globalCache.GetCachedPackage(packagePath, false);
                 }
 
-                package ??= lookupCache != null ? lookupCache.GetCachedPackage(packagePath) : MEPackageHandler.OpenMEPackage(packagePath, forceLoadFromDisk: true);
+                package ??= lookupCache != null ? lookupCache.GetCachedPackage(packagePath, openPackageMethod: openPackageMethod) : openPackageMethod(packagePath);
 
                 var packName = Path.GetFileNameWithoutExtension(packagePath);
                 var packageParts = entryFullPath.Split('.').ToList();
@@ -1149,6 +1243,120 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 return package.FindExport(entryFullPath);
             }
         }
+
+        /// <summary>
+        /// Gets the list of files that an import entry can potentially reference - this is not the same as the game, but is a user
+        /// attempt to mimic it (it is unlikely to be 100% accurate)
+        /// </summary>
+        /// <param name="entry">Import entry to check</param>
+        /// <returns>List of filenames of POSSIBLE associated sources, they may not exist</returns>
+        public static List<string> GetPossibleImportFiles(ImportEntry entry, string localization = @"INT")
+        {
+            return GetPossibleImportFiles(entry.FileRef, entry, localization);
+        }
+
+        /// <summary>
+        /// Returns the list of files that a file might try to import from. This list is not 100% accurate, but an attempt to mimic BioWare's system
+        /// </summary>
+        /// <param name="package">Package file that is being checked</param>
+        /// <param name="entry">The import being checked - this can be null if you only want package-file possibilities</param>
+        /// <param name="localization">Localization to return files for</param>
+        /// <returns>List of filenames of potential files imported from - this does not include filepaths and not all files will be guaranteed to exist</returns>
+        public static List<string> GetPossibleImportFiles(IMEPackage package, ImportEntry entry, string localization = @"INT")
+        {
+
+            var gameFiles = MELoadedFiles.GetFilesLoadedInGame(package.Game, forceUseCached: true);
+
+            List<string> filesToCheck = new List<string>();
+
+            // 06/12/2022 - Disabled this code since we have a more definitive list of files safe to import from.
+            // This just added dupes to the list and worked under assumption that you could import from a SeekFreePackage like
+            // SFXPawn_Banshee - which was false, it must have been dynamic loaded
+
+            //string upkOrPcc = package.Game == MEGame.ME1 ? ".upk" : ".pcc";
+            // Check if there is package that has this name. This works for things like resolving SFXPawn_Banshee
+            //if (entry != null)
+            //{
+            //    bool addPackageFile = gameFiles.TryGetValue(entry.ObjectName + upkOrPcc, out var efxPath) && !filesToCheck.Contains(efxPath);
+
+            //    // Let's see if there is same-named top level package folder file. This will resolve class imports from SFXGame, Engine, etc.
+            //    IEntry p = entry.Parent;
+            //    if (p != null)
+            //    {
+            //        while (p.Parent != null)
+            //        {
+            //            p = p.Parent;
+            //        }
+
+            //        if (p.ClassName == "Package")
+            //        {
+            //            if (gameFiles.TryGetValue($"{p.ObjectName}{upkOrPcc}", out var efPath) && !filesToCheck.Contains(efxPath))
+            //            {
+            //                filesToCheck.Add(Path.GetFileName(efPath));
+            //            }
+            //            else if (package.Game == MEGame.ME1)
+            //            {
+            //                if (gameFiles.TryGetValue(p.ObjectName + ".u", out var path) && !filesToCheck.Contains(efxPath))
+            //                {
+            //                    filesToCheck.Add(Path.GetFileName(path));
+            //                }
+            //            }
+            //        }
+            //    }
+            //    if (addPackageFile)
+            //    {
+            //        filesToCheck.Add(Path.GetFileName(efxPath));
+            //    }
+            //}
+
+            //add related files that will be loaded at the same time (eg. for BioD_Nor_310, check BioD_Nor_310_LOC_INT, BioD_Nor, and BioP_Nor)
+            filesToCheck.AddRange(GetPossibleAssociatedFiles(package, localization));
+
+            //if (entry.Game == MEGame.ME3)
+            //{
+            //    // Look in BIOP_MP_Common. This is not a 'safe' file but it is always loaded in MP mode and will be commonly referenced by MP files
+            //    if (gameFiles.TryGetValue("BIOP_MP_COMMON.pcc", out var efPath))
+            //    {
+            //        filesToCheck.Add(Path.GetFileName(efPath));
+            //    }
+            //}
+
+
+            //add base definition files that are always loaded (Core, Engine, etc.)
+            foreach (var fileName in FilesSafeToImportFrom(package.Game))
+            {
+                if (gameFiles.TryGetValue(fileName, out var efPath))
+                {
+                    filesToCheck.Add(Path.GetFileName(efPath));
+                }
+            }
+
+            // Add post-load files if we determine our local file is a post-load
+            if (package.FilePath != null && IsPostLoadFile(package.FilePath, package.Game))
+            {
+                foreach (var fileName in FilesSafeToImportFromPostLoad(package.Game))
+                {
+                    if (gameFiles.TryGetValue(fileName, out var efPath))
+                    {
+                        filesToCheck.Add(Path.GetFileName(efPath));
+                    }
+                }
+            }
+
+            //add startup files (always loaded)
+            /* IEnumerable<string> startups;
+            if (entry.Game.IsGame2() || entry.Game is MEGame.LE1)
+            {
+                startups = gameFiles.Keys.Where(x => x.Contains("Startup_", StringComparison.InvariantCultureIgnoreCase) && x.Contains($"_{localization}", StringComparison.InvariantCultureIgnoreCase)); //me2 this will unfortunately include the main startup file
+            }
+            else
+            {
+                startups = gameFiles.Keys.Where(x => x.Contains("Startup_", StringComparison.InvariantCultureIgnoreCase)); //me2 this will unfortunately include the main startup file
+            }*/
+
+            return filesToCheck;
+        }
+
         public static List<string> GetPossibleAssociatedFiles(IMEPackage package, string localization = "INT", bool includeNonBioPRelated = true)
         {
             // This method doesn't really work for files loaded from a stream as they have null FilePath - like certain files in M3
@@ -1162,6 +1370,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             var isBioXfile = filenameWithoutExtension is not null &&
                              filenameWithoutExtension.Length > 5 &&
                              filenameWithoutExtension.StartsWith("bio") &&
+                             !filenameWithoutExtension.StartsWith("biog") && // BioG are cooked seek free and are not meant to be imported from
                              filenameWithoutExtension[4] == '_';
             if (isBioXfile)
             {

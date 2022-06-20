@@ -18,7 +18,7 @@ namespace LegendaryExplorerCore.Packages
 {
     [DebuggerDisplay("{Game} ExportEntry | {UIndex} {ObjectName.Instanced}({ClassName}) in {System.IO.Path.GetFileName(_fileRef.FilePath)}")]
     [DoNotNotify]//disable Fody/PropertyChanged for this class. Do notification manually
-    public sealed class ExportEntry : INotifyPropertyChanged, IEntry
+    public sealed class ExportEntry :  IEntry
     {
         private readonly IMEPackage _fileRef;
         public IMEPackage FileRef => _fileRef;
@@ -98,7 +98,7 @@ namespace LegendaryExplorerCore.Packages
             _data = ms.ToArray();
             _commonHeaderFields._dataSize = _data.Length;
         }
-
+        
         /// <summary>
         /// Constructor for generating a new export entry
         /// </summary>
@@ -760,8 +760,8 @@ namespace LegendaryExplorerCore.Packages
             }
         }
 
+        private static readonly PropertyChangedEventArgs DataChangedEventArgs = new(nameof(DataChanged));
         bool dataChanged;
-
         public bool DataChanged
         {
             get => dataChanged;
@@ -775,13 +775,13 @@ namespace LegendaryExplorerCore.Packages
                 dataChanged = value;
                 //    if (value)
                 //    {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DataChanged)));
+                PropertyChanged?.Invoke(this, DataChangedEventArgs);
                 //    }
             }
         }
 
+        private static readonly PropertyChangedEventArgs HeaderChangedEventArgs = new(nameof(HeaderChanged));
         bool headerChanged;
-
         public bool HeaderChanged
         {
             get => headerChanged;
@@ -790,12 +790,12 @@ namespace LegendaryExplorerCore.Packages
             {
                 headerChanged = value;
                 EntryHasPendingChanges |= value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HeaderChanged)));
+                PropertyChanged?.Invoke(this, HeaderChangedEventArgs);
             }
         }
 
+        private static readonly PropertyChangedEventArgs EmptyPropertyChangedEventArgs = new("");
         private bool _entryHasPendingChanges;
-
         public bool EntryHasPendingChanges
         {
             get => _entryHasPendingChanges;
@@ -804,7 +804,7 @@ namespace LegendaryExplorerCore.Packages
                 if (value != _entryHasPendingChanges)
                 {
                     _entryHasPendingChanges = value;
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
+                    PropertyChanged?.Invoke(this, EmptyPropertyChangedEventArgs);
 
                     EntryModifiedChanged?.Invoke(this, EventArgs.Empty);
                 }
@@ -881,9 +881,15 @@ namespace LegendaryExplorerCore.Packages
                     start += count * 2 + 4;
                 }
                 start += 4; //TemplateOwnerClass
-                if (ParentFullPath.Contains("Default__"))
+                IEntry parent = Parent;
+                while (parent is not null)
                 {
-                    start += 8; //TemplateName
+                    if (parent is ExportEntry {IsDefaultObject: true})
+                    {
+                        start += 8; //TemplateName
+                        break;
+                    }
+                    parent = parent.Parent;
                 }
             }
 
@@ -934,7 +940,6 @@ namespace LegendaryExplorerCore.Packages
                     var data = Data;
                     data.OverwriteRange(GetPropertyStart() - 4, EndianBitConverter.GetBytes(value, _fileRef.Endian));
                     Data = data;
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
                 }
             }
         }

@@ -34,7 +34,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
             _ => throw new ArgumentOutOfRangeException()
         };
 
-        public VariableType(string name, SourcePosition start = null, SourcePosition end = null, EPropertyType propType = EPropertyType.None)
+        public VariableType(string name, int start = -1, int end = -1, EPropertyType propType = EPropertyType.None)
             : base(ASTNodeType.VariableType, start, end) 
         {
             Name = name;

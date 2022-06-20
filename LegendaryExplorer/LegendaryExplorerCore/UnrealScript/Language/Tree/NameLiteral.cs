@@ -8,7 +8,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
     {
         public string Value;
 
-        public NameLiteral(string val, SourcePosition start = null, SourcePosition end = null)
+        public NameLiteral(string val, int start = -1, int end = -1)
             : base(ASTNodeType.NameLiteral, start, end)
         {
             Value = val;

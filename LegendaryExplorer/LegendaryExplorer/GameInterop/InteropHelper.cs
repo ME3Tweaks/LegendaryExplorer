@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Pipes;
 using System.Security.Cryptography;
+using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using LegendaryExplorer.GameInterop.InteropTargets;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Misc.AppSettings;
+using LegendaryExplorerCore.Misc.ME3Tweaks;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
@@ -118,7 +121,7 @@ namespace LegendaryExplorer.GameInterop
 
                 return File.Exists(binkPath) && File.Exists(originalBinkPath)
                                              && target.OriginalBinkMD5 == CalculateMD5(originalBinkPath)
-                                             && binkProductName.StartsWith("LEBinkProxy")
+                                             && binkProductName.StartsWith("LEBinkProxy", StringComparison.CurrentCultureIgnoreCase)
                                              && binkVersionInfo.ProductMajorPart >= 2;
             }
             return false;
@@ -169,18 +172,31 @@ namespace LegendaryExplorer.GameInterop
 
         public static void OpenASILoaderDownload(MEGame game)
         {
-            if (game.IsLEGame())
+            // 06/06/2022 
+            // Allow bink installation request from ME3TweaksModManager if 
+            // the build number is 126 or higher (ME3Tweaks Mod Manager 8.0 Beta 3 - June 06 2022)
+
+            bool requestedInstall = false;
+            if (ModManagerIntegration.GetModManagerBuildNumber() >= 126)
             {
-                var result =MessageBox.Show("Install the ASI loader with ME3Tweaks Mod Manager, in the 'Tools > Bink Bypasses' menu. Click OK to open the Mod Manager download page.",
-                    "ASI Loader Installation Instructions", MessageBoxButton.OKCancel, MessageBoxImage.Information);
-                if (result == MessageBoxResult.OK)
-                {
-                    HyperlinkExtensions.OpenURL("https://me3tweaks.com/modmanager/");
-                }
+                requestedInstall = ModManagerIntegration.RequestBinkInstallation(game);
             }
-            else
+
+            if (!requestedInstall)
             {
-                HyperlinkExtensions.OpenURL("https://github.com/Erik-JS/masseffect-binkw32");
+                if (game.IsLEGame())
+                {
+                    var result = MessageBox.Show("Install the ASI loader with ME3Tweaks Mod Manager, in the 'Tools > Bink Bypasses' menu. Click OK to open the Mod Manager download page.",
+                        "ASI Loader Installation Instructions", MessageBoxButton.OKCancel, MessageBoxImage.Information);
+                    if (result == MessageBoxResult.OK)
+                    {
+                        HyperlinkExtensions.OpenURL("https://me3tweaks.com/modmanager/");
+                    }
+                }
+                else
+                {
+                    HyperlinkExtensions.OpenURL("https://github.com/Erik-JS/masseffect-binkw32");
+                }
             }
         }
 
@@ -208,6 +224,39 @@ namespace LegendaryExplorer.GameInterop
             }
 
             return false;
+        }
+
+
+        private static NamedPipeClientStream client;
+        // private StreamReader pipeReader; // Reading pipes is way more complicated
+        private static StreamWriter pipeWriter;
+
+        /// <summary>
+        /// Sends a message to a game via a pipe. The game must have the LEX Interop ASI installed that handles the command for it to do anything.
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="game"></param>
+        public static void SendMessageToGame(string message, MEGame game)
+        {
+            if (IsGameClosed(game))
+            {
+                Debug.WriteLine($"{game} is not running! Cannot send command {message}");
+                return;
+            }
+
+            // We make new pipe and connect to game every command
+            client = new NamedPipeClientStream($"LEX_{game}_COMM_PIPE");
+            client.Connect();
+            //pipeReader = new StreamReader(client);
+            pipeWriter = new StreamWriter(client);
+
+            // For debugging
+            // Thread.Sleep(3000);
+
+            pipeWriter.WriteLine(message); // Messages will end with \r\n when received in c++!
+            pipeWriter.Flush();
+
+            client.Dispose();
         }
     }
 }

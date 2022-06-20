@@ -8,8 +8,9 @@ using System.Threading.Tasks;
 
 namespace LegendaryExplorerCore.DebugTools
 {
-    public class DebugUtilities
+    public static class DebugUtilities
     {
+        [Conditional("DEBUG")]
         public static void CompareByteArrays(byte[] arr1, byte[] arr2)
         {
             Debug.WriteLine($"Lengths: {arr1.Length} vs {arr2.Length}");

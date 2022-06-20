@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
+using LegendaryExplorer.Tools.Sequence_Editor;
 using LegendaryExplorer.Tools.WwiseEditor;
-using UMD.HCIL.Piccolo;
-using UMD.HCIL.GraphEditor;
-using UMD.HCIL.Piccolo.Event;
+using Piccolo;
+using Piccolo.Event;
 
 namespace LegendaryExplorer.Tools.WwiseEditor
 {
@@ -228,11 +228,11 @@ namespace LegendaryExplorer.Tools.WwiseEditor
                         }
                     }
 
-                    if (e.Canvas is GraphEditor g)
+                    if (e.Canvas is WwiseGraphEditor g)
                     {
                         foreach (PNode node in g.nodeLayer)
                         {
-                            if (node is WwiseHircObjNode obj && obj.IsSelected && obj != e.PickedNode)
+                            if (node is WwiseHircObjNode { IsSelected: true } obj && obj != e.PickedNode)
                             {
                                 SizeF s = e.GetDeltaRelativeTo(obj);
                                 s = obj.LocalToParent(s);

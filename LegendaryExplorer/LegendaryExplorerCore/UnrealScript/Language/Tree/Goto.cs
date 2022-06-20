@@ -13,7 +13,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 
         public ForEachLoop ContainingForEach;
 
-        public Goto(string labelName, SourcePosition start = null, SourcePosition end = null, ushort jumpLoc = 0) : base(jumpLoc)
+        public Goto(string labelName, int start = -1, int end = -1, ushort jumpLoc = 0) : base(jumpLoc)
         {
             Type = ASTNodeType.Goto;
             StartPos = start;

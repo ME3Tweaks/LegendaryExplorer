@@ -1,25 +1,24 @@
 ﻿using LegendaryExplorerCore.UnrealScript.Language.Tree;
-using LegendaryExplorerCore.UnrealScript.Utilities;
 
 namespace LegendaryExplorerCore.UnrealScript.Compiling.Errors
 {
     public class ExternalError : Error
     {
-        public Class Class;
-        public SourcePosition Start;
+        private readonly Class Class;
+        private readonly int Line;
 
-        public ExternalError(string msg, Class cls, SourcePosition start = null) : base(msg)
+        public ExternalError(string msg, Class cls, int line = -1) : base(msg)
         {
             Class = cls;
-            Start = start;
+            Line = line;
         }
 
         public override string ToString()
         {
             string className = Class.Name;
-            if (Start != null)
+            if (Line != -1)
             {
-                return $"ERROR in class {className}| Line {Start.Line} |: {Message}";
+                return $"ERROR in class {className}| Line {Line} |: {Message}";
             }
             return $"ERROR in class {className}: {Message}";
         }

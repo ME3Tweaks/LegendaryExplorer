@@ -44,7 +44,7 @@
     <DefineConstants>WINDOWS;AZURE</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Update="Piccolo\PCanvas.cs">
+    <Compile Update="PCanvas.cs">
       <SubType>Component</SubType>
     </Compile>
   </ItemGroup>

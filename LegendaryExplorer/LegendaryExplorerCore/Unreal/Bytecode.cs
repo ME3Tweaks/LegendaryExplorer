@@ -885,6 +885,10 @@ namespace LegendaryExplorerCore.Unreal
                         var innerTok = ReadToken(start + 1, export);
                         newTok.text = "GotoLabel: " + innerTok.text;
                         newTok.stop = false;
+                        // 06/19/2022 - Copy the inner token inPackageReferences list
+                        // so it relinks the token name, since this just discards it it seems.
+                        // - Mgamerz
+                        newTok.inPackageReferences = innerTok.inPackageReferences;
                         newTok.raw = memory.Slice(start, 1 + innerTok.raw.Length);
                         //newTok.raw = start+ + newTok
                         end = start + 1 + innerTok.raw.Length;

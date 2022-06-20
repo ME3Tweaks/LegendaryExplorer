@@ -113,19 +113,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             SaveHexChangesCommand = new GenericCommand(SaveHexChanges, CanSaveHexChanges);
         }
 
-        private bool CanSaveHexChanges()
-        {
-            if (CurrentLoadedEntry == null || !HexChanged) return false;
-
-            return true;
-        }
+        private bool CanSaveHexChanges() => CurrentLoadedEntry != null && HexChanged;
 
         private void SaveHexChanges()
         {
-            var m = new MemoryStream();
-            for (int i = 0; i < headerByteProvider.Length; i++)
-                m.WriteByte(headerByteProvider.ReadByte(i));
-            CurrentLoadedEntry.SetHeaderValuesFromByteArray(m.ToArray());
+            var bytes = GetHeaderBytes();
+            CurrentLoadedEntry.SetHeaderValuesFromByteArray(bytes.ToArray());
             switch (CurrentLoadedEntry)
             {
                 case ExportEntry exportEntry:
@@ -151,7 +144,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 allEntriesNew.Add(pcc.Imports[i]);
             }
-            allEntriesNew.Add(ZeroUIndexClassEntry.instance);
+            allEntriesNew.Add(ZeroUIndexClassEntry.Instance);
             foreach (ExportEntry exp in pcc.Exports)
             {
                 allEntriesNew.Add(exp);
@@ -284,7 +277,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 if (exportEntry.IsClass)
                 {
-                    InfoTab_Class_ComboBox.SelectedItem = ZeroUIndexClassEntry.instance; //Class, 0
+                    InfoTab_Class_ComboBox.SelectedItem = ZeroUIndexClassEntry.Instance; //Class, 0
                 }
                 else
                 {
@@ -297,7 +290,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 }
                 else
                 {
-                    InfoTab_Superclass_ComboBox.SelectedItem = ZeroUIndexClassEntry.instance; //Class, 0
+                    InfoTab_Superclass_ComboBox.SelectedItem = ZeroUIndexClassEntry.Instance; //Class, 0
                 }
 
                 if (exportEntry.HasParent)
@@ -306,7 +299,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 }
                 else
                 {
-                    InfoTab_PackageLink_ComboBox.SelectedItem = ZeroUIndexClassEntry.instance; //Class, 0
+                    InfoTab_PackageLink_ComboBox.SelectedItem = ZeroUIndexClassEntry.Instance; //Class, 0
                 }
 
                 if (exportEntry.HasArchetype)
@@ -315,7 +308,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 }
                 else
                 {
-                    InfoTab_Archetype_ComboBox.SelectedItem = ZeroUIndexClassEntry.instance; //Class, 0
+                    InfoTab_Archetype_ComboBox.SelectedItem = ZeroUIndexClassEntry.Instance; //Class, 0
                 }
             }
             else if (entry is ImportEntry importEntry)
@@ -326,7 +319,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 }
                 else
                 {
-                    InfoTab_PackageLink_ComboBox.SelectedItem = ZeroUIndexClassEntry.instance; //Class, 0
+                    InfoTab_PackageLink_ComboBox.SelectedItem = ZeroUIndexClassEntry.Instance; //Class, 0
                 }
             }
         }
@@ -472,7 +465,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 var unrealIndex = selectedClassIndex - CurrentLoadedEntry.FileRef.ImportCount;
                 if (unrealIndex == CurrentLoadedEntry?.UIndex)
                 {
-                    var exp = CurrentLoadedEntry as ExportEntry;
+                    var exp = (ExportEntry)CurrentLoadedEntry;
                     InfoTab_Class_ComboBox.SelectedIndex = exp.Class != null ? exp.Class.UIndex + CurrentLoadedEntry.FileRef.ImportCount : CurrentLoadedEntry.FileRef.ImportCount;
                     MessageBox.Show("Cannot set class to self, this will cause infinite recursion in game.");
                     return;
@@ -518,7 +511,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 if (unrealIndex == CurrentLoadedEntry?.UIndex)
                 {
                     MessageBox.Show("Cannot set superclass to self, this will cause infinite recursion in game.");
-                    var exp = CurrentLoadedEntry as ExportEntry;
+                    var exp = (ExportEntry)CurrentLoadedEntry;
 
                     if (exp.HasSuperClass)
                     {
@@ -570,7 +563,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 if (unrealIndex == CurrentLoadedEntry?.UIndex)
                 {
                     MessageBox.Show("Cannot set archetype to self, this will cause infinite recursion in game.");
-                    var exp = CurrentLoadedEntry as ExportEntry;
+                    var exp = (ExportEntry)CurrentLoadedEntry;
 
                     if (exp.HasArchetype)
                     {
@@ -592,7 +585,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             if (!loadingNewData && InfoTab_PackageFile_ComboBox.SelectedIndex >= 0)
             {
-                var selectedNameIndex = InfoTab_PackageFile_ComboBox.SelectedIndex;
+                int selectedNameIndex = InfoTab_PackageFile_ComboBox.SelectedIndex;
                 headerByteProvider.WriteBytes(HEADER_OFFSET_IMP_IDXPACKAGEFILE, BitConverter.GetBytes(selectedNameIndex));
                 Header_Hexbox.Refresh();
             }
@@ -672,9 +665,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             if (!loadingNewData)
             {
                 EObjectFlags newFlags = 0U;
-                foreach (var flag in InfoTab_Flags_ComboBox.Items)
+                foreach (object flag in InfoTab_Flags_ComboBox.Items)
                 {
-                    if (InfoTab_Flags_ComboBox.ItemContainerGenerator.ContainerFromItem(flag) is SelectorItem selectorItem && selectorItem.IsSelected == true)
+                    if (InfoTab_Flags_ComboBox.ItemContainerGenerator.ContainerFromItem(flag) is SelectorItem { IsSelected: true })
                     {
                         newFlags |= (EObjectFlags)flag;
                     }
@@ -767,6 +760,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             Header_Hexbox_Host?.Dispose();
             Header_Hexbox_Host = null;
             AllEntriesList.Clear();
+            _currentLoadedEntry = null;
         }
 
         /// <summary>
@@ -774,7 +768,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         /// </summary>
         private class ZeroUIndexClassEntry
         {
-            public static readonly ZeroUIndexClassEntry instance = new();
+            public static readonly ZeroUIndexClassEntry Instance = new();
 
             private ZeroUIndexClassEntry() { }
 
@@ -783,13 +777,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             public int UIndex => 0;
         }
 
-        private byte[] GetHeaderBytes()
-        {
-            MemoryStream m = new MemoryStream();
-            for (int i = 0; i < headerByteProvider.Length; i++)
-                m.WriteByte(headerByteProvider.ReadByte(i));
-            return m.ToArray();
-        }
+        private ReadOnlySpan<byte> GetHeaderBytes() => headerByteProvider.Span;
 
         private void GoToExportClass_Clicked(object sender, MouseButtonEventArgs e)
         {
@@ -806,7 +794,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             var header = GetHeaderBytes();
             if (header.Length >= HEADER_OFFSET_EXP_IDXCLASS + 4)
             {
-                var uindex = EndianReader.ToInt32(header, HEADER_OFFSET_EXP_IDXSUPERCLASS, CurrentLoadedEntry.FileRef.Endian);
+                int uindex = EndianReader.ToInt32(header, HEADER_OFFSET_EXP_IDXSUPERCLASS, CurrentLoadedEntry.FileRef.Endian);
                 GoToEntryUIndex(uindex);
             }
         }
@@ -816,27 +804,25 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             var header = GetHeaderBytes();
             if (header.Length >= HEADER_OFFSET_EXP_IDXCLASS + 4)
             {
-                var uindex = EndianReader.ToInt32(header, HEADER_OFFSET_EXP_IDXARCHETYPE, CurrentLoadedEntry.FileRef.Endian);
+                int uindex = EndianReader.ToInt32(header, HEADER_OFFSET_EXP_IDXARCHETYPE, CurrentLoadedEntry.FileRef.Endian);
                 GoToEntryUIndex(uindex);
             }
         }
 
-        private void GoToEntryUIndex(int UIndex)
+        private void GoToEntryUIndex(int uIndex)
         {
-            if (CurrentLoadedEntry.FileRef.TryGetEntry(UIndex, out var entry))
+            if (CurrentLoadedEntry.FileRef.TryGetEntry(uIndex, out IEntry entry))
             {
                 if (entry is ExportEntry exp)
                 {
-                    Window w = Window.GetWindow(this);
-                    if (w is PackageEditorWindow pe)
+                    if (Window.GetWindow(this) is PackageEditorWindow pe)
                     {
                         pe.GoToNumber(exp.UIndex);
                     }
                 }
                 else if (entry is ImportEntry imp)
                 {
-                    var resolved = EntryImporter.ResolveImport(imp);
-                    if (resolved != null)
+                    if (EntryImporter.ResolveImport(imp) is ExportEntry resolved)
                     {
                         var p = new PackageEditorWindow();
                         p.Show();

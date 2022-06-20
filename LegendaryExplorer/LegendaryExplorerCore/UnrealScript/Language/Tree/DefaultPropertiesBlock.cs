@@ -6,7 +6,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 {
     public class DefaultPropertiesBlock : CodeBody
     {
-        public DefaultPropertiesBlock(List<Statement> contents = null, SourcePosition start = null, SourcePosition end = null)
+        public DefaultPropertiesBlock(List<Statement> contents = null, int start = -1, int end = -1)
             :base(contents, start, end)
         {
             Type = ASTNodeType.DefaultPropertiesBlock;

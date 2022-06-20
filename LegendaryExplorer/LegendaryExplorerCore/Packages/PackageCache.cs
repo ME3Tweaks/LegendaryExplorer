@@ -36,7 +36,7 @@ namespace LegendaryExplorerCore.Packages
         /// <summary>
         /// The list of packages that will not be dropped from last access staleness
         /// </summary>
-        private List<string> ResidentPackages = new List<string>();
+        private List<string> ResidentPackages = new();
 
         /// <summary>
         /// The maximum amount of packages this cache can hold open at a time. The default is unlimited (0). Global packages like SFXGame, Core, etc do not count against this.
@@ -45,12 +45,19 @@ namespace LegendaryExplorerCore.Packages
         public int CacheMaxSize { get; set; }
 
         /// <summary>
-        /// Thread-safe package cache fetch. Can be passed to various methods to help expedite operations by preventing package reopening. Packages opened with this method do not use the global LegendaryExplorerCore caching system and will always load from disk if not in this local cache.
+        /// When the <see cref="PackageCache"/> opens a package, should it always load from disk, or should it acquire one from the global cache if possible.
+        /// Defaults to <value>true</value>
+        /// </summary>
+        public bool AlwaysOpenFromDisk { get; init; } = true;
+
+        /// <summary>
+        /// Thread-safe package cache fetch. Can be passed to various methods to help expedite operations by preventing package reopening.
+        /// If <see cref="AlwaysOpenFromDisk"/> is true, then packages opened with this method will not use the global LegendaryExplorerCore caching system and will always load from disk if not in this local cache.
         /// </summary>
         /// <param name="packagePath"></param>
         /// <param name="openIfNotInCache">Open the specified package if it is not in the cache, and add it to the cache</param>
         /// <returns></returns>
-        public virtual IMEPackage GetCachedPackage(string packagePath, bool openIfNotInCache = true)
+        public virtual IMEPackage GetCachedPackage(string packagePath, bool openIfNotInCache = true, Func<string, IMEPackage> openPackageMethod = null)
         {
             // Cannot look up null paths
             if (packagePath == null)
@@ -59,7 +66,7 @@ namespace LegendaryExplorerCore.Packages
             // May need way to set maximum size of dictionary so we don't hold onto too much memory.
             lock (syncObj)
             {
-                if (Cache.TryGetValue(packagePath, out var package))
+                if (Cache.TryGetValue(packagePath, out IMEPackage package))
                 {
                     //Debug.WriteLine($@"PackageCache hit: {packagePath}");
                     LastAccessMap[packagePath] = DateTime.Now; // Update access time
@@ -70,8 +77,8 @@ namespace LegendaryExplorerCore.Packages
                 {
                     if (File.Exists(packagePath))
                     {
-                        //Debug.WriteLine($@"PackageCache {guid} load: {packagePath}");
-                        package = MEPackageHandler.OpenMEPackage(packagePath, forceLoadFromDisk: true);
+                        Debug.WriteLine($@"PackageCache {guid} load: {packagePath}");
+                        package = openPackageMethod?.Invoke(packagePath) ?? MEPackageHandler.OpenMEPackage(packagePath, forceLoadFromDisk: AlwaysOpenFromDisk);
                         InsertIntoCache(package);
                         return package;
                     }

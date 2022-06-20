@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.UnrealScript.Analysis.Symbols;
-using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
 using LegendaryExplorerCore.UnrealScript.Language.ByteCode;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
+using LegendaryExplorerCore.UnrealScript.Lexing;
 using LegendaryExplorerCore.UnrealScript.Utilities;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
 
@@ -32,15 +31,12 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
 
         private byte PeekByte => Position < Size ? _data[Position] : (byte)0;
 
-        private byte PrevByte => (byte)(Position > 0 ? _data[Position - 1] : 0);
-
         private Dictionary<ushort, Statement> StatementLocations;
         private Stack<ushort> StartPositions;
         private List<List<Statement>> Scopes;
         private Stack<int> CurrentScope;
         private readonly List<ForEachLoop> decompiledForEachLoops = new();
-
-        private Queue<FunctionParameter> OptionalParams;
+        
         private readonly List<FunctionParameter> Parameters;
         private readonly VariableType ReturnType;
 
@@ -50,7 +46,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
 
         private bool isInContextExpression; // For super lookups
 
-        private Dictionary<ushort, List<string>> ReplicatedProperties; //for decompiling Class replication blocks
+        private readonly Dictionary<ushort, List<string>> ReplicatedProperties; //for decompiling Class replication blocks
 
         private bool CurrentIs(OpCodes val)
         {
@@ -97,8 +93,25 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
 
         public CodeBody Decompile()
         {
-            // Skip native funcs
-            if (DataContainer is UFunction Func && Func.FunctionFlags.Has(EFunctionFlags.Native))
+            Position = 0;
+            _totalPadding = 0;
+            CurrentScope = new Stack<int>();
+            StatementLocations = new Dictionary<ushort, Statement>();
+            StartPositions = new Stack<ushort>();
+            Scopes = new List<List<Statement>>();
+            LabelTable = new List<LabelTableEntry>();
+            ForEachScopes = new Stack<ushort>();
+            var statements = new List<Statement>();
+            var codeBody = new CodeBody(statements);
+
+            //native funcs can have default params
+            if (!DecompileDefaultParameterValues())
+            {
+                ClearToDecompilationError(statements);
+                return codeBody;
+            }
+            
+            if (DataContainer is UFunction func && func.FunctionFlags.Has(EFunctionFlags.Native))
             {
                 var comment = new ExpressionOnlyStatement(new SymbolReference(null, "// Native function"));
                 return new CodeBody(new List<Statement> { comment });
@@ -117,18 +130,6 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 }
             }
 
-            Position = 0;
-            _totalPadding = 0;
-            CurrentScope = new Stack<int>();
-            var statements = new List<Statement>();
-            var codeBody = new CodeBody(statements);
-            StatementLocations = new Dictionary<ushort, Statement>();
-            StartPositions = new Stack<ushort>();
-            Scopes = new List<List<Statement>>();
-            LabelTable = new List<LabelTableEntry>();
-            ForEachScopes = new Stack<ushort>();
-
-            DecompileDefaultParameterValues(statements);
 
             Scopes.Add(statements);
             CurrentScope.Push(Scopes.Count - 1);
@@ -558,8 +559,8 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 {
                     switch (expStmnt.Value)
                     {
-                        case PreOpReference preOp when (preOp.Operator.OperatorKeyword is "++" or "--"):
-                        case PostOpReference postOp when (postOp.Operator.OperatorKeyword is "++" or "--"):
+                        case PreOpReference preOp when (preOp.Operator.OperatorType is TokenType.Increment or TokenType.Decrement):
+                        case PostOpReference postOp when (postOp.Operator.OperatorType is TokenType.Increment or TokenType.Decrement):
                             return true;
                     }
                 }
@@ -615,16 +616,11 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             }
         }
 
-        private void DecompileDefaultParameterValues(List<Statement> statements)
+        private bool DecompileDefaultParameterValues()
         {
             if (DataContainer is UFunction) // Gets all optional params for default value parsing
             {
-                OptionalParams = new Queue<FunctionParameter>();
                 foreach (FunctionParameter param in Parameters.Where(param => param.IsOptional))
-                {
-                    OptionalParams.Enqueue(param);
-                }
-                while (PeekByte is (byte)OpCodes.DefaultParmValue or (byte)OpCodes.Nothing)
                 {
                     StartPositions.Push((ushort)Position);
                     byte token = PopByte();
@@ -635,29 +631,17 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                         var value = DecompileExpression();
                         PopByte(); // Opcodes.EndParmValue
 
-
-                        if (OptionalParams.Count != 0)
-                        {
-                            var parm = OptionalParams.Dequeue();
-                            parm.DefaultParameter = value;
-                            StartPositions.Pop();
-                        }
-                        else
-                        {       // TODO: weird, research how to deal with this
-                            var builder = new CodeBuilderVisitor(); // what a wonderful hack, TODO.
-                            value.AcceptVisitor(builder);
-                            var comment = new SymbolReference(null, "// Orphaned Default Parm: " + builder.GetOutput(), null, null);
-                            var statement = new ExpressionOnlyStatement(comment, null, null);
-                            StatementLocations.Add(StartPositions.Pop(), statement);
-                            statements.Add(statement);
-                        }
+                        
+                        param.DefaultParameter = value;
+                        StartPositions.Pop();
                     }
-                    else
+                    else if (token != (byte)OpCodes.Nothing)
                     {
-                        OptionalParams.Dequeue();
+                        return false;
                     }
                 }
             }
+            return true;
         }
     }
 }

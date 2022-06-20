@@ -24,7 +24,7 @@ namespace LegendaryExplorer.Dialogs
         }
 
         private IMEPackage Pcc;
-        public ObservableCollectionExtended<object> AllEntriesList { get; } = new ObservableCollectionExtended<object>();
+        public ObservableCollectionExtended<object> AllEntriesList { get; } = new();
 
         /// <summary>
         /// Instantiates a EntrySelectorDialog WPF dialog
@@ -70,7 +70,7 @@ namespace LegendaryExplorer.Dialogs
             DataContext = this;
             LoadCommands();
             InitializeComponent();
-            EntrySelector_ComboBox.Focus();
+            EntrySelectorComboBox.Focus();
         }
 
         public static (bool selectedPackageRoot, T selectedEntry) GetEntryWithNoOption<T>(Window owner, IMEPackage pcc, string directionsText = null, Predicate<T> predicate = null) where T : class, IEntry
@@ -99,7 +99,7 @@ namespace LegendaryExplorer.Dialogs
             return (false,null); //No option was picked.
         }
 
-        public static T GetEntry<T>(Window owner, IMEPackage pcc, string directionsText = null, Predicate<T> predicate = null) where T : class, IEntry
+        public static T GetEntry<T>(Window owner, IMEPackage pcc, string directionsText = null, Predicate<T> predicate = null, IEntry defaultItem = null) where T : class, IEntry
         {
             SupportedTypes supportedInputTypes = SupportedTypes.ExportsAndImports;
             if (typeof(T) == typeof(ExportEntry))
@@ -117,6 +117,10 @@ namespace LegendaryExplorer.Dialogs
                 entryPredicate = entry => predicate((T)entry);
             }
             using var dlg = new EntrySelector(owner, pcc, supportedInputTypes, directionsText, entryPredicate);
+            if (defaultItem is not null)
+            {
+                dlg.EntrySelectorComboBox.SelectedItem = defaultItem;
+            }
             if (dlg.ShowDialog() == true)
             {
                 return dlg.ChosenEntry as T;
@@ -133,14 +137,14 @@ namespace LegendaryExplorer.Dialogs
 
         private bool CanAcceptSelection()
         {
-            return EntrySelector_ComboBox.SelectedItem != null;
+            return EntrySelectorComboBox.SelectedItem != null;
         }
 
         private void AcceptSelection()
         {
             DialogResult = true;
-            ChosenEntry = EntrySelector_ComboBox.SelectedItem as IEntry;
-            ChoseRoot = EntrySelector_ComboBox.SelectedItem is string;
+            ChosenEntry = EntrySelectorComboBox.SelectedItem as IEntry;
+            ChoseRoot = EntrySelectorComboBox.SelectedItem is string;
             Dispose();
         }
 

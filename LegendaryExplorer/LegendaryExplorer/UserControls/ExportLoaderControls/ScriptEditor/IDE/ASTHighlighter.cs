@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Highlighting;
+using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
 {
@@ -9,14 +10,15 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
     {
 
         public IDocument Document { get; }
-        public HighlightingColor DefaultTextColor => null;
+        public HighlightingColor DefaultTextColor { get; }
         readonly WeakLineTracker weakLineTracker;
 
         private readonly SyntaxInfo SyntaxInfo;
 
         public ASTHighlighter(TextDocument document, SyntaxInfo syntaxInfo)
         {
-            SyntaxInfo = syntaxInfo ?? throw new ArgumentNullException(nameof(syntaxInfo)); ;
+            SyntaxInfo = syntaxInfo ?? throw new ArgumentNullException(nameof(syntaxInfo));
+            DefaultTextColor = SyntaxInfo.Colors[EF.None];
             Document = document ?? throw new ArgumentNullException(nameof(document));
             document.VerifyAccess();
             //weakLineTracker = WeakLineTracker.Register(document, this);
@@ -26,28 +28,60 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
         {
             IDocumentLine line = Document.GetLineByNumber(lineNumber);
             var highlightedLine = new HighlightedLine(Document, line);
-            lineNumber--;
-            if (lineNumber >= SyntaxInfo.Count)
+            
+            int lineLength = line.Length;
+            if (lineLength == 0)
             {
                 return highlightedLine;
             }
-            int lineOffset = line.Offset;
-            int pos = 0;
-            List<SyntaxSpan> spans = SyntaxInfo[lineNumber];
 
-            foreach (SyntaxSpan span in spans)
+            lineNumber--;
+
+            List<int> lineToIndex = SyntaxInfo.LineToIndex;
+            if (lineNumber < 0 || lineNumber >= lineToIndex.Count)
             {
-                if (pos >= line.Length)
+                return highlightedLine;
+            }
+
+            int i = lineToIndex[lineNumber];
+
+            int lineStart = line.Offset;
+            int lineEnd = lineStart + lineLength;
+
+            List<SyntaxSpan> syntaxSpans = SyntaxInfo.SyntaxSpans;
+
+            lineNumber++;
+            int endIndex = lineNumber == lineToIndex.Count ? syntaxSpans.Count : lineToIndex[lineNumber];
+
+            for (; i < endIndex; i++)
+            {
+                SyntaxSpan syntaxSpan = syntaxSpans[i];
+                
+                //if a highlighted section is not entirely within the line,
+                //AvalonEdit will throw an uncatchable exception and LEX will instantly crash.
+                //let's avoid that
+                if (syntaxSpan.Offset < lineStart || syntaxSpan.Offset + syntaxSpan.Length > lineEnd)
                 {
                     break;
                 }
+
                 highlightedLine.Sections.Add(new HighlightedSection
                 {
-                    Offset = pos + lineOffset,
-                    Length = Math.Min(span.Length, line.Length - pos),
-                    Color = SyntaxInfo.Colors[span.FormatType]
+                    Offset = syntaxSpan.Offset,
+                    Length = syntaxSpan.Length,
+                    Color = SyntaxInfo.Colors[syntaxSpan.FormatType]
                 });
-                pos += span.Length;
+            }
+
+            if (SyntaxInfo.CommentSpans.TryGetValue(lineNumber, out SyntaxSpan commentSpan)
+                && commentSpan.Offset >= lineStart && commentSpan.Offset + commentSpan.Length <= lineEnd)
+            {
+                highlightedLine.Sections.Add(new HighlightedSection
+                {
+                    Offset = commentSpan.Offset,
+                    Length = commentSpan.Length,
+                    Color = SyntaxInfo.Colors[commentSpan.FormatType]
+                });
             }
 
             return highlightedLine;

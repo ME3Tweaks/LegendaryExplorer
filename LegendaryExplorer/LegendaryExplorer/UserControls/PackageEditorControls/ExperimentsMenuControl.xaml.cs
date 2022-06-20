@@ -1086,7 +1086,7 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
                         EnumerateChildNetIndexes(funcbin.Children);
                         EnumerateChildNetIndexes(funcbin.Next);
                     }
-                    else if(childbin is UState statebin)
+                    else if (childbin is UState statebin)
                     {
                         EnumerateChildNetIndexes(statebin.Children);
                         EnumerateChildNetIndexes(statebin.Next);
@@ -1309,6 +1309,21 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         private void Baldinator_Click(object sender, RoutedEventArgs a)
         {
             PackageEditorExperimentsO.Baldinator(GetPEWindow());
+        }
+
+        private void CopyProperty_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.CopyProperty(GetPEWindow());
+        }
+
+        private void CopyMatToBMOorMIC_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.CopyMatToBMOorMIC(GetPEWindow());
+        }
+
+        private void SMRefRemover_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.SMRefRemover(GetPEWindow());
         }
         #endregion
 

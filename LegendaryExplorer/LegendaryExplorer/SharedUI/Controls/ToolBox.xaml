@@ -12,7 +12,7 @@
                                   d:DesignHeight="450" d:DesignWidth="300">
     <DockPanel>
         <controls:SearchBox x:Name="searchBox" DockPanel.Dock="Top" TextChanged="SearchBox_OnTextChanged" WatermarkText="Search Toolbox"/>
-        <ListView Name="listView" SelectedItem="{Binding SelectedItem}">
+        <ListView Name="listView" ItemsSource="{Binding Classes}" SelectedItem="{Binding SelectedItem}" SelectionMode="Single">
             <ListView.ItemTemplate>
                 <DataTemplate DataType="packages:ClassInfo">
                     <TextBlock HorizontalAlignment="Stretch" Text="{Binding ClassName}" MouseDown="classInfo_MouseDown"/>

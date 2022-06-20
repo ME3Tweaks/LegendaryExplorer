@@ -10,7 +10,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 
         public bool IsFunction;
 
-        public DelegateType(Function defaultFunction, SourcePosition start = null, SourcePosition end = null) : base(defaultFunction.Name, start, end, EPropertyType.Delegate)
+        public DelegateType(Function defaultFunction, int start = -1, int end = -1) : base(defaultFunction.Name, start, end, EPropertyType.Delegate)
         {
             DefaultFunction = defaultFunction;
         }

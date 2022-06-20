@@ -11,7 +11,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
         public VariableType ElementType;
         public UnrealFlags.EPropertyFlags ElementPropertyFlags;
 
-        public DynamicArrayType(VariableType elementType, SourcePosition start = null, SourcePosition end = null) : base(elementType.Name, start, end)
+        public DynamicArrayType(VariableType elementType, int start = -1, int end = -1) : base(elementType.Name, start, end)
         {
             ElementType = elementType;
         }

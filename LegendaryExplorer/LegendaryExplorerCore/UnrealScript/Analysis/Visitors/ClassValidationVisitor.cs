@@ -7,6 +7,7 @@ using LegendaryExplorerCore.UnrealScript.Analysis.Symbols;
 using LegendaryExplorerCore.UnrealScript.Compiling.Errors;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
 using LegendaryExplorerCore.UnrealScript.Language.Util;
+using LegendaryExplorerCore.UnrealScript.Lexing;
 using LegendaryExplorerCore.UnrealScript.Utilities;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
 
@@ -46,7 +47,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             Pass = pass;
         }
 
-        private bool Error(string msg, SourcePosition start = null, SourcePosition end = null)
+        private bool Error(string msg, int start = -1, int end = -1)
         {
             Log.LogError(msg, start, end);
             Success = false;
@@ -67,35 +68,54 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                         //{
                         //    return Error($"A class named '{node.Name}' already exists!", node.StartPos, node.EndPos);
                         //}
-                        node.Parent.Outer = node;
-                        if (!Symbols.TryResolveType(ref node.Parent))
-                            return Error($"No parent class named '{node.Parent.Name}' found!", node.Parent.StartPos, node.Parent.EndPos);
-                        if (node.Parent.Type != ASTNodeType.Class)
-                            return Error($"Parent named '{node.Parent.Name}' is not a class!", node.Parent.StartPos, node.Parent.EndPos);
+
+                        if (Symbols.TryGetType(node.Parent.Name, out Class parentClass))
+                        {
+                            Log.Tokens?.AddDefinitionLink(parentClass, node.Parent.StartPos, node.Parent.Length);
+                            node.Parent = parentClass;
+
+                            //do this check here and in the second pass. This one protects against extending from self
+                            if (((Class)node.Parent).SameAsOrSubClassOf(node))
+                            {
+                                return Error($"Extending from '{node.Parent.Name}' causes circular extension!", node.StartPos);
+                            }
+                        }
+                        else
+                        {
+                            return Error($"No class named '{node.Parent.Name}' found!", node.Parent.StartPos, node.Parent.EndPos);
+                        }
+
 
                         if (node._outerClass != null)
                         {
-                            node._outerClass.Outer = node;
-                            if (!Symbols.TryResolveType(ref node._outerClass))
-                                return Error($"No outer class named '{node._outerClass.Name}' found!", node._outerClass.StartPos, node._outerClass.EndPos);
-                            if (node.OuterClass.Type != ASTNodeType.Class)
-                                return Error($"Outer named '{node.OuterClass.Name}' is not a class!", node.OuterClass.StartPos, node.OuterClass.EndPos);
-                            if (node.Parent.Name == "Actor" && !node.OuterClass.Name.Equals("Object", StringComparison.OrdinalIgnoreCase))
-                                return Error("Classes extending 'Actor' can not be inner classes!", node.OuterClass.StartPos, node.OuterClass.EndPos);
+                            if (Symbols.TryGetType(node._outerClass.Name, out Class outerClass))
+                            {
+                                Log.Tokens?.AddDefinitionLink(outerClass, node._outerClass.StartPos, node._outerClass.Length);
+                                node._outerClass = outerClass;
+                            }
+                            else
+                            {
+                                return Error($"No class named '{node._outerClass.Name}' found!", node._outerClass.StartPos, node._outerClass.EndPos);
+                            }
                         }
 
                         for (int i = 0; i < node.Interfaces.Count; i++)
                         {
-                            VariableType nodeInterface = node.Interfaces[i];
-                            if (!Symbols.TryResolveType(ref nodeInterface, true))
+                            VariableType interfaceStub = node.Interfaces[i];
+                            if (Symbols.TryGetType(interfaceStub.Name, out Class @interface))
                             {
-                                return Error($"No outer class named '{nodeInterface.Name}' found!", nodeInterface.StartPos, nodeInterface.EndPos);
+                                Log.Tokens?.AddDefinitionLink(@interface, interfaceStub.StartPos, interfaceStub.Length);
+
+                                if (!node.IsNative && @interface.IsNative)
+                                {
+                                    return Error($"Only a native class can implement a native interface!", interfaceStub.StartPos, interfaceStub.EndPos);
+                                }
+                                node.Interfaces[i] = @interface;
                             }
-                            if (!node.IsNative && ((Class)nodeInterface).IsNative)
+                            else
                             {
-                                return Error($"Only a native class can implement a native interface!", nodeInterface.StartPos, nodeInterface.EndPos);
+                                return Error($"No class named '{interfaceStub.Name}' found!", interfaceStub.StartPos, interfaceStub.EndPos);
                             }
-                            node.Interfaces[i] = nodeInterface;
                         }
 
                         //specifier validation
@@ -143,7 +163,8 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 {
                     if (node.Name != "Object")
                     {
-                        if (((Class)node.Parent).SameAsOrSubClassOf(node)) // TODO: not needed due to no forward declarations?
+                        //do this check for a second time now that all classes have been properly linked up
+                        if (((Class)node.Parent).SameAsOrSubClassOf(node))
                         {
                             return Error($"Extending from '{node.Parent.Name}' causes circular extension!", node.StartPos);
                         }
@@ -151,19 +172,19 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                         {
                             return Error("Outer class must be a sub-class of the parents outer class!", node.StartPos);
                         }
+
+                        if (node._outerClass is not null && node.SameAsOrSubClassOf("Actor") && !node.OuterClass.Name.Equals("Object", StringComparison.OrdinalIgnoreCase))
+                        {
+                            return Error("Classes extending 'Actor' can not be inner classes!", node.OuterClass.StartPos, node.OuterClass.EndPos);
+                        }
+
                         if (node.SameAsOrSubClassOf("Interface"))
                         {
                             node.Flags |= EClassFlags.Interface;
                             node.PropertyType = EPropertyType.Interface;
                         }
                         Symbols.GoDirectlyToStack(((Class)node.Parent).GetInheritanceString());
-                        string outerScope = null;
-                        if (node.OuterClass != null && !string.Equals(node.OuterClass.Name, "Object", StringComparison.OrdinalIgnoreCase))
-                        {
-                            outerScope = ((Class)node.OuterClass).GetInheritanceString();
-                        }
-
-                        Symbols.PushScope(node.Name); //, outerScope);
+                        Symbols.PushScope(node.Name); 
                     }
 
                     //second pass over structs to resolve their members
@@ -178,12 +199,13 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                         decl.Outer = node;
                         Success &= decl.AcceptVisitor(this);
 
-                        if (node.Name != "Object" && Symbols.TryGetSymbolInScopeStack<ASTNode>(decl.Name, out _, node.Parent.GetScope()))
+                        if (node.Name != "Object" && Symbols.SymbolExistsInParentScopes(decl.Name))
                         {
                             Log.LogWarning($"A symbol named '{decl.Name}' exists in a parent class. Are you sure you want to shadow it?", decl.StartPos, decl.EndPos);
                         }
                     }
 
+                    //Add fake class members to shadow the ones in Object. This allows Class and Outer to be implicitly typed correctly
                     if (node.Name != "Object")
                     {
                         Symbols.TryGetType("Object", out Class objectClass);
@@ -299,10 +321,12 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                     if (node.VarType is not PrimitiveType)
                     {
                         node.VarType.Outer = node;
+                        var typeStub = node.VarType;
                         if (!Symbols.TryResolveType(ref node.VarType))
                         {
                             return Error($"No type named '{node.VarType.Name}' exists!", node.VarType.StartPos, node.VarType.EndPos);
                         }
+                        Log.Tokens?.AddDefinitionLink(node.VarType, typeStub.StartPos, typeStub.Length);
                     }
 
                     if (Symbols.SymbolExistsInCurrentScope(node.Name))
@@ -325,7 +349,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 switch ((node.VarType as StaticArrayType)?.ElementType ?? node.VarType)
                 {
                     case DynamicArrayType {ElementType: VariableType elType} dynArrType:
-                        if (elType is Class {IsComponent: true})
+                        if (elType is Class {NeedsComponentFlag: true})
                         {
                             dynArrType.ElementPropertyFlags |= EPropertyFlags.Component;
                             node.Flags |= EPropertyFlags.Component;
@@ -337,7 +361,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                             dynArrType.ElementPropertyFlags |= EPropertyFlags.NeedCtorLink;
                         }
                         break;
-                    case Class {IsComponent: true}:
+                    case Class {NeedsComponentFlag: true}:
                         node.Flags |= EPropertyFlags.Component;
                         break;
                     case Struct strct:
@@ -356,7 +380,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                         {
                             return true;
                         }
-                        else if (strctVariableDeclaration.VarType is Struct s2)
+                        if (strctVariableDeclaration.VarType is Struct s2)
                         {
                             if (stack.Contains(s2))
                             {
@@ -443,16 +467,17 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 string parentScope = null;
                 if (node.Parent != null)
                 {
-                    node.Parent.Outer = node;
-                    if (!Symbols.TryResolveType(ref node.Parent))
+                    if (node.Outer is ObjectType containingObject && containingObject.LookupStruct(node.Parent.Name) is Struct parentStruct
+                        || Symbols.TryGetType(node.Parent.Name, out parentStruct))
                     {
-                        return Error($"No parent struct named '{node.Parent.Name}' found!", node.Parent.StartPos, node.Parent.EndPos);
+                        Log.Tokens?.AddDefinitionLink(parentStruct, node.Parent.StartPos, node.Parent.Length);
+                        node.Parent = parentStruct;
+                        parentScope = $"{NodeUtils.GetContainingClass(node.Parent).GetInheritanceString()}.{node.Parent.Name}";
                     }
-
-                    if (node.Parent.Type != ASTNodeType.Struct)
-                        return Error($"Parent named '{node.Parent.Name}' is not a struct!", node.Parent.StartPos, node.Parent.EndPos);
-
-                    parentScope = $"{NodeUtils.GetContainingClass(node.Parent).GetInheritanceString()}.{node.Parent.Name}";
+                    else
+                    {
+                        return Error($"No struct named '{node.Parent.Name}' found!", node.Parent.StartPos, node.Parent.EndPos);
+                    }
                 }
 
                 Symbols.PushScope(node.Name, parentScope);
@@ -590,7 +615,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             if (Pass == ValidationPass.TypesAndFunctionNamesAndStateNames)
             {
                 if (Symbols.SymbolExistsInCurrentScope(node.Name))
-                    return Error($"The name '{node.Name}' is already in use in this class!", node.StartPos, node.EndPos);
+                    return Error($"The name '{node.Name}' is already in use in this scope!", node.StartPos, node.EndPos);
 
                 Symbols.AddSymbol(node.Name, node);
                 return Success;
@@ -626,27 +651,32 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 if (node.FriendlyName is not null //true in ME1, ME2, LE1, and LE2
                  && node.IsOperator)
                 {
+                    TokenType operatorType = OperatorHelper.FriendlyNameToTokenType(node.FriendlyName);
+                    if (operatorType is TokenType.INVALID)
+                    {
+                        return Error($"{node.FriendlyName} is not one of the allowed operator symbols!", node.StartPos, node.EndPos);
+                    }
                     if (node.Flags.Has(EFunctionFlags.PreOperator))
                     {
                         if (node.Parameters.Count != 1)
                         {
                             return Error($"{node.Name} is declared as a prefix operator, so it must have exactly one parameter!", node.StartPos, node.EndPos);
                         }
-                        Symbols.AddOperator(new PreOpDeclaration(node.FriendlyName, node.ReturnType, node.NativeIndex, node.Parameters[0]) { Implementer = node });
+                        Symbols.AddOperator(new PreOpDeclaration(operatorType, node.ReturnType, node.NativeIndex, node.Parameters[0]) { Implementer = node });
                     }
                     else
                     {
                         switch (node.Parameters.Count)
                         {
                             case 1:
-                                Symbols.AddOperator(new PostOpDeclaration(node.FriendlyName, node.ReturnType, node.NativeIndex, node.Parameters[0]) { Implementer = node });
+                                Symbols.AddOperator(new PostOpDeclaration(operatorType, node.ReturnType, node.NativeIndex, node.Parameters[0]) { Implementer = node });
                                 break;
                             case 2:
-                                Symbols.AddOperator(new InOpDeclaration(node.FriendlyName, node.OperatorPrecedence, node.NativeIndex, node.ReturnType, node.Parameters[0], node.Parameters[1])
+                                Symbols.AddOperator(new InOpDeclaration(operatorType, node.OperatorPrecedence, node.NativeIndex, node.ReturnType, node.Parameters[0], node.Parameters[1])
                                 {
                                     Implementer = node
                                 });
-                                Symbols.InFixOperatorSymbols.Add(node.FriendlyName);
+                                Symbols.InFixOperatorSymbols.Add(operatorType);
                                 break;
                             default:
                                 return Error($"{node.Name} is declared as an operator, so it must have either 1 or 2 parameters!", node.StartPos, node.EndPos);
@@ -681,7 +711,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                     Class parentScopeClass = node.Outer is State ? containingClass : containingClass.Parent as Class;
                     if (parentScopeClass is not null)
                     {
-                        Symbols.TryGetSymbolInScopeStack(node.Name, out superFunc, parentScopeClass.GetInheritanceString());
+                        superFunc = parentScopeClass.LookupFunction(node.Name);
                     }
                 }
 
@@ -762,33 +792,31 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
             if (Pass == ValidationPass.ClassAndStructMembersAndFunctionParams)
             {
-                bool overrides = Symbols.TryGetSymbolInScopeStack(node.Name, out ASTNode overrideState, NodeUtils.GetParentClassScope(node))
-                              && overrideState.Type == ASTNodeType.State;
-
+                State overrideState = null;
+                if (((node.Outer as Class)?.Parent as Class)?.LookupState(node.Name) is State s)
+                {
+                    overrideState = s;
+                }
                 if (node.Parent is null)
                 {
-                    if (overrides)
+                    if (overrideState is not null)
                     {
-                        node.Parent = overrideState as State;
+                        node.Parent = overrideState;
                     }
                 }
                 else
                 {
-                    if (overrides)
+                    if (overrideState is not null)
                         Error("A state is not allowed to both override a parent class's state and extend another state at the same time!", node.StartPos, node.EndPos);
 
-                    if (!Symbols.TryGetSymbol(node.Parent.Name, out ASTNode parent))
+                    if ((node.Outer as Class)?.LookupState(node.Parent.Name) is State parent)
+                    {
+                        node.Parent = parent;
+                    }
+                    else
                     {
                         Error($"No parent state named '{node.Parent.Name}' found in the current class!", node.Parent.StartPos, node.Parent.EndPos);
                         node.Parent = null;
-                    }
-
-                    if (parent != null)
-                    {
-                        if (parent.Type != ASTNodeType.State)
-                            Error($"Parent named '{node.Parent.Name}' is not a state!", node.Parent.StartPos, node.Parent.EndPos);
-                        else
-                            node.Parent = parent as State;
                     }
                 }
                 

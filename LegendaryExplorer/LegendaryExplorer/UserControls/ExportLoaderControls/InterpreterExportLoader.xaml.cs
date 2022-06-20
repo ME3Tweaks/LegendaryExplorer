@@ -36,7 +36,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
     /// </summary>
     public partial class InterpreterExportLoader : ExportLoaderControl
     {
-        public ObservableCollectionExtended<UPropertyTreeViewEntry> PropertyNodes { get; set; } = new();
+        public ObservableCollectionExtended<UPropertyTreeViewEntry> PropertyNodes { get; } = new();
         //Values in this list will cause the ExportToString() method to be called on an objectproperty in InterpreterExportLoader.
         //This is useful for end user when they want to view things in a list for example, but all of the items are of the 
         //same type and are not distinguishable without changing to another export, wasting a lot of time.
@@ -125,14 +125,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         int RescanSelectionOffset;
         private readonly List<FrameworkElement> EditorSetElements = new();
-        public struct PropHeader
-        {
-            public int name;
-            public int type;
-            public int size;
-            public int index;
-            public int offset;
-        }
 
         private HexBox Interpreter_Hexbox;
         private bool isLoadingNewData;
@@ -149,7 +141,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             EditorSetElements.Add(NameIndexPrefix_TextBlock); //nameindex
             EditorSetElements.Add(NameIndex_TextBox); //nameindex
             EditorSetElements.Add(ParsedValue_TextBlock);
-            EditorSetElements.Add(EditorSet_ArraySetSeparator);
             Set_Button.Visibility = Visibility.Collapsed;
 
             //EditorSet_Separator.Visibility = Visibility.Collapsed;
@@ -166,14 +157,14 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private static void ForceSimpleModeChangedCallback(DependencyObject obj, DependencyPropertyChangedEventArgs e)
         {
-            InterpreterExportLoader i = (InterpreterExportLoader)obj;
+            var i = (InterpreterExportLoader)obj;
             i.OnPropertyChanged(nameof(AdvancedView));
             i.OnPropertyChanged(nameof(ShowPropOffsets));
         }
 
         private static void DisableHexBoxChangedCallback(DependencyObject obj, DependencyPropertyChangedEventArgs e)
         {
-            InterpreterExportLoader i = (InterpreterExportLoader)obj;
+            var i = (InterpreterExportLoader)obj;
             if ((bool)e.NewValue)
             {
                 i.hexBoxContainer.Visibility = i.HexProps_GridSplitter.Visibility = i.ToggleHexbox_Button.Visibility = i.SaveHexChange_Button.Visibility = i.HexInfoStatusBar.Visibility = Visibility.Collapsed;
@@ -367,14 +358,14 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void FireNavigateCallback()
         {
-            var objProp = (ObjectProperty)(SelectedItem as UPropertyTreeViewEntry).Property;
+            var objProp = (ObjectProperty)SelectedItem.Property;
             var entry = CurrentLoadedExport.FileRef.GetEntry(objProp.Value);
             NavigateToEntryCommand?.Execute(entry);
         }
 
         private bool CanFireNavigateCallback()
         {
-            if (CurrentLoadedExport != null && NavigateToEntryCommand != null && SelectedItem != null && SelectedItem.Property is ObjectProperty op)
+            if (CurrentLoadedExport != null && NavigateToEntryCommand != null && SelectedItem is { Property: ObjectProperty op })
             {
                 var entry = CurrentLoadedExport.FileRef.GetEntry(op.Value);
                 return NavigateToEntryCommand.CanExecute(entry);
@@ -1039,7 +1030,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         {
                             parsedValue = IntToString(prop.Name, ip.Value, parsingExport);
                         }
-                        if (ip.Name == "m_nStrRefID" || ip.Name == "nLineStrRef" || ip.Name == "nStrRefID" || ip.Name == "m_iStringRef" || ip.Name == "m_iDescriptionStringRef")
+                        if (ip.Name == "m_nStrRefID" || ip.Name == "nLineStrRef" || ip.Name == "nStrRefID" || ip.Name == "m_iStringRef" || ip.Name == "m_iDescriptionStringRef" || ip.Name == "m_srStringID")
                         {
                             parsedValue = IntToString(prop.Name, ip.Value, parsingExport);
                         }
@@ -1066,7 +1057,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     {
                         ArrayType at = GlobalUnrealObjectInfo.GetArrayType(parsingExport.FileRef.Game, prop.Name, parent.Property is StructProperty sp ? sp.StructType : parsingExport.ClassName, parsingExport);
 
-                        if (at == ArrayType.Struct || at == ArrayType.Enum || at == ArrayType.Object)
+                        if (at is ArrayType.Struct or ArrayType.Enum or ArrayType.Object)
                         {
                             // Try to get the type of struct array
                             // This code doesn't work for nested structs as the containing class is different
@@ -1329,6 +1320,14 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         var channels = sp.Properties.Where(p => p is BoolProperty {Value: true});
                         parsedValue = string.Join(", ", channels.Select(p => p.Name.Instanced));
                     }
+                    else if (sp.StructType is "MorphFeature")
+                    {
+                        parsedValue = $"{sp.GetProp<NameProperty>("sFeatureName")?.Value}";
+                    }
+                    else if (sp.StructType is "OffsetBonePos")
+                    {
+                        parsedValue = $"{sp.GetProp<NameProperty>("nName")?.Value}";
+                    }
                     else
                     {
                         parsedValue = sp.StructType;
@@ -1479,7 +1478,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
             }
 
-            if (name == "m_nStrRefID" || name == "nLineStrRef" || name == "nStrRefID" || name == "m_iStringRef" || name == "m_iDescriptionStringRef")
+            if (name == "m_nStrRefID" || name == "nLineStrRef" || name == "nStrRefID" || name == "m_iStringRef" || name == "m_iDescriptionStringRef" || name == "m_srStringID")
             {
                 return TLKManagerWPF.GlobalFindStrRefbyID(value, export.FileRef.Game, export.FileRef);
             }
@@ -1624,7 +1623,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     case IntProperty ip:
                         Value_TextBox.Text = ip.Value.ToString();
                         SupportedEditorSetElements.Add(Value_TextBox);
-                        if (newSelectedItem.Parent?.Property is StructProperty property && property.StructType == "Rotator")
+                        if (newSelectedItem.Parent?.Property is StructProperty { StructType: "Rotator" })
                         {
                             //we support editing rotators as degrees. We will preview the raw value and enter data in degrees instead.
                             SupportedEditorSetElements.Add(ParsedValue_TextBlock);

@@ -10,7 +10,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
         public CodeBody Body;
 
         public DoUntilLoop(Expression cond, CodeBody body,
-            SourcePosition start = null, SourcePosition end = null)
+            int start = -1, int end = -1)
             : base(ASTNodeType.WhileLoop, start, end)
         {
             Condition = cond;

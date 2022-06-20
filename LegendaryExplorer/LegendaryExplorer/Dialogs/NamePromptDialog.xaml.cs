@@ -46,7 +46,7 @@ namespace LegendaryExplorer.Dialogs
 
         public static IndexedName Prompt(Control owner, string question, string title, List<IndexedName> NameList, int defaultValue = 0)
         {
-            NamePromptDialog inst = new NamePromptDialog(question, title, NameList, defaultValue);
+            var inst = new NamePromptDialog(question, title, NameList, defaultValue);
             if (owner != null)
             {
                 inst.Owner = owner as Window ?? GetWindow(owner);
@@ -64,7 +64,7 @@ namespace LegendaryExplorer.Dialogs
 
         public static bool Prompt(Control owner, string question, string title, IMEPackage pcc, out NameReference result, int defaultValue = 0)
         {
-            NamePromptDialog inst = new NamePromptDialog(question, title, pcc.Names.Select((nr, i) => new IndexedName(i, nr)).ToList(), defaultValue);
+            var inst = new NamePromptDialog(question, title, pcc.Names.Select((nr, i) => new IndexedName(i, nr)).ToList(), defaultValue);
             if (owner != null)
             {
                 inst.Owner = owner as Window ?? GetWindow(owner);
@@ -73,10 +73,10 @@ namespace LegendaryExplorer.Dialogs
             inst.ShowDialog();
             if (inst.DialogResult == true)
             {
-                IndexedName name = (IndexedName)inst.answerChoicesCombobox.SelectedItem;
+                var name = (IndexedName)inst.answerChoicesCombobox.SelectedItem;
                 if (name is not null)
                 {
-                    result = new NameReference(name.Name.Name, inst.Number);
+                    result = new NameReference(name.Name, inst.Number);
                     return true;
                 }
             }

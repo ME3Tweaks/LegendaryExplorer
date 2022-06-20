@@ -105,7 +105,7 @@ namespace LegendaryExplorerCore.Packages
         /// Attempts to determine the localization of the given string. Localizations end with either LOC_[LANG] or just _[LANG].
         /// </summary>
         /// <param name="str">The string to check against</param>
-        /// <returns>The MELocalization enum that corresponds to the matchingl ocalization. If none match, <see cref="MELocalization.None"/> is returned</returns>
+        /// <returns>The MELocalization enum that corresponds to the matching localization. If none match, <see cref="MELocalization.None"/> is returned</returns>
         public static MELocalization GetUnrealLocalization(this string str)
         {
             string localizationName = Path.GetFileNameWithoutExtension(str).ToUpper();

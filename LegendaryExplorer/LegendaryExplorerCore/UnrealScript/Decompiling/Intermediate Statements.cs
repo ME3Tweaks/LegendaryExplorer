@@ -1,4 +1,5 @@
 ﻿using LegendaryExplorerCore.UnrealScript.Language.Tree;
+using LegendaryExplorerCore.UnrealScript.Lexing;
 
 namespace LegendaryExplorerCore.UnrealScript.Decompiling
 {
@@ -10,7 +11,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
     {
         public readonly ushort JumpLoc;
 
-        protected Jump(ushort jumpLoc) : base(ASTNodeType.INVALID, null, null)
+        protected Jump(ushort jumpLoc) : base(ASTNodeType.INVALID, -1, -1)
         {
             JumpLoc = jumpLoc;
         }
@@ -47,7 +48,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
     {
         public NullJump(ushort jumpLoc, Expression condition, bool not) : base(jumpLoc, condition)
         {
-            Condition = new InOpReference(new InOpDeclaration(not ? "!=" : "==", 0, 0, null, null, null), Condition, new NoneLiteral());
+            Condition = new InOpReference(new InOpDeclaration(not ? TokenType.NotEquals : TokenType.Equals, 0, 0, null, null, null), Condition, new NoneLiteral());
         }
     }
 
@@ -60,14 +61,14 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
 
     internal class IteratorNext : Statement
     {
-        public IteratorNext() : base(ASTNodeType.INVALID, null, null)
+        public IteratorNext() : base(ASTNodeType.INVALID, -1, -1)
         {
         }
     }
 
     internal class IteratorPop : Statement
     {
-        public IteratorPop() : base(ASTNodeType.INVALID, null, null)
+        public IteratorPop() : base(ASTNodeType.INVALID, -1, -1)
         {
         }
     }

@@ -13,7 +13,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 
         public ForLoop(Statement init, Expression cond, Statement update,
                        CodeBody body,
-                       SourcePosition start = null, SourcePosition end = null)
+                       int start = -1, int end = -1)
             : base(ASTNodeType.WhileLoop, start, end)
         {
             Condition = cond;

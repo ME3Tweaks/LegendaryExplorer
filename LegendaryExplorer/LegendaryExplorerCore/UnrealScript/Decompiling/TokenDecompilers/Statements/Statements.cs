@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.UnrealScript.Analysis.Symbols;
 using LegendaryExplorerCore.UnrealScript.Language.ByteCode;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
+using LegendaryExplorerCore.UnrealScript.Lexing;
 
 namespace LegendaryExplorerCore.UnrealScript.Decompiling
 {
@@ -77,7 +77,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 // stop;
                 case (byte)OpCodes.Stop:
                     PopByte();
-                    var stopStatement = new StopStatement(null, null);
+                    var stopStatement = new StopStatement(-1, -1);
                     StatementLocations.Add(StartPositions.Pop(), stopStatement);
                     return stopStatement;
 
@@ -129,7 +129,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                     if (obj.ClassName == "BoolProperty")
                     {
                         var ifJump = new IfNotJump(
-                            ReadUInt16(), not ? (Expression)condition : new PreOpReference(new PreOpDeclaration("!", SymbolTable.BoolType, 0, null), condition),
+                            ReadUInt16(), not ? (Expression)condition : new PreOpReference(new PreOpDeclaration(TokenType.ExclamationMark, SymbolTable.BoolType, 0, null), condition),
                             Position - StartPositions.Peek());
                         StatementLocations.Add(StartPositions.Pop(), ifJump);
                         return ifJump;
@@ -321,7 +321,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             //}
             //CurrentScope.Pop();
 
-            var statement = new SwitchStatement(expr, null, null, null);
+            var statement = new SwitchStatement(expr, null, -1, -1);
             StatementLocations.Add(StartPositions.Pop(), statement);
             return statement;
         }
@@ -334,7 +334,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
 
             if (offs == (ushort)0xFFFF)
             {
-                statement = new DefaultCaseStatement(null, null);
+                statement = new DefaultCaseStatement(-1, -1);
             }
             else 
             {
@@ -342,7 +342,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 if (expr == null)
                     return null; //ERROR ?
 
-                statement = new CaseStatement(expr, null, null);
+                statement = new CaseStatement(expr, -1, -1);
             }
 
             StatementLocations.Add(StartPositions.Pop(), statement);

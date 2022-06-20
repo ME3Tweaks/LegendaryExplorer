@@ -1,14 +1,16 @@
 ﻿using System.Collections.Generic;
 using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
 using LegendaryExplorerCore.UnrealScript.Language.Util;
-using LegendaryExplorerCore.UnrealScript.Utilities;
+using LegendaryExplorerCore.UnrealScript.Parsing;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
 
 namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 {
     public class State : ASTNode, IContainsByteCode, IHasFileReference, IContainsFunctions
     {
-        public EStateFlags Flags;
+        public TokenStream Tokens { get; init; }
+
+        public readonly EStateFlags Flags;
         public string Name { get; }
         public CodeBody Body { get; set; }
         public State Parent;
@@ -16,7 +18,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
         public EProbeFunctions IgnoreMask = (EProbeFunctions)ulong.MaxValue;
         public List<Label> Labels;
 
-        public State(string name, CodeBody body, EStateFlags flags, State parent, List<Function> funcs, List<Label> labels, SourcePosition start, SourcePosition end)
+        public State(string name, CodeBody body, EStateFlags flags, State parent, List<Function> funcs, List<Label> labels, int start, int end)
             : base(ASTNodeType.State, start, end)
         {
             Flags = flags;

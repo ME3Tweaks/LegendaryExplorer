@@ -9,7 +9,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
         public byte IntVal;
         public Enumeration Enum;
 
-        public EnumValue(string name, byte intVal, SourcePosition start = null, SourcePosition end = null)
+        public EnumValue(string name, byte intVal, int start = -1, int end = -1)
             : base(ASTNodeType.VariableIdentifier, start, end)
         {
             Name = name;

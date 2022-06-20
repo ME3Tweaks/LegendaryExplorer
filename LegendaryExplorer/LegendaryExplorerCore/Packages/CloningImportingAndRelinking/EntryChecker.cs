@@ -37,7 +37,23 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             }
         }
 
+        public void AddBlockingError(string message, LEXOpenable entry)
+        {
+            lock (syncLock)
+            {
+                BlockingErrors.Add(new EntryStringPair(entry, message));
+            }
+        }
+
         public void AddSignificantIssue(string message, IEntry entry = null)
+        {
+            lock (syncLock)
+            {
+                SignificantIssues.Add(new EntryStringPair(entry, message));
+            }
+        }
+
+        public void AddSignificantIssue(string message, LEXOpenable entry)
         {
             lock (syncLock)
             {
@@ -52,6 +68,15 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 InfoWarnings.Add(new EntryStringPair(entry, message));
             }
         }
+
+        public void AddInfoWarning(string message, LEXOpenable entry)
+        {
+            lock (syncLock)
+            {
+                InfoWarnings.Add(new EntryStringPair(entry, message));
+            }
+        }
+
 
         public void ClearMessages()
         {

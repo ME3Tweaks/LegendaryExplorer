@@ -13,6 +13,7 @@ using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
 using LegendaryExplorerCore.UnrealScript.Language.ByteCode;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
 using LegendaryExplorerCore.UnrealScript.Language.Util;
+using LegendaryExplorerCore.UnrealScript.Lexing;
 using LegendaryExplorerCore.UnrealScript.Utilities;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
 
@@ -66,7 +67,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         private readonly Stack<Nest> Nests = new();
 
-        public ByteCodeCompilerVisitor(UStruct target) : base(target.Export.FileRef)
+        private ByteCodeCompilerVisitor(UStruct target) : base(target.Export.FileRef)
         {
             Target = target;
             IEntry containingClass = Target.Export;
@@ -118,6 +119,25 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 }
 
 
+                foreach (FunctionParameter parameter in func.Parameters.Where(param => param.IsOptional))
+                {
+                    if (parameter.DefaultParameter is Expression expr)
+                    {
+                        WriteOpCode(OpCodes.DefaultParmValue);
+
+                        using (WriteSkipPlaceholder())
+                        {
+                            Emit(AddConversion(parameter.VarType, expr));
+                            WriteOpCode(OpCodes.EndParmValue);
+                        }
+                    }
+                    else
+                    {
+                        WriteOpCode(OpCodes.Nothing);
+                    }
+                }
+
+
                 if (func.IsNative)
                 {
                     foreach (FunctionParameter functionParameter in func.Parameters)
@@ -129,24 +149,6 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 }
                 else
                 {
-                    foreach (FunctionParameter parameter in func.Parameters.Where(param => param.IsOptional))
-                    {
-                        if (parameter.DefaultParameter is Expression expr)
-                        {
-                            WriteOpCode(OpCodes.DefaultParmValue);
-
-                            using (WriteSkipPlaceholder())
-                            {
-                                Emit(AddConversion(parameter.VarType, expr));
-                                WriteOpCode(OpCodes.EndParmValue);
-                            }
-                        }
-                        else
-                        {
-                            WriteOpCode(OpCodes.Nothing);
-                        }
-                    }
-
                     Emit(func.Body);
 
                     WriteOpCode(OpCodes.Return);
@@ -384,7 +386,12 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
         public bool VisitNode(AssertStatement node)
         {
             WriteOpCode(OpCodes.Assert);
-            WriteUShort((ushort)node.StartPos.Line);
+            //why you would have a source file longer than 65,535 lines I truly do not know
+            //better for it to emit an incorrect line number in the assert than to crash the compiler though
+            unchecked
+            {
+                WriteUShort((ushort)CompilationUnit.Tokens.LineLookup.GetLineFromCharIndex(node.StartPos));
+            }
             WriteByte(0);//bool debug mode - true: crash, false: log warning
             Emit(node.Condition);
             return true;
@@ -440,18 +447,18 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             JumpPlaceholder jump;
             if (Game.IsGame3() && condition is InOpReference inOp && inOp.LeftOperand.ResolveType()?.PropertyType == EPropertyType.Object
                                                                       && inOp.LeftOperand.GetType() == typeof(SymbolReference) && inOp.RightOperand is NoneLiteral
-                                                                      && (inOp.Operator.OperatorKeyword == "==" || inOp.Operator.OperatorKeyword == "!="))
+                                                                      && inOp.Operator.OperatorType is TokenType.Equals or TokenType.NotEquals)
             {
-                SymbolReference symRef = (SymbolReference)inOp.LeftOperand;
+                var symRef = (SymbolReference)inOp.LeftOperand;
                 WriteOpCode(symRef.Node.Outer is Function ? OpCodes.OptIfLocal : OpCodes.OptIfInstance);
                 WriteObjectRef(ResolveSymbol(symRef.Node));
-                WriteByte((byte)(inOp.Operator.OperatorKeyword == "!=" ? 1 : 0));
+                WriteByte((byte)(inOp.Operator.OperatorType is TokenType.NotEquals ? 1 : 0));
                 jump = WriteJumpPlaceholder(JumpType.Conditional);
             }
-            else if (Game.IsGame3() && condition is PreOpReference preOp && preOp.Operator.OperatorKeyword == "!"
+            else if (Game.IsGame3() && condition is PreOpReference preOp && preOp.Operator.OperatorType is TokenType.ExclamationMark
                                                                              && preOp.Operand.GetType() == typeof(SymbolReference) && preOp.Operand.ResolveType() == SymbolTable.BoolType)
             {
-                SymbolReference symRef = (SymbolReference)preOp.Operand;
+                var symRef = (SymbolReference)preOp.Operand;
                 WriteOpCode(symRef.Node.Outer is Function ? OpCodes.OptIfLocal : OpCodes.OptIfInstance);
                 WriteObjectRef(ResolveSymbol(symRef.Node));
                 WriteByte(0);
@@ -536,13 +543,13 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
         public bool VisitNode(ErrorStatement node)
         {
             //an ast with errors should never be passed to the compiler
-            throw new Exception($"Line {node.StartPos.Line}: Cannot compile an error!");
+            throw new Exception($"Line {CompilationUnit.Tokens.LineLookup.GetLineFromCharIndex(node.StartPos)}: Cannot compile an error!");
         }
 
         public bool VisitNode(ErrorExpression node)
         {
             //an ast with errors should never be passed to the compiler
-            throw new Exception($"Line {node.StartPos.Line}: Cannot compile an error!");
+            throw new Exception($"Line {CompilationUnit.Tokens.LineLookup.GetLineFromCharIndex(node.StartPos)}: Cannot compile an error!");
         }
 
         private static Function GetAffector(Expression expr) =>
@@ -735,7 +742,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 }
                 else
                 {
-                    throw new Exception($"Line {node.StartPos.Line}: Could not find '{func.Name}' in #{ContainingClass.UIndex} {ContainingClass.ObjectName}'s Virtual Function Table!");
+                    throw new Exception($"Line {CompilationUnit.Tokens.LineLookup.GetLineFromCharIndex(node.StartPos)}: Could not find '{func.Name}' in #{ContainingClass.UIndex} {ContainingClass.ObjectName}'s Virtual Function Table!");
                 }
             }
             CompileArguments(node.Arguments, func.Parameters);
@@ -1207,22 +1214,22 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 WriteByte((byte)i);
             }
             else switch (i)
-                {
-                    case 0:
-                        WriteOpCode(OpCodes.IntZero);
-                        break;
-                    case 1:
-                        WriteOpCode(OpCodes.IntOne);
-                        break;
-                    case >= 0 and < 256:
-                        WriteOpCode(OpCodes.IntConstByte);
-                        WriteByte((byte)i);
-                        break;
-                    default:
-                        WriteOpCode(OpCodes.IntConst);
-                        WriteInt(i);
-                        break;
-                }
+            {
+                case 0:
+                    WriteOpCode(OpCodes.IntZero);
+                    break;
+                case 1:
+                    WriteOpCode(OpCodes.IntOne);
+                    break;
+                case >= 0 and < 256:
+                    WriteOpCode(OpCodes.IntConstByte);
+                    WriteByte((byte)i);
+                    break;
+                default:
+                    WriteOpCode(OpCodes.IntConst);
+                    WriteInt(i);
+                    break;
+            }
 
             return true;
         }
@@ -1261,12 +1268,12 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 IEntry entry = ResolveObject($"{ContainingClass.InstancedFullPath}.{node.Name.Value}") ?? ResolveObject(node.Name.Value);
                 if (entry is null)
                 {
-                    throw new Exception($"Line {node.StartPos.Line}: Could not find '{node.Name.Value}' in {Pcc.FilePath}!");
+                    throw new Exception($"Line {CompilationUnit.Tokens.LineLookup.GetLineFromCharIndex(node.StartPos)}: Could not find '{node.Name.Value}' in {Pcc.FilePath}!");
                 }
 
                 if (!entry.ClassName.CaseInsensitiveEquals(node.Class.Name))
                 {
-                    throw new Exception($"Line {node.StartPos.Line}: Expected '{node.Name.Value}' to be a '{node.Class.Name}'!");
+                    throw new Exception($"Line {CompilationUnit.Tokens.LineLookup.GetLineFromCharIndex(node.StartPos)}: Expected '{node.Name.Value}' to be a '{node.Class.Name}'!");
                 }
                 WriteObjectRef(entry);
             }

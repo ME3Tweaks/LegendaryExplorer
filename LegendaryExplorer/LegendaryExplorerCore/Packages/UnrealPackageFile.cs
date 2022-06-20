@@ -35,6 +35,11 @@ namespace LegendaryExplorerCore.Packages
         public int DependencyTableOffset { get; protected set; }
         public Guid PackageGuid { get; set; }
 
+        /// <summary>
+        /// For concurrency
+        /// </summary>
+        private object _packageSyncObj = new object();
+
         public bool IsCompressed => Flags.Has(UnrealFlags.EPackageFlags.Compressed);
 
         /// <summary>
@@ -370,49 +375,57 @@ namespace LegendaryExplorerCore.Packages
         /// </summary>
         public void RebuildLookupTable()
         {
-            EntryLookupTable.Clear();
 
-            //pre-order traversal of entry tree
-            //this is superior to just looping through the export and import arrays and calculating the InstancedFullPath anew for each one
-            //as InstancedFullPath has to recurse up from leaf to root, performing multiple string concats per node.
-            var tree = new EntryTree((IMEPackage)this);
-            var stack = new Stack<(TreeNode<IEntry, int>, string, int)>(8); //max tree depth will rarely be more than 8
-            foreach (TreeNode<IEntry, int> root in tree.Roots)
+            // This needs locked or multithreaded use might corrupt the lookup table
+            // We don't want it to be the concurrent version since we don't want the lookup table being modified
+            // in multiple locations at the same time
+            lock (_packageSyncObj)
             {
-                stack.Clear();
-                string objFullPath = root.Data.ObjectName.Instanced;
-                EntryLookupTable[objFullPath] = root.Data;
-                if (root.Children.Count is 0)
+                EntryLookupTable.Clear();
+                //pre-order traversal of entry tree
+                //this is superior to just looping through the export and import arrays and calculating the InstancedFullPath anew for each one
+                //as InstancedFullPath has to recurse up from leaf to root, performing multiple string concats per node.
+                var tree = new EntryTree((IMEPackage)this);
+                var stack = new Stack<(TreeNode<IEntry, int>, string, int)>(8); //max tree depth will rarely be more than 8
+                foreach (TreeNode<IEntry, int> root in tree.Roots)
                 {
-                    continue;
-                }
-                stack.Push((root, objFullPath, 0));
-                while (true)
-                {
-                    if (stack.Count is 0)
+                    stack.Clear();
+                    string objFullPath = root.Data.ObjectName.Instanced;
+                    EntryLookupTable[objFullPath] = root.Data;
+                    if (root.Children.Count is 0)
                     {
-                        break;
-                    }
-                    int i;
-                    TreeNode<IEntry, int> node;
-                    (node, objFullPath, i) = stack.Pop();
-                    if (i + 1 < node.Children.Count)
-                    {
-                        stack.Push((node, objFullPath, i + 1));
+                        continue;
                     }
 
-                    node = tree[node.Children[i]];
-                    objFullPath = node.Data.ObjectName.AddToPath(objFullPath);
-                    EntryLookupTable[objFullPath] = node.Data;
-                    if (node.Children.Count > 0)
+                    stack.Push((root, objFullPath, 0));
+                    while (true)
                     {
-                        stack.Push((node, objFullPath, 0));
+                        if (stack.Count is 0)
+                        {
+                            break;
+                        }
+
+                        int i;
+                        TreeNode<IEntry, int> node;
+                        (node, objFullPath, i) = stack.Pop();
+                        if (i + 1 < node.Children.Count)
+                        {
+                            stack.Push((node, objFullPath, i + 1));
+                        }
+
+                        node = tree[node.Children[i]];
+                        objFullPath = node.Data.ObjectName.AddToPath(objFullPath);
+                        EntryLookupTable[objFullPath] = node.Data;
+                        if (node.Children.Count > 0)
+                        {
+                            stack.Push((node, objFullPath, 0));
+                        }
                     }
                 }
+
+                this._tree = tree;
+                lookupTableNeedsToBeRegenerated = false;
             }
-
-            this._tree = tree;
-            lookupTableNeedsToBeRegenerated = false;
         }
 
         public ImportEntry GetImport(int uIndex) => imports[Math.Abs(uIndex) - 1];
@@ -539,7 +552,7 @@ namespace LegendaryExplorerCore.Packages
                     break;
                 }
 
-                lastExport.PropertyChanged -= importChanged;
+                lastExport.PropertyChanged -= exportChanged;
                 exports.RemoveAt(i);
                 UpdateTools(PackageChange.ExportRemove, lastExport.UIndex);
                 IsModified = true;
@@ -554,7 +567,7 @@ namespace LegendaryExplorerCore.Packages
             {
                 if (trashPackage.GetChildren().IsEmpty())
                 {
-                    trashPackage.PropertyChanged -= importChanged;
+                    trashPackage.PropertyChanged -= exportChanged;
                     exports.Remove(trashPackage);
                     UpdateTools(PackageChange.ExportRemove, trashPackage.UIndex);
                     IsModified = true;

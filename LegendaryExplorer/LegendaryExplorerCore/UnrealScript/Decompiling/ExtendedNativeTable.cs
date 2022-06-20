@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
+using LegendaryExplorerCore.UnrealScript.Lexing;
 using static LegendaryExplorerCore.UnrealScript.Utilities.Keywords;
 
 namespace LegendaryExplorerCore.UnrealScript.Decompiling
@@ -1328,21 +1329,20 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             //{ 0x5F, "UNKN_TYPE_5F"}, //UNUSED
             { 0x60, NAME }, // StringToName
         };
-
-        //TODO: investigate this for LE
+        
         private static readonly Dictionary<string, InOpDeclaration> NonNativeOperators = new()
         {
-            ["EqualEqual_InterfaceInterface"] = new InOpDeclaration("==", 24, 0, null, null, null),
-            ["NotEqual_InterfaceInterface"] = new InOpDeclaration("!=", 26, 0, null, null, null),
-            ["Multiply_MatrixMatrix"] = new InOpDeclaration("*", 34, 0, null, null, null), //ME3 only
-            ["Add_Vector2DVector2D"] = new InOpDeclaration("+", 16, 0, null, null, null), //ME3 only
-            ["Subtract_Vector2DVector2D"] = new InOpDeclaration("-", 16, 0, null, null, null), //ME3 only
-            ["Subtract_ColorColor"] = new InOpDeclaration("-", 20, 0, null, null, null),
-            ["Multiply_FloatColor"] = new InOpDeclaration("*", 16, 0, null, null, null),
-            ["Multiply_ColorFloat"] = new InOpDeclaration("*", 16, 0, null, null, null),
-            ["Add_ColorColor"] = new InOpDeclaration("+", 20, 0, null, null, null),
-            ["Multiply_LinearColorFloat"] = new InOpDeclaration("*", 20, 0, null, null, null),
-            ["Subtract_LinearColorLinearColor"] = new InOpDeclaration("-", 16, 0, null, null, null),
+            ["EqualEqual_InterfaceInterface"] = new InOpDeclaration(TokenType.Equals, 24, 0, null, null, null),
+            ["NotEqual_InterfaceInterface"] = new InOpDeclaration(TokenType.NotEquals, 26, 0, null, null, null),
+            ["Multiply_MatrixMatrix"] = new InOpDeclaration(TokenType.StarSign, 34, 0, null, null, null), //ME3 only
+            ["Add_Vector2DVector2D"] = new InOpDeclaration(TokenType.PlusSign, 16, 0, null, null, null), //ME3 only
+            ["Subtract_Vector2DVector2D"] = new InOpDeclaration(TokenType.MinusSign, 16, 0, null, null, null), //ME3 only
+            ["Subtract_ColorColor"] = new InOpDeclaration(TokenType.MinusSign, 20, 0, null, null, null),
+            ["Multiply_FloatColor"] = new InOpDeclaration(TokenType.StarSign, 16, 0, null, null, null),
+            ["Multiply_ColorFloat"] = new InOpDeclaration(TokenType.StarSign, 16, 0, null, null, null),
+            ["Add_ColorColor"] = new InOpDeclaration(TokenType.PlusSign, 20, 0, null, null, null),
+            ["Multiply_LinearColorFloat"] = new InOpDeclaration(TokenType.StarSign, 20, 0, null, null, null),
+            ["Subtract_LinearColorLinearColor"] = new InOpDeclaration(TokenType.MinusSign, 16, 0, null, null, null),
         };
     }
 }

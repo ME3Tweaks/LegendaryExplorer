@@ -8,7 +8,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
         public NameLiteral Name;
         public VariableType Class;
 
-        public ObjectLiteral(NameLiteral objectName, VariableType @class = null, SourcePosition start = null, SourcePosition end = null) : base(ASTNodeType.ObjectLiteral, start, end)
+        public ObjectLiteral(NameLiteral objectName, VariableType @class = null, int start = -1, int end = -1) : base(ASTNodeType.ObjectLiteral, start, end)
         {
             Class = @class;
             Name = objectName;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -478,8 +479,8 @@ namespace LegendaryExplorerCore.Packages
             #region Decompression of package data
 
             //determine if tables are in order.
-            //The < 500 is just to check that the tables are all at the start of the file. (will never not be the case for unedited files, but for modded ones, all things are possible)
-            bool tablesInOrder = NameOffset < 500 && NameOffset < ImportOffset && ImportOffset < ExportOffset;
+            //The < 0x500 is just to check that the tables are all at the start of the file. (will never not be the case for unedited files, but for modded ones, all things are possible)
+            bool tablesInOrder = NameOffset < 0x500 && NameOffset < ImportOffset && ImportOffset < ExportOffset;
 
             packageReader.Position = savedPos; //restore position to chunk table
             Stream inStream = fs;
@@ -522,22 +523,32 @@ namespace LegendaryExplorerCore.Packages
             //read importTable
             inStream.JumpTo(ImportOffset);
             imports = new List<ImportEntry>(ImportCount);
+
+            //explicitly creating the delegate outside the loop avoids allocating a new delegate for every import
+            var importChangedHandler = new PropertyChangedEventHandler(importChanged);
             for (int i = 0; i < ImportCount; i++)
             {
                 var imp = new ImportEntry(this, packageReader) { Index = i };
                 if (MEPackageHandler.GlobalSharedCacheEnabled)
-                    imp.PropertyChanged += importChanged; // If packages are not shared there is no point to attaching this
+                {
+                    imp.PropertyChanged += importChangedHandler; // If packages are not shared there is no point to attaching this
+                }
                 imports.Add(imp);
             }
 
             //read exportTable
             inStream.JumpTo(ExportOffset);
             exports = new List<ExportEntry>(ExportCount);
+
+            //explicitly creating the delegate outside the loop avoids allocating a new delegate for every import
+            var exportChangedHandler = new PropertyChangedEventHandler(exportChanged);
             for (int i = 0; i < ExportCount; i++)
             {
                 var e = new ExportEntry(this, packageReader, false) { Index = i };
                 if (MEPackageHandler.GlobalSharedCacheEnabled)
-                    e.PropertyChanged += exportChanged; // If packages are not shared there is no point to attaching this
+                {
+                    e.PropertyChanged += exportChangedHandler; // If packages are not shared there is no point to attaching this
+                }
                 exports.Add(e);
                 if (platformNeedsResolved && e.ClassName == "ShaderCache")
                 {

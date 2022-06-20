@@ -7,29 +7,26 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
-using System.Xml.Linq;
-using System.Xml.XPath;
 using GongSolutions.Wpf.DragDrop;
 using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.DialogueEditor;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Misc.AppSettings;
-using LegendaryExplorer.Misc.ME3Tweaks;
+using LegendaryExplorerCore.Misc.ME3Tweaks;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Bases;
 using LegendaryExplorer.SharedUI.Interfaces;
-using LegendaryExplorer.Tools;
 using LegendaryExplorer.Tools.Meshplorer;
 using LegendaryExplorer.UserControls.ExportLoaderControls;
 using LegendaryExplorer.UserControls.SharedToolControls;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
+using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
@@ -43,7 +40,6 @@ using LegendaryExplorerCore.UnrealScript;
 using LegendaryExplorerCore.UnrealScript.Compiling.Errors;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
-using Newtonsoft.Json;
 
 namespace LegendaryExplorer.Tools.PackageEditor
 {
@@ -106,11 +102,12 @@ namespace LegendaryExplorer.Tools.PackageEditor
             }
         }
 
-        public ObservableCollectionExtended<object> LeftSideList_ItemsSource { get; set; } = new();
+        public ObservableCollectionExtended<object> LeftSideList_ItemsSource { get; } = new();
 
-        public ObservableCollectionExtended<IndexedName> NamesList { get; set; } = new();
+        //referenced by EntryMetaDataExportLoader's xaml, do not make private
+        public ObservableCollectionExtended<IndexedName> NamesList { get; } = new();
 
-        public ObservableCollectionExtended<string> ClassDropdownList { get; set; } = new();
+        public ObservableCollectionExtended<string> ClassDropdownList { get; } = new();
 
         public ObservableCollectionExtended<TreeViewEntry> AllTreeViewNodesX { get; } = new();
 
@@ -335,7 +332,8 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     MessageBox.Show(this, "Classes must be children of a Package export. Add one to the file first.");
                     return;
                 }
-                parent = EntrySelector.GetEntry<ExportEntry>(this, Pcc, "Pick a Package export your class should be a child of.", exp => existingPackages.Contains(exp));
+                parent = EntrySelector.GetEntry<ExportEntry>(this, Pcc, "Pick a Package export your class should be a child of.",
+                    exp => existingPackages.Contains(exp), Pcc.Exports.FirstOrDefault(exp => exp.IsClass)?.Parent);
                 if (parent is null)
                 {
                     return;
@@ -356,14 +354,14 @@ namespace LegendaryExplorer.Tools.PackageEditor
             var fileLib = new FileLib(Pcc);
             if (!fileLib.Initialize())
             {
-                var dlg = new ListDialog(fileLib.InitializationLog.Content.Select(msg => msg.ToString()), "Script Error", "Could not build script database for this file!", this);
+                var dlg = new ListDialog(fileLib.InitializationLog.AllErrors.Select(msg => msg.ToString()), "Script Error", "Could not build script database for this file!", this);
                 dlg.Show();
                 return;
             }
             (_, MessageLog log) = UnrealScriptCompiler.CompileClass(Pcc, $"class {className};", fileLib, parent: parent);
             if (log.HasErrors)
             {
-                var dlg = new ListDialog(fileLib.InitializationLog.Content.Select(msg => msg.ToString()), "Script Error", "Could not create class!", this);
+                var dlg = new ListDialog(log.AllErrors.Select(msg => msg.ToString()), "Script Error", "Could not create class!", this);
                 dlg.Show();
                 return;
             }
@@ -908,7 +906,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
                         if (importedFiles.Count == 0)
                         {
-                            importedFiles.Add(new EntryStringPair(null, "No matching filenames were found."));
+                            importedFiles.Add(new EntryStringPair((IEntry)null, "No matching filenames were found."));
                         }
 
                         eventArgs.Result = importedFiles;
@@ -1123,8 +1121,8 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
             if (result != null)
             {
-                var searchTerm = result.Name.Name.ToLower();
-                var found = Pcc.Names.Any(x => x.ToLower() == searchTerm);
+                string searchTerm = result.Name;
+                bool found = Pcc.Names.Any(x => x.CaseInsensitiveEquals(searchTerm));
                 if (found)
                 {
                     foreach (ExportEntry exp in Pcc.Exports)
@@ -1373,14 +1371,16 @@ namespace LegendaryExplorer.Tools.PackageEditor
             if (TreeEntryIsSelected())
             {
                 var selected = (TreeViewEntry)LeftSide_TreeView.SelectedItem;
-                if (selected.Entry is IEntry ent && ent.FullPath.StartsWith(UnrealPackageFile.TrashPackageName))
+                // 06/12/2022 - Change from FullPath.StartsWith() because if somehow trashed object has children (old files, bad experiments, etc) 
+                // this prevents removing these items easily
+                if (selected.Entry is IEntry ent && ent.ClassName == @"Package" && ent.ObjectName.Name == UnrealPackageFile.TrashPackageName)
                 {
                     MessageBox.Show("Cannot trash an already trashed item.");
                     return;
                 }
 
-                bool skipReferencesCheck =
-                    Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift); // Bypass the check if holding SHIFT
+                bool skipReferencesCheck = ShowExperiments &&
+                    (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift)); // Bypass the check if holding SHIFT
 
                 BusyText = "Performing reference check...";
                 IsBusy = true;
@@ -1388,31 +1388,13 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 {
 
                     List<IEntry> itemsToTrash = selected.FlattenTree().OrderByDescending(x => x.UIndex).Select(tvEntry => tvEntry.Entry).ToList();
-                    var itemsToTrashSet = new HashSet<IEntry>(itemsToTrash);
 
                     IEntry entryWithReferences =
                         // Requested by Khaar 05/12/2022
-                        // Way to bypass references check as it significantly slows down mass
+                        // Way to bypass references check as it slows down mass
                         // trashing of objects especially when the dev knows what they're doing
-                        // Might make sense to show this in a menu
-                        // of some kind? You have to hold shift (which is a typical windows power modifier, like
-                        // shift right click context menus) which means average person won't trigger it.
                         // Implemented by Mgamerz 05/14/2022
-                        skipReferencesCheck ? null : itemsToTrash.FirstOrDefault(entry => entry.GetEntriesThatReferenceThisOne().Any(kvp =>
-                    {
-                        (IEntry referencedEntry, List<string> referenceDescriptors) = kvp;
-
-                        //referenced from another entry that we are trashing, so it doesn't matter
-                        if (itemsToTrashSet.Contains(referencedEntry)) return false;
-
-                        //referenced from the level's actor list, which will be automatically cleaned up, so it doesn't matter
-                        if (referenceDescriptors.Count == 1 && referencedEntry.ClassName == "Level" && entry is ExportEntry exp && exp.IsA("Actor") && Pcc.LevelContainsActor(exp))
-                        {
-                            return false;
-                        }
-                        //dangerous reference detected!
-                        return true;
-                    }));
+                        skipReferencesCheck ? null : GetExternallyReferencedEntry(itemsToTrash);
                     return (itemsToTrash, entryWithReferences);
                 }).ContinueWithOnUIThread(prevTask =>
                 {
@@ -1446,6 +1428,144 @@ namespace LegendaryExplorer.Tools.PackageEditor
                         MessageBox.Show(this, "Trashed and removed from level!");
                     }
                 });
+
+                static IEntry GetExternallyReferencedEntry(List<IEntry> entriesToTrash)
+                {
+                    if (entriesToTrash.IsEmpty())
+                    {
+                        return null;
+                    }
+                    IMEPackage pcc = entriesToTrash[0].FileRef;
+                    MEGame pccGame = pcc.Game;
+                    var uIndexes = new HashSet<int>(entriesToTrash.Select(entry => entry.UIndex));
+
+                    foreach (ExportEntry exp in pcc.Exports.Except(entriesToTrash.OfType<ExportEntry>()))
+                    {
+                        try
+                        {
+                            //find header references
+                            if (uIndexes.Contains(exp.idxArchetype))
+                            {
+                                return pcc.GetEntry(exp.idxArchetype);
+                            }
+                            if (uIndexes.Contains(exp.idxClass))
+                            {
+                                return pcc.GetEntry(exp.idxClass);
+                            }
+                            if (uIndexes.Contains(exp.idxSuperClass))
+                            {
+                                return pcc.GetEntry(exp.idxSuperClass);
+                            }
+                            if (exp.HasComponentMap && exp.ComponentMap.Any(kvp => uIndexes.Contains(kvp.Value)))
+                            {
+                                return pcc.GetEntry(exp.ComponentMap.Values().First(uIdx => uIndexes.Contains(uIdx)));
+                            }
+
+                            //find stack references
+                            if (exp.HasStack)
+                            {
+                                if (uIndexes.TryGetValue(EndianReader.ToInt32(exp.DataReadOnly, 0, exp.FileRef.Endian), out int stack1))
+                                {
+                                    return pcc.GetEntry(stack1);
+                                }
+                                if (uIndexes.TryGetValue(EndianReader.ToInt32(exp.DataReadOnly, 4, exp.FileRef.Endian), out int stack2))
+                                {
+                                    return pcc.GetEntry(stack2);
+                                }
+                            }
+                            else if (exp.TemplateOwnerClassIdx is var toci and >= 0 && 
+                                     uIndexes.TryGetValue(EndianReader.ToInt32(exp.DataReadOnly, toci, exp.FileRef.Endian), out int tocuIdx))
+                            {
+                                return pcc.GetEntry(tocuIdx);
+                            }
+
+
+                            //find property references
+                            if (GetReferencedEntryInProps(exp.GetProperties()) is IEntry entry)
+                            {
+                                return entry;
+                            }
+
+                            //find binary references
+                            if (!exp.IsDefaultObject
+                                && exp.ClassName != "AnimSequence" //has no UIndexes, and is expensive to deserialize
+                                && ObjectBinary.From(exp) is ObjectBinary objBin)
+                            {
+                                List<(UIndex, string)> indices;
+                                if (objBin is Level levelBin)
+                                {
+                                    //trashing a level object will automatically remove it from the Actor list
+                                    //so we don't care if it's referenced there
+                                    indices = levelBin.GetUIndexesWithoutActorList(pccGame);
+                                }
+                                else
+                                {
+                                    indices = objBin.GetUIndexes(pccGame);
+                                }
+                                foreach ((UIndex uIndex, string _) in indices)
+                                {
+                                    if (uIndexes.Contains(uIndex.value))
+                                    {
+                                        return pcc.GetEntry(uIndex.value);
+                                    }
+                                }
+                            }
+                        }
+                        catch (Exception e) //when (!App.IsDebug)
+                        {
+                            MessageBox.Show($"Exception occurred while reading export# {exp.UIndex}: {e.Message}");
+                        }
+                    }
+
+                    return null;
+
+                    IEntry GetReferencedEntryInProps(PropertyCollection props)
+                    {
+                        foreach (Property prop in props)
+                        {
+                            switch (prop)
+                            {
+                                case ObjectProperty objectProperty:
+                                    if (uIndexes.Contains(objectProperty.Value))
+                                    {
+                                        return pcc.GetEntry(objectProperty.Value);
+                                    }
+                                    break;
+                                case DelegateProperty delegateProperty:
+                                    if (uIndexes.Contains(delegateProperty.Value.ContainingObjectUIndex))
+                                    {
+                                        return pcc.GetEntry(delegateProperty.Value.ContainingObjectUIndex);
+                                    }
+                                    break;
+                                case StructProperty structProperty:
+                                    if (GetReferencedEntryInProps(structProperty.Properties) is ExportEntry export1)
+                                    {
+                                        return export1;
+                                    }
+                                    break;
+                                case ArrayProperty<ObjectProperty> arrayProperty:
+                                    foreach (ObjectProperty objProp in arrayProperty)
+                                    {
+                                        if (uIndexes.Contains(objProp.Value))
+                                        {
+                                            return pcc.GetEntry(objProp.Value);
+                                        }
+                                    }
+                                    break;
+                                case ArrayProperty<StructProperty> arrayProperty:
+                                    foreach (StructProperty structProp in arrayProperty)
+                                    {
+                                        if (GetReferencedEntryInProps(structProp.Properties) is IEntry entry)
+                                        {
+                                            return entry;
+                                        }
+                                    }
+                                    break;
+                            }
+                        }
+                        return null;
+                    }
+                }
             }
         }
         
@@ -1555,7 +1675,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
         {
             if (LeftSide_ListView.SelectedItem is IndexedName iName)
             {
-                string name = iName.Name.Name;
+                string name = iName.Name;
                 BusyText = $"Finding usages of '{name}'...";
                 IsBusy = true;
                 Task.Run(() => Pcc.FindUsagesOfName(name)).ContinueWithOnUIThread(prevTask =>
@@ -1962,7 +2082,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
         {
             if (LeftSide_ListView.SelectedItem is IndexedName iName)
             {
-                var name = iName.Name;
+                string name = iName.Name;
                 string input = $"Enter a new name to replace this name ({name}) with.";
                 string result =
                     PromptDialog.Prompt(this, input, "Enter new name", defaultValue: name, selectText: true);
@@ -2657,7 +2777,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
             Intro_Tab.Visibility = Visibility.Visible;
             Intro_Tab.IsSelected = true;
 
-            AllTreeViewNodesX.ClearEx();
+            ResetTreeView();
             NamesList.ClearEx();
             ClassDropdownList.ClearEx();
             BackwardsIndexes = new Stack<int>();
@@ -2667,12 +2787,11 @@ namespace LegendaryExplorer.Tools.PackageEditor
             //Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
         }
 
-        private void InitializeTreeViewBackground_Completed(
-            Task<ObservableCollectionExtended<TreeViewEntry>> prevTask)
+        private void InitializeTreeViewBackground_Completed(Task<List<TreeViewEntry>> prevTask)
         {
             if (prevTask.Result != null)
             {
-                AllTreeViewNodesX.ClearEx();
+                ResetTreeView();
                 AllTreeViewNodesX.AddRange(prevTask.Result);
             }
 
@@ -2699,11 +2818,8 @@ namespace LegendaryExplorer.Tools.PackageEditor
             }
         }
 
-        private ObservableCollectionExtended<TreeViewEntry> InitializeTreeViewBackground()
+        private List<TreeViewEntry> InitializeTreeViewBackground()
         {
-            if (Thread.CurrentThread.Name == null)
-                Thread.CurrentThread.Name = "PackageEditorWPF TreeViewInitialization";
-
             BusyText = "Loading " + Path.GetFileName(Pcc.FilePath);
             if (Pcc == null)
             {
@@ -2744,7 +2860,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 }
             }
 
-            return new ObservableCollectionExtended<TreeViewEntry>(rootNodes.Except(itemsToRemove));
+            return new List<TreeViewEntry>(rootNodes.Except(itemsToRemove));
         }
 
         private void InitializeTreeView()
@@ -2862,6 +2978,11 @@ namespace LegendaryExplorer.Tools.PackageEditor
         /// <returns>True if an item was selected, false if nothing was selected.</returns>
         public bool GetSelected(out int n)
         {
+            n = 0;
+            if (Pcc is null)
+            {
+                return false;
+            }
             switch (CurrentView)
             {
                 case CurrentViewMode.Tree when SelectedItem is TreeViewEntry selected:
@@ -2873,8 +2994,8 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 case CurrentViewMode.Imports when LeftSide_ListView.SelectedItem != null:
                     n = -LeftSide_ListView.SelectedIndex - 1;
                     return true;
+                case CurrentViewMode.Names:
                 default:
-                    n = 0;
                     return false;
             }
         }
@@ -2946,17 +3067,15 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 changes.Any(x => x != PackageChange.ExportData && x.HasFlag(PackageChange.Export));
             bool hasSelection = GetSelected(out int selectedEntryUIndex);
 
-            List<PackageUpdate> addedChanges = updates.Where(x => x.Change.HasFlag(PackageChange.EntryAdd))
-                .OrderBy(x => x.Index).ToList();
-            var headerChanges = updates.Where(x => x.Change.HasFlag(PackageChange.EntryHeader)).Select(x => x.Index)
-                .ToHashSet();
+            List<PackageUpdate> addedChanges = updates.Where(x => x.Change.HasFlag(PackageChange.EntryAdd)).OrderBy(x => x.Index).ToList();
+            HashSet<int> headerChanges = updates.Where(x => x.Change.HasFlag(PackageChange.EntryHeader)).Select(x => x.Index).ToHashSet();
 
             // Reduces tree enumeration
-            var treeViewItems = AllTreeViewNodesX[0].FlattenTree();
-            Dictionary<int, TreeViewEntry> uindexMap = new Dictionary<int, TreeViewEntry>();
+            List<TreeViewEntry> treeViewItems = AllTreeViewNodesX[0].FlattenTree();
+            var uindexMap = new Dictionary<int, TreeViewEntry>();
             if (Enumerable.Any(addedChanges) || Enumerable.Any(headerChanges))
             {
-                foreach (var tv in treeViewItems)
+                foreach (TreeViewEntry tv in treeViewItems)
                 {
                     uindexMap[tv.UIndex] = tv;
                 }
@@ -2979,9 +3098,9 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     var orphans = new List<IEntry>();
                     foreach (IEntry entry in entriesToAdd)
                     {
-                        if (uindexMap.TryGetValue(entry.idxLink, out var parent))
+                        if (uindexMap.TryGetValue(entry.idxLink, out TreeViewEntry parent))
                         {
-                            TreeViewEntry newEntry = new TreeViewEntry(entry) { Parent = parent };
+                            var newEntry = new TreeViewEntry(entry) { Parent = parent };
                             parent.Sublinks.Add(newEntry);
                             treeViewItems.Add(newEntry); //used to find parents
                             nodesToSortChildrenFor.Add(parent);
@@ -3076,7 +3195,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 }
             }
 
-            if ((CurrentView == CurrentViewMode.Exports || CurrentView == CurrentViewMode.Tree) && hasSelection &&
+            if (CurrentView is CurrentViewMode.Exports or CurrentViewMode.Tree && hasSelection &&
                 updates.Contains(new PackageUpdate(PackageChange.ExportData, selectedEntryUIndex)))
             {
                 Preview(true);
@@ -3090,8 +3209,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 //initial loading
                 //we don't update the left side with this
                 NamesList.ReplaceAll(Pcc.Names.Select((name, i) =>
-                    new IndexedName(i,
-                        name))); //we replaceall so we don't add one by one and trigger tons of notifications
+                    new IndexedName(i, name))); //we replaceall so we don't add one by one and trigger tons of notifications
             }
             else
             {
@@ -3106,9 +3224,12 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
                     if (update.Change == PackageChange.NameAdd) //names are 0 indexed
                     {
-                        NameReference nr = Pcc.Names[update.Index];
+                        var nr = Pcc.Names[update.Index];
                         NamesList.Add(new IndexedName(update.Index, nr));
-                        LeftSideList_ItemsSource.Add(new IndexedName(update.Index, nr));
+                        if (CurrentView == CurrentViewMode.Names)
+                        {
+                            LeftSideList_ItemsSource.Add(new IndexedName(update.Index, nr));
+                        }
                     }
                     else if (update.Change == PackageChange.NameEdit)
                     {
@@ -3870,15 +3991,27 @@ namespace LegendaryExplorer.Tools.PackageEditor
             if (!e.Cancel)
             {
                 SoundTab_Soundpanel.FreeAudioResources();
-                foreach (var el in ExportLoaders.Keys)
+                foreach (ExportLoaderControl el in ExportLoaders.Keys)
                 {
                     el.Dispose(); //Remove hosted winforms references
                 }
 
                 LeftSideList_ItemsSource.ClearEx();
-                AllTreeViewNodesX.ClearEx();
+                ResetTreeView();
                 RecentsController?.Dispose();
             }
+        }
+
+        private void ResetTreeView()
+        {
+            if (AllTreeViewNodesX.Count > 0)
+            {
+                foreach (TreeViewEntry tv in AllTreeViewNodesX[0].FlattenTree())
+                {
+                    tv.Dispose();
+                }
+            }
+            AllTreeViewNodesX.ClearEx();
         }
 
         private void OpenIn_Clicked(object sender, RoutedEventArgs e)

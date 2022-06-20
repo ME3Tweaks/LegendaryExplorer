@@ -12,7 +12,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
         public bool IsSuper;
         public VariableType SuperSpecifier;
 
-        public SymbolReference(ASTNode symbol, string name = "", SourcePosition start = null, SourcePosition end = null) 
+        public SymbolReference(ASTNode symbol, string name = "", int start = -1, int end = -1) 
             : base(ASTNodeType.SymbolReference, start, end)
         {
             Node = symbol;

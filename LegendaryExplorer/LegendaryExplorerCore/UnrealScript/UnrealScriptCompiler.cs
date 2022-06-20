@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
@@ -38,10 +39,10 @@ namespace LegendaryExplorerCore.UnrealScript
             }
             catch (Exception e) when (!LegendaryExplorerCoreLib.IsDebug)
             {
-                return (null, $"Error occured while decompiling {export?.InstancedFullPath}:\n\n{e.FlattenException()}");
+                return (null, $"Error occured while decompiling {export.InstancedFullPath}:\n\n{e.FlattenException()}");
             }
 
-            return (null, "Could not decompile!");
+            return (null, $"Could not decompile {export.InstancedFullPath}");
         }
 
         public static ASTNode ExportToAstNode(ExportEntry export, FileLib lib, PackageCache packageCache)
@@ -84,7 +85,7 @@ namespace LegendaryExplorerCore.UnrealScript
 
         public static (ASTNode ast, TokenStream tokens) CompileOutlineAST(string script, string type, MessageLog log, MEGame game, bool isDefaultObject = false)
         {
-            var tokens = new TokenStream(StringLexer.Lex(script, log));
+            var tokens = Lexer.Lex(script, log);
             var parser = new ClassOutlineParser(tokens, game, log);
             try
             {
@@ -110,6 +111,107 @@ namespace LegendaryExplorerCore.UnrealScript
                 return (null, tokens);
             }
 
+        }
+
+        //Used by M3. Do not delete
+        public static MessageLog AddOrReplaceInClass(ExportEntry classExport, string scriptText, FileLib lib, PackageCache packageCache = null)
+        {
+            IMEPackage pcc = classExport.FileRef;
+            if (!ReferenceEquals(lib.Pcc, pcc))
+            {
+                throw new InvalidOperationException("FileLib can only be used with exports from the same file it was created for.");
+            }
+            if (!classExport.IsClass)
+            {
+                throw new ArgumentException($"Expected '{classExport.InstancedFullPath}' to be a class definition export!", nameof(classExport));
+            }
+            var log = new MessageLog();
+            if (!lib.IsInitialized)
+            {
+                log.LogError("FileLib not initialized!");
+                return log;
+            }
+            (ASTNode decompedNode, string classSource) = DecompileExport(classExport, lib, packageCache);
+            if (decompedNode is null)
+            {
+                log.LogError(classSource);
+                return log;
+            }
+            (ASTNode classAST, _) = CompileOutlineAST(classSource, "Class", log, pcc.Game);
+            if (log.HasErrors || classAST is not Class cls)
+            {
+                log.LogError($"Failed to parse class {classExport.InstancedFullPath}");
+                return log;
+            }
+
+            try
+            {
+                var tokens = Lexer.Lex(scriptText, log);
+                var parser = new ClassOutlineParser(tokens, pcc.Game, log);
+                ASTNode astNode = parser.ParseDocument();
+                if (astNode is null || log.HasErrors)
+                {
+                    log.LogError("Parse failed!");
+                    return log;
+                }
+                switch (astNode)
+                {
+                    case Enumeration enumeration:
+                        cls.TypeDeclarations.ReplaceFirstOrAdd(t => t is Enumeration && t.Name.CaseInsensitiveEquals(enumeration.Name), enumeration);
+                        break;
+                    case Struct @struct:
+                        cls.TypeDeclarations.ReplaceFirstOrAdd(t => t is Struct && t.Name.CaseInsensitiveEquals(@struct.Name), @struct);
+                        break;
+                    case VariableDeclaration varDecl:
+                        cls.VariableDeclarations.ReplaceFirstOrAdd(v => v.Name.CaseInsensitiveEquals(varDecl.Name), varDecl);
+                        break;
+                    case Function func:
+                        cls.Functions.ReplaceFirstOrAdd(f => f.Name.CaseInsensitiveEquals(func.Name), func);
+                        break;
+                    case State state:
+                        cls.States.ReplaceFirstOrAdd(s => s.Name.CaseInsensitiveEquals(state.Name), state);
+                        break;
+                    case DefaultPropertiesBlock propsBlock:
+                        //cls.DefaultProperties = propsBlock;
+                        log.LogError("Replacing default properties is not permitted at this time.");
+                        return log;
+                    case Class://support whole-class replacement?
+                        log.LogError("Replacing an entire class is not permitted at this time.");
+                        return log;
+                    case Const:
+                        log.LogError("Adding or replacing a const is not permitted.");
+                        return log;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(astNode));
+                }
+
+                classAST = CompileNewClassAST(pcc, cls, log, lib, out _);
+                if (classAST is null || log.HasErrors)
+                {
+                    log.LogError("Parse failed!");
+                    return log;
+                }
+            }
+            catch (ParseException)
+            {
+                log.LogError("Parse failed!");
+                return log;
+            }
+            catch (Exception exception)
+            {
+                log.LogError($"Parse failed! Exception: {exception}");
+                return log;
+            }
+            try
+            {
+                ScriptObjectCompiler.Compile(classAST, pcc, classExport.Parent, classExport.GetBinaryData<UClass>(), packageCache);
+                log.LogMessage("Compiled!");
+            }
+            catch (Exception exception) when (!LegendaryExplorerCoreLib.IsDebug)
+            {
+                log.LogError($"Compilation failed! Exception: {exception}");
+            }
+            return log;
         }
 
         public static (ASTNode astNode, MessageLog log) CompileClass(IMEPackage pcc, string scriptText, FileLib lib, ExportEntry export = null, IEntry parent = null, PackageCache packageCache = null)
@@ -183,7 +285,7 @@ namespace LegendaryExplorerCore.UnrealScript
                 {
                     if (func.IsNative)
                     {
-                        log.LogMessage("Cannot edit native functions!");
+                        log.LogError("Cannot edit native functions!");
                         return (astNode, log);
                     }
                     try
@@ -373,7 +475,11 @@ namespace LegendaryExplorerCore.UnrealScript
                     log.LogError(export.InstancedFullPath + " does not have a Class or ScriptStruct Export as a parent!");
                     return (null, log);
                 }
-
+                if (strct.IsNative)
+                {
+                    log.LogMessage("Cannot edit native structs!");
+                    return (astNode, log);
+                }
                 try
                 {
                     astNode = CompileNewStructAST(parent, strct, log, lib);
@@ -481,8 +587,18 @@ namespace LegendaryExplorerCore.UnrealScript
                 throw new Exception("Cannot compile the root Object class!");
             }
             vfTableChanged = false;
-            //get the old version of this class, if it exists, for the purpose of determining whether the virtual function table has been changed
-            lib.ReadonlySymbolTable.TryGetType(cls.Name, out Class existingClass);
+            //get the old version of this class, if it exists
+            if (lib.ReadonlySymbolTable.TryGetType(cls.Name, out Class existingClass))
+            {
+                foreach (Struct existingNativeStruct in existingClass.TypeDeclarations.OfType<Struct>().Where(s => s.IsNative))
+                {
+                    if (cls.TypeDeclarations.FirstOrDefault(t => t.Name == existingNativeStruct.Name) is Struct newStruct 
+                        && !existingNativeStruct.IsNativeCompatibleWith(newStruct, pcc.Game))
+                    {
+                        log.LogError($"Cannot modify native struct: {existingNativeStruct.Name}", newStruct.StartPos, newStruct.EndPos);
+                    }
+                }
+            }
             log.Filter = cls;
             SymbolTable symbols = lib.CreateSymbolTableWithClass(cls, log);
             log.Filter = null;
@@ -536,7 +652,7 @@ namespace LegendaryExplorerCore.UnrealScript
                         var existingFuncDict = existingClass.Functions.Where(func => func.IsVirtual).ToDictionary(func => func.Name);
                         foreach (string funcName in parentVirtualFuncNames)
                         {
-                            if (existingFuncDict.Remove(funcName, out Function func))
+                            if (existingFuncDict.Remove(funcName))
                             {
                                 existingOverrides.Add(funcName);
                             }
@@ -553,7 +669,7 @@ namespace LegendaryExplorerCore.UnrealScript
                     }
                 }
 
-                cls.VirtualFunctionTable = cls.VirtualFunctionNames.Select(funcName => symbols.TryGetSymbol(funcName, out Function func) ? func : throw new Exception($"'{funcName}' not found on class!")).ToList();
+                cls.VirtualFunctionTable = cls.VirtualFunctionNames.Select(funcName => cls.LookupFunction(funcName) ?? throw new Exception($"'{funcName}' not found on class!")).ToList();
             }
 
             return cls;
@@ -686,6 +802,41 @@ namespace LegendaryExplorerCore.UnrealScript
                 ClassValidationVisitor.RunAllPasses(enumeration, log, symbols);
 
                 return enumeration;
+            }
+
+            return null;
+        }
+
+        public static VariableDeclaration CompileNewVarDeclAST(ExportEntry parentExport, VariableDeclaration varDecl, MessageLog log, FileLib lib)
+        {
+            if (!ReferenceEquals(lib.Pcc, parentExport.FileRef))
+            {
+                throw new InvalidOperationException("FileLib can only be used with exports from the same file it was created for.");
+            }
+            var symbols = lib.GetSymbolTable();
+            symbols.RevertToObjectStack();
+            if (symbols.TryGetType(parentExport.ObjectName.Instanced, out ObjectType containingObject))
+            {
+                if (!containingObject.Name.CaseInsensitiveEquals("Object"))
+                {
+                    symbols.GoDirectlyToStack(containingObject.GetScope());
+                }
+                symbols.RemoveSymbol(varDecl.Name);
+
+                int enumIdx = containingObject.VariableDeclarations.FindIndex(v => v.Name.CaseInsensitiveEquals(varDecl.Name));
+                if (enumIdx == -1)
+                {
+                    containingObject.VariableDeclarations.Add(varDecl);
+                }
+                else
+                {
+                    containingObject.VariableDeclarations[enumIdx] = varDecl;
+                }
+
+                varDecl.Outer = containingObject;
+                ClassValidationVisitor.RunAllPasses(varDecl, log, symbols);
+
+                return varDecl;
             }
 
             return null;
