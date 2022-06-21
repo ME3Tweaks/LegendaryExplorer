@@ -114,7 +114,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     VariableType valueType = parsed.ResolveType();
                     if (!bodyParser.TypeCompatible(param.VarType, valueType, parsed.StartPos))
                     {
-                        paramParser.TypeError($"Could not assign value of type '{valueType}' to variable of type '{param.VarType}'!", unparsedBody);
+                        paramParser.TypeError($"Could not assign value of type '{valueType.FullTypeName()}' to variable of type '{param.VarType.FullTypeName()}'!", unparsedBody);
                     }
                     AddConversion(param.VarType, ref parsed);
                     param.DefaultParameter = parsed;
@@ -473,7 +473,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 VariableType exprType = expr.ResolveType();
                 if (!TypeCompatible(exprType, value.ResolveType(), value.StartPos))
                 {
-                    TypeError($"Cannot assign a value of type '{value.ResolveType()?.FullTypeName() ?? "None"}' to a variable of type '{exprType?.FullTypeName()}'.", assign);
+                    TypeError($"Cannot assign a value of type '{value.ResolveType().FullTypeName() ?? "None"}' to a variable of type '{exprType.FullTypeName()}'.", assign);
                 }
                 AddConversion(exprType, ref value);
 
@@ -506,7 +506,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             VariableType type = ParseTypeRef();
             if (type == null) throw ParseError($"Expected variable type after '{LOCAL}'!", CurrentPosition);
             type.Outer = Body;
-            if (!Symbols.TryResolveType(ref type)) TypeError($"The type '{type.Name}' does not exist in the current scope!", type);
+            if (!Symbols.TryResolveType(ref type)) TypeError($"The type '{type.FullTypeName()}' does not exist in the current scope!", type);
             if (type is Enumeration)
             {
                 PrevToken.SyntaxType = EF.Enum;
@@ -616,7 +616,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             }
             else if (!TypeCompatible(func.ReturnType, type, value.StartPos))
             {
-                TypeError($"Cannot return a value of type '{type?.Name ?? "None"}', function should return '{func.ReturnType.Name}'.", token);
+                TypeError($"Cannot return a value of type '{type.FullTypeName()}', function should return '{func.ReturnType.FullTypeName()}'.", token);
             }
             else
             {
@@ -1187,13 +1187,13 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     }
                     else
                     {
-                        ParseError($"No valid operator found for '{lType?.Name ?? "None"}' '{opType}' '{rType?.Name ?? "None"}'!", opToken);
+                        ParseError($"No valid operator found for '{lType.FullTypeName()}' '{opType}' '{rType.FullTypeName()}'!", opToken);
                         expr = new ErrorExpression(lhs.StartPos, rhs.EndPos, Tokens.GetTokensInRange(lhs.StartPos, rhs.EndPos).ToArray());
                     }
                 }
                 else if (matches > 1)
                 {
-                    ParseError($"Ambiguous operator overload! {matches} equally valid possibilites for '{lType?.Name ?? "None"}' '{opType}' '{rType?.Name ?? "None"}'!", opToken);
+                    ParseError($"Ambiguous operator overload! {matches} equally valid possibilites for '{lType.FullTypeName()}' '{opType}' '{rType.FullTypeName()}'!", opToken);
                     expr = new ErrorExpression(lhs.StartPos, rhs.EndPos, Tokens.GetTokensInRange(lhs.StartPos, rhs.EndPos).ToArray());
                 }
                 else
@@ -1324,7 +1324,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                         return floatLit;
                 }
 
-                if (exprType != SymbolTable.FloatType && exprType != SymbolTable.IntType && !exprType.Name.CaseInsensitiveEquals("Vector"))
+                if (exprType != SymbolTable.FloatType && exprType != SymbolTable.IntType && !(exprType.Name.CaseInsensitiveEquals("Vector") && exprType is not DynamicArrayType))
                 {
                     throw ParseError("Unary '-' can only be used with expressions that evaluate to float, int, or Vector!", expr);
                 }
@@ -1746,7 +1746,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
                 if (!correctType)
                 {
-                    TypeError($"Expected 'comparefunction' argument to '{SORT}' to be a delegate that takes two parameters of type '{elementType.Name}' and returns an int!", comparefunctionArg);
+                    TypeError($"Expected 'comparefunction' argument to '{SORT}' to be a delegate that takes two parameters of type '{elementType.FullTypeName()}' and returns an int!", comparefunctionArg);
                 }
                 
                 ExpectRightParen();
@@ -1791,7 +1791,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 {
                     if (expectedType is not DelegateType) //seems wrong, but required to parse bioware classes, so...
                     {
-                        TypeError($"Expected '{argumentName}' argument to '{functionName}' to evaluate to '{expectedType?.Name ?? "None"}'!", arg);
+                        TypeError($"Expected '{argumentName}' argument to '{functionName}' to evaluate to '{expectedType.FullTypeName()}'!", arg);
                     }
                 }
                 AddConversion(expectedType, ref arg);
@@ -1943,7 +1943,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                             {
                                 break;
                             }
-                            throw ParseError($"Expected an argument of type '{p.VarType.Name}'!", paramStartPos);
+                            throw ParseError($"Expected an argument of type '{p.VarType.FullTypeName()}'!", paramStartPos);
                         }
 
                         VariableType argType = currentArg.ResolveType();
@@ -2350,7 +2350,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
                     if (vartype is not Class super)
                     {
-                        throw ParseError($"'{vartype.Name}' is not a class!", className);
+                        throw ParseError($"'{vartype.FullTypeName()}' is not a class!", className);
                     }
 
                     Tokens.AddDefinitionLink(super, className);
@@ -2551,7 +2551,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             if (!Symbols.TryGetSymbolInScopeStack(token.Value, out ASTNode symbol, specificScope))
             {
                 //primitive or dynamic cast, or enum
-                if (!isDefaultRef && Symbols.TryGetType(token.Value, out VariableType destType))
+                if (NotInContext && !isDefaultRef && Symbols.TryGetType(token.Value, out VariableType destType))
                 {
                     Tokens.AddDefinitionLink(destType, token);
                     if (destType is Enumeration enm && Matches(TokenType.Dot))
@@ -2641,7 +2641,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 bool isInterfaceCast = destClass.IsInterface || srcClass.IsInterface;
                 if (!srcClass.SameAsOrSubClassOf(destClass) && !destClass.SameAsOrSubClassOf(srcClass) && !isInterfaceCast)
                 {
-                    TypeError($"Cannot cast between unrelated classes '{exprType.Name}' and '{destType?.Name}'!", castToken.StartPos, CurrentPosition);
+                    TypeError($"Cannot cast between unrelated classes '{srcClass.Name}' and '{destClass.Name}'!", castToken.StartPos, CurrentPosition);
                 }
 
                 return new CastExpression(destType, expr, castToken.StartPos, CurrentPosition)
@@ -2659,7 +2659,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             ECast cast = CastHelper.GetConversion(destType, exprType);
             if (cast == ECast.Max)
             {
-                TypeError($"Cannot cast from '{exprType?.Name}' to '{destType?.Name}'!", castToken.StartPos, CurrentPosition);
+                TypeError($"Cannot cast from '{exprType.FullTypeName()}' to '{destType.FullTypeName()}'!", castToken.StartPos, CurrentPosition);
             }
 
             return new PrimitiveCast(CastHelper.PureCastType(cast), destType, expr, castToken.StartPos, CurrentPosition);

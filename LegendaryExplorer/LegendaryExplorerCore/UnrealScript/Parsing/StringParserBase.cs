@@ -347,7 +347,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 }
             }
 
-            if (dest.Name.CaseInsensitiveEquals(src?.Name)) return true;
+            if (dest?.GetType() == src?.GetType() && dest.Name.CaseInsensitiveEquals(src.Name)) return true;
             ECast cast = CastHelper.GetConversion(dest, src);
             if (coerce)
             {

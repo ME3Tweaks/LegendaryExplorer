@@ -324,7 +324,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                         var typeStub = node.VarType;
                         if (!Symbols.TryResolveType(ref node.VarType))
                         {
-                            return Error($"No type named '{node.VarType.Name}' exists!", node.VarType.StartPos, node.VarType.EndPos);
+                            return Error($"No type named '{node.VarType.FullTypeName()}' exists!", node.VarType.StartPos, node.VarType.EndPos);
                         }
                         Log.Tokens?.AddDefinitionLink(node.VarType, typeStub.StartPos, typeStub.Length);
                     }
@@ -599,7 +599,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                     //Consts do not have to be globally unique, but they do have to be unique within a scope
                     if (((ObjectType)node.Outer).TypeDeclarations.Any(decl => decl != node && decl.Name.CaseInsensitiveEquals(node.Name)))
                     {
-                        return Error($"A type named '{node.Name}' already exists in this {node.Outer.GetType().Name.ToLower()}!", node.StartPos, node.EndPos);
+                        return Error($"A type named '{node.FullTypeName()}' already exists in this {node.Outer.GetType().Name.ToLower()}!", node.StartPos, node.EndPos);
                     }
                 }
 
