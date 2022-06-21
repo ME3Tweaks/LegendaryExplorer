@@ -1,0 +1,4 @@
+var class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_type_extensions =
+[
+    [ "FullTypeName", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_type_extensions.html#a56f854fa87cc2fe7f651ee428166b42f", null ]
+];

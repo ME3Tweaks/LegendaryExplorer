@@ -999,6 +999,7 @@ var hierarchy =
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.URL", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_r_l.html", null ],
     [ "LegendaryExplorerCore.Gammtek.Windows.WindowsApi.User32", "class_legendary_explorer_core_1_1_gammtek_1_1_windows_1_1_windows_api_1_1_user32.html", null ],
     [ "LegendaryExplorerCore.Misc.ValueTupleEqualityComparer", "class_legendary_explorer_core_1_1_misc_1_1_value_tuple_equality_comparer.html", null ],
+    [ "LegendaryExplorerCore.UnrealScript.Language.Tree.VariableTypeExtensions", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_type_extensions.html", null ],
     [ "LegendaryExplorerCore.Gammtek.IO.VarInt", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_var_int.html", null ],
     [ "LegendaryExplorerCore.Kismet.SeqTools.VarLinkInfo", "class_legendary_explorer_core_1_1_kismet_1_1_seq_tools_1_1_var_link_info.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.Vector2DHalf", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_vector2_d_half.html", null ],

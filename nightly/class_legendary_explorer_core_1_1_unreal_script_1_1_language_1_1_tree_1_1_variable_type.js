@@ -4,7 +4,6 @@ var class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_va
     [ "Size", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_type.html#afa606151fab5a3662abc0728fc69c411", null ],
     [ "AcceptVisitor", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_type.html#a6ebc61d9dc06b6dd8e35ecb087126125", null ],
     [ "GetScope", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_type.html#a5cd65bdfd1f9b0a4988dc1b5dd8da39e", null ],
-    [ "FullTypeName", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_type.html#a621a7f7318293a6828a9a02ca62b96d8", null ],
     [ "Name", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_type.html#af5288daa0a16043158a988f5ca9beb49", null ],
     [ "Declaration", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_type.html#ac6b07a3634f9da9fd6560e3711632879", null ],
     [ "PropertyType", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_type.html#aabde604cca7a49040b60b863e8a42375", null ],

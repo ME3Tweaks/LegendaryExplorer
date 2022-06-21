@@ -837,6 +837,7 @@ var annotated_dup =
             [ "VariableDeclaration", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_declaration.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_declaration" ],
             [ "VariableIdentifier", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_identifier.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_identifier" ],
             [ "VariableType", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_type.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_type" ],
+            [ "VariableTypeExtensions", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_type_extensions.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_type_extensions" ],
             [ "VectorLiteral", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_vector_literal.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_vector_literal" ],
             [ "WhileLoop", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_while_loop.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_while_loop" ]
           ] ],

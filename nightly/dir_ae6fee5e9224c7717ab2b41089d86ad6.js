@@ -233,7 +233,8 @@ var dir_ae6fee5e9224c7717ab2b41089d86ad6 =
       [ "LegendaryExplorerCore.UnrealScript.Language.Tree.VariableIdentifier", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_identifier.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_identifier" ]
     ] ],
     [ "VariableType.cs", "_variable_type_8cs.html", [
-      [ "LegendaryExplorerCore.UnrealScript.Language.Tree.VariableType", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_type.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_type" ]
+      [ "LegendaryExplorerCore.UnrealScript.Language.Tree.VariableType", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_type.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_type" ],
+      [ "LegendaryExplorerCore.UnrealScript.Language.Tree.VariableTypeExtensions", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_type_extensions.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_type_extensions" ]
     ] ],
     [ "VectorLiteral.cs", "_vector_literal_8cs.html", [
       [ "LegendaryExplorerCore.UnrealScript.Language.Tree.VectorLiteral", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_vector_literal.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_vector_literal" ]
