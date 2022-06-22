@@ -598,7 +598,7 @@ namespace LegendaryExplorer.Tools.PackageDumper
                         var objectFlags = exp.GetPropertyFlags();
                         isCoalesced = objectFlags != null && objectFlags.Value.HasFlag(UnrealFlags.EPropertyFlags.Config);
                     }
-                    bool isScript = (className == "Function");
+                    bool shouldUseDecompiledText = (className is "Function" or "Enum" or "State");
                     //int progress = ((int)(((double)numDone / numTotal) * 100));
                     //while (progress >= (lastProgress + 10))
                     //{
@@ -615,9 +615,22 @@ namespace LegendaryExplorer.Tools.PackageDumper
                     }
 
                     stringoutput.Write($"{exp.InstancedFullPath}({exp.ClassName})");
-                    stringoutput.WriteLine($"(Superclass: {exp.SuperClassName}) (Data Offset: 0x {exp.DataOffset:X5})");
+                    if (exp.SuperClassName != "Class")
+                    {
+                        stringoutput.Write($" (Superclass: {exp.SuperClass?.InstancedFullPath})");
+                    }
 
-                    if (isScript)
+                    if (exp.Archetype != null)
+                    {
+                        stringoutput.Write($" (Archetype: {exp.Archetype?.InstancedFullPath})");
+
+                    }
+
+
+                    stringoutput.WriteLine(); // next line please
+                    
+
+                    if (shouldUseDecompiledText)
                     {
                         //initing filelib is expensive, so we only want to do it for files that have script
                         if (fileLib is null)
@@ -633,7 +646,7 @@ namespace LegendaryExplorer.Tools.PackageDumper
                                 //it just makes the output a bit nicer (at the time of this writing all it does is resolve some integer literals into enum values)
                             }
                         }
-                        stringoutput.WriteLine("==============Function==============");
+                        stringoutput.WriteLine($"=============={exp.ClassName}==============");
 
                         (_, string functionText) = UnrealScriptCompiler.DecompileExport(exp, fileLib);
 
@@ -641,7 +654,7 @@ namespace LegendaryExplorer.Tools.PackageDumper
                     }
                     //TODO: Change to UProperty
 
-                    if (exp.ClassName != "Class" && !isScript && exp.ClassName != "ShaderCache")
+                    if (!shouldUseDecompiledText && exp.ClassName != "Class" && exp.ClassName != "ShaderCache")
                     {
                         try
                         {
