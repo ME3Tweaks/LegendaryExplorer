@@ -245,16 +245,16 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 {
                     //State
                     //parse remaining
-                    var footerstartpos = pos + diskSize;
+                    var footerstartpos = pos + diskSize + 4;
                     var footerdata = CurrentLoadedExport.DataReadOnly.Slice(footerstartpos, CurrentLoadedExport.DataSize - footerstartpos);
                     var fpos = 0;
-                    ScriptFooterBlocks.Add(new ScriptHeaderItem("Probemask?", "??", fpos + footerstartpos) { length = 8 });
+                    ScriptFooterBlocks.Add(new ScriptHeaderItem("ProbeMask", "??", fpos + footerstartpos) { length = 8 });
                     fpos += 0x8;
 
-                    ScriptFooterBlocks.Add(new ScriptHeaderItem("Unknown 8 FF's", "??", fpos + footerstartpos) { length = 8 });
+                    ScriptFooterBlocks.Add(new ScriptHeaderItem("IgnoreMask", "??", fpos + footerstartpos) { length = 8 });
                     fpos += 0x8;
 
-                    ScriptFooterBlocks.Add(new ScriptHeaderItem("Label Table Offset", "??", fpos + footerstartpos) { length = 2 });
+                    ScriptFooterBlocks.Add(new ScriptHeaderItem("Label Table Offset", EndianReader.ToInt16(footerdata, fpos, Pcc.Endian), fpos + footerstartpos) { length = 2 });
                     fpos += 0x2;
 
 

@@ -67,6 +67,13 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         private readonly Stack<Nest> Nests = new();
 
+        private class NestedContextFlag
+        {
+            public bool HasNestedContext;
+        }
+
+        private readonly Stack<NestedContextFlag> InContext = new() { null };
+
         private ByteCodeCompilerVisitor(UStruct target) : base(target.Export.FileRef)
         {
             Target = target;
@@ -566,6 +573,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
         public bool VisitNode(DynArrayIterator node)
         {
             Emit(node.DynArrayExpression);
+            InContext.Push(null);
             Emit(node.ValueArg);
             if (node.IndexArg is null)
             {
@@ -577,6 +585,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 WriteByte(1);
                 Emit(node.IndexArg);
             }
+            InContext.Pop();
 
             return true;
         }
@@ -745,7 +754,9 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     throw new Exception($"Line {CompilationUnit.Tokens.LineLookup.GetLineFromCharIndex(node.StartPos)}: Could not find '{func.Name}' in #{ContainingClass.UIndex} {ContainingClass.ObjectName}'s Virtual Function Table!");
                 }
             }
+            InContext.Push(null);
             CompileArguments(node.Arguments, func.Parameters);
+            InContext.Pop();
             return true;
         }
 
@@ -763,7 +774,9 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             }
             WriteObjectRef(ResolveSymbol(varDecl));
             WriteName(node.DefaultFunction.Name);
+            InContext.Push(null);
             CompileArguments(node.Arguments, node.DefaultFunction.Parameters);
+            InContext.Pop();
             return true;
         }
 
@@ -794,11 +807,13 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
         public bool VisitNode(ArraySymbolRef node)
         {
             WriteOpCode(node.IsDynamic ? OpCodes.DynArrayElement : OpCodes.ArrayElement);
+            InContext.Push(null);
             Emit(node.Index);
+            InContext.Pop();
             Emit(node.Array);
             return true;
         }
-
+        
         public bool VisitNode(CompositeSymbolRef node)
         {
             bool forEachJump = inIteratorCall;
@@ -852,19 +867,35 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             {
                 WriteOpCode(OpCodes.InterfaceContext);
             }
+            if (InContext.Peek() is NestedContextFlag flag)
+            {
+                flag.HasNestedContext= true;
+            }
+            
+            InContext.Push(new NestedContextFlag());
             Emit(node.OuterSymbol);
+            bool hasInnerContext = InContext.Pop().HasNestedContext;
             SkipPlaceholder skip = WriteSkipPlaceholder();
             EmitVariableSize(innerSymbol);
 
             skip.ResetStart();
+
             Emit(innerSymbol);
             if (forEachJump)
             {
+                //todo: not correct
                 iteratorCallSkip = skip;
             }
             else
             {
-                skip.End();
+                if (node.IsClassContext || hasInnerContext)
+                {
+                    skip.End();
+                }
+                else
+                {
+                    skip.SetExplicit((ushort)(Game >= MEGame.ME3 ? 9 : 5));
+                }
             }
             return true;
 
