@@ -763,7 +763,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             //TODO: Make this more reliable because it is recycling virtualization
             if (CurrentLoadedExport != null && export.FileRef == Pcc && export.UIndex == CurrentLoadedExport.UIndex)
             {
-                if (SelectedItem is UPropertyTreeViewEntry {Property: not null} tvi)
+                if (SelectedItem is UPropertyTreeViewEntry { Property: not null } tvi)
                 {
                     RescanSelectionOffset = tvi.Property.StartOffset;
                 }
@@ -799,7 +799,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 var topLevelTree = new UPropertyTreeViewEntry
                 {
-                    DisplayName = $"Export {CurrentLoadedExport.UIndex }: { CurrentLoadedExport.ObjectName.Instanced} ({CurrentLoadedExport.ClassName})",
+                    DisplayName = $"Export {CurrentLoadedExport.UIndex}: {CurrentLoadedExport.ObjectName.Instanced} ({CurrentLoadedExport.ClassName})",
                     IsExpanded = true
                 };
 
@@ -817,7 +817,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
                 var topLevelTree = new UPropertyTreeViewEntry
                 {
-                    DisplayName = $"Export {CurrentLoadedExport.UIndex }: { CurrentLoadedExport.InstancedFullPath} ({CurrentLoadedExport.ClassName})",
+                    DisplayName = $"Export {CurrentLoadedExport.UIndex}: {CurrentLoadedExport.InstancedFullPath} ({CurrentLoadedExport.ClassName})",
                     IsExpanded = true
                 };
 
@@ -1066,6 +1066,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             if (p != null)
                             {
                                 editableValue = $"{p.Reference} {at} array";
+
+                                // Expanded array types
+                                if (parent.Property == null && p.Reference == "TimelineEffect")
+                                {
+                                    isExpanded = true;
+                                }
                                 break;
                             }
                         }
@@ -1147,6 +1153,28 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             case "TLT_Function":
                                 timelineEffectType += $" {sp.Properties.GetProp<NameProperty>("Func")?.Value}()";
                                 break;
+                            case "TLT_ClientEffect":
+                                timelineEffectType += $" {sp.Properties.GetProp<ObjectProperty>("RVR_CrustTemplate")?.ResolveToEntry(parsingExport.FileRef)?.InstancedFullPath}";
+                                break;
+                            case "TLT_GameEffect":
+                                timelineEffectType += $" {sp.Properties.GetProp<ObjectProperty>("GameEffectClass")?.ResolveToEntry(parsingExport.FileRef)?.InstancedFullPath}";
+                                break;
+                            case "TLT_Sound":
+                                timelineEffectType += $" {sp.Properties.GetProp<ObjectProperty>("Sound")?.ResolveToEntry(parsingExport.FileRef)?.InstancedFullPath}";
+                                break;
+                            case "TLT_ScreenShake":
+                                timelineEffectType += $" {sp.Properties.GetProp<ObjectProperty>("ScreenShakeClass")?.ResolveToEntry(parsingExport.FileRef)?.InstancedFullPath}";
+                                break;
+                            case "TLT_Rumble":
+                                timelineEffectType += $" {sp.Properties.GetProp<ObjectProperty>("RumbleClass")?.ResolveToEntry(parsingExport.FileRef)?.InstancedFullPath}";
+                                break;
+                            case "TLT_Damage":
+                                timelineEffectType += $" {sp.Properties.GetProp<FloatProperty>("Damage")?.Value}";
+                                break;
+                            case "TLT_AOEVisiblePawns":
+                                timelineEffectType += $" {sp.Properties.GetProp<ObjectProperty>("AOEImpactTimeline")?.ResolveToEntry(parsingExport.FileRef)?.InstancedFullPath}";
+                                break;
+
                         }
                         parsedValue = $"({timelineEffectType})";
                     }
@@ -1317,7 +1345,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     }
                     else if (sp.StructType is "LightingChannelContainer" or "RBCollisionChannelContainer")
                     {
-                        var channels = sp.Properties.Where(p => p is BoolProperty {Value: true});
+                        var channels = sp.Properties.Where(p => p is BoolProperty { Value: true });
                         parsedValue = string.Join(", ", channels.Select(p => p.Name.Instanced));
                     }
                     else if (sp.StructType is "MorphFeature")
@@ -1327,6 +1355,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     else if (sp.StructType is "OffsetBonePos")
                     {
                         parsedValue = $"{sp.GetProp<NameProperty>("nName")?.Value}";
+                    }
+                    else if (sp.StructType is "RvrCEParameterDistribution")
+                    {
+                        parsedValue = $"Variable: {sp.GetProp<StructProperty>("Parameter").GetProp<NameProperty>("Variable")}";
                     }
                     else
                     {
@@ -1856,7 +1888,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     }
                     else if (newSelectedItem.Property is ArrayPropertyBase arrayProperty)
                     {
-                        if (newSelectedItem.Parent.Property is StructProperty {IsImmutable: true})
+                        if (newSelectedItem.Parent.Property is StructProperty { IsImmutable: true })
                         {
                             Interpreter_Hexbox.Highlight(arrayProperty.StartOffset, arrayProperty.GetLength(Pcc, true));
                         }
@@ -1880,7 +1912,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             {
                                 switch (newSelectedItem.Parent.Property)
                                 {
-                                    case StructProperty {IsImmutable: true}:
+                                    case StructProperty { IsImmutable: true }:
                                     case ArrayProperty<IntProperty>:
                                     case ArrayProperty<FloatProperty>:
                                     case ArrayProperty<ObjectProperty>:
@@ -1896,7 +1928,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             {
                                 switch (newSelectedItem.Parent.Property)
                                 {
-                                    case StructProperty {IsImmutable: true}:
+                                    case StructProperty { IsImmutable: true }:
                                         Interpreter_Hexbox.Highlight(ep.ValueOffset, 8);
                                         return;
                                     case ArrayProperty<EnumProperty>:
@@ -1909,7 +1941,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             }
                         case ByteProperty bp:
                             {
-                                if (newSelectedItem.Parent.Property is StructProperty {IsImmutable: true} or ArrayProperty<ByteProperty>)
+                                if (newSelectedItem.Parent.Property is StructProperty { IsImmutable: true } or ArrayProperty<ByteProperty>)
                                 {
                                     Interpreter_Hexbox.Highlight(bp.ValueOffset, 1);
                                     return;
@@ -1918,7 +1950,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             }
                         case BioMask4Property b4p:
                             {
-                                if (newSelectedItem.Parent.Property is StructProperty {IsImmutable: true} or ArrayProperty<BioMask4Property>)
+                                if (newSelectedItem.Parent.Property is StructProperty { IsImmutable: true } or ArrayProperty<BioMask4Property>)
                                 {
                                     Interpreter_Hexbox.Highlight(b4p.ValueOffset, 1);
                                     return;
@@ -1927,7 +1959,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             }
                         case StrProperty sp:
                             {
-                                if (newSelectedItem.Parent.Property is StructProperty {IsImmutable: true} or ArrayProperty<StrProperty>)
+                                if (newSelectedItem.Parent.Property is StructProperty { IsImmutable: true } or ArrayProperty<StrProperty>)
                                 {
                                     Interpreter_Hexbox.Highlight(sp.StartOffset, sp.GetLength(Pcc, true));
                                     return;
@@ -1937,7 +1969,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             }
                         case BoolProperty boolp:
                             {
-                                if (newSelectedItem.Parent.Property is StructProperty {IsImmutable: true})
+                                if (newSelectedItem.Parent.Property is StructProperty { IsImmutable: true })
                                 {
                                     Interpreter_Hexbox.Highlight(boolp.ValueOffset, 1);
                                     return;
@@ -1947,7 +1979,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             }
                         case NameProperty np:
                             {
-                                if (newSelectedItem.Parent.Property is StructProperty {IsImmutable: true} or ArrayProperty<NameProperty>)
+                                if (newSelectedItem.Parent.Property is StructProperty { IsImmutable: true } or ArrayProperty<NameProperty>)
                                 {
                                     Interpreter_Hexbox.Highlight(np.ValueOffset, 8);
                                     return;
@@ -1957,7 +1989,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             }
                         case DelegateProperty dp:
                             {
-                                if (newSelectedItem.Parent.Property is StructProperty {IsImmutable: true} or ArrayProperty<DelegateProperty>)
+                                if (newSelectedItem.Parent.Property is StructProperty { IsImmutable: true } or ArrayProperty<DelegateProperty>)
                                 {
                                     Interpreter_Hexbox.Highlight(dp.ValueOffset, 12);
                                     return;
@@ -1967,7 +1999,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             }
                         case StringRefProperty srefp:
                             {
-                                if (newSelectedItem.Parent.Property is StructProperty {IsImmutable: true} or ArrayProperty<StringRefProperty>)
+                                if (newSelectedItem.Parent.Property is StructProperty { IsImmutable: true } or ArrayProperty<StringRefProperty>)
                                 {
                                     Interpreter_Hexbox.Highlight(srefp.ValueOffset, 4);
                                     return;
