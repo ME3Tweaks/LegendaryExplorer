@@ -103,6 +103,11 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 Writer.bytecode.OverwriteRange(placeHolderIdx, BitConverter.GetBytes(skipSize));
             }
 
+            public void SetExplicit(ushort val)
+            {
+                Writer.bytecode.OverwriteRange(placeHolderIdx, BitConverter.GetBytes(val));
+            }
+
             public void Dispose() => End();
         }
 
