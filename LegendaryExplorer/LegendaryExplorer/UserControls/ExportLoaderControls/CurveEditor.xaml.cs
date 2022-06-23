@@ -23,6 +23,15 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
     public sealed partial class CurveEditor : ExportLoaderControl
     {
         public List<CurveEdInterpCurve> InterpCurveTracks;
+        
+        /// <summary>
+        /// Indicates the status of this export loader
+        /// </summary>
+        public bool IsLoaded;
+        /// <summary>
+        /// Indicates if the export loader was ever in the loaded state while the current export was active. If it wasn't, we should not write out changes.
+        /// </summary>
+        public bool WasLoadedThisExport;
 
         public float Time
         {
@@ -81,6 +90,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     MEGame.ME2 => Visibility.Collapsed,
                     _ => Visibility.Visible
                 };
+
+                // If the export loader is 'loaded' (e.g. tab was selected in a tab control or is visible)
+                // we should mark that the curve editor was loaded
+                WasLoadedThisExport = IsLoaded;
             }
         }
 
@@ -395,7 +408,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         public override void UnloadExport()
         {
-            Commit();
+            // Do not commit changes if we were never even visible while the export was visible.
+            if (WasLoadedThisExport)
+            {
+                Commit();
+            }
+
             graph.Clear();
             InterpCurveTracks = null;
             CurrentLoadedExport = null;
@@ -489,6 +507,17 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             graph.ComparisonCurve = graph.SelectedCurve;
             graph.Paint();
+        }
+
+        private void CurveEditor_GotFocus(object sender, RoutedEventArgs e)
+        {
+            IsLoaded = true;
+            WasLoadedThisExport = true;
+        }
+
+        private void CurveEditor_Unloaded(object sender, RoutedEventArgs e)
+        {
+            IsLoaded = false;
         }
     }
 }

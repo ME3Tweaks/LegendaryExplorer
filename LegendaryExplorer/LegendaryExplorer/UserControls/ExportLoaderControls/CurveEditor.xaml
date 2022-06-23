@@ -9,6 +9,8 @@
              xmlns:fa="http://schemas.fontawesome.com/icons/"
              xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero" 
              mc:Ignorable="d" 
+             Unloaded="CurveEditor_Unloaded"
+             GotFocus="CurveEditor_GotFocus"
              d:DesignHeight="297.789" d:DesignWidth="600.737">
     <!--<Window.CommandBindings>
         <CommandBinding Command="Save" CanExecute="Save_CanExecute" Executed="Save_Executed"/>
