@@ -79,7 +79,12 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
             }
             var builder = new CodeBuilderVisitor();
             builder.AppendTypeName(type);
-            return builder.GetOutput();
+            string fullTypeName = builder.GetOutput();
+            if (type is StaticArrayType staticArrayType)
+            {
+                fullTypeName = $"{fullTypeName}[{staticArrayType.Length}]";
+            }
+            return fullTypeName;
         }
     }
 }

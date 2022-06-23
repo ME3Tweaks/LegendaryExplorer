@@ -283,9 +283,18 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
         protected bool TypeCompatible(VariableType dest, VariableType src, int errorPosition, bool coerce = false)
         {
-            if (dest is DynamicArrayType destArr && src is DynamicArrayType srcArr)
+            if (dest is DynamicArrayType destDynArr && src is DynamicArrayType srcDynArr)
             {
-                return TypeCompatible(destArr.ElementType, srcArr.ElementType, errorPosition);
+                return TypeCompatible(destDynArr.ElementType, srcDynArr.ElementType, errorPosition);
+            }
+            if (dest is DynamicArrayType || src is DynamicArrayType)
+            {
+                return false;
+            }
+            //Static arrays cannot be assigned to or from as a whole, only by elements
+            if (dest is StaticArrayType || src is StaticArrayType)
+            {
+                return false;
             }
 
             if (dest is ClassType destClassType && src is ClassType srcClassType)
@@ -347,7 +356,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 }
             }
 
-            if (dest?.GetType() == src?.GetType() && dest.Name.CaseInsensitiveEquals(src.Name)) return true;
+            if (dest.Name.CaseInsensitiveEquals(src?.Name)) return true;
             ECast cast = CastHelper.GetConversion(dest, src);
             if (coerce)
             {
