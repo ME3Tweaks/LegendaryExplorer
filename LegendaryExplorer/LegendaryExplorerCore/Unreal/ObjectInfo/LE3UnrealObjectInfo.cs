@@ -616,7 +616,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 properties =
                 {
                     new KeyValuePair<NameReference, PropertyInfo>("m_bCerberusSystem", new PropertyInfo(PropertyType.BoolProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("ShipChasePlayEvent", new PropertyInfo(PropertyType.ObjectProperty, "WwiseEvent")),
+                    new KeyValuePair<NameReference, PropertyInfo>("ShipChaseWwisePair", new PropertyInfo(PropertyType.StructProperty, "WwiseAudioPair")),
                     new KeyValuePair<NameReference, PropertyInfo>("ShipChaseStopEvent", new PropertyInfo(PropertyType.ObjectProperty, "WwiseEvent"))
                 }
             };
@@ -645,6 +645,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 properties =
                 {
                     new KeyValuePair<NameReference, PropertyInfo>("DestructionCondition", new PropertyInfo(PropertyType.IntProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("HideFuelSettiingCondition", new PropertyInfo(PropertyType.IntProperty)),
                     new KeyValuePair<NameReference, PropertyInfo>("EmptyAppearance", new PropertyInfo(PropertyType.ObjectProperty, "SFXGalaxyMapObjectAppearanceBase")),
                     new KeyValuePair<NameReference, PropertyInfo>("EmptyDisplayName", new PropertyInfo(PropertyType.StringRefProperty)),
                     new KeyValuePair<NameReference, PropertyInfo>("EmptyDescription", new PropertyInfo(PropertyType.StringRefProperty)),
