@@ -944,7 +944,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         private static readonly string[] me3FilesSafeToImportFromPostLoad =
         {
             // These files are safe to import from if the file doing the import is post-save (e.g. it is not a seekfree or startup file)
-            "BIO_COMMON.pcc", 
+            "BIO_COMMON.pcc",
             "GesturesConfig.pcc" // Some animations
         };
         //TODO: make LE lists more exhaustive
@@ -990,6 +990,64 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             // Add DLC startup files here
         };
 
+        // Advanced users can add to this list to make additional files be treated as safe
+        // For example if they want to use a custom startup file
+        // These only are allowed for post load usage!
+        // These have size 0 since they are going to be very rarely used so don't allocate anything for them
+        // Usages: Mass Effect Randomizer, probably DropTheSquid
+        private static SortedSet<string> me1FilesSafeToImportFromUser = new();
+        private static SortedSet<string> me2FilesSafeToImportFromUser = new();
+        private static SortedSet<string> me3FilesSafeToImportFromUser = new();
+        private static SortedSet<string> le1FilesSafeToImportFromUser = new();
+        private static SortedSet<string> le2FilesSafeToImportFromUser = new();
+        private static SortedSet<string> le3FilesSafeToImportFromUser = new();
+
+
+        private static SortedSet<string> InternalGetUserSafeToImportFromFiles(MEGame game)
+        {
+            return game switch
+            {
+                MEGame.ME1 => me1FilesSafeToImportFromUser,
+                MEGame.ME2 => me2FilesSafeToImportFromUser,
+                MEGame.ME3 => me3FilesSafeToImportFromUser,
+                MEGame.LE1 => le1FilesSafeToImportFromUser,
+                MEGame.LE2 => le2FilesSafeToImportFromUser,
+                MEGame.LE3 => le3FilesSafeToImportFromUser,
+                MEGame.UDK => new SortedSet<string>(), // Dunno how to do Set.Empty<string>()
+                _ => throw new Exception($"Cannot lookup user-defined safe post-load files for {game}")
+            };
+        }
+
+        /// <summary>
+        /// Adds a user-safe file to import to the specified game. Only use this if you really know what you're doing. The file must exist in the default game directory.
+        /// </summary>
+        /// <param name="game"></param>
+        /// <param name="safeToImportFromFile"></param>
+        public static bool AddUserSafeToImportFromFile(MEGame game, string safeToImportFromFile)
+        {
+            return InternalGetUserSafeToImportFromFiles(game).Add(safeToImportFromFile);
+        }
+
+        /// <summary>
+        /// Removes a user-safe file to import from specified game.
+        /// </summary>
+        /// <param name="game"></param>
+        /// <param name="safeToImportFromFile"></param>
+        public static bool RemoveSafeToImportFromFile(MEGame game, string safeToImportFromFile)
+        {
+            return InternalGetUserSafeToImportFromFiles(game).Remove(safeToImportFromFile);
+        }
+
+        /// <summary>
+        /// Removes all 
+        /// </summary>
+        /// <param name="game"></param>
+        /// <exception cref="Exception"></exception>
+        public static void ClearUserSafeToImportFromFiles(MEGame game)
+        {
+            InternalGetUserSafeToImportFromFiles(game).Clear();
+        }
+
         /// <summary>
         /// Determines if a file "should" be safe to import from. In order to test postload files, a sourceFilePath must be provided.
         /// </summary>
@@ -1005,7 +1063,9 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             if (sourceFilePath != null)
             {
                 if (IsPostLoadFile(sourceFilePath, game))
-                    fileList = fileList.Concat(FilesSafeToImportFromPostLoad(game));
+                {
+                    fileList = fileList.Concat(FilesSafeToImportFromPostLoad(game)).Concat(UserSpecifiedSafeToImportFromFiles(game));
+                }
             }
 
             return fileList.Any(f => fileName == f);
@@ -1094,6 +1154,12 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 _ => throw new Exception($"Cannot lookup post-load safe files for {game}")
             };
 
+        /// <summary>
+        /// Returns the list of user-specified safe-to-import-from files. These files must exist in the game directory in order to be used.
+        /// </summary>
+        /// <param name="game"></param>
+        /// <returns></returns>
+        public static IReadOnlySet<string> UserSpecifiedSafeToImportFromFiles(MEGame game) => InternalGetUserSafeToImportFromFiles(game);
 
         public static bool CanImport(string className, MEGame game) => CanImport(GlobalUnrealObjectInfo.GetClassOrStructInfo(game, className), game);
 
@@ -1497,7 +1563,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 // No cache and not testpatch. Can this be imported?
                 // Not actually sure if you can import testpatch since I think it just
                 // patches on object load but who knows
-                if (loadStream == null && rop.GenerateImportsForGlobalFiles && IsSafeToImportFrom(info.pccPath, pcc.Game))
+                if (loadStream == null && rop.GenerateImportsForGlobalFiles && IsSafeToImportFrom(info.pccPath, pcc.Game, pcc.FilePath))
                 {
                     string package = Path.GetFileNameWithoutExtension(info.pccPath);
                     return pcc.getEntryOrAddImport($"{package}.{className}");

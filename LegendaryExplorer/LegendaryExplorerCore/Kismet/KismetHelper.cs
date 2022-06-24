@@ -311,6 +311,18 @@ namespace LegendaryExplorerCore.Kismet
         }
 
         /// <summary>
+        /// Gets the first value in the m_aObjComment array for a sequence object. If empty or no comment, this returns null
+        /// </summary>
+        /// <param name="export">Sequence object to set comments for</param>
+        /// <param name="comments">Object comment lines</param>
+        public static string GetComment(ExportEntry export)
+        {
+            var m_aObjComment = export.GetProperty<ArrayProperty<StrProperty>>("m_aObjComment");
+            if (m_aObjComment == null || m_aObjComment.Count == 0) return null;
+            return m_aObjComment[0];
+        }
+
+        /// <summary>
         /// Sets the m_aObjComment for a sequence object
         /// </summary>
         /// <param name="export">Sequence object to set comments for</param>

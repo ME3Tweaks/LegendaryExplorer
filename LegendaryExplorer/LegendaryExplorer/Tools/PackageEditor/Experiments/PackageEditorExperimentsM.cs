@@ -1078,7 +1078,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     if (streambin != null)
                     {
                         var duration = streambin.GetAudioInfo().GetLength();
-                        switch(Pcc.Game)
+                        switch (Pcc.Game)
                         {
                             case MEGame.ME3:
                                 var durtnMS = wwevent.GetProperty<FloatProperty>("DurationMilliseconds");
@@ -3105,8 +3105,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 foreach (var f in allPackages)
                 {
                     pe.BusyText = $"Indexing file [{++numDone}/{allPackages.Count}]";
-                    using var package = MEPackageHandler.OpenMEPackage(f.Value);
-
+                    // Load tables only to speed up performance.
+                    using var package = MEPackageHandler.UnsafePartialLoad(f.Value, x => false);
                     IndexFileForObjDB(objectDB, game, package);
                 }
 
