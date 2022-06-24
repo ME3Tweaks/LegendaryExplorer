@@ -14,5 +14,6 @@ var class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper =
     [ "AddObjectsToSequence", "class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a8ec6f516132d99595217c98c9e640e9a", null ],
     [ "GetOutboundLinkNames", "class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a959bad8531fa8b6fd9aa1f720f9fd0fd", null ],
     [ "SetComment", "class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a62dea70614c1add0fafe28939be4e640", null ],
+    [ "GetComment", "class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a7c0999b10eb310c9ec0830c7ebf0bab6", null ],
     [ "SetComment", "class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a2285539ddaf104adb50342db6dd2f295", null ]
 ];

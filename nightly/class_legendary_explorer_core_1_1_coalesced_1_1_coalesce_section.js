@@ -12,6 +12,8 @@ var class_legendary_explorer_core_1_1_coalesced_1_1_coalesce_section =
     [ "Remove", "class_legendary_explorer_core_1_1_coalesced_1_1_coalesce_section.html#aca10d6bd139545ceb93e622df17325ec", null ],
     [ "Remove", "class_legendary_explorer_core_1_1_coalesced_1_1_coalesce_section.html#a1feaa8caf9a556a735a871eebfbd24f0", null ],
     [ "TryGetValue", "class_legendary_explorer_core_1_1_coalesced_1_1_coalesce_section.html#ad3787b63670b755914f71bfcfd998947", null ],
+    [ "AddEntry", "class_legendary_explorer_core_1_1_coalesced_1_1_coalesce_section.html#a2e4be58bd0b828f1bebe995020a225ab", null ],
+    [ "AddEntryIfUnique", "class_legendary_explorer_core_1_1_coalesced_1_1_coalesce_section.html#a07bc646b8c4af4e1d403669e8c495c98", null ],
     [ "Count", "class_legendary_explorer_core_1_1_coalesced_1_1_coalesce_section.html#a71f2343b31e49132380b319c02722250", null ],
     [ "IsReadOnly", "class_legendary_explorer_core_1_1_coalesced_1_1_coalesce_section.html#a1722aec8daed3ee163a9063fa0c1dafa", null ],
     [ "Keys", "class_legendary_explorer_core_1_1_coalesced_1_1_coalesce_section.html#a9b8beda74e509110d7e3bbdd668f36d0", null ],

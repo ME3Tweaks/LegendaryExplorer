@@ -167,6 +167,9 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a7d87c3c00b32afca819c4a818d84c36b"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_textures_1_1_image.html">Image</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_textures_1_1_image.html#a7d87c3c00b32afca819c4a818d84c36b">LoadFromFile</a> (string filename, <a class="el" href="namespace_legendary_explorer_core_1_1_textures.html#a00a75c8a054cd63f64b7bbecc2d61e09">PixelFormat</a> targetFormat)</td></tr>
 <tr class="memdesc:a7d87c3c00b32afca819c4a818d84c36b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads an image from disk and converts it internally to the specified pixel format  <a href="class_legendary_explorer_core_1_1_textures_1_1_image.html#a7d87c3c00b32afca819c4a818d84c36b">More...</a><br /></td></tr>
 <tr class="separator:a7d87c3c00b32afca819c4a818d84c36b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a149519a4439ce28637a070e9aa3fadd2"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_textures_1_1_image.html">Image</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_textures_1_1_image.html#a149519a4439ce28637a070e9aa3fadd2">LoadFromFileMemory</a> (byte[] buffer, int imageType, <a class="el" href="namespace_legendary_explorer_core_1_1_textures.html#a00a75c8a054cd63f64b7bbecc2d61e09">PixelFormat</a> targetFormat)</td></tr>
+<tr class="memdesc:a149519a4439ce28637a070e9aa3fadd2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads an image from an array and converts it internally to the specified pixel format  <a href="class_legendary_explorer_core_1_1_textures_1_1_image.html#a149519a4439ce28637a070e9aa3fadd2">More...</a><br /></td></tr>
+<tr class="separator:a149519a4439ce28637a070e9aa3fadd2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad1dc6edd08d2aa9620c74c0d010db641"><td class="memItemLeft" align="right" valign="top">static byte[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_textures_1_1_image.html#ad1dc6edd08d2aa9620c74c0d010db641">StoreMipToDDS</a> (byte[] src, <a class="el" href="namespace_legendary_explorer_core_1_1_textures.html#a00a75c8a054cd63f64b7bbecc2d61e09">PixelFormat</a> format, int w, int h)</td></tr>
 <tr class="separator:ad1dc6edd08d2aa9620c74c0d010db641"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -925,6 +928,59 @@ Properties</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">filename</td><td>Full file path on disk to the image</td></tr>
+    <tr><td class="paramname">targetFormat</td><td>The destination image pixel format</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_legendary_explorer_core_1_1_textures_1_1_image.html">Image</a> with the specified pixel format</dd></dl>
+
+</div>
+</div>
+<a id="a149519a4439ce28637a070e9aa3fadd2" name="a149519a4439ce28637a070e9aa3fadd2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a149519a4439ce28637a070e9aa3fadd2">&#9670;&nbsp;</a></span>LoadFromFileMemory()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="class_legendary_explorer_core_1_1_textures_1_1_image.html">Image</a> LegendaryExplorerCore.Textures.Image.LoadFromFileMemory </td>
+          <td>(</td>
+          <td class="paramtype">byte[]&#160;</td>
+          <td class="paramname"><em>buffer</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>imageType</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespace_legendary_explorer_core_1_1_textures.html#a00a75c8a054cd63f64b7bbecc2d61e09">PixelFormat</a>&#160;</td>
+          <td class="paramname"><em>targetFormat</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Loads an image from an array and converts it internally to the specified pixel format </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">buffer</td><td>Full data of a file to load</td></tr>
+    <tr><td class="paramname">imageType</td><td>1 = DDS 2 = PNG 3 = TGA</td></tr>
     <tr><td class="paramname">targetFormat</td><td>The destination image pixel format</td></tr>
   </table>
   </dd>

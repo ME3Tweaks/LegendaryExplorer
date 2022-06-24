@@ -28,5 +28,6 @@ var searchData=
   ['updatetocbin_25',['UpdateTOCbin',['../class_legendary_explorer_core_1_1_unreal_1_1_d_l_c_package.html#a544d9039a85cb3d43f944e8d72090232',1,'LegendaryExplorerCore::Unreal::DLCPackage']]],
   ['updateuitext_26',['updateUIText',['../class_legendary_explorer_core_1_1_m_e1_1_1_unreal_1_1_unhood_bytecode_1_1_label_table_token.html#ae07be91350f30d930b2e1caa65af0b68',1,'LegendaryExplorerCore::ME1::Unreal::UnhoodBytecode::LabelTableToken']]],
   ['upheap_27',['UpHeap',['../class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_priority_queue.html#afb4b51e2e7fb3323af2f5ceabcf3fb34',1,'LegendaryExplorerCore::Gammtek::Collections::Generic::PriorityQueue']]],
-  ['upperfirst_28',['UpperFirst',['../class_legendary_explorer_core_1_1_helpers_1_1_string_extensions.html#a178a923be631b31dfd559e4ca0bd7c63',1,'LegendaryExplorerCore::Helpers::StringExtensions']]]
+  ['upperfirst_28',['UpperFirst',['../class_legendary_explorer_core_1_1_helpers_1_1_string_extensions.html#a178a923be631b31dfd559e4ca0bd7c63',1,'LegendaryExplorerCore::Helpers::StringExtensions']]],
+  ['userspecifiedsafetoimportfromfiles_29',['UserSpecifiedSafeToImportFromFiles',['../class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#a1e346daec863504f0a8af9299bb4c704',1,'LegendaryExplorerCore::Packages::CloningImportingAndRelinking::EntryImporter']]]
 ];

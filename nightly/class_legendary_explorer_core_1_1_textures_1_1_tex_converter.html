@@ -263,6 +263,7 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a94e34120f2b776ea824631a9a944bd01"><td class="memItemLeft" align="right" valign="top">static unsafe byte[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_textures_1_1_tex_converter.html#a94e34120f2b776ea824631a9a944bd01">LoadTexture</a> (string filename, out uint width, out uint height, ref <a class="el" href="namespace_legendary_explorer_core_1_1_textures.html#a00a75c8a054cd63f64b7bbecc2d61e09">PixelFormat</a> pixelFormat)</td></tr>
 <tr class="separator:a94e34120f2b776ea824631a9a944bd01"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7c64e0e09200be6415baa4f53cfbc2cc"><td class="memItemLeft" align="right" valign="top">static unsafe byte[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_textures_1_1_tex_converter.html#a7c64e0e09200be6415baa4f53cfbc2cc">LoadTextureFromMemory</a> (ReadOnlySpan&lt; byte &gt; buffer, int imageType, out uint width, out uint height, ref <a class="el" href="namespace_legendary_explorer_core_1_1_textures.html#a00a75c8a054cd63f64b7bbecc2d61e09">PixelFormat</a> pixelFormat)</td></tr>
+<tr class="memdesc:a7c64e0e09200be6415baa4f53cfbc2cc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads texture data from the given file buffer in memory (e.g. file streamed from exe will not be disk based)  <a href="class_legendary_explorer_core_1_1_textures_1_1_tex_converter.html#a7c64e0e09200be6415baa4f53cfbc2cc">More...</a><br /></td></tr>
 <tr class="separator:a7c64e0e09200be6415baa4f53cfbc2cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Enumeration Documentation</h2>
@@ -661,6 +662,19 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Loads texture data from the given file buffer in memory (e.g. file streamed from exe will not be disk based) </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">buffer</td><td>The buffer containing the image file data</td></tr>
+    <tr><td class="paramname">imageType</td><td>1 = DDS 2 = PNG 3 = TGA</td></tr>
+    <tr><td class="paramname">width</td><td>The out width of the image</td></tr>
+    <tr><td class="paramname">height</td><td>The out out height of the image</td></tr>
+    <tr><td class="paramname">pixelFormat</td><td>The target pixel format to convert to on load</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
 
 </div>
 </div>

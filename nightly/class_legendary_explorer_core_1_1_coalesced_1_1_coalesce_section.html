@@ -126,6 +126,12 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a1feaa8caf9a556a735a871eebfbd24f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad3787b63670b755914f71bfcfd998947"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesce_section.html#ad3787b63670b755914f71bfcfd998947">TryGetValue</a> (string key, out <a class="el" href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesce_property.html">CoalesceProperty</a> value)</td></tr>
 <tr class="separator:ad3787b63670b755914f71bfcfd998947"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2e4be58bd0b828f1bebe995020a225ab"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesce_section.html#a2e4be58bd0b828f1bebe995020a225ab">AddEntry</a> (<a class="el" href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesce_property.html">CoalesceProperty</a> value)</td></tr>
+<tr class="memdesc:a2e4be58bd0b828f1bebe995020a225ab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Merges a property into the list of properties if it already exists, otherwise adding a new one.  <a href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesce_section.html#a2e4be58bd0b828f1bebe995020a225ab">More...</a><br /></td></tr>
+<tr class="separator:a2e4be58bd0b828f1bebe995020a225ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a07bc646b8c4af4e1d403669e8c495c98"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesce_section.html#a07bc646b8c4af4e1d403669e8c495c98">AddEntryIfUnique</a> (<a class="el" href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesce_property.html">CoalesceProperty</a> value)</td></tr>
+<tr class="memdesc:a07bc646b8c4af4e1d403669e8c495c98"><td class="mdescLeft">&#160;</td><td class="mdescRight">VALUE MUST HAVE ONLY HAVE SINGULAR ITEM  <a href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesce_section.html#a07bc646b8c4af4e1d403669e8c495c98">More...</a><br /></td></tr>
+<tr class="separator:a07bc646b8c4af4e1d403669e8c495c98"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="properties" name="properties"></a>
 Properties</h2></td></tr>
@@ -491,6 +497,75 @@ Properties</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="a2e4be58bd0b828f1bebe995020a225ab" name="a2e4be58bd0b828f1bebe995020a225ab"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2e4be58bd0b828f1bebe995020a225ab">&#9670;&nbsp;</a></span>AddEntry()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void LegendaryExplorerCore.Coalesced.CoalesceSection.AddEntry </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesce_property.html">CoalesceProperty</a>&#160;</td>
+          <td class="paramname"><em>value</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Merges a property into the list of properties if it already exists, otherwise adding a new one. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">key</td><td></td></tr>
+    <tr><td class="paramname">value</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a07bc646b8c4af4e1d403669e8c495c98" name="a07bc646b8c4af4e1d403669e8c495c98"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a07bc646b8c4af4e1d403669e8c495c98">&#9670;&nbsp;</a></span>AddEntryIfUnique()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void LegendaryExplorerCore.Coalesced.CoalesceSection.AddEntryIfUnique </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesce_property.html">CoalesceProperty</a>&#160;</td>
+          <td class="paramname"><em>value</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>VALUE MUST HAVE ONLY HAVE SINGULAR ITEM </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">value</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

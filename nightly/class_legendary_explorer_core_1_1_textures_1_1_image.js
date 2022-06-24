@@ -26,6 +26,7 @@ var class_legendary_explorer_core_1_1_textures_1_1_image =
     [ "IsPowerOfTwo", "class_legendary_explorer_core_1_1_textures_1_1_image.html#a19d60cd04ffc588af7f3f8760ff76286", null ],
     [ "returnPowerOfTwo", "class_legendary_explorer_core_1_1_textures_1_1_image.html#ae529e90aad51d6b14ebed850d6f82c81", null ],
     [ "LoadFromFile", "class_legendary_explorer_core_1_1_textures_1_1_image.html#a7d87c3c00b32afca819c4a818d84c36b", null ],
+    [ "LoadFromFileMemory", "class_legendary_explorer_core_1_1_textures_1_1_image.html#a149519a4439ce28637a070e9aa3fadd2", null ],
     [ "checkDDSHaveAllMipmaps", "class_legendary_explorer_core_1_1_textures_1_1_image.html#a521b02662420434114903b5779651e8d", null ],
     [ "convertToARGB", "class_legendary_explorer_core_1_1_textures_1_1_image.html#a3a85bde7c406c6fd433f3e0523426064", null ],
     [ "convertToRGB", "class_legendary_explorer_core_1_1_textures_1_1_image.html#a29a7548010c760aacbc4deb547d396b8", null ],

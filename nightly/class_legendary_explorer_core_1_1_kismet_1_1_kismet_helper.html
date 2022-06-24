@@ -140,6 +140,9 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a62dea70614c1add0fafe28939be4e640"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a62dea70614c1add0fafe28939be4e640">SetComment</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> export, IEnumerable&lt; string &gt; comments)</td></tr>
 <tr class="memdesc:a62dea70614c1add0fafe28939be4e640"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the m_aObjComment for a sequence object  <a href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a62dea70614c1add0fafe28939be4e640">More...</a><br /></td></tr>
 <tr class="separator:a62dea70614c1add0fafe28939be4e640"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7c0999b10eb310c9ec0830c7ebf0bab6"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a7c0999b10eb310c9ec0830c7ebf0bab6">GetComment</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> export)</td></tr>
+<tr class="memdesc:a7c0999b10eb310c9ec0830c7ebf0bab6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the first value in the m_aObjComment array for a sequence object. If empty or no comment, this returns null  <a href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a7c0999b10eb310c9ec0830c7ebf0bab6">More...</a><br /></td></tr>
+<tr class="separator:a7c0999b10eb310c9ec0830c7ebf0bab6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2285539ddaf104adb50342db6dd2f295"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a2285539ddaf104adb50342db6dd2f295">SetComment</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> export, string comment)</td></tr>
 <tr class="memdesc:a2285539ddaf104adb50342db6dd2f295"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the m_aObjComment for a sequence object  <a href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a2285539ddaf104adb50342db6dd2f295">More...</a><br /></td></tr>
 <tr class="separator:a2285539ddaf104adb50342db6dd2f295"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -770,6 +773,41 @@ Static Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Sets the m_aObjComment for a sequence object </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">export</td><td>Sequence object to set comments for</td></tr>
+    <tr><td class="paramname">comments</td><td>Object comment lines</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a7c0999b10eb310c9ec0830c7ebf0bab6" name="a7c0999b10eb310c9ec0830c7ebf0bab6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7c0999b10eb310c9ec0830c7ebf0bab6">&#9670;&nbsp;</a></span>GetComment()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static string LegendaryExplorerCore.Kismet.KismetHelper.GetComment </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td>
+          <td class="paramname"><em>export</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Gets the first value in the m_aObjComment array for a sequence object. If empty or no comment, this returns null </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">export</td><td>Sequence object to set comments for</td></tr>

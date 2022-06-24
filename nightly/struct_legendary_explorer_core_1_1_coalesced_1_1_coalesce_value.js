@@ -1,6 +1,7 @@
 var struct_legendary_explorer_core_1_1_coalesced_1_1_coalesce_value =
 [
     [ "CoalesceValue", "struct_legendary_explorer_core_1_1_coalesced_1_1_coalesce_value.html#ab37813b211607737db001ca4bcd668ad", null ],
+    [ "CoalesceValue", "struct_legendary_explorer_core_1_1_coalesced_1_1_coalesce_value.html#a8e4c5cc90b799ab99bd2cccf4575a62b", null ],
     [ "operator==", "struct_legendary_explorer_core_1_1_coalesced_1_1_coalesce_value.html#a0e6a2f964d713b4c6a11cb9d4ef7fb46", null ],
     [ "operator CoalesceValue", "struct_legendary_explorer_core_1_1_coalesced_1_1_coalesce_value.html#a47cc804da358264f6f4f47c3e5decfbb", null ],
     [ "operator string", "struct_legendary_explorer_core_1_1_coalesced_1_1_coalesce_value.html#a8d7f86dc7c4631fe624e095ccba44bbd", null ],
