@@ -496,6 +496,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 {
                     if (sourceExport.Game != destPackage.Game)
                     {
+                        ApplyCrossGamePropertyFixes(sourceExport, destPackage, props);
                         bool removedProperties = false;
                         props = EntryPruner.RemoveIncompatibleProperties(sourceExport.FileRef, props, sourceExport.ClassName, destPackage.Game, ref removedProperties);
                     }
@@ -603,6 +604,34 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             }
 
             return newExport;
+        }
+
+        internal static void ApplyCrossGamePropertyFixes(ExportEntry sourceExport, IMEPackage destPackage, PropertyCollection props)
+        {
+            // 06/25/2022 - Support corrections to allow more sucessful porting
+            // Mgamerz
+
+            // Doesn't for for OT since they use different Wwise versions
+            if (sourceExport.Game == MEGame.LE2 && destPackage.Game == MEGame.LE3 && sourceExport.ClassName == "WwiseEvent")
+            {
+                // Convert the property format
+                var refs = props.GetProp<ArrayProperty<StructProperty>>("References");
+                if (refs != null)
+                {
+                    props.RemoveNamedProperty("References");
+                    if (refs.Count == 1)
+                    {
+                        Debug.WriteLine($@"ApplyCrossGamePropertyFixes(): WwiseEvent LE2 -> LE3 for {sourceExport.InstancedFullPath}");
+                        var relationShips = refs[0].GetProp<StructProperty>("Relationships");
+                        relationShips.Properties.RemoveNamedProperty("Streams"); // Does this need moved to the binary?
+                        props.AddOrReplaceProp(relationShips); // Move 'RelationShips' struct to the root
+
+                        // Add Id from binary to props as it seems to have moved 
+                        WwiseEvent ob = ObjectBinary.From<WwiseEvent>(sourceExport);
+                        props.Add(new IntProperty((int)ob.WwiseEventID, "Id"));
+                    }
+                }
+            }
         }
 
         private static bool CanDonateClassType(string sourceExportClassName)
@@ -944,7 +973,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         private static readonly string[] me3FilesSafeToImportFromPostLoad =
         {
             // These files are safe to import from if the file doing the import is post-save (e.g. it is not a seekfree or startup file)
-            "BIO_COMMON.pcc", 
+            "BIO_COMMON.pcc",
             "GesturesConfig.pcc" // Some animations
         };
         //TODO: make LE lists more exhaustive

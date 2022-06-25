@@ -265,6 +265,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             {
                 if (!sourceExport.IsDefaultObject)
                 {
+                    EntryImporter.ApplyCrossGamePropertyFixes(sourceExport, relinkingExport.FileRef, props);
                     props = EntryPruner.RemoveIncompatibleProperties(sourcePcc, props, sourceExport.ClassName, relinkingExport.Game, ref removedProperties);
                     if (removedProperties)
                     {
