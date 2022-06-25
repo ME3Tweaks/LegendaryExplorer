@@ -21,7 +21,33 @@ namespace LegendaryExplorerCore.Coalesced
 			ValueType = valueType ?? CoalesceProperty.DefaultValueType;
 		}
 
-		public bool IsNull
+        public CoalesceValue(string value, CoalesceParseAction valueType)
+            : this()
+        {
+            Value = value;
+            ValueType = GetValueType(valueType);
+        }
+
+        private int GetValueType(CoalesceParseAction valueType)
+        {
+            switch (valueType)
+            {
+                case CoalesceParseAction.New:
+                    return 0;
+                case CoalesceParseAction.RemoveProperty:
+                    return 1;
+                case CoalesceParseAction.Add:
+                    return 2;
+				case CoalesceParseAction.AddUnique:
+                    return 3;
+                case CoalesceParseAction.Remove:
+                    return 4;
+			}
+
+            return CoalesceProperty.DefaultValueType;
+        }
+
+        public bool IsNull
 		{
 			get { return Value == null || ValueType == CoalesceProperty.NullValueType; }
 		}

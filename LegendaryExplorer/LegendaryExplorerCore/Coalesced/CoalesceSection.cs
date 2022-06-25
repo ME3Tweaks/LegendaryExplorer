@@ -202,5 +202,41 @@ namespace LegendaryExplorerCore.Coalesced
 		{
 			return ((IEnumerable) _properties).GetEnumerator();
 		}
-	}
+
+		/// <summary>
+		/// Merges a property into the list of properties if it already exists, otherwise adding a new one.
+		/// </summary>
+		/// <param name="key"></param>
+		/// <param name="value"></param>
+        public void AddEntry(CoalesceProperty value)
+        {
+            if (_properties.TryGetValue(value.Name, out var existing))
+            {
+                _properties[value.Name].AddRange(value);
+            }
+			else
+            {
+                _properties[value.Name] = value;
+            }
+		}
+
+		/// <summary>
+		/// VALUE MUST HAVE ONLY HAVE SINGULAR ITEM
+		/// </summary>
+		/// <param name="value"></param>
+        public void AddEntryIfUnique(CoalesceProperty value)
+        {
+            if (_properties.TryGetValue(value.Name, out var existing))
+            {
+				if (!_properties[value.Name].Contains(value[0]))
+                {
+                    _properties[value.Name].AddRange(value);
+                }
+            }
+            else
+            {
+                _properties[value.Name] = value;
+            }
+		}
+    }
 }

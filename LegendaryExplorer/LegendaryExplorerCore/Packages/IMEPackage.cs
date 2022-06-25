@@ -102,6 +102,11 @@ namespace LegendaryExplorerCore.Packages
         public int exportIndex;
         public bool isAbstract;
 
+        /// <summary>
+        /// If the export is forcedexport, which changes how we have to reference it for an import
+        /// </summary>
+        public bool forcedExport;
+
         public bool TryGetPropInfo(NameReference name, MEGame game, out PropertyInfo propInfo) =>
             properties.TryGetValue(name, out propInfo) || (GlobalUnrealObjectInfo.GetClassOrStructInfo(game, baseClass)?.TryGetPropInfo(name, game, out propInfo) ?? false);
     }

@@ -846,6 +846,21 @@ namespace LegendaryExplorerCore.Textures
         }
 
         /// <summary>
+        /// Loads an image from an array and converts it internally to the specified pixel format
+        /// </summary>
+        /// <param name="buffer">Full data of a file to load</param>
+        /// <param name="imageType">1 = DDS 2 = PNG 3 = TGA</param>
+        /// <param name="targetFormat">The destination image pixel format</param>
+        /// <returns>Image with the specified pixel format</returns>
+        public static Image LoadFromFileMemory(byte[] buffer, int imageType, PixelFormat targetFormat)
+        {
+            var mips = new List<MipMap>();
+            byte[] pixelData = TexConverter.LoadTextureFromMemory(buffer, imageType, out uint width, out uint height, ref targetFormat);
+            mips.Add(new MipMap(pixelData, (int)width, (int)height, targetFormat));
+            return new Image(mips, targetFormat);
+        }
+
+        /// <summary>
         /// Checks if the top mip has any pixels that don't have an alpha of 0 or 1. Only works on ARGB images.
         /// </summary>
         /// <returns>True if any pixel is not 0 or 1 alpha and is in ARGB format, false otherwise</returns>

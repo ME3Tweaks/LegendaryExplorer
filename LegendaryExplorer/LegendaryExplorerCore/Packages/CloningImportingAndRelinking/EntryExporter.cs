@@ -234,8 +234,8 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 var instancedFullPath = import.InstancedFullPath;
                 if (instancedFullPath.StartsWith("Core.") || instancedFullPath.StartsWith("Engine."))
                     continue; // A lot of these are not resolvable cause they're native
-                if (import.Game == MEGame.ME2 && instancedFullPath == "BioVFX_Z_TEXTURES.Generic.Glass_Shards_Norm")
-                    continue; // This texture for some reason is not stored in package files... not sure where, or how it is loaded into memory
+                if (import.Game.IsGame2() && instancedFullPath == "BioVFX_Z_TEXTURES.Generic.Glass_Shards_Norm")
+                    continue; // This texture is straight up missing from the game for some reason
                 if (import.IsAKnownNativeClass())
                     continue; // Known native items can never be imported
                 var resolved = EntryImporter.ResolveImport(import, globalCache, cache);

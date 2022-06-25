@@ -312,6 +312,15 @@ namespace LegendaryExplorerCore.Textures
             return result;
         }
 
+        /// <summary>
+        /// Loads texture data from the given file buffer in memory (e.g. file streamed from exe will not be disk based)
+        /// </summary>
+        /// <param name="buffer">The buffer containing the image file data</param>
+        /// <param name="imageType">1 = DDS 2 = PNG 3 = TGA</param>
+        /// <param name="width">The out width of the image</param>
+        /// <param name="height">The out out height of the image</param>
+        /// <param name="pixelFormat">The target pixel format to convert to on load</param>
+        /// <returns></returns>
         public static unsafe byte[] LoadTextureFromMemory(ReadOnlySpan<byte> buffer, int imageType, out uint width, out uint height, ref PixelFormat pixelFormat)
         {
             TexConverter.EnsureInitialized();
@@ -321,7 +330,7 @@ namespace LegendaryExplorerCore.Textures
                 Format = GetDXGIFormatForPixelFormat(pixelFormat)
             };
 
-            byte[] result = new byte[outputBuffer.PixelDataLength];
+            byte[] result = null;
             uint srcLen = (uint)buffer.Length;
             unsafe
             {
@@ -329,7 +338,7 @@ namespace LegendaryExplorerCore.Textures
                 {
                     int hr = TCLoadTextureFromMemory(inPtr, buffer.Length, imageType, &outputBuffer);
                     Marshal.ThrowExceptionForHR(hr);
-
+                    result = new byte[outputBuffer.PixelDataLength];
                     Marshal.Copy((IntPtr)outputBuffer.PixelData, result, 0, (int)outputBuffer.PixelDataLength);
 
                     hr = TCFreePixelData(&outputBuffer);
