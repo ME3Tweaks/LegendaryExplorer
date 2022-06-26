@@ -483,7 +483,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             //MeshContext.BackgroundColor = color is not null ? new Color(color.Value.R, color.Value.G, color.Value.B) : Color.FromRgba(0x999999);
             SceneViewer.Loaded += (sender, args) =>
             {
-                this.ViewportLoadAction?.Invoke();
+                if (MeshContext.IsReady)
+                {
+                    this.ViewportLoadAction?.Invoke();
+                }
                 this.ViewportLoadAction = null;
             };
 
@@ -794,7 +797,18 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                     break;
                             }
                             assetCache.Dispose();
+                            LODPicker.ClearEx();
+                            if (Preview is not null)
+                            {
+                                for (int l = 0; l < Preview.LODs.Count; l++)
+                                {
+                                    LODPicker.Add($"LOD{l}");
+                                }
+                            }
+                            CenterView();
                         };
+
+                        LODPicker.ClearEx();
 
                         // We can't call graphics methods until the render control has been loaded by WPF - only then will it have initialized D3D.
                         if (this.MeshContext.IsReady)
@@ -804,13 +818,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         else
                         {
                             this.ViewportLoadAction = loadPreviewAction;
-                        }
-
-                        CenterView();
-                        LODPicker.ClearEx();
-                        for (int l = 0; l < Preview.LODs.Count; l++)
-                        {
-                            LODPicker.Add($"LOD{l}");
                         }
                     }
 

@@ -131,6 +131,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
 
         public override void CreateResources()
         {
+            TextureCache = new PreviewTextureCache(this);
             base.CreateResources();
 
             // Build a custom rasterizer state that doesn't cull backfaces
@@ -170,7 +171,6 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             // Load the default position-texture shader
             DefaultEffect = new Effect<WorldConstants, WorldVertex>(Device, EmbeddedResources.StandardShader);
 
-            TextureCache = new PreviewTextureCache(this);
 
             this.ImmediateContext.OutputMerger.SetBlendState(this.AlphaBlendState);
         }

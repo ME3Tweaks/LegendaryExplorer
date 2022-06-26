@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Controls;
 using System.Windows.Input;
+using FontAwesome5;
 using SharpDX;
 using SharpDX.Direct3D11;
 using SharpDX.Direct3D;
@@ -245,7 +246,19 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
                 D3DImage.WindowOwner = new System.Windows.Interop.WindowInteropHelper(Window.GetWindow(this)).Handle; // This needs to be cleared when disposing or it will hold a reference
                 Unloaded += SceneRenderControlWPF_Unloaded;
 
-                Context.CreateResources();
+                try
+                {
+                    Context.CreateResources();
+                }
+                catch (Exception)
+                {
+                    Content = Image = new ImageAwesome
+                    {
+                        Icon = EFontAwesomeIcon.Solid_Ban,
+                        Foreground = Brushes.DarkRed
+                    };
+                    return;
+                }
 
                 CompositionTarget.Rendering += CompositionTarget_Rendering;
                 InitiallyLoaded = true;
