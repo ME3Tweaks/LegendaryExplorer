@@ -3592,7 +3592,25 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 }
 
                 // Load the object DB if games are different
-                ObjectInstanceDB objectDB = portingOption.PortUsingDonors && sourceEntry.Game != targetItem.Game && sourceEntry.Game != MEGame.UDK ? ObjectInstanceDB.DeserializeDB(File.ReadAllText(AppDirectories.GetObjectDatabasePath(targetItem.Game))) : null;
+                string objectDBPath = AppDirectories.GetObjectDatabasePath(targetItem.Game);
+                bool shouldUseDonors = portingOption.PortUsingDonors && sourceEntry.Game != targetItem.Game && sourceEntry.Game != MEGame.UDK;
+                ObjectInstanceDB objectDB = null;
+                if (shouldUseDonors)
+                {
+                    if (File.Exists(objectDBPath))
+                    {
+                        objectDB = ObjectInstanceDB.DeserializeDB(File.ReadAllText(objectDBPath));
+                    }
+                    else
+                    {
+                        var result = MessageBox.Show("Port With Donors checkbox was selected, but no object database was found! Continue operation without donors?", 
+                            "No object database", MessageBoxButton.YesNo);
+                        if (result is not MessageBoxResult.Yes)
+                        {
+                            return;
+                        }
+                    }
+                }
                 objectDB?.BuildLookupTable();
 
                 // To profile this, run dotTrace and attach to the process, make sure to choose option to profile via API
@@ -3603,7 +3621,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
                 int numExports = Pcc.ExportCount;
                 //Import!
-                RelinkerOptionsPackage rop = new RelinkerOptionsPackage()
+                var rop = new RelinkerOptionsPackage
                 {
                     IsCrossGame = sourceEntry.Game != targetItem.Game && sourceEntry.Game != MEGame.UDK,
                     TargetGameDonorDB = objectDB,

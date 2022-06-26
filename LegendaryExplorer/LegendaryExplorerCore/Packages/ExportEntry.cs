@@ -285,7 +285,7 @@ namespace LegendaryExplorerCore.Packages
         
         public byte[] GenerateHeader(IMEPackage pcc, bool clearComponentMap = false)
         {
-            if (pcc.Endian.IsNative && _fileRef.Game > MEGame.ME2 && _commonHeaderFields._generationNetObjectCountsLength == 0)
+            if (pcc.Endian.IsNative && pcc.Game > MEGame.ME2 && _commonHeaderFields._generationNetObjectCountsLength == 0)
             {
                 unsafe
                 {
