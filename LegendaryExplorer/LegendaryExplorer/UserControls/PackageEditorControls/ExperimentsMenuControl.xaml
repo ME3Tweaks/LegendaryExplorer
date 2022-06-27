@@ -96,6 +96,7 @@
         <MenuItem Header="Scan folder for files containing objects of a specific name" Click="FindAllFilesWithSpecificName"/>
         <MenuItem Header="Resolve all imports (see debug output)" Click="ResolveAllImports_Clicked"/>
         <MenuItem Header="Shift current selected InterpTrackMove" Click="ShiftInterpTrackMove"/>
+        <MenuItem Header="Shift all InterpTrackMove in package" Click="ShiftInterpTrackMovePackageWide"/>
     </MenuItem>
     <MenuItem Header="SirCxyrtyx's Garden of Modding Delights">
         <MenuItem Header="Re-Serialize All Properties in game(check code to see which game)" Click="ReSerializeAllProperties_Click"/>

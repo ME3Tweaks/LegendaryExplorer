@@ -756,6 +756,15 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             }
         }
 
+        private void ShiftInterpTrackMovePackageWide(object sender, RoutedEventArgs e)
+        {
+            var pccLoaded = GetPEWindow().Pcc != null;
+            if (pccLoaded)
+            {
+                PackageEditorExperimentsM.ShiftInterpTrackMovesInPackage(GetPEWindow().Pcc);
+            }
+        }
+
         private void ShiftInterpTrackMove(object sender, RoutedEventArgs e)
         {
             var selected = GetPEWindow().TryGetSelectedExport(out var export);

@@ -866,11 +866,22 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
         }
 
-        public static void ShiftInterpTrackMove(ExportEntry interpTrackMove)
+        public static void ShiftInterpTrackMovesInPackage(IMEPackage package)
         {
             var offsetX = int.Parse(PromptDialog.Prompt(null, "Enter X shift offset", "Offset X", "0", true));
             var offsetY = int.Parse(PromptDialog.Prompt(null, "Enter Y shift offset", "Offset Y", "0", true));
             var offsetZ = int.Parse(PromptDialog.Prompt(null, "Enter Z shift offset", "Offset Z", "0", true));
+            foreach(var exp in package.Exports.Where(x=>x.ClassName == "InterpTrackMove"))
+            {
+                ShiftInterpTrackMove(ExpertTerrainDataToUDK(exp, offsetX, offsetY, offsetZ));
+            }
+        }
+
+        public static void ShiftInterpTrackMove(ExportEntry interpTrackMove, int? offsetX = null, int? offsetY = null, int? offsetZ = null)
+        {
+            offsetX ??= int.Parse(PromptDialog.Prompt(null, "Enter X shift offset", "Offset X", "0", true));
+            offsetY ??= int.Parse(PromptDialog.Prompt(null, "Enter Y shift offset", "Offset Y", "0", true));
+            offsetZ ??= int.Parse(PromptDialog.Prompt(null, "Enter Z shift offset", "Offset Z", "0", true));
 
             var props = interpTrackMove.GetProperties();
             var posTrack = props.GetProp<StructProperty>("PosTrack");
@@ -878,9 +889,9 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             foreach (var point in points)
             {
                 var outval = point.GetProp<StructProperty>("OutVal");
-                outval.GetProp<FloatProperty>("X").Value += offsetX;
-                outval.GetProp<FloatProperty>("Y").Value += offsetY;
-                outval.GetProp<FloatProperty>("Z").Value += offsetZ;
+                outval.GetProp<FloatProperty>("X").Value += offsetX.Value;
+                outval.GetProp<FloatProperty>("Y").Value += offsetY.Value;
+                outval.GetProp<FloatProperty>("Z").Value += offsetZ.Value;
             }
 
             interpTrackMove.WriteProperties(props);
