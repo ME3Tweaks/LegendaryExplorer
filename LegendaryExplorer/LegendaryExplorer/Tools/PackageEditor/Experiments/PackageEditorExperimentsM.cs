@@ -873,7 +873,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             var offsetZ = int.Parse(PromptDialog.Prompt(null, "Enter Z shift offset", "Offset Z", "0", true));
             foreach(var exp in package.Exports.Where(x=>x.ClassName == "InterpTrackMove"))
             {
-                ShiftInterpTrackMove(ExpertTerrainDataToUDK(exp, offsetX, offsetY, offsetZ));
+                ShiftInterpTrackMove(exp, offsetX, offsetY, offsetZ);
             }
         }
 
