@@ -1521,7 +1521,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         {
             var gameString = InputComboBoxDialog.GetValue(pewpf,
                             "Select which game's files you want converted to having skippable dialogue",
-                            "Game selector", new[] { "ME1", "ME2", "ME3" }, "ME1");
+                            "Game selector", new[] { "ME1", "ME2", "ME3", "LE1", "LE2", "LE3" }, "LE1");
             if (Enum.TryParse(gameString, out MEGame game) && MessageBoxResult.Yes ==
                 MessageBox.Show(pewpf,
                     $"WARNING! This will edit every dialogue-containing file in {gameString}, including in DLCs and installed mods. Do you want to begin?",
