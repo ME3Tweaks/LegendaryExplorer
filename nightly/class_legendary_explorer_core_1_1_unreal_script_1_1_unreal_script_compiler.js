@@ -1,6 +1,8 @@
 var class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler =
 [
     [ "DecompileExport", "class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#aa937532e62bad6fbd398695bdc0a267a", null ],
+    [ "GetPropertyLiteralValue", "class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#ac57d5c5ef65f597559dfbcdc21d5bc94", null ],
+    [ "CompileProperty", "class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#a9b7ef24457f5ae683678f5b37a8be25c", null ],
     [ "ExportToAstNode", "class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#a8b9abfd6c7ee56a2f7addd2a9da04d12", null ],
     [ "CompileOutlineAST", "class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#a11381f02e383aa0b5671889fb7db7545", null ],
     [ "AddOrReplaceInClass", "class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#acc24b76504bca654d617aa8459993fd5", null ],

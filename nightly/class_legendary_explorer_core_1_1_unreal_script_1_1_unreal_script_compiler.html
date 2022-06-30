@@ -98,6 +98,10 @@ $(document).ready(function(){initNavTree('class_legendary_explorer_core_1_1_unre
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:aa937532e62bad6fbd398695bdc0a267a"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_a_s_t_node.html">ASTNode</a> string text&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#aa937532e62bad6fbd398695bdc0a267a">DecompileExport</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> export, <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html">FileLib</a> lib, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a> packageCache=null)</td></tr>
 <tr class="separator:aa937532e62bad6fbd398695bdc0a267a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac57d5c5ef65f597559dfbcdc21d5bc94"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#ac57d5c5ef65f597559dfbcdc21d5bc94">GetPropertyLiteralValue</a> (<a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property.html">Property</a> prop, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> containingExport, <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html">FileLib</a> lib)</td></tr>
+<tr class="separator:ac57d5c5ef65f597559dfbcdc21d5bc94"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9b7ef24457f5ae683678f5b37a8be25c"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property.html">Property</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#a9b7ef24457f5ae683678f5b37a8be25c">CompileProperty</a> (string propName, string valueliteral, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> containingExport, <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html">FileLib</a> lib, <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_errors_1_1_message_log.html">MessageLog</a> log, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a> packageCache=null)</td></tr>
+<tr class="separator:a9b7ef24457f5ae683678f5b37a8be25c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8b9abfd6c7ee56a2f7addd2a9da04d12"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_a_s_t_node.html">ASTNode</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#a8b9abfd6c7ee56a2f7addd2a9da04d12">ExportToAstNode</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> export, <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html">FileLib</a> lib, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a> packageCache)</td></tr>
 <tr class="separator:a8b9abfd6c7ee56a2f7addd2a9da04d12"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a11381f02e383aa0b5671889fb7db7545"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_a_s_t_node.html">ASTNode</a> <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_token_stream.html">TokenStream</a> tokens&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#a11381f02e383aa0b5671889fb7db7545">CompileOutlineAST</a> (string script, string type, <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_errors_1_1_message_log.html">MessageLog</a> log, <a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game, bool isDefaultObject=false)</td></tr>
@@ -161,6 +165,108 @@ Static Public Attributes</h2></td></tr>
           <td></td>
           <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html">FileLib</a>&#160;</td>
           <td class="paramname"><em>lib</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a>&#160;</td>
+          <td class="paramname"><em>packageCache</em> = <code>null</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac57d5c5ef65f597559dfbcdc21d5bc94" name="ac57d5c5ef65f597559dfbcdc21d5bc94"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac57d5c5ef65f597559dfbcdc21d5bc94">&#9670;&nbsp;</a></span>GetPropertyLiteralValue()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static string LegendaryExplorerCore.UnrealScript.UnrealScriptCompiler.GetPropertyLiteralValue </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property.html">Property</a>&#160;</td>
+          <td class="paramname"><em>prop</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td>
+          <td class="paramname"><em>containingExport</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html">FileLib</a>&#160;</td>
+          <td class="paramname"><em>lib</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a9b7ef24457f5ae683678f5b37a8be25c" name="a9b7ef24457f5ae683678f5b37a8be25c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9b7ef24457f5ae683678f5b37a8be25c">&#9670;&nbsp;</a></span>CompileProperty()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property.html">Property</a> LegendaryExplorerCore.UnrealScript.UnrealScriptCompiler.CompileProperty </td>
+          <td>(</td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>propName</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>valueliteral</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td>
+          <td class="paramname"><em>containingExport</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html">FileLib</a>&#160;</td>
+          <td class="paramname"><em>lib</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_errors_1_1_message_log.html">MessageLog</a>&#160;</td>
+          <td class="paramname"><em>log</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
