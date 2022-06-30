@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.UnrealScript.Analysis.Symbols;
 using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
@@ -43,6 +45,59 @@ namespace LegendaryExplorerCore.UnrealScript
             }
 
             return (null, $"Could not decompile {export.InstancedFullPath}");
+        }
+
+        public static string GetPropertyLiteralValue(Property prop, ExportEntry containingExport, FileLib lib)
+        {
+            Expression literal = ScriptObjectToASTConverter.ConvertToLiteralValue(prop, containingExport, lib);
+            return CodeBuilderVisitor.ConvertToText(literal);
+        }
+
+        [CanBeNull]
+        //Used by M3. Do not delete
+        public static Property CompileProperty(string propName, string valueliteral, ExportEntry containingExport, FileLib lib, MessageLog log, PackageCache packageCache = null)
+        {
+            if (!lib.IsInitialized)
+            {
+                log.LogError("FileLib not initialized!");
+                return null;
+            }
+            try
+            {
+                var fauxDefaultProperties = $"{DEFAULTPROPERTIES}{{{propName}={valueliteral}}}";
+                TokenStream tokens = Lexer.Lex(fauxDefaultProperties, log);
+                if (log.HasErrors)
+                {
+                    log.LogError("Lexing failed!");
+                    return null;
+                }
+                DefaultPropertiesBlock node = new ClassOutlineParser(tokens, containingExport.Game, log).ParseDefaultProperties();
+                SymbolTable symbolTable = lib.GetSymbolTable();
+                if (!symbolTable.TryGetType(containingExport.ClassName, out Class exportClass))
+                {
+                    log.LogError($"FileLib did not contain definition of class: '{exportClass.Name}'");
+                    return null;
+                }
+                node.Outer = exportClass;
+                PropertiesBlockParser.Parse(node, containingExport.FileRef, symbolTable, log);
+                if (log.HasErrors)
+                {
+                    log.LogError("Parse failed!");
+                    return null;
+                }
+                PropertyCollection props = ScriptPropertiesCompiler.CompileProps(node, containingExport.FileRef, packageCache);
+                return props[0];
+            }
+            catch (ParseException)
+            {
+                log.LogError("Parse failed!");
+                return null;
+            }
+            catch (Exception e)
+            {
+                log.LogError($"Parse failed! Exception: {e}");
+                return null;
+            }
         }
 
         public static ASTNode ExportToAstNode(ExportEntry export, FileLib lib, PackageCache packageCache)

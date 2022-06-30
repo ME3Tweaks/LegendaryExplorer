@@ -141,12 +141,12 @@
                                 </StackPanel>
                                 <TextBlock Grid.Row="1" x:Name="PropertyItem_DisplayType" FontSize="10" Text="{Binding PropertyType, Mode=OneTime}" VerticalAlignment="Center" Margin="5,0,0,0"
                                            Visibility="{Binding AdvancedView, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=global:InterpreterExportLoader}, Converter={StaticResource BoolToVisibilityConverter}}"/>
-                                <b:Interaction.Triggers>
-                                    <b:EventTrigger EventName="PreviewMouseRightButtonDown">
-                                        <b:ChangePropertyAction PropertyName="IsSelected" Value="true" TargetObject="{Binding}"/>
-                                    </b:EventTrigger>
-                                </b:Interaction.Triggers>
                             </Grid>
+                            <b:Interaction.Triggers>
+                                <b:EventTrigger EventName="PreviewMouseRightButtonDown">
+                                    <b:ChangePropertyAction PropertyName="IsSelected" Value="true" TargetObject="{Binding}"/>
+                                </b:EventTrigger>
+                            </b:Interaction.Triggers>
                         </Border>
                         <HierarchicalDataTemplate.Triggers>
                             <MultiDataTrigger>
@@ -308,6 +308,7 @@
                         <MenuItem Header="Add missing properties" ToolTip="Add all properties that this struct can have" Command="{Binding AddPropertiesToStructCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
                         <MenuItem Header="Generate new GUID" ToolTip="Generate a new GUID" Command="{Binding GenerateGUIDCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
                         <MenuItem Header="Copy property name" ToolTip="Copies the name of the property to the clipboard" Command="{Binding CopyPropNameCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
+                        <MenuItem Header="Copy unrealscript value (for mergemods)" ToolTip="Copies the value of this property as an unrealscript literal" Command="{Binding CopyUnrealScriptPropValueCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
                         <!--<MenuItem Header="Order array...">
                             <MenuItem Header="By value" ToolTip="Remove this property from this export" Command="{Binding RemovePropertyCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
 

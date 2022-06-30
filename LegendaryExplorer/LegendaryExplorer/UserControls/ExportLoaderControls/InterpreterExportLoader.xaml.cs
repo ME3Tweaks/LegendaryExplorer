@@ -15,7 +15,6 @@ using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Misc.AppSettings;
 using LegendaryExplorer.SharedUI;
-using LegendaryExplorer.SharedUI.Interfaces;
 using LegendaryExplorer.Tools.PackageEditor;
 using LegendaryExplorer.Tools.TlkManagerNS;
 using LegendaryExplorerCore.Gammtek;
@@ -28,6 +27,7 @@ using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.PlotDatabase;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
+using LegendaryExplorerCore.UnrealScript;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls
 {
@@ -226,6 +226,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public ICommand ClearArrayCommand { get; set; }
         public ICommand CopyValueCommand { get; set; }
         public ICommand CopyPropNameCommand { get; set; }
+        public ICommand CopyUnrealScriptPropValueCommand { get; set; }
         public ICommand GenerateGUIDCommand { get; set; }
         public ICommand OpenInPackageEditorCommand { get; set; }
         public ICommand OpenInMeshplorerCommand { get; set; }
@@ -260,7 +261,30 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
             CopyValueCommand = new GenericCommand(CopyPropertyValue, CanCopyPropertyValue);
             CopyPropNameCommand = new GenericCommand(CopyPropertyName, CanCopyPropertyName);
+            CopyUnrealScriptPropValueCommand = new GenericCommand(CopyUnrealScriptPropValue, CanCopyUnrealScriptPropValue);
         }
+
+        private void CopyUnrealScriptPropValue()
+        {
+            try
+            {
+                if (Interpreter_TreeView?.SelectedItem is UPropertyTreeViewEntry { Property: ArrayPropertyBase prop })
+                {
+                    var lib = new FileLib(Pcc);
+                    lib.Initialize();//not going to check for failure since we're just decompiling
+                    string value = UnrealScriptCompiler.GetPropertyLiteralValue(prop, CurrentLoadedExport, lib);
+                    Clipboard.SetText(value);
+                }
+                //clear that chonky FileLib out of memory
+                MemoryAnalyzer.ForceFullGC(true);
+            }
+            catch
+            {
+                // sometimes errors occur on copy when clipboard is locked. Dont do anything
+            }
+        }
+
+        private bool CanCopyUnrealScriptPropValue() => Interpreter_TreeView?.SelectedItem is UPropertyTreeViewEntry { Property: ArrayPropertyBase };
 
         private void CopyPropertyValue()
         {

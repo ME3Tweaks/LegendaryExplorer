@@ -1507,37 +1507,6 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             return true;
         }
 
-        private static string FormatFloat(float single)
-        {
-            //G9 ensures a fully accurate version of the float (no rounding) is written.
-            //more details here: https://docs.microsoft.com/en-us/dotnet/standard/base-types/standard-numeric-format-strings#the-round-trip-r-format-specifier 
-            string floatString = single.ToString("G9", NumberFormatInfo.InvariantInfo).Replace("E+", "e");
-
-            if (floatString.Contains("E-"))
-            {
-                //unrealscript does not support negative exponents in literals, so we have to format it manually
-                //for example, 1.401298E-45 would be formatted as 0.00000000000000000000000000000000000000000000140129846
-                //This code assumes there is exactly 1 digit before the decimal point, which will always be the case when formatted as scientific notation with the G specifier
-                string minus = null;
-                if (floatString[0] == '-')
-                {
-                    minus = "-";
-                    floatString = floatString[1..];
-                }
-                int ePos = floatString.IndexOf("E-");
-                int exponent = int.Parse(floatString[(ePos + 2)..]);
-                string digits = floatString[..ePos].Replace(".", "");
-                floatString = $"{minus}0.{new string('0', exponent - 1)}{digits}";
-            }
-            else if (!floatString.Contains(".") && !floatString.Contains("e"))
-            {
-                //need a decimal place in the float so that it does not get parsed as an int
-                floatString += $".0";
-            }
-
-            return floatString;
-        }
-
         public bool VisitNode(IntegerLiteral node)
         {
             // integervalue
@@ -1952,6 +1921,37 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             }
         }
 
+        public static string FormatFloat(float single)
+        {
+            //G9 ensures a fully accurate version of the float (no rounding) is written.
+            //more details here: https://docs.microsoft.com/en-us/dotnet/standard/base-types/standard-numeric-format-strings#the-round-trip-r-format-specifier 
+            string floatString = single.ToString("G9", NumberFormatInfo.InvariantInfo).Replace("E+", "e");
+
+            if (floatString.Contains("E-"))
+            {
+                //unrealscript does not support negative exponents in literals, so we have to format it manually
+                //for example, 1.401298E-45 would be formatted as 0.00000000000000000000000000000000000000000000140129846
+                //This code assumes there is exactly 1 digit before the decimal point, which will always be the case when formatted as scientific notation with the G specifier
+                string minus = null;
+                if (floatString[0] == '-')
+                {
+                    minus = "-";
+                    floatString = floatString[1..];
+                }
+                int ePos = floatString.IndexOf("E-");
+                int exponent = int.Parse(floatString[(ePos + 2)..]);
+                string digits = floatString[..ePos].Replace(".", "");
+                floatString = $"{minus}0.{new string('0', exponent - 1)}{digits}";
+            }
+            else if (!floatString.Contains(".") && !floatString.Contains("e"))
+            {
+                //need a decimal place in the float so that it does not get parsed as an int
+                floatString += $".0";
+            }
+
+            return floatString;
+        }
+
         public static string EncodeString(string original)
         {
             var sb = new StringBuilder();
@@ -2025,7 +2025,15 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
     public class CodeBuilderVisitor<TFormatter> : CodeBuilderVisitor<TFormatter, string> where TFormatter : class, ICodeFormatter<string>, new()
     { }
 
-    public class CodeBuilderVisitor : CodeBuilderVisitor<PlainTextCodeFormatter> {}
+    public class CodeBuilderVisitor : CodeBuilderVisitor<PlainTextCodeFormatter>
+    {
+        public static string ConvertToText(ASTNode node)
+        {
+            var builder = new CodeBuilderVisitor();
+            node.AcceptVisitor(builder);
+            return builder.GetOutput();
+        }
+    }
 
     public interface ICodeFormatter<out TOutput>
     {

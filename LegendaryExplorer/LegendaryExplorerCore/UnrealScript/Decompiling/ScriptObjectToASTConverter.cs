@@ -578,6 +578,12 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             }
         }
 
+        public static Expression ConvertToLiteralValue(Property prop, ExportEntry containingExport, FileLib lib)
+        {
+            var statements = ConvertProperties(new PropertyCollection { prop }, containingExport, containingExport.ObjectName.Instanced, false, lib);
+            return statements[0].Value;
+        }
+
         private static List<AssignStatement> ConvertProperties(PropertyCollection properties, ExportEntry defaultsExport, string objectName, bool isStruct, FileLib fileLib)
         {
             var statements = new List<AssignStatement>();
@@ -590,6 +596,8 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
 
                 Expression name = new SymbolReference(null, prop.Name.Instanced);
 
+                //If a property is the 0th element in a static array, there is no way to tell that from the Property object, since StaticArrayIndex will be 0.
+                //All this lookup is just so we can properly determine when that is the case.
                 if (fileLib.IsInitialized && fileLib.ReadonlySymbolTable is SymbolTable symbols)
                 {
                     string scope = null;
@@ -672,7 +680,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                         if (objRef == 0)
                             return new NoneLiteral();
                         var objEntry = pcc.GetEntry(objRef);
-                        if (objEntry is ExportEntry objExp && objExp.InstancedFullPath.StartsWith(defaultsExport.InstancedFullPath, StringComparison.OrdinalIgnoreCase))
+                        if (objEntry is ExportEntry objExp && defaultsExport.IsDefaultObject && objExp.InstancedFullPath.StartsWith(defaultsExport.InstancedFullPath, StringComparison.OrdinalIgnoreCase))
                         {
                             //subObject reference
                             return new SymbolReference(null, objExp.ObjectName.Instanced);

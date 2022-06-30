@@ -41,6 +41,17 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             }
         }
 
+        public static PropertyCollection CompileProps(DefaultPropertiesBlock block, IMEPackage pcc, PackageCache packageCache = null)
+        {
+            var compiler = new ScriptPropertiesCompiler(pcc, packageCache) { ShouldStripTransients = true };
+            var props = new PropertyCollection();
+            foreach (Statement statement in block.Statements)
+            {
+                props.AddOrReplaceProp(compiler.ConvertToProperty((AssignStatement)statement));
+            }
+            return props;
+        }
+
         public static void CompileDefault__Object(DefaultPropertiesBlock defaultsAST, ExportEntry classExport, ref ExportEntry defaultsExport, PackageCache packageCache = null)
         {
             IMEPackage pcc = classExport.FileRef;
