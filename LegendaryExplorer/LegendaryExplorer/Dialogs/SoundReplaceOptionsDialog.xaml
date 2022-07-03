@@ -11,6 +11,7 @@
     DataContext="{Binding RelativeSource={RelativeSource Self}}"
     WindowStartupLocation="CenterOwner"
     SizeToContent="WidthAndHeight"
+    ResizeMode="NoResize"
     Title="Sound replacement options">
     <Window.Resources>
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
@@ -19,6 +20,8 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="20"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -42,7 +45,14 @@
                   Margin="0 5 0 0" Visibility="{Binding ShowUpdateEventsCheckbox, Converter={StaticResource BoolToVisibilityConverter}}" />
         <CheckBox x:Name="UpdateEvents_CheckBox"  Grid.Row="4" Grid.Column="1" IsChecked="False" 
                   Margin="0 5 0 0" Visibility="{Binding ShowUpdateEventsCheckbox, Converter={StaticResource BoolToVisibilityConverter}}"  />
-        <Button Content="Replace Audio" Command="{Binding ConvertAudioCommand}" Grid.Row="8" Grid.Column="2" IsDefault="True"/>
+        <TextBlock Text ="Destination AFC" Grid.Row="5" VerticalAlignment="Center" Margin="0 5 0 0" 
+                   Visibility="{Binding ShowDestAFCFile, Converter={StaticResource BoolToVisibilityConverter}}"/>
+        <TextBox x:Name="AfcFileDest_TextBox"  Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" Margin="0 5 0 0"  
+                 Visibility="{Binding ShowDestAFCFile, Converter={StaticResource BoolToVisibilityConverter}}"/>
+        <TextBlock Text="Audio is appended to the specified AFC file if it exists. Use AFC compactor to trim unused audio and merge modified audio samples into a single AFC file." 
+                   Grid.Row="6" Grid.ColumnSpan="3" TextWrapping="Wrap"
+                   Visibility="{Binding ShowDestAFCFile, Converter={StaticResource BoolToVisibilityConverter}}"  />
+        <Button Content="Replace Audio" Command="{Binding ConvertAudioCommand}" Grid.Row="9" Grid.Column="2" IsDefault="True"/>
         <Button Content="Cancel" Click="Cancel_Click"  Grid.Row="9" Grid.Column="1" Margin="8,0"/>
     </Grid>
 </misc:NotifyPropertyChangedWindowBase>

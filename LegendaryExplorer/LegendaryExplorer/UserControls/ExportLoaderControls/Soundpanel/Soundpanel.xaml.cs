@@ -1399,7 +1399,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
             if (conversionSettings == null)
             {
-                SoundReplaceOptionsDialog srod = new SoundReplaceOptionsDialog(Window.GetWindow(this), Pcc.Game.IsGame3(), Pcc.Game);
+                SoundReplaceOptionsDialog srod = new SoundReplaceOptionsDialog(Window.GetWindow(this), Pcc.Game.IsGame3(), Pcc.Game, (forcedExport ?? CurrentLoadedExport).GetProperty<NameProperty>("Filename").Value);
                 if (srod.ShowDialog() == true)
                 {
                     conversionSettings = srod.ChosenSettings;
@@ -1420,7 +1420,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             await Task.Run(async () =>
             {
                 var conversion = await WwiseCliHandler.RunWwiseConversion(Pcc.Game, sourceFile, conversionSettings);
-                ReplaceAudioFromWwiseEncodedFile(conversion, forcedExport, conversionSettings?.UpdateReferencedEvents ?? false);
+                ReplaceAudioFromWwiseEncodedFile(conversion, forcedExport, conversionSettings?.UpdateReferencedEvents ?? false, conversionSettings?.DestinationAFCFile);
 
             }).ContinueWithOnUIThread((a) =>
             {
@@ -1437,7 +1437,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         /// </summary>
         /// <param name="forcedExport">Export to update. If null, the currently loaded one is used instead.</param>
         /// <param name="updateReferencedEvents">If true will find all WwiseEvents referencing this export and update their Duration property</param>
-        public void ReplaceAudioFromWwiseEncodedFile(string filePath = null, ExportEntry forcedExport = null, bool updateReferencedEvents = false)
+        public void ReplaceAudioFromWwiseEncodedFile(string filePath = null, ExportEntry forcedExport = null, bool updateReferencedEvents = false, string destAFCBasename = null)
         {
             StopPlaying();
             ExportEntry exportToWorkOn = forcedExport ?? CurrentLoadedExport;
@@ -1458,7 +1458,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     }
                 }
 
-                w.ImportFromFile(filePath, w.GetPathToAFC());
+                w.ImportFromFile(filePath, w.GetPathToAFC(destAFCBasename), destAFCBasename);
                 exportToWorkOn.WriteBinary(w);
 
                 if (updateReferencedEvents)

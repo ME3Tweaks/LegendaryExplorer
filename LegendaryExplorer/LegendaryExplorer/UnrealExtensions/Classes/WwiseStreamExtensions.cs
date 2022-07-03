@@ -1,7 +1,9 @@
-﻿using System.IO;
+﻿using System.Diagnostics;
+using System.IO;
 using System.Windows.Forms;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 
 namespace LegendaryExplorer.UnrealExtensions.Classes
@@ -14,7 +16,7 @@ namespace LegendaryExplorer.UnrealExtensions.Classes
         /// </summary>
         /// <param name="path"></param>
         /// <param name="pathtoafc"></param>
-        public static void ImportFromFile(this WwiseStream ws, string path, string pathtoafc = "")
+        public static void ImportFromFile(this WwiseStream ws, string path, string pathtoafc = "", string forcedAFCBaseName = null)
         {
             if (ws.Filename == "")
                 return;
@@ -37,6 +39,15 @@ namespace LegendaryExplorer.UnrealExtensions.Classes
                     if (d.ShowDialog() == DialogResult.OK)
                         ws.ImportWwiseOgg(d.FileName, stream);
                 }
+            }
+            else if (forcedAFCBaseName != null)
+            {
+                // Force an AFC - put it next to the package file we are working on
+                // IDK where we could reliably put it so user doesn't lose it.
+                var savePath = Path.Combine(Directory.GetParent(ws.Export.FileRef.FilePath).FullName, forcedAFCBaseName+".afc");
+                ws.ImportWwiseOgg(savePath, stream);
+                ws.Export.WriteProperty(new NameProperty(forcedAFCBaseName, "Filename")); // Update the filename
+
             }
             else
             {
@@ -97,8 +108,16 @@ namespace LegendaryExplorer.UnrealExtensions.Classes
 
         private static void ImportWwiseOgg(this WwiseStream ws, string pathafc, Stream wwiseOggStream)
         {
-            if ((!ws.IsPCCStored && !File.Exists(pathafc)) || wwiseOggStream == null)
+
+            // 07/03/2022 - Change logic to remove check if file exists as we can create AFCs.
+            // - Mgamerz
+            if (wwiseOggStream == null)
+            {
+                Debug.WriteLine("Improperly setup ImportWwiseOgg() call!");
                 return;
+            }
+
+
             MemoryStream convertedStream = new MemoryStream();
             if (ws.Export.FileRef.Game is MEGame.ME3)
             {
@@ -119,17 +138,19 @@ namespace LegendaryExplorer.UnrealExtensions.Classes
 
 
             //Open AFC
-            FileStream fs = new FileStream(pathafc, FileMode.Open, FileAccess.Read);
-            var Header = new byte[94];
+            // Disabled 07/03/2022 - Not really sure what this did
+            // - Mgamerz
+            //FileStream fs = new FileStream(pathafc, FileMode.Open, FileAccess.Read);
+            //var Header = new byte[94];
 
-            //Seek to data we are replacing and read header
-            fs.Seek(ws.DataOffset, SeekOrigin.Begin);
-            fs.Read(Header, 0, 94);
-            fs.Close();
+            ////Seek to data we are replacing and read header
+            //fs.Seek(ws.DataOffset, SeekOrigin.Begin);
+            //fs.Read(Header, 0, 94);
+            //fs.Close();
 
 
             //append new wav
-            fs = new FileStream(pathafc, FileMode.Append, FileAccess.Write, FileShare.Write);
+            var fs = new FileStream(pathafc, FileMode.Append, FileAccess.Write, FileShare.Write);
             int newWavDataOffset = (int)fs.Length;
             int newWavSize = newWavfile.Length;
             fs.Write(newWavfile, 0, newWavSize);
