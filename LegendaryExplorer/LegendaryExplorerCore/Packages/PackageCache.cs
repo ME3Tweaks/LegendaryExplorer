@@ -29,14 +29,14 @@ namespace LegendaryExplorerCore.Packages
         /// The last access order. Packages at the bottom are the last accessed, the ones at the top are first.
         /// This is only for dropping packages if the count is not 0.
         /// </summary>
-        private Dictionary<string, DateTime> LastAccessMap = new();
+        public readonly Dictionary<string, DateTime> LastAccessMap = new();
 
         public PackageCache() { }
 
         /// <summary>
         /// The list of packages that will not be dropped from last access staleness
         /// </summary>
-        private List<string> ResidentPackages = new();
+        public readonly List<string> ResidentPackages = new();
 
         /// <summary>
         /// The maximum amount of packages this cache can hold open at a time. The default is unlimited (0). Global packages like SFXGame, Core, etc do not count against this.
@@ -90,7 +90,7 @@ namespace LegendaryExplorerCore.Packages
             return null; //Package could not be found
         }
 
-        public void InsertIntoCache(IMEPackage package)
+        public virtual void InsertIntoCache(IMEPackage package)
         {
             Cache[package.FilePath] = package;
             LastAccessMap[package.FilePath] = DateTime.Now;
@@ -101,7 +101,7 @@ namespace LegendaryExplorerCore.Packages
         /// Makes the specified package, if in the cache, not drop when the cache is full. If the cache is uncapped, this does nothing.
         /// </summary>
         /// <param name="package"></param>
-        public void AddResidentPackage(IMEPackage package)
+        public virtual void AddResidentPackage(IMEPackage package)
         {
             if (package.FilePath != null)
                 AddResidentPackage(package.FilePath);
@@ -110,7 +110,7 @@ namespace LegendaryExplorerCore.Packages
         /// <summary>
         /// Makes the specified package path, if in the cache, not drop when the cache is full. If the cache is uncapped, this does nothing.
         /// </summary>
-        public void AddResidentPackage(string packagePath)
+        public virtual void AddResidentPackage(string packagePath)
         {
             if (CacheMaxSize <= 0)
                 return; // Does nothing.
@@ -121,7 +121,7 @@ namespace LegendaryExplorerCore.Packages
             }
         }
 
-        private void CheckCacheFullness()
+        public virtual void CheckCacheFullness()
         {
             if (CacheMaxSize > 1 && Cache.Count > CacheMaxSize)
             {
@@ -221,7 +221,7 @@ namespace LegendaryExplorerCore.Packages
             return cachedPackage != null;
         }
 
-        public void Dispose()
+        public virtual void Dispose()
         {
             ReleasePackages();
         }

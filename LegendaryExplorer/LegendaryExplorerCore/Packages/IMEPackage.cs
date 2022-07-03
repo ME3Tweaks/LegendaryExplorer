@@ -138,6 +138,11 @@ namespace LegendaryExplorerCore.Packages
         DateTime LastSaved { get; }
         long FileSize { get; }
 
+        /// <summary>
+        /// Custom user-defined metadata to associate with this package object. This data has no effect on saving or loading, it is only for library user convenience.
+        /// </summary>
+        public Dictionary<string, object> CustomMetadata { get; set; }
+
         //reading
         bool IsUExport(int index);
         bool IsName(int index);

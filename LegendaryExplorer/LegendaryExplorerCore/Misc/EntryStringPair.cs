@@ -20,6 +20,11 @@ namespace LegendaryExplorerCore.Misc
         public string EntryClass { get; init; }
 
         // Todo: Add support for tool IDs?
+        public LEXOpenable()
+        {
+
+        }
+
         public LEXOpenable(IEntry entry)
         {
             FilePath = entry.FileRef.FilePath; // CAN BE NULL IF THIS IS MEMORY FILE !!

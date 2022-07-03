@@ -84,7 +84,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         }
 
         /// <summary>
-        /// Exports the export and all required dependencies to a package file located at the specified path. The package is saved to disk.
+        /// Exports the export and all required dependencies to a package file located at the specified path.
         /// </summary>
         /// <param name="sourceExport"></param>
         /// <param name="newPackagePath"></param>
@@ -98,7 +98,6 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             MEPackageHandler.CreateAndSavePackage(newPackagePath, sourceExport.Game);
             using var p = MEPackageHandler.OpenMEPackage(newPackagePath);
             var result = ExportExportToPackage(sourceExport, p, out newEntry, globalCache, pc);
-            p.Save(compress: compress);
             return result;
         }
 
@@ -163,7 +162,8 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     if (entriesAC - entriesBC > parentCount)
                     {
                         // We ported in too many things!!
-                        Debugger.Break();
+                        Debug.WriteLine("We appear to have ported too many things!!");
+                        // Debugger.Break();
                     }
                 }
                 else
@@ -211,8 +211,6 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             }
 
             sourcePackage.InvalidateLookupTable();
-
-
         }
 
         /// <summary>
@@ -249,7 +247,6 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 var sourcePath = Path.GetFileNameWithoutExtension(resolved.FileRef.FilePath);
                 if (IsLevelFile(sourcePath) || IsGlobalNonStartupFile(sourcePath))
                 {
-
                     resolutionMap[import] = resolved;
                     RecursiveGetAllLevelImportsAsExports(resolved, resolutionMap, globalCache, cache);
                 }

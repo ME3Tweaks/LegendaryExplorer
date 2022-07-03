@@ -1286,15 +1286,18 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
                 //Try local.
                 containingDirectory ??= Path.GetDirectoryName(entry.FileRef.FilePath);
-                var localPath = Path.Combine(containingDirectory, fileName);
-                if (!localPath.Equals(fullgamepath, StringComparison.InvariantCultureIgnoreCase) && (
-                        (localDirFiles != null && localDirFiles.Contains(localPath, StringComparer.InvariantCultureIgnoreCase))
-                                                                                                     || (localDirFiles == null && File.Exists(localPath))))
+                if (containingDirectory != null)
                 {
-                    var export = containsImportedExport(localPath);
-                    if (export != null)
+                    var localPath = Path.Combine(containingDirectory, fileName);
+                    if (!localPath.Equals(fullgamepath, StringComparison.InvariantCultureIgnoreCase) && (
+                            (localDirFiles != null && localDirFiles.Contains(localPath, StringComparer.InvariantCultureIgnoreCase))
+                            || (localDirFiles == null && File.Exists(localPath))))
                     {
-                        return export;
+                        var export = containsImportedExport(localPath);
+                        if (export != null)
+                        {
+                            return export;
+                        }
                     }
                 }
             }

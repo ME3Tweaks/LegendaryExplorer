@@ -2,13 +2,21 @@
 
 namespace LegendaryExplorerCore.Coalesced
 {
+	/// <summary>
+	/// The type of action for this coalesced line. In Game3 terminology this is the type, in 1/2 it is the prefix.
+	/// </summary>
 	public enum CoalesceParseAction
 	{
+		// Type 2 - Add always (No prefix)
 		Add,
+		// Type 3 - Add if unique (No prefix)
 		AddUnique,
+		// Type 0 - Overwrite
 		New,
 		None,
+		// Type 4 - Remove if same
 		Remove,
+		// Type 1 - Remove entirely
 		RemoveProperty
 	}
 
