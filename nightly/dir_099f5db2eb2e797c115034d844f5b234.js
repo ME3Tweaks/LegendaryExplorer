@@ -18,6 +18,7 @@ var dir_099f5db2eb2e797c115034d844f5b234 =
     [ "PlotDatabase", "dir_f48af66ef1bef296acd33911ae513106.html", "dir_f48af66ef1bef296acd33911ae513106" ],
     [ "Shaders", "dir_7bfe9d5a638d2b2105ac7708553759fc.html", "dir_7bfe9d5a638d2b2105ac7708553759fc" ],
     [ "SharpDX", "dir_6782e2787ca3c6510d84607fd39f20c8.html", "dir_6782e2787ca3c6510d84607fd39f20c8" ],
+    [ "Sound", "dir_cf28c7c3c6180825101a9961baeff32f.html", "dir_cf28c7c3c6180825101a9961baeff32f" ],
     [ "Textures", "dir_88d259683dc35125553e2d066a3628f9.html", "dir_88d259683dc35125553e2d066a3628f9" ],
     [ "TLK", "dir_cd864ddaefa5aa18bd4c926aafe6719e.html", "dir_cd864ddaefa5aa18bd4c926aafe6719e" ],
     [ "Unreal", "dir_e8d5662cc6f786975e15a0182ad5d9be.html", "dir_e8d5662cc6f786975e15a0182ad5d9be" ],

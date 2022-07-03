@@ -405,6 +405,11 @@ var annotated_dup =
         [ "Color", "struct_legendary_explorer_core_1_1_sharp_d_x_1_1_color.html", "struct_legendary_explorer_core_1_1_sharp_d_x_1_1_color" ],
         [ "MathUtil", "class_legendary_explorer_core_1_1_sharp_d_x_1_1_math_util.html", "class_legendary_explorer_core_1_1_sharp_d_x_1_1_math_util" ]
       ] ],
+      [ "Sound", "namespace_legendary_explorer_core_1_1_sound.html", [
+        [ "Wwise", "namespace_legendary_explorer_core_1_1_sound_1_1_wwise.html", [
+          [ "WwiseHelper", "class_legendary_explorer_core_1_1_sound_1_1_wwise_1_1_wwise_helper.html", "class_legendary_explorer_core_1_1_sound_1_1_wwise_1_1_wwise_helper" ]
+        ] ]
+      ] ],
       [ "Textures", "namespace_legendary_explorer_core_1_1_textures.html", [
         [ "Codecs", "namespace_legendary_explorer_core_1_1_textures_1_1_codecs.html", [
           [ "Codecs", "class_legendary_explorer_core_1_1_textures_1_1_codecs_1_1_codecs.html", "class_legendary_explorer_core_1_1_textures_1_1_codecs_1_1_codecs" ]

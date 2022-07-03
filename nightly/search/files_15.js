@@ -8,7 +8,8 @@ var searchData=
   ['world_2ecs_5',['World.cs',['../_world_8cs.html',1,'']]],
   ['wwisebank_2ecs_6',['WwiseBank.cs',['../_wwise_bank_8cs.html',1,'']]],
   ['wwiseevent_2ecs_7',['WwiseEvent.cs',['../_wwise_event_8cs.html',1,'']]],
-  ['wwisestream_2ecs_8',['WwiseStream.cs',['../_wwise_stream_8cs.html',1,'']]],
-  ['wwisestreamext_2ecs_9',['WwiseStreamExt.cs',['../_wwise_stream_ext_8cs.html',1,'']]],
-  ['wwiseversions_2ecs_10',['WwiseVersions.cs',['../_wwise_versions_8cs.html',1,'']]]
+  ['wwisehelper_2ecs_8',['WwiseHelper.cs',['../_wwise_helper_8cs.html',1,'']]],
+  ['wwisestream_2ecs_9',['WwiseStream.cs',['../_wwise_stream_8cs.html',1,'']]],
+  ['wwisestreamext_2ecs_10',['WwiseStreamExt.cs',['../_wwise_stream_ext_8cs.html',1,'']]],
+  ['wwiseversions_2ecs_11',['WwiseVersions.cs',['../_wwise_versions_8cs.html',1,'']]]
 ];
