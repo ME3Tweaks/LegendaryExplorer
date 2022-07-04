@@ -919,7 +919,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 trashExport.SuperClass = super;
                 trashExport.Parent = parent;
                 trashExport.Archetype = null;
-                trashExport.WritePrePropsAndPropertiesAndBinary(new byte[4], null, (ObjectBinary)binary ?? new GenericObjectBinary(Array.Empty<byte>()));
+                trashExport.WritePrePropsAndPropertiesAndBinary(new byte[4], binary is UClass ? null : new PropertyCollection(), (ObjectBinary)binary ?? new GenericObjectBinary(Array.Empty<byte>()));
                 return trashExport;
             }
 
