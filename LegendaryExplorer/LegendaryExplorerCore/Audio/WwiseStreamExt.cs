@@ -34,7 +34,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
             var gameFiles = MELoadedFiles.GetFilesLoadedInGame(Export.FileRef.Game, includeAFCs: true);
             gameFiles.TryGetValue((forcedFilename ?? Filename) + ".afc", out string afcPath);
-            return afcPath ?? "";
+            return forcedFilename != null ? "" : afcPath ?? ""; // return "" if not found and the name is forced, we don't know where the afc path is right now.
         }
 
         public AudioInfo GetAudioInfo()

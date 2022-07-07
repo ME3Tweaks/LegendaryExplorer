@@ -39,6 +39,11 @@ namespace LegendaryExplorer.UnrealExtensions.Classes
                     if (d.ShowDialog() == DialogResult.OK)
                         ws.ImportWwiseOgg(d.FileName, stream);
                 }
+
+                // Update the AFC name - it might be changing
+                if (forcedAFCBaseName != null)
+                    ws.Export.WriteProperty(new NameProperty(forcedAFCBaseName, "Filename")); // Update the filename
+
             }
             else if (forcedAFCBaseName != null)
             {
