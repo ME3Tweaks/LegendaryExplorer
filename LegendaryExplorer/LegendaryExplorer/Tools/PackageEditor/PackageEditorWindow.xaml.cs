@@ -1473,7 +1473,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                                     return pcc.GetEntry(stack2);
                                 }
                             }
-                            else if (exp.TemplateOwnerClassIdx is var toci and >= 0 && 
+                            else if (exp.TemplateOwnerClassIdx is var toci and >= 0 &&
                                      uIndexes.TryGetValue(EndianReader.ToInt32(exp.DataReadOnly, toci, exp.FileRef.Endian), out int tocuIdx))
                             {
                                 return pcc.GetEntry(tocuIdx);
@@ -1568,7 +1568,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 }
             }
         }
-        
+
         // ReSharper disable once MemberCanBePrivate.Global
         public static string FindReferencesMenuText => "Find references";
         private void FindReferencesToObject()
@@ -2169,7 +2169,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 var lw = new ListDialog(brokenMaterials.Select(exp => new EntryStringPair(exp)), $"Broken Materials in {Pcc.FilePath}",
                         "The following Materials or MaterialInstances have no corresponding entry in either the local or global shader cache.",
                         this)
-                    { DoubleClickEntryHandler = entryDoubleClick };
+                { DoubleClickEntryHandler = entryDoubleClick };
                 lw.Show();
             }
             else
@@ -2829,7 +2829,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
             IReadOnlyList<ImportEntry> Imports = Pcc.Imports;
             IReadOnlyList<ExportEntry> Exports = Pcc.Exports;
 
-            var rootEntry = new TreeViewEntry(null, Path.GetFileName(Pcc.FilePath)) { IsExpanded = true, Game = Pcc.Game };
+            var rootEntry = new TreeViewEntry(null, Path.GetFileName(Pcc.FilePath)) { IsExpanded = true, PackageRef = Pcc };
 
             var rootNodes = new List<TreeViewEntry> { rootEntry };
             rootNodes.AddRange(Exports.Select(t => new TreeViewEntry(t)));
@@ -3535,7 +3535,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 sourceItem.Parent != null)
             {
                 if (targetItem.Game.IsLEGame() != sourceItem.Game.IsLEGame() &&
-                    !App.IsDebug && 
+                    !App.IsDebug &&
                     sourceItem.Entry.Game != MEGame.UDK) // allow UDK -> OT and LE)
                 {
                     MessageBox.Show(
@@ -3543,10 +3543,23 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     return;
                 }
 
-                //Check if the path of the target and the source is the same. If so, offer to merge instead
-                if (sourceItem == targetItem || (targetItem.Entry != null && sourceItem.Entry.FileRef == targetItem.Entry.FileRef))
+                // 07/06/2022
+                // Holding shift will allow to drag an export to another link in the same package
+                // Check if the path of the target and the source is the same. If so, offer to merge instead
+                var isShiftHeld = Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift);
+                var isSamePackageDrop = (targetItem.Entry != null && sourceItem.Entry.FileRef == targetItem.Entry.FileRef) // entry to entry
+                                        || (targetItem.PackageRef != null && sourceItem.Entry.FileRef == targetItem.PackageRef); // entry to root
+
+                if (sourceItem == targetItem || (isSamePackageDrop && !isShiftHeld))
                 {
-                    return; //ignore
+                    return; // ignore
+                }
+
+                if (isSamePackageDrop && isShiftHeld)
+                {
+                    // Change the link instead
+                    sourceItem.Entry.idxLink = targetItem?.Entry?.UIndex ?? 0;
+                    return;
                 }
 
                 var portingOption = TreeMergeDialog.GetMergeType(this, sourceItem, targetItem, Pcc.Game);
@@ -3603,7 +3616,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     }
                     else
                     {
-                        var result = MessageBox.Show("Port With Donors checkbox was selected, but no object database was found! Continue operation without donors?", 
+                        var result = MessageBox.Show("Port With Donors checkbox was selected, but no object database was found! Continue operation without donors?",
                             "No object database", MessageBoxButton.YesNo);
                         if (result is not MessageBoxResult.Yes)
                         {

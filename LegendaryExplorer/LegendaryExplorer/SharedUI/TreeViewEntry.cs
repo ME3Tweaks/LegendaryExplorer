@@ -32,6 +32,12 @@ namespace LegendaryExplorer.SharedUI
             get => isSelected;
             set => SetProperty(ref isSelected, value);
         }
+
+        /// <summary>
+        /// Returns the game that this entry node is tied to
+        /// </summary>
+        public MEGame Game => PackageRef?.Game ?? Entry.Game;
+
         /*   {
               /* if (!IsProgramaticallySelecting && isSelected != value)
                {
@@ -129,6 +135,12 @@ namespace LegendaryExplorer.SharedUI
         /// The entry object from the file that this node represents
         /// </summary>
         public IEntry Entry { get; set; }
+
+        /// <summary>
+        /// Only used on the root node - used to tell what package this entry represent the root for
+        /// </summary>
+        public IMEPackage PackageRef { get; set; }
+
         /// <summary>
         /// List of entries that link to this node
         /// </summary>
@@ -138,8 +150,6 @@ namespace LegendaryExplorer.SharedUI
             Entry = entry;
             DisplayName = displayName;
             Sublinks = new ObservableCollectionExtended<TreeViewEntry>();
-            if (Entry != null)
-                Game = Entry.Game;
 
             // Events don't work in interface without method to raise changes
             // so we just attach to each
@@ -504,11 +514,6 @@ namespace LegendaryExplorer.SharedUI
 
         private static SolidColorBrush ImportEntryBrush => SystemColors.GrayTextBrush;
         private static SolidColorBrush ExportEntryBrush => SystemColors.ControlTextBrush;
-
-        /// <summary>
-        /// Game this entry is for. This is mostly for the root node since it won't have an attached entry
-        /// </summary>
-        public MEGame Game { get; init; }
 
         public override string ToString()
         {
