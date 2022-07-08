@@ -190,13 +190,24 @@ namespace LegendaryExplorer.SharedUI
                 try
                 {
                     if (_displayName != null) return _displayName;
-                    string type = UIndex < 0 ? "(Imp) " : "(Exp) ";
                     string returnvalue = $"{UIndex} {Entry.ObjectName.Instanced}";
                     if (Settings.PackageEditor_ShowImpExpPrefix)
                     {
+                        string type = UIndex < 0 ? "(Imp) " : "(Exp) ";
                         returnvalue = type + returnvalue;
                     }
-                    returnvalue += $"({Entry.ClassName})";
+
+                    string className = Entry.ClassName;
+                    if (Entry is ExportEntry exp && BinaryInterpreterWPF.IsNativePropertyType(Entry.ClassName))
+                    {
+                        // We can't do this in the subtext setter since:
+                        // 1. Users might have that off
+                        // 2. The display property is Init-Only
+                        var bin = ObjectBinary.From<UBoolProperty>(exp);
+                        if (bin.ArraySize > 1)
+                            className += $"[{bin.ArraySize}]";
+                    }
+                    returnvalue += $"({className})";
                     return returnvalue;
                 }
                 catch (Exception)
@@ -387,6 +398,8 @@ namespace LegendaryExplorer.SharedUI
                             }
                             else
                             {
+                                // Bool is the most common subset so we parse the export as this to access the actual data.
+                                // Lots of common properties won't have a stack
                                 var bin = ObjectBinary.From<UBoolProperty>(ee);
                                 if (bin.PropertyFlags.HasFlag(UnrealFlags.EPropertyFlags.Config))
                                 {
