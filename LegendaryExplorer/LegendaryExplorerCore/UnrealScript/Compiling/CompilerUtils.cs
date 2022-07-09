@@ -59,8 +59,16 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             var rop = new RelinkerOptionsPackage { ImportExportDependencies = true }; // Might need to disable cache here depending on if that is desirable
             if (!GlobalUnrealObjectInfo.GetClasses(pcc.Game).ContainsKey(c.Name) && c.FilePath is not null)
             {
-                using IMEPackage classPcc = MEPackageHandler.OpenMEPackage(c.FilePath);
-                GlobalUnrealObjectInfo.generateClassInfo(classPcc.GetUExport(c.UIndex));
+                if (c.FilePath == pcc.FilePath)
+                {
+                    // It's part of the current package - e.g. we're adding a new class in porting
+                    GlobalUnrealObjectInfo.generateClassInfo(pcc.GetUExport(c.UIndex));
+                }
+                else
+                {
+                    using IMEPackage classPcc = MEPackageHandler.OpenMEPackage(c.FilePath);
+                    GlobalUnrealObjectInfo.generateClassInfo(classPcc.GetUExport(c.UIndex));
+                }
             }
             var entry = EntryImporter.EnsureClassIsInFile(pcc, c.Name, rop);
             if (rop.RelinkReport.Any())
