@@ -92,7 +92,7 @@ namespace LegendaryExplorer.Dialogs
             Close();
         }
 
-        private bool CanReturnSettings() => SampleRate_Combobox.SelectedIndex >= 0 && !string.IsNullOrWhiteSpace(AfcFileDest_TextBox.Text);
+        private bool CanReturnSettings() => SampleRate_Combobox.SelectedIndex >= 0 && !ShowDestAFCFile || !string.IsNullOrWhiteSpace(AfcFileDest_TextBox.Text);
 
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {
