@@ -73,7 +73,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                         nextItem = uProperty.Next;
                         break;
                     case UScriptStruct uScriptStruct:
-                        Types.Add(ConvertStruct(uScriptStruct, decompileBytecodeAndDefaults, fileLib, packageCache));
+                        Types.Add(ConvertStruct(uScriptStruct, fileLib, packageCache));
                         nextItem = uScriptStruct.Next;
                         break;
                     case UState uState:
@@ -188,7 +188,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             };
         }
 
-        public static Struct ConvertStruct(UScriptStruct obj, bool decompileDefaults, FileLib fileLib, PackageCache packageCache = null)
+        public static Struct ConvertStruct(UScriptStruct obj, FileLib fileLib, PackageCache packageCache = null)
         {
             var vars = new List<VariableDeclaration>();
             var types = new List<VariableType>();
@@ -205,7 +205,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                         nextItem = uProperty.Next;
                         break;
                     case UScriptStruct uStruct:
-                        types.Add(ConvertStruct(uStruct, decompileDefaults, fileLib, packageCache));
+                        types.Add(ConvertStruct(uStruct, fileLib, packageCache));
                         nextItem = uStruct.Next;
                         break;
                     default:
@@ -217,29 +217,27 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             VariableType parent = obj.SuperClass != 0
                 ? new VariableType(obj.SuperClass.GetEntry(pcc).ObjectName.Instanced) : null;
 
-            DefaultPropertiesBlock defaults = null;
+            DefaultPropertiesBlock defaults;
             string structName = obj.Export.ObjectName.Instanced;
-            if (decompileDefaults)
-            {
-                try
-                {
-                    PropertyCollection properties = null;
-                    if (parent is not null)
-                    {
-                        properties = obj.Defaults;
-                    }
-                    else if (fileLib.IsInitialized && fileLib.ReadonlySymbolTable is SymbolTable symbols && symbols.TryGetType(structName, out Struct libStruct))
-                    {
-                        properties = obj.Defaults.Diff(libStruct.MakeBaseProps(pcc, packageCache));
-                    }
 
-                    properties ??= RemoveDefaultValues(obj.Defaults.DeepClone(), pcc.Game);
-                    defaults = new DefaultPropertiesBlock(new List<Statement>(ConvertProperties(properties, obj.Export, structName, true, fileLib)));
-                }
-                catch (Exception e)
+            try
+            {
+                PropertyCollection properties = null;
+                if (parent is not null)
                 {
-                    throw new Exception($"Exception while removing default properties in export {obj.Export.InstancedFullPath} {obj.Export.FileRef.FilePath}", e);
+                    properties = obj.Defaults;
                 }
+                else if (fileLib.IsInitialized && fileLib.ReadonlySymbolTable is SymbolTable symbols && symbols.TryGetType(structName, out Struct libStruct))
+                {
+                    properties = obj.Defaults.Diff(libStruct.MakeBaseProps(pcc, packageCache));
+                }
+
+                properties ??= RemoveDefaultValues(obj.Defaults.DeepClone(), pcc.Game);
+                defaults = new DefaultPropertiesBlock(new List<Statement>(ConvertProperties(properties, obj.Export, structName, true, fileLib)));
+            }
+            catch (Exception e)
+            {
+                throw new Exception($"Exception while removing default properties in export {obj.Export.InstancedFullPath} {obj.Export.FileRef.FilePath}", e);
             }
 
             var node = new Struct(structName, parent, obj.StructFlags, vars, types, defaults, obj.Defaults.DeepClone())

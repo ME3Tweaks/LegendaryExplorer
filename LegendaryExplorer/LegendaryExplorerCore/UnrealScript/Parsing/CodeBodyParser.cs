@@ -1573,12 +1573,12 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                         fc.IsCalledOnInterface = true;
                     }
 
-                    bool isClassContext = lhsType is ClassType && (isStaticAccess || rhs is DefaultReference);
 
                     switch (rhs)
                     {
                         case ArraySymbolRef asr:
                         {
+                            bool isClassContext = lhsType is ClassType && (isStaticAccess || asr.Array is DefaultReference);
                             var csf = new CompositeSymbolRef(lhs, asr.Array, isClassContext, lhs.StartPos, asr.Array.EndPos)
                             {
                                 IsStructMemberExpression = isStructMemberExpression
@@ -1590,6 +1590,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                         }
                         case DynArrayIterator dai:
                         {
+                            bool isClassContext = lhsType is ClassType && (isStaticAccess || dai.DynArrayExpression is DefaultReference);
                             var csf = new CompositeSymbolRef(lhs, dai.DynArrayExpression, isClassContext, lhs.StartPos, dai.DynArrayExpression.EndPos)
                             {
                                 IsStructMemberExpression = isStructMemberExpression
@@ -1601,6 +1602,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                         }
                         case DynArrayLength dal:
                         {
+                            bool isClassContext = lhsType is ClassType && (isStaticAccess || dal.DynArrayExpression is DefaultReference);
                             var csf = new CompositeSymbolRef(lhs, dal.DynArrayExpression, isClassContext, lhs.StartPos, dal.DynArrayExpression.EndPos)
                             {
                                 IsStructMemberExpression = isStructMemberExpression
@@ -1614,11 +1616,14 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                             lhs = NewSymbolReference(ev, new ScriptToken(TokenType.Word, sr.Name, sr.StartPos, sr.EndPos), false);
                             break;
                         default:
+                        {
+                            bool isClassContext = lhsType is ClassType && (isStaticAccess || rhs is DefaultReference);
                             lhs = new CompositeSymbolRef(lhs, rhs, isClassContext, lhs.StartPos, rhs.EndPos)
                             {
                                 IsStructMemberExpression = isStructMemberExpression
                             };
                             break;
+                        }
                     }
                     
                 }
