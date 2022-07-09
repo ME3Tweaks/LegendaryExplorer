@@ -1704,6 +1704,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     case "BioTlkFile":
                     case "BioSoundNodeWaveStreamingData":
                     case "FaceFXAsset":
+                    case "WwiseBank":
                         return true;
                 }
             }
@@ -1837,6 +1838,22 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
                             break;
                         }
+                    case "WwiseBank":
+                        var wdiag = new SaveFileDialog
+                        {
+                            Title = "WwiseBank file",
+                            FileName = exp.FullPath + ".bnk",
+                            Filter = "*.bnk|*.bnk"
+                        };
+                        if (wdiag.ShowDialog() == true)
+                        {
+                            var data = new MemoryStream(exp.GetBinaryData());
+                            data.Skip(0x16); // Maybe diff for non ME3/LE games. Is anyone ever going to export ME2...?
+                            using FileStream fs = new FileStream(wdiag.FileName, FileMode.Create);
+                            data.CopyToEx(fs, (int)data.Length - 0x16);
+                            MessageBox.Show("Done");
+                        }
+                        break;
                 }
             }
         }
@@ -1977,6 +1994,28 @@ namespace LegendaryExplorer.Tools.PackageEditor
                             }
                             break;
                         }
+                    case "WwiseBank":
+                    {
+                        string extension = Path.GetExtension(".bnk");
+                        var wdiag = new OpenFileDialog
+                        {
+                            Title = "Select WwiseBank file",
+                            Filter = $"*{extension}|*{extension}"
+                        };
+                        if (wdiag.ShowDialog() == true)
+                        {
+                            var length = new FileInfo(wdiag.FileName).Length;
+                            MemoryStream outStream = new MemoryStream();
+                            // Write Bulk Data header
+                            outStream.WriteInt32(0); // Local
+                            outStream.WriteInt32((int)length); // Compressed size
+                            outStream.WriteInt32((int)length); // Decompressed size
+                            outStream.WriteInt32(0); // Data offset - this is not external so this is not used
+                            outStream.Write(File.ReadAllBytes(wdiag.FileName));
+                            exp.WriteBinary(outStream.GetBuffer());
+                        }
+                        break;
+                    }
                 }
             }
         }
