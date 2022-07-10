@@ -312,7 +312,6 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             //Debug.WriteLine($"Importing {sourceExport.InstancedFullPath}");
             //if (sourceExport.InstancedFullPath == "TheWorld.PersistentLevel.Model_0")
             //    Debugger.Break();
-#if DEBUG
             // CROSSGEN - WILL NEED HEAVY REWORK IF THIS IS TO BE MERGED TO BETA
             // Cause there's a lot of things that seem to have to be manually accounted for
             // To do cross game porting you MUST have a cache object on the ROP
@@ -448,18 +447,17 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
                 if (!usingDonor && !ifp.StartsWith(@"TheWorld"))
                 {
-                    //if (sourceExport.ClassName == "ParticleSystem")
-                    //{
+                    if (sourceExport.ClassName == "Material")
+                    {
                     var entryStr = $"{sourceExport.ClassName} {sourceExport.InstancedFullPath}";
-                    //Debug.WriteLine($@"Not ported using donor: {sourceExport.InstancedFullPath} ({sourceExport.ClassName})");
+                    Debug.WriteLine($@"Not ported using donor: {sourceExport.InstancedFullPath} ({sourceExport.ClassName})");
                     if (!NonDonorItems.Contains(entryStr))
                     {
                         NonDonorItems.Add(entryStr);
                     }
-                    //}
+                    }
                 }
             }
-#endif
 
 
             byte[] prePropBinary;
@@ -528,7 +526,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     classValue = GetOrAddCrossImportOrPackage(sourceClassImport.InstancedFullPath, sourceExport.FileRef, destPackage, rop);
                     break;
                 case ExportEntry sourceClassExport:
-                    if (rop.GenerateImportsForGlobalFiles && IsSafeToImportFrom(sourceExport.FileRef.FilePath, destPackage.Game))
+                    if (rop.GenerateImportsForGlobalFiles && IsSafeToImportFrom(sourceExport.FileRef.FilePath, destPackage.Game, destPackage.FilePath))
                     {
                         classValue = GenerateEntryForGlobalFileExport(sourceClassExport.InstancedFullPath, sourceExport.FileRef, destPackage, rop);
                         break;
@@ -551,7 +549,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     superclass = GetOrAddCrossImportOrPackage(sourceSuperClassImport.InstancedFullPath, sourceExport.FileRef, destPackage, rop);
                     break;
                 case ExportEntry sourceSuperClassExport:
-                    if (rop.GenerateImportsForGlobalFiles && IsSafeToImportFrom(sourceExport.FileRef.FilePath, destPackage.Game))
+                    if (rop.GenerateImportsForGlobalFiles && IsSafeToImportFrom(sourceExport.FileRef.FilePath, destPackage.Game, destPackage.FilePath))
                     {
                         superclass = GenerateEntryForGlobalFileExport(sourceSuperClassExport.InstancedFullPath, sourceExport.FileRef, destPackage, rop);
                         break;
@@ -573,7 +571,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     archetype = GetOrAddCrossImportOrPackage(sourceArchetypeImport.InstancedFullPath, sourceExport.FileRef, destPackage, rop);
                     break;
                 case ExportEntry sourceArchetypeExport:
-                    if (rop.GenerateImportsForGlobalFiles && IsSafeToImportFrom(sourceExport.FileRef.FilePath, destPackage.Game))
+                    if (rop.GenerateImportsForGlobalFiles && IsSafeToImportFrom(sourceExport.FileRef.FilePath, destPackage.Game, destPackage.FilePath))
                     {
                         archetype = GenerateEntryForGlobalFileExport(sourceArchetypeExport.InstancedFullPath, sourceExport.FileRef, destPackage, rop);
                         break;
@@ -611,7 +609,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             // 06/25/2022 - Support corrections to allow more sucessful porting
             // Mgamerz
 
-            // Doesn't for for OT since they use different Wwise versions
+            // Doesn't go backwards for OT since they use different Wwise versions
             if (sourceExport.Game == MEGame.LE2 && destPackage.Game == MEGame.LE3 && sourceExport.ClassName == "WwiseEvent")
             {
                 // Convert the property format
@@ -630,6 +628,25 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         WwiseEvent ob = ObjectBinary.From<WwiseEvent>(sourceExport);
                         props.Add(new IntProperty((int)ob.WwiseEventID, "Id"));
                     }
+                }
+            }
+
+            if (sourceExport.Game.IsGame3() && destPackage.Game.IsGame3() && sourceExport.ClassName == "WwiseEvent")
+            {
+                // DurationMilliseconds <-> DurationSeconds
+                var prop = props.GetProp<FloatProperty>("DurationMilliseconds");
+                if (prop == null)
+                {
+                    prop = props.GetProp<FloatProperty>("DurationSeconds");
+                    if (prop == null)
+                        return;// Might be loop which doesn't have duration.
+                    prop.Name = "DurationMilliseconds";
+                    prop.Value *= 1000;
+                }
+                else
+                {
+                    prop.Name = "DurationSeconds";
+                    prop.Value /= 1000;
                 }
             }
         }
@@ -1082,7 +1099,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// </summary>
         /// <param name="path">Full instanced path of the import to test</param>
         /// <param name="game">The game to check against</param>
-        /// <param name="sourceFilePath">The file path the import is in - if not provided, only global safe files will be included</param>
+        /// <param name="sourceFilePath">The file path the import is in - if not provided, only global safe files will be included. Can be only filename or full path, both will work.</param>
         /// <returns></returns>
         public static bool IsSafeToImportFrom(string path, MEGame game, string sourceFilePath = null)
         {
@@ -1190,9 +1207,9 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// <returns></returns>
         public static IReadOnlySet<string> UserSpecifiedSafeToImportFromFiles(MEGame game) => InternalGetUserSafeToImportFromFiles(game);
 
-        public static bool CanImport(string className, MEGame game) => CanImport(GlobalUnrealObjectInfo.GetClassOrStructInfo(game, className), game);
+        public static bool CanImport(string className, MEGame game, string sourceFilePath = null) => CanImport(GlobalUnrealObjectInfo.GetClassOrStructInfo(game, className), game, sourceFilePath);
 
-        public static bool CanImport(ClassInfo classInfo, MEGame game) => classInfo != null && IsSafeToImportFrom(classInfo.pccPath, game);
+        public static bool CanImport(ClassInfo classInfo, MEGame game, string sourceFilePath = null) => classInfo != null && IsSafeToImportFrom(classInfo.pccPath, game, sourceFilePath);
 
         public static byte[] CreateStack(MEGame game, int stateNodeUIndex)
         {
@@ -1577,7 +1594,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     if (patchPcc.TryGetUExport(info.exportIndex, out ExportEntry export) && export.IsClass && export.ObjectName == className)
                     {
                         string packageName = export.ParentName;
-                        if (IsSafeToImportFrom($"{packageName}.pcc", MEGame.ME3))
+                        if (IsSafeToImportFrom($"{packageName}.pcc", MEGame.ME3, pcc.FilePath))
                         {
                             return pcc.getEntryOrAddImport($"{packageName}.{className}");
                         }

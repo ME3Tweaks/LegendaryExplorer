@@ -132,6 +132,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                             sourceOK &= sourceLib.Initialize(rop.Cache);
                             if (!sourceOK)
                             {
+                                rop.RelinkReport.Add(new EntryStringPair(funcToRelink, $"{funcToRelink.UIndex} {funcToRelink.InstancedFullPath} function relinking failed. Could not initialize the FileLib! This will likely be unusable. {string.Join("\n", sourceLib.InitializationLog.AllErrors.Select(x => x.Message))}"));
                                 break;
                             }
                             sourceFileLibs[funcToRelink.FileRef] = sourceLib;
@@ -164,6 +165,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                             //    targetFunc.ScriptBytes = new byte[0]; // Zero out function
                             //    targetFuncExp.WriteBinary(targetFunc);
 
+                            Debug.WriteLine($"Recompiling function after cross game porting: {targetFuncExp.InstancedFullPath}");
                             (_, MessageLog log) = UnrealScriptCompiler.CompileFunction(targetFuncExp, sourceInfo.text, destFL);
                             if (log.AllErrors.Any())
                             {
@@ -280,11 +282,12 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             try
             {
                 // crossgen-v disabled .IsClass sept 20 2021 - mgamerz
-                if (relinkingExport.Game != sourcePcc.Game && (/*relinkingExport.IsClass || */relinkingExport.ClassName is "State" /*or "Function"*/))
-                {
-                    rop.RelinkReport.Add(new EntryStringPair(relinkingExport, $"{relinkingExport.UIndex} {relinkingExport.InstancedFullPath} binary relinking failed. Cannot port {relinkingExport.ClassName} between games!"));
-                }
-                else if (ObjectBinary.From(relinkingExport) is ObjectBinary objBin)
+                //if (relinkingExport.Game != sourcePcc.Game && (/*relinkingExport.IsClass || */relinkingExport.ClassName is "State" /*or "Function"*/))
+                //{
+                //    rop.RelinkReport.Add(new EntryStringPair(relinkingExport, $"{relinkingExport.UIndex} {relinkingExport.InstancedFullPath} binary relinking failed. Cannot port {relinkingExport.ClassName} between games!"));
+                //}
+                //else
+                if (ObjectBinary.From(relinkingExport) is ObjectBinary objBin)
                 {
 
                     // This doesn't work on functions! Finding the children through the probe doesn't work
@@ -444,9 +447,11 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 // CROSSGEN-V
                 // Imports are not reliable across games (or even across a single game)
                 // Check to see if this import is safe to import from,
-                // if not take the export instead. Might use some disk space but maybe with better algorith
+                // if not take the export instead. Might use some disk space but maybe with better algorithm
                 // We can identify master/persistent files in ME2+ and also inspect those.
-                if (rop.IsCrossGame && rop.TargetGameDonorDB != null && !EntryImporter.IsSafeToImportFrom($"{importFullName.GetRootName()}.{(relinkingExport.Game == MEGame.ME1 ? "u" : "pcc")}", relinkingExport.Game)) // This doesn't 
+                if (rop.IsCrossGame && rop.TargetGameDonorDB != null 
+                                    && !EntryImporter.IsSafeToImportFrom($"{importFullName.GetRootName()}.{(relinkingExport.Game == MEGame.ME1 ? "u" : "pcc")}", 
+                                        relinkingExport.Game, relinkingExport.FileRef.FilePath)) 
                 {
                     // Find an export version instead that we can import
                     var canddiates = rop.TargetGameDonorDB.GetFilesContainingObject(originalInstancedFullPath, relinkingExport.FileRef.Localization);
@@ -463,7 +468,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         // Map the relative paths onto the game directory
                         canddiates = canddiates.Select(x => Path.Combine(MEDirectories.GetDefaultGamePath(relinkingExport.Game), x)).ToList();
 
-                        if (canddiates.Any(x => EntryImporter.IsSafeToImportFrom(Path.GetFileName(x), relinkingExport.Game))) // Some things are in multiple files, like things in startup files.
+                        if (canddiates.Any(x => EntryImporter.IsSafeToImportFrom(Path.GetFileName(x), relinkingExport.Game, relinkingExport.FileRef.FilePath))) // Some things are in multiple files, like things in startup files.
                         {
                             // It's been moved, we need to change how we import to it.
                             // Depending on if it's ForcedExport or not changes how we reference it
@@ -639,7 +644,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
             // Typically global files are not ForceExport'd 
             // which means objects in them will sit at the root instead of under a package export
-            if (rop.GenerateImportsForGlobalFiles && EntryImporter.IsSafeToImportFrom(sourceFilePath, relinkingExport.FileRef.Game))
+            if (rop.GenerateImportsForGlobalFiles && EntryImporter.IsSafeToImportFrom(sourceFilePath, relinkingExport.FileRef.Game, relinkingExport.FileRef.FilePath))
             {
                 importingFromGlobalFile = true;
                 instancedFullPath = $"{Path.GetFileNameWithoutExtension(sourceFilePath)}.{instancedFullPath}";
