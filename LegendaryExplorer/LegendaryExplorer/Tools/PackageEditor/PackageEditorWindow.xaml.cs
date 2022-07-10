@@ -3677,7 +3677,8 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 {
                     IsCrossGame = sourceEntry.Game != targetItem.Game && sourceEntry.Game != MEGame.UDK,
                     TargetGameDonorDB = objectDB,
-                    Cache = null, // Disable cache as we want to pull from open files in LEX. Will reduce performance
+                    Cache = objectDB != null ? new PackageCache() : null, // For donors to work you MUST provide a package cache otherwise it'll take ages
+                    // as LEX closes on dispose which we don't want
                     ImportExportDependencies = portingOption.PortingOptionChosen is EntryImporter.PortingOption.CloneAllDependencies
                         or EntryImporter.PortingOption.ReplaceSingularWithRelink,
                     GenerateImportsForGlobalFiles = portingOption.PortGlobalsAsImports
