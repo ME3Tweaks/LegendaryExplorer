@@ -80,7 +80,17 @@ namespace LegendaryExplorer
             var eh = new ExceptionHandlerDialog(e.Exception);
             Window wpfActiveWindow = Current.Windows.OfType<Window>().SingleOrDefault(x => x.IsActive);
             eh.Owner = wpfActiveWindow;
-            eh.ShowDialog();
+            try
+            {
+                eh.ShowDialog();
+            }
+            catch
+            {
+                // Retry without owner - if owner window is in error state it will crash this dialog and the 
+                // whole app will die instead
+                eh = new ExceptionHandlerDialog(e.Exception);
+                eh.ShowDialog();
+            }
             e.Handled = eh.Handled;
         }
 
