@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
   <PropertyGroup>
     <!-- Since this project uses winforms, it cannot target .net standard-->
-    <TargetFrameworks>net5.0-windows</TargetFrameworks>
+    <TargetFrameworks>net6.0-windows</TargetFrameworks>
     <ProjectType>Local</ProjectType>
     <Platforms>x64</Platforms>
     <AssemblyKeyContainerName>

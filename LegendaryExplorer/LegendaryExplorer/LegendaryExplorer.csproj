@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net5.0-windows</TargetFramework>
+    <TargetFramework>net6.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
     <Platforms>x64</Platforms>
@@ -90,6 +90,7 @@
     <ProjectReference Include="..\..\SharedProjects\Be.Windows.Forms.HexBox\Be.Windows.Forms.HexBox.csproj" />
     <ProjectReference Include="..\..\SharedProjects\HexConverterWPF\HexConverterWPF.csproj" />
     <ProjectReference Include="..\LegendaryExplorerCore\LegendaryExplorerCore.csproj" />
+    <ProjectReference Include="..\submodules\WwiseTools\WwiseTools_DotNet6\WwiseTools_DotNet6.csproj" />
     <ProjectReference Include="..\WaveFormRendererLib\WaveFormRendererLib.csproj" />
     <ProjectReference Include="..\Xceed.Wpf.Toolkit\DotNetProjects.Wpf.Extended.Toolkit.csproj" />
     <ProjectReference Include="..\..\SharedProjects\Piccolo\Piccolo.csproj" />
