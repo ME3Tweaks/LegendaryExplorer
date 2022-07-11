@@ -25,7 +25,6 @@ using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.Classes;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
-using SlavaGu.ConsoleAppLauncher;
 using Settings = LegendaryExplorer.Misc.AppSettings.Settings;
 
 namespace LegendaryExplorer.Tools.TFCCompactor

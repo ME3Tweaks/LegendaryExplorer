@@ -99,8 +99,8 @@
   <ItemGroup>
     <PackageReference Include="AvalonEdit" Version="6.1.1" />
     <PackageReference Include="BinaryPack" Version="1.0.3" />
+    <PackageReference Include="CliWrap" Version="3.4.4" />
     <PackageReference Include="ClosedXML" Version="0.95.3" />
-    <PackageReference Include="ConsoleAppLauncher" Version="2.0.0" />
     <PackageReference Include="FontAwesome5" Version="2.1.0" />
     <PackageReference Include="gong-wpf-dragdrop" Version="2.3.2" />
     <PackageReference Include="Gu.Wpf.DataGrid2D" Version="0.2.4" />

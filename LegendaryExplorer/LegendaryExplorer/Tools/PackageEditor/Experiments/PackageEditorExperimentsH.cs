@@ -264,7 +264,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         {
             if (pew.TryGetSelectedExport(out var export) && export.ClassName == "BioMorphFace")
             {
-                if (UModelHelper.GetLocalUModelVersion() < UModelHelper.SupportedUModelBuildNum)
+                if (UModelHelper.GetLocalUModelVersionAsync().Result < UModelHelper.SupportedUModelBuildNum)
                 {
                     MessageBox.Show("UModel not installed or incorrect version!");
                     return;
