@@ -234,7 +234,8 @@ namespace LegendaryExplorerCore.UnrealScript
                     var associatedFiles = EntryImporter.GetPossibleAssociatedFiles(Pcc, includeNonBioPRelated: false);
                     if (Pcc.Game is MEGame.ME3)
                     {
-                        if (Pcc.FindEntry("SFXGameMPContent") is { ClassName: "Package" } && !associatedFiles.Contains("BIOP_MP_COMMON.pcc"))
+                        associatedFiles.Remove("BIOP_MP_COMMON.pcc");
+                        if (Pcc.FindEntry("SFXGameMPContent") is { ClassName: "Package" } mpContentPackage && mpContentPackage.GetChildren<ImportEntry>().Any())
                         {
                             associatedFiles.Add("BIOP_MP_COMMON.pcc");
                         }
@@ -392,10 +393,12 @@ namespace LegendaryExplorerCore.UnrealScript
                     try
                     {
                         Class cls;
+                        bool isClassOverride = false;
                         if (classOverride != null && export.ObjectNameString.CaseInsensitiveEquals(classOverride.Name))
                         {
                             cls = classOverride;
                             classOverride = null;
+                            isClassOverride = true;
                         }
                         else
                         {
@@ -430,6 +433,13 @@ namespace LegendaryExplorerCore.UnrealScript
                         }
                         else if (!symbols.AddType(cls))
                         {
+                            if (isClassOverride)
+                            {
+                                symbols.TryGetType(cls.Name, out Class existingClass);
+                                log.CurrentClass = cls;
+                                log.LogError($"A class named '{existingClass.Name}' already exists: #{existingClass.UIndex} in {existingClass.FilePath}");
+                                return false;
+                            }
                             continue; //class already defined
                         }
 
