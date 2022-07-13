@@ -334,7 +334,6 @@ namespace LegendaryExplorerCore.Packages
                 foreach (Block b in chunks[i].blocks)
                 {
                     //Debug.WriteLine("Decompressing block " + blocknum);
-                    var chunk = chunks[i];
                     var datain = chunks[i].Compressed.Span.Slice(pos, b.compressedsize);
                     //Buffer.BlockCopy(Chunks[i].Compressed, pos, datain, 0, b.compressedsize);
                     pos += b.compressedsize;
@@ -344,8 +343,7 @@ namespace LegendaryExplorerCore.Packages
                         // These are very uncommon
                         // WiiU: SFXGame
                         // PS3: BIOA_NOR_04_DS1
-                        var outS = dataout.AsSpan(0, b.uncompressedsize);
-                        datain.CopyTo(outS);
+                        datain.CopyTo(dataout.AsSpan(0, b.uncompressedsize));
                     }
                     else
                     {
