@@ -334,33 +334,46 @@ namespace LegendaryExplorerCore.Packages
                 foreach (Block b in chunks[i].blocks)
                 {
                     //Debug.WriteLine("Decompressing block " + blocknum);
+                    var chunk = chunks[i];
                     var datain = chunks[i].Compressed.Span.Slice(pos, b.compressedsize);
                     //Buffer.BlockCopy(Chunks[i].Compressed, pos, datain, 0, b.compressedsize);
                     pos += b.compressedsize;
-                    switch (compressionType)
+                    if (b.compressedsize == b.uncompressedsize)
                     {
-                        case UnrealPackageFile.CompressionType.LZO:
-                            if (LZO2.Decompress(datain, dataout.AsSpan(0, b.uncompressedsize)) != b.uncompressedsize)
-                                throw new Exception("LZO decompression failed!");
-                            break;
-                        case UnrealPackageFile.CompressionType.Zlib:
-                            if (Zlib.Decompress(datain, dataout.AsSpan(0, b.uncompressedsize)) != b.uncompressedsize)
-                                throw new Exception("Zlib decompression failed!");
-                            break;
-                        case UnrealPackageFile.CompressionType.LZMA:
-                            if (LZMA.Decompress(datain, dataout.AsSpan(0, b.uncompressedsize)) != 0)
-                                throw new Exception("LZMA decompression failed!");
-                            break;
-                        case UnrealPackageFile.CompressionType.LZX:
-                            if (LZX.Decompress(datain, (uint)datain.Length, dataout, (uint)b.uncompressedsize) != 0)
-                                throw new Exception("LZX decompression failed!");
-                            break;
-                        case UnrealPackageFile.CompressionType.OodleLeviathan:
-                            // Error decompressing exception is thrown in decompress method itself
-                            OodleHelper.Decompress(datain, dataout.AsSpan(0, b.uncompressedsize));
-                            break;
-                        default:
-                            throw new Exception("Unknown compression type for this package.");
+                        // WiiU and PS3 files sometimes have weird case where one single block has same sizes and does not have LZMA compression flag for some reason
+                        // These are very uncommon
+                        // WiiU: SFXGame
+                        // PS3: BIOA_NOR_04_DS1
+                        var outS = dataout.AsSpan(0, b.uncompressedsize);
+                        datain.CopyTo(outS);
+                    }
+                    else
+                    {
+                        switch (compressionType)
+                        {
+                            case UnrealPackageFile.CompressionType.LZO:
+                                if (LZO2.Decompress(datain, dataout.AsSpan(0, b.uncompressedsize)) != b.uncompressedsize)
+                                    throw new Exception("LZO decompression failed!");
+                                break;
+                            case UnrealPackageFile.CompressionType.Zlib:
+                                if (Zlib.Decompress(datain, dataout.AsSpan(0, b.uncompressedsize)) != b.uncompressedsize)
+                                    throw new Exception("Zlib decompression failed!");
+                                break;
+                            case UnrealPackageFile.CompressionType.LZMA:
+                                if (LZMA.Decompress(datain, dataout.AsSpan(0, b.uncompressedsize)) != 0)
+                                    throw new Exception("LZMA decompression failed!");
+                                break;
+                            case UnrealPackageFile.CompressionType.LZX:
+                                if (LZX.Decompress(datain, (uint)datain.Length, dataout, (uint)b.uncompressedsize) != 0)
+                                    throw new Exception("LZX decompression failed!");
+                                break;
+                            case UnrealPackageFile.CompressionType.OodleLeviathan:
+                                // Error decompressing exception is thrown in decompress method itself
+                                OodleHelper.Decompress(datain, dataout.AsSpan(0, b.uncompressedsize));
+                                break;
+                            default:
+                                throw new Exception("Unknown compression type for this package.");
+                        }
                     }
 
                     result.Seek(chunks[i].uncompressedOffset + currentUncompChunkOffset, SeekOrigin.Begin);
