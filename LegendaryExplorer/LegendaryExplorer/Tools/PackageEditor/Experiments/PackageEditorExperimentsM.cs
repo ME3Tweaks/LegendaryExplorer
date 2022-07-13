@@ -18,6 +18,7 @@ using LegendaryExplorer.Tools.PathfindingEditor;
 using LegendaryExplorer.Tools.Sequence_Editor;
 using LegendaryExplorer.UnrealExtensions.Classes;
 using LegendaryExplorerCore;
+using LegendaryExplorerCore.DebugTools;
 using LegendaryExplorerCore.Dialogue;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
@@ -3107,57 +3108,32 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
         public static void BuildAllObjectsGameDB(MEGame game, PackageEditorWindow pe)
         {
-            var objectDB = new ObjectInstanceDB();
             Task.Run(() =>
             {
+                //using (var sw = new DebugStopWatch("bin deserialization"))
+                //using (var fileStream = File.OpenRead(Path.Combine(AppDirectories.ObjectDatabasesFolder, $"{game}.bin")))
+                //{
+                //    var oldDb = ObjectInstanceDB.Deserialize(fileStream);
+                //}
+                //return;
                 pe.SetBusy("Building Object IFP DB");
-                var allPackages = MELoadedFiles.GetFilesLoadedInGame(game).ToList();
-                int numDone = 0;
-                foreach (var f in allPackages)
-                {
-                    pe.BusyText = $"Indexing file [{++numDone}/{allPackages.Count}]";
-                    // Load tables only to speed up performance.
-                    using var package = MEPackageHandler.UnsafePartialLoad(f.Value, x => false);
-                    IndexFileForObjDB(objectDB, game, package);
-                }
+                var allPackages = MELoadedFiles.GetFilesLoadedInGame(game).Values.ToList();
+
+                var objectDB = ObjectInstanceDB.Create(game, allPackages, numDone => pe.BusyText = $"Indexed [{++numDone}/{allPackages.Count}] files");
 
                 // Compile the database
                 pe.BusyText = "Compiling database";
-                File.WriteAllText(AppDirectories.GetObjectDatabasePath(game), objectDB.Serialize());
-
-            }).ContinueWithOnUIThread(result => { pe.EndBusy(); });
+                var oldDbpath = Path.Combine(AppDirectories.ObjectDatabasesFolder, $"{game}.json");
+                if (File.Exists(oldDbpath))
+                {
+                    File.Delete(oldDbpath);
+                }
+                using FileStream fs = File.Create(AppDirectories.GetObjectDatabasePath(game));
+                objectDB.Serialize(fs);
+            }).ContinueWithOnUIThread(_ => { pe.EndBusy(); });
         }
 
-        internal static void IndexFileForObjDB(ObjectInstanceDB objectDB, MEGame game, IMEPackage package)
-        {
-            // Index package path
-            int packageNameIndex;
-            if (package.FilePath.StartsWith(MEDirectories.GetDefaultGamePath(game)))
-            {
-                // Get relative path
-                packageNameIndex = objectDB.GetNameTableIndex(package.FilePath.Substring(MEDirectories.GetDefaultGamePath(game).Length + 1));
-            }
-            else
-            {
-                // Store full path
-                packageNameIndex = objectDB.GetNameTableIndex(package.FilePath);
-            }
-
-            // Index objects
-            foreach (var exp in package.Exports)
-            {
-                var ifp = exp.InstancedFullPath;
-
-                // Things to ignore
-                if (ifp.StartsWith(@"TheWorld"))
-                    continue;
-                if (ifp.StartsWith(@"ObjectReferencer"))
-                    continue;
-
-                // Index it
-                objectDB.AddRecord(ifp, packageNameIndex, true);
-            }
-        }
+        
 
         public static void PortSequenceObjectClassAcrossGame(PackageEditorWindow pe)
         {

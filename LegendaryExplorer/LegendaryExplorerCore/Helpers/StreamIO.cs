@@ -220,6 +220,22 @@ namespace LegendaryExplorerCore.Helpers
             stream.WriteByte(0);
         }
 
+        public static void WriteStringUtf8WithLength(this Stream stream, string str)
+        {
+            byte[] buff = Encoding.UTF8.GetBytes(str);
+            stream.WriteInt32(buff.Length);
+            stream.Write(buff, 0, buff.Length);
+        }
+
+        public static string ReadStringUtf8WithLength(this Stream stream)
+        {
+            Span<byte> buffer = stackalloc byte[256];
+            int length = stream.ReadInt32();
+            buffer = length > buffer.Length ? new byte[length] : buffer[..length];
+            stream.ReadToSpan(buffer);
+            return Encoding.UTF8.GetString(buffer);
+        }
+
         // DO NOT REMOVE ASCII CODE
         #region ASCII SUPPORT
         public static string ReadStringASCII(this Stream stream, int count)
