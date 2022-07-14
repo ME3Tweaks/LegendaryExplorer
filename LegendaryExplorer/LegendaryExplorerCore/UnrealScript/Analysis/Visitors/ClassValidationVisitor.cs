@@ -269,9 +269,23 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                     }
 
                     //third pass over states to check function overrides 
+                    State autoState = null;
                     foreach (State state in node.States)
                     {
                         Success &= state.AcceptVisitor(this);
+
+                        if (state.Flags.Has(EStateFlags.Auto))
+                        {
+                            if (autoState is null)
+                            {
+                                autoState = state;
+                            }
+                            else
+                            {
+                                Log.LogWarning($"Another state in this class ({autoState.Name}) has already been declared 'auto'!\n" +
+                                               $"Only one state can be the initial state of an object.", state.StartPos, state.EndPos);
+                            }
+                        }
                     }
 
                     //second pass to resolve EPropertyFlags.NeedCtorLink for Struct Properties

@@ -105,7 +105,6 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             classObj.SuperClass = superClass?.UIndex ?? 0;
             classObj.IgnoreMask = (EProbeFunctions)ulong.MaxValue;
             classObj.LabelTableOffset = ushort.MaxValue;
-            classObj.StateFlags = EStateFlags.Auto;
             classObj.OuterClass = classAST.OuterClass is Class outerClass ? CompilerUtils.ResolveClass(outerClass, pcc).UIndex : 0;
             classObj.ClassConfigName = NameReference.FromInstancedString(classAST.ConfigName);
 
@@ -129,6 +128,19 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 }
                 curClass = curClass.Parent as Class;
             }
+
+            //set StateFlags to Auto if there is no Auto state in the class
+            curClass = classAST;
+            bool hasAutoState = false;
+            while (curClass is not null)
+            {
+                foreach (State state in curClass.States)
+                {
+                    hasAutoState |= state.Flags.Has(EStateFlags.Auto);
+                }
+                curClass = curClass.Parent as Class;
+            }
+            classObj.StateFlags = hasAutoState ? EStateFlags.None : EStateFlags.Auto;
 
             //leave these untouched to preserve existing replication blocks, since compilation of those is not yet supported
             //classObj.ScriptBytecodeSize = 0;
