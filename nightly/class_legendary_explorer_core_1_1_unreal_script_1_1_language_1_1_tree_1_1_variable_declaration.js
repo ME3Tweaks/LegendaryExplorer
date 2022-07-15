@@ -12,6 +12,7 @@ var class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_va
     [ "Name", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_declaration.html#af5518e8395a6927eeb1250aac14c325f", null ],
     [ "IsStaticArray", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_declaration.html#a48d3a9ace69c4920ba9845ebf5e1ce18", null ],
     [ "IsTransient", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_declaration.html#a3319c0dcc123f125e866fda0753539f5", null ],
+    [ "IsConst", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_declaration.html#aa0c596db824e9187cfc4be8196b886db", null ],
     [ "ChildNodes", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_declaration.html#aef4a98d268f619c35d5fb485a3723d08", null ],
     [ "FilePath", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_declaration.html#acd6e64308163350e1d505eafad655d91", null ],
     [ "UIndex", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_declaration.html#ac58dab499f12764f833cc305fe182904", null ]
