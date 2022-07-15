@@ -291,9 +291,12 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             {
                 return false;
             }
-            //Static arrays cannot be assigned to or from as a whole, only by elements
             if (dest is StaticArrayType || src is StaticArrayType)
             {
+                if (dest is StaticArrayType destArr && src is StaticArrayType srcArr && destArr.Length == srcArr.Length)
+                {
+                    return TypeCompatible(destArr.ElementType, srcArr.ElementType, errorPosition);
+                }
                 return false;
             }
 
