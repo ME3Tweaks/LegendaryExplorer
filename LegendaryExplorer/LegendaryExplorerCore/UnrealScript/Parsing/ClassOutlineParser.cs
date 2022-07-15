@@ -329,7 +329,13 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                         throw ParseError("Expected ';' after constant value!", CurrentPosition);
                     }
 
-                    constValue += Tokens.CurrentItem.Value;
+                    constValue += CurrentTokenType switch
+                    {
+                        TokenType.NameLiteral => $"'{CurrentToken.Value}'",
+                        TokenType.StringLiteral => '"' + CurrentToken.Value + '"',
+                        TokenType.StringRefLiteral => '$' + CurrentToken.Value,
+                        _ => Tokens.CurrentItem.Value
+                    };
                     Tokens.Advance();
                 }
                 Tokens.PopSnapshot();

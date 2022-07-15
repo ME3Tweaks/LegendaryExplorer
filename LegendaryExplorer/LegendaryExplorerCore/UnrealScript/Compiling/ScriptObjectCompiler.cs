@@ -192,7 +192,12 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             var compiledProperties = new OrderedMultiValueDictionary<string, UProperty>();
             foreach (VariableDeclaration property in classAST.VariableDeclarations)
             {
-                existingProperties.Remove(property.Name, out UProperty uProperty);
+                if (existingProperties.Remove(property.Name, out UProperty uProperty) && !uProperty.Export.ClassName.CaseInsensitiveEquals(ByteCodeCompilerVisitor.PropertyTypeName(property.VarType)))
+                {
+                    //whoops, it's a different type now! We cannot reuse this. Put it back so that it can be trashed.
+                    existingProperties.Add(property.Name, uProperty);
+                    uProperty = null;
+                }
                 childrenHaveBeenAdded |= uProperty is null;
                 completions.Add(CreatePropertyStub(property, classExport, ref uProperty));
                 compiledProperties.Add(property.Name, uProperty);
