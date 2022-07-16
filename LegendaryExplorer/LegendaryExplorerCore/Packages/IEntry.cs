@@ -27,6 +27,7 @@ namespace LegendaryExplorerCore.Packages
         string ParentInstancedFullPath { get; }
         string ParentName { get; }
         bool HasParent { get; }
+        bool IsClass { get; }
         IEntry Parent { get; set; }
         IEntry Clone(bool incrementIndex);
 

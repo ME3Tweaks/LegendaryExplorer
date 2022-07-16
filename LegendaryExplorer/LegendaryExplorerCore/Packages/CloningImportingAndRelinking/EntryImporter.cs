@@ -1522,6 +1522,12 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
         public static IEntry EnsureClassIsInFile(IMEPackage pcc, string className, RelinkerOptionsPackage rop, string gamePathOverride = null)
         {
+            //When ensuring classes in Engine and SFXGame, this will save a very large amount of time
+            if (pcc.FindEntry(className) is { IsClass: true } topLevelClassEntry)
+            {
+                return topLevelClassEntry;
+            }
+
             //check to see class is already in file
             foreach (ImportEntry import in pcc.Imports)
             {

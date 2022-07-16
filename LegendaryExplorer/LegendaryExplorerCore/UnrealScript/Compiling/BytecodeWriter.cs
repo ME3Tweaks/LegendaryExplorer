@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
@@ -14,37 +13,31 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         protected readonly IMEPackage Pcc;
         protected readonly MEGame Game;
-        protected readonly byte extNativeIndex;
+        private readonly byte extNativeIndex;
 
         protected BytecodeWriter(IMEPackage pcc)
         {
             Pcc = pcc;
             Game = pcc.Game;
-            extNativeIndex = (byte) (Game.IsGame3() ? 0x70 : 0x60);
+            extNativeIndex = (byte)(Game.IsGame3() ? 0x70 : 0x60);
         }
 
-        public byte[] GetByteCode() => bytecode.ToArray();
+        protected byte[] GetByteCode() => bytecode.ToArray();
 
-        public int GetMemLength() => Position;
+        protected int GetMemLength() => Position;
 
         protected ushort Position { get; private set; }
         private readonly List<byte> bytecode = new();
-        private readonly List<int> positions = new();
-
-        private void IncrementPosition(int times = 1)
-        {
-            while (times-- > 0) positions.Add(Position++);
-        }
 
         protected void WriteByte(byte b)
         {
-            IncrementPosition();
+            Position += 1;
             bytecode.Add(b);
         }
 
         protected void WriteBytes(byte[] bytes)
         {
-            IncrementPosition(bytes.Length);
+            Position += (ushort)bytes.Length;
             bytecode.AddRange(bytes);
         }
 

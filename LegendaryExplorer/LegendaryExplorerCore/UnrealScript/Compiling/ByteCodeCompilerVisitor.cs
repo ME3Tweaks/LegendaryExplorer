@@ -25,8 +25,8 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
         private IContainsByteCode CompilationUnit;
         private readonly IEntry ContainingClass;
 
-        readonly CaseInsensitiveDictionary<UProperty> parameters = new();
-        readonly CaseInsensitiveDictionary<UProperty> locals = new();
+        private readonly CaseInsensitiveDictionary<ExportEntry> parameters = new();
+        private readonly CaseInsensitiveDictionary<ExportEntry> locals = new();
 
         private bool inAssignTarget;
         private bool inIteratorCall;
@@ -111,11 +111,11 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                             }
                             else if (uProperty.PropertyFlags.Has(EPropertyFlags.Parm))
                             {
-                                parameters.Add(nextChild.ObjectName.Instanced, uProperty);
+                                parameters.Add(nextChild.ObjectName.Instanced, uProperty.Export);
                             }
                             else
                             {
-                                locals.Add(nextChild.ObjectName.Instanced, uProperty);
+                                locals.Add(nextChild.ObjectName.Instanced, uProperty.Export);
                             }
                             nextItem = uProperty.Next;
                             break;
@@ -813,7 +813,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             Emit(node.Array);
             return true;
         }
-        
+
         public bool VisitNode(CompositeSymbolRef node)
         {
             bool forEachJump = inIteratorCall;
@@ -869,9 +869,9 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             }
             if (InContext.Peek() is NestedContextFlag flag)
             {
-                flag.HasNestedContext= true;
+                flag.HasNestedContext = true;
             }
-            
+
             InContext.Push(new NestedContextFlag());
             Emit(node.OuterSymbol);
             bool hasInnerContext = InContext.Pop().HasNestedContext;
@@ -1053,7 +1053,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 else
                 {
                     WriteOpCode(OpCodes.PrimitiveCast);
-                    WriteByte((byte)prim.Cast);
+                    WriteCast(prim.Cast);
                 }
             }
             else if (node.CastType is ClassType clsType)
@@ -1245,22 +1245,22 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 WriteByte((byte)i);
             }
             else switch (i)
-            {
-                case 0:
-                    WriteOpCode(OpCodes.IntZero);
-                    break;
-                case 1:
-                    WriteOpCode(OpCodes.IntOne);
-                    break;
-                case >= 0 and < 256:
-                    WriteOpCode(OpCodes.IntConstByte);
-                    WriteByte((byte)i);
-                    break;
-                default:
-                    WriteOpCode(OpCodes.IntConst);
-                    WriteInt(i);
-                    break;
-            }
+                {
+                    case 0:
+                        WriteOpCode(OpCodes.IntZero);
+                        break;
+                    case 1:
+                        WriteOpCode(OpCodes.IntOne);
+                        break;
+                    case >= 0 and < 256:
+                        WriteOpCode(OpCodes.IntConstByte);
+                        WriteByte((byte)i);
+                        break;
+                    default:
+                        WriteOpCode(OpCodes.IntConst);
+                        WriteInt(i);
+                        break;
+                }
 
             return true;
         }
@@ -1395,19 +1395,34 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             return expr;
         }
 
-        private IEntry ResolveSymbol(ASTNode node) =>
-            node switch
+        private readonly Dictionary<ASTNode, IEntry> resolveSymbolCache = new();
+
+        private IEntry ResolveSymbol(ASTNode node)
+        {
+            switch (node)
+            {
+                case FunctionParameter param:
+                    return parameters[param.Name];
+                case VariableDeclaration { Outer: Function } local:
+                    return locals[local.Name];
+            }
+            if (resolveSymbolCache.TryGetValue(node, out IEntry resolvedEntry))
+            {
+                return resolvedEntry;
+            }
+            resolvedEntry = node switch
             {
                 Class cls => ResolveClass(cls),
                 Struct strct => ResolveStruct(strct),
                 State state => ResolveState(state),
                 Function func => ResolveFunction(func),
-                FunctionParameter param => parameters[param.Name].Export,
-                VariableDeclaration { Outer: Function } local => locals[local.Name].Export,
                 VariableDeclaration field => ResolveProperty(field),
                 SymbolReference symRef => ResolveSymbol(symRef.Node),
                 _ => throw new ArgumentOutOfRangeException(nameof(node))
             };
+            resolveSymbolCache[node] = resolvedEntry;
+            return resolvedEntry;
+        }
 
         private IEntry ResolveProperty(VariableDeclaration decl)
         {
@@ -1424,7 +1439,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         private IEntry ResolveClass(Class c)
         {
-            RelinkerOptionsPackage rop = new RelinkerOptionsPackage() { ImportExportDependencies = true };
+            var rop = new RelinkerOptionsPackage { ImportExportDependencies = true };
             var entry = EntryImporter.EnsureClassIsInFile(Pcc, c.Name, rop);
             if (rop.RelinkReport.Any())
             {
@@ -1439,8 +1454,8 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
         public static string PropertyTypeName(VariableType type) =>
             type switch
             {
-                Class {IsComponent: true} => "ComponentProperty",
-                Class {IsInterface: true} => "InterfaceProperty",
+                Class { IsComponent: true } => "ComponentProperty",
+                Class { IsInterface: true } => "InterfaceProperty",
                 Class _ => "ObjectProperty",
                 Struct _ => "StructProperty",
                 ClassType _ => "ClassProperty",
