@@ -1086,6 +1086,26 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 if (!eventbin.Links.IsEmpty() && !eventbin.Links[0].WwiseStreams.IsEmpty())
                 {
                     var wwstream = Pcc.GetUExport(eventbin.Links[0].WwiseStreams[0]);
+                    if (eventbin.Links[0].WwiseStreams.Count > 1 && wwevent.ObjectNameString.Length == 16)  //must be standard VO_123456_m_Play wwiseevent name format
+                    {
+                        var tlkref = wwevent.ObjectNameString.Remove(9).Remove(0,3);
+                        var genderref = wwevent.ObjectNameString.ToLower().Remove(11).Remove(0, 10);
+                        foreach (var stream in eventbin.Links[0].WwiseStreams)
+                        {
+                            var potentialStream = Pcc.GetUExport(stream);
+                            if(potentialStream.ObjectNameString.Contains(tlkref))
+                            {
+                                if(potentialStream.ObjectNameString.ToLower().Contains("player"))
+                                {
+                                    if (!potentialStream.ObjectNameString.ToLower()
+                                                                         .Contains("_" + genderref + "_"))
+                                            continue;
+                                }
+                                wwstream = potentialStream;
+                                break;
+                            }
+                        }
+                    }
                     var streambin = wwstream?.GetBinaryData<WwiseStream>() ?? null;
                     if (streambin != null)
                     {
