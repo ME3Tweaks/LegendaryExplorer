@@ -393,7 +393,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
             foreach ((VariableDeclaration ours, VariableDeclaration theirs) in VariableDeclarations.Zip(other.VariableDeclarations))
             {
                 if (ours.Name != theirs.Name 
-                    || ours.VarType.Name != theirs.VarType.Name
+                    || !string.Equals(ours.VarType.Name, theirs.VarType.Name, StringComparison.OrdinalIgnoreCase)
                     || ours.ArrayLength != theirs.ArrayLength)
                 {
                     return false;

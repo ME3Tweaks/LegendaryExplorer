@@ -1,5 +1,4 @@
 ﻿using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
-using LegendaryExplorerCore.UnrealScript.Utilities;
 
 namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 {

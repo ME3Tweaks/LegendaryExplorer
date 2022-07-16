@@ -477,9 +477,16 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 }
                 AddConversion(exprType, ref value);
 
-                if (expr is SymbolReference { Node: VariableDeclaration decl} && ReferenceEquals(decl, SelfDeclaration))
+                if (expr is SymbolReference { Node: VariableDeclaration decl})
                 {
-                    TypeError($"{SELF} is immutable! You cannot assign a different value to it.", expr);
+                    if (decl.IsConst)
+                    {
+                        TypeError("Cannot assign to a 'const' variable.", expr);
+                    }
+                    else if (ReferenceEquals(decl, SelfDeclaration))
+                    {
+                        TypeError($"{SELF} is immutable! You cannot assign a different value to it.", expr);
+                    }
                 }
 
                 return new AssignStatement(expr, value, expr.StartPos, value.EndPos);
@@ -1958,21 +1965,43 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                         }
 
                         AddConversion(p.VarType, ref currentArg);
-                        if (p.IsOut)
+
+                        if (p.IsOut && !p.IsConst)
                         {
-                            if (currentArg is not SymbolReference && currentArg is not ConditionalExpression {TrueExpression: SymbolReference, FalseExpression: SymbolReference})
+                            void CheckIfConst(SymbolReference symbolReference)
                             {
-                                TypeError("Argument given to an out parameter must be an lvalue!", currentArg);
+                                if (symbolReference.Node is VariableDeclaration varDecl)
+                                {
+                                    if (varDecl.IsConst)
+                                    {
+                                        TypeError("Argument given to an out parameter cannot be 'const'!", symbolReference);
+                                    }
+                                    if (ReferenceEquals(varDecl, SelfDeclaration))
+                                    {
+                                        TypeError($"{SELF} is immutable! It cannot be given as an argument to an out parameter.", symbolReference);
+                                    }
+                                }
                             }
 
-                            if (currentArg is ArraySymbolRef {IsDynamic: true} || currentArg is ConditionalExpression cndExp && (cndExp.TrueExpression is ArraySymbolRef { IsDynamic: true } || cndExp.FalseExpression is ArraySymbolRef { IsDynamic: true}))
+                            switch (currentArg)
                             {
-                                TypeError("Argument given to an out parameter cannot be a dynamic array element!", currentArg);
+                                case SymbolReference symRef:
+                                    CheckIfConst(symRef);
+                                    break;
+                                case ConditionalExpression { TrueExpression: SymbolReference trueSymRef, FalseExpression: SymbolReference falseSymRef}:
+                                    CheckIfConst(trueSymRef);
+                                    CheckIfConst(falseSymRef);
+                                    break;
+                                default:
+                                    TypeError("Argument given to an out parameter must be an lvalue!", currentArg);
+                                    break;
                             }
 
-                            if (currentArg is SymbolReference { Node: VariableDeclaration decl } && ReferenceEquals(decl, SelfDeclaration))
+                            if (currentArg is ArraySymbolRef {IsDynamic: true} 
+                                || currentArg is ConditionalExpression cndExp && (cndExp.TrueExpression is ArraySymbolRef { IsDynamic: true } || cndExp.FalseExpression is ArraySymbolRef { IsDynamic: true}))
                             {
-                                TypeError($"{SELF} is immutable! It cannot be given as an argument to an out parameter.", currentArg);
+                                Log.LogWarning("Argument given to an out parameter should not be a dynamic array element!\n" +
+                                               "Modification of the parameter inside the function will NOT modify the array.", currentArg.StartPos, currentArg.EndPos);
                             }
 
                             VariableType parmType = p.VarType;

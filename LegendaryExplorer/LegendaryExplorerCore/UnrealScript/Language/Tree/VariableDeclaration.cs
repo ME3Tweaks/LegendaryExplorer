@@ -2,7 +2,6 @@
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
-using LegendaryExplorerCore.UnrealScript.Utilities;
 
 namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 {
@@ -20,6 +19,8 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
         public bool IsStaticArray => ArrayLength > 1;
 
         public bool IsTransient => Flags.Has(UnrealFlags.EPropertyFlags.Transient);
+
+        public bool IsConst => Flags.Has(UnrealFlags.EPropertyFlags.Const);
 
         public VariableDeclaration(VariableType type, UnrealFlags.EPropertyFlags flags,
                                    string name, int arrayLength = 1, string category = "None", int start = -1, int end = -1)

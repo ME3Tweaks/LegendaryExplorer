@@ -291,7 +291,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                         }
                         break;
                     case EnumProperty enumProperty:
-                        if (enumProperty.Value != GlobalUnrealObjectInfo.GetEnumValues(game, enumProperty.EnumType).FirstOrDefault())
+                        if (enumProperty.Value != (GlobalUnrealObjectInfo.GetEnumValues(game, enumProperty.EnumType)?.FirstOrDefault() ?? default))
                         {
                             result.Add(prop);
                         }
