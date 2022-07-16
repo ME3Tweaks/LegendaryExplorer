@@ -193,7 +193,7 @@ namespace LegendaryExplorer.GameInterop
             return false;
         }
 
-        private static bool DeleteFilesAndFoldersRecursively(string targetDirectory)
+        public static bool DeleteFilesAndFoldersRecursively(string targetDirectory)
         {
             if (!Directory.Exists(targetDirectory))
             {

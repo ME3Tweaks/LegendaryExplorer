@@ -10,9 +10,11 @@ using System.Windows;
 using System.Xml;
 using System.Xml.Linq;
 using LegendaryExplorer.Dialogs;
+using LegendaryExplorer.GameInterop;
 using LegendaryExplorer.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorer.Misc.AppSettings;
+using LegendaryExplorer.Tools.WwiseEditor;
 using LegendaryExplorerCore.Audio;
 
 namespace LegendaryExplorer.UnrealExtensions
@@ -24,10 +26,18 @@ namespace LegendaryExplorer.UnrealExtensions
             MEGame.ME3 => Settings.Wwise_3773Path,
             MEGame.LE2 => Settings.Wwise_7110Path,
             MEGame.LE3 => Settings.Wwise_7110Path,
-            _ => throw new NotImplementedException($"Wwise path unavailable for {game}")
+            _ => throw new NotImplementedException($"Wwise CLI path unavailable for {game}")
         };
 
-        private static string GetWwiseTemplateProject(MEGame game) => game switch
+        public static string GetWwiseGUIPath(MEGame game) => game switch
+        {
+            MEGame.ME3 => Path.Combine(Directory.GetParent(Settings.Wwise_3773Path).FullName, "Wwise.exe"),
+            MEGame.LE2 => Path.Combine(Directory.GetParent(Settings.Wwise_7110Path).FullName, "Wwise.exe"),
+            MEGame.LE3 => Path.Combine(Directory.GetParent(Settings.Wwise_7110Path).FullName, "Wwise.exe"),
+            _ => throw new NotImplementedException($"Wwise GUI path unavailable for {game}")
+        };
+
+        public static string GetWwiseTemplateProject(MEGame game) => game switch
         {
             MEGame.ME3 => Path.Combine(AppDirectories.ExecFolder, "WwiseTemplateProjectV3773.zip"),
             MEGame.LE2 => Path.Combine(AppDirectories.ExecFolder, "WwiseTemplateProjectV7110.zip"),
@@ -45,7 +55,7 @@ namespace LegendaryExplorer.UnrealExtensions
             var path = WwiseCliHandler.GetWwiseCliPath(game);
             if (string.IsNullOrEmpty(path) || !WwiseVersions.IsCorrectWwiseVersion(game, path))
             {
-                SetWwisePathDialog swpd = new ();
+                SetWwisePathDialog swpd = new();
                 swpd.ShowDialog();
                 return swpd.PathCorrect;
             }
@@ -271,6 +281,50 @@ namespace LegendaryExplorer.UnrealExtensions
             {
                 await TryDeleteDirectory(templateDirectory);
             }
+        }
+
+        public static string CreateNewProjectForBank(ExportEntry export, string projectOutputDirectory)
+        {
+            return "";
+            //WwiseIO.ExportBankToProject(export, projectOutputDirectory);
+        }
+
+        /// <summary>
+        /// LE ONLY - Generates a new WwiseProject with 7110 Wwise at the specified path
+        /// </summary>
+        /// <param name="projectDir"></param>
+        public static string CreateNewProject(string projectDir)
+        {
+            InteropModInstaller.DeleteFilesAndFoldersRecursively(projectDir);
+
+            var wwiseCLIPath = GetWwiseCliPath(MEGame.LE3);
+            var projFile = Path.GetFileNameWithoutExtension(projectDir) + ".wproj";
+            var projPath = Path.Combine(projectDir, projFile);
+            Process process = new Process
+            {
+                StartInfo =
+                {
+                    FileName = wwiseCLIPath,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    Arguments = $"\"{projPath}\" -CreateNewProject -Platform Windows",
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                    RedirectStandardInput = true
+                }
+            };
+            process.Start();
+            process.WaitForExit();
+
+            // Read output.
+
+            return projPath;
+        }
+
+        public static void RunWwiseInAutomatedMode(MEGame game, string projectPath)
+        {
+            var wwiseGui = GetWwiseGUIPath(game);
+            Process.Start(wwiseGui, $"\"{projectPath}\" -AutomationMode -SetTitleBarText \"Automated by Legendary Explorer\"");
         }
     }
 }
