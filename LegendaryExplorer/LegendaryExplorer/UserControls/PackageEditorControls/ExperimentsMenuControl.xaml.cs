@@ -460,6 +460,12 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         }
 
         private async void CoalesceBioActorTypesLE1_Click(object sender, RoutedEventArgs e)
+        private async void WwiseBankToProject_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.ConvertWwiseBankToProject(GetPEWindow());
+        }
+
+        private async void ForceVignetteOff_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.CoalesceBioActorTypes(GetPEWindow());
         }
