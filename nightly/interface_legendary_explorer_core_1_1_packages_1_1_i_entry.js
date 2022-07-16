@@ -21,5 +21,6 @@ var interface_legendary_explorer_core_1_1_packages_1_1_i_entry =
     [ "ParentInstancedFullPath", "interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html#acc3e17e12693ccca43b143ea2c203596", null ],
     [ "ParentName", "interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html#abafd144ce43238633d9036b4ad334ef6", null ],
     [ "HasParent", "interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html#a14cec1a535e965d4ce9416b3f95403b3", null ],
+    [ "IsClass", "interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html#a31face1406c3aaceaac4a88c2f291bbf", null ],
     [ "Parent", "interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html#ad25472ac03a44ef523974d492d072381", null ]
 ];
