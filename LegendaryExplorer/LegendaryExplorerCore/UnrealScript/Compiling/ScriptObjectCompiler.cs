@@ -194,9 +194,13 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             {
                 if (existingProperties.Remove(property.Name, out UProperty uProperty) && !uProperty.Export.ClassName.CaseInsensitiveEquals(ByteCodeCompilerVisitor.PropertyTypeName(property.VarType)))
                 {
-                    //whoops, it's a different type now! We cannot reuse this. Put it back so that it can be trashed.
-                    existingProperties.Add(property.Name, uProperty);
-                    uProperty = null;
+                    //do not mess with mapproperties
+                    if (uProperty is not UMapProperty)
+                    {
+                        //whoops, it's a different type now! We cannot reuse this. Put it back so that it can be trashed.
+                        existingProperties.Add(property.Name, uProperty);
+                        uProperty = null;
+                    }
                 }
                 childrenHaveBeenAdded |= uProperty is null;
                 completions.Add(CreatePropertyStub(property, classExport, ref uProperty));
