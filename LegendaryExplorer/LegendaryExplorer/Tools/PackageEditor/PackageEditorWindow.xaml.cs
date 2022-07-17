@@ -1848,9 +1848,9 @@ namespace LegendaryExplorer.Tools.PackageEditor
                         if (wdiag.ShowDialog() == true)
                         {
                             var data = new MemoryStream(exp.GetBinaryData());
-                            data.Skip(0x16); // Maybe diff for non ME3/LE games. Is anyone ever going to export ME2...?
+                            data.Skip(0x10); // Maybe diff for non ME3/LE games. Is anyone ever going to export ME2...?
                             using FileStream fs = new FileStream(wdiag.FileName, FileMode.Create);
-                            data.CopyToEx(fs, (int)data.Length - 0x16);
+                            data.CopyToEx(fs, (int)data.Length - 0x10);
                             MessageBox.Show("Done");
                         }
                         break;
