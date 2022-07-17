@@ -1848,9 +1848,9 @@ namespace LegendaryExplorer.Tools.PackageEditor
                         if (wdiag.ShowDialog() == true)
                         {
                             var data = new MemoryStream(exp.GetBinaryData());
-                            data.Skip(0x16); // Maybe diff for non ME3/LE games. Is anyone ever going to export ME2...?
+                            data.Skip(0x10); // Maybe diff for non ME3/LE games. Is anyone ever going to export ME2...?
                             using FileStream fs = new FileStream(wdiag.FileName, FileMode.Create);
-                            data.CopyToEx(fs, (int)data.Length - 0x16);
+                            data.CopyToEx(fs, (int)data.Length - 0x10);
                             MessageBox.Show("Done");
                         }
                         break;
@@ -2572,7 +2572,11 @@ namespace LegendaryExplorer.Tools.PackageEditor
             }).ContinueWithOnUIThread(foundCandidates =>
            {
                IsBusy = false;
-               if (!foundCandidates.Result.Any()) MessageBox.Show(this, "Cannot find any candidates for this file!");
+               if (!foundCandidates.Result.Any())
+               {
+                   MessageBox.Show(this, "Cannot find any candidates for this file!");
+                   return;
+               }
 
                var choices = foundCandidates.Result.DiskFiles.ToList(); //make new list
                choices.AddRange(foundCandidates.Result.SFARPackageStreams.Select(x => x.Key));
@@ -2628,6 +2632,12 @@ namespace LegendaryExplorer.Tools.PackageEditor
                             Directory.EnumerateFiles(cookedPath, "*", SearchOption.AllDirectories)
                                 .FirstOrDefault(path => Path.GetFileName(path) == filename))
                         .NonNull());
+
+                    if (Pcc.Game == MEGame.ME3)
+                    {
+                        // Check TESTPATCH
+
+                    }
                 }
 
                 return inGameCandidates;
@@ -2674,7 +2684,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 {
                     var sfars = Directory.GetFiles(backupDlcPath, "*.sfar", SearchOption.AllDirectories).ToList();
 
-                    var testPatch = Path.Combine(backupDlcPath, "BIOGame", "Patches", "PCConsole", "Patch_001.sfar");
+                    var testPatch = Path.Combine(backupPath, "BIOGame", "Patches", "PCConsole", "Patch_001.sfar");
                     if (File.Exists(testPatch))
                     {
                         sfars.Add(testPatch);
