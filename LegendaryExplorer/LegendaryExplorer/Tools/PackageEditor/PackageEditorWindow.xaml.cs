@@ -2572,7 +2572,11 @@ namespace LegendaryExplorer.Tools.PackageEditor
             }).ContinueWithOnUIThread(foundCandidates =>
            {
                IsBusy = false;
-               if (!foundCandidates.Result.Any()) MessageBox.Show(this, "Cannot find any candidates for this file!");
+               if (!foundCandidates.Result.Any())
+               {
+                   MessageBox.Show(this, "Cannot find any candidates for this file!");
+                   return;
+               }
 
                var choices = foundCandidates.Result.DiskFiles.ToList(); //make new list
                choices.AddRange(foundCandidates.Result.SFARPackageStreams.Select(x => x.Key));
@@ -2628,6 +2632,12 @@ namespace LegendaryExplorer.Tools.PackageEditor
                             Directory.EnumerateFiles(cookedPath, "*", SearchOption.AllDirectories)
                                 .FirstOrDefault(path => Path.GetFileName(path) == filename))
                         .NonNull());
+
+                    if (Pcc.Game == MEGame.ME3)
+                    {
+                        // Check TESTPATCH
+
+                    }
                 }
 
                 return inGameCandidates;
@@ -2674,7 +2684,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 {
                     var sfars = Directory.GetFiles(backupDlcPath, "*.sfar", SearchOption.AllDirectories).ToList();
 
-                    var testPatch = Path.Combine(backupDlcPath, "BIOGame", "Patches", "PCConsole", "Patch_001.sfar");
+                    var testPatch = Path.Combine(backupPath, "BIOGame", "Patches", "PCConsole", "Patch_001.sfar");
                     if (File.Exists(testPatch))
                     {
                         sfars.Add(testPatch);
