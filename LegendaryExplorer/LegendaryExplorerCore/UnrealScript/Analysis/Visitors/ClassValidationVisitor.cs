@@ -74,8 +74,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                             Log.Tokens?.AddDefinitionLink(parentClass, node.Parent.StartPos, node.Parent.Length);
                             node.Parent = parentClass;
 
-                            //do this check here and in the second pass. This one protects against extending from self
-                            if (((Class)node.Parent).SameAsOrSubClassOf(node))
+                            if (parentClass == node)
                             {
                                 return Error($"Extending from '{node.Parent.Name}' causes circular extension!", node.StartPos);
                             }
