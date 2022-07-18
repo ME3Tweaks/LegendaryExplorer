@@ -63,7 +63,19 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
         private EF? ForcedFormatType = null;
 
-        private void Write(string text = "", EF formatType = EF.None) => Formatter.Write(text, ForcedFormatType ?? formatType);
+        private bool ForceComment = false;
+
+        private void Write(string text = "", EF formatType = EF.None)
+        {
+            if (!ForceComment)
+            {
+                Formatter.Write(text, ForcedFormatType ?? formatType);
+            }
+            else
+            {
+                Formatter.Write($"//{text}", EF.Comment);
+            }
+        }
 
         private void Append(string text, EF formatType = EF.None) => Formatter.Append(text, ForcedFormatType ?? formatType);
         private void Space() => Formatter.Space();
@@ -1039,6 +1051,12 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
         private void VisitIf(IfStatement node, bool ifElse = false)
         {
+            bool invalidBlock = !ForceComment && node.Condition is SymbolReference { Name: __IN_EDITOR };
+            if (invalidBlock)
+            {
+                ForceComment = true;
+            }
+
             if (!ifElse)
                 Write(); // New line only if we're not chaining
             Append(IF, EF.Keyword);
@@ -1056,10 +1074,14 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             if (node.Else != null && node.Else.Statements.Any())
             {
                 Write(ELSE, EF.Keyword);
+                if (invalidBlock)
+                {
+                    ForceComment = false;
+                }
                 if (node.Else.Statements.Count == 1 && node.Else.Statements[0] is IfStatement)
                 {
                     Space();
-                    VisitIf(node.Else.Statements[0] as IfStatement, true);
+                    VisitIf(node.Else.Statements[0] as IfStatement, !invalidBlock);
                 }
                 else
                 {
@@ -1069,6 +1091,10 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                     NestingLevel--;
                     Write("}");
                 }
+            }
+            if (invalidBlock)
+            {
+                ForceComment = false;
             }
         }
 

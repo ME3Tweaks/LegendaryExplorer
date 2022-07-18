@@ -71,7 +71,8 @@
         "new",
         "assert",
         "goto",
-        "replication"
+        "replication",
+        "__<>IN_EDITOR"
     };
 #>
 namespace LegendaryExplorerCore.UnrealScript.Utilities
@@ -81,7 +82,7 @@ namespace LegendaryExplorerCore.UnrealScript.Utilities
 
 <#
     foreach (string keyword in keywords) { #>
-        public const string <#= keyword.ToUpper() #> = "<#= keyword #>";     
+        public const string <#= keyword.Replace("<", "").Replace(">", "").ToUpper() #> = "<#= keyword #>";     
 <# } #>
 	}
 }
