@@ -39,6 +39,11 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 
         public bool HasOptionalParms => Flags.Has(EFunctionFlags.HasOptionalParms) || Parameters.Any(parm => parm.IsOptional);
 
+        //final event functions, despite not being called virtually, go in the VTable.
+        //I assume this is because event functions get an auto-generated c++ func that calls the unrealscript func.
+        //The c++ func could have a more performant implementation if the unrealscript func was in the vtable
+        public bool ShouldBeInVTable => IsVirtual || Flags.Has(EFunctionFlags.Event);
+
         public bool RetValNeedsDestruction;
 
         public byte OperatorPrecedence; //ME1/2
