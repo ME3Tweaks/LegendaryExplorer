@@ -240,7 +240,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 }
                 Lines.Add(LineEntry);
             }
-
             graph.Clear();
         }
 
@@ -570,6 +569,13 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
 
             Lines.Add(newEntry);
+        }
+        private void SortLines_Click(object sender, RoutedEventArgs e)
+        {
+            // Sort lines by TLKID (as per Bioware)
+            Lines.Sort(l => l.TLKID);
+            FaceFX.Lines.Sort((a, b) => int.Parse(a.ID).CompareTo(int.Parse(b.ID)));
+            CurrentLoadedExport?.WriteBinary(FaceFX.Binary);
         }
 
         private void UpdateTreeItems(IFaceFXBinary animSet, FaceFXLine d)
