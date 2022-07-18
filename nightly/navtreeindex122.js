@@ -1,5 +1,7 @@
 var NAVTREEINDEX122 =
 {
+"struct_legendary_explorer_core_1_1_unreal_1_1_texture_compression_1_1_chunk_block.html#ab8dcc93795de6a4e4549da43db5eab98":[1,0,0,20,37,1,2],
+"struct_legendary_explorer_core_1_1_unreal_1_1_texture_compression_1_1_chunk_block.html#ae6dc4514421e9efb8de94e184843026a":[0,5,1,20,37,1,0],
 "struct_legendary_explorer_core_1_1_unreal_1_1_texture_compression_1_1_chunk_block.html#ae6dc4514421e9efb8de94e184843026a":[1,0,0,20,37,1,0],
 "struct_legendary_explorer_core_1_1_unreal_1_1_texture_compression_1_1_chunk_block.html#af341f3ee81c39991e4fab7911f02b084":[1,0,0,20,37,1,3],
 "struct_legendary_explorer_core_1_1_unreal_1_1_texture_compression_1_1_chunk_block.html#af341f3ee81c39991e4fab7911f02b084":[0,5,1,20,37,1,3],
