@@ -57,6 +57,7 @@
                                     <MenuItem Header="Clone" Click="CloneLine_Click"/>
                                     <MenuItem Header="Delete Line" Click="DeleteLine_Click"/>
                                     <MenuItem Header="Sort Lines by StrRef" Click="SortLines_Click"/>
+                                    <MenuItem Header="Set All Paths" Click="SetPaths_Click"/>
                                 </ContextMenu>
                             </StackPanel.ContextMenu>
                         </StackPanel>

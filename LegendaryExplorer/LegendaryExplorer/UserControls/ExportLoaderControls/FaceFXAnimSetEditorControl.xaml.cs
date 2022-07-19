@@ -23,6 +23,7 @@ using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Newtonsoft.Json;
 using Point = System.Windows.Point;
+using LegendaryExplorerCore.Unreal;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls
 {
@@ -578,6 +579,22 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             CurrentLoadedExport?.WriteBinary(FaceFX.Binary);
         }
 
+        private void SetPaths_Click(object sender, RoutedEventArgs e)
+        {
+            // Set paths
+            var eventRefs = CurrentLoadedExport.GetProperty<ArrayProperty<ObjectProperty>>("ReferencedSoundCues");
+            if (eventRefs == null)
+                return;
+            foreach (var line in Lines)
+            {
+                var wwiseevent = Pcc.GetEntry(eventRefs[line.Line.Index].Value);
+                if(wwiseevent != null)
+                {
+                    line.Line.Path = wwiseevent.FullPath;
+                }
+            }
+            SaveChanges();
+        }
         private void UpdateTreeItems(IFaceFXBinary animSet, FaceFXLine d)
         {
             TreeNodes.ClearEx();
