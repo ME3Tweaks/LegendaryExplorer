@@ -1,5 +1,6 @@
 ﻿using LegendaryExplorerCore.UnrealScript.Language.Tree;
 using LegendaryExplorerCore.UnrealScript.Lexing;
+using LegendaryExplorerCore.UnrealScript.Utilities;
 
 namespace LegendaryExplorerCore.UnrealScript.Decompiling
 {
@@ -54,7 +55,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
 
     internal class InEditorJump : ConditionalJump
     {
-        public InEditorJump(ushort jumpLoc) : base(jumpLoc, new SymbolReference(null, "__IN_EDITOR"))
+        public InEditorJump(ushort jumpLoc) : base(jumpLoc, new SymbolReference(null, Keywords.__IN_EDITOR))
         {
         }
     }

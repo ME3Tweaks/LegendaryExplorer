@@ -69,5 +69,6 @@
         public const string ASSERT = "assert";     
         public const string GOTO = "goto";     
         public const string REPLICATION = "replication";     
+        public const string __IN_EDITOR = "__<>IN_EDITOR";     
 	}
 }

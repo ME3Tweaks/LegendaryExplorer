@@ -680,7 +680,7 @@ namespace LegendaryExplorerCore.UnrealScript
             //calculate the virtual function table
             if (pcc.Game.IsGame3())
             {
-                var virtualFuncs = cls.Functions.Where(func => func.IsVirtual).ToList();
+                var virtualFuncs = cls.Functions.Where(func => func.ShouldBeInVTable).ToList();
                 var funcDict = virtualFuncs.ToDictionary(func => func.Name);
                 List<string> parentVirtualFuncNames = ((Class)cls.Parent).VirtualFunctionNames;
                 var overrides = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -692,7 +692,12 @@ namespace LegendaryExplorerCore.UnrealScript
                         virtualFuncs.Remove(func);
                     }
                 }
-                cls.VirtualFunctionNames = parentVirtualFuncNames.Concat(virtualFuncs.Select(func => func.Name)).ToList();
+                cls.VirtualFunctionNames = new List<string>();
+                if (!cls.IsInterface)
+                {
+                    cls.VirtualFunctionNames.AddRange(parentVirtualFuncNames);
+                    cls.VirtualFunctionNames.AddRange(virtualFuncs.Select(func => func.Name));
+                }
 
                 if (existingClass is not null)
                 {
@@ -704,7 +709,7 @@ namespace LegendaryExplorerCore.UnrealScript
 
                         //check to see if overrides have changed
                         var existingOverrides = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-                        var existingFuncDict = existingClass.Functions.Where(func => func.IsVirtual).ToDictionary(func => func.Name);
+                        var existingFuncDict = existingClass.Functions.Where(func => func.ShouldBeInVTable).ToDictionary(func => func.Name);
                         foreach (string funcName in parentVirtualFuncNames)
                         {
                             if (existingFuncDict.Remove(funcName))

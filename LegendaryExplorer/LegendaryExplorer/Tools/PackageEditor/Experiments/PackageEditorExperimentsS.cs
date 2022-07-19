@@ -716,7 +716,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             pewpf.BusyText = "Scanning";
             Task.Run(() =>
             {
-                foreach (MEGame game in new[] { MEGame.LE3, MEGame.LE2, MEGame.LE1, MEGame.ME3, MEGame.ME2, MEGame.ME1})
+                foreach (MEGame game in new[] { MEGame.LE3/*, MEGame.LE2, MEGame.LE1, MEGame.ME3, MEGame.ME2, MEGame.ME1*/})
                 {
                     //preload base files for faster scanning
                     using DisposableCollection<IMEPackage> baseFiles = MEPackageHandler.OpenMEPackages(EntryImporter.FilesSafeToImportFrom(game)
@@ -728,7 +728,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         baseFiles.Add(MEPackageHandler.OpenMEPackage(Path.Combine(ME3Directory.CookedPCPath, "BIOP_MP_COMMON.pcc")));
                     }
 
-                    foreach (string filePath in baseFiles.Select(x => x.FilePath))// EnumerateOfficialFiles(game))
+                    foreach (string filePath in EnumerateOfficialFiles(game))
                     {
                         //ScanShaderCache(filePath);
                         //ScanMaterials(filePath);
@@ -1342,35 +1342,55 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                         try
                         {
-                            if (fileLib.Initialize())
+                            if (fileLib.Initialize(packageCache))
                             {
-                                (ASTNode decompiledClassNode, string script) = UnrealScriptCompiler.DecompileExport(exp, fileLib);
-                                if (!((Class)decompiledClassNode).IsFullyDefined)
+                                (ASTNode ast, string script) = UnrealScriptCompiler.DecompileExport(exp, fileLib, packageCache);
+                                if (!((Class)ast).IsFullyDefined)
                                 {
                                     continue;
                                 }
                                 foundClasses.Add(instancedFullPath);
-                                (ASTNode ast, MessageLog log) = UnrealScriptCompiler.CompileClass(pcc, script, fileLib, exp, exp.Parent, packageCache);
-                                if (ast is not Class || log.HasErrors)
+                                var log = new MessageLog();
+                                (ast, _) = UnrealScriptCompiler.CompileOutlineAST(script, "Class", log, pcc.Game);
+                                if (ast is not Class classAST || log.HasErrors)
                                 {
                                     interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {pcc.FilePath}\nfailed to parse class!"));
                                     return;
                                 }
 
-                                if (!fileLib.ReInitializeFile())
+                                UnrealScriptCompiler.CompileNewClassAST(pcc, classAST, log, fileLib, out bool vfTableChanged);
+                                if (log.HasErrors)
                                 {
-                                    interestingExports.Add(new EntryStringPair(exp, $"{pcc.FilePath} failed to re-initialize after compiling {$"#{exp.UIndex}",-9}"));
+                                    interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {pcc.FilePath}\nfailed to parse class!"));
                                     return;
                                 }
-                                if (exp.EntryHasPendingChanges )//|| exp.GetAllDescendants().Any(entry => entry.EntryHasPendingChanges))
+                                if (vfTableChanged)
                                 {
-                                    interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {filePath}\nRecompilation does not match!"));
-                                }
-                                if (pcc.FindEntry(UnrealPackageFile.TrashPackageName) is not null)
-                                {
-                                    interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {filePath}\nTrashed an export! Aborting compilation for file."));
+                                    interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {pcc.FilePath}\nVTableChanged!"));
                                     return;
                                 }
+
+                                //(ast, log) = UnrealScriptCompiler.CompileClass(pcc, script, fileLib, exp, exp.Parent, packageCache);
+                                //if (ast is not Class || log.HasErrors)
+                                //{
+                                //    interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {pcc.FilePath}\nfailed to parse class!"));
+                                //    return;
+                                //}
+
+                                //if (!fileLib.ReInitializeFile())
+                                //{
+                                //    interestingExports.Add(new EntryStringPair(exp, $"{pcc.FilePath} failed to re-initialize after compiling {$"#{exp.UIndex}",-9}"));
+                                //    return;
+                                //}
+                                //if (exp.EntryHasPendingChanges )//|| exp.GetAllDescendants().Any(entry => entry.EntryHasPendingChanges))
+                                //{
+                                //    interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {filePath}\nRecompilation does not match!"));
+                                //}
+                                //if (pcc.FindEntry(UnrealPackageFile.TrashPackageName) is not null)
+                                //{
+                                //    interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {filePath}\nTrashed an export! Aborting compilation for file."));
+                                //    return;
+                                //}
                             }
                             else
                             {

@@ -88,7 +88,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             if (body.EndPos != body.StartPos //check if this is a defined function
                 && func.ReturnType is not null && body.Statements.LastOrDefault() is not ReturnStatement)
             {
-                log.LogWarning($"Function '{func.Name}' might reach end without returning a value!");
+                log.LogWarning($"Function '{func.Name}' might reach end without returning a value!", func.EndPos);
             }
 
             //parse default parameter values
