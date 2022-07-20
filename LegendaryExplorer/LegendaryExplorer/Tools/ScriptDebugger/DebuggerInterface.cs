@@ -365,22 +365,25 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
 
         public unsafe string ReadASCIIString(IntPtr address, int length)
         {
+            Span<byte> bytes = stackalloc byte[256];
             if (length <= 0)
             {
                 return "";
             }
-            Span<byte> bytes = stackalloc byte[length];
+            bytes = length > bytes.Length ? new byte[length] : bytes[..length];
             ReadProcessMemory(address, bytes);
             return Encoding.ASCII.GetString(bytes);
         }
         
         public unsafe string ReadUnicodeString(IntPtr address, int length)
         {
+            Span<byte> bytes = stackalloc byte[256];
             if (length <= 0)
             {
                 return "";
             }
-            Span<byte> bytes = stackalloc byte[length * 2];
+            length *= 2;
+            bytes = length > bytes.Length ? new byte[length] : bytes[..length];
             ReadProcessMemory(address, bytes);
             return Encoding.Unicode.GetString(bytes);
         }
@@ -388,13 +391,15 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
         //returns false if there was not enough space to write the string. Since we can't allocate new memory, we are bound by the existing allocation length
         public unsafe bool WriteUnicodeString(IntPtr address, string str, int maxCharsAvailable)
         {
+            Span<byte> bytes = stackalloc byte[256];
             var charSpan = str.AsSpan();
             var bytesLength = Encoding.Unicode.GetByteCount(charSpan);
-            if ((bytesLength + 2) > maxCharsAvailable * 2)
+            int maxBytesAvailable = maxCharsAvailable * 2;
+            if ((bytesLength + 2) > maxBytesAvailable)
             {
                 return false;
             }
-            Span<byte> bytes = stackalloc byte[maxCharsAvailable * 2];
+            bytes = maxBytesAvailable > bytes.Length ? new byte[maxBytesAvailable] : bytes[..maxBytesAvailable];
             bytes.Fill(0);
             Encoding.Unicode.GetBytes(charSpan, bytes);
             fixed (byte* bytePtr = bytes)

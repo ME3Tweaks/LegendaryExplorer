@@ -144,7 +144,8 @@ namespace LegendaryExplorerCore.Helpers
 
         public static string ReadStringLatin1(this Stream stream, int count)
         {
-            Span<byte> buffer = count > 256 ? new byte[count] : stackalloc byte[count];
+            Span<byte> buffer = stackalloc byte[256];
+            buffer = count > buffer.Length ? new byte[count] : buffer[..count];
             stream.ReadToSpan(buffer);
             return Encoding.Latin1.GetString(buffer);
         }
@@ -169,7 +170,8 @@ namespace LegendaryExplorerCore.Helpers
 
         public static string ReadStringUnicode(this Stream stream, int count)
         {
-            Span<byte> buffer = count > 256 ? new byte[count] : stackalloc byte[count];
+            Span<byte> buffer = stackalloc byte[256];
+            buffer = count > buffer.Length ? new byte[count] : buffer[..count];
             stream.ReadToSpan(buffer);
             return Encoding.Unicode.GetString(buffer);
         }
@@ -240,7 +242,8 @@ namespace LegendaryExplorerCore.Helpers
         #region ASCII SUPPORT
         public static string ReadStringASCII(this Stream stream, int count)
         {
-            Span<byte> buffer = count > 256 ? new byte[count] : stackalloc byte[count];
+            Span<byte> buffer = stackalloc byte[256];
+            buffer = count > buffer.Length ? new byte[count] : buffer[..count];
             stream.ReadToSpan(buffer);
             return Encoding.ASCII.GetString(buffer);
         }

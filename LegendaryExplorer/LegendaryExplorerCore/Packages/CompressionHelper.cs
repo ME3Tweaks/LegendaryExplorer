@@ -591,7 +591,8 @@ namespace LegendaryExplorerCore.Packages
 
             private string ReadUnrealStringLittleEndianSlow()
             {
-                Span<byte> lenBytes = stackalloc byte[4];
+                Span<byte> bytes = stackalloc byte[256];
+                Span<byte> lenBytes = bytes[..4];
                 Read(lenBytes);
                 int len = MemoryMarshal.Read<int>(lenBytes);
                 if (len == 0)
@@ -600,14 +601,14 @@ namespace LegendaryExplorerCore.Packages
                 }
                 if (len > 0)
                 {
-                    Span<byte> strBytes = len < 256 ? stackalloc byte[len] : new byte[len];
+                    Span<byte> strBytes = len > 256 ? new byte[len] : bytes[..len];
                     Read(strBytes);
                     return Encoding.Latin1.GetString(strBytes).Trim('\0');
                 }
                 else
                 {
                     len *= -2;
-                    Span<byte> strBytes = len < 256 ? stackalloc byte[len] : new byte[len];
+                    Span<byte> strBytes = len > 256 ? new byte[len] : bytes[..len];
                     Read(strBytes);
                     return Encoding.Unicode.GetString(strBytes).Trim('\0');
                 }
