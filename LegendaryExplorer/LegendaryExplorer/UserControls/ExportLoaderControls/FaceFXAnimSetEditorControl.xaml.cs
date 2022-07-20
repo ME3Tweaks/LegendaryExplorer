@@ -551,6 +551,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             SaveChanges();
         }
 
+        private void ClearAnimations_Click(object sender, RoutedEventArgs e)
+        {
+            Animations.ClearEx();
+            SaveChanges();
+        }
+
         private void DeleteLine_Click(object sender, RoutedEventArgs e)
         {
             FaceFX.Lines.Remove(SelectedLine);
