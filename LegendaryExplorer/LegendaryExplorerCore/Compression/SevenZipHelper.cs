@@ -128,13 +128,15 @@ namespace LegendaryExplorerCore.Compression
         /// </summary>
         /// <param name="src">Source data</param>
         /// <returns>Byte array of compressed data</returns>
-
         public static byte[] CompressToLZMAFile(byte[] src)
         {
             var compressedBytes = LZMA.Compress(src);
             byte[] fixedBytes = new byte[compressedBytes.Length + 8]; //needs 8 byte header written into it (only mem version needs this)
+            
+            // Copy LZMA header info and write the full length of the data
             Buffer.BlockCopy(compressedBytes, 0, fixedBytes, 0, 5);
             fixedBytes.OverwriteRange(5, BitConverter.GetBytes(src.Length));
+            // Copy the remaining data
             Buffer.BlockCopy(compressedBytes, 5, fixedBytes, 13, compressedBytes.Length - 5);
             return fixedBytes;
         }
