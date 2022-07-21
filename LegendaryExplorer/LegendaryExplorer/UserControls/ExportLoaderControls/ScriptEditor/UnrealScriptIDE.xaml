@@ -32,6 +32,18 @@
             <ide:UnrealScriptTextEditor x:Name="textEditor" Document="{Binding Document}" SyntaxHighlighting="Unrealscript"
                                         Background="#1E1E1E" Foreground="#DBDBDB" LineNumbersForeground ="#2B90AE"
                                         FontFamily="Consolas" ShowLineNumbers="True">
+                <avalonedit:TextEditor.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Command="Find"/>
+                        <Separator/>
+                        <MenuItem Command="Undo"/>
+                        <MenuItem Command="Redo"/>
+                        <Separator/>
+                        <MenuItem Command="Cut"/>
+                        <MenuItem Command="Copy"/>
+                        <MenuItem Command="Paste"/>
+                    </ContextMenu>
+                </avalonedit:TextEditor.ContextMenu>
                 <avalonedit:TextEditor.Resources>
                     <Style TargetType="{x:Type avalonedit:TextEditor}">
                         <Setter Property="FlowDirection" Value="LeftToRight" />
@@ -169,6 +181,9 @@
                                 </ControlTemplate>
                             </Setter.Value>
                         </Setter>
+                    </Style>
+                    <Style TargetType="avalonedit:SearchPanel">
+                        <Setter Property="MarkerBrush" Value="#653306"/>
                     </Style>
                 </avalonedit:TextEditor.Resources>
             </ide:UnrealScriptTextEditor>
