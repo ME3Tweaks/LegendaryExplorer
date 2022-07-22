@@ -28,6 +28,15 @@ namespace LegendaryExplorerCore.Misc
             EntryPath = entry.InstancedFullPath;
         }
 
+        public LEXOpenable(IMEPackage pcc, int uIndex)
+        {
+            IEntry entry = pcc.GetEntry(uIndex);
+            FilePath = pcc.FilePath;
+            EntryPath = entry.InstancedFullPath;
+            EntryUIndex = uIndex;
+            EntryClass = entry.ClassName;
+        }
+
         public bool IsImport()
         {
             return EntryUIndex < 0;

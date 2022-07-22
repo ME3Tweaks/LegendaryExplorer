@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -8,8 +9,11 @@ using System.Windows.Threading;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Folding;
 using LegendaryExplorer.Dialogs;
+using LegendaryExplorer.SharedUI;
+using LegendaryExplorer.Tools.PackageEditor;
 using LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE;
 using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.UnrealScript;
 using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
@@ -46,6 +50,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
             });
         }
 
+        public ICommand FindUsagesInFileCommand { get; set; }
+
         public UnrealScriptIDE() : base("UnrealScript IDE")
         {
             InitializeComponent();
@@ -58,6 +64,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
             textEditor.TextArea.TextEntered += TextAreaOnTextEntered;
             _definitionLinkGenerator = new DefinitionLinkGenerator(ScrollTo);
             textEditor.TextArea.TextView.ElementGenerators.Add(_definitionLinkGenerator);
+
+            FindUsagesInFileCommand = new GenericCommand(FindUsagesInFile, CanFindReferences);
         }
 
         public override bool CanParse(ExportEntry exportEntry) =>
@@ -269,7 +277,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                                             "Functionality will be limited to script decompilation.\n\n\n" +
                                             "Do you want to see the compilation error log?", "Script Error", MessageBoxButton.YesNo))
                         {
-                            Dispatcher.Invoke(() => new ListDialog(CurrentFileLib.InitializationLog.Content.Select(msg => msg.ToString()), 
+                            Dispatcher.Invoke(() => new ListDialog(CurrentFileLib.InitializationLog.AllErrors.Select(msg => msg.ToString()), 
                                                                    "Initialization Log", "", Window.GetWindow(this)).Show());
                         }
                     }
@@ -636,5 +644,103 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
         private readonly DefinitionLinkGenerator _definitionLinkGenerator;
 
         #endregion
+
+        private ASTNode contextMenuDefinitionNode;
+
+        private void TextEditor_OnContextMenuOpening(object sender, ContextMenuEventArgs e)
+        {
+            var position = textEditor.TextArea.TextView.GetPosition(Mouse.GetPosition(textEditor.TextArea.TextView) + textEditor.TextArea.TextView.ScrollOffset);
+            if (position is null)
+            {
+                contextMenuDefinitionNode = null;
+                return;
+            }
+            var lineLength = textEditor.Document.GetLineByNumber(position.Value.Line).Length + 1;
+            if (position.Value.Column == lineLength)
+            {
+                contextMenuDefinitionNode = null;
+                return;
+            }
+            int offset = textEditor.Document.GetOffset(position.Value.Location);
+            contextMenuDefinitionNode = _definitionLinkGenerator.GetDefinitionFromOffset(offset);
+        }
+        private void TextEditor_OnContextMenuClosing(object sender, ContextMenuEventArgs e) => contextMenuDefinitionNode = null;
+
+        private bool CanFindReferences() => contextMenuDefinitionNode is Function && CurrentFileLib.IsInitialized;
+
+        private void FindUsagesInFile()
+        {
+            ASTNode definitonNode = contextMenuDefinitionNode;
+            IsBusy = true;
+            BusyProgressIndeterminate = true;
+            string itemName;
+            switch (definitonNode)
+            {
+                case Function func:
+                    itemName = func.Name;
+                    break;
+                case VariableDeclaration varDecl:
+                    itemName = varDecl.Name;
+                    break;
+                case VariableType varType:
+                    itemName = varType.Name;
+                    break;
+                case EnumValue enumValue:
+                    itemName = enumValue.Name;
+                    break;
+                default:
+                    MessageBox.Show($"Cannot find usages of a {definitonNode.GetType().FullName}.");
+                    return;
+            }
+            BusyText = $"Finding usages of {itemName}...";
+            Task.Run(() =>
+            {
+                try
+                {
+                    switch (definitonNode)
+                    {
+                        case Function func:
+                            return UnrealScriptLookup.FindUsagesInFile(func, CurrentFileLib);
+                        case VariableDeclaration varDecl:
+                            break;
+                        case VariableType varType:
+                            break;
+                        case EnumValue enumValue:
+                            break;
+                    }
+                    return null;
+                }
+                catch (Exception e)
+                {
+                    return new List<EntryStringPair> { new EntryStringPair($"Error occured: {e.FlattenException()}") };
+                }
+            }).ContinueWithOnUIThread(prevTask =>
+            {
+                IsBusy = false;
+                if (prevTask.Result is null)
+                {
+                    return;
+                }
+                if (prevTask.Result.IsEmpty())
+                {
+                    MessageBox.Show($"No usages of '{itemName}' found in this file.");
+                    return;
+                }
+                new ListDialog(prevTask.Result, $"Usages of {itemName}", "", Window.GetWindow(this))
+                {
+                    DoubleClickEntryHandler = entryItem =>
+                    {
+                        if (entryItem?.Openable is LEXOpenable openable)
+                        {
+                            var p = new PackageEditorWindow();
+                            p.Show();
+                            p.LoadFile(openable.FilePath, openable.EntryUIndex);
+                            p.Activate();
+                        }
+                    }
+                }.Show();
+            });
+        }
+
     }
 }

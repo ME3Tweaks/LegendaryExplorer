@@ -6,7 +6,6 @@ using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
 using LegendaryExplorerCore.UnrealScript.Compiling.Errors;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
 using LegendaryExplorerCore.UnrealScript.Lexing;
-using LegendaryExplorerCore.UnrealScript.Utilities;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
 using static LegendaryExplorerCore.UnrealScript.Utilities.Keywords;
 
@@ -301,11 +300,12 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 Tokens = new TokenStream(new List<ScriptToken>(), Tokens)
             };
 
-            // TODO: should AST-nodes accept null values? should they make sure they dont present any?
-            return new Class(name.Value, parentClass, outerClass, flags, interfaces, types, variables, funcs, states, defaultPropertiesBlock, startPos, CurrentToken.StartPos)
+            var @class = new Class(name.Value, parentClass, outerClass, flags, interfaces, types, variables, funcs, states, defaultPropertiesBlock, startPos, CurrentToken.StartPos)
             {
                 ConfigName = configName
             };
+            Tokens.AddDefinitionLink(@class, name);
+            return @class;
             
         }
 
@@ -397,11 +397,16 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             var semicolon = Consume(TokenType.SemiColon);
             if (semicolon == null) throw ParseError("Expected semi-colon!", CurrentPosition);
 
-            return new VariableDeclaration(type, flags, var.Name, var.Size, category, startPos, semicolon.EndPos);
+            var varDecl = new VariableDeclaration(type, flags, var.Name, var.Size, category, startPos, semicolon.EndPos);
+
+            Tokens.AddDefinitionLink(varDecl, var.StartPos, var.EndPos - var.StartPos);
+
+            return varDecl;
         }
 
         private Struct ParseStruct()
         {
+            var startPos = CurrentToken.StartPos;
             if (!Matches(STRUCT, EF.Keyword)) return null;
 
             ScriptStructFlags flags = 0;
@@ -505,7 +510,11 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
             if (Consume(TokenType.RightBracket) == null) throw ParseError("Expected '}'!", CurrentPosition);
 
-            return new Struct(name.Value, parent, flags, vars, types, defaults, null, name.StartPos, name.EndPos);
+            var @struct = new Struct(name.Value, parent, flags, vars, types, defaults, null, startPos, PrevToken.EndPos);
+
+            Tokens.AddDefinitionLink(@struct, name);
+
+            return @struct;
         }
 
         private Enumeration ParseEnum()
@@ -531,7 +540,11 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 if (ident == null) throw ParseError("Expected non-empty enumeration!", CurrentPosition);
                 if (ident.Value.Length > 63) TypeError("Enum value must be 63 characters or less!", CurrentPosition);
 
-                identifiers.Add(new EnumValue(ident.Value, i, ident.StartPos, ident.EndPos));
+                var enumValue = new EnumValue(ident.Value, i, ident.StartPos, ident.EndPos);
+
+                Tokens.AddDefinitionLink(enumValue, ident);
+
+                identifiers.Add(enumValue);
                 if (Consume(TokenType.Comma) == null && CurrentTokenType != TokenType.RightBracket) throw ParseError("Malformed enumeration content!", CurrentPosition);
                 i++;
             } while (CurrentTokenType != TokenType.RightBracket);
@@ -542,7 +555,11 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 TypeError("Enums must have at least 1 value!", name);
             }
 
-            return new Enumeration(name.Value, identifiers, startPos, PrevToken.EndPos);
+            var @enum = new Enumeration(name.Value, identifiers, startPos, PrevToken.EndPos);
+
+            Tokens.AddDefinitionLink(@enum, name);
+
+            return @enum;
         }
 
         private Function TryParseFunction()
@@ -643,11 +660,15 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
                 returnDeclaration = new VariableDeclaration(returnType, returnFlags, "ReturnValue");
             }
-            return new Function(name.Value, flags, returnDeclaration, body, parameters, start, body.EndPos)
+            var function = new Function(name.Value, flags, returnDeclaration, body, parameters, start, PrevToken.EndPos)
             {
                 NativeIndex = nativeIndex,
                 Tokens = Tokens
             };
+
+            Tokens.AddDefinitionLink(function, name);
+
+            return function;
         }
 
         private bool IsStartOfStateDeclaration()
@@ -659,6 +680,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
         private State ParseState()
         {
+            int startPos = CurrentToken.StartPos;
             var flags = EStateFlags.None;
             while (CurrentTokenType == TokenType.Word)
             {
@@ -743,11 +765,15 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             };
 
             var parentState = parent != null ? new State(parent.Name, null, default, null, null, null, parent.StartPos, parent.EndPos) : null;
-            return new State(name.Value, body, flags, parentState, funcs, null, name.StartPos, CurrentPosition)
+            var state = new State(name.Value, body, flags, parentState, funcs, null, startPos, CurrentPosition)
             {
                 IgnoreMask = ignoreMask,
                 Tokens = Tokens
             };
+
+            Tokens.AddDefinitionLink(state, name);
+
+            return state;
         }
 
         public DefaultPropertiesBlock ParseDefaultProperties()

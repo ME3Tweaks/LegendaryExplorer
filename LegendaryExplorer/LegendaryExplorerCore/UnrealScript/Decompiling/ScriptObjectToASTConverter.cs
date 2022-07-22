@@ -494,12 +494,6 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             VariableDeclaration returnVal = null;
             var nextItem = obj.Children;
 
-
-            //if (containingClass != null && containingClass.Export != null && containingClass.Export.ObjectName == "UIAction_PlaySound")
-            //{
-            //    //pcc.Save(@"C:\users\mgame\desktop\failed.pcc");
-            //    Debugger.Break();
-            //}
             var parameters = new List<FunctionParameter>();
             var locals = new List<VariableDeclaration>();
             IMEPackage pcc = obj.Export.FileRef;

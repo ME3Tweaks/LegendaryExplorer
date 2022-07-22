@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
@@ -7,6 +8,8 @@ using LegendaryExplorerCore.UnrealScript.Utilities;
 
 namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 {
+
+    [DebuggerDisplay("Class | {Name}")]
     public sealed class Class : ObjectType, IContainsFunctions
     {
         public string Package;

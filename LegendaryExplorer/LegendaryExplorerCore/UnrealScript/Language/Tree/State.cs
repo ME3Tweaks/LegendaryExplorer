@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
 using LegendaryExplorerCore.UnrealScript.Language.Util;
 using LegendaryExplorerCore.UnrealScript.Parsing;
@@ -6,6 +7,7 @@ using static LegendaryExplorerCore.Unreal.UnrealFlags;
 
 namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 {
+    [DebuggerDisplay("State | {Name}")]
     public class State : ASTNode, IContainsByteCode, IHasFileReference, IContainsFunctions
     {
         public TokenStream Tokens { get; init; }
@@ -42,6 +44,11 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
                 if (Functions != null) foreach (Function function in Functions) yield return function;
                 yield return Body;
             }
+        }
+
+        public string GetScope()
+        {
+            return $"{((Class)Outer).GetScope()}.{Name}";
         }
 
         public string FilePath { get; init; }

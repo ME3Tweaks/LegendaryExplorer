@@ -1,16 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
-using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Unreal;
-using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
 using LegendaryExplorerCore.UnrealScript.Language.Util;
 using LegendaryExplorerCore.UnrealScript.Parsing;
-using LegendaryExplorerCore.UnrealScript.Utilities;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
 
 namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 {
+    [DebuggerDisplay("Function | {Name}")]
     public class Function : ASTNode, IContainsByteCode, IHasFileReference
     {
         public string Name { get; }
@@ -105,6 +105,16 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
                 if (Body != null) yield return Body;
             }
         }
+
+        public string GetScope() => $"{GetOuterScope()}.{Name}";
+
+        public string GetOuterScope() =>
+            Outer switch
+            {
+                Class cls => cls.GetScope(),
+                State state => state.GetScope(),
+                _ => throw new ArgumentOutOfRangeException(nameof(Outer))
+            };
 
 
         public string FilePath { get; init; }

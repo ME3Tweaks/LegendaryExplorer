@@ -126,7 +126,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             symbols.PopScope();
         }
 
-        public static void ParseState(State state, MEGame game, SymbolTable symbols, MessageLog log = null)
+        public static void ParseState(State state, MEGame game, SymbolTable symbols, MessageLog log = null, bool parseFunctions = true)
         {
             symbols.PushScope(state.Name);
 
@@ -145,9 +145,12 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
             state.Body = body;
 
-            foreach (Function stateFunction in state.Functions)
+            if (parseFunctions)
             {
-                ParseFunction(stateFunction, game, symbols, log);
+                foreach (Function stateFunction in state.Functions)
+                {
+                    ParseFunction(stateFunction, game, symbols, log);
+                }
             }
 
             symbols.PopScope();
@@ -557,6 +560,8 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 ParseError("States cannot declare variables!", varDecl);
             }
             varDecl.Outer = Node;
+
+            Tokens.AddDefinitionLink(varDecl, var.StartPos, var.EndPos - var.StartPos);
 
             return varDecl;
         }

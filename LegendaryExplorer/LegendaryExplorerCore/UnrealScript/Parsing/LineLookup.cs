@@ -8,7 +8,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
         public LineLookup(List<int> lines)
         {
-            this.Lines = lines;
+            Lines = lines;
         }
 
         public int GetLineFromCharIndex(int charIndex)
@@ -34,6 +34,12 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
         public int GetColumnFromCharIndex(int charIndex)
         {
             return charIndex - Lines[GetLineFromCharIndex(charIndex) - 1];
+        }
+
+        public (int, int) GetLineandColumnFromCharIndex(int charIndex)
+        {
+            int line = GetLineFromCharIndex(charIndex);
+            return (line, charIndex - Lines[line - 1]);
         }
     }
 }

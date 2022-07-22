@@ -42,7 +42,9 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
         private readonly CaseInsensitiveDictionary<ASTNodeDict> Cache;
         private readonly Stack<ASTNodeDict> Scopes;
         private readonly Stack<string> ScopeNames;
-        private readonly CaseInsensitiveDictionary<VariableType> Types;
+        private readonly CaseInsensitiveDictionary<VariableType> TypeDict;
+
+        internal IReadOnlyCollection<VariableType> Types => TypeDict.Values;
 
         public string CurrentScopeName => ScopeNames.Count == 0 ? "" : ScopeNames.Peek();
 
@@ -57,17 +59,17 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
             ScopeNames = new Stack<string>();
             Scopes = new Stack<ASTNodeDict>();
             Cache = new CaseInsensitiveDictionary<ASTNodeDict>();
-            Types = new CaseInsensitiveDictionary<VariableType>();
+            TypeDict = new CaseInsensitiveDictionary<VariableType>();
             Game = game;
         }
 
-        private SymbolTable(Stack<string> scopeNames, Stack<ASTNodeDict> scopes, CaseInsensitiveDictionary<ASTNodeDict> cache, CaseInsensitiveDictionary<VariableType> types, OperatorDefinitions ops, MEGame game)
+        private SymbolTable(Stack<string> scopeNames, Stack<ASTNodeDict> scopes, CaseInsensitiveDictionary<ASTNodeDict> cache, CaseInsensitiveDictionary<VariableType> typeDict, OperatorDefinitions ops, MEGame game)
         {
             Operators = ops;
             ScopeNames = scopeNames;
             Scopes = scopes;
             Cache = cache;
-            Types = types;
+            TypeDict = typeDict;
             Game = game;
         }
 
@@ -296,15 +298,15 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
                 return;
             }
             //non-primitive types that have operators defined for
-            var objectType = Types["Object"];
-            var interfaceType = Types["Interface"];
-            var vectorType = Types["Vector"];
-            var rotatorType = Types["Rotator"];
-            var quatType = Types["Quat"];
-            var matrixType = Types["Matrix"];
-            var vector2DType = Types["Vector2D"];
-            var colorType = Types["Color"];
-            var linearColorType = Types["LinearColor"];
+            var objectType = TypeDict["Object"];
+            var interfaceType = TypeDict["Interface"];
+            var vectorType = TypeDict["Vector"];
+            var rotatorType = TypeDict["Rotator"];
+            var quatType = TypeDict["Quat"];
+            var matrixType = TypeDict["Matrix"];
+            var vector2DType = TypeDict["Vector2D"];
+            var colorType = TypeDict["Color"];
+            var linearColorType = TypeDict["LinearColor"];
 
 
             const EPropertyFlags parm = EPropertyFlags.Parm;
@@ -608,7 +610,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
                     {
                         var parts = functionName.Split('.');
                         functionName = parts[^1];
-                        if (parts.Length == 2 && Types.TryGetValue(parts[0], out VariableType type) && type is Class cls)
+                        if (parts.Length == 2 && TypeDict.TryGetValue(parts[0], out VariableType type) && type is Class cls)
                         {
                             scope = cls.GetInheritanceString();
                         }
@@ -655,7 +657,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
                 }
             }
 
-            if (Types.TryGetValue(stub.Name, out VariableType temp))
+            if (TypeDict.TryGetValue(stub.Name, out VariableType temp))
             {
                 return temp;
             }
@@ -833,9 +835,9 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
             //Hopefully the one defined later is the one that actually gets used...
             if (node.Name == "SFXGameEffect_DamageBonus")
             {
-                Types[node.Name] = node;
+                TypeDict[node.Name] = node;
             }
-            else if (Types.ContainsKey(node.Name))
+            else if (TypeDict.ContainsKey(node.Name))
             {
                 if (node is Class)
                 {
@@ -847,7 +849,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
             }
             else
             {
-                Types.Add(node.Name, node);
+                TypeDict.Add(node.Name, node);
             }
 
             //hack for registering intrinsic classes that inherit from non-intrinsics
@@ -855,7 +857,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
             {
                 case "Player":
                 {
-                    var objClass = Types[OBJECT];
+                    var objClass = TypeDict[OBJECT];
                     var netConType = new Class("NetConnection", node, objClass, EClassFlags.Intrinsic | EClassFlags.Abstract | EClassFlags.Transient | EClassFlags.Config) { ConfigName = "Engine" };
                     AddType(netConType);
                     PushScope(netConType.Name);
@@ -884,7 +886,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
 
         public void RemoveTypeAndChildTypes(VariableType type)
         {
-            Types.Remove(type.Name);
+            TypeDict.Remove(type.Name);
             if (type is ObjectType objectType)
             {
                 foreach (VariableType innerType in objectType.TypeDeclarations)
@@ -1014,7 +1016,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
 
         public bool TryGetType<T>(string nameValue, out T variableType) where T : VariableType
         {
-            if (Types.TryGetValue(nameValue, out VariableType varType) && varType is T tType)
+            if (TypeDict.TryGetValue(nameValue, out VariableType varType) && varType is T tType)
             {
                 variableType = tType;
                 return true;
@@ -1042,7 +1044,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
                        newScopeNames, 
                        newScopes, 
                        newCache,
-                       new CaseInsensitiveDictionary<VariableType>(Types),
+                       new CaseInsensitiveDictionary<VariableType>(TypeDict),
                        Operators,
                        Game);
         }

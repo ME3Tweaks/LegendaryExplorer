@@ -313,7 +313,6 @@ namespace LegendaryExplorerCore.UnrealScript
                     objBinCache.Clear();
                 }
             }
-            InitializationStatusChange?.Invoke(true);
             return IsInitialized;
         }
 
@@ -368,6 +367,7 @@ namespace LegendaryExplorerCore.UnrealScript
                 if (Pcc.GetEntry(update.Index) is ExportEntry exp && IsScriptExport(exp))
                 {
                     ReInitializeFile();
+                    InitializationStatusChange?.Invoke(true);
                     return;
                 }
             }

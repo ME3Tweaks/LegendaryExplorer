@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using ICSharpCode.AvalonEdit.Rendering;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
@@ -72,7 +73,41 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
             return -1;
         }
 
-        public override VisualLineElement ConstructElement(int offset)
+        public ASTNode? GetDefinitionFromOffset(int offset)
+        {
+            ASTNode? node = null;
+
+            int index = Offsets.BinarySearch(offset);
+
+            if (index < 0)
+            {
+                index = ~index - 1;
+                if (index < 0)
+                {
+                    return null;
+                }
+            }
+            if (index < Offsets.Count)
+            {
+                int spanOffset = Offsets[index];
+                DefinitionLinkSpan span = Spans[spanOffset];
+
+                if (offset >= spanOffset && offset < spanOffset + span.Length)
+                {
+                    node = span.Node;
+                }
+            }
+
+            return node switch
+            {
+                StaticArrayType staticArrayType => staticArrayType.ElementType,
+                ClassType classType => classType.ClassLimiter,
+                DynamicArrayType dynArr => dynArr.ElementType,
+                _ => node
+            };
+        }
+
+        public override VisualLineElement? ConstructElement(int offset)
         {
             //Debug.WriteLine($"Construct Offset: {offset}");
             if (Spans.TryGetValue(offset, out DefinitionLinkSpan span))
