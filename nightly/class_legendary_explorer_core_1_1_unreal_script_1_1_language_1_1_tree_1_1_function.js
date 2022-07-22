@@ -3,6 +3,8 @@ var class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_fu
     [ "Function", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function.html#a90c2f6b0596ec6adaf5b238d2e3d6d21", null ],
     [ "SignatureEquals", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function.html#a3947283b7f855bc1001a240382ff077c", null ],
     [ "AcceptVisitor", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function.html#a5b8da85e7161bd459a1ca49e083f95a4", null ],
+    [ "GetScope", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function.html#afe0feb03d6876e1005c8b23a2c680737", null ],
+    [ "GetOuterScope", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function.html#a8033ec07bfa5eb53bb539a30fe7fe391", null ],
     [ "ReturnValueDeclaration", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function.html#aa8eba3107c10ab35d2c5a28440423553", null ],
     [ "Flags", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function.html#ad0c956514034f230e1252b51f8e536d1", null ],
     [ "Parameters", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function.html#a949539c5913b2c590052dfe0145a7e5e", null ],

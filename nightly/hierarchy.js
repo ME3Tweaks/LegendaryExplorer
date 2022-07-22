@@ -362,10 +362,6 @@ var hierarchy =
       [ "LegendaryExplorerCore.Unreal.NameReference", "struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html", null ],
       [ "LegendaryExplorerCore.Unreal.ObjectProperty", "class_legendary_explorer_core_1_1_unreal_1_1_object_property.html", null ]
     ] ],
-    [ "LegendaryExplorerCore.UnrealScript.Language.Util.IContainsByteCode", "interface_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_util_1_1_i_contains_byte_code.html", [
-      [ "LegendaryExplorerCore.UnrealScript.Language.Tree.Function", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function.html", null ],
-      [ "LegendaryExplorerCore.UnrealScript.Language.Tree.State", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_state.html", null ]
-    ] ],
     [ "LegendaryExplorerCore.UnrealScript.Language.Util.IContainsFunctions", "interface_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_util_1_1_i_contains_functions.html", [
       [ "LegendaryExplorerCore.UnrealScript.Language.Tree.Class", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_class.html", null ],
       [ "LegendaryExplorerCore.UnrealScript.Language.Tree.State", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_state.html", null ]
@@ -452,7 +448,11 @@ var hierarchy =
       [ "LegendaryExplorerCore.UnrealScript.Language.Tree.Function", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function.html", null ],
       [ "LegendaryExplorerCore.UnrealScript.Language.Tree.State", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_state.html", null ],
       [ "LegendaryExplorerCore.UnrealScript.Language.Tree.VariableDeclaration", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_declaration.html", null ],
-      [ "LegendaryExplorerCore.UnrealScript.Language.Tree.VariableType", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_type.html", null ]
+      [ "LegendaryExplorerCore.UnrealScript.Language.Tree.VariableType", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_type.html", null ],
+      [ "LegendaryExplorerCore.UnrealScript.Language.Util.IContainsByteCode", "interface_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_util_1_1_i_contains_byte_code.html", [
+        [ "LegendaryExplorerCore.UnrealScript.Language.Tree.Function", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function.html", null ],
+        [ "LegendaryExplorerCore.UnrealScript.Language.Tree.State", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_state.html", null ]
+      ] ]
     ] ],
     [ "LegendaryExplorerCore.Gammtek.Dynamic.IHierarchyWrapperProvider< T >", "interface_legendary_explorer_core_1_1_gammtek_1_1_dynamic_1_1_i_hierarchy_wrapper_provider.html", null ],
     [ "LegendaryExplorerCore.Gammtek.Dynamic.IHierarchyWrapperProvider< ElasticObject >", "interface_legendary_explorer_core_1_1_gammtek_1_1_dynamic_1_1_i_hierarchy_wrapper_provider.html", [
@@ -995,6 +995,7 @@ var hierarchy =
     [ "LegendaryExplorerCore.Helpers.UnrealExtensions", "class_legendary_explorer_core_1_1_helpers_1_1_unreal_extensions.html", null ],
     [ "LegendaryExplorerCore.Unreal.UnrealFlags", "class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html", null ],
     [ "LegendaryExplorerCore.UnrealScript.UnrealScriptCompiler", "class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html", null ],
+    [ "LegendaryExplorerCore.UnrealScript.UnrealScriptLookup", "class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_lookup.html", null ],
     [ "LegendaryExplorerCore.Unreal.UPropertyExtensions", "class_legendary_explorer_core_1_1_unreal_1_1_u_property_extensions.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.URL", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_r_l.html", null ],
     [ "LegendaryExplorerCore.Gammtek.Windows.WindowsApi.User32", "class_legendary_explorer_core_1_1_gammtek_1_1_windows_1_1_windows_api_1_1_user32.html", null ],

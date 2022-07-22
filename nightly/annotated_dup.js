@@ -867,7 +867,8 @@ var annotated_dup =
           [ "ObjectReader", "class_legendary_explorer_core_1_1_unreal_script_1_1_utilities_1_1_object_reader.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_utilities_1_1_object_reader" ]
         ] ],
         [ "FileLib", "class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib" ],
-        [ "UnrealScriptCompiler", "class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler" ]
+        [ "UnrealScriptCompiler", "class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler" ],
+        [ "UnrealScriptLookup", "class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_lookup.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_lookup" ]
       ] ],
       [ "LegendaryExplorerCoreLib", "class_legendary_explorer_core_1_1_legendary_explorer_core_lib.html", "class_legendary_explorer_core_1_1_legendary_explorer_core_lib" ],
       [ "LegendaryExplorerCoreLibSettings", "class_legendary_explorer_core_1_1_legendary_explorer_core_lib_settings.html", "class_legendary_explorer_core_1_1_legendary_explorer_core_lib_settings" ]

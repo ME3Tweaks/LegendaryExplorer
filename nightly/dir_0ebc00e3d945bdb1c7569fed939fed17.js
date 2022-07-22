@@ -12,5 +12,8 @@ var dir_0ebc00e3d945bdb1c7569fed939fed17 =
     ] ],
     [ "UnrealScriptCompiler.cs", "_unreal_script_compiler_8cs.html", [
       [ "LegendaryExplorerCore.UnrealScript.UnrealScriptCompiler", "class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler" ]
+    ] ],
+    [ "UnrealScriptLookup.cs", "_unreal_script_lookup_8cs.html", [
+      [ "LegendaryExplorerCore.UnrealScript.UnrealScriptLookup", "class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_lookup.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_lookup" ]
     ] ]
 ];

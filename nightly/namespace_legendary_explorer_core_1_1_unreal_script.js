@@ -8,5 +8,6 @@ var namespace_legendary_explorer_core_1_1_unreal_script =
     [ "Parsing", "namespace_legendary_explorer_core_1_1_unreal_script_1_1_parsing.html", "namespace_legendary_explorer_core_1_1_unreal_script_1_1_parsing" ],
     [ "Utilities", "namespace_legendary_explorer_core_1_1_unreal_script_1_1_utilities.html", "namespace_legendary_explorer_core_1_1_unreal_script_1_1_utilities" ],
     [ "FileLib", "class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib" ],
-    [ "UnrealScriptCompiler", "class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler" ]
+    [ "UnrealScriptCompiler", "class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler" ],
+    [ "UnrealScriptLookup", "class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_lookup.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_lookup" ]
 ];
