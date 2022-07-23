@@ -21,6 +21,7 @@
 
 using System;
 using System.IO;
+using System.Numerics;
 using LegendaryExplorerCore.Helpers;
 
 namespace LegendaryExplorerCore.Textures
@@ -49,7 +50,7 @@ namespace LegendaryExplorerCore.Textures
 
             int imageWidth = stream.ReadInt16();
             int imageHeight = stream.ReadInt16();
-            if (!IsPowerOfTwo(imageWidth) || !IsPowerOfTwo(imageHeight))
+            if (!BitOperations.IsPow2(imageWidth) || !BitOperations.IsPow2(imageHeight))
                 throw new TextureSizeNotPowerOf2Exception();
 
             int imageDepth = stream.ReadByte();

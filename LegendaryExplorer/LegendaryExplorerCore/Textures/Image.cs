@@ -26,6 +26,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Runtime.InteropServices;
 using BCnEncoder.Decoder;
 using BCnEncoder.Encoder;
@@ -260,7 +261,7 @@ namespace LegendaryExplorerCore.Textures
 
                         var image = decoder.Decode<Rgba32>(Configuration.Default, stream);
 
-                        if (!IsPowerOfTwo(image.Width) || !IsPowerOfTwo(image.Height))
+                        if (!BitOperations.IsPow2(image.Width) || !BitOperations.IsPow2(image.Height))
                             throw new TextureSizeNotPowerOf2Exception();
 
                         //image.Get
@@ -802,31 +803,6 @@ namespace LegendaryExplorerCore.Textures
                 default:
                     throw new Exception("invalid texture format");
             }
-        }
-
-        /// <summary>
-        /// Checks if a number is a power of two.
-        /// </summary>
-        /// <param name="n">The number to check</param>
-        /// <returns>True if the number is a power of two, false otherwise</returns>
-        public static bool IsPowerOfTwo(int n) => (n & (n - 1)) == 0;
-
-        /// <summary>
-        /// Returns the... power of two of the number?
-        /// </summary>
-        /// <todo>NOT SURE HOW THIS CODE WORKS!</todo>
-        /// <param name="n"></param>
-        /// <returns></returns>
-        public static int returnPowerOfTwo(int n)
-        {
-            n--;
-            n |= n >> 1;
-            n |= n >> 2;
-            n |= n >> 4;
-            n |= n >> 8;
-            n |= n >> 16;
-            n++;
-            return n;
         }
 
         /// <summary>

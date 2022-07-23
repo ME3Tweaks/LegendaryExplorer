@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
   <PropertyGroup>
-    <!-- Since this project uses winforms, it cannot target .net standard-->
     <TargetFrameworks>net6.0-windows</TargetFrameworks>
+    <LangVersion>10.0</LangVersion>
     <ProjectType>Local</ProjectType>
     <Platforms>x64</Platforms>
     <AssemblyKeyContainerName>
@@ -17,7 +17,6 @@
     <StartupObject>
     </StartupObject>
     <IsWebBootstrapper>false</IsWebBootstrapper>
-    <LangVersion>9.0</LangVersion>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>

@@ -30,9 +30,7 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
             Text = code;
             Log = log ?? new MessageLog();
             Builder = new StringBuilder();
-            uint lineGuess = (uint)code.Length / 100;
-            //todo: replace with BitOperations.RoundUpToPowerOf2 after upgrade to .NET 6
-            lineGuess = (uint)(0x1_0000_0000ul >> BitOperations.LeadingZeroCount(lineGuess - 1));
+            uint lineGuess = BitOperations.RoundUpToPowerOf2((uint)code.Length / 100);
             Lines = new List<int>((int)Math.Min(lineGuess, 524_288));
             Comments = new Dictionary<int, ScriptToken>();
         }
@@ -57,9 +55,7 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
 
         private List<ScriptToken> Lex()
         {
-            uint tokenGuess = (uint)Text.Length / 20;
-            //todo: replace with BitOperations.RoundUpToPowerOf2 after upgrade to .NET 6
-            tokenGuess = (uint)(0x1_0000_0000ul >> BitOperations.LeadingZeroCount(tokenGuess - 1));
+            uint tokenGuess = BitOperations.RoundUpToPowerOf2((uint)Text.Length / 20);
             var tokens = new List<ScriptToken>((int)Math.Min(tokenGuess, 2_097_152));
 
 
