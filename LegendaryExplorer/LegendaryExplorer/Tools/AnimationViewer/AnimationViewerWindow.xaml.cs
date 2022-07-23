@@ -391,9 +391,7 @@ namespace LegendaryExplorer.Tools.AnimationViewer
                 if (anim != null && Enumerable.Any(anim.Usages))
                 {
                     //CameraState = ECameraState.Fixed;
-                    int fileListIndex;
-                    bool isMod;
-                    (fileListIndex, animUIndex, isMod) = anim.Usages[0];
+                    (int fileListIndex, animUIndex, bool isMod) = anim.Usages[0];
                     (string filename, string contentdir) = FileListExtended[fileListIndex];
                     string rootPath = ME3Directory.DefaultGamePath;
 

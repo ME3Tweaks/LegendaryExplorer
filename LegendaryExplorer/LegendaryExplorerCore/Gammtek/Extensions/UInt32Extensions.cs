@@ -130,8 +130,7 @@ namespace LegendaryExplorerCore.Gammtek.Extensions
             int p = dest.Length;
             do
 			{
-                uint rem;
-                (value, rem) = Math.DivRem(value, 10);
+                (value, uint rem) = Math.DivRem(value, 10);
                 dest[--p] = (char)(rem + '0');
             }
             while (p > 0);

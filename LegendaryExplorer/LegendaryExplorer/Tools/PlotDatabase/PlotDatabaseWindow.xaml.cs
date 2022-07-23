@@ -499,9 +499,8 @@ namespace LegendaryExplorer.Tools.PlotDatabase
                         }
                     }
 
-                    string primarySort;
                     ICollectionView linedataView = CollectionViewSource.GetDefaultView(LV_Plots.ItemsSource);
-                    primarySort = headerClicked.Column.Header.ToString();
+                    string primarySort = headerClicked.Column.Header.ToString();
                     linedataView.SortDescriptions.Clear();
                     switch (primarySort)
                     {

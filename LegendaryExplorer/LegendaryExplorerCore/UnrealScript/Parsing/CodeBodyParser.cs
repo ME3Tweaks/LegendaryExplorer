@@ -1477,11 +1477,11 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
                 if (InStaticFunction)
                 {
-                    if (lhs is FunctionCall { Function: { Node: Function { IsStatic: false}}})
+                    if (lhs is FunctionCall { Function.Node: Function { IsStatic: false } })
                     {
                         TypeError("Cannot call an instance function from a static function!", lhs);
                     }
-                    else if (lhs is DelegateCall { DelegateReference: { Node: VariableDeclaration { Outer: Class } } })
+                    else if (lhs is DelegateCall { DelegateReference.Node: VariableDeclaration { Outer: Class } })
                     {
                         TypeError("Cannot call an instance delegate from a static function!", lhs);
                     }

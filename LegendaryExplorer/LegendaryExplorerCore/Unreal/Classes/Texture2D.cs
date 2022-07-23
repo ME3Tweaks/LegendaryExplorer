@@ -400,7 +400,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
             {
                 bool dxt1HasAlpha = false;
                 byte dxt1Threshold = 128;
-                if (pixelFormat == PixelFormat.DXT1 && (image.HasFullAlpha() || props.GetProp<EnumProperty>("CompressionSettings") is { Value: { Name: "TC_OneBitAlpha" } }))
+                if (pixelFormat == PixelFormat.DXT1 && (image.HasFullAlpha() || props.GetProp<EnumProperty>("CompressionSettings") is { Value.Name: "TC_OneBitAlpha" }))
                 {
                     dxt1HasAlpha = true;
                     if (image.pixelFormat is PixelFormat.ARGB or PixelFormat.DXT3 or PixelFormat.DXT5)

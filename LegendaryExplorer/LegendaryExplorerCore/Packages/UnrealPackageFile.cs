@@ -405,9 +405,7 @@ namespace LegendaryExplorerCore.Packages
                             break;
                         }
 
-                        int i;
-                        TreeNode<IEntry, int> node;
-                        (node, objFullPath, i) = stack.Pop();
+                        (TreeNode<IEntry, int> node, objFullPath, int i) = stack.Pop();
                         if (i + 1 < node.Children.Count)
                         {
                             stack.Push((node, objFullPath, i + 1));

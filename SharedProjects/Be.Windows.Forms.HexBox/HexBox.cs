@@ -1981,9 +1981,6 @@ namespace Be.Windows.Forms
         {
             //System.Diagnostics.Debug.WriteLine("GetHexBytePositionInfo()", "HexBox");
 
-            long bytePos;
-            int byteCharaterPos;
-
             float x = ((float)(p.X - _recHex.X) / _charSize.Width);
             float y = ((float)(p.Y - _recHex.Y) / _charSize.Height);
             int iX = (int)x;
@@ -1991,9 +1988,9 @@ namespace Be.Windows.Forms
 
             int hPos = (iX / 3 + 1);
 
-            bytePos = Math.Min(_byteProvider.Length,
+            long bytePos = Math.Min(_byteProvider.Length,
                 _startByte + (_iHexMaxHBytes * (iY + 1) - _iHexMaxHBytes) + hPos - 1);
-            byteCharaterPos = (iX % 3);
+            int byteCharaterPos = (iX % 3);
             if (byteCharaterPos > 1)
                 byteCharaterPos = 1;
 
@@ -2009,9 +2006,6 @@ namespace Be.Windows.Forms
         {
             //System.Diagnostics.Debug.WriteLine("GetStringBytePositionInfo()", "HexBox");
 
-            long bytePos;
-            int byteCharacterPos;
-
             float x = ((float)(p.X - _recStringView.X) / _charSize.Width);
             float y = ((float)(p.Y - _recStringView.Y) / _charSize.Height);
             int iX = (int)x;
@@ -2019,9 +2013,9 @@ namespace Be.Windows.Forms
 
             int hPos = iX + 1;
 
-            bytePos = Math.Min(_byteProvider.Length,
+            long bytePos = Math.Min(_byteProvider.Length,
                 _startByte + (_iHexMaxHBytes * (iY + 1) - _iHexMaxHBytes) + hPos - 1);
-            byteCharacterPos = 0;
+            int byteCharacterPos = 0;
 
             if (bytePos < 0)
                 return new BytePositionInfo(0, 0);

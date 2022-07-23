@@ -1129,7 +1129,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             ExpressionPrescedence.Push(node.Operator.Precedence);
 
             if (scopeNeeded) Append("(");
-            if (node.Operator.OperatorType is TokenType.AtSign or TokenType.DollarSign && node.LeftOperand is PrimitiveCast { CastType: { Name: "string" } } lpc)
+            if (node.Operator.OperatorType is TokenType.AtSign or TokenType.DollarSign && node.LeftOperand is PrimitiveCast { CastType.Name: "string" } lpc)
             {
                 lpc.CastTarget.AcceptVisitor(this);
             }
@@ -1140,7 +1140,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             Space();
             Append(OperatorHelper.OperatorTypeToString(node.Operator.OperatorType), EF.Operator);
             Space();
-            if (node.Operator.OperatorType is TokenType.AtSign or TokenType.DollarSign or TokenType.StrConcAssSpace or TokenType.StrConcatAssign && node.RightOperand is PrimitiveCast { CastType: { Name: "string" } } rpc)
+            if (node.Operator.OperatorType is TokenType.AtSign or TokenType.DollarSign or TokenType.StrConcAssSpace or TokenType.StrConcatAssign && node.RightOperand is PrimitiveCast { CastType.Name: "string" } rpc)
             {
                 rpc.CastTarget.AcceptVisitor(this);
             }

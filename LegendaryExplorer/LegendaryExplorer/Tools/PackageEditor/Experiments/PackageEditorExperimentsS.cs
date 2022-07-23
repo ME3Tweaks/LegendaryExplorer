@@ -99,7 +99,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         {
                             foreach (ObjectProperty objProp in smcArray)
                             {
-                                if (objProp.ResolveToEntry(pcc) is ExportEntry { ObjectName: { Instanced: var smcName } } smcExport && otPcc.Exports.FirstOrDefault(exp => exp.ObjectName.Instanced.CaseInsensitiveEquals(smcName)) is ExportEntry otsmcExport)
+                                if (objProp.ResolveToEntry(pcc) is ExportEntry { ObjectName.Instanced: var smcName } smcExport && otPcc.Exports.FirstOrDefault(exp => exp.ObjectName.Instanced.CaseInsensitiveEquals(smcName)) is ExportEntry otsmcExport)
                                 {
                                     PortShadowMap(otsmcExport, smcExport);
                                 }

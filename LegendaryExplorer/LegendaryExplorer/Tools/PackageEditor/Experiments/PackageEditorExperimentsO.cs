@@ -784,8 +784,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                             StaticMeshCollectionActor parent = ObjectBinary.From<StaticMeshCollectionActor>((ExportEntry)reference.Parent);
                             UIndex uindex = new(reference.UIndex);
                             int smcaIndex = parent.Components.IndexOf(uindex);
-                            float destX, destY, destZ;
-                            ((destX, destY, destZ), _, _) = parent.LocalToWorldTransforms[smcaIndex].UnrealDecompose();
+                            ((float destX, float destY, float destZ), _, _) = parent.LocalToWorldTransforms[smcaIndex].UnrealDecompose();
 
                             // Check if the component is within the given distance, and if so remove the reference
                             if (InDist(origins[0], destX, dists[0]) && InDist(origins[1], destY, dists[1]) && InDist(origins[2], destZ, dists[2]))
