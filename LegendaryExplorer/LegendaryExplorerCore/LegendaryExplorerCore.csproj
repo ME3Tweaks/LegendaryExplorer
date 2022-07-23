@@ -4,11 +4,11 @@
     <Description>Core library for LegendaryExplorer, a toolset for modding the Mass Effect Trilogy and Mass Effect Legendary Edition</Description>
     <Company>ME3Tweaks</Company>
     <Authors>ME3Tweaks</Authors>
-    <Version>6.1.0.0</Version>
+    <Version>6.2.0.0</Version>
   </PropertyGroup>
 
   <PropertyGroup>
-    <TargetFrameworks>net5.0</TargetFrameworks>
+    <TargetFrameworks>net6.0</TargetFrameworks>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>9.0</LangVersion>
     <Platforms>x64</Platforms>

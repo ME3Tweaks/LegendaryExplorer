@@ -247,18 +247,6 @@ namespace LegendaryExplorerCore.Helpers
             return string.Join(separator, values);
         }
 
-        public static T MaxBy<T, R>(this IEnumerable<T> en, Func<T, R> evaluate) where R : IComparable<R>
-        {
-            return en.Select(t => (obj: t, key: evaluate(t)))
-                .Aggregate((max, next) => next.key.CompareTo(max.key) > 0 ? next : max).obj;
-        }
-
-        public static T MinBy<T, R>(this IEnumerable<T> en, Func<T, R> evaluate) where R : IComparable<R>
-        {
-            return en.Select(t => (obj: t, key: evaluate(t)))
-                .Aggregate((max, next) => next.key.CompareTo(max.key) < 0 ? next : max).obj;
-        }
-
         public static bool SubsetOf<T>(this IList<T> src, IList<T> compare)
         {
             return src.All(compare.Contains);
