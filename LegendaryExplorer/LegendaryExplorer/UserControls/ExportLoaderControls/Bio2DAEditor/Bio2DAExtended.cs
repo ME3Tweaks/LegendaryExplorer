@@ -49,7 +49,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             string tlkLookup = TLKManagerWPF.GlobalFindStrRefbyID(stringId, twoDA.Export.FileRef.Game, twoDA.Export.FileRef);
                             if (tlkLookup != "No Data" && tlkLookup != "")
                             {
-                                worksheet.Cell(rowindex + 2, colindex + 2).Comment.AddText(tlkLookup);
+                                worksheet.Cell(rowindex + 2, colindex + 2).GetComment().AddText(tlkLookup);
                             }
                         }
                     }

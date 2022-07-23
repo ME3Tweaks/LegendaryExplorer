@@ -104,7 +104,7 @@
     <PackageReference Include="FontAwesome5" Version="2.1.11" />
     <PackageReference Include="gong-wpf-dragdrop" Version="3.1.1" />
     <PackageReference Include="Gu.Wpf.DataGrid2D" Version="0.2.4" />
-    <PackageReference Include="HMBSbige.SingleInstance" Version="6.0.0" />
+    <PackageReference Include="HMBSbige.SingleInstance" Version="5.0.0" />
     <PackageReference Include="JetBrains.Profiler.SelfApi" Version="2.3.0" />
     <PackageReference Include="LibVLCSharp.WPF" Version="3.6.6" />
     <PackageReference Include="Microsoft.AppCenter" Version="4.5.1" />
