@@ -1,4 +1,4 @@
 var dir_3119dfddc952fc60bf249160d85bf1de =
 [
-    [ "net5.0", "dir_c371190c44053cab87dad0265d2808d5.html", "dir_c371190c44053cab87dad0265d2808d5" ]
+    [ "net6.0", "dir_a1817d274d2aee606edcbe77a50580d2.html", "dir_a1817d274d2aee606edcbe77a50580d2" ]
 ];

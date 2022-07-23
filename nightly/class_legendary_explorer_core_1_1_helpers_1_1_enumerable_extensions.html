@@ -139,10 +139,6 @@ Static Public Member Functions</h2></td></tr>
 <tr class="separator:aa7fe9f9ceb0d6cbff7b446991db46e11"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeecfe41619eb016d8f3ce19c25d40377"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_helpers_1_1_enumerable_extensions.html#aeecfe41619eb016d8f3ce19c25d40377">StringJoin&lt; T &gt;</a> (this IEnumerable&lt; T &gt; values, string separator)</td></tr>
 <tr class="separator:aeecfe41619eb016d8f3ce19c25d40377"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac8d618826cdb17e87a7332196291d52d"><td class="memItemLeft" align="right" valign="top">static T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_helpers_1_1_enumerable_extensions.html#ac8d618826cdb17e87a7332196291d52d">MaxBy&lt; T, R &gt;</a> (this IEnumerable&lt; T &gt; en, Func&lt; T, R &gt; evaluate)</td></tr>
-<tr class="separator:ac8d618826cdb17e87a7332196291d52d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aca6b76d8d11ee7bfab922e5ab72f51ca"><td class="memItemLeft" align="right" valign="top">static T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_helpers_1_1_enumerable_extensions.html#aca6b76d8d11ee7bfab922e5ab72f51ca">MinBy&lt; T, R &gt;</a> (this IEnumerable&lt; T &gt; en, Func&lt; T, R &gt; evaluate)</td></tr>
-<tr class="separator:aca6b76d8d11ee7bfab922e5ab72f51ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9af55ea66d7f129c64086959a38f165a"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_helpers_1_1_enumerable_extensions.html#a9af55ea66d7f129c64086959a38f165a">SubsetOf&lt; T &gt;</a> (this IList&lt; T &gt; src, IList&lt; T &gt; compare)</td></tr>
 <tr class="separator:a9af55ea66d7f129c64086959a38f165a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a03a8c68ae171674b1600082aac62ba4d"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_helpers_1_1_enumerable_extensions.html#a03a8c68ae171674b1600082aac62ba4d">RemoveAll&lt; T &gt;</a> (this IList&lt; T &gt; list, Predicate&lt; T &gt; predicate)</td></tr>
@@ -889,94 +885,6 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-
-</div>
-</div>
-<a id="ac8d618826cdb17e87a7332196291d52d" name="ac8d618826cdb17e87a7332196291d52d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac8d618826cdb17e87a7332196291d52d">&#9670;&nbsp;</a></span>MaxBy&lt; T, R &gt;()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static T LegendaryExplorerCore.Helpers.EnumerableExtensions.MaxBy&lt; T, R &gt; </td>
-          <td>(</td>
-          <td class="paramtype">this IEnumerable&lt; T &gt;&#160;</td>
-          <td class="paramname"><em>en</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">Func&lt; T, R &gt;&#160;</td>
-          <td class="paramname"><em>evaluate</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<div class="typeconstraint">
-<dl><dt><b>Type Constraints</b></dt><dd>
-<table border="0" cellspacing="2" cellpadding="0">
-<tr><td valign="top"><em>R</em></td><td>&#160;:</td><td valign="top"><em>IComparable&lt;R&gt;</em></td><td>&#160;</td></tr>
-</table>
-</dd>
-</dl>
-</div>
-
-</div>
-</div>
-<a id="aca6b76d8d11ee7bfab922e5ab72f51ca" name="aca6b76d8d11ee7bfab922e5ab72f51ca"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aca6b76d8d11ee7bfab922e5ab72f51ca">&#9670;&nbsp;</a></span>MinBy&lt; T, R &gt;()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static T LegendaryExplorerCore.Helpers.EnumerableExtensions.MinBy&lt; T, R &gt; </td>
-          <td>(</td>
-          <td class="paramtype">this IEnumerable&lt; T &gt;&#160;</td>
-          <td class="paramname"><em>en</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">Func&lt; T, R &gt;&#160;</td>
-          <td class="paramname"><em>evaluate</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<div class="typeconstraint">
-<dl><dt><b>Type Constraints</b></dt><dd>
-<table border="0" cellspacing="2" cellpadding="0">
-<tr><td valign="top"><em>R</em></td><td>&#160;:</td><td valign="top"><em>IComparable&lt;R&gt;</em></td><td>&#160;</td></tr>
-</table>
-</dd>
-</dl>
-</div>
 
 </div>
 </div>

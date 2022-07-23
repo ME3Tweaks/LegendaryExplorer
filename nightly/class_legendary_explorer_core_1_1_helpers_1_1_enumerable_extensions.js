@@ -20,8 +20,6 @@ var class_legendary_explorer_core_1_1_helpers_1_1_enumerable_extensions =
     [ "HasExactly< T >", "class_legendary_explorer_core_1_1_helpers_1_1_enumerable_extensions.html#ac1a3efe2ad78b70491433fb0ff55eb5e", null ],
     [ "NonNull< T >", "class_legendary_explorer_core_1_1_helpers_1_1_enumerable_extensions.html#aa7fe9f9ceb0d6cbff7b446991db46e11", null ],
     [ "StringJoin< T >", "class_legendary_explorer_core_1_1_helpers_1_1_enumerable_extensions.html#aeecfe41619eb016d8f3ce19c25d40377", null ],
-    [ "MaxBy< T, R >", "class_legendary_explorer_core_1_1_helpers_1_1_enumerable_extensions.html#ac8d618826cdb17e87a7332196291d52d", null ],
-    [ "MinBy< T, R >", "class_legendary_explorer_core_1_1_helpers_1_1_enumerable_extensions.html#aca6b76d8d11ee7bfab922e5ab72f51ca", null ],
     [ "SubsetOf< T >", "class_legendary_explorer_core_1_1_helpers_1_1_enumerable_extensions.html#a9af55ea66d7f129c64086959a38f165a", null ],
     [ "RemoveAll< T >", "class_legendary_explorer_core_1_1_helpers_1_1_enumerable_extensions.html#a03a8c68ae171674b1600082aac62ba4d", null ],
     [ "TryRemove< T >", "class_legendary_explorer_core_1_1_helpers_1_1_enumerable_extensions.html#a3c2434f456d00d1a90bcde6a478a0809", null ],
