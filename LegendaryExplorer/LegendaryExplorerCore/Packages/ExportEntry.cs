@@ -1016,7 +1016,11 @@ namespace LegendaryExplorerCore.Packages
         public ExportEntry Clone(int newIndex = -1)
         {
             var clone = (ExportEntry)MemberwiseClone();
+
+            //set to empty array to avoid the sequenceequal optimization when setting Data
+            clone._data = Array.Empty<byte>();
             clone.Data = _data.ArrayClone();
+
             clone._generationNetObjectCounts = _generationNetObjectCounts.ArrayClone();
             if (HasComponentMap)
             {

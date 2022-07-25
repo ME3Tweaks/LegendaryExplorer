@@ -2367,6 +2367,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 {
                     IEntry newTreeRoot = EntryCloner.CloneTree(entry);
                     TryAddToPersistentLevel(newTreeRoot);
+                    TryAddToStaticCollectionActor(newTreeRoot, entry);
                     lastTreeRoot = newTreeRoot.UIndex;
                 }
                 GoToNumber(lastTreeRoot);
@@ -2400,6 +2401,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 {
                     IEntry newEntry = EntryCloner.CloneEntry(entry);
                     TryAddToPersistentLevel(newEntry);
+                    TryAddToStaticCollectionActor(newEntry, entry);
                     lastClonedUIndex = newEntry.UIndex;
                 }
                 GoToNumber(lastClonedUIndex);
@@ -2421,6 +2423,33 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 return true;
             }
 
+            return false;
+        }
+
+        private bool TryAddToStaticCollectionActor(IEntry newEntry, IEntry originalEntry)
+        {
+            if (newEntry is ExportEntry
+                {
+                    Parent: ExportEntry
+                    {
+                        ClassName: nameof(StaticMeshCollectionActor) or nameof(StaticLightCollectionActor)
+                    } scaExp
+                } &&
+                ObjectBinary.From(scaExp) is StaticCollectionActor scaBin)
+            {
+                var componentsProp = scaExp.GetProperty<ArrayProperty<ObjectProperty>>(scaBin.ComponentPropName);
+                int originalIndex = componentsProp.IndexOf(new ObjectProperty(originalEntry));
+                if (originalIndex == -1)
+                {
+                    return false;
+                }
+                componentsProp.Add(new ObjectProperty(newEntry));
+                scaExp.WriteProperty(componentsProp);
+
+                scaBin.LocalToWorldTransforms.Add(scaBin.LocalToWorldTransforms[originalIndex]);
+                scaExp.WriteBinary(scaBin);
+                return true;
+            }
             return false;
         }
 

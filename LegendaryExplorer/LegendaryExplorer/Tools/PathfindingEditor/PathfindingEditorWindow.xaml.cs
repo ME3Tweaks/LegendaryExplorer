@@ -3415,7 +3415,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                     newNodeEntry = EntryCloner.CloneTree(nodeEntry);
                     newNodeEntry.idxLink = parent.UIndex;
                     components.Add(new ObjectProperty(newNodeEntry));
-                    sca.LocalToWorldTransforms.Add(new Matrix4x4(clonedloc.M11, clonedloc.M12, clonedloc.M13, clonedloc.M14, clonedloc.M21, clonedloc.M22, clonedloc.M23, clonedloc.M24, clonedloc.M31, clonedloc.M32, clonedloc.M33, clonedloc.M34, clonedloc.M41, clonedloc.M42, clonedloc.M43, clonedloc.M44));
+                    sca.LocalToWorldTransforms.Add(clonedloc);
                     parent.WriteProperty(components);
                     parent.WriteBinary(sca);
                     AllowRefresh = true;
