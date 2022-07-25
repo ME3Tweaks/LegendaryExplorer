@@ -666,7 +666,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
         }
         private void TextEditor_OnContextMenuClosing(object sender, ContextMenuEventArgs e) => contextMenuDefinitionNode = null;
 
-        private bool CanFindReferences() => contextMenuDefinitionNode is Function && CurrentFileLib.IsInitialized;
+        private bool CanFindReferences() => contextMenuDefinitionNode is Function or VariableDeclaration {Outer: ObjectType} && CurrentFileLib.IsInitialized;
 
         private void FindUsagesInFile()
         {
@@ -702,7 +702,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                         case Function func:
                             return UnrealScriptLookup.FindUsagesInFile(func, CurrentFileLib);
                         case VariableDeclaration varDecl:
-                            break;
+                            return UnrealScriptLookup.FindUsagesInFile(varDecl, CurrentFileLib);
                         case VariableType varType:
                             break;
                         case EnumValue enumValue:

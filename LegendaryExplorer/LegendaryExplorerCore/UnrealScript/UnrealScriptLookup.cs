@@ -46,7 +46,7 @@ namespace LegendaryExplorerCore.UnrealScript
 
                                 FindInFuncs(state.Functions, stateScope);
 
-                                FindInBytecode(state, stateScope);
+                                FindInBytecode(searchFunc, state, stateScope, lib, symbols, results);
                             }
                         }
                     }
@@ -74,84 +74,163 @@ namespace LegendaryExplorerCore.UnrealScript
                     FindInVars(clsFunc.Parameters, "param", funcScope);
                     FindInVars(clsFunc.Locals, "local", funcScope);
 
-                    FindInBytecode(clsFunc, funcScope);
+                    FindInBytecode(searchFunc, clsFunc, funcScope, lib, symbols, results);
+                }
+            }
+        }
+        public static List<EntryStringPair> FindUsagesInFile(VariableDeclaration searchDecl, FileLib lib)
+        {
+            var results = new List<EntryStringPair>();
+
+            lib.ReInitializeFile();
+            SymbolTable symbols = lib.GetSymbolTable();
+
+            symbols.RevertToObjectStack();
+            if (!symbols.TryGetSymbolFromSpecificScope(searchDecl.Name, out searchDecl, GetOuterScope(searchDecl)))
+            {
+                results.Add(new EntryStringPair($"Error: could not find definition of'{GetOuterScope(searchDecl)}.{searchDecl.Name}'. Have you compiled it yet?"));
+                return results;
+            }
+
+            IMEPackage pcc = lib.Pcc;
+            string pccFilePath = pcc.FilePath;
+            foreach (VariableType type in symbols.Types)
+            {
+                if (type.FilePath == pccFilePath)
+                {
+                    if (type is ObjectType objType)
+                    {
+                        if (objType is Class cls)
+                        {
+                            FindInFuncs(cls.Functions, cls.Name);
+
+                            foreach (State state in cls.States)
+                            {
+                                string stateScope = $"{cls.Name}.{state.Name}";
+
+                                FindInFuncs(state.Functions, stateScope);
+
+                                FindInBytecode(searchDecl, state, stateScope, lib, symbols, results);
+                            }
+                        }
+                    }
                 }
             }
 
-            void FindInBytecode(IContainsByteCode containsBytecode, string scope)
+            return results;
+
+            void FindInFuncs(List<Function> functions, string outerScope)
             {
-                string kind = containsBytecode switch
+                foreach (Function clsFunc in functions)
                 {
-                    Function => "Function",
-                    State => "State",
-                    _ => "Class"
-                };
-                ExportEntry export = pcc.GetUExport(containsBytecode.UIndex);
-                (_, string script) = UnrealScriptCompiler.DecompileExport(export, lib);
-                var log = new MessageLog();
-                (ASTNode ast, TokenStream tokens) = UnrealScriptCompiler.CompileOutlineAST(script, kind, log, pcc.Game);
-                if (log.HasErrors)
-                {
-                    return;
+                    string funcScope = $"{outerScope}.{clsFunc.Name}";
+
+                    FindInBytecode(searchDecl, clsFunc, funcScope, lib, symbols, results);
                 }
-                containsBytecode.Body = ((IContainsByteCode)ast).Body;
-                containsBytecode.Body.Outer = (ASTNode)containsBytecode;
-                symbols.RevertToObjectStack();
+            }
+
+            string GetOuterScope(VariableDeclaration varDecl) =>
+                varDecl.Outer switch
+                {
+                    ObjectType objType => objType.GetScope(),
+                    Function func => func.GetScope(),
+                    _ => throw new Exception("Unexpected outer type!")
+                };
+        }
+
+        private static void FindInBytecode(ASTNode search, IContainsByteCode containsBytecode, string scope, FileLib lib, SymbolTable symbols, List<EntryStringPair> results)
+        {
+            string kind = containsBytecode switch
+            {
+                Function => "Function",
+                State => "State",
+                _ => "Class"
+            };
+            IMEPackage pcc = lib.Pcc;
+            ExportEntry export = pcc.GetUExport(containsBytecode.UIndex);
+            (_, string script) = UnrealScriptCompiler.DecompileExport(export, lib);
+            var log = new MessageLog();
+            (ASTNode ast, TokenStream tokens) = UnrealScriptCompiler.CompileOutlineAST(script, kind, log, pcc.Game);
+            if (log.HasErrors)
+            {
+                return;
+            }
+            containsBytecode.Body = ((IContainsByteCode)ast).Body;
+            containsBytecode.Body.Outer = (ASTNode)containsBytecode;
+            symbols.RevertToObjectStack();
+            switch (containsBytecode)
+            {
+                case Function function:
+                    symbols.GoDirectlyToStack(function.GetOuterScope());
+                    break;
+                case State state:
+                    symbols.GoDirectlyToStack(((Class)state.Outer).GetScope());
+                    break;
+                //case Class cls:
+                //    symbols.GoDirectlyToStack(cls.GetScope());
+                //    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(containsBytecode));
+            }
+            try
+            {
                 switch (containsBytecode)
                 {
                     case Function function:
-                        symbols.GoDirectlyToStack(function.GetOuterScope());
+                        CodeBodyParser.ParseFunction(function, pcc.Game, symbols, log);
                         break;
                     case State state:
-                        symbols.GoDirectlyToStack(((Class)state.Outer).GetScope());
+                        CodeBodyParser.ParseState(state, pcc.Game, symbols, log, false);
                         break;
-                    //case Class cls:
-                    //    symbols.GoDirectlyToStack(cls.GetScope());
-                    //    break;
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(containsBytecode));
                 }
-                try
+            }
+            catch
+            {
+                return;
+            }
+            switch (search)
+            {
+                case Function searchFunc:
                 {
-                    switch (containsBytecode)
+                    foreach ((ASTNode definitionNode, int offset, int _) in tokens.DefinitionLinks)
                     {
-                        case Function function:
-                            CodeBodyParser.ParseFunction(function, pcc.Game, symbols, log);
-                            break;
-                        case State state:
-                            CodeBodyParser.ParseState(state, pcc.Game, symbols, log, false);
-                            break;
-                    }
-                }
-                catch
-                {
-                    return;
-                }
-                foreach ((ASTNode definitionNode, int offset, int _) in tokens.DefinitionLinks)
-                {
-                    if (definitionNode is not Function usedFunc )
-                    {
-                        continue;
-                    }
-                    if (searchFunc == usedFunc)
-                    {
-                        (int line, int col) = tokens.LineLookup.GetLineandColumnFromCharIndex(offset);
-                        results.Add(new EntryStringPair(new LEXOpenable(pcc, containsBytecode.UIndex), $"#{containsBytecode.UIndex} {kind} '{scope}' ({line}, {col})\n{GetContext(script, offset)}"));
-                    }
-                    else if (searchFunc.IsVirtual && searchFunc.Name == usedFunc.Name && searchFunc.SignatureEquals(usedFunc))
-                    {
-                        Function curFunc = searchFunc.SuperFunction;
-                        while (curFunc is not null)
+                        if (definitionNode is not Function usedFunc)
                         {
-                            if (curFunc == usedFunc)
+                            continue;
+                        }
+                        if (searchFunc == usedFunc)
+                        {
+                            (int line, int col) = tokens.LineLookup.GetLineandColumnFromCharIndex(offset);
+                            results.Add(new EntryStringPair(new LEXOpenable(pcc, containsBytecode.UIndex), $"#{containsBytecode.UIndex} {kind} '{scope}' ({line}, {col})\n{GetContext(script, offset)}"));
+                        }
+                        else if (searchFunc.IsVirtual && searchFunc.Name == usedFunc.Name && searchFunc.SignatureEquals(usedFunc))
+                        {
+                            Function curFunc = searchFunc.SuperFunction;
+                            while (curFunc is not null)
                             {
-                                (int line, int col) = tokens.LineLookup.GetLineandColumnFromCharIndex(offset);
-                                results.Add(new EntryStringPair(new LEXOpenable(pcc, containsBytecode.UIndex), $"#{containsBytecode.UIndex} {kind} '{scope}' ({line}, {col}) (Virtual call)\n{GetContext(script, offset)}"));
-                                break;
+                                if (curFunc == usedFunc)
+                                {
+                                    (int line, int col) = tokens.LineLookup.GetLineandColumnFromCharIndex(offset);
+                                    results.Add(new EntryStringPair(new LEXOpenable(pcc, containsBytecode.UIndex), $"#{containsBytecode.UIndex} {kind} '{scope}' ({line}, {col}) (Virtual call)\n{GetContext(script, offset)}"));
+                                    break;
+                                }
+                                curFunc = curFunc.SuperFunction;
                             }
-                            curFunc = curFunc.SuperFunction;
                         }
                     }
+                    break;
+                }
+                case VariableDeclaration searchVar:
+                {
+                    foreach ((ASTNode definitionNode, int offset, int _) in tokens.DefinitionLinks)
+                    {
+                        if (definitionNode is VariableDeclaration usedVar && searchVar == usedVar)
+                        {
+                            (int line, int col) = tokens.LineLookup.GetLineandColumnFromCharIndex(offset);
+                            results.Add(new EntryStringPair(new LEXOpenable(pcc, containsBytecode.UIndex), $"#{containsBytecode.UIndex} {kind} '{scope}' ({line}, {col})\n{GetContext(script, offset)}"));
+                        }
+                    }
+                    break;
                 }
             }
         }

@@ -1034,11 +1034,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         editableValue = index.ToString();
                         if (entry != null)
                         {
-                            parsedValue = $"{entry.InstancedFullPath}.{dp.Value.FunctionName}";
+                            parsedValue = $"{entry.InstancedFullPath}.{dp.Value.FunctionName.Instanced}";
                         }
                         else if (index == 0)
                         {
-                            parsedValue = "Null";
+                            parsedValue = dp.Value.FunctionName.Instanced;
 
                         }
                         else
@@ -1172,7 +1172,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         switch (typeProp.Value)
                         {
                             case "TLT_InputOn":
-                                timelineEffectType += $" {sp.Properties.GetProp<StrProperty>("InputAlias")?.Value} {sp.Properties.GetProp<DelegateProperty>("InputHandle")?.Value.FunctionName}";
+                                timelineEffectType += $" {sp.Properties.GetProp<StrProperty>("InputAlias")?.Value} {sp.Properties.GetProp<DelegateProperty>("InputHandle")?.Value.FunctionName.Instanced}";
                                 break;
                             case "TLT_Function":
                                 timelineEffectType += $" {sp.Properties.GetProp<NameProperty>("Func")?.Value}()";
