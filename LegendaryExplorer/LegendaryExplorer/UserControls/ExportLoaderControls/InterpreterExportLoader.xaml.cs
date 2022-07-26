@@ -2169,7 +2169,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                 }
                             }
                             // WwiseEvents are unsigned integers, this allows entering the value
-                            else if (CurrentLoadedExport != null && CurrentLoadedExport.ClassName == "WwiseEvent"
+                            else if (CurrentLoadedExport != null && CurrentLoadedExport.ClassName is "WwiseEvent" or "WwiseBank"
                                                                    && uint.TryParse(Value_TextBox.Text, out uint ui)
                                                                    && ui != ip.Value)
                             {
