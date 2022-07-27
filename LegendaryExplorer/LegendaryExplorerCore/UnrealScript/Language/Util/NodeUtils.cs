@@ -1,5 +1,4 @@
 ﻿using System;
-using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.UnrealScript.Analysis.Symbols;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
 using LegendaryExplorerCore.UnrealScript.Utilities;

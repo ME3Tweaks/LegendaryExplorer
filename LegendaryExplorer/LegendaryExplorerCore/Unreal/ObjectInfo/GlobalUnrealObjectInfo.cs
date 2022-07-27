@@ -146,7 +146,6 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             @"Engine.StaticMesh",
             @"Engine.World",
             @"Engine.ShaderCache",
-            @"Core.Package",
             @"Core.ObjectProperty",
             @"Core.Function",
             @"Core.ClassProperty",

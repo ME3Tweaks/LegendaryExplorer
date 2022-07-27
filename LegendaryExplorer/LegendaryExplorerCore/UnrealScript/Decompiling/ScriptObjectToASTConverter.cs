@@ -510,7 +510,11 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                         else if (uProperty.PropertyFlags.Has(EPropertyFlags.Parm))
                         {
                             var convert = ConvertVariable(uProperty, fileLib, packageCache);
-                            parameters.Add(new FunctionParameter(convert.VarType, convert.Flags, convert.Name, convert.ArrayLength));
+                            parameters.Add(new FunctionParameter(convert.VarType, convert.Flags, convert.Name, convert.ArrayLength)
+                            {
+                                FilePath = pcc.FilePath,
+                                UIndex = nextChild.UIndex
+                            });
                         }
                         else
                         {

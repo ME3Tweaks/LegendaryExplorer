@@ -68,13 +68,17 @@ namespace LegendaryExplorerCore.UnrealScript
 
             void FindInFuncs(List<Function> functions, string outerScope)
             {
-                foreach (Function clsFunc in functions)
+                foreach (Function func in functions)
                 {
-                    string funcScope = $"{outerScope}.{clsFunc.Name}";
-                    FindInVars(clsFunc.Parameters, "param", funcScope);
-                    FindInVars(clsFunc.Locals, "local", funcScope);
+                    string funcScope = $"{outerScope}.{func.Name}";
+                    FindInVars(func.Parameters, "param", funcScope);
 
-                    FindInBytecode(searchFunc, clsFunc, funcScope, lib, symbols, results);
+                    if (func.ReturnType is DelegateType { DefaultFunction: Function delFunc } && searchFunc == delFunc)
+                    {
+                        results.Add(new EntryStringPair(new LEXOpenable(pcc, func.UIndex), $"#{func.UIndex} Default function of delegate return type: '{funcScope}'"));
+                    }
+
+                    FindInBytecode(searchFunc, func, funcScope, lib, symbols, results);
                 }
             }
         }
@@ -98,20 +102,17 @@ namespace LegendaryExplorerCore.UnrealScript
             {
                 if (type.FilePath == pccFilePath)
                 {
-                    if (type is ObjectType objType)
+                    if (type is Class cls)
                     {
-                        if (objType is Class cls)
+                        FindInFuncs(cls.Functions, cls.Name);
+
+                        foreach (State state in cls.States)
                         {
-                            FindInFuncs(cls.Functions, cls.Name);
+                            string stateScope = $"{cls.Name}.{state.Name}";
 
-                            foreach (State state in cls.States)
-                            {
-                                string stateScope = $"{cls.Name}.{state.Name}";
+                            FindInFuncs(state.Functions, stateScope);
 
-                                FindInFuncs(state.Functions, stateScope);
-
-                                FindInBytecode(searchDecl, state, stateScope, lib, symbols, results);
-                            }
+                            FindInBytecode(searchDecl, state, stateScope, lib, symbols, results);
                         }
                     }
                 }
@@ -136,6 +137,108 @@ namespace LegendaryExplorerCore.UnrealScript
                     Function func => func.GetScope(),
                     _ => throw new Exception("Unexpected outer type!")
                 };
+        }
+
+        public static List<EntryStringPair> FindUsagesInFile(VariableType searchType, FileLib lib)
+        {
+            var results = new List<EntryStringPair>();
+
+            lib.ReInitializeFile();
+            SymbolTable symbols = lib.GetSymbolTable();
+
+            symbols.RevertToObjectStack();
+            if (symbols.GoDirectlyToStack(searchType.GetScope()))
+            {
+                symbols.PopScope();
+            }
+            if (!symbols.TryResolveType(ref searchType, searchType is Class))
+            {
+                results.Add(new EntryStringPair($"Error: could not find definition of'{searchType.GetScope()}'. Have you compiled it yet?"));
+                return results;
+            }
+
+            IMEPackage pcc = lib.Pcc;
+            string pccFilePath = pcc.FilePath;
+            foreach (VariableType type in symbols.Types)
+            {
+                if (type.FilePath == pccFilePath)
+                {
+                    if (type is ObjectType objType)
+                    {
+                        FindInVars(objType.VariableDeclarations, "type of field:", objType.Name);
+                        if (objType.Parent == searchType)
+                        {
+                            results.Add(new EntryStringPair(new LEXOpenable(pcc, objType.UIndex), $"#{objType.UIndex} Super of class: '{objType.Name}'"));
+                        }
+                        if (objType is Class cls)
+                        {
+                            if (cls._outerClass == searchType)
+                            {
+                                results.Add(new EntryStringPair(new LEXOpenable(pcc, cls.UIndex), $"#{cls.UIndex} Outer of class: '{cls.Name}'"));
+                            }
+                            foreach (VariableType @interface in cls.Interfaces)
+                            {
+                                if (@interface == searchType)
+                                {
+                                    results.Add(new EntryStringPair(new LEXOpenable(pcc, cls.UIndex), $"#{cls.UIndex} Implemented by class: '{cls.Name}'"));
+                                }
+                            }
+
+                            FindInFuncs(cls.Functions, cls.Name);
+
+                            foreach (State state in cls.States)
+                            {
+                                string stateScope = $"{cls.Name}.{state.Name}";
+
+                                FindInFuncs(state.Functions, stateScope);
+
+                                FindInBytecode(searchType, state, stateScope, lib, symbols, results);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return results;
+
+            void FindInVars(IEnumerable<VariableDeclaration> vars, string varKind, string outerScope)
+            {
+                foreach (VariableDeclaration varDecl in vars)
+                {
+                    if (searchType == varDecl.VarType switch
+                        {
+                            StaticArrayType staticArrayType => staticArrayType.ElementType,
+                            ClassType classType => classType.ClassLimiter,
+                            DynamicArrayType dynArr => dynArr.ElementType,
+                            _ => varDecl.VarType
+                        })
+                    {
+                        results.Add(new EntryStringPair(new LEXOpenable(pcc, varDecl.UIndex), $"#{varDecl.UIndex} {varKind} '{outerScope}.{varDecl.Name}'"));
+                    }
+                }
+            }
+
+            void FindInFuncs(List<Function> functions, string outerScope)
+            {
+                foreach (Function func in functions)
+                {
+                    string funcScope = $"{outerScope}.{func.Name}";
+                    FindInVars(func.Parameters, "type of param:", funcScope);
+
+                    if (searchType == func.ReturnType switch
+                        {
+                            StaticArrayType staticArrayType => staticArrayType.ElementType,
+                            ClassType classType => classType.ClassLimiter,
+                            DynamicArrayType dynArr => dynArr.ElementType,
+                            _ => func.ReturnType
+                        })
+                    {
+                        results.Add(new EntryStringPair(new LEXOpenable(pcc, func.UIndex), $"#{func.UIndex} Return type of: '{funcScope}'"));
+                    }
+
+                    FindInBytecode(searchType, func, funcScope, lib, symbols, results);
+                }
+            }
         }
 
         private static void FindInBytecode(ASTNode search, IContainsByteCode containsBytecode, string scope, FileLib lib, SymbolTable symbols, List<EntryStringPair> results)
@@ -220,11 +323,12 @@ namespace LegendaryExplorerCore.UnrealScript
                     }
                     break;
                 }
-                case VariableDeclaration searchVar:
+                case VariableDeclaration:
+                case VariableType:
                 {
                     foreach ((ASTNode definitionNode, int offset, int _) in tokens.DefinitionLinks)
                     {
-                        if (definitionNode is VariableDeclaration usedVar && searchVar == usedVar)
+                        if (search == definitionNode)
                         {
                             (int line, int col) = tokens.LineLookup.GetLineandColumnFromCharIndex(offset);
                             results.Add(new EntryStringPair(new LEXOpenable(pcc, containsBytecode.UIndex), $"#{containsBytecode.UIndex} {kind} '{scope}' ({line}, {col})\n{GetContext(script, offset)}"));

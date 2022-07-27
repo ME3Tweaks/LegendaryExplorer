@@ -564,7 +564,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
         /// </summary>
         public static readonly string[] NativeClasses =
         {
-            
+            @"Core.Package",
         };
     }
 }

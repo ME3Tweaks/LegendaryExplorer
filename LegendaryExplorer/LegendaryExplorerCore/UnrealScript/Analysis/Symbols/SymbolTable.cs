@@ -563,7 +563,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
 
         public void PopScope()
         {
-            if (Scopes.Count == 0)
+            if (Scopes.Count <= 1)
                 throw new InvalidOperationException();
 
             Scopes.Pop();
@@ -926,6 +926,11 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
                 return true;
 
             string[] scopes = scope.Split('.');
+            if (!scopes[0].CaseInsensitiveEquals(OBJECT))
+            {
+                //all scopes must start with Object
+                return false;
+            }
             for (int n = 1; n < scopes.Length; n++) // Start after "Object."
             {
                 if (!Cache.ContainsKey($"{CurrentScopeName}.{scopes[n]}"))
