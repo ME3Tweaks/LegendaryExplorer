@@ -1033,33 +1033,14 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
         }
         #endregion
 
-        public static bool IsAKnownNativeClass(string className) => NativeClasses.Contains(className);
+        public static bool IsAKnownGameSpecificNativeClass(string className) => NativeClasses.Contains(className);
 
         /// <summary>
-        /// List of all known classes that are only defined in native code. These are not able to be handled for things like InheritsFrom as they are not in the property info database.
+        /// List of all known classes that are only defined in native code that are LE1 specific
         /// </summary>
         public static readonly string[] NativeClasses =
         {
-            @"Engine.CodecMovieBink",
-            @"Engine.StaticMesh",
-            @"Engine.World",
-            @"Engine.World",
-            @"Engine.Level",
-            @"Engine.Model",
-            @"Engine.Polys",
-            @"Engine.ShaderCache",
-            @"Core.Package",
-            @"Core.ArrayProperty",
-            @"Core.FloatProperty",
-            @"Core.Function",
-            @"Core.ObjectProperty",
-            @"Core.IntProperty",
-            @"Core.BoolProperty",
-            @"Core.StructProperty",
-            @"Core.NameProperty",
-            @"Core.StrProperty"
-
-
+            
         };
     }
 }

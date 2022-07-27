@@ -1082,14 +1082,14 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
         #endregion
 #endif
 
-        public static bool IsAKnownNativeClass(string className) => NativeClasses.Contains(className);
+        public static bool IsAKnownGameSpecificNativeClass(string className) => NativeClasses.Contains(className);
 
         /// <summary>
-        /// List of all known classes that are only defined in native code. These are not able to be handled for things like InheritsFrom as they are not in the property info database.
+        /// List of all known classes that are only defined in native code that are ME3 specific
         /// </summary>
         public static readonly string[] NativeClasses =
         {
-            @"Engine.CodecMovieBink"
+
         };
     }
 }

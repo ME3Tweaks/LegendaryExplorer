@@ -644,23 +644,14 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
         }
         #endregion
 
-        public static bool IsAKnownNativeClass(string className) => NativeClasses.Contains(className);
+        public static bool IsAKnownGameSpecificNativeClass(string className) => NativeClasses.Contains(className);
 
         /// <summary>
-        /// List of all known classes that are only defined in native code. These are not able to be handled for things like InheritsFrom as they are not in the property info database.
+        /// List of all known classes that are only defined in native code that are ME2 specific
         /// </summary>
         public static readonly string[] NativeClasses =
         {
-            // NEEDS CHECKED FOR ME2
-            @"Engine.CodecMovieBink",
-
-            // These are shared across all games
-            @"Core.Class",
-            @"Engine.StaticMesh",
-            @"Engine.SkeletalMesh",
-            @"Engine.ShaderCache",
-            @"Engine.Engine",
-            @"Engine.Level",
+            
         };
     }
 }

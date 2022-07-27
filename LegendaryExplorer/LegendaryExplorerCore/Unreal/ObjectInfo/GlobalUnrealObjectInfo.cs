@@ -113,17 +113,72 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
         /// <returns></returns>
         public static bool IsAKnownNativeClass(string fullPathName, MEGame game)
         {
+            if (IsAKnownNativeClassGlobally(fullPathName)) return true;
             switch (game)
             {
-                case MEGame.ME1: return ME1UnrealObjectInfo.IsAKnownNativeClass(fullPathName);
-                case MEGame.ME2: return ME2UnrealObjectInfo.IsAKnownNativeClass(fullPathName);
-                case MEGame.ME3: return ME3UnrealObjectInfo.IsAKnownNativeClass(fullPathName);
-                case MEGame.UDK: return ME3UnrealObjectInfo.IsAKnownNativeClass(fullPathName);
-                case MEGame.LE1: return LE1UnrealObjectInfo.IsAKnownNativeClass(fullPathName);
-                case MEGame.LE2: return LE2UnrealObjectInfo.IsAKnownNativeClass(fullPathName);
-                case MEGame.LE3: return LE3UnrealObjectInfo.IsAKnownNativeClass(fullPathName);
+                case MEGame.ME1: return ME1UnrealObjectInfo.IsAKnownGameSpecificNativeClass(fullPathName);
+                case MEGame.ME2: return ME2UnrealObjectInfo.IsAKnownGameSpecificNativeClass(fullPathName);
+                case MEGame.ME3: return ME3UnrealObjectInfo.IsAKnownGameSpecificNativeClass(fullPathName);
+                case MEGame.UDK: return ME3UnrealObjectInfo.IsAKnownGameSpecificNativeClass(fullPathName);
+                case MEGame.LE1: return LE1UnrealObjectInfo.IsAKnownGameSpecificNativeClass(fullPathName);
+                case MEGame.LE2: return LE2UnrealObjectInfo.IsAKnownGameSpecificNativeClass(fullPathName);
+                case MEGame.LE3: return LE3UnrealObjectInfo.IsAKnownGameSpecificNativeClass(fullPathName);
                 default: return false;
             };
+        }
+
+        /// <summary>
+        /// List of all known classes that are only defined in native code.
+        /// These are not able to be handled for things like InheritsFrom as they are not in the property info database.
+        /// </summary>
+        public static readonly string[] KnownGlobalNativeClasses =
+        {
+            // We should verify these don't exist by fetching the path
+            // of the objects out of an ObjectDB. If the result is null
+            // then no object of that name exists.
+
+            @"Engine.CodecMovieBink",
+            @"Engine.Level",
+            @"Engine.LightMapTexture2D",
+            @"Engine.Model",
+            @"Engine.Polys",
+            @"Engine.ShadowMap1D",
+            @"Engine.StaticMesh",
+            @"Engine.World",
+            @"Engine.ShaderCache",
+            @"Core.Package",
+            @"Core.ObjectProperty",
+            @"Core.Function",
+            @"Core.ClassProperty",
+            @"Core.IntProperty",
+            @"Core.Class",
+            @"Core.BoolProperty",
+            @"Core.FloatProperty",
+            @"Core.ArrayProperty",
+            @"Core.DelegateProperty",
+            @"Core.StructProperty",
+            @"Core.ScriptStruct",
+            @"Core.StringRefProperty",
+            @"Core.StrProperty",
+            @"Core.NameProperty",
+            @"Core.ByteProperty",
+            @"Core.Enum",
+            @"Core.Const",
+            @"Core.ComponentProperty",
+            @"Core.InterfaceProperty",
+            @"Core.MapProperty",
+            @"Core.Property",
+            @"Core.State",
+        };
+
+        /// <summary>
+        /// If this is a known native class that exists natively only across all supported games
+        /// </summary>
+        /// <param name="fullPathName">The path to check</param>
+        /// <returns>True if in the list, false otherwise</returns>
+        public static bool IsAKnownNativeClassGlobally(string fullPathName)
+        {
+            return KnownGlobalNativeClasses.Contains(fullPathName, StringComparer.CurrentCultureIgnoreCase);
         }
 
         public static SequenceObjectInfo getSequenceObjectInfo(MEGame game, string className) =>
