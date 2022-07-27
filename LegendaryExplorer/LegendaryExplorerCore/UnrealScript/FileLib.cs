@@ -232,29 +232,36 @@ namespace LegendaryExplorerCore.UnrealScript
                 if (!isBaseFile)
                 {
                     var associatedFiles = EntryImporter.GetPossibleAssociatedFiles(Pcc, includeNonBioPRelated: false);
-                    if (Pcc.Game is MEGame.ME3)
+                    switch (Pcc.Game)
                     {
-                        associatedFiles.Remove("BIOP_MP_COMMON.pcc");
-                        if (Pcc.FindEntry("SFXGameMPContent") is { ClassName: "Package" } mpContentPackage && mpContentPackage.GetChildren<ImportEntry>().Any())
+                        case MEGame.ME3:
                         {
-                            associatedFiles.Add("BIOP_MP_COMMON.pcc");
+                            associatedFiles.Remove("BIOP_MP_COMMON.pcc");
+                            if (Pcc.FindEntry("SFXGameMPContent") is { ClassName: "Package" } mpContentPackage && mpContentPackage.GetChildren<ImportEntry>().Any())
+                            {
+                                associatedFiles.Add("BIOP_MP_COMMON.pcc");
+                            }
+                            if (Pcc.FindEntry("SFXGameContentDLC_CON_MP2") is { ClassName: "Package" })
+                            {
+                                associatedFiles.Add("Startup_DLC_CON_MP2_INT.pcc");
+                            }
+                            if (Pcc.FindEntry("SFXGameContentDLC_CON_MP3") is { ClassName: "Package" })
+                            {
+                                associatedFiles.Add("Startup_DLC_CON_MP3_INT.pcc");
+                            }
+                            if (Pcc.FindEntry("SFXGameContentDLC_CON_MP4") is { ClassName: "Package" })
+                            {
+                                associatedFiles.Add("Startup_DLC_CON_MP4_INT.pcc");
+                            }
+                            if (Pcc.FindEntry("SFXGameContentDLC_CON_MP5") is { ClassName: "Package" })
+                            {
+                                associatedFiles.Add("Startup_DLC_CON_MP5_INT.pcc");
+                            }
+                            break;
                         }
-                        if (Pcc.FindEntry("SFXGameContentDLC_CON_MP2") is { ClassName: "Package" })
-                        {
-                            associatedFiles.Add("Startup_DLC_CON_MP2_INT.pcc");
-                        }
-                        if (Pcc.FindEntry("SFXGameContentDLC_CON_MP3") is { ClassName: "Package" })
-                        {
-                            associatedFiles.Add("Startup_DLC_CON_MP3_INT.pcc");
-                        }
-                        if (Pcc.FindEntry("SFXGameContentDLC_CON_MP4") is { ClassName: "Package" })
-                        {
-                            associatedFiles.Add("Startup_DLC_CON_MP4_INT.pcc");
-                        }
-                        if (Pcc.FindEntry("SFXGameContentDLC_CON_MP5") is { ClassName: "Package" })
-                        {
-                            associatedFiles.Add("Startup_DLC_CON_MP5_INT.pcc");
-                        }
+                        case MEGame.ME2 when Pcc.FindImport("IpDrv") is not null:
+                            associatedFiles.Add("IpDrv.pcc");
+                            break;
                     }
                     foreach (string fileName in Enumerable.Reverse(associatedFiles))
                     {
