@@ -118,8 +118,8 @@ Static Public Member Functions</h2></td></tr>
 <tr class="separator:a442c881eaa3fe4eb1bc50da5c068ec5a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a86e686a720133bb67450e28951872e2e"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_class_info.html">ClassInfo</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_m_e3_unreal_object_info.html#a86e686a720133bb67450e28951872e2e">generateClassInfo</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> export, bool isStruct=false)</td></tr>
 <tr class="separator:a86e686a720133bb67450e28951872e2e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4f78d82497e655ed345547e161214317"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_m_e3_unreal_object_info.html#a4f78d82497e655ed345547e161214317">IsAKnownNativeClass</a> (string className)</td></tr>
-<tr class="separator:a4f78d82497e655ed345547e161214317"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af8d2d93867e39179ca71c0d700a4cb91"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_m_e3_unreal_object_info.html#af8d2d93867e39179ca71c0d700a4cb91">IsAKnownGameSpecificNativeClass</a> (string className)</td></tr>
+<tr class="separator:af8d2d93867e39179ca71c0d700a4cb91"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-attribs" name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
@@ -134,7 +134,7 @@ Static Public Attributes</h2></td></tr>
 <tr class="memitem:a78f0deb3fb38824ebbcc5bdcd34bbb9c"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_m_e3_unreal_object_info.html#a78f0deb3fb38824ebbcc5bdcd34bbb9c">IsLoaded</a></td></tr>
 <tr class="separator:a78f0deb3fb38824ebbcc5bdcd34bbb9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acaac905eeb025772b4ff4f797a0c50ee"><td class="memItemLeft" align="right" valign="top">static readonly string[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_m_e3_unreal_object_info.html#acaac905eeb025772b4ff4f797a0c50ee">NativeClasses</a></td></tr>
-<tr class="memdesc:acaac905eeb025772b4ff4f797a0c50ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">List of all known classes that are only defined in native code. These are not able to be handled for things like InheritsFrom as they are not in the property info database.  <a href="class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_m_e3_unreal_object_info.html#acaac905eeb025772b4ff4f797a0c50ee">More...</a><br /></td></tr>
+<tr class="memdesc:acaac905eeb025772b4ff4f797a0c50ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">List of all known classes that are only defined in native code that are ME3 specific  <a href="class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_m_e3_unreal_object_info.html#acaac905eeb025772b4ff4f797a0c50ee">More...</a><br /></td></tr>
 <tr class="separator:acaac905eeb025772b4ff4f797a0c50ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
@@ -548,8 +548,8 @@ Static Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a4f78d82497e655ed345547e161214317" name="a4f78d82497e655ed345547e161214317"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4f78d82497e655ed345547e161214317">&#9670;&nbsp;</a></span>IsAKnownNativeClass()</h2>
+<a id="af8d2d93867e39179ca71c0d700a4cb91" name="af8d2d93867e39179ca71c0d700a4cb91"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af8d2d93867e39179ca71c0d700a4cb91">&#9670;&nbsp;</a></span>IsAKnownGameSpecificNativeClass()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -558,7 +558,7 @@ Static Public Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static bool LegendaryExplorerCore.Unreal.ObjectInfo.ME3UnrealObjectInfo.IsAKnownNativeClass </td>
+          <td class="memname">static bool LegendaryExplorerCore.Unreal.ObjectInfo.ME3UnrealObjectInfo.IsAKnownGameSpecificNativeClass </td>
           <td>(</td>
           <td class="paramtype">string&#160;</td>
           <td class="paramname"><em>className</em></td><td>)</td>
@@ -706,10 +706,10 @@ Static Public Attributes</h2></td></tr>
 </div><div class="memdoc">
 <b>Initial value:</b><div class="fragment"><div class="line">=</div>
 <div class="line">        {</div>
-<div class="line">            <span class="stringliteral">@&quot;Engine.CodecMovieBink&quot;</span></div>
+<div class="line"> </div>
 <div class="line">        }</div>
 </div><!-- fragment -->
-<p>List of all known classes that are only defined in native code. These are not able to be handled for things like InheritsFrom as they are not in the property info database. </p>
+<p>List of all known classes that are only defined in native code that are ME3 specific </p>
 
 </div>
 </div>

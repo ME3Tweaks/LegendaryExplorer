@@ -8,6 +8,7 @@ var class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_global_unreal_o
     [ "IsA", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_global_unreal_object_info.html#a1860aee02e4e016bca53acf1a9610d26", null ],
     [ "IsAKnownNativeClass", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_global_unreal_object_info.html#afdd051512b8a9c58d0b03aac1d262a95", null ],
     [ "IsAKnownNativeClass", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_global_unreal_object_info.html#a612299e8230327ce73a1282a25d97798", null ],
+    [ "IsAKnownNativeClassGlobally", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_global_unreal_object_info.html#a1f89846f1237989a7ae886b751a961ef", null ],
     [ "getSequenceObjectInfo", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_global_unreal_object_info.html#a935231097f4056bb4f4cc073f241a7f4", null ],
     [ "GetEnumType", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_global_unreal_object_info.html#ad462dce1436b1536216f7a0b5775d354", null ],
     [ "GetEnumValues", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_global_unreal_object_info.html#a056e8f772c1c5e1b24e25daf289bd659", null ],
@@ -26,5 +27,6 @@ var class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_global_unreal_o
     [ "GetSequenceObjectInfoInputLinks", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_global_unreal_object_info.html#abb1dea270ec15f23a3ae494343cf82b9", null ],
     [ "GenerateSequenceObjectInfoForClassDefaults", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_global_unreal_object_info.html#a1a3442d002bbb8134d4a30e43e448708", null ],
     [ "InstallCustomClassInfo", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_global_unreal_object_info.html#a974f6b398f32b4fff931ed29016f3ac7", null ],
-    [ "Me3ExplorerCustomNativeAdditionsName", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_global_unreal_object_info.html#a4054066d32bbe036fe980c2d1c11e74b", null ]
+    [ "Me3ExplorerCustomNativeAdditionsName", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_global_unreal_object_info.html#a4054066d32bbe036fe980c2d1c11e74b", null ],
+    [ "KnownGlobalNativeClasses", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_global_unreal_object_info.html#ae0b3ccd3f2f49beba4101dff1b081e4f", null ]
 ];

@@ -115,6 +115,9 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a612299e8230327ce73a1282a25d97798"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_global_unreal_object_info.html#a612299e8230327ce73a1282a25d97798">IsAKnownNativeClass</a> (string fullPathName, <a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game)</td></tr>
 <tr class="memdesc:a612299e8230327ce73a1282a25d97798"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks if the full path name is known to be defined in native only  <a href="class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_global_unreal_object_info.html#a612299e8230327ce73a1282a25d97798">More...</a><br /></td></tr>
 <tr class="separator:a612299e8230327ce73a1282a25d97798"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1f89846f1237989a7ae886b751a961ef"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_global_unreal_object_info.html#a1f89846f1237989a7ae886b751a961ef">IsAKnownNativeClassGlobally</a> (string fullPathName)</td></tr>
+<tr class="memdesc:a1f89846f1237989a7ae886b751a961ef"><td class="mdescLeft">&#160;</td><td class="mdescRight">If this is a known native class that exists natively only across all supported games  <a href="class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_global_unreal_object_info.html#a1f89846f1237989a7ae886b751a961ef">More...</a><br /></td></tr>
+<tr class="separator:a1f89846f1237989a7ae886b751a961ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a935231097f4056bb4f4cc073f241a7f4"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_sequence_object_info.html">SequenceObjectInfo</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_global_unreal_object_info.html#a935231097f4056bb4f4cc073f241a7f4">getSequenceObjectInfo</a> (<a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game, string className)</td></tr>
 <tr class="separator:a935231097f4056bb4f4cc073f241a7f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad462dce1436b1536216f7a0b5775d354"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_global_unreal_object_info.html#ad462dce1436b1536216f7a0b5775d354">GetEnumType</a> (<a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game, <a class="el" href="struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html">NameReference</a> propName, string typeName, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_class_info.html">ClassInfo</a> nonVanillaClassInfo=null)</td></tr>
@@ -162,6 +165,9 @@ Static Public Member Functions</h2></td></tr>
 Static Public Attributes</h2></td></tr>
 <tr class="memitem:a4054066d32bbe036fe980c2d1c11e74b"><td class="memItemLeft" align="right" valign="top">const string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_global_unreal_object_info.html#a4054066d32bbe036fe980c2d1c11e74b">Me3ExplorerCustomNativeAdditionsName</a> = &quot;ME3Explorer_CustomNativeAdditions&quot;</td></tr>
 <tr class="separator:a4054066d32bbe036fe980c2d1c11e74b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae0b3ccd3f2f49beba4101dff1b081e4f"><td class="memItemLeft" align="right" valign="top">static readonly string[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_global_unreal_object_info.html#ae0b3ccd3f2f49beba4101dff1b081e4f">KnownGlobalNativeClasses</a></td></tr>
+<tr class="memdesc:ae0b3ccd3f2f49beba4101dff1b081e4f"><td class="mdescLeft">&#160;</td><td class="mdescRight">List of all known classes that are only defined in native code. These are not able to be handled for things like InheritsFrom as they are not in the property info database.  <a href="class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_global_unreal_object_info.html#ae0b3ccd3f2f49beba4101dff1b081e4f">More...</a><br /></td></tr>
+<tr class="separator:ae0b3ccd3f2f49beba4101dff1b081e4f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
 <a id="af21223b1e09d4b69d75c22b65fd9fefb" name="af21223b1e09d4b69d75c22b65fd9fefb"></a>
@@ -510,6 +516,41 @@ Static Public Attributes</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+</div>
+</div>
+<a id="a1f89846f1237989a7ae886b751a961ef" name="a1f89846f1237989a7ae886b751a961ef"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1f89846f1237989a7ae886b751a961ef">&#9670;&nbsp;</a></span>IsAKnownNativeClassGlobally()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static bool LegendaryExplorerCore.Unreal.ObjectInfo.GlobalUnrealObjectInfo.IsAKnownNativeClassGlobally </td>
+          <td>(</td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>fullPathName</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>If this is a known native class that exists natively only across all supported games </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">fullPathName</td><td>The path to check</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True if in the list, false otherwise</dd></dl>
 
 </div>
 </div>
@@ -1339,6 +1380,30 @@ Static Public Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae0b3ccd3f2f49beba4101dff1b081e4f" name="ae0b3ccd3f2f49beba4101dff1b081e4f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae0b3ccd3f2f49beba4101dff1b081e4f">&#9670;&nbsp;</a></span>KnownGlobalNativeClasses</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">readonly string [] LegendaryExplorerCore.Unreal.ObjectInfo.GlobalUnrealObjectInfo.KnownGlobalNativeClasses</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>List of all known classes that are only defined in native code. These are not able to be handled for things like InheritsFrom as they are not in the property info database. </p>
 
 </div>
 </div>

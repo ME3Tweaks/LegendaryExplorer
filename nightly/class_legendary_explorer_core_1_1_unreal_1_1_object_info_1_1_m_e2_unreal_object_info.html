@@ -118,8 +118,8 @@ Static Public Member Functions</h2></td></tr>
 <tr class="separator:afd4ea39e87b1b3af9e19fdd4b3880a12"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a028a1374a635a7e1626a8545040ade03"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_class_info.html">ClassInfo</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_m_e2_unreal_object_info.html#a028a1374a635a7e1626a8545040ade03">generateClassInfo</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> export, bool isStruct=false)</td></tr>
 <tr class="separator:a028a1374a635a7e1626a8545040ade03"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aeeb6a3a7ede766fd6c916c47c9f2206f"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_m_e2_unreal_object_info.html#aeeb6a3a7ede766fd6c916c47c9f2206f">IsAKnownNativeClass</a> (string className)</td></tr>
-<tr class="separator:aeeb6a3a7ede766fd6c916c47c9f2206f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af1df4c1a43a0f145c560ff9d659b0c89"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_m_e2_unreal_object_info.html#af1df4c1a43a0f145c560ff9d659b0c89">IsAKnownGameSpecificNativeClass</a> (string className)</td></tr>
+<tr class="separator:af1df4c1a43a0f145c560ff9d659b0c89"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-attribs" name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
@@ -134,7 +134,7 @@ Static Public Attributes</h2></td></tr>
 <tr class="memitem:a33a6fcd52c282baf42e28912d7c08c2f"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_m_e2_unreal_object_info.html#a33a6fcd52c282baf42e28912d7c08c2f">IsLoaded</a></td></tr>
 <tr class="separator:a33a6fcd52c282baf42e28912d7c08c2f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a821228c90fdbf0d4fb5a3795eabf9b0f"><td class="memItemLeft" align="right" valign="top">static readonly string[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_m_e2_unreal_object_info.html#a821228c90fdbf0d4fb5a3795eabf9b0f">NativeClasses</a></td></tr>
-<tr class="memdesc:a821228c90fdbf0d4fb5a3795eabf9b0f"><td class="mdescLeft">&#160;</td><td class="mdescRight">List of all known classes that are only defined in native code. These are not able to be handled for things like InheritsFrom as they are not in the property info database.  <a href="class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_m_e2_unreal_object_info.html#a821228c90fdbf0d4fb5a3795eabf9b0f">More...</a><br /></td></tr>
+<tr class="memdesc:a821228c90fdbf0d4fb5a3795eabf9b0f"><td class="mdescLeft">&#160;</td><td class="mdescRight">List of all known classes that are only defined in native code that are ME2 specific  <a href="class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_m_e2_unreal_object_info.html#a821228c90fdbf0d4fb5a3795eabf9b0f">More...</a><br /></td></tr>
 <tr class="separator:a821228c90fdbf0d4fb5a3795eabf9b0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
@@ -560,8 +560,8 @@ Static Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="aeeb6a3a7ede766fd6c916c47c9f2206f" name="aeeb6a3a7ede766fd6c916c47c9f2206f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aeeb6a3a7ede766fd6c916c47c9f2206f">&#9670;&nbsp;</a></span>IsAKnownNativeClass()</h2>
+<a id="af1df4c1a43a0f145c560ff9d659b0c89" name="af1df4c1a43a0f145c560ff9d659b0c89"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af1df4c1a43a0f145c560ff9d659b0c89">&#9670;&nbsp;</a></span>IsAKnownGameSpecificNativeClass()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -570,7 +570,7 @@ Static Public Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static bool LegendaryExplorerCore.Unreal.ObjectInfo.ME2UnrealObjectInfo.IsAKnownNativeClass </td>
+          <td class="memname">static bool LegendaryExplorerCore.Unreal.ObjectInfo.ME2UnrealObjectInfo.IsAKnownGameSpecificNativeClass </td>
           <td>(</td>
           <td class="paramtype">string&#160;</td>
           <td class="paramname"><em>className</em></td><td>)</td>
@@ -719,18 +719,9 @@ Static Public Attributes</h2></td></tr>
 <b>Initial value:</b><div class="fragment"><div class="line">=</div>
 <div class="line">        {</div>
 <div class="line">            </div>
-<div class="line">            <span class="stringliteral">@&quot;Engine.CodecMovieBink&quot;</span>,</div>
-<div class="line"> </div>
-<div class="line">            </div>
-<div class="line">            <span class="stringliteral">@&quot;Core.Class&quot;</span>,</div>
-<div class="line">            <span class="stringliteral">@&quot;Engine.StaticMesh&quot;</span>,</div>
-<div class="line">            <span class="stringliteral">@&quot;Engine.SkeletalMesh&quot;</span>,</div>
-<div class="line">            <span class="stringliteral">@&quot;Engine.ShaderCache&quot;</span>,</div>
-<div class="line">            <span class="stringliteral">@&quot;Engine.Engine&quot;</span>,</div>
-<div class="line">            <span class="stringliteral">@&quot;Engine.Level&quot;</span>,</div>
 <div class="line">        }</div>
 </div><!-- fragment -->
-<p>List of all known classes that are only defined in native code. These are not able to be handled for things like InheritsFrom as they are not in the property info database. </p>
+<p>List of all known classes that are only defined in native code that are ME2 specific </p>
 
 </div>
 </div>

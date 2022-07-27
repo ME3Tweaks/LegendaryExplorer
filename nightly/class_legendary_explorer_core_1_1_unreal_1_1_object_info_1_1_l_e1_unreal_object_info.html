@@ -116,8 +116,8 @@ Static Public Member Functions</h2></td></tr>
 <tr class="separator:a8736ad39df85816d79562abceacd4ab7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2299f823226b96fe0a0e989113da5363"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_class_info.html">ClassInfo</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_l_e1_unreal_object_info.html#a2299f823226b96fe0a0e989113da5363">generateClassInfo</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> export, bool isStruct=false)</td></tr>
 <tr class="separator:a2299f823226b96fe0a0e989113da5363"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0d4d35fd626beb2591e9b6e9c121ab2a"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_l_e1_unreal_object_info.html#a0d4d35fd626beb2591e9b6e9c121ab2a">IsAKnownNativeClass</a> (string className)</td></tr>
-<tr class="separator:a0d4d35fd626beb2591e9b6e9c121ab2a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a79890a7ea25d6ac61909e6c318bbc916"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_l_e1_unreal_object_info.html#a79890a7ea25d6ac61909e6c318bbc916">IsAKnownGameSpecificNativeClass</a> (string className)</td></tr>
+<tr class="separator:a79890a7ea25d6ac61909e6c318bbc916"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-attribs" name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
@@ -132,7 +132,7 @@ Static Public Attributes</h2></td></tr>
 <tr class="memitem:a3eeccd563a5a44cfbe78e416de904b05"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_l_e1_unreal_object_info.html#a3eeccd563a5a44cfbe78e416de904b05">IsLoaded</a></td></tr>
 <tr class="separator:a3eeccd563a5a44cfbe78e416de904b05"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad6bf6890d6a5fcfe02944042a639e5a3"><td class="memItemLeft" align="right" valign="top">static readonly string[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_l_e1_unreal_object_info.html#ad6bf6890d6a5fcfe02944042a639e5a3">NativeClasses</a></td></tr>
-<tr class="memdesc:ad6bf6890d6a5fcfe02944042a639e5a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">List of all known classes that are only defined in native code. These are not able to be handled for things like InheritsFrom as they are not in the property info database.  <a href="class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_l_e1_unreal_object_info.html#ad6bf6890d6a5fcfe02944042a639e5a3">More...</a><br /></td></tr>
+<tr class="memdesc:ad6bf6890d6a5fcfe02944042a639e5a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">List of all known classes that are only defined in native code that are LE1 specific  <a href="class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_l_e1_unreal_object_info.html#ad6bf6890d6a5fcfe02944042a639e5a3">More...</a><br /></td></tr>
 <tr class="separator:ad6bf6890d6a5fcfe02944042a639e5a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
@@ -510,8 +510,8 @@ Static Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a0d4d35fd626beb2591e9b6e9c121ab2a" name="a0d4d35fd626beb2591e9b6e9c121ab2a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0d4d35fd626beb2591e9b6e9c121ab2a">&#9670;&nbsp;</a></span>IsAKnownNativeClass()</h2>
+<a id="a79890a7ea25d6ac61909e6c318bbc916" name="a79890a7ea25d6ac61909e6c318bbc916"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a79890a7ea25d6ac61909e6c318bbc916">&#9670;&nbsp;</a></span>IsAKnownGameSpecificNativeClass()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -520,7 +520,7 @@ Static Public Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static bool LegendaryExplorerCore.Unreal.ObjectInfo.LE1UnrealObjectInfo.IsAKnownNativeClass </td>
+          <td class="memname">static bool LegendaryExplorerCore.Unreal.ObjectInfo.LE1UnrealObjectInfo.IsAKnownGameSpecificNativeClass </td>
           <td>(</td>
           <td class="paramtype">string&#160;</td>
           <td class="paramname"><em>className</em></td><td>)</td>
@@ -668,29 +668,10 @@ Static Public Attributes</h2></td></tr>
 </div><div class="memdoc">
 <b>Initial value:</b><div class="fragment"><div class="line">=</div>
 <div class="line">        {</div>
-<div class="line">            <span class="stringliteral">@&quot;Engine.CodecMovieBink&quot;</span>,</div>
-<div class="line">            <span class="stringliteral">@&quot;Engine.StaticMesh&quot;</span>,</div>
-<div class="line">            <span class="stringliteral">@&quot;Engine.World&quot;</span>,</div>
-<div class="line">            <span class="stringliteral">@&quot;Engine.World&quot;</span>,</div>
-<div class="line">            <span class="stringliteral">@&quot;Engine.Level&quot;</span>,</div>
-<div class="line">            <span class="stringliteral">@&quot;Engine.Model&quot;</span>,</div>
-<div class="line">            <span class="stringliteral">@&quot;Engine.Polys&quot;</span>,</div>
-<div class="line">            <span class="stringliteral">@&quot;Engine.ShaderCache&quot;</span>,</div>
-<div class="line">            <span class="stringliteral">@&quot;Core.Package&quot;</span>,</div>
-<div class="line">            <span class="stringliteral">@&quot;Core.ArrayProperty&quot;</span>,</div>
-<div class="line">            <span class="stringliteral">@&quot;Core.FloatProperty&quot;</span>,</div>
-<div class="line">            <span class="stringliteral">@&quot;Core.Function&quot;</span>,</div>
-<div class="line">            <span class="stringliteral">@&quot;Core.ObjectProperty&quot;</span>,</div>
-<div class="line">            <span class="stringliteral">@&quot;Core.IntProperty&quot;</span>,</div>
-<div class="line">            <span class="stringliteral">@&quot;Core.BoolProperty&quot;</span>,</div>
-<div class="line">            <span class="stringliteral">@&quot;Core.StructProperty&quot;</span>,</div>
-<div class="line">            <span class="stringliteral">@&quot;Core.NameProperty&quot;</span>,</div>
-<div class="line">            <span class="stringliteral">@&quot;Core.StrProperty&quot;</span></div>
-<div class="line"> </div>
-<div class="line"> </div>
+<div class="line">            </div>
 <div class="line">        }</div>
 </div><!-- fragment -->
-<p>List of all known classes that are only defined in native code. These are not able to be handled for things like InheritsFrom as they are not in the property info database. </p>
+<p>List of all known classes that are only defined in native code that are LE1 specific </p>
 
 </div>
 </div>

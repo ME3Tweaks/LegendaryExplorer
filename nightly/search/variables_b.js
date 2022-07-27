@@ -9,5 +9,6 @@ var searchData=
   ['keyquotum_6',['KeyQuotum',['../class_legendary_explorer_core_1_1_unreal_1_1_p_s_a_1_1_p_s_a_anim_info.html#a9d0a31ec9908435c253950dddc35c834',1,'LegendaryExplorerCore::Unreal::PSA::PSAAnimInfo']]],
   ['keyreduction_7',['KeyReduction',['../class_legendary_explorer_core_1_1_unreal_1_1_p_s_a_1_1_p_s_a_anim_info.html#a8afc37387303827d82c0d18372a53436',1,'LegendaryExplorerCore::Unreal::PSA::PSAAnimInfo']]],
   ['keys_8',['Keys',['../class_legendary_explorer_core_1_1_unreal_1_1_p_s_a.html#a89ba8f1027424543f0d2961f7bebc99b',1,'LegendaryExplorerCore::Unreal::PSA']]],
-  ['keytype_9',['KeyType',['../class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_map_property.html#a670798644acf632648b47b5a258ac7bf',1,'LegendaryExplorerCore::Unreal::BinaryConverters::UMapProperty']]]
+  ['keytype_9',['KeyType',['../class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_map_property.html#a670798644acf632648b47b5a258ac7bf',1,'LegendaryExplorerCore::Unreal::BinaryConverters::UMapProperty']]],
+  ['knownglobalnativeclasses_10',['KnownGlobalNativeClasses',['../class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_global_unreal_object_info.html#ae0b3ccd3f2f49beba4101dff1b081e4f',1,'LegendaryExplorerCore::Unreal::ObjectInfo::GlobalUnrealObjectInfo']]]
 ];

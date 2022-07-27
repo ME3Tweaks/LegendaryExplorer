@@ -10,7 +10,7 @@ var class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_l_e3_unreal_obj
     [ "getDefaultProperty", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_l_e3_unreal_object_info.html#aa7feb5e3b179ce8b8527dcd4875f9318", null ],
     [ "generateInfo", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_l_e3_unreal_object_info.html#a0eacd6fb7015375318b7c4853c579616", null ],
     [ "generateClassInfo", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_l_e3_unreal_object_info.html#aa9b6ffa0dbb5a832a84c02daeb58cb3d", null ],
-    [ "IsAKnownNativeClass", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_l_e3_unreal_object_info.html#a90ab873b7f6f855fe262f70b708bee18", null ],
+    [ "IsAKnownGameSpecificNativeClass", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_l_e3_unreal_object_info.html#a538d6d3ce150d72945a173aba03c93ea", null ],
     [ "Classes", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_l_e3_unreal_object_info.html#a93c3aa53710d4b94a7b8ede3abaf76a0", null ],
     [ "Structs", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_l_e3_unreal_object_info.html#ade85a20b9dabd998740e0ec9eaac3944", null ],
     [ "SequenceObjects", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_l_e3_unreal_object_info.html#adf2914a197854efdc7381843c47e7ad1", null ],
