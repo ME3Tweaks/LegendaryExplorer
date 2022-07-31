@@ -610,7 +610,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             TreeNodes.Add(new FaceFXEditorTreeNode() { Header = $"FadeOutTime : {d.FadeOutTime}", DoubleClickAction = FadeOutDoubleClick});
             TreeNodes.Add(new FaceFXEditorTreeNode() { Header = $"Path : {d.Path}", DoubleClickAction = PathDoubleClick});
             TreeNodes.Add(new FaceFXEditorTreeNode() { Header = $"ID : {d.ID}", DoubleClickAction = IDDoubleClick});
-            TreeNodes.Add(new FaceFXEditorTreeNode() { Header = $"Index : 0x{d.Index:X8}", DoubleClickAction = IndexDoubleClick});
+            TreeNodes.Add(new FaceFXEditorTreeNode() { Header = $"Index : {d.Index} (0x{d.Index:X8})", DoubleClickAction = IndexDoubleClick});
             TreeNodes.Add(new FaceFXEditorTreeNode() { Header = $"Class : {(animSet.Binary is FaceFXAnimSet ? "FaceFXAnimSet" : "FaceFXAsset")}", DoubleClickAction = null});
         }
 
