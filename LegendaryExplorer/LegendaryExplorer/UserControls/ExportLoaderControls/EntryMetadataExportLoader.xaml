@@ -179,7 +179,9 @@
         <TextBox Name="InfoTab_ExportDataSize_TextBox" Grid.Row="12" Grid.Column="1" IsReadOnly ="true" VerticalAlignment="Center"/>
         <TextBox Name="InfoTab_ExportOffsetHex_TextBox" Grid.Row="13" Grid.Column="1" IsReadOnly ="true" VerticalAlignment="Center"/>
         <TextBox Name="InfoTab_ExportOffsetDec_TextBox" Grid.Row="14" Grid.Column="1" IsReadOnly="True" VerticalAlignment="Center"/>
-        <TextBox Name="InfoTab_ExportFlags_TextBox" Grid.Row="15" Grid.Column="1" IsReadOnly="True" VerticalAlignment="Center"/>
+        <xctk:CheckComboBox Name="InfoTab_ExportFlags_ComboBox" IsEditable="False" Delimiter=" " VerticalAlignment="Center" Grid.Row="15" Grid.Column="1"
+                            GotFocus="InfoTab_ExportFlags_ComboBox_GotFocus" ItemSelectionChanged="InfoTab_ExportFlags_ComboBox_ItemSelectionChanged"
+                            ToolTip="ExportFlags for this entry&#10;It is very rare you will ever need to change these"/>
         <TextBox Name="InfoTab_GenerationNetObjectCount_TextBox" Grid.Row="16" Grid.Column="1" IsReadOnly="True" VerticalAlignment="Center"/>
         <TextBox Name="InfoTab_ExportGUID_TextBox" Grid.Row="17" Grid.Column="1" IsReadOnly="True" VerticalAlignment="Center"/>
         <TextBox Name="InfoTab_PackageFlags_TextBox" Grid.Row="18" Grid.Column="1" IsReadOnly="True" VerticalAlignment="Center"/>

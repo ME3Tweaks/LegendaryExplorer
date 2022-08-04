@@ -93,6 +93,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         private bool ControlLoaded;
 
         private bool _hexChanged;
+        private int _exportFlagsOffset;
 
         public bool HexChanged
         {
@@ -200,7 +201,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
                 var flagsList = Enums.GetValues<EObjectFlags>().Distinct().ToList();
                 //Don't even get me started on how dumb it is that SelectedItems is read only...
-                string selectedFlags = flagsList.Where(flag => exportEntry.ObjectFlags.HasFlag(flag)).StringJoin(" ");
+                string selectedFlags = flagsList.Where(flag => exportEntry.ObjectFlags.Has(flag)).StringJoin(" ");
 
                 InfoTab_Flags_ComboBox.ItemsSource = flagsList;
                 InfoTab_Flags_ComboBox.SelectedValue = selectedFlags;
@@ -227,18 +228,20 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 {
                     Header_Hexbox_ComponentsLabel.Text = "";
                 }
-                int exportFlagsOffset = exportEntry.HasComponentMap ? 44 + EndianReader.ToInt32(header, 40, exportEntry.FileRef.Endian) * 12 : 40;
-                InfoTab_ExportFlags_TextBlock.Text = $"0x{exportFlagsOffset:X2} ExportFlags:";
-                InfoTab_ExportFlags_TextBox.Text = Enums.GetValues<EExportFlags>().Distinct().ToList()
-                    .Where(flag => exportEntry.ExportFlags.HasFlag(flag)).StringJoin(" ");
+                _exportFlagsOffset = exportEntry.HasComponentMap ? 44 + EndianReader.ToInt32(header, 40, exportEntry.FileRef.Endian) * 12 : 40;
+                InfoTab_ExportFlags_TextBlock.Text = $"0x{_exportFlagsOffset:X2} ExportFlags:";
+                List<EExportFlags> exportFlagsList = Enums.GetValues<EExportFlags>().Distinct().ToList();
+                string selectedExportFlags = exportFlagsList.Where(flag => exportEntry.ExportFlags.Has(flag)).StringJoin(" ");
+                InfoTab_ExportFlags_ComboBox.ItemsSource = exportFlagsList;
+                InfoTab_ExportFlags_ComboBox.SelectedValue = selectedExportFlags;
 
                 InfoTab_GenerationNetObjectCount_TextBlock.Text =
-                    $"0x{exportFlagsOffset + 4:X2} GenerationNetObjs:";
+                    $"0x{_exportFlagsOffset + 4:X2} GenerationNetObjs:";
                 int[] generationNetObjectCount = exportEntry.GenerationNetObjectCount;
                 InfoTab_GenerationNetObjectCount_TextBox.Text =
                     $"{generationNetObjectCount.Length} counts: {string.Join(", ", generationNetObjectCount)}";
 
-                int packageGuidOffset = exportFlagsOffset + 8 + generationNetObjectCount.Length * 4;
+                int packageGuidOffset = _exportFlagsOffset + 8 + generationNetObjectCount.Length * 4;
                 InfoTab_GUID_TextBlock.Text = $"0x{packageGuidOffset:X2} GUID:";
                 InfoTab_ExportGUID_TextBox.Text = exportEntry.PackageGUID.ToString();
                 if (exportEntry.FileRef.Platform is MEPackage.GamePlatform.Xenon && exportEntry.FileRef.Game is MEGame.ME1)
@@ -431,6 +434,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             InfoTab_Archetype_ComboBox.SelectedItem = null;
             InfoTab_Flags_ComboBox.ItemsSource = null;
             InfoTab_Flags_ComboBox.SelectedItem = null;
+            InfoTab_ExportFlags_ComboBox.ItemsSource = null;
+            InfoTab_ExportFlags_ComboBox.SelectedItem = null;
             InfoTab_ExportDataSize_TextBox.Text = null;
             InfoTab_ExportOffsetHex_TextBox.Text = null;
             InfoTab_ExportOffsetDec_TextBox.Text = null;
@@ -649,6 +654,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             Header_Hexbox.SelectionLength = 8;
         }
 
+        private void InfoTab_ExportFlags_ComboBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            Header_Hexbox.SelectionStart = _exportFlagsOffset;
+            Header_Hexbox.SelectionLength = 4;
+        }
+
         private void InfoTab_ObjectNameIndex_ComboBox_GotFocus(object sender, RoutedEventArgs e)
         {
             Header_Hexbox.SelectionStart = CurrentLoadedEntry is ExportEntry ? HEADER_OFFSET_EXP_IDXOBJECTNAME + 4 : HEADER_OFFSET_IMP_IDXOBJECTNAME + 4;
@@ -674,6 +685,29 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 }
                 //Debug.WriteLine(newFlags);
                 headerByteProvider.WriteBytes(HEADER_OFFSET_EXP_OBJECTFLAGS, BitConverter.GetBytes((ulong)newFlags));
+                Header_Hexbox.Refresh();
+            }
+        }
+
+        /// <summary>
+        /// Handler for when the exportflags combobox item changes value
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void InfoTab_ExportFlags_ComboBox_ItemSelectionChanged(object sender, ItemSelectionChangedEventArgs e)
+        {
+            if (!loadingNewData)
+            {
+                EExportFlags newFlags = 0U;
+                foreach (object flag in InfoTab_ExportFlags_ComboBox.Items)
+                {
+                    if (InfoTab_ExportFlags_ComboBox.ItemContainerGenerator.ContainerFromItem(flag) is SelectorItem { IsSelected: true })
+                    {
+                        newFlags |= (EExportFlags)flag;
+                    }
+                }
+                //Debug.WriteLine(newFlags);
+                headerByteProvider.WriteBytes(_exportFlagsOffset, BitConverter.GetBytes((uint)newFlags));
                 Header_Hexbox.Refresh();
             }
         }
