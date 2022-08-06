@@ -907,6 +907,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
         }
 
+        private void ImportFromExcel_Click(object sender, RoutedEventArgs e)
         {
             var wdlg = MessageBox.Show("Do you want to import a new curve from Excel and overwrite the existing curve values?\n \nThe sheet must be in the correct format:\n- Headers must match the overwritten curve\n- All cells must contain a value\n- Time values must be ordered.\n- Values only, no links or formulas", "Import Curves", MessageBoxButton.OKCancel);
             if (wdlg == MessageBoxResult.Cancel)
@@ -956,6 +957,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 //Check time is in order
                 float previoustime = -9999;
                 for (int row = 2; row <= xlrowCount; row++)
+                {
+                    var t = iWorksheet.Cell(row, 1).Value.ToString();
                     if (!float.TryParse(t, out float time) || time < previoustime)
                     {
                         MessageBox.Show("The imported timings are not in order.\nPlease check import sheet.  Aborting.", "Import Curves", MessageBoxButton.OK);
