@@ -114,6 +114,11 @@
                                         <Image Source="/Resources/Images/excel.png" Width="16" Height="16" Margin="0,0,2,0"/>
                                     </MenuItem.Icon>
                                 </MenuItem>
+                                <MenuItem Header="Import Curve from Excel" Click="ImportFromExcel_Click">
+                                    <MenuItem.Icon>
+                                        <Image Source="/Resources/Images/excel.png" Width="16" Height="16" Margin="0,0,2,0"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
                             </ContextMenu>
                         </TextBlock.ContextMenu>
                     </TextBlock>

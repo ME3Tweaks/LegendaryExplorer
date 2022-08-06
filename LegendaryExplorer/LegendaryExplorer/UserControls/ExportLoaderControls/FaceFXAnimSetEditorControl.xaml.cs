@@ -24,6 +24,7 @@ using Microsoft.WindowsAPICodePack.Dialogs;
 using Newtonsoft.Json;
 using Point = System.Windows.Point;
 using LegendaryExplorerCore.Unreal;
+using LegendaryExplorerCore.Gammtek.Extensions;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls
 {
@@ -906,7 +907,107 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
         }
 
+        {
+            var wdlg = MessageBox.Show("Do you want to import a new curve from Excel and overwrite the existing curve values?\n \nThe sheet must be in the correct format:\n- Headers must match the overwritten curve\n- All cells must contain a value\n- Time values must be ordered.\n- Values only, no links or formulas", "Import Curves", MessageBoxButton.OKCancel);
+            if (wdlg == MessageBoxResult.Cancel)
+                return;
 
+            var curve = graph.SelectedCurve;
+            var oDlg = new OpenFileDialog //Load Excel
+            {
+                Filter = "Excel Files (*.xlsx)|*.xlsx",
+                Title = "Import Excel table"
+            };
+
+            if (oDlg.ShowDialog() != true)
+                return;
+
+            var Workbook = new XLWorkbook(oDlg.FileName);
+            IXLWorksheet iWorksheet;
+            if (Workbook.Worksheets.Count() > 1)
+            {
+                try
+                {
+                    iWorksheet = Workbook.Worksheet(1);
+                }
+                catch
+                {
+                    MessageBox.Show("Curve Sheet not found");
+                    return;
+                }
+            }
+            else
+            {
+                iWorksheet = Workbook.Worksheet(1);
+            }
+
+            try
+            {
+                var xlrowCount = iWorksheet.RowsUsed().Count();
+                //Check headers
+
+                var returned = (string)iWorksheet.Cell(1, 2).Value; //2 as XL starts at 1, and skip time column
+                if (curve.Name != returned)
+                {
+                    var chkbx = MessageBox.Show("The imported column header does not match current selection.\n", "Import Curves", MessageBoxButton.OK);
+                    return;
+                }
+
+                //Check time is in order
+                float previoustime = -9999;
+                for (int row = 2; row <= xlrowCount; row++)
+                    if (!float.TryParse(t, out float time) || time < previoustime)
+                    {
+                        MessageBox.Show("The imported timings are not in order.\nPlease check import sheet.  Aborting.", "Import Curves", MessageBoxButton.OK);
+                        return;
+                    }
+                    previoustime = time;
+                }
+                //CHECK Every cell has a numeric value
+                foreach (var cell in iWorksheet.RangeUsed().Cells())
+                {
+                    if (cell.IsNull() || cell.IsEmpty())
+                    {
+                        MessageBox.Show("The sheet contains empty cells.\nPlease check import sheet.  Aborting.", "Import Curves", MessageBoxButton.OK);
+                        return;
+                    }
+                    if (cell.Address.RowNumber > 1 && !float.TryParse(cell.Value.ToString(), out float f))
+                    {
+                        MessageBox.Show("The values contain text.\nPlease check import sheet.  Aborting.", "Import Curves", MessageBoxButton.OK);
+                        return;
+                    }
+                }
+
+                //Import data to curves
+                curve.CurvePoints.Clear();
+                string cname = curve.Name;
+
+                for (int xlrow = 2; xlrow <= xlrowCount; xlrow++) //Get Excel points start at 2 because top contains headers
+                {
+                    var time = iWorksheet.Cell(xlrow, 1).Value.ToString();
+                    var outval = iWorksheet.Cell(xlrow, 2).Value.ToString();
+                    if (outval != null && float.TryParse(time, out float t) && float.TryParse(outval, out float v))
+                    {
+                        var point = new CurvePoint(t, v, 0, 0, EInterpCurveMode.CIM_CurveUser);
+                        curve.CurvePoints.AddLast(point);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Data error. Aborted");
+                        return;
+                    }
+                }
+                MessageBox.Show("Import complete.", "Import Curves");
+            }
+            catch (Exception exp)
+            {
+                MessageBox.Show("Import failed. Check Import data.\n", "Error");
+#if DEBUG
+                MessageBox.Show($"{exp.FlattenException()}", "Error");
+#endif
+            }
+
+        }
 
         public interface IFaceFXBinary
         {
