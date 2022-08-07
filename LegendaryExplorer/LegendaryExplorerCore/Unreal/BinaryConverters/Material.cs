@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.CompilerServices;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
+using Microsoft.Toolkit.HighPerformance;
+using UIndex = System.Int32;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
@@ -32,17 +32,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             };
         }
 
-        public override List<(UIndex, string)> GetUIndexes(MEGame game)
-        {
-            var uIndexes = new List<(UIndex, string)>();
-            uIndexes.AddRange(SM3MaterialResource.GetUIndexes(game));
-            if (game != MEGame.UDK)
-            {
-                uIndexes.AddRange(SM2MaterialResource.GetUIndexes(game));
-            }
-            return uIndexes;
-        }
-
         public override List<(NameReference, string)> GetNames(MEGame game)
         {
             var names = new List<(NameReference, string)>();
@@ -54,6 +43,15 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
 
             return names;
+        }
+
+        public override void ForEachUIndex<TAction>(MEGame game, in TAction action)
+        {
+            SM3MaterialResource.ForEachUIndex(game, action, "SM3MaterialResource.");
+            if (game is not MEGame.UDK)
+            {
+                SM2MaterialResource.ForEachUIndex(game, action, "SM2MaterialResource.");
+            }
         }
     }
     public class MaterialInstance : ObjectBinary
@@ -84,17 +82,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             };
         }
 
-        public override List<(UIndex, string)> GetUIndexes(MEGame game)
-        {
-            var uIndexes = new List<(UIndex, string)>();
-            uIndexes.AddRange(SM3StaticPermutationResource.GetUIndexes(game));
-            if (game != MEGame.UDK)
-            {
-                uIndexes.AddRange(SM2StaticPermutationResource.GetUIndexes(game));
-            }
-            return uIndexes;
-        }
-
         public override List<(NameReference, string)> GetNames(MEGame game)
         {
             var names = new List<(NameReference, string)>();
@@ -108,6 +95,15 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
 
             return names;
+        }
+
+        public override void ForEachUIndex<TAction>(MEGame game, in TAction action)
+        {
+            SM3StaticPermutationResource.ForEachUIndex(game, action, "SM3StaticPermutationResource.");
+            if (game is not MEGame.UDK)
+            {
+                SM2StaticPermutationResource.ForEachUIndex(game, action, "SM2StaticPermutationResource.");
+            }
         }
     }
 
@@ -179,44 +175,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             };
         }
 
-        public virtual List<(UIndex, string)> GetUIndexes(MEGame game)
-        {
-            List<(UIndex uIndex, string)> uIndexes = TextureDependencyLengthMap.Keys().Select((uIndex, i) => (uIndex, $"TextureDependencyLengthMap[{i}]")).ToList();
-            if (game >= MEGame.ME3)
-            {
-                uIndexes.AddRange(UniformExpressionTextures.Select((uIndex, i) => (uIndex, $"UniformExpressionTextures[{i}]")));
-            }
-            else
-            {
-                uIndexes.AddRange(UniformPixelVectorExpressions.OfType<MaterialUniformExpressionFlipbookParameter>()
-                    .Select((flipParam, i) => (flipParam.TextureIndex, $"UniformPixelVectorExpressions[{i}]")));
-
-                // Used in ME2 Carnage fireballPlasma Material
-                uIndexes.AddRange(UniformPixelVectorExpressions.OfType<MaterialUniformExpressionTexture>()
-                    .Select((flipParam, i) => (flipParam.TextureIndex, $"UniformPixelVectorExpressions[{i}]")));
-
-                uIndexes.AddRange(UniformPixelScalarExpressions.OfType<MaterialUniformExpressionFlipbookParameter>()
-                    .Select((flipParam, i) => (flipParam.TextureIndex, $"UniformPixelScalarExpressions[{i}]")));
-                uIndexes.AddRange(Uniform2DTextureExpressions.Select((texParam, i) => (texParam.TextureIndex, $"Uniform2DTextureExpressions[{i}]")));
-                uIndexes.AddRange(UniformCubeTextureExpressions.Select((texParam, i) => (texParam.TextureIndex, $"UniformCubeTextureExpressions[{i}]")));
-                if (game == MEGame.ME1)
-                {
-                    int j = 0;
-                    foreach (ME1MaterialUniformExpressionsElement expressionsElement in Me1MaterialUniformExpressionsList)
-                    {
-                        uIndexes.AddRange(expressionsElement.UniformPixelVectorExpressions.OfType<MaterialUniformExpressionFlipbookParameter>()
-                            .Select((flipParam, i) => (flipParam.TextureIndex, $"MaterialUniformExpressions[{j}].UniformPixelVectorExpressions[{i}]")));
-                        uIndexes.AddRange(expressionsElement.UniformPixelScalarExpressions.OfType<MaterialUniformExpressionFlipbookParameter>()
-                            .Select((flipParam, i) => (flipParam.TextureIndex, $"MaterialUniformExpressions[{j}].UniformPixelScalarExpressions[{i}]")));
-                        uIndexes.AddRange(expressionsElement.Uniform2DTextureExpressions.Select((texParam, i) => (texParam.TextureIndex, $"MaterialUniformExpressions[{j}].Uniform2DTextureExpressions[{i}]")));
-                        uIndexes.AddRange(expressionsElement.UniformCubeTextureExpressions.Select((texParam, i) => (texParam.TextureIndex, $"MaterialUniformExpressions[{j}].UniformCubeTextureExpressions[{i}]")));
-                        ++j;
-                    }
-                }
-            }
-            return uIndexes;
-        }
-
         public List<(NameReference, string)> GetNames(MEGame game)
         {
             var names = new List<(NameReference, string)>();
@@ -268,6 +226,95 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
 
             return names;
+        }
+        public virtual void ForEachUIndex<TAction>(MEGame game, in TAction action, string prefix) where TAction : struct, IUIndexAction
+        {
+            ObjectBinary.ForEachUIndexKeyInOrderedMultiValueDictionary(action, TextureDependencyLengthMap.AsSpan(), nameof(TextureDependencyLengthMap));
+            if (game >= MEGame.ME3)
+            {
+                ObjectBinary.ForEachUIndexInSpan(action, UniformExpressionTextures.AsSpan(), $"{prefix}{nameof(UniformExpressionTextures)}");
+            }
+            else
+            {
+                //seperating this monstrosity out so the poor jit can ignore it in the common case (LE)
+                NonLE_UIndexes(game, action, prefix);
+            }
+
+        }
+        private void NonLE_UIndexes<TAction>(MEGame meGame, TAction uIndexAction, string prefix) where TAction : struct, IUIndexAction
+        {
+            TAction a = Unsafe.AsRef(uIndexAction);
+            for (int i = 0; i < UniformPixelVectorExpressions.Length; i++)
+            {
+                switch (UniformPixelVectorExpressions[i])
+                {
+                    case MaterialUniformExpressionFlipbookParameter flipParm:
+                        a.Invoke(ref flipParm.TextureIndex, $"{prefix}UniformPixelVectorExpressions[{i}]");
+                        break;
+                    case MaterialUniformExpressionTexture parm:
+                        a.Invoke(ref parm.TextureIndex, $"{prefix}UniformPixelVectorExpressions[{i}]");
+                        break;
+                }
+            }
+            for (int i = 0; i < UniformPixelScalarExpressions.Length; i++)
+            {
+                switch (UniformPixelScalarExpressions[i])
+                {
+                    case MaterialUniformExpressionFlipbookParameter flipParm:
+                        a.Invoke(ref flipParm.TextureIndex, $"{prefix}UniformPixelScalarExpressions[{i}]");
+                        break;
+                    case MaterialUniformExpressionTexture parm:
+                        a.Invoke(ref parm.TextureIndex, $"{prefix}UniformPixelScalarExpressions[{i}]");
+                        break;
+                }
+            }
+            for (int i = 0; i < Uniform2DTextureExpressions.Length; i++)
+            {
+                a.Invoke(ref Uniform2DTextureExpressions[i].TextureIndex, $"{prefix}Uniform2DTextureExpressions[{i}]");
+            }
+            for (int i = 0; i < UniformCubeTextureExpressions.Length; i++)
+            {
+                a.Invoke(ref UniformCubeTextureExpressions[i].TextureIndex, $"{prefix}UniformCubeTextureExpressions[{i}]");
+            }
+            if (meGame is MEGame.ME1)
+            {
+                for (int j = 0; j < Me1MaterialUniformExpressionsList.Length; j++)
+                {
+                    ME1MaterialUniformExpressionsElement expressionsElement = Me1MaterialUniformExpressionsList[j];
+                    for (int i = 0; i < expressionsElement.UniformPixelVectorExpressions.Length; i++)
+                    {
+                        switch (expressionsElement.UniformPixelVectorExpressions[i])
+                        {
+                            case MaterialUniformExpressionFlipbookParameter flipParm:
+                                a.Invoke(ref flipParm.TextureIndex, $"{prefix}MaterialUniformExpressions[{j}].UniformPixelVectorExpressions[{i}]");
+                                break;
+                            case MaterialUniformExpressionTexture parm:
+                                a.Invoke(ref parm.TextureIndex, $"{prefix}MaterialUniformExpressions[{j}].UniformPixelVectorExpressions[{i}]");
+                                break;
+                        }
+                    }
+                    for (int i = 0; i < expressionsElement.UniformPixelScalarExpressions.Length; i++)
+                    {
+                        switch (expressionsElement.UniformPixelScalarExpressions[i])
+                        {
+                            case MaterialUniformExpressionFlipbookParameter flipParm:
+                                a.Invoke(ref flipParm.TextureIndex, $"{prefix}MaterialUniformExpressions[{j}].UniformPixelScalarExpressions[{i}]");
+                                break;
+                            case MaterialUniformExpressionTexture parm:
+                                a.Invoke(ref parm.TextureIndex, $"{prefix}MaterialUniformExpressions[{j}].UniformPixelScalarExpressions[{i}]");
+                                break;
+                        }
+                    }
+                    for (int i = 0; i < expressionsElement.Uniform2DTextureExpressions.Length; i++)
+                    {
+                        a.Invoke(ref expressionsElement.Uniform2DTextureExpressions[i].TextureIndex, $"{prefix}MaterialUniformExpressions[{j}].Uniform2DTextureExpressions[{i}]");
+                    }
+                    for (int i = 0; i < expressionsElement.UniformCubeTextureExpressions.Length; i++)
+                    {
+                        a.Invoke(ref expressionsElement.UniformCubeTextureExpressions[i].TextureIndex, $"{prefix}MaterialUniformExpressions[{j}].UniformCubeTextureExpressions[{i}]");
+                    }
+                }
+            }
         }
     }
 

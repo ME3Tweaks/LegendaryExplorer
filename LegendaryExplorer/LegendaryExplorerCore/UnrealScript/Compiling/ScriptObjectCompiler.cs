@@ -244,7 +244,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
             if (pcc.Game.IsGame3())
             {
-                classObj.VirtualFunctionTable = classAST.VirtualFunctionTable.Select(func => new UIndex(CompilerUtils.ResolveFunction(func, pcc).UIndex)).ToArray();
+                classObj.VirtualFunctionTable = classAST.VirtualFunctionTable.Select(func => CompilerUtils.ResolveFunction(func, pcc).UIndex).ToArray();
             }
 
             //finish compiling all the stubs
@@ -301,9 +301,9 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
             classObj.DLLBindName = "None";
 
-            var defaultsExport = classObj.Defaults.GetEntry(pcc) as ExportEntry;
+            var defaultsExport = pcc.GetEntry(classObj.Defaults) as ExportEntry;
             ScriptPropertiesCompiler.CompileDefault__Object(classAST.DefaultProperties, classExport, ref defaultsExport, packageCache);
-            classObj.Defaults = defaultsExport;
+            classObj.Defaults = defaultsExport.UIndex;
 
             //classObj.ComponentNameToDefaultObjectMap.Clear();
             //foreach (Subobject subobject in classAST.DefaultProperties.Statements.OfType<Subobject>())
@@ -717,7 +717,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                         UProperty child = null;
                         var dynArrType = (DynamicArrayType)varType;
                         VariableType elementType = dynArrType.ElementType;
-                        if (pcc.TryGetUExport(uArrayProperty.ElementType ?? 0, out ExportEntry childExp))
+                        if (pcc.TryGetUExport(uArrayProperty.ElementType, out ExportEntry childExp))
                         {
                             if (childExp.ClassName == ByteCodeCompilerVisitor.PropertyTypeName(elementType))
                             {
@@ -804,11 +804,11 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
         {
             if (field is null)
             {
-                uStruct.Children = current.Export;
+                uStruct.Children = current.Export.UIndex;
             }
             else
             {
-                field.Next = current.Export;
+                field.Next = current.Export.UIndex;
                 field.Export.WriteBinary(field);
             }
             field = current;
@@ -822,7 +822,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
             var nextItem = obj.Children;
 
-            while (nextItem is not null && pcc.TryGetUExport(nextItem, out ExportEntry nextChild))
+            while (nextItem is not 0 && pcc.TryGetUExport(nextItem, out ExportEntry nextChild))
             {
                 var objBin = ObjectBinary.From(nextChild);
                 switch (objBin)
@@ -835,7 +835,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                         nextItem = field.Next;
                         break;
                     default:
-                        nextItem = null;
+                        nextItem = 0;
                         break;
                 }
             }
@@ -851,7 +851,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
             var nextItem = obj.Children;
 
-            while (nextItem is not null && pcc.TryGetUExport(nextItem, out ExportEntry nextChild))
+            while (nextItem is not 0 && pcc.TryGetUExport(nextItem, out ExportEntry nextChild))
             {
                 var objBin = ObjectBinary.From(nextChild);
                 switch (objBin)
@@ -868,7 +868,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                         nextItem = field.Next;
                         break;
                     default:
-                        nextItem = null;
+                        nextItem = 0;
                         break;
                 }
             }
@@ -890,7 +890,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
             var nextItem = obj.Children;
 
-            while (nextItem is not null && pcc.TryGetUExport(nextItem, out ExportEntry nextChild))
+            while (nextItem is not 0 && pcc.TryGetUExport(nextItem, out ExportEntry nextChild))
             {
                 var objBin = ObjectBinary.From(nextChild);
                 string objName = objBin?.Export.ObjectName.Instanced;

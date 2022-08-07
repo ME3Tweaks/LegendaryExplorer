@@ -215,10 +215,7 @@ namespace LegendaryExplorer.Tools.Meshplorer
                         bool pendingChangesBackup = CurrentExport.EntryHasPendingChanges;
                         byte[] dataBackup = CurrentExport.Data;
                         ObjectBinary objBin = ObjectBinary.From(CurrentExport);
-                        foreach ((UIndex uIndex, _) in objBin.GetUIndexes(CurrentExport.Game))
-                        {
-                            uIndex.value = 0;
-                        }
+                        objBin.ForEachUIndex(CurrentExport.Game, new UIndexZeroer());
                         CurrentExport.WritePropertiesAndBinary(new PropertyCollection(), objBin);
 
                         EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.AddSingularAsChild, CurrentExport, upk, null, true, new RelinkerOptionsPackage(), out IEntry _);
@@ -390,12 +387,12 @@ namespace LegendaryExplorer.Tools.Meshplorer
                             newMesh.BodySetup = 0;
                             if (originalMesh.LODModels.Any())
                             {
-                                UIndex[] mats = originalMesh.LODModels[0].Elements.Select(el => el.Material).ToArray();
+                                int[] mats = originalMesh.LODModels[0].Elements.Select(el => el.Material).ToArray();
                                 foreach (StaticMeshRenderData lodModel in newMesh.LODModels)
                                 {
                                     for (int i = 0; i < lodModel.Elements.Length; i++)
                                     {
-                                        UIndex matIndex = 0;
+                                        int matIndex = 0;
                                         if (i < mats.Length)
                                         {
                                             matIndex = mats[i];
@@ -418,7 +415,7 @@ namespace LegendaryExplorer.Tools.Meshplorer
 
         private void ImportFromUDK()
         {
-            OpenFileDialog d = new OpenFileDialog { Filter = GameFileFilters.UDKFileFilter };
+            var d = new OpenFileDialog { Filter = GameFileFilters.UDKFileFilter };
             if (d.ShowDialog() == true)
             {
                 try
@@ -428,10 +425,7 @@ namespace LegendaryExplorer.Tools.Meshplorer
                     if (EntrySelector.GetEntry<ExportEntry>(this, udk, "Select mesh to import:", exp => meshClasses.Contains(exp.ClassName)) is ExportEntry meshExport)
                     {
                         ObjectBinary objBin = ObjectBinary.From(meshExport);
-                        foreach ((UIndex uIndex, var _) in objBin.GetUIndexes(MEGame.UDK))
-                        {
-                            uIndex.value = 0;
-                        }
+                        objBin.ForEachUIndex(MEGame.UDK, new UIndexZeroer());
                         meshExport.WritePropertiesAndBinary(new PropertyCollection(), objBin);
                         var results = EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.AddSingularAsChild, meshExport, Pcc,
                                                                            null, true, new RelinkerOptionsPackage(), out _);

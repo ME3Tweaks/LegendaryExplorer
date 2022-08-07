@@ -35,7 +35,10 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             };
         }
 
-        public override List<(UIndex, string)> GetUIndexes(MEGame game) => LightMap.GetUIndexes(game);
+        public override void ForEachUIndex<TAction>(MEGame game, in TAction action)
+        {
+            LightMap.ForEachUIndex(game, action);
+        }
     }
 
     public class TerrainBVNode

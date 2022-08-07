@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using LegendaryExplorerCore.Packages;
 using System.Numerics;
+using System.Runtime.CompilerServices;
+using UIndex = System.Int32;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
@@ -42,12 +40,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 Elements = Array.Empty<Poly>()
             };
         }
-
-        public override List<(UIndex, string)> GetUIndexes(MEGame game)
-        {
-            return new List<(UIndex, string)> { (Owner, "Owner") };
-        }
-
+        
         public override List<(NameReference, string)> GetNames(MEGame game)
         {
             var names = new List<(NameReference, string)>();
@@ -63,6 +56,11 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
 
             return names;
+        }
+
+        public override void ForEachUIndex<TAction>(MEGame game, in TAction action)
+        {
+            Unsafe.AsRef(action).Invoke(ref Owner, nameof(Owner));
         }
     }
     public class Poly

@@ -1491,22 +1491,22 @@ namespace LegendaryExplorer.Tools.PackageEditor
                                 && exp.ClassName != "AnimSequence" //has no UIndexes, and is expensive to deserialize
                                 && ObjectBinary.From(exp) is ObjectBinary objBin)
                             {
-                                List<(UIndex, string)> indices;
+                                var indices = new List<int>();
                                 if (objBin is Level levelBin)
                                 {
                                     //trashing a level object will automatically remove it from the Actor list
                                     //so we don't care if it's referenced there
-                                    indices = levelBin.GetUIndexesWithoutActorList(pccGame);
+                                    levelBin.ForEachUIndexExceptActorList(pccGame, new UIndexCollector(indices));
                                 }
                                 else
                                 {
-                                    indices = objBin.GetUIndexes(pccGame);
+                                    objBin.ForEachUIndex(pccGame, new UIndexCollector(indices));
                                 }
-                                foreach ((UIndex uIndex, string _) in indices)
+                                foreach (int uIndex in indices)
                                 {
-                                    if (uIndexes.Contains(uIndex.value))
+                                    if (uIndexes.Contains(uIndex))
                                     {
-                                        return pcc.GetEntry(uIndex.value);
+                                        return pcc.GetEntry(uIndex);
                                     }
                                 }
                             }

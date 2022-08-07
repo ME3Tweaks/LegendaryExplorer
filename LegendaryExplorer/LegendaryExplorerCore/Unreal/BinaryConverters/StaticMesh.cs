@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.CompilerServices;
 using LegendaryExplorerCore.Packages;
 using Vector2 = System.Numerics.Vector2;
 using Vector3 = System.Numerics.Vector3;
+using UIndex = System.Int32;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
@@ -165,19 +163,16 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             };
         }
 
-        public override List<(UIndex, string)> GetUIndexes(MEGame game)
+        public override void ForEachUIndex<TAction>(MEGame game, in TAction action)
         {
-            var uIndexes = new List<(UIndex, string)> { (BodySetup, "BodySetup") };
-
+            Unsafe.AsRef(action).Invoke(ref BodySetup, nameof(BodySetup));
             for (int i = 0; i < LODModels.Length; i++)
             {
                 for (int j = 0; j < LODModels[i].Elements.Length; j++)
                 {
-                    uIndexes.Add((LODModels[i].Elements[j].Material, $"LODModels[{i}].Elements[{j}].Material"));
+                    Unsafe.AsRef(action).Invoke(ref LODModels[i].Elements[j].Material, $"LODModels[{i}].Elements[{j}].Material");
                 }
             }
-
-            return uIndexes;
         }
 
         public StructProperty GetCollisionMeshProperty(IMEPackage pcc)

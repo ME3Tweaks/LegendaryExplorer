@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Numerics;
 using LegendaryExplorerCore.Packages;
+using UIndex = System.Int32;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
@@ -24,7 +25,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             if (sc.IsLoading)
             {
                 // Components are technically not part of the binary data. However they are required to be parsed for this class so we might as well just leverage their utility here.
-                Components = components.Select(x => new UIndex(x.Value)).ToList();
+                Components = components.Select(x => x.Value).ToList();
                 LocalToWorldTransforms = new List<Matrix4x4>(components.Count);
             }
 
@@ -42,7 +43,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
     public class StaticMeshCollectionActor : StaticCollectionActor
     {
-        public override string ComponentPropName { get; } = "StaticMeshComponents";
+        public override string ComponentPropName => "StaticMeshComponents";
 
         public static StaticMeshCollectionActor Create()
         {
@@ -55,7 +56,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     }
     public class StaticLightCollectionActor : StaticCollectionActor
     {
-        public override string ComponentPropName { get; } = "LightComponents";
+        public override string ComponentPropName => "LightComponents";
 
         public static StaticLightCollectionActor Create()
         {

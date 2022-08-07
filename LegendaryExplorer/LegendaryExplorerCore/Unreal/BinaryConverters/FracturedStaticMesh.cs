@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 using LegendaryExplorerCore.Packages;
+using UIndex = System.Int32;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
@@ -67,11 +65,10 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             };
         }
 
-        public override List<(UIndex, string)> GetUIndexes(MEGame game)
+        public override void ForEachUIndex<TAction>(MEGame game, in TAction action)
         {
-            List<(UIndex, string)> uIndexes = base.GetUIndexes(game);
-            uIndexes.Add((SourceStaticMesh, nameof(SourceStaticMesh)));
-            return uIndexes;
+            base.ForEachUIndex(game, in action);
+            Unsafe.AsRef(action).Invoke(ref SourceStaticMesh, nameof(SourceStaticMesh));
         }
     }
 

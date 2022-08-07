@@ -1714,14 +1714,14 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// <returns></returns>
         public static List<IEntry> GetAllReferencesOfExport(ExportEntry export, bool includeLink = false)
         {
-            List<IEntry> referencedItems = new List<IEntry>();
+            var referencedItems = new List<IEntry>();
             RecursiveGetDependencies(export, referencedItems, includeLink);
             return referencedItems.Distinct().ToList();
         }
 
         private static void AddEntryReference(int referenceIdx, IMEPackage package, List<IEntry> referencedItems)
         {
-            if (package.TryGetEntry(referenceIdx, out var reference) && !referencedItems.Contains(reference))
+            if (package.TryGetEntry(referenceIdx, out IEntry reference) && !referencedItems.Contains(reference))
             {
                 referencedItems.Add(reference);
             }
@@ -1729,12 +1729,12 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
         private static void RecursiveGetDependencies(ExportEntry relinkingExport, List<IEntry> referencedItems, bool includeLink)
         {
-            List<ExportEntry> localExportReferences = new List<ExportEntry>();
+            var localExportReferences = new List<ExportEntry>();
 
             // Compiles list of items local to this entry
             void AddReferenceLocal(int entryUIndex)
             {
-                if (relinkingExport.FileRef.TryGetUExport(entryUIndex, out var exp) && !referencedItems.Any(x => x.UIndex == entryUIndex))
+                if (relinkingExport.FileRef.TryGetUExport(entryUIndex, out ExportEntry exp) && referencedItems.All(x => x.UIndex != entryUIndex))
                 {
                     // Add objects that we have not referenced yet.
                     localExportReferences.Add(exp);
@@ -1761,7 +1761,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 AddReferenceLocal(uIndex);
             }
             //Relink Component's TemplateOwnerClass
-            else if (relinkingExport.TemplateOwnerClassIdx is var toci && toci >= 0)
+            else if (relinkingExport.TemplateOwnerClassIdx is var toci and >= 0)
             {
 
                 int uIndex = BitConverter.ToInt32(prePropBinary, toci);
@@ -1787,10 +1787,10 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             var bin = ObjectBinary.From(relinkingExport);
             if (bin != null)
             {
-                var binUIndexes = bin.GetUIndexes(relinkingExport.Game);
-                foreach (var binUIndex in binUIndexes)
+                List<int> binUIndexes = bin.GetUIndexes(relinkingExport.Game);
+                foreach (int binUIndex in binUIndexes)
                 {
-                    AddReferenceLocal(binUIndex.Item1);
+                    AddReferenceLocal(binUIndex);
                 }
             }
 

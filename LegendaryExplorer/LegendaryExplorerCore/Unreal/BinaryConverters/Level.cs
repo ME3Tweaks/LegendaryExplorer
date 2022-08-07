@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
+using Microsoft.Toolkit.HighPerformance;
+using UIndex = System.Int32;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
@@ -112,8 +111,8 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
             else if (sc.IsLoading)
             {
-                PylonListStart = new UIndex(0);
-                PylonListEnd = new UIndex(0);
+                PylonListStart = 0;
+                PylonListEnd = 0;
                 guidToIntMap = new OrderedMultiValueDictionary<Guid, int>();
                 CoverLinks = new List<UIndex>();
                 intToByteMap = new OrderedMultiValueDictionary<int, byte>();
@@ -137,8 +136,8 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
             else if (sc.IsLoading)
             {
-                ArtPlaceable1 = new UIndex(0);
-                ArtPlaceable2 = new UIndex(0);
+                ArtPlaceable1 = 0;
+                ArtPlaceable2 = 0;
             }
 
             if (sc.Game == MEGame.UDK && sc.IsSaving)
@@ -207,50 +206,53 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             };
         }
 
-        public override List<(UIndex, string)> GetUIndexes(MEGame game)
+        public override void ForEachUIndex<TAction>(MEGame game, in TAction action)
         {
-            var uIndexes = new List<(UIndex, string)>();
-            
-            uIndexes.AddRange(Actors.Select((u, i) => (u, $"{nameof(Actors)}[{i}]")));
-            uIndexes.AddRange(GetUIndexesWithoutActorList(game));
-
-            return uIndexes;
+            var actorSpan = Actors.AsSpan();
+            for (int i = 0; i < actorSpan.Length; i++)
+            {
+                Unsafe.AsRef(action).Invoke(ref actorSpan[i], $"Actors[{i}]");
+            }
+            ForEachUIndexExceptActorList(game, action);
         }
 
-        public List<(UIndex, string)> GetUIndexesWithoutActorList(MEGame game)
+        public void ForEachUIndexExceptActorList<TAction>(MEGame game, in TAction action) where TAction : struct, IUIndexAction
         {
-            var uIndexes = new List<(UIndex, string)>();
+            ref TAction a = ref Unsafe.AsRef(action);
 
-            uIndexes.Add((Self, nameof(Self)));
-            uIndexes.Add((Model, nameof(Model)));
-            uIndexes.AddRange(ModelComponents.Select((u, i) => (u, $"{nameof(ModelComponents)}[{i}]")));
-            uIndexes.AddRange(GameSequences.Select((u, i) => (u, $"{nameof(GameSequences)}[{i}]")));
-            uIndexes.AddRange(TextureToInstancesMap.Select((kvp, i) => (kvp.Key, $"{nameof(TextureToInstancesMap)}[{i}]")));
-            uIndexes.AddRange(CachedPhysSMDataMap.Select((kvp, i) => (kvp.Key, $"{nameof(CachedPhysSMDataMap)}[{i}]")));
-            uIndexes.AddRange(CachedPhysPerTriSMDataMap.Select((kvp, i) => (kvp.Key, $"{nameof(CachedPhysPerTriSMDataMap)}[{i}]")));
-            uIndexes.AddRange(ForceStreamTextures.Select((kvp, i) => (kvp.Key, $"{nameof(ForceStreamTextures)}[{i}]")));
-            uIndexes.Add((NavListStart, nameof(NavListStart)));
-            uIndexes.Add((NavListEnd, nameof(NavListEnd)));
-            uIndexes.Add((CoverListStart, nameof(CoverListStart)));
-            uIndexes.Add((CoverListEnd, nameof(CoverListEnd)));
+            a.Invoke(ref Self, nameof(Self));
+            a.Invoke(ref Model, nameof(Model));
+            ForEachUIndexInSpan(action, ModelComponents.AsSpan(), nameof(ModelComponents));
+            ForEachUIndexInSpan(action, GameSequences.AsSpan(), nameof(GameSequences));
+            ForEachUIndexKeyInOrderedMultiValueDictionary(action, TextureToInstancesMap.AsSpan(), nameof(TextureToInstancesMap));
+            if (game is MEGame.UDK)
+            {
+                ForEachUIndexKeyInOrderedMultiValueDictionary(action, MeshComponentsWithDynamiclighting.AsSpan(), nameof(MeshComponentsWithDynamiclighting));
+            }
+            ForEachUIndexKeyInOrderedMultiValueDictionary(action, CachedPhysSMDataMap.AsSpan(), nameof(CachedPhysSMDataMap));
+            ForEachUIndexKeyInOrderedMultiValueDictionary(action, CachedPhysPerTriSMDataMap.AsSpan(), nameof(CachedPhysPerTriSMDataMap));
+            ForEachUIndexKeyInOrderedMultiValueDictionary(action, ForceStreamTextures.AsSpan(), nameof(ForceStreamTextures));
+            a.Invoke(ref NavListStart, nameof(NavListStart));
+            a.Invoke(ref NavListEnd, nameof(NavListEnd));
+            a.Invoke(ref CoverListStart, nameof(CoverListStart));
+            a.Invoke(ref CoverListEnd, nameof(CoverListEnd));
             if (game >= MEGame.ME3)
             {
-                uIndexes.Add((PylonListStart, nameof(PylonListStart)));
-                uIndexes.Add((PylonListEnd, nameof(PylonListEnd)));
+                a.Invoke(ref PylonListStart, nameof(PylonListStart));
+                a.Invoke(ref PylonListEnd, nameof(PylonListEnd));
             }
             if (game.IsGame3())
             {
-                uIndexes.AddRange(CoverLinks.Select((u, i) => (u, $"{nameof(CoverLinks)}[{i}]")));
-                uIndexes.AddRange(NavPoints.Select((u, i) => (u, $"{nameof(NavPoints)}[{i}]")));
+                ForEachUIndexInSpan(action, CoverLinks.AsSpan(), nameof(CoverLinks));
+                ForEachUIndexInSpan(action, NavPoints.AsSpan(), nameof(NavPoints));
             }
-            uIndexes.AddRange(CrossLevelActors.Select((u, i) => (u, $"{nameof(CrossLevelActors)}[{i}]")));
+            ForEachUIndexInSpan(action, CrossLevelActors.AsSpan(), nameof(CrossLevelActors));
             if (game.IsGame1())
             {
-                uIndexes.Add((ArtPlaceable1, nameof(ArtPlaceable1)));
-                uIndexes.Add((ArtPlaceable2, nameof(ArtPlaceable2)));
+                a.Invoke(ref ArtPlaceable1, nameof(ArtPlaceable1));
+                a.Invoke(ref ArtPlaceable2, nameof(ArtPlaceable2));
             }
 
-            return uIndexes;
         }
     }
 

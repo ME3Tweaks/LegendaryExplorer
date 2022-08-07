@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using LegendaryExplorerCore.Packages;
+using Microsoft.Toolkit.HighPerformance;
+using UIndex = System.Int32;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
@@ -45,24 +44,20 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             };
         }
 
-        public override List<(UIndex, string)> GetUIndexes(MEGame game)
+        public override void ForEachUIndex<TAction>(MEGame game, in TAction action)
         {
-            List<(UIndex, string)> uIndexes = base.GetUIndexes(game);
-
             if (game.IsGame3())
             {
-                uIndexes.AddRange(Links[0].WwiseStreams.Select(((u, i) => (u, $"Wwisestreams[{i}]"))));
+                ForEachUIndexInSpan(action, Links[0].WwiseStreams.AsSpan(), "WwiseStreams");
             }
-            else if (game == MEGame.ME2) // LE2 doesn't have links, they're in properties
+            else if (game is MEGame.ME2)
             {
                 for (int i = 0; i < Links.Count; i++)
                 {
-                    uIndexes.AddRange(Links[i].WwiseBanks.Select((u, j) => (u, $"Links[{i}].WwiseBanks[{j}]")));
-                    uIndexes.AddRange(Links[i].WwiseStreams.Select((u, j) => (u, $"Links[{i}].WwiseStreams[{j}]")));
+                    ForEachUIndexInSpan(action, Links[i].WwiseStreams.AsSpan(), $"Links[{i}].WwiseStreams");
+                    ForEachUIndexInSpan(action, Links[i].WwiseBanks.AsSpan(), $"Links[{i}].WwiseBanks");
                 }
             }
-
-            return uIndexes;
         }
 
         public class WwiseEventLink

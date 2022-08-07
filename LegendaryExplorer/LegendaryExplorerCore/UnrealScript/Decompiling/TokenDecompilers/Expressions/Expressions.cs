@@ -717,7 +717,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                     }
                     var funcOuterClass = classExp?.ObjectName.Instanced;
                     isSuper = true;
-                    if (currentClass == null || currentClass.SuperClass == 0 || currentClass.SuperClass.GetEntry(Pcc).ObjectName.Instanced != funcOuterClass)
+                    if (currentClass == null || currentClass.SuperClass == 0 || Pcc.GetEntry(currentClass.SuperClass).ObjectName.Instanced != funcOuterClass)
                     {
                         superSpecifier = new VariableType(funcOuterClass);
                     }

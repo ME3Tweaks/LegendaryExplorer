@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Numerics;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 
@@ -135,7 +131,7 @@ namespace LegendaryExplorerCore.Unreal
                 }
             }
 
-            foreach (UIndex uIndex in skelMesh.Materials)
+            foreach (int uIndex in skelMesh.Materials)
             {
                 psk.Materials.Add(new PSKMaterial
                 {

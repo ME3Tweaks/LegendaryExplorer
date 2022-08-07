@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.CompilerServices;
 using LegendaryExplorerCore.Packages;
+using UIndex = System.Int32;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
@@ -50,23 +50,20 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             };
         }
 
-        public override List<(UIndex, string)> GetUIndexes(MEGame game)
+        public override void ForEachUIndex<TAction>(MEGame game, in TAction action)
         {
-            var uIndexes = new List<(UIndex, string)>();
-
-            uIndexes.AddRange(WeightedTextureMaps.Select((u, i) => (u, $"WeightedTextureMaps[{i}]")));
-            uIndexes.AddRange(CachedTerrainMaterials.SelectMany((mat, i) =>
+            ForEachUIndexInSpan(action, WeightedTextureMaps.AsSpan(), nameof(WeightedTextureMaps));
+            for (int i = 0; i < CachedTerrainMaterials.Length; i++)
             {
-                return mat.GetUIndexes(game).Select(tuple => (tuple.Item1, $"CachedTerrainMaterials[{i}].{tuple.Item2}"));
-            }));
-            if (game != MEGame.ME1 && game != MEGame.UDK)
-            {
-                uIndexes.AddRange(CachedTerrainMaterials2.SelectMany((mat, i) =>
-                {
-                    return mat.GetUIndexes(game).Select(tuple => (tuple.Item1, $"CachedTerrainMaterials2[{i}].{tuple.Item2}"));
-                }));
+                CachedTerrainMaterials[i].ForEachUIndex(game, action, $"CachedTerrainMaterials[{i}].");
             }
-            return uIndexes;
+            if (game is not MEGame.ME1 && game is not MEGame.UDK)
+            {
+                for (int i = 0; i < CachedTerrainMaterials2.Length; i++)
+                {
+                    CachedTerrainMaterials[i].ForEachUIndex(game, action, $"CachedTerrainMaterials2[{i}].");
+                }
+            }
         }
 
         public override List<(NameReference, string)> GetNames(MEGame game)
@@ -111,11 +108,10 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public Guid[] MaterialIds;
         public Guid LightingGuid; // >= ME3
 
-        public override List<(UIndex, string)> GetUIndexes(MEGame game)
+        public override void ForEachUIndex<TAction>(MEGame game, in TAction action, string prefix)
         {
-            List<(UIndex uIndex, string)> uIndexes = base.GetUIndexes(game);
-            uIndexes.Add((Terrain, nameof(Terrain)));
-            return uIndexes;
+            base.ForEachUIndex(game, in action, prefix);
+            Unsafe.AsRef(action).Invoke(ref Terrain, $"{prefix}Terrain");
         }
     }
 

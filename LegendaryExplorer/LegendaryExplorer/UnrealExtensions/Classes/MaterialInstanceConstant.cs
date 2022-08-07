@@ -34,9 +34,9 @@ namespace LegendaryExplorer.UnrealExtensions.Classes
             if (export.ClassName == "Material")
             {
                 var parsedMaterial = ObjectBinary.From<Material>(export);
-                foreach (var v in parsedMaterial.SM3MaterialResource.UniformExpressionTextures)
+                foreach (int v in parsedMaterial.SM3MaterialResource.UniformExpressionTextures)
                 {
-                    IEntry tex = export.FileRef.GetEntry(v.value);
+                    IEntry tex = export.FileRef.GetEntry(v);
                     if (tex != null)
                     {
                         Textures.Add(tex);

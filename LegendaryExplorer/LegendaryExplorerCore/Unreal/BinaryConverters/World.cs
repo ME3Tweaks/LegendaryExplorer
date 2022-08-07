@@ -1,20 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 using LegendaryExplorerCore.Packages;
+using UIndex = System.Int32;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
     public sealed class World : ObjectBinary
     {
         private UIndex PersistentLevel;
-        private UIndex PersistentFaceFXAnimSet; //ME3
+        private UIndex PersistentFaceFXAnimSet; //ME3/LE
         private readonly LevelViewportInfo[] EditorViews = new LevelViewportInfo[4];
-        private UIndex DecalManager; //ME1
+        private UIndex DecalManager; //ME1/LE1
         private float unkFloat; //UDK
         public UIndex[] ExtraReferencedObjects;
 
@@ -24,10 +21,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             if (sc.Game == MEGame.ME3 || sc.Game.IsLEGame())
             {
                 sc.Serialize(ref PersistentFaceFXAnimSet);
-            }
-            else if (sc.IsLoading)
-            {
-                PersistentFaceFXAnimSet = new UIndex(0);
             }
 
             for (int i = 0; i < 4; i++)
@@ -46,10 +39,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             {
                 sc.Serialize(ref DecalManager);
             }
-            else if (sc.IsLoading)
-            {
-                DecalManager = new UIndex(0);
-            }
 
             sc.Serialize(ref ExtraReferencedObjects, SCExt.Serialize);
         }
@@ -58,9 +47,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             var world = new World
             {
-                PersistentLevel = 0,
-                PersistentFaceFXAnimSet = 0,
-                DecalManager = 0,
                 ExtraReferencedObjects = Array.Empty<UIndex>()
             };
             for (int i = 0; i < 4; i++)
@@ -71,20 +57,18 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             return world;
         }
 
-        public override List<(UIndex, string)> GetUIndexes(MEGame game)
+        public override void ForEachUIndex<TAction>(MEGame game, in TAction action)
         {
-            var uIndexes = new List<(UIndex, string)> { (PersistentLevel, "PersistentLevel") };
+            Unsafe.AsRef(action).Invoke(ref PersistentLevel, nameof(PersistentLevel));
             if (game == MEGame.ME3 || game.IsLEGame())
             {
-                uIndexes.Add((PersistentFaceFXAnimSet, "PersistentFaceFXAnimSet"));
+                Unsafe.AsRef(action).Invoke(ref PersistentFaceFXAnimSet, nameof(PersistentFaceFXAnimSet));
             }
             else if (game.IsGame1())
             {
-                uIndexes.Add((DecalManager, "DecalManager"));
+                Unsafe.AsRef(action).Invoke(ref DecalManager, nameof(DecalManager));
             }
-            uIndexes.AddRange(ExtraReferencedObjects.Select((t, i) => (t, $"ExtraReferencedObjects[{i}]")));
-
-            return uIndexes;
+            ForEachUIndexInSpan(action, ExtraReferencedObjects.AsSpan(), nameof(ExtraReferencedObjects));
         }
     }
 

@@ -14,7 +14,7 @@ namespace LegendaryExplorerCore.Misc
     [JsonArray]
     public class OrderedMultiValueDictionary<TKey, TValue> : List<KeyValuePair<TKey, TValue>>, IDictionary<TKey, TValue>
     {
-        public IEqualityComparer<TKey> KeyComparer = EqualityComparer<TKey>.Default;
+        private readonly IEqualityComparer<TKey> KeyComparer = EqualityComparer<TKey>.Default;
 
         public OrderedMultiValueDictionary() { }
         public OrderedMultiValueDictionary(int capacity) : base(capacity) { }

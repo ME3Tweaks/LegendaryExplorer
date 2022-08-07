@@ -728,12 +728,15 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         {
             if (GetPEWindow().TryGetSelectedExport(out var exp))
             {
-                ObjectBinary bin = ObjectBinary.From(exp);
-                var indices = bin.GetUIndexes(exp.FileRef.Game);
-                foreach (var n in indices)
-                {
-                    Debug.WriteLine($"{n.Item1} {n.Item2}");
-                }
+                ObjectBinary.From(exp).ForEachUIndex(exp.FileRef.Game, new UIndexDebugLogger());
+            }
+        }
+
+        private readonly struct UIndexDebugLogger : IUIndexAction
+        {
+            public void Invoke(ref int uIndex, string propName)
+            {
+                Debug.WriteLine($"{uIndex} {propName}");
             }
         }
 
