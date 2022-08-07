@@ -57,18 +57,18 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 NumFrames = Export.GetProperty<IntProperty>("NumFrames")?.Value ?? 0;
                 RateScale = Export.GetProperty<FloatProperty>("RateScale")?.Value ?? 1f;
                 SequenceLength = Export.GetProperty<FloatProperty>("SequenceLength")?.Value ?? 0;
-                Name = Export.GetProperty<NameProperty>("SequenceName")?.Value ?? Export.ObjectName;
+                Name = Export.GetProperty<NameProperty>("SequenceName")?.Value.Instanced ?? Export.ObjectName.Instanced;
                 TrackOffsets = Export.GetProperty<ArrayProperty<IntProperty>>("CompressedTrackOffsets").Select(i => i.Value).ToArray();
                 if (compressedDataSource == MEGame.UDK)
                 {
-                    Bones = ((ExportEntry)Export.Parent)?.GetProperty<ArrayProperty<NameProperty>>("TrackBoneNames")?.Select(np => $"{np}").ToList();
+                    Bones = ((ExportEntry)Export.Parent)?.GetProperty<ArrayProperty<NameProperty>>("TrackBoneNames")?.Select(np => np.Value.Instanced).ToList();
                 }
                 else
                 {
                     var animsetData = Export.GetProperty<ObjectProperty>("m_pBioAnimSetData");
                     //In ME2, BioAnimSetData can sometimes be in a different package. 
                     Bones = animsetData != null && Export.FileRef.IsUExport(animsetData.Value)
-                        ? Export.FileRef.GetUExport(animsetData.Value)?.GetProperty<ArrayProperty<NameProperty>>("TrackBoneNames")?.Select(np => $"{np}").ToList()
+                        ? Export.FileRef.GetUExport(animsetData.Value)?.GetProperty<ArrayProperty<NameProperty>>("TrackBoneNames")?.Select(np => np.Value.Instanced).ToList()
                         : null;
                 }
 

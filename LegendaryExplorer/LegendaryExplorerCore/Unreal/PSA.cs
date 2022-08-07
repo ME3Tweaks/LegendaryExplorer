@@ -161,7 +161,7 @@ namespace LegendaryExplorerCore.Unreal
                         Vector3 posVec = animTrack.Positions.Count > frameIdx ? animTrack.Positions[frameIdx] : animTrack.Positions[^1];
                         Quaternion rotQuat = animTrack.Rotations.Count > frameIdx ? animTrack.Rotations[frameIdx] : animTrack.Rotations[^1];
                         rotQuat = new Quaternion(rotQuat.X, rotQuat.Y * -1, rotQuat.Z, rotQuat.W  * -1);
-                        posVec = new Vector3(posVec.X, posVec.Y * -1, posVec.Z);
+                        posVec = posVec with { Y = posVec.Y * -1 };
                         psa.Keys.Add(new PSAAnimKeys
                         {
                             Position = posVec,
@@ -182,12 +182,12 @@ namespace LegendaryExplorerCore.Unreal
             List<string> boneNames = Bones.Select(b => b.Name).ToList();
 
             int boneCount = boneNames.Count;
-            foreach (var info in Infos)
+            foreach (PSAAnimInfo info in Infos)
             {
                 var seq = new AnimSequence
                 {
                     Bones = boneNames,
-                    Name = info.Name,
+                    Name = NameReference.FromInstancedString(info.Name),
                     NumFrames = info.NumRawFrames,
                     SequenceLength = info.TrackTime / info.AnimRate,
                     RateScale = 1,
@@ -205,9 +205,9 @@ namespace LegendaryExplorerCore.Unreal
                     for (int frameIdx = 0; frameIdx < seq.NumFrames; frameIdx++)
                     {
                         int srcIdx = ((info.FirstRawFrame + frameIdx) * boneCount) + boneIdx;
-                        var posVec = Keys[srcIdx].Position;
-                        var rotQuat = Keys[srcIdx].Rotation;
-                        track.Positions.Add(new Vector3(posVec.X, posVec.Y * -1, posVec.Z));
+                        Vector3 posVec = Keys[srcIdx].Position;
+                        Quaternion rotQuat = Keys[srcIdx].Rotation;
+                        track.Positions.Add(posVec with { Y = posVec.Y * -1 });
                         track.Rotations.Add(new Quaternion(rotQuat.X, rotQuat.Y * -1, rotQuat.Z, rotQuat.W * -1));
                     }
 

@@ -111,7 +111,7 @@ namespace LegendaryExplorer.Tools.AnimationImporterExporter
         {
             if (ObjectBinary.From(CurrentExport) is AnimSequence animSequence)
             {
-                string sequenceName = CurrentExport.GetProperty<NameProperty>("SequenceName")?.Value ?? CurrentExport.ObjectName;
+                string sequenceName = CurrentExport.GetProperty<NameProperty>("SequenceName")?.Value.Instanced ?? CurrentExport.ObjectName.Instanced;
                 var dlg = new SaveFileDialog
                 {
                     Filter = PSAFilter,
@@ -140,6 +140,8 @@ namespace LegendaryExplorer.Tools.AnimationImporterExporter
                 };
                 if (dlg.ShowDialog(this) == true)
                 {
+                    var props = CurrentExport.GetProperties();
+
                     var psa = PSA.FromFile(dlg.FileName);
                     var psaSeqs = psa.GetAnimSequences();
                     if (psaSeqs.IsEmpty())
@@ -147,27 +149,50 @@ namespace LegendaryExplorer.Tools.AnimationImporterExporter
                         MessageBox.Show("This PSA is empty!", "", MessageBoxButton.OK, MessageBoxImage.Error); //can this happen?
                         return;
                     }
-                    var curSeq = CurrentExport.GetBinaryData<AnimSequence>();
-                    if (!curSeq.Bones.SequenceEqual(psaSeqs[0].Bones))
+
+
+                    if (props.GetProp<ObjectProperty>("m_pBioAnimSetData") is { Value: > 0 } bioAnimSetProp
+                        && Pcc.TryGetUExport(bioAnimSetProp.Value, out ExportEntry bioAnimSet)
+                        && bioAnimSet.GetProperty<ArrayProperty<NameProperty>>("TrackBoneNames") is {} trackNames)
                     {
-                        MessageBox.Show("This PSA contains no compatible Animations! Bone names must be identical to replace this animation.",
-                                        "", MessageBoxButton.OK, MessageBoxImage.Error);
-                        return;
+                        List<string> existingBones = trackNames.Select(nameProp => nameProp.Value.Instanced).ToList();
+                        if (!existingBones.SequenceEqual(psaSeqs[0].Bones))
+                        {
+                            if (existingBones.Except(psaSeqs[0].Bones).ToList() is { Count: > 0 } missingBones)
+                            {
+                                MessageBox.Show($"This PSA is missing these bones:\n{string.Join(',', missingBones)}", "", MessageBoxButton.OK, MessageBoxImage.Error); //can this happen?
+                                return;
+                            }
+                            foreach (AnimSequence psaSeq in psaSeqs)
+                            {
+                                var fixedAnimTracks = new List<AnimTrack>();
+                                foreach (string bone in existingBones)
+                                {
+                                    fixedAnimTracks.Add(psaSeq.RawAnimationData[psaSeq.Bones.IndexOf(bone)]);
+                                }
+                                psaSeq.RawAnimationData = fixedAnimTracks;
+                                psaSeq.Bones = existingBones.Clone();
+                            }
+                        }
                     }
+                    else
+                    {
+                        //No m_pBioAnimSetData specified. Import anyway I suppose, since we can't do any validation
+                    }
+
 
                     AnimSequence selectedAnimSequence = psaSeqs[0];
                     if (psaSeqs.Count > 1)
                     {
-                        var seqName = InputComboBoxDialog.GetValue(this, "Select animation from PSA", "Animation Selector", psaSeqs.Select(s => s.Name.Name));
+                        var seqName = InputComboBoxDialog.GetValue(this, "Select animation from PSA", "Animation Selector", psaSeqs.Select(s => s.Name.Instanced));
                         if (seqName.IsEmpty())
                         {
                             return;
                         }
 
-                        selectedAnimSequence = psaSeqs.First(s => s.Name == seqName);
+                        selectedAnimSequence = psaSeqs.First(s => s.Name.Instanced == seqName);
                     }
 
-                    var props = CurrentExport.GetProperties();
                     var originalSeqName = props.GetProp<NameProperty>("SequenceName");
                     selectedAnimSequence.UpdateProps(props, CurrentExport.Game);
                     if (originalSeqName != null)
@@ -192,7 +217,7 @@ namespace LegendaryExplorer.Tools.AnimationImporterExporter
             };
             if (dlg.ShowDialog(this) == true)
             {
-                var psa = PSA.FromFile(dlg.FileName);
+                PSA psa = PSA.FromFile(dlg.FileName);
                 List<AnimSequence> psaSeqs = psa.GetAnimSequences();
                 if (psaSeqs.IsEmpty())
                 {
@@ -202,14 +227,14 @@ namespace LegendaryExplorer.Tools.AnimationImporterExporter
 
                 //todo: Make UI for choosing subset of AnimSequences from PSA.
 
-                var pkg = ExportCreator.CreatePackageExport(Pcc, Path.GetFileNameWithoutExtension(dlg.FileName));
+                var pkg = ExportCreator.CreatePackageExport(Pcc, NameReference.FromInstancedString(Path.GetFileNameWithoutExtension(dlg.FileName)));
 
                 var bioAnimSetData = ExportCreator.CreateExport(Pcc, "BioAnimSetData", "BioAnimSetData", pkg);
-                bioAnimSetData.WriteProperty(new ArrayProperty<NameProperty>(psaSeqs[0].Bones.Select(b => new NameProperty(b.Trim().Replace(' ', '-'))), "TrackBoneNames"));
+                bioAnimSetData.WriteProperty(new ArrayProperty<NameProperty>(psaSeqs[0].Bones.Select(b => new NameProperty(NameReference.FromInstancedString(b.Trim().Replace(' ', '-')))), "TrackBoneNames"));
 
                 foreach (AnimSequence seq in psaSeqs)
                 {
-                    var seqExp = ExportCreator.CreateExport(Pcc, seq.Name, "AnimSequence", pkg);
+                    var seqExp = ExportCreator.CreateExport(Pcc, NameReference.FromInstancedString(seq.Name), "AnimSequence", pkg);
                     var props = seqExp.GetProperties();
                     seq.UpdateProps(props, Pcc.Game);
                     props.AddOrReplaceProp(new ObjectProperty(bioAnimSetData, "m_pBioAnimSetData"));
@@ -242,7 +267,7 @@ namespace LegendaryExplorer.Tools.AnimationImporterExporter
                     }
 
                     var curSeq = CurrentExport.GetBinaryData<AnimSequence>();
-                    animSets = animSets.Where(set => set.GetProperty<ArrayProperty<NameProperty>>("TrackBoneNames").Select(np => $"{np}").SequenceEqual(curSeq.Bones)).ToList();
+                    animSets = animSets.Where(set => set.GetProperty<ArrayProperty<NameProperty>>("TrackBoneNames").Select(np => np.Value.Instanced).SequenceEqual(curSeq.Bones)).ToList();
                     if (animSets.IsEmpty())
                     {
                         MessageBox.Show("This file contains no compatible Animations! TrackBoneNames must be identical to replace this animation.",
@@ -326,7 +351,7 @@ namespace LegendaryExplorer.Tools.AnimationImporterExporter
 
                 foreach (AnimSequence seq in selectedAnimSequences)
                 {
-                    var seqExp = ExportCreator.CreateExport(Pcc, seq.Name, "AnimSequence", pkg);
+                    var seqExp = ExportCreator.CreateExport(Pcc, NameReference.FromInstancedString(seq.Name), "AnimSequence", pkg);
                     var props = seqExp.GetProperties();
                     seq.UpdateProps(props, Pcc.Game);
                     props.AddOrReplaceProp(new ObjectProperty(bioAnimSetData, "m_pBioAnimSetData"));

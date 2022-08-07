@@ -1352,7 +1352,7 @@ namespace LegendaryExplorerCore.Unreal
 
         public override string ToString()
         {
-            return Value;
+            return Value.Instanced;
         }
 #pragma warning disable
         public event PropertyChangedEventHandler PropertyChanged;
