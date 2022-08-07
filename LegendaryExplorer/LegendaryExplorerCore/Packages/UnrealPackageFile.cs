@@ -84,7 +84,7 @@ namespace LegendaryExplorerCore.Packages
             MEGame.LE1 => MEPackage.LE1UnrealVersion,
             MEGame.LE2 => MEPackage.LE2UnrealVersion,
             MEGame.LE3 => MEPackage.LE3UnrealVersion,
-            MEGame.UDK => UDKPackage.UDKUnrealVersion,
+            MEGame.UDK => UDKPackage.UDKUnrealVersion2015, // This is technically not correct since UDK has many versions we support
             _ => throw new ArgumentOutOfRangeException(nameof(game), game, null)
         };
 

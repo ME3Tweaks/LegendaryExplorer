@@ -16,8 +16,12 @@ namespace LegendaryExplorerCore.Packages
 {
     public sealed class UDKPackage : UnrealPackageFile, IMEPackage
     {
-        public const int UDKUnrealVersion = 868;
-        public const int UDKLicenseeVersion = 0;
+        public const int UDKUnrealVersion2015 = 868; // 2015, the primary one
+        public const int UDKUnrealVersion2014 = 867; // 2014, some really old ME3 mods ship these files
+        public const int UDKUnrealVersion2011 = 812; // 2011, similar in age to ME3 // UDK 7797
+        public const int UDKLicenseeVersion = 0; // 2015
+
+
         public MEGame Game => MEGame.UDK;
         public MEPackage.GamePlatform Platform => MEPackage.GamePlatform.PC;
         public Endian Endian => Endian.Native; //we do not support big endian UDK packages
@@ -374,7 +378,7 @@ namespace LegendaryExplorerCore.Packages
         {
             ms.WriteUInt32(packageTagLittleEndian);
             //version
-            ms.WriteUInt16(UDKUnrealVersion);
+            ms.WriteUInt16(UDKUnrealVersion2015);
             ms.WriteUInt16(UDKLicenseeVersion);
 
             ms.WriteInt32(FullHeaderSize);
