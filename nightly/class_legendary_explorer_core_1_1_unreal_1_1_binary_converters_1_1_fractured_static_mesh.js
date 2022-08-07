@@ -2,7 +2,7 @@ var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_fractured
 [
     [ "Serialize", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_fractured_static_mesh.html#ac984645eca454a1b833464d52b93b111", null ],
     [ "Create", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_fractured_static_mesh.html#a1b02e2fa77f8a2e13608f0b8a03b8a98", null ],
-    [ "GetUIndexes", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_fractured_static_mesh.html#afabd197c4e69feec26b97b9e3579c72b", null ],
+    [ "ForEachUIndex< TAction >", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_fractured_static_mesh.html#a7dff048e260810c623e7c2ff5086f87c", null ],
     [ "SourceStaticMesh", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_fractured_static_mesh.html#a57a9e58ea41b15be4f989682b341b288", null ],
     [ "Fragments", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_fractured_static_mesh.html#a54f26509fce0fde9cc7f1a6665ed9591", null ],
     [ "CoreFragmentIndex", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_fractured_static_mesh.html#a7d968aa8d35d566a6c974917371c0de2", null ],

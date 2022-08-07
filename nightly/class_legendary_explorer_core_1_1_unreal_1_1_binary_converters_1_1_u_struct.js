@@ -1,8 +1,8 @@
 var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_struct =
 [
     [ "Serialize", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_struct.html#aecc7b7780c548e35e76f9ff8bd66683e", null ],
-    [ "GetUIndexes", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_struct.html#a582b29d6c1e4fbdf69052e56b9f70df6", null ],
     [ "GetNames", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_struct.html#ab44e3b20ae48cfd0c074706fbbfbee13", null ],
+    [ "ForEachUIndex< TAction >", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_struct.html#a9caa5d8ef8a0f8580a8702a02d48cce9", null ],
     [ "UpdateChildrenChain", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_struct.html#ad4a2ef9551eea43f1c2efc31d849fe20", null ],
     [ "Children", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_struct.html#a54b7b5f1076988037024c49831cf0256", null ],
     [ "ScriptBytecodeSize", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_struct.html#a6b80598656ad6c95fb65147670b0fb93", null ],

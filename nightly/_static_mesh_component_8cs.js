@@ -11,6 +11,7 @@ var _static_mesh_component_8cs =
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.QuantizedDirectionalLightSample", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_quantized_directional_light_sample.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_quantized_directional_light_sample" ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.QuantizedSimpleLightSample", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_quantized_simple_light_sample.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_quantized_simple_light_sample" ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.SCExt", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_s_c_ext.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_s_c_ext" ],
+    [ "UIndex", "_static_mesh_component_8cs.html#a31ccc8e63558d15b93826f6ed881ead5", null ],
     [ "ELightMapType", "_static_mesh_component_8cs.html#ae27c2393e97195af7eaa79df4634da7b", [
       [ "LMT_None", "_static_mesh_component_8cs.html#ae27c2393e97195af7eaa79df4634da7bab1e0640db873ee70290c92bed236fed4", null ],
       [ "LMT_1D", "_static_mesh_component_8cs.html#ae27c2393e97195af7eaa79df4634da7bad62252efb30601c2f429f6dd526f29eb", null ],

@@ -111,15 +111,18 @@ Inheritance diagram for LegendaryExplorerCore.Unreal.BinaryConverters.UStruct:</
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a582b29d6c1e4fbdf69052e56b9f70df6"><td class="memItemLeft" align="right" valign="top">override List&lt;(<a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_index.html">UIndex</a>, string)&gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_struct.html#a582b29d6c1e4fbdf69052e56b9f70df6">GetUIndexes</a> (<a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game)</td></tr>
-<tr class="memdesc:a582b29d6c1e4fbdf69052e56b9f70df6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets a list of entry references made in this <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_object_binary.html">ObjectBinary</a>. Values are <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_index.html">UIndex</a> mapped to the name of the variable name of that list item, e.g. (25, "DataOffset")  <a href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_struct.html#a582b29d6c1e4fbdf69052e56b9f70df6">More...</a><br /></td></tr>
-<tr class="separator:a582b29d6c1e4fbdf69052e56b9f70df6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab44e3b20ae48cfd0c074706fbbfbee13"><td class="memItemLeft" align="right" valign="top">override List&lt;(<a class="el" href="struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html">NameReference</a>, string)&gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_struct.html#ab44e3b20ae48cfd0c074706fbbfbee13">GetNames</a> (<a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game)</td></tr>
 <tr class="separator:ab44e3b20ae48cfd0c074706fbbfbee13"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9caa5d8ef8a0f8580a8702a02d48cce9"><td class="memItemLeft" align="right" valign="top">override void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_struct.html#a9caa5d8ef8a0f8580a8702a02d48cce9">ForEachUIndex&lt; TAction &gt;</a> (<a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game, in TAction action)</td></tr>
+<tr class="memdesc:a9caa5d8ef8a0f8580a8702a02d48cce9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calls <a class="el" href="interface_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_i_u_index_action.html#ae5b54bcb0ebea14b6166e6234033a8cc">IUIndexAction.Invoke</a> on every UIndex in this object. This can be used to change the UIndex, or to perform some action based on each one.  <a href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_struct.html#a9caa5d8ef8a0f8580a8702a02d48cce9">More...</a><br /></td></tr>
+<tr class="separator:a9caa5d8ef8a0f8580a8702a02d48cce9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad4a2ef9551eea43f1c2efc31d849fe20"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_struct.html#ad4a2ef9551eea43f1c2efc31d849fe20">UpdateChildrenChain</a> (bool relinkChildrenStructs=false)</td></tr>
 <tr class="memdesc:ad4a2ef9551eea43f1c2efc31d849fe20"><td class="mdescLeft">&#160;</td><td class="mdescRight">Rebuilds the compiling chain of children for this struct. Items with this entry as the parent will participate in the class. Don't use this on functions.  <a href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_struct.html#ad4a2ef9551eea43f1c2efc31d849fe20">More...</a><br /></td></tr>
 <tr class="separator:ad4a2ef9551eea43f1c2efc31d849fe20"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_object_binary"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_object_binary')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_object_binary.html">LegendaryExplorerCore.Unreal.BinaryConverters.ObjectBinary</a></td></tr>
+<tr class="memitem:a45ec2f5055533833b0732be2eb564c47 inherit pub_methods_class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_object_binary"><td class="memItemLeft" align="right" valign="top">List&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_object_binary.html#a45ec2f5055533833b0732be2eb564c47">GetUIndexes</a> (<a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game)</td></tr>
+<tr class="memdesc:a45ec2f5055533833b0732be2eb564c47 inherit pub_methods_class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_object_binary"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets a list of entry references made in this <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_object_binary.html">ObjectBinary</a>.  <a href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_object_binary.html#a45ec2f5055533833b0732be2eb564c47">More...</a><br /></td></tr>
+<tr class="separator:a45ec2f5055533833b0732be2eb564c47 inherit pub_methods_class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_object_binary"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3b38fcb1b475afa9f737c60fc697d242 inherit pub_methods_class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_object_binary"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_object_binary.html#a3b38fcb1b475afa9f737c60fc697d242">WriteTo</a> (<a class="el" href="class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_endian_writer.html">EndianWriter</a> ms, <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> pcc, int fileOffset=0)</td></tr>
 <tr class="separator:a3b38fcb1b475afa9f737c60fc697d242 inherit pub_methods_class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_object_binary"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad756d18048ab8c3f9eec0c9e6c1139cd inherit pub_methods_class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_object_binary"><td class="memItemLeft" align="right" valign="top">virtual byte[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_object_binary.html#ad756d18048ab8c3f9eec0c9e6c1139cd">ToBytes</a> (<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> pcc, int fileOffset=0)</td></tr>
@@ -127,7 +130,7 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a54b7b5f1076988037024c49831cf0256"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_index.html">UIndex</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_struct.html#a54b7b5f1076988037024c49831cf0256">Children</a></td></tr>
+<tr class="memitem:a54b7b5f1076988037024c49831cf0256"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_bio_inert_8cs.html#a31ccc8e63558d15b93826f6ed881ead5">UIndex</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_struct.html#a54b7b5f1076988037024c49831cf0256">Children</a></td></tr>
 <tr class="separator:a54b7b5f1076988037024c49831cf0256"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6b80598656ad6c95fb65147670b0fb93"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_struct.html#a6b80598656ad6c95fb65147670b0fb93">ScriptBytecodeSize</a></td></tr>
 <tr class="separator:a6b80598656ad6c95fb65147670b0fb93"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -136,9 +139,9 @@ Public Attributes</h2></td></tr>
 <tr class="memitem:a318651664dd2efbd7d97759cc790b130"><td class="memItemLeft" align="right" valign="top">byte[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_struct.html#a318651664dd2efbd7d97759cc790b130">ScriptBytes</a></td></tr>
 <tr class="separator:a318651664dd2efbd7d97759cc790b130"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_attribs_class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_field"><td colspan="2" onclick="javascript:toggleInherit('pub_attribs_class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_field')"><img src="closed.png" alt="-"/>&#160;Public Attributes inherited from <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_field.html">LegendaryExplorerCore.Unreal.BinaryConverters.UField</a></td></tr>
-<tr class="memitem:a23c9f29eba0d6480ee9f1a5adaf2654b inherit pub_attribs_class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_field"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_index.html">UIndex</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_field.html#a23c9f29eba0d6480ee9f1a5adaf2654b">SuperClass</a></td></tr>
+<tr class="memitem:a23c9f29eba0d6480ee9f1a5adaf2654b inherit pub_attribs_class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_field"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_bio_inert_8cs.html#a31ccc8e63558d15b93826f6ed881ead5">UIndex</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_field.html#a23c9f29eba0d6480ee9f1a5adaf2654b">SuperClass</a></td></tr>
 <tr class="separator:a23c9f29eba0d6480ee9f1a5adaf2654b inherit pub_attribs_class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_field"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afb721d5917a2b089b22d3af3e2a6927e inherit pub_attribs_class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_field"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_index.html">UIndex</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_field.html#afb721d5917a2b089b22d3af3e2a6927e">Next</a></td></tr>
+<tr class="memitem:afb721d5917a2b089b22d3af3e2a6927e inherit pub_attribs_class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_field"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_bio_inert_8cs.html#a31ccc8e63558d15b93826f6ed881ead5">UIndex</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_field.html#afb721d5917a2b089b22d3af3e2a6927e">Next</a></td></tr>
 <tr class="separator:afb721d5917a2b089b22d3af3e2a6927e inherit pub_attribs_class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_field"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-methods" name="pro-methods"></a>
@@ -190,43 +193,6 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a id="a582b29d6c1e4fbdf69052e56b9f70df6" name="a582b29d6c1e4fbdf69052e56b9f70df6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a582b29d6c1e4fbdf69052e56b9f70df6">&#9670;&nbsp;</a></span>GetUIndexes()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">override List&lt;(<a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_index.html">UIndex</a>, string)&gt; LegendaryExplorerCore.Unreal.BinaryConverters.UStruct.GetUIndexes </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a>&#160;</td>
-          <td class="paramname"><em>game</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Gets a list of entry references made in this <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_object_binary.html">ObjectBinary</a>. Values are <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_index.html">UIndex</a> mapped to the name of the variable name of that list item, e.g. (25, "DataOffset") </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">game</td><td></td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd></dd></dl>
-
-<p>Reimplemented from <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_field.html#acd57cedf0b656fa2a8fdcf559b82b36f">LegendaryExplorerCore.Unreal.BinaryConverters.UField</a>.</p>
-
-</div>
-</div>
 <a id="ab44e3b20ae48cfd0c074706fbbfbee13" name="ab44e3b20ae48cfd0c074706fbbfbee13"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab44e3b20ae48cfd0c074706fbbfbee13">&#9670;&nbsp;</a></span>GetNames()</h2>
 
@@ -252,6 +218,59 @@ Additional Inherited Members</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Reimplemented from <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_object_binary.html#a3cd739f5862c58d7950387e22430b9ae">LegendaryExplorerCore.Unreal.BinaryConverters.ObjectBinary</a>.</p>
+
+</div>
+</div>
+<a id="a9caa5d8ef8a0f8580a8702a02d48cce9" name="a9caa5d8ef8a0f8580a8702a02d48cce9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9caa5d8ef8a0f8580a8702a02d48cce9">&#9670;&nbsp;</a></span>ForEachUIndex&lt; TAction &gt;()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">override void LegendaryExplorerCore.Unreal.BinaryConverters.UStruct.ForEachUIndex&lt; TAction &gt; </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a>&#160;</td>
+          <td class="paramname"><em>game</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">in TAction&#160;</td>
+          <td class="paramname"><em>action</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Calls <a class="el" href="interface_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_i_u_index_action.html#ae5b54bcb0ebea14b6166e6234033a8cc">IUIndexAction.Invoke</a> on every UIndex in this object. This can be used to change the UIndex, or to perform some action based on each one. </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">TAction</td><td>A readonly struct that implements <a class="el" href="interface_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_i_u_index_action.html" title="See documentation for ObjectBinary.ForEachUIndex.">IUIndexAction</a>. Examples: <a class="el" href="struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_index_zeroer.html" title="Sets all UIndexes to 0">UIndexZeroer</a>, <a class="el" href="struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_index_and_prop_name_collector.html" title="Puts all the UIndexes and PropNames in a List">UIndexAndPropNameCollector</a></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">game</td><td>Restricts the UIndexes to the ones that exist on this game's version of the object.</td></tr>
+    <tr><td class="paramname">action</td><td>The <a class="el" href="interface_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_i_u_index_action.html" title="See documentation for ObjectBinary.ForEachUIndex.">IUIndexAction</a> implementation whose Invoke method will be called for every uIndex.</td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Reimplemented from <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_field.html#a19c6af1a88036194cfa126e0bbf031c4">LegendaryExplorerCore.Unreal.BinaryConverters.UField</a>.</p>
 
 </div>
 </div>
@@ -297,7 +316,7 @@ Additional Inherited Members</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_index.html">UIndex</a> LegendaryExplorerCore.Unreal.BinaryConverters.UStruct.Children</td>
+          <td class="memname"><a class="el" href="_bio_inert_8cs.html#a31ccc8e63558d15b93826f6ed881ead5">UIndex</a> LegendaryExplorerCore.Unreal.BinaryConverters.UStruct.Children</td>
         </tr>
       </table>
 </div><div class="memdoc">

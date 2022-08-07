@@ -58,9 +58,10 @@ var searchData=
   ['italkfile_55',['ITalkFile',['../interface_legendary_explorer_core_1_1_t_l_k_1_1_i_talk_file.html',1,'LegendaryExplorerCore::TLK']]],
   ['iteratornexttoken_56',['IteratorNextToken',['../class_legendary_explorer_core_1_1_m_e1_1_1_unreal_1_1_unhood_bytecode_1_1_iterator_next_token.html',1,'LegendaryExplorerCore::ME1::Unreal::UnhoodBytecode']]],
   ['iteratorpoptoken_57',['IteratorPopToken',['../class_legendary_explorer_core_1_1_m_e1_1_1_unreal_1_1_unhood_bytecode_1_1_iterator_pop_token.html',1,'LegendaryExplorerCore::ME1::Unreal::UnhoodBytecode']]],
-  ['ivaluevalidator_58',['IValueValidator',['../interface_legendary_explorer_core_1_1_gammtek_1_1_data_1_1_i_value_validator.html',1,'LegendaryExplorerCore::Gammtek::Data']]],
-  ['ivariabledirectorypath_59',['IVariableDirectoryPath',['../interface_legendary_explorer_core_1_1_gammtek_1_1_paths_1_1_i_variable_directory_path.html',1,'LegendaryExplorerCore::Gammtek::Paths']]],
-  ['ivariablefilepath_60',['IVariableFilePath',['../interface_legendary_explorer_core_1_1_gammtek_1_1_paths_1_1_i_variable_file_path.html',1,'LegendaryExplorerCore::Gammtek::Paths']]],
-  ['ivariablepath_61',['IVariablePath',['../interface_legendary_explorer_core_1_1_gammtek_1_1_paths_1_1_i_variable_path.html',1,'LegendaryExplorerCore::Gammtek::Paths']]],
-  ['iweakpackageuser_62',['IWeakPackageUser',['../interface_legendary_explorer_core_1_1_packages_1_1_i_weak_package_user.html',1,'LegendaryExplorerCore::Packages']]]
+  ['iuindexaction_58',['IUIndexAction',['../interface_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_i_u_index_action.html',1,'LegendaryExplorerCore::Unreal::BinaryConverters']]],
+  ['ivaluevalidator_59',['IValueValidator',['../interface_legendary_explorer_core_1_1_gammtek_1_1_data_1_1_i_value_validator.html',1,'LegendaryExplorerCore::Gammtek::Data']]],
+  ['ivariabledirectorypath_60',['IVariableDirectoryPath',['../interface_legendary_explorer_core_1_1_gammtek_1_1_paths_1_1_i_variable_directory_path.html',1,'LegendaryExplorerCore::Gammtek::Paths']]],
+  ['ivariablefilepath_61',['IVariableFilePath',['../interface_legendary_explorer_core_1_1_gammtek_1_1_paths_1_1_i_variable_file_path.html',1,'LegendaryExplorerCore::Gammtek::Paths']]],
+  ['ivariablepath_62',['IVariablePath',['../interface_legendary_explorer_core_1_1_gammtek_1_1_paths_1_1_i_variable_path.html',1,'LegendaryExplorerCore::Gammtek::Paths']]],
+  ['iweakpackageuser_63',['IWeakPackageUser',['../interface_legendary_explorer_core_1_1_packages_1_1_i_weak_package_user.html',1,'LegendaryExplorerCore::Packages']]]
 ];

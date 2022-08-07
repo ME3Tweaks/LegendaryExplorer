@@ -2,8 +2,8 @@ var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_level =
 [
     [ "Serialize", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_level.html#a37075a18f1cba4ffefb8c0eafcf806eb", null ],
     [ "Create", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_level.html#a17307f36da8c53d84058a3d3ea8373a4", null ],
-    [ "GetUIndexes", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_level.html#a1c82fd06fd2da8bcd3256d8d6705b2c1", null ],
-    [ "GetUIndexesWithoutActorList", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_level.html#a2cc7f8f383433e6c25fa493e557cfa5a", null ],
+    [ "ForEachUIndex< TAction >", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_level.html#a2d56a17ac4fb905cb5be1e9a701f924a", null ],
+    [ "ForEachUIndexExceptActorList< TAction >", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_level.html#a86398b24dc01e68899227ea7521a0b84", null ],
     [ "Self", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_level.html#aa63eee73135ee0a03a0b434c255aba2e", null ],
     [ "Actors", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_level.html#a948c0c43ad5c872956aec3ee6895bbe1", null ],
     [ "URL", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_level.html#a3563f3340a7065a8ea68aef2f76414cc", null ],

@@ -431,7 +431,6 @@ var hierarchy =
       [ "LegendaryExplorerCore.Unreal.BinaryConverters.StaticParameterSet.NormalParameter", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_static_parameter_set_1_1_normal_parameter.html", null ],
       [ "LegendaryExplorerCore.Unreal.BinaryConverters.StaticParameterSet.StaticComponentMaskParameter", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_static_parameter_set_1_1_static_component_mask_parameter.html", null ],
       [ "LegendaryExplorerCore.Unreal.BinaryConverters.StaticParameterSet.StaticSwitchParameter", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_static_parameter_set_1_1_static_switch_parameter.html", null ],
-      [ "LegendaryExplorerCore.Unreal.BinaryConverters.UIndex", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_index.html", null ],
       [ "LegendaryExplorerCore.Unreal.NameReference", "struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html", null ],
       [ "LegendaryExplorerCore.Unreal.ScriptDelegate", "struct_legendary_explorer_core_1_1_unreal_1_1_script_delegate.html", null ],
       [ "LegendaryExplorerCore.UnrealScript.Language.Tree.DelegateType", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_delegate_type.html", null ],
@@ -568,6 +567,11 @@ var hierarchy =
     [ "LegendaryExplorerCore.TLK.ITalkFile", "interface_legendary_explorer_core_1_1_t_l_k_1_1_i_talk_file.html", [
       [ "LegendaryExplorerCore.TLK.ME1.ME1TalkFile", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e1_1_1_m_e1_talk_file.html", null ],
       [ "LegendaryExplorerCore.TLK.ME2ME3.ME2ME3TalkFile", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_talk_file.html", null ]
+    ] ],
+    [ "LegendaryExplorerCore.Unreal.BinaryConverters.IUIndexAction", "interface_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_i_u_index_action.html", [
+      [ "LegendaryExplorerCore.Unreal.BinaryConverters.UIndexAndPropNameCollector", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_index_and_prop_name_collector.html", null ],
+      [ "LegendaryExplorerCore.Unreal.BinaryConverters.UIndexCollector", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_index_collector.html", null ],
+      [ "LegendaryExplorerCore.Unreal.BinaryConverters.UIndexZeroer", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_index_zeroer.html", null ]
     ] ],
     [ "LegendaryExplorerCore.Gammtek.Data.IValueValidator< in in TValue >", "interface_legendary_explorer_core_1_1_gammtek_1_1_data_1_1_i_value_validator.html", null ],
     [ "LegendaryExplorerCore.Packages.IWeakPackageUser", "interface_legendary_explorer_core_1_1_packages_1_1_i_weak_package_user.html", [

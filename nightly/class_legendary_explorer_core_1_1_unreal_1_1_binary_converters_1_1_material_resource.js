@@ -2,8 +2,8 @@ var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_
 [
     [ "TextureLookup", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_resource_1_1_texture_lookup.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_resource_1_1_texture_lookup" ],
     [ "Create", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_resource.html#a025b80763f3748dd80758de571691dda", null ],
-    [ "GetUIndexes", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_resource.html#a1e90e8c39f23683762b810609ee17af5", null ],
     [ "GetNames", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_resource.html#af37255ef830bc14b36886e5f16ff8100", null ],
+    [ "ForEachUIndex< TAction >", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_resource.html#a9297e168f25e48440273c92be3cfc4c7", null ],
     [ "CompileErrors", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_resource.html#a1082ce42cc3070afa8c1a667a1a2f096", null ],
     [ "TextureDependencyLengthMap", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_resource.html#ad07c55353d3afddc4fec9447915fa6eb", null ],
     [ "MaxTextureDependencyLength", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_resource.html#a25511fba614ed607f50512f79e2f3124", null ],

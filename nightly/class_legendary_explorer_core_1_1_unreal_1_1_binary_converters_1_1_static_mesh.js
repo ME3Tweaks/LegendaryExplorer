@@ -2,7 +2,7 @@ var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_static_me
 [
     [ "Serialize", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_static_mesh.html#a6688a2d6217e938965dbaa86a5569944", null ],
     [ "Create", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_static_mesh.html#ac252a251009ac2e44621a5155b26ffa8", null ],
-    [ "GetUIndexes", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_static_mesh.html#a6549c91e9b4c103d1819c33055589e92", null ],
+    [ "ForEachUIndex< TAction >", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_static_mesh.html#ae10d684038372777bd7baf22e4bd71aa", null ],
     [ "GetCollisionMeshProperty", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_static_mesh.html#ad94f3f19ae97ed420107700dd65d49d6", null ],
     [ "Bounds", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_static_mesh.html#aad7ff420311168fdb6a9e61cca4e9154", null ],
     [ "BodySetup", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_static_mesh.html#af0124f066e6113bb74a26eb41707a08a", null ],

@@ -2,8 +2,8 @@ var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_class =
 [
     [ "Serialize", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_class.html#a01ebce9e914f72d84588394eab40b2f9", null ],
     [ "Create", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_class.html#a2b4fe8f4b66e495ad97e81471498f26e", null ],
-    [ "GetUIndexes", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_class.html#ab9a79e8357241ee57c4b00d043dcf20d", null ],
     [ "GetNames", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_class.html#ac7dd1d24fee9fc2037d86f8af375a026", null ],
+    [ "ForEachUIndex< TAction >", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_class.html#a5312893f78dc644adc299ad8c9a16e1b", null ],
     [ "UpdateLocalFunctions", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_class.html#a82f60efc2f4ebac353712206d8eb5fc5", null ],
     [ "ClassFlags", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_class.html#a51dcc8aa582b4dfbf6341830ffa02853", null ],
     [ "OuterClass", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_class.html#abea1a7d06bda08721f68c46b9125d717", null ],
