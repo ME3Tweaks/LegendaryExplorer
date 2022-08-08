@@ -28,6 +28,7 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
+using System.Threading;
 using BCnEncoder.Decoder;
 using BCnEncoder.Encoder;
 using BCnEncoder.ImageSharp;
@@ -259,7 +260,7 @@ namespace LegendaryExplorerCore.Textures
                             ? new PngDecoder()
                             : new JpegDecoder();
 
-                        var image = decoder.Decode<Rgba32>(Configuration.Default, stream);
+                        var image = decoder.Decode<Rgba32>(Configuration.Default, stream, CancellationToken.None);
 
                         if (!BitOperations.IsPow2(image.Width) || !BitOperations.IsPow2(image.Height))
                             throw new TextureSizeNotPowerOf2Exception();
