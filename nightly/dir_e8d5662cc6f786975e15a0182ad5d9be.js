@@ -74,9 +74,7 @@ var dir_e8d5662cc6f786975e15a0182ad5d9be =
       [ "LegendaryExplorerCore.Unreal.PSK.PSKWeight", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_k_1_1_p_s_k_weight.html", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_k_1_1_p_s_k_weight" ],
       [ "LegendaryExplorerCore.Unreal.BinaryConverters.SCExt", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_s_c_ext.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_s_c_ext" ]
     ] ],
-    [ "SerializingContainer.cs", "_serializing_container_8cs.html", [
-      [ "LegendaryExplorerCore.Unreal.SerializingFile", "struct_legendary_explorer_core_1_1_unreal_1_1_serializing_file.html", "struct_legendary_explorer_core_1_1_unreal_1_1_serializing_file" ]
-    ] ],
+    [ "SerializingFile.cs", "_serializing_file_8cs.html", null ],
     [ "SFARUnpacker.cs", "_s_f_a_r_unpacker_8cs.html", [
       [ "LegendaryExplorerCore.Unreal.SFARUnpacker", "class_legendary_explorer_core_1_1_unreal_1_1_s_f_a_r_unpacker.html", "class_legendary_explorer_core_1_1_unreal_1_1_s_f_a_r_unpacker" ],
       [ "LegendaryExplorerCore.Unreal.SFARUnpacker.DLCEntry", "struct_legendary_explorer_core_1_1_unreal_1_1_s_f_a_r_unpacker_1_1_d_l_c_entry.html", "struct_legendary_explorer_core_1_1_unreal_1_1_s_f_a_r_unpacker_1_1_d_l_c_entry" ]

@@ -1,6 +1,5 @@
 var struct_legendary_explorer_core_1_1_unreal_1_1_d_l_c_package_1_1_file_entry_struct =
 [
-    [ "Serialize", "struct_legendary_explorer_core_1_1_unreal_1_1_d_l_c_package_1_1_file_entry_struct.html#a21acce43a02da250efd4b1d634c4faab", null ],
     [ "Header", "struct_legendary_explorer_core_1_1_unreal_1_1_d_l_c_package_1_1_file_entry_struct.html#ab6013b94926d34f1d684df7818584596", null ],
     [ "MyOffset", "struct_legendary_explorer_core_1_1_unreal_1_1_d_l_c_package_1_1_file_entry_struct.html#af4fcca889d5e315fc67be31a2a8fe9e9", null ],
     [ "Hash", "struct_legendary_explorer_core_1_1_unreal_1_1_d_l_c_package_1_1_file_entry_struct.html#aa15c68364ac76cf3bb979d9c5de17985", null ],

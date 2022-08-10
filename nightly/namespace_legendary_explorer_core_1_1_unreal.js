@@ -30,7 +30,6 @@ var namespace_legendary_explorer_core_1_1_unreal =
     [ "PSA", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_a.html", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_a" ],
     [ "PSK", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_k.html", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_k" ],
     [ "ScriptDelegate", "struct_legendary_explorer_core_1_1_unreal_1_1_script_delegate.html", "struct_legendary_explorer_core_1_1_unreal_1_1_script_delegate" ],
-    [ "SerializingFile", "struct_legendary_explorer_core_1_1_unreal_1_1_serializing_file.html", "struct_legendary_explorer_core_1_1_unreal_1_1_serializing_file" ],
     [ "SFAREntryReader", "class_legendary_explorer_core_1_1_unreal_1_1_s_f_a_r_entry_reader.html", "class_legendary_explorer_core_1_1_unreal_1_1_s_f_a_r_entry_reader" ],
     [ "SFARUnpacker", "class_legendary_explorer_core_1_1_unreal_1_1_s_f_a_r_unpacker.html", "class_legendary_explorer_core_1_1_unreal_1_1_s_f_a_r_unpacker" ],
     [ "StorageTypeExtensions", "class_legendary_explorer_core_1_1_unreal_1_1_storage_type_extensions.html", "class_legendary_explorer_core_1_1_unreal_1_1_storage_type_extensions" ],

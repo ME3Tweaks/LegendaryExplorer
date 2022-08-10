@@ -10,7 +10,6 @@ var class_legendary_explorer_core_1_1_unreal_1_1_d_l_c_package =
     ] ],
     [ "DLCPackage", "class_legendary_explorer_core_1_1_unreal_1_1_d_l_c_package.html#a34dd5315eb228ae1ecd164a64963015e", null ],
     [ "Load", "class_legendary_explorer_core_1_1_unreal_1_1_d_l_c_package.html#a28ec87d770ba3b54b25d5be40ead17d6", null ],
-    [ "Serialize", "class_legendary_explorer_core_1_1_unreal_1_1_d_l_c_package.html#a1d9839f5cec315eab312c0988ea66e76", null ],
     [ "ReadFileNames", "class_legendary_explorer_core_1_1_unreal_1_1_d_l_c_package.html#aa13eacc3ef03b650926c5b02caf6a8fb", null ],
     [ "GetBlocks", "class_legendary_explorer_core_1_1_unreal_1_1_d_l_c_package.html#a689f2fce2762261049127269a568d97a", null ],
     [ "DecompressEntry", "class_legendary_explorer_core_1_1_unreal_1_1_d_l_c_package.html#a119fc0b3b6ac18b8191438d3c197fdab", null ],

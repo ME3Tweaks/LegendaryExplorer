@@ -903,7 +903,6 @@ var hierarchy =
       [ "LegendaryExplorerCore.PlotDatabase.Serialization.SerializedModPlotDatabase", "class_legendary_explorer_core_1_1_plot_database_1_1_serialization_1_1_serialized_mod_plot_database.html", null ]
     ] ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.SerializingContainer2", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_serializing_container2.html", null ],
-    [ "LegendaryExplorerCore.Unreal.SerializingFile", "struct_legendary_explorer_core_1_1_unreal_1_1_serializing_file.html", null ],
     [ "LegendaryExplorerCore.Unreal.SFAREntryReader", "class_legendary_explorer_core_1_1_unreal_1_1_s_f_a_r_entry_reader.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.Shader", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shader.html", null ],
     [ "LegendaryExplorerCore.Shaders.ShaderCacheManipulator", "class_legendary_explorer_core_1_1_shaders_1_1_shader_cache_manipulator.html", null ],
