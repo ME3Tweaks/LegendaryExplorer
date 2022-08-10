@@ -340,6 +340,77 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             });
         }
 
+        public static void ReSerializeAllObjectBinaryInFile(PackageEditorWindow pewpf)
+        {
+            pewpf.IsBusy = true;
+            pewpf.BusyText = "Re-serializing all binary in file";
+            var interestingExports = new List<EntryStringPair>();
+            var comparisonDict = new Dictionary<string, (byte[] original, byte[] newData)>();
+            var classesMissingObjBin = new List<string>();
+            Task.Run(() =>
+            {
+                var sw = new Stopwatch();
+                sw.Start();
+                foreach (ExportEntry export in pewpf.Pcc.Exports)
+                {
+                    try
+                    {
+                        if (ObjectBinary.From(export) is ObjectBinary bin)
+                        {
+                            var original = export.Data;
+                            export.WriteBinary(bin);
+                            if (!export.DataReadOnly.SequenceEqual(original))
+                            {
+                                interestingExports.Add(export);
+                                comparisonDict.Add($"{export.UIndex} {export.FileRef.FilePath}", (original, export.Data));
+                            }
+                        }
+                        else
+                        {
+                            // Binary class is not defined for this
+                            // Check to make sure there is in fact no binary so 
+                            // we aren't missing anything
+                            if (export.propsEnd() != export.DataSize && !classesMissingObjBin.Contains(export.ClassName))
+                            {
+                                classesMissingObjBin.Add(export.ClassName);
+                                interestingExports.Add(new EntryStringPair($"{export.ClassName} Export has data after properties but no objectbinary class exists for this "));
+                            }
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        interestingExports.Add(new EntryStringPair(export, e.Message));
+                    }
+                }
+                sw.Stop();
+                interestingExports.Insert(0, new EntryStringPair($"{sw.ElapsedMilliseconds}ms"));
+            }).ContinueWithOnUIThread(prevTask =>
+            {
+                //the base files will have been in memory for so long at this point that they take a looong time to clear out automatically, so force it.
+                MemoryAnalyzer.ForceFullGC(true);
+                pewpf.IsBusy = false;
+                var listDlg = new ListDialog(interestingExports, "Interesting Exports", "", pewpf)
+                {
+                    DoubleClickEntryHandler = entryItem =>
+                    {
+                        if (entryItem?.Entry is IEntry entryToSelect)
+                        {
+                            var p = new PackageEditorWindow();
+                            p.Show();
+                            p.LoadFile(entryToSelect.FileRef.FilePath, entryToSelect.UIndex);
+                            p.Activate();
+                            if (comparisonDict.TryGetValue($"{entryToSelect.UIndex} {entryToSelect.FileRef.FilePath}", out (byte[] original, byte[] newData) val))
+                            {
+                                File.WriteAllBytes(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "original.bin"), val.original);
+                                File.WriteAllBytes(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "new.bin"), val.newData);
+                            }
+                        }
+                    }
+                };
+                listDlg.Show();
+            });
+        }
+
         public static void ReSerializeAllProperties(PackageEditorWindow pewpf)
         {
             pewpf.IsBusy = true;

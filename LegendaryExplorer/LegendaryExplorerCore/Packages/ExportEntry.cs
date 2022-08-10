@@ -841,7 +841,8 @@ namespace LegendaryExplorerCore.Packages
 
         public void WriteProperties(PropertyCollection props)
         {
-            var m = new EndianReader { Endian = _fileRef.Endian };
+            MemoryStream ms = MemoryManager.GetMemoryStream(_data.Length);
+            var m = new EndianReader(ms) { Endian = _fileRef.Endian };
             m.Writer.Write(_data, 0, GetPropertyStart());
             props.WriteTo(m.Writer, _fileRef);
             int binStart = propsEnd();
@@ -854,7 +855,8 @@ namespace LegendaryExplorerCore.Packages
             // This does not properly work when porting assets across games
             // if the binary format significantly changes! An example is porting Texture2D across games, binStart could be wrong, which
             // leads to wrong branch taken
-            var m = new EndianReader { Endian = _fileRef.Endian };
+            MemoryStream ms = MemoryManager.GetMemoryStream(_data.Length);
+            var m = new EndianReader(ms) { Endian = _fileRef.Endian };
             m.Writer.WriteBytes(prePropBytes);
             props.WriteTo(m.Writer, _fileRef);
             binStart = binStart == -1 ? propsEnd() : binStart; // this allows us to precompute the starting position, which can avoid issues during relink as props may not have resolved yet
@@ -971,15 +973,17 @@ namespace LegendaryExplorerCore.Packages
 
         public void WriteBinary(byte[] binaryData)
         {
-            var m = new EndianReader { Endian = _fileRef.Endian };
-            m.Writer.Write(_data, 0, propsEnd());
+            int binStart = propsEnd();
+            var m = new EndianReader(MemoryManager.GetMemoryStream(binStart + binaryData.Length)) { Endian = _fileRef.Endian };
+            m.Writer.Write(_data, 0, binStart);
             m.Writer.WriteBytes(binaryData);
             Data = m.ToArray();
         }
 
         public void WriteBinary(ObjectBinary bin)
         {
-            var m = new EndianReader { Endian = _fileRef.Endian };
+            MemoryStream ms = MemoryManager.GetMemoryStream(_data.Length);
+            var m = new EndianReader(ms) { Endian = _fileRef.Endian };
             m.Writer.Write(_data, 0, propsEnd());
             bin.WriteTo(m.Writer, _fileRef, _commonHeaderFields._dataOffset);
             Data = m.ToArray();
@@ -992,7 +996,8 @@ namespace LegendaryExplorerCore.Packages
         /// <param name="binary"></param>
         public void WritePropertiesAndBinary(PropertyCollection props, ObjectBinary binary)
         {
-            var m = new EndianReader { Endian = _fileRef.Endian };
+            MemoryStream ms = MemoryManager.GetMemoryStream(_data.Length);
+            var m = new EndianReader(ms) { Endian = _fileRef.Endian };
             m.Writer.Write(_data, 0, GetPropertyStart());
             props?.WriteTo(m.Writer, _fileRef); //props could be null if this is a class
             binary.WriteTo(m.Writer, _fileRef, _commonHeaderFields._dataOffset);
@@ -1006,7 +1011,8 @@ namespace LegendaryExplorerCore.Packages
         /// <param name="props"></param>
         public void WritePrePropsAndPropertiesAndBinary(byte[] preProps, PropertyCollection props, ObjectBinary binary)
         {
-            var m = new EndianReader { Endian = _fileRef.Endian };
+            MemoryStream ms = MemoryManager.GetMemoryStream(_data.Length);
+            var m = new EndianReader(ms) { Endian = _fileRef.Endian };
             m.Writer.WriteBytes(preProps);
             props?.WriteTo(m.Writer, _fileRef); //props could be null if this is a class
             binary.WriteTo(m.Writer, _fileRef, _commonHeaderFields._dataOffset);

@@ -193,8 +193,13 @@ namespace LegendaryExplorer.Tools.AnimationImporterExporter
                         selectedAnimSequence = psaSeqs.First(s => s.Name.Instanced == seqName);
                     }
 
+                    if (!TryGetRotationCompressionFormat(out AnimationCompressionFormat rotationCompressionFormat))
+                    {
+                        return;
+                    }
+
                     var originalSeqName = props.GetProp<NameProperty>("SequenceName");
-                    selectedAnimSequence.UpdateProps(props, CurrentExport.Game);
+                    selectedAnimSequence.UpdateProps(props, CurrentExport.Game, rotationCompressionFormat, forceUpdate: true);
                     if (originalSeqName != null)
                     {
                         props.AddOrReplaceProp(originalSeqName);
@@ -204,6 +209,14 @@ namespace LegendaryExplorer.Tools.AnimationImporterExporter
                     MessageBox.Show("Done!", "Replace From PSA", MessageBoxButton.OK);
                 }
             }
+        }
+
+        private bool TryGetRotationCompressionFormat(out AnimationCompressionFormat rotationCompressionFormat)
+        {
+            string compressionFormatString = InputComboBoxDialog.GetValue(this, "Select desired rotation compression format", "Rotation Compression Format Selector",
+                AnimSequence.ValidRotationCompressionFormats.Select(x => x.ToString()), AnimationCompressionFormat.ACF_Float96NoW.ToString());
+
+            return Enum.TryParse(compressionFormatString, out rotationCompressionFormat);
         }
 
         private void ImportFromPSA()
@@ -225,6 +238,11 @@ namespace LegendaryExplorer.Tools.AnimationImporterExporter
                     return;
                 }
 
+                if (!TryGetRotationCompressionFormat(out AnimationCompressionFormat rotationCompressionFormat))
+                {
+                    return;
+                }
+
                 //todo: Make UI for choosing subset of AnimSequences from PSA.
 
                 var pkg = ExportCreator.CreatePackageExport(Pcc, NameReference.FromInstancedString(Path.GetFileNameWithoutExtension(dlg.FileName)));
@@ -236,7 +254,7 @@ namespace LegendaryExplorer.Tools.AnimationImporterExporter
                 {
                     var seqExp = ExportCreator.CreateExport(Pcc, NameReference.FromInstancedString(seq.Name), "AnimSequence", pkg);
                     var props = seqExp.GetProperties();
-                    seq.UpdateProps(props, Pcc.Game);
+                    seq.UpdateProps(props, Pcc.Game, rotationCompressionFormat, forceUpdate: true);
                     props.AddOrReplaceProp(new ObjectProperty(bioAnimSetData, "m_pBioAnimSetData"));
                     seqExp.WriteProperties(props);
                     seqExp.WriteBinary(seq);
@@ -275,17 +293,22 @@ namespace LegendaryExplorer.Tools.AnimationImporterExporter
                         return;
                     }
 
-                    ExportEntry selectedExport = EntrySelector.GetEntry<ExportEntry>(this, upk, "Select an AnimSequence", entry => entry.ClassName == "AnimSequence" && animSets.Contains(entry.Parent));
+                    var selectedExport = EntrySelector.GetEntry<ExportEntry>(this, upk, "Select an AnimSequence", entry => entry.ClassName == "AnimSequence" && animSets.Contains(entry.Parent));
                     if (selectedExport is null)
                     {
                         return;
                     }
-                    AnimSequence selectedAnimSequence = selectedExport.GetBinaryData<AnimSequence>();
 
+                    if (!TryGetRotationCompressionFormat(out AnimationCompressionFormat rotationCompressionFormat))
+                    {
+                        return;
+                    }
+
+                    var selectedAnimSequence = selectedExport.GetBinaryData<AnimSequence>();
 
                     var props = CurrentExport.GetProperties();
                     var originalSeqName = props.GetProp<NameProperty>("SequenceName");
-                    selectedAnimSequence.UpdateProps(props, CurrentExport.Game);
+                    selectedAnimSequence.UpdateProps(props, CurrentExport.Game, rotationCompressionFormat);
                     if (originalSeqName != null)
                     {
                         props.AddOrReplaceProp(originalSeqName);
@@ -316,33 +339,38 @@ namespace LegendaryExplorer.Tools.AnimationImporterExporter
                     return;
                 }
 
-                ExportEntry selectedExport = EntrySelector.GetEntry<ExportEntry>(this, upk, "Select an AnimSequence, or an Animset",
+                var selectedExport = EntrySelector.GetEntry<ExportEntry>(this, upk, "Select an AnimSequence, or an Animset",
                                                                                  entry => animSets.Contains(entry) || entry.ClassName == "AnimSequence" && animSets.Contains(entry.Parent));
 
 
                 var selectedAnimSequences = new List<AnimSequence>();
                 ExportEntry animSet;
-                if (selectedExport?.ClassName == "AnimSequence")
+                switch (selectedExport?.ClassName)
                 {
-                    selectedAnimSequences.Add(selectedExport.GetBinaryData<AnimSequence>());
-                    animSet = (ExportEntry)selectedExport.Parent;
-                }
-                else if (selectedExport?.ClassName == "AnimSet")
-                {
-                    animSet = selectedExport;
-                    var sequences = animSet.GetProperty<ArrayProperty<ObjectProperty>>("Sequences");
-                    if (sequences is null || sequences.IsEmpty())
+                    case "AnimSequence":
+                        selectedAnimSequences.Add(selectedExport.GetBinaryData<AnimSequence>());
+                        animSet = (ExportEntry)selectedExport.Parent;
+                        break;
+                    case "AnimSet":
                     {
-                        MessageBox.Show("This AnimSets has no AnimSeqeunces!", "", MessageBoxButton.OK, MessageBoxImage.Error);
-                        return;
+                        animSet = selectedExport;
+                        var sequences = animSet.GetProperty<ArrayProperty<ObjectProperty>>("Sequences");
+                        if (sequences is null || sequences.IsEmpty())
+                        {
+                            MessageBox.Show("This AnimSets has no AnimSeqeunces!", "", MessageBoxButton.OK, MessageBoxImage.Error);
+                            return;
+                        }
+                        selectedAnimSequences.AddRange(sequences.Select(op => upk.GetUExport(op.Value).GetBinaryData<AnimSequence>()));
+                        break;
                     }
-                    selectedAnimSequences.AddRange(sequences.Select(op => upk.GetUExport(op.Value).GetBinaryData<AnimSequence>()));
+                    default:
+                        return;
                 }
-                else
+
+                if (!TryGetRotationCompressionFormat(out AnimationCompressionFormat rotationCompressionFormat))
                 {
                     return;
                 }
-
 
                 var pkg = ExportCreator.CreatePackageExport(Pcc, animSet.ObjectName);
 
@@ -353,7 +381,7 @@ namespace LegendaryExplorer.Tools.AnimationImporterExporter
                 {
                     var seqExp = ExportCreator.CreateExport(Pcc, NameReference.FromInstancedString(seq.Name), "AnimSequence", pkg);
                     var props = seqExp.GetProperties();
-                    seq.UpdateProps(props, Pcc.Game);
+                    seq.UpdateProps(props, Pcc.Game, rotationCompressionFormat);
                     props.AddOrReplaceProp(new ObjectProperty(bioAnimSetData, "m_pBioAnimSetData"));
                     seqExp.WriteProperties(props);
                     seqExp.WriteBinary(seq);

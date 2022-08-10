@@ -101,6 +101,7 @@
     <MenuItem Header="SirCxyrtyx's Garden of Modding Delights">
         <MenuItem Header="Re-Serialize All Properties in game(check code to see which game)" Click="ReSerializeAllProperties_Click"/>
         <MenuItem Header="Re-Serialize All Binary in game(check code to see which game)" Click="ReSerializeAllObjectBinary_Click"/>
+        <MenuItem Header="Re-Serialize All Binary in file" Click="ReSerializeAllObjectBinaryInFile_Click"/>
         <MenuItem Header="Re-serialize export" Click="ReSerializeExport_Click"/>
         <MenuItem Header="Enable Dynamic Lighting" Click="CreateDynamicLighting"/>
         <MenuItem Header="Scan stuff" Click="ScanStuff_Click"/>

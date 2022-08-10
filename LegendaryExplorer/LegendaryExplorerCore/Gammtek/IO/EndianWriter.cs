@@ -186,7 +186,7 @@ namespace LegendaryExplorerCore.Gammtek.IO
 
 
 
-        public void WriteBytes(byte[] bytes) => WriteFromBuffer(bytes);
+        public void WriteBytes(byte[] bytes) => Write(bytes);
 
         public void WriteByte(byte b)
         {

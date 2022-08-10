@@ -15,6 +15,8 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
     public class AnimSequence : ObjectBinary
     {
+        public static readonly AnimationCompressionFormat[] ValidRotationCompressionFormats = { AnimationCompressionFormat.ACF_None, AnimationCompressionFormat.ACF_Float96NoW, AnimationCompressionFormat.ACF_BioFixed48, AnimationCompressionFormat.ACF_Fixed48NoW };
+
         public List<AnimTrack> RawAnimationData;
         public byte[] CompressedAnimationData;
 
@@ -320,7 +322,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
         }
 
-        void CompressAnimationData(MEGame game, AnimationCompressionFormat newRotationCompression)
+        private void CompressAnimationData(MEGame game, AnimationCompressionFormat newRotationCompression)
         {
             if (RawAnimationData is null)
             {

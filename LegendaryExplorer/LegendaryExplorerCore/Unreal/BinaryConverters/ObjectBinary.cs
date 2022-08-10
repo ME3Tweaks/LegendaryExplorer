@@ -27,19 +27,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 return null;
             }
             string className = export.ClassName;
-            if (IsEither(className, export.Game, "BioPawn", "BioActorBehavior"))
-            {
-                //export actually being a subclass of BioPawn or BioActorBehavior is rare, so it's simpler and not very costly to just do the lookup again
-                if (export.IsA("BioPawn"))
-                {
-                    //way, waaay too many subclasses of BioPawn to put in the switch statement, so we take care of it here
-                    className = "BioPawn";
-                }
-                else if (export.IsA("BioActorBehavior"))
-                {
-                    className = "BioActorBehavior";
-                }
-            }
+            
             switch (className)
             {
                 case "AnimSequence":
@@ -90,8 +78,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     return From<ModelComponent>(export, packageCache);
                 case "BioDynamicAnimSet":
                     return From<BioDynamicAnimSet>(export, packageCache);
-                case "BioPawn":
-                    return From<BioPawn>(export, packageCache);
                 case "PrefabInstance":
                     return From<PrefabInstance>(export, packageCache);
                 case "Class":
@@ -227,9 +213,20 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     return From<SpeedTreeComponent>(export, packageCache);
                 case "BioGamePropertyEventDispatcher":
                     return From<BioGamePropertyEventDispatcher>(export, packageCache);
-                case "BioActorBehavior":
-                    return From<BioActorBehavior>(export, packageCache);
                 default:
+                    //way, waaay too many subclasses of BioPawn and BioActorBehavior to put in the switch statement, so we take care of it here
+                    if (IsEither(className, export.Game, "BioPawn", "BioActorBehavior"))
+                    {
+                        //export actually being a subclass of BioPawn or BioActorBehavior is rare, so it's simpler and not very costly to just do the lookup again
+                        if (export.IsA("BioPawn"))
+                        {
+                            return From<BioPawn>(export, packageCache);
+                        }
+                        if (export.IsA("BioActorBehavior"))
+                        {
+                            return From<BioActorBehavior>(export, packageCache);
+                        }
+                    }
                     return null;
             }
         }
@@ -269,15 +266,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
         public static ObjectBinary Create(string className, MEGame game, PropertyCollection props = null)
         {
-            if (GlobalUnrealObjectInfo.IsA(className, "BioPawn", game))
-            {
-                //way, waaay too many subclasses of BioPawn to put in the switch statement, so we take care of it here
-                className = "BioPawn";
-            }
-            else if (GlobalUnrealObjectInfo.IsA(className, "BioActorBehavior", game))
-            {
-                className = "BioActorBehavior";
-            }
             switch (className)
             {
                 case "AnimSequence":
@@ -321,8 +309,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     return ModelComponent.Create();
                 case "BioDynamicAnimSet":
                     return BioDynamicAnimSet.Create();
-                case "BioPawn":
-                    return BioPawn.Create();
                 case "PrefabInstance":
                     return PrefabInstance.Create();
                 case "Class":
@@ -458,8 +444,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     return SpeedTreeComponent.Create();
                 case "BioGamePropertyEventDispatcher":
                     return BioGamePropertyEventDispatcher.Create();
-                case "BioActorBehavior":
-                    return BioActorBehavior.Create();
                 case "MaterialInstanceConstant":
                 case "MaterialInstanceTimeVarying":
                     if (props?.GetProp<BoolProperty>("bHasStaticPermutationResource")?.Value is true)
@@ -467,6 +451,14 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                         return MaterialInstance.Create();
                     }
                     break;
+            }
+            if (GlobalUnrealObjectInfo.IsA(className, "BioPawn", game))
+            {
+                return BioPawn.Create();
+            }
+            if (GlobalUnrealObjectInfo.IsA(className, "BioActorBehavior", game))
+            {
+                return BioActorBehavior.Create();
             }
             return GenericObjectBinary.Create();
         }
