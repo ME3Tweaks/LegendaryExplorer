@@ -766,6 +766,21 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 //}
 
                 EntryPruner.TrashEntries(pcc, itemsToTrash);
+            } else if (pcc.Exports.FirstOrDefault(exp => exp.ClassName == "ObjectReferencer") is ExportEntry BaseReferencer)  //Clean up seekfree files
+            {
+                HashSet<int> norefsList = await Task.Run(() => pcc.GetReferencedEntries(false, false, BaseReferencer));
+                pewpf.BusyText = "Recooking Unreferenced Objects";
+                List<IEntry> itemsToTrash = new List<IEntry>();
+                foreach (var export in pcc.Exports)
+                {
+                    if (norefsList.Contains(export.UIndex))
+                    {
+                        itemsToTrash.Add(export);
+                    }
+                }
+
+                EntryPruner.TrashEntries(pcc, itemsToTrash);
+
             }
             //pewpf.AllowRefresh = true;
             pewpf.EndBusy();

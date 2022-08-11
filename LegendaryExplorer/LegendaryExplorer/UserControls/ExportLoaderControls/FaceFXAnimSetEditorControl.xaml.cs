@@ -946,9 +946,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 var xlrowCount = iWorksheet.RowsUsed().Count();
                 //Check headers
-
                 var returned = (string)iWorksheet.Cell(1, 2).Value; //2 as XL starts at 1, and skip time column
-                if (curve.Name != returned)
+                if (SelectedAnimation.Name != returned)
                 {
                     var chkbx = MessageBox.Show("The imported column header does not match current selection.\n", "Import Curves", MessageBoxButton.OK);
                     return;
@@ -981,10 +980,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     }
                 }
 
-                //Import data to curves
-                curve.CurvePoints.Clear();
-                string cname = curve.Name;
-
+                //Import data to curve
+                var newCurvePoints = new LinkedList<CurvePoint>();
                 for (int xlrow = 2; xlrow <= xlrowCount; xlrow++) //Get Excel points start at 2 because top contains headers
                 {
                     var time = iWorksheet.Cell(xlrow, 1).Value.ToString();
@@ -992,7 +989,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     if (outval != null && float.TryParse(time, out float t) && float.TryParse(outval, out float v))
                     {
                         var point = new CurvePoint(t, v, 0, 0, EInterpCurveMode.CIM_CurveUser);
-                        curve.CurvePoints.AddLast(point);
+                        newCurvePoints.AddLast(point);
                     }
                     else
                     {
@@ -1000,7 +997,18 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         return;
                     }
                 }
+                SelectedAnimation.Points.Clear();
+                foreach(CurvePoint point in newCurvePoints)
+                {
+                    SelectedAnimation.Points.AddLast(point);
+                }
+
+                graph.SelectedCurve = SelectedAnimation.ToCurve(SaveChanges);
+                graph.Paint(true);
+                SaveChanges();
+                
                 MessageBox.Show("Import complete.", "Import Curves");
+
             }
             catch (Exception exp)
             {
