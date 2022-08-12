@@ -62,6 +62,8 @@ namespace LegendaryExplorer
 
     public static class ToolSet
     {
+        private const string ICON_COMING_SOON_RES_NAME = "iconPlaceholder";
+
         //has an invisible no width space at the beginning so it will sort last
         private const string other = "⁣Other";
         private static HashSet<Tool> items;
@@ -383,6 +385,21 @@ namespace LegendaryExplorer
                 category = "Cinematic Tools",
                 description = "Interp Editor is a simplified version of UDK’s Matinee Editor. It loads interpdata objects and displays their children as tracks on a timeline, allowing the user to visualize the game content associated with a specific scene."
             });
+#if DEBUG
+            set.Add(new Tool
+            {
+                name = "LEX Custom Files Manager",
+                type = typeof(Tools.CustomFilesManager.CustomFilesManagerWindow),
+                icon = Application.Current.FindResource(ICON_COMING_SOON_RES_NAME) as ImageSource,
+                open = () =>
+                {
+                    (new Tools.CustomFilesManager.CustomFilesManagerWindow()).Show();
+                },
+                tags = new List<string> { "utility", "startup", "import", "custom", "file", "class", "kismet" },
+                category = "Utilities",
+                description = "The LEX Custom Files Manager allows you to define custom files for use with the toolset, including specifying mod startup files that can be imported from and files to inventory the classes of on toolset boot."
+            });
+#endif
             set.Add(new Tool
             {
                 name = "Mesh Explorer",
