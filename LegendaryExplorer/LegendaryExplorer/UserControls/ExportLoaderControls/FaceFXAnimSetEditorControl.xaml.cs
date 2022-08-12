@@ -1006,8 +1006,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 graph.SelectedCurve = SelectedAnimation.ToCurve(SaveChanges);
                 graph.Paint(true);
                 SaveChanges();
-                
-                MessageBox.Show("Import complete.", "Import Curves");
 
             }
             catch (Exception exp)
