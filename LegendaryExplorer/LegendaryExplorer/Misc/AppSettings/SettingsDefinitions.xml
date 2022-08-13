@@ -116,5 +116,10 @@
   <setting name="Global_TLK_IsMale" type="bool" defaultvalue="true" settingsbridgename="TLKGenderIsMale" category="General"
            friendlyName="Default to Male TLK"/>
 
+  <setting name="CustomStartupFiles" type="List&lt;string&gt;" defaultvalue="new List&lt;string&gt;()" category="General"
+           friendlyName="Custom Startup Files"/>
+  <setting name="CustomClassDirectories" type="List&lt;string&gt;" defaultvalue="new List&lt;string&gt;()" category="General"
+           friendlyName="Custom Class Directories"/>
+
 
 </appsettings>

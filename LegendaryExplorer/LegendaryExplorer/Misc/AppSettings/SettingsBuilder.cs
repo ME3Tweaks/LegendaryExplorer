@@ -5,6 +5,7 @@ using System;
 using System.Diagnostics;
 using LegendaryExplorerCore;
 using LegendaryExplorerCore.Packages;
+using Newtonsoft.Json.Linq;
 
 namespace LegendaryExplorer.Misc.AppSettings
 {
@@ -299,6 +300,16 @@ namespace LegendaryExplorer.Misc.AppSettings
             get => _global_tlk_ismale; 
             set => SetProperty(ref _global_tlk_ismale, value);
         }
+        private static List<string> _customstartupfiles = new List<string>(); 
+        public static List<string> CustomStartupFiles {
+            get => _customstartupfiles; 
+            set => SetProperty(ref _customstartupfiles, value);
+        }
+        private static List<string> _customclassdirectories = new List<string>(); 
+        public static List<string> CustomClassDirectories {
+            get => _customclassdirectories; 
+            set => SetProperty(ref _customclassdirectories, value);
+        }
 
         public static string Get_SequenceEditor_Favorites (MEGame game) => game switch
         {
@@ -341,9 +352,10 @@ namespace LegendaryExplorer.Misc.AppSettings
         }
 
         // Settings converters
-        public static int TryGetSetting(Dictionary<string, string> settings, string key, int defaultValue) => settings.TryGetValue(key, out var value) && int.TryParse(value, out var ivalue) ? ivalue : defaultValue;
-        public static bool TryGetSetting(Dictionary<string, string> settings, string key, bool defaultValue) => settings.TryGetValue(key, out var value) && bool.TryParse(value, out var bvalue) ? bvalue : defaultValue;
-        public static string TryGetSetting(Dictionary<string, string> settings, string key, string defaultValue) => settings.TryGetValue(key, out var value) ? value : defaultValue;
+        public static int TryGetSetting(Dictionary<string, object> settings, string key, int defaultValue) => settings.TryGetValue(key, out var value) && value is string svalue && int.TryParse(svalue, out var ivalue) ? ivalue : defaultValue;
+        public static bool TryGetSetting(Dictionary<string, object> settings, string key, bool defaultValue) => settings.TryGetValue(key, out var value) && value is string svalue && bool.TryParse(svalue, out var bvalue) ? bvalue : defaultValue;
+        public static string TryGetSetting(Dictionary<string, object> settings, string key, string defaultValue) => settings.TryGetValue(key, out var value) && value is string svalue ? svalue : defaultValue;
+        public static List<string> TryGetSetting(Dictionary<string, object> settings, string key, List<string> defaultValue) => settings.TryGetValue(key, out var value) && value is JArray listValue ? listValue.ToObject<List<string>>() : defaultValue;
 
 
         private static string AppSettingsFile => Path.Combine(AppDirectories.AppDataFolder, "appsettings.json");
@@ -356,8 +368,8 @@ namespace LegendaryExplorer.Misc.AppSettings
                 return;
             
             var settingsJson = File.Exists(AppSettingsFile)
-                ? JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(AppSettingsFile))
-                : new Dictionary<string, string>();
+                ? JsonConvert.DeserializeObject<Dictionary<string, object>>(File.ReadAllText(AppSettingsFile))
+                : new Dictionary<string, object>();
 
             //if the settings file has been corrupted somehow, the JSON deserializer will return null.
             settingsJson ??= new();
@@ -419,6 +431,8 @@ namespace LegendaryExplorer.Misc.AppSettings
             Global_LEDirectory = TryGetSetting(settingsJson, "global_ledirectory", "");
             Global_TLK_Language = TryGetSetting(settingsJson, "global_tlk_language", "INT");
             Global_TLK_IsMale = TryGetSetting(settingsJson, "global_tlk_ismale", true);
+            CustomStartupFiles = TryGetSetting(settingsJson, "customstartupfiles", new List<string>());
+            CustomClassDirectories = TryGetSetting(settingsJson, "customclassdirectories", new List<string>());
 
             // Settings Bridge Init
             LegendaryExplorerCoreLibSettings.Instance.ParseUnknownArrayTypesAsObject = Global_PropertyParsing_ParseUnknownArrayTypeAsObject;
@@ -437,64 +451,66 @@ namespace LegendaryExplorer.Misc.AppSettings
         /// </summary>
         public static void Save()
         {
-            var settingsJson = new Dictionary<string,string>();
-            settingsJson["mainwindow_disabletransparencyandanimations"] = MainWindow_DisableTransparencyAndAnimations.ToString();
-            settingsJson["mainwindow_favorites"] = MainWindow_Favorites.ToString();
-            settingsJson["mainwindow_completedinitialsetup"] = MainWindow_CompletedInitialSetup.ToString();
-            settingsJson["packageeditor_hideinterpreterhexbox"] = PackageEditor_HideInterpreterHexBox.ToString();
-            settingsJson["packageeditor_touchcomfymode"] = PackageEditor_TouchComfyMode.ToString();
-            settingsJson["packageeditor_showimpexpprefix"] = PackageEditor_ShowImpExpPrefix.ToString();
-            settingsJson["packageeditor_showexporttypeicons"] = PackageEditor_ShowExportTypeIcons.ToString();
-            settingsJson["packageeditor_showtreeentrysubtext"] = PackageEditor_ShowTreeEntrySubText.ToString();
-            settingsJson["packageeditor_showexperiments"] = PackageEditor_ShowExperiments.ToString();
-            settingsJson["sequenceeditor_maxvarstringlength"] = SequenceEditor_MaxVarStringLength.ToString();
-            settingsJson["sequenceeditor_showparsedinfo"] = SequenceEditor_ShowParsedInfo.ToString();
-            settingsJson["sequenceeditor_autosaveviewv2"] = SequenceEditor_AutoSaveViewV2.ToString();
-            settingsJson["sequenceeditor_showoutputnumbers"] = SequenceEditor_ShowOutputNumbers.ToString();
-            settingsJson["sequenceeditor_favorites_me1"] = SequenceEditor_Favorites_ME1.ToString();
-            settingsJson["sequenceeditor_favorites_me2"] = SequenceEditor_Favorites_ME2.ToString();
-            settingsJson["sequenceeditor_favorites_me3"] = SequenceEditor_Favorites_ME3.ToString();
-            settingsJson["sequenceeditor_favorites_le1"] = SequenceEditor_Favorites_LE1.ToString();
-            settingsJson["sequenceeditor_favorites_le2"] = SequenceEditor_Favorites_LE2.ToString();
-            settingsJson["sequenceeditor_favorites_le3"] = SequenceEditor_Favorites_LE3.ToString();
-            settingsJson["sequenceeditor_favorites_udk"] = SequenceEditor_Favorites_UDK.ToString();
-            settingsJson["soundplorer_reverseiddisplayendianness"] = Soundplorer_ReverseIDDisplayEndianness.ToString();
-            settingsJson["soundplorer_autoplayentriesonselection"] = Soundplorer_AutoplayEntriesOnSelection.ToString();
-            settingsJson["meshplorer_backgroundcolor"] = Meshplorer_BackgroundColor.ToString();
-            settingsJson["meshplorer_viewfirstperson"] = Meshplorer_ViewFirstPerson.ToString();
-            settingsJson["meshplorer_viewrotating"] = Meshplorer_ViewRotating.ToString();
-            settingsJson["meshplorer_view_solidenabled"] = Meshplorer_View_SolidEnabled.ToString();
-            settingsJson["meshplorer_viewwireframeenabled"] = Meshplorer_ViewWireframeEnabled.ToString();
-            settingsJson["pathfindingeditor_shownodesizes"] = PathfindingEditor_ShowNodeSizes.ToString();
-            settingsJson["pathfindingeditor_showpathfindingnodeslayer"] = PathfindingEditor_ShowPathfindingNodesLayer.ToString();
-            settingsJson["pathfindingeditor_showactorslayer"] = PathfindingEditor_ShowActorsLayer.ToString();
-            settingsJson["pathfindingeditor_showartlayer"] = PathfindingEditor_ShowArtLayer.ToString();
-            settingsJson["pathfindingeditor_showsplineslayer"] = PathfindingEditor_ShowSplinesLayer.ToString();
-            settingsJson["pathfindingeditor_showeverythingelselayer"] = PathfindingEditor_ShowEverythingElseLayer.ToString();
-            settingsJson["assetdb_defaultgame"] = AssetDB_DefaultGame.ToString();
-            settingsJson["assetdbgame"] = AssetDBGame.ToString();
-            settingsJson["assetdbpath"] = AssetDBPath.ToString();
-            settingsJson["coalescededitor_sourcepath"] = CoalescedEditor_SourcePath.ToString();
-            settingsJson["coalescededitor_destinationpath"] = CoalescedEditor_DestinationPath.ToString();
-            settingsJson["wwisegrapheditor_autosaveview"] = WwiseGraphEditor_AutoSaveView.ToString();
-            settingsJson["binaryinterpreter_skipautoparsesizecheck"] = BinaryInterpreter_SkipAutoParseSizeCheck.ToString();
-            settingsJson["textureviewer_autoloadmip"] = TextureViewer_AutoLoadMip.ToString();
-            settingsJson["interpreter_limitarraypropertysize"] = Interpreter_LimitArrayPropertySize.ToString();
-            settingsJson["interpreter_advanceddisplay"] = Interpreter_AdvancedDisplay.ToString();
-            settingsJson["interpreter_colorize"] = Interpreter_Colorize.ToString();
-            settingsJson["interpreter_showlinearcolorwheel"] = Interpreter_ShowLinearColorWheel.ToString();
-            settingsJson["soundpanel_loopaudio"] = Soundpanel_LoopAudio.ToString();
-            settingsJson["wwise_3773path"] = Wwise_3773Path.ToString();
-            settingsJson["wwise_7110path"] = Wwise_7110Path.ToString();
-            settingsJson["tfccompactor_laststagingpath"] = TFCCompactor_LastStagingPath.ToString();
-            settingsJson["global_propertyparsing_parseunknownarraytypeasobject"] = Global_PropertyParsing_ParseUnknownArrayTypeAsObject.ToString();
-            settingsJson["global_analytics_enabled"] = Global_Analytics_Enabled.ToString();
-            settingsJson["global_me1directory"] = Global_ME1Directory.ToString();
-            settingsJson["global_me2directory"] = Global_ME2Directory.ToString();
-            settingsJson["global_me3directory"] = Global_ME3Directory.ToString();
-            settingsJson["global_ledirectory"] = Global_LEDirectory.ToString();
-            settingsJson["global_tlk_language"] = Global_TLK_Language.ToString();
-            settingsJson["global_tlk_ismale"] = Global_TLK_IsMale.ToString();
+            var settingsJson = new Dictionary<string,object>();
+                    settingsJson["mainwindow_disabletransparencyandanimations"] = MainWindow_DisableTransparencyAndAnimations.ToString();
+                    settingsJson["mainwindow_favorites"] = MainWindow_Favorites.ToString();
+                    settingsJson["mainwindow_completedinitialsetup"] = MainWindow_CompletedInitialSetup.ToString();
+                    settingsJson["packageeditor_hideinterpreterhexbox"] = PackageEditor_HideInterpreterHexBox.ToString();
+                    settingsJson["packageeditor_touchcomfymode"] = PackageEditor_TouchComfyMode.ToString();
+                    settingsJson["packageeditor_showimpexpprefix"] = PackageEditor_ShowImpExpPrefix.ToString();
+                    settingsJson["packageeditor_showexporttypeicons"] = PackageEditor_ShowExportTypeIcons.ToString();
+                    settingsJson["packageeditor_showtreeentrysubtext"] = PackageEditor_ShowTreeEntrySubText.ToString();
+                    settingsJson["packageeditor_showexperiments"] = PackageEditor_ShowExperiments.ToString();
+                    settingsJson["sequenceeditor_maxvarstringlength"] = SequenceEditor_MaxVarStringLength.ToString();
+                    settingsJson["sequenceeditor_showparsedinfo"] = SequenceEditor_ShowParsedInfo.ToString();
+                    settingsJson["sequenceeditor_autosaveviewv2"] = SequenceEditor_AutoSaveViewV2.ToString();
+                    settingsJson["sequenceeditor_showoutputnumbers"] = SequenceEditor_ShowOutputNumbers.ToString();
+                    settingsJson["sequenceeditor_favorites_me1"] = SequenceEditor_Favorites_ME1.ToString();
+                    settingsJson["sequenceeditor_favorites_me2"] = SequenceEditor_Favorites_ME2.ToString();
+                    settingsJson["sequenceeditor_favorites_me3"] = SequenceEditor_Favorites_ME3.ToString();
+                    settingsJson["sequenceeditor_favorites_le1"] = SequenceEditor_Favorites_LE1.ToString();
+                    settingsJson["sequenceeditor_favorites_le2"] = SequenceEditor_Favorites_LE2.ToString();
+                    settingsJson["sequenceeditor_favorites_le3"] = SequenceEditor_Favorites_LE3.ToString();
+                    settingsJson["sequenceeditor_favorites_udk"] = SequenceEditor_Favorites_UDK.ToString();
+                    settingsJson["soundplorer_reverseiddisplayendianness"] = Soundplorer_ReverseIDDisplayEndianness.ToString();
+                    settingsJson["soundplorer_autoplayentriesonselection"] = Soundplorer_AutoplayEntriesOnSelection.ToString();
+                    settingsJson["meshplorer_backgroundcolor"] = Meshplorer_BackgroundColor.ToString();
+                    settingsJson["meshplorer_viewfirstperson"] = Meshplorer_ViewFirstPerson.ToString();
+                    settingsJson["meshplorer_viewrotating"] = Meshplorer_ViewRotating.ToString();
+                    settingsJson["meshplorer_view_solidenabled"] = Meshplorer_View_SolidEnabled.ToString();
+                    settingsJson["meshplorer_viewwireframeenabled"] = Meshplorer_ViewWireframeEnabled.ToString();
+                    settingsJson["pathfindingeditor_shownodesizes"] = PathfindingEditor_ShowNodeSizes.ToString();
+                    settingsJson["pathfindingeditor_showpathfindingnodeslayer"] = PathfindingEditor_ShowPathfindingNodesLayer.ToString();
+                    settingsJson["pathfindingeditor_showactorslayer"] = PathfindingEditor_ShowActorsLayer.ToString();
+                    settingsJson["pathfindingeditor_showartlayer"] = PathfindingEditor_ShowArtLayer.ToString();
+                    settingsJson["pathfindingeditor_showsplineslayer"] = PathfindingEditor_ShowSplinesLayer.ToString();
+                    settingsJson["pathfindingeditor_showeverythingelselayer"] = PathfindingEditor_ShowEverythingElseLayer.ToString();
+                    settingsJson["assetdb_defaultgame"] = AssetDB_DefaultGame.ToString();
+                    settingsJson["assetdbgame"] = AssetDBGame.ToString();
+                    settingsJson["assetdbpath"] = AssetDBPath.ToString();
+                    settingsJson["coalescededitor_sourcepath"] = CoalescedEditor_SourcePath.ToString();
+                    settingsJson["coalescededitor_destinationpath"] = CoalescedEditor_DestinationPath.ToString();
+                    settingsJson["wwisegrapheditor_autosaveview"] = WwiseGraphEditor_AutoSaveView.ToString();
+                    settingsJson["binaryinterpreter_skipautoparsesizecheck"] = BinaryInterpreter_SkipAutoParseSizeCheck.ToString();
+                    settingsJson["textureviewer_autoloadmip"] = TextureViewer_AutoLoadMip.ToString();
+                    settingsJson["interpreter_limitarraypropertysize"] = Interpreter_LimitArrayPropertySize.ToString();
+                    settingsJson["interpreter_advanceddisplay"] = Interpreter_AdvancedDisplay.ToString();
+                    settingsJson["interpreter_colorize"] = Interpreter_Colorize.ToString();
+                    settingsJson["interpreter_showlinearcolorwheel"] = Interpreter_ShowLinearColorWheel.ToString();
+                    settingsJson["soundpanel_loopaudio"] = Soundpanel_LoopAudio.ToString();
+                    settingsJson["wwise_3773path"] = Wwise_3773Path.ToString();
+                    settingsJson["wwise_7110path"] = Wwise_7110Path.ToString();
+                    settingsJson["tfccompactor_laststagingpath"] = TFCCompactor_LastStagingPath.ToString();
+                    settingsJson["global_propertyparsing_parseunknownarraytypeasobject"] = Global_PropertyParsing_ParseUnknownArrayTypeAsObject.ToString();
+                    settingsJson["global_analytics_enabled"] = Global_Analytics_Enabled.ToString();
+                    settingsJson["global_me1directory"] = Global_ME1Directory.ToString();
+                    settingsJson["global_me2directory"] = Global_ME2Directory.ToString();
+                    settingsJson["global_me3directory"] = Global_ME3Directory.ToString();
+                    settingsJson["global_ledirectory"] = Global_LEDirectory.ToString();
+                    settingsJson["global_tlk_language"] = Global_TLK_Language.ToString();
+                    settingsJson["global_tlk_ismale"] = Global_TLK_IsMale.ToString();
+                    settingsJson["customstartupfiles"] = CustomStartupFiles;
+                    settingsJson["customclassdirectories"] = CustomClassDirectories;
 
             var settingsText = JsonConvert.SerializeObject(settingsJson, Formatting.Indented);
             try

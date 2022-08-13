@@ -15,6 +15,7 @@ using System;
 using System.Diagnostics;
 using LegendaryExplorerCore;
 using LegendaryExplorerCore.Packages;
+using Newtonsoft.Json.Linq;
 
 namespace LegendaryExplorer.Misc.AppSettings
 {
@@ -35,19 +36,23 @@ namespace LegendaryExplorer.Misc.AppSettings
         string defaultValue = x.Attribute("defaultvalue").Value;
         string settingsBridgeName = x.Attribute("settingsbridgename")?.Value;
         bool pergame = x.Attribute("pergame")?.Value == "true";
+        bool storeRaw = false;
         if (type == "string")
         {
             defaultValue = "\"" + defaultValue + "\"";
+        } else if (type.StartsWith("List"))
+        {
+            storeRaw = true;
         }
 
         if (pergame)
         {
             // create a new setting for each game, don't use settings bridge at all
-            return MEGame.Select(game => Tuple.Create($"{name}_{game}", type, defaultValue, ""));
+            return MEGame.Select(game => Tuple.Create($"{name}_{game}", type, defaultValue, "", storeRaw));
         }
         else
         {
-            return new [] { Tuple.Create(name, type, defaultValue, settingsBridgeName) };
+            return new [] { Tuple.Create(name, type, defaultValue, settingsBridgeName, storeRaw) };
         }
     }).ToList();
 
@@ -92,9 +97,10 @@ namespace LegendaryExplorer.Misc.AppSettings
 <#      }#>
 
         // Settings converters
-        public static int TryGetSetting(Dictionary<string, string> settings, string key, int defaultValue) => settings.TryGetValue(key, out var value) && int.TryParse(value, out var ivalue) ? ivalue : defaultValue;
-        public static bool TryGetSetting(Dictionary<string, string> settings, string key, bool defaultValue) => settings.TryGetValue(key, out var value) && bool.TryParse(value, out var bvalue) ? bvalue : defaultValue;
-        public static string TryGetSetting(Dictionary<string, string> settings, string key, string defaultValue) => settings.TryGetValue(key, out var value) ? value : defaultValue;
+        public static int TryGetSetting(Dictionary<string, object> settings, string key, int defaultValue) => settings.TryGetValue(key, out var value) && value is string svalue && int.TryParse(svalue, out var ivalue) ? ivalue : defaultValue;
+        public static bool TryGetSetting(Dictionary<string, object> settings, string key, bool defaultValue) => settings.TryGetValue(key, out var value) && value is string svalue && bool.TryParse(svalue, out var bvalue) ? bvalue : defaultValue;
+        public static string TryGetSetting(Dictionary<string, object> settings, string key, string defaultValue) => settings.TryGetValue(key, out var value) && value is string svalue ? svalue : defaultValue;
+        public static List<string> TryGetSetting(Dictionary<string, object> settings, string key, List<string> defaultValue) => settings.TryGetValue(key, out var value) && value is JArray listValue ? listValue.ToObject<List<string>>() : defaultValue;
 
 
         private static string AppSettingsFile => Path.Combine(AppDirectories.AppDataFolder, "appsettings.json");
@@ -107,8 +113,8 @@ namespace LegendaryExplorer.Misc.AppSettings
                 return;
             
             var settingsJson = File.Exists(AppSettingsFile)
-                ? JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(AppSettingsFile))
-                : new Dictionary<string, string>();
+                ? JsonConvert.DeserializeObject<Dictionary<string, object>>(File.ReadAllText(AppSettingsFile))
+                : new Dictionary<string, object>();
 
             //if the settings file has been corrupted somehow, the JSON deserializer will return null.
             settingsJson ??= new();
@@ -132,9 +138,13 @@ namespace LegendaryExplorer.Misc.AppSettings
         /// </summary>
         public static void Save()
         {
-            var settingsJson = new Dictionary<string,string>();
+            var settingsJson = new Dictionary<string,object>();
 <#          foreach (var setting in settings){#>
-            settingsJson["<#=setting.Item1.ToLower()#>"] = <#=setting.Item1#>.ToString();
+<#              if (setting.Item5) { #>
+                    settingsJson["<#=setting.Item1.ToLower()#>"] = <#=setting.Item1#>;
+<#              } else { #>
+                    settingsJson["<#=setting.Item1.ToLower()#>"] = <#=setting.Item1#>.ToString();
+<#              } #>
 <#          }#>
 
             var settingsText = JsonConvert.SerializeObject(settingsJson, Formatting.Indented);

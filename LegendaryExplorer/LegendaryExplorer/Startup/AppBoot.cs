@@ -16,7 +16,9 @@ using LegendaryExplorer.MainWindow;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Misc.AppSettings;
 using LegendaryExplorer.SharedUI.PeregrineTreeView;
+using LegendaryExplorer.Tools.CustomFilesManager;
 using LegendaryExplorerCore;
+using LegendaryExplorerCore.DebugTools;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
@@ -107,6 +109,10 @@ namespace LegendaryExplorer.Startup
                 {
                     Debug.WriteLine("Unable to determine core count from WMI, defaulting to 2");
                 }
+
+                // 08/13/2022 - Custom Class Inventory
+                CustomFilesManagerWindow.InventoryCustomClassDirectories();
+
             }).ContinueWithOnUIThread(x =>
             {
                 IsLoaded = true;

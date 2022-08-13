@@ -13,6 +13,11 @@ using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
+using LegendaryExplorer.Misc.AppSettings;
+using System.Diagnostics;
+using System.IO;
+using LegendaryExplorerCore.Unreal.BinaryConverters;
+using System.Security.Cryptography;
 
 namespace LegendaryExplorer.Tools.CustomFilesManager
 {
@@ -84,6 +89,9 @@ namespace LegendaryExplorer.Tools.CustomFilesManager
         public CustomFilesManagerWindow() : base("LEX Custom Files Manager", true)
         {
             LoadCommands();
+
+            CustomClassDirectories.ReplaceAll(Settings.CustomClassDirectories);
+
             InitializeComponent();
         }
 
@@ -114,11 +122,13 @@ namespace LegendaryExplorer.Tools.CustomFilesManager
             var result = ofd.ShowDialog();
             if (result == CommonFileDialogResult.Ok)
             {
-                if (CustomClassDirectories.Contains(ofd.FileName))
+                if (!CustomClassDirectories.Contains(ofd.FileName))
                 {
                     CustomClassDirectories.Add(ofd.FileName);
 
-                    // TODO: COMMIT SETTING
+                    // Persist the setting for next boot
+                    Settings.CustomClassDirectories = CustomClassDirectories.ToList();
+                    Settings.Save();
                 }
             }
         }
@@ -129,7 +139,9 @@ namespace LegendaryExplorer.Tools.CustomFilesManager
             var selected = SelectedCustomClassDirectory;
             CustomClassDirectories.Remove(selected);
 
-            // TODO: COMMIT SETTING
+            // Persist the setting for next boot
+            Settings.CustomClassDirectories = CustomClassDirectories.ToList();
+            Settings.Save();
         }
 
         private void AddStartupFile()
@@ -157,6 +169,56 @@ namespace LegendaryExplorer.Tools.CustomFilesManager
         private bool StartupFileIsSelected()
         {
             return SelectedStartupFile != null;
+        }
+
+        /// <summary>
+        /// Inven
+        /// </summary>
+        internal static void InventoryCustomClassDirectories()
+        {
+            foreach (var dir in Settings.CustomClassDirectories)
+            {
+                try
+                {
+                    if (Directory.Exists(dir))
+                    {
+                        var files = Directory.GetFiles(dir).Where(x => x.RepresentsPackageFilePath());
+                        foreach (var f in files)
+                        {
+                            try
+                            {
+                                using var p = MEPackageHandler.OpenMEPackage(f, forceLoadFromDisk: true);
+                                if (p.Platform != MEPackage.GamePlatform.PC || (!p.Game.IsOTGame() && !p.Game.IsLEGame()))
+                                    continue; // Do not inventory
+
+                                foreach (var e in p.Exports.Where(x => x.IsClass))
+                                {
+                                    if (GlobalUnrealObjectInfo.GetClasses(p.Game).ContainsKey(e.ObjectName.Name))
+                                        continue; // This class is already inventoried
+
+                                    Debug.WriteLine($@"Inventorying {e.InstancedFullPath}");
+                                    var classInfo = GlobalUnrealObjectInfo.generateClassInfo(e);
+                                    GlobalUnrealObjectInfo.InstallCustomClassInfo(e.ObjectName, classInfo, e.Game);
+                                    if (e.InheritsFrom("SequenceObject"))
+                                    {
+                                        // Add to Kismet library
+                                        var defaults = p.GetUExport(ObjectBinary.From<UClass>(e).Defaults);
+                                        GlobalUnrealObjectInfo.GenerateSequenceObjectInfoForClassDefaults(defaults);
+                                    }
+                                }
+                            }
+                            catch (Exception ie)
+                            {
+                                Debug.WriteLine($@"Failed to inventory directory {f}: {ie.Message}");
+                            }
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine($@"Failed to inventory directory {dir}: {e.Message}");
+                }
+            }
         }
     }
 }
