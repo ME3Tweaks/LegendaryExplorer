@@ -113,6 +113,8 @@ namespace LegendaryExplorer.Startup
                 // 08/13/2022 - Custom Class Inventory
                 CustomFilesManagerWindow.InventoryCustomClassDirectories();
 
+                // 08/13/2022 - Custom Startup Files
+                CustomFilesManagerWindow.InstallCustomStartupFiles();
             }).ContinueWithOnUIThread(x =>
             {
                 IsLoaded = true;
