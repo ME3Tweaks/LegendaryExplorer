@@ -1,5 +1,9 @@
 var NAVTREEINDEX94 =
 {
+"namespace_legendary_explorer_core_1_1_misc.html#a60e9d63f39b2ffee21a6f1cb2421aa99a038adad55773d5dd88815c53430a943c":[0,5,1,12,14,1],
+"namespace_legendary_explorer_core_1_1_misc.html#a60e9d63f39b2ffee21a6f1cb2421aa99a55c0010271ffa56800e55196d9acd283":[0,5,1,12,14,0],
+"namespace_legendary_explorer_core_1_1_misc.html#a60e9d63f39b2ffee21a6f1cb2421aa99af4ec5f57bd4d31b803312d873be40da9":[0,5,1,12,14,2],
+"namespace_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks.html":[0,5,1,12,0],
 "namespace_legendary_explorer_core_1_1_packages.html":[0,5,1,13],
 "namespace_legendary_explorer_core_1_1_packages.html#a01ab7fe2b35882890ba5f989fefef344":[0,5,1,13,25],
 "namespace_legendary_explorer_core_1_1_packages.html#a01ab7fe2b35882890ba5f989fefef344a1686a6c336b71b36d77354cea19a8b52":[0,5,1,13,25,7],
@@ -245,9 +249,5 @@ var NAVTREEINDEX94 =
 "namespace_legendary_explorer_core_1_1_unreal.html#a03b1b6bf3e7115626812a0fb18c4d1e5a1c14d38ef6d38200ea783f1e361a5583":[0,5,1,20,556,2],
 "namespace_legendary_explorer_core_1_1_unreal.html#a03b1b6bf3e7115626812a0fb18c4d1e5a39e4ac38c03ea5ca5b39544667d8c9d7":[0,5,1,20,556,3],
 "namespace_legendary_explorer_core_1_1_unreal.html#a03b1b6bf3e7115626812a0fb18c4d1e5acdd1eb97204ca22ef7400796741dcb40":[0,5,1,20,556,1],
-"namespace_legendary_explorer_core_1_1_unreal.html#a03b1b6bf3e7115626812a0fb18c4d1e5aef490798b093b69806ac18f731726e3c":[0,5,1,20,556,0],
-"namespace_legendary_explorer_core_1_1_unreal.html#a04ac37fee784fbe01902577bece5e279":[0,5,1,20,654],
-"namespace_legendary_explorer_core_1_1_unreal.html#a04ac37fee784fbe01902577bece5e279a151dc2b4aca9fcb5c768c9c0324f78ed":[0,5,1,20,654,2],
-"namespace_legendary_explorer_core_1_1_unreal.html#a04ac37fee784fbe01902577bece5e279a5aa849ccbc5d76b8a54f5e2a003ed756":[0,5,1,20,654,1],
-"namespace_legendary_explorer_core_1_1_unreal.html#a04ac37fee784fbe01902577bece5e279a91a064238ff48f72044b7455cd4bbda7":[0,5,1,20,654,0]
+"namespace_legendary_explorer_core_1_1_unreal.html#a03b1b6bf3e7115626812a0fb18c4d1e5aef490798b093b69806ac18f731726e3c":[0,5,1,20,556,0]
 };
