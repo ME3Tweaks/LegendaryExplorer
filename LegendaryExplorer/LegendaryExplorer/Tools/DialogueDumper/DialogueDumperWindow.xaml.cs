@@ -376,7 +376,7 @@ namespace LegendaryExplorer.Tools.DialogueDumper
                     OverallProgressValue++; //Concurrency 
                     CurrentDumpingItems.Remove(x);
                 });
-            }, new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = Math.Min(App.CoreCount, 8) }); // How many items at the same time 
+            }, new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = 1 /*Math.Min(App.CoreCount, 8)*/ }); // How many items at the same time 
 
             AllDumpingItems = new List<DialogueDumperSingleFileTask>();
             CurrentDumpingItems.ClearEx();
@@ -603,24 +603,24 @@ namespace LegendaryExplorer.Tools.DialogueDumper
             //SETUP FILE FILTERS
             bool CheckConv;
             bool CheckActor;
-
+            var fileLoc = fileName.GetUnrealLocalization();
             if (GameBeingDumped == MEGame.Unknown) //Unknown = Single files or folders that always fully parse
             {
                 CheckConv = true;
                 CheckActor = true;
             }
-            else if (GameBeingDumped.IsGame1() && fileName.GetUnrealLocalization() != _selectedLocalization && !fileName.EndsWith(@"LAY") && !fileName.EndsWith(@"SND") && !fileName.EndsWith(@"_T") && !fileName.StartsWith(@"BIOG") && !fileName.StartsWith(@"BIOC"))
+            else if (GameBeingDumped.IsGame1() && fileLoc == _selectedLocalization && !fileName.EndsWith(@"LAY") && !fileName.EndsWith(@"SND") && !fileName.EndsWith(@"_T") && !fileName.StartsWith(@"BIOG") && !fileName.StartsWith(@"BIOC"))
             {
                 CheckConv = true; //Filter ME1 remove file types that never have convos. Levels only.
                 CheckActor = true;
             }
             // 05/07/2022 - Change from != ME1 to !IsGame1(), since structure didn't change for ME1 to LE1 - Mgamerz
-            else if (!GameBeingDumped.IsGame1() && fileName.GetUnrealLocalization() == _selectedLocalization) //Filter ME2/3 files with potential convos
+            else if (!GameBeingDumped.IsGame1() && fileLoc == _selectedLocalization) //Filter ME2/3 files with potential convos
             {
                 CheckConv = true;
                 CheckActor = false;
             }
-            else if (!GameBeingDumped.IsGame1() && fileName.GetUnrealLocalization() != _selectedLocalization && !fileName.StartsWith(@"BIOG")) //Filter ME2/3 files with potential actors
+            else if (!GameBeingDumped.IsGame1() && fileLoc != _selectedLocalization && !fileName.StartsWith(@"BIOG")) //Filter ME2/3 files with potential actors
             {
                 CheckConv = false;
                 CheckActor = true;
@@ -653,10 +653,14 @@ namespace LegendaryExplorer.Tools.DialogueDumper
                     // THIS ONLY WORKS IN RELEASE MODE
                     // because the debug dump stuff would mean i have to load a bunch of stuff so I don't bother.
                     pcc = MEPackageHandler.UnsafePartialLoad(File, x =>
-                        x.ClassName is "BioConversation"
+                        x.ClassName is "BioConversation" or "BioTlkFile" or "BioTlkFileSet"
                     );
                 }
-
+                if (pcc.Game.IsGame1() && pcc is UnrealPackageFile upf)
+                {
+                    // Force it to read the proper TLK - it may not be set properly in LEX
+                    upf.SetLocalTLKs(upf.ReadLocalTLKs(_selectedLocalization.ToLocaleString(pcc.Game)));
+                }
                 //using IMEPackage pcc = MEPackageHandler.OpenMEPackage(File);
                 if (GameBeingDumped == MEGame.Unknown) //Correct mapping
                 {
@@ -891,14 +895,24 @@ namespace LegendaryExplorer.Tools.DialogueDumper
                             if (GameBeingDumped.IsGame1() && className == "BioPawn")
                             {
                                 var tagprop = exp.GetProperty<NameProperty>("Tag");
-                                tag = tagprop.ToString();
-                                var behav = exp.GetProperty<ObjectProperty>("m_oBehavior");
-                                var set = pcc.GetUExport(behav.Value).GetProperty<ObjectProperty>("m_oActorType");
-                                var strrefprop = pcc.GetUExport(set.Value)
-                                    .GetProperty<StringRefProperty>("ActorGameNameStrRef");
-                                if (strrefprop != null)
+                                if (tagprop != null)
                                 {
-                                    strref = strrefprop.Value;
+                                    tag = tagprop.ToString();
+                                }
+                                var behav = exp.GetProperty<ObjectProperty>("m_oBehavior");
+                                if (behav != null)
+                                {
+                                    var set = pcc.GetUExport(behav.Value).GetProperty<ObjectProperty>("m_oActorType");
+                                    if (set != null)
+                                    {
+                                        var strrefprop = pcc.GetUExport(set.Value)
+                                            .GetProperty<StringRefProperty>("ActorGameNameStrRef");
+                                        if (strrefprop != null)
+
+                                        {
+                                            strref = strrefprop.Value;
+                                        }
+                                    }
                                 }
                             }
                             else if (GameBeingDumped.IsGame2() && className == "BioPawn")

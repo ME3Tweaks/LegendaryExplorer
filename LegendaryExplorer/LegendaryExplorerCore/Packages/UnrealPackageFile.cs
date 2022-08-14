@@ -76,6 +76,19 @@ namespace LegendaryExplorerCore.Packages
         private List<ME1TalkFile> localTlks;
         public List<ME1TalkFile> LocalTalkFiles => localTlks ??= ReadLocalTLKs();
 
+        /// <summary>
+        /// Sets the list of LocalTLKs - use for changing the language of locally loaded TLKs
+        /// </summary>
+        /// <param name="tlks">List of TLKs to use locally from this package</param>
+        public void SetLocalTLKs(IEnumerable<ME1TalkFile> tlks)
+        {
+            if (localTlks == null)
+                localTlks = new List<ME1TalkFile>();
+            else
+                localTlks.Clear();
+            localTlks.AddRange(tlks);
+        }
+
         public static ushort UnrealVersion(MEGame game) => game switch
         {
             MEGame.ME1 => MEPackage.ME1UnrealVersion,
@@ -641,28 +654,39 @@ namespace LegendaryExplorerCore.Packages
             IsModified = false;
         }
 
-        private List<ME1TalkFile> ReadLocalTLKs()
+        /// <summary>
+        /// Reads local TLK exports. Only use in Game 1 packages.
+        /// </summary>
+        /// <param name="lang"></param>
+        /// <returns></returns>
+        public List<ME1TalkFile> ReadLocalTLKs(string language = null)
         {
             var tlks = new List<ME1TalkFile>();
+            var langToMatch = language ?? LegendaryExplorerCoreLibSettings.Instance.TLKDefaultLanguage;
             if (this is MEPackage mePackage && mePackage.Game.IsGame1() && mePackage.Platform == MEPackage.GamePlatform.PC)
             {
                 var exportsToLoad = new List<ExportEntry>();
+                var processedExports = new List<int>();
                 foreach (var tlkFileSet in Exports.Where(x => x.ClassName == "BioTlkFileSet" && !x.IsDefaultObject).Select(exp => exp.GetBinaryData<BioTlkFileSet>()))
                 {
+                    bool addedLoad = false;
                     foreach ((NameReference lang, BioTlkFileSet.BioTlkSet bioTlkSet) in tlkFileSet.TlkSets)
                     {
-                        if (LegendaryExplorerCoreLibSettings.Instance.TLKDefaultLanguage.Equals(lang, StringComparison.InvariantCultureIgnoreCase))
+                        if (!addedLoad && langToMatch.Equals(lang, StringComparison.InvariantCultureIgnoreCase))
                         {
                             exportsToLoad.Add(GetUExport(LegendaryExplorerCoreLibSettings.Instance.TLKGenderIsMale ? bioTlkSet.Male : bioTlkSet.Female));
-                            break;
+                            addedLoad = true;
                         }
+                        processedExports.Add(bioTlkSet.Male);
+                        processedExports.Add(bioTlkSet.Female);
                     }
                 }
 
                 // Global TLK
-                foreach (var tlk in Exports.Where(x => x.ClassName == "BioTlkFile" && !x.IsDefaultObject && !exportsToLoad.Contains(x)))
+                foreach (var tlk in Exports.Where(x => x.ClassName == "BioTlkFile" && !x.IsDefaultObject && !processedExports.Contains(x.UIndex)))
                 {
                     exportsToLoad.Add(tlk);
+                    processedExports.Add(tlk.UIndex); // This is technically not necessary in code path but might be useful if this code changes in future.
                 }
                 foreach (var exp in exportsToLoad)
                 {
