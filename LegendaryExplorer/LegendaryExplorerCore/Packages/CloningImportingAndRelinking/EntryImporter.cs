@@ -1031,7 +1031,12 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         private static SortedSet<string> le2FilesSafeToImportFromUser = new();
         private static SortedSet<string> le3FilesSafeToImportFromUser = new();
 
-
+        /// <summary>
+        /// Gets the list of safe to import files from (user defined) for a game. For public read-only access use <see cref="UserSpecifiedSafeToImportFromFiles(MEGame)"/>
+        /// </summary>
+        /// <param name="game">Game to get safe files for.</param>
+        /// <returns>The set of files that can be imported from (user defined)</returns>
+        /// <exception cref="Exception">If game is not supported</exception>
         private static SortedSet<string> InternalGetUserSafeToImportFromFiles(MEGame game)
         {
             return game switch
@@ -1050,8 +1055,8 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// <summary>
         /// Adds a user-safe file to import to the specified game. Only use this if you really know what you're doing. The file must exist in the default game directory.
         /// </summary>
-        /// <param name="game"></param>
-        /// <param name="safeToImportFromFile"></param>
+        /// <param name="game">Which game to append the safe file to</param>
+        /// <param name="safeToImportFromFile">The path to the safe file to use when adding an import</param>
         public static bool AddUserSafeToImportFromFile(MEGame game, string safeToImportFromFile)
         {
             return InternalGetUserSafeToImportFromFiles(game).Add(safeToImportFromFile);

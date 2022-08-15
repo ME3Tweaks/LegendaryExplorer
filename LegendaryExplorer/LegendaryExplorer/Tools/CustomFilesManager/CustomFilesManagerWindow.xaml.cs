@@ -106,14 +106,40 @@ namespace LegendaryExplorer.Tools.CustomFilesManager
             AddCustomDirectoryCommand = new GenericCommand(AddCustomClassDirectory, () => true);
         }
 
+        #region STARTUP FILES
+        private void AddStartupFile()
+        {
+            OpenFileDialog ofd = new OpenFileDialog();
+            var result = ofd.ShowDialog();
+            if (result.HasValue && result.Value)
+            {
+                if (!CustomStartupFiles.Any(x => x.FilePath.CaseInsensitiveEquals(ofd.FileName)))
+                {
+                    var p = MEPackageHandler.QuickOpenMEPackage(ofd.FileName);
+                    EntryImporter.AddUserSafeToImportFromFile(p.Game, ofd.FileName);
+                    CustomStartupFiles.Add(new CustomStartupFileInfo() { Game = p.Game, FilePath = ofd.FileName });
+
+                    // Persist the setting for next boot
+                    Settings.CustomStartupFiles = CustomStartupFiles.Select(x=>x.FilePath).ToList();
+                    Settings.Save();
+                }
+            }
+        }
+
         private void RemoveSelectedStartupFile()
         {
             var selected = SelectedStartupFile;
             CustomStartupFiles.Remove(selected);
 
-            // TODO: COMMIT SETTING
-        }
+            EntryImporter.RemoveSafeToImportFromFile(selected.Game, selected.FilePath);
 
+            // Persist the setting for next boot
+            Settings.CustomStartupFiles = CustomStartupFiles.Select(x => x.FilePath).ToList();
+            Settings.Save();
+        }
+        #endregion
+
+        #region CUSTOM CLASSES
         private void AddCustomClassDirectory()
         {
             CommonOpenFileDialog ofd = new CommonOpenFileDialog();
@@ -143,23 +169,7 @@ namespace LegendaryExplorer.Tools.CustomFilesManager
             Settings.CustomClassDirectories = CustomClassDirectories.ToList();
             Settings.Save();
         }
-
-        private void AddStartupFile()
-        {
-            OpenFileDialog ofd = new OpenFileDialog();
-            var result = ofd.ShowDialog();
-            if (result.HasValue && result.Value)
-            {
-                if (!CustomStartupFiles.Any(x => x.FilePath.CaseInsensitiveEquals(ofd.FileName)))
-                {
-                    var p = MEPackageHandler.QuickOpenMEPackage(ofd.FileName);
-                    EntryImporter.AddUserSafeToImportFromFile(p.Game, ofd.FileName);
-                    CustomStartupFiles.Add(new CustomStartupFileInfo() { Game = p.Game, FilePath = ofd.FileName });
-
-                    // TODO: COMMIT SETTING FOR PERSISTENCE
-                }
-            }
-        }
+        #endregion
 
         public GenericCommand RemoveStartupFileCommand { get; set; }
         public GenericCommand AddStartupFileCommand { get; set; }
@@ -217,6 +227,21 @@ namespace LegendaryExplorer.Tools.CustomFilesManager
                 catch (Exception e)
                 {
                     Debug.WriteLine($@"Failed to inventory directory {dir}: {e.Message}");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Installs the list of files into the toolset for use
+        /// </summary>
+        internal static void InstallCustomStartupFiles()
+        {
+            foreach(var v in Settings.CustomStartupFiles)
+            {
+                if (v != null && File.Exists(v) && v.RepresentsPackageFilePath())
+                {
+                    var p = MEPackageHandler.QuickOpenMEPackage(v);
+                    EntryImporter.AddUserSafeToImportFromFile(p.Game, v);
                 }
             }
         }

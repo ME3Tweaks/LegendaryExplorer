@@ -11,6 +11,7 @@ using System.Windows.Threading;
 using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.SharedUI;
+using LegendaryExplorer.Tools.CustomFilesManager;
 using LegendaryExplorer.Tools.PackageEditor;
 using LegendaryExplorer.Tools.PackageEditor.Experiments;
 using LegendaryExplorerCore.GameFilesystem;
@@ -374,6 +375,10 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         // EXPERIMENTS: MGAMERZ---------------------------------------------------
 
         #region Mgamerz's Experiments
+        private void LEXCustomFilesManager_Click(object sender, RoutedEventArgs e)
+        {
+            new CustomFilesManagerWindow().Show();
+        }
 
         private async void MakeVTestDonor_Click(object sender, RoutedEventArgs e)
         {
@@ -1375,6 +1380,7 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         {
             PackageEditorExperimentsM.BuildAllObjectsGameDB(MEGame.ME3, GetPEWindow());
         }
+
 
         // PLEASE MOVE YOUR EXPERIMENT HANDLER INTO YOUR SECTION ABOVE
     }
