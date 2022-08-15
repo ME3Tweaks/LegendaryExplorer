@@ -376,7 +376,7 @@ namespace LegendaryExplorer.Tools.DialogueDumper
                     OverallProgressValue++; //Concurrency 
                     CurrentDumpingItems.Remove(x);
                 });
-            }, new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = 1 /*Math.Min(App.CoreCount, 8)*/ }); // How many items at the same time 
+            }, new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = Math.Min(App.CoreCount, 8) }); // How many items at the same time 
 
             AllDumpingItems = new List<DialogueDumperSingleFileTask>();
             CurrentDumpingItems.ClearEx();
