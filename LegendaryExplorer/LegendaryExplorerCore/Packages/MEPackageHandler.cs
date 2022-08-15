@@ -558,6 +558,19 @@ namespace LegendaryExplorerCore.Packages
 
         //useful for scanning operations, where a common set of packages are going to be referenced repeatedly
         public static DisposableCollection<IMEPackage> OpenMEPackages(IEnumerable<string> filePaths) => new(filePaths.Select(filePath => OpenMEPackage(filePath)));
+
+        /// <summary>
+        /// Creates a new package and disk, and then opens and returns it.
+        /// </summary>
+        /// <param name="packagePath">Path to package file to create</param>
+        /// <param name="game">What game the package is for</param>
+        /// <param name="forceLoadFromDisk">If package should use the sharing system (false) or not (true)</param>
+        /// <returns></returns>
+        public static IMEPackage CreateAndOpenPackage(string packagePath, MEGame game, bool forceLoadFromDisk = false)
+        {
+            CreateAndSavePackage(packagePath, game);
+            return MEPackageHandler.OpenMEPackage(packagePath, forceLoadFromDisk: forceLoadFromDisk);
+        }
     }
 
     public class DisposableCollection<T> : List<T>, IDisposable where T : IDisposable
