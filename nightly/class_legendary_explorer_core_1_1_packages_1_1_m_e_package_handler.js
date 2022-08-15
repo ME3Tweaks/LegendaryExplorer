@@ -23,6 +23,7 @@ var class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler =
     [ "PrintOpenPackages", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#abb178b5944951ac1259b53a4b82dbf0a", null ],
     [ "TryGetPackageFromCache", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#a9a3610d045c65fe4e1b84ed74f8a67ad", null ],
     [ "OpenMEPackages", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#a1098084e34b864edf29c0bd34bb83c71", null ],
+    [ "CreateAndOpenPackage", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#a70980eb595e1524364210a29a35159a1", null ],
     [ "GlobalSharedCacheEnabled", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#a25504fe78951f44b245fa7332e567d67", null ],
     [ "PackagesInTools", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#ab4d1206ace15e447b15edc2d7e95cb5c", null ]
 ];

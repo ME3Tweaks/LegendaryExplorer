@@ -130,6 +130,7 @@ var hierarchy =
     ] ],
     [ "LegendaryExplorerCore.Unreal.CNDFile.ConditionalEntry", "class_legendary_explorer_core_1_1_unreal_1_1_c_n_d_file_1_1_conditional_entry.html", null ],
     [ "LegendaryExplorerCore.Gammtek.IO.ConduitPath", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_conduit_path.html", null ],
+    [ "LegendaryExplorerCore.Coalesced.ConfigFileProxy", "class_legendary_explorer_core_1_1_coalesced_1_1_config_file_proxy.html", null ],
     [ "LegendaryExplorerCore.Gammtek.IO.ConsoleManager", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_console_manager.html", null ],
     [ "LegendaryExplorerCore.Shaders.ConstantInfo", "class_legendary_explorer_core_1_1_shaders_1_1_constant_info.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.ConvertExtensions", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_convert_extensions.html", null ],

@@ -13,6 +13,7 @@ var namespace_legendary_explorer_core_1_1_coalesced =
     [ "CoalesceSections", "class_legendary_explorer_core_1_1_coalesced_1_1_coalesce_sections.html", "class_legendary_explorer_core_1_1_coalesced_1_1_coalesce_sections" ],
     [ "CoalesceSettings", "class_legendary_explorer_core_1_1_coalesced_1_1_coalesce_settings.html", "class_legendary_explorer_core_1_1_coalesced_1_1_coalesce_settings" ],
     [ "CoalesceValue", "struct_legendary_explorer_core_1_1_coalesced_1_1_coalesce_value.html", "struct_legendary_explorer_core_1_1_coalesced_1_1_coalesce_value" ],
+    [ "ConfigFileProxy", "class_legendary_explorer_core_1_1_coalesced_1_1_config_file_proxy.html", "class_legendary_explorer_core_1_1_coalesced_1_1_config_file_proxy" ],
     [ "Crc32", "class_legendary_explorer_core_1_1_coalesced_1_1_crc32.html", "class_legendary_explorer_core_1_1_coalesced_1_1_crc32" ],
     [ "FileEntry", "class_legendary_explorer_core_1_1_coalesced_1_1_file_entry.html", "class_legendary_explorer_core_1_1_coalesced_1_1_file_entry" ],
     [ "LECoalescedBundle", "class_legendary_explorer_core_1_1_coalesced_1_1_l_e_coalesced_bundle.html", "class_legendary_explorer_core_1_1_coalesced_1_1_l_e_coalesced_bundle" ],

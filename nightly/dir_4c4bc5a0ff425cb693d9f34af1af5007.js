@@ -23,6 +23,9 @@ var dir_4c4bc5a0ff425cb693d9f34af1af5007 =
       [ "LegendaryExplorerCore.Coalesced.CoalesceSettings", "class_legendary_explorer_core_1_1_coalesced_1_1_coalesce_settings.html", "class_legendary_explorer_core_1_1_coalesced_1_1_coalesce_settings" ]
     ] ],
     [ "CoalesceValue.cs", "_coalesce_value_8cs.html", "_coalesce_value_8cs" ],
+    [ "ConfigFileProxy.cs", "_config_file_proxy_8cs.html", [
+      [ "LegendaryExplorerCore.Coalesced.ConfigFileProxy", "class_legendary_explorer_core_1_1_coalesced_1_1_config_file_proxy.html", "class_legendary_explorer_core_1_1_coalesced_1_1_config_file_proxy" ]
+    ] ],
     [ "Crc32.cs", "_crc32_8cs.html", [
       [ "LegendaryExplorerCore.Coalesced.Crc32", "class_legendary_explorer_core_1_1_coalesced_1_1_crc32.html", "class_legendary_explorer_core_1_1_coalesced_1_1_crc32" ],
       [ "LegendaryExplorerCore.Coalesced.StringHelpers", "class_legendary_explorer_core_1_1_coalesced_1_1_string_helpers.html", "class_legendary_explorer_core_1_1_coalesced_1_1_string_helpers" ]

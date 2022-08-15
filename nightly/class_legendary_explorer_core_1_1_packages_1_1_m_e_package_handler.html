@@ -153,6 +153,9 @@ Static Public Member Functions</h2></td></tr>
 <tr class="separator:a9a3610d045c65fe4e1b84ed74f8a67ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1098084e34b864edf29c0bd34bb83c71"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_disposable_collection.html">DisposableCollection</a>&lt; <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#a1098084e34b864edf29c0bd34bb83c71">OpenMEPackages</a> (IEnumerable&lt; string &gt; filePaths)</td></tr>
 <tr class="separator:a1098084e34b864edf29c0bd34bb83c71"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a70980eb595e1524364210a29a35159a1"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#a70980eb595e1524364210a29a35159a1">CreateAndOpenPackage</a> (string packagePath, <a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game, bool forceLoadFromDisk=false)</td></tr>
+<tr class="memdesc:a70980eb595e1524364210a29a35159a1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a new package and disk, and then opens and returns it.  <a href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#a70980eb595e1524364210a29a35159a1">More...</a><br /></td></tr>
+<tr class="separator:a70980eb595e1524364210a29a35159a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-attribs" name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
@@ -1087,6 +1090,59 @@ Static Public Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="a70980eb595e1524364210a29a35159a1" name="a70980eb595e1524364210a29a35159a1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a70980eb595e1524364210a29a35159a1">&#9670;&nbsp;</a></span>CreateAndOpenPackage()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> LegendaryExplorerCore.Packages.MEPackageHandler.CreateAndOpenPackage </td>
+          <td>(</td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>packagePath</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a>&#160;</td>
+          <td class="paramname"><em>game</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>forceLoadFromDisk</em> = <code>false</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Creates a new package and disk, and then opens and returns it. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">packagePath</td><td>Path to package file to create</td></tr>
+    <tr><td class="paramname">game</td><td>What game the package is for</td></tr>
+    <tr><td class="paramname">forceLoadFromDisk</td><td>If package should use the sharing system (false) or not (true)</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
 
 </div>
 </div>
