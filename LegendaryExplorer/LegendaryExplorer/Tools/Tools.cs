@@ -167,7 +167,7 @@ namespace LegendaryExplorer
             {
                 name = "Class Hierarchy Viewer",
                 type = typeof(Tools.ClassViewer.ClassViewerWindow),
-                icon = Application.Current.FindResource("iconAnimViewer") as ImageSource,
+                icon = Application.Current.FindResource("iconClassViewer") as ImageSource,
                 open = () =>
                 {
                     var gameStr = InputComboBoxWPF.GetValue(null, "Choose game you want to use Class Hierarchy Viewer with.", "Class Hierarchy Viewer game selector",
