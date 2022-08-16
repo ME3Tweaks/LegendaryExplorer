@@ -390,7 +390,7 @@ namespace LegendaryExplorer
             {
                 name = "LEX Custom Files Manager",
                 type = typeof(Tools.CustomFilesManager.CustomFilesManagerWindow),
-                icon = Application.Current.FindResource(ICON_COMING_SOON_RES_NAME) as ImageSource,
+                icon = Application.Current.FindResource("iconLexCustomFileManager") as ImageSource,
                 open = () =>
                 {
                     (new Tools.CustomFilesManager.CustomFilesManagerWindow()).Show();
