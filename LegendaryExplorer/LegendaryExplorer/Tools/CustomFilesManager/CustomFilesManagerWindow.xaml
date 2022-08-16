@@ -29,7 +29,7 @@
         <ListBox Grid.Row="2" Grid.Column="0" ItemsSource="{Binding CustomStartupFiles}" SelectedItem="{Binding SelectedStartupFile}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <StackPanel Orientation="Horizontal">
+                    <StackPanel Orientation="Horizontal" MouseLeftButtonDown="CustomStartupFile_Click" ToolTip="Double click to open">
                         <sharedToolControls:StatusBarGameIDIndicator GameType="{Binding Path=Game}" />
                         <TextBlock Text="{Binding Path=FilePath}" VerticalAlignment="Center" TextWrapping="Wrap" MaxWidth="500"/>
                     </StackPanel>
