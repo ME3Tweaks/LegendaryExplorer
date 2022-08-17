@@ -40,5 +40,6 @@ var class_legendary_explorer_core_1_1_packages_1_1_m_e_package =
     [ "Endian", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#aea923a578e254f755afb331b76b577e3", null ],
     [ "Game", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#a4f4b00a25fc2001d86e3c461fa3539a2", null ],
     [ "Platform", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#ac786de6a79fdecf70e2b2167d7c5ceb2", null ],
-    [ "Localization", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#a40365fcfab73aa61d97cca124ebb6e4e", null ]
+    [ "Localization", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#a40365fcfab73aa61d97cca124ebb6e4e", null ],
+    [ "CustomMetadata", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#a999699d98fba85aa9bf196d8309e6cb4", null ]
 ];

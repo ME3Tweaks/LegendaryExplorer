@@ -111,14 +111,16 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a617c1d1af05bbc53574994380d9cb6ae"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a617c1d1af05bbc53574994380d9cb6ae">GetCachedPackage</a> (string packagePath, bool openIfNotInCache=true, Func&lt; string, <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> &gt; openPackageMethod=null)</td></tr>
 <tr class="memdesc:a617c1d1af05bbc53574994380d9cb6ae"><td class="mdescLeft">&#160;</td><td class="mdescRight">Thread-safe package cache fetch. Can be passed to various methods to help expedite operations by preventing package reopening. If <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#accede661db51e02040eaaa098b787005" title="When the PackageCache opens a package, should it always load from disk, or should it acquire one from...">AlwaysOpenFromDisk</a> is true, then packages opened with this method will not use the global <a class="el" href="namespace_legendary_explorer_core.html">LegendaryExplorerCore</a> caching system and will always load from disk if not in this local cache.  <a href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a617c1d1af05bbc53574994380d9cb6ae">More...</a><br /></td></tr>
 <tr class="separator:a617c1d1af05bbc53574994380d9cb6ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a514fff2e78ac72d21ee7c404c3fe570d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a514fff2e78ac72d21ee7c404c3fe570d">InsertIntoCache</a> (<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> package)</td></tr>
-<tr class="separator:a514fff2e78ac72d21ee7c404c3fe570d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a04a14964272e8c4c8b06482012de3c5c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a04a14964272e8c4c8b06482012de3c5c">AddResidentPackage</a> (<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> package)</td></tr>
-<tr class="memdesc:a04a14964272e8c4c8b06482012de3c5c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Makes the specified package, if in the cache, not drop when the cache is full. If the cache is uncapped, this does nothing.  <a href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a04a14964272e8c4c8b06482012de3c5c">More...</a><br /></td></tr>
-<tr class="separator:a04a14964272e8c4c8b06482012de3c5c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afb4566b96f4556f1b774a3033b9aa292"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#afb4566b96f4556f1b774a3033b9aa292">AddResidentPackage</a> (string packagePath)</td></tr>
-<tr class="memdesc:afb4566b96f4556f1b774a3033b9aa292"><td class="mdescLeft">&#160;</td><td class="mdescRight">Makes the specified package path, if in the cache, not drop when the cache is full. If the cache is uncapped, this does nothing.  <a href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#afb4566b96f4556f1b774a3033b9aa292">More...</a><br /></td></tr>
-<tr class="separator:afb4566b96f4556f1b774a3033b9aa292"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a432bd598b11b1e4c3331935e880ea55f"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a432bd598b11b1e4c3331935e880ea55f">InsertIntoCache</a> (<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> package)</td></tr>
+<tr class="separator:a432bd598b11b1e4c3331935e880ea55f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab996486be0787fb8dca18529c6f82cb1"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#ab996486be0787fb8dca18529c6f82cb1">AddResidentPackage</a> (<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> package)</td></tr>
+<tr class="memdesc:ab996486be0787fb8dca18529c6f82cb1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Makes the specified package, if in the cache, not drop when the cache is full. If the cache is uncapped, this does nothing.  <a href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#ab996486be0787fb8dca18529c6f82cb1">More...</a><br /></td></tr>
+<tr class="separator:ab996486be0787fb8dca18529c6f82cb1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a11c67b8090f2d21cee048a29012af993"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a11c67b8090f2d21cee048a29012af993">AddResidentPackage</a> (string packagePath)</td></tr>
+<tr class="memdesc:a11c67b8090f2d21cee048a29012af993"><td class="mdescLeft">&#160;</td><td class="mdescRight">Makes the specified package path, if in the cache, not drop when the cache is full. If the cache is uncapped, this does nothing.  <a href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a11c67b8090f2d21cee048a29012af993">More...</a><br /></td></tr>
+<tr class="separator:a11c67b8090f2d21cee048a29012af993"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a49200db521aa26bc2ee8d9e10803bd2f"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a49200db521aa26bc2ee8d9e10803bd2f">CheckCacheFullness</a> ()</td></tr>
+<tr class="separator:a49200db521aa26bc2ee8d9e10803bd2f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2b3fe2751053bc588735de0646c7cb4f"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a2b3fe2751053bc588735de0646c7cb4f">ReleasePackage</a> (string packagePath)</td></tr>
 <tr class="memdesc:a2b3fe2751053bc588735de0646c7cb4f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Releases a package by it's filepath from the cache.  <a href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a2b3fe2751053bc588735de0646c7cb4f">More...</a><br /></td></tr>
 <tr class="separator:a2b3fe2751053bc588735de0646c7cb4f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -133,8 +135,8 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ae9c5329b353e1667169634a91bd48f20"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#ae9c5329b353e1667169634a91bd48f20">TryGetCachedPackage</a> (string filepath, bool openIfNotInCache, out <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> cachedPackage)</td></tr>
 <tr class="memdesc:ae9c5329b353e1667169634a91bd48f20"><td class="mdescLeft">&#160;</td><td class="mdescRight">Attempts to open or return the existing cached package. Returns true if a package was either in the cache or was loaded from disk, false otherwise. Ignores null filepaths.  <a href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#ae9c5329b353e1667169634a91bd48f20">More...</a><br /></td></tr>
 <tr class="separator:ae9c5329b353e1667169634a91bd48f20"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2ec6777bc99b2a61503f68d64406f193"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a2ec6777bc99b2a61503f68d64406f193">Dispose</a> ()</td></tr>
-<tr class="separator:a2ec6777bc99b2a61503f68d64406f193"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8059d8118a0ff31982411826d1c4f906"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a8059d8118a0ff31982411826d1c4f906">Dispose</a> ()</td></tr>
+<tr class="separator:a8059d8118a0ff31982411826d1c4f906"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af00843a5ccb1ce819bf462ad65268296"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#af00843a5ccb1ce819bf462ad65268296">CacheContains</a> (string packagePath)</td></tr>
 <tr class="memdesc:af00843a5ccb1ce819bf462ad65268296"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks if the specified package path is held by a package in the cache.  <a href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#af00843a5ccb1ce819bf462ad65268296">More...</a><br /></td></tr>
 <tr class="separator:af00843a5ccb1ce819bf462ad65268296"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -153,6 +155,12 @@ Public Attributes</h2></td></tr>
 <tr class="memitem:a5c6a5b140e8c446e1975bf90fa5b616d"><td class="memItemLeft" align="right" valign="top">readonly object&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a5c6a5b140e8c446e1975bf90fa5b616d">syncObj</a> = new()</td></tr>
 <tr class="memdesc:a5c6a5b140e8c446e1975bf90fa5b616d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Object used for synchronizing for threads  <a href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a5c6a5b140e8c446e1975bf90fa5b616d">More...</a><br /></td></tr>
 <tr class="separator:a5c6a5b140e8c446e1975bf90fa5b616d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2760aff4cb286033ce6b830fcb48d825"><td class="memItemLeft" align="right" valign="top">readonly Dictionary&lt; string, DateTime &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a2760aff4cb286033ce6b830fcb48d825">LastAccessMap</a> = new()</td></tr>
+<tr class="memdesc:a2760aff4cb286033ce6b830fcb48d825"><td class="mdescLeft">&#160;</td><td class="mdescRight">The last access order. <a class="el" href="namespace_legendary_explorer_core_1_1_packages.html">Packages</a> at the bottom are the last accessed, the ones at the top are first. This is only for dropping packages if the count is not 0.  <a href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a2760aff4cb286033ce6b830fcb48d825">More...</a><br /></td></tr>
+<tr class="separator:a2760aff4cb286033ce6b830fcb48d825"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af26df9e7295ef9ab0253012bdcdb53c3"><td class="memItemLeft" align="right" valign="top">readonly List&lt; string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#af26df9e7295ef9ab0253012bdcdb53c3">ResidentPackages</a> = new()</td></tr>
+<tr class="memdesc:af26df9e7295ef9ab0253012bdcdb53c3"><td class="mdescLeft">&#160;</td><td class="mdescRight">The list of packages that will not be dropped from last access staleness  <a href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#af26df9e7295ef9ab0253012bdcdb53c3">More...</a><br /></td></tr>
+<tr class="separator:af26df9e7295ef9ab0253012bdcdb53c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="properties" name="properties"></a>
 Properties</h2></td></tr>
@@ -247,8 +255,8 @@ Properties</h2></td></tr>
 
 </div>
 </div>
-<a id="a514fff2e78ac72d21ee7c404c3fe570d" name="a514fff2e78ac72d21ee7c404c3fe570d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a514fff2e78ac72d21ee7c404c3fe570d">&#9670;&nbsp;</a></span>InsertIntoCache() <span class="overload">[1/2]</span></h2>
+<a id="a432bd598b11b1e4c3331935e880ea55f" name="a432bd598b11b1e4c3331935e880ea55f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a432bd598b11b1e4c3331935e880ea55f">&#9670;&nbsp;</a></span>InsertIntoCache() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -257,7 +265,7 @@ Properties</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void LegendaryExplorerCore.Packages.PackageCache.InsertIntoCache </td>
+          <td class="memname">virtual void LegendaryExplorerCore.Packages.PackageCache.InsertIntoCache </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a>&#160;</td>
           <td class="paramname"><em>package</em></td><td>)</td>
@@ -266,15 +274,15 @@ Properties</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="a04a14964272e8c4c8b06482012de3c5c" name="a04a14964272e8c4c8b06482012de3c5c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a04a14964272e8c4c8b06482012de3c5c">&#9670;&nbsp;</a></span>AddResidentPackage() <span class="overload">[1/2]</span></h2>
+<a id="ab996486be0787fb8dca18529c6f82cb1" name="ab996486be0787fb8dca18529c6f82cb1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab996486be0787fb8dca18529c6f82cb1">&#9670;&nbsp;</a></span>AddResidentPackage() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -283,7 +291,7 @@ Properties</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void LegendaryExplorerCore.Packages.PackageCache.AddResidentPackage </td>
+          <td class="memname">virtual void LegendaryExplorerCore.Packages.PackageCache.AddResidentPackage </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a>&#160;</td>
           <td class="paramname"><em>package</em></td><td>)</td>
@@ -292,7 +300,7 @@ Properties</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -307,8 +315,8 @@ Properties</h2></td></tr>
 
 </div>
 </div>
-<a id="afb4566b96f4556f1b774a3033b9aa292" name="afb4566b96f4556f1b774a3033b9aa292"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afb4566b96f4556f1b774a3033b9aa292">&#9670;&nbsp;</a></span>AddResidentPackage() <span class="overload">[2/2]</span></h2>
+<a id="a11c67b8090f2d21cee048a29012af993" name="a11c67b8090f2d21cee048a29012af993"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a11c67b8090f2d21cee048a29012af993">&#9670;&nbsp;</a></span>AddResidentPackage() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -317,7 +325,7 @@ Properties</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void LegendaryExplorerCore.Packages.PackageCache.AddResidentPackage </td>
+          <td class="memname">virtual void LegendaryExplorerCore.Packages.PackageCache.AddResidentPackage </td>
           <td>(</td>
           <td class="paramtype">string&#160;</td>
           <td class="paramname"><em>packagePath</em></td><td>)</td>
@@ -326,12 +334,37 @@ Properties</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
 <p>Makes the specified package path, if in the cache, not drop when the cache is full. If the cache is uncapped, this does nothing. </p>
+
+</div>
+</div>
+<a id="a49200db521aa26bc2ee8d9e10803bd2f" name="a49200db521aa26bc2ee8d9e10803bd2f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a49200db521aa26bc2ee8d9e10803bd2f">&#9670;&nbsp;</a></span>CheckCacheFullness()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void LegendaryExplorerCore.Packages.PackageCache.CheckCacheFullness </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
 
 </div>
 </div>
@@ -514,8 +547,8 @@ Properties</h2></td></tr>
 
 </div>
 </div>
-<a id="a2ec6777bc99b2a61503f68d64406f193" name="a2ec6777bc99b2a61503f68d64406f193"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2ec6777bc99b2a61503f68d64406f193">&#9670;&nbsp;</a></span>Dispose()</h2>
+<a id="a8059d8118a0ff31982411826d1c4f906" name="a8059d8118a0ff31982411826d1c4f906"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8059d8118a0ff31982411826d1c4f906">&#9670;&nbsp;</a></span>Dispose()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -524,7 +557,7 @@ Properties</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void LegendaryExplorerCore.Packages.PackageCache.Dispose </td>
+          <td class="memname">virtual void LegendaryExplorerCore.Packages.PackageCache.Dispose </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -532,7 +565,7 @@ Properties</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -674,6 +707,38 @@ Properties</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Object used for synchronizing for threads </p>
+
+</div>
+</div>
+<a id="a2760aff4cb286033ce6b830fcb48d825" name="a2760aff4cb286033ce6b830fcb48d825"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2760aff4cb286033ce6b830fcb48d825">&#9670;&nbsp;</a></span>LastAccessMap</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">readonly Dictionary&lt;string, DateTime&gt; LegendaryExplorerCore.Packages.PackageCache.LastAccessMap = new()</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>The last access order. <a class="el" href="namespace_legendary_explorer_core_1_1_packages.html">Packages</a> at the bottom are the last accessed, the ones at the top are first. This is only for dropping packages if the count is not 0. </p>
+
+</div>
+</div>
+<a id="af26df9e7295ef9ab0253012bdcdb53c3" name="af26df9e7295ef9ab0253012bdcdb53c3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af26df9e7295ef9ab0253012bdcdb53c3">&#9670;&nbsp;</a></span>ResidentPackages</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">readonly List&lt;string&gt; LegendaryExplorerCore.Packages.PackageCache.ResidentPackages = new()</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>The list of packages that will not be dropped from last access staleness </p>
 
 </div>
 </div>
