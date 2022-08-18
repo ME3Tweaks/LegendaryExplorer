@@ -1107,5 +1107,14 @@ namespace LegendaryExplorerCore.Packages
             }
             return current.InstancedFullPath;
         }
+
+        /// <summary>
+        /// Checks if the data part of this export is loaded. This can be useful when partially loading packages for performance.
+        /// </summary>
+        /// <returns>True if data was loaded, false otherwise</returns>
+        public bool IsDataLoaded()
+        {
+            return _data != null;
+        }
     }
 }
