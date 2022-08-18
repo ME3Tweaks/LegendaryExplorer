@@ -25,6 +25,7 @@ var class_legendary_explorer_core_1_1_packages_1_1_export_entry =
     [ "GetPropertyFlags", "class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#a1b31b5d1bc3af6dfc1dd42864ecf889b", null ],
     [ "SetPropertyFlags", "class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#a66d884794e0e079ba20f416526c73107", null ],
     [ "GetRootName", "class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#a87f5047ebded7789e5fbc3520f39826a", null ],
+    [ "IsDataLoaded", "class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#a2c0593cd4a40fbf3c763bd639c9e9577", null ],
     [ "OFFSET_idxClass", "class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#aa87732011e47ef8a45a374d9730b9a99", null ],
     [ "OFFSET_idxSuperClass", "class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#ab66ffbd9ef0b9f77ee01605a723134b5", null ],
     [ "OFFSET_idxLink", "class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#a0fb05df1f76a496ae54c5db43329f747", null ],
