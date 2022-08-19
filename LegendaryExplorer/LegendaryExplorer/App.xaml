@@ -219,7 +219,9 @@
         <BitmapImage x:Key="iconAudioLocalizer" UriSource="Tools/Icons/audiolocalizer_256x256.ico"/>
         <BitmapImage x:Key="iconAFCCompactor" UriSource="Tools/Icons/afccompactor_256x256.ico"/>
         <BitmapImage x:Key="iconCoalescedCompiler" UriSource="Tools/Icons/coalescedcompiler_256x256.ico"/>
-        <BitmapImage x:Key="iconScriptDebugger" UriSource="Tools/Icons/ScriptDebugger_256x256.ico"/>
+        <BitmapImage x:Key="iconScriptDebugger" UriSource="Tools/Icons/scriptdebugger_256x256.ico"/>
+        <BitmapImage x:Key="iconLexCustomFileManager" UriSource="Tools/Icons/lexcustomfilemanager_256x256.ico"/>
+        <BitmapImage x:Key="iconClassViewer" UriSource="Tools/Icons/classviewer_256x256.ico"/>
 
         <BitmapImage x:Key="iconBikExtractor16" UriSource="Tools/Icons/16x16/BinkMovieExtractor_Icon_16.ico"/>
         <BitmapImage x:Key="iconHexConverter16" UriSource="Tools/Icons/16x16/HEXConverter_Icon_16.ico"/>

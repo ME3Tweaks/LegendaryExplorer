@@ -167,7 +167,7 @@ namespace LegendaryExplorer
             {
                 name = "Class Hierarchy Viewer",
                 type = typeof(Tools.ClassViewer.ClassViewerWindow),
-                icon = Application.Current.FindResource("iconAnimViewer") as ImageSource,
+                icon = Application.Current.FindResource("iconClassViewer") as ImageSource,
                 open = () =>
                 {
                     var gameStr = InputComboBoxWPF.GetValue(null, "Choose game you want to use Class Hierarchy Viewer with.", "Class Hierarchy Viewer game selector",
@@ -390,7 +390,7 @@ namespace LegendaryExplorer
             {
                 name = "LEX Custom Files Manager",
                 type = typeof(Tools.CustomFilesManager.CustomFilesManagerWindow),
-                icon = Application.Current.FindResource(ICON_COMING_SOON_RES_NAME) as ImageSource,
+                icon = Application.Current.FindResource("iconLexCustomFileManager") as ImageSource,
                 open = () =>
                 {
                     (new Tools.CustomFilesManager.CustomFilesManagerWindow()).Show();

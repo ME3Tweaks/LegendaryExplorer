@@ -26,6 +26,12 @@ namespace LegendaryExplorerCore.Packages
         public MEPackage.GamePlatform Platform => MEPackage.GamePlatform.PC;
         public Endian Endian => Endian.Native; //we do not support big endian UDK packages
         public MELocalization Localization => MELocalization.None;
+
+        /// <summary>
+        /// Custom user-defined metadata to associate with this package object. This data has no effect on saving or loading, it is only for library user convenience.
+        /// </summary>
+        public Dictionary<string, object> CustomMetadata { get; set; } = new(0);
+
         public byte[] getHeader()
         {
             using var ms = MemoryManager.GetMemoryStream();

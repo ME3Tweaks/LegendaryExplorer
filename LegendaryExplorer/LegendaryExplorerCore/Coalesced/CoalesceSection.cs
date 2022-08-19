@@ -238,5 +238,22 @@ namespace LegendaryExplorerCore.Coalesced
                 _properties[value.Name] = value;
             }
 		}
+
+		/// <summary>
+		/// Removes all properties with the specified name, or all if none is provided.
+		/// </summary>
+		/// <param name="asset"></param>
+		/// <param name="keyName"></param>
+        public void RemoveAllNamedEntries(string keyName = null)
+        {
+            if (keyName != null)
+            {
+                _properties.RemoveAll(x => x.Key == keyName);
+            }
+            else
+            {
+                _properties.Clear();
+            }
+        }
     }
 }

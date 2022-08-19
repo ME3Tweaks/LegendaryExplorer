@@ -131,6 +131,11 @@ namespace LegendaryExplorerCore.Packages
 
         public MELocalization Localization { get; } = MELocalization.None;
 
+        /// <summary>
+        /// Custom user-defined metadata to associate with this package object. This data has no effect on saving or loading, it is only for library user convenience.
+        /// </summary>
+        public Dictionary<string, object> CustomMetadata { get; set; } = new(0);
+
         public byte[] getHeader()
         {
             using var ms = MemoryManager.GetMemoryStream();

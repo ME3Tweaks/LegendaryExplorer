@@ -18,6 +18,8 @@ using System.Diagnostics;
 using System.IO;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using System.Security.Cryptography;
+using System.Windows.Controls;
+using LegendaryExplorer.Tools.PackageEditor;
 
 namespace LegendaryExplorer.Tools.CustomFilesManager
 {
@@ -92,6 +94,15 @@ namespace LegendaryExplorer.Tools.CustomFilesManager
 
             CustomClassDirectories.ReplaceAll(Settings.CustomClassDirectories);
 
+            foreach (var sf in Settings.CustomStartupFiles)
+            {
+                if (File.Exists(sf))
+                {
+                    using var p = MEPackageHandler.QuickOpenMEPackage(sf);
+                    CustomStartupFiles.Add(new CustomStartupFileInfo() { FilePath = sf, Game = p.Game });
+                }
+            }
+
             InitializeComponent();
         }
 
@@ -120,7 +131,7 @@ namespace LegendaryExplorer.Tools.CustomFilesManager
                     CustomStartupFiles.Add(new CustomStartupFileInfo() { Game = p.Game, FilePath = ofd.FileName });
 
                     // Persist the setting for next boot
-                    Settings.CustomStartupFiles = CustomStartupFiles.Select(x=>x.FilePath).ToList();
+                    Settings.CustomStartupFiles = CustomStartupFiles.Select(x => x.FilePath).ToList();
                     Settings.Save();
                 }
             }
@@ -236,12 +247,27 @@ namespace LegendaryExplorer.Tools.CustomFilesManager
         /// </summary>
         internal static void InstallCustomStartupFiles()
         {
-            foreach(var v in Settings.CustomStartupFiles)
+            foreach (var v in Settings.CustomStartupFiles)
             {
                 if (v != null && File.Exists(v) && v.RepresentsPackageFilePath())
                 {
                     var p = MEPackageHandler.QuickOpenMEPackage(v);
                     EntryImporter.AddUserSafeToImportFromFile(p.Game, v);
+                }
+            }
+        }
+
+        private void CustomStartupFile_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            Debug.WriteLine(e.ClickCount);
+            if (e.ClickCount == 2 && sender is StackPanel sp && sp.DataContext is CustomStartupFileInfo csfi)
+            {
+                if (File.Exists(csfi.FilePath))
+                {
+                    var pe = new PackageEditorWindow();
+                    pe.Show();
+                    pe.LoadFile(csfi.FilePath);
+                    pe.Activate();
                 }
             }
         }
