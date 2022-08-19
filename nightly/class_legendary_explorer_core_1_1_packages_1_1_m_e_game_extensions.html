@@ -125,6 +125,9 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a1a694a751c3a3aea072bdeda1b0e0487"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_m_e_game_extensions.html#a1a694a751c3a3aea072bdeda1b0e0487">CookedDirName</a> (this <a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game)</td></tr>
 <tr class="memdesc:a1a694a751c3a3aea072bdeda1b0e0487"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the name of the CookedPC directory for a specific game  <a href="class_legendary_explorer_core_1_1_packages_1_1_m_e_game_extensions.html#a1a694a751c3a3aea072bdeda1b0e0487">More...</a><br /></td></tr>
 <tr class="separator:a1a694a751c3a3aea072bdeda1b0e0487"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a806f83672d4428b87f2bf51f98d537bd"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_m_e_game_extensions.html#a806f83672d4428b87f2bf51f98d537bd">PCPackageFileExtension</a> (this <a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game, bool isMapFile=false, bool isScriptFile=false)</td></tr>
+<tr class="memdesc:a806f83672d4428b87f2bf51f98d537bd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the standard file extension for a package for the specified PC game  <a href="class_legendary_explorer_core_1_1_packages_1_1_m_e_game_extensions.html#a806f83672d4428b87f2bf51f98d537bd">More...</a><br /></td></tr>
+<tr class="separator:a806f83672d4428b87f2bf51f98d537bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Extension methods for the <a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8" title="Indicates a game in the Mass Effect series">MEGame</a> enum </p>
@@ -449,6 +452,59 @@ Static Public Member Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a id="a806f83672d4428b87f2bf51f98d537bd" name="a806f83672d4428b87f2bf51f98d537bd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a806f83672d4428b87f2bf51f98d537bd">&#9670;&nbsp;</a></span>PCPackageFileExtension()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static string LegendaryExplorerCore.Packages.MEGameExtensions.PCPackageFileExtension </td>
+          <td>(</td>
+          <td class="paramtype">this <a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a>&#160;</td>
+          <td class="paramname"><em>game</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>isMapFile</em> = <code>false</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>isScriptFile</em> = <code>false</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Gets the standard file extension for a package for the specified PC game </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">game</td><td>The game to check</td></tr>
+    <tr><td class="paramname">isMapFile</td><td><a class="el" href="namespace_legendary_explorer_core_1_1_m_e1.html">ME1</a> ONLY: If this is a map file like BIOA_STA00</td></tr>
+    <tr><td class="paramname">isScriptFile</td><td><a class="el" href="namespace_legendary_explorer_core_1_1_m_e1.html">ME1</a> ONLY: If this is a script file like BIOC_Base</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>File extension including the dot</dd></dl>
 
 </div>
 </div>
