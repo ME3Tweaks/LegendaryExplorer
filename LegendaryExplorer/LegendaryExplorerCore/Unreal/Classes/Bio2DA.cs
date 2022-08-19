@@ -68,6 +68,11 @@ namespace LegendaryExplorerCore.Unreal.Classes
         /// </summary>
         public ExportEntry Export;
 
+        /// <summary>
+        /// Constructs a Bio2DA object from the specified export
+        /// </summary>
+        /// <param name="export"></param>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         public Bio2DA(ExportEntry export) : this()
         {
             //Console.WriteLine("Loading " + export.ObjectName);

@@ -82,9 +82,14 @@ namespace LegendaryExplorerCore.Coalesced
         public static string GetGame2IniText(this CoalesceAsset asset)
         {
             StringBuilder sb = new StringBuilder();
-
+            bool isFirst = true;
             foreach (var section in asset.Sections)
             {
+                if (!isFirst)
+                {
+                    // Make easier to read
+                    sb.AppendLine();
+                }
                 sb.AppendLine($"[{section.Key}]");
                 foreach (var keyValuePairs in section.Value)
                 {
@@ -93,6 +98,7 @@ namespace LegendaryExplorerCore.Coalesced
                         sb.AppendLine($"{GetGame2IniDataPrefix(vp.ParseAction)}{keyValuePairs.Key}={vp.Value}");
                     }
                 }
+                isFirst = false;
             }
             return sb.ToString();
         }

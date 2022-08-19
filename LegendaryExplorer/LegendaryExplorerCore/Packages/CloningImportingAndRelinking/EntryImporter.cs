@@ -1014,8 +1014,8 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         {
             // These files are safe to import from if the file doing the import is post-save (e.g. it is not a seekfree or startup file)
             "BIO_COMMON.pcc",
-            "GesturesConfig.pcc" // Some animations
-            
+            "GesturesConfig.pcc", // Some animations
+            // "BioP_Global.pcc" // This only applies to combat files so not sure how this would be handled for non combat
             // Add DLC startup files here
         };
 

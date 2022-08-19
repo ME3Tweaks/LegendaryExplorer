@@ -77,6 +77,7 @@ namespace LegendaryExplorerCore.Misc
         public static DuplicatingIni ParseIni(string iniText)
         {
             DuplicatingIni di = new DuplicatingIni();
+
             var splits = iniText.Split('\n');
             Section currentSection = null;
             foreach (var line in splits)
