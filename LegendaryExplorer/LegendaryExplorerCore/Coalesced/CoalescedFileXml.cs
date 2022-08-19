@@ -11,6 +11,7 @@ using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Coalesced.Huffman;
 using Decoder = LegendaryExplorerCore.Coalesced.Huffman.Decoder;
 using Encoder = LegendaryExplorerCore.Coalesced.Huffman.Encoder;
+using LegendaryExplorerCore.Misc;
 
 namespace LegendaryExplorerCore.Coalesced
 {
@@ -401,7 +402,7 @@ namespace LegendaryExplorerCore.Coalesced
 
 					foreach (var sectionInfo in sections.OrderBy(s => s.Key))
 					{
-						var section = new Dictionary<string, List<PropertyValue>>();
+						var section = new CaseInsensitiveDictionary<List<PropertyValue>>();
 
 						index.Seek(fileInfo.Value + sectionInfo.Value, SeekOrigin.Begin);
 						var valueCount = index.ReadUInt16(endian);

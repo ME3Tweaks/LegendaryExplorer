@@ -491,12 +491,12 @@ namespace LegendaryExplorerCore.Coalesced
                 var entry =
                     new FileEntry(asset.Source)
                     {
-                        Sections = new Dictionary<string, Dictionary<string, List<PropertyValue>>>()
+                        Sections = new CaseInsensitiveDictionary<CaseInsensitiveDictionary<List<PropertyValue>>>()
                     };
 
                 foreach (var section in asset.Sections)
                 {
-                    var eSection = new Dictionary<string, List<PropertyValue>>();
+                    var eSection = new CaseInsensitiveDictionary<List<PropertyValue>>();
 
                     foreach (var property in section.Value)
                     {
@@ -519,10 +519,10 @@ namespace LegendaryExplorerCore.Coalesced
                             eProperty.Add(new PropertyValue(value.ValueType, valueValue));
                         }
 
-                        eSection.Add(property.Key, eProperty);
+                        eSection.Add(property.Key.ToLower(), eProperty);
                     }
 
-                    entry.Sections.Add(section.Key, eSection);
+                    entry.Sections.Add(section.Key.ToLower(), eSection);
                 }
 
                 coal.Files.Add(entry);
@@ -570,12 +570,12 @@ namespace LegendaryExplorerCore.Coalesced
                 var entry =
                     new FileEntry(asset.Source)
                     {
-                        Sections = new Dictionary<string, Dictionary<string, List<PropertyValue>>>()
+                        Sections = new CaseInsensitiveDictionary<CaseInsensitiveDictionary<List<PropertyValue>>>()
                     };
 
                 foreach (var section in asset.Sections)
                 {
-                    var eSection = new Dictionary<string, List<PropertyValue>>();
+                    var eSection = new CaseInsensitiveDictionary<List<PropertyValue>>();
 
                     foreach (var property in section.Value)
                     {
@@ -598,10 +598,10 @@ namespace LegendaryExplorerCore.Coalesced
                             eProperty.Add(new PropertyValue(value.ValueType, valueValue));
                         }
 
-                        eSection.Add(property.Key, eProperty);
+                        eSection.Add(property.Key.ToLower(), eProperty);
                     }
 
-                    entry.Sections.Add(section.Key, eSection);
+                    entry.Sections.Add(section.Key.ToLower(), eSection);
                 }
 
                 coal.Files.Add(entry);
