@@ -245,7 +245,7 @@ namespace LegendaryExplorer.GameInterop
             }
 
             // We make new pipe and connect to game every command
-            client = new NamedPipeClientStream($"LEX_{game}_COMM_PIPE");
+            client = new NamedPipeClientStream(".", $"LEX_{game}_COMM_PIPE", PipeDirection.Out);
             client.Connect();
             //pipeReader = new StreamReader(client);
             pipeWriter = new StreamWriter(client);

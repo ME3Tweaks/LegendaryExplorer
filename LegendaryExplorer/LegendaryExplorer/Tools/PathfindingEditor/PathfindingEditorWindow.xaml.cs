@@ -593,8 +593,9 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
 
         private void ReceivedGameMessage(string obj)
         {
-            if (PlayerGPSObject != null && (DateTime.Now - LastGPSUpdate) > TimeSpan.FromSeconds(1))
+            if (PlayerGPSObject != null && (DateTime.Now - LastGPSUpdate) > TimeSpan.FromSeconds(1) && obj.StartsWith("PATHFINDING_GPS "))
             {
+                obj = obj.Substring(16); // Remove prefix.
                 //LastGPSUpdate = DateTime.Now;
                 if (obj.StartsWith("PLAYERLOC="))
                 {
@@ -4911,6 +4912,11 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
         private bool gpsActive;
         private void ConnectGPS_Clicked(object sender, RoutedEventArgs e)
         {
+            if (Pcc == null)
+            {
+                MessageBox.Show("You must load a package first, which determines which game this feature will be used on.");
+                return;
+            }
             Task.Run(() =>
             {
                 if (!gpsActive)
