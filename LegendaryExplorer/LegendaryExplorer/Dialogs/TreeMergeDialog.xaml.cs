@@ -16,6 +16,7 @@ namespace LegendaryExplorer.Dialogs
         public PortingOptions PortingOption = new PortingOptions() {PortingOptionChosen = EntryImporter.PortingOption.Cancel};//Click X, get cancel
         private readonly IEntry sourceEntry;
         private readonly IEntry targetEntry;
+        private readonly IMEPackage targetPackage;
         private readonly bool sourceHasChildren;
         private readonly bool targetHasChildren;
 
@@ -36,17 +37,18 @@ namespace LegendaryExplorer.Dialogs
         /// <summary>
         /// Is the source file a global file?
         /// </summary>
-        public bool IsGlobalFile => EntryImporter.IsSafeToImportFrom(sourceEntry.FileRef.FilePath, sourceEntry.Game);
+        public bool IsGlobalFile => EntryImporter.IsSafeToImportFrom(sourceEntry.FileRef.FilePath, sourceEntry.Game, targetPackage.FilePath);
 
         private bool _portGlobalsAsImports = true;
         public bool PortGlobalsAsImports { get => _portGlobalsAsImports; set => SetProperty(ref _portGlobalsAsImports, value); }
 
-        public TreeMergeDialog(IEntry sourceEntry, IEntry targetEntry, MEGame targetGame)
+        public TreeMergeDialog(IEntry sourceEntry, IEntry targetEntry, IMEPackage targetPackage)
         {
             this.sourceEntry = sourceEntry;
             this.targetEntry = targetEntry;
+            this.targetPackage = targetPackage;
 
-            IsCrossGamePort = sourceEntry.Game != targetGame;
+            IsCrossGamePort = sourceEntry.Game != targetPackage.Game;
             if (IsCrossGamePort)
                 PortUsingDonors = true;
 
@@ -143,9 +145,9 @@ namespace LegendaryExplorer.Dialogs
             return (sourceEntry is ExportEntry && targetEntry is ExportEntry && sourceEntry.ClassName == targetEntry.ClassName);
         }
 
-        public static PortingOptions GetMergeType(Window w, TreeViewEntry sourceItem, TreeViewEntry targetItem, MEGame targetGame)
+        public static PortingOptions GetMergeType(Window w, TreeViewEntry sourceItem, TreeViewEntry targetItem, IMEPackage targetPackage)
         {
-            TreeMergeDialog tmd = new TreeMergeDialog(sourceItem.Entry, targetItem.Entry, targetGame)
+            TreeMergeDialog tmd = new TreeMergeDialog(sourceItem.Entry, targetItem.Entry, targetPackage)
             {
                 Owner = w
             };

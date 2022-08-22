@@ -285,7 +285,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
 
             IEntry classEntry;
             if (Pcc.Exports.Any(exp => exp.ObjectName == info.ClassName) || Pcc.Imports.Any(imp => imp.ObjectName == info.ClassName) ||
-                GlobalUnrealObjectInfo.GetClassOrStructInfo(Pcc.Game, info.ClassName) is { } classInfo && EntryImporter.IsSafeToImportFrom(classInfo.pccPath, Pcc.Game))
+                GlobalUnrealObjectInfo.GetClassOrStructInfo(Pcc.Game, info.ClassName) is { } classInfo && EntryImporter.IsSafeToImportFrom(classInfo.pccPath, Pcc.Game, Pcc.FilePath))
             {
                 var rop = new RelinkerOptionsPackage();
                 classEntry = EntryImporter.EnsureClassIsInFile(Pcc, info.ClassName, rop);

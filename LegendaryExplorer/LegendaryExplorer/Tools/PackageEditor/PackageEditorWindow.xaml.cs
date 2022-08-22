@@ -3640,7 +3640,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     return;
                 }
 
-                var portingOption = TreeMergeDialog.GetMergeType(this, sourceItem, targetItem, Pcc.Game);
+                var portingOption = TreeMergeDialog.GetMergeType(this, sourceItem, targetItem, Pcc);
 
                 if (portingOption.PortingOptionChosen == EntryImporter.PortingOption.Cancel)
                 {
