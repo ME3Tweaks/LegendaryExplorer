@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System;
 using System.Collections.Generic;
 
 namespace LegendaryExplorerCore.Packages
@@ -41,8 +40,9 @@ namespace LegendaryExplorerCore.Packages
         /// <returns>True if something could be written, false otherwise</returns>
         internal bool HasAnyData()
         {
+            if (UnknownData is { Count: > 0 }) return true;
+
             // IF ADDING DATA TO THIS CLASS ENSURE YOU ADD IT BELOW OR IT WILL NOT SERIALIZE IN SOME CASES
-            if (UnknownData != null && UnknownData.Count > 0) return true;
             if (ImportHintFiles.Count > 0) return true;
 
             return false;
