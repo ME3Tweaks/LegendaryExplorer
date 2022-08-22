@@ -67,6 +67,11 @@ namespace LegendaryExplorerCore.Packages
 
     public sealed class MEPackage : UnrealPackageFile, IMEPackage, IDisposable
     {
+        /// <summary>
+        /// Player.sav in ME1 save files starts with this and needs to be scrolled forward to find actual start of package
+        /// </summary>
+        public const uint ME1SavePackageTag = 0x484D4752; // 'RGMH'
+
         public const ushort ME1UnrealVersion = 491;
         public const ushort ME1LicenseeVersion = 1008;
         public const ushort ME1XboxUnrealVersion = 391;
