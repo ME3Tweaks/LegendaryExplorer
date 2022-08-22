@@ -14,6 +14,7 @@ var class_legendary_explorer_core_1_1_packages_1_1_m_e_package =
     [ "RegisterSaver", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#a86104877b1852154aa27ec4c5478f4b1", null ],
     [ "SaveToStream", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#a2718de8d0355d5160865354180ed7730", null ],
     [ "setGame", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#a9f66c643e4f113c700a42b6ab3c05c86", null ],
+    [ "ME1SavePackageTag", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#a71bf30c927130c62550e72ce798c5310", null ],
     [ "ME1UnrealVersion", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#aa6e56857fa269b574d9b306e29b0bebb", null ],
     [ "ME1LicenseeVersion", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#a9a317d14e67d7e0a49dc996bdadca212", null ],
     [ "ME1XboxUnrealVersion", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#ab7abbb1f9f3349dbc2a0529eb7220e74", null ],

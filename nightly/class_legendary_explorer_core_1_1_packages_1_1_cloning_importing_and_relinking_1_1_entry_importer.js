@@ -18,7 +18,7 @@ var class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinki
     [ "AddUserSafeToImportFromFile", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#a26253033d9033fa20a22c1d8ce9ec1d4", null ],
     [ "RemoveSafeToImportFromFile", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#aab8960664b2632afecd046b4bc9f67ca", null ],
     [ "ClearUserSafeToImportFromFiles", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#a01b67f952203a79816752f7f57657216", null ],
-    [ "IsSafeToImportFrom", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#a06256b9f84306e90dc04d2ead868f932", null ],
+    [ "IsSafeToImportFrom", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#a3d30f9fe78d0db755c87f5e7085d98bb", null ],
     [ "IsPostLoadFile", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#a11e141c4599232ad61f2f4cbea5210ba", null ],
     [ "FilesSafeToImportFrom", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#a7495335e67bd5c21204604610a4e8d2d", null ],
     [ "FilesSafeToImportFromPostLoad", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#ad12143121f1ae4ee71c09dfc86aace9d", null ],
