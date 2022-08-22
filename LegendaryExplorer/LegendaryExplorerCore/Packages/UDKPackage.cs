@@ -10,6 +10,7 @@ using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.TLK.ME1;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.Classes;
+using Newtonsoft.Json.Linq;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
 
 namespace LegendaryExplorerCore.Packages
@@ -31,6 +32,12 @@ namespace LegendaryExplorerCore.Packages
         /// Custom user-defined metadata to associate with this package object. This data has no effect on saving or loading, it is only for library user convenience.
         /// </summary>
         public Dictionary<string, object> CustomMetadata { get; set; } = new(0);
+
+
+        /// <summary>
+        /// This property is never used as UDK packages do not save LECLData
+        /// </summary>
+        public LECLData LECLTagData { get; }
 
         public byte[] getHeader()
         {

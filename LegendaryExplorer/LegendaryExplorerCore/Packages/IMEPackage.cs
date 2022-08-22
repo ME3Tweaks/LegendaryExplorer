@@ -139,9 +139,14 @@ namespace LegendaryExplorerCore.Packages
         long FileSize { get; }
 
         /// <summary>
-        /// Custom user-defined metadata to associate with this package object. This data has no effect on saving or loading, it is only for library user convenience.
+        /// Custom user-defined metadata to associate with this package object. This data has no effect on saving or loading, it is only for library user convenience. This is not serialized!
         /// </summary>
         public Dictionary<string, object> CustomMetadata { get; set; }
+
+        /// <summary>
+        /// Data read from the LECL tag (LE only)
+        /// </summary>
+        public LECLData LECLTagData { get; }
 
         //reading
         bool IsUExport(int index);
