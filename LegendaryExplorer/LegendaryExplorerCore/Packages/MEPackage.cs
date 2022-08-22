@@ -74,14 +74,16 @@ namespace LegendaryExplorerCore.Packages
         /// <summary>
         /// MEM writes this to every single package file it modifies
         /// </summary>
-        private const string MEMPackageTag = "ThisIsMEMEndOfFileMarker";
+        private const string MEMPackageTag = "ThisIsMEMEndOfFileMarker"; //TODO NET 7: make this a utf8 literal
         private const int MEMPackageTagLength = 24;
 
         /// <summary>
         /// LEC-saved LE packages will always end in this, assuming MEM did not save later
         /// </summary>
-        private const string LECPackageTag = "LECL";
+        private const string LECPackageTag = "LECL"; //TODO NET 7: make this a utf8 literal
         private const int LECPackageTagLength = 4;
+        private const int LECPackageTag_Version_EmptyData = 1;
+        private const int LECPackageTag_Version_JSON = 2;
 
 
         public const ushort ME1UnrealVersion = 491;
@@ -625,6 +627,7 @@ namespace LegendaryExplorerCore.Packages
 
             if (Game.IsLEGame())
             {
+                //read from the original stream here, as this data is not part of the compressed data and will always be little endian
                 try
                 {
                     // Find MEM tag to see if it exists since it will append to ours (LEC will not save with a MEM tag)
@@ -632,32 +635,34 @@ namespace LegendaryExplorerCore.Packages
                     bool taggedByMEM = false;
                     bool taggedByLEC = false;
                     string leclv2Data = null;
-                    long endPos = packageReader.Length; // Where we consider end of file to be for tag reading
-                    packageReader.Seek(-MEMPackageTagLength, SeekOrigin.End);
-                    if (packageReader.ReadStringASCII(MEMPackageTagLength) == MEMPackageTag)
+                    if (fs.Position != fs.Length) //optimize for the case where it's not tagged
                     {
-                        taggedByMEM = true;
-                        packageReader.Seek(-MEMPackageTagLength, SeekOrigin.End);
-                        endPos = packageReader.Position;
-                        LECLTagData = new LECLData() { WasSavedWithMEM = true };
-                    }
-
-                    packageReader.Seek(-LECPackageTagLength + endPos, SeekOrigin.Begin);
-                    if (packageReader.ReadStringASCII(LECPackageTagLength) == LECPackageTag)
-                    {
-                        taggedByLEC = true;
-
-                        // Read <LECL Data>
-                        packageReader.Seek(-LECPackageTagLength + 4, SeekOrigin.Current); // We seek 4 back to read the length of the payload
-                        var payloadLength = packageReader.ReadInt32();
-
-                        //Read version
-                        packageReader.Seek(-payloadLength - 4, SeekOrigin.Current); // Seek to version
-                        var leclVersion = packageReader.ReadInt32();
-
-                        if (leclVersion >= 2)
+                        long tagOffsetFromEnd = -LECPackageTagLength; 
+                        fs.Seek(-MEMPackageTagLength, SeekOrigin.End);
+                        if (fs.ReadStringASCII(MEMPackageTagLength) == MEMPackageTag)
                         {
-                            leclv2Data = packageReader.BaseStream.ReadStringUnicode(payloadLength - 4);
+                            taggedByMEM = true;
+                            tagOffsetFromEnd -= MEMPackageTagLength;
+                            LECLTagData = new LECLData { WasSavedWithMEM = true };
+                        }
+
+                        fs.Seek(tagOffsetFromEnd, SeekOrigin.End);
+                        if (fs.ReadStringASCII(LECPackageTagLength) == LECPackageTag)
+                        {
+                            taggedByLEC = true;
+
+                            // Read <LECL Data>
+                            fs.Seek(-(LECPackageTagLength + sizeof(int)), SeekOrigin.Current); //seek to payload length
+                            int payloadLength = fs.ReadInt32();
+
+                            //Read version
+                            fs.Seek(-(sizeof(int) + payloadLength), SeekOrigin.Current); // Seek to version
+                            int leclVersion = fs.ReadInt32();
+
+                            if (leclVersion >= LECPackageTag_Version_JSON)
+                            {
+                                leclv2Data = fs.ReadStringUtf8(payloadLength - 4);
+                            }
                         }
                     }
 
@@ -1226,13 +1231,13 @@ namespace LegendaryExplorerCore.Packages
 
             if (package.LECLTagData != null && package.LECLTagData.HasAnyData())
             {
-                ms.WriteInt32(2); // The current version
+                ms.WriteInt32(LECPackageTag_Version_JSON); // The current version
                 var data = JsonConvert.SerializeObject(package.LECLTagData); // for debug reading
-                ms.WriteStringUnicode(data);
+                ms.WriteStringUtf8(data);
             }
             else
             {
-                ms.WriteInt32(1); // Blank data version. Version 1 will not attempt to read data.
+                ms.WriteInt32(LECPackageTag_Version_EmptyData); // Blank data version. Version 1 will not attempt to read data.
             }
 
             ms.WriteInt32((int)(ms.Position - pos)); // Size of the LECL data & version tag in bytes

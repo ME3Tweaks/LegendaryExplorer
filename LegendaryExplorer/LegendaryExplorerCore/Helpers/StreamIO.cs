@@ -238,6 +238,20 @@ namespace LegendaryExplorerCore.Helpers
             return Encoding.UTF8.GetString(buffer);
         }
 
+        public static void WriteStringUtf8(this Stream stream, string str)
+        {
+            byte[] buff = Encoding.UTF8.GetBytes(str);
+            stream.Write(buff, 0, buff.Length);
+        }
+
+        public static string ReadStringUtf8(this Stream stream, int length)
+        {
+            Span<byte> buffer = stackalloc byte[256];
+            buffer = length > buffer.Length ? new byte[length] : buffer[..length];
+            stream.ReadToSpan(buffer);
+            return Encoding.UTF8.GetString(buffer);
+        }
+
         // DO NOT REMOVE ASCII CODE
         #region ASCII SUPPORT
         public static string ReadStringASCII(this Stream stream, int count)
