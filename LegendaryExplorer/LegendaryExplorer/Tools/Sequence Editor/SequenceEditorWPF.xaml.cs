@@ -2681,6 +2681,23 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             SequenceEditorExperimentsM.CommitSequenceObjectPositions(this);
         }
 
+        private void AddMissingVarLinks_Clicked(object sender, RoutedEventArgs e) {
+            SequenceEditorExperimentsE.AddMissingVarLinks(GetSEWindow());
+        }
+
+        private void AddDialogueWheelCam_Clicked(object sender, RoutedEventArgs e) {
+            SequenceEditorExperimentsE.AddDialogueWheelTemplate(GetSEWindow());
+        }
+
+        private void AddDialogueWheelDir_Clicked(object sender, RoutedEventArgs e) {
+            SequenceEditorExperimentsE.AddDialogueWheelTemplate(GetSEWindow(), true);
+        }
+
+        public SequenceEditorWPF GetSEWindow() {
+            if (GetWindow(this) is SequenceEditorWPF sew) { return sew; }
+            return null;
+        }
+
         public string Toolname => "SequenceEditor";
     }
     static class SequenceEditorExtensions
