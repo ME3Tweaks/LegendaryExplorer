@@ -171,7 +171,7 @@
                     <MenuItem Header="Commit object positions to objects" Click="CommitObjectPositions_Clicked"
                               ToolTip="Writes the node positions of all nodes to the properties for ObjPosX and ObjPosY" />
 					<MenuItem Header="Exkywor's buttons for lazy people">
-                        <MenuItem Header="Add Missing Variable Links" Click="AddMissingVarLinks_Clicked" ToolTip="Adds missing named groups from the linked InterpData to the variable links"/>
+                        <MenuItem Header="Update Interp's Variable Links" Click="UpdateVarLinks_Clicked" ToolTip="Adds missing named interpGroups, removes deleted ones, and keeps existing ones in the variable links."/>
                         <MenuItem Header="Add Dialogue Wheel Camera" Click="AddDialogueWheelCam_Clicked" ToolTip="Adds an Interp and an InterpData template to control a dialogue wheel camera"/>
                         <MenuItem Header="Add Dialogue Wheel Director" Click="AddDialogueWheelDir_Clicked" ToolTip="Adds an Interp and an InterpData template to control the camera during a dialogue wheel"/>
                     </MenuItem>

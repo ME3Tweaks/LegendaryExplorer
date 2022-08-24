@@ -2681,8 +2681,8 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             SequenceEditorExperimentsM.CommitSequenceObjectPositions(this);
         }
 
-        private void AddMissingVarLinks_Clicked(object sender, RoutedEventArgs e) {
-            SequenceEditorExperimentsE.AddMissingVarLinks(GetSEWindow());
+        private void UpdateVarLinks_Clicked(object sender, RoutedEventArgs e) {
+            SequenceEditorExperimentsE.UpdateVarLinks(GetSEWindow());
         }
 
         private void AddDialogueWheelCam_Clicked(object sender, RoutedEventArgs e) {
