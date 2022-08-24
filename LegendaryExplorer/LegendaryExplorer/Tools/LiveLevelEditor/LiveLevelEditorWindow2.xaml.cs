@@ -15,7 +15,6 @@ using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Bases;
 using LegendaryExplorer.GameInterop;
 using LegendaryExplorer.GameInterop.InteropTargets;
-using LegendaryExplorer.Misc;
 using LegendaryExplorer.SharedUI.Controls;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Gammtek.Collections.ObjectModel;
@@ -296,8 +295,8 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             else if (msg.StartsWith("LiveEditor string ActorSelected"))
             {
                 Vector3 pos = defaultPosition;
-                if (msg.IndexOf("vector") is int idx && idx > 0 &&
-                    msg.Substring(idx + 7).Split(' ') is string[] { Length: 3 } strings)
+                if (msg.IndexOf("vector") is int idx and > 0 &&
+                    msg.Substring(idx + 7).Split(' ') is { Length: 3 } strings)
                 {
                     var floats = new float[3];
                     for (int i = 0; i < 3; i++)
@@ -326,8 +325,8 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             else if (msg.StartsWith("LiveEditor string ActorRotation"))
             {
                 Rotator rot = defaultRotation;
-                if (msg.IndexOf("vector") is int idx && idx > 0 &&
-                    msg.Substring(idx + 7).Split(' ') is string[] { Length: >= 3 } strings)
+                if (msg.IndexOf("vector") is int idx and > 0 &&
+                    msg.Substring(idx + 7).Split(' ') is { Length: >= 3 } strings)
                 {
                     var floats = new float[3];
                     for (int i = 0; i < 3; i++)
@@ -343,8 +342,8 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
                         }
                     }
                     rot = Rotator.FromDirectionVector(new Vector3(floats[0], floats[1], floats[2]));
-                    if (msg.IndexOf("int") is int rollIdx && rollIdx > 0 &&
-                        msg.Substring(rollIdx + 4).Split(' ') is string[] { Length: >= 1 } rollStrings &&  int.TryParse(rollStrings[0], out int roll))
+                    if (msg.IndexOf("int") is int rollIdx and > 0 &&
+                        msg.Substring(rollIdx + 4).Split(' ') is { Length: >= 1 } rollStrings && int.TryParse(rollStrings[0], out int roll))
                     {
                         rot = new Rotator(rot.Pitch, rot.Yaw, roll);
                     }
@@ -401,6 +400,10 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
                 actorTab.IsSelected = true;
                 InitializeCamPath();
                 EndBusy();
+            }
+            else if (verb == "ACTORSELECTED")
+            {
+                InteropHelper.SendMessageToGame("LLE_GET_ACTOR_POSDATA", Game);
             }
             else if (verb == "ACTORLOC" && command.Length == 5)
             {
@@ -533,18 +536,20 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
 
             // We only care about actors that loaded from a package file directly (level files)
             // GetFilesLoadedInGame will return a cached result
-            if (parts.Length == 2  && MELoadedFiles.GetFilesLoadedInGame(Game).ContainsKey($"{parts[0]}.pcc"))
+            if (parts.Length == 2)
             {
-                ActorDict.AddToListAt($"{parts[0]}.pcc", new ActorEntry2
+                string mapName = parts[0];
+                if (MELoadedFiles.GetFilesLoadedInGame(Game).ContainsKey($"{mapName}.pcc"))
                 {
-                    ActorName = parts[1],
-                    FileName = $"{parts[0]}.pcc",
-                });
+                    ActorDict.AddToListAt($"{mapName}.pcc", new ActorEntry2
+                    {
+                        ActorName = parts[1],
+                        FileName = $"{mapName}.pcc",
+                    });
+                    return;
+                }
             }
-            else
-            {
-                Debug.WriteLine($"SKIPPING {actorInfoStr}");
-            }
+            Debug.WriteLine($"SKIPPING {actorInfoStr}");
         }
 
         private void BuildActorDict()
@@ -655,7 +660,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
                 if (SetProperty(ref _selectedActor, value) && !noUpdate && value != null)
                 {
                     SetBusy($"Selecting {value.ActorName}", () => { });
-                    InteropHelper.SendMessageToGame($"LLE_GET_ACTOR_POSDATA {Path.GetFileNameWithoutExtension(value.FileName)} TheWorld.PersistentLevel.{value.ActorName}", Game);
+                    InteropHelper.SendMessageToGame($"LLE_SELECT_ACTOR {Path.GetFileNameWithoutExtension(value.FileName)} TheWorld.PersistentLevel.{value.ActorName}", Game);
                 }
             }
         }
