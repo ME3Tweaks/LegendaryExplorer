@@ -103,6 +103,8 @@ namespace LegendaryExplorer.Tools.Sequence_Editor.Experiments {
                     props.AddOrReplaceProp(new StrProperty(name, "LinKDesc"));
                     int index = sew.Pcc.FindImport("Engine.SeqVar_Object").UIndex;
                     props.AddOrReplaceProp(new ObjectProperty(index, "ExpectedType"));
+                    props.AddOrReplaceProp(new IntProperty(1, "MinVars"));
+                    props.AddOrReplaceProp(new IntProperty(255, "MaxVars"));
                     updatedLinks.Add(new StructProperty("SeqVarLink", props));
                 }
             }
