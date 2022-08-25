@@ -1443,7 +1443,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             }
 
             // Add post-load files if we determine our local file is a post-load
-            if (package.FilePath != null && IsPostLoadFile(package.FilePath, package.Game))
+            if (package.FilePath != null && (package.LECLTagData != null && package.LECLTagData.IsPostLoadFile) || IsPostLoadFile(package.FilePath, package.Game))
             {
                 foreach (var fileName in FilesSafeToImportFromPostLoad(package.Game))
                 {

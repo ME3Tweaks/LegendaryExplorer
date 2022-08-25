@@ -24,8 +24,14 @@ namespace LegendaryExplorerCore.Packages
         /// <summary>
         /// Filenames that this package should be able to safely import from
         /// </summary>
-        [JsonProperty("importhintfiles")]
+        [JsonProperty("importhintfiles")] // DO NOT CHANGE
         public List<string> ImportHintFiles { get; } = new(0);
+
+        /// <summary>
+        /// If this file is marked as only being used post save file load (e.g. after BIO_COMMON for example). This allows it to access more files for importing.
+        /// </summary>
+        [JsonProperty("ispostload")] // DO NOT CHANGE
+        public bool IsPostLoadFile { get; set; }
 
         /// <summary>
         /// Data that is not known by this LECLData class - it may mean that this package was saved with
