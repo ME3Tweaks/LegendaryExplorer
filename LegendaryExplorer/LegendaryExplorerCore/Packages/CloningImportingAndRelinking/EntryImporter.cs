@@ -449,12 +449,12 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 {
                     if (sourceExport.ClassName == "Material")
                     {
-                    var entryStr = $"{sourceExport.ClassName} {sourceExport.InstancedFullPath}";
-                    Debug.WriteLine($@"Not ported using donor: {sourceExport.InstancedFullPath} ({sourceExport.ClassName})");
-                    if (!NonDonorItems.Contains(entryStr))
-                    {
-                        NonDonorItems.Add(entryStr);
-                    }
+                        var entryStr = $"{sourceExport.ClassName} {sourceExport.InstancedFullPath}";
+                        Debug.WriteLine($@"Not ported using donor: {sourceExport.InstancedFullPath} ({sourceExport.ClassName})");
+                        if (!NonDonorItems.Contains(entryStr))
+                        {
+                            NonDonorItems.Add(entryStr);
+                        }
                     }
                 }
             }
@@ -1141,12 +1141,12 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             else if (game.IsGame2() || game.IsGame3())
             {
                 // DO NOT ADD BIOG
-                if (postLoadTest.StartsWith("BioA_", StringComparison.InvariantCultureIgnoreCase)||
-                    postLoadTest.StartsWith("BioD_", StringComparison.InvariantCultureIgnoreCase)||
-                    postLoadTest.StartsWith("BioS_", StringComparison.InvariantCultureIgnoreCase)||
-                    postLoadTest.StartsWith("BioP_", StringComparison.InvariantCultureIgnoreCase)||
-                    postLoadTest.StartsWith("BioS_", StringComparison.InvariantCultureIgnoreCase)||
-                    postLoadTest.StartsWith("BioH_", StringComparison.InvariantCultureIgnoreCase)||
+                if (postLoadTest.StartsWith("BioA_", StringComparison.InvariantCultureIgnoreCase) ||
+                    postLoadTest.StartsWith("BioD_", StringComparison.InvariantCultureIgnoreCase) ||
+                    postLoadTest.StartsWith("BioS_", StringComparison.InvariantCultureIgnoreCase) ||
+                    postLoadTest.StartsWith("BioP_", StringComparison.InvariantCultureIgnoreCase) ||
+                    postLoadTest.StartsWith("BioS_", StringComparison.InvariantCultureIgnoreCase) ||
+                    postLoadTest.StartsWith("BioH_", StringComparison.InvariantCultureIgnoreCase) ||
                     postLoadTest.StartsWith("SFXCharacterClass", StringComparison.InvariantCultureIgnoreCase)) // These load after. Technically in Game 2 one loads before (soldier) - not sure if we should filter that out
                 {
                     return true;
@@ -1432,14 +1432,12 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             //add related files that will be loaded at the same time (eg. for BioD_Nor_310, check BioD_Nor_310_LOC_INT, BioD_Nor, and BioP_Nor)
             filesToCheck.AddRange(GetPossibleAssociatedFiles(package, localization));
 
-            //if (entry.Game == MEGame.ME3)
-            //{
-            //    // Look in BIOP_MP_Common. This is not a 'safe' file but it is always loaded in MP mode and will be commonly referenced by MP files
-            //    if (gameFiles.TryGetValue("BIOP_MP_COMMON.pcc", out var efPath))
-            //    {
-            //        filesToCheck.Add(Path.GetFileName(efPath));
-            //    }
-            //}
+            // 08/24/2022: LECLData import hints
+            if (package.LECLTagData != null && package.LECLTagData.ImportHintFiles != null)
+            {
+                // File has been tagged with hints as to other files it can import from, such as a mod shipping a file that uses its own startup
+                filesToCheck.AddRange(package.LECLTagData.ImportHintFiles);
+            }
 
 
             //add base definition files that are always loaded (Core, Engine, etc.)
