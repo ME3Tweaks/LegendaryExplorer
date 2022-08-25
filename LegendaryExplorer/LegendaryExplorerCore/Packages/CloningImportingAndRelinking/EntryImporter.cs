@@ -1432,14 +1432,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             //add related files that will be loaded at the same time (eg. for BioD_Nor_310, check BioD_Nor_310_LOC_INT, BioD_Nor, and BioP_Nor)
             filesToCheck.AddRange(GetPossibleAssociatedFiles(package, localization));
 
-            // 08/24/2022: LECLData import hints
-            if (package.LECLTagData != null && package.LECLTagData.ImportHintFiles != null)
-            {
-                // File has been tagged with hints as to other files it can import from, such as a mod shipping a file that uses its own startup
-                filesToCheck.AddRange(package.LECLTagData.ImportHintFiles);
-            }
-
-
+            
             //add base definition files that are always loaded (Core, Engine, etc.)
             foreach (var fileName in FilesSafeToImportFrom(package.Game))
             {
@@ -1459,6 +1452,13 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         filesToCheck.Add(Path.GetFileName(efPath));
                     }
                 }
+            }
+
+            // 08/24/2022: LECLData import hints
+            if (package.LECLTagData != null && package.LECLTagData.ImportHintFiles != null)
+            {
+                // File has been tagged with hints as to other files it can import from, such as a mod shipping a file that uses its own startup
+                filesToCheck.AddRange(package.LECLTagData.ImportHintFiles);
             }
 
             //add startup files (always loaded)
