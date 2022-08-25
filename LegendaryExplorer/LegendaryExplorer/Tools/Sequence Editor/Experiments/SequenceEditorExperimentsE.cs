@@ -139,6 +139,9 @@ namespace LegendaryExplorer.Tools.Sequence_Editor.Experiments {
             interp.RemoveProperty("OutputLinks");
 
             ExportEntry interpData = SequenceObjectCreator.CreateSequenceObject(sew.Pcc, "InterpData", cache);
+            PropertyCollection interpDataProps = new PropertyCollection();
+            interpDataProps.AddOrReplaceProp(new FloatProperty(20, "InterpLength"));
+            interpData.WriteProperties(interpDataProps);
 
             // Add the objects to the sequence
             KismetHelper.AddObjectToSequence(interp, sew.SelectedSequence);
