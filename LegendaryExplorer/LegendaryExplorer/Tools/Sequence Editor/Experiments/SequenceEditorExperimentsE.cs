@@ -22,43 +22,55 @@ namespace LegendaryExplorer.Tools.Sequence_Editor.Experiments {
         /// adds links for new groups, and keeps groups that remaing the same.
         /// </summary>
         /// <param name="sew">Sequence Editor window.</param>
-        public static void UpdateVarLinks(SequenceEditorWPF sew) {
-            if (sew.Pcc == null || sew.SelectedItem == null || sew.SelectedItem.Entry == null) { return; }
+        /// <param name="inLoop">Whether we're updating in a loop. Used to avoid double-checking what the caller has already checked.</param>
+        /// <param name="interp">Interp to update. Used to pass an interp gotten from a loop, rather than being a selected object.</param>
+        public static void UpdateVarLinks(SequenceEditorWPF sew, bool inLoop = false, ExportEntry interp = null) {
+            if (interp == null) {
+                if (sew.Pcc == null || sew.SelectedItem == null || sew.SelectedItem.Entry == null) { return; }
 
-            if (!sew.SelectedObjects.HasExactly(1)) {
-                ShowError("Select only one Interp object");
-                return;
-            }
+                if (!sew.SelectedObjects.HasExactly(1)) {
+                    ShowError("Select only one Interp object");
+                    return;
+                }
 
-            ExportEntry interp = sew.SelectedObjects[0].Export;
-            if (interp.ClassName != "SeqAct_Interp") {
-                ShowError("Selected object is not a SeqAct_Interp");
-                return;
+                interp = sew.SelectedObjects[0].Export;
+                if (interp.ClassName != "SeqAct_Interp") {
+                    ShowError("Selected object is not a SeqAct_Interp");
+                    return;
+                }
             }
 
             // We get a list of StructProperties instead of VarLinkInfo because we want to keep existing ones intact
             List<StructProperty> varLinks = interp.GetProperty<ArrayProperty<StructProperty>>("VariableLinks").ToList();
-            if (varLinks == null) {
-                ShowError("The selected Interp contains no VariableLinks");
-                return;
+            if (!inLoop) {
+                if (varLinks == null) {
+                    ShowError("The selected Interp contains no VariableLinks");
+                    return;
+                }
             }
 
             List<StructProperty> dataLinks = varLinks.Where(link => link.GetProp<StrProperty>("LinkDesc").Value == "Data").ToList();
-            if (!dataLinks.Any()) {
-                ShowError("The selected Interp contains no Data variable link");
-                return;
+            if (!inLoop) {
+                if (!dataLinks.Any()) {
+                    ShowError("The selected Interp contains no Data variable link");
+                    return;
+                }
             }
 
             ObjectProperty dataObj = dataLinks.First().GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables").FirstOrDefault();
-            if (dataObj == null) {
-                ShowError("No InterpDatas were linked to the Data variable link");
-                return;
+            if (!inLoop) {
+                if (dataObj == null) {
+                    ShowError("No InterpDatas were linked to the Data variable link");
+                    return;
+                }
             }
-            ExportEntry interpData = sew.Pcc.GetUExport(dataObj.Value);
 
-            if (interpData.ClassName != "InterpData") {
-                ShowError("The first object linked to the Data variable link is not an InterpData");
-                return;
+            ExportEntry interpData = sew.Pcc.GetUExport(dataObj.Value);
+            if (!inLoop) {
+                if (interpData.ClassName != "InterpData") {
+                    ShowError("The first object linked to the Data variable link is not an InterpData");
+                    return;
+                }
             }
 
             // Don't check if there are no InterpGroups, since an update could be to remove all of them
@@ -85,7 +97,8 @@ namespace LegendaryExplorer.Tools.Sequence_Editor.Experiments {
                 StructProperty varLink = varLinks.Find(link => string.Equals(link.GetProp<StrProperty>("LinkDesc").Value, name, StringComparison.OrdinalIgnoreCase));
                 if (varLink != null) {
                     updatedLinks.Add(varLink);
-                } else {
+                }
+                else {
                     PropertyCollection props = GlobalUnrealObjectInfo.getDefaultStructValue(sew.Pcc.Game, "SeqVarLink", true);
                     props.AddOrReplaceProp(new StrProperty(name, "LinKDesc"));
                     int index = sew.Pcc.FindImport("Engine.SeqVar_Object").UIndex;
@@ -99,7 +112,61 @@ namespace LegendaryExplorer.Tools.Sequence_Editor.Experiments {
             updatedLinks.ForEach(link => variableLinksProp.Add(link));
             interp.WriteProperty(variableLinksProp);
 
-            MessageBox.Show($"Variable links updated", "Success", MessageBoxButton.OK);
+            if (!inLoop) {
+                MessageBox.Show($"Variable links updated", "Success", MessageBoxButton.OK);
+            }
+        }
+        
+        /// <summary>
+        /// Updates the variable links of all selected interps, or all interps in the selected sequence, that contain an interpData.
+        /// </summary>
+        /// <param name="sew">Sequence Editor window.</param>
+        /// <param name="selected">True to update only selected interps. Falls to update the whole sequence.</param>
+        public static void UpdateSequenceVarLinks(SequenceEditorWPF sew, bool selected = false) {
+            if (sew.Pcc == null || sew.SelectedSequence == null) { return; }
+
+            ExportEntry selectedSequence = null;
+            if (selected) {
+                if (sew.SelectedObjects.Count == 0) { return; }
+            } else {
+                selectedSequence = sew.Pcc.GetUExport(sew.SelectedSequence.UIndex);
+                if (selectedSequence.ClassName != "Sequence") {
+                    ShowError("Selected sequence is not a valid sequence.");
+                    return;
+                 }
+            }
+
+            IEnumerable<ExportEntry> interps = selected ? sew.SelectedObjects.Select(el => el.Export)
+                                                        : GetAllSequenceElements(selectedSequence).Select(el => (ExportEntry)el);
+
+            interps = interps.Where(export => {
+                // Keep only Interps that contain valid InterpDatas
+                if (export.ClassName == "SeqAct_Interp") {
+                    List<StructProperty> varLinks = export.GetProperty<ArrayProperty<StructProperty>>("VariableLinks").ToList();
+                    if (varLinks == null) { return false; }
+                    List<StructProperty> dataLinks = varLinks.Where(link => link.GetProp<StrProperty>("LinkDesc").Value == "Data").ToList();
+                    if (!dataLinks.Any()) { return false; }
+                    ObjectProperty dataObj = dataLinks.First().GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables").FirstOrDefault();
+                    if (dataObj == null) { return false; }
+                    ExportEntry interpData = sew.Pcc.GetUExport(dataObj.Value);
+                    if (interpData.ClassName != "InterpData") { return false; }
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }).ToList();
+
+            if (!interps.Any()) {
+                ShowError($"Selected {(selected ? "interps contained no" : "sequence contains no interps with")} linked interpDatas.");
+                return;
+            }
+
+            foreach (ExportEntry interp in interps) {
+                UpdateVarLinks(sew, true, interp);
+            }
+
+            MessageBox.Show($"All {(selected ? "selected " :"")}interps' variable links were updated", "Success", MessageBoxButton.OK);
         }
 
         /// <summary>

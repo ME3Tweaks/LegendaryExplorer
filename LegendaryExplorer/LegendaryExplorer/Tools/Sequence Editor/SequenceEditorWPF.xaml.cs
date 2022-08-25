@@ -2685,6 +2685,14 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             SequenceEditorExperimentsE.UpdateVarLinks(GetSEWindow());
         }
 
+        private void UpdateSelVarLinks_Clicked(object sender, RoutedEventArgs e) {
+            SequenceEditorExperimentsE.UpdateSequenceVarLinks(GetSEWindow(), true);
+        }
+
+        private void UpdateSequenceVarLinks_Clicked(object sender, RoutedEventArgs e) {
+            SequenceEditorExperimentsE.UpdateSequenceVarLinks(GetSEWindow());
+        }
+
         private void AddDialogueWheelCam_Clicked(object sender, RoutedEventArgs e) {
             SequenceEditorExperimentsE.AddDialogueWheelTemplate(GetSEWindow());
         }
