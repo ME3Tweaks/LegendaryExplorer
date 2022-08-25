@@ -1232,7 +1232,8 @@ namespace LegendaryExplorerCore.Packages
             if (package.LECLTagData != null && package.LECLTagData.HasAnyData())
             {
                 ms.WriteInt32(LECPackageTag_Version_JSON); // The current version
-                var data = JsonConvert.SerializeObject(package.LECLTagData); // for debug reading
+                var data = JsonConvert.SerializeObject(package.LECLTagData, Formatting.None, 
+                    new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore }); // This makes it not serialize default values, like false bools
                 ms.WriteStringUtf8(data);
             }
             else
