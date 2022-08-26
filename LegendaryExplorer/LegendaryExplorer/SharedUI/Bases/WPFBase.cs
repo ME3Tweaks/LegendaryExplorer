@@ -67,11 +67,16 @@ namespace LegendaryExplorer.SharedUI.Bases
             Pcc = MEPackageHandler.OpenMEPackage(package, this);
         }
 
-        protected void LoadMEPackage(string s)
+        /// <summary>
+        /// Loads a package into this window from the specified filepath. If you already have a package object, consider using <see cref="RegisterPackage(IMEPackage)"/> instead.
+        /// </summary>
+        /// <param name="filePath">Filepath of package to open</param>
+        protected void LoadMEPackage(string filePath)
         {
             UnLoadMEPackage();
-            Pcc = MEPackageHandler.OpenMEPackage(s, this);
+            Pcc = MEPackageHandler.OpenMEPackage(filePath, this);
         }
+
 
         protected void LoadMEPackage(Stream stream, string associatedFilePath = null)
         {
