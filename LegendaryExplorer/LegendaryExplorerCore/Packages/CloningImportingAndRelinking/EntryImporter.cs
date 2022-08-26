@@ -526,7 +526,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     classValue = GetOrAddCrossImportOrPackage(sourceClassImport.InstancedFullPath, sourceExport.FileRef, destPackage, rop);
                     break;
                 case ExportEntry sourceClassExport:
-                    if (rop.GenerateImportsForGlobalFiles && IsSafeToImportFrom(sourceExport.FileRef.FilePath, destPackage.Game, destPackage.FilePath))
+                    if (rop.GenerateImportsForGlobalFiles && IsSafeToImportFrom(sourceExport.FileRef.FilePath, destPackage))
                     {
                         classValue = GenerateEntryForGlobalFileExport(sourceClassExport.InstancedFullPath, sourceExport.FileRef, destPackage, rop);
                         break;
@@ -549,7 +549,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     superclass = GetOrAddCrossImportOrPackage(sourceSuperClassImport.InstancedFullPath, sourceExport.FileRef, destPackage, rop);
                     break;
                 case ExportEntry sourceSuperClassExport:
-                    if (rop.GenerateImportsForGlobalFiles && IsSafeToImportFrom(sourceExport.FileRef.FilePath, destPackage.Game, destPackage.FilePath))
+                    if (rop.GenerateImportsForGlobalFiles && IsSafeToImportFrom(sourceExport.FileRef.FilePath, destPackage))
                     {
                         superclass = GenerateEntryForGlobalFileExport(sourceSuperClassExport.InstancedFullPath, sourceExport.FileRef, destPackage, rop);
                         break;
@@ -571,7 +571,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     archetype = GetOrAddCrossImportOrPackage(sourceArchetypeImport.InstancedFullPath, sourceExport.FileRef, destPackage, rop);
                     break;
                 case ExportEntry sourceArchetypeExport:
-                    if (rop.GenerateImportsForGlobalFiles && IsSafeToImportFrom(sourceExport.FileRef.FilePath, destPackage.Game, destPackage.FilePath))
+                    if (rop.GenerateImportsForGlobalFiles && IsSafeToImportFrom(sourceExport.FileRef.FilePath, destPackage))
                     {
                         archetype = GenerateEntryForGlobalFileExport(sourceArchetypeExport.InstancedFullPath, sourceExport.FileRef, destPackage, rop);
                         break;
@@ -1099,6 +1099,19 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             InternalGetUserSafeToImportFromFiles(game).Clear();
         }
 
+        public static bool IsSafeToImportFrom(string path, IMEPackage localPackage)
+        {
+            if (localPackage == null) return false;
+            if (localPackage.LECLTagData != null && localPackage.LECLTagData.ImportHintFiles?.Count > 0)
+            {
+                var fname = Path.GetFileName(path);
+                if (localPackage.LECLTagData.ImportHintFiles.Contains(fname, StringComparer.InvariantCultureIgnoreCase))
+                    return true; // It's an importable hint
+            }
+
+            return IsSafeToImportFrom(path, localPackage.Game, localPackage.FilePath);
+        }
+
         /// <summary>
         /// Determines if a file "should" be safe to import from. In order to test postload files, a sourceFilePath must be provided.
         /// </summary>
@@ -1212,9 +1225,13 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// <returns></returns>
         public static IReadOnlySet<string> UserSpecifiedSafeToImportFromFiles(MEGame game) => InternalGetUserSafeToImportFromFiles(game);
 
+        // I'm not sure what tools use these, or what they were used for.
+        // I don't think any ME3Tweaks (non LEX) tooling uses it, may be others?
+        public static bool CanImport(string className, IMEPackage destPackage) => CanImport(GlobalUnrealObjectInfo.GetClassOrStructInfo(destPackage.Game, className), destPackage);
         public static bool CanImport(string className, MEGame game, string sourceFilePath = null) => CanImport(GlobalUnrealObjectInfo.GetClassOrStructInfo(game, className), game, sourceFilePath);
 
         public static bool CanImport(ClassInfo classInfo, MEGame game, string sourceFilePath = null) => classInfo != null && IsSafeToImportFrom(classInfo.pccPath, game, sourceFilePath);
+        public static bool CanImport(ClassInfo classInfo, IMEPackage destPackage) => classInfo != null && IsSafeToImportFrom(classInfo.pccPath, destPackage);
 
         public static byte[] CreateStack(MEGame game, int stateNodeUIndex)
         {
@@ -1432,7 +1449,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             //add related files that will be loaded at the same time (eg. for BioD_Nor_310, check BioD_Nor_310_LOC_INT, BioD_Nor, and BioP_Nor)
             filesToCheck.AddRange(GetPossibleAssociatedFiles(package, localization));
 
-            
+
             //add base definition files that are always loaded (Core, Engine, etc.)
             foreach (var fileName in FilesSafeToImportFrom(package.Game))
             {
@@ -1621,7 +1638,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 // No cache and not testpatch. Can this be imported?
                 // Not actually sure if you can import testpatch since I think it just
                 // patches on object load but who knows
-                if (loadStream == null && rop.GenerateImportsForGlobalFiles && IsSafeToImportFrom(info.pccPath, pcc.Game, pcc.FilePath))
+                if (loadStream == null && rop.GenerateImportsForGlobalFiles && IsSafeToImportFrom(info.pccPath, pcc))
                 {
                     string package = Path.GetFileNameWithoutExtension(info.pccPath);
                     return pcc.getEntryOrAddImport($"{package}.{className}");
@@ -1856,6 +1873,23 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             {
                 addReference(dp.Value.ContainingObjectUIndex);
             }
+        }
+
+        /// <summary>
+        /// Attempts to resolve the specified import and returns true or false if it did.
+        /// </summary>
+        /// <param name="importEntry"></param>
+        /// <param name="export"></param>
+        /// <param name="globalCache"></param>
+        /// <param name="localCache"></param>
+        /// <param name="localization"></param>
+        /// <param name="unsafeLoad"></param>
+        /// <param name="localDirFiles"></param>
+        /// <returns></returns>
+        public static bool TryResolveImport(ImportEntry importEntry, out ExportEntry export, PackageCache globalCache = null, PackageCache localCache = null, string localization = @"INT", bool unsafeLoad = false, IEnumerable<string> localDirFiles = null)
+        {
+            export = ResolveImport(importEntry, globalCache, localCache, localization, unsafeLoad, localDirFiles);
+            return export != null;
         }
     }
 }

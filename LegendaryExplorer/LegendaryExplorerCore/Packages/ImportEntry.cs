@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Unreal;
+using LegendaryExplorerCore.Unreal.ObjectInfo;
 using PropertyChanged;
 
 namespace LegendaryExplorerCore.Packages
@@ -25,6 +26,28 @@ namespace LegendaryExplorerCore.Packages
             if (!pccFile.Endian.IsNative)
             {
                 _header.ReverseEndianness();
+            }
+        }
+
+        /// <summary>
+        /// Creates an import that would represent the specified export if it was to be placed in the specified fakeDestPackage.
+        /// </summary>
+        /// <param name="sourceExport">Export to convert. The link in the dest package must exist or be the root.</param>
+        /// <param name="fakeDestPackage">Package to associate this object with. The import is not installed to the import table.</param>
+        public ImportEntry(ExportEntry sourceExport, int parentIdx, IMEPackage fakeDestPackage)
+        {
+            FileRef = fakeDestPackage;
+            idxLink = parentIdx;
+            ClassName = sourceExport.ClassName;
+            ObjectName = sourceExport.ObjectName;
+            var classInfo = GlobalUnrealObjectInfo.GetClassOrStructInfo(fakeDestPackage.Game, sourceExport.ClassName);
+            if (classInfo != null)
+            {
+                PackageFile = Path.GetFileNameWithoutExtension(classInfo.pccPath).UpperFirst();
+            }
+            else
+            {
+                PackageFile = @"Core"; // ?? This could be engine, sfxgame...
             }
         }
 
@@ -84,7 +107,7 @@ namespace LegendaryExplorerCore.Packages
             get => GenerateHeader();
             set => SetHeaderValuesFromByteArray(value);
         }
-        
+
         public void SetHeaderValuesFromByteArray(byte[] value)
         {
             if (value is null)
