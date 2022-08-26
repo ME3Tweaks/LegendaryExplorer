@@ -207,6 +207,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
         public ICommand TrashCommand { get; set; }
         public ICommand SetIndicesInTreeToZeroCommand { get; set; }
         public ICommand PackageHeaderViewerCommand { get; set; }
+        public ICommand LECLEditorCommand { get; set; }
         public ICommand CreateNewPackageGUIDCommand { get; set; }
         public ICommand RestoreExportCommand { get; set; }
         public ICommand SetPackageAsFilenamePackageCommand { get; set; }
@@ -267,6 +268,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
             SetIndicesInTreeToZeroCommand = new GenericCommand(SetIndicesInTreeToZero, TreeEntryIsSelected);
             TrashCommand = new GenericCommand(TrashEntryAndChildren, TreeEntryIsSelected);
             PackageHeaderViewerCommand = new GenericCommand(ViewPackageInfo, PackageIsLoaded);
+            LECLEditorCommand = new GenericCommand(EditLECLData, CanEditLECLData);
             PackageExportIsSelectedCommand = new EnableCommand(PackageExportIsSelected);
             CreateNewPackageGUIDCommand = new GenericCommand(GenerateNewGUIDForSelected, PackageExportIsSelected);
             SetPackageAsFilenamePackageCommand = new GenericCommand(SetSelectedAsFilenamePackage, PackageExportIsSelected);
@@ -308,6 +310,14 @@ namespace LegendaryExplorer.Tools.PackageEditor
             NavigateBackCommand = new GenericCommand(NavigateToPreviousEntry, () => CurrentView == CurrentViewMode.Tree && BackwardsIndexes != null && BackwardsIndexes.Any());
 
             CreateClassCommand = new GenericCommand(CreateClass, IsLoadedPackageME);
+        }
+
+        // LECLData is only available on LE game files
+        private bool CanEditLECLData() => Pcc != null && Pcc.Game.IsLEGame();
+
+        private void EditLECLData()
+        {
+            new LECLDataEditorWindow(this, Pcc).ShowDialog();
         }
 
         private void CreateClass()
@@ -1995,27 +2005,27 @@ namespace LegendaryExplorer.Tools.PackageEditor
                             break;
                         }
                     case "WwiseBank":
-                    {
-                        string extension = Path.GetExtension(".bnk");
-                        var wdiag = new OpenFileDialog
                         {
-                            Title = "Select WwiseBank file",
-                            Filter = $"*{extension}|*{extension}"
-                        };
-                        if (wdiag.ShowDialog() == true)
-                        {
-                            var length = new FileInfo(wdiag.FileName).Length;
-                            MemoryStream outStream = new MemoryStream();
-                            // Write Bulk Data header
-                            outStream.WriteInt32(0); // Local
-                            outStream.WriteInt32((int)length); // Compressed size
-                            outStream.WriteInt32((int)length); // Decompressed size
-                            outStream.WriteInt32(0); // Data offset - this is not external so this is not used
-                            outStream.Write(File.ReadAllBytes(wdiag.FileName));
-                            exp.WriteBinary(outStream.GetBuffer());
+                            string extension = Path.GetExtension(".bnk");
+                            var wdiag = new OpenFileDialog
+                            {
+                                Title = "Select WwiseBank file",
+                                Filter = $"*{extension}|*{extension}"
+                            };
+                            if (wdiag.ShowDialog() == true)
+                            {
+                                var length = new FileInfo(wdiag.FileName).Length;
+                                MemoryStream outStream = new MemoryStream();
+                                // Write Bulk Data header
+                                outStream.WriteInt32(0); // Local
+                                outStream.WriteInt32((int)length); // Compressed size
+                                outStream.WriteInt32((int)length); // Decompressed size
+                                outStream.WriteInt32(0); // Data offset - this is not external so this is not used
+                                outStream.Write(File.ReadAllBytes(wdiag.FileName));
+                                exp.WriteBinary(outStream.GetBuffer());
+                            }
+                            break;
                         }
-                        break;
-                    }
                 }
             }
         }
