@@ -1209,7 +1209,7 @@ namespace LegendaryExplorerCore.Packages
         private static void WriteLegendaryExplorerCoreTag(MemoryStream ms, IMEPackage package)
         {
             if (package is not MEPackage mep) return; // Do not write on non ME packages.
-            if (mep.Game.IsLEGame()) return; // Do not write on non-LE even if this is somehow called.
+            if (!mep.Game.IsLEGame()) return; // Do not write on non-LE even if this is somehow called.
 
             var pos = ms.Position;
 

@@ -50,6 +50,7 @@ namespace LegendaryExplorerCore.Packages
 
             // IF ADDING DATA TO THIS CLASS ENSURE YOU ADD IT BELOW OR IT WILL NOT SERIALIZE IN SOME CASES
             if (ImportHintFiles.Count > 0) return true;
+            if (IsPostLoadFile) return true;
 
             return false;
         }
