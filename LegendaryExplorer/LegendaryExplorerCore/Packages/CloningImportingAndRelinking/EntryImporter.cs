@@ -37,6 +37,15 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// Configures <see cref="RelinkerOptionsPackage.GenerateImportsForGlobalFiles"/> to force porting exports when porting out of a global file (when set to false), rather than imports.
         /// </summary>
         public bool PortGlobalsAsImports { get; set; } = true;
+
+        /// <summary>
+        /// If exports should be attempted to be resolved as imports in the destination package. If they can be resolved, port as imports instead
+        /// </summary>
+        public bool PortExportsAsImportsWhenPossible { get; set; }
+        /// <summary>
+        /// If imports should be tested for resolution in the destination package on port. If they fail, port as resolved source exports instead.
+        /// </summary>
+        public bool PortExportsMemorySafe { get; set; }
     }
     public static class EntryImporter
     {
@@ -1747,7 +1756,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         }
 
         /// <summary>
-        /// Gets a list of things the specified export references
+        /// Gets a recursive list of things the specified export references
         /// </summary>
         /// <param name="export">The export to check</param>
         /// <param name="includeLink">If the link should be included, which can sometimes pull in way more stuff than you want</param>

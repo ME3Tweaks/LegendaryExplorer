@@ -3622,6 +3622,9 @@ namespace LegendaryExplorer.Tools.PackageEditor
             if (dropInfo.TargetItem is TreeViewEntry targetItem && dropInfo.Data is TreeViewEntry sourceItem &&
                 sourceItem.Parent != null)
             {
+
+                var dragInfo = dropInfo.DragInfo;
+                var sourceWindow = Window.GetWindow(dragInfo.VisualSource) as PackageEditorWindow;
                 if (targetItem.Game.IsLEGame() != sourceItem.Game.IsLEGame() &&
                     !App.IsDebug &&
                     sourceItem.Entry.Game != MEGame.UDK) // allow UDK -> OT and LE)
@@ -3650,7 +3653,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     return;
                 }
 
-                var portingOption = TreeMergeDialog.GetMergeType(this, sourceItem, targetItem, Pcc.Game);
+                var portingOption = TreeMergeDialog.GetMergeType(sourceWindow, this, sourceItem, targetItem, Pcc.Game);
 
                 if (portingOption.PortingOptionChosen == EntryImporter.PortingOption.Cancel)
                 {
@@ -3727,8 +3730,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 {
                     IsCrossGame = sourceEntry.Game != targetItem.Game && sourceEntry.Game != MEGame.UDK,
                     TargetGameDonorDB = objectDB,
-                    Cache = objectDB != null ? new PackageCache() : null, // For donors to work you MUST provide a package cache otherwise it'll take ages
-                    // as LEX closes on dispose which we don't want
+                    Cache = new PackageCache(),
                     ImportExportDependencies = portingOption.PortingOptionChosen is EntryImporter.PortingOption.CloneAllDependencies
                         or EntryImporter.PortingOption.ReplaceSingularWithRelink,
                     GenerateImportsForGlobalFiles = portingOption.PortGlobalsAsImports

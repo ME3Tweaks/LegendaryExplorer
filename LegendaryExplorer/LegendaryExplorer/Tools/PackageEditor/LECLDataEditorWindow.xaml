@@ -21,6 +21,7 @@
             <GroupBox Header="Import resolution">
                 <StackPanel>
                     <TextBlock TextWrapping="Wrap" Text="Imports are exports that are expected to be loaded into memory by another file before the current package file loads. Imports are resolved on package load. Due to the complex nature of Unreal Engine 3 memory management, mod tools may need additional info to reliably resolve imports."/>
+                    <TextBlock TextWrapping="Wrap" Foreground="Red" FontWeight="Bold" Text="WARNING: If you don't know what these options actually do, DO NOT CHANGE THEM. IT WILL RESULT IN FILES ADDING BAD IMPORTS."/>
                     <TextBlock Text="Importable file hints" FontWeight="Bold"/>
                     <TextBlock TextWrapping="Wrap" Margin="10,0,0,0"
                                Text="The following list of files will be used for import resolution in modding tools in addition to the standard set of files. This can be useful for when this package depends on a file that will always be loaded in advance, such as a startup file. This package must be in either the same directory as this package, or installed into the game."/>
