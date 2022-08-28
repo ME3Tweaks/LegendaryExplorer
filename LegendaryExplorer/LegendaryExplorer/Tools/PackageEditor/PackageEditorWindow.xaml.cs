@@ -3710,7 +3710,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     else
                     {
                         var result = MessageBox.Show("Port With Donors checkbox was selected, but no object database was found! Continue operation without donors?",
-                            "No object database", MessageBoxButton.YesNo);
+                            "No object database", MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No);
                         if (result is not MessageBoxResult.Yes)
                         {
                             return;
@@ -3733,7 +3733,9 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     Cache = new PackageCache(),
                     ImportExportDependencies = portingOption.PortingOptionChosen is EntryImporter.PortingOption.CloneAllDependencies
                         or EntryImporter.PortingOption.ReplaceSingularWithRelink,
-                    GenerateImportsForGlobalFiles = portingOption.PortGlobalsAsImports
+                    GenerateImportsForGlobalFiles = portingOption.PortGlobalsAsImports,
+                    PortImportsMemorySafe = portingOption.PortExportsMemorySafe,
+                    PortExportsAsImportsWhenPossible = portingOption.PortExportsAsImportsWhenPossible,
                 };
 
                 var relinkResults = EntryImporter.ImportAndRelinkEntries(portingOption.PortingOptionChosen, sourceEntry, Pcc,

@@ -113,10 +113,11 @@
                           Visibility="{Binding IsCrossGamePort, Converter={StaticResource BoolToVisibilityConverter}}"/>
                         <CheckBox Content="Port exports as imports when possible" IsChecked="{Binding PortGlobalsAsImports}"/>
                         <TextBlock Text="When exports are transferred across files, exports are tested if they can be resolved as an import. If they can, they are transferred as an import instead. This may significantly slow down porting." TextWrapping="Wrap"/>
-                        <CheckBox Content="Use memory-safe import porting" IsChecked="{Binding UseMemorySafeExportPorting}"/>
+                        <CheckBox Content="Use memory-safe import porting" IsChecked="{Binding PortExportsMemorySafe}"/>
                         <TextBlock Text="Tests if imports being transferred will resolve in the destination file. If they can't be resolved in the destination file, they are ported as exports instead by resolving the import in the source file. This may significantly slow down porting." TextWrapping="Wrap"/>
-                        <CheckBox Content="Treat source file as non-global file" IsChecked="{Binding TreatSourceAsNonGlobal}"/>
-                        <TextBlock Text="When porting out of this file, port as exports rather than imports. Normally when porting out of a globally loaded file, relinked exports are converted to imports. This feature can be useful for merge mod development." TextWrapping="Wrap"/>
+                        <CheckBox Content="Treat source file as non-global file" IsChecked="{Binding PortGlobalsAsImports}" Visibility="{Binding IsGlobalFile, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                        <TextBlock Text="When porting out of this file, port as exports rather than imports. Normally when porting out of a globally loaded file, relinked exports are converted to imports. This feature can be useful for merge mod development." 
+                                   Visibility="{Binding IsGlobalFile, Converter={StaticResource BoolToVisibilityConverter}}" TextWrapping="Wrap"/>
                     </StackPanel>
                 </GroupBox>
             </StackPanel>
