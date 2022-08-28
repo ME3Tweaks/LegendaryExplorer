@@ -124,6 +124,9 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:ae9a59f95e465ec9327224ebf04f44f58"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#ae9a59f95e465ec9327224ebf04f44f58">CreateAndSavePackage</a> (string path, <a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game)</td></tr>
 <tr class="memdesc:ae9a59f95e465ec9327224ebf04f44f58"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates and saves a package. A package is not returned as the saving code will add data that must be re-read for a package to be properly used.  <a href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#ae9a59f95e465ec9327224ebf04f44f58">More...</a><br /></td></tr>
 <tr class="separator:ae9a59f95e465ec9327224ebf04f44f58"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aca987fbab3733a0794051f4ef8da0063"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#aca987fbab3733a0794051f4ef8da0063">CreateAndLoadPackage</a> (string path, <a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game)</td></tr>
+<tr class="memdesc:aca987fbab3733a0794051f4ef8da0063"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates, saves, then loads the package from disk.  <a href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#aca987fbab3733a0794051f4ef8da0063">More...</a><br /></td></tr>
+<tr class="separator:aca987fbab3733a0794051f4ef8da0063"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2631b772bd54bd50bd7293e3e01bc5e1"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#a2631b772bd54bd50bd7293e3e01bc5e1">CreateEmptyLevel</a> (string outpath, <a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game)</td></tr>
 <tr class="memdesc:a2631b772bd54bd50bd7293e3e01bc5e1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generates a new empty level package file.  <a href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#a2631b772bd54bd50bd7293e3e01bc5e1">More...</a><br /></td></tr>
 <tr class="separator:a2631b772bd54bd50bd7293e3e01bc5e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -575,6 +578,51 @@ Static Public Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Creates and saves a package. A package is not returned as the saving code will add data that must be re-read for a package to be properly used. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">path</td><td>Where to save the package</td></tr>
+    <tr><td class="paramname">game</td><td>What game the package is for</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="aca987fbab3733a0794051f4ef8da0063" name="aca987fbab3733a0794051f4ef8da0063"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aca987fbab3733a0794051f4ef8da0063">&#9670;&nbsp;</a></span>CreateAndLoadPackage()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> LegendaryExplorerCore.Packages.MEPackageHandler.CreateAndLoadPackage </td>
+          <td>(</td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>path</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a>&#160;</td>
+          <td class="paramname"><em>game</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Creates, saves, then loads the package from disk. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">path</td><td>Where to save the package</td></tr>

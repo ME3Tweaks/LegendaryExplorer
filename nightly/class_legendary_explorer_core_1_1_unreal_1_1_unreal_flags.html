@@ -228,7 +228,7 @@ Public Types</h2></td></tr>
 , <br />
 &#160;&#160;<a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a8def86843a96d28addeef00f23e50b08a487b2547c5c01cb86f6b0eee42d36fd0">LoadForCooking</a> = 0x0100000000000000U
 , <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a8def86843a96d28addeef00f23e50b08a90504a8acb6950fac05f11009d59d061">BioNonShip</a> = 0x0200000000000000U
-, <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a8def86843a96d28addeef00f23e50b08a2c91a2a8271e0d5f8ae3fa507fdce76e">BioIgnorePropertyAdd</a> =0x0400000000000000U
+, <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a8def86843a96d28addeef00f23e50b08a2c91a2a8271e0d5f8ae3fa507fdce76e">BioIgnorePropertyAdd</a> = 0x0400000000000000U
 , <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a8def86843a96d28addeef00f23e50b08ab1f7873a21541c3b48a1c2df56ada133">SortBarrier</a> = 0x0800000000000000U
 , <br />
 &#160;&#160;<a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a8def86843a96d28addeef00f23e50b08a1e8355ea58bbf3276d54bebf972c7ac9">ClearCrossLevel</a> = 0x1000000000000000U
@@ -242,33 +242,53 @@ Public Types</h2></td></tr>
 <tr class="separator:a8def86843a96d28addeef00f23e50b08"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a93717837f7a982013c328e4e478ca1fe"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1fe">EObjectFlags</a> : ulong { <br />
 &#160;&#160;<a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1fea004ced0bbc33921f214c2f9d9bb0341f">InSingularFunc</a> = 0x0000000000000002
-, <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1fea0958821a92993d147d41069435de783e">ClassDefaultObject</a> = 0x0000000000000200
-, <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1fea5c416e2d0220836ef81cd4a6ffa3bb7b">IsCrossLevelReferenced</a> = 0x0000000000400000
+, <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1fea8499576aa97bf34e41c9ffec52b20151">StateChanged</a> = 0x0000000000000004
+, <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1feaf0f399ee9bc554389a41f51408516106">DebugPostLoad</a> = 0x0000000000000008
+, <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1feaa95664d9e20af34e8d0294c20abf91bb">DebugSerialize</a> = 0x0000000000000010
+, <br />
+&#160;&#160;<a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1fea1ac602e95cf7febcbb16e0abb15e2ff9">DebugFinishDestroy</a> = 0x0000000000000020
+, <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1fea19ddd1e45c58b1544e1c52cbaffb581a">EdSelected</a> = 0x0000000000000040
+, <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1feace97bfbff62838e142b35fe02e49dece">ZombieComponent</a> = 0x0000000000000080
+, <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1fea56f0605c9795b173abd2e34fab7fc164">Protected</a> = 0x0000000000000100
+, <br />
+&#160;&#160;<a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1fea0958821a92993d147d41069435de783e">ClassDefaultObject</a> = 0x0000000000000200
 , <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1fea37c7e837629de19d47006f74c9f246f0">ArchetypeObject</a> = 0x0000000000000400
+, <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1fea8d4cd79c05be0f855eaf6a534f775438">ForceTagExp</a> = 0x0000000000000800
+, <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1fea01d835085f429b2ecd8a7a083478cbc8">TokenStreamAssembled</a> = 0x0000000000001000
 , <br />
-&#160;&#160;<a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1feae931ebac52c153a09cb881e546211a6f">LocalizedResource</a> = 0x0000000000080000
+&#160;&#160;<a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1fea8587b5632492a7c758bd9ac4bd2476a1">MisAlignedObject</a> = 0x0000000000002000
+, <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1fea938560a4aa1fe4cb114cbd06dae811d4">RootSet</a> = 0x0000000000004000
+, <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1fea985a7680cb912d2b44f97838f5555616">BeginDestroyed</a> = 0x0000000000008000
+, <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1fea799f6ba6913f632cdea8c41b63d95977">FinishDestroyed</a> = 0x0000000000010000
+, <br />
+&#160;&#160;<a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1fea475079df3ffee0db1ccd86e5cd2a2c81">DebugBeginDestroyed</a> = 0x0000000000020000
+, <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1fea8bfa2ad32aa56bdc4e2b3fd95ff81c6d">MarkedByCooker</a> = 0x0000000000040000
+, <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1feae931ebac52c153a09cb881e546211a6f">LocalizedResource</a> = 0x0000000000080000
+, <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1fea516f6f748b6535dd9c1478534057daae">InitializedProps</a> = 0x0000000000100000
+, <br />
+&#160;&#160;<a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1fea161d036d9c4396bf048b3adad69e8be1">PendingFieldPatches</a> = 0x0000000000200000
+, <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1fea5c416e2d0220836ef81cd4a6ffa3bb7b">IsCrossLevelReferenced</a> = 0x0000000000400000
+, <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1fea248336101b461380a4b2391a7625493d">Saved</a> = 0x0000000080000000
 , <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1fead7140284ac92d169d24484726d8a2f10">Transactional</a> = 0x0000000100000000
-, <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1fea4bed942140642650ca78039de000796a">Unreachable</a> = 0x0000000200000000
+, <br />
+&#160;&#160;<a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1fea4bed942140642650ca78039de000796a">Unreachable</a> = 0x0000000200000000
 , <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1fea3d067bedfe2f4677470dd6ccf64d05ed">Public</a> = 0x0000000400000000
-, <br />
-&#160;&#160;<a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1feab8427a71a6481f600967bedbbe06e3f0">TagImp</a> = 0x0000000800000000
+, <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1feab8427a71a6481f600967bedbbe06e3f0">TagImp</a> = 0x0000000800000000
 , <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1fea9d7fbceb2c7db544e74d9262a808dda9">TagExp</a> = 0x0000001000000000
-, <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1feaec30c235d0eb792797af1aa1d11759a7">Obsolete</a> = 0x0000002000000000
+, <br />
+&#160;&#160;<a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1feaec30c235d0eb792797af1aa1d11759a7">Obsolete</a> = 0x0000002000000000
 , <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1fea4409537fd193c2a5a3fbca9828034919">TagGarbage</a> = 0x0000004000000000
-, <br />
-&#160;&#160;<a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1feabeae421a14a34f831c113f61323d1ab3">Final</a> = 0x0000008000000000
+, <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1feac5458efc10b9b00b32efe72bf98250a6">DisregardForGC</a> = 0x0000008000000000
 , <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1feae4fba638ba2d7b547a7ec2c9ab0afd26">PerObjectLocalized</a> = 0x0000010000000000
-, <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1fea3dadc18031ff5014431a52aefccfc27f">NeedLoad</a> = 0x0000020000000000
-, <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1fea9ae63df4440af7b9b3472dab4519b606">HighlightedName</a> = 0x0000040000000000
 , <br />
-&#160;&#160;<a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1fea8687544e8d0f5bb2693a7caad0c83a36">EliminateObject</a> = 0x0000040000000000
-, <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1feac13b992f5586aecaf41d100b200e12dc">RemappedName</a> = 0x0000080000000000
+&#160;&#160;<a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1fea3dadc18031ff5014431a52aefccfc27f">NeedLoad</a> = 0x0000020000000000
+, <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1feac45504fe8ef51ad2d9652dddc050612d">AsyncLoading</a> = 0x0000040000000000
+, <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1fea1a9361df7945671b180ba81a6ae8aa6f">NeedPostLoadSubobjects</a> = 0x0000080000000000
 , <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1fea853fbbeb76e35bea97202cc179baa627">Suppress</a> = 0x0000100000000000
-, <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1fea8499576aa97bf34e41c9ffec52b20151">StateChanged</a> = 0x0000100000000000
 , <br />
 &#160;&#160;<a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1fea172fbb291ff1297d77b967525a62e5aa">InEndState</a> = 0x0000200000000000
 , <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1feab1f023eff9a6b5308d6024e4c6b3d475">Transient</a> = 0x0000400000000000
-, <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1fea483a342f570093eb964731c52f159293">Preloading</a> = 0x0000800000000000
+, <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1fea603704d17e2b294629335466e6ca92bb">Cooked</a> = 0x0000800000000000
 , <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1fea896f15929ebedce478e4dc18a7f85d34">LoadForClient</a> = 0x0001000000000000
 , <br />
 &#160;&#160;<a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1fea9eaf3370d4b37f8e16a21aa05d10b534">LoadForServer</a> = 0x0002000000000000
@@ -278,17 +298,13 @@ Public Types</h2></td></tr>
 , <br />
 &#160;&#160;<a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1fea4ac918632b6b3203bd1c0c9a2d42cf75">NotForServer</a> = 0x0020000000000000
 , <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1fea905adb9e1b86ee1d90ccdc4cf2d872d5">NotForEdit</a> = 0x0040000000000000
-, <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1feaaefbd0597f1bc2493bbc18898243513b">Destroyed</a> = 0x0080000000000000
 , <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1fead7fe531d940761625e8fac882a58aa6d">NeedPostLoad</a> = 0x0100000000000000
+, <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1fea6db837f5f5c35344316ff26282b0d037">HasStack</a> = 0x0200000000000000
 , <br />
-&#160;&#160;<a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1fea6db837f5f5c35344316ff26282b0d037">HasStack</a> = 0x0200000000000000
-, <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1fea925641e0b76c28cc940e8f3ca178d826">Native</a> = 0x0400000000000000
+&#160;&#160;<a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1fea925641e0b76c28cc940e8f3ca178d826">Native</a> = 0x0400000000000000
 , <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1feab80c545ea15439f0b585c86a6aab3226">Marked</a> = 0x0800000000000000
 , <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1fea138e41b95348f0fac88aefcf2f9b79f5">ErrorShutdown</a> = 0x1000000000000000
-, <br />
-&#160;&#160;<a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1feaf0f399ee9bc554389a41f51408516106">DebugPostLoad</a> = 0x2000000000000000
-, <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1feaa95664d9e20af34e8d0294c20abf91bb">DebugSerialize</a> = 0x4000000000000000
-, <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1fea3372af6746087cc5e00af73c4b96a8dd">DebugDestroy</a> = 0x8000000000000000
+, <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1fea5d70defc71a5fada1396ad989b5c7971">PendingKill</a> = 0x2000000000000000
 <br />
  }</td></tr>
 <tr class="separator:a93717837f7a982013c328e4e478ca1fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -651,10 +667,28 @@ Static Public Attributes</h2></td></tr>
 </div><div class="memdoc">
 <table class="fieldtable">
 <tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a93717837f7a982013c328e4e478ca1fea004ced0bbc33921f214c2f9d9bb0341f" name="a93717837f7a982013c328e4e478ca1fea004ced0bbc33921f214c2f9d9bb0341f"></a>InSingularFunc&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a93717837f7a982013c328e4e478ca1fea8499576aa97bf34e41c9ffec52b20151" name="a93717837f7a982013c328e4e478ca1fea8499576aa97bf34e41c9ffec52b20151"></a>StateChanged&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a93717837f7a982013c328e4e478ca1feaf0f399ee9bc554389a41f51408516106" name="a93717837f7a982013c328e4e478ca1feaf0f399ee9bc554389a41f51408516106"></a>DebugPostLoad&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a93717837f7a982013c328e4e478ca1feaa95664d9e20af34e8d0294c20abf91bb" name="a93717837f7a982013c328e4e478ca1feaa95664d9e20af34e8d0294c20abf91bb"></a>DebugSerialize&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a93717837f7a982013c328e4e478ca1fea1ac602e95cf7febcbb16e0abb15e2ff9" name="a93717837f7a982013c328e4e478ca1fea1ac602e95cf7febcbb16e0abb15e2ff9"></a>DebugFinishDestroy&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a93717837f7a982013c328e4e478ca1fea19ddd1e45c58b1544e1c52cbaffb581a" name="a93717837f7a982013c328e4e478ca1fea19ddd1e45c58b1544e1c52cbaffb581a"></a>EdSelected&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a93717837f7a982013c328e4e478ca1feace97bfbff62838e142b35fe02e49dece" name="a93717837f7a982013c328e4e478ca1feace97bfbff62838e142b35fe02e49dece"></a>ZombieComponent&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a93717837f7a982013c328e4e478ca1fea56f0605c9795b173abd2e34fab7fc164" name="a93717837f7a982013c328e4e478ca1fea56f0605c9795b173abd2e34fab7fc164"></a>Protected&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a93717837f7a982013c328e4e478ca1fea0958821a92993d147d41069435de783e" name="a93717837f7a982013c328e4e478ca1fea0958821a92993d147d41069435de783e"></a>ClassDefaultObject&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a93717837f7a982013c328e4e478ca1fea5c416e2d0220836ef81cd4a6ffa3bb7b" name="a93717837f7a982013c328e4e478ca1fea5c416e2d0220836ef81cd4a6ffa3bb7b"></a>IsCrossLevelReferenced&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a93717837f7a982013c328e4e478ca1fea37c7e837629de19d47006f74c9f246f0" name="a93717837f7a982013c328e4e478ca1fea37c7e837629de19d47006f74c9f246f0"></a>ArchetypeObject&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a93717837f7a982013c328e4e478ca1fea8d4cd79c05be0f855eaf6a534f775438" name="a93717837f7a982013c328e4e478ca1fea8d4cd79c05be0f855eaf6a534f775438"></a>ForceTagExp&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a93717837f7a982013c328e4e478ca1fea01d835085f429b2ecd8a7a083478cbc8" name="a93717837f7a982013c328e4e478ca1fea01d835085f429b2ecd8a7a083478cbc8"></a>TokenStreamAssembled&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a93717837f7a982013c328e4e478ca1fea8587b5632492a7c758bd9ac4bd2476a1" name="a93717837f7a982013c328e4e478ca1fea8587b5632492a7c758bd9ac4bd2476a1"></a>MisAlignedObject&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a93717837f7a982013c328e4e478ca1fea938560a4aa1fe4cb114cbd06dae811d4" name="a93717837f7a982013c328e4e478ca1fea938560a4aa1fe4cb114cbd06dae811d4"></a>RootSet&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a93717837f7a982013c328e4e478ca1fea985a7680cb912d2b44f97838f5555616" name="a93717837f7a982013c328e4e478ca1fea985a7680cb912d2b44f97838f5555616"></a>BeginDestroyed&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a93717837f7a982013c328e4e478ca1fea799f6ba6913f632cdea8c41b63d95977" name="a93717837f7a982013c328e4e478ca1fea799f6ba6913f632cdea8c41b63d95977"></a>FinishDestroyed&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a93717837f7a982013c328e4e478ca1fea475079df3ffee0db1ccd86e5cd2a2c81" name="a93717837f7a982013c328e4e478ca1fea475079df3ffee0db1ccd86e5cd2a2c81"></a>DebugBeginDestroyed&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a93717837f7a982013c328e4e478ca1fea8bfa2ad32aa56bdc4e2b3fd95ff81c6d" name="a93717837f7a982013c328e4e478ca1fea8bfa2ad32aa56bdc4e2b3fd95ff81c6d"></a>MarkedByCooker&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a93717837f7a982013c328e4e478ca1feae931ebac52c153a09cb881e546211a6f" name="a93717837f7a982013c328e4e478ca1feae931ebac52c153a09cb881e546211a6f"></a>LocalizedResource&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a93717837f7a982013c328e4e478ca1fea516f6f748b6535dd9c1478534057daae" name="a93717837f7a982013c328e4e478ca1fea516f6f748b6535dd9c1478534057daae"></a>InitializedProps&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a93717837f7a982013c328e4e478ca1fea161d036d9c4396bf048b3adad69e8be1" name="a93717837f7a982013c328e4e478ca1fea161d036d9c4396bf048b3adad69e8be1"></a>PendingFieldPatches&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a93717837f7a982013c328e4e478ca1fea5c416e2d0220836ef81cd4a6ffa3bb7b" name="a93717837f7a982013c328e4e478ca1fea5c416e2d0220836ef81cd4a6ffa3bb7b"></a>IsCrossLevelReferenced&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a93717837f7a982013c328e4e478ca1fea248336101b461380a4b2391a7625493d" name="a93717837f7a982013c328e4e478ca1fea248336101b461380a4b2391a7625493d"></a>Saved&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a93717837f7a982013c328e4e478ca1fead7140284ac92d169d24484726d8a2f10" name="a93717837f7a982013c328e4e478ca1fead7140284ac92d169d24484726d8a2f10"></a>Transactional&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a93717837f7a982013c328e4e478ca1fea4bed942140642650ca78039de000796a" name="a93717837f7a982013c328e4e478ca1fea4bed942140642650ca78039de000796a"></a>Unreachable&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a93717837f7a982013c328e4e478ca1fea3d067bedfe2f4677470dd6ccf64d05ed" name="a93717837f7a982013c328e4e478ca1fea3d067bedfe2f4677470dd6ccf64d05ed"></a>Public&#160;</td><td class="fielddoc"></td></tr>
@@ -662,17 +696,15 @@ Static Public Attributes</h2></td></tr>
 <tr><td class="fieldname"><a id="a93717837f7a982013c328e4e478ca1fea9d7fbceb2c7db544e74d9262a808dda9" name="a93717837f7a982013c328e4e478ca1fea9d7fbceb2c7db544e74d9262a808dda9"></a>TagExp&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a93717837f7a982013c328e4e478ca1feaec30c235d0eb792797af1aa1d11759a7" name="a93717837f7a982013c328e4e478ca1feaec30c235d0eb792797af1aa1d11759a7"></a>Obsolete&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a93717837f7a982013c328e4e478ca1fea4409537fd193c2a5a3fbca9828034919" name="a93717837f7a982013c328e4e478ca1fea4409537fd193c2a5a3fbca9828034919"></a>TagGarbage&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a93717837f7a982013c328e4e478ca1feabeae421a14a34f831c113f61323d1ab3" name="a93717837f7a982013c328e4e478ca1feabeae421a14a34f831c113f61323d1ab3"></a>Final&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a93717837f7a982013c328e4e478ca1feac5458efc10b9b00b32efe72bf98250a6" name="a93717837f7a982013c328e4e478ca1feac5458efc10b9b00b32efe72bf98250a6"></a>DisregardForGC&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a93717837f7a982013c328e4e478ca1feae4fba638ba2d7b547a7ec2c9ab0afd26" name="a93717837f7a982013c328e4e478ca1feae4fba638ba2d7b547a7ec2c9ab0afd26"></a>PerObjectLocalized&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a93717837f7a982013c328e4e478ca1fea3dadc18031ff5014431a52aefccfc27f" name="a93717837f7a982013c328e4e478ca1fea3dadc18031ff5014431a52aefccfc27f"></a>NeedLoad&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a93717837f7a982013c328e4e478ca1fea9ae63df4440af7b9b3472dab4519b606" name="a93717837f7a982013c328e4e478ca1fea9ae63df4440af7b9b3472dab4519b606"></a>HighlightedName&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a93717837f7a982013c328e4e478ca1fea8687544e8d0f5bb2693a7caad0c83a36" name="a93717837f7a982013c328e4e478ca1fea8687544e8d0f5bb2693a7caad0c83a36"></a>EliminateObject&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a93717837f7a982013c328e4e478ca1feac13b992f5586aecaf41d100b200e12dc" name="a93717837f7a982013c328e4e478ca1feac13b992f5586aecaf41d100b200e12dc"></a>RemappedName&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a93717837f7a982013c328e4e478ca1feac45504fe8ef51ad2d9652dddc050612d" name="a93717837f7a982013c328e4e478ca1feac45504fe8ef51ad2d9652dddc050612d"></a>AsyncLoading&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a93717837f7a982013c328e4e478ca1fea1a9361df7945671b180ba81a6ae8aa6f" name="a93717837f7a982013c328e4e478ca1fea1a9361df7945671b180ba81a6ae8aa6f"></a>NeedPostLoadSubobjects&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a93717837f7a982013c328e4e478ca1fea853fbbeb76e35bea97202cc179baa627" name="a93717837f7a982013c328e4e478ca1fea853fbbeb76e35bea97202cc179baa627"></a>Suppress&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a93717837f7a982013c328e4e478ca1fea8499576aa97bf34e41c9ffec52b20151" name="a93717837f7a982013c328e4e478ca1fea8499576aa97bf34e41c9ffec52b20151"></a>StateChanged&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a93717837f7a982013c328e4e478ca1fea172fbb291ff1297d77b967525a62e5aa" name="a93717837f7a982013c328e4e478ca1fea172fbb291ff1297d77b967525a62e5aa"></a>InEndState&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a93717837f7a982013c328e4e478ca1feab1f023eff9a6b5308d6024e4c6b3d475" name="a93717837f7a982013c328e4e478ca1feab1f023eff9a6b5308d6024e4c6b3d475"></a>Transient&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a93717837f7a982013c328e4e478ca1fea483a342f570093eb964731c52f159293" name="a93717837f7a982013c328e4e478ca1fea483a342f570093eb964731c52f159293"></a>Preloading&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a93717837f7a982013c328e4e478ca1fea603704d17e2b294629335466e6ca92bb" name="a93717837f7a982013c328e4e478ca1fea603704d17e2b294629335466e6ca92bb"></a>Cooked&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a93717837f7a982013c328e4e478ca1fea896f15929ebedce478e4dc18a7f85d34" name="a93717837f7a982013c328e4e478ca1fea896f15929ebedce478e4dc18a7f85d34"></a>LoadForClient&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a93717837f7a982013c328e4e478ca1fea9eaf3370d4b37f8e16a21aa05d10b534" name="a93717837f7a982013c328e4e478ca1fea9eaf3370d4b37f8e16a21aa05d10b534"></a>LoadForServer&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a93717837f7a982013c328e4e478ca1fea3d9ba1922983b5517ca1d9342b0432c1" name="a93717837f7a982013c328e4e478ca1fea3d9ba1922983b5517ca1d9342b0432c1"></a>LoadForEdit&#160;</td><td class="fielddoc"></td></tr>
@@ -680,15 +712,12 @@ Static Public Attributes</h2></td></tr>
 <tr><td class="fieldname"><a id="a93717837f7a982013c328e4e478ca1fead76a08975dec2543016f345fe29356af" name="a93717837f7a982013c328e4e478ca1fead76a08975dec2543016f345fe29356af"></a>NotForClient&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a93717837f7a982013c328e4e478ca1fea4ac918632b6b3203bd1c0c9a2d42cf75" name="a93717837f7a982013c328e4e478ca1fea4ac918632b6b3203bd1c0c9a2d42cf75"></a>NotForServer&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a93717837f7a982013c328e4e478ca1fea905adb9e1b86ee1d90ccdc4cf2d872d5" name="a93717837f7a982013c328e4e478ca1fea905adb9e1b86ee1d90ccdc4cf2d872d5"></a>NotForEdit&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a93717837f7a982013c328e4e478ca1feaaefbd0597f1bc2493bbc18898243513b" name="a93717837f7a982013c328e4e478ca1feaaefbd0597f1bc2493bbc18898243513b"></a>Destroyed&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a93717837f7a982013c328e4e478ca1fead7fe531d940761625e8fac882a58aa6d" name="a93717837f7a982013c328e4e478ca1fead7fe531d940761625e8fac882a58aa6d"></a>NeedPostLoad&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a93717837f7a982013c328e4e478ca1fea6db837f5f5c35344316ff26282b0d037" name="a93717837f7a982013c328e4e478ca1fea6db837f5f5c35344316ff26282b0d037"></a>HasStack&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a93717837f7a982013c328e4e478ca1fea925641e0b76c28cc940e8f3ca178d826" name="a93717837f7a982013c328e4e478ca1fea925641e0b76c28cc940e8f3ca178d826"></a>Native&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a93717837f7a982013c328e4e478ca1feab80c545ea15439f0b585c86a6aab3226" name="a93717837f7a982013c328e4e478ca1feab80c545ea15439f0b585c86a6aab3226"></a>Marked&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a93717837f7a982013c328e4e478ca1fea138e41b95348f0fac88aefcf2f9b79f5" name="a93717837f7a982013c328e4e478ca1fea138e41b95348f0fac88aefcf2f9b79f5"></a>ErrorShutdown&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a93717837f7a982013c328e4e478ca1feaf0f399ee9bc554389a41f51408516106" name="a93717837f7a982013c328e4e478ca1feaf0f399ee9bc554389a41f51408516106"></a>DebugPostLoad&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a93717837f7a982013c328e4e478ca1feaa95664d9e20af34e8d0294c20abf91bb" name="a93717837f7a982013c328e4e478ca1feaa95664d9e20af34e8d0294c20abf91bb"></a>DebugSerialize&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a93717837f7a982013c328e4e478ca1fea3372af6746087cc5e00af73c4b96a8dd" name="a93717837f7a982013c328e4e478ca1fea3372af6746087cc5e00af73c4b96a8dd"></a>DebugDestroy&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a93717837f7a982013c328e4e478ca1fea5d70defc71a5fada1396ad989b5c7971" name="a93717837f7a982013c328e4e478ca1fea5d70defc71a5fada1396ad989b5c7971"></a>PendingKill&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>

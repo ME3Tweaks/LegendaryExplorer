@@ -8,8 +8,9 @@ var searchData=
   ['zlib_5',['Zlib',['../class_legendary_explorer_core_1_1_compression_1_1_zlib.html',1,'LegendaryExplorerCore.Compression.Zlib'],['../class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#ad74b667bf197fb96fa3e9a5bebae419ead697a787afbc87e2117697b91ed26272',1,'LegendaryExplorerCore.Packages.UnrealPackageFile.Zlib()']]],
   ['zlibblock_2ecs_6',['ZlibBlock.cs',['../_zlib_block_8cs.html',1,'']]],
   ['zlibhelper_2ecs_7',['ZlibHelper.cs',['../_zlib_helper_8cs.html',1,'']]],
-  ['zoneactor_8',['ZoneActor',['../class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_zone_properties.html#a3f884a989a2ba4fc9bb272053045f92d',1,'LegendaryExplorerCore::Unreal::BinaryConverters::ZoneProperties']]],
-  ['zoneindex_9',['ZoneIndex',['../class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_model_component.html#a3a5617a061897e3f0aabce32aadccbf9',1,'LegendaryExplorerCore::Unreal::BinaryConverters::ModelComponent']]],
-  ['zoneproperties_10',['ZoneProperties',['../class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_zone_properties.html',1,'LegendaryExplorerCore::Unreal::BinaryConverters']]],
-  ['zones_11',['Zones',['../class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_model.html#a1e5895203280c2b9d4c4ec6cda2596d8',1,'LegendaryExplorerCore::Unreal::BinaryConverters::Model']]]
+  ['zombiecomponent_8',['ZombieComponent',['../class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html#a93717837f7a982013c328e4e478ca1feace97bfbff62838e142b35fe02e49dece',1,'LegendaryExplorerCore::Unreal::UnrealFlags']]],
+  ['zoneactor_9',['ZoneActor',['../class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_zone_properties.html#a3f884a989a2ba4fc9bb272053045f92d',1,'LegendaryExplorerCore::Unreal::BinaryConverters::ZoneProperties']]],
+  ['zoneindex_10',['ZoneIndex',['../class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_model_component.html#a3a5617a061897e3f0aabce32aadccbf9',1,'LegendaryExplorerCore::Unreal::BinaryConverters::ModelComponent']]],
+  ['zoneproperties_11',['ZoneProperties',['../class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_zone_properties.html',1,'LegendaryExplorerCore::Unreal::BinaryConverters']]],
+  ['zones_12',['Zones',['../class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_model.html#a1e5895203280c2b9d4c4ec6cda2596d8',1,'LegendaryExplorerCore::Unreal::BinaryConverters::Model']]]
 ];
