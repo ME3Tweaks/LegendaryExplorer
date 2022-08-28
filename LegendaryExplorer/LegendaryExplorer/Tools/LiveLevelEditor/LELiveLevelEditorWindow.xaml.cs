@@ -26,6 +26,7 @@ using LegendaryExplorerCore.Unreal.BinaryConverters;
 using InterpCurveVector = LegendaryExplorerCore.Unreal.BinaryConverters.InterpCurve<System.Numerics.Vector3>;
 using InterpCurveFloat = LegendaryExplorerCore.Unreal.BinaryConverters.InterpCurve<float>;
 using LegendaryExplorer.Tools.PackageEditor;
+using System.Runtime.InteropServices;
 
 namespace LegendaryExplorer.Tools.LiveLevelEditor
 {
@@ -79,17 +80,21 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
                 throw new Exception($"{game} does not support LE Live Level Editor!");
             }
 
-            GameTarget.GameReceiveMessage += GameControllerOnReceiveMessage;
-
             if (Instance(game) is not null)
             {
                 throw new Exception($"Can only have one instance of {game} Live Level Editor open!");
             }
             Instances[game] = this;
 
+            GameTarget.GameReceiveMessage += GameControllerOnReceiveMessage;
+
             DataContext = this;
             LoadCommands();
             InitializeComponent();
+
+            ActorEditorPanel.DataContext = this;
+            //LightEditorPanel.DataContext = this;
+
             GameOpenTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
             GameOpenTimer.Tick += CheckIfGameOpen;
             RetryLoadTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(6) };
@@ -201,7 +206,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             if (command[0] != "LIVELEVELEDITOR")
                 return; // Not for us
 
-            Debug.WriteLine($"LLE Command: {msg}");
+            //Debug.WriteLine($"LLE Command: {msg}");
             var verb = command[1]; // Message Info
             // "READY" is done on first initialize and will automatically 
             if (verb == "READY") // We polled game, and found LLE is available
@@ -210,7 +215,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
                 GameOpenTimer.Start();
                 BusyText = "Building Actor list";
                 actorTab.IsSelected = true;
-
+                // Pull the initial list of actors
                 DumpActors();
             }
             else if (verb == "ACTORDUMPSTART") // We're about to receive a list of actors
@@ -234,15 +239,10 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             }
             else if (verb == "ACTORLOC" && command.Length == 5)
             {
-                Vector3 pos = defaultPosition;
-                pos.X = float.Parse(command[2]);
-                pos.Y = float.Parse(command[3]);
-                pos.Z = float.Parse(command[4]);
-
                 noUpdate = true;
-                XPos = (int)pos.X;
-                YPos = (int)pos.Y;
-                ZPos = (int)pos.Z;
+                XPos = (int)float.Parse(command[2]);
+                YPos = (int)float.Parse(command[3]);
+                ZPos = (int)float.Parse(command[4]);
                 noUpdate = false;
                 EndBusy();
             }
@@ -259,16 +259,11 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             }
             else if (verb == "ACTORSCALE" && command.Length == 6)
             {
-                Vector3 scale3D = defaultScale3D;
-                scale3D.X = float.Parse(command[3]);
-                scale3D.Y = float.Parse(command[4]);
-                scale3D.Z = float.Parse(command[5]);
-
                 noUpdate = true;
                 Scale = float.Parse(command[2]);
-                XScale = scale3D.X;
-                YScale = scale3D.Y;
-                ZScale = scale3D.Z;
+                XScale = float.Parse(command[3]);
+                YScale = float.Parse(command[4]);
+                ZScale = float.Parse(command[5]);
                 noUpdate = false;
                 EndBusy();
             }
@@ -321,6 +316,11 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         }
 
         public ObservableDictionary<string, ObservableCollectionExtended<ActorEntry2>> ActorDict { get; } = new();
+
+        /// <summary>
+        /// Builds actor information based on what's sent from the Interop ASI
+        /// </summary>
+        /// <param name="actorInfoStr"></param>
         private void BuildActor(string actorInfoStr)
         {
             string[] parts = actorInfoStr.Split(':');
@@ -405,30 +405,28 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             {
                 if (SetProperty(ref _selectedActor, value) && !noUpdate && value != null)
                 {
-                    SetBusy($"Selecting {value.DisplayText}", () => { });
-                    InteropHelper.SendMessageToGame($"LLE_SELECT_ACTOR {Path.GetFileNameWithoutExtension(value.FileName)} TheWorld.PersistentLevel.{value.DisplayText}", Game);
+                    SetBusy($"Selecting {value.ActorName}", () => { });
+                    InteropHelper.SendMessageToGame($"LLE_SELECT_ACTOR {Path.GetFileNameWithoutExtension(value.FileName)} TheWorld.PersistentLevel.{value.ActorName}", Game);
                 }
             }
         }
 
-        private bool _drawTrace = true;
-        public bool DrawTrace
+        private bool _showTraceToActor = true;
+        public bool ShowTraceToActor
         {
-            get => _drawTrace;
+            get => _showTraceToActor;
             set {
-                if (SetProperty(ref _drawTrace, value))
+                if (SetProperty(ref _showTraceToActor, value))
                 {
-                    InteropHelper.SendMessageToGame(_drawTrace ? "LLE_SHOW_TRACE" : "LLE_HIDE_TRACE", Game);
+                    InteropHelper.SendMessageToGame(_showTraceToActor ? "LLE_SHOW_TRACE" : "LLE_HIDE_TRACE", Game);
                 }
             }
         }
 
         #region Position/Rotation/Scale
-        private static readonly Vector3 defaultPosition = Vector3.Zero;
-        private static readonly Vector3 defaultScale3D = Vector3.One;
 
-        private int _xPos = (int)defaultPosition.X;
-        public int XPos
+        private float _xPos;
+        public float XPos
         {
             get => _xPos;
             set
@@ -440,8 +438,8 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             }
         }
 
-        private int _yPos = (int)defaultPosition.Y;
-        public int YPos
+        private float _yPos;
+        public float YPos
         {
             get => _yPos;
             set
@@ -453,8 +451,8 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             }
         }
 
-        private int _zPos = (int)defaultPosition.Z;
-        public int ZPos
+        private float _zPos;
+        public float ZPos
         {
             get => _zPos;
             set
@@ -466,8 +464,8 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             }
         }
 
-        private int _posIncrement = 10;
-        public int PosIncrement
+        private float _posIncrement = 10;
+        public float PosIncrement
         {
             get => _posIncrement;
             set => SetProperty(ref _posIncrement, value);
@@ -534,7 +532,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         }
 
 
-        private float _xScale = defaultScale3D.X;
+        private float _xScale = 1;
         public float XScale
         {
             get => _xScale;
@@ -547,7 +545,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             }
         }
 
-        private float _yScale = defaultScale3D.Y;
+        private float _yScale = 1;
         public float YScale
         {
             get => _yScale;
@@ -560,7 +558,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             }
         }
 
-        private float _zScale = defaultScale3D.Z;
+        private float _zScale = 1;
         public float ZScale
         {
             get => _zScale;

@@ -12,14 +12,18 @@
         xmlns:controls="clr-namespace:LegendaryExplorer.SharedUI.Controls" 
         xmlns:exportLoaderControls="clr-namespace:LegendaryExplorer.UserControls.ExportLoaderControls"
         xmlns:liveLevelEditor="clr-namespace:LegendaryExplorer.Tools.LiveLevelEditor"
+        xmlns:editorPanels="clr-namespace:LegendaryExplorer.Tools.LiveLevelEditor.EditorPanels"
         mc:Ignorable="d"
-        Width="600"
+        Width="800"
+        Height="1000"
         MinWidth="580"
+        MinHeight="500"
         Icon="pack://application:,,,/Tools/Icons/16x16/LiveLevelEditor_Icon_16.ico"
         d:DataContext="{Binding RelativeSource={RelativeSource Self}}"
-        Title="Live Level Editor" SizeToContent="WidthAndHeight" Closing="LiveLevelEditor_OnClosing">
+        Title="Live Level Editor" SizeToContent="Manual" Closing="LiveLevelEditor_OnClosing">
     <Window.Resources>
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
         <converters:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter"/>
         <converters:GameToVisibilityConverter x:Key="GameToVisibilityConverter"/>
         <ContextMenu x:Key="packagesContextMenu">
@@ -87,118 +91,22 @@
                                 <ColumnDefinition Width="5" />
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <controls:ListBoxScroll x:Name="listBoxPackages" ItemsSource="{Binding ActorDict}" DisplayMemberPath="Key" SelectedValuePath="Value" ContextMenu="{StaticResource packagesContextMenu}"/>
-                            <GridSplitter Width="5" HorizontalAlignment="Stretch" Grid.Column="1" />
-                            <Border BorderBrush="LightSlateGray" BorderThickness="0.65" Grid.Column="2">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="5"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <controls:ListBoxScroll x:Name="listBoxPackages" ItemsSource="{Binding ActorDict}" DisplayMemberPath="Key" SelectedValuePath="Value" ContextMenu="{StaticResource packagesContextMenu}" Grid.Row="0" Grid.RowSpan="3"/>
+                            <Border BorderBrush="LightSlateGray" BorderThickness="0.65" Grid.Row="0" Grid.Column="2" >
                                 <controls:ListBoxScroll ItemsSource="{Binding SelectedValue, ElementName=listBoxPackages}" DisplayMemberPath="DisplayText" SelectedItem="{Binding SelectedActor}"
                                                         ContextMenu="{StaticResource actorsContextMenu}"/>
                             </Border>
+                            <editorPanels:LLEActorEditorPanel x:Name="ActorEditorPanel" Grid.Row="2" Grid.Column="2"/>
+
+                            <!--<editorPanels:LLELightEditorPanel x:Name="LightEditorPanel" Grid.Row="3" Grid.Column="2"/>-->
+
                         </Grid>
-                        <WrapPanel Grid.Row="2">
-                            <StackPanel>
-                                <Label Content="Actor Position" Margin="10,0,0,0" />
-                                <Border Margin="10,0,10,10" BorderBrush="#FFD8D8D8" BorderThickness="2"
-                                        CornerRadius="5">
-                                    <StackPanel Orientation="Vertical">
-                                        <StackPanel Orientation="Horizontal">
-                                            <!--<Button Content=" Reset Position " Margin="5" Click="SetDefaultPosition_Click" />-->
-                                            <StackPanel Orientation="Horizontal">
-                                                <TextBlock Text=" X:  " VerticalAlignment="Center" />
-                                                <xctk:IntegerUpDown Name="xPosUpDown" Value="{Binding XPos}"
-                                                                    Increment="{Binding PosIncrement}" ButtonSpinnerLocation="Left" />
-                                            </StackPanel>
-                                            <StackPanel Orientation="Horizontal">
-                                                <TextBlock Text=" Y:  " VerticalAlignment="Center" />
-                                                <xctk:IntegerUpDown Name="yPosUpDown" Value="{Binding YPos}"
-                                                                    Increment="{Binding PosIncrement}" ButtonSpinnerLocation="Left" />
-                                            </StackPanel>
-                                            <StackPanel Orientation="Horizontal">
-                                                <TextBlock Text=" Z:  " VerticalAlignment="Center" />
-                                                <xctk:IntegerUpDown Name="zPosUpDown" Value="{Binding ZPos}"
-                                                                    Increment="{Binding PosIncrement}" ButtonSpinnerLocation="Left" />
-                                            </StackPanel>
-                                        </StackPanel>
-                                        <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text=" Increment:  " VerticalAlignment="Center" />
-                                            <xctk:IntegerUpDown Value="{Binding PosIncrement}" Minimum="0"  ButtonSpinnerLocation="Left"/>
-                                        </StackPanel>
-                                    </StackPanel>
-                                </Border>
-                            </StackPanel>
-                            <StackPanel>
-                                <Label Content="Actor Rotation" Margin="10,0,0,0" />
-                                <Border Margin="10,0,10,10" BorderBrush="#FFD8D8D8" BorderThickness="2"
-                                        CornerRadius="5">
-                                    <StackPanel Orientation="Vertical">
-                                        <StackPanel Orientation="Horizontal">
-                                            <!--<Button Content=" Reset Rotation " Margin="5" Click="ResetRotation_Click" />-->
-                                            <TextBlock Text=" Pitch:  " VerticalAlignment="Center" />
-                                            <xctk:IntegerUpDown Name="pitchUpDown" Value="{Binding Pitch}"
-                                                                Increment="{Binding RotIncrement}"  ButtonSpinnerLocation="Left"/>
-                                            <TextBlock Text=" Yaw:  " VerticalAlignment="Center" />
-                                            <xctk:IntegerUpDown Name="yawUpDown" Value="{Binding Yaw}"
-                                                                Increment="{Binding RotIncrement}"  ButtonSpinnerLocation="Left"/>
-                                            <TextBlock Text=" Roll:  " VerticalAlignment="Center" />
-                                            <xctk:IntegerUpDown Name="rollUpDown" Value="{Binding Roll}"
-                                                                Increment="{Binding RotIncrement}"  ButtonSpinnerLocation="Left"/>
-                                        </StackPanel>
-                                        <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text=" Increment:  " VerticalAlignment="Center" />
-                                            <xctk:IntegerUpDown Value="{Binding RotIncrement}" Minimum="0"  ButtonSpinnerLocation="Left"/>
-                                        </StackPanel>
-                                    </StackPanel>
-                                </Border>
-                            </StackPanel>
-                            <StackPanel>
-                                <Label Content="Actor Scale" Margin="10,0,0,0" />
-                                <Border Margin="10,0,10,10" BorderBrush="#FFD8D8D8" BorderThickness="2"
-                                        CornerRadius="5">
-                                    <StackPanel Orientation="Vertical">
-                                        <StackPanel Orientation="Horizontal">
-                                            <!--<Button Content=" Reset Scale " Margin="5" Click="SetDefaultScale_Click" />-->
-                                            <StackPanel Orientation="Horizontal">
-                                                <TextBlock Text=" Scale:  " VerticalAlignment="Center" />
-                                                <xctk:SingleUpDown Name="scaleUpDown" Value="{Binding Scale}"
-                                                                   Increment="{Binding ScaleIncrement}"  ButtonSpinnerLocation="Left" FormatString="F3"/>
-                                            </StackPanel>
-                                            <StackPanel Orientation="Horizontal">
-                                                <TextBlock Text=" X:  " VerticalAlignment="Center" />
-                                                <xctk:SingleUpDown Name="xScaleUpDown" Value="{Binding XScale}"
-                                                                   Increment="{Binding ScaleIncrement}"  ButtonSpinnerLocation="Left" FormatString="F3"/>
-                                            </StackPanel>
-                                            <StackPanel Orientation="Horizontal">
-                                                <TextBlock Text=" Y:  " VerticalAlignment="Center" />
-                                                <xctk:SingleUpDown Name="yScaleUpDown" Value="{Binding YScale}"
-                                                                   Increment="{Binding ScaleIncrement}"  ButtonSpinnerLocation="Left" FormatString="F3"/>
-                                            </StackPanel>
-                                            <StackPanel Orientation="Horizontal">
-                                                <TextBlock Text=" Z:  " VerticalAlignment="Center" />
-                                                <xctk:SingleUpDown Name="zScaleUpDown" Value="{Binding ZScale}"
-                                                                   Increment="{Binding ScaleIncrement}" ButtonSpinnerLocation="Left" FormatString="F3"/>
-                                            </StackPanel>
-                                        </StackPanel>
-                                        <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text=" Increment:  " VerticalAlignment="Center" />
-                                            <xctk:SingleUpDown Value="{Binding ScaleIncrement}" Minimum="0" ButtonSpinnerLocation="Left" FormatString="F3"/>
-                                        </StackPanel>
-                                    </StackPanel>
-                                </Border>
-                            </StackPanel>
-                            <StackPanel>
-                                <Label Content="Misc" Margin="10,0,0,0" />
-                                <Border Margin="10,0,10,10" BorderBrush="#FFD8D8D8" BorderThickness="2"
-                                        CornerRadius="5">
-                                    <StackPanel Orientation="Vertical">
-                                        <StackPanel Orientation="Horizontal">
-                                            <StackPanel Orientation="Horizontal">
-                                                <TextBlock Text=" Draw Line To Selected Actor:  " VerticalAlignment="Center" />
-                                                <CheckBox IsChecked="{Binding DrawTrace}"/>
-                                            </StackPanel>
-                                        </StackPanel>
-                                    </StackPanel>
-                                </Border>
-                            </StackPanel>
-                        </WrapPanel>
                     </Grid>
                 </TabItem>
                 <!--<TabItem Name="optionsTab" Header="Controls/Options" Visibility="{Binding ReadyToView, Converter={StaticResource BoolToVisibilityConverter}}">

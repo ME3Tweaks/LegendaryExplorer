@@ -145,14 +145,20 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
         }
 
-        public static void OverrideVignettes(PackageEditorWindow pewpf)
+        public static void CoalesceBioActorTypes(PackageEditorWindow pewpf)
         {
 
             Task.Run(() =>
             {
-                pewpf.BusyText = "Enumerating exports for PPS...";
+                MEPackageHandler.GlobalSharedCacheEnabled = false;
+                PackageCache globalCache = new PackageCache();
+
+                // Load global files into the cache to speed this process up.
+                globalCache.InsertIntoCache(MEPackageHandler.OpenMEPackages(EntryImporter.FilesSafeToImportFrom(MEGame.LE1).Select(x=>Path.Combine(MEDirectories.GetCookedPath(MEGame.LE1), x))));
+                using var actorTypesPackage = MEPackageHandler.CreateAndLoadPackage(Path.Combine(MEDirectories.GetCookedPath(MEGame.LE1), "LE1ActorTypes.pcc"), MEGame.LE1);
+                pewpf.BusyText = "Coalescing actor types...";
                 pewpf.IsBusy = true;
-                var allFiles = MELoadedFiles.GetOfficialFiles(MEGame.LE3).Where(x => Path.GetExtension(x) == ".pcc").ToList();
+                var allFiles = MELoadedFiles.GetOfficialFiles(MEGame.LE1).Where(x => Path.GetExtension(x) == ".pcc").ToList();
                 int totalFiles = allFiles.Count;
                 int numDone = 0;
                 foreach (string filePath in allFiles)
@@ -160,33 +166,18 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     //if (!filePath.EndsWith("Engine.pcc"))
                     //    continue;
                     using IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath);
-                    foreach (var f in pcc.Exports)
+                    foreach (var f in pcc.Exports.Where(x => !x.IsDefaultObject && x.IsA("BioActorType")))
                     {
-                        var props = f.GetProperties();
-                        foreach (var prop in props)
-                        {
-                            if (prop is StructProperty sp && sp.StructType == "PostProcessSettings")
-                            {
-                                var vignette = sp.GetProp<BoolProperty>("bEnableVignette");
-                                var vigOverride = sp.GetProp<BoolProperty>("bOverride_EnableVignette");
-
-                                if (vigOverride != null && vignette != null)
-                                {
-                                    vignette.Value = false;
-                                    vigOverride.Value = true;
-                                    f.WriteProperty(sp);
-                                }
-                            }
-                        }
+                        EntryExporter.ExportExportToPackage(f, actorTypesPackage, out var _, globalCache);
 
                     }
 
-                    if (pcc.IsModified)
-                        pcc.Save();
-
                     numDone++;
-                    pewpf.BusyText = $"Enumerating exports for PPS [{numDone}/{totalFiles}]";
+                    pewpf.BusyText = $"Coalescing actor types [{numDone}/{totalFiles}]";
                 }
+                actorTypesPackage.Save();
+                MEPackageHandler.GlobalSharedCacheEnabled = true;
+
             }).ContinueWithOnUIThread(foundCandidates => { pewpf.IsBusy = false; });
         }
 
@@ -1967,7 +1958,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 if (string.IsNullOrEmpty(donorFullName))
                     return;
                 var donorPath = Path.Combine(PAEMPaths.VTest_DonorsDir, $"{donorFullName}.pcc");
-                MEPackageHandler.CreateAndSavePackage(donorPath, MEGame.LE1);
+                MEPackageHandler.CreateAndSavePackage(donorPath, MEGame.LE3);
                 using var donorPackage = MEPackageHandler.OpenMEPackage(donorPath);
 
                 var parts = donorFullName.Split('.');
@@ -1982,7 +1973,9 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     else
                     {
                         exp.ObjectName = parts[i];
-                        EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, exp, donorPackage, parent, true, new RelinkerOptionsPackage() { ImportExportDependencies = true }, out var newDonor);
+                        EntryExporter.ExportExportToPackage(exp, donorPackage, out var portedEntry);
+                        portedEntry.idxLink = parent?.UIndex ?? 0;
+                        //EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, exp, donorPackage, parent, true, new RelinkerOptionsPackage() { ImportExportDependencies = true }, out var newDonor);
                     }
                 }
                 donorPackage.Save();
@@ -2842,14 +2835,23 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         public static void ExpertTerrainDataToUDK(PackageEditorWindow pe)
         {
             {
-                var udkDestFile = @"C:\Users\Mgame\Desktop\ahernterrain.udk";
+                OpenFileDialog d = new OpenFileDialog { Title = "Select UDK file to export to (MUST HAVE TERRAIN ALREADY)", Filter = "*.udk|*.udk" };
+                if (d.ShowDialog() != true)
+                    return;
+                var udkDestFile = d.FileName;
                 using var udkP = MEPackageHandler.OpenUDKPackage(udkDestFile);
 
-                var sourcePackage = @"X:\Origin GAmes\Mass Effect\DLC\DLC_VEGAS\CookedPC\Maps\PRC2\BIOA_PRC2_CCAHERN.SFM";
+                OpenFileDialog f = new OpenFileDialog { Title = "Select source file to export from", Filter = GameFileFilters.OpenFileFilter };
+                if (f.ShowDialog() != true)
+                    return;
+
+                var sourcePackage = f.FileName;
                 using var sourceP = MEPackageHandler.OpenMEPackage(sourcePackage);
 
-                var udkT = udkP.FindExport(@"TheWorld.PersistentLevel.Terrain_0");
-                var sourceT = sourceP.FindExport(@"TheWorld.PersistentLevel.Terrain_1");
+                var udkT = udkP.Exports.FirstOrDefault(x => x.ClassName == "Terrain");
+
+                // Might need changed if files have multiple terrains... is that normal?
+                var sourceT = sourceP.Exports.FirstOrDefault(x => x.ClassName == "Terrain");
 
                 var udkTerrBin = ObjectBinary.From<Terrain>(udkT);
                 var sourceTerrBin = ObjectBinary.From<Terrain>(sourceT);
@@ -2873,10 +2875,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 }
 
 
-                udkP.Save(@"B:\Documents\CCAHERN_TERRAIN_PORTED.udk");
+                udkP.Save(udkDestFile);
             }
-            return;
-
         }
 
         // This method depended on VTest which was moved to CrossGenV. It may be re-instated later if we ever want to make mako maps again

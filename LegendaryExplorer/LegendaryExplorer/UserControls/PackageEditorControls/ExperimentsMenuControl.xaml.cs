@@ -454,9 +454,9 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             PackageEditorExperimentsM.MapMaterialIDs(GetPEWindow());
         }
 
-        private async void ForceVignetteOff_Click(object sender, RoutedEventArgs e)
+        private async void CoalesceBioActorTypesLE1_Click(object sender, RoutedEventArgs e)
         {
-            PackageEditorExperimentsM.OverrideVignettes(GetPEWindow());
+            PackageEditorExperimentsM.CoalesceBioActorTypes(GetPEWindow());
         }
 
         private void RebuildSelectedMaterialExpressions(object sender, RoutedEventArgs e)

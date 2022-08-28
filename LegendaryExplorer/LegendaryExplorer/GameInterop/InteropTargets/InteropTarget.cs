@@ -50,6 +50,7 @@ namespace LegendaryExplorer.GameInterop.InteropTargets
             }
         }
 
+        // This needs kept around for ME3 since we aren't updating its ASI anymore
         public void ExecuteConsoleCommands(IntPtr hWnd, params string[] commands) => ExecuteConsoleCommands(hWnd, commands.AsEnumerable());
         public void ExecuteConsoleCommands(IntPtr hWnd, IEnumerable<string> commands)
         {
@@ -57,6 +58,18 @@ namespace LegendaryExplorer.GameInterop.InteropTargets
 
             File.WriteAllText(execFilePath, string.Join(Environment.NewLine, commands));
             GameController.DirectExecuteConsoleCommand(hWnd, $"exec {ExecFileName}");
+        }
+
+        /// <summary>
+        /// Use for LE games!
+        /// </summary>
+        /// <param name="command"></param>
+        public void ModernExecuteConsoleCommand(string command)
+        {
+            if (!Game.IsLEGame())
+                throw new Exception("This method only works on LE games");
+
+            InteropHelper.SendMessageToGame($"CONSOLECOMMAND {command}", Game);
         }
 
         public bool IsGameInstalled() => MEDirectories.GetExecutablePath(Game) is string exePath && File.Exists(exePath);

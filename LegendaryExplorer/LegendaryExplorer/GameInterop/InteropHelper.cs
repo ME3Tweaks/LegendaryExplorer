@@ -19,6 +19,23 @@ namespace LegendaryExplorer.GameInterop
 {
     public class InteropHelper
     {
+        #region COMMON COMMANDS
+
+        // Todo: Maybe move to target class
+
+        /// <summary>
+        /// Triggers a console event in kismet
+        /// </summary>
+        /// <param name="eventName"></param>
+        /// <param name="game"></param>
+        public static void CauseEvent(string eventName, MEGame game)
+        {
+            SendMessageToGame($"CAUSEEVENT {eventName}", game);
+        }
+        #endregion
+
+
+
         //Currently will not work, as ASIs are not included in LEX due to anti-virus software freaking out about them :(
         /*public static void InstallInteropASI(MEGame game)
         {
