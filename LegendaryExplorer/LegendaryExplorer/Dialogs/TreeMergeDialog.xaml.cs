@@ -25,6 +25,7 @@ namespace LegendaryExplorer.Dialogs
         private readonly IEntry targetEntry;
         private readonly PackageEditorWindow sourceWindow;
         private readonly PackageEditorWindow destWindow;
+        private readonly IMEPackage targetPackage;
         private readonly bool sourceHasChildren;
         private readonly bool targetHasChildren;
 
@@ -46,7 +47,7 @@ namespace LegendaryExplorer.Dialogs
         /// <summary>
         /// Is the source file a globally loaded file?
         /// </summary>
-        public bool IsGlobalFile => EntryImporter.IsSafeToImportFrom(sourceEntry.FileRef.FilePath, sourceEntry.Game);
+        public bool IsGlobalFile => EntryImporter.IsSafeToImportFrom(sourceEntry.FileRef.FilePath, sourceEntry.Game, targetPackage.FilePath);
 
         private bool _portGlobalsAsImports = true;
         public bool PortGlobalsAsImports { get => _portGlobalsAsImports; set => SetProperty(ref _portGlobalsAsImports, value); }
@@ -62,8 +63,9 @@ namespace LegendaryExplorer.Dialogs
             this.sourceWindow = sourceWindow;
             this.destWindow = destWindow;
             Owner = destWindow;
+            this.targetPackage = targetPackage;
 
-            IsCrossGamePort = sourceEntry.Game != targetGame;
+            IsCrossGamePort = sourceEntry.Game != targetPackage.Game;
             if (IsCrossGamePort)
                 PortUsingDonors = true;
 

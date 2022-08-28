@@ -275,7 +275,14 @@ namespace LegendaryExplorerCore.Packages
             bool fullyCompressed = false;
 
             var er = new EndianReader(stream);
-            if (stream.ReadUInt32() == UnrealPackageFile.packageTagBigEndian) er.Endian = Endian.Big;
+            var packageTag = stream.ReadUInt32();
+            if (packageTag == UnrealPackageFile.packageTagBigEndian) er.Endian = Endian.Big;
+            if (packageTag == MEPackage.ME1SavePackageTag)
+            {
+                stream.ReadUInt32(); // Should be 1
+                stream.Seek(stream.ReadUInt32(), SeekOrigin.Begin);
+                packageTag = stream.ReadUInt32(); // Read the actual package tag
+            }
 
             // This is stored as integer by cooker as it is flipped by size word in big endian
             uint versionLicenseePacked = er.ReadUInt32();
@@ -316,9 +323,6 @@ namespace LegendaryExplorerCore.Packages
                 version == MEPackage.LE1UnrealVersion && licenseVersion == MEPackage.LE1LicenseeVersion ||
                 version == MEPackage.LE2UnrealVersion && licenseVersion == MEPackage.LE2LicenseeVersion ||
                 version == MEPackage.LE3UnrealVersion && licenseVersion == MEPackage.LE3LicenseeVersion
-
-
-
                 )
             {
                 stream.Position -= 8; //reset to start

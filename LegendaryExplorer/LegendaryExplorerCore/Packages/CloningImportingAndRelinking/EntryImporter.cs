@@ -1005,11 +1005,27 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         //TODO: make LE lists more exhaustive
         private static readonly string[] le1FilesSafeToImportFrom =
         {
-            "Core.pcc", "Engine.pcc", "GFxUI.pcc", "PlotManagerMap.pcc", "SFXOnlineFoundation.pcc", "SFXGame.pcc", "Startup_INT.pcc", "BIOC_Materials.pcc",
+            // Determined from Debug Logger
+            "Core.pcc",
+            "Engine.pcc",
+            "IpDrv.pcc",
+            "GFxUI.pcc",
+            "PlotManagerMap.pcc", // Also LOC file
+            "SFXOnlineFoundation.pcc",
+            "SFXGame.pcc",
             "SFXStrategicAI.pcc",
-            // SFXWorldResources and SFXVehicleResources are always loaded
-            // EXCEPT ON STA MAPS!!
-        };
+            "SFXGameContent_Powers.pcc",
+            "PlotManager.pcc",
+            "PlotManagerDLC_UNC.pcc",
+            "BIOC_Materials.pcc",
+            "SFXWorldResources.pcc",
+            "SFXVehicleResources.pcc",
+            "Startup_INT.pcc",
+
+        // SFXWorldResources and SFXVehicleResources are always loaded
+        // EXCEPT ON STA MAPS!!
+        // At least according to coalesced, not sure if that's actually true
+    };
 
         private static readonly string[] le1FilesSafeToImportFromPostLoad =
         {
@@ -1124,24 +1140,32 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// <summary>
         /// Determines if a file "should" be safe to import from. In order to test postload files, a sourceFilePath must be provided.
         /// </summary>
-        /// <param name="path">Full instanced path of the import to test</param>
+        /// <param name="path">Path/filename of the file that is being checked if is safe to import from</param>
         /// <param name="game">The game to check against</param>
-        /// <param name="sourceFilePath">The file path the import is in - if not provided, only global safe files will be included. Can be only filename or full path, both will work.</param>
+        /// <param name="sourceFilePath">The file path the import would be placed into - if not provided, only global safe files will be included and precedence will not be checked. Can be only filename or full path, both will work.</param>
         /// <returns></returns>
-        public static bool IsSafeToImportFrom(string path, MEGame game, string sourceFilePath = null)
+        public static bool IsSafeToImportFrom(string path, MEGame game, string sourceFilePath)
         {
             string fileName = Path.GetFileName(path);
+            string sourceFileName = sourceFilePath != null ? Path.GetFileName(sourceFilePath) : null;
 
             IEnumerable<string> fileList = FilesSafeToImportFrom(game);
-            if (sourceFilePath != null)
+            if (sourceFileName != null)
             {
-                if (IsPostLoadFile(sourceFilePath, game))
+                if (IsPostLoadFile(sourceFileName, game))
                 {
                     fileList = fileList.Concat(FilesSafeToImportFromPostLoad(game)).Concat(UserSpecifiedSafeToImportFromFiles(game));
                 }
             }
-
-            return fileList.Any(f => fileName == f);
+            foreach (var f in fileList)
+            {
+                if (f == sourceFileName)
+                    break; // You can't import from yourself
+                if (f == fileName)
+                    return true;
+            }
+            return false;
+            //return fileList.Any(f => fileName == f);
         }
 
         /// <summary>
