@@ -183,8 +183,7 @@ namespace LegendaryExplorer.Tools.SequenceObjects
                         {
                             for (int i = 0; i < sets.Count; i++)
                             {
-                                StructProperty set = sets[i];
-                                var types = set.GetProp<ArrayProperty<ObjectProperty>>("Types");
+                                var types = sets[i].GetProp<ArrayProperty<ObjectProperty>>("Types");
                                 if (types != null)
                                 {
                                     res += $"SpawnSet {i}:\n";

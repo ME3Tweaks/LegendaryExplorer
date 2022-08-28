@@ -62,7 +62,7 @@
     <None Remove="Tools\PlotDatabase\PlotTypeIcons\icon_float.png" />
     <None Remove="Tools\PlotDatabase\PlotTypeIcons\icon_int.png" />
     <None Remove="UserControls\SharedToolControls\Scene3D\StandardShader.hlsl" />
-    <Page Update="Tools\LiveLevelEditor\LiveLevelEditorWindow2.xaml">
+    <Page Update="Tools\LiveLevelEditor\LELiveLevelEditorWindow.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
     </Page>
     <Page Update="UserControls\ExportLoaderControls\AnimNodeExportLoader.xaml">

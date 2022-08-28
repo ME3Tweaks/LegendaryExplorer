@@ -3529,6 +3529,16 @@ namespace LegendaryExplorer.Tools.PackageEditor
             return false;
         }
 
+        public bool GoToEntry(string instancedFullPath)
+        {
+            if (Pcc.FindEntry(instancedFullPath) is IEntry entry)
+            {
+                CurrentView = CurrentViewMode.Tree;
+                return GoToNumber(entry.UIndex);
+            }
+            return false;
+        }
+
         /// <summary>
         /// Handler for the keyup event while the Goto Textbox is focused. It will issue the Goto button function when the enter key is pressed.
         /// </summary>
