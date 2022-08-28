@@ -766,16 +766,15 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         //}
                     }
 
-                    if (rop.PortExportsAsImportsWhenPossible)
+                    if (rop.PortExportsAsImportsWhenPossible && !relinkingExport.InstancedFullPath.StartsWith(@"TheWorld."))
                     {
                         // Try convert to import
                         var testImport = new ImportEntry(sourceExport, parent?.UIndex ?? 0, relinkingExport.FileRef);
-                        if (EntryImporter.TryResolveImport(testImport, out var resolved, rop.Cache))
+                        if (EntryImporter.TryResolveImport(testImport, out var resolved, localCache: rop.Cache))
                         {
                             relinkingExport.FileRef.AddImport(testImport);
                             uIndex = testImport.UIndex;
-                            Debug.WriteLine(
-                                $"Redirected importable export {relinkingExport.InstancedFullPath} to import from {resolved.FileRef.FilePath}");
+                            Debug.WriteLine($"Redirected importable export {relinkingExport.InstancedFullPath} to import from {resolved.FileRef.FilePath}");
                             return null;
                         }
                     }
