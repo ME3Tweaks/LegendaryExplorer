@@ -42,36 +42,29 @@ namespace LegendaryExplorer.Tools.Sequence_Editor.Experiments {
 
             // We get a list of StructProperties instead of VarLinkInfo because we want to keep existing ones intact
             List<StructProperty> varLinks = interp.GetProperty<ArrayProperty<StructProperty>>("VariableLinks").ToList();
-            if (!inLoop) {
-                if (varLinks == null) {
-                    ShowError("The selected Interp contains no VariableLinks");
-                    return;
-                }
-            }
+			if (varLinks == null) {
+				ShowError("The selected Interp contains no VariableLinks");
+				return;
+			}
+            
 
             List<StructProperty> dataLinks = varLinks.Where(link => link.GetProp<StrProperty>("LinkDesc").Value == "Data").ToList();
-            if (!inLoop) {
-                if (!dataLinks.Any()) {
-                    ShowError("The selected Interp contains no Data variable link");
-                    return;
-                }
-            }
+			if (!dataLinks.Any()) {
+				ShowError("The selected Interp contains no Data variable link");
+				return;
+			}
 
             ObjectProperty dataObj = dataLinks.First().GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables").FirstOrDefault();
-            if (!inLoop) {
-                if (dataObj == null) {
-                    ShowError("No InterpDatas were linked to the Data variable link");
-                    return;
-                }
-            }
+			if (dataObj == null) {
+				ShowError("No InterpDatas were linked to the Data variable link");
+				return;
+			}
 
             ExportEntry interpData = sew.Pcc.GetUExport(dataObj.Value);
-            if (!inLoop) {
-                if (interpData.ClassName != "InterpData") {
-                    ShowError("The first object linked to the Data variable link is not an InterpData");
-                    return;
-                }
-            }
+			if (interpData.ClassName != "InterpData") {
+				ShowError("The first object linked to the Data variable link is not an InterpData");
+				return;
+			}
 
             // Don't check if there are no InterpGroups, since an update could be to remove all of them
             ArrayProperty<ObjectProperty> interpGroups = interpData.GetProperty<ArrayProperty<ObjectProperty>>("InterpGroups");
@@ -84,7 +77,6 @@ namespace LegendaryExplorer.Tools.Sequence_Editor.Experiments {
             groupNames.AddRange(interpGroups.Where(id => {
                 ExportEntry group = null;
                 if (!sew.Pcc.TryGetUExport(id.Value, out group)) { return false; }
-
                 return group.GetProperty<NameProperty>("GroupName") != null;
             }).Select(id => {
                 ExportEntry group = sew.Pcc.GetUExport(id.Value);
@@ -100,7 +92,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor.Experiments {
                 }
                 else {
                     PropertyCollection props = GlobalUnrealObjectInfo.getDefaultStructValue(sew.Pcc.Game, "SeqVarLink", true);
-                    props.AddOrReplaceProp(new StrProperty(name, "LinKDesc"));
+                    props.AddOrReplaceProp(new StrProperty(name, "LinkDesc"));
                     int index = sew.Pcc.FindImport("Engine.SeqVar_Object").UIndex;
                     props.AddOrReplaceProp(new ObjectProperty(index, "ExpectedType"));
                     props.AddOrReplaceProp(new IntProperty(1, "MinVars"));
@@ -190,7 +182,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor.Experiments {
             ArrayProperty<StructProperty> variableLinks = interp.GetProperty<ArrayProperty<StructProperty>>("VariableLinks");
             // Add camera varLink
             PropertyCollection camProps = GlobalUnrealObjectInfo.getDefaultStructValue(sew.Pcc.Game, "SeqVarLink", true);
-            camProps.AddOrReplaceProp(new StrProperty(camActor, "LinKDesc"));
+            camProps.AddOrReplaceProp(new StrProperty(camActor, "LinkDesc"));
             int objIdx = sew.Pcc.FindImport("Engine.SeqVar_Object").UIndex;
             camProps.AddOrReplaceProp(new ObjectProperty(objIdx, "ExpectedType"));
             variableLinks.Add(new StructProperty("SeqVarLink", camProps));
