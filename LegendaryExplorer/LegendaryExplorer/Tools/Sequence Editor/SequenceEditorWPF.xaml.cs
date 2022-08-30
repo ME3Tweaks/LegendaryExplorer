@@ -1,22 +1,4 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
-using Color = System.Drawing.Color;
-using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
-using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
-using System.Windows.Threading;
-using Gammtek.Conduit.MassEffect3.SFXGame.StateEventMap;
+﻿using Gammtek.Conduit.MassEffect3.SFXGame.StateEventMap;
 using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Misc.AppSettings;
@@ -31,19 +13,37 @@ using LegendaryExplorer.Tools.SequenceObjects;
 using LegendaryExplorer.UserControls.SharedToolControls;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
+using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Kismet;
+using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
-using Microsoft.WindowsAPICodePack.Dialogs;
-using Image = System.Drawing.Image;
-using LegendaryExplorerCore.Helpers;
-using LegendaryExplorerCore.Kismet;
-using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
+using Microsoft.WindowsAPICodePack.Dialogs;
+using Newtonsoft.Json;
 using Piccolo;
 using Piccolo.Event;
 using Piccolo.Nodes;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Threading;
+using Color = System.Drawing.Color;
+using Image = System.Drawing.Image;
+using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
+using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
 
 namespace LegendaryExplorer.Tools.Sequence_Editor
 {
@@ -2679,6 +2679,32 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
         private void CommitObjectPositions_Clicked(object sender, RoutedEventArgs e)
         {
             SequenceEditorExperimentsM.CommitSequenceObjectPositions(this);
+        }
+
+        private void UpdateSelVarLinks_Clicked(object sender, RoutedEventArgs e)
+        {
+            SequenceEditorExperimentsE.UpdateSequenceVarLinks(GetSEWindow(), true);
+        }
+
+        private void UpdateSequenceVarLinks_Clicked(object sender, RoutedEventArgs e)
+        {
+            SequenceEditorExperimentsE.UpdateSequenceVarLinks(GetSEWindow());
+        }
+
+        private void AddDialogueWheelCam_Clicked(object sender, RoutedEventArgs e)
+        {
+            SequenceEditorExperimentsE.AddDialogueWheelTemplate(GetSEWindow());
+        }
+
+        private void AddDialogueWheelDir_Clicked(object sender, RoutedEventArgs e)
+        {
+            SequenceEditorExperimentsE.AddDialogueWheelTemplate(GetSEWindow(), true);
+        }
+
+        public SequenceEditorWPF GetSEWindow()
+        {
+            if (GetWindow(this) is SequenceEditorWPF sew) { return sew; }
+            return null;
         }
 
         public string Toolname => "SequenceEditor";
