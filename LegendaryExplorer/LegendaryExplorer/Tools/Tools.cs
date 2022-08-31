@@ -219,7 +219,7 @@ namespace LegendaryExplorer
                 open = () =>
                 {
                     var gameStr = InputComboBoxWPF.GetValue(null, "Choose game you want to use Live Level Editor with.", "Live Level Editor game selector",
-                                              new[] { "LE1", "ME3", "ME2" }, "LE1");
+                                              new[] { "LE3", "LE2", "LE1", "ME3", "ME2" }, "LE3");
 
                     if (Enum.TryParse(gameStr, out MEGame game))
                     {

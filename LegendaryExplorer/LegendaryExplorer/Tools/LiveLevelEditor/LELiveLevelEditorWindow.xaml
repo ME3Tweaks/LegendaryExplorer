@@ -80,7 +80,7 @@
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <StackPanel Grid.Row="0">
-                            <TextBlock Text="You should regenerate the actor list whenever you move to a new area of the level, as what is loaded may have changed"
+                            <TextBlock Text="You MUST regenerate the actor list whenever you move to a new area of the level, as what is loaded may have changed"
                                        Margin="15,5,15,5" TextWrapping="Wrap" MaxWidth="330" />
                             <Button Margin="15,0,15,6" Content="Regenerate Actor List"
                                     Command="{Binding RegenActorListCommand}" />

@@ -3,17 +3,14 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Pipes;
 using System.Security.Cryptography;
-using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using LegendaryExplorer.GameInterop.InteropTargets;
 using LegendaryExplorer.Misc;
-using LegendaryExplorer.Misc.AppSettings;
 using LegendaryExplorerCore.Misc.ME3Tweaks;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
-using Microsoft.Win32;
 
 namespace LegendaryExplorer.GameInterop
 {
@@ -64,7 +61,10 @@ namespace LegendaryExplorer.GameInterop
                 foreach (var f in files)
                 {
                     var md5 = CalculateMD5(f);
-                    if (md5 == md5ToMatch) return true;
+                    if (md5 == md5ToMatch)
+                    {
+                        return true;
+                    }
                 }
             }
             return false;
@@ -263,7 +263,7 @@ namespace LegendaryExplorer.GameInterop
 
             // We make new pipe and connect to game every command
             client = new NamedPipeClientStream(".", $"LEX_{game}_COMM_PIPE", PipeDirection.Out);
-            client.Connect(5000);
+            client.Connect(3000);
             //pipeReader = new StreamReader(client);
             pipeWriter = new StreamWriter(client);
 

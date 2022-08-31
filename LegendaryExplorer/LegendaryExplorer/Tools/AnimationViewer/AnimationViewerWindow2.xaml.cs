@@ -43,7 +43,7 @@ namespace LegendaryExplorer.Tools.AnimationViewer
         private static readonly Dictionary<MEGame, AnimationViewerWindow2> Instances = new();
         public static AnimationViewerWindow2 Instance(MEGame game)
         {
-            if (!GameController.GetInteropTargetForGame(game)?.ModInfo?.CanUseLLE ?? true)
+            if (!GameController.GetInteropTargetForGame(game)?.CanUseLLE ?? true)
                 throw new ArgumentException(@"Animation Viewer 2 does not support this game!", nameof(game));
 
             return Instances.TryGetValue(game, out var lle) ? lle : null;

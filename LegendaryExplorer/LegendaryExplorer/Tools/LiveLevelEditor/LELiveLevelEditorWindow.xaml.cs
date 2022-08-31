@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
@@ -26,7 +25,7 @@ using LegendaryExplorerCore.Unreal.BinaryConverters;
 using InterpCurveVector = LegendaryExplorerCore.Unreal.BinaryConverters.InterpCurve<System.Numerics.Vector3>;
 using InterpCurveFloat = LegendaryExplorerCore.Unreal.BinaryConverters.InterpCurve<float>;
 using LegendaryExplorer.Tools.PackageEditor;
-using System.Runtime.InteropServices;
+using System.Windows.Media;
 
 namespace LegendaryExplorer.Tools.LiveLevelEditor
 {
@@ -40,7 +39,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         private static readonly Dictionary<MEGame, LELiveLevelEditorWindow> Instances = new();
         public static LELiveLevelEditorWindow Instance(MEGame game)
         {
-            if (!game.IsLEGame() || !(GameController.GetInteropTargetForGame(game)?.ModInfo?.CanUseLLE ?? false))
+            if (!game.IsLEGame() || !(GameController.GetInteropTargetForGame(game)?.CanUseLLE ?? false))
                 throw new ArgumentException(@"LE Live Level Editor does not support this game!", nameof(game));
 
             return Instances.TryGetValue(game, out LELiveLevelEditorWindow lle) ? lle : null;
@@ -75,7 +74,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         {
             Game = game;
             GameTarget = GameController.GetInteropTargetForGame(game);
-            if (GameTarget is null || !GameTarget.ModInfo.CanUseLLE)
+            if (GameTarget is null || !GameTarget.CanUseLLE)
             {
                 throw new Exception($"{game} does not support LE Live Level Editor!");
             }
@@ -109,6 +108,19 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             DataContext = null;
             GameTarget.GameReceiveMessage -= GameControllerOnReceiveMessage;
             Instances.Remove(Game);
+            GameOpenTimer.Stop();
+            RetryLoadTimer.Stop();
+            if (GameController.IsGameOpen(Game))
+            {
+                try
+                {
+                    InteropHelper.SendMessageToGame("LLE_DEACTIVATE", Game);
+                }
+                catch
+                {
+                    //
+                }
+            }
         }
 
         #endregion
@@ -126,7 +138,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         {
             GameInstalledRequirementCommand = new Requirement.RequirementCommand(() => InteropHelper.IsGameInstalled(Game), () => InteropHelper.SelectGamePath(Game));
             ASILoaderInstalledRequirementCommand = new Requirement.RequirementCommand(() => InteropHelper.IsASILoaderInstalled(Game), () => InteropHelper.OpenASILoaderDownload(Game));
-            InteropASIInstalledRequirementCommand = new Requirement.RequirementCommand(() => InteropHelper.IsInteropASIInstalled(Game), () => InteropHelper.OpenInteropASIDownload(Game));
+            InteropASIInstalledRequirementCommand = new Requirement.RequirementCommand(() => /*App.IsDebug ||*/ InteropHelper.IsInteropASIInstalled(Game), () => InteropHelper.OpenInteropASIDownload(Game));
             LoadLiveEditorCommand = new GenericCommand(LoadLiveEditor, CanLoadLiveEditor);
             OpenPackageCommand = new GenericCommand(OpenPackage, CanOpenPackage);
             OpenActorInPackEdCommand = new GenericCommand(OpenActorInPackEd, CanOpenInPackEd);
@@ -145,7 +157,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         {
             if (SelectedActor != null)
             {
-                OpenInPackEd(SelectedActor.FileName, SelectedActor.ActorName);
+                OpenInPackEd(SelectedActor.FileName, SelectedActor.PathInLevel);
             }
         }
 
@@ -159,14 +171,14 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             }
         }
 
-        private void OpenInPackEd(string fileName, string actorName = null)
+        private void OpenInPackEd(string fileName, string pathInLevel = null)
         {
             if (MELoadedFiles.GetFilesLoadedInGame(Game).TryGetValue(fileName, out string filePath))
             {
                 string entryPath = "TheWorld.PersistentLevel";
-                if (actorName is not null)
+                if (pathInLevel is not null)
                 {
-                    entryPath = $"{entryPath}.{actorName}";
+                    entryPath = $"{entryPath}.{pathInLevel}";
                 }
 
                 if (WPFBase.TryOpenInExisting(filePath, out PackageEditorWindow packEd))
@@ -186,8 +198,8 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             }
         }
 
-        private bool CanLoadLiveEditor() => ReadyToInitialize && gameInstalledReq.IsFullfilled && asiLoaderInstalledReq.IsFullfilled && interopASIInstalledReq.IsFullfilled 
-                                            && GameController.TryGetMEProcess(Game, out _);
+        private bool CanLoadLiveEditor() => gameInstalledReq.IsFullfilled && asiLoaderInstalledReq.IsFullfilled && interopASIInstalledReq.IsFullfilled 
+                                            && GameController.IsGameOpen(Game);
 
         private void LoadLiveEditor()
         {
@@ -290,9 +302,8 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         private readonly DispatcherTimer GameOpenTimer;
         private void CheckIfGameOpen(object sender, EventArgs e)
         {
-            if (!GameController.TryGetMEProcess(Game, out _))
+            if (!GameController.IsGameOpen(Game))
             {
-                ReadyToInitialize = false;
                 EndBusy();
                 ReadyToView = false;
                 SelectedActor = null;
@@ -325,21 +336,37 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         {
             string[] parts = actorInfoStr.Split(':');
 
+            var ae = new ActorEntry2();
+            foreach (var part in parts)
+            {
+                string[] split = part.Split('=');
+                switch (split[0])
+                {
+                    case "MAP":
+                        ae.FileName = $"{split[1]}.pcc";
+                        break;
+                    case "ACTOR":
+                        ae.ActorName = split[1];
+                        break;
+                    case "TAG":
+                        ae.Tag = split[1];
+                        break;
+                    case "COMPNAME":
+                        ae.ComponentName = split[1];
+                        break;
+                    case "COMPIDX":
+                        ae.ComponentIdx = int.Parse(split[1]);
+                        break;
+                }
+            }
+
             // We only care about actors that loaded from a package file directly (level files)
             // GetFilesLoadedInGame will return a cached result
-            if (parts.Length >= 3)
+            
+            if (MELoadedFiles.GetFilesLoadedInGame(Game).ContainsKey(ae.FileName))
             {
-                string mapName = parts[0];
-                if (MELoadedFiles.GetFilesLoadedInGame(Game).ContainsKey($"{mapName}.pcc"))
-                {
-                    ActorDict.AddToListAt($"{mapName}.pcc", new ActorEntry2
-                    {
-                        DisplayText = parts.Length == 2 ? parts[1] : $"{parts[1]} ({parts[2]})",
-                        ActorName = parts[1],
-                        FileName = $"{mapName}.pcc"
-                    });
-                    return;
-                }
+                ActorDict.AddToListAt(ae.FileName, ae);
+                return;
             }
             Debug.WriteLine($"SKIPPING {actorInfoStr}");
         }
@@ -406,7 +433,8 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
                 if (SetProperty(ref _selectedActor, value) && !noUpdate && value != null)
                 {
                     SetBusy($"Selecting {value.ActorName}", () => { });
-                    InteropHelper.SendMessageToGame($"LLE_SELECT_ACTOR {Path.GetFileNameWithoutExtension(value.FileName)} TheWorld.PersistentLevel.{value.ActorName}", Game);
+                    string message = $"LLE_SELECT_ACTOR {Path.GetFileNameWithoutExtension(value.FileName)} TheWorld.PersistentLevel.{value.ActorName} {_selectedActor.ComponentIdx}";
+                    InteropHelper.SendMessageToGame(message, Game);
                 }
             }
         }
@@ -419,6 +447,43 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
                 if (SetProperty(ref _showTraceToActor, value))
                 {
                     InteropHelper.SendMessageToGame(_showTraceToActor ? "LLE_SHOW_TRACE" : "LLE_HIDE_TRACE", Game);
+                }
+            }
+        }
+
+        private bool _pauseOnFocusLoss = true;
+        public bool PauseOnFocusLoss
+        {
+            get => _pauseOnFocusLoss;
+            set {
+                if (SetProperty(ref _pauseOnFocusLoss, value))
+                {
+                    InteropHelper.SendMessageToGame(_pauseOnFocusLoss ? "ANIMV_ALLOW_WINDOW_PAUSE" : "ANIMV_DISALLOW_WINDOW_PAUSE", Game);
+                }
+            }
+        }
+
+        private Color _traceColor = Colors.Yellow;
+        public Color TraceColor
+        {
+            get => _traceColor;
+            set {
+                if (SetProperty(ref _traceColor, value))
+                {
+                    InteropHelper.SendMessageToGame($"LLE_TRACE_COLOR {_traceColor.R} {_traceColor.G} {_traceColor.B}", Game);
+                }
+            }
+        }
+
+        private float _debugCoordinateAxesScale = 100;
+        public float DebugCoordinateAxesScale
+        {
+            get => _debugCoordinateAxesScale;
+            set
+            {
+                if (SetProperty(ref _debugCoordinateAxesScale, value))
+                {
+                    InteropHelper.SendMessageToGame($"LLE_AXES_Scale {_debugCoordinateAxesScale}", Game);
                 }
             }
         }
@@ -784,9 +849,28 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
     }
     public class ActorEntry2
     {
-        public string FileName;
-        public string DisplayText { get; init; }
+        public string DisplayText
+        {
+            get
+            {
+                if (ComponentName is not null)
+                {
+                    return $"{ActorName}:{ComponentName}";
+                }
+                if (Tag is not null)
+                {
+                    return $"{ActorName} (Tag: {Tag})";
+                }
+                return ActorName;
+            }
+        }
 
+        public string FileName;
+        public string Tag;
         public string ActorName;
+        public string ComponentName;
+        public int ComponentIdx = -1;
+
+        public string PathInLevel => ComponentName is null ? ActorName : $"{ActorName}.{ComponentName}";
     }
 }

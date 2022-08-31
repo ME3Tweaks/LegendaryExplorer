@@ -86,7 +86,18 @@
             </StackPanel>
         </GroupBox>
         <GroupBox Header="Misc" Margin="10,0,10,10" BorderThickness="2" >
-            <CheckBox Content="Show trace to selected actor" IsChecked="{Binding ShowTraceToActor}" Margin="10,0,0,3"/>
+            <StackPanel>
+                <CheckBox Content="Pause game on focus loss" IsChecked="{Binding PauseOnFocusLoss}" Margin="10,0,0,3"/>
+                <CheckBox Content="Show trace to selected actor" IsChecked="{Binding ShowTraceToActor}" Margin="10,0,0,3"/>
+                <StackPanel Margin="5" Orientation="Horizontal">
+                    <TextBlock Text="Trace Color:  " VerticalAlignment="Center"/>
+                    <xctk:ColorPicker Width="100" SelectedColor="{Binding TraceColor}" />
+                </StackPanel>
+                <StackPanel Margin="5" Orientation="Horizontal">
+                    <TextBlock Text="Debug Axes scale:  " VerticalAlignment="Center"/>
+                    <xctk:SingleUpDown Value="{Binding DebugCoordinateAxesScale}" Increment="10" ButtonSpinnerLocation="Left" FormatString="F0"/>
+                </StackPanel>
+            </StackPanel>
         </GroupBox>
     </WrapPanel>
 </UserControl>

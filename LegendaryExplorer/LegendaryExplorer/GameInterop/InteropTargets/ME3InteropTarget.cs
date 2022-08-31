@@ -16,13 +16,14 @@ namespace LegendaryExplorer.GameInterop.InteropTargets
         public override bool CanUpdateTOC => true;
         public override string InteropASIName => "LEXInteropME3.asi";
         public override string OldInteropASIName => "ME3ExplorerInterop.asi";
+        public override bool CanUseLLE => true;
 
         public override string InteropASIDownloadLink => "https://github.com/ME3Tweaks/ME3-ASI-Plugins/releases/tag/v2.0-LegendaryExplorerInterop";
         public override string InteropASIMD5 => "7ac354e16e62434de656f7eea3259316";
         public override string BinkBypassMD5 => "1acccbdae34e29ca7a50951999ed80d5";
         public override string OriginalBinkMD5 => "128b560ef70e8085c507368da6f26fe6";
 
-        public override InteropModInfo ModInfo { get; } = new InteropModInfo("DLC_MOD_Interop", true)
+        public override InteropModInfo ModInfo { get; } = new InteropModInfo("DLC_MOD_Interop")
         {
             LiveEditorFilename = "ME3LiveEditor",
             CanUseCamPath = true,
