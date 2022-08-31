@@ -94,6 +94,7 @@
     <ProjectReference Include="..\..\SharedProjects\Be.Windows.Forms.HexBox\Be.Windows.Forms.HexBox.csproj" />
     <ProjectReference Include="..\..\SharedProjects\HexConverterWPF\HexConverterWPF.csproj" />
     <ProjectReference Include="..\LegendaryExplorerCore\LegendaryExplorerCore.csproj" />
+    <ProjectReference Include="..\submodules\WwiseTools\WwiseTools_DotNet6\WwiseTools_DotNet6.csproj" />
     <ProjectReference Include="..\WaveFormRendererLib\WaveFormRendererLib.csproj" />
     <ProjectReference Include="..\Xceed.Wpf.Toolkit\DotNetProjects.Wpf.Extended.Toolkit.csproj" />
     <ProjectReference Include="..\..\SharedProjects\Piccolo\Piccolo.csproj" />
@@ -102,6 +103,7 @@
   <ItemGroup>
     <PackageReference Include="AvalonEdit" Version="6.1.3.50" />
     <PackageReference Include="BinaryPack" Version="1.0.3" />
+    <PackageReference Include="CliWrap" Version="3.4.4" />
     <PackageReference Include="ClosedXML" Version="0.96.0" />
     <PackageReference Include="ConsoleAppLauncher" Version="2.0.0" />
     <PackageReference Include="FontAwesome5" Version="2.1.11" />
