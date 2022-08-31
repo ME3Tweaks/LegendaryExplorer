@@ -359,6 +359,21 @@ namespace LegendaryExplorerCore.Kismet
                 {
                     defaults.Remove(inputLinks);
                 }
+
+#if DEBUG
+                // 08/30/2022 Add useful defaults for editor - Mgamerz
+                // These might add names to package so maybe use existing names?
+                switch (info.ClassName)
+                {
+                    case "SeqEvent_Console":
+                        defaults.Add(new NameProperty("Placeholder command", "ConsoleEventName"));
+                        break;
+                    case "SeqEvent_RemoteEvent":
+                    case "SeqAct_ActivateRemoteEvent":
+                        defaults.Add(new NameProperty("Placeholder event", "EventName"));
+                        break;
+                }
+#endif
             }
 
             int objInstanceVersion = GlobalUnrealObjectInfo.getSequenceObjectInfo(game, info.ClassName)?.ObjInstanceVersion ?? 1;
