@@ -43,7 +43,7 @@ namespace LegendaryExplorer.Tools.AnimationViewer
         private static readonly Dictionary<MEGame, AnimationViewerWindow2> Instances = new();
         public static AnimationViewerWindow2 Instance(MEGame game)
         {
-            if (!GameController.GetInteropTargetForGame(game)?.ModInfo?.CanUseLLE ?? true)
+            if (!game.IsLEGame())
                 throw new ArgumentException(@"Animation Viewer 2 does not support this game!", nameof(game));
 
             return Instances.TryGetValue(game, out var lle) ? lle : null;
@@ -66,6 +66,10 @@ namespace LegendaryExplorer.Tools.AnimationViewer
                     if (Game == MEGame.LE1)
                     {
                         PrepChangeLE1Actor(value);
+                        return;
+                    } else if (Game == MEGame.LE2)
+                    {
+                        PrepChangeLE2Actor(value);
                         return;
                     }
 
@@ -106,6 +110,16 @@ namespace LegendaryExplorer.Tools.AnimationViewer
             // Tell game to load package and change the pawn
             InteropHelper.SendMessageToGame($"ANIMV_CHANGE_PAWN {packageName}.{memoryName}", Game);
             InteropHelper.SendMessageToGame($"CAUSEEVENT ChangeActor", Game);
+        }
+
+        #endregion
+
+        #region LE2 SPECIFIC
+
+        private void PrepChangeLE2Actor(string actorFullPath)
+        {
+            // It's the same as LE1.
+            PrepChangeLE1Actor(actorFullPath);
         }
 
         #endregion
@@ -211,9 +225,10 @@ namespace LegendaryExplorer.Tools.AnimationViewer
         private void ReceivedGameMessage(string msg)
         {
             // Check message is for us
+            Debug.WriteLine($"Message: {msg}");
+
             if (!msg.StartsWith("ANIMVIEWER"))
                 return;
-            Debug.WriteLine($"Message: {msg}");
             if (msg == "ANIMVIEWER LOADED")
             {
                 Initialized = true;
@@ -462,23 +477,23 @@ namespace LegendaryExplorer.Tools.AnimationViewer
                 listBoxAnims.ItemsSource = Animations;
             }).ContinueWith(x =>
             {
-                if (Game == MEGame.LE1)
+                if (Game is MEGame.LE1 or MEGame.LE2)
                 {
+                    var classNameToCheck = Game == MEGame.LE1 ? "BioPawnChallengeScaledType" : "BioPawnType";
                     // Object Instance DB doesn't include class name, and AssetDB doesn't store name of usage
                     // Object -> Package containing it
                     var foundActorTypes = new Dictionary<string, string>();
                     foreach (var cr in db.ClassRecords)
                     {
-                        if (cr.Class == "BioPawnChallengeScaledType")
+                        if (cr.Class == classNameToCheck)
                         {
                             // Types of actors that can be spawned
-                            foreach (var usage in cr.Usages)
+                            foreach (var usage in cr.Usages) // Usages of the class (per file)
                             {
-
                                 var file = db.FileList[usage.FileKey];
                                 if (MELoadedFiles.GetFilesLoadedInGame(Game).TryGetValue(file.FileName, out var fullPath))
                                 {
-                                    using var p = MEPackageHandler.UnsafePartialLoad(fullPath, x => false); // Just load the tables
+                                     var p = MEPackageHandler.UnsafePartialLoad(fullPath, x => false); // Just load the tables
                                     var exp = p.GetUExport(usage.UIndex);
                                     if (!exp.IsDefaultObject && !foundActorTypes.ContainsKey(exp.InstancedFullPath))
                                     {
@@ -518,10 +533,10 @@ namespace LegendaryExplorer.Tools.AnimationViewer
             Task.Run(() =>
             {
                 var animLevelBaseName = $"{Game}LiveAnimViewerStage";
-                var animViewerStagePath = Path.Combine(AppDirectories.ExecFolder, $"{animLevelBaseName}.pcc");
-
-                using var mapPcc = MEPackageHandler.OpenMEPackage(animViewerStagePath);
-                AnimViewer.OpenMapInGame(mapPcc, true, false, animLevelBaseName);
+                //var animViewerStagePath = Path.Combine(AppDirectories.ExecFolder, $"{animLevelBaseName}.pcc");
+                //using var mapPcc = MEPackageHandler.OpenMEPackage(animViewerStagePath);
+                
+                AnimViewer.OpenMapInGame(Game, true, false, animLevelBaseName);
                 BusyText = "Launching game...";
 
                 AnimViewer.SetUpAnimStreamFile(Game, null, 0, $"{Game}AnimViewer_StreamAnim"); //placeholder for making sure file is in TOC
