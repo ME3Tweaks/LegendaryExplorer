@@ -6,7 +6,11 @@
              xmlns:local="clr-namespace:LegendaryExplorer.Tools.LiveLevelEditor.EditorPanels"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:converters="clr-namespace:LegendaryExplorer.SharedUI.Converters"
+             xmlns:controls="clr-namespace:LegendaryExplorer.SharedUI.Controls"
+             xmlns:liveLevelEditor="clr-namespace:LegendaryExplorer.Tools.LiveLevelEditor"
+             xmlns:sharedUi="clr-namespace:LegendaryExplorer.SharedUI"
              mc:Ignorable="d" 
+             d:DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type liveLevelEditor:LELiveLevelEditorWindow}}}"
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
@@ -97,6 +101,17 @@
                     <TextBlock Text="Debug Axes scale:  " VerticalAlignment="Center"/>
                     <xctk:SingleUpDown Value="{Binding DebugCoordinateAxesScale}" Increment="10" ButtonSpinnerLocation="Left" FormatString="F0"/>
                 </StackPanel>
+            </StackPanel>
+        </GroupBox>
+        <GroupBox Header="Save Changes" Margin="10,0,10,10" BorderThickness="2" >
+            <StackPanel >
+                <controls:Requirement x:Name="pccOpenInPackEdReq"
+                                      FullfilledText="Selected Package is open in a PackageEditor window"
+                                      Margin="0,5,0,5"
+                                      UnFullfilledText="The selected Package must be open in a PackageEditor window to save changes to it."
+                                      ButtonText="Open in PackEd"
+                                      Command="{Binding PackEdWindowOpenCommand, RelativeSource={RelativeSource AncestorType={x:Type liveLevelEditor:LELiveLevelEditorWindow}}}" />
+                <Button Content="Update saved position, rotation and scale of selected actor." Command="{Binding WriteActorValuesCommand}" sharedUi:Bindings.VisibilityToEnabled="true"/>
             </StackPanel>
         </GroupBox>
     </WrapPanel>

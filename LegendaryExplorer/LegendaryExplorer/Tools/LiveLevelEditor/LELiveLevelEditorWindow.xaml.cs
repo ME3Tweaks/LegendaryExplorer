@@ -26,6 +26,9 @@ using InterpCurveVector = LegendaryExplorerCore.Unreal.BinaryConverters.InterpCu
 using InterpCurveFloat = LegendaryExplorerCore.Unreal.BinaryConverters.InterpCurve<float>;
 using LegendaryExplorer.Tools.PackageEditor;
 using System.Windows.Media;
+using LegendaryExplorer.Misc;
+using LegendaryExplorerCore.Unreal.ObjectInfo;
+using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 
 namespace LegendaryExplorer.Tools.LiveLevelEditor
 {
@@ -133,6 +136,8 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         public ICommand OpenPackageCommand { get; set; }
         public ICommand OpenActorInPackEdCommand { get; set; }
         public ICommand RegenActorListCommand { get; set; }
+        public Requirement.RequirementCommand PackEdWindowOpenCommand { get; set; }
+        public ICommand WriteActorValuesCommand { get; set; }
 
         private void LoadCommands()
         {
@@ -143,6 +148,84 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             OpenPackageCommand = new GenericCommand(OpenPackage, CanOpenPackage);
             OpenActorInPackEdCommand = new GenericCommand(OpenActorInPackEd, CanOpenInPackEd);
             RegenActorListCommand = new GenericCommand(RegenActorList);
+            PackEdWindowOpenCommand = new Requirement.RequirementCommand(IsSelectedPackageOpenInPackEd, OpenPackage);
+            WriteActorValuesCommand = new GenericCommand(WriteActorValues, IsSelectedPackageOpenInPackEd);
+        }
+
+        private void WriteActorValues()
+        {
+            if (MELoadedFiles.GetFilesLoadedInGame(Game).TryGetValue(SelectedActor.FileName, out string filePath) 
+                && WPFBase.GetExistingToolInstance(filePath, out PackageEditorWindow packEd))
+            {
+                IMEPackage pcc = packEd.Pcc;
+                string fullPath = $"TheWorld.PersistentLevel.{SelectedActor.PathInLevel}";
+
+                if (pcc.FindExport(fullPath) is not ExportEntry actorExport)
+                {
+                    MessageBox.Show($"Could not find '{fullPath}' in '{pcc.FilePath}'");
+                    return;
+                }
+                int pitchUU = ((float)Pitch).DegreesToUnrealRotationUnits();
+                int yawUU = ((float)Yaw).DegreesToUnrealRotationUnits();
+                int rollUU = ((float)Roll).DegreesToUnrealRotationUnits();
+                if (actorExport.IsA("Actor"))
+                {
+                    var props = actorExport.GetProperties();
+
+                    //Only write the prop if it already exists, or we would write a non-default value
+
+                    string locationPropName = Game.IsGame3() ? "location" : "Location";
+                    if (props.ContainsNamedProp(locationPropName) || XPos != 0f || YPos != 0f || ZPos != 0f)
+                    {
+                        props.AddOrReplaceProp(CommonStructs.Vector3Prop(XPos, YPos, ZPos, locationPropName));
+                    }
+                    if (props.ContainsNamedProp("DrawScale") || Scale != 1f)
+                    {
+                        props.AddOrReplaceProp(new FloatProperty(Scale, "DrawScale"));
+                    }
+                    if (props.ContainsNamedProp("DrawScale3D") || XScale != 1f || YScale != 1f || ZScale != 1f)
+                    {
+                        props.AddOrReplaceProp(CommonStructs.Vector3Prop(XScale, YScale, ZScale, "DrawScale3D"));
+                    }
+                    if (props.ContainsNamedProp("Rotation") || pitchUU != 0 || yawUU != 0 || rollUU != 0)
+                    {
+                        props.AddOrReplaceProp(CommonStructs.RotatorProp(pitchUU, yawUU, rollUU, "Rotation"));
+                    }
+
+                    actorExport.WriteProperties(props);
+                }
+                else if (actorExport.IsA("StaticMeshComponent"))
+                {
+                    if (actorExport.Parent is ExportEntry smcaExport
+                        && ObjectBinary.From(smcaExport) is StaticMeshCollectionActor smca
+                        && smcaExport.GetProperty<ArrayProperty<ObjectProperty>>(smca.ComponentPropName) is { } components
+                        && components.FindIndex(prop => prop.Value == actorExport.UIndex) is int idx and >= 0)
+                    {
+                        Matrix4x4 m = ActorUtils.ComposeLocalToWorld(new Vector3(XPos, YPos, ZPos),
+                            new Rotator(pitchUU, yawUU, rollUU),
+                            Scale * new Vector3(XScale, YScale, ZScale));
+                        smca.LocalToWorldTransforms[idx] = m;
+                        smcaExport.WriteBinary(smca);
+                    }
+                    else
+                    {
+                        MessageBox.Show($"StaticMeshComponent '{actorExport.ClassName}' is not a valid part of a StaticMeshCollection");
+                        return;
+                    }
+                }
+                else
+                {
+                    MessageBox.Show($"Cannot not edit an export of class '{actorExport.ClassName}'");
+                    return;
+                }
+            }
+        }
+
+        private bool IsSelectedPackageOpenInPackEd()
+        {
+            return listBoxPackages.SelectedItem is KeyValuePair<string, ObservableCollectionExtended<ActorEntry2>> kvp 
+                   && MELoadedFiles.GetFilesLoadedInGame(Game).TryGetValue(kvp.Key, out string filePath)
+                   && WPFBase.IsOpenInExisting<PackageEditorWindow>(filePath);
         }
 
         private void RegenActorList()
@@ -181,9 +264,10 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
                     entryPath = $"{entryPath}.{pathInLevel}";
                 }
 
-                if (WPFBase.TryOpenInExisting(filePath, out PackageEditorWindow packEd))
+                if (WPFBase.GetExistingToolInstance(filePath, out PackageEditorWindow packEd))
                 {
                     packEd.GoToEntry(entryPath);
+                    packEd.RestoreAndBringToFront();
                 }
                 else
                 {
@@ -439,6 +523,8 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             }
         }
 
+        #region Misc
+
         private bool _showTraceToActor = true;
         public bool ShowTraceToActor
         {
@@ -487,6 +573,8 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
                 }
             }
         }
+
+        #endregion
 
         #region Position/Rotation/Scale
 

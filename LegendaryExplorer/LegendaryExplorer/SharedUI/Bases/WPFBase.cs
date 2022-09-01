@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -104,7 +105,19 @@ namespace LegendaryExplorer.SharedUI.Bases
             wpfClosed = null;
         }
 
-        public static bool TryOpenInExisting<T>(string filePath, out T tool) where T : WPFBase
+        public static bool IsOpenInExisting<T>(string filePath) where T : WPFBase
+        {
+            foreach (IMEPackage pcc in MEPackageHandler.PackagesInTools)
+            {
+                if (pcc.FilePath == filePath && pcc.Users.OfType<T>().Any())
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public static bool GetExistingToolInstance<T>(string filePath, [NotNullWhen(true)] out T tool) where T : WPFBase
         {
             foreach (IMEPackage pcc in MEPackageHandler.PackagesInTools)
             {
@@ -113,7 +126,6 @@ namespace LegendaryExplorer.SharedUI.Bases
                     foreach (T user in pcc.Users.OfType<T>())
                     {
                         tool = user;
-                        tool.RestoreAndBringToFront();
                         return true;
                     }
                 }

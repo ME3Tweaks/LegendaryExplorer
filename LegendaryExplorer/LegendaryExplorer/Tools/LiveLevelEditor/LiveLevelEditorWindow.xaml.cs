@@ -180,9 +180,10 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         {
             if (MELoadedFiles.GetFilesLoadedInGame(Game).TryGetValue(fileName, out string filePath))
             {
-                if (WPFBase.TryOpenInExisting(filePath, out PackageEditorWindow packEd))
+                if (WPFBase.GetExistingToolInstance(filePath, out PackageEditorWindow packEd))
                 {
                     packEd.GoToNumber(uIndex);
+                    packEd.RestoreAndBringToFront();
                 }
                 else
                 {
