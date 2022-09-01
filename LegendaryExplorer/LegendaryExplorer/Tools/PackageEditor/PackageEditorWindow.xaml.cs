@@ -1937,42 +1937,23 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     case "BioSoundNodeWaveStreamingData":
                         {
                             // Requires ICB and ISB
-                            string extension = Path.GetExtension(".icb");
+                            string extension = Path.GetExtension(".icsb");
                             var d = new OpenFileDialog
                             {
-                                Title = "Select processed ICB from ISACT",
+                                Title = "Select stripped combined bank",
                                 Filter = $"*{extension}|*{extension}"
-                            };
-
-                            var d2 = new OpenFileDialog
-                            {
-                                Title = "Select stripped processed ICB from ISACT",
-                                Filter = $"Stripped ISB|*isb"
                             };
 
                             string embeddedICBf = null;
                             string embeddedISBf = null;
-                            if (d.ShowDialog() == true && d2.ShowDialog() == true)
+                            if (d.ShowDialog() == true)
                             {
-                                var baseName = Path.GetFileNameWithoutExtension(d.FileName);
-                                var basePath = Directory.GetParent(d.FileName).FullName;
-
-                                // Strip data from ISB
-                                //MemoryStream
-                                //MemoryStream outStr = new MemoryStream();
-                                //outStr.WriteStringASCII("RIFF");
-                                //outStr.WriteInt32(0); // Placeolder position
-
-                                //while ()
-
-                                //// Re-write RIFF size
-                                //outStr.Seek(0x4, SeekOrigin.Begin);
-                                //outStr.WriteInt32((int)outStr.Length);
-
-                                var bsnwsd = ObjectBinary.From<BioSoundNodeWaveStreamingData>(exp);
-                                bsnwsd.EmbeddedICB = File.ReadAllBytes(d.FileName);
-                                bsnwsd.EmbeddedISB = File.ReadAllBytes(d2.FileName);
-                                exp.WriteBinary(bsnwsd);
+                                MemoryStream ms = new MemoryStream();
+                                ms.WriteInt32(0);
+                                ms.Write(File.ReadAllBytes(d.FileName));
+                                ms.Seek(0, SeekOrigin.Begin);
+                                ms.WriteInt32((int)ms.Length - 4);
+                                exp.WriteBinary(ms.ToArray()); // bank already is set up.
                             }
                             break;
                         }
