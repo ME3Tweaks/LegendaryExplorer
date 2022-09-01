@@ -15,6 +15,7 @@
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:audio1="clr-namespace:LegendaryExplorerCore.Audio;assembly=LegendaryExplorerCore"
              xmlns:sharedUi="clr-namespace:LegendaryExplorer.SharedUI"
+             xmlns:audio="clr-namespace:LegendaryExplorer.Audio"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="400"
              DataContext="{Binding RelativeSource={RelativeSource Self}}">
@@ -116,7 +117,7 @@
                             </ContextMenu>
 
                             <!--Sets a context menu for each ListBoxItem in the current ListBox-->
-                            <DataTemplate DataType="{x:Type exportLoaderControls:EmbeddedWEMFile}">
+                            <DataTemplate DataType="{x:Type audio:EmbeddedWEMFile}">
                                 <!-- Do not remove transparent background. It is required for mouse hit testing.-->
                                 <TextBlock Text="{Binding DisplayString}" Foreground="DarkBlue"/>
                             </DataTemplate>

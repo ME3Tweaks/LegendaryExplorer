@@ -16,6 +16,7 @@ using LegendaryExplorer.Misc;
 using LegendaryExplorer.Tools.AssetDatabase;
 using LegendaryExplorer.Tools.PathfindingEditor;
 using LegendaryExplorer.Tools.Sequence_Editor;
+using LegendaryExplorer.Tools.WwiseEditor;
 using LegendaryExplorer.UnrealExtensions.Classes;
 using LegendaryExplorerCore;
 using LegendaryExplorerCore.DebugTools;
@@ -863,7 +864,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             var offsetX = int.Parse(PromptDialog.Prompt(null, "Enter X shift offset", "Offset X", "0", true));
             var offsetY = int.Parse(PromptDialog.Prompt(null, "Enter Y shift offset", "Offset Y", "0", true));
             var offsetZ = int.Parse(PromptDialog.Prompt(null, "Enter Z shift offset", "Offset Z", "0", true));
-            foreach(var exp in package.Exports.Where(x=>x.ClassName == "InterpTrackMove"))
+            foreach (var exp in package.Exports.Where(x => x.ClassName == "InterpTrackMove"))
             {
                 ShiftInterpTrackMove(exp, offsetX, offsetY, offsetZ);
             }
@@ -3252,6 +3253,36 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
 
             }
+        }
+
+        /// <summary>
+        /// Converts a WwiseBank to a basic Wwise project with events.
+        /// </summary>
+        /// <param name="getPeWindow"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        public static void ConvertWwiseBankToProject(PackageEditorWindow peWindow)
+        {
+            // This is just experimental version for now
+            var pcc = peWindow.Pcc;
+            if (pcc == null || (pcc.Game != MEGame.LE2 && pcc.Game != MEGame.LE3))
+            {
+                MessageBox.Show("Unsupported game - only can support LE2/LE3");
+                return;
+            }
+
+            //if (!peWindow.TryGetSelectedExport(out var exp) || (exp.IsDefaultObject || exp.ClassName != "WwiseBank"))
+            //{
+            //    MessageBox.Show("Unsupported export - must select a WwiseBank");
+            //    return;
+            //}
+
+            //var dlg = new CommonOpenFileDialog("Select directory to output project to") { IsFolderPicker = true };
+            //if (dlg.ShowDialog(peWindow) != CommonFileDialogResult.Ok) { return; }
+
+            // Debug: Just do first bank (in our BankTest.pcc) file
+            var exp = pcc.Exports.FirstOrDefault(x => x.ClassName == "WwiseBank");
+            var outDir = Path.Combine(@"B:\Documents\WwiseExports", exp.ObjectName);
+            WwiseIO.ExportBankToProject(exp, Directory.CreateDirectory(outDir).FullName);
         }
     }
 }

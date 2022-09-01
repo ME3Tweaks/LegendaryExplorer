@@ -29,7 +29,6 @@ using System.Numerics;
 using LegendaryExplorer.UserControls.ExportLoaderControls.TextureViewer;
 using LegendaryExplorer.UserControls.Interfaces;
 using LegendaryExplorerCore.Gammtek;
-using SlavaGu.ConsoleAppLauncher;
 using SkeletalMesh = LegendaryExplorerCore.Unreal.BinaryConverters.SkeletalMesh;
 using Color = LegendaryExplorerCore.SharpDX.Color;
 
