@@ -2003,15 +2003,50 @@ namespace LegendaryExplorer.Tools.PackageEditor
                             string embeddedISBf = null;
                             if (d.ShowDialog() == true)
                             {
+                                exp.WriteBinary(File.ReadAllBytes(d.FileName));
+                                /*
                                 MemoryStream ms = new MemoryStream();
                                 ms.WriteInt32(0);
                                 ms.Write(File.ReadAllBytes(d.FileName));
                                 ms.Seek(0, SeekOrigin.Begin);
-                                ms.WriteInt32((int)ms.Length - 4);
-                                exp.WriteBinary(ms.ToArray()); // bank already is set up.
+                                ms.WriteInt32((int)ms.Length - 4); // This should actually be ISB offset !!
+                                exp.WriteBinary(ms.ToArray()); // bank already is set up.*/
                             }
                             break;
                         }
+                    case "SoundNodeWave":
+                        {
+                            // Requires ICB and ISB
+                            string extension = Path.GetExtension(".icb");
+                            var d = new OpenFileDialog
+                            {
+                                Title = "Select stripped ICB",
+                                Filter = $"*{extension}|*{extension}"
+                            };
+                            if (d.ShowDialog() == false)
+                                return;
+
+                            extension = ".isb";
+                            var d2 = new OpenFileDialog
+                            {
+                                Title = "Select stripped ISB",
+                                Filter = $"*{extension}|*{extension}"
+                            };
+                            if (d2.ShowDialog() == false)
+                                return;
+
+                            MemoryStream ms = new MemoryStream();
+                            ms.WriteInt32(0);
+                            ms.Write(File.ReadAllBytes(d.FileName));
+                            ms.Seek(0, SeekOrigin.Begin);
+                            ms.WriteInt32((int)ms.Length /*- 4*/);
+                            ms.Seek(0, SeekOrigin.End);
+                            ms.Write(File.ReadAllBytes(d2.FileName));
+                            var snw = ObjectBinary.From<SoundNodeWave>(exp);
+                            snw.RawData = ms.ToArray();
+                            exp.WriteBinary(snw);
+                        }
+                        break;
                     case "FaceFXAsset":
                         {
                             string extension = Path.GetExtension(".fxa");
