@@ -1702,6 +1702,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     case "BioSWF":
                     case "GFxMovieInfo":
                     case "BioTlkFile":
+                    case "SoundNodeWave":
                     case "BioSoundNodeWaveStreamingData":
                     case "FaceFXAsset":
                     case "WwiseBank":
@@ -1780,11 +1781,65 @@ namespace LegendaryExplorer.Tools.PackageEditor
                             }
                             break;
                         }
+                    case "SoundNodeWave":
+                        {
+                            var ob = ObjectBinary.From<SoundNodeWave>(exp);
+                            if (ob.RawData == null || !ob.RawData.Any())
+                            {
+                                MessageBox.Show("This export has no sound data embedded in it.");
+                                return;
+                            }
+
+                            var d = new CommonOpenFileDialog()
+                            {
+                                Title = "Select output folder for ICB/ISB",
+                                IsFolderPicker = true
+                            };
+
+                            if (d.ShowDialog() == CommonFileDialogResult.Ok)
+                            {
+                                // ICB
+                                var outDir = d.FileName;
+                                // todo: Use objectbinary when we implement it
+                                var data = new MemoryStream(ob.RawData);
+                                // var totalStreamingDataLen = data.ReadInt32();
+                                var isbOffset = data.ReadInt32();
+
+                                string icbName = null;
+
+                                // ICB
+                                var dataStartPos = data.Position; // RIFF start
+                                var riffForDebug = data.ReadStringASCII(0x4); // get riff length
+                                var riffLen = data.ReadInt32() + 0x8; // include len and RIFF
+                                data.Skip(0x8); // Jump to start of unicode string
+                                var strLen = data.ReadInt32();
+                                icbName = data.ReadStringUnicodeNull(strLen);
+
+                                data.Position = dataStartPos;
+                                using FileStream fs = new FileStream(Path.Combine(outDir, icbName), FileMode.Create);
+                                data.CopyToEx(fs, riffLen);
+
+                                // ISB
+                                data.Position = isbOffset;
+
+                                var audioName =
+                                    exp.ObjectName.Instanced.Substring(exp.ObjectName.Instanced.IndexOf(":") +
+                                                                       1); // This is really weak 
+                                using FileStream fs2 = new FileStream(
+                                    Path.Combine(outDir,
+                                        $"{Path.GetFileNameWithoutExtension(icbName)}_{audioName}.isb"),
+                                    FileMode.Create);
+                                data.Copy(fs2, new byte[2048]);
+
+                                MessageBox.Show("Done");
+                            }
+                        }
+                        break;
                     case "BioSoundNodeWaveStreamingData":
                         {
                             var d = new CommonOpenFileDialog()
                             {
-                                Title = "Select output folder for ICBs",
+                                Title = "Select output folder for ICB/Stripped ISB",
                                 IsFolderPicker = true
                             };
                             if (d.ShowDialog() == CommonFileDialogResult.Ok)
@@ -1976,27 +2031,27 @@ namespace LegendaryExplorer.Tools.PackageEditor
                             break;
                         }
                     case "WwiseBank":
-                    {
-                        string extension = Path.GetExtension(".bnk");
-                        var wdiag = new OpenFileDialog
                         {
-                            Title = "Select WwiseBank file",
-                            Filter = $"*{extension}|*{extension}"
-                        };
-                        if (wdiag.ShowDialog() == true)
-                        {
-                            var length = new FileInfo(wdiag.FileName).Length;
-                            MemoryStream outStream = new MemoryStream();
-                            // Write Bulk Data header
-                            outStream.WriteInt32(0); // Local
-                            outStream.WriteInt32((int)length); // Compressed size
-                            outStream.WriteInt32((int)length); // Decompressed size
-                            outStream.WriteInt32(0); // Data offset - this is not external so this is not used
-                            outStream.Write(File.ReadAllBytes(wdiag.FileName));
-                            exp.WriteBinary(outStream.GetBuffer());
+                            string extension = Path.GetExtension(".bnk");
+                            var wdiag = new OpenFileDialog
+                            {
+                                Title = "Select WwiseBank file",
+                                Filter = $"*{extension}|*{extension}"
+                            };
+                            if (wdiag.ShowDialog() == true)
+                            {
+                                var length = new FileInfo(wdiag.FileName).Length;
+                                MemoryStream outStream = new MemoryStream();
+                                // Write Bulk Data header
+                                outStream.WriteInt32(0); // Local
+                                outStream.WriteInt32((int)length); // Compressed size
+                                outStream.WriteInt32((int)length); // Decompressed size
+                                outStream.WriteInt32(0); // Data offset - this is not external so this is not used
+                                outStream.Write(File.ReadAllBytes(wdiag.FileName));
+                                exp.WriteBinary(outStream.GetBuffer());
+                            }
+                            break;
                         }
-                        break;
-                    }
                 }
             }
         }
