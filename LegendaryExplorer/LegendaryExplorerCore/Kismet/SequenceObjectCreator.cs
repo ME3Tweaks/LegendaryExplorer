@@ -362,15 +362,15 @@ namespace LegendaryExplorerCore.Kismet
 
 #if DEBUG
                 // 08/30/2022 Add useful defaults for editor - Mgamerz
-                // These might add names to package so maybe use existing names?
+                // edited default to None as that is in every package and should be default if there is no named event to reference. - KK
                 switch (info.ClassName)
                 {
                     case "SeqEvent_Console":
-                        defaults.Add(new NameProperty("Placeholder command", "ConsoleEventName"));
+                        defaults.Add(new NameProperty("None", "ConsoleEventName"));
                         break;
                     case "SeqEvent_RemoteEvent":
                     case "SeqAct_ActivateRemoteEvent":
-                        defaults.Add(new NameProperty("Placeholder event", "EventName"));
+                        defaults.Add(new NameProperty("None", "EventName"));
                         break;
                 }
 #endif
