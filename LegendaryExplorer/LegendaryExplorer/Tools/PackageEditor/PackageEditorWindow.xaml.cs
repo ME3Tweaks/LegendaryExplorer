@@ -32,6 +32,7 @@ using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Shaders;
+using LegendaryExplorerCore.Sound.ISACT;
 using LegendaryExplorerCore.TLK.ME1;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
@@ -1991,27 +1992,27 @@ namespace LegendaryExplorer.Tools.PackageEditor
                         }
                     case "BioSoundNodeWaveStreamingData":
                         {
+#if !DEBUG
+MessageBox.Show("Not currently supported");
+#else
                             // Requires ICB and ISB
-                            string extension = Path.GetExtension(".icsb");
+                            string extension = Path.GetExtension(".icb");
                             var d = new OpenFileDialog
                             {
-                                Title = "Select stripped combined bank",
-                                Filter = $"*{extension}|*{extension}"
+                                Title = "Select the ICB file (ISB should be same name next to it)",
+                                Filter = $"ISACT Content Bank (*.icb)|*{extension}",
+                                CheckFileExists = true
                             };
+                            if (d.ShowDialog() == false)
+                                return;
 
-                            string embeddedICBf = null;
-                            string embeddedISBf = null;
-                            if (d.ShowDialog() == true)
+                            var isbF = Path.Combine(Directory.GetParent(d.FileName).FullName, $"{Path.GetFileNameWithoutExtension(d.FileName)}.isb");
+                            var errorMsg = ISACTHelper.GenerateSoundNodeWaveStreamingData(exp, d.FileName, isbF);
+                            if (errorMsg != null)
                             {
-                                exp.WriteBinary(File.ReadAllBytes(d.FileName));
-                                /*
-                                MemoryStream ms = new MemoryStream();
-                                ms.WriteInt32(0);
-                                ms.Write(File.ReadAllBytes(d.FileName));
-                                ms.Seek(0, SeekOrigin.Begin);
-                                ms.WriteInt32((int)ms.Length - 4); // This should actually be ISB offset !!
-                                exp.WriteBinary(ms.ToArray()); // bank already is set up.*/
+                                MessageBox.Show(errorMsg);
                             }
+#endif
                             break;
                         }
                     case "SoundNodeWave":

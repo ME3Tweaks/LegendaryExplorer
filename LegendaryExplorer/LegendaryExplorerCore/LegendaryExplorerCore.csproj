@@ -125,6 +125,10 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <TargetPath>TexConverter.dll</TargetPath>
     </ContentWithTargetPath>
+    <ContentWithTargetPath Include="Libraries\Windows\ISACTTools.dll" Condition="$(Configuration.StartsWith('Win'))">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	    <TargetPath>ISACTTools.dll</TargetPath>
+    </ContentWithTargetPath>
     <!-- For ALOT Installer, also can't figure out way to make this work in multicondition above-->
     <ContentWithTargetPath Include="Libraries\Windows\CompressionWrappers.dll" Condition="$(Configuration.StartsWith('WPF'))">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
