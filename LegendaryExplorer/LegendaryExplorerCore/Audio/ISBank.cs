@@ -68,7 +68,7 @@ namespace LegendaryExplorerCore.Audio
                 chunksize = 0; //reset
                 var chunkStartPos = ms.BaseStream.Position;
                 string blockName = ms.ReadEndianASCIIString(4);
-                Debug.WriteLine($"{(ms.Position - 4).ToString("X8")}: {blockName}");
+                //Debug.WriteLine($"{(ms.Position - 4).ToString("X8")}: {blockName}");
                 switch (blockName)
                 {
                     case "LIST":
@@ -173,12 +173,12 @@ namespace LegendaryExplorerCore.Audio
                             var riffType = ms.ReadEndianASCIIString(4); //type of ISB riff
                             var riffType2 = ms.ReadEndianASCIIString(4); //type of ISB riff
 
-                            Debug.WriteLine($"Riff type is {riffType}");
+                            //Debug.WriteLine($"Riff type is {riffType}");
 
                             if (riffType != "isbf" && riffType2 == "titl")
                             {
                                 //its an icbftitl, which never has data.
-                                Debug.WriteLine($"Skipping non isbf type");
+                                //Debug.WriteLine($"Skipping non isbf type");
                                 ms.Seek(TestISBOffset, SeekOrigin.Begin);
                                 //ms.Seek(riffSize - 8, SeekOrigin.Current); //skip it
                                 continue; //skip

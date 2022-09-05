@@ -14,6 +14,7 @@ using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Sound.ISACT;
 using LegendaryExplorerCore.Unreal.Classes;
 using static LegendaryExplorer.Tools.TlkManagerNS.TLKManagerWPF;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
@@ -2528,6 +2529,17 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 subnodes.Add(new BinInterpNode { Header = $"Error reading binary data: {ex}" });
             }
+
+            try
+            {
+                var paired = ISACTHelper.GetPairedBanks(ObjectBinary.From<SoundNodeWave>(CurrentLoadedExport).RawData);
+                Debug.WriteLine("test");
+            }
+            catch (Exception e)
+            {
+
+            }
+
             return subnodes;
         }
 

@@ -31,6 +31,7 @@ using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Sound.ISACT;
 using LegendaryExplorerCore.Sound.Wwise;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
@@ -152,7 +153,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             if (d is Soundpanel sp)
             {
-                sp.seekbarUpdateTimer.Interval = new TimeSpan(0, 0, 0, 0, (int) e.NewValue);
+                sp.seekbarUpdateTimer.Interval = new TimeSpan(0, 0, 0, 0, (int)e.NewValue);
             }
         }
 
@@ -1277,6 +1278,14 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 return result;
             }
 
+#if DEBUG
+            if (CurrentLoadedExport.ClassName == "SoundNodeWave")
+            {
+                var data = ObjectBinary.From<SoundNodeWave>(CurrentLoadedExport);
+                return data.RawData.Any(); // This probably needs a bit more expansion
+            }
+#endif
+
             return false;
         }
 
@@ -1292,6 +1301,55 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 ReplaceEmbeddedWEMFromWave();
             }
+
+            if (CurrentLoadedExport.ClassName == "SoundNodeWave")
+            {
+                ReplaceEmbeddedSoundNodeWave();
+            }
+        }
+
+        private void ReplaceEmbeddedSoundNodeWave()
+        {
+            OpenFileDialog d = new OpenFileDialog { Filter = "Wave PCM|*.wav" };
+            bool? res = d.ShowDialog();
+            if (!res.HasValue || !res.Value)
+            {
+                return;
+            }
+            /*
+            if (conversionSettings == null)
+            {
+                SoundReplaceOptionsDialog srod = new SoundReplaceOptionsDialog(Window.GetWindow(this), false, Pcc.Game);
+                if (srod.ShowDialog().Value)
+                {
+                    conversionSettings = srod.ChosenSettings;
+                }
+                else
+                {
+                    return; //user didn't choose any settings
+                }
+            }*/
+
+            var wavData = File.ReadAllBytes(d.FileName);
+            var oggData = ISACTHelperExtended.ConvertWaveToOgg(wavData);
+
+            // Todo: Replace the data segment and update the cmpi segment and reserialize the ICB/ISB/RawData.
+            var bin = ObjectBinary.From<SoundNodeWave>(CurrentLoadedExport);
+            var isactBankPair = ISACTHelper.GetPairedBanks(bin.RawData);
+
+            var allChunks = isactBankPair.ISBBank.GetAllBankChunks();
+
+            var dataChunk = allChunks.FirstOrDefault(x => x.ChunkName == "data");
+            dataChunk.RawData = oggData; // Update ogg data.
+
+            var cmpiChunk = allChunks.FirstOrDefault(x => x.ChunkName == "cmpi");
+            var c2Chunk = cmpiChunk as CompressionInfoBankChunk;
+            c2Chunk.TotalSize = oggData.Length;
+            // Not sure if other data needs to be updated here.
+
+
+            bin.RawData = ISACTHelper.SerializePairedBanks(isactBankPair);
+            CurrentLoadedExport.WriteBinary(bin);
         }
 
         private async void ReplaceEmbeddedWEMFromWave(string sourceFile = null, WwiseConversionSettingsPackage conversionSettings = null)
@@ -2048,7 +2106,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         }
     }
 
-    
+
 
     public class ImportExportSoundEnabledConverter : IValueConverter
     {
