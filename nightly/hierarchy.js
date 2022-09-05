@@ -7,6 +7,10 @@ var hierarchy =
     [ "LegendaryExplorerCore.Gammtek.Argument", "class_legendary_explorer_core_1_1_gammtek_1_1_argument.html", null ],
     [ "LegendaryExplorerCore.Misc.ME3Tweaks.ASIModIDs", "class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html", null ],
     [ "LegendaryExplorerCore.Gammtek.Extensions.Reflection.AssemblyExtensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_reflection_1_1_assembly_extensions.html", null ],
+    [ "LegendaryExplorerCore.Sound.ISACT.BankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_bank_chunk.html", [
+      [ "LegendaryExplorerCore.Sound.ISACT.CompressionInfoBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_compression_info_bank_chunk.html", null ],
+      [ "LegendaryExplorerCore.Sound.ISACT.TitleBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_title_bank_chunk.html", null ]
+    ] ],
     [ "LegendaryExplorerCore.Coalesced.BinaryExtensions", "class_legendary_explorer_core_1_1_coalesced_1_1_binary_extensions.html", null ],
     [ "LegendaryExplorerCore.Gammtek.Collections.Generic.BinaryHeap< T >", "class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_binary_heap.html", null ],
     [ "BinaryReader", null, [
@@ -557,6 +561,8 @@ var hierarchy =
     [ "LegendaryExplorerCore.Gammtek.Collections.Generic.IPriorityQueueNode", "interface_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_i_priority_queue_node.html", [
       [ "LegendaryExplorerCore.Gammtek.Collections.Generic.PriorityQueueNode", "class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_priority_queue_node.html", null ]
     ] ],
+    [ "LegendaryExplorerCore.Sound.ISACT.ISACTBank", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_i_s_a_c_t_bank.html", null ],
+    [ "LegendaryExplorerCore.Sound.ISACT.ISACTBankPair", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_i_s_a_c_t_bank_pair.html", null ],
     [ "LegendaryExplorerCore.Sound.ISACT.ISACTHelper", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_i_s_a_c_t_helper.html", null ],
     [ "LegendaryExplorerCore.Audio.ISBank", "class_legendary_explorer_core_1_1_audio_1_1_i_s_bank.html", null ],
     [ "LegendaryExplorerCore.Gammtek.Text.StringMatching.IStringMatcher", "interface_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_string_matching_1_1_i_string_matcher.html", [

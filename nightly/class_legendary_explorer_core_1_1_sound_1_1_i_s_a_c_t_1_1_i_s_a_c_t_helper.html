@@ -100,6 +100,11 @@ $(document).ready(function(){initNavTree('class_legendary_explorer_core_1_1_soun
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a892ad02abf440774c878f0c82fa25196"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_i_s_a_c_t_helper.html#a892ad02abf440774c878f0c82fa25196">GenerateSoundNodeWaveStreamingData</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> wsdExport, string icbPath, string isbPath)</td></tr>
 <tr class="separator:a892ad02abf440774c878f0c82fa25196"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac56f4491f150638286433b50617058ad"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_i_s_a_c_t_bank_pair.html">ISACTBankPair</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_i_s_a_c_t_helper.html#ac56f4491f150638286433b50617058ad">GetPairedBanks</a> (byte[] binRawData)</td></tr>
+<tr class="memdesc:ac56f4491f150638286433b50617058ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Input data must start with the integer that matches the data to follow size  <a href="class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_i_s_a_c_t_helper.html#ac56f4491f150638286433b50617058ad">More...</a><br /></td></tr>
+<tr class="separator:ac56f4491f150638286433b50617058ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9671b44a144a220ad785b6c531b2e4fa"><td class="memItemLeft" align="right" valign="top">static byte[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_i_s_a_c_t_helper.html#a9671b44a144a220ad785b6c531b2e4fa">SerializePairedBanks</a> (<a class="el" href="class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_i_s_a_c_t_bank_pair.html">ISACTBankPair</a> banks)</td></tr>
+<tr class="separator:a9671b44a144a220ad785b6c531b2e4fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Contains methods related to working with <a class="el" href="namespace_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t.html">ISACT</a> content </p>
@@ -135,6 +140,67 @@ Static Public Member Functions</h2></td></tr>
           <td></td>
           <td>)</td>
           <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac56f4491f150638286433b50617058ad" name="ac56f4491f150638286433b50617058ad"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac56f4491f150638286433b50617058ad">&#9670;&nbsp;</a></span>GetPairedBanks()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_i_s_a_c_t_bank_pair.html">ISACTBankPair</a> LegendaryExplorerCore.Sound.ISACT.ISACTHelper.GetPairedBanks </td>
+          <td>(</td>
+          <td class="paramtype">byte[]&#160;</td>
+          <td class="paramname"><em>binRawData</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Input data must start with the integer that matches the data to follow size </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">binRawData</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+</div>
+</div>
+<a id="a9671b44a144a220ad785b6c531b2e4fa" name="a9671b44a144a220ad785b6c531b2e4fa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9671b44a144a220ad785b6c531b2e4fa">&#9670;&nbsp;</a></span>SerializePairedBanks()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static byte[] LegendaryExplorerCore.Sound.ISACT.ISACTHelper.SerializePairedBanks </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_i_s_a_c_t_bank_pair.html">ISACTBankPair</a>&#160;</td>
+          <td class="paramname"><em>banks</em></td><td>)</td>
+          <td></td>
         </tr>
       </table>
   </td>
