@@ -407,6 +407,9 @@ var annotated_dup =
         [ "MathUtil", "class_legendary_explorer_core_1_1_sharp_d_x_1_1_math_util.html", "class_legendary_explorer_core_1_1_sharp_d_x_1_1_math_util" ]
       ] ],
       [ "Sound", "namespace_legendary_explorer_core_1_1_sound.html", [
+        [ "ISACT", "namespace_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t.html", [
+          [ "ISACTHelper", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_i_s_a_c_t_helper.html", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_i_s_a_c_t_helper" ]
+        ] ],
         [ "Wwise", "namespace_legendary_explorer_core_1_1_sound_1_1_wwise.html", [
           [ "WwiseHelper", "class_legendary_explorer_core_1_1_sound_1_1_wwise_1_1_wwise_helper.html", "class_legendary_explorer_core_1_1_sound_1_1_wwise_1_1_wwise_helper" ]
         ] ]

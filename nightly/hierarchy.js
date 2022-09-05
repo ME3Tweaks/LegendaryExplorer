@@ -557,6 +557,7 @@ var hierarchy =
     [ "LegendaryExplorerCore.Gammtek.Collections.Generic.IPriorityQueueNode", "interface_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_i_priority_queue_node.html", [
       [ "LegendaryExplorerCore.Gammtek.Collections.Generic.PriorityQueueNode", "class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_priority_queue_node.html", null ]
     ] ],
+    [ "LegendaryExplorerCore.Sound.ISACT.ISACTHelper", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_i_s_a_c_t_helper.html", null ],
     [ "LegendaryExplorerCore.Audio.ISBank", "class_legendary_explorer_core_1_1_audio_1_1_i_s_bank.html", null ],
     [ "LegendaryExplorerCore.Gammtek.Text.StringMatching.IStringMatcher", "interface_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_string_matching_1_1_i_string_matcher.html", [
       [ "LegendaryExplorerCore.Gammtek.Text.StringMatching.CombinedStringMatcher", "class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_string_matching_1_1_combined_string_matcher.html", null ],

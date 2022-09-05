@@ -1,5 +1,11 @@
 var NAVTREEINDEX94 =
 {
+"namespace_legendary_explorer_core_1_1_gammtek_1_1_dynamic.html":[0,5,1,6,3],
+"namespace_legendary_explorer_core_1_1_gammtek_1_1_dynamic.html#a930c09d828d202c2c163aef271d40934":[0,5,1,6,3,7],
+"namespace_legendary_explorer_core_1_1_gammtek_1_1_dynamic.html#a930c09d828d202c2c163aef271d40934a231afe47f3f37d3808096b36c28b4ded":[0,5,1,6,3,7,0],
+"namespace_legendary_explorer_core_1_1_gammtek_1_1_dynamic.html#a930c09d828d202c2c163aef271d40934af2bbdf9f72c085adc4d0404e370f0f4c":[0,5,1,6,3,7,1],
+"namespace_legendary_explorer_core_1_1_gammtek_1_1_dynamic.html#acc340f85c51c82374bfd3856fec5471a":[0,5,1,6,3,6],
+"namespace_legendary_explorer_core_1_1_gammtek_1_1_dynamic.html#acc340f85c51c82374bfd3856fec5471aa9ec8e4e3ab4c7eeba097f27d7364d743":[0,5,1,6,3,6,0],
 "namespace_legendary_explorer_core_1_1_gammtek_1_1_dynamic.html#acc340f85c51c82374bfd3856fec5471aaeed8d85b888a6c015834240885ee6333":[0,5,1,6,3,6,1],
 "namespace_legendary_explorer_core_1_1_gammtek_1_1_dynamic_1_1_collections.html":[0,5,1,6,3,0],
 "namespace_legendary_explorer_core_1_1_gammtek_1_1_extensions.html":[0,5,1,6,4],
@@ -230,7 +236,8 @@ var NAVTREEINDEX94 =
 "namespace_legendary_explorer_core_1_1_shaders.html#accd69302e7e70eba62836205cdc1ab26ab8223be2455e0ea5a0e63e8f018d6fc3":[0,5,1,15,11,5],
 "namespace_legendary_explorer_core_1_1_sharp_d_x.html":[0,5,1,16],
 "namespace_legendary_explorer_core_1_1_sound.html":[0,5,1,17],
-"namespace_legendary_explorer_core_1_1_sound_1_1_wwise.html":[0,5,1,17,0],
+"namespace_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t.html":[0,5,1,17,0],
+"namespace_legendary_explorer_core_1_1_sound_1_1_wwise.html":[0,5,1,17,1],
 "namespace_legendary_explorer_core_1_1_t_l_k.html":[0,5,1,19],
 "namespace_legendary_explorer_core_1_1_t_l_k_1_1_m_e1.html":[0,5,1,19,0],
 "namespace_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3.html":[0,5,1,19,1],
@@ -242,12 +249,5 @@ var NAVTREEINDEX94 =
 "namespace_legendary_explorer_core_1_1_textures.html#a00a75c8a054cd63f64b7bbecc2d61e09a791670d5c35d6c647153f1458137fbd4":[0,5,1,18,11,4],
 "namespace_legendary_explorer_core_1_1_textures.html#a00a75c8a054cd63f64b7bbecc2d61e09a88183b946cc5f0e8c96b2e66e1c74a7e":[0,5,1,18,11,0],
 "namespace_legendary_explorer_core_1_1_textures.html#a00a75c8a054cd63f64b7bbecc2d61e09a889574aebacda6bfd3e534e2b49b8028":[0,5,1,18,11,7],
-"namespace_legendary_explorer_core_1_1_textures.html#a00a75c8a054cd63f64b7bbecc2d61e09aa3d1190cdb525c3e1c7c06c19005387e":[0,5,1,18,11,3],
-"namespace_legendary_explorer_core_1_1_textures.html#a00a75c8a054cd63f64b7bbecc2d61e09aaa51ef981f910b0ec9ed8b82c65be593":[0,5,1,18,11,9],
-"namespace_legendary_explorer_core_1_1_textures.html#a00a75c8a054cd63f64b7bbecc2d61e09ace789f624a22f7c5e6baafe4f4fe9e4d":[0,5,1,18,11,10],
-"namespace_legendary_explorer_core_1_1_textures.html#a00a75c8a054cd63f64b7bbecc2d61e09ae034278428deb1ad937eb98f2ad0217a":[0,5,1,18,11,8],
-"namespace_legendary_explorer_core_1_1_textures.html#a00a75c8a054cd63f64b7bbecc2d61e09ae192297ecf3602fabbec5f0a38ede758":[0,5,1,18,11,6],
-"namespace_legendary_explorer_core_1_1_textures_1_1_codecs.html":[0,5,1,18,0],
-"namespace_legendary_explorer_core_1_1_textures_1_1_studio.html":[0,5,1,18,1],
-"namespace_legendary_explorer_core_1_1_unreal.html":[0,5,1,20]
+"namespace_legendary_explorer_core_1_1_textures.html#a00a75c8a054cd63f64b7bbecc2d61e09aa3d1190cdb525c3e1c7c06c19005387e":[0,5,1,18,11,3]
 };
