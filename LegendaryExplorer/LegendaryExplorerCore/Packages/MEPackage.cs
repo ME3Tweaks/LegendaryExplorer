@@ -4,13 +4,13 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Threading.Tasks;
 using LegendaryExplorerCore.Compression;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Memory;
 using LegendaryExplorerCore.Misc;
-using LegendaryExplorerCore.TLK.ME1;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
@@ -904,7 +904,8 @@ namespace LegendaryExplorerCore.Packages
                 package.FullHeaderSize = package.ImportExportGuidsOffset = offset + dependencyTableSize;
 
                 //calculate chunks
-                var chunks = new List<CompressionHelper.Chunk>();
+                int numChunksRoughGuess = (int)BitOperations.RoundUpToPowerOf2((uint)(totalSize / CompressionHelper.MAX_CHUNK_SIZE + 1));
+                var chunks = new List<CompressionHelper.Chunk>(numChunksRoughGuess);
                 var compressionType = package.Game switch
                 {
                     MEGame.ME3 => CompressionType.Zlib,
@@ -918,8 +919,7 @@ namespace LegendaryExplorerCore.Packages
                 var chunk = new CompressionHelper.Chunk
                 {
                     uncompressedSize = package.FullHeaderSize - package.NameOffset,
-                    uncompressedOffset = package.NameOffset,
-                    blocks = new List<CompressionHelper.Block>()
+                    uncompressedOffset = package.NameOffset
                 };
                 int actualMaxChunkSize = chunk.uncompressedSize;
                 //Export data chunks
@@ -941,8 +941,7 @@ namespace LegendaryExplorerCore.Packages
                         chunk = new CompressionHelper.Chunk
                         {
                             uncompressedSize = exportDataSize,
-                            uncompressedOffset = e.DataOffset,
-                            blocks = new List<CompressionHelper.Block>()
+                            uncompressedOffset = e.DataOffset
                         };
                     }
                     else
@@ -963,28 +962,37 @@ namespace LegendaryExplorerCore.Packages
                 //write tables to first chunk
                 using (var ms = new MemoryStream(uncompressedData))
                 {
-                    foreach (string name in package.names)
+                    switch (package.Game)
                     {
-                        switch (package.Game)
-                        {
-                            case MEGame.ME1:
+                        case MEGame.ME1:
+                            foreach (string name in package.names)
+                            {
                                 ms.WriteUnrealStringLatin1(name);
                                 ms.WriteInt32(0);
                                 ms.WriteInt32(458768);
-                                break;
-                            case MEGame.ME2:
+                            }
+                            break;
+                        case MEGame.ME2:
+                            foreach (string name in package.names)
+                            {
                                 ms.WriteUnrealStringLatin1(name);
                                 ms.WriteInt32(-14);
-                                break;
-                            case MEGame.ME3:
-                            case MEGame.LE3:
+                            }
+                            break;
+                        case MEGame.ME3:
+                        case MEGame.LE3:
+                            foreach (string name in package.names)
+                            {
                                 ms.WriteUnrealStringUnicode(name);
-                                break;
-                            case MEGame.LE1:
-                            case MEGame.LE2:
+                            }
+                            break;
+                        case MEGame.LE1:
+                        case MEGame.LE2:
+                            foreach (string name in package.names)
+                            {
                                 ms.WriteUnrealStringLatin1(name);
-                                break;
-                        }
+                            }
+                            break;
                     }
 
                     // sanity check
@@ -1029,7 +1037,7 @@ namespace LegendaryExplorerCore.Packages
                     int dataSizeRemainingToCompress = chunk.uncompressedSize;
                     int chunkUncompressedEndOffset = chunk.uncompressedOffset + chunk.uncompressedSize;
                     int numBlocksInChunk = (int)Math.Ceiling(chunk.uncompressedSize * 1.0 / maxBlockSize);
-
+                    chunk.blocks = new CompressionHelper.Block[numBlocksInChunk];
                     // skip chunk header and blocks table - filled later
                     compressedStream.Seek(CompressionHelper.SIZE_OF_CHUNK_HEADER + CompressionHelper.SIZE_OF_CHUNK_BLOCK_HEADER * numBlocksInChunk, SeekOrigin.Current);
 
@@ -1054,31 +1062,35 @@ namespace LegendaryExplorerCore.Packages
                         var block = new CompressionHelper.Block();
                         block.uncompressedsize = Math.Min(maxBlockSize, dataSizeRemainingToCompress);
                         dataSizeRemainingToCompress -= block.uncompressedsize;
-                        block.uncompressedData = uncompressedData.AsMemory(positionInChunkData, block.uncompressedsize);
+                        block.uncompressedData = new ArraySegment<byte>(uncompressedData, positionInChunkData, block.uncompressedsize);
                         block.compressedData = rentedOutputArrays[b];
-                        chunk.blocks.Add(block);
+                        chunk.blocks[b] = block;
 
                         positionInChunkData += block.uncompressedsize;
                     }
-
-                    //Compress blocks
-                    Parallel.ForEach(chunk.blocks, block =>
+                    switch (compressionType)
                     {
-                        block.compressedsize = compressionType switch
-                        {
-                            CompressionType.LZO => LZO2.Compress(block.uncompressedData.Span, block.compressedData),
-                            CompressionType.Zlib => Zlib.Compress(block.uncompressedData.Span, block.compressedData),
-                            CompressionType.OodleLeviathan => OodleHelper.Compress(block.uncompressedData.Span, block.compressedData),
-                            _ => throw new Exception("Internal error: Unsupported compression type for compressing blocks: " + compressionType)
-                        };
-                        if (block.compressedsize == 0)
-                            throw new Exception("Internal error: Block compression failed! Compressor returned no bytes");
-                    });
+                        case CompressionType.LZO:
+                            Parallel.ForEach(chunk.blocks, static block => block.compressedsize = LZO2.Compress(block.uncompressedData, block.compressedData));
+                            break;
+                        case CompressionType.Zlib:
+                            Parallel.ForEach(chunk.blocks, static block => block.compressedsize = Zlib.Compress(block.uncompressedData, block.compressedData));
+                            break;
+                        case CompressionType.OodleLeviathan:
+                            Parallel.ForEach(chunk.blocks, static block => block.compressedsize = OodleHelper.Compress(block.uncompressedData, block.compressedData));
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException("Internal error: Unsupported compression type for compressing blocks: " + compressionType);
+                    }
 
                     //Write compressed data to stream 
                     for (int b = 0; b < numBlocksInChunk; b++)
                     {
                         var block = chunk.blocks[b];
+                        if (block.compressedsize == 0)
+                        {
+                            throw new Exception("Internal error: Block compression failed! Compressor returned no bytes");
+                        }
                         compressedStream.Write(block.compressedData, 0, block.compressedsize);
                         chunk.compressedSize += block.compressedsize;
                     }
@@ -1177,7 +1189,7 @@ namespace LegendaryExplorerCore.Packages
                             e.WriteBinary(ObjectBinary.From(e));
                             break;
                         case "ShaderCache":
-                            UpdateShaderCacheOffsets(e, oldDataOffset);
+                            e.UpdateShaderCacheOffsets(oldDataOffset);
                             break;
                     }
                 }
@@ -1189,74 +1201,6 @@ namespace LegendaryExplorerCore.Packages
             return compress
                 ? saveCompressed(this, true, includeAdditionalPackagesToCook, includeDependencyTable)
                 : saveUncompressed(this, true, includeAdditionalPackagesToCook, includeDependencyTable);
-        }
-
-        //TODO: edit memory in-place somehow? This currently requires an allocation and a copy of the sizeable shadercache export, and must happen on save for nearly every LE file
-        private static void UpdateShaderCacheOffsets(ExportEntry export, int oldDataOffset)
-        {
-            int newDataOffset = export.DataOffset;
-
-            MEGame game = export.Game;
-            var binData = new MemoryStream(export.Data, 0, export.DataSize, true, true);
-            binData.Seek(export.propsEnd() + 1, SeekOrigin.Begin);
-
-            int nameList1Count = binData.ReadInt32();
-            binData.Seek(nameList1Count * 12, SeekOrigin.Current);
-
-            if (game is MEGame.ME3 || game.IsLEGame())
-            {
-                int namelist2Count = binData.ReadInt32();//namelist2
-                binData.Seek(namelist2Count * 12, SeekOrigin.Current);
-            }
-
-            if (game is MEGame.ME1)
-            {
-                int vertexFactoryMapCount = binData.ReadInt32();
-                binData.Seek(vertexFactoryMapCount * 12, SeekOrigin.Current);
-            }
-
-            int shaderCount = binData.ReadInt32();
-            for (int i = 0; i < shaderCount; i++)
-            {
-                binData.Seek(24, SeekOrigin.Current);
-                int nextShaderOffset = binData.ReadInt32() - oldDataOffset;
-                binData.Seek(-4, SeekOrigin.Current);
-                binData.WriteInt32(nextShaderOffset + newDataOffset);
-                binData.Seek(nextShaderOffset, SeekOrigin.Begin);
-            }
-
-            if (game is not MEGame.ME1)
-            {
-                int vertexFactoryMapCount = binData.ReadInt32();
-                binData.Seek(vertexFactoryMapCount * 12, SeekOrigin.Current);
-            }
-
-            int materialShaderMapCount = binData.ReadInt32();
-            for (int i = 0; i < materialShaderMapCount; i++)
-            {
-                binData.Seek(16, SeekOrigin.Current);
-
-                int switchParamCount = binData.ReadInt32();
-                binData.Seek(switchParamCount * 32, SeekOrigin.Current);
-
-                int componentMaskParamCount = binData.ReadInt32();
-                binData.Seek(componentMaskParamCount * 44, SeekOrigin.Current);
-
-                if (game is MEGame.ME3 || game.IsLEGame())
-                {
-                    int normalParams = binData.ReadInt32();
-                    binData.Seek(normalParams * 29, SeekOrigin.Current);
-
-                    binData.Seek(8, SeekOrigin.Current);
-                }
-
-                int nextMaterialShaderMapOffset = binData.ReadInt32() - oldDataOffset;
-                binData.Seek(-4, SeekOrigin.Current);
-                binData.WriteInt32(nextMaterialShaderMapOffset + newDataOffset);
-                binData.Seek(nextMaterialShaderMapOffset, SeekOrigin.Begin);
-            }
-
-            export.Data = binData.GetBuffer();
         }
 
         private void WriteHeader(Stream ms, CompressionType compressionType = CompressionType.None, List<CompressionHelper.Chunk> chunks = null, bool includeAdditionalPackageToCook = true)
@@ -1425,7 +1369,7 @@ namespace LegendaryExplorerCore.Packages
                     ms.WriteInt32(chunk.compressedOffset);
                     if (chunk.blocks != null)
                     {
-                        var chunksize = chunk.compressedSize + CompressionHelper.SIZE_OF_CHUNK_HEADER + CompressionHelper.SIZE_OF_CHUNK_BLOCK_HEADER * chunk.blocks.Count;
+                        var chunksize = chunk.compressedSize + CompressionHelper.SIZE_OF_CHUNK_HEADER + CompressionHelper.SIZE_OF_CHUNK_BLOCK_HEADER * chunk.blocks.Length;
                         //Debug.WriteLine($"Writing chunk table chunk {i} size: {chunksize}");
                         ms.WriteInt32(chunksize); //Size of compressed data + chunk header + block header * number of blocks in the chunk
                     }
