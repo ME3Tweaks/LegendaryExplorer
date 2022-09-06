@@ -99,8 +99,14 @@
                             </Grid.RowDefinitions>
                             <controls:ListBoxScroll x:Name="listBoxPackages" ItemsSource="{Binding ActorDict}" DisplayMemberPath="Key" SelectedValuePath="Value" ContextMenu="{StaticResource packagesContextMenu}" Grid.Row="0" Grid.RowSpan="3"/>
                             <Border BorderBrush="LightSlateGray" BorderThickness="0.65" Grid.Row="0" Grid.Column="2" >
-                                <controls:ListBoxScroll ItemsSource="{Binding SelectedValue, ElementName=listBoxPackages}" DisplayMemberPath="DisplayText" SelectedItem="{Binding SelectedActor}"
-                                                        ContextMenu="{StaticResource actorsContextMenu}"/>
+                                <DockPanel>
+                                    <controls:SearchBox x:Name="actorFilterSearchBox" DockPanel.Dock="Top" WatermarkText="Filter Actors (In selected file)" TextChanged="ActorFilterSearchBox_OnTextChanged"/>
+                                    <controls:ListBoxScroll
+                                        ItemsSource="{Binding SelectedValue, ElementName=listBoxPackages}"
+                                        DisplayMemberPath="DisplayText" SelectedItem="{Binding SelectedActor}"
+                                        ContextMenu="{StaticResource actorsContextMenu}"
+                                        sharedUi:Filter.By="{Binding ActorFilter}" />
+                                </DockPanel>
                             </Border>
                             <editorPanels:LLEActorEditorPanel x:Name="ActorEditorPanel" Grid.Row="2" Grid.Column="2"/>
 

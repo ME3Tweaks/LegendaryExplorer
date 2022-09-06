@@ -63,13 +63,6 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         
         public bool CamPathReadyToView => _readyToView && Game is MEGame.ME3;
 
-        private bool _readyToInitialize = true;
-        public bool ReadyToInitialize
-        {
-            get => _readyToInitialize;
-            set => SetProperty(ref _readyToInitialize, value);
-        }
-
         public MEGame Game { get; }
         public InteropTarget GameTarget { get; }
 
@@ -223,7 +216,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
 
         private bool IsSelectedPackageOpenInPackEd()
         {
-            return listBoxPackages.SelectedItem is KeyValuePair<string, ObservableCollectionExtended<ActorEntry2>> kvp 
+            return listBoxPackages.SelectedItem is KeyValuePair<string, ObservableCollectionExtended<ActorEntryLE>> kvp 
                    && MELoadedFiles.GetFilesLoadedInGame(Game).TryGetValue(kvp.Key, out string filePath)
                    && WPFBase.IsOpenInExisting<PackageEditorWindow>(filePath);
         }
@@ -247,7 +240,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
 
         private void OpenPackage()
         {
-            if (listBoxPackages.SelectedItem is KeyValuePair<string, ObservableCollectionExtended<ActorEntry2>> kvp)
+            if (listBoxPackages.SelectedItem is KeyValuePair<string, ObservableCollectionExtended<ActorEntryLE>> kvp)
             {
                 OpenInPackEd(kvp.Key);
             }
@@ -400,7 +393,9 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             }
         }
 
-        public ObservableDictionary<string, ObservableCollectionExtended<ActorEntry2>> ActorDict { get; } = new();
+        #region Actor Selection and Display
+
+        public ObservableDictionary<string, ObservableCollectionExtended<ActorEntryLE>> ActorDict { get; } = new();
 
         private class JsonMapObj
         {
@@ -445,7 +440,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
                 {
                     if (jsonActorObj.Components is null)
                     {
-                        var actor = new ActorEntry2
+                        var actor = new ActorEntryLE
                         {
                             FileName = mapName,
                             ActorName = jsonActorObj.Name,
@@ -458,7 +453,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
                     {
                         if (jsonActorObj.Components[i] is string componentName)
                         {
-                            var actor = new ActorEntry2
+                            var actor = new ActorEntryLE
                             {
                                 FileName = mapName,
                                 ActorName = jsonActorObj.Name,
@@ -476,6 +471,49 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
                 ActorDict.Remove(mapName);
             }
         }
+
+        private ActorEntryLE _selectedActor;
+        public ActorEntryLE SelectedActor
+        {
+            get => _selectedActor;
+            set
+            {
+                if (SetProperty(ref _selectedActor, value) && !noUpdate && value != null)
+                {
+                    SetBusy($"Selecting {value.ActorName}", () => { });
+                    string message = $"LLE_SELECT_ACTOR {Path.GetFileNameWithoutExtension(value.FileName)} {value.ActorName} {_selectedActor.ComponentIdx}";
+                    InteropHelper.SendMessageToGame(message, Game);
+                }
+            }
+        }
+
+        private Predicate<object> _actorFilter;
+        public Predicate<object> ActorFilter
+        {
+            get => _actorFilter;
+            set
+            {
+                //this should always trigger, even if the new value is the same
+                _actorFilter = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private void ActorFilterSearchBox_OnTextChanged(SearchBox sender, string newtext)
+        {
+            ActorFilter = string.IsNullOrWhiteSpace(newtext) ? null : IsActorMatch;
+        }
+
+        private bool IsActorMatch(object obj)
+        {
+            var ae = (ActorEntryLE)obj;
+            string text = actorFilterSearchBox.Text;
+            return  ae.ActorName.Contains(text, StringComparison.OrdinalIgnoreCase)
+                   || ae.Tag is not null && ae.Tag.Contains(text, StringComparison.OrdinalIgnoreCase)
+                   || ae.ComponentName is not null && ae.ComponentName.Contains(text, StringComparison.OrdinalIgnoreCase);
+        }
+
+        #endregion
 
         #region BusyHost
 
@@ -528,22 +566,6 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         }
 
         #endregion
-
-        private ActorEntry2 _selectedActor;
-
-        public ActorEntry2 SelectedActor
-        {
-            get => _selectedActor;
-            set
-            {
-                if (SetProperty(ref _selectedActor, value) && !noUpdate && value != null)
-                {
-                    SetBusy($"Selecting {value.ActorName}", () => { });
-                    string message = $"LLE_SELECT_ACTOR {Path.GetFileNameWithoutExtension(value.FileName)} {value.ActorName} {_selectedActor.ComponentIdx}";
-                    InteropHelper.SendMessageToGame(message, Game);
-                }
-            }
-        }
 
         #region Misc
 
@@ -957,7 +979,8 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
 
         #endregion
     }
-    public class ActorEntry2
+
+    public class ActorEntryLE
     {
         public string DisplayText
         {
