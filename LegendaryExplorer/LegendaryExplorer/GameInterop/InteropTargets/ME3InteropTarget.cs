@@ -14,7 +14,7 @@ namespace LegendaryExplorer.GameInterop.InteropTargets
         public override MEGame Game => MEGame.ME3;
         public override bool CanExecuteConsoleCommands => true;
         public override bool CanUpdateTOC => true;
-        public override string InteropASIName => "LEXInteropME3.asi";
+        public string InteropASIName => "LEXInteropME3.asi";
         public override string OldInteropASIName => "ME3ExplorerInterop.asi";
         public override bool CanUseLLE => true;
 

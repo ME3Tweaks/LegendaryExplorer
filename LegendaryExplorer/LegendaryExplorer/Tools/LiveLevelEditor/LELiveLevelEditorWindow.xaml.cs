@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -29,6 +28,7 @@ using System.Windows.Media;
 using LegendaryExplorer.Misc;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace LegendaryExplorer.Tools.LiveLevelEditor
 {
@@ -230,8 +230,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
 
         private void RegenActorList()
         {
-            SetBusy("Building Actor List", () => { });
-            DumpActors();
+            InteropHelper.SendMessageToGame("LLE_TEST_ACTIVE", Game);
         }
 
         private bool CanOpenInPackEd() => SelectedActor != null;
@@ -287,16 +286,16 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
 
         private void LoadLiveEditor()
         {
-            SetBusy("Loading Live Editor", () => RetryLoadTimer.Stop());
-            //GameTarget.ExecuteConsoleCommands("ce LoadLiveEditor");
-            InteropHelper.SendMessageToGame("LLE_TEST_ACTIVE", Game); // If this response works, we will know we are ready and can now start
+            RegenActorList();
             RetryLoadTimer.Start();
         }
         #endregion
 
+        private int regenActorsRetryCount = 0;
+
         private void GameControllerOnReceiveMessage(string msg)
         {
-            var command = msg.Split(" ");
+            string[] command = msg.Split(" ");
             if (command.Length < 2)
                 return;
             if (command[0] != "LIVELEVELEDITOR")
@@ -311,23 +310,30 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
                 GameOpenTimer.Start();
                 BusyText = "Building Actor list";
                 actorTab.IsSelected = true;
-                // Pull the initial list of actors
-                DumpActors();
-            }
-            else if (verb == "ACTORDUMPSTART") // We're about to receive a list of actors
-            {
+
+                // Reload all files in the game to make sure the list is current
+                MELoadedFiles.GetFilesLoadedInGame(Game, true);
                 ActorDict.Clear();
             }
-            else if (verb == "ACTORINFO") // We're about to receive a list of this many actors
+            else if (verb == "LEVELSUPDATE")
             {
-                BuildActor(string.Join("", command.Skip(2))); // Skip tool and verb
-            }
-            else if (verb == "ACTORDUMPFINISHED") // Finished dumping actors
-            {
-                // We have reached the end of the list
-                ReadyToView = true;
-                InitializeCamPath();
-                EndBusy();
+                try
+                {
+                    UpdateLevels(string.Join(' ', command.Skip(2))); // Skip tool and verb
+
+                    ReadyToView = true;
+                    EndBusy();
+                    regenActorsRetryCount = 0;
+                }
+                catch
+                {
+                    regenActorsRetryCount++;
+                    if (regenActorsRetryCount > 5)
+                    {
+                        throw;
+                    }
+                    RegenActorList();
+                }
             }
             else if (verb == "ACTORSELECTED")
             {
@@ -363,23 +369,6 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
                 noUpdate = false;
                 EndBusy();
             }
-
-
-            if (msg == "LiveEditCamPath string CamPathComplete")
-            {
-                playbackState = PlaybackState.Paused;
-                PlayPauseIcon = EFontAwesomeIcon.Solid_Play;
-            }
-        }
-
-        /// <summary>
-        /// Tells the game to dump the list of actors
-        /// </summary>
-        private void DumpActors()
-        {
-            // Reload all files in the game to make sure the list is current
-            MELoadedFiles.GetFilesLoadedInGame(Game, true);
-            InteropHelper.SendMessageToGame("LLE_DUMP_ACTORS", Game);
         }
 
 
@@ -391,6 +380,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
                 EndBusy();
                 ReadyToView = false;
                 SelectedActor = null;
+                ActorDict.Clear();
                 instructionsTab.IsSelected = true;
                 GameOpenTimer.Stop();
             }
@@ -412,47 +402,79 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
 
         public ObservableDictionary<string, ObservableCollectionExtended<ActorEntry2>> ActorDict { get; } = new();
 
+        private class JsonMapObj
+        {
+            public string Name { get; set; }
+            public JsonActorObj[] Actors { get; set; }
+        }
+
+        private class JsonActorObj
+        {
+            public string Name { get; set; }
+            public string Tag { get; set; }
+            public string[] Components { get; set; }
+        }
+
         /// <summary>
         /// Builds actor information based on what's sent from the Interop ASI
         /// </summary>
-        /// <param name="actorInfoStr"></param>
-        private void BuildActor(string actorInfoStr)
+        private void UpdateLevels(string json)
         {
-            string[] parts = actorInfoStr.Split(':');
-
-            var ae = new ActorEntry2();
-            foreach (var part in parts)
+            CaseInsensitiveDictionary<string> filesLoadedInGame = MELoadedFiles.GetFilesLoadedInGame(Game);
+            JsonMapObj[] mapObjs = JsonConvert.DeserializeObject<JsonMapObj[]>(json);
+            if (mapObjs == null)
             {
-                string[] split = part.Split('=');
-                switch (split[0])
-                {
-                    case "MAP":
-                        ae.FileName = $"{split[1]}.pcc";
-                        break;
-                    case "ACTOR":
-                        ae.ActorName = split[1];
-                        break;
-                    case "TAG":
-                        ae.Tag = split[1];
-                        break;
-                    case "COMPNAME":
-                        ae.ComponentName = split[1];
-                        break;
-                    case "COMPIDX":
-                        ae.ComponentIdx = int.Parse(split[1]);
-                        break;
-                }
-            }
-
-            // We only care about actors that loaded from a package file directly (level files)
-            // GetFilesLoadedInGame will return a cached result
-            
-            if (MELoadedFiles.GetFilesLoadedInGame(Game).ContainsKey(ae.FileName))
-            {
-                ActorDict.AddToListAt(ae.FileName, ae);
                 return;
             }
-            Debug.WriteLine($"SKIPPING {actorInfoStr}");
+            var maps = new HashSet<string>();
+            foreach (JsonMapObj jsonMapObj in mapObjs)
+            {
+                string mapName = $"{jsonMapObj.Name}.pcc";
+                if (!filesLoadedInGame.ContainsKey(mapName))
+                {
+                    continue;
+                }
+                maps.Add(mapName);
+                //there will never be changes in what actors are loaded in a specific map,
+                //so we can skip maps we've already loaded
+                if (ActorDict.ContainsKey(mapName))
+                {
+                    continue;
+                }
+                foreach (JsonActorObj jsonActorObj in jsonMapObj.Actors)
+                {
+                    if (jsonActorObj.Components is null)
+                    {
+                        var actor = new ActorEntry2
+                        {
+                            FileName = mapName,
+                            ActorName = jsonActorObj.Name,
+                            Tag = jsonActorObj.Tag
+                        };
+                        ActorDict.AddToListAt(mapName, actor);
+                        continue;
+                    }
+                    for (int i = 0; i < jsonActorObj.Components.Length; i++)
+                    {
+                        if (jsonActorObj.Components[i] is string componentName)
+                        {
+                            var actor = new ActorEntry2
+                            {
+                                FileName = mapName,
+                                ActorName = jsonActorObj.Name,
+                                ComponentName = componentName,
+                                ComponentIdx = i
+                            };
+                            ActorDict.AddToListAt(mapName, actor);
+                        }
+                    }
+                }
+            }
+            //remove unloaded maps
+            foreach (string mapName in ActorDict.Keys.ToList().Except(maps))
+            {
+                ActorDict.Remove(mapName);
+            }
         }
 
         #region BusyHost
@@ -517,7 +539,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
                 if (SetProperty(ref _selectedActor, value) && !noUpdate && value != null)
                 {
                     SetBusy($"Selecting {value.ActorName}", () => { });
-                    string message = $"LLE_SELECT_ACTOR {Path.GetFileNameWithoutExtension(value.FileName)} TheWorld.PersistentLevel.{value.ActorName} {_selectedActor.ComponentIdx}";
+                    string message = $"LLE_SELECT_ACTOR {Path.GetFileNameWithoutExtension(value.FileName)} {value.ActorName} {_selectedActor.ComponentIdx}";
                     InteropHelper.SendMessageToGame(message, Game);
                 }
             }

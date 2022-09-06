@@ -16,7 +16,7 @@ namespace LegendaryExplorer.GameInterop.InteropTargets
         public override bool CanExecuteConsoleCommands => true;
         public override bool CanUpdateTOC => false;
 
-        public override string InteropASIName => "ZZZ_LEXInteropME2.asi";
+        public string InteropASIName => "ZZZ_LEXInteropME2.asi";
         public override bool CanUseLLE => true;
         public override string OldInteropASIName => "ME3ExplorerInteropME2.asi";
         public override string InteropASIDownloadLink => "https://github.com/ME3Tweaks/ME2-ASI-Plugins/releases/tag/v2.0-LegendaryExplorerInterop";

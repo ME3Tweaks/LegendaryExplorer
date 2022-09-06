@@ -84,13 +84,6 @@ namespace LegendaryExplorer.GameInterop
             }
         }
 
-        public static string GetInteropAsiWritePath(MEGame game)
-        {
-            string asiDir = GetAsiDir(game);
-            string interopASIWritePath = Path.Combine(asiDir, GameController.GetInteropTargetForGame(game).InteropASIName);
-            return interopASIWritePath;
-        }
-
         public static string GetAsiDir(MEGame game)
         {
             string asiDir = MEDirectories.GetASIPath(game);

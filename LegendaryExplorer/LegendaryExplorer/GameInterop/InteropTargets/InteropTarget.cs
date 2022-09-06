@@ -18,7 +18,6 @@ namespace LegendaryExplorer.GameInterop.InteropTargets
         public abstract MEGame Game { get; }
         public abstract bool CanExecuteConsoleCommands { get; }
         public abstract bool CanUpdateTOC { get; }
-        public abstract string InteropASIName { get; }
         public abstract bool CanUseLLE { get; }
         /// <summary>
         /// The file name of a deprecated ASI, if any.
