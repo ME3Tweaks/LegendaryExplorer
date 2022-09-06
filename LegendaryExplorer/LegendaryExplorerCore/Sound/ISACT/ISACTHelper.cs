@@ -147,8 +147,10 @@ namespace LegendaryExplorerCore.Sound.ISACT
             }
 
             BankChunks = new List<BankChunk>();
-            while (inStream.Position < (bankFileLen + bankStartPos))
+            var endPos = bankFileLen + bankStartPos;
+            while (inStream.Position < endPos)
             {
+                Debug.WriteLine($"Reading chunk at 0x{inStream.Position:X8}, endpos: 0x{endPos:X8}");
                 ReadChunk(inStream, BankChunks);
             }
         }
@@ -181,6 +183,12 @@ namespace LegendaryExplorerCore.Sound.ISACT
                     break;
                 case "cmpi":
                     chunks.Add(new CompressionInfoBankChunk(inStream)); // We need to know data for this to replace audio
+                    break;
+                case "sinf":
+                    chunks.Add(new SampleInfoBankChunk(inStream)); // We need to know data for this to replace audio
+                    break;
+                case "chnk":
+                    chunks.Add(new ChannelBankChunk(inStream)); // We need to know data for this to replace audio
                     break;
                 case "LIST":
                     // These are special listing things.
@@ -228,10 +236,6 @@ namespace LegendaryExplorerCore.Sound.ISACT
             List<BankChunk> chunks = new List<BankChunk>();
             foreach (var chunk in BankChunks)
             {
-                if (chunk is ListBankChunk lbc)
-                {
-                    Debugger.Break();
-                }
                 chunks.Add(chunk); // Technically if this has subchunks it will also include it
                 chunks.AddRange(chunk.GetAllSubChunks());
             }
@@ -242,6 +246,23 @@ namespace LegendaryExplorerCore.Sound.ISACT
             }
 
             return chunks;
+        }
+    }
+
+    public class ChannelBankChunk : BankChunk
+    {
+        public int ChannelCount;
+        public ChannelBankChunk(Stream inStream)
+        {
+            ChunkName = "chnk";
+            ChannelCount = inStream.ReadInt32();
+        }
+
+        public override void Write(Stream outStream)
+        {
+            outStream.WriteStringASCII(ChunkName);
+            outStream.WriteInt32(4); // size
+            outStream.WriteInt32(ChannelCount);
         }
     }
 
@@ -256,6 +277,7 @@ namespace LegendaryExplorerCore.Sound.ISACT
             var endPos = chunkLen + startPos;
             while (inStream.Position < endPos)
             {
+                Debug.WriteLine($"Reading chunk at 0x{inStream.Position:X8}, endpos: 0x{endPos:X8}");
                 ISACTBank.ReadChunk(inStream, SubChunks);
 
                 if (inStream.Position + 1 == endPos)
@@ -337,7 +359,7 @@ namespace LegendaryExplorerCore.Sound.ISACT
             if (SubChunks.Count == 0) return Array.Empty<BankChunk>();
             List<BankChunk> returnList = new List<BankChunk>();
             returnList.AddRange(SubChunks);
-            returnList.AddRange(SubChunks.SelectMany(x=>x.GetAllSubChunks()));
+            returnList.AddRange(SubChunks.SelectMany(x => x.GetAllSubChunks()));
             return returnList;
         }
     }
@@ -403,6 +425,40 @@ namespace LegendaryExplorerCore.Sound.ISACT
             outStream.WriteInt32(PacketSize);
             outStream.WriteFloat(CompressionRatio);
             outStream.WriteFloat(CompressionQuality);
+        }
+    }
+
+    /// <summary>
+    /// ISACT info about the sample data
+    /// </summary>
+    public class SampleInfoBankChunk : BankChunk
+    {
+        public int BufferOffset;
+        public int TimeLength;
+        public int SamplesPerSecond;
+        public int ByteLength;
+        public ushort BitsPerSample;
+        public SampleInfoBankChunk(Stream inStream)
+        {
+            ChunkName = @"sinf"; // We know the chunk name and len already so we don't need this.
+            BufferOffset = inStream.ReadInt32();
+            TimeLength = inStream.ReadInt32();
+            SamplesPerSecond = inStream.ReadInt32();
+            ByteLength = inStream.ReadInt32();
+            BitsPerSample = inStream.ReadUInt16();
+            inStream.ReadUInt16(); // Align 2 since struct size is 20 (align 4)
+        }
+
+        public override void Write(Stream outStream)
+        {
+            outStream.WriteStringASCII(ChunkName);
+            outStream.WriteInt32(20); // Fixed size
+            outStream.WriteInt32(BufferOffset);
+            outStream.WriteInt32(TimeLength);
+            outStream.WriteInt32(SamplesPerSecond);
+            outStream.WriteInt32(ByteLength);
+            outStream.WriteUInt16(BitsPerSample);
+            outStream.WriteUInt16(0); // Align to 4 byte boundary
         }
     }
 }

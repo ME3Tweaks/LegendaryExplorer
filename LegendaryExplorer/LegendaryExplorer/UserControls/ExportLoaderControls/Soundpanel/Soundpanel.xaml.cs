@@ -42,6 +42,7 @@ using AudioStreamHelper = LegendaryExplorer.UnrealExtensions.AudioStreamHelper;
 using WwiseStream = LegendaryExplorerCore.Unreal.BinaryConverters.WwiseStream;
 using AudioInfo = LegendaryExplorerCore.Audio.AudioInfo;
 using Color = System.Drawing.Color;
+using SharpDX.Win32;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls
 {
@@ -1333,20 +1334,36 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             var wavData = File.ReadAllBytes(d.FileName);
             var oggData = ISACTHelperExtended.ConvertWaveToOgg(wavData);
 
-            // Todo: Replace the data segment and update the cmpi segment and reserialize the ICB/ISB/RawData.
+
+            // UPDATE THE OTHER INFO
+
+
             var bin = ObjectBinary.From<SoundNodeWave>(CurrentLoadedExport);
             var isactBankPair = ISACTHelper.GetPairedBanks(bin.RawData);
+            using (var wfr = new WaveFileReader(new MemoryStream(wavData)))
+            {
 
-            var allChunks = isactBankPair.ISBBank.GetAllBankChunks();
+                var allChunks = isactBankPair.ISBBank.GetAllBankChunks();
 
-            var dataChunk = allChunks.FirstOrDefault(x => x.ChunkName == "data");
-            dataChunk.RawData = oggData; // Update ogg data.
+                var dataChunk = allChunks.FirstOrDefault(x => x.ChunkName == "data");
+                dataChunk.RawData = oggData; // Update ogg data.
 
-            var cmpiChunk = allChunks.FirstOrDefault(x => x.ChunkName == "cmpi");
-            var c2Chunk = cmpiChunk as CompressionInfoBankChunk;
-            c2Chunk.TotalSize = oggData.Length;
-            // Not sure if other data needs to be updated here.
+                var cmpiChunk = allChunks.FirstOrDefault(x => x.ChunkName == "cmpi");
+                var c2Chunk = cmpiChunk as CompressionInfoBankChunk;
+                c2Chunk.TotalSize = oggData.Length;
 
+                var sinfChunk = allChunks.FirstOrDefault(x => x.ChunkName == "sinf") as SampleInfoBankChunk;
+                sinfChunk.TimeLength = wfr.TotalTime.Milliseconds;
+                // sinfChunk.ByteLength = wfr.GetChunkData().
+                //sinfChunk.BufferOffset = 0;
+                sinfChunk.BitsPerSample = (ushort)wfr.WaveFormat.BitsPerSample;
+                sinfChunk.SamplesPerSecond = wfr.WaveFormat.SampleRate;
+
+                var channelChunk = allChunks.FirstOrDefault(x => x.ChunkName == "chnk") as ChannelBankChunk;
+                channelChunk.ChannelCount = wfr.WaveFormat.Channels;
+                // Not sure if other data needs to be updated here.
+
+            }
 
             bin.RawData = ISACTHelper.SerializePairedBanks(isactBankPair);
             CurrentLoadedExport.WriteBinary(bin);

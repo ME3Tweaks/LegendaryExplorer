@@ -2529,17 +2529,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 subnodes.Add(new BinInterpNode { Header = $"Error reading binary data: {ex}" });
             }
-
-            try
-            {
-                var paired = ISACTHelper.GetPairedBanks(ObjectBinary.From<SoundNodeWave>(CurrentLoadedExport).RawData);
-                Debug.WriteLine("test");
-            }
-            catch (Exception e)
-            {
-
-            }
-
             return subnodes;
         }
 
