@@ -1351,13 +1351,17 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 var cmpiChunk = allChunks.FirstOrDefault(x => x.ChunkName == "cmpi");
                 var c2Chunk = cmpiChunk as CompressionInfoBankChunk;
                 c2Chunk.TotalSize = oggData.Length;
+                c2Chunk.CurrentFormat = 2; // Ogg Vorbis
+                c2Chunk.TargetFormat = 2; // Ogg Vorbis
 
                 var sinfChunk = allChunks.FirstOrDefault(x => x.ChunkName == "sinf") as SampleInfoBankChunk;
                 sinfChunk.TimeLength = wfr.TotalTime.Milliseconds;
-                // sinfChunk.ByteLength = wfr.GetChunkData().
+                // sinfChunk.ByteLength = wfr.GetChunkData(). // 'data' segment size of source wav / (BitsPerSample / 8) // Unsure what this actually does, if anything
                 //sinfChunk.BufferOffset = 0;
                 sinfChunk.BitsPerSample = (ushort)wfr.WaveFormat.BitsPerSample;
                 sinfChunk.SamplesPerSecond = wfr.WaveFormat.SampleRate;
+
+                // Todo: Change compression for
 
                 var channelChunk = allChunks.FirstOrDefault(x => x.ChunkName == "chnk") as ChannelBankChunk;
                 channelChunk.ChannelCount = wfr.WaveFormat.Channels;
