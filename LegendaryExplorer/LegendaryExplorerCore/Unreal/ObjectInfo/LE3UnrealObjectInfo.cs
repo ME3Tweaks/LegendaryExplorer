@@ -639,7 +639,8 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 {
                     new KeyValuePair<NameReference, PropertyInfo>("InvasionCondition", new PropertyInfo(PropertyType.IntProperty)),
                     new KeyValuePair<NameReference, PropertyInfo>("PreInvasionDescription", new PropertyInfo(PropertyType.StringRefProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("m_bDestroyedbyReapers", new PropertyInfo(PropertyType.BoolProperty))
+                    new KeyValuePair<NameReference, PropertyInfo>("m_bDestroyedbyReapers", new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("m_bNoPlanetScan", new PropertyInfo(PropertyType.BoolProperty))
                 }
             };
             classes["SFXGalaxyMapShipAppearance"] = new ClassInfo
