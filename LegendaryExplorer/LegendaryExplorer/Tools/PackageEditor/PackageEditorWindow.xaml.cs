@@ -41,6 +41,7 @@ using LegendaryExplorerCore.UnrealScript;
 using LegendaryExplorerCore.UnrealScript.Compiling.Errors;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
+using LegendaryExplorerCore.Audio;
 
 namespace LegendaryExplorer.Tools.PackageEditor
 {
@@ -1847,29 +1848,16 @@ namespace LegendaryExplorer.Tools.PackageEditor
                             {
                                 // ICB
                                 var outDir = d.FileName;
-                                // todo: Use objectbinary when we implement it
-                                var data = new MemoryStream(exp.GetBinaryData());
-                                var totalStreamingDataLen = data.ReadInt32();
-                                var isbOffset = data.ReadInt32();
 
-                                string icbName = null;
+                                var bsnwsd = ObjectBinary.From<BioSoundNodeWaveStreamingData>(exp);
+                                var icbBank = new ISACTBank(new MemoryStream(bsnwsd.EmbeddedICB));
+                                var icbName = icbBank.BankChunks.OfType<TitleBankChunk>().FirstOrDefault();
 
-                                // ICB
-                                var dataStartPos = data.Position; // RIFF start
-                                data.Skip(0x4); // get riff length
-                                var riffLen = data.ReadInt32() + 0x8; // include len and RIFF
-                                data.Skip(0x8); // Jump to start of unicode string
-                                var strLen = data.ReadInt32();
-                                icbName = data.ReadStringUnicodeNull(strLen);
-
-                                data.Position = dataStartPos;
-                                using FileStream fs = new FileStream(Path.Combine(outDir, icbName), FileMode.Create);
-                                data.CopyToEx(fs, riffLen);
-
+                                using FileStream fs = new FileStream(Path.Combine(outDir, Path.GetFileNameWithoutExtension(icbName.Value) + ".icb"), FileMode.Create);
+                                fs.Write(bsnwsd.EmbeddedICB);
                                 // ISB
-                                data.Position = isbOffset;
-                                using FileStream fs2 = new FileStream(Path.Combine(outDir, Path.GetFileNameWithoutExtension(icbName) + ".isb"), FileMode.Create);
-                                data.Copy(fs2, new byte[2048]);
+                                using FileStream fs2 = new FileStream(Path.Combine(outDir, Path.GetFileNameWithoutExtension(icbName.Value) + ".isb"), FileMode.Create);
+                                fs2.Write(bsnwsd.EmbeddedISB);
 
                                 MessageBox.Show("Done");
                             }
@@ -1993,7 +1981,8 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     case "BioSoundNodeWaveStreamingData":
                         {
 #if !DEBUG
-MessageBox.Show("Not currently supported");
+                            MessageBox.Show("Not currently supported");
+                            return;
 #else
                             // Requires ICB and ISB
                             string extension = Path.GetExtension(".icb");

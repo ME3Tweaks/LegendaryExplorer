@@ -104,6 +104,8 @@ namespace LegendaryExplorerCore.Sound.ISACT
     /// </summary>
     public class ISACTBankPair
     {
+        public ISACTBankPair() { }
+
         public ISACTBank ICBBank { get; set; }
         public ISACTBank ISBBank { get; set; }
     }
@@ -164,8 +166,8 @@ namespace LegendaryExplorerCore.Sound.ISACT
             switch (chunkName)
             {
 
-                case "samp":
-                case "fldr":
+                //case "samp":
+                //case "fldr":
                 case "snde":
                     break; // Seems to be a marker of some kind for parser
                 default:
@@ -176,8 +178,8 @@ namespace LegendaryExplorerCore.Sound.ISACT
             // Parse special types
             switch (chunkName)
             {
-                case "samp":
-                case "fldr":
+                //case "samp":
+                //case "fldr":
                 case "snde":
                     chunks.Add(new NameOnlyChunk(chunkName)); // These are just markers in files it seems and don't have any actual standalone chunk data
                     break;
@@ -266,15 +268,18 @@ namespace LegendaryExplorerCore.Sound.ISACT
         }
     }
 
-    [DebuggerDisplay("ListBankChunk with {SubChunks.Count} sub chunks")]
+    [DebuggerDisplay("ListBankChunk of type {ObjectType} with {SubChunks.Count} sub chunks")]
     internal class ListBankChunk : BankChunk
     {
-
+        public string ObjectType; // What this LIST object is
         public ListBankChunk(int chunkLen, Stream inStream)
         {
             ChunkName = "LIST";
             var startPos = inStream.Position;
             var endPos = chunkLen + startPos;
+
+            ObjectType = inStream.ReadStringASCII(4);
+
             while (inStream.Position < endPos)
             {
                 Debug.WriteLine($"Reading chunk at 0x{inStream.Position:X8}, endpos: 0x{endPos:X8}");
@@ -291,6 +296,7 @@ namespace LegendaryExplorerCore.Sound.ISACT
             outStream.WriteStringASCII(ChunkName);
             var lenPos = outStream.Position;
             outStream.WriteInt32(0);
+            outStream.WriteStringASCII(ObjectType);
             foreach (var chunk in SubChunks)
             {
                 chunk.Write(outStream);
