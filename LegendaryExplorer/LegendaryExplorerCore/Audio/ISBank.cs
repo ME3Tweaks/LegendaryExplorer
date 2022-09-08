@@ -8,6 +8,7 @@ namespace LegendaryExplorerCore.Audio
 {
     public class ISBank
     {
+        private int TestISBOffset;
         private string Filepath;
         public List<ISBankEntry> BankEntries = new List<ISBankEntry>();
         public ISBank(string isbPath)
@@ -19,7 +20,7 @@ namespace LegendaryExplorerCore.Audio
         public ISBank(byte[] binData)
         {
             MemoryStream ms = new MemoryStream(binData);
-            ms.Skip(4);
+            TestISBOffset = ms.ReadInt32();
             ParseBank(new EndianReader(ms), true);
         }
 
@@ -67,7 +68,7 @@ namespace LegendaryExplorerCore.Audio
                 chunksize = 0; //reset
                 var chunkStartPos = ms.BaseStream.Position;
                 string blockName = ms.ReadEndianASCIIString(4);
-                Debug.WriteLine(blockName + " at " + (ms.Position - 4).ToString("X8"));
+                //Debug.WriteLine($"{(ms.Position - 4).ToString("X8")}: {blockName}");
                 switch (blockName)
                 {
                     case "LIST":
@@ -77,6 +78,7 @@ namespace LegendaryExplorerCore.Audio
                         if (dataType == "fldr")
                         {
                             // Folder for organization. We are just going to skip this. Might parse in future if it's useful
+                            ms.Seek(-4, SeekOrigin.Current); // Seek back since there will be a subheader here.
                             continue;
                         }
 
@@ -170,10 +172,15 @@ namespace LegendaryExplorerCore.Audio
                             var riffSize = ms.ReadUInt32(); //size of isfbtitl chunk
                             var riffType = ms.ReadEndianASCIIString(4); //type of ISB riff
                             var riffType2 = ms.ReadEndianASCIIString(4); //type of ISB riff
+
+                            //Debug.WriteLine($"Riff type is {riffType}");
+
                             if (riffType != "isbf" && riffType2 == "titl")
                             {
                                 //its an icbftitl, which never has data.
-                                ms.Seek(riffSize - 8, SeekOrigin.Current); //skip it
+                                //Debug.WriteLine($"Skipping non isbf type");
+                                ms.Seek(TestISBOffset, SeekOrigin.Begin);
+                                //ms.Seek(riffSize - 8, SeekOrigin.Current); //skip it
                                 continue; //skip
                             }
 

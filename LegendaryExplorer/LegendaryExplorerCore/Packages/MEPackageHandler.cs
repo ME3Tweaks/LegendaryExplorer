@@ -229,7 +229,7 @@ namespace LegendaryExplorerCore.Packages
         /// <returns></returns>
         public static IMEPackage UnsafePartialLoad(string pathToFile, Func<ExportEntry, bool> exportPredicate)
         {
-            // Debug.WriteLine($"Partially loading package {pathToFile}");
+            //Debug.WriteLine($"Partially loading package {pathToFile}");
             using var fs = new FileStream(pathToFile, FileMode.Open, FileAccess.Read);
             return LoadPackage(fs, pathToFile, false, false, exportPredicate);
         }
@@ -369,6 +369,30 @@ namespace LegendaryExplorerCore.Packages
                     MEBlankPackageCreatorDelegate(path, game).Save();
                     break;
             }
+        }
+
+        /// <summary>
+        /// Creates, saves, then loads the package from disk.
+        /// </summary>
+        /// <param name="path">Where to save the package</param>
+        /// <param name="game">What game the package is for</param>
+        public static IMEPackage CreateAndLoadPackage(string path, MEGame game)
+        {
+            switch (game)
+            {
+                case MEGame.UDK:
+                    UDKConstructorDelegate(path).Save();
+                    break;
+                case MEGame.LELauncher:
+                    throw new ArgumentException("Cannot create a package for LELauncher, it doesn't use packages");
+                case MEGame.Unknown:
+                    throw new ArgumentException("Cannot create a package file for an Unknown game!", nameof(game));
+                default:
+                    MEBlankPackageCreatorDelegate(path, game).Save();
+                    break;
+            }
+
+            return MEPackageHandler.OpenMEPackage(path);
         }
 
         /// <summary>

@@ -165,6 +165,34 @@ namespace LegendaryExplorer
 #if DEBUG
             set.Add(new Tool
             {
+                name = "Animation Viewer 2",
+                type = typeof(Tools.AnimationViewer.AnimationViewerWindow2),
+                icon = Application.Current.FindResource("iconAnimViewer") as ImageSource,
+                open = () =>
+                {
+                    var gameStr = InputComboBoxWPF.GetValue(null, "Choose game you want to use Animation Viewer 2 with.", "Live Level Editor 2 game selector",
+                        new[] { "LE1" }, "LE1");
+
+                    if (Enum.TryParse(gameStr, out MEGame game))
+                    {
+                        if (Tools.AnimationViewer.AnimationViewerWindow2.Instance(game) is { } instance)
+                        {
+                            instance.RestoreAndBringToFront();
+                        }
+                        else
+                        {
+                            (new Tools.AnimationViewer.AnimationViewerWindow2(game)).Show();
+                        }
+                    }
+                },
+                tags = new List<string> { "utility", "animation", "gesture" },
+                category = "Cinematic Tools",
+                category2 = "Utilities",
+                description = "IN DEVELOPMENT: (LE ONLY) Animation Viewer 2 allows you to preview any animation in the Legendary Edition versions of the games."
+            });
+
+            set.Add(new Tool
+            {
                 name = "Class Hierarchy Viewer",
                 type = typeof(Tools.ClassViewer.ClassViewerWindow),
                 icon = Application.Current.FindResource("iconClassViewer") as ImageSource,
@@ -191,53 +219,38 @@ namespace LegendaryExplorer
                 open = () =>
                 {
                     var gameStr = InputComboBoxWPF.GetValue(null, "Choose game you want to use Live Level Editor with.", "Live Level Editor game selector",
-                                              new[] { "ME3", "ME2", "LE1" }, "ME3");
+                                              new[] { "LE3", "LE2", "LE1", "ME3", "ME2" }, "LE3");
 
                     if (Enum.TryParse(gameStr, out MEGame game))
                     {
-                        if (Tools.LiveLevelEditor.LiveLevelEditorWindow.Instance(game) is { } instance)
+                        if (game.IsLEGame())
                         {
-                            instance.RestoreAndBringToFront();
+                            if (Tools.LiveLevelEditor.LELiveLevelEditorWindow.Instance(game) is { } instance)
+                            {
+                                instance.RestoreAndBringToFront();
+                            }
+                            else
+                            {
+                                (new Tools.LiveLevelEditor.LELiveLevelEditorWindow(game)).Show();
+                            }
                         }
                         else
                         {
-                            (new Tools.LiveLevelEditor.LiveLevelEditorWindow(game)).Show();
+                            if (Tools.LiveLevelEditor.LiveLevelEditorWindow.Instance(game) is { } instance)
+                            {
+                                instance.RestoreAndBringToFront();
+                            }
+                            else
+                            {
+                                (new Tools.LiveLevelEditor.LiveLevelEditorWindow(game)).Show();
+                            }
                         }
                     }
                 },
                 tags = new List<string> { "utility" },
                 category = "Utilities",
-                description = "Live Level Editor allows you to preview the effect of property changes to Actors in game, to reduce iteration times. It also has a Camera Path Editor, which lets you make camera pans quickly."
+                description = "Live Level Editor allows you to preview the effect of property changes to Actors in game, to reduce iteration times."
             });
-
-#if DEBUG
-            set.Add(new Tool
-            {
-                name = "Live Level Editor 2",
-                type = typeof(Tools.LiveLevelEditor.LiveLevelEditorWindow2),
-                icon = Application.Current.FindResource("iconLiveLevelEditor") as ImageSource,
-                open = () =>
-                {
-                    var gameStr = InputComboBoxWPF.GetValue(null, "Choose game you want to use Live Level Editor 2 with.", "Live Level Editor 2 game selector",
-                        new[] { "ME3", "ME2", "LE1" }, "ME3");
-
-                    if (Enum.TryParse(gameStr, out MEGame game))
-                    {
-                        if (Tools.LiveLevelEditor.LiveLevelEditorWindow2.Instance(game) is { } instance)
-                        {
-                            instance.RestoreAndBringToFront();
-                        }
-                        else
-                        {
-                            (new Tools.LiveLevelEditor.LiveLevelEditorWindow2(game)).Show();
-                        }
-                    }
-                },
-                tags = new List<string> { "utility" },
-                category = "Utilities",
-                description = "IN DEVELOPMENT: Live Level Editor allows you to preview the effect of property changes to Actors in game, to reduce iteration times. It also has a Camera Path Editor, which lets you make camera pans quickly."
-            });
-#endif
 
             set.Add(new Tool
             {

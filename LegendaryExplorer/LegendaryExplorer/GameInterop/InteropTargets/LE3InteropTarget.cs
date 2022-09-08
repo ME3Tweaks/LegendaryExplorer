@@ -1,8 +1,6 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Windows.Input;
 using LegendaryExplorer.Misc.AppSettings;
-using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Packages;
 using Microsoft.Win32;
 
@@ -13,15 +11,16 @@ namespace LegendaryExplorer.GameInterop.InteropTargets
         public override MEGame Game => MEGame.LE1;
         public override bool CanExecuteConsoleCommands => true;
         public override bool CanUpdateTOC => false;
-        public override string InteropASIName => "ZZZ_LEXInteropLE3.asi";
+        public override bool CanUseLLE => true;
 
         // THIS ALL NEEDS UPDATED
-        public override string InteropASIDownloadLink => "https://github.com/ME3Tweaks/LE1-ASI-Plugins/releases/tag/LE1LEXInterop-v1.0";
-        public override string InteropASIMD5 => "1e0e463a10a598265c380fde97f9c8d8";
+        public override string InteropASIDownloadLink => 
+            "https://github.com/ME3Tweaks/LE3-ASI-Plugins/releases/tag/LE3LEXInterop-v5";
+        public override string InteropASIMD5 => "5976dbb78c1603b6d5b19e1378bfd358";
         public override string BinkBypassMD5 { get; }
         public override string OriginalBinkMD5 => "1f00452ad61a944556399e2ad5292b35";
 
-        public override InteropModInfo ModInfo { get; } = new InteropModInfo("DLC_MOD_InteropLE3", true)
+        public override InteropModInfo ModInfo { get; } = new("DLC_MOD_InteropLE3")
         {
             LiveEditorFilename = "LE3LiveEditor"
         };

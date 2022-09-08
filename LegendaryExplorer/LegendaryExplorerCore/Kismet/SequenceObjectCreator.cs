@@ -359,6 +359,21 @@ namespace LegendaryExplorerCore.Kismet
                 {
                     defaults.Remove(inputLinks);
                 }
+
+#if DEBUG
+                // 08/30/2022 Add useful defaults for editor - Mgamerz
+                // edited default to None as that is in every package and should be default if there is no named event to reference. - KK
+                switch (info.ClassName)
+                {
+                    case "SeqEvent_Console":
+                        defaults.Add(new NameProperty("None", "ConsoleEventName"));
+                        break;
+                    case "SeqEvent_RemoteEvent":
+                    case "SeqAct_ActivateRemoteEvent":
+                        defaults.Add(new NameProperty("None", "EventName"));
+                        break;
+                }
+#endif
             }
 
             int objInstanceVersion = GlobalUnrealObjectInfo.getSequenceObjectInfo(game, info.ClassName)?.ObjInstanceVersion ?? 1;

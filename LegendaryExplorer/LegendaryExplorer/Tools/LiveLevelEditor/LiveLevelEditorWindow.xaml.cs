@@ -39,7 +39,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         private static readonly Dictionary<MEGame, LiveLevelEditorWindow> Instances = new();
         public static LiveLevelEditorWindow Instance(MEGame game)
         {
-            if (!GameController.GetInteropTargetForGame(game)?.ModInfo?.CanUseLLE ?? true)
+            if (!GameController.GetInteropTargetForGame(game)?.CanUseLLE ?? true)
                 throw new ArgumentException(@"Live Level Editor does not support this game!", nameof(game));
 
             return Instances.TryGetValue(game, out var lle) ? lle : null;
@@ -76,7 +76,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         {
             Game = game;
             GameTarget = GameController.GetInteropTargetForGame(game);
-            if (GameTarget is null || !GameTarget.ModInfo.CanUseLLE)
+            if (GameTarget is null || !GameTarget.CanUseLLE)
             {
                 throw new Exception($"{game} does not support Live Level Editor!");
             }
@@ -180,9 +180,10 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         {
             if (MELoadedFiles.GetFilesLoadedInGame(Game).TryGetValue(fileName, out string filePath))
             {
-                if (WPFBase.TryOpenInExisting(filePath, out PackageEditorWindow packEd))
+                if (WPFBase.GetExistingToolInstance(filePath, out PackageEditorWindow packEd))
                 {
                     packEd.GoToNumber(uIndex);
+                    packEd.RestoreAndBringToFront();
                 }
                 else
                 {

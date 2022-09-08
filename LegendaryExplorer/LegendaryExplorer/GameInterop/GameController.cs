@@ -35,6 +35,8 @@ namespace LegendaryExplorer.GameInterop
             return null;
         }
 
+        public static bool IsGameOpen(MEGame game) => TryGetMEProcess(game, out _);
+
         public static bool TryGetMEProcess(MEGame game, out Process meProcess)
         {
             meProcess = null;

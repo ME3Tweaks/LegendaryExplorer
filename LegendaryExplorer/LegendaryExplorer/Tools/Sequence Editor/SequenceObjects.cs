@@ -174,22 +174,22 @@ namespace LegendaryExplorer.Tools.SequenceObjects
                         var originator = properties.GetProp<ObjectProperty>("Originator");
                         if (originator != null && originator.Value != 0)
                         {
-                            res += $"Originator: {export.FileRef.GetEntry(originator.Value).InstancedFullPath}";
+                            res += $"Originator: {export.FileRef.GetEntry(originator.Value)?.InstancedFullPath}";
                         }
                         break;
                     case "SFXSeqAct_AIFactory2":
                         var sets = properties.GetProp<ArrayProperty<StructProperty>>("SpawnSets");
                         if (sets != null)
                         {
-                            foreach (StructProperty set in sets)
+                            for (int i = 0; i < sets.Count; i++)
                             {
-                                var types = set.GetProp<ArrayProperty<ObjectProperty>>("Types");
+                                var types = sets[i].GetProp<ArrayProperty<ObjectProperty>>("Types");
                                 if (types != null)
                                 {
-                                    res += "SpawnSet 0:\n";
+                                    res += $"SpawnSet {i}:\n";
                                     foreach (ObjectProperty v in types)
                                     {
-                                        res += $"  {v.ResolveToEntry(export.FileRef).FullPath}";
+                                        res += $"  {v.ResolveToEntry(export.FileRef)?.FullPath}\n";
                                     }
                                 }
                             }

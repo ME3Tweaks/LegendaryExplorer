@@ -32,6 +32,7 @@ using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Shaders;
+using LegendaryExplorerCore.Sound.ISACT;
 using LegendaryExplorerCore.TLK.ME1;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
@@ -40,6 +41,7 @@ using LegendaryExplorerCore.UnrealScript;
 using LegendaryExplorerCore.UnrealScript.Compiling.Errors;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
+using LegendaryExplorerCore.Audio;
 
 namespace LegendaryExplorer.Tools.PackageEditor
 {
@@ -1712,6 +1714,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     case "BioSWF":
                     case "GFxMovieInfo":
                     case "BioTlkFile":
+                    case "SoundNodeWave":
                     case "BioSoundNodeWaveStreamingData":
                     case "FaceFXAsset":
                     case "WwiseBank":
@@ -1790,27 +1793,35 @@ namespace LegendaryExplorer.Tools.PackageEditor
                             }
                             break;
                         }
-                    case "BioSoundNodeWaveStreamingData":
+                    case "SoundNodeWave":
                         {
+                            var ob = ObjectBinary.From<SoundNodeWave>(exp);
+                            if (ob.RawData == null || !ob.RawData.Any())
+                            {
+                                MessageBox.Show("This export has no sound data embedded in it.");
+                                return;
+                            }
+
                             var d = new CommonOpenFileDialog()
                             {
-                                Title = "Select output folder for ICBs",
+                                Title = "Select output folder for ICB/ISB",
                                 IsFolderPicker = true
                             };
+
                             if (d.ShowDialog() == CommonFileDialogResult.Ok)
                             {
                                 // ICB
                                 var outDir = d.FileName;
                                 // todo: Use objectbinary when we implement it
-                                var data = new MemoryStream(exp.GetBinaryData());
-                                var totalStreamingDataLen = data.ReadInt32();
+                                var data = new MemoryStream(ob.RawData);
+                                // var totalStreamingDataLen = data.ReadInt32();
                                 var isbOffset = data.ReadInt32();
 
                                 string icbName = null;
 
                                 // ICB
                                 var dataStartPos = data.Position; // RIFF start
-                                data.Skip(0x4); // get riff length
+                                var riffForDebug = data.ReadStringASCII(0x4); // get riff length
                                 var riffLen = data.ReadInt32() + 0x8; // include len and RIFF
                                 data.Skip(0x8); // Jump to start of unicode string
                                 var strLen = data.ReadInt32();
@@ -1822,8 +1833,41 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
                                 // ISB
                                 data.Position = isbOffset;
-                                using FileStream fs2 = new FileStream(Path.Combine(outDir, Path.GetFileNameWithoutExtension(icbName) + ".isb"), FileMode.Create);
+
+                                var audioName =
+                                    exp.ObjectName.Instanced.Substring(exp.ObjectName.Instanced.IndexOf(":") +
+                                                                       1); // This is really weak 
+                                using FileStream fs2 = new FileStream(
+                                    Path.Combine(outDir,
+                                        $"{Path.GetFileNameWithoutExtension(icbName)}_{audioName}.isb"),
+                                    FileMode.Create);
                                 data.Copy(fs2, new byte[2048]);
+
+                                MessageBox.Show("Done");
+                            }
+                        }
+                        break;
+                    case "BioSoundNodeWaveStreamingData":
+                        {
+                            var d = new CommonOpenFileDialog()
+                            {
+                                Title = "Select output folder for ICB/Stripped ISB",
+                                IsFolderPicker = true
+                            };
+                            if (d.ShowDialog() == CommonFileDialogResult.Ok)
+                            {
+                                // ICB
+                                var outDir = d.FileName;
+
+                                var bsnwsd = ObjectBinary.From<BioSoundNodeWaveStreamingData>(exp);
+                                var icbBank = new ISACTBank(new MemoryStream(bsnwsd.EmbeddedICB));
+                                var icbName = icbBank.BankChunks.OfType<TitleBankChunk>().FirstOrDefault();
+
+                                using FileStream fs = new FileStream(Path.Combine(outDir, Path.GetFileNameWithoutExtension(icbName.Value) + ".icb"), FileMode.Create);
+                                fs.Write(bsnwsd.EmbeddedICB);
+                                // ISB
+                                using FileStream fs2 = new FileStream(Path.Combine(outDir, Path.GetFileNameWithoutExtension(icbName.Value) + ".isb"), FileMode.Create);
+                                fs2.Write(bsnwsd.EmbeddedISB);
 
                                 MessageBox.Show("Done");
                             }
@@ -1946,46 +1990,63 @@ namespace LegendaryExplorer.Tools.PackageEditor
                         }
                     case "BioSoundNodeWaveStreamingData":
                         {
+#if !DEBUG
+                            MessageBox.Show("Not currently supported");
+                            return;
+#else
                             // Requires ICB and ISB
                             string extension = Path.GetExtension(".icb");
                             var d = new OpenFileDialog
                             {
-                                Title = "Select processed ICB from ISACT",
-                                Filter = $"*{extension}|*{extension}"
+                                Title = "Select the ICB file (ISB should be same name next to it)",
+                                Filter = $"ISACT Content Bank (*.icb)|*{extension}",
+                                CheckFileExists = true
                             };
+                            if (d.ShowDialog() == false)
+                                return;
 
-                            var d2 = new OpenFileDialog
+                            var isbF = Path.Combine(Directory.GetParent(d.FileName).FullName, $"{Path.GetFileNameWithoutExtension(d.FileName)}.isb");
+                            var errorMsg = ISACTHelper.GenerateSoundNodeWaveStreamingData(exp, d.FileName, isbF);
+                            if (errorMsg != null)
                             {
-                                Title = "Select stripped processed ICB from ISACT",
-                                Filter = $"Stripped ISB|*isb"
-                            };
-
-                            string embeddedICBf = null;
-                            string embeddedISBf = null;
-                            if (d.ShowDialog() == true && d2.ShowDialog() == true)
-                            {
-                                var baseName = Path.GetFileNameWithoutExtension(d.FileName);
-                                var basePath = Directory.GetParent(d.FileName).FullName;
-
-                                // Strip data from ISB
-                                //MemoryStream
-                                //MemoryStream outStr = new MemoryStream();
-                                //outStr.WriteStringASCII("RIFF");
-                                //outStr.WriteInt32(0); // Placeolder position
-
-                                //while ()
-
-                                //// Re-write RIFF size
-                                //outStr.Seek(0x4, SeekOrigin.Begin);
-                                //outStr.WriteInt32((int)outStr.Length);
-
-                                var bsnwsd = ObjectBinary.From<BioSoundNodeWaveStreamingData>(exp);
-                                bsnwsd.EmbeddedICB = File.ReadAllBytes(d.FileName);
-                                bsnwsd.EmbeddedISB = File.ReadAllBytes(d2.FileName);
-                                exp.WriteBinary(bsnwsd);
+                                MessageBox.Show(errorMsg);
                             }
+#endif
                             break;
                         }
+                    case "SoundNodeWave":
+                        {
+                            // Requires ICB and ISB
+                            string extension = Path.GetExtension(".icb");
+                            var d = new OpenFileDialog
+                            {
+                                Title = "Select stripped ICB",
+                                Filter = $"*{extension}|*{extension}"
+                            };
+                            if (d.ShowDialog() == false)
+                                return;
+
+                            extension = ".isb";
+                            var d2 = new OpenFileDialog
+                            {
+                                Title = "Select stripped ISB",
+                                Filter = $"*{extension}|*{extension}"
+                            };
+                            if (d2.ShowDialog() == false)
+                                return;
+
+                            MemoryStream ms = new MemoryStream();
+                            ms.WriteInt32(0);
+                            ms.Write(File.ReadAllBytes(d.FileName));
+                            ms.Seek(0, SeekOrigin.Begin);
+                            ms.WriteInt32((int)ms.Length /*- 4*/);
+                            ms.Seek(0, SeekOrigin.End);
+                            ms.Write(File.ReadAllBytes(d2.FileName));
+                            var snw = ObjectBinary.From<SoundNodeWave>(exp);
+                            snw.RawData = ms.ToArray();
+                            exp.WriteBinary(snw);
+                        }
+                        break;
                     case "FaceFXAsset":
                         {
                             string extension = Path.GetExtension(".fxa");
@@ -3536,6 +3597,16 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     return true;
             }
 
+            return false;
+        }
+
+        public bool GoToEntry(string instancedFullPath)
+        {
+            if (Pcc.FindEntry(instancedFullPath) is IEntry entry)
+            {
+                CurrentView = CurrentViewMode.Tree;
+                return GoToNumber(entry.UIndex);
+            }
             return false;
         }
 

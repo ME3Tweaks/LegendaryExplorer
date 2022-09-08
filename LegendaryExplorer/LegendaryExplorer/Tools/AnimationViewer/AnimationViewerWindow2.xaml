@@ -1,0 +1,217 @@
+﻿<bases:TrackingNotifyPropertyChangedWindowBase x:Class="LegendaryExplorer.Tools.AnimationViewer.AnimationViewerWindow2"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LegendaryExplorer.Tools.AnimationViewer"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:fa5="http://schemas.fontawesome.com/icons/"
+        xmlns:controls="clr-namespace:LegendaryExplorer.SharedUI.Controls"
+        xmlns:bases="clr-namespace:LegendaryExplorer.SharedUI.Bases"
+        xmlns:converters="clr-namespace:LegendaryExplorer.SharedUI.Converters"
+        xmlns:sharedUi="clr-namespace:LegendaryExplorer.SharedUI"
+        mc:Ignorable="d"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        Icon="pack://application:,,,/Tools/Icons/16x16/AnimationViewer_Icon_16.ico"
+        Title="Animation Viewer" SizeToContent="Width" Loaded="AnimationExplorerWPF_Loaded" Closing="AnimationExplorerWPF_OnClosing">
+    <Window.Resources>
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <converters:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter"/>
+    </Window.Resources>
+    <xctk:BusyIndicator IsBusy="{Binding Path=IsBusy}">
+        <Grid>
+            <TabControl>
+                <TabItem Name="instructionsTab" Header="Instructions" Visibility="{Binding ReadyToView, Converter={StaticResource InverseBoolToVisibilityConverter}}">
+                    <Grid Width="523">
+                        <Border BorderBrush="LightSlateGray" BorderThickness="0.65">
+                            <StackPanel MinWidth="200" Margin="8">
+                                <TextBlock Text="Welcome to Animation Explorer!" Margin="0,5,0,0" />
+                                <TextBlock Text="Requirements:" Margin="0,5,0,0" />
+                                <StackPanel>
+                                    <controls:Requirement x:Name="me3InstalledReq"
+                                                       FullfilledText="Mass Effect 3 is installed" Margin="0,5,0,5"
+                                                       UnFullfilledText="Can't find Mass Effect 3 installation!"
+                                                       ButtonText="Set ME3 path"
+                                                       Command="{Binding ME3InstalledRequirementCommand, RelativeSource={RelativeSource AncestorType={x:Type local:AnimationViewerWindow2}}}" />
+                                    <controls:Requirement x:Name="asiLoaderInstalledReq"
+                                                       FullfilledText="Binkw32 asi loader is installed"
+                                                       Margin="0,5,0,5"
+                                                       UnFullfilledText="Binkw32 asi loader is not installed!"
+                                                       ButtonText="Get dlls"
+                                                       Command="{Binding ASILoaderInstalledRequirementCommand, RelativeSource={RelativeSource AncestorType={x:Type local:AnimationViewerWindow2}}}" />
+                                    <controls:Requirement x:Name="interopASIInstalledReq"
+                                                          FullfilledText="Interop asi is installed"
+                                                          Margin="0,5,0,5"
+                                                          UnFullfilledText="Interop asi is not installed!"
+                                                          ButtonText="Get Interop ASI"
+                                                          Command="{Binding InteropASIInstalledRequirementCommand, RelativeSource={RelativeSource AncestorType={x:Type local:AnimationViewerWindow2}}}" />
+                                    <controls:Requirement x:Name="me3ClosedReq"
+                                                       FullfilledText="Mass Effect 3 is not running" Margin="0,5,0,5"
+                                                       UnFullfilledText="Mass Effect 3 must be quit!"
+                                                       ButtonText="Kill ME3 process"
+                                                       Command="{Binding GameClosedRequirementCommand, RelativeSource={RelativeSource AncestorType={x:Type local:AnimationViewerWindow2}}}" />
+                                    <controls:Requirement x:Name="dbLoadedReq"
+                                                       FullfilledText="Animation data is loaded" Margin="0,5,0,5"
+                                                       UnFullfilledText="Animation data is not loaded!"
+                                                       ButtonText="Load Database"
+                                                       Command="{Binding DatabaseLoadedRequirementCommand, RelativeSource={RelativeSource AncestorType={x:Type local:AnimationViewerWindow2}}}" />
+                                </StackPanel>
+                                <Button Name="startME3Button" Content="Start Mass Effect 3 in Animation Viewer Mode"
+                                        Margin="20,10,20,0"
+                                        Command="{Binding StartGameCommand, RelativeSource={RelativeSource AncestorType={x:Type local:AnimationViewerWindow2}}}" />
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </TabItem>
+                <TabItem Name="animTab" Header="Animations" Visibility="{Binding ReadyToView, Converter={StaticResource BoolToVisibilityConverter}}">
+                    <DockPanel>
+                        <controls:SearchBox x:Name="searchBox" DockPanel.Dock="Top" WatermarkText="Search Animations" TextChanged="SearchBox_OnTextChanged"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="300" />
+                                <ColumnDefinition Width="5" />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <controls:ListBoxScroll x:Name="listBoxAnims" SelectedItem="{Binding SelectedAnimation, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="AnimSequence"/>
+                            <GridSplitter Width="5" HorizontalAlignment="Stretch" Grid.Column="1" />
+                            <Border BorderBrush="LightSlateGray" BorderThickness="0.65" Grid.Column="2">
+                                <StackPanel x:Name="details_Anim" MinWidth="200" Margin="8">
+                                    <StackPanel.Style>
+                                        <Style>
+                                            <Style.Triggers>
+                                                <DataTrigger
+                                                    Binding="{Binding ElementName=listBoxAnims, Path=SelectedIndex}"
+                                                    Value=">=0">
+                                                    <Setter Property="StackPanel.Visibility" Value="Visible" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </StackPanel.Style>
+                                    <TextBlock Text="Sequence Name: " Margin="0,5,0,0" />
+                                    <TextBlock Text="{Binding Path=SelectedItem.SeqName, ElementName=listBoxAnims}" />
+                                    <TextBlock Text="Animation Group: " Margin="0,5,0,0" />
+                                    <TextBlock Text="{Binding Path=SelectedItem.AnimData, ElementName=listBoxAnims}" />
+                                    <TextBlock Text="Length (s): " Margin="0,5,0,0" />
+                                    <TextBlock Text="{Binding Path=SelectedItem.Length, ElementName=listBoxAnims}" />
+                                    <TextBlock Text="Number of Frames (runs at 30fps): " Margin="0,5,0,0" />
+                                    <TextBlock Text="{Binding Path=SelectedItem.Frames, ElementName=listBoxAnims}" />
+                                    <TextBlock Text="Compression Format: " Margin="0,5,0,0" />
+                                    <TextBlock Text="{Binding Path=SelectedItem.Compression, ElementName=listBoxAnims}" />
+                                    <TextBlock Text="Key Format: " Margin="0,5,0,0" />
+                                    <TextBlock Text="{Binding Path=SelectedItem.KeyFormat, ElementName=listBoxAnims}" />
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+                    </DockPanel>
+                </TabItem>
+                <TabItem Name="optionsTab" Header="Controls/Options" Visibility="{Binding ReadyToView, Converter={StaticResource BoolToVisibilityConverter}}">
+                    <StackPanel>
+                        <Label Content="Playback" Margin="10,0,0,0"/>
+                        <Border Margin="10,0,10,10" BorderBrush="#FFD8D8D8" BorderThickness="2" CornerRadius="5">
+                            <StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Button ToolTip="Start or pause playback" Click="PlayPause_Click" Margin="5">
+                                        <fa5:ImageAwesome Icon="{Binding PlayPauseIcon}" Height="16" Width="16" Margin="4"/>
+                                    </Button>
+                                    <Button ToolTip="Stop playback" Click="StopAnimation_Click" Margin="5">
+                                        <fa5:ImageAwesome Icon="Solid_Stop" Height="16" Width="16" Margin="4"/>
+                                    </Button>
+                                    <TextBlock Text="    PlayRate: " VerticalAlignment="Center"/>
+                                    <xctk:DoubleUpDown Name="playRateUpDown" Value="{Binding PlayRate}" Increment="0.1"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                        <Label Content="Actor" Margin="10,0,0,0"/>
+                        <Border Margin="10,0,10,10" BorderBrush="#FFD8D8D8" BorderThickness="2" CornerRadius="5">
+                            <ComboBox SelectedItem="{Binding SelectedActor}" ItemsSource="{Binding ActorOptions}" Margin="5"/>
+                        </Border>
+                        <Label Content="Actor Position" Margin="10,0,0,0"/>
+                        <Border Margin="10,0,10,10" BorderBrush="#FFD8D8D8" BorderThickness="2" CornerRadius="5">
+                            <StackPanel Orientation="Vertical">
+                                <StackPanel Orientation="Horizontal">
+                                    <Button Content=" Reset Position " Margin="5" Click="SetDefaultPosition_Click" />
+                                    <TextBlock Text=" X:  " VerticalAlignment="Center"/>
+                                    <xctk:IntegerUpDown Name="xPosUpDown" Value="{Binding XPos}" Increment="10"/>
+                                    <TextBlock Text=" Y:  " VerticalAlignment="Center"/>
+                                    <xctk:IntegerUpDown Name="yPosUpDown" Value="{Binding YPos}" Increment="10"/>
+                                    <TextBlock Text=" Z:  " VerticalAlignment="Center"/>
+                                    <xctk:IntegerUpDown Name="zPosUpDown" Value="{Binding ZPos}" Increment="10"/>
+                                </StackPanel>
+                                <CheckBox Margin="5,0,0,0" IsChecked="{Binding RemoveOffset}">
+                                    <Label>
+                                        Center actor on screen (may not work)
+                                    </Label>
+                                </CheckBox>
+                            </StackPanel>
+                        </Border>
+                        <Label Content="Actor Rotation" Margin="10,0,0,0"/>
+                        <Border Margin="10,0,10,10" BorderBrush="#FFD8D8D8" BorderThickness="2" CornerRadius="5">
+                            <StackPanel Orientation="Horizontal">
+                                <Button Content=" Reset Rotation " Margin="5" Click="ResetRotation_Click" />
+                                <TextBlock Text=" Yaw:  " VerticalAlignment="Center"/>
+                                <xctk:IntegerUpDown Name="yawUpDown" Value="{Binding Yaw}" Increment="5"/>
+                                <TextBlock Text=" Pitch:  " VerticalAlignment="Center"/>
+                                <xctk:IntegerUpDown Name="pitchUpDown" Value="{Binding Pitch}" Increment="5"/>
+                            </StackPanel>
+                        </Border>
+                        <Label Content="Camera" Margin="10,0,0,0"/>
+                        <Border Margin="10,0,10,10" BorderBrush="#FFD8D8D8" BorderThickness="2" CornerRadius="5">
+                            <StackPanel Orientation="Vertical">
+                                <StackPanel Orientation="Horizontal">
+                                    <Button Content=" Reset Rotation " Margin="5" Click="ResetCamRotation_Click" />
+                                    <TextBlock Text=" Yaw:  " VerticalAlignment="Center" />
+                                    <xctk:IntegerUpDown Name="camYawUpDown" Value="{Binding CamYaw}" Increment="5" />
+                                    <TextBlock Text=" Pitch:  " VerticalAlignment="Center" />
+                                    <xctk:IntegerUpDown Name="camPitchUpDown" Value="{Binding CamPitch}" Increment="5" />
+                                </StackPanel>
+                                <CheckBox Margin="5,0,0,0" IsChecked="{Binding ShouldFollowActor}">
+                                    <Label Content="Follow actor"/>
+                                </CheckBox>
+                            </StackPanel>
+                        </Border>
+
+                        <Label Content="Miscellaneous" Margin="10,0,0,0"/>
+                        <Border Margin="10,0,10,10" BorderBrush="#FFD8D8D8" BorderThickness="2" CornerRadius="5">
+                            <StackPanel Orientation="Vertical" Margin="0,10">
+                                <CheckBox IsChecked="{Binding GreenScreenOn}" Margin="5,0,0,0" Content="Green screen"/>
+                            </StackPanel>
+                        </Border>
+                        <!--<Label Content="Camera" Margin="10,0,0,0"/>
+                        <Border Margin="10,0,10,10" BorderBrush="#FFD8D8D8" BorderThickness="2" CornerRadius="5">
+                            <StackPanel Margin="10 0" Orientation="Horizontal">
+                                <RadioButton IsChecked="{Binding CameraState, Converter={StaticResource EnumComparisonConverter}, ConverterParameter={x:Static local:ECameraState.Fixed}}" Margin="30,0,0,0">
+                                    <Label Content="Fixed"/>
+                                </RadioButton>
+                                <RadioButton IsChecked="{Binding CameraState, Converter={StaticResource EnumComparisonConverter}, ConverterParameter={x:Static local:ECameraState.Free}}" Margin="50,0,0,0">
+                                    <Label Content="Free"/>
+                                </RadioButton>
+                                ~1~<RadioButton IsChecked="{Binding CameraState, Converter={StaticResource EnumComparisonConverter}, ConverterParameter={x:Static local:ECameraState.Shepard}}">
+                                    <Label Content="Shepard"/>
+                                </RadioButton>@1@
+                            </StackPanel>
+                        </Border>-->
+                        <Label Content="Application" Margin="10,0,0,0"/>
+                        <Border Margin="10,0,10,10" BorderBrush="Red" BorderThickness="2" CornerRadius="5">
+                            <Button Content=" Quit Mass Effect 3 " Margin="5" Click="QuitME3_Click" />
+                        </Border>
+                    </StackPanel>
+                </TabItem>
+            </TabControl>
+        </Grid>
+        <xctk:BusyIndicator.BusyContentTemplate>
+            <DataTemplate>
+                <StackPanel DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}">
+                    <!--<TextBlock Text="{Binding BusyHeader}" FontWeight="Bold" TextAlignment="Center"/>-->
+                    <TextBlock Text="{Binding BusyText}"/>
+                    <ProgressBar IsIndeterminate="True"  Margin="0,5,0,0" Height="15" />
+                    <Button Content="Cancel" HorizontalAlignment="center" Margin="0,5,0,0" Padding="3" Command="{Binding CancelBusyCommand}" sharedUi:Bindings.VisibilityToEnabled="True"/>
+                </StackPanel>
+            </DataTemplate>
+        </xctk:BusyIndicator.BusyContentTemplate>
+        <xctk:BusyIndicator.ProgressBarStyle>
+            <Style TargetType="ProgressBar" >
+                <Setter Property="Visibility" Value="Collapsed"/>
+            </Style>
+        </xctk:BusyIndicator.ProgressBarStyle>
+    </xctk:BusyIndicator>
+</bases:TrackingNotifyPropertyChangedWindowBase>

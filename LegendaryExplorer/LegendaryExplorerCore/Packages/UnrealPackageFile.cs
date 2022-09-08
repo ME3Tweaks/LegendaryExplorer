@@ -343,7 +343,7 @@ namespace LegendaryExplorerCore.Packages
         /// </summary>
         /// <param name="uindex"></param>
         /// <returns></returns>
-        public bool IsImport(int uindex) => uindex < 0 && -uindex <= imports.Count;
+        public bool IsImport(int uindex) => uindex < 0 && uindex >= -imports.Count;
 
         /// <summary>
         /// Adds an import to the tree. This method is used to add new imports.

@@ -38,6 +38,7 @@
         <MenuItem Header="Re-Inventory game resources file" ToolTip="Generates the code for custom classes in the resources zip. Check the code for which game" Click="ReInventoryCustomClasses_Click"/>
     </MenuItem>
     <MenuItem Header="Mgamerz's Programming Circus">
+        <MenuItem Header="Test WwiseSDK on WwiseBank" Click="WwiseBankToProject_Click"/>
         <MenuItem Header="Make current material a VTest Donor" Click="MakeVTestDonor_Click" Visibility="{x:Static global:App.IsDebugVisibility}"/>
         <MenuItem Header="Cram current LE3 BioP full of stuff that will take up lotsa memory" Click="CramLevelFullOfEverything_Click"/>
         <MenuItem Header="Test current package binary against LEX serializer" Click="TestCurrentPackageBinary"/>
@@ -56,7 +57,7 @@
         <MenuItem Header="Map Material IDs" Click="MapMaterialIDs_Click" />
         <MenuItem Header="Check NeverStreams" Click="CheckNeverStream_Click"/>
         <MenuItem Header="Print Texture Formats" Click="PrintTextureFormats_Click"/>
-        <MenuItem Header="Force Vignette Off in coded game" Click="ForceVignetteOff_Click"/>
+        <MenuItem Header="Coalesce BioActorTypes into single file (LE1)" Click="CoalesceBioActorTypesLE1_Click"/>
         <MenuItem Header="Dump LE1 TLK to XML" Click="DumpLE1TLK_Clicked"/>
         <MenuItem Header="Save package...">
             <MenuItem Header="Compressed" Click="SavePackageCompressed_Click"/>

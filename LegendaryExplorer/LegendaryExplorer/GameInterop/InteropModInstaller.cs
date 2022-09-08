@@ -25,7 +25,7 @@ namespace LegendaryExplorer.GameInterop
         protected readonly InteropTarget Target;
         private MEGame Game => Target.Game;
 
-        protected bool CancelInstallation = false;
+        protected bool CancelInstallation;
 
         private string InstallInfoPath => Path.Combine(ModInstallPath, "InstallInfo.json");
         protected string ModInstallPath => Path.Combine(MEDirectories.GetDLCPath(Game), Target.ModInfo.InteropModName);
@@ -88,7 +88,7 @@ namespace LegendaryExplorer.GameInterop
             const string bioPGlobalFileName = "BioP_Global.pcc";
             const string bioPGlobalNcFileName = "BioP_Global_NC.pcc";
 
-            var filesToAugment = new List<string>() {bioPGlobalFileName};
+            var filesToAugment = new List<string> {bioPGlobalFileName};
             if (Game.IsGame3()) filesToAugment.Add(bioPGlobalNcFileName);
             return filesToAugment;
         }
@@ -193,7 +193,7 @@ namespace LegendaryExplorer.GameInterop
             return false;
         }
 
-        private static bool DeleteFilesAndFoldersRecursively(string targetDirectory)
+        public static bool DeleteFilesAndFoldersRecursively(string targetDirectory)
         {
             if (!Directory.Exists(targetDirectory))
             {

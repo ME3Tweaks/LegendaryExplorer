@@ -29,6 +29,7 @@ steps:
 - checkout: self
   clean: true
   persistCredentials: true
+  submodules: true 
 # DEBUG for Find Text Transform
 #- task: CmdLine@2
 #  inputs:

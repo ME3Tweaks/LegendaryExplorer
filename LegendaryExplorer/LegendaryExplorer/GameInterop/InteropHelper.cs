@@ -3,22 +3,36 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Pipes;
 using System.Security.Cryptography;
-using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using LegendaryExplorer.GameInterop.InteropTargets;
 using LegendaryExplorer.Misc;
-using LegendaryExplorer.Misc.AppSettings;
 using LegendaryExplorerCore.Misc.ME3Tweaks;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
-using Microsoft.Win32;
 
 namespace LegendaryExplorer.GameInterop
 {
     public class InteropHelper
     {
+        #region COMMON COMMANDS
+
+        // Todo: Maybe move to target class
+
+        /// <summary>
+        /// Triggers a console event in kismet
+        /// </summary>
+        /// <param name="eventName"></param>
+        /// <param name="game"></param>
+        public static void CauseEvent(string eventName, MEGame game)
+        {
+            SendMessageToGame($"CAUSEEVENT {eventName}", game);
+        }
+        #endregion
+
+
+
         //Currently will not work, as ASIs are not included in LEX due to anti-virus software freaking out about them :(
         /*public static void InstallInteropASI(MEGame game)
         {
@@ -47,7 +61,10 @@ namespace LegendaryExplorer.GameInterop
                 foreach (var f in files)
                 {
                     var md5 = CalculateMD5(f);
-                    if (md5 == md5ToMatch) return true;
+                    if (md5 == md5ToMatch)
+                    {
+                        return true;
+                    }
                 }
             }
             return false;
@@ -65,13 +82,6 @@ namespace LegendaryExplorer.GameInterop
                     File.Delete(oldASIPath);
                 }
             }
-        }
-
-        public static string GetInteropAsiWritePath(MEGame game)
-        {
-            string asiDir = GetAsiDir(game);
-            string interopASIWritePath = Path.Combine(asiDir, GameController.GetInteropTargetForGame(game).InteropASIName);
-            return interopASIWritePath;
         }
 
         public static string GetAsiDir(MEGame game)
@@ -246,7 +256,7 @@ namespace LegendaryExplorer.GameInterop
 
             // We make new pipe and connect to game every command
             client = new NamedPipeClientStream(".", $"LEX_{game}_COMM_PIPE", PipeDirection.Out);
-            client.Connect();
+            client.Connect(3000);
             //pipeReader = new StreamReader(client);
             pipeWriter = new StreamWriter(client);
 

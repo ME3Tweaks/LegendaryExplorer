@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using LegendaryExplorerCore.Packages;
 using PropertyChanged;
 
@@ -20,8 +21,26 @@ namespace LegendaryExplorerCore.Unreal.Classes
         [AlsoNotifyFor(nameof(DisplayableValue))]
         public float FloatValue { get; set; }
 
-        [AlsoNotifyFor(nameof(DisplayableValue))]
-        public NameReference NameValue { get; set; }
+        private NameReference _nameValue;
+        
+        [DoNotNotify]
+        public NameReference NameValue
+        {
+            get => _nameValue;
+            set
+            {
+                if (_nameValue.Name != null)
+                {
+                    var oldName = _nameValue;
+                    _nameValue = value;
+                    IsModified = oldName != _nameValue;
+                }
+                else
+                {
+                    _nameValue = value;
+                }
+            }
+        }
 
         public int NameIndex
         {
@@ -135,7 +154,9 @@ namespace LegendaryExplorerCore.Unreal.Classes
                 if (Type != Bio2DADataType.TYPE_NAME) return;
                 if (int.TryParse(value, out int parsed) && parsed >= 0)
                 {
+                    var oldName = NameValue;
                     NameValue = new NameReference(NameValue.Name, parsed);
+                    IsModified = oldName != NameValue;
                     //OnPropertyChanged(nameof(DisplayableValue));
                 }
             }
@@ -148,7 +169,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
                 {
                     Bio2DADataType.TYPE_INT => IntValue.ToString(),
                     Bio2DADataType.TYPE_NAME => NameValue.Instanced,
-                    Bio2DADataType.TYPE_FLOAT => FloatValue.ToString(),
+                    Bio2DADataType.TYPE_FLOAT => FloatValue.ToString(CultureInfo.InvariantCulture),
                     Bio2DADataType.TYPE_NULL => "",
                     _ => $"Unknown type {Type}"
                 };

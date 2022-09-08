@@ -14,6 +14,7 @@ using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Sound.ISACT;
 using LegendaryExplorerCore.Unreal.Classes;
 using static LegendaryExplorer.Tools.TlkManagerNS.TLKManagerWPF;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
@@ -2591,7 +2592,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         icbNode.Items.Add(new BinInterpNode(pos, $"{title} (??): {asStream.ReadStringUnicodeNull(asStream.ReadInt32())}"));
                         // unknown remaining data
                         asStream.Seek(startPos + size, SeekOrigin.Begin);
-
                     }
                     else if (title == "LIST")
                     {
@@ -2605,7 +2605,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             var stitle = asStream.ReadStringASCII(4);
                             var ssize = asStream.ReadInt32();
 
-                            if (stitle == "sdqu")
+                            if (stitle is "sdqu")
                             {
                                 // ignore this i guess
                                 asStream.Position -= 4;
@@ -2661,6 +2661,14 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     // not a section?
                     inStream.Position -= 4;
                     return null;
+                case "qcnt":
+                    {
+                        // reads number of integers based on 2 * size / 8
+                        // Don't really care about this so just gonna skip 8
+                        inStream.Position += 8;
+                        // This is not actually a length... I guess?
+                        return new BinInterpNode(pos, $"{title} (Sound Queue... something): {size}");
+                    }
                 case "titl":
                     {
                         return new BinInterpNode(pos, $"{title} (Title): {inStream.ReadStringUnicodeNull(size)}");

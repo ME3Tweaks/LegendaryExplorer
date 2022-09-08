@@ -1,0 +1,118 @@
+﻿<UserControl x:Class="LegendaryExplorer.Tools.LiveLevelEditor.EditorPanels.LLEActorEditorPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:LegendaryExplorer.Tools.LiveLevelEditor.EditorPanels"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:converters="clr-namespace:LegendaryExplorer.SharedUI.Converters"
+             xmlns:controls="clr-namespace:LegendaryExplorer.SharedUI.Controls"
+             xmlns:liveLevelEditor="clr-namespace:LegendaryExplorer.Tools.LiveLevelEditor"
+             xmlns:sharedUi="clr-namespace:LegendaryExplorer.SharedUI"
+             mc:Ignorable="d" 
+             d:DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type liveLevelEditor:LELiveLevelEditorWindow}}}"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
+    </UserControl.Resources>
+    <WrapPanel IsEnabled="{Binding SelectedActor, Converter={StaticResource NullEnabledConverter}}">
+        <GroupBox Header="Actor Position" Margin="10,0,10,10" BorderThickness="2" Padding="5">
+            <StackPanel Orientation="Vertical">
+                <StackPanel Orientation="Horizontal">
+                    <!--<Button Content=" Reset Position " Margin="5" Click="SetDefaultPosition_Click" />-->
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text=" X:  " VerticalAlignment="Center" />
+                        <xctk:SingleUpDown Name="xPosUpDown" Value="{Binding XPos}" Increment="{Binding PosIncrement}" ButtonSpinnerLocation="Left" FormatString="F2"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text=" Y:  " VerticalAlignment="Center"/>
+                        <xctk:SingleUpDown Name="yPosUpDown" Value="{Binding YPos}" Increment="{Binding PosIncrement}" ButtonSpinnerLocation="Left" FormatString="F3"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text=" Z:  " VerticalAlignment="Center"/>
+                        <xctk:SingleUpDown Name="zPosUpDown" Value="{Binding ZPos}" Increment="{Binding PosIncrement}" ButtonSpinnerLocation="Left" FormatString="F3"/>
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel Margin="0, 5, 0, 0" Orientation="Horizontal">
+                    <TextBlock Text=" Increment:  " VerticalAlignment="Center" />
+                    <xctk:SingleUpDown Value="{Binding PosIncrement}" Minimum="0" ButtonSpinnerLocation="Left" FormatString="F3"/>
+                </StackPanel>
+            </StackPanel>
+        </GroupBox>
+        <GroupBox Header="Actor Rotation" Margin="10,0,10,10" BorderThickness="2">
+            <StackPanel Orientation="Vertical">
+                <StackPanel Orientation="Horizontal">
+                    <!--<Button Content=" Reset Rotation " Margin="5" Click="ResetRotation_Click" />-->
+                    <TextBlock Text=" Pitch:  " VerticalAlignment="Center" />
+                    <xctk:IntegerUpDown Name="pitchUpDown" Value="{Binding Pitch}" Increment="{Binding RotIncrement}" ButtonSpinnerLocation="Left"/>
+                    <TextBlock Text=" Yaw:  " VerticalAlignment="Center" />
+                    <xctk:IntegerUpDown Name="yawUpDown" Value="{Binding Yaw}" Increment="{Binding RotIncrement}" ButtonSpinnerLocation="Left"/>
+                    <TextBlock Text=" Roll:  " VerticalAlignment="Center" 
+                                               />
+                    <xctk:IntegerUpDown Name="rollUpDown" Value="{Binding Roll}" Increment="{Binding RotIncrement}" ButtonSpinnerLocation="Left"
+                                                        />
+                </StackPanel>
+                <StackPanel Margin="0, 5, 0, 0" Orientation="Horizontal">
+                    <TextBlock Text=" Increment:  " VerticalAlignment="Center" />
+                    <xctk:IntegerUpDown Value="{Binding RotIncrement}" Minimum="0" ButtonSpinnerLocation="Left"/>
+                </StackPanel>
+            </StackPanel>
+        </GroupBox>
+        <GroupBox Header="Actor DrawScale" Margin="10,0,10,10" BorderThickness="2" >
+            <StackPanel Orientation="Vertical">
+                <StackPanel Orientation="Horizontal">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text=" Scale:  " VerticalAlignment="Center" />
+                        <xctk:SingleUpDown Name="scaleUpDown" Value="{Binding Scale}"
+                                                                   Increment="{Binding ScaleIncrement}"  ButtonSpinnerLocation="Left" FormatString="F3"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text=" X:  " VerticalAlignment="Center" />
+                        <xctk:SingleUpDown Name="xScaleUpDown" Value="{Binding XScale}"
+                                                                   Increment="{Binding ScaleIncrement}"  ButtonSpinnerLocation="Left" FormatString="F3"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text=" Y:  " VerticalAlignment="Center" />
+                        <xctk:SingleUpDown Name="yScaleUpDown" Value="{Binding YScale}"
+                                                                   Increment="{Binding ScaleIncrement}"  ButtonSpinnerLocation="Left" FormatString="F3"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text=" Z:  " VerticalAlignment="Center" />
+                        <xctk:SingleUpDown Name="zScaleUpDown" Value="{Binding ZScale}"
+                                                                   Increment="{Binding ScaleIncrement}" ButtonSpinnerLocation="Left" FormatString="F3"/>
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel Margin="0, 5, 0, 0" Orientation="Horizontal">
+                    <TextBlock Text=" Increment:  " VerticalAlignment="Center" />
+                    <xctk:SingleUpDown Value="{Binding ScaleIncrement}" Minimum="0" ButtonSpinnerLocation="Left" FormatString="F3"/>
+                </StackPanel>
+            </StackPanel>
+        </GroupBox>
+        <GroupBox Header="Misc" Margin="10,0,10,10" BorderThickness="2" >
+            <StackPanel>
+                <CheckBox Content="Pause game on focus loss" IsChecked="{Binding PauseOnFocusLoss}" Margin="10,0,0,3"/>
+                <CheckBox Content="Show trace to selected actor" IsChecked="{Binding ShowTraceToActor}" Margin="10,0,0,3"/>
+                <StackPanel Margin="5" Orientation="Horizontal">
+                    <TextBlock Text="Trace Color:  " VerticalAlignment="Center"/>
+                    <xctk:ColorPicker Width="100" SelectedColor="{Binding TraceColor}" />
+                </StackPanel>
+                <StackPanel Margin="5" Orientation="Horizontal">
+                    <TextBlock Text="Debug Axes scale:  " VerticalAlignment="Center"/>
+                    <xctk:SingleUpDown Value="{Binding DebugCoordinateAxesScale}" Increment="10" ButtonSpinnerLocation="Left" FormatString="F0"/>
+                </StackPanel>
+            </StackPanel>
+        </GroupBox>
+        <GroupBox Header="Save Changes" Margin="10,0,10,10" BorderThickness="2" >
+            <StackPanel >
+                <controls:Requirement x:Name="pccOpenInPackEdReq"
+                                      FullfilledText="Selected Package is open in a PackageEditor window"
+                                      Margin="0,5,0,5"
+                                      UnFullfilledText="The selected Package must be open in a PackageEditor window to save changes to it."
+                                      ButtonText="Open in PackEd"
+                                      Command="{Binding PackEdWindowOpenCommand, RelativeSource={RelativeSource AncestorType={x:Type liveLevelEditor:LELiveLevelEditorWindow}}}" />
+                <Button Content="Update saved position, rotation and scale of selected actor." Command="{Binding WriteActorValuesCommand}" sharedUi:Bindings.VisibilityToEnabled="true"/>
+            </StackPanel>
+        </GroupBox>
+    </WrapPanel>
+</UserControl>
