@@ -55,6 +55,7 @@ var interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package =
     [ "LastSaved", "interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#ab0f97d7eb626c9d8c4d61dc4ec65c947", null ],
     [ "FileSize", "interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#ac45d21665548ab4ba75e437fb1acada4", null ],
     [ "CustomMetadata", "interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#a30f294bf39ad1a3a989c0aa33bf90f31", null ],
+    [ "LECLTagData", "interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#af28a6b37e56c51f7e3af758c8c35ca60", null ],
     [ "Users", "interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#ac298a2f38181f0ca0cb50b902168d8f8", null ],
     [ "WeakUsers", "interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#a5acf313fe89fe6dab52f151068ca2c72", null ],
     [ "LocalTalkFiles", "interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#aab3237a219666daedc1cc28952c26d9a", null ],

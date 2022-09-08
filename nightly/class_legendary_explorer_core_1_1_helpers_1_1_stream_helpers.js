@@ -26,6 +26,8 @@ var class_legendary_explorer_core_1_1_helpers_1_1_stream_helpers =
     [ "WriteStringLatin1Null", "class_legendary_explorer_core_1_1_helpers_1_1_stream_helpers.html#a5d79d77589616c98f576fd4b01c99307", null ],
     [ "WriteStringUtf8WithLength", "class_legendary_explorer_core_1_1_helpers_1_1_stream_helpers.html#abcf5ee91d6bf24d3e23e6f26dda225c8", null ],
     [ "ReadStringUtf8WithLength", "class_legendary_explorer_core_1_1_helpers_1_1_stream_helpers.html#a2b1571418f1d7f86af7c07ee72bd3653", null ],
+    [ "WriteStringUtf8", "class_legendary_explorer_core_1_1_helpers_1_1_stream_helpers.html#a16b7cbb55739b328e484b6cb91c9d619", null ],
+    [ "ReadStringUtf8", "class_legendary_explorer_core_1_1_helpers_1_1_stream_helpers.html#af5077f484814140553deecdb68c378d5", null ],
     [ "ReadStringASCII", "class_legendary_explorer_core_1_1_helpers_1_1_stream_helpers.html#afedde0d85cca20fac43eccffc906047e", null ],
     [ "ReadStringASCIINull", "class_legendary_explorer_core_1_1_helpers_1_1_stream_helpers.html#a24acf13a153a767370bca33092b4b355", null ],
     [ "ReadStringASCIINull", "class_legendary_explorer_core_1_1_helpers_1_1_stream_helpers.html#a24ac1a10b3d74906a68b3d21de53bd22", null ],

@@ -148,6 +148,7 @@ var NAVTREEINDEX2 =
 "_l_e3_directory_8cs.html":[2,0,0,0,5,2],
 "_l_e3_talk_files_8cs.html":[2,0,0,0,20,5],
 "_l_e3_unreal_object_info_8cs.html":[2,0,0,0,21,2,4],
+"_l_e_c_l_data_8cs.html":[2,0,0,0,14,9],
 "_l_e_c_log_8cs.html":[2,0,0,0,3,2],
 "_l_e_coalesced_8cs.html":[2,0,0,0,1,14],
 "_l_e_directory_8cs.html":[2,0,0,0,5,3],
@@ -248,6 +249,5 @@ var NAVTREEINDEX2 =
 "_m_e3_enums_8cs.html#a03b1b6bf3e7115626812a0fb18c4d1e5a1c14d38ef6d38200ea783f1e361a5583":[2,0,0,0,21,11,512,2],
 "_m_e3_enums_8cs.html#a03b1b6bf3e7115626812a0fb18c4d1e5a39e4ac38c03ea5ca5b39544667d8c9d7":[2,0,0,0,21,11,512,3],
 "_m_e3_enums_8cs.html#a03b1b6bf3e7115626812a0fb18c4d1e5acdd1eb97204ca22ef7400796741dcb40":[2,0,0,0,21,11,512,1],
-"_m_e3_enums_8cs.html#a03b1b6bf3e7115626812a0fb18c4d1e5aef490798b093b69806ac18f731726e3c":[2,0,0,0,21,11,512,0],
-"_m_e3_enums_8cs.html#a04ac37fee784fbe01902577bece5e279":[2,0,0,0,21,11,610]
+"_m_e3_enums_8cs.html#a03b1b6bf3e7115626812a0fb18c4d1e5aef490798b093b69806ac18f731726e3c":[2,0,0,0,21,11,512,0]
 };

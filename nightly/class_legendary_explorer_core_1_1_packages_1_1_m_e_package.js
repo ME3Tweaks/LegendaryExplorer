@@ -42,5 +42,6 @@ var class_legendary_explorer_core_1_1_packages_1_1_m_e_package =
     [ "Game", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#a4f4b00a25fc2001d86e3c461fa3539a2", null ],
     [ "Platform", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#ac786de6a79fdecf70e2b2167d7c5ceb2", null ],
     [ "Localization", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#a40365fcfab73aa61d97cca124ebb6e4e", null ],
-    [ "CustomMetadata", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#a999699d98fba85aa9bf196d8309e6cb4", null ]
+    [ "CustomMetadata", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#a999699d98fba85aa9bf196d8309e6cb4", null ],
+    [ "LECLTagData", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#a850d4f7a801927731ef2033bdb78a4c3", null ]
 ];

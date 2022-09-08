@@ -615,6 +615,7 @@ var hierarchy =
     [ "LegendaryExplorerCore.GameFilesystem.LE3Directory", "class_legendary_explorer_core_1_1_game_filesystem_1_1_l_e3_directory.html", null ],
     [ "LegendaryExplorerCore.TLK.LE3TalkFiles", "class_legendary_explorer_core_1_1_t_l_k_1_1_l_e3_talk_files.html", null ],
     [ "LegendaryExplorerCore.Unreal.ObjectInfo.LE3UnrealObjectInfo", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_l_e3_unreal_object_info.html", null ],
+    [ "LegendaryExplorerCore.Packages.LECLData", "class_legendary_explorer_core_1_1_packages_1_1_l_e_c_l_data.html", null ],
     [ "LegendaryExplorerCore.DebugTools.LECLog", "class_legendary_explorer_core_1_1_debug_tools_1_1_l_e_c_log.html", null ],
     [ "LegendaryExplorerCore.Coalesced.LECoalescedBundle", "class_legendary_explorer_core_1_1_coalesced_1_1_l_e_coalesced_bundle.html", null ],
     [ "LegendaryExplorerCore.Coalesced.LECoalescedConverter", "class_legendary_explorer_core_1_1_coalesced_1_1_l_e_coalesced_converter.html", null ],

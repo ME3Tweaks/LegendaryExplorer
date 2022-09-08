@@ -12,5 +12,6 @@ var class_legendary_explorer_core_1_1_packages_1_1_u_d_k_package =
     [ "Endian", "class_legendary_explorer_core_1_1_packages_1_1_u_d_k_package.html#a324cb0ac1cd9b825e8751ea95a090456", null ],
     [ "Localization", "class_legendary_explorer_core_1_1_packages_1_1_u_d_k_package.html#a7b02a8f6b767ff0e870f076c9a5cf440", null ],
     [ "CustomMetadata", "class_legendary_explorer_core_1_1_packages_1_1_u_d_k_package.html#a2e0ef2b1ef024d82d777fa0a168b186f", null ],
+    [ "LECLTagData", "class_legendary_explorer_core_1_1_packages_1_1_u_d_k_package.html#a2795427cbc9891b458b3536c62600d86", null ],
     [ "CanReconstruct", "class_legendary_explorer_core_1_1_packages_1_1_u_d_k_package.html#ac07c0126d23ca3284914ea613e1db0c3", null ]
 ];
