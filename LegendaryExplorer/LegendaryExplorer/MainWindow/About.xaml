@@ -13,7 +13,7 @@
             <Image Width="248" Height="109" Source="../Resources/Images/LEX_Splash.png" RenderOptions.BitmapScalingMode="HighQuality"/>
             <Grid Width="362" Height="109" Background="#FF1F283C">
                 <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                    <TextBlock Text="LegendaryExplorer" TextAlignment="Center" Foreground="#FFD8D8D8" FontSize="26" FontFamily="{StaticResource Exo-SemiBold}"/>
+                    <TextBlock Text="Legendary Explorer" TextAlignment="Center" Foreground="#FFD8D8D8" FontSize="26" FontFamily="{StaticResource Exo-SemiBold}"/>
                     <TextBlock Text="{Binding Source={x:Static misc:AppVersion.FullDisplayedVersion}}" Foreground="White" FontSize="26" 
                                FontFamily="{StaticResource TitilliumWeb-Regular}" HorizontalAlignment="Center" Margin="0,-6,0,0"/>
                 </StackPanel>
@@ -39,15 +39,15 @@
                 <TextBlock Text="Developers" FontFamily="{StaticResource TitilliumWeb-SemiBold}" FontSize="17"/>
                 <TextBlock Text="Main contributors" FontFamily="{StaticResource TitilliumWeb-SemiBold}" FontSize="14"/>
                 <TextBlock FontFamily="{StaticResource TitilliumWeb-Light}" FontSize="15" Margin="7,0,0,0">
-                    <Run Text="• Mgamerz - Developer&#10;• SirCxyrtyx - Developer&#10;• Kinkojiro - Developer&#10;• HenBagle - Developer"/>
+                    <Run Text="• Mgamerz&#10;• SirCxyrtyx&#10;• Kinkojiro&#10;• HenBagle"/>
                 </TextBlock>
                 <TextBlock Text="Additional contributors" FontFamily="{StaticResource TitilliumWeb-SemiBold}" FontSize="14"/>
                 <TextBlock FontFamily="{StaticResource TitilliumWeb-Light}" FontSize="15" Margin="7,0,0,0">
-                    <Run Text="• Aquadran - Developer&#10;• Benji - 3D Developer"/>
+                    <Run Text="• Aquadran&#10;• Benji&#10;• Exkywor"/>
                 </TextBlock>
 
             </StackPanel>
-            <TabControl Height="215" Width="385" HorizontalContentAlignment="Right" Grid.Column="1" Margin="0,0,0,0" BorderThickness="2" BorderBrush="#FFA8A8A8">
+            <TabControl Height="228" Width="385" HorizontalContentAlignment="Right" Grid.Column="1" Margin="0,0,0,0" BorderThickness="2" BorderBrush="#FFA8A8A8">
                 <TabControl.Resources>
                     <Style TargetType="TabItem">
                         <Setter Property="Template">
@@ -113,7 +113,6 @@
                         Gocek - ME2 TLK Tool                            <LineBreak/>
                         Hcs64 - ww2ogg                                  <LineBreak/>
                         Jean-Loup Gailly and Mark Adler - zLib          <LineBreak/>
-                        John33 - Oggdec                                 <LineBreak/>
                         Newtonsoft - JSON.NET                           <LineBreak/>
                         NAudio - NAudio sound system                    <LineBreak/>
                         AudioKinetic - Wwise SDK WAAPI                  <LineBreak/>
@@ -123,7 +122,7 @@
                         Piccolo Team - Piccolo Graphics Framework       <LineBreak/>
                         bgbennyboy - Psychonauts Explorer (ME1 Audio)   <LineBreak/>
                         TheFeckless - UE3 SDK Generator                 <LineBreak/>
-                        Aquadran - Mass Effect Modder  (Textures)       <LineBreak/>
+                        Aquadran - Mass Effect Modder (Textures)       <LineBreak/>
                         d00t - LE Coalesced Tool                        <LineBreak/>
                         gabbyh - ME Head Morph Exporter                 <LineBreak/>
                         VGMStream - Audio decoding                      <LineBreak/>
@@ -132,6 +131,8 @@
                         JetBrains - Debugging licenses &amp; tools      <LineBreak/>
                         AvalonEdit Contributors - AvalonEdit text editor<LineBreak/>
                         BioWare - MELE Plot Databases                   <LineBreak/>
+                        gabbyh - ME Head Morph Exporter                 <LineBreak/>
+                        TheBenefactor - Technical information           <LineBreak/>
                         </TextBlock>
                     </ScrollViewer>
                 </TabItem>
@@ -167,9 +168,9 @@
         </Grid>
         <StackPanel Margin="10,0">
             <TextBlock TextWrapping="Wrap" FontFamily="{StaticResource TitilliumWeb-Light}" FontSize="16" Margin="0,3,0,0">
-                <Run FontFamily="{StaticResource TitilliumWeb-SemiBold}">LegendaryExplorer</Run> is licensed under GPLv3.
+                <Run FontFamily="{StaticResource TitilliumWeb-SemiBold}">Legendary Explorer</Run> is licensed under GPLv3.
             </TextBlock>
-            <RichTextBox x:Name="licenseBox" IsReadOnly="True" ScrollViewer.CanContentScroll="True" VerticalScrollBarVisibility="Auto" Height="181" Margin="0,3,0,6">
+            <RichTextBox x:Name="licenseBox" IsReadOnly="True" ScrollViewer.CanContentScroll="True" VerticalScrollBarVisibility="Auto" Height="181" Margin="0,3,4,6">
                 <RichTextBox.Document>
                     <FlowDocument>
                         <Paragraph>
