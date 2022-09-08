@@ -1226,7 +1226,10 @@ namespace LegendaryExplorerCore.Packages
         private static void WriteLegendaryExplorerCoreTag(MemoryStream ms, IMEPackage package)
         {
             if (package is not MEPackage mep) return; // Do not write on non ME packages.
-            if (mep.Game.IsLEGame()) return; // Do not write on non-LE even if this is somehow called.
+
+            // This line will need merged when leclsystem is merged into Beta! Just FYI - Mgamerz
+            // We didn't want the other part of the commit that contained this fix
+            if (!mep.Game.IsLEGame()) return; // Do not write on non-LE even if this is somehow called.
 
             var pos = ms.Position;
 
