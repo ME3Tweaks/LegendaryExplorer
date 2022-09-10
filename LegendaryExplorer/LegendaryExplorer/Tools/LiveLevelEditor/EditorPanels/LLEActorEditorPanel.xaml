@@ -17,20 +17,44 @@
         <converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
     </UserControl.Resources>
     <WrapPanel IsEnabled="{Binding SelectedActor, Converter={StaticResource NullEnabledConverter}}">
-        <GroupBox Header="Actor Position" Margin="10,0,10,10" BorderThickness="2" Padding="5">
+        <GroupBox Header="Actor Position" Margin="5,0,5,5" BorderThickness="2" Padding="5">
             <StackPanel Orientation="Vertical">
                 <StackPanel Orientation="Horizontal">
                     <!--<Button Content=" Reset Position " Margin="5" Click="SetDefaultPosition_Click" />-->
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text=" X:  " VerticalAlignment="Center" />
+                        <TextBlock Text="X:  " VerticalAlignment="Center">
+                            <TextBlock.TextDecorations>
+                                <TextDecoration Location="Underline" PenOffset="2">
+                                    <TextDecoration.Pen>
+                                        <Pen Brush="Red" Thickness="3"/>
+                                    </TextDecoration.Pen>
+                                </TextDecoration>
+                            </TextBlock.TextDecorations>
+                        </TextBlock>
                         <xctk:SingleUpDown Name="xPosUpDown" Value="{Binding XPos}" Increment="{Binding PosIncrement}" ButtonSpinnerLocation="Left" FormatString="F2"/>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text=" Y:  " VerticalAlignment="Center"/>
+                    <StackPanel Orientation="Horizontal" Margin="3,0,3,0">
+                        <TextBlock Text="Y:  " VerticalAlignment="Center">
+                            <TextBlock.TextDecorations>
+                                <TextDecoration Location="Underline" PenOffset="2">
+                                    <TextDecoration.Pen>
+                                        <Pen Brush="#00C91D" Thickness="3"/>
+                                    </TextDecoration.Pen>
+                                </TextDecoration>
+                            </TextBlock.TextDecorations>
+                        </TextBlock>
                         <xctk:SingleUpDown Name="yPosUpDown" Value="{Binding YPos}" Increment="{Binding PosIncrement}" ButtonSpinnerLocation="Left" FormatString="F3"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text=" Z:  " VerticalAlignment="Center"/>
+                        <TextBlock Text="Z:  " VerticalAlignment="Center">
+                            <TextBlock.TextDecorations>
+                                <TextDecoration Location="Underline" PenOffset="2">
+                                    <TextDecoration.Pen>
+                                        <Pen Brush="Blue" Thickness="3"/>
+                                    </TextDecoration.Pen>
+                                </TextDecoration>
+                            </TextBlock.TextDecorations>
+                        </TextBlock>
                         <xctk:SingleUpDown Name="zPosUpDown" Value="{Binding ZPos}" Increment="{Binding PosIncrement}" ButtonSpinnerLocation="Left" FormatString="F3"/>
                     </StackPanel>
                 </StackPanel>
@@ -40,7 +64,7 @@
                 </StackPanel>
             </StackPanel>
         </GroupBox>
-        <GroupBox Header="Actor Rotation" Margin="10,0,10,10" BorderThickness="2">
+        <GroupBox Header="Actor Rotation" Margin="5,0,5,5" BorderThickness="2">
             <StackPanel Orientation="Vertical">
                 <StackPanel Orientation="Horizontal">
                     <!--<Button Content=" Reset Rotation " Margin="5" Click="ResetRotation_Click" />-->
@@ -59,7 +83,7 @@
                 </StackPanel>
             </StackPanel>
         </GroupBox>
-        <GroupBox Header="Actor DrawScale" Margin="10,0,10,10" BorderThickness="2" >
+        <GroupBox Header="Actor DrawScale" Margin="5,0,5,5" BorderThickness="2" >
             <StackPanel Orientation="Vertical">
                 <StackPanel Orientation="Horizontal">
                     <StackPanel Orientation="Horizontal">
@@ -89,7 +113,7 @@
                 </StackPanel>
             </StackPanel>
         </GroupBox>
-        <GroupBox Header="Misc" Margin="10,0,10,10" BorderThickness="2" >
+        <GroupBox Header="Misc" Margin="5,0,5,5" BorderThickness="2" >
             <StackPanel>
                 <CheckBox Content="Pause game on focus loss" IsChecked="{Binding PauseOnFocusLoss}" Margin="10,0,0,3"/>
                 <CheckBox Content="Show trace to selected actor" IsChecked="{Binding ShowTraceToActor}" Margin="10,0,0,3"/>
@@ -98,21 +122,25 @@
                     <xctk:ColorPicker Width="100" SelectedColor="{Binding TraceColor}" />
                 </StackPanel>
                 <StackPanel Margin="5" Orientation="Horizontal">
+                    <TextBlock Text="Trace Width:  " VerticalAlignment="Center"/>
+                    <xctk:SingleUpDown Value="{Binding TraceWidth}" Increment="1" ButtonSpinnerLocation="Left" FormatString="F0"/>
+                </StackPanel>
+                <StackPanel Margin="5" Orientation="Horizontal">
                     <TextBlock Text="Debug Axes scale:  " VerticalAlignment="Center"/>
                     <xctk:SingleUpDown Value="{Binding DebugCoordinateAxesScale}" Increment="10" ButtonSpinnerLocation="Left" FormatString="F0"/>
                 </StackPanel>
             </StackPanel>
         </GroupBox>
-        <GroupBox Header="Save Changes" Margin="10,0,10,10" BorderThickness="2" >
-            <StackPanel >
-                <controls:Requirement x:Name="pccOpenInPackEdReq"
+        <GroupBox Header="Save Changes" Margin="5,0,5,5" BorderThickness="2" >
+            <DockPanel>
+                <controls:Requirement x:Name="pccOpenInPackEdReq" DockPanel.Dock="Top"
                                       FullfilledText="Selected Package is open in a PackageEditor window"
                                       Margin="0,5,0,5"
-                                      UnFullfilledText="The selected Package must be open in a PackageEditor window to save changes to it."
-                                      ButtonText="Open in PackEd"
+                                      UnFullfilledText="The selected pcc must be open in PackageEditor to save changes to it."
+                                      ButtonText="Open pcc"
                                       Command="{Binding PackEdWindowOpenCommand, RelativeSource={RelativeSource AncestorType={x:Type liveLevelEditor:LELiveLevelEditorWindow}}}" />
-                <Button Content="Update saved position, rotation and scale of selected actor." Command="{Binding WriteActorValuesCommand}" sharedUi:Bindings.VisibilityToEnabled="true"/>
-            </StackPanel>
+                <Button Content="Update saved position, rotation and scale of selected actor." Command="{Binding WriteActorValuesCommand}" sharedUi:Bindings.VisibilityToEnabled="True"/>
+            </DockPanel>
         </GroupBox>
     </WrapPanel>
 </UserControl>

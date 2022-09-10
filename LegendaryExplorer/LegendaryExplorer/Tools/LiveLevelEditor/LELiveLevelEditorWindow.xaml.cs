@@ -199,6 +199,17 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
                             Scale * new Vector3(XScale, YScale, ZScale));
                         smca.LocalToWorldTransforms[idx] = m;
                         smcaExport.WriteBinary(smca);
+
+                        //all position info has been saved into the matrix. clear these if they exist
+                        var smcProps = actorExport.GetProperties();
+                        smcProps.RemoveNamedProperty("AbsoluteTranslation");
+                        smcProps.RemoveNamedProperty("AbsoluteRotation");
+                        smcProps.RemoveNamedProperty("AbsoluteScale");
+                        smcProps.RemoveNamedProperty("Translation");
+                        smcProps.RemoveNamedProperty("Rotation");
+                        smcProps.RemoveNamedProperty("Scale");
+                        smcProps.RemoveNamedProperty("Scale3D");
+                        actorExport.WriteProperties(smcProps);
                     }
                     else
                     {
@@ -600,7 +611,19 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             set {
                 if (SetProperty(ref _traceColor, value))
                 {
-                    InteropHelper.SendMessageToGame($"LLE_TRACE_COLOR {_traceColor.R} {_traceColor.G} {_traceColor.B}", Game);
+                    InteropHelper.SendMessageToGame($"LLE_TRACE_COLOR {MathF.Pow(_traceColor.R / 255f, 2.2f)} {MathF.Pow(_traceColor.G / 255f, 2.2f)} {MathF.Pow(_traceColor.B / 255f, 2.2f)}", Game);
+                }
+            }
+        }
+
+        private float _traceWidth = 3;
+        public float TraceWidth
+        {
+            get => _traceWidth;
+            set {
+                if (SetProperty(ref _traceWidth, value))
+                {
+                    InteropHelper.SendMessageToGame($"LLE_TRACE_WIDTH {_traceWidth}", Game);
                 }
             }
         }

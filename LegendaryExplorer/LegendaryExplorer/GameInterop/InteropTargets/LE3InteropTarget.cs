@@ -15,8 +15,8 @@ namespace LegendaryExplorer.GameInterop.InteropTargets
 
         // THIS ALL NEEDS UPDATED
         public override string InteropASIDownloadLink => 
-            "https://github.com/ME3Tweaks/LE3-ASI-Plugins/releases/tag/LE3LEXInterop-v5";
-        public override string InteropASIMD5 => "5976dbb78c1603b6d5b19e1378bfd358";
+            "https://github.com/ME3Tweaks/LE3-ASI-Plugins/releases/tag/LE3LEXInterop-v6";
+        public override string InteropASIMD5 => "e90f6179cee4f16ff19872ba09ab19f0";
         public override string BinkBypassMD5 { get; }
         public override string OriginalBinkMD5 => "1f00452ad61a944556399e2ad5292b35";
 
