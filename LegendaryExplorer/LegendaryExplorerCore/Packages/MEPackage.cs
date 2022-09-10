@@ -7,12 +7,14 @@ using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
 using LegendaryExplorerCore.Compression;
+using LegendaryExplorerCore.DebugTools;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Memory;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
+using Newtonsoft.Json;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
 #if AZURE
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -20,6 +22,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace LegendaryExplorerCore.Packages
 {
+
+
     [Flags]
     public enum PackageChange
     {
@@ -67,6 +71,21 @@ namespace LegendaryExplorerCore.Packages
 
     public sealed class MEPackage : UnrealPackageFile, IMEPackage, IDisposable
     {
+        /// <summary>
+        /// MEM writes this to every single package file it modifies
+        /// </summary>
+        private const string MEMPackageTag = "ThisIsMEMEndOfFileMarker"; //TODO NET 7: make this a utf8 literal
+        private const int MEMPackageTagLength = 24;
+
+        /// <summary>
+        /// LEC-saved LE packages will always end in this, assuming MEM did not save later
+        /// </summary>
+        private const string LECPackageTag = "LECL"; //TODO NET 7: make this a utf8 literal
+        private const int LECPackageTagLength = 4;
+        private const int LECPackageTag_Version_EmptyData = 1;
+        private const int LECPackageTag_Version_JSON = 2;
+
+
         /// <summary>
         /// Player.sav in ME1 save files starts with this and needs to be scrolled forward to find actual start of package
         /// </summary>
@@ -137,9 +156,14 @@ namespace LegendaryExplorerCore.Packages
         public MELocalization Localization { get; } = MELocalization.None;
 
         /// <summary>
-        /// Custom user-defined metadata to associate with this package object. This data has no effect on saving or loading, it is only for library user convenience.
+        /// Custom user-defined metadata to associate with this package object. This data has no effect on saving or loading, it is only for library user convenience. This data is NOT serialized to disk!
         /// </summary>
         public Dictionary<string, object> CustomMetadata { get; set; } = new(0);
+
+        /// <summary>
+        /// Metadata that is serialized to the end of the package file and contains useful information for tooling
+        /// </summary>
+        public LECLData LECLTagData { get; }
 
         public byte[] getHeader()
         {
@@ -217,6 +241,7 @@ namespace LegendaryExplorerCore.Packages
             //reasonable defaults?
             Flags = EPackageFlags.Cooked | EPackageFlags.AllowDownload | EPackageFlags.DisallowLazyLoading | EPackageFlags.RequireImportsAlreadyLoaded;
             EntryLookupTable = new CaseInsensitiveDictionary<IEntry>();
+            LECLTagData = new LECLData();
         }
 
         /// <summary>
@@ -605,6 +630,57 @@ namespace LegendaryExplorerCore.Packages
                 export.Data = data;
             }
 
+            if (Game.IsLEGame())
+            {
+                //read from the original stream here, as this data is not part of the compressed data and will always be little endian
+                try
+                {
+                    // Find MEM tag to see if it exists since it will append to ours (LEC will not save with a MEM tag)
+
+                    bool taggedByMEM = false;
+                    bool taggedByLEC = false;
+                    string leclv2Data = null;
+                    if (fs.Position != fs.Length) //optimize for the case where it's not tagged
+                    {
+                        long tagOffsetFromEnd = -LECPackageTagLength; 
+                        fs.Seek(-MEMPackageTagLength, SeekOrigin.End);
+                        if (fs.ReadStringASCII(MEMPackageTagLength) == MEMPackageTag)
+                        {
+                            taggedByMEM = true;
+                            tagOffsetFromEnd -= MEMPackageTagLength;
+                            LECLTagData = new LECLData { WasSavedWithMEM = true };
+                        }
+
+                        fs.Seek(tagOffsetFromEnd, SeekOrigin.End);
+                        if (fs.ReadStringASCII(LECPackageTagLength) == LECPackageTag)
+                        {
+                            taggedByLEC = true;
+
+                            // Read <LECL Data>
+                            fs.Seek(-(LECPackageTagLength + sizeof(int)), SeekOrigin.Current); //seek to payload length
+                            int payloadLength = fs.ReadInt32();
+
+                            //Read version
+                            fs.Seek(-(sizeof(int) + payloadLength), SeekOrigin.Current); // Seek to version
+                            int leclVersion = fs.ReadInt32();
+
+                            if (leclVersion >= LECPackageTag_Version_JSON)
+                            {
+                                leclv2Data = fs.ReadStringUtf8(payloadLength - 4);
+                            }
+                        }
+                    }
+
+                    LECLTagData = leclv2Data != null ? JsonConvert.DeserializeObject<LECLData>(leclv2Data) : new LECLData();
+                    LECLTagData.WasSavedWithMEM = taggedByMEM;
+                    LECLTagData.WasSavedWithLEC = taggedByLEC;
+                }
+                catch (Exception e)
+                {
+                    LECLog.Error($"Error reading LECLDataTag on package: {e.Message}. The data will not be deserialized.");
+                }
+            }
+
             packageReader.Dispose();
 
 
@@ -795,7 +871,7 @@ namespace LegendaryExplorerCore.Packages
 
             if (mePackage.Game.IsLEGame())
             {
-                WriteLegendaryExplorerCoreTag(ms);
+                WriteLegendaryExplorerCoreTag(ms, mePackage);
             }
 
             ms.JumpTo(0);
@@ -1105,7 +1181,7 @@ namespace LegendaryExplorerCore.Packages
 
                 if (package.Game.IsLEGame())
                 {
-                    WriteLegendaryExplorerCoreTag(compressedStream);
+                    WriteLegendaryExplorerCoreTag(compressedStream, package);
                 }
 
                 //Update each chunk header with new information
@@ -1147,11 +1223,45 @@ namespace LegendaryExplorerCore.Packages
             }
         }
 
-        private static void WriteLegendaryExplorerCoreTag(MemoryStream ms)
+        private static void WriteLegendaryExplorerCoreTag(MemoryStream ms, IMEPackage package)
         {
-            ms.WriteInt32(1); //version. for if we want to append more data in the future 
-            ms.WriteInt32(4); //size of preceding data. (just the version for now)
-            ms.WriteStringASCII("LECL");
+            if (package is not MEPackage mep) return; // Do not write on non ME packages.
+
+            // This line will need merged when leclsystem is merged into Beta! Just FYI - Mgamerz
+            // We didn't want the other part of the commit that contained this fix
+            if (!mep.Game.IsLEGame()) return; // Do not write on non-LE even if this is somehow called.
+
+            var pos = ms.Position;
+
+            // BASIC TAG FORMAT:
+            // <data of package to the end>
+            // INT: LECL TAG VERSION
+            // <LECL DATA>
+            // INT: LECL DATA size in bytes + 4
+            // ASCII 'LECL'
+
+            // DOCUMENT VERSIONS HERE
+
+            // 1: INITIAL VERSION
+            // Contains no LECL DATA.
+
+            // 2: Import 'Hinting' 08/21/2022
+            // Contains data for hinting to LEC what files contain imports, which will
+            // automatically add them to the list of files that can be imported from
+
+            if (package.LECLTagData != null && package.LECLTagData.HasAnyData())
+            {
+                ms.WriteInt32(LECPackageTag_Version_JSON); // The current version
+                var data = JsonConvert.SerializeObject(package.LECLTagData); // for debug reading
+                ms.WriteStringUtf8(data);
+            }
+            else
+            {
+                ms.WriteInt32(LECPackageTag_Version_EmptyData); // Blank data version. Version 1 will not attempt to read data.
+            }
+
+            ms.WriteInt32((int)(ms.Position - pos)); // Size of the LECL data & version tag in bytes
+            ms.WriteStringASCII(LECPackageTag);
         }
 
         //Must not change export's DataSize!

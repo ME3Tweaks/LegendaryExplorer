@@ -92,7 +92,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor.Experiments
             }).Select(id =>
             {
                 ExportEntry group = sew.Pcc.GetUExport(id.Value);
-                return group.GetProperty<NameProperty>("GroupName").Value.Name;
+                return group.GetProperty<NameProperty>("GroupName").Value.Instanced;
             }).Distinct().ToList());
 
             List<StructProperty> updatedLinks = new();
