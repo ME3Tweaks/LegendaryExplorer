@@ -231,6 +231,7 @@ namespace LegendaryExplorer.SharedUI
                     if (Entry == null) return null;
                     if (Entry is ExportEntry ee)
                     {
+                        if (ee.IsDefaultObject) return null; // We don't have subtext on defaults.
                         //Parse as export
                         switch (ee.ClassName)
                         {

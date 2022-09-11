@@ -395,7 +395,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             //    || exportEntry.TemplateOwnerClassIdx >= 0;
 
             // crossgen 9/24/2021
-            return exportEntry.HasStack || exportEntry.TemplateOwnerClassIdx >= 0 || exportEntry.propsEnd() < exportEntry.DataSize;
+            return !exportEntry.IsDefaultObject && (exportEntry.HasStack || exportEntry.TemplateOwnerClassIdx >= 0 || exportEntry.propsEnd() < exportEntry.DataSize);
         }
 
         public override void PopOut()
