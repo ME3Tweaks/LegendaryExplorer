@@ -159,7 +159,7 @@ namespace LegendaryExplorer
                 tags = new List<string> { "utility", "animation", "gesture" },
                 category = "Cinematic Tools",
                 category2 = "Utilities",
-                description = "Animation Viewer allows you to preview any animation in Mass Effect 3"
+                description = "Animation Viewer allows you to preview any animation in Mass Effect 3 (OT only)."
             });
 
 #if DEBUG

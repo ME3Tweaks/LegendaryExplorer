@@ -68,6 +68,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             LoadCommands();
             InitializeComponent();
             ContentGrid.Children.Add(HostedControl);
+            HostedControl.IsPoppedOut = true;
             HostedControl.PoppedOut(this);
             switch (HostedControl)
             {

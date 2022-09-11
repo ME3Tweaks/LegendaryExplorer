@@ -91,7 +91,7 @@ namespace LegendaryExplorer.Tools.TextureStudio
             }
             else
             {
-                using var package = MEPackageHandler.UnsafePartialLoad(Path.Combine(SelectedFolder, SelectedInstance.RelativePackagePath), x=>x.InstancedFullPath == SelectedInstance.ExportPath); // do not open the full package
+                using var package = MEPackageHandler.UnsafePartialLoad(Path.Combine(SelectedFolder, SelectedInstance.RelativePackagePath), x => x.InstancedFullPath == SelectedInstance.ExportPath); // do not open the full package
                 TextureViewer_ExportLoader.LoadExport(package.FindExport(SelectedInstance.ExportPath));
             }
         }
@@ -167,8 +167,6 @@ namespace LegendaryExplorer.Tools.TextureStudio
             {
                 InitWorkspace(fileName);
             });
-            MessageBox.Show(
-                @"Texture Studio is in development and is not finished. It will have usability problems AND IT MAY POTENTIALLY HAVE MOD BREAKING BUGS. TAKE FULL BACKUPS OF YOUR MOD FOLDER BEFORE USING THIS TOOL!");
         }
 
         private void InitWorkspace(string workspacepath)

@@ -80,6 +80,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 {
                     this.TextureContext.Constants.Flags &= ~TextureRenderContext.TextureViewFlags.AlphaAsBlack;
                 }
+                RequestRender();
             }
         }
 
@@ -98,6 +99,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 {
                     this.TextureContext.Constants.Flags &= ~TextureRenderContext.TextureViewFlags.EnableRedChannel;
                 }
+                RequestRender();
             }
         }
 
@@ -116,6 +118,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 {
                     this.TextureContext.Constants.Flags &= ~TextureRenderContext.TextureViewFlags.EnableGreenChannel;
                 }
+                RequestRender();
             }
         }
 
@@ -136,6 +139,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 {
                     this.TextureContext.Constants.Flags &= ~TextureRenderContext.TextureViewFlags.EnableBlueChannel;
                 }
+                RequestRender();
             }
         }
 
@@ -156,6 +160,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 {
                     this.TextureContext.Constants.Flags &= ~TextureRenderContext.TextureViewFlags.EnableAlphaChannel;
                 }
+                RequestRender();
             }
         }
 
@@ -167,6 +172,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 SetProperty(ref _backgroundColor, value);
                 TextureContext.BackgroundColor = new Vector4(value.R / 255.0f, value.G / 255.0f, value.B / 255.0f, value.A / 255.0f);
+                RequestRender();
             }
         }
         #endregion
@@ -228,11 +234,27 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             this.PreviewRenderer.Context = this.TextureContext;
             this.TextureContext.BackgroundColor = new Vector4(0.5f, 0.5f, 0.5f, 1.0f);
             this.PreviewRenderer.Loaded += RendererLoaded;
+            this.PreviewRenderer.Unloaded += RendererUnloaded;
+
+            // Once an image has been rendered we turn it back off until we need a new one rendered, or we just waste GPU resources.
+            PreviewRenderer.OnImageRendered = SignalRendered;
         }
 
         private void RendererLoaded(object sender, RoutedEventArgs e)
         {
             MipList_SelectedItemChanged(sender, null);
+            if (Parent is TabItem { Parent: TabControl tc })
+            {
+                tc.SelectionChanged += TextureViewer_HostingTabSelectionChanged;
+            }
+        }
+
+        private void RendererUnloaded(object sender, RoutedEventArgs e)
+        {
+            if (Parent is TabItem { Parent: TabControl tc })
+            {
+                tc.SelectionChanged -= TextureViewer_HostingTabSelectionChanged;
+            }
         }
 
         public ICommand ExportToPNGCommand { get; set; }
@@ -458,7 +480,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new TextureViewerExportLoader(), CurrentLoadedExport)
                 {
-                    Title = $"Texture Viewer - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.InstancedFullPath} - {Pcc.FilePath}"
+                    Title = $"Texture Viewer - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.InstancedFullPath} - {Pcc.FilePath}",
                 };
                 elhw.Show();
             }
@@ -535,7 +557,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     CurrentLoadedFormat = format.Value.Name;
                     MipList.ReplaceAll(mips);
                     TextureCRC = LegendaryExplorerCore.Unreal.Classes.Texture2D.GetTextureCRC(exportEntry);
-                    if (Settings.TextureViewer_AutoLoadMip || ViewerModeOnly)
+                    if (Settings.TextureViewer_AutoLoadMip || ViewerModeOnly || IsPoppedOut)
                     {
                         Mips_ListBox.SelectedIndex = MipList.IndexOf(topmip);
                     }
@@ -553,6 +575,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void LoadMip(Texture2DMipInfo mipToLoad)
         {
+            RequestRender();
+
             if (mipToLoad == null)
             {
                 TextureContext.Texture = null;
@@ -642,7 +666,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         public override void Dispose()
         {
+            PreviewRenderer.OnImageRendered = null; // Remove reference to this
             PreviewRenderer.Loaded -= RendererLoaded;
+            PreviewRenderer.Unloaded -= RendererUnloaded;
+            PreviewRenderer.SetShouldRender(false);
         }
 
         private void CRC_MouseDown(object sender, MouseButtonEventArgs e)
@@ -655,6 +682,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void ScaleComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            RequestRender();
+
             if (this.ScaleComboBox.SelectedValue is ComboBoxItem item && item.Content is string inputString)
             {
                 if (inputString == "Scale to Fit")
@@ -678,5 +707,47 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 }
             }
         }
+
+
+
+        public override void PoppedOut(ExportLoaderHostedWindow window)
+        {
+            RequestRender(); // turn on rendering
+        }
+
+        #region Performance
+
+        /// <summary>
+        /// We should render a new frame
+        /// </summary>
+        public void RequestRender()
+        {
+            PreviewRenderer?.SetShouldRender(true);
+        }
+
+        /// <summary>
+        /// Textures do not change (there is no camera, lighting, etc), so we should not render more than the first time.
+        /// </summary>
+        public void SignalRendered()
+        {
+            PreviewRenderer?.SetShouldRender(false);
+        }
+
+        private void TextureViewer_HostingTabSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            // Do not render if we are not visible
+            if (Parent is TabItem ti)
+            {
+                if (e.AddedItems.Contains(ti))
+                {
+                    RequestRender();
+                }
+                else if (e.RemovedItems.Contains(ti))
+                {
+                    PreviewRenderer?.SetShouldRender(false);
+                }
+            }
+        }
+        #endregion
     }
 }

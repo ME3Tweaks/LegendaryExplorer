@@ -196,6 +196,10 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
 
         public RenderContext Context { get; set; }
 
+        /// <summary>
+        /// Invoked when the D3D11Image object has completed a rendering update
+        /// </summary>
+        public Action OnImageRendered { get; set; }
         public int RenderWidth => (int)RenderSize.Width;
         public int RenderHeight => (int)RenderSize.Height;
         public bool CaptureNextFrame { get; set; }
@@ -233,7 +237,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
                 Debug.WriteLine("SceneRenderControl_Loaded");
                 D3DImage = new Microsoft.Wpf.Interop.DirectX.D3D11Image
                 {
-                    OnRender = D3DImage_OnRender
+                    OnRender = D3DImage_OnRender,
                 };
                 Image = new Image
                 {
@@ -349,6 +353,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
         {
             if (isNewSurface)
             {
+                Debug.WriteLine("IsNewSurface");
                 if (Context.Backbuffer != null)
                 {
                     Context.DisposeSizeDependentResources();
@@ -364,8 +369,9 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
                 d3dres.Dispose();
             }
 
-            if (_shouldRender)
+            if (isNewSurface || _shouldRender)
             {
+                Debug.WriteLine("_shouldRender");
                 Context.Update((float)Stopwatch.Elapsed.TotalSeconds);
                 Stopwatch.Restart();
                 bool capturing = false;
@@ -382,6 +388,8 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
                 {
                     RenderDoc.EndCapture(Context.Device.NativePointer, D3DImage.WindowOwner);
                 }
+
+                OnImageRendered?.Invoke();
             }
         }
 
