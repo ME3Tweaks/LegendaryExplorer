@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Pipes;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -13,6 +12,7 @@ using System.Windows.Interop;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
+using Microsoft.Toolkit.HighPerformance;
 
 namespace LegendaryExplorer.Tools.ScriptDebugger
 {
@@ -22,12 +22,15 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
         private readonly uint windowsMessageFilter;
         private readonly IntPtr MEHandle;
         private IntPtr NamePool;
+        private TArray GObjects;
 
         public bool InBreakState;
 
         public event Action OnDetach;
         public event Action OnAttach;
         public event Action OnBreak;
+
+        private TaskCompletionSource blockingSource;
         
         public readonly List<DebuggerFrame> CallStack = new();
 
@@ -62,14 +65,38 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
             SendMessage(new[] { (byte)PipeCommands.AttachDebugger });
         }
 
+        public async Task WaitForAttach()
+        {
+            blockingSource = new TaskCompletionSource();
+            Attach();
+            await blockingSource.Task;
+            blockingSource = null;
+        }
+
         public void Detach()
         {
             SendMessage(new[] { (byte)PipeCommands.DetachDebugger });
         }
 
+        public async Task WaitForDetach()
+        {
+            blockingSource = new TaskCompletionSource();
+            Detach();
+            await blockingSource.Task;
+            blockingSource = null;
+        }
+
         public void BreakASAP()
         {
             SendMessage(new[] { (byte)PipeCommands.BreakImmediate });
+        }
+
+        public async Task WaitForBreak()
+        {
+            blockingSource = new TaskCompletionSource();
+            BreakASAP();
+            await blockingSource.Task;
+            blockingSource = null;
         }
 
         public void SetBreakPoint(string functionPath, ushort location) => BreakPoint(true, functionPath, location);
@@ -155,6 +182,11 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
             switch (msg)
             {
                 case "Attached":
+                    if (blockingSource is not null)
+                    {
+                        blockingSource.SetResult();
+                        return;
+                    }
                     if (OnAttach is null)
                     {
                         //Debugger has been disconnected, allow program to resume 
@@ -164,6 +196,11 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
                     OnAttach();
                     break;
                 case "Detached":
+                    if (blockingSource is not null)
+                    {
+                        blockingSource.SetResult();
+                        return;
+                    }
                     OnDetach?.Invoke();
                     break;
                 case "Break":
@@ -186,6 +223,11 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
                 framePtr = frame.PreviousFrame;
             }
 
+            if (blockingSource is not null)
+            {
+                blockingSource.SetResult();
+                return;
+            }
             OnBreak?.Invoke();
         }
 
@@ -329,6 +371,13 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
                 {
                     var msgStruct = Marshal.PtrToStructure<LexMsg>(cds.lpData);
                     NamePool = msgStruct.NamePool;
+                    GObjects = ReadValue<TArray>(Game switch
+                    {
+                        MEGame.LE1 => NamePool - 0x16A2090 + 0x1770670,
+                        MEGame.LE2 => throw new NotImplementedException(),
+                        MEGame.LE3 => throw new NotImplementedException(),
+                        _ => throw new ArgumentOutOfRangeException()
+                    });
                     char[] msgChars = new char[msgStruct.msgLength];
                     unsafe
                     {
@@ -356,7 +405,7 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
             var byteSpan = new Span<byte>(&value, sizeof(T));
             fixed (byte* tPtr = byteSpan)
             {
-                if (!WriteProcessMemory(MEHandle, address, tPtr, sizeof(T), out _))
+                if (!WriteProcessMemory(MEHandle, address, tPtr, (ulong)sizeof(T), out _))
                 {
                     throw new AccessViolationException();
                 }
@@ -404,7 +453,7 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
             Encoding.Unicode.GetBytes(charSpan, bytes);
             fixed (byte* bytePtr = bytes)
             {
-                if (!WriteProcessMemory(MEHandle, address, bytePtr, bytes.Length, out _))
+                if (!WriteProcessMemory(MEHandle, address, bytePtr, (ulong)bytes.Length, out _))
                 {
                     throw new AccessViolationException();
                 }
@@ -434,61 +483,75 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
             return new NameReference(str, fName.Number);
         }
 
+        public IEnumerable<NObject> IterateGObjects()
+        {
+            if (GObjects.Count >= int.MaxValue / 8)
+            {
+                Debugger.Break();
+            }
+            var objectPointers = new IntPtr[GObjects.Count];
+            ReadProcessMemory(GObjects.Data, objectPointers.AsSpan().AsBytes());
+            foreach (IntPtr objPointer in objectPointers)
+            {
+                yield return ReadObject(objPointer);
+            }
+        }
+
         private unsafe void ReadProcessMemory(IntPtr address, Span<byte> bytes)
         {
             fixed (byte* bytePtr = bytes)
             {
-                if (!ReadProcessMemory(MEHandle, address, bytePtr, bytes.Length, out _))
+                if (!ReadProcessMemory(MEHandle, address, bytePtr, (ulong)bytes.Length, out _))
                 {
                     throw new AccessViolationException();
                 }
             }
         }
 
-        private void ReleaseResources()
+        private void ReleaseUnmanagedResources()
         {
-            if (PresentationSource.FromVisual(App.Instance.MainWindow) is HwndSource hwndSource)
-            {
-                hwndSource.RemoveHook(WndProc);
-            }
             CloseHandle(MEHandle);
         }
 
         public void Dispose()
         {
-            ReleaseResources();
+            if (PresentationSource.FromVisual(App.Instance.MainWindow) is HwndSource hwndSource)
+            {
+                hwndSource.RemoveHook(WndProc);
+            }
+            ReleaseUnmanagedResources();
             GC.SuppressFinalize(this);
         }
 
         ~DebuggerInterface()
         {
-            ReleaseResources();
+            ReleaseUnmanagedResources();
         }
 
         [DllImport("kernel32.dll")]
-        static extern unsafe bool ReadProcessMemory(
+        private static extern unsafe bool ReadProcessMemory(
             IntPtr hProcess,
             IntPtr lpBaseAddress,
-            byte* lpBuffer,
-            int dwSize,
+            void* lpBuffer,
+            ulong dwSize,
             out IntPtr lpNumberOfBytesRead); 
 
         [DllImport("kernel32.dll")]
-        static extern unsafe bool WriteProcessMemory(
+        private static extern unsafe bool WriteProcessMemory(
             IntPtr hProcess,
             IntPtr lpBaseAddress,
-            byte* lpBuffer,
-            int nSize,
+            void* lpBuffer,
+            ulong nSize,
             out IntPtr lpNumberOfBytesWritten);
 
         [DllImport("kernel32.dll")]
-        public static extern IntPtr OpenProcess(
+        private static extern IntPtr OpenProcess(
             uint processAccess,
             bool bInheritHandle,
             uint processId
         );
 
         [DllImport("kernel32.dll")]
-        static extern bool CloseHandle(IntPtr hObject);
+        private static extern bool CloseHandle(IntPtr hObject);
     }
 }

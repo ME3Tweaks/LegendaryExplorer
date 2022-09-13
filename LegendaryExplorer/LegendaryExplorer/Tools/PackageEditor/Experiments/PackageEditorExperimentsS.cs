@@ -3,13 +3,16 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using ClosedXML.Excel;
 using LegendaryExplorer.Dialogs;
+using LegendaryExplorer.GameInterop;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Misc.AppSettings;
+using LegendaryExplorer.Tools.ScriptDebugger;
 using LegendaryExplorer.UnrealExtensions.Classes;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
@@ -29,6 +32,7 @@ using LegendaryExplorerCore.UnrealScript.Language.Tree;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Newtonsoft.Json;
 using SharpDX.D3DCompiler;
+using static LegendaryExplorer.Tools.ScriptDebugger.DebuggerInterface;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
 
 namespace LegendaryExplorer.Tools.PackageEditor.Experiments
@@ -55,6 +59,156 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 {
                     yield return filePath;
                 }
+            }
+        }
+
+        public record GhidraProperty(string Name, string TypeName, int Offset, int Size, int NumElements = 1, int BitOffset = 0);
+        public record GhidraStruct(string Name, int Size, string Super, List<GhidraProperty> Properties);
+
+        public static async void GenerateGhidraStructInsertionScript(PackageEditorWindow pewpf)
+        {
+            pewpf.IsBusy = true;
+            pewpf.BusyText = "Generating Ghidra Scripts";
+
+            try
+            {
+                foreach (MEGame game in new[] { MEGame.LE1/*, MEGame.LE2, MEGame.LE3*/ })
+                {
+                    if (!GameController.TryGetMEProcess(game, out Process meProcess)) continue;
+                    var structDict = new Dictionary<string, GhidraStruct>
+                    {
+                        ["TArray"] = new("TArray", 16, null, new List<GhidraProperty>
+                        {
+                            new("Data", "pointer", 0, 8),
+                            new("Count", "int", 8, 4),
+                            new("Max", "int", 12, 4),
+                        }),
+                        ["FString"] = new("FString", 16, null, new List<GhidraProperty>
+                        {
+                            new("Data", "wchar_t*", 0, 8),
+                            new("Count", "int", 8, 4),
+                            new("Max", "int", 12, 4),
+                        }),
+                        ["FScriptDelegate"] = new("FScriptDelegate", 16, null, new List<GhidraProperty>
+                        {
+                            new("Object", "UObject*", 0, 8),
+                            new("FunctionName", "FName", 8, 4)
+                        }),
+                        ["FScriptInterface"] = new("FScriptInterface", 16, null, new List<GhidraProperty>
+                        {
+                            new("Object", "UObject*", 0, 8),
+                            new("Interface", "void*", 8, 4)
+                        }),
+                    };
+                    //this must be created on the main thread!
+                    using var debugger = new DebuggerInterface(game, meProcess);
+
+                    await debugger.WaitForAttach();
+                    try
+                    {
+                        await debugger.WaitForBreak();
+
+                        foreach (NObject nObject in debugger.IterateGObjects())
+                        {
+                            if (nObject is NClass nClass && nClass.ClassFlags(game).Has(EClassFlags.Native))
+                            {
+                                AddStruct(nClass);
+                            }
+
+                            void AddStruct(NStruct nStruct)
+                            {
+                                var props = new List<GhidraProperty>();
+                                for (NField child = nStruct.FirstChild; child is not null; child = child.Next)
+                                {
+                                    if (child is NScriptStruct nScriptStruct)
+                                    {
+                                        AddStruct(nScriptStruct);
+                                    }
+                                    else if (child is NProperty nProp)
+                                    {
+                                        string typename = nProp switch
+                                        {
+                                            NArrayProperty => "TArray",
+                                            NBioMask4Property => "byte",
+                                            NBoolProperty => "bool",
+                                            NByteProperty => "byte",
+                                            NClassProperty => "UClass*",
+                                            NDelegateProperty => "FScriptDelegate",
+                                            NFloatProperty => "float",
+                                            NInterfaceProperty => "FScriptInterface",
+                                            NIntProperty => "int",
+                                            NMapProperty => "FMap_Mirror",
+                                            NNameProperty => "FName",
+                                            //NComponentProperty
+                                            NObjectProperty nObjectProperty => nObjectProperty.PropertyClass.CPlusPlusName(game) + "*",
+                                            NStringRefProperty => "int",
+                                            NStrProperty => "FString",
+                                            NStructProperty nStructProperty => nStructProperty.Struct.CPlusPlusName(game),
+                                            _ => throw new ArgumentOutOfRangeException(nameof(nProp))
+                                        };
+                                        int arrayDim = nProp.GetRealArrayDim();
+                                        arrayDim = arrayDim == 0 ? 1 : arrayDim;
+                                        NameReference nPropName = nProp.Name;
+                                        int nPropOffset = nProp.Offset;
+                                        int nPropElementSize = nProp.ElementSize;
+                                        int bitOffset = 0;
+                                        if (nProp is NBoolProperty nBoolProp)
+                                        {
+                                            bitOffset = BitOperations.TrailingZeroCount(nBoolProp.BitMask);
+                                        }
+                                        props.Add(new GhidraProperty(nPropName, typename, nPropOffset, nPropElementSize, arrayDim, bitOffset));
+                                    }
+                                }
+
+                                string name = nStruct.CPlusPlusName(game);
+                                var ghidraStruct = new GhidraStruct(name, nStruct.PropertySize, (nStruct.Super as NStruct)?.CPlusPlusName(game), props);
+                                structDict[name] = ghidraStruct;
+                            }
+                        }
+                    }
+                    finally
+                    {
+                        await debugger.WaitForDetach();
+                    }
+
+                    await using var fileStream = new FileStream(Path.Combine(AppDirectories.ExecFolder, $"{game}ImportStructs.json"), FileMode.Create);
+                    await using var textWriter = new StreamWriter(fileStream);
+                    await textWriter.WriteAsync(JsonConvert.SerializeObject(structDict, Formatting.Indented));
+                    continue;
+                    using var writer = new CodeWriter(fileStream);
+                    writer.Write(
+                        @"//TODO write a description for this script
+//@author 
+//@category Data Types
+//@keybinding 
+//@menupath 
+//@toolbar 
+
+import ghidra.app.script.GhidraScript;
+import ghidra.program.model.util.*;
+import ghidra.program.model.reloc.*;
+import ghidra.program.model.data.*;
+import ghidra.program.model.block.*;
+import ghidra.program.model.symbol.*;
+import ghidra.program.model.scalar.*;
+import ghidra.program.model.mem.*;
+import ghidra.program.model.listing.*;
+import ghidra.program.model.lang.*;
+import ghidra.program.model.pcode.*;
+import ghidra.program.model.address.*;\n"
+                    );
+                    writer.WriteBlock("public class ImportDataTypes extends GhidraScript", () =>
+                    {
+                        writer.WriteBlock("public void run() throws Exception", () =>
+                        {
+
+                        });
+                    });
+                }
+            }
+            finally
+            {
+                pewpf.IsBusy = false;
             }
         }
 
