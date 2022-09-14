@@ -1605,6 +1605,12 @@ namespace LegendaryExplorerCore.Unreal
             {
                 var eNameIdx = stream.ReadInt32();
                 var eName = pcc.GetNameEntry(eNameIdx);
+#if AZURE || DEBUG
+                if (eName == "")
+                {
+                    throw new Exception($"Enum being initialized with invalid name reference idx: {eNameIdx}");
+                }
+#endif
                 var eNameNumber = stream.ReadInt32();
                 Value = new NameReference(eName, eNameNumber);
             }
