@@ -133,6 +133,12 @@ Properties</h2></td></tr>
 <tr class="memitem:a9526f62aabdafadad11a71b4122e7a32"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a9526f62aabdafadad11a71b4122e7a32">GenerateImportsForGlobalFiles</a> = true<code> [getset]</code></td></tr>
 <tr class="memdesc:a9526f62aabdafadad11a71b4122e7a32"><td class="mdescLeft">&#160;</td><td class="mdescRight">When porting out of globally loaded files (like SFXGame), imports will be generated for relinked objects instead of porting exports.  <a href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a9526f62aabdafadad11a71b4122e7a32">More...</a><br /></td></tr>
 <tr class="separator:a9526f62aabdafadad11a71b4122e7a32"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab48095c65a1d92e0d4b77f6cc50cd599"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#ab48095c65a1d92e0d4b77f6cc50cd599">PortImportsMemorySafe</a><code> [getset]</code></td></tr>
+<tr class="memdesc:ab48095c65a1d92e0d4b77f6cc50cd599"><td class="mdescLeft">&#160;</td><td class="mdescRight">When porting imports across files, resolve import in target first. If import fails to resolve, port the resolved export from the source instead  <a href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#ab48095c65a1d92e0d4b77f6cc50cd599">More...</a><br /></td></tr>
+<tr class="separator:ab48095c65a1d92e0d4b77f6cc50cd599"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abf30d4147fe777038ff299fcc9a142e2"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#abf30d4147fe777038ff299fcc9a142e2">PortExportsAsImportsWhenPossible</a><code> [getset]</code></td></tr>
+<tr class="memdesc:abf30d4147fe777038ff299fcc9a142e2"><td class="mdescLeft">&#160;</td><td class="mdescRight">When porting exports, attempt to resolve as import in the target file first, if it resolves, port it as an import instead  <a href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#abf30d4147fe777038ff299fcc9a142e2">More...</a><br /></td></tr>
+<tr class="separator:abf30d4147fe777038ff299fcc9a142e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Specifies options used for relinking, as well as containing objects that can be passed through the entry porting process without having to modify method signatures. </p>
@@ -339,6 +345,54 @@ Properties</h2></td></tr>
 </div><div class="memdoc">
 
 <p>When porting out of globally loaded files (like SFXGame), imports will be generated for relinked objects instead of porting exports. </p>
+
+</div>
+</div>
+<a id="ab48095c65a1d92e0d4b77f6cc50cd599" name="ab48095c65a1d92e0d4b77f6cc50cd599"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab48095c65a1d92e0d4b77f6cc50cd599">&#9670;&nbsp;</a></span>PortImportsMemorySafe</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool LegendaryExplorerCore.Packages.CloningImportingAndRelinking.RelinkerOptionsPackage.PortImportsMemorySafe</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">get</span><span class="mlabel">set</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>When porting imports across files, resolve import in target first. If import fails to resolve, port the resolved export from the source instead </p>
+
+</div>
+</div>
+<a id="abf30d4147fe777038ff299fcc9a142e2" name="abf30d4147fe777038ff299fcc9a142e2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abf30d4147fe777038ff299fcc9a142e2">&#9670;&nbsp;</a></span>PortExportsAsImportsWhenPossible</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool LegendaryExplorerCore.Packages.CloningImportingAndRelinking.RelinkerOptionsPackage.PortExportsAsImportsWhenPossible</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">get</span><span class="mlabel">set</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>When porting exports, attempt to resolve as import in the target file first, if it resolves, port it as an import instead </p>
 
 </div>
 </div>

@@ -1,7 +1,9 @@
 var class_legendary_explorer_core_1_1_packages_1_1_import_entry =
 [
     [ "ImportEntry", "class_legendary_explorer_core_1_1_packages_1_1_import_entry.html#a2749114a838e470051db85d6248c8359", null ],
+    [ "ImportEntry", "class_legendary_explorer_core_1_1_packages_1_1_import_entry.html#a41f9cfb7b1011b48562fe79395d7e892", null ],
     [ "ImportEntry", "class_legendary_explorer_core_1_1_packages_1_1_import_entry.html#ab36527a000c50928ad942e13297e340c", null ],
+    [ "ImportEntry", "class_legendary_explorer_core_1_1_packages_1_1_import_entry.html#aca98da2850116d5c99aa987599e1cf8f", null ],
     [ "ImportEntry", "class_legendary_explorer_core_1_1_packages_1_1_import_entry.html#a959c54c7ff1b7ab8621bef10210df3b9", null ],
     [ "ImportEntry", "class_legendary_explorer_core_1_1_packages_1_1_import_entry.html#aad73a913254f9024df5ad200831c4a01", null ],
     [ "SetHeaderValuesFromByteArray", "class_legendary_explorer_core_1_1_packages_1_1_import_entry.html#ae1f58c632a9de32f10ca2d9b8e4cb581", null ],
