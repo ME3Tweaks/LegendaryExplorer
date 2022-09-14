@@ -6,6 +6,7 @@ using System.Linq;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Gammtek.Collections.ObjectModel;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
+using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode;
 using LegendaryExplorerCore.Misc;
@@ -56,6 +57,16 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// When porting out of globally loaded files (like SFXGame), imports will be generated for relinked objects instead of porting exports.
         /// </summary>
         public bool GenerateImportsForGlobalFiles { get; set; } = true;
+
+        /// <summary>
+        /// When porting imports across files, resolve import in target first. If import fails to resolve, port the resolved export from the source instead
+        /// </summary>
+        public bool PortImportsMemorySafe { get; set; }
+
+        /// <summary>
+        /// When porting exports, attempt to resolve as import in the target file first, if it resolves, port it as an import instead
+        /// </summary>
+        public bool PortExportsAsImportsWhenPossible { get; set; }
 
         /// <summary>
         /// Invoked when an error occurs during porting. Can be null.
@@ -302,7 +313,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     {
                         uf.ScriptBytes = Array.Empty<byte>(); // This needs zero'd out so it doesn't try to relink anything. The relink will occur on the second pass
                     }
-                    
+
                     objBin.ForEachUIndex(relinkingExport.FileRef.Game, new RelinkingAction(sourcePcc, relinkingExport, rop));
                     if (relinkingExport.Game != sourcePcc.Game && objBin is UFunction uf2)
                     {
@@ -462,9 +473,9 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 // Check to see if this import is safe to import from,
                 // if not take the export instead. Might use some disk space but maybe with better algorithm
                 // We can identify master/persistent files in ME2+ and also inspect those.
-                if (rop.IsCrossGame && rop.TargetGameDonorDB != null 
-                                    && !EntryImporter.IsSafeToImportFrom($"{importFullName.GetRootName()}.{(relinkingExport.Game == MEGame.ME1 ? "u" : "pcc")}", 
-                                        relinkingExport.Game, relinkingExport.FileRef.FilePath)) 
+                if (rop.IsCrossGame && rop.TargetGameDonorDB != null
+                                    && !EntryImporter.IsSafeToImportFrom($"{importFullName.GetRootName()}.{(relinkingExport.Game == MEGame.ME1 ? "u" : "pcc")}",
+                                        relinkingExport.FileRef))
                 {
                     // Find an export version instead that we can import
                     var canddiates = rop.TargetGameDonorDB.GetFilesContainingObject(originalInstancedFullPath, relinkingExport.FileRef.Localization);
@@ -481,7 +492,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         // Map the relative paths onto the game directory
                         canddiates = canddiates.Select(x => Path.Combine(MEDirectories.GetDefaultGamePath(relinkingExport.Game), x)).ToList();
 
-                        if (canddiates.Any(x => EntryImporter.IsSafeToImportFrom(Path.GetFileName(x), relinkingExport.Game, relinkingExport.FileRef.FilePath))) // Some things are in multiple files, like things in startup files.
+                        if (canddiates.Any(x => EntryImporter.IsSafeToImportFrom(Path.GetFileName(x), relinkingExport.FileRef))) // Some things are in multiple files, like things in startup files.
                         {
                             // It's been moved, we need to change how we import to it.
                             // Depending on if it's ForcedExport or not changes how we reference it
@@ -521,8 +532,8 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
                         if (continueConvertingToExport)
                         {
-                            if (originalInstancedFullPath.Contains("EngineMaterials"))
-                                Debugger.Break();
+                            //if (originalInstancedFullPath.Contains("EngineMaterials"))
+                            //    Debugger.Break();
                             Debug.WriteLine($@"Redirecting relink of import {originalInstancedFullPath} to pull export from {newSourcePackage.FilePath} instead");
 
                             // Have to kind of hack it to work
@@ -543,6 +554,53 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
                 // END CROSSGEN-V
 
+                if (rop.PortImportsMemorySafe && !rop.IsCrossGame)
+                {
+                    if (importFullName.HasParent)
+                    {
+                        var parentTest = importFullName.Parent;
+                        if (relinkingExport.FileRef.FindEntry(parentTest.InstancedFullPath) == null)
+                        {
+                            // We need to port the parent first
+
+                            // Build the parent stack in order from top to bottom.
+                            Stack<IEntry> parentStack = new Stack<IEntry>();
+                            var parentPointer = parentTest;
+                            while (parentPointer != null)
+                            {
+                                parentStack.Push(parentPointer);
+                                parentPointer = parentPointer.Parent;
+                            }
+
+                            while (parentStack.Count > 0)
+                            {
+                                var parentToEnsure = parentStack.Pop();
+                                int pUindex = parentToEnsure.UIndex;
+                                relinkUIndex(importingPCC, relinkingExport, ref pUindex, "Parent", null, rop);
+                            }
+                        }
+                    }
+                    ImportEntry testImport = new ImportEntry(relinkingExport.FileRef, importFullName);
+                    var resolved = EntryImporter.ResolveImport(testImport, rop.Cache);
+                    if (resolved == null)
+                    {
+                        // We failed to resolve the import in the destination
+                        Debug.WriteLine($@"Failed to resolve import in destination package: {testImport.InstancedFullPath}. Attempting to port export instead");
+                        var resolvedSource = EntryImporter.ResolveImport(importFullName, rop.Cache);
+                        if (resolvedSource != null)
+                        {
+                            // Todo: We probably need to support porting in from things like BIOG files due to ForcedExport.
+                            ExportEntry importedExport = EntryImporter.ImportExport(relinkingExport.FileRef, resolvedSource, testImport.Parent?.UIndex ?? 0, rop);
+                            Debug.WriteLine($@"Memory safe porting: Redirected import {importedExport.InstancedFullPath} to export from {resolvedSource.FileRef.FileNameNoExtension}");
+
+                            if (!rop.CrossPackageMap.ContainsKey(importFullName))
+                                rop.CrossPackageMap.Add(importFullName, importedExport); //add to mapping to speed up future relinks
+                            uIndex = importedExport.UIndex;
+                            // Debug.WriteLine($"Relink hit: Dynamic CrossImport for {origvalue} {importingPCC.GetEntry(origvalue).InstancedFullPath} -> {uIndex}");
+                            return null; // OK
+                        }
+                    }
+                }
 
                 IEntry crossImport = null;
                 string linkFailedDueToError = null;
@@ -657,7 +715,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
             // Typically global files are not ForceExport'd 
             // which means objects in them will sit at the root instead of under a package export
-            if (rop.GenerateImportsForGlobalFiles && EntryImporter.IsSafeToImportFrom(sourceFilePath, relinkingExport.FileRef.Game, relinkingExport.FileRef.FilePath))
+            if (rop.GenerateImportsForGlobalFiles && EntryImporter.IsSafeToImportFrom(sourceFilePath, relinkingExport.FileRef))
             {
                 importingFromGlobalFile = true;
                 instancedFullPath = $"{Path.GetFileNameWithoutExtension(sourceFilePath)}.{instancedFullPath}";
@@ -681,6 +739,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             {
                 if (importingFromGlobalFile)
                 {
+                    // We are porting out of a global loaded file like SFXGame - generate imports
                     uIndex = EntryImporter.GenerateEntryForGlobalFileExport(sourceExport.InstancedFullPath, importingPCC, relinkingExport.FileRef, rop).UIndex;
                 }
                 else
@@ -706,6 +765,20 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         parent = EntryImporter.GetOrAddCrossImportOrPackage(sourceExport.ParentInstancedFullPath, importingPCC, relinkingExport.FileRef, rop);
                         //}
                     }
+
+                    if (rop.PortExportsAsImportsWhenPossible && !relinkingExport.InstancedFullPath.StartsWith(@"TheWorld."))
+                    {
+                        // Try convert to import
+                        var testImport = new ImportEntry(sourceExport, parent?.UIndex ?? 0, relinkingExport.FileRef);
+                        if (EntryImporter.TryResolveImport(testImport, out var resolved, localCache: rop.Cache))
+                        {
+                            relinkingExport.FileRef.AddImport(testImport);
+                            uIndex = testImport.UIndex;
+                            Debug.WriteLine($"Redirected importable export {relinkingExport.InstancedFullPath} to import from {resolved.FileRef.FilePath}");
+                            return null;
+                        }
+                    }
+
                     ExportEntry importedExport = EntryImporter.ImportExport(relinkingExport.FileRef, sourceExport, parent?.UIndex ?? 0, rop);
                     if (!importedExport.InstancedFullPath.CaseInsensitiveEquals(sourceExport.InstancedFullPath))
                     {

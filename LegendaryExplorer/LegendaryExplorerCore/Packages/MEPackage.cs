@@ -1226,9 +1226,6 @@ namespace LegendaryExplorerCore.Packages
         private static void WriteLegendaryExplorerCoreTag(MemoryStream ms, IMEPackage package)
         {
             if (package is not MEPackage mep) return; // Do not write on non ME packages.
-
-            // This line will need merged when leclsystem is merged into Beta! Just FYI - Mgamerz
-            // We didn't want the other part of the commit that contained this fix
             if (!mep.Game.IsLEGame()) return; // Do not write on non-LE even if this is somehow called.
 
             var pos = ms.Position;
@@ -1252,7 +1249,8 @@ namespace LegendaryExplorerCore.Packages
             if (package.LECLTagData != null && package.LECLTagData.HasAnyData())
             {
                 ms.WriteInt32(LECPackageTag_Version_JSON); // The current version
-                var data = JsonConvert.SerializeObject(package.LECLTagData); // for debug reading
+                var data = JsonConvert.SerializeObject(package.LECLTagData, Formatting.None, 
+                    new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore }); // This makes it not serialize default values, like false bools
                 ms.WriteStringUtf8(data);
             }
             else

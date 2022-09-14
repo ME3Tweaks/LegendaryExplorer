@@ -158,6 +158,7 @@
 
                 <MenuItem Header="Tools" Padding="4">
                     <MenuItem Header="Package file header info" ToolTip="View information stored in package header" Command="{Binding PackageHeaderViewerCommand}"/>
+                    <MenuItem Header="LECL Data Editor" ToolTip="Edits metadata stored in this package that is used in mod development tools" Command="{Binding LECLEditorCommand}"/>
                     <MenuItem Header="Compare with another package" ToolTip="Compare another version of this package to see what exports and imports have changed" Command="{Binding ComparePackagesCommand}"/>
                     <MenuItem Header="Compare with unmodded" ToolTip="Compare with the (hopefully) unmodded version of this package to see what exports and imports have changed" Command="{Binding CompareToUnmoddedCommand}"/>
                     <MenuItem Header="Open LE version of file" ToolTip="Opens the Legendary Edition version of this file, if it exists." Command="{Binding OpenLEVersionCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>

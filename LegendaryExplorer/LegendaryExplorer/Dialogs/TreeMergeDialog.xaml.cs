@@ -1,10 +1,17 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.SharedUI;
+using LegendaryExplorer.Tools.PackageEditor;
+using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
+using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
+using Microsoft.Toolkit.HighPerformance;
 
 namespace LegendaryExplorer.Dialogs
 {
@@ -13,9 +20,11 @@ namespace LegendaryExplorer.Dialogs
     /// </summary>
     public partial class TreeMergeDialog : NotifyPropertyChangedWindowBase
     {
-        public PortingOptions PortingOption = new PortingOptions() {PortingOptionChosen = EntryImporter.PortingOption.Cancel};//Click X, get cancel
+        public PortingOptions PortingOption = new PortingOptions() { PortingOptionChosen = EntryImporter.PortingOption.Cancel };//Click X, get cancel
         private readonly IEntry sourceEntry;
         private readonly IEntry targetEntry;
+        private readonly PackageEditorWindow sourceWindow;
+        private readonly PackageEditorWindow destWindow;
         private readonly IMEPackage targetPackage;
         private readonly bool sourceHasChildren;
         private readonly bool targetHasChildren;
@@ -29,23 +38,31 @@ namespace LegendaryExplorer.Dialogs
         public ICommand MergeTreeCommand { get; set; }
         public ICommand CloneTreeCommand { get; set; }
         public ICommand CloneAllReferencesCommand { get; set; }
+        public ICommand SeeAllReferencesCommand { get; set; }
 
         // For crossgen, try to use donors in dest game instead
         private bool _portUsingDonors;
         public bool PortUsingDonors { get => _portUsingDonors; set => SetProperty(ref _portUsingDonors, value); }
 
         /// <summary>
-        /// Is the source file a global file?
+        /// Is the source file a globally loaded file?
         /// </summary>
         public bool IsGlobalFile => EntryImporter.IsSafeToImportFrom(sourceEntry.FileRef.FilePath, sourceEntry.Game, targetPackage.FilePath);
 
         private bool _portGlobalsAsImports = true;
         public bool PortGlobalsAsImports { get => _portGlobalsAsImports; set => SetProperty(ref _portGlobalsAsImports, value); }
 
-        public TreeMergeDialog(IEntry sourceEntry, IEntry targetEntry, IMEPackage targetPackage)
+
+        public bool PortExportsMemorySafe { get; set; }
+        public bool PortExportsAsImportsWhenPossible { get; set; }
+
+        public TreeMergeDialog(IEntry sourceEntry, IEntry targetEntry, MEGame targetGame, PackageEditorWindow sourceWindow = null, PackageEditorWindow destWindow = null)
         {
             this.sourceEntry = sourceEntry;
             this.targetEntry = targetEntry;
+            this.sourceWindow = sourceWindow;
+            this.destWindow = destWindow;
+            Owner = destWindow;
             this.targetPackage = targetPackage;
 
             IsCrossGamePort = sourceEntry.Game != targetPackage.Game;
@@ -82,6 +99,56 @@ namespace LegendaryExplorer.Dialogs
             AddSingularCommand = new GenericCommand(AddSingular, CanAddSingular);
             CloneTreeCommand = new GenericCommand(CloneTree, CanCloneTree);
             CloneAllReferencesCommand = new GenericCommand(CloneAllReferences);
+            SeeAllReferencesCommand = new GenericCommand(SeeAllReferences);
+
+        }
+
+        private void SeeAllReferences()
+        {
+            Task.Run(() =>
+            {
+                SortedSet<int> referencedObjects = new SortedSet<int>();
+                List<IEntry> portingObjects = new List<IEntry>();
+                portingObjects.Add(sourceEntry);
+                if (sourceEntry.ClassName == "Package")
+                {
+                    portingObjects.AddRange(sourceEntry.GetChildren());
+                }
+
+                foreach (var v in portingObjects)
+                {
+                    if (v is ExportEntry exp)
+                    {
+                        //if (exp.Parent != null)
+                        //    referencedObjects.Add(exp.Parent);
+                        referencedObjects.AddRange(EntryImporter.GetAllReferencesOfExport(exp).Select(x => x.UIndex));
+                    }
+                    else if (v is ImportEntry imp)
+                    {
+                        //if (imp.Parent != null)
+                        //    referencedObjects.Add(imp.Parent);
+                        // ? This would require resolution since it has no object refs
+                    }
+                }
+                return referencedObjects.OrderBy(x => x).Select(x => sourceEntry.FileRef.GetEntry(x)).ToList();
+            }).ContinueWithOnUIThread(x =>
+            {
+                if (x.Exception != null)
+                {
+                    MessageBox.Show(x.Exception.FlattenException());
+                }
+                else if (x.Result != null)
+                {
+                    ListDialog ld = new ListDialog(x.Result.Select(x => new EntryStringPair(x)),
+                        $"Referenced objects from {sourceEntry.InstancedFullPath}",
+                        "The following objects are referenced by the source object and will be ported if using clone all dependencies.",
+                        this)
+                    {
+                        DoubleClickEntryHandler = sourceWindow?.GetEntryDoubleClickAction()
+                    };
+                    ld.Show();
+                }
+            });
         }
 
         private void CloneAllReferences()
@@ -145,16 +212,15 @@ namespace LegendaryExplorer.Dialogs
             return (sourceEntry is ExportEntry && targetEntry is ExportEntry && sourceEntry.ClassName == targetEntry.ClassName);
         }
 
-        public static PortingOptions GetMergeType(Window w, TreeViewEntry sourceItem, TreeViewEntry targetItem, IMEPackage targetPackage)
+        public static PortingOptions GetMergeType(PackageEditorWindow sourceWindow, PackageEditorWindow destWindow, TreeViewEntry sourceItem, TreeViewEntry targetItem, MEGame targetGame)
         {
-            TreeMergeDialog tmd = new TreeMergeDialog(sourceItem.Entry, targetItem.Entry, targetPackage)
-            {
-                Owner = w
-            };
+            TreeMergeDialog tmd = new TreeMergeDialog(sourceItem.Entry, targetItem.Entry, targetGame, sourceWindow: sourceWindow, destWindow: destWindow);
             tmd.ShowDialog(); //modal
 
             tmd.PortingOption.PortUsingDonors = tmd.PortUsingDonors;
             tmd.PortingOption.PortGlobalsAsImports = tmd.PortGlobalsAsImports;
+            tmd.PortingOption.PortExportsAsImportsWhenPossible = tmd.PortExportsAsImportsWhenPossible;
+            tmd.PortingOption.PortExportsMemorySafe = tmd.PortExportsMemorySafe;
             return tmd.PortingOption;
         }
 

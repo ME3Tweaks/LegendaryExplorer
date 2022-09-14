@@ -67,7 +67,7 @@ namespace LegendaryExplorerCore.Misc
             Message = message;
         }
 
-        public EntryStringPair(IEntry entry) : this(entry, $"{$"#{entry.UIndex}",-9} {entry.InstancedFullPath} in {entry.FileRef.FilePath}")
+        public EntryStringPair(IEntry entry) : this(entry, $"{entry.UIndex,-9}\t{entry.InstancedFullPath} in {entry.FileRef.FilePath}")
         {
         }
 

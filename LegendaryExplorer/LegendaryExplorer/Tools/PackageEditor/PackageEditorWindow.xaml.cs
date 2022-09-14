@@ -209,6 +209,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
         public ICommand TrashCommand { get; set; }
         public ICommand SetIndicesInTreeToZeroCommand { get; set; }
         public ICommand PackageHeaderViewerCommand { get; set; }
+        public ICommand LECLEditorCommand { get; set; }
         public ICommand CreateNewPackageGUIDCommand { get; set; }
         public ICommand RestoreExportCommand { get; set; }
         public ICommand SetPackageAsFilenamePackageCommand { get; set; }
@@ -269,6 +270,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
             SetIndicesInTreeToZeroCommand = new GenericCommand(SetIndicesInTreeToZero, TreeEntryIsSelected);
             TrashCommand = new GenericCommand(TrashEntryAndChildren, TreeEntryIsSelected);
             PackageHeaderViewerCommand = new GenericCommand(ViewPackageInfo, PackageIsLoaded);
+            LECLEditorCommand = new GenericCommand(EditLECLData, CanEditLECLData);
             PackageExportIsSelectedCommand = new EnableCommand(PackageExportIsSelected);
             CreateNewPackageGUIDCommand = new GenericCommand(GenerateNewGUIDForSelected, PackageExportIsSelected);
             SetPackageAsFilenamePackageCommand = new GenericCommand(SetSelectedAsFilenamePackage, PackageExportIsSelected);
@@ -310,6 +312,14 @@ namespace LegendaryExplorer.Tools.PackageEditor
             NavigateBackCommand = new GenericCommand(NavigateToPreviousEntry, () => CurrentView == CurrentViewMode.Tree && BackwardsIndexes != null && BackwardsIndexes.Any());
 
             CreateClassCommand = new GenericCommand(CreateClass, IsLoadedPackageME);
+        }
+
+        // LECLData is only available on LE game files
+        private bool CanEditLECLData() => Pcc != null && Pcc.Game.IsLEGame();
+
+        private void EditLECLData()
+        {
+            new LECLDataEditorWindow(this, Pcc).ShowDialog();
         }
 
         private void CreateClass()
@@ -3683,6 +3693,9 @@ namespace LegendaryExplorer.Tools.PackageEditor
             if (dropInfo.TargetItem is TreeViewEntry targetItem && dropInfo.Data is TreeViewEntry sourceItem &&
                 sourceItem.Parent != null)
             {
+
+                var dragInfo = dropInfo.DragInfo;
+                var sourceWindow = Window.GetWindow(dragInfo.VisualSource) as PackageEditorWindow;
                 if (targetItem.Game.IsLEGame() != sourceItem.Game.IsLEGame() &&
                     !App.IsDebug &&
                     sourceItem.Entry.Game != MEGame.UDK) // allow UDK -> OT and LE)
@@ -3711,7 +3724,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     return;
                 }
 
-                var portingOption = TreeMergeDialog.GetMergeType(this, sourceItem, targetItem, Pcc);
+                var portingOption = TreeMergeDialog.GetMergeType(sourceWindow, this, sourceItem, targetItem, Pcc.Game);
 
                 if (portingOption.PortingOptionChosen == EntryImporter.PortingOption.Cancel)
                 {
@@ -3768,7 +3781,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     else
                     {
                         var result = MessageBox.Show("Port With Donors checkbox was selected, but no object database was found! Continue operation without donors?",
-                            "No object database", MessageBoxButton.YesNo);
+                            "No object database", MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No);
                         if (result is not MessageBoxResult.Yes)
                         {
                             return;
@@ -3788,11 +3801,12 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 {
                     IsCrossGame = sourceEntry.Game != targetItem.Game && sourceEntry.Game != MEGame.UDK,
                     TargetGameDonorDB = objectDB,
-                    Cache = objectDB != null ? new PackageCache() : null, // For donors to work you MUST provide a package cache otherwise it'll take ages
-                    // as LEX closes on dispose which we don't want
+                    Cache = new PackageCache(),
                     ImportExportDependencies = portingOption.PortingOptionChosen is EntryImporter.PortingOption.CloneAllDependencies
                         or EntryImporter.PortingOption.ReplaceSingularWithRelink,
-                    GenerateImportsForGlobalFiles = portingOption.PortGlobalsAsImports
+                    GenerateImportsForGlobalFiles = portingOption.PortGlobalsAsImports,
+                    PortImportsMemorySafe = portingOption.PortExportsMemorySafe,
+                    PortExportsAsImportsWhenPossible = portingOption.PortExportsAsImportsWhenPossible,
                 };
 
                 var relinkResults = EntryImporter.ImportAndRelinkEntries(portingOption.PortingOptionChosen, sourceEntry, Pcc,

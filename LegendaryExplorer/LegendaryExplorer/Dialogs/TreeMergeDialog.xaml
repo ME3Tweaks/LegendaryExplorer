@@ -7,8 +7,11 @@
         xmlns:converters="clr-namespace:LegendaryExplorer.SharedUI.Converters"
         mc:Ignorable="d"
         WindowStartupLocation="CenterOwner"
-        SizeToContent="WidthAndHeight"
+        SizeToContent="Height"
         Title="Package porting options"
+        Width="720"
+        MaxWidth="720"
+        MinWidth="720"
         DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <Window.Resources>
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
@@ -70,38 +73,58 @@
             </Button>
         </StackPanel>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-        <Button Width="300" Height="70"  Margin="5" Command="{Binding ReplaceDataWithRelinkCommand}">
-            <Button.Content>
-                <Grid HorizontalAlignment="Center">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-                    <TextBlock Grid.Row="0" Text="{Binding Path=SourceEntryObjectName, StringFormat='Replace export data of {0} with references'}" TextWrapping="Wrap" HorizontalAlignment="Center"  TextAlignment="Center" FontWeight="Bold"/>
-                    <TextBlock Grid.Row="1" Text="{Binding Path=TargetEntryObjectName, StringFormat='with export data from {0}. This replaces the export and ports all associated referenced objects'}" TextAlignment="Center" TextWrapping="Wrap" Foreground="DimGray" FontSize="11"  HorizontalAlignment="Center"/>
-                </Grid>
-            </Button.Content>
-        </Button>
-        <Button Name="cloneAllRefsButton" Width="300" Height="70" Margin="5" Command="{Binding CloneAllReferencesCommand}">
-            <Button.Content>
-                <StackPanel HorizontalAlignment="Center">
-                    <TextBlock Text="Clone All References" HorizontalAlignment="Center" FontWeight="Bold"/>
-                    <TextBlock Name="cloneAllRefsText" Foreground="DimGray" FontSize="11" HorizontalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center">
-                        <TextBlock.Text>
-                            <MultiBinding StringFormat="Clones {0} into the file and ports all associated referenced objects">
-                                <Binding Path="SourceEntryObjectName" />
-                                <Binding Path="TargetEntryObjectName" />
-                            </MultiBinding>
-                        </TextBlock.Text>
-                    </TextBlock>
-                </StackPanel>
-            </Button.Content>
-        </Button>
+            <Button Width="300" Height="70"  Margin="5" Command="{Binding ReplaceDataWithRelinkCommand}">
+                <Button.Content>
+                    <Grid HorizontalAlignment="Center">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" Text="{Binding Path=SourceEntryObjectName, StringFormat='Replace export data of {0} with references'}" TextWrapping="Wrap" HorizontalAlignment="Center"  TextAlignment="Center" FontWeight="Bold"/>
+                        <TextBlock Grid.Row="1" Text="{Binding Path=TargetEntryObjectName, StringFormat='with export data from {0}. This replaces the export and ports all associated referenced objects'}" TextAlignment="Center" TextWrapping="Wrap" Foreground="DimGray" FontSize="11"  HorizontalAlignment="Center"/>
+                    </Grid>
+                </Button.Content>
+            </Button>
+            <Button Name="cloneAllRefsButton" Width="300" Height="70" Margin="5" Command="{Binding CloneAllReferencesCommand}">
+                <Button.Content>
+                    <StackPanel HorizontalAlignment="Center">
+                        <TextBlock Text="Clone All References" HorizontalAlignment="Center" FontWeight="Bold"/>
+                        <TextBlock Name="cloneAllRefsText" Foreground="DimGray" FontSize="11" HorizontalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center">
+                            <TextBlock.Text>
+                                <MultiBinding StringFormat="Clones {0} into the file and ports all associated referenced objects">
+                                    <Binding Path="SourceEntryObjectName" />
+                                    <Binding Path="TargetEntryObjectName" />
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+                    </StackPanel>
+                </Button.Content>
+            </Button>
         </StackPanel>
-
-        <CheckBox Content="Port using donors" IsChecked="{Binding PortUsingDonors}" Visibility="{Binding IsCrossGamePort, Converter={StaticResource BoolToVisibilityConverter}}"/>
-        <CheckBox Content="Port global entries as imports" IsChecked="{Binding PortGlobalsAsImports}" Visibility="{Binding IsGlobalFile, Converter={StaticResource BoolToVisibilityConverter}}"/>
         <TextBlock Text="The Clone All References option is typically the preferred option, as it includes all dependencies for an export to work." HorizontalAlignment="Center" Foreground="DimGray" Margin="0" TextWrapping="Wrap"/>
+        <Expander Header="Advanced porting options">
+            <StackPanel>
+                <Button HorizontalAlignment="Left" Content="See referenced objects" Command="{Binding SeeAllReferencesCommand}"/>
+                <GroupBox Header="Porting features">
+                    <StackPanel>
+                        <CheckBox Content="Port using destination game donors" IsChecked="{Binding PortUsingDonors}" 
+                          Visibility="{Binding IsCrossGamePort, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                        <TextBlock Text="When porting across games, use the Object Instance DB. As exports are ported across, same-named exports in the destination game will be used instead." TextWrapping="Wrap"
+                          Visibility="{Binding IsCrossGamePort, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                        <CheckBox Content="Port exports as imports when possible" 
+                                  IsChecked="{Binding PortExportsAsImportsWhenPossible}"/>
+                        <TextBlock Text="When exports are transferred across files, exports are tested if they can be resolved as an import. If they can, they are transferred as an import instead. This may significantly slow down porting." TextWrapping="Wrap"/>
+                        <CheckBox Content="Use memory-safe import porting" 
+                                  IsChecked="{Binding PortExportsMemorySafe}"/>
+                        <TextBlock Text="Tests if imports being transferred will resolve in the destination file. If they can't be resolved in the destination file, they are ported as exports instead by resolving the import in the source file. This may significantly slow down porting." TextWrapping="Wrap"/>
+                        <CheckBox Content="Treat source file as non-global file" 
+                                  IsChecked="{Binding PortGlobalsAsImports}" Visibility="{Binding IsGlobalFile, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                        <TextBlock Text="When porting out of this file, port as exports rather than imports. Normally when porting out of a globally loaded file, relinked exports are converted to imports. This feature can be useful for merge mod development." 
+                                   Visibility="{Binding IsGlobalFile, Converter={StaticResource BoolToVisibilityConverter}}" TextWrapping="Wrap"/>
+                    </StackPanel>
+                </GroupBox>
+            </StackPanel>
+        </Expander>
         <Button Content="Cancel" HorizontalContentAlignment="Center" HorizontalAlignment="Center" Margin="5,5,5,0" Padding="8" Click="CancelButton_Click"/>
     </StackPanel>
 </misc:NotifyPropertyChangedWindowBase>

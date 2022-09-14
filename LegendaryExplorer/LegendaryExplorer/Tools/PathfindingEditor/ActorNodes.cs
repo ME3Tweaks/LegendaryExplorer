@@ -792,7 +792,6 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
 
     public class LAC_ActorNode : SMAC_ActorNode
     {
-        public float Z;
         private static readonly Color outlinePenColor = Color.FromArgb(255, 0, 0);
         private static readonly Color directionOutlinePenColor = Color.FromArgb(55, 150, 190);
         private static readonly PointF[] outlineShape = { new PointF(50, 0), new PointF(0, 17), new PointF(35, 33), new PointF(0, 50), new PointF(50, 33), new PointF(15, 17) };
