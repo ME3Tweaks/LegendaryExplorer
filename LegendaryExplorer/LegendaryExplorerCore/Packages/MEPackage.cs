@@ -1,17 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Threading.Tasks;
 using LegendaryExplorerCore.Compression;
+using LegendaryExplorerCore.DebugTools;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Memory;
 using LegendaryExplorerCore.Misc;
-using LegendaryExplorerCore.TLK.ME1;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
+using Newtonsoft.Json;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
 #if AZURE
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -19,6 +22,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace LegendaryExplorerCore.Packages
 {
+
+
     [Flags]
     public enum PackageChange
     {
@@ -66,6 +71,26 @@ namespace LegendaryExplorerCore.Packages
 
     public sealed class MEPackage : UnrealPackageFile, IMEPackage, IDisposable
     {
+        /// <summary>
+        /// MEM writes this to every single package file it modifies
+        /// </summary>
+        private const string MEMPackageTag = "ThisIsMEMEndOfFileMarker"; //TODO NET 7: make this a utf8 literal
+        private const int MEMPackageTagLength = 24;
+
+        /// <summary>
+        /// LEC-saved LE packages will always end in this, assuming MEM did not save later
+        /// </summary>
+        private const string LECPackageTag = "LECL"; //TODO NET 7: make this a utf8 literal
+        private const int LECPackageTagLength = 4;
+        private const int LECPackageTag_Version_EmptyData = 1;
+        private const int LECPackageTag_Version_JSON = 2;
+
+
+        /// <summary>
+        /// Player.sav in ME1 save files starts with this and needs to be scrolled forward to find actual start of package
+        /// </summary>
+        public const uint ME1SavePackageTag = 0x484D4752; // 'RGMH'
+
         public const ushort ME1UnrealVersion = 491;
         public const ushort ME1LicenseeVersion = 1008;
         public const ushort ME1XboxUnrealVersion = 391;
@@ -91,6 +116,7 @@ namespace LegendaryExplorerCore.Packages
         public const ushort LE2UnrealVersion = 684;
         public const ushort LE2LicenseeVersion = 168;
 
+        // PS4 Orbis uses this version information too
         public const ushort LE3UnrealVersion = 685;
         public const ushort LE3LicenseeVersion = 205;
 
@@ -102,7 +128,7 @@ namespace LegendaryExplorerCore.Packages
         /// <summary>
         /// This is not useful for modding but we should not be changing the format of the package file.
         /// </summary>
-        public List<string> AdditionalPackagesToCook = new List<string>();
+        public readonly List<string> AdditionalPackagesToCook = new();
 
         /// <summary>
         /// Passthrough to UnrealPackageFile's IsModified
@@ -116,7 +142,7 @@ namespace LegendaryExplorerCore.Packages
 
         public Endian Endian { get; }
         public MEGame Game { get; private set; } //can only be ME1, ME2, ME3, LE1, LE2, LE3. UDK is a separate class
-        public GamePlatform Platform { get; private set; } = GamePlatform.Unknown;
+        public GamePlatform Platform { get; private set; }
 
         public enum GamePlatform
         {
@@ -128,6 +154,16 @@ namespace LegendaryExplorerCore.Packages
         }
 
         public MELocalization Localization { get; } = MELocalization.None;
+
+        /// <summary>
+        /// Custom user-defined metadata to associate with this package object. This data has no effect on saving or loading, it is only for library user convenience. This data is NOT serialized to disk!
+        /// </summary>
+        public Dictionary<string, object> CustomMetadata { get; set; } = new(0);
+
+        /// <summary>
+        /// Metadata that is serialized to the end of the package file and contains useful information for tooling
+        /// </summary>
+        public LECLData LECLTagData { get; }
 
         public byte[] getHeader()
         {
@@ -149,63 +185,28 @@ namespace LegendaryExplorerCore.Packages
         private int unknown6;
         #endregion
 
-        private static bool isLoaderRegistered;
-        private static bool isStreamLoaderRegistered;
-        private static bool isQuickStreamLoaderRegistered;
-        private static bool isQuickLoaderRegistered;
-        public static Func<string, MEGame, MEPackage> RegisterLoader()
+        private static bool _isBlankPackageCreatorRegistered;
+        private static bool _isStreamLoaderRegistered;
+        public static Func<string, MEGame, MEPackage> RegisterBlankPackageCreator()
         {
-            if (isLoaderRegistered)
+            if (_isBlankPackageCreatorRegistered)
             {
                 throw new Exception(nameof(MEPackage) + " can only be initialized once");
             }
 
-            isLoaderRegistered = true;
-            return (f, g) =>
-            {
-                if (g != MEGame.Unknown)
-                {
-                    return new MEPackage(g, f);
-                }
-                return new MEPackage(new MemoryStream(File.ReadAllBytes(f)), f);
-            };
+            _isBlankPackageCreatorRegistered = true;
+            return (f, g) => new MEPackage(g, f);
         }
 
-        public static Func<string, MEPackage> RegisterQuickLoader()
+        public static Func<Stream, string, bool, Func<ExportEntry, bool>, MEPackage> RegisterStreamLoader()
         {
-            if (isQuickLoaderRegistered)
-            {
-                throw new Exception(nameof(MEPackage) + " quickloader can only be initialized once");
-            }
-
-            isQuickLoaderRegistered = true;
-            return f =>
-            {
-                using var fs = File.OpenRead(f); //This is faster than reading whole package file in
-                return new MEPackage(fs, f, onlyHeader: true);
-            };
-        }
-
-        public static Func<Stream, string, MEPackage> RegisterQuickStreamLoader()
-        {
-            if (isQuickStreamLoaderRegistered)
-            {
-                throw new Exception(nameof(MEPackage) + " quickstreamloader can only be initialized once");
-            }
-
-            isQuickStreamLoaderRegistered = true;
-            return (s, associatedFilePath) => new MEPackage(s, associatedFilePath, onlyHeader: true);
-        }
-
-        public static Func<Stream, string, MEPackage> RegisterStreamLoader()
-        {
-            if (isStreamLoaderRegistered)
+            if (_isStreamLoaderRegistered)
             {
                 throw new Exception(nameof(MEPackage) + " streamloader can only be initialized once");
             }
 
-            isStreamLoaderRegistered = true;
-            return (s, associatedFilePath) => new MEPackage(s, associatedFilePath);
+            _isStreamLoaderRegistered = true;
+            return (s, associatedFilePath, onlyheader, dataLoadPredicate) => new MEPackage(s, associatedFilePath, onlyheader, dataLoadPredicate);
         }
 
         /// <summary>
@@ -236,9 +237,11 @@ namespace LegendaryExplorerCore.Packages
             exports = new List<ExportEntry>();
             //new Package
             Game = game;
+            Platform = GamePlatform.PC; //Platform must be set or saving code will throw exception (cannot save non-PC platforms)
             //reasonable defaults?
             Flags = EPackageFlags.Cooked | EPackageFlags.AllowDownload | EPackageFlags.DisallowLazyLoading | EPackageFlags.RequireImportsAlreadyLoaded;
             EntryLookupTable = new CaseInsensitiveDictionary<IEntry>();
+            LECLTagData = new LECLData();
         }
 
         /// <summary>
@@ -247,7 +250,8 @@ namespace LegendaryExplorerCore.Packages
         /// <param name="fs"></param>
         /// <param name="filePath"></param>
         /// <param name="onlyHeader">Only read header data. Do not load the tables or decompress</param>
-        private MEPackage(Stream fs, string filePath = null, bool onlyHeader = false) : base(filePath != null ? File.Exists(filePath) ? Path.GetFullPath(filePath) : filePath : null)
+        /// <param name="dataLoadPredicate">If provided, export data will only be read for exports that match the predicate</param>
+        private MEPackage(Stream fs, string filePath = null, bool onlyHeader = false, Func<ExportEntry, bool> dataLoadPredicate = null) : base(filePath != null ? File.Exists(filePath) ? Path.GetFullPath(filePath) : filePath : null)
         {
             //MemoryStream fs = new MemoryStream(File.ReadAllBytes(filePath));
             //Debug.WriteLine($"Reading MEPackage from stream starting at position 0x{fs.Position:X8}");
@@ -376,6 +380,14 @@ namespace LegendaryExplorerCore.Packages
                 default:
                     throw new FormatException("Not a Mass Effect Package!");
             }
+
+            if (Game.IsLEGame() && filePath != null && Path.GetExtension(filePath) == ".xxx")
+            {
+                // There is no way to differentiate Orbis vs Durango so we will just mark it as 
+                // Orbis.
+                Platform = GamePlatform.PS3; // Just use PS3 flag for now.
+            }
+
             FullHeaderSize = packageReader.ReadInt32();
             int foldernameStrLen = packageReader.ReadInt32();
             //always "None", so don't bother saving result
@@ -502,20 +514,15 @@ namespace LegendaryExplorerCore.Packages
             #region Decompression of package data
 
             //determine if tables are in order.
-            //The < 500 is just to check that the tables are all at the start of the file. (will never not be the case for unedited files, but for modded ones, all things are possible)
-            bool tablesInOrder = NameOffset < 500 && NameOffset < ImportOffset && ImportOffset < ExportOffset;
+            //The < 0x500 is just to check that the tables are all at the start of the file. (will never not be the case for unedited files, but for modded ones, all things are possible)
+            bool tablesInOrder = NameOffset < 0x500 && NameOffset < ImportOffset && ImportOffset < ExportOffset;
 
             packageReader.Position = savedPos; //restore position to chunk table
             Stream inStream = fs;
-            bool readExportDataInConstructor = true;
             if (IsCompressed && NumCompressedChunksAtLoad > 0)
             {
                 inStream = CompressionHelper.DecompressPackage(packageReader, compressionFlagPosition, game: Game, platform: Platform,
                                                                canUseLazyDecompression: tablesInOrder && !platformNeedsResolved);
-                if (inStream is CompressionHelper.PackageDecompressionStream)
-                {
-                    readExportDataInConstructor = false;
-                }
             }
             #endregion
 
@@ -524,36 +531,59 @@ namespace LegendaryExplorerCore.Packages
             //read namelist
             inStream.JumpTo(NameOffset);
             names = new List<string>(NameCount);
-            for (int i = 0; i < NameCount; i++)
+            nameLookupTable.EnsureCapacity(NameCount);
+            if (Game > MEGame.ME2 && inStream is CompressionHelper.PackageDecompressionStreamBase packageDecompressionStream)
             {
-                var name = packageReader.ReadUnrealString();
-                names.Add(name);
-                nameLookupTable[name] = i;
-                if (Game == MEGame.ME1 && Platform != GamePlatform.PS3)
-                    inStream.Skip(8);
-                else if (Game == MEGame.ME2 && Platform != GamePlatform.PS3)
-                    inStream.Skip(4);
+                for (int i = 0; i < NameCount; i++)
+                {
+                    string name = packageDecompressionStream.ReadUnrealStringLittleEndianFast();
+                    names.Add(name);
+                    nameLookupTable[name] = i;
+                }
+            }
+            else
+            {
+                for (int i = 0; i < NameCount; i++)
+                {
+                    string name = packageReader.ReadUnrealString();
+                    names.Add(name);
+                    nameLookupTable[name] = i;
+                    if (Game == MEGame.ME1 && Platform != GamePlatform.PS3)
+                        inStream.Skip(8);
+                    else if (Game == MEGame.ME2 && Platform != GamePlatform.PS3)
+                        inStream.Skip(4);
+                }
             }
 
             //read importTable
             inStream.JumpTo(ImportOffset);
             imports = new List<ImportEntry>(ImportCount);
+
+            //explicitly creating the delegate outside the loop avoids allocating a new delegate for every import
+            var importChangedHandler = new PropertyChangedEventHandler(importChanged);
             for (int i = 0; i < ImportCount; i++)
             {
                 var imp = new ImportEntry(this, packageReader) { Index = i };
                 if (MEPackageHandler.GlobalSharedCacheEnabled)
-                    imp.PropertyChanged += importChanged; // If packages are not shared there is no point to attaching this
+                {
+                    imp.PropertyChanged += importChangedHandler; // If packages are not shared there is no point to attaching this
+                }
                 imports.Add(imp);
             }
 
-            //read exportTable (ExportEntry constructor reads export data if readExportDataInConstructor is true)
+            //read exportTable
             inStream.JumpTo(ExportOffset);
             exports = new List<ExportEntry>(ExportCount);
+
+            //explicitly creating the delegate outside the loop avoids allocating a new delegate for every import
+            var exportChangedHandler = new PropertyChangedEventHandler(exportChanged);
             for (int i = 0; i < ExportCount; i++)
             {
-                var e = new ExportEntry(this, packageReader, readExportDataInConstructor) { Index = i };
+                var e = new ExportEntry(this, packageReader, false) { Index = i };
                 if (MEPackageHandler.GlobalSharedCacheEnabled)
-                    e.PropertyChanged += exportChanged; // If packages are not shared there is no point to attaching this
+                {
+                    e.PropertyChanged += exportChangedHandler; // If packages are not shared there is no point to attaching this
+                }
                 exports.Add(e);
                 if (platformNeedsResolved && e.ClassName == "ShaderCache")
                 {
@@ -588,74 +618,79 @@ namespace LegendaryExplorerCore.Packages
                 }
             }
 
-            if (!readExportDataInConstructor)
+            foreach (ExportEntry export in dataLoadPredicate is null ? exports : exports.Where(dataLoadPredicate))
             {
-                foreach (var export in Exports)
+                inStream.JumpTo(export.DataOffset);
+                var data = new byte[export.DataSize];
+                int bytesRead = inStream.Read(data.AsSpan());
+                if (bytesRead != data.Length)
                 {
-                    inStream.JumpTo(export.DataOffset);
-                    export.Data = packageReader.ReadBytes(export.DataSize);
+                    throw new EndOfStreamException("Attempted to read export data past the end of the stream!");
+                }
+                export.Data = data;
+            }
+
+            if (Game.IsLEGame())
+            {
+                //read from the original stream here, as this data is not part of the compressed data and will always be little endian
+                try
+                {
+                    // Find MEM tag to see if it exists since it will append to ours (LEC will not save with a MEM tag)
+
+                    bool taggedByMEM = false;
+                    bool taggedByLEC = false;
+                    string leclv2Data = null;
+                    if (fs.Position != fs.Length) //optimize for the case where it's not tagged
+                    {
+                        long tagOffsetFromEnd = -LECPackageTagLength; 
+                        fs.Seek(-MEMPackageTagLength, SeekOrigin.End);
+                        if (fs.ReadStringASCII(MEMPackageTagLength) == MEMPackageTag)
+                        {
+                            taggedByMEM = true;
+                            tagOffsetFromEnd -= MEMPackageTagLength;
+                            LECLTagData = new LECLData { WasSavedWithMEM = true };
+                        }
+
+                        fs.Seek(tagOffsetFromEnd, SeekOrigin.End);
+                        if (fs.ReadStringASCII(LECPackageTagLength) == LECPackageTag)
+                        {
+                            taggedByLEC = true;
+
+                            // Read <LECL Data>
+                            fs.Seek(-(LECPackageTagLength + sizeof(int)), SeekOrigin.Current); //seek to payload length
+                            int payloadLength = fs.ReadInt32();
+
+                            //Read version
+                            fs.Seek(-(sizeof(int) + payloadLength), SeekOrigin.Current); // Seek to version
+                            int leclVersion = fs.ReadInt32();
+
+                            if (leclVersion >= LECPackageTag_Version_JSON)
+                            {
+                                leclv2Data = fs.ReadStringUtf8(payloadLength - 4);
+                            }
+                        }
+                    }
+
+                    LECLTagData = leclv2Data != null ? JsonConvert.DeserializeObject<LECLData>(leclv2Data) : new LECLData();
+                    LECLTagData.WasSavedWithMEM = taggedByMEM;
+                    LECLTagData.WasSavedWithLEC = taggedByLEC;
+                }
+                catch (Exception e)
+                {
+                    LECLog.Error($"Error reading LECLDataTag on package: {e.Message}. The data will not be deserialized.");
                 }
             }
 
             packageReader.Dispose();
-            if (Game.IsGame1() && Platform == GamePlatform.PC)
-            {
-                ReadLocalTLKs();
-            }
 
 
             if (filePath != null)
             {
-
-                string localizationName = Path.GetFileNameWithoutExtension(filePath).ToUpper();
-                if (localizationName.Length > 8)
-                {
-                    var loc = localizationName.LastIndexOf("LOC_", StringComparison.OrdinalIgnoreCase);
-                    if (loc > 0)
-                    {
-                        localizationName = localizationName.Substring(loc);
-                    }
-                }
-                switch (localizationName)
-                {
-                    case "LOC_DEU":
-                    case "LOC_DE":
-                        Localization = MELocalization.DEU;
-                        break;
-                    case "LOC_ESN":
-                        Localization = MELocalization.ESN;
-                        break;
-                    case "LOC_FRA":
-                    case "LOC_FR":
-                        Localization = MELocalization.FRA;
-                        break;
-                    case "LOC_INT":
-                        Localization = MELocalization.INT;
-                        break;
-                    case "LOC_ITA":
-                    case "LOC_IT":
-                        Localization = MELocalization.ITA;
-                        break;
-                    case "LOC_JPN":
-                        Localization = MELocalization.JPN;
-                        break;
-                    case "LOC_POL":
-                    case "LOC_PLPC":
-                    case "LOC_PL":
-                        Localization = MELocalization.POL;
-                        break;
-                    case "LOC_RUS":
-                    case "LOC_RA":
-                        Localization = MELocalization.RUS;
-                        break;
-                    default:
-                        Localization = MELocalization.None;
-                        break;
-                }
+                Localization = filePath.GetUnrealLocalization();
             }
 
+            //Allocate the lookup table. It is initialized on an if-needed basis.
             EntryLookupTable = new CaseInsensitiveDictionary<IEntry>(ExportCount + ImportCount);
-            RebuildLookupTable(); // Builds the export/import lookup tables.
 #if AZURE
             if (platformNeedsResolved)
             {
@@ -836,7 +871,7 @@ namespace LegendaryExplorerCore.Packages
 
             if (mePackage.Game.IsLEGame())
             {
-                WriteLegendaryExplorerCoreTag(ms);
+                WriteLegendaryExplorerCoreTag(ms, mePackage);
             }
 
             ms.JumpTo(0);
@@ -945,7 +980,8 @@ namespace LegendaryExplorerCore.Packages
                 package.FullHeaderSize = package.ImportExportGuidsOffset = offset + dependencyTableSize;
 
                 //calculate chunks
-                var chunks = new List<CompressionHelper.Chunk>();
+                int numChunksRoughGuess = (int)BitOperations.RoundUpToPowerOf2((uint)(totalSize / CompressionHelper.MAX_CHUNK_SIZE + 1));
+                var chunks = new List<CompressionHelper.Chunk>(numChunksRoughGuess);
                 var compressionType = package.Game switch
                 {
                     MEGame.ME3 => CompressionType.Zlib,
@@ -959,8 +995,7 @@ namespace LegendaryExplorerCore.Packages
                 var chunk = new CompressionHelper.Chunk
                 {
                     uncompressedSize = package.FullHeaderSize - package.NameOffset,
-                    uncompressedOffset = package.NameOffset,
-                    blocks = new List<CompressionHelper.Block>()
+                    uncompressedOffset = package.NameOffset
                 };
                 int actualMaxChunkSize = chunk.uncompressedSize;
                 //Export data chunks
@@ -982,8 +1017,7 @@ namespace LegendaryExplorerCore.Packages
                         chunk = new CompressionHelper.Chunk
                         {
                             uncompressedSize = exportDataSize,
-                            uncompressedOffset = e.DataOffset,
-                            blocks = new List<CompressionHelper.Block>()
+                            uncompressedOffset = e.DataOffset
                         };
                     }
                     else
@@ -1004,28 +1038,37 @@ namespace LegendaryExplorerCore.Packages
                 //write tables to first chunk
                 using (var ms = new MemoryStream(uncompressedData))
                 {
-                    foreach (string name in package.names)
+                    switch (package.Game)
                     {
-                        switch (package.Game)
-                        {
-                            case MEGame.ME1:
+                        case MEGame.ME1:
+                            foreach (string name in package.names)
+                            {
                                 ms.WriteUnrealStringLatin1(name);
                                 ms.WriteInt32(0);
                                 ms.WriteInt32(458768);
-                                break;
-                            case MEGame.ME2:
+                            }
+                            break;
+                        case MEGame.ME2:
+                            foreach (string name in package.names)
+                            {
                                 ms.WriteUnrealStringLatin1(name);
                                 ms.WriteInt32(-14);
-                                break;
-                            case MEGame.ME3:
-                            case MEGame.LE3:
+                            }
+                            break;
+                        case MEGame.ME3:
+                        case MEGame.LE3:
+                            foreach (string name in package.names)
+                            {
                                 ms.WriteUnrealStringUnicode(name);
-                                break;
-                            case MEGame.LE1:
-                            case MEGame.LE2:
+                            }
+                            break;
+                        case MEGame.LE1:
+                        case MEGame.LE2:
+                            foreach (string name in package.names)
+                            {
                                 ms.WriteUnrealStringLatin1(name);
-                                break;
-                        }
+                            }
+                            break;
                     }
 
                     // sanity check
@@ -1070,7 +1113,7 @@ namespace LegendaryExplorerCore.Packages
                     int dataSizeRemainingToCompress = chunk.uncompressedSize;
                     int chunkUncompressedEndOffset = chunk.uncompressedOffset + chunk.uncompressedSize;
                     int numBlocksInChunk = (int)Math.Ceiling(chunk.uncompressedSize * 1.0 / maxBlockSize);
-
+                    chunk.blocks = new CompressionHelper.Block[numBlocksInChunk];
                     // skip chunk header and blocks table - filled later
                     compressedStream.Seek(CompressionHelper.SIZE_OF_CHUNK_HEADER + CompressionHelper.SIZE_OF_CHUNK_BLOCK_HEADER * numBlocksInChunk, SeekOrigin.Current);
 
@@ -1095,31 +1138,35 @@ namespace LegendaryExplorerCore.Packages
                         var block = new CompressionHelper.Block();
                         block.uncompressedsize = Math.Min(maxBlockSize, dataSizeRemainingToCompress);
                         dataSizeRemainingToCompress -= block.uncompressedsize;
-                        block.uncompressedData = uncompressedData.AsMemory(positionInChunkData, block.uncompressedsize);
+                        block.uncompressedData = new ArraySegment<byte>(uncompressedData, positionInChunkData, block.uncompressedsize);
                         block.compressedData = rentedOutputArrays[b];
-                        chunk.blocks.Add(block);
+                        chunk.blocks[b] = block;
 
                         positionInChunkData += block.uncompressedsize;
                     }
-
-                    //Compress blocks
-                    Parallel.ForEach(chunk.blocks, block =>
+                    switch (compressionType)
                     {
-                        block.compressedsize = compressionType switch
-                        {
-                            CompressionType.LZO => LZO2.Compress(block.uncompressedData.Span, block.compressedData),
-                            CompressionType.Zlib => Zlib.Compress(block.uncompressedData.Span, block.compressedData),
-                            CompressionType.OodleLeviathan => OodleHelper.Compress(block.uncompressedData.Span, block.compressedData),
-                            _ => throw new Exception("Internal error: Unsupported compression type for compressing blocks: " + compressionType)
-                        };
-                        if (block.compressedsize == 0)
-                            throw new Exception("Internal error: Block compression failed! Compressor returned no bytes");
-                    });
+                        case CompressionType.LZO:
+                            Parallel.ForEach(chunk.blocks, static block => block.compressedsize = LZO2.Compress(block.uncompressedData, block.compressedData));
+                            break;
+                        case CompressionType.Zlib:
+                            Parallel.ForEach(chunk.blocks, static block => block.compressedsize = Zlib.Compress(block.uncompressedData, block.compressedData));
+                            break;
+                        case CompressionType.OodleLeviathan:
+                            Parallel.ForEach(chunk.blocks, static block => block.compressedsize = OodleHelper.Compress(block.uncompressedData, block.compressedData));
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException("Internal error: Unsupported compression type for compressing blocks: " + compressionType);
+                    }
 
                     //Write compressed data to stream 
                     for (int b = 0; b < numBlocksInChunk; b++)
                     {
                         var block = chunk.blocks[b];
+                        if (block.compressedsize == 0)
+                        {
+                            throw new Exception("Internal error: Block compression failed! Compressor returned no bytes");
+                        }
                         compressedStream.Write(block.compressedData, 0, block.compressedsize);
                         chunk.compressedSize += block.compressedsize;
                     }
@@ -1134,7 +1181,7 @@ namespace LegendaryExplorerCore.Packages
 
                 if (package.Game.IsLEGame())
                 {
-                    WriteLegendaryExplorerCoreTag(compressedStream);
+                    WriteLegendaryExplorerCoreTag(compressedStream, package);
                 }
 
                 //Update each chunk header with new information
@@ -1176,11 +1223,45 @@ namespace LegendaryExplorerCore.Packages
             }
         }
 
-        private static void WriteLegendaryExplorerCoreTag(MemoryStream ms)
+        private static void WriteLegendaryExplorerCoreTag(MemoryStream ms, IMEPackage package)
         {
-            ms.WriteInt32(1); //version. for if we want to append more data in the future 
-            ms.WriteInt32(4); //size of preceding data. (just the version for now)
-            ms.WriteStringASCII("LECL");
+            if (package is not MEPackage mep) return; // Do not write on non ME packages.
+
+            // This line will need merged when leclsystem is merged into Beta! Just FYI - Mgamerz
+            // We didn't want the other part of the commit that contained this fix
+            if (!mep.Game.IsLEGame()) return; // Do not write on non-LE even if this is somehow called.
+
+            var pos = ms.Position;
+
+            // BASIC TAG FORMAT:
+            // <data of package to the end>
+            // INT: LECL TAG VERSION
+            // <LECL DATA>
+            // INT: LECL DATA size in bytes + 4
+            // ASCII 'LECL'
+
+            // DOCUMENT VERSIONS HERE
+
+            // 1: INITIAL VERSION
+            // Contains no LECL DATA.
+
+            // 2: Import 'Hinting' 08/21/2022
+            // Contains data for hinting to LEC what files contain imports, which will
+            // automatically add them to the list of files that can be imported from
+
+            if (package.LECLTagData != null && package.LECLTagData.HasAnyData())
+            {
+                ms.WriteInt32(LECPackageTag_Version_JSON); // The current version
+                var data = JsonConvert.SerializeObject(package.LECLTagData); // for debug reading
+                ms.WriteStringUtf8(data);
+            }
+            else
+            {
+                ms.WriteInt32(LECPackageTag_Version_EmptyData); // Blank data version. Version 1 will not attempt to read data.
+            }
+
+            ms.WriteInt32((int)(ms.Position - pos)); // Size of the LECL data & version tag in bytes
+            ms.WriteStringASCII(LECPackageTag);
         }
 
         //Must not change export's DataSize!
@@ -1218,7 +1299,7 @@ namespace LegendaryExplorerCore.Packages
                             e.WriteBinary(ObjectBinary.From(e));
                             break;
                         case "ShaderCache":
-                            UpdateShaderCacheOffsets(e, oldDataOffset);
+                            e.UpdateShaderCacheOffsets(oldDataOffset);
                             break;
                     }
                 }
@@ -1230,74 +1311,6 @@ namespace LegendaryExplorerCore.Packages
             return compress
                 ? saveCompressed(this, true, includeAdditionalPackagesToCook, includeDependencyTable)
                 : saveUncompressed(this, true, includeAdditionalPackagesToCook, includeDependencyTable);
-        }
-
-        //TODO: edit memory in-place somehow? This currently requires an allocation and a copy of the sizeable shadercache export, and must happen on save for nearly every LE file
-        private static void UpdateShaderCacheOffsets(ExportEntry export, int oldDataOffset)
-        {
-            int newDataOffset = export.DataOffset;
-
-            MEGame game = export.Game;
-            var binData = new MemoryStream(export.Data, 0, export.DataSize, true, true);
-            binData.Seek(export.propsEnd() + 1, SeekOrigin.Begin);
-
-            int nameList1Count = binData.ReadInt32();
-            binData.Seek(nameList1Count * 12, SeekOrigin.Current);
-
-            if (game is MEGame.ME3 || game.IsLEGame())
-            {
-                int namelist2Count = binData.ReadInt32();//namelist2
-                binData.Seek(namelist2Count * 12, SeekOrigin.Current);
-            }
-
-            if (game is MEGame.ME1)
-            {
-                int vertexFactoryMapCount = binData.ReadInt32();
-                binData.Seek(vertexFactoryMapCount * 12, SeekOrigin.Current);
-            }
-
-            int shaderCount = binData.ReadInt32();
-            for (int i = 0; i < shaderCount; i++)
-            {
-                binData.Seek(24, SeekOrigin.Current);
-                int nextShaderOffset = binData.ReadInt32() - oldDataOffset;
-                binData.Seek(-4, SeekOrigin.Current);
-                binData.WriteInt32(nextShaderOffset + newDataOffset);
-                binData.Seek(nextShaderOffset, SeekOrigin.Begin);
-            }
-
-            if (game is not MEGame.ME1)
-            {
-                int vertexFactoryMapCount = binData.ReadInt32();
-                binData.Seek(vertexFactoryMapCount * 12, SeekOrigin.Current);
-            }
-
-            int materialShaderMapCount = binData.ReadInt32();
-            for (int i = 0; i < materialShaderMapCount; i++)
-            {
-                binData.Seek(16, SeekOrigin.Current);
-
-                int switchParamCount = binData.ReadInt32();
-                binData.Seek(switchParamCount * 32, SeekOrigin.Current);
-
-                int componentMaskParamCount = binData.ReadInt32();
-                binData.Seek(componentMaskParamCount * 44, SeekOrigin.Current);
-
-                if (game is MEGame.ME3 || game.IsLEGame())
-                {
-                    int normalParams = binData.ReadInt32();
-                    binData.Seek(normalParams * 29, SeekOrigin.Current);
-
-                    binData.Seek(8, SeekOrigin.Current);
-                }
-
-                int nextMaterialShaderMapOffset = binData.ReadInt32() - oldDataOffset;
-                binData.Seek(-4, SeekOrigin.Current);
-                binData.WriteInt32(nextMaterialShaderMapOffset + newDataOffset);
-                binData.Seek(nextMaterialShaderMapOffset, SeekOrigin.Begin);
-            }
-
-            export.Data = binData.GetBuffer();
         }
 
         private void WriteHeader(Stream ms, CompressionType compressionType = CompressionType.None, List<CompressionHelper.Chunk> chunks = null, bool includeAdditionalPackageToCook = true)
@@ -1466,7 +1479,7 @@ namespace LegendaryExplorerCore.Packages
                     ms.WriteInt32(chunk.compressedOffset);
                     if (chunk.blocks != null)
                     {
-                        var chunksize = chunk.compressedSize + CompressionHelper.SIZE_OF_CHUNK_HEADER + CompressionHelper.SIZE_OF_CHUNK_BLOCK_HEADER * chunk.blocks.Count;
+                        var chunksize = chunk.compressedSize + CompressionHelper.SIZE_OF_CHUNK_HEADER + CompressionHelper.SIZE_OF_CHUNK_BLOCK_HEADER * chunk.blocks.Length;
                         //Debug.WriteLine($"Writing chunk table chunk {i} size: {chunksize}");
                         ms.WriteInt32(chunksize); //Size of compressed data + chunk header + block header * number of blocks in the chunk
                     }
@@ -1511,34 +1524,6 @@ namespace LegendaryExplorerCore.Packages
                 {
                     ms.WriteInt32(0);
                 }
-            }
-        }
-        private void ReadLocalTLKs()
-        {
-            LocalTalkFiles.Clear();
-            var exportsToLoad = new List<ExportEntry>();
-            foreach (var tlkFileSet in Exports.Where(x => x.ClassName == "BioTlkFileSet" && !x.IsDefaultObject).Select(exp => exp.GetBinaryData<BioTlkFileSet>()))
-            {
-                foreach ((NameReference lang, BioTlkFileSet.BioTlkSet bioTlkSet) in tlkFileSet.TlkSets)
-                {
-                    if (LegendaryExplorerCoreLibSettings.Instance.TLKDefaultLanguage.Equals(lang, StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        exportsToLoad.Add(GetUExport(LegendaryExplorerCoreLibSettings.Instance.TLKGenderIsMale ? bioTlkSet.Male : bioTlkSet.Female));
-                        break;
-                    }
-                }
-            }
-
-            // Global TLK
-            foreach (var tlk in Exports.Where(x => x.ClassName == "BioTlkFile" && !x.IsDefaultObject && !exportsToLoad.Contains(x)))
-            {
-                exportsToLoad.Add(tlk);
-            }
-
-            foreach (var exp in exportsToLoad)
-            {
-                //Debug.WriteLine("Loading local TLK: " + exp.GetIndexedFullPath);
-                LocalTalkFiles.Add(new ME1TalkFile(exp));
             }
         }
 

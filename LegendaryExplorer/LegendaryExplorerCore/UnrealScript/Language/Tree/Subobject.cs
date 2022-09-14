@@ -12,7 +12,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 
         public bool IsTemplate;
 
-        public Subobject(VariableDeclaration nameDeclaration, Class @class, List<Statement> contents, bool isTemplate = false, SourcePosition start = null, SourcePosition end = null) : base(contents, start, end)
+        public Subobject(VariableDeclaration nameDeclaration, Class @class, List<Statement> contents, bool isTemplate = false, int start = -1, int end = -1) : base(contents, start, end)
         {
             NameDeclaration = nameDeclaration;
             Class = @class;

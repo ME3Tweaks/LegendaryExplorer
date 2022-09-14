@@ -8,17 +8,17 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 {
     public class Const : VariableType
     {
-        public MEGame game;
-        public string Value;
+        public MEGame Game;
+        public readonly string Value;
 
         private Expression _literal;
         public Expression Literal
         {
             init => _literal = value;
-            get => _literal ??= new ClassOutlineParser(new TokenStream(StringLexer.Lex(Value)), game).ParseConstValue();
+            get => _literal ??= new ClassOutlineParser(Lexer.Lex(Value), Game).ParseConstValue();
         }
 
-        public Const(string name, string value, SourcePosition start = null, SourcePosition end = null) : base(name, start, end)
+        public Const(string name, string value, int start = -1, int end = -1) : base(name, start, end)
         {
             Type = ASTNodeType.Const;
             Value = value;

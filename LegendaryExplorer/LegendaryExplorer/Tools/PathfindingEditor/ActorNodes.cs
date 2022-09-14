@@ -6,10 +6,87 @@ using LegendaryExplorer.Tools.SequenceObjects;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
-using UMD.HCIL.Piccolo.Nodes;
+using Piccolo;
+using Piccolo.Nodes;
 
 namespace LegendaryExplorer.Tools.PathfindingEditor
 {
+    public class PlayerGPSNode : PNode
+    {
+        private static readonly PointF[] outlineShape = {
+            new PointF(35, 0), new PointF(40, 10),new PointF(50, 15), //top right
+            new PointF(50, 35),new PointF(40, 40), new PointF(35, 50), //bottom right
+            new PointF(15, 50),new PointF(10, 40),new PointF(0, 35), //bottom left
+            new PointF(0, 15), new PointF(10, 10), new PointF(15, 0), }; //top left
+
+        public PathingGraphEditor g;
+        internal SText text = new SText("PLAYER");
+        public PPath shape;
+        private float yaw = 0;
+        private PNode directionShape;
+
+        /// <summary>
+        /// SPECIAL NODE: THIS NODE TRACKS THE PLAYER IN REAL TIME
+        /// </summary>
+        /// <param name="idx"></param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="p"></param>
+        /// <param name="grapheditor"></param>
+        /// <param name="drawAsPolygon"></param>
+        /// <param name="drawRotationLine"></param>
+        /// <param name="drawAsCylinder"></param>
+        public PlayerGPSNode(float x, float y, PathingGraphEditor grapheditor)
+        {
+            g = grapheditor;
+            directionShape = CreateDirectionShape();
+            AddChild(directionShape);
+
+            this.Pickable = false;
+            Bounds = new RectangleF(0, 0, 50, 50);
+            PPath defaultShape = PPath.CreatePolygon(outlineShape);
+            shape = defaultShape;
+            shape.Pen = new Pen(Color.BlueViolet);
+            shape.Brush = PathfindingNodeMaster.pathfindingNodeBrush;
+            shape.Pickable = false;
+            text.X = 50f / 2 - text.Width / 2;
+            text.Y = 50f / 2 - text.Height / 2;
+            AddChild(0, shape);
+            AddChild(0, text);
+
+            TranslateBy(x, y);
+        }
+
+        private PNode CreateDirectionShape()
+        {
+            float theta = yaw;
+
+            float circleX1 = (float)(25 + 20 * Math.Cos((theta + 5) * Math.PI / 180));
+            float circleY1 = (float)(25 + 20 * Math.Sin((theta + 5) * Math.PI / 180));
+            float circleX2 = (float)(25 + 20 * Math.Cos((theta - 5) * Math.PI / 180));
+            float circleY2 = (float)(25 + 20 * Math.Sin((theta - 5) * Math.PI / 180));
+
+            float circleTipX = (float)(25 + 25 * Math.Cos(theta * Math.PI / 180));
+            float circleTipY = (float)(25 + 25 * Math.Sin(theta * Math.PI / 180));
+            PPath directionShape = PPath.CreatePolygon(new[] { new PointF(25, 25), new PointF(circleX1, circleY1), new PointF(circleTipX, circleTipY), new PointF(circleX2, circleY2) });
+            directionShape.Pen = Pens.BlanchedAlmond;
+            directionShape.Brush = PathfindingNodeMaster.directionBrush;
+            directionShape.Pickable = false;
+            return directionShape;
+        }
+
+        public void SetYaw(float value)
+        {
+            if (value != yaw)
+            {
+                yaw = value;
+                RemoveChild(directionShape);
+                directionShape = CreateDirectionShape();
+                AddChild(directionShape);
+            }
+        }
+    }
+
     public abstract class ActorNode : PathfindingNodeMaster
     {
         internal bool ShowAsPolygon;

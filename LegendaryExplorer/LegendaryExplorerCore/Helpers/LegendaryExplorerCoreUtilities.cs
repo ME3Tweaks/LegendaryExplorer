@@ -77,7 +77,12 @@ namespace LegendaryExplorerCore.Helpers
         private static bool InternalLoadEmbeddedFile(string embeddedFilename, out Stream stream)
         {
             var assembly = Assembly.GetExecutingAssembly();
-            //var resources = assembly.GetManifestResourceNames();
+#if DEBUG
+            // Leave this here - it makes debugging missing resource names
+            // way easier
+            var resources = assembly.GetManifestResourceNames();
+#endif
+
             //debug
             var assetName = $"LegendaryExplorerCore.Embedded.{embeddedFilename}";
             stream = assembly.GetManifestResourceStream(assetName);

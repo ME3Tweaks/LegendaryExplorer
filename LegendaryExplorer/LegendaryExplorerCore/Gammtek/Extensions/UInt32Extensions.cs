@@ -129,20 +129,11 @@ namespace LegendaryExplorerCore.Gammtek.Extensions
         {
             int p = dest.Length;
             do
-            {
-                value = DivRem(value, 10, out uint remainder);
-                dest[--p] = (char)(remainder + '0');
+			{
+                (value, uint rem) = Math.DivRem(value, 10);
+                dest[--p] = (char)(rem + '0');
             }
             while (p > 0);
-
-			//JIT should turn this into a single 
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            static uint DivRem(uint a, uint b, out uint result)
-            {
-                uint div = a / b;
-                result = a - (div * b);
-                return div;
-            }
         }
 	}
 }

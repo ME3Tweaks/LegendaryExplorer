@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
+using System.Runtime.CompilerServices;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Memory;
@@ -28,19 +27,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 return null;
             }
             string className = export.ClassName;
-            if (IsEither(className, export.Game, "BioPawn", "BioActorBehavior"))
-            {
-                //export actually being a subclass of BioPawn or BioActorBehavior is rare, so it's simpler and not very costly to just do the lookup again
-                if (export.IsA("BioPawn"))
-                {
-                    //way, waaay too many subclasses of BioPawn to put in the switch statement, so we take care of it here
-                    className = "BioPawn";
-                }
-                else if (export.IsA("BioActorBehavior"))
-                {
-                    className = "BioActorBehavior";
-                }
-            }
+            
             switch (className)
             {
                 case "AnimSequence":
@@ -91,8 +78,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     return From<ModelComponent>(export, packageCache);
                 case "BioDynamicAnimSet":
                     return From<BioDynamicAnimSet>(export, packageCache);
-                case "BioPawn":
-                    return From<BioPawn>(export, packageCache);
                 case "PrefabInstance":
                     return From<PrefabInstance>(export, packageCache);
                 case "Class":
@@ -155,6 +140,8 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     return From<BioGestureRuntimeData>(export, packageCache);
                 case "LightMapTexture2D":
                     return From<LightMapTexture2D>(export, packageCache);
+                case "TextureCube":
+                    return From<UTextureCube>(export, packageCache);
                 case "Texture2D":
                 case "ShadowMapTexture2D":
                 case "TerrainWeightMapTexture":
@@ -214,6 +201,8 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     return From<FaceFXAsset>(export, packageCache);
                 case "BioInert":
                     return From<BioInert>(export, packageCache);
+                case "BioSquadCombat":
+                    return From<BioSquadCombat>(export, packageCache);
                 case "BioGestureAnimSetMgr":
                     return From<BioGestureAnimSetMgr>(export, packageCache);
                 case "BioQuestProgressionMap":
@@ -224,9 +213,20 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     return From<SpeedTreeComponent>(export, packageCache);
                 case "BioGamePropertyEventDispatcher":
                     return From<BioGamePropertyEventDispatcher>(export, packageCache);
-                case "BioActorBehavior":
-                    return From<BioActorBehavior>(export, packageCache);
                 default:
+                    //way, waaay too many subclasses of BioPawn and BioActorBehavior to put in the switch statement, so we take care of it here
+                    if (IsEither(className, export.Game, "BioPawn", "BioActorBehavior"))
+                    {
+                        //export actually being a subclass of BioPawn or BioActorBehavior is rare, so it's simpler and not very costly to just do the lookup again
+                        if (export.IsA("BioPawn"))
+                        {
+                            return From<BioPawn>(export, packageCache);
+                        }
+                        if (export.IsA("BioActorBehavior"))
+                        {
+                            return From<BioActorBehavior>(export, packageCache);
+                        }
+                    }
                     return null;
             }
         }
@@ -266,15 +266,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
         public static ObjectBinary Create(string className, MEGame game, PropertyCollection props = null)
         {
-            if (GlobalUnrealObjectInfo.IsA(className, "BioPawn", game))
-            {
-                //way, waaay too many subclasses of BioPawn to put in the switch statement, so we take care of it here
-                className = "BioPawn";
-            }
-            else if (GlobalUnrealObjectInfo.IsA(className, "BioActorBehavior", game))
-            {
-                className = "BioActorBehavior";
-            }
             switch (className)
             {
                 case "AnimSequence":
@@ -318,8 +309,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     return ModelComponent.Create();
                 case "BioDynamicAnimSet":
                     return BioDynamicAnimSet.Create();
-                case "BioPawn":
-                    return BioPawn.Create();
                 case "PrefabInstance":
                     return PrefabInstance.Create();
                 case "Class":
@@ -455,8 +444,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     return SpeedTreeComponent.Create();
                 case "BioGamePropertyEventDispatcher":
                     return BioGamePropertyEventDispatcher.Create();
-                case "BioActorBehavior":
-                    return BioActorBehavior.Create();
                 case "MaterialInstanceConstant":
                 case "MaterialInstanceTimeVarying":
                     if (props?.GetProp<BoolProperty>("bHasStaticPermutationResource")?.Value is true)
@@ -465,18 +452,42 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     }
                     break;
             }
+            if (GlobalUnrealObjectInfo.IsA(className, "BioPawn", game))
+            {
+                return BioPawn.Create();
+            }
+            if (GlobalUnrealObjectInfo.IsA(className, "BioActorBehavior", game))
+            {
+                return BioActorBehavior.Create();
+            }
             return GenericObjectBinary.Create();
         }
 
         protected abstract void Serialize(SerializingContainer2 sc);
 
         /// <summary>
-        /// Gets a list of entry references made in this ObjectBinary. Values are UIndex mapped to the name of the variable name of that list item, e.g. (25, "DataOffset")
+        /// Gets a list of entry references made in this ObjectBinary.
         /// </summary>
         /// <param name="game"></param>
         /// <returns></returns>
-        public virtual List<(UIndex, string)> GetUIndexes(MEGame game) => new();
+        public List<int> GetUIndexes(MEGame game)
+        {
+            var result = new List<int>();
+            ForEachUIndex(game, new UIndexCollector(result));
+            return result;
+        }
         public virtual List<(NameReference, string)> GetNames(MEGame game) => new();
+
+        /// <summary>
+        /// Calls <see cref="IUIndexAction.Invoke"/> on every UIndex in this object. This can be used to change the UIndex, or to perform some action based on each one.
+        /// </summary>
+        /// <typeparam name="TAction">A readonly struct that implements <see cref="IUIndexAction"/>. Examples: <see cref="UIndexZeroer"/>, <see cref="UIndexAndPropNameCollector"/></typeparam>
+        /// <param name="game">Restricts the UIndexes to the ones that exist on this game's version of the object.</param>
+        /// <param name="action">The <see cref="IUIndexAction"/> implementation whose Invoke method will be called for every uIndex.</param>
+        public virtual void ForEachUIndex<TAction>(MEGame game, in TAction action) where TAction : struct, IUIndexAction
+        {
+            //Not every Object has UIndexes. For those that don't, we do nothing.
+        }
 
         public virtual void WriteTo(EndianWriter ms, IMEPackage pcc, int fileOffset = 0)
         {
@@ -493,6 +504,83 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public static implicit operator ObjectBinary(byte[] buff)
         {
             return new GenericObjectBinary(buff);
+        }
+
+        #region ForEachUIndex Helper methods
+        internal static void ForEachUIndexKeyInOrderedMultiValueDictionary<TAction, TValue>(in TAction action, Span<KeyValuePair<int, TValue>> span, string name) where TAction : struct, IUIndexAction
+        {
+            for (int i = 0; i < span.Length; i++)
+            {
+                int key = span[i].Key;
+                int originalValue = key;
+                Unsafe.AsRef(action).Invoke(ref key, $"{name}[{i}]");
+                if (key != originalValue)
+                {
+                    span[i] = new(key, span[i].Value);
+                }
+            }
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static void ForEachUIndexInSpan<TAction>(in TAction action, Span<int> span, string name) where TAction : struct, IUIndexAction
+        {
+            for (int i = 0; i < span.Length; i++)
+            {
+                Unsafe.AsRef(action).Invoke(ref span[i], $"{name}[{i}]");
+            }
+        }
+        #endregion
+    }
+
+    /// <summary>
+    /// See documentation for <see cref="ObjectBinary.ForEachUIndex"/>.
+    /// </summary>
+    //this should only be implemented by readonly structs!
+    public interface IUIndexAction
+    {
+        void Invoke(ref int uIndex, string propName);
+    }
+
+    /// <summary>
+    /// Sets all UIndexes to 0
+    /// </summary>
+    public readonly struct UIndexZeroer : IUIndexAction
+    {
+        public void Invoke(ref int uIndex, string propName) => uIndex = 0;
+    }
+
+    /// <summary>
+    /// Puts all the UIndexes in a List
+    /// </summary>
+    public readonly struct UIndexCollector : IUIndexAction
+    {
+        private readonly List<int> UIndexes;
+
+        public UIndexCollector(List<int> uIndexes)
+        {
+            UIndexes = uIndexes;
+        }
+
+        public void Invoke(ref int uIndex, string propName)
+        {
+            UIndexes.Add(uIndex);
+        }
+    }
+
+    /// <summary>
+    /// Puts all the UIndexes and PropNames in a List
+    /// </summary>
+    public readonly struct UIndexAndPropNameCollector : IUIndexAction
+    {
+        private readonly List<(int, string)> UindexAndPropNames;
+
+        public UIndexAndPropNameCollector(List<(int, string)> uindexAndPropNames)
+        {
+            UindexAndPropNames = uindexAndPropNames;
+        }
+
+        public void Invoke(ref int uIndex, string propName)
+        {
+            UindexAndPropNames.Add((uIndex, propName));
         }
     }
 

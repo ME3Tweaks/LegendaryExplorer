@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode;
 using LegendaryExplorerCore.Packages;
+using UIndex = System.Int32;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
@@ -48,56 +50,11 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref ScriptBytes, ScriptStorageSize);
         }
 
-        public override List<(UIndex, string)> GetUIndexes(MEGame game)
-        {
-            List<(UIndex, string)> uIndices = base.GetUIndexes(game);
-            uIndices.Add((Children, "ChildListStart"));
-
-            if (Export.ClassName is "Function" or "State")
-            {
-                if (Export.Game == MEGame.ME3 || Export.Game.IsLEGame())
-                {
-                    try
-                    {
-                        (List<Token> tokens, _) = Bytecode.ParseBytecode(ScriptBytes, Export);
-                        foreach (var t in tokens)
-                        {
-                            {
-                                var refs = t.inPackageReferences.Where(x => x.type == Token.INPACKAGEREFTYPE_ENTRY);
-                                uIndices.AddRange(refs.Select(x => (new UIndex(x.value), $"Reference inside of function at 0x{x.position:X}")));
-                            }
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        Debug.WriteLine($"Error decompiling function {Export.InstancedFullPath}: {e.Message}");
-                    }
-                }
-                else
-                {
-                    try
-                    {
-                        var func = Export.ClassName == "State" ? UE3FunctionReader.ReadState(Export) : UE3FunctionReader.ReadFunction(Export);
-                        func.Decompile(new TextBuilder(), false, false); //parse bytecode without signature (it does not contain entry refs)
-                        var entryRefs = func.EntryReferences;
-                        uIndices.AddRange(entryRefs.Select(x =>
-                            (new UIndex(x.Value.UIndex), $"Reference inside of function at 0x{x.Key:X}")));
-                    }
-                    catch (Exception e)
-                    {
-                        Debug.WriteLine($"Error decompiling function {Export.InstancedFullPath}: {e.Message}");
-                    }
-                }
-            }
-
-            return uIndices;
-        }
-
         public override List<(NameReference, string)> GetNames(MEGame game)
         {
             var names = base.GetNames(game);
 
-            if (Export.ClassName == "Function" || Export.ClassName == "State")
+            if (Export.ClassName is "Function" or "State")
             {
                 if (Export.Game is MEGame.ME3 || Export.Game.IsLEGame())
                 {
@@ -135,7 +92,54 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
             return names;
         }
-        
+
+        public override void ForEachUIndex<TAction>(MEGame game, in TAction action)
+        {
+            base.ForEachUIndex(game, in action);
+            Unsafe.AsRef(action).Invoke(ref Children, "ChildListStart");
+            
+            if (Export.ClassName is not "ScriptStruct")
+            {
+                if (Export.Game == MEGame.ME3 || Export.Game.IsLEGame())
+                {
+                    try
+                    {
+                        (List<Token> tokens, _) = Bytecode.ParseBytecode(ScriptBytes, Export);
+                        foreach (var t in tokens)
+                        {
+                            var refs = t.inPackageReferences.Where(x => x.type == Token.INPACKAGEREFTYPE_ENTRY);
+                            foreach ((int position, int type, int value) in refs)
+                            {
+                                int temp = value;
+                                Unsafe.AsRef(action).Invoke(ref temp, $"Reference inside of function at 0x{position:X}");
+                            }
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.WriteLine($"Error decompiling function {Export.InstancedFullPath}: {e.Message}");
+                    }
+                }
+                else if (!Export.IsClass)
+                {
+                    try
+                    {
+                        var func = Export.ClassName == "State" ? UE3FunctionReader.ReadState(Export) : UE3FunctionReader.ReadFunction(Export);
+                        func.Decompile(new TextBuilder(), false, false); //parse bytecode without signature (it does not contain entry refs)
+                        var entryRefs = func.EntryReferences;
+                        foreach ((long key, IEntry value) in entryRefs)
+                        {
+                            int temp = value.UIndex;
+                            Unsafe.AsRef(action).Invoke(ref temp, $"Reference inside of function at 0x{key:X}");
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.WriteLine($"Error decompiling function {Export.InstancedFullPath}: {e.Message}");
+                    }
+                }
+            }
+        }
 
         /// <summary>
         ///  Rebuilds the compiling chain of children for this struct. Items with this entry as the parent will participate in the class. Don't use this on functions.
@@ -143,7 +147,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         /// <param name="relinkChildrenStructs">Recursively relink children for all structs that are decendants of this struct</param>
         public void UpdateChildrenChain(bool relinkChildrenStructs = false)
         {
-            if (this is UFunction fn)
+            if (this is UFunction)
             {
                 //UpdateChildrenChain not yet working for function exports, use function compilation instead
                 return;
@@ -154,7 +158,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 var c = children[i];
                 if (ObjectBinary.From(c) is UField uf)
                 {
-                    uf.Next = i == 0 ? 0 : children[i - 1];
+                    uf.Next = i == 0 ? 0 : children[i - 1].UIndex;
                     if (relinkChildrenStructs && uf is UStruct st)
                     {
                         st.UpdateChildrenChain(true);

@@ -8,6 +8,8 @@
              xmlns:Converters="clr-namespace:LegendaryExplorer.SharedUI.Converters"
              xmlns:forms="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
              mc:Ignorable="d" 
+             Loaded="FaceFXAnimSetEditorControl_OnLoaded"
+             Unloaded="FaceFXAnimSetEditorControl_OnUnloaded"
              d:DataContext="{Binding RelativeSource={RelativeSource Self}}"
              d:DesignHeight="450" d:DesignWidth="800">
     <exportLoaderControls:ExportLoaderControl.Resources>
@@ -26,10 +28,11 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Label Content="Lines"/>
-        <Grid Grid.Row="1" Grid.Column="0">
+        <Grid Grid.Row="1" Grid.Column="0" Grid.RowSpan="2">
             <Grid.RowDefinitions>
                 <RowDefinition/>
                 <RowDefinition Height="155"/>
@@ -50,8 +53,12 @@
                                     <MenuItem Header="Export Section of line" Click="ExpLineSec_Click"/>
                                     <MenuItem Header="Offset keys after time" Click="OffsetKeysAfterTime_Click" />
                                     <MenuItem Header="Clear all 'm__' lip sync keys" Click="ClearLipSyncKeys_Click"/>
+                                    <MenuItem Header="Clear all Animations" Click="ClearAnimations_Click"/>
+                                    <MenuItem Header="Import tracks from XML" Click="ImportTracksFromXML_Click"/>
                                     <MenuItem Header="Clone" Click="CloneLine_Click"/>
                                     <MenuItem Header="Delete Line" Click="DeleteLine_Click"/>
+                                    <MenuItem Header="Sort Lines by StrRef" Click="SortLines_Click"/>
+                                    <MenuItem Header="Set All Paths" Click="SetPaths_Click"/>
                                 </ContextMenu>
                             </StackPanel.ContextMenu>
                         </StackPanel>
@@ -74,13 +81,20 @@
                     </Style>
                 </ListBox.Style>
             </ListBox>
-            <WindowsFormsHost Grid.Row="1" Margin="0,5,0,0"  Name="treeView_WinFormsHost">
+            <TreeView Name="treeView" ItemsSource="{Binding TreeNodes}" DisplayMemberPath="Header" Grid.Row="1" Margin="0,5,0,0">
+                <TreeView.ItemContainerStyle>
+                    <Style TargetType="{x:Type TreeViewItem}">
+                        <EventSetter Event="MouseDoubleClick" Handler="OnTreeItemMouseDoubleClick" />
+                    </Style>
+                </TreeView.ItemContainerStyle>
+            </TreeView>
+            <!--<WindowsFormsHost Grid.Row="1" Margin="0,5,0,0"  Name="treeView_WinFormsHost">
                 <forms:TreeView x:Name="treeView"/>
-            </WindowsFormsHost>
+            </WindowsFormsHost>-->
         </Grid>
         <GridSplitter Grid.Row="1" Grid.RowSpan="2" Width="5" HorizontalAlignment="Stretch" Grid.Column="1"/>
         <Label Content="Animations" Grid.Row="0" Grid.Column="2"/>
-        <ListBox x:Name="animationListBox" Grid.Column="2" Grid.Row="1" ItemsSource="{Binding Animations}"
+        <ListBox x:Name="animationListBox" Grid.Column="2" Grid.Row="1" Grid.RowSpan="2" ItemsSource="{Binding Animations}"
                     SelectionChanged="animationListBox_SelectionChanged" 
                      AllowDrop="True" PreviewMouseLeftButtonDown="animationListBox_PreviewMouseLeftButtonDown" MouseMove="animationListBox_MouseMove"
                      DragEnter="animationListBox_DragEnter" Drop="animationListBox_Drop" HorizontalContentAlignment="Stretch"
@@ -94,7 +108,13 @@
                                 <MenuItem Header="Delete All Keys" Click="DeleteAnimKeys_Click"/>
                                 <MenuItem Header="Set As Reference Curve" Click="SelectForCompare_Click"/>
                                 <MenuItem Header="Clone" Click="CloneAnimation_Click"/>
+                                <MenuItem Header="Change Name" Click="ChangeAnimName_Click"></MenuItem>
                                 <MenuItem Header="Export Curve to Excel" Click="ExportToExcel_Click">
+                                    <MenuItem.Icon>
+                                        <Image Source="/Resources/Images/excel.png" Width="16" Height="16" Margin="0,0,2,0"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                                <MenuItem Header="Import Curve from Excel" Click="ImportFromExcel_Click">
                                     <MenuItem.Icon>
                                         <Image Source="/Resources/Images/excel.png" Width="16" Height="16" Margin="0,0,2,0"/>
                                     </MenuItem.Icon>
@@ -110,8 +130,7 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-
-        <GridSplitter Width="5" HorizontalAlignment="Stretch" Grid.Row="0" Grid.RowSpan="2" Grid.Column="3"/>
+        <GridSplitter Width="5" HorizontalAlignment="Stretch" Grid.Row="0" Grid.RowSpan="3" Grid.Column="3"/>
         <Grid Grid.Column="4" Grid.Row="0" Grid.RowSpan="2">
             <Grid.RowDefinitions>
                 <RowDefinition/>
@@ -120,5 +139,6 @@
             <sharedToolControls:CurveGraph x:Name="graph" DockPanel.Dock="Right" KeyDown="Graph_KeyDown"/>
             <TextBlock Text="{Binding SelectedLineEntry.TLKString}" Grid.Row="1" TextWrapping="Wrap"/>
         </Grid>
+        <exportLoaderControls:Soundpanel x:Name="audioPlayer" Grid.Row="2" Grid.Column="4" MiniPlayerMode="True" GenerateWaveformGraph="True" SeekbarUpdatePeriod="66"/>
     </Grid>
 </exportLoaderControls:ExportLoaderControl>

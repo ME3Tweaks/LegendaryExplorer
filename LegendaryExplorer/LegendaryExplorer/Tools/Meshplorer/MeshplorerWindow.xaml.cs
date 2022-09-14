@@ -215,14 +215,10 @@ namespace LegendaryExplorer.Tools.Meshplorer
                         bool pendingChangesBackup = CurrentExport.EntryHasPendingChanges;
                         byte[] dataBackup = CurrentExport.Data;
                         ObjectBinary objBin = ObjectBinary.From(CurrentExport);
-                        foreach ((UIndex uIndex, _) in objBin.GetUIndexes(CurrentExport.Game))
-                        {
-                            uIndex.value = 0;
-                        }
+                        objBin.ForEachUIndex(CurrentExport.Game, new UIndexZeroer());
                         CurrentExport.WritePropertiesAndBinary(new PropertyCollection(), objBin);
 
-                        EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.AddSingularAsChild, CurrentExport, upk, null, true,
-                                                             out IEntry _);
+                        EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.AddSingularAsChild, CurrentExport, upk, null, true, new RelinkerOptionsPackage(), out IEntry _);
                         CurrentExport.Data = dataBackup;
                         if (!cachedDataChanged)
                         {
@@ -391,12 +387,12 @@ namespace LegendaryExplorer.Tools.Meshplorer
                             newMesh.BodySetup = 0;
                             if (originalMesh.LODModels.Any())
                             {
-                                UIndex[] mats = originalMesh.LODModels[0].Elements.Select(el => el.Material).ToArray();
+                                int[] mats = originalMesh.LODModels[0].Elements.Select(el => el.Material).ToArray();
                                 foreach (StaticMeshRenderData lodModel in newMesh.LODModels)
                                 {
                                     for (int i = 0; i < lodModel.Elements.Length; i++)
                                     {
-                                        UIndex matIndex = 0;
+                                        int matIndex = 0;
                                         if (i < mats.Length)
                                         {
                                             matIndex = mats[i];
@@ -419,7 +415,7 @@ namespace LegendaryExplorer.Tools.Meshplorer
 
         private void ImportFromUDK()
         {
-            OpenFileDialog d = new OpenFileDialog { Filter = GameFileFilters.UDKFileFilter };
+            var d = new OpenFileDialog { Filter = GameFileFilters.UDKFileFilter };
             if (d.ShowDialog() == true)
             {
                 try
@@ -429,13 +425,10 @@ namespace LegendaryExplorer.Tools.Meshplorer
                     if (EntrySelector.GetEntry<ExportEntry>(this, udk, "Select mesh to import:", exp => meshClasses.Contains(exp.ClassName)) is ExportEntry meshExport)
                     {
                         ObjectBinary objBin = ObjectBinary.From(meshExport);
-                        foreach ((UIndex uIndex, var _) in objBin.GetUIndexes(MEGame.UDK))
-                        {
-                            uIndex.value = 0;
-                        }
+                        objBin.ForEachUIndex(MEGame.UDK, new UIndexZeroer());
                         meshExport.WritePropertiesAndBinary(new PropertyCollection(), objBin);
                         var results = EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.AddSingularAsChild, meshExport, Pcc,
-                                                                           null, true, out _);
+                                                                           null, true, new RelinkerOptionsPackage(), out _);
                         if (results.Any())
                         {
                             var ld = new ListDialog(results, "Relink report",
@@ -459,13 +452,13 @@ namespace LegendaryExplorer.Tools.Meshplorer
         private bool IsMeshSelected() => Mesh3DViewer.IsStaticMesh || Mesh3DViewer.IsSkeletalMesh;
         private bool IsSkeletalMeshSelected() => Mesh3DViewer.IsSkeletalMesh;
 
-        private bool CanConvertToStaticMesh() => Mesh3DViewer.IsSkeletalMesh && Pcc.Game == MEGame.ME3;
+        private bool CanConvertToStaticMesh() => Mesh3DViewer.IsSkeletalMesh && (Pcc.Game is MEGame.ME3 || Pcc.Game.IsLEGame());
 
         private void ConvertToStaticMesh()
         {
             if (CurrentExport.ClassName == "SkeletalMesh")
             {
-                StaticMesh stm = CurrentExport.GetBinaryData<SkeletalMesh>().ConvertToME3StaticMesh();
+                StaticMesh stm = CurrentExport.GetBinaryData<SkeletalMesh>().ConvertToME3LEStaticMesh();
                 CurrentExport.Class = Pcc.getEntryOrAddImport("Engine.StaticMesh");
                 CurrentExport.WritePropertiesAndBinary(new PropertyCollection
                 {
@@ -552,6 +545,7 @@ namespace LegendaryExplorer.Tools.Meshplorer
                     CurrentExport = MeshExports.FirstOrDefault(x => x.UIndex == goToIndex);
                     ExportQueuedForFocusing = CurrentExport;
                 }
+                Mesh3DViewer.SceneViewer.SetShouldRender(true); // Set it to enable rendering
             }
             catch (Exception e)
             {
@@ -563,7 +557,7 @@ namespace LegendaryExplorer.Tools.Meshplorer
             }
         }
 
-        public override void handleUpdate(List<PackageUpdate> updates)
+        public override void HandleUpdate(List<PackageUpdate> updates)
         {
             if (updates.Any(update => update.Change == PackageChange.ExportData && update.Index == CurrentExport.UIndex)
              && Mesh3DViewer.CanParse(CurrentExport))
@@ -627,7 +621,7 @@ namespace LegendaryExplorer.Tools.Meshplorer
                 // Note that you can have more than one file.
                 var files = (string[])e.Data.GetData(DataFormats.FileDrop);
                 string ext = Path.GetExtension(files[0]).ToLower();
-                if (ext == ".upk" || ext == ".pcc" || ext == ".sfm")
+                if (ext is ".upk" or ".pcc" or ".sfm")
                 {
                     LoadFile(files[0]);
                 }
@@ -681,7 +675,7 @@ namespace LegendaryExplorer.Tools.Meshplorer
             }
         }
 
-        public void PropogateRecentsChange(IEnumerable<RecentsControl.RecentItem> newRecents)
+        public void PropogateRecentsChange(string propogationSource, IEnumerable<RecentsControl.RecentItem> newRecents)
         {
             RecentsController.PropogateRecentsChange(false, newRecents);
         }

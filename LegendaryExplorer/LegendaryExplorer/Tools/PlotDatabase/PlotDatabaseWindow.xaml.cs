@@ -268,7 +268,7 @@ namespace LegendaryExplorer.Tools.PlotDatabase
 
                 foreach (var c in plotElement.Children)
                 {
-                    AddPlotsToList(c, elementList);
+                    AddPlotsToList(c, elementList, addFolders);
                 }
             }
         }
@@ -499,9 +499,8 @@ namespace LegendaryExplorer.Tools.PlotDatabase
                         }
                     }
 
-                    string primarySort;
                     ICollectionView linedataView = CollectionViewSource.GetDefaultView(LV_Plots.ItemsSource);
-                    primarySort = headerClicked.Column.Header.ToString();
+                    string primarySort = headerClicked.Column.Header.ToString();
                     linedataView.SortDescriptions.Clear();
                     switch (primarySort)
                     {
@@ -1044,7 +1043,7 @@ namespace LegendaryExplorer.Tools.PlotDatabase
                 }
                 mpc.AddMod(mod);
             }
-            mpc.SaveModsToDisk(AppDirectories.AppDataFolder);
+            mpc.SaveModsToDisk(AppDirectories.AppDataFolder, true);
         }
 
         private void form_KeyUp(object sender, KeyEventArgs e)
@@ -1432,7 +1431,7 @@ namespace LegendaryExplorer.Tools.PlotDatabase
                 {
                     IXLCell cellM = iWorksheet.Cell(row, 13);
                     string contentsM = cellM.Value.ToString();
-                    if (contentsM != null)
+                    if (contentsM != null && !contentsM.IsEmpty())
                     {
                         xlPlot.ModDb.Organizational[target.ElementId].Label = contentsM;
                     }
@@ -1584,17 +1583,20 @@ namespace LegendaryExplorer.Tools.PlotDatabase
                 //write labels
                 var headers = new List<string>()
                 {
-                    "#",
-                    "PlotId",
+                    "Action", //1
+                    "Mod",
                     "Type",
+                    "ParentPath", //4
                     "Label",
-                    "Path",
+                    "PlotID",
+                    "Code", 
+                    "Argument",  //8
                     "SubType",
-                    "Code",
-                    "Argument",
                     "GamerVariable",
                     "AchievementID",
-                    "GalaxyAtWar"
+                    "GalaxyAtWar",
+                    "NewLabel"
+
                 };
                 for (int colindex = 0; colindex < headers.Count; colindex++)
                 {
@@ -1602,44 +1604,91 @@ namespace LegendaryExplorer.Tools.PlotDatabase
                 }
 
                 //Write rows
+                var rawlist = new List<PlotElement>();
+                var catlist = new List<PlotElement>();
                 var plotlist = new List<PlotElement>();
-                AddPlotsToList(SelectedNode, plotlist);
-                for (int r = 0; r < plotlist.Count; r++)
+                AddPlotsToList(SelectedNode, rawlist, true);
+                foreach (PlotElement pe in rawlist)
                 {
-                    worksheet.Cell(r + 2, 1).Value = r.ToString();
-                    worksheet.Cell(r + 2, 2).Value = plotlist[r].PlotId.ToString();
-                    worksheet.Cell(r + 2, 3).Value = plotlist[r].Type.ToString();
-                    worksheet.Cell(r + 2, 4).Value = plotlist[r].Label;
-                    worksheet.Cell(r + 2, 5).Value = plotlist[r].Path;
-                    switch(plotlist[r].Type)
+
+                    if (pe.ElementId <= 100000 || pe.Type == PlotElementType.Mod)
+                        continue;
+                    if (pe.Type == PlotElementType.Category)
+                    {
+                        catlist.Add(pe);
+                    }
+                    else
+                    {
+                        plotlist.Add(pe);
+                    }
+                }
+
+                var exportlist = new List<PlotElement>();
+                exportlist.AddRange(catlist);
+                exportlist.AddRange(plotlist);
+
+                for (int r = 0; r < exportlist.Count; r++)
+                {
+                    string modname = GetCurrentMod(exportlist[r]);
+                    if (modname == "N/A") //Export is not import
+                        continue;
+                    worksheet.Cell(r + 2, 1).Value = "";
+                    worksheet.Cell(r + 2, 2).Value = modname;
+                    worksheet.Cell(r + 2, 3).Value = exportlist[r].Type.ToString();
+                    worksheet.Cell(r + 2, 4).Value = exportlist[r].Parent.Path.Length > 13 ? exportlist[r].Parent.Path.Remove(0, 13) : "";
+                    worksheet.Cell(r + 2, 5).Value = exportlist[r].Label;
+                    worksheet.Cell(r + 2, 6).Value = exportlist[r].PlotId;
+                    switch (exportlist[r].Type)
                     {
                         case PlotElementType.State:
                         case PlotElementType.SubState:
-                            var plotBool = plotlist[r] as PlotBool;
-                            worksheet.Cell(r + 2, 6).Value = plotBool.SubType.ToString();
-                            worksheet.Cell(r + 2, 9).Value = plotBool.GamerVariable.ToString();
-                            worksheet.Cell(r + 2, 10).Value = plotBool.AchievementID.ToString();
-                            worksheet.Cell(r + 2, 11).Value = plotBool.GalaxyAtWar.ToString();
+                            var plotBool = exportlist[r] as PlotBool;
+                            worksheet.Cell(r + 2, 9).Value = plotBool.SubType.ToString();
+                            worksheet.Cell(r + 2, 10).Value = plotBool.GamerVariable.ToString();
+                            worksheet.Cell(r + 2, 11).Value = plotBool.AchievementID.ToString();
+                            worksheet.Cell(r + 2, 12).Value = plotBool.GalaxyAtWar.ToString();
                             break;
                         case PlotElementType.Conditional:
-                            var plotCnd = plotlist[r] as PlotConditional;
+                            var plotCnd = exportlist[r] as PlotConditional;
                             worksheet.Cell(r + 2, 7).Value = plotCnd.Code;
                             break;
                         case PlotElementType.Transition:
-                            var plotTrans = plotlist[r] as PlotTransition;
+                            var plotTrans = exportlist[r] as PlotTransition;
                             worksheet.Cell(r + 2, 8).Value = plotTrans.Argument;
                             break;
                         default:
                             break;
                     }
-                    
                 }
 
                 workbook.SaveAs(d.FileName);
                 MessageBox.Show("Done");
+
+
             }
         }
 
+
+        private string GetCurrentMod(PlotElement pe)
+        {
+            if (pe == null)
+                return "N/A";
+            string modname;
+            if(pe.Type == PlotElementType.Mod)
+            {
+                 modname = pe.Label;
+            }
+            else
+            {
+                modname = GetCurrentMod(pe.Parent);
+                
+            }
+            if(modname == null)
+            {
+                modname = "N/A";
+            }
+            return modname;
+        }
         #endregion
     }
 

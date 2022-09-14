@@ -247,18 +247,6 @@ namespace LegendaryExplorerCore.Helpers
             return string.Join(separator, values);
         }
 
-        public static T MaxBy<T, R>(this IEnumerable<T> en, Func<T, R> evaluate) where R : IComparable<R>
-        {
-            return en.Select(t => (obj: t, key: evaluate(t)))
-                .Aggregate((max, next) => next.key.CompareTo(max.key) > 0 ? next : max).obj;
-        }
-
-        public static T MinBy<T, R>(this IEnumerable<T> en, Func<T, R> evaluate) where R : IComparable<R>
-        {
-            return en.Select(t => (obj: t, key: evaluate(t)))
-                .Aggregate((max, next) => next.key.CompareTo(max.key) < 0 ? next : max).obj;
-        }
-
         public static bool SubsetOf<T>(this IList<T> src, IList<T> compare)
         {
             return src.All(compare.Contains);
@@ -419,7 +407,7 @@ namespace LegendaryExplorerCore.Helpers
             return false;
         }
 
-        public static bool isNumericallyEqual(this string first, string second)
+        public static bool IsNumericallyEqual(this string first, string second)
         {
             return double.TryParse(first, out double a)
                 && double.TryParse(second, out double b)
@@ -499,6 +487,7 @@ namespace LegendaryExplorerCore.Helpers
             return source?.IndexOf(toCheck, comp) >= 0;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool CaseInsensitiveEquals(this string left, string right) => string.Equals(left, right, StringComparison.OrdinalIgnoreCase);
         public static string GetPathWithoutInvalids(this string filename)
         {
@@ -651,7 +640,7 @@ namespace LegendaryExplorerCore.Helpers
 
     public static class ByteArrayExtensions
     {
-        static readonly int[] Empty = new int[0];
+        private static readonly int[] Empty = Array.Empty<int>();
 
         public static int[] Locate(this byte[] self, byte[] candidate)
         {
@@ -724,7 +713,7 @@ namespace LegendaryExplorerCore.Helpers
         /// <summary>
         /// Converts Radians to Unreal rotation units
         /// </summary>
-        public static int RadiansToUnrealRotationUnits(this float radians) => Convert.ToInt32(radians * 180 / Math.PI * 65536f / 360f);
+        public static int RadiansToUnrealRotationUnits(this float radians) => Convert.ToInt32(radians * 180 / MathF.PI * 65536f / 360f);
 
         /// <summary>
         /// Converts Unreal rotation units to Degrees
@@ -734,7 +723,7 @@ namespace LegendaryExplorerCore.Helpers
         /// <summary>
         /// Converts Unreal rotation units to Radians
         /// </summary>
-        public static double UnrealRotationUnitsToRadians(this int unrealRotationUnits) => unrealRotationUnits * 360.0 / 65536.0 * Math.PI / 180.0;
+        public static float UnrealRotationUnitsToRadians(this int unrealRotationUnits) => unrealRotationUnits * 360.0f / 65536.0f * MathF.PI / 180.0f;
 
         /// <summary>
         /// Checks if this object is of a specific generic type (e.g. List&lt;IntProperty&gt;)
@@ -815,7 +804,7 @@ namespace LegendaryExplorerCore.Helpers
             ulong mantissa = bits & 0x000fffffffffffffL;
             ulong sign = bits & 0x8000000000000000L;
             int placement = (int)((exponent >> 52) - 1023);
-            if (placement > 15 || placement < -14)
+            if (placement is > 15 or < -14)
                 return 0;
             ushort exponentBits = (ushort)((15 + placement) << 10);
             ushort mantissaBits = (ushort)(mantissa >> 42);
@@ -840,9 +829,9 @@ namespace LegendaryExplorerCore.Helpers
             return (word << (31 - from)) >> (31 - from + to);
         }
 
-        public static unsafe bool IsBinarilyIdentical(this float f1, float f2)
+        public static bool IsBinarilyIdentical(this float f1, float f2)
         {
-            return *((int*)&f1) == *((int*)&f2);
+            return BitConverter.SingleToInt32Bits(f1) == BitConverter.SingleToInt32Bits(f2);
         }
 
         public static Rotator GetRotator(this Matrix4x4 m)
@@ -873,9 +862,9 @@ namespace LegendaryExplorerCore.Helpers
         public static (Vector3 translation, Vector3 scale, Rotator rotation) UnrealDecompose(this Matrix4x4 m)
         {
             Vector3 translation = m.Translation;
-            Vector3 scale = new Vector3((float)Math.Sqrt(m.M11 * m.M11 + m.M12 * m.M12 + m.M13 * m.M13),
-                                        (float)Math.Sqrt(m.M21 * m.M21 + m.M22 * m.M22 + m.M23 * m.M23),
-                                        (float)Math.Sqrt(m.M31 * m.M31 + m.M32 * m.M32 + m.M33 * m.M33));
+            Vector3 scale = new Vector3(MathF.Sqrt(m.M11 * m.M11 + m.M12 * m.M12 + m.M13 * m.M13),
+                                        MathF.Sqrt(m.M21 * m.M21 + m.M22 * m.M22 + m.M23 * m.M23),
+                                        MathF.Sqrt(m.M31 * m.M31 + m.M32 * m.M32 + m.M33 * m.M33));
 
             if (SharpDX.MathUtil.IsZero(scale.X) ||
                 SharpDX.MathUtil.IsZero(scale.Y) ||

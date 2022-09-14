@@ -1,0 +1,457 @@
+﻿<bases:TrackingNotifyPropertyChangedWindowBase x:Class="LegendaryExplorer.Tools.ScriptDebugger.ScriptDebuggerWindow"
+                                         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                                         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                                         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                                         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                                         xmlns:local="clr-namespace:LegendaryExplorer.Tools.ScriptDebugger"
+                                         xmlns:bases="clr-namespace:LegendaryExplorer.SharedUI.Bases"
+                                         xmlns:controls="clr-namespace:LegendaryExplorer.SharedUI.Controls"
+                                         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+                                         xmlns:sharedUi="clr-namespace:LegendaryExplorer.SharedUI"
+                                         xmlns:converters="clr-namespace:LegendaryExplorer.SharedUI.Converters"
+                                         xmlns:fa5="http://schemas.fontawesome.com/icons/"
+                                         xmlns:unreal="clr-namespace:LegendaryExplorerCore.Unreal;assembly=LegendaryExplorerCore"
+                                         xmlns:sharedToolControls="clr-namespace:LegendaryExplorer.UserControls.SharedToolControls"
+                                         mc:Ignorable="d"
+                                         d:DataContext="{Binding RelativeSource={RelativeSource Self}}"
+                                         Title="Script Debugger" Closing="ScriptDebuggerWindow_OnClosing">
+
+    <Window.Resources>
+        <converters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </Window.Resources>
+    <Window.InputBindings>
+        <KeyBinding Key="F5" Command="{Binding ResumeCommand}"/>
+        <KeyBinding Key="F11" Command="{Binding StepIntoCommand}"/>
+        <KeyBinding Key="F10" Command="{Binding StepOverCommand}"/>
+        <KeyBinding Key="F11" Modifiers="Shift" Command="{Binding StepOutCommand}"/>
+    </Window.InputBindings>
+    <xctk:BusyIndicator IsBusy="{Binding Path=IsBusy}">
+        <Grid>
+            <DockPanel>
+                <StatusBar Height="23" DockPanel.Dock="Bottom" >
+                    <sharedToolControls:StatusBarGameIDIndicator GameType="{Binding Game, Mode=OneTime}" VerticalContentAlignment="Center" Visibility="Visible" Margin="3,-4,3,-4" DockPanel.Dock="Left" />
+                    <StatusBarItem>
+                        <TextBlock x:Name="StatusBar_LeftMostText" Text="{Binding StatusBarText}"/>
+                    </StatusBarItem>
+                </StatusBar>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="400"/> <!-- Do not set this width to Auto! Causes huge layout delay. Users can easily re-size it if need be. --> 
+                        <ColumnDefinition Width="5" />
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="5" />
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition/>
+                        <RowDefinition Height="5" />
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <xctk:BusyIndicator Grid.Row="0" Grid.RowSpan="4" Grid.Column="0" IsBusy="{Binding IsScriptDBBusy}">
+                        <DockPanel>
+                            <controls:SearchBox DockPanel.Dock="Top"
+                                                WatermarkText="Search Functions" TextChanged="FunctionListSearchBox_OnTextChanged" />
+                            <ListBox ItemsSource="{Binding FunctionList}" SelectionMode="Single"
+                                     SelectedItem="{Binding SelectedScriptDatabaseEntry}">
+                                <ListBox.Resources>
+                                    <DataTemplate DataType="{x:Type local:ScriptDatabaseEntry}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{Binding Path=FunctionPath, Mode=OneTime}" />
+                                            <TextBlock
+                                                Text="{Binding Path=FileName, StringFormat=' ({0})', Mode=OneTime}" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ListBox.Resources>
+                            </ListBox>
+                        </DockPanel>
+                        <xctk:BusyIndicator.BusyContentTemplate>
+                            <DataTemplate>
+                                <StackPanel
+                                    DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}">
+                                    <TextBlock Text="{Binding ScriptDBBusyText}" />
+                                    <ProgressBar IsIndeterminate="True" Margin="0,5,0,0" Height="15" />
+                                    <Button Content="Cancel" HorizontalAlignment="center" Margin="0,5,0,0" Padding="3"
+                                            Command="{Binding CancelScriptDBBusyCommand}"
+                                            sharedUi:Bindings.VisibilityToEnabled="True" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </xctk:BusyIndicator.BusyContentTemplate>
+                        <xctk:BusyIndicator.ProgressBarStyle>
+                            <Style TargetType="ProgressBar">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                            </Style>
+                        </xctk:BusyIndicator.ProgressBarStyle>
+                    </xctk:BusyIndicator>
+                    <GridSplitter Grid.Row="0" Grid.RowSpan="4" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                  Margin="-5,0"
+                                  BorderThickness="5,0"
+                                  BorderBrush="Transparent"
+                                  Panel.ZIndex="60" />
+                    <ToolBar Grid.Row="0" Grid.Column="2" IsEnabled="{Binding IsAttached}"
+                             sharedUi:Bindings.VisibilityToEnabled="True">
+                        <Button FontWeight="Bold" Command="{Binding DetachDebuggerCommand}">Detach</Button>
+                        <Separator />
+                        <Separator />
+                        <Button ToolTip="Break All" Command="{Binding BreakAllCommand}">
+                            <Button.Content>
+                                <fa5:FontAwesome Icon="Solid_Pause" Height="12" />
+                            </Button.Content>
+                        </Button>
+                        <Button ToolTip="Resume (F5)" Command="{Binding ResumeCommand}">
+                            <Button.Content>
+                                <fa5:FontAwesome Icon="Solid_Play" Height="12" />
+                            </Button.Content>
+                        </Button>
+                        <Separator />
+                        <Button ToolTip="Step Into (F11)" Command="{Binding StepIntoCommand}">
+                            <Button.Content>
+                                <fa5:FontAwesome Icon="Solid_LevelDownAlt" Height="12" />
+                            </Button.Content>
+                        </Button>
+                        <Button ToolTip="Step Over (F10)" Command="{Binding StepOverCommand}">
+                            <Button.Content>
+                                <fa5:FontAwesome Icon="Solid_LongArrowAltRight" Height="12" />
+                            </Button.Content>
+                        </Button>
+                        <Button ToolTip="Step Out (Shift+F11)" Command="{Binding StepOutCommand}">
+                            <Button.Content>
+                                <fa5:FontAwesome Icon="Solid_LevelUpAlt" Height="12" />
+                            </Button.Content>
+                        </Button>
+                    </ToolBar>
+                    <ListBox Grid.Row="1" Grid.Column="2" Name="FunctionListBox"  HorizontalAlignment="Stretch"
+                             VerticalAlignment="Stretch" ItemsSource="{Binding Statements}" SelectionMode="Single">
+                        <ListBox.Resources>
+                            <DataTemplate DataType="{x:Type local:ScriptStatement}">
+                                <StackPanel Orientation="Horizontal">
+                                    <Grid x:Name="Gutter" Background="Black" MouseDown="Gutter_OnMouseDown"
+                                          Margin="0,-5,0,-5">
+                                        <Label x:Name="HoverBreakPointIcon" Visibility="Hidden">
+                                            <Label.Content>
+                                                <fa5:FontAwesome Icon="Regular_Circle" Foreground="Red" />
+                                            </Label.Content>
+                                        </Label>
+                                        <Label x:Name="ActiveBreakPointIcon"
+                                               Visibility="{Binding HasBreakPoint, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                            <Label.Content>
+                                                <fa5:FontAwesome Icon="Solid_Circle" Foreground="Red" />
+                                            </Label.Content>
+                                        </Label>
+                                        <Label x:Name="CurrentStatementIcon"
+                                               Visibility="{Binding IsCurrentStatement, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                            <Label.Content>
+                                                <fa5:FontAwesome Icon="Solid_ArrowRight" Foreground="Yellow" />
+                                            </Label.Content>
+                                        </Label>
+                                    </Grid>
+                                    <TextBlock x:Name="MemPosBlock"
+                                               Text="{Binding Path=Position, StringFormat='{}(0x{0:X}):'}" />
+                                    <TextBlock x:Name="ScriptBlock" Margin="4,0,0,0" Text="{Binding Path=Text}">
+                                        <TextBlock.Style>
+                                            <Style>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Path=IsCurrentStatement}"
+                                                                 Value="True">
+                                                        <Setter Property="TextBlock.FontWeight" Value="Bold" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </StackPanel>
+                                <DataTemplate.Triggers>
+                                    <Trigger SourceName="Gutter" Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="HoverBreakPointIcon" Property="Visibility" Value="Visible" />
+                                    </Trigger>
+                                </DataTemplate.Triggers>
+                            </DataTemplate>
+                        </ListBox.Resources>
+                    </ListBox>
+                    <GridSplitter Grid.Row="2" Grid.Column="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                                  
+                                  BorderBrush="Transparent"
+                                  Panel.ZIndex="60" />
+                    <Grid Grid.Row="3" Grid.Column="2" IsEnabled="{Binding IsAttached, Converter={StaticResource InverseBooleanConverter}}"
+                          sharedUi:Bindings.VisibilityToEnabled="True">
+                        <Border BorderBrush="LightSlateGray" BorderThickness="0.65">
+                            <StackPanel MinWidth="200" Margin="8">
+                                <TextBlock Text="Welcome to Script Debugger" Margin="0,5,0,0" />
+                                <TextBlock Text="Requirements:" Margin="0,5,0,0" />
+                                <StackPanel>
+                                    <controls:Requirement x:Name="GameInstalledReq"
+                                                          FullfilledText="Mass Effect (Legendary Edition) is installed"
+                                                          Margin="0,5,0,5"
+                                                          UnFullfilledText="Can't find Mass Effect (Legendary Edition) installation!"
+                                                          ButtonText="Set LE1 path"
+                                                          Command="{Binding GameInstalledRequirementCommand, RelativeSource={RelativeSource AncestorType={x:Type local:ScriptDebuggerWindow}}}" />
+                                    <controls:Requirement x:Name="AsiLoaderInstalledReq"
+                                                          FullfilledText="ASI loader is installed"
+                                                          Margin="0,5,0,5"
+                                                          UnFullfilledText="ASI loader is not installed!"
+                                                          ButtonText="Get ASI loader"
+                                                          Command="{Binding ASILoaderInstalledRequirementCommand, RelativeSource={RelativeSource AncestorType={x:Type local:ScriptDebuggerWindow}}}" />
+                                    <controls:Requirement x:Name="DebuggerAsiInstalledReq"
+                                                          FullfilledText="Debugger ASI is installed"
+                                                          Margin="0,5,0,5"
+                                                          UnFullfilledText="Debugger ASI is not installed or is out of date!"
+                                                          ButtonText="Get Debugger ASI"
+                                                          Command="{Binding DebuggerASIInstalledRequirementCommand, RelativeSource={RelativeSource AncestorType={x:Type local:ScriptDebuggerWindow}}}" />
+                                    <TextBlock
+                                        Text="Once the above requirements are fulfilled, start the game, and attach the debugger."
+                                        Margin="15,5,15,5" TextWrapping="Wrap" />
+                                </StackPanel>
+                                <Button Name="AttachToGameButton" Content="Attach Debugger"
+                                        Margin="20,10,20,0"
+                                        Command="{Binding AttachDebuggerCommand, RelativeSource={RelativeSource AncestorType={x:Type local:ScriptDebuggerWindow}}}" />
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                    <Grid Grid.Row="3" Grid.Column="2" IsEnabled="{Binding IsAttached}"
+                          sharedUi:Bindings.VisibilityToEnabled="True">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="1" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <TabControl TabStripPlacement="Bottom">
+                            <TabItem Header="Locals">
+                                <controls:StretchingTreeView
+                                    controls:StretchingTreeViewItem.Expanded="TreeViewItem_OnExpanded"
+                                    ItemsSource="{Binding Locals}"
+                                    HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                                    <controls:StretchingTreeView.Resources>
+                                        <DataTemplate DataType="{x:Type local:IntPropertyValue}">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="200" />
+                                                    <ColumnDefinition />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Text="{Binding PropName, Mode=OneTime}" />
+                                                <xctk:IntegerUpDown Grid.Column="1" Value="{Binding Value}" />
+                                            </Grid>
+                                        </DataTemplate>
+                                        <DataTemplate DataType="{x:Type local:StringRefPropertyValue}">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="200" />
+                                                    <ColumnDefinition />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Text="{Binding PropName, Mode=OneTime}" />
+                                                <xctk:IntegerUpDown Grid.Column="1" Value="{Binding Value}" />
+                                            </Grid>
+                                        </DataTemplate>
+                                        <DataTemplate DataType="{x:Type local:FloatPropertyValue}">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="200" />
+                                                    <ColumnDefinition />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Text="{Binding PropName, Mode=OneTime}" />
+                                                <xctk:SingleUpDown Grid.Column="1" Value="{Binding Value}" />
+                                            </Grid>
+                                        </DataTemplate>
+                                        <DataTemplate DataType="{x:Type local:BytePropertyValue}">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="200" />
+                                                    <ColumnDefinition />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Text="{Binding PropName, Mode=OneTime}" />
+                                                <xctk:ByteUpDown Grid.Column="1" Value="{Binding Value}" />
+                                            </Grid>
+                                        </DataTemplate>
+                                        <DataTemplate DataType="{x:Type local:BoolPropertyValue}">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="200" />
+                                                    <ColumnDefinition />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Text="{Binding PropName, Mode=OneTime}" />
+                                                <CheckBox Grid.Column="1" IsChecked="{Binding Value}" />
+                                            </Grid>
+                                        </DataTemplate>
+                                        <DataTemplate DataType="{x:Type local:StrPropertyValue}">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="200" />
+                                                    <ColumnDefinition />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Text="{Binding PropName, Mode=OneTime}" />
+                                                <TextBox Grid.Column="1" Text="{Binding Value}" />
+                                            </Grid>
+                                        </DataTemplate>
+                                        <DataTemplate DataType="{x:Type local:NamePropertyValue}">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="200" />
+                                                    <ColumnDefinition />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Text="{Binding PropName, Mode=OneTime}" />
+                                                <TextBlock Grid.Column="1" Text="{Binding Value, Mode=OneTime}" />
+                                            </Grid>
+                                        </DataTemplate>
+                                        <DataTemplate DataType="{x:Type local:DelegatePropertyValue}">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="200" />
+                                                    <ColumnDefinition />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Text="{Binding PropName, Mode=OneTime}" />
+                                                <TextBlock Grid.Column="1" Text="{Binding Value, Mode=OneTime}" />
+                                            </Grid>
+                                        </DataTemplate>
+                                        <DataTemplate DataType="{x:Type local:EnumPropertyValue}">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="200" />
+                                                    <ColumnDefinition />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Text="{Binding PropName, Mode=OneTime}" />
+                                                <ComboBox Grid.Column="1" ItemsSource="{Binding EnumValues}"
+                                                          SelectedItem="{Binding Value}">
+                                                    <ComboBox.Resources>
+                                                        <DataTemplate DataType="{x:Type unreal:NameReference}">
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <TextBlock Text="{Binding Path=Instanced}"
+                                                                           Margin="5,0,0,0" />
+                                                            </StackPanel>
+                                                        </DataTemplate>
+                                                    </ComboBox.Resources>
+                                                </ComboBox>
+                                            </Grid>
+                                        </DataTemplate>
+                                        <HierarchicalDataTemplate DataType="{x:Type local:ObjectPropertyValue}"
+                                                                  ItemsSource="{Binding Properties}">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="200" />
+                                                    <ColumnDefinition />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Text="{Binding PropName, Mode=OneTime}" />
+                                                <TextBlock Grid.Column="1" Text="{Binding Value, Mode=OneTime}" />
+                                            </Grid>
+                                        </HierarchicalDataTemplate>
+                                        <HierarchicalDataTemplate DataType="{x:Type local:StructPropertyValue}"
+                                                                  ItemsSource="{Binding Properties}">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="200" />
+                                                    <ColumnDefinition />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Text="{Binding PropName, Mode=OneTime}" />
+                                                <TextBlock Grid.Column="1" Text="{Binding Value, Mode=OneTime}" />
+                                            </Grid>
+                                        </HierarchicalDataTemplate>
+                                        <HierarchicalDataTemplate DataType="{x:Type local:ArrayPropertyValue}"
+                                                                  ItemsSource="{Binding Elements}">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="200" />
+                                                    <ColumnDefinition />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Text="{Binding PropName, Mode=OneTime}" />
+                                                <TextBlock Grid.Column="1" Text="{Binding Value, Mode=OneTime}" />
+                                            </Grid>
+                                        </HierarchicalDataTemplate>
+                                        <DataTemplate DataType="{x:Type local:LoadingPropertyValue}">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="200" />
+                                                    <ColumnDefinition />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Text="{Binding PropName, Mode=OneTime}" />
+                                            </Grid>
+                                        </DataTemplate>
+                                    </controls:StretchingTreeView.Resources>
+                                </controls:StretchingTreeView>
+                            </TabItem>
+                        </TabControl>
+                        <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch"
+                                      Margin="-5,0"
+                                      BorderThickness="5,0"
+                                      BorderBrush="Transparent"
+                                      Panel.ZIndex="60" />
+                        <TabControl Grid.Column="2" TabStripPlacement="Bottom">
+                            <TabItem Header="Call Stack">
+                                <ListBox ItemsSource="{Binding CallStack}" SelectionMode="Single"
+                                         SelectedItem="{Binding SelectedCallStackEntry}">
+                                    <ListBox.Resources>
+                                        <DataTemplate DataType="{x:Type local:CallStackEntry}">
+                                            <Border HorizontalAlignment="Stretch">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*" />
+                                                        <ColumnDefinition />
+                                                    </Grid.ColumnDefinitions>
+                                                    <Label x:Name="SelectedCallIndicator" Visibility="Hidden">
+                                                        <Label.Content>
+                                                            <fa5:ImageAwesome Icon="Solid_ArrowRight" Height="10" />
+                                                        </Label.Content>
+                                                    </Label>
+                                                    <TextBlock Grid.Column="1"
+                                                               Text="{Binding DisplayText, Mode=OneTime}" />
+                                                </Grid>
+                                            </Border>
+                                            <DataTemplate.Triggers>
+                                                <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                                    <Setter TargetName="SelectedCallIndicator" Property="Visibility"
+                                                            Value="Visible" />
+                                                </DataTrigger>
+                                            </DataTemplate.Triggers>
+                                        </DataTemplate>
+                                    </ListBox.Resources>
+                                    <ListBox.ItemContainerStyle>
+                                        <Style TargetType="{x:Type ListBoxItem}">
+                                            <Setter Property="IsSelected"
+                                                    Value="{Binding Path=IsSelected, Mode=TwoWay}" />
+                                            <Setter Property="IsEnabled"
+                                                    Value="{Binding Path=IsNative, Mode=TwoWay, Converter={StaticResource InverseBooleanConverter}}" />
+                                        </Style>
+                                    </ListBox.ItemContainerStyle>
+                                </ListBox>
+                            </TabItem>
+                        </TabControl>
+                    </Grid>
+                    <GridSplitter Grid.Row="0" Grid.RowSpan="4" Grid.Column="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                  Margin="-5,0"
+                                  BorderThickness="5,0"
+                                  BorderBrush="Transparent"
+                                  Panel.ZIndex="60" />
+                    <DockPanel Grid.Row="0" Grid.RowSpan="4" Grid.Column="4">
+                        <!--<controls:SearchBox DockPanel.Dock="Top"
+                                            WatermarkText="Search BreakPoints" TextChanged="BreakPointSearchBox_OnTextChanged" />-->
+                        <Label DockPanel.Dock="Top">BreakPoints</Label>
+                        <ListBox ItemsSource="{Binding BreakPoints}" SelectionMode="Single"
+                                 SelectionChanged="BreakPoints_OnSelectionChanged">
+                            <ListBox.Resources>
+                                <DataTemplate DataType="{x:Type local:BreakPoint}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding Path=Position, StringFormat='{}(0x{0:X}):'}" />
+                                        <TextBlock Text="{Binding Path=FullFunctionPath, Mode=OneTime}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListBox.Resources>
+                        </ListBox>
+                    </DockPanel>
+                </Grid>
+            </DockPanel>
+        </Grid>
+        <xctk:BusyIndicator.BusyContentTemplate>
+            <DataTemplate>
+                <StackPanel DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}">
+                    <!--<TextBlock Text="{Binding BusyHeader}" FontWeight="Bold" TextAlignment="Center"/>-->
+                    <TextBlock Text="{Binding BusyText}"/>
+                    <ProgressBar IsIndeterminate="True"  Margin="0,5,0,0" Height="15" />
+                    <Button Content="Cancel" HorizontalAlignment="center" Margin="0,5,0,0" Padding="3" Command="{Binding CancelBusyCommand}" sharedUi:Bindings.VisibilityToEnabled="True"/>
+                </StackPanel>
+            </DataTemplate>
+        </xctk:BusyIndicator.BusyContentTemplate>
+        <xctk:BusyIndicator.ProgressBarStyle>
+            <Style TargetType="ProgressBar" >
+                <Setter Property="Visibility" Value="Collapsed"/>
+            </Style>
+        </xctk:BusyIndicator.ProgressBarStyle>
+    </xctk:BusyIndicator>
+</bases:TrackingNotifyPropertyChangedWindowBase>

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
@@ -7,6 +8,7 @@ namespace LegendaryExplorerCore.Audio
 {
     public class ISBank
     {
+        private int TestISBOffset;
         private string Filepath;
         public List<ISBankEntry> BankEntries = new List<ISBankEntry>();
         public ISBank(string isbPath)
@@ -18,7 +20,7 @@ namespace LegendaryExplorerCore.Audio
         public ISBank(byte[] binData)
         {
             MemoryStream ms = new MemoryStream(binData);
-            ms.Skip(4);
+            TestISBOffset = ms.ReadInt32();
             ParseBank(new EndianReader(ms), true);
         }
 
@@ -66,14 +68,27 @@ namespace LegendaryExplorerCore.Audio
                 chunksize = 0; //reset
                 var chunkStartPos = ms.BaseStream.Position;
                 string blockName = ms.ReadEndianASCIIString(4);
-                //Debug.WriteLine(blockName + " at " + (ms.Position - 4).ToString("X8"));
+                //Debug.WriteLine($"{(ms.Position - 4).ToString("X8")}: {blockName}");
                 switch (blockName)
                 {
                     case "LIST":
                         chunksize = ms.ReadUInt32();
-                        var nextblockname = ms.ReadEndianASCIIString(4);
+                        var dataType = ms.ReadEndianASCIIString(4);
                         var nextblockname2 = ms.ReadEndianASCIIString(4);
-                        if (nextblockname == "samp" && nextblockname2 == "titl")
+                        if (dataType == "fldr")
+                        {
+                            // Folder for organization. We are just going to skip this. Might parse in future if it's useful
+                            ms.Seek(-4, SeekOrigin.Current); // Seek back since there will be a subheader here.
+                            continue;
+                        }
+
+                        if (dataType == "samp" && nextblockname2 == "stat") //stat LE1 music_bank.isb
+                        {
+                            ms.Skip(ms.ReadInt32()); // Skip Stat
+                            nextblockname2 = ms.ReadEndianASCIIString(4);
+                        }
+
+                        if (dataType == "samp" && nextblockname2 == "titl") //stat LE1 music_bank.isb
                         {
                             if (!isEmbedded)
                             {
@@ -157,10 +172,15 @@ namespace LegendaryExplorerCore.Audio
                             var riffSize = ms.ReadUInt32(); //size of isfbtitl chunk
                             var riffType = ms.ReadEndianASCIIString(4); //type of ISB riff
                             var riffType2 = ms.ReadEndianASCIIString(4); //type of ISB riff
+
+                            //Debug.WriteLine($"Riff type is {riffType}");
+
                             if (riffType != "isbf" && riffType2 == "titl")
                             {
                                 //its an icbftitl, which never has data.
-                                ms.Seek(riffSize - 8, SeekOrigin.Current); //skip it
+                                //Debug.WriteLine($"Skipping non isbf type");
+                                ms.Seek(TestISBOffset, SeekOrigin.Begin);
+                                //ms.Seek(riffSize - 8, SeekOrigin.Current); //skip it
                                 continue; //skip
                             }
 
@@ -188,7 +208,7 @@ namespace LegendaryExplorerCore.Audio
                             var riffSize = ms.ReadUInt32(); //size of isfbtitl chunk
                             var riffType = ms.ReadEndianASCIIString(4); //type of ISB riff
                             var riffType2 = ms.ReadEndianASCIIString(4); //type of ISB riff
-                            if (riffType != "isbf" && riffType2 != "titl")
+                            if (riffType != "isbf" && riffType2 != "titl" && riffType2 != "stat") // stat: LE1 music_bank.isb
                             {
                                 //its an icbftitl, which never has data, or is not ISB
                                 ms.Seek(riffSize - 8, SeekOrigin.Current); //skip it

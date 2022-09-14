@@ -8,13 +8,20 @@ using LegendaryExplorerCore.Packages;
 
 namespace LegendaryExplorerCore.GameFilesystem
 {
+    /// <summary>
+    /// Static methods to get collections of files in a game directory
+    /// </summary>
     public static class MELoadedFiles
     {
         private static readonly string[] ME1FilePatterns = { "*.u", "*.upk", "*.sfm" };
         private const string ME23LEFilePattern = "*.pcc";
-
         private static readonly string[] ME23LEFilePatternIncludeTFC = { "*.pcc", "*.tfc" };
 
+        private static readonly string FauxStartupPath = Path.Combine("DLC_METR_Patch01", "CookedPCConsole", "Startup.pcc");
+
+        /// <summary>
+        /// Invalidates the cache of loaded files for all games
+        /// </summary>
         public static void InvalidateCaches()
         {
             cachedME1LoadedFiles = cachedME2LoadedFiles = cachedME3LoadedFiles = cachedLE1LoadedFiles = cachedLE2LoadedFiles = cachedLE3LoadedFiles = null;
@@ -28,12 +35,18 @@ namespace LegendaryExplorerCore.GameFilesystem
         private static CaseInsensitiveDictionary<string> cachedLE1LoadedFiles;
         private static CaseInsensitiveDictionary<string> cachedLE2LoadedFiles;
         private static CaseInsensitiveDictionary<string> cachedLE3LoadedFiles;
+
         /// <summary>
-        /// Gets a Dictionary of all loaded files in the given game. Key is the filename, value is file path
+        /// Gets a dictionary of all loaded files in the given game. Key is the filename, value is file path. This data may be cached; to reload it, set the forceReload flag to true
         /// </summary>
-        /// <param name="game"></param>
-        /// <returns></returns>
-        public static CaseInsensitiveDictionary<string> GetFilesLoadedInGame(MEGame game, bool forceReload = false, bool includeTFCs = false, bool includeAFCs = false, string gameRootOverride = null)
+        /// <param name="game">Game to get loaded files for</param>
+        /// <param name="forceReload">If false, method may return a cache of loaded files. If true, cache will be regenerated</param>
+        /// <param name="includeTFCs">If true, files with the .tfc extension will be included</param>
+        /// <param name="includeAFCs">If true, files with the .afc extension will be included</param>
+        /// <param name="gameRootOverride">Optional: override game path root</param>
+        /// <param name="forceUseCached">Optional: Set to true to forcibly use the cached version if available; ignoring the tfc/afc check for rebuilding. Only use if you know what you're doing; this is to improve performance in certain scenarios</param>
+        /// <returns>Case insensitive dictionary where key is filename and value is file path</returns>
+        public static CaseInsensitiveDictionary<string> GetFilesLoadedInGame(MEGame game, bool forceReload = false, bool includeTFCs = false, bool includeAFCs = false, string gameRootOverride = null, bool forceUseCached = false)
         {
             //Override: Do not use cached items
             if (!forceReload && gameRootOverride == null)
@@ -42,35 +55,51 @@ namespace LegendaryExplorerCore.GameFilesystem
                 if (game == MEGame.ME2 && cachedME2LoadedFiles != null)
                 {
                     bool useCached = true;
-                    useCached &= !includeTFCs || !cachedME2LoadedFiles.Keys.Any(x => x.EndsWith(".tfc"));
-                    useCached &= !includeAFCs || !cachedME2LoadedFiles.Keys.Any(x => x.EndsWith(".afc"));
+                    if (!forceUseCached)
+                    {
+                        useCached &= !includeTFCs || !cachedME2LoadedFiles.Keys.Any(x => x.EndsWith(".tfc"));
+                        useCached &= !includeAFCs || !cachedME2LoadedFiles.Keys.Any(x => x.EndsWith(".afc"));
+                    }
+
                     if (useCached) return cachedME2LoadedFiles;
                 }
                 if (game == MEGame.ME3 && cachedME3LoadedFiles != null)
                 {
                     bool useCached = true;
-                    useCached &= !includeTFCs || !cachedME3LoadedFiles.Keys.Any(x => x.EndsWith(".tfc"));
-                    useCached &= !includeAFCs || !cachedME3LoadedFiles.Keys.Any(x => x.EndsWith(".afc"));
+                    if (!forceUseCached)
+                    {
+                        useCached &= !includeTFCs || !cachedME3LoadedFiles.Keys.Any(x => x.EndsWith(".tfc"));
+                        useCached &= !includeAFCs || !cachedME3LoadedFiles.Keys.Any(x => x.EndsWith(".afc"));
+                    }
                     if (useCached) return cachedME3LoadedFiles;
                 }
                 if (game == MEGame.LE1 && cachedLE1LoadedFiles != null)
                 {
                     bool useCached = true;
-                    useCached &= !includeTFCs || !cachedLE1LoadedFiles.Keys.Any(x => x.EndsWith(".tfc"));
+                    if (!forceUseCached)
+                    {
+                        useCached &= !includeTFCs || !cachedLE1LoadedFiles.Keys.Any(x => x.EndsWith(".tfc"));
+                    }
                     if (useCached) return cachedLE1LoadedFiles;
                 }
                 if (game == MEGame.LE2 && cachedLE2LoadedFiles != null)
                 {
                     bool useCached = true;
-                    useCached &= !includeTFCs || !cachedLE2LoadedFiles.Keys.Any(x => x.EndsWith(".tfc"));
-                    useCached &= !includeAFCs || !cachedLE2LoadedFiles.Keys.Any(x => x.EndsWith(".afc"));
+                    if (!forceUseCached)
+                    {
+                        useCached &= !includeTFCs || !cachedLE2LoadedFiles.Keys.Any(x => x.EndsWith(".tfc"));
+                        useCached &= !includeAFCs || !cachedLE2LoadedFiles.Keys.Any(x => x.EndsWith(".afc"));
+                    }
                     if (useCached) return cachedLE2LoadedFiles;
                 }
                 if (game == MEGame.LE3 && cachedLE3LoadedFiles != null)
                 {
                     bool useCached = true;
-                    useCached &= !includeTFCs || !cachedLE3LoadedFiles.Keys.Any(x => x.EndsWith(".tfc"));
-                    useCached &= !includeAFCs || !cachedLE3LoadedFiles.Keys.Any(x => x.EndsWith(".afc"));
+                    if (!forceUseCached)
+                    {
+                        useCached &= !includeTFCs || !cachedLE3LoadedFiles.Keys.Any(x => x.EndsWith(".tfc"));
+                        useCached &= !includeAFCs || !cachedLE3LoadedFiles.Keys.Any(x => x.EndsWith(".afc"));
+                    }
                     if (useCached) return cachedLE3LoadedFiles;
                 }
             }
@@ -85,12 +114,14 @@ namespace LegendaryExplorerCore.GameFilesystem
             var bgPath = MEDirectories.GetBioGamePath(game, gameRootOverride);
             if (bgPath != null)
             {
-                foreach (string directory in GetEnabledDLCFolders(game, gameRootOverride).OrderBy(dir => GetMountPriority(dir, game)).Prepend(bgPath))
+                foreach (string directory in MELoadedDLC.GetEnabledDLCFolders(game, gameRootOverride)
+                             .OrderBy(dir => MELoadedDLC.GetMountPriority(dir, game))
+                             .Prepend(bgPath))
                 {
                     foreach (string filePath in GetCookedFiles(game, directory, includeTFCs, includeAFCs))
                     {
                         string fileName = Path.GetFileName(filePath);
-                        if (game == MEGame.LE3 && filePath.EndsWith($@"DLC_METR_Patch01{Path.DirectorySeparatorChar}CookedPCConsole{Path.DirectorySeparatorChar}Startup.pcc"))
+                        if (game == MEGame.LE3 && filePath.EndsWith(FauxStartupPath, StringComparison.InvariantCultureIgnoreCase))
                         {
                             continue; // This file is not used by game and will break lots of stuff if we don't filter it out. This is a bug in how LE3 was cooked
                         }
@@ -114,7 +145,6 @@ namespace LegendaryExplorerCore.GameFilesystem
         }
         #endregion
 
-        #region All Game Files
         private static List<string> cachedME1TargetFiles;
         private static List<string> cachedME2TargetFiles;
         private static List<string> cachedME3TargetFiles;
@@ -123,9 +153,16 @@ namespace LegendaryExplorerCore.GameFilesystem
         private static List<string> cachedLE3TargetFiles;
 
         /// <summary>
-        /// Gets a Dictionary of all loaded files in the given game. Key is the filename, value is file path
+        /// Gets a list of all loaded files in the given game.
         /// </summary>
-        /// <param name="game"></param>
+        /// <remarks>
+        /// How does this differ from <see cref="GetFilesLoadedInGame"/>.Values.ToList()?
+        /// GetFilesLoadedInGame handles edge cases and caching slightly better. I'm pretty sure M3 uses this one.
+        /// </remarks>
+        /// <param name="gamePath">Game root path. If null, default from MEDirectories will be used</param>
+        /// <param name="game">Game to get all loaded files for</param>
+        /// <param name="forceReload">If false, may return a cache of target files. If true, dictionary will be regenerated.</param>
+        /// <param name="includeTFC">If true, files with the .tfc extension will be included</param>
         /// <returns></returns>
         public static List<string> GetAllGameFiles(string gamePath, MEGame game, bool forceReload = false, bool includeTFC = false)
         {
@@ -144,7 +181,9 @@ namespace LegendaryExplorerCore.GameFilesystem
                 return new List<string>(); // Game path not set!
 
             var loadedFiles = new List<string>(2000);
-            foreach (string directory in MELoadedFiles.GetEnabledDLCFolders(game, gamePath).OrderBy(dir => GetMountPriority(dir, game)).Prepend(MEDirectories.GetBioGamePath(game, gamePath)))
+            foreach (string directory in MELoadedDLC.GetEnabledDLCFolders(game, gamePath)
+                         .OrderBy(dir => MELoadedDLC.GetMountPriority(dir, game))
+                         .Prepend(MEDirectories.GetBioGamePath(game, gamePath)))
             {
                 foreach (string filePath in GetCookedFiles(game, directory, includeTFC))
                 {
@@ -162,8 +201,13 @@ namespace LegendaryExplorerCore.GameFilesystem
 
             return loadedFiles;
         }
-        #endregion
 
+        /// <summary>
+        /// Gets all package files in a specified DLC
+        /// </summary>
+        /// <param name="game">Game to search in</param>
+        /// <param name="dlcName">Name of the DLC folder. Example: <c>DLC_MOD_EGM</c></param>
+        /// <returns>Full paths to all package files in the specified DLC folder, empty enumerable if DLC does not exist</returns>
         public static IEnumerable<string> GetDLCFiles(MEGame game, string dlcName)
         {
             var dlcPath = MEDirectories.GetDLCPath(game);
@@ -175,11 +219,19 @@ namespace LegendaryExplorerCore.GameFilesystem
                     return GetCookedFiles(game, specificDlcPath);
                 }
             }
-
             return Enumerable.Empty<string>();
         }
 
-        // How is this different from GetOfficialFiles?
+        /// <summary>
+        /// Gets all files from a specified game, including basegame and all DLC folders.
+        /// Package files will always be included, other extensions can be specified.
+        /// </summary>
+        /// <remarks>Includes files from mod added DLC folders</remarks>
+        /// <param name="game">Game to get files for. Default game path is used.</param>
+        /// <param name="includeTFCs">If true, files with the .tfc extension will also be included</param>
+        /// <param name="includeAFCs">If true, files with the .afc extension will also be included</param>
+        /// <param name="additionalExtensions">Array of additional extensions to be included. Only the extension should be passed in, EG: ".isb"</param>
+        /// <returns>Full paths to all files in the specified game's folder</returns>
         public static IEnumerable<string> GetAllFiles(MEGame game, bool includeTFCs = false, bool includeAFCs = false, string[] additionalExtensions = null)
         {
             var path = MEDirectories.GetBioGamePath(game);
@@ -188,11 +240,21 @@ namespace LegendaryExplorerCore.GameFilesystem
                 Debug.WriteLine($"Cannot get list of all files for game that cannot be found! Game: {game}. Returning empty list");
                 return new List<string>();
             }
-            return GetEnabledDLCFolders(game).Prepend(path).SelectMany(directory => GetCookedFiles(game, directory, includeTFCs, includeAFCs, additionalExtensions));
+            return MELoadedDLC.GetEnabledDLCFolders(game).Prepend(path)
+                .SelectMany(directory => GetCookedFiles(game, directory, includeTFCs, includeAFCs, additionalExtensions));
         }
 
-        public static IEnumerable<string> GetOfficialFiles(MEGame game, bool
-            includeTFCs = false, bool includeAFCs = false, string[] additionalExtensions = null)
+        /// <summary>
+        /// Gets all official files from a specified game, from basegame and official DLC folders.
+        /// Package files will always be included, other extensions can be specified.
+        /// </summary>
+        /// <remarks>Does not get files in mod folders, use <see cref="GetAllFiles"/> to get mod-added files</remarks>
+        /// <param name="game">Game to get files for. Default game path will be used.</param>
+        /// <param name="includeTFCs">If true, files with the .tfc extension will also be included</param>
+        /// <param name="includeAFCs">If true, files with the .afc extension will also be included</param>
+        /// <param name="additionalExtensions">Array of additional extensions to be included. Only the extension should be passed in, EG: ".isb"</param>
+        /// <returns>Full paths to all official files in the specified game's folder</returns>
+        public static IEnumerable<string> GetOfficialFiles(MEGame game, bool includeTFCs = false, bool includeAFCs = false, string[] additionalExtensions = null)
         {
             var path = MEDirectories.GetBioGamePath(game);
             if (path == null)
@@ -200,9 +262,20 @@ namespace LegendaryExplorerCore.GameFilesystem
                 Debug.WriteLine($"Cannot get list of official files for game that cannot be found! Game: {game}. Returning empty list");
                 return new List<string>();
             }
-            return GetOfficialDLCFolders(game).Prepend(path).SelectMany(directory => GetCookedFiles(game, directory, includeTFCs, includeAFCs, additionalExtensions));
+            return MELoadedDLC.GetOfficialDLCFolders(game).Prepend(path)
+                .SelectMany(directory => GetCookedFiles(game, directory, includeTFCs, includeAFCs, additionalExtensions));
         }
 
+        /// <summary>
+        /// Gets all game files from a specified BioGame or DLC folder. Package files will always be included, other extensions can be specified.
+        /// Only returns files that are in the CookedPC subfolder of the input folder.
+        /// </summary>
+        /// <param name="game">Game you are searching files for. This determines extensions that are used.</param>
+        /// <param name="directory">Path to DLC or Basegame directory to search in. Files will be enumerated from the CookedPC subfolder of this path.</param>
+        /// <param name="includeTFCs">If true, files with the .tfc extension will be included</param>
+        /// <param name="includeAFCs">If true, files with the .afc extension will be included</param>
+        /// <param name="additionalExtensions">Array of additional extensions to be included. Only the extension should be passed in, EG: ".isb"</param>
+        /// <returns>Full paths to all matching files in the input Cooked directory</returns>
         public static IEnumerable<string> GetCookedFiles(MEGame game, string directory, bool includeTFCs = false, bool includeAFCs = false, string[] additionalExtensions = null)
         {
             if (game == MEGame.ME1)
@@ -219,84 +292,94 @@ namespace LegendaryExplorerCore.GameFilesystem
             if (includeAFCs) extensions.Add("*.afc");
             if (additionalExtensions != null)
                 extensions.AddRange(additionalExtensions.Select(x => $"*{x}"));
-            extensions.Add("*.pcc"); //This is last, as any of the lookup methods will see if any of these files types exist in-order. By putting pcc's last, the lookups will be searched first when using
-            //includeTFC or includeAFC.
+            extensions.Add("*.pcc"); //This is last, as any of the lookup methods will see if any of these files types exist in-order.
+                                         //By putting PCCs last, the lookups will be searched first when using includeTFC or includeAFC.
             return extensions.SelectMany(pattern => Directory.EnumerateFiles(Path.Combine(directory, game.CookedDirName()), pattern, SearchOption.AllDirectories));
         }
 
-
-        // These methods should check DLCPath to avoid throwing exception
+        /// <summary>
+        /// Gets the base DLC directory of each unpacked DLC that will load in game
+        /// </summary>
+        /// <param name="game">Game to get DLC for</param>
+        /// <param name="gameRootOverride">Optional: override game path root</param>
+        /// <returns>An IEnumerable of full paths to enabled DLC folders (strings)</returns>
+        [Obsolete("This method is deprecated, use the same named method in MELoadedDLC instead")]
+        public static IEnumerable<string> GetEnabledDLCFolders(MEGame game, string gameRootOverride = null) =>
+            MELoadedDLC.GetEnabledDLCFolders(game, gameRootOverride);
 
         /// <summary>
-        /// Gets the base DLC directory of each unpacked DLC/mod that will load in game (eg. C:\Program Files (x86)\Origin Games\Mass Effect 3\BIOGame\DLC\DLC_EXP_Pack001)
-        /// Directory Override is used to use a custom path, for things like TFC Compactor, where the directory ME3Exp is pointing to may not be the one you want to use.
+        /// Gets the base DLC directory of each unpacked official DLC
         /// </summary>
-        /// <returns></returns>
-        public static IEnumerable<string> GetEnabledDLCFolders(MEGame game, string gameDirectoryOverride = null) =>
-            Directory.Exists(MEDirectories.GetDLCPath(game, gameDirectoryOverride))
-                ? Directory.EnumerateDirectories(MEDirectories.GetDLCPath(game, gameDirectoryOverride)).Where(dir => IsEnabledDLC(dir, game))
-                : Enumerable.Empty<string>();
-        public static IEnumerable<string> GetOfficialDLCFolders(MEGame game) =>
-            Directory.Exists(MEDirectories.GetDLCPath(game))
-                ? Directory.EnumerateDirectories(MEDirectories.GetDLCPath(game)).Where(dir => IsOfficialDLC(dir, game))
-                : Enumerable.Empty<string>();
+        /// <param name="game">Game to get DLC for</param>
+        /// <returns>An IEnumerable of full paths to official DLC folders (strings)</returns>
+        [Obsolete("This method is deprecated, use the same named method in MELoadedDLC instead")]
+        public static IEnumerable<string> GetOfficialDLCFolders(MEGame game) => MELoadedDLC.GetOfficialDLCFolders(game);
 
-        public static string GetMountDLCFromDLCDir(string dlcDirectory, MEGame game) => Path.Combine(dlcDirectory, game.CookedDirName(), "Mount.dlc");
+        /// <summary>
+        /// Gets the path to a Mount.dlc file from a given DLC folder
+        /// </summary>
+        /// <remarks>This method does not check if Mount.dlc exists. If given a Game 1 DLC folder, it will still provide a path to a Mount.dlc file.</remarks>
+        /// <param name="dlcDirectory">Path to a DLC folder</param>
+        /// <param name="game">Game this DLC is for</param>
+        /// <returns>Path to where Mount.dlc file should be</returns>
+        [Obsolete("This method is deprecated, use the same named method in MELoadedDLC instead")]
+        public static string GetMountDLCFromDLCDir(string dlcDirectory, MEGame game) =>
+            MELoadedDLC.GetMountDLCFromDLCDir(dlcDirectory, game);
 
+        /// <summary>
+        /// Checks whether a DLC folder is enabled or not. Checks for existence of mount file and if folder starts with "DLC_"
+        /// </summary>
+        /// <param name="dir">Path to a DLC folder</param>
+        /// <param name="game">Game this DLC is for</param>
+        /// <returns>True if DLC is enabled, false otherwise</returns>
+        [Obsolete("This method is deprecated, use the same named method in MELoadedDLC instead")]
         public static bool IsEnabledDLC(string dir, MEGame game)
         {
-            string dlcName = Path.GetFileName(dir);
-            if (game == MEGame.ME1)
-            {
-                return ME1Directory.OfficialDLC.Contains(dlcName) || File.Exists(Path.Combine(dir, "AutoLoad.ini"));
-            }
-            else if (game == MEGame.LE1) return dlcName.StartsWith("DLC_MOD") && File.Exists(Path.Combine(dir, "AutoLoad.ini"));
-            return dlcName.StartsWith("DLC_") && File.Exists(GetMountDLCFromDLCDir(dir, game));
+            return MELoadedDLC.IsEnabledDLC(dir, game);
         }
-
-        public static bool IsOfficialDLC(string dir, MEGame game)
-        {
-            string dlcName = Path.GetFileName(dir);
-            if (game == MEGame.LE1) return false;
-            return MEDirectories.OfficialDLC(game).Contains(dlcName);
-        }
-
-        public static int GetMountPriority(string dlcDirectory, MEGame game)
-        {
-            if (game.IsGame1())
-            {
-                if (game is MEGame.ME1)
-                {
-                    int idx = 1 + ME1Directory.OfficialDLC.IndexOf(Path.GetFileName(dlcDirectory));
-                    if (idx > 0)
-                    {
-                        return idx;
-                    }
-                }
-                //is mod
-                string autoLoadPath = Path.Combine(dlcDirectory, "AutoLoad.ini");
-                var dlcAutoload = DuplicatingIni.LoadIni(autoLoadPath);
-                return Convert.ToInt32(dlcAutoload["ME1DLCMOUNT"]["ModMount"].Value);
-            }
-            return MountFile.GetMountPriority(GetMountDLCFromDLCDir(dlcDirectory, game));
-        }
-
-        public static string GetDLCNameFromDir(string dlcDirectory) => Path.GetFileName(dlcDirectory).Substring(4);
 
         /// <summary>
-        /// Gets all the enabled DLC in a dictionary along with the mount value.
+        /// Checks whether a DLC directory is an official DLC
         /// </summary>
-        /// <returns></returns>
+        /// <remarks>Only checks based on folder name, not folder contents</remarks>
+        /// <param name="dir">Path to a DLC folder</param>
+        /// <param name="game">Game to check official DLC for</param>
+        /// <returns>True if path is directory to an official DLC, false otherwise</returns>
+        [Obsolete("This method is deprecated, use the same named method in MELoadedDLC instead")]
+        public static bool IsOfficialDLC(string dir, MEGame game)
+        {
+            return MELoadedDLC.IsOfficialDLC(dir, game);
+        }
+
+        /// <summary>
+        /// Finds the mount priority of a given DLC folder. Uses AutoLoad.ini or mount file depending on game.
+        /// </summary>
+        /// <param name="dlcDirectory">Path to a DLC folder</param>
+        /// <param name="game">Game of DLC</param>
+        /// <returns>Mount priority</returns>
+        [Obsolete("This method is deprecated, use the same named method in MELoadedDLC instead")]
+        public static int GetMountPriority(string dlcDirectory, MEGame game)
+        {
+            return MELoadedDLC.GetMountPriority(dlcDirectory, game);
+        }
+
+        /// <summary>
+        /// Removes the "DLC_" prefix from a DLC folder path
+        /// </summary>
+        /// <remarks>If the folder name is "DLC_MOD_", this method will not remove the "MOD_"</remarks>
+        /// <param name="dlcDirectory">Path to a DLC folder</param>
+        /// <returns>Folder name without "DLC_"</returns>
+        [Obsolete("This method is deprecated, use the same named method in MELoadedDLC instead")]
+        public static string GetDLCNameFromDir(string dlcDirectory) => MELoadedDLC.GetDLCNameFromDir(dlcDirectory);
+
+        /// <summary>
+        /// Gets all the enabled DLC in a game along with the mount value.
+        /// </summary>
+        /// <returns>Dictionary of DLC folder name to mount priority</returns>
+        [Obsolete("This method is deprecated, use the same named method in MELoadedDLC instead")]
         public static Dictionary<string, int> GetDLCNamesWithMounts(MEGame game)
         {
-            var dlcs = MELoadedFiles.GetEnabledDLCFolders(game);
-            var mountlist = new Dictionary<string, int>();
-            foreach (var d in dlcs)
-            {
-                var m = MELoadedFiles.GetMountPriority(d, game);
-                mountlist.Add(Path.GetFileName(d), m);
-            }
-            return mountlist;
+            return MELoadedDLC.GetDLCNamesWithMounts(game);
         }
     }
 }

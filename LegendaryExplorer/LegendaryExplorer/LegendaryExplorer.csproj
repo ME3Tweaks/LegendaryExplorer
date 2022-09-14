@@ -1,519 +1,552 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>net5.0-windows</TargetFramework>
-    <UseWPF>true</UseWPF>
-    <UseWindowsForms>true</UseWindowsForms>
-    <Platforms>x64</Platforms>
-    <ApplicationIcon>Resources\Images\LEX_icon.ico</ApplicationIcon>
-    <Configurations>WinDebug;WinRelease;WinAzureRelease;WinAzureTest</Configurations>
-    <DebugSymbols>true</DebugSymbols>
-    <RunPostBuildEvent>Always</RunPostBuildEvent>
-    <PreserveCompilationContext>false</PreserveCompilationContext>
-    <ValidateExecutableReferencesMatchSelfContained>false</ValidateExecutableReferencesMatchSelfContained>
-    <Version>6.1.0</Version>
-  </PropertyGroup>
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net6.0-windows</TargetFramework>
+		<LangVersion>10.0</LangVersion>
+		<UseWPF>true</UseWPF>
+		<UseWindowsForms>true</UseWindowsForms>
+		<Platforms>x64</Platforms>
+		<ApplicationIcon>Resources\Images\LEX_icon.ico</ApplicationIcon>
+		<Configurations>WinDebug;WinRelease;WinAzureRelease;WinAzureTest</Configurations>
+		<DebugSymbols>true</DebugSymbols>
+		<RunPostBuildEvent>Always</RunPostBuildEvent>
+		<PreserveCompilationContext>false</PreserveCompilationContext>
+		<ValidateExecutableReferencesMatchSelfContained>false</ValidateExecutableReferencesMatchSelfContained>
+		<Version>6.2.0</Version>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)'=='WinDebug'">
-    <DebugType>pdbonly</DebugType>
-    <DefineConstants>TRACE;DEBUG;WINDOWS</DefineConstants>
-    <XamlDebuggingInformation>True</XamlDebuggingInformation>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)'=='WinDebug'">
+		<DebugType>pdbonly</DebugType>
+		<DefineConstants>TRACE;DEBUG;WINDOWS</DefineConstants>
+		<XamlDebuggingInformation>True</XamlDebuggingInformation>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)'=='WinRelease'">
-    <DebugType>embedded</DebugType>
-    <DefineConstants>WINDOWS;RELEASE</DefineConstants>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)'=='WinRelease'">
+		<DebugType>embedded</DebugType>
+		<Optimize>true</Optimize>
+		<DefineConstants>WINDOWS;RELEASE</DefineConstants>
+	</PropertyGroup>
 
-  <!-- Nightly release from Azure-->
-  <PropertyGroup Condition="'$(Configuration)'=='WinAzureRelease'">
-    <DebugType>embedded</DebugType>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DefineConstants>WINDOWS;NIGHTLY</DefineConstants>
-  </PropertyGroup>
+	<!-- Nightly release from Azure-->
+	<PropertyGroup Condition="'$(Configuration)'=='WinAzureRelease'">
+		<DebugType>embedded</DebugType>
+		<Optimize>true</Optimize>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<DefineConstants>WINDOWS;NIGHTLY</DefineConstants>
+	</PropertyGroup>
 
-  <!-- Azure flags allow special code to make tests work on azure since game won't exist there. It should never be used locally -->
-  <PropertyGroup Condition="'$(Configuration)'=='WinAzureTest'">
-    <DebugType>embedded</DebugType>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DefineConstants>WINDOWS;AZURE</DefineConstants>
-  </PropertyGroup>
+	<!-- Azure flags allow special code to make tests work on azure since game won't exist there. It should never be used locally -->
+	<PropertyGroup Condition="'$(Configuration)'=='WinAzureTest'">
+		<DebugType>embedded</DebugType>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<DefineConstants>WINDOWS;AZURE</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WinDebug|x64'">
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WinRelease|x64'">
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <None Remove="Resources\Images\bink.jpg" />
-    <None Remove="Resources\Images\GameIcons\UDK_48.ico" />
-    <Compile Remove="Resources\exec\**" />
-    <EmbeddedResource Remove="Resources\exec\**" />
-    <None Remove="Resources\exec\**" />
-    <None Remove="Tools\Icons\**\*.ico" />
-    <Page Remove="Resources\exec\**" />
-    <None Remove="Tools\PackageEditor\ExportIcons\icon_texturecube.png" />
-    <None Remove="Tools\PlotDatabase\PlotTypeIcons\icon_bool.png" />
-    <None Remove="Tools\PlotDatabase\PlotTypeIcons\icon_cnd.png" />
-    <None Remove="Tools\PlotDatabase\PlotTypeIcons\icon_float.png" />
-    <None Remove="Tools\PlotDatabase\PlotTypeIcons\icon_int.png" />
-    <None Remove="UserControls\SharedToolControls\Scene3D\StandardShader.hlsl" />
-    <Page Update="UserControls\ExportLoaderControls\AnimNodeExportLoader.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Fonts\Exo-Regular.ttf" />
-    <Resource Include="Resources\Fonts\Exo-SemiBold.ttf" />
-    <Resource Include="Resources\Fonts\Hack-Bold.ttf" />
-    <Resource Include="Resources\Fonts\TitilliumWeb-Italic.ttf" />
-    <Resource Include="Resources\Fonts\TitilliumWeb-Light.ttf" />
-    <Resource Include="Resources\Fonts\TitilliumWeb-Regular.ttf" />
-    <Resource Include="Resources\Fonts\TitilliumWeb-SemiBold.ttf" />
-    <Resource Include="Resources\Fonts\BIOMASS2-LIGHT.ttf" />
-    <Resource Include="Resources\Fonts\BIOMASS2-BOLD.ttf" />
-    <Resource Include="Resources\Images\bink.jpg" />
-    <Resource Include="Tools\PlotDatabase\PlotTypeIcons\icon_float.png" />
-    <Resource Include="Tools\PlotDatabase\PlotTypeIcons\icon_cnd.png" />
-    <Resource Include="Tools\PlotDatabase\PlotTypeIcons\icon_int.png" />
-    <Resource Include="Tools\PlotDatabase\PlotTypeIcons\icon_bool.png" />
-    <!-- Kismet font being an EmbeddedResource instead of a Resource like the other fonts is intentional, do not change it!-->
-    <EmbeddedResource Include="Resources\Fonts\KismetFont.ttf" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\SharedProjects\Be.Windows.Forms.HexBox\Be.Windows.Forms.HexBox.csproj" />
-    <ProjectReference Include="..\..\SharedProjects\HexConverterWPF\HexConverterWPF.csproj" />
-    <ProjectReference Include="..\LegendaryExplorerCore\LegendaryExplorerCore.csproj" />
-    <ProjectReference Include="..\Xceed.Wpf.Toolkit\DotNetProjects.Wpf.Extended.Toolkit.csproj" />
-    <ProjectReference Include="..\..\SharedProjects\Piccolo\Piccolo.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<None Remove="Resources\Images\bink.jpg" />
+		<None Remove="Resources\Images\GameIcons\UDK_48.ico" />
+		<Compile Remove="Resources\exec\**" />
+		<EmbeddedResource Remove="Resources\exec\**" />
+		<None Remove="Resources\exec\**" />
+		<None Remove="Tools\Icons\**\*.ico" />
+		<Page Remove="Resources\exec\**" />
+		<None Remove="Tools\PackageEditor\ExportIcons\icon_texturecube.png" />
+		<None Remove="Tools\PlotDatabase\PlotTypeIcons\icon_bool.png" />
+		<None Remove="Tools\PlotDatabase\PlotTypeIcons\icon_cnd.png" />
+		<None Remove="Tools\PlotDatabase\PlotTypeIcons\icon_float.png" />
+		<None Remove="Tools\PlotDatabase\PlotTypeIcons\icon_int.png" />
+		<None Remove="UserControls\SharedToolControls\Scene3D\StandardShader.hlsl" />
+		<Page Update="Tools\AnimationViewer\AnimationViewerWindow2.xaml">
+			<XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+		</Page>
+		<Page Update="Tools\LiveLevelEditor\LELiveLevelEditorWindow.xaml">
+			<XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+		</Page>
+		<Page Update="UserControls\ExportLoaderControls\AnimNodeExportLoader.xaml">
+			<SubType>Designer</SubType>
+		</Page>
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Resources\Fonts\Exo-Regular.ttf" />
+		<Resource Include="Resources\Fonts\Exo-SemiBold.ttf" />
+		<Resource Include="Resources\Fonts\Hack-Bold.ttf" />
+		<Resource Include="Resources\Fonts\TitilliumWeb-Italic.ttf" />
+		<Resource Include="Resources\Fonts\TitilliumWeb-Light.ttf" />
+		<Resource Include="Resources\Fonts\TitilliumWeb-Regular.ttf" />
+		<Resource Include="Resources\Fonts\TitilliumWeb-SemiBold.ttf" />
+		<Resource Include="Resources\Fonts\BIOMASS2-LIGHT.ttf" />
+		<Resource Include="Resources\Fonts\BIOMASS2-BOLD.ttf" />
+		<Resource Include="Resources\Images\bink.jpg" />
+		<Resource Include="Tools\PlotDatabase\PlotTypeIcons\icon_float.png" />
+		<Resource Include="Tools\PlotDatabase\PlotTypeIcons\icon_cnd.png" />
+		<Resource Include="Tools\PlotDatabase\PlotTypeIcons\icon_int.png" />
+		<Resource Include="Tools\PlotDatabase\PlotTypeIcons\icon_bool.png" />
+		<!-- Kismet font being an EmbeddedResource instead of a Resource like the other fonts is intentional, do not change it!-->
+		<EmbeddedResource Include="Resources\Fonts\KismetFont.ttf" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\SharedProjects\Be.Windows.Forms.HexBox\Be.Windows.Forms.HexBox.csproj" />
+		<ProjectReference Include="..\..\SharedProjects\HexConverterWPF\HexConverterWPF.csproj" />
+		<ProjectReference Include="..\LegendaryExplorerCore\LegendaryExplorerCore.csproj" />
+		<ProjectReference Include="..\submodules\WwiseTools\WwiseTools_DotNet6\WwiseTools_DotNet6.csproj" />
+		<ProjectReference Include="..\WaveFormRendererLib\WaveFormRendererLib.csproj" />
+		<ProjectReference Include="..\Xceed.Wpf.Toolkit\DotNetProjects.Wpf.Extended.Toolkit.csproj" />
+		<ProjectReference Include="..\..\SharedProjects\Piccolo\Piccolo.csproj" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="AvalonEdit" Version="6.1.1" />
-    <PackageReference Include="BinaryPack" Version="1.0.1" />
-    <PackageReference Include="ClosedXML" Version="0.95.3" />
-    <PackageReference Include="ConsoleAppLauncher" Version="2.0.0" />
-    <PackageReference Include="FontAwesome5" Version="2.1.0" />
-    <PackageReference Include="gong-wpf-dragdrop" Version="2.3.2" />
-    <PackageReference Include="Gu.Wpf.DataGrid2D" Version="0.2.4" />
-    <PackageReference Include="HMBSbige.SingleInstance" Version="5.0.0" />
-    <PackageReference Include="JetBrains.Profiler.SelfApi" Version="2.1.2" />
-    <PackageReference Include="LibVLCSharp.WPF" Version="3.5.1" />
-    <PackageReference Include="Microsoft.AppCenter" Version="4.3.0" />
-    <PackageReference Include="Microsoft.AppCenter.Analytics" Version="4.3.0" />
-    <PackageReference Include="Microsoft.AppCenter.Crashes" Version="4.3.0" />
-    <PackageReference Include="Microsoft.Wpf.Interop.DirectX-x64" Version="0.9.0-beta-22856" />
-    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.31" />
-    <PackageReference Include="NAudio" Version="2.0.1" />
-    <PackageReference Include="SharpDX" Version="4.2.0" />
-    <PackageReference Include="SharpDX.D3DCompiler" Version="4.2.0" />
-    <PackageReference Include="SharpDX.Desktop" Version="4.2.0" />
-    <PackageReference Include="SharpDX.Direct2D1" Version="4.2.0" />
-    <PackageReference Include="SharpDX.Direct3D11" Version="4.2.0" />
-    <PackageReference Include="SharpDX.DXGI" Version="4.2.0" />
-    <PackageReference Include="System.CommandLine" Version="2.0.0-beta1.20071.2" />
-    <PackageReference Include="System.Drawing.Common" Version="5.0.2" />
-    <PackageReference Include="VideoLAN.LibVLC.Windows" Version="3.0.14" />
-    <PackageReference Include="WindowsAPICodePack-Shell" Version="1.1.1" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="AvalonEdit" Version="6.1.3.50" />
+		<PackageReference Include="BinaryPack" Version="1.0.3" />
+		<PackageReference Include="CliWrap" Version="3.4.4" />
+		<PackageReference Include="ClosedXML" Version="0.96.0" />
+		<PackageReference Include="ConsoleAppLauncher" Version="2.0.0" />
+		<PackageReference Include="FontAwesome5" Version="2.1.11" />
+		<PackageReference Include="gong-wpf-dragdrop" Version="3.1.1" />
+		<PackageReference Include="Gu.Wpf.DataGrid2D" Version="0.2.4" />
+		<!--Do not upgrade SingleInstance-->
+		<PackageReference Include="HMBSbige.SingleInstance" Version="[5.0.0]" />
+		<PackageReference Include="JetBrains.Profiler.SelfApi" Version="2.3.0" />
+		<PackageReference Include="LibVLCSharp.WPF" Version="3.6.6" />
+		<PackageReference Include="Microsoft.AppCenter" Version="4.5.3" />
+		<PackageReference Include="Microsoft.AppCenter.Analytics" Version="4.5.3" />
+		<PackageReference Include="Microsoft.AppCenter.Crashes" Version="4.5.3" />
+		<PackageReference Include="Microsoft.Wpf.Interop.DirectX-x64" Version="0.9.0-beta-22856" />
+		<PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
+		<PackageReference Include="MSTest.TestAdapter" Version="2.2.10" />
+		<PackageReference Include="MSTest.TestFramework" Version="2.2.10" />
+		<PackageReference Include="NAudio" Version="2.1.0" />
+		<PackageReference Include="SharpDX" Version="4.2.0" />
+		<PackageReference Include="SharpDX.D3DCompiler" Version="4.2.0" />
+		<PackageReference Include="SharpDX.Desktop" Version="4.2.0" />
+		<PackageReference Include="SharpDX.Direct2D1" Version="4.2.0" />
+		<PackageReference Include="SharpDX.Direct3D11" Version="4.2.0" />
+		<PackageReference Include="SharpDX.DXGI" Version="4.2.0" />
+		<PackageReference Include="System.CommandLine" Version="2.0.0-beta1.20071.2" />
+		<PackageReference Include="System.Drawing.Common" Version="6.0.0" />
+		<PackageReference Include="VideoLAN.LibVLC.Windows" Version="3.0.17.4" />
+		<PackageReference Include="WindowsAPICodePack-Shell" Version="1.1.1" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Update="MainWindow\SettingsWindow.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>SettingsWindow.xaml</LastGenOutput>
-    </None>
-    <None Update="Misc\AppSettings\SettingsBuilder.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>SettingsBuilder.cs</LastGenOutput>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\.editorconfig" Link=".editorconfig" />
-    <None Include="Misc\AppSettings\SettingsBuilder.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>SettingsBuilder.tt</DependentUpon>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Tools\Icons\**\*.ico" />
-    <Resource Include="Resources\Images\**\*.ico" />
-    <Resource Include="Resources\Images\*.gif" />
-    <!-- Is there a fontawesome excel icon?-->
-    <Resource Include="Resources\Images\*.png" />
-    <Resource Include="Tools\PackageEditor\ExportIcons\*" />
-  </ItemGroup>
+	<ItemGroup>
+		<None Update="MainWindow\SettingsWindow.tt">
+			<Generator>TextTemplatingFileGenerator</Generator>
+			<LastGenOutput>SettingsWindow.xaml</LastGenOutput>
+		</None>
+		<None Update="Misc\AppSettings\SettingsBuilder.tt">
+			<Generator>TextTemplatingFileGenerator</Generator>
+			<LastGenOutput>SettingsBuilder.cs</LastGenOutput>
+		</None>
+	</ItemGroup>
+	<ItemGroup>
+		<None Include="..\.editorconfig" Link=".editorconfig" />
+		<None Include="Misc\AppSettings\SettingsBuilder.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>SettingsBuilder.tt</DependentUpon>
+		</None>
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Tools\Icons\**\*.ico" />
+		<Resource Include="Resources\Images\**\*.ico" />
+		<Resource Include="Resources\Images\*.gif" />
+		<!-- Is there a fontawesome excel icon?-->
+		<Resource Include="Resources\Images\*.png" />
+		<Resource Include="Tools\PackageEditor\ExportIcons\*" />
+	</ItemGroup>
 
-  <!--The following reduces executable size by not including the other build's images.-->
-  <ItemGroup Condition="'$(Configuration)'=='WinAzureRelease' Or '$(Configuration)'=='WinAzureTest'">
-    <Resource Remove="Resources\Images\Legendary_Explorer_Graphic2.png"/>
-    <Resource Remove="Resources\Images\LEX_Splash.png"/>
-  </ItemGroup>
-  <ItemGroup Condition="'$(Configuration)'!='WinAzureRelease' And '$(Configuration)'!='WinAzureTest'">
-    <Resource Remove="Resources\Images\Legendary_Explorer_Graphic2_Nightly.png"/>
-    <Resource Remove="Resources\Images\LEX_Splash_Nightly.png"/>
-  </ItemGroup>
+	<!--The following reduces executable size by not including the other build's images.-->
+	<ItemGroup Condition="'$(Configuration)'=='WinAzureRelease' Or '$(Configuration)'=='WinAzureTest'">
+		<Resource Remove="Resources\Images\Legendary_Explorer_Graphic2.png" />
+		<Resource Remove="Resources\Images\LEX_Splash.png" />
+	</ItemGroup>
+	<ItemGroup Condition="'$(Configuration)'!='WinAzureRelease' And '$(Configuration)'!='WinAzureTest'">
+		<Resource Remove="Resources\Images\Legendary_Explorer_Graphic2_Nightly.png" />
+		<Resource Remove="Resources\Images\LEX_Splash_Nightly.png" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\StandardShader.hlsl" />
-  </ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Include="Resources\TextureShader.hlsl" />
+	</ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Include="Resources\StandardShader.hlsl" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
-  </ItemGroup>
+	<ItemGroup>
+		<Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <VlcWindowsX64IncludeFiles Include="plugins\d3d%2A\%2A" />
-    <VlcWindowsX64IncludeFiles Include="libvlc.dll;libvlccore.dll;hrtfs\%2A%2A;" />
-    <VlcWindowsX64IncludeFiles Include="locale\en_GB\%2A" />
-    <VlcWindowsX64IncludeFiles Include="plugins\codec\libavcodec_plugin.dll" />
-    <VlcWindowsX64IncludeFiles Include="plugins\access\libimem_plugin.dll" />
-    <VlcWindowsX64IncludeFiles Include="plugins\audio%2A\%2A" />
-    <VlcWindowsX64IncludeFiles Include="plugins\video_output\%2A" />
-    <VlcWindowsX86IncludeFiles Include="locale\en_GB\%2A" />
-  </ItemGroup>
+	<ItemGroup>
+		<VlcWindowsX64IncludeFiles Include="plugins\d3d%2A\%2A" />
+		<VlcWindowsX64IncludeFiles Include="libvlc.dll;libvlccore.dll;hrtfs\%2A%2A;" />
+		<VlcWindowsX64IncludeFiles Include="locale\en_GB\%2A" />
+		<VlcWindowsX64IncludeFiles Include="plugins\codec\libavcodec_plugin.dll" />
+		<VlcWindowsX64IncludeFiles Include="plugins\access\libimem_plugin.dll" />
+		<VlcWindowsX64IncludeFiles Include="plugins\audio%2A\%2A" />
+		<VlcWindowsX64IncludeFiles Include="plugins\video_output\%2A" />
+		<VlcWindowsX86IncludeFiles Include="locale\en_GB\%2A" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Compile Update="Dialogs\ClassPickerDlg.xaml.cs">
-      <DependentUpon>ClassPickerDlg.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Dialogs\SoundReplaceOptionsDialog - Copy.xaml.cs">
-      <DependentUpon>SoundReplaceOptionsDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="MainWindow\ToolPanel.xaml.cs">
-      <DependentUpon>ToolPanel.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Misc\AppSettings\SettingsBuilder.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>SettingsBuilder.tt</DependentUpon>
-    </Compile>
-    <Compile Update="SharedUI\Controls\InputComboBoxWPF.xaml.cs">
-      <DependentUpon>InputComboBoxWPF.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="SharedUI\Controls\SearchBox.xaml.cs">
-      <DependentUpon>SearchBox.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="SharedUI\Controls\ToolBox.xaml.cs">
-      <DependentUpon>ToolBox.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="ToolsetDev\FileHexViewerWPF.xaml.cs">
-      <DependentUpon>FileHexViewerWPF.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Tools\AnimationImporterExporter\AnimationImporter.xaml.cs">
-      <DependentUpon>AnimationImporter.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Tools\AssetDatabase\AssetDatabaseWindow.xaml.cs">
-      <DependentUpon>AssetDatabaseWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Tools\Dialogue Editor\ConvGraphEditor.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="Tools\Dialogue Editor\LinkEditor.xaml.cs">
-      <DependentUpon>LinkEditor.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Tools\PlotEditor\CodexMapView.xaml.cs">
-      <DependentUpon>CodexMapView.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Tools\PlotEditor\Dialogs\ChangeObjectIdDialog.xaml.cs">
-      <DependentUpon>ChangeObjectIdDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Tools\PlotEditor\Dialogs\CopyObjectDialog.xaml.cs">
-      <DependentUpon>CopyObjectDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Tools\PlotEditor\Dialogs\NewObjectDialog.xaml.cs">
-      <DependentUpon>NewObjectDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Tools\PlotEditor\FindObjectUsagesView.xaml.cs">
-      <DependentUpon>FindObjectUsagesView.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Tools\PlotEditor\QuestMapView.xaml.cs">
-      <DependentUpon>QuestMapView.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Tools\PlotEditor\StateEventMapView.xaml.cs">
-      <DependentUpon>StateEventMapView.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Tools\PlotEditor\StateTaskListsView.xaml.cs">
-      <DependentUpon>StateTaskListsView.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Tools\TextureStudio\MasterTextureSelector.xaml.cs">
-      <DependentUpon>MasterTextureSelector.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Tools\PathfindingEditor\PathingGraphEditor.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="Tools\PathfindingEditor\ReachSpecsPanel.xaml.cs">
-      <DependentUpon>ReachSpecsPanel.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Tools\PathfindingEditor\ValidationPanel.xaml.cs">
-      <DependentUpon>ValidationPanel.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Tools\WwiseEditor\WwiseGraphEditor.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="UserControls\ExportLoaderControls\InterpDataTimeline\Timeline.xaml.cs">
-      <DependentUpon>Timeline.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="UserControls\ExportLoaderControls\BytecodeEditor.xaml.cs">
-      <DependentUpon>BytecodeEditor.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="UserControls\ExportLoaderControls\FaceFXAnimSetEditorControl.xaml.cs">
-      <DependentUpon>FaceFXAnimSetEditorControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Tools\Sequence Editor\GraphEditor.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="Tools\Sequence Editor\KismetLogParser.xaml.cs">
-      <DependentUpon>KismetLogParser.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Tools\Sequence Editor\SequenceEditorWPF.xaml.cs">
-      <DependentUpon>SequenceEditorWPF.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Tools\Soundplorer\SoundplorerWPF.xaml.cs">
-      <DependentUpon>SoundplorerWPF.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Tools\TlkManager\TLKManagerWPF.xaml.cs">
-      <DependentUpon>TLKManagerWPF.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Tools\TlkManager\TLKManagerWPF_ExportReplaceDialog.xaml.cs">
-      <DependentUpon>TLKManagerWPF_ExportReplaceDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="UserControls\ExportLoaderControls\BinaryInterpreter\BinaryInterpreterWPF.xaml.cs">
-      <DependentUpon>BinaryInterpreterWPF.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="UserControls\ExportLoaderControls\Bio2DAEditor\Bio2DAEditorWPF.xaml.cs">
-      <DependentUpon>Bio2DAEditorWPF.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="UserControls\ExportLoaderControls\CurveEditor.xaml.cs">
-      <DependentUpon>CurveEditor.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="UserControls\ExportLoaderControls\ParticleSystems\ParticleModuleExportLoader.xaml.cs">
-      <DependentUpon>ParticleModuleExportLoader.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="UserControls\ExportLoaderControls\ParticleSystems\ParticleSystemExportLoader.xaml.cs">
-      <DependentUpon>ParticleSystemExportLoader.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="UserControls\ExportLoaderControls\Soundpanel\Soundpanel.xaml.cs">
-      <DependentUpon>Soundpanel.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Dialogs\SoundReplaceOptionsDialog.xaml.cs">
-      <DependentUpon>SoundReplaceOptionsDialog.xaml</DependentUpon>
-    </Compile>
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Update="Dialogs\ClassPickerDlg.xaml.cs">
+			<DependentUpon>ClassPickerDlg.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="Dialogs\SoundReplaceOptionsDialog - Copy.xaml.cs">
+			<DependentUpon>SoundReplaceOptionsDialog.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="MainWindow\ToolPanel.xaml.cs">
+			<DependentUpon>ToolPanel.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="Misc\AppSettings\SettingsBuilder.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>SettingsBuilder.tt</DependentUpon>
+		</Compile>
+		<Compile Update="SharedUI\Controls\InputComboBoxWPF.xaml.cs">
+			<DependentUpon>InputComboBoxWPF.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="SharedUI\Controls\SearchBox.xaml.cs">
+			<DependentUpon>SearchBox.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="SharedUI\Controls\ToolBox.xaml.cs">
+			<DependentUpon>ToolBox.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="ToolsetDev\FileHexViewerWPF.xaml.cs">
+			<DependentUpon>FileHexViewerWPF.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="Tools\AnimationImporterExporter\AnimationImporter.xaml.cs">
+			<DependentUpon>AnimationImporter.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="Tools\AssetDatabase\AssetDatabaseWindow.xaml.cs">
+			<DependentUpon>AssetDatabaseWindow.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="Tools\Dialogue Editor\ConvGraphEditor.cs" />
+		<Compile Update="Tools\Dialogue Editor\LinkEditor.xaml.cs">
+			<DependentUpon>LinkEditor.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="Tools\PlotEditor\CodexMapView.xaml.cs">
+			<DependentUpon>CodexMapView.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="Tools\PlotEditor\Dialogs\ChangeObjectIdDialog.xaml.cs">
+			<DependentUpon>ChangeObjectIdDialog.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="Tools\PlotEditor\Dialogs\CopyObjectDialog.xaml.cs">
+			<DependentUpon>CopyObjectDialog.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="Tools\PlotEditor\Dialogs\NewObjectDialog.xaml.cs">
+			<DependentUpon>NewObjectDialog.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="Tools\PlotEditor\FindObjectUsagesView.xaml.cs">
+			<DependentUpon>FindObjectUsagesView.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="Tools\PlotEditor\QuestMapView.xaml.cs">
+			<DependentUpon>QuestMapView.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="Tools\PlotEditor\StateEventMapView.xaml.cs">
+			<DependentUpon>StateEventMapView.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="Tools\PlotEditor\StateTaskListsView.xaml.cs">
+			<DependentUpon>StateTaskListsView.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="Tools\TextureStudio\MasterTextureSelector.xaml.cs">
+			<DependentUpon>MasterTextureSelector.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="Tools\PathfindingEditor\PathingGraphEditor.cs" />
+		<Compile Update="Tools\PathfindingEditor\ReachSpecsPanel.xaml.cs">
+			<DependentUpon>ReachSpecsPanel.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="Tools\PathfindingEditor\ValidationPanel.xaml.cs">
+			<DependentUpon>ValidationPanel.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="Tools\WwiseEditor\WwiseGraphEditor.cs" />
+		<Compile Update="UserControls\ExportLoaderControls\InterpDataTimeline\Timeline.xaml.cs">
+			<DependentUpon>Timeline.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="UserControls\ExportLoaderControls\BytecodeEditor.xaml.cs">
+			<DependentUpon>BytecodeEditor.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="UserControls\ExportLoaderControls\FaceFXAnimSetEditorControl.xaml.cs">
+			<DependentUpon>FaceFXAnimSetEditorControl.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="Tools\Sequence Editor\SequenceGraphEditor.cs" />
+		<Compile Update="Tools\Sequence Editor\KismetLogParser.xaml.cs">
+			<DependentUpon>KismetLogParser.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="Tools\Sequence Editor\SequenceEditorWPF.xaml.cs">
+			<DependentUpon>SequenceEditorWPF.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="Tools\Soundplorer\SoundplorerWPF.xaml.cs">
+			<DependentUpon>SoundplorerWPF.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="Tools\TlkManager\TLKManagerWPF.xaml.cs">
+			<DependentUpon>TLKManagerWPF.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="Tools\TlkManager\TLKManagerWPF_ExportReplaceDialog.xaml.cs">
+			<DependentUpon>TLKManagerWPF_ExportReplaceDialog.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="UserControls\ExportLoaderControls\BinaryInterpreter\BinaryInterpreterWPF.xaml.cs">
+			<DependentUpon>BinaryInterpreterWPF.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="UserControls\ExportLoaderControls\Bio2DAEditor\Bio2DAEditorWPF.xaml.cs">
+			<DependentUpon>Bio2DAEditorWPF.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="UserControls\ExportLoaderControls\CurveEditor.xaml.cs">
+			<DependentUpon>CurveEditor.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="UserControls\ExportLoaderControls\ParticleSystems\ParticleModuleExportLoader.xaml.cs">
+			<DependentUpon>ParticleModuleExportLoader.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="UserControls\ExportLoaderControls\ParticleSystems\ParticleSystemExportLoader.xaml.cs">
+			<DependentUpon>ParticleSystemExportLoader.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="UserControls\ExportLoaderControls\Soundpanel\Soundpanel.xaml.cs">
+			<DependentUpon>Soundpanel.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="Dialogs\SoundReplaceOptionsDialog.xaml.cs">
+			<DependentUpon>SoundReplaceOptionsDialog.xaml</DependentUpon>
+		</Compile>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Page Update="Dialogs\ClassPickerDlg.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Dialogs\SetWwisePathDialog.xaml">
-      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="MainWindow\Help.xaml">
-      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-    </Page>
-    <Page Update="MainWindow\SettingsWindow.xaml">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>SettingsWindow.tt</DependentUpon>
-    </Page>
-    <Page Update="MainWindow\ToolPanel.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="SharedUI\Controls\InputComboBoxWPF.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="SharedUI\Controls\SearchBox.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="SharedUI\Controls\ToolBox.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="ToolsetDev\FileHexViewer.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Tools\AFCCompactor\AFCCompactorWindow.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Tools\AnimationImporterExporter\AnimationImporterExporterWindow.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Tools\AssetDatabase\AssetDatabaseWindow.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Tools\AudioLocalizer\AudioLocalizerWindow.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Tools\AutoTOC\AutoTOCWindow.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Tools\Dialogue Editor\DialogueEditorWindow.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Tools\Dialogue Editor\LinkEditor.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Tools\DialogueDumper\DialogueDumperWindow.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Tools\InterpEditor\InterpEditorWindow.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Tools\PackageDumper\PackageDumperWindow.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Tools\PlotEditor\CodexMapView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Tools\PlotEditor\Dialogs\ChangeObjectIdDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Tools\PlotEditor\Dialogs\CopyObjectDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Tools\PlotEditor\Dialogs\NewObjectDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Tools\PlotEditor\FindObjectUsagesView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Tools\PlotEditor\PlotEditorWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Tools\PlotEditor\QuestMapView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Tools\PlotEditor\StateEventMapView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Tools\PlotEditor\StateTaskListsView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Tools\SFARExplorer\SFARExplorerWindow.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Tools\TextureStudio\MasterTextureSelector.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Tools\TextureStudio\TextureStudioWindow.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Tools\TextureStudio\PlotManagerWindow.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="UserControls\ExportLoaderControls\TLKEditor.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Tools\Meshplorer\MeshplorerWindow.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="UserControls\ExportLoaderControls\MeshRenderer.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Tools\MountEditor\MountEditorWindow.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Tools\PathfindingEditor\PathfindingEditorWindow.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Tools\PathfindingEditor\ReachSpecsPanel.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Tools\PathfindingEditor\ValidationPanel.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Tools\TFCCompactor\TFCCompactorWindow.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Tools\WwiseEditor\WwiseEditorWindow.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="UserControls\ExportLoaderControls\CollectionActorEditorExportLoader.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="UserControls\ExportLoaderControls\InterpDataTimeline\Timeline.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="UserControls\ExportLoaderControls\BytecodeEditor.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="UserControls\ExportLoaderControls\FaceFXAnimSetEditorControl.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Tools\FaceFXEditor\FaceFXEditorWindow.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Tools\Sequence Editor\KismetLogParser.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Tools\Sequence Editor\SequenceEditorWPF.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Tools\Soundplorer\SoundplorerWPF.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Tools\TlkManager\TLKManagerWPF.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Tools\TlkManager\TLKManagerWPF_ExportReplaceDialog.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="UserControls\ExportLoaderControls\BinaryInterpreter\BinaryInterpreterWPF.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="UserControls\ExportLoaderControls\Bio2DAEditor\Bio2DAEditorWPF.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="UserControls\ExportLoaderControls\CurveEditor.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="UserControls\ExportLoaderControls\ParticleSystems\ParticleModuleExportLoader.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="UserControls\ExportLoaderControls\ParticleSystems\ParticleSystemExportLoader.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="UserControls\ExportLoaderControls\Soundpanel\Soundpanel.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Dialogs\SoundReplaceOptionsDialog.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-  </ItemGroup>
+	<ItemGroup>
+		<Page Update="Dialogs\ClassPickerDlg.xaml">
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Update="Dialogs\SetWwisePathDialog.xaml">
+			<XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Update="MainWindow\Help.xaml">
+			<XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+		</Page>
+		<Page Update="MainWindow\SettingsWindow.xaml">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>SettingsWindow.tt</DependentUpon>
+		</Page>
+		<Page Update="MainWindow\ToolPanel.xaml">
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Update="SharedUI\Controls\InputComboBoxWPF.xaml">
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Update="SharedUI\Controls\SearchBox.xaml">
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Update="SharedUI\Controls\ToolBox.xaml">
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Update="ToolsetDev\FileHexViewer.xaml">
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Update="Tools\AFCCompactor\AFCCompactorWindow.xaml">
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Update="Tools\AnimationImporterExporter\AnimationImporterExporterWindow.xaml">
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Update="Tools\AssetDatabase\AssetDatabaseWindow.xaml">
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Update="Tools\AudioLocalizer\AudioLocalizerWindow.xaml">
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Update="Tools\AutoTOC\AutoTOCWindow.xaml">
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Update="Tools\Dialogue Editor\DialogueEditorWindow.xaml">
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Update="Tools\Dialogue Editor\LinkEditor.xaml">
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Update="Tools\DialogueDumper\DialogueDumperWindow.xaml">
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Update="Tools\InterpEditor\InterpEditorWindow.xaml">
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Update="Tools\PackageDumper\PackageDumperWindow.xaml">
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Update="Tools\PlotEditor\CodexMapView.xaml">
+			<SubType>Designer</SubType>
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+		<Page Update="Tools\PlotEditor\Dialogs\ChangeObjectIdDialog.xaml">
+			<SubType>Designer</SubType>
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+		<Page Update="Tools\PlotEditor\Dialogs\CopyObjectDialog.xaml">
+			<SubType>Designer</SubType>
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+		<Page Update="Tools\PlotEditor\Dialogs\NewObjectDialog.xaml">
+			<SubType>Designer</SubType>
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+		<Page Update="Tools\PlotEditor\FindObjectUsagesView.xaml">
+			<SubType>Designer</SubType>
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+		<Page Update="Tools\PlotEditor\PlotEditorWindow.xaml">
+			<SubType>Designer</SubType>
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+		<Page Update="Tools\PlotEditor\QuestMapView.xaml">
+			<SubType>Designer</SubType>
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+		<Page Update="Tools\PlotEditor\StateEventMapView.xaml">
+			<SubType>Designer</SubType>
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+		<Page Update="Tools\PlotEditor\StateTaskListsView.xaml">
+			<SubType>Designer</SubType>
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+		<Page Update="Tools\SFARExplorer\SFARExplorerWindow.xaml">
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Update="Tools\TextureStudio\MasterTextureSelector.xaml">
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Update="Tools\TextureStudio\TextureStudioWindow.xaml">
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Update="Tools\TextureStudio\PlotManagerWindow.xaml">
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Update="UserControls\ExportLoaderControls\TLKEditorExportLoader.xaml">
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Update="Tools\Meshplorer\MeshplorerWindow.xaml">
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Update="UserControls\ExportLoaderControls\MeshRenderer.xaml">
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Update="Tools\MountEditor\MountEditorWindow.xaml">
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Update="Tools\PathfindingEditor\PathfindingEditorWindow.xaml">
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Update="Tools\PathfindingEditor\ReachSpecsPanel.xaml">
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Update="Tools\PathfindingEditor\ValidationPanel.xaml">
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Update="Tools\TFCCompactor\TFCCompactorWindow.xaml">
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Update="Tools\WwiseEditor\WwiseEditorWindow.xaml">
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Update="UserControls\ExportLoaderControls\CollectionActorEditorExportLoader.xaml">
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Update="UserControls\ExportLoaderControls\InterpDataTimeline\Timeline.xaml">
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Update="UserControls\ExportLoaderControls\BytecodeEditor.xaml">
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Update="UserControls\ExportLoaderControls\FaceFXAnimSetEditorControl.xaml">
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Update="Tools\FaceFXEditor\FaceFXEditorWindow.xaml">
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Update="Tools\Sequence Editor\KismetLogParser.xaml">
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Update="Tools\Sequence Editor\SequenceEditorWPF.xaml">
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Update="Tools\Soundplorer\SoundplorerWPF.xaml">
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Update="Tools\TlkManager\TLKManagerWPF.xaml">
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Update="Tools\TlkManager\TLKManagerWPF_ExportReplaceDialog.xaml">
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Update="UserControls\ExportLoaderControls\BinaryInterpreter\BinaryInterpreterWPF.xaml">
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Update="UserControls\ExportLoaderControls\Bio2DAEditor\Bio2DAEditorWPF.xaml">
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Update="UserControls\ExportLoaderControls\CurveEditor.xaml">
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Update="UserControls\ExportLoaderControls\ParticleSystems\ParticleModuleExportLoader.xaml">
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Update="UserControls\ExportLoaderControls\ParticleSystems\ParticleSystemExportLoader.xaml">
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Update="UserControls\ExportLoaderControls\Soundpanel\Soundpanel.xaml">
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Update="Dialogs\SoundReplaceOptionsDialog.xaml">
+			<SubType>Designer</SubType>
+		</Page>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Resources\FileAssocIcons\" />
-    <Folder Include="Tools\PlotEditor\SFXGame\biodefine\" />
-    <Folder Include="UserControls\ExportLoaderControls\ScriptEditor\" />
-  </ItemGroup>
+	<ItemGroup>
+		<Folder Include="Resources\FileAssocIcons\" />
+		<Folder Include="Tools\PlotEditor\SFXGame\biodefine\" />
+		<Folder Include="UserControls\ExportLoaderControls\ScriptEditor\" />
+		<Folder Include="UserControls\SharedToolControls\DirectX\" />
+	</ItemGroup>
 
-  <Target Name="Date" BeforeTargets="BeforeBuild">
-    <WriteLinesToFile File="$(ProjectDir)BuildInfo.cs" Lines="/*generated by csproj on build. Do not edit*/namespace LegendaryExplorer{public partial class App{const long CompileTime=$([System.DateTime]::UtcNow.Ticks)%3B}}" Overwrite="true" />
-    <ItemGroup>
-      <Compile Include="$(ProjectDir)BuildInfo.cs" />
-    </ItemGroup>
-  </Target>
+	<Target Name="Date" BeforeTargets="BeforeBuild">
+		<WriteLinesToFile File="$(ProjectDir)BuildInfo.cs" Lines="/*generated by csproj on build. Do not edit*/namespace LegendaryExplorer{public partial class App{const long CompileTime=$([System.DateTime]::UtcNow.Ticks)%3B}}" Overwrite="true" />
+		<ItemGroup>
+			<Compile Include="$(ProjectDir)BuildInfo.cs" />
+		</ItemGroup>
+	</Target>
 
-  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="powershell -ExecutionPolicy Bypass -File &quot;BuildTools\UpdateTextTransforms.ps1&quot;" />
-  </Target>
+	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+		<Exec Command="powershell -ExecutionPolicy Bypass -File &quot;BuildTools\UpdateTextTransforms.ps1&quot;" />
+	</Target>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Message Importance="high" Text="PublishDir=$(PublishDir)" />
-    <Exec Command="xcopy /f /e /y &quot;Resources\exec&quot; &quot;$(OutDir)exec\&quot;" />
-    <Exec Command="&quot;$(ProjectDir)BuildTools\InsertIcons.exe&quot; &quot;$(TargetDir)LegendaryExplorer.exe&quot; &quot;$(ProjectDir)BuildTools\iconlist.txt&quot;" />
-    <!--Space required or it tries to escape the quote-->
-    <!-- Not 100% working. Seems like sqlite has same post build in parallel somehow? -->
-    <!-- Used for stable deployments script -->
-    <!--<Exec Command="powershell -ExecutionPolicy Bypass -File &quot;Build\PostBuildCleanup.ps1&quot; &quot;$(TargetDir) &quot;" />-->
-  </Target>
-  <Target Name="PostPublish" AfterTargets="Publish">
-    <Message Importance="high" Text="Copying exec to publish directory $(PublishDir)exec" />
-    <Exec Command="xcopy /f /e /y &quot;Resources\exec&quot; &quot;$(PublishDir)exec\&quot;" />
-  </Target>
+	<ItemGroup>
+		<!--These are for encoding ogg - used by ISACTHelper.dll -->
+		<ContentWithTargetPath Include="Libraries\ogg.dll" Condition="$(Configuration.StartsWith('Win'))">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<TargetPath>ogg.dll</TargetPath>
+		</ContentWithTargetPath>
+		<ContentWithTargetPath Include="Libraries\vorbis.dll" Condition="$(Configuration.StartsWith('Win'))">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<TargetPath>vorbis.dll</TargetPath>
+		</ContentWithTargetPath>
+		<ContentWithTargetPath Include="Libraries\vorbisenc.dll" Condition="$(Configuration.StartsWith('Win'))">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<TargetPath>vorbisenc.dll</TargetPath>
+		</ContentWithTargetPath>
+	</ItemGroup>
+
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Message Importance="high" Text="PublishDir=$(PublishDir)" />
+		<Exec Command="xcopy /f /e /y &quot;Resources\exec&quot; &quot;$(OutDir)exec\&quot;" />
+		<Exec Command="&quot;$(ProjectDir)BuildTools\InsertIcons.exe&quot; &quot;$(TargetDir)LegendaryExplorer.exe&quot; &quot;$(ProjectDir)BuildTools\iconlist.txt&quot;" />
+		<!--Space required or it tries to escape the quote-->
+		<!-- Not 100% working. Seems like sqlite has same post build in parallel somehow? -->
+		<!-- Used for stable deployments script -->
+		<!--<Exec Command="powershell -ExecutionPolicy Bypass -File &quot;Build\PostBuildCleanup.ps1&quot; &quot;$(TargetDir) &quot;" />-->
+	</Target>
+	<Target Name="PostPublish" AfterTargets="Publish">
+		<Message Importance="high" Text="Copying exec to publish directory $(PublishDir)exec" />
+		<Exec Command="xcopy /f /e /y &quot;Resources\exec&quot; &quot;$(PublishDir)exec\&quot;" />
+	</Target>
 </Project>
 

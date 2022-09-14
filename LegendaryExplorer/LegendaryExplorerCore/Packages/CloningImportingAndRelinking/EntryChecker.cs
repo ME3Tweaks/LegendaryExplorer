@@ -37,7 +37,23 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             }
         }
 
+        public void AddBlockingError(string message, LEXOpenable entry)
+        {
+            lock (syncLock)
+            {
+                BlockingErrors.Add(new EntryStringPair(entry, message));
+            }
+        }
+
         public void AddSignificantIssue(string message, IEntry entry = null)
+        {
+            lock (syncLock)
+            {
+                SignificantIssues.Add(new EntryStringPair(entry, message));
+            }
+        }
+
+        public void AddSignificantIssue(string message, LEXOpenable entry)
         {
             lock (syncLock)
             {
@@ -52,6 +68,15 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 InfoWarnings.Add(new EntryStringPair(entry, message));
             }
         }
+
+        public void AddInfoWarning(string message, LEXOpenable entry)
+        {
+            lock (syncLock)
+            {
+                InfoWarnings.Add(new EntryStringPair(entry, message));
+            }
+        }
+
 
         public void ClearMessages()
         {
@@ -294,7 +319,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                             item.AddSignificantIssue(localizationDelegate(ME3XL.string_interp_warningExportStackElementOutsideTables, prefix, 1, stack2), exp);
                         }
                     }
-                    else if (exp.TemplateOwnerClassIdx is var toci && toci >= 0)
+                    else if (exp.TemplateOwnerClassIdx is var toci and >= 0)
                     {
                         var TemplateOwnerClassIdx = EndianReader.ToInt32(exp.DataReadOnly, toci, exp.FileRef.Endian);
                         if (TemplateOwnerClassIdx != 0 && !package.IsEntry(TemplateOwnerClassIdx))
@@ -320,20 +345,20 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 {
                     if (!exp.IsDefaultObject && ObjectBinary.From(exp) is ObjectBinary objBin)
                     {
-                        List<(UIndex, string)> indices = objBin.GetUIndexes(exp.FileRef.Game);
-                        foreach ((UIndex uIndex, string propName) in indices)
+                        List<int> indices = objBin.GetUIndexes(exp.FileRef.Game);
+                        foreach (int uIndex in indices)
                         {
-                            if (uIndex.value != 0 && !exp.FileRef.IsEntry(uIndex.value))
+                            if (uIndex != 0 && !exp.FileRef.IsEntry(uIndex))
                             {
-                                item.AddSignificantIssue(localizationDelegate(ME3XL.string_interp_warningBinaryReferenceOutsideTables, prefix, uIndex.value), exp);
+                                item.AddSignificantIssue(localizationDelegate(ME3XL.string_interp_warningBinaryReferenceOutsideTables, prefix, uIndex), exp);
                             }
-                            else if (exp.FileRef.GetEntry(uIndex.value)?.ObjectName.ToString() == @"Trash")
+                            else if (exp.FileRef.GetEntry(uIndex)?.ObjectName.ToString() == @"Trash")
                             {
-                                item.AddSignificantIssue(localizationDelegate(ME3XL.string_interp_warningBinaryReferenceTrashed, prefix, uIndex.value), exp);
+                                item.AddSignificantIssue(localizationDelegate(ME3XL.string_interp_warningBinaryReferenceTrashed, prefix, uIndex), exp);
                             }
-                            else if (exp.FileRef.GetEntry(uIndex.value)?.ObjectName.ToString() == @"ME3ExplorerTrashPackage")
+                            else if (exp.FileRef.GetEntry(uIndex)?.ObjectName.ToString() == @"ME3ExplorerTrashPackage")
                             {
-                                item.AddSignificantIssue(localizationDelegate(ME3XL.string_interp_warningBinaryReferenceTrashed, prefix, uIndex.value), exp);
+                                item.AddSignificantIssue(localizationDelegate(ME3XL.string_interp_warningBinaryReferenceTrashed, prefix, uIndex), exp);
                             }
                         }
 
@@ -544,11 +569,61 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             }
             else if (property is DelegateProperty dp)
             {
-                if (dp.Value.Object != 0 && !entry.FileRef.IsEntry(dp.Value.Object))
+                if (dp.Value.ContainingObjectUIndex != 0 && !entry.FileRef.IsEntry(dp.Value.ContainingObjectUIndex))
                 {
                     item.AddSignificantIssue(localizationDelegate(ME3XL.string_interp_warningDelegatePropertyIsOutsideOfExportTable, prefix, dp.Name.Name), entry);
                 }
             }
+        }
+
+        /// <summary>
+        /// Returns a list of duplicate indexes in a package file. Trash exports are ignored.
+        /// </summary>
+        /// <param name="Pcc">Package file to check against</param>
+        /// <returns>A list of <see cref="EntryStringPair"/> objects that detail the second or further duplicate. If this list is empty, there are no duplicates detected.</returns>
+        public static List<EntryStringPair> CheckForDuplicateIndices(IMEPackage Pcc)
+        {
+            var duplicates = new List<EntryStringPair>();
+            var duplicatesPackagePathIndexMapping = new Dictionary<string, List<int>>();
+            foreach (ExportEntry exp in Pcc.Exports)
+            {
+                string key = exp.InstancedFullPath;
+                if (key.StartsWith(UnrealPackageFile.TrashPackageName))
+                    continue; //Do not report these as requiring re-indexing.
+                if (!duplicatesPackagePathIndexMapping.TryGetValue(key, out List<int> indexList))
+                {
+                    indexList = new List<int>();
+                    duplicatesPackagePathIndexMapping[key] = indexList;
+                }
+                else
+                {
+                    duplicates.Add(new EntryStringPair(exp,
+                        $"{exp.UIndex} {exp.InstancedFullPath} has duplicate index (index value {exp.indexValue})"));
+                }
+
+                indexList.Add(exp.UIndex);
+            }
+
+            // IMPORTS TOO
+            foreach (ImportEntry imp in Pcc.Imports)
+            {
+                string key = imp.InstancedFullPath;
+                if (key.StartsWith(UnrealPackageFile.TrashPackageName))
+                    continue; //Do not report these as requiring re-indexing.
+                if (!duplicatesPackagePathIndexMapping.TryGetValue(key, out List<int> indexList))
+                {
+                    indexList = new List<int>();
+                    duplicatesPackagePathIndexMapping[key] = indexList;
+                }
+                else
+                {
+                    duplicates.Add(new EntryStringPair(imp, $"{imp.UIndex} {imp.InstancedFullPath} has duplicate index (index value {imp.indexValue})"));
+                }
+
+                indexList.Add(imp.UIndex);
+            }
+
+            return duplicates;
         }
     }
 }

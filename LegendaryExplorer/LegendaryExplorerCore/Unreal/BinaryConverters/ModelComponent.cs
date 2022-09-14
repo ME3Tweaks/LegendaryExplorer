@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.CompilerServices;
 using LegendaryExplorerCore.Packages;
+using UIndex = System.Int32;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
@@ -34,22 +32,20 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             };
         }
 
-        public override List<(UIndex, string)> GetUIndexes(MEGame game)
+        public override void ForEachUIndex<TAction>(MEGame game, in TAction action)
         {
-            var uIndexes = new List<(UIndex, string)>();
+            ref TAction a = ref Unsafe.AsRef(action);
 
-            uIndexes.Add((Model, nameof(Model)));
+            a.Invoke(ref Model, nameof(Model));
             for (int i = 0; i < Elements.Length; i++)
             {
                 ModelElement elm = Elements[i];
                 string prefix = $"Elements[{i}].";
-                uIndexes.AddRange(elm.LightMap.GetUIndexes(game, prefix));
-                uIndexes.Add((elm.Component, $"{prefix}Component"));
-                uIndexes.Add((elm.Material, $"{prefix}Material"));
-                uIndexes.AddRange(elm.ShadowMaps.Select((u,j) => (u, $"{prefix}ShadowMaps[{j}]")));
+                elm.LightMap.ForEachUIndex(game, action, prefix);
+                a.Invoke(ref elm.Component, $"{prefix}Component");
+                a.Invoke(ref elm.Material, $"{prefix}Material");
+                ForEachUIndexInSpan(action, elm.ShadowMaps.AsSpan(), $"{prefix}ShadowMaps");
             }
-
-            return uIndexes;
         }
     }
 

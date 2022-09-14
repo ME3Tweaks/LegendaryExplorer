@@ -26,7 +26,7 @@ namespace LegendaryExplorer.UnrealExtensions
 
         public static bool TlkFirstLoadDone { get; private set; } //Set when the TLK loading at startup is finished.
 
-        private static void loadME1Tlk()
+        private static void LoadME1Tlk()
         {
             if (File.Exists(LoadedTLKsPathME1))
             {
@@ -44,7 +44,7 @@ namespace LegendaryExplorer.UnrealExtensions
                     try
                     {
                         using IMEPackage pcc = MEPackageHandler.OpenME1Package(path);
-                        ME1TalkFiles.tlkList.Add(new ME1TalkFile(pcc, 1));
+                        ME1TalkFiles.LoadedTlks.Add(new ME1TalkFile(pcc, 1));
                     }
                     catch (Exception)
                     {
@@ -54,7 +54,7 @@ namespace LegendaryExplorer.UnrealExtensions
             }
         }
 
-        private static void loadME2Tlk()
+        private static void LoadME2Tlk()
         {
             if (File.Exists(LoadedTLKsPathME2))
             {
@@ -78,7 +78,7 @@ namespace LegendaryExplorer.UnrealExtensions
             }
         }
 
-        private static void loadME3Tlk()
+        private static void LoadME3Tlk()
         {
             if (File.Exists(LoadedTLKsPathME3))
             {
@@ -102,7 +102,7 @@ namespace LegendaryExplorer.UnrealExtensions
             }
         }
 
-        private static void loadLE1Tlk()
+        private static void LoadLE1Tlk()
         {
             if (File.Exists(LoadedTLKsPathLE1))
             {
@@ -114,7 +114,7 @@ namespace LegendaryExplorer.UnrealExtensions
             }
         }
 
-        private static void loadLE2Tlk()
+        private static void LoadLE2Tlk()
         {
             if (File.Exists(LoadedTLKsPathLE2))
             {
@@ -138,7 +138,7 @@ namespace LegendaryExplorer.UnrealExtensions
             }
         }
 
-        private static void loadLE3Tlk()
+        private static void LoadLE3Tlk()
         {
             if (File.Exists(LoadedTLKsPathLE3))
             {
@@ -166,12 +166,12 @@ namespace LegendaryExplorer.UnrealExtensions
         {
             Action[] loaders =
             {
-                loadME1Tlk,
-                loadME2Tlk,
-                loadME3Tlk,
-                loadLE1Tlk,
-                loadLE2Tlk,
-                loadLE3Tlk
+                LoadME1Tlk,
+                LoadME2Tlk,
+                LoadME3Tlk,
+                LoadLE1Tlk,
+                LoadLE2Tlk,
+                LoadLE3Tlk
             };
             Parallel.ForEach(loaders, action => action());
             string lastReloaded = $"{DateTime.Now:HH:mm:ss tt}";
@@ -188,12 +188,12 @@ namespace LegendaryExplorer.UnrealExtensions
 
         public static void SaveTLKList(MEGame game = MEGame.Unknown)
         {
-            if (game == MEGame.Unknown || game == MEGame.ME1) File.WriteAllText(LoadedTLKsPathME1, JsonConvert.SerializeObject(ME1TalkFiles.tlkList.Select(x => (uindex: x.UIndex, x.FilePath))));
-            if (game == MEGame.Unknown || game == MEGame.ME2) File.WriteAllText(LoadedTLKsPathME2, JsonConvert.SerializeObject(ME2TalkFiles.tlkList.Select(x => x.path)));
-            if (game == MEGame.Unknown || game == MEGame.ME3) File.WriteAllText(LoadedTLKsPathME3, JsonConvert.SerializeObject(ME3TalkFiles.tlkList.Select(x => x.path)));
-            if (game == MEGame.Unknown || game == MEGame.LE1) File.WriteAllText(LoadedTLKsPathLE1, JsonConvert.SerializeObject(LE1TalkFiles.tlkList.Select(x => (uindex: x.UIndex, x.FilePath))));
-            if (game == MEGame.Unknown || game == MEGame.LE2) File.WriteAllText(LoadedTLKsPathLE2, JsonConvert.SerializeObject(LE2TalkFiles.tlkList.Select(x => x.path)));
-            if (game == MEGame.Unknown || game == MEGame.LE3) File.WriteAllText(LoadedTLKsPathLE3, JsonConvert.SerializeObject(LE3TalkFiles.tlkList.Select(x => x.path)));
+            if (game is MEGame.Unknown or MEGame.ME1) File.WriteAllText(LoadedTLKsPathME1, JsonConvert.SerializeObject(ME1TalkFiles.LoadedTlks.Select(x => (uindex: x.UIndex, x.FilePath))));
+            if (game is MEGame.Unknown or MEGame.ME2) File.WriteAllText(LoadedTLKsPathME2, JsonConvert.SerializeObject(ME2TalkFiles.LoadedTlks.Select(x => x.FilePath)));
+            if (game is MEGame.Unknown or MEGame.ME3) File.WriteAllText(LoadedTLKsPathME3, JsonConvert.SerializeObject(ME3TalkFiles.LoadedTlks.Select(x => x.FilePath)));
+            if (game is MEGame.Unknown or MEGame.LE1) File.WriteAllText(LoadedTLKsPathLE1, JsonConvert.SerializeObject(LE1TalkFiles.LoadedTlks.Select(x => (uindex: x.UIndex, x.FilePath))));
+            if (game is MEGame.Unknown or MEGame.LE2) File.WriteAllText(LoadedTLKsPathLE2, JsonConvert.SerializeObject(LE2TalkFiles.LoadedTlks.Select(x => x.FilePath)));
+            if (game is MEGame.Unknown or MEGame.LE3) File.WriteAllText(LoadedTLKsPathLE3, JsonConvert.SerializeObject(LE3TalkFiles.LoadedTlks.Select(x => x.FilePath)));
         }
     }
 }

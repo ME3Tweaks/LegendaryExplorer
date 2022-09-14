@@ -12,7 +12,7 @@ namespace LegendaryExplorerCore.Textures
         #region Native Interop
         private const string TEXCONVERTER_DLL_FILENAME = "TexConverter.dll";
 
-        private enum DXGIFormat : uint
+        public enum DXGIFormat : uint
         {
             UNKNOWN = 0,
             R32G32B32A32_TYPELESS = 1,
@@ -148,22 +148,25 @@ namespace LegendaryExplorerCore.Textures
         }
 
         [DllImport(TEXCONVERTER_DLL_FILENAME, EntryPoint = "Initialize")]
-        private static unsafe extern int TCInitialize();
+        private static extern unsafe int TCInitialize();
 
         [DllImport(TEXCONVERTER_DLL_FILENAME, EntryPoint = "Dispose")]
-        private static unsafe extern int TCDispose();
+        private static extern unsafe int TCDispose();
 
         [DllImport(TEXCONVERTER_DLL_FILENAME, EntryPoint = "ConvertTexture")]
-        private static unsafe extern int TCConvertTexture(TextureBuffer* inputBuffer, TextureBuffer* outputBuffer);
+        private static extern unsafe int TCConvertTexture(TextureBuffer* inputBuffer, TextureBuffer* outputBuffer);
 
         [DllImport(TEXCONVERTER_DLL_FILENAME, EntryPoint = "SaveTexture", CharSet = CharSet.Ansi)]
-        private static unsafe extern int TCSaveTexture(TextureBuffer* inputBuffer, string outputFilename);
+        private static extern unsafe int TCSaveTexture(TextureBuffer* inputBuffer, string outputFilename);
 
         [DllImport(TEXCONVERTER_DLL_FILENAME, EntryPoint = "LoadTexture", CharSet = CharSet.Ansi)]
-        private static unsafe extern int TCLoadTexture(string inputFilename, TextureBuffer* outputBuffer);
+        private static extern unsafe int TCLoadTexture(string inputFilename, TextureBuffer* outputBuffer);
+
+        [DllImport(TEXCONVERTER_DLL_FILENAME, EntryPoint = "LoadTextureFromMemory", CharSet = CharSet.Ansi)]
+        private static extern unsafe int TCLoadTextureFromMemory(byte* inputBuffer, int inputBufferLength, int imageType, TextureBuffer* outputBuffer);
 
         [DllImport(TEXCONVERTER_DLL_FILENAME, EntryPoint = "FreePixelData")]
-        private static unsafe extern int TCFreePixelData(TextureBuffer* textureBuffer);
+        private static extern unsafe int TCFreePixelData(TextureBuffer* textureBuffer);
         #endregion
 
         private static bool IsInitialized = false;
@@ -176,7 +179,7 @@ namespace LegendaryExplorerCore.Textures
             }
         }
 
-        private static DXGIFormat GetDXGIFormatForPixelFormat(PixelFormat pixelFormat)
+        public static DXGIFormat GetDXGIFormatForPixelFormat(PixelFormat pixelFormat)
         {
             switch (pixelFormat)
             {
@@ -205,7 +208,7 @@ namespace LegendaryExplorerCore.Textures
             }
         }
 
-        private static PixelFormat GetPixelFormatForDXGIFormat(DXGIFormat format)
+        public static PixelFormat GetPixelFormatForDXGIFormat(DXGIFormat format)
         {
             switch (format)
             {
@@ -306,6 +309,47 @@ namespace LegendaryExplorerCore.Textures
             width = outputBuffer.Width;
             height = outputBuffer.Height;
             pixelFormat = GetPixelFormatForDXGIFormat(outputBuffer.Format);
+            return result;
+        }
+
+        /// <summary>
+        /// Loads texture data from the given file buffer in memory (e.g. file streamed from exe will not be disk based)
+        /// </summary>
+        /// <param name="buffer">The buffer containing the image file data</param>
+        /// <param name="imageType">1 = DDS 2 = PNG 3 = TGA</param>
+        /// <param name="width">The out width of the image</param>
+        /// <param name="height">The out out height of the image</param>
+        /// <param name="pixelFormat">The target pixel format to convert to on load</param>
+        /// <returns></returns>
+        public static unsafe byte[] LoadTextureFromMemory(ReadOnlySpan<byte> buffer, int imageType, out uint width, out uint height, ref PixelFormat pixelFormat)
+        {
+            TexConverter.EnsureInitialized();
+
+            var outputBuffer = new TextureBuffer
+            {
+                Format = GetDXGIFormatForPixelFormat(pixelFormat)
+            };
+
+            byte[] result = null;
+            uint srcLen = (uint)buffer.Length;
+            unsafe
+            {
+                fixed (byte* inPtr = &MemoryMarshal.GetReference(buffer))
+                {
+                    int hr = TCLoadTextureFromMemory(inPtr, buffer.Length, imageType, &outputBuffer);
+                    Marshal.ThrowExceptionForHR(hr);
+                    result = new byte[outputBuffer.PixelDataLength];
+                    Marshal.Copy((IntPtr)outputBuffer.PixelData, result, 0, (int)outputBuffer.PixelDataLength);
+
+                    hr = TCFreePixelData(&outputBuffer);
+                    Marshal.ThrowExceptionForHR(hr);
+
+                    width = outputBuffer.Width;
+                    height = outputBuffer.Height;
+                    pixelFormat = GetPixelFormatForDXGIFormat(outputBuffer.Format);
+
+                }
+            }
             return result;
         }
     }

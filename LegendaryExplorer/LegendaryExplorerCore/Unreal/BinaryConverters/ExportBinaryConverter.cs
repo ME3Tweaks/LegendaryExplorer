@@ -137,7 +137,9 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
             if (!export.Game.IsGame3())
             {
-                bin.Skip(16);
+                bin.Skip(8);
+                bin.Skip(bin.ReadInt32()); // Skip the thumbnail
+                bin.Skip(4); // Skip fileOffset
             }
             if (!newGame.IsGame3())
             {
@@ -152,7 +154,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             int trueMipCount = 0;
             for (int i = 0; i < mipCount; i++)
             {
-                var storageType = (StorageTypes)bin.ReadInt32();
+                var storageType = (StorageTypes)bin.ReadInt32(); // The existing storage type
                 int uncompressedSize = bin.ReadInt32();
                 int compressedSize = bin.ReadInt32();
                 int fileOffset = bin.ReadInt32();
@@ -166,6 +168,10 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     case StorageTypes.pccZlib:
                     case StorageTypes.pccOodle:
                         texture = bin.ReadToBuffer(compressedSize);
+
+                        // Todo: This needs to be handled in the caller if it's handled there
+                        texture = TextureCompression.ConvertTextureCompression(texture, uncompressedSize, ref storageType, newGame, true);
+                        compressedSize = texture.Length;
                         if (offsets != null)
                         {
                             //the caller has transferred this mip, so use the provided data
@@ -185,7 +191,12 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                         if (export.Game != newGame)
                         {
                             storageType &= (StorageTypes)~StorageFlags.externalFile;
-                            texture = Texture2D.GetTextureData(mips[i], export.Game, MEDirectories.GetDefaultGamePath(export.Game),false); //copy in external textures
+                            texture = Texture2D.GetTextureData(mips[i], export.Game, export.Game != MEGame.UDK ? MEDirectories.GetDefaultGamePath(export.Game) : null,false); //copy in external textures
+                            if (storageType != StorageTypes.pccUnc)
+                            {
+                                texture = TextureCompression.ConvertTextureCompression(texture, uncompressedSize, ref storageType, newGame, true); // Convert the storage type to work with the listed game
+                                compressedSize = texture.Length;
+                            }
                         }
                         else
                         {

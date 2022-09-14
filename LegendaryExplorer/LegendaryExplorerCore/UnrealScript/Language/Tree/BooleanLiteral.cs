@@ -8,7 +8,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
     {
         public bool Value;
 
-        public BooleanLiteral(bool val, SourcePosition start = null, SourcePosition end = null)
+        public BooleanLiteral(bool val, int start = -1, int end = -1)
             : base(ASTNodeType.BooleanLiteral, start, end)
         {
             Value = val;

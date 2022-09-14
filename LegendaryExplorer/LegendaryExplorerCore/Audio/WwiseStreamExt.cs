@@ -17,7 +17,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         // Is this correct?
         public bool IsPCCStored => Filename == null;
 
-        public string GetPathToAFC()
+        public string GetPathToAFC(string forcedFilename = null)
         {
             //Check if pcc-stored
             if (IsPCCStored)
@@ -25,18 +25,16 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 return null; //it's pcc stored. we will return null for this case since we already coded for "".
             }
 
-            //Look in currect directory first
-
-
-            string path = Path.Combine(Path.GetDirectoryName(Export.FileRef.FilePath), Filename + ".afc");
+            //Look in current directory first
+            string path = Path.Combine(Path.GetDirectoryName(Export.FileRef.FilePath), (forcedFilename ?? Filename) + ".afc");
             if (File.Exists(path))
             {
                 return path; //in current directory of this pcc file
             }
 
             var gameFiles = MELoadedFiles.GetFilesLoadedInGame(Export.FileRef.Game, includeAFCs: true);
-            gameFiles.TryGetValue(Filename + ".afc", out string afcPath);
-            return afcPath ?? "";
+            gameFiles.TryGetValue((forcedFilename ?? Filename) + ".afc", out string afcPath);
+            return forcedFilename != null ? "" : afcPath ?? ""; // return "" if not found and the name is forced, we don't know where the afc path is right now.
         }
 
         public AudioInfo GetAudioInfo()

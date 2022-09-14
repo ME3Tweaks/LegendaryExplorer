@@ -87,23 +87,6 @@ namespace LegendaryExplorerCore.Audio
             FullData = outStream.ToArray();
         }
 
-        internal string GetTextSummary()
-        {
-            string str = "";
-            //Debug.WriteLine("Sound #" + currentCounter);
-            str += FileName + "\n";
-            str += "Sample Rate: " + sampleRate + "\n";
-            str += "Channels: " + numberOfChannels + "\n";
-            var codec = getCodecStr();
-            if (codec != null)
-            {
-                str += $"Codec: {codec}\n";
-            }
-            str += "Has Data: " + (DataAsStored != null);
-            return str;
-
-        }
-
         public string getCodecStr()
         {
             switch (CodecID)

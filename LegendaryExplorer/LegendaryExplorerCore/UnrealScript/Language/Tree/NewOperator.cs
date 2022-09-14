@@ -17,7 +17,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
                            Expression flags,
                            Expression objectClass,
                            Expression template,
-                           SourcePosition start = null, SourcePosition end = null) : base(ASTNodeType.NewOp, start, end)
+                           int start = -1, int end = -1) : base(ASTNodeType.NewOp, start, end)
         {
             OuterObject = outerObject;
             ObjectName = objectName;

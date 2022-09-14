@@ -17,14 +17,11 @@
 
 using System;
 using System.Buffers.Binary;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using LegendaryExplorerCore.Gammtek.Extensions;
-using LegendaryExplorerCore.Gammtek.IO.Converters;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Memory;
 using LegendaryExplorerCore.Packages;
@@ -189,7 +186,6 @@ namespace LegendaryExplorerCore.Gammtek.IO
         /// <summary>
         /// Reads an unreal-style prefixed string from the underlying stream.
         /// </summary>
-        /// <param name="stream"></param>
         /// <returns></returns>
         public string ReadUnrealString()
         {

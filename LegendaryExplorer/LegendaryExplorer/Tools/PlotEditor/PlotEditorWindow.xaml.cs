@@ -165,7 +165,7 @@ namespace LegendaryExplorer.Tools.PlotEditor
             SaveFile(dlg.FileName);
         }
 
-        public override void handleUpdate(List<PackageUpdate> updates)
+        public override void HandleUpdate(List<PackageUpdate> updates)
         {
             //TODO: implement handleUpdate
         }
@@ -276,7 +276,7 @@ namespace LegendaryExplorer.Tools.PlotEditor
             }
         }
 
-        public void PropogateRecentsChange(IEnumerable<RecentsControl.RecentItem> newRecents)
+        public void PropogateRecentsChange(string propogationSource, IEnumerable<RecentsControl.RecentItem> newRecents)
         {
             RecentsController.PropogateRecentsChange(false, newRecents);
         }

@@ -6,12 +6,12 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 {
     public class CastExpression : Expression
     {
-        public VariableType CastType;
-        public Expression CastTarget;
+        public readonly VariableType CastType;
+        public readonly Expression CastTarget;
 
         public bool IsInterfaceCast;//TODO:Remove
 
-        public CastExpression(VariableType type, Expression expr, SourcePosition start = null, SourcePosition end = null)
+        public CastExpression(VariableType type, Expression expr, int start = -1, int end = -1)
             : base(ASTNodeType.CastExpression, start, end)
         {
             CastType = type;

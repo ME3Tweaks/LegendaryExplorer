@@ -18,7 +18,7 @@
         DragOver="Window_DragOver"
         Drop="Window_Drop"
         Icon="pack://application:,,,/Tools/Icons/16x16/AnimationImporter_Icon_16.ico"
-        Title="Animation Importer/Exporter" Height="600" Width="900" Loaded="AnimationImporter_OnLoaded">
+        Title="Animation Importer/Exporter" Height="600" Width="1000" Loaded="AnimationImporter_OnLoaded">
     <Window.Resources>
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
@@ -75,7 +75,7 @@
             </StatusBar>
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition MinWidth="280" Width="280" />
+                    <ColumnDefinition MinWidth="375" Width="375" />
                     <ColumnDefinition MinWidth="5" MaxWidth="5" />
                     <ColumnDefinition Width="*" MinWidth="300" />
                 </Grid.ColumnDefinitions>

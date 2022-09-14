@@ -8,27 +8,40 @@ using Newtonsoft.Json;
 namespace LegendaryExplorerCore.PlotDatabase.Serialization
 {
     /// <summary>
-    /// A class representing the JSON serialized plot database file
+    /// Represents a JSON serialized plot database file
     /// </summary>
     public class SerializedPlotDatabase
     {
         // TODO: Change the JSON serialization to dictionary
+        /// <summary>A list of plot bool elements in this database</summary>
         [JsonProperty("bools")] public List<PlotBool> Bools = new();
 
+        /// <summary>A list of plot int elements in this database</summary>
         [JsonProperty("ints")] public List<PlotElement> Ints = new();
 
+        /// <summary>A list of plot float elements in this database</summary>
         [JsonProperty("floats")] public List<PlotElement> Floats = new();
 
+        /// <summary>A list of plot conditional elements in this database</summary>
         [JsonProperty("conditionals")] public List<PlotConditional> Conditionals = new();
 
+        /// <summary>A list of plot transition elements in this database</summary>
         [JsonProperty("transitions")] public List<PlotTransition> Transitions = new();
 
+        /// <summary>A list of all non-game-state and journal elements in this database</summary>
         [JsonProperty("organizational")] public List<PlotElement> Organizational = new();
 
+        /// <summary>
+        /// Initializes a new serializable database
+        /// </summary>
         public SerializedPlotDatabase()
         {
         }
 
+        /// <summary>
+        /// Initializes a new serializable database, importing all elements from an input <see cref="PlotDataBaseBase"/>
+        /// </summary>
+        /// <param name="plotDatabase">Database to import plot elements from</param>
         public SerializedPlotDatabase(PlotDatabaseBase plotDatabase)
         {
             Bools = plotDatabase.Bools.Values.ToList();
@@ -65,6 +78,10 @@ namespace LegendaryExplorerCore.PlotDatabase.Serialization
             }
         }
 
+        /// <summary>
+        /// Creates a dictionary of all PlotElements in this database by ElementId
+        /// </summary>
+        /// <returns>Dictionary of PlotElements, with ElementId as keys</returns>
         protected virtual Dictionary<int, PlotElement> GetMasterPlotDictionary()
         {
             return Bools.Concat(Ints)

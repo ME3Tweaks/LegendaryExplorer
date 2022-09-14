@@ -2,6 +2,10 @@
   "profiles": {
     "LegendaryExplorer": {
       "commandName": "Project",
+      "nativeDebugging": false
+    },
+    "Legendary Explorer (Native Debugging)": {
+      "commandName": "Project",
       "nativeDebugging": true
     }
   }

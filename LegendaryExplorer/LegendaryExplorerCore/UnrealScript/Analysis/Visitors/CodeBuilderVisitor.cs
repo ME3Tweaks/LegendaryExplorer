@@ -5,18 +5,18 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using LegendaryExplorerCore.Helpers;
-using LegendaryExplorerCore.UnrealScript.Analysis.Symbols;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
-using LegendaryExplorerCore.UnrealScript.Lexing.Tokenizing;
+using LegendaryExplorerCore.UnrealScript.Lexing;
 using LegendaryExplorerCore.UnrealScript.Parsing;
+using LegendaryExplorerCore.UnrealScript.Utilities;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
 using static LegendaryExplorerCore.UnrealScript.Utilities.Keywords;
 
 namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 {
-    public enum EF
+    public enum EF : byte
     {
-        None,
+        None = 0,
         Keyword,
         Specifier,
         TypeName,
@@ -63,7 +63,19 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
         private EF? ForcedFormatType = null;
 
-        private void Write(string text = "", EF formatType = EF.None) => Formatter.Write(text, ForcedFormatType ?? formatType);
+        private bool ForceComment = false;
+
+        private void Write(string text = "", EF formatType = EF.None)
+        {
+            if (!ForceComment)
+            {
+                Formatter.Write(text, ForcedFormatType ?? formatType);
+            }
+            else
+            {
+                Formatter.Write($"//{text}", EF.Comment);
+            }
+        }
 
         private void Append(string text, EF formatType = EF.None) => Formatter.Append(text, ForcedFormatType ?? formatType);
         private void Space() => Formatter.Space();
@@ -226,7 +238,9 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
         public bool VisitNode(VariableDeclaration node)
         {
-            if (node.Outer.Type is ASTNodeType.Class or ASTNodeType.Struct)
+            //node.Outer can be null if we have decompiled a single var and nothing else
+            //It only makes sense to have done that for a class field
+            if (node.Outer?.Type != ASTNodeType.Function)
             {
                 Write(VAR, EF.Keyword);
                 if (!string.IsNullOrEmpty(node.Category) && !node.Category.CaseInsensitiveEquals("None"))
@@ -234,13 +248,9 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                     Append($"({node.Category})");
                 }
             }
-            else if (node.Outer.Type == ASTNodeType.Function)
-            {
-                Write(LOCAL, EF.Keyword);
-            }
             else
             {
-                Write("ERROR", EF.ERROR);
+                Write(LOCAL, EF.Keyword);
             }
 
             Space();
@@ -978,7 +988,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             }
             else
             {
-                int len = node.EndPos.CharIndex - node.StartPos.CharIndex;
+                int len = node.EndPos - node.StartPos;
                 Append(new string('_', len), EF.ERROR);
             }
 
@@ -1002,7 +1012,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             }
             else
             {
-                int len = node.EndPos.CharIndex - node.StartPos.CharIndex;
+                int len = node.EndPos - node.StartPos;
                 Append(new string('_', len), EF.ERROR);
             }
 
@@ -1041,6 +1051,12 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
         private void VisitIf(IfStatement node, bool ifElse = false)
         {
+            bool invalidBlock = !ForceComment && node.Condition is SymbolReference { Name: __IN_EDITOR };
+            if (invalidBlock)
+            {
+                ForceComment = true;
+            }
+
             if (!ifElse)
                 Write(); // New line only if we're not chaining
             Append(IF, EF.Keyword);
@@ -1058,10 +1074,14 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             if (node.Else != null && node.Else.Statements.Any())
             {
                 Write(ELSE, EF.Keyword);
+                if (invalidBlock)
+                {
+                    ForceComment = false;
+                }
                 if (node.Else.Statements.Count == 1 && node.Else.Statements[0] is IfStatement)
                 {
                     Space();
-                    VisitIf(node.Else.Statements[0] as IfStatement, true);
+                    VisitIf(node.Else.Statements[0] as IfStatement, !invalidBlock);
                 }
                 else
                 {
@@ -1071,6 +1091,10 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                     NestingLevel--;
                     Write("}");
                 }
+            }
+            if (invalidBlock)
+            {
+                ForceComment = false;
             }
         }
 
@@ -1105,7 +1129,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             ExpressionPrescedence.Push(node.Operator.Precedence);
 
             if (scopeNeeded) Append("(");
-            if (node.Operator.OperatorKeyword switch { "@" => true, "$" => true, _ => false } && node.LeftOperand is PrimitiveCast lpc && lpc.CastType?.Name == "string")
+            if (node.Operator.OperatorType is TokenType.AtSign or TokenType.DollarSign && node.LeftOperand is PrimitiveCast { CastType.Name: "string" } lpc)
             {
                 lpc.CastTarget.AcceptVisitor(this);
             }
@@ -1114,9 +1138,9 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 node.LeftOperand.AcceptVisitor(this);
             }
             Space();
-            Append(node.Operator.OperatorKeyword, EF.Operator);
+            Append(OperatorHelper.OperatorTypeToString(node.Operator.OperatorType), EF.Operator);
             Space();
-            if (node.Operator.OperatorKeyword switch { "@" => true, "$" => true, "@=" => true, "$=" => true, _ => false } && node.RightOperand is PrimitiveCast rpc && rpc.CastType?.Name == "string")
+            if (node.Operator.OperatorType is TokenType.AtSign or TokenType.DollarSign or TokenType.StrConcAssSpace or TokenType.StrConcatAssign && node.RightOperand is PrimitiveCast { CastType.Name: "string" } rpc)
             {
                 rpc.CastTarget.AcceptVisitor(this);
             }
@@ -1134,7 +1158,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         {
             ExpressionPrescedence.Push(1);
             // operatorkeywordExpression
-            Append(node.Operator.OperatorKeyword, EF.Operator);
+            Append(OperatorHelper.OperatorTypeToString(node.Operator.OperatorType), EF.Operator);
             node.Operand.AcceptVisitor(this);
 
             ExpressionPrescedence.Pop();
@@ -1146,7 +1170,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             ExpressionPrescedence.Push(NOPRESCEDENCE);
             // ExpressionOperatorkeyword
             node.Operand.AcceptVisitor(this);
-            Append(node.Operator.OperatorKeyword, EF.Operator);
+            Append(OperatorHelper.OperatorTypeToString(node.Operator.OperatorType), EF.Operator);
 
             ExpressionPrescedence.Pop();
             return true;
@@ -1509,37 +1533,6 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             return true;
         }
 
-        private static string FormatFloat(float single)
-        {
-            //G9 ensures a fully accurate version of the float (no rounding) is written.
-            //more details here: https://docs.microsoft.com/en-us/dotnet/standard/base-types/standard-numeric-format-strings#the-round-trip-r-format-specifier 
-            string floatString = single.ToString("G9", NumberFormatInfo.InvariantInfo).Replace("E+", "e");
-
-            if (floatString.Contains("E-"))
-            {
-                //unrealscript does not support negative exponents in literals, so we have to format it manually
-                //for example, 1.401298E-45 would be formatted as 0.00000000000000000000000000000000000000000000140129846
-                //This code assumes there is exactly 1 digit before the decimal point, which will always be the case when formatted as scientific notation with the G specifier
-                string minus = null;
-                if (floatString[0] == '-')
-                {
-                    minus = "-";
-                    floatString = floatString.Substring(1, floatString.Length - 1);
-                }
-                int ePos = floatString.IndexOf("E-");
-                int exponent = int.Parse(floatString.Substring(ePos + 2));
-                string digits = floatString.Substring(0, ePos).Replace(".", "");
-                floatString = $"{minus}0.{new string('0', exponent - 1)}{digits}";
-            }
-            else if (!floatString.Contains(".") && !floatString.Contains("e"))
-            {
-                //need a decimal place in the float so that it does not get parsed as an int
-                floatString += $".0";
-            }
-
-            return floatString;
-        }
-
         public bool VisitNode(IntegerLiteral node)
         {
             // integervalue
@@ -1625,7 +1618,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         }
         public bool VisitNode(StructLiteral node)
         {
-            bool multiLine = !ForceNoNewLines && (node.Statements.Count > 5 || node.Statements.Any(stmnt => (stmnt as AssignStatement)?.Value is StructLiteral or DynamicArrayLiteral));
+            bool multiLine = !ForceNoNewLines && (node.Statements.Count > 5 || node.Statements.Any(stmnt => stmnt.Value is StructLiteral or DynamicArrayLiteral));
 
             bool oldForceNoNewLines = ForceNoNewLines;
             int oldForcedAlignment = ForcedAlignment;
@@ -1665,7 +1658,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
         public bool VisitNode(DynamicArrayLiteral node)
         {
-            bool multiLine = !ForceNoNewLines && (node.Values.Any(expr => expr is StructLiteral or DynamicArrayLiteral) || node.Values.Count > 7);
+            bool multiLine = !ForceNoNewLines && (node.Values.Any(expr => expr is StructLiteral) || node.Values.Count > 7);
 
             bool oldForceNoNewLines = ForceNoNewLines;
             int oldForcedAlignment = ForcedAlignment;
@@ -1954,6 +1947,37 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             }
         }
 
+        public static string FormatFloat(float single)
+        {
+            //G9 ensures a fully accurate version of the float (no rounding) is written.
+            //more details here: https://docs.microsoft.com/en-us/dotnet/standard/base-types/standard-numeric-format-strings#the-round-trip-r-format-specifier 
+            string floatString = single.ToString("G9", NumberFormatInfo.InvariantInfo).Replace("E+", "e");
+
+            if (floatString.Contains("E-"))
+            {
+                //unrealscript does not support negative exponents in literals, so we have to format it manually
+                //for example, 1.401298E-45 would be formatted as 0.00000000000000000000000000000000000000000000140129846
+                //This code assumes there is exactly 1 digit before the decimal point, which will always be the case when formatted as scientific notation with the G specifier
+                string minus = null;
+                if (floatString[0] == '-')
+                {
+                    minus = "-";
+                    floatString = floatString[1..];
+                }
+                int ePos = floatString.IndexOf("E-");
+                int exponent = int.Parse(floatString[(ePos + 2)..]);
+                string digits = floatString[..ePos].Replace(".", "");
+                floatString = $"{minus}0.{new string('0', exponent - 1)}{digits}";
+            }
+            else if (!floatString.Contains(".") && !floatString.Contains("e"))
+            {
+                //need a decimal place in the float so that it does not get parsed as an int
+                floatString += $".0";
+            }
+
+            return floatString;
+        }
+
         public static string EncodeString(string original)
         {
             var sb = new StringBuilder();
@@ -2027,7 +2051,15 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
     public class CodeBuilderVisitor<TFormatter> : CodeBuilderVisitor<TFormatter, string> where TFormatter : class, ICodeFormatter<string>, new()
     { }
 
-    public class CodeBuilderVisitor : CodeBuilderVisitor<PlainTextCodeFormatter> {}
+    public class CodeBuilderVisitor : CodeBuilderVisitor<PlainTextCodeFormatter>
+    {
+        public static string ConvertToText(ASTNode node)
+        {
+            var builder = new CodeBuilderVisitor();
+            node.AcceptVisitor(builder);
+            return builder.GetOutput();
+        }
+    }
 
     public interface ICodeFormatter<out TOutput>
     {
@@ -2057,7 +2089,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
         public string GetOutput() => string.Join("\n", Lines.Append(currentLine));
 
-        public void Write(string text, EF _)
+        public virtual void Write(string text, EF _)
         {
             if (!ForceNoNewLines)
             {

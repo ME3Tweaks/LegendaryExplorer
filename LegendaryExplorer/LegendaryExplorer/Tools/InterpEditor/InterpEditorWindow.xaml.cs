@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using System.Windows.Forms.VisualStyles;
 using System.Windows.Input;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.SharedUI;
@@ -33,7 +34,7 @@ namespace LegendaryExplorer.Tools.InterpEditor
             InitializeComponent();
             RecentsController.InitRecentControl(Toolname, Recents_MenuItem, LoadFile);
 
-            timelineControl.SelectionChanged += TimelineControlOnSelectionChanged;
+            TimelineControl.SelectionChanged += TimelineControlOnSelectionChanged;
         }
 
         private void TimelineControlOnSelectionChanged(ExportEntry export)
@@ -64,17 +65,23 @@ namespace LegendaryExplorer.Tools.InterpEditor
         public ICommand SaveCommand { get; set; }
         public ICommand SaveAsCommand { get; set; }
         public ICommand GotoCommand { get; set; }
-
+        public ICommand RenameTrackCommand { get; set; }
         private void LoadCommands()
         {
             OpenCommand = new GenericCommand(OpenPackage);
             SaveCommand = new GenericCommand(SavePackage, PackageIsLoaded);
             SaveAsCommand = new GenericCommand(SavePackageAs, PackageIsLoaded);
             GotoCommand = new GenericCommand(GoTo, PackageIsLoaded);
+            RenameTrackCommand = new GenericCommand(RenameTrack);
         }
 
         private void GoTo()
         {
+        }
+
+        private void RenameTrack()
+        {
+            TimelineControl?.RenameTrack();
         }
 
         private string _statusText;
@@ -150,17 +157,17 @@ namespace LegendaryExplorer.Tools.InterpEditor
             Animations.AddRange(Pcc.Exports.Where(exp => exp.ClassName == "AnimSequence").Select(a => a.ObjectNameString));
             Title = $"Interp Editor - {Pcc.FilePath}";
             StatusText = Path.GetFileName(Pcc.FilePath);
-            timelineControl.UnloadExport();
+            TimelineControl.UnloadExport();
         }
 
         private void LoadInterpData(ExportEntry value)
         {
-            timelineControl.LoadExport(value);
+            TimelineControl.LoadExport(value);
             Properties_InterpreterWPF.LoadExport(value);
             OnPropertyChanged(nameof(LoadedExportIsCurve));
         }
 
-        public override void handleUpdate(List<PackageUpdate> updates)
+        public override void HandleUpdate(List<PackageUpdate> updates)
         {
             IEnumerable<PackageUpdate> exportUpdates = updates.Where(update => update.Change.HasFlag(PackageChange.Export));
             foreach (var update in exportUpdates)
@@ -185,7 +192,7 @@ namespace LegendaryExplorer.Tools.InterpEditor
                 else if (changedExport.IsDescendantOf(SelectedInterpData)) //track was changed or at least a descendant
                 {
                     // subcontrol, 
-                    timelineControl.RefreshInterpData(changedExport, update.Change);
+                    TimelineControl.RefreshInterpData(changedExport, update.Change);
                 }
 
                 if (Properties_InterpreterWPF.CurrentLoadedExport == changedExport)
@@ -204,14 +211,14 @@ namespace LegendaryExplorer.Tools.InterpEditor
             if (e.Cancel)
                 return;
 
-            timelineControl.SelectionChanged -= TimelineControlOnSelectionChanged;
-            timelineControl.Dispose();
+            TimelineControl.SelectionChanged -= TimelineControlOnSelectionChanged;
+            TimelineControl.Dispose();
             Properties_InterpreterWPF?.Dispose();
             CurveTab_CurveEditor?.Dispose();
             RecentsController?.Dispose();
         }
 
-        public void PropogateRecentsChange(IEnumerable<RecentsControl.RecentItem> newRecents)
+        public void PropogateRecentsChange(string propogationSource, IEnumerable<RecentsControl.RecentItem> newRecents)
         {
             RecentsController.PropogateRecentsChange(false, newRecents);
         }

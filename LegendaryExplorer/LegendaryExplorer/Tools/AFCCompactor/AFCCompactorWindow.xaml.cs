@@ -66,18 +66,18 @@ namespace LegendaryExplorer.Tools.AFCCompactorWindow
         {
             if (obj is AFCCompactor.ReferencedAudio ra)
             {
-                var dlcDep = getDlcDependencyForAFC(ra.afcName);
+                var dlcDep = getDlcDependencyForAFC(ra.AFCName);
                 // Any will work since there should be only 1 instance that matches in the list
-                if (!ra.isModified && dlcDep != null && DLCDependencies.Any(x => x.DLCName.Equals(dlcDep, StringComparison.InvariantCultureIgnoreCase) && !x.IsDependedOn))
+                if (!ra.IsModified && dlcDep != null && DLCDependencies.Any(x => x.DLCName.Equals(dlcDep, StringComparison.InvariantCultureIgnoreCase) && !x.IsDependedOn))
                 {
                     return false; // Selected to be depended on. Which means it won't be pulled in. Don't show it
                 }
                 if (string.IsNullOrWhiteSpace(FilterText)) return true;
 
-                if (ra.afcName.Contains(FilterText, StringComparison.InvariantCultureIgnoreCase)) return true;
-                if (ra.audioOffset.ToString("X8").Contains(FilterText, StringComparison.InvariantCultureIgnoreCase)) return true;
-                if (ra.uiAFCSourceType.Contains(FilterText, StringComparison.InvariantCultureIgnoreCase)) return true;
-                if (ra.uiOriginatingExportName.Contains(FilterText, StringComparison.InvariantCultureIgnoreCase)) return true;
+                if (ra.AFCName.Contains(FilterText, StringComparison.InvariantCultureIgnoreCase)) return true;
+                if (ra.AudioOffset.ToString("X8").Contains(FilterText, StringComparison.InvariantCultureIgnoreCase)) return true;
+                if (ra.AFCSourceType.Contains(FilterText, StringComparison.InvariantCultureIgnoreCase)) return true;
+                if (ra.OriginatingExportName.Contains(FilterText, StringComparison.InvariantCultureIgnoreCase)) return true;
             }
 
             return false;
@@ -111,7 +111,7 @@ namespace LegendaryExplorer.Tools.AFCCompactorWindow
                             "The following audio references are broken and will not be included in your new AFC. Please review them, and confirm continuation in the follow up dialog.",
                             "Broken audio found", MessageBoxButton.OK, MessageBoxImage.Error);
                         var ld = new ListDialog(brokenAudio.Select(x =>
-                                $"{x.audioRef.uiOriginatingExportName} |||| {x.brokenReason}"),
+                                $"{x.audioRef.OriginatingExportName} |||| {x.brokenReason}"),
                             "Broken audio references",
                             "The following audio references are invalid and do not work. These references will not be updated and the audio will remain broken. Once this dialog is closed, there will a confirmation dialog you can abort the compaction with.",
                             this);
@@ -149,11 +149,11 @@ namespace LegendaryExplorer.Tools.AFCCompactorWindow
                 var dependencyList = recalcedRefs.availableAFCReferences
                     .Where(x =>
                     {
-                        var dependencyName = getDlcDependencyForAFC(x.afcName);
+                        var dependencyName = getDlcDependencyForAFC(x.AFCName);
                         if (dependencyName == null) return false;
-                        if (x.afcName.Equals(NewAFCName, StringComparison.InvariantCultureIgnoreCase)) return false; //we just made this obviously it depends on it
+                        if (x.AFCName.Equals(NewAFCName, StringComparison.InvariantCultureIgnoreCase)) return false; //we just made this obviously it depends on it
                         return true;
-                    }).Select(x => getDlcDependencyForAFC(x.afcName)).Distinct().ToList();
+                    }).Select(x => getDlcDependencyForAFC(x.AFCName)).Distinct().ToList();
                 if (finalAfcPath != null && File.Exists(finalAfcPath))
                 {
                     LegendaryExplorerCoreUtilities.OpenAndSelectFileInExplorer(finalAfcPath);
@@ -358,7 +358,7 @@ namespace LegendaryExplorer.Tools.AFCCompactorWindow
                         if (prevTask.Result.missingAFCReferences.Any())
                         {
                             var ld = new ListDialog(prevTask.Result.missingAFCReferences.Select(x =>
-                                    $"{x.uiOriginatingExportName} references an AFC that could not be found: {x.afcName}"),
+                                    $"{x.OriginatingExportName} references an AFC that could not be found: {x.AFCName}"),
                                 "Broken audio references",
                                 "The following audio references reference AFC files that could not be found. These are considered broken and will not be compacted, as they do not work.",
                                 this);
@@ -384,7 +384,7 @@ namespace LegendaryExplorer.Tools.AFCCompactorWindow
             var dependencies = new HashSet<DLCDependency>();
             foreach (var reference in audioReferences)
             {
-                var uiString = getDlcDependencyForAFC(reference.afcName);
+                var uiString = getDlcDependencyForAFC(reference.AFCName);
                 if (uiString != null)
                 {
                     var dlcDep = uiString;

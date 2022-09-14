@@ -1,21 +1,21 @@
 ﻿using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
-using LegendaryExplorerCore.UnrealScript.Lexing.Tokenizing;
+using LegendaryExplorerCore.UnrealScript.Lexing;
 using LegendaryExplorerCore.UnrealScript.Utilities;
 
 namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 {
     public class ErrorStatement : Statement
     {
-        public Statement InnerStatement;
+        public readonly Statement InnerStatement;
 
-        public ScriptToken[] ErrorTokens; 
+        public readonly ScriptToken[] ErrorTokens; 
 
         public ErrorStatement(Statement innerStatement) : base(ASTNodeType.INVALID, innerStatement.StartPos, innerStatement.EndPos)
         {
             InnerStatement = innerStatement;
         }
 
-        public ErrorStatement(SourcePosition start, SourcePosition end, params ScriptToken[] tokens) : base(ASTNodeType.INVALID, start, end)
+        public ErrorStatement(int start, int end, params ScriptToken[] tokens) : base(ASTNodeType.INVALID, start, end)
         {
             ErrorTokens = tokens;
         }
@@ -28,16 +28,16 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 
     public class ErrorExpression : Expression
     {
-        public Expression InnerExpression;
+        public readonly Expression InnerExpression;
 
-        public ScriptToken[] ErrorTokens;
+        public readonly ScriptToken[] ErrorTokens;
 
         public ErrorExpression(Expression innerExpression) : base(ASTNodeType.INVALID, innerExpression.StartPos, innerExpression.EndPos)
         {
             InnerExpression = innerExpression;
         }
 
-        public ErrorExpression(SourcePosition start, SourcePosition end, params ScriptToken[] tokens) : base(ASTNodeType.INVALID, start, end)
+        public ErrorExpression(int start, int end, params ScriptToken[] tokens) : base(ASTNodeType.INVALID, start, end)
         {
             ErrorTokens = tokens;
             foreach (ScriptToken token in tokens)

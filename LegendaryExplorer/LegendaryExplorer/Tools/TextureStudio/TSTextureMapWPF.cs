@@ -66,7 +66,7 @@ namespace LegendaryExplorer.Tools.TextureStudio
         /// <summary>
         /// List of direct children to this memory entry. The collection type WPF allows adding from other threads
         /// </summary>
-        public override ObservableCollectionExtendedWPF<TextureMapMemoryEntry> Children { get; } = new ObservableCollectionExtendedWPF<TextureMapMemoryEntry>();
+        public override ObservableCollectionExtendedWPF<TextureMapMemoryEntry> Children { get; } = new();
 
         public event PropertyChangedEventHandler PropertyChanged;
 

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -14,6 +16,7 @@ using System.Windows.Media;
 using System.Windows.Threading;
 using Be.Windows.Forms;
 using FontAwesome5;
+using LegendaryExplorer.Audio;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Interfaces;
 using LegendaryExplorer.Dialogs;
@@ -28,12 +31,18 @@ using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Sound.ISACT;
+using LegendaryExplorerCore.Sound.Wwise;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using Microsoft.Win32;
+using NAudio.Wave;
+using NAudio.WaveFormRenderer;
 using AudioStreamHelper = LegendaryExplorer.UnrealExtensions.AudioStreamHelper;
 using WwiseStream = LegendaryExplorerCore.Unreal.BinaryConverters.WwiseStream;
 using AudioInfo = LegendaryExplorerCore.Audio.AudioInfo;
+using Color = System.Drawing.Color;
+using SharpDX.Win32;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls
 {
@@ -53,6 +62,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         Stream audioStream;
         private HexBox SoundpanelHIRC_Hexbox;
         private ReadOptimizedByteProvider hircHexProvider;
+
+        /// <summary>
+        /// Notified when the seekbar position has changed.
+        /// </summary>
+        public event EventHandler<AudioPlayheadEventArgs> SeekbarPositionChanged;
 
         public ISBankEntry CurrentLoadedISACTEntry { get; private set; }
         public AFCFileEntry CurrentLoadedAFCFileEntry { get; private set; }
@@ -128,6 +142,22 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public static readonly DependencyProperty HexBoxMaxWidthProperty = DependencyProperty.Register(
             nameof(HexBoxMaxWidth), typeof(int), typeof(Soundpanel), new PropertyMetadata(default(int)));
 
+        public int SeekbarUpdatePeriod
+        {
+            get => (int)GetValue(SeekbarUpdatePeriodProperty);
+            set => SetValue(SeekbarUpdatePeriodProperty, value);
+        }
+        public static readonly DependencyProperty SeekbarUpdatePeriodProperty = DependencyProperty.Register(
+            nameof(SeekbarUpdatePeriod), typeof(int), typeof(Soundpanel), new PropertyMetadata(250, SeekbarUpdatePeriodChanged));
+
+        private static void SeekbarUpdatePeriodChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is Soundpanel sp)
+            {
+                sp.seekbarUpdateTimer.Interval = new TimeSpan(0, 0, 0, 0, (int)e.NewValue);
+            }
+        }
+
 
         public bool MiniPlayerMode
         {
@@ -136,6 +166,22 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         }
         public static readonly DependencyProperty MiniPlayerModeProperty = DependencyProperty.Register(
             nameof(MiniPlayerMode), typeof(bool), typeof(Soundpanel), new PropertyMetadata(default(bool), MiniPlayerModeChanged));
+
+        public bool GenerateWaveformGraph
+        {
+            get => (bool)GetValue(GenerateWaveformGraphProperty);
+            set => SetValue(GenerateWaveformGraphProperty, value);
+        }
+        public static readonly DependencyProperty GenerateWaveformGraphProperty = DependencyProperty.Register(
+            nameof(GenerateWaveformGraph), typeof(bool), typeof(Soundpanel), new PropertyMetadata(default(bool), GenerateWaveFormChanged));
+
+        private static void GenerateWaveFormChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is Soundpanel sp)
+            {
+
+            }
+        }
 
         private static void MiniPlayerModeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -147,7 +193,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     sp.ExportInfoListBox.Visibility = Visibility.Collapsed;
                     foreach (var item in sp.SoundPanel_TabsControl.Items)
                         (item as TabItem).Visibility = Visibility.Collapsed;
-                }   
+                }
                 else
                 {
                     // MiniPlayerMode disabled
@@ -187,7 +233,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
         }
 
-        public override void PoppedOut(MenuItem recentsMenuItem)
+        public override void PoppedOut(ExportLoaderHostedWindow elhw)
         {
             //todo: improve ui layout on popout
         }
@@ -278,7 +324,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             get => _searchStatusText;
             private set => SetProperty(ref _searchStatusText, value);
         }
-        
+
         #endregion
 
         #region Commands
@@ -317,7 +363,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             // HIRC commands
             PlayHIRCCommand = new RelayCommand(PlayHIRC, CanPlayHIRC);
         }
-        
+
         private bool CanCommitBankToFile() => HasPendingHIRCChanges;
 
         private void CommitBankToFile()
@@ -556,12 +602,13 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             //CurrentVorbisStream.Dispose();
             //_audioPlayer.Dispose();
             //infoTextBox.Text = "Select an export";
+            waveformImage.Source = null;
             CurrentLoadedExport = null;
         }
 
         public static bool CanParseStatic(ExportEntry exportEntry)
         {
-            return (exportEntry.FileRef.Game.IsGame1() && exportEntry.ClassName == "SoundNodeWave") || 
+            return (exportEntry.FileRef.Game.IsGame1() && exportEntry.ClassName == "SoundNodeWave") ||
                    (!exportEntry.FileRef.Game.IsGame1() && (exportEntry.ClassName == "WwiseBank" || exportEntry.ClassName == "WwiseStream"));
         }
 
@@ -645,7 +692,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
 
         }
-        
+
         internal void UnloadAFCEntry()
         {
             CurrentLoadedAFCFileEntry = null;
@@ -765,9 +812,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private bool CanPlayHIRC(object obj)
         {
-            return obj is HIRCDisplayObject {ObjType: 0x2} hirc && CurrentLoadedWwisebank != null && hirc.SourceID == CurrentLoadedWwisebank.ID;
+            return obj is HIRCDisplayObject { ObjType: 0x2 } hirc && CurrentLoadedWwisebank != null && hirc.SourceID == CurrentLoadedWwisebank.ID;
         }
-        
+
         private void StartPlayback()
         {
             StartOrPausePlaying();
@@ -884,6 +931,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         break;
                 }
             }
+
+            GenerateWaveform(audioStream);
         }
 
         private void UpdateSeekBarPos(object state, EventArgs e)
@@ -939,6 +988,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public void StopPlaying()
         {
             seekbarUpdateTimer.Stop();
+            CurrentTrackPosition = 0;
+            UpdateSeekBarPos(null, null);
             if (_audioPlayer != null)
             {
 
@@ -954,7 +1005,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         /// </summary>
         public void StartPlayingCurrentSelection()
         {
-            if(_playbackState == PlaybackState.Stopped)
+            if (_playbackState == PlaybackState.Stopped)
             {
                 StartOrPausePlaying();
             }
@@ -1039,6 +1090,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void Seekbar_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
+            SeekbarPositionChanged?.Invoke(this, new AudioPlayheadEventArgs(CurrentTrackPosition));
             if (!SeekUpdatingDueToTimer && !SeekDragging)
             {
                 PlayFromCurrentTrackPosition();
@@ -1200,13 +1252,13 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     case "WwiseBank":
                         return ExportInfoListBox.SelectedItem is EmbeddedWEMFile;
                     case "SoundNodeWave":
-                        return ExportInfoListBox.SelectedItem is ISBankEntry {DataAsStored: not null};
+                        return ExportInfoListBox.SelectedItem is ISBankEntry { DataAsStored: not null };
                 }
             }
 
             return false;
         }
-        
+
 
         #endregion
 
@@ -1227,6 +1279,14 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 return result;
             }
 
+#if DEBUG
+            if (CurrentLoadedExport.ClassName == "SoundNodeWave")
+            {
+                var data = ObjectBinary.From<SoundNodeWave>(CurrentLoadedExport);
+                return data.RawData.Any(); // This probably needs a bit more expansion
+            }
+#endif
+
             return false;
         }
 
@@ -1242,6 +1302,75 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 ReplaceEmbeddedWEMFromWave();
             }
+
+            if (CurrentLoadedExport.ClassName == "SoundNodeWave")
+            {
+                ReplaceEmbeddedSoundNodeWave();
+            }
+        }
+
+        private void ReplaceEmbeddedSoundNodeWave()
+        {
+            OpenFileDialog d = new OpenFileDialog { Filter = "Wave PCM|*.wav" };
+            bool? res = d.ShowDialog();
+            if (!res.HasValue || !res.Value)
+            {
+                return;
+            }
+            /*
+            if (conversionSettings == null)
+            {
+                SoundReplaceOptionsDialog srod = new SoundReplaceOptionsDialog(Window.GetWindow(this), false, Pcc.Game);
+                if (srod.ShowDialog().Value)
+                {
+                    conversionSettings = srod.ChosenSettings;
+                }
+                else
+                {
+                    return; //user didn't choose any settings
+                }
+            }*/
+
+            var wavData = File.ReadAllBytes(d.FileName);
+            var oggData = ISACTHelperExtended.ConvertWaveToOgg(wavData);
+
+
+            // UPDATE THE OTHER INFO
+
+
+            var bin = ObjectBinary.From<SoundNodeWave>(CurrentLoadedExport);
+            var isactBankPair = ISACTHelper.GetPairedBanks(bin.RawData);
+            using (var wfr = new WaveFileReader(new MemoryStream(wavData)))
+            {
+
+                var allChunks = isactBankPair.ISBBank.GetAllBankChunks();
+
+                var dataChunk = allChunks.FirstOrDefault(x => x.ChunkName == "data");
+                dataChunk.RawData = oggData; // Update ogg data.
+
+                var cmpiChunk = allChunks.FirstOrDefault(x => x.ChunkName == "cmpi");
+                var c2Chunk = cmpiChunk as CompressionInfoBankChunk;
+                c2Chunk.TotalSize = oggData.Length;
+                c2Chunk.CurrentFormat = 2; // Ogg Vorbis
+                c2Chunk.TargetFormat = 2; // Ogg Vorbis
+
+                var sinfChunk = allChunks.FirstOrDefault(x => x.ChunkName == "sinf") as SampleInfoBankChunk;
+                sinfChunk.TimeLength = wfr.TotalTime.Milliseconds;
+                // sinfChunk.ByteLength = wfr.GetChunkData(). // 'data' segment size of source wav / (BitsPerSample / 8) // Unsure what this actually does, if anything
+                //sinfChunk.BufferOffset = 0;
+                sinfChunk.BitsPerSample = (ushort)wfr.WaveFormat.BitsPerSample;
+                sinfChunk.SamplesPerSecond = wfr.WaveFormat.SampleRate;
+
+                // Todo: Change compression for
+
+                var channelChunk = allChunks.FirstOrDefault(x => x.ChunkName == "chnk") as ChannelBankChunk;
+                channelChunk.ChannelCount = wfr.WaveFormat.Channels;
+                // Not sure if other data needs to be updated here.
+
+            }
+
+            bin.RawData = ISACTHelper.SerializePairedBanks(isactBankPair);
+            CurrentLoadedExport.WriteBinary(bin);
         }
 
         private async void ReplaceEmbeddedWEMFromWave(string sourceFile = null, WwiseConversionSettingsPackage conversionSettings = null)
@@ -1350,7 +1479,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
             if (conversionSettings == null)
             {
-                SoundReplaceOptionsDialog srod = new SoundReplaceOptionsDialog(Window.GetWindow(this), Pcc.Game.IsGame3(), Pcc.Game);
+                SoundReplaceOptionsDialog srod = new SoundReplaceOptionsDialog(Window.GetWindow(this), Pcc.Game.IsGame3(), Pcc.Game, (forcedExport ?? CurrentLoadedExport).GetProperty<NameProperty>("Filename").Value);
                 if (srod.ShowDialog() == true)
                 {
                     conversionSettings = srod.ChosenSettings;
@@ -1371,10 +1500,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             await Task.Run(async () =>
             {
                 var conversion = await WwiseCliHandler.RunWwiseConversion(Pcc.Game, sourceFile, conversionSettings);
-                ReplaceAudioFromWwiseEncodedFile(conversion, forcedExport, conversionSettings?.UpdateReferencedEvents ?? false);
+                ReplaceAudioFromWwiseEncodedFile(conversion, forcedExport, conversionSettings?.UpdateReferencedEvents ?? false, conversionSettings?.DestinationAFCFile);
 
             }).ContinueWithOnUIThread((a) =>
             {
+                UpdateAudioStream();
                 if (HostingControl != null)
                 {
                     HostingControl.IsBusy = false;
@@ -1387,7 +1517,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         /// </summary>
         /// <param name="forcedExport">Export to update. If null, the currently loaded one is used instead.</param>
         /// <param name="updateReferencedEvents">If true will find all WwiseEvents referencing this export and update their Duration property</param>
-        public void ReplaceAudioFromWwiseEncodedFile(string filePath = null, ExportEntry forcedExport = null, bool updateReferencedEvents = false)
+        public void ReplaceAudioFromWwiseEncodedFile(string filePath = null, ExportEntry forcedExport = null, bool updateReferencedEvents = false, string destAFCBasename = null)
         {
             StopPlaying();
             ExportEntry exportToWorkOn = forcedExport ?? CurrentLoadedExport;
@@ -1408,78 +1538,13 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     }
                 }
 
-                w.ImportFromFile(filePath, w.GetPathToAFC());
+                w.ImportFromFile(filePath, w.GetPathToAFC(destAFCBasename), destAFCBasename);
                 exportToWorkOn.WriteBinary(w);
-                UpdateAudioStream();
 
-                if(updateReferencedEvents)
+                if (updateReferencedEvents)
                 {
                     var ms = (float)w.GetAudioInfo().GetLength().TotalMilliseconds;
-                    UpdateReferencedWwiseEventLengths(exportToWorkOn, ms);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Update the DurationMilliseconds property on all WwiseEvents that reference the given WwiseStream
-        /// </summary>
-        /// <param name="wwiseStreamExport"></param>
-        /// <param name="streamLengthInMs">Value to update DurationMilliseconds to</param>
-        public void UpdateReferencedWwiseEventLengths(ExportEntry wwiseStreamExport, float streamLengthInMs)
-        {
-            // LE2 has the DurationSeconds property but does not appear to be on any events, so we do nothing. I think.
-
-            if (wwiseStreamExport.Game is MEGame.ME3)
-            {
-                var durationProperty = new FloatProperty(streamLengthInMs, "DurationMilliseconds");
-
-                // Find referenced WwiseEvent exports and update the property
-                var referencedExports = wwiseStreamExport.GetEntriesThatReferenceThisOne();
-                foreach (ExportEntry re in referencedExports.Select(e => e.Key)
-                                                            .Where(e => e.ClassName == "WwiseEvent"))
-                {
-                    re.WriteProperty(durationProperty);
-                }
-            }
-            // Finding all WwiseEvent references in LE games will return several WwiseExports, some incorrect
-            // so we have to look up the WwiseEvent by TLK ID
-            else if (wwiseStreamExport.Game is MEGame.LE3)
-            {
-                var durationProperty = new FloatProperty(streamLengthInMs/1000, "DurationSeconds");
-                
-                var splits = wwiseStreamExport.ObjectName.Name.Split('_', ',');
-                int tlkId = 0;
-                bool specifyByGender = false;
-                bool isFemaleStream = false;
-                for (int i = splits.Length - 1; i > 0; i--)
-                {
-                    //backwards is faster
-                    if (int.TryParse(splits[i], out var parsed))
-                    {
-                        tlkId = parsed;
-                        specifyByGender = wwiseStreamExport.ObjectName.Name.Contains("player_", StringComparison.OrdinalIgnoreCase);
-                        isFemaleStream = splits[i + 1] == "f";
-                    }
-                }
-                if (tlkId == 0) return;
-
-                var referencedExports = wwiseStreamExport.GetEntriesThatReferenceThisOne()
-                    .Select(e => e.Key)
-                    .Where(e => e.ClassName == "WwiseEvent")
-                    .Where(e =>
-                    {
-                        if (!e.ObjectName.Name.StartsWith("VO", StringComparison.OrdinalIgnoreCase)) return false;
-
-                        var splits = e.ObjectName.Name.Split("_");
-                        if (specifyByGender)
-                        {
-                            return splits[1] == tlkId.ToString() && (isFemaleStream == (splits[2] == "f"));
-                        }
-                        else return splits[1] == tlkId.ToString();
-                    });
-                foreach (ExportEntry re in referencedExports)
-                {
-                    re.WriteProperty(durationProperty);
+                    WwiseHelper.UpdateReferencedWwiseEventLengths(exportToWorkOn, ms);
                 }
             }
         }
@@ -1541,7 +1606,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         }
 
         #endregion
-         
+
         #region HIRC Panel
 
         public event Action<uint> HIRCObjectSelected;
@@ -1914,9 +1979,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public override void Dispose()
         {
             FreeAudioResources();
+            waveformImage.Source = null;
+            SoundpanelHIRC_Hexbox?.Dispose();
             SoundpanelHIRC_Hexbox = null;
-            HIRC_Hexbox_Host.Child.Dispose();
-            HIRC_Hexbox_Host.Dispose();
+            HIRC_Hexbox_Host?.Child?.Dispose();
+            HIRC_Hexbox_Host?.Dispose();
             CurrentLoadedWwisebank = null;
         }
 
@@ -2011,156 +2078,56 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
         }
         #endregion
+
+        #region Waveform graph
+
+        /// <summary>
+        /// Generates a waveform from the given stream input (Not a wave stream!)
+        /// </summary>
+        /// <param name="waveStream">PCM data stream</param>
+        private void GenerateWaveform(Stream waveStream)
+        {
+            if (!GenerateWaveformGraph)
+                return;
+            waveStream.Position = 0;
+            var audioFileReader = new WaveFileReader(waveStream);
+
+
+            // 1. Configure Providers
+            MaxPeakProvider maxPeakProvider = new MaxPeakProvider();
+            RmsPeakProvider rmsPeakProvider = new RmsPeakProvider(200); // e.g. 200
+            SamplingPeakProvider samplingPeakProvider = new SamplingPeakProvider(200); // e.g. 200
+            AveragePeakProvider averagePeakProvider = new AveragePeakProvider(4); // e.g. 4
+
+            // 2. Configure the style of the audio wave image
+            StandardWaveFormRendererSettings myRendererSettings = new StandardWaveFormRendererSettings();
+            myRendererSettings.Width = 1200;
+            myRendererSettings.TopHeight = 32;
+            myRendererSettings.BottomHeight = 32;
+            myRendererSettings.BackgroundColor = Color.Transparent;
+
+            // 3. Define the audio file from which the audio wave will be created and define the providers and settings
+            WaveFormRenderer renderer = new WaveFormRenderer();
+            var image = renderer.Render(audioFileReader, averagePeakProvider, myRendererSettings);
+            waveformImage.Source = image.ToBitmapImage(ImageFormat.Png);
+        }
+        #endregion
     }
 
-    public class EmbeddedWEMFile
+    public class AudioPlayheadEventArgs : EventArgs
     {
-        public uint Id;
-        public bool HasBeenFixed;
-        public MEGame Game;
+        /// <summary>
+        /// The position of the playhead
+        /// </summary>
+        public double PlayheadTime;
 
-        public EmbeddedWEMFile(byte[] WemData, string DisplayString, ExportEntry export, uint Id = 0)
+        public AudioPlayheadEventArgs(double position)
         {
-            this.export = export;
-            this.Id = Id;
-            this.Game = export.Game;
-            this.WemData = WemData;
-            this.DisplayString = DisplayString;
-
-
-            int size = EndianReader.ToInt32(WemData, 4, export.FileRef.Endian);
-            int subchunk2size = EndianReader.ToInt32(WemData, 0x5A, export.FileRef.Endian);
-
-            if (size != WemData.Length - 8)
-            {
-                OriginalWemData = WemData.ArrayClone(); //store copy of the original data in the event the user rewrites a WEM
-
-                //Some clips in ME3 are just the intro to the audio. The raw data is literally cutoff and the first ~.5 seconds are inserted into the soundbank.
-                //In order to attempt to even listen to these we have to fix the headers for size and subchunk2size.
-                size = WemData.Length - 8;
-                HasBeenFixed = true;
-                this.DisplayString += " - Preloading";
-                int offset = 4;
-
-                if (export.FileRef.Endian == Endian.Little)
-                {
-                    WemData[offset] = (byte)size; // fourth byte
-                    WemData[offset + 1] = (byte)(size >> 8); // third byte
-                    WemData[offset + 2] = (byte)(size >> 16); // second byte
-                    WemData[offset + 3] = (byte)(size >> 24); // last byte
-
-                    offset = 0x5A; //Subchunk2 size offset
-                    size = WemData.Length - 94; //size of data to follow
-                    WemData[offset] = (byte)size; // fourth byte
-                    WemData[offset + 1] = (byte)(size >> 8); // third byte
-                    WemData[offset + 2] = (byte)(size >> 16); // second byte
-                    WemData[offset + 3] = (byte)(size >> 24); // last byte
-                }
-                else
-                {
-                    WemData[offset + 3] = (byte)size; // fourth byte
-                    WemData[offset + 2] = (byte)(size >> 8); // third byte
-                    WemData[offset + 1] = (byte)(size >> 16); // second byte
-                    WemData[offset] = (byte)(size >> 24); // last byte
-
-                    offset = 0x5A; //Subchunk2 size offset
-                    size = WemData.Length - 94; //size of data to follow
-                    WemData[offset + 3] = (byte)size; // fourth byte
-                    WemData[offset + 2] = (byte)(size >> 8); // third byte
-                    WemData[offset + 1] = (byte)(size >> 16); // second byte
-                    WemData[offset] = (byte)(size >> 24); // last byte
-                }
-
-                var audioLen = GetAudioInfo(WemData)?.GetLength();
-                if (audioLen != null && audioLen.Value != TimeSpan.Zero)
-                {
-                    this.DisplayString += $" ({ audioLen.Value.ToString(@"mm\:ss\:fff")})";
-                }
-                
-                if(App.IsDebug)
-                {
-                    var audioData = GetAudioInfo(WemData);
-                    this.DisplayString += $" (Size { audioData.AudioDataSize.ToString()})";
-                    this.DisplayString += $" (BitsPerSample { audioData.BitsPerSample.ToString()})";
-                    this.DisplayString += $" (Channels { audioData.Channels.ToString()})";
-                    this.DisplayString += $" (CodecID { audioData.CodecID.ToString()})";
-                    this.DisplayString += $" (Codec { audioData.CodecName.ToString()})";
-                    this.DisplayString += $" (SampleCount { audioData.SampleCount.ToString()})";
-                    this.DisplayString += $" (SampleRate { audioData.SampleRate.ToString()})";
-                }
-            }
-        }
-
-        private ExportEntry export;
-        public byte[] WemData { get; set; }
-        public byte[] OriginalWemData { get; set; }
-        public string DisplayString { get; set; }
-
-        public AudioInfo GetAudioInfo(byte[] dataOverride = null)
-        {
-            // Similar to WwiseStream
-            try
-            {
-                AudioInfo ai = new AudioInfo();
-                Stream dataStream = new MemoryStream(dataOverride ?? WemData);
-
-                EndianReader er = new EndianReader(dataStream);
-                var header = er.ReadStringASCII(4);
-                if (header == "RIFX") er.Endian = Endian.Big;
-                if (header == "RIFF") er.Endian = Endian.Little;
-                // Position 4
-
-                // This info seems wrong. Needs to be updated. Probably for 5.1.
-
-
-                er.Seek(0xC, SeekOrigin.Current); // Post 'fmt ', get fmt size
-                var fmtSize = er.ReadInt32();
-                var postFormatPosition = er.Position;
-                ai.CodecID = er.ReadUInt16();
-
-                switch (ai.CodecID)
-                {
-                    case 0xFFFF:
-                        ai.CodecName = "Vorbis";
-                        break;
-                    default:
-                        ai.CodecName = $"Unknown codec ID {ai.CodecID}";
-                        break;
-                }
-
-                ai.Channels = er.ReadUInt16();
-                ai.SampleRate = er.ReadUInt32();
-                er.ReadInt32(); //Average bits per second
-                er.ReadUInt16(); //Alignment. VGMStream shows this is 16bit but that doesn't seem right
-                ai.BitsPerSample = er.ReadUInt16(); //Bytes per sample. For vorbis this is always 0!
-                var extraSize = er.ReadUInt16();
-                if (extraSize == 0x30)
-                {
-                    er.Seek(postFormatPosition + 0x18, SeekOrigin.Begin);
-                    ai.SampleCount = er.ReadUInt32();
-                }
-                else
-                {
-                    // Find audio sample data chunk size
-                    er.Seek(0x10 + fmtSize, SeekOrigin.Begin);
-                    var chunkName = er.ReadStringASCII(4);
-                    while (!chunkName.Equals("data", StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        er.Seek(er.ReadInt32(), SeekOrigin.Current);
-                        chunkName = er.ReadStringASCII(4);
-                    }
-                    ai.AudioDataSize = er.ReadUInt32();
-                }
-
-                // We don't care about the rest.
-                return ai;
-            }
-            catch
-            {
-                return null;
-            }
+            PlayheadTime = position;
         }
     }
+
+
 
     public class ImportExportSoundEnabledConverter : IValueConverter
     {

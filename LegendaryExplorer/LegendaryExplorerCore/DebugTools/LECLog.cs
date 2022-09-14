@@ -16,7 +16,7 @@ namespace LegendaryExplorerCore.DebugTools
         /// If debug messages should be logged. Defaults to false.
         /// </summary>
         public static bool LogDebug;
-        private const string Prefix = @"[LEC]";
+        private const string Prefix = @"[LEC] ";
 
         public static void Information(string message)
         {

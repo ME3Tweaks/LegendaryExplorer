@@ -6,6 +6,7 @@ using System.Linq;
 using System.Xml;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Memory;
+using LegendaryExplorerCore.TLK.ME1;
 using static LegendaryExplorerCore.TLK.ME1.ME1TalkFile;
 
 namespace LegendaryExplorerCore.TLK.ME2ME3
@@ -16,10 +17,10 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
     public class HuffmanCompression
     {
         private Version _inputFileVersion = null;
-        private List<TLKStringRef> _inputData = new List<TLKStringRef>();
-        private Dictionary<char, int> frequencyCount = new Dictionary<char, int>();
-        private List<HuffmanNode> _huffmanTree = new List<HuffmanNode>();
-        private Dictionary<char, BitArray> _huffmanCodes = new Dictionary<char, BitArray>();
+        private List<TLKStringRef> _inputData = new();
+        private readonly Dictionary<char, int> frequencyCount = new();
+        private readonly List<HuffmanNode> _huffmanTree = new();
+        private readonly Dictionary<char, BitArray> _huffmanCodes = new();
 
 
         private class HuffmanNode
@@ -48,28 +49,28 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
         /// <summary>
         /// Loads a file into memory and prepares for compressing it to TLK
         /// </summary>
-        /// <param name="fileName"></param>
-        /// <param name="debugVersion"></param>
+        /// <param name="filePath">Path of the file to open</param>
+        /// <param name="debugVersion">Should the StringID be appended to every string</param>
         /// 
-        public void LoadInputData(string fileName, bool debugVersion = false)
+        public void LoadInputData(string filePath, bool debugVersion = false)
         {
             _inputData.Clear();
-            LoadXmlInputData(fileName, debugVersion);
+            LoadXmlInputData(filePath, debugVersion);
             _inputData.Sort();
             PrepareHuffmanCoding();
         }
 
         /// <summary>
-        /// Loads files into memory, dedups, and prepares for compressing it to TLK
+        /// Loads multiple files into memory, dedups, and prepares for compressing it to a single TLK
         /// </summary>
-        /// <param name="fileNames"></param>
-        /// <param name="debugVersion"></param>
+        /// <param name="filePaths">Paths of files to load</param>
+        /// <param name="debugVersion">Should the StringID be appended to every string</param>
         /// 
-        public void LoadInputData(string[] fileNames, bool debugVersion)
+        public void LoadInputData(string[] filePaths, bool debugVersion)
         {
             var maleDict = new Dictionary<int, TLKStringRef>();
             var femaleDict = new Dictionary<int, TLKStringRef>();
-            foreach (string fileName in fileNames)
+            foreach (string fileName in filePaths)
             {
                 _inputData.Clear();
                 var tempMaleDict = new Dictionary<int, TLKStringRef>();
@@ -103,30 +104,46 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
             PrepareHuffmanCoding();
         }
 
+        /// <summary>
+        /// Loads <see cref="TLKStringRef"/>s and prepares for compressing them to a TLK
+        /// </summary>
+        /// <param name="tlkEntries">All the <see cref="TLKStringRef"/>s to add to the TLK</param>
         public void LoadInputData(List<TLKStringRef> tlkEntries)
         {
             _inputData = tlkEntries;
             PrepareHuffmanCoding();
         }
 
-        /// Dumps data from memory to TLK compressed file format.
+        /// <summary>
+        /// Saves <paramref name="stringRefs"/> to TLK compressed file format.
+        /// </summary>
+        /// <param name="filePath">Path to save to</param>
+        /// <param name="stringRefs">The <see cref="TLKStringRef"/>s that should be saved to the file</param>
+        public static void SaveToTlkFile(string filePath, List<TLKStringRef> stringRefs)
+        {
+            SaveToTlkStream(stringRefs).WriteToFile(filePath);
+        }
+
+        /// <summary>
+        /// Saves to TLK compressed file format.
+        /// </summary>
         /// <remarks>
         /// Compressed data should be read into memory first, by LoadInputData method.
         /// </remarks>
+        /// <param name="filePath">Path to save to</param>
+        public void SaveToFile(string filePath)
+        {
+            SaveToTlkFile(filePath, _inputData);
+        }
+
+        /// <summary>
+        /// Writes compressed TLK file to a <see cref="MemoryStream"/>
         /// </summary>
-        /// <param name="fileName"></param>
-        /// <param name="stringRefs"></param>
-        public static void SaveToTlkFile(string fileName, List<TLKStringRef> stringRefs)
-        {
-            SaveToTlkStream(stringRefs).WriteToFile(fileName);
-        }
-
-        public void SaveToFile(string fileName)
-        {
-            SaveToTlkFile(fileName, _inputData);
-        }
-
-        public Stream SaveToStream()
+        /// <remarks>
+        /// Compressed data should be read into memory first, by LoadInputData method.
+        /// </remarks>
+        /// <returns>A <see cref="MemoryStream"/> containing the compressed TLK file</returns>
+        public MemoryStream SaveToStream()
         {
             return SaveToTlkStream(_inputData);
         }
@@ -134,10 +151,11 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
         /// <summary>
         /// Loads data from XML file into memory
         /// </summary>
-        /// <param name="fileName"></param>
-        private void LoadXmlInputData(string fileName, bool debugVersion)
+        /// <param name="filePath">Path of XML file</param>
+        /// <param name="debugVersion">Should the StringID be appended to every string</param>
+        private void LoadXmlInputData(string filePath, bool debugVersion)
         {
-            var xmlReader = new XmlTextReader(fileName);
+            var xmlReader = new XmlTextReader(filePath);
 
             /* read and store TLK Tool version, which was used to create the XML file */
             while (xmlReader.Read())
@@ -171,9 +189,9 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
                             data += '\0';
                         /* only add debug info if we are in debug mode and StringID is positive AND it's localizable */
                         if (id >= 0 && debugVersion && (id & 0x8000000) != 0x8000000)
-                            _inputData.Add(new TLKStringRef(id, position, "(#" + id + ") " + data, position));
+                            _inputData.Add(new TLKStringRef(id, "(#" + id + ") " + data, position, position));
                         else
-                            _inputData.Add(new TLKStringRef(id, position, data, position));
+                            _inputData.Add(new TLKStringRef(id, data, position, position));
                         position++;
                     }
                 }
@@ -203,9 +221,9 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
                             data += '\0';
                         /* only add debug info if we are in debug mode and StringID is positive AND it's localizable */
                         if (id >= 0 && debugVersion && (id & 0x8000000) != 0x8000000)
-                            _inputData.Add(new TLKStringRef(id, 0, "(#" + id + ") " + data, position));
+                            _inputData.Add(new TLKStringRef(id, "(#" + id + ") " + data, 0, position));
                         else
-                            _inputData.Add(new TLKStringRef(id, 0, data, position));
+                            _inputData.Add(new TLKStringRef(id, data, 0, position));
                     }
                 }
             }
@@ -215,7 +233,7 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
         /// <summary>
         /// Creates Huffman Tree based on data from memory.
         /// For every character in text data, a corresponding Huffman Code is prepared.
-        /// Source: http://en.wikipedia.org/wiki/Huffman_coding
+        /// Source: <see href="http://en.wikipedia.org/wiki/Huffman_coding"/>
         /// </summary>
         private void PrepareHuffmanCoding()
         {
@@ -278,7 +296,7 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
             /* check if both sons are null */
             if (node.Left == node.Right)
             {
-                BitArray ba = new BitArray(code.ToArray());
+                var ba = new BitArray(code.ToArray());
                 _huffmanCodes.Add(node.Data, ba);
             }
             else
@@ -368,7 +386,7 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
 
                 while (bitpos < bits.Length)
                 {
-                    if (bits[bitpos])
+                    if (bits.Get(bitpos))
                     {
                         value += significance;
                     }
@@ -403,7 +421,12 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
         {
             return L1.FrequencyCount.CompareTo(L2.FrequencyCount);
         }
-
+        
+        /// <summary>
+        /// Compresses <paramref name="stringRefs"/> to a TLK file, returned as a <see cref="MemoryStream"/>
+        /// </summary>
+        /// <param name="stringRefs">The <see cref="TLKStringRef"/>s that should be compressed</param>
+        /// <returns>A <see cref="MemoryStream"/> containing the compressed TLK file</returns>
         public static MemoryStream SaveToTlkStream(List<TLKStringRef> stringRefs)
         {
             MemoryStream memStream = MemoryManager.GetMemoryStream();
@@ -453,7 +476,7 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
             const int min_ver = 2;
             int entry1Count = maleStrings.Count;
             int entry2Count = femaleStrings.Count;
-            int treeNodeCount = treeBuffer.Count() / 2;
+            int treeNodeCount = treeBuffer.Count / 2;
             int dataLength = offset / 8;
             if (offset % 8 > 0)
                 ++dataLength;

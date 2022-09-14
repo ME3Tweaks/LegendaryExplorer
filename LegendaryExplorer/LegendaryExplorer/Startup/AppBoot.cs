@@ -8,13 +8,17 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms.Integration;
+using FontAwesome5;
+using FontAwesome5.Extensions;
 using LegendaryExplorer.Dialogs.Splash;
 using LegendaryExplorer.GameInterop;
 using LegendaryExplorer.MainWindow;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Misc.AppSettings;
 using LegendaryExplorer.SharedUI.PeregrineTreeView;
+using LegendaryExplorer.Tools.CustomFilesManager;
 using LegendaryExplorerCore;
+using LegendaryExplorerCore.DebugTools;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
@@ -47,6 +51,7 @@ namespace LegendaryExplorer.Startup
 
             //Peregrine's Dispatcher (for WPF Treeview selecting on virtualized lists)
             DispatcherHelper.Initialize();
+
             Settings.LoadSettings();
             initCoreLib();
 
@@ -67,6 +72,11 @@ namespace LegendaryExplorer.Startup
 
             // WPF setup
             ToolTipService.ShowDurationProperty.OverrideMetadata(typeof(DependencyObject), new FrameworkPropertyMetadata(int.MaxValue));
+            //fixes bad WPF default. Users aren't going to not want to know what a button does just because it's disabled at the moment!
+            ToolTipService.ShowOnDisabledProperty.OverrideMetadata(typeof(FrameworkElement), new FrameworkPropertyMetadata(true));
+
+            //force fontawesome's icons into memory, so that it won't need to happen when the main window is opening 
+            EFontAwesomeIcon.None.GetUnicode();
 
             // Initialize VLC
             LibVLCSharp.Shared.Core.Initialize();
@@ -99,6 +109,12 @@ namespace LegendaryExplorer.Startup
                 {
                     Debug.WriteLine("Unable to determine core count from WMI, defaulting to 2");
                 }
+
+                // 08/13/2022 - Custom Class Inventory
+                CustomFilesManagerWindow.InventoryCustomClassDirectories();
+
+                // 08/13/2022 - Custom Startup Files
+                CustomFilesManagerWindow.InstallCustomStartupFiles();
             }).ContinueWithOnUIThread(x =>
             {
                 IsLoaded = true;
@@ -115,6 +131,13 @@ namespace LegendaryExplorer.Startup
                     cliHandler.InvokeAsync(Arguments.Dequeue());
                 }
             });
+
+            var mpc1 = LegendaryExplorerCore.PlotDatabase.PlotDatabases.GetModPlotContainerForGame(MEGame.LE1);
+            if (mpc1.Mods.IsEmpty()) mpc1.LoadModsFromDisk(AppDirectories.AppDataFolder);
+            var mpc2 = LegendaryExplorerCore.PlotDatabase.PlotDatabases.GetModPlotContainerForGame(MEGame.LE2);
+            if (mpc2.Mods.IsEmpty()) mpc2.LoadModsFromDisk(AppDirectories.AppDataFolder);
+            var mpc3 = LegendaryExplorerCore.PlotDatabase.PlotDatabases.GetModPlotContainerForGame(MEGame.LE3);
+            if (mpc3.Mods.IsEmpty()) mpc3.LoadModsFromDisk(AppDirectories.AppDataFolder);
         }
 
         private static void initCoreLib()

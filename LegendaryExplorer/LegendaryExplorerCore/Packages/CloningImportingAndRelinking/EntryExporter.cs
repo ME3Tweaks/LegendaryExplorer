@@ -22,7 +22,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             Dictionary<ImportEntry, ExportEntry> impToExpMap = new Dictionary<ImportEntry, ExportEntry>();
 
             // Check and resolve all imports upstream in the level
-            var unresolvableImports = RecursiveGetAllLevelImportsAsExports(sourceExport, impToExpMap, globalCache, pc, true);
+            var unresolvableImports = RecursiveGetAllLevelImportsAsExports(sourceExport, impToExpMap, globalCache, pc);
             issues.AddRange(unresolvableImports);
 
             // Imports are resolvable. We should port in level imports then port in the rest
@@ -35,7 +35,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     // port it in
                     //Debug.WriteLine($"Porting in: {mapping.Key.InstancedFullPath}");
                     var parent = PortParents(mapping.Value, targetPackage);
-                    var relinkResults1 = EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, mapping.Value, targetPackage, parent, true, out _);
+                    var relinkResults1 = EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, mapping.Value, targetPackage, parent, true, new RelinkerOptionsPackage() { ImportExportDependencies = true }, out _);
                     issues.AddRange(relinkResults1);
                 }
                 else
@@ -51,7 +51,8 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             var newEntry = targetPackage.FindEntry(sourceExport.InstancedFullPath);
             if (newEntry == null)
             {
-                var relinkResults2 = EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, sourceExport, targetPackage, lParent, true, out newEntry);
+
+                var relinkResults2 = EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, sourceExport, targetPackage, lParent, true, new RelinkerOptionsPackage() { ImportExportDependencies = true }, out newEntry);
                 issues.AddRange(relinkResults2);
             }
 
@@ -83,7 +84,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         }
 
         /// <summary>
-        /// Exporst the export and all rqeuired dependencies to a package file located at the specified path. The package is saved to disk.
+        /// Exports the export and all required dependencies to a package file located at the specified path.
         /// </summary>
         /// <param name="sourceExport"></param>
         /// <param name="newPackagePath"></param>
@@ -97,7 +98,6 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             MEPackageHandler.CreateAndSavePackage(newPackagePath, sourceExport.Game);
             using var p = MEPackageHandler.OpenMEPackage(newPackagePath);
             var result = ExportExportToPackage(sourceExport, p, out newEntry, globalCache, pc);
-            p.Save(compress: compress);
             return result;
         }
 
@@ -150,19 +150,20 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         }
                         else
                         {
-                            EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.AddSingularAsChild, pEntry, target, parent, false, out parent);
+                            EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.AddSingularAsChild, pEntry, target, parent, false, new RelinkerOptionsPackage() { ImportExportDependencies = false }, out parent);
                         }
                     }
                     else
                     {
                         // Port in with relink... this could get really ugly performance wise
-                        EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.AddSingularAsChild, pEntry, target, parent, true, out parent);
+                        EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.AddSingularAsChild, pEntry, target, parent, true, new RelinkerOptionsPackage() { ImportExportDependencies = true }, out parent);
                     }
                     var entriesAC = target.ExportCount;
                     if (entriesAC - entriesBC > parentCount)
                     {
                         // We ported in too many things!!
-                        Debugger.Break();
+                        Debug.WriteLine("We appear to have ported too many things!!");
+                        // Debugger.Break();
                     }
                 }
                 else
@@ -210,8 +211,6 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             }
 
             sourcePackage.InvalidateLookupTable();
-
-
         }
 
         /// <summary>
@@ -222,7 +221,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// <param name="globalCache">Global cache that will not have it's contents modified. Should contain things like SFXGame, Startup, etc.</param>
         /// <param name="cache">Cache for the local operation, such as the localization files, the upstream level files. This cache will be modified as packages are opened</param>
         /// <returns></returns>
-        private static List<EntryStringPair> RecursiveGetAllLevelImportsAsExports(ExportEntry sourceExport, Dictionary<ImportEntry, ExportEntry> resolutionMap, PackageCache globalCache, PackageCache cache, bool clipRootLevelPackgesOnImports = true)
+        private static List<EntryStringPair> RecursiveGetAllLevelImportsAsExports(ExportEntry sourceExport, Dictionary<ImportEntry, ExportEntry> resolutionMap, PackageCache globalCache, PackageCache cache)
         {
             List<EntryStringPair> unresolvableImports = new List<EntryStringPair>();
             var references = EntryImporter.GetAllReferencesOfExport(sourceExport);
@@ -233,11 +232,11 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 var instancedFullPath = import.InstancedFullPath;
                 if (instancedFullPath.StartsWith("Core.") || instancedFullPath.StartsWith("Engine."))
                     continue; // A lot of these are not resolvable cause they're native
-                if (import.Game == MEGame.ME2 && instancedFullPath == "BioVFX_Z_TEXTURES.Generic.Glass_Shards_Norm")
-                    continue; // This texture for some reason is not stored in package files... not sure where, or how it is loaded into memory
+                if (import.Game.IsGame2() && instancedFullPath == "BioVFX_Z_TEXTURES.Generic.Glass_Shards_Norm")
+                    continue; // This texture is straight up missing from the game for some reason
                 if (import.IsAKnownNativeClass())
                     continue; // Known native items can never be imported
-                var resolved = EntryImporter.ResolveImport(import, globalCache, cache, clipRootLevelPackage: clipRootLevelPackgesOnImports);
+                var resolved = EntryImporter.ResolveImport(import, globalCache, cache);
                 if (resolved == null)
                 {
                     unresolvableImports.Add(new EntryStringPair(import, $"Import {import.InstancedFullPath} could not be resolved - cannot be safely used"));
@@ -248,9 +247,8 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 var sourcePath = Path.GetFileNameWithoutExtension(resolved.FileRef.FilePath);
                 if (IsLevelFile(sourcePath) || IsGlobalNonStartupFile(sourcePath))
                 {
-
                     resolutionMap[import] = resolved;
-                    RecursiveGetAllLevelImportsAsExports(resolved, resolutionMap, globalCache, cache, clipRootLevelPackgesOnImports);
+                    RecursiveGetAllLevelImportsAsExports(resolved, resolutionMap, globalCache, cache);
                 }
             }
 

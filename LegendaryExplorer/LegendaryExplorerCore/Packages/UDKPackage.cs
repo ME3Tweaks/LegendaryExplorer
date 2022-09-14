@@ -10,18 +10,35 @@ using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.TLK.ME1;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.Classes;
+using Newtonsoft.Json.Linq;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
 
 namespace LegendaryExplorerCore.Packages
 {
     public sealed class UDKPackage : UnrealPackageFile, IMEPackage
     {
-        public const int UDKUnrealVersion = 868;
-        public const int UDKLicenseeVersion = 0;
+        public const int UDKUnrealVersion2015 = 868; // 2015, the primary one
+        public const int UDKUnrealVersion2014 = 867; // 2014, some really old ME3 mods ship these files
+        public const int UDKUnrealVersion2011 = 812; // 2011, similar in age to ME3 // UDK 7797
+        public const int UDKLicenseeVersion = 0; // 2015
+
+
         public MEGame Game => MEGame.UDK;
         public MEPackage.GamePlatform Platform => MEPackage.GamePlatform.PC;
         public Endian Endian => Endian.Native; //we do not support big endian UDK packages
         public MELocalization Localization => MELocalization.None;
+
+        /// <summary>
+        /// Custom user-defined metadata to associate with this package object. This data has no effect on saving or loading, it is only for library user convenience.
+        /// </summary>
+        public Dictionary<string, object> CustomMetadata { get; set; } = new(0);
+
+
+        /// <summary>
+        /// This property is never used as UDK packages do not save LECLData
+        /// </summary>
+        public LECLData LECLTagData { get; }
+
         public byte[] getHeader()
         {
             using var ms = MemoryManager.GetMemoryStream();
@@ -66,37 +83,27 @@ namespace LegendaryExplorerCore.Packages
         private List<Thumbnail> ThumbnailTable = new List<Thumbnail>();
         #endregion
 
-        static bool isLoaderRegistered;
-        internal static Func<string, bool, UDKPackage> RegisterLoader()
+        private static bool _isBlankPackageCreatorRegistered;
+        internal static Func<string, UDKPackage> RegisterBlankPackageCreator()
         {
-            if (isLoaderRegistered)
+            if (_isBlankPackageCreatorRegistered)
             {
                 throw new Exception(nameof(UDKPackage) + " can only be initialized once");
             }
-            else
-            {
-                isLoaderRegistered = true;
-                return (fileName, shouldCreate) =>
-                {
-                    if (shouldCreate)
-                    {
-                        return new UDKPackage(fileName);
-                    }
-                    return new UDKPackage(new MemoryStream(File.ReadAllBytes(fileName)), fileName);
-                };
-            }
+            _isBlankPackageCreatorRegistered = true;
+            return fileName => new UDKPackage(fileName);
         }
 
-        private static bool isStreamLoaderRegistered;
+        private static bool _isStreamLoaderRegistered;
         internal static Func<Stream, string, UDKPackage> RegisterStreamLoader()
         {
 
-            if (isStreamLoaderRegistered)
+            if (_isStreamLoaderRegistered)
             {
                 throw new Exception(nameof(UDKPackage) + " streamloader can only be initialized once");
             }
 
-            isStreamLoaderRegistered = true;
+            _isStreamLoaderRegistered = true;
             return (s, associatedFilePath) => new UDKPackage(s, associatedFilePath);
         }
 
@@ -384,7 +391,7 @@ namespace LegendaryExplorerCore.Packages
         {
             ms.WriteUInt32(packageTagLittleEndian);
             //version
-            ms.WriteUInt16(UDKUnrealVersion);
+            ms.WriteUInt16(UDKUnrealVersion2015);
             ms.WriteUInt16(UDKLicenseeVersion);
 
             ms.WriteInt32(FullHeaderSize);

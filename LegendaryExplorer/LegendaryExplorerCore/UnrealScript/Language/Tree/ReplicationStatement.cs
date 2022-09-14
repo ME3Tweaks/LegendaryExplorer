@@ -13,7 +13,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
         public readonly Expression Condition;
         public readonly List<SymbolReference> ReplicatedVariables;
 
-        public ReplicationStatement(Expression condition, List<SymbolReference> replicatedVariables, SourcePosition start = null, SourcePosition end = null) : base(ASTNodeType.ReplicationStatement, start, end)
+        public ReplicationStatement(Expression condition, List<SymbolReference> replicatedVariables, int start = -1, int end = -1) : base(ASTNodeType.ReplicationStatement, start, end)
         {
             Condition = condition;
             ReplicatedVariables = replicatedVariables;

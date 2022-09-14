@@ -3,6 +3,7 @@ using Microsoft.WindowsAPICodePack.Dialogs;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -20,6 +21,7 @@ using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorer.SharedUI.Bases;
+using LegendaryExplorerCore;
 using static LegendaryExplorer.Tools.TlkManagerNS.TLKManagerWPF;
 
 namespace LegendaryExplorer.Tools.DialogueDumper
@@ -33,6 +35,49 @@ namespace LegendaryExplorer.Tools.DialogueDumper
         /// Items show in the list that are currently being processed
         /// </summary>
         public ObservableCollectionExtended<DialogueDumperSingleFileTask> CurrentDumpingItems { get; set; } = new ObservableCollectionExtended<DialogueDumperSingleFileTask>();
+
+        public ObservableCollectionExtended<MEGame> SupportedGames { get; } = new ObservableCollectionExtended<MEGame>()
+        {
+            MEGame.ME1,
+            MEGame.ME2,
+            MEGame.ME3,
+            MEGame.LE1,
+            MEGame.LE2,
+            MEGame.LE3
+        };
+
+        private MEGame _selectedGame = MEGame.LE3;
+        public MEGame SelectedGame
+        {
+            get => _selectedGame;
+            set
+            {
+                if (SetProperty(ref _selectedGame, value))
+                {
+                    DumpableLocalizations.ReplaceAll(gameSpecificLocalization[value]);
+                }
+            }
+        }
+
+        private readonly Dictionary<MEGame, MELocalization[]> gameSpecificLocalization = new()
+        {
+            // Probably should just use the list from Mod Manager
+            { MEGame.ME1, new[] { MELocalization.INT, MELocalization.ESN, MELocalization.DEU, MELocalization.FRA, MELocalization.ITA, MELocalization.RUS } }, // IDK if we can open the official POL-extension version (2nd release)
+            { MEGame.ME2, new[] { MELocalization.INT, MELocalization.ESN, MELocalization.DEU, MELocalization.FRA, MELocalization.ITA, MELocalization.POL, MELocalization.RUS, MELocalization.JPN } }, // ME2 had a JPN version. It's rare
+            { MEGame.ME3, new[] { MELocalization.INT, MELocalization.ESN, MELocalization.DEU, MELocalization.FRA, MELocalization.ITA, MELocalization.POL, MELocalization.RUS, MELocalization.JPN } }, // ME3 had a JPN version. It's rare
+            { MEGame.LE1, new[] { MELocalization.INT, MELocalization.ESN, MELocalization.DEU, MELocalization.FRA, MELocalization.ITA, MELocalization.POL, MELocalization.RUS, MELocalization.JPN } },
+            { MEGame.LE2, new[] { MELocalization.INT, MELocalization.ESN, MELocalization.DEU, MELocalization.FRA, MELocalization.ITA, MELocalization.POL, MELocalization.RUS, MELocalization.JPN } },
+            { MEGame.LE3, new[] { MELocalization.INT, MELocalization.ESN, MELocalization.DEU, MELocalization.FRA, MELocalization.ITA, MELocalization.POL, MELocalization.RUS, MELocalization.JPN } }
+        };
+
+        public ObservableCollectionExtended<MELocalization> DumpableLocalizations { get; } = new();
+
+        private MELocalization _selectedLocalization = MELocalization.INT;
+        public MELocalization SelectedLocalization
+        {
+            get => _selectedLocalization;
+            set => SetProperty(ref _selectedLocalization, value);
+        }
 
         /// <summary>
         /// All items in the queue
@@ -55,9 +100,7 @@ namespace LegendaryExplorer.Tools.DialogueDumper
         private void LoadCommands()
         {
             // Player commands
-            DumpME1Command = new RelayCommand(DumpGameME1, CanDumpGameME1);
-            DumpME2Command = new RelayCommand(DumpGameME2, CanDumpGameME2);
-            DumpME3Command = new RelayCommand(DumpGameME3, CanDumpGameME3);
+            DumpGameCommand = new RelayCommand(DumpSelectedGame, CanDumpGame);
             DumpSpecificFilesCommand = new RelayCommand(DumpSpecificFiles, CanDumpSpecificFiles);
             CancelDumpCommand = new RelayCommand(CancelDump, CanCancelDump);
             ManageTLKsCommand = new RelayCommand(ManageTLKs);
@@ -73,7 +116,7 @@ namespace LegendaryExplorer.Tools.DialogueDumper
             };
             dlg.Filters.Add(new CommonFileDialogFilter("All supported files", "*.pcc;*.sfm;*.u;*.upk"));
             dlg.Filters.Add(new CommonFileDialogFilter("Mass Effect package files", "*.sfm;*.u;*.upk"));
-            dlg.Filters.Add(new CommonFileDialogFilter("Mass Effect 2/3 package files", "*.pcc"));
+            dlg.Filters.Add(new CommonFileDialogFilter("Mass Effect 2/3/LE package files", "*.pcc"));
 
 
             if (dlg.ShowDialog(this) == CommonFileDialogResult.Ok)
@@ -110,10 +153,8 @@ namespace LegendaryExplorer.Tools.DialogueDumper
         /// </summary>
         public bool shouldDoDebugOutput;
 
-        #region commands
-        public ICommand DumpME1Command { get; set; }
-        public ICommand DumpME2Command { get; set; }
-        public ICommand DumpME3Command { get; set; }
+        #region Commands
+        public ICommand DumpGameCommand { get; set; }
         public ICommand DumpSpecificFilesCommand { get; set; }
         public ICommand CancelDumpCommand { get; set; }
         public ICommand ManageTLKsCommand { get; set; }
@@ -144,19 +185,19 @@ namespace LegendaryExplorer.Tools.DialogueDumper
             return (ProcessingQueue == null || ProcessingQueue.Completion.Status != TaskStatus.WaitingForActivation) && !isProcessing;
         }
 
-        private bool CanDumpGameME1(object obj)
+        private bool CanDumpGame(object obj)
         {
-            return ME1Directory.DefaultGamePath != null && Directory.Exists(ME1Directory.DefaultGamePath) && (ProcessingQueue == null || ProcessingQueue.Completion.Status != TaskStatus.WaitingForActivation) && !isProcessing;
+            var gameDir = MEDirectories.GetDefaultGamePath(SelectedGame);
+            var gameExists = gameDir != null && Directory.Exists(gameDir);
+            return gameExists &&
+                   (ProcessingQueue == null ||
+                    ProcessingQueue.Completion.Status != TaskStatus.WaitingForActivation)
+                   && !isProcessing;
         }
 
-        private bool CanDumpGameME2(object obj)
+        private void DumpSelectedGame(object obj)
         {
-            return ME2Directory.DefaultGamePath != null && Directory.Exists(ME2Directory.DefaultGamePath) && (ProcessingQueue == null || ProcessingQueue.Completion.Status != TaskStatus.WaitingForActivation) && !isProcessing;
-        }
-
-        private bool CanDumpGameME3(object obj)
-        {
-            return ME3Directory.DefaultGamePath != null && Directory.Exists(ME3Directory.DefaultGamePath) && (ProcessingQueue == null || ProcessingQueue.Completion.Status != TaskStatus.WaitingForActivation) && !isProcessing;
+            DumpGame(SelectedGame);
         }
 
         private bool CanCancelDump(object obj)
@@ -171,30 +212,15 @@ namespace LegendaryExplorer.Tools.DialogueDumper
             CommandManager.InvalidateRequerySuggested(); //Refresh commands
         }
 
-        private void DumpGameME1(object obj)
-        {
-            DumpGame(MEGame.ME1);
-        }
-
-        private void DumpGameME2(object obj)
-        {
-            DumpGame(MEGame.ME2);
-        }
-
-        private void DumpGameME3(object obj)
-        {
-            DumpGame(MEGame.ME3);
-        }
-
         private static void ManageTLKs(object obj)
         {
-           var tlkmgr = new TlkManagerNS.TLKManagerWPF();
-           tlkmgr.Show();
+            var tlkmgr = new TlkManagerNS.TLKManagerWPF();
+            tlkmgr.Show();
         }
 
         #endregion
 
-        public DialogueDumperWindow(Window owner = null) : base ("Dialogue Dumper", true)
+        public DialogueDumperWindow(Window owner = null) : base("Dialogue Dumper", true)
         {
             Owner = owner;
             LoadCommands();
@@ -271,7 +297,8 @@ namespace LegendaryExplorer.Tools.DialogueDumper
 
             path = Path.GetFullPath(path);
             var supportedExtensions = new List<string> { ".u", ".upk", ".sfm", ".pcc" };
-            List<string> files = Directory.GetFiles(path, "Bio*.*", SearchOption.AllDirectories).Where(s => supportedExtensions.Contains(Path.GetExtension(s.ToLower()))).ToList();
+            List<string> files = Directory.GetFiles(path, "Bio*.*", SearchOption.AllDirectories)
+                .Where(s => supportedExtensions.Contains(Path.GetExtension(s.ToLower())) && s.GetUnrealLocalization() == MELocalization.None || s.GetUnrealLocalization() == SelectedLocalization).ToList();
             await DumpPackages(files, outFile, game);
         }
 
@@ -302,7 +329,7 @@ namespace LegendaryExplorer.Tools.DialogueDumper
             xlowners.Cell(1, 2).Value = "Owner";
             xlowners.Cell(1, 3).Value = "File";
 
-            if(shouldDoDebugOutput) //DEBUG
+            if (shouldDoDebugOutput) //DEBUG
             {
                 var xltags = workbook.Worksheets.Add("Tags");
                 xltags.Cell(1, 1).Value = "ActorTag";
@@ -349,23 +376,22 @@ namespace LegendaryExplorer.Tools.DialogueDumper
                     OverallProgressValue++; //Concurrency 
                     CurrentDumpingItems.Remove(x);
                 });
-            }, new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = App.CoreCount }); // How many items at the same time 
+            }, new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = Math.Min(App.CoreCount, 8) }); // How many items at the same time 
 
             AllDumpingItems = new List<DialogueDumperSingleFileTask>();
             CurrentDumpingItems.ClearEx();
             foreach (var item in files)
             {
-                var threadtask = new DialogueDumperSingleFileTask(item);
+                var threadtask = new DialogueDumperSingleFileTask(item, SelectedLocalization);
                 AllDumpingItems.Add(threadtask); //For setting cancelation value
                 ProcessingQueue.Post(threadtask); // Post all items to the block
-                
             }
 
             ProcessingQueue.Complete(); // Signal completion
             CommandManager.InvalidateRequerySuggested();
             await ProcessingQueue.Completion;
 
-            if(!shouldDoDebugOutput)
+            if (!shouldDoDebugOutput)
             {
                 CurrentOverallOperationText = $"Dump {(DumpCanceled ? "canceled" : "completed")} - saving excel";
             }
@@ -378,7 +404,7 @@ namespace LegendaryExplorer.Tools.DialogueDumper
 
         public async Task<bool> CheckProcess()
         {
-            if ( _xlqueue.IsEmpty() && ((OverallProgressValue >= OverallProgressMaximum) || DumpCanceled))
+            if (_xlqueue.IsEmpty() && ((OverallProgressValue >= OverallProgressMaximum) || DumpCanceled))
             {
                 _xlqueue.CompleteAdding();
                 return false;
@@ -409,7 +435,7 @@ namespace LegendaryExplorer.Tools.DialogueDumper
                     MessageBox.Show("Dialogue Dump was completed.", "Success", MessageBoxButton.OK);
                     CurrentOverallOperationText = "Dump completed";
                 }
-                
+
             }
             catch
             {
@@ -423,7 +449,7 @@ namespace LegendaryExplorer.Tools.DialogueDumper
             {
                 try
                 {
-                    string sheetName = newrow[0]; 
+                    string sheetName = newrow[0];
                     var activesheet = workbook.Worksheet(sheetName);
                     int nextrow = activesheet.LastRowUsed().RowNumber() + 1;
                     //Write output to excel
@@ -449,6 +475,7 @@ namespace LegendaryExplorer.Tools.DialogueDumper
         private void DialogueDumper_Loaded(object sender, RoutedEventArgs e)
         {
             Owner = null; //Detach from parent
+            DumpableLocalizations.ReplaceAll(gameSpecificLocalization[SelectedGame]); // Populate the list for the first time
         }
 
         private void Dump_BackgroundThread(object sender, DoWorkEventArgs e)
@@ -517,6 +544,8 @@ namespace LegendaryExplorer.Tools.DialogueDumper
     public class DialogueDumperSingleFileTask : NotifyPropertyChangedBase
     {
         private string _currentOverallOperationText;
+        private MELocalization _selectedLocalization;
+
         public string CurrentOverallOperationText
         {
             get => _currentOverallOperationText;
@@ -544,15 +573,17 @@ namespace LegendaryExplorer.Tools.DialogueDumper
             set => SetProperty(ref _shortFileName, value);
         }
 
-        public DialogueDumperSingleFileTask(string file)
+        public DialogueDumperSingleFileTask(string file, MELocalization localization)
         {
             File = file;
+            _selectedLocalization = localization;
+
             ShortFileName = Path.GetFileNameWithoutExtension(file);
             CurrentOverallOperationText = $"Dumping {ShortFileName}";
         }
 
         public bool DumpCanceled;
-        
+
         private readonly string File;
 
         /// <summary>
@@ -562,33 +593,35 @@ namespace LegendaryExplorer.Tools.DialogueDumper
         public void DumpPackageFile(MEGame GameBeingDumped, DialogueDumperWindow dumper)
         {
             string fileName = ShortFileName.ToUpper();
+            dumper.CurrentOverallOperationText = $"Dumping Packages.... {dumper.OverallProgressValue}/{dumper.OverallProgressMaximum}";
+
             if (dumper.shouldDoDebugOutput)
             {
-                dumper.CurrentOverallOperationText = $"Dumping Packages.... {dumper.OverallProgressValue}/{dumper.OverallProgressMaximum} { dumper._xlqueue.Count }";
                 var excelout = new List<string> { "DEBUG", "IN PROCESS", fileName };
                 dumper._xlqueue.Add(excelout);
-            } 
+            }
 
             //SETUP FILE FILTERS
             bool CheckConv;
             bool CheckActor;
-
+            var fileLoc = fileName.GetUnrealLocalization();
             if (GameBeingDumped == MEGame.Unknown) //Unknown = Single files or folders that always fully parse
             {
                 CheckConv = true;
                 CheckActor = true;
             }
-            else if (GameBeingDumped.IsGame1() && !fileName.EndsWith(@"LOC_INT", StringComparison.OrdinalIgnoreCase) && !fileName.EndsWith(@"LAY") && !fileName.EndsWith(@"SND") && !fileName.EndsWith(@"_T") && !fileName.StartsWith(@"BIOG") && !fileName.StartsWith(@"BIOC"))
+            else if (GameBeingDumped.IsGame1() && (fileLoc == MELocalization.None || fileLoc == _selectedLocalization) && !fileName.EndsWith(@"LAY") && !fileName.EndsWith(@"SND") && !fileName.EndsWith(@"_T") && !fileName.StartsWith(@"BIOG") && !fileName.StartsWith(@"BIOC"))
             {
                 CheckConv = true; //Filter ME1 remove file types that never have convos. Levels only.
                 CheckActor = true;
             }
-            else if (GameBeingDumped != MEGame.ME1 && fileName.EndsWith(@"LOC_INT")) //Filter ME2/3 files with potential convos
+            // 05/07/2022 - Change from != ME1 to !IsGame1(), since structure didn't change for ME1 to LE1 - Mgamerz
+            else if (!GameBeingDumped.IsGame1() && fileLoc == _selectedLocalization) //Filter ME2/3 files with potential convos
             {
                 CheckConv = true;
                 CheckActor = false;
             }
-            else if (GameBeingDumped != MEGame.ME1 && !fileName.EndsWith(@"LOC_INT") && !fileName.StartsWith(@"BIOG")) //Filter ME2/3 files with potential actors
+            else if (!GameBeingDumped.IsGame1() && fileLoc != _selectedLocalization && !fileName.StartsWith(@"BIOG")) //Filter ME2/3 files with potential actors
             {
                 CheckConv = false;
                 CheckActor = true;
@@ -605,127 +638,163 @@ namespace LegendaryExplorer.Tools.DialogueDumper
             }
 
             string className = null;
+            IMEPackage pcc = null;
+
             try
             {
-                using IMEPackage pcc = MEPackageHandler.OpenMEPackage(File);
+                var testPcc = MEPackageHandler.QuickOpenMEPackage(File);
+                if (testPcc.Game.IsGame1() || dumper.shouldDoDebugOutput)
+                {
+                    // We need to do a full load so it loads the local TLKS
+                    pcc = MEPackageHandler.OpenMEPackage(File);
+                }
+                else
+                {
+                    // We can do a partial load which will skip reading a lot of stuff
+                    // THIS ONLY WORKS IN RELEASE MODE
+                    // because the debug dump stuff would mean i have to load a bunch of stuff so I don't bother.
+                    pcc = MEPackageHandler.UnsafePartialLoad(File, x =>
+                        x.ClassName is "BioConversation" or "BioTlkFile" or "BioTlkFileSet"
+                    );
+                }
+                if (pcc.Game.IsGame1() && pcc is UnrealPackageFile upf)
+                {
+                    // Force it to read the proper TLK - it may not be set properly in LEX
+                    upf.SetLocalTLKs(upf.ReadLocalTLKs(_selectedLocalization.ToLocaleString(pcc.Game)));
+                }
+                //using IMEPackage pcc = MEPackageHandler.OpenMEPackage(File);
                 if (GameBeingDumped == MEGame.Unknown) //Correct mapping
                 {
                     GameBeingDumped = pcc.Game;
                 }
 
                 CurrentFileProgressMaximum = pcc.ExportCount;
-                    
+
                 //CHECK FOR CONVERSATIONS TO DUMP
                 if (CheckConv)
                 {
+                    // We do a .ToArray() since we need to account. Count() a few times
+                    var convExports = pcc.Exports.Where(x => x.ClassName == "BioConversation").ToArray();
+                    CurrentFileProgressMaximum = convExports.Length;
 
-                    foreach (ExportEntry exp in pcc.Exports)
+                    int doneCount = 0;
+                    foreach (ExportEntry exp in convExports)
                     {
                         if (DumpCanceled)
                         {
                             return;
                         }
-                        CurrentFileProgressValue = exp.UIndex;
 
-                        className = exp.ClassName;
-                        if (className == "BioConversation")
+                        CurrentFileProgressValue = doneCount++;
+
+                        string convName = exp.ObjectName.Instanced;
+                        int convIdx = exp.UIndex;
+
+
+                        var convo = exp.GetProperties();
+                        if (convo.Count > 0)
                         {
-                            string convName = exp.ObjectName.Instanced;
-                            int convIdx = exp.UIndex;
-
-
-                            var convo = exp.GetProperties();
-                            if (convo.Count > 0)
+                            //1.  Define speaker list "m_aSpeakerList"
+                            var speakers = new List<string>();
+                            if (!GameBeingDumped.IsGame3()) //05/07/2022 - Changed from != ME3 to !.IsGame3() - Mgamerz
                             {
-                                //1.  Define speaker list "m_aSpeakerList"
-                                var speakers = new List<string>();
-                                if (GameBeingDumped != MEGame.ME3)
+                                var s_speakers = exp.GetProperty<ArrayProperty<StructProperty>>("m_SpeakerList");
+                                if (s_speakers != null)
                                 {
-                                    var s_speakers = exp.GetProperty<ArrayProperty<StructProperty>>("m_SpeakerList");
-                                    if (s_speakers != null)
-                                    {
-                                        speakers.AddRange(s_speakers.Select(s => s.GetProp<NameProperty>("sSpeakerTag").Value.Instanced));
-                                    }
+                                    speakers.AddRange(s_speakers.Select(s =>
+                                        s.GetProp<NameProperty>("sSpeakerTag").Value.Instanced));
+                                }
 
+                            }
+                            else
+                            {
+                                var a_speakers = exp.GetProperty<ArrayProperty<NameProperty>>("m_aSpeakerList");
+                                if (a_speakers != null)
+                                {
+                                    speakers.AddRange(a_speakers.Select(n => n.Value.Instanced));
+                                }
+                            }
+
+                            //2. Go through Entry list "m_EntryList"
+                            // Parse line TLK StrRef, TLK Line, Speaker -1 = Owner, -2 = Shepard, or from m_aSpeakerList
+
+                            var entryList = exp.GetProperty<ArrayProperty<StructProperty>>("m_EntryList");
+                            foreach (StructProperty entry in entryList)
+                            {
+                                //Get and set speaker name
+                                var speakeridx = entry.GetProp<IntProperty>("nSpeakerIndex");
+                                string lineSpeaker;
+                                if (speakeridx >= 0)
+                                {
+                                    lineSpeaker = speakers[speakeridx];
+                                }
+                                else if (speakeridx == -2)
+                                {
+                                    lineSpeaker = "Shepard";
                                 }
                                 else
                                 {
-                                    var a_speakers = exp.GetProperty<ArrayProperty<NameProperty>>("m_aSpeakerList");
-                                    if (a_speakers != null)
-                                    {
-                                        speakers.AddRange(a_speakers.Select(n => n.Value.Instanced));
-                                    }
+                                    lineSpeaker = "Owner";
                                 }
 
-                                //2. Go through Entry list "m_EntryList"
-                                // Parse line TLK StrRef, TLK Line, Speaker -1 = Owner, -2 = Shepard, or from m_aSpeakerList
-
-                                var entryList = exp.GetProperty<ArrayProperty<StructProperty>>("m_EntryList");
-                                foreach (StructProperty entry in entryList)
+                                //Get StringRef
+                                int lineStrRef = entry.GetProp<StringRefProperty>("srText").Value;
+                                if (lineStrRef > 0)
                                 {
-                                    //Get and set speaker name
-                                    var speakeridx = entry.GetProp<IntProperty>("nSpeakerIndex");
-                                    string lineSpeaker;
-                                    if (speakeridx >= 0)
-                                    {
-                                        lineSpeaker = speakers[speakeridx];
-                                    }
-                                    else if (speakeridx == -2)
-                                    {
-                                        lineSpeaker = "Shepard";
-                                    }
-                                    else
-                                    {
-                                        lineSpeaker = "Owner";
-                                    }
+                                    //Get StringRef Text
+                                    string lineTLKstring =
+                                        GlobalFindStrRefbyID(lineStrRef, GameBeingDumped, exp.FileRef);
 
-                                    //Get StringRef
-                                    int lineStrRef = entry.GetProp<StringRefProperty>("srText").Value;
-                                    if (lineStrRef > 0)
+                                    if (lineTLKstring != "No Data" && lineTLKstring != "\"\"" &&
+                                        lineTLKstring != "\" \"")
                                     {
-                                        //Get StringRef Text
-                                        string lineTLKstring = GlobalFindStrRefbyID(lineStrRef, GameBeingDumped, exp.FileRef);
-
-                                        if (lineTLKstring != "No Data" && lineTLKstring != "\"\"" && lineTLKstring != "\" \"")
-                                        {
-                                            //Write to Background thread
-                                            var excelout = new List<string> { "TLKStrings", lineSpeaker, lineStrRef.ToString(), lineTLKstring, convName, GameBeingDumped.ToString(), fileName, convIdx.ToString() };
-                                            dumper._xlqueue.Add(excelout);
-                                        }
-                                    }
-                                }
-
-                                //3. Go through Reply list "m_ReplyList"
-                                // Parse line TLK StrRef, TLK Line, Speaker always Shepard
-                                var replyList = exp.GetProperty<ArrayProperty<StructProperty>>("m_ReplyList");
-                                if (replyList != null)
-                                {
-                                    foreach (StructProperty reply in replyList)
-                                    {
-                                        //Get and set speaker name
-                                        const string lineSpeaker = "Shepard";
-
-                                        //Get StringRef
-                                        var lineStrRef = reply.GetProp<StringRefProperty>("srText").Value;
-                                        if (lineStrRef > 0)
-                                        {
-
-                                            //Get StringRef Text
-                                            string lineTLKstring = GlobalFindStrRefbyID(lineStrRef, GameBeingDumped, exp.FileRef);
-                                            if (lineTLKstring != "No Data" && lineTLKstring != "\"\"" && lineTLKstring != "\" \"")
+                                        //Write to Background thread
+                                        var excelout = new List<string>
                                             {
-                                                //Write to Background thread (must be 8 strings)
-                                                var excelout = new List<string> { "TLKStrings", lineSpeaker, lineStrRef.ToString(), lineTLKstring, convName, GameBeingDumped.ToString(), fileName, convIdx.ToString() };
-                                                dumper._xlqueue.Add(excelout);
-                                            }
-                                        }
+                                                "TLKStrings", lineSpeaker, lineStrRef.ToString(), lineTLKstring,
+                                                convName, GameBeingDumped.ToString(), fileName, convIdx.ToString()
+                                            };
+                                        dumper._xlqueue.Add(excelout);
                                     }
                                 }
                             }
 
+                            //3. Go through Reply list "m_ReplyList"
+                            // Parse line TLK StrRef, TLK Line, Speaker always Shepard
+                            var replyList = exp.GetProperty<ArrayProperty<StructProperty>>("m_ReplyList");
+                            if (replyList != null)
+                            {
+                                foreach (StructProperty reply in replyList)
+                                {
+                                    //Get and set speaker name
+                                    const string lineSpeaker = "Shepard";
+
+                                    //Get StringRef
+                                    var lineStrRef = reply.GetProp<StringRefProperty>("srText").Value;
+                                    if (lineStrRef > 0)
+                                    {
+
+                                        //Get StringRef Text
+                                        string lineTLKstring = GlobalFindStrRefbyID(lineStrRef, GameBeingDumped,
+                                            exp.FileRef);
+                                        if (lineTLKstring != "No Data" && lineTLKstring != "\"\"" &&
+                                            lineTLKstring != "\" \"")
+                                        {
+                                            //Write to Background thread (must be 8 strings)
+                                            var excelout = new List<string>
+                                                {
+                                                    "TLKStrings", lineSpeaker, lineStrRef.ToString(), lineTLKstring,
+                                                    convName, GameBeingDumped.ToString(), fileName, convIdx.ToString()
+                                                };
+                                            dumper._xlqueue.Add(excelout);
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }
+
                 //Build Table of conversation owner tags
                 if (CheckActor)
                 {
@@ -740,10 +809,11 @@ namespace LegendaryExplorer.Tools.DialogueDumper
 
                         string ownertag = "Not found";
                         className = exp.ClassName;
-                        if (className == "BioSeqAct_StartConversation" || className == "SFXSeqAct_StartConversation" || className == "SFXSeqAct_StartAmbientConv")
+                        if (className == "BioSeqAct_StartConversation" || className == "SFXSeqAct_StartConversation" ||
+                            className == "SFXSeqAct_StartAmbientConv")
                         {
 
-                            string convo = "not found";  //Find Conversation 
+                            string convo = "not found"; //Find Conversation 
                             var oconv = exp.GetProperty<ObjectProperty>("Conv");
                             if (oconv != null)
                             {
@@ -775,33 +845,35 @@ namespace LegendaryExplorer.Tools.DialogueDumper
                                     }
                                 }
                             }
+
                             if (iownerObj > 0)
                             {
                                 var svlink = pcc.GetUExport(iownerObj);
                                 switch (svlink.ClassName)
                                 {
                                     case "SeqVar_Object":
-                                    {
-                                        ObjectProperty oactorlink = svlink.GetProperty<ObjectProperty>("ObjValue");
-                                        if (oactorlink != null)
                                         {
-                                            var actor = pcc.GetUExport(oactorlink.Value);
-                                            var actortag = actor.GetProperty<NameProperty>("Tag");
-                                            if (actortag != null)
+                                            ObjectProperty oactorlink = svlink.GetProperty<ObjectProperty>("ObjValue");
+                                            if (oactorlink != null)
                                             {
-                                                ownertag = actortag.ToString();
-                                            }
-                                            else if (actor.HasArchetype && actor.Archetype is ExportEntry archetype)
-                                            {
-                                                var archtag = archetype.GetProperty<NameProperty>("Tag");
-                                                if (archtag != null)
+                                                var actor = pcc.GetUExport(oactorlink.Value);
+                                                var actortag = actor.GetProperty<NameProperty>("Tag");
+                                                if (actortag != null)
                                                 {
-                                                    ownertag = archtag.ToString();
+                                                    ownertag = actortag.ToString();
+                                                }
+                                                else if (actor.HasArchetype && actor.Archetype is ExportEntry archetype)
+                                                {
+                                                    var archtag = archetype.GetProperty<NameProperty>("Tag");
+                                                    if (archtag != null)
+                                                    {
+                                                        ownertag = archtag.ToString();
+                                                    }
                                                 }
                                             }
+
+                                            break;
                                         }
-                                        break;
-                                    }
                                     case "BioSeqVar_ObjectFindByTag" when GameBeingDumped.IsGame3():
                                         ownertag = svlink.GetProperty<NameProperty>("m_sObjectTagToFind").ToString();
                                         break;
@@ -821,24 +893,36 @@ namespace LegendaryExplorer.Tools.DialogueDumper
                         {
                             string tag = null;
                             int strref = -1;
-                            if (GameBeingDumped == MEGame.ME1 && className == "BioPawn")
+                            if (GameBeingDumped.IsGame1() && className == "BioPawn")
                             {
                                 var tagprop = exp.GetProperty<NameProperty>("Tag");
-                                tag = tagprop.ToString();
-                                var behav = exp.GetProperty<ObjectProperty>("m_oBehavior");
-                                var set = pcc.GetUExport(behav.Value).GetProperty<ObjectProperty>("m_oActorType");
-                                var strrefprop = pcc.GetUExport(set.Value).GetProperty<StringRefProperty>("ActorGameNameStrRef");
-                                if (strrefprop != null)
+                                if (tagprop != null)
                                 {
-                                    strref = strrefprop.Value;
+                                    tag = tagprop.ToString();
+                                }
+                                var behav = exp.GetProperty<ObjectProperty>("m_oBehavior");
+                                if (behav != null)
+                                {
+                                    var set = pcc.GetUExport(behav.Value).GetProperty<ObjectProperty>("m_oActorType");
+                                    if (set != null)
+                                    {
+                                        var strrefprop = pcc.GetUExport(set.Value)
+                                            .GetProperty<StringRefProperty>("ActorGameNameStrRef");
+                                        if (strrefprop != null)
+
+                                        {
+                                            strref = strrefprop.Value;
+                                        }
+                                    }
                                 }
                             }
-                            else if (GameBeingDumped == MEGame.ME2 && className == "BioPawn")
+                            else if (GameBeingDumped.IsGame2() && className == "BioPawn")
                             {
                                 var tagprop = exp.GetProperty<NameProperty>("Tag");
                                 tag = tagprop.ToString();
                                 var type = exp.GetProperty<ObjectProperty>("ActorType");
-                                var strrefprop = pcc.GetUExport(type.Value).GetProperty<StringRefProperty>("ActorGameNameStrRef");
+                                var strrefprop = pcc.GetUExport(type.Value)
+                                    .GetProperty<StringRefProperty>("ActorGameNameStrRef");
                                 if (strrefprop != null)
                                 {
                                     strref = strrefprop.Value;
@@ -850,8 +934,10 @@ namespace LegendaryExplorer.Tools.DialogueDumper
                                 var tagprop = exp.GetProperty<NameProperty>("Tag");
                                 tag = tagprop.Value;
                                 var modules = exp.GetProperty<ArrayProperty<ObjectProperty>>("Modules").ToList();
-                                var simplemod = modules.FirstOrDefault(m => exp.FileRef.GetUExport(m.Value).ClassName == "SFXSimpleUseModule");
-                                strref = exp.FileRef.GetUExport(simplemod.Value).GetProperty<StringRefProperty>("m_srGameName").Value;
+                                var simplemod = modules.FirstOrDefault(m =>
+                                    exp.FileRef.GetUExport(m.Value).ClassName == "SFXSimpleUseModule");
+                                strref = exp.FileRef.GetUExport(simplemod.Value)
+                                    .GetProperty<StringRefProperty>("m_srGameName").Value;
                             }
                             else if (className.StartsWith("SFXPawn_"))
                             {
@@ -876,10 +962,14 @@ namespace LegendaryExplorer.Tools.DialogueDumper
                             if (className == "AnimSequence")
                             {
                                 string animname = exp.ObjectName.Instanced;
-                                string animpackage = exp.Parent.ObjectName.Instanced;
+                                string animpackage = exp.Parent?.ObjectName.Instanced ?? exp.FileRef.FileNameNoExtension; // ME1 has lots of root stuff.
                                 var seqName = exp.GetProperty<NameProperty>("SequenceName");
                                 float length = exp.GetProperty<FloatProperty>("SequenceLength");
-                                dumper._xlqueue.Add(new List<string> { "Animations", animname, animpackage, seqName.ToString(), length.ToString(), fileName, GameBeingDumped.ToString() });
+                                dumper._xlqueue.Add(new List<string>
+                                    {
+                                        "Animations", animname, animpackage, seqName.ToString(), length.ToString(),
+                                        fileName, GameBeingDumped.ToString()
+                                    });
                             }
                         }
                     }
@@ -889,14 +979,19 @@ namespace LegendaryExplorer.Tools.DialogueDumper
             {
                 if (dumper.shouldDoDebugOutput)
                 {
-                    var excelout = new List<string> { "DEBUG", "FAILURE", fileName, className, CurrentFileProgressValue.ToString(), e.ToString() };
+                    var excelout = new List<string>
+                        { "DEBUG", "FAILURE", fileName, className, CurrentFileProgressValue.ToString(), e.ToString() };
                     dumper._xlqueue.Add(excelout);
                 }
             }
-            
+            finally
+            {
+                pcc?.Dispose();
+            }
+
             if (dumper.shouldDoDebugOutput)
             {
-                var excelout = new List<string> { "DEBUG", "SUCCESS", fileName};
+                var excelout = new List<string> { "DEBUG", "SUCCESS", fileName };
                 dumper._xlqueue.Add(excelout);
             }
         }

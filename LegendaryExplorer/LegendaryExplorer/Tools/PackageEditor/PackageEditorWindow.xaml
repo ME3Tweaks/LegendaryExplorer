@@ -3,9 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d"
         xmlns:dd="urn:gong-wpf-dragdrop"
-        Closing="PackageEditorWPF_Closing"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:Packages="clr-namespace:LegendaryExplorerCore.Packages;assembly=LegendaryExplorerCore"
         xmlns:exportLoaderControls="clr-namespace:LegendaryExplorer.UserControls.ExportLoaderControls"
@@ -20,12 +18,16 @@
         xmlns:appsettings="clr-namespace:LegendaryExplorer.Misc.AppSettings"
         xmlns:misc="clr-namespace:LegendaryExplorer.Misc"
         xmlns:scriptEditor="clr-namespace:LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor"
+        xmlns:packageEditor="clr-namespace:LegendaryExplorer.Tools.PackageEditor"
+        xmlns:fa5="http://schemas.fontawesome.com/icons/"
+        mc:Ignorable="d"
         Icon="pack://application:,,,/Tools/Icons/16x16/PackageEditor_Icon_16.ico"
         Title="Package Editor" Height="720" Width="1100"
         DragOver="Window_DragOver"
         Drop="Window_Drop"
         AllowDrop="True"
         PreviewMouseUp="Window_MouseUp"
+        Closing="PackageEditorWPF_Closing"
         d:DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <Window.Resources>
         <ItemsPanelTemplate x:Key="VSP">
@@ -56,7 +58,8 @@
             <MenuItem Header="Open in Pathfinding Editor" Command="{Binding OpenExportInCommand}" CommandParameter="PathfindingEditor" SharedUI:Bindings.VisibilityToEnabled="True"/>
             <MenuItem Header="Open in WwiseEditor" Command="{Binding OpenExportInCommand}" CommandParameter="WwiseEditor" SharedUI:Bindings.VisibilityToEnabled="True"/>
 
-            <MenuItem Header="Find references" ToolTip="Finds objects that reference this one" Command="{Binding FindReferencesCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
+            <MenuItem Header="{Binding Path=(packageEditor:PackageEditorWindow.FindReferencesMenuText), Mode=OneTime}"
+                      ToolTip="Finds objects that reference this one" Command="{Binding FindReferencesCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
             <MenuItem Header="Reindex objects with this name" ToolTip="Reindexes all objects with this name, ensuring there are no duplicate indexes" Command="{Binding ReindexCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
             <MenuItem Header="Extract to file (EXPERIMENTAL)" ToolTip="Extracts this export and all references to a new package file. Attempts to convert imports into exports that are located in the level-specific files" Command="{Binding ExtractToPackageCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
             <MenuItem Header="Clone" ToolTip="Clone only this entry"  Command="{Binding CloneCommand}"/>
@@ -75,13 +78,13 @@
             <MenuItem Header="Set all object indexes in this tree to 0 " Command="{Binding SetIndicesInTreeToZeroCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
             <MenuItem Header="Export..." IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                 <MenuItem Header="Embedded file(s)" Command="{Binding ExportEmbeddedFileCommand}" ToolTip="{Binding Converter={StaticResource EmbeddedFileToolTipConverter}, ConverterParameter='Export'}" SharedUI:Bindings.VisibilityToEnabled="True"/>
-                <MenuItem Header="Complete export data"  Command="{Binding ExportAllDataCommand}" ToolTip="Export all export data (properties + binary) to a .bin file"/>
-                <MenuItem Header="Binary data only"   Command="{Binding ExportBinaryDataCommand}" ToolTip="Export only binary data (bytes after properties) to a .bin file"/>
+                <MenuItem Header="Complete export data"  Command="{Binding ExportAllDataCommand}" ToolTip="Export all export data (properties + binary) to a .bin file. This is not for porting data across files, this is for advanced users only!"/>
+                <MenuItem Header="Binary data only"   Command="{Binding ExportBinaryDataCommand}" ToolTip="Export only binary data (bytes after properties) to a .bin file. This is not for porting data across files, this is for advanced users only!"/>
             </MenuItem>
             <MenuItem Header="Import..." IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
-                <MenuItem Header="Embedded file" Command="{Binding ImportEmbeddedFileCommand}" ToolTip="{Binding Converter={StaticResource EmbeddedFileToolTipConverter}, ConverterParameter='Import'}" SharedUI:Bindings.VisibilityToEnabled="True"/>
-                <MenuItem Header="Complete export data"  Command="{Binding ImportAllDataCommand}" ToolTip="Import a .bin file and replace the contents of this export"/>
-                <MenuItem Header="Binary data only"  Command="{Binding ImportBinaryDataCommand}" ToolTip="Import a .bin file and replace only the binary section of this export"/>
+                <MenuItem Header="Embedded file*" Command="{Binding ImportEmbeddedFileCommand}" ToolTip="{Binding Converter={StaticResource EmbeddedFileToolTipConverter}, ConverterParameter='Import'}" SharedUI:Bindings.VisibilityToEnabled="True"/>
+                <MenuItem Header="Complete export data*"  Command="{Binding ImportAllDataCommand}" ToolTip="Import a .bin file and replace the contents of this export. This does NOT relink the data - this is for advanced users only!"/>
+                <MenuItem Header="Binary data only*"  Command="{Binding ImportBinaryDataCommand}" ToolTip="Import a .bin file and replace only the binary section of this export. This does NOT relink the data - this is for advanced users only!"/>
             </MenuItem>
             <Separator Visibility="{Binding ShowExperiments, Converter={StaticResource BoolToVisibilityConverter}}"/>
             <MenuItem 
@@ -163,6 +166,8 @@
 
                     <MenuItem Header="Pop out current tab into new standalone window" ToolTip="Opens the panel on the right side in a new window" Command="{Binding PopoutCurrentViewCommand}" InputGestureText="CTRL+P"/>
                     <Separator/>
+                    <MenuItem Header="Create new Class" ToolTip="Adds a new UnrealScript class to this package" Command="{Binding CreateClassCommand}"/>
+                    <Separator/>
                     <MenuItem Header="Add name" ToolTip="Add a name to this package" Command="{Binding AddNameCommand}" InputGestureText="CTRL+Shift+A"/>
                     <MenuItem Header="Convenience tools" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <MenuItem Header="Rebuild BioWorld StreamingLevels"  Command="{Binding RebuildStreamingLevelsCommand}" ToolTip="Updates BioWorldInfo's list of StreamingLevels to include all LevelStreamingKismet"/>
@@ -232,10 +237,11 @@
                     <MenuItem Header="Find entry via Tag" ToolTip="Find entry with Tag NameProperty that matches the specified value." Command="{Binding FindEntryViaTagCommand}"/>
                     <MenuItem Header="Check for duplicate indexes" ToolTip="Tries to find duplicate indexes in this file" Command="{Binding CheckForDuplicateIndexesCommand}"/>
                     <MenuItem Header="Check for bad references" ToolTip="Checks imports and exports for references out of bounds of tables" Command="{Binding CheckForInvalidObjectPropertiesCommand}"/>
+                    <MenuItem Header="Check for broken Materials" ToolTip="Checks to see if all Materials, and all MaterialInstances that have a StaticPermutationResource, have a corresponding entry in either the local or global shader cache" Command="{Binding CheckForBrokenMaterialsCommand}"/>
                     <MenuItem Header="Resolve imports*" ToolTip="Attempts to resolve the imports and show the source of them in the treeview" Command="{Binding ResolveImportsTreeViewCommand}"/>
                     <MenuItem Header="Enable experiments (Warning: dangerous)" ToolTip="Enables experiments used by toolset developers. These features are not tested, not supported, and can easily break the toolset and/or games without warning" IsChecked="{Binding ShowExperiments}" IsCheckable="True" StaysOpenOnClick="True"/>
                 </MenuItem>
-                <packageEditorControls:ExperimentsMenuControl x:Name="ExperimentsMenu"  Visibility="{Binding ShowExperiments, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                <packageEditorControls:ExperimentsMenuControl x:Name="ExperimentsMenu"  Visibility="{Binding ShowExperiments, RelativeSource={RelativeSource FindAncestor, AncestorType=packageEditor:PackageEditorWindow},Converter={StaticResource BoolToVisibilityConverter}}"/>
             </Menu>
             <StatusBar Height="23" DockPanel.Dock="Bottom">
                 <sharedToolControls:StatusBarGameIDIndicator GameType="{Binding Pcc.Game}" Margin="0,-4"/>
@@ -259,6 +265,16 @@
                     <ColumnDefinition Width="6*" />
                 </Grid.ColumnDefinitions>
                 <ToolBar ToolBarTray.IsLocked="True" Grid.Row="0" Grid.ColumnSpan="3">
+                    <Button Padding="7,0" VerticalAlignment="Stretch" ToolTip="Navigate to previous (historically) selected entry.  You can also press the back button on your mouse" Command="{Binding NavigateBackCommand}">
+                    <Button.Content>
+                        <fa5:FontAwesome Icon="Solid_ArrowLeft" Height="12" />
+                    </Button.Content>
+                    </Button>
+                    <Button Padding="7,0" VerticalAlignment="Stretch" ToolTip="Navigate to the next (historically) selected entry. You can also press the forward button on your mouse" Command="{Binding NavigateForwardCommand}">
+                        <Button.Content>
+                            <fa5:FontAwesome Icon="Solid_ArrowRight" Height="12" />
+                        </Button.Content>
+                    </Button>
                     <Button Content="Names" Padding="7,0" VerticalAlignment="Stretch" ToolTip="View Name table" Click="NamesView_Click" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}" Background="{Binding CurrentView, Converter={StaticResource PackageEditorWPFActiveViewHighlightConverter}, ConverterParameter='Names'}" />
                     <Button Content="Imports" Padding="7,0" VerticalAlignment="Stretch" Click="ImportsView_Click" ToolTip="View Imports table" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"  Background="{Binding CurrentView, Converter={StaticResource PackageEditorWPFActiveViewHighlightConverter}, ConverterParameter='Imports'}"/>
                     <Button Content="Exports" Padding="7,0" VerticalAlignment="Stretch" Click="ExportsView_Click" ToolTip="View Exports Table" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"  Background="{Binding CurrentView, Converter={StaticResource PackageEditorWPFActiveViewHighlightConverter}, ConverterParameter='Exports'}"/>
@@ -283,13 +299,13 @@
                     <controls:ListBoxScroll.Resources>
                         <DataTemplate DataType="{x:Type SharedUI:IndexedName}">
                             <StackPanel Orientation="Horizontal" ContextMenu="{StaticResource EntryContextMenu}" Background="Transparent">
-                                <TextBlock Text="{Binding Path=Index}" Foreground="Gray"/>
-                                <TextBlock Text="{Binding Path=Name.Name}" Margin="5,0,0,0"/>
+                                <TextBlock Text="{Binding Path=Index, Mode=OneTime}" Foreground="Gray"/>
+                                <TextBlock Text="{Binding Path=Name, Mode=OneTime}" Margin="5,0,0,0"/>
                             </StackPanel>
                         </DataTemplate>
                         <DataTemplate DataType="{x:Type Packages:ImportEntry}">
                             <StackPanel Orientation="Horizontal" ContextMenu="{StaticResource EntryContextMenu}" Background="Transparent">
-                                <TextBlock Text="{Binding Path=UIndex}" Foreground="Gray"/>
+                                <TextBlock Text="{Binding Path=UIndex, Mode=OneTime}" Foreground="Gray"/>
                                 <TextBlock Text="{Binding Path=InstancedFullPath}"  Margin="5,0,0,0"/>
                             </StackPanel>
                         </DataTemplate>
@@ -304,7 +320,7 @@
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" Text="{Binding Path=UIndex}" Foreground="Maroon" VerticalAlignment="Center"/>
+                                <TextBlock Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" Text="{Binding Path=UIndex, Mode=OneTime}" Foreground="Maroon" VerticalAlignment="Center"/>
                                 <TextBlock Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2" Text="{Binding InstancedFullPath}" Margin="5,0,0,0"/>
                                 <TextBlock Grid.Column="1" Grid.Row="1" Foreground="BlueViolet" Margin="5,0,0,0" FontWeight="Bold" FontFamily="Consolas">
                                     <TextBlock.Text>
@@ -330,7 +346,7 @@
                             <Border ContextMenu="{StaticResource EntryContextMenu}" Background="Transparent"  Padding="{Binding Path=(SharedUI:TouchComfySettings.TreeViewMargin)}">
                                 <DockPanel>
 
-                                    <TextBlock DockPanel.Dock="Bottom" Text="{Binding SubText}" FontSize="10" Foreground="{Binding Path=ForegroundColor}" TextWrapping="Wrap" VerticalAlignment="Center" Visibility="{Binding SubText, Converter={StaticResource NullVisibilityConverter}}" >
+                                    <TextBlock DockPanel.Dock="Bottom" Text="{Binding SubText}"  FontSize="10" Foreground="{Binding Path=ForegroundColor}" TextWrapping="Wrap" VerticalAlignment="Center" MaxWidth="300" HorizontalAlignment="Left"  Visibility="{Binding SubText, Converter={StaticResource NullVisibilityConverter}}" >
                                         <TextBlock.Style>
                                             <Style TargetType="{x:Type TextBlock}">
                                                 <Style.Triggers>
@@ -513,7 +529,7 @@
                         <TabItem.Header>
                             <TextBlock Text="Talktable" ToolTip="Edit entries in this BioTLKFile"/>
                         </TabItem.Header>
-                        <exportLoaderControls:TLKEditor x:Name="TlkEditorTab_TlkEditor"/>
+                        <exportLoaderControls:TLKEditorExportLoader x:Name="TlkEditorTab_TlkEditor"/>
                     </TabItem>
                     <TabItem Name="MaterialViewer_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <TabItem.Header>

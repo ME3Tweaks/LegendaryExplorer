@@ -70,7 +70,7 @@ namespace LegendaryExplorer.Startup
                                 OpenTool<PackageEditorWindow>((p) => p.LoadFile(file.FullName, UIndex));
                                 break;
                             case ".tlk":
-                                var elhw = new ExportLoaderHostedWindow(new TLKEditor(), file.FullName)
+                                var elhw = new ExportLoaderHostedWindow(new TLKEditorExportLoader(), file.FullName)
                                 {
                                     Title = $"TLK Editor"
                                 };

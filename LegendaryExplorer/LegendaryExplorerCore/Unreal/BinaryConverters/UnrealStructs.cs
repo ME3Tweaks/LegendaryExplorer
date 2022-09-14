@@ -7,72 +7,6 @@ using LegendaryExplorerCore.Packages;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
-    [DebuggerDisplay("UIndex | {" + nameof(value) + "}")]
-    public sealed class UIndex : IEquatable<UIndex>
-    {
-        public int value;
-
-        public UIndex(int value)
-        {
-            this.value = value;
-        }
-
-        public static implicit operator int(UIndex uIndex) => uIndex.value;
-
-        public static implicit operator UIndex(int uIndex) => new UIndex(uIndex);
-
-        public static implicit operator UIndex(ExportEntry exp) => new UIndex(exp?.UIndex ?? 0);
-
-        public static implicit operator UIndex(ImportEntry imp) => new UIndex(imp?.UIndex ?? 0);
-
-        /// <summary>
-        ///     gets Export or Import entry. Returns null for invalid UIndexes
-        /// </summary>
-        public IEntry GetEntry(IMEPackage pcc) => pcc.GetEntry(value);
-
-        #region IEquatable
-
-        public bool Equals(UIndex other)
-        {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
-            return value == other.value;
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
-            return Equals((UIndex)obj);
-        }
-
-        public override int GetHashCode()
-        {
-            return value;
-        }
-
-        public static bool operator ==(UIndex left, UIndex right)
-        {
-            return Equals(left, right);
-        }
-
-        public static bool operator !=(UIndex left, UIndex right)
-        {
-            return !Equals(left, right);
-        }
-
-        #endregion
-
-#if DEBUG
-        /// <summary>
-        /// ToString() for debugger, when in a dictionary (which doesn't seem to use debugger display)
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString() => $"UIndex {value}";
-#endif
-    }
-
     [StructLayout(LayoutKind.Sequential)]
     public readonly struct Vector2DHalf
     {
@@ -130,18 +64,18 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             float x = dirVec.X;
             float y = dirVec.Y;
             float z = dirVec.Z;
-            var pitch = Math.Atan2(z, Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2)));
-            var yaw = Math.Atan2(y, x);
-            return new Rotator(((float)pitch).RadiansToUnrealRotationUnits(), ((float)yaw).RadiansToUnrealRotationUnits(), 0);
+            var pitch = MathF.Atan2(z, MathF.Sqrt(MathF.Pow(x, 2) + MathF.Pow(y, 2)));
+            var yaw = MathF.Atan2(y, x);
+            return new Rotator(pitch.RadiansToUnrealRotationUnits(), yaw.RadiansToUnrealRotationUnits(), 0);
         }
 
         public Vector3 GetDirectionalVector()
         {
-            var cp = Math.Cos(Pitch.UnrealRotationUnitsToRadians());
-            var cy = Math.Cos(Yaw.UnrealRotationUnitsToRadians());
-            var sp = Math.Sin(Pitch.UnrealRotationUnitsToRadians());
-            var sy = Math.Sin(Yaw.UnrealRotationUnitsToRadians());
-            return new Vector3((float)(cp * cy), (float)(cp * sy), (float)sp);
+            var cp = MathF.Cos(Pitch.UnrealRotationUnitsToRadians());
+            var cy = MathF.Cos(Yaw.UnrealRotationUnitsToRadians());
+            var sp = MathF.Sin(Pitch.UnrealRotationUnitsToRadians());
+            var sy = MathF.Sin(Yaw.UnrealRotationUnitsToRadians());
+            return new Vector3((cp * cy), (cp * sy), sp);
         }
 
         public bool IsZero => Pitch == 0 && Yaw == 0 && Roll == 0; 
@@ -263,17 +197,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
     public static partial class SCExt
     {
-        public static void Serialize(this SerializingContainer2 sc, ref UIndex uidx)
-        {
-            if (sc.IsLoading)
-            {
-                uidx = new UIndex(sc.ms.ReadInt32());
-            }
-            else
-            {
-                sc.ms.Writer.WriteInt32(uidx?.value ?? 0);
-            }
-        }
         public static void Serialize(this SerializingContainer2 sc, ref Vector3 vec)
         {
             if (sc.ms.Endian.IsNative)

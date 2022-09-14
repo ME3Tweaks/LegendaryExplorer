@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Buffers.Binary;
 using System.IO;
-using System.Text;
-using LegendaryExplorerCore.Helpers;
+using System.IO.Hashing;
+using LegendaryExplorerCore.Textures;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace LegendaryExplorerCore.Tests
@@ -11,17 +10,19 @@ namespace LegendaryExplorerCore.Tests
     public class CRCTests
     {
         [TestMethod]
-        public void TestParallelCRC()
+        public void TestTextureCRC()
         {
             GlobalTest.Init();
-            // Loads compressed packages and attempts to enumerate every object's properties.
-            var filesPath = GlobalTest.GetTestCRCDirectory();
-            var files = Directory.GetFiles(filesPath, "*.*", SearchOption.AllDirectories);
-            foreach (var f in files)
+
+            var files = Directory.GetFiles(GlobalTest.GetTestTexturesDirectory(), "*.*", SearchOption.AllDirectories);
+
+            foreach (string file in files)
             {
-                var expectedCrc = Path.GetFileNameWithoutExtension(f);
-                var calculatedCrc = ParallelCRC.Compute(File.ReadAllBytes(f));
-                Assert.AreEqual(expectedCrc, calculatedCrc.ToString("x8"));
+                var bytes = File.ReadAllBytes(file);
+
+                var standardCRC = ~BinaryPrimitives.ReadUInt32LittleEndian(Crc32.Hash(bytes));
+                var LEC_CRC = TextureCRC.Compute(bytes);
+                Assert.AreEqual(standardCRC, LEC_CRC, "LEC's CRC32 does not match System.Hashing.IO's!");
             }
         }
     }

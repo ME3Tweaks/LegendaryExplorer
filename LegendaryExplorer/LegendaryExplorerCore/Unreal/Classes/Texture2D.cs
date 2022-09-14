@@ -59,10 +59,15 @@ namespace LegendaryExplorerCore.Unreal.Classes
         {
             PropertyCollection properties = export.GetProperties();
             var format = properties.GetProp<EnumProperty>("Format");
-            var cache = properties.GetProp<NameProperty>("TextureFileCacheName");
-            List<Texture2DMipInfo> mips = Texture2D.GetTexture2DMipInfos(export, cache?.Value);
-            var topmip = mips.FirstOrDefault(x => x.storageType != StorageTypes.empty);
-            return Texture2D.GetMipCRC(topmip, format.Value, additionalTFCs: additionalTFCs);
+            if (format != null)
+            {
+                var cache = properties.GetProp<NameProperty>("TextureFileCacheName");
+                List<Texture2DMipInfo> mips = Texture2D.GetTexture2DMipInfos(export, cache?.Value);
+                var topmip = mips.FirstOrDefault(x => x.storageType != StorageTypes.empty);
+                return Texture2D.GetMipCRC(topmip, format.Value, additionalTFCs: additionalTFCs);
+            }
+
+            return 0; // BIOA_GLO_00_B_Sovereign_T.upk in ME1 has a Texture2D export in it that is completely blank, no props, no binary. no idea how this compiled
         }
 
         public void RemoveEmptyMipsFromMipList()
@@ -226,7 +231,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
                     Buffer.BlockCopy(mipToLoad.Mip, 0, imagebytes, 0, mipToLoad.compressedSize);
                 }
             }
-            else if (((int)mipToLoad.storageType & (int)StorageFlags.externalFile) != 0)
+            else if (mipToLoad.storageType != StorageTypes.empty && ((int)mipToLoad.storageType & (int)StorageFlags.externalFile) != 0)
             {
                 // external 
                 string filename = null;
@@ -364,9 +369,9 @@ namespace LegendaryExplorerCore.Unreal.Classes
             if (textureFormat == "PF_NormalMap_HQ")
             {
                 // only ME1 and ME2
-                return (uint)~ParallelCRC.Compute(data, 0, data.Length / 2);
+                return TextureCRC.Compute(data, 0, data.Length / 2);
             }
-            return (uint)~ParallelCRC.Compute(data);
+            return TextureCRC.Compute(data);
         }
 
         /// <summary>
@@ -379,9 +384,9 @@ namespace LegendaryExplorerCore.Unreal.Classes
         /// <param name="forcedTFCPath"></param>
         /// <param name="isPackageStored"></param>
         /// <returns></returns>
-        public string Replace(Image image, PropertyCollection props, string fileSourcePath = null, string forcedTFCName = null, string forcedTFCPath = null, bool isPackageStored = false)
+        public List<string> Replace(Image image, PropertyCollection props, string fileSourcePath = null, string forcedTFCName = null, string forcedTFCPath = null, bool isPackageStored = false)
         {
-            string errors = "";
+            var messages = new List<string>();
             var textureCache = forcedTFCName ?? GetTopMip().TextureCacheName;
             if (isPackageStored) textureCache = null;
             string fmt = TextureFormat;
@@ -395,12 +400,12 @@ namespace LegendaryExplorerCore.Unreal.Classes
             {
                 bool dxt1HasAlpha = false;
                 byte dxt1Threshold = 128;
-                if (pixelFormat == PixelFormat.DXT1 && props.GetProp<EnumProperty>("CompressionSettings") is { Value: { Name: "TC_OneBitAlpha" } })
+                if (pixelFormat == PixelFormat.DXT1 && (image.HasFullAlpha() || props.GetProp<EnumProperty>("CompressionSettings") is { Value.Name: "TC_OneBitAlpha" }))
                 {
                     dxt1HasAlpha = true;
                     if (image.pixelFormat is PixelFormat.ARGB or PixelFormat.DXT3 or PixelFormat.DXT5)
                     {
-                        errors += "Warning: Texture was converted from full alpha to binary alpha." + Environment.NewLine;
+                        messages.Add("Texture was converted from full alpha to binary alpha. DXT1 does not support more than 1-bit alpha");
                     }
                 }
 
@@ -766,7 +771,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
             //}
 
 
-            return errors;
+            return messages;
         }
         
         /// <summary>

@@ -172,7 +172,8 @@ namespace LegendaryExplorer.Tools.ConditionalsEditor
                 try
                 {
                     string text = entry.Conditional.Decompile();
-                    if (text.Contains(searchText, StringComparison.OrdinalIgnoreCase))
+                    string entryPlotPath = entry.PlotPath ?? "";
+                    if (text.Contains(searchText, StringComparison.OrdinalIgnoreCase) || entryPlotPath.Contains(searchText, StringComparison.OrdinalIgnoreCase))
                     {
                         SelectedCond = entry;
                         ConditionalsListBox.ScrollIntoView(entry);
@@ -458,7 +459,7 @@ namespace LegendaryExplorer.Tools.ConditionalsEditor
             }
         }
 
-        public void PropogateRecentsChange(IEnumerable<RecentsControl.RecentItem> newRecents)
+        public void PropogateRecentsChange(string propogationSource, IEnumerable<RecentsControl.RecentItem> newRecents)
         {
             RecentsController.PropogateRecentsChange(false, newRecents);
         }

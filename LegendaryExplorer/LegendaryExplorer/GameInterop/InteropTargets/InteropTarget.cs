@@ -18,7 +18,7 @@ namespace LegendaryExplorer.GameInterop.InteropTargets
         public abstract MEGame Game { get; }
         public abstract bool CanExecuteConsoleCommands { get; }
         public abstract bool CanUpdateTOC { get; }
-        public abstract string InteropASIName { get; }
+        public abstract bool CanUseLLE { get; }
         /// <summary>
         /// The file name of a deprecated ASI, if any.
         /// </summary>
@@ -50,6 +50,7 @@ namespace LegendaryExplorer.GameInterop.InteropTargets
             }
         }
 
+        // This needs kept around for ME3 since we aren't updating its ASI anymore
         public void ExecuteConsoleCommands(IntPtr hWnd, params string[] commands) => ExecuteConsoleCommands(hWnd, commands.AsEnumerable());
         public void ExecuteConsoleCommands(IntPtr hWnd, IEnumerable<string> commands)
         {
@@ -59,13 +60,25 @@ namespace LegendaryExplorer.GameInterop.InteropTargets
             GameController.DirectExecuteConsoleCommand(hWnd, $"exec {ExecFileName}");
         }
 
+        /// <summary>
+        /// Use for LE games!
+        /// </summary>
+        /// <param name="command"></param>
+        public void ModernExecuteConsoleCommand(string command)
+        {
+            if (!Game.IsLEGame())
+                throw new Exception("This method only works on LE games");
+
+            InteropHelper.SendMessageToGame($"CONSOLECOMMAND {command}", Game);
+        }
+
         public bool IsGameInstalled() => MEDirectories.GetExecutablePath(Game) is string exePath && File.Exists(exePath);
 
         public abstract void SelectGamePath();
 
         internal void RaiseReceivedMessage(string message)
         {
-            if (GameReceiveMessage != null) GameReceiveMessage.Invoke(message);
+            GameReceiveMessage?.Invoke(message);
         }
     }
 }

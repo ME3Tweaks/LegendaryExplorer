@@ -1,67 +1,323 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Windows;
 using System.Windows.Media;
 using System.Windows.Controls;
 using System.Windows.Input;
+using FontAwesome5;
 using SharpDX;
 using SharpDX.Direct3D11;
 using SharpDX.Direct3D;
+using LegendaryExplorerCore.Unreal;
+using PropertyChanged;
 
 namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
 {
-    /// <summary>
-    /// Hosts a <see cref="SceneRenderContext"/> in a WPF control.
-    /// </summary>
-    public class SceneRenderControl : System.Windows.Controls.ContentControl, IDisposable
+    public enum MouseButtons
     {
-        private Microsoft.Wpf.Interop.DirectX.D3D11Image D3DImage = null;
+        Left,
+        Middle,
+        Right,
+    }
+
+    public static class RenderContextExtensions
+    {
+        public static unsafe Texture2D LoadTexture(this RenderContext renderContext, uint width, uint height, SharpDX.DXGI.Format format, byte[] pixelData)
+        {
+            fixed (byte* pixelDataPointer = pixelData)
+            {
+                int pitch = (int)(SharpDX.DXGI.FormatHelper.SizeOfInBits(format) * width / 8);
+                if (SharpDX.DXGI.FormatHelper.IsCompressed(format))
+                {
+                    // Pitch calculation for compressed formats from https://docs.microsoft.com/en-us/windows/win32/direct3ddds/dx-graphics-dds-pguide
+                    int blockSize = 16;
+                    if (format is SharpDX.DXGI.Format.BC1_UNorm or SharpDX.DXGI.Format.BC1_UNorm_SRgb or SharpDX.DXGI.Format.BC4_SNorm or SharpDX.DXGI.Format.BC4_UNorm)
+                    {
+                        blockSize = 8;
+                    }
+                    pitch = (int)(Math.Max(1, ((width + 3) / 4)) * blockSize);
+                }
+                return new Texture2D(renderContext.Device, new Texture2DDescription
+                {
+                    Width = (int)width,
+                    Height = (int)height,
+                    ArraySize = 1,
+                    BindFlags = BindFlags.ShaderResource,
+                    Usage = ResourceUsage.Immutable,
+                    
+                    CpuAccessFlags = CpuAccessFlags.None,
+                    Format = format,
+                    MipLevels = 1,
+                    OptionFlags = ResourceOptionFlags.None,
+                    SampleDescription = new SharpDX.DXGI.SampleDescription(1, 0)
+                }, new DataRectangle((IntPtr)pixelDataPointer, pitch));
+            }
+        }
+
+        public static unsafe Texture2D LoadFile(this RenderContext renderContext, string filename)
+        {
+            LegendaryExplorerCore.Textures.PixelFormat pixelFormat = LegendaryExplorerCore.Textures.PixelFormat.ARGB;
+            byte[] pixelData = LegendaryExplorerCore.Textures.TexConverter.LoadTexture(filename, out uint width, out uint height, ref pixelFormat); // NEEDS WAY TO HAVE ALPHA AS BLACK!
+            SharpDX.DXGI.Format format = (SharpDX.DXGI.Format)LegendaryExplorerCore.Textures.TexConverter.GetDXGIFormatForPixelFormat(pixelFormat);
+            return renderContext.LoadTexture(width, height, format, pixelData);
+        }
+
+        public static Texture2D LoadUnrealMip(this RenderContext renderContext, LegendaryExplorerCore.Unreal.Classes.Texture2DMipInfo mip, LegendaryExplorerCore.Textures.PixelFormat pixelFormat)
+        {
+            // Todo: Needs way to set black alpha
+            var imagebytes = LegendaryExplorerCore.Unreal.Classes.Texture2D.GetTextureData(mip, mip.Export.Game);
+            uint mipWidth = (uint)mip.width;
+            uint mipHeight = (uint)mip.height;
+            SharpDX.DXGI.Format mipFormat = (SharpDX.DXGI.Format)LegendaryExplorerCore.Textures.TexConverter.GetDXGIFormatForPixelFormat(pixelFormat);
+            if (SharpDX.DXGI.FormatHelper.IsCompressed(mipFormat))
+            {
+                mipWidth = (mipWidth < 4) ? 4 : mipWidth;
+                mipHeight = (mipHeight < 4) ? 4 : mipHeight;
+            }
+            return renderContext.LoadTexture(mipWidth, mipHeight, mipFormat, imagebytes);
+        }
+
+        public static Texture2D LoadUnrealTexture(this RenderContext renderContext, LegendaryExplorerCore.Unreal.Classes.Texture2D unrealTexture)
+        {
+            return renderContext.LoadUnrealMip(unrealTexture.GetTopMip(), LegendaryExplorerCore.Textures.Image.getPixelFormatType(unrealTexture.Export.GetProperties().GetProp<EnumProperty>("Format").Value.Name));
+        }
+    }
+
+    public abstract class RenderContext
+    {
+        public int Width { get; private set; } = 0;
+        public int Height { get; private set; } = 0;
+        public Device Device { get; private set; }
+        public DeviceContext ImmediateContext { get; private set; }
+        public Texture2D Backbuffer { get; private set; }
+        public BlendState AlphaBlendState { get; private set; } // A BlendState that uses standard alpha blending
+        public bool IsReady => Device != null;
+
+        public virtual void CreateResources()
+        {
+            DeviceCreationFlags deviceFlags = DeviceCreationFlags.BgraSupport | DeviceCreationFlags.SingleThreaded;
+#if DEBUG
+            deviceFlags |= DeviceCreationFlags.Debug;
+#endif
+            Device = new Device(DriverType.Hardware, deviceFlags);
+            ImmediateContext = Device.ImmediateContext;
+
+            var alphaBlendDesc = new BlendStateDescription();
+            alphaBlendDesc.RenderTarget[0] = new RenderTargetBlendDescription
+            {
+                RenderTargetWriteMask = ColorWriteMaskFlags.All, 
+                BlendOperation = BlendOperation.Add, 
+                AlphaBlendOperation = BlendOperation.Add, 
+                SourceBlend = BlendOption.SourceAlpha, 
+                DestinationBlend = BlendOption.InverseSourceAlpha, 
+                SourceAlphaBlend = BlendOption.SourceAlpha, 
+                DestinationAlphaBlend = BlendOption.InverseSourceAlpha, 
+                IsBlendEnabled = true
+            };
+            AlphaBlendState = new BlendState(Device, alphaBlendDesc);
+        }
+
+        public virtual void CreateSizeDependentResources(int width, int height, Texture2D newBackbuffer)
+        {
+            Width = width;
+            Height = height;
+            Backbuffer = newBackbuffer;
+        }
+
+        public virtual void DisposeSizeDependentResources()
+        {
+            Backbuffer.Dispose();
+            Backbuffer = null;
+        }
+
+        public virtual void DisposeResources()
+        {
+            AlphaBlendState.Dispose();
+            AlphaBlendState = null;
+            ImmediateContext.Dispose();
+            ImmediateContext = null;
+
+#if DEBUG
+            var debug = Device.QueryInterface<DeviceDebug>();
+            debug.ReportLiveDeviceObjects(ReportingLevel.Detail);
+            debug.Dispose();
+#endif
+
+            Device.Dispose();
+            Device = null;
+        }
+
+        public abstract void Update(float timestep);
+        public virtual void Render()
+        {
+            ImmediateContext.Flush();
+        }
+
+        public virtual bool MouseDown(MouseButtons button, int x, int y)
+        {
+            return false;
+        }
+
+        public virtual bool MouseUp(MouseButtons button, int x, int y)
+        {
+            return false;
+        }
+
+        public virtual bool MouseMove(int x, int y)
+        {
+            return false;
+        }
+
+        public virtual bool MouseScroll(int delta)
+        {
+            return false;
+        }
+
+        public virtual bool KeyDown(Key key)
+        {
+            return false;
+        }
+
+        public virtual bool KeyUp(Key key)
+        {
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Hosts a <see cref="RenderContext"/> in a WPF control.
+    /// </summary>
+    [AddINotifyPropertyChangedInterface]
+    public class SceneRenderControl : ContentControl, IDisposable
+    {
+        private Microsoft.Wpf.Interop.DirectX.D3D11Image D3DImage;
         private Image Image;
-        private bool initialized;
+        private readonly Stopwatch Stopwatch = new();
 
-        public SceneRenderContext Context { get; } = new();
+        public RenderContext Context { get; set; }
 
+        /// <summary>
+        /// Invoked when the D3D11Image object has completed a rendering update
+        /// </summary>
+        public Action OnImageRendered { get; set; }
         public int RenderWidth => (int)RenderSize.Width;
         public int RenderHeight => (int)RenderSize.Height;
+        public bool CaptureNextFrame { get; set; }
 
         public SceneRenderControl()
         {
             InitializeComponent();
-            Context.Camera.FocusDepth = 100.0f;
+            Loaded += (s, e) =>
+            {
+                // only at this point the control is ready
+                Window.GetWindow(this) // get the parent window
+                    .Closing += (s1, e1) =>
+                {
+                    if (!e1.Cancel)
+                    {
+                        Dispose();
+                    }
+                };
+            };
         }
 
         private void InitializeComponent()
         {
-            D3DImage = new Microsoft.Wpf.Interop.DirectX.D3D11Image
-            {
-                OnRender = this.D3DImage_OnRender
-            };
-            Image = new Image
-            {
-                HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch,
-                VerticalAlignment = System.Windows.VerticalAlignment.Stretch,
-                Source = D3DImage
-            };
-            this.AddChild(Image);
+            if (System.ComponentModel.DesignerProperties.GetIsInDesignMode(this))
+                return;
 
-            CompositionTarget.Rendering += CompositionTarget_Rendering;
-
-            this.SizeChanged += SceneRenderControlWPF_SizeChanged;
-            this.PreviewMouseDown += SceneRenderControlWPF_PreviewMouseDown;
-            this.PreviewMouseMove += SceneRenderControlWPF_PreviewMouseMove;
-            this.PreviewMouseUp += SceneRenderControlWPF_PreviewMouseUp;
-            this.PreviewMouseWheel += SceneRenderControlWPF_PreviewMouseWheel;
-            this.KeyDown += OnKeyDown;
-            this.KeyUp += OnKeyUp;
+            Loaded += SceneRenderControl_Loaded;
         }
 
-        public void OnKeyUp(object sender, KeyEventArgs e)
+        private bool InitiallyLoaded = false;
+        private void SceneRenderControl_Loaded(object sender, RoutedEventArgs e)
         {
-            e.Handled = Context.KeyUp(e.Key);
+            if (!InitiallyLoaded)
+            {
+                Debug.WriteLine("SceneRenderControl_Loaded");
+                D3DImage = new Microsoft.Wpf.Interop.DirectX.D3D11Image
+                {
+                    OnRender = D3DImage_OnRender,
+                };
+                Image = new Image
+                {
+                    HorizontalAlignment = HorizontalAlignment.Stretch,
+                    VerticalAlignment = VerticalAlignment.Stretch,
+                    Source = D3DImage
+                };
+                Content = Image;
+
+                D3DImage.WindowOwner = new System.Windows.Interop.WindowInteropHelper(Window.GetWindow(this)).Handle; // This needs to be cleared when disposing or it will hold a reference
+                Unloaded += SceneRenderControlWPF_Unloaded;
+
+                try
+                {
+                    Context.CreateResources();
+                }
+                catch (Exception)
+                {
+                    Content = Image = new ImageAwesome
+                    {
+                        Icon = EFontAwesomeIcon.Solid_Ban,
+                        Foreground = Brushes.DarkRed
+                    };
+                    return;
+                }
+
+                CompositionTarget.Rendering += CompositionTarget_Rendering;
+                InitiallyLoaded = true;
+            }
+            else
+            {
+                // We are now becoming visible (e.g. tab selection)
+                SetShouldRender(true);
+            }
+            PreviewMouseDown += SceneRenderControlWPF_PreviewMouseDown;
+            PreviewMouseMove += SceneRenderControlWPF_PreviewMouseMove;
+            PreviewMouseUp += SceneRenderControlWPF_PreviewMouseUp;
+            PreviewMouseWheel += SceneRenderControlWPF_PreviewMouseWheel;
+            KeyDown += OnKeyDown;
+            KeyUp += OnKeyUp;
+            SizeChanged += SceneRenderControlWPF_SizeChanged;
         }
 
-
-        public void OnKeyDown(object sender, KeyEventArgs e)
+        private void SceneRenderControlWPF_Unloaded(object sender, RoutedEventArgs e)
         {
-            e.Handled = Context.KeyDown(e.Key);
+            SetShouldRender(false);
+            PreviewMouseDown -= SceneRenderControlWPF_PreviewMouseDown;
+            PreviewMouseMove -= SceneRenderControlWPF_PreviewMouseMove;
+            PreviewMouseUp -= SceneRenderControlWPF_PreviewMouseUp;
+            PreviewMouseWheel -= SceneRenderControlWPF_PreviewMouseWheel;
+            KeyUp -= OnKeyUp;
+            KeyDown -= OnKeyDown;
+            SizeChanged -= SceneRenderControlWPF_SizeChanged;
+        }
+
+        /// <summary>
+        /// This is called when the window closes, as we have to dispose of resources that can't be disposed during unload
+        /// </summary>
+        public void Dispose()
+        {
+            CompositionTarget.Rendering -= CompositionTarget_Rendering;
+            Unloaded -= SceneRenderControlWPF_Unloaded;
+
+            if (Context.Backbuffer != null)
+                Context.DisposeSizeDependentResources();
+
+            if (Context.Device != null)
+                Context.DisposeResources();
+
+            D3DImage?.Dispose();
+            D3DImage = null;
+            Image = null;
+            Content = null;
+            
+            //Image.Source = null; // Lose reference to D3DImage
+            //this.D3DImage.WindowOwner = IntPtr.Zero; // dunno if this is a good idea
+            //D3DImage.Dispose();
+            //Context = null;
+
+            GC.SuppressFinalize(this);
         }
 
         /// <summary>
@@ -69,125 +325,156 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        public void InitializeD3D()
+        /*public void InitializeD3D()
         {
-            if (initialized) return;
-            initialized = true;
             D3DImage.WindowOwner = (new System.Windows.Interop.WindowInteropHelper(System.Windows.Window.GetWindow(this))).Handle;
-            DeviceCreationFlags flags = DeviceCreationFlags.BgraSupport | DeviceCreationFlags.SingleThreaded;
-#if DEBUG
-            flags |= DeviceCreationFlags.Debug;
-#endif
-            Context.LoadDirect3D(new SharpDX.Direct3D11.Device(DriverType.Hardware, flags));
-        }
+            Context.CreateResources();
+        }*/
 
-        private void SceneRenderControlWPF_PreviewMouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
-        {
-            Context.MouseScroll(e.Delta);
-        }
-
-        private void SceneRenderControlWPF_PreviewMouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            SceneRenderContext.MouseButtons buttons;
-            if (e.ChangedButton == System.Windows.Input.MouseButton.Left)
-                buttons = SceneRenderContext.MouseButtons.Left;
-            else if (e.ChangedButton == System.Windows.Input.MouseButton.Middle)
-                buttons = SceneRenderContext.MouseButtons.Middle;
-            else if (e.ChangedButton == System.Windows.Input.MouseButton.Right)
-                buttons = SceneRenderContext.MouseButtons.Right;
-            else
-                return;
-            System.Windows.Point position = e.GetPosition(this);
-            Context.MouseUp(buttons, (int)position.X, (int)position.Y);
-        }
-
-        private void SceneRenderControlWPF_PreviewMouseMove(object sender, System.Windows.Input.MouseEventArgs e)
-        {
-            System.Windows.Point position = e.GetPosition(this);
-            Context.MouseMove((int)position.X, (int)position.Y);
-        }
-
-        private void SceneRenderControlWPF_PreviewMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            SceneRenderContext.MouseButtons buttons;
-            if (e.ChangedButton == System.Windows.Input.MouseButton.Left)
-                buttons = SceneRenderContext.MouseButtons.Left;
-            else if (e.ChangedButton == System.Windows.Input.MouseButton.Middle)
-                buttons = SceneRenderContext.MouseButtons.Middle;
-            else if (e.ChangedButton == System.Windows.Input.MouseButton.Right)
-                buttons = SceneRenderContext.MouseButtons.Right;
-            else
-                return;
-            System.Windows.Point position = e.GetPosition(this);
-            Context.MouseDown(buttons, (int)position.X, (int)position.Y);
-        }
-
-        private void SceneRenderControlWPF_SizeChanged(object sender, System.Windows.SizeChangedEventArgs e)
+        private void SceneRenderControlWPF_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             D3DImage.SetPixelSize(RenderWidth, RenderHeight);
-            Context.Camera.aspect = (float)RenderWidth / RenderHeight;
         }
 
         private void CompositionTarget_Rendering(object sender, EventArgs e)
         {
-            if (Context.Ready)
+            if (_shouldRender && Context is { IsReady: true })
             {
+                //Debug.WriteLine("Rendering");
                 D3DImage.RequestRender();
             }
         }
 
+
+
         public event EventHandler Render;
-        DateTime LastUpdatedTime = DateTime.Now;
+
         private void D3DImage_OnRender(IntPtr surface, bool isNewSurface)
         {
             if (isNewSurface)
             {
-                Context.DestroyBuffers();
+                Debug.WriteLine("IsNewSurface");
+                if (Context.Backbuffer != null)
+                {
+                    Context.DisposeSizeDependentResources();
+                }
 
                 // Yikes - from https://github.com/microsoft/WPFDXInterop/blob/master/samples/D3D11Image/D3D11Visualization/D3DVisualization.cpp#L384
-                ComObject res = CppObject.FromPointer<ComObject>(surface);
-                SharpDX.DXGI.Resource resource = res.QueryInterface<SharpDX.DXGI.Resource>();
+                var res = CppObject.FromPointer<ComObject>(surface);
+                var resource = res.QueryInterface<SharpDX.DXGI.Resource>();
                 IntPtr sharedHandle = resource.SharedHandle;
                 resource.Dispose();
-                SharpDX.Direct3D11.Resource d3dres = Context.Device.OpenSharedResource<SharpDX.Direct3D11.Resource>(sharedHandle);
-                Context.UpdateSize(RenderWidth, RenderHeight, (int width, int height) => d3dres.QueryInterface<Texture2D>());
+                var d3dres = Context.Device.OpenSharedResource<Resource>(sharedHandle);
+                Context.CreateSizeDependentResources(RenderWidth, RenderHeight, d3dres.QueryInterface<Texture2D>());
                 d3dres.Dispose();
-
             }
-            LastUpdatedTime = Context.UpdateScene((DateTime.Now - LastUpdatedTime).Milliseconds / 100.0f); // TODO: Measure elapsed time!
-            Context.RenderScene();
-            Render?.Invoke(this, new EventArgs());
-            Context.ImmediateContext.Flush();
+
+            if (isNewSurface || _shouldRender)
+            {
+                Debug.WriteLine("_shouldRender");
+                Context.Update((float)Stopwatch.Elapsed.TotalSeconds);
+                Stopwatch.Restart();
+                bool capturing = false;
+                if (CaptureNextFrame && RenderDoc.IsRenderDocAttached())
+                {
+                    CaptureNextFrame = false;
+                    capturing = true;
+                    RenderDoc.StartCapture(Context.Device.NativePointer, D3DImage.WindowOwner);
+                }
+
+                Context.Render();
+                Render?.Invoke(this, EventArgs.Empty);
+                if (capturing)
+                {
+                    RenderDoc.EndCapture(Context.Device.NativePointer, D3DImage.WindowOwner);
+                }
+
+                OnImageRendered?.Invoke();
+            }
         }
 
-        public void Dispose()
-        {
-
-            CompositionTarget.Rendering -= CompositionTarget_Rendering;
-            Context.TextureCache?.Dispose();
-            this.SizeChanged -= SceneRenderControlWPF_SizeChanged;
-            this.PreviewMouseDown -= SceneRenderControlWPF_PreviewMouseDown;
-            this.PreviewMouseMove -= SceneRenderControlWPF_PreviewMouseMove;
-            this.PreviewMouseUp -= SceneRenderControlWPF_PreviewMouseUp;
-            this.PreviewMouseWheel -= SceneRenderControlWPF_PreviewMouseWheel;
-            this.KeyUp -= OnKeyUp;
-            this.KeyDown -= OnKeyDown;
-        }
-
-        private bool _shouldRender = true;
+        private bool _shouldRender = false;
 
         public void SetShouldRender(bool shouldRender)
         {
-            if (!_shouldRender && shouldRender) //Not rendering, but we should start
-            {
-                D3DImage.OnRender = D3DImage_OnRender;
-            }
-            else if (_shouldRender && !shouldRender) //Currently rendering, but we should stop
-            {
-                D3DImage.OnRender = null;
-            }
+            //if (!_shouldRender && shouldRender && D3DImage != null) // Not rendering, but we should start
+            //{
+            //    D3DImage.OnRender = D3DImage_OnRender;
+            //}
+            //else if (_shouldRender && !shouldRender && D3DImage != null) // Currently rendering, but we should stop
+            //{
+            //    D3DImage.OnRender = null;
+            //}
 
             _shouldRender = shouldRender;
+        }
+
+        #region Input Events
+        private void SceneRenderControlWPF_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            Focus();
+            MouseButtons buttons;
+            if (e.ChangedButton == MouseButton.Left)
+                buttons = MouseButtons.Left;
+            else if (e.ChangedButton == MouseButton.Middle)
+                buttons = MouseButtons.Middle;
+            else if (e.ChangedButton == MouseButton.Right)
+                buttons = MouseButtons.Right;
+            else
+                return;
+            Point position = e.GetPosition(this);
+            e.Handled = Context.MouseDown(buttons, (int)position.X, (int)position.Y);
+        }
+
+        private void SceneRenderControlWPF_PreviewMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            MouseButtons buttons;
+            if (e.ChangedButton == MouseButton.Left)
+                buttons = MouseButtons.Left;
+            else if (e.ChangedButton == MouseButton.Middle)
+                buttons = MouseButtons.Middle;
+            else if (e.ChangedButton == MouseButton.Right)
+                buttons = MouseButtons.Right;
+            else
+                return;
+            Point position = e.GetPosition(this);
+            e.Handled = Context.MouseUp(buttons, (int)position.X, (int)position.Y);
+        }
+
+        private void SceneRenderControlWPF_PreviewMouseMove(object sender, MouseEventArgs e)
+        {
+            Point position = e.GetPosition(this);
+            e.Handled = Context.MouseMove((int)position.X, (int)position.Y);
+        }
+
+        private void SceneRenderControlWPF_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            e.Handled = Context.MouseScroll(e.Delta);
+        }
+
+        public void OnKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.F11 && RenderDoc.IsRenderDocAttached())
+            {
+                CaptureNextFrame = true;
+                e.Handled = true;
+            }
+            else
+            {
+                e.Handled = Context.KeyDown(e.Key);
+            }
+        }
+
+        public void OnKeyUp(object sender, KeyEventArgs e)
+        {
+            e.Handled = Context.KeyUp(e.Key);
+        }
+        #endregion
+
+        // MEMORY GC
+        ~SceneRenderControl()
+        {
+            Dispose();
         }
     }
 }

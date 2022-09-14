@@ -29,6 +29,7 @@
         <KeyBinding Key="S" Modifiers="Control" Command="{Binding SaveCommand}"/>
         <KeyBinding Key="S" Modifiers="Control+Shift" Command="{Binding SaveAsCommand}"/>
         <KeyBinding Key="G" Modifiers="Control" Command="{Binding GotoCommand}"/>
+        <KeyBinding Key="F2" Command="{Binding RenameTrackCommand}"/>
     </Window.InputBindings>
     <xctk:BusyIndicator IsBusy="{Binding Path=IsBusy}" BusyContent="{Binding BusyText}">
         <DockPanel>
@@ -48,6 +49,7 @@
 
                 <MenuItem Header="Tools" Padding="4">
                     <MenuItem Header="Goto #" Command="{Binding GotoCommand}" InputGestureText="Ctrl+G" />
+                    <MenuItem Header="Rename Track" Command="{Binding RenameTrackCommand}" InputGestureText="F2" />
                 </MenuItem>
 
                 <interpExperiments:InterpExperimentsMenuControl x:Name="InterpExperimentsMenu"  Visibility="{Binding ShowExperiments, Converter={StaticResource BoolToVisibilityConverter}}"/>
@@ -73,7 +75,7 @@
                     <RowDefinition Height="5" />
                     <RowDefinition Height="1*" />
                 </Grid.RowDefinitions>
-                <exportLoaderControls:Timeline x:Name="timelineControl" Grid.Row="0" />
+                <exportLoaderControls:Timeline x:Name="TimelineControl" Grid.Row="0" />
                 <GridSplitter Grid.Row="1" Height="5" HorizontalAlignment="Stretch" Grid.Column="0" />
                 <Grid Column="0" Row="2">
                     <Grid.RowDefinitions>

@@ -4,19 +4,23 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:misc="clr-namespace:LegendaryExplorer.Misc"
+        xmlns:converters="clr-namespace:LegendaryExplorer.SharedUI.Converters"
         mc:Ignorable="d"
         WindowStartupLocation="CenterOwner"
         SizeToContent="WidthAndHeight"
         Title="Package porting options"
         DataContext="{Binding RelativeSource={RelativeSource Self}}">
+    <Window.Resources>
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+    </Window.Resources>
     <StackPanel Margin="5">
-        <TextBlock HorizontalAlignment="Center" Text="Select what you'd like to do for this porting operation."/>
+        <TextBlock HorizontalAlignment="Center" Text="{Binding SourceEntryObjectName, StringFormat='Select how you would like to port {0} into this file.'}"/>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-            <Button  Width="300" Height="60" Margin="5" Click="MergeButton_Click"  Command="{Binding MergeTreeCommand}">
+            <Button  Width="300" Height="70" Margin="5" Click="MergeButton_Click"  Command="{Binding MergeTreeCommand}">
                 <Button.Content>
                     <StackPanel HorizontalAlignment="Center">
                         <TextBlock Text="Merge" HorizontalAlignment="Center" FontWeight="Bold"/>
-                        <TextBlock Foreground="Gray" FontSize="9"  HorizontalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center">
+                        <TextBlock Foreground="DimGray" FontSize="11"  HorizontalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center">
                             <TextBlock.Text>
                                 <MultiBinding StringFormat="children of {0} into {1}">
                                     <Binding Path="SourceEntryObjectName" />
@@ -27,11 +31,11 @@
                     </StackPanel>
                 </Button.Content>
             </Button>
-            <Button Width="300" Height="60" Margin="5" Click="CloneTreeButton_Click"  Command="{Binding CloneTreeCommand}">
+            <Button Width="300" Height="70" Margin="5" Click="CloneTreeButton_Click"  Command="{Binding CloneTreeCommand}">
                 <Button.Content>
                     <StackPanel HorizontalAlignment="Center">
                         <TextBlock Text="Clone" HorizontalAlignment="Center" FontWeight="Bold"/>
-                        <TextBlock Foreground="Gray" FontSize="9" HorizontalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center">
+                        <TextBlock Foreground="DimGray" FontSize="11" HorizontalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center">
                             <TextBlock.Text>
                                 <MultiBinding StringFormat="Clone {0}'s tree as a child of {1}">
                                     <Binding Path="SourceEntryObjectName" />
@@ -44,7 +48,7 @@
             </Button>
         </StackPanel>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-            <Button Width="300" Height="60"  Margin="5" Command="{Binding ReplaceDataCommand}">
+            <Button Width="300" Height="70"  Margin="5" Command="{Binding ReplaceDataCommand}">
                 <Button.Content>
                     <Grid HorizontalAlignment="Center">
                         <Grid.RowDefinitions>
@@ -52,26 +56,39 @@
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <TextBlock Grid.Row="0" Text="{Binding Path=SourceEntryObjectName, StringFormat='Replace export data of {0}'}" TextWrapping="Wrap" HorizontalAlignment="Center"  TextAlignment="Center" FontWeight="Bold"/>
-                        <TextBlock Grid.Row="1" Text="{Binding Path=TargetEntryObjectName, StringFormat='with export data from {0}'}" TextWrapping="Wrap" Foreground="Gray" FontSize="9"  HorizontalAlignment="Center"/>
+                        <TextBlock Grid.Row="1" Text="{Binding Path=TargetEntryObjectName, StringFormat='with export data from {0}'}" TextWrapping="Wrap" Foreground="DimGray" FontSize="11"  HorizontalAlignment="Center"/>
                     </Grid>
                 </Button.Content>
             </Button>
-            <Button  Width="300" Height="60" Margin="5" Click="AddSingularButton_Click"  Command="{Binding AddSingularCommand}">
+            <Button  Width="300" Height="70" Margin="5" Click="AddSingularButton_Click"  Command="{Binding AddSingularCommand}">
                 <Button.Content>
                     <StackPanel HorizontalAlignment="Center">
                         <TextBlock Text="{Binding Path=SourceEntryObjectName, StringFormat='Add only {0}'}" HorizontalAlignment="Center" FontWeight="Bold"/>
-                        <TextBlock Text="{Binding Path=TargetEntryObjectName, StringFormat='as child of {0}'}" Foreground="Gray" FontSize="9"  HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap"/>
+                        <TextBlock Text="{Binding Path=TargetEntryObjectName, StringFormat='as child of {0}'}" Foreground="DimGray" FontSize="11"  HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap"/>
                     </StackPanel>
                 </Button.Content>
             </Button>
         </StackPanel>
-        <Button Name="cloneAllRefsButton" Width="300" Height="60" Margin="5" Command="{Binding CloneAllReferencesCommand}">
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+        <Button Width="300" Height="70"  Margin="5" Command="{Binding ReplaceDataWithRelinkCommand}">
+            <Button.Content>
+                <Grid HorizontalAlignment="Center">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Text="{Binding Path=SourceEntryObjectName, StringFormat='Replace export data of {0} with references'}" TextWrapping="Wrap" HorizontalAlignment="Center"  TextAlignment="Center" FontWeight="Bold"/>
+                    <TextBlock Grid.Row="1" Text="{Binding Path=TargetEntryObjectName, StringFormat='with export data from {0}. This replaces the export and ports all associated referenced objects'}" TextAlignment="Center" TextWrapping="Wrap" Foreground="DimGray" FontSize="11"  HorizontalAlignment="Center"/>
+                </Grid>
+            </Button.Content>
+        </Button>
+        <Button Name="cloneAllRefsButton" Width="300" Height="70" Margin="5" Command="{Binding CloneAllReferencesCommand}">
             <Button.Content>
                 <StackPanel HorizontalAlignment="Center">
                     <TextBlock Text="Clone All References" HorizontalAlignment="Center" FontWeight="Bold"/>
-                    <TextBlock Name="cloneAllRefsText" Foreground="Gray" FontSize="9" HorizontalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center">
+                    <TextBlock Name="cloneAllRefsText" Foreground="DimGray" FontSize="11" HorizontalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center">
                         <TextBlock.Text>
-                            <MultiBinding StringFormat="Clone {0}'s tree as a child of {1}. Clone all other references too. (Backup file before attempting)">
+                            <MultiBinding StringFormat="Clones {0} into the file and ports all associated referenced objects">
                                 <Binding Path="SourceEntryObjectName" />
                                 <Binding Path="TargetEntryObjectName" />
                             </MultiBinding>
@@ -80,7 +97,11 @@
                 </StackPanel>
             </Button.Content>
         </Button>
-        <TextBlock Text="The Clone option is how porting was done in ME3Explorer versions prior to version 3.1.2.14" HorizontalAlignment="Center" Foreground="Gray" FontSize="9" Margin="0"/>
+        </StackPanel>
+
+        <CheckBox Content="Port using donors" IsChecked="{Binding PortUsingDonors}" Visibility="{Binding IsCrossGamePort, Converter={StaticResource BoolToVisibilityConverter}}"/>
+        <CheckBox Content="Port global entries as imports" IsChecked="{Binding PortGlobalsAsImports}" Visibility="{Binding IsGlobalFile, Converter={StaticResource BoolToVisibilityConverter}}"/>
+        <TextBlock Text="The Clone All References option is typically the preferred option, as it includes all dependencies for an export to work." HorizontalAlignment="Center" Foreground="DimGray" Margin="0" TextWrapping="Wrap"/>
         <Button Content="Cancel" HorizontalContentAlignment="Center" HorizontalAlignment="Center" Margin="5,5,5,0" Padding="8" Click="CancelButton_Click"/>
     </StackPanel>
 </misc:NotifyPropertyChangedWindowBase>

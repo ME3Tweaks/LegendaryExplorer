@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
 using LegendaryExplorerCore.UnrealScript.Lexing;
-using LegendaryExplorerCore.UnrealScript.Lexing.Tokenizing;
-using LegendaryExplorerCore.UnrealScript.Utilities;
+using Microsoft.Toolkit.HighPerformance;
 
 namespace LegendaryExplorerCore.UnrealScript.Parsing
 {
@@ -15,14 +13,33 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
         private readonly Stack<int> Snapshots;
         private readonly ScriptToken EndToken;
         private int CurrentIndex;
+        public LineLookup LineLookup { get; }
+        public Dictionary<int, ScriptToken> Comments;
+        public readonly List<(ASTNode node, int offset, int length)> DefinitionLinks;
 
-        public TokenStream(List<ScriptToken> tokens)
+        public ReadOnlySpan<ScriptToken> TokensSpan => Data.AsSpan();
+
+        private TokenStream(List<ScriptToken> tokens)
         {
             CurrentIndex = 0;
             Snapshots = new Stack<int>();
             Data = tokens;
-            SourcePosition endPos = Data.Count > 0 ? Data[^1].EndPos : new SourcePosition(0, 0, 0);
+            int endPos = Data.Count > 0 ? Data[^1].EndPos : 0;
             EndToken = new ScriptToken(TokenType.EOF, default, endPos, endPos);
+        }
+
+        public TokenStream(List<ScriptToken> tokens, LineLookup lineLookup) : this(tokens)
+        {
+
+            LineLookup = lineLookup;
+
+            DefinitionLinks = new();
+        }
+
+        public TokenStream(List<ScriptToken> tokens, TokenStream parent) : this(tokens)
+        {
+            LineLookup = parent.LineLookup;
+            DefinitionLinks = parent.DefinitionLinks;
         }
 
         public ScriptToken ConsumeToken(TokenType type)
@@ -43,23 +60,50 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
         public ScriptToken CurrentItem => CurrentIndex >= Data.Count ? EndToken : Data[CurrentIndex];
 
-        public List<ScriptToken> GetTokensInRange(SourcePosition start, SourcePosition end)
+
+        public List<ScriptToken> GetTokensInRange(int start, int end)
         {
             var tokens = new List<ScriptToken>();
-            for (int i = 0; i < Data.Count; i++)
+            foreach (ScriptToken token in Data)
             {
-                ScriptToken token = Data[i];
-                if (token.StartPos.CharIndex >= start.CharIndex)
+                if (token.StartPos >= start)
                 {
                     tokens.Add(token);
 
-                    if (token.EndPos.CharIndex >= end.CharIndex)
+                    if (token.EndPos >= end)
                     {
                         break;
                     }
                 }
             }
             return tokens;
+        }
+
+        public List<ScriptToken> GetRestOfScope()
+        {
+            int startIndex = CurrentIndex;
+            int nestedLevel = 1;
+            int i;
+            for (i = CurrentIndex; i < Data.Count; i++)
+            {
+                switch (Data[i].Type)
+                {
+                    case TokenType.LeftBracket:
+                        nestedLevel++;
+                        break;
+                    case TokenType.RightBracket:
+                        nestedLevel--;
+                        break;
+                }
+
+                if (nestedLevel <= 0)
+                {
+                    CurrentIndex = i;
+                    return Data.GetRange(startIndex, CurrentIndex - startIndex);
+                }
+            }
+            CurrentIndex = i;
+            return null;
         }
 
         public void PushSnapshot()
@@ -105,6 +149,16 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
         IEnumerator IEnumerable.GetEnumerator()
         {
             return Data.GetEnumerator();
+        }
+
+        public void AddDefinitionLink(ASTNode node, int offset, int length)
+        {
+            DefinitionLinks.Add((node, offset, length));
+        }
+
+        public void AddDefinitionLink(ASTNode node, ScriptToken token)
+        {
+            DefinitionLinks.Add((node, token.StartPos, token.Length));
         }
     }
 }

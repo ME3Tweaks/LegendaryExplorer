@@ -1,11 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
   <PropertyGroup>
-    <TargetFrameworks>net48</TargetFrameworks>
-    <RuntimeIdentifiers>win7-x64</RuntimeIdentifiers>
+    <TargetFrameworks>net6.0-windows</TargetFrameworks>
+    <LangVersion>10.0</LangVersion>
     <OutputType>WinExe</OutputType>
     <RootNamespace>HexConverter</RootNamespace>
     <AssemblyName>HexConverter</AssemblyName>
-    <LangVersion>9.0</LangVersion>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <UseWPF>true</UseWPF>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
@@ -26,9 +25,11 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'WinRelease'">
     <OutputPath>bin\x64\WinRelease\</OutputPath>
+	<Optimize>true</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'WinAzureRelease'">
     <OutputPath>bin\x64\WinAzureRelease\</OutputPath>
+	<Optimize>true</Optimize>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'WinAzureTest'">
@@ -40,10 +41,10 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-    <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.2.222702">
+    <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.4.336902">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Windows.Compatibility" Version="5.0.2" />
+    <PackageReference Include="Microsoft.Windows.Compatibility" Version="6.0.0" />
   </ItemGroup>
   <!--
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">

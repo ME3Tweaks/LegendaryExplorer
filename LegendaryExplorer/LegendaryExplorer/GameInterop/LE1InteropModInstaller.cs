@@ -14,7 +14,7 @@ namespace LegendaryExplorer.GameInterop
     /// </summary>
     public class LE1InteropModInstaller : InteropModInstaller
     {
-        private Func<IEnumerable<string>, IEnumerable<string>> SelectMap;
+        private readonly Func<IEnumerable<string>, IEnumerable<string>> SelectMap;
 
         public LE1InteropModInstaller(InteropTarget target, Func<IEnumerable<string>, IEnumerable<string>> selectMap) :
             base(target)
@@ -22,7 +22,7 @@ namespace LegendaryExplorer.GameInterop
             SelectMap = selectMap;
         }
 
-        private List<string> le1MapNames = new()
+        private readonly List<string> le1MapNames = new()
         {
             "BIOA_CRD00", "BIOA_END00", "BIOA_FRE31", "BIOA_FRE32", "BIOA_FRE33", "BIOA_FRE34", "BIOA_FRE35",
             "BIOA_ICE00", "BIOA_JUG00", "BIOA_LAV00", "BIOA_LOS00", "BIOA_NOR00", "BIOA_PRO00", "BIOA_STA00",
@@ -49,14 +49,14 @@ namespace LegendaryExplorer.GameInterop
             // Load the LE1LiveEditor pcc. This is just a donor file for a sequence, it will never be loaded by the game.
             var liveEditorFilename = Path.ChangeExtension(Target.ModInfo.LiveEditorFilename, ".pcc");
             var liveEditorFile = Path.Combine(ModInstallPath, Target.Game.CookedDirName(), liveEditorFilename ?? "");
-            if (liveEditorFilename is null || liveEditorFilename == "" || !File.Exists(liveEditorFile)) throw new Exception("Cannot find Live Editor file for LE1.");
+            if (liveEditorFilename is null or "" || !File.Exists(liveEditorFile)) throw new Exception("Cannot find Live Editor file for LE1.");
 
             using IMEPackage liveEditor = MEPackageHandler.OpenMEPackage(liveEditorFile);
             var liveEditorSequence = liveEditor.FindExport(@"TheWorld.PersistentLevel.LE1LiveEditor");
 
             EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, liveEditorSequence,
                 pcc, mainSequence,
-                true, out var clonedEditorSequence);
+                true, new RelinkerOptionsPackage(), out var clonedEditorSequence);
             KismetHelper.AddObjectToSequence((ExportEntry)clonedEditorSequence, mainSequence);
         }
     }

@@ -11,6 +11,7 @@
              xmlns:legendaryExplorer="clr-namespace:LegendaryExplorer"
              mc:Ignorable="d" 
              Loaded="MeshRenderer_Loaded"
+             Unloaded="MeshRenderer_Unloaded"
              d:DesignHeight="450" d:DesignWidth="800"
              KeyDown="MeshRendererWPF_OnKeyDown"
              KeyUp="MeshRendererWPF_OnKeyUp"
@@ -40,14 +41,17 @@
                     <CheckBox Name="ShowMemory_Checkbox" 
                               IsChecked="{Binding ShowMemoryUsage}" 
                               Content="Show memory usage" 
-                              Visibility="{Binding Path=(legendaryExplorer:App.IsDebug), Converter={StaticResource BoolToVisibilityConverter}}"  
+                              Visibility="{Binding Path=(legendaryExplorer:App.IsDebug), Converter={StaticResource BoolToVisibilityConverter}, Mode=OneTime}"  
                               VerticalAlignment="Center" Margin="2,0"/>
                     <ComboBox Name="LODPicker_ComboBox" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="11" Width="55" ItemsSource="{Binding LODPicker}" 
                               SelectedIndex="{Binding CurrentLOD, Mode=TwoWay}" ToolTip="Change the visible LOD" Margin="2,0" FontStretch="UltraCondensed"/>
                     <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="2,0"/>
 
-                    <TextBlock Text="Background color:" VerticalAlignment="Center" Margin="2,0"/>
-                    <xctk:ColorPicker Name="Background_ColorPicker" Width="40" UsingAlphaChannel="False" SelectedColorChanged="BackgroundColorPicker_Changed" Margin="2,0"/>
+                    <xctk:DropDownButton Content="View options" Margin="0,3">
+                        <xctk:DropDownButton.DropDownContent>
+                            <scene3D:SceneControlOptionsControl/>
+                        </xctk:DropDownButton.DropDownContent>
+                    </xctk:DropDownButton>
                     <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="2,0"/>
                     <Button Command="{Binding UModelExportCommand}"  ToolTip="Export with umodel" Margin="2,0"
                             sharedUi:Bindings.VisibilityToEnabled="true">
@@ -101,7 +105,7 @@
 
                     </StackPanel>
                 </Expander>
-                <StackPanel Orientation="Vertical" Canvas.ZIndex="4" VerticalAlignment="Top" HorizontalAlignment="Right" Background="#99AAAAAA" Visibility="{Binding ShowMemoryUsage, Converter={StaticResource BoolToVisibilityConverter}}">
+                <!--<StackPanel Orientation="Vertical" Canvas.ZIndex="4" VerticalAlignment="Top" HorizontalAlignment="Right" Background="#99AAAAAA" Visibility="{Binding ShowMemoryUsage, Converter={StaticResource BoolToVisibilityConverter}}">
                     <TextBlock Text="Memory Information" FontWeight="Bold"/>
                     <ItemsControl ItemsSource="{Binding SceneViewerProperty}">
                         <ItemsControl.Resources>
@@ -110,7 +114,7 @@
                             </DataTemplate>
                         </ItemsControl.Resources>
                     </ItemsControl>
-                </StackPanel>
+                </StackPanel>-->
                 <scene3D:SceneRenderControl Canvas.ZIndex="0"  x:Name="SceneViewer" Render="SceneViewer_Render" />
             </Grid>
         </DockPanel>

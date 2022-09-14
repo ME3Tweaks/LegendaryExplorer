@@ -22,11 +22,11 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Scanners
         public override void ScanExport(ExportScanInfo e, ConcurrentAssetDB db, AssetDBScanOptions options)
         {
             if (e.IsDefault) return;
-            var mSets = GetMaterialSettings(e, db);
-            if (e.ClassName == "Material" || e.ClassName == "DecalMaterial")
+            
+            if (e.ClassName is "Material" or "DecalMaterial")
             {
                 var matUsage = new MatUsage(e.FileKey, e.Export.UIndex, e.IsDlc);
-                if (db.GeneratedMats.TryGetValue(e.AssetKey, out var eMat))
+                if (db.GeneratedMats.TryGetValue(e.AssetKey, out MaterialRecord eMat))
                 {
                     lock (eMat)
                     {
@@ -35,7 +35,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Scanners
                 }
                 else
                 {
-
+                    var mSets = GetMaterialSettings(e, db);
                     string parent;
                     if (e.Export.Game == MEGame.ME1 && e.FileName.EndsWith(".upk"))
                     {
@@ -233,7 +233,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Scanners
 
                     break;
                 case DelegateProperty pdelg:
-                    var pscrdel = pdelg.Value.Object;
+                    var pscrdel = pdelg.Value.ContainingObjectUIndex;
                     if (pscrdel != 0)
                     {
                         pValue = pcc.GetEntry(pscrdel).ClassName;

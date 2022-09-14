@@ -723,17 +723,19 @@ namespace LegendaryExplorerCore.Unreal
             StringToName = 0x60
         };
 
-        public static (List<Token>, List<BytecodeSingularToken>) ParseBytecode(byte[] raw, ExportEntry export, int pos = 0x20)
+        public static (List<Token>, List<BytecodeSingularToken>) ParseBytecode(byte[] raw, ExportEntry export)
         {
-            var parser = new Bytecode(raw);
+            int pos = export.IsClass ? 0x18 : 0x20;
+            var parser = new Bytecode(raw, pos);
 
             List<Token> tokens = parser.ReadAll(0, export);
 
             //calculate padding width.
-            int totalLength = 32 + tokens.Sum(tok => tok.raw.Length);
+            Token lastToken = tokens.LastOrDefault();
+            int totalLength = Math.Max(lastToken?.pos ?? 0, lastToken?.memPos ?? 0);
 
             //calculate block position and assign paddingwidth.
-            int paddingSize = totalLength.ToString().Length;
+            int paddingSize = totalLength.ToString("X").Length;
             foreach (Token tok in tokens)
             {
                 tok.pos = pos;
@@ -744,18 +746,20 @@ namespace LegendaryExplorerCore.Unreal
             return (tokens, parser.SingularTokens);
         }
 
-        private Bytecode(byte[] mem)
+        private Bytecode(byte[] mem, int byteCodeStart)
         {
             memory = mem;
             memsize = memory.Length;
             DebugCounter = 0;
             SingularTokens = new List<BytecodeSingularToken>();
+            ByteCodeStart = byteCodeStart;
         }
 
         private readonly byte[] memory;
         private readonly int memsize;
         private readonly List<BytecodeSingularToken> SingularTokens;
         private int DebugCounter;
+        private readonly int ByteCodeStart;
 
         private List<Token> ReadAll(int start, ExportEntry export)
         {
@@ -881,6 +885,10 @@ namespace LegendaryExplorerCore.Unreal
                         var innerTok = ReadToken(start + 1, export);
                         newTok.text = "GotoLabel: " + innerTok.text;
                         newTok.stop = false;
+                        // 06/19/2022 - Copy the inner token inPackageReferences list
+                        // so it relinks the token name, since this just discards it it seems.
+                        // - Mgamerz
+                        newTok.inPackageReferences = innerTok.inPackageReferences;
                         newTok.raw = memory.Slice(start, 1 + innerTok.raw.Length);
                         //newTok.raw = start+ + newTok
                         end = start + 1 + innerTok.raw.Length;
@@ -1346,13 +1354,12 @@ namespace LegendaryExplorerCore.Unreal
             }
 
             string op = $"[0x{t:X2}] {opname}";
-            string tokenpos = "0x" + (start + 32).ToString("X");
             string data = res.text;
             msg.OpCode = t < 0x66 ? t : newTok.op;
             msg.OpCodeString = op;
             msg.CurrentStack = data;
             msg.TokenIndex = thiscount;
-            msg.StartPos = start + 0x20; //start of script data in ME3
+            msg.StartPos = start + ByteCodeStart;
             SingularTokens.Add(msg);
             return res;
         }
@@ -1388,7 +1395,7 @@ namespace LegendaryExplorerCore.Unreal
                 case (int)ENatives.NATIVE_Not_PreBool: //0x0081
                     t.text = "!";
                     count = 0;
-                    while (pos < memsize - 6)
+                    while (pos < memsize)
                     {
                         a = ReadToken(pos, export);
 
@@ -1690,7 +1697,7 @@ namespace LegendaryExplorerCore.Unreal
                 case (int)ENatives.NATIVE_Rand: // 0x00A7
                     t.text = "Rand(";
                     count = 0;
-                    while (pos < memsize - 6)
+                    while (pos < memsize)
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
@@ -1895,7 +1902,7 @@ namespace LegendaryExplorerCore.Unreal
                 case (int)ENatives.NATIVE_Exp: // 0x00BF
                     t.text = "Exp(";
                     count = 0;
-                    while (pos < memsize - 6)
+                    while (pos < memsize)
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
@@ -1914,7 +1921,7 @@ namespace LegendaryExplorerCore.Unreal
                 case (int)ENatives.NATIVE_Loge: // 0x00C0
                     t.text = "Loge(";
                     count = 0;
-                    while (pos < memsize - 6)
+                    while (pos < memsize)
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
@@ -1940,7 +1947,7 @@ namespace LegendaryExplorerCore.Unreal
                 case (int)ENatives.NATIVE_Square: // 0x00C2
                     t.text = "Sqr(";
                     count = 0;
-                    while (pos < memsize - 6)
+                    while (pos < memsize)
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
@@ -1987,7 +1994,7 @@ namespace LegendaryExplorerCore.Unreal
                 case (int)ENatives.NATIVE_Repl: // 0x00C9
                     t.text = "Repl(";
                     count = 0;
-                    while (pos < memsize - 6)
+                    while (pos < memsize)
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
@@ -2155,7 +2162,7 @@ namespace LegendaryExplorerCore.Unreal
                 case (int)ENatives.NATIVE_GetAxes: // 0x00E5
                     t.text = "GetAxes(";
                     count = 0;
-                    while (pos < memsize - 6)
+                    while (pos < memsize)
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
@@ -2174,7 +2181,7 @@ namespace LegendaryExplorerCore.Unreal
                 case (int)ENatives.NATIVE_Right: // 0x00EA
                     t.text = "Right(";
                     count = 0;
-                    while (pos < memsize - 6)
+                    while (pos < memsize)
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
@@ -2193,7 +2200,7 @@ namespace LegendaryExplorerCore.Unreal
                 case (int)ENatives.NATIVE_Caps: // 0x00EB
                     t.text = "Caps(";
                     count = 0;
-                    while (pos < memsize - 6)
+                    while (pos < memsize)
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
@@ -2212,7 +2219,7 @@ namespace LegendaryExplorerCore.Unreal
                 case (int)ENatives.NATIVE_Chr: // 0x00EC
                     t.text = "Chr(";
                     count = 0;
-                    while (pos < memsize - 6)
+                    while (pos < memsize)
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
@@ -2231,7 +2238,7 @@ namespace LegendaryExplorerCore.Unreal
                 case (int)ENatives.NATIVE_Asc: // 0x00ED
                     t.text = "Asc(";
                     count = 0;
-                    while (pos < memsize - 6)
+                    while (pos < memsize)
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
@@ -2250,7 +2257,7 @@ namespace LegendaryExplorerCore.Unreal
                 case (int)ENatives.NATIVE_Locs: // 0x00EE
                     t.text = "Locs(";
                     count = 0;
-                    while (pos < memsize - 6)
+                    while (pos < memsize)
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
@@ -2287,7 +2294,7 @@ namespace LegendaryExplorerCore.Unreal
                 case (int)ENatives.NATIVE_FMin: // 0x00F4
                     t.text = "Min(";
                     count = 0;
-                    while (pos < memsize - 6)
+                    while (pos < memsize)
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
@@ -2306,7 +2313,7 @@ namespace LegendaryExplorerCore.Unreal
                 case (int)ENatives.NATIVE_FMax: //  0x00F5
                     t.text = "Max(";
                     count = 0;
-                    while (pos < memsize - 6)
+                    while (pos < memsize)
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
@@ -2325,7 +2332,7 @@ namespace LegendaryExplorerCore.Unreal
                 case (int)ENatives.NATIVE_FClamp: //  0x00F6
                     t.text = "Clamp(";
                     count = 0;
-                    while (pos < memsize - 6)
+                    while (pos < memsize)
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
@@ -2344,7 +2351,7 @@ namespace LegendaryExplorerCore.Unreal
                 case (int)ENatives.NATIVE_Lerp: // 0x00F7
                     t.text = "Lerp(";
                     count = 0;
-                    while (pos < memsize - 6)
+                    while (pos < memsize)
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
@@ -2363,7 +2370,7 @@ namespace LegendaryExplorerCore.Unreal
                 case (int)ENatives.NATIVE_Min: // 0x00F9
                     t.text = "Min(";
                     count = 0;
-                    while (pos < memsize - 6)
+                    while (pos < memsize)
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
@@ -2382,7 +2389,7 @@ namespace LegendaryExplorerCore.Unreal
                 case (int)ENatives.NATIVE_Max: // 0x00FA
                     t.text = "Max(";
                     count = 0;
-                    while (pos < memsize - 6)
+                    while (pos < memsize)
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
@@ -2401,7 +2408,7 @@ namespace LegendaryExplorerCore.Unreal
                 case (int)ENatives.NATIVE_Clamp: // 0x00FB
                     t.text = "Clamp(";
                     count = 0;
-                    while (pos < memsize - 6)
+                    while (pos < memsize)
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
@@ -2420,7 +2427,7 @@ namespace LegendaryExplorerCore.Unreal
                 case (int)ENatives.NATIVE_VRand: // 0x00FC
                     t.text = "VRand(";
                     count = 0;
-                    while (pos < memsize - 6)
+                    while (pos < memsize)
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
@@ -2496,7 +2503,7 @@ namespace LegendaryExplorerCore.Unreal
                 case (int)ENatives.NATIVE_ClassIsChildOf:// 0x0102
                     t.text = "ClassIsChildOf(";
                     count = 0;
-                    while (pos < memsize - 6)
+                    while (pos < memsize)
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
@@ -2515,7 +2522,7 @@ namespace LegendaryExplorerCore.Unreal
                 case (int)ENatives.NATIVE_SetCollision: // 0x0106
                     t.text = "SetCollision(";
                     count = 0;
-                    while (pos < memsize - 6)
+                    while (pos < memsize)
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
@@ -2534,7 +2541,7 @@ namespace LegendaryExplorerCore.Unreal
                 case (int)ENatives.NATIVE_SetLocation: // 0x010B
                     t.text = "SetLocation(";
                     count = 0;
-                    while (pos < memsize - 6)
+                    while (pos < memsize)
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
@@ -2553,7 +2560,7 @@ namespace LegendaryExplorerCore.Unreal
                 case (int)ENatives.NATIVE_SetOwner: // 0x0110
                     t.text = "SetOwner(";
                     count = 0;
-                    while (pos < memsize - 6)
+                    while (pos < memsize)
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
@@ -2590,7 +2597,7 @@ namespace LegendaryExplorerCore.Unreal
                 case (int)ENatives.NATIVE_Trace: // 0x0115
                     t.text = "Trace(";
                     count = 0;
-                    while (pos < memsize - 6)
+                    while (pos < memsize)
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
@@ -2609,7 +2616,7 @@ namespace LegendaryExplorerCore.Unreal
                 case (int)ENatives.NATIVE_Destroy:  // 0x0117
                     t.text = "Destroy(";
                     count = 0;
-                    while (pos < memsize - 6)
+                    while (pos < memsize)
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
@@ -2628,7 +2635,7 @@ namespace LegendaryExplorerCore.Unreal
                 case (int)ENatives.NATIVE_SetTimer: //0x0118
                     t.text = "SetTimer(";
                     count = 0;
-                    while (pos < memsize - 6)
+                    while (pos < memsize)
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
@@ -2647,7 +2654,7 @@ namespace LegendaryExplorerCore.Unreal
                 case (int)ENatives.NATIVE_IsInState: // 0x0119
                     t.text = "IsInState(";
                     count = 0;
-                    while (pos < memsize - 6)
+                    while (pos < memsize)
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
@@ -2666,7 +2673,7 @@ namespace LegendaryExplorerCore.Unreal
                 case (int)ENatives.NATIVE_SetCollisionSize: // 0x011B
                     t.text = "SetCollisionSize(";
                     count = 0;
-                    while (pos < memsize - 6)
+                    while (pos < memsize)
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
@@ -2749,7 +2756,7 @@ namespace LegendaryExplorerCore.Unreal
                 case (int)ENatives.NATIVE_SetBase: // 0x012A
                     t.text = "SetBase(";
                     count = 0;
-                    while (pos < memsize - 6)
+                    while (pos < memsize)
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
@@ -2768,7 +2775,7 @@ namespace LegendaryExplorerCore.Unreal
                 case (int)ENatives.NATIVE_SetRotation: // 0x012B
                     t.text = "SetRotation(";
                     count = 0;
-                    while (pos < memsize - 6)
+                    while (pos < memsize)
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
@@ -2787,7 +2794,7 @@ namespace LegendaryExplorerCore.Unreal
                 case (int)ENatives.NATIVE_AllActors:// 0x0130
                     t.text = "AllActors(";
                     count = 0;
-                    while (pos < memsize - 6)
+                    while (pos < memsize)
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
@@ -2806,7 +2813,7 @@ namespace LegendaryExplorerCore.Unreal
                 case (int)ENatives.NATIVE_ChildActors: // 0x0131
                     t.text = "ChildActors(";
                     count = 0;
-                    while (pos < memsize - 6)
+                    while (pos < memsize)
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
@@ -2825,7 +2832,7 @@ namespace LegendaryExplorerCore.Unreal
                 case (int)ENatives.NATIVE_BasedActors: // 0x0132
                     t.text = "BasedActors(";
                     count = 0;
-                    while (pos < memsize - 6)
+                    while (pos < memsize)
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
@@ -2844,7 +2851,7 @@ namespace LegendaryExplorerCore.Unreal
                 case (int)ENatives.NATIVE_TouchingActors: // 0x0133
                     t.text = "TouchingActors(";
                     count = 0;
-                    while (pos < memsize - 6)
+                    while (pos < memsize)
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
@@ -2863,7 +2870,7 @@ namespace LegendaryExplorerCore.Unreal
                 case (int)ENatives.NATIVE_TraceActors: // 0x0135
                     t.text = "TraceActors(";
                     count = 0;
-                    while (pos < memsize - 6)
+                    while (pos < memsize)
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
@@ -2882,7 +2889,7 @@ namespace LegendaryExplorerCore.Unreal
                 case (int)ENatives.NATIVE_VisibleActors: // 0x0137
                     t.text = "VisibleActors(";
                     count = 0;
-                    while (pos < memsize - 6)
+                    while (pos < memsize)
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
@@ -2901,7 +2908,7 @@ namespace LegendaryExplorerCore.Unreal
                 case (int)ENatives.NATIVE_VisibleCollidingActors: // 0x0138
                     t.text = "VisibleCollidingActors(";
                     count = 0;
-                    while (pos < memsize - 6)
+                    while (pos < memsize)
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
@@ -2920,7 +2927,7 @@ namespace LegendaryExplorerCore.Unreal
                 case (int)ENatives.NATIVE_DynamicActors: // 0x0139
                     t.text = "DynamicActors(";
                     count = 0;
-                    while (pos < memsize - 6)
+                    while (pos < memsize)
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
@@ -2975,7 +2982,7 @@ namespace LegendaryExplorerCore.Unreal
                 case (int)ENatives.NATIVE_CollidingActors: // 0x0141
                     t.text = "CollidingActors(";
                     count = 0;
-                    while (pos < memsize - 6)
+                    while (pos < memsize)
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
@@ -3012,7 +3019,7 @@ namespace LegendaryExplorerCore.Unreal
                 case (int)ENatives.NATIVE_MakeNoise: // 0x0200
                     t.text = "MakeNoise(";
                     count = 0;
-                    while (pos < memsize - 6)
+                    while (pos < memsize)
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
@@ -3031,7 +3038,7 @@ namespace LegendaryExplorerCore.Unreal
                 case (int)ENatives.NATIVE_LineOfSightTo: // 0x0202
                     t.text = "LineOfSightTo(";
                     count = 0;
-                    while (pos < memsize - 6)
+                    while (pos < memsize)
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
@@ -3050,7 +3057,7 @@ namespace LegendaryExplorerCore.Unreal
                 case (int)ENatives.NATIVE_FindPathToward: // 0x0205
                     t.text = "FindPathToward(";
                     count = 0;
-                    while (pos < memsize - 6)
+                    while (pos < memsize)
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
@@ -3069,7 +3076,7 @@ namespace LegendaryExplorerCore.Unreal
                 case (int)ENatives.NATIVE_FindPathTo: // 0x0206
                     t.text = "FindPathTo(";
                     count = 0;
-                    while (pos < memsize - 6)
+                    while (pos < memsize)
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
@@ -3088,7 +3095,7 @@ namespace LegendaryExplorerCore.Unreal
                 case (int)ENatives.NATIVE_ActorReachable: // 0x0208
                     t.text = "ActorReachable(";
                     count = 0;
-                    while (pos < memsize - 6)
+                    while (pos < memsize)
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
@@ -3107,7 +3114,7 @@ namespace LegendaryExplorerCore.Unreal
                 case (int)ENatives.NATIVE_PointReachable: // 0x0209
                     t.text = "PointReachable(";
                     count = 0;
-                    while (pos < memsize - 6)
+                    while (pos < memsize)
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
@@ -3126,7 +3133,7 @@ namespace LegendaryExplorerCore.Unreal
                 case (int)ENatives.NATIVE_PickTarget: // 0x0213
                     t.text = "PickTarget(";
                     count = 0;
-                    while (pos < memsize - 6)
+                    while (pos < memsize)
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
@@ -3145,7 +3152,7 @@ namespace LegendaryExplorerCore.Unreal
                 case (int)ENatives.NATIVE_PlayerCanSeeMe: // 0x0214
                     t.text = "PlayerCanSeeMe(";
                     count = 0;
-                    while (pos < memsize - 6)
+                    while (pos < memsize)
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
@@ -3167,7 +3174,7 @@ namespace LegendaryExplorerCore.Unreal
                 case (int)ENatives.NATIVE_UpdateURL: // 0x0222
                     t.text = "UpdateURL(";
                     count = 0;
-                    while (pos < memsize - 6)
+                    while (pos < memsize)
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
@@ -3186,7 +3193,7 @@ namespace LegendaryExplorerCore.Unreal
                 case (int)ENatives.NATIVE_GetURLMap: // 0x0223
                     t.text = "GetURLMap(";
                     count = 0;
-                    while (pos < memsize - 6)
+                    while (pos < memsize)
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
@@ -3205,7 +3212,7 @@ namespace LegendaryExplorerCore.Unreal
                 case (int)ENatives.NATIVE_FastTrace: // 0x0224
                     t.text = "FastTrace(";
                     count = 0;
-                    while (pos < memsize - 6)
+                    while (pos < memsize)
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
@@ -3335,7 +3342,7 @@ namespace LegendaryExplorerCore.Unreal
                 case (int)ENatives.NATIVE_GotoState: // 0x026C
                     t.text = "GotoState(";
                     count = 0;
-                    while (pos < memsize - 6)
+                    while (pos < memsize)
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
@@ -3375,7 +3382,7 @@ namespace LegendaryExplorerCore.Unreal
                 case (int)ENatives.NATIVE_Len: // 0x028A
                     t.text = "Len(";
                     count = 0;
-                    while (pos < memsize - 6)
+                    while (pos < memsize)
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
@@ -3395,7 +3402,7 @@ namespace LegendaryExplorerCore.Unreal
                 case (int)ENatives.NATIVE_InStr: // 0x028B
                     t.text = "InStr(";
                     count = 0;
-                    while (pos < memsize - 6)
+                    while (pos < memsize)
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
@@ -3415,7 +3422,7 @@ namespace LegendaryExplorerCore.Unreal
                 case (int)ENatives.NATIVE_Mid: // 0x028C
                     t.text = "Mid(";
                     count = 0;
-                    while (pos < memsize - 6)
+                    while (pos < memsize)
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
@@ -3435,7 +3442,7 @@ namespace LegendaryExplorerCore.Unreal
                 case (int)ENatives.NATIVE_Left: // 0x028D
                     t.text = "Left(";
                     count = 0;
-                    while (pos < memsize - 6)
+                    while (pos < memsize)
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
@@ -3476,7 +3483,7 @@ namespace LegendaryExplorerCore.Unreal
                 case (int)ENatives.NATIVE_ProjectOnTo: // 0x05DC
                     t.text = "ProjectOnTo(";
                     count = 0;
-                    while (pos < memsize - 6)
+                    while (pos < memsize)
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
@@ -3495,7 +3502,7 @@ namespace LegendaryExplorerCore.Unreal
                 case (int)ENatives.NATIVE_IsZero: // 0x05DD
                     t.text = "IsZero(";
                     count = 0;
-                    while (pos < memsize - 6)
+                    while (pos < memsize)
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
@@ -3514,7 +3521,7 @@ namespace LegendaryExplorerCore.Unreal
                 case (int)ENatives.NATIVE_MoveSmooth: // 0x0F81
                     t.text = "MoveSmooth(";
                     count = 0;
-                    while (pos < memsize - 6)
+                    while (pos < memsize)
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
@@ -3533,7 +3540,7 @@ namespace LegendaryExplorerCore.Unreal
                 case (int)ENatives.NATIVE_SetPhysics: //  0x0F82
                     t.text = "SetPhysics(";
                     count = 0;
-                    while (pos < memsize - 6)
+                    while (pos < memsize)
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
@@ -3552,7 +3559,7 @@ namespace LegendaryExplorerCore.Unreal
                 case (int)ENatives.NATIVE_AutonomousPhysics: // 0x0F83
                     t.text = "AutonomousPhysics(";
                     count = 0;
-                    while (pos < memsize - 6)
+                    while (pos < memsize)
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
@@ -3571,7 +3578,7 @@ namespace LegendaryExplorerCore.Unreal
                 case (int)ENatives.NATIVE_MoveToward: // 0x01F6
                     t.text = "MoveToward(";
                     count = 0;
-                    while (pos < memsize - 6)
+                    while (pos < memsize)
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
@@ -3590,7 +3597,7 @@ namespace LegendaryExplorerCore.Unreal
                 case (int)ENatives.NATIVE_MoveTo: // 0x01F4
                     t.text = "MoveTo(";
                     count = 0;
-                    while (pos < memsize - 6)
+                    while (pos < memsize)
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
@@ -3665,7 +3672,7 @@ namespace LegendaryExplorerCore.Unreal
             Token t = new Token();
             int index = EndianReader.ToInt32(memory, start + 1, export.FileRef.Endian);
             int pos = start + 5;
-            t.text = $"${index}({ME3TalkFiles.findDataById(index)})";
+            t.text = $"${index}({ME3TalkFiles.FindDataById(index)})";
 
             int len = pos - start;
             t.raw = new byte[len];
@@ -3680,7 +3687,7 @@ namespace LegendaryExplorerCore.Unreal
             int pos = start + 1;
             t.text = "Add(";
             int count = 0;
-            while (pos < memsize - 6)
+            while (pos < memsize)
             {
                 Token t2 = ReadToken(pos, export);
                 t.inPackageReferences.AddRange(t2.inPackageReferences);
@@ -3755,7 +3762,7 @@ namespace LegendaryExplorerCore.Unreal
             string s = export.FileRef.GetNameEntry(index);
             t.text = a.text + "." + s + "(";
             int count = 0;
-            while (pos < memsize - 6)
+            while (pos < memsize)
             {
                 Token t2 = ReadToken(pos, export);
                 t.inPackageReferences.AddRange(t2.inPackageReferences);
@@ -3787,7 +3794,7 @@ namespace LegendaryExplorerCore.Unreal
             t.text = "Global." + export.FileRef.GetNameEntry(index) + "(";
             int pos = start + 9;
             int count = 0;
-            while (pos < memsize - 6)
+            while (pos < memsize)
             {
                 Token t2 = ReadToken(pos, export);
                 t.inPackageReferences.AddRange(t2.inPackageReferences);
@@ -4177,7 +4184,7 @@ namespace LegendaryExplorerCore.Unreal
             t.text = "";
             int count = 0;
             int pos = start + 3;
-            while (pos < memsize - 6)
+            while (pos < memsize)
             {
                 //Debug.WriteLine("Readskip subtoken at " + pos.ToString("X8"));
                 a = ReadToken(pos, export);
@@ -4211,7 +4218,7 @@ namespace LegendaryExplorerCore.Unreal
             t.text = export.FileRef.GetNameEntry(nameIdx);
             t.text += "(";
             int count = 0;
-            while (pos < memsize - 6)
+            while (pos < memsize)
             {
                 Token a = ReadToken(pos, export);
                 t.inPackageReferences.AddRange(a.inPackageReferences);
@@ -4286,10 +4293,12 @@ namespace LegendaryExplorerCore.Unreal
             return t;
         }
 
+        public const string IterNextText = "//foreach continue";
+        public const string IterPopText = "//foreach end";
         private Token ReadIterNext(int start, ExportEntry export)
         {
             Token t = new Token();
-            t.text = "\\\\Next";
+            t.text = IterNextText;
             t.raw = new byte[1];
             t.raw[0] = memory[start];
             return t;
@@ -4298,15 +4307,9 @@ namespace LegendaryExplorerCore.Unreal
         private Token ReadIterPop(int start, ExportEntry export)
         {
             Token t = new Token();
-            Token a = ReadToken(start + 1, export);
-            t.inPackageReferences.AddRange(a.inPackageReferences);
-
-            int len = a.raw.Length + 1;
-            t.text = a.text;
-            t.raw = new byte[len];
-            if (start + len <= memsize)
-                for (int i = 0; i < len; i++)
-                    t.raw[i] = memory[start + i];
+            t.text = IterPopText;
+            t.raw = new byte[1];
+            t.raw[0] = memory[start];
             return t;
         }
 
@@ -4558,7 +4561,7 @@ namespace LegendaryExplorerCore.Unreal
 
             int pos = start + 5;
             int count = 0;
-            while (pos < memsize - 6)
+            while (pos < memsize)
             {
                 Token t2 = ReadToken(pos, export);
                 t.inPackageReferences.AddRange(t2.inPackageReferences);
@@ -4621,7 +4624,7 @@ namespace LegendaryExplorerCore.Unreal
             t.text = export.FileRef.GetNameEntry(index) + "(";
             int pos = start + 9;
             int count = 0;
-            while (pos < memsize - 6)
+            while (pos < memsize)
             {
                 Token t2 = ReadToken(pos, export);
                 t.inPackageReferences.AddRange(t2.inPackageReferences);
@@ -4743,14 +4746,19 @@ namespace LegendaryExplorerCore.Unreal
         private Token ReadDefaultParmVal(int start, ExportEntry export)
         {
             Token t = new Token();
-            int size = EndianReader.ToInt16(memory, start + 1, export.FileRef.Endian);
-            Token expression = ReadToken(start + 3, export);
+            int pos = start + 1;
+            int size = EndianReader.ToInt16(memory, pos, export.FileRef.Endian);
+            pos += 2;
+            Token expression = ReadToken(pos, export);
             t.inPackageReferences.AddRange(expression.inPackageReferences);
 
-            int pos = start + expression.raw.Length + 3;
+            pos += expression.raw.Length;
+
+            Token endParmToken = ReadToken(pos, export);
+            pos += endParmToken.raw.Length;
             int len = pos - start;
             //var expression = ReadToken(pos, export);
-            t.text = "DefaultParameterValue(" + expression.text + ")";
+            t.text = "DefaultParameterValue(" + expression.text + ");";
             t.raw = new byte[len];
             if (start + len <= memsize)
                 for (int i = 0; i < len; i++)
@@ -4832,10 +4840,12 @@ namespace LegendaryExplorerCore.Unreal
             return t;
         }
 
+        public const string ReturnText = "Return (";
+
         private Token ReadReturn(int start, ExportEntry export)
         {
             Token t = new Token();
-            t.text = "Return (";
+            t.text = ReturnText;
             Token a = ReadToken(start + 1, export);
             t.inPackageReferences.AddRange(a.inPackageReferences);
 
@@ -5040,7 +5050,7 @@ namespace LegendaryExplorerCore.Unreal
         public const int INPACKAGEREFTYPE_NAME = 0;
         public const int INPACKAGEREFTYPE_ENTRY = 1;
 
-        public List<(int position, int type, int value)> inPackageReferences = new List<(int position, int type, int value)>();
+        public List<(int position, int type, int value)> inPackageReferences = new();
         public byte[] raw;
         public string text { get; set; }
         public bool stop;

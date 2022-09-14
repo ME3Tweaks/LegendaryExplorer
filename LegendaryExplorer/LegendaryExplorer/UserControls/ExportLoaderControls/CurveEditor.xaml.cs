@@ -22,7 +22,16 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
     /// </summary>
     public sealed partial class CurveEditor : ExportLoaderControl
     {
-        public List<InterpCurve> InterpCurveTracks;
+        public List<CurveEdInterpCurve> InterpCurveTracks;
+        
+        /// <summary>
+        /// Indicates the status of this export loader
+        /// </summary>
+        public bool IsLoaded;
+        /// <summary>
+        /// Indicates if the export loader was ever in the loaded state while the current export was active. If it wasn't, we should not write out changes.
+        /// </summary>
+        public bool WasLoadedThisExport;
 
         public float Time
         {
@@ -72,16 +81,19 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 int mainSeqIdx = fullPath.IndexOf("Main_Sequence.");
                 if (mainSeqIdx >= 0)
                 {
-                    fullPath = fullPath.Substring(mainSeqIdx + "Main_Sequence.".Length);
+                    fullPath = fullPath.Substring("Main_Sequence.".Length + mainSeqIdx);
                 }
                 CurrentExportName_TextBlock.Text = fullPath;
                 btnClamped.Visibility = CurrentLoadedExport.Game switch
                 {
-                    MEGame.ME3 => Visibility.Visible,
-                    MEGame.LE3 => Visibility.Visible,
-                    MEGame.UDK => Visibility.Visible,
-                    _ => Visibility.Collapsed
+                    MEGame.ME1 => Visibility.Collapsed,
+                    MEGame.ME2 => Visibility.Collapsed,
+                    _ => Visibility.Visible
                 };
+
+                // If the export loader is 'loaded' (e.g. tab was selected in a tab control or is visible)
+                // we should mark that the curve editor was loaded
+                WasLoadedThisExport = IsLoaded;
             }
         }
 
@@ -93,7 +105,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void Load()
         {
-            InterpCurveTracks = new List<InterpCurve>();
+            InterpCurveTracks = new List<CurveEdInterpCurve>();
 
             var props = CurrentLoadedExport.GetProperties();
             foreach (var prop in props)
@@ -102,7 +114,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 {
                     if (Enum.TryParse(structProp.StructType, out CurveType _))
                     {
-                        InterpCurveTracks.Add(new InterpCurve(CurrentLoadedExport.FileRef, structProp));
+                        InterpCurveTracks.Add(new CurveEdInterpCurve(CurrentLoadedExport.FileRef, structProp));
                     }
                 }
             }
@@ -138,22 +150,22 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
             switch (e.NewValue.InterpMode)
             {
-                case CurveMode.CIM_Linear:
+                case EInterpCurveMode.CIM_Linear:
                     btnLinear.IsChecked = true;
                     break;
-                case CurveMode.CIM_CurveAuto:
+                case EInterpCurveMode.CIM_CurveAuto:
                     btnAuto.IsChecked = true;
                     break;
-                case CurveMode.CIM_Constant:
+                case EInterpCurveMode.CIM_Constant:
                     btnConstant.IsChecked = true;
                     break;
-                case CurveMode.CIM_CurveUser:
+                case EInterpCurveMode.CIM_CurveUser:
                     btnUser.IsChecked = true;
                     break;
-                case CurveMode.CIM_CurveBreak:
+                case EInterpCurveMode.CIM_CurveBreak:
                     btnBreak.IsChecked = true;
                     break;
-                case CurveMode.CIM_CurveAutoClamped:
+                case EInterpCurveMode.CIM_CurveAutoClamped:
                     btnClamped.IsChecked = true;
                     break;
             }
@@ -166,12 +178,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 selectedPoint.InterpMode = (sender as RadioButton)?.Name switch
                 {
-                    "btnLinear" => CurveMode.CIM_Linear,
-                    "btnAuto" => CurveMode.CIM_CurveAuto,
-                    "btnConstant" => CurveMode.CIM_Constant,
-                    "btnUser" => CurveMode.CIM_CurveUser,
-                    "btnBreak" => CurveMode.CIM_CurveBreak,
-                    "btnClamped" => CurveMode.CIM_CurveAutoClamped,
+                    nameof(btnLinear) => EInterpCurveMode.CIM_Linear,
+                    nameof(btnAuto) => EInterpCurveMode.CIM_CurveAuto,
+                    nameof(btnConstant) => EInterpCurveMode.CIM_Constant,
+                    nameof(btnUser) => EInterpCurveMode.CIM_CurveUser,
+                    nameof(btnBreak) => EInterpCurveMode.CIM_CurveBreak,
+                    nameof(btnClamped) when Pcc.Game is not (MEGame.ME1 or MEGame.ME2) => EInterpCurveMode.CIM_CurveAutoClamped,
                     _ => selectedPoint.InterpMode
                 };
                 graph.Paint();
@@ -184,7 +196,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             if (!CurveGraph.TrackLoading && CurrentLoadedExport is not null)
             {
                 var props = CurrentLoadedExport.GetProperties();
-                foreach (InterpCurve item in InterpCurveTracks)
+                foreach (CurveEdInterpCurve item in InterpCurveTracks)
                 {
                     props.AddOrReplaceProp(item.WriteProperties());
                 }
@@ -370,7 +382,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             var outval = iWorksheet.Cell(xlrow, xlcolumn).Value.ToString();
                             if (outval != null && float.TryParse(time, out float t) && float.TryParse(outval, out float v))
                             {
-                                var point = new CurvePoint(t, v, 0, 0, CurveMode.CIM_CurveAuto);
+                                var point = new CurvePoint(t, v, 0, 0, EInterpCurveMode.CIM_CurveUser);
                                 curve.CurvePoints.AddLast(point);
                             }
                             else
@@ -396,7 +408,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         public override void UnloadExport()
         {
-            Commit();
+            // Do not commit changes if we were never even visible while the export was visible.
+            if (WasLoadedThisExport)
+            {
+                Commit();
+            }
+
             graph.Clear();
             InterpCurveTracks = null;
             CurrentLoadedExport = null;
@@ -420,7 +437,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public override void Dispose()
         {
             UnloadExport();
-            if (TrackList.ItemsSource is List<InterpCurve> curvelist)
+            if (TrackList.ItemsSource is List<CurveEdInterpCurve> curvelist)
             {
                 foreach (var interpCurve in curvelist)
                 {
@@ -490,6 +507,17 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             graph.ComparisonCurve = graph.SelectedCurve;
             graph.Paint();
+        }
+
+        private void CurveEditor_GotFocus(object sender, RoutedEventArgs e)
+        {
+            IsLoaded = true;
+            WasLoadedThisExport = true;
+        }
+
+        private void CurveEditor_Unloaded(object sender, RoutedEventArgs e)
+        {
+            IsLoaded = false;
         }
     }
 }

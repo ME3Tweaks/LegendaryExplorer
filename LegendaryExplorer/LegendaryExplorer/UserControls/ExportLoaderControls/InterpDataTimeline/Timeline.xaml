@@ -447,6 +447,7 @@
                                   CommandParameter="Track" />
                         <MenuItem Header="Open InterpData in Package Editor" Command="{Binding OpenInterpData}"
                                   CommandParameter="Data" />
+                        <MenuItem Header="Rename Track" Command="{Binding RenameTrackCommand}" />
                     </ContextMenu>
                 </TreeView.ContextMenu>
             </TreeView>

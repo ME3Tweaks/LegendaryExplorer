@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Linq;
 using LegendaryExplorer.Misc;
+using LegendaryExplorer.Tools.TlkManagerNS;
 using LegendaryExplorerCore.Helpers;
-using LegendaryExplorerCore.ME1;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
@@ -16,7 +15,11 @@ namespace LegendaryExplorer.Tools.InterpEditor
     {
         public ExportEntry Export { get; }
 
-        public string GroupName { get; set; }
+        private string _groupName;
+        public string GroupName {
+            get => _groupName;
+            set => SetProperty(ref _groupName, value);
+        }
 
         public Color GroupColor { get; set; } = Color.FromArgb(0, 0, 0, 0);
 
@@ -27,14 +30,10 @@ namespace LegendaryExplorer.Tools.InterpEditor
             Export = export;
             GroupName = Export.GetProperty<NameProperty>("GroupName")?.Value.Instanced ?? Export.ObjectName.Instanced;
 
-            if (Export.GetProperty<StructProperty>("GroupColor") is StructProperty colorStruct)
+            if (Export.GetProperty<StructProperty>("GroupColor") is { } colorStruct)
             {
-
-                var a = colorStruct.GetProp<ByteProperty>("A").Value;
-                var r = colorStruct.GetProp<ByteProperty>("R").Value;
-                var g = colorStruct.GetProp<ByteProperty>("G").Value;
-                var b = colorStruct.GetProp<ByteProperty>("B").Value;
-                GroupColor = Color.FromArgb(a, r, g, b);
+                var color = CommonStructs.GetColor(colorStruct);
+                GroupColor = Color.FromArgb(color.A, color.R, color.G, color.B);
             }
 
             RefreshTracks();
@@ -49,103 +48,128 @@ namespace LegendaryExplorer.Tools.InterpEditor
                 var trackExports = tracksProp.Where(prop => Export.FileRef.IsUExport(prop.Value)).Select(prop => Export.FileRef.GetUExport(prop.Value));
                 foreach (ExportEntry trackExport in trackExports)
                 {
-                    if (trackExport.IsA("BioEvtSysTrackDOF"))
-                    {
-                        //Depth of Field
-                        Tracks.Add(new BioEvtSysTrackDOF(trackExport));
-                    }
-                    else if (trackExport.IsA("BioEvtSysTrackSubtitles"))
-                    {
-                        Tracks.Add(new BioEvtSysTrackSubtitles(trackExport));
-                    }
-                    else if (trackExport.IsA("BioEvtSysTrackGesture"))
-                    {
-                        Tracks.Add(new BioEvtSysTrackGesture(trackExport));
-                    }
-                    else if(trackExport.IsA("BioInterpTrack"))
-                    {
-                        Tracks.Add(new BioInterpTrack(trackExport));
-                    }
-                    else if (trackExport.ClassName == "InterpTrackSound")
-                    {
-                        Tracks.Add(new InterpTrackSound(trackExport));
-                    }
-                    else if (trackExport.IsA("InterpTrackEvent"))
-                    {
-                        Tracks.Add(new InterpTrackEvent(trackExport));
-                    }
-                    else if (trackExport.IsA("InterpTrackFaceFX"))
-                    {
-                        Tracks.Add(new InterpTrackFaceFX(trackExport));
-                    }
-                    else if (trackExport.IsA("InterpTrackAnimControl"))
-                    {
-                        Tracks.Add(new InterpTrackAnimControl(trackExport));
-                    }
-                    else if (trackExport.IsA("InterpTrackMove"))
-                    {
-                        Tracks.Add(new InterpTrackMove(trackExport));
-                    }
-                    else if (trackExport.IsA("InterpTrackVisibility"))
-                    {
-                        Tracks.Add(new InterpTrackVisibility(trackExport));
-                    }
-                    else if (trackExport.IsA("InterpTrackToggle"))
-                    {
-                        Tracks.Add(new InterpTrackToggle(trackExport));
-                    }
-                    else if (trackExport.IsA("InterpTrackWwiseEvent"))
-                    {
-                        Tracks.Add(new InterpTrackWwiseEvent(trackExport));
-                    }
-                    else if (trackExport.IsA("InterpTrackDirector"))
-                    {
-                        Tracks.Add(new InterpTrackDirector(trackExport));
-                    }
-                    else if (trackExport.IsA("InterpTrackFloatBase"))
-                    {
-                        Tracks.Add(new InterpTrackFloatBase(trackExport));
-                    }
-                    else if (trackExport.IsA("InterpTrackVectorBase"))
-                    {
-                        Tracks.Add(new InterpTrackVectorBase(trackExport));
-                    }
-                    else if (trackExport.IsA("BioEvtSysTrackVOElements") && trackExport.Game == MEGame.ME1)
-                    {
-                        Tracks.Add(new BioInterpTrack(trackExport));
-                    }
-                    else
-                    {
-                        throw new FormatException($"Unknown Track Type: {trackExport.ClassName}");
-                    }
+                    Tracks.Add(InterpTrack.CreateInterpTrackForExport(trackExport));
                 }
             }
         }
 
-        private bool isSelected;
+        private bool _isSelected;
         public bool IsSelected
         {
-            get => isSelected;
-            set => SetProperty(ref isSelected, value);
+            get => _isSelected;
+            set => SetProperty(ref _isSelected, value);
         }
 
-        private bool isExpanded;
+        private bool _isExpanded;
         public bool IsExpanded
         {
-            get => isExpanded;
-            set => SetProperty(ref isExpanded, value);
+            get => _isExpanded;
+            set => SetProperty(ref _isExpanded, value);
         }
 
-        public int? StrRefId => Tracks.Select(t => t.Export.GetProperty<IntProperty>("m_nStrRefID")?.Value).FirstOrDefault(i => i != null);
+        /// <summary>
+        /// Attempts to find the str ref value of the first track with an m_nStrRefID property
+        /// </summary>
+        /// <remarks>Calls GetProperties on all tracks, so may be expensive</remarks>
+        /// <returns>StrRef ID if found, null otherwise</returns>
+        public int? TryGetStrRefId()
+        {
+            return Tracks.Select(t => t.Export.GetProperty<IntProperty>("m_nStrRefID")?.Value)
+                .FirstOrDefault(i => i != null);
+        }
     }
 
     public abstract class InterpTrack : NotifyPropertyChangedBase
     {
         public ExportEntry Export { get; }
 
-        public string TrackTitle { get; set; }
+        private string _trackTitle;
+        public string TrackTitle
+        {
+            get => _trackTitle;
+            set => SetProperty(ref _trackTitle, value);
+        }
 
         public ObservableCollectionExtended<Key> Keys { get; } = new();
+
+        /// <summary>
+        /// Factory method to create the appropriate <see cref="InterpTrack"/> subclass for an export
+        /// </summary>
+        /// <param name="trackExport">Export to create InterpTrack for</param>
+        /// <returns>New instance of InterpTrack subclass</returns>
+        /// <exception cref="FormatException">Export has no supported InterpTrack subclass</exception>
+        public static InterpTrack CreateInterpTrackForExport(ExportEntry trackExport)
+        {
+            if (trackExport.IsA("BioEvtSysTrackDOF"))
+            {
+                //Depth of Field
+                return new BioEvtSysTrackDOF(trackExport);
+            }
+            else if (trackExport.IsA("BioEvtSysTrackSubtitles"))
+            {
+                return new BioEvtSysTrackSubtitles(trackExport);
+            }
+            else if (trackExport.IsA("BioEvtSysTrackGesture"))
+            {
+                return new BioEvtSysTrackGesture(trackExport);
+            }
+            else if (trackExport.IsA("BioInterpTrack"))
+            {
+                return new BioInterpTrack(trackExport);
+            }
+            else if (trackExport.ClassName == "InterpTrackSound")
+            {
+                return new InterpTrackSound(trackExport);
+            }
+            else if (trackExport.IsA("InterpTrackEvent"))
+            {
+                return new InterpTrackEvent(trackExport);
+            }
+            else if (trackExport.IsA("InterpTrackFaceFX"))
+            {
+                return new InterpTrackFaceFX(trackExport);
+            }
+            else if (trackExport.IsA("InterpTrackAnimControl"))
+            {
+                return new InterpTrackAnimControl(trackExport);
+            }
+            else if (trackExport.IsA("InterpTrackMove"))
+            {
+                return new InterpTrackMove(trackExport);
+            }
+            else if (trackExport.IsA("InterpTrackVisibility"))
+            {
+                return new InterpTrackVisibility(trackExport);
+            }
+            else if (trackExport.IsA("InterpTrackToggle"))
+            {
+                return new InterpTrackToggle(trackExport);
+            }
+            else if (trackExport.IsA("InterpTrackWwiseEvent"))
+            {
+                return new InterpTrackWwiseEvent(trackExport);
+            }
+            else if (trackExport.IsA("InterpTrackDirector"))
+            {
+                return new InterpTrackDirector(trackExport);
+            }
+            else if (trackExport.IsA("InterpTrackFloatBase"))
+            {
+                return new InterpTrackFloatBase(trackExport);
+            }
+            else if (trackExport.IsA("InterpTrackVectorBase"))
+            {
+                return new InterpTrackVectorBase(trackExport);
+            }
+            else if (trackExport.IsA("BioEvtSysTrackVOElements") && trackExport.Game == MEGame.ME1)
+            {
+                return new BioInterpTrack(trackExport);
+            }
+            else
+            {
+                throw new FormatException($"Unknown Track Type: {trackExport.ClassName}");
+            }
+        }
 
         protected InterpTrack(ExportEntry export)
         {
@@ -156,25 +180,24 @@ namespace LegendaryExplorer.Tools.InterpEditor
 
         public abstract void LoadTrack();
 
-
-        private bool isSelected;
+        private bool _isSelected;
         public bool IsSelected
         {
-            get => isSelected;
-            set => SetProperty(ref isSelected, value);
+            get => _isSelected;
+            set => SetProperty(ref _isSelected, value);
         }
 
-        private bool isExpanded;
+        private bool _isExpanded;
         public bool IsExpanded
         {
-            get => isExpanded;
-            set => SetProperty(ref isExpanded, value);
+            get => _isExpanded;
+            set => SetProperty(ref _isExpanded, value);
         }
     }
 
     public class BioInterpTrack : InterpTrack
     {
-        public BioInterpTrack(ExportEntry exp) : base(exp)
+        public BioInterpTrack(ExportEntry export) : base(export)
         {
         }
 
@@ -202,7 +225,7 @@ namespace LegendaryExplorer.Tools.InterpEditor
         {
             Keys.ClearEx();
             var floatTrackProp = Export.GetProperty<StructProperty>("FloatTrack");
-            if (floatTrackProp?.GetProp<ArrayProperty<StructProperty>>("Points") is {} pointsArray)
+            if (floatTrackProp?.GetProp<ArrayProperty<StructProperty>>("Points") is { } pointsArray)
             {
                 foreach (var curvePoint in pointsArray)
                 {
@@ -276,7 +299,7 @@ namespace LegendaryExplorer.Tools.InterpEditor
             {
                 foreach (var trackKey in trackKeys)
                 {
-                    Keys.Add(new Key(trackKey.GetProp<FloatProperty>("StartTime"), trackKey.GetProp<NameProperty>("EventName").Value.Name));
+                    Keys.Add(new Key(trackKey.GetProp<FloatProperty>(Export.Game.IsGame1() ? "Time" : "StartTime"), trackKey.GetProp<NameProperty>("EventName").Value.Name));
                 }
             }
         }
@@ -470,7 +493,7 @@ namespace LegendaryExplorer.Tools.InterpEditor
                 foreach (var trackKey in trackKeys)
                 {
                     int strRef = subtitleData?[keyindex]?.GetProp<IntProperty>("nStrRefID");
-                    Keys.Add(new Key(trackKey.GetProp<FloatProperty>("fTime"), ME1TalkFiles.findDataById(strRef, Export.FileRef)));
+                    Keys.Add(new Key(trackKey.GetProp<FloatProperty>("fTime"), TLKManagerWPF.GlobalFindStrRefbyID(strRef, Export.FileRef)));
                 }
             }
         }

@@ -16,12 +16,14 @@ namespace LegendaryExplorerCore.Packages
         /// <param name="parent"></param>
         /// <param name="relinkResultsAvailable"></param>
         /// <returns></returns>
-        public static ExportEntry CreatePackageExport(IMEPackage pcc, string packageName, IEntry parent = null, Action<List<EntryStringPair>> relinkResultsAvailable = null)
+        public static ExportEntry CreatePackageExport(IMEPackage pcc, NameReference packageName, IEntry parent = null, Action<List<EntryStringPair>> relinkResultsAvailable = null)
         {
+            var rop = new RelinkerOptionsPackage { ImportExportDependencies = true };
             var exp = new ExportEntry(pcc, parent, packageName)
             {
-                Class = EntryImporter.EnsureClassIsInFile(pcc, "Package", RelinkResultsAvailable: relinkResultsAvailable),
+                Class = EntryImporter.EnsureClassIsInFile(pcc, "Package", rop)
             };
+            relinkResultsAvailable?.Invoke(rop.RelinkReport);
             exp.ObjectFlags |= UnrealFlags.EObjectFlags.Public;
             exp.ExportFlags |= UnrealFlags.EExportFlags.ForcedExport;
             pcc.AddExport(exp);
@@ -30,10 +32,12 @@ namespace LegendaryExplorerCore.Packages
 
         public static ExportEntry CreateExport(IMEPackage pcc, string name, string className, IEntry parent = null, Action<List<EntryStringPair>> relinkResultsAvailable = null)
         {
+            var rop = new RelinkerOptionsPackage() { ImportExportDependencies = true };
             var exp = new ExportEntry(pcc, parent, pcc.GetNextIndexedName(name))
             {
-                Class = EntryImporter.EnsureClassIsInFile(pcc, className, RelinkResultsAvailable: relinkResultsAvailable),
+                Class = EntryImporter.EnsureClassIsInFile(pcc, className, rop)
             };
+            relinkResultsAvailable?.Invoke(rop.RelinkReport);
             pcc.AddExport(exp);
             return exp;
         }

@@ -36,6 +36,8 @@ namespace LegendaryExplorer
 
         public static DateTime BuildDateTime = new(App.CompileTime, DateTimeKind.Utc);
 
+        public static App Instance;
+
         #endregion
 
 
@@ -54,6 +56,7 @@ namespace LegendaryExplorer
 
             if(singleInstance.IsFirstInstance)
             {
+                Instance = this;
                 // Application bootup is handled in AppBoot class
                 singleInstance.ArgumentsReceived.Subscribe(OnInstanceInvoked);
                 singleInstance.ListenForArgumentsFromSuccessiveInstances();
@@ -77,7 +80,17 @@ namespace LegendaryExplorer
             var eh = new ExceptionHandlerDialog(e.Exception);
             Window wpfActiveWindow = Current.Windows.OfType<Window>().SingleOrDefault(x => x.IsActive);
             eh.Owner = wpfActiveWindow;
-            eh.ShowDialog();
+            try
+            {
+                eh.ShowDialog();
+            }
+            catch
+            {
+                // Retry without owner - if owner window is in error state it will crash this dialog and the 
+                // whole app will die instead
+                eh = new ExceptionHandlerDialog(e.Exception);
+                eh.ShowDialog();
+            }
             e.Handled = eh.Handled;
         }
 

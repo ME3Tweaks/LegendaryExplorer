@@ -12,6 +12,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
     /// </summary>
     public abstract class ExportLoaderControl : NotifyPropertyChangedControlBase, IDisposable
     {
+        /// <summary>
+        /// If this ExportLoaderControl has been popped out to its own standalone window
+        /// </summary>
+        public bool IsPoppedOut { get; set; }
+
         protected ExportLoaderControl(string memoryTrackerName)
         {
             MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended($"[EL] {memoryTrackerName}", new WeakReference(this)));
@@ -26,7 +31,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         /// <summary>
         /// Called when the control is being popped out. Allows subcontrol to updated UI to account for more space than when embedded in a tool
         /// </summary>
-        public virtual void PoppedOut(MenuItem recentsMenuItem) {}
+        public virtual void PoppedOut(ExportLoaderHostedWindow window) {}
 
         /// <summary>
         /// The list of supported games that this loader control can handle. Typically used by CanParse().

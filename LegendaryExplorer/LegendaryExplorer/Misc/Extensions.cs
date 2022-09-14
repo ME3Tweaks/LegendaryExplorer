@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -18,6 +19,7 @@ using System.Numerics;
 using LegendaryExplorer.Dialogs;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
+using Image = LegendaryExplorerCore.Textures.Image;
 using Point = System.Windows.Point;
 
 namespace LegendaryExplorer.Misc
@@ -101,10 +103,10 @@ namespace LegendaryExplorer.Misc
             box.ScrollToEnd();
         }
 
-        public static BitmapImage ToBitmapImage(this System.Drawing.Image bitmap)
+        public static BitmapImage ToBitmapImage(this System.Drawing.Image bitmap, System.Drawing.Imaging.ImageFormat destFormat = null)
         {
             MemoryStream memory = new MemoryStream();
-            bitmap.Save(memory, System.Drawing.Imaging.ImageFormat.Bmp);
+            bitmap.Save(memory, destFormat ?? System.Drawing.Imaging.ImageFormat.Bmp);
             memory.Position = 0;
             BitmapImage bitmapImage = new BitmapImage();
             bitmapImage.BeginInit();

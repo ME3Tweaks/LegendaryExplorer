@@ -13,7 +13,7 @@ namespace LegendaryExplorerCore.Packages
 {
     [DebuggerDisplay("ImportEntry | {UIndex} = {InstancedFullPath}")]
     [DoNotNotify] //disable Fody/PropertyChanged for this class. Do notification manually
-    public sealed class ImportEntry : INotifyPropertyChanged, IEntry
+    public sealed class ImportEntry : IEntry
     {
         public MEGame Game => FileRef.Game;
 
@@ -21,9 +21,7 @@ namespace LegendaryExplorerCore.Packages
         {
             HeaderOffset = importData.Position;
             FileRef = pccFile;
-            Span<byte> headerBytes = stackalloc byte[HeaderLength];
-            importData.Read(headerBytes);
-            _header = MemoryMarshal.Read<ImportHeader>(headerBytes);
+            importData.Read(MemoryMarshal.AsBytes(MemoryMarshal.CreateSpan(ref _header, 1)));
             if (!pccFile.Endian.IsNative)
             {
                 _header.ReverseEndianness();
@@ -143,9 +141,7 @@ namespace LegendaryExplorerCore.Packages
 
         public void SerializeHeader(Stream stream)
         {
-            Span<byte> buff = stackalloc byte[HeaderLength];
-            MemoryMarshal.Write(buff, ref _header);
-            stream.Write(buff);
+            stream.Write(MemoryMarshal.AsBytes(MemoryMarshal.CreateReadOnlySpan(ref _header, 1)));
         }
 
         public bool HasParent => FileRef.IsEntry(idxLink);
@@ -308,6 +304,20 @@ namespace LegendaryExplorerCore.Packages
             }
 
             return Clone();
+        }
+
+        /// <summary>
+        /// Gets the top level object by following the idxLink up the chain. Typically this is the file that will contain the export (unless it is a ForcedExport) if it's an import, or the original package before forcing the export into the file.
+        /// </summary>
+        /// <returns></returns>
+        public string GetRootName()
+        {
+            IEntry current = this;
+            while (current.Parent != null)
+            {
+                current = current.Parent;
+            }
+            return current.InstancedFullPath;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

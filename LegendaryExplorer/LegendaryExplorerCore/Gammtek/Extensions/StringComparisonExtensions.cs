@@ -1,10 +1,11 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace LegendaryExplorerCore.Gammtek.Extensions
 {
 	public static class StringComparisonExtensions
 	{
-		[NotNull]
+		[return: NotNull]
 		public static StringComparer GetStringComparer(this StringComparison comparison)
 		{
 			switch (comparison)

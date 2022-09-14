@@ -2,6 +2,7 @@
 using System.Linq;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
+using LegendaryExplorerCore.Unreal.ObjectInfo;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
 
 namespace LegendaryExplorerCore.UnrealScript.Compiling
@@ -53,8 +54,28 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
         public static IEntry ResolveFunction(Function f, IMEPackage pcc) => pcc.getEntryOrAddImport($"{ResolveSymbol(f.Outer, pcc).InstancedFullPath}.{f.Name}", "Function");
         public static IEntry ResolveState(State s, IMEPackage pcc) => pcc.getEntryOrAddImport($"{ResolveSymbol(s.Outer, pcc).InstancedFullPath}.{s.Name}", "State");
 
-        public static IEntry ResolveClass(Class c, IMEPackage pcc) =>
-            EntryImporter.EnsureClassIsInFile(pcc, c.Name, RelinkResultsAvailable: relinkResults =>
-                throw new Exception($"Unable to resolve class '{c.Name}'! There were relinker errors: {string.Join("\n\t", relinkResults.Select(pair => pair.Message))}"));
+        public static IEntry ResolveClass(Class c, IMEPackage pcc)
+        {
+            var rop = new RelinkerOptionsPackage { ImportExportDependencies = true }; // Might need to disable cache here depending on if that is desirable
+            if (!GlobalUnrealObjectInfo.GetClasses(pcc.Game).ContainsKey(c.Name) && c.FilePath is not null)
+            {
+                if (c.FilePath == pcc.FilePath)
+                {
+                    // It's part of the current package - e.g. we're adding a new class in porting
+                    GlobalUnrealObjectInfo.generateClassInfo(pcc.GetUExport(c.UIndex));
+                }
+                else
+                {
+                    using IMEPackage classPcc = MEPackageHandler.OpenMEPackage(c.FilePath);
+                    GlobalUnrealObjectInfo.generateClassInfo(classPcc.GetUExport(c.UIndex));
+                }
+            }
+            var entry = EntryImporter.EnsureClassIsInFile(pcc, c.Name, rop);
+            if (rop.RelinkReport.Any())
+            {
+                throw new Exception($"Unable to resolve class '{c.Name}'! There were relinker errors: {string.Join("\n\t", rop.RelinkReport.Select(pair => pair.Message))}");
+            }
+            return entry;
+        }
     }
 }

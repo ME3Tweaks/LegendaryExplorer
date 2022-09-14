@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
@@ -7,10 +8,11 @@ using LegendaryExplorerCore.UnrealScript.Utilities;
 
 namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 {
+
+    [DebuggerDisplay("Class | {Name}")]
     public sealed class Class : ObjectType, IContainsFunctions
     {
         public string Package;
-        public VariableType Parent;
         public VariableType _outerClass;
         public UnrealFlags.EClassFlags Flags;
         public string ConfigName;
@@ -30,6 +32,9 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 
         public bool IsInterface => Flags.Has(UnrealFlags.EClassFlags.Interface);
 
+        //BioBaseComponents are not components for most compiling purposes, but they do have the Component flag
+        public bool NeedsComponentFlag => SameAsOrSubClassOf("Component") || SameAsOrSubClassOf("BioBaseComponent");
+
         public bool IsComponent => SameAsOrSubClassOf("Component");
 
         public bool IsNative => Flags.Has(UnrealFlags.EClassFlags.Native);
@@ -46,7 +51,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
                      List<Function> funcs = null,
                      List<State> states = null,
                      DefaultPropertiesBlock defaultProperties = null,
-                     SourcePosition start = null, SourcePosition end = null)
+                     int start = -1, int end = -1)
             : base(name, start, end, EPropertyType.Object)
         {
             Parent = parent;
@@ -77,18 +82,16 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 
         public bool SameAsOrSubClassOf(string name)
         {
-            string inputName = name.ToLower();
-            if (inputName == "object")
+            if (name.CaseInsensitiveEquals("Object"))
             {
                 return true;
             }
-            string nodeName = Name.ToLower();
-            if (nodeName == inputName)
+            if (name.CaseInsensitiveEquals(Name))
                 return true;
             Class current = this;
-            while (current.Parent != null && current.Parent.Name.ToLower() != "object")
+            while (current.Parent != null && !current.Parent.Name.CaseInsensitiveEquals("Object"))
             {
-                if (current.Parent.Name.ToLower() == inputName)
+                if (current.Parent.Name.CaseInsensitiveEquals(name))
                     return true;
                 current = (Class)current.Parent;
             }
@@ -146,6 +149,38 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
         {
             get => _outerClass ?? (Parent as Class)?.OuterClass;
             set => _outerClass = value;
+        }
+
+        public State LookupState(string stateName, bool lookInParents = true)
+        {
+            foreach (State state in States)
+            {
+                if (state.Name.CaseInsensitiveEquals(stateName))
+                {
+                    return state;
+                }
+            }
+            if (lookInParents)
+            {
+                return (Parent as Class)?.LookupState(stateName);
+            }
+            return null;
+        }
+
+        public Function LookupFunction(string funcName, bool lookInParents = true)
+        {
+            foreach (Function func in Functions)
+            {
+                if (func.Name.CaseInsensitiveEquals(funcName))
+                {
+                    return func;
+                }
+            }
+            if (lookInParents)
+            {
+                return (Parent as Class)?.LookupFunction(funcName);
+            }
+            return null;
         }
     }
 }

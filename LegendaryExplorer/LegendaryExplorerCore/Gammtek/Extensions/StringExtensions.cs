@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using LegendaryExplorerCore.Packages;
 
 namespace LegendaryExplorerCore.Gammtek.Extensions
@@ -268,6 +269,5 @@ namespace LegendaryExplorerCore.Gammtek.Extensions
 
             return lines;
         }
-
     }
 }

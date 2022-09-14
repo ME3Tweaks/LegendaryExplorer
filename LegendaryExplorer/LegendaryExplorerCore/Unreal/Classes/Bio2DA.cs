@@ -68,6 +68,11 @@ namespace LegendaryExplorerCore.Unreal.Classes
         /// </summary>
         public ExportEntry Export;
 
+        /// <summary>
+        /// Constructs a Bio2DA object from the specified export
+        /// </summary>
+        /// <param name="export"></param>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         public Bio2DA(ExportEntry export) : this()
         {
             //Console.WriteLine("Loading " + export.ObjectName);
@@ -231,6 +236,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
             else
             {
                 export.RemoveProperty("m_sRowLabel"); // No rows.
+                export.RemoveProperty("m_lstRowNumbers"); // No rows.
                 export.WriteBinary(binary);
             }
 
@@ -355,6 +361,14 @@ namespace LegendaryExplorerCore.Unreal.Classes
                     Cells[i, newColCount - 1] = new Bio2DACell() { package = Export?.FileRef }; ; // -1 as it's 0 indexed
                 }
             }
+        }
+
+        /// <summary>
+        /// Removes all rows from this 2DA table
+        /// </summary>
+        public void ClearRows()
+        {
+            _rowNames.Clear();
         }
 
         /// <summary>

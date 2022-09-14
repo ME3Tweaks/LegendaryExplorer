@@ -11,7 +11,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
         public VariableType ElementType;
         public readonly int Length;
 
-        public StaticArrayType(VariableType elementType, int length, SourcePosition start = null, SourcePosition end = null) : base(elementType.Name, start, end)
+        public StaticArrayType(VariableType elementType, int length, int start = -1, int end = -1) : base(elementType.Name, start, end)
         {
             ElementType = elementType;
             Length = length;

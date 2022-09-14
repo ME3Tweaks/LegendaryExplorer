@@ -8,7 +8,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 {
     public class VariableType : ASTNode, IHasFileReference
     {
-        public string Name { get; }
+        public readonly string Name;
         public ASTNode Declaration;
         public virtual ASTNodeType NodeType => Declaration?.Type ?? ASTNodeType.INVALID;
 
@@ -34,7 +34,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
             _ => throw new ArgumentOutOfRangeException()
         };
 
-        public VariableType(string name, SourcePosition start = null, SourcePosition end = null, EPropertyType propType = EPropertyType.None)
+        public VariableType(string name, int start = -1, int end = -1, EPropertyType propType = EPropertyType.None)
             : base(ASTNodeType.VariableType, start, end) 
         {
             Name = name;
@@ -66,11 +66,25 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
         public string FilePath { get; init; }
         public int UIndex { get; init; }
 
-        public string FullTypeName()
+        string IHasFileReference.Name => Name;
+    }
+
+    public static class VariableTypeExtensions
+    {
+        public static string FullTypeName(this VariableType type)
         {
+            if (type is null)
+            {
+                return "None";
+            }
             var builder = new CodeBuilderVisitor();
-            builder.AppendTypeName(this);
-            return builder.GetOutput();
+            builder.AppendTypeName(type);
+            string fullTypeName = builder.GetOutput();
+            if (type is StaticArrayType staticArrayType)
+            {
+                fullTypeName = $"{fullTypeName}[{staticArrayType.Length}]";
+            }
+            return fullTypeName;
         }
     }
 }

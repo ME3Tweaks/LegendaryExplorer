@@ -1,98 +1,77 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml;
 using LegendaryExplorerCore.Gammtek.IO;
+using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.TLK.ME1;
-using static LegendaryExplorerCore.TLK.ME1.ME1TalkFile;
 
 namespace LegendaryExplorerCore.TLK.ME2ME3
 {
-    public class TalkFile
+    /// <summary>
+    /// Represents a .tlk file, as used by ME2/ME3/LE2/LE3. For ME1/LE1 TLK, use <see cref="ME1TalkFile"/>. Used for reading from .tlk files, and writing an xml representation. 
+    /// </summary>
+    /// <remarks>Writing a .tlk file is done with the <see cref="HuffmanCompression"/> class</remarks>
+    public sealed class ME2ME3TalkFile : ME2ME3TLKBase, ITalkFile
     {
-        public struct TLKHeader
-        {
-            public int magic;
-            public int ver;
-            public int min_ver;
-            public int MaleEntryCount;
-            public int FemaleEntryCount;
-            public int treeNodeCount;
-            public int dataLen;
-
-            public TLKHeader(EndianReader r)
-                : this()
-            {
-                magic = r.ReadInt32();
-                ver = r.ReadInt32();
-                min_ver = r.ReadInt32();
-                MaleEntryCount = r.ReadInt32();
-                FemaleEntryCount = r.ReadInt32();
-                treeNodeCount = r.ReadInt32();
-                dataLen = r.ReadInt32();
-            }
-        };
-
-        public struct HuffmanNode
-        {
-            public int LeftNodeID;
-            public int RightNodeID;
-
-            public HuffmanNode(BinaryReader r)
-                : this()
-            {
-                LeftNodeID = r.ReadInt32();
-                RightNodeID = r.ReadInt32();
-            }
-        }
-
-        public TLKHeader Header;
         private Dictionary<int, string> MaleStringRefsTable;
         private Dictionary<int, string> FemaleStringRefsTable;
-        public List<TLKStringRef> StringRefs;
-        public string name;
-        public string path;
 
+        /// <summary>
+        /// Empty constructor (usable by external libraries)
+        /// </summary>
+        public ME2ME3TalkFile()
+        {
+
+        }
+
+        /// <summary>
+        /// Loads a ME2ME3TalkFile from the specified file path.
+        /// </summary>
+        /// <param name="filepath">File on disk to read from.</param>
+        public ME2ME3TalkFile(string filepath)
+        {
+            LoadTlkData(filepath);
+        }
+
+        /// <summary>
+        /// Loads a ME2ME3TalkFile from the specified <see cref="Stream"/>. The position must be properly set.
+        /// </summary>
+        /// <param name="stream">Stream to read from</param>
+        public ME2ME3TalkFile(Stream stream)
+        {
+            LoadTlkDataFromStream(stream);
+        }
+
+        /// <inheritdoc/>
+        public List<TLKStringRef> StringRefs { get; set; }
+
+
+        /// <summary>
+        /// A delegate used for reporting progress
+        /// </summary>
+        /// <param name="percentProgress">What percent is finished</param>
         public delegate void ProgressChangedEventHandler(int percentProgress);
+
+        /// <summary>
+        /// Reports progress of writing to XML
+        /// </summary>
         public event ProgressChangedEventHandler ProgressChanged;
         private void OnProgressChanged(int percentProgress)
         {
             ProgressChanged?.Invoke(percentProgress);
         }
 
-
-        /// <summary>
-        /// Loads a TLK file into memory.
-        /// </summary>
-        /// <param name="fileName"></param>
-        public void LoadTlkData(string fileName)
-        {
-            path = fileName;
-            name = Path.GetFileNameWithoutExtension(fileName);
-            /* **************** STEP ONE ****************
-             *          -- load TLK file header --
-             * 
-             * reading first 28 (4 * 7) bytes 
-             */
-
-            using Stream fs = File.OpenRead(fileName);
-            LoadTlkDataFromStream(fs);
-        }
-
-        /// <summary>
-        /// Loads TLK data from a stream. The position must be properly set.
-        /// </summary>
-        /// <param name="fs"></param>
-        public void LoadTlkDataFromStream(Stream fs)
+        /// <inheritdoc/>
+        public override void LoadTlkDataFromStream(Stream fs)
         {
             //Magic: "Tlk " on Little Endian
-            EndianReader r = EndianReader.SetupForReading(fs, 0x006B6C54, out var magic);
+            EndianReader r = EndianReader.SetupForReading(fs, 0x006B6C54, out int _);
             r.Position = 0;
             Header = new TLKHeader(r);
 
+            int strRefCount = Header.MaleEntryCount + Header.FemaleEntryCount;
             //DebugTools.PrintHeader(Header);
 
             /* **************** STEP TWO ****************
@@ -100,20 +79,17 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
              */
             /* jumping to the beginning of Huffmann Tree stored in TLK file */
             long pos = r.BaseStream.Position;
-            r.BaseStream.Seek(pos + (Header.MaleEntryCount + Header.FemaleEntryCount) * 8, SeekOrigin.Begin);
+            r.BaseStream.Seek(pos + strRefCount * 8, SeekOrigin.Begin);
 
 
-            var characterTree = new List<HuffmanNode>(Header.treeNodeCount);
+            var characterTree = new HuffmanNode[Header.treeNodeCount];
             for (int i = 0; i < Header.treeNodeCount; i++)
-                characterTree.Add(new HuffmanNode(r));
+                characterTree[i] = new HuffmanNode(r);
 
             /* **************** STEP THREE ****************
              *  -- read all of coded data into memory -- 
-             */
-            byte[] data = new byte[Header.dataLen];
-            r.BaseStream.Read(data, 0, data.Length);
-            /* and store it as raw bits for further processing */
-            var bits = new BitArray(data);
+             * and store it as raw bits for further processing */
+            var bits = new TLKBitArray(r.BaseStream, Header.dataLen);
 
             /* rewind BinaryReader just after the Header
              * at the beginning of TLK Entries data */
@@ -125,7 +101,7 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
              *   int: bit offset of the beginning of data (offset starting at 0 and counted for Bits array)
              *        so offset == 0 means the first bit in Bits array
              *   string: actual decoded string */
-            var rawStrings = new Dictionary<int, string>();
+            var rawStrings = new Dictionary<int, string>(strRefCount); //strRefCount will be either the correct capacity or a slight overestimate, due to the possibility of duplicate strings
             int offset = 0;
             // int maxOffset = 0;
             var builder = new StringBuilder(); //reuse the same stringbuilder to avoid allocations
@@ -148,7 +124,6 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
              * Sometimes there's no such key, in that case, our String ID is probably a substring
              * of another String present in rawStrings. 
              */
-            int strRefCount = Header.MaleEntryCount + Header.FemaleEntryCount;
             StringRefs = new List<TLKStringRef>(strRefCount);
             MaleStringRefsTable = new Dictionary<int, string>(Header.MaleEntryCount);
             FemaleStringRefsTable = new Dictionary<int, string>(Header.FemaleEntryCount);
@@ -195,46 +170,88 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
             r.Close();
         }
 
-        public string findDataById(int strRefID, bool withFileName = false, bool returnNullIfNotFound = false, bool noQuotes = false, bool male = true)
+        /// <summary>
+        /// Gets the string corresponding to the <paramref name="strRefID"/> (wrapped in quotes), if it exists in this file. If it does not, returns <c>"No Data"</c>
+        /// </summary>
+        /// <param name="strRefID"></param>
+        /// <param name="withFileName">Optional: Should the filename be appended to the returned string</param>
+        /// <param name="returnNullIfNotFound">Optional: return <c>null</c> instead of <c>"No Data"</c></param>
+        /// <param name="noQuotes">Optional: do not wrap the returned string in quotation marks</param>
+        /// <param name="male">Optional: if false, gets the female version of the string</param>
+        /// <returns></returns>
+        public string FindDataById(int strRefID, bool withFileName = false, bool returnNullIfNotFound = false, bool noQuotes = false, bool male = true)
         {
             string data;
             if (male && MaleStringRefsTable.TryGetValue(strRefID, out data) || !male && FemaleStringRefsTable.TryGetValue(strRefID, out data))
             {
-                if (noQuotes)
-                    return data;
-
-                var retdata = "\"" + data + "\"";
-                if (withFileName)
+                // Todo: Find way to do this faster if possible, maybe like binary search (if TLKs are in order?)
+                foreach (TLKStringRef tlkStringRef in StringRefs)
                 {
-                    retdata += " (" + name + ")";
+                    if (tlkStringRef.StringID == strRefID)
+                    {
+                        if (noQuotes)
+                        {
+                            if(withFileName)
+                            {
+                                return $"{(data ?? "")} ({Path.GetFileName(FilePath)})";
+                            }
+                            return data ?? "";
+                        }
+                        else
+                        {
+                            data = $"\"{(tlkStringRef.Data ?? "")}\"";
+                        }
+                        if (withFileName)
+                        {
+                            data += $" ({Path.GetFileName(FilePath)})";
+                        }
+
+                        return data;
+                    }
                 }
-                return retdata;
             }
 
             return returnNullIfNotFound ? null : "No Data";
         }
 
         /// <summary>
-        /// Writes data stored in memory to an appriopriate text format.
+        /// Find the matching string id for the specified string. Returns -1 if not found.
         /// </summary>
-        /// <param name="fileName"></param>
-        public void DumpToFile(string fileName)
+        /// <param name="value"></param>
+        /// <param name="male">If the search should looking in the male or female table. The male table is the main one.</param>
+        /// <returns></returns>
+        public int FindIdByData(string value, bool male = true)
         {
-            File.Delete(fileName);
+            var refs = male ? MaleStringRefsTable : FemaleStringRefsTable;
+            var matching = refs.FirstOrDefault(x => x.Value == value);
+            if (matching.Value != null) return matching.Key;
+            return -1;
+        }
+
+        /// <summary>
+        /// Saves this TLK object to an XML file
+        /// </summary>
+        /// <param name="filePath">path to write an XML file to</param>
+        public void SaveToXML(string filePath)
+        {
+            File.Delete(filePath);
             /* for now, it's better not to sort, to preserve original order */
             // StringRefs.Sort(CompareTlkStringRef);
 
-            using var xr = new XmlTextWriter(fileName, Encoding.UTF8);
+            using var xr = new XmlTextWriter(filePath, Encoding.UTF8);
             WriteXML(xr);
         }
 
+        /// <summary>
+        /// Writes TLK data to XML, and returns it as a string
+        /// </summary>
         public string WriteXMLString()
         {
-            var InputTLK = new StringBuilder();
-            using var stringWriter = new StringWriter(InputTLK);
+            var inputTLK = new StringBuilder();
+            using var stringWriter = new StringWriter(inputTLK);
             using var writer = new XmlTextWriter(stringWriter);
             WriteXML(writer);
-            return InputTLK.ToString();
+            return inputTLK.ToString();
         }
 
         private void WriteXML(XmlTextWriter xr)
@@ -247,7 +264,7 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
 
             xr.WriteStartDocument();
             xr.WriteStartElement("tlkFile");
-            xr.WriteAttributeString("TLKToolVersion", LegendaryExplorerCoreLib.GetVersion());
+            xr.WriteAttributeString("TLKToolVersion", LegendaryExplorerCoreLib.GetTLKToolVersion());
 
             xr.WriteComment("Male entries section begin");
 
@@ -291,61 +308,9 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
         }
 
         /// <summary>
-        /// Starts reading 'Bits' array at position 'bitOffset'. Read data is
-        /// used on a Huffman Tree to decode read bits into real strings.
-        /// 'bitOffset' variable is updated with last read bit PLUS ONE (first unread bit).
+        /// If the TLK instance has been modified by <see cref="ReplaceString"/> or <see cref="AddString"/>
         /// </summary>
-        /// <param name="bitOffset"></param>
-        /// <param name="builder"></param>
-        /// <returns>
-        /// decoded string or null if there's an error (last string's bit code is incomplete)
-        /// </returns>
-        private static string GetString(ref int bitOffset, StringBuilder builder, BitArray bits, List<HuffmanNode> characterTree)
-        {
-            HuffmanNode root = characterTree[0];
-            HuffmanNode curNode = root;
-            builder.Clear();
-            int i;
-            for (i = bitOffset; i < bits.Length; i++)
-            {
-                /* reading bits' sequence and decoding it to Strings while traversing Huffman Tree */
-                int nextNodeID;
-                if (bits[i])
-                    nextNodeID = curNode.RightNodeID;
-                else
-                    nextNodeID = curNode.LeftNodeID;
-
-                /* it's an internal node - keep looking for a leaf */
-                if (nextNodeID >= 0)
-                    curNode = characterTree[nextNodeID];
-                else
-                /* it's a leaf! */
-                {
-                    char c = (char)(0xffff - nextNodeID);
-                    if (c != '\0')
-                    {
-                        /* it's not NULL */
-                        builder.Append(c);
-                        curNode = root;
-                    }
-                    else
-                    {
-                        /* it's a NULL terminating processed string, we're done */
-                        bitOffset = i + 1;
-                        return builder.ToString();
-                    }
-                }
-            }
-
-            bitOffset = i + 1;
-
-            return null;
-        }
-
-        /// <summary>
-        /// If the TLK instance has been modified by the ReplaceString method.
-        /// </summary>
-        public bool IsModified { get; private set; }
+        public bool IsModified { get; set; }
 
         /// <summary>
         /// Replaces a string in the list of StringRefs. Does not work for Female strings as they share the same string ID (all instances will be replaced)
@@ -369,7 +334,7 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
             else if (addIfNotFound)
             {
                 IsModified = true;
-                AddString(new TLKStringRef(stringID, 0, newText));
+                AddString(new TLKStringRef(stringID, newText, 0));
                 return false; // Was not found, but was added.
             }
             else

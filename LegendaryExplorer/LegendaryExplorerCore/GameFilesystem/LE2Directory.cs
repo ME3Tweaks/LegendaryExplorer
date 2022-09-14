@@ -10,9 +10,20 @@ using Microsoft.Win32;
 
 namespace LegendaryExplorerCore.GameFilesystem
 {
+    /// <summary>
+    /// Contains information about the LE2 game directory
+    /// </summary>
     public static class LE2Directory
     {
+        /// <summary>
+        /// Gets the path to the BioGame folder for LE2
+        /// </summary>
         public static string BioGamePath => GetBioGamePath();
+        /// <summary>
+        /// Gets the path to the BioGame folder for LE2
+        /// </summary>
+        /// <param name="rootPathOverride">Optional: override game path root</param>
+        /// <returns>Path to BioGame folder, null if no usable root path</returns>
         public static string GetBioGamePath(string rootPathOverride = null)
         {
             if (rootPathOverride == null) rootPathOverride = DefaultGamePath;
@@ -20,7 +31,15 @@ namespace LegendaryExplorerCore.GameFilesystem
             return Path.Combine(rootPathOverride, "BioGame");
         }
 
+        /// <summary>
+        /// Gets the path to the DLC folder for LE2
+        /// </summary>
         public static string DLCPath => GetDLCPath();
+        /// <summary>
+        /// Gets the path to the DLC folder for LE2
+        /// </summary>
+        /// <param name="rootPathOverride">Optional: override game path root</param>
+        /// <returns>Path to DLC folder, null if no usable root path</returns>
         public static string GetDLCPath(string rootPathOverride = null)
         {
             if (rootPathOverride == null) rootPathOverride = DefaultGamePath;
@@ -28,7 +47,15 @@ namespace LegendaryExplorerCore.GameFilesystem
             return Path.Combine(GetBioGamePath(rootPathOverride), "DLC");
         }
 
+        /// <summary>
+        /// Gets the path to the basegame Cooked folder for LE2
+        /// </summary>
         public static string CookedPCPath => GetCookedPCPath();
+        /// <summary>
+        /// Gets the path to basegame Cooked folder for LE2
+        /// </summary>
+        /// <param name="rootPathOverride">Optional: override game path root</param>
+        /// <returns>Path to Cooked folder, null if no usable root path</returns>
         public static string GetCookedPCPath(string rootPathOverride = null)
         {
             if (rootPathOverride == null) rootPathOverride = DefaultGamePath;
@@ -36,7 +63,15 @@ namespace LegendaryExplorerCore.GameFilesystem
             return Path.Combine(GetBioGamePath(rootPathOverride), CookedName);
         }
 
+        /// <summary>
+        /// Gets the path to the executable folder for LE2
+        /// </summary>
         public static string ExecutableFolder => GetExecutableDirectory();
+        /// <summary>
+        /// Gets the path to the executable folder for LE2
+        /// </summary>
+        /// <param name="rootPathOverride">Optional: override game path root</param>
+        /// <returns>Path to executable folder, null if no usable root path</returns>
         public static string GetExecutableDirectory(string rootPathOverride = null)
         {
             if (rootPathOverride == null) rootPathOverride = DefaultGamePath;
@@ -44,7 +79,15 @@ namespace LegendaryExplorerCore.GameFilesystem
             return Path.Combine(rootPathOverride, "Binaries", "Win64");
         }
 
+        /// <summary>
+        /// Gets the path to the game executable for LE2
+        /// </summary>
         public static string ExecutablePath => GetExecutablePath();
+        /// <summary>
+        /// Gets the path to the game executable for LE2
+        /// </summary>
+        /// <param name="rootPathOverride">Optional: override game path root</param>
+        /// <returns>Path to game executable, null if no usable root path</returns>
         public static string GetExecutablePath(string rootPathOverride = null)
         {
             if (rootPathOverride == null) rootPathOverride = DefaultGamePath;
@@ -52,7 +95,15 @@ namespace LegendaryExplorerCore.GameFilesystem
             return Path.Combine(GetExecutableDirectory(rootPathOverride), "MassEffect2.exe");
         }
 
+        /// <summary>
+        /// Gets the path to the ASI install directory for LE2
+        /// </summary>
         public static string ASIPath => GetASIPath();
+        /// <summary>
+        /// Gets the path to the ASI install directory for LE2
+        /// </summary>
+        /// <param name="rootPathOverride">Optional: override game path root</param>
+        /// <returns>Path to ASI folder, null if no usable root path</returns>
         public static string GetASIPath(string rootPathOverride = null)
         {
             if (rootPathOverride == null) rootPathOverride = DefaultGamePath;
@@ -60,7 +111,15 @@ namespace LegendaryExplorerCore.GameFilesystem
             return Path.Combine(GetExecutableDirectory(rootPathOverride), "ASI");
         }
 
+        /// <summary>
+        /// Gets the path to the texture mod marker file for LE2
+        /// </summary>
         public static string TextureModMarkerPath => GetTextureModMarkerPath();
+        /// <summary>
+        /// Gets the path to the texture mod marker file for LE2
+        /// </summary>
+        /// <param name="rootPathOverride">Optional: override game path root</param>
+        /// <returns>Path to texture mod marker, null if no usable root path</returns>
         public static string GetTextureModMarkerPath(string rootPathOverride = null)
         {
             if (rootPathOverride == null) rootPathOverride = DefaultGamePath;
@@ -68,7 +127,15 @@ namespace LegendaryExplorerCore.GameFilesystem
             return Path.Combine(GetCookedPCPath(rootPathOverride), "SFXTest.pcc");
         }
 
+        /// <summary>
+        /// The filenames of any valid LE2 executables
+        /// </summary>
         public static readonly ReadOnlyCollection<string> ExecutableNames = Array.AsReadOnly(new[] { "MassEffect2.exe", });
+
+        /// <summary>
+        /// Gets the list of vanilla DLL filenames that ship with LE2
+        /// </summary>
+        /// <remarks>This list will include both the bink bypass and the original renamed bink dll</remarks>
         public static readonly ReadOnlyCollection<string> VanillaDlls = Array.AsReadOnly(new[]
         {
             "bink2w64_original.dll", // We say this is vanilla since it will very commonly be present and should not be removed
@@ -81,7 +148,17 @@ namespace LegendaryExplorerCore.GameFilesystem
             "PhysXCore64.dll",
         });
 
+        /// <summary>
+        /// Gets the path of the LE2 folder in the user's Documents/BioWare folder. This is where savegames and some configuration files are stored.
+        /// </summary>
+        /// <remarks>This is the same folder for all LE games</remarks>
         public static string BioWareDocumentsPath => LEDirectory.BioWareDocumentsPath;
+
+        /// <summary>
+        /// Gets the path to the LOD configuration file for LE2
+        /// </summary>
+        /// <param name="gamePathRootOverride">Optional: override game path root</param>
+        /// <returns>Path to LOD configuration file</returns>
         public static string GetLODConfigFile(string gamePathRootOverride = null)
         {
             if (gamePathRootOverride != null)
@@ -90,10 +167,19 @@ namespace LegendaryExplorerCore.GameFilesystem
             }
             return Path.Combine(BioGamePath, @"Config", @"GamerSettings.ini");
         }
+
+        /// <summary>
+        /// Gets the name of the Cooked folder for LE2
+        /// </summary>
         public static string CookedName => "CookedPCConsole";
 
 
         private static string _gamePath;
+        /// <summary>
+        /// Gets or sets the default game root path that is used when locating game folders.
+        /// By default, this path is loaded from the <see cref="LegendaryExplorerCoreLibSettings"/> instance.
+        /// Updating this path will not update the value in the CoreLibSettings.
+        /// </summary>
         public static string DefaultGamePath
         {
             get
@@ -119,6 +205,9 @@ namespace LegendaryExplorerCore.GameFilesystem
             }
         }
 
+        /// <summary>
+        /// Gets the path to the basegame PCConsoleTOC.bin file for LE2
+        /// </summary>
         public static string TocFile => DefaultGamePath != null ? Path.Combine(DefaultGamePath, @"BioGame", "PCConsoleTOC.bin") : null;
 
         static LE2Directory()
@@ -126,6 +215,10 @@ namespace LegendaryExplorerCore.GameFilesystem
             ReloadDefaultGamePath(false);
         }
 
+        /// <summary>
+        /// Reloads the default LE2 game path, either from LEC settings or from the registry
+        /// </summary>
+        /// <param name="forceUseRegistry">If true, registry will be used to determine game path. If false, LEC settings may be used instead</param>
         public static void ReloadDefaultGamePath(bool forceUseRegistry = false)
         {
             if (!forceUseRegistry && !string.IsNullOrEmpty(LegendaryExplorerCoreLibSettings.Instance?.LEDirectory))
@@ -140,6 +233,9 @@ namespace LegendaryExplorerCore.GameFilesystem
             }
         }
 
+        /// <summary>
+        /// Gets a mapping of official DLC folder names to human readable names for LE2
+        /// </summary>
         public static readonly CaseInsensitiveDictionary<string> OfficialDLCNames = new()
         {
             ["DLC_00_Shared"] = "Shared TLK",
@@ -173,6 +269,9 @@ namespace LegendaryExplorerCore.GameFilesystem
             ["DLC_UPD_Patch03"] = "Patch 3",
         };
 
+        /// <summary>
+        /// Gets a list of official DLC folder names for LE2
+        /// </summary>
         public static readonly ReadOnlyCollection<string> OfficialDLC = Array.AsReadOnly(new[]
         {
             "DLC_00_Shared", //0

@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using LegendaryExplorerCore.Misc;
+﻿using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using System.Drawing;
+using Microsoft.Toolkit.HighPerformance;
+using UIndex = System.Int32;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
@@ -25,8 +22,11 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 EditorData = new OrderedMultiValueDictionary<UIndex, Point>()
             };
         }
-
-        public override List<(UIndex, string)> GetUIndexes(MEGame game) => EditorData.Keys().Select((u, i) => (u, $"EditorData[{i}].SoundNode")).ToList();
+        
+        public override void ForEachUIndex<TAction>(MEGame game, in TAction action)
+        {
+            ForEachUIndexKeyInOrderedMultiValueDictionary(action, EditorData.AsSpan(), nameof(EditorData));
+        }
     }
 
     public static partial class SCExt

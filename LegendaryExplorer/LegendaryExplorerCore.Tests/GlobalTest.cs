@@ -15,7 +15,9 @@ namespace LegendaryExplorerCore.Tests
     public static class GlobalTest
     {
         private static bool initialized;
-
+        /// <summary>
+        /// Initializes the game paths for use in a testing environment
+        /// </summary>
         public static void Init()
         {
             if (initialized) return;
@@ -66,9 +68,9 @@ namespace LegendaryExplorerCore.Tests
         public static string GetTestMountsDirectory() => Path.Combine(GetTestDataDirectory(), "mounts");
         public static string GetTestTLKDirectory() => Path.Combine(GetTestDataDirectory(), "tlk");
         public static string GetTestDataMiscDirectory() => Path.Combine(GetTestDataDirectory(), "misc");
-        public static string GetTestCRCDirectory() => Path.Combine(GetTestDataMiscDirectory(), "crc");
         public static string GetTestTexturesDirectory() => Path.Combine(GetTestDataDirectory(), "textures");
         public static string GetTestCoalescedDirectory() => Path.Combine(GetTestDataDirectory(), "coalesced");
+        public static string GetTestISBDirectory() => Path.Combine(GetTestDataDirectory(), "isb");
 
         /// <summary>
         /// Gets the expected game for a file based on the name of the containing directory. It be an MEGame Enum.

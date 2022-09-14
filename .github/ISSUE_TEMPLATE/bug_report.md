@@ -16,6 +16,8 @@ A clear and concise description of what the bug is.
 **To Reproduce**
 Be specific. Reports must include tool names, filenames, export numbers and more so that we can reproduce the issue. **Do not use generic "use any file" or "any tool". Be specific. If specific reproducible steps are not included, we may simply close the issue as not reproducible.**
 
+When giving a file name, please specify which game it's from (ME1/ME2/ME3/LE1/LE2/LE3), and whether it's in the base game or in a DLC.
+
 Steps to reproduce the behavior:
 1. Go to '...'
 2. Click on '....'

@@ -12,6 +12,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
 using FontAwesome5;
+using LegendaryExplorer.Audio;
 using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Bases;
@@ -330,7 +331,7 @@ namespace LegendaryExplorer.Tools.Soundplorer
             if (exportsToReload == null)
             {
                 BindedItemsList.Clear();
-                BindedItemsList.AddRange(Pcc.Exports.Where(e => e.ClassName == "WwiseBank" || e.ClassName == "WwiseStream" || e.ClassName == "SoundNodeWave").Select(x => new SoundplorerExport(x)));
+                BindedItemsList.AddRange(Pcc.Exports.Where(e => e.ClassName is "WwiseBank" or "WwiseStream" or "SoundNodeWave").Select(x => new SoundplorerExport(x)));
                 //SoundExports_ListBox.ItemsSource = BindedExportsList; //todo: figure out why this is required and data is not binding
             }
             else
@@ -342,7 +343,7 @@ namespace LegendaryExplorer.Tools.Soundplorer
                     se.Icon = EFontAwesomeIcon.Solid_Spinner;
                 }
             }
-            if (backgroundScanner != null && backgroundScanner.IsBusy)
+            if (backgroundScanner is { IsBusy: true })
             {
                 backgroundScanner.CancelAsync(); //cancel current operation
                 while (backgroundScanner.IsBusy)
@@ -368,12 +369,12 @@ namespace LegendaryExplorer.Tools.Soundplorer
         private void GetStreamTimes_ReportProgress(object sender, ProgressChangedEventArgs e)
         {
             IsBusyTaskbar = true; //enforce spinner
-            TaskbarText = "Parsing " + Path.GetFileName(LoadedISBFile ?? LoadedAFCFile ?? Pcc.FilePath) + " (" + e.ProgressPercentage + "%)";
+            TaskbarText = "Parsing " + Path.GetFileName(LoadedISBFile ?? LoadedAFCFile ?? Pcc?.FilePath) + " (" + e.ProgressPercentage + "%)";
         }
 
         private void GetStreamTimes_Completed(object sender, RunWorkerCompletedEventArgs e)
         {
-            TaskbarText = Path.GetFileName(LoadedISBFile ?? LoadedAFCFile ?? Pcc.FilePath);
+            TaskbarText = Path.GetFileName(LoadedISBFile ?? LoadedAFCFile ?? Pcc?.FilePath);
             IsBusyTaskbar = false;
         }
 
@@ -397,7 +398,7 @@ namespace LegendaryExplorer.Tools.Soundplorer
             }
         }
 
-        public override void handleUpdate(List<PackageUpdate> updates)
+        public override void HandleUpdate(List<PackageUpdate> updates)
         {
             if (LoadedISBFile != null || LoadedAFCFile != null)
             {
@@ -1110,7 +1111,7 @@ namespace LegendaryExplorer.Tools.Soundplorer
             }
         }
 
-        public void PropogateRecentsChange(IEnumerable<RecentsControl.RecentItem> newRecents)
+        public void PropogateRecentsChange(string propogationSource, IEnumerable<RecentsControl.RecentItem> newRecents)
         {
             RecentsController.PropogateRecentsChange(false, newRecents);
         }

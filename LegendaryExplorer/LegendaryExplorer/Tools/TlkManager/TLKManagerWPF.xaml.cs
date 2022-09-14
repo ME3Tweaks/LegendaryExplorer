@@ -16,7 +16,6 @@ using LegendaryExplorer.SharedUI.Bases;
 using LegendaryExplorer.UnrealExtensions;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
-using LegendaryExplorerCore.ME1;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.TLK;
@@ -53,12 +52,12 @@ namespace LegendaryExplorer.Tools.TlkManagerNS
             LE1TLKItems.CollectionChanged += LE1CollectionChangedEventHandler;
             LE2TLKItems.CollectionChanged += LE2CollectionChangedEventHandler;
             LE3TLKItems.CollectionChanged += LE3CollectionChangedEventHandler;
-            ME1TLKItems.AddRange(ME1TalkFiles.tlkList.Select(x => new LoadedTLK(x.FilePath, x.UIndex, x.Name, true)));
-            ME2TLKItems.AddRange(ME2TalkFiles.tlkList.Select(x => new LoadedTLK(x.path, true)));
-            ME3TLKItems.AddRange(ME3TalkFiles.tlkList.Select(x => new LoadedTLK(x.path, true)));
-            LE1TLKItems.AddRange(LE1TalkFiles.tlkList.Select(x => new LoadedTLK(x.FilePath, x.UIndex, x.Name, true)));
-            LE2TLKItems.AddRange(LE2TalkFiles.tlkList.Select(x => new LoadedTLK(x.path, true)));
-            LE3TLKItems.AddRange(LE3TalkFiles.tlkList.Select(x => new LoadedTLK(x.path, true)));
+            ME1TLKItems.AddRange(ME1TalkFiles.LoadedTlks.Select(x => new LoadedTLK(x.FilePath, x.UIndex, x.Name, true)));
+            ME2TLKItems.AddRange(ME2TalkFiles.LoadedTlks.Select(x => new LoadedTLK(x.FilePath, true)));
+            ME3TLKItems.AddRange(ME3TalkFiles.LoadedTlks.Select(x => new LoadedTLK(x.FilePath, true)));
+            LE1TLKItems.AddRange(LE1TalkFiles.LoadedTlks.Select(x => new LoadedTLK(x.FilePath, x.UIndex, x.Name, true)));
+            LE2TLKItems.AddRange(LE2TalkFiles.LoadedTlks.Select(x => new LoadedTLK(x.FilePath, true)));
+            LE3TLKItems.AddRange(LE3TalkFiles.LoadedTlks.Select(x => new LoadedTLK(x.FilePath, true)));
 
         }
 
@@ -405,7 +404,7 @@ namespace LegendaryExplorer.Tools.TlkManagerNS
             BusyText = "Reloading Mass Effect 3 TLK strings";
             IsBusy = true;
             bSaveNeededME3 = false;
-            ME3TalkFiles.tlkList.Clear();
+            ME3TalkFiles.ClearLoadedTlks();
             await Task.Run(() => ME3ReloadTLKStringsAsync(ME3TLKItems.Where(x => x.selectedForLoad).ToList()));
             IsBusy = false;
         }
@@ -415,7 +414,7 @@ namespace LegendaryExplorer.Tools.TlkManagerNS
             BusyText = "Reloading Mass Effect 2 TLK strings";
             bSaveNeededME2 = false;
             IsBusy = true;
-            ME2TalkFiles.tlkList.Clear();
+            ME2TalkFiles.ClearLoadedTlks();
             await Task.Run(() => ME2ReloadTLKStringsAsync(ME2TLKItems.Where(x => x.selectedForLoad).ToList()));
             IsBusy = false;
         }
@@ -425,7 +424,7 @@ namespace LegendaryExplorer.Tools.TlkManagerNS
             BusyText = "Reloading Mass Effect TLK strings";
             bSaveNeededME1 = false;
             IsBusy = true;
-            ME1TalkFiles.tlkList.Clear();
+            ME1TalkFiles.ClearLoadedTlks();
             await Task.Run(() => ME1ReloadTLKStringsAsync(ME1TLKItems.Where(x => x.selectedForLoad).ToList()));
             IsBusy = false;
         }
@@ -435,7 +434,7 @@ namespace LegendaryExplorer.Tools.TlkManagerNS
             BusyText = "Reloading Mass Effect 3 Legendary Edition TLK strings";
             IsBusy = true;
             bSaveNeededLE3 = false;
-            LE3TalkFiles.tlkList.Clear();
+            LE3TalkFiles.ClearLoadedTlks();
             await Task.Run(() => LE3ReloadTLKStringsAsync(LE3TLKItems.Where(x => x.selectedForLoad).ToList()));
             IsBusy = false;
         }
@@ -445,7 +444,7 @@ namespace LegendaryExplorer.Tools.TlkManagerNS
             BusyText = "Reloading Mass Effect 2 Legendary Edition TLK strings";
             bSaveNeededLE2 = false;
             IsBusy = true;
-            LE2TalkFiles.tlkList.Clear();
+            LE2TalkFiles.ClearLoadedTlks();
             await Task.Run(() => LE2ReloadTLKStringsAsync(LE2TLKItems.Where(x => x.selectedForLoad).ToList()));
             IsBusy = false;
         }
@@ -455,7 +454,7 @@ namespace LegendaryExplorer.Tools.TlkManagerNS
             BusyText = "Reloading Mass Effect 1 Legendary Edition TLK strings";
             bSaveNeededLE1 = false;
             IsBusy = true;
-            LE1TalkFiles.tlkList.Clear();
+            LE1TalkFiles.ClearLoadedTlks();
             await Task.Run(() => LE1ReloadTLKStringsAsync(LE1TLKItems.Where(x => x.selectedForLoad).ToList()));
             IsBusy = false;
         }
@@ -540,7 +539,7 @@ namespace LegendaryExplorer.Tools.TlkManagerNS
         {
             BusyText = "Scanning for Mass Effect 3 TLK files";
             IsBusy = true;
-            ME3TalkFiles.tlkList.Clear();
+            ME3TalkFiles.LoadedTlks.Clear();
             Task.Run(() =>
             {
                 var tlkmountmap = new List<(string, int)>();
@@ -565,7 +564,7 @@ namespace LegendaryExplorer.Tools.TlkManagerNS
         {
             BusyText = "Scanning for Mass Effect 2 TLK files";
             IsBusy = true;
-            ME2TalkFiles.tlkList.Clear();
+            ME2TalkFiles.LoadedTlks.Clear();
             Task.Run(() =>
             {
                 var tlkmountmap = new List<(string, int)>();
@@ -590,7 +589,7 @@ namespace LegendaryExplorer.Tools.TlkManagerNS
         {
             BusyText = "Scanning for Mass Effect TLK files";
             IsBusy = true;
-            ME1TalkFiles.tlkList.Clear();
+            ME1TalkFiles.LoadedTlks.Clear();
             Task.Run(() =>
             {
                 var tlkfiles = Directory.EnumerateFiles(ME1Directory.DefaultGamePath, "*Tlk*", SearchOption.AllDirectories).ToList();
@@ -621,7 +620,7 @@ namespace LegendaryExplorer.Tools.TlkManagerNS
         {
             BusyText = "Scanning for Mass Effect 3 Legendary Edition TLK files";
             IsBusy = true;
-            LE3TalkFiles.tlkList.Clear();
+            LE3TalkFiles.LoadedTlks.Clear();
             Task.Run(() =>
             {
                 var tlkmountmap = new List<(string, int)>();
@@ -646,7 +645,7 @@ namespace LegendaryExplorer.Tools.TlkManagerNS
         {
             BusyText = "Scanning for Mass Effect 2 Legendary Edition TLK files";
             IsBusy = true;
-            LE2TalkFiles.tlkList.Clear();
+            LE2TalkFiles.LoadedTlks.Clear();
             Task.Run(() =>
             {
                 var tlkmountmap = new List<(string, int)>();
@@ -671,7 +670,7 @@ namespace LegendaryExplorer.Tools.TlkManagerNS
         {
             BusyText = "Scanning for Mass Effect 1 Legendary Edition TLK files";
             IsBusy = true;
-            LE1TalkFiles.tlkList.Clear();
+            LE1TalkFiles.LoadedTlks.Clear();
             Task.Run(() =>
             {
                 var tlkfiles = Directory.EnumerateFiles(LE1Directory.DefaultGamePath, "Startup_*", SearchOption.AllDirectories).ToList();
@@ -965,32 +964,32 @@ namespace LegendaryExplorer.Tools.TlkManagerNS
                 {
                     if(bSaveNeededME1)
                     {
-                        ME1TalkFiles.tlkList.Clear();
+                        ME1TalkFiles.LoadedTlks.Clear();
                         await Task.Run(() => ME1ReloadTLKStringsAsync(ME1TLKItems.Where(x => x.selectedForLoad).ToList()));
                     }
                     if(bSaveNeededME2)
                     {
-                        ME2TalkFiles.tlkList.Clear();
+                        ME2TalkFiles.LoadedTlks.Clear();
                         await Task.Run(() => ME2ReloadTLKStringsAsync(ME2TLKItems.Where(x => x.selectedForLoad).ToList()));
                     }
                     if (bSaveNeededME3)
                     {
-                        ME3TalkFiles.tlkList.Clear();
+                        ME3TalkFiles.LoadedTlks.Clear();
                         await Task.Run(() => ME3ReloadTLKStringsAsync(ME3TLKItems.Where(x => x.selectedForLoad).ToList()));
                     }
                     if(bSaveNeededLE1)
                     {
-                        LE1TalkFiles.tlkList.Clear();
+                        LE1TalkFiles.LoadedTlks.Clear();
                         await Task.Run(() => LE1ReloadTLKStringsAsync(LE1TLKItems.Where(x => x.selectedForLoad).ToList()));
                     }
                     if(bSaveNeededLE2)
                     {
-                        LE2TalkFiles.tlkList.Clear();
+                        LE2TalkFiles.LoadedTlks.Clear();
                         await Task.Run(() => LE2ReloadTLKStringsAsync(LE2TLKItems.Where(x => x.selectedForLoad).ToList()));
                     }
                     if (bSaveNeededLE3)
                     {
-                        LE3TalkFiles.tlkList.Clear();
+                        LE3TalkFiles.LoadedTlks.Clear();
                         await Task.Run(() => LE3ReloadTLKStringsAsync(LE3TLKItems.Where(x => x.selectedForLoad).ToList()));
                     }
                 }
@@ -1113,12 +1112,12 @@ namespace LegendaryExplorer.Tools.TlkManagerNS
 
             return game switch
             {
-                MEGame.ME1 => ME1TalkFiles.findDataById(stringRefID, me1Package),
-                MEGame.ME2 => ME2TalkFiles.findDataById(stringRefID),
-                MEGame.ME3 => ME3TalkFiles.findDataById(stringRefID),
-                MEGame.LE1 => LE1TalkFiles.findDataById(stringRefID, me1Package),
-                MEGame.LE2 => LE2TalkFiles.findDataById(stringRefID),
-                MEGame.LE3 => LE3TalkFiles.findDataById(stringRefID),
+                MEGame.ME1 => ME1TalkFiles.FindDataById(stringRefID, me1Package),
+                MEGame.ME2 => ME2TalkFiles.FindDataById(stringRefID),
+                MEGame.ME3 => ME3TalkFiles.FindDataById(stringRefID),
+                MEGame.LE1 => LE1TalkFiles.FindDataById(stringRefID, me1Package),
+                MEGame.LE2 => LE2TalkFiles.FindDataById(stringRefID),
+                MEGame.LE3 => LE3TalkFiles.FindDataById(stringRefID),
                 _ => "UDK String Refs Not Supported"
             };
         }

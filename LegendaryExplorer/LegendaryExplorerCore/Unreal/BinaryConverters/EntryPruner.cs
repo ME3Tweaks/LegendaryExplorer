@@ -132,7 +132,15 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 }
             }
         }
-
+        /// <summary>
+        /// Removes properties that are not compatible with the export. Basic types are not pruned (such as Int, Float, Name)
+        /// </summary>
+        /// <param name="sourcePcc"></param>
+        /// <param name="props"></param>
+        /// <param name="typeName"></param>
+        /// <param name="newGame"></param>
+        /// <param name="removedProperties"></param>
+        /// <returns></returns>
         public static PropertyCollection RemoveIncompatibleProperties(IMEPackage sourcePcc, PropertyCollection props, string typeName, MEGame newGame, ref bool removedProperties)
         {
             var infoProps = GlobalUnrealObjectInfo.GetAllProperties(newGame, typeName);
@@ -157,6 +165,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                             }
                             else
                             {
+                                Debug.WriteLine($"Trimmed property {prop.Name} from {typeName}");
                                 removedProperties = true;
                             }
                             break;
@@ -185,16 +194,20 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                             }
                             else
                             {
+                                Debug.WriteLine($"Trimmed property {prop.Name} from {typeName}");
                                 removedProperties = true;
                             }
                             break;
                         case DelegateProperty delegateProperty:
                             //script related, so just delete it.
+                            // ?? Could this be automatically converted these days?
                             removedProperties = true;
+                            Debug.WriteLine($"Trimmed property {prop.Name} from {typeName}");
                             break;
                         case EnumProperty enumProperty:
                             if (GlobalUnrealObjectInfo.GetEnumValues(newGame, enumProperty.EnumType) is List<NameReference> values)
                             {
+                                values.Add(new NameReference("None"));
                                 if (!values.Contains(enumProperty.Value))
                                 {
                                     enumProperty.Value = values.First(); //hope that the first value is a reasonable default
@@ -203,6 +216,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                             }
                             else
                             {
+                                Debug.WriteLine($"Trimmed property {prop.Name} from {typeName}");
                                 removedProperties = true;
                             }
                             break;
@@ -213,6 +227,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                             }
                             else
                             {
+                                Debug.WriteLine($"Trimmed property {prop.Name} from {typeName}");
                                 removedProperties = true;
                             }
                             break;
@@ -220,13 +235,19 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                             string structType = structProperty.StructType;
                             if (GlobalUnrealObjectInfo.GetStructs(newGame).ContainsKey(structType))
                             {
-                                if (HasIncompatibleImmutabilities(structType, out bool newImmutability)) break;
+                                if (HasIncompatibleImmutabilities(structType, out bool newImmutability))
+                                {
+                                    Debug.WriteLine($"Trimmed property {prop.Name} from {typeName}, as the struct immutabilities are not guaranteed compatible");
+                                    removedProperties = true;
+                                    break;
+                                }
                                 structProperty.Properties = RemoveIncompatibleProperties(sourcePcc, structProperty.Properties, structType, newGame, ref removedProperties);
                                 structProperty.IsImmutable = newImmutability;
                                 newProps.Add(structProperty);
                             }
                             else
                             {
+                                Debug.WriteLine($"Trimmed property {prop.Name} from {typeName}");
                                 removedProperties = true;
                             }
                             break;
@@ -237,7 +258,20 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 }
                 else
                 {
-                    removedProperties = true;
+                    // CROSSGEN-V TEST: Don't remove USEFUL but non-functional properties 
+                    switch (prop)
+                    {
+                        case StrProperty when prop.Name == "ObjName":
+                            newProps.Add(prop);
+                            continue;
+                        default:
+                            removedProperties = true;
+                            continue;
+                    }
+                    // End CROSSGEN-V
+
+                    // OLD CODE
+                    // removedProperties = true;
                 }
             }
 

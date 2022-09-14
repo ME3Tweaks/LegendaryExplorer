@@ -4,7 +4,6 @@ using System.Linq;
 using LegendaryExplorerCore.Gammtek.Extensions;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
-using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
 using LegendaryExplorerCore.UnrealScript.Compiling;
 using LegendaryExplorerCore.UnrealScript.Language.Util;
@@ -16,7 +15,6 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
     public sealed class Struct : ObjectType
     {
         public ScriptStructFlags Flags;
-        public VariableType Parent;
         public override List<VariableDeclaration> VariableDeclarations { get; }
         public override List<VariableType> TypeDeclarations { get; }
         public override DefaultPropertiesBlock DefaultProperties { get; set; }
@@ -24,13 +22,14 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
         public bool IsAtomic => Flags.Has(ScriptStructFlags.Atomic) || Flags.Has(ScriptStructFlags.AtomicWhenCooked);
 
         public bool IsImmutable => Flags.Has(ScriptStructFlags.Immutable) || Flags.Has(ScriptStructFlags.ImmutableWhenCooked);
+        public bool IsNative => Flags.Has(ScriptStructFlags.Native);
 
         public Struct(string name, VariableType parent, ScriptStructFlags flags,
                       List<VariableDeclaration> variableDeclarations = null,
                       List<VariableType> typeDeclarations = null,
                       DefaultPropertiesBlock defaults = null,
                       PropertyCollection defaultPropertyCollection = null,
-                      SourcePosition start = null, SourcePosition end = null)
+                      int start = -1, int end = -1)
             : base(name, start, end, name switch
             {
                 "Vector" => EPropertyType.Vector,
@@ -192,21 +191,17 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
         public override string GetScope()
         {
             Struct targetStruct = this;
-            string specificScope = NodeUtils.GetContainingClass(targetStruct).GetInheritanceString();
-            var outerStructs = new Stack<string>();
+            string classScope = NodeUtils.GetContainingClass(targetStruct).GetInheritanceString();
+            var scopes = new Stack<string>();
+            scopes.Push(Name);
             while (targetStruct.Outer is Struct lhsStructOuter)
             {
-                outerStructs.Push(lhsStructOuter.Name);
+                scopes.Push(lhsStructOuter.Name);
                 targetStruct = lhsStructOuter;
             }
+            scopes.Push(classScope);
 
-            if (outerStructs.Any())
-            {
-                specificScope += $".{string.Join(".", outerStructs)}";
-            }
-
-            specificScope += $".{targetStruct.Name}";
-            return specificScope;
+            return string.Join(".", scopes);
         }
 
         private PropertyCollection DefaultPropertyCollection;
@@ -267,7 +262,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
                             prop = new ObjectProperty(0, propName);
                             break;
                         case DelegateType delegateType:
-                            prop = new DelegateProperty(0, "None", propName);
+                            prop = new DelegateProperty("None", 0, propName);
                             break;
                         case DynamicArrayType dynArrType:
                             var elementType = dynArrType.ElementType;
@@ -387,6 +382,35 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
                 }
             }
             return props;
+        }
+
+        public bool IsNativeCompatibleWith(Struct other, MEGame game)
+        {
+            if (VariableDeclarations.Count != other.VariableDeclarations.Count)
+            {
+                return false;
+            }
+            foreach ((VariableDeclaration ours, VariableDeclaration theirs) in VariableDeclarations.Zip(other.VariableDeclarations))
+            {
+                if (ours.Name != theirs.Name 
+                    || !string.Equals(ours.VarType.Name, theirs.VarType.Name, StringComparison.OrdinalIgnoreCase)
+                    || ours.ArrayLength != theirs.ArrayLength)
+                {
+                    return false;
+                }
+            }
+            if (TypeDeclarations.Count != other.TypeDeclarations.Count)
+            {
+                return false;
+            }
+            foreach ((VariableType ours, VariableType theirs) in TypeDeclarations.Zip(other.TypeDeclarations))
+            {
+                if (!((Struct)ours).IsNativeCompatibleWith((Struct)theirs, game))
+                {
+                    return false;
+                }
+            }
+            return true;
         }
     }
 }

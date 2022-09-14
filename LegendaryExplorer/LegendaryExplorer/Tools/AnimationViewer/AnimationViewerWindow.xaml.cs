@@ -85,7 +85,7 @@ namespace LegendaryExplorer.Tools.AnimationViewer
                 FileListExtended.Add((fileName, db.ContentDir[dirIndex]));
             }
             Animations.AddRange(db.Animations.Where(a => a.IsAmbPerf == false));
-            
+
         }
 
         private void AnimationExplorerWPF_Loaded(object sender, RoutedEventArgs e)
@@ -152,7 +152,7 @@ namespace LegendaryExplorer.Tools.AnimationViewer
             else if (msg.StartsWith("AnimViewer string AnimLoaded"))
             {
                 Vector3 pos = defaultPosition;
-                if (msg.IndexOf("vector") is int idx && idx > 0 && 
+                if (msg.IndexOf("vector") is int idx && idx > 0 &&
                     msg.Substring(idx + 7).Split(' ') is string[] strings && strings.Length == 3)
                 {
                     var floats = new float[3];
@@ -311,7 +311,7 @@ namespace LegendaryExplorer.Tools.AnimationViewer
         void LoadCommands()
         {
             ME3InstalledRequirementCommand = new Requirement.RequirementCommand(() => InteropHelper.IsGameInstalled(MEGame.ME3), () => InteropHelper.SelectGamePath(MEGame.ME3));
-            ASILoaderInstalledRequirementCommand = new Requirement.RequirementCommand(() => InteropHelper.IsASILoaderInstalled(MEGame.ME3), InteropHelper.OpenASILoaderDownload);
+            ASILoaderInstalledRequirementCommand = new Requirement.RequirementCommand(() => InteropHelper.IsASILoaderInstalled(MEGame.ME3), () => InteropHelper.OpenASILoaderDownload(MEGame.ME3));
             InteropASIInstalledRequirementCommand = new Requirement.RequirementCommand(() => InteropHelper.IsInteropASIInstalled(MEGame.ME3), () => InteropHelper.OpenInteropASIDownload(MEGame.ME3));
             ME3ClosedRequirementCommand = new Requirement.RequirementCommand(() => InteropHelper.IsGameClosed(MEGame.ME3), () => InteropHelper.KillGame(MEGame.ME3));
             DatabaseLoadedRequirementCommand = new Requirement.RequirementCommand(IsDatabaseLoaded, TryLoadDatabase);
@@ -371,8 +371,8 @@ namespace LegendaryExplorer.Tools.AnimationViewer
                 string animViewerBaseFilePath = Path.Combine(AppDirectories.ExecFolder, "ME3AnimViewer.pcc");
 
                 using IMEPackage animViewerBase = MEPackageHandler.OpenMEPackage(animViewerBaseFilePath);
-                AnimViewer.SetUpAnimStreamFile(null, 0, "AAAME3EXPAVS1"); //placeholder for tocing
-                AnimViewer.OpenFileInME3(animViewerBase, true, false);
+                AnimViewer.SetUpAnimStreamFile(MEGame.ME3, null, 0, "AAAME3EXPAVS1"); //placeholder for tocing
+                AnimViewer.OpenMapInGame(animViewerBase, true, false);
                 BusyText = "Launching Mass Effect 3...";
             });
         }
@@ -391,9 +391,7 @@ namespace LegendaryExplorer.Tools.AnimationViewer
                 if (anim != null && Enumerable.Any(anim.Usages))
                 {
                     //CameraState = ECameraState.Fixed;
-                    int fileListIndex;
-                    bool isMod;
-                    (fileListIndex, animUIndex, isMod) = anim.Usages[0];
+                    (int fileListIndex, animUIndex, bool isMod) = anim.Usages[0];
                     (string filename, string contentdir) = FileListExtended[fileListIndex];
                     string rootPath = ME3Directory.DefaultGamePath;
 
@@ -402,14 +400,14 @@ namespace LegendaryExplorer.Tools.AnimationViewer
                 }
                 Task.Run(() =>
                 {
-                    AnimViewer.SetUpAnimStreamFile(filePath, animUIndex, "AAAME3EXPAVS1");
+                    AnimViewer.SetUpAnimStreamFile(MEGame.ME3, filePath, animUIndex, "AAAME3EXPAVS1");
                     GameTarget.ExecuteConsoleCommands("ce LoadAnim1");
                 });
             }
         }
 
         #region Position/Rotation
-        private static readonly Vector3 defaultPosition = new (0f, 0f, 85f);
+        private static readonly Vector3 defaultPosition = new(0f, 0f, 85f);
 
         private int _xPos = (int)defaultPosition.X;
         public int XPos
@@ -495,7 +493,7 @@ namespace LegendaryExplorer.Tools.AnimationViewer
             if (noUpdate) return;
             GameTarget.ExecuteConsoleCommands(VarCmd(XPos, FloatVarIndexes.XPos),
                                                      VarCmd(YPos, FloatVarIndexes.YPos),
-                                                     VarCmd(ZPos, FloatVarIndexes.ZPos), 
+                                                     VarCmd(ZPos, FloatVarIndexes.ZPos),
                                                      "ce SetActorLocation");
         }
 
@@ -582,9 +580,9 @@ namespace LegendaryExplorer.Tools.AnimationViewer
                 case ECameraState.Free:
                     GameTarget.ExecuteConsoleCommands("toggledebugcamera");
                     break;
-                //case ECameraState.Shepard when prevCameraState != ECameraState.Shepard:
-                //    LoadAnimation(SelectedAnimation, true);
-                //    break;
+                    //case ECameraState.Shepard when prevCameraState != ECameraState.Shepard:
+                    //    LoadAnimation(SelectedAnimation, true);
+                    //    break;
             }
         }
 

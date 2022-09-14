@@ -1,132 +1,99 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Xml;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.TLK.ME2ME3;
 
 namespace LegendaryExplorerCore.TLK.ME1
 {
-    public class ME1TalkFile : IEquatable<ME1TalkFile>
+    /// <summary>
+    /// Represents the tlk embedded in a BioTalkFile export, which is used in ME1/LE1. For ME2/ME3/LE2/LE3TLK, use <see cref="ME2ME3TalkFile"/>.
+    /// </summary>
+    public class ME1TalkFile : IEquatable<ME1TalkFile>, ITalkFile
     {
+        /// <summary>
+        /// The localization of the TLK
+        /// </summary>
+        public MELocalization Localization { get; set; }
+
+        /// <summary>
+        /// If TLK is modified. This should not be trusted as you can directly edit StringRefs. Only use if your own code sets it.
+        /// </summary>
+        public bool IsModified { get; set; }
+
         #region structs
-        public struct HuffmanNode
+
+        private readonly struct HuffmanNode
         {
-            public int LeftNodeID;
-            public int RightNodeID;
-            public char data;
+            public readonly int LeftNodeID;
+            public readonly int RightNodeID;
+            public readonly char Data;
 
             public HuffmanNode(int r, int l)
-                : this()
             {
                 RightNodeID = r;
                 LeftNodeID = l;
+                Data = default;
             }
 
             public HuffmanNode(char c)
-                : this()
             {
-                data = c;
+                Data = c;
                 LeftNodeID = -1;
                 RightNodeID = -1;
             }
         }
 
-        [DebuggerDisplay("TLKStringRef {StringID} {Data}")]
-        public class TLKStringRef : INotifyPropertyChanged, IEquatable<TLKStringRef>, IComparable
-        {
-            public int StringID { get; set; }
-            public string Data { get; set; }
-            public int Flags { get; set; }
-            public int Index { get; set; }
-
-            public int BitOffset
-            {
-                get => Flags;
-                //use same variable to save memory as flags is not used in me2/3, but bitoffset is.
-                set => Flags = value;
-            }
-
-            public int CalculatedID => StringID >= 0 ? StringID : -(int.MinValue - StringID);
-
-            /// <summary>
-            /// This is used by huffman compression
-            /// </summary>
-            public string ASCIIData
-            {
-                get
-                {
-                    if (Data == null)
-                    {
-                        return "-1\0";
-                    }
-                    if (Data.EndsWith("\0", StringComparison.Ordinal))
-                    {
-                        return Data;
-                    }
-                    return Data + '\0';
-                }
-            }
-
-            public TLKStringRef(BinaryReader r, bool me1)
-            {
-                StringID = r.ReadInt32();
-                if (me1)
-                {
-                    Flags = r.ReadInt32();
-                    Index = r.ReadInt32();
-                }
-                else
-                {
-                    BitOffset = r.ReadInt32();
-                }
-            }
-
-            public TLKStringRef(int id, int flags, string data, int index = -1)
-            {
-                StringID = id;
-                Flags = flags;
-                Data = data;
-                Index = index;
-            }
-
-            public bool Equals(TLKStringRef other)
-            {
-                return StringID == other.StringID && ASCIIData == other.ASCIIData && Flags == other.Flags /*&& Index == other.Index*/;
-            }
-            public int CompareTo(object obj)
-            {
-                TLKStringRef entry = (TLKStringRef)obj;
-                return Index.CompareTo(entry.Index);
-            }
-#pragma warning disable
-            public event PropertyChangedEventHandler PropertyChanged;
-#pragma warning restore
-        }
         #endregion
 
-        private List<HuffmanNode> nodes;
+        private HuffmanNode[] nodes;
 
-        public TLKStringRef[] StringRefs;
-        public int UIndex;
+        /// <summary>
+        /// All the <see cref="TLKStringRef"/>s in the TLK
+        /// </summary>
+        public List<TLKStringRef> StringRefs { get; set; }
 
-        public string language;
-        public bool male;
+        /// <summary>
+        /// The UIndex of the BioTLKFile export
+        /// </summary>
+        public readonly int UIndex;
+
+        /// <summary>
+        /// The path of the file this was in
+        /// </summary>
         public readonly string FilePath;
 
-        public string Name;
-        public string BioTlkSetName;
+        /// <summary>
+        /// The name of the BioTalkFile export
+        /// </summary>
+        public readonly string Name;
+
+        /// <summary>
+        /// The name of the BioTlkSet this BioTalkFile is in. (Probably. Not gauranteed to be accurate)
+        /// </summary>
+        public readonly string BioTlkSetName;
 
 
         #region Constructors
+        /// <summary>
+        /// Creates a new <see cref="ME1TalkFile"/> from the export at <paramref name="uIndex"/> in <paramref name="pcc"/>
+        /// </summary>
+        /// <param name="pcc">The ME1/LE1 package file the BioTalkFile export is in</param>
+        /// <param name="uIndex">The uIndex in <paramref name="pcc"/> of the BioTalkFile export</param>
         public ME1TalkFile(IMEPackage pcc, int uIndex) : this(pcc, pcc.GetUExport(uIndex))
         {
         }
 
+        /// <summary>
+        /// Creates a new <see cref="ME1TalkFile"/> from the <paramref name="export"/>
+        /// </summary>
+        /// <param name="export">A BioTalkFile export</param>
         public ME1TalkFile(ExportEntry export) : this(export.FileRef, export)
         {
         }
@@ -142,26 +109,121 @@ namespace LegendaryExplorerCore.TLK.ME1
             FilePath = pcc.FilePath;
             Name = export.ObjectName.Instanced;
             BioTlkSetName = export.ParentName; //Not technically the tlkset name, but should be about the same
+
+            // ME1 localizations for TLK are... fun
+            Localization = getTlkLocalization(export);
+
         }
+
+        private MELocalization getTlkLocalization(ExportEntry exportEntry)
+        {
+            var testLoc = Name.GetUnrealLocalization();
+            if (testLoc != MELocalization.None) return testLoc;
+
+            if (Name is "tlk" or "tlk_M") return MELocalization.INT;
+            if (Name is "GlobalTlk_tlk" or "GlobalTlk_tlk_M")
+            {
+                // If the package doesn't have a localization, we just default to INT.
+                // An example of this is GlobalTlk.upk in ME1 which has no LOC designations 
+                // but is INT.
+                return exportEntry.FileRef.Localization != MELocalization.None
+                    ? exportEntry.FileRef.Localization
+                    : MELocalization.INT;
+            }
+            return MELocalization.None; // We have no idea
+        }
+
         #endregion
 
-        //ITalkFile
-        public string findDataById(int strRefID, bool withFileName = false)
+
+        /// <summary>
+        /// Replaces a string in the list of StringRefs.
+        /// </summary>
+        /// <param name="stringID">The ID of the string to replace.</param>
+        /// <param name="newText">The new text of the string.</param>
+        /// <param name="addIfNotFound">If the string should be added as new stringref if it is not found. Default is false.</param>
+        /// <returns>True if the string was found, false otherwise.</returns>
+        public bool ReplaceString(int stringID, string newText, bool addIfNotFound = false)
         {
-            string data = "No Data";
+            var strRef = StringRefs.Find(x => x.StringID == stringID);
+            if (strRef != null)
+            {
+                strRef.Data = newText;
+                return true; // Was found and updated.
+            }
+
+            if (addIfNotFound)
+            {
+                IsModified = true;
+                AddString(new TLKStringRef(stringID, newText));
+                return false; // Was not found, but was added.
+            }
+            else
+            {
+                // Not found, not added
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Adds a new string reference to the TLK. Marks the TLK as modified.
+        /// </summary>
+        /// <param name="sref"></param>
+        public void AddString(TLKStringRef sref)
+        {
+            StringRefs.Add(sref);
+            IsModified = true;
+        }
+
+        /// <summary>
+        /// Gets the string corresponding to the <paramref name="strRefID"/> (wrapped in quotes), if it exists in this tlk. If it does not, returns <c>"No Data"</c>
+        /// </summary>
+        /// <param name="strRefID">The ID to lookup</param>
+        /// <param name="withFileName">Optional: If true, the filename will be appended to the returned string</param>
+        /// <param name="returnNullIfNotFound">Optional: If TLK string is not found, setting this to true will return null rather than "No Data"</param>
+        /// <param name="noQuotes">Optional: If the returned string data should be in quotes or not. Setting this to false makes the string return the exact TLK string</param>
+        /// <param name="male">Optional: Unused in Game 1 as TLKs are fully split.</param>
+        /// 
+        public string FindDataById(int strRefID, bool withFileName = false, bool returnNullIfNotFound = false, bool noQuotes = false, bool male = true)
+        {
+            // Todo: Find way to do this faster if possible, maybe like binary search (if TLKs are in order?)
             foreach (TLKStringRef tlkStringRef in StringRefs)
             {
                 if (tlkStringRef.StringID == strRefID)
                 {
-                    data = $"\"{tlkStringRef.Data}\"";
+                    string data = "";
+                    if (noQuotes)
+                    {
+                        data = tlkStringRef.Data ?? "";
+                    }
+                    else
+                    {
+                        data = $"\"{(tlkStringRef.Data ?? "")}\"";
+                    }
                     if (withFileName)
                     {
                         data += $" ({Path.GetFileName(FilePath)} -> {BioTlkSetName}.{Name})";
                     }
-                    break;
+
+                    return data;
                 }
             }
-            return data;
+            return returnNullIfNotFound ? null : "No Data";
+        }
+
+
+        /// <summary>
+        /// Find the matching string id for the specified string. Returns -1 if not found. The male parameter is not used.
+        /// </summary>
+        /// <param name="value">The text value to find, without quotes.</param>
+        /// <param name="male">Optional: Not used in Game 1</param>
+        /// <returns></returns>
+        public int FindIdByData(string value, bool male = true)
+        {
+            // Male is not used
+            var matching = StringRefs.FirstOrDefault(x => x.Data == value);
+            if (matching != null) return matching.StringID;
+            return -1;
         }
 
         #region IEquatable
@@ -181,8 +243,12 @@ namespace LegendaryExplorerCore.TLK.ME1
 
         public override int GetHashCode()
         {
-            return 1;
+            var hashCode = new HashCode();
+            hashCode.Add(UIndex);
+            hashCode.Add(FilePath, StringComparer.OrdinalIgnoreCase);
+            return hashCode.ToHashCode();
         }
+
         #endregion
 
         #region Load Data
@@ -194,25 +260,25 @@ namespace LegendaryExplorerCore.TLK.ME1
             };
             //hashtable
             int entryCount = r.ReadInt32();
-            StringRefs = new TLKStringRef[entryCount];
+            StringRefs = new List<TLKStringRef>(entryCount);
             for (int i = 0; i < entryCount; i++)
             {
-                StringRefs[i] = new TLKStringRef(r, true);
+                StringRefs.Add(new TLKStringRef(r, true));
             }
 
             //Huffman tree
             int nodeCount = r.ReadInt32();
-            nodes = new List<HuffmanNode>(nodeCount);
+            nodes = new HuffmanNode[nodeCount];
             for (int i = 0; i < nodeCount; i++)
             {
                 bool leaf = r.ReadBoolean();
                 if (leaf)
                 {
-                    nodes.Add(new HuffmanNode(r.ReadChar()));
+                    nodes[i] = new HuffmanNode(r.ReadChar());
                 }
                 else
                 {
-                    nodes.Add(new HuffmanNode(r.ReadInt16(), r.ReadInt16()));
+                    nodes[i] = new HuffmanNode(r.ReadInt16(), r.ReadInt16());
                 }
             }
             //TraverseHuffmanTree(nodes[0], new List<bool>());
@@ -221,7 +287,7 @@ namespace LegendaryExplorerCore.TLK.ME1
             int stringCount = r.ReadInt32();
             byte[] data = new byte[r.BaseStream.Length - r.BaseStream.Position];
             r.Read(data, 0, data.Length);
-            var bits = new BitArray(data);
+            var bits = new TLKBitArray(data);
 
             //decompress encoded data with huffman tree
             int offset = 4;
@@ -245,17 +311,22 @@ namespace LegendaryExplorerCore.TLK.ME1
             }
         }
 
-        private string GetString(int bitOffset, BitArray bits)
+        private string GetString(int bitOffset, TLKBitArray bits)
         {
             HuffmanNode root = nodes[0];
             HuffmanNode curNode = root;
 
             var builder = new StringBuilder();
             int i;
-            for (i = bitOffset; i < bits.Length; i++)
+            int bitsLength = bits.Length;
+            for (i = bitOffset; i < bitsLength; i++)
             {
                 /* reading bits' sequence and decoding it to Strings while traversing Huffman Tree */
-                int nextNodeID = bits[i] ? curNode.RightNodeID : curNode.LeftNodeID;
+                int nextNodeID;
+                if (bits.Get(i))
+                    nextNodeID = curNode.RightNodeID;
+                else
+                    nextNodeID = curNode.LeftNodeID;
 
                 /* it's an internal node - keep looking for a leaf */
                 if (nextNodeID >= 0)
@@ -263,7 +334,7 @@ namespace LegendaryExplorerCore.TLK.ME1
                 else
                 /* it's a leaf! */
                 {
-                    char c = curNode.data;
+                    char c = curNode.Data;
                     if (c != '\0')
                     {
                         /* it's not NULL */
@@ -282,7 +353,7 @@ namespace LegendaryExplorerCore.TLK.ME1
 
             if (curNode.LeftNodeID == curNode.RightNodeID)
             {
-                char c = curNode.data;
+                char c = curNode.Data;
                 //We hit edge case where final bit is on a byte boundary and there is nothing left to read. This is a leaf node.
                 if (c != '\0')
                 {
@@ -307,7 +378,7 @@ namespace LegendaryExplorerCore.TLK.ME1
             /* check if both sons are null */
             if (node.LeftNodeID == node.RightNodeID)
             {
-                BitArray ba = new BitArray(code.ToArray());
+                var ba = new BitArray(code.ToArray());
                 string c = "";
                 foreach (bool b in ba)
                 {
@@ -330,12 +401,12 @@ namespace LegendaryExplorerCore.TLK.ME1
         #endregion
 
         /// <summary>
-        /// Saves this TLK object to XML
+        /// Saves this TLK object to an XML file
         /// </summary>
-        /// <param name="fileName"></param>
-        public void saveToFile(string fileName)
+        /// <param name="filePath">path to write an XML file to</param>
+        public void SaveToXML(string filePath)
         {
-            using var xr = new XmlTextWriter(fileName, Encoding.UTF8);
+            using var xr = new XmlTextWriter(filePath, Encoding.UTF8);
             WriteXML(StringRefs, Name, xr);
         }
 
@@ -366,6 +437,12 @@ namespace LegendaryExplorerCore.TLK.ME1
             writer.WriteEndElement(); // </tlkFile>
         }
 
+        /// <summary>
+        /// Writes the provided <see cref="TLKStringRef"/>s to XML, returned as a string.
+        /// </summary>
+        /// <param name="name">Tlk name</param>
+        /// <param name="tlkStringRefs"><see cref="TLKStringRef"/>s to write to xml</param>
+        /// <returns></returns>
         public static string TLKtoXmlstring(string name, IEnumerable<TLKStringRef> tlkStringRefs)
         {
             var InputTLK = new StringBuilder();
@@ -374,7 +451,5 @@ namespace LegendaryExplorerCore.TLK.ME1
             WriteXML(tlkStringRefs, name, writer);
             return InputTLK.ToString();
         }
-
-
     }
 }

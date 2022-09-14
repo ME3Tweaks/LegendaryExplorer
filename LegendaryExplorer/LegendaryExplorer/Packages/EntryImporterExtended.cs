@@ -20,5 +20,16 @@ namespace LegendaryExplorer.Packages
         {
             Application.Current.Dispatcher.Invoke(() => new ListDialog(results, "Relink report", "The following items failed to relink.", null).Show());
         }
+
+        public static void ShowRelinkResultsIfAny(List<EntryStringPair> results)
+        {
+            if (results.Any())
+                ShowRelinkResults(results);
+        }
+
+        public static void ShowRelinkResultsIfAny(RelinkerOptionsPackage rop)
+        {
+            ShowRelinkResultsIfAny(rop.RelinkReport);
+        }
     }
 }

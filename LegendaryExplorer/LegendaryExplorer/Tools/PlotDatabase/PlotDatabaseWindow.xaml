@@ -107,7 +107,7 @@
                                     <Image Source="\Resources\Images\excel.png"/>
                                 </MenuItem.Icon>
                             </MenuItem>
-                            <MenuItem Header="Export Selected States to Excel" Command="{Binding XLExportCommand}">
+                            <MenuItem Header="Export Selected Mod States to Excel" Command="{Binding XLExportCommand}">
                                 <MenuItem.Icon>
                                     <Image Source="\Resources\Images\excel.png"/>
                                 </MenuItem.Icon>

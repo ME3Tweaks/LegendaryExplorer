@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using LegendaryExplorerCore.Packages;
 using System.Numerics;
+using System.Runtime.CompilerServices;
+using UIndex = System.Int32;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
@@ -25,18 +25,15 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             };
         }
 
-        public override List<(UIndex, string)> GetUIndexes(MEGame game)
+        public override void ForEachUIndex<TAction>(MEGame game, in TAction action)
         {
-            var uIndexes = new List<(UIndex, string)>();
             for (int i = 0; i < LODData.Length; i++)
             {
                 StaticMeshComponentLODInfo lodInfo = LODData[i];
-                uIndexes.AddRange(lodInfo.ShadowMaps.Select((uIndex, j) => (uIndex, $"LODData[{i}].ShadowMaps[{j}]")));
-                uIndexes.AddRange(lodInfo.ShadowVertexBuffers.Select((uIndex, j) => (uIndex, $"LODData[{i}].ShadowVertexBuffers[{j}]")));
-                uIndexes.AddRange(lodInfo.LightMap.GetUIndexes(game, $"LODData[{i}]."));
+                ForEachUIndexInSpan(action, lodInfo.ShadowMaps.AsSpan(), $"LODData[{i}].ShadowMaps");
+                ForEachUIndexInSpan(action, lodInfo.ShadowVertexBuffers.AsSpan(), $"LODData[{i}].ShadowVertexBuffers");
+                lodInfo.LightMap.ForEachUIndex(game, action, $"LODData[{i}].");
             }
-
-            return uIndexes;
         }
     }
 
@@ -65,31 +62,28 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     {
         public ELightMapType LightMapType;
 
-        public List<(UIndex, string)> GetUIndexes(MEGame game, string prefix = "")
+        public void ForEachUIndex<TAction>(MEGame game, in TAction action, string prefix = "") where TAction : struct, IUIndexAction
         {
-            var uIndexes = new List<(UIndex, string)>();
             switch (this)
             {
-                case LightMap_1D lightMap_1D:
-                    uIndexes.Add((lightMap_1D.Owner, $"{prefix}LightMap.Owner"));
+                case LightMap_1D lightMap1D:
+                    Unsafe.AsRef(action).Invoke(ref lightMap1D.Owner, $"{prefix}LightMap.Owner");
                     break;
                 case LightMap_2D lightMap2D:
-                    uIndexes.Add((lightMap2D.Texture1, $"{prefix}LightMap.Texture1"));
-                    uIndexes.Add((lightMap2D.Texture2, $"{prefix}LightMap.Texture2"));
-                    uIndexes.Add((lightMap2D.Texture3, $"{prefix}LightMap.Texture3"));
+                    Unsafe.AsRef(action).Invoke(ref lightMap2D.Texture1, $"{prefix}LightMap.Texture1");
+                    Unsafe.AsRef(action).Invoke(ref lightMap2D.Texture2, $"{prefix}LightMap.Texture2");
+                    Unsafe.AsRef(action).Invoke(ref lightMap2D.Texture3, $"{prefix}LightMap.Texture3");
                     if (game < MEGame.ME3)
                     {
-                        uIndexes.Add((lightMap2D.Texture4, $"{prefix}LightMap.Texture4"));
+                        Unsafe.AsRef(action).Invoke(ref lightMap2D.Texture4, $"{prefix}LightMap.Texture4");
                     }
                     break;
                 case LightMap_4or6 lightMap4Or6:
-                    uIndexes.Add((lightMap4Or6.Texture1, $"{prefix}LightMap.Texture1"));
-                    uIndexes.Add((lightMap4Or6.Texture2, $"{prefix}LightMap.Texture2"));
-                    uIndexes.Add((lightMap4Or6.Texture3, $"{prefix}LightMap.Texture3"));
+                    Unsafe.AsRef(action).Invoke(ref lightMap4Or6.Texture1, $"{prefix}LightMap.Texture1");
+                    Unsafe.AsRef(action).Invoke(ref lightMap4Or6.Texture2, $"{prefix}LightMap.Texture2");
+                    Unsafe.AsRef(action).Invoke(ref lightMap4Or6.Texture3, $"{prefix}LightMap.Texture3");
                     break;
             }
-
-            return uIndexes;
         }
     }
 
@@ -283,7 +277,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
             else if (sc.IsLoading)
             {
-                lmap.Texture4 = new UIndex(0);
+                lmap.Texture4 = 0;
             }
             sc.Serialize(ref lmap.CoordinateScale);
             sc.Serialize(ref lmap.CoordinateBias);

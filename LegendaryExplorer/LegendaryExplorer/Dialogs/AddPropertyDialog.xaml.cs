@@ -19,6 +19,7 @@ namespace LegendaryExplorer.Dialogs
     /// </summary>
     public partial class AddPropertyDialog : TrackingNotifyPropertyChangedWindowBase
     {
+
         public class AddPropertyItem
         {
             public AddPropertyItem() { }
@@ -85,7 +86,7 @@ namespace LegendaryExplorer.Dialogs
         {
             if (obj is AddPropertyItem api)
             {
-                if (api.PropInfo.Transient) return false; //Don't show transient props
+                if (api.PropInfo.Transient && !ShowTransients) return false; //Don't show transient props
                 if (existingProperties.Contains(new PropNameStaticArrayIdxPair(api.PropertyName, api.StaticArrayIndex))) return false; //Don't show existing properties
                 if (string.IsNullOrWhiteSpace(FilterText)) return true; //no filter
                 if (api.PropertyName.Instanced.Contains(FilterText, StringComparison.InvariantCultureIgnoreCase)) 
@@ -118,7 +119,19 @@ namespace LegendaryExplorer.Dialogs
             {
                 if (SetProperty(ref _selectedClassName, value) && value != null)
                 {
-                    updateShownProperties();
+                    UpdateShownProperties();
+                }
+            }
+        }
+        private bool _showTransients;
+        public bool ShowTransients
+        {
+            get => _showTransients;
+            set
+            {
+                if (SetProperty(ref _showTransients, value))
+                {
+                    UpdateShownProperties();
                 }
             }
         }
@@ -167,7 +180,7 @@ namespace LegendaryExplorer.Dialogs
 
         #endregion
 
-        private void updateShownProperties()
+        private void UpdateShownProperties()
         {
             // Replaces the list of available properties with ones for the specified selected class
             // that are not transient and are not already part of the export
@@ -176,7 +189,7 @@ namespace LegendaryExplorer.Dialogs
                 if (SelectedClassName != null)
                 {
                     _availableProperties.ReplaceAll(classToClassPropertyMap[SelectedClassName]
-                        .Where(x => !x.PropInfo.Transient && !existingProperties.Contains(new PropNameStaticArrayIdxPair(x.PropertyName, x.StaticArrayIndex)))
+                        .Where(x => (!x.PropInfo.Transient || ShowTransients) && !existingProperties.Contains(new PropNameStaticArrayIdxPair(x.PropertyName, x.StaticArrayIndex)))
                         .OrderBy(x => new PropNameStaticArrayIdxPair(x.PropertyName, x.StaticArrayIndex)));
                 }
                 else
@@ -214,70 +227,33 @@ namespace LegendaryExplorer.Dialogs
         {
             string temp = export.ClassName;
             var classes = new List<ClassInfo>();
-            Dictionary<string, ClassInfo> classList;
-            switch (game)
-            {
-                case MEGame.ME1:
-                    classList = ME1UnrealObjectInfo.Classes;
-                    break;
-                case MEGame.ME2:
-                    classList = ME2UnrealObjectInfo.Classes;
-                    break;
-                case MEGame.ME3:
-                default:
-                    classList = ME3UnrealObjectInfo.Classes;
-                    break;
-                case MEGame.LE1:
-                    classList = LE1UnrealObjectInfo.Classes;
-                    break;
-                case MEGame.LE2:
-                    classList = LE2UnrealObjectInfo.Classes;
-                    break;
-                case MEGame.LE3:
-                    classList = LE3UnrealObjectInfo.Classes;
-                    break;
-            }
+            Dictionary<string, ClassInfo> classList = GlobalUnrealObjectInfo.GetClasses(game);
 
             if (!classList.ContainsKey(temp) && export.Class is ImportEntry)
             {
-                //lookup import parent info
-                temp = export.SuperClassName;
+                if (GlobalUnrealObjectInfo.generateClassInfo(export) is ClassInfo info)
+                {
+                    classes.Add(info);
+                    temp = info.baseClass;
+                }
+                else
+                {
+                    //lookup import parent info
+                    temp = export.SuperClassName;
+                }
             }
             else if (!classList.ContainsKey(temp) && export.Class is ExportEntry classExport)
             {
                 export = classExport;
                 //current object is not in classes db, temporarily add it to the list
-                ClassInfo currentInfo;
-                switch (game)
-                {
-                    case MEGame.ME1:
-                        currentInfo = ME1UnrealObjectInfo.generateClassInfo(export);
-                        break;
-                    case MEGame.ME2:
-                        currentInfo = ME2UnrealObjectInfo.generateClassInfo(export);
-                        break;
-                    case MEGame.ME3:
-                    default:
-                        currentInfo = ME3UnrealObjectInfo.generateClassInfo(export);
-                        break;
-                    case MEGame.LE1:
-                        currentInfo = LE1UnrealObjectInfo.generateClassInfo(export);
-                        break;
-                    case MEGame.LE2:
-                        currentInfo = LE2UnrealObjectInfo.generateClassInfo(export);
-                        break;
-                    case MEGame.LE3:
-                        currentInfo = LE3UnrealObjectInfo.generateClassInfo(export);
-                        break;
-
-                }
-                currentInfo.baseClass = export.SuperClassName;
+                using var cache = new PackageCache();
+                ClassInfo currentInfo = GlobalUnrealObjectInfo.generateClassInfo(export, packageCache: cache);
                 classList = classList.ToDictionary(entry => entry.Key, entry => entry.Value);
                 classList[temp] = currentInfo;
                 classExport = classExport.SuperClass as ExportEntry;
                 while (!classList.ContainsKey(currentInfo.baseClass) && classExport != null)
                 {
-                    currentInfo = GlobalUnrealObjectInfo.generateClassInfo(classExport);
+                    currentInfo = GlobalUnrealObjectInfo.generateClassInfo(classExport, packageCache: cache);
                     if (currentInfo == null)
                     {
                         break;

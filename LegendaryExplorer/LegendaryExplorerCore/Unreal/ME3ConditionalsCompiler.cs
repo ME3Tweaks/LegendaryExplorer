@@ -37,6 +37,9 @@ namespace LegendaryExplorerCore.Unreal
             }
         }
 
+        //totally arbitrary number, chosen to prevent save file bloat. Can be increased if necessary.
+        private const int PLOT_MAX = 250_000;
+
         //TODO: This is barely modified ancient code and could really use a re-write.
         //on the other hand, it works! Lot to be said for that...
         //counterpoint: it can only really be said to work if you supply it with a fully accurate input. Practically no error checking
@@ -1148,7 +1151,11 @@ namespace LegendaryExplorerCore.Unreal
                 byte[] Cout = new byte[0];
                 if (node.Text == "plot bool")
                 {
-                    int n = Convert.ToInt16(node.Nodes[0].Text);
+                    int n = Convert.ToInt32(node.Nodes[0].Text);
+                    if (Math.Abs(n) > PLOT_MAX)
+                    {
+                        throw new Exception($"plot bool id cannot be greater than {PLOT_MAX}");
+                    }
                     Cout = new byte[5];
                     Cout[0] = 0x60;
                     byte[] buff = BitConverter.GetBytes(n);
@@ -1165,7 +1172,11 @@ namespace LegendaryExplorerCore.Unreal
                 byte[] Cout = new byte[0];
                 if (node.Text == "plot int")
                 {
-                    int n = Convert.ToInt16(node.Nodes[0].Text);
+                    int n = Convert.ToInt32(node.Nodes[0].Text);
+                    if (Math.Abs(n) > PLOT_MAX)
+                    {
+                        throw new Exception($"plot int id cannot be greater than {PLOT_MAX}");
+                    }
                     Cout = new byte[5];
                     Cout[0] = 0x61;
                     byte[] buff = BitConverter.GetBytes(n);
@@ -1182,7 +1193,11 @@ namespace LegendaryExplorerCore.Unreal
                 byte[] Cout = new byte[0];
                 if (node.Text == "plot float")
                 {
-                    int n = Convert.ToInt16(node.Nodes[0].Text);
+                    int n = Convert.ToInt32(node.Nodes[0].Text);
+                    if (Math.Abs(n) > PLOT_MAX)
+                    {
+                        throw new Exception($"plot float id cannot be greater than {PLOT_MAX}");
+                    }
                     Cout = new byte[5];
                     Cout[0] = 0x62;
                     byte[] buff = BitConverter.GetBytes(n);

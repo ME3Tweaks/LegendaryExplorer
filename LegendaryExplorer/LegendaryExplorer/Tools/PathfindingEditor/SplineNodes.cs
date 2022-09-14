@@ -8,9 +8,9 @@ using LegendaryExplorer.Tools.SequenceObjects;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
-using UMD.HCIL.Piccolo;
-using UMD.HCIL.Piccolo.Nodes;
-using UMD.HCIL.Piccolo.Event;
+using Piccolo;
+using Piccolo.Event;
+using Piccolo.Nodes;
 using Color = System.Drawing.Color;
 using RectangleF = System.Drawing.RectangleF;
 using InterpCurveVector = LegendaryExplorerCore.Unreal.BinaryConverters.InterpCurve<System.Numerics.Vector3>;
@@ -286,14 +286,14 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
         {
             Pickable = false;
             NextActor = nextActor;
-            StructProperty splineInfoProp = component.GetProperty<StructProperty>("SplineInfo");
+            var splineInfoProp = component.GetProperty<StructProperty>("SplineInfo");
             if (splineInfoProp != null)
             {
-                SplineInfo = InterpCurveVector.FromStructProperty(splineInfoProp);
+                SplineInfo = InterpCurveVector.FromStructProperty(splineInfoProp, component.Game);
                 var reparamProp = component.GetProperty<StructProperty>("SplineReparamTable");
                 if (reparamProp != null)
                 {
-                    ReparamTable = InterpCurveFloat.FromStructProperty(reparamProp);
+                    ReparamTable = InterpCurveFloat.FromStructProperty(reparamProp, component.Game);
                 }
                 else
                 {

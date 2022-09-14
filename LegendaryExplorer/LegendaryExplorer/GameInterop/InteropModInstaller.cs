@@ -25,7 +25,7 @@ namespace LegendaryExplorer.GameInterop
         protected readonly InteropTarget Target;
         private MEGame Game => Target.Game;
 
-        protected bool CancelInstallation = false;
+        protected bool CancelInstallation;
 
         private string InstallInfoPath => Path.Combine(ModInstallPath, "InstallInfo.json");
         protected string ModInstallPath => Path.Combine(MEDirectories.GetDLCPath(Game), Target.ModInfo.InteropModName);
@@ -88,7 +88,7 @@ namespace LegendaryExplorer.GameInterop
             const string bioPGlobalFileName = "BioP_Global.pcc";
             const string bioPGlobalNcFileName = "BioP_Global_NC.pcc";
 
-            var filesToAugment = new List<string>() {bioPGlobalFileName};
+            var filesToAugment = new List<string> {bioPGlobalFileName};
             if (Game.IsGame3()) filesToAugment.Add(bioPGlobalNcFileName);
             return filesToAugment;
         }
@@ -122,23 +122,23 @@ namespace LegendaryExplorer.GameInterop
 
             #region Sequencing
 
-            var consoleEvent = SequenceObjectCreator.CreateSequenceObject(pcc, "SeqEvent_Console", game);
+            var consoleEvent = LEXSequenceObjectCreator.CreateSequenceObject(pcc, "SeqEvent_Console");
             consoleEvent.WriteProperty(new NameProperty("LoadLiveEditor", "ConsoleEventName"));
             KismetHelper.AddObjectToSequence(consoleEvent, mainSequence);
-            var setStreamingState = SequenceObjectCreator.CreateSequenceObject(pcc, "BioSeqAct_SetStreamingState", game);
+            var setStreamingState = LEXSequenceObjectCreator.CreateSequenceObject(pcc, "BioSeqAct_SetStreamingState");
             setStreamingState.WriteProperty(new NameProperty(stateName, "StateName"));
             setStreamingState.WriteProperty(new BoolProperty(true, "NewValue"));
             KismetHelper.AddObjectToSequence(setStreamingState, mainSequence);
             KismetHelper.CreateOutputLink(consoleEvent, "Out", setStreamingState);
 
-            var levelLoaded = SequenceObjectCreator.CreateSequenceObject(pcc, "SeqEvent_LevelLoaded", game);
+            var levelLoaded = LEXSequenceObjectCreator.CreateSequenceObject(pcc, "SeqEvent_LevelLoaded");
             KismetHelper.AddObjectToSequence(levelLoaded, mainSequence);
 
             var sendMessageClassName = game.IsLEGame() ? "SeqAct_SendMessageToLEX" : "SeqAct_SendMessageToME3Explorer";
-            var sendMessageToME3Exp = SequenceObjectCreator.CreateSequenceObject(pcc, sendMessageClassName, game);
+            var sendMessageToME3Exp = LEXSequenceObjectCreator.CreateSequenceObject(pcc, sendMessageClassName);
             KismetHelper.AddObjectToSequence(sendMessageToME3Exp, mainSequence);
             KismetHelper.CreateOutputLink(levelLoaded, game is MEGame.ME2 ? "Out" : "Loaded and Visible", sendMessageToME3Exp);
-            var stringVar = SequenceObjectCreator.CreateSequenceObject(pcc, "SeqVar_String", game);
+            var stringVar = LEXSequenceObjectCreator.CreateSequenceObject(pcc, "SeqVar_String");
             stringVar.WriteProperty(new StrProperty(LiveEditHelper.LoaderLoadedMessage, "StrValue"));
             KismetHelper.AddObjectToSequence(stringVar, mainSequence);
             KismetHelper.CreateVariableLink(sendMessageToME3Exp, "MessageName", stringVar);
@@ -193,7 +193,7 @@ namespace LegendaryExplorer.GameInterop
             return false;
         }
 
-        private static bool DeleteFilesAndFoldersRecursively(string targetDirectory)
+        public static bool DeleteFilesAndFoldersRecursively(string targetDirectory)
         {
             if (!Directory.Exists(targetDirectory))
             {

@@ -5,7 +5,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 {
     public class ContinueStatement : Statement
     {
-        public ContinueStatement(SourcePosition start = null, SourcePosition end = null)
+        public ContinueStatement(int start = -1, int end = -1)
             : base(ASTNodeType.ContinueStatement, start, end) { }
 
         public override bool AcceptVisitor(IASTVisitor visitor)

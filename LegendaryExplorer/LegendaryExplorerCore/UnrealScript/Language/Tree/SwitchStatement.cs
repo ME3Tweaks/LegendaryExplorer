@@ -10,7 +10,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
         public CodeBody Body;
 
         public SwitchStatement(Expression expr, CodeBody body,
-            SourcePosition start, SourcePosition end)
+            int start, int end)
             : base(ASTNodeType.SwitchStatement, start, end)
         {
             Expression = expr;

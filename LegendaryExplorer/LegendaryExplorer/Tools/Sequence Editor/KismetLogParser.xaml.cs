@@ -63,16 +63,21 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             LogLines.ClearEx();
             if (File.Exists(KismetLogPath(Game)))
             {
-
                 LogLines.AddRange(File.ReadLines(KismetLogPath(Game)).Skip(4).Select(ParseLoggerLine).NonNull().ToList());
             }
         }
 
+        /// <summary>
+        /// Parses a line from Kismet Logger output
+        /// </summary>
+        /// <param name="line"></param>
+        /// <returns></returns>
         private LoggerInfo ParseLoggerLine(string line)
         {
             string[] args = line.Split(' ');
-            if (args.Length == 3)
+            if (args.Length >= 3)
             {
+                // Time / Object Class / Instanced Full Path
                 string[] path = args[2].Split('.');
                 if (path.Length < 2) return null;
                 string packageName = path[0];
@@ -82,11 +87,19 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                     var newInfo = new LoggerInfo
                     {
                         fullLine = line,
+                        activationTime = args[0].Trim('[',']'),
                         packageName = packageName,
                         className = args[1],
                         fullInstancedPath = fullInstancedPath
                     };
 
+                    if (args.Length >= 4)
+                    {
+                        // Input Pin
+                        newInfo.inputPin = args[3];
+                    }
+
+                    // Filter it (if filters are on)
                     if (FilterPcc != null && SequenceToFilterTo != null)
                     {
                         var referencedEntry = FilterPcc.FindExport(newInfo.fullInstancedPath);
@@ -94,9 +107,11 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                         {
                             return newInfo;
                         }
+
                         return null;
                     }
 
+                    // No filters, just return it
                     return newInfo;
                 }
             }
@@ -107,9 +122,27 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
         public class LoggerInfo
         {
             public string fullLine { get; set; }
-            public string packageName;
-            public string className;
-            public string fullInstancedPath;
+
+            /// <summary>
+            /// The package this object is contained in
+            /// </summary>
+            public string packageName { get; set; }
+            /// <summary>
+            /// The class name of the object
+            /// </summary>
+            public string className { get; set; }
+            /// <summary>
+            /// The instanced full path of the object
+            /// </summary>
+            public string fullInstancedPath { get; set; }
+            /// <summary>
+            /// What pin activated this object, if any
+            /// </summary>
+            public string inputPin { get; set; }
+            /// <summary>
+            /// The text that denotes how long into the game the activation took place after
+            /// </summary>
+            public string activationTime { get; set; }
         }
 
         private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -128,10 +161,10 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                     var fileName = filesLoadedInGame.Keys.FirstOrDefault((t =>
                         Path.GetFileNameWithoutExtension(t)
                             .Equals(info.packageName, StringComparison.InvariantCultureIgnoreCase)));
-                    if(fileName is not null) filePath = filesLoadedInGame[fileName];
+                    if (fileName is not null) filePath = filesLoadedInGame[fileName];
                 }
 
-                if(filePath != null)
+                if (filePath != null)
                 {
                     using var package = MEPackageHandler.OpenMEPackage(filePath);
                     var export = package.FindExport(info.fullInstancedPath);

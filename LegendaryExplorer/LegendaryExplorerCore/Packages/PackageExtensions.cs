@@ -9,6 +9,7 @@ using LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
+using Microsoft.Toolkit.HighPerformance;
 
 namespace LegendaryExplorerCore.Packages
 {
@@ -78,10 +79,9 @@ namespace LegendaryExplorerCore.Packages
         public static bool AddToLevelActorsIfNotThere(this IMEPackage pcc, params ExportEntry[] actors)
         {
             bool added = false;
-            var levelE = pcc.FindExport("TheWorld.PersistentLevel");
-            if (levelE != null && levelE.ClassName == "Level")
+            if (pcc.FindExport("TheWorld.PersistentLevel") is ExportEntry { ClassName: "Level" } levelExport)
             {
-                Level level = ObjectBinary.From<Level>(levelE);
+                var level = ObjectBinary.From<Level>(levelExport);
                 foreach (ExportEntry actor in actors)
                 {
                     if (!level.Actors.Contains(actor.UIndex))
@@ -90,7 +90,7 @@ namespace LegendaryExplorerCore.Packages
                         level.Actors.Add(actor.UIndex);
                     }
                 }
-                levelE.WriteBinary(level);
+                levelExport.WriteBinary(level);
             }
 
             return added;
@@ -98,12 +98,25 @@ namespace LegendaryExplorerCore.Packages
 
         public static bool RemoveFromLevelActors(this IMEPackage pcc, ExportEntry actor)
         {
-            if (pcc.Exports.FirstOrDefault(exp => exp.ClassName == "Level") is ExportEntry levelExport)
+            if (pcc.FindExport("TheWorld.PersistentLevel") is ExportEntry { ClassName: "Level" } levelExport)
             {
-                Level level = ObjectBinary.From<Level>(levelExport);
+                var level = ObjectBinary.From<Level>(levelExport);
                 if (level.Actors.Remove(actor.UIndex))
                 {
                     levelExport.WriteBinary(level);
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public static bool LevelContainsActor(this IMEPackage pcc, ExportEntry actor)
+        {
+            if (pcc.FindExport("TheWorld.PersistentLevel") is ExportEntry { ClassName: "Level" } levelExport)
+            {
+                var level = ObjectBinary.From<Level>(levelExport);
+                if (level.Actors.Contains(actor.UIndex))
+                {
                     return true;
                 }
             }
@@ -280,10 +293,9 @@ namespace LegendaryExplorerCore.Packages
         public static HashSet<int> GetReferencedEntries(this IMEPackage pcc, bool getreferenced = true, bool getactorrefs = false, ExportEntry startatexport = null)
         {
             var result = new HashSet<int>();
-            Level level = null;
-            Stack<IEntry> entriesToEvaluate = new Stack<IEntry>();
-            HashSet<IEntry> entriesEvaluated = new HashSet<IEntry>();
-            HashSet<IEntry> entriesReferenced = new HashSet<IEntry>();
+            var entriesToEvaluate = new Stack<IEntry>();
+            var entriesEvaluated = new HashSet<IEntry>();
+            var entriesReferenced = new HashSet<IEntry>();
             if (startatexport != null) //Start at object
             {
                 entriesToEvaluate.Push(startatexport);
@@ -292,7 +304,7 @@ namespace LegendaryExplorerCore.Packages
             }
             else if (pcc.Exports.FirstOrDefault(exp => exp.ClassName == "Level") is ExportEntry levelExport) //Evaluate level with only actors, model+components, sequences and level class being processed.
             {
-                level = ObjectBinary.From<Level>(levelExport);
+                var level = ObjectBinary.From<Level>(levelExport);
                 entriesEvaluated.Add(null); //null stops future evaluations
                 entriesEvaluated.Add(levelExport);
                 entriesReferenced.Add(levelExport);
@@ -305,7 +317,7 @@ namespace LegendaryExplorerCore.Packages
                     entriesToEvaluate.Push(actor);
                     entriesReferenced.Add(actor);
                 }
-                var model = pcc.GetEntry(level.Model?.value ?? 0);
+                var model = pcc.GetEntry(level.Model);
                 entriesToEvaluate.Push(model);
                 entriesReferenced.Add(model);
                 foreach (var comp in level.ModelComponents)
@@ -362,7 +374,7 @@ namespace LegendaryExplorerCore.Packages
                     var exp = pcc.GetUExport(ent.UIndex);
 
                     //find header references only if doing non-actors
-                    if(!getactorrefs)
+                    if (!getactorrefs)
                     {
                         if ((exp.Archetype?.UIndex ?? 0) != 0)
                         {
@@ -396,14 +408,7 @@ namespace LegendaryExplorerCore.Packages
                     //find binary references
                     if (!exp.IsDefaultObject && ObjectBinary.From(exp) is ObjectBinary objBin)
                     {
-                        List<(UIndex, string)> indices = objBin.GetUIndexes(exp.FileRef.Game);
-                        foreach ((UIndex uIndex, string propName) in indices)
-                        {
-                            if (uIndex != exp.UIndex)
-                            {
-                                theserefs.Add(pcc.GetEntry(uIndex));
-                            }
-                        }
+                        objBin.ForEachUIndex(exp.FileRef.Game, new ReferenceFinder(exp.UIndex, pcc, theserefs));
                     }
 
                     foreach (var reference in theserefs)
@@ -462,9 +467,9 @@ namespace LegendaryExplorerCore.Packages
                             }
                             break;
                         case DelegateProperty delegateProperty:
-                            if (delegateProperty.Value.Object != 0 && delegateProperty.Value.Object != exp.UIndex)
+                            if (delegateProperty.Value.ContainingObjectUIndex != 0 && delegateProperty.Value.ContainingObjectUIndex != exp.UIndex)
                             {
-                                theserefs.Add(pcc.GetEntry(delegateProperty.Value.Object));
+                                theserefs.Add(pcc.GetEntry(delegateProperty.Value.ContainingObjectUIndex));
                             }
                             break;
                         case StructProperty structProperty:
@@ -491,15 +496,43 @@ namespace LegendaryExplorerCore.Packages
                 }
             }
         }
+        
+        private readonly struct ReferenceFinder : IUIndexAction
+        {
+            private readonly int CurrentExportUIndex;
+            private readonly IMEPackage Pcc;
+            private readonly HashSet<IEntry> Refs;
+
+            public ReferenceFinder(int currentExportUIndex, IMEPackage pcc, HashSet<IEntry> refs)
+            {
+                CurrentExportUIndex = currentExportUIndex;
+                Pcc = pcc;
+                Refs = refs;
+            }
+
+            public void Invoke(ref int uIndex, string propName)
+            {
+                if (uIndex != CurrentExportUIndex)
+                {
+                    Refs.Add(Pcc.GetEntry(uIndex));
+                }
+            }
+        }
     }
+
     public static class ExportEntryExtensions
     {
-
-        public static T GetProperty<T>(this ExportEntry export, string name) where T : Property
+        public static T GetProperty<T>(this ExportEntry export, string name, PackageCache cache = null) where T : Property
         {
-            return export.GetProperties().GetProp<T>(name);
+            return export.GetProperties(packageCache: cache).GetProp<T>(name);
         }
 
+        /// <summary>
+        /// Writes a property to the export, replacing a property with the same <see cref="Property.Name"/> and <see cref="Property.StaticArrayIndex"/> if it exists,
+        /// otherwise adding a new one. 
+        /// </summary>
+        /// <param name="export"></param>
+        /// <param name="prop"></param>
         public static void WriteProperty(this ExportEntry export, Property prop)
         {
             var props = export.GetProperties();
@@ -546,15 +579,15 @@ namespace LegendaryExplorerCore.Packages
         }
 
         public static bool IsTexture(this IEntry entry) =>
-            entry.ClassName 
-                is "Texture2D" 
-                or "LightMapTexture2D" 
+            entry.ClassName
+                is "Texture2D"
+                or "LightMapTexture2D"
                 or "ShadowMapTexture2D"
-                or "TerrainWeightMapTexture" 
+                or "TerrainWeightMapTexture"
                 or "TextureFlipBook";
 
         public static bool IsPartOfClassDefinition(this ExportEntry entry) =>
-            entry.ClassName 
+            entry.ClassName
                 is "Class"
                 or "Function"
                 or "State"
@@ -665,7 +698,7 @@ namespace LegendaryExplorerCore.Packages
                             result.AddToListAt(exp, "Stack");
                         }
                     }
-                    else if (exp.TemplateOwnerClassIdx is var toci && toci >= 0 && baseUIndex == EndianReader.ToInt32(exp.DataReadOnly, toci, exp.FileRef.Endian))
+                    else if (exp.TemplateOwnerClassIdx is var toci and >= 0 && baseUIndex == EndianReader.ToInt32(exp.DataReadOnly, toci, exp.FileRef.Endian))
                     {
                         result.AddToListAt(exp, $"TemplateOwnerClass (Data offset 0x{toci:X})");
                     }
@@ -675,16 +708,11 @@ namespace LegendaryExplorerCore.Packages
                     findPropertyReferences(exp.GetProperties(), exp, "Property:");
 
                     //find binary references
-                    if (!exp.IsDefaultObject && ObjectBinary.From(exp) is ObjectBinary objBin)
+                    if (!exp.IsDefaultObject
+                        && exp.ClassName != "AnimSequence" //has no UIndexes, and is expensive to deserialize
+                        && ObjectBinary.From(exp) is ObjectBinary objBin)
                     {
-                        List<(UIndex, string)> indices = objBin.GetUIndexes(exp.FileRef.Game);
-                        foreach ((UIndex uIndex, string propName) in indices)
-                        {
-                            if (uIndex == baseUIndex)
-                            {
-                                result.AddToListAt(exp, $"(Binary prop: {propName})");
-                            }
-                        }
+                        objBin.ForEachUIndex(exp.FileRef.Game, new ReferenceFinder(baseUIndex, exp, result));
                     }
                 }
                 catch (Exception e) when (!LegendaryExplorerCoreLib.IsDebug)
@@ -708,7 +736,7 @@ namespace LegendaryExplorerCore.Packages
                             }
                             break;
                         case DelegateProperty delegateProperty:
-                            if (delegateProperty.Value.Object == baseUIndex)
+                            if (delegateProperty.Value.ContainingObjectUIndex == baseUIndex)
                             {
                                 result.AddToListAt(exp, $"{prefix} {delegateProperty.Name}");
                             }
@@ -738,6 +766,28 @@ namespace LegendaryExplorerCore.Packages
             }
         }
 
+        private readonly struct ReferenceFinder : IUIndexAction
+        {
+            private readonly int UIndexToFind;
+            private readonly ExportEntry CurrentExport;
+            private readonly Dictionary<IEntry, List<string>> ResultDict;
+
+            public ReferenceFinder(int uIndexToFind, ExportEntry currentExport, Dictionary<IEntry, List<string>> resultDict)
+            {
+                UIndexToFind = uIndexToFind;
+                CurrentExport = currentExport;
+                ResultDict = resultDict;
+            }
+
+            public void Invoke(ref int uIndex, string propName)
+            {
+                if (uIndex == UIndexToFind)
+                {
+                    ResultDict.AddToListAt(CurrentExport, $"(Binary prop: {propName})");
+                }
+            }
+        }
+
         public static int ReplaceAllReferencesToThisOne(this IEntry baseEntry, IEntry replacementEntry)
         {
             int rcount = 0;
@@ -757,20 +807,14 @@ namespace LegendaryExplorerCore.Packages
                     {
                         if (propsList.Any(l => l.StartsWith("(Binary prop:")) && !exp.IsDefaultObject && ObjectBinary.From(exp) is ObjectBinary objBin)
                         {
-                            List<(UIndex, string)> indices = objBin.GetUIndexes(exp.FileRef.Game);
-                            foreach ((UIndex uIndex, _) in indices)
-                            {
-                                if (uIndex.value == selectedEntryUIndex)
-                                {
-                                    uIndex.value = replacementUIndex;
-                                    rcount++;
-                                }
-                            }
+                            var refReplacer = new ReferenceReplacer(selectedEntryUIndex, replacementUIndex);
+                            objBin.ForEachUIndex(exp.FileRef.Game, refReplacer);
+                            rcount += refReplacer.ReplacementCount;
 
                             //script relinking is not covered by standard binary relinking
                             if (objBin is UStruct uStruct && uStruct.ScriptBytes.Length > 0)
                             {
-                                if (exp.Game == MEGame.ME3)
+                                if (exp.Game is MEGame.ME3 | exp.Game.IsLEGame())
                                 {
                                     (List<Token> tokens, _) = Bytecode.ParseBytecode(uStruct.ScriptBytes, exp);
                                     foreach (Token token in tokens)
@@ -826,7 +870,7 @@ namespace LegendaryExplorerCore.Packages
                             }
                             break;
                         case DelegateProperty delegateProperty:
-                            if (delegateProperty.Value.Object == targetUIndex)
+                            if (delegateProperty.Value.ContainingObjectUIndex == targetUIndex)
                             {
                                 delegateProperty.Value = new ScriptDelegate(replaceUIndex, delegateProperty.Value.FunctionName);
                                 replacementCount++;
@@ -858,6 +902,31 @@ namespace LegendaryExplorerCore.Packages
                 return newprops;
             }
 
+        }
+
+        private readonly struct ReferenceReplacer : IUIndexAction
+        {
+            private readonly int UIndexToReplace;
+            private readonly int ReplacementUIndex;
+            
+            //this is the c# version of a pointer to an int
+            public readonly Box<int> ReplacementCount;
+
+            public ReferenceReplacer(int uIndexToReplace, int replacementUIndex)
+            {
+                UIndexToReplace = uIndexToReplace;
+                ReplacementUIndex = replacementUIndex;
+                ReplacementCount = 0;
+            }
+
+            public void Invoke(ref int uIndex, string propName)
+            {
+                if (uIndex == UIndexToReplace)
+                {
+                    uIndex = ReplacementUIndex;
+                    ReplacementCount.GetReference() += 1;
+                }
+            }
         }
 
         public static void CondenseArchetypes(this ExportEntry export, bool removeArchetypeLink = true)

@@ -41,6 +41,17 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             }
         }
 
+        public static PropertyCollection CompileProps(DefaultPropertiesBlock block, IMEPackage pcc, PackageCache packageCache = null)
+        {
+            var compiler = new ScriptPropertiesCompiler(pcc, packageCache) { ShouldStripTransients = true };
+            var props = new PropertyCollection();
+            foreach (Statement statement in block.Statements)
+            {
+                props.AddOrReplaceProp(compiler.ConvertToProperty((AssignStatement)statement));
+            }
+            return props;
+        }
+
         public static void CompileDefault__Object(DefaultPropertiesBlock defaultsAST, ExportEntry classExport, ref ExportEntry defaultsExport, PackageCache packageCache = null)
         {
             IMEPackage pcc = classExport.FileRef;
@@ -133,7 +144,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
         private void CreateSubObject(Subobject subObject, ExportEntry parent, ref ExportEntry subExport)
         {
             var objName = NameReference.FromInstancedString(subObject.NameDeclaration.Name);
-            IEntry classEntry = EntryImporter.EnsureClassIsInFile(Pcc, subObject.Class.Name);
+            IEntry classEntry = EntryImporter.EnsureClassIsInFile(Pcc, subObject.Class.Name, new RelinkerOptionsPackage());
             if (subExport is null)
             {
                 if (Pcc.TryGetTrash(out subExport))
@@ -270,7 +281,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
                         funcName = NameReference.FromInstancedString(((SymbolReference) literal).Name);
                     }
-                    prop = new DelegateProperty(objUIndex, funcName, propName);
+                    prop = new DelegateProperty(funcName, objUIndex, propName);
                     break;
                 case DynamicArrayType dynamicArrayType:
                     VariableType elementType = dynamicArrayType.ElementType;
@@ -335,9 +346,9 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 case Struct @struct:
                     //todo: Spec says that unspecified properties on a struct value should be inherited from base class's default for that property
                     var structProps = (IsStructDefaults || @struct.IsAtomic) ? @struct.GetDefaultPropertyCollection(Pcc, ShouldStripTransients, packageCache) : new PropertyCollection();
-                    foreach (Statement statement in ((StructLiteral)literal).Statements)
+                    foreach (AssignStatement statement in ((StructLiteral)literal).Statements)
                     {
-                        structProps.AddOrReplaceProp(ConvertToProperty((AssignStatement)statement, subObjectDict));
+                        structProps.AddOrReplaceProp(ConvertToProperty(statement, subObjectDict));
                     }
                     prop = new StructProperty(@struct.Name, structProps, propName, @struct.IsImmutable);
                     break;
@@ -437,7 +448,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             if (classEntry is ExportEntry export)
             {
                 var classObj = export.GetBinaryData<UClass>(packageCache);
-                return classObj.Defaults.GetEntry(Pcc);
+                return Pcc.GetEntry(classObj.Defaults);
             }
             string parentPath = classEntry.ParentInstancedFullPath;
             return Pcc.getEntryOrAddImport($"{parentPath}.Default__{classEntry.ObjectName.Instanced}", classEntry.ObjectName.Instanced, classEntry.ParentName);

@@ -12,10 +12,24 @@
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <Grid>
-                        <TextBlock Text="{Binding fullLine, Mode=OneTime}"></TextBlock>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition MinWidth="60" Width="Auto"/>
+                            <ColumnDefinition MinWidth="120" Width="Auto"/>
+                            <ColumnDefinition MinWidth="80" Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="{Binding activationTime, Mode=OneTime}"></TextBlock>
+                        <TextBlock Grid.Column="1" Text="{Binding packageName, Mode=OneTime}"></TextBlock>
+                        <TextBlock Grid.Column="2" HorizontalAlignment="Center" FontWeight="Bold" Foreground="Red" Text="{Binding inputPin, Mode=OneTime}"></TextBlock>
+                        <TextBlock Grid.Column="3" Text="{Binding fullInstancedPath, Mode=OneTime}"></TextBlock>
                     </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
+                </Style>
+            </ListBox.ItemContainerStyle>
         </ListBox>
     </Grid>
 </misc:NotifyPropertyChangedControlBase>

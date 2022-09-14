@@ -69,6 +69,26 @@ namespace LegendaryExplorerCore.Compression
             }
         }
 
+        /// <summary>
+        /// Decompresses the input block (as a span) to the specified output block
+        /// </summary>
+        /// <param name="src"></param>
+        /// <param name="dst"></param>
+        /// <returns></returns>
+        public static int Decompress(ReadOnlySpan<byte> src, byte[] dst)
+        {
+            var dstLen = (uint) dst.Length;
+            uint srcLen = (uint)src.Length;
+            unsafe
+            {
+                fixed (byte* inPtr = &MemoryMarshal.GetReference(src))
+                fixed (byte* outPtr = &MemoryMarshal.GetReference(dst.AsSpan()))
+                {
+                    return SevenZipDecompress(inPtr, srcLen, outPtr, ref dstLen);
+                }
+            }
+        }
+
         public static byte[] Decompress(byte[] src, uint dstLen)
         {
             uint len = dstLen;
@@ -76,7 +96,7 @@ namespace LegendaryExplorerCore.Compression
 
             int status = SevenZipDecompress(src, (uint)src.Length, dst, ref len);
             if (status != 0)
-                return new byte[0];
+                return Array.Empty<byte>();
 
             return dst;
         }
@@ -88,7 +108,7 @@ namespace LegendaryExplorerCore.Compression
 
             int status = SevenZipCompress(compressionLevel, src, (uint)src.Length, tmpbuf, ref dstLen);
             if (status != 0)
-                return new byte[0];
+                return Array.Empty<byte>();
 
             byte[] dst = new byte[dstLen];
             Array.Copy(tmpbuf, dst, (int)dstLen);
@@ -108,13 +128,15 @@ namespace LegendaryExplorerCore.Compression
         /// </summary>
         /// <param name="src">Source data</param>
         /// <returns>Byte array of compressed data</returns>
-
         public static byte[] CompressToLZMAFile(byte[] src)
         {
             var compressedBytes = LZMA.Compress(src);
             byte[] fixedBytes = new byte[compressedBytes.Length + 8]; //needs 8 byte header written into it (only mem version needs this)
+            
+            // Copy LZMA header info and write the full length of the data
             Buffer.BlockCopy(compressedBytes, 0, fixedBytes, 0, 5);
             fixedBytes.OverwriteRange(5, BitConverter.GetBytes(src.Length));
+            // Copy the remaining data
             Buffer.BlockCopy(compressedBytes, 5, fixedBytes, 13, compressedBytes.Length - 5);
             return fixedBytes;
         }
@@ -142,7 +164,7 @@ namespace LegendaryExplorerCore.Compression
             }
         }
 
-        public static void DecompressLZMAStream(MemoryStream compressedStream, MemoryStream decompressedStream)
+        public static void DecompressLZMAStream(Stream compressedStream, MemoryStream decompressedStream)
         {
             compressedStream.Seek(5, SeekOrigin.Begin);
             int len = compressedStream.ReadInt32();

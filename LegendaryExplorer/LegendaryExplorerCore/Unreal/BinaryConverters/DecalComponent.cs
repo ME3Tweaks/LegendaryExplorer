@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 using LegendaryExplorerCore.Packages;
+using UIndex = System.Int32;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
@@ -24,22 +22,18 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 StaticReceivers = Array.Empty<StaticReceiverData>()
             };
         }
-
-        public override List<(UIndex, string)> GetUIndexes(MEGame game)
+        
+        public override void ForEachUIndex<TAction>(MEGame game, in TAction action)
         {
-            var uIndexes = new List<(UIndex, string)>();
-
             for (int i = 0; i < StaticReceivers.Length; i++)
             {
                 StaticReceiverData data = StaticReceivers[i];
-                uIndexes.Add((data.PrimitiveComponent, $"StaticReceiver[{i}].PrimitiveComponent"));
+                Unsafe.AsRef(action).Invoke(ref data.PrimitiveComponent, $"StaticReceiver[{i}].PrimitiveComponent");
                 if (game >= MEGame.ME3)
                 {
-                    uIndexes.AddRange(data.ShadowMap1D.Select((u, j) => (u, $"StaticReceiver[{i}].ShadowMap1D[{j}]")));
+                    ForEachUIndexInSpan(action, data.ShadowMap1D.AsSpan(), $"StaticReceiver[{i}].ShadowMap1D");
                 }
             }
-
-            return uIndexes;
         }
     }
 
@@ -96,7 +90,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
             sc.Serialize(ref dat.PrimitiveComponent);
             sc.BulkSerialize(ref dat.Vertices, Serialize, sc.Game >= MEGame.ME3 ? 28 : 52);
-            sc.BulkSerialize(ref dat.Indices, SCExt.Serialize, 2);
+            sc.BulkSerialize(ref dat.Indices, Serialize, 2);
             sc.Serialize(ref dat.NumTriangles);
             sc.Serialize(ref dat.LightMap);
             if (sc.Game >= MEGame.ME3)

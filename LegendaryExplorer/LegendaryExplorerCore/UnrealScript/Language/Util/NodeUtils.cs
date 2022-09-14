@@ -1,5 +1,4 @@
 ﻿using System;
-using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.UnrealScript.Analysis.Symbols;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
 using LegendaryExplorerCore.UnrealScript.Utilities;
@@ -41,17 +40,16 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Util
 
         public static Class GetContainingClass(ASTNode node)
         {
-            if (node is Class cls)
+            switch (node)
             {
-                return cls;
+                case Class cls:
+                    return cls;
+                case ClassType clsType:
+                    return (Class)clsType.ClassLimiter;
             }
 
-            if (node is ClassType clsType)
-            {
-                return (Class)clsType.ClassLimiter;
-            }
             var outer = node.Outer;
-            while (outer?.Outer != null && outer.Type != ASTNodeType.Class)
+            while (outer?.Outer != null && outer is not Class)
                 outer = outer.Outer;
             return outer as Class;
         }
@@ -59,7 +57,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Util
         public static ObjectType GetContainingScopeObject(ASTNode node)
         {
             var outer = node.Outer;
-            while (outer?.Outer != null && !(outer is ObjectType))
+            while (outer?.Outer != null && outer is not ObjectType)
                 outer = outer.Outer;
             return outer as ObjectType;
         }

@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.CompilerServices;
 using LegendaryExplorerCore.Packages;
 using Vector2 = System.Numerics.Vector2;
 using Vector3 = System.Numerics.Vector3;
+using UIndex = System.Int32;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
@@ -119,7 +117,14 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 }
                 if (sc.Game >= MEGame.ME3)
                 {
-                    sc.Serialize(ref HighResSourceMeshName);
+                    if (HighResSourceMeshName != null)
+                        sc.Serialize(ref HighResSourceMeshName);
+                    else
+                    {
+                        // When porting ME1, ME2 to ME3 or LE
+                        string blank = "";
+                        sc.Serialize(ref blank);
+                    }
                     sc.Serialize(ref HighResSourceMeshCRC);
                     sc.Serialize(ref LightingGuid);
                 }
@@ -158,19 +163,16 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             };
         }
 
-        public override List<(UIndex, string)> GetUIndexes(MEGame game)
+        public override void ForEachUIndex<TAction>(MEGame game, in TAction action)
         {
-            var uIndexes = new List<(UIndex, string)> {(BodySetup, "BodySetup")};
-
+            Unsafe.AsRef(action).Invoke(ref BodySetup, nameof(BodySetup));
             for (int i = 0; i < LODModels.Length; i++)
             {
                 for (int j = 0; j < LODModels[i].Elements.Length; j++)
                 {
-                    uIndexes.Add((LODModels[i].Elements[j].Material, $"LODModels[{i}].Elements[{j}].Material"));
+                    Unsafe.AsRef(action).Invoke(ref LODModels[i].Elements[j].Material, $"LODModels[{i}].Elements[{j}].Material");
                 }
             }
-
-            return uIndexes;
         }
 
         public StructProperty GetCollisionMeshProperty(IMEPackage pcc)
@@ -272,7 +274,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     public class StaticMeshTriangle
     {
         public Vector3[] Vertices = new Vector3[3];
-        public Vector2[,] UVs = new Vector2[3,8];
+        public Vector2[,] UVs = new Vector2[3, 8];
         public SharpDX.Color[] Colors = new SharpDX.Color[3];
         public int MaterialIndex;
         public int FragmentIndex; //ME3/UDK

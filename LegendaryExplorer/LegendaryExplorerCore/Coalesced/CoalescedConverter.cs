@@ -14,10 +14,19 @@ using LegendaryExplorerCore.Misc;
 
 namespace LegendaryExplorerCore.Coalesced
 {
+    /// <summary>
+    /// Class for converting to and from editable text versions of Coalesced files (Game3, LE1/LE2)
+    /// </summary>
     public static class CoalescedConverter
     {
+        /// <summary>
+        /// The magic number header for Game 3 Coalesced files
+        /// </summary>
         public static readonly int CoalescedMagicNumber = 1718448749;
 
+        /// <summary>
+        /// The list of filenames supported by this compiler
+        /// </summary>
         public static readonly SortedSet<string> ProperNames =
             new SortedSet<string>
             {
@@ -27,6 +36,7 @@ namespace LegendaryExplorerCore.Coalesced
                 "BioDifficulty",
                 "BioEngine",
                 "BioGame",
+                "BioGuiResources", // PC Main Menu PC New Character
                 "BioInput",
                 "BioLightmass",
                 "BioTest",
@@ -56,11 +66,16 @@ namespace LegendaryExplorerCore.Coalesced
                 { "\n", "\\n" }
             };
 
-        public static CaseInsensitiveDictionary<string> DecompileGame3ToMemory(Stream ms)
+        /// <summary>
+        /// Decompiles a Game3 Coalesced stream to a dictionary of strings that maps the filenames to their xml string contents 
+        /// </summary>
+        /// <param name="inputStream">Input stream</param>
+        /// <returns>Dictionary of files mapped to their xml files</returns>
+        public static CaseInsensitiveDictionary<string> DecompileGame3ToMemory(Stream inputStream)
         {
             var fileMapping = new CaseInsensitiveDictionary<string>();
             var coal = new CoalescedFileXml();
-            coal.Deserialize(ms);
+            coal.Deserialize(inputStream);
 
             XDocument xDoc;
             XElement rootElement;
@@ -170,11 +185,20 @@ namespace LegendaryExplorerCore.Coalesced
             return fileMapping;
         }
 
-        private class Utf8StringWriter : StringWriter
+        internal class Utf8StringWriter : StringWriter
         {
             public override Encoding Encoding { get { return Encoding.UTF8; } }
         }
 
+        // Todo: Make this method say Game3 to be less ambiguous
+        /// <summary>
+        /// Converts a Game3 Coalesced file between its binary and decompiled text formats
+        /// </summary>
+        /// <param name="SourceType">The type the <paramref name="SourcePath"/> file is in.</param>
+        /// <param name="SourcePath">The input file</param>
+        /// <param name="DestinationPath">The destination file or directory</param>
+        /// <exception cref="FileNotFoundException">If input file is not found</exception>
+        /// <exception cref="ArgumentOutOfRangeException">If invalid coalesced type is specified</exception>
         public static void Convert(CoalescedType SourceType, string SourcePath, string DestinationPath)
         {
             if (!Path.IsPathRooted(SourcePath))
@@ -224,24 +248,44 @@ namespace LegendaryExplorerCore.Coalesced
 
         }
 
+        /// <summary>
+        /// Enum describing a type of Coalesced file
+        /// </summary>
         public enum CoalescedType
         {
+            /// <summary>
+            /// Compiled Coalesced file
+            /// </summary>
             //[Display(Name = "Binary")]
             [Description("Binary Coalesced file.")]
             Binary,
 
+            /// <summary>
+            /// Decompiled Game 3 XML Coalesced manifest file
+            /// </summary>
+            // Todo: Make this say game3 to make it easier to infer at a glance
             //[Display(Name = "Xml")]
             [Description("Xml Coalesced file.")]
             Xml,
 
+            // Todo: Make this say LE to make it easier to infer at a glance
+            /// <summary>
+            /// Unpacked LE1/LE2 Coalesced manifest file
+            /// </summary>
             [Description("Unpacked LE Coalesced.")]
             ExtractedBin
         }
 
-        public static void ConvertToXML(string source, string destination)
+        // Todo: Make this method say Game3 to be less ambiguous
+        /// <summary>
+        /// Converts the Game3 Coalesced file to its XML representation (decompile)
+        /// </summary>
+        /// <param name="source">The input Coalesced file</param>
+        /// <param name="destinationDirectory">The output directory</param>
+        public static void ConvertToXML(string source, string destinationDirectory)
         {
             var sourcePath = source;
-            var destinationPath = destination;
+            var destinationPath = destinationDirectory;
 
             if (string.IsNullOrEmpty(destinationPath))
             {
@@ -415,6 +459,12 @@ namespace LegendaryExplorerCore.Coalesced
             }
         }
 
+        // Todo: Make this method say Game3 to be less ambiguous
+        /// <summary>
+        /// Serializes a Game3 Coalesced file from a mapping of text xml strings
+        /// </summary>
+        /// <param name="fileMapping">Mapping of filenames to their contents</param>
+        /// <returns>Memorystream of the compiled Game3 Coalesced file</returns>
         public static MemoryStream CompileFromMemory(Dictionary<string, string> fileMapping)
         {
             var virtualizedXmlHeader = new XmlCoalesceFile();
@@ -441,12 +491,12 @@ namespace LegendaryExplorerCore.Coalesced
                 var entry =
                     new FileEntry(asset.Source)
                     {
-                        Sections = new Dictionary<string, Dictionary<string, List<PropertyValue>>>()
+                        Sections = new CaseInsensitiveDictionary<CaseInsensitiveDictionary<List<PropertyValue>>>()
                     };
 
                 foreach (var section in asset.Sections)
                 {
-                    var eSection = new Dictionary<string, List<PropertyValue>>();
+                    var eSection = new CaseInsensitiveDictionary<List<PropertyValue>>();
 
                     foreach (var property in section.Value)
                     {
@@ -469,10 +519,10 @@ namespace LegendaryExplorerCore.Coalesced
                             eProperty.Add(new PropertyValue(value.ValueType, valueValue));
                         }
 
-                        eSection.Add(property.Key, eProperty);
+                        eSection.Add(property.Key.ToLower(), eProperty);
                     }
 
-                    entry.Sections.Add(section.Key, eSection);
+                    entry.Sections.Add(section.Key.ToLower(), eSection);
                 }
 
                 coal.Files.Add(entry);
@@ -484,6 +534,13 @@ namespace LegendaryExplorerCore.Coalesced
             return outputStream;
         }
 
+        // Todo: Make this method say Game3 to be less ambiguous
+        /// <summary>
+        /// Converts the source coalesced manifest xml to a Game3 Coalesced
+        /// </summary>
+        /// <param name="source">The source input file. Can be null if you are passing in an already-parsed XDocument on the <paramref name="preloadedDoc"/> paremeter</param>
+        /// <param name="destination">Where the serialized file will be saved to</param>
+        /// <param name="preloadedDoc">A preloaded XDocument object, in the event the document was already loaded by the caller for other purposes. If this value is set, <paramref name="source"/> is not used.</param>
         public static void ConvertToBin(string source, string destination, XDocument preloadedDoc = null)
         {
             var inputPath = Path.IsPathRooted(source) ? source : Path.Combine(GetExePath(), source);
@@ -513,12 +570,12 @@ namespace LegendaryExplorerCore.Coalesced
                 var entry =
                     new FileEntry(asset.Source)
                     {
-                        Sections = new Dictionary<string, Dictionary<string, List<PropertyValue>>>()
+                        Sections = new CaseInsensitiveDictionary<CaseInsensitiveDictionary<List<PropertyValue>>>()
                     };
 
                 foreach (var section in asset.Sections)
                 {
-                    var eSection = new Dictionary<string, List<PropertyValue>>();
+                    var eSection = new CaseInsensitiveDictionary<List<PropertyValue>>();
 
                     foreach (var property in section.Value)
                     {
@@ -541,10 +598,10 @@ namespace LegendaryExplorerCore.Coalesced
                             eProperty.Add(new PropertyValue(value.ValueType, valueValue));
                         }
 
-                        eSection.Add(property.Key, eProperty);
+                        eSection.Add(property.Key.ToLower(), eProperty);
                     }
 
-                    entry.Sections.Add(section.Key, eSection);
+                    entry.Sections.Add(section.Key.ToLower(), eSection);
                 }
 
                 coal.Files.Add(entry);
@@ -584,11 +641,22 @@ namespace LegendaryExplorerCore.Coalesced
             return true;
         }
 
-        public static Dictionary<string, DuplicatingIni> DecompileLE1LE2ToMemory(Stream fs, string name)
+        /// <summary>
+        /// Decompiles a LE1/LE2 Coalesced file to a memory map.
+        /// </summary>
+        /// <param name="inputStream">The input stream to read from</param>
+        /// <param name="name">The name of the coalesced file - this is written to the manifest file and will be the name the file reserializes to (in tools such as M3)</param>
+        /// <returns></returns>
+        public static Dictionary<string, DuplicatingIni> DecompileLE1LE2ToMemory(Stream inputStream, string name)
         {
-            return LECoalescedConverter.UnpackToMemory(fs, name).Files;
+            return LECoalescedConverter.UnpackToMemory(inputStream, name).Files;
         }
 
+        /// <summary>
+        /// Compiles a LE1/LE2 Coalesced file from a memory map.
+        /// </summary>
+        /// <param name="iniFileMap">Mapping of filenames to the ini object that represents the file contents.</param>
+        /// <returns>Memorystream of the compiled Coalesced file</returns>
         public static MemoryStream CompileLE1LE2FromMemory(Dictionary<string, DuplicatingIni> iniFileMap)
         {
             LECoalescedBundle cb = new LECoalescedBundle("");

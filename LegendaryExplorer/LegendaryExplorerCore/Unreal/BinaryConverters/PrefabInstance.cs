@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using LegendaryExplorerCore.Helpers;
+﻿using System;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
+using Microsoft.Toolkit.HighPerformance;
+using UIndex = System.Int32;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
@@ -10,6 +12,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     {
         public OrderedMultiValueDictionary<UIndex, UIndex> ArchetypeToInstanceMap;
         public OrderedMultiValueDictionary<UIndex, int> ObjectMap;
+
         protected override void Serialize(SerializingContainer2 sc)
         {
             sc.Serialize(ref ArchetypeToInstanceMap, SCExt.Serialize, SCExt.Serialize);
@@ -24,20 +27,26 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 ObjectMap = new OrderedMultiValueDictionary<UIndex, int>()
             };
         }
-
-        public override List<(UIndex, string)> GetUIndexes(MEGame game)
+        
+        public override void ForEachUIndex<TAction>(MEGame game, in TAction action)
         {
-            var uIndexes = new List<(UIndex, string)>();
+            ref TAction a = ref Unsafe.AsRef(action);
 
-            foreach ((UIndex archetype, UIndex instance) in ArchetypeToInstanceMap)
+            Span<KeyValuePair<int, int>> span = ArchetypeToInstanceMap.AsSpan();
+            for (int i = 0; i < span.Length; i++)
             {
-                uIndexes.Add((archetype, "ArchetypeToInstanceMap.Archetype"));
-                uIndexes.Add((instance, "ArchetypeToInstanceMap.Instance"));
+                int key = span[i].Key;
+                int value = span[i].Value;
+                int originalKey = key;
+                int originalValue = key;
+                Unsafe.AsRef(action).Invoke(ref key, $"ArchetypeToInstanceMap[{i}]");
+                Unsafe.AsRef(action).Invoke(ref value, $"ArchetypeToInstanceMap[{i}]");
+                if (key != originalKey || value != originalValue)
+                {
+                    span[i] = new(key, value);
+                }
             }
-
-            uIndexes.AddRange(ObjectMap.Select((kvp, i) => (kvp.Key, $"ObjectMap[{i}]")));
-
-            return uIndexes;
+            ForEachUIndexKeyInOrderedMultiValueDictionary(action, ObjectMap.AsSpan(), nameof(ObjectMap));
         }
     }
 }

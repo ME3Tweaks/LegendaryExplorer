@@ -13,6 +13,7 @@ using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
 using LegendaryExplorerCore.UnrealScript.Language.ByteCode;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
 using LegendaryExplorerCore.UnrealScript.Language.Util;
+using LegendaryExplorerCore.UnrealScript.Lexing;
 using LegendaryExplorerCore.UnrealScript.Utilities;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
 
@@ -24,8 +25,8 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
         private IContainsByteCode CompilationUnit;
         private readonly IEntry ContainingClass;
 
-        readonly CaseInsensitiveDictionary<UProperty> parameters = new();
-        readonly CaseInsensitiveDictionary<UProperty> locals = new();
+        private readonly CaseInsensitiveDictionary<ExportEntry> parameters = new();
+        private readonly CaseInsensitiveDictionary<ExportEntry> locals = new();
 
         private bool inAssignTarget;
         private bool inIteratorCall;
@@ -66,7 +67,14 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         private readonly Stack<Nest> Nests = new();
 
-        public ByteCodeCompilerVisitor(UStruct target) : base(target.Export.FileRef)
+        private class NestedContextFlag
+        {
+            public bool HasNestedContext;
+        }
+
+        private readonly Stack<NestedContextFlag> InContext = new() { null };
+
+        private ByteCodeCompilerVisitor(UStruct target) : base(target.Export.FileRef)
         {
             Target = target;
             IEntry containingClass = Target.Export;
@@ -103,17 +111,36 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                             }
                             else if (uProperty.PropertyFlags.Has(EPropertyFlags.Parm))
                             {
-                                parameters.Add(nextChild.ObjectName.Instanced, uProperty);
+                                parameters.Add(nextChild.ObjectName.Instanced, uProperty.Export);
                             }
                             else
                             {
-                                locals.Add(nextChild.ObjectName.Instanced, uProperty);
+                                locals.Add(nextChild.ObjectName.Instanced, uProperty.Export);
                             }
                             nextItem = uProperty.Next;
                             break;
                         default:
                             nextItem = 0;
                             break;
+                    }
+                }
+
+
+                foreach (FunctionParameter parameter in func.Parameters.Where(param => param.IsOptional))
+                {
+                    if (parameter.DefaultParameter is Expression expr)
+                    {
+                        WriteOpCode(OpCodes.DefaultParmValue);
+
+                        using (WriteSkipPlaceholder())
+                        {
+                            Emit(AddConversion(parameter.VarType, expr));
+                            WriteOpCode(OpCodes.EndParmValue);
+                        }
+                    }
+                    else
+                    {
+                        WriteOpCode(OpCodes.Nothing);
                     }
                 }
 
@@ -129,24 +156,6 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 }
                 else
                 {
-                    foreach (FunctionParameter parameter in func.Parameters.Where(param => param.IsOptional))
-                    {
-                        if (parameter.DefaultParameter is Expression expr)
-                        {
-                            WriteOpCode(OpCodes.DefaultParmValue);
-
-                            using (WriteSkipPlaceholder())
-                            {
-                                Emit(AddConversion(parameter.VarType, expr));
-                                WriteOpCode(OpCodes.EndParmValue);
-                            }
-                        }
-                        else
-                        {
-                            WriteOpCode(OpCodes.Nothing);
-                        }
-                    }
-
                     Emit(func.Body);
 
                     WriteOpCode(OpCodes.Return);
@@ -277,7 +286,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         public bool VisitNode(ForEachLoop node)
         {
-            if (node.IteratorCall is DynArrayIterator or CompositeSymbolRef {InnerSymbol: DynArrayIterator})
+            if (node.IteratorCall is DynArrayIterator or CompositeSymbolRef { InnerSymbol: DynArrayIterator })
             {
                 WriteOpCode(OpCodes.DynArrayIterator);
             }
@@ -384,7 +393,12 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
         public bool VisitNode(AssertStatement node)
         {
             WriteOpCode(OpCodes.Assert);
-            WriteUShort((ushort)node.StartPos.Line);
+            //why you would have a source file longer than 65,535 lines I truly do not know
+            //better for it to emit an incorrect line number in the assert than to crash the compiler though
+            unchecked
+            {
+                WriteUShort((ushort)CompilationUnit.Tokens.LineLookup.GetLineFromCharIndex(node.StartPos));
+            }
             WriteByte(0);//bool debug mode - true: crash, false: log warning
             Emit(node.Condition);
             return true;
@@ -440,18 +454,18 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             JumpPlaceholder jump;
             if (Game.IsGame3() && condition is InOpReference inOp && inOp.LeftOperand.ResolveType()?.PropertyType == EPropertyType.Object
                                                                       && inOp.LeftOperand.GetType() == typeof(SymbolReference) && inOp.RightOperand is NoneLiteral
-                                                                      && (inOp.Operator.OperatorKeyword == "==" || inOp.Operator.OperatorKeyword == "!="))
+                                                                      && inOp.Operator.OperatorType is TokenType.Equals or TokenType.NotEquals)
             {
-                SymbolReference symRef = (SymbolReference)inOp.LeftOperand;
+                var symRef = (SymbolReference)inOp.LeftOperand;
                 WriteOpCode(symRef.Node.Outer is Function ? OpCodes.OptIfLocal : OpCodes.OptIfInstance);
                 WriteObjectRef(ResolveSymbol(symRef.Node));
-                WriteByte((byte)(inOp.Operator.OperatorKeyword == "!=" ? 1 : 0));
+                WriteByte((byte)(inOp.Operator.OperatorType is TokenType.NotEquals ? 1 : 0));
                 jump = WriteJumpPlaceholder(JumpType.Conditional);
             }
-            else if (Game.IsGame3() && condition is PreOpReference preOp && preOp.Operator.OperatorKeyword == "!"
+            else if (Game.IsGame3() && condition is PreOpReference preOp && preOp.Operator.OperatorType is TokenType.ExclamationMark
                                                                              && preOp.Operand.GetType() == typeof(SymbolReference) && preOp.Operand.ResolveType() == SymbolTable.BoolType)
             {
-                SymbolReference symRef = (SymbolReference)preOp.Operand;
+                var symRef = (SymbolReference)preOp.Operand;
                 WriteOpCode(symRef.Node.Outer is Function ? OpCodes.OptIfLocal : OpCodes.OptIfInstance);
                 WriteObjectRef(ResolveSymbol(symRef.Node));
                 WriteByte(0);
@@ -476,9 +490,12 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         public bool VisitNode(ReturnStatement node)
         {
-            if (Nests.Any(n => n.Type == NestType.ForEach))
+            foreach (Nest nest in Nests)
             {
-                WriteOpCode(OpCodes.IteratorPop);
+                if (nest.Type is NestType.ForEach)
+                {
+                    WriteOpCode(OpCodes.IteratorPop);
+                }
             }
             WriteOpCode(OpCodes.Return);
             if (node.Value is null)
@@ -515,8 +532,8 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         public bool VisitNode(ExpressionOnlyStatement node)
         {
-            
-            if (GetAffector(node.Value) is {RetValNeedsDestruction: true} func)
+
+            if (GetAffector(node.Value) is { RetValNeedsDestruction: true } func)
             {
                 WriteOpCode(OpCodes.EatReturnValue);
                 WriteObjectRef(ResolveReturnValue(func));
@@ -533,13 +550,13 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
         public bool VisitNode(ErrorStatement node)
         {
             //an ast with errors should never be passed to the compiler
-            throw new Exception($"Line {node.StartPos.Line}: Cannot compile an error!");
+            throw new Exception($"Line {CompilationUnit.Tokens.LineLookup.GetLineFromCharIndex(node.StartPos)}: Cannot compile an error!");
         }
 
         public bool VisitNode(ErrorExpression node)
         {
             //an ast with errors should never be passed to the compiler
-            throw new Exception($"Line {node.StartPos.Line}: Cannot compile an error!");
+            throw new Exception($"Line {CompilationUnit.Tokens.LineLookup.GetLineFromCharIndex(node.StartPos)}: Cannot compile an error!");
         }
 
         private static Function GetAffector(Expression expr) =>
@@ -556,6 +573,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
         public bool VisitNode(DynArrayIterator node)
         {
             Emit(node.DynArrayExpression);
+            InContext.Push(null);
             Emit(node.ValueArg);
             if (node.IndexArg is null)
             {
@@ -567,6 +585,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 WriteByte(1);
                 Emit(node.IndexArg);
             }
+            InContext.Pop();
 
             return true;
         }
@@ -586,7 +605,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
             VariableType lType = node.Operator.LeftOperand.VarType;
             VariableType rType = node.Operator.RightOperand.VarType;
-            if (node.Operator.LeftOperand.VarType is Class {IsInterface: true} c)
+            if (node.Operator.LeftOperand.VarType is Class { IsInterface: true } c)
             {
                 lType = rType = node.LeftOperand.ResolveType() ?? node.RightOperand.ResolveType() ?? c;
             }
@@ -639,7 +658,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
         public bool VisitNode(DelegateComparison node)
         {
             useInstanceDelegate = true;
-            WriteOpCode(node.RightOperand.ResolveType() is DelegateType {IsFunction: true}
+            WriteOpCode(node.RightOperand.ResolveType() is DelegateType { IsFunction: true }
                             ? node.IsEqual
                                 ? OpCodes.EqualEqual_DelFunc
                                 : OpCodes.NotEqual_DelFunc
@@ -732,19 +751,32 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 }
                 else
                 {
-                    throw new Exception($"Line {node.StartPos.Line}: Could not find '{func.Name}' in #{ContainingClass.UIndex} {ContainingClass.ObjectName}'s Virtual Function Table!");
+                    throw new Exception($"Line {CompilationUnit.Tokens.LineLookup.GetLineFromCharIndex(node.StartPos)}: Could not find '{func.Name}' in #{ContainingClass.UIndex} {ContainingClass.ObjectName}'s Virtual Function Table!");
                 }
             }
+            InContext.Push(null);
             CompileArguments(node.Arguments, func.Parameters);
+            InContext.Pop();
             return true;
         }
 
         public bool VisitNode(DelegateCall node)
         {
             WriteOpCode(OpCodes.DelegateFunction);
-            Emit(node.DelegateReference);
+            var varDecl = (VariableDeclaration)node.DelegateReference.Node;
+            if (varDecl.Outer is Function)
+            {
+                WriteByte(1);
+            }
+            else
+            {
+                WriteByte(0);
+            }
+            WriteObjectRef(ResolveSymbol(varDecl));
             WriteName(node.DefaultFunction.Name);
+            InContext.Push(null);
             CompileArguments(node.Arguments, node.DefaultFunction.Parameters);
+            InContext.Pop();
             return true;
         }
 
@@ -775,7 +807,9 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
         public bool VisitNode(ArraySymbolRef node)
         {
             WriteOpCode(node.IsDynamic ? OpCodes.DynArrayElement : OpCodes.ArrayElement);
+            InContext.Push(null);
             Emit(node.Index);
+            InContext.Pop();
             Emit(node.Array);
             return true;
         }
@@ -833,19 +867,35 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             {
                 WriteOpCode(OpCodes.InterfaceContext);
             }
+            if (InContext.Peek() is NestedContextFlag flag)
+            {
+                flag.HasNestedContext = true;
+            }
+
+            InContext.Push(new NestedContextFlag());
             Emit(node.OuterSymbol);
+            bool hasInnerContext = InContext.Pop().HasNestedContext;
             SkipPlaceholder skip = WriteSkipPlaceholder();
             EmitVariableSize(innerSymbol);
 
             skip.ResetStart();
+
             Emit(innerSymbol);
             if (forEachJump)
             {
+                //todo: not correct
                 iteratorCallSkip = skip;
             }
             else
             {
-                skip.End();
+                if (node.IsClassContext || hasInnerContext)
+                {
+                    skip.End();
+                }
+                else
+                {
+                    skip.SetExplicit((ushort)(Game >= MEGame.ME3 ? 9 : 5));
+                }
             }
             return true;
 
@@ -886,7 +936,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     return true;
             }
 
-            VariableDeclaration varDecl = (VariableDeclaration)node.Node;
+            var varDecl = (VariableDeclaration)node.Node;
             if (varDecl.Name == "Self")
             {
                 WriteOpCode(OpCodes.Self);
@@ -1003,7 +1053,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 else
                 {
                     WriteOpCode(OpCodes.PrimitiveCast);
-                    WriteByte((byte)prim.Cast);
+                    WriteCast(prim.Cast);
                 }
             }
             else if (node.CastType is ClassType clsType)
@@ -1195,22 +1245,22 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 WriteByte((byte)i);
             }
             else switch (i)
-            {
-                case 0:
-                    WriteOpCode(OpCodes.IntZero);
-                    break;
-                case 1:
-                    WriteOpCode(OpCodes.IntOne);
-                    break;
-                case >= 0 and < 256:
-                    WriteOpCode(OpCodes.IntConstByte);
-                    WriteByte((byte)i);
-                    break;
-                default:
-                    WriteOpCode(OpCodes.IntConst);
-                    WriteInt(i);
-                    break;
-            }
+                {
+                    case 0:
+                        WriteOpCode(OpCodes.IntZero);
+                        break;
+                    case 1:
+                        WriteOpCode(OpCodes.IntOne);
+                        break;
+                    case >= 0 and < 256:
+                        WriteOpCode(OpCodes.IntConstByte);
+                        WriteByte((byte)i);
+                        break;
+                    default:
+                        WriteOpCode(OpCodes.IntConst);
+                        WriteInt(i);
+                        break;
+                }
 
             return true;
         }
@@ -1249,12 +1299,12 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 IEntry entry = ResolveObject($"{ContainingClass.InstancedFullPath}.{node.Name.Value}") ?? ResolveObject(node.Name.Value);
                 if (entry is null)
                 {
-                    throw new Exception($"Line {node.StartPos.Line}: Could not find '{node.Name.Value}' in {Pcc.FilePath}!");
+                    throw new Exception($"Line {CompilationUnit.Tokens.LineLookup.GetLineFromCharIndex(node.StartPos)}: Could not find '{node.Name.Value}' in {Pcc.FilePath}!");
                 }
 
                 if (!entry.ClassName.CaseInsensitiveEquals(node.Class.Name))
                 {
-                    throw new Exception($"Line {node.StartPos.Line}: Expected '{node.Name.Value}' to be a '{node.Class.Name}'!");
+                    throw new Exception($"Line {CompilationUnit.Tokens.LineLookup.GetLineFromCharIndex(node.StartPos)}: Expected '{node.Name.Value}' to be a '{node.Class.Name}'!");
                 }
                 WriteObjectRef(entry);
             }
@@ -1345,19 +1395,34 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             return expr;
         }
 
-        private IEntry ResolveSymbol(ASTNode node) =>
-            node switch
+        private readonly Dictionary<ASTNode, IEntry> resolveSymbolCache = new();
+
+        private IEntry ResolveSymbol(ASTNode node)
+        {
+            switch (node)
+            {
+                case FunctionParameter param:
+                    return parameters[param.Name];
+                case VariableDeclaration { Outer: Function } local:
+                    return locals[local.Name];
+            }
+            if (resolveSymbolCache.TryGetValue(node, out IEntry resolvedEntry))
+            {
+                return resolvedEntry;
+            }
+            resolvedEntry = node switch
             {
                 Class cls => ResolveClass(cls),
                 Struct strct => ResolveStruct(strct),
                 State state => ResolveState(state),
                 Function func => ResolveFunction(func),
-                FunctionParameter param => parameters[param.Name].Export,
-                VariableDeclaration {Outer: Function} local => locals[local.Name].Export,
                 VariableDeclaration field => ResolveProperty(field),
                 SymbolReference symRef => ResolveSymbol(symRef.Node),
                 _ => throw new ArgumentOutOfRangeException(nameof(node))
             };
+            resolveSymbolCache[node] = resolvedEntry;
+            return resolvedEntry;
+        }
 
         private IEntry ResolveProperty(VariableDeclaration decl)
         {
@@ -1372,9 +1437,16 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         private IEntry ResolveState(State s) => Pcc.getEntryOrAddImport($"{ResolveSymbol(s.Outer).InstancedFullPath}.{s.Name}", "State");
 
-        private IEntry ResolveClass(Class c) =>
-            EntryImporter.EnsureClassIsInFile(Pcc, c.Name, RelinkResultsAvailable: relinkResults =>
-                    throw new Exception($"Unable to resolve class '{c.Name}'! There were relinker errors: {string.Join("\n\t", relinkResults.Select(pair => pair.Message))}"));
+        private IEntry ResolveClass(Class c)
+        {
+            var rop = new RelinkerOptionsPackage { ImportExportDependencies = true };
+            var entry = EntryImporter.EnsureClassIsInFile(Pcc, c.Name, rop);
+            if (rop.RelinkReport.Any())
+            {
+                throw new Exception($"Unable to resolve class '{c.Name}'! There were relinker errors: {string.Join("\n\t", rop.RelinkReport.Select(pair => pair.Message))}");
+            }
+            return entry;
+        }
 
         private IEntry ResolveObject(string instancedFullPath) => Pcc.Exports.FirstOrDefault(exp => exp.InstancedFullPath == instancedFullPath) ??
                                                                   (IEntry)Pcc.Imports.FirstOrDefault(imp => imp.InstancedFullPath == instancedFullPath);
@@ -1382,8 +1454,8 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
         public static string PropertyTypeName(VariableType type) =>
             type switch
             {
-                Class {IsComponent: true} => "ComponentProperty",
-                Class {IsInterface: true} => "InterfaceProperty",
+                Class { IsComponent: true } => "ComponentProperty",
+                Class { IsInterface: true } => "InterfaceProperty",
                 Class _ => "ObjectProperty",
                 Struct _ => "StructProperty",
                 ClassType _ => "ClassProperty",
@@ -1430,7 +1502,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
                 WriteByte(0);
             }
-            else if (expr is InOpReference || expr is PreOpReference || expr is PostOpReference)
+            else if (expr is InOpReference or PreOpReference or PostOpReference)
             {
                 if (Game >= MEGame.ME3)
                 {
@@ -1458,7 +1530,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             {
                 if (Game >= MEGame.ME3)
                 {
-                    WriteObjectRef(!(expr is DynArrayOperation) || expr is DynArraySort ? ResolveSymbol(expr) : null);
+                    WriteObjectRef(expr is DynArraySort or not DynArrayOperation ? ResolveSymbol(expr) : null);
                 }
                 switch (expr)
                 {

@@ -93,6 +93,7 @@ namespace LegendaryExplorerCore.Coalesced.Xml
 					continue;
 				}
 
+                source = source.Trim();
 				var sourcePath = Path.Combine(SourceDirectory, source);
 				sourcePath = Path.GetFullPath(sourcePath);
 
@@ -102,7 +103,7 @@ namespace LegendaryExplorerCore.Coalesced.Xml
 			foreach (var include in includes)
 			{
 				var asset = XmlCoalesceAsset.Load(include.Source);
-
+				
 				if (asset != null && !string.IsNullOrEmpty(asset.Source))
 				{
 					Assets.Add(asset);

@@ -21,6 +21,7 @@
 
 using System;
 using System.IO;
+using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using LegendaryExplorerCore.Helpers;
@@ -82,8 +83,8 @@ namespace LegendaryExplorerCore.Textures
 
             int dwHeight = stream.ReadInt32();
             int dwWidth = stream.ReadInt32();
-            if (!IsPowerOfTwo(dwWidth) ||
-                !IsPowerOfTwo(dwHeight))
+            if (!BitOperations.IsPow2(dwWidth) ||
+                !BitOperations.IsPow2(dwHeight))
                 throw new TextureSizeNotPowerOf2Exception();
 
             stream.Skip(8); // dwPitchOrLinearSize, dwDepth
@@ -541,7 +542,7 @@ namespace LegendaryExplorerCore.Textures
             }
             else
             {
-                cores = returnPowerOfTwo(cores);
+                cores = (int)BitOperations.RoundUpToPowerOf2((uint)cores);
                 if ((cores * 4 * 4) > h)
                     cores = h / 4 / 4;
                 partSize = h / 4 / cores;
@@ -606,7 +607,7 @@ namespace LegendaryExplorerCore.Textures
             }
             else
             {
-                cores = returnPowerOfTwo(cores);
+                cores = (int)BitOperations.RoundUpToPowerOf2((uint)cores);
                 if ((cores * 4 * 4) > h)
                     cores = h / 4 / 4;
                 partSize = h / 4 / cores;

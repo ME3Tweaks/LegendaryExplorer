@@ -2,13 +2,21 @@
 
 namespace LegendaryExplorerCore.Coalesced
 {
+	/// <summary>
+	/// The type of action for this coalesced line. In Game3 terminology this is the type, in 1/2 it is the prefix.
+	/// </summary>
 	public enum CoalesceParseAction
 	{
+		// Type 2 - Add always (No prefix)
 		Add,
+		// Type 3 - Add if unique (No prefix)
 		AddUnique,
+		// Type 0 - Overwrite
 		New,
 		None,
+		// Type 4 - Remove if same
 		Remove,
+		// Type 1 - Remove entirely
 		RemoveProperty
 	}
 
@@ -21,7 +29,33 @@ namespace LegendaryExplorerCore.Coalesced
 			ValueType = valueType ?? CoalesceProperty.DefaultValueType;
 		}
 
-		public bool IsNull
+        public CoalesceValue(string value, CoalesceParseAction valueType)
+            : this()
+        {
+            Value = value;
+            ValueType = GetValueType(valueType);
+        }
+
+        private int GetValueType(CoalesceParseAction valueType)
+        {
+            switch (valueType)
+            {
+                case CoalesceParseAction.New:
+                    return 0;
+                case CoalesceParseAction.RemoveProperty:
+                    return 1;
+                case CoalesceParseAction.Add:
+                    return 2;
+				case CoalesceParseAction.AddUnique:
+                    return 3;
+                case CoalesceParseAction.Remove:
+                    return 4;
+			}
+
+            return CoalesceProperty.DefaultValueType;
+        }
+
+        public bool IsNull
 		{
 			get { return Value == null || ValueType == CoalesceProperty.NullValueType; }
 		}

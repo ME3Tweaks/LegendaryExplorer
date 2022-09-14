@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Windows.Forms;
 using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.DialogueEditor;
 using LegendaryExplorer.Tools.FaceFXEditor;
@@ -38,20 +39,26 @@ namespace LegendaryExplorer.Tools.InterpEditor.InterpExperiments
             var node = GetSelectedFOVOLine(iew);
             if (node is null) return;
             var faceFx = isMale ? node.FaceFX_Male : node.FaceFX_Female;
-            var faceFxUindex = isMale ? node.SpeakerTag.FaceFX_Male.UIndex : node.SpeakerTag.FaceFX_Female.UIndex;
+            var faceFxUIndex = isMale ? node.SpeakerTag.FaceFX_Male?.UIndex : node.SpeakerTag.FaceFX_Female?.UIndex;
+            if (!faceFxUIndex.HasValue)
+            {
+                MessageBox.Show($@"Node {node.LineStrRef} appears to have no FaceFX. Aborting.");
+                return;
+            }
+
             var pcc = node.WwiseStream_Female?.FileRef ?? node.WwiseStream_Male?.FileRef;
             if (pcc is null) return;
 
-            if (pcc.IsUExport(faceFxUindex) && faceFx is not null)
+            if (pcc.IsUExport(faceFxUIndex.Value) && faceFx is not null)
             {
                 var fxe = new FaceFXEditorWindow();
                 fxe.LoadFile(pcc.FilePath);
                 fxe.Show();
-                fxe.SelectAnimset(faceFxUindex, faceFx);
+                fxe.SelectAnimset(faceFxUIndex.Value, faceFx);
             }
-            else if (pcc.IsUExport(faceFxUindex))
+            else if (pcc.IsUExport(faceFxUIndex.Value))
             {
-                new FaceFXEditorWindow(pcc.GetUExport(faceFxUindex)).Show();
+                new FaceFXEditorWindow(pcc.GetUExport(faceFxUIndex.Value)).Show();
             }
             else
             {
@@ -78,7 +85,7 @@ namespace LegendaryExplorer.Tools.InterpEditor.InterpExperiments
 
         private static (int strRef, ConversationExtended conv)? GetConversationFromSelectedTrack(InterpEditorWindow iew)
         {
-            if (iew.timelineControl.MatineeTree.SelectedItem is InterpTrack track && track.Export.ClassName == "SFXInterpTrackPlayFaceOnlyVO")
+            if (iew.TimelineControl.MatineeTree.SelectedItem is InterpTrack track && track.Export.ClassName == "SFXInterpTrackPlayFaceOnlyVO")
             {
                 var keys = track.Export.GetProperty<ArrayProperty<StructProperty>>("m_aFOVOKeys");
                 if (keys is null || keys.Count == 0) return null;

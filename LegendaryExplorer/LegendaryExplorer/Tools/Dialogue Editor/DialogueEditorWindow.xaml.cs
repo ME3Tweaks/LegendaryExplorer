@@ -29,9 +29,6 @@ using LegendaryExplorer.Tools.Soundplorer;
 using LegendaryExplorer.Tools.TlkManagerNS;
 using LegendaryExplorer.UnrealExtensions;
 using LegendaryExplorer.UserControls.SharedToolControls;
-using UMD.HCIL.Piccolo;
-using UMD.HCIL.Piccolo.Event;
-using UMD.HCIL.Piccolo.Nodes;
 using static LegendaryExplorer.Tools.TlkManagerNS.TLKManagerWPF;
 using Key = System.Windows.Input.Key;
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
@@ -45,6 +42,9 @@ using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
 using LegendaryExplorerCore.PlotDatabase;
+using Piccolo;
+using Piccolo.Event;
+using Piccolo.Nodes;
 
 namespace LegendaryExplorer.DialogueEditor
 {
@@ -165,9 +165,6 @@ namespace LegendaryExplorer.DialogueEditor
         public ICommand AutoLayoutCommand { get; set; }
         public ICommand LoadTLKManagerCommand { get; set; }
         public ICommand OpenInCommand { get; set; }
-        public ICommand OpenInCommand_Wwbank { get; set; }
-        public ICommand OpenInCommand_FFXNS { get; set; }
-        public ICommand OpenInCommand_Line { get; set; }
         public ICommand SpeakerMoveUpCommand { get; set; }
         public ICommand SpeakerMoveDownCommand { get; set; }
         public ICommand AddSpeakerCommand { get; set; }
@@ -392,10 +389,7 @@ namespace LegendaryExplorer.DialogueEditor
             AutoLayoutCommand = new GenericCommand(AutoLayout, () => CurrentObjects.Any);
             GoToCommand = new GenericCommand(GoToBoxOpen);
             LoadTLKManagerCommand = new GenericCommand(LoadTLKManager);
-            OpenInCommand = new RelayCommand(OpenInAction);
-            OpenInCommand_FFXNS = new RelayCommand(OpenInAction, HasFFXNS);
-            OpenInCommand_Wwbank = new RelayCommand(OpenInAction, HasWwbank);
-            OpenInCommand_Line = new RelayCommand(OpenInAction, LineHasInterpdata);
+            OpenInCommand = new RelayCommand(OpenInAction, CanOpenIn);
             SpeakerMoveUpCommand = new RelayCommand(SpeakerMoveAction, SpkrCanMoveUp);
             SpeakerMoveDownCommand = new RelayCommand(SpeakerMoveAction, SpkrCanMoveDown);
             AddSpeakerCommand = new GenericCommand(SpeakerAdd);
@@ -862,34 +856,21 @@ namespace LegendaryExplorer.DialogueEditor
                     {
                         if (Pcc.Game.IsGame3())
                         {
-                            m_aSpeakerList.Add(new NameProperty(spkr.SpeakerName, "m_aSpeakerList"));
+                            m_aSpeakerList.Add(new NameProperty(spkr.SpeakerNameRef, "m_aSpeakerList"));
                         }
                         else
                         {
                             m_SpeakerList.Add(new StructProperty("BioDialogSpeaker", new PropertyCollection
                             {
-                                new NameProperty(spkr.SpeakerName, "sSpeakerTag"),
+                                new NameProperty(spkr.SpeakerNameRef, "sSpeakerTag"),
                                 new NoneProperty()
                             }));
                         }
                     }
 
-                    if (spkr.FaceFX_Male == null)
-                    {
-                        m_aMaleFaceSets.Add(new ObjectProperty(0));
-                    }
-                    else
-                    {
-                        m_aMaleFaceSets.Add(new ObjectProperty(spkr.FaceFX_Male));
-                    }
-                    if (spkr.FaceFX_Female == null)
-                    {
-                        m_aFemaleFaceSets.Add(new ObjectProperty(0));
-                    }
-                    else
-                    {
-                        m_aFemaleFaceSets.Add(new ObjectProperty(spkr.FaceFX_Female));
-                    }
+
+                    m_aMaleFaceSets.Add(new ObjectProperty(spkr.FaceFX_Male));
+                    m_aFemaleFaceSets.Add(new ObjectProperty(spkr.FaceFX_Female));
                 }
 
                 if (m_aSpeakerList.Count > 0 && Pcc.Game.IsGame3())
@@ -986,7 +967,7 @@ namespace LegendaryExplorer.DialogueEditor
         #endregion RecreateToFile
 
         #region Handling-updates
-        public override void handleUpdate(List<PackageUpdate> updates)
+        public override void HandleUpdate(List<PackageUpdate> updates)
         {
             if (Pcc == null || IsLocalUpdate)
             {
@@ -1904,7 +1885,7 @@ namespace LegendaryExplorer.DialogueEditor
                 Start_ListBoxUpdate();
 
                 ListenersList.ClearEx();
-                ListenersList.Add(new SpeakerExtended(-3, "none"));
+                ListenersList.Add(new SpeakerExtended(-3, "None"));
                 foreach (var spkr in SelectedSpeakerList)
                 {
                     ListenersList.Add(spkr);
@@ -2036,7 +2017,7 @@ namespace LegendaryExplorer.DialogueEditor
                 if (dlg != MessageBoxResult.No)
                 {
                     Keyboard.ClearFocus();
-                    SelectedSpeakerList[Speakers_ListBox.SelectedIndex].SpeakerName = SelectedSpeaker.SpeakerName;
+                    SelectedSpeakerList[Speakers_ListBox.SelectedIndex].SpeakerNameRef = SelectedSpeaker.SpeakerNameRef;
                     SelectedSpeaker.StrRefID = LookupTagRef(SelectedSpeaker.SpeakerName);
                     SelectedSpeaker.FriendlyName = GlobalFindStrRefbyID(SelectedSpeakerList[Speakers_ListBox.SelectedIndex].StrRefID, Pcc);
 
@@ -2049,10 +2030,11 @@ namespace LegendaryExplorer.DialogueEditor
             int maxID = SelectedSpeakerList.Max(x => x.SpeakerID);
             var ndlg = new PromptDialog("Enter the new actors tag", "Add a speaker", "Actor_Tag");
             ndlg.ShowDialog();
-            if (ndlg.ResponseText == null || ndlg.ResponseText == "Actor_Tag")
+            if (ndlg.ResponseText is null or "Actor_Tag")
                 return;
-            Pcc.FindNameOrAdd(ndlg.ResponseText);
-            SelectedSpeakerList.Add(new SpeakerExtended(maxID + 1, ndlg.ResponseText, null, null, 0, "No Data"));
+            var speakerName = NameReference.FromInstancedString(ndlg.ResponseText);
+            Pcc.FindNameOrAdd(speakerName.Name);
+            SelectedSpeakerList.Add(new SpeakerExtended(maxID + 1, speakerName, null, null, 0, "No Data"));
             SaveSpeakersToProperties(SelectedSpeakerList);
         }
         private void SpeakerDelete()
@@ -2253,9 +2235,8 @@ namespace LegendaryExplorer.DialogueEditor
 
         private void Script_Add()
         {
-            if (NamePromptDialog.Prompt(this, "Enter the new script name", "Add a script", Pcc, out NameReference result))
+            if (SelectOrAddNamePromptDialog.Prompt(this, "Enter the new script name", "Add a script", Pcc, out NameReference result))
             {
-                Pcc.FindNameOrAdd(result);
                 SelectedConv.ScriptList.Add(result);
                 SaveScriptsToProperties(SelectedConv);
             }
@@ -2316,6 +2297,7 @@ namespace LegendaryExplorer.DialogueEditor
         }
         private void DialogueNode_Selected(DiagNode obj)
         {
+            SetUIMode(2);
             foreach (var oldselection in SelectedObjects)
             {
                 oldselection.IsSelected = false;
@@ -2947,7 +2929,6 @@ namespace LegendaryExplorer.DialogueEditor
                         }
                     }
                     DialogueNode_Selected(dreply);
-                    SetUIMode(2, false);
                     contextMenu.DataContext = this;
                     contextMenu.IsOpen = true;
                     graphEditor.DisableDragging();
@@ -3003,7 +2984,6 @@ namespace LegendaryExplorer.DialogueEditor
                         }
                     }
                     DialogueNode_Selected(dentry);
-                    SetUIMode(2, false);
                     contextMenu.DataContext = this;
                     contextMenu.IsOpen = true;
                     graphEditor.DisableDragging();
@@ -3139,7 +3119,7 @@ namespace LegendaryExplorer.DialogueEditor
 
             var p = new InterpEditorWindow();
             p.Show();
-            p.LoadFile(Pcc.FilePath);
+            p.LoadFile(exportEntry.FileRef.FilePath);
             if (exportEntry.ObjectName == "InterpData")
             {
                 p.SelectedInterpData = exportEntry;
@@ -3149,7 +3129,6 @@ namespace LegendaryExplorer.DialogueEditor
 
         private void OpenInAction(object obj)
         {
-
             string tool = obj as string;
             switch (tool)
             {
@@ -3160,7 +3139,7 @@ namespace LegendaryExplorer.DialogueEditor
                     OpenInToolkit("PackageEditor", SelectedConv.ExportUID);
                     break;
                 case "PackEdLine":
-                    OpenInToolkit("PackageEditor", SelectedDialogueNode.Interpdata.UIndex);
+                    OpenInToolkit("PackageEditor", SelectedDialogueNode.Interpdata.UIndex, Path.GetFileName(SelectedDialogueNode.Interpdata.FileRef.FilePath));
                     break;
                 case "PackEd_StreamM":
                     if (SelectedDialogueNode.WwiseStream_Male != null)
@@ -3188,36 +3167,50 @@ namespace LegendaryExplorer.DialogueEditor
                     }
                     break;
                 case "SeqEdLine":
-                    OpenInToolkit("SequenceEditor", SelectedDialogueNode.Interpdata.UIndex);
+                    OpenInToolkit("SequenceEditor", SelectedDialogueNode.Interpdata.UIndex, Path.GetFileName(SelectedDialogueNode.Interpdata.FileRef.FilePath));
                     break;
                 case "FaceFXNS":
                     OpenInToolkit("FaceFXEditor", SelectedConv.NonSpkrFFX.UIndex);
                     break;
                 case "FaceFXSpkrM":
-                    if (Pcc.IsImport(SelectedSpeaker.FaceFX_Male.UIndex))
+                    if (SelectedSpeaker.FaceFX_Male != null)
                     {
-                        OpenInToolkit("FaceFXEditor", 0, Level); //CAN SEND TO THE CORRECT EXPORT IN THE NEW FILE LOAD?
-                    }
-                    else
-                    {
-                        OpenInToolkit("FaceFXEditor", SelectedSpeaker.FaceFX_Male.UIndex);
+                        if (Pcc.IsImport(SelectedSpeaker.FaceFX_Male.UIndex))
+                        {
+                            OpenInToolkit("FaceFXEditor", 0,
+                                Level); //CAN SEND TO THE CORRECT EXPORT IN THE NEW FILE LOAD?
+                        }
+                        else
+                        {
+                            OpenInToolkit("FaceFXEditor", SelectedSpeaker.FaceFX_Male.UIndex);
+                        }
                     }
                     break;
                 case "FaceFXSpkrF":
-                    if (Pcc.IsImport(SelectedSpeaker.FaceFX_Female.UIndex))
+                    if (SelectedSpeaker.FaceFX_Female != null)
                     {
-                        OpenInToolkit("FaceFXEditor", 0, Level);
-                    }
-                    else
-                    {
-                        OpenInToolkit("FaceFXEditor", SelectedSpeaker.FaceFX_Female.UIndex);
+                        if (Pcc.IsImport(SelectedSpeaker.FaceFX_Female.UIndex))
+                        {
+                            OpenInToolkit("FaceFXEditor", 0, Level);
+                        }
+                        else
+                        {
+                            OpenInToolkit("FaceFXEditor", SelectedSpeaker.FaceFX_Female.UIndex);
+                        }
                     }
                     break;
                 case "FaceFXLineM":
-                    OpenInToolkit("FaceFXEditor", SelectedDialogueNode.SpeakerTag.FaceFX_Male.UIndex, null, SelectedDialogueNode.FaceFX_Male);
+                    if (SelectedDialogueNode.SpeakerTag.FaceFX_Male != null)
+                    {
+                        OpenInToolkit("FaceFXEditor", SelectedDialogueNode.SpeakerTag.FaceFX_Male.UIndex, null, SelectedDialogueNode.FaceFX_Male);
+                    }
                     break;
                 case "FaceFXLineF":
-                    OpenInToolkit("FaceFXEditor", SelectedDialogueNode.SpeakerTag.FaceFX_Female.UIndex, null, SelectedDialogueNode.FaceFX_Female);
+                    if (SelectedDialogueNode.SpeakerTag.FaceFX_Female != null)
+                    {
+                        OpenInToolkit("FaceFXEditor", SelectedDialogueNode.SpeakerTag.FaceFX_Female.UIndex, null,
+                            SelectedDialogueNode.FaceFX_Female);
+                    }
                     break;
                 case "SoundP_Bank":
                     if (SelectedConv.WwiseBank != null)
@@ -3247,6 +3240,28 @@ namespace LegendaryExplorer.DialogueEditor
                     OpenInToolkit(tool);
                     break;
             }
+        }
+
+        private bool CanOpenIn(object obj)
+        {
+            string tool = obj as string;
+            return tool switch
+            {
+                "PackEdLine" => SelectedDialogueNode?.Interpdata != null,
+                "PackEd_StreamM" => SelectedDialogueNode?.WwiseStream_Male != null,
+                "PackEd_StreamF" => SelectedDialogueNode?.WwiseStream_Female != null,
+                "SeqEdLine" => SelectedDialogueNode?.Interpdata != null,
+                "FaceFXNS" => SelectedConv?.NonSpkrFFX != null,
+                "FaceFXSpkrM" => SelectedSpeaker?.FaceFX_Male != null,
+                "FaceFXSpkrF" => SelectedSpeaker?.FaceFX_Female != null,
+                "FaceFXLineM" => SelectedDialogueNode?.SpeakerTag.FaceFX_Male != null,
+                "FaceFXLineF" => SelectedDialogueNode?.SpeakerTag.FaceFX_Female != null,
+                "SoundP_Bank" => SelectedConv?.WwiseBank != null,
+                "SoundP_StreamM" => SelectedDialogueNode?.WwiseStream_Male != null,
+                "SoundP_StreamF" => SelectedDialogueNode?.WwiseStream_Female != null,
+                "InterpEdLine" => SelectedDialogueNode?.Interpdata != null,
+                _ => true
+            };
         }
         private void OpenInToolkit(string tool, int uIndex = 0, string filename = null, string param = null)
         {
@@ -3317,13 +3332,13 @@ namespace LegendaryExplorer.DialogueEditor
                 case "PackageEditor":
                     var packEditor = new PackageEditorWindow();
                     packEditor.Show();
-                    if (Pcc.IsUExport(uIndex))
+                    if (Pcc.IsUExport(uIndex) && filePath == Pcc.FilePath)
                     {
                         packEditor.LoadFile(Pcc.FilePath, uIndex);
                     }
                     else
                     {
-                        packEditor.LoadFile(filePath);
+                        packEditor.LoadFile(filePath, uIndex);
                     }
                     break;
                 case "SoundplorerWPF":
@@ -3339,15 +3354,19 @@ namespace LegendaryExplorer.DialogueEditor
                     }
                     break;
                 case "SequenceEditor":
-                    if (Pcc.IsUExport(uIndex))
+                    if (Pcc.IsUExport(uIndex) && filePath == Pcc.FilePath)
                     {
                         new SequenceEditorWPF(Pcc.GetUExport(uIndex)).Show();
                     }
                     else
                     {
                         var seqEditor = new SequenceEditorWPF();
-                        seqEditor.LoadFile(filePath);
                         seqEditor.Show();
+                        if (uIndex != 0)
+                        {
+                            seqEditor.LoadFile(filePath, uIndex);
+                        }
+                        else seqEditor.LoadFile(filePath);
                     }
                     break;
             }
@@ -3671,7 +3690,7 @@ namespace LegendaryExplorer.DialogueEditor
         #endregion Helpers
 
         #region IRecents interface
-        public void PropogateRecentsChange(IEnumerable<RecentsControl.RecentItem> newRecents)
+        public void PropogateRecentsChange(string propogationSource, IEnumerable<RecentsControl.RecentItem> newRecents)
         {
             RecentsController.PropogateRecentsChange(false, newRecents);
         }

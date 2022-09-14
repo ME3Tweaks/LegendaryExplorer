@@ -367,9 +367,8 @@ namespace LegendaryExplorerCore.SharpDX
             float g = G / 255.0f;
             float b = B / 255.0f;
 
-            float max, min;
-
-            max = r; min = r;
+            float max = r; 
+            float min = r;
 
             if (g > max) max = g;
             if (b > max) max = b;
@@ -393,11 +392,9 @@ namespace LegendaryExplorerCore.SharpDX
             float g = G / 255.0f;
             float b = B / 255.0f;
 
-            float max, min;
-            float delta;
             float hue = 0.0f;
 
-            max = r; min = r;
+            float max = r; float min = r;
 
             if (g > max) max = g;
             if (b > max) max = b;
@@ -405,7 +402,7 @@ namespace LegendaryExplorerCore.SharpDX
             if (g < min) min = g;
             if (b < min) min = b;
 
-            delta = max - min;
+            float delta = max - min;
 
             if (r == max)
             {
@@ -438,10 +435,9 @@ namespace LegendaryExplorerCore.SharpDX
             float g = G / 255.0f;
             float b = B / 255.0f;
 
-            float max, min;
             float l, s = 0;
 
-            max = r; min = r;
+            float max = r; float min = r;
 
             if (g > max) max = g;
             if (b > max) max = b;

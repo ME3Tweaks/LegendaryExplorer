@@ -20,7 +20,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
         public Expression DefaultParameter;
         public CodeBody UnparsedDefaultParam;
 
-        public FunctionParameter(VariableType type, EPropertyFlags flags, string Name, int arrayLength = 1, SourcePosition start = null, SourcePosition end = null)
+        public FunctionParameter(VariableType type, EPropertyFlags flags, string Name, int arrayLength = 1, int start = -1, int end = -1)
             : base(type, flags, Name, arrayLength, "None", start, end)
         {
             Type = ASTNodeType.FunctionParameter;

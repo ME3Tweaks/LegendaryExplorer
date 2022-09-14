@@ -3,21 +3,18 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using LegendaryExplorerCore.Helpers;
-using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
 using LegendaryExplorerCore.UnrealScript.Analysis.Symbols;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
-using LegendaryExplorerCore.UnrealScript.Lexing;
-using LegendaryExplorerCore.UnrealScript.Parsing;
 using LegendaryExplorerCore.UnrealScript.Utilities;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
 
 namespace LegendaryExplorerCore.UnrealScript.Decompiling
 {
-    public static class ScriptObjectToASTConverter
+    internal static class ScriptObjectToASTConverter
     {
 
         public static Class ConvertClass(UClass uClass, bool decompileBytecodeAndDefaults, FileLib fileLib, PackageCache packageCache = null)
@@ -32,7 +29,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             // TODO: components
 
             var interfaces = new List<VariableType>();
-            foreach ((UIndex interfaceUIndex, UIndex _) in uClass.Interfaces)
+            foreach ((int interfaceUIndex, int _) in uClass.Interfaces)
             {
                 interfaces.Add(new VariableType(pcc.GetEntry(interfaceUIndex)?.ObjectName.Instanced ?? "UNK_INTERFACE"));
             }
@@ -55,7 +52,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                         {
                             FilePath = pcc.FilePath,
                             UIndex = nextChild.UIndex,
-                            game = pcc.Game
+                            Game = pcc.Game
                         });
                         nextItem = uConst.Next;
                         break;
@@ -76,7 +73,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                         nextItem = uProperty.Next;
                         break;
                     case UScriptStruct uScriptStruct:
-                        Types.Add(ConvertStruct(uScriptStruct, decompileBytecodeAndDefaults, fileLib, packageCache));
+                        Types.Add(ConvertStruct(uScriptStruct, fileLib, packageCache));
                         nextItem = uScriptStruct.Next;
                         break;
                     case UState uState:
@@ -88,9 +85,9 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                         break;
                 }
             }
-            foreach (UIndex uIndex in uClass.LocalFunctionMap.Values())
+            foreach (int uIndex in uClass.LocalFunctionMap.Values())
             {
-                if (uIndex.GetEntry(pcc) is ExportEntry funcExp && fileLib.GetCachedObjectBinary<UFunction>(funcExp, packageCache) is UFunction uFunction)
+                if (pcc.GetEntry(uIndex) is ExportEntry funcExp && fileLib.GetCachedObjectBinary<UFunction>(funcExp, packageCache) is UFunction uFunction)
                 {
                     Funcs.Add(ConvertFunction(uFunction, fileLib, uClass, decompileBytecodeAndDefaults, packageCache));
                 }
@@ -103,10 +100,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 defaultProperties = ConvertDefaultProperties(propExport, fileLib, packageCache);
                 if (uClass.ScriptBytecodeSize > 0)
                 {
-                    replicationBlock = new ByteCodeDecompiler(uClass, uClass, fileLib)
-                    {
-                        ReplicatedProperties = replicatedProperties
-                    }.Decompile();
+                    replicationBlock = new ByteCodeDecompiler(uClass, uClass, fileLib, replicatedProperties: replicatedProperties).Decompile();
                 }
             }
 
@@ -114,7 +108,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             {
                 ConfigName = uClass.ClassConfigName,
                 Package = uClassExport.Parent is null ? Path.GetFileNameWithoutExtension(pcc.FilePath) : uClassExport.ParentInstancedFullPath,
-                IsFullyDefined = nextItem.value == 0 && propEntry is ExportEntry,
+                IsFullyDefined = nextItem == 0 && propEntry is ExportEntry,
                 FilePath = pcc.FilePath,
                 UIndex = uClassExport.UIndex,
                 ReplicationBlock = replicationBlock
@@ -133,9 +127,9 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             var virtFuncLookup = new List<string>(uClass.VirtualFunctionTable?.Length ?? 0);
             if (pcc.Game.IsGame3())
             {
-                foreach (UIndex uIdx in uClass.VirtualFunctionTable)
+                foreach (int uIdx in uClass.VirtualFunctionTable)
                 {
-                    virtFuncLookup.Add(uIdx.GetEntry(pcc)?.ObjectName.Instanced);
+                    virtFuncLookup.Add(pcc.GetEntry(uIdx)?.ObjectName.Instanced);
                 }
             }
             ast.VirtualFunctionNames = virtFuncLookup;
@@ -164,10 +158,10 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
 
             State parent = null;
             //if the parent has the same name, then it's overriden, not extended
-            if (obj.SuperClass != 0 && obj.SuperClass.GetEntry(obj.Export.FileRef) is IEntry parentState &&
+            if (obj.SuperClass != 0 && obj.Export.FileRef.GetEntry(obj.SuperClass) is IEntry parentState &&
                 !parentState.ObjectName.Instanced.CaseInsensitiveEquals(obj.Export.ObjectName.Instanced))
             {
-                parent = new State(parentState.ObjectName.Instanced, null, default, null, null, null, null, null);
+                parent = new State(parentState.ObjectName.Instanced, null, default, null, null, null, -1, -1);
             }
 
             var funcs = new List<Function>();
@@ -186,7 +180,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
 
             var body = decompileBytecode ? new ByteCodeDecompiler(obj, containingClass, fileLib).Decompile() : null;
 
-            return new State(obj.Export.ObjectName.Instanced, body, obj.StateFlags, parent, funcs, new List<Label>(), null, null)
+            return new State(obj.Export.ObjectName.Instanced, body, obj.StateFlags, parent, funcs, new List<Label>(), -1, -1)
             {
                 FilePath = obj.Export.FileRef.FilePath,
                 UIndex = obj.Export.UIndex,
@@ -194,7 +188,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             };
         }
 
-        public static Struct ConvertStruct(UScriptStruct obj, bool decompileDefaults, FileLib fileLib, PackageCache packageCache = null)
+        public static Struct ConvertStruct(UScriptStruct obj, FileLib fileLib, PackageCache packageCache = null)
         {
             var vars = new List<VariableDeclaration>();
             var types = new List<VariableType>();
@@ -211,7 +205,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                         nextItem = uProperty.Next;
                         break;
                     case UScriptStruct uStruct:
-                        types.Add(ConvertStruct(uStruct, decompileDefaults, fileLib, packageCache));
+                        types.Add(ConvertStruct(uStruct, fileLib, packageCache));
                         nextItem = uStruct.Next;
                         break;
                     default:
@@ -221,31 +215,29 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             }
 
             VariableType parent = obj.SuperClass != 0
-                ? new VariableType(obj.SuperClass.GetEntry(pcc).ObjectName.Instanced) : null;
+                ? new VariableType(pcc.GetEntry(obj.SuperClass).ObjectName.Instanced) : null;
 
-            DefaultPropertiesBlock defaults = null;
+            DefaultPropertiesBlock defaults;
             string structName = obj.Export.ObjectName.Instanced;
-            if (decompileDefaults)
-            {
-                try
-                {
-                    PropertyCollection properties = null;
-                    if (parent is not null)
-                    {
-                        properties = obj.Defaults;
-                    }
-                    else if (fileLib.IsInitialized && fileLib.ReadonlySymbolTable is SymbolTable symbols && symbols.TryGetType(structName, out Struct libStruct))
-                    {
-                        properties = obj.Defaults.Diff(libStruct.MakeBaseProps(pcc, packageCache));
-                    }
 
-                    properties ??= RemoveDefaultValues(obj.Defaults.DeepClone(), pcc.Game);
-                    defaults = new DefaultPropertiesBlock(ConvertProperties(properties, obj.Export, structName, true, fileLib));
-                }
-                catch (Exception e)
+            try
+            {
+                PropertyCollection properties = null;
+                if (parent is not null)
                 {
-                    throw new Exception($"Exception while removing default properties in export {obj.Export.InstancedFullPath} {obj.Export.FileRef.FilePath}", e);
+                    properties = obj.Defaults;
                 }
+                else if (fileLib.IsInitialized && fileLib.ReadonlySymbolTable is SymbolTable symbols && symbols.TryGetType(structName, out Struct libStruct))
+                {
+                    properties = obj.Defaults.Diff(libStruct.MakeBaseProps(pcc, packageCache));
+                }
+
+                properties ??= RemoveDefaultValues(obj.Defaults.DeepClone(), pcc.Game);
+                defaults = new DefaultPropertiesBlock(new List<Statement>(ConvertProperties(properties, obj.Export, structName, true, fileLib)));
+            }
+            catch (Exception e)
+            {
+                throw new Exception($"Exception while removing default properties in export {obj.Export.InstancedFullPath} {obj.Export.FileRef.FilePath}", e);
             }
 
             var node = new Struct(structName, parent, obj.StructFlags, vars, types, defaults, obj.Defaults.DeepClone())
@@ -299,7 +291,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                         }
                         break;
                     case EnumProperty enumProperty:
-                        if (enumProperty.Value != GlobalUnrealObjectInfo.GetEnumValues(game, enumProperty.EnumType).FirstOrDefault())
+                        if (enumProperty.Value != (GlobalUnrealObjectInfo.GetEnumValues(game, enumProperty.EnumType)?.FirstOrDefault() ?? default))
                         {
                             result.Add(prop);
                         }
@@ -367,7 +359,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 vals.Add(new EnumValue(val.Instanced, i));
             }
 
-            var node = new Enumeration(obj.Export.ObjectName.Instanced, vals, null, null)
+            var node = new Enumeration(obj.Export.ObjectName.Instanced, vals, -1, -1)
             {
                 FilePath = obj.Export.FileRef.FilePath,
                 UIndex = obj.Export.UIndex
@@ -404,7 +396,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 case UByteProperty byteProperty:
                     if (byteProperty.IsEnum)
                     {
-                        IEntry enumDef = byteProperty.Enum.GetEntry(obj.Export.FileRef);
+                        IEntry enumDef = obj.Export.FileRef.GetEntry(byteProperty.Enum);
                         if (enumDef is ExportEntry enumExp)
                         {
                             return ConvertEnum(fileLib.GetCachedObjectBinary<UEnum>(enumExp, packageCache));
@@ -458,18 +450,18 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 case UStrProperty:
                     return SymbolTable.StringType;
                 case UStructProperty structProperty:
-                    typeStr = structProperty.Struct.GetEntry(obj.Export.FileRef)?.ObjectName.Instanced ?? typeStr;
+                    typeStr = obj.Export.FileRef.GetEntry(structProperty.Struct)?.ObjectName.Instanced ?? typeStr;
                     break;
                 //if we're just getting the name of the objectref, then Interface and Component are the same as Object
                 //Leave these here in case we do something fancier
                 //case UInterfaceProperty interfaceProperty:
-                //    typeStr = interfaceProperty.ObjectRef.GetEntry(obj.Export.FileRef)?.ObjectName.Instanced ?? typeStr; // ?
+                //    typeStr = obj.Export.FileRef.GetEntry(interfaceProperty.ObjectRef)?.ObjectName.Instanced ?? typeStr; // ?
                 //    break;
                 //case UComponentProperty componentProperty:
-                //    typeStr = componentProperty.ObjectRef.GetEntry(obj.Export.FileRef)?.ObjectName.Instanced ?? typeStr; // ?
+                //    typeStr = obj.Export.FileRef.GetEntry(componentProperty.ObjectRef)?.ObjectName.Instanced ?? typeStr; // ?
                 //    break;
                 case UObjectProperty objectProperty:
-                    typeStr = objectProperty.ObjectRef.GetEntry(obj.Export.FileRef)?.ObjectName.Instanced ?? typeStr; // ?
+                    typeStr = obj.Export.FileRef.GetEntry(objectProperty.ObjectRef)?.ObjectName.Instanced ?? typeStr; // ?
                     break;
                 default:
                     {
@@ -518,7 +510,11 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                         else if (uProperty.PropertyFlags.Has(EPropertyFlags.Parm))
                         {
                             var convert = ConvertVariable(uProperty, fileLib, packageCache);
-                            parameters.Add(new FunctionParameter(convert.VarType, convert.Flags, convert.Name, convert.ArrayLength));
+                            parameters.Add(new FunctionParameter(convert.VarType, convert.Flags, convert.Name, convert.ArrayLength)
+                            {
+                                FilePath = pcc.FilePath,
+                                UIndex = nextChild.UIndex
+                            });
                         }
                         else
                         {
@@ -578,9 +574,15 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             }
         }
 
-        private static List<Statement> ConvertProperties(PropertyCollection properties, ExportEntry defaultsExport, string objectName, bool isStruct, FileLib fileLib)
+        public static Expression ConvertToLiteralValue(Property prop, ExportEntry containingExport, FileLib lib)
         {
-            var statements = new List<Statement>();
+            var statements = ConvertProperties(new PropertyCollection { prop }, containingExport, containingExport.ObjectName.Instanced, false, lib);
+            return statements[0].Value;
+        }
+
+        private static List<AssignStatement> ConvertProperties(PropertyCollection properties, ExportEntry defaultsExport, string objectName, bool isStruct, FileLib fileLib)
+        {
+            var statements = new List<AssignStatement>();
             foreach (var prop in properties)
             {
                 if (prop is NoneProperty)
@@ -590,6 +592,8 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
 
                 Expression name = new SymbolReference(null, prop.Name.Instanced);
 
+                //If a property is the 0th element in a static array, there is no way to tell that from the Property object, since StaticArrayIndex will be 0.
+                //All this lookup is just so we can properly determine when that is the case.
                 if (fileLib.IsInitialized && fileLib.ReadonlySymbolTable is SymbolTable symbols)
                 {
                     string scope = null;
@@ -621,12 +625,12 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
 
                     if (scope is not null && symbols.TryGetSymbolInScopeStack(prop.Name, out VariableDeclaration decl, scope) && decl.IsStaticArray)
                     {
-                        name = new ArraySymbolRef(name, new IntegerLiteral(prop.StaticArrayIndex), null, null);
+                        name = new ArraySymbolRef(name, new IntegerLiteral(prop.StaticArrayIndex), -1, -1);
                     }
                 }
                 else if (prop.StaticArrayIndex > 0)
                 {
-                    name = new ArraySymbolRef(name, new IntegerLiteral(prop.StaticArrayIndex), null, null);
+                    name = new ArraySymbolRef(name, new IntegerLiteral(prop.StaticArrayIndex), -1, -1);
                 }
                 var value = ConvertPropertyValue(prop);
                 statements.Add(new AssignStatement(name, value));
@@ -650,7 +654,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                     case DelegateProperty delegateProperty:
                         string funcName = delegateProperty.Value.FunctionName.Instanced;
                         var symRef = new SymbolReference(null, funcName);
-                        if (pcc.TryGetEntry(delegateProperty.Value.Object, out IEntry containingObject))
+                        if (pcc.TryGetEntry(delegateProperty.Value.ContainingObjectUIndex, out IEntry containingObject))
                         {
                             symRef = new CompositeSymbolRef(new ObjectLiteral(new NameLiteral(containingObject.ClassName), new VariableType("Class")), symRef);
                         }
@@ -660,7 +664,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                         {
                             return new NoneLiteral();
                         }
-                        return new SymbolReference(new EnumValue(enumProperty.Value.Instanced, 0) {Enum = new Enumeration(enumProperty.EnumType.Instanced, new List<EnumValue>(), null, null)}, enumProperty.Value.Instanced);
+                        return new SymbolReference(new EnumValue(enumProperty.Value.Instanced, 0) {Enum = new Enumeration(enumProperty.EnumType.Instanced, new List<EnumValue>(), -1, -1) }, enumProperty.Value.Instanced);
                     case FloatProperty floatProperty:
                         return new FloatLiteral(floatProperty.Value);
                     case IntProperty intProperty:
@@ -672,7 +676,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                         if (objRef == 0)
                             return new NoneLiteral();
                         var objEntry = pcc.GetEntry(objRef);
-                        if (objEntry is ExportEntry objExp && objExp.InstancedFullPath.StartsWith(defaultsExport.InstancedFullPath, StringComparison.OrdinalIgnoreCase))
+                        if (objEntry is ExportEntry objExp && defaultsExport.IsDefaultObject && objExp.InstancedFullPath.StartsWith(defaultsExport.InstancedFullPath, StringComparison.OrdinalIgnoreCase))
                         {
                             //subObject reference
                             return new SymbolReference(null, objExp.ObjectName.Instanced);

@@ -3,20 +3,26 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using LegendaryExplorerCore.Helpers;
-using LegendaryExplorerCore.Unreal.BinaryConverters;
 
 namespace LegendaryExplorerCore.Unreal
 {
+    /// <summary>
+    /// Represents a Game 3 .cnd file
+    /// </summary>
     public class CNDFile
     {
         private const int Magic = 0x434F4E44;
         private const int Version = 1;
 
+        /// <summary>
+        /// The entries contained in this .cnd file
+        /// </summary>
         public List<ConditionalEntry> ConditionalEntries;
 
+        /// <summary>
+        /// The path to the file this was originally loaded from
+        /// </summary>
         public string FilePath;
 
         private void Read(Stream stream)
@@ -34,7 +40,7 @@ namespace LegendaryExplorerCore.Unreal
 
             //count of serialized conditional bodies. Conditionals with identical bytecode can share the same serialized bytecode,
             //so this can be less than the entryCount. We don't need to know it for deserializing 
-            stream.SkipInt16(); 
+            stream.SkipInt16();
 
             int entryCount = stream.ReadInt16();
 
@@ -71,6 +77,8 @@ namespace LegendaryExplorerCore.Unreal
 
         private void Write(Stream stream)
         {
+            ConditionalEntries = ConditionalEntries.OrderBy(x=>x.ID).ToList();
+
             stream.WriteInt32(Magic);
             stream.WriteInt32(Version);
             stream.WriteUInt16((ushort)ConditionalEntries.Count); // Serialized count. We don't save like BW, so this will always be the same as the amount of conditionals.
@@ -95,6 +103,10 @@ namespace LegendaryExplorerCore.Unreal
             }
         }
 
+        /// <summary>
+        /// Writes this .cnd file to disk.
+        /// </summary>
+        /// <param name="filePath">File to write to. If null, will use the <see cref="FilePath"/> property</param>
         public void ToFile(string filePath = null)
         {
             filePath ??= FilePath;
@@ -102,6 +114,11 @@ namespace LegendaryExplorerCore.Unreal
             Write(fs);
         }
 
+        /// <summary>
+        /// Factory method to load a <see cref="CNDFile"/> from a file on disk
+        /// </summary>
+        /// <param name="filePath">Path to a .cnd file on disk</param>
+        /// <returns>Created CNDFile</returns>
         public static CNDFile FromFile(string filePath)
         {
             var cnd = new CNDFile
@@ -113,11 +130,17 @@ namespace LegendaryExplorerCore.Unreal
             return cnd;
         }
 
+        /// <summary>
+        /// Represents a conditional in a Game 3 .cnd file
+        /// </summary>
         [DebuggerDisplay("ID: {" + nameof(ID) + ("}, Offset: {" + nameof(Offset) + "}"))]
         public class ConditionalEntry
         {
+            /// <summary>The conditional ID</summary>
             public int ID;
+            /// <summary>The data offset of this conditional</summary>
             public int Offset;
+            /// <summary>Actual conditional data</summary>
             public byte[] Data;
         }
     }

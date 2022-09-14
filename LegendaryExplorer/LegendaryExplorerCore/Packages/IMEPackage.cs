@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
+using LegendaryExplorerCore.Gammtek.Collections.Specialized;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.TLK.ME1;
@@ -13,122 +13,6 @@ using static LegendaryExplorerCore.Unreal.UnrealFlags;
 
 namespace LegendaryExplorerCore.Packages
 {
-    public static class MEGameExtensions
-    {
-        /// <summary>
-        /// If game is part of legendary edition (not including UDK)
-        /// </summary>
-        /// <param name="game"></param>
-        /// <returns></returns>
-        public static bool IsLEGame(this MEGame game) => game is MEGame.LE1 or MEGame.LE2 or MEGame.LE3;
-
-        /// <summary>
-        /// Is game part of original trilogy (not including UDK)
-        /// </summary>
-        /// <param name="game"></param>
-        /// <returns></returns>
-        public static bool IsOTGame(this MEGame game) => game is MEGame.ME1 or MEGame.ME2 or MEGame.ME3;
-
-        /// <summary>
-        /// Is game OT ME or LE ME
-        /// </summary>
-        /// <param name="game"></param>
-        /// <returns></returns>
-        public static bool IsGame1(this MEGame game) => game is MEGame.ME1 or MEGame.LE1;
-
-        /// <summary>
-        /// Is game OT ME2 or LE ME2
-        /// </summary>
-        /// <param name="game"></param>
-        /// <returns></returns>
-        public static bool IsGame2(this MEGame game) => game is MEGame.ME2 or MEGame.LE2;
-
-        /// <summary>
-        /// Is game OT ME3 or LE ME3
-        /// </summary>
-        /// <param name="game"></param>
-        /// <returns></returns>
-        public static bool IsGame3(this MEGame game) => game is MEGame.ME3 or MEGame.LE3;
-
-        public static MEGame ToOTVersion(this MEGame game)
-        {
-            if (game == MEGame.LE1) return MEGame.ME1;
-            if (game == MEGame.LE2) return MEGame.ME2;
-            if (game == MEGame.LE3) return MEGame.ME3;
-            return game;
-        }
-
-        public static MEGame ToLEVersion(this MEGame game)
-        {
-            if (game == MEGame.ME1) return MEGame.LE1;
-            if (game == MEGame.ME2) return MEGame.LE2;
-            if (game == MEGame.ME3) return MEGame.LE3;
-            return game;
-        }
-
-        public static string CookedDirName(this MEGame game) => game switch
-        {
-            MEGame.ME1 => "CookedPC",
-            MEGame.ME2 => "CookedPC",
-            MEGame.UDK => throw new Exception($"{game} does not support CookedDirName()"),
-            MEGame.LELauncher => throw new Exception($"{game} does not support CookedDirName()"),
-            _ => "CookedPCConsole"
-        };
-    }
-
-    public enum MEGame
-    {
-        Unknown = 0,
-        ME1 = 1,
-        ME2 = 2,
-        ME3 = 3,
-        LE1 = 4,
-        LE2 = 5,
-        LE3 = 6,
-        UDK = 7,
-
-        // Not an actual game, but used for identifying game directories
-        LELauncher = 100, // Do not change this number. It's so we can add before this without messing up any existing items
-    }
-
-    public static class MELocalizationExtensions
-    {
-        // This should only be used for "LOC_" filenames, there are more options for TLK localizations
-        public static string ToLocaleString(this MELocalization localization, MEGame game)
-        {
-            if (game.IsGame1())
-            {
-                return localization switch
-                {
-                    MELocalization.DEU => "DE",
-                    MELocalization.ESN => "ES",
-                    MELocalization.FRA => "FR",
-                    MELocalization.ITA => "IT",
-                    MELocalization.POL => "PLPC", // This does not correctly account for PL
-                    MELocalization.RUS => "RA",
-                    MELocalization.JPN => "JA",
-                    MELocalization.None => "",
-                    _ => localization.ToString()
-                };
-            }
-            return localization.ToString();
-        }
-    }
-
-    // This does not work for ME1/LE1 as it uses two character non-int localizations
-    public enum MELocalization
-    {
-        None = 0,
-        INT,
-        DEU,
-        ESN,
-        FRA,
-        ITA,
-        JPN,
-        POL,
-        RUS
-    }
-
     public enum ArrayType
     {
         Object,
@@ -218,6 +102,11 @@ namespace LegendaryExplorerCore.Packages
         public int exportIndex;
         public bool isAbstract;
 
+        /// <summary>
+        /// If the export is forcedexport, which changes how we have to reference it for an import
+        /// </summary>
+        public bool forcedExport;
+
         public bool TryGetPropInfo(NameReference name, MEGame game, out PropertyInfo propInfo) =>
             properties.TryGetValue(name, out propInfo) || (GlobalUnrealObjectInfo.GetClassOrStructInfo(game, baseClass)?.TryGetPropInfo(name, game, out propInfo) ?? false);
     }
@@ -248,6 +137,16 @@ namespace LegendaryExplorerCore.Packages
         public string FileNameNoExtension { get; }
         DateTime LastSaved { get; }
         long FileSize { get; }
+
+        /// <summary>
+        /// Custom user-defined metadata to associate with this package object. This data has no effect on saving or loading, it is only for library user convenience. This is not serialized!
+        /// </summary>
+        public Dictionary<string, object> CustomMetadata { get; set; }
+
+        /// <summary>
+        /// Data read from the LECL tag (LE only)
+        /// </summary>
+        public LECLData LECLTagData { get; }
 
         //reading
         bool IsUExport(int index);
@@ -336,13 +235,29 @@ namespace LegendaryExplorerCore.Packages
         void RemoveTrailingTrash();
 
         byte[] getHeader();
-        ObservableCollection<IPackageUser> Users { get; }
-        List<IPackageUser> WeakUsers { get; }
+
+        /// <summary>
+        /// Collection of <see cref="IPackageUser"/>s that are using this <see cref="IMEPackage"/>. Use <see cref="RegisterTool"/> and <see cref="Release"/> to modify this collection.
+        /// </summary>
+        IReadOnlyCollection<IPackageUser> Users { get; }
+        /// <summary>
+        /// Collection of <see cref="IWeakPackageUser"/>s. This is for users that want to subscribe to package change notifications as long as the package is open,
+        /// but don't want to cause it to stay open if there are no other users. Unlike <see cref="Users"/>, this collection should be modified directly,
+        /// and since it only keeps weak references, users don't need to remove themselves before they fall out of scope.
+        /// </summary>
+        WeakCollection<IWeakPackageUser> WeakUsers { get; }
         void RegisterTool(IPackageUser user);
         void Release(IPackageUser user = null);
-        event UnrealPackageFile.MEPackageEventHandler noLongerOpenInTools;
+        /// <summary>
+        /// Invoked when <see cref="Users"/> becomes empty.
+        /// </summary>
+        event UnrealPackageFile.MEPackageEventHandler NoLongerOpenInTools;
         void RegisterUse();
-        event UnrealPackageFile.MEPackageEventHandler noLongerUsed;
+        /// <summary>
+        /// Invoked when usages drop tp 0. Every call to <see cref="RegisterTool"/> or <see cref="RegisterUse"/> adds a usage,
+        /// and every call to <see cref="Release"/> or <see cref="IDisposable.Dispose"/> subtracts a usage.
+        /// </summary>
+        event UnrealPackageFile.MEPackageEventHandler NoLongerUsed;
         MemoryStream SaveToStream(bool compress, bool includeAdditionalPackagesToCook = true, bool includeDependencyTable = true);
         List<ME1TalkFile> LocalTalkFiles { get; }
         public bool IsModified { get; internal set; }

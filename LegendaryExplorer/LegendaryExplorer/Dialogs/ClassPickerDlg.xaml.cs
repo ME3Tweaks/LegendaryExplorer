@@ -54,7 +54,7 @@ namespace LegendaryExplorer.Dialogs
                 WindowStartupLocation = WindowStartupLocation.CenterScreen;
             }
 
-            ClassToolBox.Classes = classes;
+            ClassToolBox.Classes.AddRange(classes);
             ClassToolBox.DoubleClickCallback = DoubleClickCallback;
 
             ClassToolBox.searchBox.searchBox.Focus();

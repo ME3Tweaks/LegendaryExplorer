@@ -8,7 +8,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
     {
         public Expression Value;
 
-        public CaseStatement(Expression expr, SourcePosition start, SourcePosition end) 
+        public CaseStatement(Expression expr, int start, int end) 
             : base(ASTNodeType.CaseStatement, start, end) 
         {
             Value = expr;

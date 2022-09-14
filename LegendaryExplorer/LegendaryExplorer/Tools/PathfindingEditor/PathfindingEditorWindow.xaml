@@ -192,6 +192,7 @@
                               ToolTip="Toggles the size of nodes being listed beneath their UIndex. BS = Boss, MB = Miniboss, M = Mooks." />
                 </MenuItem>
                 <MenuItem Header="Experiments" Padding="4">
+                    <MenuItem Header="Connect GPS (requires interop)" Click="ConnectGPS_Clicked"/>
                     <MenuItem Header="Flip level upside down" Command="{Binding FlipLevelCommand}" />
                     <MenuItem Header="Build linear pathfinding chain from path logger (ASI)"
                               Command="{Binding BuildPathfindingChainCommand}" />
@@ -780,10 +781,10 @@
                     <exportLoaderControls:InterpreterExportLoader x:Name="interpreterControl" HideHexBox="True" />
                 </DockPanel>
                 <Grid>
-                    <WindowsFormsHost Name="GraphHost" VerticalAlignment="Stretch">
+                    <sharedUi:WindowsFormsHostEx x:Name="GraphHost" VerticalAlignment="Stretch">
                         <pathfindingEditor:PathingGraphEditor DragEnter="GraphEditor_DragEnter"
                                                               DragDrop="GraphEditor_DragDrop" />
-                    </WindowsFormsHost>
+                    </sharedUi:WindowsFormsHostEx>
                     <Image Visibility="Collapsed" Name="graphImageSub" Stretch="None" />
                 </Grid>
             </DockPanel>

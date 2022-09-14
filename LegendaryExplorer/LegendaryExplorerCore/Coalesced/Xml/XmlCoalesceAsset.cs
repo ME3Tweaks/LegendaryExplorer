@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Xml;
 using System.Xml.Linq;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 
@@ -14,8 +15,7 @@ namespace LegendaryExplorerCore.Coalesced.Xml
 		//private static readonly Regex WhitespacePattern = new Regex(@"\s+", RegexOptions.Compiled);
 		private static readonly Regex SpecialCharactersPattern = new Regex(@"[\r\n\t]+", RegexOptions.Compiled);
 
-		public XmlCoalesceAsset(string name = "", CoalesceSections sections = default, IList<CoalesceInclude> includes = null)
-			: base(name, sections)
+		public XmlCoalesceAsset(string name = "", CoalesceSections sections = default, IList<CoalesceInclude> includes = null) : base(name, sections)
 		{
 			Includes = includes ?? new List<CoalesceInclude>();
 		}
@@ -69,10 +69,18 @@ namespace LegendaryExplorerCore.Coalesced.Xml
 			if (!File.Exists(sourcePath))
 			{
 				Console.WriteLine(@"Warning: {0} not found!", path);
-				return null;
-			}
+                throw new FileNotFoundException($"Unable to include file '{sourcePath}'. The system cannot find the specified file.", sourcePath);
+            }
 
-			var doc = XDocument.Load(path);
+            XDocument doc;
+            try
+            {
+                doc = XDocument.Load(path);
+            }
+            catch (XmlException e)
+            {
+                throw new XmlException($"{Path.GetFileName(sourcePath)}: {e.Message}", e, e.LineNumber, e.LinePosition);
+            }
 
 			var root = doc.Root;
 

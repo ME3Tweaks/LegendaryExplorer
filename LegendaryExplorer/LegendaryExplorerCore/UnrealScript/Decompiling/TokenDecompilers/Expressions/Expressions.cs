@@ -7,15 +7,15 @@ using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.UnrealScript.Language.ByteCode;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
+using LegendaryExplorerCore.UnrealScript.Lexing;
 using LegendaryExplorerCore.UnrealScript.Utilities;
 using static LegendaryExplorerCore.UnrealScript.Utilities.Keywords;
 
 namespace LegendaryExplorerCore.UnrealScript.Decompiling
 {
-    public partial class ByteCodeDecompiler
+    internal partial class ByteCodeDecompiler
     {
-
-        public Expression DecompileExpression()
+        private Expression DecompileExpression()
         {
             StartPositions.Push((ushort)Position);
             var token = PeekByte;
@@ -285,9 +285,6 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 case (byte)OpCodes.NativeParm: // is this even present anywhere?
                     return DecompileNativeParm();
 
-                case (byte)OpCodes.GoW_DefaultValue:
-                    return DecompileGoW_DefaultValue();
-
                 case (byte)OpCodes.InstanceDelegate:
                     return DecompileInstanceDelegate();
 
@@ -309,7 +306,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
 
         #region Decompilers
 
-        public Expression DecompileObjectLookup()
+        private Expression DecompileObjectLookup()
         {
             var obj = ReadObject();
             if (obj == null)
@@ -367,7 +364,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             return node;
         }
 
-        public Expression DecompileDefaultReference()
+        private Expression DecompileDefaultReference()
         {
             var obj = ReadObject();
             if (obj == null)
@@ -377,7 +374,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             return new DefaultReference(ResolveEnumReference(obj), obj.ObjectName.Instanced);
         }
 
-        public Expression DecompileContext(bool isClass = false)
+        private Expression DecompileContext(bool isClass = false)
         {
             PopByte();
 
@@ -426,7 +423,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             }
         }
 
-        public Expression DecompileStructMember()
+        private Expression DecompileStructMember()
         {
             PopByte();
 
@@ -447,7 +444,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             return new CompositeSymbolRef(expr, member);
         }
 
-        public Expression DecompileArrayRef()
+        private Expression DecompileArrayRef()
         {
             PopByte();
 
@@ -460,10 +457,10 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 return null; // ERROR
 
             StartPositions.Pop();
-            return new ArraySymbolRef(arrayExpr, index, null, null);
+            return new ArraySymbolRef(arrayExpr, index, -1, -1);
         }
 
-        public Expression DecompileBoolExprValue()
+        private Expression DecompileBoolExprValue()
         {
             PopByte(); 
 
@@ -475,7 +472,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             return value; 
         }
 
-        public DelegateComparison DecompileDelegateComparison(bool isEqual)
+        private DelegateComparison DecompileDelegateComparison(bool isEqual)
         {
             PopByte();
 
@@ -493,7 +490,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             return new DelegateComparison(isEqual, left, right);
         }
 
-        public StructComparison DecompileStructComparison(bool isEqual)
+        private StructComparison DecompileStructComparison(bool isEqual)
         {
             PopByte();
 
@@ -511,7 +508,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             return new StructComparison(isEqual, left, right);
         }
 
-        public Expression DecompileConditionalExpression()
+        private Expression DecompileConditionalExpression()
         {
             PopByte();
 
@@ -532,10 +529,10 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 return null; // ERROR
 
             StartPositions.Pop();
-            return new ConditionalExpression(cond, trueExpr, falseExpr, null, null);
+            return new ConditionalExpression(cond, trueExpr, falseExpr, -1, -1);
         }
 
-        public Expression DecompileNativeFunction(int index)
+        private Expression DecompileNativeFunction(int index)
         {
             var parameters = new List<Expression>();
             while (!CurrentIs(OpCodes.EndFunctionParms))
@@ -555,24 +552,24 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             {
                 case NativeType.Function:
                     var func = new SymbolReference(null, entry.Name);
-                    call = new FunctionCall(func, parameters, null, null);
+                    call = new FunctionCall(func, parameters, -1, -1);
                     break;
 
                 case NativeType.Operator:
-                    var op = new InOpDeclaration(entry.Name, entry.Precedence, index, null, null, null);
+                    var op = new InOpDeclaration(OperatorHelper.FriendlyNameToTokenType(entry.Name), entry.Precedence, index, null, null, null);
                     var opRef = new InOpReference(op, parameters[0], parameters[1]);
                     DecompileEnumOperatorComparisons(opRef);
                     call = opRef;
                     break;
 
                 case NativeType.PreOperator:
-                    var preOp = new PreOpDeclaration(entry.Name, null, index, null);
+                    var preOp = new PreOpDeclaration(OperatorHelper.FriendlyNameToTokenType(entry.Name), null, index, null);
                     call = new PreOpReference(preOp, parameters[0]);
                     break;
 
                 case NativeType.PostOperator:
-                    var postOp = new PostOpDeclaration(entry.Name, null, index, null);
-                    call = new PostOpReference(postOp, parameters[0], null, null);
+                    var postOp = new PostOpDeclaration(OperatorHelper.FriendlyNameToTokenType(entry.Name), null, index, null);
+                    call = new PostOpReference(postOp, parameters[0], -1, -1);
                     break;
             }
 
@@ -582,14 +579,14 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
 
         private static void DecompileEnumOperatorComparisons(InOpReference opRef)
         {
-            switch (opRef.Operator.OperatorKeyword)
+            switch (opRef.Operator.OperatorType)
             {
-                case "==":
-                case "!=":
-                case ">":
-                case "<":
-                case ">=":
-                case "<=":
+                case TokenType.Equals:
+                case TokenType.NotEquals:
+                case TokenType.RightArrow:
+                case TokenType.LeftArrow:
+                case TokenType.GreaterOrEquals:
+                case TokenType.LessOrEquals:
                     if (!ResolveEnumValues(ref opRef.LeftOperand, ref opRef.RightOperand))
                     {
                         ResolveEnumValues(ref opRef.RightOperand, ref opRef.LeftOperand);
@@ -625,7 +622,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             return false;
         }
 
-        public Expression DecompileCast(bool meta = false)
+        private Expression DecompileCast(bool meta = false)
         {
             PopByte();
             var objRef = ReadObject();
@@ -647,7 +644,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             return new CastExpression(type, expr);
         }
 
-        public Expression DecompilePrimitiveCast()
+        private Expression DecompilePrimitiveCast()
         {
             PopByte();
             var typeToken = ReadByte();
@@ -669,10 +666,10 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             //{
             //    return new FloatLiteral(shouldBeFloat.Value);
             //}
-            return new PrimitiveCast((ECast)typeToken, new VariableType(type), expr, null, null);
+            return new PrimitiveCast((ECast)typeToken, new VariableType(type), expr, -1, -1);
         }
 
-        public Expression DecompileFunctionCall(bool byName = false, bool withFuncListIdx = false, bool global = false)
+        private Expression DecompileFunctionCall(bool byName = false, bool withFuncListIdx = false, bool global = false)
         {
             PopByte();
             string funcName;
@@ -720,7 +717,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                     }
                     var funcOuterClass = classExp?.ObjectName.Instanced;
                     isSuper = true;
-                    if (currentClass == null || currentClass.SuperClass == 0 || currentClass.SuperClass.GetEntry(Pcc).ObjectName.Instanced != funcOuterClass)
+                    if (currentClass == null || currentClass.SuperClass == 0 || Pcc.GetEntry(currentClass.SuperClass).ObjectName.Instanced != funcOuterClass)
                     {
                         superSpecifier = new VariableType(funcOuterClass);
                     }
@@ -743,7 +740,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 IsSuper = isSuper,
                 SuperSpecifier = superSpecifier
             };
-            return new FunctionCall(func, parameters, null, null);
+            return new FunctionCall(func, parameters, -1, -1);
         }
 
         private List<Expression> DecompileArgumentList()
@@ -790,7 +787,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             return DataContainer.Export.Parent.GetChildren().Any(child => child.ObjectName.Instanced.CaseInsensitiveEquals(funcName));
         }
 
-        public Expression DecompileNew()
+        private Expression DecompileNew()
         {
             PopByte();
             var parms = new List<Expression>();
@@ -814,11 +811,13 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             return new NewOperator(parms[0], parms[1], parms[2], parms[3], parms.Count > 4 ? parms[4] : null);
         }
 
-        public Expression DecompileDelegateFunction()
+        private Expression DecompileDelegateFunction()
         {
-            PopByte();
-            var delegateProp = DecompileExpression();
-            if (!(delegateProp is SymbolReference symRef)) return null;
+            PopByte(); //opcode
+            PopByte(); //IsLocalVariable. irrelevant to decompilation
+            StartPositions.Push((ushort)Position);
+            var delegateProp = DecompileObjectLookup();
+            if (delegateProp is not SymbolReference symRef) return null;
 
             var delegateTypeName = ReadNameReference();
 
@@ -829,7 +828,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             return new DelegateCall(symRef, args);
         }
 
-        public Expression DecompileDelegateProperty()
+        private Expression DecompileDelegateProperty()
         {
             PopByte();
             var name = ReadNameReference();
@@ -853,28 +852,16 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
          * */
         #region UnsuportedDecompilers
 
-        public Expression DecompileGoW_DefaultValue()
-        {
-            PopByte();
-            var unkn = ReadByte();
-            var expr = DecompileExpression();
-
-            StartPositions.Pop();
-            var op = new InOpDeclaration("", 0, 0, null, null, null);
-            var objRef = new SymbolReference(null, "UNSUPPORTED: GoW_DefaultValue: Byte:" + unkn + " - ", null, null);
-            return new InOpReference(op, objRef, expr, null, null);
-        }
-
-        public Expression DecompileNativeParm() // TODO: see code
+        private Expression DecompileNativeParm() // TODO: see code
         {
             PopByte();
             var obj = ReadObject();
 
             StartPositions.Pop();
-            return new SymbolReference(null, "UNSUPPORTED: NativeParm: " + obj.ObjectName.Instanced + " : " + obj.ClassName, null, null);
+            return new SymbolReference(null, "UNSUPPORTED: NativeParm: " + obj.ObjectName.Instanced + " : " + obj.ClassName);
         }
 
-        public Expression DecompileInstanceDelegate() // TODO: check code, seems ok?
+        private Expression DecompileInstanceDelegate() // TODO: check code, seems ok?
         {
             PopByte();
             var name = ReadNameReference();

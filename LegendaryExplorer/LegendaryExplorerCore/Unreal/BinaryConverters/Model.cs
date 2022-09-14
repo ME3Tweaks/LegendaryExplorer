@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.CompilerServices;
 using LegendaryExplorerCore.Packages;
+using UIndex = System.Int32;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
@@ -101,22 +99,23 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 LightmassSettings = Array.Empty<LightmassPrimitiveSettings>()
             };
         }
-        public override List<(UIndex, string)> GetUIndexes(MEGame game)
-        {
-            var uIndexes = new List<(UIndex, string)>();
 
-            uIndexes.Add((Self, nameof(Self)));
+        public override void ForEachUIndex<TAction>(MEGame game, in TAction action)
+        {
+            ref TAction a = ref Unsafe.AsRef(action);
+
+            a.Invoke(ref Self, nameof(Self));
             for (int i = 0; i < Surfs.Length; i++)
             {
                 BspSurf surf = Surfs[i];
-                uIndexes.Add((surf.Material, $"Surfs[{i}].Material"));
-                uIndexes.Add((surf.Actor, $"Surfs[{i}].Actor"));
+                a.Invoke(ref surf.Material, $"Surfs[{i}].Material");
+                a.Invoke(ref surf.Actor, $"Surfs[{i}].Actor");
             }
-
-            uIndexes.AddRange(Zones.Select((zone, i) => (zone.ZoneActor, $"Zones[{i}].ZoneActor")));
-            uIndexes.Add((Polys, nameof(Polys)));
-
-            return uIndexes;
+            for (int i = 0; i < Zones.Length; i++)
+            {
+                a.Invoke(ref Zones[i].ZoneActor, $"Zones[{i}].ZoneActor");
+            }
+            a.Invoke(ref Polys, nameof(Polys));
         }
     }
 

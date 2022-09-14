@@ -39,7 +39,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         private static readonly Dictionary<MEGame, LiveLevelEditorWindow> Instances = new();
         public static LiveLevelEditorWindow Instance(MEGame game)
         {
-            if (!GameController.GetInteropTargetForGame(game)?.ModInfo?.CanUseLLE ?? true)
+            if (!GameController.GetInteropTargetForGame(game)?.CanUseLLE ?? true)
                 throw new ArgumentException(@"Live Level Editor does not support this game!", nameof(game));
 
             return Instances.TryGetValue(game, out var lle) ? lle : null;
@@ -76,7 +76,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         {
             Game = game;
             GameTarget = GameController.GetInteropTargetForGame(game);
-            if (GameTarget is null || !GameTarget.ModInfo.CanUseLLE)
+            if (GameTarget is null || !GameTarget.CanUseLLE)
             {
                 throw new Exception($"{game} does not support Live Level Editor!");
             }
@@ -140,7 +140,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         void LoadCommands()
         {
             GameInstalledRequirementCommand = new Requirement.RequirementCommand(() => InteropHelper.IsGameInstalled(Game), () => InteropHelper.SelectGamePath(Game));
-            ASILoaderInstalledRequirementCommand = new Requirement.RequirementCommand(() => InteropHelper.IsASILoaderInstalled(Game), InteropHelper.OpenASILoaderDownload);
+            ASILoaderInstalledRequirementCommand = new Requirement.RequirementCommand(() => InteropHelper.IsASILoaderInstalled(Game), () => InteropHelper.OpenASILoaderDownload(Game));
             InteropASIInstalledRequirementCommand = new Requirement.RequirementCommand(() => InteropHelper.IsInteropASIInstalled(Game), () => InteropHelper.OpenInteropASIDownload(Game));
             ConsoleASIInstalledRequirementCommand = new Requirement.RequirementCommand(InteropHelper.IsME3ConsoleExtensionInstalled, InteropHelper.OpenConsoleExtensionDownload);
             SupportFilesInstalledRequirementCommand = new Requirement.RequirementCommand(AreSupportFilesInstalled, InstallSupportFiles);
@@ -180,9 +180,10 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         {
             if (MELoadedFiles.GetFilesLoadedInGame(Game).TryGetValue(fileName, out string filePath))
             {
-                if (WPFBase.TryOpenInExisting(filePath, out PackageEditorWindow packEd))
+                if (WPFBase.GetExistingToolInstance(filePath, out PackageEditorWindow packEd))
                 {
                     packEd.GoToNumber(uIndex);
+                    packEd.RestoreAndBringToFront();
                 }
                 else
                 {
@@ -805,8 +806,8 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
                 var pov = (POV)((System.Windows.Controls.Button)sender).DataContext;
 
                 var props = interpTrackMove.GetProperties();
-                var interpCurvePos = InterpCurveVector.FromStructProperty(props.GetProp<StructProperty>("PosTrack"));
-                var interpCurveRot = InterpCurveVector.FromStructProperty(props.GetProp<StructProperty>("EulerTrack"));
+                var interpCurvePos = InterpCurveVector.FromStructProperty(props.GetProp<StructProperty>("PosTrack"), Game);
+                var interpCurveRot = InterpCurveVector.FromStructProperty(props.GetProp<StructProperty>("EulerTrack"), Game);
 
                 interpCurvePos.AddPoint(time, pov.Position, Vector3.Zero, Vector3.Zero, EInterpCurveMode.CIM_CurveUser);
                 interpCurveRot.AddPoint(time, pov.Rotation, Vector3.Zero, Vector3.Zero, EInterpCurveMode.CIM_CurveUser);
@@ -815,7 +816,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
                 props.AddOrReplaceProp(interpCurveRot.ToStructProperty(Game, "EulerTrack"));
                 interpTrackMove.WriteProperties(props);
 
-                var floatTrack = InterpCurveFloat.FromStructProperty(fovTrackExport.GetProperty<StructProperty>("FloatTrack"));
+                var floatTrack = InterpCurveFloat.FromStructProperty(fovTrackExport.GetProperty<StructProperty>("FloatTrack"), Game);
                 floatTrack.AddPoint(time, pov.FOV, 0, 0, EInterpCurveMode.CIM_CurveUser);
                 fovTrackExport.WriteProperty(floatTrack.ToStructProperty(Game, "FloatTrack"));
 
@@ -830,11 +831,11 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             if (MessageBoxResult.Yes == MessageBox.Show("Are you sure you want to clear all keys from the Curve Editors?", "Clear Keys confirmation", MessageBoxButton.YesNo, MessageBoxImage.Warning))
             {
                 var props = interpTrackMove.GetProperties();
-                props.AddOrReplaceProp(new InterpCurve<Vector3>().ToStructProperty(Game, "PosTrack"));
-                props.AddOrReplaceProp(new InterpCurve<Vector3>().ToStructProperty(Game, "EulerTrack"));
+                props.AddOrReplaceProp(new InterpCurveVector().ToStructProperty(Game, "PosTrack"));
+                props.AddOrReplaceProp(new InterpCurveVector().ToStructProperty(Game, "EulerTrack"));
                 interpTrackMove.WriteProperties(props);
 
-                fovTrackExport.WriteProperty(new InterpCurve<float>().ToStructProperty(Game, "FloatTrack"));
+                fovTrackExport.WriteProperty(new InterpCurveFloat().ToStructProperty(Game, "FloatTrack"));
 
                 ReloadCurveEdExports();
             }

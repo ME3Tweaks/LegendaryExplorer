@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Unreal;
 
 namespace LegendaryExplorer.UserControls.SharedToolControls.Curves
 {
@@ -23,7 +24,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Curves
                 return;
             }
 
-            var firstPoint = enumerator.Current;
+            CurvePoint firstPoint = enumerator.Current;
             double x1 = graph.toLocalX(firstPoint.InVal);
             double y1 = graph.toLocalY(firstPoint.OutVal);
             double slope1 = firstPoint.LeaveTangent;
@@ -47,17 +48,17 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Curves
                 double slope2 = curvePoint.ArriveTangent;
                 switch (interpMode)
                 {
-                    case CurveMode.CIM_Linear:
+                    case EInterpCurveMode.CIM_Linear:
                         ctxt.LineTo(new Point(x2, graph.ActualHeight - y2), true, true);
                         break;
-                    case CurveMode.CIM_Constant:
+                    case EInterpCurveMode.CIM_Constant:
                         ctxt.LineTo(new Point(x2, graph.ActualHeight - y1), true, true);
                         ctxt.LineTo(new Point(x2, graph.ActualHeight - y2), true, true);
                         break;
-                    case CurveMode.CIM_CurveUser:
-                    case CurveMode.CIM_CurveAuto:
-                    case CurveMode.CIM_CurveBreak:
-                    case CurveMode.CIM_CurveAutoClamped:
+                    case EInterpCurveMode.CIM_CurveUser:
+                    case EInterpCurveMode.CIM_CurveAuto:
+                    case EInterpCurveMode.CIM_CurveBreak:
+                    case EInterpCurveMode.CIM_CurveAutoClamped:
                         BezierSegment.BezierTo(graph, ctxt, x1, y1, slope1, x2, y2, slope2);
                         break;
                     default:

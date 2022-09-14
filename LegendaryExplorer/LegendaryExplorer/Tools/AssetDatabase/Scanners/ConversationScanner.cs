@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using LegendaryExplorer.Tools.TlkManagerNS;
-using LegendaryExplorerCore.ME1;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.TLK;
 using LegendaryExplorerCore.Unreal;
 
 namespace LegendaryExplorer.Tools.AssetDatabase.Scanners
@@ -113,20 +109,18 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Scanners
         /// <param name="line"></param>
         /// <param name="fileref"></param>
         /// <returns></returns>
-        private bool HasTLKLine(ConvoLine line, IMEPackage fileref)
+        private static bool HasTLKLine(ConvoLine line, IMEPackage fileref)
         {
             if (fileref.Game == MEGame.ME1)
             {
-                line.Line = ME1TalkFiles.findDataById(line.StrRef, fileref);
-                if (line.Line == "No Data" || line.Line == "\"\"" ||
-                    line.Line == "\" \"" || line.Line == " ")
+                line.Line = ME1TalkFiles.FindDataById(line.StrRef, fileref);
+                if (line.Line is "No Data" or "\"\"" or "\" \"" or " ")
                     return false;
             }
             else if (fileref.Game == MEGame.LE1)
             {
-                line.Line = LE1TalkFiles.findDataById(line.StrRef, fileref);
-                if (line.Line == "No Data" || line.Line == "\"\"" ||
-                    line.Line == "\" \"" || line.Line == " ")
+                line.Line = LE1TalkFiles.FindDataById(line.StrRef, fileref);
+                if (line.Line is "No Data" or "\"\"" or "\" \"" or " ")
                     return false;
             }
             return true;

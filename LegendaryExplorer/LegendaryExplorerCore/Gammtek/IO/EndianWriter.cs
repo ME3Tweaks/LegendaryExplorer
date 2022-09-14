@@ -17,6 +17,7 @@ using System;
 using System.Buffers.Binary;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Text;
 using LegendaryExplorerCore.Gammtek.Extensions;
 using LegendaryExplorerCore.Gammtek.IO.Converters;
@@ -185,7 +186,7 @@ namespace LegendaryExplorerCore.Gammtek.IO
 
 
 
-        public void WriteBytes(byte[] bytes) => WriteFromBuffer(bytes);
+        public void WriteBytes(byte[] bytes) => Write(bytes);
 
         public void WriteByte(byte b)
         {
@@ -245,6 +246,23 @@ namespace LegendaryExplorerCore.Gammtek.IO
         public void WriteZeros(int count)
         {
             Write(new byte[count]);
+        }
+
+        public void WriteGuid(Guid value)
+        {
+            Span<byte> data = stackalloc byte[16];
+            MemoryMarshal.Write(data, ref value);
+
+            if (NoConvert)
+            {
+                Write(data);
+                return;
+            }
+
+            WriteInt32(BitConverter.ToInt32(data));
+            WriteInt16(BitConverter.ToInt16(data.Slice(4)));
+            WriteInt16(BitConverter.ToInt16(data.Slice(6)));
+            Write(data.Slice(8));
         }
 
         /// <summary>

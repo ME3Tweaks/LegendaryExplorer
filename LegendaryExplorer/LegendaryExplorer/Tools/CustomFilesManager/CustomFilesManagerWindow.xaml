@@ -1,0 +1,53 @@
+﻿<bases:TrackingNotifyPropertyChangedWindowBase x:Class="LegendaryExplorer.Tools.CustomFilesManager.CustomFilesManagerWindow"
+                                         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                                         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                                         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                                         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                                         xmlns:bases="clr-namespace:LegendaryExplorer.SharedUI.Bases"
+                                         xmlns:sharedToolControls="clr-namespace:LegendaryExplorer.UserControls.SharedToolControls"
+                                         mc:Ignorable="d"
+                                         DataContext="{Binding RelativeSource={RelativeSource Self}}"
+                                         Title="LEX Custom Files Manager" Height="450" Width="1200">
+    <Grid Margin="5">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="5"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- COLUMN 0: CUSTOM STARTUP FILES (SAFE TO IMPORT FROM) -->
+        <TextBlock Grid.Row="0" Grid.Column="0" Text="Custom startup files" FontWeight="Bold"/>
+        <TextBlock Grid.Row="1" Grid.Column="0" Text="These files will be treated as safe to use for creating imports from. Improper use of this feature will result in broken game files. If you don't know what you're doing, do not modify this list." TextWrapping="Wrap"/>
+        <ListBox Grid.Row="2" Grid.Column="0" ItemsSource="{Binding CustomStartupFiles}" SelectedItem="{Binding SelectedStartupFile}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal" MouseLeftButtonDown="CustomStartupFile_Click" ToolTip="Double click to open">
+                        <sharedToolControls:StatusBarGameIDIndicator GameType="{Binding Path=Game}" />
+                        <TextBlock Text="{Binding Path=FilePath}" VerticalAlignment="Center" TextWrapping="Wrap" MaxWidth="500"/>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <DockPanel Grid.Row="5" Grid.Column="0" Margin="0,3,0,0">
+            <Button Padding="5" Content="Remove file" DockPanel.Dock="Right" Command="{Binding RemoveStartupFileCommand}"/>
+            <Button Padding="5" Content="Add file" HorizontalAlignment="Left" Command="{Binding AddStartupFileCommand}"/>
+        </DockPanel>
+
+        <!-- COLUMN 1: STARTUP INVENTORY DIRECTORY -->
+        <TextBlock Grid.Row="0" Grid.Column="2" Text="Custom class file directories" FontWeight="Bold"/>
+        <TextBlock Grid.Row="1" Grid.Column="2" Text="Files in these directories will be scanned on toolset boot, and any classes in them will be automatically added to the LEX database for this session. This will allow you to use them more effectively in tools such as Package Editor (better property handling) and Sequence Editor (add custom kismet objects to toolbox)." TextWrapping="Wrap"/>
+        <ListBox Grid.Row="2" Grid.Column="2" ItemsSource="{Binding CustomClassDirectories}" SelectedItem="{Binding SelectedCustomClassDirectory}"/>
+        <DockPanel Grid.Row="5" Grid.Column="2" Margin="0,3,0,0">
+            <Button Padding="5" Content="Remove directory" DockPanel.Dock="Right" Command="{Binding RemoveCustomDirectoryCommand}"/>
+            <Button Padding="5" Content="Add directory" HorizontalAlignment="Left" Command="{Binding AddCustomDirectoryCommand}"/>
+        </DockPanel>
+    </Grid>
+</bases:TrackingNotifyPropertyChangedWindowBase>

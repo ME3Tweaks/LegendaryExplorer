@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.IO;
+using System.Windows;
 using System.Windows.Input;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.Misc;
@@ -13,7 +14,7 @@ namespace LegendaryExplorer.Dialogs
     public partial class SoundReplaceOptionsDialog : NotifyPropertyChangedWindowBase
     {
         public ObservableCollectionExtended<int> SampleRates { get; } = new ObservableCollectionExtended<int>();
-        private static readonly int[] AcceptedSampleRates = {24000, 32000, 44100}; //may add more later
+        private static readonly int[] AcceptedSampleRates = { 24000, 32000, 44100 }; //may add more later
 
         public ObservableCollectionExtended<MEGame> SupportedGames { get; } = new()
         {
@@ -28,22 +29,31 @@ namespace LegendaryExplorer.Dialogs
             set => SetProperty(ref _showUpdateEventsCheckbox, value);
         }
 
+        private bool _showDestAFCFile;
+
+        public bool ShowDestAFCFile
+        {
+            get => _showDestAFCFile;
+            set => SetProperty(ref _showDestAFCFile, value);
+        }
+
         private MEGame _selectedGame;
 
         public MEGame SelectedGame
         {
             get => _selectedGame;
-            set {
+            set
+            {
                 if (SupportedGames.Contains(value))
                 {
                     SetProperty(ref _selectedGame, value);
                 }
             }
-    }
+        }
 
         public WwiseConversionSettingsPackage ChosenSettings;
 
-        public SoundReplaceOptionsDialog(bool showUpdateEvents = true, MEGame game = MEGame.ME3) : base()
+        public SoundReplaceOptionsDialog(bool showUpdateEvents = true, MEGame game = MEGame.LE3, string destAFCFile = null) : base()
         {
             DataContext = this;
             SampleRates.AddRange(AcceptedSampleRates);
@@ -52,9 +62,11 @@ namespace LegendaryExplorer.Dialogs
             ShowUpdateEventsCheckbox = showUpdateEvents;
             SelectedGame = game;
             SampleRate_Combobox.SelectedIndex = 0;
+            AfcFileDest_TextBox.Text = destAFCFile;
+            ShowDestAFCFile = !string.IsNullOrWhiteSpace(destAFCFile);
         }
 
-        public SoundReplaceOptionsDialog(Window w, bool showUpdateEvents = true, MEGame game = MEGame.ME3) : this(showUpdateEvents, game)
+        public SoundReplaceOptionsDialog(Window w, bool showUpdateEvents = true, MEGame game = MEGame.LE3, string destAFCFile = null) : this(showUpdateEvents, game, destAFCFile)
         {
             Owner = w;
         }
@@ -73,13 +85,14 @@ namespace LegendaryExplorer.Dialogs
             {
                 TargetSamplerate = (int)SampleRate_Combobox.SelectedItem,
                 UpdateReferencedEvents = (bool)UpdateEvents_CheckBox.IsChecked,
-                TargetGame = SelectedGame
+                TargetGame = SelectedGame,
+                DestinationAFCFile = Path.GetFileNameWithoutExtension(AfcFileDest_TextBox.Text) // Just remove it so we don't have to deal with it
             };
             DialogResult = true;
             Close();
         }
 
-        private bool CanReturnSettings() => SampleRate_Combobox.SelectedIndex >= 0;
+        private bool CanReturnSettings() => SampleRate_Combobox.SelectedIndex >= 0 && !ShowDestAFCFile || !string.IsNullOrWhiteSpace(AfcFileDest_TextBox.Text);
 
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {
@@ -90,6 +103,7 @@ namespace LegendaryExplorer.Dialogs
     {
         public int TargetSamplerate = 0;
         public bool UpdateReferencedEvents = true;
-        public MEGame TargetGame = MEGame.ME3;
+        public MEGame TargetGame = MEGame.LE3;
+        public string DestinationAFCFile; // No default to ensure it must be set.
     }
 }

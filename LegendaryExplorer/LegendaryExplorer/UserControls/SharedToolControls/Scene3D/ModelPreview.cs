@@ -146,7 +146,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
         /// <param name="s">Which faces to render.</param>
         /// <param name="transform">The model transformation to be applied to the vertices.</param>
         /// <param name="view">The SceneRenderControl that the given LOD should be rendered into.</param>
-        public abstract void RenderSection(ModelPreviewLOD lod, ModelPreviewSection s, Matrix4x4 transform, SceneRenderContext context);
+        public abstract void RenderSection(ModelPreviewLOD lod, ModelPreviewSection s, Matrix4x4 transform, MeshRenderContext context);
 
         /// <summary>
         /// Disposes any outstanding resources.
@@ -235,10 +235,10 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
         /// <param name="s">Which faces to render.</param>
         /// <param name="transform">The model transformation to be applied to the vertices.</param>
         /// <param name="view">The SceneRenderControl that the given LOD should be rendered into.</param>
-        public override void RenderSection(ModelPreviewLOD lod, ModelPreviewSection s, Matrix4x4 transform, SceneRenderContext context)
+        public override void RenderSection(ModelPreviewLOD lod, ModelPreviewSection s, Matrix4x4 transform, MeshRenderContext context)
         {
             context.DefaultEffect.PrepDraw(context.ImmediateContext);
-            context.DefaultEffect.RenderObject(context.ImmediateContext, new SceneRenderContext.WorldConstants(Matrix4x4.Transpose(context.Camera.ProjectionMatrix), Matrix4x4.Transpose(context.Camera.ViewMatrix), Matrix4x4.Transpose(transform)), lod.Mesh, (int)s.StartIndex, (int)s.TriangleCount * 3, Textures.ContainsKey(DiffuseTextureFullName) ? Textures[DiffuseTextureFullName]?.TextureView ?? context.DefaultTextureView : context.DefaultTextureView);
+            context.DefaultEffect.RenderObject(context.ImmediateContext, new MeshRenderContext.WorldConstants(Matrix4x4.Transpose(context.Camera.ProjectionMatrix), Matrix4x4.Transpose(context.Camera.ViewMatrix), Matrix4x4.Transpose(transform), context.CurrentTextureViewFlags), lod.Mesh, (int)s.StartIndex, (int)s.TriangleCount * 3, Textures.ContainsKey(DiffuseTextureFullName) ? Textures[DiffuseTextureFullName]?.TextureView ?? context.DefaultTextureView : context.DefaultTextureView);
         }
     }
 
@@ -477,130 +477,6 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             LODs.Add(new ModelPreviewLOD(new WorldMesh(Device, triangles, vertices), sections));
         }
 
-        // Todo: ME3Exp 5.1: Get rid of this and use the import resolver. It must support a cache so we don't constnatly open packages
-        internal static ExportEntry FindExternalAsset(ImportEntry entry, List<ExportEntry> alreadyLoadedPackageEntries, List<IMEPackage> openedPackages)
-        {
-            //Debug.WriteLine("Finding external asset " + entry.GetFullPath);
-            if (entry.Game == MEGame.ME1)
-            {
-                var sourcePackageInternalPath = entry.FullPath.Substring(entry.FullPath.IndexOf('.') + 1);
-                string baseName = entry.FileRef.FollowLink(entry.idxLink).Split('.')[0].ToUpper() + ".upk"; //Get package filename
-                var preloadedPackageEntry = alreadyLoadedPackageEntries?.FirstOrDefault(x => Path.GetFileName(x.FileRef.FilePath).Equals(baseName, StringComparison.InvariantCultureIgnoreCase));
-                if (preloadedPackageEntry == null && MELoadedFiles.GetFilesLoadedInGame(MEGame.ME1).TryGetValue(baseName, out string packagePath))
-                {
-                    var package = MEPackageHandler.OpenMEPackage(packagePath);
-                    if (openedPackages != null && !openedPackages.Contains(package))
-                    {
-                        openedPackages.Add(package);
-                    }
-
-                    var foundExp = package.Exports.FirstOrDefault(exp => exp.FullPath == sourcePackageInternalPath && exp.ClassName == entry.ClassName);
-                    if (foundExp != null) return foundExp;
-                    if (openedPackages == null) package.Dispose();
-                }
-                else
-                {
-                    Debug.WriteLine("ME1 External Asset lookup: Using existing preloaded export package");
-                    var foundExp = preloadedPackageEntry.FileRef.Exports.FirstOrDefault(exp => exp.FullPath == sourcePackageInternalPath && exp.ClassName == entry.ClassName);
-                    if (foundExp != null) return foundExp;
-                }
-
-            }
-            else
-            {
-                // Next, split the filename by underscores
-                string filenameWithoutExtension = Path.GetFileNameWithoutExtension(entry.FileRef.FilePath).ToLower();
-                string containingDirectory = Path.GetDirectoryName(entry.FileRef.FilePath);
-                var packagesToCheck = new List<string>();
-                var gameFiles = MELoadedFiles.GetFilesLoadedInGame(entry.Game);
-
-                if (filenameWithoutExtension.StartsWith("bioa_") || filenameWithoutExtension.StartsWith("biod_"))
-                {
-                    string[] parts = filenameWithoutExtension.Split('_');
-                    if (parts.Length >= 2) //BioA_Nor_WowThatsAlot310.pcc
-                    {
-                        string bioad = $"{parts[0]}_{parts[1]}.pcc";
-                        string filename = Path.Combine(containingDirectory, bioad); //BioA_Nor.pcc
-                        if (File.Exists(filename))
-                        {
-                            packagesToCheck.Add(filename);
-                        }
-                        else
-                        {
-                            if (gameFiles.TryGetValue(filename, out string inGamePath))
-                            {
-                                packagesToCheck.Add(inGamePath);
-                            }
-                        }
-
-                        string biop = $"BioP_{parts[1]}.pcc";
-                        filename = Path.Combine(containingDirectory, biop); //BioP_Nor.pcc
-                        if (File.Exists(filename))
-                        {
-                            packagesToCheck.Add(filename);
-                        }
-                        else
-                        {
-                            if (gameFiles.TryGetValue(filename, out string inGamePath))
-                            {
-                                packagesToCheck.Add(inGamePath);
-                            }
-                        }
-                    }
-                }
-
-                // Add globals
-                packagesToCheck.Add(Path.Combine(MEDirectories.GetCookedPath(entry.Game), "SFXGame.pcc"));
-                packagesToCheck.Add(Path.Combine(MEDirectories.GetCookedPath(entry.Game), "EntryMenu.pcc"));
-                packagesToCheck.Add(Path.Combine(MEDirectories.GetCookedPath(entry.Game), entry.Game == MEGame.ME3 ? "Startup.pcc" : "Startup_INT.pcc"));
-                packagesToCheck.Add(Path.Combine(MEDirectories.GetCookedPath(entry.Game), "Engine.pcc"));
-                packagesToCheck.Add(Path.Combine(MEDirectories.GetCookedPath(entry.Game), "Engine.u")); //ME1
-
-                foreach (string packagePath in packagesToCheck)
-                {
-                    if (File.Exists(packagePath))
-                    {
-                        var preloadedPackageEntry = alreadyLoadedPackageEntries?.FirstOrDefault(x => Path.GetFileName(x.FileRef.FilePath).Equals(packagePath, StringComparison.InvariantCultureIgnoreCase));
-                        if (preloadedPackageEntry == null)
-                        {
-                            var sentry = searchPackageForEntry(packagePath, entry.FullPath, entry.ClassName, openedPackages);
-                            if (sentry != null) return sentry;
-                        }
-                        else
-                        {
-                            Debug.WriteLine("ME2/3 External Asset lookup: Using existing preloaded export package");
-                            var foundExp = preloadedPackageEntry.FileRef.Exports.FirstOrDefault(exp => exp.FullPath == entry.FullPath && exp.ClassName == entry.ClassName);
-                            if (foundExp != null) return foundExp;
-                        }
-                    }
-                }
-            }
-
-            Debug.WriteLine("Could not find external asset: " + entry.FullPath);
-            return null;
-        }
-
-        private static ExportEntry searchPackageForEntry(string packagePath, string fullPath, string className, List<IMEPackage> openedPackages)
-        {
-
-            //Debug.WriteLine("ME2/3 External Asset lookup: Checking " + packagePath);
-            IMEPackage package = null;
-            if (openedPackages != null)
-            {
-                package = openedPackages.FirstOrDefault(x => x.FilePath == packagePath);
-            }
-            package ??= MEPackageHandler.OpenMEPackage(packagePath);
-            if (openedPackages != null && !openedPackages.Contains(package))
-            {
-                openedPackages.Add(package);
-            }
-            var foundExp = package.Exports.FirstOrDefault(exp => exp.FullPath == fullPath && exp.ClassName == className);
-            if (openedPackages == null) package.Dispose();
-            return foundExp;
-            //Debug.WriteLine("ME2/3 External Asset lookup: Not found, disposing " + packagePath);
-        }
-
-
         /// <summary>
         /// Internal method for decoding UV values.
         /// </summary>
@@ -648,18 +524,17 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             // STEP 1: MATERIALS
             if (preloadedData == null)
             {
-                for (int i = 0; i < m.Materials.Length; i++)
+                foreach (int materialUIndex in m.Materials)
                 {
-                    UIndex materialUIndex = m.Materials[i];
                     MaterialInstanceConstant mat = null;
-                    if (materialUIndex.value > 0)
+                    if (materialUIndex > 0)
                     {
-                        mat = new MaterialInstanceConstant(m.Export.FileRef.GetUExport(materialUIndex.value));
+                        mat = new MaterialInstanceConstant(m.Export.FileRef.GetUExport(materialUIndex));
                     }
-                    else if (materialUIndex.value < 0)
+                    else if (materialUIndex < 0)
                     {
                         // The material instance is an import!
-                        ImportEntry matImport = m.Export.FileRef.GetImport(materialUIndex.value);
+                        ImportEntry matImport = m.Export.FileRef.GetImport(materialUIndex);
                         var externalAsset = EntryImporter.ResolveImport(matImport, null, assetCache);
                         if (externalAsset != null)
                         {
@@ -684,7 +559,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
                 var uniqueMaterials = preloadedData.texturePreviewMaterials.Select(x => x.MaterialExport).Distinct();
                 foreach (var mat in uniqueMaterials)
                 {
-                    var material = new TexturedPreviewMaterial(texcache, new MaterialInstanceConstant(mat), assetCache, preloadedData.texturePreviewMaterials);
+                    var material = new TexturedPreviewMaterial(texcache, new MaterialInstanceConstant(mat, assetCache), assetCache, preloadedData.texturePreviewMaterials);
                     AddMaterial(mat.ObjectName.Name, material);
 
                 }
@@ -809,7 +684,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
         /// <param name="view">The SceneRenderControl to render the preview into.</param>
         /// <param name="LOD">Which level of detail to render at. Level 0 is traditionally the most detailed.</param>
         /// <param name="transform">The model transformation to be applied to the vertices.</param>
-        public void Render(SceneRenderContext view, int LOD, Matrix4x4 transform)
+        public void Render(MeshRenderContext view, int LOD, Matrix4x4 transform)
         {
             foreach (ModelPreviewSection section in LODs[LOD].Sections)
             {

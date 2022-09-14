@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using LegendaryExplorerCore.Packages;
+using UIndex = System.Int32;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
@@ -13,15 +10,14 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public int ArraySize;//If this is not 0, this property is a static array, of ArraySize length
         public UnrealFlags.EPropertyFlags PropertyFlags;
         public NameReference Category;
-        public UIndex ArraySizeEnum; //If this is not 0, this property is a static array,
-        //and the number of copies of this property there should be is equal to the MAX value of the Enum this points to 
+        public UIndex ArraySizeEnum; //If this is not 0, this property is a static array, and the number of copies of this property there should be is equal to the MAX value of the Enum this points to 
         public ushort ReplicationOffset;
         protected override void Serialize(SerializingContainer2 sc)
         {
             base.Serialize(sc);
             sc.Serialize(ref ArraySize);
             sc.Serialize(ref PropertyFlags);
-            if (sc.Pcc.Platform == MEPackage.GamePlatform.PC)
+            if (sc.Pcc.Platform is MEPackage.GamePlatform.PC || (sc.Game is not MEGame.ME3 && sc.Pcc.Platform is MEPackage.GamePlatform.Xenon))
             {
                 sc.Serialize(ref Category);
                 sc.Serialize(ref ArraySizeEnum);
@@ -33,13 +29,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
         }
 
-        public override List<(UIndex, string)> GetUIndexes(MEGame game)
-        {
-            List<(UIndex, string)> uIndices = base.GetUIndexes(game);
-            uIndices.Add((ArraySizeEnum, "ArraySizeEnum"));
-            return uIndices;
-        }
-
         public override List<(NameReference, string)> GetNames(MEGame game)
         {
             var names = base.GetNames(game);
@@ -47,6 +36,12 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             names.Add((Category, nameof(Category)));
 
             return names;
+        }
+
+        public override void ForEachUIndex<TAction>(MEGame game, in TAction action)
+        {
+            base.ForEachUIndex(game, in action);
+            Unsafe.AsRef(action).Invoke(ref ArraySizeEnum, nameof(ArraySizeEnum));
         }
     }
 
@@ -56,10 +51,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             return new()
             {
-                SuperClass = 0,
-                Next = 0,
-                Category = "None",
-                ArraySizeEnum = 0
+                Category = "None"
             };
         }
     }
@@ -69,10 +61,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             return new()
             {
-                SuperClass = 0,
-                Next = 0,
-                Category = "None",
-                ArraySizeEnum = 0
+                Category = "None"
             };
         }
     }
@@ -82,10 +71,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             return new()
             {
-                SuperClass = 0,
-                Next = 0,
-                Category = "None",
-                ArraySizeEnum = 0
+                Category = "None"
             };
         }
     }
@@ -95,10 +81,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             return new()
             {
-                SuperClass = 0,
-                Next = 0,
-                Category = "None",
-                ArraySizeEnum = 0
+                Category = "None"
             };
         }
     }
@@ -108,10 +91,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             return new()
             {
-                SuperClass = 0,
-                Next = 0,
-                Category = "None",
-                ArraySizeEnum = 0
+                Category = "None"
             };
         }
     }
@@ -121,10 +101,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             return new()
             {
-                SuperClass = 0,
-                Next = 0,
-                Category = "None",
-                ArraySizeEnum = 0
+                Category = "None"
             };
         }
     }

@@ -11,7 +11,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 
         public int iteratorPopPos;
 
-        public ForEachLoop(Expression iterator, CodeBody body, SourcePosition start = null, SourcePosition end = null)
+        public ForEachLoop(Expression iterator, CodeBody body, int start = -1, int end = -1)
             : base(ASTNodeType.ForEachLoop, start, end)
         {
             IteratorCall = iterator;

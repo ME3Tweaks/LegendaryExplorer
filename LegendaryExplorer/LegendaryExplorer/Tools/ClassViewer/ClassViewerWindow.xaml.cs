@@ -13,8 +13,11 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using LegendaryExplorer.Misc;
+using LegendaryExplorerCore.Gammtek.Extensions;
 using LegendaryExplorerCore.Misc;
+using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
+using LegendaryExplorerCore.UnrealScript.Language.Tree;
 
 namespace LegendaryExplorer.Tools.ClassViewer
 {
@@ -30,12 +33,11 @@ namespace LegendaryExplorer.Tools.ClassViewer
             set => SetProperty(ref _selectedObject, value);
         }
 
-        public ClassViewerWindow()
+        public ClassViewerWindow(MEGame game)
         {
-
             // Pass 1: Build all classes
             Dictionary<string, ClassObject> objMap = new();
-            foreach (var v in ME3UnrealObjectInfo.Classes)
+            foreach (var v in GlobalUnrealObjectInfo.GetClasses(game))
             {
                 ClassObject co = new ClassObject()
                 {
@@ -43,13 +45,13 @@ namespace LegendaryExplorer.Tools.ClassViewer
                     ObjectClass = v.Value.ClassName,
                 };
 
-                co.Descendents.AddRange(v.Value.properties.Select(x=>new ClassObject() { ObjectClass = x.Value.Type.ToString(), ObjectName = x.Key, IsProperty = true}));
+                co.Descendents.AddRange(v.Value.properties.Select(x => new ClassObject() { ObjectClass = x.Value.Type.ToString(), ObjectName = x.Key, IsProperty = true }));
 
                 objMap[v.Value.ClassName] = co;
             }
 
             // Pass 2: Link heirarchy
-            foreach (var v in ME3UnrealObjectInfo.Classes)
+            foreach (var v in GlobalUnrealObjectInfo.GetClasses(game))
             {
                 var classObj = objMap[v.Value.ClassName];
                 //if (v.Value.ClassName.Contains(@"SFXWeapon"))
@@ -87,6 +89,8 @@ namespace LegendaryExplorer.Tools.ClassViewer
 
             RootObjects.AddRange(roots);
             InitializeComponent();
+
+            Title = $"{game.ToGameName()} Class Viewer";
         }
 
         private void SortChildren(ClassObject classObject)
@@ -95,8 +99,10 @@ namespace LegendaryExplorer.Tools.ClassViewer
             {
                 SortChildren(v);
             }
-
-            classObject.Descendents.Sort(x => x.ObjectName);
+            if (classObject.ObjectName == "Object")
+                Debug.WriteLine("hi");
+            var list = classObject.Descendents.OrderBy(x => x.IsProperty).ThenBy(x => x.ObjectName).ToList();
+            classObject.Descendents.ReplaceAll(list);
         }
 
 
@@ -105,8 +111,17 @@ namespace LegendaryExplorer.Tools.ClassViewer
 
         public class ClassObject : NotifyPropertyChangedBase
         {
+            /// <summary>
+            /// The parent object
+            /// </summary>
             public ClassObject Parent { get; set; }
+            /// <summary>
+            /// The name of the object (the class, the property, etc)
+            /// </summary>
             public string ObjectName { get; set; }
+            /// <summary>
+            /// The type of the object (Class, property, etc)
+            /// </summary>
             public string ObjectClass { get; set; }
             public ObservableCollectionExtended<ClassObject> Descendents { get; } = new();
 

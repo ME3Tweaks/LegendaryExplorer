@@ -6,12 +6,14 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows;
+using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.Misc;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
+using LegendaryExplorerCore.TLK;
 using LegendaryExplorerCore.TLK.ME1;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
@@ -29,8 +31,22 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         /// <param name="pew">Instance of Package Editor</param>
         public static void BuildME1SuperTLKFile (PackageEditorWindow pew)
         {
-            string myBasePath = ME1Directory.DefaultGamePath;
-            string searchDir = ME1Directory.CookedPCPath;
+            string gameString = InputComboBoxDialog.GetValue(pew, "Choose game to create SuperTLK for:",
+                "Create SuperTLK file", new[] { "LE1", "ME1" }, "LE1");
+            var game = Enum.Parse<MEGame>(gameString);
+            if(!game.IsGame1()) return;
+
+            var locPrompt = new PromptDialog("Enter file localization suffix to scan",
+                "Create SuperTLK file", "_INT")
+            {
+                Owner = pew
+            };
+            locPrompt.ShowDialog();
+            if (locPrompt.DialogResult == false) return;
+            var locSuffix = locPrompt.ResponseText;
+
+            string myBasePath = MEDirectories.GetDefaultGamePath(game);
+            string searchDir = MEDirectories.GetCookedPath(game);
 
             CommonOpenFileDialog d = new CommonOpenFileDialog { Title = "Select folder to search", IsFolderPicker = true, InitialDirectory = myBasePath };
             if (d.ShowDialog() == CommonFileDialogResult.Ok)
@@ -38,9 +54,10 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 searchDir = d.FileName;
             }
 
+            var filter = game is MEGame.LE1 ? "*.pcc|*.pcc" : "*.upk|*.upk";
             Microsoft.Win32.OpenFileDialog outputFileDialog = new () { 
                 Title = "Select GlobalTlk file to output to (GlobalTlk exports will be completely overwritten)", 
-                Filter = "*.upk|*.upk" };
+                Filter = filter };
             bool? result = outputFileDialog.ShowDialog();
             if (!result.HasValue || !result.Value)
             {
@@ -49,7 +66,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
             string outputFilePath = outputFileDialog.FileName;
 
-            string[] extensions = { ".u", ".upk" };
+            string[] extensions = { ".u", ".upk", ".pcc" };
 
             pew.IsBusy = true;
 
@@ -67,6 +84,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 {
                     pew.BusyText = $"[{i}/{files.Length}] Scanning Packages for TLK Exports";
                     int basePathLen = myBasePath.Length;
+                    if ((f.Name.Contains("LOC") || f.Name.Contains("Startup")) && !f.Name.Contains(locSuffix))
+                    {
+                        i++;
+                        continue;
+                    }
                     using (IMEPackage pack = MEPackageHandler.OpenMEPackage(f.FullName))
                     {
                         List<ExportEntry> tlkExports = pack.Exports.Where(x =>
@@ -108,16 +130,16 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         {
                             var stringMapping = (exp.ObjectName == "GlobalTlk_tlk" ? tlkLines : tlkLines_m);
                             var talkFile = new ME1TalkFile(exp);
-                            var LoadedStrings = new List<ME1TalkFile.TLKStringRef>();
+                            var LoadedStrings = new List<TLKStringRef>();
                             foreach (var tlkString in stringMapping)
                             {
                                 // Do the important part
-                                LoadedStrings.Add(new ME1TalkFile.TLKStringRef(tlkString.Key, 1, tlkString.Value));
+                                LoadedStrings.Add(new TLKStringRef(tlkString.Key, tlkString.Value, 1));
                             }
 
                             HuffmanCompression huff = new HuffmanCompression();
                             huff.LoadInputData(LoadedStrings);
-                            huff.serializeTalkfileToExport(exp);
+                            huff.SerializeTalkfileToExport(exp);
                         }
                     }
                     o.Save();
@@ -126,10 +148,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                 return total;
 
-            }).ContinueWithOnUIThread((total) =>
+            }).ContinueWithOnUIThread(async (total) =>
             {
+                var actualTotal = await total;
                 pew.IsBusy = false;
-                pew.StatusBar_LeftMostText.Text = $"Wrote {total} lines to {outputFilePath}";
+                pew.StatusBar_LeftMostText.Text = $"Wrote {actualTotal} lines to {outputFilePath}";
             });
 
         }
@@ -241,7 +264,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         {
             if (pew.TryGetSelectedExport(out var export) && export.ClassName == "BioMorphFace")
             {
-                if (UModelHelper.GetLocalUModelVersion() < UModelHelper.SupportedUModelBuildNum)
+                if (UModelHelper.GetLocalUModelVersionAsync().Result < UModelHelper.SupportedUModelBuildNum)
                 {
                     MessageBox.Show("UModel not installed or incorrect version!");
                     return;
@@ -249,6 +272,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 pew.IsBusy = true;
                 pew.BusyText = "Applying MorphFace to head mesh...";
                 var morphFace = new BioMorphFace(export);
+                var rop = new RelinkerOptionsPackage();
 
                 // Create a new file containing only the headmesh
                 var tempFilePath = Path.Combine(Path.GetTempPath(), "HeadMeshExport.pcc");
@@ -256,27 +280,52 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 MEPackageHandler.CreateAndSavePackage(tempFilePath, export.Game);
                 using var tempFile = MEPackageHandler.OpenMEPackage(tempFilePath);
                 EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies,
-                    morphFace.m_oBaseHead, tempFile, null, true, out var clonedHeadEntry);
+                    morphFace.m_oBaseHead, tempFile, null, true, rop, out var clonedHeadEntry);
                 var clonedHead = clonedHeadEntry as ExportEntry;
                 var appliedHead = morphFace.Apply();
 
                 // Clone materials
                 for (var i = 0; i < appliedHead.Materials.Length; i++)
                 {
-                    var originalMat = export.FileRef.GetEntry(appliedHead.Materials[i].value);
+                    var originalMat = export.FileRef.GetEntry(appliedHead.Materials[i]);
                     EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies,
-                        originalMat, tempFile, null, true, out var clonedMat);
-                    appliedHead.Materials[i] = new UIndex(clonedMat.UIndex);
+                        originalMat, tempFile, null, true, rop, out var clonedMat);
+                    appliedHead.Materials[i] = clonedMat.UIndex;
                 }
                 clonedHead.WriteBinary(appliedHead);
                 clonedHead.ObjectName = new NameReference(export.ObjectNameString);
                 tempFile.Save();
 
-                // Export the cloned headmesh
-                pew.BusyText = "Exporting via UModel...";
-                UModelHelper.ExportViaUModel(pew, clonedHead);
-                //File.Delete(tempFilePath);
-                pew.IsBusy = false;
+                // Ensure UModel
+                // Pass error message back
+                Task.Run(() =>
+                {
+                    return UModelHelper.EnsureUModel(
+                        () => pew.IsBusy = true,
+                        null,
+                        null,
+                        busyText => pew.BusyText = busyText
+                    );
+                }).ContinueWithOnUIThread(x =>
+                {
+                    // Export the cloned headmesh
+                    if (x != null)
+                    {
+                        MessageBox.Show($"Couldn't export via umodel: {x.Result}");
+                    }
+                    else
+                    {
+                        pew.BusyText = "Exporting via UModel...";
+                        UModelHelper.ExportViaUModel(pew, clonedHead);
+                        //File.Delete(tempFilePath);
+                    }
+                    pew.IsBusy = false;
+                });
+                
+            }
+            else
+            {
+                MessageBox.Show("Must have 'BioMorphFace' export selected in the tree view.");
             }
         }
     }

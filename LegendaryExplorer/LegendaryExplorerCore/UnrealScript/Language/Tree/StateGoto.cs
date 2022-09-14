@@ -7,7 +7,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
     {
         public Expression LabelExpression;
 
-        public StateGoto(Expression labelExpr, SourcePosition start = null, SourcePosition end = null) : base(ASTNodeType.Goto, start, end)
+        public StateGoto(Expression labelExpr, int start = -1, int end = -1) : base(ASTNodeType.Goto, start, end)
         {
             LabelExpression = labelExpr;
         }

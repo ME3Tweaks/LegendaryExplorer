@@ -23,13 +23,13 @@ namespace LegendaryExplorer.Tools.AssetDatabase
     /// </summary>
     internal class ExportScanInfo
     {
-        public ExportScanInfo(ExportEntry export, string FileName, int FileKey, bool IsMod, bool IsDLC)
+        public ExportScanInfo(ExportEntry export, string fileName, int fileKey, bool isMod, bool isDlc)
         {
             Export = export;
-            this.FileName = FileName;
-            this.FileKey = FileKey;
-            this.IsMod = IsMod;
-            IsDlc = IsDLC;
+            FileName = fileName;
+            FileKey = fileKey;
+            IsMod = isMod;
+            IsDlc = isDlc;
         }
 
         private ExportEntry export;
@@ -39,24 +39,32 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             set
             {
                 export = value;
-                Properties = export.GetProperties(false, false);
-                AssetKey = export.InstancedFullPath.ToLower();
+                assetKey = null;
+                props = null;
                 ObjectNameInstanced = export.ObjectName.Instanced;
                 ClassName = export.ClassName;
                 IsDefault = export?.IsDefaultObject == true;
             }
         }
 
-        public int FileKey { get; private set; }
-        public bool IsMod { get; private set; }
-        public bool IsDlc { get; private set; }
-        public string FileName { get; private set; }
-        public PropertyCollection Properties { get; private set; }
-        public string AssetKey { get; private set; }
+        public int FileKey { get; }
+        public bool IsMod { get; }
+        public bool IsDlc { get; }
+        public string FileName { get; }
         public string ObjectNameInstanced { get; private set; }
         public bool IsDefault { get; private set; }
         public string ClassName { get; private set; }
         public FileLib FileLib { get; set; }
+
+        //This is usually not needed, and creates many gigabytes of string allocations if done on every single export
+        private string assetKey;
+        public string AssetKey => assetKey ??= export.InstancedFullPath.ToLower();
+
+        //Since ExportEntry:GetProperties() is very expensive,
+        //we lazy load it so that we don't pay the price on exports where we don't need it.
+        //(This reduces the percentage of database generation time spent on getting properties from ~60% to ~10%!)
+        private PropertyCollection props;
+        public PropertyCollection Properties => props ??= export.GetProperties();
     }
 
     /// <summary>

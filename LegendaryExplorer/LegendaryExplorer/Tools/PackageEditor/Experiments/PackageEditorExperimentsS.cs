@@ -66,7 +66,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             pewpf.BusyText = $"Porting Shadow Maps from OT file.";
             if (pcc?.Game is not MEGame.LE3)
             {
-                MessageBox.Show("This is only designed to work on LE3 BioA_CitSam_800Finalroom.pcc!");
+                MessageBox.Show("This is only designed to work on LE3!");
                 return;
             }
 
@@ -80,15 +80,14 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             {
                 var levelExport = pcc.FindExport("TheWorld.PersistentLevel");
                 var levelBin = levelExport.GetBinaryData<Level>();
-                levelBin.TextureToInstancesMap.RemoveAll(kvp => kvp.Key.GetEntry(pcc) is ExportEntry exp && exp.ClassName.CaseInsensitiveEquals("ShadowMapTexture2D"));
+                levelBin.TextureToInstancesMap.RemoveAll(kvp => pcc.GetEntry(kvp.Key) is ExportEntry exp && exp.ClassName.CaseInsensitiveEquals("ShadowMapTexture2D"));
                 var shadowMapsToTrash = pcc.Exports.Where(exp => exp.ClassName.CaseInsensitiveEquals("ShadowMapTexture2D")).ToList();
                 EntryPruner.TrashEntriesAndDescendants(shadowMapsToTrash);
 
                 using IMEPackage otPcc = MEPackageHandler.OpenME3Package(otFilePath);
-                var relinkMap = new Dictionary<IEntry, IEntry>();
-                foreach (UIndex uIndex in levelBin.Actors)
+                foreach (int uIndex in levelBin.Actors)
                 {
-                    if (uIndex.GetEntry(pcc) is ExportEntry actor)
+                    if (pcc.GetEntry(uIndex) is ExportEntry actor)
                     {
                         if (actor.ClassName.CaseInsensitiveEquals("StaticMeshActor") && actor.GetProperty<ObjectProperty>("StaticMeshComponent") is ObjectProperty smcProp && smcProp.ResolveToEntry(pcc) is ExportEntry smcExp)
                         {
@@ -96,11 +95,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                             PortShadowMap(otsmcExp, smcExp);
                         }
-                        else if (actor.ClassName.CaseInsensitiveEquals("StaticMeshCollectionActor") && actor.GetProperty<ArrayProperty<ObjectProperty>>("StaticMeshComponents") is {} smcArray)
+                        else if (actor.ClassName.CaseInsensitiveEquals("StaticMeshCollectionActor") && actor.GetProperty<ArrayProperty<ObjectProperty>>("StaticMeshComponents") is { } smcArray)
                         {
                             foreach (ObjectProperty objProp in smcArray)
                             {
-                                if (objProp.ResolveToEntry(pcc) is ExportEntry {ObjectName: {Instanced: var smcName}} smcExport && otPcc.Exports.FirstOrDefault(exp => exp.ObjectName.Instanced.CaseInsensitiveEquals(smcName)) is ExportEntry otsmcExport)
+                                if (objProp.ResolveToEntry(pcc) is ExportEntry { ObjectName.Instanced: var smcName } smcExport && otPcc.Exports.FirstOrDefault(exp => exp.ObjectName.Instanced.CaseInsensitiveEquals(smcName)) is ExportEntry otsmcExport)
                                 {
                                     PortShadowMap(otsmcExport, smcExport);
                                 }
@@ -111,9 +110,9 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                 var otLevelExport = otPcc.FindExport("TheWorld.PersistentLevel");
                 var otLevelTexToInst = otLevelExport.GetBinaryData<Level>().TextureToInstancesMap;
-                foreach ((UIndex key, StreamableTextureInstanceList value) in otLevelTexToInst)
+                foreach ((int key, StreamableTextureInstanceList value) in otLevelTexToInst)
                 {
-                    if (key.GetEntry(otPcc) is ExportEntry exp && exp.ClassName.CaseInsensitiveEquals("ShadowMapTexture2D"))
+                    if (otPcc.GetEntry(key) is ExportEntry exp && exp.ClassName.CaseInsensitiveEquals("ShadowMapTexture2D"))
                     {
                         levelBin.TextureToInstancesMap.Add(pcc.FindExport(exp.InstancedFullPath).UIndex, value);
                     }
@@ -125,7 +124,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                 void PortShadowMap(ExportEntry otsmcExp, ExportEntry smcExp)
                 {
-                    if (otsmcExp.GetProperty<ArrayProperty<StructProperty>>("IrrelevantLights") is {} irrelevantLightsProp)
+                    if (otsmcExp.GetProperty<ArrayProperty<StructProperty>>("IrrelevantLights") is { } irrelevantLightsProp)
                     {
                         smcExp.WriteProperty(irrelevantLightsProp);
                     }
@@ -155,17 +154,23 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                     if (shadowMaps.Length == 1)
                     {
-                        EntryPruner.TrashEntryAndDescendants(shadowMaps[0].GetEntry(pcc));
+                        EntryPruner.TrashEntryAndDescendants(pcc.GetEntry(shadowMaps[0]));
                     }
 
+                    var rop = new RelinkerOptionsPackage
+                    {
+                        Cache = null, // Maintains original behavior of this func (09/30/2021: Change to RelinkerOptionsPackage)
+                        ImportExportDependencies = true,
+                    };
+
                     var results = EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies,
-                        otShadowMaps[0].GetEntry(otPcc), pcc, smcExp, true, out IEntry leShadowMap, relinkMap);
+                        otPcc.GetEntry(otShadowMaps[0]), pcc, smcExp, true, rop, out IEntry leShadowMap);
                     if (results?.Count > 0)
                     {
                         Debugger.Break();
                     }
 
-                    smcBin.LODData[0].ShadowMaps = new UIndex[] {leShadowMap.UIndex};
+                    smcBin.LODData[0].ShadowMaps = new[] { leShadowMap.UIndex };
                     smcExp.WriteBinary(smcBin);
                 }
             }).ContinueWithOnUIThread(prevTask =>
@@ -184,7 +189,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         //Does not work!
         public static void CalculateProbeNames(PackageEditorWindow pewpf)
         {
-            var game = MEGame.LE3;
+            const MEGame game = MEGame.LE3;
             pewpf.IsBusy = true;
             pewpf.BusyText = $"Calculating Probe functions for {game}";
             Task.Run(() =>
@@ -205,7 +210,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                             ProbeMask = objBin.ProbeMask,
                             Functions = new HashSet<string>(objBin.VirtualFunctionTable.Length)
                         };
-                        foreach (UIndex uIndex in objBin.VirtualFunctionTable)
+                        foreach (int uIndex in objBin.VirtualFunctionTable)
                         {
                             if (pcc.GetEntry(uIndex) is IEntry entry)
                             {
@@ -264,9 +269,10 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             pewpf.BusyText = "Re-serializing all binary in LE2 and LE3";
             var interestingExports = new List<EntryStringPair>();
             var comparisonDict = new Dictionary<string, (byte[] original, byte[] newData)>();
+            var classesMissingObjBin = new List<string>();
             Task.Run(() =>
             {
-                foreach (string filePath in EnumerateOfficialFiles(MEGame.LE1, MEGame.LE2, MEGame.LE3))
+                foreach (string filePath in EnumerateOfficialFiles(MEGame.LE1/*, MEGame.LE2, MEGame.LE3*/))
                 {
                     using IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath);
                     foreach (ExportEntry export in pcc.Exports)
@@ -283,6 +289,17 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                                     comparisonDict.Add($"{export.UIndex} {export.FileRef.FilePath}", (original, export.Data));
                                 }
                             }
+                            else
+                            {
+                                // Binary class is not defined for this
+                                // Check to make sure there is in fact no binary so 
+                                // we aren't missing anything
+                                if (export.propsEnd() != export.DataSize && !classesMissingObjBin.Contains(export.ClassName))
+                                {
+                                    classesMissingObjBin.Add(export.ClassName);
+                                    interestingExports.Add(new EntryStringPair($"{export.ClassName} Export has data after properties but no objectbinary class exists for this "));
+                                }
+                            }
                         }
                         catch (Exception e)
                         {
@@ -290,11 +307,83 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         }
                     }
 
-                    if (interestingExports.Count >= 2)
+                    // Uncomment this if you don't want it to do a lot before stopping
+                    //if (interestingExports.Count >= 2)
+                    //{
+                    //    return;
+                    //}
+                }
+            }).ContinueWithOnUIThread(prevTask =>
+            {
+                //the base files will have been in memory for so long at this point that they take a looong time to clear out automatically, so force it.
+                MemoryAnalyzer.ForceFullGC(true);
+                pewpf.IsBusy = false;
+                var listDlg = new ListDialog(interestingExports, "Interesting Exports", "", pewpf)
+                {
+                    DoubleClickEntryHandler = entryItem =>
                     {
-                        return;
+                        if (entryItem?.Entry is IEntry entryToSelect)
+                        {
+                            var p = new PackageEditorWindow();
+                            p.Show();
+                            p.LoadFile(entryToSelect.FileRef.FilePath, entryToSelect.UIndex);
+                            p.Activate();
+                            if (comparisonDict.TryGetValue($"{entryToSelect.UIndex} {entryToSelect.FileRef.FilePath}", out (byte[] original, byte[] newData) val))
+                            {
+                                File.WriteAllBytes(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "original.bin"), val.original);
+                                File.WriteAllBytes(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "new.bin"), val.newData);
+                            }
+                        }
+                    }
+                };
+                listDlg.Show();
+            });
+        }
+
+        public static void ReSerializeAllObjectBinaryInFile(PackageEditorWindow pewpf)
+        {
+            pewpf.IsBusy = true;
+            pewpf.BusyText = "Re-serializing all binary in file";
+            var interestingExports = new List<EntryStringPair>();
+            var comparisonDict = new Dictionary<string, (byte[] original, byte[] newData)>();
+            var classesMissingObjBin = new List<string>();
+            Task.Run(() =>
+            {
+                var sw = new Stopwatch();
+                sw.Start();
+                foreach (ExportEntry export in pewpf.Pcc.Exports)
+                {
+                    try
+                    {
+                        if (ObjectBinary.From(export) is ObjectBinary bin)
+                        {
+                            var original = export.Data;
+                            export.WriteBinary(bin);
+                            if (!export.DataReadOnly.SequenceEqual(original))
+                            {
+                                interestingExports.Add(export);
+                                comparisonDict.Add($"{export.UIndex} {export.FileRef.FilePath}", (original, export.Data));
+                            }
+                        }
+                        else
+                        {
+                            // Binary class is not defined for this
+                            // Check to make sure there is in fact no binary so 
+                            // we aren't missing anything
+                            if (export.propsEnd() != export.DataSize && !classesMissingObjBin.Contains(export.ClassName))
+                            {
+                                classesMissingObjBin.Add(export.ClassName);
+                                interestingExports.Add(new EntryStringPair($"{export.ClassName} Export has data after properties but no objectbinary class exists for this "));
+                            }
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        interestingExports.Add(new EntryStringPair(export, e.Message));
                     }
                 }
+                sw.Stop();
+                interestingExports.Insert(0, new EntryStringPair($"{sw.ElapsedMilliseconds}ms"));
             }).ContinueWithOnUIThread(prevTask =>
             {
                 //the base files will have been in memory for so long at this point that they take a looong time to clear out automatically, so force it.
@@ -388,7 +477,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             var oodleData = new List<CompressionData>();
             Task.Run(() =>
             {
-                foreach (MEGame game in new []{MEGame.LE1, MEGame.LE2, MEGame.LE3})//, MEGame.ME1, MEGame.ME2, MEGame.ME3})
+                foreach (MEGame game in new[] { MEGame.LE1, MEGame.LE2, MEGame.LE3 })//, MEGame.ME1, MEGame.ME2, MEGame.ME3})
                 {
                     var filePaths = MELoadedFiles.GetOfficialFiles(game);
                     foreach (string filePath in filePaths)
@@ -400,7 +489,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                         raw.SkipInt32(); //skip magic as we have already read it
                         var versionLicenseePacked = raw.ReadUInt32();
-                        
+
                         raw.ReadInt32();
                         int foldernameStrLen = raw.ReadInt32();
                         if (foldernameStrLen > 0)
@@ -409,7 +498,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                             fs.ReadStringUnicodeNull(foldernameStrLen * -2);
 
                         var Flags = (UnrealFlags.EPackageFlags)raw.ReadUInt32();
-                        
+
                         if ((game == MEGame.ME3 || game == MEGame.LE3)
                          && Flags.HasFlag(UnrealFlags.EPackageFlags.Cooked))
                         {
@@ -448,7 +537,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         }
                         //should never be more than 1 generation, but just in case
                         raw.Skip(generationsTableCount * 12);
-                        
+
                         raw.SkipInt32(); //engineVersion          Like unrealVersion and licenseeVersion, these 2 are determined by what game this is,
                         raw.SkipInt32(); //cookedContentVersion   so we don't have to read them in
 
@@ -480,7 +569,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                         var NumChunks = raw.ReadInt32();
                         int compressedSize = 0;
-                        int uncompressedSize = 0; 
+                        int uncompressedSize = 0;
                         for (int i = 0; i < NumChunks; i++)
                         {
                             raw.ReadInt32();
@@ -508,7 +597,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 var oodleWS = xl.AddWorksheet("Oodle");
                 var lzoWS = xl.AddWorksheet("lzo");
                 var zlibWS = xl.AddWorksheet("zlib");
-                foreach ((List<CompressionData> data, IXLWorksheet ws) in new []{oodleData, lzoData, zLibData}.Zip(new []{oodleWS, lzoWS, zlibWS}))
+                foreach ((List<CompressionData> data, IXLWorksheet ws) in new[] { oodleData, lzoData, zLibData }.Zip(new[] { oodleWS, lzoWS, zlibWS }))
                 {
                     ws.Cell(1, 1).SetValue("Compressed Size");
                     ws.Cell(1, 2).SetValue("Uncompressed Size");
@@ -652,7 +741,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }).ContinueWithOnUIThread(prevTask =>
             {
                 pewpf.IsBusy = false;
-                new ListDialog(new []
+                new ListDialog(new[]
                 {
                     $"build:\n {string.Join('\n', prevTask.Result.buildData.Select(kvp => $"{kvp.Key}: {string.Join(',', kvp.Value)}"))}",
                     $"branc:\n {string.Join('\n', prevTask.Result.branchData.Select(kvp => $"{kvp.Key}: {string.Join(',', kvp.Value)}"))}",
@@ -698,7 +787,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             pewpf.BusyText = "Scanning";
             Task.Run(() =>
             {
-                foreach (MEGame game in new[] { MEGame.LE3, MEGame.LE2, MEGame.LE1, MEGame.ME3, MEGame.ME2, MEGame.ME1})
+                foreach (MEGame game in new[] { MEGame.LE3/*, MEGame.LE2, MEGame.LE1, MEGame.ME3, MEGame.ME2, MEGame.ME1*/})
                 {
                     //preload base files for faster scanning
                     using DisposableCollection<IMEPackage> baseFiles = MEPackageHandler.OpenMEPackages(EntryImporter.FilesSafeToImportFrom(game)
@@ -710,7 +799,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         baseFiles.Add(MEPackageHandler.OpenMEPackage(Path.Combine(ME3Directory.CookedPCPath, "BIOP_MP_COMMON.pcc")));
                     }
 
-                    foreach (string filePath in baseFiles.Select(x => x.FilePath))// EnumerateOfficialFiles(game))
+                    foreach (string filePath in EnumerateOfficialFiles(game))
                     {
                         //ScanShaderCache(filePath);
                         //ScanMaterials(filePath);
@@ -737,8 +826,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 //the base files will have been in memory for so long at this point that they take a looong time to clear out automatically, so force it.
                 MemoryAnalyzer.ForceFullGC();
                 pewpf.IsBusy = false;
-                interestingExports.Add(new EntryStringPair(null, string.Join("\n", extraInfo)));
-                var listDlg = new ListDialog(interestingExports, "Interesting Exports", "", pewpf)
+                if (extraInfo.Count > 0)
+                {
+                    interestingExports.Add(new EntryStringPair(string.Join("\n", extraInfo)));
+                }
+                var listDlg = new ListDialog(interestingExports, $" {interestingExports.Count} Interesting Exports", "", pewpf)
                 {
                     DoubleClickEntryHandler = entryItem =>
                     {
@@ -748,6 +840,9 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                             p.Show();
                             p.LoadFile(entryToSelect.FileRef.FilePath, entryToSelect.UIndex);
                             p.Activate();
+                            p = new PackageEditorWindow();
+                            p.Show();
+                            p.LoadFile(entryToSelect.FileRef.FilePath, entryToSelect.UIndex);
                             if (comparisonDict.TryGetValue($"{entryToSelect.UIndex} {entryToSelect.FileRef.FilePath}", out (byte[] original, byte[] newData) val))
                             {
                                 File.WriteAllBytes(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "original.bin"), val.original);
@@ -858,7 +953,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                             binData.Skip(14);
                             if (binData.ReadInt32() != 1111577667) //CTAB
                             {
-                                interestingExports.Add(new EntryStringPair(null,
+                                interestingExports.Add(new EntryStringPair((IEntry)null,
                                     $"{binData.Position - 4}: {filePath}"));
                                 return;
                             }
@@ -889,7 +984,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                             int normalParams = binData.ReadInt32();
                             if (normalParams != 0)
                             {
-                                interestingExports.Add(new EntryStringPair(null, $"{i}: {filePath}"));
+                                interestingExports.Add(new EntryStringPair((IEntry)null, $"{i}: {filePath}"));
                                 return;
                             }
 
@@ -899,7 +994,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                             int licenseeVersion = binData.ReadInt32();
                             if (unrealVersion != 684 || licenseeVersion != 194)
                             {
-                                interestingExports.Add(new EntryStringPair(null,
+                                interestingExports.Add(new EntryStringPair((IEntry)null,
                                     $"{binData.Position - 8}: {filePath}"));
                                 return;
                             }
@@ -911,7 +1006,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     catch (Exception exception)
                     {
                         Console.WriteLine(exception);
-                        interestingExports.Add(new EntryStringPair(null, $"{filePath}\n{exception}"));
+                        interestingExports.Add(new EntryStringPair((IEntry)null, $"{filePath}\n{exception}"));
                     }
                 }
             }
@@ -1010,6 +1105,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                                 continue;
                             }
 
+                            if (!fileLib.ReInitializeFile())
+                            {
+                                interestingExports.Add(new EntryStringPair(exp, $"{pcc.FilePath} failed to re-initialize after compiling {$"#{exp.UIndex}",-9}"));
+                                return;
+                            }
                             if (!originalData.SequenceEqual(exp.Data))
                             {
                                 interestingExports.Add(exp);
@@ -1057,6 +1157,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                             {
                                 interestingExports.Add(exp);
                             }
+                            if (!fileLib.ReInitializeFile())
+                            {
+                                interestingExports.Add(new EntryStringPair(exp, $"{pcc.FilePath} failed to re-initialize after compiling {$"#{exp.UIndex}",-9}"));
+                                return;
+                            }
                         }
                         catch (Exception exception)
                         {
@@ -1102,6 +1207,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                                 comparisonDict[$"{exp.UIndex} {exp.FileRef.FilePath}"] = (originalData, exp.Data);
                                 interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {filePath}\nRecompilation does not match!"));
                             }
+                            if (!fileLib.ReInitializeFile())
+                            {
+                                interestingExports.Add(new EntryStringPair(exp, $"{pcc.FilePath} failed to re-initialize after compiling {$"#{exp.UIndex}",-9}"));
+                                return;
+                            }
                         }
                         else
                         {
@@ -1145,6 +1255,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                                 return;
                             }
 
+                            if (!fileLib.ReInitializeFile())
+                            {
+                                interestingExports.Add(new EntryStringPair(exp, $"{pcc.FilePath} failed to re-initialize after compiling {$"#{exp.UIndex}",-9}"));
+                                return;
+                            }
                             if (exp.EntryHasPendingChanges || exp.GetChildren().Any(entry => entry.EntryHasPendingChanges && entry.ClassName is not "ForceFeedbackWaveform") || pcc.FindEntry(UnrealPackageFile.TrashPackageName) is not null)
                             {
                                 interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {filePath}\nRecompilation does not match!"));
@@ -1199,6 +1314,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                                     return;
                                 }
 
+                                if (!fileLib.ReInitializeFile())
+                                {
+                                    interestingExports.Add(new EntryStringPair(exp, $"{pcc.FilePath} failed to re-initialize after compiling {$"#{exp.UIndex}",-9}"));
+                                    return;
+                                }
                                 if (exp.EntryHasPendingChanges || exp.GetAllDescendants().Any(entry => entry.EntryHasPendingChanges))
                                 {
                                     interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {filePath}\nRecompilation does not match!"));
@@ -1249,6 +1369,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                                     return;
                                 }
 
+                                if (!fileLib.ReInitializeFile())
+                                {
+                                    interestingExports.Add(new EntryStringPair(exp, $"{pcc.FilePath} failed to re-initialize after compiling {$"#{exp.UIndex}",-9}"));
+                                    return;
+                                }
                                 if (exp.EntryHasPendingChanges)
                                 {
                                     interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {filePath}\nRecompilation does not match!"));
@@ -1288,30 +1413,55 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                         try
                         {
-                            if (fileLib.Initialize())
+                            if (fileLib.Initialize(packageCache))
                             {
-                                (ASTNode decompiledClassNode, string script) = UnrealScriptCompiler.DecompileExport(exp, fileLib);
-                                if (!((Class)decompiledClassNode).IsFullyDefined)
+                                (ASTNode ast, string script) = UnrealScriptCompiler.DecompileExport(exp, fileLib, packageCache);
+                                if (!((Class)ast).IsFullyDefined)
                                 {
                                     continue;
                                 }
                                 foundClasses.Add(instancedFullPath);
-                                (ASTNode ast, MessageLog log) = UnrealScriptCompiler.CompileClass(pcc, exp, script, fileLib, packageCache);
-                                if (ast is not Class || log.HasErrors)
+                                var log = new MessageLog();
+                                (ast, _) = UnrealScriptCompiler.CompileOutlineAST(script, "Class", log, pcc.Game);
+                                if (ast is not Class classAST || log.HasErrors)
                                 {
                                     interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {pcc.FilePath}\nfailed to parse class!"));
                                     return;
                                 }
 
-                                if (exp.EntryHasPendingChanges )//|| exp.GetAllDescendants().Any(entry => entry.EntryHasPendingChanges))
+                                UnrealScriptCompiler.CompileNewClassAST(pcc, classAST, log, fileLib, out bool vfTableChanged);
+                                if (log.HasErrors)
                                 {
-                                    interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {filePath}\nRecompilation does not match!"));
-                                }
-                                if (pcc.FindEntry(UnrealPackageFile.TrashPackageName) is not null)
-                                {
-                                    interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {filePath}\nTrashed an export! Aborting compilation for file."));
+                                    interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {pcc.FilePath}\nfailed to parse class!"));
                                     return;
                                 }
+                                if (vfTableChanged)
+                                {
+                                    interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {pcc.FilePath}\nVTableChanged!"));
+                                    return;
+                                }
+
+                                //(ast, log) = UnrealScriptCompiler.CompileClass(pcc, script, fileLib, exp, exp.Parent, packageCache);
+                                //if (ast is not Class || log.HasErrors)
+                                //{
+                                //    interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {pcc.FilePath}\nfailed to parse class!"));
+                                //    return;
+                                //}
+
+                                //if (!fileLib.ReInitializeFile())
+                                //{
+                                //    interestingExports.Add(new EntryStringPair(exp, $"{pcc.FilePath} failed to re-initialize after compiling {$"#{exp.UIndex}",-9}"));
+                                //    return;
+                                //}
+                                //if (exp.EntryHasPendingChanges )//|| exp.GetAllDescendants().Any(entry => entry.EntryHasPendingChanges))
+                                //{
+                                //    interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {filePath}\nRecompilation does not match!"));
+                                //}
+                                //if (pcc.FindEntry(UnrealPackageFile.TrashPackageName) is not null)
+                                //{
+                                //    interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {filePath}\nTrashed an export! Aborting compilation for file."));
+                                //    return;
+                                //}
                             }
                             else
                             {
@@ -1373,9 +1523,9 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             #endregion
         }
 
-        public static void CreateDynamicLighting(IMEPackage Pcc)
+        public static void CreateDynamicLighting(IMEPackage Pcc, bool silent = false)
         {
-            foreach (ExportEntry exp in Pcc.Exports.Where(exp => exp.IsA("MeshComponent") || exp.IsA("BrushComponent")))
+            foreach (ExportEntry exp in Pcc.Exports.Where(exp => (exp.IsA("MeshComponent") && exp.Parent.IsA("StaticMeshActorBase")) || (exp.IsA("BrushComponent") && !exp.Parent.IsA("Volume"))))
             {
                 PropertyCollection props = exp.GetProperties();
                 if (props.GetProp<ObjectProperty>("StaticMesh")?.Value != 11483 &&
@@ -1388,11 +1538,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                 props.AddOrReplaceProp(new BoolProperty(false, "bUsePreComputedShadows"));
                 props.AddOrReplaceProp(new BoolProperty(false, "bBioForcePreComputedShadows"));
-                //props.AddOrReplaceProp(new BoolProperty(true, "bCastDynamicShadow"));
+                props.AddOrReplaceProp(new BoolProperty(false, "bCastDynamicShadow"));
                 //props.AddOrReplaceProp(new BoolProperty(true, "CastShadow"));
                 //props.AddOrReplaceProp(new BoolProperty(true, "bAcceptsDynamicDominantLightShadows"));
                 props.AddOrReplaceProp(new BoolProperty(true, "bAcceptsLights"));
-                //props.AddOrReplaceProp(new BoolProperty(true, "bAcceptsDynamicLights"));
+                //props.AddOrReplaceProp(new BoolProperty(false, "bAcceptsDynamicLights"));
 
                 var lightingChannels = props.GetProp<StructProperty>("LightingChannels") ??
                                        new StructProperty("LightingChannelContainer", false,
@@ -1403,6 +1553,32 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 lightingChannels.Properties.AddOrReplaceProp(new BoolProperty(true, "Static"));
                 lightingChannels.Properties.AddOrReplaceProp(new BoolProperty(true, "Dynamic"));
                 lightingChannels.Properties.AddOrReplaceProp(new BoolProperty(true, "CompositeDynamic"));
+                props.AddOrReplaceProp(lightingChannels);
+
+                exp.WriteProperties(props);
+            }
+            //fix interpactors to be dynamic
+            foreach (ExportEntry exp in Pcc.Exports.Where(exp => exp.IsA("MeshComponent") && exp.Parent.IsA("DynamicSMActor")))
+            {
+                PropertyCollection props = exp.GetProperties();
+                if (props.GetProp<ObjectProperty>("StaticMesh")?.Value != 11483 &&
+                    (props.GetProp<BoolProperty>("bAcceptsLights")?.Value == false ||
+                     props.GetProp<BoolProperty>("CastShadow")?.Value == false))
+                {
+                    // shadows/lighting has been explicitly forbidden, don't mess with it.
+                    continue;
+                }
+
+                props.AddOrReplaceProp(new BoolProperty(false, "bUsePreComputedShadows"));
+                props.AddOrReplaceProp(new BoolProperty(false, "bBioForcePreComputedShadows"));
+
+                var lightingChannels = props.GetProp<StructProperty>("LightingChannels") ??
+                                       new StructProperty("LightingChannelContainer", false,
+                                           new BoolProperty(true, "bIsInitialized"))
+                                       {
+                                           Name = "LightingChannels"
+                                       };
+                lightingChannels.Properties.AddOrReplaceProp(new BoolProperty(true, "Dynamic"));
                 props.AddOrReplaceProp(lightingChannels);
 
                 exp.WriteProperties(props);
@@ -1428,14 +1604,15 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 exp.WriteProperties(props);
             }
 
-            MessageBox.Show("Done!");
+            if (!silent)
+                MessageBox.Show("Done!");
         }
 
         public static void ConvertAllDialogueToSkippable(PackageEditorWindow pewpf)
         {
             var gameString = InputComboBoxDialog.GetValue(pewpf,
                             "Select which game's files you want converted to having skippable dialogue",
-                            "Game selector", new[] { "ME1", "ME2", "ME3" }, "ME1");
+                            "Game selector", new[] { "ME1", "ME2", "ME3", "LE1", "LE2", "LE3" }, "LE1");
             if (Enum.TryParse(gameString, out MEGame game) && MessageBoxResult.Yes ==
                 MessageBox.Show(pewpf,
                     $"WARNING! This will edit every dialogue-containing file in {gameString}, including in DLCs and installed mods. Do you want to begin?",
@@ -1784,100 +1961,98 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
         public static void BuildNativeTable(PackageEditorWindow pewpf)
         {
-            pewpf.IsBusy = true;
-            pewpf.BusyText = "Building Native Tables";
-            Task.Run(() =>
-            {
-                foreach (MEGame game in new[] { MEGame.LE1, MEGame.LE2, MEGame.LE3 })
-                {
-                    string cookedPath = MEDirectories.GetCookedPath(game);
-                    var entries = new List<(int, string)>();
-                    foreach (string fileName in FileLib.BaseFileNames(game))
-                    {
-                        using IMEPackage pcc = MEPackageHandler.OpenMEPackage(Path.Combine(cookedPath, fileName));
-                        foreach (ExportEntry export in pcc.Exports.Where(exp => exp.ClassName == "Function"))
-                        {
-                            var func = export.GetBinaryData<UFunction>();
-                            ushort nativeIndex = func.NativeIndex;
-                            if (nativeIndex > 0)
-                            {
-                                NativeType type = NativeType.Function;
-                                if (func.FunctionFlags.Has(EFunctionFlags.PreOperator))
-                                {
-                                    type = NativeType.PreOperator;
-                                }
-                                else if (func.FunctionFlags.Has(EFunctionFlags.Operator))
-                                {
-                                    var nextItem = func.Children;
-                                    int paramCount = 0;
-                                    while (export.FileRef.TryGetUExport(nextItem, out ExportEntry nextChild))
-                                    {
-                                        var objBin = ObjectBinary.From(nextChild);
-                                        switch (objBin)
-                                        {
-                                            case UProperty uProperty:
-                                                if (uProperty.PropertyFlags.HasFlag(UnrealFlags.EPropertyFlags.ReturnParm))
-                                                {
-                                                }
-                                                else if (uProperty.PropertyFlags.HasFlag(UnrealFlags.EPropertyFlags.Parm))
-                                                {
-                                                    paramCount++;
-                                                }
-                                                nextItem = uProperty.Next;
-                                                break;
-                                            default:
-                                                nextItem = 0;
-                                                break;
-                                        }
-                                    }
+            //pewpf.IsBusy = true;
+            //pewpf.BusyText = "Building Native Tables";
+            //Task.Run(() =>
+            //{
+            //    foreach (MEGame game in new[] { MEGame.LE1, MEGame.LE2, MEGame.LE3 })
+            //    {
+            //        string cookedPath = MEDirectories.GetCookedPath(game);
+            //        var entries = new List<(int, string)>();
+            //        foreach (string fileName in FileLib.BaseFileNames(game))
+            //        {
+            //            using IMEPackage pcc = MEPackageHandler.OpenMEPackage(Path.Combine(cookedPath, fileName));
+            //            foreach (ExportEntry export in pcc.Exports.Where(exp => exp.ClassName == "Function"))
+            //            {
+            //                var func = export.GetBinaryData<UFunction>();
+            //                ushort nativeIndex = func.NativeIndex;
+            //                if (nativeIndex > 0)
+            //                {
+            //                    NativeType type = NativeType.Function;
+            //                    if (func.FunctionFlags.Has(EFunctionFlags.PreOperator))
+            //                    {
+            //                        type = NativeType.PreOperator;
+            //                    }
+            //                    else if (func.FunctionFlags.Has(EFunctionFlags.Operator))
+            //                    {
+            //                        var nextItem = func.Children;
+            //                        int paramCount = 0;
+            //                        while (export.FileRef.TryGetUExport(nextItem, out ExportEntry nextChild))
+            //                        {
+            //                            var objBin = ObjectBinary.From(nextChild);
+            //                            switch (objBin)
+            //                            {
+            //                                case UProperty uProperty:
+            //                                    if (uProperty.PropertyFlags.HasFlag(UnrealFlags.EPropertyFlags.ReturnParm))
+            //                                    {
+            //                                    }
+            //                                    else if (uProperty.PropertyFlags.HasFlag(UnrealFlags.EPropertyFlags.Parm))
+            //                                    {
+            //                                        paramCount++;
+            //                                    }
+            //                                    nextItem = uProperty.Next;
+            //                                    break;
+            //                                default:
+            //                                    nextItem = 0;
+            //                                    break;
+            //                            }
+            //                        }
 
-                                    type = paramCount == 1 ? NativeType.PostOperator : NativeType.Operator;
-                                }
+            //                        type = paramCount == 1 ? NativeType.PostOperator : NativeType.Operator;
+            //                    }
 
-                                string name = func.FriendlyName;
-                                if (game is MEGame.ME3 or MEGame.LE3)
-                                {
-                                    name = export.ObjectName;
-                                }
-                                entries.Add(nativeIndex, $"{{ 0x{nativeIndex:X}, new {nameof(NativeTableEntry)} {{ {nameof(NativeTableEntry.Name)}=\"{name}\", " +
-                                                         $"{nameof(NativeTableEntry.Type)}={nameof(NativeType)}.{type}, {nameof(NativeTableEntry.Precedence)}={func.OperatorPrecedence}}} }},");
-                            }
-                        }
-                    }
+            //                    string name = func.FriendlyName;
+            //                    if (game is MEGame.ME3 or MEGame.LE3)
+            //                    {
+            //                        name = export.ObjectName;
+            //                    }
+            //                    entries.Add(nativeIndex, $"{{ 0x{nativeIndex:X}, new {nameof(NativeTableEntry)} {{ {nameof(NativeTableEntry.Name)}=\"{name}\", " +
+            //                                             $"{nameof(NativeTableEntry.Type)}={nameof(NativeType)}.{type}, {nameof(NativeTableEntry.Precedence)}={func.OperatorPrecedence}}} }},");
+            //                }
+            //            }
+            //        }
 
-                    using var fileStream = new FileStream(Path.Combine(AppDirectories.ExecFolder, $"{game}NativeTable.cs"), FileMode.Create);
-                    using var writer = new CodeWriter(fileStream);
-                    writer.WriteLine("using System.Collections.Generic;");
-                    writer.WriteLine();
-                    writer.WriteBlock("namespace LegendaryExplorerCore.UnrealScript.Decompiling", () =>
-                    {
-                        writer.WriteBlock($"public partial class {nameof(ByteCodeDecompiler)}", () =>
-                        {
-                            if (game is MEGame.ME3 or MEGame.LE3)
-                            {
-                                writer.WriteLine("//TODO: Names need fixing for operators with symbols in name");
-                            }
-                            writer.WriteLine($"public static readonly Dictionary<int, {nameof(NativeTableEntry)}> {game}NativeTable = new() ");
-                            writer.WriteLine("{");
-                            writer.IncreaseIndent();
+            //        using var fileStream = new FileStream(Path.Combine(AppDirectories.ExecFolder, $"{game}NativeTable.cs"), FileMode.Create);
+            //        using var writer = new CodeWriter(fileStream);
+            //        writer.WriteLine("using System.Collections.Generic;");
+            //        writer.WriteLine();
+            //        writer.WriteBlock("namespace LegendaryExplorerCore.UnrealScript.Decompiling", () =>
+            //        {
+            //            writer.WriteBlock($"public partial class {nameof(ByteCodeDecompiler)}", () =>
+            //            {
+            //                if (game is MEGame.ME3 or MEGame.LE3)
+            //                {
+            //                    writer.WriteLine("//TODO: Names need fixing for operators with symbols in name");
+            //                }
+            //                writer.WriteLine($"public static readonly Dictionary<int, {nameof(NativeTableEntry)}> {game}NativeTable = new() ");
+            //                writer.WriteLine("{");
+            //                writer.IncreaseIndent();
 
-                            foreach ((_, string entry) in entries.OrderBy(tup => tup.Item1))
-                            {
-                                writer.WriteLine(entry);
-                            }
+            //                foreach ((_, string entry) in entries.OrderBy(tup => tup.Item1))
+            //                {
+            //                    writer.WriteLine(entry);
+            //                }
 
-                            writer.DecreaseIndent();
-                            writer.WriteLine("};");
-                        });
+            //                writer.DecreaseIndent();
+            //                writer.WriteLine("};");
+            //            });
 
-                    });
-                }
-            }).ContinueWithOnUIThread(_ =>
-            {
-                pewpf.IsBusy = false;
-            });
-
-
+            //        });
+            //    }
+            //}).ContinueWithOnUIThread(_ =>
+            //{
+            //    pewpf.IsBusy = false;
+            //});
         }
         class CodeWriter : IDisposable
         {
@@ -2148,6 +2323,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                             if (ast is not Struct s || log.HasErrors)
                             {
                                 throw new Exception();
+                            }
+                            if (!fileLib.ReInitializeFile())
+                            {
+                                exportsWithDecompilationErrors.Add(new EntryStringPair(export, $"{pew.Pcc.FilePath} failed to re-initialize after compiling {$"#{export.UIndex}",-9}"));
+                                return;
                             }
                         }
                         catch (Exception e)

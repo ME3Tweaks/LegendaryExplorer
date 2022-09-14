@@ -3,87 +3,93 @@ using System.Collections.Generic;
 
 namespace LegendaryExplorerCore.Coalesced
 {
-	public class CoalesceProperty : IList<CoalesceValue>
-	{
-		public const int DefaultValueType = 2;
-		public const int NullValueType = 1;
+    public class CoalesceProperty : IList<CoalesceValue>
+    {
+        public const int DefaultValueType = 2;
+        public const int NullValueType = 1;
 
-		private readonly IList<CoalesceValue> _values;
+        private readonly IList<CoalesceValue> _values;
 
-		public CoalesceProperty(string name = null, IList<CoalesceValue> values = null)
-		{
-			_values = values ?? new List<CoalesceValue>();
-			Name = name ?? "CoalesceProperty";
-		}
+        public CoalesceProperty(string name = null, IList<CoalesceValue> values = null)
+        {
+            _values = values ?? new List<CoalesceValue>();
+            Name = name ?? "CoalesceProperty";
+        }
 
-		public int Count
-		{
-			get { return _values.Count; }
-		}
+        public CoalesceProperty(string name, CoalesceValue value)
+        {
+            _values = new List<CoalesceValue>(new[] { value });
+            Name = name;
+        }
 
-		public bool IsReadOnly
-		{
-			get { return _values.IsReadOnly; }
-		}
+        public int Count
+        {
+            get { return _values.Count; }
+        }
 
-		public string Name { get; set; }
+        public bool IsReadOnly
+        {
+            get { return _values.IsReadOnly; }
+        }
 
-		public IDictionary<string, string> Settings { get; set; }
+        public string Name { get; set; }
 
-		public CoalesceValue this[int index]
-		{
-			get { return _values[index]; }
-			set { _values[index] = value; }
-		}
+        public IDictionary<string, string> Settings { get; set; }
 
-		public void Add(CoalesceValue item)
-		{
-			_values.Add(item);
-		}
+        public CoalesceValue this[int index]
+        {
+            get { return _values[index]; }
+            set { _values[index] = value; }
+        }
 
-		public void Clear()
-		{
-			_values.Clear();
-		}
+        public void Add(CoalesceValue item)
+        {
+            _values.Add(item);
+        }
 
-		public bool Contains(CoalesceValue item)
-		{
-			return _values.Contains(item);
-		}
+        public void Clear()
+        {
+            _values.Clear();
+        }
 
-		public void CopyTo(CoalesceValue[] array, int arrayIndex)
-		{
-			_values.CopyTo(array, arrayIndex);
-		}
+        public bool Contains(CoalesceValue item)
+        {
+            return _values.Contains(item);
+        }
 
-		public IEnumerator<CoalesceValue> GetEnumerator()
-		{
-			return _values.GetEnumerator();
-		}
+        public void CopyTo(CoalesceValue[] array, int arrayIndex)
+        {
+            _values.CopyTo(array, arrayIndex);
+        }
 
-		public int IndexOf(CoalesceValue item)
-		{
-			return _values.IndexOf(item);
-		}
+        public IEnumerator<CoalesceValue> GetEnumerator()
+        {
+            return _values.GetEnumerator();
+        }
 
-		public void Insert(int index, CoalesceValue item)
-		{
-			_values.Insert(index, item);
-		}
+        public int IndexOf(CoalesceValue item)
+        {
+            return _values.IndexOf(item);
+        }
 
-		public bool Remove(CoalesceValue item)
-		{
-			return _values.Remove(item);
-		}
+        public void Insert(int index, CoalesceValue item)
+        {
+            _values.Insert(index, item);
+        }
 
-		public void RemoveAt(int index)
-		{
-			_values.RemoveAt(index);
-		}
+        public bool Remove(CoalesceValue item)
+        {
+            return _values.Remove(item);
+        }
 
-		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return ((IEnumerable) _values).GetEnumerator();
-		}
-	}
+        public void RemoveAt(int index)
+        {
+            _values.RemoveAt(index);
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return ((IEnumerable)_values).GetEnumerator();
+        }
+    }
 }

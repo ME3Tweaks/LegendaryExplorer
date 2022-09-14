@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -17,6 +16,9 @@ using Newtonsoft.Json;
 
 namespace LegendaryExplorerCore.Audio
 {
+    /// <summary>
+    /// Tools to scan for AFCs and references to AFCs, and perform AFC compaction of DLC mods
+    /// </summary>
     public class AFCCompactor
     {
         /// <summary>
@@ -24,18 +26,24 @@ namespace LegendaryExplorerCore.Audio
         /// </summary>
         private class AFCInventory
         {
+            /// <summary>AFCs that reside in the given input path</summary>
             public readonly List<string> LocalFolderAFCFiles = new();
+            /// <summary>AFCs that reside in the basegame</summary>
             public readonly List<string> BasegameAFCFiles = new();
-            /// <summary>
-            /// AFCs that reside in official DLC. This includes SFAR files.
-            /// </summary>
+            /// <summary>AFCs that reside in official DLC. This includes SFAR files.</summary>
             public List<string> OfficialDLCAFCFiles = new();
 
-            /// <summary>
-            /// Mapping of DLC foldername to a list of AFCs in that SFAR
-            /// </summary>
+            /// <summary>Mapping of DLC folder name to a list of AFCs in that SFAR</summary>
             public readonly CaseInsensitiveDictionary<List<string>> SFARAFCsMap = new();
 
+            /// <summary>
+            /// Creates an inventory of AFC file paths for the given game and input folder
+            /// </summary>
+            /// <param name="inputPath">Folder to search for AFCs in. This would typically be a DLC_MOD folder.</param>
+            /// <param name="game">Game to search for AFCs in. Basegame folder and all official DLC folders (including SFARs) will be searched</param>
+            /// <param name="currentScanningFileCallback">Callback invoked on every AFC found with the path to the AFC</param>
+            /// <param name="debugOut">Callback invoked with debug information on every AFC found</param>
+            /// <returns>An <see cref="AFCInventory"/> of every .afc file found</returns>
             public static AFCInventory GetInventory(string inputPath, MEGame game, Action<string> currentScanningFileCallback = null, Action<string> debugOut = null)
             {
                 var inventory = new AFCInventory();
@@ -48,7 +56,7 @@ namespace LegendaryExplorerCore.Audio
                 {
                     debugOut?.Invoke($@" >> Found Basegame AFC {oafc}");
                 }
-                inventory.OfficialDLCAFCFiles = MELoadedFiles.GetOfficialDLCFolders(game).SelectMany(x => Directory.GetFiles(x, "*.afc", SearchOption.AllDirectories)).ToList();
+                inventory.OfficialDLCAFCFiles = MELoadedDLC.GetOfficialDLCFolders(game).SelectMany(x => Directory.GetFiles(x, "*.afc", SearchOption.AllDirectories)).ToList();
                 foreach (var oafc in inventory.OfficialDLCAFCFiles)
                 {
                     debugOut?.Invoke($@" >> Found AFC in DLC directory {oafc}");
@@ -81,12 +89,30 @@ namespace LegendaryExplorerCore.Audio
             }
         }
 
+        /// <summary>
+        /// Represents a reference to a piece of audio in an AFC
+        /// </summary>
         [DebuggerDisplay("RA {afcName} @ 0x{audioOffset.ToString(\"X8\")}")]
         public class ReferencedAudio
         {
+            /// <summary>The name of the AFC containing this audio</summary>
+            public string AFCName { get; set; }
+            /// <summary>The offset into the AFC where this audio starts</summary>
+            public long AudioOffset { get; set; }
+            /// <summary>The size in bytes of this audio</summary>
+            public long AudioSize { get; set; }
+            /// <summary>The name of the export that references this audio</summary>
+            public string OriginatingExportName { get; set; }
+            /// <summary>A string representation of the source type of the AFC, for binding to a UI</summary>
+            public string AFCSourceType { get; set; }
+            /// <summary>If true, this reference does not lie in any known AFC boundaries from the vanilla game</summary>
+            public bool IsModified { get; set; }
+            /// <summary>If AFC is available. If not, this is broken audio</summary>
+            public bool IsAvailable { get; set; }
+
             protected bool Equals(ReferencedAudio other)
             {
-                return afcName.Equals(other.afcName, StringComparison.InvariantCultureIgnoreCase) && audioOffset == other.audioOffset && audioSize == other.audioSize;
+                return AFCName.Equals(other.AFCName, StringComparison.InvariantCultureIgnoreCase) && AudioOffset == other.AudioOffset && AudioSize == other.AudioSize;
             }
 
             public override bool Equals(object obj)
@@ -101,28 +127,24 @@ namespace LegendaryExplorerCore.Audio
             {
                 unchecked
                 {
-                    var hashCode = (afcName != null ? afcName.ToLower().GetHashCode() : 0);
-                    hashCode = (hashCode * 397) ^ audioOffset.GetHashCode();
-                    hashCode = (hashCode * 397) ^ audioSize.GetHashCode();
+                    var hashCode = (AFCName != null ? AFCName.ToLower().GetHashCode() : 0);
+                    hashCode = (hashCode * 397) ^ AudioOffset.GetHashCode();
+                    hashCode = (hashCode * 397) ^ AudioSize.GetHashCode();
                     return hashCode;
                 }
             }
-
-            public string afcName { get; set; }
-            public long audioOffset { get; set; }
-            public long audioSize { get; set; }
-            public string uiOriginatingExportName { get; set; }
-            public string uiAFCSourceType { get; set; }
-            /// <summary>
-            /// If this reference does not lie in any known AFC boundaries from the vanilla game
-            /// </summary>
-            public bool isModified { get; set; }
-            /// <summary>
-            /// If AFC is available. If not, this is broken audio
-            /// </summary>
-            public bool isAvailable { get; set; }
         }
 
+        /// <summary>
+        /// Compiles <see cref="ReferencedAudio"/> for every WwiseStream export in a given folder of package files
+        /// </summary>
+        /// <remarks>This method will look for AFCs in the game's basegame folder, all official DLC folders, and the input folder</remarks>
+        /// <param name="game">Game you are operating on</param>
+        /// <param name="inputPath">Path to folder to scan for WwiseStreams. All subdirectories will be searched for .pcc files</param>
+        /// <param name="notifyProgress">Callback invoked after every package file is opened with (currentFileIndex, totalFileCount)</param>
+        /// <param name="currentScanningFileCallback">Callback invoked after every package file is opened with the path to the current file</param>
+        /// <param name="debugOut">Callback invoked with debug information on every export scanned and every AFC found</param>
+        /// <returns>A tuple of ReferencedAudios for which no AFC was able to be found, and ReferencedAudios with verified AFCs</returns>
         public static (List<ReferencedAudio> missingAFCReferences, List<ReferencedAudio> availableAFCReferences) GetReferencedAudio(MEGame game, string inputPath,
             Action<long,long> notifyProgress = null,
             Action<string> currentScanningFileCallback = null, 
@@ -234,12 +256,12 @@ namespace LegendaryExplorerCore.Audio
 
                                 referencedAFCAudio.Add(new ReferencedAudio()
                                 {
-                                    afcName = afcName,
-                                    audioSize = audioSize,
-                                    audioOffset = audioOffset,
-                                    uiOriginatingExportName = exp.ObjectName,
-                                    uiAFCSourceType = source,
-                                    isModified = isModified
+                                    AFCName = afcName,
+                                    AudioSize = audioSize,
+                                    AudioOffset = audioOffset,
+                                    OriginatingExportName = exp.ObjectName,
+                                    AFCSourceType = source,
+                                    IsModified = isModified
                                 });
                             }
                             else
@@ -248,11 +270,11 @@ namespace LegendaryExplorerCore.Audio
 
                                 missingAFCReferences.Add(new ReferencedAudio()
                                 {
-                                    afcName = afcNameProp.Value,
-                                    audioSize = audioSize,
-                                    audioOffset = audioOffset,
-                                    uiOriginatingExportName = exp.ObjectName,
-                                    uiAFCSourceType = "AFC unavailable"
+                                    AFCName = afcNameProp.Value,
+                                    AudioSize = audioSize,
+                                    AudioOffset = audioOffset,
+                                    OriginatingExportName = exp.ObjectName,
+                                    AFCSourceType = "AFC unavailable"
                                 });
                             }
                         }
@@ -275,7 +297,7 @@ namespace LegendaryExplorerCore.Audio
 
             var afcInventory = AFCInventory.GetInventory(inputPath, game, notifyStatusUpdate, null); //Null lets me know there's something here to add for debug
             // Order by AFC name so we can just open a single stream to pull from rather than 800 times
-            referencesToCompact = referencesToCompact.OrderBy(x => x.afcName).ToList();
+            referencesToCompact = referencesToCompact.OrderBy(x => x.AFCName).ToList();
 
             #region EXTRACT AND BUILD NEW AFC FILE
             string currentOpenAfc = null;
@@ -293,57 +315,57 @@ namespace LegendaryExplorerCore.Audio
             {
                 notifyProgress?.Invoke(i, referencesToCompact.Count);
                 i++;
-                if (referencedAudio.afcName != currentOpenAfc)
+                if (referencedAudio.AFCName != currentOpenAfc)
                 {
                     currentOpenAfcStream?.Dispose();
-                    currentOpenAfcStream = fetchAfcStream(referencedAudio.afcName, afcInventory, debugOut);
-                    currentOpenAfc = referencedAudio.afcName;
+                    currentOpenAfcStream = fetchAfcStream(referencedAudio.AFCName, afcInventory, debugOut);
+                    currentOpenAfc = referencedAudio.AFCName;
                 }
 
                 if (currentOpenAfcStream == null)
                 {
-                    Debug.WriteLine($"AFC could not be found: {referencedAudio.afcName}");
-                    brokenAudio.Add((referencedAudio, $"AFC could not be found:  {referencedAudio.afcName}"));
+                    Debug.WriteLine($"AFC could not be found: {referencedAudio.AFCName}");
+                    brokenAudio.Add((referencedAudio, $"AFC could not be found:  {referencedAudio.AFCName}"));
                     continue;
                 }
 
                 var referencePos = memoryNewAfc.Position;
                 try
                 {
-                    if (currentOpenAfcStream.Length <= referencedAudio.audioOffset)
+                    if (currentOpenAfcStream.Length <= referencedAudio.AudioOffset)
                     {
-                        brokenAudio.Add((referencedAudio, $"Audio pointer is outside of AFC {referencedAudio.afcName} @ 0x{referencedAudio.audioOffset:X8}"));
+                        brokenAudio.Add((referencedAudio, $"Audio pointer is outside of AFC {referencedAudio.AFCName} @ 0x{referencedAudio.AudioOffset:X8}"));
                         continue;
                     }
 
-                    if (currentOpenAfcStream.Length < referencedAudio.audioOffset + referencedAudio.audioSize)
+                    if (currentOpenAfcStream.Length < referencedAudio.AudioOffset + referencedAudio.AudioSize)
                     {
-                        brokenAudio.Add((referencedAudio, $"Audio size causes reference to extend beyond end of AFC {referencedAudio.afcName} @ 0x{referencedAudio.audioOffset:X8} for length 0x{referencedAudio.audioSize:X6}. The AFC is only 0x{currentOpenAfcStream.Length:X8} in size"));
+                        brokenAudio.Add((referencedAudio, $"Audio size causes reference to extend beyond end of AFC {referencedAudio.AFCName} @ 0x{referencedAudio.AudioOffset:X8} for length 0x{referencedAudio.AudioSize:X6}. The AFC is only 0x{currentOpenAfcStream.Length:X8} in size"));
                         continue;
                     }
 
                     // Read header
-                    currentOpenAfcStream.Position = referencedAudio.audioOffset;
+                    currentOpenAfcStream.Position = referencedAudio.AudioOffset;
                     var header = currentOpenAfcStream.ReadStringLatin1(4);
                     if (header != "RIFF")
                     {
-                        brokenAudio.Add((referencedAudio, $"Audio pointer doesn't point to data that doesn't start with the RIFF tag. This is an invalid pointer as all audio will start with RIFF. AFC {referencedAudio.afcName} @ 0x{referencedAudio.audioOffset:X8}"));
+                        brokenAudio.Add((referencedAudio, $"Audio pointer doesn't point to data that doesn't start with the RIFF tag. This is an invalid pointer as all audio will start with RIFF. AFC {referencedAudio.AFCName} @ 0x{referencedAudio.AudioOffset:X8}"));
                         continue;
                     }
 
-                    currentOpenAfcStream.Position = referencedAudio.audioOffset;
-                    currentOpenAfcStream.CopyToEx(memoryNewAfc, (int)referencedAudio.audioSize);
+                    currentOpenAfcStream.Position = referencedAudio.AudioOffset;
+                    currentOpenAfcStream.CopyToEx(memoryNewAfc, (int)referencedAudio.AudioSize);
 
                     referenceMap[referencedAudio] = new ReferencedAudio()
                     {
-                        afcName = newAFCBaseName,
-                        audioOffset = referencePos,
-                        audioSize = referencedAudio.audioSize,
+                        AFCName = newAFCBaseName,
+                        AudioOffset = referencePos,
+                        AudioSize = referencedAudio.AudioSize,
                     };
                 }
                 catch (Exception e)
                 {
-                    brokenAudio.Add((referencedAudio, $"AFC could not be found: {referencedAudio.afcName} (Error: {e.Message})"));
+                    brokenAudio.Add((referencedAudio, $"AFC could not be found: {referencedAudio.AFCName} (Error: {e.Message})"));
                 }
 
                 var test = referenceMap[referencedAudio];
@@ -392,15 +414,15 @@ namespace LegendaryExplorerCore.Audio
                     if (wwiseStream.IsPCCStored) continue; //Nothing to update here
 
                     var key = new ReferencedAudio()
-                    { afcName = wwiseStream.Filename, audioSize = wwiseStream.DataSize, audioOffset = wwiseStream.DataOffset };
+                    { AFCName = wwiseStream.Filename, AudioSize = wwiseStream.DataSize, AudioOffset = wwiseStream.DataOffset };
 
                     if (referenceMap.TryGetValue(key, out var newInfo))
                     {
                         //Write new filename
-                        exp.WriteProperty(new NameProperty(newInfo.afcName, "FileName"));
+                        exp.WriteProperty(new NameProperty(newInfo.AFCName, "FileName"));
                         byte[] newData = exp.Data;
                         // Write new offset
-                        Buffer.BlockCopy(BitConverter.GetBytes((int)newInfo.audioOffset), 0, newData,
+                        Buffer.BlockCopy(BitConverter.GetBytes((int)newInfo.AudioOffset), 0, newData,
                             newData.Length - 4, 4); //update AFC audio offset
                         exp.Data = newData;
 

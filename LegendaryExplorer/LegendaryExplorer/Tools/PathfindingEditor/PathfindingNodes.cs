@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using UMD.HCIL.Piccolo.Nodes;
 using System.Diagnostics;
 using System.Drawing.Drawing2D;
 using LegendaryExplorer.Misc.AppSettings;
@@ -10,6 +9,7 @@ using LegendaryExplorer.Tools.SequenceObjects;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
+using Piccolo.Nodes;
 
 namespace LegendaryExplorer.Tools.PathfindingEditor
 {

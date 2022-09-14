@@ -112,94 +112,6 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             return null;
         }
 
-        public static ArrayType getArrayType(string className, NameReference propName, ExportEntry export = null)
-        {
-            PropertyInfo p = getPropertyInfo(className, propName, false, containingExport: export);
-            if (p == null)
-            {
-                p = getPropertyInfo(className, propName, true, containingExport: export);
-            }
-            if (p == null && export != null)
-            {
-                if (!export.IsClass && export.Class is ExportEntry classExport)
-                {
-                    export = classExport;
-                }
-                if (export.IsClass)
-                {
-                    ClassInfo currentInfo = generateClassInfo(export);
-                    currentInfo.baseClass = export.SuperClassName;
-                    p = getPropertyInfo(className, propName, false, currentInfo, containingExport: export);
-                    if (p == null)
-                    {
-                        p = getPropertyInfo(className, propName, true, currentInfo, containingExport: export);
-                    }
-                }
-            }
-            return getArrayType(p);
-        }
-
-#if DEBUG
-        public static bool ArrayTypeLookupJustFailed;
-#endif
-
-        public static ArrayType getArrayType(PropertyInfo p)
-        {
-            if (p != null)
-            {
-                if (p.Reference == "NameProperty")
-                {
-                    return ArrayType.Name;
-                }
-
-                if (Enums.ContainsKey(p.Reference))
-                {
-                    return ArrayType.Enum;
-                }
-
-                if (p.Reference == "BoolProperty")
-                {
-                    return ArrayType.Bool;
-                }
-
-                if (p.Reference == "ByteProperty")
-                {
-                    return ArrayType.Byte;
-                }
-
-                if (p.Reference == "StrProperty")
-                {
-                    return ArrayType.String;
-                }
-
-                if (p.Reference == "FloatProperty")
-                {
-                    return ArrayType.Float;
-                }
-
-                if (p.Reference == "IntProperty")
-                {
-                    return ArrayType.Int;
-                }
-                if (p.Reference == "StringRefProperty")
-                {
-                    return ArrayType.StringRef;
-                }
-
-                if (Structs.ContainsKey(p.Reference))
-                {
-                    return ArrayType.Struct;
-                }
-
-                return ArrayType.Object;
-            }
-#if DEBUG
-            ArrayTypeLookupJustFailed = true;
-#endif
-            Debug.WriteLine("LE2 Array type lookup failed due to no info provided, defaulting to int");
-            return LegendaryExplorerCoreLibSettings.Instance.ParseUnknownArrayTypesAsObject ? ArrayType.Object : ArrayType.Int;
-        }
-
         public static PropertyInfo getPropertyInfo(string className, NameReference propName, bool inStruct = false, ClassInfo nonVanillaClassInfo = null, bool reSearch = true, ExportEntry containingExport = null)
         {
             if (className.StartsWith("Default__", StringComparison.OrdinalIgnoreCase))
@@ -213,6 +125,18 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 info = nonVanillaClassInfo;
                 infoExists = true;
             }
+
+            // 07/18/2022 - If during property lookup we are passed a class 
+            // that we don't know about, generate and use it, since it will also have superclass info
+            // For example looking at a custom subclass in Interpreter, this code will resolve the ???'s
+            // - Mgamerz
+            if (!infoExists && !inStruct && containingExport != null && containingExport.IsDefaultObject && containingExport.Class is ExportEntry classExp)
+            {
+                info = generateClassInfo(classExp, false);
+                Classes[className] = info;
+                infoExists = true;
+            }
+
             if (infoExists) //|| (temp = !inStruct ? Structs : Classes).ContainsKey(className))
             {
                 //look in class properties
@@ -282,7 +206,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 case PropertyType.FloatProperty:
                     return new FloatProperty(0f, propName);
                 case PropertyType.DelegateProperty:
-                    return new DelegateProperty(0, "None");
+                    return new DelegateProperty("None", 0);
                 case PropertyType.ObjectProperty:
                     return new ObjectProperty(0, propName);
                 case PropertyType.NameProperty:
@@ -300,7 +224,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 case PropertyType.BioMask4Property:
                     return new BioMask4Property(0, propName);
                 case PropertyType.ArrayProperty:
-                    switch (getArrayType(propInfo))
+                    switch (GlobalUnrealObjectInfo.GetArrayType(MEGame.LE2, propInfo))
                     {
                         case ArrayType.Object:
                             return new ArrayProperty<ObjectProperty>(propName);
@@ -350,6 +274,8 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             foreach (string filePath in allFiles)
             {
                 using IMEPackage pcc = MEPackageHandler.OpenLE2Package(filePath);
+                if (pcc.Localization != MELocalization.None && pcc.Localization != MELocalization.INT)
+                    continue; // DO NOT LOOK AT NON-INT AS SOME GAMES WILL BE MISSING THESE FILES (due to backup/storage)
                 for (int i = 1; i <= pcc.ExportCount; i++)
                 {
                     ExportEntry exportEntry = pcc.GetUExport(i);
@@ -379,6 +305,8 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             foreach (string filePath in allFiles)
             {
                 using IMEPackage pcc = MEPackageHandler.OpenLE2Package(filePath);
+                if (pcc.Localization != MELocalization.None && pcc.Localization != MELocalization.INT)
+                    continue; // DO NOT LOOK AT NON-INT AS SOME GAMES WILL BE MISSING THESE FILES (due to backup/storage)
                 foreach (ExportEntry exportEntry in pcc.Exports)
                 {
                     if (exportEntry.IsA("SequenceObject"))
@@ -629,27 +557,14 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
         }
         #endregion
 
-        public static bool IsAKnownNativeClass(string className) => NativeClasses.Contains(className);
+        public static bool IsAKnownGameSpecificNativeClass(string className) => NativeClasses.Contains(className);
 
         /// <summary>
-        /// List of all known classes that are only defined in native code. These are not able to be handled for things like InheritsFrom as they are not in the property info database.
+        /// List of all known classes that are only defined in native code that are LE2 specific
         /// </summary>
         public static readonly string[] NativeClasses =
         {
-            @"Engine.CodecMovieBink",
-            "Engine.FracturedStaticMesh",
-            "Engine.ChildConnection",
-            "Engine.Client",
-            "Engine.Model",
-            "Engine.World",
-            "Engine.NetConnection",
-            "Engine.PendingLevel",
-            "Engine.StaticMesh",
-            "Engine.Level",
-            "Engine.Polys",
-            "Engine.ShaderCache",
-            "Engine.ShadowMap1D",
-            "Engine.LightMapTexture2D",
+            @"Core.Package",
         };
     }
 }

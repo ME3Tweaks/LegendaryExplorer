@@ -30,6 +30,7 @@ using LegendaryExplorerCore.Packages;
 using System.Text;
 using LegendaryExplorer.Tools.ClassViewer;
 using LegendaryExplorer.Tools.PlotDatabase;
+using LegendaryExplorer.Tools.ScriptDebugger;
 
 namespace LegendaryExplorer
 {
@@ -61,6 +62,8 @@ namespace LegendaryExplorer
 
     public static class ToolSet
     {
+        private const string ICON_COMING_SOON_RES_NAME = "iconPlaceholder";
+
         //has an invisible no width space at the beginning so it will sort last
         private const string other = "⁣Other";
         private static HashSet<Tool> items;
@@ -156,18 +159,52 @@ namespace LegendaryExplorer
                 tags = new List<string> { "utility", "animation", "gesture" },
                 category = "Cinematic Tools",
                 category2 = "Utilities",
-                description = "Animation Viewer allows you to preview any animation in Mass Effect 3"
+                description = "Animation Viewer allows you to preview any animation in Mass Effect 3 (OT only)."
             });
 
 #if DEBUG
             set.Add(new Tool
             {
-                name = "Class Hierarchy Viewer",
-                type = typeof(Tools.ClassViewer.ClassViewerWindow),
+                name = "Animation Viewer 2",
+                type = typeof(Tools.AnimationViewer.AnimationViewerWindow2),
                 icon = Application.Current.FindResource("iconAnimViewer") as ImageSource,
                 open = () =>
                 {
-                    new ClassViewerWindow().Show();
+                    var gameStr = InputComboBoxWPF.GetValue(null, "Choose game you want to use Animation Viewer 2 with.", "Live Level Editor 2 game selector",
+                        new[] { "LE1" }, "LE1");
+
+                    if (Enum.TryParse(gameStr, out MEGame game))
+                    {
+                        if (Tools.AnimationViewer.AnimationViewerWindow2.Instance(game) is { } instance)
+                        {
+                            instance.RestoreAndBringToFront();
+                        }
+                        else
+                        {
+                            (new Tools.AnimationViewer.AnimationViewerWindow2(game)).Show();
+                        }
+                    }
+                },
+                tags = new List<string> { "utility", "animation", "gesture" },
+                category = "Cinematic Tools",
+                category2 = "Utilities",
+                description = "IN DEVELOPMENT: (LE ONLY) Animation Viewer 2 allows you to preview any animation in the Legendary Edition versions of the games."
+            });
+
+            set.Add(new Tool
+            {
+                name = "Class Hierarchy Viewer",
+                type = typeof(Tools.ClassViewer.ClassViewerWindow),
+                icon = Application.Current.FindResource("iconClassViewer") as ImageSource,
+                open = () =>
+                {
+                    var gameStr = InputComboBoxWPF.GetValue(null, "Choose game you want to use Class Hierarchy Viewer with.", "Class Hierarchy Viewer game selector",
+                        new[] { "LE1", "LE2", "LE3", "ME1", "ME2", "ME3" }, "LE3");
+
+                    if (Enum.TryParse(gameStr, out MEGame game))
+                    {
+                        new ClassViewerWindow(game).Show();
+                    }
                 },
                 tags = new List<string> { "utility", "class", "property" },
                 category = "Utilities",
@@ -182,23 +219,64 @@ namespace LegendaryExplorer
                 open = () =>
                 {
                     var gameStr = InputComboBoxWPF.GetValue(null, "Choose game you want to use Live Level Editor with.", "Live Level Editor game selector",
-                                              new[] { "ME3", "ME2", "LE1" }, "ME3");
+                                              new[] { "LE3", "LE2", "LE1", "ME3", "ME2" }, "LE3");
 
                     if (Enum.TryParse(gameStr, out MEGame game))
                     {
-                        if (Tools.LiveLevelEditor.LiveLevelEditorWindow.Instance(game) is { } instance)
+                        if (game.IsLEGame())
                         {
-                            instance.RestoreAndBringToFront();
+                            if (Tools.LiveLevelEditor.LELiveLevelEditorWindow.Instance(game) is { } instance)
+                            {
+                                instance.RestoreAndBringToFront();
+                            }
+                            else
+                            {
+                                (new Tools.LiveLevelEditor.LELiveLevelEditorWindow(game)).Show();
+                            }
                         }
                         else
                         {
-                            (new Tools.LiveLevelEditor.LiveLevelEditorWindow(game)).Show();
+                            if (Tools.LiveLevelEditor.LiveLevelEditorWindow.Instance(game) is { } instance)
+                            {
+                                instance.RestoreAndBringToFront();
+                            }
+                            else
+                            {
+                                (new Tools.LiveLevelEditor.LiveLevelEditorWindow(game)).Show();
+                            }
                         }
                     }
                 },
                 tags = new List<string> { "utility" },
                 category = "Utilities",
-                description = "Live Level Editor allows you to preview the effect of property changes to Actors in game, to reduce iteration times. It also has a Camera Path Editor, which lets you make camera pans quickly."
+                description = "Live Level Editor allows you to preview the effect of property changes to Actors in game, to reduce iteration times."
+            });
+
+            set.Add(new Tool
+            {
+                name = "Script Debugger",
+                type = typeof(ScriptDebuggerWindow),
+                icon = Application.Current.FindResource("iconScriptDebugger") as ImageSource,
+                open = () =>
+                {
+                    var gameStr = InputComboBoxWPF.GetValue(null, "Choose game you want to use Script Debugger with.", "Script Debugger game selector",
+                        new[] { "LE1", "LE2" }, "LE2");
+
+                    if (Enum.TryParse(gameStr, out MEGame game))
+                    {
+                        if (ScriptDebuggerWindow.Instance(game) is { } instance)
+                        {
+                            instance.RestoreAndBringToFront();
+                        }
+                        else
+                        {
+                            (new ScriptDebuggerWindow(game)).Show();
+                        }
+                    }
+                },
+                tags = new List<string> { "utility", "unrealscript" },
+                category = "Utilities",
+                description = "Script Debugger lets you debug your UnrealScript for Legendary Edition games. Set breakpoints, step through code, and inspect and change the values of local and instance variables"
             });
             set.Add(new Tool
             {
@@ -320,6 +398,21 @@ namespace LegendaryExplorer
                 category = "Cinematic Tools",
                 description = "Interp Editor is a simplified version of UDK’s Matinee Editor. It loads interpdata objects and displays their children as tracks on a timeline, allowing the user to visualize the game content associated with a specific scene."
             });
+#if DEBUG
+            set.Add(new Tool
+            {
+                name = "LEX Custom Files Manager",
+                type = typeof(Tools.CustomFilesManager.CustomFilesManagerWindow),
+                icon = Application.Current.FindResource("iconLexCustomFileManager") as ImageSource,
+                open = () =>
+                {
+                    (new Tools.CustomFilesManager.CustomFilesManagerWindow()).Show();
+                },
+                tags = new List<string> { "utility", "startup", "import", "custom", "file", "class", "kismet" },
+                category = "Utilities",
+                description = "The LEX Custom Files Manager allows you to define custom files for use with the toolset, including specifying mod startup files that can be imported from and files to inventory the classes of on toolset boot."
+            });
+#endif
             set.Add(new Tool
             {
                 name = "Mesh Explorer",
@@ -349,11 +442,11 @@ namespace LegendaryExplorer
             set.Add(new Tool
             {
                 name = "TLK Editor",
-                type = typeof(TLKEditor),
+                type = typeof(TLKEditorExportLoader),
                 icon = Application.Current.FindResource("iconTLKEditor") as ImageSource,
                 open = () =>
                 {
-                    var elhw = new ExportLoaderHostedWindow(new TLKEditor())
+                    var elhw = new ExportLoaderHostedWindow(new TLKEditorExportLoader())
                     {
                         Title = $"TLK Editor"
                     };

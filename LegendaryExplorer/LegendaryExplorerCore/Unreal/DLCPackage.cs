@@ -26,7 +26,7 @@ namespace LegendaryExplorerCore.Unreal
             public uint BlockTableOffset;
             public uint MaxBlockSize;
             public string CompressionScheme;
-            public void Serialize(SerializingFile con)
+            internal void Serialize(SerializingFile con)
             {
                 //Magic = magic;
                 Version = con + Version;
@@ -65,7 +65,7 @@ namespace LegendaryExplorerCore.Unreal
             public string FileName { get; set; }
             public bool isActualFile;
 
-            public void Serialize(SerializingFile con, HeaderStruct header)
+            internal void Serialize(SerializingFile con, HeaderStruct header)
             {
                 Header = header;
                 MyOffset = (uint)con.GetPos();
@@ -166,7 +166,7 @@ namespace LegendaryExplorerCore.Unreal
             con.Memory.Close();
         }
 
-        public void Serialize(SerializingFile con)
+        private void Serialize(SerializingFile con)
         {
             if (con.isLoading)
                 Header = new HeaderStruct();

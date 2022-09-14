@@ -31,7 +31,21 @@
             </Grid.RowDefinitions>
             <ide:UnrealScriptTextEditor x:Name="textEditor" Document="{Binding Document}" SyntaxHighlighting="Unrealscript"
                                         Background="#1E1E1E" Foreground="#DBDBDB" LineNumbersForeground ="#2B90AE"
-                                        FontFamily="Consolas" ShowLineNumbers="True">
+                                        FontFamily="Consolas" ShowLineNumbers="True" ContextMenuOpening="TextEditor_OnContextMenuOpening" ContextMenuClosing="TextEditor_OnContextMenuClosing">
+                <avalonedit:TextEditor.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Command="Find"/>
+                        <Separator/>
+                        <MenuItem Command="Undo"/>
+                        <MenuItem Command="Redo"/>
+                        <Separator/>
+                        <MenuItem Command="Cut"/>
+                        <MenuItem Command="Copy"/>
+                        <MenuItem Command="Paste"/>
+                        <Separator/>
+                        <MenuItem Header="Find Usages In File" Command="{Binding FindUsagesInFileCommand}"/>
+                    </ContextMenu>
+                </avalonedit:TextEditor.ContextMenu>
                 <avalonedit:TextEditor.Resources>
                     <Style TargetType="{x:Type avalonedit:TextEditor}">
                         <Setter Property="FlowDirection" Value="LeftToRight" />
@@ -123,9 +137,7 @@
                                                                     CanContentScroll="True"
                                                                     CanHorizontallyScroll="True"
                                                                     CanVerticallyScroll="True"
-                                                                    Content="{Binding RelativeSource={RelativeSource AncestorType={x:Type avalonedit:TextEditor}}, Path=TextArea}"
-                                            />
-
+                                                                    Content="{Binding RelativeSource={RelativeSource AncestorType={x:Type avalonedit:TextEditor}}, Path=TextArea}"/>
                                                             <!-- Display Vertical Scrollbar to the right -->
                                                             <ScrollBar Name="PART_VerticalScrollBar"
                                                        Grid.Column="1"
@@ -172,6 +184,9 @@
                             </Setter.Value>
                         </Setter>
                     </Style>
+                    <Style TargetType="avalonedit:SearchPanel">
+                        <Setter Property="MarkerBrush" Value="#653306"/>
+                    </Style>
                 </avalonedit:TextEditor.Resources>
             </ide:UnrealScriptTextEditor>
             <GridSplitter Grid.Row="1" Height="5"  HorizontalAlignment="Stretch"/>
@@ -183,9 +198,9 @@
                 <StackPanel Orientation="Vertical">
                     <Button Content="Decompile" Click="Decompile_OnClick" />
                     <Button Content="Compile to AST" Click="CompileAST_OnClick" Visibility="{x:Static global:App.IsDebugVisibility}" IsEnabled="{Binding FullyInitialized}"/>
-                    <Button Content="Compile (EXPERIMENTAL!)" Click="Compile_OnClick" IsEnabled="{Binding FullyInitialized}"/>
+                    <Button Content="Compile" Click="Compile_OnClick" IsEnabled="{Binding FullyInitialized}"/>
                 </StackPanel>
-                <ListBox Grid.Column="1" Name="outputListBox" SelectionChanged="outputListBox_SelectionChanged" HorizontalContentAlignment="Left" >
+                <ListBox Grid.Column="1" Name="OutputListBox" SelectionChanged="outputListBox_SelectionChanged" HorizontalContentAlignment="Left" >
                     <ListBox.Resources>
                         <DataTemplate DataType="errors:LogMessage">
                             <Grid>

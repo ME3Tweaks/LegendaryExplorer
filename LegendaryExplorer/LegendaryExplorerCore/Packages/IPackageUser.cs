@@ -3,9 +3,12 @@ using System.Collections.Generic;
 
 namespace LegendaryExplorerCore.Packages
 {
-    public interface IPackageUser
+    public interface IWeakPackageUser
     {
-        void handleUpdate(List<PackageUpdate> updates);
+        void HandleUpdate(List<PackageUpdate> updates);
+    }
+    public interface IPackageUser : IWeakPackageUser
+    {
         void RegisterClosed(Action handler);
         void ReleaseUse();
         void HandleSaveStateChange(bool isSaving);

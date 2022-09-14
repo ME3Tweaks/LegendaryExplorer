@@ -36,19 +36,18 @@ namespace LegendaryExplorer.Dialogs
                 Height = height;
             }
             Owner = owner;
+            TopText = message;
         }
 
 
         public ListDialog(IEnumerable<EntryStringPair> listItems, string title, string message, Window owner, int width = 0, int height = 0) : this(title, message, owner, width, height)
         {
             Items.ReplaceAll(listItems);
-            TopText = message;
         }
 
         public ListDialog(IEnumerable<string> listItems, string title, string message, Window owner, int width = 0, int height = 0) : this(title, message, owner, width, height)
         {
             Items.ReplaceAll(listItems);
-            TopText = message;
         }
 
         private void CopyItemsToClipBoard_Click(object sender, RoutedEventArgs e)
@@ -68,7 +67,7 @@ namespace LegendaryExplorer.Dialogs
 
         private void ListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            if (((FrameworkElement)e.OriginalSource).DataContext is EntryStringPair item && item.Entry != null)
+            if (((FrameworkElement)e.OriginalSource).DataContext is EntryStringPair item && (item.Entry is not null || item.Openable is not null))
             {
                 if (DoubleClickEntryHandler == null)
                 {

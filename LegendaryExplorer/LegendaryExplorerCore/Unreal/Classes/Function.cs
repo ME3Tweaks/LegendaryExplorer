@@ -51,11 +51,13 @@ namespace LegendaryExplorerCore.Unreal.Classes
         public Function(byte[] raw, ExportEntry export)
         {
             this.export = export;
-            var objBin = ObjectBinary.From(export) as UStruct;
-            if (objBin is null)
+            
+            //need to make a temp copy to support the "Preview Script Changes" functionality in bytecode editor
+            if (ObjectBinary.From(export.CreateTempCopyWithNewData(raw)) is not UStruct objBin)
             {
                 throw new Exception($"Cannot parse export of class {export.ClassName}!");
             }
+            
             memory = raw;
             memsize = raw.Length;
             flagint = (int)((objBin as UFunction)?.FunctionFlags ?? 0);
@@ -245,6 +247,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
 
         public void ParseFunction()
         {
+            int byteCodeStartPos = export.IsClass ? 0x18 : 0x20;
             var parsedData = Bytecode.ParseBytecode(script, export);
             ScriptBlocks = parsedData.Item1;
             SingularTokenList = parsedData.Item2;
@@ -277,7 +280,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
 
             foreach (Token t in ScriptBlocks)
             {
-                var diskPos = t.pos - 32;
+                var diskPos = t.pos - byteCodeStartPos;
                 if (diskPos >= 0 && diskPos < DiskToMemPosMap.Length)
                 {
                     t.memPos = DiskToMemPosMap[diskPos];

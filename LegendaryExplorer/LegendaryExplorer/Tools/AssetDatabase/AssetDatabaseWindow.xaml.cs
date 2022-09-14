@@ -372,6 +372,10 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             var build = dbCurrentBuild.Trim(' ', '*', '.');
             //Async load
             AssetDB pdb = await ParseDBAsync(game, currentDbPath, build, cancelloadingToken);
+            if (pdb is null)
+            {
+                return;
+            }
             database.Game = pdb.Game;
             database.GenerationDate = pdb.GenerationDate;
             database.DatabaseVersion = pdb.DatabaseVersion;
@@ -381,61 +385,37 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             database.AddRecords(pdb);
             database.PlotUsages.LoadPlotPaths(game);
         }
-        public static async Task<AssetDB> ParseDBAsync(MEGame dbgame, string dbpath, string build, CancellationToken cancel)
-        {
-            var deserializingQueue = new BlockingCollection<AssetDB>();
 
+        private static async Task<AssetDB> ParseDBAsync(MEGame dbgame, string dbpath, string build, CancellationToken cancel)
+        {
             try
             {
-                await Task.Run(() =>
-                {
-                    var archiveEntries = new Dictionary<string, ZipArchiveEntry>();
-                    using ZipArchive archive = new(new FileStream(dbpath, FileMode.Open));
-                    if (archive.Entries.Any(e => e.Name == $"MasterDB.{dbgame}_{build}.bin"))
-                    {
-                        foreach (ZipArchiveEntry entry in archive.Entries)
-                        {
-                            var ms = new MemoryStream();
-                            using (Stream estream = entry.Open())
-                            {
-                                estream.CopyTo(ms);
-                            }
-                            ms.Position = 0;
-                            Task.Run(() => JsonFileParse(ms, deserializingQueue, cancel));
-                        }
-
-                    }
-                    else //Wrong build - send dummy pdb back and ask user to refresh
-                    {
-                        AssetDB pdb = new();
-                        var entry = archive.Entries.FirstOrDefault(z => z.Name.StartsWith("Master"));
-                        pdb.DatabaseVersion = "pre 2.0";
-                        if (entry != null)
-                        {
-                            var split = Path.GetFileNameWithoutExtension(entry.Name).Split('_');
-                            if (split.Length == 2)
-                            {
-                                pdb.DatabaseVersion = split[1];
-                            }
-                        }
-
-                        deserializingQueue.Add(pdb);
-                        if (!cancel.IsCancellationRequested)
-                        {
-                            deserializingQueue.CompleteAdding();
-                        }
-                    }
-                });
-
                 return await Task.Run(() =>
                 {
-                    AssetDB readData = null;
-                    foreach (AssetDB pdb in deserializingQueue.GetConsumingEnumerable())
+                    using ZipArchive archive = new(new FileStream(dbpath, FileMode.Open));
+                    if (archive.Entries.FirstOrDefault(e => e.Name == $"MasterDB.{dbgame}_{build}.bin") is ZipArchiveEntry entry)
                     {
-                        readData = pdb;
-                        deserializingQueue.CompleteAdding();
+                        var ms = new MemoryStream((int)entry.Length);
+                        using (Stream estream = entry.Open())
+                        {
+                            estream.CopyTo(ms);
+                        }
+                        ms.Position = 0;
+                        return JsonFileParse(ms, cancel);
                     }
-                    return readData;
+                    //Wrong build - send dummy pdb back and ask user to refresh
+                    AssetDB pdb = new();
+                    var oldEntry = archive.Entries.FirstOrDefault(z => z.Name.StartsWith("Master"));
+                    pdb.DatabaseVersion = "pre 2.0";
+                    if (oldEntry != null)
+                    {
+                        var split = Path.GetFileNameWithoutExtension(oldEntry.Name).Split('_');
+                        if (split.Length == 2)
+                        {
+                            pdb.DatabaseVersion = split[1];
+                        }
+                    }
+                    return pdb;
                 });
             }
             catch (Exception e)
@@ -444,25 +424,27 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             }
             return null;
         }
-        private static void JsonFileParse(MemoryStream ms, BlockingCollection<AssetDB> propsDataBases, CancellationToken ct)
+        private static AssetDB JsonFileParse(Stream ms, CancellationToken ct)
         {
 
             try
             {
-                AssetDB readData = BinaryConverter.Deserialize<AssetDB>(ms);
+                var readData = BinaryConverter.Deserialize<AssetDB>(ms);
                 if (ct.IsCancellationRequested)
                 {
                     Console.WriteLine("Cancelled ParseDB");
-                    return;
+                    return null;
                 }
-                propsDataBases.Add(readData);
+                return readData;
             }
             catch
             {
                 MessageBox.Show($"Failure deserializing database");
+                return null;
             }
         }
-        public async void SaveDatabase()
+
+        private async void SaveDatabase()
         {
             BusyHeader = "Saving database";
             BusyText = "Please wait...";
@@ -479,12 +461,10 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             {
                 using (var archive = new ZipArchive(fileStream, ZipArchiveMode.Create, true))
                 {
-                    var build = dbCurrentBuild.Trim(' ', '*', '.');
-                    var archiveEntry = archive.CreateEntry($"MasterDB.{CurrentGame}_{build}.bin");
-                    await using (var entryStream = archiveEntry.Open())
-                    {
-                        await Task.Run(() => BinaryConverter.Serialize(CurrentDataBase, entryStream));
-                    }
+                    string build = dbCurrentBuild.Trim(' ', '*', '.');
+                    ZipArchiveEntry archiveEntry = archive.CreateEntry($"MasterDB.{CurrentGame}_{build}.bin");
+                    await using Stream entryStream = archiveEntry.Open();
+                    await Task.Run(() => BinaryConverter.Serialize(CurrentDataBase, entryStream));
                 }
             }
             menu_SaveXEmptyLines.IsEnabled = false;
@@ -586,16 +566,16 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                         //Shouldn't be called in ME1/LE1
                         break;
                     case MEGame.ME2:
-                        ol.Line = ME2TalkFiles.findDataById(ol.StrRef);
+                        ol.Line = ME2TalkFiles.FindDataById(ol.StrRef);
                         break;
                     case MEGame.ME3:
-                        ol.Line = ME3TalkFiles.findDataById(ol.StrRef);
+                        ol.Line = ME3TalkFiles.FindDataById(ol.StrRef);
                         break;
                     case MEGame.LE2:
-                        ol.Line = LE2TalkFiles.findDataById(ol.StrRef);
+                        ol.Line = LE2TalkFiles.FindDataById(ol.StrRef);
                         break;
                     case MEGame.LE3:
-                        ol.Line = LE3TalkFiles.findDataById(ol.StrRef);
+                        ol.Line = LE3TalkFiles.FindDataById(ol.StrRef);
                         break;
                 }
                 GeneratedDB.GeneratedLines.TryAdd(ol.StrRef.ToString(), ol);
@@ -715,7 +695,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                     }
                     else
                     {
-                        var dlcs = MELoadedFiles.GetDLCNamesWithMounts(CurrentGame);
+                        var dlcs = MELoadedDLC.GetDLCNamesWithMounts(CurrentGame);
                         dlcs.Add("BioGame", 0);
                         foreach ((string fileName, int directoryKey) in CurrentDataBase.FileList)
                         {
@@ -1389,7 +1369,8 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                 {
                     continue;
                 }
-                textPcc = MEPackageHandler.OpenMEPackage(filePath);
+                textPcc = MEPackageHandler.OpenMEPackage(filePath); // maybe use unsafe load?
+                //textPcc = MEPackageHandler.UnsafePartialLoad(filePath, x=>x.UIndex == selecteditem.Usages[0].UIndex); // maybe use unsafe load?
                 var uexpIdx = selecteditem.Usages[0].UIndex;
                 if (uexpIdx <= textPcc.ExportCount)
                 {
@@ -2196,7 +2177,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             //Add and sort Classes
             CurrentDataBase.AddRecords(pdb);
 
-            var dlcs = MELoadedFiles.GetDLCNamesWithMounts(CurrentGame);
+            var dlcs = MELoadedDLC.GetDLCNamesWithMounts(CurrentGame);
             dlcs.Add("BioGame", 0);
             foreach ((string fileName, int directoryKey) in CurrentDataBase.FileList)
             {

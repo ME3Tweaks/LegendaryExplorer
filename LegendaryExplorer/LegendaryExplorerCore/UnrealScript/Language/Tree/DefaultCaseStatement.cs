@@ -5,7 +5,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 {
     public class DefaultCaseStatement : Statement
     {
-        public DefaultCaseStatement(SourcePosition start, SourcePosition end)
+        public DefaultCaseStatement(int start, int end)
             : base(ASTNodeType.DefaultStatement, start, end) { }
 
         public override bool AcceptVisitor(IASTVisitor visitor)

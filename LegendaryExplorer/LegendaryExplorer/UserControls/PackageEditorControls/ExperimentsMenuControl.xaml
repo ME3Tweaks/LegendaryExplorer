@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:LegendaryExplorer.UserControls.PackageEditorControls"
              xmlns:sharedUi="clr-namespace:LegendaryExplorer.SharedUI"
              xmlns:converters="clr-namespace:LegendaryExplorer.SharedUI.Converters"
+             xmlns:global="clr-namespace:LegendaryExplorer"
              mc:Ignorable="d" 
               Header="Experiments" Padding="4"
              DataContext="{Binding RelativeSource={RelativeSource Self}}">
@@ -33,11 +34,31 @@
         <Separator/>
         <!--<MenuItem Header="Generate ME3 Code" Click="GenerateME3Code_Click"/>-->
         <MenuItem Header="Generate ME2/ME3 object info diff" Click="GenerateObjectInfoDiff_Click"/>
+        <Separator/>
+        <MenuItem Header="Re-Inventory game resources file" ToolTip="Generates the code for custom classes in the resources zip. Check the code for which game" Click="ReInventoryCustomClasses_Click"/>
     </MenuItem>
     <MenuItem Header="Mgamerz's Programming Circus">
-        <MenuItem Header="Force Vignette Off in coded game" Click="ForceVignetteOff_Click"/>
+        <MenuItem Header="Test WwiseSDK on WwiseBank" Click="WwiseBankToProject_Click"/>
+        <MenuItem Header="Make current material a VTest Donor" Click="MakeVTestDonor_Click" Visibility="{x:Static global:App.IsDebugVisibility}"/>
+        <MenuItem Header="Cram current LE3 BioP full of stuff that will take up lotsa memory" Click="CramLevelFullOfEverything_Click"/>
+        <MenuItem Header="Test current package binary against LEX serializer" Click="TestCurrentPackageBinary"/>
+        <MenuItem Header="Run MaterialInstanceScreenshot" Click="RunMaterialInstanceScreenshot_Click"/>
+        <MenuItem Header="Generate MaterialInstanceConstant from Material" Click="GenerateMaterialInstanceConstant_Click"/>
+        <MenuItem Header="Convert Static Light component to non-static" Click="ConvertSLCALightToNonSLCA"/>
+        <MenuItem Header="Find bad index location from appErrorF message (doesn't work)" Click="FindAppErrorFLocation_Click"/>
+        <MenuItem Header="Organize Particle System Exports" Click="OrganizeParticleSystemExports_Click"/>
+        <MenuItem Header="MScanner" Click="MScanner_Click"/>
+        <!--<MenuItem Header="Make LE1 Mako Map from terrain from UDK file" Click="MakeLE1MakoMap_Click"/>-->
+        <MenuItem Header="Import UDK Terrain Collision Data" Click="ImportUDKTerrain_Click"/>
+        <MenuItem Header="Export Terrain Collision Data to UDK" Click="ExportTerrainCollisionDataToUDK_Clicked" Visibility="{x:Static global:App.IsDebugVisibility}"/>
+        <MenuItem Header="Print LE1 Terrains By Size to debug console" Click="PrintTerrainsBySize_Click"/>
+        <MenuItem Header="Rebuild selected Material's expressions list" Click="RebuildSelectedMaterialExpressions"/>
+        <MenuItem Header="Test CrossGen class porting" Click="TestCrossGenClassPort_Click" Visibility="{x:Static global:App.IsDebugVisibility}"/>
+        <MenuItem Header="Map Material IDs" Click="MapMaterialIDs_Click" />
+        <MenuItem Header="Check NeverStreams" Click="CheckNeverStream_Click"/>
+        <MenuItem Header="Print Texture Formats" Click="PrintTextureFormats_Click"/>
+        <MenuItem Header="Coalesce BioActorTypes into single file (LE1)" Click="CoalesceBioActorTypesLE1_Click"/>
         <MenuItem Header="Dump LE1 TLK to XML" Click="DumpLE1TLK_Clicked"/>
-        <MenuItem Header="Update textures to game" Click="RepointTexturesToGame_Click" ToolTip="You're gonna break your file lol"/>
         <MenuItem Header="Save package...">
             <MenuItem Header="Compressed" Click="SavePackageCompressed_Click"/>
             <MenuItem Header="UnCompressed" Click="SavePackageUnCompressed_Click"/>
@@ -76,10 +97,13 @@
         <MenuItem Header="Scan folder for files containing objects of a specific name" Click="FindAllFilesWithSpecificName"/>
         <MenuItem Header="Resolve all imports (see debug output)" Click="ResolveAllImports_Clicked"/>
         <MenuItem Header="Shift current selected InterpTrackMove" Click="ShiftInterpTrackMove"/>
+        <MenuItem Header="Shift all InterpTrackMove in package" Click="ShiftInterpTrackMovePackageWide"/>
+        <MenuItem Header="LEX Custom Files Manager" Click="LEXCustomFilesManager_Click"/>
     </MenuItem>
     <MenuItem Header="SirCxyrtyx's Garden of Modding Delights">
         <MenuItem Header="Re-Serialize All Properties in game(check code to see which game)" Click="ReSerializeAllProperties_Click"/>
         <MenuItem Header="Re-Serialize All Binary in game(check code to see which game)" Click="ReSerializeAllObjectBinary_Click"/>
+        <MenuItem Header="Re-Serialize All Binary in file" Click="ReSerializeAllObjectBinaryInFile_Click"/>
         <MenuItem Header="Re-serialize export" Click="ReSerializeExport_Click"/>
         <MenuItem Header="Enable Dynamic Lighting" Click="CreateDynamicLighting"/>
         <MenuItem Header="Scan stuff" Click="ScanStuff_Click"/>
@@ -120,7 +144,7 @@
         <MenuItem Header="Trash Compactor" Click="RunTrashCompactor"/>
     </MenuItem>
     <MenuItem Header="HenBagle's stuff that saved five minutes once">
-        <MenuItem Header="Build ME1 SuperTlk File" Click="BuildME1SuperTLK_Clicked"/>
+        <MenuItem Header="Build ME1/LE1 SuperTlk File" Click="BuildME1SuperTLK_Clicked"/>
         <MenuItem Header="Associate all file extensions" Click="AssociateAllExtensions_Clicked"/>
         <MenuItem Header="Generate audio file info JSON (check code for game)" Click="GenerateAudioFileInfo_Click"/>
         <MenuItem Header="Generate Wwise ID from entry name" Click="GenerateWwiseId_Click"/>
@@ -136,5 +160,19 @@
         <MenuItem Header="Add Preset Actor InterpGroup" Click="AddPresetActorGroup_Click" ToolTip="Add an Actor InterpGroup with its actor set along with Move and Gesture tracks, as designed by Mentlegen."/>
         <MenuItem Header="Add Preset Gesture Track" Click="AddPresetGestureTrack_Click" ToolTip="Add a Gesture track with its actor set along with all the default properties."/>
         <MenuItem Header="Add Preset Gesture Track 2" Click="AddPresetGestureTrack2_Click" ToolTip="Alternate version of preset Gesture track, as designed by Lunk."/>
+        <MenuItem Header="Batch Add/Modify Materials' Parameters" Click="BatchPatchMaterialsParameters_Click" ToolTip="Batch add/modify a list of vector or scalar parameters in a list of given materials to all files in a given DLC folder."/>
+        <MenuItem Header="Batch Set Bool Property Value" Click="BatchSetBoolPropVal_Click" ToolTip="Batch set the value of a boolean property to all given classes in a given DLC folder."/>
+        <MenuItem Header="The Baldinator" Click="Baldinator_Click" ToolTip="Modify the hair morph targets of a male headmorph to make it bald."/>
+        <MenuItem Header="Copy Property" Click="CopyProperty_Click" ToolTip="Copy the selected property to another export of the same class."/>
+        <MenuItem Header="Copy Material to BioMaterialOverrides or MaterialInstanceConstants" Click="CopyMatToBMOorMIC_Click" ToolTip="Copies the texture, vector, and scalar properties of a BioMaterialOverride into [Bio]MaterialInstanceConstants, or vice-versa."/>
+        <MenuItem Header="Remove References to SkeletalMesh or StaticMesh in Distance" Click="SMRefRemover_Click" ToolTip="Removes SMC references to a SkeletalMesh or StaticMesh within a given distance"/>
+    </MenuItem>
+    <MenuItem Header="Object Database">
+        <MenuItem Header="Build ME1 Object Database" Click="ChonkyDB_BuildME1GameDB"/>
+        <MenuItem Header="Build LE1 Object Database" Click="ChonkyDB_BuildLE1GameDB"/>
+        <MenuItem Header="Build ME2 Object Database" Click="ChonkyDB_BuildME2GameDB" />
+        <MenuItem Header="Build LE2 Object Database" Click="ChonkyDB_BuildLE2GameDB"/>
+        <MenuItem Header="Build ME3 Object Database" Click="ChonkyDB_BuildME3GameDB"/>
+        <MenuItem Header="Build LE3 Object Database" Click="ChonkyDB_BuildLE3GameDB"/>
     </MenuItem>
 </MenuItem>

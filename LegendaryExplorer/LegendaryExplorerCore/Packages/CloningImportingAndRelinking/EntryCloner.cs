@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using LegendaryExplorerCore.Misc;
 
 namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 {
@@ -7,10 +8,10 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
     {
         public static T CloneTree<T>(T entry, bool incrementIndex = true) where T : IEntry
         {
-            var objectMap = new Dictionary<IEntry, IEntry>();
+            var objectMap = new ListenableDictionary<IEntry, IEntry>();
             T newRoot = CloneEntry(entry, objectMap, incrementIndex);
             cloneTreeRecursive(entry, newRoot);
-            Relinker.RelinkAll(objectMap);
+            Relinker.RelinkAll(new RelinkerOptionsPackage() {CrossPackageMap = objectMap});
             return newRoot;
 
             void cloneTreeRecursive(IEntry originalRootNode, IEntry newRootNode)
@@ -24,9 +25,9 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             }
         }
         
-        public static T CloneEntry<T>(T entry, Dictionary<IEntry, IEntry> objectMap = null, bool incrementIndex = true) where T : IEntry
+        public static T CloneEntry<T>(T entry, IDictionary<IEntry, IEntry> objectMap = null, bool incrementIndex = true) where T : IEntry
         {
-            bool shouldIncrement = incrementIndex && entry is ExportEntry;
+            bool shouldIncrement = incrementIndex && entry is ExportEntry; // Why is this only for exports?
             IEntry newEntry = entry.Clone(shouldIncrement);
 
             switch (newEntry)

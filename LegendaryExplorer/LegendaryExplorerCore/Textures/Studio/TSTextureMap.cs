@@ -175,12 +175,12 @@ namespace LegendaryExplorerCore.Textures.Studio
         /// <summary>
         /// The instances of this entry.
         /// </summary>
-        public virtual ObservableCollectionExtended<TextureMapPackageEntry> Instances { get; } = new ObservableCollectionExtended<TextureMapPackageEntry>();
+        public virtual ObservableCollectionExtended<TextureMapPackageEntry> Instances { get; } = new();
 
         /// <summary>
         /// List of direct children to this memory entry
         /// </summary>
-        public virtual ObservableCollectionExtended<TextureMapMemoryEntry> Children { get; } = new ObservableCollectionExtended<TextureMapMemoryEntry>();
+        public virtual ObservableCollectionExtended<TextureMapMemoryEntry> Children { get; } = new();
 
         #region FOR TEXTURE MAP BUILD
         /// <summary>
@@ -306,10 +306,12 @@ namespace LegendaryExplorerCore.Textures.Studio
                 }
             }
 
+            UIndex = exportEntry.UIndex; // This is so texture can be located in package by tooling
+
             // This needs some optimization once it's working
-            Texture2D t2d = new Texture2D(exportEntry);
-            var canCache = t2d.GetTopMip().storageType != StorageTypes.empty && crcCache != null;
-            if (canCache && crcCache.TryGetValue($"{TFCName}_{t2d.GetTopMip().externalOffset}", out var crc))
+            var t2d = new Texture2D(exportEntry);
+            bool canCache = t2d.GetTopMip().storageType != StorageTypes.empty && crcCache != null;
+            if (canCache && crcCache.TryGetValue($"{TFCName}_{t2d.GetTopMip().externalOffset}", out uint crc))
             {
                 CRC = crc;
             }
@@ -325,6 +327,7 @@ namespace LegendaryExplorerCore.Textures.Studio
             catch (Exception)
             {
                 // CRC could not be calculated
+                
             }
         }
 
@@ -343,7 +346,7 @@ namespace LegendaryExplorerCore.Textures.Studio
         public string RelativePackagePath { get; set; }
 
         /// <summary>
-        /// UIndex of the export for the package. This is only used in the vanilla precomputed map
+        /// UIndex of the export for the package
         /// </summary>
         public int UIndex { get; set; }
 
@@ -427,7 +430,7 @@ namespace LegendaryExplorerCore.Textures.Studio
         // Todo: Have way to serialize map to and from disk, with info about filesizes to ensure map is in sync with disk state
     }
 
-    public class TextureMapGenerator
+    public static class TextureMapGenerator
     {
         /// <summary>
         /// DO NOT CHANGE THIS
@@ -455,7 +458,7 @@ namespace LegendaryExplorerCore.Textures.Studio
         {
 
             var rootNodes = new List<TextureMapMemoryEntry>();
-            MEGame game = MEGame.Unknown;
+            var game = MEGame.Unknown;
 
             void addRootItem(TextureMapMemoryEntry entry)
             {
@@ -465,7 +468,7 @@ namespace LegendaryExplorerCore.Textures.Studio
 
             // Mapping of full paths to their entries
             progressDelegate?.Invoke(@"Calculating texture map", -1, -1);
-            Dictionary<string, TextureMapMemoryEntry> entries = new Dictionary<string, TextureMapMemoryEntry>();
+            var entries = new Dictionary<string, TextureMapMemoryEntry>();
             var packageFiles = Directory.GetFiles(rootDirectory, "*.*", SearchOption.AllDirectories).Where(x => x.RepresentsPackageFilePath()).ToList();
             var tfcs = Directory.GetFiles(rootDirectory, "*.tfc", SearchOption.AllDirectories).ToList();
             progressDelegate?.Invoke(@"Calculating texture map", 0, packageFiles.Count);
@@ -482,20 +485,22 @@ namespace LegendaryExplorerCore.Textures.Studio
 
                 if (cts.IsCancellationRequested) 
                     break;
-                using var package = MEPackageHandler.OpenMEPackage(p);
+                //using var package = MEPackageHandler.OpenMEPackage(p);
+                using var package = MEPackageHandler.UnsafePartialLoad(p, x=> !x.IsDefaultObject && x.IsTexture());
 
                 if (game != MEGame.Unknown && game != package.Game)
                 {
                     // This workspace has files from multiple games!
                     throw new Exception("A directory being scanned cannot have packages from different games in it");
                 }
-                else
+                
+                if (vanillaMap is null)
                 {
                     game = package.Game;
                     vanillaMap = MEMTextureMap.LoadTextureMap(game);
                 }
 
-                var textures = package.Exports.Where(x => !x.IsDefaultObject && x.IsTexture());
+                var textures = package.Exports.Where(x => x.IsDataLoaded());
                 foreach (var t in textures)
                 {
                     if (cts.IsCancellationRequested) break;
@@ -517,7 +522,7 @@ namespace LegendaryExplorerCore.Textures.Studio
             var allTextures = rootNodes.SelectMany(x => x.GetAllTextureEntries());
 
             // Pass 3: Find items that have matching CRCs across memory entries
-            Dictionary<uint, List<TextureMapMemoryEntry>> crcMap = new Dictionary<uint, List<TextureMapMemoryEntry>>();
+            var crcMap = new Dictionary<uint, List<TextureMapMemoryEntry>>();
             foreach (var t in allTextures)
             {
                 if (t.Instances.Any())
@@ -545,7 +550,7 @@ namespace LegendaryExplorerCore.Textures.Studio
                 }
             }
 
-            return new TextureMap()
+            return new TextureMap
             {
                 VanillaMap = vanillaMap,
                 CalculatedMap = rootNodes,
@@ -559,7 +564,7 @@ namespace LegendaryExplorerCore.Textures.Studio
             List<string> additionalTFCs, Func<IEntry, TextureMapMemoryEntry> generatorDelegate, Action<TextureMapMemoryEntry> addRootNodeDelegate,
             CancellationToken cancelToken)
         {
-            PackageCache pc = new PackageCache();
+            var pc = new PackageCache();
             foreach (var textureEntry in entriesToRefresh.SelectMany(x => x.GetAllTextureEntries()))
             {
                 if (cancelToken.IsCancellationRequested)

@@ -12,7 +12,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 
         public bool IsDynamic => Array.ResolveType() is DynamicArrayType;
 
-        public ArraySymbolRef(Expression array, Expression index, SourcePosition start, SourcePosition end) 
+        public ArraySymbolRef(Expression array, Expression index, int start, int end) 
             : base(array, start: start, end: end)
         {
             Index = index;

@@ -1,17 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Bases;
-using LegendaryExplorer.Tools.PackageEditor;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
 
 namespace LegendaryExplorer.Dialogs
 {
     /// <summary>
-    /// Interaction logic for NamePromptDialogPromptDialog.xaml
+    /// Dialog to select a name in a package file.
     /// </summary>
+    /// <remarks>Cannot be used to add a new name, use <see cref="SelectOrAddNamePromptDialog"/> to do that.</remarks>
     public partial class NamePromptDialog : TrackingNotifyPropertyChangedWindowBase
     {
         private List<IndexedName> _nameList;
@@ -43,10 +44,14 @@ namespace LegendaryExplorer.Dialogs
             answerChoicesCombobox.SelectedIndex = defaultValue;
         }
 
-        public static IndexedName Prompt(Window owner, string question, string title, List<IndexedName> NameList, int defaultValue = 0)
+        public static IndexedName Prompt(Control owner, string question, string title, List<IndexedName> NameList, int defaultValue = 0)
         {
-            NamePromptDialog inst = new NamePromptDialog(question, title, NameList, defaultValue);
-            inst.Owner = owner;
+            var inst = new NamePromptDialog(question, title, NameList, defaultValue);
+            if (owner != null)
+            {
+                inst.Owner = owner as Window ?? GetWindow(owner);
+                inst.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            }
             inst.numberColumn.Width = new GridLength(0);
             inst.ShowDialog();
             if (inst.DialogResult == true)
@@ -57,16 +62,23 @@ namespace LegendaryExplorer.Dialogs
             return null;
         }
 
-        public static bool Prompt(Window owner, string question, string title, IMEPackage pcc, out NameReference result, int defaultValue = 0)
+        public static bool Prompt(Control owner, string question, string title, IMEPackage pcc, out NameReference result, int defaultValue = 0)
         {
-            NamePromptDialog inst = new NamePromptDialog(question, title, pcc.Names.Select((nr, i) => new IndexedName(i, nr)).ToList(), defaultValue);
-            inst.Owner = owner;
+            var inst = new NamePromptDialog(question, title, pcc.Names.Select((nr, i) => new IndexedName(i, nr)).ToList(), defaultValue);
+            if (owner != null)
+            {
+                inst.Owner = owner as Window ?? GetWindow(owner);
+                inst.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            }
             inst.ShowDialog();
             if (inst.DialogResult == true)
             {
-                IndexedName name = (IndexedName)inst.answerChoicesCombobox.SelectedItem;
-                result = new NameReference(name.Name.Name, inst.Number);
-                return true;
+                var name = (IndexedName)inst.answerChoicesCombobox.SelectedItem;
+                if (name is not null)
+                {
+                    result = new NameReference(name.Name, inst.Number);
+                    return true;
+                }
             }
 
             result = default;

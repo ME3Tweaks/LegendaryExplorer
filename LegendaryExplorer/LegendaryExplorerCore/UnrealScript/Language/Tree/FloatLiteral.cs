@@ -8,7 +8,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
     {
         public float Value;
 
-        public FloatLiteral(float val, SourcePosition start = null, SourcePosition end = null)
+        public FloatLiteral(float val, int start = -1, int end = -1)
             : base(ASTNodeType.FloatLiteral, start, end)
         {
             Value = val;

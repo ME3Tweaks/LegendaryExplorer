@@ -1,6 +1,9 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Linq;
+using LegendaryExplorerCore.DebugTools;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Packages;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -46,6 +49,15 @@ namespace LegendaryExplorerCore.Tests
                     Assert.AreEqual(me2DlcName, mf.ME2Only_DLCFolderName, $"Mount file {mountName} has wrong DLC folder name");
                     Assert.AreEqual(me2HRDlcName, mf.ME2Only_DLCHumanName, $"Mount file {mountName} has wrong human name");
                 }
+
+                var testStream = new MemoryStream();
+                mf.WriteMountFileToStream(testStream);
+
+                var mountBytes = File.ReadAllBytes(mountFilePath);
+                Assert.AreEqual(mountBytes.Length,testStream.Length, "Serialized mount file has wrong length, differs from original");
+                // We can't easily test if we serialized correctly as we don't write back the GUIDs used for validation
+                // maybe in future we will use it for testing.
+
             }
         }
     }
