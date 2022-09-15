@@ -1990,10 +1990,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                         }
                     case "BioSoundNodeWaveStreamingData":
                         {
-#if !DEBUG
-                            MessageBox.Show("Not currently supported");
-                            return;
-#else
+
                             // Requires ICB and ISB
                             string extension = Path.GetExtension(".icb");
                             var d = new OpenFileDialog
@@ -2011,11 +2008,14 @@ namespace LegendaryExplorer.Tools.PackageEditor
                             {
                                 MessageBox.Show(errorMsg);
                             }
-#endif
                             break;
                         }
                     case "SoundNodeWave":
                         {
+#if !DEBUG
+                            MessageBox.Show("Not currently supported");
+                            return;
+#endif
                             // Requires ICB and ISB
                             string extension = Path.GetExtension(".icb");
                             var d = new OpenFileDialog
