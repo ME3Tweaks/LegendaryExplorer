@@ -296,7 +296,7 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
             {
             }
 
-            public UnrealFlags.EClassFlags ClassFlags(MEGame game) => ReadValue<UnrealFlags.EClassFlags>(game switch
+            public UnrealFlags.EClassFlags ClassFlags => ReadValue<UnrealFlags.EClassFlags>(Debugger.Game switch
             {
                 MEGame.LE1 => 0x138,
                 MEGame.LE2 => 0x130,
@@ -309,6 +309,12 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
             public NScriptStruct(IntPtr address, NClass nClass, int size, DebuggerInterface debugger) : base(address, nClass, size, debugger)
             {
             }
+            public UnrealFlags.ScriptStructFlags StructFlags => ReadValue<UnrealFlags.ScriptStructFlags>(Debugger.Game switch
+            {
+                MEGame.LE1 => 0xE8,
+                MEGame.LE2 => throw new NotImplementedException(),
+                _ => throw new NotImplementedException()
+            });
         }
 
         public class NFunction : NStruct
