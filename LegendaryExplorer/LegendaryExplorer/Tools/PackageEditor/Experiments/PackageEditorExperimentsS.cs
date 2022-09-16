@@ -79,7 +79,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             try
             {
-                foreach (MEGame game in new[] { MEGame.LE1/*, MEGame.LE2, MEGame.LE3*/ })
+                foreach (MEGame game in new[] { MEGame.LE1, MEGame.LE2, MEGame.LE3 })
                 {
                     if (!GameController.TryGetMEProcess(game, out Process meProcess)) continue;
                     var structDict = new Dictionary<string, GhidraStruct>
@@ -232,7 +232,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     //continue;
                     using var writer = new CodeWriter(fileStream);
                     writer.WriteLine(
-                        @"//Imports LE1 structure definitions
+                        $@"//Imports {game} structure definitions
 //@author SirCxyrtyx
 //@category Data Types
 //@keybinding 

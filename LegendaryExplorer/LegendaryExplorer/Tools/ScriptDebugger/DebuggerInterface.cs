@@ -374,8 +374,8 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
                     GObjects = ReadValue<TArray>(Game switch
                     {
                         MEGame.LE1 => NamePool - 0x16A2090 + 0x1770670,
-                        MEGame.LE2 => throw new NotImplementedException(),
-                        MEGame.LE3 => throw new NotImplementedException(),
+                        MEGame.LE2 => NamePool - 0x1668A10 + 0x173CC48,
+                        MEGame.LE3 => NamePool - 0x17B33D0 + 0x1887E40,
                         _ => throw new ArgumentOutOfRangeException()
                     });
                     char[] msgChars = new char[msgStruct.msgLength];

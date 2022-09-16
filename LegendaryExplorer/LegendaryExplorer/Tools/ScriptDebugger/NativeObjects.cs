@@ -312,8 +312,8 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
             public UnrealFlags.ScriptStructFlags StructFlags => ReadValue<UnrealFlags.ScriptStructFlags>(Debugger.Game switch
             {
                 MEGame.LE1 => 0xE8,
-                MEGame.LE2 => throw new NotImplementedException(),
-                _ => throw new NotImplementedException()
+                MEGame.LE2 => 0xE0,
+                _ => 0xE8
             });
         }
 
