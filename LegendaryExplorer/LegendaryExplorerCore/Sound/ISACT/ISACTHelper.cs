@@ -23,7 +23,52 @@ namespace LegendaryExplorerCore.Sound.ISACT
         private static extern int CreateBioSoundNodeWaveStreamingData([In] string icbPath, [In] string isbPath,
              byte[] dstBuf, ulong dstLen);
 
-        public static string GenerateSoundNodeWaveStreamingData(ExportEntry wsdExport, string icbPath, string isbPath)
+        /// <summary>
+        /// Generates the SoundNodeWaveStreamingData binary using C# implementation
+        /// </summary>
+        /// <param name="wsdExport"></param>
+        /// <param name="icbPath"></param>
+        /// <param name="isbPath"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        public static string GenerateSoundNodeWaveStreamingDataCS(ExportEntry wsdExport, string icbPath, string isbPath)
+        {
+            if (icbPath is null || isbPath is null || wsdExport is null)
+                throw new Exception("No arguments can be null");
+
+            if (!File.Exists(icbPath))
+                throw new Exception($"ICB path not available: {icbPath}");
+
+            if (!File.Exists(isbPath))
+                throw new Exception($"ISB path not available: {isbPath}");
+
+            var streamingData = GetStreamingData(icbPath, isbPath);
+
+            MemoryStream ms = new MemoryStream();
+            ms.WriteInt32(0);
+            streamingData.CopyTo(ms);
+            ms.Seek(0, SeekOrigin.Begin);
+            ms.WriteInt32((int)ms.Length - 4);
+            wsdExport.WriteBinary(ms.ToArray());
+
+            return null;
+        }
+
+        private static MemoryStream GetStreamingData(string icbPath, string isbPath)
+        {
+            ISACTBankPair ibp = new ISACTBankPair();
+            using var icbFs = File.OpenRead(icbPath);
+            using var isbFs = File.OpenRead(isbPath);
+            ibp.ICBBank = new ISACTBank(icbFs);
+            ibp.ISBBank = new ISACTBank(isbFs);
+
+            ibp.ISBBank.StripSamples();
+            MemoryStream ms = new MemoryStream(SerializePairedBanks(ibp));
+            ms.Position = 0; // Reset to zero
+            return ms;
+        }
+
+        public static string GenerateSoundNodeWaveStreamingDataNative(ExportEntry wsdExport, string icbPath, string isbPath)
         {
             if (icbPath is null || isbPath is null || wsdExport is null)
                 throw new Exception("No arguments can be null");
@@ -178,8 +223,6 @@ namespace LegendaryExplorerCore.Sound.ISACT
             // Parse special types
             switch (chunkName)
             {
-                //case "samp":
-                //case "fldr":
                 case "snde":
                     chunks.Add(new NameOnlyChunk(chunkName)); // These are just markers in files it seems and don't have any actual standalone chunk data
                     break;
@@ -188,6 +231,9 @@ namespace LegendaryExplorerCore.Sound.ISACT
                     break;
                 case "sinf":
                     chunks.Add(new SampleInfoBankChunk(inStream)); // We need to know data for this to replace audio
+                    break;
+                case "soff":
+                    chunks.Add(new SampleOffsetBankChunk(inStream));
                     break;
                 case "chnk":
                     chunks.Add(new ChannelBankChunk(inStream)); // We need to know data for this to replace audio
@@ -248,6 +294,26 @@ namespace LegendaryExplorerCore.Sound.ISACT
             }
 
             return chunks;
+        }
+
+        public void StripSamples()
+        {
+            // Replace data segment with soff
+            stripSubchunks(BankChunks);
+        }
+
+        private void stripSubchunks(List<BankChunk> chunks)
+        {
+            for (int i = 0; i < chunks.Count; i++)
+            {
+                var bc = chunks[i];
+                if (bc.ChunkName == "data")
+                {
+                    chunks[i] = new SampleOffsetBankChunk() { SampleOffset = (uint)bc.ChunkDataStartOffset}; // We do + 8 as it skips data and length, directly pointing at OggS
+                }
+                if (bc.SubChunks.Any())
+                    stripSubchunks(bc.SubChunks);
+            }
         }
     }
 
@@ -342,6 +408,11 @@ namespace LegendaryExplorerCore.Sound.ISACT
         public List<BankChunk> SubChunks = new List<BankChunk>(0);
 
 
+        /// <summary>
+        /// The offset in which this bank's data starts - + 8 after header & size. For name only this should not be used.
+        /// </summary>
+        public long ChunkDataStartOffset { get; init; }
+
         public BankChunk() { }
         public BankChunk(string chunkName, int chunkLen, Stream inStream)
         {
@@ -349,9 +420,11 @@ namespace LegendaryExplorerCore.Sound.ISACT
             if (chunkName == "data")
                 Debug.WriteLine("FOUND 'data'!");
 #endif
+            ChunkDataStartOffset = inStream.Position;
             ChunkName = chunkName;
             RawData = inStream.ReadToBuffer(chunkLen);
         }
+
 
         public virtual void Write(Stream outStream)
         {
@@ -412,6 +485,9 @@ namespace LegendaryExplorerCore.Sound.ISACT
         public float CompressionQuality;
         public CompressionInfoBankChunk(Stream inStream)
         {
+            ChunkDataStartOffset = inStream.Position;
+
+
             ChunkName = @"cmpi"; // We know the chunk name and len already so we don't need this.
             CurrentFormat = inStream.ReadInt32();
             TargetFormat = inStream.ReadInt32();
@@ -446,6 +522,8 @@ namespace LegendaryExplorerCore.Sound.ISACT
         public ushort BitsPerSample;
         public SampleInfoBankChunk(Stream inStream)
         {
+            ChunkDataStartOffset = inStream.Position;
+
             ChunkName = @"sinf"; // We know the chunk name and len already so we don't need this.
             BufferOffset = inStream.ReadInt32();
             TimeLength = inStream.ReadInt32();
@@ -465,6 +543,32 @@ namespace LegendaryExplorerCore.Sound.ISACT
             outStream.WriteInt32(ByteLength);
             outStream.WriteUInt16(BitsPerSample);
             outStream.WriteUInt16(0); // Align to 4 byte boundary
+        }
+    }
+
+    /// <summary>
+    /// BioWare-specific: Sample offset in external ISB
+    /// </summary>
+    public class SampleOffsetBankChunk : BankChunk
+    {
+        public uint SampleOffset { get; set; }
+
+        public SampleOffsetBankChunk(Stream inStream) : this()
+        {
+            ChunkDataStartOffset = inStream.Position;
+            SampleOffset = inStream.ReadUInt32(); // Align 2 since struct size is 20 (align 4)
+        }
+
+        public SampleOffsetBankChunk()
+        {
+            ChunkName = @"soff"; // We know the chunk name and len already so we don't need this.
+        }
+
+        public override void Write(Stream outStream)
+        {
+            outStream.WriteStringASCII(ChunkName);
+            outStream.WriteInt32(4); // Fixed size
+            outStream.WriteUInt32(SampleOffset);
         }
     }
 }

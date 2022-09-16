@@ -2006,7 +2006,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                                 return;
 
                             var isbF = Path.Combine(Directory.GetParent(d.FileName).FullName, $"{Path.GetFileNameWithoutExtension(d.FileName)}.isb");
-                            var errorMsg = ISACTHelper.GenerateSoundNodeWaveStreamingData(exp, d.FileName, isbF);
+                            var errorMsg = ISACTHelper.GenerateSoundNodeWaveStreamingDataCS(exp, d.FileName, isbF);
                             if (errorMsg != null)
                             {
                                 MessageBox.Show(errorMsg);
