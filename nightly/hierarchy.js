@@ -10,6 +10,8 @@ var hierarchy =
     [ "LegendaryExplorerCore.Sound.ISACT.BankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_bank_chunk.html", [
       [ "LegendaryExplorerCore.Sound.ISACT.ChannelBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_channel_bank_chunk.html", null ],
       [ "LegendaryExplorerCore.Sound.ISACT.CompressionInfoBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_compression_info_bank_chunk.html", null ],
+      [ "LegendaryExplorerCore.Sound.ISACT.ListBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_list_bank_chunk.html", null ],
+      [ "LegendaryExplorerCore.Sound.ISACT.NameOnlyBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_name_only_bank_chunk.html", null ],
       [ "LegendaryExplorerCore.Sound.ISACT.SampleInfoBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_sample_info_bank_chunk.html", null ],
       [ "LegendaryExplorerCore.Sound.ISACT.SampleOffsetBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_sample_offset_bank_chunk.html", null ],
       [ "LegendaryExplorerCore.Sound.ISACT.TitleBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_title_bank_chunk.html", null ]

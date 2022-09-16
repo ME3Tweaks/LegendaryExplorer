@@ -2,6 +2,7 @@ var class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_sample_info_bank_c
 [
     [ "SampleInfoBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_sample_info_bank_chunk.html#ac98e3d552e78f08df37665ed62922738", null ],
     [ "Write", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_sample_info_bank_chunk.html#a6e6d466f0475c8ddac44acb231f11941", null ],
+    [ "ToChunkDisplay", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_sample_info_bank_chunk.html#ad417338cac5ce57d186824828d3ccdca", null ],
     [ "BufferOffset", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_sample_info_bank_chunk.html#a116133274dc4f74031d1940a06e27148", null ],
     [ "TimeLength", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_sample_info_bank_chunk.html#a31145cd7b0a7574bbbd182f27e3df2be", null ],
     [ "SamplesPerSecond", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_sample_info_bank_chunk.html#ac04bc9b374c1d7a84fb9ccb400ab407d", null ],

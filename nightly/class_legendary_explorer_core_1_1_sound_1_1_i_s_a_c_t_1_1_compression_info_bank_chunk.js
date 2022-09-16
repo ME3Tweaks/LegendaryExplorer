@@ -2,6 +2,7 @@ var class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_compression_info_b
 [
     [ "CompressionInfoBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_compression_info_bank_chunk.html#a062591c78938e423919a7069d7a50084", null ],
     [ "Write", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_compression_info_bank_chunk.html#aa1f3d26f3ff7191e1d49d465554b2868", null ],
+    [ "ToChunkDisplay", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_compression_info_bank_chunk.html#abc8ef708c15523962073d111b6ba6c3a", null ],
     [ "CurrentFormat", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_compression_info_bank_chunk.html#a264784a89b39c77d4c1ef557f63f4686", null ],
     [ "TargetFormat", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_compression_info_bank_chunk.html#a70cd7fe637e50acdf372778922700768", null ],
     [ "TotalSize", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_compression_info_bank_chunk.html#a62d70cd63ff9f3021662b8ea5260ded6", null ],

@@ -415,6 +415,8 @@ var annotated_dup =
           [ "ISACTBank", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_i_s_a_c_t_bank.html", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_i_s_a_c_t_bank" ],
           [ "ISACTBankPair", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_i_s_a_c_t_bank_pair.html", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_i_s_a_c_t_bank_pair" ],
           [ "ISACTHelper", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_i_s_a_c_t_helper.html", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_i_s_a_c_t_helper" ],
+          [ "ListBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_list_bank_chunk.html", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_list_bank_chunk" ],
+          [ "NameOnlyBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_name_only_bank_chunk.html", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_name_only_bank_chunk" ],
           [ "SampleInfoBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_sample_info_bank_chunk.html", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_sample_info_bank_chunk" ],
           [ "SampleOffsetBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_sample_offset_bank_chunk.html", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_sample_offset_bank_chunk" ],
           [ "TitleBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_title_bank_chunk.html", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_title_bank_chunk" ]
