@@ -416,6 +416,7 @@ var annotated_dup =
           [ "ISACTBankPair", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_i_s_a_c_t_bank_pair.html", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_i_s_a_c_t_bank_pair" ],
           [ "ISACTHelper", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_i_s_a_c_t_helper.html", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_i_s_a_c_t_helper" ],
           [ "SampleInfoBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_sample_info_bank_chunk.html", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_sample_info_bank_chunk" ],
+          [ "SampleOffsetBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_sample_offset_bank_chunk.html", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_sample_offset_bank_chunk" ],
           [ "TitleBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_title_bank_chunk.html", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_title_bank_chunk" ]
         ] ],
         [ "Wwise", "namespace_legendary_explorer_core_1_1_sound_1_1_wwise.html", [

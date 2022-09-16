@@ -89,6 +89,7 @@ $(document).ready(function(){initNavTree('class_legendary_explorer_core_1_1_soun
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
+<a href="#properties">Properties</a> &#124;
 <a href="class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_bank_chunk-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">LegendaryExplorerCore.Sound.ISACT.BankChunk Class Reference</div></div>
 </div><!--header-->
@@ -105,7 +106,8 @@ Inheritance diagram for LegendaryExplorerCore.Sound.ISACT.BankChunk:</div>
 <area href="class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_channel_bank_chunk.html" alt="LegendaryExplorerCore.Sound.ISACT.ChannelBankChunk" shape="rect" coords="0,56,391,80"/>
 <area href="class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_compression_info_bank_chunk.html" title="ISACT Compression Info bank chunk" alt="LegendaryExplorerCore.Sound.ISACT.CompressionInfoBankChunk" shape="rect" coords="401,56,792,80"/>
 <area href="class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_sample_info_bank_chunk.html" title="ISACT info about the sample data" alt="LegendaryExplorerCore.Sound.ISACT.SampleInfoBankChunk" shape="rect" coords="802,56,1193,80"/>
-<area href="class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_title_bank_chunk.html" alt="LegendaryExplorerCore.Sound.ISACT.TitleBankChunk" shape="rect" coords="1203,56,1594,80"/>
+<area href="class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_sample_offset_bank_chunk.html" title="BioWare-specific: Sample offset in external ISB" alt="LegendaryExplorerCore.Sound.ISACT.SampleOffsetBankChunk" shape="rect" coords="1203,56,1594,80"/>
+<area href="class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_title_bank_chunk.html" alt="LegendaryExplorerCore.Sound.ISACT.TitleBankChunk" shape="rect" coords="1604,56,1995,80"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -129,6 +131,12 @@ Public Attributes</h2></td></tr>
 <tr class="memitem:a44823db1abcc36215ef9cf2b2ca005ff"><td class="memItemLeft" align="right" valign="top">List&lt; <a class="el" href="class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_bank_chunk.html">BankChunk</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_bank_chunk.html#a44823db1abcc36215ef9cf2b2ca005ff">SubChunks</a> = new List&lt;<a class="el" href="class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_bank_chunk.html">BankChunk</a>&gt;(0)</td></tr>
 <tr class="memdesc:a44823db1abcc36215ef9cf2b2ca005ff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Some chunks have subchunks  <a href="class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_bank_chunk.html#a44823db1abcc36215ef9cf2b2ca005ff">More...</a><br /></td></tr>
 <tr class="separator:a44823db1abcc36215ef9cf2b2ca005ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="properties" name="properties"></a>
+Properties</h2></td></tr>
+<tr class="memitem:a7cb23d1f6833cd72a299e409efe97a78"><td class="memItemLeft" align="right" valign="top">long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_bank_chunk.html#a7cb23d1f6833cd72a299e409efe97a78">ChunkDataStartOffset</a><code> [get]</code></td></tr>
+<tr class="memdesc:a7cb23d1f6833cd72a299e409efe97a78"><td class="mdescLeft">&#160;</td><td class="mdescRight">The offset in which this bank's data starts - + 8 after header &amp; size. For name only this should not be used.  <a href="class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_bank_chunk.html#a7cb23d1f6833cd72a299e409efe97a78">More...</a><br /></td></tr>
+<tr class="separator:a7cb23d1f6833cd72a299e409efe97a78"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >A generic 4 byte name 4 byte length block that is not parsed. </p>
@@ -225,7 +233,7 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Reimplemented in <a class="el" href="class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_channel_bank_chunk.html#a368102071b2ce3f33af48707382eca8f">LegendaryExplorerCore.Sound.ISACT.ChannelBankChunk</a>, <a class="el" href="class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_compression_info_bank_chunk.html#aa1f3d26f3ff7191e1d49d465554b2868">LegendaryExplorerCore.Sound.ISACT.CompressionInfoBankChunk</a>, and <a class="el" href="class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_sample_info_bank_chunk.html#a6e6d466f0475c8ddac44acb231f11941">LegendaryExplorerCore.Sound.ISACT.SampleInfoBankChunk</a>.</p>
+<p>Reimplemented in <a class="el" href="class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_channel_bank_chunk.html#a368102071b2ce3f33af48707382eca8f">LegendaryExplorerCore.Sound.ISACT.ChannelBankChunk</a>, <a class="el" href="class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_compression_info_bank_chunk.html#aa1f3d26f3ff7191e1d49d465554b2868">LegendaryExplorerCore.Sound.ISACT.CompressionInfoBankChunk</a>, <a class="el" href="class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_sample_info_bank_chunk.html#a6e6d466f0475c8ddac44acb231f11941">LegendaryExplorerCore.Sound.ISACT.SampleInfoBankChunk</a>, and <a class="el" href="class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_sample_offset_bank_chunk.html#ad427cb9e4ae47ac54c1c8f6ec0466771">LegendaryExplorerCore.Sound.ISACT.SampleOffsetBankChunk</a>.</p>
 
 </div>
 </div>
@@ -296,6 +304,31 @@ Public Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Some chunks have subchunks </p>
+
+</div>
+</div>
+<h2 class="groupheader">Property Documentation</h2>
+<a id="a7cb23d1f6833cd72a299e409efe97a78" name="a7cb23d1f6833cd72a299e409efe97a78"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7cb23d1f6833cd72a299e409efe97a78">&#9670;&nbsp;</a></span>ChunkDataStartOffset</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">long LegendaryExplorerCore.Sound.ISACT.BankChunk.ChunkDataStartOffset</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">get</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>The offset in which this bank's data starts - + 8 after header &amp; size. For name only this should not be used. </p>
 
 </div>
 </div>

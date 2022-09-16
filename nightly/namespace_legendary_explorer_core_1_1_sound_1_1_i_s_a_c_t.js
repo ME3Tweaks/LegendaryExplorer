@@ -7,6 +7,7 @@ var namespace_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t =
     [ "ISACTBankPair", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_i_s_a_c_t_bank_pair.html", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_i_s_a_c_t_bank_pair" ],
     [ "ISACTHelper", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_i_s_a_c_t_helper.html", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_i_s_a_c_t_helper" ],
     [ "SampleInfoBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_sample_info_bank_chunk.html", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_sample_info_bank_chunk" ],
+    [ "SampleOffsetBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_sample_offset_bank_chunk.html", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_sample_offset_bank_chunk" ],
     [ "TitleBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_title_bank_chunk.html", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_title_bank_chunk" ],
     [ "ISACTBankType", "namespace_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t.html#a1d306bb280144056b87e695f2b641217", [
       [ "ICB", "namespace_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t.html#a1d306bb280144056b87e695f2b641217af60d54f52a4013689e7d94c309edd93e", null ],
