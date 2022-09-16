@@ -19,10 +19,6 @@ namespace LegendaryExplorerCore.Sound.ISACT
     /// </summary>
     public static class ISACTHelper
     {
-        [DllImport(@"ISACTTools.dll", CharSet = CharSet.Ansi)]
-        private static extern int CreateBioSoundNodeWaveStreamingData([In] string icbPath, [In] string isbPath,
-             byte[] dstBuf, ulong dstLen);
-
         /// <summary>
         /// Generates the SoundNodeWaveStreamingData binary using C# implementation
         /// </summary>
@@ -68,35 +64,7 @@ namespace LegendaryExplorerCore.Sound.ISACT
             return ms;
         }
 
-        public static string GenerateSoundNodeWaveStreamingDataNative(ExportEntry wsdExport, string icbPath, string isbPath)
-        {
-            if (icbPath is null || isbPath is null || wsdExport is null)
-                throw new Exception("No arguments can be null");
-
-            if (!File.Exists(icbPath))
-                throw new Exception($"ICB path not available: {icbPath}");
-
-            if (!File.Exists(isbPath))
-                throw new Exception($"ISB path not available: {isbPath}");
-
-            byte[] outputBuf = new byte[8 * FileSize.MebiByte];
-            var numBytesWritten =
-                CreateBioSoundNodeWaveStreamingData(icbPath, isbPath, outputBuf, (ulong)outputBuf.Length);
-            if (numBytesWritten < 0)
-            {
-                // Handle errors here
-                return $"Error creating data, library returned code {numBytesWritten}";
-            }
-
-            MemoryStream ms = new MemoryStream();
-            ms.WriteInt32(0);
-            ms.Write(outputBuf, 0, numBytesWritten);
-            ms.Seek(0, SeekOrigin.Begin);
-            ms.WriteInt32((int)ms.Length - 4);
-            wsdExport.WriteBinary(ms.ToArray());
-
-            return null;
-        }
+        // Todo: Eventually split to own classes and replace existing ISBank class
 
         /// <summary>
         /// Input data must start with the integer that matches the data to follow size
@@ -309,7 +277,7 @@ namespace LegendaryExplorerCore.Sound.ISACT
                 var bc = chunks[i];
                 if (bc.ChunkName == "data")
                 {
-                    chunks[i] = new SampleOffsetBankChunk() { SampleOffset = (uint)bc.ChunkDataStartOffset}; // We do + 8 as it skips data and length, directly pointing at OggS
+                    chunks[i] = new SampleOffsetBankChunk() { SampleOffset = (uint)bc.ChunkDataStartOffset};  // Points directly at OggS
                 }
                 if (bc.SubChunks.Any())
                     stripSubchunks(bc.SubChunks);
