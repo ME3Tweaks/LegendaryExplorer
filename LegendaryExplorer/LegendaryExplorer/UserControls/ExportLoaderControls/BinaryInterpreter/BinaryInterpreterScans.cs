@@ -19,6 +19,7 @@ using LegendaryExplorerCore.Unreal.Classes;
 using static LegendaryExplorer.Tools.TlkManagerNS.TLKManagerWPF;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
 using Newtonsoft.Json;
+using DocumentFormat.OpenXml.InkML;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls
 {
@@ -2539,6 +2540,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 int offset = binarystart;
 
+
                 // Size of the entire data to follow
                 int numBytesOfStreamingData = BitConverter.ToInt32(data, offset);
                 subnodes.Add(new BinInterpNode
@@ -2558,6 +2560,15 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     Tag = NodeType.StructLeafInt
                 };
 
+                // Offset is not incremented here as this method reads paired data which includes the offset
+                var isactBankPair = ISACTHelper.GetPairedBanks(data[offset..]);
+                subnodes.Add(MakeISACTBankNode(isactBankPair.ICBBank, offset));
+                subnodes.Add(MakeISACTBankNode(isactBankPair.ISBBank, offset));
+
+                return subnodes;
+
+                // Old code
+                /*
                 var clickToGotoOffset = new BinInterpNode
                 {
                     Header = $"0x{offset:X5} Click to go to referenced offset 0x{isbOffset:X5}",
@@ -2650,6 +2661,38 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 subnodes.Add(new BinInterpNode() { Header = $"Error reading binary data: {ex}" });
             }
             return subnodes;
+        }
+
+        private ITreeItem MakeISACTBankNode(ISACTBank iSBBank, int binOffset)
+        {
+            BinInterpNode bin = new BinInterpNode(iSBBank.BankRIFFPosition + binOffset, $"{iSBBank.BankType} Bank");
+            foreach (var bc in iSBBank.BankChunks)
+            {
+                MakeISACTBankChunkNode(bin, bc, binOffset);
+            }
+
+            return bin;
+        }
+
+        private void MakeISACTBankChunkNode(BinInterpNode parent, BankChunk bc, int binOffset)
+        {
+            if (bc is NameOnlyBankChunk)
+            {
+                parent.Items.Add(new BinInterpNode(bc.ChunkDataStartOffset - 4 + binOffset, bc.ToChunkDisplay()));
+            }
+            else if (bc is ListBankChunk lbc)
+            {
+                var lParent = new BinInterpNode(bc.ChunkDataStartOffset - 8 + binOffset, bc.ToChunkDisplay());
+                parent.Items.Add(lParent);
+                foreach (var sc in lbc.SubChunks)
+                {
+                    MakeISACTBankChunkNode(lParent, sc, binOffset);
+                }
+            }
+            else
+            {
+                parent.Items.Add(new BinInterpNode(bc.ChunkDataStartOffset - 8 + binOffset, bc.ToChunkDisplay()));
+            }
         }
 
         private ITreeItem ReadISACTNode(Stream inStream, string title, int size)

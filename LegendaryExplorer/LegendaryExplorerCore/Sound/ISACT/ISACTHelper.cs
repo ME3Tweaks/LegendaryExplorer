@@ -11,6 +11,8 @@ using LegendaryExplorerCore.Audio;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Gammtek.Extensions.IO;
 using LegendaryExplorerCore.Gammtek.IO;
+using Newtonsoft.Json.Linq;
+using BCnEncoder.Encoder;
 
 namespace LegendaryExplorerCore.Sound.ISACT
 {
@@ -133,16 +135,18 @@ namespace LegendaryExplorerCore.Sound.ISACT
     public class ISACTBank
     {
         public ISACTBankType BankType;
+        public long BankRIFFPosition { get; }
         public List<BankChunk> BankChunks { get; set; }
 
         public ISACTBank(Stream inStream)
         {
             // Stream should start on RIFF
+            BankRIFFPosition = inStream.Position;
             var riff = inStream.ReadStringASCII(4);
             if (riff != "RIFF")
                 throw new Exception($"Input for bank does not start with RIFF! It starts with {riff}");
 
-            var bankFileLen = inStream.ReadInt32();
+            var bankFileLen = inStream.ReadInt32() - 8;
             var bankStartPos = inStream.Position;
 
             var bankType = inStream.ReadStringASCII(4);
@@ -165,7 +169,7 @@ namespace LegendaryExplorerCore.Sound.ISACT
             var endPos = bankFileLen + bankStartPos;
             while (inStream.Position < endPos)
             {
-                Debug.WriteLine($"Reading chunk at 0x{inStream.Position:X8}, endpos: 0x{endPos:X8}");
+                Debug.Write($"Reading chunk at 0x{inStream.Position:X8}, endpos: 0x{endPos:X8}");
                 ReadChunk(inStream, BankChunks);
             }
         }
@@ -173,7 +177,7 @@ namespace LegendaryExplorerCore.Sound.ISACT
         public static void ReadChunk(Stream inStream, List<BankChunk> chunks)
         {
             var chunkName = inStream.ReadStringASCII(4);
-
+            Debug.WriteLine(chunkName); // finishes previous Debug.Write() line.
             int chunkLen = 0;
             // Some are subchunks that have a known fixed length. In this instance we don't read the len
             switch (chunkName)
@@ -192,7 +196,7 @@ namespace LegendaryExplorerCore.Sound.ISACT
             switch (chunkName)
             {
                 case "snde":
-                    chunks.Add(new NameOnlyChunk(chunkName)); // These are just markers in files it seems and don't have any actual standalone chunk data
+                    chunks.Add(new NameOnlyBankChunk(chunkName)); // These are just markers in files it seems and don't have any actual standalone chunk data
                     break;
                 case "cmpi":
                     chunks.Add(new CompressionInfoBankChunk(inStream)); // We need to know data for this to replace audio
@@ -303,27 +307,28 @@ namespace LegendaryExplorerCore.Sound.ISACT
     }
 
     [DebuggerDisplay("ListBankChunk of type {ObjectType} with {SubChunks.Count} sub chunks")]
-    internal class ListBankChunk : BankChunk
+    public class ListBankChunk : BankChunk
     {
         public string ObjectType; // What this LIST object is
         public ListBankChunk(int chunkLen, Stream inStream)
         {
+            ChunkDataStartOffset = inStream.Position;
+
             ChunkName = "LIST";
             var startPos = inStream.Position;
-            var endPos = chunkLen + startPos;
+            var endPos = chunkLen + startPos - 4; // The length of LIST for some reason is +4.
 
             ObjectType = inStream.ReadStringASCII(4);
 
             while (inStream.Position < endPos)
             {
-                Debug.WriteLine($"Reading chunk at 0x{inStream.Position:X8}, endpos: 0x{endPos:X8}");
+                Debug.Write($"Reading ListBank SubChunk at 0x{inStream.Position:X8}, endpos: 0x{endPos:X8}: ");
                 ISACTBank.ReadChunk(inStream, SubChunks);
 
                 if (inStream.Position + 1 == endPos)
                     inStream.ReadByte(); // Even boundary
             }
         }
-
 
         public override void Write(Stream outStream)
         {
@@ -345,11 +350,16 @@ namespace LegendaryExplorerCore.Sound.ISACT
                 outStream.WriteByte(0); // Even boundary
 
         }
+
+        public override string ToChunkDisplay()
+        {
+            return $"{ChunkName} Object ({SubChunks.Count} subitems)";
+        }
     }
 
-    internal class NameOnlyChunk : BankChunk
+    public class NameOnlyBankChunk : BankChunk
     {
-        public NameOnlyChunk(string chunkName)
+        public NameOnlyBankChunk(string chunkName)
         {
             ChunkName = chunkName;
         }
@@ -409,6 +419,16 @@ namespace LegendaryExplorerCore.Sound.ISACT
             returnList.AddRange(SubChunks.SelectMany(x => x.GetAllSubChunks()));
             return returnList;
         }
+
+        public virtual string ToChunkDisplay()
+        {
+            if (RawData == null)
+            {
+                return ChunkName;
+            }
+
+            return $"{ChunkName} ({RawData.Length} bytes)";
+        }
     }
 
     [DebuggerDisplay("TitleBankChunk: {Value}")]
@@ -418,6 +438,16 @@ namespace LegendaryExplorerCore.Sound.ISACT
         public TitleBankChunk(string chunkName, int chunkLen, Stream inStream) : base(chunkName, chunkLen, inStream)
         {
             Value = Encoding.Unicode.GetString(RawData);
+        }
+
+        public override string ToChunkDisplay()
+        {
+            if (RawData == null)
+            {
+                return ChunkName;
+            }
+
+            return $"{ChunkName}: {Value}";
         }
     }
 
@@ -476,6 +506,11 @@ namespace LegendaryExplorerCore.Sound.ISACT
             outStream.WriteFloat(CompressionRatio);
             outStream.WriteFloat(CompressionQuality);
         }
+
+        public override string ToChunkDisplay()
+        {
+            return $"{ChunkName}: Compression Info\nCurrent Format: {CurrentFormat}\nTarget Format: {TargetFormat}\nTotal Size: {TotalSize}\nStreaming Packet Size: {PacketSize}\nCompression Ratio: {CompressionRatio}\nCompression Quality: {CompressionQuality}";
+        }
     }
 
     /// <summary>
@@ -512,6 +547,12 @@ namespace LegendaryExplorerCore.Sound.ISACT
             outStream.WriteUInt16(BitsPerSample);
             outStream.WriteUInt16(0); // Align to 4 byte boundary
         }
+
+        public override string ToChunkDisplay()
+        {
+            return
+                $"{ChunkName}: Sample Info\nBuffer Offset: {BufferOffset}\nTime Length: {TimeLength}\nSamples Per Second: {SamplesPerSecond}\nByte Length: {ByteLength}\nBits Per Sample: {BitsPerSample}";
+        }
     }
 
     /// <summary>
@@ -537,6 +578,11 @@ namespace LegendaryExplorerCore.Sound.ISACT
             outStream.WriteStringASCII(ChunkName);
             outStream.WriteInt32(4); // Fixed size
             outStream.WriteUInt32(SampleOffset);
+        }
+
+        public override string ToChunkDisplay()
+        {
+            return $"{ChunkName}: External ISB Sample Data Offset: 0x{SampleOffset:X8}";
         }
     }
 }
