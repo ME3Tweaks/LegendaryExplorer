@@ -266,7 +266,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         public static void ReSerializeAllObjectBinary(PackageEditorWindow pewpf)
         {
             pewpf.IsBusy = true;
-            pewpf.BusyText = "Re-serializing all binary in LE2 and LE3";
+            pewpf.BusyText = "Re-serializing all binary in LE1";
             var interestingExports = new List<EntryStringPair>();
             var comparisonDict = new Dictionary<string, (byte[] original, byte[] newData)>();
             var classesMissingObjBin = new List<string>();

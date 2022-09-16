@@ -1,18 +1,13 @@
-﻿using LegendaryExplorerCore.Packages;
+﻿//#define ISACTDEBUGLOG
+
+using LegendaryExplorerCore.Packages;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading.Tasks;
-using LegendaryExplorerCore.Audio;
 using LegendaryExplorerCore.Helpers;
-using LegendaryExplorerCore.Gammtek.Extensions.IO;
-using LegendaryExplorerCore.Gammtek.IO;
-using Newtonsoft.Json.Linq;
-using BCnEncoder.Encoder;
 
 namespace LegendaryExplorerCore.Sound.ISACT
 {
@@ -169,7 +164,9 @@ namespace LegendaryExplorerCore.Sound.ISACT
             var endPos = bankFileLen + bankStartPos;
             while (inStream.Position < endPos)
             {
+#if ISACTDEBUGLOG
                 Debug.Write($"Reading chunk at 0x{inStream.Position:X8}, endpos: 0x{endPos:X8}");
+#endif
                 ReadChunk(inStream, BankChunks);
             }
         }
@@ -177,7 +174,9 @@ namespace LegendaryExplorerCore.Sound.ISACT
         public static void ReadChunk(Stream inStream, List<BankChunk> chunks)
         {
             var chunkName = inStream.ReadStringASCII(4);
+#if ISACTDEBUGLOG
             Debug.WriteLine(chunkName); // finishes previous Debug.Write() line.
+#endif
             int chunkLen = 0;
             // Some are subchunks that have a known fixed length. In this instance we don't read the len
             switch (chunkName)
@@ -228,7 +227,7 @@ namespace LegendaryExplorerCore.Sound.ISACT
         /// </summary>
         /// <param name="ms"></param>
         /// <exception cref="NotImplementedException"></exception>
-        public void Write(MemoryStream ms)
+        public void Write(Stream ms)
         {
             ms.WriteStringASCII("RIFF");
             var riffLenPos = ms.Position;
@@ -243,7 +242,7 @@ namespace LegendaryExplorerCore.Sound.ISACT
 
             // Write size
             ms.Seek(riffLenPos, SeekOrigin.Begin);
-            ms.WriteInt32((int)(ms.Length - riffLenPos));
+            ms.WriteInt32((int)(ms.Length - riffLenPos - 4));
             ms.Seek(0, SeekOrigin.End);
         }
 
@@ -262,7 +261,9 @@ namespace LegendaryExplorerCore.Sound.ISACT
 
             foreach (var c in chunks)
             {
+#if ISACTDEBUGLOG
                 Debug.WriteLine(c.ChunkName);
+#endif
             }
 
             return chunks;
@@ -322,7 +323,9 @@ namespace LegendaryExplorerCore.Sound.ISACT
 
             while (inStream.Position < endPos)
             {
+#if ISACTDEBUGLOG
                 Debug.Write($"Reading ListBank SubChunk at 0x{inStream.Position:X8}, endpos: 0x{endPos:X8}: ");
+#endif
                 ISACTBank.ReadChunk(inStream, SubChunks);
 
                 if (inStream.Position + 1 == endPos)
@@ -342,7 +345,7 @@ namespace LegendaryExplorerCore.Sound.ISACT
             }
 
             outStream.Seek(lenPos, SeekOrigin.Begin);
-            var len = outStream.Length - lenPos;
+            var len = outStream.Length - lenPos - 4;
             outStream.WriteInt32((int)len);
             outStream.Seek(0, SeekOrigin.End);
 
@@ -394,13 +397,20 @@ namespace LegendaryExplorerCore.Sound.ISACT
         public BankChunk() { }
         public BankChunk(string chunkName, int chunkLen, Stream inStream)
         {
-#if DEBUG
+#if DEBUG && ISACTDEBUGLOG
             if (chunkName == "data")
+            {
                 Debug.WriteLine("FOUND 'data'!");
+            }
 #endif
             ChunkDataStartOffset = inStream.Position;
             ChunkName = chunkName;
             RawData = inStream.ReadToBuffer(chunkLen);
+            //has to be 2-byte aligned
+            if (chunkLen % 2 == 1)
+            {
+                inStream.ReadByte();
+            }
         }
 
 
@@ -409,6 +419,11 @@ namespace LegendaryExplorerCore.Sound.ISACT
             outStream.WriteStringASCII(ChunkName);
             outStream.WriteInt32(RawData.Length);
             outStream.Write(RawData);
+            //has to be 2-byte aligned
+            if (RawData.Length % 2 == 1)
+            {
+                outStream.WriteByte(0);
+            }
         }
 
         public IEnumerable<BankChunk> GetAllSubChunks()
@@ -437,7 +452,7 @@ namespace LegendaryExplorerCore.Sound.ISACT
         public string Value;
         public TitleBankChunk(string chunkName, int chunkLen, Stream inStream) : base(chunkName, chunkLen, inStream)
         {
-            Value = Encoding.Unicode.GetString(RawData);
+            Value = Encoding.Unicode.GetString(RawData, 0, chunkLen - 2); //exclude null terminator
         }
 
         public override string ToChunkDisplay()
@@ -523,6 +538,9 @@ namespace LegendaryExplorerCore.Sound.ISACT
         public int SamplesPerSecond;
         public int ByteLength;
         public ushort BitsPerSample;
+
+        //Content of Padding doesn't matter, but we save it so that we can do an identical reserialization (Its value is inconsistent)
+        private ushort Padding;
         public SampleInfoBankChunk(Stream inStream)
         {
             ChunkDataStartOffset = inStream.Position;
@@ -533,7 +551,7 @@ namespace LegendaryExplorerCore.Sound.ISACT
             SamplesPerSecond = inStream.ReadInt32();
             ByteLength = inStream.ReadInt32();
             BitsPerSample = inStream.ReadUInt16();
-            inStream.ReadUInt16(); // Align 2 since struct size is 20 (align 4)
+            Padding = inStream.ReadUInt16(); // Align 2 since struct size is 20 (align 4)
         }
 
         public override void Write(Stream outStream)
@@ -545,7 +563,7 @@ namespace LegendaryExplorerCore.Sound.ISACT
             outStream.WriteInt32(SamplesPerSecond);
             outStream.WriteInt32(ByteLength);
             outStream.WriteUInt16(BitsPerSample);
-            outStream.WriteUInt16(0); // Align to 4 byte boundary
+            outStream.WriteUInt16(Padding); // Align to 4 byte boundary.
         }
 
         public override string ToChunkDisplay()

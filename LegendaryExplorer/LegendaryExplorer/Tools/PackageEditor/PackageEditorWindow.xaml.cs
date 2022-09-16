@@ -1849,7 +1849,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                         break;
                     case "BioSoundNodeWaveStreamingData":
                         {
-                            var d = new CommonOpenFileDialog()
+                            var d = new CommonOpenFileDialog
                             {
                                 Title = "Select output folder for ICB/Stripped ISB",
                                 IsFolderPicker = true
@@ -1860,14 +1860,14 @@ namespace LegendaryExplorer.Tools.PackageEditor
                                 var outDir = d.FileName;
 
                                 var bsnwsd = ObjectBinary.From<BioSoundNodeWaveStreamingData>(exp);
-                                var icbBank = new ISACTBank(new MemoryStream(bsnwsd.EmbeddedICB));
+                                var icbBank = bsnwsd.BankPair.ICBBank;
                                 var icbName = icbBank.BankChunks.OfType<TitleBankChunk>().FirstOrDefault();
 
-                                using FileStream fs = new FileStream(Path.Combine(outDir, Path.GetFileNameWithoutExtension(icbName.Value) + ".icb"), FileMode.Create);
-                                fs.Write(bsnwsd.EmbeddedICB);
+                                using var fs = new FileStream(Path.Combine(outDir, Path.GetFileNameWithoutExtension(icbName.Value) + ".icb"), FileMode.Create);
+                                bsnwsd.BankPair.ICBBank.Write(fs);
                                 // ISB
-                                using FileStream fs2 = new FileStream(Path.Combine(outDir, Path.GetFileNameWithoutExtension(icbName.Value) + ".isb"), FileMode.Create);
-                                fs2.Write(bsnwsd.EmbeddedISB);
+                                using var fs2 = new FileStream(Path.Combine(outDir, Path.GetFileNameWithoutExtension(icbName.Value) + ".isb"), FileMode.Create);
+                                bsnwsd.BankPair.ISBBank.Write(fs2);
 
                                 MessageBox.Show("Done");
                             }
