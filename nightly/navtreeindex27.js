@@ -237,8 +237,8 @@ var NAVTREEINDEX27 =
 "class_legendary_explorer_core_1_1_audio_1_1_a_f_c_compactor_1_1_referenced_audio.html#adf1670df05b2bd500070d6ac16bd0426":[1,0,0,0,0,0,7],
 "class_legendary_explorer_core_1_1_audio_1_1_a_f_c_compactor_1_1_referenced_audio.html#af4204e2604a0cee67de2777e32e6676d":[0,5,1,0,0,0,0],
 "class_legendary_explorer_core_1_1_audio_1_1_a_f_c_compactor_1_1_referenced_audio.html#af4204e2604a0cee67de2777e32e6676d":[1,0,0,0,0,0,0],
-"class_legendary_explorer_core_1_1_audio_1_1_audio_info.html":[0,5,1,0,1],
 "class_legendary_explorer_core_1_1_audio_1_1_audio_info.html":[1,0,0,0,1],
+"class_legendary_explorer_core_1_1_audio_1_1_audio_info.html":[0,5,1,0,1],
 "class_legendary_explorer_core_1_1_audio_1_1_audio_info.html#a062709f808e3cd979a77779a71b73682":[0,5,1,0,1,4],
 "class_legendary_explorer_core_1_1_audio_1_1_audio_info.html#a062709f808e3cd979a77779a71b73682":[1,0,0,0,1,4],
 "class_legendary_explorer_core_1_1_audio_1_1_audio_info.html#a1b7cf00772de573a4c2e8d39e69892bb":[0,5,1,0,1,5],
@@ -247,7 +247,7 @@ var NAVTREEINDEX27 =
 "class_legendary_explorer_core_1_1_audio_1_1_audio_info.html#a78ce6c4a177e238c30fe735658efbb84":[1,0,0,0,1,0],
 "class_legendary_explorer_core_1_1_audio_1_1_audio_info.html#a79eb325dfe60c9e5bafd5cac1aca0d9b":[0,5,1,0,1,6],
 "class_legendary_explorer_core_1_1_audio_1_1_audio_info.html#a79eb325dfe60c9e5bafd5cac1aca0d9b":[1,0,0,0,1,6],
-"class_legendary_explorer_core_1_1_audio_1_1_audio_info.html#a8d01bbd38a20624cfde3fbec194437a8":[0,5,1,0,1,3],
 "class_legendary_explorer_core_1_1_audio_1_1_audio_info.html#a8d01bbd38a20624cfde3fbec194437a8":[1,0,0,0,1,3],
+"class_legendary_explorer_core_1_1_audio_1_1_audio_info.html#a8d01bbd38a20624cfde3fbec194437a8":[0,5,1,0,1,3],
 "class_legendary_explorer_core_1_1_audio_1_1_audio_info.html#a9e85e17e318af6d99f39bf35d4027a03":[0,5,1,0,1,2]
 };
