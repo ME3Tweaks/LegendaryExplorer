@@ -3,6 +3,7 @@ var namespace_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t =
     [ "BankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_bank_chunk.html", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_bank_chunk" ],
     [ "ChannelBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_channel_bank_chunk.html", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_channel_bank_chunk" ],
     [ "CompressionInfoBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_compression_info_bank_chunk.html", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_compression_info_bank_chunk" ],
+    [ "ContentGlobalVarInfoBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_content_global_var_info_bank_chunk.html", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_content_global_var_info_bank_chunk" ],
     [ "FloatBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_float_bank_chunk.html", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_float_bank_chunk" ],
     [ "IntBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_int_bank_chunk.html", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_int_bank_chunk" ],
     [ "ISACTBank", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_i_s_a_c_t_bank.html", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_i_s_a_c_t_bank" ],
