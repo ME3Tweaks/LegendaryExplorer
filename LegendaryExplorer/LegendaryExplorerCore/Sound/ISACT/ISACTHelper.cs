@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Gammtek.Extensions.IO;
 
 namespace LegendaryExplorerCore.Sound.ISACT
 {
@@ -227,6 +228,7 @@ namespace LegendaryExplorerCore.Sound.ISACT
                 case "stri":
                 case "msti":
                 case "prel":
+                case "s3di":
                     chunks.Add(new IntBankChunk(chunkName, inStream)); // size is always 4
                     break;
                 case "gbst":
@@ -234,6 +236,9 @@ namespace LegendaryExplorerCore.Sound.ISACT
                     break;
                 case "sync":
                     chunks.Add(new SyncBankChunk(inStream)); // size is always 4
+                    break;
+                case "cgvi":
+                    chunks.Add(new ContentGlobalVarInfoBankChunk(inStream)); 
                     break;
                 default:
                     chunks.Add(new BankChunk(chunkName, chunkLen, inStream));
@@ -666,6 +671,48 @@ namespace LegendaryExplorerCore.Sound.ISACT
         }
     }
 
+    public class ContentGlobalVarInfoBankChunk : BankChunk
+    {
+        public int StartVarIndex { get; set; }
+        public int StartStateIndex { get; set; }
+        public int StopVarIndex { get; set; }
+        public int StopStateIndex { get; set; }
+        public int Flags { get; set; }
+
+        public ContentGlobalVarInfoBankChunk(Stream inStream) : this()
+        {
+            ChunkDataStartOffset = inStream.Position;
+            StartVarIndex = inStream.ReadInt32();
+            StartStateIndex = inStream.ReadInt32();
+            StopVarIndex = inStream.ReadInt32();
+            StopStateIndex = inStream.ReadInt32();
+
+            // This is optional; if size of chunk is not 20 then this field is not read.
+            Flags = inStream.ReadInt32();
+        }
+
+        public ContentGlobalVarInfoBankChunk()
+        {
+            ChunkName = "cgvi";
+        }
+
+        public override void Write(Stream outStream)
+        {
+            outStream.WriteStringASCII(ChunkName);
+            outStream.WriteInt32(20); // Fixed size
+            outStream.WriteInt32(StartVarIndex);
+            outStream.WriteInt32(StartStateIndex);
+            outStream.WriteInt32(StopVarIndex);
+            outStream.WriteInt32(StopStateIndex);
+            outStream.WriteInt32(Flags);
+        }
+
+        public override string ToChunkDisplay()
+        {
+            return $"{ChunkName}: Content Global Var Info\nStartVarIndex: {StartVarIndex}\nStartStateIndex: {StartStateIndex}\nStopVarIndex: {StopVarIndex}\nStopStateIndex{StopStateIndex}\nFlags: {Flags}";
+        }
+    }
+
     /// <summary>
     /// Holds only an integer value
     /// </summary>
@@ -715,6 +762,9 @@ namespace LegendaryExplorerCore.Sound.ISACT
                     break;
                 case "prel":
                     HumanName = "Preload Stream Packet";
+                    break;
+                case "s3di":
+                    HumanName = "Sample 3D Info (Buffer Index)";
                     break;
 
 
