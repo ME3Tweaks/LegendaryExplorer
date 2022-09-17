@@ -216,6 +216,25 @@ namespace LegendaryExplorerCore.Sound.ISACT
                 case "titl":
                     chunks.Add(new TitleBankChunk(chunkName, chunkLen, inStream)); // Easier to use for debugging
                     break;
+                case "dtsg":
+                case "dtmp":
+                case "dsec":
+                case "tmcd":
+                case "loop":
+                case "trks":
+                case "geix":
+                case "indx":
+                case "stri":
+                case "msti":
+                case "prel":
+                    chunks.Add(new IntBankChunk(chunkName, inStream)); // size is always 4
+                    break;
+                case "gbst":
+                    chunks.Add(new FloatBankChunk(chunkName, inStream)); // size is always 4
+                    break;
+                case "sync":
+                    chunks.Add(new SyncBankChunk(inStream)); // size is always 4
+                    break;
                 default:
                     chunks.Add(new BankChunk(chunkName, chunkLen, inStream));
                     break;
@@ -282,11 +301,49 @@ namespace LegendaryExplorerCore.Sound.ISACT
                 var bc = chunks[i];
                 if (bc.ChunkName == "data")
                 {
-                    chunks[i] = new SampleOffsetBankChunk() { SampleOffset = (uint)bc.ChunkDataStartOffset};  // Points directly at OggS
+                    chunks[i] = new SampleOffsetBankChunk() { SampleOffset = (uint)bc.ChunkDataStartOffset };  // Points directly at OggS
                 }
                 if (bc.SubChunks.Any())
                     stripSubchunks(bc.SubChunks);
             }
+        }
+    }
+
+    public class SyncBankChunk : BankChunk
+    {
+        public enum ISACTSyncStart
+        {
+            IMMEDIATE,
+            CLOCK,
+            BEAT,
+            BAR,
+            MARKER,
+            COUNT
+        }
+
+        public ISACTSyncStart SyncStart { get; set; }
+        public int Multiple { get; set; }
+
+
+        public SyncBankChunk(Stream inStream)
+        {
+            ChunkName = "sync";
+            ChunkDataStartOffset = inStream.Position;
+            SyncStart = (ISACTSyncStart)inStream.ReadInt32();
+            Multiple = inStream.ReadInt32();
+        }
+
+        public override void Write(Stream outStream)
+        {
+            outStream.WriteStringASCII(ChunkName);
+            outStream.WriteInt32(8); // size
+            outStream.WriteInt32((int)SyncStart);
+            outStream.WriteInt32(Multiple);
+        }
+
+        public override string ToChunkDisplay()
+        {
+            return $"{ChunkName}: Sync Start: {SyncStart}, Multiple: {Multiple}";
         }
     }
 
@@ -304,6 +361,11 @@ namespace LegendaryExplorerCore.Sound.ISACT
             outStream.WriteStringASCII(ChunkName);
             outStream.WriteInt32(4); // size
             outStream.WriteInt32(ChannelCount);
+        }
+
+        public override string ToChunkDisplay()
+        {
+            return $"{ChunkName} Channel Count: {ChannelCount}";
         }
     }
 
@@ -601,6 +663,125 @@ namespace LegendaryExplorerCore.Sound.ISACT
         public override string ToChunkDisplay()
         {
             return $"{ChunkName}: External ISB Sample Data Offset: 0x{SampleOffset:X8}";
+        }
+    }
+
+    /// <summary>
+    /// Holds only an integer value
+    /// </summary>
+    public class IntBankChunk : BankChunk
+    {
+        public int Value { get; set; }
+        public string HumanName { get; }
+
+        public IntBankChunk(string chunkName, Stream inStream)
+        {
+            ChunkName = chunkName;
+            ChunkDataStartOffset = inStream.Position;
+            Value = inStream.ReadInt32();
+
+            // Configure human name (if any defined)
+            switch (chunkName)
+            {
+                case "dtsg":
+                    HumanName = "Default Time";
+                    break;
+                case "dtmp":
+                    HumanName = "Default Temp";
+                    break;
+                case "dsec":
+                    HumanName = "Default Section";
+                    break;
+                case "tmcd":
+                    HumanName = "Default Code";
+                    break;
+                case "loop":
+                    HumanName = "Loop Count";
+                    break;
+                case "trks":
+                    HumanName = "Track Count";
+                    break;
+                case "geix":
+                    HumanName = "Global Effect Index";
+                    break;
+                case "indx":
+                    HumanName = "Resource Index";
+                    break;
+                case "stri":
+                    HumanName = "Streaming Info (Packet Size)";
+                    break;
+                case "msti":
+                    HumanName = "Memory Streaming Info (Time Length)";
+                    break;
+                case "prel":
+                    HumanName = "Preload Stream Packet";
+                    break;
+
+
+            }
+        }
+
+        public IntBankChunk()
+        {
+        }
+
+        public override void Write(Stream outStream)
+        {
+            outStream.WriteStringASCII(ChunkName);
+            outStream.WriteInt32(4); // Fixed size
+            outStream.WriteInt32(Value);
+        }
+
+        public override string ToChunkDisplay()
+        {
+            if (HumanName != null)
+            {
+                return $"{ChunkName}: {HumanName}: {Value}";
+            }
+            return $"{ChunkName}: {Value}";
+        }
+    }
+
+    public class FloatBankChunk : BankChunk
+    {
+        public float Value { get; set; }
+        public string HumanName { get; }
+
+        public FloatBankChunk(string chunkName, Stream inStream)
+        {
+            ChunkName = chunkName;
+            ChunkDataStartOffset = inStream.Position;
+            Value = inStream.ReadFloat();
+
+            // Configure human name (if any defined)
+            switch (chunkName)
+            {
+                case "gbst":
+                    HumanName = "Gain Boost";
+                    break;
+
+
+            }
+        }
+
+        public FloatBankChunk()
+        {
+        }
+
+        public override void Write(Stream outStream)
+        {
+            outStream.WriteStringASCII(ChunkName);
+            outStream.WriteInt32(4); // Fixed size
+            outStream.WriteFloat(Value);
+        }
+
+        public override string ToChunkDisplay()
+        {
+            if (HumanName != null)
+            {
+                return $"{ChunkName}: {HumanName}: {Value}";
+            }
+            return $"{ChunkName}: {Value}";
         }
     }
 }
