@@ -32,5 +32,6 @@ var searchData=
   ['mountflags_29',['MountFlags',['../class_legendary_explorer_core_1_1_game_filesystem_1_1_mount_file.html#a9f350fec64067a394cb5d67fe9515a6d',1,'LegendaryExplorerCore::GameFilesystem::MountFile']]],
   ['mountpriority_30',['MountPriority',['../class_legendary_explorer_core_1_1_game_filesystem_1_1_mount_file.html#a7104f4f8a86344b376759ce6e4f44c6f',1,'LegendaryExplorerCore::GameFilesystem::MountFile']]],
   ['multilinedformat_31',['MultiLinedFormat',['../class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_formatting_1_1_verbose_format_info.html#a6484988b4063f326c6990449adf37037',1,'LegendaryExplorerCore::Gammtek::Text::Formatting::VerboseFormatInfo']]],
-  ['multiplewildcard_32',['MultipleWildcard',['../class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_string_matching_1_1_wildcard_matcher.html#a5904060539936208c73afe333a46fde2',1,'LegendaryExplorerCore::Gammtek::Text::StringMatching::WildcardMatcher']]]
+  ['multiple_32',['Multiple',['../class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_sync_bank_chunk.html#af19b515b44457b376a0cab72f8644647',1,'LegendaryExplorerCore::Sound::ISACT::SyncBankChunk']]],
+  ['multiplewildcard_33',['MultipleWildcard',['../class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_string_matching_1_1_wildcard_matcher.html#a5904060539936208c73afe333a46fde2',1,'LegendaryExplorerCore::Gammtek::Text::StringMatching::WildcardMatcher']]]
 ];

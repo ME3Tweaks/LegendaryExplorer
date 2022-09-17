@@ -89,5 +89,6 @@ var searchData=
   ['switchpoint_86',['SwitchPoint',['../class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_state_management_1_1_switch_point.html',1,'LegendaryExplorerCore::Unreal::BinaryConverters::WwiseStateManagement']]],
   ['switchstatement_87',['SwitchStatement',['../class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_switch_statement.html',1,'LegendaryExplorerCore::UnrealScript::Language::Tree']]],
   ['switchtoken_88',['SwitchToken',['../class_legendary_explorer_core_1_1_m_e1_1_1_unreal_1_1_unhood_bytecode_1_1_switch_token.html',1,'LegendaryExplorerCore::ME1::Unreal::UnhoodBytecode']]],
-  ['symbolreference_89',['SymbolReference',['../class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_symbol_reference.html',1,'LegendaryExplorerCore::UnrealScript::Language::Tree']]]
+  ['symbolreference_89',['SymbolReference',['../class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_symbol_reference.html',1,'LegendaryExplorerCore::UnrealScript::Language::Tree']]],
+  ['syncbankchunk_90',['SyncBankChunk',['../class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_sync_bank_chunk.html',1,'LegendaryExplorerCore::Sound::ISACT']]]
 ];
