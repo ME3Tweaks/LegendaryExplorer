@@ -217,6 +217,9 @@ namespace LegendaryExplorerCore.Sound.ISACT
                 case "titl":
                     chunks.Add(new TitleBankChunk(chunkName, chunkLen, inStream)); // Easier to use for debugging
                     break;
+                case "isgn":
+                    chunks.Add(new GroupBankChunk(chunkName, chunkLen, inStream)); // Easier to use for debugging
+                    break;
                 case "dtsg":
                 case "dtmp":
                 case "dsec":
@@ -239,6 +242,15 @@ namespace LegendaryExplorerCore.Sound.ISACT
                     break;
                 case "cgvi":
                     chunks.Add(new ContentGlobalVarInfoBankChunk(inStream)); 
+                    break;
+                case "dist":
+                    chunks.Add(new BufferSoundDistanceBankChunk(inStream));
+                    break;
+                case "sdst":
+                    chunks.Add(new BufferDistanceBankChunk(inStream));
+                    break;
+                case "cone":
+                    chunks.Add(new SoundConeBankChunk(inStream));
                     break;
                 default:
                     chunks.Add(new BankChunk(chunkName, chunkLen, inStream));
@@ -533,19 +545,54 @@ namespace LegendaryExplorerCore.Sound.ISACT
         }
     }
 
+    [DebuggerDisplay("GroupBankChunk: {Value}")]
+    public class GroupBankChunk : BankChunk
+    {
+        public string Value;
+        public GroupBankChunk(string chunkName, int chunkLen, Stream inStream) : base(chunkName, chunkLen, inStream)
+        {
+            Value = Encoding.Unicode.GetString(RawData, 0, chunkLen - 2); //exclude null terminator
+        }
+
+        public override string ToChunkDisplay()
+        {
+            if (RawData == null)
+            {
+                return ChunkName;
+            }
+
+            return $"{ChunkName}: Group Name: {Value}";
+        }
+    }
+
     /// <summary>
     /// ISACT Compression Info bank chunk
     /// </summary>
     public class CompressionInfoBankChunk : BankChunk
     {
         /// <summary>
+        /// The type of audio that is stored
+        /// </summary>
+        public enum ISACTCompressionFormat
+        {
+            PCM = 0,
+            IMA4ADPCM = 1,
+            OGGVORBIS = 2,
+            WMA = 3,
+            XMA = 4,
+            MSMP3 = 5,
+            MSADPCM = 6,
+            MSPCMBIG = 7 // Big Endian
+        }
+
+        /// <summary>
         /// Should be same as Target in processed ISB
         /// </summary>
-        public int CurrentFormat;
+        public ISACTCompressionFormat CurrentFormat;
         /// <summary>
         /// Should be same as current in processed ISB
         /// </summary>
-        public int TargetFormat;
+        public ISACTCompressionFormat TargetFormat;
 
         /// <summary>
         /// Size of the compressed data block
@@ -569,8 +616,8 @@ namespace LegendaryExplorerCore.Sound.ISACT
 
 
             ChunkName = @"cmpi"; // We know the chunk name and len already so we don't need this.
-            CurrentFormat = inStream.ReadInt32();
-            TargetFormat = inStream.ReadInt32();
+            CurrentFormat = (ISACTCompressionFormat) inStream.ReadInt32();
+            TargetFormat = (ISACTCompressionFormat) inStream.ReadInt32();
             TotalSize = inStream.ReadInt32();
             PacketSize = inStream.ReadInt32();
             CompressionRatio = inStream.ReadFloat();
@@ -581,8 +628,8 @@ namespace LegendaryExplorerCore.Sound.ISACT
         {
             outStream.WriteStringASCII(ChunkName);
             outStream.WriteInt32(24); // Fixed size
-            outStream.WriteInt32(CurrentFormat);
-            outStream.WriteInt32(TargetFormat);
+            outStream.WriteInt32((int)CurrentFormat);
+            outStream.WriteInt32((int)TargetFormat);
             outStream.WriteInt32(TotalSize);
             outStream.WriteInt32(PacketSize);
             outStream.WriteFloat(CompressionRatio);
@@ -834,4 +881,129 @@ namespace LegendaryExplorerCore.Sound.ISACT
             return $"{ChunkName}: {Value}";
         }
     }
+
+    // Not legacy
+    public class BufferDistanceBankChunk : BankChunk
+    {
+        public float MinDistance { get; set; }
+        public float MaxDistance { get; set; }
+        public float DistanceLevel { get; set; }
+        public uint DistanceFlags { get; }
+
+        /// <summary>
+        /// Not legacy sdst version
+        /// </summary>
+        /// <param name="inStream"></param>
+        public BufferDistanceBankChunk(Stream inStream)
+        {
+            ChunkName = "sdst";
+            ChunkDataStartOffset = inStream.Position;
+            MinDistance = inStream.ReadFloat();
+            MaxDistance = inStream.ReadFloat();
+            DistanceLevel = inStream.ReadFloat();
+            DistanceFlags = inStream.ReadUInt32();
+        }
+
+        public BufferDistanceBankChunk()
+        {
+        }
+
+        public override void Write(Stream outStream)
+        {
+            outStream.WriteStringASCII(ChunkName);
+            outStream.WriteInt32(16); // Fixed size
+            outStream.WriteFloat(MinDistance);
+            outStream.WriteFloat(MaxDistance);
+            outStream.WriteFloat(DistanceLevel);
+            outStream.WriteUInt32(DistanceFlags);
+        }
+
+        public override string ToChunkDisplay()
+        {
+            return $"{ChunkName}: Buffer Sound Distance\nDistance Size: {MinDistance}\nDistance Level: {MaxDistance}\nDistance Modifier: {DistanceLevel}\nDistance Flags {DistanceFlags}";
+        }
+    }
+
+    public class BufferSoundDistanceBankChunk : BankChunk
+    {
+        public float DistanceSize { get; set; }
+        public float DistanceLevel { get; set; }
+        public float DistanceModifier { get; set; }
+        public uint DistanceFlags { get; }
+
+        /// <summary>
+        /// Legacy dist version
+        /// </summary>
+        /// <param name="inStream"></param>
+        public BufferSoundDistanceBankChunk(Stream inStream)
+        {
+            ChunkName = "dist";
+            ChunkDataStartOffset = inStream.Position;
+            DistanceSize = inStream.ReadFloat();
+            DistanceLevel = inStream.ReadFloat();
+            DistanceModifier = inStream.ReadFloat();
+            DistanceFlags = inStream.ReadUInt32();
+        }
+
+        public BufferSoundDistanceBankChunk()
+        {
+        }
+
+        public override void Write(Stream outStream)
+        {
+            outStream.WriteStringASCII(ChunkName);
+            outStream.WriteInt32(16); // Fixed size
+            outStream.WriteFloat(DistanceSize);
+            outStream.WriteFloat(DistanceLevel);
+            outStream.WriteFloat(DistanceModifier);
+            outStream.WriteUInt32(DistanceFlags);
+        }
+
+        public override string ToChunkDisplay()
+        {
+            return $"{ChunkName}: Buffer Sound Distance (Legacy)\nDistance Size: {DistanceSize}\nDistance Level: {DistanceLevel}\nDistance Modifier: {DistanceModifier}\nDistance Flags {DistanceFlags}";
+        }
+    }
+
+    public class SoundConeBankChunk : BankChunk
+    {
+        public int InsideConeAngle { get; set; }
+        public int OutsideConeAngle { get; set; }
+        public int OutsideConeLevel { get; set; }
+        public int OutsideConeHFLevel { get; set; }
+        public uint ConeFlags { get; set; }
+
+        public SoundConeBankChunk(Stream inStream)
+        {
+            ChunkName = "cone";
+            ChunkDataStartOffset = inStream.Position;
+            InsideConeAngle = inStream.ReadInt32();
+            OutsideConeAngle = inStream.ReadInt32();
+            OutsideConeLevel = inStream.ReadInt32();
+            OutsideConeHFLevel = inStream.ReadInt32();
+            ConeFlags = inStream.ReadUInt32();
+        }
+
+        public SoundConeBankChunk()
+        {
+        }
+
+        public override void Write(Stream outStream)
+        {
+            outStream.WriteStringASCII(ChunkName);
+            outStream.WriteInt32(20); // Fixed size
+            outStream.WriteInt32(InsideConeAngle);
+            outStream.WriteInt32(OutsideConeAngle);
+            outStream.WriteInt32(OutsideConeLevel);
+            outStream.WriteInt32(OutsideConeHFLevel);
+            outStream.WriteUInt32(ConeFlags);
+        }
+
+        public override string ToChunkDisplay()
+        {
+            return $"{ChunkName}: Buffer Sound Cone\nInside Cone Angle: {InsideConeAngle}\nOutside Cone Angle: {OutsideConeAngle}\nOutside Cone Level: {OutsideConeLevel}\nOutside Cone HF Level: {OutsideConeHFLevel}\nCone Flags: {ConeFlags}";
+        }
+    }
+
+
 }

@@ -1351,8 +1351,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 var cmpiChunk = allChunks.FirstOrDefault(x => x.ChunkName == "cmpi");
                 var c2Chunk = cmpiChunk as CompressionInfoBankChunk;
                 c2Chunk.TotalSize = oggData.Length;
-                c2Chunk.CurrentFormat = 2; // Ogg Vorbis
-                c2Chunk.TargetFormat = 2; // Ogg Vorbis
+                c2Chunk.CurrentFormat = CompressionInfoBankChunk.ISACTCompressionFormat.OGGVORBIS;
+                c2Chunk.TargetFormat = CompressionInfoBankChunk.ISACTCompressionFormat.OGGVORBIS;
 
                 var sinfChunk = allChunks.FirstOrDefault(x => x.ChunkName == "sinf") as SampleInfoBankChunk;
                 sinfChunk.TimeLength = wfr.TotalTime.Milliseconds;
