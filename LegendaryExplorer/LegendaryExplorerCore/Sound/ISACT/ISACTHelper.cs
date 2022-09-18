@@ -1030,7 +1030,7 @@ namespace LegendaryExplorerCore.Sound.ISACT
         {
             ChunkName = "info";
             ChunkDataStartOffset = inStream.Position;
-            EventSelection = (ISACTSEEventSelection) inStream.ReadUInt32();
+            EventSelection = (ISACTSEEventSelection)inStream.ReadUInt32();
             DefaultChance = inStream.ReadUInt32();
             EqualChance = inStream.ReadInt32();
             Flags = inStream.ReadUInt32();
@@ -1064,14 +1064,18 @@ namespace LegendaryExplorerCore.Sound.ISACT
     {
         public uint EntryCount { get; set; }
         public IndexEntry[] IndexEntry;
-        // public IndexPage NextPage;
     }
 
     class IndexEntry
     {
         public string Title { get; set; }
+        /// <summary>
+        /// String struct alignment data. Only used for reserializing the same data, if data is modified, this is ignored.
+        /// </summary>
+        public byte[] padding;
         public string ObjectType { get; set; }
         public uint ObjectIndex { get; set; }
+
     }
 
     public class ContentIndexBankChunk : BankChunk
@@ -1091,12 +1095,13 @@ namespace LegendaryExplorerCore.Sound.ISACT
                 Page.IndexEntry = new IndexEntry[pageEntryCount];
                 for (int i = 0; i < pageEntryCount; i++)
                 {
-                    Page.IndexEntry[i] = new IndexEntry();
+                    var entry = new IndexEntry();
                     var endPos = inStream.Position + 0x100; // The string is an array of 128 chars. So it is 0x100 shorts. We read it as null string and skip the garbage data.
-                    Page.IndexEntry[i].Title = inStream.ReadStringUnicodeNull();
-                    inStream.Position = endPos;
-                    Page.IndexEntry[i].ObjectType = inStream.ReadStringASCII(4); // This is an ascii string.
-                    Page.IndexEntry[i].ObjectIndex = inStream.ReadUInt32();
+                    entry.Title = inStream.ReadStringUnicodeNull();
+                    entry.padding = inStream.ReadToBuffer(endPos - inStream.Position); // For reserialization
+                    entry.ObjectType = inStream.ReadStringASCII(4); // This is an ascii string.
+                    entry.ObjectIndex = inStream.ReadUInt32();
+                    Page.IndexEntry[i] = entry;
                 }
                 IndexPages.Add(Page);
 
@@ -1122,10 +1127,20 @@ namespace LegendaryExplorerCore.Sound.ISACT
                 {
                     var endPos = outStream.Position + 0x100;
                     outStream.WriteStringUnicodeNull(entry.Title);
-                    while (outStream.Position < endPos)
+
+                    if (entry.padding != null && outStream.Position + entry.padding.Length == endPos)
                     {
-                        outStream.WriteByte(0xCC); // Garbage alignment data.
+                        outStream.Write(entry.padding);
                     }
+                    else
+                    {
+                        // It would never reserialize to the same anyways.
+                        while (outStream.Position < endPos)
+                        {
+                            outStream.WriteByte(0xCC); // Garbage alignment data.
+                        }
+                    }
+
                     outStream.WriteStringASCII(entry.ObjectType);
                     outStream.WriteUInt32(entry.ObjectIndex);
                 }
