@@ -2496,10 +2496,18 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
                 subnodes.Add(new BinInterpNode(bin.Position, $"BulkDataFlags: {(EBulkDataFlags)bin.ReadUInt32()}"));
                 subnodes.Add(new BinInterpNode(bin.Position, $"Element Count: {count = bin.ReadInt32()}"));
+
                 subnodes.Add(MakeInt32Node(bin, "BulkDataSizeOnDisk"));
                 subnodes.Add(MakeUInt32HexNode(bin, "BulkDataOffsetInFile"));
-                subnodes.Add(new BinInterpNode(bin.Position, "RawData") { Length = count });
-                bin.Skip(count);
+                var rawDataNode = new BinInterpNode(bin.Position, count > 0 ? "RawData (Embedded Non-Streaming Audio)" : "RawData (None, Streaming Audio)") { Length = count, IsExpanded = true};
+                subnodes.Add(rawDataNode);
+
+                if (count > 0)
+                {
+                    rawDataNode.Items.AddRange(ReadISACTPair(data, ref binarystart, (int)bin.Position));
+                }
+                bin.Skip(count); 
+
                 if (Pcc.Game.IsLEGame())
                 {
                     subnodes.Add(new BinInterpNode(bin.Position, $"Unknown int 3: {bin.ReadInt32()}"));
@@ -2539,7 +2547,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 int offset = binarystart;
 
-
                 // Size of the entire data to follow
                 int numBytesOfStreamingData = BitConverter.ToInt32(data, offset);
                 subnodes.Add(new BinInterpNode
@@ -2550,115 +2557,35 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 });
                 offset += 4;
 
-                // ISB Offset
-                var isbOffset = BitConverter.ToInt32(data, offset);
-                var node = new BinInterpNode
-                {
-                    Header = $"0x{offset:X5} ISB file offset: 0x{isbOffset:X8}",
-                    Name = "_" + offset,
-                    Tag = NodeType.StructLeafInt
-                };
-
-                // Offset is not incremented here as this method reads paired data which includes the offset
-                var isactBankPair = ISACTHelper.GetPairedBanks(data[offset..]);
-                subnodes.Add(MakeISACTBankNode(isactBankPair.ICBBank, offset));
-                subnodes.Add(MakeISACTBankNode(isactBankPair.ISBBank, offset));
-
-                return subnodes;
-
-                // Old code
-                /*
-                var clickToGotoOffset = new BinInterpNode
-                {
-                    Header = $"0x{offset:X5} Click to go to referenced offset 0x{isbOffset:X5}",
-                    Name = "_" + (isbOffset + offset)
-                };
-                node.Items.Add(clickToGotoOffset);
-
-                subnodes.Add(node);
-                offset += 4;
-
-                MemoryStream asStream = new MemoryStream(data);
-                asStream.Position = offset;
-
-                // ICB RIFF START
-                var icbNode = new BinInterpNode(asStream.Position, "Embedded ICB file");
-                subnodes.Add(icbNode);
-
-                while (asStream.Position < isbOffset)
-                {
-                    var pos = asStream.Position;
-                    var title = asStream.ReadStringASCII(4);
-                    var size = asStream.ReadInt32();
-
-                    if (title == "RIFF")
-                    {
-                        icbNode.Items.Add(new BinInterpNode(pos, $"File type: {asStream.ReadStringASCII(4)}"));
-                        continue; // Don't skip the whole file.
-                    }
-                    else if (title == "ctdx")
-                    {
-                        var startPos = asStream.Position;
-                        icbNode.Items.Add(new BinInterpNode(pos, $"{title} (??): {asStream.ReadStringUnicodeNull(asStream.ReadInt32())}"));
-                        // unknown remaining data
-                        asStream.Seek(startPos + size, SeekOrigin.Begin);
-                    }
-                    else if (title == "LIST")
-                    {
-                        // Sub entry
-                        var subISnode = new BinInterpNode(asStream.Position, "LIST") { IsExpanded = true };
-                        icbNode.Items.Add(subISnode);
-                        var endPos = asStream.Position + size;
-                        while (asStream.Position < endPos)
-                        {
-                            var spos = asStream.Position;
-                            var stitle = asStream.ReadStringASCII(4);
-                            var ssize = asStream.ReadInt32();
-
-                            if (stitle is "sdqu")
-                            {
-                                // ignore this i guess
-                                asStream.Position -= 4;
-                            }
-                            else
-                            {
-                                var nodeX = ReadISACTNode(asStream, stitle, ssize);
-                                if (nodeX != null)
-                                    subISnode.Items.Add(nodeX);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        var nodeX = ReadISACTNode(asStream, title, size);
-                        if (nodeX != null)
-                            icbNode.Items.Add(nodeX);
-                    }
-                }
-
-
-                //while (asStream.Position < asStream.Length)
-                //{
-                //    //Debug.WriteLine("Reading at " + asStream.Position);
-                //    //ISACT_Parser.ReadStream(asStream);
-                //}
-                /*
-                offset = binarystart + 0x18;
-
-                MemoryStream ms = new MemoryStream(data);
-                ms.Position = offset;
-                var scriptStructProperties = PropertyCollection.ReadProps(CurrentLoadedExport.FileRef, ms, "ScriptStruct", includeNoneProperty: true);
-
-                UPropertyTreeViewEntry topLevelTree = new UPropertyTreeViewEntry(); //not used, just for holding and building data.
-                foreach (UProperty prop in scriptStructProperties)
-                {
-                    InterpreterWPF.GenerateUPropertyTreeForProperty(prop, topLevelTree, CurrentLoadedExport);
-                }*/
+                subnodes.AddRange(ReadISACTPair(data, ref binarystart, offset));
             }
             catch (Exception ex)
             {
                 subnodes.Add(new BinInterpNode() { Header = $"Error reading binary data: {ex}" });
             }
+            return subnodes;
+        }
+
+        private List<ITreeItem> ReadISACTPair(byte[] data, ref int binarystart, int pairStart)
+        {
+            int offset = pairStart;
+
+            var subnodes = new List<ITreeItem>();
+            // ISB Offset
+            var isbOffset = BitConverter.ToInt32(data, offset);
+            var node = new BinInterpNode
+            {
+                Header = $"0x{offset:X5} ISB file offset: 0x{isbOffset:X8} (0x{(isbOffset + pairStart):X8} in binary)",
+                Name = "_" + offset,
+                Tag = NodeType.StructLeafInt
+            };
+            subnodes.Add(node);
+
+            // Offset is not incremented here as this method reads paired data which includes the offset
+            var isactBankPair = ISACTHelper.GetPairedBanks(data[offset..]);
+            subnodes.Add(MakeISACTBankNode(isactBankPair.ICBBank, offset));
+            subnodes.Add(MakeISACTBankNode(isactBankPair.ISBBank, offset));
+
             return subnodes;
         }
 
