@@ -2664,7 +2664,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private ITreeItem MakeISACTBankNode(ISACTBank iSBBank, int binOffset)
         {
-            BinInterpNode bin = new BinInterpNode(iSBBank.BankRIFFPosition + binOffset, $"{iSBBank.BankType} Bank");
+            BinInterpNode bin = new BinInterpNode(iSBBank.BankRIFFPosition + binOffset, $"{iSBBank.BankType} Bank") { IsExpanded = true};
             foreach (var bc in iSBBank.BankChunks)
             {
                 MakeISACTBankChunkNode(bin, bc, binOffset);

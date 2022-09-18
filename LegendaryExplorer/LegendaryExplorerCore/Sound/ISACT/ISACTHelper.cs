@@ -241,7 +241,7 @@ namespace LegendaryExplorerCore.Sound.ISACT
                     chunks.Add(new SyncBankChunk(inStream)); // size is always 4
                     break;
                 case "cgvi":
-                    chunks.Add(new ContentGlobalVarInfoBankChunk(inStream)); 
+                    chunks.Add(new ContentGlobalVarInfoBankChunk(inStream));
                     break;
                 case "dist":
                     chunks.Add(new BufferSoundDistanceBankChunk(inStream));
@@ -251,6 +251,12 @@ namespace LegendaryExplorerCore.Sound.ISACT
                     break;
                 case "cone":
                     chunks.Add(new SoundConeBankChunk(inStream));
+                    break;
+                case "ctdx":
+                    chunks.Add(new ContentIndexBankChunk(chunkLen, inStream));
+                    break;
+                case "info":
+                    chunks.Add(new SoundEventInfoBankChunk(inStream));
                     break;
                 default:
                     chunks.Add(new BankChunk(chunkName, chunkLen, inStream));
@@ -616,8 +622,8 @@ namespace LegendaryExplorerCore.Sound.ISACT
 
 
             ChunkName = @"cmpi"; // We know the chunk name and len already so we don't need this.
-            CurrentFormat = (ISACTCompressionFormat) inStream.ReadInt32();
-            TargetFormat = (ISACTCompressionFormat) inStream.ReadInt32();
+            CurrentFormat = (ISACTCompressionFormat)inStream.ReadInt32();
+            TargetFormat = (ISACTCompressionFormat)inStream.ReadInt32();
             TotalSize = inStream.ReadInt32();
             PacketSize = inStream.ReadInt32();
             CompressionRatio = inStream.ReadFloat();
@@ -756,7 +762,7 @@ namespace LegendaryExplorerCore.Sound.ISACT
 
         public override string ToChunkDisplay()
         {
-            return $"{ChunkName}: Content Global Var Info\nStartVarIndex: {StartVarIndex}\nStartStateIndex: {StartStateIndex}\nStopVarIndex: {StopVarIndex}\nStopStateIndex{StopStateIndex}\nFlags: {Flags}";
+            return $"{ChunkName}: Content Global Var Info\n\tStartVarIndex: {StartVarIndex}\n\tStartStateIndex: {StartStateIndex}\n\tStopVarIndex: {StopVarIndex}\n\tStopStateIndex: {StopStateIndex}\n\tFlags: {Flags}";
         }
     }
 
@@ -920,7 +926,7 @@ namespace LegendaryExplorerCore.Sound.ISACT
 
         public override string ToChunkDisplay()
         {
-            return $"{ChunkName}: Buffer Sound Distance\nDistance Size: {MinDistance}\nDistance Level: {MaxDistance}\nDistance Modifier: {DistanceLevel}\nDistance Flags {DistanceFlags}";
+            return $"{ChunkName}: Buffer Sound Distance\n\tDistance Size: {MinDistance}\n\tDistance Level: {MaxDistance}\n\tDistance Modifier: {DistanceLevel}\n\tDistance Flags: {DistanceFlags}";
         }
     }
 
@@ -961,7 +967,7 @@ namespace LegendaryExplorerCore.Sound.ISACT
 
         public override string ToChunkDisplay()
         {
-            return $"{ChunkName}: Buffer Sound Distance (Legacy)\nDistance Size: {DistanceSize}\nDistance Level: {DistanceLevel}\nDistance Modifier: {DistanceModifier}\nDistance Flags {DistanceFlags}";
+            return $"{ChunkName}: Buffer Sound Distance (Legacy)\n\tDistance Size: {DistanceSize}\n\tDistance Level: {DistanceLevel}\n\tDistance Modifier: {DistanceModifier}\n\tDistance Flags: {DistanceFlags}";
         }
     }
 
@@ -1001,9 +1007,150 @@ namespace LegendaryExplorerCore.Sound.ISACT
 
         public override string ToChunkDisplay()
         {
-            return $"{ChunkName}: Buffer Sound Cone\nInside Cone Angle: {InsideConeAngle}\nOutside Cone Angle: {OutsideConeAngle}\nOutside Cone Level: {OutsideConeLevel}\nOutside Cone HF Level: {OutsideConeHFLevel}\nCone Flags: {ConeFlags}";
+            return $"{ChunkName}: Buffer Sound Cone\n\tInside Cone Angle: {InsideConeAngle}\n\tOutside Cone Angle: {OutsideConeAngle}\n\tOutside Cone Level: {OutsideConeLevel}\n\tOutside Cone HF Level: {OutsideConeHFLevel}\n\tCone Flags: {ConeFlags}";
         }
     }
 
+    public class SoundEventInfoBankChunk : BankChunk
+    {
+        public enum ISACTSEEventSelection
+        {
+            USE_EVS_ORDER, // 0
+            USE_EVS_CHANCE // 1
+        }
 
+        public ISACTSEEventSelection EventSelection { get; set; }
+        public uint DefaultChance { get; set; }
+        public int EqualChance { get; set; }
+        public uint Flags { get; set; }
+        public int ResetParamsOnLoop { get; set; }
+        public int ResetSampleOnLoop { get; set; }
+
+        public SoundEventInfoBankChunk(Stream inStream)
+        {
+            ChunkName = "info";
+            ChunkDataStartOffset = inStream.Position;
+            EventSelection = (ISACTSEEventSelection) inStream.ReadUInt32();
+            DefaultChance = inStream.ReadUInt32();
+            EqualChance = inStream.ReadInt32();
+            Flags = inStream.ReadUInt32();
+            ResetParamsOnLoop = inStream.ReadInt32();
+            ResetSampleOnLoop = inStream.ReadInt32();
+        }
+
+        public SoundEventInfoBankChunk()
+        {
+        }
+
+        public override void Write(Stream outStream)
+        {
+            outStream.WriteStringASCII(ChunkName);
+            outStream.WriteInt32(24); // Fixed size
+            outStream.WriteInt32((int)EventSelection);
+            outStream.WriteUInt32(DefaultChance);
+            outStream.WriteInt32(EqualChance);
+            outStream.WriteUInt32(Flags);
+            outStream.WriteInt32(ResetParamsOnLoop);
+            outStream.WriteInt32(ResetSampleOnLoop);
+        }
+
+        public override string ToChunkDisplay()
+        {
+            return $"{ChunkName}: Sound Event Info\n\tEvent Selection: {EventSelection}\n\tDefault Chance: {DefaultChance}\n\tEqual Chance: {EqualChance}\n\tFlags: {Flags}\n\tReset Params On Loop: {ResetParamsOnLoop}\n\tReset Sample On Loop: {ResetSampleOnLoop}";
+        }
+    }
+
+    class IndexPage
+    {
+        public uint EntryCount { get; set; }
+        public IndexEntry[] IndexEntry;
+        // public IndexPage NextPage;
+    }
+
+    class IndexEntry
+    {
+        public string Title { get; set; }
+        public string ObjectType { get; set; }
+        public uint ObjectIndex { get; set; }
+    }
+
+    public class ContentIndexBankChunk : BankChunk
+    {
+        private List<IndexPage> IndexPages;
+        public ContentIndexBankChunk(int dataSize, Stream inStream)
+        {
+            ChunkName = "ctdx";
+            ChunkDataStartOffset = inStream.Position;
+
+            int dataAmountRead = 0;
+            while (dataAmountRead < dataSize)
+            {
+                IndexPages ??= new List<IndexPage>();
+                IndexPage Page = new IndexPage();
+                var pageEntryCount = inStream.ReadInt32();
+                Page.IndexEntry = new IndexEntry[pageEntryCount];
+                for (int i = 0; i < pageEntryCount; i++)
+                {
+                    Page.IndexEntry[i] = new IndexEntry();
+                    var endPos = inStream.Position + 0x100; // The string is an array of 128 chars. So it is 0x100 shorts. We read it as null string and skip the garbage data.
+                    Page.IndexEntry[i].Title = inStream.ReadStringUnicodeNull();
+                    inStream.Position = endPos;
+                    Page.IndexEntry[i].ObjectType = inStream.ReadStringASCII(4); // This is an ascii string.
+                    Page.IndexEntry[i].ObjectIndex = inStream.ReadUInt32();
+                }
+                IndexPages.Add(Page);
+
+                // 4 (page count) + (0x100 + 0x8) (page entries)
+                dataAmountRead += 4 + (264 * pageEntryCount);
+            }
+        }
+
+        public ContentIndexBankChunk()
+        {
+        }
+
+        public override void Write(Stream outStream)
+        {
+            outStream.WriteStringASCII(ChunkName);
+            var sizePos = outStream.Position;
+            outStream.WriteInt32(0); // placeholder
+
+            foreach (var p in IndexPages)
+            {
+                outStream.WriteInt32(p.IndexEntry.Length);
+                foreach (var entry in p.IndexEntry)
+                {
+                    var endPos = outStream.Position + 0x100;
+                    outStream.WriteStringUnicodeNull(entry.Title);
+                    while (outStream.Position < endPos)
+                    {
+                        outStream.WriteByte(0xCC); // Garbage alignment data.
+                    }
+                    outStream.WriteStringASCII(entry.ObjectType);
+                    outStream.WriteUInt32(entry.ObjectIndex);
+                }
+            }
+
+            // Write out the length.
+            var finishPos = outStream.Position;
+            outStream.Position = sizePos;
+            outStream.WriteInt32((int)(finishPos - sizePos - 4)); // -4 to remove the size itself.
+            outStream.Position = finishPos;
+        }
+
+        public override string ToChunkDisplay()
+        {
+            var str = $"{ChunkName}: Content Index ({IndexPages?.Count ?? 0} index pages)";
+            foreach (var ip in IndexPages)
+            {
+                str += $"\n\tIndex Page ({ip.IndexEntry.Length} indexes)";
+                foreach (var ie in ip.IndexEntry)
+                {
+                    str += $"\n\t\tIndex Entry {ie.Title}, type {ie.ObjectType}, index {ie.ObjectIndex}";
+                }
+            }
+
+            return str;
+        }
+    }
 }
