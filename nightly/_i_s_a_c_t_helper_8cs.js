@@ -19,6 +19,10 @@ var _i_s_a_c_t_helper_8cs =
     [ "LegendaryExplorerCore.Sound.ISACT.BufferDistanceBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_buffer_distance_bank_chunk.html", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_buffer_distance_bank_chunk" ],
     [ "LegendaryExplorerCore.Sound.ISACT.BufferSoundDistanceBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_buffer_sound_distance_bank_chunk.html", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_buffer_sound_distance_bank_chunk" ],
     [ "LegendaryExplorerCore.Sound.ISACT.SoundConeBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_sound_cone_bank_chunk.html", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_sound_cone_bank_chunk" ],
+    [ "LegendaryExplorerCore.Sound.ISACT.SoundEventInfoBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_sound_event_info_bank_chunk.html", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_sound_event_info_bank_chunk" ],
+    [ "LegendaryExplorerCore.Sound.ISACT.IndexPage", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_index_page.html", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_index_page" ],
+    [ "LegendaryExplorerCore.Sound.ISACT.IndexEntry", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_index_entry.html", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_index_entry" ],
+    [ "LegendaryExplorerCore.Sound.ISACT.ContentIndexBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_content_index_bank_chunk.html", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_content_index_bank_chunk" ],
     [ "ISACTBankType", "_i_s_a_c_t_helper_8cs.html#a1d306bb280144056b87e695f2b641217", [
       [ "ICB", "_i_s_a_c_t_helper_8cs.html#a1d306bb280144056b87e695f2b641217af60d54f52a4013689e7d94c309edd93e", null ],
       [ "ISB", "_i_s_a_c_t_helper_8cs.html#a1d306bb280144056b87e695f2b641217a19857b34a4cdd584317c3bad71c20d34", null ],

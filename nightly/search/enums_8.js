@@ -4,5 +4,6 @@ var searchData=
   ['imageformat_1',['ImageFormat',['../class_legendary_explorer_core_1_1_textures_1_1_image.html#a56b9f4440142d36f639dca6a3f0229c9',1,'LegendaryExplorerCore::Textures::Image']]],
   ['isactbanktype_2',['ISACTBankType',['../namespace_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t.html#a1d306bb280144056b87e695f2b641217',1,'LegendaryExplorerCore::Sound::ISACT']]],
   ['isactcompressionformat_3',['ISACTCompressionFormat',['../class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_compression_info_bank_chunk.html#a6670ba8df049cb9670e8f431082030eb',1,'LegendaryExplorerCore::Sound::ISACT::CompressionInfoBankChunk']]],
-  ['isactsyncstart_4',['ISACTSyncStart',['../class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_sync_bank_chunk.html#a88014efc0c5c02e9267b5f38d60b8909',1,'LegendaryExplorerCore::Sound::ISACT::SyncBankChunk']]]
+  ['isactseeventselection_4',['ISACTSEEventSelection',['../class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_sound_event_info_bank_chunk.html#aa1d0fbd2cbba4f64d03f5c04b62075e5',1,'LegendaryExplorerCore::Sound::ISACT::SoundEventInfoBankChunk']]],
+  ['isactsyncstart_5',['ISACTSyncStart',['../class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_sync_bank_chunk.html#a88014efc0c5c02e9267b5f38d60b8909',1,'LegendaryExplorerCore::Sound::ISACT::SyncBankChunk']]]
 ];
