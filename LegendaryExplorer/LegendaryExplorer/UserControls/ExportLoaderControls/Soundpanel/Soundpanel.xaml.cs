@@ -1279,13 +1279,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 return result;
             }
 
-#if DEBUG
-            if (CurrentLoadedExport.ClassName == "SoundNodeWave")
+            if (Settings.PackageEditor_ShowExperiments && CurrentLoadedExport.ClassName == "SoundNodeWave")
             {
                 var data = ObjectBinary.From<SoundNodeWave>(CurrentLoadedExport);
                 return data.RawData.Any(); // This probably needs a bit more expansion
             }
-#endif
 
             return false;
         }
