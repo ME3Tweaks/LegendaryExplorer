@@ -101,6 +101,7 @@ namespace LegendaryExplorerCore
                 LE1UnrealObjectInfo.loadfromJSON,
                 LE2UnrealObjectInfo.loadfromJSON,
                 LE3UnrealObjectInfo.loadfromJSON,
+                UDKUnrealObjectInfo.loadfromJSON,
             };
             Parallel.ForEach(jsonLoaders, action => action(null));
             if (!OodleHelper.EnsureOodleDll())

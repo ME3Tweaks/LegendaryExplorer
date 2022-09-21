@@ -33,5 +33,11 @@ namespace LegendaryExplorerCore.Gammtek
 				throw new ArgumentNullException(paramName);
 			}
 		}
-	}
+
+        [DoesNotReturn]
+        public static void ThrowArgumentException([InvokerParameterName] string paramName, string message)
+        {
+            throw new ArgumentException(message, paramName);
+        }
+    }
 }

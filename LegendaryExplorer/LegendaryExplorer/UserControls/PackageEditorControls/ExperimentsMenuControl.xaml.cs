@@ -195,6 +195,33 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             });
         }
 
+        private void BuildUDKObjectInfo_Clicked(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrEmpty(UDKDirectory.DefaultGamePath))
+            {
+                MessageBox.Show(GetPEWindow(), "Specify a UDK path in the settings first.");
+                return;
+            }
+            var pew = GetPEWindow();
+            pew.BusyText = "Building UDK Object Info";
+            pew.IsBusy = true;
+
+            void setProgress(int done, int total)
+            {
+                Application.Current.Dispatcher.InvokeAsync(() => { pew.BusyText = $"Building UDK Object Info [{done}/{total}]"; });
+            }
+
+            Task.Run(() => 
+            {
+                UDKUnrealObjectInfo.generateInfo(Path.Combine(AppDirectories.ExecFolder, "UDKObjectInfo.json"), true, setProgress);
+            }).ContinueWithOnUIThread(x =>
+            {
+                pew.IsBusy = false;
+                pew.RestoreAndBringToFront();
+                MessageBox.Show(GetPEWindow(), "Done");
+            });
+        }
+
         private void BuildAllObjectInfoLE_Clicked(object sender, RoutedEventArgs e)
         {
             var pew = GetPEWindow();

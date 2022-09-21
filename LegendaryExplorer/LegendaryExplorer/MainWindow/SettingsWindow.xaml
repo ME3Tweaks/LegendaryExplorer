@@ -59,6 +59,13 @@
                             <Button Click="DirectoryBrowse_Click" 
                             Margin="5,0" Tag="">Browse</Button>
                                                 </StackPanel>
+                        <TextBlock Margin="5,5,0,0">UDK\Custom Directory:</TextBlock>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,5" Tag="Global_UDKCustomDirectory">
+                            <TextBox Width="250" x:Name="Global_UDKCustomDirectory" Margin="5,0,0,0" TextChanged="Setting_OnTextChanged"
+                                       Text="{Binding Path=(settings:Settings.Global_UDKCustomDirectory)}"/>
+                            <Button Click="DirectoryBrowse_Click" 
+                            Margin="5,0" Tag="">Browse</Button>
+                                                </StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="0,5">
                             <TextBlock Margin="5,0">TLK Language</TextBlock>
                             <TextBox Width="100" x:Name="Global_TLK_Language"

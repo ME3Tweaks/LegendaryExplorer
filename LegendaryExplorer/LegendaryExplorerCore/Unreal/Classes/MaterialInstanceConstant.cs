@@ -8,7 +8,7 @@ using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 
-namespace LegendaryExplorer.UnrealExtensions.Classes
+namespace LegendaryExplorerCore.Unreal.Classes
 {
     public class MaterialInstanceConstant
     {

@@ -68,51 +68,6 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             }
         }
 
-        public static SequenceObjectInfo getSequenceObjectInfo(string className)
-        {
-            return SequenceObjects.TryGetValue(className, out SequenceObjectInfo seqInfo) ? seqInfo : null;
-        }
-
-        public static List<string> getSequenceObjectInfoInputLinks(string className)
-        {
-            if (SequenceObjects.TryGetValue(className, out SequenceObjectInfo seqInfo))
-            {
-                if (seqInfo.inputLinks != null)
-                {
-                    return SequenceObjects[className].inputLinks;
-                }
-                if (Classes.TryGetValue(className, out ClassInfo info) && info.baseClass != "Object" && info.baseClass != "Class")
-                {
-                    return getSequenceObjectInfoInputLinks(info.baseClass);
-                }
-            }
-            return null;
-        }
-
-        public static string getEnumTypefromProp(string className, NameReference propName, ClassInfo nonVanillaClassInfo = null)
-        {
-            PropertyInfo p = getPropertyInfo(className, propName, nonVanillaClassInfo: nonVanillaClassInfo);
-            if (p == null)
-            {
-                p = getPropertyInfo(className, propName, true, nonVanillaClassInfo);
-            }
-            return p?.Reference;
-        }
-
-        public static List<NameReference> getEnumValues(string enumName, bool includeNone = false)
-        {
-            if (Enums.ContainsKey(enumName))
-            {
-                var values = new List<NameReference>(Enums[enumName]);
-                if (includeNone)
-                {
-                    values.Insert(0, "None");
-                }
-                return values;
-            }
-            return null;
-        }
-
         public static PropertyInfo getPropertyInfo(string className, NameReference propName, bool inStruct = false, ClassInfo nonVanillaClassInfo = null, bool reSearch = true, ExportEntry containingExport = null)
         {
             if (className.StartsWith("Default__", StringComparison.OrdinalIgnoreCase))
@@ -197,67 +152,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
         }
 
         internal static readonly ConcurrentDictionary<string, PropertyCollection> defaultStructValuesME3 = new();
-
-        public static Property getDefaultProperty(NameReference propName, PropertyInfo propInfo, PackageCache packageCache, bool stripTransients = true, bool isImmutable = false)
-        {
-            switch (propInfo.Type)
-            {
-                case PropertyType.IntProperty:
-                    return new IntProperty(0, propName);
-                case PropertyType.FloatProperty:
-                    return new FloatProperty(0f, propName);
-                case PropertyType.DelegateProperty:
-                    return new DelegateProperty("None", 0);
-                case PropertyType.ObjectProperty:
-                    return new ObjectProperty(0, propName);
-                case PropertyType.NameProperty:
-                    return new NameProperty("None", propName);
-                case PropertyType.BoolProperty:
-                    return new BoolProperty(false, propName);
-                case PropertyType.ByteProperty when propInfo.IsEnumProp():
-                    return new EnumProperty(propInfo.Reference, MEGame.ME3, propName);
-                case PropertyType.ByteProperty:
-                    return new ByteProperty(0, propName);
-                case PropertyType.StrProperty:
-                    return new StrProperty("", propName);
-                case PropertyType.StringRefProperty:
-                    return new StringRefProperty(propName);
-                case PropertyType.BioMask4Property:
-                    return new BioMask4Property(0, propName);
-                case PropertyType.ArrayProperty:
-                    switch (GlobalUnrealObjectInfo.GetArrayType(MEGame.ME3, propInfo))
-                    {
-                        case ArrayType.Object:
-                            return new ArrayProperty<ObjectProperty>(propName);
-                        case ArrayType.Name:
-                            return new ArrayProperty<NameProperty>(propName);
-                        case ArrayType.Enum:
-                            return new ArrayProperty<EnumProperty>(propName);
-                        case ArrayType.Struct:
-                            return new ArrayProperty<StructProperty>(propName);
-                        case ArrayType.Bool:
-                            return new ArrayProperty<BoolProperty>(propName);
-                        case ArrayType.String:
-                            return new ArrayProperty<StrProperty>(propName);
-                        case ArrayType.Float:
-                            return new ArrayProperty<FloatProperty>(propName);
-                        case ArrayType.Int:
-                            return new ArrayProperty<IntProperty>(propName);
-                        case ArrayType.Byte:
-                            return new ImmutableByteArrayProperty(propName);
-                        default:
-                            return null;
-                    }
-                case PropertyType.StructProperty:
-                    isImmutable = isImmutable || GlobalUnrealObjectInfo.IsImmutable(propInfo.Reference, MEGame.ME3);
-                    return new StructProperty(propInfo.Reference, GlobalUnrealObjectInfo.getDefaultStructValue(MEGame.ME3, propInfo.Reference, stripTransients, packageCache), propName, isImmutable);
-                case PropertyType.None:
-                case PropertyType.Unknown:
-                default:
-                    return null;
-            }
-        }
-
+        
         #region Generating
         //call this method to regenerate ME3ObjectInfo.json
         //Takes a long time (~5 minutes maybe?). Application will be completely unresponsive during that time.
@@ -674,8 +569,8 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
 
         public static void AddIntrinsicClasses(Dictionary<string, ClassInfo> classes, MEGame game)
         {
-            string corePath = game <= MEGame.ME2 ? @"CookedPC\Core.pcc" : @"CookedPCConsole\Core.pcc";
-            string enginePath = game <= MEGame.ME2 ? @"CookedPC\Engine.pcc" : @"CookedPCConsole\Engine.pcc";
+            string corePath = game is MEGame.UDK ? @"Script\Core.u" : game <= MEGame.ME2 ? @"CookedPC\Core.pcc" : @"CookedPCConsole\Core.pcc";
+            string enginePath = game is MEGame.UDK ? @"Script\Engine.u" : game <= MEGame.ME2 ? @"CookedPC\Engine.pcc" : @"CookedPCConsole\Engine.pcc";
            
             if (game >= MEGame.ME3)
             {

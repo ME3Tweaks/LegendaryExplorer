@@ -91,6 +91,10 @@ namespace LegendaryExplorer.MainWindow
                         LE2Directory.ReloadDefaultGamePath();
                         LE3Directory.ReloadDefaultGamePath();
                         break;
+                    case nameof(Settings.Global_UDKCustomDirectory) when UDKDirectory.IsValidGameDir(t.Text):
+                        LegendaryExplorerCoreLibSettings.Instance.UDKCustomDirectory = t.Text;
+                        UDKDirectory.ReloadDefaultGamePath();
+                        break;
                 }
             }
         }
