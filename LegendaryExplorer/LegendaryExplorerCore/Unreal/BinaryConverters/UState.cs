@@ -20,8 +20,21 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         protected override void Serialize(SerializingContainer2 sc)
         {
             base.Serialize(sc);
-            sc.Serialize(ref ProbeMask);
-            sc.Serialize(ref IgnoreMask);
+            if (sc.Game is MEGame.UDK)
+            {
+                uint temp = (uint)ProbeMask;
+                sc.Serialize(ref temp);
+                if (sc.IsLoading)
+                {
+                    ProbeMask = (EProbeFunctions)temp; //this is going to be garbage...
+                    IgnoreMask = (EProbeFunctions)ulong.MaxValue;
+                }
+            }
+            else
+            {
+                sc.Serialize(ref ProbeMask);
+                sc.Serialize(ref IgnoreMask);
+            }
             sc.Serialize(ref LabelTableOffset);
             sc.Serialize(ref StateFlags);
             sc.Serialize(ref LocalFunctionMap, SCExt.Serialize, SCExt.Serialize);

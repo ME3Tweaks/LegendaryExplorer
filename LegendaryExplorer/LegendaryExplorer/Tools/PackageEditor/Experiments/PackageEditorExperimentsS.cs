@@ -11,6 +11,7 @@ using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Misc.AppSettings;
 using LegendaryExplorer.UnrealExtensions.Classes;
+using LegendaryExplorerCore;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using LegendaryExplorerCore.Gammtek.IO;
@@ -18,6 +19,7 @@ using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
+using LegendaryExplorerCore.UDK;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.Classes;
@@ -1815,43 +1817,43 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         public static void UDKifyTest(PackageEditorWindow pewpf)
         {
             // TODO: IMPLEMENT IN LEX
-            /*
-            var Pcc = pewpf.Pcc;
-            var udkPath = Settings.UDKCustomPath;
+
+            IMEPackage Pcc = pewpf.Pcc;
+            string udkPath = UDKDirectory.DefaultGamePath;
             if (udkPath == null || !Directory.Exists(udkPath))
             {
-                var udkDlg = new System.Windows.Forms.FolderBrowserDialog();
-                udkDlg.Description = @"Select UDK\Custom folder";
-                System.Windows.Forms.DialogResult result = udkDlg.ShowDialog();
+                var udkDlg = new CommonOpenFileDialog(@"Select your UDK\Custom folder");
+                udkDlg.IsFolderPicker = true;
+                var result = udkDlg.ShowDialog();
 
-                if (result != System.Windows.Forms.DialogResult.OK ||
-                    string.IsNullOrWhiteSpace(udkDlg.SelectedPath))
+                if (result is not CommonFileDialogResult.Ok || string.IsNullOrWhiteSpace(udkDlg.FileName) || !Directory.Exists(udkDlg.FileName))
                     return;
-                udkPath = udkDlg.SelectedPath;
-                Settings.UDKCustomPath = udkPath;
+                udkPath = udkDlg.FileName;
+                LegendaryExplorerCoreLibSettings.Instance.UDKCustomDirectory = udkPath;
+                UDKDirectory.ReloadDefaultGamePath();
             }
 
-            string fileName = Path.GetFileNameWithoutExtension(Pcc.FilePath);
-            bool convertAll = fileName.StartsWith("BioP") && MessageBoxResult.Yes ==
+            string persistentLevelFileName = Path.GetFileNameWithoutExtension(Pcc.FilePath);
+            bool convertAll = persistentLevelFileName.StartsWith("BioP") && MessageBoxResult.Yes ==
                 MessageBox.Show("Convert BioA and BioD files for this level?", "", MessageBoxButton.YesNo);
 
             pewpf.IsBusy = true;
-            pewpf.BusyText = $"Converting {fileName}";
+            pewpf.BusyText = $"Converting {persistentLevelFileName}";
             Task.Run(() =>
             {
-                string persistentPath = StaticLightingGenerator.GenerateUDKFileForLevel(udkPath, Pcc);
+                string persistentPath = ConvertToUDK.GenerateUDKFileForLevel(Pcc);
                 if (convertAll)
                 {
                     var levelFiles = new List<string>();
-                    string levelName = fileName.Split('_')[1];
+                    string levelName = persistentLevelFileName.Split('_')[1];
                     foreach ((string fileName, string filePath) in MELoadedFiles.GetFilesLoadedInGame(Pcc.Game))
                     {
-                        if (!fileName.Contains("_LOC_") && fileName.Split('_') is { } parts && parts.Length >= 2 &&
+                        if (!fileName.Contains("_LOC_") && fileName.Split('_') is { Length: >= 2 } parts &&
                             parts[1] == levelName)
                         {
                             pewpf.BusyText = $"Converting {fileName}";
                             using IMEPackage levPcc = MEPackageHandler.OpenMEPackage(filePath);
-                            levelFiles.Add(StaticLightingGenerator.GenerateUDKFileForLevel(udkPath, levPcc));
+                            levelFiles.Add(ConvertToUDK.GenerateUDKFileForLevel(levPcc));
                         }
                     }
 
@@ -1861,20 +1863,15 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     IEntry theWorld = persistentUDK.Exports.First(exp => exp.ClassName == "World");
                     int i = 1;
                     int firstLevStream = persistentUDK.ExportCount;
-                    foreach (string levelFile in levelFiles)
+                    foreach (string fileName in levelFiles.Select(Path.GetFileNameWithoutExtension))
                     {
-                        string fileName = Path.GetFileNameWithoutExtension(levelFile);
-                        persistentUDK.AddExport(new ExportEntry(persistentUDK, properties: new PropertyCollection
-                            {
-                                new NameProperty(fileName, "PackageName"),
-                                CommonStructs.ColorProp(
-                                    System.Drawing.Color.FromArgb(255, (byte) (i % 256), (byte) ((255 - i) % 256),
-                                        (byte) ((i * 7) % 256)), "DrawColor")
-                            })
+                        persistentUDK.AddExport(new ExportEntry(persistentUDK, theWorld, new NameReference("LevelStreamingAlwaysLoaded", i), properties: new PropertyCollection
                         {
-                            ObjectName = new NameReference("LevelStreamingAlwaysLoaded", i),
-                            Class = levStreamingClass,
-                            Parent = theWorld
+                            new NameProperty(fileName, "PackageName"), 
+                            CommonStructs.ColorProp(System.Drawing.Color.FromArgb(255, (byte)(i % 256), (byte)((255 - i) % 256), (byte)(i * 7 % 256)), "DrawColor")
+                        })
+                        {
+                            Class = levStreamingClass
                         });
                         i++;
                     }
@@ -1890,9 +1887,15 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     persistentUDK.Save();
                 }
 
+            }).ContinueWithOnUIThread(prevTask =>
+            {
+                if (prevTask.IsFaulted)
+                {
+                    new ExceptionHandlerDialog(prevTask.Exception).ShowDialog();
+                }
                 pewpf.IsBusy = false;
             });
-            */
+
         }
 
         public static void MakeME1TextureFileList(PackageEditorWindow pewpf)

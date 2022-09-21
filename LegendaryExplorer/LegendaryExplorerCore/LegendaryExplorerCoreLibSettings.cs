@@ -21,6 +21,7 @@ namespace LegendaryExplorerCore
             GameFilesystem.ME2Directory.ReloadDefaultGamePath();
             GameFilesystem.ME3Directory.ReloadDefaultGamePath();
             GameFilesystem.LEDirectory.LookupDefaultPath(); // LE Directory is root of 3 games plus the launcher 
+            GameFilesystem.UDKDirectory.ReloadDefaultGamePath();
         }
 
         /// <summary>
@@ -39,21 +40,25 @@ namespace LegendaryExplorerCore
         public bool ParseUnknownArrayTypesAsObject { get; set; }
 
         /// <summary>
-        /// Value that can be binded to to bridge location settings from an enclosing wrapper application
+        /// Value that can be bound to to bridge location settings from an enclosing wrapper application
         /// </summary>
         public string ME1Directory { get; set; }
         /// <summary>
-        /// Value that can be binded to to bridge location settings from an enclosing wrapper application
+        /// Value that can be bound to to bridge location settings from an enclosing wrapper application
         /// </summary>
         public string ME2Directory { get; set; }
         /// <summary>
-        /// Value that can be binded to to bridge location settings from an enclosing wrapper application
+        /// Value that can be bound to to bridge location settings from an enclosing wrapper application
         /// </summary>
         public string ME3Directory { get; set; }
         /// <summary>
-        /// Value that can be binded to to bridge location settings from an enclosing wrapper application
+        /// Value that can be bound to to bridge location settings from an enclosing wrapper application
         /// </summary>
         public string LEDirectory { get; set; }
+        /// <summary>
+        /// Value that can be bound to to bridge location settings from an enclosing wrapper application
+        /// </summary>
+        public string UDKCustomDirectory { get; set; }
 
 #pragma warning disable
         /// <summary>

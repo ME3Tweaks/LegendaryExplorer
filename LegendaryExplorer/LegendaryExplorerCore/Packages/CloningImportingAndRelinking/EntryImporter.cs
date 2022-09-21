@@ -135,7 +135,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
             // Crossgen Sept 30 2021: Disabled import children when doing clone all dependencies as not all children are dependendencies
             // Crossgen Oct 8 2021: Re-enabled, but only for packages, as they won't have any direct references to children
-            if ((portingOption == PortingOption.CloneTreeAsChild || portingOption == PortingOption.MergeTreeChildren || (portingOption == PortingOption.CloneAllDependencies && sourceEntry.ClassName == "Package"))
+            if ((portingOption is PortingOption.CloneTreeAsChild or PortingOption.MergeTreeChildren || (portingOption == PortingOption.CloneAllDependencies && sourceEntry.ClassName == "Package"))
              && sourcePcc.Tree.NumChildrenOf(sourceEntry) > 0)
             {
                 importChildrenOf(sourceEntry, newEntry);

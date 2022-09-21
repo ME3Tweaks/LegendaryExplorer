@@ -41,10 +41,26 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
             sc.Serialize(ref ComponentNameToDefaultObjectMap, SCExt.Serialize, SCExt.Serialize);
             sc.Serialize(ref Interfaces, SCExt.Serialize, SCExt.Serialize);
+            if (sc.Game is MEGame.UDK)
+            {
+                NameReference[] dummyArray = Array.Empty<NameReference>();
+                sc.Serialize(ref dummyArray, SCExt.Serialize);
+                sc.Serialize(ref dummyArray, SCExt.Serialize);
+                sc.Serialize(ref dummyArray, SCExt.Serialize);
+                sc.Serialize(ref dummyArray, SCExt.Serialize);
+                bool dummyBool = false;
+                sc.Serialize(ref dummyBool);
+                sc.Serialize(ref dummyArray, SCExt.Serialize);
+                string dummyString = "";
+                sc.Serialize(ref dummyString);
+            }
             if (sc.Game >= MEGame.ME3 || sc.Pcc.Platform == MEPackage.GamePlatform.PS3)
             {
                 sc.Serialize(ref DLLBindName);
-                sc.Serialize(ref unk2);
+                if (sc.Game is not MEGame.UDK)
+                {
+                    sc.Serialize(ref unk2);
+                }
             }
             else
             {
@@ -62,7 +78,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 sc.Serialize(ref le2ps3me2Unknown);
             }
             sc.Serialize(ref Defaults);
-            if (sc.Game is MEGame.ME3 or MEGame.UDK or MEGame.LE3)
+            if (sc.Game.IsGame3())
             {
                 sc.Serialize(ref VirtualFunctionTable, SCExt.Serialize);
             }
@@ -142,7 +158,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
 
             Unsafe.AsRef(action).Invoke(ref Defaults, nameof(Defaults));
-            if (game is MEGame.UDK or MEGame.ME3 or MEGame.LE3)
+            if (game is MEGame.ME3 or MEGame.LE3)
             {
                 ForEachUIndexInSpan(action, VirtualFunctionTable.AsSpan(), nameof(VirtualFunctionTable));
             }

@@ -6304,7 +6304,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private IEnumerable<ITreeItem> MakeUFieldNodes(EndianReader bin)
         {
-            yield return MakeEntryNode(bin, "SuperClass");
+            if (Pcc.Game is not MEGame.UDK)
+            {
+                yield return MakeEntryNode(bin, "SuperClass");
+            }
             yield return MakeEntryNode(bin, "Next item in compiling chain");
         }
 
@@ -6314,14 +6317,18 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 yield return node;
             }
-            if (Pcc.Game <= MEGame.ME2 && Pcc.Platform != MEPackage.GamePlatform.PS3)
+            if (Pcc.Game is MEGame.UDK)
             {
-                yield return MakeInt32Node(bin, "Unknown 1");
+                yield return MakeEntryNode(bin, "SuperClass");
+            }
+            if (Pcc.Game is MEGame.ME1 or MEGame.ME2 or MEGame.UDK && Pcc.Platform != MEPackage.GamePlatform.PS3)
+            {
+                yield return MakeEntryNode(bin, "ScriptText");
             }
             yield return MakeEntryNode(bin, "ChildListStart");
-            if (Pcc.Game <= MEGame.ME2 && Pcc.Platform != MEPackage.GamePlatform.PS3)
+            if (Pcc.Game is MEGame.ME1 or MEGame.ME2 or MEGame.UDK && Pcc.Platform != MEPackage.GamePlatform.PS3)
             {
-                yield return MakeInt32Node(bin, "Unknown 2");
+                yield return MakeEntryNode(bin, "C++ Text");
                 yield return MakeInt32Node(bin, "Source file line number");
                 yield return MakeInt32Node(bin, "Source file text position");
             }
@@ -6376,7 +6383,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
 
             long probeMaskPos = bin.Position;
-            var probeFuncs = (EProbeFunctions)bin.ReadUInt64();
+            var probeFuncs = (EProbeFunctions)(Pcc.Game is MEGame.UDK ? bin.ReadUInt32() : bin.ReadUInt64());
             var probeMaskNode = new BinInterpNode(probeMaskPos, $"ProbeMask: {(ulong)probeFuncs:X16}")
             {
                 Length = 8,
@@ -6388,29 +6395,32 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 {
                     Header = $"{(ulong)flag:X16} {flag}",
                     Name = $"_{probeMaskPos}",
-                    Length = 8
+                    Length = Pcc.Game is MEGame.UDK ? 4 : 8
                 });
             }
             yield return probeMaskNode;
 
 
-            long ignoreMaskPos = bin.Position;
-            var ignoredFuncs = (EProbeFunctions)bin.ReadUInt64();
-            var ignoreMaskNode = new BinInterpNode(ignoreMaskPos, $"IgnoreMask: {(ulong)ignoredFuncs:X16}")
+            if (Pcc.Game is not MEGame.UDK)
             {
-                Length = 8,
-                IsExpanded = true
-            };
-            foreach (EProbeFunctions flag in (~ignoredFuncs).MaskToList())
-            {
-                ignoreMaskNode.Items.Add(new BinInterpNode
+                long ignoreMaskPos = bin.Position;
+                var ignoredFuncs = (EProbeFunctions)bin.ReadUInt64();
+                var ignoreMaskNode = new BinInterpNode(ignoreMaskPos, $"IgnoreMask: {(ulong)ignoredFuncs:X16}")
                 {
-                    Header = $"{(ulong)flag:X16} {flag}",
-                    Name = $"_{ignoreMaskPos}",
-                    Length = 8
-                });
+                    Length = 8,
+                    IsExpanded = true
+                };
+                foreach (EProbeFunctions flag in (~ignoredFuncs).MaskToList())
+                {
+                    ignoreMaskNode.Items.Add(new BinInterpNode
+                    {
+                        Header = $"{(ulong)flag:X16} {flag}",
+                        Name = $"_{ignoreMaskPos}",
+                        Length = 8
+                    });
+                }
+                yield return ignoreMaskNode;
             }
-            yield return ignoreMaskNode;
             yield return MakeInt16Node(bin, "Label Table Offset");
             yield return new BinInterpNode(bin.Position, $"StateFlags: {getStateFlagsStr((EStateFlags)bin.ReadUInt32())}") { Length = 4 };
             yield return MakeArrayNode(bin, "Local Functions", i =>
@@ -6461,10 +6471,24 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 subnodes.Add(MakeArrayNode(bin, "Interface Table", i =>
                                                new BinInterpNode(bin.Position, $"{Pcc.GetEntryString(bin.ReadInt32())} => {Pcc.GetEntryString(bin.ReadInt32())}")));
 
+                if (Pcc.Game is MEGame.UDK)
+                {
+                    subnodes.Add(MakeArrayNode(bin, "DontSortCategories", i => MakeNameNode(bin, $"{i}")));
+                    subnodes.Add(MakeArrayNode(bin, "HideCategories", i => MakeNameNode(bin, $"{i}")));
+                    subnodes.Add(MakeArrayNode(bin, "AutoExpandCategories", i => MakeNameNode(bin, $"{i}")));
+                    subnodes.Add(MakeArrayNode(bin, "AutoCollapseCategories", i => MakeNameNode(bin, $"{i}")));
+                    subnodes.Add(MakeBoolIntNode(bin, "bForceScriptOrder"));
+                    subnodes.Add(MakeArrayNode(bin, "Unknown name list", i => MakeNameNode(bin, $"{i}")));
+                    subnodes.Add(MakeStringNode(bin, "Class Name?"));
+                }
+
                 if (Pcc.Game >= MEGame.ME3 || Pcc.Platform == MEPackage.GamePlatform.PS3)
                 {
-                    subnodes.Add(MakeNameNode(bin, "Unknown Name"));
-                    subnodes.Add(MakeUInt32Node(bin, "Unknown"));
+                    subnodes.Add(MakeNameNode(bin, "DLL Bind Name"));
+                    if (Pcc.Game is not MEGame.UDK)
+                    {
+                        subnodes.Add(MakeUInt32Node(bin, "Unknown"));
+                    }
                 }
                 else
                 {
@@ -6476,7 +6500,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     subnodes.Add(MakeUInt32Node(bin, "LE2 & PS3 ME2 Unknown"));
                 }
                 subnodes.Add(MakeEntryNode(bin, "Defaults"));
-                if (Pcc.Game is MEGame.ME3 or MEGame.UDK or MEGame.LE3)
+                if (Pcc.Game.IsGame3())
                 {
                     subnodes.Add(MakeArrayNode(bin, "Virtual Function Table", i => MakeEntryNode(bin, $"{i}: ")));
                 }
@@ -6578,7 +6602,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 bin.Skip(binaryStart);
                 subnodes.AddRange(MakeUStructNodes(bin));
                 subnodes.Add(MakeUInt16Node(bin, "NativeIndex"));
-                if (Pcc.Game.IsGame1() || Pcc.Game.IsGame2())
+                if (Pcc.Game.IsGame1() || Pcc.Game.IsGame2() || Pcc.Game is MEGame.UDK)
                 {
                     subnodes.Add(MakeByteNode(bin, "OperatorPrecedence"));
                 }
@@ -6601,11 +6625,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 }
                 subnodes.Add(probeMaskNode);
 
-                if (Pcc.Game is MEGame.ME1 or MEGame.ME2 && Pcc.Platform != MEPackage.GamePlatform.PS3 && funcFlags.Has(EFunctionFlags.Net))
+                if (Pcc.Game is MEGame.ME1 or MEGame.ME2 or MEGame.UDK && Pcc.Platform != MEPackage.GamePlatform.PS3 && funcFlags.Has(EFunctionFlags.Net))
                 {
                     subnodes.Add(MakeUInt16Node(bin, "ReplicationOffset"));
                 }
-                if ((Pcc.Game.IsGame1() || Pcc.Game.IsGame2()) && Pcc.Platform != MEPackage.GamePlatform.PS3)
+                if ((Pcc.Game.IsGame1() || Pcc.Game.IsGame2() || Pcc.Game is MEGame.UDK) && Pcc.Platform != MEPackage.GamePlatform.PS3)
                 {
                     subnodes.Add(MakeNameNode(bin, "FriendlyName"));
                 }

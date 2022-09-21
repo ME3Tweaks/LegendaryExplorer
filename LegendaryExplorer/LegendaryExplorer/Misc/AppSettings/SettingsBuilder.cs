@@ -290,6 +290,11 @@ namespace LegendaryExplorer.Misc.AppSettings
             get => _global_ledirectory; 
             set => SetProperty(ref _global_ledirectory, value);
         }
+        private static string _global_udkcustomdirectory = ""; 
+        public static string Global_UDKCustomDirectory {
+            get => _global_udkcustomdirectory; 
+            set => SetProperty(ref _global_udkcustomdirectory, value);
+        }
         private static string _global_tlk_language = "INT"; 
         public static string Global_TLK_Language {
             get => _global_tlk_language; 
@@ -429,6 +434,7 @@ namespace LegendaryExplorer.Misc.AppSettings
             Global_ME2Directory = TryGetSetting(settingsJson, "global_me2directory", "");
             Global_ME3Directory = TryGetSetting(settingsJson, "global_me3directory", "");
             Global_LEDirectory = TryGetSetting(settingsJson, "global_ledirectory", "");
+            Global_UDKCustomDirectory = TryGetSetting(settingsJson, "global_udkcustomdirectory", "");
             Global_TLK_Language = TryGetSetting(settingsJson, "global_tlk_language", "INT");
             Global_TLK_IsMale = TryGetSetting(settingsJson, "global_tlk_ismale", true);
             CustomStartupFiles = TryGetSetting(settingsJson, "customstartupfiles", new List<string>());
@@ -440,6 +446,7 @@ namespace LegendaryExplorer.Misc.AppSettings
             LegendaryExplorerCoreLibSettings.Instance.ME2Directory = Global_ME2Directory;
             LegendaryExplorerCoreLibSettings.Instance.ME3Directory = Global_ME3Directory;
             LegendaryExplorerCoreLibSettings.Instance.LEDirectory = Global_LEDirectory;
+            LegendaryExplorerCoreLibSettings.Instance.UDKCustomDirectory = Global_UDKCustomDirectory;
             LegendaryExplorerCoreLibSettings.Instance.TLKDefaultLanguage = Global_TLK_Language;
             LegendaryExplorerCoreLibSettings.Instance.TLKGenderIsMale = Global_TLK_IsMale;
 
@@ -507,6 +514,7 @@ namespace LegendaryExplorer.Misc.AppSettings
                     settingsJson["global_me2directory"] = Global_ME2Directory.ToString();
                     settingsJson["global_me3directory"] = Global_ME3Directory.ToString();
                     settingsJson["global_ledirectory"] = Global_LEDirectory.ToString();
+                    settingsJson["global_udkcustomdirectory"] = Global_UDKCustomDirectory.ToString();
                     settingsJson["global_tlk_language"] = Global_TLK_Language.ToString();
                     settingsJson["global_tlk_ismale"] = Global_TLK_IsMale.ToString();
                     settingsJson["customstartupfiles"] = CustomStartupFiles;

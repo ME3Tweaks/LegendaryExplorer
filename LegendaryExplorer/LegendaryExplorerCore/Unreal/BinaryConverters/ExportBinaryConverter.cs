@@ -185,7 +185,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                         }
                         break;
                     case StorageTypes.empty:
-                        texture = new byte[0];
+                        texture = Array.Empty<byte>();
                         break;
                     default:
                         if (export.Game != newGame)

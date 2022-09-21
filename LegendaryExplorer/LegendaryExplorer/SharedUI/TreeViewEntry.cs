@@ -311,7 +311,7 @@ namespace LegendaryExplorer.SharedUI
                                 {
                                     var data = ee.DataReadOnly;
                                     //This is kind of a hack. 
-                                    var value = EndianReader.ReadUnrealString(data, 0x14, ee.FileRef.Endian);
+                                    var value = EndianReader.ReadUnrealString(data, Entry.Game is MEGame.UDK ? 0x10 :0x14, ee.FileRef.Endian);
                                     _subtext = "Value: " + value;
                                     break;
                                 }
@@ -321,7 +321,7 @@ namespace LegendaryExplorer.SharedUI
                             case "ComponentProperty":
                                 {
                                     // Objects of this type
-                                    var typeRef = EndianReader.ToInt32(ee.DataReadOnly, Entry.FileRef.Platform == MEPackage.GamePlatform.PC ? 0x2C : 0x20, ee.FileRef.Endian);
+                                    var typeRef = EndianReader.ToInt32(ee.DataReadOnly, Entry.FileRef.Platform == MEPackage.GamePlatform.PC ? Entry.Game is MEGame.UDK ? 0x28 : 0x2C : 0x20, ee.FileRef.Endian);
                                     if (ee.FileRef.TryGetEntry(typeRef, out var type))
                                     {
                                         _subtext = type.ObjectName;
