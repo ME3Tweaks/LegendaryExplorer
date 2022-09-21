@@ -10,9 +10,10 @@ var class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_compression_info_b
       [ "MSADPCM", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_compression_info_bank_chunk.html#a6670ba8df049cb9670e8f431082030eba51717d5a7c2402b8949870fed63d4687", null ],
       [ "MSPCMBIG", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_compression_info_bank_chunk.html#a6670ba8df049cb9670e8f431082030eba27f2f2c8d0c7c33d51dd0352c4d89187", null ]
     ] ],
-    [ "CompressionInfoBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_compression_info_bank_chunk.html#a062591c78938e423919a7069d7a50084", null ],
+    [ "CompressionInfoBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_compression_info_bank_chunk.html#a5dcddcadee6bbb60e7e6f417700a6ec0", null ],
     [ "Write", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_compression_info_bank_chunk.html#aa1f3d26f3ff7191e1d49d465554b2868", null ],
     [ "ToChunkDisplay", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_compression_info_bank_chunk.html#abc8ef708c15523962073d111b6ba6c3a", null ],
+    [ "FixedChunkTitle", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_compression_info_bank_chunk.html#a17a82ff7504b7cce55c6b9e7f89be197", null ],
     [ "CurrentFormat", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_compression_info_bank_chunk.html#afc7f3950e486a65f5dba6973ba8c7d51", null ],
     [ "TargetFormat", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_compression_info_bank_chunk.html#af8593eb4eddde62d1557b909e38f6906", null ],
     [ "TotalSize", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_compression_info_bank_chunk.html#a62d70cd63ff9f3021662b8ea5260ded6", null ],

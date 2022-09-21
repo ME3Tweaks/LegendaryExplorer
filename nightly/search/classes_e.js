@@ -14,9 +14,10 @@ var searchData=
   ['observablecollectionextended_11',['ObservableCollectionExtended',['../class_legendary_explorer_core_1_1_misc_1_1_observable_collection_extended.html',1,'LegendaryExplorerCore::Misc']]],
   ['observablecollectionextendedthreading_12',['ObservableCollectionExtendedThreading',['../class_legendary_explorer_core_1_1_misc_1_1_observable_collection_extended_threading.html',1,'LegendaryExplorerCore::Misc']]],
   ['observabledictionary_13',['ObservableDictionary',['../class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_object_model_1_1_observable_dictionary.html',1,'LegendaryExplorerCore::Gammtek::Collections::ObjectModel']]],
-  ['ole32_14',['Ole32',['../class_legendary_explorer_core_1_1_gammtek_1_1_windows_1_1_windows_api_1_1_ole32.html',1,'LegendaryExplorerCore::Gammtek::Windows::WindowsApi']]],
-  ['oodlehelper_15',['OodleHelper',['../class_legendary_explorer_core_1_1_compression_1_1_oodle_helper.html',1,'LegendaryExplorerCore::Compression']]],
-  ['operatordeclaration_16',['OperatorDeclaration',['../class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_operator_declaration.html',1,'LegendaryExplorerCore::UnrealScript::Language::Tree']]],
-  ['orderedmultivaluedictionary_17',['OrderedMultiValueDictionary',['../class_legendary_explorer_core_1_1_misc_1_1_ordered_multi_value_dictionary.html',1,'LegendaryExplorerCore::Misc']]],
-  ['outboundlink_18',['OutboundLink',['../class_legendary_explorer_core_1_1_kismet_1_1_seq_tools_1_1_outbound_link.html',1,'LegendaryExplorerCore::Kismet::SeqTools']]]
+  ['oggwavestream_14',['OggWaveStream',['../class_legendary_explorer_core_1_1_audio_1_1_ogg_wave_stream.html',1,'LegendaryExplorerCore::Audio']]],
+  ['ole32_15',['Ole32',['../class_legendary_explorer_core_1_1_gammtek_1_1_windows_1_1_windows_api_1_1_ole32.html',1,'LegendaryExplorerCore::Gammtek::Windows::WindowsApi']]],
+  ['oodlehelper_16',['OodleHelper',['../class_legendary_explorer_core_1_1_compression_1_1_oodle_helper.html',1,'LegendaryExplorerCore::Compression']]],
+  ['operatordeclaration_17',['OperatorDeclaration',['../class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_operator_declaration.html',1,'LegendaryExplorerCore::UnrealScript::Language::Tree']]],
+  ['orderedmultivaluedictionary_18',['OrderedMultiValueDictionary',['../class_legendary_explorer_core_1_1_misc_1_1_ordered_multi_value_dictionary.html',1,'LegendaryExplorerCore::Misc']]],
+  ['outboundlink_19',['OutboundLink',['../class_legendary_explorer_core_1_1_kismet_1_1_seq_tools_1_1_outbound_link.html',1,'LegendaryExplorerCore::Kismet::SeqTools']]]
 ];

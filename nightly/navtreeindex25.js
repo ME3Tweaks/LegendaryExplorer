@@ -227,6 +227,7 @@ var NAVTREEINDEX25 =
 "_object_type_8cs.html":[2,0,0,0,23,3,1,47],
 "_observable_collection_extended_8cs.html":[2,0,0,0,12,7],
 "_observable_dictionary_8cs.html":[2,0,0,0,6,0,1,0],
+"_ogg_wave_stream_8cs.html":[2,0,0,0,0,5],
 "_oodle_helper_8cs.html":[2,0,0,0,2,2],
 "_operator_declaration_8cs.html":[2,0,0,0,23,3,1,48],
 "_operator_helper_8cs.html":[2,0,0,0,23,6,3],
@@ -248,6 +249,5 @@ var NAVTREEINDEX25 =
 "_path_type_8cs.html":[2,0,0,0,6,7,22],
 "_path_type_8cs.html#a1b57d1c38b70e3ea94bd777d5f1a8310":[2,0,0,0,6,7,22,0],
 "_path_type_8cs.html#a1b57d1c38b70e3ea94bd777d5f1a8310a2ca9469819fb0fb61ff98e914a7ccca0":[2,0,0,0,6,7,22,0,1],
-"_path_type_8cs.html#a1b57d1c38b70e3ea94bd777d5f1a8310a47c14840d8e15331fa420b9b2f757cd9":[2,0,0,0,6,7,22,0,3],
-"_path_type_8cs.html#a1b57d1c38b70e3ea94bd777d5f1a8310a50a0910cb16d0c4593c4b4ec841f0f09":[2,0,0,0,6,7,22,0,2]
+"_path_type_8cs.html#a1b57d1c38b70e3ea94bd777d5f1a8310a47c14840d8e15331fa420b9b2f757cd9":[2,0,0,0,6,7,22,0,3]
 };

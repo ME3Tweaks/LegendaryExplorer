@@ -14,10 +14,11 @@ var hierarchy =
       [ "LegendaryExplorerCore.Sound.ISACT.CompressionInfoBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_compression_info_bank_chunk.html", null ],
       [ "LegendaryExplorerCore.Sound.ISACT.ContentGlobalVarInfoBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_content_global_var_info_bank_chunk.html", null ],
       [ "LegendaryExplorerCore.Sound.ISACT.ContentIndexBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_content_index_bank_chunk.html", null ],
+      [ "LegendaryExplorerCore.Sound.ISACT.DataBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_data_bank_chunk.html", null ],
       [ "LegendaryExplorerCore.Sound.ISACT.FloatBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_float_bank_chunk.html", null ],
       [ "LegendaryExplorerCore.Sound.ISACT.GroupBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_group_bank_chunk.html", null ],
+      [ "LegendaryExplorerCore.Sound.ISACT.ISACTListBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_i_s_a_c_t_list_bank_chunk.html", null ],
       [ "LegendaryExplorerCore.Sound.ISACT.IntBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_int_bank_chunk.html", null ],
-      [ "LegendaryExplorerCore.Sound.ISACT.ListBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_list_bank_chunk.html", null ],
       [ "LegendaryExplorerCore.Sound.ISACT.NameOnlyBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_name_only_bank_chunk.html", null ],
       [ "LegendaryExplorerCore.Sound.ISACT.SampleInfoBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_sample_info_bank_chunk.html", null ],
       [ "LegendaryExplorerCore.Sound.ISACT.SampleOffsetBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_sample_offset_bank_chunk.html", null ],
@@ -489,7 +490,7 @@ var hierarchy =
     ] ],
     [ "INotifyPropertyChanged", null, [
       [ "LegendaryExplorerCore.Audio.AudioInfo", "class_legendary_explorer_core_1_1_audio_1_1_audio_info.html", null ],
-      [ "LegendaryExplorerCore.Audio.ISBankEntry", "class_legendary_explorer_core_1_1_audio_1_1_i_s_bank_entry.html", null ],
+      [ "LegendaryExplorerCore.Audio.ISBankEntry_DEPRECATED", "class_legendary_explorer_core_1_1_audio_1_1_i_s_bank_entry___d_e_p_r_e_c_a_t_e_d.html", null ],
       [ "LegendaryExplorerCore.Dialogue.ConversationExtended", "class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html", null ],
       [ "LegendaryExplorerCore.Dialogue.DialogueNodeExtended", "class_legendary_explorer_core_1_1_dialogue_1_1_dialogue_node_extended.html", null ],
       [ "LegendaryExplorerCore.Dialogue.ReplyChoiceNode", "class_legendary_explorer_core_1_1_dialogue_1_1_reply_choice_node.html", null ],
@@ -574,7 +575,7 @@ var hierarchy =
     [ "LegendaryExplorerCore.Sound.ISACT.ISACTBank", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_i_s_a_c_t_bank.html", null ],
     [ "LegendaryExplorerCore.Sound.ISACT.ISACTBankPair", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_i_s_a_c_t_bank_pair.html", null ],
     [ "LegendaryExplorerCore.Sound.ISACT.ISACTHelper", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_i_s_a_c_t_helper.html", null ],
-    [ "LegendaryExplorerCore.Audio.ISBank", "class_legendary_explorer_core_1_1_audio_1_1_i_s_bank.html", null ],
+    [ "LegendaryExplorerCore.Audio.ISBank_DEPRECATED", "class_legendary_explorer_core_1_1_audio_1_1_i_s_bank___d_e_p_r_e_c_a_t_e_d.html", null ],
     [ "LegendaryExplorerCore.Gammtek.Text.StringMatching.IStringMatcher", "interface_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_string_matching_1_1_i_string_matcher.html", [
       [ "LegendaryExplorerCore.Gammtek.Text.StringMatching.CombinedStringMatcher", "class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_string_matching_1_1_combined_string_matcher.html", null ],
       [ "LegendaryExplorerCore.Gammtek.Text.StringMatching.DefaultStringMatcher", "class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_string_matching_1_1_default_string_matcher.html", null ],
@@ -709,6 +710,9 @@ var hierarchy =
     [ "LegendaryExplorerCore.Gammtek.Extensions.Reflection.MemberInfoExtensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_reflection_1_1_member_info_extensions.html", null ],
     [ "LegendaryExplorerCore.Misc.MemoryAnalyzer", "class_legendary_explorer_core_1_1_misc_1_1_memory_analyzer.html", null ],
     [ "LegendaryExplorerCore.Memory.MemoryManager", "class_legendary_explorer_core_1_1_memory_1_1_memory_manager.html", null ],
+    [ "MemoryStream", null, [
+      [ "LegendaryExplorerCore.Audio.OggWaveStream", "class_legendary_explorer_core_1_1_audio_1_1_ogg_wave_stream.html", null ]
+    ] ],
     [ "LegendaryExplorerCore.Textures.Studio.MEMTextureMap", "class_legendary_explorer_core_1_1_textures_1_1_studio_1_1_m_e_m_texture_map.html", null ],
     [ "LegendaryExplorerCore.Packages.MEPackageExtensions", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_extensions.html", null ],
     [ "LegendaryExplorerCore.Packages.MEPackageHandler", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html", null ],

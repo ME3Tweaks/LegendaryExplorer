@@ -12,8 +12,9 @@ var searchData=
   ['objecttype_2ecs_9',['ObjectType.cs',['../_object_type_8cs.html',1,'']]],
   ['observablecollectionextended_2ecs_10',['ObservableCollectionExtended.cs',['../_observable_collection_extended_8cs.html',1,'']]],
   ['observabledictionary_2ecs_11',['ObservableDictionary.cs',['../_observable_dictionary_8cs.html',1,'']]],
-  ['oodlehelper_2ecs_12',['OodleHelper.cs',['../_oodle_helper_8cs.html',1,'']]],
-  ['operatordeclaration_2ecs_13',['OperatorDeclaration.cs',['../_operator_declaration_8cs.html',1,'']]],
-  ['operatorhelper_2ecs_14',['OperatorHelper.cs',['../_operator_helper_8cs.html',1,'']]],
-  ['ordereddictionary_2ecs_15',['OrderedDictionary.cs',['../_ordered_dictionary_8cs.html',1,'']]]
+  ['oggwavestream_2ecs_12',['OggWaveStream.cs',['../_ogg_wave_stream_8cs.html',1,'']]],
+  ['oodlehelper_2ecs_13',['OodleHelper.cs',['../_oodle_helper_8cs.html',1,'']]],
+  ['operatordeclaration_2ecs_14',['OperatorDeclaration.cs',['../_operator_declaration_8cs.html',1,'']]],
+  ['operatorhelper_2ecs_15',['OperatorHelper.cs',['../_operator_helper_8cs.html',1,'']]],
+  ['ordereddictionary_2ecs_16',['OrderedDictionary.cs',['../_ordered_dictionary_8cs.html',1,'']]]
 ];
