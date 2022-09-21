@@ -2355,67 +2355,38 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             var subnodes = new List<ITreeItem>();
             try
             {
-                int offset = binarystart;
-
-                int count = BitConverter.ToInt32(data, offset);
-                subnodes.Add(new BinInterpNode
+                var bin = new EndianReader(data) { Endian = CurrentLoadedExport.FileRef.Endian };
+                bin.JumpTo(binarystart);
+                subnodes.Add(MakeArrayNode(bin, "Object to Metadata Map", i =>
                 {
-                    Header = $"0x{offset:X5} Unknown int (not count): {count}",
-                    Name = "_" + offset,
-                    Tag = NodeType.StructLeafObject
-                });
-                offset += 4;
-
-                MemoryStream ms = new MemoryStream(data);
-                ms.Position = offset;
-                int i = 0;
-                while (ms.Position + 1 < ms.Length)
-                {
-                    offset = (int)ms.Position;
-
-                    string label = null;
-                    if (i % 2 == 1)
+                    var node = Pcc.Game is MEGame.UDK ? MakeEntryNode(bin, "Object") : MakeStringNode(bin, "Object");
+                    node.IsExpanded = true;
+                    int count = bin.ReadInt32();
+                    while (count --> 0)
                     {
-                        var postint = ms.ReadInt32();
-                        var nameIdx = ms.ReadInt32();
-                        label = CurrentLoadedExport.FileRef.GetNameEntry(nameIdx);
-                        ms.ReadInt32();
+                        var metadataType = bin.ReadNameReference(Pcc);
+                        node.Items.Add(MakeStringNode(bin, metadataType.Instanced));
                     }
+                    return node;
+                }, true));
+            }
+            catch (Exception ex)
+            {
+                subnodes.Add(new BinInterpNode() { Header = $"Error reading binary data: {ex}" });
+            }
+            return subnodes;
+        }
 
-                    var line = ms.ReadUnrealString();
-                    if (label != null)
-                    {
-                        subnodes.Add(new BinInterpNode
-                        {
-                            Header = $"0x{offset:X6}    {label}:\n{line}\n",
-                            Name = "_" + offset,
-                            Tag = NodeType.None
-                        });
-                    }
-                    else
-                    {
-                        subnodes.Add(new BinInterpNode
-                        {
-                            Header = $"0x{offset:X6} {line}",
-                            Name = "_" + offset,
-                            Tag = NodeType.None
-                        });
-                    }
-                    Debug.WriteLine("Read string " + i + ", end at 0x" + offset.ToString("X6"));
-                    i++;
-                }
-                /*
-                offset = binarystart + 0x18;
-
-                MemoryStream ms = new MemoryStream(data);
-                ms.Position = offset;
-                var scriptStructProperties = PropertyCollection.ReadProps(CurrentLoadedExport.FileRef, ms, "ScriptStruct", includeNoneProperty: true);
-
-                UPropertyTreeViewEntry topLevelTree = new UPropertyTreeViewEntry(); //not used, just for holding and building data.
-                foreach (UProperty prop in scriptStructProperties)
-                {
-                    InterpreterWPF.GenerateUPropertyTreeForProperty(prop, topLevelTree, CurrentLoadedExport);
-                }*/
+        private List<ITreeItem> StartTextBufferScan(byte[] data, int binarystart)
+        {
+            var subnodes = new List<ITreeItem>();
+            try
+            {
+                var bin = new EndianReader(data) { Endian = CurrentLoadedExport.FileRef.Endian };
+                bin.JumpTo(binarystart);
+                subnodes.Add(MakeInt32Node(bin, "Position"));
+                subnodes.Add(MakeInt32Node(bin, "Top"));
+                subnodes.Add(MakeStringNode(bin, "Text"));
             }
             catch (Exception ex)
             {

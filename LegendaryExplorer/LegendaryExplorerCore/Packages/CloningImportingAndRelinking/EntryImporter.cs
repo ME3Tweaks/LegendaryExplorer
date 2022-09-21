@@ -15,6 +15,7 @@ using LegendaryExplorerCore.Shaders;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
+using LegendaryExplorerCore.UnrealScript;
 
 namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 {
@@ -1025,7 +1026,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         // SFXWorldResources and SFXVehicleResources are always loaded
         // EXCEPT ON STA MAPS!!
         // At least according to coalesced, not sure if that's actually true
-    };
+        };
 
         private static readonly string[] le1FilesSafeToImportFromPostLoad =
         {
@@ -1227,7 +1228,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 MEGame.LE1 => le1FilesSafeToImportFrom,
                 MEGame.LE2 => le2FilesSafeToImportFrom,
                 MEGame.LE3 => le3FilesSafeToImportFrom,
-                MEGame.UDK => Array.Empty<string>(),
+                MEGame.UDK => FileLib.BaseFileNames(MEGame.UDK),
                 _ => throw new Exception($"Cannot lookup safe files for {game}")
             };
 

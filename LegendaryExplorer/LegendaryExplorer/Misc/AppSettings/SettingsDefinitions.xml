@@ -112,7 +112,7 @@
   <setting name="Global_LEDirectory" type="string" defaultvalue="" settingsbridgename="LEDirectory" category="General" isDirectorySelect="true"
            friendlyName="Mass Effect Legendary Edition Directory"/>
   <setting name="Global_UDKCustomDirectory" type="string" defaultvalue="" settingsbridgename="UDKCustomDirectory" category="General" isDirectorySelect="true"
-           friendlyName="UDK\Custom Directory"/>
+           friendlyName="UDKGame Directory"/>
   <setting name="Global_TLK_Language" type="string" defaultvalue="INT" settingsbridgename="TLKDefaultLanguage" category="General"
            friendlyName="TLK Language"/>
   <setting name="Global_TLK_IsMale" type="bool" defaultvalue="true" settingsbridgename="TLKGenderIsMale" category="General"

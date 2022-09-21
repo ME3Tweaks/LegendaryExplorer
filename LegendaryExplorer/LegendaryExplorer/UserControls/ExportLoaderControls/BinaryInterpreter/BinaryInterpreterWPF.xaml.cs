@@ -378,6 +378,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             "Terrain",
             "TerrainComponent",
             "TerrainWeightMapTexture",
+            "TextBuffer",
             "Texture2D",
             "TextureFlipBook",
             "TextureMovie",
@@ -619,6 +620,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         break;
                     case "MetaData":
                         subNodes.AddRange(StartMetaDataScan(data, ref binarystart));
+                        break;
+                    case "TextBuffer":
+                        subNodes.AddRange(StartTextBufferScan(data, binarystart));
                         break;
                     case "WwiseStream":
                         subNodes.AddRange(Scan_WwiseStream(data));

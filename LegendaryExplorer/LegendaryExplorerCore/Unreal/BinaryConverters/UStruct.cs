@@ -60,7 +60,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
             if (Export.ClassName is "Function" or "State")
             {
-                if (Export.Game is MEGame.ME3 || Export.Game.IsLEGame())
+                if (Export.Game is MEGame.ME3 || Export.Game.IsLEGame() || Export.Game is MEGame.UDK)
                 {
                     try
                     {
@@ -116,7 +116,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
             if (Export.ClassName is not "ScriptStruct")
             {
-                if (Export.Game == MEGame.ME3 || Export.Game.IsLEGame())
+                if (Export.Game == MEGame.ME3 || Export.Game.IsLEGame() || Export.Game is MEGame.UDK)
                 {
                     try
                     {

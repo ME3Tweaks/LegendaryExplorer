@@ -1968,13 +1968,13 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             //pewpf.BusyText = "Building Native Tables";
             //Task.Run(() =>
             //{
-            //    foreach (MEGame game in new[] { MEGame.LE1, MEGame.LE2, MEGame.LE3 })
+            //    foreach (MEGame game in new[] {  MEGame.UDK })
             //    {
-            //        string cookedPath = MEDirectories.GetCookedPath(game);
+            //        string scriptPath = UDKDirectory.ScriptPath;
             //        var entries = new List<(int, string)>();
             //        foreach (string fileName in FileLib.BaseFileNames(game))
             //        {
-            //            using IMEPackage pcc = MEPackageHandler.OpenMEPackage(Path.Combine(cookedPath, fileName));
+            //            using IMEPackage pcc = MEPackageHandler.OpenMEPackage(Path.Combine(scriptPath, fileName));
             //            foreach (ExportEntry export in pcc.Exports.Where(exp => exp.ClassName == "Function"))
             //            {
             //                var func = export.GetBinaryData<UFunction>();
@@ -2052,8 +2052,12 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             //        });
             //    }
-            //}).ContinueWithOnUIThread(_ =>
+            //}).ContinueWithOnUIThread(prevTask =>
             //{
+            //    if (prevTask.IsFaulted)
+            //    {
+            //        new ExceptionHandlerDialog(prevTask.Exception).ShowDialog();
+            //    }
             //    pewpf.IsBusy = false;
             //});
         }

@@ -146,21 +146,7 @@ namespace LegendaryExplorerCore.GameFilesystem
                 }
                 return Path.GetFullPath(_DefaultGamePath); //normalize
             }
-            set
-            {
-                if (value != null)
-                {
-                    if (value.Contains("UDKGame/Custom", StringComparison.OrdinalIgnoreCase))
-                    {
-                        value = value[..value.LastIndexOf("UDKGame/Custom", StringComparison.OrdinalIgnoreCase)];
-                    }
-                    else if (value.Contains(@"UDKGame\Custom", StringComparison.OrdinalIgnoreCase))
-                    {
-                        value = value[..value.LastIndexOf(@"UDKGame\Custom", StringComparison.OrdinalIgnoreCase)];
-                    }
-                }
-                _DefaultGamePath = value;
-            }
+            set => _DefaultGamePath = value;
         }
         
         static UDKDirectory()
