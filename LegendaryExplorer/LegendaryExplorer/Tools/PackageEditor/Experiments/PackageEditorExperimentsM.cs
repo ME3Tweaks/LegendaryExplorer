@@ -2481,8 +2481,16 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
         public static void MScanner(PackageEditorWindow pe)
         {
+            Debug.WriteLine("ME1");
+
+            GenerateAllMemoryPathedObjects(MEGame.ME1);
+            Debug.WriteLine("LE1");
+
+            GenerateAllMemoryPathedObjects(MEGame.LE1);
+            Debug.WriteLine("Done");
+            return;
             SortedSet<string> configNames = new SortedSet<string>();
-            foreach (var f in MELoadedFiles.GetFilesLoadedInGame(MEGame.LE3))
+            foreach (var f in MELoadedFiles.GetFilesLoadedInGame(MEGame.LE1))
             {
                 using var pack = MEPackageHandler.UnsafePartialLoad(f.Value, x => x.ClassName == "Class"); // Only load class files
                 foreach (var c in pack.Exports.Where(x => x.ClassName == "Class"))
@@ -2717,6 +2725,36 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             {
                 Debug.WriteLine($"DUPLICATE IFP: {duplicate.Key} in {duplicate.Value}");
             }
+        }
+
+        private static void GenerateAllMemoryPathedObjects(MEGame game)
+        {
+            SortedSet<string> objects = new SortedSet<string>();
+
+            var packages = MELoadedFiles.GetFilesLoadedInGame(game);
+
+            foreach (var p in packages)
+            {
+                var pack = MEPackageHandler.UnsafePartialLoad(p.Value, x => false); // tables only
+                foreach (var e in pack.Exports)
+                {
+                    if (e.InstancedFullPath.StartsWith("TheWorld"))
+                        continue; // Do not do these
+
+                    if (e.ExportFlags.HasFlag(UnrealFlags.EExportFlags.ForcedExport))
+                    {
+                        objects.Add(e.FullPath);
+                    }
+                    else
+                    {
+                        objects.Add($"{e.FileRef.FileNameNoExtension}.{e.FullPath}");
+                    }
+                }
+            }
+
+            var objectsSorted = objects.ToList();
+            objectsSorted.Sort();
+            File.WriteAllLines($@"C:\users\public\{game}-memorypaths.txt", objectsSorted);
         }
 
         public static void OrganizeParticleSystems(PackageEditorWindow pe)

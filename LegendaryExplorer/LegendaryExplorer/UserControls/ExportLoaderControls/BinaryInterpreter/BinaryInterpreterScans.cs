@@ -2606,7 +2606,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 parent.Items.Add(new BinInterpNode(bc.ChunkDataStartOffset - 4 + binOffset, bc.ToChunkDisplay()));
             }
-            else if (bc is ListBankChunk lbc)
+            else if (bc is ISACTListBankChunk lbc)
             {
                 var lParent = new BinInterpNode(bc.ChunkDataStartOffset - 8 + binOffset, bc.ToChunkDisplay());
                 parent.Items.Add(lParent);

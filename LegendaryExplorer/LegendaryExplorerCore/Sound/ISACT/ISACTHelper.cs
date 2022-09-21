@@ -168,11 +168,11 @@ namespace LegendaryExplorerCore.Sound.ISACT
 #if ISACTDEBUGLOG
                 Debug.Write($"Reading chunk at 0x{inStream.Position:X8}, endpos: 0x{endPos:X8}");
 #endif
-                ReadChunk(inStream, BankChunks);
+                ReadChunk(inStream, BankChunks, null);
             }
         }
 
-        public static void ReadChunk(Stream inStream, List<BankChunk> chunks)
+        public static void ReadChunk(Stream inStream, List<BankChunk> chunks, BankChunk parent)
         {
             var chunkName = inStream.ReadStringASCII(4);
 #if ISACTDEBUGLOG
@@ -196,29 +196,29 @@ namespace LegendaryExplorerCore.Sound.ISACT
             switch (chunkName)
             {
                 case "snde":
-                    chunks.Add(new NameOnlyBankChunk(chunkName)); // These are just markers in files it seems and don't have any actual standalone chunk data
+                    chunks.Add(new NameOnlyBankChunk(chunkName, parent)); // These are just markers in files it seems and don't have any actual standalone chunk data
                     break;
                 case "cmpi":
-                    chunks.Add(new CompressionInfoBankChunk(inStream)); // We need to know data for this to replace audio
+                    chunks.Add(new CompressionInfoBankChunk(inStream, parent)); // We need to know data for this to replace audio
                     break;
                 case "sinf":
-                    chunks.Add(new SampleInfoBankChunk(inStream)); // We need to know data for this to replace audio
+                    chunks.Add(new SampleInfoBankChunk(inStream, parent)); // We need to know data for this to replace audio
                     break;
                 case "soff":
-                    chunks.Add(new SampleOffsetBankChunk(inStream));
+                    chunks.Add(new SampleOffsetBankChunk(inStream, parent));
                     break;
                 case "chnk":
-                    chunks.Add(new ChannelBankChunk(inStream)); // We need to know data for this to replace audio
+                    chunks.Add(new ChannelBankChunk(inStream, parent)); // We need to know data for this to replace audio
                     break;
                 case "LIST":
                     // These are special listing things.
-                    chunks.Add(new ListBankChunk(chunkLen, inStream)); // We need to know data for this to replace audio
+                    chunks.Add(new ISACTListBankChunk(chunkLen, inStream, parent)); // We need to know data for this to replace audio
                     break;
                 case "titl":
-                    chunks.Add(new TitleBankChunk(chunkName, chunkLen, inStream)); // Easier to use for debugging
+                    chunks.Add(new TitleBankChunk(chunkName, chunkLen, inStream, parent)); // Easier to use for debugging
                     break;
                 case "isgn":
-                    chunks.Add(new GroupBankChunk(chunkName, chunkLen, inStream)); // Easier to use for debugging
+                    chunks.Add(new GroupBankChunk(chunkName, chunkLen, inStream, parent)); // Easier to use for debugging
                     break;
                 case "dtsg":
                 case "dtmp":
@@ -232,34 +232,34 @@ namespace LegendaryExplorerCore.Sound.ISACT
                 case "msti":
                 case "prel":
                 case "s3di":
-                    chunks.Add(new IntBankChunk(chunkName, inStream)); // size is always 4
+                    chunks.Add(new IntBankChunk(chunkName, inStream, parent)); // size is always 4
                     break;
                 case "gbst":
-                    chunks.Add(new FloatBankChunk(chunkName, inStream)); // size is always 4
+                    chunks.Add(new FloatBankChunk(chunkName, inStream, parent)); // size is always 4
                     break;
                 case "sync":
                     chunks.Add(new SyncBankChunk(inStream)); // size is always 4
                     break;
                 case "cgvi":
-                    chunks.Add(new ContentGlobalVarInfoBankChunk(inStream));
+                    chunks.Add(new ContentGlobalVarInfoBankChunk(inStream, parent));
                     break;
                 case "dist":
-                    chunks.Add(new BufferSoundDistanceBankChunk(inStream));
+                    chunks.Add(new BufferSoundDistanceBankChunk(inStream, parent));
                     break;
                 case "sdst":
-                    chunks.Add(new BufferDistanceBankChunk(inStream));
+                    chunks.Add(new BufferDistanceBankChunk(inStream, parent));
                     break;
                 case "cone":
-                    chunks.Add(new SoundConeBankChunk(inStream));
+                    chunks.Add(new SoundConeBankChunk(inStream, parent));
                     break;
                 case "ctdx":
-                    chunks.Add(new ContentIndexBankChunk(chunkLen, inStream));
+                    chunks.Add(new ContentIndexBankChunk(chunkLen, inStream, parent));
                     break;
                 case "info":
-                    chunks.Add(new SoundEventInfoBankChunk(inStream));
+                    chunks.Add(new SoundEventInfoBankChunk(inStream, parent));
                     break;
                 default:
-                    chunks.Add(new BankChunk(chunkName, chunkLen, inStream));
+                    chunks.Add(new BankChunk(chunkName, chunkLen, inStream, parent));
                     break;
             }
         }
@@ -373,8 +373,9 @@ namespace LegendaryExplorerCore.Sound.ISACT
     public class ChannelBankChunk : BankChunk
     {
         public int ChannelCount;
-        public ChannelBankChunk(Stream inStream)
+        public ChannelBankChunk(Stream inStream, BankChunk parent)
         {
+            Parent = parent;
             ChunkName = "chnk";
             ChannelCount = inStream.ReadInt32();
         }
@@ -392,12 +393,63 @@ namespace LegendaryExplorerCore.Sound.ISACT
         }
     }
 
-    [DebuggerDisplay("ListBankChunk of type {ObjectType} with {SubChunks.Count} sub chunks")]
-    public class ListBankChunk : BankChunk
+    [DebuggerDisplay("ISACTListBankChunk of type {ObjectType} with {SubChunks.Count} sub chunks")]
+    public class ISACTListBankChunk : BankChunk
     {
+        /// <summary>
+        /// Map of the children for easy access
+        /// </summary>
+        private Dictionary<string, BankChunk> BankSubChunkMap = new();
+
         public string ObjectType; // What this LIST object is
-        public ListBankChunk(int chunkLen, Stream inStream)
+
+        // Quick accessors
+        /// <summary>
+        /// Compression information such as codec and compressed size
+        /// </summary>
+        public CompressionInfoBankChunk CompressionInfo => BankSubChunkMap["cmpi"] as CompressionInfoBankChunk;
+
+        /// <summary>
+        /// Sample information such as length
+        /// </summary>
+        public SampleInfoBankChunk SampleInfo => BankSubChunkMap["sinf"] as SampleInfoBankChunk;
+
+        /// <summary>
+        /// The title of the object
+        /// </summary>
+        public TitleBankChunk TitleInfo => BankSubChunkMap["titl"] as TitleBankChunk;
+
+        /// <summary>
+        /// The raw 'data' segment data.
+        /// </summary>
+        public byte[] SampleData
         {
+            get
+            {
+                if (BankSubChunkMap.TryGetValue("data", out var dataSeg))
+                {
+                    return dataSeg.RawData;
+                }
+                return null;
+            }
+        }
+
+        public int ChannelCount
+        {
+            get
+            {
+                if (BankSubChunkMap.TryGetValue("chnk", out var chk) && chk is ChannelBankChunk cbc)
+                {
+                    return cbc.ChannelCount;
+                }
+
+                return 1; // Default to 1
+            }
+        }
+
+        public ISACTListBankChunk(int chunkLen, Stream inStream, BankChunk parent)
+        {
+            Parent = parent;
             ChunkDataStartOffset = inStream.Position;
 
             ChunkName = "LIST";
@@ -411,10 +463,16 @@ namespace LegendaryExplorerCore.Sound.ISACT
 #if ISACTDEBUGLOG
                 Debug.Write($"Reading ListBank SubChunk at 0x{inStream.Position:X8}, endpos: 0x{endPos:X8}: ");
 #endif
-                ISACTBank.ReadChunk(inStream, SubChunks);
+                ISACTBank.ReadChunk(inStream, SubChunks, this);
 
                 if (inStream.Position + 1 == endPos)
                     inStream.ReadByte(); // Even boundary
+            }
+
+            // Map the items
+            foreach (var chunk in SubChunks)
+            {
+                BankSubChunkMap[chunk.ChunkName] = chunk;
             }
         }
 
@@ -447,8 +505,9 @@ namespace LegendaryExplorerCore.Sound.ISACT
 
     public class NameOnlyBankChunk : BankChunk
     {
-        public NameOnlyBankChunk(string chunkName)
+        public NameOnlyBankChunk(string chunkName, BankChunk parent)
         {
+            Parent = parent;
             ChunkName = chunkName;
         }
 
@@ -469,6 +528,11 @@ namespace LegendaryExplorerCore.Sound.ISACT
         public byte[] RawData;
 
         /// <summary>
+        /// References the containing object
+        /// </summary>
+        protected BankChunk Parent;
+
+        /// <summary>
         /// Some chunks have subchunks
         /// </summary>
         public List<BankChunk> SubChunks = new List<BankChunk>(0);
@@ -480,7 +544,7 @@ namespace LegendaryExplorerCore.Sound.ISACT
         public long ChunkDataStartOffset { get; init; }
 
         public BankChunk() { }
-        public BankChunk(string chunkName, int chunkLen, Stream inStream)
+        public BankChunk(string chunkName, int chunkLen, Stream inStream, BankChunk parent)
         {
 #if DEBUG && ISACTDEBUGLOG
             if (chunkName == "data")
@@ -488,6 +552,7 @@ namespace LegendaryExplorerCore.Sound.ISACT
                 Debug.WriteLine("FOUND 'data'!");
             }
 #endif
+            Parent = parent;
             ChunkDataStartOffset = inStream.Position;
             ChunkName = chunkName;
             RawData = inStream.ReadToBuffer(chunkLen);
@@ -529,13 +594,18 @@ namespace LegendaryExplorerCore.Sound.ISACT
 
             return $"{ChunkName} ({RawData.Length} bytes)";
         }
+
+        public BankChunk GetParent()
+        {
+            return Parent;
+        }
     }
 
     [DebuggerDisplay("TitleBankChunk: {Value}")]
     public class TitleBankChunk : BankChunk
     {
-        public string Value;
-        public TitleBankChunk(string chunkName, int chunkLen, Stream inStream) : base(chunkName, chunkLen, inStream)
+        public string Value { get; }
+        public TitleBankChunk(string chunkName, int chunkLen, Stream inStream, BankChunk parent) : base(chunkName, chunkLen, inStream, parent)
         {
             Value = Encoding.Unicode.GetString(RawData, 0, chunkLen - 2); //exclude null terminator
         }
@@ -555,7 +625,7 @@ namespace LegendaryExplorerCore.Sound.ISACT
     public class GroupBankChunk : BankChunk
     {
         public string Value;
-        public GroupBankChunk(string chunkName, int chunkLen, Stream inStream) : base(chunkName, chunkLen, inStream)
+        public GroupBankChunk(string chunkName, int chunkLen, Stream inStream, BankChunk parent) : base(chunkName, chunkLen, inStream, parent)
         {
             Value = Encoding.Unicode.GetString(RawData, 0, chunkLen - 2); //exclude null terminator
         }
@@ -586,8 +656,18 @@ namespace LegendaryExplorerCore.Sound.ISACT
             OGGVORBIS = 2,
             WMA = 3,
             XMA = 4,
+
+            /// <summary>
+            /// PS3 only - MSF MP3
+            /// </summary>
             MSMP3 = 5,
+            /// <summary>
+            /// PS3 only - MSF ADPCM
+            /// </summary>
             MSADPCM = 6,
+            /// <summary>
+            /// PS3 only - MSF PCM Big Endian
+            /// </summary>
             MSPCMBIG = 7 // Big Endian
         }
 
@@ -616,8 +696,9 @@ namespace LegendaryExplorerCore.Sound.ISACT
         /// Not sure
         /// </summary>
         public float CompressionQuality;
-        public CompressionInfoBankChunk(Stream inStream)
+        public CompressionInfoBankChunk(Stream inStream, BankChunk parent)
         {
+            Parent = parent;
             ChunkDataStartOffset = inStream.Position;
 
 
@@ -661,8 +742,9 @@ namespace LegendaryExplorerCore.Sound.ISACT
 
         //Content of Padding doesn't matter, but we save it so that we can do an identical reserialization (Its value is inconsistent)
         private ushort Padding;
-        public SampleInfoBankChunk(Stream inStream)
+        public SampleInfoBankChunk(Stream inStream, BankChunk parent)
         {
+            Parent = parent;
             ChunkDataStartOffset = inStream.Position;
 
             ChunkName = @"sinf"; // We know the chunk name and len already so we don't need this.
@@ -700,8 +782,9 @@ namespace LegendaryExplorerCore.Sound.ISACT
     {
         public uint SampleOffset { get; set; }
 
-        public SampleOffsetBankChunk(Stream inStream) : this()
+        public SampleOffsetBankChunk(Stream inStream, BankChunk parent) : this()
         {
+            Parent = parent;
             ChunkDataStartOffset = inStream.Position;
             SampleOffset = inStream.ReadUInt32(); // Align 2 since struct size is 20 (align 4)
         }
@@ -732,8 +815,9 @@ namespace LegendaryExplorerCore.Sound.ISACT
         public int StopStateIndex { get; set; }
         public int Flags { get; set; }
 
-        public ContentGlobalVarInfoBankChunk(Stream inStream) : this()
+        public ContentGlobalVarInfoBankChunk(Stream inStream, BankChunk parent) : this()
         {
+            Parent = parent;
             ChunkDataStartOffset = inStream.Position;
             StartVarIndex = inStream.ReadInt32();
             StartStateIndex = inStream.ReadInt32();
@@ -774,8 +858,9 @@ namespace LegendaryExplorerCore.Sound.ISACT
         public int Value { get; set; }
         public string HumanName { get; }
 
-        public IntBankChunk(string chunkName, Stream inStream)
+        public IntBankChunk(string chunkName, Stream inStream, BankChunk parent)
         {
+            Parent = parent;
             ChunkName = chunkName;
             ChunkDataStartOffset = inStream.Position;
             Value = inStream.ReadInt32();
@@ -850,8 +935,9 @@ namespace LegendaryExplorerCore.Sound.ISACT
         public float Value { get; set; }
         public string HumanName { get; }
 
-        public FloatBankChunk(string chunkName, Stream inStream)
+        public FloatBankChunk(string chunkName, Stream inStream, BankChunk parent)
         {
+            Parent = parent;
             ChunkName = chunkName;
             ChunkDataStartOffset = inStream.Position;
             Value = inStream.ReadFloat();
@@ -900,8 +986,9 @@ namespace LegendaryExplorerCore.Sound.ISACT
         /// Not legacy sdst version
         /// </summary>
         /// <param name="inStream"></param>
-        public BufferDistanceBankChunk(Stream inStream)
+        public BufferDistanceBankChunk(Stream inStream, BankChunk parent)
         {
+            Parent = parent;
             ChunkName = "sdst";
             ChunkDataStartOffset = inStream.Position;
             MinDistance = inStream.ReadFloat();
@@ -941,8 +1028,9 @@ namespace LegendaryExplorerCore.Sound.ISACT
         /// Legacy dist version
         /// </summary>
         /// <param name="inStream"></param>
-        public BufferSoundDistanceBankChunk(Stream inStream)
+        public BufferSoundDistanceBankChunk(Stream inStream, BankChunk parent)
         {
+            Parent = parent;
             ChunkName = "dist";
             ChunkDataStartOffset = inStream.Position;
             DistanceSize = inStream.ReadFloat();
@@ -979,8 +1067,9 @@ namespace LegendaryExplorerCore.Sound.ISACT
         public int OutsideConeHFLevel { get; set; }
         public uint ConeFlags { get; set; }
 
-        public SoundConeBankChunk(Stream inStream)
+        public SoundConeBankChunk(Stream inStream, BankChunk parent)
         {
+            Parent = parent;
             ChunkName = "cone";
             ChunkDataStartOffset = inStream.Position;
             InsideConeAngle = inStream.ReadInt32();
@@ -1026,8 +1115,9 @@ namespace LegendaryExplorerCore.Sound.ISACT
         public int ResetParamsOnLoop { get; set; }
         public int ResetSampleOnLoop { get; set; }
 
-        public SoundEventInfoBankChunk(Stream inStream)
+        public SoundEventInfoBankChunk(Stream inStream, BankChunk parent)
         {
+            Parent = parent;
             ChunkName = "info";
             ChunkDataStartOffset = inStream.Position;
             EventSelection = (ISACTSEEventSelection)inStream.ReadUInt32();
@@ -1081,8 +1171,9 @@ namespace LegendaryExplorerCore.Sound.ISACT
     public class ContentIndexBankChunk : BankChunk
     {
         private List<IndexPage> IndexPages;
-        public ContentIndexBankChunk(int dataSize, Stream inStream)
+        public ContentIndexBankChunk(int dataSize, Stream inStream, BankChunk parent)
         {
+            Parent = parent;
             ChunkName = "ctdx";
             ChunkDataStartOffset = inStream.Position;
 

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using LegendaryExplorer.Misc;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Audio;
+using LegendaryExplorerCore.Sound.ISACT;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 
 namespace LegendaryExplorer.UnrealExtensions
@@ -138,13 +139,13 @@ namespace LegendaryExplorer.UnrealExtensions
 
             var ww2oggArguments = $@"{(useAlternateCodebook ? @$"--pcb {alternatePcbFile}" : "")} {(fullSetup ? "--full-setup" : "")} --stdout {riffPath}";
             var procStartInfo = new ProcessStartInfo(Path.Combine(AppDirectories.ExecFolder, "ww2ogg.exe"), ww2oggArguments)
-                {
-                    WorkingDirectory = AppDirectories.ExecFolder,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true
-                };
+            {
+                WorkingDirectory = AppDirectories.ExecFolder,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
 
             Process proc = new Process { StartInfo = procStartInfo };
             proc.Start();
@@ -246,42 +247,52 @@ namespace LegendaryExplorer.UnrealExtensions
         /// </summary>
         /// <param name="bankEntry">ISBankEntry to get stream from</param>
         /// <returns></returns>
-        public static MemoryStream GetWaveStreamFromISBEntry(ISBankEntry bankEntry)
+        public static MemoryStream GetWaveStreamFromISBEntry(ISACTListBankChunk bankEntry)
         {
             //string outPath = Path.Combine(path, currentFileName);
             MemoryStream waveStream;
-            switch(bankEntry.CodecID)
+            switch (bankEntry.CompressionInfo.CurrentFormat)
             {
-                case 0x0:
-                    //PCM
-                    var ms = new MemoryStream(bankEntry.DataAsStored);
-                    var raw = new RawSourceWaveStream(ms, new WaveFormat((int)bankEntry.sampleRate, bankEntry.bps, (int)bankEntry.numberOfChannels));
-                    waveStream = new MemoryStream();
-                    WaveFileWriter.WriteWavFileToStream(waveStream, raw);
-                    return waveStream;
+                case CompressionInfoBankChunk.ISACTCompressionFormat.PCM:
+                    {
+                        var ms = new MemoryStream(bankEntry.SampleData);
+                        var raw = new RawSourceWaveStream(ms,
+                            new WaveFormat((int)bankEntry.SampleInfo.SamplesPerSecond, bankEntry.SampleInfo.BitsPerSample,
+                                bankEntry.ChannelCount));
+                        waveStream = new MemoryStream();
+                        WaveFileWriter.WriteWavFileToStream(waveStream, raw);
+                        return waveStream;
+                    }
 
-                case 0x1:
-                case 0x4:
-                case 0x5:
+                // These require external conversion
+                case CompressionInfoBankChunk.ISACTCompressionFormat.IMA4ADPCM:
+                case CompressionInfoBankChunk.ISACTCompressionFormat.XMA:
+                case CompressionInfoBankChunk.ISACTCompressionFormat.MSMP3:
+                case CompressionInfoBankChunk.ISACTCompressionFormat.MSADPCM:
+                case CompressionInfoBankChunk.ISACTCompressionFormat.MSPCMBIG:
                     //Xbox IMA, XMA, Sony MSF (PS3)
                     //Use VGM Stream
-                    if (bankEntry.FullData == null)
+
+                    // Todo: Reimplement this
+                    /*
+                    if (bankEntry.SampleData == null)
                     {
                         bankEntry.PopulateFakeFullData();
                     }
                     var tempPath = GetATempSoundPath() + ".isb";
                     File.WriteAllBytes(tempPath, bankEntry.FullData);
-                    return ConvertRIFFToWaveVGMStream(tempPath);
+                    return ConvertRIFFToWaveVGMStream(tempPath);*/
+                    return null;
 
-                case 0x2:
-                    // Ogg Vorbis
-                    string basePath = System.IO.Path.GetTempPath() + "ME3EXP_SOUND_" + Guid.NewGuid().ToString() + ".ogg";
-                    File.WriteAllBytes(basePath, bankEntry.DataAsStored);
-                    waveStream = ConvertOggToWave(basePath);
-                    return waveStream;
-
+                // This code is played directly
+                case CompressionInfoBankChunk.ISACTCompressionFormat.OGGVORBIS:
+                    {
+                        // Return custom stream - player will see custom class
+                        var ms = new OggWaveStream(bankEntry.SampleData);
+                        return ms;
+                    }
                 default:
-                    Debug.WriteLine("Unsupported codec for getting wave: " + bankEntry.CodecID);
+                    //Debug.WriteLine("Unsupported codec for getting wave: " + bankEntry.CodecID);
                     return null; //other codecs currently unsupported
             }
         }

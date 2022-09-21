@@ -68,7 +68,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         /// </summary>
         public event EventHandler<AudioPlayheadEventArgs> SeekbarPositionChanged;
 
-        public ISBankEntry CurrentLoadedISACTEntry { get; private set; }
+        public ISACTListBankChunk CurrentLoadedISACTEntry { get; private set; }
         public AFCFileEntry CurrentLoadedAFCFileEntry { get; private set; }
         public WwiseBank CurrentLoadedWwisebank { get; private set; }
 
@@ -567,19 +567,15 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     var soundNodeWave = exportEntry.GetBinaryData<SoundNodeWave>();
                     if (soundNodeWave.RawData.Length > 0)
                     {
-                        ISBank isb = new ISBank(soundNodeWave.RawData);
-                        foreach (ISBankEntry isbe in isb.BankEntries)
+                        ISACTBankPair ibp = ISACTHelper.GetPairedBanks(soundNodeWave.RawData);
+                        foreach (var isbC in ibp.ISBBank.GetAllBankChunks().Where(x => x.ChunkName == "data"))
                         {
-                            if (isbe.DataAsStored != null)
+                            var objectParent = isbC.GetParent();
+                            if (objectParent != null)
                             {
-                                ExportInformationList.Add(isbe);
-                            }
-                            else
-                            {
-                                ExportInformationList.Add($"{isbe.FileName} - No data - Data Location: 0x{isbe.DataOffset:X8}");
+                                ExportInformationList.Add(objectParent);
                             }
                         }
-                        ExportInfoListBox.SelectedItem = isb.BankEntries.FirstOrDefault();
                     }
                     else
                     {
@@ -702,17 +698,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         #region ISACT Entry Loading
 
-        internal void LoadISACTEntry(ISBankEntry entry)
+        internal void LoadISACTEntry(ISACTListBankChunk entry)
         {
             try
             {
                 ExportInformationList.Clear();
                 AllWems.Clear();
-
-                ExportInformationList.Add(entry.FileName);
-                ExportInformationList.Add($"Codec: {entry.getCodecStr()}");
-                ExportInformationList.Add($"Datastream size: {entry.DataAsStored.Length} bytes");
-                ExportInformationList.Add($"Datastream offset: 0x{entry.DataOffset:X8}");
 
                 CurrentLoadedISACTEntry = entry;
             }
@@ -762,7 +753,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 }
                 else if (localCurrentExport?.ClassName == "SoundNodeWave")
                 {
-                    if (ExportInfoListBox.SelectedItem is ISBankEntry bankEntry)
+                    if (ExportInfoListBox.SelectedItem is ISACTListBankChunk bankEntry)
                     {
                         return AudioStreamHelper.GetWaveStreamFromISBEntry(bankEntry);
                     }
@@ -970,8 +961,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 {
                     case null:
                         return false;
-                    case ISBankEntry isbe:
-                        return isbe.DataAsStored != null;
+                    case ISACTListBankChunk _:
+                        return true;
                     case EmbeddedWEMFile _:
                         return true;
                 }
@@ -1172,7 +1163,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     }
                 }
 
-                if (CurrentLoadedExport.ClassName == "SoundNodeWave" && ExportInfoListBox.SelectedItem is ISBankEntry bankEntry)
+                if (CurrentLoadedExport.ClassName == "SoundNodeWave" && ExportInfoListBox.SelectedItem is ISACTFileEntry bankEntry)
                 {
                     SaveFileDialog d = new SaveFileDialog
                     {
@@ -1181,7 +1172,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     };
                     if (d.ShowDialog() == true)
                     {
-                        MemoryStream waveStream = AudioStreamHelper.GetWaveStreamFromISBEntry(bankEntry);
+                        MemoryStream waveStream = AudioStreamHelper.GetWaveStreamFromISBEntry(bankEntry.Entry);
                         waveStream.Seek(0, SeekOrigin.Begin);
                         using (FileStream fs = new FileStream(d.FileName, FileMode.OpenOrCreate))
                         {
@@ -1199,7 +1190,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 SaveFileDialog d = new SaveFileDialog
                 {
                     Filter = "Wave PCM File|*.wav",
-                    FileName = CurrentLoadedISACTEntry.FileName
+                    FileName = CurrentLoadedISACTEntry.TitleInfo.Value
                 };
                 if (d.ShowDialog() == true)
                 {
@@ -1252,7 +1243,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     case "WwiseBank":
                         return ExportInfoListBox.SelectedItem is EmbeddedWEMFile;
                     case "SoundNodeWave":
-                        return ExportInfoListBox.SelectedItem is ISBankEntry { DataAsStored: not null };
+                        return ExportInfoListBox.SelectedItem is ISACTListBankChunk { SampleData: not null };
                 }
             }
 
@@ -1309,6 +1300,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void ReplaceEmbeddedSoundNodeWave()
         {
+#if !DEBUG
+            MessageBox.Show("This feature is disabled due to stability issues, please check back later.");
+            return;
+#endif
             OpenFileDialog d = new OpenFileDialog { Filter = "Wave PCM|*.wav" };
             bool? res = d.ShowDialog();
             if (!res.HasValue || !res.Value)
@@ -1547,9 +1542,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
         }
 
-        #endregion
+#endregion
 
-        #region Listbox Events
+#region Listbox Events
 
         private void WEMItem_KeyDown(object sender, KeyEventArgs e)
         {
@@ -1580,7 +1575,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 StartPlayingCurrentSelection();
             }
 
-            if (currentSelectedItem is ISBankEntry bankEntry && bankEntry.DataAsStored != null)
+            if (currentSelectedItem is ISACTListBankChunk bankEntry && bankEntry.SampleData != null)
             {
                 StartPlayingCurrentSelection();
             }
@@ -1596,16 +1591,16 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     StartPlayingCurrentSelection();
                 }
 
-                if (currentSelectedItem is ISBankEntry bankEntry && bankEntry.DataAsStored != null)
+                if (currentSelectedItem is ISACTListBankChunk bankEntry && bankEntry.SampleData != null)
                 {
                     StartPlayingCurrentSelection();
                 }
             }
         }
 
-        #endregion
+#endregion
 
-        #region HIRC Panel
+#region HIRC Panel
 
         public event Action<uint> HIRCObjectSelected;
 
@@ -1956,9 +1951,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
         }
 
-        #endregion
+#endregion
 
-        #region Soundpanel Closing
+#region Soundpanel Closing
 
         private void Soundpanel_Unloaded(object sender, RoutedEventArgs e)
         {
@@ -1985,9 +1980,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             CurrentLoadedWwisebank = null;
         }
 
-        #endregion
+#endregion
 
-        #region Helpers
+#region Helpers
 
         private static string GetHexForUI(byte[] bytes, int startoffset, int length, Endian endian)
         {
@@ -2031,29 +2026,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         }
 
-        private void ExtractISBERaw(object sender, RoutedEventArgs e)
-        {
-            object currentSelectedItem = ExportInfoListBox.SelectedItem;
-            if (!(currentSelectedItem is ISBankEntry isbe) || isbe.DataAsStored == null || isbe.FullData == null)
-            {
-                return; //nothing selected, or current item is not playable
-            }
-
-            var bankEntry = (ISBankEntry)currentSelectedItem;
-            SaveFileDialog d = new SaveFileDialog
-            {
-                //ISBS is not a real extension, but I set it to prevent people from trying to load a single sample into
-                //soundplorer and breaking things as the headers are different for real banks.
-                Filter = "ISACT Single Sample|*.isbs",
-                FileName = Path.GetFileNameWithoutExtension(isbe.FileName) + ".isbs"
-            };
-            if (d.ShowDialog() == true)
-            {
-                File.WriteAllBytes(d.FileName, bankEntry.FullData);
-                MessageBox.Show("Done");
-            }
-        }
-
         public static T FindParent<T>(DependencyObject child) where T : DependencyObject
         {
             while (true)
@@ -2075,9 +2047,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 }
             }
         }
-        #endregion
+#endregion
 
-        #region Waveform graph
+#region Waveform graph
 
         /// <summary>
         /// Generates a waveform from the given stream input (Not a wave stream!)
@@ -2109,7 +2081,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             var image = renderer.Render(audioFileReader, averagePeakProvider, myRendererSettings);
             waveformImage.Source = image.ToBitmapImage(ImageFormat.Png);
         }
-        #endregion
+#endregion
     }
 
     public class AudioPlayheadEventArgs : EventArgs

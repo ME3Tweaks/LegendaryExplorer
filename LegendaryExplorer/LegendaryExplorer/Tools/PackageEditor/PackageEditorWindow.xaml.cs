@@ -1810,6 +1810,8 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
                             if (d.ShowDialog() == CommonFileDialogResult.Ok)
                             {
+                                // todo: Change to ISACTBankPair?
+
                                 // ICB
                                 var outDir = d.FileName;
                                 // todo: Use objectbinary when we implement it
@@ -2012,6 +2014,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                         }
                     case "SoundNodeWave":
                         {
+                            // I don't think we should import this way. In release builds don't allow this
 #if !DEBUG
                             MessageBox.Show("Not currently supported");
                             return;
