@@ -1304,7 +1304,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             MessageBox.Show("This feature is disabled due to stability issues, please check back later.");
             return;
 #endif
-            OpenFileDialog d = new OpenFileDialog { Filter = "Wave PCM|*.wav" };
+            var replacementTarget = ExportInfoListBox.SelectedItem as ISACTListBankChunk;
+            if (replacementTarget == null)
+                return;
+
+            OpenFileDialog d = new OpenFileDialog { Title="Select new .wav file", Filter = "Wave PCM|*.wav" };
             bool? res = d.ShowDialog();
             if (!res.HasValue || !res.Value)
             {
@@ -1326,28 +1330,28 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
             var wavData = File.ReadAllBytes(d.FileName);
             var oggData = ISACTHelperExtended.ConvertWaveToOgg(wavData);
-
-
-            // UPDATE THE OTHER INFO
-
-
+            File.WriteAllBytes(@"C:\users\mgame\desktop\ogg.ogg", oggData);
             var bin = ObjectBinary.From<SoundNodeWave>(CurrentLoadedExport);
             var isactBankPair = ISACTHelper.GetPairedBanks(bin.RawData);
             using (var wfr = new WaveFileReader(new MemoryStream(wavData)))
             {
-
                 var allChunks = isactBankPair.ISBBank.GetAllBankChunks();
+                // Find same bank chunk
+                var listChunk = allChunks.OfType<ISACTListBankChunk>().FirstOrDefault(x => x.ChunkDataStartOffset == replacementTarget.ChunkDataStartOffset);
+                if (listChunk == null)
+                {
+                    MessageBox.Show("Could not find original audio to replace! This is a bug.");
+                    return;
+                }
 
-                var dataChunk = allChunks.FirstOrDefault(x => x.ChunkName == "data");
-                dataChunk.RawData = oggData; // Update ogg data.
+                listChunk.GetChunk(DataBankChunk.FixedChunkTitle).RawData = oggData; // Update ogg data.
 
-                var cmpiChunk = allChunks.FirstOrDefault(x => x.ChunkName == "cmpi");
-                var c2Chunk = cmpiChunk as CompressionInfoBankChunk;
+                var c2Chunk = listChunk.GetChunk(CompressionInfoBankChunk.FixedChunkTitle) as CompressionInfoBankChunk;
                 c2Chunk.TotalSize = oggData.Length;
                 c2Chunk.CurrentFormat = CompressionInfoBankChunk.ISACTCompressionFormat.OGGVORBIS;
                 c2Chunk.TargetFormat = CompressionInfoBankChunk.ISACTCompressionFormat.OGGVORBIS;
 
-                var sinfChunk = allChunks.FirstOrDefault(x => x.ChunkName == "sinf") as SampleInfoBankChunk;
+                var sinfChunk = listChunk.GetChunk(SampleInfoBankChunk.FixedChunkTitle) as SampleInfoBankChunk;
                 sinfChunk.TimeLength = wfr.TotalTime.Milliseconds;
                 // sinfChunk.ByteLength = wfr.GetChunkData(). // 'data' segment size of source wav / (BitsPerSample / 8) // Unsure what this actually does, if anything
                 //sinfChunk.BufferOffset = 0;
@@ -1356,7 +1360,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
                 // Todo: Change compression for
 
-                var channelChunk = allChunks.FirstOrDefault(x => x.ChunkName == "chnk") as ChannelBankChunk;
+                var channelChunk = listChunk.GetChunk(ChannelBankChunk.FixedChunkTitle) as ChannelBankChunk;
                 channelChunk.ChannelCount = wfr.WaveFormat.Channels;
                 // Not sure if other data needs to be updated here.
 
@@ -1542,9 +1546,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
         }
 
-#endregion
+        #endregion
 
-#region Listbox Events
+        #region Listbox Events
 
         private void WEMItem_KeyDown(object sender, KeyEventArgs e)
         {
@@ -1598,9 +1602,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
         }
 
-#endregion
+        #endregion
 
-#region HIRC Panel
+        #region HIRC Panel
 
         public event Action<uint> HIRCObjectSelected;
 
@@ -1951,9 +1955,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
         }
 
-#endregion
+        #endregion
 
-#region Soundpanel Closing
+        #region Soundpanel Closing
 
         private void Soundpanel_Unloaded(object sender, RoutedEventArgs e)
         {
@@ -1980,9 +1984,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             CurrentLoadedWwisebank = null;
         }
 
-#endregion
+        #endregion
 
-#region Helpers
+        #region Helpers
 
         private static string GetHexForUI(byte[] bytes, int startoffset, int length, Endian endian)
         {
@@ -2047,9 +2051,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 }
             }
         }
-#endregion
+        #endregion
 
-#region Waveform graph
+        #region Waveform graph
 
         /// <summary>
         /// Generates a waveform from the given stream input (Not a wave stream!)
@@ -2081,7 +2085,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             var image = renderer.Render(audioFileReader, averagePeakProvider, myRendererSettings);
             waveformImage.Source = image.ToBitmapImage(ImageFormat.Png);
         }
-#endregion
+        #endregion
     }
 
     public class AudioPlayheadEventArgs : EventArgs

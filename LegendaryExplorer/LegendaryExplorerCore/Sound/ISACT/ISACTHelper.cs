@@ -258,6 +258,9 @@ namespace LegendaryExplorerCore.Sound.ISACT
                 case "info":
                     chunks.Add(new SoundEventInfoBankChunk(inStream, parent));
                     break;
+                case "data":
+                    chunks.Add(new DataBankChunk(chunkName, chunkLen, inStream, parent));
+                    break;
                 default:
                     chunks.Add(new BankChunk(chunkName, chunkLen, inStream, parent));
                     break;
@@ -372,11 +375,15 @@ namespace LegendaryExplorerCore.Sound.ISACT
 
     public class ChannelBankChunk : BankChunk
     {
+        /// <summary>
+        /// The defined name of this chunk.
+        /// </summary>
+        public static readonly string FixedChunkTitle = "chnk";
         public int ChannelCount;
         public ChannelBankChunk(Stream inStream, BankChunk parent)
         {
             Parent = parent;
-            ChunkName = "chnk";
+            ChunkName = FixedChunkTitle;
             ChannelCount = inStream.ReadInt32();
         }
 
@@ -501,6 +508,18 @@ namespace LegendaryExplorerCore.Sound.ISACT
         {
             return $"{ChunkName} Object ({SubChunks.Count} subitems)";
         }
+
+        /// <summary>
+        /// Fetches a chunk by name.
+        /// </summary>
+        /// <param name="header"></param>
+        /// <returns></returns>
+        public BankChunk GetChunk(string header)
+        {
+            if (BankSubChunkMap.TryGetValue(header, out var res))
+                return res;
+            return null;
+        }
     }
 
     public class NameOnlyBankChunk : BankChunk
@@ -604,6 +623,10 @@ namespace LegendaryExplorerCore.Sound.ISACT
     [DebuggerDisplay("TitleBankChunk: {Value}")]
     public class TitleBankChunk : BankChunk
     {
+        /// <summary>
+        /// The defined name of this chunk.
+        /// </summary>
+        public static readonly string FixedChunkTitle = "titl";
         public string Value { get; }
         public TitleBankChunk(string chunkName, int chunkLen, Stream inStream, BankChunk parent) : base(chunkName, chunkLen, inStream, parent)
         {
@@ -646,6 +669,11 @@ namespace LegendaryExplorerCore.Sound.ISACT
     /// </summary>
     public class CompressionInfoBankChunk : BankChunk
     {
+        /// <summary>
+        /// The defined name of this chunk.
+        /// </summary>
+        public static readonly string FixedChunkTitle = "cmpi";
+
         /// <summary>
         /// The type of audio that is stored
         /// </summary>
@@ -701,8 +729,7 @@ namespace LegendaryExplorerCore.Sound.ISACT
             Parent = parent;
             ChunkDataStartOffset = inStream.Position;
 
-
-            ChunkName = @"cmpi"; // We know the chunk name and len already so we don't need this.
+            ChunkName = FixedChunkTitle; // We know the chunk name and len already so we don't need this.
             CurrentFormat = (ISACTCompressionFormat)inStream.ReadInt32();
             TargetFormat = (ISACTCompressionFormat)inStream.ReadInt32();
             TotalSize = inStream.ReadInt32();
@@ -734,6 +761,12 @@ namespace LegendaryExplorerCore.Sound.ISACT
     /// </summary>
     public class SampleInfoBankChunk : BankChunk
     {
+        /// <summary>
+        /// The defined name of this chunk.
+        /// </summary>
+        public static readonly string FixedChunkTitle = "sinf";
+
+
         public int BufferOffset;
         public int TimeLength;
         public int SamplesPerSecond;
@@ -747,7 +780,7 @@ namespace LegendaryExplorerCore.Sound.ISACT
             Parent = parent;
             ChunkDataStartOffset = inStream.Position;
 
-            ChunkName = @"sinf"; // We know the chunk name and len already so we don't need this.
+            ChunkName = FixedChunkTitle; // We know the chunk name and len already so we don't need this.
             BufferOffset = inStream.ReadInt32();
             TimeLength = inStream.ReadInt32();
             SamplesPerSecond = inStream.ReadInt32();
@@ -755,6 +788,7 @@ namespace LegendaryExplorerCore.Sound.ISACT
             BitsPerSample = inStream.ReadUInt16();
             Padding = inStream.ReadUInt16(); // Align 2 since struct size is 20 (align 4)
         }
+
 
         public override void Write(Stream outStream)
         {
@@ -1059,8 +1093,28 @@ namespace LegendaryExplorerCore.Sound.ISACT
         }
     }
 
+    /// <summary>
+    /// Data segment bank chunk. Contains the raw audio samples
+    /// </summary>
+    public class DataBankChunk : BankChunk
+    {
+        /// <summary>
+        /// The defined name of this chunk.
+        /// </summary>
+        public static readonly string FixedChunkTitle = "data";
+
+        public DataBankChunk(string chunkName, int chunkLen, Stream inStream, BankChunk parent) : base(chunkName, chunkLen, inStream, parent) { }
+        public DataBankChunk() : base() { }
+
+        // This has no special implementation
+    }
+
     public class SoundConeBankChunk : BankChunk
     {
+        /// <summary>
+        /// The defined name of this chunk.
+        /// </summary>
+        public static readonly string FixedChunkTitle = "cone";
         public int InsideConeAngle { get; set; }
         public int OutsideConeAngle { get; set; }
         public int OutsideConeLevel { get; set; }
@@ -1070,7 +1124,7 @@ namespace LegendaryExplorerCore.Sound.ISACT
         public SoundConeBankChunk(Stream inStream, BankChunk parent)
         {
             Parent = parent;
-            ChunkName = "cone";
+            ChunkName = FixedChunkTitle;
             ChunkDataStartOffset = inStream.Position;
             InsideConeAngle = inStream.ReadInt32();
             OutsideConeAngle = inStream.ReadInt32();
@@ -1102,6 +1156,11 @@ namespace LegendaryExplorerCore.Sound.ISACT
 
     public class SoundEventInfoBankChunk : BankChunk
     {
+        /// <summary>
+        /// The defined name of this chunk.
+        /// </summary>
+        public static readonly string FixedChunkTitle = "info";
+
         public enum ISACTSEEventSelection
         {
             USE_EVS_ORDER, // 0
@@ -1118,7 +1177,7 @@ namespace LegendaryExplorerCore.Sound.ISACT
         public SoundEventInfoBankChunk(Stream inStream, BankChunk parent)
         {
             Parent = parent;
-            ChunkName = "info";
+            ChunkName = FixedChunkTitle;
             ChunkDataStartOffset = inStream.Position;
             EventSelection = (ISACTSEEventSelection)inStream.ReadUInt32();
             DefaultChance = inStream.ReadUInt32();
@@ -1170,11 +1229,15 @@ namespace LegendaryExplorerCore.Sound.ISACT
 
     public class ContentIndexBankChunk : BankChunk
     {
+        /// <summary>
+        /// The defined name of this chunk.
+        /// </summary>
+        public static readonly string FixedChunkTitle = "ctdx";
         private List<IndexPage> IndexPages;
         public ContentIndexBankChunk(int dataSize, Stream inStream, BankChunk parent)
         {
             Parent = parent;
-            ChunkName = "ctdx";
+            ChunkName = FixedChunkTitle;
             ChunkDataStartOffset = inStream.Position;
 
             int dataAmountRead = 0;
