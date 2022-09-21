@@ -1,4 +1,0 @@
-var class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_specialized_1_1_enum_initialization_exception =
-[
-    [ "EnumInitializationException", "class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_specialized_1_1_enum_initialization_exception.html#a666adf33d304bc6421d61d6568d2d1dc", null ]
-];

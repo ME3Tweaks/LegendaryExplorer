@@ -153,6 +153,7 @@ var hierarchy =
     [ "LegendaryExplorerCore.Gammtek.IO.ConsoleManager", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_console_manager.html", null ],
     [ "LegendaryExplorerCore.Shaders.ConstantInfo", "class_legendary_explorer_core_1_1_shaders_1_1_constant_info.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.ConvertExtensions", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_convert_extensions.html", null ],
+    [ "LegendaryExplorerCore.UDK.ConvertToUDK", "class_legendary_explorer_core_1_1_u_d_k_1_1_convert_to_u_d_k.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.ConvexHull", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_convex_hull.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.ConvexVolume", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_convex_volume.html", null ],
     [ "LegendaryExplorerCore.Coalesced.Crc32", "class_legendary_explorer_core_1_1_coalesced_1_1_crc32.html", null ],
@@ -190,15 +191,12 @@ var hierarchy =
     [ "LegendaryExplorerCore.Helpers.EnumerableExtensions", "class_legendary_explorer_core_1_1_helpers_1_1_enumerable_extensions.html", null ],
     [ "LegendaryExplorerCore.Gammtek.Extensions.EnumExtensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_enum_extensions.html", null ],
     [ "LegendaryExplorerCore.Helpers.Enums", "class_legendary_explorer_core_1_1_helpers_1_1_enums.html", null ],
-    [ "LegendaryExplorerCore.Gammtek.Collections.Specialized.EnumSet", "class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_specialized_1_1_enum_set.html", null ],
     [ "EventArgs", null, [
       [ "LegendaryExplorerCore.Misc.DictionaryChangedEvent< K, V >", "class_legendary_explorer_core_1_1_misc_1_1_dictionary_changed_event.html", null ]
     ] ],
     [ "Exception", null, [
       [ "LegendaryExplorerCore.Coalesced.Exceptions.CBundleException", "class_legendary_explorer_core_1_1_coalesced_1_1_exceptions_1_1_c_bundle_exception.html", null ],
       [ "LegendaryExplorerCore.Coalesced.Exceptions.CToolException", "class_legendary_explorer_core_1_1_coalesced_1_1_exceptions_1_1_c_tool_exception.html", null ],
-      [ "LegendaryExplorerCore.Gammtek.Collections.Specialized.EnumInitializationException", "class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_specialized_1_1_enum_initialization_exception.html", null ],
-      [ "LegendaryExplorerCore.Gammtek.Collections.Specialized.UnregisteredEnumException", "class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_specialized_1_1_unregistered_enum_exception.html", null ],
       [ "LegendaryExplorerCore.Gammtek.IO.BufferAcquisitionException", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_buffer_acquisition_exception.html", null ],
       [ "LegendaryExplorerCore.Textures.TextureSizeNotPowerOf2Exception", "class_legendary_explorer_core_1_1_textures_1_1_texture_size_not_power_of2_exception.html", null ],
       [ "LegendaryExplorerCore.UnrealScript.Parsing.ParseException", "class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_parse_exception.html", null ]
@@ -370,7 +368,6 @@ var hierarchy =
       [ "LegendaryExplorerCore.Gammtek.Collections.Specialized.WeakCollection< T >", "class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_specialized_1_1_weak_collection.html", null ]
     ] ],
     [ "IComparable", null, [
-      [ "LegendaryExplorerCore.Gammtek.Collections.Specialized.PolymorphicEnum< TEnum >", "class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_specialized_1_1_polymorphic_enum.html", null ],
       [ "LegendaryExplorerCore.Gammtek.IBindableEnum< TEnum >", "interface_legendary_explorer_core_1_1_gammtek_1_1_i_bindable_enum.html", null ],
       [ "LegendaryExplorerCore.Gammtek.IO.MutableByte", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_mutable_byte.html", null ],
       [ "LegendaryExplorerCore.Gammtek.IO.MutableByte", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_mutable_byte.html", null ],
@@ -385,9 +382,6 @@ var hierarchy =
     [ "LegendaryExplorerCore.UnrealScript.Language.Util.IContainsFunctions", "interface_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_util_1_1_i_contains_functions.html", [
       [ "LegendaryExplorerCore.UnrealScript.Language.Tree.Class", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_class.html", null ],
       [ "LegendaryExplorerCore.UnrealScript.Language.Tree.State", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_state.html", null ]
-    ] ],
-    [ "IConvertible", null, [
-      [ "LegendaryExplorerCore.Gammtek.Collections.Specialized.PolymorphicEnum< TEnum >", "class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_specialized_1_1_polymorphic_enum.html", null ]
     ] ],
     [ "ICustomFormatter", null, [
       [ "LegendaryExplorerCore.Gammtek.Text.Formatting.VerboseFormatInfoBase", "class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_formatting_1_1_verbose_format_info_base.html", null ]
@@ -485,7 +479,6 @@ var hierarchy =
       [ "LegendaryExplorerCore.Unreal.ArrayProperty< T >", "class_legendary_explorer_core_1_1_unreal_1_1_array_property.html", null ]
     ] ],
     [ "LegendaryExplorerCore.Textures.Image", "class_legendary_explorer_core_1_1_textures_1_1_image.html", null ],
-    [ "LegendaryExplorerCore.Gammtek.Collections.Specialized.Incrementer", "class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_specialized_1_1_incrementer.html", null ],
     [ "LegendaryExplorerCore.Sound.ISACT.IndexEntry", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_index_entry.html", null ],
     [ "LegendaryExplorerCore.Sound.ISACT.IndexPage", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_index_page.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.Influences", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_influences.html", null ],
@@ -670,6 +663,7 @@ var hierarchy =
     [ "LegendaryExplorerCore.Compression.LZMA", "class_legendary_explorer_core_1_1_compression_1_1_l_z_m_a.html", null ],
     [ "LegendaryExplorerCore.Compression.LZO2", "class_legendary_explorer_core_1_1_compression_1_1_l_z_o2.html", null ],
     [ "LegendaryExplorerCore.Compression.LZX", "class_legendary_explorer_core_1_1_compression_1_1_l_z_x.html", null ],
+    [ "LegendaryExplorerCore.Unreal.Classes.MaterialInstanceConstant", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_material_instance_constant.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.MaterialResource", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_resource.html", [
       [ "LegendaryExplorerCore.Unreal.BinaryConverters.TerrainMaterialResource", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_terrain_material_resource.html", null ]
     ] ],
@@ -871,9 +865,6 @@ var hierarchy =
     [ "LegendaryExplorerCore.PlotDatabase.PlotDatabases", "class_legendary_explorer_core_1_1_plot_database_1_1_plot_databases.html", null ],
     [ "LegendaryExplorerCore.PlotDatabase.PlotElements.PlotElementTypeExtensions", "class_legendary_explorer_core_1_1_plot_database_1_1_plot_elements_1_1_plot_element_type_extensions.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.Poly", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_poly.html", null ],
-    [ "LegendaryExplorerCore.Gammtek.Collections.Specialized.PolymorphicEnum< int, TEnum >", "class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_specialized_1_1_polymorphic_enum.html", [
-      [ "LegendaryExplorerCore.Gammtek.Collections.Specialized.PolymorphicEnum< TEnum >", "class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_specialized_1_1_polymorphic_enum.html", null ]
-    ] ],
     [ "LegendaryExplorerCore.Packages.CloningImportingAndRelinking.PortingOptions", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_porting_options.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.PositionVertexBuffer", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_position_vertex_buffer.html", null ],
     [ "LegendaryExplorerCore.Gammtek.Collections.Generic.PriorityQueue< T >", "class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_priority_queue.html", null ],
@@ -943,6 +934,7 @@ var hierarchy =
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.SkelMeshChunk", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_skel_mesh_chunk.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.SkelMeshSection", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_skel_mesh_section.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.SoftSkinVertex", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_soft_skin_vertex.html", null ],
+    [ "LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic.SpanExtensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_collections_1_1_generic_1_1_span_extensions.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.Sphere", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_sphere.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.WwiseStateManagement.StateGroup", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_state_management_1_1_state_group.html", null ],
     [ "LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode.Statement", "class_legendary_explorer_core_1_1_m_e1_1_1_unreal_1_1_unhood_bytecode_1_1_statement.html", null ],
@@ -1008,6 +1000,7 @@ var hierarchy =
     [ "LegendaryExplorerCore.Helpers.TypeExtension", "class_legendary_explorer_core_1_1_helpers_1_1_type_extension.html", null ],
     [ "LegendaryExplorerCore.Gammtek.Extensions.Reflection.TypeExtensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_reflection_1_1_type_extensions.html", null ],
     [ "LegendaryExplorerCore.Gammtek.TypeSwitch", "class_legendary_explorer_core_1_1_gammtek_1_1_type_switch.html", null ],
+    [ "LegendaryExplorerCore.GameFilesystem.UDKDirectory", "class_legendary_explorer_core_1_1_game_filesystem_1_1_u_d_k_directory.html", null ],
     [ "LegendaryExplorerCore.Unreal.UDKUnrealObjectInfo", "class_legendary_explorer_core_1_1_unreal_1_1_u_d_k_unreal_object_info.html", null ],
     [ "LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode.UE3FunctionReader", "class_legendary_explorer_core_1_1_m_e1_1_1_unreal_1_1_unhood_bytecode_1_1_u_e3_function_reader.html", null ],
     [ "LegendaryExplorerCore.Gammtek.Extensions.UInt16Extensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_u_int16_extensions.html", null ],

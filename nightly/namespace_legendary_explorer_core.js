@@ -20,6 +20,7 @@ var namespace_legendary_explorer_core =
     [ "Sound", "namespace_legendary_explorer_core_1_1_sound.html", "namespace_legendary_explorer_core_1_1_sound" ],
     [ "Textures", "namespace_legendary_explorer_core_1_1_textures.html", "namespace_legendary_explorer_core_1_1_textures" ],
     [ "TLK", "namespace_legendary_explorer_core_1_1_t_l_k.html", "namespace_legendary_explorer_core_1_1_t_l_k" ],
+    [ "UDK", "namespace_legendary_explorer_core_1_1_u_d_k.html", "namespace_legendary_explorer_core_1_1_u_d_k" ],
     [ "Unreal", "namespace_legendary_explorer_core_1_1_unreal.html", "namespace_legendary_explorer_core_1_1_unreal" ],
     [ "UnrealScript", "namespace_legendary_explorer_core_1_1_unreal_script.html", "namespace_legendary_explorer_core_1_1_unreal_script" ],
     [ "LegendaryExplorerCoreLib", "class_legendary_explorer_core_1_1_legendary_explorer_core_lib.html", "class_legendary_explorer_core_1_1_legendary_explorer_core_lib" ],

@@ -103,6 +103,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ade90299047e237f886c80c97852a5dbb"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#ade90299047e237f886c80c97852a5dbb">RelinkerOptionsPackage</a> ()</td></tr>
 <tr class="memdesc:ade90299047e237f886c80c97852a5dbb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Blank constructor (left here for breakpoints)  <a href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#ade90299047e237f886c80c97852a5dbb">More...</a><br /></td></tr>
 <tr class="separator:ade90299047e237f886c80c97852a5dbb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a489e134d5fb3424712352a1ae36a836e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a489e134d5fb3424712352a1ae36a836e">RelinkerOptionsPackage</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a> cache)</td></tr>
+<tr class="memdesc:a489e134d5fb3424712352a1ae36a836e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor that takes an existing <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html" title="Class that allows you to cache packages in memory for fast accessing, without having to use a global ...">PackageCache</a>  <a href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a489e134d5fb3424712352a1ae36a836e">More...</a><br /></td></tr>
+<tr class="separator:a489e134d5fb3424712352a1ae36a836e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -127,7 +130,7 @@ Properties</h2></td></tr>
 <tr class="memitem:ae0877440e52b90f0bf03311fd20a5ded"><td class="memItemLeft" align="right" valign="top">List&lt; <a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_entry_string_pair.html">EntryStringPair</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#ae0877440e52b90f0bf03311fd20a5ded">RelinkReport</a> = new()<code> [getset]</code></td></tr>
 <tr class="memdesc:ae0877440e52b90f0bf03311fd20a5ded"><td class="mdescLeft">&#160;</td><td class="mdescRight">The results of the relink. If this is empty, everything was OK, otherwise warnings and errors will populate this list.  <a href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#ae0877440e52b90f0bf03311fd20a5ded">More...</a><br /></td></tr>
 <tr class="separator:ae0877440e52b90f0bf03311fd20a5ded"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a622a8719c9e29dfeaee7f394abe08375"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a622a8719c9e29dfeaee7f394abe08375">Cache</a> = new()<code> [getset]</code></td></tr>
+<tr class="memitem:a622a8719c9e29dfeaee7f394abe08375"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a622a8719c9e29dfeaee7f394abe08375">Cache</a><code> [getset]</code></td></tr>
 <tr class="memdesc:a622a8719c9e29dfeaee7f394abe08375"><td class="mdescLeft">&#160;</td><td class="mdescRight">Package Cache that can be used to open packages. Can speed up performance if many packages have to be opened in succession.  <a href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a622a8719c9e29dfeaee7f394abe08375">More...</a><br /></td></tr>
 <tr class="separator:a622a8719c9e29dfeaee7f394abe08375"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9526f62aabdafadad11a71b4122e7a32"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a9526f62aabdafadad11a71b4122e7a32">GenerateImportsForGlobalFiles</a> = true<code> [getset]</code></td></tr>
@@ -144,7 +147,7 @@ Properties</h2></td></tr>
 <div class="textblock"><p >Specifies options used for relinking, as well as containing objects that can be passed through the entry porting process without having to modify method signatures. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ade90299047e237f886c80c97852a5dbb" name="ade90299047e237f886c80c97852a5dbb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ade90299047e237f886c80c97852a5dbb">&#9670;&nbsp;</a></span>RelinkerOptionsPackage()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ade90299047e237f886c80c97852a5dbb">&#9670;&nbsp;</a></span>RelinkerOptionsPackage() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -167,6 +170,34 @@ Properties</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Blank constructor (left here for breakpoints) </p>
+
+</div>
+</div>
+<a id="a489e134d5fb3424712352a1ae36a836e" name="a489e134d5fb3424712352a1ae36a836e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a489e134d5fb3424712352a1ae36a836e">&#9670;&nbsp;</a></span>RelinkerOptionsPackage() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">LegendaryExplorerCore.Packages.CloningImportingAndRelinking.RelinkerOptionsPackage.RelinkerOptionsPackage </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a>&#160;</td>
+          <td class="paramname"><em>cache</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Constructor that takes an existing <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html" title="Class that allows you to cache packages in memory for fast accessing, without having to use a global ...">PackageCache</a> </p>
 
 </div>
 </div>
@@ -310,7 +341,7 @@ Properties</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a> LegendaryExplorerCore.Packages.CloningImportingAndRelinking.RelinkerOptionsPackage.Cache = new()</td>
+          <td class="memname"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a> LegendaryExplorerCore.Packages.CloningImportingAndRelinking.RelinkerOptionsPackage.Cache</td>
         </tr>
       </table>
   </td>

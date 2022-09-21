@@ -25,5 +25,8 @@ var dir_d4e3a615790dfb16f635e3dcf7bbdbbd =
       [ "LegendaryExplorerCore.GameFilesystem.MELoadedFiles", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_loaded_files.html", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_loaded_files" ]
     ] ],
     [ "MountFile.cs", "_mount_file_8cs.html", "_mount_file_8cs" ],
-    [ "NSDoc.cs", "_game_filesystem_2_n_s_doc_8cs.html", null ]
+    [ "NSDoc.cs", "_game_filesystem_2_n_s_doc_8cs.html", null ],
+    [ "UDKDirectory.cs", "_u_d_k_directory_8cs.html", [
+      [ "LegendaryExplorerCore.GameFilesystem.UDKDirectory", "class_legendary_explorer_core_1_1_game_filesystem_1_1_u_d_k_directory.html", "class_legendary_explorer_core_1_1_game_filesystem_1_1_u_d_k_directory" ]
+    ] ]
 ];

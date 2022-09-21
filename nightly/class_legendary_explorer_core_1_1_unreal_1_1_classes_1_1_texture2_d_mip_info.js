@@ -10,6 +10,7 @@ var class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d_mip_info
     [ "externalOffset", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d_mip_info.html#a44b8ce3e074843290b9a77c22c17faf6", null ],
     [ "storageType", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d_mip_info.html#ad105aac1ccab521784e2394cdfa52f51", null ],
     [ "Mip", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d_mip_info.html#a9faf0ec68f8f5337e048fcb5778ac9af", null ],
+    [ "IsPackageStored", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d_mip_info.html#a42ddce643bdee03e88356099f08a08c4", null ],
     [ "TextureCacheName", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d_mip_info.html#afd614c81f26111e03a17602f91867465", null ],
     [ "MipDisplayString", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d_mip_info.html#aa601fb4ca0ac4763961b2057f7479e3f", null ]
 ];

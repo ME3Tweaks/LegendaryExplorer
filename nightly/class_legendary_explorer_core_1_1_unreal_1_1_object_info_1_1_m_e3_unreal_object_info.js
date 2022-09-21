@@ -2,12 +2,7 @@ var class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_m_e3_unreal_obj
 [
     [ "IsImmutableStruct", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_m_e3_unreal_object_info.html#a49dc0eff9fde1ba92a92483b0ec7be87", null ],
     [ "loadfromJSON", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_m_e3_unreal_object_info.html#a95368ae6ae7243d417bb981ced8a8c44", null ],
-    [ "getSequenceObjectInfo", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_m_e3_unreal_object_info.html#affef60f1d2a0aaade3ad232804483489", null ],
-    [ "getSequenceObjectInfoInputLinks", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_m_e3_unreal_object_info.html#a96a2328cb488ab1f2edd935448b88979", null ],
-    [ "getEnumTypefromProp", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_m_e3_unreal_object_info.html#a77df1deb13582f83135f3e4c1516de69", null ],
-    [ "getEnumValues", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_m_e3_unreal_object_info.html#a674bd442466b3aeb7c2dc5497f93c6d2", null ],
     [ "getPropertyInfo", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_m_e3_unreal_object_info.html#a29eea06dbade44db3efbe1c9c40a0871", null ],
-    [ "getDefaultProperty", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_m_e3_unreal_object_info.html#afb0393821e6fe5a3f641e2ad52d1b269", null ],
     [ "generateInfo", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_m_e3_unreal_object_info.html#af139f79c272216d1f68bb5c83abc1720", null ],
     [ "AddIntrinsicClasses", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_m_e3_unreal_object_info.html#a442c881eaa3fe4eb1bc50da5c068ec5a", null ],
     [ "generateClassInfo", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_m_e3_unreal_object_info.html#a86e686a720133bb67450e28951872e2e", null ],

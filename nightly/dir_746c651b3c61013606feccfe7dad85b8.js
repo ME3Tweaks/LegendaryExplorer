@@ -14,5 +14,8 @@ var dir_746c651b3c61013606feccfe7dad85b8 =
     ] ],
     [ "ListExtensions.cs", "_list_extensions_8cs.html", [
       [ "LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic.ListExtensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_collections_1_1_generic_1_1_list_extensions.html", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_collections_1_1_generic_1_1_list_extensions" ]
+    ] ],
+    [ "SpanExtensions.cs", "_span_extensions_8cs.html", [
+      [ "LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic.SpanExtensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_collections_1_1_generic_1_1_span_extensions.html", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_collections_1_1_generic_1_1_span_extensions" ]
     ] ]
 ];

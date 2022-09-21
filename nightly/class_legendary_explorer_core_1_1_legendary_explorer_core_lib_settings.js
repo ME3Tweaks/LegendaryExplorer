@@ -8,5 +8,6 @@ var class_legendary_explorer_core_1_1_legendary_explorer_core_lib_settings =
     [ "ME2Directory", "class_legendary_explorer_core_1_1_legendary_explorer_core_lib_settings.html#a3b5c8ffd795526ed844d66ab7ed099c4", null ],
     [ "ME3Directory", "class_legendary_explorer_core_1_1_legendary_explorer_core_lib_settings.html#a4f96cd26ed6b3eb31425e595703b8a86", null ],
     [ "LEDirectory", "class_legendary_explorer_core_1_1_legendary_explorer_core_lib_settings.html#a3bb11e36850049eceab6587f2ad9a296", null ],
+    [ "UDKCustomDirectory", "class_legendary_explorer_core_1_1_legendary_explorer_core_lib_settings.html#adc77e2455184667886e967a41b0b51c5", null ],
     [ "PropertyChanged", "class_legendary_explorer_core_1_1_legendary_explorer_core_lib_settings.html#a80e477238f2f1df8db2446d2a7af71b7", null ]
 ];

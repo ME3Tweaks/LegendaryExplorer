@@ -9,6 +9,7 @@ var namespace_legendary_explorer_core_1_1_game_filesystem =
     [ "MELoadedFiles", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_loaded_files.html", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_loaded_files" ],
     [ "MountFile", "class_legendary_explorer_core_1_1_game_filesystem_1_1_mount_file.html", "class_legendary_explorer_core_1_1_game_filesystem_1_1_mount_file" ],
     [ "MountFlag", "class_legendary_explorer_core_1_1_game_filesystem_1_1_mount_flag.html", "class_legendary_explorer_core_1_1_game_filesystem_1_1_mount_flag" ],
+    [ "UDKDirectory", "class_legendary_explorer_core_1_1_game_filesystem_1_1_u_d_k_directory.html", "class_legendary_explorer_core_1_1_game_filesystem_1_1_u_d_k_directory" ],
     [ "EME2MountFileFlag", "namespace_legendary_explorer_core_1_1_game_filesystem.html#aa23133fea72a60ea6401786fd5a6381b", [
       [ "CerberusNetworkRequired", "namespace_legendary_explorer_core_1_1_game_filesystem.html#aa23133fea72a60ea6401786fd5a6381ba07fa975399df505630e4ef89acfd1786", null ],
       [ "SaveFileDependency", "namespace_legendary_explorer_core_1_1_game_filesystem.html#aa23133fea72a60ea6401786fd5a6381baf1f842bd6ce7f7268e852c901a09cce6", null ]

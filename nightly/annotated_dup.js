@@ -70,7 +70,8 @@ var annotated_dup =
         [ "MELoadedDLC", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_loaded_d_l_c.html", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_loaded_d_l_c" ],
         [ "MELoadedFiles", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_loaded_files.html", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_loaded_files" ],
         [ "MountFile", "class_legendary_explorer_core_1_1_game_filesystem_1_1_mount_file.html", "class_legendary_explorer_core_1_1_game_filesystem_1_1_mount_file" ],
-        [ "MountFlag", "class_legendary_explorer_core_1_1_game_filesystem_1_1_mount_flag.html", "class_legendary_explorer_core_1_1_game_filesystem_1_1_mount_flag" ]
+        [ "MountFlag", "class_legendary_explorer_core_1_1_game_filesystem_1_1_mount_flag.html", "class_legendary_explorer_core_1_1_game_filesystem_1_1_mount_flag" ],
+        [ "UDKDirectory", "class_legendary_explorer_core_1_1_game_filesystem_1_1_u_d_k_directory.html", "class_legendary_explorer_core_1_1_game_filesystem_1_1_u_d_k_directory" ]
       ] ],
       [ "Gammtek", "namespace_legendary_explorer_core_1_1_gammtek.html", [
         [ "Collections", "namespace_legendary_explorer_core_1_1_gammtek_1_1_collections.html", [
@@ -90,11 +91,6 @@ var annotated_dup =
             [ "ObservableDictionary", "class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_object_model_1_1_observable_dictionary.html", "class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_object_model_1_1_observable_dictionary" ]
           ] ],
           [ "Specialized", "namespace_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_specialized.html", [
-            [ "EnumInitializationException", "class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_specialized_1_1_enum_initialization_exception.html", "class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_specialized_1_1_enum_initialization_exception" ],
-            [ "EnumSet", "class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_specialized_1_1_enum_set.html", "class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_specialized_1_1_enum_set" ],
-            [ "Incrementer", "class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_specialized_1_1_incrementer.html", "class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_specialized_1_1_incrementer" ],
-            [ "PolymorphicEnum", "class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_specialized_1_1_polymorphic_enum.html", "class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_specialized_1_1_polymorphic_enum" ],
-            [ "UnregisteredEnumException", "class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_specialized_1_1_unregistered_enum_exception.html", "class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_specialized_1_1_unregistered_enum_exception" ],
             [ "WeakCollection", "class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_specialized_1_1_weak_collection.html", "class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_specialized_1_1_weak_collection" ]
           ] ]
         ] ],
@@ -120,7 +116,8 @@ var annotated_dup =
               [ "CollectionExtensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_collections_1_1_generic_1_1_collection_extensions.html", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_collections_1_1_generic_1_1_collection_extensions" ],
               [ "DictionaryExtensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_collections_1_1_generic_1_1_dictionary_extensions.html", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_collections_1_1_generic_1_1_dictionary_extensions" ],
               [ "EnumerableExtensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_collections_1_1_generic_1_1_enumerable_extensions.html", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_collections_1_1_generic_1_1_enumerable_extensions" ],
-              [ "ListExtensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_collections_1_1_generic_1_1_list_extensions.html", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_collections_1_1_generic_1_1_list_extensions" ]
+              [ "ListExtensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_collections_1_1_generic_1_1_list_extensions.html", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_collections_1_1_generic_1_1_list_extensions" ],
+              [ "SpanExtensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_collections_1_1_generic_1_1_span_extensions.html", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_collections_1_1_generic_1_1_span_extensions" ]
             ] ],
             [ "BitArrayExtensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_collections_1_1_bit_array_extensions.html", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_collections_1_1_bit_array_extensions" ],
             [ "ByteArrayExtensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_collections_1_1_byte_array_extensions.html", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_collections_1_1_byte_array_extensions" ]
@@ -479,6 +476,9 @@ var annotated_dup =
         [ "TLKBitArray", "class_legendary_explorer_core_1_1_t_l_k_1_1_t_l_k_bit_array.html", "class_legendary_explorer_core_1_1_t_l_k_1_1_t_l_k_bit_array" ],
         [ "TLKStringRef", "class_legendary_explorer_core_1_1_t_l_k_1_1_t_l_k_string_ref.html", "class_legendary_explorer_core_1_1_t_l_k_1_1_t_l_k_string_ref" ]
       ] ],
+      [ "UDK", "namespace_legendary_explorer_core_1_1_u_d_k.html", [
+        [ "ConvertToUDK", "class_legendary_explorer_core_1_1_u_d_k_1_1_convert_to_u_d_k.html", "class_legendary_explorer_core_1_1_u_d_k_1_1_convert_to_u_d_k" ]
+      ] ],
       [ "Unreal", "namespace_legendary_explorer_core_1_1_unreal.html", [
         [ "BinaryConverters", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html", [
           [ "AlphaMap", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_alpha_map.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_alpha_map" ],
@@ -691,6 +691,7 @@ var annotated_dup =
           [ "BioMorphFace", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio_morph_face.html", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio_morph_face" ],
           [ "BoneOffset", "struct_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bone_offset.html", "struct_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bone_offset" ],
           [ "Function", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_function.html", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_function" ],
+          [ "MaterialInstanceConstant", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_material_instance_constant.html", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_material_instance_constant" ],
           [ "MorphFeature", "struct_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_morph_feature.html", "struct_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_morph_feature" ],
           [ "Texture2D", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d.html", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d" ],
           [ "Texture2DMipInfo", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d_mip_info.html", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d_mip_info" ]
