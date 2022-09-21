@@ -1588,7 +1588,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         private void ExportInfoListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             object currentSelectedItem = ExportInfoListBox.SelectedItem;
-            if (Settings.Soundpanel_LoopAudio)
+            if (Settings.Soundpanel_LoopAudio && _playbackState == PlaybackState.Playing)
             {
                 if (currentSelectedItem is EmbeddedWEMFile)
                 {
