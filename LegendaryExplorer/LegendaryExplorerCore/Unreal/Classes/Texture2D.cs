@@ -468,7 +468,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
                 {
                     compressedMips.Add(TextureCompression.CompressTexture(image.mipMaps[m].data, isPackageStored ? StorageTypes.pccZlib : StorageTypes.extZlib)); //ZLib
                 }
-                else if (Export.Game.IsOTGame())
+                else if (Export.Game.IsOTGame() || Export.Game is MEGame.UDK)
                 {
                     compressedMips.Add(TextureCompression.CompressTexture(image.mipMaps[m].data, isPackageStored ? StorageTypes.pccLZO : StorageTypes.extLZO)); //LZO 
                 }

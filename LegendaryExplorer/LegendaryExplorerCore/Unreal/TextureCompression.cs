@@ -263,10 +263,9 @@ namespace LegendaryExplorerCore.Unreal
 
                 MEGame.LE1 or MEGame.LE2 or MEGame.LE3 when isExternal => StorageTypes.extOodle,
                 MEGame.LE1 or MEGame.LE2 or MEGame.LE3 => StorageTypes.pccUnc, // LE game packages are always compressed. Do not compress pcc stored textures
-
-                //TODO: figure out what texture compression format UDK uses
-                MEGame.UDK when isExternal => StorageTypes.extUnc,
-                MEGame.UDK => StorageTypes.pccUnc,
+                
+                MEGame.UDK when isExternal => StorageTypes.extLZO,
+                MEGame.UDK => StorageTypes.pccLZO,
                 _ => throw new Exception($"{game} is not a supported game for getting texture storage types")
             };
         }

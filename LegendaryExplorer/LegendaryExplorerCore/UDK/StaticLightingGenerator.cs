@@ -96,9 +96,12 @@ namespace LegendaryExplorerCore.UDK
                             }
                         }
 
-                        static void ImportTexture(ref ExportEntry texport, IMEPackage meshPackage, PackageCache packageCache)
+                        static ExportEntry ImportTexture(ExportEntry texport, IMEPackage meshPackage, PackageCache packageCache)
                         {
-                            
+                            if (meshPackage.FindExport(texport.ObjectName.Instanced) is ExportEntry existingTexture)
+                            {
+                                return existingTexture;
+                            }
                             EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.AddSingularAsChild, texport, meshPackage, null, false, new RelinkerOptionsPackage(packageCache), out IEntry ent);
                             var importedExport = (ExportEntry)ent;
                             PropertyCollection properties = importedExport.GetProperties();
@@ -116,7 +119,7 @@ namespace LegendaryExplorerCore.UDK
                             {
                                 importedExport.WriteProperties(properties);
                             }
-                            texport = importedExport;
+                            return importedExport;
                         }
 
                         if (diff == null)
@@ -124,10 +127,10 @@ namespace LegendaryExplorerCore.UDK
                             relinkMap[matExp] = defMat;
                             continue;
                         }
-                        ImportTexture(ref diff, meshPackage, packageCache);
+                        diff= ImportTexture(diff, meshPackage, packageCache);
                         if (norm != null)
                         {
-                            ImportTexture(ref norm, meshPackage, packageCache);
+                            norm = ImportTexture(norm, meshPackage, packageCache);
                         }
 
                         EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneTreeAsChild, normDiffMat, meshPackage, null, true, new RelinkerOptionsPackage(packageCache), out IEntry matEnt);
@@ -281,6 +284,7 @@ namespace LegendaryExplorerCore.UDK
 
                             EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.AddSingularAsChild, smc, tempPackage,
                                                                  sma, true, new RelinkerOptionsPackage(packageCache), out IEntry result);
+                            ((ExportEntry)result).Archetype = staticMeshComponentArchetype;
                             var props = new PropertyCollection
                             {
                                 new ObjectProperty(result.UIndex, "StaticMeshComponent"),

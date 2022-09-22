@@ -1848,8 +1848,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     string levelName = persistentLevelFileName.Split('_')[1];
                     foreach ((string fileName, string filePath) in MELoadedFiles.GetFilesLoadedInGame(Pcc.Game))
                     {
-                        if (!fileName.Contains("_LOC_") && fileName.Split('_') is { Length: >= 2 } parts &&
-                            parts[1] == levelName)
+                        if (!fileName.Contains("_LOC_") && !fileName.Contains("BSP") &&
+                            fileName.Split('_') is { Length: >= 2 } parts && parts[1] == levelName)
                         {
                             pewpf.BusyText = $"Converting {fileName}";
                             using IMEPackage levPcc = MEPackageHandler.OpenMEPackage(filePath);
