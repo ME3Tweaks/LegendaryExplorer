@@ -29,5 +29,6 @@ var searchData=
   ['audioid_26',['AudioID',['../class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_bank_1_1_sound_s_f_x_voice.html#a118b63842992f9e0e184df43eb9c6ffa',1,'LegendaryExplorerCore::Unreal::BinaryConverters::WwiseBank::SoundSFXVoice']]],
   ['auxflags_27',['auxflags',['../struct_legendary_explorer_core_1_1_unreal_1_1_p_s_k_1_1_p_s_k_material.html#a5b3361559df2d9c778915c7cf2c7e2f7',1,'LegendaryExplorerCore::Unreal::PSK::PSKMaterial']]],
   ['auxmaterial_28',['auxmaterial',['../struct_legendary_explorer_core_1_1_unreal_1_1_p_s_k_1_1_p_s_k_material.html#a7b9dc61cdd93844e01898bd969cc68cc',1,'LegendaryExplorerCore::Unreal::PSK::PSKMaterial']]],
-  ['averageexteriornormal_29',['AverageExteriorNormal',['../class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_fragment_info.html#aa6cd73b5f275038629a306e91c94240a',1,'LegendaryExplorerCore::Unreal::BinaryConverters::FragmentInfo']]]
+  ['averageexteriornormal_29',['AverageExteriorNormal',['../class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_fragment_info.html#aa6cd73b5f275038629a306e91c94240a',1,'LegendaryExplorerCore::Unreal::BinaryConverters::FragmentInfo']]],
+  ['azimuth_30',['Azimuth',['../class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_i_s_a_c_t_orientation.html#aa6558fe9e8e76446c6aba5aa859e34be',1,'LegendaryExplorerCore::Sound::ISACT::ISACTOrientation']]]
 ];

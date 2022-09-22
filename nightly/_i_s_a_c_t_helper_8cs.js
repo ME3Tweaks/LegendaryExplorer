@@ -24,6 +24,9 @@ var _i_s_a_c_t_helper_8cs =
     [ "LegendaryExplorerCore.Sound.ISACT.IndexPage", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_index_page.html", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_index_page" ],
     [ "LegendaryExplorerCore.Sound.ISACT.IndexEntry", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_index_entry.html", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_index_entry" ],
     [ "LegendaryExplorerCore.Sound.ISACT.ContentIndexBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_content_index_bank_chunk.html", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_content_index_bank_chunk" ],
+    [ "LegendaryExplorerCore.Sound.ISACT.ISACTOrientation", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_i_s_a_c_t_orientation.html", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_i_s_a_c_t_orientation" ],
+    [ "LegendaryExplorerCore.Sound.ISACT.ISACTSoundTrack", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_i_s_a_c_t_sound_track.html", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_i_s_a_c_t_sound_track" ],
+    [ "LegendaryExplorerCore.Sound.ISACT.SoundEventSoundTracksFour", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_sound_event_sound_tracks_four.html", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_sound_event_sound_tracks_four" ],
     [ "ISACTBankType", "_i_s_a_c_t_helper_8cs.html#a1d306bb280144056b87e695f2b641217", [
       [ "ICB", "_i_s_a_c_t_helper_8cs.html#a1d306bb280144056b87e695f2b641217af60d54f52a4013689e7d94c309edd93e", null ],
       [ "ISB", "_i_s_a_c_t_helper_8cs.html#a1d306bb280144056b87e695f2b641217a19857b34a4cdd584317c3bad71c20d34", null ],

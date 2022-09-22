@@ -24,6 +24,7 @@ var hierarchy =
       [ "LegendaryExplorerCore.Sound.ISACT.SampleOffsetBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_sample_offset_bank_chunk.html", null ],
       [ "LegendaryExplorerCore.Sound.ISACT.SoundConeBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_sound_cone_bank_chunk.html", null ],
       [ "LegendaryExplorerCore.Sound.ISACT.SoundEventInfoBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_sound_event_info_bank_chunk.html", null ],
+      [ "LegendaryExplorerCore.Sound.ISACT.SoundEventSoundTracksFour", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_sound_event_sound_tracks_four.html", null ],
       [ "LegendaryExplorerCore.Sound.ISACT.SyncBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_sync_bank_chunk.html", null ],
       [ "LegendaryExplorerCore.Sound.ISACT.TitleBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_title_bank_chunk.html", null ]
     ] ],
@@ -575,6 +576,8 @@ var hierarchy =
     [ "LegendaryExplorerCore.Sound.ISACT.ISACTBank", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_i_s_a_c_t_bank.html", null ],
     [ "LegendaryExplorerCore.Sound.ISACT.ISACTBankPair", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_i_s_a_c_t_bank_pair.html", null ],
     [ "LegendaryExplorerCore.Sound.ISACT.ISACTHelper", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_i_s_a_c_t_helper.html", null ],
+    [ "LegendaryExplorerCore.Sound.ISACT.ISACTOrientation", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_i_s_a_c_t_orientation.html", null ],
+    [ "LegendaryExplorerCore.Sound.ISACT.ISACTSoundTrack", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_i_s_a_c_t_sound_track.html", null ],
     [ "LegendaryExplorerCore.Audio.ISBank_DEPRECATED", "class_legendary_explorer_core_1_1_audio_1_1_i_s_bank___d_e_p_r_e_c_a_t_e_d.html", null ],
     [ "LegendaryExplorerCore.Gammtek.Text.StringMatching.IStringMatcher", "interface_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_string_matching_1_1_i_string_matcher.html", [
       [ "LegendaryExplorerCore.Gammtek.Text.StringMatching.CombinedStringMatcher", "class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_string_matching_1_1_combined_string_matcher.html", null ],
