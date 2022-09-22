@@ -1300,10 +1300,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void ReplaceEmbeddedSoundNodeWave()
         {
-#if !DEBUG
-            MessageBox.Show("This feature is disabled due to stability issues, please check back later.");
-            return;
-#endif
+//#if !DEBUG
+//            MessageBox.Show("This feature is disabled due to stability issues, please check back later.");
+//            return;
+//#endif
             var replacementTarget = ExportInfoListBox.SelectedItem as ISACTListBankChunk;
             if (replacementTarget == null)
                 return;
@@ -1328,9 +1328,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 }
             }*/
 
+            var quality = 0.8f; // Changable with UI?
             var wavData = File.ReadAllBytes(d.FileName);
-            var oggData = ISACTHelperExtended.ConvertWaveToOgg(wavData);
-            File.WriteAllBytes(@"C:\users\mgame\desktop\ogg.ogg", oggData);
+            var oggData = ISACTHelperExtended.ConvertWaveToOgg(wavData, quality);
+            // File.WriteAllBytes(@"C:\users\mgame\desktop\ogg.ogg", oggData);
             var bin = ObjectBinary.From<SoundNodeWave>(CurrentLoadedExport);
             var isactBankPair = ISACTHelper.GetPairedBanks(bin.RawData);
             using (var wfr = new WaveFileReader(new MemoryStream(wavData)))
@@ -1350,15 +1351,15 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 c2Chunk.TotalSize = oggData.Length;
                 c2Chunk.CurrentFormat = CompressionInfoBankChunk.ISACTCompressionFormat.OGGVORBIS;
                 c2Chunk.TargetFormat = CompressionInfoBankChunk.ISACTCompressionFormat.OGGVORBIS;
+                c2Chunk.CompressionQuality = quality;
 
                 var sinfChunk = listChunk.GetChunk(SampleInfoBankChunk.FixedChunkTitle) as SampleInfoBankChunk;
-                sinfChunk.TimeLength = wfr.TotalTime.Milliseconds;
-                // sinfChunk.ByteLength = wfr.GetChunkData(). // 'data' segment size of source wav / (BitsPerSample / 8) // Unsure what this actually does, if anything
-                //sinfChunk.BufferOffset = 0;
+                sinfChunk.TimeLength = (int)wfr.TotalTime.TotalMilliseconds;
+                sinfChunk.ByteLength = (int)wfr.Length; // Appears to be the size of the original WAV data segment, maybe this is the size of the buffer
+                                                        // it will need to allocate for decompressed sample data
+                sinfChunk.BufferOffset = 0; // Pretty sure this is always zero
                 sinfChunk.BitsPerSample = (ushort)wfr.WaveFormat.BitsPerSample;
                 sinfChunk.SamplesPerSecond = wfr.WaveFormat.SampleRate;
-
-                // Todo: Change compression for
 
                 var channelChunk = listChunk.GetChunk(ChannelBankChunk.FixedChunkTitle) as ChannelBankChunk;
                 channelChunk.ChannelCount = wfr.WaveFormat.Channels;
