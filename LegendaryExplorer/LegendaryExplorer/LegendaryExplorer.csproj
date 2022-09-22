@@ -52,10 +52,22 @@
 		<None Remove="Resources\Images\bink.jpg" />
 		<None Remove="Resources\Images\GameIcons\UDK_48.ico" />
 		<Compile Remove="Resources\exec\**" />
+		<Compile Remove="Resources\FileAssocIcons\**" />
+		<Compile Remove="Tools\PlotEditor\SFXGame\biodefine\**" />
+		<Compile Remove="UserControls\SharedToolControls\DirectX\**" />
 		<EmbeddedResource Remove="Resources\exec\**" />
+		<EmbeddedResource Remove="Resources\FileAssocIcons\**" />
+		<EmbeddedResource Remove="Tools\PlotEditor\SFXGame\biodefine\**" />
+		<EmbeddedResource Remove="UserControls\SharedToolControls\DirectX\**" />
 		<None Remove="Resources\exec\**" />
+		<None Remove="Resources\FileAssocIcons\**" />
 		<None Remove="Tools\Icons\**\*.ico" />
+		<None Remove="Tools\PlotEditor\SFXGame\biodefine\**" />
+		<None Remove="UserControls\SharedToolControls\DirectX\**" />
 		<Page Remove="Resources\exec\**" />
+		<Page Remove="Resources\FileAssocIcons\**" />
+		<Page Remove="Tools\PlotEditor\SFXGame\biodefine\**" />
+		<Page Remove="UserControls\SharedToolControls\DirectX\**" />
 		<None Remove="Tools\PackageEditor\ExportIcons\icon_texturecube.png" />
 		<None Remove="Tools\PlotDatabase\PlotTypeIcons\icon_bool.png" />
 		<None Remove="Tools\PlotDatabase\PlotTypeIcons\icon_cnd.png" />
@@ -215,12 +227,6 @@
 		</Compile>
 		<Compile Update="SharedUI\Controls\ToolBox.xaml.cs">
 			<DependentUpon>ToolBox.xaml</DependentUpon>
-		</Compile>
-		<Compile Update="ToolsetDev\FileHexViewerWPF.xaml.cs">
-			<DependentUpon>FileHexViewerWPF.xaml</DependentUpon>
-		</Compile>
-		<Compile Update="Tools\AnimationImporterExporter\AnimationImporter.xaml.cs">
-			<DependentUpon>AnimationImporter.xaml</DependentUpon>
 		</Compile>
 		<Compile Update="Tools\AssetDatabase\AssetDatabaseWindow.xaml.cs">
 			<DependentUpon>AssetDatabaseWindow.xaml</DependentUpon>
@@ -502,10 +508,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Folder Include="Resources\FileAssocIcons\" />
-		<Folder Include="Tools\PlotEditor\SFXGame\biodefine\" />
 		<Folder Include="UserControls\ExportLoaderControls\ScriptEditor\" />
-		<Folder Include="UserControls\SharedToolControls\DirectX\" />
 	</ItemGroup>
 
 	<Target Name="Date" BeforeTargets="BeforeBuild">

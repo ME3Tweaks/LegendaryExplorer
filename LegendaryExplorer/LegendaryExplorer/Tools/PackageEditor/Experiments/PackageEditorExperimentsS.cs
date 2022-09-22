@@ -1834,24 +1834,21 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
 
             string persistentLevelFileName = Path.GetFileNameWithoutExtension(Pcc.FilePath);
-            bool convertAll = persistentLevelFileName.StartsWith("BioP") && MessageBoxResult.Yes ==
-                MessageBox.Show("Convert BioA and BioD files for this level?", "", MessageBoxButton.YesNo);
 
             pewpf.IsBusy = true;
             pewpf.BusyText = $"Converting {persistentLevelFileName}";
             Task.Run(() =>
             {
-                string persistentPath = ConvertToUDK.GenerateUDKFileForLevel(Pcc);
-                if (convertAll)
+                string persistentPath = ConvertToUDK.GenerateUDKFileForLevel(Pcc); 
+                var levelFiles = new List<string>();
+                if (Pcc is MEPackage mePackage)
                 {
-                    var levelFiles = new List<string>();
-                    string levelName = persistentLevelFileName.Split('_')[1];
-                    foreach ((string fileName, string filePath) in MELoadedFiles.GetFilesLoadedInGame(Pcc.Game))
+                    var loadedFiles = MELoadedFiles.GetFilesLoadedInGame(Pcc.Game);
+                    foreach (string additionalPackage in mePackage.AdditionalPackagesToCook)
                     {
-                        if (!fileName.Contains("_LOC_") && !fileName.Contains("BSP") &&
-                            fileName.Split('_') is { Length: >= 2 } parts && parts[1] == levelName)
+                        if (loadedFiles.TryGetValue($"{additionalPackage}.pcc", out string filePath))
                         {
-                            pewpf.BusyText = $"Converting {fileName}";
+                            pewpf.BusyText = $"Converting {additionalPackage}";
                             using IMEPackage levPcc = MEPackageHandler.OpenMEPackage(filePath);
                             levelFiles.Add(ConvertToUDK.GenerateUDKFileForLevel(levPcc));
                         }
@@ -1867,7 +1864,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     {
                         persistentUDK.AddExport(new ExportEntry(persistentUDK, theWorld, new NameReference("LevelStreamingAlwaysLoaded", i), properties: new PropertyCollection
                         {
-                            new NameProperty(fileName, "PackageName"), 
+                            new NameProperty(fileName, "PackageName"),
                             CommonStructs.ColorProp(System.Drawing.Color.FromArgb(255, (byte)(i % 256), (byte)((255 - i) % 256), (byte)(i * 7 % 256)), "DrawColor")
                         })
                         {

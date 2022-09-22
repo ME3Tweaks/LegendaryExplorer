@@ -193,7 +193,13 @@ namespace LegendaryExplorer.Tools.AnimationImporterExporter
                         selectedAnimSequence = psaSeqs.First(s => s.Name.Instanced == seqName);
                     }
 
-                    if (!TryGetRotationCompressionFormat(out AnimationCompressionFormat rotationCompressionFormat))
+                    if (props.GetProp<EnumProperty>("RotationCompressionFormat") is not EnumProperty compressionFormatEnum ||
+                        !Enum.TryParse(compressionFormatEnum.Value, out AnimationCompressionFormat rotationCompressionFormat))
+                    {
+                        rotationCompressionFormat = AnimationCompressionFormat.ACF_Float96NoW;
+                    }
+
+                    if (!TryGetRotationCompressionFormat(ref rotationCompressionFormat))
                     {
                         return;
                     }
@@ -211,10 +217,10 @@ namespace LegendaryExplorer.Tools.AnimationImporterExporter
             }
         }
 
-        private bool TryGetRotationCompressionFormat(out AnimationCompressionFormat rotationCompressionFormat)
+        private bool TryGetRotationCompressionFormat(ref AnimationCompressionFormat rotationCompressionFormat)
         {
             string compressionFormatString = InputComboBoxDialog.GetValue(this, "Select desired rotation compression format", "Rotation Compression Format Selector",
-                AnimSequence.ValidRotationCompressionFormats.Select(x => x.ToString()), AnimationCompressionFormat.ACF_Float96NoW.ToString());
+                AnimSequence.ValidRotationCompressionFormats.Select(x => x.ToString()), rotationCompressionFormat.ToString());
 
             return Enum.TryParse(compressionFormatString, out rotationCompressionFormat);
         }
@@ -238,7 +244,8 @@ namespace LegendaryExplorer.Tools.AnimationImporterExporter
                     return;
                 }
 
-                if (!TryGetRotationCompressionFormat(out AnimationCompressionFormat rotationCompressionFormat))
+                AnimationCompressionFormat rotationCompressionFormat = AnimationCompressionFormat.ACF_Float96NoW;
+                if (!TryGetRotationCompressionFormat(ref rotationCompressionFormat))
                 {
                     return;
                 }
@@ -298,15 +305,20 @@ namespace LegendaryExplorer.Tools.AnimationImporterExporter
                     {
                         return;
                     }
+                    var props = CurrentExport.GetProperties();
+                    if (props.GetProp<EnumProperty>("RotationCompressionFormat") is not EnumProperty compressionFormatEnum ||
+                        !Enum.TryParse(compressionFormatEnum.Value, out AnimationCompressionFormat rotationCompressionFormat))
+                    {
+                        rotationCompressionFormat = AnimationCompressionFormat.ACF_Float96NoW;
+                    }
 
-                    if (!TryGetRotationCompressionFormat(out AnimationCompressionFormat rotationCompressionFormat))
+                    if (!TryGetRotationCompressionFormat(ref rotationCompressionFormat))
                     {
                         return;
                     }
 
                     var selectedAnimSequence = selectedExport.GetBinaryData<AnimSequence>();
 
-                    var props = CurrentExport.GetProperties();
                     var originalSeqName = props.GetProp<NameProperty>("SequenceName");
                     selectedAnimSequence.UpdateProps(props, CurrentExport.Game, rotationCompressionFormat);
                     if (originalSeqName != null)
@@ -367,7 +379,8 @@ namespace LegendaryExplorer.Tools.AnimationImporterExporter
                         return;
                 }
 
-                if (!TryGetRotationCompressionFormat(out AnimationCompressionFormat rotationCompressionFormat))
+                var rotationCompressionFormat = AnimationCompressionFormat.ACF_Float96NoW;
+                if (!TryGetRotationCompressionFormat(ref rotationCompressionFormat))
                 {
                     return;
                 }

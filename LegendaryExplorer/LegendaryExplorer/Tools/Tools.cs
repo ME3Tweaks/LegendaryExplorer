@@ -125,6 +125,20 @@ namespace LegendaryExplorer
 
             set.Add(new Tool
             {
+                name = "PSA Viewer",
+                type = typeof(PSAViewerWindow),
+                icon = Application.Current.FindResource("iconPlaceholder") as ImageSource,
+                open = () =>
+                {
+                    (new PSAViewerWindow()).Show();
+                },
+                tags = new List<string> { "utility", "toolsetdev", "animation" },
+                category = "Toolset Devs",
+                description = "PSA Viewer is a tool for viewing the contents of a PSA file."
+            });
+
+            set.Add(new Tool
+            {
                 name = "SFAR Explorer",
                 type = typeof(Tools.SFARExplorer.SFARExplorerWindow),
                 icon = Application.Current.FindResource("iconSFARExplorer") as ImageSource,
