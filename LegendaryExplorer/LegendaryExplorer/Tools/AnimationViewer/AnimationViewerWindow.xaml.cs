@@ -370,9 +370,9 @@ namespace LegendaryExplorer.Tools.AnimationViewer
             {
                 string animViewerBaseFilePath = Path.Combine(AppDirectories.ExecFolder, "ME3AnimViewer.pcc");
 
-                using IMEPackage animViewerBase = MEPackageHandler.OpenMEPackage(animViewerBaseFilePath);
+                //using IMEPackage animViewerBase = MEPackageHandler.OpenMEPackage(animViewerBaseFilePath);
                 AnimViewer.SetUpAnimStreamFile(MEGame.ME3, null, 0, "AAAME3EXPAVS1"); //placeholder for tocing
-                AnimViewer.OpenMapInGame(animViewerBase, true, false);
+                AnimViewer.OpenMapInGame(MEGame.ME3, true, false);
                 BusyText = "Launching Mass Effect 3...";
             });
         }
