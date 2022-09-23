@@ -180,6 +180,9 @@ Static Public Member Functions</h2></td></tr>
 <tr class="separator:aebc4405ecb031760973e1e9281845a24"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a11aab4adad437beeba3d4a07210abe99"><td class="memItemLeft" align="right" valign="top">static List&lt; string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#a11aab4adad437beeba3d4a07210abe99">GetPossibleAssociatedFiles</a> (<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> package, string localization=&quot;INT&quot;, bool includeNonBioPRelated=true)</td></tr>
 <tr class="separator:a11aab4adad437beeba3d4a07210abe99"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3c5ad045c0bd478e14cfc69409c3dcfa"><td class="memItemLeft" align="right" valign="top">static List&lt; string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#a3c5ad045c0bd478e14cfc69409c3dcfa">GetBioXParentFiles</a> (<a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game, string filenameWithoutExtension, bool includeNonBioPTiers, bool includeLocalizations, string bioFileExt, string localization)</td></tr>
+<tr class="memdesc:a3c5ad045c0bd478e14cfc69409c3dcfa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the possible parent files of the specified package name according to the BioWare tier system.  <a href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#a3c5ad045c0bd478e14cfc69409c3dcfa">More...</a><br /></td></tr>
+<tr class="separator:a3c5ad045c0bd478e14cfc69409c3dcfa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aed5747fe34549c3e75da3dd7ce8d50a9"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#aed5747fe34549c3e75da3dd7ce8d50a9">EnsureClassIsInFile</a> (<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> pcc, string className, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html">RelinkerOptionsPackage</a> rop, string gamePathOverride=null)</td></tr>
 <tr class="separator:aed5747fe34549c3e75da3dd7ce8d50a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aefec59169d0ae2b1b2a08af444a8177b"><td class="memItemLeft" align="right" valign="top">static List&lt; <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#aefec59169d0ae2b1b2a08af444a8177b">GetAllReferencesOfExport</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> export, bool includeLink=false)</td></tr>
@@ -1453,6 +1456,78 @@ Static Public Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="a3c5ad045c0bd478e14cfc69409c3dcfa" name="a3c5ad045c0bd478e14cfc69409c3dcfa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3c5ad045c0bd478e14cfc69409c3dcfa">&#9670;&nbsp;</a></span>GetBioXParentFiles()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static List&lt; string &gt; LegendaryExplorerCore.Packages.CloningImportingAndRelinking.EntryImporter.GetBioXParentFiles </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a>&#160;</td>
+          <td class="paramname"><em>game</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>filenameWithoutExtension</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>includeNonBioPTiers</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>includeLocalizations</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>bioFileExt</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>localization</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Gets the possible parent files of the specified package name according to the BioWare tier system. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">filenameWithoutExtension</td><td></td></tr>
+    <tr><td class="paramname">includeNonBioPTiers</td><td>If files other than BioP should be included (like Bio files should be included</td></tr>
+    <tr><td class="paramname">bioFileExt</td><td></td></tr>
+    <tr><td class="paramname">localization</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
 
 </div>
 </div>

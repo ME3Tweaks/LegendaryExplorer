@@ -35,6 +35,7 @@ var class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinki
     [ "GetPossibleImportFiles", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#a6c8fa8d66a1b62a1732af386d44f2251", null ],
     [ "GetPossibleImportFiles", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#aebc4405ecb031760973e1e9281845a24", null ],
     [ "GetPossibleAssociatedFiles", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#a11aab4adad437beeba3d4a07210abe99", null ],
+    [ "GetBioXParentFiles", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#a3c5ad045c0bd478e14cfc69409c3dcfa", null ],
     [ "EnsureClassIsInFile", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#aed5747fe34549c3e75da3dd7ce8d50a9", null ],
     [ "GetAllReferencesOfExport", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#aefec59169d0ae2b1b2a08af444a8177b", null ],
     [ "TryResolveImport", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#ac361ebf5fc5bd2ece30f3730815f3f0d", null ],
