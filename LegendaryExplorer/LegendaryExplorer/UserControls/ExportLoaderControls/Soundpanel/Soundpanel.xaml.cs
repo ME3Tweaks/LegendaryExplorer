@@ -1163,7 +1163,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     }
                 }
 
-                if (CurrentLoadedExport.ClassName == "SoundNodeWave" && ExportInfoListBox.SelectedItem is ISACTFileEntry bankEntry)
+                if (CurrentLoadedExport.ClassName == "SoundNodeWave" && ExportInfoListBox.SelectedItem is ISACTListBankChunk bankEntry)
                 {
                     SaveFileDialog d = new SaveFileDialog
                     {
@@ -1172,7 +1172,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     };
                     if (d.ShowDialog() == true)
                     {
-                        MemoryStream waveStream = AudioStreamHelper.GetWaveStreamFromISBEntry(bankEntry.Entry);
+                        MemoryStream waveStream = AudioStreamHelper.GetWaveStreamFromISBEntry(bankEntry);
                         waveStream.Seek(0, SeekOrigin.Begin);
                         using (FileStream fs = new FileStream(d.FileName, FileMode.OpenOrCreate))
                         {
