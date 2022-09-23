@@ -81,15 +81,17 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 info = nonVanillaClassInfo;
                 infoExists = true;
             }
-
+            
             // 07/18/2022 - If during property lookup we are passed a class 
             // that we don't know about, generate and use it, since it will also have superclass info
             // For example looking at a custom subclass in Interpreter, this code will resolve the ???'s
+            // //09/23/2022 - Fixed Classes[] = assignment using the class name rather than the containing name. This would make future
+            // lookups wrong.
             // - Mgamerz
             if (!infoExists && !inStruct && containingExport != null && containingExport.IsDefaultObject && containingExport.Class is ExportEntry classExp)
             {
                 info = generateClassInfo(classExp, false);
-                Classes[className] = info;
+                Classes[containingExport.ClassName] = info;
                 infoExists = true;
             }
 
