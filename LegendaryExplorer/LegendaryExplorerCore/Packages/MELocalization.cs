@@ -139,6 +139,7 @@ namespace LegendaryExplorerCore.Packages
                     return MELocalization.DEU;
                 case "ES":
                 case "ESN":
+                case "LOC_ES":
                 case "LOC_ESN":
                     return MELocalization.ESN;
                 case "FR":
