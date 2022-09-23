@@ -173,6 +173,7 @@ namespace LegendaryExplorerCore.Packages
                 case "RUS":
                 case "LOC_RUS":
                 case "LOC_RA":
+                case "LOC_RU":
                     return MELocalization.RUS;
                 default:
                     return MELocalization.None;
