@@ -1536,11 +1536,34 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             {
                 associatedFiles.Add($"{filenameWithoutExtension}_LOC_{localization}{bioFileExt}"); //todo: support users setting preferred language of game files
             }
+
+            associatedFiles.AddRange(GetBioXParentFiles(package.Game, filenameWithoutExtension, true, true, bioFileExt, localization));
+
+            if (package.Game == MEGame.ME3 && filenameWithoutExtension.Contains("MP", StringComparison.OrdinalIgnoreCase) && !filenameWithoutExtension.CaseInsensitiveEquals("BIOP_MP_COMMON"))
+            {
+                associatedFiles.Add("BIOP_MP_COMMON.pcc");
+            }
+
+            return associatedFiles;
+        }
+
+        /// <summary>
+        /// Gets the possible parent files of the specified package name according to the BioWare tier system.
+        /// </summary>
+        /// <param name="filenameWithoutExtension"></param>
+        /// <param name="includeNonBioPTiers">If files other than BioP should be included (like Bio files should be included</param>
+        /// <param name="bioFileExt"></param>
+        /// <param name="localization"></param>
+        /// <returns></returns>
+        public static List<string> GetBioXParentFiles(MEGame game, string filenameWithoutExtension, bool includeNonBioPTiers, bool includeLocalizations, string bioFileExt, string localization)
+        {
+            filenameWithoutExtension = filenameWithoutExtension.ToLower(); // Ensure lowercase
+            List<string> associatedFiles = new List<string>();
             var isBioXfile = filenameWithoutExtension is not null &&
-                             filenameWithoutExtension.Length > 5 &&
-                             filenameWithoutExtension.StartsWith("bio") &&
-                             !filenameWithoutExtension.StartsWith("biog") && // BioG are cooked seek free and are not meant to be imported from
-                             filenameWithoutExtension[4] == '_';
+                                         filenameWithoutExtension.Length > 5 &&
+                                         filenameWithoutExtension.StartsWith("bio") &&
+                                         !filenameWithoutExtension.StartsWith("biog") && // BioG are cooked seek free and are not meant to be imported from
+                                         filenameWithoutExtension[4] == '_';
             if (isBioXfile)
             {
                 // Do not include extensions in the results of this, they will be appended in resulting file
@@ -1573,10 +1596,14 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 string nextfile = bioXNextFileLookup(filenameWithoutExtension);
                 while (nextfile != null)
                 {
-                    if (includeNonBioPRelated)
+                    if (includeNonBioPTiers)
                     {
                         associatedFiles.Add($"{nextfile}{bioFileExt}");
-                        associatedFiles.Add($"{nextfile}_LOC_{localization}{bioFileExt}"); //todo: support users setting preferred language of game files
+                        if (includeLocalizations)
+                        {
+                            associatedFiles.Add(
+                                $"{nextfile}_LOC_{localization}{bioFileExt}"); //todo: support users setting preferred language of game files
+                        }
                     }
                     else if (nextfile.Length > 3 && nextfile[3] == 'p')
                     {
@@ -1584,11 +1611,6 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     }
                     nextfile = bioXNextFileLookup(nextfile.ToLower());
                 }
-            }
-
-            if (package.Game == MEGame.ME3 && filenameWithoutExtension.Contains("MP", StringComparison.OrdinalIgnoreCase) && !filenameWithoutExtension.CaseInsensitiveEquals("BIOP_MP_COMMON"))
-            {
-                associatedFiles.Add("BIOP_MP_COMMON.pcc");
             }
 
             return associatedFiles;

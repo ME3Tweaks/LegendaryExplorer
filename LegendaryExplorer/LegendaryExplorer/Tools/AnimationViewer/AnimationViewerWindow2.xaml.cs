@@ -22,6 +22,7 @@ using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using Path = System.IO.Path;
 
@@ -67,7 +68,8 @@ namespace LegendaryExplorer.Tools.AnimationViewer
                     {
                         PrepChangeLE1Actor(value);
                         return;
-                    } else if (Game == MEGame.LE2)
+                    }
+                    else if (Game == MEGame.LE2)
                     {
                         PrepChangeLE2Actor(value);
                         return;
@@ -116,10 +118,36 @@ namespace LegendaryExplorer.Tools.AnimationViewer
 
         #region LE2 SPECIFIC
 
+        private List<string> CurrentParentPackages;
         private void PrepChangeLE2Actor(string actorFullPath)
         {
-            // It's the same as LE1.
-            PrepChangeLE1Actor(actorFullPath);
+            if (!Initialized)
+                return; // We haven't received the init message yet
+            var packageName = actorFullPath.Split('.').FirstOrDefault(); // 1
+            var memoryName = string.Join('.', actorFullPath.Split('.').Skip(1)); // The rest
+
+            // LE2: Load parent packages for memory
+            if (CurrentParentPackages?.Count > 0)
+            {
+                // Unload packages.
+                foreach (var parentPackage in CurrentParentPackages)
+                {
+                    InteropHelper.SendMessageToGame($"STREAMLEVELOUT {Path.GetFileNameWithoutExtension(parentPackage)}", Game);
+                }
+            }
+
+            // Get new list.
+            CurrentParentPackages = EntryImporter.GetBioXParentFiles(MEGame.LE2, packageName, true, false, ".pcc", "INT");
+            CurrentParentPackages.Reverse(); // We want BioP as top not bottom
+            foreach (var parentPackage in CurrentParentPackages)
+            {
+                InteropHelper.SendMessageToGame($"ONLYLOADLEVEL {Path.GetFileNameWithoutExtension(parentPackage)}", Game);
+                Thread.Sleep(100); // Allow command to run for a moment.
+            }
+
+            // Tell game to load package and change the pawn
+            InteropHelper.SendMessageToGame($"ANIMV_CHANGE_PAWN {packageName}.{memoryName}", Game);
+            InteropHelper.SendMessageToGame($"CAUSEEVENT ChangeActor", Game);
         }
 
         #endregion
@@ -493,7 +521,7 @@ namespace LegendaryExplorer.Tools.AnimationViewer
                                 var file = db.FileList[usage.FileKey];
                                 if (MELoadedFiles.GetFilesLoadedInGame(Game).TryGetValue(file.FileName, out var fullPath))
                                 {
-                                     var p = MEPackageHandler.UnsafePartialLoad(fullPath, x => false); // Just load the tables
+                                    var p = MEPackageHandler.UnsafePartialLoad(fullPath, _ => false); // Just load the tables
                                     var exp = p.GetUExport(usage.UIndex);
                                     if (!exp.IsDefaultObject && !foundActorTypes.ContainsKey(exp.InstancedFullPath))
                                     {
@@ -535,9 +563,11 @@ namespace LegendaryExplorer.Tools.AnimationViewer
                 var animLevelBaseName = $"{Game}LiveAnimViewerStage";
                 //var animViewerStagePath = Path.Combine(AppDirectories.ExecFolder, $"{animLevelBaseName}.pcc");
                 //using var mapPcc = MEPackageHandler.OpenMEPackage(animViewerStagePath);
-                
+                IsBusy = true;
+                BusyText = "Preparing animation viewer";
+
                 AnimViewer.OpenMapInGame(Game, true, false, animLevelBaseName);
-                BusyText = "Launching game...";
+                BusyText = "Loading game";
 
                 AnimViewer.SetUpAnimStreamFile(Game, null, 0, $"{Game}AnimViewer_StreamAnim"); //placeholder for making sure file is in TOC
             });

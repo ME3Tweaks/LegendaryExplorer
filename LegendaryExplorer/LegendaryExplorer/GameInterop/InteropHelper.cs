@@ -262,7 +262,7 @@ namespace LegendaryExplorer.GameInterop
 
             // For debugging
             // Thread.Sleep(3000);
-
+            Debug.WriteLine($"SendMessageToGame({game}): {message}");
             pipeWriter.WriteLine(message); // Messages will end with \r\n when received in c++!
             pipeWriter.Flush();
 
