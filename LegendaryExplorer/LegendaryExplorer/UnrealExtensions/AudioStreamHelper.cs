@@ -228,6 +228,8 @@ namespace LegendaryExplorer.UnrealExtensions
                 StartInfo = procStartInfo
             };
 
+            Debug.WriteLine($"\"{procStartInfo.FileName}\" {procStartInfo.Arguments}");
+
             // Set our event handler to asynchronously read the sort output.
             proc.Start();
             //proc.BeginOutputReadLine();
@@ -247,7 +249,7 @@ namespace LegendaryExplorer.UnrealExtensions
         /// </summary>
         /// <param name="bankEntry">ISBankEntry to get stream from</param>
         /// <returns></returns>
-        public static MemoryStream GetWaveStreamFromISBEntry(ISACTListBankChunk bankEntry)
+        public static MemoryStream GetWaveStreamFromISBEntry(ISACTListBankChunk bankEntry, bool forceReturnWaveData = false)
         {
             //string outPath = Path.Combine(path, currentFileName);
             MemoryStream waveStream;
@@ -270,21 +272,22 @@ namespace LegendaryExplorer.UnrealExtensions
                 case CompressionInfoBankChunk.ISACTCompressionFormat.MSMP3:
                 case CompressionInfoBankChunk.ISACTCompressionFormat.MSADPCM:
                 case CompressionInfoBankChunk.ISACTCompressionFormat.MSPCMBIG:
+                case CompressionInfoBankChunk.ISACTCompressionFormat.OGGVORBIS when forceReturnWaveData:
                     //Xbox IMA, XMA, Sony MSF (PS3)
                     //Use VGM Stream
-
-                    // Todo: Reimplement this
-                    /*
-                    if (bankEntry.SampleData == null)
+                    if (bankEntry.SampleData != null)
                     {
-                        bankEntry.PopulateFakeFullData();
+                        // We have no sample data!
+                        byte[] fakeData = bankEntry.GenerateFakeSampleISB();
+                        var tempPath = GetATempSoundPath() + ".isb";
+                        File.WriteAllBytes(tempPath, fakeData);
+                        return ConvertRIFFToWaveVGMStream(tempPath);
                     }
-                    var tempPath = GetATempSoundPath() + ".isb";
-                    File.WriteAllBytes(tempPath, bankEntry.FullData);
-                    return ConvertRIFFToWaveVGMStream(tempPath);*/
+
                     return null;
 
                 // This code is played directly
+                
                 case CompressionInfoBankChunk.ISACTCompressionFormat.OGGVORBIS:
                     {
                         // Return custom stream - player will see custom class

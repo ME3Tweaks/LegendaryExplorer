@@ -525,959 +525,992 @@ namespace LegendaryExplorerCore.Sound.ISACT
                 return res;
             return null;
         }
-    }
 
-    public class NameOnlyBankChunk : BankChunk
+        /// <summary>
+        /// Constructs an ISB with only sample-related information for conversion
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public byte[] GenerateFakeSampleISB()
+        {
+            MemoryStream outStream = new MemoryStream();
+            EndianWriter writer = new EndianWriter(outStream);
+            // writer.Endian = FileEndianness;
+            writer.WriteStringLatin1("RIFF");
+            writer.Write(0); //Placeholder for length
+            writer.WriteStringLatin1("isbf"); 
+            writer.WriteStringLatin1("LIST");
+            var listsizepos = writer.BaseStream.Position;
+            writer.Write(0); //list size placeholder
+            writer.WriteStringLatin1("samp"); //sample object
+
+            BankSubChunkMap[TitleBankChunk.FixedChunkTitle].Write(outStream);
+            BankSubChunkMap[ChannelBankChunk.FixedChunkTitle].Write(outStream);
+            BankSubChunkMap[SampleInfoBankChunk.FixedChunkTitle].Write(outStream);
+            BankSubChunkMap[CompressionInfoBankChunk.FixedChunkTitle].Write(outStream);
+            BankSubChunkMap[DataBankChunk.FixedChunkTitle].Write(outStream);
+
+            //Correct headers
+            writer.BaseStream.Position = listsizepos;
+            writer.Write((uint)writer.BaseStream.Length - (uint)listsizepos);
+
+            writer.BaseStream.Position = 0x4;
+            writer.Write((uint)writer.BaseStream.Length - 0x8);
+            return outStream.ToArray();
+        }
+    }
+}
+
+public class NameOnlyBankChunk : BankChunk
+{
+    public NameOnlyBankChunk(string chunkName, BankChunk parent)
     {
-        public NameOnlyBankChunk(string chunkName, BankChunk parent)
-        {
-            Parent = parent;
-            ChunkName = chunkName;
-        }
-
-        public override void Write(Stream outStream)
-        {
-            outStream.WriteStringASCII(ChunkName);
-        }
+        Parent = parent;
+        ChunkName = chunkName;
     }
+
+    public override void Write(Stream outStream)
+    {
+        outStream.WriteStringASCII(ChunkName);
+    }
+}
+
+/// <summary>
+/// A generic 4 byte name 4 byte length block that is not parsed.
+/// </summary>
+[DebuggerDisplay("BankChunk {ChunkName}")]
+
+public class BankChunk
+{
+    public string ChunkName;
+    public byte[] RawData;
 
     /// <summary>
-    /// A generic 4 byte name 4 byte length block that is not parsed.
+    /// References the containing object
     /// </summary>
-    [DebuggerDisplay("BankChunk {ChunkName}")]
+    protected BankChunk Parent;
 
-    public class BankChunk
+    /// <summary>
+    /// Some chunks have subchunks
+    /// </summary>
+    public List<BankChunk> SubChunks = new List<BankChunk>(0);
+
+
+    /// <summary>
+    /// The offset in which this bank's data starts - + 8 after header & size. For name only this should not be used.
+    /// </summary>
+    public long ChunkDataStartOffset { get; init; }
+
+    public BankChunk() { }
+    public BankChunk(string chunkName, int chunkLen, Stream inStream, BankChunk parent)
     {
-        public string ChunkName;
-        public byte[] RawData;
-
-        /// <summary>
-        /// References the containing object
-        /// </summary>
-        protected BankChunk Parent;
-
-        /// <summary>
-        /// Some chunks have subchunks
-        /// </summary>
-        public List<BankChunk> SubChunks = new List<BankChunk>(0);
-
-
-        /// <summary>
-        /// The offset in which this bank's data starts - + 8 after header & size. For name only this should not be used.
-        /// </summary>
-        public long ChunkDataStartOffset { get; init; }
-
-        public BankChunk() { }
-        public BankChunk(string chunkName, int chunkLen, Stream inStream, BankChunk parent)
-        {
 #if DEBUG && ISACTDEBUGLOG
             if (chunkName == "data")
             {
                 Debug.WriteLine("FOUND 'data'!");
             }
 #endif
-            Parent = parent;
-            ChunkDataStartOffset = inStream.Position;
-            ChunkName = chunkName;
-            RawData = inStream.ReadToBuffer(chunkLen);
-            //has to be 2-byte aligned
-            if (chunkLen % 2 == 1)
-            {
-                inStream.ReadByte();
-            }
-        }
-
-
-        public virtual void Write(Stream outStream)
+        Parent = parent;
+        ChunkDataStartOffset = inStream.Position;
+        ChunkName = chunkName;
+        RawData = inStream.ReadToBuffer(chunkLen);
+        //has to be 2-byte aligned
+        if (chunkLen % 2 == 1)
         {
-            outStream.WriteStringASCII(ChunkName);
-            outStream.WriteInt32(RawData.Length);
-            outStream.Write(RawData);
-            //has to be 2-byte aligned
-            if (RawData.Length % 2 == 1)
-            {
-                outStream.WriteByte(0);
-            }
-        }
-
-        public IEnumerable<BankChunk> GetAllSubChunks()
-        {
-            if (SubChunks.Count == 0) return Array.Empty<BankChunk>();
-            List<BankChunk> returnList = new List<BankChunk>();
-            returnList.AddRange(SubChunks);
-            returnList.AddRange(SubChunks.SelectMany(x => x.GetAllSubChunks()));
-            return returnList;
-        }
-
-        public virtual string ToChunkDisplay()
-        {
-            if (RawData == null)
-            {
-                return ChunkName;
-            }
-
-            return $"{ChunkName} ({RawData.Length} bytes)";
-        }
-
-        public BankChunk GetParent()
-        {
-            return Parent;
+            inStream.ReadByte();
         }
     }
 
-    [DebuggerDisplay("TitleBankChunk: {Value}")]
-    public class TitleBankChunk : BankChunk
+
+    public virtual void Write(Stream outStream)
     {
+        outStream.WriteStringASCII(ChunkName);
+        outStream.WriteInt32(RawData.Length);
+        outStream.Write(RawData);
+        //has to be 2-byte aligned
+        if (RawData.Length % 2 == 1)
+        {
+            outStream.WriteByte(0);
+        }
+    }
+
+    public IEnumerable<BankChunk> GetAllSubChunks()
+    {
+        if (SubChunks.Count == 0) return Array.Empty<BankChunk>();
+        List<BankChunk> returnList = new List<BankChunk>();
+        returnList.AddRange(SubChunks);
+        returnList.AddRange(SubChunks.SelectMany(x => x.GetAllSubChunks()));
+        return returnList;
+    }
+
+    public virtual string ToChunkDisplay()
+    {
+        if (RawData == null)
+        {
+            return ChunkName;
+        }
+
+        return $"{ChunkName} ({RawData.Length} bytes)";
+    }
+
+    public BankChunk GetParent()
+    {
+        return Parent;
+    }
+}
+
+[DebuggerDisplay("TitleBankChunk: {Value}")]
+public class TitleBankChunk : BankChunk
+{
+    /// <summary>
+    /// The defined name of this chunk.
+    /// </summary>
+    public static readonly string FixedChunkTitle = "titl";
+    public string Value { get; }
+    public TitleBankChunk(string chunkName, int chunkLen, Stream inStream, BankChunk parent) : base(chunkName, chunkLen, inStream, parent)
+    {
+        Value = Encoding.Unicode.GetString(RawData, 0, chunkLen - 2); //exclude null terminator
+    }
+
+    public override string ToChunkDisplay()
+    {
+        if (RawData == null)
+        {
+            return ChunkName;
+        }
+
+        return $"{ChunkName}: {Value}";
+    }
+}
+
+[DebuggerDisplay("GroupBankChunk: {Value}")]
+public class GroupBankChunk : BankChunk
+{
+    public string Value;
+    public GroupBankChunk(string chunkName, int chunkLen, Stream inStream, BankChunk parent) : base(chunkName, chunkLen, inStream, parent)
+    {
+        Value = Encoding.Unicode.GetString(RawData, 0, chunkLen - 2); //exclude null terminator
+    }
+
+    public override string ToChunkDisplay()
+    {
+        if (RawData == null)
+        {
+            return ChunkName;
+        }
+
+        return $"{ChunkName}: Group Name: {Value}";
+    }
+}
+
+/// <summary>
+/// ISACT Compression Info bank chunk
+/// </summary>
+public class CompressionInfoBankChunk : BankChunk
+{
+    /// <summary>
+    /// The defined name of this chunk.
+    /// </summary>
+    public static readonly string FixedChunkTitle = "cmpi";
+
+    /// <summary>
+    /// The type of audio that is stored
+    /// </summary>
+    public enum ISACTCompressionFormat
+    {
+        PCM = 0,
+        IMA4ADPCM = 1,
+        OGGVORBIS = 2,
+        WMA = 3,
+        XMA = 4,
+
         /// <summary>
-        /// The defined name of this chunk.
+        /// PS3 only - MSF MP3
         /// </summary>
-        public static readonly string FixedChunkTitle = "titl";
-        public string Value { get; }
-        public TitleBankChunk(string chunkName, int chunkLen, Stream inStream, BankChunk parent) : base(chunkName, chunkLen, inStream, parent)
-        {
-            Value = Encoding.Unicode.GetString(RawData, 0, chunkLen - 2); //exclude null terminator
-        }
-
-        public override string ToChunkDisplay()
-        {
-            if (RawData == null)
-            {
-                return ChunkName;
-            }
-
-            return $"{ChunkName}: {Value}";
-        }
-    }
-
-    [DebuggerDisplay("GroupBankChunk: {Value}")]
-    public class GroupBankChunk : BankChunk
-    {
-        public string Value;
-        public GroupBankChunk(string chunkName, int chunkLen, Stream inStream, BankChunk parent) : base(chunkName, chunkLen, inStream, parent)
-        {
-            Value = Encoding.Unicode.GetString(RawData, 0, chunkLen - 2); //exclude null terminator
-        }
-
-        public override string ToChunkDisplay()
-        {
-            if (RawData == null)
-            {
-                return ChunkName;
-            }
-
-            return $"{ChunkName}: Group Name: {Value}";
-        }
+        MSMP3 = 5,
+        /// <summary>
+        /// PS3 only - MSF ADPCM
+        /// </summary>
+        MSADPCM = 6,
+        /// <summary>
+        /// PS3 only - MSF PCM Big Endian
+        /// </summary>
+        MSPCMBIG = 7 // Big Endian
     }
 
     /// <summary>
-    /// ISACT Compression Info bank chunk
+    /// Should be same as Target in processed ISB
     /// </summary>
-    public class CompressionInfoBankChunk : BankChunk
-    {
-        /// <summary>
-        /// The defined name of this chunk.
-        /// </summary>
-        public static readonly string FixedChunkTitle = "cmpi";
-
-        /// <summary>
-        /// The type of audio that is stored
-        /// </summary>
-        public enum ISACTCompressionFormat
-        {
-            PCM = 0,
-            IMA4ADPCM = 1,
-            OGGVORBIS = 2,
-            WMA = 3,
-            XMA = 4,
-
-            /// <summary>
-            /// PS3 only - MSF MP3
-            /// </summary>
-            MSMP3 = 5,
-            /// <summary>
-            /// PS3 only - MSF ADPCM
-            /// </summary>
-            MSADPCM = 6,
-            /// <summary>
-            /// PS3 only - MSF PCM Big Endian
-            /// </summary>
-            MSPCMBIG = 7 // Big Endian
-        }
-
-        /// <summary>
-        /// Should be same as Target in processed ISB
-        /// </summary>
-        public ISACTCompressionFormat CurrentFormat;
-        /// <summary>
-        /// Should be same as current in processed ISB
-        /// </summary>
-        public ISACTCompressionFormat TargetFormat;
-
-        /// <summary>
-        /// Size of the compressed data block
-        /// </summary>
-        public int TotalSize;
-        /// <summary>
-        /// Not sure
-        /// </summary>
-        public int PacketSize;
-        /// <summary>
-        /// Ratio chosen to compress data with
-        /// </summary>
-        public float CompressionRatio;
-        /// <summary>
-        /// Not sure
-        /// </summary>
-        public float CompressionQuality;
-        public CompressionInfoBankChunk(Stream inStream, BankChunk parent)
-        {
-            Parent = parent;
-            ChunkDataStartOffset = inStream.Position;
-
-            ChunkName = FixedChunkTitle; // We know the chunk name and len already so we don't need this.
-            CurrentFormat = (ISACTCompressionFormat)inStream.ReadInt32();
-            TargetFormat = (ISACTCompressionFormat)inStream.ReadInt32();
-            TotalSize = inStream.ReadInt32();
-            PacketSize = inStream.ReadInt32();
-            CompressionRatio = inStream.ReadFloat();
-            CompressionQuality = inStream.ReadFloat(); // Seems to not always be present
-        }
-
-        public override void Write(Stream outStream)
-        {
-            outStream.WriteStringASCII(ChunkName);
-            outStream.WriteInt32(24); // Fixed size
-            outStream.WriteInt32((int)CurrentFormat);
-            outStream.WriteInt32((int)TargetFormat);
-            outStream.WriteInt32(TotalSize);
-            outStream.WriteInt32(PacketSize);
-            outStream.WriteFloat(CompressionRatio);
-            outStream.WriteFloat(CompressionQuality);
-        }
-
-        public override string ToChunkDisplay()
-        {
-            return $"{ChunkName}: Compression Info\nCurrent Format: {CurrentFormat}\nTarget Format: {TargetFormat}\nTotal Size: {TotalSize}\nStreaming Packet Size: {PacketSize}\nCompression Ratio: {CompressionRatio}\nCompression Quality: {CompressionQuality}";
-        }
-    }
+    public ISACTCompressionFormat CurrentFormat;
+    /// <summary>
+    /// Should be same as current in processed ISB
+    /// </summary>
+    public ISACTCompressionFormat TargetFormat;
 
     /// <summary>
-    /// ISACT info about the sample data
+    /// Size of the compressed data block
     /// </summary>
-    public class SampleInfoBankChunk : BankChunk
+    public int TotalSize;
+    /// <summary>
+    /// Not sure
+    /// </summary>
+    public int PacketSize;
+    /// <summary>
+    /// Ratio chosen to compress data with
+    /// </summary>
+    public float CompressionRatio;
+    /// <summary>
+    /// Not sure
+    /// </summary>
+    public float CompressionQuality;
+    public CompressionInfoBankChunk(Stream inStream, BankChunk parent)
     {
-        /// <summary>
-        /// The defined name of this chunk.
-        /// </summary>
-        public static readonly string FixedChunkTitle = "sinf";
+        Parent = parent;
+        ChunkDataStartOffset = inStream.Position;
+
+        ChunkName = FixedChunkTitle; // We know the chunk name and len already so we don't need this.
+        CurrentFormat = (ISACTCompressionFormat)inStream.ReadInt32();
+        TargetFormat = (ISACTCompressionFormat)inStream.ReadInt32();
+        TotalSize = inStream.ReadInt32();
+        PacketSize = inStream.ReadInt32();
+        CompressionRatio = inStream.ReadFloat();
+        CompressionQuality = inStream.ReadFloat(); // Seems to not always be present
+    }
+
+    public override void Write(Stream outStream)
+    {
+        outStream.WriteStringASCII(ChunkName);
+        outStream.WriteInt32(24); // Fixed size
+        outStream.WriteInt32((int)CurrentFormat);
+        outStream.WriteInt32((int)TargetFormat);
+        outStream.WriteInt32(TotalSize);
+        outStream.WriteInt32(PacketSize);
+        outStream.WriteFloat(CompressionRatio);
+        outStream.WriteFloat(CompressionQuality);
+    }
+
+    public override string ToChunkDisplay()
+    {
+        return $"{ChunkName}: Compression Info\nCurrent Format: {CurrentFormat}\nTarget Format: {TargetFormat}\nTotal Size: {TotalSize}\nStreaming Packet Size: {PacketSize}\nCompression Ratio: {CompressionRatio}\nCompression Quality: {CompressionQuality}";
+    }
+}
+
+/// <summary>
+/// ISACT info about the sample data
+/// </summary>
+public class SampleInfoBankChunk : BankChunk
+{
+    /// <summary>
+    /// The defined name of this chunk.
+    /// </summary>
+    public static readonly string FixedChunkTitle = "sinf";
 
 
-        public int BufferOffset;
-        public int TimeLength;
-        public int SamplesPerSecond;
-        public int ByteLength;
-        public ushort BitsPerSample;
+    public int BufferOffset;
+    public int TimeLength;
+    public int SamplesPerSecond;
+    public int ByteLength;
+    public ushort BitsPerSample;
 
-        //Content of Padding doesn't matter, but we save it so that we can do an identical reserialization (Its value is inconsistent)
-        private ushort Padding;
-        public SampleInfoBankChunk(Stream inStream, BankChunk parent)
+    //Content of Padding doesn't matter, but we save it so that we can do an identical reserialization (Its value is inconsistent)
+    private ushort Padding;
+    public SampleInfoBankChunk(Stream inStream, BankChunk parent)
+    {
+        Parent = parent;
+        ChunkDataStartOffset = inStream.Position;
+
+        ChunkName = FixedChunkTitle; // We know the chunk name and len already so we don't need this.
+        BufferOffset = inStream.ReadInt32();
+        TimeLength = inStream.ReadInt32();
+        SamplesPerSecond = inStream.ReadInt32();
+        ByteLength = inStream.ReadInt32();
+        BitsPerSample = inStream.ReadUInt16();
+        Padding = inStream.ReadUInt16(); // Align 2 since struct size is 20 (align 4)
+    }
+
+
+    public override void Write(Stream outStream)
+    {
+        outStream.WriteStringASCII(ChunkName);
+        outStream.WriteInt32(20); // Fixed size
+        outStream.WriteInt32(BufferOffset);
+        outStream.WriteInt32(TimeLength);
+        outStream.WriteInt32(SamplesPerSecond);
+        outStream.WriteInt32(ByteLength);
+        outStream.WriteUInt16(BitsPerSample);
+        outStream.WriteUInt16(Padding); // Align to 4 byte boundary.
+    }
+
+    public override string ToChunkDisplay()
+    {
+        return
+            $"{ChunkName}: Sample Info\nBuffer Offset: {BufferOffset}\nTime Length: {TimeLength}\nSamples Per Second: {SamplesPerSecond}\nByte Length: {ByteLength}\nBits Per Sample: {BitsPerSample}";
+    }
+}
+
+/// <summary>
+/// BioWare-specific: Sample offset in external ISB
+/// </summary>
+public class SampleOffsetBankChunk : BankChunk
+{
+    public uint SampleOffset { get; set; }
+
+    public SampleOffsetBankChunk(Stream inStream, BankChunk parent) : this()
+    {
+        Parent = parent;
+        ChunkDataStartOffset = inStream.Position;
+        SampleOffset = inStream.ReadUInt32(); // Align 2 since struct size is 20 (align 4)
+    }
+
+    public SampleOffsetBankChunk()
+    {
+        ChunkName = @"soff"; // We know the chunk name and len already so we don't need this.
+    }
+
+    public override void Write(Stream outStream)
+    {
+        outStream.WriteStringASCII(ChunkName);
+        outStream.WriteInt32(4); // Fixed size
+        outStream.WriteUInt32(SampleOffset);
+    }
+
+    public override string ToChunkDisplay()
+    {
+        return $"{ChunkName}: External ISB Sample Data Offset: 0x{SampleOffset:X8}";
+    }
+}
+
+public class ContentGlobalVarInfoBankChunk : BankChunk
+{
+    public int StartVarIndex { get; set; }
+    public int StartStateIndex { get; set; }
+    public int StopVarIndex { get; set; }
+    public int StopStateIndex { get; set; }
+    public int Flags { get; set; }
+
+    public ContentGlobalVarInfoBankChunk(Stream inStream, BankChunk parent) : this()
+    {
+        Parent = parent;
+        ChunkDataStartOffset = inStream.Position;
+        StartVarIndex = inStream.ReadInt32();
+        StartStateIndex = inStream.ReadInt32();
+        StopVarIndex = inStream.ReadInt32();
+        StopStateIndex = inStream.ReadInt32();
+
+        // This is optional; if size of chunk is not 20 then this field is not read.
+        Flags = inStream.ReadInt32();
+    }
+
+    public ContentGlobalVarInfoBankChunk()
+    {
+        ChunkName = "cgvi";
+    }
+
+    public override void Write(Stream outStream)
+    {
+        outStream.WriteStringASCII(ChunkName);
+        outStream.WriteInt32(20); // Fixed size
+        outStream.WriteInt32(StartVarIndex);
+        outStream.WriteInt32(StartStateIndex);
+        outStream.WriteInt32(StopVarIndex);
+        outStream.WriteInt32(StopStateIndex);
+        outStream.WriteInt32(Flags);
+    }
+
+    public override string ToChunkDisplay()
+    {
+        return $"{ChunkName}: Content Global Var Info\n\tStartVarIndex: {StartVarIndex}\n\tStartStateIndex: {StartStateIndex}\n\tStopVarIndex: {StopVarIndex}\n\tStopStateIndex: {StopStateIndex}\n\tFlags: {Flags}";
+    }
+}
+
+/// <summary>
+/// Holds only an integer value
+/// </summary>
+public class IntBankChunk : BankChunk
+{
+    public int Value { get; set; }
+    public string HumanName { get; }
+
+    public IntBankChunk(string chunkName, Stream inStream, BankChunk parent)
+    {
+        Parent = parent;
+        ChunkName = chunkName;
+        ChunkDataStartOffset = inStream.Position;
+        Value = inStream.ReadInt32();
+
+        // Configure human name (if any defined)
+        switch (chunkName)
         {
-            Parent = parent;
-            ChunkDataStartOffset = inStream.Position;
+            case "dtsg":
+                HumanName = "Default Time";
+                break;
+            case "dtmp":
+                HumanName = "Default Temp";
+                break;
+            case "dsec":
+                HumanName = "Default Section";
+                break;
+            case "tmcd":
+                HumanName = "Default Code";
+                break;
+            case "loop":
+                HumanName = "Loop Count";
+                break;
+            case "trks":
+                HumanName = "Track Count";
+                break;
+            case "geix":
+                HumanName = "Global Effect Index";
+                break;
+            case "indx":
+                HumanName = "Resource Index";
+                break;
+            case "stri":
+                HumanName = "Streaming Info (Packet Size)";
+                break;
+            case "msti":
+                HumanName = "Memory Streaming Info (Time Length)";
+                break;
+            case "prel":
+                HumanName = "Preload Stream Packet";
+                break;
+            case "s3di":
+                HumanName = "Sample 3D Info (Buffer Index)";
+                break;
 
-            ChunkName = FixedChunkTitle; // We know the chunk name and len already so we don't need this.
-            BufferOffset = inStream.ReadInt32();
-            TimeLength = inStream.ReadInt32();
-            SamplesPerSecond = inStream.ReadInt32();
-            ByteLength = inStream.ReadInt32();
-            BitsPerSample = inStream.ReadUInt16();
-            Padding = inStream.ReadUInt16(); // Align 2 since struct size is 20 (align 4)
-        }
 
-
-        public override void Write(Stream outStream)
-        {
-            outStream.WriteStringASCII(ChunkName);
-            outStream.WriteInt32(20); // Fixed size
-            outStream.WriteInt32(BufferOffset);
-            outStream.WriteInt32(TimeLength);
-            outStream.WriteInt32(SamplesPerSecond);
-            outStream.WriteInt32(ByteLength);
-            outStream.WriteUInt16(BitsPerSample);
-            outStream.WriteUInt16(Padding); // Align to 4 byte boundary.
-        }
-
-        public override string ToChunkDisplay()
-        {
-            return
-                $"{ChunkName}: Sample Info\nBuffer Offset: {BufferOffset}\nTime Length: {TimeLength}\nSamples Per Second: {SamplesPerSecond}\nByte Length: {ByteLength}\nBits Per Sample: {BitsPerSample}";
         }
     }
+
+    public IntBankChunk()
+    {
+    }
+
+    public override void Write(Stream outStream)
+    {
+        outStream.WriteStringASCII(ChunkName);
+        outStream.WriteInt32(4); // Fixed size
+        outStream.WriteInt32(Value);
+    }
+
+    public override string ToChunkDisplay()
+    {
+        if (HumanName != null)
+        {
+            return $"{ChunkName}: {HumanName}: {Value}";
+        }
+        return $"{ChunkName}: {Value}";
+    }
+}
+
+public class FloatBankChunk : BankChunk
+{
+    public float Value { get; set; }
+    public string HumanName { get; }
+
+    public FloatBankChunk(string chunkName, Stream inStream, BankChunk parent)
+    {
+        Parent = parent;
+        ChunkName = chunkName;
+        ChunkDataStartOffset = inStream.Position;
+        Value = inStream.ReadFloat();
+
+        // Configure human name (if any defined)
+        switch (chunkName)
+        {
+            case "gbst":
+                HumanName = "Gain Boost";
+                break;
+
+
+        }
+    }
+
+    public FloatBankChunk()
+    {
+    }
+
+    public override void Write(Stream outStream)
+    {
+        outStream.WriteStringASCII(ChunkName);
+        outStream.WriteInt32(4); // Fixed size
+        outStream.WriteFloat(Value);
+    }
+
+    public override string ToChunkDisplay()
+    {
+        if (HumanName != null)
+        {
+            return $"{ChunkName}: {HumanName}: {Value}";
+        }
+        return $"{ChunkName}: {Value}";
+    }
+}
+
+// Not legacy
+public class BufferDistanceBankChunk : BankChunk
+{
+    public float MinDistance { get; set; }
+    public float MaxDistance { get; set; }
+    public float DistanceLevel { get; set; }
+    public uint DistanceFlags { get; }
 
     /// <summary>
-    /// BioWare-specific: Sample offset in external ISB
+    /// Not legacy sdst version
     /// </summary>
-    public class SampleOffsetBankChunk : BankChunk
+    /// <param name="inStream"></param>
+    public BufferDistanceBankChunk(Stream inStream, BankChunk parent)
     {
-        public uint SampleOffset { get; set; }
-
-        public SampleOffsetBankChunk(Stream inStream, BankChunk parent) : this()
-        {
-            Parent = parent;
-            ChunkDataStartOffset = inStream.Position;
-            SampleOffset = inStream.ReadUInt32(); // Align 2 since struct size is 20 (align 4)
-        }
-
-        public SampleOffsetBankChunk()
-        {
-            ChunkName = @"soff"; // We know the chunk name and len already so we don't need this.
-        }
-
-        public override void Write(Stream outStream)
-        {
-            outStream.WriteStringASCII(ChunkName);
-            outStream.WriteInt32(4); // Fixed size
-            outStream.WriteUInt32(SampleOffset);
-        }
-
-        public override string ToChunkDisplay()
-        {
-            return $"{ChunkName}: External ISB Sample Data Offset: 0x{SampleOffset:X8}";
-        }
+        Parent = parent;
+        ChunkName = "sdst";
+        ChunkDataStartOffset = inStream.Position;
+        MinDistance = inStream.ReadFloat();
+        MaxDistance = inStream.ReadFloat();
+        DistanceLevel = inStream.ReadFloat();
+        DistanceFlags = inStream.ReadUInt32();
     }
 
-    public class ContentGlobalVarInfoBankChunk : BankChunk
+    public BufferDistanceBankChunk()
     {
-        public int StartVarIndex { get; set; }
-        public int StartStateIndex { get; set; }
-        public int StopVarIndex { get; set; }
-        public int StopStateIndex { get; set; }
-        public int Flags { get; set; }
-
-        public ContentGlobalVarInfoBankChunk(Stream inStream, BankChunk parent) : this()
-        {
-            Parent = parent;
-            ChunkDataStartOffset = inStream.Position;
-            StartVarIndex = inStream.ReadInt32();
-            StartStateIndex = inStream.ReadInt32();
-            StopVarIndex = inStream.ReadInt32();
-            StopStateIndex = inStream.ReadInt32();
-
-            // This is optional; if size of chunk is not 20 then this field is not read.
-            Flags = inStream.ReadInt32();
-        }
-
-        public ContentGlobalVarInfoBankChunk()
-        {
-            ChunkName = "cgvi";
-        }
-
-        public override void Write(Stream outStream)
-        {
-            outStream.WriteStringASCII(ChunkName);
-            outStream.WriteInt32(20); // Fixed size
-            outStream.WriteInt32(StartVarIndex);
-            outStream.WriteInt32(StartStateIndex);
-            outStream.WriteInt32(StopVarIndex);
-            outStream.WriteInt32(StopStateIndex);
-            outStream.WriteInt32(Flags);
-        }
-
-        public override string ToChunkDisplay()
-        {
-            return $"{ChunkName}: Content Global Var Info\n\tStartVarIndex: {StartVarIndex}\n\tStartStateIndex: {StartStateIndex}\n\tStopVarIndex: {StopVarIndex}\n\tStopStateIndex: {StopStateIndex}\n\tFlags: {Flags}";
-        }
     }
+
+    public override void Write(Stream outStream)
+    {
+        outStream.WriteStringASCII(ChunkName);
+        outStream.WriteInt32(16); // Fixed size
+        outStream.WriteFloat(MinDistance);
+        outStream.WriteFloat(MaxDistance);
+        outStream.WriteFloat(DistanceLevel);
+        outStream.WriteUInt32(DistanceFlags);
+    }
+
+    public override string ToChunkDisplay()
+    {
+        return $"{ChunkName}: Buffer Sound Distance\n\tDistance Size: {MinDistance}\n\tDistance Level: {MaxDistance}\n\tDistance Modifier: {DistanceLevel}\n\tDistance Flags: {DistanceFlags}";
+    }
+}
+
+public class BufferSoundDistanceBankChunk : BankChunk
+{
+    public float DistanceSize { get; set; }
+    public float DistanceLevel { get; set; }
+    public float DistanceModifier { get; set; }
+    public uint DistanceFlags { get; }
 
     /// <summary>
-    /// Holds only an integer value
+    /// Legacy dist version
     /// </summary>
-    public class IntBankChunk : BankChunk
+    /// <param name="inStream"></param>
+    public BufferSoundDistanceBankChunk(Stream inStream, BankChunk parent)
     {
-        public int Value { get; set; }
-        public string HumanName { get; }
-
-        public IntBankChunk(string chunkName, Stream inStream, BankChunk parent)
-        {
-            Parent = parent;
-            ChunkName = chunkName;
-            ChunkDataStartOffset = inStream.Position;
-            Value = inStream.ReadInt32();
-
-            // Configure human name (if any defined)
-            switch (chunkName)
-            {
-                case "dtsg":
-                    HumanName = "Default Time";
-                    break;
-                case "dtmp":
-                    HumanName = "Default Temp";
-                    break;
-                case "dsec":
-                    HumanName = "Default Section";
-                    break;
-                case "tmcd":
-                    HumanName = "Default Code";
-                    break;
-                case "loop":
-                    HumanName = "Loop Count";
-                    break;
-                case "trks":
-                    HumanName = "Track Count";
-                    break;
-                case "geix":
-                    HumanName = "Global Effect Index";
-                    break;
-                case "indx":
-                    HumanName = "Resource Index";
-                    break;
-                case "stri":
-                    HumanName = "Streaming Info (Packet Size)";
-                    break;
-                case "msti":
-                    HumanName = "Memory Streaming Info (Time Length)";
-                    break;
-                case "prel":
-                    HumanName = "Preload Stream Packet";
-                    break;
-                case "s3di":
-                    HumanName = "Sample 3D Info (Buffer Index)";
-                    break;
-
-
-            }
-        }
-
-        public IntBankChunk()
-        {
-        }
-
-        public override void Write(Stream outStream)
-        {
-            outStream.WriteStringASCII(ChunkName);
-            outStream.WriteInt32(4); // Fixed size
-            outStream.WriteInt32(Value);
-        }
-
-        public override string ToChunkDisplay()
-        {
-            if (HumanName != null)
-            {
-                return $"{ChunkName}: {HumanName}: {Value}";
-            }
-            return $"{ChunkName}: {Value}";
-        }
+        Parent = parent;
+        ChunkName = "dist";
+        ChunkDataStartOffset = inStream.Position;
+        DistanceSize = inStream.ReadFloat();
+        DistanceLevel = inStream.ReadFloat();
+        DistanceModifier = inStream.ReadFloat();
+        DistanceFlags = inStream.ReadUInt32();
     }
 
-    public class FloatBankChunk : BankChunk
+    public BufferSoundDistanceBankChunk()
     {
-        public float Value { get; set; }
-        public string HumanName { get; }
-
-        public FloatBankChunk(string chunkName, Stream inStream, BankChunk parent)
-        {
-            Parent = parent;
-            ChunkName = chunkName;
-            ChunkDataStartOffset = inStream.Position;
-            Value = inStream.ReadFloat();
-
-            // Configure human name (if any defined)
-            switch (chunkName)
-            {
-                case "gbst":
-                    HumanName = "Gain Boost";
-                    break;
-
-
-            }
-        }
-
-        public FloatBankChunk()
-        {
-        }
-
-        public override void Write(Stream outStream)
-        {
-            outStream.WriteStringASCII(ChunkName);
-            outStream.WriteInt32(4); // Fixed size
-            outStream.WriteFloat(Value);
-        }
-
-        public override string ToChunkDisplay()
-        {
-            if (HumanName != null)
-            {
-                return $"{ChunkName}: {HumanName}: {Value}";
-            }
-            return $"{ChunkName}: {Value}";
-        }
     }
 
-    // Not legacy
-    public class BufferDistanceBankChunk : BankChunk
+    public override void Write(Stream outStream)
     {
-        public float MinDistance { get; set; }
-        public float MaxDistance { get; set; }
-        public float DistanceLevel { get; set; }
-        public uint DistanceFlags { get; }
-
-        /// <summary>
-        /// Not legacy sdst version
-        /// </summary>
-        /// <param name="inStream"></param>
-        public BufferDistanceBankChunk(Stream inStream, BankChunk parent)
-        {
-            Parent = parent;
-            ChunkName = "sdst";
-            ChunkDataStartOffset = inStream.Position;
-            MinDistance = inStream.ReadFloat();
-            MaxDistance = inStream.ReadFloat();
-            DistanceLevel = inStream.ReadFloat();
-            DistanceFlags = inStream.ReadUInt32();
-        }
-
-        public BufferDistanceBankChunk()
-        {
-        }
-
-        public override void Write(Stream outStream)
-        {
-            outStream.WriteStringASCII(ChunkName);
-            outStream.WriteInt32(16); // Fixed size
-            outStream.WriteFloat(MinDistance);
-            outStream.WriteFloat(MaxDistance);
-            outStream.WriteFloat(DistanceLevel);
-            outStream.WriteUInt32(DistanceFlags);
-        }
-
-        public override string ToChunkDisplay()
-        {
-            return $"{ChunkName}: Buffer Sound Distance\n\tDistance Size: {MinDistance}\n\tDistance Level: {MaxDistance}\n\tDistance Modifier: {DistanceLevel}\n\tDistance Flags: {DistanceFlags}";
-        }
+        outStream.WriteStringASCII(ChunkName);
+        outStream.WriteInt32(16); // Fixed size
+        outStream.WriteFloat(DistanceSize);
+        outStream.WriteFloat(DistanceLevel);
+        outStream.WriteFloat(DistanceModifier);
+        outStream.WriteUInt32(DistanceFlags);
     }
 
-    public class BufferSoundDistanceBankChunk : BankChunk
+    public override string ToChunkDisplay()
     {
-        public float DistanceSize { get; set; }
-        public float DistanceLevel { get; set; }
-        public float DistanceModifier { get; set; }
-        public uint DistanceFlags { get; }
-
-        /// <summary>
-        /// Legacy dist version
-        /// </summary>
-        /// <param name="inStream"></param>
-        public BufferSoundDistanceBankChunk(Stream inStream, BankChunk parent)
-        {
-            Parent = parent;
-            ChunkName = "dist";
-            ChunkDataStartOffset = inStream.Position;
-            DistanceSize = inStream.ReadFloat();
-            DistanceLevel = inStream.ReadFloat();
-            DistanceModifier = inStream.ReadFloat();
-            DistanceFlags = inStream.ReadUInt32();
-        }
-
-        public BufferSoundDistanceBankChunk()
-        {
-        }
-
-        public override void Write(Stream outStream)
-        {
-            outStream.WriteStringASCII(ChunkName);
-            outStream.WriteInt32(16); // Fixed size
-            outStream.WriteFloat(DistanceSize);
-            outStream.WriteFloat(DistanceLevel);
-            outStream.WriteFloat(DistanceModifier);
-            outStream.WriteUInt32(DistanceFlags);
-        }
-
-        public override string ToChunkDisplay()
-        {
-            return $"{ChunkName}: Buffer Sound Distance (Legacy)\n\tDistance Size: {DistanceSize}\n\tDistance Level: {DistanceLevel}\n\tDistance Modifier: {DistanceModifier}\n\tDistance Flags: {DistanceFlags}";
-        }
+        return $"{ChunkName}: Buffer Sound Distance (Legacy)\n\tDistance Size: {DistanceSize}\n\tDistance Level: {DistanceLevel}\n\tDistance Modifier: {DistanceModifier}\n\tDistance Flags: {DistanceFlags}";
     }
+}
 
+/// <summary>
+/// Data segment bank chunk. Contains the raw audio samples
+/// </summary>
+public class DataBankChunk : BankChunk
+{
     /// <summary>
-    /// Data segment bank chunk. Contains the raw audio samples
+    /// The defined name of this chunk.
     /// </summary>
-    public class DataBankChunk : BankChunk
+    public static readonly string FixedChunkTitle = "data";
+
+    public DataBankChunk(string chunkName, int chunkLen, Stream inStream, BankChunk parent) : base(chunkName, chunkLen, inStream, parent) { }
+    public DataBankChunk() : base() { }
+
+    // This has no special implementation
+}
+
+public class SoundConeBankChunk : BankChunk
+{
+    /// <summary>
+    /// The defined name of this chunk.
+    /// </summary>
+    public static readonly string FixedChunkTitle = "cone";
+    public int InsideConeAngle { get; set; }
+    public int OutsideConeAngle { get; set; }
+    public int OutsideConeLevel { get; set; }
+    public int OutsideConeHFLevel { get; set; }
+    public uint ConeFlags { get; set; }
+
+    public SoundConeBankChunk(Stream inStream, BankChunk parent)
     {
-        /// <summary>
-        /// The defined name of this chunk.
-        /// </summary>
-        public static readonly string FixedChunkTitle = "data";
-
-        public DataBankChunk(string chunkName, int chunkLen, Stream inStream, BankChunk parent) : base(chunkName, chunkLen, inStream, parent) { }
-        public DataBankChunk() : base() { }
-
-        // This has no special implementation
+        Parent = parent;
+        ChunkName = FixedChunkTitle;
+        ChunkDataStartOffset = inStream.Position;
+        InsideConeAngle = inStream.ReadInt32();
+        OutsideConeAngle = inStream.ReadInt32();
+        OutsideConeLevel = inStream.ReadInt32();
+        OutsideConeHFLevel = inStream.ReadInt32();
+        ConeFlags = inStream.ReadUInt32();
     }
 
-    public class SoundConeBankChunk : BankChunk
+    public SoundConeBankChunk()
     {
-        /// <summary>
-        /// The defined name of this chunk.
-        /// </summary>
-        public static readonly string FixedChunkTitle = "cone";
-        public int InsideConeAngle { get; set; }
-        public int OutsideConeAngle { get; set; }
-        public int OutsideConeLevel { get; set; }
-        public int OutsideConeHFLevel { get; set; }
-        public uint ConeFlags { get; set; }
-
-        public SoundConeBankChunk(Stream inStream, BankChunk parent)
-        {
-            Parent = parent;
-            ChunkName = FixedChunkTitle;
-            ChunkDataStartOffset = inStream.Position;
-            InsideConeAngle = inStream.ReadInt32();
-            OutsideConeAngle = inStream.ReadInt32();
-            OutsideConeLevel = inStream.ReadInt32();
-            OutsideConeHFLevel = inStream.ReadInt32();
-            ConeFlags = inStream.ReadUInt32();
-        }
-
-        public SoundConeBankChunk()
-        {
-        }
-
-        public override void Write(Stream outStream)
-        {
-            outStream.WriteStringASCII(ChunkName);
-            outStream.WriteInt32(20); // Fixed size
-            outStream.WriteInt32(InsideConeAngle);
-            outStream.WriteInt32(OutsideConeAngle);
-            outStream.WriteInt32(OutsideConeLevel);
-            outStream.WriteInt32(OutsideConeHFLevel);
-            outStream.WriteUInt32(ConeFlags);
-        }
-
-        public override string ToChunkDisplay()
-        {
-            return $"{ChunkName}: Buffer Sound Cone\n\tInside Cone Angle: {InsideConeAngle}\n\tOutside Cone Angle: {OutsideConeAngle}\n\tOutside Cone Level: {OutsideConeLevel}\n\tOutside Cone HF Level: {OutsideConeHFLevel}\n\tCone Flags: {ConeFlags}";
-        }
     }
 
-    public class SoundEventInfoBankChunk : BankChunk
+    public override void Write(Stream outStream)
     {
-        /// <summary>
-        /// The defined name of this chunk.
-        /// </summary>
-        public static readonly string FixedChunkTitle = "info";
-
-        public enum ISACTSEEventSelection
-        {
-            USE_EVS_ORDER, // 0
-            USE_EVS_CHANCE // 1
-        }
-
-        public ISACTSEEventSelection EventSelection { get; set; }
-        public uint DefaultChance { get; set; }
-        public int EqualChance { get; set; }
-        public uint Flags { get; set; }
-        public int ResetParamsOnLoop { get; set; }
-        public int ResetSampleOnLoop { get; set; }
-
-        public SoundEventInfoBankChunk(Stream inStream, BankChunk parent)
-        {
-            Parent = parent;
-            ChunkName = FixedChunkTitle;
-            ChunkDataStartOffset = inStream.Position;
-            EventSelection = (ISACTSEEventSelection)inStream.ReadUInt32();
-            DefaultChance = inStream.ReadUInt32();
-            EqualChance = inStream.ReadInt32();
-            Flags = inStream.ReadUInt32();
-            ResetParamsOnLoop = inStream.ReadInt32();
-            ResetSampleOnLoop = inStream.ReadInt32();
-        }
-
-        public SoundEventInfoBankChunk()
-        {
-        }
-
-        public override void Write(Stream outStream)
-        {
-            outStream.WriteStringASCII(ChunkName);
-            outStream.WriteInt32(24); // Fixed size
-            outStream.WriteInt32((int)EventSelection);
-            outStream.WriteUInt32(DefaultChance);
-            outStream.WriteInt32(EqualChance);
-            outStream.WriteUInt32(Flags);
-            outStream.WriteInt32(ResetParamsOnLoop);
-            outStream.WriteInt32(ResetSampleOnLoop);
-        }
-
-        public override string ToChunkDisplay()
-        {
-            return $"{ChunkName}: Sound Event Info\n\tEvent Selection: {EventSelection}\n\tDefault Chance: {DefaultChance}\n\tEqual Chance: {EqualChance}\n\tFlags: {Flags}\n\tReset Params On Loop: {ResetParamsOnLoop}\n\tReset Sample On Loop: {ResetSampleOnLoop}";
-        }
+        outStream.WriteStringASCII(ChunkName);
+        outStream.WriteInt32(20); // Fixed size
+        outStream.WriteInt32(InsideConeAngle);
+        outStream.WriteInt32(OutsideConeAngle);
+        outStream.WriteInt32(OutsideConeLevel);
+        outStream.WriteInt32(OutsideConeHFLevel);
+        outStream.WriteUInt32(ConeFlags);
     }
 
-    class IndexPage
+    public override string ToChunkDisplay()
     {
-        public uint EntryCount { get; set; }
-        public IndexEntry[] IndexEntry;
+        return $"{ChunkName}: Buffer Sound Cone\n\tInside Cone Angle: {InsideConeAngle}\n\tOutside Cone Angle: {OutsideConeAngle}\n\tOutside Cone Level: {OutsideConeLevel}\n\tOutside Cone HF Level: {OutsideConeHFLevel}\n\tCone Flags: {ConeFlags}";
+    }
+}
+
+public class SoundEventInfoBankChunk : BankChunk
+{
+    /// <summary>
+    /// The defined name of this chunk.
+    /// </summary>
+    public static readonly string FixedChunkTitle = "info";
+
+    public enum ISACTSEEventSelection
+    {
+        USE_EVS_ORDER, // 0
+        USE_EVS_CHANCE // 1
     }
 
-    class IndexEntry
-    {
-        public string Title { get; set; }
-        /// <summary>
-        /// String struct alignment data. Only used for reserializing the same data, if data is modified, this is ignored.
-        /// </summary>
-        public byte[] padding;
-        public string ObjectType { get; set; }
-        public uint ObjectIndex { get; set; }
+    public ISACTSEEventSelection EventSelection { get; set; }
+    public uint DefaultChance { get; set; }
+    public int EqualChance { get; set; }
+    public uint Flags { get; set; }
+    public int ResetParamsOnLoop { get; set; }
+    public int ResetSampleOnLoop { get; set; }
 
+    public SoundEventInfoBankChunk(Stream inStream, BankChunk parent)
+    {
+        Parent = parent;
+        ChunkName = FixedChunkTitle;
+        ChunkDataStartOffset = inStream.Position;
+        EventSelection = (ISACTSEEventSelection)inStream.ReadUInt32();
+        DefaultChance = inStream.ReadUInt32();
+        EqualChance = inStream.ReadInt32();
+        Flags = inStream.ReadUInt32();
+        ResetParamsOnLoop = inStream.ReadInt32();
+        ResetSampleOnLoop = inStream.ReadInt32();
     }
 
-    public class ContentIndexBankChunk : BankChunk
+    public SoundEventInfoBankChunk()
     {
-        /// <summary>
-        /// The defined name of this chunk.
-        /// </summary>
-        public static readonly string FixedChunkTitle = "ctdx";
-        private List<IndexPage> IndexPages;
-        public ContentIndexBankChunk(int dataSize, Stream inStream, BankChunk parent)
+    }
+
+    public override void Write(Stream outStream)
+    {
+        outStream.WriteStringASCII(ChunkName);
+        outStream.WriteInt32(24); // Fixed size
+        outStream.WriteInt32((int)EventSelection);
+        outStream.WriteUInt32(DefaultChance);
+        outStream.WriteInt32(EqualChance);
+        outStream.WriteUInt32(Flags);
+        outStream.WriteInt32(ResetParamsOnLoop);
+        outStream.WriteInt32(ResetSampleOnLoop);
+    }
+
+    public override string ToChunkDisplay()
+    {
+        return $"{ChunkName}: Sound Event Info\n\tEvent Selection: {EventSelection}\n\tDefault Chance: {DefaultChance}\n\tEqual Chance: {EqualChance}\n\tFlags: {Flags}\n\tReset Params On Loop: {ResetParamsOnLoop}\n\tReset Sample On Loop: {ResetSampleOnLoop}";
+    }
+}
+
+class IndexPage
+{
+    public uint EntryCount { get; set; }
+    public IndexEntry[] IndexEntry;
+}
+
+class IndexEntry
+{
+    public string Title { get; set; }
+    /// <summary>
+    /// String struct alignment data. Only used for reserializing the same data, if data is modified, this is ignored.
+    /// </summary>
+    public byte[] padding;
+    public string ObjectType { get; set; }
+    public uint ObjectIndex { get; set; }
+
+}
+
+public class ContentIndexBankChunk : BankChunk
+{
+    /// <summary>
+    /// The defined name of this chunk.
+    /// </summary>
+    public static readonly string FixedChunkTitle = "ctdx";
+    private List<IndexPage> IndexPages;
+    public ContentIndexBankChunk(int dataSize, Stream inStream, BankChunk parent)
+    {
+        Parent = parent;
+        ChunkName = FixedChunkTitle;
+        ChunkDataStartOffset = inStream.Position;
+
+        int dataAmountRead = 0;
+        while (dataAmountRead < dataSize)
         {
-            Parent = parent;
-            ChunkName = FixedChunkTitle;
-            ChunkDataStartOffset = inStream.Position;
-
-            int dataAmountRead = 0;
-            while (dataAmountRead < dataSize)
+            IndexPages ??= new List<IndexPage>();
+            IndexPage Page = new IndexPage();
+            var pageEntryCount = inStream.ReadInt32();
+            Page.IndexEntry = new IndexEntry[pageEntryCount];
+            for (int i = 0; i < pageEntryCount; i++)
             {
-                IndexPages ??= new List<IndexPage>();
-                IndexPage Page = new IndexPage();
-                var pageEntryCount = inStream.ReadInt32();
-                Page.IndexEntry = new IndexEntry[pageEntryCount];
-                for (int i = 0; i < pageEntryCount; i++)
+                var entry = new IndexEntry();
+                var endPos = inStream.Position + 0x100; // The string is an array of 128 chars. So it is 0x100 shorts. We read it as null string and skip the garbage data.
+                entry.Title = inStream.ReadStringUnicodeNull();
+                entry.padding = inStream.ReadToBuffer(endPos - inStream.Position); // For reserialization
+                entry.ObjectType = inStream.ReadStringASCII(4); // This is an ascii string.
+                entry.ObjectIndex = inStream.ReadUInt32();
+                Page.IndexEntry[i] = entry;
+            }
+            IndexPages.Add(Page);
+
+            // 4 (page count) + (0x100 + 0x8) (page entries)
+            dataAmountRead += 4 + (264 * pageEntryCount);
+        }
+    }
+
+    public ContentIndexBankChunk()
+    {
+    }
+
+    public override void Write(Stream outStream)
+    {
+        outStream.WriteStringASCII(ChunkName);
+        var sizePos = outStream.Position;
+        outStream.WriteInt32(0); // placeholder
+
+        foreach (var p in IndexPages)
+        {
+            outStream.WriteInt32(p.IndexEntry.Length);
+            foreach (var entry in p.IndexEntry)
+            {
+                var endPos = outStream.Position + 0x100;
+                outStream.WriteStringUnicodeNull(entry.Title);
+
+                if (entry.padding != null && outStream.Position + entry.padding.Length == endPos)
                 {
-                    var entry = new IndexEntry();
-                    var endPos = inStream.Position + 0x100; // The string is an array of 128 chars. So it is 0x100 shorts. We read it as null string and skip the garbage data.
-                    entry.Title = inStream.ReadStringUnicodeNull();
-                    entry.padding = inStream.ReadToBuffer(endPos - inStream.Position); // For reserialization
-                    entry.ObjectType = inStream.ReadStringASCII(4); // This is an ascii string.
-                    entry.ObjectIndex = inStream.ReadUInt32();
-                    Page.IndexEntry[i] = entry;
+                    outStream.Write(entry.padding);
                 }
-                IndexPages.Add(Page);
-
-                // 4 (page count) + (0x100 + 0x8) (page entries)
-                dataAmountRead += 4 + (264 * pageEntryCount);
-            }
-        }
-
-        public ContentIndexBankChunk()
-        {
-        }
-
-        public override void Write(Stream outStream)
-        {
-            outStream.WriteStringASCII(ChunkName);
-            var sizePos = outStream.Position;
-            outStream.WriteInt32(0); // placeholder
-
-            foreach (var p in IndexPages)
-            {
-                outStream.WriteInt32(p.IndexEntry.Length);
-                foreach (var entry in p.IndexEntry)
+                else
                 {
-                    var endPos = outStream.Position + 0x100;
-                    outStream.WriteStringUnicodeNull(entry.Title);
-
-                    if (entry.padding != null && outStream.Position + entry.padding.Length == endPos)
+                    // It would never reserialize to the same anyways.
+                    while (outStream.Position < endPos)
                     {
-                        outStream.Write(entry.padding);
+                        outStream.WriteByte(0xCC); // Garbage alignment data.
                     }
-                    else
-                    {
-                        // It would never reserialize to the same anyways.
-                        while (outStream.Position < endPos)
-                        {
-                            outStream.WriteByte(0xCC); // Garbage alignment data.
-                        }
-                    }
-
-                    outStream.WriteStringASCII(entry.ObjectType);
-                    outStream.WriteUInt32(entry.ObjectIndex);
                 }
-            }
 
-            // Write out the length.
-            var finishPos = outStream.Position;
-            outStream.Position = sizePos;
-            outStream.WriteInt32((int)(finishPos - sizePos - 4)); // -4 to remove the size itself.
-            outStream.Position = finishPos;
+                outStream.WriteStringASCII(entry.ObjectType);
+                outStream.WriteUInt32(entry.ObjectIndex);
+            }
         }
 
-        public override string ToChunkDisplay()
-        {
-            var str = $"{ChunkName}: Content Index ({IndexPages?.Count ?? 0} index pages)";
-            foreach (var ip in IndexPages)
-            {
-                str += $"\n\tIndex Page ({ip.IndexEntry.Length} indexes)";
-                foreach (var ie in ip.IndexEntry)
-                {
-                    str += $"\n\t\tIndex Entry {ie.Title}, type {ie.ObjectType}, index {ie.ObjectIndex}";
-                }
-            }
+        // Write out the length.
+        var finishPos = outStream.Position;
+        outStream.Position = sizePos;
+        outStream.WriteInt32((int)(finishPos - sizePos - 4)); // -4 to remove the size itself.
+        outStream.Position = finishPos;
+    }
 
-            return str;
+    public override string ToChunkDisplay()
+    {
+        var str = $"{ChunkName}: Content Index ({IndexPages?.Count ?? 0} index pages)";
+        foreach (var ip in IndexPages)
+        {
+            str += $"\n\tIndex Page ({ip.IndexEntry.Length} indexes)";
+            foreach (var ie in ip.IndexEntry)
+            {
+                str += $"\n\t\tIndex Entry {ie.Title}, type {ie.ObjectType}, index {ie.ObjectIndex}";
+            }
+        }
+
+        return str;
+    }
+}
+
+public class ISACTOrientation
+{
+    public int Azimuth; // Left/Right
+    public int Height;
+    public int Roll;
+}
+
+public class ISACTSoundTrack
+{
+    public uint BufferIndex;
+    public uint PathIndex;
+    public uint Order;
+    public uint Chance;
+    public Vector3 Position;
+    public ISACTOrientation Orientation;
+    public Vector3 Velocity;
+    public float MinGain;
+    public float MaxGain;
+    public float MinPitch;
+    public float MaxPitch;
+    public float MinDirect;
+    public float MaxDirect;
+    public float MinDirectHF;
+    public float MaxDirectHF;
+    public int[] SendEnable; // BioWare Specific: Array size is 4. Default is 32 in non forked ISACT
+    public float[] MinSend; // BioWare Specific: Array size is 4. Default is 32 in non forked ISACT
+    public float[] MaxSend; // BioWare Specific: Array size is 4. Default is 32 in non forked ISACT
+    public float[] MinSendHF; // BioWare Specific: Array size is 4. Default is 32 in non forked ISACT
+    public float[] MaxSendHF; // BioWare Specific: Array size is 4. Default is 32 in non forked ISACT
+    public uint Flags;
+}
+
+public class SoundEventSoundTracksFour : BankChunk
+{
+    public List<ISACTSoundTrack> SoundTracks;
+    /// <summary>
+    /// The defined name of this chunk.
+    /// </summary>
+    public static readonly string FixedChunkTitle = "sdtf";
+    public SoundEventSoundTracksFour(int dataSize, Stream inStream, BankChunk parent)
+    {
+        Parent = parent;
+        ChunkName = FixedChunkTitle;
+        ChunkDataStartOffset = inStream.Position;
+        SoundTracks = new List<ISACTSoundTrack>();
+
+        int numEntriesInArray = 4;
+        var numTracksToRead = dataSize / 168; // Struct size of a track is 168
+        for (int i = 0; i < numTracksToRead; i++)
+        {
+            ISACTSoundTrack st = new ISACTSoundTrack();
+            st.BufferIndex = inStream.ReadUInt32();
+            st.PathIndex = inStream.ReadUInt32();
+            st.Order = inStream.ReadUInt32();
+            st.Chance = inStream.ReadUInt32();
+            st.Position = new Vector3(inStream.ReadFloat(), inStream.ReadFloat(), inStream.ReadFloat());
+            st.Orientation = new ISACTOrientation()
+            { Azimuth = inStream.ReadInt32(), Height = inStream.ReadInt32(), Roll = inStream.ReadInt32() };
+            st.Velocity = new Vector3(inStream.ReadFloat(), inStream.ReadFloat(), inStream.ReadFloat());
+            st.MinGain = inStream.ReadFloat();
+            st.MaxGain = inStream.ReadFloat();
+            st.MinPitch = inStream.ReadFloat();
+            st.MaxPitch = inStream.ReadFloat();
+            st.MinDirect = inStream.ReadFloat();
+            st.MaxDirect = inStream.ReadFloat();
+            st.MinDirectHF = inStream.ReadFloat();
+            st.MaxDirectHF = inStream.ReadFloat();
+
+            st.SendEnable = new int[numEntriesInArray];
+            st.MinSend = new float[numEntriesInArray];
+            st.MaxSend = new float[numEntriesInArray];
+            st.MinSendHF = new float[numEntriesInArray];
+            st.MaxSendHF = new float[numEntriesInArray];
+
+            for (int j = 0; j < numEntriesInArray; j++) { st.SendEnable[j] = inStream.ReadInt32(); }
+            for (int j = 0; j < numEntriesInArray; j++) { st.MinSend[j] = inStream.ReadFloat(); }
+            for (int j = 0; j < numEntriesInArray; j++) { st.MaxSend[j] = inStream.ReadFloat(); }
+            for (int j = 0; j < numEntriesInArray; j++) { st.MinSendHF[j] = inStream.ReadFloat(); }
+            for (int j = 0; j < numEntriesInArray; j++) { st.MaxSendHF[j] = inStream.ReadFloat(); }
+
+            st.Flags = inStream.ReadUInt32();
+            SoundTracks.Add(st);
+
         }
     }
 
-    public class ISACTOrientation
+    public SoundEventSoundTracksFour()
     {
-        public int Azimuth; // Left/Right
-        public int Height;
-        public int Roll;
     }
 
-    public class ISACTSoundTrack
+    public override void Write(Stream outStream)
     {
-        public uint BufferIndex;
-        public uint PathIndex;
-        public uint Order;
-        public uint Chance;
-        public Vector3 Position;
-        public ISACTOrientation Orientation;
-        public Vector3 Velocity;
-        public float MinGain;
-        public float MaxGain;
-        public float MinPitch;
-        public float MaxPitch;
-        public float MinDirect;
-        public float MaxDirect;
-        public float MinDirectHF;
-        public float MaxDirectHF;
-        public int[] SendEnable; // BioWare Specific: Array size is 4. Default is 32 in non forked ISACT
-        public float[] MinSend; // BioWare Specific: Array size is 4. Default is 32 in non forked ISACT
-        public float[] MaxSend; // BioWare Specific: Array size is 4. Default is 32 in non forked ISACT
-        public float[] MinSendHF; // BioWare Specific: Array size is 4. Default is 32 in non forked ISACT
-        public float[] MaxSendHF; // BioWare Specific: Array size is 4. Default is 32 in non forked ISACT
-        public uint Flags;
+        outStream.WriteStringASCII(ChunkName);
+        var sizePos = outStream.Position;
+        outStream.WriteInt32(0); // placeholder
+
+        foreach (var st in SoundTracks)
+        {
+            outStream.WriteUInt32(st.BufferIndex);
+            outStream.WriteUInt32(st.PathIndex);
+            outStream.WriteUInt32(st.Order);
+            outStream.WriteUInt32(st.Chance);
+            outStream.WriteFloat(st.Position.X); // Vector
+            outStream.WriteFloat(st.Position.Y);
+            outStream.WriteFloat(st.Position.Z);
+            outStream.WriteInt32(st.Orientation.Azimuth); // ISACTOrientation
+            outStream.WriteInt32(st.Orientation.Height);
+            outStream.WriteInt32(st.Orientation.Roll);
+            outStream.WriteFloat(st.Velocity.X); // Vector
+            outStream.WriteFloat(st.Velocity.Y);
+            outStream.WriteFloat(st.Velocity.Z);
+            outStream.WriteFloat(st.MinGain);
+            outStream.WriteFloat(st.MaxGain);
+            outStream.WriteFloat(st.MinPitch);
+            outStream.WriteFloat(st.MaxPitch);
+            outStream.WriteFloat(st.MinDirect);
+            outStream.WriteFloat(st.MaxDirect);
+            outStream.WriteFloat(st.MinDirectHF);
+            outStream.WriteFloat(st.MaxDirectHF);
+
+            for (int j = 0; j < st.SendEnable.Length; j++) { outStream.WriteInt32(st.SendEnable[j]); }
+            for (int j = 0; j < st.MinSend.Length; j++) { outStream.WriteFloat(st.MinSend[j]); }
+            for (int j = 0; j < st.MaxSend.Length; j++) { outStream.WriteFloat(st.MaxSend[j]); }
+            for (int j = 0; j < st.MinSendHF.Length; j++) { outStream.WriteFloat(st.MinSendHF[j]); }
+            for (int j = 0; j < st.MaxSendHF.Length; j++) { outStream.WriteFloat(st.MaxSendHF[j]); }
+
+            outStream.WriteUInt32(st.Flags);
+        }
+
+        // Write out the length.
+        var finishPos = outStream.Position;
+        outStream.Position = sizePos;
+        outStream.WriteInt32((int)(finishPos - sizePos - 4)); // -4 to remove the size itself.
+        outStream.Position = finishPos;
     }
 
-    public class SoundEventSoundTracksFour : BankChunk
+    public override string ToChunkDisplay()
     {
-        public List<ISACTSoundTrack> SoundTracks;
-        /// <summary>
-        /// The defined name of this chunk.
-        /// </summary>
-        public static readonly string FixedChunkTitle = "sdtf";
-        public SoundEventSoundTracksFour(int dataSize, Stream inStream, BankChunk parent)
+        var str = $"{ChunkName}: SoundTracks Info ({SoundTracks?.Count ?? 0} tracks)";
+        int i = 0;
+        foreach (var st in SoundTracks)
         {
-            Parent = parent;
-            ChunkName = FixedChunkTitle;
-            ChunkDataStartOffset = inStream.Position;
-            SoundTracks = new List<ISACTSoundTrack>();
-
-            int numEntriesInArray = 4;
-            var numTracksToRead = dataSize / 168; // Struct size of a track is 168
-            for (int i = 0; i < numTracksToRead; i++)
-            {
-                ISACTSoundTrack st = new ISACTSoundTrack();
-                st.BufferIndex = inStream.ReadUInt32();
-                st.PathIndex = inStream.ReadUInt32();
-                st.Order = inStream.ReadUInt32();
-                st.Chance = inStream.ReadUInt32();
-                st.Position = new Vector3(inStream.ReadFloat(), inStream.ReadFloat(), inStream.ReadFloat());
-                st.Orientation = new ISACTOrientation()
-                { Azimuth = inStream.ReadInt32(), Height = inStream.ReadInt32(), Roll = inStream.ReadInt32() };
-                st.Velocity = new Vector3(inStream.ReadFloat(), inStream.ReadFloat(), inStream.ReadFloat());
-                st.MinGain = inStream.ReadFloat();
-                st.MaxGain = inStream.ReadFloat();
-                st.MinPitch = inStream.ReadFloat();
-                st.MaxPitch = inStream.ReadFloat();
-                st.MinDirect = inStream.ReadFloat();
-                st.MaxDirect = inStream.ReadFloat();
-                st.MinDirectHF = inStream.ReadFloat();
-                st.MaxDirectHF = inStream.ReadFloat();
-
-                st.SendEnable = new int[numEntriesInArray];
-                st.MinSend = new float[numEntriesInArray];
-                st.MaxSend = new float[numEntriesInArray];
-                st.MinSendHF = new float[numEntriesInArray];
-                st.MaxSendHF = new float[numEntriesInArray];
-
-                for (int j = 0; j < numEntriesInArray; j++) { st.SendEnable[j] = inStream.ReadInt32(); }
-                for (int j = 0; j < numEntriesInArray; j++) { st.MinSend[j] = inStream.ReadFloat(); }
-                for (int j = 0; j < numEntriesInArray; j++) { st.MaxSend[j] = inStream.ReadFloat(); }
-                for (int j = 0; j < numEntriesInArray; j++) { st.MinSendHF[j] = inStream.ReadFloat(); }
-                for (int j = 0; j < numEntriesInArray; j++) { st.MaxSendHF[j] = inStream.ReadFloat(); }
-
-                st.Flags = inStream.ReadUInt32();
-                SoundTracks.Add(st);
-
-            }
+            i++;
+            str += $"\nTrack {i}:";
+            str += $"\n\tBuffer Index: {st.BufferIndex}\tPath Index: {st.PathIndex}";
+            str += $"\n\tOrder: {st.Order}\tChance: {st.Chance}";
+            str += "\n...";
         }
 
-        public SoundEventSoundTracksFour()
-        {
-        }
-
-        public override void Write(Stream outStream)
-        {
-            outStream.WriteStringASCII(ChunkName);
-            var sizePos = outStream.Position;
-            outStream.WriteInt32(0); // placeholder
-
-            foreach (var st in SoundTracks)
-            {
-                outStream.WriteUInt32(st.BufferIndex);
-                outStream.WriteUInt32(st.PathIndex);
-                outStream.WriteUInt32(st.Order);
-                outStream.WriteUInt32(st.Chance);
-                outStream.WriteFloat(st.Position.X); // Vector
-                outStream.WriteFloat(st.Position.Y);
-                outStream.WriteFloat(st.Position.Z);
-                outStream.WriteInt32(st.Orientation.Azimuth); // ISACTOrientation
-                outStream.WriteInt32(st.Orientation.Height);
-                outStream.WriteInt32(st.Orientation.Roll);
-                outStream.WriteFloat(st.Velocity.X); // Vector
-                outStream.WriteFloat(st.Velocity.Y);
-                outStream.WriteFloat(st.Velocity.Z);
-                outStream.WriteFloat(st.MinGain);
-                outStream.WriteFloat(st.MaxGain);
-                outStream.WriteFloat(st.MinPitch);
-                outStream.WriteFloat(st.MaxPitch);
-                outStream.WriteFloat(st.MinDirect);
-                outStream.WriteFloat(st.MaxDirect);
-                outStream.WriteFloat(st.MinDirectHF);
-                outStream.WriteFloat(st.MaxDirectHF);
-
-                for (int j = 0; j < st.SendEnable.Length; j++) { outStream.WriteInt32(st.SendEnable[j]); }
-                for (int j = 0; j < st.MinSend.Length; j++) { outStream.WriteFloat(st.MinSend[j]); }
-                for (int j = 0; j < st.MaxSend.Length; j++) { outStream.WriteFloat(st.MaxSend[j]); }
-                for (int j = 0; j < st.MinSendHF.Length; j++) { outStream.WriteFloat(st.MinSendHF[j]); }
-                for (int j = 0; j < st.MaxSendHF.Length; j++) { outStream.WriteFloat(st.MaxSendHF[j]); }
-
-                outStream.WriteUInt32(st.Flags);
-            }
-
-            // Write out the length.
-            var finishPos = outStream.Position;
-            outStream.Position = sizePos;
-            outStream.WriteInt32((int)(finishPos - sizePos - 4)); // -4 to remove the size itself.
-            outStream.Position = finishPos;
-        }
-
-        public override string ToChunkDisplay()
-        {
-            var str = $"{ChunkName}: SoundTracks Info ({SoundTracks?.Count ?? 0} tracks)";
-            int i = 0;
-            foreach (var st in SoundTracks)
-            {
-                i++;
-                str += $"\nTrack {i}:";
-                str += $"\n\tBuffer Index: {st.BufferIndex}\tPath Index: {st.PathIndex}";
-                str += $"\n\tOrder: {st.Order}\tChance: {st.Chance}";
-                str += "\n...";
-            }
-
-            return str;
-        }
+        return str;
     }
 }

@@ -36,15 +36,11 @@ using LegendaryExplorerCore.Sound.Wwise;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using Microsoft.Win32;
-using NAudio.Vorbis;
 using NAudio.Wave;
-using NAudio.Wave.SampleProviders;
 using NAudio.WaveFormRenderer;
 using AudioStreamHelper = LegendaryExplorer.UnrealExtensions.AudioStreamHelper;
 using WwiseStream = LegendaryExplorerCore.Unreal.BinaryConverters.WwiseStream;
-using AudioInfo = LegendaryExplorerCore.Audio.AudioInfo;
 using Color = System.Drawing.Color;
-using SharpDX.Win32;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls
 {
@@ -1174,22 +1170,15 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     };
                     if (d.ShowDialog() == true)
                     {
-                        MemoryStream waveStream = AudioStreamHelper.GetWaveStreamFromISBEntry(bankEntry);
-                        waveStream.Seek(0, SeekOrigin.Begin);
-
-                        if (waveStream is OggWaveStream)
+                        // We force return wave data as using the conversion in NAudio makes it all static on reimport due to it not being actual raw PCM data (it is type 0x3, which is not 0x1 PCM)
+                        MemoryStream waveStream = AudioStreamHelper.GetWaveStreamFromISBEntry(bankEntry, true);
+                        if (waveStream.Length == 0)
                         {
-                            // Convert to .wav
-                            using (VorbisWaveReader reader = new VorbisWaveReader(waveStream))
-                            {
-                                var sampleProvider = new SampleToWaveProvider(reader.ToSampleProvider());
-                                MemoryStream convertedStream = new MemoryStream();
-                                WaveFileWriter.WriteWavFileToStream(convertedStream, sampleProvider);
-                                convertedStream.Position = 0; // Seek to start
-                                waveStream = convertedStream;
-                            }
+                            MessageBox.Show("An error occurred converting the audio to .wav.", "Error converting", MessageBoxButton.OK, MessageBoxImage.Error);
+                            return;
                         }
-
+                        
+                        waveStream.Seek(0, SeekOrigin.Begin);
                         using (FileStream fs = new FileStream(d.FileName, FileMode.OpenOrCreate))
                         {
                             waveStream.CopyTo(fs);
@@ -1324,7 +1313,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             if (replacementTarget == null)
                 return;
 
-            OpenFileDialog d = new OpenFileDialog { Title="Select new .wav file", Filter = "Wave PCM|*.wav" };
+            OpenFileDialog d = new OpenFileDialog { Title = "Select new .wav file", Filter = "Wave PCM|*.wav" };
             bool? res = d.ShowDialog();
             if (!res.HasValue || !res.Value)
             {
@@ -1346,8 +1335,23 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
             var quality = 0.8f; // Changable with UI?
             var wavData = File.ReadAllBytes(d.FileName);
+
+            if (wavData.Length < 0x2E)
+            {
+                MessageBox.Show("The specified file is not a valid .wav file.");
+                return;
+            }
+
             var oggData = ISACTHelperExtended.ConvertWaveToOgg(wavData, quality);
+            if (oggData == null)
+            {
+                MessageBox.Show("An error occurred converting the file to .ogg.", "Error converting", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+#if DEBUG
             // File.WriteAllBytes(@"C:\users\mgame\desktop\ogg.ogg", oggData);
+#endif
+
             var bin = ObjectBinary.From<SoundNodeWave>(CurrentLoadedExport);
             var isactBankPair = ISACTHelper.GetPairedBanks(bin.RawData);
             using (var wfr = new WaveFileReader(new MemoryStream(wavData)))

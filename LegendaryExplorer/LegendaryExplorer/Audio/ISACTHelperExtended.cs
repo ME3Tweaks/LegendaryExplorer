@@ -21,7 +21,12 @@ namespace LegendaryExplorer.Audio
         {
             byte[] outputBuffer = new byte[wavData.Length]; // It will always be smaller than this
             var result = CreateIPSOgg(wavData, (uint)wavData.Length, outputBuffer, (uint)outputBuffer.Length, quality);
-            return outputBuffer.Take(result).ToArray();
+            if (result > 0)
+            {
+                return outputBuffer.Take(result).ToArray();
+            }
+
+            return null; // Data segment was not found / ogg was not encoded.
         }
     }
 }
