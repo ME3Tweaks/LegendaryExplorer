@@ -277,13 +277,13 @@ namespace LegendaryExplorer.UnrealExtensions
                     //Use VGM Stream
                     if (bankEntry.SampleData != null)
                     {
-                        // We have no sample data!
                         byte[] fakeData = bankEntry.GenerateFakeSampleISB();
                         var tempPath = GetATempSoundPath() + ".isb";
                         File.WriteAllBytes(tempPath, fakeData);
                         return ConvertRIFFToWaveVGMStream(tempPath);
                     }
 
+                    // We have no sample data!
                     return null;
 
                 // This code is played directly
