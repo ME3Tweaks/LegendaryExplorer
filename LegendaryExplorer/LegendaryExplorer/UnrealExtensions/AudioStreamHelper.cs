@@ -243,7 +243,7 @@ namespace LegendaryExplorer.UnrealExtensions
         }
 
         /// <summary>
-        /// Creates a MemoryStream with a WAVE for a given ISBEntry if codec is supported
+        /// Gets a playable stream of data from the ISB Entry. The result may be a <see cref="OggWaveStream"/>, which is the Ogg file - this may need converted for use!
         /// </summary>
         /// <param name="bankEntry">ISBankEntry to get stream from</param>
         /// <returns></returns>

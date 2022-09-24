@@ -36,7 +36,9 @@ using LegendaryExplorerCore.Sound.Wwise;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using Microsoft.Win32;
+using NAudio.Vorbis;
 using NAudio.Wave;
+using NAudio.Wave.SampleProviders;
 using NAudio.WaveFormRenderer;
 using AudioStreamHelper = LegendaryExplorer.UnrealExtensions.AudioStreamHelper;
 using WwiseStream = LegendaryExplorerCore.Unreal.BinaryConverters.WwiseStream;
@@ -1174,6 +1176,20 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     {
                         MemoryStream waveStream = AudioStreamHelper.GetWaveStreamFromISBEntry(bankEntry);
                         waveStream.Seek(0, SeekOrigin.Begin);
+
+                        if (waveStream is OggWaveStream)
+                        {
+                            // Convert to .wav
+                            using (VorbisWaveReader reader = new VorbisWaveReader(waveStream))
+                            {
+                                var sampleProvider = new SampleToWaveProvider(reader.ToSampleProvider());
+                                MemoryStream convertedStream = new MemoryStream();
+                                WaveFileWriter.WriteWavFileToStream(convertedStream, sampleProvider);
+                                convertedStream.Position = 0; // Seek to start
+                                waveStream = convertedStream;
+                            }
+                        }
+
                         using (FileStream fs = new FileStream(d.FileName, FileMode.OpenOrCreate))
                         {
                             waveStream.CopyTo(fs);
@@ -1300,10 +1316,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void ReplaceEmbeddedSoundNodeWave()
         {
-//#if !DEBUG
-//            MessageBox.Show("This feature is disabled due to stability issues, please check back later.");
-//            return;
-//#endif
+            //#if !DEBUG
+            //            MessageBox.Show("This feature is disabled due to stability issues, please check back later.");
+            //            return;
+            //#endif
             var replacementTarget = ExportInfoListBox.SelectedItem as ISACTListBankChunk;
             if (replacementTarget == null)
                 return;
