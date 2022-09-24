@@ -569,7 +569,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                         PortFunc = () =>
                         {
                             using var package = MEPackageHandler.OpenMEPackage(d.FileName);
-                            var results = EntryExporter.ExportExportToFile(SelectedItem.Entry as ExportEntry, d.FileName, out _);
+                            var results = EntryExporter.ExportExportToPackage(SelectedItem.Entry as ExportEntry, package, out _);
                             package.Save();
                             return results;
                         };

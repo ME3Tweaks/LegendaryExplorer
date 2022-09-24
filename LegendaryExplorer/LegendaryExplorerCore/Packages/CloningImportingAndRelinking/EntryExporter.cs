@@ -98,6 +98,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             MEPackageHandler.CreateAndSavePackage(newPackagePath, sourceExport.Game);
             using var p = MEPackageHandler.OpenMEPackage(newPackagePath);
             var result = ExportExportToPackage(sourceExport, p, out newEntry, globalCache, pc);
+            p.Save();
             return result;
         }
 
