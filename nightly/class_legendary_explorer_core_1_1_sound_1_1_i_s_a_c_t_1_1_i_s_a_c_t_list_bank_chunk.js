@@ -4,6 +4,7 @@ var class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_i_s_a_c_t_list_ban
     [ "Write", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_i_s_a_c_t_list_bank_chunk.html#ae4782e75d8851f535c5b0d9ccfb2e0e4", null ],
     [ "ToChunkDisplay", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_i_s_a_c_t_list_bank_chunk.html#a2bdc78224a785f67d9874d389453dbda", null ],
     [ "GetChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_i_s_a_c_t_list_bank_chunk.html#afa1fb97546a057ff141610ee3dc2c5fd", null ],
+    [ "GenerateFakeSampleISB", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_i_s_a_c_t_list_bank_chunk.html#a9724dd74b363c22403456f27a0883cb7", null ],
     [ "ObjectType", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_i_s_a_c_t_list_bank_chunk.html#a4c7f65b660cda66931d0c08abcb29912", null ],
     [ "CompressionInfo", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_i_s_a_c_t_list_bank_chunk.html#ad864cbafcc3150532a3c9f1ee8826038", null ],
     [ "SampleInfo", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_i_s_a_c_t_list_bank_chunk.html#ac0c229bfd2aa5e9c557dcc00b90dc26d", null ],

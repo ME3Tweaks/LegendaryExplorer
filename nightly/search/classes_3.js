@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['databankchunk_0',['DataBankChunk',['../class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_data_bank_chunk.html',1,'LegendaryExplorerCore::Sound::ISACT']]],
+  ['databankchunk_0',['DataBankChunk',['../class_data_bank_chunk.html',1,'']]],
   ['databinding_1',['DataBinding',['../class_legendary_explorer_core_1_1_gammtek_1_1_enum_1_1_data_binding.html',1,'LegendaryExplorerCore::Gammtek::Enum']]],
   ['datareader_2',['DataReader',['../class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_data_reader.html',1,'LegendaryExplorerCore::Gammtek::IO']]],
   ['datawriter_3',['DataWriter',['../class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_data_writer.html',1,'LegendaryExplorerCore::Gammtek::IO']]],

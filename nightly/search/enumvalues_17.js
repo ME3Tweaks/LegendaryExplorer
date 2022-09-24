@@ -38,7 +38,7 @@ var searchData=
   ['whitespace_35',['WhiteSpace',['../namespace_legendary_explorer_core_1_1_unreal_script_1_1_lexing.html#a2a96f27fabd3c6ba0cd9f3f05a775c56a1043facb02056549cfa595ce3622fe77',1,'LegendaryExplorerCore::UnrealScript::Lexing']]],
   ['wiiu_36',['WiiU',['../class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#a423493ad96316a5a54f0df3fb3126cbea4ed0cccaa878852e4d97123c98e5426f',1,'LegendaryExplorerCore::Packages::MEPackage']]],
   ['wildcard_37',['Wildcard',['../namespace_legendary_explorer_core_1_1_gammtek_1_1_windows.html#a036f04d7460dd96fbdf6dba1681c3f60ac4a0dbaac3bd0f3bf581ad822f5fb4b4',1,'LegendaryExplorerCore::Gammtek::Windows']]],
-  ['wma_38',['WMA',['../class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_compression_info_bank_chunk.html#a6670ba8df049cb9670e8f431082030ebad954202506588335bc40071f1425e064',1,'LegendaryExplorerCore::Sound::ISACT::CompressionInfoBankChunk']]],
+  ['wma_38',['WMA',['../class_compression_info_bank_chunk.html#a564690902f1a92cf2d882e36e1ecfe01ad954202506588335bc40071f1425e064',1,'CompressionInfoBankChunk']]],
   ['wmodcategory_5fbarrel_39',['WModCategory_Barrel',['../namespace_legendary_explorer_core_1_1_unreal.html#a567b04e1379259acbf4de2c2e363694fa695ca160589bd5b51a007912f1532840',1,'LegendaryExplorerCore::Unreal']]],
   ['wmodcategory_5fblade_40',['WModCategory_Blade',['../namespace_legendary_explorer_core_1_1_unreal.html#a567b04e1379259acbf4de2c2e363694fa32a527ba0c076a20ffdd6a052689c5c6',1,'LegendaryExplorerCore::Unreal']]],
   ['wmodcategory_5fbody_41',['WModCategory_Body',['../namespace_legendary_explorer_core_1_1_unreal.html#a567b04e1379259acbf4de2c2e363694facb07886ee7121991f7c49a928753c505',1,'LegendaryExplorerCore::Unreal']]],

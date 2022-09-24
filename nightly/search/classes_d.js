@@ -2,7 +2,7 @@ var searchData=
 [
   ['nameentryguidpair_0',['NameEntryGuidPair',['../class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_name_entry_guid_pair.html',1,'LegendaryExplorerCore::Unreal::BinaryConverters']]],
   ['nameliteral_1',['NameLiteral',['../class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_name_literal.html',1,'LegendaryExplorerCore::UnrealScript::Language::Tree']]],
-  ['nameonlybankchunk_2',['NameOnlyBankChunk',['../class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_name_only_bank_chunk.html',1,'LegendaryExplorerCore::Sound::ISACT']]],
+  ['nameonlybankchunk_2',['NameOnlyBankChunk',['../class_name_only_bank_chunk.html',1,'']]],
   ['nameproperty_3',['NameProperty',['../class_legendary_explorer_core_1_1_unreal_1_1_name_property.html',1,'LegendaryExplorerCore::Unreal']]],
   ['namereference_4',['NameReference',['../struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html',1,'LegendaryExplorerCore::Unreal']]],
   ['namespace_5',['Namespace',['../class_legendary_explorer_core_1_1_coalesced_1_1_namespace.html',1,'LegendaryExplorerCore::Coalesced']]],

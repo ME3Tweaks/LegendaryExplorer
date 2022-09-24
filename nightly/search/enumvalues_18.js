@@ -49,7 +49,7 @@ var searchData=
   ['xgq_5fdefault_46',['XGQ_Default',['../namespace_legendary_explorer_core_1_1_unreal.html#ae89e115e75d9ebdbfc1c6ebe11bda099ad06984b0b3595dbe668453db8240976a',1,'LegendaryExplorerCore::Unreal']]],
   ['xgq_5fhigh_47',['XGQ_High',['../namespace_legendary_explorer_core_1_1_unreal.html#ae89e115e75d9ebdbfc1c6ebe11bda099aaf825bfbbac0c082ebe34d9d06feb94a',1,'LegendaryExplorerCore::Unreal']]],
   ['xgq_5flow_48',['XGQ_Low',['../namespace_legendary_explorer_core_1_1_unreal.html#ae89e115e75d9ebdbfc1c6ebe11bda099a0bdaced65fe4006bc7de1ed3867b47c7',1,'LegendaryExplorerCore::Unreal']]],
-  ['xma_49',['XMA',['../class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_compression_info_bank_chunk.html#a6670ba8df049cb9670e8f431082030eba3e24993aabf593921c91ea986dd951e8',1,'LegendaryExplorerCore::Sound::ISACT::CompressionInfoBankChunk']]],
+  ['xma_49',['XMA',['../class_compression_info_bank_chunk.html#a564690902f1a92cf2d882e36e1ecfe01a3e24993aabf593921c91ea986dd951e8',1,'CompressionInfoBankChunk']]],
   ['xml_50',['Xml',['../class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#a9f828aa5e7a667bedaee76b888d01400a9ec8e4e3ab4c7eeba097f27d7364d743',1,'LegendaryExplorerCore.Coalesced.CoalescedConverter.Xml()'],['../namespace_legendary_explorer_core_1_1_gammtek_1_1_dynamic.html#acc340f85c51c82374bfd3856fec5471aa9ec8e4e3ab4c7eeba097f27d7364d743',1,'LegendaryExplorerCore.Gammtek.Dynamic.Xml()']]],
   ['xor_51',['Xor',['../namespace_legendary_explorer_core_1_1_unreal_script_1_1_lexing.html#a2a96f27fabd3c6ba0cd9f3f05a775c56a76feb79109026728a20736a8c6504548',1,'LegendaryExplorerCore::UnrealScript::Lexing']]]
 ];

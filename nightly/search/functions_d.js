@@ -1,7 +1,7 @@
 var searchData=
 [
   ['nameliteral_0',['NameLiteral',['../class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_name_literal.html#a2dc17d1d6d7322107557136d08016cda',1,'LegendaryExplorerCore::UnrealScript::Language::Tree::NameLiteral']]],
-  ['nameonlybankchunk_1',['NameOnlyBankChunk',['../class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_name_only_bank_chunk.html#a9b392d191151986d37fae99e84604dbd',1,'LegendaryExplorerCore::Sound::ISACT::NameOnlyBankChunk']]],
+  ['nameonlybankchunk_1',['NameOnlyBankChunk',['../class_name_only_bank_chunk.html#a09011c106b5f33da4a87e81ffb3373fa',1,'NameOnlyBankChunk']]],
   ['nameproperty_2',['NameProperty',['../class_legendary_explorer_core_1_1_unreal_1_1_name_property.html#a13eca03312a09f8002629b8443334df0',1,'LegendaryExplorerCore::Unreal::NameProperty']]],
   ['namereference_3',['NameReference',['../struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html#a848f054c2692afcb92b20876466d9559',1,'LegendaryExplorerCore::Unreal::NameReference']]],
   ['nearequal_4',['NearEqual',['../class_legendary_explorer_core_1_1_sharp_d_x_1_1_math_util.html#aa27f263b924be9584321bc8716b02de0',1,'LegendaryExplorerCore::SharpDX::MathUtil']]],

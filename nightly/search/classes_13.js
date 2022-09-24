@@ -27,7 +27,7 @@ var searchData=
   ['tfccompactorinfopackage_24',['TFCCompactorInfoPackage',['../class_legendary_explorer_core_1_1_textures_1_1_t_f_c_compactor_info_package.html',1,'LegendaryExplorerCore::Textures']]],
   ['tfcinfo_25',['TFCInfo',['../class_legendary_explorer_core_1_1_textures_1_1_t_f_c_info.html',1,'LegendaryExplorerCore::Textures']]],
   ['throwhelper_26',['ThrowHelper',['../class_legendary_explorer_core_1_1_gammtek_1_1_throw_helper.html',1,'LegendaryExplorerCore::Gammtek']]],
-  ['titlebankchunk_27',['TitleBankChunk',['../class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_title_bank_chunk.html',1,'LegendaryExplorerCore::Sound::ISACT']]],
+  ['titlebankchunk_27',['TitleBankChunk',['../class_title_bank_chunk.html',1,'']]],
   ['tlkbitarray_28',['TLKBitArray',['../class_legendary_explorer_core_1_1_t_l_k_1_1_t_l_k_bit_array.html',1,'LegendaryExplorerCore::TLK']]],
   ['tlkheader_29',['TLKHeader',['../struct_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base_1_1_t_l_k_header.html',1,'LegendaryExplorerCore::TLK::ME2ME3::ME2ME3TLKBase']]],
   ['tlkstringref_30',['TLKStringRef',['../class_legendary_explorer_core_1_1_t_l_k_1_1_t_l_k_string_ref.html',1,'LegendaryExplorerCore::TLK']]],

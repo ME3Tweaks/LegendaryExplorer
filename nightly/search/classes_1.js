@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['bankchunk_0',['BankChunk',['../class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_bank_chunk.html',1,'LegendaryExplorerCore::Sound::ISACT']]],
+  ['bankchunk_0',['BankChunk',['../class_bank_chunk.html',1,'']]],
   ['basegameplotdatabase_1',['BasegamePlotDatabase',['../class_legendary_explorer_core_1_1_plot_database_1_1_databases_1_1_basegame_plot_database.html',1,'LegendaryExplorerCore::PlotDatabase::Databases']]],
   ['binaryextensions_2',['BinaryExtensions',['../class_legendary_explorer_core_1_1_coalesced_1_1_binary_extensions.html',1,'LegendaryExplorerCore::Coalesced']]],
   ['binaryheap_3',['BinaryHeap',['../class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_binary_heap.html',1,'LegendaryExplorerCore::Gammtek::Collections::Generic']]],
@@ -72,8 +72,8 @@ var searchData=
   ['bspsurf_69',['BspSurf',['../class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bsp_surf.html',1,'LegendaryExplorerCore::Unreal::BinaryConverters']]],
   ['buffer_70',['Buffer',['../class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_buffer.html',1,'LegendaryExplorerCore::Gammtek::Collections::Generic']]],
   ['bufferacquisitionexception_71',['BufferAcquisitionException',['../class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_buffer_acquisition_exception.html',1,'LegendaryExplorerCore::Gammtek::IO']]],
-  ['bufferdistancebankchunk_72',['BufferDistanceBankChunk',['../class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_buffer_distance_bank_chunk.html',1,'LegendaryExplorerCore::Sound::ISACT']]],
-  ['buffersounddistancebankchunk_73',['BufferSoundDistanceBankChunk',['../class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_buffer_sound_distance_bank_chunk.html',1,'LegendaryExplorerCore::Sound::ISACT']]],
+  ['bufferdistancebankchunk_72',['BufferDistanceBankChunk',['../class_buffer_distance_bank_chunk.html',1,'']]],
+  ['buffersounddistancebankchunk_73',['BufferSoundDistanceBankChunk',['../class_buffer_sound_distance_bank_chunk.html',1,'']]],
   ['bytearrayextensions_74',['ByteArrayExtensions',['../class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_collections_1_1_byte_array_extensions.html',1,'LegendaryExplorerCore.Gammtek.Extensions.Collections.ByteArrayExtensions'],['../class_legendary_explorer_core_1_1_helpers_1_1_byte_array_extensions.html',1,'LegendaryExplorerCore.Helpers.ByteArrayExtensions']]],
   ['bytecode_75',['Bytecode',['../class_legendary_explorer_core_1_1_unreal_1_1_bytecode.html',1,'LegendaryExplorerCore::Unreal']]],
   ['bytecodecompilervisitor_76',['ByteCodeCompilerVisitor',['../class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_byte_code_compiler_visitor.html',1,'LegendaryExplorerCore::UnrealScript::Compiling']]],

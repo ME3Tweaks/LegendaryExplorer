@@ -1,7 +1,7 @@
 var searchData=
 [
-  ['sampleinfobankchunk_0',['SampleInfoBankChunk',['../class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_sample_info_bank_chunk.html',1,'LegendaryExplorerCore::Sound::ISACT']]],
-  ['sampleoffsetbankchunk_1',['SampleOffsetBankChunk',['../class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_sample_offset_bank_chunk.html',1,'LegendaryExplorerCore::Sound::ISACT']]],
+  ['sampleinfobankchunk_0',['SampleInfoBankChunk',['../class_sample_info_bank_chunk.html',1,'']]],
+  ['sampleoffsetbankchunk_1',['SampleOffsetBankChunk',['../class_sample_offset_bank_chunk.html',1,'']]],
   ['sbyteextensions_2',['SByteExtensions',['../class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_s_byte_extensions.html',1,'LegendaryExplorerCore::Gammtek::Extensions']]],
   ['scext_3',['SCExt',['../class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_s_c_ext.html',1,'LegendaryExplorerCore::Unreal::BinaryConverters']]],
   ['scriptdelegate_4',['ScriptDelegate',['../struct_legendary_explorer_core_1_1_unreal_1_1_script_delegate.html',1,'LegendaryExplorerCore::Unreal']]],
@@ -35,10 +35,10 @@ var searchData=
   ['skelmeshsection_32',['SkelMeshSection',['../class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_skel_mesh_section.html',1,'LegendaryExplorerCore::Unreal::BinaryConverters']]],
   ['skipplaceholder_33',['SkipPlaceholder',['../class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_bytecode_writer_1_1_skip_placeholder.html',1,'LegendaryExplorerCore::UnrealScript::Compiling::BytecodeWriter']]],
   ['softskinvertex_34',['SoftSkinVertex',['../class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_soft_skin_vertex.html',1,'LegendaryExplorerCore::Unreal::BinaryConverters']]],
-  ['soundconebankchunk_35',['SoundConeBankChunk',['../class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_sound_cone_bank_chunk.html',1,'LegendaryExplorerCore::Sound::ISACT']]],
+  ['soundconebankchunk_35',['SoundConeBankChunk',['../class_sound_cone_bank_chunk.html',1,'']]],
   ['soundcue_36',['SoundCue',['../class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_sound_cue.html',1,'LegendaryExplorerCore::Unreal::BinaryConverters']]],
-  ['soundeventinfobankchunk_37',['SoundEventInfoBankChunk',['../class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_sound_event_info_bank_chunk.html',1,'LegendaryExplorerCore::Sound::ISACT']]],
-  ['soundeventsoundtracksfour_38',['SoundEventSoundTracksFour',['../class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_sound_event_sound_tracks_four.html',1,'LegendaryExplorerCore::Sound::ISACT']]],
+  ['soundeventinfobankchunk_37',['SoundEventInfoBankChunk',['../class_sound_event_info_bank_chunk.html',1,'']]],
+  ['soundeventsoundtracksfour_38',['SoundEventSoundTracksFour',['../class_sound_event_sound_tracks_four.html',1,'']]],
   ['soundnodewave_39',['SoundNodeWave',['../class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_sound_node_wave.html',1,'LegendaryExplorerCore::Unreal::BinaryConverters']]],
   ['soundsfxvoice_40',['SoundSFXVoice',['../class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_bank_1_1_sound_s_f_x_voice.html',1,'LegendaryExplorerCore::Unreal::BinaryConverters::WwiseBank']]],
   ['spanextensions_41',['SpanExtensions',['../class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_collections_1_1_generic_1_1_span_extensions.html',1,'LegendaryExplorerCore::Gammtek::Extensions::Collections::Generic']]],

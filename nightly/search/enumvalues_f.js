@@ -30,7 +30,7 @@ var searchData=
   ['ofs_5fbusy_27',['OFS_Busy',['../namespace_legendary_explorer_core_1_1_unreal.html#a3e52174d208bedf93fe70d0dd6488886a4059f76f7680c3fc230ec1f9703bd66e',1,'LegendaryExplorerCore::Unreal']]],
   ['ofs_5foffline_28',['OFS_Offline',['../namespace_legendary_explorer_core_1_1_unreal.html#a3e52174d208bedf93fe70d0dd6488886abff5727afec3e6473b150dc68621c8e1',1,'LegendaryExplorerCore::Unreal']]],
   ['ofs_5fonline_29',['OFS_Online',['../namespace_legendary_explorer_core_1_1_unreal.html#a3e52174d208bedf93fe70d0dd6488886abeb9c5f3db8898b9543d876a8e567962',1,'LegendaryExplorerCore::Unreal']]],
-  ['oggvorbis_30',['OGGVORBIS',['../class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_compression_info_bank_chunk.html#a6670ba8df049cb9670e8f431082030ebaa3044cf873f8480ac24750dcb153e561',1,'LegendaryExplorerCore::Sound::ISACT::CompressionInfoBankChunk']]],
+  ['oggvorbis_30',['OGGVORBIS',['../class_compression_info_bank_chunk.html#a564690902f1a92cf2d882e36e1ecfe01aa3044cf873f8480ac24750dcb153e561',1,'CompressionInfoBankChunk']]],
   ['ogs_5fended_31',['OGS_Ended',['../namespace_legendary_explorer_core_1_1_unreal.html#af94c332b7f24fcfce0a68d459b0aa8d3a933836fd642e9f9b6fc43bce68a8f8ce',1,'LegendaryExplorerCore::Unreal']]],
   ['ogs_5fending_32',['OGS_Ending',['../namespace_legendary_explorer_core_1_1_unreal.html#af94c332b7f24fcfce0a68d459b0aa8d3a89f40a55f078c2ad510691c7174ae1d8',1,'LegendaryExplorerCore::Unreal']]],
   ['ogs_5finprogress_33',['OGS_InProgress',['../namespace_legendary_explorer_core_1_1_unreal.html#af94c332b7f24fcfce0a68d459b0aa8d3a241c659a55fd49a9bbb6778568e4bc87',1,'LegendaryExplorerCore::Unreal']]],

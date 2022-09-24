@@ -407,33 +407,12 @@ var annotated_dup =
       ] ],
       [ "Sound", "namespace_legendary_explorer_core_1_1_sound.html", [
         [ "ISACT", "namespace_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t.html", [
-          [ "BankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_bank_chunk.html", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_bank_chunk" ],
-          [ "BufferDistanceBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_buffer_distance_bank_chunk.html", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_buffer_distance_bank_chunk" ],
-          [ "BufferSoundDistanceBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_buffer_sound_distance_bank_chunk.html", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_buffer_sound_distance_bank_chunk" ],
           [ "ChannelBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_channel_bank_chunk.html", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_channel_bank_chunk" ],
-          [ "CompressionInfoBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_compression_info_bank_chunk.html", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_compression_info_bank_chunk" ],
-          [ "ContentGlobalVarInfoBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_content_global_var_info_bank_chunk.html", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_content_global_var_info_bank_chunk" ],
-          [ "ContentIndexBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_content_index_bank_chunk.html", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_content_index_bank_chunk" ],
-          [ "DataBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_data_bank_chunk.html", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_data_bank_chunk" ],
-          [ "FloatBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_float_bank_chunk.html", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_float_bank_chunk" ],
-          [ "GroupBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_group_bank_chunk.html", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_group_bank_chunk" ],
-          [ "IndexEntry", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_index_entry.html", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_index_entry" ],
-          [ "IndexPage", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_index_page.html", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_index_page" ],
-          [ "IntBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_int_bank_chunk.html", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_int_bank_chunk" ],
           [ "ISACTBank", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_i_s_a_c_t_bank.html", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_i_s_a_c_t_bank" ],
           [ "ISACTBankPair", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_i_s_a_c_t_bank_pair.html", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_i_s_a_c_t_bank_pair" ],
           [ "ISACTHelper", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_i_s_a_c_t_helper.html", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_i_s_a_c_t_helper" ],
           [ "ISACTListBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_i_s_a_c_t_list_bank_chunk.html", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_i_s_a_c_t_list_bank_chunk" ],
-          [ "ISACTOrientation", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_i_s_a_c_t_orientation.html", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_i_s_a_c_t_orientation" ],
-          [ "ISACTSoundTrack", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_i_s_a_c_t_sound_track.html", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_i_s_a_c_t_sound_track" ],
-          [ "NameOnlyBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_name_only_bank_chunk.html", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_name_only_bank_chunk" ],
-          [ "SampleInfoBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_sample_info_bank_chunk.html", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_sample_info_bank_chunk" ],
-          [ "SampleOffsetBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_sample_offset_bank_chunk.html", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_sample_offset_bank_chunk" ],
-          [ "SoundConeBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_sound_cone_bank_chunk.html", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_sound_cone_bank_chunk" ],
-          [ "SoundEventInfoBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_sound_event_info_bank_chunk.html", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_sound_event_info_bank_chunk" ],
-          [ "SoundEventSoundTracksFour", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_sound_event_sound_tracks_four.html", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_sound_event_sound_tracks_four" ],
-          [ "SyncBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_sync_bank_chunk.html", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_sync_bank_chunk" ],
-          [ "TitleBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_title_bank_chunk.html", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_title_bank_chunk" ]
+          [ "SyncBankChunk", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_sync_bank_chunk.html", "class_legendary_explorer_core_1_1_sound_1_1_i_s_a_c_t_1_1_sync_bank_chunk" ]
         ] ],
         [ "Wwise", "namespace_legendary_explorer_core_1_1_sound_1_1_wwise.html", [
           [ "WwiseHelper", "class_legendary_explorer_core_1_1_sound_1_1_wwise_1_1_wwise_helper.html", "class_legendary_explorer_core_1_1_sound_1_1_wwise_1_1_wwise_helper" ]
@@ -907,5 +886,26 @@ var annotated_dup =
       ] ],
       [ "LegendaryExplorerCoreLib", "class_legendary_explorer_core_1_1_legendary_explorer_core_lib.html", "class_legendary_explorer_core_1_1_legendary_explorer_core_lib" ],
       [ "LegendaryExplorerCoreLibSettings", "class_legendary_explorer_core_1_1_legendary_explorer_core_lib_settings.html", "class_legendary_explorer_core_1_1_legendary_explorer_core_lib_settings" ]
-    ] ]
+    ] ],
+    [ "BankChunk", "class_bank_chunk.html", "class_bank_chunk" ],
+    [ "BufferDistanceBankChunk", "class_buffer_distance_bank_chunk.html", "class_buffer_distance_bank_chunk" ],
+    [ "BufferSoundDistanceBankChunk", "class_buffer_sound_distance_bank_chunk.html", "class_buffer_sound_distance_bank_chunk" ],
+    [ "CompressionInfoBankChunk", "class_compression_info_bank_chunk.html", "class_compression_info_bank_chunk" ],
+    [ "ContentGlobalVarInfoBankChunk", "class_content_global_var_info_bank_chunk.html", "class_content_global_var_info_bank_chunk" ],
+    [ "ContentIndexBankChunk", "class_content_index_bank_chunk.html", "class_content_index_bank_chunk" ],
+    [ "DataBankChunk", "class_data_bank_chunk.html", "class_data_bank_chunk" ],
+    [ "FloatBankChunk", "class_float_bank_chunk.html", "class_float_bank_chunk" ],
+    [ "GroupBankChunk", "class_group_bank_chunk.html", "class_group_bank_chunk" ],
+    [ "IndexEntry", "class_index_entry.html", "class_index_entry" ],
+    [ "IndexPage", "class_index_page.html", "class_index_page" ],
+    [ "IntBankChunk", "class_int_bank_chunk.html", "class_int_bank_chunk" ],
+    [ "ISACTOrientation", "class_i_s_a_c_t_orientation.html", "class_i_s_a_c_t_orientation" ],
+    [ "ISACTSoundTrack", "class_i_s_a_c_t_sound_track.html", "class_i_s_a_c_t_sound_track" ],
+    [ "NameOnlyBankChunk", "class_name_only_bank_chunk.html", "class_name_only_bank_chunk" ],
+    [ "SampleInfoBankChunk", "class_sample_info_bank_chunk.html", "class_sample_info_bank_chunk" ],
+    [ "SampleOffsetBankChunk", "class_sample_offset_bank_chunk.html", "class_sample_offset_bank_chunk" ],
+    [ "SoundConeBankChunk", "class_sound_cone_bank_chunk.html", "class_sound_cone_bank_chunk" ],
+    [ "SoundEventInfoBankChunk", "class_sound_event_info_bank_chunk.html", "class_sound_event_info_bank_chunk" ],
+    [ "SoundEventSoundTracksFour", "class_sound_event_sound_tracks_four.html", "class_sound_event_sound_tracks_four" ],
+    [ "TitleBankChunk", "class_title_bank_chunk.html", "class_title_bank_chunk" ]
 ];
