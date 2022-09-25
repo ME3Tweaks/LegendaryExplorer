@@ -424,6 +424,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private string GetDestinationTFCName()
         {
+            var tex = ObjectBinary.From<UTexture2D>(CurrentLoadedExport);
+            if (tex.Mips.Count == 1)
+                return PACKAGE_STORED_STRING; // If there is only 1 mip it will always be package stored.
+
             // This might need updated if we need to stuff textures into UDK for some reason
             var options = new List<string>();
             if (CurrentLoadedExport.Game > MEGame.ME1)
@@ -435,6 +439,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
             options.Add(PACKAGE_STORED_STRING);
             
+
+
             return InputComboBoxWPF.GetValue(Window.GetWindow(this),
                 "Select where the new texture should be stored. TFCs are better for game performance.",
                 "Select storage location", options, options.First());
