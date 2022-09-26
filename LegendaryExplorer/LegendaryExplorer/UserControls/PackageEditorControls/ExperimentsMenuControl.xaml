@@ -99,6 +99,7 @@
         <MenuItem Header="Resolve all imports (see debug output)" Click="ResolveAllImports_Clicked"/>
         <MenuItem Header="Shift current selected InterpTrackMove" Click="ShiftInterpTrackMove"/>
         <MenuItem Header="Shift all InterpTrackMove in package" Click="ShiftInterpTrackMovePackageWide"/>
+        <MenuItem Header="Shift all InterpTrackMove in package (Ignore MoveFrame=IMF_AnchorObject)" Click="ShiftInterpTrackMovePackageWideNoAnchor"/>
         <MenuItem Header="LEX Custom Files Manager" Click="LEXCustomFilesManager_Click"/>
     </MenuItem>
     <MenuItem Header="SirCxyrtyx's Garden of Modding Delights">

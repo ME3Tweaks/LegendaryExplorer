@@ -806,7 +806,21 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             var pccLoaded = GetPEWindow().Pcc != null;
             if (pccLoaded)
             {
-                PackageEditorExperimentsM.ShiftInterpTrackMovesInPackage(GetPEWindow().Pcc);
+                PackageEditorExperimentsM.ShiftInterpTrackMovesInPackage(GetPEWindow().Pcc, null);
+            }
+        }
+
+        private void ShiftInterpTrackMovePackageWideNoAnchor(object sender, RoutedEventArgs e)
+        {
+            var pccLoaded = GetPEWindow().Pcc != null;
+            if (pccLoaded)
+            {
+                PackageEditorExperimentsM.ShiftInterpTrackMovesInPackage(GetPEWindow().Pcc, x =>
+                {
+                    var prop = x.GetProperty<EnumProperty>("MoveFrame");
+                    if (prop == null || prop.Value != "IMF_AnchorObject") return true;
+                    return false; // IMF_AnchorObject
+                }); 
             }
         }
 

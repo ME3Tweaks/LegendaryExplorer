@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.ComponentModel.Composition.Primitives;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -155,7 +156,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 PackageCache globalCache = new PackageCache();
 
                 // Load global files into the cache to speed this process up.
-                globalCache.InsertIntoCache(MEPackageHandler.OpenMEPackages(EntryImporter.FilesSafeToImportFrom(MEGame.LE1).Select(x=>Path.Combine(MEDirectories.GetCookedPath(MEGame.LE1), x))));
+                globalCache.InsertIntoCache(MEPackageHandler.OpenMEPackages(EntryImporter.FilesSafeToImportFrom(MEGame.LE1).Select(x => Path.Combine(MEDirectories.GetCookedPath(MEGame.LE1), x))));
                 using var actorTypesPackage = MEPackageHandler.CreateAndLoadPackage(Path.Combine(MEDirectories.GetCookedPath(MEGame.LE1), "LE1ActorTypes.pcc"), MEGame.LE1);
                 pewpf.BusyText = "Coalescing actor types...";
                 pewpf.IsBusy = true;
@@ -859,14 +860,17 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
         }
 
-        public static void ShiftInterpTrackMovesInPackage(IMEPackage package)
+        public static void ShiftInterpTrackMovesInPackage(IMEPackage package, Func<ExportEntry, bool> predicate)
         {
             var offsetX = int.Parse(PromptDialog.Prompt(null, "Enter X shift offset", "Offset X", "0", true));
             var offsetY = int.Parse(PromptDialog.Prompt(null, "Enter Y shift offset", "Offset Y", "0", true));
             var offsetZ = int.Parse(PromptDialog.Prompt(null, "Enter Z shift offset", "Offset Z", "0", true));
             foreach (var exp in package.Exports.Where(x => x.ClassName == "InterpTrackMove"))
             {
-                ShiftInterpTrackMove(exp, offsetX, offsetY, offsetZ);
+                if (predicate == null || predicate.Invoke(exp))
+                {
+                    ShiftInterpTrackMove(exp, offsetX, offsetY, offsetZ);
+                }
             }
         }
 
@@ -1080,18 +1084,18 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     var wwstream = Pcc.GetUExport(eventbin.Links[0].WwiseStreams[0]);
                     if (eventbin.Links[0].WwiseStreams.Count > 1 && wwevent.ObjectNameString.Length == 16)  //must be standard VO_123456_m_Play wwiseevent name format
                     {
-                        var tlkref = wwevent.ObjectNameString.Remove(9).Remove(0,3);
+                        var tlkref = wwevent.ObjectNameString.Remove(9).Remove(0, 3);
                         var genderref = wwevent.ObjectNameString.ToLower().Remove(11).Remove(0, 10);
                         foreach (var stream in eventbin.Links[0].WwiseStreams)
                         {
                             var potentialStream = Pcc.GetUExport(stream);
-                            if(potentialStream.ObjectNameString.Contains(tlkref))
+                            if (potentialStream.ObjectNameString.Contains(tlkref))
                             {
-                                if(potentialStream.ObjectNameString.ToLower().Contains("player"))
+                                if (potentialStream.ObjectNameString.ToLower().Contains("player"))
                                 {
                                     if (!potentialStream.ObjectNameString.ToLower()
                                                                          .Contains("_" + genderref + "_"))
-                                            continue;
+                                        continue;
                                 }
                                 wwstream = potentialStream;
                                 break;
@@ -3191,7 +3195,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }).ContinueWithOnUIThread(_ => { pe.EndBusy(); });
         }
 
-        
+
 
         public static void PortSequenceObjectClassAcrossGame(PackageEditorWindow pe)
         {
