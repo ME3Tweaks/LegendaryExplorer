@@ -13,7 +13,7 @@
         AllowDrop="True"
         Closing="FileHexViewerWPF_OnClosing"
         Loaded="FileHexViewerWPF_OnLoaded"
-        Title="{Binding WindowTitle, FallbackValue=FileHexViewerWPF}" Height="450" Width="800">
+        Title="{Binding WindowTitle, FallbackValue=FileHexViewer}" Height="450" Width="800">
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="File" Padding  ="4">

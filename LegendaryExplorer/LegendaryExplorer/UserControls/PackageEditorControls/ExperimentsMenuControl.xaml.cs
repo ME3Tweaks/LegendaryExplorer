@@ -195,6 +195,33 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             });
         }
 
+        private void BuildUDKObjectInfo_Clicked(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrEmpty(UDKDirectory.DefaultGamePath))
+            {
+                MessageBox.Show(GetPEWindow(), "Specify a UDK path in the settings first.");
+                return;
+            }
+            var pew = GetPEWindow();
+            pew.BusyText = "Building UDK Object Info";
+            pew.IsBusy = true;
+
+            void setProgress(int done, int total)
+            {
+                Application.Current.Dispatcher.InvokeAsync(() => { pew.BusyText = $"Building UDK Object Info [{done}/{total}]"; });
+            }
+
+            Task.Run(() => 
+            {
+                UDKUnrealObjectInfo.generateInfo(Path.Combine(AppDirectories.ExecFolder, "UDKObjectInfo.json"), true, setProgress);
+            }).ContinueWithOnUIThread(x =>
+            {
+                pew.IsBusy = false;
+                pew.RestoreAndBringToFront();
+                MessageBox.Show(GetPEWindow(), "Done");
+            });
+        }
+
         private void BuildAllObjectInfoLE_Clicked(object sender, RoutedEventArgs e)
         {
             var pew = GetPEWindow();
@@ -779,7 +806,21 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             var pccLoaded = GetPEWindow().Pcc != null;
             if (pccLoaded)
             {
-                PackageEditorExperimentsM.ShiftInterpTrackMovesInPackage(GetPEWindow().Pcc);
+                PackageEditorExperimentsM.ShiftInterpTrackMovesInPackage(GetPEWindow().Pcc, null);
+            }
+        }
+
+        private void ShiftInterpTrackMovePackageWideNoAnchor(object sender, RoutedEventArgs e)
+        {
+            var pccLoaded = GetPEWindow().Pcc != null;
+            if (pccLoaded)
+            {
+                PackageEditorExperimentsM.ShiftInterpTrackMovesInPackage(GetPEWindow().Pcc, x =>
+                {
+                    var prop = x.GetProperty<EnumProperty>("MoveFrame");
+                    if (prop == null || prop.Value != "IMF_AnchorObject") return true;
+                    return false; // IMF_AnchorObject
+                }); 
             }
         }
 

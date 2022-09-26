@@ -414,24 +414,31 @@ namespace LegendaryExplorerCore.Packages
         /// <returns>MemoryStream of generated package file</returns>
         public static MemoryStream CreateEmptyLevelStream(string levelPackageName, MEGame game)
         {
-            if (!game.IsOTGame() && !game.IsLEGame())
-                throw new Exception(@"Cannot create a level for a game that is not ME1/2/3 or LE1/2/3");
+            if (!game.IsOTGame() && !game.IsLEGame() && game is not MEGame.UDK)
+            {
+                throw new Exception(@"Cannot create a level for a game that is not ME1/2/3, LE1/2/3, or UDK");
+            }
 
-            var emptyLevelName = $"{game}EmptyLevel";
-            var packageStream = LegendaryExplorerCoreUtilities.LoadEmbeddedFile($@"Packages.EmptyLevels.{emptyLevelName}.{(game == MEGame.ME1 ? ".SFM" : "pcc")}");
-            using var pcc = MEPackageHandler.OpenMEPackageFromStream(packageStream);
+            string emptyLevelName = $"{game}EmptyLevel";
+            MemoryStream packageStream = LegendaryExplorerCoreUtilities.LoadEmbeddedFile($@"Packages.EmptyLevels.{emptyLevelName}.{game switch
+            {
+                MEGame.ME1 => "SFM",
+                MEGame.UDK => "udk",
+                _ => "pcc"
+            }}");
+            using IMEPackage pcc = OpenMEPackageFromStream(packageStream);
             for (int i = 0; i < pcc.Names.Count; i++)
             {
                 string name = pcc.Names[i];
                 if (name.Equals(emptyLevelName))
                 {
-                    var newName = name.Replace(emptyLevelName, levelPackageName);
+                    string newName = name.Replace(emptyLevelName, levelPackageName);
                     pcc.replaceName(i, newName);
                 }
             }
 
             var packguid = Guid.NewGuid();
-            var packageExport = pcc.GetUExport(game switch
+            ExportEntry packageExport = pcc.GetUExport(game switch
             {
                 MEGame.LE1 => 4,
                 MEGame.LE3 => 6,
@@ -440,7 +447,7 @@ namespace LegendaryExplorerCore.Packages
             });
             packageExport.PackageGUID = packguid;
             pcc.PackageGuid = packguid;
-            var ms = pcc.SaveToStream(game.IsLEGame());
+            MemoryStream ms = pcc.SaveToStream(game.IsLEGame());
             ms.Position = 0; // Set position to beginning so users of this can open package immediately.
             return ms;
         }

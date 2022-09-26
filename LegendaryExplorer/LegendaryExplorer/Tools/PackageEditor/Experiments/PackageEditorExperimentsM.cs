@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.ComponentModel.Composition.Primitives;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -155,7 +156,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 PackageCache globalCache = new PackageCache();
 
                 // Load global files into the cache to speed this process up.
-                globalCache.InsertIntoCache(MEPackageHandler.OpenMEPackages(EntryImporter.FilesSafeToImportFrom(MEGame.LE1).Select(x=>Path.Combine(MEDirectories.GetCookedPath(MEGame.LE1), x))));
+                globalCache.InsertIntoCache(MEPackageHandler.OpenMEPackages(EntryImporter.FilesSafeToImportFrom(MEGame.LE1).Select(x => Path.Combine(MEDirectories.GetCookedPath(MEGame.LE1), x))));
                 using var actorTypesPackage = MEPackageHandler.CreateAndLoadPackage(Path.Combine(MEDirectories.GetCookedPath(MEGame.LE1), "LE1ActorTypes.pcc"), MEGame.LE1);
                 pewpf.BusyText = "Coalescing actor types...";
                 pewpf.IsBusy = true;
@@ -859,14 +860,17 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
         }
 
-        public static void ShiftInterpTrackMovesInPackage(IMEPackage package)
+        public static void ShiftInterpTrackMovesInPackage(IMEPackage package, Func<ExportEntry, bool> predicate)
         {
             var offsetX = int.Parse(PromptDialog.Prompt(null, "Enter X shift offset", "Offset X", "0", true));
             var offsetY = int.Parse(PromptDialog.Prompt(null, "Enter Y shift offset", "Offset Y", "0", true));
             var offsetZ = int.Parse(PromptDialog.Prompt(null, "Enter Z shift offset", "Offset Z", "0", true));
             foreach (var exp in package.Exports.Where(x => x.ClassName == "InterpTrackMove"))
             {
-                ShiftInterpTrackMove(exp, offsetX, offsetY, offsetZ);
+                if (predicate == null || predicate.Invoke(exp))
+                {
+                    ShiftInterpTrackMove(exp, offsetX, offsetY, offsetZ);
+                }
             }
         }
 
@@ -1080,18 +1084,18 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     var wwstream = Pcc.GetUExport(eventbin.Links[0].WwiseStreams[0]);
                     if (eventbin.Links[0].WwiseStreams.Count > 1 && wwevent.ObjectNameString.Length == 16)  //must be standard VO_123456_m_Play wwiseevent name format
                     {
-                        var tlkref = wwevent.ObjectNameString.Remove(9).Remove(0,3);
+                        var tlkref = wwevent.ObjectNameString.Remove(9).Remove(0, 3);
                         var genderref = wwevent.ObjectNameString.ToLower().Remove(11).Remove(0, 10);
                         foreach (var stream in eventbin.Links[0].WwiseStreams)
                         {
                             var potentialStream = Pcc.GetUExport(stream);
-                            if(potentialStream.ObjectNameString.Contains(tlkref))
+                            if (potentialStream.ObjectNameString.Contains(tlkref))
                             {
-                                if(potentialStream.ObjectNameString.ToLower().Contains("player"))
+                                if (potentialStream.ObjectNameString.ToLower().Contains("player"))
                                 {
                                     if (!potentialStream.ObjectNameString.ToLower()
                                                                          .Contains("_" + genderref + "_"))
-                                            continue;
+                                        continue;
                                 }
                                 wwstream = potentialStream;
                                 break;
@@ -2481,8 +2485,16 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
         public static void MScanner(PackageEditorWindow pe)
         {
+            Debug.WriteLine("ME1");
+
+            GenerateAllMemoryPathedObjects(MEGame.ME1);
+            Debug.WriteLine("LE1");
+
+            GenerateAllMemoryPathedObjects(MEGame.LE1);
+            Debug.WriteLine("Done");
+            return;
             SortedSet<string> configNames = new SortedSet<string>();
-            foreach (var f in MELoadedFiles.GetFilesLoadedInGame(MEGame.LE3))
+            foreach (var f in MELoadedFiles.GetFilesLoadedInGame(MEGame.LE1))
             {
                 using var pack = MEPackageHandler.UnsafePartialLoad(f.Value, x => x.ClassName == "Class"); // Only load class files
                 foreach (var c in pack.Exports.Where(x => x.ClassName == "Class"))
@@ -2717,6 +2729,36 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             {
                 Debug.WriteLine($"DUPLICATE IFP: {duplicate.Key} in {duplicate.Value}");
             }
+        }
+
+        private static void GenerateAllMemoryPathedObjects(MEGame game)
+        {
+            SortedSet<string> objects = new SortedSet<string>();
+
+            var packages = MELoadedFiles.GetFilesLoadedInGame(game);
+
+            foreach (var p in packages)
+            {
+                var pack = MEPackageHandler.UnsafePartialLoad(p.Value, x => false); // tables only
+                foreach (var e in pack.Exports)
+                {
+                    if (e.InstancedFullPath.StartsWith("TheWorld"))
+                        continue; // Do not do these
+
+                    if (e.ExportFlags.HasFlag(UnrealFlags.EExportFlags.ForcedExport))
+                    {
+                        objects.Add(e.FullPath);
+                    }
+                    else
+                    {
+                        objects.Add($"{e.FileRef.FileNameNoExtension}.{e.FullPath}");
+                    }
+                }
+            }
+
+            var objectsSorted = objects.ToList();
+            objectsSorted.Sort();
+            File.WriteAllLines($@"C:\users\public\{game}-memorypaths.txt", objectsSorted);
         }
 
         public static void OrganizeParticleSystems(PackageEditorWindow pe)
@@ -3153,7 +3195,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }).ContinueWithOnUIThread(_ => { pe.EndBusy(); });
         }
 
-        
+
 
         public static void PortSequenceObjectClassAcrossGame(PackageEditorWindow pe)
         {

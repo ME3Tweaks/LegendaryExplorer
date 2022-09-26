@@ -31,6 +31,11 @@
         <converters:GameTypeConverter x:Key="GameTypeConverter"/>
         <sharedUi:BindingProxy x:Key="bindingProxy" Data="{Binding}"/>
     </Window.Resources>
+    <Window.InputBindings>
+        <KeyBinding Key="O" Modifiers="Control" Command="{Binding OpenFileCommand}"/>
+        <KeyBinding Key="S" Modifiers="Control" Command="{Binding SaveFileCommand}"/>
+        <KeyBinding Key="S" Modifiers="Control+Shift" Command="{Binding SaveAsCommand}"/>
+    </Window.InputBindings>
     <xctk:BusyIndicator IsBusy="{Binding Path=IsBusy}" BusyContent="{Binding BusyText}">
         <DockPanel>
             <Menu DockPanel.Dock="Top">

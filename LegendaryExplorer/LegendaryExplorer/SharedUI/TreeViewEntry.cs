@@ -254,7 +254,7 @@ namespace LegendaryExplorer.SharedUI
                                         {
                                             if (_subtext != "") _subtext += " ";
                                             _subtext += "Native";
-                                            var nativeBackOffset = Entry.FileRef.Game < MEGame.ME3 ? 3 : 2; // can be ps3 me1/me2
+                                            var nativeBackOffset = !Entry.FileRef.Game.IsGame3() ? 3 : 2; // can be ps3 me1/me2
                                             var nativeIndex = EndianReader.ToInt16(data, data.Length - nativeBackOffset - flagOffset, ee.FileRef.Endian);
                                             if (nativeIndex > 0)
                                             {
@@ -270,7 +270,7 @@ namespace LegendaryExplorer.SharedUI
 
                                         if (_subtext == "") _subtext = null;
                                     }
-                                    else if (Entry.Game.IsOTGame()) // ME1 / ME2
+                                    else if (Entry.Game.IsOTGame() || Entry.Game is MEGame.UDK) // ME1 / ME2
                                     {
                                         //This could be -14 if it's defined as Net... we would have to decompile the whole function to know though...
                                         var flags = EndianReader.ToInt32(data, data.Length - 12, ee.FileRef.Endian);
@@ -282,9 +282,10 @@ namespace LegendaryExplorer.SharedUI
                                         else if (fs.HasFlag("Native"))
                                         {
                                             var nativeBackOffset = ee.FileRef.Game == MEGame.ME3 ? 6 : 7;
-                                            if (ee.Game < MEGame.ME3 &&
-                                                ee.FileRef.Platform != MEPackage.GamePlatform.PS3)
+                                            if (ee.Game is MEGame.UDK || ee.Game < MEGame.ME3 && ee.FileRef.Platform != MEPackage.GamePlatform.PS3)
+                                            {
                                                 nativeBackOffset = 0xF;
+                                            }
                                             var nativeIndex = EndianReader.ToInt16(data, data.Length - nativeBackOffset,
                                                 ee.FileRef.Endian);
                                             if (nativeIndex > 0)
@@ -311,7 +312,7 @@ namespace LegendaryExplorer.SharedUI
                                 {
                                     var data = ee.DataReadOnly;
                                     //This is kind of a hack. 
-                                    var value = EndianReader.ReadUnrealString(data, 0x14, ee.FileRef.Endian);
+                                    var value = EndianReader.ReadUnrealString(data, Entry.Game is MEGame.UDK ? 0x10 :0x14, ee.FileRef.Endian);
                                     _subtext = "Value: " + value;
                                     break;
                                 }
@@ -321,7 +322,7 @@ namespace LegendaryExplorer.SharedUI
                             case "ComponentProperty":
                                 {
                                     // Objects of this type
-                                    var typeRef = EndianReader.ToInt32(ee.DataReadOnly, Entry.FileRef.Platform == MEPackage.GamePlatform.PC ? 0x2C : 0x20, ee.FileRef.Endian);
+                                    var typeRef = EndianReader.ToInt32(ee.DataReadOnly, Entry.FileRef.Platform == MEPackage.GamePlatform.PC ? Entry.Game is MEGame.UDK ? 0x28 : 0x2C : 0x20, ee.FileRef.Endian);
                                     if (ee.FileRef.TryGetEntry(typeRef, out var type))
                                     {
                                         _subtext = type.ObjectName;

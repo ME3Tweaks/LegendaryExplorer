@@ -11,30 +11,34 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
     public abstract class UStruct : UField
     {
+        private UIndex ScriptText; //ME1/ME2/UDK
         public UIndex Children;
-        private int Line; //ME1/ME2
-        private int TextPos; //ME1/ME2
+        private UIndex CppText; //ME1/ME2/UDK
+        private int Line; //ME1/ME2/UDK
+        private int TextPos; //ME1/ME2/UDK
         public int ScriptBytecodeSize; //ME3, LE
         public int ScriptStorageSize;
         public byte[] ScriptBytes;
         protected override void Serialize(SerializingContainer2 sc)
         {
             base.Serialize(sc);
-            if (sc.Game is MEGame.ME1 or MEGame.ME2 && sc.Pcc.Platform != MEPackage.GamePlatform.PS3)
+            if (sc.Game is MEGame.UDK)
             {
-                int dummy = 0;
-                sc.Serialize(ref dummy);
+                sc.Serialize(ref SuperClass);
+            }
+            if (sc.Game is MEGame.ME1 or MEGame.ME2 or MEGame.UDK && sc.Pcc.Platform != MEPackage.GamePlatform.PS3)
+            {
+                sc.Serialize(ref ScriptText);
             }
             sc.Serialize(ref Children);
-            if (sc.Game <= MEGame.ME2 && sc.Pcc.Platform != MEPackage.GamePlatform.PS3)
+            if (sc.Game is MEGame.ME1 or MEGame.ME2 or MEGame.UDK && sc.Pcc.Platform != MEPackage.GamePlatform.PS3)
             {
-                int dummy = 0;
-                sc.Serialize(ref dummy);
+                sc.Serialize(ref CppText);
                 sc.Serialize(ref Line);
                 sc.Serialize(ref TextPos);
             }
 
-            if (sc.Game is MEGame.ME3 || sc.Game.IsLEGame() || sc.Pcc.Platform == MEPackage.GamePlatform.PS3)
+            if (sc.Game is MEGame.ME3 || sc.Game.IsLEGame() || sc.Game is MEGame.UDK || sc.Pcc.Platform == MEPackage.GamePlatform.PS3)
             {
                 sc.Serialize(ref ScriptBytecodeSize);
             }
@@ -56,7 +60,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
             if (Export.ClassName is "Function" or "State")
             {
-                if (Export.Game is MEGame.ME3 || Export.Game.IsLEGame())
+                if (Export.Game is MEGame.ME3 || Export.Game.IsLEGame() || Export.Game is MEGame.UDK)
                 {
                     try
                     {
@@ -96,11 +100,23 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public override void ForEachUIndex<TAction>(MEGame game, in TAction action)
         {
             base.ForEachUIndex(game, in action);
+            if (game is MEGame.UDK)
+            {
+                Unsafe.AsRef(action).Invoke(ref SuperClass, nameof(SuperClass));
+            }
+            if (game is MEGame.ME1 or MEGame.ME2 or MEGame.UDK)
+            {
+                Unsafe.AsRef(action).Invoke(ref ScriptText, nameof(ScriptText));
+            }
             Unsafe.AsRef(action).Invoke(ref Children, "ChildListStart");
-            
+
+            if (game is MEGame.ME1 or MEGame.ME2 or MEGame.UDK)
+            {
+                Unsafe.AsRef(action).Invoke(ref CppText, nameof(CppText));
+            }
             if (Export.ClassName is not "ScriptStruct")
             {
-                if (Export.Game == MEGame.ME3 || Export.Game.IsLEGame())
+                if (Export.Game == MEGame.ME3 || Export.Game.IsLEGame() || Export.Game is MEGame.UDK)
                 {
                     try
                     {

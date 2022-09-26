@@ -15,6 +15,7 @@ using LegendaryExplorerCore.Shaders;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
+using LegendaryExplorerCore.UnrealScript;
 
 namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 {
@@ -135,7 +136,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
             // Crossgen Sept 30 2021: Disabled import children when doing clone all dependencies as not all children are dependendencies
             // Crossgen Oct 8 2021: Re-enabled, but only for packages, as they won't have any direct references to children
-            if ((portingOption == PortingOption.CloneTreeAsChild || portingOption == PortingOption.MergeTreeChildren || (portingOption == PortingOption.CloneAllDependencies && sourceEntry.ClassName == "Package"))
+            if ((portingOption is PortingOption.CloneTreeAsChild or PortingOption.MergeTreeChildren || (portingOption == PortingOption.CloneAllDependencies && sourceEntry.ClassName == "Package"))
              && sourcePcc.Tree.NumChildrenOf(sourceEntry) > 0)
             {
                 importChildrenOf(sourceEntry, newEntry);
@@ -1025,7 +1026,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         // SFXWorldResources and SFXVehicleResources are always loaded
         // EXCEPT ON STA MAPS!!
         // At least according to coalesced, not sure if that's actually true
-    };
+        };
 
         private static readonly string[] le1FilesSafeToImportFromPostLoad =
         {
@@ -1227,7 +1228,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 MEGame.LE1 => le1FilesSafeToImportFrom,
                 MEGame.LE2 => le2FilesSafeToImportFrom,
                 MEGame.LE3 => le3FilesSafeToImportFrom,
-                MEGame.UDK => Array.Empty<string>(),
+                MEGame.UDK => FileLib.BaseFileNames(MEGame.UDK),
                 _ => throw new Exception($"Cannot lookup safe files for {game}")
             };
 
@@ -1535,11 +1536,34 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             {
                 associatedFiles.Add($"{filenameWithoutExtension}_LOC_{localization}{bioFileExt}"); //todo: support users setting preferred language of game files
             }
+
+            associatedFiles.AddRange(GetBioXParentFiles(package.Game, filenameWithoutExtension, true, true, bioFileExt, localization));
+
+            if (package.Game == MEGame.ME3 && filenameWithoutExtension.Contains("MP", StringComparison.OrdinalIgnoreCase) && !filenameWithoutExtension.CaseInsensitiveEquals("BIOP_MP_COMMON"))
+            {
+                associatedFiles.Add("BIOP_MP_COMMON.pcc");
+            }
+
+            return associatedFiles;
+        }
+
+        /// <summary>
+        /// Gets the possible parent files of the specified package name according to the BioWare tier system.
+        /// </summary>
+        /// <param name="filenameWithoutExtension"></param>
+        /// <param name="includeNonBioPTiers">If files other than BioP should be included (like Bio files should be included</param>
+        /// <param name="bioFileExt"></param>
+        /// <param name="localization"></param>
+        /// <returns></returns>
+        public static List<string> GetBioXParentFiles(MEGame game, string filenameWithoutExtension, bool includeNonBioPTiers, bool includeLocalizations, string bioFileExt, string localization)
+        {
+            filenameWithoutExtension = filenameWithoutExtension.ToLower(); // Ensure lowercase
+            List<string> associatedFiles = new List<string>();
             var isBioXfile = filenameWithoutExtension is not null &&
-                             filenameWithoutExtension.Length > 5 &&
-                             filenameWithoutExtension.StartsWith("bio") &&
-                             !filenameWithoutExtension.StartsWith("biog") && // BioG are cooked seek free and are not meant to be imported from
-                             filenameWithoutExtension[4] == '_';
+                                         filenameWithoutExtension.Length > 5 &&
+                                         filenameWithoutExtension.StartsWith("bio") &&
+                                         !filenameWithoutExtension.StartsWith("biog") && // BioG are cooked seek free and are not meant to be imported from
+                                         filenameWithoutExtension[4] == '_';
             if (isBioXfile)
             {
                 // Do not include extensions in the results of this, they will be appended in resulting file
@@ -1572,10 +1596,14 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 string nextfile = bioXNextFileLookup(filenameWithoutExtension);
                 while (nextfile != null)
                 {
-                    if (includeNonBioPRelated)
+                    if (includeNonBioPTiers)
                     {
                         associatedFiles.Add($"{nextfile}{bioFileExt}");
-                        associatedFiles.Add($"{nextfile}_LOC_{localization}{bioFileExt}"); //todo: support users setting preferred language of game files
+                        if (includeLocalizations)
+                        {
+                            associatedFiles.Add(
+                                $"{nextfile}_LOC_{localization}{bioFileExt}"); //todo: support users setting preferred language of game files
+                        }
                     }
                     else if (nextfile.Length > 3 && nextfile[3] == 'p')
                     {
@@ -1583,11 +1611,6 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     }
                     nextfile = bioXNextFileLookup(nextfile.ToLower());
                 }
-            }
-
-            if (package.Game == MEGame.ME3 && filenameWithoutExtension.Contains("MP", StringComparison.OrdinalIgnoreCase) && !filenameWithoutExtension.CaseInsensitiveEquals("BIOP_MP_COMMON"))
-            {
-                associatedFiles.Add("BIOP_MP_COMMON.pcc");
             }
 
             return associatedFiles;

@@ -51,7 +51,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// <summary>
         /// Package Cache that can be used to open packages. Can speed up performance if many packages have to be opened in succession.
         /// </summary>
-        public PackageCache Cache { get; set; } = new();
+        public PackageCache Cache { get; set; }
 
         /// <summary>
         /// When porting out of globally loaded files (like SFXGame), imports will be generated for relinked objects instead of porting exports.
@@ -78,7 +78,15 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// </summary>
         public RelinkerOptionsPackage()
         {
+            Cache = new PackageCache();
+        }
 
+        /// <summary>
+        /// Constructor that takes an existing <see cref="PackageCache"/>
+        /// </summary>
+        public RelinkerOptionsPackage(PackageCache cache)
+        {
+            Cache = cache;
         }
     }
 

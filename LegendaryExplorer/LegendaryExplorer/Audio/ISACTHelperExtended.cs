@@ -14,14 +14,19 @@ namespace LegendaryExplorer.Audio
     {
 
         [DllImport(@"ISACTTools.dll")]
-        private static extern int CreateIPSOgg(byte[] wavedata, uint waveDataLen, byte[] dstBuf, uint dstLen);
+        private static extern int CreateIPSOgg(byte[] wavedata, uint waveDataLen, byte[] dstBuf, uint dstLen, float quality);
 
         // Encodes a .wav file to .ogg
-        public static byte[] ConvertWaveToOgg(byte[] wavData)
+        public static byte[] ConvertWaveToOgg(byte[] wavData, float quality)
         {
             byte[] outputBuffer = new byte[wavData.Length]; // It will always be smaller than this
-            var result = CreateIPSOgg(wavData, (uint)wavData.Length, outputBuffer, (uint)outputBuffer.Length);
-            return outputBuffer.Take(result).ToArray();
+            var result = CreateIPSOgg(wavData, (uint)wavData.Length, outputBuffer, (uint)outputBuffer.Length, quality);
+            if (result > 0)
+            {
+                return outputBuffer.Take(result).ToArray();
+            }
+
+            return null; // Data segment was not found / ogg was not encoded.
         }
     }
 }

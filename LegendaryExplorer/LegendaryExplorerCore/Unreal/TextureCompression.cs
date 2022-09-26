@@ -239,36 +239,35 @@ namespace LegendaryExplorerCore.Unreal
 
             // todo: optimize this
             byte[] decompressed = new byte[decompressedSize];
-            TextureCompression.DecompressTexture(decompressed, new MemoryStream(textureCompressed), storageType, decompressedSize, textureCompressed.Length);
+            DecompressTexture(decompressed, new MemoryStream(textureCompressed), storageType, decompressedSize, textureCompressed.Length);
 
             bool external = !forceInternal && storageType.IsExternal(); // Should this be stored externally?
-            storageType = TextureCompression.GetStorageTypeForGame(newGame, external);
+            storageType = GetStorageTypeForGame(newGame, external);
 
             if (storageType != StorageTypes.pccUnc)
             {
-                textureCompressed = TextureCompression.CompressTexture(decompressed, storageType);
+                return CompressTexture(decompressed, storageType);
             }
-            else
-            {
-                textureCompressed = decompressed;
-            }
-
-            return textureCompressed;
-
+            return decompressed;
         }
 
         public static StorageTypes GetStorageTypeForGame(MEGame game, bool isExternal)
         {
-            switch (game)
+            return game switch
             {
-                case MEGame.ME1 or MEGame.ME2 when isExternal: return StorageTypes.extLZO;
-                case MEGame.ME1 or MEGame.ME2: return StorageTypes.pccLZO;
-                case MEGame.ME3 when isExternal: return StorageTypes.extZlib;
-                case MEGame.ME3: return StorageTypes.pccZlib;
-                case MEGame.LE1 or MEGame.LE2 or MEGame.LE3 when isExternal: return StorageTypes.extOodle;
-                case MEGame.LE1 or MEGame.LE2 or MEGame.LE3: return StorageTypes.pccUnc; // LE game packages are always compressed. Do not compress pcc stored textures
-                default: throw new Exception($"{game} is not a supported game for getting texture storage types");
-            }
+                MEGame.ME1 or MEGame.ME2 when isExternal => StorageTypes.extLZO,
+                MEGame.ME1 or MEGame.ME2 => StorageTypes.pccLZO,
+
+                MEGame.ME3 when isExternal => StorageTypes.extZlib,
+                MEGame.ME3 => StorageTypes.pccZlib,
+
+                MEGame.LE1 or MEGame.LE2 or MEGame.LE3 when isExternal => StorageTypes.extOodle,
+                MEGame.LE1 or MEGame.LE2 or MEGame.LE3 => StorageTypes.pccUnc, // LE game packages are always compressed. Do not compress pcc stored textures
+                
+                MEGame.UDK when isExternal => StorageTypes.extLZO,
+                MEGame.UDK => StorageTypes.pccLZO,
+                _ => throw new Exception($"{game} is not a supported game for getting texture storage types")
+            };
         }
     }
 }

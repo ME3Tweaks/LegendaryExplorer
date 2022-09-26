@@ -725,7 +725,7 @@ namespace LegendaryExplorerCore.Unreal
 
         public static (List<Token>, List<BytecodeSingularToken>) ParseBytecode(byte[] raw, ExportEntry export)
         {
-            int pos = export.IsClass ? 0x18 : 0x20;
+            int pos = export.Game is MEGame.UDK ? export.IsClass ? 0x28 : 0x30 : export.IsClass ? 0x18 : 0x20;
             var parser = new Bytecode(raw, pos);
 
             List<Token> tokens = parser.ReadAll(0, export);
@@ -811,7 +811,7 @@ namespace LegendaryExplorerCore.Unreal
             Token newTok = new Token { op = t };
             int end = start;
             if ((t <= 0x65 && export.Game.IsGame3())
-                || (t < 0x60 && (export.FileRef.Platform == MEPackage.GamePlatform.PS3 || (export.Game is MEGame.ME1 or MEGame.ME2 or MEGame.LE1 or MEGame.LE2)))) //PS3 uses ME3 engine but ME1/ME2 use PC native index which are different
+                || (t < 0x60 && (export.FileRef.Platform == MEPackage.GamePlatform.PS3 || (export.Game is MEGame.ME1 or MEGame.ME2 or MEGame.LE1 or MEGame.LE2 or MEGame.UDK)))) //PS3 uses ME3 engine but ME1/ME2 use PC native index which are different
             {
                 switch (t)
                 {
@@ -1329,7 +1329,7 @@ namespace LegendaryExplorerCore.Unreal
                         break;
                 }
             }
-            else if (t < (export.Game is MEGame.ME1 or MEGame.ME2 or MEGame.LE1 or MEGame.LE2 ? 0x60 : 0x70)) //PS3 uses 0x60 as native table
+            else if (t < (export.Game is MEGame.ME1 or MEGame.ME2 or MEGame.LE1 or MEGame.LE2 or MEGame.UDK ? 0x60 : 0x70)) //PS3 uses 0x60 as native table
             {
                 //Never reached?
                 // Is this right? Extended Native is 0x61
@@ -1372,7 +1372,7 @@ namespace LegendaryExplorerCore.Unreal
 
             // This doesn't work as the native call IDs seem to maybe have changed
             // So while some native calls keep same ID, others don't
-            int nativeId = export.Game is MEGame.ME1 or MEGame.ME2 or MEGame.LE1 or MEGame.LE2 ? 0x60 : 0x70;
+            int nativeId = export.Game is MEGame.ME1 or MEGame.ME2 or MEGame.LE1 or MEGame.LE2 or MEGame.UDK ? 0x60 : 0x70;
 
             // Determine if this is an extended native
             byte byte1 = memory[start];

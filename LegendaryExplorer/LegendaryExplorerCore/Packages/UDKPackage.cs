@@ -328,14 +328,14 @@ namespace LegendaryExplorerCore.Packages
                 if (export.IsTexture())
                 {
                     var tex = new Texture2D(export);
-                    var mip = tex.GetTopMip();
+                    Texture2DMipInfo mip = tex.Mips.FirstOrDefault(mip => mip.height <= 256) ?? tex.GetTopMip();
                     ThumbnailTable.Add(new Thumbnail
                     {
                         ClassName = export.ClassName,
                         PathName = export.InstancedFullPath,
                         Width = mip.width,
                         Height = mip.height,
-                        Data = tex.GetPNG(tex.GetTopMip())
+                        Data = tex.GetPNG(mip)
                     });
                 }
             }

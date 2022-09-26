@@ -28,10 +28,10 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 MEGame.ME1 => ME1UnrealObjectInfo.IsImmutableStruct(structType),
                 MEGame.ME2 => ME2UnrealObjectInfo.IsImmutableStruct(structType),
                 MEGame.ME3 => ME3UnrealObjectInfo.IsImmutableStruct(structType),
-                MEGame.UDK => ME3UnrealObjectInfo.IsImmutableStruct(structType),
                 MEGame.LE1 => LE1UnrealObjectInfo.IsImmutableStruct(structType),
                 MEGame.LE2 => LE2UnrealObjectInfo.IsImmutableStruct(structType),
                 MEGame.LE3 => LE3UnrealObjectInfo.IsImmutableStruct(structType),
+                MEGame.UDK => UDKUnrealObjectInfo.IsImmutableStruct(structType),
                 _ => false,
             };
 
@@ -52,17 +52,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             if (className == baseClass) return true;
             if (baseClass == @"Object") return true; //Everything inherits from Object
             if (knownSuperClass != null && baseClass == knownSuperClass) return true; // We already know it's a direct descendant
-            var classes = game switch
-            {
-                MEGame.ME1 => ME1UnrealObjectInfo.Classes,
-                MEGame.ME2 => ME2UnrealObjectInfo.Classes,
-                MEGame.ME3 => ME3UnrealObjectInfo.Classes,
-                MEGame.UDK => ME3UnrealObjectInfo.Classes,
-                MEGame.LE1 => LE1UnrealObjectInfo.Classes,
-                MEGame.LE2 => LE2UnrealObjectInfo.Classes,
-                MEGame.LE3 => LE3UnrealObjectInfo.Classes,
-                _ => throw new ArgumentOutOfRangeException(nameof(game), game, null)
-            };
+            var classes = GetClasses(game) ?? throw new ArgumentOutOfRangeException(nameof(game), game, null);
             while (true)
             {
                 if (className == baseClass)
@@ -119,7 +109,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 case MEGame.ME1: return ME1UnrealObjectInfo.IsAKnownGameSpecificNativeClass(fullPathName);
                 case MEGame.ME2: return ME2UnrealObjectInfo.IsAKnownGameSpecificNativeClass(fullPathName);
                 case MEGame.ME3: return ME3UnrealObjectInfo.IsAKnownGameSpecificNativeClass(fullPathName);
-                case MEGame.UDK: return ME3UnrealObjectInfo.IsAKnownGameSpecificNativeClass(fullPathName);
+                case MEGame.UDK: return UDKUnrealObjectInfo.IsAKnownGameSpecificNativeClass(fullPathName);
                 case MEGame.LE1: return LE1UnrealObjectInfo.IsAKnownGameSpecificNativeClass(fullPathName);
                 case MEGame.LE2: return LE2UnrealObjectInfo.IsAKnownGameSpecificNativeClass(fullPathName);
                 case MEGame.LE3: return LE3UnrealObjectInfo.IsAKnownGameSpecificNativeClass(fullPathName);
@@ -180,50 +170,35 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             return KnownGlobalNativeClasses.Contains(fullPathName, StringComparer.CurrentCultureIgnoreCase);
         }
 
-        public static SequenceObjectInfo getSequenceObjectInfo(MEGame game, string className) =>
-            game switch
-            {
-                MEGame.ME1 => ME1UnrealObjectInfo.getSequenceObjectInfo(className),
-                MEGame.ME2 => ME2UnrealObjectInfo.getSequenceObjectInfo(className),
-                MEGame.ME3 => ME3UnrealObjectInfo.getSequenceObjectInfo(className),
-                MEGame.UDK => ME3UnrealObjectInfo.getSequenceObjectInfo(className),
-                MEGame.LE1 => LE1UnrealObjectInfo.getSequenceObjectInfo(className),
-                MEGame.LE2 => LE2UnrealObjectInfo.getSequenceObjectInfo(className),
-                MEGame.LE3 => LE3UnrealObjectInfo.getSequenceObjectInfo(className),
-                _ => null
-            };
+        public static SequenceObjectInfo GetSequenceObjectInfo(MEGame game, string className)
+        {
 
-        public static string GetEnumType(MEGame game, NameReference propName, string typeName, ClassInfo nonVanillaClassInfo = null) =>
-            game switch
-            {
-                MEGame.ME1 => ME1UnrealObjectInfo.getEnumTypefromProp(typeName, propName, nonVanillaClassInfo: nonVanillaClassInfo),
-                MEGame.ME2 => ME2UnrealObjectInfo.getEnumTypefromProp(typeName, propName, nonVanillaClassInfo: nonVanillaClassInfo),
-                MEGame.ME3 => ME3UnrealObjectInfo.getEnumTypefromProp(typeName, propName, nonVanillaClassInfo),
-                MEGame.UDK => ME3UnrealObjectInfo.getEnumTypefromProp(typeName, propName, nonVanillaClassInfo) ?? UDKUnrealObjectInfo.getEnumTypefromProp(typeName, propName),
-                MEGame.LE1 => LE1UnrealObjectInfo.getEnumTypefromProp(typeName, propName, nonVanillaClassInfo: nonVanillaClassInfo),
-                MEGame.LE2 => LE2UnrealObjectInfo.getEnumTypefromProp(typeName, propName, nonVanillaClassInfo: nonVanillaClassInfo),
-                MEGame.LE3 => LE3UnrealObjectInfo.getEnumTypefromProp(typeName, propName, nonVanillaClassInfo),
-                _ => null
-            };
+            return GetSequenceObjects(game).TryGetValue(className, out SequenceObjectInfo seqInfo) ? seqInfo : null;
+        }
 
-        public static List<NameReference> GetEnumValues(MEGame game, string enumName, bool includeNone = false) =>
-            game switch
+        public static string GetEnumType(MEGame game, NameReference propName, string typeName, ClassInfo nonVanillaClassInfo = null) => 
+            GetPropertyInfo(game, propName, typeName, nonVanillaClassInfo)?.Reference;
+
+        public static List<NameReference> GetEnumValues(MEGame game, string enumName, bool includeNone = false)
+        {
+            var enums = GetEnums(game);
+            if (enums.TryGetValue(enumName, out List<NameReference> values))
             {
-                MEGame.ME1 => ME1UnrealObjectInfo.getEnumValues(enumName, includeNone),
-                MEGame.ME2 => ME2UnrealObjectInfo.getEnumValues(enumName, includeNone),
-                MEGame.ME3 => ME3UnrealObjectInfo.getEnumValues(enumName, includeNone),
-                MEGame.UDK => ME3UnrealObjectInfo.getEnumValues(enumName, includeNone),
-                MEGame.LE1 => LE1UnrealObjectInfo.getEnumValues(enumName, includeNone),
-                MEGame.LE2 => LE2UnrealObjectInfo.getEnumValues(enumName, includeNone),
-                MEGame.LE3 => LE3UnrealObjectInfo.getEnumValues(enumName, includeNone),
-                _ => null
-            };
+                values = new List<NameReference>(values);
+                if (includeNone)
+                {
+                    values.Insert(0, "None");
+                }
+                return values;
+            }
+            return null;
+        }
 
         public static bool IsValidEnum(MEGame game, string enumName) => GetEnums(game)?.ContainsKey(enumName) ?? false;
 
 
         /// <summary>
-        /// Recursively gets class defaults, traveling up inheritiance chain, but stopping at <paramref name="notIncludingClass"></paramref>
+        /// Recursively gets class defaults, traveling up inheritance chain, but stopping at <paramref name="notIncludingClass"></paramref>
         /// </summary>
         /// <param name="game"></param>
         /// <param name="className"></param>
@@ -383,12 +358,10 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 case MEGame.ME1 when containingExport.FileRef.Platform == MEPackage.GamePlatform.PS3:
                 case MEGame.ME2 when containingExport.FileRef.Platform == MEPackage.GamePlatform.PS3:
                 case MEGame.ME3:
-                case MEGame.UDK:
                     p = ME3UnrealObjectInfo.getPropertyInfo(containingClassOrStructName, propname, inStruct, nonVanillaClassInfo, containingExport: containingExport);
-                    if (p == null && game == MEGame.UDK)
-                    {
-                        p = UDKUnrealObjectInfo.getPropertyInfo(containingClassOrStructName, propname, inStruct, nonVanillaClassInfo, containingExport: containingExport);
-                    }
+                    break;
+                case MEGame.UDK:
+                    p = UDKUnrealObjectInfo.getPropertyInfo(containingClassOrStructName, propname, inStruct, nonVanillaClassInfo, containingExport: containingExport);
                     break;
                 case MEGame.LE1:
                     p = LE1UnrealObjectInfo.getPropertyInfo(containingClassOrStructName, propname, inStruct, nonVanillaClassInfo, containingExport: containingExport);
@@ -417,11 +390,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                         p = ME3UnrealObjectInfo.getPropertyInfo(containingClassOrStructName, propname, inStruct);
                         break;
                     case MEGame.UDK:
-                        p = ME3UnrealObjectInfo.getPropertyInfo(containingClassOrStructName, propname, inStruct);
-                        if (p == null)
-                        {
-                            p = UDKUnrealObjectInfo.getPropertyInfo(containingClassOrStructName, propname, inStruct, nonVanillaClassInfo);
-                        }
+                        p = UDKUnrealObjectInfo.getPropertyInfo(containingClassOrStructName, propname, inStruct);
                         break;
                     case MEGame.LE1:
                         p = LE1UnrealObjectInfo.getPropertyInfo(containingClassOrStructName, propname, inStruct);
@@ -449,10 +418,6 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
         /// <returns></returns>
         public static PropertyCollection getDefaultStructValue(MEGame game, string structName, bool stripTransients, PackageCache packageCache = null, bool shouldReturnClone = true)
         {
-            if (game == MEGame.UDK)
-            {
-                game = MEGame.ME3;
-            }
             var defaultStructValues = game switch
             {
                 MEGame.ME1 => stripTransients ? ME1UnrealObjectInfo.defaultStructValuesME1 : DefaultStructValuesWithTransientsME1,
@@ -461,6 +426,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 MEGame.LE1 => stripTransients ? LE1UnrealObjectInfo.defaultStructValuesLE1 : DefaultStructValuesWithTransientsLE1,
                 MEGame.LE2 => stripTransients ? LE2UnrealObjectInfo.defaultStructValuesLE2 : DefaultStructValuesWithTransientsLE2,
                 MEGame.LE3 => stripTransients ? LE3UnrealObjectInfo.defaultStructValuesLE3 : DefaultStructValuesWithTransientsLE3,
+                MEGame.UDK => stripTransients ? UDKUnrealObjectInfo.defaultStructValuesUDK : DefaultStructValuesWithTransientsUDK,
                 _ => throw new ArgumentOutOfRangeException(nameof(game), game, null)
             };
             if (defaultStructValues.TryGetValue(structName, out var cachedProps))
@@ -484,14 +450,14 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                                 continue;
                             }
 
-                            if (getDefaultProperty(game, propName, propInfo, packageCache, stripTransients, isImmutable) is Property prop)
+                            if (GetDefaultProperty(game, propName, propInfo, packageCache, stripTransients, isImmutable) is Property prop)
                             {
                                 props.Add(prop);
                                 if (propInfo.IsStaticArray())
                                 {
                                     for (int i = 1; i < propInfo.StaticArrayLength; i++)
                                     {
-                                        prop = getDefaultProperty(game, propName, propInfo, packageCache, stripTransients, isImmutable);
+                                        prop = GetDefaultProperty(game, propName, propInfo, packageCache, stripTransients, isImmutable);
                                         prop.StaticArrayIndex = i;
                                         props.Add(prop);
                                     }
@@ -586,6 +552,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
         private static readonly ConcurrentDictionary<string, PropertyCollection> DefaultStructValuesWithTransientsLE1 = new();
         private static readonly ConcurrentDictionary<string, PropertyCollection> DefaultStructValuesWithTransientsLE2 = new();
         private static readonly ConcurrentDictionary<string, PropertyCollection> DefaultStructValuesWithTransientsLE3 = new();
+        private static readonly ConcurrentDictionary<string, PropertyCollection> DefaultStructValuesWithTransientsUDK = new();
 
         public static OrderedMultiValueDictionary<NameReference, PropertyInfo> GetAllProperties(MEGame game, string typeName)
         {
@@ -603,31 +570,11 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
 
         public static ClassInfo GetClassOrStructInfo(MEGame game, string typeName)
         {
-            ClassInfo result = null;
-            switch (game)
+            ClassInfo result;
+            _ = GetClasses(game).TryGetValue(typeName, out result) || GetStructs(game).TryGetValue(typeName, out result);
+            if (result is null && game is MEGame.UDK)
             {
-                case MEGame.ME1:
-                    _ = ME1UnrealObjectInfo.Classes.TryGetValue(typeName, out result) || ME1UnrealObjectInfo.Structs.TryGetValue(typeName, out result);
-                    break;
-                case MEGame.ME2:
-                    _ = ME2UnrealObjectInfo.Classes.TryGetValue(typeName, out result) || ME2UnrealObjectInfo.Structs.TryGetValue(typeName, out result);
-                    break;
-                case MEGame.ME3:
-                    _ = ME3UnrealObjectInfo.Classes.TryGetValue(typeName, out result) || ME3UnrealObjectInfo.Structs.TryGetValue(typeName, out result);
-                    break;
-                case MEGame.LE1:
-                    _ = LE1UnrealObjectInfo.Classes.TryGetValue(typeName, out result) || LE1UnrealObjectInfo.Structs.TryGetValue(typeName, out result);
-                    break;
-                case MEGame.LE2:
-                    _ = LE2UnrealObjectInfo.Classes.TryGetValue(typeName, out result) || LE2UnrealObjectInfo.Structs.TryGetValue(typeName, out result);
-                    break;
-                case MEGame.LE3:
-                    _ = LE3UnrealObjectInfo.Classes.TryGetValue(typeName, out result) || LE3UnrealObjectInfo.Structs.TryGetValue(typeName, out result);
-                    break;
-                case MEGame.UDK:
-                    _ = UDKUnrealObjectInfo.Classes.TryGetValue(typeName, out result) || UDKUnrealObjectInfo.Structs.TryGetValue(typeName, out result)
-                     || ME3UnrealObjectInfo.Classes.TryGetValue(typeName, out result) || ME3UnrealObjectInfo.Structs.TryGetValue(typeName, out result);
-                    break;
+                _ = ME3UnrealObjectInfo.Classes.TryGetValue(typeName, out result) || ME3UnrealObjectInfo.Structs.TryGetValue(typeName, out result);
             }
 
             return result;
@@ -639,11 +586,11 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             {
                 MEGame.ME1 => ME1UnrealObjectInfo.Classes,
                 MEGame.ME2 => ME2UnrealObjectInfo.Classes,
-                MEGame.UDK => ME3UnrealObjectInfo.Classes,
                 MEGame.ME3 => ME3UnrealObjectInfo.Classes,
                 MEGame.LE1 => LE1UnrealObjectInfo.Classes,
                 MEGame.LE2 => LE2UnrealObjectInfo.Classes,
                 MEGame.LE3 => LE3UnrealObjectInfo.Classes,
+                MEGame.UDK => UDKUnrealObjectInfo.Classes,
                 _ => null
             };
         }
@@ -654,11 +601,11 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             {
                 MEGame.ME1 => ME1UnrealObjectInfo.Structs,
                 MEGame.ME2 => ME2UnrealObjectInfo.Structs,
-                MEGame.UDK => ME3UnrealObjectInfo.Structs,
                 MEGame.ME3 => ME3UnrealObjectInfo.Structs,
                 MEGame.LE1 => LE1UnrealObjectInfo.Structs,
                 MEGame.LE2 => LE2UnrealObjectInfo.Structs,
                 MEGame.LE3 => LE3UnrealObjectInfo.Structs,
+                MEGame.UDK => UDKUnrealObjectInfo.Structs,
                 _ => null
             };
         }
@@ -669,11 +616,26 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             {
                 MEGame.ME1 => ME1UnrealObjectInfo.Enums,
                 MEGame.ME2 => ME2UnrealObjectInfo.Enums,
-                MEGame.UDK => ME3UnrealObjectInfo.Enums,
                 MEGame.ME3 => ME3UnrealObjectInfo.Enums,
                 MEGame.LE1 => LE1UnrealObjectInfo.Enums,
                 MEGame.LE2 => LE2UnrealObjectInfo.Enums,
                 MEGame.LE3 => LE3UnrealObjectInfo.Enums,
+                MEGame.UDK => UDKUnrealObjectInfo.Enums,
+                _ => null
+            };
+        }
+
+        public static Dictionary<string, SequenceObjectInfo> GetSequenceObjects(MEGame game)
+        {
+            return game switch
+            {
+                MEGame.ME1 => ME1UnrealObjectInfo.SequenceObjects,
+                MEGame.ME2 => ME2UnrealObjectInfo.SequenceObjects,
+                MEGame.ME3 => ME3UnrealObjectInfo.SequenceObjects,
+                MEGame.LE1 => LE1UnrealObjectInfo.SequenceObjects,
+                MEGame.LE2 => LE2UnrealObjectInfo.SequenceObjects,
+                MEGame.LE3 => LE3UnrealObjectInfo.SequenceObjects,
+                MEGame.UDK => UDKUnrealObjectInfo.SequenceObjects,
                 _ => null
             };
         }
@@ -701,7 +663,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 MEGame.ME1 when export.FileRef.Platform == MEPackage.GamePlatform.PS3 => ME3UnrealObjectInfo.generateClassInfo(export, isStruct),
                 MEGame.ME2 when export.FileRef.Platform == MEPackage.GamePlatform.PS3 => ME3UnrealObjectInfo.generateClassInfo(export, isStruct),
                 MEGame.ME3 => ME3UnrealObjectInfo.generateClassInfo(export, isStruct),
-                MEGame.UDK => ME3UnrealObjectInfo.generateClassInfo(export, isStruct),
+                MEGame.UDK => UDKUnrealObjectInfo.generateClassInfo(export, isStruct),
                 MEGame.LE1 => LE1UnrealObjectInfo.generateClassInfo(export, isStruct),
                 MEGame.LE2 => LE2UnrealObjectInfo.generateClassInfo(export, isStruct),
                 MEGame.LE3 => LE3UnrealObjectInfo.generateClassInfo(export, isStruct),
@@ -865,36 +827,65 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             }
         }
 
-        public static Property getDefaultProperty(MEGame game, NameReference propName, PropertyInfo propInfo, PackageCache packageCache, bool stripTransients = true, bool isImmutable = false)
+        public static Property GetDefaultProperty(MEGame game, NameReference propName, PropertyInfo propInfo, PackageCache packageCache, bool stripTransients = true, bool isImmutable = false)
         {
-            return game switch
+            return propInfo.Type switch
             {
-                MEGame.ME1 => ME1UnrealObjectInfo.getDefaultProperty(propName, propInfo, packageCache, stripTransients, isImmutable),
-                MEGame.ME2 => ME2UnrealObjectInfo.getDefaultProperty(propName, propInfo, packageCache, stripTransients, isImmutable),
-                MEGame.ME3 => ME3UnrealObjectInfo.getDefaultProperty(propName, propInfo, packageCache, stripTransients, isImmutable),
-                MEGame.UDK => ME3UnrealObjectInfo.getDefaultProperty(propName, propInfo, packageCache, stripTransients, isImmutable),
-                MEGame.LE1 => LE1UnrealObjectInfo.getDefaultProperty(propName, propInfo, packageCache, stripTransients, isImmutable),
-                MEGame.LE2 => LE2UnrealObjectInfo.getDefaultProperty(propName, propInfo, packageCache, stripTransients, isImmutable),
-                MEGame.LE3 => LE3UnrealObjectInfo.getDefaultProperty(propName, propInfo, packageCache, stripTransients, isImmutable),
+                PropertyType.IntProperty => new IntProperty(0, propName),
+                PropertyType.FloatProperty => new FloatProperty(0f, propName),
+                PropertyType.DelegateProperty => new DelegateProperty("None", 0),
+                PropertyType.ObjectProperty => new ObjectProperty(0, propName),
+                PropertyType.InterfaceProperty => new ObjectProperty(0, propName),
+                PropertyType.ComponentProperty => new ObjectProperty(0, propName),
+                PropertyType.NameProperty => new NameProperty("None", propName),
+                PropertyType.BoolProperty => new BoolProperty(false, propName),
+                PropertyType.ByteProperty when propInfo.IsEnumProp() => new EnumProperty(propInfo.Reference, game, propName),
+                PropertyType.ByteProperty => new ByteProperty(0, propName),
+                PropertyType.StrProperty => new StrProperty("", propName),
+                PropertyType.StringRefProperty => new StringRefProperty(propName),
+                PropertyType.BioMask4Property => new BioMask4Property(0, propName),
+                PropertyType.ArrayProperty => GetArrayType(game, propInfo) switch
+                {
+                    ArrayType.Object => new ArrayProperty<ObjectProperty>(propName),
+                    ArrayType.Name => new ArrayProperty<NameProperty>(propName),
+                    ArrayType.Enum => new ArrayProperty<EnumProperty>(propName),
+                    ArrayType.Struct => new ArrayProperty<StructProperty>(propName),
+                    ArrayType.Bool => new ArrayProperty<BoolProperty>(propName),
+                    ArrayType.String => new ArrayProperty<StrProperty>(propName),
+                    ArrayType.Float => new ArrayProperty<FloatProperty>(propName),
+                    ArrayType.Int => new ArrayProperty<IntProperty>(propName),
+                    ArrayType.Byte => new ImmutableByteArrayProperty(propName),
+                    _ => null
+                },
+                PropertyType.StructProperty => new StructProperty(propInfo.Reference, getDefaultStructValue(game, propInfo.Reference, stripTransients, packageCache), propName,
+                    isImmutable || IsImmutable(propInfo.Reference, game)),
+                PropertyType.None => null,
+                PropertyType.Unknown => null,
                 _ => null
             };
         }
 
-        public static List<string> GetSequenceObjectInfoInputLinks(MEGame game, string exportClassName)
+        public static List<string> GetSequenceObjectInfoInputLinks(MEGame game, string className)
         {
-            return game switch
+            Dictionary<string, SequenceObjectInfo> seqObjs = GetSequenceObjects(game);
+            Dictionary<string, ClassInfo> classInfos = GetClasses(game);
+            while (true)
             {
-                MEGame.ME1 => ME1UnrealObjectInfo.getSequenceObjectInfoInputLinks(exportClassName),
-                MEGame.ME2 => ME2UnrealObjectInfo.getSequenceObjectInfoInputLinks(exportClassName),
-                MEGame.ME3 => ME3UnrealObjectInfo.getSequenceObjectInfoInputLinks(exportClassName),
-                MEGame.UDK => ME3UnrealObjectInfo.getSequenceObjectInfoInputLinks(exportClassName),
-                MEGame.LE1 => LE1UnrealObjectInfo.getSequenceObjectInfoInputLinks(exportClassName),
-                MEGame.LE2 => LE2UnrealObjectInfo.getSequenceObjectInfoInputLinks(exportClassName),
-                MEGame.LE3 => LE3UnrealObjectInfo.getSequenceObjectInfoInputLinks(exportClassName),
-                _ => null
-            };
+                if (seqObjs is not null && seqObjs.TryGetValue(className, out SequenceObjectInfo seqInfo))
+                {
+                    if (seqInfo.inputLinks != null)
+                    {
+                        return seqObjs[className].inputLinks;
+                    }
+                    if (classInfos.TryGetValue(className, out ClassInfo info) && info.baseClass != "Object" && info.baseClass != "Class")
+                    {
+                        className = info.baseClass;
+                        continue;
+                    }
+                }
+                return null;
+            }
         }
-
 
 
         // Shared global methods for loading custom data
@@ -908,17 +899,11 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
         {
             if (infos == null)
             {
-                infos = exportEntry.Game switch
+                infos = GetSequenceObjects(exportEntry.Game);
+                if (infos is null)
                 {
-                    MEGame.ME1 => ME1UnrealObjectInfo.SequenceObjects,
-                    MEGame.ME2 => ME2UnrealObjectInfo.SequenceObjects,
-                    MEGame.ME3 => ME3UnrealObjectInfo.SequenceObjects,
-                    MEGame.UDK => ME3UnrealObjectInfo.SequenceObjects,
-                    MEGame.LE1 => LE1UnrealObjectInfo.SequenceObjects,
-                    MEGame.LE2 => LE2UnrealObjectInfo.SequenceObjects,
-                    MEGame.LE3 => LE3UnrealObjectInfo.SequenceObjects,
-                    _ => throw new ArgumentOutOfRangeException($"GenerateSequenceObjectInfoForClassDefaults() does not accept export for game {exportEntry.Game}")
-                };
+                    throw new ArgumentOutOfRangeException($"{nameof(GenerateSequenceObjectInfoForClassDefaults)}() does not accept export for game {exportEntry.Game}");
+                }
             }
 
 
@@ -967,17 +952,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
         /// <param name="game"></param>
         public static void InstallCustomClassInfo(string className, ClassInfo info, MEGame game)
         {
-            var classes = game switch
-            {
-                MEGame.ME1 => ME1UnrealObjectInfo.Classes,
-                MEGame.ME2 => ME2UnrealObjectInfo.Classes,
-                MEGame.ME3 => ME3UnrealObjectInfo.Classes,
-                MEGame.UDK => ME3UnrealObjectInfo.Classes,
-                MEGame.LE1 => LE1UnrealObjectInfo.Classes,
-                MEGame.LE2 => LE2UnrealObjectInfo.Classes,
-                MEGame.LE3 => LE3UnrealObjectInfo.Classes,
-                _ => throw new ArgumentOutOfRangeException($"InstallCustomClassInfo() does not accept game {game}")
-            };
+            var classes = GetClasses(game) ?? throw new ArgumentOutOfRangeException($"{nameof(InstallCustomClassInfo)}() does not accept game {game}");
             classes[className] = info;
         }
     }

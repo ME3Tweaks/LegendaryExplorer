@@ -661,7 +661,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                     return Error("Error in function parameters.", node.StartPos, node.EndPos);
 
 
-                if (node.FriendlyName is not null //true in ME1, ME2, LE1, and LE2
+                if (node.FriendlyName is not null //true in ME1, ME2, LE1, LE2, and UDK
                  && node.IsOperator)
                 {
                     TokenType operatorType = OperatorHelper.FriendlyNameToTokenType(node.FriendlyName);

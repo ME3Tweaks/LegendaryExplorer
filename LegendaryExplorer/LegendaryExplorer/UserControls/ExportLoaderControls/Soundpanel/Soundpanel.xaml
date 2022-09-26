@@ -16,6 +16,8 @@
              xmlns:audio1="clr-namespace:LegendaryExplorerCore.Audio;assembly=LegendaryExplorerCore"
              xmlns:sharedUi="clr-namespace:LegendaryExplorer.SharedUI"
              xmlns:audio="clr-namespace:LegendaryExplorer.Audio"
+             xmlns:soundplorer="clr-namespace:LegendaryExplorer.Tools.Soundplorer"
+             xmlns:isact="clr-namespace:LegendaryExplorerCore.Sound.ISACT;assembly=LegendaryExplorerCore"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="400"
              DataContext="{Binding RelativeSource={RelativeSource Self}}">
@@ -121,19 +123,14 @@
                                 <!-- Do not remove transparent background. It is required for mouse hit testing.-->
                                 <TextBlock Text="{Binding DisplayString}" Foreground="DarkBlue"/>
                             </DataTemplate>
-                            <DataTemplate DataType="{x:Type audio1:ISBankEntry}">
+                            <DataTemplate DataType="{x:Type isact:ISACTListBankChunk}">
                                 <!-- Do not remove transparent background. It is required for mouse hit testing.-->
-                                <TextBlock Text="{Binding DisplayString}" Foreground="DarkBlue" Background="Transparent">
+                                <TextBlock Text="{Binding TitleInfo.Value}" Foreground="DarkBlue" Background="Transparent">
                                     <TextBlock.ContextMenu>
                                         <ContextMenu>
                                             <MenuItem Click="ExtractISBEToWav" ToolTip="Extract audio to WAV file">
                                                 <MenuItem.Header>
                                                     <TextBlock Text="Extract as WAV" Foreground="{DynamicResource {x:Static SystemColors.ControlTextBrush}}"/>
-                                                </MenuItem.Header>
-                                            </MenuItem>
-                                            <MenuItem Click="ExtractISBERaw" ToolTip="Extracts this sound from the embedded ISB and places it into a standalone ISB. This is mainly only for debugging.">
-                                                <MenuItem.Header>
-                                                    <TextBlock Text="Extract single sound to 'ISB' raw file" Foreground="{DynamicResource {x:Static SystemColors.ControlTextBrush}}"/>
                                                 </MenuItem.Header>
                                             </MenuItem>
                                         </ContextMenu>

@@ -7,6 +7,7 @@ using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Audio;
+using LegendaryExplorerCore.Sound.ISACT;
 using WwiseStream = LegendaryExplorerCore.Unreal.BinaryConverters.WwiseStream;
 
 namespace LegendaryExplorer.Tools.Soundplorer
@@ -188,9 +189,14 @@ namespace LegendaryExplorer.Tools.Soundplorer
         }
     }
 
+    /// <summary>
+    /// Wrapper class for a sound sample in ISACT, for play in SoundPanel
+    /// </summary>
     public class ISACTFileEntry : NotifyPropertyChangedBase
     {
-        public ISBankEntry Entry { get; set; }
+        public ISACTListBankChunk Entry { get; set; }
+
+        public string TLKString { get; set; }
 
         private bool _needsLoading;
         public bool NeedsLoading
@@ -220,7 +226,7 @@ namespace LegendaryExplorer.Tools.Soundplorer
             set => SetProperty(ref _displayString, value);
         }
 
-        public ISACTFileEntry(ISBankEntry entry)
+        public ISACTFileEntry(ISACTListBankChunk entry)
         {
             Entry = entry;
             SubText = "Calculating stream length";
@@ -231,13 +237,13 @@ namespace LegendaryExplorer.Tools.Soundplorer
 
         private void UpdateDisplay()
         {
-            DisplayString = Entry.FileName;
+            DisplayString = Entry.TitleInfo.Value;
         }
 
         public void LoadData()
         {
             // Check if there is TLK string in the export name
-            var splits = Entry.FileName.Split('_', ',');
+            var splits = Entry.TitleInfo.Value.Split('_', ',');
             for (int i = splits.Length - 1; i > 0; i--)
             {
                 //backwards is faster
@@ -248,27 +254,28 @@ namespace LegendaryExplorer.Tools.Soundplorer
                     var data = TLKManagerWPF.GlobalFindStrRefbyID(parsed, MEGame.ME1, null);
                     if (data != "No Data")
                     {
-                        Entry.TLKString = data;
+                        TLKString = data;
                     }
                 }
             }
 
 
 
-            if (Entry.DataAsStored != null)
+            if (Entry.SampleInfo != null)
             {
-                //Debug.WriteLine("getting time for " + Entry.FileName + " Ogg: " + Entry.isOgg);
-                TimeSpan? time = Entry.GetLength();
-                if (time != null)
-                {
-                    //here backslash must be present to tell that parser colon is
-                    //not the part of format, it just a character that we want in output
-                    SubText = time.Value.ToString(@"mm\:ss\:fff");
-                }
-                else
-                {
-                    SubText = "Error getting length, may be unsupported";
-                }
+                SubText = (Entry.SampleInfo.TimeLength / 1000.0f).ToString(@"mm\:ss\:fff");
+                ////Debug.WriteLine("getting time for " + Entry.FileName + " Ogg: " + Entry.isOgg);
+                //TimeSpan? time = Entry.GetLength();
+                //if (time != null)
+                //{
+                //    //here backslash must be present to tell that parser colon is
+                //    //not the part of format, it just a character that we want in output
+                //    SubText = time.Value.ToString(@"mm\:ss\:fff");
+                //}
+                //else
+                //{
+                //    SubText = "Error getting length, may be unsupported";
+                //}
             }
             else
             {
@@ -279,6 +286,9 @@ namespace LegendaryExplorer.Tools.Soundplorer
         }
     }
 
+    /// <summary>
+    /// Container for Soundplorer items 
+    /// </summary>
     public class SoundplorerExport : NotifyPropertyChangedBase
     {
         public ExportEntry Export { get; set; }

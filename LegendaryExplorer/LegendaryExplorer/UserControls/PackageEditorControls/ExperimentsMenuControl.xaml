@@ -32,6 +32,7 @@
         <MenuItem Header="Build LE3 Object Info" Click="BuildLE3ObjectInfo_Clicked"/>
         <MenuItem Header="Build All 3 LE Object Infos" Click="BuildAllObjectInfoLE_Clicked"/>
         <Separator/>
+        <MenuItem Header="Build UDK Object Info" Click="BuildUDKObjectInfo_Clicked"/>
         <!--<MenuItem Header="Generate ME3 Code" Click="GenerateME3Code_Click"/>-->
         <MenuItem Header="Generate ME2/ME3 object info diff" Click="GenerateObjectInfoDiff_Click"/>
         <Separator/>
@@ -98,6 +99,7 @@
         <MenuItem Header="Resolve all imports (see debug output)" Click="ResolveAllImports_Clicked"/>
         <MenuItem Header="Shift current selected InterpTrackMove" Click="ShiftInterpTrackMove"/>
         <MenuItem Header="Shift all InterpTrackMove in package" Click="ShiftInterpTrackMovePackageWide"/>
+        <MenuItem Header="Shift all InterpTrackMove in package (Ignore MoveFrame=IMF_AnchorObject)" Click="ShiftInterpTrackMovePackageWideNoAnchor"/>
         <MenuItem Header="LEX Custom Files Manager" Click="LEXCustomFilesManager_Click"/>
     </MenuItem>
     <MenuItem Header="SirCxyrtyx's Garden of Modding Delights">

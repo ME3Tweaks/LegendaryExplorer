@@ -376,7 +376,7 @@ namespace LegendaryExplorerCore.Kismet
 #endif
             }
 
-            int objInstanceVersion = GlobalUnrealObjectInfo.getSequenceObjectInfo(game, info.ClassName)?.ObjInstanceVersion ?? 1;
+            int objInstanceVersion = GlobalUnrealObjectInfo.GetSequenceObjectInfo(game, info.ClassName)?.ObjInstanceVersion ?? 1;
             defaults.Add(new IntProperty(objInstanceVersion, "ObjInstanceVersion"));
 
             return defaults;

@@ -569,7 +569,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                         PortFunc = () =>
                         {
                             using var package = MEPackageHandler.OpenMEPackage(d.FileName);
-                            var results = EntryExporter.ExportExportToFile(SelectedItem.Entry as ExportEntry, d.FileName, out _);
+                            var results = EntryExporter.ExportExportToPackage(SelectedItem.Entry as ExportEntry, package, out _);
                             package.Save();
                             return results;
                         };
@@ -1810,6 +1810,8 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
                             if (d.ShowDialog() == CommonFileDialogResult.Ok)
                             {
+                                // todo: Change to ISACTBankPair?
+
                                 // ICB
                                 var outDir = d.FileName;
                                 // todo: Use objectbinary when we implement it
@@ -2012,6 +2014,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                         }
                     case "SoundNodeWave":
                         {
+                            // I don't think we should import this way. In release builds don't allow this
 #if !DEBUG
                             MessageBox.Show("Not currently supported");
                             return;
@@ -3801,7 +3804,6 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 {
                     IsCrossGame = sourceEntry.Game != targetItem.Game && sourceEntry.Game != MEGame.UDK,
                     TargetGameDonorDB = objectDB,
-                    Cache = new PackageCache(),
                     ImportExportDependencies = portingOption.PortingOptionChosen is EntryImporter.PortingOption.CloneAllDependencies
                         or EntryImporter.PortingOption.ReplaceSingularWithRelink,
                     GenerateImportsForGlobalFiles = portingOption.PortGlobalsAsImports,

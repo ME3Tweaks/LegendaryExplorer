@@ -125,6 +125,20 @@ namespace LegendaryExplorer
 
             set.Add(new Tool
             {
+                name = "PSA Viewer",
+                type = typeof(PSAViewerWindow),
+                icon = Application.Current.FindResource("iconPlaceholder") as ImageSource,
+                open = () =>
+                {
+                    (new PSAViewerWindow()).Show();
+                },
+                tags = new List<string> { "utility", "toolsetdev", "animation" },
+                category = "Toolset Devs",
+                description = "PSA Viewer is a tool for viewing the contents of a PSA file."
+            });
+
+            set.Add(new Tool
+            {
                 name = "SFAR Explorer",
                 type = typeof(Tools.SFARExplorer.SFARExplorerWindow),
                 icon = Application.Current.FindResource("iconSFARExplorer") as ImageSource,
@@ -171,7 +185,7 @@ namespace LegendaryExplorer
                 open = () =>
                 {
                     var gameStr = InputComboBoxWPF.GetValue(null, "Choose game you want to use Animation Viewer 2 with.", "Live Level Editor 2 game selector",
-                        new[] { "LE1" }, "LE1");
+                        new[] { "LE1", "LE2", /*"LE3"*/ }, "LE2");
 
                     if (Enum.TryParse(gameStr, out MEGame game))
                     {

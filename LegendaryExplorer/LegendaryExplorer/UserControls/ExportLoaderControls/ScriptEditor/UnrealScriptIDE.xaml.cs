@@ -69,8 +69,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
         }
 
         public override bool CanParse(ExportEntry exportEntry) =>
-            exportEntry.Game != MEGame.UDK 
-            && (exportEntry.FileRef.Platform == MEPackage.GamePlatform.PC || exportEntry.Game.IsLEGame()) // LE games all should have identical bytecode, but we do not support it (but some users might try anyways)
+            (exportEntry.FileRef.Platform == MEPackage.GamePlatform.PC || exportEntry.Game.IsLEGame()) // LE games all should have identical bytecode, but we do not support it (but some users might try anyways)
             && (exportEntry.ClassName switch
             {
                 "Class" => true,
@@ -435,7 +434,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                 }
                 catch (Exception e) //when (!App.IsDebug)
                 {
-                    ScriptText = $"Error occured while decompiling {CurrentLoadedExport?.InstancedFullPath}:\n\n{e.FlattenException()}";
+                    ScriptText = $"/*Error occured while decompiling {CurrentLoadedExport?.InstancedFullPath}:\n\n{e.FlattenException()}*/";
                 }
             });
         }

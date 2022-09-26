@@ -18,7 +18,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
         public List<Texture2DMipInfo> Mips { get; }
         public readonly bool NeverStream;
         public readonly ExportEntry Export;
-        public readonly string TextureFormat;
+        public string TextureFormat { get; init; }
         public Guid TextureGuid;
 
         // Callback for when there's an exception. Used by M3 to localize the error. Defaults to an int version since ME3Explorer is INT only
@@ -464,13 +464,13 @@ namespace LegendaryExplorerCore.Unreal.Classes
                     continue;
                 }
 
-                if (Export.Game.IsOTGame() && Export.Game < MEGame.ME3)
-                {
-                    compressedMips.Add(TextureCompression.CompressTexture(image.mipMaps[m].data, isPackageStored ? StorageTypes.pccLZO : StorageTypes.extLZO)); //LZO 
-                }
-                else if (Export.Game == MEGame.ME3)
+                if (Export.Game == MEGame.ME3)
                 {
                     compressedMips.Add(TextureCompression.CompressTexture(image.mipMaps[m].data, isPackageStored ? StorageTypes.pccZlib : StorageTypes.extZlib)); //ZLib
+                }
+                else if (Export.Game.IsOTGame() || Export.Game is MEGame.UDK)
+                {
+                    compressedMips.Add(TextureCompression.CompressTexture(image.mipMaps[m].data, isPackageStored ? StorageTypes.pccLZO : StorageTypes.extLZO)); //LZO 
                 }
                 else if (Export.Game.IsLEGame())
                 {
@@ -716,7 +716,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
                 // Adjust the internal lod bias.
                 var maxLodInfo = TextureLODInfo.LEMaxLodSizes(Export.Game);
                 var texGroup = props.GetProp<EnumProperty>(@"LODGroup");
-                if (texGroup != null && maxLodInfo.TryGetValue(texGroup.Value.Instanced, out var maxDimension))
+                if (texGroup != null && maxLodInfo.TryGetValue(texGroup.Value.Instanced, out int maxDimension))
                 {
                     // cubemaps will have null texture group. we don't want to update these
                     int lodBias = 0;
@@ -733,10 +733,10 @@ namespace LegendaryExplorerCore.Unreal.Classes
                 }
             }
 
-            var mem = new EndianReader(new MemoryStream()) { Endian = Export.FileRef.Endian };
+            var mem = new EndianReader(new MemoryStream(0x400 + Mips.Sum(mip => mip.IsPackageStored ? 24 + mip.Mip.Length : 24))) { Endian = Export.FileRef.Endian };
             mem.Writer.WriteFromBuffer(Export.GetPrePropBinary());
             props.WriteTo(mem.Writer, Export.FileRef);
-            SerializeNewData(mem.BaseStream); //quite slow when writing a pcc-stored texture. Pre-calc memeorystream size might help 
+            SerializeNewData(mem.BaseStream);
             Export.Data = mem.ToArray();
 
             //using (MemoryStream newData = new MemoryStream())
@@ -983,6 +983,15 @@ namespace LegendaryExplorerCore.Unreal.Classes
             return Image.convertToPng(GetTextureData(info, Export.Game), info.width, info.height, format)
                 .ToArray();
         }
+
+        public Image ToImage(PixelFormat dstFormat)
+        {
+            PixelFormat format = Image.getPixelFormatType(TextureFormat);
+            Texture2DMipInfo topMip = GetTopMip();
+            var image = new Image(new List<MipMap> { new(GetTextureData(topMip, Export.Game), topMip.width, topMip.height, format) }, format);
+            image.correctMips(dstFormat);
+            return image;
+        }
     }
 
     [DebuggerDisplay(@"Texture2DMipInfo for {Export.ObjectName.Instanced} | {width}x{height} | {storageType}")]
@@ -1000,6 +1009,8 @@ namespace LegendaryExplorerCore.Unreal.Classes
         private string _textureCacheName;
         public byte[] Mip;
 
+        public bool IsPackageStored => !((StorageFlags)storageType).Has(StorageFlags.externalFile);
+
         public string TextureCacheName
         {
             get
@@ -1009,7 +1020,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
                 //ME1 externally references the UPKs. I think. It doesn't load external textures from SFMs
                 string baseName = Export.FileRef.FollowLink(Export.idxLink).Split('.')[0].ToUpper() + ".upk"; //get top package name
 
-                if (storageType == StorageTypes.extLZO || storageType == StorageTypes.extZlib || storageType == StorageTypes.extUnc)
+                if (storageType is StorageTypes.extLZO or StorageTypes.extZlib or StorageTypes.extUnc)
                 {
                     return baseName;
                 }

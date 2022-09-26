@@ -25,7 +25,6 @@
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <converters:WwiseMenuItemVisibilityConverter x:Key="WwiseMenuItemVisibilityConverter"/>
         <ContextMenu x:Key="EntryContextMenu">
-            <MenuItem Header="Export ISACT entry as raw" ToolTip="Exports the binary data of this ISACT entry to disk" Click="ExtractISACTAsRaw_Clicked" Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='ISACTFileEntry'}"/>
             <MenuItem Header="Export ISACT entry as wave" ToolTip="Exports the ISACT entry data to playable wave file" Click="ExtractISACTAsWave_Clicked" Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='ISACTFileEntry'}"/>
 
             <MenuItem Header="Export bank to file" ToolTip="Exports the binary data of this export (embedded soundbank) to disk" Click="ExtractBank_Clicked" Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='WwiseBank'}"/>
@@ -191,7 +190,7 @@
                                 <fa:ImageAwesome  Grid.Column="7" Icon="{Binding Icon}" Spin="{Binding NeedsLoading}" SpinDuration="1.2" Width="18" Height="18" Margin="2,0,4,0"/>
                                 <StackPanel>
                                     <TextBlock Text="{Binding DisplayString}" VerticalAlignment="Center"/>
-                                    <TextBlock Text="{Binding Entry.TLKString}" TextWrapping="Wrap" FontSize="10" FontStyle="Italic"  Visibility="{Binding Entry.TLKString, Converter={StaticResource NullVisibilityConverter}}"/>
+                                    <TextBlock Text="{Binding TLKString}" TextWrapping="Wrap" FontSize="10" FontStyle="Italic"  Visibility="{Binding TLKString, Converter={StaticResource NullVisibilityConverter}}"/>
                                     <TextBlock Text="{Binding SubText}" VerticalAlignment="Center" Foreground="Gray"/>
                                 </StackPanel>
                             </StackPanel>
