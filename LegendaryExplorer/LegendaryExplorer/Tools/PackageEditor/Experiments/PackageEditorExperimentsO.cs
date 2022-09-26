@@ -1,8 +1,11 @@
 ﻿using LegendaryExplorer.Dialogs;
+using LegendaryExplorerCore.Dialogue;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Kismet;
 using LegendaryExplorerCore.Matinee;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorer.Tools.TlkManagerNS;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using System;
@@ -840,6 +843,66 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         }
 
         /// <summary>
+        /// Keeps the BioEvtSysTrackVOElements only of all InterpDatas associated with the conversation,
+        /// as well as performing other safety measures on it for audio donation.
+        /// </summary>
+        /// <param name="pew">Current PE instance.</param>
+        public static void CleanConvoDonor(PackageEditorWindow pew)
+        {
+            if (pew.Pcc == null || pew.SelectedItem?.Entry == null) { return; }
+
+            if (pew.SelectedItem.Entry.ClassName is not "BioConversation")
+            {
+                ShowError("Selected export is not a BioConversation");
+                return;
+            }
+
+            ConversationExtended conversation = new((ExportEntry)pew.SelectedItem.Entry);
+            conversation.LoadConversation(TLKManagerWPF.GlobalFindStrRefbyID, true);
+
+            List<IEntry> interpDatas = new(SeqTools.GetAllSequenceElements((ExportEntry)conversation.Sequence)
+                .Where(el => el.ClassName == "InterpData"));
+
+            // Keep only InterpGroups names "Conversation" and only the BioEvtSysTrackVOElements InterpTracks
+            foreach (ExportEntry interpData in interpDatas)
+            {
+                // Get a list of groups named "cOnversation"
+                List<ObjectProperty> filteredGroups = interpData.GetProperty<ArrayProperty<ObjectProperty>>("InterpGroups")
+                    .Where(obj =>
+                    {
+                        ExportEntry group = (ExportEntry)pew.Pcc.GetEntry(obj.Value);
+                        NameProperty name = group.GetProperty<NameProperty>("GroupName");
+                        if (name == null) { return false; }
+                        return name.Value.Instanced == "Conversation";
+                    }).ToList<ObjectProperty>();
+
+
+                // Keep only BioEvtSysTrackVOElements InterpTracks
+                foreach (ObjectProperty interpGroupObj in filteredGroups)
+                {
+                    ExportEntry interpGroup = (ExportEntry)pew.Pcc.GetEntry(interpGroupObj.Value);
+                    IEnumerable<ObjectProperty> filteredTracks = interpGroup.GetProperty<ArrayProperty<ObjectProperty>>("InterpTracks")
+                        .Where(obj =>
+                        {
+                            ExportEntry track = (ExportEntry)pew.Pcc.GetEntry(obj.Value);
+                            return track.ClassName == "BioEvtSysTrackVOElements";
+                        });
+
+                    ArrayProperty<ObjectProperty> voElementsTracks = new(filteredTracks, "InterpTracks");
+                    interpGroup.WriteProperty(voElementsTracks);
+                }
+
+                ArrayProperty<ObjectProperty> conversationGroups = new(filteredGroups, "InterpGroups");
+                interpData.WriteProperty(conversationGroups);
+            }
+
+            var x = 1;
+        }
+
+        // HELPER FUNCTIONS
+
+        #region Helper functions
+        /// <summary>
         /// Checks if a dest position is within a given distance of the origin.
         /// </summary>
         /// <param name="origin">Origin position.</param>
@@ -1061,5 +1124,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             return new StructProperty("Guid", props, "ExpressionGUID", true);
         }
+        #endregion
     }
 }

@@ -1384,6 +1384,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         {
             PackageEditorExperimentsO.SMRefRemover(GetPEWindow());
         }
+
+        private void CleanConvoDonor_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.CleanConvoDonor(GetPEWindow());
+        }
         #endregion
 
         // EXPERIMENTS: CHONKY DB---------------------------------------------------------
