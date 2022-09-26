@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
@@ -71,7 +73,7 @@ namespace LegendaryExplorerCore.Unreal
                             res.AddRange(GetFiles(Path.Combine(baseFolder, f.Name, "Packages", "ISACT"), isLE2LE3));
                     }
                 }
-            }   
+            }
 
             return res;
         }
@@ -128,12 +130,16 @@ namespace LegendaryExplorerCore.Unreal
 
             var tocFolders = GetTOCableFoldersForGame(game, gameRootOverride);
 
-            foreach (var dir in tocFolders)
+            var numDone = 0;
+            Parallel.ForEach(tocFolders, dir =>
             {
                 string sfar = Path.Combine(dir, game.CookedDirName(), "Default.sfar");
 
                 //This is a sfar - code ported from M3
-                if (dir.EndsWith(".sfar") || (File.Exists(sfar) && new FileInfo(sfar).Length != 32)) //endswith .sfar is for TESTPATCH as it doesn't follow other naming system
+                if (dir.EndsWith(".sfar") ||
+                    (File.Exists(sfar) &&
+                     new FileInfo(sfar).Length !=
+                     32)) //endswith .sfar is for TESTPATCH as it doesn't follow other naming system
                 {
                     var sfarToToc = dir;
                     if (File.Exists(sfar)) sfarToToc = sfar;
@@ -158,15 +164,17 @@ namespace LegendaryExplorerCore.Unreal
                     {
                         CreateDLCTOCForDirectory(dir, game).WriteToFile(tocFileLocation);
                     }
+                    Debug.WriteLine($"TOC'd: {tocFileLocation}");
                     //Debug.WriteLine($"{tocFileLocation}-------------------------");
                     //TOCBinFile tbf = new TOCBinFile(tocFileLocation);
                     //tbf.DumpTOC();
                 }
-                var percent = (float)tocFolders.IndexOf(dir) / tocFolders.Count;
-                percentDoneCallback?.Invoke((int)(percent * 100.0));
-            }
-        }
 
+                Interlocked.Increment(ref numDone);
+                percentDoneCallback?.Invoke((int)(numDone * 100.0 / tocFolders.Count));
+            });
+            Debug.WriteLine("Done.");
+        }
 
         /// <summary>
         /// Creates the binary for a TOC file for a specified directory root
@@ -274,7 +282,7 @@ namespace LegendaryExplorerCore.Unreal
                 foreach (var file in files)
                 {
                     var name = new FileInfo(file).Name.ToUpper();
-                    if(!outFiles.ContainsKey(name)) outFiles.Add(name, file);
+                    if (!outFiles.ContainsKey(name)) outFiles.Add(name, file);
                 }
             }
 
@@ -282,7 +290,7 @@ namespace LegendaryExplorerCore.Unreal
             foreach (var file in basegameFiles)
             {
                 var name = new FileInfo(file).Name.ToUpper();
-                if(!outFiles.ContainsKey(name)) outFiles.Add(name, file);
+                if (!outFiles.ContainsKey(name)) outFiles.Add(name, file);
             }
 
             return outFiles.Values.ToList();
@@ -356,7 +364,7 @@ namespace LegendaryExplorerCore.Unreal
 
 
                 tbf.HashBuckets = hashBuckets;
-                Debug.WriteLine($@"Hash table stats: File count: {tbf.HashBuckets.Sum(x=>x.TOCEntries.Count)} Bucket count: {tbf.HashBuckets.Count}");
+                Debug.WriteLine($@"Hash table stats: File count: {tbf.HashBuckets.Sum(x => x.TOCEntries.Count)} Bucket count: {tbf.HashBuckets.Count}");
 
                 return tbf.Save();
             }
