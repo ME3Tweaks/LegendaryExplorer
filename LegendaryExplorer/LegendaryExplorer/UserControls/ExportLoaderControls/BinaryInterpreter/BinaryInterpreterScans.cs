@@ -7114,9 +7114,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             var node = new BinInterpNode(bin.Position, $"{name}: (Pitch: {bin.ReadInt32()}, Yaw: {bin.ReadInt32()}, Roll: {bin.ReadInt32()})") { Length = 12 };
             bin.Position -= 12;
-            node.Items.Add(MakeFloatNode(bin, "X"));
-            node.Items.Add(MakeFloatNode(bin, "Y"));
-            node.Items.Add(MakeFloatNode(bin, "Z"));
+            node.Items.Add(MakeInt32Node(bin, "Pitch"));
+            node.Items.Add(MakeInt32Node(bin, "Yaw"));
+            node.Items.Add(MakeInt32Node(bin, "Roll"));
             return node;
 
         }
