@@ -7089,14 +7089,37 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         }
 
 
-        private static BinInterpNode MakeVectorNode(EndianReader bin, string name) =>
-            new BinInterpNode(bin.Position, $"{name}: (X: {bin.ReadFloat()}, Y: {bin.ReadFloat()}, Z: {bin.ReadFloat()})") { Length = 12 };
+        private static BinInterpNode MakeVectorNode(EndianReader bin, string name) {
+            var node = new BinInterpNode(bin.Position, $"{name}: (X: {bin.ReadFloat()}, Y: {bin.ReadFloat()}, Z: {bin.ReadFloat()})") { Length = 12 };
+            bin.Position -= 12;
+            node.Items.Add(MakeFloatNode(bin, "X"));
+            node.Items.Add(MakeFloatNode(bin, "Y"));
+            node.Items.Add(MakeFloatNode(bin, "Z"));
+            return node;
 
-        private static BinInterpNode MakeQuatNode(EndianReader bin, string name) =>
-            new BinInterpNode(bin.Position, $"{name}: (X: {bin.ReadFloat()}, Y: {bin.ReadFloat()}, Z: {bin.ReadFloat()}, W: {bin.ReadFloat()})") { Length = 16 };
+        }
 
-        private static BinInterpNode MakeRotatorNode(EndianReader bin, string name) =>
-            new BinInterpNode(bin.Position, $"{name}: (Pitch: {bin.ReadInt32()}, Yaw: {bin.ReadInt32()}, Roll: {bin.ReadInt32()})") { Length = 12 };
+        private static BinInterpNode MakeQuatNode(EndianReader bin, string name)
+        {
+            var node = new BinInterpNode(bin.Position, $"{name}: (X: {bin.ReadFloat()}, Y: {bin.ReadFloat()}, Z: {bin.ReadFloat()}, W: {bin.ReadFloat()})") { Length = 16 };
+            bin.Position -= 16;
+            node.Items.Add(MakeFloatNode(bin, "X"));
+            node.Items.Add(MakeFloatNode(bin, "Y"));
+            node.Items.Add(MakeFloatNode(bin, "Z"));
+            node.Items.Add(MakeFloatNode(bin, "W"));
+            return node;
+        }
+
+        private static BinInterpNode MakeRotatorNode(EndianReader bin, string name)
+        {
+            var node = new BinInterpNode(bin.Position, $"{name}: (Pitch: {bin.ReadInt32()}, Yaw: {bin.ReadInt32()}, Roll: {bin.ReadInt32()})") { Length = 12 };
+            bin.Position -= 12;
+            node.Items.Add(MakeFloatNode(bin, "X"));
+            node.Items.Add(MakeFloatNode(bin, "Y"));
+            node.Items.Add(MakeFloatNode(bin, "Z"));
+            return node;
+
+        }
 
         private static BinInterpNode MakeBoxNode(EndianReader bin, string name) =>
             new BinInterpNode(bin.Position, name)
