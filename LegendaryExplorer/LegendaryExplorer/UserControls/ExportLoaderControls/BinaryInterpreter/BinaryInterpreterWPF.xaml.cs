@@ -235,7 +235,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     }
                     Task.Run(() => EntryImporter.ResolveImport(import)).ContinueWithOnUIThread(prevTask =>
                     {
-                        if(HostingControl is not null) HostingControl.IsBusy = false;
+                        if (HostingControl is not null) HostingControl.IsBusy = false;
                         if (prevTask.Result is ExportEntry res)
                         {
                             var pwpf = new PackageEditorWindow();
@@ -265,7 +265,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private static bool IsObjectNodeType(object nodeobj)
         {
-            if (nodeobj is BinInterpNode {Tag: NodeType type})
+            if (nodeobj is BinInterpNode { Tag: NodeType type })
             {
                 if (type == NodeType.ArrayLeafObject) return true;
                 if (type == NodeType.ObjectProperty) return true;
@@ -403,7 +403,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             if (CurrentLoadedExport != null)
             {
-                ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new BinaryInterpreterWPF(), CurrentLoadedExport)
+                ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new BinaryInterpreterWPF() { AlwaysLoadRegardlessOfSize = true }, CurrentLoadedExport)
                 {
                     Title = $"Binary Interpreter - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.InstancedFullPath} - {CurrentLoadedExport.FileRef.FilePath}"
                 };
@@ -880,6 +880,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     {
                         if (AttemptSelectPreviousEntry(b.Items))
                         {
+                            o.IsExpanded = true;
                             return true;
                         }
                     }
@@ -948,18 +949,14 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             switch (BinaryInterpreter_TreeView.SelectedItem)
             {
                 case BinInterpNode bitve:
-                    int dataOffset = 0;
-                    if (bitve.Name is string offsetStr && offsetStr.StartsWith("_"))
+                    int dataOffset = bitve.GetOffset();
+                    if (dataOffset > 0)
                     {
-                        offsetStr = offsetStr.Substring(1); //remove _
-                        if (int.TryParse(offsetStr, out dataOffset))
+                        BinaryInterpreter_Hexbox.SelectionStart = dataOffset;
+                        BinaryInterpreter_Hexbox.SelectionLength = 1;
+                        if (bitve.Length > 0)
                         {
-                            BinaryInterpreter_Hexbox.SelectionStart = dataOffset;
-                            BinaryInterpreter_Hexbox.SelectionLength = 1;
-                            if (bitve.Length > 0)
-                            {
-                                BinaryInterpreter_Hexbox.Highlight(dataOffset, bitve.Length);
-                            }
+                            BinaryInterpreter_Hexbox.Highlight(dataOffset, bitve.Length);
                         }
                     }
                     switch (bitve.Tag)
