@@ -19,6 +19,8 @@ using LegendaryExplorerCore.Unreal.Classes;
 using static LegendaryExplorer.Tools.TlkManagerNS.TLKManagerWPF;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
 using Newtonsoft.Json;
+using WwiseParserLib.Structures.Chunks;
+using WwiseParserLib.Structures.SoundBanks;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls
 {
@@ -5450,6 +5452,41 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         }
 
         private List<ITreeItem> Scan_WwiseBank(byte[] data)
+        {
+            var subnodes = new List<ITreeItem>();
+
+            var bin = new EndianReader(new MemoryStream(data)) { Endian = Pcc.Endian };
+            bin.JumpTo(CurrentLoadedExport.propsEnd());
+
+            if (Pcc.Game is MEGame.ME2 or MEGame.LE2)
+            {
+                subnodes.Add(MakeUInt32Node(bin, "Unk1"));
+                subnodes.Add(MakeUInt32Node(bin, "Unk2"));
+                if (bin.Skip(-8).ReadInt64() == 0)
+                {
+                    return subnodes;
+                }
+            }
+            subnodes.Add(MakeUInt32Node(bin, "BulkDataFlags"));
+            subnodes.Add(MakeInt32Node(bin, "DataSize1", out var datasize));
+            int dataSize = bin.Skip(-4).ReadInt32();
+            subnodes.Add(MakeInt32Node(bin, "DataSize2"));
+            subnodes.Add(MakeInt32Node(bin, "DataOffset"));
+
+            var sb = new InMemorySoundBank(data.Skip((int)bin.Position).ToArray());
+
+            var bkhd = sb.GetChunk(SoundBankChunkType.BKHD);
+            var datab = sb.GetChunk(SoundBankChunkType.DATA);
+            var didx = sb.GetChunk(SoundBankChunkType.DIDX);
+            var envs = sb.GetChunk(SoundBankChunkType.ENVS);
+            var stid = sb.GetChunk(SoundBankChunkType.STID);
+            var stmg = sb.GetChunk(SoundBankChunkType.STMG);
+            var hirc = sb.GetChunk(SoundBankChunkType.HIRC);
+
+            return Scan_WwiseBankOld(data);
+        }
+
+        private List<ITreeItem> Scan_WwiseBankOld(byte[] data)
         {
             var subnodes = new List<ITreeItem>();
             try
