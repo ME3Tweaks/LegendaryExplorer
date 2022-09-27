@@ -1052,14 +1052,18 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 return;
             }
 
-            int convNodeIDOffset = promptForInt("ConvNodeID offset:", "Not a valid offset.");
-            if (convNodeIDOffset == -1) { return; }
+            int newConvResRefID = promptForInt("New ConvResRefID:", "Not a valid ref id, it must be positive integer.");
+            if (newConvResRefID == -1) { return; }
 
-            ConversationExtended conversation = new((ExportEntry)pew.SelectedItem.Entry);
+            int convNodeIDBase = promptForInt("New ConvNodeID base range:", "Not a valid base, it must be positive integer.");
+            if (convNodeIDBase == -1) { return; }
+
+            ExportEntry bioConversation = (ExportEntry) pew.SelectedItem.Entry;
+
+            ConversationExtended conversation = new(bioConversation);
             conversation.LoadConversation(TLKManagerWPF.GlobalFindStrRefbyID, true);
 
-
-            // PHASE 1: SCRUBBING GROUPS AND TRACKS ---------------------------------------------------------
+            // STEP 1: CLEANING GROUPS AND TRACKS ---------------------------------------------------------
 
             List<IEntry> interpDatas = new(SeqTools.GetAllSequenceElements((ExportEntry)conversation.Sequence)
                 .Where(el => el.ClassName == "InterpData"));
@@ -1067,7 +1071,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             // Keep only InterpGroups names "Conversation" and only the BioEvtSysTrackVOElements InterpTracks
             foreach (ExportEntry interpData in interpDatas)
             {
-                // Get a list of groups named "cOnversation"
+                // Get a list of groups named "Conversation"
                 List<ObjectProperty> filteredGroups = interpData.GetProperty<ArrayProperty<ObjectProperty>>("InterpGroups")
                     .Where(obj =>
                     {
@@ -1075,7 +1079,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         NameProperty name = group.GetProperty<NameProperty>("GroupName");
                         if (name == null) { return false; }
                         return name.Value.Instanced == "Conversation";
-                    }).ToList<ObjectProperty>();
+                    }).ToList();
 
 
                 // Keep only BioEvtSysTrackVOElements InterpTracks
@@ -1097,22 +1101,67 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 interpData.WriteProperty(conversationGroups);
             }
 
-            // PHASE 2: NEW CONVO IDs ---------------------------------------------------------
+            // STEP 2: NEW CONVRESREFID AND NODEIDs ---------------------------------------------------------
 
+            // Update the conversation's refId
+            IntProperty m_nResRefID = new(newConvResRefID, "m_nResRefID");
+            bioConversation.WriteProperty(m_nResRefID);
+
+            // Update the convNodes nodeId and convResRefId
+            int count = 0;
             List<IEntry> convNodes = new(SeqTools.GetAllSequenceElements((ExportEntry)conversation.Sequence)
                 .Where(el => el.ClassName == "BioSeqEvt_ConvNode"));
 
+            Dictionary<int, int> remappedIDs = new();
             foreach (ExportEntry convNode in convNodes)
             {
-                IntProperty m_nNodeId = convNode.GetProperty<IntProperty>("m_nNodeId");
-                if (m_nNodeId == null) { continue; } // Skip nodes without a node id
-                m_nNodeId.Value += convNodeIDOffset;
-                convNode.WriteProperty(m_nNodeId);
+                IntProperty oldNodeID = convNode.GetProperty<IntProperty>("m_nNodeID");
+                if (oldNodeID == null) { continue; }
+
+                // Save a reference to the old id for update the entry and reply lists
+                remappedIDs.Add(oldNodeID.Value, convNodeIDBase + count); 
+
+                IntProperty m_nNodeID = new(convNodeIDBase + count, "m_nNodeID");
+                IntProperty m_nConvResRefID = new(newConvResRefID, "m_nConvResRefID");
+                convNode.WriteProperty(m_nNodeID);
+                convNode.WriteProperty(m_nConvResRefID);
+                count++;
             }
 
-            // PHASE 3: RENAMING HELL ---------------------------------------------------------
+            // Update the nExportIDs of the Entry list
+            ArrayProperty<StructProperty> entryNodes = bioConversation.GetProperty<ArrayProperty<StructProperty>>("m_EntryList");
+            foreach (StructProperty entryNode in entryNodes)
+            {
+                IntProperty oldNodeID = entryNode.GetProp<IntProperty>("nExportID");
+                if (oldNodeID == null || !remappedIDs.ContainsKey(oldNodeID.Value)) { continue; }
+
+                PropertyCollection properties = entryNode.Properties;
+                IntProperty nExportID = new(remappedIDs[oldNodeID.Value], "nExportID");
+                properties.AddOrReplaceProp(nExportID);
+                entryNode.Properties = properties;
+            }
+
+            // Update the nExportIDs of the Reply list
+            ArrayProperty<StructProperty> replyNodes = bioConversation.GetProperty<ArrayProperty<StructProperty>>("m_ReplyList");
+            foreach (StructProperty replyNode in replyNodes)
+            {
+                IntProperty oldNodeID = replyNode.GetProp<IntProperty>("nExportID");
+                if (oldNodeID == null || !remappedIDs.ContainsKey(oldNodeID.Value)) { continue; }
+
+                PropertyCollection properties = replyNode.Properties;
+                IntProperty nExportID = new(remappedIDs[oldNodeID.Value], "nExportID");
+                properties.AddOrReplaceProp(nExportID);
+                replyNode.Properties = properties;
+            }
+
+            bioConversation.WriteProperty(entryNodes);
+            bioConversation.WriteProperty(replyNodes);
+
+
+            // STEP 3: RENAMING HELL ---------------------------------------------------------
 
             var x = 1;
+            MessageBox.Show("Conversation cleaned successfully.", "Success", MessageBoxButton.OK);
         }
 
         // HELPER FUNCTIONS
@@ -1156,7 +1205,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             if (PromptDialog.Prompt(null, msg) is string stringPrompt)
             {
                 int intPrompt;
-                if (string.IsNullOrEmpty(stringPrompt) || !int.TryParse(stringPrompt, out intPrompt))
+                if (string.IsNullOrEmpty(stringPrompt) || !int.TryParse(stringPrompt, out intPrompt) || intPrompt < 0)
                 {
                     MessageBox.Show(err, "Warning", MessageBoxButton.OK);
                     return -1;
