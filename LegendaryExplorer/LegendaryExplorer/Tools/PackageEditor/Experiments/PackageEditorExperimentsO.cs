@@ -4,6 +4,7 @@ using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Kismet;
 using LegendaryExplorerCore.Matinee;
+using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorer.Tools.TlkManagerNS;
 using LegendaryExplorerCore.Unreal;
@@ -13,6 +14,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Numerics;
+using System.Runtime;
+using System.Text;
 using System.Windows;
 
 namespace LegendaryExplorer.Tools.PackageEditor.Experiments
@@ -1058,10 +1061,35 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             int convNodeIDBase = promptForInt("New ConvNodeID base range:", "Not a valid base, it must be positive integer.");
             if (convNodeIDBase == -1) { return; }
 
-            ExportEntry bioConversation = (ExportEntry) pew.SelectedItem.Entry;
+            ExportEntry bioConversation = (ExportEntry)pew.SelectedItem.Entry;
+
+            string newName = "djfkshjfhsuehfjkshfushjfshufeshfjsheufhsefjshefudjfkshjfhsuehfjkshfushjfshufeshfjsheufhsefjshefudjfkshjfhsuehfjkshfushjfshufeshfjsheufhsefjshefudjfkshjfhsuehfjkshfushjfshufeshfjsheufhsefjshefudjfkshjfhsuehfjkshfushjfshufeshfjsheufhsefjshefudjfkshjfhsuehfjkshfushjfshufeshfjsheufhsefjshefu";
 
             ConversationExtended conversation = new(bioConversation);
             conversation.LoadConversation(TLKManagerWPF.GlobalFindStrRefbyID, true);
+
+            // STEP 0: GETTING THE OLD NAME ---------------------------------------------------------------
+
+            string oldWwiseBankName = conversation.WwiseBank.ObjectName.Instanced;
+            string oldBioConversationName = bioConversation.ObjectName.Instanced;
+            string oldName = "";
+
+            for (int w = 0, b = 0; w < oldWwiseBankName.Length && b < oldBioConversationName.Length; w++, b++)
+            {
+                if (char.ToLower(oldWwiseBankName[w]) == char.ToLower(oldBioConversationName[b]))
+                {
+                    oldName += char.ToLower(oldWwiseBankName[w]);
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            string newWwiseBankName = oldWwiseBankName.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
+            string newBioConversationName = oldBioConversationName.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
+
+            bioConversation.ObjectName = newBioConversationName;
 
             // STEP 1: CLEANING GROUPS AND TRACKS ---------------------------------------------------------
 
@@ -1119,7 +1147,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 if (oldNodeID == null) { continue; }
 
                 // Save a reference to the old id for update the entry and reply lists
-                remappedIDs.Add(oldNodeID.Value, convNodeIDBase + count); 
+                remappedIDs.Add(oldNodeID.Value, convNodeIDBase + count);
 
                 IntProperty m_nNodeID = new(convNodeIDBase + count, "m_nNodeID");
                 IntProperty m_nConvResRefID = new(newConvResRefID, "m_nConvResRefID");
@@ -1158,9 +1186,94 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             bioConversation.WriteProperty(replyNodes);
 
 
-            // STEP 3: RENAMING HELL ---------------------------------------------------------
+            // STEP 3: WWISE HELL ---------------------------------------------------------
 
-            var x = 1;
+            // NEW NAME LIMIT WILL BE 255 to be able to easily get the lenght of the name for OT3
+            // TODO: GET old hash from decimal of ID property, and new hash from hashing the name
+
+            // Write the new WwiseBank name
+            conversation.WwiseBank.ObjectName = newWwiseBankName;
+            IntProperty bankIDProp = conversation.WwiseBank.GetProperty<IntProperty>("Id");
+
+            // Get/Generate IDs and little endian hashes
+            uint oldBankID = unchecked((uint)bankIDProp.Value);
+            string oldBankHash = BigToLittleEndian(string.Format("{0:X2}", oldBankID).PadLeft(8, '0'));
+
+            uint newBankID = GetBankId(newWwiseBankName);
+            string newBankHash = BigToLittleEndian(string.Format("{0:X2}", newBankID).PadLeft(8, '0'));
+
+            // Write the replaced ID property
+            bankIDProp.Value = unchecked((int)newBankID);
+            conversation.WwiseBank.WriteProperty(bankIDProp);
+
+
+            // IMPROPER WAY TO REPLACE THE OLD HASH
+            //byte[] wwiseBankData = conversation.WwiseBank.GetBinaryData();
+            //string wwiseBankDataHex = Convert.ToHexString(wwiseBankData);
+
+            //// Update all occurences of the old hash
+            //wwiseBankDataHex = wwiseBankDataHex.Replace(oldBankHash, newBankHash);
+            //conversation.WwiseBank.WriteBinary(Convert.FromHexString(wwiseBankDataHex));
+
+            //if (pew.Pcc.Game.IsGame3() && pew.Pcc.Game.IsOTGame())
+            //{
+            //    // Find name's hex
+            //    // Previous hex is the length, replace it
+            //}
+
+            WwiseBank wwiseBank = conversation.WwiseBank.GetBinaryData<WwiseBank>();
+            // Update the bank id
+            wwiseBank.ID = newBankID;
+
+            // Update referenced banks kvp that reference the old name
+            IEnumerable<KeyValuePair<uint, string>> updatedBanks = wwiseBank.ReferencedBanks
+                .Select(referencedBank =>
+                {
+                    if (referencedBank.Value == oldName) { return new(newBankID, newName); }
+                    else { return referencedBank; }
+                });
+
+            wwiseBank.ReferencedBanks = new OrderedMultiValueDictionary<uint, string>(updatedBanks);
+
+            // Update all references to the old hash in the HIRC objects
+            // THIS IS UNSAFE: We may be replacing stuff we shouldn't, but at the moment of writing this experiment,
+            // we have no better realistic option.
+            foreach (WwiseBank.HIRCObject hirc in wwiseBank.HIRCObjects.Values())
+            {
+                byte[] unparsed = hirc.unparsed;
+                if (unparsed != null && unparsed.Length >= 4)
+                {
+                    // string unparsedHex = Convert.ToHexString(unparsed);
+                    // unparsedHex = unparsedHex.Replace(oldBankHash, newBankHash, StringComparison.OrdinalIgnoreCase);
+                    // hirc.unparsed = Convert.FromHexString(unparsedHex);
+
+                    byte[] oldArr = Convert.FromHexString(oldBankHash);
+                    byte[] newArr = Convert.FromHexString(newBankHash);
+
+                    int idBase = unparsed.Length - 4;
+
+                    // Check if the last 4 bytes of unparsed match the old id
+                    bool equal = true;
+                    for (int i = 0; i < 4; i++)
+                    {
+                        equal = equal && (unparsed[idBase + i] == oldArr[i]);
+                    }
+
+                    // Replace id
+                    if (equal)
+                    {
+                        for (int i = 0; i < 4; i++)
+                        {
+                            unparsed[idBase + i] = newArr[i];
+                        }
+
+                        hirc.unparsed = unparsed;
+                    }
+                }
+            }
+
+            conversation.WwiseBank.WriteBinary(wwiseBank);
+
             MessageBox.Show("Conversation cleaned successfully.", "Success", MessageBoxButton.OK);
         }
 
@@ -1213,6 +1326,42 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 return intPrompt;
             }
             return -1;
+        }
+
+        /// <summary>
+        /// Generates a FNV132 hash of the given name.
+        /// IMPORTANT: This may not be compeletely bug-free or may be missing a couple of details, but so far it works.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns>The decimal representation of the hash.</returns>
+        private static uint GetBankId(string name)
+        {
+            byte[] bytedName = Encoding.ASCII.GetBytes(name);
+
+            // FNV132 hashing algorithm
+            uint hash = 2166136261;
+            foreach (byte namebyte in bytedName)
+            {
+                hash = ((hash * 16777619) ^ namebyte) & 0xFFFFFFFF;
+            }
+            return hash;
+        }
+
+        /// <summary>
+        /// Convert a big endian hex to its little endian representation.
+        /// </summary>
+        /// <param name="bigEndian">Endian to convert.</param>
+        /// <returns>Little endian.</returns>
+        private static string BigToLittleEndian(string bigEndian)
+        {
+            byte[] asCurrentEndian = new byte[4];
+            string littleEndian = "";
+            for (int i = 0; i < 4; i++)
+            {
+                asCurrentEndian[i] = Convert.ToByte(bigEndian.Substring(i * 2, 2), 16);
+                littleEndian = $"{asCurrentEndian[i]:X2}{littleEndian}";
+            }
+            return littleEndian;
         }
         #endregion
     }
