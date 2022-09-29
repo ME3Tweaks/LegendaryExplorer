@@ -1063,17 +1063,24 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             ExportEntry bioConversation = (ExportEntry)pew.SelectedItem.Entry;
 
-            string newName = "djfkshjfhsuehfjkshfushjfshufeshfjsheufhsefjshefudjfkshjfhsuehfjkshfushjfshufeshfjsheufhsefjshefudjfkshjfhsuehfjkshfushjfshufeshfjsheufhsefjshefudjfkshjfhsuehfjkshfushjfshufeshfjsheufhsefjshefudjfkshjfhsuehfjkshfushjfshufeshfjsheufhsefjshefudjfkshjfhsuehfjkshfushjfshufeshfjsheufhsefjshefu";
+            string newName = "THIS_IS_JUST_A_TEST";
 
+            // Load the conversation. We use ConversationExtended since it aggregates most of the elements we'll need to
+            // operate on
             ConversationExtended conversation = new(bioConversation);
             conversation.LoadConversation(TLKManagerWPF.GlobalFindStrRefbyID, true);
 
-            // STEP 0: GETTING THE OLD NAME ---------------------------------------------------------------
+
+            // STEP 0: SETTING UP THE NAMES ---------------------------------------------------------------
 
             string oldWwiseBankName = conversation.WwiseBank.ObjectName.Instanced;
             string oldBioConversationName = bioConversation.ObjectName.Instanced;
             string oldName = "";
 
+            // Get the old name found in all pieces of the conversation by getting the union of the bioconversation
+            // and the wwise bank names.
+            // Assumes that both begin the same, since that's the behavior in all vanilla occurences, and helps
+            // keep the logic simple.
             for (int w = 0, b = 0; w < oldWwiseBankName.Length && b < oldBioConversationName.Length; w++, b++)
             {
                 if (char.ToLower(oldWwiseBankName[w]) == char.ToLower(oldBioConversationName[b]))
@@ -1089,7 +1096,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             string newWwiseBankName = oldWwiseBankName.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
             string newBioConversationName = oldBioConversationName.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
 
-            bioConversation.ObjectName = newBioConversationName;
 
             // STEP 1: CLEANING GROUPS AND TRACKS ---------------------------------------------------------
 
@@ -1129,6 +1135,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 interpData.WriteProperty(conversationGroups);
             }
 
+
             // STEP 2: NEW CONVRESREFID AND NODEIDs ---------------------------------------------------------
 
             // Update the conversation's refId
@@ -1140,13 +1147,12 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             List<IEntry> convNodes = new(SeqTools.GetAllSequenceElements((ExportEntry)conversation.Sequence)
                 .Where(el => el.ClassName == "BioSeqEvt_ConvNode"));
 
-            Dictionary<int, int> remappedIDs = new();
+            Dictionary<int, int> remappedIDs = new(); // Save references of old id for update of entry and reply lists
             foreach (ExportEntry convNode in convNodes)
             {
                 IntProperty oldNodeID = convNode.GetProperty<IntProperty>("m_nNodeID");
                 if (oldNodeID == null) { continue; }
-
-                // Save a reference to the old id for update the entry and reply lists
+                
                 remappedIDs.Add(oldNodeID.Value, convNodeIDBase + count);
 
                 IntProperty m_nNodeID = new(convNodeIDBase + count, "m_nNodeID");
@@ -1188,11 +1194,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             // STEP 3: WWISE HELL ---------------------------------------------------------
 
-            // NEW NAME LIMIT WILL BE 255 to be able to easily get the lenght of the name for OT3
-            // TODO: GET old hash from decimal of ID property, and new hash from hashing the name
-
-            // Write the new WwiseBank name
-            conversation.WwiseBank.ObjectName = newWwiseBankName;
             IntProperty bankIDProp = conversation.WwiseBank.GetProperty<IntProperty>("Id");
 
             // Get/Generate IDs and little endian hashes
@@ -1206,21 +1207,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             bankIDProp.Value = unchecked((int)newBankID);
             conversation.WwiseBank.WriteProperty(bankIDProp);
 
-
-            // IMPROPER WAY TO REPLACE THE OLD HASH
-            //byte[] wwiseBankData = conversation.WwiseBank.GetBinaryData();
-            //string wwiseBankDataHex = Convert.ToHexString(wwiseBankData);
-
-            //// Update all occurences of the old hash
-            //wwiseBankDataHex = wwiseBankDataHex.Replace(oldBankHash, newBankHash);
-            //conversation.WwiseBank.WriteBinary(Convert.FromHexString(wwiseBankDataHex));
-
-            //if (pew.Pcc.Game.IsGame3() && pew.Pcc.Game.IsOTGame())
-            //{
-            //    // Find name's hex
-            //    // Previous hex is the length, replace it
-            //}
-
             WwiseBank wwiseBank = conversation.WwiseBank.GetBinaryData<WwiseBank>();
             // Update the bank id
             wwiseBank.ID = newBankID;
@@ -1232,34 +1218,29 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     if (referencedBank.Value == oldName) { return new(newBankID, newName); }
                     else { return referencedBank; }
                 });
-
             wwiseBank.ReferencedBanks = new OrderedMultiValueDictionary<uint, string>(updatedBanks);
 
-            // Update all references to the old hash in the HIRC objects
-            // THIS IS UNSAFE: We may be replacing stuff we shouldn't, but at the moment of writing this experiment,
-            // we have no better realistic option.
+            // Update references to the old hash at the end of HIRC objects when they are found.
+            // This is mostly safe, since we know the reference appears at the end of the unparsed data,
+            // and we only replace it there.
             foreach (WwiseBank.HIRCObject hirc in wwiseBank.HIRCObjects.Values())
             {
                 byte[] unparsed = hirc.unparsed;
-                if (unparsed != null && unparsed.Length >= 4)
+                if (unparsed != null && unparsed.Length >= 4) // Only replace if not null and at least width of hash
                 {
-                    // string unparsedHex = Convert.ToHexString(unparsed);
-                    // unparsedHex = unparsedHex.Replace(oldBankHash, newBankHash, StringComparison.OrdinalIgnoreCase);
-                    // hirc.unparsed = Convert.FromHexString(unparsedHex);
-
                     byte[] oldArr = Convert.FromHexString(oldBankHash);
                     byte[] newArr = Convert.FromHexString(newBankHash);
 
                     int idBase = unparsed.Length - 4;
 
-                    // Check if the last 4 bytes of unparsed match the old id
+                    // Check if the last 4 bytes of unparsed match the old hash
                     bool equal = true;
                     for (int i = 0; i < 4; i++)
                     {
                         equal = equal && (unparsed[idBase + i] == oldArr[i]);
                     }
 
-                    // Replace id
+                    // Replace the hash
                     if (equal)
                     {
                         for (int i = 0; i < 4; i++)
@@ -1273,6 +1254,12 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
 
             conversation.WwiseBank.WriteBinary(wwiseBank);
+
+
+            // STEP 4: NAME REPLACEMENTS ---------------------------------------------------------
+
+            bioConversation.ObjectName = newBioConversationName;
+            conversation.WwiseBank.ObjectName = newWwiseBankName;
 
             MessageBox.Show("Conversation cleaned successfully.", "Success", MessageBoxButton.OK);
         }
