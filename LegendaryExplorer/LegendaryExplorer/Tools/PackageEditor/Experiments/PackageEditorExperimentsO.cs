@@ -1,4 +1,5 @@
 ﻿using LegendaryExplorer.Dialogs;
+using LegendaryExplorer.Tools.TlkManagerNS;
 using LegendaryExplorerCore.Dialogue;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
@@ -6,7 +7,6 @@ using LegendaryExplorerCore.Kismet;
 using LegendaryExplorerCore.Matinee;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
-using LegendaryExplorer.Tools.TlkManagerNS;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using System;
@@ -14,7 +14,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Numerics;
-using System.Runtime;
 using System.Text;
 using System.Windows;
 
@@ -1109,7 +1108,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 List<ObjectProperty> filteredGroups = interpData.GetProperty<ArrayProperty<ObjectProperty>>("InterpGroups")
                     .Where(obj =>
                     {
-                        ExportEntry group = (ExportEntry)pew.Pcc.GetEntry(obj.Value);
+                        ExportEntry group = pew.Pcc.GetUExport(obj.Value);
                         NameProperty name = group.GetProperty<NameProperty>("GroupName");
                         if (name == null) { return false; }
                         return name.Value.Instanced == "Conversation";
@@ -1119,11 +1118,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 // Keep only BioEvtSysTrackVOElements InterpTracks
                 foreach (ObjectProperty interpGroupObj in filteredGroups)
                 {
-                    ExportEntry interpGroup = (ExportEntry)pew.Pcc.GetEntry(interpGroupObj.Value);
+                    ExportEntry interpGroup = pew.Pcc.GetUExport(interpGroupObj.Value);
                     IEnumerable<ObjectProperty> filteredTracks = interpGroup.GetProperty<ArrayProperty<ObjectProperty>>("InterpTracks")
                         .Where(obj =>
                         {
-                            ExportEntry track = (ExportEntry)pew.Pcc.GetEntry(obj.Value);
+                            ExportEntry track = pew.Pcc.GetUExport(obj.Value);
                             return track.ClassName == "BioEvtSysTrackVOElements";
                         });
 
@@ -1152,7 +1151,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             {
                 IntProperty oldNodeID = convNode.GetProperty<IntProperty>("m_nNodeID");
                 if (oldNodeID == null) { continue; }
-                
+
                 remappedIDs.Add(oldNodeID.Value, convNodeIDBase + count);
 
                 IntProperty m_nNodeID = new(convNodeIDBase + count, "m_nNodeID");
@@ -1167,7 +1166,14 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             foreach (StructProperty entryNode in entryNodes)
             {
                 IntProperty oldNodeID = entryNode.GetProp<IntProperty>("nExportID");
-                if (oldNodeID == null || !remappedIDs.ContainsKey(oldNodeID.Value)) { continue; }
+                if (oldNodeID == null) {
+                    continue;
+                }
+                if (!remappedIDs.ContainsKey(oldNodeID.Value))
+                {
+                    remappedIDs.Add(oldNodeID.Value, convNodeIDBase + count);
+                    count++;
+                }
 
                 PropertyCollection properties = entryNode.Properties;
                 IntProperty nExportID = new(remappedIDs[oldNodeID.Value], "nExportID");
@@ -1180,7 +1186,12 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             foreach (StructProperty replyNode in replyNodes)
             {
                 IntProperty oldNodeID = replyNode.GetProp<IntProperty>("nExportID");
-                if (oldNodeID == null || !remappedIDs.ContainsKey(oldNodeID.Value)) { continue; }
+                if (oldNodeID == null) { continue; }
+                if (!remappedIDs.ContainsKey(oldNodeID.Value))
+                {
+                    remappedIDs.Add(oldNodeID.Value, convNodeIDBase + count);
+                    count++;
+                }
 
                 PropertyCollection properties = replyNode.Properties;
                 IntProperty nExportID = new(remappedIDs[oldNodeID.Value], "nExportID");
@@ -1260,6 +1271,145 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             bioConversation.ObjectName = newBioConversationName;
             conversation.WwiseBank.ObjectName = newWwiseBankName;
+
+            // Replace package's name
+            if (bioConversation.idxLink != 0)
+            {
+                ExportEntry link = pew.Pcc.GetUExport(bioConversation.idxLink);
+                if (link.ClassName == "Package")
+                {
+                    link.ObjectName = link.ObjectName.Instanced.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
+                }
+            }
+
+            List<ObjectProperty> fxas = bioConversation.GetProperty<ArrayProperty<ObjectProperty>>("m_aMaleFaceSets").ToList();
+            fxas.AddRange(bioConversation.GetProperty<ArrayProperty<ObjectProperty>>("m_aFemaleFaceSets"));
+            fxas.Add(bioConversation.GetProperty<ObjectProperty>("m_pNonSpeakerFaceFXSet"));
+
+
+            foreach (ObjectProperty fxa in fxas)
+            {
+                if (fxa.Value == 0) { continue; }
+
+                ExportEntry fxaExport = pew.Pcc.GetUExport(fxa.Value);
+
+                string oldFxaFullName = fxaExport.ObjectName.Instanced; // May contain _M and _F
+                string oldFxaName = oldFxaFullName; // full name minus _M/_F
+
+                if (oldFxaFullName.Substring(oldFxaFullName.Length - 2).ToUpper() is "_M" or "_F")
+                {
+                    oldFxaName = oldFxaFullName.Remove(oldFxaFullName.Length - 2);
+                }
+
+                string newFxaName = oldFxaName.Replace(oldName, newName);
+                fxaExport.ObjectName = oldFxaFullName.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
+
+                FaceFXAnimSet faceFXAnimSet = fxaExport.GetBinaryData<FaceFXAnimSet>();
+                List<string> names = faceFXAnimSet.Names.Select(name =>
+                {
+                    if (name == oldFxaName) { return newFxaName; }
+                    else { return name; }
+                }).ToList();
+                faceFXAnimSet.Names = names;
+
+                // Set the paths with the new names
+                ArrayProperty<ObjectProperty> eventRefs = fxaExport.GetProperty<ArrayProperty<ObjectProperty>>("ReferencedSoundCues");
+                if (eventRefs == null) { continue; }
+                foreach (FaceFXLine line in faceFXAnimSet.Lines)
+                {
+                    ExportEntry wwiseEvent = pew.Pcc.GetUExport(eventRefs[line.Index].Value);
+                    if (wwiseEvent != null)
+                    {
+                        line.Path = wwiseEvent.FullPath;
+                    }
+
+                    WwiseEvent wwiseEventBin = wwiseEvent.GetBinaryData<WwiseEvent>();
+                    foreach (WwiseEvent.WwiseEventLink link in wwiseEventBin.Links)
+                    {
+                        foreach (int stream in link.WwiseStreams)
+                        {
+                            if (stream == 0) { continue; }
+
+                            ExportEntry wwiseStream = pew.Pcc.GetUExport(stream);
+                            NameProperty fileName = wwiseStream.GetProperty<NameProperty>("Filename");
+                            if (fileName != null)
+                            {
+                                fileName = new NameProperty(fileName.Value.Instanced.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase), "Filename");
+                                wwiseStream.WriteProperty(fileName);
+                            }
+                            wwiseStream.ObjectName = wwiseStream.ObjectName.Instanced.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
+                        }
+
+                    }
+                }
+
+                fxaExport.WriteBinary(faceFXAnimSet);
+            }
+
+            // STEP 5: CLEAN SEQUENCE ---------------------------------------------------------
+            ExportEntry sequence = (ExportEntry)conversation.Sequence;
+            ArrayProperty<ObjectProperty> m_aSFXSharedAnimsets = sequence.GetProperty<ArrayProperty<ObjectProperty>>("m_aSFXSharedAnimsets");
+            if (m_aSFXSharedAnimsets != null)
+            {
+                sequence.RemoveProperty("m_aSFXSharedAnimsets");
+            }
+            ArrayProperty<ObjectProperty> seqObjRefs = sequence.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
+            if (seqObjRefs != null)
+            {
+                // Make a list of ExportEntries to pass to the connectionsToNode methods.
+                List<ExportEntry> sequenceObjects = seqObjRefs.Select(objRef =>
+                {
+                    pew.Pcc.TryGetUExport(objRef.Value, out ExportEntry seqObj);
+                    return seqObj;
+                }).ToList();
+
+
+                List<string> validClasses = new() { "BioSeqAct_EndCurrentConvNode", "BioSeqEvt_ConvNode", "InterpData", "SeqAct_Interp" };
+                // Keep only references to objects that make the conversation or are linked to Interps
+                IEnumerable<ObjectProperty> filteredSeqObjRefs = seqObjRefs
+                    .Where(objRef =>
+                    {
+                        if (objRef == null || objRef.Value == 0) { return false; }
+
+                        ExportEntry sequenceObject = pew.Pcc.GetUExport(objRef.Value);
+
+                        if (sequenceObject.ClassName == "BioSeqVar_ObjectFindByTag")
+                        {
+                            var x = 1;
+                        }
+                        // Check if any Interp links to the object in a variable link
+                        bool connectedInterpData = SeqTools.FindVariableConnectionsToNode(sequenceObject, sequenceObjects)
+                            .Any(connection => connection.ClassName == "SeqAct_Interp");
+
+                        return connectedInterpData || validClasses.Contains(sequenceObject.ClassName);
+                    });
+
+                sequence.WriteProperty(new ArrayProperty<ObjectProperty>(filteredSeqObjRefs, "SequenceObjects"));
+
+                // Remove links to objects no longer in the sequence
+                foreach (ObjectProperty objRef in filteredSeqObjRefs)
+                {
+                    ExportEntry sequenceObject = pew.Pcc.GetUExport(objRef.Value);
+
+                    // Keep only outbound links to valid classes
+                    List<List<SeqTools.OutboundLink>> outboundLinks = SeqTools.GetOutboundLinksOfNode(sequenceObject);
+                    if (outboundLinks.Count > 0)
+                    {
+                        List<List<SeqTools.OutboundLink>> filteredOutboundLinks = new();
+                        foreach (List<SeqTools.OutboundLink> outboundLink in outboundLinks)
+                        {
+                            // Add to filteredOutboundLinks the elements of this outbound link that connect to a valid class
+                            filteredOutboundLinks.Add(outboundLink.Where(link =>
+                            {
+                                IEntry linkedOP = link.LinkedOp;
+                                if (linkedOP == null) { return false; }
+                                else { return validClasses.Contains(linkedOP.ClassName); }
+                            }).ToList());
+                        }
+                        SeqTools.WriteOutboundLinksToNode(sequenceObject, filteredOutboundLinks);
+                    }
+                }
+            }
 
             MessageBox.Show("Conversation cleaned successfully.", "Success", MessageBoxButton.OK);
         }
