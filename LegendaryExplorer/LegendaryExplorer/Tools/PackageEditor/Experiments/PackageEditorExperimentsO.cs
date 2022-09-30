@@ -1366,23 +1366,19 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                 List<string> validClasses = new() { "BioSeqAct_EndCurrentConvNode", "BioSeqEvt_ConvNode", "InterpData", "SeqAct_Interp" };
                 // Keep only references to objects that make the conversation or are linked to Interps
-                IEnumerable<ObjectProperty> filteredSeqObjRefs = seqObjRefs
+                List<ObjectProperty> filteredSeqObjRefs = seqObjRefs
                     .Where(objRef =>
                     {
                         if (objRef == null || objRef.Value == 0) { return false; }
 
                         ExportEntry sequenceObject = pew.Pcc.GetUExport(objRef.Value);
 
-                        if (sequenceObject.ClassName == "BioSeqVar_ObjectFindByTag")
-                        {
-                            var x = 1;
-                        }
                         // Check if any Interp links to the object in a variable link
                         bool connectedInterpData = SeqTools.FindVariableConnectionsToNode(sequenceObject, sequenceObjects)
                             .Any(connection => connection.ClassName == "SeqAct_Interp");
 
-                        return connectedInterpData || validClasses.Contains(sequenceObject.ClassName);
-                    });
+                        return connectedInterpData || validClasses.Contains(sequenceObject.ClassName, StringComparer.OrdinalIgnoreCase);
+                    }).ToList();
 
                 sequence.WriteProperty(new ArrayProperty<ObjectProperty>(filteredSeqObjRefs, "SequenceObjects"));
 
@@ -1399,12 +1395,10 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         foreach (List<SeqTools.OutboundLink> outboundLink in outboundLinks)
                         {
                             // Add to filteredOutboundLinks the elements of this outbound link that connect to a valid class
-                            filteredOutboundLinks.Add(outboundLink.Where(link =>
-                            {
-                                IEntry linkedOP = link.LinkedOp;
-                                if (linkedOP == null) { return false; }
-                                else { return validClasses.Contains(linkedOP.ClassName); }
-                            }).ToList());
+                            filteredOutboundLinks.Add(outboundLink
+                                .Where(link =>
+                                    link != null || validClasses.Contains(link.LinkedOp.ClassName, StringComparer.OrdinalIgnoreCase)
+                                ).ToList());
                         }
                         SeqTools.WriteOutboundLinksToNode(sequenceObject, filteredOutboundLinks);
                     }
