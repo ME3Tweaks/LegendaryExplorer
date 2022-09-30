@@ -1156,10 +1156,10 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         //}
                     }
 
-                    interpGroup.WriteProperty(new ArrayProperty<ObjectProperty> (filteredTracksRefs, "InterpTracks"));
+                    interpGroup.WriteProperty(new ArrayProperty<ObjectProperty>(filteredTracksRefs, "InterpTracks"));
                 }
 
-                interpData.WriteProperty(new ArrayProperty<ObjectProperty> (filteredGroupsRefs, "InterpGroups"));
+                interpData.WriteProperty(new ArrayProperty<ObjectProperty>(filteredGroupsRefs, "InterpGroups"));
                 interpData.RemoveProperty("m_aBioPreloadData"); // Make sure not to bring extra stuff here
                 // Seems like there's no need to trash anything?
                 // EntryPruner.TrashEntries(pew.Pcc, itemsToTrash);
@@ -1401,6 +1401,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             // Keep only objects essential to the conversation
             ArrayProperty<ObjectProperty> seqObjRefs = sequence.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
+            // Keep a list of disconnected convNodes in case removal of certain objects breaks their links to Interps
+            List<string> disconnectedConvNodes = new();
             if (seqObjRefs != null)
             {
                 List<string> validClasses = new() { "BioSeqAct_EndCurrentConvNode", "BioSeqEvt_ConvNode", "InterpData", "SeqAct_Interp" };
@@ -1415,25 +1417,30 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                     if (seqObj == null) { continue; }
 
-                    bool linksToValid = false;
-
-                    // Optional step that may keep unwanted objects and references, but preserves the links
-                    // of the conversation better
-                    if (bringTrash)
+                    // Check if the object links to a valid class.
+                    // We do this regardless of bringTrash in order to know whether a valid convNode may be
+                    // an orphan.
+                    List<List<SeqTools.OutboundLink>> outboundLinks = SeqTools.GetOutboundLinksOfNode(seqObj);
+                    // Link is valid if it has outbound links, and at least 1 one is linked to 1 valid class
+                    bool linksToValid = (outboundLinks.Count > 0) && outboundLinks
+                        .Any(outboundLink => outboundLink
+                            .Any(link =>
+                                link != null && validClasses.Contains(link.LinkedOp.ClassName, StringComparer.OrdinalIgnoreCase)
+                            )
+                        );
+                    // Keep a list of convNodes that link to nothing
+                    if (!linksToValid && seqObj.ClassName == "BioSeqEvt_ConvNode")
                     {
-                        // Check if the object links to a valid calss
-                        List<List<SeqTools.OutboundLink>> outboundLinks = SeqTools.GetOutboundLinksOfNode(seqObj);
-                        // Link is valid if it has outbound links, and at least 1 one is linked to 1 valid class
-                        linksToValid = (outboundLinks.Count > 0) && outboundLinks
-                            .Any(outboundLink => outboundLink
-                                .Any(link =>
-                                    link != null && validClasses.Contains(link.LinkedOp.ClassName, StringComparer.OrdinalIgnoreCase)
-                                )
-                            );
+                        disconnectedConvNodes.Add(seqObj.ObjectName.Instanced.Replace("BioSeqEvt_", ""));
                     }
 
+                    // Override linkToValid if we want to ignore the object unless it's a valid class
+                    if (!bringTrash) { linksToValid = false; }
+
                     // Skip objects that are not essential for the conversation
+                    // If linktsToValid, we won't recalculate validClasses.Contains, so we're all good
                     if (!linksToValid && !validClasses.Contains(seqObj.ClassName, StringComparer.OrdinalIgnoreCase)) { continue; }
+
 
                     // Save only Data var links of Interps
                     if (seqObj.ClassName == "SeqAct_Interp")
@@ -1483,7 +1490,13 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 }
             }
 
-            MessageBox.Show("Conversation cleaned successfully.", "Success", MessageBoxButton.OK);
+            string successMessage = "Conversation cleaned successfully.";
+            if (disconnectedConvNodes.Count > 0)
+            {
+                successMessage += $"\nThe following ConvNodes were found to be disconnected after the process: {string.Join(", ", disconnectedConvNodes)}";
+            }
+
+            MessageBox.Show(successMessage, "Success", MessageBoxButton.OK);
         }
 
         // HELPER FUNCTIONS
@@ -1592,10 +1605,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             props.AddOrReplaceProp(new IntProperty(minVars, "MinVars"));
             props.AddOrReplaceProp(new IntProperty(maxVars, "MaxVars"));
             return new StructProperty("SeqVarLink", props);
-        }
-
-        private static void TrashEntryAndChildren(PackageEditorWindow pew, ExportEntry toTrash)
-        {
         }
         #endregion
     }
