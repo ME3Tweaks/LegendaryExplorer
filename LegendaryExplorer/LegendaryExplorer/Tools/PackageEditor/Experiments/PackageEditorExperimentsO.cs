@@ -1108,7 +1108,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             {
                 ArrayProperty<ObjectProperty> interpGroupsRefs = interpData.GetProperty<ArrayProperty<ObjectProperty>>("InterpGroups");
                 List<ObjectProperty> filteredGroupsRefs = new();
-                List<IEntry> itemsToTrash = new();
+                //List<IEntry> itemsToTrash = new();
 
                 // Save "Conversation" InterpGroup, trash the rest
                 foreach (ObjectProperty groupRef in interpGroupsRefs)
@@ -1124,10 +1124,10 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     {
                         filteredGroupsRefs.Add(groupRef);
                     }
-                    else
-                    {
-                        itemsToTrash.Add(group);
-                    }
+                    //else
+                    //{
+                    //    itemsToTrash.Add(group);
+                    //}
 
                 }
 
@@ -1150,10 +1150,10 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         {
                             filteredTracksRefs.Add(trackRef);
                         }
-                        else
-                        {
-                            itemsToTrash.Insert(0, track); // Insert first so they are trashed first
-                        }
+                        //else
+                        //{
+                        //    itemsToTrash.Insert(0, track); // Insert first so they are trashed first
+                        //}
                     }
 
                     interpGroup.WriteProperty(new ArrayProperty<ObjectProperty> (filteredTracksRefs, "InterpTracks"));
@@ -1161,7 +1161,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                 interpData.WriteProperty(new ArrayProperty<ObjectProperty> (filteredGroupsRefs, "InterpGroups"));
                 interpData.RemoveProperty("m_aBioPreloadData"); // Make sure not to bring extra stuff here
-                EntryPruner.TrashEntries(pew.Pcc, itemsToTrash);
+                // Seems like there's no need to trash anything?
+                // EntryPruner.TrashEntries(pew.Pcc, itemsToTrash);
             }
 
 
@@ -1324,12 +1325,20 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                 ExportEntry fxaExport = pew.Pcc.GetUExport(fxa.Value);
 
-                string oldFxaFullName = fxaExport.ObjectName.Instanced; // May contain _M and _F
+                string oldFxaFullName = fxaExport.ObjectName.Instanced; // May contain _M, _F, or _NonSpkr
                 string oldFxaName = oldFxaFullName; // full name minus _M/_F
 
-                if (oldFxaFullName.Substring(oldFxaFullName.Length - 2).ToUpper() is "_M" or "_F")
+                if (oldFxaFullName[^2..].ToLower() is "_m" or "_f")
                 {
                     oldFxaName = oldFxaFullName.Remove(oldFxaFullName.Length - 2);
+                }
+                else
+                {
+                    // Most likely a NonSpkr, in which case we'll use the full name
+                    if (oldFxaFullName.Length > 8 && oldFxaFullName[^8..].ToLower() is "_nonspkr")
+                    {
+                        oldFxaName = oldFxaFullName;
+                    }
                 }
 
                 string newFxaName = oldFxaName.Replace(oldName, newName);
@@ -1345,32 +1354,34 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                 // Set the paths with the new names
                 ArrayProperty<ObjectProperty> eventRefs = fxaExport.GetProperty<ArrayProperty<ObjectProperty>>("ReferencedSoundCues");
-                if (eventRefs == null) { continue; }
-                foreach (FaceFXLine line in faceFXAnimSet.Lines)
+                if (eventRefs != null)
                 {
-                    ExportEntry wwiseEvent = pew.Pcc.GetUExport(eventRefs[line.Index].Value);
-                    if (wwiseEvent != null)
+                    foreach (FaceFXLine line in faceFXAnimSet.Lines)
                     {
-                        line.Path = wwiseEvent.FullPath;
-                    }
-
-                    WwiseEvent wwiseEventBin = wwiseEvent.GetBinaryData<WwiseEvent>();
-                    foreach (WwiseEvent.WwiseEventLink link in wwiseEventBin.Links)
-                    {
-                        foreach (int stream in link.WwiseStreams)
+                        ExportEntry wwiseEvent = pew.Pcc.GetUExport(eventRefs[line.Index].Value);
+                        if (wwiseEvent != null)
                         {
-                            if (stream == 0) { continue; }
-
-                            ExportEntry wwiseStream = pew.Pcc.GetUExport(stream);
-                            NameProperty fileName = wwiseStream.GetProperty<NameProperty>("Filename");
-                            if (fileName != null)
-                            {
-                                fileName = new NameProperty(fileName.Value.Instanced.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase), "Filename");
-                                wwiseStream.WriteProperty(fileName);
-                            }
-                            wwiseStream.ObjectName = wwiseStream.ObjectName.Instanced.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
+                            line.Path = wwiseEvent.FullPath;
                         }
 
+                        WwiseEvent wwiseEventBin = wwiseEvent.GetBinaryData<WwiseEvent>();
+                        foreach (WwiseEvent.WwiseEventLink link in wwiseEventBin.Links)
+                        {
+                            foreach (int stream in link.WwiseStreams)
+                            {
+                                if (stream == 0) { continue; }
+
+                                ExportEntry wwiseStream = pew.Pcc.GetUExport(stream);
+                                NameProperty fileName = wwiseStream.GetProperty<NameProperty>("Filename");
+                                if (fileName != null)
+                                {
+                                    fileName = new NameProperty(fileName.Value.Instanced.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase), "Filename");
+                                    wwiseStream.WriteProperty(fileName);
+                                }
+                                wwiseStream.ObjectName = wwiseStream.ObjectName.Instanced.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
+                            }
+
+                        }
                     }
                 }
 
