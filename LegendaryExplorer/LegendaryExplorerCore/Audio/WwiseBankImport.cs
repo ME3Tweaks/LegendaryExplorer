@@ -51,7 +51,7 @@ namespace LegendaryExplorerCore.Audio
             // Get info about what we need to do
             var infoDoc = XDocument.Load(soundBankInfo);
 
-            var allStreamedFiles = infoDoc.Root.Descendants("StreamedFiles").Select(x => new
+            var allStreamedFiles = infoDoc.Root.Descendants("StreamedFiles").Descendants("File").Select(x => new
             {
                 Id = uint.Parse(x.Attribute("Id")?.Value),
                 Language = x.Attribute("Language")?.Value,
@@ -62,13 +62,13 @@ namespace LegendaryExplorerCore.Audio
 
             var soundBankChunk = infoDoc.Root.Descendants("SoundBank").FirstOrDefault(x => x.Element("Path")?.Value == bankNameWithExtension);
 
-            var eventInfos = soundBankChunk.Descendants("IncludedEvents").Select(x => new
+            var eventInfos = soundBankChunk.Element("IncludedEvents").Descendants("Event").Select(x => new
             {
                 Id = uint.Parse(x.Attribute("Id")?.Value),
                 Name = x.Attribute("Name")?.Value
             }).ToList();
 
-            var referencedStreamingAudioIds = soundBankChunk.Element("ReferencedStreamFiles")?.Descendants("File")
+            var referencedStreamingAudioIds = soundBankChunk.Element("ReferencedStreamedFiles")?.Descendants("File")
                 .Select(x => uint.Parse(x.Attribute("Id").Value));
             var referencedStreamingAudio = referencedStreamingAudioIds != null ? allStreamedFiles.Where(x => referencedStreamingAudioIds.Contains(x.Id)) : null;
 
@@ -83,12 +83,13 @@ namespace LegendaryExplorerCore.Audio
             ExportEntry bankExport = package.FindExport($"{bankName}.{bankName}");
             if (bankExport == null)
             {
-                bankExport = ExportCreator.CreateExport(package, bankName, "Wwisebank", parentPackage);
+                bankExport = ExportCreator.CreateExport(package, bankName, "Wwisebank", parentPackage, indexed: false);
             }
 
             bankExport.WriteProperty(new ObjectProperty(GetInitBankReference(package), "Parent"));
             // Id is stored as uint - we read as uint and then write as int as it's the same.
             bankExport.WriteProperty(new IntProperty((int)uint.Parse(soundBankChunk.Attribute("Id").Value), "Id"));
+            WwiseBank.WriteBankRaw(File.ReadAllBytes(bankPath), bankExport);
 
 
             // Import the streams
@@ -99,7 +100,7 @@ namespace LegendaryExplorerCore.Audio
                 var streamExport = package.FindExport($"{bankName}.{exportName}");
                 if (streamExport == null)
                 {
-                    streamExport = ExportCreator.CreateExport(package, exportName, "WwiseStream", parentPackage);
+                    streamExport = ExportCreator.CreateExport(package, exportName, "WwiseStream", parentPackage, indexed: false);
                 }
 
                 PropertyCollection p = new PropertyCollection();
@@ -114,11 +115,12 @@ namespace LegendaryExplorerCore.Audio
                     // LE2
                 }
 
-                var wemPath = Path.Combine(generatedDir, streamInfo.WemPath);
+                var wemPath = Path.Combine(generatedDir, $"{streamInfo.Id}.wem"); // Seems to dump here for non-localized audio.
                 WwiseStream ws = new WwiseStream();
                 ws.Id = (int)streamInfo.Id;
                 ws.DataOffset = 0; // Todo: We have to build the AFC
                 ws.DataSize = (int)new FileInfo(wemPath).Length;
+                ws.Filename = bankName; // This is needed internally for serialization
 
                 streamExport.WritePropertiesAndBinary(p, ws);
                 streamExports.Add(streamExport);
@@ -131,15 +133,16 @@ namespace LegendaryExplorerCore.Audio
                 var eventExport = package.FindExport($"{bankName}.{eventInfo.Name}");
                 if (eventExport == null)
                 {
-                    eventExport = ExportCreator.CreateExport(package, eventInfo.Name, "WwiseEvent", parentPackage);
+                    eventExport = ExportCreator.CreateExport(package, eventInfo.Name, "WwiseEvent", parentPackage, indexed: false);
                 }
 
                 PropertyCollection p = new PropertyCollection();
                 if (package.Game == MEGame.LE3)
                 {
                     // LE3
-                    p.Add(new StructProperty("WwiseRelationShips", false,
-                        new ObjectProperty(bankExport, "Bank"), new NoneProperty()));
+                    p.Add(new StructProperty("WwiseRelationships", false,
+                        new ObjectProperty(bankExport, "Bank"))
+                    { Name = "Relationships" });
                     p.Add(new IntProperty((int)eventInfo.Id, "Id"));
                     p.Add(new FloatProperty(9, "Duration")); // TODO: FIGURE THIS OUT!!! THIS IS A PLACEHOLDER
 

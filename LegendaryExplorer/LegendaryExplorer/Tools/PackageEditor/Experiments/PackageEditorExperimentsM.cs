@@ -20,6 +20,7 @@ using LegendaryExplorer.Tools.Sequence_Editor;
 using LegendaryExplorer.Tools.WwiseEditor;
 using LegendaryExplorer.UnrealExtensions.Classes;
 using LegendaryExplorerCore;
+using LegendaryExplorerCore.Audio;
 using LegendaryExplorerCore.DebugTools;
 using LegendaryExplorerCore.Dialogue;
 using LegendaryExplorerCore.GameFilesystem;
@@ -2485,6 +2486,13 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
         public static void MScanner(PackageEditorWindow pe)
         {
+            if (pe.Pcc != null)
+            {
+                WwiseBankImport.ImportBank(
+                    @"C:\Users\mgame\Documents\WwiseProjects\LETest1\GeneratedSoundBanks\Windows\TestBank.bnk", pe.Pcc);
+            }
+
+            return;
             Debug.WriteLine("ME1");
 
             GenerateAllMemoryPathedObjects(MEGame.ME1);
