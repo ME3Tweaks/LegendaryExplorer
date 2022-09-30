@@ -1464,7 +1464,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                             // Add to filteredOutboundLinks the elements of this outbound link that connect to a valid class
                             filteredOutboundLinks.Add(outboundLink
                                 .Where(link =>
-                                    link != null || validClasses.Contains(link.LinkedOp.ClassName, StringComparer.OrdinalIgnoreCase)
+                                    link == null || validClasses.Contains(link.LinkedOp.ClassName, StringComparer.OrdinalIgnoreCase)
                                 ).ToList());
                         }
                         SeqTools.WriteOutboundLinksToNode(seqObj, filteredOutboundLinks);
