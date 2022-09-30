@@ -9,6 +9,7 @@ using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
+using LegendaryExplorerCore.Unreal.ObjectInfo;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -1166,7 +1167,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             foreach (StructProperty entryNode in entryNodes)
             {
                 IntProperty oldNodeID = entryNode.GetProp<IntProperty>("nExportID");
-                if (oldNodeID == null) {
+                if (oldNodeID == null)
+                {
                     continue;
                 }
                 if (!remappedIDs.ContainsKey(oldNodeID.Value))
@@ -1346,49 +1348,66 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 fxaExport.WriteBinary(faceFXAnimSet);
             }
 
+
             // STEP 5: CLEAN SEQUENCE ---------------------------------------------------------
             ExportEntry sequence = (ExportEntry)conversation.Sequence;
+
+            // Remove animation sets
             ArrayProperty<ObjectProperty> m_aSFXSharedAnimsets = sequence.GetProperty<ArrayProperty<ObjectProperty>>("m_aSFXSharedAnimsets");
             if (m_aSFXSharedAnimsets != null)
             {
                 sequence.RemoveProperty("m_aSFXSharedAnimsets");
             }
+
+            // Keep only objects essential to the conversation
             ArrayProperty<ObjectProperty> seqObjRefs = sequence.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
             if (seqObjRefs != null)
             {
-                // Make a list of ExportEntries to pass to the connectionsToNode methods.
-                List<ExportEntry> sequenceObjects = seqObjRefs.Select(objRef =>
-                {
-                    pew.Pcc.TryGetUExport(objRef.Value, out ExportEntry seqObj);
-                    return seqObj;
-                }).ToList();
-
-
                 List<string> validClasses = new() { "BioSeqAct_EndCurrentConvNode", "BioSeqEvt_ConvNode", "InterpData", "SeqAct_Interp" };
-                // Keep only references to objects that make the conversation or are linked to Interps
-                List<ObjectProperty> filteredSeqObjRefs = seqObjRefs
-                    .Where(objRef =>
+                List<ObjectProperty> filteredObjRefs = new();
+                List<ExportEntry> filteredObjs = new();
+
+                foreach (ObjectProperty objRef in seqObjRefs)
+                {
+                    if (objRef == null || objRef.Value == 0) { continue; }
+
+                    ExportEntry seqObj = pew.Pcc.GetUExport(objRef.Value);
+
+                    // Skip objects that are not essential for the conversation
+                    if (seqObj == null || !validClasses.Contains(seqObj.ClassName, StringComparer.OrdinalIgnoreCase)) { continue; }
+
+                    // Save only Data var links of Interps
+                    if (seqObj.ClassName == "SeqAct_Interp")
                     {
-                        if (objRef == null || objRef.Value == 0) { return false; }
+                        List<StructProperty> varLinks = seqObj.GetProperty<ArrayProperty<StructProperty>>("VariableLinks").ToList();
 
-                        ExportEntry sequenceObject = pew.Pcc.GetUExport(objRef.Value);
+                        if (varLinks != null)
+                        {
+                            List<StructProperty> newVarLinks = new();
 
-                        // Check if any Interp links to the object in a variable link
-                        bool connectedInterpData = SeqTools.FindVariableConnectionsToNode(sequenceObject, sequenceObjects)
-                            .Any(connection => connection.ClassName == "SeqAct_Interp");
+                            StructProperty dataLink = varLinks.Find(link =>
+                                string.Equals(link.GetProp<StrProperty>("LinkDesc").Value, "Data", StringComparison.OrdinalIgnoreCase));
 
-                        return connectedInterpData || validClasses.Contains(sequenceObject.ClassName, StringComparer.OrdinalIgnoreCase);
-                    }).ToList();
+                            if (dataLink != null) { newVarLinks.Add(dataLink); }
 
-                sequence.WriteProperty(new ArrayProperty<ObjectProperty>(filteredSeqObjRefs, "SequenceObjects"));
+                            newVarLinks.Add(CreateVarLink(pew, "Anchor"));
+                            newVarLinks.Add(CreateVarLink(pew, "Conversation"));
+
+                            seqObj.WriteProperty(new ArrayProperty<StructProperty>(newVarLinks, "VariableLinks"));
+                        }
+                    }
+
+                    filteredObjRefs.Add(objRef);
+                    filteredObjs.Add(seqObj);
+                }
+
+                sequence.WriteProperty(new ArrayProperty<ObjectProperty>(filteredObjRefs, "SequenceObjects"));
 
                 // Remove links to objects no longer in the sequence
-                foreach (ObjectProperty objRef in filteredSeqObjRefs)
+                foreach (ExportEntry seqObj in filteredObjs)
                 {
-                    ExportEntry sequenceObject = pew.Pcc.GetUExport(objRef.Value);
-
                     // Keep only outbound links to valid classes
-                    List<List<SeqTools.OutboundLink>> outboundLinks = SeqTools.GetOutboundLinksOfNode(sequenceObject);
+                    List<List<SeqTools.OutboundLink>> outboundLinks = SeqTools.GetOutboundLinksOfNode(seqObj);
                     if (outboundLinks.Count > 0)
                     {
                         List<List<SeqTools.OutboundLink>> filteredOutboundLinks = new();
@@ -1400,7 +1419,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                                     link != null || validClasses.Contains(link.LinkedOp.ClassName, StringComparer.OrdinalIgnoreCase)
                                 ).ToList());
                         }
-                        SeqTools.WriteOutboundLinksToNode(sequenceObject, filteredOutboundLinks);
+                        SeqTools.WriteOutboundLinksToNode(seqObj, filteredOutboundLinks);
                     }
                 }
             }
@@ -1493,6 +1512,27 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 littleEndian = $"{asCurrentEndian[i]:X2}{littleEndian}";
             }
             return littleEndian;
+        }
+
+        /// <summary>
+        /// Create a var link with custom properties.
+        /// </summary>
+        /// <param name="pew">Current PE window.</param>
+        /// <param name="name">LinkDesc.</param>
+        /// <returns>The varLink StructProperty.</returns>
+        private static StructProperty CreateVarLink(PackageEditorWindow pew, string name)
+        {
+            PropertyCollection props = GlobalUnrealObjectInfo.getDefaultStructValue(pew.Pcc.Game, "SeqVarLink", true);
+
+            int minVars = name == "Anchor" ? 1 : 0;
+            int maxVars = name == "Anchor" ? 1 : 255;
+
+            props.AddOrReplaceProp(new StrProperty(name, "LinkDesc"));
+            int index = pew.Pcc.FindImport("Engine.SeqVar_Object").UIndex;
+            props.AddOrReplaceProp(new ObjectProperty(index, "ExpectedType"));
+            props.AddOrReplaceProp(new IntProperty(minVars, "MinVars"));
+            props.AddOrReplaceProp(new IntProperty(maxVars, "MaxVars"));
+            return new StructProperty("SeqVarLink", props);
         }
         #endregion
     }
