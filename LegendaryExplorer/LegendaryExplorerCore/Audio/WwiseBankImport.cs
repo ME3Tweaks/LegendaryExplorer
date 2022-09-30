@@ -7,13 +7,21 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
+using LegendaryExplorerCore.Unreal.BinaryConverters;
 
 namespace LegendaryExplorerCore.Audio
 {
+    #region Transient classes for import
+    class WwiseStreamImport
+    {
+
+    }
+
     class WwiseEventImport
     {
 
     }
+    #endregion
 
     /// <summary>
     /// Handles importing a .bnk file into a package file and setting up relevant data
@@ -52,7 +60,7 @@ namespace LegendaryExplorerCore.Audio
             }).ToList();
 
 
-            var soundBankChunk = infoDoc.Root.Descendants("SoundBank").FirstOrDefault(x=>x.Element("Path")?.Value == bankNameWithExtension);
+            var soundBankChunk = infoDoc.Root.Descendants("SoundBank").FirstOrDefault(x => x.Element("Path")?.Value == bankNameWithExtension);
 
             var eventInfos = soundBankChunk.Descendants("IncludedEvents").Select(x => new
             {
@@ -62,7 +70,7 @@ namespace LegendaryExplorerCore.Audio
 
             var referencedStreamingAudioIds = soundBankChunk.Element("ReferencedStreamFiles")?.Descendants("File")
                 .Select(x => uint.Parse(x.Attribute("Id").Value));
-            var referencedStreamingAudio = referencedStreamingAudioIds != null ? allStreamedFiles.Where(x=> referencedStreamingAudioIds.Contains(x.Id)) : null;
+            var referencedStreamingAudio = referencedStreamingAudioIds != null ? allStreamedFiles.Where(x => referencedStreamingAudioIds.Contains(x.Id)) : null;
 
             // Import the bank export 
             var parentPackage = package.FindEntry(bankName);
@@ -84,7 +92,37 @@ namespace LegendaryExplorerCore.Audio
 
 
             // Import the streams
+            List<ExportEntry> streamExports = new List<ExportEntry>();
+            foreach (var streamInfo in referencedStreamingAudio)
+            {
+                var exportName = GetExportNameFromShortname(streamInfo.Shortname);
+                var streamExport = package.FindExport($"{bankName}.{exportName}");
+                if (streamExport == null)
+                {
+                    streamExport = ExportCreator.CreateExport(package, exportName, "WwiseStream", parentPackage);
+                }
 
+                PropertyCollection p = new PropertyCollection();
+                if (package.Game == MEGame.LE3)
+                {
+                    // LE3
+                    p.Add(new NameProperty(bankName, "Filename"));
+                    p.Add(new IntProperty((int)streamInfo.Id, "Id"));
+                }
+                else
+                {
+                    // LE2
+                }
+
+                var wemPath = Path.Combine(generatedDir, streamInfo.WemPath);
+                WwiseStream ws = new WwiseStream();
+                ws.Id = (int)streamInfo.Id;
+                ws.DataOffset = 0; // Todo: We have to build the AFC
+                ws.DataSize = (int)new FileInfo(wemPath).Length;
+
+                streamExport.WritePropertiesAndBinary(p, ws);
+                streamExports.Add(streamExport);
+            }
 
 
             // Import the events
@@ -104,26 +142,30 @@ namespace LegendaryExplorerCore.Audio
                         new ObjectProperty(bankExport, "Bank"), new NoneProperty()));
                     p.Add(new IntProperty((int)eventInfo.Id, "Id"));
                     p.Add(new FloatProperty(9, "Duration")); // TODO: FIGURE THIS OUT!!! THIS IS A PLACEHOLDER
-                 
+
                     // Todo: Write the WwiseStreams
                 }
                 else
                 {
                     // LE2
                 }
-                eventExport.WriteProperties(p);
 
+                WwiseEvent we = new WwiseEvent();
+                we.WwiseEventID = eventInfo.Id;
+                we.Links = new List<WwiseEvent.WwiseEventLink>();
 
+                // GAME 3 SPECIFIC CODE! Needs implemented for 2
+                we.Links.Add(new WwiseEvent.WwiseEventLink() { WwiseStreams = streamExports.Select(x => x.UIndex).ToList() });
+                eventExport.WritePropertiesAndBinary(p, we);
             }
 
-
-
-
-
-
-
-
             return null;
+        }
+
+        private static string GetExportNameFromShortname(string shortname)
+        {
+            // Space, . -> _
+            return shortname.Replace(".", "_").Replace(" ", "_"); // Add more rules here
         }
 
         /// <summary>
