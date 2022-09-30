@@ -1073,6 +1073,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             // STEP 0: SETTING UP THE NAMES ---------------------------------------------------------------
 
+            bool bringTrash = false;
             string oldWwiseBankName = conversation.WwiseBank.ObjectName.Instanced;
             string oldBioConversationName = bioConversation.ObjectName.Instanced;
             string oldName = "";
@@ -1102,37 +1103,65 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             List<IEntry> interpDatas = new(SeqTools.GetAllSequenceElements((ExportEntry)conversation.Sequence)
                 .Where(el => el.ClassName == "InterpData"));
 
-            // Keep only InterpGroups names "Conversation" and only the BioEvtSysTrackVOElements InterpTracks
+            // Keep only InterpGroups named "Conversation" and only the BioEvtSysTrackVOElements InterpTracks
             foreach (ExportEntry interpData in interpDatas)
             {
-                // Get a list of groups named "Conversation"
-                List<ObjectProperty> filteredGroups = interpData.GetProperty<ArrayProperty<ObjectProperty>>("InterpGroups")
-                    .Where(obj =>
-                    {
-                        ExportEntry group = pew.Pcc.GetUExport(obj.Value);
-                        NameProperty name = group.GetProperty<NameProperty>("GroupName");
-                        if (name == null) { return false; }
-                        return name.Value.Instanced == "Conversation";
-                    }).ToList();
+                ArrayProperty<ObjectProperty> interpGroupsRefs = interpData.GetProperty<ArrayProperty<ObjectProperty>>("InterpGroups");
+                List<ObjectProperty> filteredGroupsRefs = new();
+                List<IEntry> itemsToTrash = new();
 
-
-                // Keep only BioEvtSysTrackVOElements InterpTracks
-                foreach (ObjectProperty interpGroupObj in filteredGroups)
+                // Save "Conversation" InterpGroup, trash the rest
+                foreach (ObjectProperty groupRef in interpGroupsRefs)
                 {
-                    ExportEntry interpGroup = pew.Pcc.GetUExport(interpGroupObj.Value);
-                    IEnumerable<ObjectProperty> filteredTracks = interpGroup.GetProperty<ArrayProperty<ObjectProperty>>("InterpTracks")
-                        .Where(obj =>
-                        {
-                            ExportEntry track = pew.Pcc.GetUExport(obj.Value);
-                            return track.ClassName == "BioEvtSysTrackVOElements";
-                        });
+                    if (groupRef.Value == 0) { continue; }
 
-                    ArrayProperty<ObjectProperty> voElementsTracks = new(filteredTracks, "InterpTracks");
-                    interpGroup.WriteProperty(voElementsTracks);
+                    ExportEntry group = pew.Pcc.GetUExport(groupRef.Value);
+                    if (group == null) { continue; }
+
+                    NameProperty name = group.GetProperty<NameProperty>("GroupName");
+
+                    if (name != null && !string.IsNullOrEmpty(name.Value.Instanced) && name.Value.Instanced == "Conversation")
+                    {
+                        filteredGroupsRefs.Add(groupRef);
+                    }
+                    else
+                    {
+                        itemsToTrash.Add(group);
+                    }
+
                 }
 
-                ArrayProperty<ObjectProperty> conversationGroups = new(filteredGroups, "InterpGroups");
-                interpData.WriteProperty(conversationGroups);
+                // Keep only BioEvtSysTrackVOElements InterpTracks
+                foreach (ObjectProperty interpGroupRef in filteredGroupsRefs)
+                {
+                    ExportEntry interpGroup = pew.Pcc.GetUExport(interpGroupRef.Value);
+
+                    ArrayProperty<ObjectProperty> interpTracksRefs = interpGroup.GetProperty<ArrayProperty<ObjectProperty>>("InterpTracks");
+                    List<ObjectProperty> filteredTracksRefs = new();
+
+                    foreach (ObjectProperty trackRef in interpTracksRefs)
+                    {
+                        if (trackRef.Value == 0) { continue; }
+
+                        ExportEntry track = pew.Pcc.GetUExport(trackRef.Value);
+                        if (track == null) { continue; }
+
+                        if (track.ClassName == "BioEvtSysTrackVOElements")
+                        {
+                            filteredTracksRefs.Add(trackRef);
+                        }
+                        else
+                        {
+                            itemsToTrash.Insert(0, track); // Insert first so they are trashed first
+                        }
+                    }
+
+                    interpGroup.WriteProperty(new ArrayProperty<ObjectProperty> (filteredTracksRefs, "InterpTracks"));
+                }
+
+                interpData.WriteProperty(new ArrayProperty<ObjectProperty> (filteredGroupsRefs, "InterpGroups"));
+                interpData.RemoveProperty("m_aBioPreloadData"); // Make sure not to bring extra stuff here
+                EntryPruner.TrashEntries(pew.Pcc, itemsToTrash);
             }
 
 
@@ -1373,8 +1402,27 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                     ExportEntry seqObj = pew.Pcc.GetUExport(objRef.Value);
 
+                    if (seqObj == null) { continue; }
+
+                    bool linksToValid = false;
+
+                    // Optional step that may keep unwanted objects and references, but preserves the links
+                    // of the conversation better
+                    if (bringTrash)
+                    {
+                        // Check if the object links to a valid calss
+                        List<List<SeqTools.OutboundLink>> outboundLinks = SeqTools.GetOutboundLinksOfNode(seqObj);
+                        // Link is valid if it has outbound links, and at least 1 one is linked to 1 valid class
+                        linksToValid = (outboundLinks.Count > 0) && outboundLinks
+                            .Any(outboundLink => outboundLink
+                                .Any(link =>
+                                    link != null && validClasses.Contains(link.LinkedOp.ClassName, StringComparer.OrdinalIgnoreCase)
+                                )
+                            );
+                    }
+
                     // Skip objects that are not essential for the conversation
-                    if (seqObj == null || !validClasses.Contains(seqObj.ClassName, StringComparer.OrdinalIgnoreCase)) { continue; }
+                    if (!linksToValid && !validClasses.Contains(seqObj.ClassName, StringComparer.OrdinalIgnoreCase)) { continue; }
 
                     // Save only Data var links of Interps
                     if (seqObj.ClassName == "SeqAct_Interp")
@@ -1533,6 +1581,10 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             props.AddOrReplaceProp(new IntProperty(minVars, "MinVars"));
             props.AddOrReplaceProp(new IntProperty(maxVars, "MaxVars"));
             return new StructProperty("SeqVarLink", props);
+        }
+
+        private static void TrashEntryAndChildren(PackageEditorWindow pew, ExportEntry toTrash)
+        {
         }
         #endregion
     }
