@@ -1197,10 +1197,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             foreach (StructProperty entryNode in entryNodes)
             {
                 IntProperty oldNodeID = entryNode.GetProp<IntProperty>("nExportID");
-                if (oldNodeID == null)
-                {
-                    continue;
-                }
+                if (oldNodeID == null) { continue; }
+
                 if (!remappedIDs.ContainsKey(oldNodeID.Value))
                 {
                     remappedIDs.Add(oldNodeID.Value, convNodeIDBase + count);
@@ -1314,10 +1312,12 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 }
             }
 
+
+            // STEP 5: FXA, VO, AND OTHER NAME REPLACEMENTS ---------------------------------------------------------
+
             List<ObjectProperty> fxas = bioConversation.GetProperty<ArrayProperty<ObjectProperty>>("m_aMaleFaceSets").ToList();
             fxas.AddRange(bioConversation.GetProperty<ArrayProperty<ObjectProperty>>("m_aFemaleFaceSets"));
             fxas.Add(bioConversation.GetProperty<ObjectProperty>("m_pNonSpeakerFaceFXSet"));
-
 
             foreach (ObjectProperty fxa in fxas)
             {
@@ -1326,7 +1326,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 ExportEntry fxaExport = pew.Pcc.GetUExport(fxa.Value);
 
                 string oldFxaFullName = fxaExport.ObjectName.Instanced; // May contain _M, _F, or _NonSpkr
-                string oldFxaName = oldFxaFullName; // full name minus _M/_F
+                string oldFxaName = oldFxaFullName; // Full name minus _M/_F, or including _NonSpkr
 
                 if (oldFxaFullName[^2..].ToLower() is "_m" or "_f")
                 {
@@ -1345,6 +1345,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 fxaExport.ObjectName = oldFxaFullName.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
 
                 FaceFXAnimSet faceFXAnimSet = fxaExport.GetBinaryData<FaceFXAnimSet>();
+                // Replace the old name in the name chunk
                 List<string> names = faceFXAnimSet.Names.Select(name =>
                 {
                     if (name == oldFxaName) { return newFxaName; }
@@ -1352,18 +1353,20 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 }).ToList();
                 faceFXAnimSet.Names = names;
 
-                // Set the paths with the new names
+                // Set the paths with the new names and update the names of WwiseStreams
                 ArrayProperty<ObjectProperty> eventRefs = fxaExport.GetProperty<ArrayProperty<ObjectProperty>>("ReferencedSoundCues");
                 if (eventRefs != null)
                 {
                     foreach (FaceFXLine line in faceFXAnimSet.Lines)
                     {
+                        // Update the path
                         ExportEntry wwiseEvent = pew.Pcc.GetUExport(eventRefs[line.Index].Value);
                         if (wwiseEvent != null)
                         {
                             line.Path = wwiseEvent.FullPath;
                         }
 
+                        // Update the WwiseStreams
                         WwiseEvent wwiseEventBin = wwiseEvent.GetBinaryData<WwiseEvent>();
                         foreach (WwiseEvent.WwiseEventLink link in wwiseEventBin.Links)
                         {
@@ -1372,12 +1375,13 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                                 if (stream == 0) { continue; }
 
                                 ExportEntry wwiseStream = pew.Pcc.GetUExport(stream);
-                                NameProperty fileName = wwiseStream.GetProperty<NameProperty>("Filename");
-                                if (fileName != null)
-                                {
-                                    fileName = new NameProperty(fileName.Value.Instanced.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase), "Filename");
-                                    wwiseStream.WriteProperty(fileName);
-                                }
+                                // Filename SHOULD NOT be changed, since it would break the link to the afc, which we don't touch
+                                //NameProperty fileName = wwiseStream.GetProperty<NameProperty>("Filename");
+                                //if (fileName != null)
+                                //{
+                                //    fileName = new NameProperty(fileName.Value.Instanced.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase), "Filename");
+                                //    wwiseStream.WriteProperty(fileName);
+                                //}
                                 wwiseStream.ObjectName = wwiseStream.ObjectName.Instanced.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
                             }
 
@@ -1389,7 +1393,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
 
 
-            // STEP 5: CLEAN SEQUENCE ---------------------------------------------------------
+            // STEP 6: CLEAN SEQUENCE ---------------------------------------------------------
+
             ExportEntry sequence = (ExportEntry)conversation.Sequence;
 
             // Remove animation sets
