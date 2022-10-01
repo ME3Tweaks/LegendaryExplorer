@@ -1140,7 +1140,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                     NameProperty name = group.GetProperty<NameProperty>("GroupName");
 
-                    if (name != null && !string.IsNullOrEmpty(name.Value.Instanced) && name.Value.Instanced == "Conversation")
+                    if (name != null && !string.IsNullOrEmpty(name.Value.Instanced) && name.Value.Instanced.Equals("Conversation", StringComparison.OrdinalIgnoreCase))
                     {
                         filteredGroupsRefs.Add(groupRef);
                     }
@@ -1277,7 +1277,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 IEnumerable<KeyValuePair<uint, string>> updatedBanks = wwiseBank.ReferencedBanks
                     .Select(referencedBank =>
                     {
-                        if (referencedBank.Value == oldName) { return new(newBankID, newName); }
+                        if (referencedBank.Value.Equals(oldName, StringComparison.OrdinalIgnoreCase)) { return new(newBankID, newName); }
                         else { return referencedBank; }
                     });
                 wwiseBank.ReferencedBanks = new OrderedMultiValueDictionary<uint, string>(updatedBanks);
