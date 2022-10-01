@@ -789,7 +789,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             pewpf.BusyText = "Scanning";
             Task.Run(() =>
             {
-                foreach (MEGame game in new[] { MEGame.LE3/*, MEGame.LE2, MEGame.LE1, MEGame.ME3, MEGame.ME2, MEGame.ME1*/})
+                foreach (MEGame game in new[] { /*MEGame.LE3, MEGame.LE2,*/ MEGame.LE1, /*MEGame.ME3, MEGame.ME2, MEGame.ME1*/ })
                 {
                     //preload base files for faster scanning
                     using DisposableCollection<IMEPackage> baseFiles = MEPackageHandler.OpenMEPackages(EntryImporter.FilesSafeToImportFrom(game)
