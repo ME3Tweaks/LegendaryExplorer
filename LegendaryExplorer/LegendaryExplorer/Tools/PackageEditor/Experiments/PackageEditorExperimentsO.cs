@@ -1055,15 +1055,31 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 return;
             }
 
-            int newConvResRefID = promptForInt("New ConvResRefID:", "Not a valid ref id, it must be positive integer.");
+            string newName = PromptDialog.Prompt(null, "New conversation name:");
+            // Check that the new name is not empty, no longe than 255, and doesn't contain white-spaces or symbols aside from _ or -
+            if (string.IsNullOrEmpty(newName) || newName.Length > 240 || newName.Any(c => char.IsWhiteSpace(c) || (!(c is '_' or '-') && !char.IsLetterOrDigit(c))))
+            {
+                ShowError("Invalid new name. It must not be empty, be longer than 240 characters, or contain whitespaces or symbols aside from '-' and '_'");
+                return;
+            }
+
+            int newConvResRefID = promptForInt("New ConvResRefID:", "Not a valid ref id. It must be positive integer", 1);
             if (newConvResRefID == -1) { return; }
 
-            int convNodeIDBase = promptForInt("New ConvNodeID base range:", "Not a valid base, it must be positive integer.");
+            int convNodeIDBase = promptForInt("New ConvNodeID base range:", "Not a valid base. It must be positive integer", 1);
             if (convNodeIDBase == -1) { return; }
 
-            ExportEntry bioConversation = (ExportEntry)pew.SelectedItem.Entry;
+            bool setNewWwiseBankID = MessageBoxResult.Yes == MessageBox.Show(
+                "Change the WwiseBank ID?\nIn general it's safe and better to do so, but there may be edge cases" +
+                "where doing so may overwrite parts of the WwiseBank binary that are not the ID.",
+                null, MessageBoxButton.YesNo);
 
-            string newName = "THIS_IS_JUST_A_TEST";
+            bool bringTrash = MessageBoxResult.No == MessageBox.Show(
+                "Discard sequence objects that are not Interp, InterpData, ConvNode or EndConvNode but link to them?\n" +
+                "In general it's better to discard them, but there may be edge cases where you may want to preseve them.",
+                null, MessageBoxButton.YesNo);
+
+            ExportEntry bioConversation = (ExportEntry)pew.SelectedItem.Entry;
 
             // Load the conversation. We use ConversationExtended since it aggregates most of the elements we'll need to
             // operate on
@@ -1073,7 +1089,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             // STEP 0: SETTING UP THE NAMES ---------------------------------------------------------------
 
-            bool bringTrash = false;
             string oldWwiseBankName = conversation.WwiseBank.ObjectName.Instanced;
             string oldBioConversationName = bioConversation.ObjectName.Instanced;
             string oldName = "";
@@ -1235,66 +1250,69 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             // STEP 3: WWISE HELL ---------------------------------------------------------
 
-            IntProperty bankIDProp = conversation.WwiseBank.GetProperty<IntProperty>("Id");
-
-            // Get/Generate IDs and little endian hashes
-            uint oldBankID = unchecked((uint)bankIDProp.Value);
-            string oldBankHash = BigToLittleEndian(string.Format("{0:X2}", oldBankID).PadLeft(8, '0'));
-
-            uint newBankID = GetBankId(newWwiseBankName);
-            string newBankHash = BigToLittleEndian(string.Format("{0:X2}", newBankID).PadLeft(8, '0'));
-
-            // Write the replaced ID property
-            bankIDProp.Value = unchecked((int)newBankID);
-            conversation.WwiseBank.WriteProperty(bankIDProp);
-
-            WwiseBank wwiseBank = conversation.WwiseBank.GetBinaryData<WwiseBank>();
-            // Update the bank id
-            wwiseBank.ID = newBankID;
-
-            // Update referenced banks kvp that reference the old name
-            IEnumerable<KeyValuePair<uint, string>> updatedBanks = wwiseBank.ReferencedBanks
-                .Select(referencedBank =>
-                {
-                    if (referencedBank.Value == oldName) { return new(newBankID, newName); }
-                    else { return referencedBank; }
-                });
-            wwiseBank.ReferencedBanks = new OrderedMultiValueDictionary<uint, string>(updatedBanks);
-
-            // Update references to the old hash at the end of HIRC objects when they are found.
-            // This is mostly safe, since we know the reference appears at the end of the unparsed data,
-            // and we only replace it there.
-            foreach (WwiseBank.HIRCObject hirc in wwiseBank.HIRCObjects.Values())
+            if (setNewWwiseBankID)
             {
-                byte[] unparsed = hirc.unparsed;
-                if (unparsed != null && unparsed.Length >= 4) // Only replace if not null and at least width of hash
+                IntProperty bankIDProp = conversation.WwiseBank.GetProperty<IntProperty>("Id");
+
+                // Get/Generate IDs and little endian hashes
+                uint oldBankID = unchecked((uint)bankIDProp.Value);
+                string oldBankHash = BigToLittleEndian(string.Format("{0:X2}", oldBankID).PadLeft(8, '0'));
+
+                uint newBankID = GetBankId(newWwiseBankName);
+                string newBankHash = BigToLittleEndian(string.Format("{0:X2}", newBankID).PadLeft(8, '0'));
+
+                // Write the replaced ID property
+                bankIDProp.Value = unchecked((int)newBankID);
+                conversation.WwiseBank.WriteProperty(bankIDProp);
+
+                WwiseBank wwiseBank = conversation.WwiseBank.GetBinaryData<WwiseBank>();
+                // Update the bank id
+                wwiseBank.ID = newBankID;
+
+                // Update referenced banks kvp that reference the old name
+                IEnumerable<KeyValuePair<uint, string>> updatedBanks = wwiseBank.ReferencedBanks
+                    .Select(referencedBank =>
+                    {
+                        if (referencedBank.Value == oldName) { return new(newBankID, newName); }
+                        else { return referencedBank; }
+                    });
+                wwiseBank.ReferencedBanks = new OrderedMultiValueDictionary<uint, string>(updatedBanks);
+
+                // Update references to the old hash at the end of HIRC objects when they are found.
+                // This is mostly safe, since we know the reference appears at the end of the unparsed data,
+                // and we only replace it there.
+                foreach (WwiseBank.HIRCObject hirc in wwiseBank.HIRCObjects.Values())
                 {
-                    byte[] oldArr = Convert.FromHexString(oldBankHash);
-                    byte[] newArr = Convert.FromHexString(newBankHash);
-
-                    int idBase = unparsed.Length - 4;
-
-                    // Check if the last 4 bytes of unparsed match the old hash
-                    bool equal = true;
-                    for (int i = 0; i < 4; i++)
+                    byte[] unparsed = hirc.unparsed;
+                    if (unparsed != null && unparsed.Length >= 4) // Only replace if not null and at least width of hash
                     {
-                        equal = equal && (unparsed[idBase + i] == oldArr[i]);
-                    }
+                        byte[] oldArr = Convert.FromHexString(oldBankHash);
+                        byte[] newArr = Convert.FromHexString(newBankHash);
 
-                    // Replace the hash
-                    if (equal)
-                    {
+                        int idBase = unparsed.Length - 4;
+
+                        // Check if the last 4 bytes of unparsed match the old hash
+                        bool equal = true;
                         for (int i = 0; i < 4; i++)
                         {
-                            unparsed[idBase + i] = newArr[i];
+                            equal = equal && (unparsed[idBase + i] == oldArr[i]);
                         }
 
-                        hirc.unparsed = unparsed;
+                        // Replace the hash
+                        if (equal)
+                        {
+                            for (int i = 0; i < 4; i++)
+                            {
+                                unparsed[idBase + i] = newArr[i];
+                            }
+
+                            hirc.unparsed = unparsed;
+                        }
                     }
                 }
-            }
 
-            conversation.WwiseBank.WriteBinary(wwiseBank);
+                conversation.WwiseBank.WriteBinary(wwiseBank);
+            }
 
 
             // STEP 4: NAME REPLACEMENTS ---------------------------------------------------------
@@ -1539,13 +1557,14 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         /// </summary>
         /// <param name="msg">Message to display for the prompt.</param>
         /// <param name="err">Error message to display.</param>
+        /// <param name="biggerThan">Number the input must be bigger than. If not provided -2,147,483,648 will be used.</param>
         /// <returns>The input int.</returns>
-        private static int promptForInt(string msg, string err)
+        private static int promptForInt(string msg, string err, int biggerThan = -2147483648)
         {
             if (PromptDialog.Prompt(null, msg) is string stringPrompt)
             {
                 int intPrompt;
-                if (string.IsNullOrEmpty(stringPrompt) || !int.TryParse(stringPrompt, out intPrompt) || intPrompt < 0)
+                if (string.IsNullOrEmpty(stringPrompt) || !int.TryParse(stringPrompt, out intPrompt) || !(intPrompt > biggerThan))
                 {
                     MessageBox.Show(err, "Warning", MessageBoxButton.OK);
                     return -1;
