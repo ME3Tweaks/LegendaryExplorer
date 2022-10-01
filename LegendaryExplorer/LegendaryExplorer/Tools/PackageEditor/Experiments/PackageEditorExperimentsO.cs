@@ -1086,6 +1086,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             ConversationExtended conversation = new(bioConversation);
             conversation.LoadConversation(TLKManagerWPF.GlobalFindStrRefbyID, true);
 
+            // We'll trash unnecessary InterpTracks, InterpGroups and no longer used objects.
+            // It's necessary so users of the experiment can clone the package of a conversation instead
+            // of the BioConversation directly.
+            List<IEntry> itemsToTrash = new();
+
 
             // STEP 0: SETTING UP THE NAMES ---------------------------------------------------------------
 
@@ -1123,7 +1128,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             {
                 ArrayProperty<ObjectProperty> interpGroupsRefs = interpData.GetProperty<ArrayProperty<ObjectProperty>>("InterpGroups");
                 List<ObjectProperty> filteredGroupsRefs = new();
-                //List<IEntry> itemsToTrash = new();
 
                 // Save "Conversation" InterpGroup, trash the rest
                 foreach (ObjectProperty groupRef in interpGroupsRefs)
@@ -1139,10 +1143,10 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     {
                         filteredGroupsRefs.Add(groupRef);
                     }
-                    //else
-                    //{
-                    //    itemsToTrash.Add(group);
-                    //}
+                    else
+                    {
+                        itemsToTrash.Add(group);
+                    }
 
                 }
 
@@ -1165,10 +1169,10 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         {
                             filteredTracksRefs.Add(trackRef);
                         }
-                        //else
-                        //{
-                        //    itemsToTrash.Insert(0, track); // Insert first so they are trashed first
-                        //}
+                        else
+                        {
+                            itemsToTrash.Insert(0, track); // Insert first so they are trashed first
+                        }
                     }
 
                     interpGroup.WriteProperty(new ArrayProperty<ObjectProperty>(filteredTracksRefs, "InterpTracks"));
@@ -1176,8 +1180,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                 interpData.WriteProperty(new ArrayProperty<ObjectProperty>(filteredGroupsRefs, "InterpGroups"));
                 interpData.RemoveProperty("m_aBioPreloadData"); // Make sure not to bring extra stuff here
-                // Seems like there's no need to trash anything?
-                // EntryPruner.TrashEntries(pew.Pcc, itemsToTrash);
             }
 
 
@@ -1419,6 +1421,13 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             ArrayProperty<ObjectProperty> m_aSFXSharedAnimsets = sequence.GetProperty<ArrayProperty<ObjectProperty>>("m_aSFXSharedAnimsets");
             if (m_aSFXSharedAnimsets != null)
             {
+                // Store KYS objects to trash
+                foreach (ObjectProperty kysRef in m_aSFXSharedAnimsets)
+                {
+                    if (kysRef == null || kysRef.Value == 0) { continue; }
+                    ExportEntry kys = pew.Pcc.GetUExport(kysRef.Value);
+                    if (kys != null) { itemsToTrash.Add(kys); }
+                }
                 sequence.RemoveProperty("m_aSFXSharedAnimsets");
             }
 
@@ -1462,7 +1471,10 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                     // Skip objects that are not essential for the conversation
                     // If linktsToValid, we won't recalculate validClasses.Contains, so we're all good
-                    if (!linksToValid && !validClasses.Contains(seqObj.ClassName, StringComparer.OrdinalIgnoreCase)) { continue; }
+                    if (!linksToValid && !validClasses.Contains(seqObj.ClassName, StringComparer.OrdinalIgnoreCase)) {
+                        itemsToTrash.Add(seqObj);
+                        continue;
+                    }
 
 
                     // Save only Data var links of Interps
@@ -1512,6 +1524,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     }
                 }
             }
+
+            EntryPruner.TrashEntries(pew.Pcc, itemsToTrash);
 
             string successMessage = "Conversation cleaned successfully.";
             if (disconnectedConvNodes.Count > 0)
