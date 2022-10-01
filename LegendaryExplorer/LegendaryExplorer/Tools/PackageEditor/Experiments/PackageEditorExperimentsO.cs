@@ -554,10 +554,51 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         }
 
         /// <summary>
-        /// Modify the hair morph targets of a male headmorph to make it bald
+        /// Modify the hair morph targets of a male headmorph to make it bald.
         /// </summary>
-        /// <param name="pew">Current PE window</param>
+        /// <param name="pew">Current PE window.</param>
         public static void Baldinator(PackageEditorWindow pew)
+        {
+            if (pew.SelectedItem == null || pew.SelectedItem.Entry == null || pew.Pcc == null) { return; }
+
+            MEGame game = pew.Pcc.Game;
+
+            string baldPccPath = Path.Combine(MEDirectories.GetCookedPath(game),
+                game.IsGame3() ? "BioD_CitHub_Underbelly.pcc" : game.IsGame2() ? "BioH_Wilson.pcc" : "BIOA_FRE32_00_DSG.pcc");
+
+            string baldMorphName = game.IsGame3() ? "BioChar_CitHub.Faces.HMM_Deco_1" :
+                game.IsGame2() ? "BIOG_Hench_FAC.HMM.hench_wilson" : "BIOA_UNC_FAC.HMM.Plot.FRE32_BioticLeader";
+
+            MorphMaleHair(pew,"bald", baldPccPath, baldMorphName);
+        }
+
+        /// <summary>
+        /// Modify the hair morph targets of a male headmorph to make it rollins.
+        /// </summary>
+        /// <param name="pew">Current PE window.</param>
+        public static void Rollinator(PackageEditorWindow pew)
+        {
+            if (pew.SelectedItem == null || pew.SelectedItem.Entry == null || pew.Pcc == null) { return; }
+
+            MEGame game = pew.Pcc.Game;
+
+            string rollinPccPath = Path.Combine(MEDirectories.GetCookedPath(game),
+                game.IsGame3() ? "BioD_CitHub_Dock.pcc" : game.IsGame2() ? "BIOA_STA60_07A_DSG.pcc" : "BIOA_STA60_07A_DSG.pcc");
+
+            string rollinMorphName = game.IsGame3() ? "BioChar_CitHub.Faces.cit_news_announcer" :
+                game.IsGame2() ? "BIOA_STA_FAC.HMM.Plot.rp107_keeler" : "BIOA_STA_FAC.HMM.Plot.rp107_keeler";
+
+            MorphMaleHair(pew,"rollins", rollinPccPath, rollinMorphName);
+        }
+
+        /// <summary>
+        /// Modify the hair morph targets of a male headmorph to make it like the parameters.
+        /// </summary>
+        /// <param name="pew">Current PE window.</param>
+        /// <param name="name">Name of the modification, used for messages.</param>
+        /// <param name="modelPccPath">Path to the pcc containing the morph to copy.</param>
+        /// <param name="morphName">Instanced name of the morph in the modelPccPath pcc.</param>
+        public static void MorphMaleHair(PackageEditorWindow pew, string name, string modelPccPath, string morphName)
         {
             if (pew.SelectedItem == null || pew.SelectedItem.Entry == null || pew.Pcc == null) { return; }
 
@@ -586,35 +627,32 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
 
             // Get the export that we'll use as the values to set the target like
-            string baldPccPath = Path.Combine(MEDirectories.GetCookedPath(game),
-                game.IsGame3() ? "BioD_CitHub_Underbelly.pcc" : game.IsGame2() ? "BioH_Wilson.pcc" : "BIOA_FRE32_00_DSG.pcc");
-            if (!File.Exists(baldPccPath))
+            if (!File.Exists(modelPccPath))
             {
-                ShowError($"Could not find the {Path.GetFileNameWithoutExtension(baldPccPath)} file. Please ensure the vanilla game files have not been modified.");
+                ShowError($"Could not find the {Path.GetFileNameWithoutExtension(modelPccPath)} file. Please ensure the vanilla game files have not been modified.");
                 return;
             }
-            using IMEPackage baldPcc = MEPackageHandler.OpenMEPackage(baldPccPath);
+            using IMEPackage modelPcc = MEPackageHandler.OpenMEPackage(modelPccPath);
 
-            ExportEntry baldMorph = baldPcc.FindExport(game.IsGame3() ? "BioChar_CitHub.Faces.HMM_Deco_1" :
-                game.IsGame2() ? "BIOG_Hench_FAC.HMM.hench_wilson" : "BIOA_UNC_FAC.HMM.Plot.FRE32_BioticLeader");
-            if (baldMorph == null || baldMorph.ClassName != "BioMorphFace")
+            ExportEntry modelMorph = modelPcc.FindExport(morphName);
+            if (modelMorph == null || modelMorph.ClassName != "BioMorphFace")
             {
-                ShowError($"Could not find the bald headmorph. Please ensure the vanilla game files have not been modified.");
+                ShowError($"Could not find the {name} headmorph. Please ensure the vanilla game files have not been modified.");
                 return;
             }
 
             ExportEntry targetMorph = (ExportEntry)pew.SelectedItem.Entry;
 
-            BioMorphFace baldMorphFace = ObjectBinary.From<BioMorphFace>(baldMorph);
+            BioMorphFace modelMorphFace = ObjectBinary.From<BioMorphFace>(modelMorph);
             BioMorphFace targetMorphFace = ObjectBinary.From<BioMorphFace>(targetMorph);
 
-            if (baldMorphFace.LODs[0].Length != targetMorphFace.LODs[0].Length)
+            if (modelMorphFace.LODs[0].Length != targetMorphFace.LODs[0].Length)
             {
                 ShowError($"The selected headmorph differs from the expected one. This experiment only works for male human headmorphs.");
                 return;
             }
 
-            List<string> targetNames = new List<string>()
+            List<string> targetNames = new()
                 {
                     "Afro",
                     "Buzzcut",
@@ -679,15 +717,15 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 List<int> lod = indices[l];
                 foreach (int i in lod)
                 {
-                    targetMorphFace.LODs[l][i].X = baldMorphFace.LODs[l][i].X;
-                    targetMorphFace.LODs[l][i].Y = baldMorphFace.LODs[l][i].Y;
-                    targetMorphFace.LODs[l][i].Z = baldMorphFace.LODs[l][i].Z;
+                    targetMorphFace.LODs[l][i].X = modelMorphFace.LODs[l][i].X;
+                    targetMorphFace.LODs[l][i].Y = modelMorphFace.LODs[l][i].Y;
+                    targetMorphFace.LODs[l][i].Z = modelMorphFace.LODs[l][i].Z;
                 }
 
             }
 
             targetMorph.WriteBinary(targetMorphFace);
-            MessageBox.Show("The selected morph's hair has been cut and offered as a sacrifice to the Reape-- The morph is now bald.", "Success", MessageBoxButton.OK);
+            MessageBox.Show($"The selected morph's hair has been cut and offered as a sacrifice to the Reape-- The morph is now {name}.", "Success", MessageBoxButton.OK);
         }
 
         /// <summary>

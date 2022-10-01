@@ -1384,6 +1384,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             PackageEditorExperimentsO.Baldinator(GetPEWindow());
         }
 
+        private void Rollinator_Click(object sender, RoutedEventArgs a)
+        {
+            PackageEditorExperimentsO.Rollinator(GetPEWindow());
+        }
+
         private void CopyProperty_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsO.CopyProperty(GetPEWindow());
