@@ -312,11 +312,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             return null;
         }
 
-        private static void ShowError(string errMsg)
-        {
-            MessageBox.Show(errMsg, "Warning", MessageBoxButton.OK);
-        }
-
         /// <summary>
         /// Batch patch parameters in a list of materials
         /// </summary>
@@ -1055,7 +1050,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 return;
             }
 
-            string newName = PromptDialog.Prompt(null, "New conversation name:");
+            string newName = PromptDialog.Prompt(null, "New conversation name:", "New name");
             // Check that the new name is not empty, no longe than 255, and doesn't contain white-spaces or symbols aside from _ or -
             if (string.IsNullOrEmpty(newName) || newName.Length > 240 || newName.Any(c => char.IsWhiteSpace(c) || (!(c is '_' or '-') && !char.IsLetterOrDigit(c))))
             {
@@ -1063,21 +1058,21 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 return;
             }
 
-            int newConvResRefID = promptForInt("New ConvResRefID:", "Not a valid ref id. It must be positive integer", 1);
+            int newConvResRefID = promptForInt("New ConvResRefID:", "Not a valid ref id. It must be positive integer", 1, "New ConvResRefID");
             if (newConvResRefID == -1) { return; }
 
-            int convNodeIDBase = promptForInt("New ConvNodeID base range:", "Not a valid base. It must be positive integer", 1);
+            int convNodeIDBase = promptForInt("New ConvNodeID base range:", "Not a valid base. It must be positive integer", 1, "New NodeID range");
             if (convNodeIDBase == -1) { return; }
 
             bool setNewWwiseBankID = MessageBoxResult.Yes == MessageBox.Show(
                 "Change the WwiseBank ID?\nIn general it's safe and better to do so, but there may be edge cases" +
                 "where doing so may overwrite parts of the WwiseBank binary that are not the ID.",
-                null, MessageBoxButton.YesNo);
+                "Set new bank ID", MessageBoxButton.YesNo);
 
             bool bringTrash = MessageBoxResult.No == MessageBox.Show(
                 "Discard sequence objects that are not Interp, InterpData, ConvNode or EndConvNode but link to them?\n" +
                 "In general it's better to discard them, but there may be edge cases where you may want to preseve them.",
-                null, MessageBoxButton.YesNo);
+                "Discard unneeded objects", MessageBoxButton.YesNo);
 
             ExportEntry bioConversation = (ExportEntry)pew.SelectedItem.Entry;
 
@@ -1574,16 +1569,22 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             return new StructProperty("Guid", props, "ExpressionGUID", true);
         }
 
+        private static void ShowError(string errMsg)
+        {
+            MessageBox.Show(errMsg, "Warning", MessageBoxButton.OK);
+        }
+
         /// <summary>
         /// Prompts the user for an int, verifying that the int is valid.
         /// </summary>
         /// <param name="msg">Message to display for the prompt.</param>
         /// <param name="err">Error message to display.</param>
         /// <param name="biggerThan">Number the input must be bigger than. If not provided -2,147,483,648 will be used.</param>
+        /// <param name="title">Title for the prompt.</param>
         /// <returns>The input int.</returns>
-        private static int promptForInt(string msg, string err, int biggerThan = -2147483648)
+        private static int promptForInt(string msg, string err, int biggerThan = -2147483648, string title = "")
         {
-            if (PromptDialog.Prompt(null, msg) is string stringPrompt)
+            if (PromptDialog.Prompt(null, msg, title) is string stringPrompt)
             {
                 int intPrompt;
                 if (string.IsNullOrEmpty(stringPrompt) || !int.TryParse(stringPrompt, out intPrompt) || !(intPrompt > biggerThan))
