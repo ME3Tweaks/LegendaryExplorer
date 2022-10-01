@@ -1127,6 +1127,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             foreach (ExportEntry interpData in interpDatas)
             {
                 ArrayProperty<ObjectProperty> interpGroupsRefs = interpData.GetProperty<ArrayProperty<ObjectProperty>>("InterpGroups");
+                if (interpGroupsRefs == null) { continue; }
                 List<ObjectProperty> filteredGroupsRefs = new();
 
                 // Save "Conversation" InterpGroup, trash the rest
@@ -1156,6 +1157,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     ExportEntry interpGroup = pew.Pcc.GetUExport(interpGroupRef.Value);
 
                     ArrayProperty<ObjectProperty> interpTracksRefs = interpGroup.GetProperty<ArrayProperty<ObjectProperty>>("InterpTracks");
+                    if (interpTracksRefs == null) { continue; }
                     List<ObjectProperty> filteredTracksRefs = new();
 
                     foreach (ObjectProperty trackRef in interpTracksRefs)
@@ -1335,9 +1337,13 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             // STEP 5: FXA, VO, AND OTHER NAME REPLACEMENTS ---------------------------------------------------------
 
-            List<ObjectProperty> fxas = bioConversation.GetProperty<ArrayProperty<ObjectProperty>>("m_aMaleFaceSets").ToList();
-            fxas.AddRange(bioConversation.GetProperty<ArrayProperty<ObjectProperty>>("m_aFemaleFaceSets"));
-            fxas.Add(bioConversation.GetProperty<ObjectProperty>("m_pNonSpeakerFaceFXSet"));
+            List<ObjectProperty> fxas = new();
+            ArrayProperty<ObjectProperty> maleFXAs = bioConversation.GetProperty<ArrayProperty<ObjectProperty>>("m_aMaleFaceSets");
+            if (maleFXAs != null) { fxas.AddRange(maleFXAs); }
+            ArrayProperty<ObjectProperty> femaleFXAs = bioConversation.GetProperty<ArrayProperty<ObjectProperty>>("m_aFemaleFaceSets");
+            if (femaleFXAs != null) { fxas.AddRange(femaleFXAs); }
+            ObjectProperty nonSpkrFxa = bioConversation.GetProperty<ObjectProperty>("m_pNonSpeakerFaceFXSet");
+            if (nonSpkrFxa != null) { fxas.Add(nonSpkrFxa); }
 
             foreach (ObjectProperty fxa in fxas)
             {
@@ -1379,6 +1385,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 {
                     foreach (FaceFXLine line in faceFXAnimSet.Lines)
                     {
+                        if (eventRefs[line.Index].Value == 0) { continue; }
+
                         // Update the path
                         ExportEntry wwiseEvent = pew.Pcc.GetUExport(eventRefs[line.Index].Value);
                         if (wwiseEvent != null)
