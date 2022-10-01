@@ -5423,12 +5423,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         subnodes.Add(MakeUInt32Node(bin, "Unk4"));
                     }
                 }
-                subnodes.Add(MakeUInt32Node(bin, "Unk5"));
-                int dataSize = bin.ReadInt32();
-                bin.Skip(-4);
-                subnodes.Add(MakeInt32Node(bin, "DataSize1"));
-                subnodes.Add(MakeInt32Node(bin, "DataSize2"));
-                subnodes.Add(MakeInt32Node(bin, "DataOffset"));
+                subnodes.Add(new BinInterpNode(bin.Position, $"BulkDataFlags: {(EBulkDataFlags)bin.ReadUInt32()}"));
+                subnodes.Add(MakeInt32Node(bin, "Element Count", out int dataSize));
+                subnodes.Add(MakeInt32Node(bin, "BulkDataSizeOnDisk"));
+                subnodes.Add(MakeUInt32HexNode(bin, "BulkDataOffsetInFile"));
                 if (CurrentLoadedExport.GetProperty<NameProperty>("Filename") is null)
                 {
                     subnodes.Add(new BinInterpNode(bin.Position, "Embedded sound data. Use Soundplorer to modify this data.")
@@ -5466,11 +5464,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         return subnodes;
                     }
                 }
-                subnodes.Add(MakeUInt32Node(bin, "BulkDataFlags"));
-                subnodes.Add(MakeInt32Node(bin, "DataSize1", out var datasize));
-                int dataSize = bin.Skip(-4).ReadInt32();
-                subnodes.Add(MakeInt32Node(bin, "DataSize2"));
-                subnodes.Add(MakeInt32Node(bin, "DataOffset"));
+                subnodes.Add(new BinInterpNode(bin.Position, $"BulkDataFlags: {(EBulkDataFlags)bin.ReadUInt32()}"));
+                subnodes.Add(MakeInt32Node(bin, "Element Count", out int dataSize));
+                subnodes.Add(MakeInt32Node(bin, "BulkDataSizeOnDisk"));
+                subnodes.Add(MakeUInt32HexNode(bin, "BulkDataOffsetInFile"));
 
                 if (dataSize == 0)
                 {
@@ -8081,7 +8078,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             BULKDATA_StoreOnlyPayload = 1 << 6,
             BULKDATA_SerializeCompressedLZX = 1 << 7,
             BULKDATA_SerializeCompressed = (BULKDATA_SerializeCompressedZLIB | BULKDATA_SerializeCompressedLZO | BULKDATA_SerializeCompressedLZX),
-
         }
 
         private IEnumerable<ITreeItem> StartStaticMeshScan(byte[] data, ref int binarystart)
