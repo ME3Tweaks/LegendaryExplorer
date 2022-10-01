@@ -9,7 +9,7 @@ var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_str
     [ "UnkGuid", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_stream.html#a66f973a6253a816e476cd5912f990444", null ],
     [ "Unk3", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_stream.html#a0dc93280df4513f118244ff57ee4f78e", null ],
     [ "Unk4", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_stream.html#a2cf88f7f2272c28e3124d836a43b17b0", null ],
-    [ "Unk5", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_stream.html#a1c099ceddd794e68f5372e42e879a158", null ],
+    [ "BulkDataFlags", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_stream.html#a0f7bd5bae110826d18fc85bdce5c1ec2", null ],
     [ "DataSize", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_stream.html#a99eac6238ce26cfba97b82513554611f", null ],
     [ "DataOffset", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_stream.html#a441a52a63a032fb31d600620b03c409b", null ],
     [ "EmbeddedData", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_stream.html#a1f807c8fcdd2e5d762a6b8793d4aac4b", null ],
