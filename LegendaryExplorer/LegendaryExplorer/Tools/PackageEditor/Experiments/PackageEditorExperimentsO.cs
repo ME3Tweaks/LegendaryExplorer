@@ -1605,7 +1605,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         /// <returns>The decimal representation of the hash.</returns>
         private static uint GetBankId(string name)
         {
-            byte[] bytedName = Encoding.ASCII.GetBytes(name);
+            byte[] bytedName = Encoding.ASCII.GetBytes(name.ToLower()); // Wwise automatically lowecases the input
 
             // FNV132 hashing algorithm
             uint hash = 2166136261;
