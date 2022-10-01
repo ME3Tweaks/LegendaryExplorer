@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -11,18 +12,6 @@ using LegendaryExplorerCore.Unreal.BinaryConverters;
 
 namespace LegendaryExplorerCore.Audio
 {
-    #region Transient classes for import
-    class WwiseStreamImport
-    {
-
-    }
-
-    class WwiseEventImport
-    {
-
-    }
-    #endregion
-
     /// <summary>
     /// Handles importing a .bnk file into a package file and setting up relevant data
     /// </summary>
@@ -56,7 +45,8 @@ namespace LegendaryExplorerCore.Audio
                 Id = uint.Parse(x.Attribute("Id")?.Value),
                 Language = x.Attribute("Language")?.Value,
                 Shortname = x.Element("ShortName").Value,
-                WemPath = x.Element("Path").Value
+                WemPath = x.Element("Path").Value,
+                DataOffset = 0, // Will be set later.
             }).ToList();
 
 
@@ -71,6 +61,9 @@ namespace LegendaryExplorerCore.Audio
             var referencedStreamingAudioIds = soundBankChunk.Element("ReferencedStreamedFiles")?.Descendants("File")
                 .Select(x => uint.Parse(x.Attribute("Id").Value));
             var referencedStreamingAudio = referencedStreamingAudioIds != null ? allStreamedFiles.Where(x => referencedStreamingAudioIds.Contains(x.Id)) : null;
+
+            
+
 
             // Import the bank export 
             var parentPackage = package.FindEntry(bankName);
@@ -90,6 +83,10 @@ namespace LegendaryExplorerCore.Audio
             // Id is stored as uint - we read as uint and then write as int as it's the same.
             bankExport.WriteProperty(new IntProperty((int)uint.Parse(soundBankChunk.Attribute("Id").Value), "Id"));
             WwiseBank.WriteBankRaw(File.ReadAllBytes(bankPath), bankExport);
+
+            // Prepare the AFC
+            var afcPath = Path.Combine(generatedDir, $"{bankName}.afc"); // Will need changed if localized!
+            using var afcStream = File.Create(afcPath);
 
 
             // Import the streams
@@ -118,8 +115,10 @@ namespace LegendaryExplorerCore.Audio
                 var wemPath = Path.Combine(generatedDir, $"{streamInfo.Id}.wem"); // Seems to dump here for non-localized audio.
                 WwiseStream ws = new WwiseStream();
                 ws.Id = (int)streamInfo.Id;
-                ws.DataOffset = 0; // Todo: We have to build the AFC
-                ws.DataSize = (int)new FileInfo(wemPath).Length;
+                ws.DataOffset = (int)afcStream.Position;
+                var wemData = File.ReadAllBytes(wemPath);
+                afcStream.Write(wemData);
+                ws.DataSize = wemData.Length;
                 ws.Filename = bankName; // This is needed internally for serialization
 
                 streamExport.WritePropertiesAndBinary(p, ws);
