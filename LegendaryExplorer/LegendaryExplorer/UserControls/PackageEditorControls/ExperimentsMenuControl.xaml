@@ -168,6 +168,12 @@
         <MenuItem Header="Copy Material to BioMaterialOverrides or MaterialInstanceConstants" Click="CopyMatToBMOorMIC_Click" ToolTip="Copies the texture, vector, and scalar properties of a BioMaterialOverride into [Bio]MaterialInstanceConstants, or vice-versa."/>
         <MenuItem Header="Remove References to SkeletalMesh or StaticMesh in Distance" Click="SMRefRemover_Click" ToolTip="Removes SMC references to a SkeletalMesh or StaticMesh within a given distance"/>
         <MenuItem Header="Clean BioConversation for Cloning" Click="CleanConvoDonor_Click" ToolTip="Rename a BioConversation, change its ID, rename all the FXAs and audio elements, and keep only VOTracks, Conversation InterpGroups and conversation objects."/>
+        <MenuItem Header="Clean Sequence" Click="CleanSequence_Click" ToolTip="Cleans a sequence of objects that are not ConvNode, Interp, InterpData, and ConvNodeEnd; and optionally, of non-Conversation InterpGroups and non-VOElements InterpTracks."/>
+        <MenuItem Header="Clean Sequence's InterpDatas" Click="CleanSequenceInterpDatas_Click" ToolTip="Clean a sequence of non-Conversation InterpGroups and non-VOElements InterpTracks."/>
+        <MenuItem Header="Change Conversation ID and ConvNodes' ID" Click="ChangeConvoIDandConvNodeIDs_Click" ToolTip="Change a conversation's ConvResRefID and give its ConvNodes a new ID range."/>
+        <MenuItem Header="Rename Conversation" Click="RenameConversation_Click" ToolTip="Rename a conversation, changing the WwiseBank name and FXAs and related elements too, and optionally, updating its WwiseBank ID."/>
+        <MenuItem Header="Rename WwiseBank" Click="RenameWwiseBank_Click" ToolTip="Rename a WwiseBank, and optionally udate its ID."/>
+        <MenuItem Header="Update WwiseBank's ID" Click="UpdateWwiseBankID_Click" ToolTip="Udate a WwiseBank's ID."/>
     </MenuItem>
     <MenuItem Header="Object Database">
         <MenuItem Header="Build ME1 Object Database" Click="ChonkyDB_BuildME1GameDB"/>
