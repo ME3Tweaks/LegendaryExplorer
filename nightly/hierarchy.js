@@ -118,8 +118,6 @@ var hierarchy =
     [ "LegendaryExplorerCore.UnrealScript.Utilities.CastHelper", "class_legendary_explorer_core_1_1_unreal_script_1_1_utilities_1_1_cast_helper.html", null ],
     [ "LegendaryExplorerCore.Gammtek.Extensions.CharExtensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_char_extensions.html", null ],
     [ "LegendaryExplorerCore.Packages.CompressionHelper.Chunk", "class_legendary_explorer_core_1_1_packages_1_1_compression_helper_1_1_chunk.html", null ],
-    [ "LegendaryExplorerCore.Unreal.TextureCompression.Chunk", "struct_legendary_explorer_core_1_1_unreal_1_1_texture_compression_1_1_chunk.html", null ],
-    [ "LegendaryExplorerCore.Unreal.TextureCompression.ChunkBlock", "struct_legendary_explorer_core_1_1_unreal_1_1_texture_compression_1_1_chunk_block.html", null ],
     [ "LegendaryExplorerCore.Packages.CompressionHelper.ChunkHeader", "struct_legendary_explorer_core_1_1_packages_1_1_compression_helper_1_1_chunk_header.html", null ],
     [ "LegendaryExplorerCore.Unreal.PSA.ChunkHeader", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_a_1_1_chunk_header.html", null ],
     [ "LegendaryExplorerCore.Packages.ClassInfo", "class_legendary_explorer_core_1_1_packages_1_1_class_info.html", null ],
@@ -399,9 +397,6 @@ var hierarchy =
       [ "LegendaryExplorerCore.Misc.ListenableDictionary< TKey, TValue >", "class_legendary_explorer_core_1_1_misc_1_1_listenable_dictionary.html", null ],
       [ "LegendaryExplorerCore.Misc.OrderedMultiValueDictionary< TKey, TValue >", "class_legendary_explorer_core_1_1_misc_1_1_ordered_multi_value_dictionary.html", null ]
     ] ],
-    [ "IDictionaryEnumerator", null, [
-      [ "LegendaryExplorerCore.Gammtek.Collections.ObjectModel.ObservableDictionary< TKey, TValue >.Enumerator< TKey1, TValue1 >", "struct_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_object_model_1_1_observable_dictionary_1_1_enumerator.html", null ]
-    ] ],
     [ "IDisposable", null, [
       [ "LegendaryExplorerCore.DebugTools.DebugStopWatch", "class_legendary_explorer_core_1_1_debug_tools_1_1_debug_stop_watch.html", null ],
       [ "LegendaryExplorerCore.Gammtek.IO.IBuffer", "interface_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_i_buffer.html", null ],
@@ -422,7 +417,6 @@ var hierarchy =
         [ "LegendaryExplorerCore.Gammtek.Collections.Generic.HeapPriorityQueue< T >", "class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_heap_priority_queue.html", null ]
       ] ],
       [ "LegendaryExplorerCore.Gammtek.Collections.ObjectModel.ObservableDictionary< TKey, TValue >", "class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_object_model_1_1_observable_dictionary.html", null ],
-      [ "LegendaryExplorerCore.Gammtek.Collections.ObjectModel.ObservableDictionary< TKey, TValue >", "class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_object_model_1_1_observable_dictionary.html", null ],
       [ "LegendaryExplorerCore.Packages.EntryTree", "class_legendary_explorer_core_1_1_packages_1_1_entry_tree.html", null ],
       [ "LegendaryExplorerCore.Unreal.ArrayPropertyBase", "class_legendary_explorer_core_1_1_unreal_1_1_array_property_base.html", [
         [ "LegendaryExplorerCore.Unreal.ArrayProperty< T >", "class_legendary_explorer_core_1_1_unreal_1_1_array_property.html", null ],
@@ -431,9 +425,6 @@ var hierarchy =
       [ "LegendaryExplorerCore.Unreal.BinaryConverters.TreeNode< T >", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_tree_node.html", null ],
       [ "LegendaryExplorerCore.Unreal.BinaryConverters.TreeNode< T >", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_tree_node.html", null ],
       [ "LegendaryExplorerCore.UnrealScript.Parsing.TokenStream", "class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_token_stream.html", null ]
-    ] ],
-    [ "IEnumerator", null, [
-      [ "LegendaryExplorerCore.Gammtek.Collections.ObjectModel.ObservableDictionary< TKey, TValue >.Enumerator< TKey1, TValue1 >", "struct_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_object_model_1_1_observable_dictionary_1_1_enumerator.html", null ]
     ] ],
     [ "IEquatable", null, [
       [ "LegendaryExplorerCore.Coalesced.CoalesceValue", "struct_legendary_explorer_core_1_1_coalesced_1_1_coalesce_value.html", null ],

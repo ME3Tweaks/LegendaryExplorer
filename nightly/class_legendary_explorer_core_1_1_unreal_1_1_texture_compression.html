@@ -94,19 +94,12 @@ $(document).ready(function(){initNavTree('class_legendary_explorer_core_1_1_unre
 </div><!--header-->
 <div class="contents">
 <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
-Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_legendary_explorer_core_1_1_unreal_1_1_texture_compression_1_1_chunk.html">Chunk</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_legendary_explorer_core_1_1_unreal_1_1_texture_compression_1_1_chunk_block.html">ChunkBlock</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:ad256013d7cbd22f9fd0f96ec19a0af04"><td class="memItemLeft" align="right" valign="top">static byte[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_texture_compression.html#ad256013d7cbd22f9fd0f96ec19a0af04">CompressTexture</a> (byte[] inputData, <a class="el" href="namespace_legendary_explorer_core_1_1_unreal.html#ada9f16a120f6eb3951fcb1b4f0a93827">StorageTypes</a> type)</td></tr>
 <tr class="separator:ad256013d7cbd22f9fd0f96ec19a0af04"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a48d2340da15ae1f328db5e8b820445b2"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_texture_compression.html#a48d2340da15ae1f328db5e8b820445b2">DecompressTexture</a> (byte[] DecompressedBuffer, Stream stream, <a class="el" href="namespace_legendary_explorer_core_1_1_unreal.html#ada9f16a120f6eb3951fcb1b4f0a93827">StorageTypes</a> type, int uncompressedSize, int compressedSize)</td></tr>
-<tr class="separator:a48d2340da15ae1f328db5e8b820445b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3f7fd2e56e992369c374600b733b90fe"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_texture_compression.html#a3f7fd2e56e992369c374600b733b90fe">DecompressTexture</a> (byte[] decompressedBuffer, Stream stream, <a class="el" href="namespace_legendary_explorer_core_1_1_unreal.html#ada9f16a120f6eb3951fcb1b4f0a93827">StorageTypes</a> type, int uncompressedSize, int compressedSize)</td></tr>
+<tr class="separator:a3f7fd2e56e992369c374600b733b90fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa3871529bd540f64deeddd0811b33961"><td class="memItemLeft" align="right" valign="top">static byte[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_texture_compression.html#aa3871529bd540f64deeddd0811b33961">ConvertTextureCompression</a> (byte[] textureCompressed, int decompressedSize, ref <a class="el" href="namespace_legendary_explorer_core_1_1_unreal.html#ada9f16a120f6eb3951fcb1b4f0a93827">StorageTypes</a> storageType, <a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> newGame, bool forceInternal)</td></tr>
 <tr class="separator:aa3871529bd540f64deeddd0811b33961"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a694fae76278b356a59ebae243911df67"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="namespace_legendary_explorer_core_1_1_unreal.html#ada9f16a120f6eb3951fcb1b4f0a93827">StorageTypes</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_texture_compression.html#a694fae76278b356a59ebae243911df67">GetStorageTypeForGame</a> (<a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game, bool isExternal)</td></tr>
@@ -149,8 +142,8 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a48d2340da15ae1f328db5e8b820445b2" name="a48d2340da15ae1f328db5e8b820445b2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a48d2340da15ae1f328db5e8b820445b2">&#9670;&nbsp;</a></span>DecompressTexture()</h2>
+<a id="a3f7fd2e56e992369c374600b733b90fe" name="a3f7fd2e56e992369c374600b733b90fe"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3f7fd2e56e992369c374600b733b90fe">&#9670;&nbsp;</a></span>DecompressTexture()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -162,7 +155,7 @@ Static Public Member Functions</h2></td></tr>
           <td class="memname">static void LegendaryExplorerCore.Unreal.TextureCompression.DecompressTexture </td>
           <td>(</td>
           <td class="paramtype">byte[]&#160;</td>
-          <td class="paramname"><em>DecompressedBuffer</em>, </td>
+          <td class="paramname"><em>decompressedBuffer</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>

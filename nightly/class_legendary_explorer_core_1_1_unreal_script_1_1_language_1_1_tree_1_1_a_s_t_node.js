@@ -6,6 +6,6 @@ var class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_a_
     [ "StartPos", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_a_s_t_node.html#a3fe8e5e9a79821bff57883a61de1b1ec", null ],
     [ "EndPos", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_a_s_t_node.html#aabaffa56f61cac1862be85d842e74189", null ],
     [ "Type", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_a_s_t_node.html#a85a5f7201b8a7252994796f704fbf704", null ],
-    [ "Length", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_a_s_t_node.html#a80b0c1dcec335d221dfb550ebbdc5ad2", null ],
+    [ "TextLength", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_a_s_t_node.html#a11afd5ff295d688e82f72ac2cb707899", null ],
     [ "ChildNodes", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_a_s_t_node.html#a2622e0e0ceee4fea5fd86a3bc4947572", null ]
 ];

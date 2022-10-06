@@ -2,8 +2,6 @@ var _texture_compression_8cs =
 [
     [ "LegendaryExplorerCore.Unreal.StorageTypeExtensions", "class_legendary_explorer_core_1_1_unreal_1_1_storage_type_extensions.html", "class_legendary_explorer_core_1_1_unreal_1_1_storage_type_extensions" ],
     [ "LegendaryExplorerCore.Unreal.TextureCompression", "class_legendary_explorer_core_1_1_unreal_1_1_texture_compression.html", "class_legendary_explorer_core_1_1_unreal_1_1_texture_compression" ],
-    [ "LegendaryExplorerCore.Unreal.TextureCompression.ChunkBlock", "struct_legendary_explorer_core_1_1_unreal_1_1_texture_compression_1_1_chunk_block.html", "struct_legendary_explorer_core_1_1_unreal_1_1_texture_compression_1_1_chunk_block" ],
-    [ "LegendaryExplorerCore.Unreal.TextureCompression.Chunk", "struct_legendary_explorer_core_1_1_unreal_1_1_texture_compression_1_1_chunk.html", "struct_legendary_explorer_core_1_1_unreal_1_1_texture_compression_1_1_chunk" ],
     [ "StorageTypes", "_texture_compression_8cs.html#ada9f16a120f6eb3951fcb1b4f0a93827", [
       [ "pccUnc", "_texture_compression_8cs.html#ada9f16a120f6eb3951fcb1b4f0a93827ae5384bbebac311b2eabbb43f2b963f34", null ],
       [ "pccLZO", "_texture_compression_8cs.html#ada9f16a120f6eb3951fcb1b4f0a93827a32576f262891cd847f310cb8509228cc", null ],
