@@ -84,7 +84,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
         public int StartPos;
         public int EndPos;
 
-        public int Length => EndPos - StartPos;
+        public int TextLength => EndPos - StartPos;
 
         protected ASTNode(ASTNodeType type, int start, int end)
         {

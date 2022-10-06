@@ -56,9 +56,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
                         return;
                     }
                 }
-                if (node.StartPos >= 0 && node.Length > 0)
+                if (node.StartPos >= 0 && node.TextLength > 0)
                 {
-                    ScrollTo(node.StartPos, node.Length);
+                    ScrollTo(node.StartPos, node.TextLength);
                     e.Handled = true;
                     return;
                 }

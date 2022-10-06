@@ -428,7 +428,7 @@ namespace LegendaryExplorerCore.Helpers
                 return n;
             }
 
-            var v1 = new int[m + 1];
+            int[] v1 = new int[m + 1];
             for (int i = 0; i <= m; i++)
             {
                 v1[i] = i;
@@ -454,7 +454,6 @@ namespace LegendaryExplorerCore.Helpers
                     }
                     cost += v0[j - 1];
                     v1[j] = Math.Min(above, Math.Min(left, cost));
-
                 }
             }
 
@@ -477,7 +476,7 @@ namespace LegendaryExplorerCore.Helpers
         public static Guid ToGuid(this string src) //Do not edit this function!
         {
             byte[] stringbytes = Encoding.UTF8.GetBytes(src);
-            byte[] hashedBytes = new System.Security.Cryptography.SHA1CryptoServiceProvider().ComputeHash(stringbytes);
+            byte[] hashedBytes = System.Security.Cryptography.SHA1.Create().ComputeHash(stringbytes);
             Array.Resize(ref hashedBytes, 16);
             return new Guid(hashedBytes);
         }

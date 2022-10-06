@@ -97,9 +97,6 @@ namespace LegendaryExplorerCore.Packages
         /// <param name="diskIOSyncLock">Object that can be used to force a lock on write operations, which can be used to prevent concurrent operations on the same package file. If null, a lock is not used.</param>
         public static async Task SaveAsync(this IMEPackage package, string savePath = null, bool? compress = null, bool includeAdditionalPackagesToCook = true, bool includeDependencyTable = true, object diskIOSyncLock = null)
         {
-//#if !DEBUG && !AZURE
-//            throw new Exception("Cannot save packages with LEX at this time");
-//#endif
             try
             {
                 foreach (IPackageUser packageUser in package.Users)

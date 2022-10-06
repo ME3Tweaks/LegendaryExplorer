@@ -180,11 +180,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         {
             Debug.WriteLine("Beginning capture!");
 
-            var gameWindowPosition = GetWindowCoordinates();
-            var ffmpegPath = @"X:\Downloads\ffmpeg-4.4-full_build\bin\ffmpeg.exe";
-            var arguments = $"-f gdigrab -y -framerate 30 -i desktop -codec:v libx264 -pix_fmt yuv420p -t 8 B:\\MaterialVideosLE1\\{materialName}-{currentActorIndex}.mp4";
-
             // Todo: Someday finish this and change to CLIWrap
+            //var gameWindowPosition = GetWindowCoordinates();
+            //var ffmpegPath = @"X:\Downloads\ffmpeg-4.4-full_build\bin\ffmpeg.exe";
+            //var arguments = $"-f gdigrab -y -framerate 30 -i desktop -codec:v libx264 -pix_fmt yuv420p -t 8 B:\\MaterialVideosLE1\\{materialName}-{currentActorIndex}.mp4";
+
             //ConsoleApp ca = new ConsoleApp(ffmpegPath, arguments);
             //ca.Run();
             //ca.ConsoleOutput += (sender, args) =>

@@ -68,11 +68,6 @@ namespace LegendaryExplorer.Tools.PackageEditor
             "TextureCube", "Bio2DA", "Bio2DANumberedRows"
         };
 
-        /// <summary>
-        /// Used to populate the metadata editor values so the list does not constantly need to rebuilt, which can slow down the program on large files like SFXGame or BIOC_Base.
-        /// </summary>
-        List<string> AllEntriesList;
-
         //Objects in this collection are displayed on the left list view (names, imports, exports)
 
         readonly Dictionary<ExportLoaderControl, TabItem> ExportLoaders = new();

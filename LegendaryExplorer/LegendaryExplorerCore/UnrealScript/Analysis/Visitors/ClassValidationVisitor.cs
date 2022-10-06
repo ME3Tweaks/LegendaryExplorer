@@ -71,7 +71,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
                         if (Symbols.TryGetType(node.Parent.Name, out Class parentClass))
                         {
-                            Log.Tokens?.AddDefinitionLink(parentClass, node.Parent.StartPos, node.Parent.Length);
+                            Log.Tokens?.AddDefinitionLink(parentClass, node.Parent.StartPos, node.Parent.TextLength);
                             node.Parent = parentClass;
 
                             if (parentClass == node)
@@ -89,7 +89,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                         {
                             if (Symbols.TryGetType(node._outerClass.Name, out Class outerClass))
                             {
-                                Log.Tokens?.AddDefinitionLink(outerClass, node._outerClass.StartPos, node._outerClass.Length);
+                                Log.Tokens?.AddDefinitionLink(outerClass, node._outerClass.StartPos, node._outerClass.TextLength);
                                 node._outerClass = outerClass;
                             }
                             else
@@ -103,7 +103,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                             VariableType interfaceStub = node.Interfaces[i];
                             if (Symbols.TryGetType(interfaceStub.Name, out Class @interface))
                             {
-                                Log.Tokens?.AddDefinitionLink(@interface, interfaceStub.StartPos, interfaceStub.Length);
+                                Log.Tokens?.AddDefinitionLink(@interface, interfaceStub.StartPos, interfaceStub.TextLength);
 
                                 if (!node.IsNative && @interface.IsNative)
                                 {
@@ -339,7 +339,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                         {
                             return Error($"No type named '{node.VarType.FullTypeName()}' exists!", node.VarType.StartPos, node.VarType.EndPos);
                         }
-                        Log.Tokens?.AddDefinitionLink(node.VarType, typeStub.StartPos, typeStub.Length);
+                        Log.Tokens?.AddDefinitionLink(node.VarType, typeStub.StartPos, typeStub.TextLength);
                     }
 
                     if (Symbols.SymbolExistsInCurrentScope(node.Name))
@@ -483,7 +483,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                     if (node.Outer is ObjectType containingObject && containingObject.LookupStruct(node.Parent.Name) is Struct parentStruct
                         || Symbols.TryGetType(node.Parent.Name, out parentStruct))
                     {
-                        Log.Tokens?.AddDefinitionLink(parentStruct, node.Parent.StartPos, node.Parent.Length);
+                        Log.Tokens?.AddDefinitionLink(parentStruct, node.Parent.StartPos, node.Parent.TextLength);
                         node.Parent = parentStruct;
                         parentScope = $"{NodeUtils.GetContainingClass(node.Parent).GetInheritanceString()}.{node.Parent.Name}";
                     }

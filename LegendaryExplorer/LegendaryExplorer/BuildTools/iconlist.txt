@@ -1,4 +1,0 @@
-..\Tools\Icons\16x16\MeshExplorer_Icon_16.ico
-..\Tools\Icons\16x16\AFCCompactor_Icon_16.ico
-..\Tools\Icons\16x16\ConditionalEditor_Icon_16.ico
-..\Tools\Icons\16x16\ME23TLKEditor_Icon_16.ico

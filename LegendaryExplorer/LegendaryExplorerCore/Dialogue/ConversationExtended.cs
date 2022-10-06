@@ -506,9 +506,10 @@ namespace LegendaryExplorerCore.Dialogue
             }
             catch (Exception e)
             {
-#if DEBUG
-                throw new Exception($"List Parse failed: N{count} Reply?:{isReply}, {linestrref}, {line}, {cond}, {stevent}, {bcond.ToString()}, {eReply.ToString()}", e);  //Note some convos don't have replies.
-#endif
+                if (LegendaryExplorerCoreLib.IsDebug)
+                {
+                    throw new Exception($"List Parse failed: N{count} Reply?:{isReply}, {linestrref}, {line}, {cond}, {stevent}, {bcond}, {eReply}", e);  //Note some convos don't have replies.
+                }
                 return new DialogueNodeExtended(node, isReply, count, spkridx, linestrref, line, bcond, cond, stevent, eReply);
             }
         }

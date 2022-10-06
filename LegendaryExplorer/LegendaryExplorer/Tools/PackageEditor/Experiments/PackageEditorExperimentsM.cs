@@ -1105,14 +1105,14 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     var streambin = wwstream?.GetBinaryData<WwiseStream>() ?? null;
                     if (streambin != null)
                     {
-                        var duration = streambin.GetAudioInfo().GetLength();
+                        var duration = streambin.GetAudioInfo()?.GetLength();
                         switch (Pcc.Game)
                         {
                             case MEGame.ME3:
                                 var durtnMS = wwevent.GetProperty<FloatProperty>("DurationMilliseconds");
                                 if (durtnMS != null && duration != null)
                                 {
-                                    durtnMS.Value = (float)duration.TotalMilliseconds;
+                                    durtnMS.Value = (float)duration.Value.TotalMilliseconds;
                                     wwevent.WriteProperty(durtnMS);
                                 }
                                 break;
@@ -1120,7 +1120,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                                 var durtnSec = wwevent.GetProperty<FloatProperty>("DurationSeconds");
                                 if (durtnSec != null && duration != null)
                                 {
-                                    durtnSec.Value = (float)duration.TotalSeconds;
+                                    durtnSec.Value = (float)duration.Value.TotalSeconds;
                                     wwevent.WriteProperty(durtnSec);
                                 }
                                 break;

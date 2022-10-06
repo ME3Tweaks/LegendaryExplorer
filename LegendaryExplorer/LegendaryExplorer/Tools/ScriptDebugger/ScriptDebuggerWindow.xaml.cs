@@ -51,7 +51,6 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
                     break;
                 case MEGame.LE3:
                     throw new NotImplementedException();
-                    break;
             }
 
         }

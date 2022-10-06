@@ -852,7 +852,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 {
                     if (o is BinInterpNode b)
                     {
-                        b.Finalize();
+                        b.RemoveNullNodes();
                         b.Parent = topLevelTree;
                     }
                 }

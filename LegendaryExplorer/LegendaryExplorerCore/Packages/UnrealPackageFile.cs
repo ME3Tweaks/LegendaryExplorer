@@ -657,7 +657,7 @@ namespace LegendaryExplorerCore.Packages
         /// <summary>
         /// Reads local TLK exports. Only use in Game 1 packages.
         /// </summary>
-        /// <param name="lang"></param>
+        /// <param name="language"></param>
         /// <returns></returns>
         public List<ME1TalkFile> ReadLocalTLKs(string language = null)
         {

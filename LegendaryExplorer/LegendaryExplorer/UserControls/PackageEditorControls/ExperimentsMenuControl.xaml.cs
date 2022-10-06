@@ -407,7 +407,7 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             new CustomFilesManagerWindow().Show();
         }
 
-        private async void MakeVTestDonor_Click(object sender, RoutedEventArgs e)
+        private void MakeVTestDonor_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.ConvertMaterialToVtestDonor(GetPEWindow());
         }
@@ -421,7 +421,7 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             PackageEditorExperimentsM.OrganizeParticleSystems(GetPEWindow());
         }
 
-        private async void ConvertSLCALightToNonSLCA(object sender, RoutedEventArgs e)
+        private void ConvertSLCALightToNonSLCA(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.ConvertSLCALightToNonSLCA(GetPEWindow());
         }
@@ -461,37 +461,37 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             PackageEditorExperimentsM.TestCrossGenClassPorting(GetPEWindow());
         }
 
-        private async void CheckNeverStream_Click(object sender, RoutedEventArgs e)
+        private void CheckNeverStream_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.CheckNeverstream(GetPEWindow());
         }
 
-        private async void GenerateMaterialInstanceConstant_Click(object sender, RoutedEventArgs e)
+        private void GenerateMaterialInstanceConstant_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.GenerateMaterialInstanceConstantFromMaterial(GetPEWindow());
         }
 
-        private async void PrintTextureFormats_Click(object sender, RoutedEventArgs e)
+        private void PrintTextureFormats_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.ShowTextureFormats(GetPEWindow());
         }
 
-        private async void MapMaterialIDs_Click(object sender, RoutedEventArgs e)
+        private void MapMaterialIDs_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.MapMaterialIDs(GetPEWindow());
         }
 
-        private async void WwiseBankToProject_Click(object sender, RoutedEventArgs e)
+        private void WwiseBankToProject_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.ConvertWwiseBankToProject(GetPEWindow());
         }
 
-        private async void CoalesceBioActorTypesLE1_Click(object sender, RoutedEventArgs e)
+        private void CoalesceBioActorTypesLE1_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.CoalesceBioActorTypes(GetPEWindow());
         }
 
-        private async void ForceVignetteOff_Click(object sender, RoutedEventArgs e)
+        private void ForceVignetteOff_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.CoalesceBioActorTypes(GetPEWindow());
         }

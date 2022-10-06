@@ -335,7 +335,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         public string Toolname => HostedControl is FileExportLoaderControl felc ? felc.Toolname : null;
 
-        private void ExportLoaderHostedWindow_OnContentRendered(object? sender, EventArgs e)
+        private void ExportLoaderHostedWindow_OnContentRendered(object sender, EventArgs e)
         {
             // If popped open with a file we should do this here
             OnPropertyChanged(nameof(ShouldShowRecentsController));

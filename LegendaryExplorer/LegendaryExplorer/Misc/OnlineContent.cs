@@ -16,37 +16,35 @@ namespace LegendaryExplorer.Misc
             string staticExecutable = Path.Combine(AppDirectories.StaticExecutablesDirectory, staticExecutableName);
             if (!File.Exists(staticExecutable)) //In future we will want to have a way to hash check this or something so we can update this if necessary without user intervention.
             {
-                using (var wc = new System.Net.WebClient())
+                using var wc = new System.Net.WebClient();
+                string downloadError = null;
+                wc.DownloadProgressChanged += (a, args) =>
                 {
-                    string downloadError = null;
-                    wc.DownloadProgressChanged += (a, args) =>
+                    progressCallback?.Invoke(args.BytesReceived, args.TotalBytesToReceive);
+                };
+                wc.DownloadFileCompleted += (a, args) =>
+                {
+                    downloadError = args.Error?.Message;
+                    if (downloadError != null) { File.Delete(staticExecutable); }
+                    lock (args.UserState)
                     {
-                        progressCallback?.Invoke(args.BytesReceived, args.TotalBytesToReceive);
-                    };
-                    wc.DownloadFileCompleted += (a, args) =>
-                    {
-                        downloadError = args.Error?.Message;
-                        if (downloadError != null) { File.Delete(staticExecutable); }
-                        lock (args.UserState)
-                        {
-                            //releases blocked thread
-                            Monitor.Pulse(args.UserState);
-                        }
-                    };
-                    var fullURL = AppDirectories.StaticFilesBaseURL + staticExecutableName;
-
-
-
-                    var syncObject = new object();
-                    lock (syncObject)
-                    {
-                        wc.DownloadFileAsync(new Uri(fullURL), staticExecutable, syncObject);
-                        //This will block the thread until download completes
-                        Monitor.Wait(syncObject);
+                        //releases blocked thread
+                        Monitor.Pulse(args.UserState);
                     }
+                };
+                var fullURL = AppDirectories.StaticFilesBaseURL + staticExecutableName;
 
-                    return downloadError;
+
+
+                var syncObject = new object();
+                lock (syncObject)
+                {
+                    wc.DownloadFileAsync(new Uri(fullURL), staticExecutable, syncObject);
+                    //This will block the thread until download completes
+                    Monitor.Wait(syncObject);
                 }
+
+                return downloadError;
             }
 
             return null; //File exists
@@ -57,45 +55,43 @@ namespace LegendaryExplorer.Misc
             string staticExecutable = Path.Combine(AppDirectories.StaticExecutablesDirectory, foldername, executablename);
             if (forceDownload || !File.Exists(staticExecutable)) //In future we will want to have a way to hash check this or something so we can update this if necessary without user intervention.
             {
-                using (var wc = new System.Net.WebClient())
+                using var wc = new System.Net.WebClient();
+                string downloadError = null;
+                wc.DownloadProgressChanged += (a, args) =>
                 {
-                    string downloadError = null;
-                    wc.DownloadProgressChanged += (a, args) =>
+                    progressCallback?.Invoke(args.BytesReceived, args.TotalBytesToReceive);
+                };
+                wc.DownloadDataCompleted += (a, args) =>
+                {
+                    downloadError = args.Error?.Message;
+                    if (downloadError != null)
                     {
-                        progressCallback?.Invoke(args.BytesReceived, args.TotalBytesToReceive);
-                    };
-                    wc.DownloadDataCompleted += (a, args) =>
-                    {
-                        downloadError = args.Error?.Message;
-                        if (downloadError != null)
-                        {
-                            if (File.Exists(staticExecutable)) 
-                                File.Delete(staticExecutable);
-                        }
-                        else
-                        {
-                            ZipArchive za = new ZipArchive(new MemoryStream(args.Result));
-                            var outputdir = Directory.CreateDirectory(Path.Combine(AppDirectories.StaticExecutablesDirectory, foldername)).FullName;
-                            za.ExtractToDirectory(outputdir, true);
-                        }
-                        lock (args.UserState)
-                        {
-                            //releases blocked thread
-                            Monitor.Pulse(args.UserState);
-                        }
-                    };
-                    var fullURL = AppDirectories.StaticFilesBaseURL + staticZipName;
-                    var syncObject = new object();
-                    lock (syncObject)
-                    {
-                        Debug.WriteLine("Fetching zip via " + fullURL);
-                        wc.DownloadDataAsync(new Uri(fullURL), syncObject);
-                        //This will block the thread until download completes
-                        Monitor.Wait(syncObject);
+                        if (File.Exists(staticExecutable)) 
+                            File.Delete(staticExecutable);
                     }
-
-                    return downloadError;
+                    else
+                    {
+                        var za = new ZipArchive(new MemoryStream(args.Result));
+                        var outputdir = Directory.CreateDirectory(Path.Combine(AppDirectories.StaticExecutablesDirectory, foldername)).FullName;
+                        za.ExtractToDirectory(outputdir, true);
+                    }
+                    lock (args.UserState)
+                    {
+                        //releases blocked thread
+                        Monitor.Pulse(args.UserState);
+                    }
+                };
+                var fullURL = AppDirectories.StaticFilesBaseURL + staticZipName;
+                var syncObject = new object();
+                lock (syncObject)
+                {
+                    Debug.WriteLine("Fetching zip via " + fullURL);
+                    wc.DownloadDataAsync(new Uri(fullURL), syncObject);
+                    //This will block the thread until download completes
+                    Monitor.Wait(syncObject);
                 }
+
+                return downloadError;
             }
 
             return null; //File exists

@@ -49,11 +49,7 @@ namespace Piccolo.Event {
 		/// </summary>
         private object newValue;
 
-		/// <summary>
-		/// The key that identifies which property changed.
-		/// </summary>
-        private object propertyEventKey;
-		#endregion
+        #endregion
 
 		#region Constructors
 		/// <summary>
