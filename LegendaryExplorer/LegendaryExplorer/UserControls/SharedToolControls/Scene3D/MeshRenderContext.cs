@@ -217,13 +217,13 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             if (!IsReady)
                 return;
 
-            TextureCache.Dispose();
-            DefaultTextureView.Dispose();
-            DefaultTexture.Dispose();
-            SampleState.Dispose();
-            DefaultEffect.Dispose();
-            FillRasterizerState.Dispose();
-            WireframeRasterizerState.Dispose();
+            TextureCache?.Dispose();
+            DefaultTextureView?.Dispose();
+            DefaultTexture?.Dispose();
+            SampleState?.Dispose();
+            DefaultEffect?.Dispose();
+            FillRasterizerState?.Dispose();
+            WireframeRasterizerState?.Dispose();
             base.DisposeResources();
         }
 
