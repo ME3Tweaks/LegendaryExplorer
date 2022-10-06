@@ -111,6 +111,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
                 try
                 {
                     InteropHelper.SendMessageToGame("LLE_DEACTIVATE", Game);
+                    InteropHelper.SendMessageToGame("DEACTIVATE_PLAYERGPS", Game);
                 }
                 catch
                 {
@@ -131,6 +132,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         public ICommand RegenActorListCommand { get; set; }
         public Requirement.RequirementCommand PackEdWindowOpenCommand { get; set; }
         public ICommand WriteActorValuesCommand { get; set; }
+        public ICommand SnapToPlayerPositionCommand { get; set; }
 
         private void LoadCommands()
         {
@@ -143,6 +145,19 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             RegenActorListCommand = new GenericCommand(RegenActorList);
             PackEdWindowOpenCommand = new Requirement.RequirementCommand(IsSelectedPackageOpenInPackEd, OpenPackage);
             WriteActorValuesCommand = new GenericCommand(WriteActorValues, IsSelectedPackageOpenInPackEd);
+            SnapToPlayerPositionCommand = new GenericCommand(SetSelectedActorToPlayerPosition);
+        }
+
+        private void SetSelectedActorToPlayerPosition()
+        {
+            //we don't want to trigger multiple position updates
+            noUpdate = true;
+            XPos = PlayerPosition.X;
+            YPos = PlayerPosition.Y;
+            ZPos = PlayerPosition.Z;
+            noUpdate = false;
+
+            UpdateLocation();
         }
 
         private void WriteActorValues()
@@ -302,6 +317,11 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             string[] command = msg.Split(" ");
             if (command.Length < 2)
                 return;
+            if (command[0] == "PATHFINDING_GPS" && command[1].StartsWith("PLAYERLOC="))
+            {
+                string[] pos = command[1][10..].Split(',');
+                PlayerPosition = new Vector3(float.Parse(pos[0]), float.Parse(pos[1]), float.Parse(pos[2]));
+            }
             if (command[0] != "LIVELEVELEDITOR")
                 return; // Not for us
 
@@ -310,6 +330,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             // "READY" is done on first initialize and will automatically 
             if (verb == "READY") // We polled game, and found LLE is available
             {
+                InteropHelper.SendMessageToGame("ACTIVATE_PLAYERGPS", Game);
                 RetryLoadTimer.Stop();
                 GameOpenTimer.Start();
                 BusyText = "Building Actor list";
@@ -644,6 +665,8 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         #endregion
 
         #region Position/Rotation/Scale
+
+        private Vector3 PlayerPosition { get; set; }
 
         private float _xPos;
         public float XPos
