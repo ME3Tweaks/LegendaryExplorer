@@ -1044,6 +1044,12 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         {
             if (pew.Pcc == null || pew.SelectedItem?.Entry == null) { return; }
 
+            if (pew.Pcc.Game is MEGame.ME1)
+            {
+                ShowError("Not available for ME1");
+                return;
+            }
+
             if (pew.SelectedItem.Entry.ClassName is not "BioConversation")
             {
                 ShowError("Selected export is not a BioConversation");
@@ -1064,10 +1070,14 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             int convNodeIDBase = promptForInt("New ConvNodeID base range:", "Not a valid base. It must be positive integer", 1, "New NodeID range");
             if (convNodeIDBase == -1) { return; }
 
-            bool setNewWwiseBankID = MessageBoxResult.Yes == MessageBox.Show(
+            bool setNewWwiseBankID = false;
+            if (!pew.Pcc.Game.IsGame1())
+            {
+                setNewWwiseBankID = MessageBoxResult.Yes == MessageBox.Show(
                 "Change the WwiseBank ID?\nIn general it's safe and better to do so, but there may be edge cases" +
                 "where doing so may overwrite parts of the WwiseBank binary that are not the ID.",
                 "Set new bank ID", MessageBoxButton.YesNo);
+            }
 
             bool bringTrash = MessageBoxResult.No == MessageBox.Show(
                 "Discard sequence objects that are not Interp, InterpData, ConvNode or EndConvNode but link to them?\n" +
@@ -1120,6 +1130,12 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             {
                 if (pew.Pcc == null || pew.SelectedItem?.Entry == null) { return null; }
 
+                if (pew.Pcc.Game is MEGame.ME1)
+                {
+                    ShowError("Not available for ME1");
+                    return null;
+                }
+
                 if (pew.SelectedItem.Entry.ClassName is not "Sequence")
                 {
                     ShowError("Selected export is not a Sequence");
@@ -1148,17 +1164,18 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
 
             // Remove animation sets
-            ArrayProperty<ObjectProperty> m_aSFXSharedAnimsets = sequence.GetProperty<ArrayProperty<ObjectProperty>>("m_aSFXSharedAnimsets");
-            if (m_aSFXSharedAnimsets != null)
+            string animsetsPropName = pew.Pcc.Game.IsGame3() ? "m_aSFXSharedAnimsets" : "m_aBioDynAnimSets";
+            ArrayProperty<ObjectProperty> animSets = sequence.GetProperty<ArrayProperty<ObjectProperty>>(animsetsPropName);
+            if (animSets != null)
             {
                 // Store KYS objects to trash
-                foreach (ObjectProperty kysRef in m_aSFXSharedAnimsets)
+                foreach (ObjectProperty kysRef in animSets)
                 {
                     if (kysRef == null || kysRef.Value == 0) { continue; }
                     ExportEntry kys = pew.Pcc.GetUExport(kysRef.Value);
                     if (kys != null) { itemsToTrash.Add(kys); }
                 }
-                sequence.RemoveProperty("m_aSFXSharedAnimsets");
+                sequence.RemoveProperty(animsetsPropName);
             }
 
             // Keep only objects essential to the conversation
@@ -1288,6 +1305,12 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             {
                 if (pew.Pcc == null || pew.SelectedItem?.Entry == null) { return null; }
 
+                if (pew.Pcc.Game is MEGame.ME1)
+                {
+                    ShowError("Not available for ME1");
+                    return null;
+                }
+
                 if (pew.SelectedItem.Entry.ClassName is not "Sequence")
                 {
                     ShowError("Selected export is not a Sequence");
@@ -1393,6 +1416,12 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             if (!called) // Setup properties if not called from another experiment
             {
                 if (pew.Pcc == null || pew.SelectedItem?.Entry == null) { return; }
+
+                if (pew.Pcc.Game is MEGame.ME1)
+                {
+                    ShowError("Not available for ME1");
+                    return;
+                }
 
                 if (pew.SelectedItem.Entry.ClassName is not "BioConversation")
                 {
@@ -1503,6 +1532,12 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             {
                 if (pew.Pcc == null || pew.SelectedItem?.Entry == null) { return; }
 
+                if (pew.Pcc.Game is MEGame.ME1)
+                {
+                    ShowError("Not available for ME1");
+                    return;
+                }
+
                 if (pew.SelectedItem.Entry.ClassName is not "BioConversation")
                 {
                     ShowError("Selected export is not a BioConversation");
@@ -1517,10 +1552,13 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     return;
                 }
 
-                updateID = MessageBoxResult.Yes == MessageBox.Show(
-                    "Change the WwiseBank ID?\nIn general it's safe and better to do so, but there may be edge cases" +
-                    "where doing so may overwrite parts of the WwiseBank binary that are not the ID.",
-                    "Set new bank ID", MessageBoxButton.YesNo);
+                if (!pew.Pcc.Game.IsGame1())
+                {
+                    updateID = MessageBoxResult.Yes == MessageBox.Show(
+                        "Change the WwiseBank ID?\nIn general it's safe and better to do so, but there may be edge cases" +
+                        "where doing so may overwrite parts of the WwiseBank binary that are not the ID.",
+                        "Set new bank ID", MessageBoxButton.YesNo);
+                }
 
                 bioConversation = (ExportEntry)pew.SelectedItem.Entry;
 
@@ -1530,24 +1568,42 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 conversation.LoadConversation(TLKManagerWPF.GlobalFindStrRefbyID, true);
             }
 
-            string oldWwiseBankName = conversation.WwiseBank.ObjectName.Instanced;
             string oldBioConversationName = bioConversation.ObjectName.Instanced;
             string oldName = "";
 
             // Get the old name found in all pieces of the conversation by getting the union of the bioconversation
-            // and the wwise bank names.
+            // and the wwise bank names, or tlk file set in ME1.
             // Assumes that both begin the same, since that's the behavior in all vanilla occurences, and helps
             // keep the logic simple.
-            oldName = GetUnionOfStrings(oldWwiseBankName, oldBioConversationName);
+            if (pew.Pcc.Game.IsGame1())
+            {
+                ObjectProperty m_oTlkFileSet = bioConversation.GetProperty<ObjectProperty>("m_oTlkFileSet");
+                if (m_oTlkFileSet != null && m_oTlkFileSet.Value != 0)
+                {
+                    ExportEntry tlkFileSet = pew.Pcc.GetUExport(m_oTlkFileSet.Value);
+                    // All Tlk file sets begin with TlkSet_, followed by the name they have in common with the package
+                    oldName = GetUnionOfStrings(tlkFileSet.ObjectName.Name[7..], oldBioConversationName);
+                }
+                else
+                {
+                    // I've been told all LE1 conversations have a tlk file set, so this won't ever be reached,
+                    // but better safe than sorry.
+                    oldName = oldBioConversationName;
+                }
+            }
+            else
+            {
+                string oldWwiseBankName = conversation.WwiseBank.ObjectName.Instanced;
+                oldName = GetUnionOfStrings(oldWwiseBankName, oldBioConversationName);
+                string newWwiseBankName = oldWwiseBankName.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
 
-            string newWwiseBankName = oldWwiseBankName.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
+                // Must happen before renaming the wwiseBank since it reads the old bank's name
+                RenameWwiseBank(true, pew, conversation.WwiseBank, newWwiseBankName, updateID);
+                conversation.WwiseBank.ObjectName = newWwiseBankName;
+            }
+
             string newBioConversationName = oldBioConversationName.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
-
-            // Must happen before renaming since it reads the old bank's name
-            RenameWwiseBank(true, pew, conversation.WwiseBank, newWwiseBankName, updateID);
-
             bioConversation.ObjectName = newBioConversationName;
-            conversation.WwiseBank.ObjectName = newWwiseBankName;
 
             // Replace package's name
             if (bioConversation.idxLink != 0)
@@ -1557,6 +1613,25 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 {
                     link.ObjectName = link.ObjectName.Instanced.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
                 }
+            }
+            // Replace name of the sound, sequence, and FXA package, which is separate in ME1
+            if (pew.Pcc.Game.IsGame1())
+            {
+                ExportEntry link = pew.Pcc.GetUExport(conversation.Sequence.idxLink);
+                if (link.ClassName == "Package")
+                {
+                    link.ObjectName = link.ObjectName.Instanced.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
+                }
+            }
+            // Replace name of the sounds package, which is separate in ME2
+            if (pew.Pcc.Game.IsGame2())
+            {
+                ExportEntry link = pew.Pcc.GetUExport(conversation.WwiseBank.idxLink);
+                if (link.ClassName == "Package")
+                {
+                    link.ObjectName = link.ObjectName.Instanced.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
+                }
+
             }
 
             // Must be called after everything else has been renamed due to the need ot update FXA paths.
@@ -1584,6 +1659,12 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             if (!called)
             {
                 if (pew.Pcc == null || pew.SelectedItem?.Entry == null) { return; }
+
+                if (pew.Pcc.Game.IsGame1())
+                {
+                    ShowError("Not available for ME1/LE1");
+                    return;
+                }
 
                 if (pew.SelectedItem.Entry.ClassName is not "WwiseBank")
                 {
@@ -1624,6 +1705,12 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             if (!called)
             {
                 if (pew.Pcc == null || pew.SelectedItem?.Entry == null) { return; }
+
+                if (pew.Pcc.Game.IsGame1())
+                {
+                    ShowError("Not available for ME1/LE1");
+                    return;
+                }
 
                 if (pew.SelectedItem.Entry.ClassName is not "WwiseBank")
                 {
@@ -1720,6 +1807,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         /// <param name="newName">New name to replace in the elements.</param>
         private static void RenameFXAsAndRelated(PackageEditorWindow pew, ExportEntry bioConversation, string oldName, string newName)
         {
+            if (pew.Pcc == null || pew.SelectedItem?.Entry == null || (pew.Pcc.Game is MEGame.ME1))
+            {
+                return;
+            }
+
             List<ObjectProperty> fxas = new();
             ArrayProperty<ObjectProperty> maleFXAs = bioConversation.GetProperty<ArrayProperty<ObjectProperty>>("m_aMaleFaceSets");
             if (maleFXAs != null) { fxas.AddRange(maleFXAs); }
@@ -1768,34 +1860,72 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 {
                     foreach (FaceFXLine line in faceFXAnimSet.Lines)
                     {
-                        if (eventRefs[line.Index].Value == 0) { continue; }
-
-                        // Update the path
-                        ExportEntry wwiseEvent = pew.Pcc.GetUExport(eventRefs[line.Index].Value);
-                        if (wwiseEvent != null)
+                        ExportEntry soundEvent;
+                        if (pew.Pcc.Game is MEGame.ME2)
                         {
-                            line.Path = wwiseEvent.FullPath;
+                            if (string.IsNullOrEmpty(line.Path)) { continue; }
+                            soundEvent = pew.Pcc.FindExport(line.Path.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase));
+                        }
+                        else
+                        {
+                            if (eventRefs[line.Index].Value == 0) { continue; }
+                            soundEvent = pew.Pcc.GetUExport(eventRefs[line.Index].Value);
                         }
 
-                        // Update the WwiseStreams
-                        WwiseEvent wwiseEventBin = wwiseEvent.GetBinaryData<WwiseEvent>();
-                        foreach (WwiseEvent.WwiseEventLink link in wwiseEventBin.Links)
+                        // We can't really do anything else if the sound event is null
+                        if (soundEvent == null) { continue; }
+
+                        line.Path = soundEvent.FullPath;
+
+                        if (!pew.Pcc.Game.IsGame1())
                         {
-                            foreach (int stream in link.WwiseStreams)
+                            if (pew.Pcc.Game is MEGame.LE2)
                             {
-                                if (stream == 0) { continue; }
+                                ArrayProperty<StructProperty> references = soundEvent.GetProperty<ArrayProperty<StructProperty>>("References");
+                                if ((references == null) || (references.Count == 0)) { continue; }
+                                StructProperty relationships = references[0].GetProp<StructProperty>("Relationships");
+                                if (relationships == null) { continue; }
+                                ArrayProperty<ObjectProperty> streams = relationships.GetProp<ArrayProperty<ObjectProperty>>("Streams");
+                                if ((streams == null) || (streams.Count == 0)) { continue; }
 
-                                ExportEntry wwiseStream = pew.Pcc.GetUExport(stream);
-                                // Filename SHOULD NOT be changed, since it would break the link to the afc, which we don't touch
-                                //NameProperty fileName = wwiseStream.GetProperty<NameProperty>("Filename");
-                                //if (fileName != null)
-                                //{
-                                //    fileName = new NameProperty(fileName.Value.Instanced.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase), "Filename");
-                                //    wwiseStream.WriteProperty(fileName);
-                                //}
-                                wwiseStream.ObjectName = wwiseStream.ObjectName.Instanced.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
+                                foreach (ObjectProperty streamRef in streams)
+                                {
+                                    ExportEntry stream = pew.Pcc.GetUExport(streamRef.Value);
+                                    if (stream == null) { continue; }
+
+                                    stream.ObjectName = stream.ObjectName.Instanced.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
+                                    NameProperty bankName = stream.GetProperty<NameProperty>("BankName");
+                                    if (bankName == null) { continue; }
+                                    bankName.Value = bankName.Value.Instanced.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
+                                    stream.WriteProperty(bankName);
+                                }
                             }
+                            else
+                            {
+                                // Update the WwiseStreams
+                                WwiseEvent wwiseEventBin = soundEvent.GetBinaryData<WwiseEvent>();
+                                foreach (WwiseEvent.WwiseEventLink link in wwiseEventBin.Links)
+                                {
+                                    foreach (int stream in link.WwiseStreams)
+                                    {
+                                        if (stream == 0) { continue; }
 
+                                        ExportEntry wwiseStream = pew.Pcc.GetUExport(stream);
+
+                                        wwiseStream.ObjectName = wwiseStream.ObjectName.Instanced.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
+
+                                        // This is similar to the step for LE2, but the general way of getting to it is more similar
+                                        // to the LE3/ME3 way
+                                        if (pew.Pcc.Game is MEGame.ME2)
+                                        {
+                                            NameProperty bankName = wwiseStream.GetProperty<NameProperty>("BankName");
+                                            if (bankName == null) { continue; }
+                                            bankName.Value = bankName.Value.Instanced.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
+                                            wwiseStream.WriteProperty(bankName);
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }
