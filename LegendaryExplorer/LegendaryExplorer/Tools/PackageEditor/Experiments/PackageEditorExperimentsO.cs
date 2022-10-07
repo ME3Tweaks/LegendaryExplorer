@@ -1344,7 +1344,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                     NameProperty name = group.GetProperty<NameProperty>("GroupName");
 
-                    if (name != null && !string.IsNullOrEmpty(name.Value.Instanced) && name.Value.Instanced.Equals("Conversation", StringComparison.OrdinalIgnoreCase))
+                    if (name != null && !string.IsNullOrEmpty(name.Value) && name.Value.Name.Equals("Conversation", StringComparison.OrdinalIgnoreCase))
                     {
                         filteredGroupsRefs.Add(groupRef);
                     }
@@ -1568,7 +1568,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 conversation.LoadConversation(TLKManagerWPF.GlobalFindStrRefbyID, true);
             }
 
-            string oldBioConversationName = bioConversation.ObjectName.Instanced;
+            string oldBioConversationName = bioConversation.ObjectName;
             string oldName = "";
 
             // Get the old name found in all pieces of the conversation by getting the union of the bioconversation
@@ -1593,7 +1593,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
             else
             {
-                string oldWwiseBankName = conversation.WwiseBank.ObjectName.Instanced;
+                string oldWwiseBankName = conversation.WwiseBank.ObjectName;
                 oldName = GetUnionOfStrings(oldWwiseBankName, oldBioConversationName);
                 string newWwiseBankName = oldWwiseBankName.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
 
@@ -1611,7 +1611,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 ExportEntry link = pew.Pcc.GetUExport(bioConversation.idxLink);
                 if (link.ClassName == "Package")
                 {
-                    link.ObjectName = link.ObjectName.Instanced.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
+                    link.ObjectName = link.ObjectName.Name.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
                 }
             }
             // Replace name of the sound, sequence, and FXA package, which is separate in ME1
@@ -1620,7 +1620,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 ExportEntry link = pew.Pcc.GetUExport(conversation.Sequence.idxLink);
                 if (link.ClassName == "Package")
                 {
-                    link.ObjectName = link.ObjectName.Instanced.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
+                    link.ObjectName = link.ObjectName.Name.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
                 }
             }
             // Replace name of the sounds package, which is separate in ME2
@@ -1629,9 +1629,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 ExportEntry link = pew.Pcc.GetUExport(conversation.WwiseBank.idxLink);
                 if (link.ClassName == "Package")
                 {
-                    link.ObjectName = link.ObjectName.Instanced.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
+                    link.ObjectName = link.ObjectName.Name.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
                 }
-
             }
 
             // Must be called after everything else has been renamed due to the need ot update FXA paths.
@@ -1826,7 +1825,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                 ExportEntry fxaExport = pew.Pcc.GetUExport(fxa.Value);
 
-                string oldFxaFullName = fxaExport.ObjectName.Instanced; // May contain _M, _F, or _NonSpkr
+                string oldFxaFullName = fxaExport.ObjectName; // May contain _M, _F, or _NonSpkr
                 string oldFxaName = oldFxaFullName; // Full name minus _M/_F, or including _NonSpkr
 
                 if (oldFxaFullName[^2..].ToLower() is "_m" or "_f")
@@ -1893,10 +1892,10 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                                     ExportEntry stream = pew.Pcc.GetUExport(streamRef.Value);
                                     if (stream == null) { continue; }
 
-                                    stream.ObjectName = stream.ObjectName.Instanced.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
+                                    stream.ObjectName = stream.ObjectName.Name.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
                                     NameProperty bankName = stream.GetProperty<NameProperty>("BankName");
                                     if (bankName == null) { continue; }
-                                    bankName.Value = bankName.Value.Instanced.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
+                                    bankName.Value = bankName.Value.Name.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
                                     stream.WriteProperty(bankName);
                                 }
                             }
@@ -1912,7 +1911,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                                         ExportEntry wwiseStream = pew.Pcc.GetUExport(stream);
 
-                                        wwiseStream.ObjectName = wwiseStream.ObjectName.Instanced.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
+                                        wwiseStream.ObjectName = wwiseStream.ObjectName.Name.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
 
                                         // This is similar to the step for LE2, but the general way of getting to it is more similar
                                         // to the LE3/ME3 way
@@ -1920,7 +1919,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                                         {
                                             NameProperty bankName = wwiseStream.GetProperty<NameProperty>("BankName");
                                             if (bankName == null) { continue; }
-                                            bankName.Value = bankName.Value.Instanced.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
+                                            bankName.Value = bankName.Value.Name.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
                                             wwiseStream.WriteProperty(bankName);
                                         }
                                     }
