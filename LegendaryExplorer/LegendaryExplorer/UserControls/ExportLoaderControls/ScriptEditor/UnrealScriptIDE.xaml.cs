@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
+using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Folding;
 using LegendaryExplorer.Dialogs;
@@ -559,21 +560,55 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
         }
 
 
-        //CompletionWindow completionWindow;
+        CompletionWindow completionWindow;
         private void TextAreaOnTextEntered(object sender, TextCompositionEventArgs e)
         {
-            //TODO: code completion
-            // if (e.Text == ".")
-            // {
-            //     completionWindow = new CompletionWindow(textEditor.TextArea);
-            //     IList<ICompletionData> data = completionWindow.CompletionList.CompletionData;
-            //     data.Add(new CompletionData("foo", "baz"));
-            //     data.Add(new CompletionData("bar"));
-            //     completionWindow.Show();
-            //     completionWindow.Closed += delegate {
-            //         completionWindow = null;
-            //     };
-            // }
+            if (e.Text == ".")
+            {
+                IEnumerable<string> symbols = Enumerable.Empty<string>();
+
+                //hacky. what if there's whitespace? need a way to get the previous token
+                ASTNode definitionOfPrevSymbol = _definitionLinkGenerator.GetDefinitionFromOffset(textEditor.TextArea.Caret.Offset - 2);
+                switch (definitionOfPrevSymbol)
+                {
+                    case VariableDeclaration varDecl:
+                        switch (varDecl.VarType)
+                        {
+                            case ObjectType objType:
+                                do
+                                {
+                                    symbols = symbols.Concat(objType.VariableDeclarations.Select(d => d.Name));
+                                    if (objType is Class classType)
+                                    {
+                                        symbols = symbols.Concat(classType.Functions.Select(f => f.Name));
+                                    }
+                                    objType = objType.Parent as ObjectType;
+                                } while (objType is not null);
+                                break;
+                        }
+                        break;
+                    case Enumeration enumType:
+                        symbols = enumType.Values.Select(v => v.Name);
+                        break;
+                }
+                if (!ReferenceEquals(symbols, Enumerable.Empty<string>()))
+                {
+                    completionWindow = new CompletionWindow(textEditor.TextArea)
+                    {
+                        SizeToContent = SizeToContent.WidthAndHeight
+                    };
+                    IList<ICompletionData> data = completionWindow.CompletionList.CompletionData;
+                    foreach (string symbol in symbols)
+                    {
+                        data.Add(new CompletionData(symbol));
+                    }
+                    completionWindow.Show();
+                    completionWindow.Closed += delegate
+                    {
+                        completionWindow = null;
+                    };
+                }
+            }
         }
 
         private void CompileAST_OnClick(object sender, RoutedEventArgs e)

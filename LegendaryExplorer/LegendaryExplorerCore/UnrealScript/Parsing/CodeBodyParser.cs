@@ -1177,7 +1177,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                         }
                         expr = new DelegateComparison(isEqualEqual, lhs, rhs, lhs.StartPos, rhs.EndPos);
                     }
-                    else if (isComparison && lType is Struct typeStruct && rType.PropertyType == EPropertyType.Struct)
+                    else if (isComparison && lType is Struct typeStruct && rType?.PropertyType == EPropertyType.Struct)
                     {
                         if (lType == rType)
                         {

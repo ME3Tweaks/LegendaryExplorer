@@ -48,7 +48,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Util
                     return (Class)clsType.ClassLimiter;
             }
 
-            var outer = node.Outer;
+            var outer = node?.Outer;
             while (outer?.Outer != null && outer is not Class)
                 outer = outer.Outer;
             return outer as Class;
