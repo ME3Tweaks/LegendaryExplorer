@@ -528,6 +528,10 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     return;
                 }
 
+                bool addBool = MessageBoxResult.Yes == MessageBox.Show(
+                        "Add boolean property if an object does not not have it?",
+                        "Add bool", MessageBoxButton.YesNo);
+
                 // Get the state to set the booleans to
                 string stateString = InputComboBoxDialog.GetValue(null, "State to set the bools to", "Bool state",
                     new[] { "True", "False" }, "True");
@@ -543,8 +547,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     foreach (ExportEntry export in exports)
                     {
                         BoolProperty currProp = export.GetProperty<BoolProperty>(boolName);
-                        if (currProp == null) { continue; }
-                        export.RemoveProperty(boolName);
+                        if ((currProp == null) && !addBool) { continue; }
                         export.WriteProperty(new BoolProperty(state, boolName));
                     }
                     pcc.Save();
