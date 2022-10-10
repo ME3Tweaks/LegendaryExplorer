@@ -1382,7 +1382,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             BinaryInterpreterWPF i = (BinaryInterpreterWPF)obj;
             if ((bool)e.NewValue)
             {
-                i.hexBoxContainer.Visibility = i.HexProps_GridSplitter.Visibility = i.ToggleHexboxWidth_Button.Visibility = Visibility.Collapsed;
+                i.hexBoxContainer.Visibility = i.HexProps_GridSplitter.Visibility = i.ToggleHexboxWidth_Button.Visibility = i.SaveHexChange_Button.Visibility = Visibility.Collapsed;
                 i.HexboxColumn_GridSplitter_ColumnDefinition.Width = new GridLength(0);
                 i.HexboxColumnDefinition.MinWidth = 0;
                 i.HexboxColumnDefinition.MaxWidth = 0;
@@ -1390,7 +1390,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
             else
             {
-                i.hexBoxContainer.Visibility = i.HexProps_GridSplitter.Visibility = i.ToggleHexboxWidth_Button.Visibility = Visibility.Visible;
+                i.hexBoxContainer.Visibility = i.HexProps_GridSplitter.Visibility = i.ToggleHexboxWidth_Button.Visibility = i.SaveHexChange_Button.Visibility = Visibility.Visible;
                 i.HexboxColumnDefinition.Width = new GridLength(i.HexBoxMinWidth);
                 i.HexboxColumn_GridSplitter_ColumnDefinition.Width = new GridLength(1);
                 i.HexboxColumnDefinition.bind(ColumnDefinition.MinWidthProperty, i, nameof(HexBoxMinWidth));

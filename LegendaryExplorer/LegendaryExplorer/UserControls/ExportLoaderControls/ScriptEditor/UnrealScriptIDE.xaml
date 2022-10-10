@@ -44,6 +44,7 @@
                         <MenuItem Command="Paste"/>
                         <Separator/>
                         <MenuItem Header="Find Usages In File" Command="{Binding FindUsagesInFileCommand}"/>
+                        <MenuItem Header="Go To Definition" Command="{Binding GoToDefinitionCommand}" InputGestureText="Ctrl+Click"/>
                     </ContextMenu>
                 </avalonedit:TextEditor.ContextMenu>
                 <avalonedit:TextEditor.Resources>

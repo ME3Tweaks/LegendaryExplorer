@@ -79,6 +79,26 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             return tokens;
         }
 
+        public int GetIndexOfTokenAtOffset(int offset)
+        {
+            return TokensSpan.BinarySearch(new TokenOffsetComparer(offset));
+        }
+
+        private readonly struct TokenOffsetComparer : IComparable<ScriptToken>
+        {
+            private readonly int Offset;
+
+            public TokenOffsetComparer(int offset) => Offset = offset;
+            public int CompareTo(ScriptToken other)
+            {
+                if (Offset < other.StartPos)
+                {
+                    return -1;
+                }
+                return Offset >= other.EndPos ? 1 : 0;
+            }
+        }
+
         public List<ScriptToken> GetRestOfScope()
         {
             int startIndex = CurrentIndex;

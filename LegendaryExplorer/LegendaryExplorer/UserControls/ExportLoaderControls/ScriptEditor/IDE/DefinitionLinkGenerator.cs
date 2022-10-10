@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using ICSharpCode.AvalonEdit.Rendering;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
+using LegendaryExplorerCore.UnrealScript.Lexing;
 using LegendaryExplorerCore.UnrealScript.Parsing;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
@@ -12,10 +13,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
         private readonly Dictionary<int, DefinitionLinkSpan> Spans = new();
         private readonly List<int> Offsets = new();
         private readonly Action<int, int> ScrollTo;
+        public TokenStream Tokens { get; private set; }
 
         public DefinitionLinkGenerator(Action<int, int> scrollTo)
         {
             ScrollTo = scrollTo;
+            Tokens = new TokenStream(new List<ScriptToken>(), new LineLookup(new List<int> {0}));
         }
 
 
@@ -34,7 +37,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
         public void SetTokens(TokenStream tokens)
         {
             Reset();
-            foreach ((ASTNode node, int offset, int length) in tokens.DefinitionLinks)
+            Tokens = tokens;
+            foreach ((ASTNode node, int offset, int length) in Tokens.DefinitionLinks)
             {
                 Spans[offset] = new DefinitionLinkSpan(node, length);
                 Offsets.Add(offset);
