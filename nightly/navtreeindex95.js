@@ -1,5 +1,11 @@
 var NAVTREEINDEX95 =
 {
+"namespace_legendary_explorer_core_1_1_game_filesystem.html":[0,5,1,5],
+"namespace_legendary_explorer_core_1_1_game_filesystem.html#a43f479aacbaa9f3944b3581287be5f53":[0,5,1,5,11],
+"namespace_legendary_explorer_core_1_1_game_filesystem.html#a43f479aacbaa9f3944b3581287be5f53a0ba87809bd425495d3cdc6248b1de175":[0,5,1,5,11,1],
+"namespace_legendary_explorer_core_1_1_game_filesystem.html#a43f479aacbaa9f3944b3581287be5f53a313cce250e2838225a7e98d037f2675c":[0,5,1,5,11,5],
+"namespace_legendary_explorer_core_1_1_game_filesystem.html#a43f479aacbaa9f3944b3581287be5f53a8cfccaa80412ab13f5bfed3dda52787f":[0,5,1,5,11,2],
+"namespace_legendary_explorer_core_1_1_game_filesystem.html#a43f479aacbaa9f3944b3581287be5f53adb3de5306eab8a487dc91cef634a20c6":[0,5,1,5,11,4],
 "namespace_legendary_explorer_core_1_1_game_filesystem.html#a43f479aacbaa9f3944b3581287be5f53af1df0846b837d79d3fbee7fc06ac725d":[0,5,1,5,11,3],
 "namespace_legendary_explorer_core_1_1_game_filesystem.html#a43f479aacbaa9f3944b3581287be5f53af1f842bd6ce7f7268e852c901a09cce6":[0,5,1,5,11,0],
 "namespace_legendary_explorer_core_1_1_game_filesystem.html#aa23133fea72a60ea6401786fd5a6381b":[0,5,1,5,10],
@@ -243,11 +249,5 @@ var NAVTREEINDEX95 =
 "namespace_legendary_explorer_core_1_1_shaders.html#ab9041dfe7a0c7d2f064b39ee45051d5ba08822b3ae4e2aede0afe08abe600e9c0":[0,5,1,15,8,1],
 "namespace_legendary_explorer_core_1_1_shaders.html#ab9041dfe7a0c7d2f064b39ee45051d5bab22b929ba52471a02d18bb3a4e4472e6":[0,5,1,15,8,0],
 "namespace_legendary_explorer_core_1_1_shaders.html#accd69302e7e70eba62836205cdc1ab26":[0,5,1,15,11],
-"namespace_legendary_explorer_core_1_1_shaders.html#accd69302e7e70eba62836205cdc1ab26a0832e369ba07823d01fb4da451183ce1":[0,5,1,15,11,2],
-"namespace_legendary_explorer_core_1_1_shaders.html#accd69302e7e70eba62836205cdc1ab26a87752381b583740610f1dfeb07fdad7e":[0,5,1,15,11,1],
-"namespace_legendary_explorer_core_1_1_shaders.html#accd69302e7e70eba62836205cdc1ab26a8eee8e217391199668cbac89472ace53":[0,5,1,15,11,4],
-"namespace_legendary_explorer_core_1_1_shaders.html#accd69302e7e70eba62836205cdc1ab26a8f3d9a4b6a7b7f2c7afa61ca113d0db9":[0,5,1,15,11,0],
-"namespace_legendary_explorer_core_1_1_shaders.html#accd69302e7e70eba62836205cdc1ab26a96a9b34b797454d8b292258ab9f1266c":[0,5,1,15,11,3],
-"namespace_legendary_explorer_core_1_1_shaders.html#accd69302e7e70eba62836205cdc1ab26ab8223be2455e0ea5a0e63e8f018d6fc3":[0,5,1,15,11,5],
-"namespace_legendary_explorer_core_1_1_sharp_d_x.html":[0,5,1,16]
+"namespace_legendary_explorer_core_1_1_shaders.html#accd69302e7e70eba62836205cdc1ab26a0832e369ba07823d01fb4da451183ce1":[0,5,1,15,11,2]
 };

@@ -5,6 +5,7 @@ var class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_token_stream
     [ "ConsumeToken", "class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_token_stream.html#afe249369bb81bdb45d931b98031d04aa", null ],
     [ "LookAhead", "class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_token_stream.html#a97184fd883b4b6414274775a3706d463", null ],
     [ "GetTokensInRange", "class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_token_stream.html#affccd350fa6e8e426ccb112df6184057", null ],
+    [ "GetIndexOfTokenAtOffset", "class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_token_stream.html#ac725aff84f2a6ee7a61aca4d95b4cb6c", null ],
     [ "GetRestOfScope", "class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_token_stream.html#af0b9e789f2f21f3a0c943228f7cb5f2a", null ],
     [ "PushSnapshot", "class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_token_stream.html#adc7ee3ecc6480b54b09714adf1433eb6", null ],
     [ "DiscardSnapshot", "class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_token_stream.html#a6544361bbfa7960e8b1f5733500bbf4d", null ],
