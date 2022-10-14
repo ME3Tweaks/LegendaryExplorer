@@ -27,11 +27,15 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
             function = func;
         }
 
-        public static IEnumerable<FunctionCompletion> GenerateCompletions(IEnumerable<Function> functions, Class currentClass)
+        public static IEnumerable<FunctionCompletion> GenerateCompletions(IEnumerable<Function> functions, Class currentClass, bool statics = false)
         {
             foreach (Function func in functions)
             {
-                if (func.IsStatic)
+                if (statics != func.IsStatic)
+                {
+                    continue;
+                }
+                if (func.IsOperator)
                 {
                     continue;
                 }

@@ -23,6 +23,7 @@ using LegendaryExplorerCore.UnrealScript.Language.Tree;
 using LegendaryExplorerCore.UnrealScript.Language.Util;
 using LegendaryExplorerCore.UnrealScript.Lexing;
 using LegendaryExplorerCore.UnrealScript.Parsing;
+using LegendaryExplorerCore.UnrealScript.Utilities;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
 {
@@ -566,59 +567,125 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
             textEditor.SyntaxHighlighting = new SyntaxInfo(lineToIndex, syntaxSpans, commentSpans);
         }
 
-        //CompletionWindow completionWindow;
+        private CompletionWindow completionWindow;
         private void TextAreaOnTextEntered(object sender, TextCompositionEventArgs e)
         {
-            if (e.Text == ".")
+            TokenStream tokens = _definitionLinkGenerator.Tokens;
+            int currentTokenIdx = tokens.GetIndexOfTokenAtOffset(textEditor.TextArea.Caret.Offset - 1);
+            if (currentTokenIdx < 0)
             {
-                var completionData = new List<ICompletionData>();
-                var currentClass = NodeUtils.GetContainingClass(AST);
-                var tokens = _definitionLinkGenerator.Tokens;
-                int dotTokenIndex = tokens.GetIndexOfTokenAtOffset(textEditor.TextArea.Caret.Offset - 1);
-                if (dotTokenIndex <= 0)
+                return;
+            }
+            ReadOnlySpan<ScriptToken> tokensSpan = tokens.TokensSpan;
+            ScriptToken currentToken = tokensSpan[currentTokenIdx];
+            switch (currentToken.Type)
+            {
+                case TokenType.Dot when currentTokenIdx > 0:
                 {
-                    return;
-                }
-                ASTNode definitionOfPrevSymbol = _definitionLinkGenerator.GetDefinitionFromOffset(tokens.TokensSpan[dotTokenIndex - 1].StartPos);
-                switch (definitionOfPrevSymbol)
-                {
-                    case VariableDeclaration varDecl:
-                        switch (varDecl.VarType)
+                    var completionData = new List<ICompletionData>();
+                    Class currentClass = NodeUtils.GetContainingClass(AST);
+                    ScriptToken prevToken = tokensSpan[currentTokenIdx - 1];
+                    ASTNode definitionOfPrevSymbol = GetDefinitionFromToken(prevToken);
+                    definitionOfPrevSymbol = definitionOfPrevSymbol switch
+                    {
+                        VariableDeclaration decl => decl.VarType,
+                        _ => definitionOfPrevSymbol
+                    };
+                    switch (definitionOfPrevSymbol)
+                    {
+                        case ObjectType objType:
                         {
-                            case ObjectType objType:
-                                do
+                            if (prevToken.Type is TokenType.NameLiteral)
+                            {
+                                //this is a class literal
+                                completionData.Add(new KeywordCompletion("static"));
+                                completionData.Add(new KeywordCompletion("const"));
+                                completionData.Add(new KeywordCompletion("default"));
+                                break;
+                            }
+                            bool varsAccesible = !prevToken.Value.CaseInsensitiveEquals(Keywords.SUPER) && !prevToken.Value.CaseInsensitiveEquals(Keywords.GLOBAL);
+                            bool functionsAccesible = !prevToken.Value.CaseInsensitiveEquals(Keywords.DEFAULT);
+                            do
+                            {
+                                if (varsAccesible)
                                 {
                                     completionData.AddRange(VariableCompletion.GenerateCompletions(objType.VariableDeclarations));
-                                    if (objType is Class classType)
-                                    {
-                                        completionData.AddRange(FunctionCompletion.GenerateCompletions(classType.Functions, currentClass));
-                                    }
-                                    objType = objType.Parent as ObjectType;
-                                } while (objType is not null);
-                                break;
+                                }
+                                if (objType is Class classType && functionsAccesible)
+                                {
+                                    completionData.AddRange(FunctionCompletion.GenerateCompletions(classType.Functions, currentClass));
+                                }
+                                objType = objType.Parent as ObjectType;
+                            } while (objType is not null);
+                            break;
                         }
-                        break;
-                    case Enumeration enumType:
-                        completionData.AddRange(enumType.Values.Select(v => new CompletionData(v.Name, $"{v.IntVal}")));
-                        break;
-                }
-                if (completionData.Count > 0)
-                {
-                    var completionWindow = new CompletionWindow(textEditor.TextArea)
-                    {
-                        SizeToContent = SizeToContent.WidthAndHeight
-                    };
-                    IList<ICompletionData> data = completionWindow.CompletionList.CompletionData;
-                    foreach (ICompletionData completion in completionData)
-                    {
-                        data.Add(completion);
+                        case Enumeration enumType:
+                            completionData.AddRange(enumType.Values.Select(v => new CompletionData(v.Name, $"{v.IntVal}")));
+                            break;
+                        case null:
+                        {
+                            if (prevToken.Value.CaseInsensitiveEquals(Keywords.CONST))
+                            {
+                                if (currentTokenIdx > 3)
+                                {
+                                    ScriptToken classNameToken = tokensSpan[currentTokenIdx - 3];
+                                    if (classNameToken.Type is TokenType.NameLiteral && GetDefinitionFromToken(classNameToken) is Class cls)
+                                    {
+                                        do
+                                        {
+                                            completionData.AddRange(cls.TypeDeclarations.OfType<Const>().Select(c => new CompletionData(c.Name, $"{c.Literal?.ResolveType().DisplayName()} {c.Value}")));
+                                            cls = cls.Parent as Class;
+                                        } while (cls is not null);
+                                    }
+                                }
+                            }
+                            else if (prevToken.Value.CaseInsensitiveEquals(Keywords.STATIC))
+                            {
+                                if (currentTokenIdx > 3)
+                                {
+                                    ScriptToken classNameToken = tokensSpan[currentTokenIdx - 3];
+                                    if (classNameToken.Type is TokenType.NameLiteral && GetDefinitionFromToken(classNameToken) is Class cls)
+                                    {
+                                        do
+                                        {
+                                            completionData.AddRange(FunctionCompletion.GenerateCompletions(cls.Functions, currentClass, true));
+                                                    cls = cls.Parent as Class;
+                                        } while (cls is not null);
+                                    }
+                                }
+                            }
+                            break;
+                        }
                     }
-                    completionWindow.Show();
-                    //completionWindow.Closed += delegate
-                    //{
-                    //    completionWindow = null;
-                    //};
+                    if (completionData.Count > 0)
+                    {
+                        completionWindow = new CompletionWindow(textEditor.TextArea)
+                        {
+                            SizeToContent = SizeToContent.WidthAndHeight
+                        };
+                        IList<ICompletionData> data = completionWindow.CompletionList.CompletionData;
+                        foreach (ICompletionData completion in completionData)
+                        {
+                            data.Add(completion);
+                        }
+                        completionWindow.Show();
+                        completionWindow.Closed += delegate
+                        {
+                            completionWindow = null;
+                        };
+                    }
+                    break;
                 }
+                //case TokenType.Word when currentToken.Value.Length == 1 && completionWindow is null:
+                //{
+
+                //    break;
+                //}
+            }
+
+            ASTNode GetDefinitionFromToken(ScriptToken prevToken)
+            {
+                return _definitionLinkGenerator.GetDefinitionFromOffset(prevToken.StartPos);
             }
         }
 
