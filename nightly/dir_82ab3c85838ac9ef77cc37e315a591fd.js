@@ -30,7 +30,9 @@ var dir_82ab3c85838ac9ef77cc37e315a591fd =
     ] ],
     [ "MEGame.cs", "_m_e_game_8cs.html", "_m_e_game_8cs" ],
     [ "MELocalization.cs", "_m_e_localization_8cs.html", "_m_e_localization_8cs" ],
-    [ "MEPackage.cs", "_m_e_package_8cs.html", "_m_e_package_8cs" ],
+    [ "MEPackage.cs", "_m_e_package_8cs.html", [
+      [ "LegendaryExplorerCore.Packages.MEPackage", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package" ]
+    ] ],
     [ "MEPackageHandler.cs", "_m_e_package_handler_8cs.html", [
       [ "LegendaryExplorerCore.Packages.MEPackageHandler", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler" ],
       [ "LegendaryExplorerCore.Packages.DisposableCollection< T >", "class_legendary_explorer_core_1_1_packages_1_1_disposable_collection.html", "class_legendary_explorer_core_1_1_packages_1_1_disposable_collection" ]
@@ -52,7 +54,5 @@ var dir_82ab3c85838ac9ef77cc37e315a591fd =
     [ "UDKPackage.cs", "_u_d_k_package_8cs.html", [
       [ "LegendaryExplorerCore.Packages.UDKPackage", "class_legendary_explorer_core_1_1_packages_1_1_u_d_k_package.html", "class_legendary_explorer_core_1_1_packages_1_1_u_d_k_package" ]
     ] ],
-    [ "UnrealPackageFile.cs", "_unreal_package_file_8cs.html", [
-      [ "LegendaryExplorerCore.Packages.UnrealPackageFile", "class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html", "class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file" ]
-    ] ]
+    [ "UnrealPackageFile.cs", "_unreal_package_file_8cs.html", "_unreal_package_file_8cs" ]
 ];
