@@ -329,7 +329,7 @@ namespace LegendaryExplorerCore.Packages
                 pkg = MEStreamConstructorDelegate(stream, filePath, quickLoad, dataLoadPredicate);
                 MemoryAnalyzer.AddTrackedMemoryItem($"MEPackage {Path.GetFileName(filePath)}", new WeakReference(pkg));
             }
-            else if (version is UDKPackage.UDKUnrealVersion2015 or UDKPackage.UDKUnrealVersion2014 or UDKPackage.UDKUnrealVersion2011 && licenseVersion == 0)
+            else if (version is UDKPackage.UDKUnrealVersion2015 or UDKPackage.UDKUnrealVersion2014 or UDKPackage.UDKUnrealVersion2011 or UDKPackage.UDKUnrealVersion2010_09 && licenseVersion == 0)
             {
                 //UDK
                 stream.Position -= 8; //reset to start

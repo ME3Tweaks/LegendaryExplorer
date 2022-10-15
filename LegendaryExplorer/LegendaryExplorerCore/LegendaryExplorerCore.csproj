@@ -101,14 +101,6 @@
     <None Remove="Libraries\Windows\TexConverter.ilk" />
     <None Remove="Libraries\Windows\TexConverter.lib" />
     <None Remove="Libraries\Windows\TexConverter.pdb" />
-    <None Remove="UnrealScript\Utilities\Keywords.tt" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="UnrealScript\Utilities\Keywords.tt">
-      <LastGenOutput>Keywords.cs</LastGenOutput>
-      <Generator>TextTemplatingFileGenerator</Generator>
-    </Content>
   </ItemGroup>
 
   <ItemGroup>
@@ -163,14 +155,6 @@
     <PackageReference Include="System.Buffers" Version="4.5.1" />
     <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
     <PackageReference Include="System.IO.Hashing" Version="6.0.2" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Update="UnrealScript\Utilities\Keywords.cs">
-      <DependentUpon>Keywords.tt</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
   </ItemGroup>
 
   <ItemGroup>

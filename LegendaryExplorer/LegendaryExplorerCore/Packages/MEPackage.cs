@@ -22,53 +22,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace LegendaryExplorerCore.Packages
 {
-
-
-    [Flags]
-    public enum PackageChange
-    {
-        Export = 0x1,
-        Import = 0x2,
-        Name = 0x4,
-        Add = 0x8,
-        Remove = 0x10,
-        Data = 0x20,
-        Header = 0x40,
-        Entry = 0x80,
-        EntryAdd = Entry | Add,
-        EntryRemove = Entry | Remove,
-        EntryHeader = Entry | Header,
-        ExportData = Export | Data | Entry,
-        ExportHeader = Export | EntryHeader,
-        ImportHeader = Import | EntryHeader,
-        ExportAdd = Export | EntryAdd,
-        ImportAdd = Import | EntryAdd,
-        ExportRemove = Export | EntryRemove,
-        ImportRemove = Import | EntryRemove,
-        NameAdd = Name | Add,
-        NameRemove = Name | Remove,
-        NameEdit = Name | Data
-    }
-
-    [DebuggerDisplay("PackageUpdate | {Change} on index {Index}")]
-    public readonly struct PackageUpdate
-    {
-        /// <summary>
-        /// Details on what piece of data has changed
-        /// </summary>
-        public readonly PackageChange Change;
-        /// <summary>
-        /// index of what item has changed. Meaning depends on value of Change
-        /// </summary>
-        public readonly int Index;
-
-        public PackageUpdate(PackageChange change, int index)
-        {
-            this.Change = change;
-            this.Index = index;
-        }
-    }
-
     public sealed class MEPackage : UnrealPackageFile, IMEPackage, IDisposable
     {
         /// <summary>
