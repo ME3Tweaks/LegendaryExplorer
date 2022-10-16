@@ -1735,10 +1735,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             // Get/Generate IDs and little endian hashes
             uint oldBankID = unchecked((uint)bankIDProp.Value);
-            string oldBankHash = BigToLittleEndian(string.Format("{0:X2}", oldBankID).PadLeft(8, '0'));
-
             uint newBankID = GetBankId(newWwiseBankName);
-            string newBankHash = BigToLittleEndian(string.Format("{0:X2}", newBankID).PadLeft(8, '0'));
 
             // Update the ID property
             bankIDProp.Value = unchecked((int)newBankID);
@@ -1762,30 +1759,15 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             // and we only replace it there.
             foreach (WwiseBank.HIRCObject hirc in wwiseBank.HIRCObjects.Values())
             {
-                byte[] unparsed = hirc.unparsed;
-                if (unparsed != null && unparsed.Length >= 4) // Only replace if not null and at least width of hash
+                byte[] oldID = BitConverter.GetBytes(oldBankID);
+                byte[] newID = BitConverter.GetBytes(newBankID);
+                if (hirc.unparsed != null && hirc.unparsed.Length >= 4) // Only replace if not null and at least width of hash
                 {
-                    byte[] oldArr = Convert.FromHexString(oldBankHash);
-                    byte[] newArr = Convert.FromHexString(newBankHash);
 
-                    int idBase = unparsed.Length - 4;
-
-                    // Check if the last 4 bytes of unparsed match the old hash
-                    bool equal = true;
-                    for (int i = 0; i < 4; i++)
+                    Span<byte> last4Bytes = hirc.unparsed.AsSpan(^4..);
+                    if (last4Bytes.SequenceEqual(oldID))
                     {
-                        equal = equal && (unparsed[idBase + i] == oldArr[i]);
-                    }
-
-                    // Replace the hash
-                    if (equal)
-                    {
-                        for (int i = 0; i < 4; i++)
-                        {
-                            unparsed[idBase + i] = newArr[i];
-                        }
-
-                        hirc.unparsed = unparsed;
+                        newID.CopyTo(last4Bytes);
                     }
                 }
             }
@@ -2024,23 +2006,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 hash = ((hash * 16777619) ^ namebyte) & 0xFFFFFFFF;
             }
             return hash;
-        }
-
-        /// <summary>
-        /// Convert a big endian hex to its little endian representation.
-        /// </summary>
-        /// <param name="bigEndian">Endian to convert.</param>
-        /// <returns>Little endian.</returns>
-        private static string BigToLittleEndian(string bigEndian)
-        {
-            byte[] asCurrentEndian = new byte[4];
-            string littleEndian = "";
-            for (int i = 0; i < 4; i++)
-            {
-                asCurrentEndian[i] = Convert.ToByte(bigEndian.Substring(i * 2, 2), 16);
-                littleEndian = $"{asCurrentEndian[i]:X2}{littleEndian}";
-            }
-            return littleEndian;
         }
 
         /// <summary>
