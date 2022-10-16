@@ -1811,7 +1811,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 else
                 {
                     // Most likely a NonSpkr, in which case we'll use the full name
-                    if (oldFxaFullName.Length > 8 && oldFxaFullName[^8..].ToLower() is "_nonspkr")
+                    if (oldFxaFullName.EndsWith("_nonspkr", StringComparison.OrdinalIgnoreCase))
                     {
                         oldFxaName = oldFxaFullName;
                     }
@@ -1822,11 +1822,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                 FaceFXAnimSet faceFXAnimSet = fxaExport.GetBinaryData<FaceFXAnimSet>();
                 // Replace the old name in the name chunk
-                List<string> names = faceFXAnimSet.Names.Select(name =>
-                {
-                    if (name == oldFxaName) { return newFxaName; }
-                    else { return name; }
-                }).ToList();
+                List<string> names = faceFXAnimSet.Names.Select(name => name == oldFxaName ? newFxaName : name).ToList();
                 faceFXAnimSet.Names = names;
 
                 // Set the paths with the new names and update the names of WwiseStreams
