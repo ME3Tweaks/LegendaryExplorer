@@ -1392,32 +1392,32 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
 
         private void CleanSequence_Click(object sender, RoutedEventArgs e)
         {
-            PackageEditorExperimentsO.CleanSequence(false, GetPEWindow());
+            PackageEditorExperimentsO.CleanSequenceExperiment(GetPEWindow());
         }
 
         private void CleanSequenceInterpDatas_Click(object sender, RoutedEventArgs e)
         {
-            PackageEditorExperimentsO.CleanSequenceInterpDatas(false, GetPEWindow());
+            PackageEditorExperimentsO.CleanSequenceInterpDatasExperiment(GetPEWindow());
         }
 
         private void ChangeConvoIDandConvNodeIDs_Click(object sender, RoutedEventArgs e)
         {
-            PackageEditorExperimentsO.ChangeConvoIDandConvNodeIDs(false, GetPEWindow());
+            PackageEditorExperimentsO.ChangeConvoIDandConvNodeIDsExperiment(GetPEWindow());
         }
 
         private void RenameConversation_Click(object sender, RoutedEventArgs e)
         {
-            PackageEditorExperimentsO.RenameConversation(false, GetPEWindow());
+            PackageEditorExperimentsO.RenameConversationExperiment(GetPEWindow());
         }
 
         private void RenameWwiseBank_Click(object sender, RoutedEventArgs e)
         {
-            PackageEditorExperimentsO.RenameWwiseBank(false, GetPEWindow());
+            PackageEditorExperimentsO.RenameWwiseBankExperiment(GetPEWindow());
         }
 
         private void UpdateWwiseBankID_Click (object sender, RoutedEventArgs e)
         {
-            PackageEditorExperimentsO.UpdateWwiseBankID(false, GetPEWindow());
+            PackageEditorExperimentsO.UpdateWwiseBankIDExperiment(GetPEWindow());
         }
         #endregion
 
