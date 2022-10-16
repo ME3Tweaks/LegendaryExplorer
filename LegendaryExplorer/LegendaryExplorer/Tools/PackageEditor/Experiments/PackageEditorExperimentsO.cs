@@ -1064,10 +1064,10 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 return;
             }
 
-            int newConvResRefID = promptForInt("New ConvResRefID:", "Not a valid ref id. It must be positive integer", 1, "New ConvResRefID");
+            int newConvResRefID = promptForInt("New ConvResRefID:", "Not a valid ref id. It must be positive integer", -1, "New ConvResRefID");
             if (newConvResRefID == -1) { return; }
 
-            int convNodeIDBase = promptForInt("New ConvNodeID base range:", "Not a valid base. It must be positive integer", 1, "New NodeID range");
+            int convNodeIDBase = promptForInt("New ConvNodeID base range:", "Not a valid base. It must be positive integer", -1, "New NodeID range");
             if (convNodeIDBase == -1) { return; }
 
             bool setNewWwiseBankID = false;
@@ -1239,22 +1239,19 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     // Save only Data var links of Interps
                     if (seqObj.ClassName == "SeqAct_Interp")
                     {
-                        List<StructProperty> varLinks = seqObj.GetProperty<ArrayProperty<StructProperty>>("VariableLinks").ToList();
+                        IEnumerable<StructProperty> varLinks = seqObj.GetProperty<ArrayProperty<StructProperty>>("VariableLinks");
 
-                        if (varLinks != null)
-                        {
-                            List<StructProperty> newVarLinks = new();
+                        List<StructProperty> newVarLinks = new();
 
-                            StructProperty dataLink = varLinks.Find(link =>
-                                string.Equals(link.GetProp<StrProperty>("LinkDesc").Value, "Data", StringComparison.OrdinalIgnoreCase));
+                        StructProperty dataLink = varLinks.FirstOrDefault(link =>
+                            string.Equals(link.GetProp<StrProperty>("LinkDesc").Value, "Data", StringComparison.OrdinalIgnoreCase));
 
-                            if (dataLink != null) { newVarLinks.Add(dataLink); }
+                        if (dataLink != null) { newVarLinks.Add(dataLink); }
 
-                            newVarLinks.Add(CreateVarLink(pcc, "Anchor"));
-                            newVarLinks.Add(CreateVarLink(pcc, "Conversation"));
+                        newVarLinks.Add(CreateVarLink(pcc, "Anchor"));
+                        newVarLinks.Add(CreateVarLink(pcc, "Conversation"));
 
-                            seqObj.WriteProperty(new ArrayProperty<StructProperty>(newVarLinks, "VariableLinks"));
-                        }
+                        seqObj.WriteProperty(new ArrayProperty<StructProperty>(newVarLinks, "VariableLinks"));
                     }
 
                     filteredObjRefs.Add(objRef);
@@ -1416,10 +1413,10 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 return;
             }
 
-            int newConvResRefID = promptForInt("New ConvResRefID:", "Not a valid ref id. It must be positive integer", 1, "New ConvResRefID");
+            int newConvResRefID = promptForInt("New ConvResRefID:", "Not a valid ref id. It must be positive integer", -1, "New ConvResRefID");
             if (newConvResRefID == -1) { return; }
 
-            int convNodeIDBase = promptForInt("New ConvNodeID base range:", "Not a valid base. It must be positive integer", 1, "New NodeID range");
+            int convNodeIDBase = promptForInt("New ConvNodeID base range:", "Not a valid base. It must be positive integer", -1, "New NodeID range");
             if (convNodeIDBase == -1) { return; }
 
             ExportEntry bioConversation = (ExportEntry)pew.SelectedItem.Entry;
@@ -1445,9 +1442,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         /// <param name="convNodeIDBase">If called, the convNodeIDBase to use.</param>
         public static void ChangeConvoIDandConvNodeIDs(ExportEntry bioConversation, ExportEntry sequence, int newConvResRefID, int convNodeIDBase)
         {
+            PropertyCollection conversationProps = bioConversation.GetProperties();
+
             // Update the conversation's refId
             IntProperty m_nResRefID = new(newConvResRefID, "m_nResRefID");
-            bioConversation.WriteProperty(m_nResRefID);
+            conversationProps.AddOrReplaceProp(m_nResRefID);
 
             // Update the convNodes nodeId and convResRefId
             int count = 0;
@@ -1457,20 +1456,24 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             Dictionary<int, int> remappedIDs = new(); // Save references of old id for update of entry and reply lists
             foreach (ExportEntry convNode in convNodes)
             {
-                IntProperty oldNodeID = convNode.GetProperty<IntProperty>("m_nNodeID");
+                PropertyCollection nodeProps = convNode.GetProperties();
+
+                IntProperty oldNodeID = nodeProps.GetProp<IntProperty>("m_nNodeID");
                 if (oldNodeID == null) { continue; }
 
                 remappedIDs.Add(oldNodeID.Value, convNodeIDBase + count);
 
                 IntProperty m_nNodeID = new(convNodeIDBase + count, "m_nNodeID");
                 IntProperty m_nConvResRefID = new(newConvResRefID, "m_nConvResRefID");
-                convNode.WriteProperty(m_nNodeID);
-                convNode.WriteProperty(m_nConvResRefID);
+                nodeProps.AddOrReplaceProp(m_nNodeID);
+                nodeProps.AddOrReplaceProp(m_nConvResRefID);
+
+                convNode.WriteProperties(nodeProps);
                 count++;
             }
 
             // Update the nExportIDs of the Entry list
-            ArrayProperty<StructProperty> entryNodes = bioConversation.GetProperty<ArrayProperty<StructProperty>>("m_EntryList");
+            ArrayProperty<StructProperty> entryNodes = conversationProps.GetProp<ArrayProperty<StructProperty>>("m_EntryList");
             foreach (StructProperty entryNode in entryNodes)
             {
                 IntProperty oldNodeID = entryNode.GetProp<IntProperty>("nExportID");
@@ -1489,7 +1492,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
 
             // Update the nExportIDs of the Reply list
-            ArrayProperty<StructProperty> replyNodes = bioConversation.GetProperty<ArrayProperty<StructProperty>>("m_ReplyList");
+            ArrayProperty<StructProperty> replyNodes = conversationProps.GetProp<ArrayProperty<StructProperty>>("m_ReplyList");
             foreach (StructProperty replyNode in replyNodes)
             {
                 IntProperty oldNodeID = replyNode.GetProp<IntProperty>("nExportID");
@@ -1506,8 +1509,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 replyNode.Properties = properties;
             }
 
-            bioConversation.WriteProperty(entryNodes);
-            bioConversation.WriteProperty(replyNodes);
+            bioConversation.WriteProperties(conversationProps);
         }
 
         /// <summary>
@@ -1728,7 +1730,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         public static void UpdateWwiseBankID(ExportEntry wwiseBankEntry, string newWwiseBankName)
         {
             string oldBankName = wwiseBankEntry.ObjectName;
-            IntProperty bankIDProp = wwiseBankEntry.GetProperty<IntProperty>("Id");
+            PropertyCollection bankProps = wwiseBankEntry.GetProperties();
+            IntProperty bankIDProp = bankProps.GetProp<IntProperty>("Id");
 
             // Get/Generate IDs and little endian hashes
             uint oldBankID = unchecked((uint)bankIDProp.Value);
@@ -1737,9 +1740,9 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             uint newBankID = GetBankId(newWwiseBankName);
             string newBankHash = BigToLittleEndian(string.Format("{0:X2}", newBankID).PadLeft(8, '0'));
 
-            // Write the replaced ID property
+            // Update the ID property
             bankIDProp.Value = unchecked((int)newBankID);
-            wwiseBankEntry.WriteProperty(bankIDProp);
+            bankProps.AddOrReplaceProp(bankIDProp);
 
             WwiseBank wwiseBank = wwiseBankEntry.GetBinaryData<WwiseBank>();
             // Update the bank id
@@ -1787,7 +1790,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 }
             }
 
-            wwiseBankEntry.WriteBinary(wwiseBank);
+            wwiseBankEntry.WritePropertiesAndBinary(bankProps, wwiseBank);
         }
 
         /// <summary>
