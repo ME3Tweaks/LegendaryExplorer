@@ -1974,19 +1974,20 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         /// <returns>Union of input strings.</returns>
         private static string GetCommonPrefix(string s1, string s2)
         {
-            string union = "";
-            for (int w = 0, b = 0; w < s1.Length && b < s2.Length; w++, b++)
+            if (s1.Length == 0 || s2.Length == 0 || char.ToLower(s1[0]) != char.ToLower(s2[0]))
             {
-                if (char.ToLower(s1[w]) == char.ToLower(s2[b]))
+                return "";
+            }
+
+            for (int i = 1; i < s1.Length && i < s2.Length; i++)
+            {
+                if (char.ToLower(s1[i]) != char.ToLower(s2[i]))
                 {
-                    union += char.ToLower(s1[w]);
-                }
-                else
-                {
-                    break;
+                    return s1[..i];
                 }
             }
-            return union;
+
+            return s1.Length < s2.Length ? s1 : s2;
         }
 
         /// <summary>
