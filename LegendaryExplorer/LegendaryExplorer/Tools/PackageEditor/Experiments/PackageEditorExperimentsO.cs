@@ -1241,17 +1241,20 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     {
                         IEnumerable<StructProperty> varLinks = seqObj.GetProperty<ArrayProperty<StructProperty>>("VariableLinks");
 
-                        List<StructProperty> newVarLinks = new();
+                        if (varLinks != null)
+                        {
+                            List<StructProperty> newVarLinks = new();
 
-                        StructProperty dataLink = varLinks.FirstOrDefault(link =>
-                            string.Equals(link.GetProp<StrProperty>("LinkDesc").Value, "Data", StringComparison.OrdinalIgnoreCase));
+                            StructProperty dataLink = varLinks.FirstOrDefault(link =>
+                                string.Equals(link.GetProp<StrProperty>("LinkDesc").Value, "Data", StringComparison.OrdinalIgnoreCase));
 
-                        if (dataLink != null) { newVarLinks.Add(dataLink); }
+                            if (dataLink != null) { newVarLinks.Add(dataLink); }
 
-                        newVarLinks.Add(CreateVarLink(pcc, "Anchor"));
-                        newVarLinks.Add(CreateVarLink(pcc, "Conversation"));
+                            newVarLinks.Add(CreateVarLink(pcc, "Anchor"));
+                            newVarLinks.Add(CreateVarLink(pcc, "Conversation"));
 
-                        seqObj.WriteProperty(new ArrayProperty<StructProperty>(newVarLinks, "VariableLinks"));
+                            seqObj.WriteProperty(new ArrayProperty<StructProperty>(newVarLinks, "VariableLinks"));
+                        }
                     }
 
                     filteredObjRefs.Add(objRef);
@@ -1757,10 +1760,10 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             // Update references to the old hash at the end of HIRC objects when they are found.
             // This is mostly safe, since we know the reference appears at the end of the unparsed data,
             // and we only replace it there.
+            byte[] oldID = BitConverter.GetBytes(oldBankID);
+            byte[] newID = BitConverter.GetBytes(newBankID);
             foreach (WwiseBank.HIRCObject hirc in wwiseBank.HIRCObjects.Values())
             {
-                byte[] oldID = BitConverter.GetBytes(oldBankID);
-                byte[] newID = BitConverter.GetBytes(newBankID);
                 if (hirc.unparsed != null && hirc.unparsed.Length >= 4) // Only replace if not null and at least width of hash
                 {
 
