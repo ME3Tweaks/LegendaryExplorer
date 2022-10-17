@@ -1,15 +1,21 @@
 ﻿using LegendaryExplorer.Dialogs;
+using LegendaryExplorer.Tools.TlkManagerNS;
+using LegendaryExplorerCore.Dialogue;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Kismet;
 using LegendaryExplorerCore.Matinee;
+using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
+using LegendaryExplorerCore.Unreal.ObjectInfo;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Numerics;
+using System.Text;
 using System.Windows;
 
 namespace LegendaryExplorer.Tools.PackageEditor.Experiments
@@ -304,11 +310,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 return actor;
             }
             return null;
-        }
-
-        private static void ShowError(string errMsg)
-        {
-            MessageBox.Show(errMsg, "Warning", MessageBoxButton.OK);
         }
 
         /// <summary>
@@ -683,8 +684,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 ArrayProperty<StructProperty> features = targetMorph.GetProperty<ArrayProperty<StructProperty>>("m_aMorphFeatures");
                 if (features.Any())
                 {
-                        // Compare the targetName against the names of the features
-                        List<string> featureNames = features.Select(feature => feature.GetProp<NameProperty>("sFeatureName").Value.Name).ToList();
+                    // Compare the targetName against the names of the features
+                    List<string> featureNames = features.Select(feature => feature.GetProp<NameProperty>("sFeatureName").Value.Name).ToList();
                     return featureNames.Exists(featureName => string.Equals(featureName, targetName, StringComparison.OrdinalIgnoreCase));
                 }
                 else { return true; }
@@ -700,12 +701,12 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 {
                     MorphTarget target = ObjectBinary.From<MorphTarget>(t);
                     for (int i = 0; i < 2; i++) // Adds indices for two lods, since the morphTargets only have two lod models
-                        {
+                    {
                         List<int> lod = new();
                         foreach (MorphTarget.MorphVertex vertex in target.MorphLODModels[i].Vertices)
                         {
                             if (!lod.Contains(vertex.SourceIdx) && (vertex.SourceIdx != 495)) // 495 is a nose vertex
-                                {
+                            {
                                 lod.Add(vertex.SourceIdx);
                             }
                         }
@@ -879,19 +880,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 MessageBox.Show("No references were found within the given distance");
             }
         }
-
-        /// <summary>
-        /// Checks if a dest position is within a given distance of the origin.
-        /// </summary>
-        /// <param name="origin">Origin position.</param>
-        /// <param name="dest">Dest position to check.</param>
-        /// <param name="dist">Max distance from origin.</param>
-        /// <returns>True if the dest is within dist</returns>
-        private static bool InDist(float origin, float dest, float dist)
-        {
-            return Math.Abs((dest - origin)) <= dist;
-        }
-
 
         /// <summary>
         /// Copy the selected property to another export of the same class.
@@ -1089,6 +1077,893 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         }
 
         /// <summary>
+        /// Keeps only the things that are essential to the conversation and give its elements
+        /// unique names and IDs so it can be used as a template for new ones.
+        /// </summary>
+        /// <param name="pew">Current PE instance.</param>
+        public static void CleanConvoDonor(PackageEditorWindow pew)
+        {
+            if (pew.Pcc == null || pew.SelectedItem?.Entry == null) { return; }
+
+            if (pew.Pcc.Game is MEGame.ME1)
+            {
+                ShowError("Not available for ME1");
+                return;
+            }
+
+            if (pew.SelectedItem.Entry.ClassName is not "BioConversation")
+            {
+                ShowError("Selected export is not a BioConversation");
+                return;
+            }
+
+            string newName = PromptDialog.Prompt(null, "New conversation name:", "New name");
+            // Check that the new name is not empty, no longe than 255, and doesn't contain white-spaces or symbols aside from _ or -
+            if (string.IsNullOrEmpty(newName) || newName.Length > 240 || newName.Any(c => char.IsWhiteSpace(c) || (!(c is '_' or '-') && !char.IsLetterOrDigit(c))))
+            {
+                ShowError("Invalid new name. It must not be empty, be longer than 240 characters, or contain whitespaces or symbols aside from '-' and '_'");
+                return;
+            }
+
+            int newConvResRefID = promptForInt("New ConvResRefID:", "Not a valid ref id. It must be positive integer", -1, "New ConvResRefID");
+            if (newConvResRefID == -1) { return; }
+
+            int convNodeIDBase = promptForInt("New ConvNodeID base range:", "Not a valid base. It must be positive integer", -1, "New NodeID range");
+            if (convNodeIDBase == -1) { return; }
+
+            bool setNewWwiseBankID = false;
+            if (!pew.Pcc.Game.IsGame1())
+            {
+                setNewWwiseBankID = MessageBoxResult.Yes == MessageBox.Show(
+                "Change the WwiseBank ID?\nIn general it's safe and better to do so, but there may be edge cases" +
+                "where doing so may overwrite parts of the WwiseBank binary that are not the ID.",
+                "Set new bank ID", MessageBoxButton.YesNo);
+            }
+
+            bool bringTrash = MessageBoxResult.No == MessageBox.Show(
+                "Discard sequence objects that are not Interp, InterpData, ConvNode or EndConvNode but link to them?\n" +
+                "In general it's better to discard them, but there may be edge cases where you may want to preserve them.",
+                "Discard unneeded objects", MessageBoxButton.YesNo);
+
+            ExportEntry bioConversation = (ExportEntry)pew.SelectedItem.Entry;
+
+            // Load the conversation. We use ConversationExtended since it aggregates most of the elements we'll need to
+            // operate on
+            ConversationExtended conversation = new(bioConversation);
+            conversation.LoadConversation(TLKManagerWPF.GlobalFindStrRefbyID, true);
+
+            // Rename the conversation, its package, the WwiseBank, the FXAs, VOs and WwiseEvents
+            RenameConversation(pew.Pcc, bioConversation, conversation, newName, setNewWwiseBankID);
+
+            // Change the conversations ResRefID an the ConvNodes IDs
+            ChangeConvoIDandConvNodeIDs(bioConversation, (ExportEntry)conversation.Sequence, newConvResRefID, convNodeIDBase);
+
+            // Clean the sequence of unneeded objects and keep only Conversation INterpGroups and VOElements InterpTracks
+            // We'll trash unnecessary InterpTracks, InterpGroups and no longer used objects. It's necessary so users of the experiment
+            // can clone the package of a conversation instead of the BioConversation directly.
+            List<string> disconnectedConvNodes = CleanSequence(pew.Pcc, (ExportEntry)conversation.Sequence, true, bringTrash, true);
+
+            string successMessage = "Conversation cleaned successfully.";
+            if (disconnectedConvNodes.Count > 0)
+            {
+                successMessage += $"\nThe following ConvNodes were found to be disconnected after the process: {string.Join(", ", disconnectedConvNodes)}";
+            }
+
+            MessageBox.Show(successMessage, "Success", MessageBoxButton.OK);
+        }
+
+        /// <summary>
+        /// Wrapper for CleanSequence so it can used as a full experiment on its own.
+        /// </summary>
+        /// <param name="pew">Current PE instance.</param>
+        public static void CleanSequenceExperiment(PackageEditorWindow pew)
+        {
+            if (pew.Pcc == null || pew.SelectedItem?.Entry == null) { return; }
+
+            if (pew.Pcc.Game is MEGame.ME1)
+            {
+                ShowError("Not available for ME1");
+                return;
+            }
+
+            if (pew.SelectedItem.Entry.ClassName is not "Sequence")
+            {
+                ShowError("Selected export is not a Sequence");
+                return;
+            }
+
+            bool cleanGroups = MessageBoxResult.Yes == MessageBox.Show(
+                "Clean sequence of unused InterpGroups and InterpTracks?", "Clean groups and tracks", MessageBoxButton.YesNo);
+
+            bool trashItems = MessageBoxResult.Yes == MessageBox.Show(
+                "Trash unused objects and elements?", "Trash unusued", MessageBoxButton.YesNo);
+
+            bool bringTrash = MessageBoxResult.No == MessageBox.Show(
+                "Discard sequence objects that are not Interp, InterpData, ConvNode or EndConvNode but link to them?\n" +
+                "In general it's better to discard them, but there may be edge cases where you may want to preserve them.",
+                "Discard unneeded objects", MessageBoxButton.YesNo);
+
+            ExportEntry sequence = (ExportEntry)pew.SelectedItem.Entry;
+
+            List<string> disconnectedConvNodes = CleanSequence(pew.Pcc, sequence, trashItems, bringTrash, cleanGroups);
+
+            string successMessage = "Sequence cleaned successfully.";
+            if (disconnectedConvNodes.Count > 0)
+            {
+                successMessage += $"\nThe following ConvNodes were found to be disconnected after the process: {string.Join(", ", disconnectedConvNodes)}";
+            }
+            MessageBox.Show(successMessage, "Success", MessageBoxButton.OK);
+            return;
+        }
+
+        /// <summary>
+        /// Cleans a sequence of objects that are not needed for a basic conversation.
+        /// This experiment DOES NOT update the varLinks.
+        /// </summary>
+        /// <param name="pcc">Pcc to operate on.</param>
+        /// <param name="sequence">If called, the sequence to clean.</param>
+        /// <param name="trashItems">If called, whether to trash unused groups and tracks.</param>
+        /// <param name="bringTrash">If called, whether to keep all objects that point to conversation classes, or only essential ones.</param>
+        /// <param name="cleanGroups">If called, whether to clean InterpGroups and InterpTracks.</param>
+        /// <returns>List of ConvNodes that may no longer connect to Interps.</returns>
+        public static List<string> CleanSequence(IMEPackage pcc, ExportEntry sequence, bool trashItems, bool bringTrash, bool cleanGroups)
+        {
+            List<IEntry> itemsToTrash = new();
+
+            if (cleanGroups)
+            {
+                List<IEntry> groupsTrash = CleanSequenceInterpDatas(pcc, sequence);
+                if (groupsTrash != null) { itemsToTrash.AddRange(groupsTrash); }
+            }
+
+            // Remove animation sets
+            string animsetsPropName = pcc.Game.IsGame3() ? "m_aSFXSharedAnimsets" : "m_aBioDynAnimSets";
+            ArrayProperty<ObjectProperty> animSets = sequence.GetProperty<ArrayProperty<ObjectProperty>>(animsetsPropName);
+            if (animSets != null)
+            {
+                // Store KYS objects to trash
+                foreach (ObjectProperty kysRef in animSets)
+                {
+                    if (kysRef == null || kysRef.Value == 0) { continue; }
+                    ExportEntry kys = pcc.GetUExport(kysRef.Value);
+                    if (kys != null) { itemsToTrash.Add(kys); }
+                }
+                sequence.RemoveProperty(animsetsPropName);
+            }
+
+            // Keep only objects essential to the conversation
+            ArrayProperty<ObjectProperty> seqObjRefs = sequence.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
+            // Keep a list of disconnected convNodes in case removal of certain objects breaks their links to Interps
+            List<string> disconnectedConvNodes = new();
+            if (seqObjRefs != null)
+            {
+                List<string> validClasses = new() { "BioSeqAct_EndCurrentConvNode", "BioSeqEvt_ConvNode", "InterpData", "SeqAct_Interp" };
+                List<ObjectProperty> filteredObjRefs = new();
+                List<ExportEntry> filteredObjs = new();
+
+                foreach (ObjectProperty objRef in seqObjRefs)
+                {
+                    if (objRef == null || objRef.Value == 0) { continue; }
+
+                    ExportEntry seqObj = pcc.GetUExport(objRef.Value);
+
+                    if (seqObj == null) { continue; }
+
+                    // Check if the object links to a valid class.
+                    // We do this regardless of bringTrash in order to know whether a valid convNode may be
+                    // an orphan.
+                    List<List<SeqTools.OutboundLink>> outboundLinks = SeqTools.GetOutboundLinksOfNode(seqObj);
+                    // Link is valid if it has outbound links, and at least 1 one is linked to 1 valid class
+                    bool linksToValid = (outboundLinks.Count > 0) && outboundLinks
+                        .Any(outboundLink => outboundLink
+                            .Any(link =>
+                                link != null && validClasses.Contains(link.LinkedOp.ClassName, StringComparer.OrdinalIgnoreCase)
+                            )
+                        );
+                    // Keep a list of convNodes that link to nothing
+                    if (!linksToValid && seqObj.ClassName == "BioSeqEvt_ConvNode")
+                    {
+                        disconnectedConvNodes.Add(seqObj.ObjectName.Instanced.Replace("BioSeqEvt_", ""));
+                    }
+
+                    // Override linkToValid if we want to ignore the object unless it's a valid class
+                    if (!bringTrash) { linksToValid = false; }
+
+                    // Skip objects that are not essential for the conversation
+                    // If linktsToValid, we won't recalculate validClasses.Contains, so we're all good
+                    if (!linksToValid && !validClasses.Contains(seqObj.ClassName, StringComparer.OrdinalIgnoreCase))
+                    {
+                        itemsToTrash.Add(seqObj);
+                        continue;
+                    }
+
+                    // Save only Data var links of Interps
+                    if (seqObj.ClassName == "SeqAct_Interp")
+                    {
+                        IEnumerable<StructProperty> varLinks = seqObj.GetProperty<ArrayProperty<StructProperty>>("VariableLinks");
+
+                        if (varLinks != null)
+                        {
+                            List<StructProperty> newVarLinks = new();
+
+                            StructProperty dataLink = varLinks.FirstOrDefault(link =>
+                                string.Equals(link.GetProp<StrProperty>("LinkDesc").Value, "Data", StringComparison.OrdinalIgnoreCase));
+
+                            if (dataLink != null) { newVarLinks.Add(dataLink); }
+
+                            newVarLinks.Add(CreateVarLink(pcc, "Anchor"));
+                            newVarLinks.Add(CreateVarLink(pcc, "Conversation"));
+
+                            seqObj.WriteProperty(new ArrayProperty<StructProperty>(newVarLinks, "VariableLinks"));
+                        }
+                    }
+
+                    filteredObjRefs.Add(objRef);
+                    filteredObjs.Add(seqObj);
+                }
+
+                sequence.WriteProperty(new ArrayProperty<ObjectProperty>(filteredObjRefs, "SequenceObjects"));
+
+                // Remove links to objects no longer in the sequence
+                foreach (ExportEntry seqObj in filteredObjs)
+                {
+                    // Keep only outbound links to valid classes
+                    List<List<SeqTools.OutboundLink>> outboundLinks = SeqTools.GetOutboundLinksOfNode(seqObj);
+                    if (outboundLinks.Count > 0)
+                    {
+                        List<List<SeqTools.OutboundLink>> filteredOutboundLinks = new();
+                        foreach (List<SeqTools.OutboundLink> outboundLink in outboundLinks)
+                        {
+                            // Add to filteredOutboundLinks the elements of this outbound link that connect to a valid class
+                            filteredOutboundLinks.Add(outboundLink
+                                .Where(link =>
+                                    link == null || validClasses.Contains(link.LinkedOp.ClassName, StringComparer.OrdinalIgnoreCase)
+                                ).ToList());
+                        }
+                        SeqTools.WriteOutboundLinksToNode(seqObj, filteredOutboundLinks);
+                    }
+                }
+            }
+
+            if (trashItems) { EntryPruner.TrashEntries(pcc, itemsToTrash); }
+
+            return disconnectedConvNodes;
+        }
+
+        /// <summary>
+        /// Wrapper for CleanSequenceInterpDatas so it can used as a full experiment on its own.
+        /// </summary>
+        /// <param name="pew">Current PE instance.</param>
+        public static void CleanSequenceInterpDatasExperiment(PackageEditorWindow pew)
+        {
+            if (pew.Pcc == null || pew.SelectedItem?.Entry == null) { return; }
+
+            if (pew.Pcc.Game is MEGame.ME1)
+            {
+                ShowError("Not available for ME1");
+                return;
+            }
+
+            if (pew.SelectedItem.Entry.ClassName is not "Sequence")
+            {
+                ShowError("Selected export is not a Sequence");
+                return;
+            }
+
+            bool trashItems = MessageBoxResult.Yes == MessageBox.Show(
+                "Trash unused InterpGroups and InterpTracks?", "Trash unusued", MessageBoxButton.YesNo);
+
+            ExportEntry sequence = (ExportEntry)pew.SelectedItem.Entry;
+
+            List<IEntry> itemsToTrash = CleanSequenceInterpDatas(pew.Pcc, sequence);
+
+            if (trashItems) { EntryPruner.TrashEntries(pew.Pcc, itemsToTrash); }
+
+            MessageBox.Show("Sequence cleaned of non-Conversation InterpGroups and  non-VOElements InterpTracks.", "Success", MessageBoxButton.OK);
+            return;
+
+        }
+
+        /// <summary>
+        /// Cleans a sequence's InterpDatas of non-Conversation InterpGroups and non-VOElements InterpTracks.
+        /// This experiment DOES NOT update the varLinks.
+        /// </summary>
+        /// <param name="pcc">Pcc to operate on.</param>
+        /// <param name="sequence">If called, the sequence to clean.</param>
+        /// <param name="trashItems">If not called, whether to trash unused groups and tracks.</param>
+        public static List<IEntry> CleanSequenceInterpDatas(IMEPackage pcc, ExportEntry sequence)
+        {
+            List<IEntry> itemsToTrash = new();
+
+            List<IEntry> interpDatas = new(SeqTools.GetAllSequenceElements(sequence)
+                .Where(el => el.ClassName == "InterpData"));
+
+            // Keep only InterpGroups named "Conversation" and only the BioEvtSysTrackVOElements InterpTracks
+            foreach (ExportEntry interpData in interpDatas)
+            {
+                ArrayProperty<ObjectProperty> interpGroupsRefs = interpData.GetProperty<ArrayProperty<ObjectProperty>>("InterpGroups");
+                if (interpGroupsRefs == null) { continue; }
+                List<ObjectProperty> filteredGroupsRefs = new();
+
+                // Save "Conversation" InterpGroup, trash the rest
+                foreach (ObjectProperty groupRef in interpGroupsRefs)
+                {
+                    if (groupRef.Value == 0) { continue; }
+
+                    ExportEntry group = pcc.GetUExport(groupRef.Value);
+                    if (group == null) { continue; }
+
+                    NameProperty name = group.GetProperty<NameProperty>("GroupName");
+
+                    if (name != null && !string.IsNullOrEmpty(name.Value) && name.Value.Name.Equals("Conversation", StringComparison.OrdinalIgnoreCase))
+                    {
+                        filteredGroupsRefs.Add(groupRef);
+                    }
+                    else
+                    {
+                        itemsToTrash.Add(group);
+                    }
+                }
+
+                // Keep only BioEvtSysTrackVOElements InterpTracks
+                foreach (ObjectProperty interpGroupRef in filteredGroupsRefs)
+                {
+                    ExportEntry interpGroup = pcc.GetUExport(interpGroupRef.Value);
+
+                    ArrayProperty<ObjectProperty> interpTracksRefs = interpGroup.GetProperty<ArrayProperty<ObjectProperty>>("InterpTracks");
+                    if (interpTracksRefs == null) { continue; }
+                    List<ObjectProperty> filteredTracksRefs = new();
+
+                    foreach (ObjectProperty trackRef in interpTracksRefs)
+                    {
+                        if (trackRef.Value == 0) { continue; }
+
+                        ExportEntry track = pcc.GetUExport(trackRef.Value);
+                        if (track == null) { continue; }
+
+                        if (track.ClassName == "BioEvtSysTrackVOElements")
+                        {
+                            filteredTracksRefs.Add(trackRef);
+                        }
+                        else
+                        {
+                            itemsToTrash.Insert(0, track); // Insert first so they are trashed first
+                        }
+                    }
+
+                    interpGroup.WriteProperty(new ArrayProperty<ObjectProperty>(filteredTracksRefs, "InterpTracks"));
+                }
+
+                interpData.WriteProperty(new ArrayProperty<ObjectProperty>(filteredGroupsRefs, "InterpGroups"));
+                interpData.RemoveProperty("m_aBioPreloadData"); // Make sure not to keep extra stuff here
+            }
+
+            return itemsToTrash;
+        }
+
+        public static void ChangeConvoIDandConvNodeIDsExperiment(PackageEditorWindow pew)
+        {
+            if (pew.Pcc == null || pew.SelectedItem?.Entry == null) { return; }
+
+            if (pew.Pcc.Game is MEGame.ME1)
+            {
+                ShowError("Not available for ME1");
+                return;
+            }
+
+            if (pew.SelectedItem.Entry.ClassName is not "BioConversation")
+            {
+                ShowError("Selected export is not a BioConversation");
+                return;
+            }
+
+            int newConvResRefID = promptForInt("New ConvResRefID:", "Not a valid ref id. It must be positive integer", -1, "New ConvResRefID");
+            if (newConvResRefID == -1) { return; }
+
+            int convNodeIDBase = promptForInt("New ConvNodeID base range:", "Not a valid base. It must be positive integer", -1, "New NodeID range");
+            if (convNodeIDBase == -1) { return; }
+
+            ExportEntry bioConversation = (ExportEntry)pew.SelectedItem.Entry;
+
+            // Load the conversation. We use ConversationExtended since it aggregates most of the elements we'll need to
+            // operate on. Is it overkill? Yes. Does it get the job done more cleanly and safely? yes.
+            ConversationExtended conversation = new(bioConversation);
+            conversation.LoadConversation(TLKManagerWPF.GlobalFindStrRefbyID, true);
+
+            ExportEntry sequence = (ExportEntry)conversation.Sequence;
+
+            ChangeConvoIDandConvNodeIDs(bioConversation, sequence, newConvResRefID, convNodeIDBase);
+
+            MessageBox.Show("Conversation's ResRefID and ConvNodes' ID updated successfully.", "Success", MessageBoxButton.OK);
+        }
+
+        /// <summary>
+        /// Changes the conversation's ResRefID and its ConvNodes' ID.
+        /// </summary>
+        /// <param name="bioConversation">If called, the conversation to edit.</param>
+        /// <param name="sequence">If called, the conversation's sequence.</param>
+        /// <param name="newConvResRefID">If called, the newConvResRefID to set.</param>
+        /// <param name="convNodeIDBase">If called, the convNodeIDBase to use.</param>
+        public static void ChangeConvoIDandConvNodeIDs(ExportEntry bioConversation, ExportEntry sequence, int newConvResRefID, int convNodeIDBase)
+        {
+            PropertyCollection conversationProps = bioConversation.GetProperties();
+
+            // Update the conversation's refId
+            IntProperty m_nResRefID = new(newConvResRefID, "m_nResRefID");
+            conversationProps.AddOrReplaceProp(m_nResRefID);
+
+            // Update the convNodes nodeId and convResRefId
+            int count = 0;
+            List<IEntry> convNodes = new(SeqTools.GetAllSequenceElements(sequence)
+                .Where(el => el.ClassName == "BioSeqEvt_ConvNode"));
+
+            Dictionary<int, int> remappedIDs = new(); // Save references of old id for update of entry and reply lists
+            foreach (ExportEntry convNode in convNodes)
+            {
+                PropertyCollection nodeProps = convNode.GetProperties();
+
+                IntProperty oldNodeID = nodeProps.GetProp<IntProperty>("m_nNodeID");
+                if (oldNodeID == null) { continue; }
+
+                remappedIDs.Add(oldNodeID.Value, convNodeIDBase + count);
+
+                IntProperty m_nNodeID = new(convNodeIDBase + count, "m_nNodeID");
+                IntProperty m_nConvResRefID = new(newConvResRefID, "m_nConvResRefID");
+                nodeProps.AddOrReplaceProp(m_nNodeID);
+                nodeProps.AddOrReplaceProp(m_nConvResRefID);
+
+                convNode.WriteProperties(nodeProps);
+                count++;
+            }
+
+            // Update the nExportIDs of the Entry list
+            ArrayProperty<StructProperty> entryNodes = conversationProps.GetProp<ArrayProperty<StructProperty>>("m_EntryList");
+            foreach (StructProperty entryNode in entryNodes)
+            {
+                IntProperty oldNodeID = entryNode.GetProp<IntProperty>("nExportID");
+                if (oldNodeID == null) { continue; }
+
+                if (!remappedIDs.ContainsKey(oldNodeID.Value))
+                {
+                    remappedIDs.Add(oldNodeID.Value, convNodeIDBase + count);
+                    count++;
+                }
+
+                PropertyCollection properties = entryNode.Properties;
+                IntProperty nExportID = new(remappedIDs[oldNodeID.Value], "nExportID");
+                properties.AddOrReplaceProp(nExportID);
+                entryNode.Properties = properties;
+            }
+
+            // Update the nExportIDs of the Reply list
+            ArrayProperty<StructProperty> replyNodes = conversationProps.GetProp<ArrayProperty<StructProperty>>("m_ReplyList");
+            foreach (StructProperty replyNode in replyNodes)
+            {
+                IntProperty oldNodeID = replyNode.GetProp<IntProperty>("nExportID");
+                if (oldNodeID == null) { continue; }
+                if (!remappedIDs.ContainsKey(oldNodeID.Value))
+                {
+                    remappedIDs.Add(oldNodeID.Value, convNodeIDBase + count);
+                    count++;
+                }
+
+                PropertyCollection properties = replyNode.Properties;
+                IntProperty nExportID = new(remappedIDs[oldNodeID.Value], "nExportID");
+                properties.AddOrReplaceProp(nExportID);
+                replyNode.Properties = properties;
+            }
+
+            bioConversation.WriteProperties(conversationProps);
+        }
+
+        /// <summary>
+        /// Wrapper for RenameConversation so it can used as a full experiment on its own.
+        /// </summary>
+        /// <param name="pew">Current PE instance.</param>
+        public static void RenameConversationExperiment(PackageEditorWindow pew)
+        {
+            if (pew.Pcc == null || pew.SelectedItem?.Entry == null) { return; }
+
+            if (pew.Pcc.Game is MEGame.ME1)
+            {
+                ShowError("Not available for ME1");
+                return;
+            }
+
+            if (pew.SelectedItem.Entry.ClassName is not "BioConversation")
+            {
+                ShowError("Selected export is not a BioConversation");
+                return;
+            }
+
+            string newName = PromptDialog.Prompt(null, "New WwiseBank name:", "New name");
+            // Check that the new name is not empty, no longe than 255, and doesn't contain white-spaces or symbols aside from _ or -
+            if (string.IsNullOrEmpty(newName) || newName.Length > 240 || newName.Any(c => char.IsWhiteSpace(c) || (!(c is '_' or '-') && !char.IsLetterOrDigit(c))))
+            {
+                ShowError("Invalid name. It must not be empty, be longer than 240 characters, or contain whitespaces or symbols aside from '-' and '_'");
+                return;
+            }
+
+            bool updateID = true;
+            if (!pew.Pcc.Game.IsGame1())
+            {
+                updateID = MessageBoxResult.Yes == MessageBox.Show(
+                    "Change the WwiseBank ID?\nIn general it's safe and better to do so, but there may be edge cases" +
+                    "where doing so may overwrite parts of the WwiseBank binary that are not the ID.",
+                    "Set new bank ID", MessageBoxButton.YesNo);
+            }
+
+            ExportEntry bioConversation = (ExportEntry)pew.SelectedItem.Entry;
+
+            // Load the conversation. We use ConversationExtended since it aggregates most of the elements we'll need to
+            // operate on. Is it overkill? Yes. Does it get the job done more cleanly and safely? yes.
+            ConversationExtended conversation = new(bioConversation);
+            conversation.LoadConversation(TLKManagerWPF.GlobalFindStrRefbyID, true);
+
+            RenameConversation(pew.Pcc, bioConversation, conversation, newName, updateID);
+
+            MessageBox.Show("Conversation renamed successfully.", "Success", MessageBoxButton.OK);
+        }
+
+        /// <summary>
+        /// Rename a conversation, changing the WwiseBank name and FXAs and related elements too.
+        /// </summary>
+        /// <param name="pcc">Pcc to operate on.</param>
+        /// <param name="bioConversation">If called, the bioConversation entry to edit.</param>
+        /// <param name="conversation">If called, the loaded conversation edit.</param>
+        /// <param name="newName">If called, the new name.</param>
+        /// <param name="updateID">If called, Whether to update the ID.</param>
+        public static void RenameConversation(IMEPackage pcc, ExportEntry bioConversation, ConversationExtended conversation, string newName, bool updateID)
+        {
+            string oldBioConversationName = bioConversation.ObjectName;
+            string oldName;
+
+            // Get the old name found in all pieces of the conversation by getting the union of the bioconversation
+            // and the wwise bank names, or tlk file set in ME1.
+            // Assumes that both begin the same, since that's the behavior in all vanilla occurences, and helps
+            // keep the logic simple.
+            if (pcc.Game.IsGame1())
+            {
+                ObjectProperty m_oTlkFileSet = bioConversation.GetProperty<ObjectProperty>("m_oTlkFileSet");
+                if (m_oTlkFileSet != null && m_oTlkFileSet.Value != 0)
+                {
+                    ExportEntry tlkFileSet = pcc.GetUExport(m_oTlkFileSet.Value);
+                    // All Tlk file sets begin with TlkSet_, followed by the name they have in common with the package
+                    oldName = GetCommonPrefix(tlkFileSet.ObjectName.Name[7..], oldBioConversationName);
+                }
+                else
+                {
+                    // I've been told all LE1 conversations have a tlk file set, so this won't ever be reached,
+                    // but better safe than sorry.
+                    oldName = oldBioConversationName;
+                }
+            }
+            else
+            {
+                string oldWwiseBankName = conversation.WwiseBank.ObjectName;
+                oldName = GetCommonPrefix(oldWwiseBankName, oldBioConversationName);
+                string newWwiseBankName = oldWwiseBankName.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
+
+                // Must happen before renaming the wwiseBank since it reads the old bank's name
+                RenameWwiseBank(conversation.WwiseBank, newWwiseBankName, updateID);
+                conversation.WwiseBank.ObjectName = newWwiseBankName;
+            }
+
+            string newBioConversationName = oldBioConversationName.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
+            bioConversation.ObjectName = newBioConversationName;
+
+            // Replace package's name
+            if (bioConversation.idxLink != 0)
+            {
+                ExportEntry link = pcc.GetUExport(bioConversation.idxLink);
+                if (link.ClassName == "Package")
+                {
+                    link.ObjectName = link.ObjectName.Name.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
+                }
+            }
+            // Replace name of the sound, sequence, and FXA package, which is separate in ME1
+            if (pcc.Game.IsGame1())
+            {
+                ExportEntry link = pcc.GetUExport(conversation.Sequence.idxLink);
+                if (link.ClassName == "Package")
+                {
+                    link.ObjectName = link.ObjectName.Name.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
+                }
+            }
+            // Replace name of the sounds package, which is separate in ME2
+            if (pcc.Game.IsGame2())
+            {
+                ExportEntry link = pcc.GetUExport(conversation.WwiseBank.idxLink);
+                if (link.ClassName == "Package")
+                {
+                    link.ObjectName = link.ObjectName.Name.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
+                }
+            }
+
+            // Must be called after everything else has been renamed due to the need ot update FXA paths.
+            RenameFXAsAndRelated(pcc, bioConversation, oldName, newName);
+        }
+
+        /// <summary>
+        /// Wrapper for RenameWwiseBank so it can used as a full experiment on its own.
+        /// </summary>
+        /// <param name="pew">Current PE instance.</param>
+        public static void RenameWwiseBankExperiment(PackageEditorWindow pew)
+        {
+            if (pew.Pcc == null || pew.SelectedItem?.Entry == null) { return; }
+
+            if (pew.Pcc.Game.IsGame1())
+            {
+                ShowError("Not available for ME1/LE1");
+                return;
+            }
+
+            if (pew.SelectedItem.Entry.ClassName is not "WwiseBank")
+            {
+                ShowError("Selected export is not a WwiseBank");
+                return;
+            }
+
+            ExportEntry wwiseBankEntry = (ExportEntry)pew.SelectedItem.Entry;
+
+            string newWwiseBankName = PromptDialog.Prompt(null, "New WwiseBank name:", "New name");
+            // Check that the new name is not empty, no longe than 255, and doesn't contain white-spaces or symbols aside from _ or -
+            if (string.IsNullOrEmpty(newWwiseBankName) || newWwiseBankName.Length > 240 || newWwiseBankName.Any(c => char.IsWhiteSpace(c) || (!(c is '_' or '-') && !char.IsLetterOrDigit(c))))
+            {
+                ShowError("Invalid name. It must not be empty, be longer than 240 characters, or contain whitespaces or symbols aside from '-' and '_'");
+                return;
+            }
+
+            RenameWwiseBank(wwiseBankEntry, newWwiseBankName, true);
+
+            MessageBox.Show($"WwiseBank's name and ID updated successfully.", "Success", MessageBoxButton.OK);
+        }
+
+        /// <summary>
+        /// Changes a WwiseBank's name, and update its ID accordingly.
+        /// </summary>
+        /// <param name="wwiseBankEntry">If called, the WwiseBank entry to edit.</param>
+        /// <param name="newWwiseBankName">If called, the new wwise bank name.</param>
+        /// <param name="updateID">Whether to update the ID. Useful when you want to be extra careful when calling it from
+        /// other experiments.</param>
+        public static void RenameWwiseBank(ExportEntry wwiseBankEntry, string newWwiseBankName, bool updateID)
+        {
+            if (updateID) { UpdateWwiseBankID(wwiseBankEntry, newWwiseBankName); }
+            wwiseBankEntry.ObjectName = newWwiseBankName;
+        }
+
+        /// <summary>
+        /// Wrapper for UpdateWwiseBankID so it can used as a full experiment on its own.
+        /// </summary>
+        /// <param name="pew">Current PE instance.</param>
+        public static void UpdateWwiseBankIDExperiment(PackageEditorWindow pew)
+        {
+            if (pew.Pcc == null || pew.SelectedItem?.Entry == null) { return; }
+
+            if (pew.Pcc.Game.IsGame1())
+            {
+                ShowError("Not available for ME1/LE1");
+                return;
+            }
+
+            if (pew.SelectedItem.Entry.ClassName is not "WwiseBank")
+            {
+                ShowError("Selected export is not a WwiseBank");
+                return;
+            }
+
+            ExportEntry wwiseBankEntry = (ExportEntry)pew.SelectedItem.Entry;
+
+            string newWwiseBankName = PromptDialog.Prompt(null, "New WwiseBank name:", "New name");
+            // Check that the new name is not empty, no longe than 255, and doesn't contain white-spaces or symbols aside from _ or -
+            if (string.IsNullOrEmpty(newWwiseBankName) || newWwiseBankName.Length > 240 || newWwiseBankName.Any(c => char.IsWhiteSpace(c) || (!(c is '_' or '-') && !char.IsLetterOrDigit(c))))
+            {
+                ShowError("Invalid name. It must not be empty, be longer than 240 characters, or contain whitespaces or symbols aside from '-' and '_'");
+                return;
+            }
+
+            UpdateWwiseBankID(wwiseBankEntry, newWwiseBankName);
+            MessageBox.Show("WwiseBank's ID updated successfully.", "Success", MessageBoxButton.OK);
+        }
+
+        /// <summary>
+        /// Update a WwiseBank's ID by hashing a new name and changing it in the binary data where appropriate.
+        /// </summary>
+        /// <param name="wwiseBankEntry">If called, the WwiseBank entry to edit.</param>
+        /// <param name="newWwiseBankName">If called, the new wwise bank name.</param>
+        public static void UpdateWwiseBankID(ExportEntry wwiseBankEntry, string newWwiseBankName)
+        {
+            string oldBankName = wwiseBankEntry.ObjectName;
+            PropertyCollection bankProps = wwiseBankEntry.GetProperties();
+            IntProperty bankIDProp = bankProps.GetProp<IntProperty>("Id");
+
+            // Get/Generate IDs and little endian hashes
+            uint oldBankID = unchecked((uint)bankIDProp.Value);
+            uint newBankID = GetBankId(newWwiseBankName);
+
+            // Update the ID property
+            bankIDProp.Value = unchecked((int)newBankID);
+            bankProps.AddOrReplaceProp(bankIDProp);
+
+            WwiseBank wwiseBank = wwiseBankEntry.GetBinaryData<WwiseBank>();
+            // Update the bank id
+            wwiseBank.ID = newBankID;
+
+            // Update referenced banks kvp that reference the old name
+            IEnumerable<KeyValuePair<uint, string>> updatedBanks = wwiseBank.ReferencedBanks
+                .Select(referencedBank =>
+                {
+                    if (referencedBank.Value.Equals(oldBankName, StringComparison.OrdinalIgnoreCase)) { return new(newBankID, newWwiseBankName); }
+                    else { return referencedBank; }
+                });
+            wwiseBank.ReferencedBanks = new OrderedMultiValueDictionary<uint, string>(updatedBanks);
+
+            // Update references to the old hash at the end of HIRC objects when they are found.
+            // This is mostly safe, since we know the reference appears at the end of the unparsed data,
+            // and we only replace it there.
+            byte[] oldID = BitConverter.GetBytes(oldBankID);
+            byte[] newID = BitConverter.GetBytes(newBankID);
+            foreach (WwiseBank.HIRCObject hirc in wwiseBank.HIRCObjects.Values())
+            {
+                if (hirc.unparsed != null && hirc.unparsed.Length >= 4) // Only replace if not null and at least width of hash
+                {
+
+                    Span<byte> last4Bytes = hirc.unparsed.AsSpan(^4..);
+                    if (last4Bytes.SequenceEqual(oldID))
+                    {
+                        newID.CopyTo(last4Bytes);
+                    }
+                }
+            }
+
+            wwiseBankEntry.WritePropertiesAndBinary(bankProps, wwiseBank);
+        }
+
+        /// <summary>
+        /// Rename a bioConversation's FXAs, WwiseStreams, and VOElements names.
+        /// Not useful as a standalone experiment, since other semi-unrelated elements need to be renamed too.
+        /// </summary>
+        /// <param name="pcc">Pcc to operate on.</param>
+        /// <param name="bioConversation">Conversation the elements belong to.</param>
+        /// <param name="oldName">Old name to replace in the elements.</param>
+        /// <param name="newName">New name to replace in the elements.</param>
+        private static void RenameFXAsAndRelated(IMEPackage pcc, ExportEntry bioConversation, string oldName, string newName)
+        {
+            if (pcc == null || (pcc.Game is MEGame.ME1)) { return; }
+
+            List<ObjectProperty> fxas = new();
+            ArrayProperty<ObjectProperty> maleFXAs = bioConversation.GetProperty<ArrayProperty<ObjectProperty>>("m_aMaleFaceSets");
+            if (maleFXAs != null) { fxas.AddRange(maleFXAs); }
+            ArrayProperty<ObjectProperty> femaleFXAs = bioConversation.GetProperty<ArrayProperty<ObjectProperty>>("m_aFemaleFaceSets");
+            if (femaleFXAs != null) { fxas.AddRange(femaleFXAs); }
+            ObjectProperty nonSpkrFxa = bioConversation.GetProperty<ObjectProperty>("m_pNonSpeakerFaceFXSet");
+            if (nonSpkrFxa != null) { fxas.Add(nonSpkrFxa); }
+
+            foreach (ObjectProperty fxa in fxas)
+            {
+                if (fxa.Value == 0) { continue; }
+
+                ExportEntry fxaExport = pcc.GetUExport(fxa.Value);
+
+                string oldFxaFullName = fxaExport.ObjectName; // May contain _M, _F, or _NonSpkr
+                string oldFxaName = oldFxaFullName; // Full name minus _M/_F, or including _NonSpkr
+
+                if (oldFxaFullName[^2..].ToLower() is "_m" or "_f")
+                {
+                    oldFxaName = oldFxaFullName.Remove(oldFxaFullName.Length - 2);
+                }
+                else
+                {
+                    // Most likely a NonSpkr, in which case we'll use the full name
+                    if (oldFxaFullName.EndsWith("_nonspkr", StringComparison.OrdinalIgnoreCase))
+                    {
+                        oldFxaName = oldFxaFullName;
+                    }
+                }
+
+                string newFxaName = oldFxaName.Replace(oldName, newName);
+                fxaExport.ObjectName = oldFxaFullName.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
+
+                FaceFXAnimSet faceFXAnimSet = fxaExport.GetBinaryData<FaceFXAnimSet>();
+                // Replace the old name in the name chunk
+                List<string> names = faceFXAnimSet.Names.Select(name => name == oldFxaName ? newFxaName : name).ToList();
+                faceFXAnimSet.Names = names;
+
+                // Set the paths with the new names and update the names of WwiseStreams
+                ArrayProperty<ObjectProperty> eventRefs = fxaExport.GetProperty<ArrayProperty<ObjectProperty>>("ReferencedSoundCues");
+                if (eventRefs != null)
+                {
+                    foreach (FaceFXLine line in faceFXAnimSet.Lines)
+                    {
+                        ExportEntry soundEvent;
+                        if (pcc.Game is MEGame.ME2)
+                        {
+                            if (string.IsNullOrEmpty(line.Path)) { continue; }
+                            soundEvent = pcc.FindExport(line.Path.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase));
+                        }
+                        else
+                        {
+                            if (eventRefs[line.Index].Value == 0) { continue; }
+                            soundEvent = pcc.GetUExport(eventRefs[line.Index].Value);
+                        }
+
+                        // We can't really do anything else if the sound event is null
+                        if (soundEvent == null) { continue; }
+
+                        line.Path = soundEvent.FullPath;
+
+                        if (!pcc.Game.IsGame1())
+                        {
+                            if (pcc.Game is MEGame.LE2)
+                            {
+                                ArrayProperty<StructProperty> references = soundEvent.GetProperty<ArrayProperty<StructProperty>>("References");
+                                if ((references == null) || (references.Count == 0)) { continue; }
+                                StructProperty relationships = references[0].GetProp<StructProperty>("Relationships");
+                                if (relationships == null) { continue; }
+                                ArrayProperty<ObjectProperty> streams = relationships.GetProp<ArrayProperty<ObjectProperty>>("Streams");
+                                if ((streams == null) || (streams.Count == 0)) { continue; }
+
+                                foreach (ObjectProperty streamRef in streams)
+                                {
+                                    ExportEntry stream = pcc.GetUExport(streamRef.Value);
+                                    if (stream == null) { continue; }
+
+                                    stream.ObjectName = stream.ObjectName.Name.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
+                                    NameProperty bankName = stream.GetProperty<NameProperty>("BankName");
+                                    if (bankName == null) { continue; }
+                                    bankName.Value = bankName.Value.Name.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
+                                    stream.WriteProperty(bankName);
+                                }
+                            }
+                            else
+                            {
+                                // Update the WwiseStreams
+                                WwiseEvent wwiseEventBin = soundEvent.GetBinaryData<WwiseEvent>();
+                                foreach (WwiseEvent.WwiseEventLink link in wwiseEventBin.Links)
+                                {
+                                    foreach (int stream in link.WwiseStreams)
+                                    {
+                                        if (stream == 0) { continue; }
+
+                                        ExportEntry wwiseStream = pcc.GetUExport(stream);
+
+                                        wwiseStream.ObjectName = wwiseStream.ObjectName.Name.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
+
+                                        // This is similar to the step for LE2, but the general way of getting to it is more similar
+                                        // to the LE3/ME3 way
+                                        if (pcc.Game is MEGame.ME2)
+                                        {
+                                            NameProperty bankName = wwiseStream.GetProperty<NameProperty>("BankName");
+                                            if (bankName == null) { continue; }
+                                            bankName.Value = bankName.Value.Name.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
+                                            wwiseStream.WriteProperty(bankName);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                fxaExport.WriteBinary(faceFXAnimSet);
+            }
+        }
+
+        // HELPER FUNCTIONS
+        #region Helper functions
+        /// <summary>
+        /// Checks if a dest position is within a given distance of the origin.
+        /// </summary>
+        /// <param name="origin">Origin position.</param>
+        /// <param name="dest">Dest position to check.</param>
+        /// <param name="dist">Max distance from origin.</param>
+        /// <returns>True if the dest is within dist</returns>
+        private static bool InDist(float origin, float dest, float dist)
+        {
+            return Math.Abs((dest - origin)) <= dist;
+        }
+
+        /// <summary>
         /// Generate a default ExpressionGUID
         /// </summary>
         /// <returns>ExpressionGUID StructProperty</returns>
@@ -1102,5 +1977,98 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             return new StructProperty("Guid", props, "ExpressionGUID", true);
         }
+
+        private static void ShowError(string errMsg)
+        {
+            MessageBox.Show(errMsg, "Warning", MessageBoxButton.OK);
+        }
+
+        /// <summary>
+        /// Prompts the user for an int, verifying that the int is valid.
+        /// </summary>
+        /// <param name="msg">Message to display for the prompt.</param>
+        /// <param name="err">Error message to display.</param>
+        /// <param name="biggerThan">Number the input must be bigger than. If not provided -2,147,483,648 will be used.</param>
+        /// <param name="title">Title for the prompt.</param>
+        /// <returns>The input int.</returns>
+        private static int promptForInt(string msg, string err, int biggerThan = -2147483648, string title = "")
+        {
+            if (PromptDialog.Prompt(null, msg, title) is string stringPrompt)
+            {
+                int intPrompt;
+                if (string.IsNullOrEmpty(stringPrompt) || !int.TryParse(stringPrompt, out intPrompt) || !(intPrompt > biggerThan))
+                {
+                    MessageBox.Show(err, "Warning", MessageBoxButton.OK);
+                    return -1;
+                }
+                return intPrompt;
+            }
+            return -1;
+        }
+
+        /// <summary>
+        /// Gets the common prefix of two strings. Assumes both only difer at the end.
+        /// </summary>
+        /// <param name="s1">First string.</param>
+        /// <param name="s2">Second string.</param>
+        /// <returns>Union of input strings.</returns>
+        private static string GetCommonPrefix(string s1, string s2)
+        {
+            if (s1.Length == 0 || s2.Length == 0 || char.ToLower(s1[0]) != char.ToLower(s2[0]))
+            {
+                return "";
+            }
+
+            for (int i = 1; i < s1.Length && i < s2.Length; i++)
+            {
+                if (char.ToLower(s1[i]) != char.ToLower(s2[i]))
+                {
+                    return s1[..i];
+                }
+            }
+
+            return s1.Length < s2.Length ? s1 : s2;
+        }
+
+        /// <summary>
+        /// Generates a FNV132 hash of the given name.
+        /// IMPORTANT: This may not be compeletely bug-free or may be missing a couple of details, but so far it works.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns>The decimal representation of the hash.</returns>
+        private static uint GetBankId(string name)
+        {
+            byte[] bytedName = Encoding.ASCII.GetBytes(name.ToLower()); // Wwise automatically lowecases the input
+
+            // FNV132 hashing algorithm
+            uint hash = 2166136261;
+            foreach (byte namebyte in bytedName)
+            {
+                hash = ((hash * 16777619) ^ namebyte) & 0xFFFFFFFF;
+            }
+            return hash;
+        }
+
+        /// <summary>
+        /// Create a var link with custom properties.
+        /// </summary>
+        /// <param name="pcc">Pcc to operate on.</param>
+        /// <param name="name">LinkDesc.</param>
+        /// <returns>The varLink StructProperty.</returns>
+        private static StructProperty CreateVarLink(IMEPackage pcc, string name)
+        {
+            PropertyCollection props = GlobalUnrealObjectInfo.getDefaultStructValue(pcc.Game, "SeqVarLink", true);
+
+            int minVars = name == "Anchor" ? 1 : 0;
+            int maxVars = name == "Anchor" ? 1 : 255;
+
+            props.AddOrReplaceProp(new StrProperty(name, "LinkDesc"));
+            int index = pcc.FindImport("Engine.SeqVar_Object").UIndex;
+            props.AddOrReplaceProp(new ObjectProperty(index, "ExpectedType"));
+            props.AddOrReplaceProp(new IntProperty(minVars, "MinVars"));
+            props.AddOrReplaceProp(new IntProperty(maxVars, "MaxVars"));
+            return new StructProperty("SeqVarLink", props);
+        }
+        #endregion
     }
 }

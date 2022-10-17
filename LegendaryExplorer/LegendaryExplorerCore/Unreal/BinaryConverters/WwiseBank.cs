@@ -430,7 +430,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             public HIRCType Type;
             public uint ID;
             public virtual int DataLength(MEGame game) => unparsed.Length + 4;
-            protected byte[] unparsed;
+            public byte[] unparsed;
 
             public static HIRCObject Create(SerializingContainer2 sc)
             {

@@ -211,7 +211,7 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
                 Application.Current.Dispatcher.InvokeAsync(() => { pew.BusyText = $"Building UDK Object Info [{done}/{total}]"; });
             }
 
-            Task.Run(() => 
+            Task.Run(() =>
             {
                 UDKUnrealObjectInfo.generateInfo(Path.Combine(AppDirectories.ExecFolder, "UDKObjectInfo.json"), true, setProgress);
             }).ContinueWithOnUIThread(x =>
@@ -1402,6 +1402,41 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         private void SMRefRemover_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsO.SMRefRemover(GetPEWindow());
+        }
+
+        private void CleanConvoDonor_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.CleanConvoDonor(GetPEWindow());
+        }
+
+        private void CleanSequence_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.CleanSequenceExperiment(GetPEWindow());
+        }
+
+        private void CleanSequenceInterpDatas_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.CleanSequenceInterpDatasExperiment(GetPEWindow());
+        }
+
+        private void ChangeConvoIDandConvNodeIDs_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.ChangeConvoIDandConvNodeIDsExperiment(GetPEWindow());
+        }
+
+        private void RenameConversation_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.RenameConversationExperiment(GetPEWindow());
+        }
+
+        private void RenameWwiseBank_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.RenameWwiseBankExperiment(GetPEWindow());
+        }
+
+        private void UpdateWwiseBankID_Click (object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.UpdateWwiseBankIDExperiment(GetPEWindow());
         }
         #endregion
 
