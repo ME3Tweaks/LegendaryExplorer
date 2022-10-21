@@ -45,8 +45,7 @@ namespace LegendaryExplorerCore.Audio
                 Id = uint.Parse(x.Attribute("Id")?.Value),
                 Language = x.Attribute("Language")?.Value,
                 Shortname = x.Element("ShortName").Value,
-                WemPath = x.Element("Path").Value,
-                DataOffset = 0, // Will be set later.
+                WemPath = x.Element("Path").Value
             }).ToList();
 
 
@@ -61,9 +60,6 @@ namespace LegendaryExplorerCore.Audio
             var referencedStreamingAudioIds = soundBankChunk.Element("ReferencedStreamedFiles")?.Descendants("File")
                 .Select(x => uint.Parse(x.Attribute("Id").Value));
             var referencedStreamingAudio = referencedStreamingAudioIds != null ? allStreamedFiles.Where(x => referencedStreamingAudioIds.Contains(x.Id)) : null;
-
-            
-
 
             // Import the bank export 
             var parentPackage = package.FindEntry(bankName);
