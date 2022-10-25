@@ -516,10 +516,6 @@
 		</ItemGroup>
 	</Target>
 
-	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-		<Exec Command="powershell -ExecutionPolicy Bypass -File &quot;BuildTools\UpdateTextTransforms.ps1&quot;" />
-	</Target>
-
 	<ItemGroup>
 		<!--These are for encoding ogg - used by ISACTHelper.dll -->
 		<ContentWithTargetPath Include="Libraries\ogg.dll" Condition="$(Configuration.StartsWith('Win'))">

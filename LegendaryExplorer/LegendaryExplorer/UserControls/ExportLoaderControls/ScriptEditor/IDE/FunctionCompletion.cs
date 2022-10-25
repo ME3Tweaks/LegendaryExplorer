@@ -27,11 +27,19 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
             function = func;
         }
 
-        public static IEnumerable<FunctionCompletion> GenerateCompletions(IEnumerable<Function> functions, Class currentClass, bool statics = false)
+        public static IEnumerable<FunctionCompletion> GenerateCompletions(IEnumerable<Function> functions, Class currentClass, bool statics = false, bool latents = false, bool iterators = false)
         {
             foreach (Function func in functions)
             {
                 if (statics != func.IsStatic)
+                {
+                    continue;
+                }
+                if (!latents && func.Flags.Has(UnrealFlags.EFunctionFlags.Latent))
+                {
+                    continue;
+                }
+                if (!iterators && func.Flags.Has(UnrealFlags.EFunctionFlags.Iterator))
                 {
                     continue;
                 }

@@ -613,6 +613,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                                 }
                                 if (objType is Class classType && functionsAccesible)
                                 {
+                                    //todo: determine when iterators are valid. (will require an AST lookup)
                                     completionData.AddRange(FunctionCompletion.GenerateCompletions(classType.Functions, currentClass));
                                 }
                                 objType = objType.Parent as ObjectType;
