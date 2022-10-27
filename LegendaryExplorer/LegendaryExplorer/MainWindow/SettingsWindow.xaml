@@ -167,14 +167,14 @@
                             <TextBox Width="450" x:Name="Wwise_3773Path" Margin="5,0,0,0" TextChanged="Setting_OnTextChanged"
                                        Text="{Binding Path=(settings:Settings.Wwise_3773Path)}"/>
                             <Button Click="FileBrowse_Click" 
-                            Margin="5,0" Tag="exe">Browse</Button>
+                            Margin="5,0" Tag="*.exe">Browse</Button>
                                                 </StackPanel>
                         <TextBlock Margin="5,5,0,0">WwiseCLI.exe v7110 Path:</TextBlock>
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,5" Tag="Wwise_7110Path">
                             <TextBox Width="450" x:Name="Wwise_7110Path" Margin="5,0,0,0" TextChanged="Setting_OnTextChanged"
                                        Text="{Binding Path=(settings:Settings.Wwise_7110Path)}"/>
                             <Button Click="FileBrowse_Click" 
-                            Margin="5,0" Tag="exe">Browse</Button>
+                            Margin="5,0" Tag="*.exe">Browse</Button>
                                                 </StackPanel>
                                       </StackPanel>
             </TabItem>
