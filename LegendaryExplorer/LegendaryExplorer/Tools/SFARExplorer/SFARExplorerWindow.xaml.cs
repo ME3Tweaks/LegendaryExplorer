@@ -167,6 +167,7 @@ namespace LegendaryExplorer.Tools.SFARExplorer
         {
             var ofd = new OpenFileDialog()
             {
+                Title = "Select DLC SFAR",
                 Filter = "SFAR files|*.sfar"
             };
 

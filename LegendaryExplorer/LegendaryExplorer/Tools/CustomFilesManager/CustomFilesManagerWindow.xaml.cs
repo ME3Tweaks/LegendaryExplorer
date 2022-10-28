@@ -19,6 +19,7 @@ using System.IO;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using System.Security.Cryptography;
 using System.Windows.Controls;
+using LegendaryExplorer.Misc;
 using LegendaryExplorer.Tools.PackageEditor;
 
 namespace LegendaryExplorer.Tools.CustomFilesManager
@@ -120,9 +121,8 @@ namespace LegendaryExplorer.Tools.CustomFilesManager
         #region STARTUP FILES
         private void AddStartupFile()
         {
-            OpenFileDialog ofd = new OpenFileDialog();
-            var result = ofd.ShowDialog();
-            if (result.HasValue && result.Value)
+            var ofd = AppDirectories.GetOpenPackageDialog();
+            if (ofd.ShowDialog() == true)
             {
                 if (!CustomStartupFiles.Any(x => x.FilePath.CaseInsensitiveEquals(ofd.FileName)))
                 {

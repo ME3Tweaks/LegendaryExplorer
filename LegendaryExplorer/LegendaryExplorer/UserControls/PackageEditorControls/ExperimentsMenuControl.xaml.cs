@@ -686,11 +686,6 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             });
         }
 
-        private void CompactInFile_Click(object sender, RoutedEventArgs e)
-        {
-            PackageEditorExperimentsM.CompactFileViaExternalFile(GetPEWindow().Pcc);
-        }
-
         private void ResetPackageTextures_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.ResetTexturesInFile(GetPEWindow().Pcc, GetPEWindow());

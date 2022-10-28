@@ -777,7 +777,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
 
         private void OpenPackage()
         {
-            var d = new OpenFileDialog { Filter = GameFileFilters.OpenFileFilter };
+            var d = AppDirectories.GetOpenPackageDialog();
             if (d.ShowDialog() == true)
             {
 #if !DEBUG
@@ -3545,7 +3545,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
         #region Experiments
         private void LoadOverlay()
         {
-            var d = new OpenFileDialog { Filter = GameFileFilters.OpenFileFilter };
+            var d = AppDirectories.GetOpenPackageDialog();
             if (d.ShowDialog() == true)
             {
 #if !DEBUG
@@ -3583,7 +3583,8 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
         {
             var d = new OpenFileDialog
             {
-                Filter = "Point Logger ASI file output (txt)|*txt"
+                Filter = "Point Logger ASI file output (txt)|*txt",
+                CustomPlaces = AppDirectories.GameCustomPlaces
             };
             if (d.ShowDialog() == true)
             {
@@ -4442,8 +4443,8 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
 
             foreach (ExportEntry actor in collectionActors)
             {
-                if (ObjectBinary.From(actor) is StaticCollectionActor sca 
-                    && actor.GetProperty<ArrayProperty<ObjectProperty>>(sca.ComponentPropName) is { } components 
+                if (ObjectBinary.From(actor) is StaticCollectionActor sca
+                    && actor.GetProperty<ArrayProperty<ObjectProperty>>(sca.ComponentPropName) is { } components
                     && sca.LocalToWorldTransforms.Count >= components.Count)
                 {
                     for (int index = 0; index < components.Count; index++)
@@ -4529,8 +4530,8 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
 
             foreach (ExportEntry actor in collectionActors)
             {
-                if (ObjectBinary.From(actor) is StaticCollectionActor sca 
-                    && actor.GetProperty<ArrayProperty<ObjectProperty>>(sca.ComponentPropName) is { } components 
+                if (ObjectBinary.From(actor) is StaticCollectionActor sca
+                    && actor.GetProperty<ArrayProperty<ObjectProperty>>(sca.ComponentPropName) is { } components
                     && sca.LocalToWorldTransforms.Count >= components.Count)
                 {
 

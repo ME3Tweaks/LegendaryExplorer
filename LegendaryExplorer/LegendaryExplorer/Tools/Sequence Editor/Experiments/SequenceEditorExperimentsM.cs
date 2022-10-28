@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LegendaryExplorer.Misc;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Kismet;
 using LegendaryExplorerCore.Packages;
@@ -90,10 +91,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor.Experiments
 
         public static void LoadCustomClasses(SequenceEditorWPF seqEd)
         {
-            OpenFileDialog ofd = new OpenFileDialog()
-            {
-                Filter = GameFileFilters.OpenFileFilter
-            };
+            OpenFileDialog ofd = AppDirectories.GetOpenPackageDialog();
             bool reload = false;
             var result = ofd.ShowDialog();
             if (result.HasValue && result.Value)

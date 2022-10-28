@@ -456,7 +456,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
 
         private void OpenPackage()
         {
-            var d = new OpenFileDialog { Filter = GameFileFilters.OpenFileFilter };
+            var d = AppDirectories.GetOpenPackageDialog();
             if (d.ShowDialog() == true)
             {
                 try

@@ -486,39 +486,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             MessageBox.Show("Done");
         }
 
-        public static void CompactFileViaExternalFile(IMEPackage sourcePackage)
-        {
-            OpenFileDialog d = new OpenFileDialog { Filter = "*.pcc|*.pcc" };
-            if (d.ShowDialog() == true)
-            {
-
-                using var compactedAlready = MEPackageHandler.OpenMEPackage(d.FileName);
-                var fname = Path.GetFileNameWithoutExtension(sourcePackage.FilePath);
-                var exportsToKeep = sourcePackage.Exports
-                    .Where(x => x.FullPath == fname || x.FullPath == @"SeekFreeShaderCache" ||
-                                x.FullPath.StartsWith("ME3ExplorerTrashPackage")).ToList();
-
-                var entriesToTrash = new ConcurrentBag<ExportEntry>();
-                Parallel.ForEach(sourcePackage.Exports, export =>
-                {
-                    var matchingExport = exportsToKeep.FirstOrDefault(x => x.FullPath == export.FullPath);
-                    if (matchingExport == null)
-                    {
-                        matchingExport = compactedAlready.Exports.FirstOrDefault(x => x.FullPath == export.FullPath);
-                    }
-
-                    if (matchingExport == null)
-                    {
-                        //Debug.WriteLine($"Trash {export.FullPath}");
-                        entriesToTrash.Add(export);
-                    }
-                });
-
-                EntryPruner.TrashEntries(sourcePackage, entriesToTrash);
-            }
-        }
-
-
 
         /// <summary>
         /// Builds a comparison of TESTPATCH functions against their original design. View the difference with WinMerge Folder View.
@@ -1656,12 +1623,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         public static void GenerateNewGUIDForFile(PackageEditorWindow pew)
         {
             MessageBox.Show(
-                "GetPEWindow() process applies immediately and cannot be undone.\nEnsure the file you are going to regenerate is not open in Legendary Explorer in any tools.\nBe absolutely sure you know what you're doing before you use GetPEWindow()!");
-            OpenFileDialog d = new OpenFileDialog
-            {
-                Title = "Select file to regen guid for",
-                Filter = "*.pcc|*.pcc"
-            };
+                "Generate New GUID for file process applies immediately and cannot be undone.\nEnsure the file you are going to regenerate is not open in Legendary Explorer in any tools.\nBe absolutely sure you know what you're doing before you use GetPEWindow()!");
+            OpenFileDialog d = AppDirectories.GetOpenPackageDialog();
             if (d.ShowDialog() == true)
             {
                 using (IMEPackage sourceFile = MEPackageHandler.OpenMEPackage(d.FileName))
@@ -2884,7 +2847,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 var udkDestFile = d.FileName;
                 using var udkP = MEPackageHandler.OpenUDKPackage(udkDestFile);
 
-                OpenFileDialog f = new OpenFileDialog { Title = "Select source file to export from", Filter = GameFileFilters.OpenFileFilter };
+                OpenFileDialog f = new OpenFileDialog { Title = "Select source file to export from", Filter = GameFileFilters.OpenFileFilter, CustomPlaces = AppDirectories.GameCustomPlaces};
                 if (f.ShowDialog() != true)
                     return;
 

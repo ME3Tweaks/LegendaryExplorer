@@ -72,7 +72,6 @@
         <MenuItem Header="Reset textures in package" Click="ResetPackageTextures_Click"/>
         <MenuItem Header="Reset vanilla parts of package" Click="ResetVanillaPackagePart_Click"/>
         <MenuItem Header="Extract package textures to PNG" Click="ExtractPackageTextures_Click"/>
-        <MenuItem Header="Compact current file via external file" Click="CompactInFile_Click"/>
         <MenuItem Header="Search ObjectInfo keys for value" Click="ObjectInfosSearch_Click"/>
         <MenuItem Header="Create Testpatch functions delta to vanilla" Click="CreateTestPatchDelta_Click"/>
         <MenuItem Header="Build ME1 TLK Database" Click="BuildME1TLKDB_Clicked"/>

@@ -28,6 +28,7 @@ using DragEventArgs = System.Windows.DragEventArgs;
 using MessageBox = System.Windows.MessageBox;
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
+using LegendaryExplorer.Misc;
 
 namespace LegendaryExplorer.Tools.Meshplorer
 {
@@ -252,7 +253,7 @@ namespace LegendaryExplorer.Tools.Meshplorer
 
         private void ReplaceFromUDK(bool lodOnly)
         {
-            var d = new OpenFileDialog { Filter = GameFileFilters.UDKFileFilter };
+            var d = new OpenFileDialog { Filter = GameFileFilters.UDKFileFilter, Title = "Select UDK package file" };
             if (d.ShowDialog() == true)
             {
                 try
@@ -415,7 +416,7 @@ namespace LegendaryExplorer.Tools.Meshplorer
 
         private void ImportFromUDK()
         {
-            var d = new OpenFileDialog { Filter = GameFileFilters.UDKFileFilter };
+            var d = new OpenFileDialog { Filter = GameFileFilters.UDKFileFilter, Title = "Select UDK package file" };
             if (d.ShowDialog() == true)
             {
                 try
@@ -504,7 +505,7 @@ namespace LegendaryExplorer.Tools.Meshplorer
 
         private void OpenFile()
         {
-            var d = new OpenFileDialog { Filter = GameFileFilters.OpenFileFilter };
+            var d = AppDirectories.GetOpenPackageDialog();
             if (d.ShowDialog() == true)
             {
 #if !DEBUG

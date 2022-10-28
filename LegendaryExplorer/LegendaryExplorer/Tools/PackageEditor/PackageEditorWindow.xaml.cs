@@ -1004,7 +1004,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
         private void OpenFile()
         {
-            var d = new OpenFileDialog { Filter = GameFileFilters.OpenFileFilter };
+            var d = AppDirectories.GetOpenPackageDialog();
             if (d.ShowDialog() == true)
             {
 #if !DEBUG
@@ -2596,7 +2596,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
             if (Pcc != null)
             {
                 string extension = Path.GetExtension(Pcc.FilePath);
-                OpenFileDialog d = new OpenFileDialog { Filter = "*" + extension + "|*" + extension };
+                OpenFileDialog d = new OpenFileDialog { Filter = "*" + extension + "|*" + extension, Title = "Select package file to compare against", CustomPlaces = AppDirectories.GameCustomPlaces };
                 if (d.ShowDialog() == true)
                 {
                     if (Pcc.FilePath == d.FileName)
