@@ -2651,8 +2651,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     });
         }
 
-        private bool CanCompareToUnmodded() => PackageIsLoaded() && Pcc.Game != MEGame.UDK &&
-                                               !(Pcc.IsInBasegame() || Pcc.IsInOfficialDLC());
+        private bool CanCompareToUnmodded() => PackageIsLoaded() && Pcc.Game != MEGame.UDK && (!(Pcc.IsInBasegame() || Pcc.IsInOfficialDLC()) || ME3TweaksBackups.GetGameBackupPath(Pcc.Game) != null);
 
         private void CompareUnmodded()
         {
