@@ -308,8 +308,9 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 MessageBox.Show(this, $"Could not import {info.ClassName}'s class definition! It may be defined in a DLC you don't have.");
                 return;
             }
-
-            var newSeqObj = new ExportEntry(Pcc, SelectedSequence, Pcc.GetNextIndexedName(info.ClassName), properties: SequenceObjectCreator.GetSequenceObjectDefaults(Pcc, info))
+            var packageCache = new PackageCache { AlwaysOpenFromDisk = false };
+            packageCache.InsertIntoCache(Pcc);
+            var newSeqObj = new ExportEntry(Pcc, SelectedSequence, Pcc.GetNextIndexedName(info.ClassName), properties: SequenceObjectCreator.GetSequenceObjectDefaults(Pcc, info, packageCache))
             {
                 Class = classEntry,
             };
@@ -1274,6 +1275,11 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                     LoadSequences();
                     break;
                 }
+            }
+
+            if (updatedExports.Any(uIdx => Pcc.GetEntry(uIdx) is ExportEntry { IsClass: true }))
+            {
+                RefreshToolboxItems();
             }
         }
 

@@ -251,10 +251,10 @@ namespace LegendaryExplorerCore.Kismet
                                 importPCC = MEPackageHandler.OpenMEPackageFromStream(loadStream);
                             }
                             ExportEntry classExport = importPCC.GetUExport(classInfo.exportIndex);
-                            UClass classBin = ObjectBinary.From<UClass>(classExport);
+                            var classBin = ObjectBinary.From<UClass>(classExport);
                             ExportEntry classDefaults = importPCC.GetUExport(classBin.Defaults);
 
-                            RelinkerOptionsPackage rop = new RelinkerOptionsPackage() { Cache = pc ?? new PackageCache() };
+                            var rop = new RelinkerOptionsPackage { Cache = pc ?? new PackageCache() };
 
                             foreach (var prop in classDefaults.GetProperties())
                             {
