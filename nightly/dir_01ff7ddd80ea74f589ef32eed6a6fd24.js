@@ -17,6 +17,9 @@ var dir_01ff7ddd80ea74f589ef32eed6a6fd24 =
     [ "OggWaveStream.cs", "_ogg_wave_stream_8cs.html", [
       [ "LegendaryExplorerCore.Audio.OggWaveStream", "class_legendary_explorer_core_1_1_audio_1_1_ogg_wave_stream.html", "class_legendary_explorer_core_1_1_audio_1_1_ogg_wave_stream" ]
     ] ],
+    [ "WwiseBankImport.cs", "_wwise_bank_import_8cs.html", [
+      [ "LegendaryExplorerCore.Audio.WwiseBankImport", "class_legendary_explorer_core_1_1_audio_1_1_wwise_bank_import.html", "class_legendary_explorer_core_1_1_audio_1_1_wwise_bank_import" ]
+    ] ],
     [ "WwiseStreamExt.cs", "_wwise_stream_ext_8cs.html", [
       [ "LegendaryExplorerCore.Unreal.BinaryConverters.WwiseStream", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_stream.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_stream" ]
     ] ],

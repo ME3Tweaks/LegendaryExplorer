@@ -1028,6 +1028,7 @@ var hierarchy =
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.WaveformSample", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_waveform_sample.html", null ],
     [ "LegendaryExplorerCore.Gammtek.Windows.WindowsApi", "class_legendary_explorer_core_1_1_gammtek_1_1_windows_1_1_windows_api.html", null ],
     [ "LegendaryExplorerCore.Shaders.WriteMask", "struct_legendary_explorer_core_1_1_shaders_1_1_write_mask.html", null ],
+    [ "LegendaryExplorerCore.Audio.WwiseBankImport", "class_legendary_explorer_core_1_1_audio_1_1_wwise_bank_import.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.WwiseEvent.WwiseEventLink", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_event_1_1_wwise_event_link.html", null ],
     [ "LegendaryExplorerCore.Sound.Wwise.WwiseHelper", "class_legendary_explorer_core_1_1_sound_1_1_wwise_1_1_wwise_helper.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.WwiseStateManagement", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_state_management.html", null ],

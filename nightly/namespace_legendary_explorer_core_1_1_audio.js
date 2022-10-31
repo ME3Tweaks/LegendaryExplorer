@@ -5,5 +5,6 @@ var namespace_legendary_explorer_core_1_1_audio =
     [ "ISBank_DEPRECATED", "class_legendary_explorer_core_1_1_audio_1_1_i_s_bank___d_e_p_r_e_c_a_t_e_d.html", "class_legendary_explorer_core_1_1_audio_1_1_i_s_bank___d_e_p_r_e_c_a_t_e_d" ],
     [ "ISBankEntry_DEPRECATED", "class_legendary_explorer_core_1_1_audio_1_1_i_s_bank_entry___d_e_p_r_e_c_a_t_e_d.html", "class_legendary_explorer_core_1_1_audio_1_1_i_s_bank_entry___d_e_p_r_e_c_a_t_e_d" ],
     [ "OggWaveStream", "class_legendary_explorer_core_1_1_audio_1_1_ogg_wave_stream.html", "class_legendary_explorer_core_1_1_audio_1_1_ogg_wave_stream" ],
+    [ "WwiseBankImport", "class_legendary_explorer_core_1_1_audio_1_1_wwise_bank_import.html", "class_legendary_explorer_core_1_1_audio_1_1_wwise_bank_import" ],
     [ "WwiseVersions", "class_legendary_explorer_core_1_1_audio_1_1_wwise_versions.html", "class_legendary_explorer_core_1_1_audio_1_1_wwise_versions" ]
 ];
