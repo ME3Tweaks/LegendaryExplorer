@@ -2484,6 +2484,17 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             File.WriteAllLines(@"C:\users\mgamerz\desktop\le2powers.txt", allPowers);
         }
 
+        public static void ImportBankTest(PackageEditorWindow pe)
+        {
+            if (pe.Pcc == null)
+                return;
+            OpenFileDialog ofd = new OpenFileDialog() { Filter = "WwiseBank files|*.bnk", Title = "Select generated soundbank" };
+            if (ofd.ShowDialog() == true)
+            {
+                WwiseBankImport.ImportBank(ofd.FileName, pe.Pcc);
+            }
+        }
+
         public static void MScanner(PackageEditorWindow pe)
         {
             if (pe.Pcc != null)
