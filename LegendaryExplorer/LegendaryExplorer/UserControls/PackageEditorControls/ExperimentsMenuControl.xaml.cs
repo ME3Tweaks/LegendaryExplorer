@@ -407,6 +407,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             new CustomFilesManagerWindow().Show();
         }
 
+        private void ImportWwiseBankTest_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.ImportBankTest(GetPEWindow());
+        }
+
         private void MakeVTestDonor_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.ConvertMaterialToVtestDonor(GetPEWindow());
