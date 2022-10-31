@@ -21,6 +21,7 @@
  */
 
 using System;
+using System.Buffers;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -35,18 +36,22 @@ namespace LegendaryExplorerCore.Helpers
 
         public static MemoryStream ReadToMemoryStream(this Stream stream, long size)
         {
-            var memory = MemoryManager.GetMemoryStream((int)size);
+            MemoryStream memory = MemoryManager.GetMemoryStream((int)size);
 
-            var left = size;
-            var data = new byte[4096];
+            long left = size;
+            byte[] data = ArrayPool<byte>.Shared.Rent((int)Math.Min(size, 4096));
             while (left > 0)
             {
-                var block = (int)(Math.Min(left, 4096));
-                stream.Read(data, 0, block);
+                int block = (int)Math.Min(left, 4096);
+                block = stream.Read(data, 0, block);
+                if (block is 0)
+                {
+                    ThrowEndOfStreamException();
+                }
                 memory.Write(data, 0, block);
                 left -= block;
             }
-
+            ArrayPool<byte>.Shared.Return(data);
             memory.Seek(0, SeekOrigin.Begin);
             return memory;
         }

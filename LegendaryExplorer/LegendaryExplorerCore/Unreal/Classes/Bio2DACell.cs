@@ -6,7 +6,7 @@ using PropertyChanged;
 namespace LegendaryExplorerCore.Unreal.Classes
 {
     [AddINotifyPropertyChangedInterface]
-    public class Bio2DACell
+    public partial class Bio2DACell
     {
         /// <summary>
         /// Package that is used for name lookups so the correct name index can be determined.

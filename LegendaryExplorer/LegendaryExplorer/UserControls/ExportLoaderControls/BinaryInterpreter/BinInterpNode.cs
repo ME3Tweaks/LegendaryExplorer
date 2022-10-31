@@ -71,12 +71,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         /// <summary>
         /// Recursively removes null nodes, which may happen due to conditional adds
         /// </summary>
-        public void Finalize()
+        public void RemoveNullNodes()
         {
             Items.RemoveAll(x => x == null);
             foreach (var item in Items.OfType<BinInterpNode>())
             {
-                item.Finalize();
+                item.RemoveNullNodes();
             }
         }
 

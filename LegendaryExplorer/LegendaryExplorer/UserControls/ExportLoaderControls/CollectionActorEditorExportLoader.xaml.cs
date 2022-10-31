@@ -14,8 +14,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
     /// </summary>
     public partial class CollectionActorEditorExportLoader : ExportLoaderControl
     {
-        private ExportEntry StaticCollectionActorExport;
-
         #region Properties
 
         private float _posX;
@@ -99,11 +97,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public override void LoadExport(ExportEntry exportEntry)
         {
             CurrentLoadedExport = exportEntry;
-            StaticCollectionActorExport =  exportEntry.Parent as ExportEntry;
-            if (IsValidSCA(out StaticCollectionActor sca, out int index))
+            if (StaticCollectionActor.TryGetStaticCollectionActorAndIndex(CurrentLoadedExport, out StaticCollectionActor sca, out int index))
             {
-                ((PosX, PosY, PosZ), (ScaleX, ScaleY, ScaleZ), (UUPitch, UUYaw, UURoll)) = sca.LocalToWorldTransforms[index].UnrealDecompose();
-                titleLabel.Content = $"Edit this {CurrentLoadedExport.ClassName}'s transformation matrix\n(contained in #{StaticCollectionActorExport.UIndex} {StaticCollectionActorExport.ObjectName.Instanced})";
+                ((PosX, PosY, PosZ), (ScaleX, ScaleY, ScaleZ), (UUPitch, UUYaw, UURoll)) = sca.GetDecomposedTransformationForIndex(index);
+                titleLabel.Content = $"Edit this {CurrentLoadedExport.ClassName}'s transformation matrix\n(contained in #{sca.Export.UIndex} {sca.Export.ObjectName.Instanced})";
                 editControlsPanel.Visibility = Visibility.Visible;
                 errorLabel.Visibility = Visibility.Collapsed;
             }
@@ -115,26 +112,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
         }
 
-        private bool IsValidSCA(out StaticCollectionActor staticCollectionActor, out int i)
-        {
-            if (StaticCollectionActorExport != null && ObjectBinary.From(StaticCollectionActorExport) is StaticCollectionActor sca)
-            {
-                staticCollectionActor = sca;
-                if (StaticCollectionActorExport.GetProperty<ArrayProperty<ObjectProperty>>(staticCollectionActor.ComponentPropName) is { } components)
-                {
-                    i = components.FindIndex(prop => prop.Value == CurrentLoadedExport.UIndex);
-                    return i >= 0 && staticCollectionActor.LocalToWorldTransforms.Count > i;
-                }
-            }
-            i = 0;
-            staticCollectionActor = null;
-            return false;
-
-        }
-
         public override void UnloadExport()
         {
-            StaticCollectionActorExport = null;
             CurrentLoadedExport = null;
         }
 
@@ -157,13 +136,13 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void SaveChanges_Click(object sender, RoutedEventArgs e)
         {
-            if (IsValidSCA(out StaticCollectionActor sca, out int index))
+            if (StaticCollectionActor.TryGetStaticCollectionActorAndIndex(CurrentLoadedExport, out StaticCollectionActor sca, out int index))
             {
-                Matrix4x4 m = ActorUtils.ComposeLocalToWorld(new Vector3(PosX, PosY, PosZ), 
-                                                          new Rotator(UUPitch, UUYaw, UURoll), 
-                                                          new Vector3(ScaleX, ScaleY, ScaleZ));
-                sca.LocalToWorldTransforms[index] = m;
-                StaticCollectionActorExport.WriteBinary(sca);
+                var location = new Vector3(PosX, PosY, PosZ);
+                var rotation = new Rotator(UUPitch, UUYaw, UURoll);
+                var scale = new Vector3(ScaleX, ScaleY, ScaleZ);
+                sca.UpdateTransformationForIndex(index, location, scale, rotation);
+                sca.Export.WriteBinary(sca);
             }
             else
             {

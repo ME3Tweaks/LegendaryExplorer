@@ -68,13 +68,11 @@ namespace LegendaryExplorer.Tools.TextureStudio
         /// </summary>
         public override ObservableCollectionExtendedWPF<TextureMapMemoryEntry> Children { get; } = new();
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
         private bool SetProperty<T>(ref T field, T value, [CallerMemberName] string propertyName = "")
         {
             if (EqualityComparer<T>.Default.Equals(field, value)) return false;
             field = value;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            OnPropertyChanged(propertyName);
             return true;
         }
     }

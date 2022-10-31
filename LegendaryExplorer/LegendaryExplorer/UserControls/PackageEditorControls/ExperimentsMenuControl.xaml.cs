@@ -211,7 +211,7 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
                 Application.Current.Dispatcher.InvokeAsync(() => { pew.BusyText = $"Building UDK Object Info [{done}/{total}]"; });
             }
 
-            Task.Run(() => 
+            Task.Run(() =>
             {
                 UDKUnrealObjectInfo.generateInfo(Path.Combine(AppDirectories.ExecFolder, "UDKObjectInfo.json"), true, setProgress);
             }).ContinueWithOnUIThread(x =>
@@ -407,7 +407,7 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             new CustomFilesManagerWindow().Show();
         }
 
-        private async void MakeVTestDonor_Click(object sender, RoutedEventArgs e)
+        private void MakeVTestDonor_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.ConvertMaterialToVtestDonor(GetPEWindow());
         }
@@ -421,7 +421,7 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             PackageEditorExperimentsM.OrganizeParticleSystems(GetPEWindow());
         }
 
-        private async void ConvertSLCALightToNonSLCA(object sender, RoutedEventArgs e)
+        private void ConvertSLCALightToNonSLCA(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.ConvertSLCALightToNonSLCA(GetPEWindow());
         }
@@ -461,37 +461,37 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             PackageEditorExperimentsM.TestCrossGenClassPorting(GetPEWindow());
         }
 
-        private async void CheckNeverStream_Click(object sender, RoutedEventArgs e)
+        private void CheckNeverStream_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.CheckNeverstream(GetPEWindow());
         }
 
-        private async void GenerateMaterialInstanceConstant_Click(object sender, RoutedEventArgs e)
+        private void GenerateMaterialInstanceConstant_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.GenerateMaterialInstanceConstantFromMaterial(GetPEWindow());
         }
 
-        private async void PrintTextureFormats_Click(object sender, RoutedEventArgs e)
+        private void PrintTextureFormats_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.ShowTextureFormats(GetPEWindow());
         }
 
-        private async void MapMaterialIDs_Click(object sender, RoutedEventArgs e)
+        private void MapMaterialIDs_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.MapMaterialIDs(GetPEWindow());
         }
 
-        private async void WwiseBankToProject_Click(object sender, RoutedEventArgs e)
+        private void WwiseBankToProject_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.ConvertWwiseBankToProject(GetPEWindow());
         }
 
-        private async void CoalesceBioActorTypesLE1_Click(object sender, RoutedEventArgs e)
+        private void CoalesceBioActorTypesLE1_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.CoalesceBioActorTypes(GetPEWindow());
         }
 
-        private async void ForceVignetteOff_Click(object sender, RoutedEventArgs e)
+        private void ForceVignetteOff_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.CoalesceBioActorTypes(GetPEWindow());
         }
@@ -684,11 +684,6 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
                 pew.IsBusy = false;
                 MessageBox.Show("Wwiseevents updated.");
             });
-        }
-
-        private void CompactInFile_Click(object sender, RoutedEventArgs e)
-        {
-            PackageEditorExperimentsM.CompactFileViaExternalFile(GetPEWindow().Pcc);
         }
 
         private void ResetPackageTextures_Click(object sender, RoutedEventArgs e)
@@ -1384,6 +1379,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             PackageEditorExperimentsO.Baldinator(GetPEWindow());
         }
 
+        private void Rollinator_Click(object sender, RoutedEventArgs a)
+        {
+            PackageEditorExperimentsO.Rollinator(GetPEWindow());
+        }
+
         private void CopyProperty_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsO.CopyProperty(GetPEWindow());
@@ -1397,6 +1397,41 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         private void SMRefRemover_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsO.SMRefRemover(GetPEWindow());
+        }
+
+        private void CleanConvoDonor_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.CleanConvoDonor(GetPEWindow());
+        }
+
+        private void CleanSequence_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.CleanSequenceExperiment(GetPEWindow());
+        }
+
+        private void CleanSequenceInterpDatas_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.CleanSequenceInterpDatasExperiment(GetPEWindow());
+        }
+
+        private void ChangeConvoIDandConvNodeIDs_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.ChangeConvoIDandConvNodeIDsExperiment(GetPEWindow());
+        }
+
+        private void RenameConversation_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.RenameConversationExperiment(GetPEWindow());
+        }
+
+        private void RenameWwiseBank_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.RenameWwiseBankExperiment(GetPEWindow());
+        }
+
+        private void UpdateWwiseBankID_Click (object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.UpdateWwiseBankIDExperiment(GetPEWindow());
         }
         #endregion
 

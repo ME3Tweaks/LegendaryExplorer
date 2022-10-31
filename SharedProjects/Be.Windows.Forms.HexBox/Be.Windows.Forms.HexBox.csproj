@@ -69,21 +69,6 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <Reference Update="System">
-      <Name>System</Name>
-    </Reference>
-    <Reference Update="System.Data">
-      <Name>System.Data</Name>
-    </Reference>
-    <Reference Include="System.Drawing">
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
-    <Reference Include="System.Drawing.Design" />
-    <Reference Update="System.Xml">
-      <Name>System.XML</Name>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Update="BuiltInContextMenu.cs">
       <SubType>Component</SubType>
     </Compile>

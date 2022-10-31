@@ -11,7 +11,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
 
         public IDocument Document { get; }
         public HighlightingColor DefaultTextColor { get; }
-        readonly WeakLineTracker weakLineTracker;
+        private readonly WeakLineTracker weakLineTracker;
 
         private readonly SyntaxInfo SyntaxInfo;
 

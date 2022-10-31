@@ -8,6 +8,7 @@ using System.Windows.Input;
 using Gammtek.Conduit.MassEffect3.SFXGame.CodexMap;
 using Gammtek.Conduit.MassEffect3.SFXGame.QuestMap;
 using Gammtek.Conduit.MassEffect3.SFXGame.StateEventMap;
+using LegendaryExplorer.Misc;
 using LegendaryExplorer.SharedUI.Bases;
 using LegendaryExplorer.ToolsetDev.MemoryAnalyzer;
 using LegendaryExplorer.SharedUI;
@@ -36,7 +37,7 @@ namespace LegendaryExplorer.Tools.PlotEditor
 
         public void OpenFile()
         {
-            var dlg = new OpenFileDialog { Filter = "Support files|*.pcc;*.upk", Multiselect = false };
+            var dlg = AppDirectories.GetOpenPackageDialog();
 
             if (dlg.ShowDialog() != true)
             {

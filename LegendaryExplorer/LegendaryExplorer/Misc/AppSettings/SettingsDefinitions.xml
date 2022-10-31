@@ -92,9 +92,9 @@
 
   <!-- Wwise settings -->
   <setting name="Wwise_3773Path" type="string" defaultvalue="" category="Audio"
-           friendlyName="WwiseCLI.exe v3773 Path" fileSelectExtension=".exe"/>
+           friendlyName="WwiseCLI.exe v3773 Path" fileSelectExtension="*.exe"/>
   <setting name="Wwise_7110Path" type="string" defaultvalue="" category="Audio"
-           friendlyName="WwiseCLI.exe v7110 Path" fileSelectExtension=".exe"/>
+           friendlyName="WwiseCLI.exe v7110 Path" fileSelectExtension="*.exe"/>
 	
   <!-- TFC Compactor -->
   <setting name="TFCCompactor_LastStagingPath" type="string" defaultvalue=""/>

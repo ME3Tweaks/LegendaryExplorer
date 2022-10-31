@@ -777,7 +777,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
 
         private void OpenPackage()
         {
-            var d = new OpenFileDialog { Filter = GameFileFilters.OpenFileFilter };
+            var d = AppDirectories.GetOpenPackageDialog();
             if (d.ShowDialog() == true)
             {
 #if !DEBUG
@@ -3545,7 +3545,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
         #region Experiments
         private void LoadOverlay()
         {
-            var d = new OpenFileDialog { Filter = GameFileFilters.OpenFileFilter };
+            var d = AppDirectories.GetOpenPackageDialog();
             if (d.ShowDialog() == true)
             {
 #if !DEBUG
@@ -3583,7 +3583,8 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
         {
             var d = new OpenFileDialog
             {
-                Filter = "Point Logger ASI file output (txt)|*txt"
+                Filter = "Point Logger ASI file output (txt)|*txt",
+                CustomPlaces = AppDirectories.GameCustomPlaces
             };
             if (d.ShowDialog() == true)
             {
@@ -4438,31 +4439,28 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
 
         private void ShiftActorGroup(Vector3 shifts)
         {
-            foreach (var actor in ActorGroup)
-            {
-                if (actor.ClassName.Contains("CollectionActor"))
-                {
+            (List<ExportEntry> collectionActors, List<ExportEntry> otherActors) = ActorGroup.Split(actor => actor.ClassName.Contains("CollectionActor"));
 
-                    if (ObjectBinary.From(actor) is StaticCollectionActor sca &&
-                        actor.GetProperty<ArrayProperty<ObjectProperty>>(sca.ComponentPropName) is { } components && sca.LocalToWorldTransforms.Count >= components.Count)
+            foreach (ExportEntry actor in collectionActors)
+            {
+                if (ObjectBinary.From(actor) is StaticCollectionActor sca
+                    && actor.GetProperty<ArrayProperty<ObjectProperty>>(sca.ComponentPropName) is { } components
+                    && sca.LocalToWorldTransforms.Count >= components.Count)
+                {
+                    for (int index = 0; index < components.Count; index++)
                     {
 
-                        for (int index = 0; index < components.Count; index++)
-                        {
+                        ((float posX, float posY, float posZ), Vector3 scale, Rotator rotation) = sca.LocalToWorldTransforms[index].UnrealDecompose();
 
-                            ((float posX, float posY, float posZ), (float scaleX, float scaleY, float scaleZ), (int uuPitch, int uuYaw, int uuRoll)) = sca.LocalToWorldTransforms[index].UnrealDecompose();
-
-
-                            var newm = ActorUtils.ComposeLocalToWorld(new Vector3(posX + shifts.X, posY + shifts.Y, posZ + shifts.Z),
-                                      new Rotator(uuPitch, uuYaw, uuRoll),
-                                      new Vector3(scaleX, scaleY, scaleZ));
-                            sca.LocalToWorldTransforms[index] = newm;
-                        }
-                        actor.WriteBinary(sca);
+                        Matrix4x4 newm = ActorUtils.ComposeLocalToWorld(new Vector3(posX + shifts.X, posY + shifts.Y, posZ + shifts.Z), rotation, scale);
+                        sca.LocalToWorldTransforms[index] = newm;
                     }
-
+                    actor.WriteBinary(sca);
                 }
-                else if (actor.HasStack)
+            }
+            foreach (ExportEntry actor in otherActors)
+            {
+                if (actor.HasStack)
                 {
                     var locationprop = actor.GetProperty<StructProperty>("location");
                     if (locationprop is { IsImmutable: true })
@@ -4481,31 +4479,33 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                         actor.WriteProperty(locationprop);
                     }
                 }
-                else //is component without entire SMAC
+                //is component without entire SCA
+                else if (actor.HasParent && actor.Parent.ClassName.Contains("CollectionActor") && actor.Parent is ExportEntry actorCollection)
                 {
-                    if (actor.HasParent && actor.Parent.ClassName.Contains("CollectionActor") && actor.Parent is ExportEntry actorCollection)
+                    if (collectionActors.Contains(actorCollection))
                     {
-                        var collectionitems = PathEdUtils.GetCollectionItems(actorCollection);
-                        var location = PathEdUtils.GetLocation(actor);
-                        float x = ((float)location.X) + shifts.X;
-                        float y = ((float)location.Y) + shifts.Y;
-                        float z = ((float)location.Z) + shifts.Z;
-                        PathEdUtils.SetCollectionActorLocation(actor, x, y, z, collectionitems, actorCollection);
+                        //we've already shifted all the components of this collection
+                        continue;
                     }
+                    if (StaticCollectionActor.TryGetStaticCollectionActorAndIndex(actor, out StaticCollectionActor sca, out int index))
+                    {
+                        (Vector3 translation, Vector3 scale, Rotator rotation) = sca.GetDecomposedTransformationForIndex(index);
 
+                        sca.UpdateTransformationForIndex(index, translation + shifts, scale, rotation);
+                        sca.Export.WriteBinary(sca);
+                    }
                 }
             }
         }
 
         private void CommitLevelRotation()
         {
-            var centrePivot = GetGroupCenter();
-            var rotateyawdegrees = (float)lvlRotationYaw.Value;
-            var rotatepitchdegrees = (float)lvlRotationPitch.Value;
-            var rotateyaw = Math.PI * (rotateyawdegrees / 180); //Convert to radians
-            var rotatepitch = Math.PI * (rotatepitchdegrees / 180); //Convert to radians
-            double sinCalcYaw = Math.Sin(rotateyaw);
-            double cosCalcYaw = Math.Cos(rotateyaw);
+            float rotateYawDegrees = lvlRotationYaw.Value.GetValueOrDefault();
+            float rotatePitchDegrees = lvlRotationPitch.Value.GetValueOrDefault();
+            float rotateYawRadians = MathF.PI * (rotateYawDegrees / 180); //Convert to radians
+            float rotatePitchRadians = MathF.PI * (rotatePitchDegrees / 180); //Convert to radians
+            float sinCalcYaw = MathF.Sin(rotateYawRadians);
+            float cosCalcYaw = MathF.Cos(rotateYawRadians);
 
             if (lvlRotationYaw.Value == 0)
             {
@@ -4514,126 +4514,148 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
 
             if (ActorGroup.IsEmpty())
             {
-                var agdlg = MessageBox.Show("Adding all actors in the level to the actor group.", "Experimental Tools", MessageBoxButton.OKCancel);
+                MessageBoxResult agdlg = MessageBox.Show("Adding all actors in the level to the actor group.", "Experimental Tools", MessageBoxButton.OKCancel);
                 if (agdlg == MessageBoxResult.Cancel)
                     return;
                 AddAllActorsToGroup();
             }
-            var chkdlg = MessageBox.Show($"WARNING: Confirm you wish to rotate the entire actor group?\n" +
-                $"\nHorizontal Yaw: {rotateyawdegrees} degrees\n\nThis is an experimental tool. Make backups.", "Pathfinding Editor", MessageBoxButton.OKCancel);
+            MessageBoxResult chkdlg = MessageBox.Show($"WARNING: Confirm you wish to rotate the entire actor group?\n" +
+                                                      $"\nHorizontal Yaw: {rotateYawDegrees} degrees\n\nThis is an experimental tool. Make backups.", "Pathfinding Editor", MessageBoxButton.OKCancel);
             if (chkdlg == MessageBoxResult.Cancel)
                 return;
 
-            foreach (var actor in ActorGroup)
+            Vector3 centrePivot = GetGroupCenter();
+
+            (List<ExportEntry> collectionActors, List<ExportEntry> otherActors) = ActorGroup.Split(actor => actor.ClassName.Contains("CollectionActor"));
+
+            foreach (ExportEntry actor in collectionActors)
+            {
+                if (ObjectBinary.From(actor) is StaticCollectionActor sca
+                    && actor.GetProperty<ArrayProperty<ObjectProperty>>(sca.ComponentPropName) is { } components
+                    && sca.LocalToWorldTransforms.Count >= components.Count)
+                {
+
+                    for (int index = 0; index < components.Count; index++)
+                    {
+
+                        ((float posX, float posY, float posZ), Vector3 scale, (int uuPitch, int uuYaw, int uuRoll)) = sca.LocalToWorldTransforms[index].UnrealDecompose();
+
+                        float calcX = posX * cosCalcYaw - posY * sinCalcYaw;
+                        float calcY = posX * sinCalcYaw + posY * cosCalcYaw;
+
+                        int newYaw = uuYaw + rotateYawDegrees.DegreesToUnrealRotationUnits();
+
+                        Matrix4x4 newm = ActorUtils.ComposeLocalToWorld(new Vector3(calcX, calcY, posZ),
+                            new Rotator(uuPitch, newYaw, uuRoll),
+                            scale);
+                        sca.LocalToWorldTransforms[index] = newm;
+                    }
+                    actor.WriteBinary(sca);
+                }
+            }
+
+            foreach (ExportEntry actor in otherActors)
             {
                 if (actor == null || actor.ClassName == "BioWorldInfo")
                     continue;
 
-                if (actor.ClassName.Contains("CollectionActor"))
+                if (actor.HasStack)
                 {
-                    if (ObjectBinary.From(actor) is StaticCollectionActor sca &&
-                        actor.GetProperty<ArrayProperty<ObjectProperty>>(sca.ComponentPropName) is { } components && sca.LocalToWorldTransforms.Count >= components.Count)
-                    {
-
-                        for (int index = 0; index < components.Count; index++)
-                        {
-
-                            ((float posX, float posY, float posZ), (float scaleX, float scaleY, float scaleZ), (int uuPitch, int uuYaw, int uuRoll)) = sca.LocalToWorldTransforms[index].UnrealDecompose();
-
-                            var calcX = (double)posX * cosCalcYaw - (double)posY * sinCalcYaw;
-                            var calcY = (double)posX * sinCalcYaw + (double)posY * cosCalcYaw;
-
-                            var newYaw = uuYaw + ((float)rotateyawdegrees).DegreesToUnrealRotationUnits();
-
-                            Matrix4x4 newm = ActorUtils.ComposeLocalToWorld(new Vector3((float)calcX, (float)calcY, posZ),
-                                      new Rotator(uuPitch, newYaw, uuRoll),
-                                      new Vector3(scaleX, scaleY, scaleZ));
-                            sca.LocalToWorldTransforms[index] = newm;
-                        }
-                        actor.WriteBinary(sca);
-                    }
-
-                }
-                else if (actor.HasStack)
-                {
-                    float oldx = 0;
-                    float oldy = 0;
-                    float oldz = 0;
-
-                    float oldYaw = 0;
-                    float oldPitch = 0;
-                    float oldRoll = 0;
-
                     //Get existing props
                     StructProperty locationprop = actor.GetProperty<StructProperty>("location") ?? new StructProperty("location", true);
 
-                    oldx = locationprop.GetProp<FloatProperty>("X").Value;
-                    oldy = locationprop.GetProp<FloatProperty>("Y").Value;
-                    oldz = locationprop.GetProp<FloatProperty>("Z").Value;
+                    float oldX = locationprop.GetProp<FloatProperty>("X").Value;
+                    float oldY = locationprop.GetProp<FloatProperty>("Y").Value;
+                    float oldZ = locationprop.GetProp<FloatProperty>("Z").Value;
 
                     StructProperty rotationprop = actor.GetProperty<StructProperty>("Rotation") ?? CommonStructs.RotatorProp(new Rotator(0, 0, 0));
 
-                    (oldPitch, oldYaw, oldRoll) = CommonStructs.GetRotator(rotationprop);
+                    (int oldPitch, int oldYaw, int oldRoll) = CommonStructs.GetRotator(rotationprop);
 
                     //Get new rotation x' = x cos θ − y sin θ
                     //y' = x sin θ + y cos θ
+                    float newX = oldX * cosCalcYaw - oldY * sinCalcYaw;
+                    float newY = oldX * sinCalcYaw + oldY * cosCalcYaw;
 
-                    var calcX = (double)oldx * cosCalcYaw - (double)oldy * sinCalcYaw;
-                    var calcY = (double)oldx * sinCalcYaw + (double)oldy * cosCalcYaw;
+                    int newYaw = oldYaw + rotateYawDegrees.DegreesToUnrealRotationUnits();
 
                     //Write props
-                    var newx = (float)calcX;
-                    var newy = (float)calcY;
-                    var newYaw = (int)oldYaw + ((float)rotateyawdegrees).DegreesToUnrealRotationUnits();
-
-                    locationprop.Properties.AddOrReplaceProp(new FloatProperty(newx, "X"));
-                    locationprop.Properties.AddOrReplaceProp(new FloatProperty(newy, "Y"));
-                    locationprop.Properties.AddOrReplaceProp(new FloatProperty(oldz, "Z")); //as purely 2d rotation
+                    locationprop.Properties.AddOrReplaceProp(new FloatProperty(newX, "X"));
+                    locationprop.Properties.AddOrReplaceProp(new FloatProperty(newY, "Y"));
+                    locationprop.Properties.AddOrReplaceProp(new FloatProperty(oldZ, "Z")); //as purely 2d rotation
                     actor.WriteProperty(locationprop);
 
-                    var newRot = new Rotator((int)oldPitch, newYaw, (int)oldRoll);
+                    var newRot = new Rotator(oldPitch, newYaw, oldRoll);
                     rotationprop = CommonStructs.RotatorProp(newRot, "Rotation");
                     actor.WriteProperty(rotationprop);
                 }
+                //is component without entire SCA
+                else if (actor.HasParent && actor.Parent.ClassName.Contains("CollectionActor") && actor.Parent is ExportEntry actorCollection)
+                {
+                    if (collectionActors.Contains(actorCollection))
+                    {
+                        //we've already shifted all the components of this collection
+                        continue;
+                    }
+                    if (StaticCollectionActor.TryGetStaticCollectionActorAndIndex(actor, out StaticCollectionActor sca, out int index))
+                    {
+                        ((float oldX, float oldY, float oldZ), Vector3 scale, (int oldPitch, int oldYaw, int oldRoll)) = sca.GetDecomposedTransformationForIndex(index);
+
+                        float newX = oldX * cosCalcYaw - oldY * sinCalcYaw;
+                        float newY = oldX * sinCalcYaw + oldY * cosCalcYaw;
+
+                        int newYaw = oldYaw + rotateYawDegrees.DegreesToUnrealRotationUnits();
+
+                        sca.UpdateTransformationForIndex(index, new Vector3(newX, newY, oldZ), scale, new Rotator(oldPitch, newYaw, oldRoll));
+                        sca.Export.WriteBinary(sca);
+                    }
+                }
             }
 
-            var newCenterPivot = GetGroupCenter();
-            var shiftback = centrePivot - newCenterPivot;
+            Vector3 newCenterPivot = GetGroupCenter();
+            Vector3 shiftback = centrePivot - newCenterPivot;
             ShiftActorGroup(shiftback);
             MessageBox.Show("Done");
         }
+
         private Vector3 GetGroupCenter()
         {
+            if (ActorGroup.IsEmpty())
+            {
+                return Vector3.Zero;
+            }
             float groupX = 0;
             float groupY = 0;
             float groupZ = 0;
             int actorcount = 0;
-            foreach (var actor in ActorGroup)
+
+            (List<ExportEntry> collectionActors, List<ExportEntry> otherActors) = ActorGroup.Split(actor => actor.ClassName.Contains("CollectionActor"));
+
+            foreach (ExportEntry actor in collectionActors)
+            {
+                if (ObjectBinary.From(actor) is StaticCollectionActor sca &&
+                    actor.GetProperty<ArrayProperty<ObjectProperty>>(sca.ComponentPropName) is { } components && sca.LocalToWorldTransforms.Count >= components.Count)
+                {
+
+                    for (int index = 0; index < components.Count; index++)
+                    {
+
+                        ((float posX, float posY, float posZ), Vector3 _, Rotator _) = sca.LocalToWorldTransforms[index].UnrealDecompose();
+
+                        groupX += posX;
+                        groupY += posY;
+                        groupZ += posZ;
+                        actorcount++;
+                    }
+                }
+            }
+
+            foreach (var actor in otherActors)
             {
                 if (actor == null || actor.ClassName == "BioWorldInfo")
                     continue;
 
-                if (actor.ClassName.Contains("CollectionActor"))
-                {
-
-                    if (ObjectBinary.From(actor) is StaticCollectionActor sca &&
-                        actor.GetProperty<ArrayProperty<ObjectProperty>>(sca.ComponentPropName) is { } components && sca.LocalToWorldTransforms.Count >= components.Count)
-                    {
-
-                        for (int index = 0; index < components.Count; index++)
-                        {
-
-                            ((float posX, float posY, float posZ), (float scaleX, float scaleY, float scaleZ), (int uuPitch, int uuYaw, int uuRoll)) = sca.LocalToWorldTransforms[index].UnrealDecompose();
-
-                            groupX += posX;
-                            groupY += posY;
-                            groupZ += posZ;
-                            actorcount++;
-                        }
-                    }
-
-                }
-                else
+                if (actor.HasStack)
                 {
                     var locationprop = actor.GetProperty<StructProperty>("location");
                     if (locationprop is { IsImmutable: true })
@@ -4645,6 +4667,24 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                         groupX += oldx;
                         groupY += oldy;
                         groupZ += oldz;
+                        actorcount++;
+                    }
+                }
+                //is component without entire SCA
+                else if (actor.HasParent && actor.Parent.ClassName.Contains("CollectionActor") && actor.Parent is ExportEntry actorCollection)
+                {
+                    if (collectionActors.Contains(actorCollection))
+                    {
+                        //we've already shifted all the components of this collection
+                        continue;
+                    }
+                    if (StaticCollectionActor.TryGetStaticCollectionActorAndIndex(actor, out StaticCollectionActor sca, out int index))
+                    {
+                        ((float x, float y, float z), Vector3 _, Rotator _) = sca.GetDecomposedTransformationForIndex(index);
+
+                        groupX += x;
+                        groupY += y;
+                        groupZ += z;
                         actorcount++;
                     }
                 }

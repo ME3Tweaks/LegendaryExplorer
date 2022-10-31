@@ -341,7 +341,12 @@ namespace LegendaryExplorer.Tools.ConditionalsEditor
 
         private void OpenFile()
         {
-            var d = new OpenFileDialog { Filter = CNDFileFilter };
+            var d = new OpenFileDialog
+            {
+                Filter = CNDFileFilter,
+                Title = "Open Conditionals file",
+                CustomPlaces = AppDirectories.GameCustomPlaces
+            };
             if (d.ShowDialog() == true)
             {
                 try
@@ -418,7 +423,7 @@ namespace LegendaryExplorer.Tools.ConditionalsEditor
 
         private void NewFile()
         {
-            if(FileIsLoaded()) Save();
+            if (FileIsLoaded()) Save();
             File = new CNDFile
             {
                 ConditionalEntries = new List<CNDFile.ConditionalEntry>()
@@ -553,7 +558,7 @@ namespace LegendaryExplorer.Tools.ConditionalsEditor
                 return "Compiled!";
             }
         }
-        
+
         private void RecompileAll_Click(object sender, RoutedEventArgs e)
         {
             var modified = new List<string>();

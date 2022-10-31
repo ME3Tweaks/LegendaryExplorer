@@ -32,39 +32,47 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
         {
             if (e.ChangedButton == MouseButton.Left && !e.Handled && Keyboard.Modifiers.Has(ModifierKeys.Control))
             {
-                string name = "UNKNOWN";
-                ASTNode node = Node switch
-                {
-                    StaticArrayType staticArrayType => staticArrayType.ElementType,
-                    ClassType classType => classType.ClassLimiter,
-                    DynamicArrayType dynArr => dynArr.ElementType,
-                    _ => Node
-                };
-                if (node is IHasFileReference hasFileReference)
-                {
-                    string filePath = hasFileReference.FilePath;
-                    int uIndex = hasFileReference.UIndex;
-                    name = hasFileReference.Name;
+                e.Handled = true;
+                GoToDefinition(Node, ScrollTo);
+            }
+        }
 
-                    if (filePath is not null)
-                    {
-                        var pwpf = new Tools.PackageEditor.PackageEditorWindow();
-                        pwpf.Show();
-                        pwpf.LoadFile(filePath, uIndex);
-                        pwpf.RestoreAndBringToFront();
-                        e.Handled = true;
-                        return;
-                    }
-                }
-                if (node.StartPos >= 0 && node.Length > 0)
+        public static void GoToDefinition(ASTNode node, Action<int, int> scrollTo)
+        {
+            string name = "UNKNOWN";
+            node = node switch
+            {
+                StaticArrayType staticArrayType => staticArrayType.ElementType,
+                ClassType classType => classType.ClassLimiter,
+                DynamicArrayType dynArr => dynArr.ElementType,
+                _ => node
+            };
+            if (node is IHasFileReference hasFileReference)
+            {
+                string filePath = hasFileReference.FilePath;
+                int uIndex = hasFileReference.UIndex;
+                name = hasFileReference.Name;
+
+                if (filePath is not null)
                 {
-                    ScrollTo(node.StartPos, node.Length);
-                    e.Handled = true;
+                    var pwpf = new Tools.PackageEditor.PackageEditorWindow();
+                    pwpf.Show();
+                    pwpf.LoadFile(filePath, uIndex);
+                    pwpf.RestoreAndBringToFront();
                     return;
                 }
-                MessageBox.Show($"Unable to navigate to definition of \"{name}\". This can happen if it is defined in the script you are editing");
-                e.Handled = true;
             }
+            if (node.StartPos >= 0 && node.TextLength > 0)
+            {
+                scrollTo(node.StartPos, node.TextLength);
+                return;
+            }
+            if (node is PrimitiveType primitive)
+            {
+                MessageBox.Show($"Definitions of primitive types like '{primitive.Name}' are internal");
+                return;
+            }
+            MessageBox.Show($"Unable to navigate to definition of \"{name}\". This can happen if it is defined in the script you are editing");
         }
 
         protected override VisualLineText CreateInstance(int length)

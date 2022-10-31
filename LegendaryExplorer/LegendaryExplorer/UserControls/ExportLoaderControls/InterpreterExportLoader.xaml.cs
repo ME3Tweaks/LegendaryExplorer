@@ -585,11 +585,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 return false;
             }
-            if (Pcc.Game == MEGame.UDK)
-            {
-                //MessageBox.Show("Cannot add properties to UDK UPK files.", "Unsupported operation");
-                return false;
-            }
             if (CurrentLoadedExport.ClassName == "Class")
             {
                 return false; //you can't add properties to class objects.
@@ -602,12 +597,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void AddProperty()
         {
-            if (Pcc.Game == MEGame.UDK)
-            {
-                MessageBox.Show("Cannot add properties to UDK files.", "Unsupported operation");
-                return;
-            }
-
             var props = new List<PropNameStaticArrayIdxPair>();
             foreach (Property cProp in CurrentLoadedProperties)
             {

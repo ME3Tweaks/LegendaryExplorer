@@ -208,7 +208,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
 
         private void LoadExternalFile()
         {
-            var d = new OpenFileDialog { Filter = GameFileFilters.OpenFileFilter };
+            var d = AppDirectories.GetOpenPackageDialog();
             if (d.ShowDialog() == true)
             {
                 try

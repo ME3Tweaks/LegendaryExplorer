@@ -12,7 +12,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public Guid UnkGuid;//ME2
         public uint Unk3;//ME2
         public uint Unk4;//ME2
-        public uint Unk5;
+        public uint BulkDataFlags;
         public int DataSize;
         public int DataOffset;
         public byte[] EmbeddedData;
@@ -48,7 +48,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     sc.Serialize(ref Unk4);
                 }
             }
-            sc.Serialize(ref Unk5);
+            sc.Serialize(ref BulkDataFlags);
             if (sc.IsSaving && EmbeddedData != null)
             {
                 DataOffset = sc.FileOffset + 12;

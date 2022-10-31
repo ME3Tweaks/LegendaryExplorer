@@ -31,7 +31,6 @@ using System.Reflection;
 
 using System.Collections;
 using System.Security;
-using System.Security.Permissions;
 using System.Windows.Automation;
 using Xceed.Wpf.Toolkit.Primitives;
 
@@ -1185,8 +1184,6 @@ namespace Xceed.Wpf.Toolkit
       string selectedText = this.GetSelectedText();
       try
       {
-        new UIPermission( UIPermissionClipboard.AllClipboard ).Demand();
-
         if( selectedText.Length == 0 )
         {
           Clipboard.Clear();

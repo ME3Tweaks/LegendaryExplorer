@@ -45,7 +45,8 @@ namespace LegendaryExplorer.Tools.FaceFXEditor
                 Filter = GameFileFilters.LESaveFileFilter,
                 CheckFileExists = true,
                 Multiselect = false,
-                Title = $"Select {Game} file containing the FaceFXAnimSet you want to edit"
+                Title = $"Select {Game} file containing the FaceFXAnimSet you want to edit",
+                CustomPlaces = AppDirectories.GameCustomPlaces
             };
             if (dlg.ShowDialog() == true)
             {

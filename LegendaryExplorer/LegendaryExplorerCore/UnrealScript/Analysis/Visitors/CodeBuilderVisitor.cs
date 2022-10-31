@@ -255,6 +255,14 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
             Space();
             WritePropertyFlags(node.Flags);
+            AppendTypeNameAndName(node);
+            Append(";");
+
+            return true;
+        }
+
+        private void AppendTypeNameAndName(VariableDeclaration node)
+        {
             AppendTypeName(node.VarType);
             Space();
             Append(node.Name);
@@ -264,9 +272,24 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 Append($"{node.ArrayLength}", EF.Number);
                 Append("]");
             }
-            Append(";");
+        }
 
-            return true;
+        public void AppendVariableTypeAndScopeAndName(VariableDeclaration node)
+        {
+            AppendTypeName(node.VarType);
+            Space();
+            if (node.Outer is ObjectType outer)
+            {
+                Append(outer.Name, EF.TypeName);
+                Append(".");
+            }
+            Append(node.Name);
+            if (node.IsStaticArray)
+            {
+                Append("[");
+                Append($"{node.ArrayLength}", EF.Number);
+                Append("]");
+            }
         }
 
         public void AppendTypeName(VariableType node)
@@ -554,30 +577,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
             Append(FUNCTION, EF.Keyword);
             Space();
-            if (node.ReturnType != null)
-            {
-                if (node.CoerceReturn)
-                {
-                    Append("coerce", EF.Specifier);
-                    Space();
-                }
-                AppendTypeName(node.ReturnType);
-                Space();
-            }
-            Append(node.Name, EF.Function);
-            Append("(");
-            if (node.Parameters.Any())
-            {
-                node.Parameters[0].AcceptVisitor(this);
-                for (int i = 1; i < node.Parameters.Count; i++)
-                {
-                    Append(",");
-                    Space();
-                    node.Parameters[i].AcceptVisitor(this);
-                }
-            }
-
-            Append(")");
+            AppendReturnTypeAndParameters(node);
 
             if (flags.Has(EFunctionFlags.Defined) && node.Body.Statements != null)
             {
@@ -607,19 +607,39 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             return true;
         }
 
+        public void AppendReturnTypeAndParameters(Function node)
+        {
+            if (node.ReturnType != null)
+            {
+                if (node.CoerceReturn)
+                {
+                    Append("coerce", EF.Specifier);
+                    Space();
+                }
+                AppendTypeName(node.ReturnType);
+                Space();
+            }
+            Append(node.Name, EF.Function);
+            Append("(");
+            if (node.Parameters.Any())
+            {
+                node.Parameters[0].AcceptVisitor(this);
+                for (int i = 1; i < node.Parameters.Count; i++)
+                {
+                    Append(",");
+                    Space();
+                    node.Parameters[i].AcceptVisitor(this);
+                }
+            }
+
+            Append(")");
+        }
+
         public bool VisitNode(FunctionParameter node)
         {
             // [specifiers] parametertype parametername[[staticarraysize]]
             WritePropertyFlags(node.Flags);
-            AppendTypeName(node.VarType);
-            Space();
-            Append(node.Name);
-            if (node.IsStaticArray)
-            {
-                Append("[");
-                Append($"{node.ArrayLength}", EF.Number);
-                Append("]");
-            }
+            AppendTypeNameAndName(node);
             if (node.DefaultParameter != null)
             {
                 Space();

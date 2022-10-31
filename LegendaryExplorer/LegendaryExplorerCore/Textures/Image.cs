@@ -28,12 +28,12 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
 using System.Threading;
 using BCnEncoder.Decoder;
 using BCnEncoder.Encoder;
 using BCnEncoder.ImageSharp;
 using BCnEncoder.Shared;
-using DirectXTexNet;
 using LegendaryExplorerCore.Helpers;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Advanced;
@@ -407,6 +407,9 @@ namespace LegendaryExplorerCore.Textures
             return ARGBtoRGB(convertRawToARGB(src, ref w, ref h, format), w, h);
         }
 
+        //TODO: remove this method, as it doesn't really belong here, and forces a dependency on the System.Drawing nuget package.
+        //this is used only by M3, and should be moved there.
+        [SupportedOSPlatform("windows")]
         public static Bitmap convertRawToBitmapARGB(byte[] src, int w, int h, PixelFormat format, bool clearAlpha = true)
         {
             byte[] tmpData = convertRawToARGB(src, ref w, ref h, format, clearAlpha);
