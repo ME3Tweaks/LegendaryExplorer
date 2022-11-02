@@ -81,7 +81,7 @@ namespace LegendaryExplorerCore.Audio
             WwiseBank.WriteBankRaw(File.ReadAllBytes(bankPath), bankExport);
 
             // Prepare the AFC
-            var afcPath = Path.Combine(generatedDir, $"{bankName}.afc"); // Will need changed if localized!
+            var afcPath = Path.Combine(Directory.GetParent(package.FilePath).FullName, $"{bankName}.afc"); // Will need changed if localized!
             using var afcStream = File.Create(afcPath);
 
 
@@ -116,6 +116,7 @@ namespace LegendaryExplorerCore.Audio
                 afcStream.Write(wemData);
                 ws.DataSize = wemData.Length;
                 ws.Filename = bankName; // This is needed internally for serialization
+                ws.BulkDataFlags = 0x1; // Stored externally, uncompressed
 
                 streamExport.WritePropertiesAndBinary(p, ws);
                 streamExports.Add(streamExport);
