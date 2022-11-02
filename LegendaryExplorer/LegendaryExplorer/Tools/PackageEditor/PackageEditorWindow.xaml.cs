@@ -2081,7 +2081,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                                 outStream.WriteInt32((int)length); // Decompressed size
                                 outStream.WriteInt32(0); // Data offset - this is not external so this is not used
                                 outStream.Write(File.ReadAllBytes(wdiag.FileName));
-                                exp.WriteBinary(outStream.GetBuffer());
+                                exp.WriteBinary(outStream.ToArray()); // Do not use buffer
                             }
                             break;
                         }
