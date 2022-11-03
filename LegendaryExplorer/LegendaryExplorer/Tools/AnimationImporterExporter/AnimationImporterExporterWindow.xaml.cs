@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
 using LegendaryExplorer.Dialogs;
+using LegendaryExplorer.Misc;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Bases;
 using LegendaryExplorer.SharedUI.Interfaces;
@@ -136,7 +137,8 @@ namespace LegendaryExplorer.Tools.AnimationImporterExporter
                     Filter = PSAFilter,
                     CheckFileExists = true,
                     Title = "Select PSA",
-                    Multiselect = false
+                    Multiselect = false,
+                    CustomPlaces = AppDirectories.GameCustomPlaces
                 };
                 if (dlg.ShowDialog(this) == true)
                 {
@@ -232,7 +234,8 @@ namespace LegendaryExplorer.Tools.AnimationImporterExporter
                 Filter = PSAFilter,
                 CheckFileExists = true,
                 Title = "Select PSA",
-                Multiselect = false
+                Multiselect = false,
+                CustomPlaces = AppDirectories.GameCustomPlaces
             };
             if (dlg.ShowDialog(this) == true)
             {
@@ -279,7 +282,8 @@ namespace LegendaryExplorer.Tools.AnimationImporterExporter
                     Filter = GameFileFilters.UDKFileFilter,
                     CheckFileExists = true,
                     Title = "Select UDK file",
-                    Multiselect = false
+                    Multiselect = false,
+                    CustomPlaces = AppDirectories.GameCustomPlaces
                 };
                 if (dlg.ShowDialog(this) == true)
                 {
@@ -339,7 +343,8 @@ namespace LegendaryExplorer.Tools.AnimationImporterExporter
                 Filter = GameFileFilters.UDKFileFilter,
                 CheckFileExists = true,
                 Title = "Select UDK file",
-                Multiselect = false
+                Multiselect = false,
+                CustomPlaces = AppDirectories.GameCustomPlaces
             };
             if (dlg.ShowDialog(this) == true)
             {
@@ -446,7 +451,7 @@ namespace LegendaryExplorer.Tools.AnimationImporterExporter
 
         private void OpenFile()
         {
-            var d = new OpenFileDialog { Filter = GameFileFilters.OpenFileFilter };
+            var d = AppDirectories.GetOpenPackageDialog();
             if (d.ShowDialog() == true)
             {
 #if !DEBUG

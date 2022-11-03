@@ -20,6 +20,7 @@ using LegendaryExplorer.Tools.Sequence_Editor;
 using LegendaryExplorer.Tools.WwiseEditor;
 using LegendaryExplorer.UnrealExtensions.Classes;
 using LegendaryExplorerCore;
+using LegendaryExplorerCore.Audio;
 using LegendaryExplorerCore.DebugTools;
 using LegendaryExplorerCore.Dialogue;
 using LegendaryExplorerCore.GameFilesystem;
@@ -485,39 +486,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             MessageBox.Show("Done");
         }
-
-        public static void CompactFileViaExternalFile(IMEPackage sourcePackage)
-        {
-            OpenFileDialog d = new OpenFileDialog { Filter = "*.pcc|*.pcc" };
-            if (d.ShowDialog() == true)
-            {
-
-                using var compactedAlready = MEPackageHandler.OpenMEPackage(d.FileName);
-                var fname = Path.GetFileNameWithoutExtension(sourcePackage.FilePath);
-                var exportsToKeep = sourcePackage.Exports
-                    .Where(x => x.FullPath == fname || x.FullPath == @"SeekFreeShaderCache" ||
-                                x.FullPath.StartsWith("ME3ExplorerTrashPackage")).ToList();
-
-                var entriesToTrash = new ConcurrentBag<ExportEntry>();
-                Parallel.ForEach(sourcePackage.Exports, export =>
-                {
-                    var matchingExport = exportsToKeep.FirstOrDefault(x => x.FullPath == export.FullPath);
-                    if (matchingExport == null)
-                    {
-                        matchingExport = compactedAlready.Exports.FirstOrDefault(x => x.FullPath == export.FullPath);
-                    }
-
-                    if (matchingExport == null)
-                    {
-                        //Debug.WriteLine($"Trash {export.FullPath}");
-                        entriesToTrash.Add(export);
-                    }
-                });
-
-                EntryPruner.TrashEntries(sourcePackage, entriesToTrash);
-            }
-        }
-
 
 
         /// <summary>
@@ -1105,14 +1073,14 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     var streambin = wwstream?.GetBinaryData<WwiseStream>() ?? null;
                     if (streambin != null)
                     {
-                        var duration = streambin.GetAudioInfo().GetLength();
+                        var duration = streambin.GetAudioInfo()?.GetLength();
                         switch (Pcc.Game)
                         {
                             case MEGame.ME3:
                                 var durtnMS = wwevent.GetProperty<FloatProperty>("DurationMilliseconds");
                                 if (durtnMS != null && duration != null)
                                 {
-                                    durtnMS.Value = (float)duration.TotalMilliseconds;
+                                    durtnMS.Value = (float)duration.Value.TotalMilliseconds;
                                     wwevent.WriteProperty(durtnMS);
                                 }
                                 break;
@@ -1120,7 +1088,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                                 var durtnSec = wwevent.GetProperty<FloatProperty>("DurationSeconds");
                                 if (durtnSec != null && duration != null)
                                 {
-                                    durtnSec.Value = (float)duration.TotalSeconds;
+                                    durtnSec.Value = (float)duration.Value.TotalSeconds;
                                     wwevent.WriteProperty(durtnSec);
                                 }
                                 break;
@@ -1656,12 +1624,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         public static void GenerateNewGUIDForFile(PackageEditorWindow pew)
         {
             MessageBox.Show(
-                "GetPEWindow() process applies immediately and cannot be undone.\nEnsure the file you are going to regenerate is not open in Legendary Explorer in any tools.\nBe absolutely sure you know what you're doing before you use GetPEWindow()!");
-            OpenFileDialog d = new OpenFileDialog
-            {
-                Title = "Select file to regen guid for",
-                Filter = "*.pcc|*.pcc"
-            };
+                "Generate New GUID for file process applies immediately and cannot be undone.\nEnsure the file you are going to regenerate is not open in Legendary Explorer in any tools.\nBe absolutely sure you know what you're doing before you use GetPEWindow()!");
+            OpenFileDialog d = AppDirectories.GetOpenPackageDialog();
             if (d.ShowDialog() == true)
             {
                 using (IMEPackage sourceFile = MEPackageHandler.OpenMEPackage(d.FileName))
@@ -2483,8 +2447,26 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             File.WriteAllLines(@"C:\users\mgamerz\desktop\le2powers.txt", allPowers);
         }
 
+        public static void ImportBankTest(PackageEditorWindow pe)
+        {
+            if (pe.Pcc == null)
+                return;
+            OpenFileDialog ofd = new OpenFileDialog() { Filter = "WwiseBank files|*.bnk", Title = "Select generated soundbank" };
+            if (ofd.ShowDialog() == true)
+            {
+                WwiseBankImport.ImportBank(ofd.FileName, pe.Pcc);
+            }
+        }
+
         public static void MScanner(PackageEditorWindow pe)
         {
+            if (pe.Pcc != null)
+            {
+                WwiseBankImport.ImportBank(
+                    @"C:\Users\mgame\Documents\WwiseProjects\LETest1\GeneratedSoundBanks\Windows\TestBank.bnk", pe.Pcc);
+            }
+
+            return;
             Debug.WriteLine("ME1");
 
             GenerateAllMemoryPathedObjects(MEGame.ME1);
@@ -2884,7 +2866,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 var udkDestFile = d.FileName;
                 using var udkP = MEPackageHandler.OpenUDKPackage(udkDestFile);
 
-                OpenFileDialog f = new OpenFileDialog { Title = "Select source file to export from", Filter = GameFileFilters.OpenFileFilter };
+                OpenFileDialog f = new OpenFileDialog { Title = "Select source file to export from", Filter = GameFileFilters.OpenFileFilter, CustomPlaces = AppDirectories.GameCustomPlaces};
                 if (f.ShowDialog() != true)
                     return;
 

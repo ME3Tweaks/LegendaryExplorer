@@ -1,14 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
+using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Unreal.ObjectInfo;
 using UIndex = System.Int32;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
     public abstract class StaticCollectionActor : ObjectBinary
     {
-        public List<UIndex> Components;
+        public List<int> Components;
 
         public List<Matrix4x4> LocalToWorldTransforms;
 
@@ -38,6 +41,31 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     LocalToWorldTransforms.Add(m);
                 }
             }
+        }
+
+        public static bool TryGetStaticCollectionActorAndIndex(ExportEntry component, out StaticCollectionActor staticCollectionActor, out int i)
+        {
+            if (component.Parent is ExportEntry staticCollectionActorExport && From(staticCollectionActorExport) is StaticCollectionActor sca)
+            {
+                staticCollectionActor = sca;
+                if (staticCollectionActorExport.GetProperty<ArrayProperty<ObjectProperty>>(staticCollectionActor.ComponentPropName) is { } components)
+                {
+                    i = components.FindIndex(prop => prop.Value == component.UIndex);
+                    return i >= 0 && staticCollectionActor.LocalToWorldTransforms.Count > i;
+                }
+            }
+            i = 0;
+            staticCollectionActor = null;
+            return false;
+
+        }
+
+        public (Vector3 translation, Vector3 scale, Rotator rotation) GetDecomposedTransformationForIndex(int index) => LocalToWorldTransforms[index].UnrealDecompose();
+
+        public void UpdateTransformationForIndex(int index, Vector3 location, Vector3 scale, Rotator rotation)
+        {
+            Matrix4x4 m = ActorUtils.ComposeLocalToWorld(location, rotation, scale);
+            LocalToWorldTransforms[index] = m;
         }
     }
 

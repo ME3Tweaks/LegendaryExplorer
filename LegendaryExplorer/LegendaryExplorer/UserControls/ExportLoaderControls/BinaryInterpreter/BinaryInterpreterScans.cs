@@ -19,6 +19,8 @@ using LegendaryExplorerCore.Unreal.Classes;
 using static LegendaryExplorer.Tools.TlkManagerNS.TLKManagerWPF;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
 using Newtonsoft.Json;
+using WwiseParserLib.Structures.Chunks;
+using WwiseParserLib.Structures.SoundBanks;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls
 {
@@ -5423,12 +5425,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         subnodes.Add(MakeUInt32Node(bin, "Unk4"));
                     }
                 }
-                subnodes.Add(MakeUInt32Node(bin, "Unk5"));
-                int dataSize = bin.ReadInt32();
-                bin.Skip(-4);
-                subnodes.Add(MakeInt32Node(bin, "DataSize1"));
-                subnodes.Add(MakeInt32Node(bin, "DataSize2"));
-                subnodes.Add(MakeInt32Node(bin, "DataOffset"));
+                subnodes.Add(new BinInterpNode(bin.Position, $"BulkDataFlags: {(EBulkDataFlags)bin.ReadUInt32()}"));
+                subnodes.Add(MakeInt32Node(bin, "Element Count", out int dataSize));
+                subnodes.Add(MakeInt32Node(bin, "BulkDataSizeOnDisk"));
+                subnodes.Add(MakeUInt32HexNode(bin, "BulkDataOffsetInFile"));
                 if (CurrentLoadedExport.GetProperty<NameProperty>("Filename") is null)
                 {
                     subnodes.Add(new BinInterpNode(bin.Position, "Embedded sound data. Use Soundplorer to modify this data.")
@@ -5452,6 +5452,41 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         private List<ITreeItem> Scan_WwiseBank(byte[] data)
         {
             var subnodes = new List<ITreeItem>();
+
+            var bin = new EndianReader(new MemoryStream(data)) { Endian = Pcc.Endian };
+            bin.JumpTo(CurrentLoadedExport.propsEnd());
+
+            if (Pcc.Game is MEGame.ME2 or MEGame.LE2)
+            {
+                subnodes.Add(MakeUInt32Node(bin, "Unk1"));
+                subnodes.Add(MakeUInt32Node(bin, "Unk2"));
+                if (bin.Skip(-8).ReadInt64() == 0)
+                {
+                    return subnodes;
+                }
+            }
+            subnodes.Add(MakeUInt32Node(bin, "BulkDataFlags"));
+            subnodes.Add(MakeInt32Node(bin, "DataSize1", out var datasize));
+            int dataSize = bin.Skip(-4).ReadInt32();
+            subnodes.Add(MakeInt32Node(bin, "DataSize2"));
+            subnodes.Add(MakeInt32Node(bin, "DataOffset"));
+
+            var sb = new InMemorySoundBank(data.Skip((int)bin.Position).ToArray());
+
+            var bkhd = sb.GetChunk(SoundBankChunkType.BKHD);
+            var datab = sb.GetChunk(SoundBankChunkType.DATA);
+            var didx = sb.GetChunk(SoundBankChunkType.DIDX);
+            var envs = sb.GetChunk(SoundBankChunkType.ENVS);
+            var stid = sb.GetChunk(SoundBankChunkType.STID);
+            var stmg = sb.GetChunk(SoundBankChunkType.STMG);
+            var hirc = sb.GetChunk(SoundBankChunkType.HIRC);
+
+            return Scan_WwiseBankOld(data);
+        }
+
+        private List<ITreeItem> Scan_WwiseBankOld(byte[] data)
+        {
+            var subnodes = new List<ITreeItem>();
             try
             {
                 var bin = new EndianReader(new MemoryStream(data)) { Endian = Pcc.Endian };
@@ -5466,11 +5501,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         return subnodes;
                     }
                 }
-                subnodes.Add(MakeUInt32Node(bin, "BulkDataFlags"));
-                subnodes.Add(MakeInt32Node(bin, "DataSize1", out var datasize));
-                int dataSize = bin.Skip(-4).ReadInt32();
-                subnodes.Add(MakeInt32Node(bin, "DataSize2"));
-                subnodes.Add(MakeInt32Node(bin, "DataOffset"));
+                subnodes.Add(new BinInterpNode(bin.Position, $"BulkDataFlags: {(EBulkDataFlags)bin.ReadUInt32()}"));
+                subnodes.Add(MakeInt32Node(bin, "Element Count", out int dataSize));
+                subnodes.Add(MakeInt32Node(bin, "BulkDataSizeOnDisk"));
+                subnodes.Add(MakeUInt32HexNode(bin, "BulkDataOffsetInFile"));
 
                 if (dataSize == 0)
                 {
@@ -7089,14 +7123,37 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         }
 
 
-        private static BinInterpNode MakeVectorNode(EndianReader bin, string name) =>
-            new BinInterpNode(bin.Position, $"{name}: (X: {bin.ReadFloat()}, Y: {bin.ReadFloat()}, Z: {bin.ReadFloat()})") { Length = 12 };
+        private static BinInterpNode MakeVectorNode(EndianReader bin, string name) {
+            var node = new BinInterpNode(bin.Position, $"{name}: (X: {bin.ReadFloat()}, Y: {bin.ReadFloat()}, Z: {bin.ReadFloat()})") { Length = 12 };
+            bin.Position -= 12;
+            node.Items.Add(MakeFloatNode(bin, "X"));
+            node.Items.Add(MakeFloatNode(bin, "Y"));
+            node.Items.Add(MakeFloatNode(bin, "Z"));
+            return node;
 
-        private static BinInterpNode MakeQuatNode(EndianReader bin, string name) =>
-            new BinInterpNode(bin.Position, $"{name}: (X: {bin.ReadFloat()}, Y: {bin.ReadFloat()}, Z: {bin.ReadFloat()}, W: {bin.ReadFloat()})") { Length = 16 };
+        }
 
-        private static BinInterpNode MakeRotatorNode(EndianReader bin, string name) =>
-            new BinInterpNode(bin.Position, $"{name}: (Pitch: {bin.ReadInt32()}, Yaw: {bin.ReadInt32()}, Roll: {bin.ReadInt32()})") { Length = 12 };
+        private static BinInterpNode MakeQuatNode(EndianReader bin, string name)
+        {
+            var node = new BinInterpNode(bin.Position, $"{name}: (X: {bin.ReadFloat()}, Y: {bin.ReadFloat()}, Z: {bin.ReadFloat()}, W: {bin.ReadFloat()})") { Length = 16 };
+            bin.Position -= 16;
+            node.Items.Add(MakeFloatNode(bin, "X"));
+            node.Items.Add(MakeFloatNode(bin, "Y"));
+            node.Items.Add(MakeFloatNode(bin, "Z"));
+            node.Items.Add(MakeFloatNode(bin, "W"));
+            return node;
+        }
+
+        private static BinInterpNode MakeRotatorNode(EndianReader bin, string name)
+        {
+            var node = new BinInterpNode(bin.Position, $"{name}: (Pitch: {bin.ReadInt32()}, Yaw: {bin.ReadInt32()}, Roll: {bin.ReadInt32()})") { Length = 12 };
+            bin.Position -= 12;
+            node.Items.Add(MakeInt32Node(bin, "Pitch"));
+            node.Items.Add(MakeInt32Node(bin, "Yaw"));
+            node.Items.Add(MakeInt32Node(bin, "Roll"));
+            return node;
+
+        }
 
         private static BinInterpNode MakeBoxNode(EndianReader bin, string name) =>
             new BinInterpNode(bin.Position, name)
@@ -8058,7 +8115,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             BULKDATA_StoreOnlyPayload = 1 << 6,
             BULKDATA_SerializeCompressedLZX = 1 << 7,
             BULKDATA_SerializeCompressed = (BULKDATA_SerializeCompressedZLIB | BULKDATA_SerializeCompressedLZO | BULKDATA_SerializeCompressedLZX),
-
         }
 
         private IEnumerable<ITreeItem> StartStaticMeshScan(byte[] data, ref int binarystart)

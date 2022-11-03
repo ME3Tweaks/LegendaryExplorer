@@ -62,9 +62,9 @@ namespace LegendaryExplorerCore.Unreal.Classes
             if (format != null)
             {
                 var cache = properties.GetProp<NameProperty>("TextureFileCacheName");
-                List<Texture2DMipInfo> mips = Texture2D.GetTexture2DMipInfos(export, cache?.Value);
+                List<Texture2DMipInfo> mips = GetTexture2DMipInfos(export, cache?.Value);
                 var topmip = mips.FirstOrDefault(x => x.storageType != StorageTypes.empty);
-                return Texture2D.GetMipCRC(topmip, format.Value, additionalTFCs: additionalTFCs);
+                return GetMipCRC(topmip, format.Value, additionalTFCs: additionalTFCs);
             }
 
             return 0; // BIOA_GLO_00_B_Sovereign_T.upk in ME1 has a Texture2D export in it that is completely blank, no props, no binary. no idea how this compiled
@@ -83,12 +83,12 @@ namespace LegendaryExplorerCore.Unreal.Classes
 
         public static List<Texture2DMipInfo> GetTexture2DMipInfos(ExportEntry exportEntry, string cacheName)
         {
-            UTexture2D texBin = exportEntry.GetBinaryData<UTexture2D>();
+            var texBin = exportEntry.GetBinaryData<UTexture2D>();
             var mips = new List<Texture2DMipInfo>();
             for (int i = 0; i < texBin.Mips.Count; i++)
             {
                 UTexture2D.Texture2DMipMap binMip = texBin.Mips[i];
-                Texture2DMipInfo mip = new Texture2DMipInfo
+                var mip = new Texture2DMipInfo
                 {
                     Export = exportEntry,
                     index = texBin.Mips.Count - i,
@@ -276,36 +276,27 @@ namespace LegendaryExplorerCore.Unreal.Classes
                         {
                             // Check SFAR
                             var dlcName = mipToLoad.TextureCacheName.Substring(9);
-                            if (MEDirectories.OfficialDLC(MEGame.ME3).Contains(dlcName) && ME3Directory.DLCPath != null)
-                            {
-                                var sfarPath = Path.Combine(ME3Directory.DLCPath, dlcName, game.CookedDirName(), "Default.sfar");
-                                if (File.Exists(sfarPath))
-                                {
-                                    var dpackage = new DLCPackage(sfarPath);
-                                    var entryId = dpackage.FindFileEntry(archive);
-                                    if (entryId >= 0)
-                                    {
-                                        // TFC is in this SFAR
-                                        imagebytes = dpackage.ReadFromEntry(entryId, mipToLoad.externalOffset, mipToLoad.uncompressedSize);
-                                        dataLoaded = true;
-                                    }
-                                    else
-                                    {
-                                        // File not in archive
-                                        throw new FileNotFoundException(GetLocalizedCouldNotFindME2ME3TextureCacheMessage(archive));
-                                    }
-                                }
-                                else
-                                {
-                                    // SFAR not in folder
-                                    throw new FileNotFoundException(GetLocalizedCouldNotFindME2ME3TextureCacheMessage(archive));
-                                }
-                            }
-                            else
+                            if (!MEDirectories.OfficialDLC(MEGame.ME3).Contains(dlcName) || ME3Directory.DLCPath is null)
                             {
                                 // Not an official DLC
                                 throw new FileNotFoundException(GetLocalizedCouldNotFindME2ME3TextureCacheMessage(archive));
                             }
+                            var sfarPath = Path.Combine(ME3Directory.DLCPath, dlcName, game.CookedDirName(), "Default.sfar");
+                            if (!File.Exists(sfarPath))
+                            {
+                                // SFAR not in folder
+                                throw new FileNotFoundException(GetLocalizedCouldNotFindME2ME3TextureCacheMessage(archive));
+                            }
+                            var dpackage = new DLCPackage(sfarPath);
+                            var entryId = dpackage.FindFileEntry(archive);
+                            if (entryId < 0)
+                            {
+                                // File not in archive
+                                throw new FileNotFoundException(GetLocalizedCouldNotFindME2ME3TextureCacheMessage(archive));
+                            }
+                            // TFC is in this SFAR
+                            imagebytes = dpackage.ReadFromEntry(entryId, mipToLoad.externalOffset, mipToLoad.uncompressedSize);
+                            dataLoaded = true;
                         }
                         else
                         {
@@ -320,37 +311,22 @@ namespace LegendaryExplorerCore.Unreal.Classes
                 {
                     try
                     {
-                        try
+                        using var fs = new FileStream(filename, FileMode.Open, FileAccess.Read);
+                        fs.Seek(mipToLoad.externalOffset, SeekOrigin.Begin);
+                        if (mipToLoad.storageType is StorageTypes.extLZO or StorageTypes.extZlib or StorageTypes.extOodle)
                         {
-                            using var fs = new FileStream(filename, FileMode.Open, FileAccess.Read);
-                            fs.Seek(mipToLoad.externalOffset, SeekOrigin.Begin);
-                            if (mipToLoad.storageType is StorageTypes.extLZO or StorageTypes.extZlib or StorageTypes.extOodle)
+                            if (decompress)
                             {
-                                if (decompress)
-                                {
-                                    try
-                                    {
-                                        using MemoryStream tmpStream = fs.ReadToMemoryStream(mipToLoad.compressedSize);
-                                        TextureCompression.DecompressTexture(imagebytes, tmpStream, mipToLoad.storageType, mipToLoad.uncompressedSize, mipToLoad.compressedSize);
-                                    }
-                                    catch (Exception e)
-                                    {
-                                        throw new Exception(GetLocalizedTextureExceptionExternalMessage(e.Message, filename, mipToLoad.storageType.ToString(), mipToLoad.externalOffset.ToString()));
-                                    }
-                                }
-                                else
-                                {
-                                    fs.Read(imagebytes, 0, mipToLoad.compressedSize);
-                                }
+                                TextureCompression.DecompressTexture(imagebytes, fs, mipToLoad.storageType, mipToLoad.uncompressedSize, mipToLoad.compressedSize);
                             }
                             else
                             {
-                                fs.Read(imagebytes, 0, mipToLoad.uncompressedSize);
+                                fs.Read(imagebytes, 0, mipToLoad.compressedSize);
                             }
                         }
-                        catch (Exception e)
+                        else
                         {
-                            throw new Exception(GetLocalizedTextureExceptionExternalMessage(e.Message, filename, mipToLoad.storageType.ToString(), mipToLoad.externalOffset.ToString()));
+                            fs.Read(imagebytes, 0, mipToLoad.uncompressedSize);
                         }
                     }
                     catch (Exception e)

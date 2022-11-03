@@ -68,11 +68,6 @@ namespace LegendaryExplorer.Tools.PackageEditor
             "TextureCube", "Bio2DA", "Bio2DANumberedRows"
         };
 
-        /// <summary>
-        /// Used to populate the metadata editor values so the list does not constantly need to rebuilt, which can slow down the program on large files like SFXGame or BIOC_Base.
-        /// </summary>
-        List<string> AllEntriesList;
-
         //Objects in this collection are displayed on the left list view (names, imports, exports)
 
         readonly Dictionary<ExportLoaderControl, TabItem> ExportLoaders = new();
@@ -1009,7 +1004,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
         private void OpenFile()
         {
-            var d = new OpenFileDialog { Filter = GameFileFilters.OpenFileFilter };
+            var d = AppDirectories.GetOpenPackageDialog();
             if (d.ShowDialog() == true)
             {
 #if !DEBUG
@@ -2086,7 +2081,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                                 outStream.WriteInt32((int)length); // Decompressed size
                                 outStream.WriteInt32(0); // Data offset - this is not external so this is not used
                                 outStream.Write(File.ReadAllBytes(wdiag.FileName));
-                                exp.WriteBinary(outStream.GetBuffer());
+                                exp.WriteBinary(outStream.ToArray()); // Do not use buffer
                             }
                             break;
                         }
@@ -2601,7 +2596,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
             if (Pcc != null)
             {
                 string extension = Path.GetExtension(Pcc.FilePath);
-                OpenFileDialog d = new OpenFileDialog { Filter = "*" + extension + "|*" + extension };
+                OpenFileDialog d = new OpenFileDialog { Filter = "*" + extension + "|*" + extension, Title = "Select package file to compare against", CustomPlaces = AppDirectories.GameCustomPlaces };
                 if (d.ShowDialog() == true)
                 {
                     if (Pcc.FilePath == d.FileName)
@@ -2656,8 +2651,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     });
         }
 
-        private bool CanCompareToUnmodded() => PackageIsLoaded() && Pcc.Game != MEGame.UDK &&
-                                               !(Pcc.IsInBasegame() || Pcc.IsInOfficialDLC());
+        private bool CanCompareToUnmodded() => PackageIsLoaded() && Pcc.Game != MEGame.UDK && (!(Pcc.IsInBasegame() || Pcc.IsInOfficialDLC()) || ME3TweaksBackups.GetGameBackupPath(Pcc.Game) != null);
 
         private void CompareUnmodded()
         {

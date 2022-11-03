@@ -44,10 +44,6 @@
     <DefineConstants>WINDOWS;AZURE</DefineConstants>
   </PropertyGroup>
 
-
-  <ItemGroup>
-    <Reference Include="System.ComponentModel.DataAnnotations" />
-  </ItemGroup>
   <ItemGroup>
     <Resource Include="**\*.png" />
   </ItemGroup>

@@ -2029,7 +2029,6 @@ namespace Be.Windows.Forms
         /// </summary>
         /// <param name="m">the message to process.</param>
         /// <returns>true, if the message was processed</returns>
-        [SecurityPermission(SecurityAction.LinkDemand, UnmanagedCode = true), SecurityPermission(SecurityAction.InheritanceDemand, UnmanagedCode = true)]
         public override bool PreProcessMessage(ref Message m)
         {
             switch (m.Msg)

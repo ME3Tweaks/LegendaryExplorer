@@ -19,8 +19,6 @@ using System.Collections;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Globalization;
-using System.Security;
-using System.Security.Permissions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -58,14 +56,6 @@ namespace Xceed.Wpf.Toolkit.Zoombox
     public Zoombox()
       : base()
     {
-      try
-      {
-        new UIPermission( PermissionState.Unrestricted ).Demand();
-        _cacheBits[ ( int )CacheBits.HasUIPermission ] = true;
-      }
-      catch( SecurityException )
-      {
-      }
 
       this.InitCommands();
 
@@ -1449,18 +1439,6 @@ namespace Xceed.Wpf.Toolkit.Zoombox
 
     #endregion
 
-    #region HasUIPermission Private Property
-
-    private bool HasUIPermission
-    {
-      get
-      {
-        return _cacheBits[ ( int )CacheBits.HasUIPermission ];
-      }
-    }
-
-    #endregion
-
     #region IsContentWrapped Private Property
 
     private bool IsContentWrapped
@@ -2478,12 +2456,8 @@ namespace Xceed.Wpf.Toolkit.Zoombox
     }
 
     private void MonitorInput()
-    {
-      // cannot pre-process input in partial trust
-      if( this.HasUIPermission )
-      {
-        this.PreProcessInput();
-      }
+    { 
+      this.PreProcessInput();
     }
 
     private void OnContentSizeChanged( object sender, SizeChangedEventArgs e )
@@ -4033,7 +4007,6 @@ namespace Xceed.Wpf.Toolkit.Zoombox
       HasArrangedContentPresenter = 0x00000040,
       HasRenderedFirstView = 0x00000080,
       RefocusViewOnFirstRender = 0x00000100,
-      HasUIPermission = 0x00000200,
     }
 
     #endregion

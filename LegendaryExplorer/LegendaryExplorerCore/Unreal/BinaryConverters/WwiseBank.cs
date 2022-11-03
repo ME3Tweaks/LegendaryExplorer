@@ -425,12 +425,29 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
         #endregion
 
+        /// <summary>
+        /// Utility method: Writes the raw bytes of a bank to an export's binary.
+        /// </summary>
+        /// <param name="bankData"></param>
+        /// <param name="exp"></param>
+        public static void WriteBankRaw(byte[] bankData, ExportEntry exp)
+        {
+            MemoryStream outStream = new MemoryStream(16 + bankData.Length); // This must exist or GetBuffer() will return the wrong size.
+            // Write Bulk Data header
+            outStream.WriteInt32(0); // Local
+            outStream.WriteInt32((int)bankData.Length); // Compressed size
+            outStream.WriteInt32((int)bankData.Length); // Decompressed size
+            outStream.WriteInt32(0); // Data offset - this is not external so this is not used
+            outStream.Write(bankData);
+            exp.WriteBinary(outStream.GetBuffer());
+        }
+
         public class HIRCObject
         {
             public HIRCType Type;
             public uint ID;
             public virtual int DataLength(MEGame game) => unparsed.Length + 4;
-            protected byte[] unparsed;
+            public byte[] unparsed;
 
             public static HIRCObject Create(SerializingContainer2 sc)
             {

@@ -33,6 +33,8 @@ using Newtonsoft.Json;
 using SharpDX.D3DCompiler;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
 
+#pragma warning disable CS8321 //unused function warning
+
 namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 {
     /// <summary>
@@ -789,7 +791,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             pewpf.BusyText = "Scanning";
             Task.Run(() =>
             {
-                foreach (MEGame game in new[] { MEGame.LE3/*, MEGame.LE2, MEGame.LE1, MEGame.ME3, MEGame.ME2, MEGame.ME1*/})
+                foreach (MEGame game in new[] { /*MEGame.LE3, MEGame.LE2,*/ MEGame.LE1, /*MEGame.ME3, MEGame.ME2, MEGame.ME1*/ })
                 {
                     //preload base files for faster scanning
                     using DisposableCollection<IMEPackage> baseFiles = MEPackageHandler.OpenMEPackages(EntryImporter.FilesSafeToImportFrom(game)
@@ -1789,7 +1791,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                                 return (filePath, export.UIndex);
                             }
                         }
-                        catch (Exception e)
+                        catch
                         {
                             return (filePath, export.UIndex);
                         }
@@ -2334,7 +2336,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                                 return;
                             }
                         }
-                        catch (Exception e)
+                        catch 
                         {
                             exportsWithDecompilationErrors.Add(new EntryStringPair(export, "Compilation Error!"));
                             break;

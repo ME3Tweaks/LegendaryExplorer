@@ -1,3 +1,6 @@
 [submodule "LegendaryExplorer/submodules/WwiseTools"]
 	path = LegendaryExplorer/submodules/WwiseTools
 	url = https://github.com/ME3Tweaks/WwiseTools.git
+[submodule "LegendaryExplorer/submodules/WwiseParser"]
+	path = LegendaryExplorer/submodules/WwiseParser
+	url = https://github.com/ME3Tweaks/WwiseParser.git

@@ -3,7 +3,6 @@
     <TargetFrameworks>net6.0-windows</TargetFrameworks>
     <LangVersion>10.0</LangVersion>
     <OutputType>Library</OutputType>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <UseWindowsForms>true</UseWindowsForms>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
     <Platforms>x64</Platforms>

@@ -1072,7 +1072,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 audioPlayer.SeekbarPositionChanged += AudioPositionChanged;
         }
 
-        private void AudioPositionChanged(object? sender, AudioPlayheadEventArgs e)
+        private void AudioPositionChanged(object sender, AudioPlayheadEventArgs e)
         {
             PlayheadPositionLine.Position = e.PlayheadTime;
             graph.Paint();

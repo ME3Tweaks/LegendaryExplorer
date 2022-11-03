@@ -12,9 +12,9 @@ using ICSharpCode.AvalonEdit.Editing;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
 {
-    public class CompletionData : ICompletionData
+    public class KeywordCompletion : ICompletionData
     {
-        public CompletionData(string text, string description = null)
+        public KeywordCompletion(string text, string description = null)
         {
             Text = text;
             Description = description;
@@ -25,7 +25,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
         public double Priority => 0;
         public object Content => Text;
 
-        private static readonly ImageSource _image = EFontAwesomeIcon.Solid_Table.CreateImageSource(Brushes.Black, 0.1);
+        private static readonly ImageSource _image = EFontAwesomeIcon.Solid_Key.CreateImageSource(Brushes.Black, 0.1);
         public ImageSource Image => _image;
         public void Complete(TextArea textArea, ISegment completionSegment, EventArgs insertionRequestEventArgs)
         {

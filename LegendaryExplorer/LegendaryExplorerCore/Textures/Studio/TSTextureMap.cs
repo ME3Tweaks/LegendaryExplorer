@@ -21,7 +21,7 @@ namespace LegendaryExplorerCore.Textures.Studio
     /// </summary>
     [AddINotifyPropertyChangedInterface]
     [DebuggerDisplay("TextureMapMemoryEntry {Children.Count} children, {Instances.Count} instances, TFC name {TFCName}")]
-    public class TextureMapMemoryEntry
+    public partial class TextureMapMemoryEntry
     {
         /// <summary>
         /// Parses a Texture object

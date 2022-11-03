@@ -306,7 +306,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             {
                 if (targetType is not Struct targetStruct)
                 {
-                    throw ParseError($"A '{{' is used to start a struct. Expected a {targetType.FullTypeName()} literal!", CurrentPosition);
+                    throw ParseError($"A '{{' is used to start a struct. Expected a {targetType.DisplayName()} literal!", CurrentPosition);
                 }
                 literal = FinishStructLiteral(targetStruct);
             }
@@ -321,7 +321,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                         ParseError("Use '{' for struct literals, not '('.", CurrentPosition);
                         goto default;
                     default:
-                        throw ParseError($"A '(' is used to start a dynamic array literal. Expected a {targetType.FullTypeName()} literal!", CurrentPosition);
+                        throw ParseError($"A '(' is used to start a dynamic array literal. Expected a {targetType.DisplayName()} literal!", CurrentPosition);
                 }
             }
             else
@@ -479,7 +479,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                         }
                         else if (targetClassLimiter.ClassLimiter != literalClassType.ClassLimiter && !((Class)literalClassType.ClassLimiter).SameAsOrSubClassOf(targetClassLimiter.ClassLimiter.Name))
                         {
-                            TypeError($"Cannot assign a value of type '{literalClassType.FullTypeName()}' to a variable of type '{targetClassLimiter.FullTypeName()}'.", literal);
+                            TypeError($"Cannot assign a value of type '{literalClassType.DisplayName()}' to a variable of type '{targetClassLimiter.DisplayName()}'.", literal);
                         }
                     }
 

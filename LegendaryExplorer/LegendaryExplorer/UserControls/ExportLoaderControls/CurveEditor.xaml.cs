@@ -27,7 +27,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         /// <summary>
         /// Indicates the status of this export loader
         /// </summary>
-        public bool IsLoaded;
+        public new bool IsLoaded;
         /// <summary>
         /// Indicates if the export loader was ever in the loaded state while the current export was active. If it wasn't, we should not write out changes.
         /// </summary>

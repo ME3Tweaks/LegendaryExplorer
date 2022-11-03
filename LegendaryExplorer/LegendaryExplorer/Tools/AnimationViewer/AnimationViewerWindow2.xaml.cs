@@ -36,7 +36,7 @@ namespace LegendaryExplorer.Tools.AnimationViewer
         /// <summary>
         /// If game has told us it's ready for anim commands
         /// </summary>
-        private bool Initialized;
+        private new bool Initialized;
         /// <summary>
         /// Game this instance is for
         /// </summary>

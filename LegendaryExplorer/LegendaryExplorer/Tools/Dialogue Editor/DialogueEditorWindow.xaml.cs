@@ -517,7 +517,7 @@ namespace LegendaryExplorer.DialogueEditor
         }
         private void OpenPackage()
         {
-            OpenFileDialog d = new() { Filter = GameFileFilters.OpenFileFilter };
+            OpenFileDialog d = AppDirectories.GetOpenPackageDialog();
             if (d.ShowDialog() == true)
             {
                 try

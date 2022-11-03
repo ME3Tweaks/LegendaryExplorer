@@ -13,7 +13,7 @@ namespace LegendaryExplorer.Dialogs
     /// </summary>
     public partial class SoundReplaceOptionsDialog : NotifyPropertyChangedWindowBase
     {
-        public ObservableCollectionExtended<int> SampleRates { get; } = new ObservableCollectionExtended<int>();
+        public ObservableCollectionExtended<int> SampleRates { get; } = new();
         private static readonly int[] AcceptedSampleRates = { 24000, 32000, 44100 }; //may add more later
 
         public ObservableCollectionExtended<MEGame> SupportedGames { get; } = new()
@@ -53,7 +53,7 @@ namespace LegendaryExplorer.Dialogs
 
         public WwiseConversionSettingsPackage ChosenSettings;
 
-        public SoundReplaceOptionsDialog(bool showUpdateEvents = true, MEGame game = MEGame.LE3, string destAFCFile = null) : base()
+        public SoundReplaceOptionsDialog(bool showUpdateEvents = true, MEGame game = MEGame.LE3, string destAFCFile = null)
         {
             DataContext = this;
             SampleRates.AddRange(AcceptedSampleRates);
@@ -84,7 +84,7 @@ namespace LegendaryExplorer.Dialogs
             ChosenSettings = new WwiseConversionSettingsPackage
             {
                 TargetSamplerate = (int)SampleRate_Combobox.SelectedItem,
-                UpdateReferencedEvents = (bool)UpdateEvents_CheckBox.IsChecked,
+                UpdateReferencedEvents = UpdateEvents_CheckBox.IsChecked.GetValueOrDefault(false),
                 TargetGame = SelectedGame,
                 DestinationAFCFile = Path.GetFileNameWithoutExtension(AfcFileDest_TextBox.Text) // Just remove it so we don't have to deal with it
             };
@@ -96,6 +96,7 @@ namespace LegendaryExplorer.Dialogs
 
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {
+            DialogResult = false;
             Close();
         }
     }
