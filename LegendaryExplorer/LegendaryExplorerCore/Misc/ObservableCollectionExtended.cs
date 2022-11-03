@@ -38,7 +38,7 @@ namespace LegendaryExplorerCore.Misc
         public void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-            //PublicPropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            PublicPropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName)); // This is so you can listen to internal property changes externally as PropertyChanged is protected
         }
 
         #endregion INotifyPropertyChanged
