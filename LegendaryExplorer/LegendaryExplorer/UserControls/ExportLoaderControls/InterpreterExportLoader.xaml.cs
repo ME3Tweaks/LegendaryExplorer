@@ -42,7 +42,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         //same type and are not distinguishable without changing to another export, wasting a lot of time.
         //values are the class of object value being parsed
         public static readonly string[] ExportToStringConverters = { "LevelStreamingKismet", "StaticMeshComponent", "ParticleSystemComponent", "DecalComponent", "LensFlareComponent", "AnimNodeSequence" };
-        public static readonly string[] IntToStringConverters = { "WwiseEvent", "WwiseBank", "BioSeqAct_PMExecuteTransition", "BioSeqAct_PMExecuteConsequence", "BioSeqAct_PMCheckState", "BioSeqAct_PMCheckConditional", "BioSeqVar_StoryManagerInt",
+        public static readonly string[] IntToStringConverters = { "WwiseEvent", "WwiseBank", "WwiseStream", "BioSeqAct_PMExecuteTransition", "BioSeqAct_PMExecuteConsequence", "BioSeqAct_PMCheckState", "BioSeqAct_PMCheckConditional", "BioSeqVar_StoryManagerInt",
                                                                 "BioSeqVar_StoryManagerFloat", "BioSeqVar_StoryManagerBool", "BioSeqVar_StoryManagerStateId", "SFXSceneShopNodePlotCheck", "BioWorldInfo" };
         public ObservableCollectionExtended<IndexedName> ParentNameList { get; private set; }
 
@@ -1469,6 +1469,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 case "WwiseEvent":
                 case "WwiseBank":
+                case "WwiseStream":
                     switch (name)
                     {
                         case "Id":
