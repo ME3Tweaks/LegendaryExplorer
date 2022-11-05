@@ -131,38 +131,37 @@ namespace LegendaryExplorerCore.Unreal
             var tocFolders = GetTOCableFoldersForGame(game, gameRootOverride);
 
             var numDone = 0;
-            Parallel.ForEach(tocFolders, dir =>
+            Parallel.ForEach(tocFolders, tocTarget =>
             {
-                string sfar = Path.Combine(dir, game.CookedDirName(), "Default.sfar");
+                string sfar = Path.Combine(tocTarget, game.CookedDirName(), "Default.sfar");
 
                 //This is a sfar - code ported from M3
-                if (dir.EndsWith(".sfar") ||
-                    (File.Exists(sfar) &&
-                     new FileInfo(sfar).Length !=
-                     32)) //endswith .sfar is for TESTPATCH as it doesn't follow other naming system
+                var fi = new FileInfo(sfar);
+                if (tocTarget.EndsWith(".sfar") ||
+                    (fi.Exists && fi.Length != 32)) //endswith .sfar is for TESTPATCH as it doesn't follow other naming system
                 {
-                    var sfarToToc = dir;
-                    if (File.Exists(sfar)) sfarToToc = sfar;
+                    var sfarToToc = tocTarget;
+                    if (fi.Exists) sfarToToc = sfar; // Testpatch will fail file existence test as it is not named Default.sfar
 
                     DLCPackage dlc = new DLCPackage(sfarToToc);
                     var tocResult = dlc.UpdateTOCbin();
                     if (tocResult is DLCPackage.DLCTOCUpdateResult.RESULT_ERROR_NO_ENTRIES)
                     {
-                        var tocFileLocation = Path.Combine(dir, "PCConsoleTOC.bin");
-                        CreateDLCTOCForDirectory(dir, game).WriteToFile(tocFileLocation);
+                        var tocFileLocation = Path.Combine(tocTarget, "PCConsoleTOC.bin");
+                        CreateDLCTOCForDirectory(tocTarget, game).WriteToFile(tocFileLocation);
                     }
                 }
                 // This is an unpacked folder - either BioGame or a DLC Folder
                 else
                 {
-                    var tocFileLocation = Path.Combine(dir, "PCConsoleTOC.bin");
-                    if (dir == MEDirectories.GetBioGamePath(game, gameRootOverride))
+                    var tocFileLocation = Path.Combine(tocTarget, "PCConsoleTOC.bin");
+                    if (tocTarget == MEDirectories.GetBioGamePath(game, gameRootOverride))
                     {
-                        CreateBasegameTOCForDirectory(dir, game).WriteToFile(tocFileLocation);
+                        CreateBasegameTOCForDirectory(tocTarget, game).WriteToFile(tocFileLocation);
                     }
                     else
                     {
-                        CreateDLCTOCForDirectory(dir, game).WriteToFile(tocFileLocation);
+                        CreateDLCTOCForDirectory(tocTarget, game).WriteToFile(tocFileLocation);
                     }
                     Debug.WriteLine($"TOC'd: {tocFileLocation}");
                     //Debug.WriteLine($"{tocFileLocation}-------------------------");
