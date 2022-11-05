@@ -72,7 +72,7 @@ namespace LegendaryExplorer.Startup
                             case ".tlk":
                                 var elhw = new ExportLoaderHostedWindow(new TLKEditorExportLoader(), file.FullName)
                                 {
-                                    Title = $"TLK Editor"
+                                    Title = $"TLK Editor - {file.FullName}"
                                 };
                                 elhw.Show();
                                 break;
