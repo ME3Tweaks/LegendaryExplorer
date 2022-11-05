@@ -44,9 +44,9 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
         /// <param name="baseClass"></param>
         /// <param name="customClassInfos"></param>
         /// <returns></returns>
-        public static bool InheritsFrom(this IEntry entry, string baseClass, Dictionary<string, ClassInfo> customClassInfos = null) => IsA(entry.ObjectName.Name, baseClass, entry.FileRef.Game, customClassInfos, (entry as ExportEntry)?.SuperClassName);
+        public static bool InheritsFrom(this IEntry entry, string baseClass, Dictionary<string, ClassInfo> customClassInfos = null) => IsA(entry.ObjectName.Name, baseClass, entry.FileRef.Game, customClassInfos, ((entry as ExportEntry)?.Class as ExportEntry)?.SuperClassName);
         public static bool IsA(this ClassInfo info, string baseClass, MEGame game, Dictionary<string, ClassInfo> customClassInfos = null) => IsA(info.ClassName, baseClass, game, customClassInfos);
-        public static bool IsA(this IEntry entry, string baseClass, Dictionary<string, ClassInfo> customClassInfos = null) => IsA(entry.ClassName, baseClass, entry.Game, customClassInfos);
+        public static bool IsA(this IEntry entry, string baseClass, Dictionary<string, ClassInfo> customClassInfos = null) => IsA(entry.ClassName, baseClass, entry.Game, customClassInfos, ((entry as ExportEntry)?.Class as ExportEntry)?.SuperClassName);
         public static bool IsA(string className, string baseClass, MEGame game, Dictionary<string, ClassInfo> customClassInfos = null, string knownSuperClass = null)
         {
             if (className == baseClass) return true;
