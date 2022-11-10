@@ -105,9 +105,9 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a22a6f67fb49988bbc8dd91be3e6fc98a"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_legendary_explorer_core_lib.html#a22a6f67fb49988bbc8dd91be3e6fc98a">SetSynchronizationContext</a> (TaskScheduler scheduler)</td></tr>
 <tr class="memdesc:a22a6f67fb49988bbc8dd91be3e6fc98a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allows you to specify the synchronization context, for example, if you want to use <code>Task.ContinueWithOnUIThread()</code> before the library has been initialized.  <a href="class_legendary_explorer_core_1_1_legendary_explorer_core_lib.html#a22a6f67fb49988bbc8dd91be3e6fc98a">More...</a><br /></td></tr>
 <tr class="separator:a22a6f67fb49988bbc8dd91be3e6fc98a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aff979365a101282befcd41b3888d9b14"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_legendary_explorer_core_lib.html#aff979365a101282befcd41b3888d9b14">InitLib</a> (TaskScheduler uiSyncContext, Action&lt; string &gt; packageSavingFailed=null, ILogger logger=null)</td></tr>
-<tr class="memdesc:aff979365a101282befcd41b3888d9b14"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes the <a class="el" href="namespace_legendary_explorer_core.html">LegendaryExplorerCore</a> library for use. Call this before using anything in this library. It registers things such as package loaders, initializes the object databases, and other startup tasks  <a href="class_legendary_explorer_core_1_1_legendary_explorer_core_lib.html#aff979365a101282befcd41b3888d9b14">More...</a><br /></td></tr>
-<tr class="separator:aff979365a101282befcd41b3888d9b14"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5a2c2caeec2696741b4f1682a73a06ce"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_legendary_explorer_core_lib.html#a5a2c2caeec2696741b4f1682a73a06ce">InitLib</a> (TaskScheduler uiSyncContext, Action&lt; string &gt; packageSavingFailed=null, ILogger logger=null, <a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a>[] objectDBsToLoad=null)</td></tr>
+<tr class="memdesc:a5a2c2caeec2696741b4f1682a73a06ce"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes the <a class="el" href="namespace_legendary_explorer_core.html">LegendaryExplorerCore</a> library for use. Call this before using anything in this library. It registers things such as package loaders, initializes the object databases, and other startup tasks  <a href="class_legendary_explorer_core_1_1_legendary_explorer_core_lib.html#a5a2c2caeec2696741b4f1682a73a06ce">More...</a><br /></td></tr>
+<tr class="separator:a5a2c2caeec2696741b4f1682a73a06ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="properties" name="properties"></a>
 Properties</h2></td></tr>
@@ -197,8 +197,8 @@ Properties</h2></td></tr>
 
 </div>
 </div>
-<a id="aff979365a101282befcd41b3888d9b14" name="aff979365a101282befcd41b3888d9b14"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aff979365a101282befcd41b3888d9b14">&#9670;&nbsp;</a></span>InitLib()</h2>
+<a id="a5a2c2caeec2696741b4f1682a73a06ce" name="a5a2c2caeec2696741b4f1682a73a06ce"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5a2c2caeec2696741b4f1682a73a06ce">&#9670;&nbsp;</a></span>InitLib()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -222,7 +222,13 @@ Properties</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">ILogger&#160;</td>
-          <td class="paramname"><em>logger</em> = <code>null</code>&#160;</td>
+          <td class="paramname"><em>logger</em> = <code>null</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a>[]&#160;</td>
+          <td class="paramname"><em>objectDBsToLoad</em> = <code>null</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -243,6 +249,7 @@ Properties</h2></td></tr>
     <tr><td class="paramname">uiSyncContext</td><td>Synchronization context for use with <code>Task.ContineWithOnUIThread()</code>. See <a class="el" href="class_legendary_explorer_core_1_1_legendary_explorer_core_lib.html#a22a6f67fb49988bbc8dd91be3e6fc98a" title="Allows you to specify the synchronization context, for example, if you want to use Task....">SetSynchronizationContext</a> for more information. If a synchronization context was already specified before this library was initialized, this value is ignored. </td></tr>
     <tr><td class="paramname">packageSavingFailed</td><td>Delegate that invoked when a package fails to save</td></tr>
     <tr><td class="paramname">logger</td><td>Serilog logger to use for logging operations. If null, no logging is performed.</td></tr>
+    <tr><td class="paramname">objectDBsToLoad</td><td>Only load object info for specified games. If null, all are loaded.</td></tr>
   </table>
   </dd>
 </dl>
