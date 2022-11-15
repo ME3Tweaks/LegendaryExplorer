@@ -8,6 +8,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using LegendaryExplorerCore.DebugTools;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Memory;
@@ -183,9 +184,19 @@ namespace LegendaryExplorerCore.Compression
 
                             // Todo: FIX: CANNOT RUN IN TEST MODE
                             // Access denied to directory
-                            string destPath = Path.Combine(paths.First(), CompressionHelper.OODLE_DLL_NAME);
-                            File.Copy(oodPath, destPath, true);
-                            LoadOodleDll(destPath);
+                            try
+                            {
+                                string destPath = Path.Combine(paths.First(), CompressionHelper.OODLE_DLL_NAME);
+                                File.Copy(oodPath, destPath, true);
+                                LoadOodleDll(destPath);
+                            }
+                            catch (UnauthorizedAccessException e)
+                            {
+                                // I guess just try to load it... might lock the folder :(
+                                LECLog.Error($@"Could not copy Oodle dll to native dll directory, loading directly out of game dir instead: {oodPath}");
+                                LoadOodleDll(oodPath);
+                            }
+
                             return true;
                         }
                     }

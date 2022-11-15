@@ -44,7 +44,21 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
         /// <param name="baseClass"></param>
         /// <param name="customClassInfos"></param>
         /// <returns></returns>
-        public static bool InheritsFrom(this IEntry entry, string baseClass, Dictionary<string, ClassInfo> customClassInfos = null) => IsA(entry.ObjectName.Name, baseClass, entry.FileRef.Game, customClassInfos, ((entry as ExportEntry)?.Class as ExportEntry)?.SuperClassName);
+        public static bool InheritsFrom(this IEntry entry, string baseClass,
+            Dictionary<string, ClassInfo> customClassInfos = null)
+        {
+#if DEBUG
+
+            if (entry.ClassName != @"Class")
+            {
+                Debug.WriteLine(
+                    @"InheritsFrom() is being used on a non-class object. This is likely bad design - Use IsA() for non-class objects.");
+                Console.WriteLine(
+                    @"InheritsFrom() is being used on a non-class object. This is likely bad design - Use IsA() for non-class objects.");
+            }
+#endif
+            return IsA(entry.ObjectName.Name, baseClass, entry.FileRef.Game, customClassInfos, (entry as ExportEntry)?.SuperClassName);
+        }
         public static bool IsA(this ClassInfo info, string baseClass, MEGame game, Dictionary<string, ClassInfo> customClassInfos = null) => IsA(info.ClassName, baseClass, game, customClassInfos);
         public static bool IsA(this IEntry entry, string baseClass, Dictionary<string, ClassInfo> customClassInfos = null) => IsA(entry.ClassName, baseClass, entry.Game, customClassInfos, ((entry as ExportEntry)?.Class as ExportEntry)?.SuperClassName);
         public static bool IsA(string className, string baseClass, MEGame game, Dictionary<string, ClassInfo> customClassInfos = null, string knownSuperClass = null)
@@ -176,7 +190,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             return GetSequenceObjects(game).TryGetValue(className, out SequenceObjectInfo seqInfo) ? seqInfo : null;
         }
 
-        public static string GetEnumType(MEGame game, NameReference propName, string typeName, ClassInfo nonVanillaClassInfo = null) => 
+        public static string GetEnumType(MEGame game, NameReference propName, string typeName, ClassInfo nonVanillaClassInfo = null) =>
             GetPropertyInfo(game, propName, typeName, nonVanillaClassInfo)?.Reference;
 
         public static List<NameReference> GetEnumValues(MEGame game, string enumName, bool includeNone = false)
@@ -570,6 +584,9 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
 
         public static ClassInfo GetClassOrStructInfo(MEGame game, string typeName)
         {
+            if (typeName == @"Class")
+                return null; // Has nothing we can use.
+
             ClassInfo result;
             _ = GetClasses(game).TryGetValue(typeName, out result) || GetStructs(game).TryGetValue(typeName, out result);
             if (result is null && game is MEGame.UDK)
