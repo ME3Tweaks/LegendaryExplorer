@@ -189,7 +189,7 @@ namespace LegendaryExplorerCore.UnrealScript
             return basefiles;
         }
 
-        [Obsolete("Filelib architecture has changed, and this no longer does anything.")]
+        [Obsolete("Filelib architecture has changed, and this no longer does anything.", true)]
         public static void FreeLibs() { }
 
         //only use from within _initializationLock!
@@ -200,7 +200,7 @@ namespace LegendaryExplorerCore.UnrealScript
             {
                 if (packageCache == null)
                 {
-                    packageCache = new PackageCache{AlwaysOpenFromDisk = false};
+                    packageCache = new PackageCache { AlwaysOpenFromDisk = false };
                     packageCacheIsLocal = true;
                 }
                 LECLog.Information($@"Game Root Path for FileLib Init: {gameRootPath ?? "null"}. Has package cache: {!packageCacheIsLocal}");
@@ -228,6 +228,7 @@ namespace LegendaryExplorerCore.UnrealScript
                     else
                     {
                         InitializationLog.LogError($"Could not find required base file: {fileName}");
+                        return false;
                     }
                 }
                 if (!isBaseFile)
@@ -278,20 +279,18 @@ namespace LegendaryExplorerCore.UnrealScript
                 }
                 _symbols = _baseSymbols?.Clone();
                 _cacheEnabled = canUseCache;
-                bool hadError = ResolveAllClassesInPackage(Pcc, ref _symbols, InitializationLog, packageCache);
-                if (packageCacheIsLocal)
-                {
-                    packageCache.Dispose();
-                }
-                return hadError;
+                return ResolveAllClassesInPackage(Pcc, ref _symbols, InitializationLog, packageCache);
             }
             catch when (!LegendaryExplorerCoreLib.IsDebug)
+            {
+                return false;
+            }
+            finally
             {
                 if (packageCacheIsLocal)
                 {
                     packageCache.Dispose();
                 }
-                return false;
             }
         }
 

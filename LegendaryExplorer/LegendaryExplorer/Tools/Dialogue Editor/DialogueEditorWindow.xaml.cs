@@ -2219,7 +2219,6 @@ namespace LegendaryExplorer.DialogueEditor
             {
                 SelectedStarts.Add(AddOrdinal(s.Key + 1), s.Value);
             }
-            Start_ListBox.ItemsSource = SelectedStarts;
             if (forcedSelectStart > -1)
             {
                 Start_ListBox.SelectedIndex = forcedSelectStart;

@@ -2667,6 +2667,11 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 }
             }
 
+            if (isDefaultRef && symbol.Outer is Function)
+            {
+                TypeError($"{(symbol is FunctionParameter ? "Parameters" : "Local variables")} do not have default values!", token);
+            }
+
             if (isStructScope && symbol.Outer is not Struct)
             {
                 TypeError($"{specificScope} has no member named '{token.Value}'!", token);
