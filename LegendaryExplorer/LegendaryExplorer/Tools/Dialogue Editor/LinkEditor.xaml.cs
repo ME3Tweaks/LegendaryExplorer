@@ -11,6 +11,7 @@ using LegendaryExplorer.SharedUI;
 using LegendaryExplorerCore.Dialogue;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
+using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
 using static LegendaryExplorer.Tools.TlkManagerNS.TLKManagerWPF;
 
@@ -21,11 +22,10 @@ namespace LegendaryExplorer.DialogueEditor
     /// </summary>
     public partial class LinkEditor : Window
     {
-        public Enum ERCategory;
         private readonly DialogueEditorWindow ParentWindow;
         private readonly DiagNode Dnode;
         private readonly bool IsReply;
-        public ObservableCollectionExtended<ReplyChoiceNode> linkTable { get; } = new ObservableCollectionExtended<ReplyChoiceNode>();
+        public ObservableCollectionExtended<ReplyChoiceNode> linkTable { get; } = new();
         private bool NeedsSave;
         public bool NeedsPush;
         public ICommand FinishedCommand { get; set; }
@@ -161,7 +161,7 @@ namespace LegendaryExplorer.DialogueEditor
                 var clnD = new DataGridComboBoxColumn
                 {
                     Header = "GUI Category",
-                    ItemsSource = Enum.GetValues(typeof(EReplyCategory)).Cast<EReplyCategory>(),
+                    ItemsSource = GetReplyCategoryValues(),
                     SelectedItemBinding = new Binding(nameof(ReplyChoiceNode.RCategory)),
                     IsReadOnly = false,
                     Width = 150
@@ -276,9 +276,9 @@ namespace LegendaryExplorer.DialogueEditor
                 editLink.ReplyStrRef = strRef;
 
                 ////Set GUI Reply style
-                var rc = editLink.RCategory; //Get current link
+                EReplyCategory rc = editLink.RCategory; //Get current link
 
-                string rdlg = InputComboBoxDialog.GetValue(this, "Pick the wheel position or interrupt:", "Dialogue Editor", Enums.GetNames<EReplyCategory>(), rc.ToString());
+                string rdlg = InputComboBoxDialog.GetValue(this, "Pick the wheel position or interrupt:", "Dialogue Editor", GetReplyCategoryValues().Select(v => v.ToString()), rc.ToString());
 
                 if (string.IsNullOrEmpty(rdlg))
                     return;
@@ -295,7 +295,7 @@ namespace LegendaryExplorer.DialogueEditor
             linkTable.Sort(l => l.Order);
 
             int n = 0;
-            foreach (var link in linkTable)
+            foreach (ReplyChoiceNode link in linkTable)
             {
                 link.Order = n;
                 link.Ordinal = DialogueEditorWindow.AddOrdinal(link.Order + 1);
@@ -334,12 +334,12 @@ namespace LegendaryExplorer.DialogueEditor
 
         private bool HasActiveLink()
         {
-            return datagrid_Links != null && datagrid_Links.SelectedIndex >= 0;
+            return datagrid_Links is { SelectedIndex: >= 0 };
         }
 
         private void DeleteLink()
         {
-            ReplyChoiceNode result = datagrid_Links.SelectedItem as ReplyChoiceNode;
+            var result = datagrid_Links.SelectedItem as ReplyChoiceNode;
             linkTable.Remove(result);
             NeedsSave = true;
             ReOrderTable();
@@ -347,7 +347,7 @@ namespace LegendaryExplorer.DialogueEditor
 
         private void CloneLink()
         {
-            var donor = linkTable[datagrid_Links.SelectedIndex];
+            ReplyChoiceNode donor = linkTable[datagrid_Links.SelectedIndex];
             linkTable.Add(new ReplyChoiceNode(donor) { Order = linkTable.Count + 1 });
             NeedsSave = true;
             ReOrderTable();
@@ -370,9 +370,7 @@ namespace LegendaryExplorer.DialogueEditor
 
             ReplyChoiceNode moveNode = linkTable[movelinkID];
             ReplyChoiceNode swapNode = linkTable[swapNodeID];
-            int swapto = moveNode.Order;
-            moveNode.Order = swapNode.Order;
-            swapNode.Order = swapto;
+            (moveNode.Order, swapNode.Order) = (swapNode.Order, moveNode.Order);
             NeedsSave = true;
             ReOrderTable();
         }
@@ -381,17 +379,33 @@ namespace LegendaryExplorer.DialogueEditor
         {
             if (NeedsSave)
             {
-                var confirm = MessageBox.Show("There are unsaved changes. Do you wish to save now?", "Link Editor", MessageBoxButton.YesNoCancel);
-
-                if (confirm == MessageBoxResult.Yes)
+                switch (MessageBox.Show("There are unsaved changes. Do you wish to save now?", "Link Editor", MessageBoxButton.YesNoCancel))
                 {
-                    SaveToProperties();
-                }
-                else if (confirm == MessageBoxResult.Cancel)
-                {
-                    e.Cancel = true;
+                    case MessageBoxResult.Yes:
+                        SaveToProperties();
+                        break;
+                    case MessageBoxResult.Cancel:
+                        e.Cancel = true;
+                        break;
                 }
             }
+        }
+
+        private EReplyCategory[] GetReplyCategoryValues()
+        {
+            if (ParentWindow.Pcc.Game.IsGame1())
+            {
+                return new[]
+                {
+                    EReplyCategory.REPLY_CATEGORY_DEFAULT,
+                    EReplyCategory.REPLY_CATEGORY_AGREE,
+                    EReplyCategory.REPLY_CATEGORY_DISAGREE,
+                    EReplyCategory.REPLY_CATEGORY_FRIENDLY,
+                    EReplyCategory.REPLY_CATEGORY_HOSTILE,
+                    EReplyCategory.REPLY_CATEGORY_INVESTIGATE,
+                };
+            }
+            return Enums.GetValues<EReplyCategory>();
         }
     }
 }
