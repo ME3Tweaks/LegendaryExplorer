@@ -52,7 +52,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             return props;
         }
 
-        public static void CompileDefault__Object(DefaultPropertiesBlock defaultsAST, ExportEntry classExport, ref ExportEntry defaultsExport, PackageCache packageCache = null)
+        public static void CompileDefault__Object(DefaultPropertiesBlock defaultsAST, ExportEntry classExport, ref ExportEntry defaultsExport, PackageCache packageCache = null, string gameRootOverride = null)
         {
             IMEPackage pcc = classExport.FileRef;
             var defaultsExportObjectName = new NameReference($"Default__{classExport.ObjectNameString}", classExport.indexValue);
@@ -92,7 +92,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
             compiler.Default__Archetype = defaultsExport.Archetype switch
             {
-                ImportEntry defaultArchetypeImport => EntryImporter.ResolveImport(defaultArchetypeImport, packageCache, null, "INT"),
+                ImportEntry defaultArchetypeImport => EntryImporter.ResolveImport(defaultArchetypeImport, packageCache, null, "INT", gameRootOverride: gameRootOverride),
                 ExportEntry defaultArchetypeExport => defaultArchetypeExport,
                 _ => null
             };
@@ -141,10 +141,10 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             return props;
         }
 
-        private void CreateSubObject(Subobject subObject, ExportEntry parent, ref ExportEntry subExport)
+        private void CreateSubObject(Subobject subObject, ExportEntry parent, ref ExportEntry subExport, string gamePathOverride = null)
         {
             var objName = NameReference.FromInstancedString(subObject.NameDeclaration.Name);
-            IEntry classEntry = EntryImporter.EnsureClassIsInFile(Pcc, subObject.Class.Name, new RelinkerOptionsPackage());
+            IEntry classEntry = EntryImporter.EnsureClassIsInFile(Pcc, subObject.Class.Name, new RelinkerOptionsPackage(), gamePathOverride);
             if (subExport is null)
             {
                 if (Pcc.TryGetTrash(out subExport))
@@ -196,7 +196,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     var baseDefault = classDefaultObject switch
                     {
                         ExportEntry exp => exp,
-                        ImportEntry imp => EntryImporter.ResolveImport(imp, packageCache, null, "INT"),
+                        ImportEntry imp => EntryImporter.ResolveImport(imp, packageCache, null, "INT", gameRootOverride: gamePathOverride),
                         _ => null
                     };
                     if (baseDefault is not null)

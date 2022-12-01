@@ -169,7 +169,7 @@ namespace LegendaryExplorerCore.UnrealScript
         }
 
         //Used by M3. Do not delete
-        public static MessageLog AddOrReplaceInClass(ExportEntry classExport, string scriptText, FileLib lib, PackageCache packageCache = null)
+        public static MessageLog AddOrReplaceInClass(ExportEntry classExport, string scriptText, FileLib lib, PackageCache packageCache = null, string gameRootOverride = null)
         {
             IMEPackage pcc = classExport.FileRef;
             if (!ReferenceEquals(lib.Pcc, pcc))
@@ -259,7 +259,7 @@ namespace LegendaryExplorerCore.UnrealScript
             }
             try
             {
-                ScriptObjectCompiler.Compile(classAST, pcc, classExport.Parent, classExport.GetBinaryData<UClass>(), packageCache);
+                ScriptObjectCompiler.Compile(classAST, pcc, classExport.Parent, classExport.GetBinaryData<UClass>(), packageCache, gameRootOverride: gameRootOverride);
                 log.LogMessage("Compiled!");
             }
             catch (Exception exception) when (!LegendaryExplorerCoreLib.IsDebug)
@@ -311,7 +311,7 @@ namespace LegendaryExplorerCore.UnrealScript
                 }
                 try
                 {
-                    ScriptObjectCompiler.Compile(astNode, pcc, parent, export?.GetBinaryData<UClass>(), packageCache);
+                    ScriptObjectCompiler.Compile(astNode, pcc, parent, export?.GetBinaryData<UClass>(), packageCache, gameRootOverride: lib.GameRootPath);
                     log.LogMessage("Compiled!");
                     return (astNode, log);
                 }
@@ -367,7 +367,7 @@ namespace LegendaryExplorerCore.UnrealScript
                     {
                         try
                         {
-                            ScriptObjectCompiler.Compile(funcFullAST, export.FileRef, parent, export.GetBinaryData<UFunction>());
+                            ScriptObjectCompiler.Compile(funcFullAST, export.FileRef, parent, export.GetBinaryData<UFunction>(), gameRootOverride: lib.GameRootPath);
                             log.LogMessage("Compiled!");
                             return (astNode, log);
                         }
@@ -430,7 +430,7 @@ namespace LegendaryExplorerCore.UnrealScript
                 }
                 try
                 {
-                    ScriptObjectCompiler.Compile(astNode, export.FileRef, parent, export.GetBinaryData<UState>());
+                    ScriptObjectCompiler.Compile(astNode, export.FileRef, parent, export.GetBinaryData<UState>(), gameRootOverride: lib.GameRootPath);
                     log.LogMessage("Compiled!");
                     return (astNode, log);
                 }
@@ -491,7 +491,7 @@ namespace LegendaryExplorerCore.UnrealScript
                 }
                 try
                 {
-                    ScriptObjectCompiler.Compile(astNode, export.FileRef, parent, export.GetBinaryData<UEnum>(), packageCache);
+                    ScriptObjectCompiler.Compile(astNode, export.FileRef, parent, export.GetBinaryData<UEnum>(), packageCache, gameRootOverride: lib.GameRootPath);
                     log.LogMessage("Compiled!");
                     return (astNode, log);
                 }
@@ -556,7 +556,7 @@ namespace LegendaryExplorerCore.UnrealScript
                 }
                 try
                 {
-                    ScriptObjectCompiler.Compile(astNode, export.FileRef, parent, export.GetBinaryData<UScriptStruct>(), packageCache);
+                    ScriptObjectCompiler.Compile(astNode, export.FileRef, parent, export.GetBinaryData<UScriptStruct>(), packageCache, gameRootOverride: lib.GameRootPath);
                     log.LogMessage("Compiled!");
                     return (astNode, log);
                 }
@@ -570,7 +570,7 @@ namespace LegendaryExplorerCore.UnrealScript
             return (null, log);
         }
 
-        public static (ASTNode astNode, MessageLog log) CompileDefaultProperties(ExportEntry export, string scriptText, FileLib lib, PackageCache packageCache = null)
+        public static (ASTNode astNode, MessageLog log) CompileDefaultProperties(ExportEntry export, string scriptText, FileLib lib, PackageCache packageCache = null, string gameRootOverride = null)
         {
             if (!ReferenceEquals(lib.Pcc, export.FileRef))
             {
@@ -617,7 +617,7 @@ namespace LegendaryExplorerCore.UnrealScript
                 }
                 try
                 {
-                    ScriptPropertiesCompiler.CompileDefault__Object(propBlock, classExport, ref export, packageCache);
+                    ScriptPropertiesCompiler.CompileDefault__Object(propBlock, classExport, ref export, packageCache, gameRootOverride: gameRootOverride);
                     log.LogMessage("Compiled!");
                     return (astNode, log);
                 }

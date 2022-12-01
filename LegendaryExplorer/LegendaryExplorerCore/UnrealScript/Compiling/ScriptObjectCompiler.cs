@@ -15,7 +15,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 {
     internal static class ScriptObjectCompiler
     {
-        public static void Compile(ASTNode node, IMEPackage pcc, IEntry parent, UField existingObject = null, PackageCache packageCache = null)
+        public static void Compile(ASTNode node, IMEPackage pcc, IEntry parent, UField existingObject = null, PackageCache packageCache = null, string gameRootOverride = null)
         {
             switch (node)
             {
@@ -23,7 +23,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     if (existingObject is null or UClass)
                     {
                         var uClass = (UClass)existingObject;
-                        CompileClass(classAST, pcc, parent, ref uClass, packageCache);
+                        CompileClass(classAST, pcc, parent, ref uClass, packageCache, gameRootOverride: gameRootOverride);
                         uClass.Export.WriteBinary(uClass);
                         return;
                     }
@@ -86,7 +86,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             throw new ArgumentOutOfRangeException(nameof(node));
         }
 
-        private static void CompileClass(Class classAST, IMEPackage pcc, IEntry parent, ref UClass classObj, PackageCache packageCache = null)
+        private static void CompileClass(Class classAST, IMEPackage pcc, IEntry parent, ref UClass classObj, PackageCache packageCache = null, string gameRootOverride = null)
         {
             var className = NameReference.FromInstancedString(classAST.Name);
             IEntry superClass = classAST.Parent is Class super ? CompilerUtils.ResolveClass(super, pcc) : null;
@@ -275,7 +275,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     field.Export.WriteBinary(field);
                 }
             }
-            
+
             //todo: figure out what these are. Might be able to get away with not touching them. Existing classes will retain their values, and custom ones will be 0/empty
             //classObj.unk2
             //classObj.le2ps3me2Unknown
@@ -302,7 +302,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             classObj.DLLBindName = "None";
 
             var defaultsExport = pcc.GetEntry(classObj.Defaults) as ExportEntry;
-            ScriptPropertiesCompiler.CompileDefault__Object(classAST.DefaultProperties, classExport, ref defaultsExport, packageCache);
+            ScriptPropertiesCompiler.CompileDefault__Object(classAST.DefaultProperties, classExport, ref defaultsExport, packageCache, gameRootOverride: gameRootOverride);
             classObj.Defaults = defaultsExport.UIndex;
 
             //classObj.ComponentNameToDefaultObjectMap.Clear();
@@ -331,7 +331,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             ExportEntry stateExport;
             if (refStateObj is null)
             {
-                stateExport = CreateNewExport(parent.FileRef, stateName, "State", parent,  UState.Create());
+                stateExport = CreateNewExport(parent.FileRef, stateName, "State", parent, UState.Create());
                 refStateObj = stateExport.GetBinaryData<UState>();
             }
             else
@@ -405,7 +405,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 }
                 if (prevFunc is not null)
                 {
-                    prevFunc.Next = 0; 
+                    prevFunc.Next = 0;
                     prevFunc.Export.WriteBinary(prevFunc);
                 }
 
@@ -586,7 +586,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 }
                 structObj.SuperClass = super?.UIndex ?? 0;
                 structObj.Export.SuperClass = super;
-                
+
                 foreach (Action completion in compilationCompletions)
                 {
                     completion();
@@ -737,27 +737,27 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                         uArrayProperty.ElementType = child.Export.UIndex;
                         break;
 
-                    //have no properties beyond the base class
-                    //case UIntProperty uIntProperty:
-                    //    break;
-                    //case UBoolProperty uBoolProperty:
-                    //    break;
-                    //case UFloatProperty uFloatProperty:
-                    //    break;
-                    //case UNameProperty uNameProperty:
-                    //    break;
-                    //case UStringRefProperty uStringRefProperty:
-                    //    break;
-                    //case UStrProperty uStrProperty:
-                    //    break;
+                        //have no properties beyond the base class
+                        //case UIntProperty uIntProperty:
+                        //    break;
+                        //case UBoolProperty uBoolProperty:
+                        //    break;
+                        //case UFloatProperty uFloatProperty:
+                        //    break;
+                        //case UNameProperty uNameProperty:
+                        //    break;
+                        //case UStringRefProperty uStringRefProperty:
+                        //    break;
+                        //case UStrProperty uStrProperty:
+                        //    break;
 
-                    //have no properties of their own, handled by their base classes above
-                    //case UComponentProperty uComponentProperty:
-                    //    break;
-                    //case UInterfaceProperty uInterfaceProperty:
-                    //    break;
-                    //case UBioMask4Property uBioMask4Property:
-                    //    break;
+                        //have no properties of their own, handled by their base classes above
+                        //case UComponentProperty uComponentProperty:
+                        //    break;
+                        //case UInterfaceProperty uInterfaceProperty:
+                        //    break;
+                        //case UBioMask4Property uBioMask4Property:
+                        //    break;
                 }
             }
         }

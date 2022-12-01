@@ -204,6 +204,8 @@ namespace LegendaryExplorerCore.UnrealScript
                     packageCacheIsLocal = true;
                 }
                 LECLog.Information($@"Game Root Path for FileLib Init: {gameRootPath ?? "null"}. Has package cache: {!packageCacheIsLocal}");
+                GameRootPath = gameRootPath; // This is cached because it's a pain to lookup later and requires tons of variable passing
+
                 InitializationLog = new MessageLog();
                 _cacheEnabled = false; // defaults to false, can be enabled if init works.
                 _baseSymbols = null;
@@ -541,6 +543,7 @@ namespace LegendaryExplorerCore.UnrealScript
 
         private bool _cacheEnabled;
         private readonly Dictionary<int, ObjectBinary> objBinCache = new();
+        public string GameRootPath { get; private set; } // Root path that was used to initialize this FileLib. If this is null the default game path was used.
 
         internal ObjectBinary GetCachedObjectBinary(ExportEntry export, PackageCache packageCache = null)
         {
