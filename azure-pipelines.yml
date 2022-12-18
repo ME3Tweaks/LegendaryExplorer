@@ -97,7 +97,7 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-      reportgenerator -reports:**/coverage.cobertura.xml -targetdir:CoverageReport -reporttypes:"HtmlInline_AzurePipelines;Cobertura" -classfilters:"-*Gammtek*;-*.SharpDX.*" -verbosity:Verbose
+      reportgenerator -reports:$(Agent.TempDirectory)/**/coverage.cobertura.xml -targetdir:CoverageReport -reporttypes:"HtmlInline_AzurePipelines;Cobertura" -classfilters:"-*Gammtek*;-*.SharpDX.*" -verbosity:Verbose
 
 - task: PublishCodeCoverageResults@1
   displayName: 'Publish code coverage'
