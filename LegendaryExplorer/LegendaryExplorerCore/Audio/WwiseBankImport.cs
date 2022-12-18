@@ -6,6 +6,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
@@ -72,7 +73,7 @@ namespace LegendaryExplorerCore.Audio
             ExportEntry bankExport = package.FindExport($"{bankName}.{bankName}");
             if (bankExport == null)
             {
-                bankExport = ExportCreator.CreateExport(package, bankName, "Wwisebank", parentPackage, indexed: false);
+                bankExport = ExportCreator.CreateExport(package, bankName, "WwiseBank", parentPackage, indexed: false);
             }
 
             bankExport.WriteProperty(new ObjectProperty(GetInitBankReference(package), "Parent"));
@@ -106,6 +107,9 @@ namespace LegendaryExplorerCore.Audio
                 else
                 {
                     // LE2
+                    p.Add(new NameProperty(bankName, "Filename"));
+                    p.Add(new NameProperty(bankName, "BankName"));
+                    p.Add(new IntProperty((int)streamInfo.Id, "Id"));
                 }
 
                 var wemPath = Path.Combine(generatedDir, $"{streamInfo.Id}.wem"); // Seems to dump here for non-localized audio.
@@ -117,6 +121,13 @@ namespace LegendaryExplorerCore.Audio
                 ws.DataSize = wemData.Length;
                 ws.Filename = bankName; // This is needed internally for serialization
                 ws.BulkDataFlags = 0x1; // Stored externally, uncompressed
+
+                if (package.Game == MEGame.LE2)
+                {
+                    // Not sure what these are but they are typically 0x1
+                    ws.Unk1 = 0x1;
+                    ws.Unk2 = 0x1;
+                }
 
                 streamExport.WritePropertiesAndBinary(p, ws);
                 streamExports.Add(streamExport);
@@ -140,6 +151,8 @@ namespace LegendaryExplorerCore.Audio
                         new ObjectProperty(bankExport, "Bank"))
                     { Name = "Relationships" });
                     p.Add(new IntProperty((int)eventInfo.Id, "Id"));
+
+
                     p.Add(new FloatProperty(9, "Duration")); // TODO: FIGURE THIS OUT!!! THIS IS A PLACEHOLDER
 
                     // Todo: Write the WwiseStreams
@@ -147,14 +160,36 @@ namespace LegendaryExplorerCore.Audio
                 else
                 {
                     // LE2
+
+                    var references = new ArrayProperty<StructProperty>("References");
+                    var platProps = new PropertyCollection();
+
+                    var platSpecificProps = new PropertyCollection();
+                    platSpecificProps.Add(new ArrayProperty<ObjectProperty>(streamExports.Select(x => new ObjectProperty(x.UIndex)), "Streams"));
+                    platSpecificProps.Add(new ObjectProperty(bankExport, "Bank"));
+                    platProps.Add(new StructProperty("WwiseRelationships", platSpecificProps, "Relationships"));
+                    platProps.Add(new IntProperty(1, "Platform"));
+                    var platRef = new StructProperty("WwisePlatformRelationships", platProps);
+                    references.Add(platRef);
+                    p.Add(references);
                 }
 
                 WwiseEvent we = new WwiseEvent();
                 we.WwiseEventID = eventInfo.Id;
                 we.Links = new List<WwiseEvent.WwiseEventLink>();
 
-                // GAME 3 SPECIFIC CODE! Needs implemented for 2
-                we.Links.Add(new WwiseEvent.WwiseEventLink() { WwiseStreams = streamExports.Select(x => x.UIndex).ToList() });
+                // LE3 puts this in binary instead of properties
+                if (package.Game == MEGame.LE3)
+                {
+                    we.Links.Add(new WwiseEvent.WwiseEventLink()
+                    { WwiseStreams = streamExports.Select(x => x.UIndex).ToList() });
+                }
+                else
+                {
+                    // LE2
+                    we.WwiseEventID = eventInfo.Id; // ID is stored here
+                }
+
                 eventExport.WritePropertiesAndBinary(p, we);
             }
 

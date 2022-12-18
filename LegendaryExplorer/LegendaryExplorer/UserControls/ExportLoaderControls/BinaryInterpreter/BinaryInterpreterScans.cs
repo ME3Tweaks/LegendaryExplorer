@@ -5471,15 +5471,15 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             subnodes.Add(MakeInt32Node(bin, "DataSize2"));
             subnodes.Add(MakeInt32Node(bin, "DataOffset"));
 
-            var sb = new InMemorySoundBank(data.Skip((int)bin.Position).ToArray());
+            //var sb = new InMemorySoundBank(data.Skip((int)bin.Position).ToArray());
 
-            var bkhd = sb.GetChunk(SoundBankChunkType.BKHD);
-            var datab = sb.GetChunk(SoundBankChunkType.DATA);
-            var didx = sb.GetChunk(SoundBankChunkType.DIDX);
-            var envs = sb.GetChunk(SoundBankChunkType.ENVS);
-            var stid = sb.GetChunk(SoundBankChunkType.STID);
-            var stmg = sb.GetChunk(SoundBankChunkType.STMG);
-            var hirc = sb.GetChunk(SoundBankChunkType.HIRC);
+            //var bkhd = sb.GetChunk(SoundBankChunkType.BKHD);
+            //var datab = sb.GetChunk(SoundBankChunkType.DATA);
+            //var didx = sb.GetChunk(SoundBankChunkType.DIDX);
+            //var envs = sb.GetChunk(SoundBankChunkType.ENVS);
+            //var stid = sb.GetChunk(SoundBankChunkType.STID);
+            //var stmg = sb.GetChunk(SoundBankChunkType.STMG);
+            //var hirc = sb.GetChunk(SoundBankChunkType.HIRC);
 
             return Scan_WwiseBankOld(data);
         }
@@ -6057,7 +6057,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 else if (CurrentLoadedExport.Game.IsLEGame())
                 {
                     int count = EndianReader.ToInt32(data, binarystart, CurrentLoadedExport.FileRef.Endian);
-                    subnodes.Add(new BinInterpNode { Header = $"0x{binarystart:X4} Unknown: {count} (0x{count:X8})", Name = "_" + binarystart });
+                    subnodes.Add(new BinInterpNode { Header = $"0x{binarystart:X4} EventID: {count} (0x{count:X8})", Name = "_" + binarystart });
                 }
                 else
                 {
