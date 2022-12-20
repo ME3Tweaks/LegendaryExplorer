@@ -1,12 +1,6 @@
 var class_legendary_explorer_core_1_1_packages_1_1_m_e_package =
 [
-    [ "GamePlatform", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#a423493ad96316a5a54f0df3fb3126cbe", [
-      [ "Unknown", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#a423493ad96316a5a54f0df3fb3126cbea88183b946cc5f0e8c96b2e66e1c74a7e", null ],
-      [ "PC", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#a423493ad96316a5a54f0df3fb3126cbea88dba0c4e2af76447df43d1e31331a3d", null ],
-      [ "Xenon", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#a423493ad96316a5a54f0df3fb3126cbeae9eef740bc8eaad537478239e65240f4", null ],
-      [ "PS3", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#a423493ad96316a5a54f0df3fb3126cbeabf2aed0e93e0880bb2a174e757657eb1", null ],
-      [ "WiiU", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#a423493ad96316a5a54f0df3fb3126cbea4ed0cccaa878852e4d97123c98e5426f", null ]
-    ] ],
+    [ "GamePlatform", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#a423493ad96316a5a54f0df3fb3126cbe", null ],
     [ "getHeader", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#af71eb007aa3a9d75c2315ceba0e4aba6", null ],
     [ "RegisterBlankPackageCreator", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#a136b7327f9f8d1b4c93f0ba1fcd6ffeb", null ],
     [ "RegisterStreamLoader", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#a7e9a46365feecd9c9022e5f78179244b", null ],

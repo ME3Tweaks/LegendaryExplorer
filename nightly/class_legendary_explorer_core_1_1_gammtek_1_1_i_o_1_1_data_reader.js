@@ -13,7 +13,7 @@ var class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_data_reader =
     [ "ReadUInt64", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_data_reader.html#ac974cc1f9c71aeaa06a031e035de6c40", null ],
     [ "Seek", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_data_reader.html#adfe65b74c2a5eaa11e8d6cfb58e990f7", null ],
     [ "ToArray", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_data_reader.html#acce86f5c064bbc557c2b4243d7275150", null ],
-    [ "ByteOrder", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_data_reader.html#af86e7dc1a0743b87a28cd5c4f7532e0f", null ],
+    [ "ByteOrder", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_data_reader.html#a7baf96c4cac327ab9785690238bfb5b0", null ],
     [ "Converter", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_data_reader.html#a77b96e92390e9fbd028a43f733b4749c", null ],
     [ "Length", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_data_reader.html#a24287cfe2cb55653281178657dcf40be", null ],
     [ "Position", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_data_reader.html#a155765664beb044b7edbe71b49792ded", null ]

@@ -1,10 +1,6 @@
 var class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter =
 [
-    [ "CoalescedType", "class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#a9f828aa5e7a667bedaee76b888d01400", [
-      [ "Binary", "class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#a9f828aa5e7a667bedaee76b888d01400a6ce976e8f061b2b5cfe4d0c50c3405dd", null ],
-      [ "Xml", "class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#a9f828aa5e7a667bedaee76b888d01400a9ec8e4e3ab4c7eeba097f27d7364d743", null ],
-      [ "ExtractedBin", "class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#a9f828aa5e7a667bedaee76b888d01400a274fad6e8de9fd06930710f10982dde4", null ]
-    ] ],
+    [ "CoalescedType", "class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#a9f828aa5e7a667bedaee76b888d01400", null ],
     [ "DecompileGame3ToMemory", "class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#aef3f1a229a220f244d01cc53df4c54d7", null ],
     [ "Convert", "class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#a024b131606a9489934d153e862adba1f", null ],
     [ "ConvertToXML", "class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#ad6e2703d9478f7c0186a67e5d81be9f1", null ],

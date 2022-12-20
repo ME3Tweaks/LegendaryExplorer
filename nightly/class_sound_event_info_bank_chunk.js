@@ -1,9 +1,6 @@
 var class_sound_event_info_bank_chunk =
 [
-    [ "ISACTSEEventSelection", "class_sound_event_info_bank_chunk.html#ab33bd0499e049f04ef72d6fcc21a2d8d", [
-      [ "USE_EVS_ORDER", "class_sound_event_info_bank_chunk.html#ab33bd0499e049f04ef72d6fcc21a2d8da404c17096b3b47ff715c3b9232b23118", null ],
-      [ "USE_EVS_CHANCE", "class_sound_event_info_bank_chunk.html#ab33bd0499e049f04ef72d6fcc21a2d8da5b91764f6913db20c52791e277764915", null ]
-    ] ],
+    [ "ISACTSEEventSelection", "class_sound_event_info_bank_chunk.html#ab33bd0499e049f04ef72d6fcc21a2d8d", null ],
     [ "SoundEventInfoBankChunk", "class_sound_event_info_bank_chunk.html#a50f0ca4e56400b5980dee35a0f9aa09e", null ],
     [ "SoundEventInfoBankChunk", "class_sound_event_info_bank_chunk.html#ad8c63caa59114af15d69943d56027d99", null ],
     [ "Write", "class_sound_event_info_bank_chunk.html#ade8474a043b428152ae222b181d4e35d", null ],

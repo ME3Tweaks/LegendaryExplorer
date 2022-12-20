@@ -7,6 +7,6 @@ var class_legendary_explorer_core_1_1_unreal_1_1_t_o_c_bin_file_1_1_entry =
     [ "size", "class_legendary_explorer_core_1_1_unreal_1_1_t_o_c_bin_file_1_1_entry.html#af939e13580834543abd393e8fbbdb859", null ],
     [ "sha1", "class_legendary_explorer_core_1_1_unreal_1_1_t_o_c_bin_file_1_1_entry.html#a150878d1bc50f01e2536e32758e4f8b8", null ],
     [ "name", "class_legendary_explorer_core_1_1_unreal_1_1_t_o_c_bin_file_1_1_entry.html#a4bb770320872966f0d17e489fbd32fea", null ],
-    [ "ToCSize", "class_legendary_explorer_core_1_1_unreal_1_1_t_o_c_bin_file_1_1_entry.html#a72b49e384bbcec4d0307be56808dce3c", null ],
+    [ "ToCSize", "class_legendary_explorer_core_1_1_unreal_1_1_t_o_c_bin_file_1_1_entry.html#a55de75b9f962de6598cb6feea2dbfb9d", null ],
     [ "MemorySize", "class_legendary_explorer_core_1_1_unreal_1_1_t_o_c_bin_file_1_1_entry.html#a7270dcc73f0423c8c2027e7dabe57eb4", null ]
 ];

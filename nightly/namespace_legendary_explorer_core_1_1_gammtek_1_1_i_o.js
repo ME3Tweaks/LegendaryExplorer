@@ -23,8 +23,5 @@ var namespace_legendary_explorer_core_1_1_gammtek_1_1_i_o =
     [ "MultiStream", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_multi_stream.html", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_multi_stream" ],
     [ "MutableByte", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_mutable_byte.html", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_mutable_byte" ],
     [ "VarInt", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_var_int.html", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_var_int" ],
-    [ "ByteOrder", "namespace_legendary_explorer_core_1_1_gammtek_1_1_i_o.html#a0a26a0142749afa3fa64f090b272df45", [
-      [ "BigEndian", "namespace_legendary_explorer_core_1_1_gammtek_1_1_i_o.html#a0a26a0142749afa3fa64f090b272df45a2ce7a92ae43763828ac4acb4560c2a5b", null ],
-      [ "LittleEndian", "namespace_legendary_explorer_core_1_1_gammtek_1_1_i_o.html#a0a26a0142749afa3fa64f090b272df45a3c0ba6b22b526d7fd50c3026435a8c02", null ]
-    ] ]
+    [ "ByteOrder", "namespace_legendary_explorer_core_1_1_gammtek_1_1_i_o.html#a0a26a0142749afa3fa64f090b272df45", null ]
 ];

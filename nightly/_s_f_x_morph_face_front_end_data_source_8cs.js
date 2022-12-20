@@ -1,0 +1,4 @@
+var _s_f_x_morph_face_front_end_data_source_8cs =
+[
+    [ "LegendaryExplorerCore.Unreal.BinaryConverters.SFXMorphFaceFrontEndDataSource", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_s_f_x_morph_face_front_end_data_source.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_s_f_x_morph_face_front_end_data_source" ]
+];

@@ -12,13 +12,5 @@ var _static_mesh_component_8cs =
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.QuantizedSimpleLightSample", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_quantized_simple_light_sample.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_quantized_simple_light_sample" ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.SCExt", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_s_c_ext.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_s_c_ext" ],
     [ "UIndex", "_static_mesh_component_8cs.html#a31ccc8e63558d15b93826f6ed881ead5", null ],
-    [ "ELightMapType", "_static_mesh_component_8cs.html#ae27c2393e97195af7eaa79df4634da7b", [
-      [ "LMT_None", "_static_mesh_component_8cs.html#ae27c2393e97195af7eaa79df4634da7bab1e0640db873ee70290c92bed236fed4", null ],
-      [ "LMT_1D", "_static_mesh_component_8cs.html#ae27c2393e97195af7eaa79df4634da7bad62252efb30601c2f429f6dd526f29eb", null ],
-      [ "LMT_2D", "_static_mesh_component_8cs.html#ae27c2393e97195af7eaa79df4634da7baa7823b63357235d8c0a0c3e99b44fb5c", null ],
-      [ "LMT_3", "_static_mesh_component_8cs.html#ae27c2393e97195af7eaa79df4634da7baad44896b7b1074845a532be863caa7d8", null ],
-      [ "LMT_4", "_static_mesh_component_8cs.html#ae27c2393e97195af7eaa79df4634da7baa21c4ae4ac9e22d1a3112c20d429db04", null ],
-      [ "LMT_5", "_static_mesh_component_8cs.html#ae27c2393e97195af7eaa79df4634da7baceca9469004decfe30211ca89418ed9e", null ],
-      [ "LMT_6", "_static_mesh_component_8cs.html#ae27c2393e97195af7eaa79df4634da7babd35b80cba1682f9a248289e8266cc2c", null ]
-    ] ]
+    [ "ELightMapType", "_static_mesh_component_8cs.html#ae27c2393e97195af7eaa79df4634da7b", null ]
 ];

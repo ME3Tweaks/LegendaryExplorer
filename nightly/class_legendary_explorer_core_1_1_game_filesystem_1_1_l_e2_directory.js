@@ -23,6 +23,6 @@ var class_legendary_explorer_core_1_1_game_filesystem_1_1_l_e2_directory =
     [ "TextureModMarkerPath", "class_legendary_explorer_core_1_1_game_filesystem_1_1_l_e2_directory.html#a76296c0d5f4b61af1b8f65e6a7b3fbf3", null ],
     [ "BioWareDocumentsPath", "class_legendary_explorer_core_1_1_game_filesystem_1_1_l_e2_directory.html#a4477e16ced8e6713b8c6d359e073647b", null ],
     [ "CookedName", "class_legendary_explorer_core_1_1_game_filesystem_1_1_l_e2_directory.html#abbef0c1f657d575e4ec73d710ac3c3f5", null ],
-    [ "DefaultGamePath", "class_legendary_explorer_core_1_1_game_filesystem_1_1_l_e2_directory.html#ab33b9317a9e0271e749cbb693bd5199c", null ],
+    [ "DefaultGamePath", "class_legendary_explorer_core_1_1_game_filesystem_1_1_l_e2_directory.html#a308ae086b2557cff91c885d3e75133aa", null ],
     [ "TocFile", "class_legendary_explorer_core_1_1_game_filesystem_1_1_l_e2_directory.html#a6bbeff2d6a03b37f1aff4e73bcb102b4", null ]
 ];

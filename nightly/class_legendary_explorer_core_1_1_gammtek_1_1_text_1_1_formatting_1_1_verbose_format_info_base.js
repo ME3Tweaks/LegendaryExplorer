@@ -22,7 +22,7 @@ var class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_formatting_1_1_verbos
     [ "LastIndentationString", "class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_formatting_1_1_verbose_format_info_base.html#ad860c4faeec87a5a27f1071605a3274e", null ],
     [ "LastRightMostIndentationString", "class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_formatting_1_1_verbose_format_info_base.html#a90d7de33f2979ffb033c7ad5f2fa9c79", null ],
     [ "MaximumDepth", "class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_formatting_1_1_verbose_format_info_base.html#a813c38173a67737bcd27fb19631895bc", null ],
-    [ "MaximumFormattedLength", "class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_formatting_1_1_verbose_format_info_base.html#a4bd5df764e19018ea78265cfbccffe65", null ],
+    [ "MaximumFormattedLength", "class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_formatting_1_1_verbose_format_info_base.html#a2f446b91ae88cf6806b1c9838c51afa8", null ],
     [ "RawMaximumFormattedLength", "class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_formatting_1_1_verbose_format_info_base.html#a021e0e3eb8a2d753b80aec58edd1b7dc", null ],
     [ "ValueOnly", "class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_formatting_1_1_verbose_format_info_base.html#a7e3aa93c0c38f8d43df3281bc1f2a8b9", null ]
 ];

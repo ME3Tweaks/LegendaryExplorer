@@ -2,12 +2,7 @@ var class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_bytecode_w
 [
     [ "JumpPlaceholder", "class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_bytecode_writer_1_1_jump_placeholder.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_bytecode_writer_1_1_jump_placeholder" ],
     [ "SkipPlaceholder", "class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_bytecode_writer_1_1_skip_placeholder.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_bytecode_writer_1_1_skip_placeholder" ],
-    [ "JumpType", "class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_bytecode_writer.html#a9241569dbc596010b977606f97e23d55", [
-      [ "Break", "class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_bytecode_writer.html#a9241569dbc596010b977606f97e23d55ae4c38d6d45baf080943d323dd51a2ce8", null ],
-      [ "Continue", "class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_bytecode_writer.html#a9241569dbc596010b977606f97e23d55aa0bfb8e59e6c13fc8d990781f77694fe", null ],
-      [ "Case", "class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_bytecode_writer.html#a9241569dbc596010b977606f97e23d55a0819eb30cc2cd18cf6b02042458c5da1", null ],
-      [ "Conditional", "class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_bytecode_writer.html#a9241569dbc596010b977606f97e23d55a9d3afea73e90192d96dda8d38c87a4fe", null ]
-    ] ],
+    [ "JumpType", "class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_bytecode_writer.html#a9241569dbc596010b977606f97e23d55", null ],
     [ "BytecodeWriter", "class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_bytecode_writer.html#af4a1d9accf864bccbff4379e726d9bad", null ],
     [ "GetByteCode", "class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_bytecode_writer.html#a8ec5c431608ab053621d28e4e7d850b1", null ],
     [ "GetMemLength", "class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_bytecode_writer.html#a46529b9f10a69503ff3891c95d3e9992", null ],

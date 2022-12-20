@@ -27,9 +27,5 @@ var _i_s_a_c_t_helper_8cs =
     [ "ISACTOrientation", "class_i_s_a_c_t_orientation.html", "class_i_s_a_c_t_orientation" ],
     [ "ISACTSoundTrack", "class_i_s_a_c_t_sound_track.html", "class_i_s_a_c_t_sound_track" ],
     [ "SoundEventSoundTracksFour", "class_sound_event_sound_tracks_four.html", "class_sound_event_sound_tracks_four" ],
-    [ "ISACTBankType", "_i_s_a_c_t_helper_8cs.html#a1d306bb280144056b87e695f2b641217", [
-      [ "ICB", "_i_s_a_c_t_helper_8cs.html#a1d306bb280144056b87e695f2b641217af60d54f52a4013689e7d94c309edd93e", null ],
-      [ "ISB", "_i_s_a_c_t_helper_8cs.html#a1d306bb280144056b87e695f2b641217a19857b34a4cdd584317c3bad71c20d34", null ],
-      [ "SAC", "_i_s_a_c_t_helper_8cs.html#a1d306bb280144056b87e695f2b641217acba7418d8ce88d4c6d0ebc9b441b65af", null ]
-    ] ]
+    [ "ISACTBankType", "_i_s_a_c_t_helper_8cs.html#a1d306bb280144056b87e695f2b641217", null ]
 ];

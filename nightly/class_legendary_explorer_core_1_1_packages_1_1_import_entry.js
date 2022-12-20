@@ -24,7 +24,7 @@ var class_legendary_explorer_core_1_1_packages_1_1_import_entry =
     [ "FileRef", "class_legendary_explorer_core_1_1_packages_1_1_import_entry.html#a1625d0afadadfb40ed5e792891ca2c28", null ],
     [ "Header", "class_legendary_explorer_core_1_1_packages_1_1_import_entry.html#acacd65911a18fc6a99237802d979b471", null ],
     [ "HasParent", "class_legendary_explorer_core_1_1_packages_1_1_import_entry.html#a2645ecda9ce00f489fc3080dd96751ce", null ],
-    [ "Parent", "class_legendary_explorer_core_1_1_packages_1_1_import_entry.html#af3c278a5c2d79074e2970faf6c263a28", null ],
+    [ "Parent", "class_legendary_explorer_core_1_1_packages_1_1_import_entry.html#a5ab0ca1d0f1482faf66291ab10d17d25", null ],
     [ "idxLink", "class_legendary_explorer_core_1_1_packages_1_1_import_entry.html#a595cc4686086930e7689767593cd2294", null ],
     [ "indexValue", "class_legendary_explorer_core_1_1_packages_1_1_import_entry.html#a3ab93f7dde575c06077e6e141dd8471b", null ],
     [ "ClassName", "class_legendary_explorer_core_1_1_packages_1_1_import_entry.html#a35f455c8408bf1e7c21a10fb219689cb", null ],
@@ -36,8 +36,8 @@ var class_legendary_explorer_core_1_1_packages_1_1_import_entry =
     [ "FullPath", "class_legendary_explorer_core_1_1_packages_1_1_import_entry.html#a358091919c149d764f0110b9103f822f", null ],
     [ "ParentInstancedFullPath", "class_legendary_explorer_core_1_1_packages_1_1_import_entry.html#a057bd192ddbc3efc292730c895598afe", null ],
     [ "InstancedFullPath", "class_legendary_explorer_core_1_1_packages_1_1_import_entry.html#a323b9177e7e8a87d94e9cc87ee2f818a", null ],
-    [ "HeaderChanged", "class_legendary_explorer_core_1_1_packages_1_1_import_entry.html#ac6072a299f6d1e3b408c473b67d255fa", null ],
-    [ "EntryHasPendingChanges", "class_legendary_explorer_core_1_1_packages_1_1_import_entry.html#acbada9d8c700fac1a4ebce2cf5933322", null ],
+    [ "HeaderChanged", "class_legendary_explorer_core_1_1_packages_1_1_import_entry.html#a4ab907dd72066f154446e6a7bf01204d", null ],
+    [ "EntryHasPendingChanges", "class_legendary_explorer_core_1_1_packages_1_1_import_entry.html#a17f10df85690a4c578cafdcc6f2863a5", null ],
     [ "IsClass", "class_legendary_explorer_core_1_1_packages_1_1_import_entry.html#ae8c2ff3cd99e82b99a8fb71d2ed6e438", null ],
     [ "PropertyChanged", "class_legendary_explorer_core_1_1_packages_1_1_import_entry.html#a5f1762b5122922c3d4e5bf70a62bdc4d", null ]
 ];

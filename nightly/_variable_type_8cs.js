@@ -1,0 +1,5 @@
+var _variable_type_8cs =
+[
+    [ "LegendaryExplorerCore.UnrealScript.Language.Tree.VariableType", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_type.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_type" ],
+    [ "LegendaryExplorerCore.UnrealScript.Language.Tree.VariableTypeExtensions", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_type_extensions.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_type_extensions" ]
+];

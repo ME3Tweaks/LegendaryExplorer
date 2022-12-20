@@ -209,78 +209,13 @@ var namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters =
     [ "InterpCurvePointVector", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#a54683bf93631ff86a4207698ca6350ee", null ],
     [ "InterpCurvePointVector2D", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#abd373131ae703e8f7c8fc8aa0bc33049", null ],
     [ "InterpCurvePointFloat", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#a924e3cde099cb5554486ca4cdeaec51d", null ],
-    [ "FxNodeType", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#ab2a04ada20d8590017678003c3ec596a", [
-      [ "FxCombinerNode", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#ab2a04ada20d8590017678003c3ec596aad625bd1817424e4243055a3a58266826", null ],
-      [ "FxDeltaNode", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#ab2a04ada20d8590017678003c3ec596aacb0fab38d588c12648b3bda3faa1869a", null ],
-      [ "FxCurrentTimeNode", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#ab2a04ada20d8590017678003c3ec596aa927dbbc0056d0d5c71b5d39c34ec2aea", null ],
-      [ "FxBonePoseNode", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#ab2a04ada20d8590017678003c3ec596aa5983d83358fbabaf340e0551a78945b2", null ],
-      [ "FxMorphTargetNode", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#ab2a04ada20d8590017678003c3ec596aa2c56e89c380e81cde28a9e140292df6d", null ],
-      [ "FxEmotionsWeightNode", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#ab2a04ada20d8590017678003c3ec596aa0784bade71973c6fabd616002c631097", null ]
-    ] ],
-    [ "FxInputOperation", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#aa54ec64d7c3bc07e9e1f8a5970fd765a", [
-      [ "SumInputs", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#aa54ec64d7c3bc07e9e1f8a5970fd765aa8fc69bee83696f06d7283c6c0fd2963b", null ],
-      [ "MultiplyInputs", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#aa54ec64d7c3bc07e9e1f8a5970fd765aa54ae48fd0de29bd398a41bdf9dc5a910", null ]
-    ] ],
-    [ "FxLinkFunction", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#a6152604e89aac714df2701be3c920357", [
-      [ "Linear", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#a6152604e89aac714df2701be3c920357a32a843da6ea40ab3b17a3421ccdf671b", null ],
-      [ "Quadratic", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#a6152604e89aac714df2701be3c920357a8b2972385ed28d0e199ae2985d6fea4c", null ],
-      [ "Cubic", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#a6152604e89aac714df2701be3c920357aec6b5414eb175379ff9efc9b3eef5814", null ],
-      [ "SquareRoot", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#a6152604e89aac714df2701be3c920357ae6c1b4ee758a2636a6eaf99105103c56", null ],
-      [ "Negate", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#a6152604e89aac714df2701be3c920357a67d9ebb87ad2c62fe6b9de06c8da7fa5", null ],
-      [ "Inverse", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#a6152604e89aac714df2701be3c920357a9f87f02f2da8f99c571b2a1c2a96132b", null ],
-      [ "OneClamp", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#a6152604e89aac714df2701be3c920357ae78829366c51d60f5b6faec7bd9cdfba", null ],
-      [ "Constant", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#a6152604e89aac714df2701be3c920357acb17869fe51048b5a5c4c6106551a255", null ],
-      [ "Corrective", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#a6152604e89aac714df2701be3c920357a82a183f5bbcaf7607f1e0fb56399a565", null ],
-      [ "ClampedLinear", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#a6152604e89aac714df2701be3c920357ad38c09385c94c4ffa1efeb6a15616ba7", null ]
-    ] ],
-    [ "FxNodeParamFormat", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#a5c9478640aa37e1e8f55cdcba00366cb", [
-      [ "Integer", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#a5c9478640aa37e1e8f55cdcba00366cbaa0faef0851b4294c06f2b94bb1cb2044", null ],
-      [ "String", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#a5c9478640aa37e1e8f55cdcba00366cba27118326006d3829667a400ad23d5d98", null ]
-    ] ],
-    [ "ShaderFrequency", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#ae5f93ae0703348a981b4debf37c76c87", [
-      [ "Vertex", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#ae5f93ae0703348a981b4debf37c76c87ab22b929ba52471a02d18bb3a4e4472e6", null ],
-      [ "Pixel", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#ae5f93ae0703348a981b4debf37c76c87a08822b3ae4e2aede0afe08abe600e9c0", null ]
-    ] ],
-    [ "ELightMapType", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#ae27c2393e97195af7eaa79df4634da7b", [
-      [ "LMT_None", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#ae27c2393e97195af7eaa79df4634da7bab1e0640db873ee70290c92bed236fed4", null ],
-      [ "LMT_1D", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#ae27c2393e97195af7eaa79df4634da7bad62252efb30601c2f429f6dd526f29eb", null ],
-      [ "LMT_2D", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#ae27c2393e97195af7eaa79df4634da7baa7823b63357235d8c0a0c3e99b44fb5c", null ],
-      [ "LMT_3", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#ae27c2393e97195af7eaa79df4634da7baad44896b7b1074845a532be863caa7d8", null ],
-      [ "LMT_4", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#ae27c2393e97195af7eaa79df4634da7baa21c4ae4ac9e22d1a3112c20d429db04", null ],
-      [ "LMT_5", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#ae27c2393e97195af7eaa79df4634da7baceca9469004decfe30211ca89418ed9e", null ],
-      [ "LMT_6", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#ae27c2393e97195af7eaa79df4634da7babd35b80cba1682f9a248289e8266cc2c", null ]
-    ] ],
-    [ "TerrainInfoFlags", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#a01be3ad3ce0d5a5846355f19280ae43f", [
-      [ "TID_None", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#a01be3ad3ce0d5a5846355f19280ae43fa3201adfc265e5fb385bc7ab700135c2c", null ],
-      [ "TID_Visibility_Off", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#a01be3ad3ce0d5a5846355f19280ae43fabc7f5aa318c4ad2a7b9cac9fb7256a81", null ],
-      [ "TID_OrientationFlip", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#a01be3ad3ce0d5a5846355f19280ae43fafd2ec54d2f98404ecc3825fde82c0d53", null ],
-      [ "TID_Unreachable", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#a01be3ad3ce0d5a5846355f19280ae43fab6ee98d24478b8fd32959ef7e595b9b8", null ],
-      [ "TID_Locked", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#a01be3ad3ce0d5a5846355f19280ae43fa4a0e39dfc78bf722479b91c1aeb1ace6", null ]
-    ] ],
-    [ "ELightMapFlags", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#aebc6b5cea41e712950ea8515ee2f17ac", [
-      [ "LMF_None", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#aebc6b5cea41e712950ea8515ee2f17aca0a4c7c4074018b978ac3ade50fca44cd", null ],
-      [ "LMF_Streamed", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#aebc6b5cea41e712950ea8515ee2f17acaf3cf6937545a17ea7c88a89f18bed7c3", null ],
-      [ "LMF_SimpleLightmap", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#aebc6b5cea41e712950ea8515ee2f17acaa1de41e353ab0915e635cd620845732c", null ]
-    ] ],
-    [ "HIRCType", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#a75ac72b3e7a21859ebd29065a6cd926b", [
-      [ "Settings", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#a75ac72b3e7a21859ebd29065a6cd926baf4f70727dc34561dfde1a3c529b6205c", null ],
-      [ "SoundSXFSoundVoice", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#a75ac72b3e7a21859ebd29065a6cd926baf2c8bb4269d04bf3b5acf73cf594d900", null ],
-      [ "EventAction", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#a75ac72b3e7a21859ebd29065a6cd926bad28a0070f6ef6c36099dfc863f72f969", null ],
-      [ "Event", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#a75ac72b3e7a21859ebd29065a6cd926baa4ecfc70574394990cf17bd83df499f7", null ],
-      [ "RandomOrSequenceContainer", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#a75ac72b3e7a21859ebd29065a6cd926ba5002b81704888c658cb01faa60e130dc", null ],
-      [ "SwitchContainer", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#a75ac72b3e7a21859ebd29065a6cd926bad2129c0b2921009666ffa7197801574f", null ],
-      [ "ActorMixer", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#a75ac72b3e7a21859ebd29065a6cd926ba00034a12366f72c9d034b68d1ded3399", null ],
-      [ "AudioBus", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#a75ac72b3e7a21859ebd29065a6cd926ba27e349abad8a94ab2bbd5156630ee158", null ],
-      [ "BlendContainer", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#a75ac72b3e7a21859ebd29065a6cd926baef304c92fd150674769b4443d6b36390", null ],
-      [ "MusicSegment", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#a75ac72b3e7a21859ebd29065a6cd926babb08f8297552aa04e11801c19de4a426", null ],
-      [ "MusicTrack", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#a75ac72b3e7a21859ebd29065a6cd926baaea61e485dede7c94e32a4e2ee113f7c", null ],
-      [ "MusicSwitchContainer", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#a75ac72b3e7a21859ebd29065a6cd926baeccb4854459a1a06a6615c4e1753c7f6", null ],
-      [ "MusicPlaylistContainer", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#a75ac72b3e7a21859ebd29065a6cd926ba80a193d073a3864f18fbf59ff38c95cf", null ],
-      [ "Attenuation", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#a75ac72b3e7a21859ebd29065a6cd926baf437fa6fac3e1583045a4ed47b0f8201", null ],
-      [ "DialogueEvent", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#a75ac72b3e7a21859ebd29065a6cd926bae5a9dadad9928501c2ab3e3ecafff803", null ],
-      [ "MotionBus", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#a75ac72b3e7a21859ebd29065a6cd926ba850dd28697afb716bc74944815b3c6d0", null ],
-      [ "MotionFX", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#a75ac72b3e7a21859ebd29065a6cd926ba02d65e12ba64334cc1563970e1040355", null ],
-      [ "Effect", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#a75ac72b3e7a21859ebd29065a6cd926baa62d22910732d5343689f5117999abfa", null ],
-      [ "AuxiliaryBus", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#a75ac72b3e7a21859ebd29065a6cd926baadd82bbc046e19cdd29e2815d548d4cb", null ]
-    ] ]
+    [ "FxNodeType", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#ab2a04ada20d8590017678003c3ec596a", null ],
+    [ "FxInputOperation", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#aa54ec64d7c3bc07e9e1f8a5970fd765a", null ],
+    [ "FxLinkFunction", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#a6152604e89aac714df2701be3c920357", null ],
+    [ "FxNodeParamFormat", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#a5c9478640aa37e1e8f55cdcba00366cb", null ],
+    [ "ShaderFrequency", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#ae5f93ae0703348a981b4debf37c76c87", null ],
+    [ "ELightMapType", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#ae27c2393e97195af7eaa79df4634da7b", null ],
+    [ "TerrainInfoFlags", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#a01be3ad3ce0d5a5846355f19280ae43f", null ],
+    [ "ELightMapFlags", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#aebc6b5cea41e712950ea8515ee2f17ac", null ],
+    [ "HIRCType", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#a75ac72b3e7a21859ebd29065a6cd926b", null ]
 ];

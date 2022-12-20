@@ -17,5 +17,5 @@ var class_legendary_explorer_core_1_1_game_filesystem_1_1_u_d_k_directory =
     [ "SharedPath", "class_legendary_explorer_core_1_1_game_filesystem_1_1_u_d_k_directory.html#a0042df753700ee09d59b6884da833d02", null ],
     [ "ExecutableFolder", "class_legendary_explorer_core_1_1_game_filesystem_1_1_u_d_k_directory.html#adc55203b921300ff5fb6efb5bff42e2f", null ],
     [ "ExecutablePath", "class_legendary_explorer_core_1_1_game_filesystem_1_1_u_d_k_directory.html#aa13e5650d35185ce13812bf6e15d6ee4", null ],
-    [ "DefaultGamePath", "class_legendary_explorer_core_1_1_game_filesystem_1_1_u_d_k_directory.html#a366db2a3f99eddd953c899d5104dc671", null ]
+    [ "DefaultGamePath", "class_legendary_explorer_core_1_1_game_filesystem_1_1_u_d_k_directory.html#adfad751d933a59b63290d9f76035dde4", null ]
 ];

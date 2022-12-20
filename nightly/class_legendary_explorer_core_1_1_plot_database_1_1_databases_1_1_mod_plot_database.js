@@ -1,10 +1,6 @@
 var class_legendary_explorer_core_1_1_plot_database_1_1_databases_1_1_mod_plot_database =
 [
-    [ "ModPlotSource", "class_legendary_explorer_core_1_1_plot_database_1_1_databases_1_1_mod_plot_database.html#a86c9a9b0e0f76aa0760945ca4bc6c2ab", [
-      [ "Unknown", "class_legendary_explorer_core_1_1_plot_database_1_1_databases_1_1_mod_plot_database.html#a86c9a9b0e0f76aa0760945ca4bc6c2aba88183b946cc5f0e8c96b2e66e1c74a7e", null ],
-      [ "LocalFile", "class_legendary_explorer_core_1_1_plot_database_1_1_databases_1_1_mod_plot_database.html#a86c9a9b0e0f76aa0760945ca4bc6c2abacd02efa43db4e20724d05a58c6b97480", null ],
-      [ "Server", "class_legendary_explorer_core_1_1_plot_database_1_1_databases_1_1_mod_plot_database.html#a86c9a9b0e0f76aa0760945ca4bc6c2aba9aa1b03934893d7134a660af4204f2a9", null ]
-    ] ],
+    [ "ModPlotSource", "class_legendary_explorer_core_1_1_plot_database_1_1_databases_1_1_mod_plot_database.html#a86c9a9b0e0f76aa0760945ca4bc6c2ab", null ],
     [ "ModPlotDatabase", "class_legendary_explorer_core_1_1_plot_database_1_1_databases_1_1_mod_plot_database.html#a22119c1ffe958a4ce7fcaa64c6c99d03", null ],
     [ "ModPlotDatabase", "class_legendary_explorer_core_1_1_plot_database_1_1_databases_1_1_mod_plot_database.html#ace897a30efea7f51b6ec07db4f00612a", null ],
     [ "LoadPlotsFromFile", "class_legendary_explorer_core_1_1_plot_database_1_1_databases_1_1_mod_plot_database.html#acbf890e5e4f4d2837bc27f4047d92a5e", null ],

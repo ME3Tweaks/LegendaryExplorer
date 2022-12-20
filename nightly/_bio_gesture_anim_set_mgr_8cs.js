@@ -1,0 +1,4 @@
+var _bio_gesture_anim_set_mgr_8cs =
+[
+    [ "LegendaryExplorerCore.Unreal.BinaryConverters.BioGestureAnimSetMgr", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_gesture_anim_set_mgr.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_gesture_anim_set_mgr" ]
+];

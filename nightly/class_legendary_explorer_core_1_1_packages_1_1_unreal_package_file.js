@@ -1,13 +1,6 @@
 var class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file =
 [
-    [ "CompressionType", "class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#ad74b667bf197fb96fa3e9a5bebae419e", [
-      [ "None", "class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#ad74b667bf197fb96fa3e9a5bebae419ea6adf97f83acf6453d4a6a4b1070f3754", null ],
-      [ "Zlib", "class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#ad74b667bf197fb96fa3e9a5bebae419ead697a787afbc87e2117697b91ed26272", null ],
-      [ "LZO", "class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#ad74b667bf197fb96fa3e9a5bebae419ea5505119d5315d500a0fcdbe9f521d126", null ],
-      [ "LZX", "class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#ad74b667bf197fb96fa3e9a5bebae419ea45a6bae801fa988f78c4ff118a0d205a", null ],
-      [ "LZMA", "class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#ad74b667bf197fb96fa3e9a5bebae419eaf42190e84ceca474c5c77e4ddad30fb1", null ],
-      [ "OodleLeviathan", "class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#ad74b667bf197fb96fa3e9a5bebae419ead7e8d56c8a4f024439cfc5c0f3c3499e", null ]
-    ] ],
+    [ "CompressionType", "class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#ad74b667bf197fb96fa3e9a5bebae419e", null ],
     [ "UnrealPackageFile", "class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#aa971e44e28884fb44e6a61b52edf9b8e", null ],
     [ "CompareToPackage", "class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#a03c695b2f017f01f4ce14aeb2afee7c3", null ],
     [ "CompareToPackage", "class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#a1d24498d4fc0aa7777a519118d17f7fa", null ],

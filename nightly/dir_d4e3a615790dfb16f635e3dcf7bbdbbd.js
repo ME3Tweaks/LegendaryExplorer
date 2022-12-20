@@ -1,32 +1,16 @@
 var dir_d4e3a615790dfb16f635e3dcf7bbdbbd =
 [
-    [ "LE1Directory.cs", "_l_e1_directory_8cs.html", [
-      [ "LegendaryExplorerCore.GameFilesystem.LE1Directory", "class_legendary_explorer_core_1_1_game_filesystem_1_1_l_e1_directory.html", "class_legendary_explorer_core_1_1_game_filesystem_1_1_l_e1_directory" ]
-    ] ],
-    [ "LE2Directory.cs", "_l_e2_directory_8cs.html", [
-      [ "LegendaryExplorerCore.GameFilesystem.LE2Directory", "class_legendary_explorer_core_1_1_game_filesystem_1_1_l_e2_directory.html", "class_legendary_explorer_core_1_1_game_filesystem_1_1_l_e2_directory" ]
-    ] ],
-    [ "LE3Directory.cs", "_l_e3_directory_8cs.html", [
-      [ "LegendaryExplorerCore.GameFilesystem.LE3Directory", "class_legendary_explorer_core_1_1_game_filesystem_1_1_l_e3_directory.html", "class_legendary_explorer_core_1_1_game_filesystem_1_1_l_e3_directory" ]
-    ] ],
-    [ "LEDirectory.cs", "_l_e_directory_8cs.html", [
-      [ "LegendaryExplorerCore.GameFilesystem.LEDirectory", "class_legendary_explorer_core_1_1_game_filesystem_1_1_l_e_directory.html", "class_legendary_explorer_core_1_1_game_filesystem_1_1_l_e_directory" ]
-    ] ],
+    [ "LE1Directory.cs", "_l_e1_directory_8cs.html", "_l_e1_directory_8cs" ],
+    [ "LE2Directory.cs", "_l_e2_directory_8cs.html", "_l_e2_directory_8cs" ],
+    [ "LE3Directory.cs", "_l_e3_directory_8cs.html", "_l_e3_directory_8cs" ],
+    [ "LEDirectory.cs", "_l_e_directory_8cs.html", "_l_e_directory_8cs" ],
     [ "ME1Directory.cs", "_m_e1_directory_8cs.html", null ],
     [ "ME2Directory.cs", "_m_e2_directory_8cs.html", null ],
     [ "ME3Directory.cs", "_m_e3_directory_8cs.html", null ],
-    [ "MEDirectories.cs", "_m_e_directories_8cs.html", [
-      [ "LegendaryExplorerCore.GameFilesystem.MEDirectories", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_directories.html", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_directories" ]
-    ] ],
-    [ "MELoadedDLC.cs", "_m_e_loaded_d_l_c_8cs.html", [
-      [ "LegendaryExplorerCore.GameFilesystem.MELoadedDLC", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_loaded_d_l_c.html", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_loaded_d_l_c" ]
-    ] ],
-    [ "MELoadedFiles.cs", "_m_e_loaded_files_8cs.html", [
-      [ "LegendaryExplorerCore.GameFilesystem.MELoadedFiles", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_loaded_files.html", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_loaded_files" ]
-    ] ],
+    [ "MEDirectories.cs", "_m_e_directories_8cs.html", "_m_e_directories_8cs" ],
+    [ "MELoadedDLC.cs", "_m_e_loaded_d_l_c_8cs.html", "_m_e_loaded_d_l_c_8cs" ],
+    [ "MELoadedFiles.cs", "_m_e_loaded_files_8cs.html", "_m_e_loaded_files_8cs" ],
     [ "MountFile.cs", "_mount_file_8cs.html", "_mount_file_8cs" ],
     [ "NSDoc.cs", "_game_filesystem_2_n_s_doc_8cs.html", null ],
-    [ "UDKDirectory.cs", "_u_d_k_directory_8cs.html", [
-      [ "LegendaryExplorerCore.GameFilesystem.UDKDirectory", "class_legendary_explorer_core_1_1_game_filesystem_1_1_u_d_k_directory.html", "class_legendary_explorer_core_1_1_game_filesystem_1_1_u_d_k_directory" ]
-    ] ]
+    [ "UDKDirectory.cs", "_u_d_k_directory_8cs.html", "_u_d_k_directory_8cs" ]
 ];

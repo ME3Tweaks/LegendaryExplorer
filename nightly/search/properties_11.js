@@ -57,7 +57,7 @@ var searchData=
   ['subnamespaces_54',['Subnamespaces',['../class_legendary_explorer_core_1_1_coalesced_1_1_namespace.html#ab227c2196b9078128bc2d3490b891ea7',1,'LegendaryExplorerCore::Coalesced::Namespace']]],
   ['subsequentbytes_55',['SubsequentBytes',['../class_legendary_explorer_core_1_1_m_e1_1_1_unreal_1_1_unhood_bytecode_1_1_error_bytecode_token.html#a1288a9849bc203170f7ec8017572b846',1,'LegendaryExplorerCore::ME1::Unreal::UnhoodBytecode::ErrorBytecodeToken']]],
   ['subtype_56',['SubType',['../class_legendary_explorer_core_1_1_plot_database_1_1_plot_elements_1_1_plot_bool.html#a9d4fdbea457fc1c35312d1652394fd5a',1,'LegendaryExplorerCore::PlotDatabase::PlotElements::PlotBool']]],
-  ['superclass_57',['SuperClass',['../class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#ab210ea767e5190bbecdffc2208d2084a',1,'LegendaryExplorerCore::Packages::ExportEntry']]],
+  ['superclass_57',['SuperClass',['../class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#a506c813d52b9799087cb7a7b93fa4631',1,'LegendaryExplorerCore::Packages::ExportEntry']]],
   ['superclassname_58',['SuperClassName',['../class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#a0f1c59ca9944481e470c0ab9bdb4ec4f',1,'LegendaryExplorerCore::Packages::ExportEntry']]],
   ['switch_59',['Switch',['../struct_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_endian.html#ad8f061aeed7989e9f26004bd964dcf70',1,'LegendaryExplorerCore::Gammtek::IO::Endian']]],
   ['synchronization_5fcontext_60',['SYNCHRONIZATION_CONTEXT',['../class_legendary_explorer_core_1_1_legendary_explorer_core_lib.html#aa607c2b89f2c97adc5d5e371e9fc19c8',1,'LegendaryExplorerCore::LegendaryExplorerCoreLib']]],

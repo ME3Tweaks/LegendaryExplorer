@@ -18,7 +18,7 @@ var class_legendary_explorer_core_1_1_coalesced_1_1_namespace =
     [ "IsReadOnly", "class_legendary_explorer_core_1_1_coalesced_1_1_namespace.html#aa64b63e79654fd62e254e64b040f6838", null ],
     [ "Keys", "class_legendary_explorer_core_1_1_coalesced_1_1_namespace.html#a6fad2a49643b96b16b00c2c3c9443df2", null ],
     [ "NameOnLevel", "class_legendary_explorer_core_1_1_coalesced_1_1_namespace.html#ad1c587f767581e57d3f4fd8006466064", null ],
-    [ "Parent", "class_legendary_explorer_core_1_1_coalesced_1_1_namespace.html#adc5f6fe2f2f337a58296b56b8ff9e23c", null ],
+    [ "Parent", "class_legendary_explorer_core_1_1_coalesced_1_1_namespace.html#a63659c7bcbe500a6c7ab205987bcbfce", null ],
     [ "Subnamespaces", "class_legendary_explorer_core_1_1_coalesced_1_1_namespace.html#ab227c2196b9078128bc2d3490b891ea7", null ],
     [ "Values", "class_legendary_explorer_core_1_1_coalesced_1_1_namespace.html#a283aa2ef74070d2e0189992d21c54ac7", null ],
     [ "this[string nameOnLevel]", "class_legendary_explorer_core_1_1_coalesced_1_1_namespace.html#a3c25a71d2aa7007809724646f8fcf100", null ],

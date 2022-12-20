@@ -1,0 +1,4 @@
+var _i_has_file_reference_8cs =
+[
+    [ "LegendaryExplorerCore.UnrealScript.Language.Tree.IHasFileReference", "interface_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_i_has_file_reference.html", "interface_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_i_has_file_reference" ]
+];

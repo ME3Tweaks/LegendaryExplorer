@@ -17,6 +17,6 @@ var class_legendary_explorer_core_1_1_misc_1_1_listenable_dictionary =
     [ "Values", "class_legendary_explorer_core_1_1_misc_1_1_listenable_dictionary.html#a54f2cc8bc8169e32a5efaa3685321ada", null ],
     [ "Count", "class_legendary_explorer_core_1_1_misc_1_1_listenable_dictionary.html#a1ee83035887f1698f0d7f3b7e0da8335", null ],
     [ "IsReadOnly", "class_legendary_explorer_core_1_1_misc_1_1_listenable_dictionary.html#ada8684dedf608caa119281d00d7b60b1", null ],
-    [ "this[TKey key]", "class_legendary_explorer_core_1_1_misc_1_1_listenable_dictionary.html#a53b34ae309c96fb9e56fda4370ad3d22", null ],
+    [ "this[TKey key]", "class_legendary_explorer_core_1_1_misc_1_1_listenable_dictionary.html#a0b1a96b21eee6ef5b9e3fe88e2420dde", null ],
     [ "OnDictionaryChanged", "class_legendary_explorer_core_1_1_misc_1_1_listenable_dictionary.html#a4cc06f436191e36d8ad9dca933e34bcf", null ]
 ];

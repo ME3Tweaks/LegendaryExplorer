@@ -32,5 +32,5 @@ var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_
     [ "int", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_resource.html#a6b11db21b2d07dc3e0474cf356d56d98", null ],
     [ "float", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_resource.html#abbcf2a132bc97b9e0dec2fa889817d3f", null ],
     [ "unkList", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_resource.html#a955a3ea7ce7346bbf34214dd02051f25", null ],
-    [ "unkCount", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_resource.html#a2196cd99f6cfecdeeb23942ca18d7546", null ]
+    [ "unkCount", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_resource.html#a1fe92e6d280cb5656409778d00c7ad45", null ]
 ];

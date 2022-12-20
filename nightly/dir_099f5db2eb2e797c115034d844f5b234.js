@@ -24,11 +24,7 @@ var dir_099f5db2eb2e797c115034d844f5b234 =
     [ "UDK", "dir_d0f4e9f77775f916eb63ba9739e96896.html", "dir_d0f4e9f77775f916eb63ba9739e96896" ],
     [ "Unreal", "dir_e8d5662cc6f786975e15a0182ad5d9be.html", "dir_e8d5662cc6f786975e15a0182ad5d9be" ],
     [ "UnrealScript", "dir_0ebc00e3d945bdb1c7569fed939fed17.html", "dir_0ebc00e3d945bdb1c7569fed939fed17" ],
-    [ "LegendaryExplorerCoreLib.cs", "_legendary_explorer_core_lib_8cs.html", [
-      [ "LegendaryExplorerCore.LegendaryExplorerCoreLib", "class_legendary_explorer_core_1_1_legendary_explorer_core_lib.html", "class_legendary_explorer_core_1_1_legendary_explorer_core_lib" ]
-    ] ],
-    [ "LegendaryExplorerCoreLibSettings.cs", "_legendary_explorer_core_lib_settings_8cs.html", [
-      [ "LegendaryExplorerCore.LegendaryExplorerCoreLibSettings", "class_legendary_explorer_core_1_1_legendary_explorer_core_lib_settings.html", "class_legendary_explorer_core_1_1_legendary_explorer_core_lib_settings" ]
-    ] ],
+    [ "LegendaryExplorerCoreLib.cs", "_legendary_explorer_core_lib_8cs.html", "_legendary_explorer_core_lib_8cs" ],
+    [ "LegendaryExplorerCoreLibSettings.cs", "_legendary_explorer_core_lib_settings_8cs.html", "_legendary_explorer_core_lib_settings_8cs" ],
     [ "SkipLocalsInit.cs", "_skip_locals_init_8cs.html", null ]
 ];

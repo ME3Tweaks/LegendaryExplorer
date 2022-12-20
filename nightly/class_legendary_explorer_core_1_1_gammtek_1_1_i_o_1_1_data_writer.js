@@ -14,7 +14,7 @@ var class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_data_writer =
     [ "Write", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_data_writer.html#acf95c7b743572610ebe7e59317f972b8", null ],
     [ "Write", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_data_writer.html#a1ef96986c5c0c86034c1d0678834f140", null ],
     [ "Null", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_data_writer.html#afde87b6c24b535d18139cbdaafb623c3", null ],
-    [ "ByteOrder", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_data_writer.html#a69c08928f73481ab06d1711bb0855b52", null ],
+    [ "ByteOrder", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_data_writer.html#ac7ff6e156897cc590b02f409a1bfd6d9", null ],
     [ "Converter", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_data_writer.html#a479bf8e2db3fa1a9f75e196648e0d496", null ],
     [ "Length", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_data_writer.html#ae80a42c126353d65f3cd877a2ef8de51", null ],
     [ "Position", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_data_writer.html#aabe8398aac36cc4cd2922594e2485b51", null ]

@@ -2,12 +2,7 @@ var class_legendary_explorer_core_1_1_unreal_1_1_d_l_c_package =
 [
     [ "FileEntryStruct", "struct_legendary_explorer_core_1_1_unreal_1_1_d_l_c_package_1_1_file_entry_struct.html", "struct_legendary_explorer_core_1_1_unreal_1_1_d_l_c_package_1_1_file_entry_struct" ],
     [ "HeaderStruct", "struct_legendary_explorer_core_1_1_unreal_1_1_d_l_c_package_1_1_header_struct.html", "struct_legendary_explorer_core_1_1_unreal_1_1_d_l_c_package_1_1_header_struct" ],
-    [ "DLCTOCUpdateResult", "class_legendary_explorer_core_1_1_unreal_1_1_d_l_c_package.html#aa21c23bcb3f6678869a0ee806866265b", [
-      [ "RESULT_UPDATED", "class_legendary_explorer_core_1_1_unreal_1_1_d_l_c_package.html#aa21c23bcb3f6678869a0ee806866265ba121192fbf35e81635162b5ae1cb0cc1b", null ],
-      [ "RESULT_UPDATE_NOT_NECESSARY", "class_legendary_explorer_core_1_1_unreal_1_1_d_l_c_package.html#aa21c23bcb3f6678869a0ee806866265baa48fdfbdfee391a7f10737ad8578ec34", null ],
-      [ "RESULT_ERROR_NO_ENTRIES", "class_legendary_explorer_core_1_1_unreal_1_1_d_l_c_package.html#aa21c23bcb3f6678869a0ee806866265ba626c899f0ecc51f9bfd5ef6c3629e4ef", null ],
-      [ "RESULT_ERROR_NO_TOC", "class_legendary_explorer_core_1_1_unreal_1_1_d_l_c_package.html#aa21c23bcb3f6678869a0ee806866265bab944300692351cd748b335985f7da77b", null ]
-    ] ],
+    [ "DLCTOCUpdateResult", "class_legendary_explorer_core_1_1_unreal_1_1_d_l_c_package.html#aa21c23bcb3f6678869a0ee806866265b", null ],
     [ "DLCPackage", "class_legendary_explorer_core_1_1_unreal_1_1_d_l_c_package.html#a34dd5315eb228ae1ecd164a64963015e", null ],
     [ "Load", "class_legendary_explorer_core_1_1_unreal_1_1_d_l_c_package.html#a28ec87d770ba3b54b25d5be40ead17d6", null ],
     [ "ReadFileNames", "class_legendary_explorer_core_1_1_unreal_1_1_d_l_c_package.html#aa13eacc3ef03b650926c5b02caf6a8fb", null ],

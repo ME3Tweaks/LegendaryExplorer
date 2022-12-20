@@ -1,13 +1,6 @@
 var class_legendary_explorer_core_1_1_textures_1_1_image =
 [
-    [ "ImageFormat", "class_legendary_explorer_core_1_1_textures_1_1_image.html#a56b9f4440142d36f639dca6a3f0229c9", [
-      [ "Unknown", "class_legendary_explorer_core_1_1_textures_1_1_image.html#a56b9f4440142d36f639dca6a3f0229c9a88183b946cc5f0e8c96b2e66e1c74a7e", null ],
-      [ "DDS", "class_legendary_explorer_core_1_1_textures_1_1_image.html#a56b9f4440142d36f639dca6a3f0229c9a9b20752f14503be0510115d06d64bbdc", null ],
-      [ "PNG", "class_legendary_explorer_core_1_1_textures_1_1_image.html#a56b9f4440142d36f639dca6a3f0229c9a55505ba281b015ec31f03ccb151b2a34", null ],
-      [ "BMP", "class_legendary_explorer_core_1_1_textures_1_1_image.html#a56b9f4440142d36f639dca6a3f0229c9aa5d5ca1447586e23dc011f8c0cc0a6db", null ],
-      [ "TGA", "class_legendary_explorer_core_1_1_textures_1_1_image.html#a56b9f4440142d36f639dca6a3f0229c9a64efd9bcf7b83f22fe9796967255e103", null ],
-      [ "JPEG", "class_legendary_explorer_core_1_1_textures_1_1_image.html#a56b9f4440142d36f639dca6a3f0229c9a907e06a16862d82ca6907a28a68d0ad6", null ]
-    ] ],
+    [ "ImageFormat", "class_legendary_explorer_core_1_1_textures_1_1_image.html#a56b9f4440142d36f639dca6a3f0229c9", null ],
     [ "Image", "class_legendary_explorer_core_1_1_textures_1_1_image.html#a6f96dcf24b4f938516b3a4b86b9b8876", null ],
     [ "Image", "class_legendary_explorer_core_1_1_textures_1_1_image.html#a27f18e1117f8bb7cf8663677cbd063db", null ],
     [ "Image", "class_legendary_explorer_core_1_1_textures_1_1_image.html#a7e3fea83594578cc209221b7b9f38f97", null ],

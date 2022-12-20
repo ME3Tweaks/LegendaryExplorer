@@ -1,11 +1,11 @@
 var interface_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_visitors_1_1_i_code_formatter =
 [
-    [ "GetOutput", "interface_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_visitors_1_1_i_code_formatter.html#af0053a341ddd17d05ee25e65fb79ee74", null ],
-    [ "Write", "interface_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_visitors_1_1_i_code_formatter.html#a8158ac4420fe2328e449850a46f7502b", null ],
-    [ "Append", "interface_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_visitors_1_1_i_code_formatter.html#a15310c0e5a5a92e94ae5c7e13e65f422", null ],
-    [ "Space", "interface_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_visitors_1_1_i_code_formatter.html#abd1ce80efb94afde1ddc748b7ca71f76", null ],
-    [ "ForceAlignment", "interface_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_visitors_1_1_i_code_formatter.html#a850c02cc6bf3a8d265da7ffebd7540b1", null ],
-    [ "NestingLevel", "interface_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_visitors_1_1_i_code_formatter.html#ae248c9cc0eb0ebc011dc07658676f5fc", null ],
-    [ "ForcedAlignment", "interface_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_visitors_1_1_i_code_formatter.html#a139f43a4075d3cb1412d8ba4a2b630e4", null ],
-    [ "ForceNoNewLines", "interface_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_visitors_1_1_i_code_formatter.html#ab217f4ddc50ce1563b2ba24cf006cb64", null ]
+    [ "GetOutput", "interface_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_visitors_1_1_i_code_formatter.html#ac668024d6417bb2d4cb8e6ecc2437a12", null ],
+    [ "Write", "interface_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_visitors_1_1_i_code_formatter.html#a3c1389259d7ba0af319918141036df8e", null ],
+    [ "Append", "interface_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_visitors_1_1_i_code_formatter.html#a1613c97a03d8fe04233302f5e2d49c41", null ],
+    [ "Space", "interface_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_visitors_1_1_i_code_formatter.html#a9339c7fc90359bde85d02126c2ea251b", null ],
+    [ "ForceAlignment", "interface_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_visitors_1_1_i_code_formatter.html#a4934a7a34bdd82d1ca2f0024c8890218", null ],
+    [ "NestingLevel", "interface_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_visitors_1_1_i_code_formatter.html#aa323035a293dc133b10edba66f7dee93", null ],
+    [ "ForcedAlignment", "interface_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_visitors_1_1_i_code_formatter.html#abb94c08ef9101fc7ff69fe2f63d24c3e", null ],
+    [ "ForceNoNewLines", "interface_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_visitors_1_1_i_code_formatter.html#a38b88844f7417e47f5bd516001d63d0f", null ]
 ];

@@ -1,0 +1,4 @@
+var _bio_discovered_codex_map_8cs =
+[
+    [ "LegendaryExplorerCore.Unreal.BinaryConverters.BioDiscoveredCodexMap", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_discovered_codex_map.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_discovered_codex_map" ]
+];
