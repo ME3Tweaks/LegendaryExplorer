@@ -21,7 +21,7 @@ variables:
   appPatch: '0'
   netVersion: '6'
   disable.coverage.autogenerate: 'true'
-  doxygenUrl: "https://www.doxygen.nl/files/doxygen-1.9.2.windows.x64.bin.zip"
+  doxygenUrl: "https://www.doxygen.nl/files/doxygen-1.9.5.windows.x64.bin.zip"
   doxygenWorkingDir: '$(Pipeline.Workspace)\Documentation\Doxygen'
   doxygenOutputDir: '$(Pipeline.Workspace)\Documentation\Output'
 
