@@ -96,8 +96,8 @@ steps:
   displayName: 'Generate code coverage HTML'
   inputs:
     targetType: 'inline'
-    script: |
-      reportgenerator -reports:$(Agent.TempDirectory)/**/coverage.cobertura.xml -targetdir:CoverageReport -reporttypes:"HtmlInline_AzurePipelines;Cobertura" -classfilters:"-*Gammtek*;-*.SharpDX.*" -verbosity:Verbose
+    script: 'reportgenerator -reports:/**/coverage.cobertura.xml -targetdir:CoverageReport -reporttypes:"HtmlInline_AzurePipelines;Cobertura" -classfilters:"-*Gammtek*;-*.SharpDX.*" -verbosity:Verbose'
+    workingDirectory: 'LegendaryExplorer/LegendaryExplorerCore.Tests'
 
 - task: PublishCodeCoverageResults@1
   displayName: 'Publish code coverage'
