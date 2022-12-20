@@ -20,6 +20,6 @@
 
 	<ItemGroup>
 		<PackageReference Include="NAudio.Core" Version="2.1.0" />
-		<PackageReference Include="System.Drawing.Common" Version="6.0.0" />
+		<PackageReference Include="System.Drawing.Common" Version="7.0.0" />
 	</ItemGroup>
 </Project>
