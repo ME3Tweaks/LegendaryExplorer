@@ -2423,6 +2423,10 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                         Tokens.AddDefinitionLink(super, className);
                         superSpecifier = super;
                         superClass = super;
+                        if (Self == superClass)
+                        {
+                            LogWarning($"'Super({superClass.Name}).' does nothing, this function is already in '{superClass.Name}'. Use an unqualified 'Super.' instead.");
+                        }
                         if (!Self.SameAsOrSubClassOf(superClass))
                         {
                             TypeError($"'{superClass.Name}' is not a superclass of '{Self.Name}'!", className);
@@ -2448,6 +2452,11 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     {
                         superClass = Self;
                         state = state.Parent;
+                    }
+                    else if (state is not null)
+                    {
+                        state = null;
+                        superClass = Self;
                     }
                     else
                     {
