@@ -360,7 +360,6 @@ namespace LegendaryExplorerCore.Kismet
                     defaults.Remove(inputLinks);
                 }
 
-#if DEBUG
                 // 08/30/2022 Add useful defaults for editor - Mgamerz
                 // edited default to None as that is in every package and should be default if there is no named event to reference. - KK
                 switch (info.ClassName)
@@ -378,7 +377,6 @@ namespace LegendaryExplorerCore.Kismet
                         defaults.Add(new IntProperty(0, "m_nIndex"));
                         break;
                 }
-#endif
             }
 
             int objInstanceVersion = GlobalUnrealObjectInfo.GetSequenceObjectInfo(game, info.ClassName)?.ObjInstanceVersion ?? 1;
