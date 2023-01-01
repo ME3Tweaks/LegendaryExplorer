@@ -215,7 +215,37 @@ namespace LegendaryExplorer.GameInterop
             HyperlinkExtensions.OpenURL("https://github.com/ME3Tweaks/ME3-ASI-Plugins/releases/tag/v1.0-ConsoleExtension");
         }
 
-        public static void OpenInteropASIDownload(MEGame game) => HyperlinkExtensions.OpenURL(GameController.GetInteropTargetForGame(game).InteropASIDownloadLink);
+        // public static void OpenInteropASIDownload(MEGame game) => HyperlinkExtensions.OpenURL(GameController.GetInteropTargetForGame(game).InteropASIDownloadLink);
+        public static void OpenInteropASIDownload(MEGame game)
+        {
+            // Allow if the build number is 127 or higher (ME3Tweaks Mod Manager 8.0.1 Beta)
+
+            bool requestedInstall = false;
+            if (ModManagerIntegration.GetModManagerBuildNumber() >= 127)
+            {
+                switch (game)
+                {
+                    case MEGame.LE1:
+                        requestedInstall = ModManagerIntegration.RequestASIInstallation(game, ASIModIDs.LE1_LEX_INTEROP);
+                        break;
+                    case MEGame.LE2:
+                        requestedInstall = ModManagerIntegration.RequestASIInstallation(game, ASIModIDs.LE2_LEX_INTEROP);
+                        break;
+                    case MEGame.LE3:
+                        requestedInstall = ModManagerIntegration.RequestASIInstallation(game, ASIModIDs.LE3_LEX_INTEROP);
+                        break;
+                }
+            }
+
+            if (!requestedInstall)
+            {
+                if (game.IsLEGame())
+                {
+                    HyperlinkExtensions.OpenURL(GameController.GetInteropTargetForGame(game).InteropASIDownloadLink);
+                }
+            }
+        }
+
 
         public static bool IsGameInstalled(MEGame game) => MEDirectories.GetExecutablePath(game) is string exePath && File.Exists(exePath);
 
