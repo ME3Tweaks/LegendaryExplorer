@@ -372,6 +372,11 @@ namespace LegendaryExplorerCore.Kismet
                     case "SeqAct_ActivateRemoteEvent":
                         defaults.Add(new NameProperty("None", "EventName"));
                         break;
+                    case "BioSeqAct_PMExecuteTransition":
+                    case "BioSeqAct_PMCheckState":
+                    case "BioSeqAct_PMCheckConditional":
+                        defaults.Add(new IntProperty(0, "m_nIndex"));
+                        break;
                 }
 #endif
             }
