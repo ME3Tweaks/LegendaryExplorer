@@ -515,8 +515,13 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         {
                             // See if any packages are already open to avoid wasting memory
                             newSourcePackage = rop.Cache.GetFirstCachedPackage(canddiates);
-                            if (newSourcePackage == null)
-                                newSourcePackage = rop.Cache.GetCachedPackage(canddiates[0], true); // Open package in the cache
+                            int index = 0;
+                            while (index < canddiates.Count && newSourcePackage == null)
+                            {
+                                // If db has missing file this enumerates to find the correct one
+                                newSourcePackage = rop.Cache.GetCachedPackage(canddiates[index], true); // Open package in the cache
+                                index++;
+                            }
 
                             closePackageOnCompletion = false;
                         }
