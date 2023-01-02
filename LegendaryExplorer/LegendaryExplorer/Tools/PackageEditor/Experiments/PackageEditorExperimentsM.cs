@@ -2866,7 +2866,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 var udkDestFile = d.FileName;
                 using var udkP = MEPackageHandler.OpenUDKPackage(udkDestFile);
 
-                OpenFileDialog f = new OpenFileDialog { Title = "Select source file to export from", Filter = GameFileFilters.OpenFileFilter, CustomPlaces = AppDirectories.GameCustomPlaces};
+                OpenFileDialog f = new OpenFileDialog { Title = "Select source file to export from", Filter = GameFileFilters.OpenFileFilter, CustomPlaces = AppDirectories.GameCustomPlaces };
                 if (f.ShowDialog() != true)
                     return;
 
@@ -3307,6 +3307,22 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             var exp = pcc.Exports.FirstOrDefault(x => x.ClassName == "WwiseBank");
             var outDir = Path.Combine(@"B:\Documents\WwiseExports", exp.ObjectName);
             WwiseIO.ExportBankToProject(exp, Directory.CreateDirectory(outDir).FullName);
+        }
+
+        public static void StripLightmap(PackageEditorWindow peWindow)
+        {
+            if (!peWindow.TryGetSelectedExport(out var exp) || (exp.IsDefaultObject || exp.ClassName != "StaticMeshComponent"))
+            {
+                MessageBox.Show("Unsupported export - must select a StaticMeshComponent");
+                return;
+            }
+
+            var smc = ObjectBinary.From<StaticMeshComponent>(exp);
+            foreach (var lod in smc.LODData)
+            {
+                lod.LightMap = new LightMap(); // This means no lightmap.
+            }
+            exp.WriteBinary(smc);
         }
     }
 }

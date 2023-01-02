@@ -820,7 +820,7 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
                     var prop = x.GetProperty<EnumProperty>("MoveFrame");
                     if (prop == null || prop.Value != "IMF_AnchorObject") return true;
                     return false; // IMF_AnchorObject
-                }); 
+                });
             }
         }
 
@@ -837,6 +837,12 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         {
             if (GetPEWindow().Pcc == null) return;
             PackageEditorExperimentsM.RandomizeTerrain(GetPEWindow().Pcc);
+        }
+
+        private void StripLightmap_Click(object sender, RoutedEventArgs e)
+        {
+            if (GetPEWindow().Pcc == null) return;
+            PackageEditorExperimentsM.StripLightmap(GetPEWindow());
         }
 
         #endregion
@@ -1434,13 +1440,14 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             PackageEditorExperimentsO.RenameWwiseBankExperiment(GetPEWindow());
         }
 
-        private void UpdateWwiseBankID_Click (object sender, RoutedEventArgs e)
+        private void UpdateWwiseBankID_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsO.UpdateWwiseBankIDExperiment(GetPEWindow());
         }
         #endregion
 
         // EXPERIMENTS: CHONKY DB---------------------------------------------------------
+        #region Object Database
         // This is for cross-game porting
         private void ChonkyDB_BuildLE1GameDB(object sender, RoutedEventArgs e)
         {
@@ -1471,7 +1478,7 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         {
             PackageEditorExperimentsM.BuildAllObjectsGameDB(MEGame.ME3, GetPEWindow());
         }
-
+        #endregion
 
         // PLEASE MOVE YOUR EXPERIMENT HANDLER INTO YOUR SECTION ABOVE
     }
