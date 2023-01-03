@@ -62,7 +62,7 @@ namespace LegendaryExplorerCore.Packages
                 compressPackage = package.Game.IsLEGame();
             }
 
-            if (package.FilePath is null && savePath == null)
+            if (package.IsMemoryPackage || (package.FilePath is null && savePath == null))
             {
                 throw new InvalidOperationException("Cannot save a temporary memory-based package! You must pass a save path to save a memory package.");
             }

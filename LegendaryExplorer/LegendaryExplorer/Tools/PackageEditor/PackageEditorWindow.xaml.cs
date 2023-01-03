@@ -177,8 +177,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
         public ICommand NavigateForwardCommand { get; set; }
         public ICommand ForceReloadPackageCommand { get; set; }
         public ICommand ComparePackagesCommand { get; set; }
-        public ICommand OpenLEVersionCommand { get; set; }
-        public ICommand OpenOTVersionCommand { get; set; }
+        public ICommand OpenOtherVersionCommand { get; set; }
         public ICommand CompareToUnmoddedCommand { get; set; }
         public ICommand ExportAllDataCommand { get; set; }
         public ICommand ExportBinaryDataCommand { get; set; }
@@ -298,8 +297,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
             ExtractToPackageCommand = new GenericCommand(ExtractEntryToNewPackage, ExportIsSelected);
 
             RestoreExportCommand = new GenericCommand(RestoreExportData, ExportIsSelected);
-            OpenLEVersionCommand = new GenericCommand(() => OpenOtherVersion(true), IsLoadedPackageOT);
-            OpenOTVersionCommand = new GenericCommand(() => OpenOtherVersion(false), IsLoadedPackageLE);
+            OpenOtherVersionCommand = new GenericCommand(OpenOtherVersion, IsLoadedPackageME);
 
             ForceReloadPackageCommand = new GenericCommand(() => ExperimentsMenu.ForceReloadPackageWithoutSharing(), () => ShowExperiments && ExperimentsMenu.CanForceReload());
 
@@ -307,6 +305,22 @@ namespace LegendaryExplorer.Tools.PackageEditor
             NavigateBackCommand = new GenericCommand(NavigateToPreviousEntry, () => CurrentView == CurrentViewMode.Tree && BackwardsIndexes != null && BackwardsIndexes.Any());
 
             CreateClassCommand = new GenericCommand(CreateClass, IsLoadedPackageME);
+        }
+
+        private void OpenOtherVersion()
+        {
+            var result = CrossGenHelpers.FetchOppositeGenPackage(Pcc, out var otherGen);
+            if (result != null)
+            {
+                MessageBox.Show(result);
+            }
+            else
+            {
+                TryGetSelectedEntry(out var entry);
+                PackageEditorWindow pe = new PackageEditorWindow();
+                pe.LoadPackage(otherGen, goToEntry: entry?.InstancedFullPath);
+                pe.Show();
+            }
         }
 
         // LECLData is only available on LE game files
@@ -388,60 +402,8 @@ namespace LegendaryExplorer.Tools.PackageEditor
             }
         }
 
-
-        private bool IsLoadedPackageOT() => Pcc != null && Pcc.Game.IsOTGame();
-        private bool IsLoadedPackageLE() => Pcc != null && Pcc.Game.IsLEGame();
         private bool IsLoadedPackageME() => Pcc != null && Pcc.Game.IsMEGame();
 
-        private void OpenOtherVersion(bool openLegendaryVersion)
-        {
-            var files = MELoadedFiles.GetFilesLoadedInGame(openLegendaryVersion
-                ? Pcc.Game.ToLEVersion()
-                : Pcc.Game.ToOTVersion());
-
-
-            var otherVerNameBase = Path.GetFileNameWithoutExtension(Pcc.FilePath);
-            if (Pcc.Game == MEGame.ME1 && openLegendaryVersion && otherVerNameBase == "BIOC_Base")
-                otherVerNameBase = "SFXGame";
-            if (Pcc.Game == MEGame.LE1 && !openLegendaryVersion && otherVerNameBase == "SFXGame")
-                otherVerNameBase = "BIOC_Base";
-
-            var otherVerName = $"{otherVerNameBase}.{(Pcc.Game == MEGame.LE1 ? "SFM" : "pcc")}";
-            if (files.TryGetValue(otherVerName, out var matchingVersion))
-            {
-                TryGetSelectedEntry(out var entry);
-                PackageEditorWindow pe = new PackageEditorWindow();
-                pe.LoadFile(matchingVersion, goToEntry: entry?.InstancedFullPath);
-                pe.Show();
-                return;
-            }
-
-
-            if (Pcc.Game == MEGame.LE1)
-            {
-                // try other extensions
-                otherVerName = $"{otherVerNameBase}.u";
-                if (files.TryGetValue(otherVerName, out var matchingVerMe1))
-                {
-                    TryGetSelectedEntry(out var entry);
-                    PackageEditorWindow pe = new PackageEditorWindow();
-                    pe.LoadFile(matchingVerMe1, goToEntry: entry?.InstancedFullPath);
-                    pe.Show();
-                    return;
-                }
-                otherVerName = $"{otherVerNameBase}.upk";
-                if (files.TryGetValue(otherVerName, out matchingVerMe1))
-                {
-                    TryGetSelectedEntry(out var entry);
-                    PackageEditorWindow pe = new PackageEditorWindow();
-                    pe.LoadFile(matchingVerMe1, goToEntry: entry?.InstancedFullPath);
-                    pe.Show();
-                    return;
-                }
-            }
-
-            MessageBox.Show($"Could not find {Path.GetFileName(Pcc.FilePath)} in the other version of this game.");
-        }
 
         private void ResolveImportsTreeView()
         {
@@ -606,7 +568,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
         {
             var classes = Pcc.Exports.Select(x => x.ClassName).NonNull().Distinct().ToList().OrderBy(p => p).ToList();
             var chosenClass = InputComboBoxDialog.GetValue(this, "Select a class to list all instances of.", "Class selector", classes, classes.FirstOrDefault());
-            if (chosenClass != null)
+            if (!string.IsNullOrWhiteSpace(chosenClass))
             {
                 var foundExports = Pcc.Exports.Where(x => x.ClassName == chosenClass).ToList();
                 // Have to make new EntryStringPair as Entry can be casted into String
@@ -2859,6 +2821,43 @@ namespace LegendaryExplorer.Tools.PackageEditor
             RecentsController.InitRecentControl(Toolname, Recents_MenuItem, fileName => LoadFile(fileName));
         }
 
+        /// <summary>
+        /// Opens an existing package object, that may have been loaded from somewhere else.
+        /// </summary>
+        /// <param name="package"></param>
+        /// <param name="goToIndex"></param>
+        /// <param name="goToEntry"></param>
+        public void LoadPackage(IMEPackage package, int goToIndex = 0, string goToEntry = null)
+        {
+            // Todo: Maybe prompt if there are pending changes to the current package?
+            var packageFilePath = package.FilePath;
+            try
+            {
+                preloadPackage(Path.GetFileName(packageFilePath), 0); // Package is already loaded.
+                RegisterPackage(package);
+                _selectedItem = null; // We change the backing data so we don't fire off a tree event since it checks if Pcc is null.
+                if (goToIndex == 0 && !string.IsNullOrWhiteSpace(goToEntry))
+                {
+                    goToIndex = Pcc.FindEntry(goToEntry)?.UIndex ?? 0;
+                }
+
+                postloadPackage(Path.GetFileName(packageFilePath), packageFilePath, goToIndex);
+                if (File.Exists(packageFilePath))
+                {
+                    RecentsController.AddRecent(packageFilePath, false, Pcc?.Game);
+                    RecentsController.SaveRecentList(true);
+                }
+            }
+            catch (Exception e) when (!App.IsDebug)
+            {
+                StatusBar_LeftMostText.Text = "Failed to load " + Path.GetFileName(packageFilePath);
+                MessageBox.Show($"Error loading {Path.GetFileName(packageFilePath)}:\n{e.Message}");
+                IsBusy = false;
+                IsBusyTaskbar = false;
+                //throw e;
+            }
+        }
+
         public void LoadFile(string s, int goToIndex = 0, string goToEntry = null)
         {
             // Todo: Maybe prompt if there are pending changes to the current package?
@@ -3599,6 +3598,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
         public bool GoToEntry(string instancedFullPath)
         {
+            if (instancedFullPath == null) return false;
             if (Pcc.FindEntry(instancedFullPath) is IEntry entry)
             {
                 CurrentView = CurrentViewMode.Tree;
@@ -4232,7 +4232,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     dialogueEditorWPF.Show();
                     break;
                 case "PathfindingEditor":
-                    var pathEditor = new PathfindingEditor.PathfindingEditorWindow(Pcc.FilePath);
+                    var pathEditor = new PathfindingEditor.PathfindingEditorWindow(Pcc);
                     pathEditor.Show();
                     break;
                 case "Meshplorer":
@@ -4428,35 +4428,33 @@ namespace LegendaryExplorer.Tools.PackageEditor
             }
         }
 
-
-
-
-
-
-
-
-
-        public void LoadFileFromStream(Stream packageStream, string associatedFilePath, int goToIndex = 0)
+        public void LoadFileFromStream(Stream packageStream, string associatedFilePath, int goToIndex = 0, string goToEntry = null)
         {
+            // Todo: Maybe prompt if there are pending changes to the current package?
             try
             {
                 preloadPackage(Path.GetFileName(associatedFilePath), packageStream.Length);
                 LoadMEPackage(packageStream, associatedFilePath);
+                _selectedItem = null; // We change the backing data so we don't fire off a tree event since it checks if Pcc is null.
+                if (goToIndex == 0 && !string.IsNullOrWhiteSpace(goToEntry))
+                {
+                    goToIndex = Pcc.FindEntry(goToEntry)?.UIndex ?? 0;
+                }
                 postloadPackage(Path.GetFileName(associatedFilePath), associatedFilePath, goToIndex);
+
+                // Loading from stream is not supported for saving or direct loading.
+                // RecentsController.AddRecent(s, false, Pcc?.Game);
+                // RecentsController.SaveRecentList(true);
             }
             catch (Exception e) when (!App.IsDebug)
             {
-                StatusBar_LeftMostText.Text = "Failed to load " + Path.GetFileName(associatedFilePath);
-                MessageBox.Show($"Error loading {Path.GetFileName(associatedFilePath)}:\n{e.Message}");
+                StatusBar_LeftMostText.Text = "Failed to load " + associatedFilePath;
+                MessageBox.Show($"Error loading {associatedFilePath}:\n{e.Message}");
                 IsBusy = false;
                 IsBusyTaskbar = false;
                 //throw e;
             }
         }
-
-
-
-
 
         public void PropogateRecentsChange(string propogationSource, IEnumerable<RecentsControl.RecentItem> newRecents)
         {

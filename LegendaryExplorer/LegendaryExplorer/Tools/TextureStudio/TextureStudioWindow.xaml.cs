@@ -864,6 +864,7 @@ namespace LegendaryExplorer.Tools.TextureStudio
             {
                 var decompressed = dpackage.DecompressEntry(tf);
                 var package = MEPackageHandler.OpenMEPackageFromStream(decompressed, tf.FileName);
+                package.IsMemoryPackage = true;
                 foreach (var f in package.Exports.Where(x => x.IsTexture()))
                 {
                     var t2d = ObjectBinary.From<UTexture2D>(f);

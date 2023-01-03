@@ -1677,6 +1677,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
                     MemoryStream sfarEntry = patchSFAR.DecompressEntry(fileIdx);
                     using IMEPackage patchPcc = MEPackageHandler.OpenMEPackageFromStream(sfarEntry.SeekBegin());
+                    patchPcc.IsMemoryPackage = true;
                     if (patchPcc.TryGetUExport(info.exportIndex, out ExportEntry export) && export.IsClass && export.ObjectName == className)
                     {
                         string packageName = export.ParentName;

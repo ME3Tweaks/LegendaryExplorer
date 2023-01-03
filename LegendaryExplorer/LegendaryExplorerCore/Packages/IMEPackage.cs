@@ -304,5 +304,10 @@ namespace LegendaryExplorerCore.Packages
         void InvalidateLookupTable();
 
         public EntryTree Tree { get; }
+
+        /// <summary>
+        /// If this package was opened from a non-disk source and doesn't have a true filepath (e.g. from SFAR - won't have single file it resided in on disk)
+        /// </summary>
+        bool IsMemoryPackage { get; set; }
     }
 }

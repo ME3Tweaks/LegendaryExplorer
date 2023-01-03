@@ -93,6 +93,8 @@ namespace LegendaryExplorerCore.Packages
             set => IsModified = value;
         }
 
+        public bool IsMemoryPackage { get; set; }
+
         public Endian Endian { get; }
         public MEGame Game { get; private set; } //can only be ME1, ME2, ME3, LE1, LE2, LE3. UDK is a separate class
         public GamePlatform Platform { get; private set; }

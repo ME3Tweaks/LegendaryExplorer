@@ -161,8 +161,7 @@
                     <MenuItem Header="LECL Data Editor" ToolTip="Edits metadata stored in this package that is used in mod development tools" Command="{Binding LECLEditorCommand}"/>
                     <MenuItem Header="Compare with another package" ToolTip="Compare another version of this package to see what exports and imports have changed" Command="{Binding ComparePackagesCommand}"/>
                     <MenuItem Header="Compare with unmodded" ToolTip="Compare with the (hopefully) unmodded version of this package to see what exports and imports have changed" Command="{Binding CompareToUnmoddedCommand}"/>
-                    <MenuItem Header="Open LE version of file" ToolTip="Opens the Legendary Edition version of this file, if it exists." Command="{Binding OpenLEVersionCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
-                    <MenuItem Header="Open OT version of file" ToolTip="Opens the Original Trilogy version of this file, if it exists." Command="{Binding OpenOTVersionCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
+                    <MenuItem Header="Open other generation version of file (OT &lt;-&gt; LE)" ToolTip="Opens the opposite generation's version of this file, if it exists." Command="{Binding OpenOtherVersionCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
                     <MenuItem Header="Find all instances of class in package" Command="{Binding FindAllClassInstancesCommand}" InputGestureText="CTRL+Shift+F"/>
 
                     <MenuItem Header="Pop out current tab into new standalone window" ToolTip="Opens the panel on the right side in a new window" Command="{Binding PopoutCurrentViewCommand}" InputGestureText="CTRL+P"/>

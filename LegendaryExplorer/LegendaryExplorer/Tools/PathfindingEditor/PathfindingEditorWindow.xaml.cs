@@ -38,6 +38,7 @@ using Piccolo;
 using Piccolo.Event;
 using Piccolo.Nodes;
 using RectangleF = System.Drawing.RectangleF;
+using LegendaryExplorer.Tools.PackageEditor;
 
 namespace LegendaryExplorer.Tools.PathfindingEditor
 {
@@ -120,6 +121,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
         public readonly PathingZoomController zoomController;
 
         private string FileQueuedForLoad;
+        private IMEPackage PackageQueuedForLoad;
         private ExportEntry ExportQueuedForFocus;
         public ObservableCollectionExtended<ExportEntry> ActiveNodes { get; } = new();
         public ObservableCollectionExtended<ExportEntry> ActiveOverlayNodes { get; } = new();
@@ -258,7 +260,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
         public ICommand OpenCommand { get; set; }
         public ICommand SaveCommand { get; set; }
         public ICommand SaveAsCommand { get; set; }
-
+        public ICommand OpenOtherVersionCommand { get; set; }
         public ICommand TogglePathfindingCommand { get; set; }
         public ICommand ToggleEverythingElseCommand { get; set; }
         public ICommand ToggleActorsCommand { get; set; }
@@ -356,6 +358,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
             RemoveFromGroupBoxCommand = new RelayCommand(RemoveFromGroup);
             LoadGroupCommand = new GenericCommand(LoadActorGroup, PackageIsLoaded);
             SaveGroupCommand = new GenericCommand(SaveActorGroup, () => !ActorGroup.IsEmpty());
+            OpenOtherVersionCommand = new GenericCommand(OpenOtherVersion, () => Pcc != null && Pcc.Game.IsMEGame());
         }
 
         private bool IsSplineActorSelected() => ActiveNodes_ListBox.SelectedItem is ExportEntry exp && exp.IsA("SplineActor");
@@ -566,7 +569,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
             graphEditor = (PathingGraphEditor)GraphHost.Child;
             graphEditor.BackColor = GraphEditorBackColor;
             AllowRefresh = true;
-            RecentsController.InitRecentControl(Toolname, Recents_MenuItem, LoadFile);
+            RecentsController.InitRecentControl(Toolname, Recents_MenuItem, x => LoadFile(x));
             zoomController = new PathingZoomController(graphEditor);
             PathEdUtils.LoadClassesDB();
             List<PathfindingDB_ExportType> types = PathEdUtils.ExportClassDB.Where(x => x.pathnode).ToList();
@@ -626,6 +629,11 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
             FileQueuedForLoad = fileName;
         }
 
+        public PathfindingEditorWindow(IMEPackage package) : this()
+        {
+            PackageQueuedForLoad = package;
+        }
+
         public PathfindingEditorWindow(ExportEntry export) : this()
         {
             FileQueuedForLoad = export.FileRef.FilePath;
@@ -634,13 +642,22 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
 
         private void PathfindingEditorWPF_Loaded(object sender, RoutedEventArgs e)
         {
-            if (FileQueuedForLoad != null)
+            if (FileQueuedForLoad != null || PackageQueuedForLoad != null)
             {
                 Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action(() =>
                 {
                     //Wait for all children to finish loading
-                    LoadFile(FileQueuedForLoad);
-                    FileQueuedForLoad = null;
+                    if (FileQueuedForLoad != null)
+                    {
+                        LoadFile(FileQueuedForLoad);
+                        FileQueuedForLoad = null;
+                    }
+                    else if (PackageQueuedForLoad != null)
+                    {
+                        LoadFile(PackageQueuedForLoad.FilePath, () => RegisterPackage(PackageQueuedForLoad));
+                        PackageQueuedForLoad = null;
+                    }
+
                     if (ExportQueuedForFocus != null && ExportQueuedForFocus.ClassName != "Level")
                     {
                         if (pathfindingNodeClasses.Contains(ExportQueuedForFocus.ClassName)) { ShowPathfindingNodesLayer = true; }
@@ -698,7 +715,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                 }
             }
         }
-        private void LoadFile(string fileName)
+        private void LoadFile(string fileName, Action loadPackageDelegate = null)
         {
             CurrentFile = null;
             ActiveNodes.ClearEx();
@@ -714,7 +731,16 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
             StatusText = $"Loading {Path.GetFileName(fileName)}";
             Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
 
-            LoadMEPackage(fileName);
+            // Hack: Just use our delegate to register package so we don't have to split all of this out into pre and post load
+            if (loadPackageDelegate != null)
+            {
+                loadPackageDelegate();
+            }
+            else
+            {
+                // Default behavior
+                LoadMEPackage(fileName);
+            }
             PersistentLevelExport = Pcc.Exports.FirstOrDefault(x => x.ClassName == "Level" && x.ObjectName == "PersistentLevel");
             if (PersistentLevelExport == null)
             {
@@ -741,8 +767,8 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                 {
                     ChangingSelectionByGraphClick = true;
                     ActiveNodes_ListBox.SelectedIndex = 0;
-                    var panToRectangle = new RectangleF(graphcenter, new SizeF(200, 200));
-                    graphEditor.Camera.AnimateViewToCenterBounds(panToRectangle, false, 1000);
+                    var panToRectangle = new RectangleF(graphcenter, new SizeF(2000, 2000));
+                    graphEditor.Camera.AnimateViewToCenterBounds(panToRectangle, true, 1000);
                     ChangingSelectionByGraphClick = false;
                 }
                 else
@@ -768,6 +794,16 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
             {
                 Mouse.OverrideCursor = null;
             }), DispatcherPriority.ContextIdle, null);
+        }
+
+        /// <summary>
+        /// Opens an existing package object.
+        /// </summary>
+        /// <param name="package"></param>
+        public void LoadPackage(IMEPackage package)
+        {
+            // This is a hack so we don't have to do preload/load/postload
+            LoadFile(package.FilePath, () => RegisterPackage(package));
         }
 
         private async void SavePackage()
@@ -4976,6 +5012,25 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                     gpsActive = false;
                 }
             });
+        }
+
+        private void OpenOtherVersion()
+        {
+            var result = CrossGenHelpers.FetchOppositeGenPackage(Pcc, out var otherGen);
+            if (result != null)
+            {
+                MessageBox.Show(result);
+            }
+            else
+            {
+                var nodeEntry = (ExportEntry)ActiveNodes_ListBox.SelectedItem;
+                PathfindingEditorWindow pe = new PathfindingEditorWindow(otherGen);
+                if (nodeEntry != null)
+                {
+                    pe.ExportQueuedForFocus = otherGen.FindExport(nodeEntry.InstancedFullPath);
+                }
+                pe.Show();
+            }
         }
 
         #region Busy

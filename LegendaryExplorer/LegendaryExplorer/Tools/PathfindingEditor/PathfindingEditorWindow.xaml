@@ -102,6 +102,9 @@
                 </MenuItem>
 
                 <MenuItem Header="Tools" Padding="4">
+                    <MenuItem Header="Open other generation version of file (OT &lt;-&gt; LE)" ToolTip="Opens the opposite generation's version of this file, if it exists." Command="{Binding OpenOtherVersionCommand}" sharedUi:Bindings.VisibilityToEnabled="True"/>
+                    <MenuItem Header="Add export to level" Command="{Binding AddExportToLevelCommand}"
+                              ToolTip="Add an export to this file's level" />
                     <MenuItem Header="Add export to level" Command="{Binding AddExportToLevelCommand}"
                               ToolTip="Add an export to this file's level" />
                     <MenuItem Header="Find node via Tag" Command="{Binding FocusFindCommand}" InputGestureText="CTRL+F"

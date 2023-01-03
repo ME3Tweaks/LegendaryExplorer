@@ -60,6 +60,8 @@ namespace LegendaryExplorerCore.Packages
             set => IsModified = value;
         }
 
+        public bool IsMemoryPackage { get; set; }
+
         #region HeaderMisc
         private class Thumbnail
         {
