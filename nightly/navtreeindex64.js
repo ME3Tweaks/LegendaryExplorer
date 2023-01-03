@@ -1,5 +1,9 @@
 var NAVTREEINDEX64 =
 {
+"class_sample_offset_bank_chunk.html#a70d6601bdb883ad17bc41d962d25e65b":[1,0,17,3],
+"class_sample_offset_bank_chunk.html#a80353f976c72a68ec04ce1411bfe2a84":[1,0,17,0],
+"class_sound_cone_bank_chunk.html":[1,0,18],
+"class_sound_cone_bank_chunk.html#a227e3fdeec063d2d5fc6b7d5c5b5b871":[1,0,18,7],
 "class_sound_cone_bank_chunk.html#a702f1a1f3b143dbb7a2c83a92fccabeb":[1,0,18,1],
 "class_sound_cone_bank_chunk.html#a721e5ef63484dfd32d843ed3bea4bd51":[1,0,18,9],
 "class_sound_cone_bank_chunk.html#a7db99a844cb3c560a8b0b44e8471f327":[1,0,18,8],
@@ -132,8 +136,8 @@ var NAVTREEINDEX64 =
 "dir_fc297f48b00bb058e25bce0d1d92428f.html":[2,0,0,0,12,0],
 "dir_fcbaed6291bc34708fd86da8b1325ec6.html":[2,0,0,0,6],
 "files.html":[2,0],
-"functions.html":[1,2,0,0],
 "functions.html":[1,2,0],
+"functions.html":[1,2,0,0],
 "functions_a.html":[1,2,0,1],
 "functions_b.html":[1,2,0,2],
 "functions_c.html":[1,2,0,3],
@@ -142,8 +146,8 @@ var NAVTREEINDEX64 =
 "functions_enum.html":[1,2,3],
 "functions_evnt.html":[1,2,5],
 "functions_f.html":[1,2,0,6],
-"functions_func.html":[1,2,1],
 "functions_func.html":[1,2,1,0],
+"functions_func.html":[1,2,1],
 "functions_func_b.html":[1,2,1,1],
 "functions_func_c.html":[1,2,1,2],
 "functions_func_d.html":[1,2,1,3],
@@ -209,8 +213,8 @@ var NAVTREEINDEX64 =
 "functions_t.html":[1,2,0,20],
 "functions_u.html":[1,2,0,21],
 "functions_v.html":[1,2,0,22],
-"functions_vars.html":[1,2,2,0],
 "functions_vars.html":[1,2,2],
+"functions_vars.html":[1,2,2,0],
 "functions_vars_a.html":[1,2,2,1],
 "functions_vars_b.html":[1,2,2,2],
 "functions_vars_c.html":[1,2,2,3],
@@ -245,9 +249,5 @@ var NAVTREEINDEX64 =
 "globals_defs.html":[2,1,4],
 "globals_func.html":[2,1,1],
 "globals_type.html":[2,1,3],
-"globals_vars.html":[2,1,2],
-"hierarchy.html":[1,1],
-"index.html":[],
-"index.html#autotoc_md0":[0],
-"index.html#autotoc_md1":[1]
+"globals_vars.html":[2,1,2]
 };

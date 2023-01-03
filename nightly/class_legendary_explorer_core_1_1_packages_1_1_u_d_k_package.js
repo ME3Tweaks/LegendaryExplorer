@@ -14,5 +14,6 @@ var class_legendary_explorer_core_1_1_packages_1_1_u_d_k_package =
     [ "Localization", "class_legendary_explorer_core_1_1_packages_1_1_u_d_k_package.html#a7b02a8f6b767ff0e870f076c9a5cf440", null ],
     [ "CustomMetadata", "class_legendary_explorer_core_1_1_packages_1_1_u_d_k_package.html#a2e0ef2b1ef024d82d777fa0a168b186f", null ],
     [ "LECLTagData", "class_legendary_explorer_core_1_1_packages_1_1_u_d_k_package.html#a2795427cbc9891b458b3536c62600d86", null ],
-    [ "CanSave", "class_legendary_explorer_core_1_1_packages_1_1_u_d_k_package.html#a39efcfcb553dbad2c89b79524a50f537", null ]
+    [ "CanSave", "class_legendary_explorer_core_1_1_packages_1_1_u_d_k_package.html#a39efcfcb553dbad2c89b79524a50f537", null ],
+    [ "IsMemoryPackage", "class_legendary_explorer_core_1_1_packages_1_1_u_d_k_package.html#a87150546648080fb0a1ec30cc7591414", null ]
 ];

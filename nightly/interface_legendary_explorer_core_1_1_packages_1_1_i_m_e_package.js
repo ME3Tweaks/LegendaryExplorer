@@ -61,6 +61,7 @@ var interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package =
     [ "LocalTalkFiles", "interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#aab3237a219666daedc1cc28952c26d9a", null ],
     [ "IsModified", "interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#ad0dfc44a03c8519bfe7f13c8a8688671", null ],
     [ "Tree", "interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#acb1a3956076c4048044045c9e4ad23e0", null ],
+    [ "IsMemoryPackage", "interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#a083164a094e2ac84e555f20cdeca403b", null ],
     [ "NoLongerOpenInTools", "interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#a533fea21c616fde6e573c9eb8b82aec6", null ],
     [ "NoLongerUsed", "interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#af53706e7e91c68dc29673eb829e39d07", null ]
 ];
