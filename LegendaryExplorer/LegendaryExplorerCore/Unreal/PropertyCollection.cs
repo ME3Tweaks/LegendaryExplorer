@@ -26,7 +26,7 @@ namespace LegendaryExplorerCore.Unreal
     public sealed class PropertyCollection : List<Property>
     {
         internal int EndOffset;
-        
+
         /// <summary>
         /// Indicates that when serialized, the properties in this collection should use value-only serialization and that there should not be a <see cref="NoneProperty"/> at the end.
         /// </summary>
@@ -351,12 +351,12 @@ namespace LegendaryExplorerCore.Unreal
                         structValueLookupGame = MEGame.ME3;
                         break;
                     case MEGame.ME3 when ME3UnrealObjectInfo.Structs.ContainsKey(structType):
-                    case MEGame.UDK when ME3UnrealObjectInfo.Structs.ContainsKey(structType):
+                    case MEGame.UDK when UDKUnrealObjectInfo.Structs.ContainsKey(structType):
                     case MEGame.ME2 when ME2UnrealObjectInfo.Structs.ContainsKey(structType):
                     case MEGame.ME1 when ME1UnrealObjectInfo.Structs.ContainsKey(structType):
-                    case MEGame.LE3 when ME3UnrealObjectInfo.Structs.ContainsKey(structType):
-                    case MEGame.LE2 when ME3UnrealObjectInfo.Structs.ContainsKey(structType):
-                    case MEGame.LE1 when ME3UnrealObjectInfo.Structs.ContainsKey(structType):
+                    case MEGame.LE3 when LE3UnrealObjectInfo.Structs.ContainsKey(structType):
+                    case MEGame.LE2 when LE2UnrealObjectInfo.Structs.ContainsKey(structType):
+                    case MEGame.LE1 when LE1UnrealObjectInfo.Structs.ContainsKey(structType):
                         break;
                     default:
                         Debug.WriteLine("Unknown struct type: " + structType);
@@ -375,6 +375,7 @@ namespace LegendaryExplorerCore.Unreal
 
             foreach (var prop in defaultProps)
             {
+                // Debug.WriteLine($"Reading immuatable property at 0x{stream?.Position:X8}: {prop?.Name}, in {structType}");
                 Property property;
                 if (prop is StructProperty defaultStructProperty)
                 {
@@ -460,8 +461,8 @@ namespace LegendaryExplorerCore.Unreal
         {
             IMEPackage pcc = export.FileRef;
             long arrayOffset = IsInImmutable ? stream.Position : stream.Position - 24;
-            ArrayType arrayType = GlobalUnrealObjectInfo.GetArrayType(pcc.Game, name, enclosingType == "ScriptStruct" ? export.ObjectName : enclosingType , parsingEntry, packageCache);
-            //Debug.WriteLine("Reading array length at 0x" + stream.Position.ToString("X5"));
+            ArrayType arrayType = GlobalUnrealObjectInfo.GetArrayType(pcc.Game, name, enclosingType == "ScriptStruct" ? export.ObjectName : enclosingType, parsingEntry, packageCache);
+            // Debug.WriteLine($"Reading {enclosingType} array length at 0x" + stream.Position.ToString("X5"));
             int count = stream.ReadInt32();
             switch (arrayType)
             {
@@ -806,7 +807,7 @@ namespace LegendaryExplorerCore.Unreal
         /// Creates a <see cref="NoneProperty"/>
         /// </summary>
         public NoneProperty() : base(NameReference.None) { }
-        
+
         internal NoneProperty(EndianReader stream) : this()
         {
             ValueOffset = (int)stream.Position;
@@ -930,7 +931,7 @@ namespace LegendaryExplorerCore.Unreal
         }
 
         ///<inheritdoc/>
-        public override bool Equivalent(Property other) => other is StructProperty structProperty && base.Equivalent(structProperty) && structProperty.StructType.CaseInsensitiveEquals(StructType) 
+        public override bool Equivalent(Property other) => other is StructProperty structProperty && base.Equivalent(structProperty) && structProperty.StructType.CaseInsensitiveEquals(StructType)
                                                            && structProperty.Properties.Equivalent(Properties);
 
         /// <summary>
@@ -1835,7 +1836,7 @@ namespace LegendaryExplorerCore.Unreal
         {
             Values = values;
         }
-        
+
         // Deserialization constructor
         internal ArrayProperty(long startOffset, List<T> values, NameReference name) : this(values, name)
         {

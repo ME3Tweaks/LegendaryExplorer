@@ -184,7 +184,21 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                         case ArrayProperty<StructProperty> asp:
                             if (GlobalUnrealObjectInfo.GetStructs(newGame).ContainsKey(asp.Reference))
                             {
-                                if (HasIncompatibleImmutabilities(asp.Reference, out bool newImmutability)) break;
+                                if (HasIncompatibleImmutabilities(asp.Reference, out bool newImmutability))
+                                {
+                                    // Attempt to correct an incompatible property
+                                    var correctedProperty = AttemptArrayStructCorrection(asp, sourcePcc.Game, newGame);
+                                    if (correctedProperty == null)
+                                    {
+                                        // Correction was not performed - strip the property
+                                        Debug.WriteLine($"Trimmed incompatible immutable array property {prop.Name} from {typeName}");
+                                        removedProperties = true;
+                                        break;
+                                    }
+                                    Debug.WriteLine($"Corrected incompatible immutable array property {prop.Name} from {typeName} to compatible version");
+                                    newProps.Add(correctedProperty);
+                                    continue; // Continue parsing
+                                }
                                 foreach (StructProperty structProperty in asp)
                                 {
                                     structProperty.Properties = RemoveIncompatibleProperties(sourcePcc, structProperty.Properties, structProperty.StructType, newGame, ref removedProperties);
@@ -285,6 +299,16 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 if (sourceIsImmutable && newImmutability && !GlobalUnrealObjectInfo.GetClassOrStructInfo(sourcePcc.Game, structType).properties
                                                                              .SequenceEqual(GlobalUnrealObjectInfo.GetClassOrStructInfo(newGame, structType).properties))
                 {
+#if DEBUG
+                    // For debugging
+                    //var firstGameProps = GlobalUnrealObjectInfo.GetClassOrStructInfo(sourcePcc.Game, structType).properties;
+                    //var secondGameProps = GlobalUnrealObjectInfo.GetClassOrStructInfo(newGame, structType).properties;
+                    //for (int i = 0; i < firstGameProps.Count; i++)
+                    //{
+                    //    Debug.WriteLine($"{firstGameProps[i].Key}\t\t{secondGameProps[i].Key}");
+                    //}
+#endif
+
                     //both immutable, but have different properties
                     return true;
                 }
@@ -297,6 +321,35 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
                 return false;
             }
+        }
+
+        /// <summary>
+        /// Attempts to correct an ArrayProperty<StructProperty>
+        /// </summary>
+        /// <param name="asp"></param>
+        /// <param name="sourcePccGame"></param>
+        /// <param name="newGame"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        private static Property AttemptArrayStructCorrection(ArrayProperty<StructProperty> arrayOfStructs, MEGame sourcePccGame, MEGame newGame)
+        {
+            if (sourcePccGame == MEGame.ME3 && newGame == MEGame.LE3 && arrayOfStructs.Name == "Slots")
+            {
+                // This makes a copy to ensure whatever calls this doesn't get a side effect
+                // Correction: CoverSlot ME3 -> LE3
+                ArrayProperty<StructProperty> newProp = new ArrayProperty<StructProperty>("Slots");
+                foreach (var sp in arrayOfStructs)
+                {
+                    var newStruct = new StructProperty(sp.StructType, sp.Properties, sp.Name, sp.IsImmutable);
+                    var slotMarker = newStruct.Properties[15]; // SlotMarker is at slot 15 in ME3, 11 in LE3
+                    newStruct.Properties.RemoveAt(15); // Remove property - it must be here or it will shift by 1!
+                    newStruct.Properties.Insert(11, slotMarker);
+                    newProp.Add(newStruct);
+                }
+
+                return newProp;
+            }
+            return null;
         }
     }
 }
