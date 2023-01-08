@@ -88,51 +88,56 @@ namespace LegendaryExplorerCore.Audio
 
             // Import the streams
             List<ExportEntry> streamExports = new List<ExportEntry>();
-            foreach (var streamInfo in referencedStreamingAudio)
+            if (referencedStreamingAudio != null)
             {
-                var exportName = GetExportNameFromShortname(streamInfo.Shortname);
-                var streamExport = package.FindExport($"{bankName}.{exportName}");
-                if (streamExport == null)
+                foreach (var streamInfo in referencedStreamingAudio)
                 {
-                    streamExport = ExportCreator.CreateExport(package, exportName, "WwiseStream", parentPackage, indexed: false);
-                }
+                    var exportName = GetExportNameFromShortname(streamInfo.Shortname);
+                    var streamExport = package.FindExport($"{bankName}.{exportName}");
+                    if (streamExport == null)
+                    {
+                        streamExport = ExportCreator.CreateExport(package, exportName, "WwiseStream", parentPackage,
+                            indexed: false);
+                    }
 
-                PropertyCollection p = new PropertyCollection();
-                if (package.Game == MEGame.LE3)
-                {
-                    // LE3
-                    p.Add(new NameProperty(bankName, "Filename"));
-                    p.Add(new IntProperty((int)streamInfo.Id, "Id"));
-                }
-                else
-                {
-                    // LE2
-                    p.Add(new NameProperty(bankName, "Filename"));
-                    p.Add(new NameProperty(bankName, "BankName"));
-                    p.Add(new IntProperty((int)streamInfo.Id, "Id"));
-                }
+                    PropertyCollection p = new PropertyCollection();
+                    if (package.Game == MEGame.LE3)
+                    {
+                        // LE3
+                        p.Add(new NameProperty(bankName, "Filename"));
+                        p.Add(new IntProperty((int)streamInfo.Id, "Id"));
+                    }
+                    else
+                    {
+                        // LE2
+                        p.Add(new NameProperty(bankName, "Filename"));
+                        p.Add(new NameProperty(bankName, "BankName"));
+                        p.Add(new IntProperty((int)streamInfo.Id, "Id"));
+                    }
 
-                var wemPath = Path.Combine(generatedDir, $"{streamInfo.Id}.wem"); // Seems to dump here for non-localized audio.
-                WwiseStream ws = new WwiseStream();
-                ws.Id = (int)streamInfo.Id;
-                ws.DataOffset = (int)afcStream.Position;
-                var wemData = File.ReadAllBytes(wemPath);
-                afcStream.Write(wemData);
-                ws.DataSize = wemData.Length;
-                ws.Filename = bankName; // This is needed internally for serialization
-                ws.BulkDataFlags = 0x1; // Stored externally, uncompressed
+                    var wemPath =
+                        Path.Combine(generatedDir,
+                            $"{streamInfo.Id}.wem"); // Seems to dump here for non-localized audio.
+                    WwiseStream ws = new WwiseStream();
+                    ws.Id = (int)streamInfo.Id;
+                    ws.DataOffset = (int)afcStream.Position;
+                    var wemData = File.ReadAllBytes(wemPath);
+                    afcStream.Write(wemData);
+                    ws.DataSize = wemData.Length;
+                    ws.Filename = bankName; // This is needed internally for serialization
+                    ws.BulkDataFlags = 0x1; // Stored externally, uncompressed
 
-                if (package.Game == MEGame.LE2)
-                {
-                    // Not sure what these are but they are typically 0x1
-                    ws.Unk1 = 0x1;
-                    ws.Unk2 = 0x1;
+                    if (package.Game == MEGame.LE2)
+                    {
+                        // Not sure what these are but they are typically 0x1
+                        ws.Unk1 = 0x1;
+                        ws.Unk2 = 0x1;
+                    }
+
+                    streamExport.WritePropertiesAndBinary(p, ws);
+                    streamExports.Add(streamExport);
                 }
-
-                streamExport.WritePropertiesAndBinary(p, ws);
-                streamExports.Add(streamExport);
             }
-
 
             // Import the events
             foreach (var eventInfo in eventInfos)
