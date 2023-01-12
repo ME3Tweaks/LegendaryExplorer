@@ -7,6 +7,7 @@ using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Bases;
 using LegendaryExplorer.SharedUI.Interfaces;
 using LegendaryExplorer.SharedUI.PeregrineTreeView;
+using LegendaryExplorer.Tools.PathfindingEditor;
 using LegendaryExplorer.Tools.PlotEditor;
 using LegendaryExplorer.Tools.Sequence_Editor.Experiments;
 using LegendaryExplorer.Tools.SequenceObjects;
@@ -100,7 +101,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             StatusText = "Select package file to load";
             InitializeComponent();
 
-            RecentsController.InitRecentControl(Toolname, Recents_MenuItem, LoadFile);
+            RecentsController.InitRecentControl(Toolname, Recents_MenuItem, x => LoadFile(x));
 
             graphEditor = (SequenceGraphEditor)GraphHost.Child;
             graphEditor.BackColor = GraphEditorBackColor;
@@ -135,6 +136,11 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             ExportQueuedForFocusing = export;
         }
 
+        public SequenceEditorWPF(IMEPackage package) : this()
+        {
+            PackageQueuedForLoad = package;
+        }
+
         public ICommand OpenCommand { get; set; }
         public ICommand SaveCommand { get; set; }
         public ICommand SaveAsCommand { get; set; }
@@ -150,8 +156,9 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
         public ICommand KismetLogCurrentSequenceCommand { get; set; }
         public ICommand SearchCommand { get; set; }
         public ICommand ForceReloadPackageCommand { get; set; }
-
         public ICommand ResetFavoritesCommand { get; set; }
+        public ICommand OpenOtherVersionCommand { get; set; }
+
         private void LoadCommands()
         {
             ForceReloadPackageCommand = new GenericCommand(ForceReloadPackageWithoutSharing, CanForceReload);
@@ -169,6 +176,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             SearchCommand = new GenericCommand(SearchDialogue, () => CurrentObjects.Any);
             UseSavedViewsCommand = new GenericCommand(ToggleSavedViews, () => Pcc != null && Pcc is { Game: MEGame.ME1 } || Pcc.Game.IsLEGame());
             ResetFavoritesCommand = new GenericCommand(ResetFavorites, () => Pcc != null);
+            OpenOtherVersionCommand = new GenericCommand(OpenOtherVersion, () => Pcc != null && Pcc.Game.IsMEGame());
         }
 
         private void ToggleSavedViews()
@@ -618,18 +626,28 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             }
         }
 
-        public void LoadFile(string fileName, int uIndex)
+        public void LoadFile(string fileName, int uIndex, Action loadPackageDelegate = null)
         {
-            LoadFile(fileName);
+            LoadFile(fileName, loadPackageDelegate);
             GoToExport(uIndex);
         }
 
-        public void LoadFile(string fileName)
+        public void LoadFile(string fileName, Action loadPackageDelegate = null)
         {
             try
             {
                 preloadPackage(fileName, 0); // We don't show the size so don't bother
-                LoadMEPackage(fileName);
+                if (loadPackageDelegate != null)
+                {
+                    // Used for loading packages from memory from another tool
+                    loadPackageDelegate.Invoke();
+                }
+                else
+                {
+                    // Used for loading package from disk (even in shared interop already).
+                    LoadMEPackage(fileName);
+                }
+
                 CurrentFile = Path.GetFileName(fileName);
 
                 // Streams don't work for recents
@@ -1285,6 +1303,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
 
         private readonly Dictionary<int, PointF> customSaveData = new();
         private bool panToSelection = true;
+        private IMEPackage PackageQueuedForLoad;
         private string FileQueuedForLoad;
         private ExportEntry ExportQueuedForFocusing;
         private bool AllowWindowRefocus = true;
@@ -2279,13 +2298,21 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
 
         private void SequenceEditorWPF_Loaded(object sender, RoutedEventArgs e)
         {
-            if (FileQueuedForLoad != null)
+            if (FileQueuedForLoad != null || PackageQueuedForLoad != null)
             {
                 Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action(() =>
                 {
                     //Wait for all children to finish loading
-                    LoadFile(FileQueuedForLoad);
-                    FileQueuedForLoad = null;
+                    if (FileQueuedForLoad != null)
+                    {
+                        LoadFile(FileQueuedForLoad);
+                        FileQueuedForLoad = null;
+                    }
+                    else if (PackageQueuedForLoad != null)
+                    {
+                        LoadFile(PackageQueuedForLoad.FilePath, () => RegisterPackage(PackageQueuedForLoad));
+                        PackageQueuedForLoad = null;
+                    }
 
                     if (ExportQueuedForFocusing != null)
                     {
@@ -2676,6 +2703,26 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 }
             }
         }
+
+        private void OpenOtherVersion()
+        {
+            var result = CrossGenHelpers.FetchOppositeGenPackage(Pcc, out var otherGen);
+            if (result != null)
+            {
+                MessageBox.Show(result);
+            }
+            else
+            {
+                var nodeEntry = SelectedObjects.FirstOrDefault();
+                SequenceEditorWPF seqEd = new SequenceEditorWPF(otherGen);
+                if (nodeEntry != null && nodeEntry.Export != null)
+                {
+                    seqEd.ExportQueuedForFocusing = otherGen.FindExport(nodeEntry.Export.InstancedFullPath);
+                }
+                seqEd.Show();
+            }
+        }
+
 
         private void LoadCustomClasses_Clicked(object sender, RoutedEventArgs e)
         {

@@ -99,6 +99,8 @@
                 </MenuItem>
 
                 <MenuItem Header="Tools" Padding="4">
+                    <MenuItem Header="Open other generation version of file (OT &lt;-&gt; LE)" ToolTip="Opens the opposite generation's version of this file, if it exists." Command="{Binding OpenOtherVersionCommand}" sharedUi:Bindings.VisibilityToEnabled="True"/>
+                    <Separator/>
                     <MenuItem Header="Goto #" Command="{Binding GotoCommand}" InputGestureText="Ctrl+G" />
                     <MenuItem Header="Add Object" Click="AddObject_Clicked"
                                 ToolTip="Add existing Sequence Object to this Sequence"
