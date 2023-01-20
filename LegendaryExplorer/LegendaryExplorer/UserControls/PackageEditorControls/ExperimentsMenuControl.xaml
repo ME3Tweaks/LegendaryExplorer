@@ -128,6 +128,7 @@
         <MenuItem Header="Scan Headers" Click="ScanHeaders_OnCLick" />
         <MenuItem Header="Calculate Probe Functions" Click="CalculateProbeFuncs_OnClick"/>
         <MenuItem Header="Port ShadowMaps for BioA_CitSam_800Finalroom.pcc" Click="PortShadowMaps_Click"/>
+        <MenuItem Header="Generate Ghidra Struct insertion script" Click="GenerateGhidraStructInsertionScript"/>
     </MenuItem>
     <MenuItem Header="Kinkojiro's 101 ways to cause an aneurysm">
         <MenuItem Header="Transfer game level's art to a different game (ME2 -> ME3 Only)" Click="TransferLevelBetweenGames"/>

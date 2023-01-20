@@ -851,6 +851,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
 
         #region SirCxyrtyx's Experiments
 
+        private void GenerateGhidraStructInsertionScript(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsS.GenerateGhidraStructInsertionScript(GetPEWindow());
+        }
+
         private void CalculateProbeFuncs_OnClick(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsS.CalculateProbeNames(GetPEWindow());
