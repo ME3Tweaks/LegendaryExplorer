@@ -792,9 +792,13 @@ namespace LegendaryExplorer.Tools.TextureStudio
                         if (packageInstance.RelativePackagePath.Contains(@"DLC_MOD_"))
                         {
                             var dlcFolderName = packageInstance.RelativePackagePath.Substring(packageInstance.RelativePackagePath.IndexOf(@"DLC_MOD_"));
-                            dlcFolderName = dlcFolderName.Substring(0, dlcFolderName.IndexOf(@"\"));
-                            TFCSuffix = dlcFolderName;
-                            break;
+                            var dlcIndex = dlcFolderName.IndexOf(@"\");
+                            if (dlcIndex > 0)
+                            {
+                                dlcFolderName = dlcFolderName.Substring(0, dlcIndex);
+                                TFCSuffix = dlcFolderName;
+                                break;
+                            }
                         }
                     }
 
