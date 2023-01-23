@@ -1029,6 +1029,7 @@ var hierarchy =
     [ "LegendaryExplorerCore.Textures.TFCCompactor", "class_legendary_explorer_core_1_1_textures_1_1_t_f_c_compactor.html", null ],
     [ "LegendaryExplorerCore.Textures.TFCCompactorInfoPackage", "class_legendary_explorer_core_1_1_textures_1_1_t_f_c_compactor_info_package.html", null ],
     [ "LegendaryExplorerCore.Textures.TFCInfo", "class_legendary_explorer_core_1_1_textures_1_1_t_f_c_info.html", null ],
+    [ "LegendaryExplorerCore.Textures.TFCTools", "class_legendary_explorer_core_1_1_textures_1_1_t_f_c_tools.html", null ],
     [ "LegendaryExplorerCore.Gammtek.ThrowHelper", "class_legendary_explorer_core_1_1_gammtek_1_1_throw_helper.html", null ],
     [ "LegendaryExplorerCore.TLK.TLKBitArray", "class_legendary_explorer_core_1_1_t_l_k_1_1_t_l_k_bit_array.html", null ],
     [ "LegendaryExplorerCore.TLK.ME2ME3.ME2ME3TLKBase.TLKHeader", "struct_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base_1_1_t_l_k_header.html", null ],

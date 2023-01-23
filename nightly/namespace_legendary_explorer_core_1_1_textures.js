@@ -11,5 +11,6 @@ var namespace_legendary_explorer_core_1_1_textures =
     [ "TFCCompactor", "class_legendary_explorer_core_1_1_textures_1_1_t_f_c_compactor.html", "class_legendary_explorer_core_1_1_textures_1_1_t_f_c_compactor" ],
     [ "TFCCompactorInfoPackage", "class_legendary_explorer_core_1_1_textures_1_1_t_f_c_compactor_info_package.html", "class_legendary_explorer_core_1_1_textures_1_1_t_f_c_compactor_info_package" ],
     [ "TFCInfo", "class_legendary_explorer_core_1_1_textures_1_1_t_f_c_info.html", "class_legendary_explorer_core_1_1_textures_1_1_t_f_c_info" ],
+    [ "TFCTools", "class_legendary_explorer_core_1_1_textures_1_1_t_f_c_tools.html", "class_legendary_explorer_core_1_1_textures_1_1_t_f_c_tools" ],
     [ "PixelFormat", "namespace_legendary_explorer_core_1_1_textures.html#a00a75c8a054cd63f64b7bbecc2d61e09", null ]
 ];

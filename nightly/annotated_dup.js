@@ -432,7 +432,8 @@ var annotated_dup =
         [ "TextureSizeNotPowerOf2Exception", "class_legendary_explorer_core_1_1_textures_1_1_texture_size_not_power_of2_exception.html", null ],
         [ "TFCCompactor", "class_legendary_explorer_core_1_1_textures_1_1_t_f_c_compactor.html", "class_legendary_explorer_core_1_1_textures_1_1_t_f_c_compactor" ],
         [ "TFCCompactorInfoPackage", "class_legendary_explorer_core_1_1_textures_1_1_t_f_c_compactor_info_package.html", "class_legendary_explorer_core_1_1_textures_1_1_t_f_c_compactor_info_package" ],
-        [ "TFCInfo", "class_legendary_explorer_core_1_1_textures_1_1_t_f_c_info.html", "class_legendary_explorer_core_1_1_textures_1_1_t_f_c_info" ]
+        [ "TFCInfo", "class_legendary_explorer_core_1_1_textures_1_1_t_f_c_info.html", "class_legendary_explorer_core_1_1_textures_1_1_t_f_c_info" ],
+        [ "TFCTools", "class_legendary_explorer_core_1_1_textures_1_1_t_f_c_tools.html", "class_legendary_explorer_core_1_1_textures_1_1_t_f_c_tools" ]
       ] ],
       [ "TLK", "namespace_legendary_explorer_core_1_1_t_l_k.html", [
         [ "ME1", "namespace_legendary_explorer_core_1_1_t_l_k_1_1_m_e1.html", [

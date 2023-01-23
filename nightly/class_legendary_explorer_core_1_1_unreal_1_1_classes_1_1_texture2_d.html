@@ -140,7 +140,11 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:ad81fd5640e1652a6009432fded9ad01c"><td class="memItemLeft" align="right" valign="top">static List&lt; <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d_mip_info.html">Texture2DMipInfo</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d.html#ad81fd5640e1652a6009432fded9ad01c">GetTexture2DMipInfos</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> exportEntry, string cacheName)</td></tr>
 <tr class="separator:ad81fd5640e1652a6009432fded9ad01c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5f7210f8ecd0ca6b7c4f2a90ee54db84"><td class="memItemLeft" align="right" valign="top">static byte[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d.html#a5f7210f8ecd0ca6b7c4f2a90ee54db84">GetTextureData</a> (<a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d_mip_info.html">Texture2DMipInfo</a> mipToLoad, <a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game, string gamePathToUse=null, bool decompress=true, List&lt; string &gt; additionalTFCs=null)</td></tr>
+<tr class="memdesc:a5f7210f8ecd0ca6b7c4f2a90ee54db84"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets texture data for the given mip.   <a href="class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d.html#a5f7210f8ecd0ca6b7c4f2a90ee54db84">More...</a><br /></td></tr>
 <tr class="separator:a5f7210f8ecd0ca6b7c4f2a90ee54db84"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aae87a4b0b4b4e2602a74b10a7789bd21"><td class="memItemLeft" align="right" valign="top">static byte[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d.html#aae87a4b0b4b4e2602a74b10a7789bd21">GetTextureData</a> (<a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game, byte[] mipData, <a class="el" href="namespace_legendary_explorer_core_1_1_unreal.html#ada9f16a120f6eb3951fcb1b4f0a93827">StorageTypes</a> storageType, bool decompress, int uncompressedSize, int compressedSize, int externalOffset, string textureCacheName, string gamePathToUse=null, List&lt; string &gt; additionalTFCs=null, string packagePathForLocalLookup=null)</td></tr>
+<tr class="memdesc:aae87a4b0b4b4e2602a74b10a7789bd21"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets texture data from the given data.   <a href="class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d.html#aae87a4b0b4b4e2602a74b10a7789bd21">More...</a><br /></td></tr>
+<tr class="separator:aae87a4b0b4b4e2602a74b10a7789bd21"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a60be7ae3c5a3349968f06ef912bfd8c7"><td class="memItemLeft" align="right" valign="top">static uint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d.html#a60be7ae3c5a3349968f06ef912bfd8c7">GetMipCRC</a> (<a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d_mip_info.html">Texture2DMipInfo</a> mip, string textureFormat, string gamePathToUse=null, List&lt; string &gt; additionalTFCs=null)</td></tr>
 <tr class="separator:a60be7ae3c5a3349968f06ef912bfd8c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a564243e740d452cb14db5b4de9a81701"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="namespace_legendary_explorer_core_1_1_unreal.html#ada9f16a120f6eb3951fcb1b4f0a93827">StorageTypes</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d.html#a564243e740d452cb14db5b4de9a81701">CalculateStorageType</a> (<a class="el" href="namespace_legendary_explorer_core_1_1_unreal.html#ada9f16a120f6eb3951fcb1b4f0a93827">StorageTypes</a> prevType, <a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game, bool isPackageStored)</td></tr>
@@ -439,7 +443,7 @@ Properties</h2></td></tr>
 </div>
 </div>
 <a id="a5f7210f8ecd0ca6b7c4f2a90ee54db84" name="a5f7210f8ecd0ca6b7c4f2a90ee54db84"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5f7210f8ecd0ca6b7c4f2a90ee54db84">&#9670;&#160;</a></span>GetTextureData()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a5f7210f8ecd0ca6b7c4f2a90ee54db84">&#9670;&#160;</a></span>GetTextureData() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -489,6 +493,135 @@ Properties</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Gets texture data for the given mip.  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">mipToLoad</td><td></td></tr>
+    <tr><td class="paramname">game</td><td></td></tr>
+    <tr><td class="paramname">gamePathToUse</td><td></td></tr>
+    <tr><td class="paramname">decompress</td><td></td></tr>
+    <tr><td class="paramname">additionalTFCs</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+</div>
+</div>
+<a id="aae87a4b0b4b4e2602a74b10a7789bd21" name="aae87a4b0b4b4e2602a74b10a7789bd21"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aae87a4b0b4b4e2602a74b10a7789bd21">&#9670;&#160;</a></span>GetTextureData() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static byte[] LegendaryExplorerCore.Unreal.Classes.Texture2D.GetTextureData </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a>&#160;</td>
+          <td class="paramname"><em>game</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">byte[]&#160;</td>
+          <td class="paramname"><em>mipData</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespace_legendary_explorer_core_1_1_unreal.html#ada9f16a120f6eb3951fcb1b4f0a93827">StorageTypes</a>&#160;</td>
+          <td class="paramname"><em>storageType</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>decompress</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>uncompressedSize</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>compressedSize</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>externalOffset</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>textureCacheName</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>gamePathToUse</em> = <code>null</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">List&lt; string &gt;&#160;</td>
+          <td class="paramname"><em>additionalTFCs</em> = <code>null</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>packagePathForLocalLookup</em> = <code>null</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Gets texture data from the given data.  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">game</td><td></td></tr>
+    <tr><td class="paramname">mipData</td><td></td></tr>
+    <tr><td class="paramname">storageType</td><td></td></tr>
+    <tr><td class="paramname">decompress</td><td></td></tr>
+    <tr><td class="paramname">uncompressedSize</td><td></td></tr>
+    <tr><td class="paramname">compressedSize</td><td></td></tr>
+    <tr><td class="paramname">externalOffset</td><td></td></tr>
+    <tr><td class="paramname">textureCacheName</td><td></td></tr>
+    <tr><td class="paramname">gamePathToUse</td><td></td></tr>
+    <tr><td class="paramname">additionalTFCs</td><td></td></tr>
+    <tr><td class="paramname">packagePathForLocalLookup</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">Exception</td><td></td></tr>
+    <tr><td class="paramname">FileNotFoundException</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

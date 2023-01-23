@@ -9,6 +9,7 @@ var class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d =
     [ "SerializeNewData", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d.html#acddd340bbb6e08247dc4b47d0b08b401", null ],
     [ "ReplaceMips", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d.html#adc963b6444b27f664abe0f9e70bf29a0", null ],
     [ "GetTextureData", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d.html#a5f7210f8ecd0ca6b7c4f2a90ee54db84", null ],
+    [ "GetTextureData", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d.html#aae87a4b0b4b4e2602a74b10a7789bd21", null ],
     [ "GetMipCRC", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d.html#a60be7ae3c5a3349968f06ef912bfd8c7", null ],
     [ "Replace", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d.html#a254959df4df8b6893db22e11778b3a3a", null ],
     [ "CalculateStorageType", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d.html#a564243e740d452cb14db5b4de9a81701", null ],

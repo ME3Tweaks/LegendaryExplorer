@@ -10,5 +10,6 @@ var dir_88d259683dc35125553e2d066a3628f9 =
     [ "TexConverter.cs", "_tex_converter_8cs.html", "_tex_converter_8cs" ],
     [ "TextureCRC.cs", "_texture_c_r_c_8cs.html", "_texture_c_r_c_8cs" ],
     [ "TextureLODInfo.cs", "_texture_l_o_d_info_8cs.html", "_texture_l_o_d_info_8cs" ],
-    [ "TFCCompactor.cs", "_t_f_c_compactor_8cs.html", "_t_f_c_compactor_8cs" ]
+    [ "TFCCompactor.cs", "_t_f_c_compactor_8cs.html", "_t_f_c_compactor_8cs" ],
+    [ "TFCTools.cs", "_t_f_c_tools_8cs.html", "_t_f_c_tools_8cs" ]
 ];
