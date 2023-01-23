@@ -253,7 +253,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
         {
             if (!InitiallyLoaded)
             {
-                Debug.WriteLine("SceneRenderControl_Loaded");
+                // Debug.WriteLine("SceneRenderControl_Loaded");
                 D3DImage = new Microsoft.Wpf.Interop.DirectX.D3D11Image
                 {
                     OnRender = D3DImage_OnRender,
@@ -372,7 +372,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
         {
             if (isNewSurface)
             {
-                Debug.WriteLine("IsNewSurface");
+                // Debug.WriteLine("IsNewSurface");
                 if (Context.Backbuffer != null)
                 {
                     Context.DisposeSizeDependentResources();
@@ -390,7 +390,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
 
             if (isNewSurface || _shouldRender)
             {
-                Debug.WriteLine("_shouldRender");
+                // Debug.WriteLine("_shouldRender");
                 Context.Update((float)Stopwatch.Elapsed.TotalSeconds);
                 Stopwatch.Restart();
                 bool capturing = false;
