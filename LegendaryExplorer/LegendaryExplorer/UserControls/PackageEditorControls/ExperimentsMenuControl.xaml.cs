@@ -748,6 +748,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             PackageEditorExperimentsM.DumpPackageTextures(GetPEWindow().Pcc, GetPEWindow());
         }
 
+        private void FindExternalizableTextures_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.FindExternalizableTextures(GetPEWindow());
+        }
+
         private void ValidateNavpointChain_Clicked(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.ValidateNavpointChain(GetPEWindow().Pcc);
