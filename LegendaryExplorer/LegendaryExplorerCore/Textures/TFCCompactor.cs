@@ -366,7 +366,7 @@ namespace LegendaryExplorerCore.Textures
             }
         }
 
-        private static StorageTypes GetTargetExternalStorageType(MEGame textureMapGame)
+        public static StorageTypes GetTargetExternalStorageType(MEGame textureMapGame)
         {
             if (textureMapGame is MEGame.ME1 or MEGame.ME2) return StorageTypes.extLZO;
             if (textureMapGame is MEGame.ME3) return StorageTypes.extZlib;

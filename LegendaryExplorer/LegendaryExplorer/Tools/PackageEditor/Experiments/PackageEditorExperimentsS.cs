@@ -3,13 +3,16 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using ClosedXML.Excel;
 using LegendaryExplorer.Dialogs;
+using LegendaryExplorer.GameInterop;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Misc.AppSettings;
+using LegendaryExplorer.Tools.ScriptDebugger;
 using LegendaryExplorer.UnrealExtensions.Classes;
 using LegendaryExplorerCore;
 using LegendaryExplorerCore.GameFilesystem;
@@ -31,6 +34,7 @@ using LegendaryExplorerCore.UnrealScript.Language.Tree;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Newtonsoft.Json;
 using SharpDX.D3DCompiler;
+using static LegendaryExplorer.Tools.ScriptDebugger.DebuggerInterface;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
 
 #pragma warning disable CS8321 //unused function warning
@@ -59,6 +63,312 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 {
                     yield return filePath;
                 }
+            }
+        }
+
+        public enum GhidraTypeKind
+        {
+            Normal,
+            Array,
+            Pointer
+        }
+
+        public record GhidraProperty(string Name, string TypeName, int Offset, int ElementSize, GhidraTypeKind TypeKind = GhidraTypeKind.Normal, int NumElements = 1, int BitOffset = 0);
+        public record GhidraStruct(string Name, int Size, string Super, List<GhidraProperty> Properties);
+
+        public static async void GenerateGhidraStructInsertionScript(PackageEditorWindow pewpf)
+        {
+            pewpf.IsBusy = true;
+            pewpf.BusyText = "Generating Ghidra Scripts";
+
+            try
+            {
+                foreach (MEGame game in new[] { MEGame.LE1, MEGame.LE2, MEGame.LE3 })
+                {
+                    if (!GameController.TryGetMEProcess(game, out Process meProcess)) continue;
+                    var structDict = new Dictionary<string, GhidraStruct>
+                    {
+                        ["TArray"] = new("TArray", 16, null, new List<GhidraProperty>
+                        {
+                            new("Data", "pointer", 0, 8),
+                            new("Count", "int", 8, 4),
+                            new("Max", "int", 12, 4),
+                        }),
+                        ["FString"] = new("FString", 16, null, new List<GhidraProperty>
+                        {
+                            new("Data", "wchar_t", 0, 8, GhidraTypeKind.Pointer),
+                            new("Count", "int", 8, 4),
+                            new("Max", "int", 12, 4),
+                        }),
+                        ["FScriptDelegate"] = new("FScriptDelegate", 16, null, new List<GhidraProperty>
+                        {
+                            new("Object", "UObject", 0, 8, GhidraTypeKind.Pointer),
+                            new("FunctionName", "FName", 8, 4)
+                        }),
+                        ["FScriptInterface"] = new("FScriptInterface", 16, null, new List<GhidraProperty>
+                        {
+                            new("Object", "UObject", 0, 8, GhidraTypeKind.Pointer),
+                            new("Interface", "pointer", 8, 4)
+                        }),
+                    };
+                    //this must be created on the main thread!
+                    var debugger = new DebuggerInterface(game, meProcess);
+                    try
+                    {
+                        await debugger.WaitForAttach();
+                        await debugger.WaitForBreak();
+
+                        foreach (NObject nObject in debugger.IterateGObjects())
+                        {
+                            if (nObject is NClass nClass && nClass.ClassFlags.Has(EClassFlags.Native))
+                            {
+                                AddStruct(nClass);
+                            }
+                            else if (nObject is NScriptStruct nScriptStruct && (nScriptStruct.StructFlags.Has(ScriptStructFlags.Native) || nScriptStruct.Outer is NClass structOuter && structOuter.ClassFlags.Has(EClassFlags.Native)))
+                            {
+                                AddStruct(nScriptStruct);
+                            }
+
+                            void AddStruct(NStruct nStruct)
+                            {
+                                string name = nStruct.CPlusPlusName(game);
+                                if (structDict.ContainsKey(name))
+                                {
+                                    return;
+                                }
+                                var props = new List<GhidraProperty>();
+
+                                if (nStruct is not NClass || !GlobalUnrealObjectInfo.IsA(nStruct.Name, "Interface", game))
+                                {
+                                    for (NField child = nStruct.FirstChild; child is not null; child = child.Next)
+                                    {
+                                        if (child is NScriptStruct nScriptStruct)
+                                        {
+                                            AddStruct(nScriptStruct);
+                                        }
+                                        else if (child is NProperty nProp)
+                                        {
+                                            (string typename, GhidraTypeKind typeKind) = GetTypeName(nProp);
+                                            (string, GhidraTypeKind) GetTypeName(NProperty nProperty)
+                                            {
+                                                (string typename, GhidraTypeKind typeKind) = nProperty switch
+                                                {
+                                                    NArrayProperty => (null, GhidraTypeKind.Array),
+                                                    NBioMask4Property => ("byte", GhidraTypeKind.Normal),
+                                                    NBoolProperty => ("bool", GhidraTypeKind.Normal),
+                                                    NByteProperty => ("byte", GhidraTypeKind.Normal),
+                                                    NClassProperty => ("UClass", GhidraTypeKind.Pointer),
+                                                    NDelegateProperty => ("FScriptDelegate", GhidraTypeKind.Normal),
+                                                    NFloatProperty => ("float", GhidraTypeKind.Normal),
+                                                    NInterfaceProperty => ("FScriptInterface", GhidraTypeKind.Normal),
+                                                    NIntProperty => ("int", GhidraTypeKind.Normal),
+                                                    NMapProperty => ("FMap_Mirror", GhidraTypeKind.Normal),
+                                                    NNameProperty => ("FName", GhidraTypeKind.Normal),
+                                                    //NComponentProperty
+                                                    NObjectProperty nObjectProperty => (nObjectProperty.PropertyClass.CPlusPlusName(game), GhidraTypeKind.Pointer),
+                                                    NStringRefProperty => ("int", GhidraTypeKind.Normal),
+                                                    NStrProperty => ("FString", GhidraTypeKind.Normal),
+                                                    NStructProperty nStructProperty => (nStructProperty.Struct.CPlusPlusName(game), GhidraTypeKind.Normal),
+                                                    _ => throw new ArgumentOutOfRangeException(nameof(nProperty))
+                                                };
+                                                typename = typename switch
+                                                {
+                                                    "FPointer" => "pointer",
+                                                    "FQWord" => "qword",
+                                                    _ => typename
+                                                };
+                                                return (typename, typeKind);
+                                            }
+
+                                            int arrayDim = nProp.GetRealArrayDim();
+                                            arrayDim = arrayDim == 0 ? 1 : arrayDim;
+                                            NameReference nPropName = nProp.Name;
+                                            int nPropOffset = nProp.Offset;
+                                            int nPropElementSize = nProp.ElementSize;
+                                            int bitOffset = 0;
+                                            if (nProp is NBoolProperty nBoolProp)
+                                            {
+                                                bitOffset = BitOperations.TrailingZeroCount(nBoolProp.BitMask);
+                                            }
+                                            if (nProp is NArrayProperty nArrayProp)
+                                            {
+                                                (string innerPropName, GhidraTypeKind innerTypeKind) = GetTypeName(nArrayProp.InnerProperty);
+                                                if (innerPropName is "FPointer")
+                                                {
+                                                    innerPropName = "pointer";
+                                                }
+                                                string fullInnerName = innerPropName;
+                                                if (innerTypeKind is GhidraTypeKind.Pointer)
+                                                {
+                                                    fullInnerName += "*";
+                                                }
+                                                typename = $"TArray<{fullInnerName}>";
+                                                if (!structDict.ContainsKey(typename))
+                                                {
+                                                    structDict[typename] = new GhidraStruct(typename, 16, null, new List<GhidraProperty>
+                                                {
+                                                    //incorrect technically, as this should be a pointer to the innerProp kind. Will be fixed up in the ghidra script
+                                                    new("Data", innerPropName, 0, 8, innerTypeKind),
+                                                    new("Count", "int", 8, 4),
+                                                    new("Max", "int", 12, 4),
+                                                });
+                                                }
+                                            }
+                                            props.Add(new GhidraProperty(nPropName, typename, nPropOffset, nPropElementSize, typeKind, arrayDim, bitOffset));
+                                        }
+                                    }
+                                }
+
+                                var ghidraStruct = new GhidraStruct(name, nStruct.PropertySize, (nStruct.Super as NStruct)?.CPlusPlusName(game), props);
+                                structDict[name] = ghidraStruct;
+                            }
+                        }
+                    }
+                    finally
+                    {
+                        debugger.Detach();
+                        debugger.Dispose();
+                    }
+
+                    await using var fileStream = new FileStream(Path.Combine(AppDirectories.ExecFolder, $"{game}ImportStructs.java"), FileMode.Create);
+                    //await using var textWriter = new StreamWriter(fileStream);
+                    //await textWriter.WriteAsync(JsonConvert.SerializeObject(structDict, Formatting.Indented));
+                    //continue;
+                    using var writer = new CodeWriter(fileStream);
+                    writer.WriteLine(
+                        $@"//Imports {game} structure definitions
+//@author SirCxyrtyx
+//@category Data Types
+//@keybinding 
+//@menupath 
+//@toolbar 
+
+import ghidra.app.script.GhidraScript;
+import ghidra.program.model.util.*;
+import ghidra.program.model.reloc.*;
+import ghidra.program.model.data.*;
+import ghidra.program.model.block.*;
+import ghidra.program.model.symbol.*;
+import ghidra.program.model.scalar.*;
+import ghidra.program.model.mem.*;
+import ghidra.program.model.listing.*;
+import ghidra.program.model.lang.*;
+import ghidra.program.model.pcode.*;
+import ghidra.program.model.address.*;
+import java.util.*;"
+                    );
+                    GhidraStruct[][] chunks = structDict.Values.Chunk(100).ToArray();
+                    writer.WriteBlock($"public class {game}ImportStructs extends GhidraScript", () =>
+                    {
+                        writer.WriteLine();
+                        writer.WriteLine("private static final String CATEGORY = \"/SDK_Test\";");
+                        writer.WriteLine();
+                        writer.WriteLine("//Can be either DataTypeConflictHandler.REPLACE_HANDLER or DataTypeConflictHandler.KEEP_HANDLER");
+                        writer.WriteLine("private static final DataTypeConflictHandler CONFLICT_HANDLER = DataTypeConflictHandler.REPLACE_HANDLER;");
+                        writer.WriteLine();
+                        writer.WriteBlock("public void run() throws Exception", () =>
+                        {
+                            writer.WriteLine("DataTypeManager typeMan = currentProgram.getDataTypeManager();");
+                            writer.WriteLine("var structDict = new HashMap<String, DataType>();");
+                            writer.WriteLine("var categoryPath = new CategoryPath(CATEGORY);");
+                            writer.WriteLine("var dwordType = typeMan.getDataType(new CategoryPath(\"/\"), \"dword\");");
+                            foreach (string primitive in new[]{"pointer", "int", "byte", "byte", "float", "wchar_t", "qword"})
+                            {
+                                writer.WriteLine($"structDict.put(\"{primitive}\", typeMan.getDataType(new CategoryPath(\"/\"), \"{primitive}\"));");
+                            }
+                            writer.WriteLine();
+                            writer.WriteLine("var fName = new StructureDataType(categoryPath, \"FName\", 8, typeMan);");
+                            writer.WriteLine("fName.insertBitFieldAt(0, 4, 0, dwordType, 29, \"Offset\" , null);");
+                            writer.WriteLine("fName.insertBitFieldAt(0, 4, 29, dwordType, 3, \"Chunk\" , null);");
+                            writer.WriteLine("fName.replaceAtOffset(4, typeMan.getDataType(new CategoryPath(\"/\"), \"int\"), 4, \"Number\", null);");
+                            writer.WriteLine("typeMan.addDataType(fName, CONFLICT_HANDLER);");
+                            writer.WriteLine("structDict.put(\"FName\", fName);");
+                            writer.WriteLine();
+                            writer.WriteLine("//This is chunked because java has a limit on how large methods can be");
+                            for (int i = 0; i < chunks.Length; i++)
+                            {
+                                writer.WriteLine($"createStructs{i}(structDict, typeMan, categoryPath);");
+                            }
+                            writer.WriteLine();
+                            for (int i = 0; i < chunks.Length; i++)
+                            {
+                                writer.WriteLine($"populateStructs{i}(structDict, typeMan, dwordType);");
+                            }
+                        });
+                        for (int i = 0; i < chunks.Length; i++)
+                        {
+                            GhidraStruct[] chunk = chunks[i];
+                            writer.WriteBlock($"private void createStructs{i}(HashMap<String, DataType> structDict, DataTypeManager typeMan, CategoryPath categoryPath) throws Exception", () =>
+                            {
+                                foreach (GhidraStruct ghidraStruct in chunk)
+                                {
+                                    writer.WriteLine($"structDict.put(\"{ghidraStruct.Name}\", new StructureDataType(categoryPath, \"{ghidraStruct.Name}\", {ghidraStruct.Size}, typeMan));");
+                                }
+                            });
+                        }
+                        for (int i = 0; i < chunks.Length; i++)
+                        {
+                            GhidraStruct[] chunk = chunks[i];
+                            writer.WriteBlock($"private void populateStructs{i}(HashMap<String, DataType> structDict, DataTypeManager typeMan, DataType dwordType) throws Exception", () =>
+                            {
+                                //populate the structs and add them to the type manager
+                                writer.WriteLine("StructureDataType struct = null;");
+                                foreach ((string structName, int structSize, string superName, List<GhidraProperty> properties) in chunk)
+                                {
+                                    writer.WriteLine($"struct = (StructureDataType)structDict.get(\"{structName}\");");
+                                    if (structName.StartsWith("TArray<"))
+                                    {
+                                        string typeGetter = $"structDict.get(\"{properties[0].TypeName}\")";
+                                        if (properties[0].TypeKind is GhidraTypeKind.Pointer)
+                                        {
+                                            typeGetter = $"typeMan.getPointer({typeGetter})";
+                                        }
+                                        writer.WriteLine($"struct.replaceAtOffset(0, typeMan.getPointer({typeGetter}), 8, \"Data\", null);");
+                                        writer.WriteLine("struct.replaceAtOffset(8, structDict.get(\"int\"), 4, \"Count\", null);");
+                                        writer.WriteLine("struct.replaceAtOffset(12, structDict.get(\"int\"), 4, \"Max\", null);");
+                                        continue;
+                                    }
+                                    if (superName is not null)
+                                    {
+                                        GhidraStruct superStruct = structDict[superName];
+                                        writer.WriteLine($"struct.replaceAtOffset(0, structDict.get(\"{superStruct.Name}\"), {superStruct.Size}, \"Super\", null);");
+                                    }
+                                    foreach ((string propName, string typeName, int offset, int elementSize, GhidraTypeKind ghidraTypeKind, int numElements, int bitOffset) in properties)
+                                    {
+                                        if (typeName == "bool")
+                                        {
+                                            if (numElements > 1)
+                                            {
+                                                Debugger.Break();
+                                            }
+                                            writer.WriteLine($"struct.insertBitFieldAt({offset}, 4, {bitOffset}, dwordType, 1, \"{propName}\" , null);");
+                                        }
+                                        else
+                                        {
+                                            string typeGetter = $"structDict.get(\"{typeName}\")";
+                                            if (ghidraTypeKind is GhidraTypeKind.Pointer)
+                                            {
+                                                typeGetter = $"typeMan.getPointer({typeGetter})";
+                                            }
+                                            int fullSize = elementSize;
+                                            if (numElements > 1)
+                                            {
+                                                fullSize *= numElements;
+                                                typeGetter = $"new ArrayDataType({typeGetter}, {numElements}, {elementSize}, typeMan)";
+                                            }
+                                            writer.WriteLine($"struct.replaceAtOffset({offset}, {typeGetter}, {fullSize}, \"{propName}\", null);");
+                                        }
+                                    }
+                                    writer.WriteLine("typeMan.addDataType(struct, CONFLICT_HANDLER);");
+                                }
+                            });
+                        }
+                    });
+                }
+            }
+            finally
+            {
+                pewpf.IsBusy = false;
             }
         }
 

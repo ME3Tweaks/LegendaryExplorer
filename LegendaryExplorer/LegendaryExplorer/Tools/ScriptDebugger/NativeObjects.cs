@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
+using LegendaryExplorerCore.Unreal.ObjectInfo;
 
 namespace LegendaryExplorer.Tools.ScriptDebugger
 {
@@ -274,6 +275,12 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
                 }
                 return properties;
             }
+
+            public string CPlusPlusName(MEGame game)
+            {
+                string name = Name;
+                return $"{(this is NScriptStruct ? 'F' : GlobalUnrealObjectInfo.IsA(name, "Actor", game) ? 'A' : 'U')}{name}";
+            }
         }
 
         public class NState : NStruct
@@ -288,6 +295,13 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
             public NClass(IntPtr address, int size, DebuggerInterface debugger) : base(address, null, size, debugger)
             {
             }
+
+            public UnrealFlags.EClassFlags ClassFlags => ReadValue<UnrealFlags.EClassFlags>(Debugger.Game switch
+            {
+                MEGame.LE1 => 0x138,
+                MEGame.LE2 => 0x130,
+                _ => 0x100
+            });
         }
 
         public class NScriptStruct : NStruct
@@ -295,6 +309,12 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
             public NScriptStruct(IntPtr address, NClass nClass, int size, DebuggerInterface debugger) : base(address, nClass, size, debugger)
             {
             }
+            public UnrealFlags.ScriptStructFlags StructFlags => ReadValue<UnrealFlags.ScriptStructFlags>(Debugger.Game switch
+            {
+                MEGame.LE1 => 0xE8,
+                MEGame.LE2 => 0xE0,
+                _ => 0xE8
+            });
         }
 
         public class NFunction : NStruct

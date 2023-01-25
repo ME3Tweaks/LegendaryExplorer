@@ -748,6 +748,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             PackageEditorExperimentsM.DumpPackageTextures(GetPEWindow().Pcc, GetPEWindow());
         }
 
+        private void FindExternalizableTextures_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.FindExternalizableTextures(GetPEWindow());
+        }
+
         private void ValidateNavpointChain_Clicked(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.ValidateNavpointChain(GetPEWindow().Pcc);
@@ -850,6 +855,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         // EXPERIMENTS: SIRCXYRTYX-----------------------------------------------------
 
         #region SirCxyrtyx's Experiments
+
+        private void GenerateGhidraStructInsertionScript(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsS.GenerateGhidraStructInsertionScript(GetPEWindow());
+        }
 
         private void CalculateProbeFuncs_OnClick(object sender, RoutedEventArgs e)
         {

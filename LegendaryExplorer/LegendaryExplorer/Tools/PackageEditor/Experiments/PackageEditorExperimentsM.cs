@@ -39,6 +39,7 @@ using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Newtonsoft.Json;
 using LegendaryExplorerCore.Misc;
+using LegendaryExplorerCore.Textures;
 using LegendaryExplorerCore.UnrealScript;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
 using Function = LegendaryExplorerCore.Unreal.Classes.Function;
@@ -486,6 +487,22 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
 
             MessageBox.Show("Done");
+        }
+
+        public static void FindExternalizableTextures(PackageEditorWindow pewpf)
+        {
+            MessageBox.Show(pewpf,
+                "WARNING: THIS WILL MODIFY ALL PACKAGES IN THE FOLDER YOU SELECT.\nMake a backup of this folder as this operation cannot be undone!\nMake sure there are no tool windows open in Legendary Explorer.");
+            var dlg = new CommonOpenFileDialog
+            {
+                IsFolderPicker = true,
+                EnsurePathExists = true,
+                Title = "Select Folder Containing Package Files"
+            };
+            if (dlg.ShowDialog(pewpf) == CommonFileDialogResult.Ok)
+            {
+                TFCTools.FindExternalizableTextures(dlg.FileName);
+            }
         }
 
 

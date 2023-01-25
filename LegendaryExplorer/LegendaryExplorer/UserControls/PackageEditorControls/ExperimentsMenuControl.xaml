@@ -40,6 +40,8 @@
     </MenuItem>
     <MenuItem Header="Mgamerz's Programming Circus">
         <MenuItem Header="Test WwiseSDK on WwiseBank" Click="WwiseBankToProject_Click"/>
+        <MenuItem Header="Find externalizable textures" Click="FindExternalizableTextures_Click"/>
+
         <MenuItem Header="Make current material a VTest Donor" Click="MakeVTestDonor_Click" Visibility="{x:Static global:App.IsDebugVisibility}"/>
         <MenuItem Header="Cram current LE3 BioP full of stuff that will take up lotsa memory" Click="CramLevelFullOfEverything_Click"/>
         <MenuItem Header="Test current package binary against LEX serializer" Click="TestCurrentPackageBinary"/>
@@ -128,6 +130,7 @@
         <MenuItem Header="Scan Headers" Click="ScanHeaders_OnCLick" />
         <MenuItem Header="Calculate Probe Functions" Click="CalculateProbeFuncs_OnClick"/>
         <MenuItem Header="Port ShadowMaps for BioA_CitSam_800Finalroom.pcc" Click="PortShadowMaps_Click"/>
+        <MenuItem Header="Generate Ghidra Struct insertion script" Click="GenerateGhidraStructInsertionScript"/>
     </MenuItem>
     <MenuItem Header="Kinkojiro's 101 ways to cause an aneurysm">
         <MenuItem Header="Transfer game level's art to a different game (ME2 -> ME3 Only)" Click="TransferLevelBetweenGames"/>
