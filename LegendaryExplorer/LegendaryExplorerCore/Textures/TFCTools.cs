@@ -108,8 +108,9 @@ namespace LegendaryExplorerCore.Textures
                                     byte[] data = mip.Mip;
                                     if (mip.StorageType == StorageTypes.pccUnc)
                                     {
-                                        mip.StorageType |= (StorageTypes) StorageFlags.externalFile;
-                                        data = TextureCompression.CompressTexture(mip.Mip, TFCCompactor.GetTargetExternalStorageType(ufp.Game));
+                                        var storageType = TFCCompactor.GetTargetExternalStorageType(ufp.Game);
+                                        mip.StorageType = storageType;
+                                        data = TextureCompression.CompressTexture(mip.Mip, storageType);
                                         mip.CompressedSize = data.Length;
                                     }
                                     
