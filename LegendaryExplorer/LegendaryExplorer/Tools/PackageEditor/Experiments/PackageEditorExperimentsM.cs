@@ -39,6 +39,7 @@ using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Newtonsoft.Json;
 using LegendaryExplorerCore.Misc;
+using LegendaryExplorerCore.UnrealScript;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
 using Function = LegendaryExplorerCore.Unreal.Classes.Function;
 
@@ -910,8 +911,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         Debug.WriteLine(" >> Reading " + f.FileName);
                         var packageStream = dlc.DecompressEntry(f);
                         packageStream.Position = 0;
-                        var package =
-                            MEPackageHandler.OpenMEPackageFromStream(packageStream, Path.GetFileName(f.FileName));
+                        var package = MEPackageHandler.OpenMEPackageFromStream(packageStream, Path.GetFileName(f.FileName));
+                        package.IsMemoryPackage = true;
                         foreach (var exp in package.Exports.Where(x => x.ClassName == "Function"))
                         {
                             Function func = new Function(exp.Data, exp);
@@ -2460,13 +2461,42 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
         public static void MScanner(PackageEditorWindow pe)
         {
-            if (pe.Pcc != null)
-            {
-                WwiseBankImport.ImportBank(
-                    @"C:\Users\mgame\Documents\WwiseProjects\LETest1\GeneratedSoundBanks\Windows\TestBank.bnk", pe.Pcc);
-            }
+            var sfxGameME3 = MEPackageHandler.OpenMEPackage(Path.Combine(ME3Directory.CookedPCPath, @"SFXGame.pcc"));
+            var sfxGameLE3 = MEPackageHandler.OpenMEPackage(Path.Combine(LE3Directory.CookedPCPath, @"SFXGame.pcc"));
 
+            FileLib le3Lib = new FileLib(sfxGameLE3);
+            le3Lib.Initialize();
+
+            FileLib me3Lib = new FileLib(sfxGameME3);
+            me3Lib.Initialize();
+
+            foreach (var func in sfxGameLE3.Exports.Where(x => x.ClassName == "Function"))
+            {
+                var matchingFuncME3 = sfxGameME3.FindExport(func.InstancedFullPath);
+                if (matchingFuncME3 != null)
+                {
+                    var le3Script = UnrealScriptCompiler.DecompileExport(func, le3Lib);
+                    var me3Script = UnrealScriptCompiler.DecompileExport(matchingFuncME3, me3Lib);
+                    if (me3Script.text != le3Script.text)
+                    {
+                        Debug.WriteLine($"Script differs: {matchingFuncME3.InstancedFullPath}");
+                    }
+                }
+            }
+            Debug.WriteLine("Done");
             return;
+
+
+            // Strip cached collision data
+            //foreach (var v in pe.Pcc.Exports.Where(x => x.IsA("BrushComponent")))
+            //{
+            //    var brush = ObjectBinary.From<BrushComponent>(v);
+            //    brush.CachedPhysBrushData = new KCachedConvexData(); // Blank it out
+            //    v.WriteBinary(brush);
+            //    v.RemoveProperty("CachedPhysBrushDataVersion");
+            //}
+
+            //return;
             Debug.WriteLine("ME1");
 
             GenerateAllMemoryPathedObjects(MEGame.ME1);
