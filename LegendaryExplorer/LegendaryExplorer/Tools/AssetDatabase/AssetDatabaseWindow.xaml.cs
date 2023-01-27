@@ -533,15 +533,15 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                 if (spkrs.All(s => s != line.Speaker))
                     spkrs.Add(line.Speaker);
             }
-            var emptylines = CurrentDataBase.Lines.Where(l => l.Line == "No Data").ToList();
-            foreach (var line in emptylines)
-            {
-                CurrentDataBase.Lines.Remove(line);
-            }
+
+            int lineCountWithEmptyLines = CurrentDataBase.Lines.Count;
+            CurrentDataBase.Lines.RemoveAll(l => l.Line == "No Data");
+            int numEmptyLines = lineCountWithEmptyLines - CurrentDataBase.Lines.Count;
+
             GeneratedDB.GeneratedLines.Clear();
             spkrs.Sort();
             SpeakerList.AddRange(spkrs);
-            if (!emptylines.IsEmpty())
+            if (numEmptyLines > 0)
             {
                 menu_SaveXEmptyLines.IsEnabled = true;
             }
@@ -551,7 +551,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                 MessageBox.Show("Line list is empty! Make sure you have TLKs loaded in TLK Manager.");
             }
 #if DEBUG
-            System.Diagnostics.Debug.WriteLine($"ADB: {emptylines.Count} empty lines");
+            System.Diagnostics.Debug.WriteLine($"ADB: {numEmptyLines} empty lines");
             System.Diagnostics.Debug.WriteLine("Line worker done");
 #endif
         }
@@ -1114,7 +1114,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                 }
                 else if (record.BaseUsage.Context is PlotUsageContext.CndFile)
                 {
-                    // TODO
+                    OpenInToolkit("CndEd", GetFilePath(usagepkg, contentdir), usageUID);
                 }
             }
         }
