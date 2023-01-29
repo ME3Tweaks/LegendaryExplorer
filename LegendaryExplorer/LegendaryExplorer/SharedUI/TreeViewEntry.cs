@@ -312,7 +312,7 @@ namespace LegendaryExplorer.SharedUI
                                 {
                                     var data = ee.DataReadOnly;
                                     //This is kind of a hack. 
-                                    var value = EndianReader.ReadUnrealString(data, Entry.Game is MEGame.UDK ? 0x10 :0x14, ee.FileRef.Endian);
+                                    var value = EndianReader.ReadUnrealString(data, Entry.Game is MEGame.UDK ? 0x10 : 0x14, ee.FileRef.Endian);
                                     _subtext = "Value: " + value;
                                     break;
                                 }
@@ -327,7 +327,6 @@ namespace LegendaryExplorer.SharedUI
                                     {
                                         _subtext = type.ObjectName;
                                     }
-
                                     break;
                                 }
                             case "ClassProperty":
@@ -375,48 +374,9 @@ namespace LegendaryExplorer.SharedUI
                         }
 
                         // Short circuit
-                        if (_subtext != null)
-                        {
-                            loadedSubtext = true;
-                            return _subtext;
-                        }
+                        
 
-                        if (BinaryInterpreterWPF.IsNativePropertyType(Entry.ClassName))
-                        {
-                            var objectFlags = ee.GetPropertyFlags();
-                            if (objectFlags != null)
-                            {
-                                if (objectFlags.Value.HasFlag(UnrealFlags.EPropertyFlags.Config))
-                                {
-                                    if (_subtext != null)
-                                    {
-                                        _subtext = "Config, " + _subtext;
-                                    }
-                                    else
-                                    {
-                                        _subtext = "Config";
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                // Bool is the most common subset so we parse the export as this to access the actual data.
-                                // Lots of common properties won't have a stack
-                                var bin = ObjectBinary.From<UBoolProperty>(ee);
-                                if (bin.PropertyFlags.HasFlag(UnrealFlags.EPropertyFlags.Config))
-                                {
-                                    if (_subtext != null)
-                                    {
-                                        _subtext = "Config, " + _subtext;
-                                    }
-                                    else
-                                    {
-                                        _subtext = "Config";
-                                    }
-                                }
-                            }
-                        }
-                        else
+                        if (!AddPropertyFlags(ee))
                         {
                             var tag = ee.GetProperty<NameProperty>("Tag", DefaultsLookupCache); // Todo: Pass a package cache through here so hits to Engine.pcc aren't as costly. We will need a global shared package cache (maybe just for this treeview), but one that is not
                                                                                                 // using the LEX cache as we don't want the package actually open.
@@ -512,6 +472,49 @@ namespace LegendaryExplorer.SharedUI
                 }
             }
             set { _subtext = value; OnPropertyChanged(); }
+        }
+
+        private bool AddPropertyFlags(ExportEntry ee)
+        {
+            if (BinaryInterpreterWPF.IsNativePropertyType(Entry.ClassName))
+            {
+                var objectFlags = ee.GetPropertyFlags();
+                if (objectFlags != null)
+                {
+                    if (objectFlags.Value.HasFlag(UnrealFlags.EPropertyFlags.Config))
+                    {
+                        if (_subtext != null)
+                        {
+                            _subtext = " Config, " + _subtext;
+                        }
+                        else
+                        {
+                            _subtext = "Config";
+                        }
+                    }
+                }
+                else
+                {
+                    // Bool is the most common subset so we parse the export as this to access the actual data.
+                    // Lots of common properties won't have a stack
+                    var bin = ObjectBinary.From<UBoolProperty>(ee);
+                    if (bin.PropertyFlags.HasFlag(UnrealFlags.EPropertyFlags.Config))
+                    {
+                        if (_subtext != null)
+                        {
+                            _subtext = " Config, " + _subtext;
+                        }
+                        else
+                        {
+                            _subtext = "Config";
+                        }
+                    }
+                }
+
+                return true;
+            }
+
+            return false;
         }
 
         public int UIndex => Entry?.UIndex ?? 0;
