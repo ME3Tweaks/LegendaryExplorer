@@ -5352,7 +5352,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         objectFlagsNode.Items.Add(new BinInterpNode
                         {
                             Header = $"{(ulong)flag:X16} {flag} {reason}",
-                            Name = "_" + bin.Position
+                            Name = "_" + (bin.Position - 8)
                         });
                     }
                 }
