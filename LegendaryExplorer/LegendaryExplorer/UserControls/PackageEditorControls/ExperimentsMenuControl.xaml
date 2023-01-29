@@ -41,6 +41,7 @@
     <MenuItem Header="Mgamerz's Programming Circus">
         <MenuItem Header="Test WwiseSDK on WwiseBank" Click="WwiseBankToProject_Click"/>
         <MenuItem Header="Find externalizable textures" Click="FindExternalizableTextures_Click"/>
+        <MenuItem Header="Materialize Model" Click="MaterializeModel_Click"/>
 
         <MenuItem Header="Make current material a VTest Donor" Click="MakeVTestDonor_Click" Visibility="{x:Static global:App.IsDebugVisibility}"/>
         <MenuItem Header="Cram current LE3 BioP full of stuff that will take up lotsa memory" Click="CramLevelFullOfEverything_Click"/>

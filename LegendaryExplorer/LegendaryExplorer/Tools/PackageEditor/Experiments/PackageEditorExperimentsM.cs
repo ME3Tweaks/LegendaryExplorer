@@ -2476,32 +2476,70 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
         }
 
+        public static void MaterializeModel(PackageEditorWindow pe)
+        {
+            var pcc = pe.Pcc;
+            if (pcc == null)
+                return;
+
+            var sel = EntrySelector.GetEntry<ExportEntry>(pe, pcc, "Select a material to set on this object", x => x.ClassName == @"Material" || x.ClassName == @"MaterialInstanceConstant");
+            if (sel == null) return;
+            var matValue = sel.UIndex;
+
+            if (pe.TryGetSelectedExport(out var exp) && exp.ClassName == @"Model")
+            {
+                var model = ObjectBinary.From<Model>(exp);
+
+                foreach (var v in model.Surfs)
+                {
+                    v.Material = matValue;
+                }
+
+                exp.WriteBinary(model);
+            }
+
+            if (pe.TryGetSelectedExport(out var exp2) && exp2.ClassName == @"ModelComponent")
+            {
+                var model = ObjectBinary.From<ModelComponent>(exp2);
+
+                foreach (var v in model.Elements)
+                {
+                    v.Material = matValue;
+                }
+
+                exp2.WriteBinary(model);
+            }
+        }
+
         public static void MScanner(PackageEditorWindow pe)
         {
-            var sfxGameME3 = MEPackageHandler.OpenMEPackage(Path.Combine(ME3Directory.CookedPCPath, @"SFXGame.pcc"));
-            var sfxGameLE3 = MEPackageHandler.OpenMEPackage(Path.Combine(LE3Directory.CookedPCPath, @"SFXGame.pcc"));
-
-            FileLib le3Lib = new FileLib(sfxGameLE3);
-            le3Lib.Initialize();
-
-            FileLib me3Lib = new FileLib(sfxGameME3);
-            me3Lib.Initialize();
-
-            foreach (var func in sfxGameLE3.Exports.Where(x => x.ClassName == "Function"))
-            {
-                var matchingFuncME3 = sfxGameME3.FindExport(func.InstancedFullPath);
-                if (matchingFuncME3 != null)
-                {
-                    var le3Script = UnrealScriptCompiler.DecompileExport(func, le3Lib);
-                    var me3Script = UnrealScriptCompiler.DecompileExport(matchingFuncME3, me3Lib);
-                    if (me3Script.text != le3Script.text)
-                    {
-                        Debug.WriteLine($"Script differs: {matchingFuncME3.InstancedFullPath}");
-                    }
-                }
-            }
             Debug.WriteLine("Done");
             return;
+
+            //var sfxGameME3 = MEPackageHandler.OpenMEPackage(Path.Combine(ME3Directory.CookedPCPath, @"SFXGame.pcc"));
+            //var sfxGameLE3 = MEPackageHandler.OpenMEPackage(Path.Combine(LE3Directory.CookedPCPath, @"SFXGame.pcc"));
+
+            //FileLib le3Lib = new FileLib(sfxGameLE3);
+            //le3Lib.Initialize();
+
+            //FileLib me3Lib = new FileLib(sfxGameME3);
+            //me3Lib.Initialize();
+
+            //foreach (var func in sfxGameLE3.Exports.Where(x => x.ClassName == "Function"))
+            //{
+            //    var matchingFuncME3 = sfxGameME3.FindExport(func.InstancedFullPath);
+            //    if (matchingFuncME3 != null)
+            //    {
+            //        var le3Script = UnrealScriptCompiler.DecompileExport(func, le3Lib);
+            //        var me3Script = UnrealScriptCompiler.DecompileExport(matchingFuncME3, me3Lib);
+            //        if (me3Script.text != le3Script.text)
+            //        {
+            //            Debug.WriteLine($"Script differs: {matchingFuncME3.InstancedFullPath}");
+            //        }
+            //    }
+            //}
+            //Debug.WriteLine("Done");
+            //return;
 
 
             // Strip cached collision data

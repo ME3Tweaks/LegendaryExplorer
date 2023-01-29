@@ -451,6 +451,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             PackageEditorExperimentsM.FindBadReference(GetPEWindow());
         }
 
+        private void MaterializeModel_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.MaterializeModel(GetPEWindow());
+        }
+
         private void MScanner_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.MScanner(GetPEWindow());
