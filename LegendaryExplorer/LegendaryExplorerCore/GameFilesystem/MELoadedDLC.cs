@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using LegendaryExplorerCore.DebugTools;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 
@@ -96,7 +97,13 @@ namespace LegendaryExplorerCore.GameFilesystem
                 // DLC folder is Game1 mod
                 string autoLoadPath = Path.Combine(dlcDirectory, "AutoLoad.ini");
                 var dlcAutoload = DuplicatingIni.LoadIni(autoLoadPath);
-                return Convert.ToInt32(dlcAutoload["ME1DLCMOUNT"]["ModMount"].Value);
+                if (int.TryParse(dlcAutoload["ME1DLCMOUNT"]["ModMount"].Value, out var value))
+                {
+                    return value;
+                }
+
+                LECLog.Error($@"Invalid mount priority value in Autoload.ini: {dlcAutoload["ME1DLCMOUNT"]["ModMount"].Value}");
+                return 0;
             }
             return MountFile.GetMountPriority(GetMountDLCFromDLCDir(dlcDirectory, game));
         }
