@@ -46,6 +46,7 @@ namespace LegendaryExplorerCore.Textures
             var packageFiles = Directory.GetFiles(dir, "*.*", SearchOption.AllDirectories).Where(x => x.RepresentsPackageFilePath());
             foreach (var pf in packageFiles)
             {
+                Debug.WriteLine($"Opening package {pf}");
                 using var ufp = MEPackageHandler.OpenMEPackage(pf);
                 if (vanillaMap == null)
                 {
@@ -54,6 +55,9 @@ namespace LegendaryExplorerCore.Textures
 
                 foreach (var exp in ufp.Exports.Where(x => x.IsTexture() && x.ClassName != "ShadowMapTexture2D" && !x.ObjectName.Name.Contains(@"CubemapFace")))
                 {
+                    //if (exp.ObjectName == @"Omg_PanelA_Spec")
+                    //    Debugger.Break();
+
                     var tex = ObjectBinary.From<UTexture2D>(exp);
 
                     // First 6 mips are always locally stored
@@ -72,20 +76,9 @@ namespace LegendaryExplorerCore.Textures
                             if (vanillaMap.TryGetValue(crc, out var vanillaInfo))
                             {
                                 var p = vanillaInfo.ContainingPackages[0];
-                                for (int i = 0; i < p.CompressedMipInfos.Count; i++)
-                                {
-                                    var cm = p.CompressedMipInfos[i];
 
-                                    // Modify ObjectBinary version as it's easier to work with
-                                    var em = tex.Mips[i];
-                                    em.DataOffset = cm.Offset;
-                                    em.StorageType = cm.StorageType;
-                                    em.UncompressedSize = cm.UncompressedSize;
-                                    em.CompressedSize = cm.CompressedSize;
-                                    em.Mip = Array.Empty<byte>();
-                                }
 
-                                // The vanilla texture map from me doesn't include TFC guid or TFC name
+                                // The vanilla texture map from me doesn't include TFC guid or TFC name (or compressed mip info either, it seems)
                                 // We need to open the package to find them
 
                                 // Find relative path (from MEM vanilla file)
@@ -95,10 +88,31 @@ namespace LegendaryExplorerCore.Textures
                                 var containingPackage = MEPackageHandler.UnsafePartialLoad(cpPath, x => x.UIndex == p.UIndex + 1);
                                 var matchingExport = containingPackage.GetUExport(p.UIndex + 1); // MEM uses 0 based indexing.
 
-                                exp.WriteProperty(matchingExport.GetProperty<NameProperty>(@"TextureFileCacheName"));
-                                exp.WriteProperty(matchingExport.GetProperty<StructProperty>(@"TFCFileGuid"));
-                                exp.RemoveProperty(@"NeverStream");
-                                exp.WriteBinary(tex);
+
+                                var matchingTex = ObjectBinary.From<UTexture2D>(matchingExport);
+                                var matchingCompressedMips = matchingTex.Mips.Take(matchingTex.Mips.Count - 6).ToList(); // Bottom 6 are always package stored
+                                for (int i = 0; i < matchingCompressedMips.Count; i++)
+                                {
+                                    var cm = matchingCompressedMips[i];
+
+                                    // Modify ObjectBinary version as it's easier to work with
+                                    var em = tex.Mips[i];
+                                    em.DataOffset = cm.DataOffset;
+                                    em.StorageType = cm.StorageType;
+                                    em.UncompressedSize = cm.UncompressedSize;
+                                    em.CompressedSize = cm.CompressedSize;
+                                    em.Mip = Array.Empty<byte>();
+                                }
+
+                                var props = matchingExport.GetProperties();
+
+
+                                props.AddOrReplaceProp(matchingExport.GetProperty<NameProperty>(@"TextureFileCacheName"));
+                                props.AddOrReplaceProp(matchingExport.GetProperty<StructProperty>(@"TFCFileGuid"));
+                                props.RemoveNamedProperty(@"NeverStream");
+
+                                matchingExport.WritePropertiesAndBinary(props, tex);
+
                             }
                             else
                             {
@@ -112,8 +126,9 @@ namespace LegendaryExplorerCore.Textures
                                         mip.StorageType = storageType;
                                         data = TextureCompression.CompressTexture(mip.Mip, storageType);
                                         mip.CompressedSize = data.Length;
+
                                     }
-                                    
+
                                     mip.DataOffset = (int)fs.Position;
                                     fs.Write(data);
                                     mip.Mip = Array.Empty<byte>();
