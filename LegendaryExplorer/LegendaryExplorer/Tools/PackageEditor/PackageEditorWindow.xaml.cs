@@ -42,6 +42,7 @@ using LegendaryExplorerCore.UnrealScript.Compiling.Errors;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using LegendaryExplorerCore.Audio;
+using System.IO.Packaging;
 
 namespace LegendaryExplorer.Tools.PackageEditor
 {
@@ -234,6 +235,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
         public ICommand ReplaceReferenceLinksCommand { get; set; }
         public ICommand CalculateExportMD5Command { get; set; }
         public ICommand CreateClassCommand { get; set; }
+        public ICommand CreatePackageExportCommand { get; set; }
 
         private void LoadCommands()
         {
@@ -305,6 +307,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
             NavigateBackCommand = new GenericCommand(NavigateToPreviousEntry, () => CurrentView == CurrentViewMode.Tree && BackwardsIndexes != null && BackwardsIndexes.Any());
 
             CreateClassCommand = new GenericCommand(CreateClass, IsLoadedPackageME);
+            CreatePackageExportCommand = new GenericCommand(CreatePackageExport, IsLoadedPackageME);
         }
 
         private void OpenOtherVersion()
@@ -329,6 +332,15 @@ namespace LegendaryExplorer.Tools.PackageEditor
         private void EditLECLData()
         {
             new LECLDataEditorWindow(this, Pcc).ShowDialog();
+        }
+
+        private void CreatePackageExport()
+        {
+            var packName = PromptDialog.Prompt(this, "Enter a package name to create at the root.", "Enter package export name");
+            if (string.IsNullOrWhiteSpace(packName))
+                return;
+            var package = ExportCreator.CreatePackageExport(Pcc, packName);
+            GoToNumber(package.UIndex);
         }
 
         private void CreateClass()

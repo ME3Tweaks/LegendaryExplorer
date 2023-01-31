@@ -167,6 +167,7 @@
                     <MenuItem Header="Pop out current tab into new standalone window" ToolTip="Opens the panel on the right side in a new window" Command="{Binding PopoutCurrentViewCommand}" InputGestureText="CTRL+P"/>
                     <Separator/>
                     <MenuItem Header="Create new Class" ToolTip="Adds a new UnrealScript class to this package" Command="{Binding CreateClassCommand}"/>
+                    <MenuItem Header="Create new Package export" ToolTip="Adds a new package export to the root of the current loaded package" Command="{Binding CreatePackageExportCommand}"/>
                     <Separator/>
                     <MenuItem Header="Add name" ToolTip="Add a name to this package" Command="{Binding AddNameCommand}" InputGestureText="CTRL+Shift+A"/>
                     <MenuItem Header="Convenience tools" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
