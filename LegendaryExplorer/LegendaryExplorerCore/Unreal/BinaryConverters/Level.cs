@@ -36,12 +36,12 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         //if ME3
         public UIndex PylonListStart;
         public UIndex PylonListEnd;
-        public OrderedMultiValueDictionary<Guid, int> guidToIntMap;
-        public List<UIndex> CoverLinks;
-        public OrderedMultiValueDictionary<int, byte> intToByteMap;
-        public OrderedMultiValueDictionary<Guid, int> guidToIntMap2;
-        public List<UIndex> NavPoints;
-        public List<int> numbers;
+        public OrderedMultiValueDictionary<Guid, int> CrossLevelCoverGuidRefs;
+        public List<UIndex> CoverLinkRefs;
+        public OrderedMultiValueDictionary<int, byte> CoverIndexPairs;
+        public OrderedMultiValueDictionary<Guid, int> CrossLevelNavGuidRefs;
+        public List<UIndex> NavRefs;
+        public List<int> NavRefIndicies;
         //endif
         public List<UIndex> CrossLevelActors;
         public UIndex ArtPlaceable1;//ME1
@@ -100,25 +100,25 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 sc.Serialize(ref PylonListStart);
                 sc.Serialize(ref PylonListEnd);
             }
-            if (sc.Game.IsGame3())
+            if (sc.Game.IsGame3()) // Gated by licensee version
             {
-                sc.Serialize(ref guidToIntMap, SCExt.Serialize, SCExt.Serialize);
-                sc.Serialize(ref CoverLinks, SCExt.Serialize);
-                sc.Serialize(ref intToByteMap, SCExt.Serialize, SCExt.Serialize);
-                sc.Serialize(ref guidToIntMap2, SCExt.Serialize, SCExt.Serialize);
-                sc.Serialize(ref NavPoints, SCExt.Serialize);
-                sc.Serialize(ref numbers, SCExt.Serialize);
+                sc.Serialize(ref CrossLevelCoverGuidRefs, SCExt.Serialize, SCExt.Serialize);
+                sc.Serialize(ref CoverLinkRefs, SCExt.Serialize);
+                sc.Serialize(ref CoverIndexPairs, SCExt.Serialize, SCExt.Serialize);
+                sc.Serialize(ref CrossLevelNavGuidRefs, SCExt.Serialize, SCExt.Serialize);
+                sc.Serialize(ref NavRefs, SCExt.Serialize);
+                sc.Serialize(ref NavRefIndicies, SCExt.Serialize);
             }
             else if (sc.IsLoading)
             {
                 PylonListStart = 0;
                 PylonListEnd = 0;
-                guidToIntMap = new OrderedMultiValueDictionary<Guid, int>();
-                CoverLinks = new List<UIndex>();
-                intToByteMap = new OrderedMultiValueDictionary<int, byte>();
-                guidToIntMap2 = new OrderedMultiValueDictionary<Guid, int>();
-                NavPoints = new List<UIndex>();
-                numbers = new List<int>();
+                CrossLevelCoverGuidRefs = new OrderedMultiValueDictionary<Guid, int>();
+                CoverLinkRefs = new List<UIndex>();
+                CoverIndexPairs = new OrderedMultiValueDictionary<int, byte>();
+                CrossLevelNavGuidRefs = new OrderedMultiValueDictionary<Guid, int>();
+                NavRefs = new List<UIndex>();
+                NavRefIndicies = new List<int>();
             }
             sc.Serialize(ref CrossLevelActors, SCExt.Serialize);
             if (sc.Game == MEGame.UDK)
@@ -194,12 +194,12 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 CoverListEnd = 0,
                 PylonListStart = 0,
                 PylonListEnd = 0,
-                guidToIntMap = new OrderedMultiValueDictionary<Guid, int>(),
-                CoverLinks = new List<UIndex>(),
-                intToByteMap = new OrderedMultiValueDictionary<int, byte>(),
-                guidToIntMap2 = new OrderedMultiValueDictionary<Guid, int>(),
-                NavPoints = new List<UIndex>(),
-                numbers = new List<int>(),
+                CrossLevelCoverGuidRefs = new OrderedMultiValueDictionary<Guid, int>(),
+                CoverLinkRefs = new List<UIndex>(),
+                CoverIndexPairs = new OrderedMultiValueDictionary<int, byte>(),
+                CrossLevelNavGuidRefs = new OrderedMultiValueDictionary<Guid, int>(),
+                NavRefs = new List<UIndex>(),
+                NavRefIndicies = new List<int>(),
                 CrossLevelActors = new List<UIndex>(),
                 ArtPlaceable1 = 0,
                 ArtPlaceable2 = 0
@@ -243,8 +243,8 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
             if (game.IsGame3())
             {
-                ForEachUIndexInSpan(action, CoverLinks.AsSpan(), nameof(CoverLinks));
-                ForEachUIndexInSpan(action, NavPoints.AsSpan(), nameof(NavPoints));
+                ForEachUIndexInSpan(action, CoverLinkRefs.AsSpan(), nameof(CoverLinkRefs));
+                ForEachUIndexInSpan(action, NavRefs.AsSpan(), nameof(NavRefs));
             }
             ForEachUIndexInSpan(action, CrossLevelActors.AsSpan(), nameof(CrossLevelActors));
             if (game.IsGame1())

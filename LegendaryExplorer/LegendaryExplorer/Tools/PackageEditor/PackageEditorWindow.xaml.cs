@@ -3783,7 +3783,6 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 {
                     if (File.Exists(objectDBPath))
                     {
-
                         using FileStream fs = File.OpenRead(objectDBPath);
                         objectDB = ObjectInstanceDB.Deserialize(targetItem.Game, fs);
                     }

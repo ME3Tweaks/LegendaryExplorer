@@ -43,6 +43,7 @@ using LegendaryExplorerCore.Textures;
 using LegendaryExplorerCore.UnrealScript;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
 using Function = LegendaryExplorerCore.Unreal.Classes.Function;
+using static LegendaryExplorerCore.Packages.CloningImportingAndRelinking.EntryImporter;
 
 //using ImageMagick;
 
@@ -1030,7 +1031,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 var nlS = pcc.GetUExport(nlSU);
                 var navList = new List<ExportEntry>();
                 var itemsMissingFromWorldNPC = new List<ExportEntry>();
-                if (persistentLevel.NavPoints.All(x => x != nlS.UIndex))
+                if (persistentLevel.NavRefs.All(x => x != nlS.UIndex))
                 {
                     itemsMissingFromWorldNPC.Add(nlS);
                 }
@@ -1042,7 +1043,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 {
                     var nextNavigationPoint = nnP.ResolveToEntry(pcc) as ExportEntry;
                     Debug.WriteLine($"{nextNavigationPoint.UIndex} {nextNavigationPoint.InstancedFullPath}");
-                    if (persistentLevel.NavPoints.All(x => x != nextNavigationPoint.UIndex))
+                    if (persistentLevel.NavRefs.All(x => x != nextNavigationPoint.UIndex))
                     {
                         itemsMissingFromWorldNPC.Add(nextNavigationPoint);
                     }
@@ -2513,7 +2514,134 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
         public static void MScanner(PackageEditorWindow pe)
         {
-            Debug.WriteLine("Done");
+            //            Debug.WriteLine("Done");
+
+            //// Generate BioP stuff
+            var destDir = @"B:\SteamLibrary\steamapps\common\Mass Effect Legendary Edition\Game\ME3\BioGame\DLC\DLC_MOD_SquadmateCheeseburger\CookedPCConsole";
+
+            //var bioP = Path.Combine(LE2Directory.CookedPCPath, "BioP_BchLmL.pcc");
+            //var destBioP = Path.Combine(destDir, "BioP_BchLmL.pcc");
+
+            //using var bioP1 = MEPackageHandler.OpenMEPackage(bioP);
+            //using var destBioP2 = MEPackageHandler.OpenMEPackage(destBioP);
+
+            ///c
+            //var world2 = destBioP2.FindExport("TheWorld.PersistentLevel.BioWorldInfo_0");
+
+            //EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.ReplaceSingularWithRelink, world1,
+            //    destBioP2, world2, true, new RelinkerOptionsPackage(), out _);
+
+            //destBioP2.Save();
+
+            //return;
+
+            string objectDBPath = AppDirectories.GetObjectDatabasePath(MEGame.LE3);
+            using FileStream fs = File.OpenRead(objectDBPath);
+            var objectDB = ObjectInstanceDB.Deserialize(MEGame.LE3, fs);
+
+            var sourceFiles = new[] { "BioP_BchLmL.pcc", "BioA_BchLmL.pcc", "BioD_BchLmL.pcc",
+                // ART
+                //"BioA_BchLmL_100Landing.pcc",
+                //"BioA_BchLmL_101Beach.pcc",
+                //"BioA_BchLmL_102Village.pcc",
+                //"BioA_BchLmL_103Temple.pcc",
+                //"BioA_BchLmL_200VillagePath.pcc",
+                //"BioA_BchLmL_300Ship.pcc",
+                //"BioA_BchLmL_400PathTwo.pcc",
+                //"BioA_BchLmL_500VillageTwo.pcc",
+                //"BioA_BchLmL_600PathThree.pcc",
+
+                //"BioA_BchLmL_100BSP.pcc",
+                //"BioA_BchLmL_200BSP.pcc",
+                //"BioA_BchLmL_300BSP.pcc",
+
+                // DESIGN
+                "BioD_BchLml_101Ship.pcc",
+                "BioD_BchLml_102BeachFight.pcc",
+                "BioD_BchLml_201BeachPath.pcc",
+                "BioD_BchLml_202Village.pcc",
+
+                "BioD_BchLmL_301TemplePath.pcc",
+                "BioD_BchLmL_302MechFight.pcc",
+                "BioD_BchLmL_303TempleInterior.pcc",
+
+            };
+
+            foreach (var sf in sourceFiles)
+            {
+                var savePath = Path.Combine(destDir, Path.GetFileName(sf));
+                using var srcPackage = MEPackageHandler.OpenMEPackage(Path.Combine(LE2Directory.CookedPCPath, sf));
+
+                MEPackageHandler.CreateEmptyLevel(savePath, MEGame.LE3);
+                using var destPackage = MEPackageHandler.OpenMEPackage(savePath);
+
+                var srcLevelExp = srcPackage.FindExport("TheWorld.PersistentLevel");
+                var destLevelExp = destPackage.FindExport("TheWorld.PersistentLevel");
+
+                var srcLevel = ObjectBinary.From<Level>(srcLevelExp);
+
+                // PRE PORTING
+                var srcActors = srcLevel.Actors;
+                srcLevel.Actors.ReplaceAll(srcActors.Where(x =>
+                {
+                    if (x == 0) return false;
+                    var entry = srcPackage.GetEntry(x);
+                    if (entry.IsA("Pawn"))
+                        return false;
+                    if (entry.IsA("BioStage"))
+                        return false;
+
+                    return true;
+                }).ToList());
+                srcLevelExp.WriteBinary(srcLevel);
+
+                var bwi = srcPackage.Exports.FirstOrDefault(x => x.ClassName == @"BioWorldInfo");
+                bwi.RemoveProperty("ClientDestroyedActorContent");
+
+                var autoPersist = bwi.GetProperty<ArrayProperty<ObjectProperty>>("m_AutoPersistentObjects");
+                if (autoPersist != null)
+                {
+                    autoPersist.RemoveAll(x =>
+                    {
+                        if (x.Value == 0) return true;
+                        var entry = srcPackage.GetEntry(x.Value);
+
+                        if (!LE3UnrealObjectInfo.Classes.ContainsKey(entry.ClassName))
+                        {
+                            Debug.WriteLine($"Not porting missing class {entry.ClassName}");
+                            return true;
+                        }
+
+                        // Do not port any of this crap.
+                        if (entry.IsA("SequenceObject"))
+                            return true;
+                        if (entry.IsA("BioStage"))
+                            return true;
+
+                        return false;
+                    });
+
+                    bwi.WriteProperty(autoPersist);
+                }
+
+                // Clear sequences
+                var seq = srcPackage.FindExport(@"TheWorld.PersistentLevel.Main_Sequence");
+                seq.WriteProperty(new ArrayProperty<ObjectProperty>("SequenceObjects")); // Do not port these
+
+                EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.ReplaceSingularWithRelink, srcLevelExp, destPackage, destLevelExp, true, new RelinkerOptionsPackage() { PortImportsMemorySafe = true, IsCrossGame = true, TargetGameDonorDB = objectDB }, out _);
+
+                var srcWorld = srcPackage.FindExport("TheWorld");
+                var destWorld = destPackage.FindExport("TheWorld");
+
+
+                EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.ReplaceSingularWithRelink, srcWorld, destPackage, destWorld, true, new RelinkerOptionsPackage() { PortImportsMemorySafe = true, IsCrossGame = true, TargetGameDonorDB = objectDB }, out _);
+
+
+
+                destPackage.Save();
+
+            }
+
             return;
 
             //var sfxGameME3 = MEPackageHandler.OpenMEPackage(Path.Combine(ME3Directory.CookedPCPath, @"SFXGame.pcc"));

@@ -679,16 +679,16 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     level.NavListEnd = 0;
                 }
                 var newNavArray = new List<int>();
-                newNavArray.AddRange(level.NavPoints);
+                newNavArray.AddRange(level.NavRefs);
 
-                for (int n = 0; n < level.NavPoints.Count; n++)
+                for (int n = 0; n < level.NavRefs.Count; n++)
                 {
                     if (norefsList.Contains(newNavArray[n]))
                     {
                         newNavArray[n] = 0;
                     }
                 }
-                level.NavPoints = newNavArray;
+                level.NavRefs = newNavArray;
 
                 //Clean up Coverlink Lists => pare down guid2byte? table [Just null unwanted refs]
                 if (norefsList.Contains(level.CoverListStart))
@@ -700,15 +700,15 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     level.CoverListEnd = 0;
                 }
                 var newCLArray = new List<int>();
-                newCLArray.AddRange(level.CoverLinks);
-                for (int l = 0; l < level.CoverLinks.Count;l++)
+                newCLArray.AddRange(level.CoverLinkRefs);
+                for (int l = 0; l < level.CoverLinkRefs.Count;l++)
                 {
                     if (norefsList.Contains(newCLArray[l]))
                     {
                         newCLArray[l] = 0;
                     }
                 }
-                level.CoverLinks = newCLArray;
+                level.CoverLinkRefs = newCLArray;
 
 
                 if (pcc.Game.IsGame3())
@@ -725,7 +725,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 }
 
                 //Cross Level Actors
-                level.CoverLinks = newCLArray;
+                level.CoverLinkRefs = newCLArray;
                 var newXLArray = new List<int>();
                 newXLArray.AddRange(level.CrossLevelActors);
                 foreach (int xlvlactor in level.CrossLevelActors)
@@ -738,12 +738,12 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 level.CrossLevelActors = newXLArray;
 
                 //Clean up int lists if empty of NAV points
-                if (level.NavPoints.IsEmpty() && level.CoverLinks.IsEmpty() && level.CrossLevelActors.IsEmpty() && (!pcc.Game.IsGame3() || level.PylonListStart == 0))
+                if (level.NavRefs.IsEmpty() && level.CoverLinkRefs.IsEmpty() && level.CrossLevelActors.IsEmpty() && (!pcc.Game.IsGame3() || level.PylonListStart == 0))
                 {
-                    level.guidToIntMap.Clear();
-                    level.guidToIntMap2.Clear();
-                    level.intToByteMap.Clear();
-                    level.numbers.Clear();
+                    level.CrossLevelCoverGuidRefs.Clear();
+                    level.CoverIndexPairs.Clear();
+                    level.CoverIndexPairs.Clear();
+                    level.NavRefIndicies.Clear();
                 }
 
                 levelExport.WriteBinary(level);

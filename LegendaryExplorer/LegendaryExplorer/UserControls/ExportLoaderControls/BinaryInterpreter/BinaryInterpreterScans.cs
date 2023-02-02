@@ -6898,37 +6898,37 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 if (Pcc.Game is MEGame.ME3 or MEGame.LE3)
                 {
                     int guidToIntMapCount;
-                    subnodes.Add(new BinInterpNode(bin.Position, $"guidToIntMap?: ({guidToIntMapCount = bin.ReadInt32()})")
+                    subnodes.Add(new BinInterpNode(bin.Position, $"CrossLevelCoverGuidRefs: ({guidToIntMapCount = bin.ReadInt32()})")
                     {
                         Items = ReadList(guidToIntMapCount, i => MakeInt32Node(bin, $"{bin.ReadGuid()}"))
                     });
 
                     int coverListCount;
-                    subnodes.Add(new BinInterpNode(bin.Position, $"Coverlinks: ({coverListCount = bin.ReadInt32()})")
+                    subnodes.Add(new BinInterpNode(bin.Position, $"CoverLinkRefs: ({coverListCount = bin.ReadInt32()})")
                     {
                         Items = ReadList(coverListCount, i => MakeEntryNode(bin, $"{i}"))
                     });
 
                     int intToByteMapCount;
-                    subnodes.Add(new BinInterpNode(bin.Position, $"IntToByteMap?: ({intToByteMapCount = bin.ReadInt32()})")
+                    subnodes.Add(new BinInterpNode(bin.Position, $"CoverIndexPairs: ({intToByteMapCount = bin.ReadInt32()})")
                     {
-                        Items = ReadList(intToByteMapCount, i => new BinInterpNode(bin.Position, $"{bin.ReadInt32()}: {bin.ReadByte()}"))
+                        Items = ReadList(intToByteMapCount, i => new BinInterpNode(bin.Position, $"[{i}] {bin.ReadInt32()}: {bin.ReadByte()}"))
                     });
 
                     int guidToIntMap2Count;
-                    subnodes.Add(new BinInterpNode(bin.Position, $"2nd guidToIntMap?: ({guidToIntMap2Count = bin.ReadInt32()})")
+                    subnodes.Add(new BinInterpNode(bin.Position, $"CrossLevelNavGuidRefs: ({guidToIntMap2Count = bin.ReadInt32()})")
                     {
                         Items = ReadList(guidToIntMap2Count, i => MakeInt32Node(bin, $"{bin.ReadGuid()}"))
                     });
 
                     int navListCount;
-                    subnodes.Add(new BinInterpNode(bin.Position, $"NavPoints?: ({navListCount = bin.ReadInt32()})")
+                    subnodes.Add(new BinInterpNode(bin.Position, $"NavRefs: ({navListCount = bin.ReadInt32()})")
                     {
                         Items = ReadList(navListCount, i => MakeEntryNode(bin, $"{i}"))
                     });
 
                     int numbersCount;
-                    subnodes.Add(new BinInterpNode(bin.Position, $"Ints?: ({numbersCount = bin.ReadInt32()})")
+                    subnodes.Add(new BinInterpNode(bin.Position, $"NavRefIndices: ({numbersCount = bin.ReadInt32()})")
                     {
                         Items = ReadList(numbersCount, i => MakeInt32Node(bin, $"{i}"))
                     });

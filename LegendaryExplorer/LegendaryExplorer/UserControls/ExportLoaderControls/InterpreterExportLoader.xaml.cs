@@ -26,6 +26,7 @@ using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.PlotDatabase;
 using LegendaryExplorerCore.Unreal;
+using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
 using LegendaryExplorerCore.UnrealScript;
 
@@ -43,7 +44,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         //values are the class of object value being parsed
         public static readonly string[] ExportToStringConverters = { "LevelStreamingKismet", "StaticMeshComponent", "ParticleSystemComponent", "DecalComponent", "LensFlareComponent", "AnimNodeSequence" };
         public static readonly string[] IntToStringConverters = { "WwiseEvent", "WwiseBank", "WwiseStream", "BioSeqAct_PMExecuteTransition", "BioSeqAct_PMExecuteConsequence", "BioSeqAct_PMCheckState", "BioSeqAct_PMCheckConditional", "BioSeqVar_StoryManagerInt",
-                                                                "BioSeqVar_StoryManagerFloat", "BioSeqVar_StoryManagerBool", "BioSeqVar_StoryManagerStateId", "SFXSceneShopNodePlotCheck", "BioWorldInfo" };
+                                                                "BioSeqVar_StoryManagerFloat", "BioSeqVar_StoryManagerBool", "BioSeqVar_StoryManagerStateId", "SFXSceneShopNodePlotCheck", "BioWorldInfo", "CoverLink" };
         public ObservableCollectionExtended<IndexedName> ParentNameList { get; private set; }
 
         public bool SubstituteImageForHexBox
@@ -1041,7 +1042,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         editableValue = ip.Value.ToString();
                         if (IntToStringConverters.Contains(parsingExport.ClassName))
                         {
-                            parsedValue = IntToString(prop.Name, ip.Value, parsingExport);
+                            parsedValue = IntToString(prop.Name.Name ?? parent?.Property.Name.Name, ip.Value, parsingExport);
                         }
                         if (ip.Name == "m_nStrRefID" || ip.Name == "nLineStrRef" || ip.Name == "nStrRefID" || ip.Name == "m_iStringRef" || ip.Name == "m_iDescriptionStringRef" || ip.Name == "m_srStringID")
                         {
@@ -1085,6 +1086,28 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                 {
                                     isExpanded = true;
                                 }
+                                break;
+                            }
+                        }
+
+                        if (at is ArrayType.Byte)
+                        {
+                            // Special converters
+                            if (parsingExport.ClassName == "CoverLink" && prop.Name.Name == "Interactions" && prop is ImmutableByteArrayProperty ibap)
+                            {
+                                string actions = "";
+                                foreach (var b in ibap.Bytes)
+                                {
+                                    actions += "[";
+                                    actions += (b & (1 << 4)) != 0 ? "CT_MidLevel " : "CT_Standing "; // DestType
+                                    actions += (b & (1 << 5)) != 0 ? "CA_LeanLeft" :
+                                        (b & (1 << 6)) != 0 ? "CA_LeanRight" :
+                                        (b & (1 << 7)) != 0 ? "CA_PopUp" :
+                                        "CA_Default";
+                                    actions += "] ";
+                                }
+
+                                editableValue = $"{at} array - {actions}";
                                 break;
                             }
                         }
@@ -1467,6 +1490,40 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             switch (export.ClassName)
             {
+                case "CoverLink":
+                    switch (name)
+                    {
+                        case "PackedProperties_CoverPairRefAndDynamicInfo": // FireLink in ME3/LE3
+                            {
+                                var dynamicLinkInfoIndex = (value & 0xFFFF0000) >> 16;
+                                var covRefIdx = value & 0x0000FFFF;
+
+                                var level = ObjectBinary.From<Level>(export.FileRef.FindExport("TheWorld.PersistentLevel"));
+                                if (level.CoverIndexPairs.Count >= covRefIdx)
+                                {
+                                    var cover = level.CoverIndexPairs.ContainsKey(covRefIdx);
+                                    return $"Cover Reference?: {cover}, DynamicLinkInfoIndex: {dynamicLinkInfoIndex}";
+                                }
+
+                                return $"INVALID COVREF {covRefIdx}";
+                            }
+                        case "ExposedCoverPackedProperties":
+                            {
+                                var exposedScale = (value & 0xFFFF0000) >> 16;
+                                var covRefIdx = value & 0x0000FFFF;
+
+                                var level = ObjectBinary.From<Level>(export.FileRef.FindExport("TheWorld.PersistentLevel"));
+                                if (level.CoverIndexPairs.Count >= covRefIdx)
+                                {
+                                    var cover = level.CoverIndexPairs.ContainsKey(covRefIdx);
+                                    return $"Cover Reference: {cover}, Exposure level: {exposedScale}";
+                                }
+
+                                return $"INVALID COVREF {covRefIdx}, Exposure level: {exposedScale}";
+                            }
+                    }
+
+                    break;
                 case "WwiseEvent":
                 case "WwiseBank":
                 case "WwiseStream":
