@@ -1,5 +1,6 @@
 var NAVTREEINDEX64 =
 {
+"class_sample_info_bank_chunk.html#a9e56e079c9bb1a3dee0f13cb4c4a0a8e":[1,0,16,5],
 "class_sample_info_bank_chunk.html#ab01b36a937be8f7f6f21a8f63335f121":[1,0,16,7],
 "class_sample_info_bank_chunk.html#ab40da200993f03f8712095a1f646674b":[1,0,16,4],
 "class_sample_info_bank_chunk.html#ac02e275d671694a620c7459d717292da":[1,0,16,1],
@@ -98,6 +99,7 @@ var NAVTREEINDEX64 =
 "dir_6acb3941e427b17a345850a8dc3e93d1.html":[2,0,0,0,6,5],
 "dir_6b2ffc6f8285ad593e39910a34dd6e8c.html":[2,0,0,0,23,3,0],
 "dir_6b467221cb8c52609cb7bd37220827a8.html":[2,0,0],
+"dir_6d14e9f1ee22d6f6d7bed30c575ff6f6.html":[2,0,0,0,13,1,0,1],
 "dir_6debd0e8199b80ae578655a4be418534.html":[2,0,0,0,20,0],
 "dir_746c651b3c61013606feccfe7dad85b8.html":[2,0,0,0,6,4,0,0],
 "dir_7a3b5707d60ab99f358655adf22b7c56.html":[2,0,0,0,4],
@@ -156,8 +158,8 @@ var NAVTREEINDEX64 =
 "functions_enum.html":[1,2,3],
 "functions_evnt.html":[1,2,5],
 "functions_f.html":[1,2,0,6],
-"functions_func.html":[1,2,1],
 "functions_func.html":[1,2,1,0],
+"functions_func.html":[1,2,1],
 "functions_func_b.html":[1,2,1,1],
 "functions_func_c.html":[1,2,1,2],
 "functions_func_d.html":[1,2,1,3],
@@ -192,8 +194,8 @@ var NAVTREEINDEX64 =
 "functions_n.html":[1,2,0,14],
 "functions_o.html":[1,2,0,15],
 "functions_p.html":[1,2,0,16],
-"functions_prop.html":[1,2,4],
 "functions_prop.html":[1,2,4,0],
+"functions_prop.html":[1,2,4],
 "functions_prop_b.html":[1,2,4,1],
 "functions_prop_c.html":[1,2,4,2],
 "functions_prop_d.html":[1,2,4,3],
@@ -223,8 +225,8 @@ var NAVTREEINDEX64 =
 "functions_t.html":[1,2,0,20],
 "functions_u.html":[1,2,0,21],
 "functions_v.html":[1,2,0,22],
-"functions_vars.html":[1,2,2,0],
 "functions_vars.html":[1,2,2],
+"functions_vars.html":[1,2,2,0],
 "functions_vars_a.html":[1,2,2,1],
 "functions_vars_b.html":[1,2,2,2],
 "functions_vars_c.html":[1,2,2,3],
@@ -247,7 +249,5 @@ var NAVTREEINDEX64 =
 "functions_vars_t.html":[1,2,2,20],
 "functions_vars_u.html":[1,2,2,21],
 "functions_vars_v.html":[1,2,2,22],
-"functions_vars_w.html":[1,2,2,23],
-"functions_vars_x.html":[1,2,2,24],
-"functions_vars_y.html":[1,2,2,25]
+"functions_vars_w.html":[1,2,2,23]
 };

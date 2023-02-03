@@ -1,5 +1,6 @@
 var NAVTREEINDEX32 =
 {
+"class_legendary_explorer_core_1_1_plot_database_1_1_plot_databases.html#a8d7121673dc683b2379af3f39c2405a5":[1,0,0,14,4,3],
 "class_legendary_explorer_core_1_1_plot_database_1_1_plot_databases.html#a8d7121673dc683b2379af3f39c2405a5":[0,5,1,14,4,3],
 "class_legendary_explorer_core_1_1_plot_database_1_1_plot_databases.html#aacaf6d8a2acc4d27356b6eff68c267bf":[0,5,1,14,4,7],
 "class_legendary_explorer_core_1_1_plot_database_1_1_plot_databases.html#aacaf6d8a2acc4d27356b6eff68c267bf":[1,0,0,14,4,7],
@@ -248,6 +249,5 @@ var NAVTREEINDEX32 =
 "class_legendary_explorer_core_1_1_sharp_d_x_1_1_math_util.html#a67c4ec39c4bfb8dff57ef6710b1e48cc":[1,0,0,16,1,24],
 "class_legendary_explorer_core_1_1_sharp_d_x_1_1_math_util.html#a67c4ec39c4bfb8dff57ef6710b1e48cc":[0,5,1,16,1,24],
 "class_legendary_explorer_core_1_1_sharp_d_x_1_1_math_util.html#a6fad44e6ed430938067eeaca8c292ad8":[0,5,1,16,1,21],
-"class_legendary_explorer_core_1_1_sharp_d_x_1_1_math_util.html#a6fad44e6ed430938067eeaca8c292ad8":[1,0,0,16,1,21],
-"class_legendary_explorer_core_1_1_sharp_d_x_1_1_math_util.html#a7807a13071f2b02fb761cb289bd12a9b":[0,5,1,16,1,1]
+"class_legendary_explorer_core_1_1_sharp_d_x_1_1_math_util.html#a6fad44e6ed430938067eeaca8c292ad8":[1,0,0,16,1,21]
 };

@@ -1,5 +1,6 @@
 var NAVTREEINDEX20 =
 {
+"class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_mutable_byte.html#a7416ed4c01b7110c1093ea5e85b3ba82":[1,0,0,6,6,21,9],
 "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_mutable_byte.html#a7416ed4c01b7110c1093ea5e85b3ba82":[0,5,1,6,6,21,9],
 "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_mutable_byte.html#a7ae3098ee8e3afbddce25d19ed31bf36":[0,5,1,6,6,21,18],
 "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_mutable_byte.html#a7ae3098ee8e3afbddce25d19ed31bf36":[1,0,0,6,6,21,18],
@@ -248,6 +249,5 @@ var NAVTREEINDEX20 =
 "class_legendary_explorer_core_1_1_gammtek_1_1_windows_1_1_sh_path.html":[1,0,0,6,9,1],
 "class_legendary_explorer_core_1_1_gammtek_1_1_windows_1_1_sh_path.html":[0,5,1,6,9,1],
 "class_legendary_explorer_core_1_1_gammtek_1_1_windows_1_1_sh_path.html#a08687588804bea1b5c882fe6a7ae81f1":[0,5,1,6,9,1,20],
-"class_legendary_explorer_core_1_1_gammtek_1_1_windows_1_1_sh_path.html#a08687588804bea1b5c882fe6a7ae81f1":[1,0,0,6,9,1,20],
-"class_legendary_explorer_core_1_1_gammtek_1_1_windows_1_1_sh_path.html#a0c5e3d635031d62782a7dff5bc528649":[0,5,1,6,9,1,16]
+"class_legendary_explorer_core_1_1_gammtek_1_1_windows_1_1_sh_path.html#a08687588804bea1b5c882fe6a7ae81f1":[1,0,0,6,9,1,20]
 };

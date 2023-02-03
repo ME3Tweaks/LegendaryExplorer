@@ -1,5 +1,6 @@
 var NAVTREEINDEX26 =
 {
+"class_legendary_explorer_core_1_1_memory_1_1_memory_manager.html#affd357f48c13b97a0378867a0b498274":[0,5,1,11,0,2],
 "class_legendary_explorer_core_1_1_memory_1_1_memory_manager.html#affd357f48c13b97a0378867a0b498274":[1,0,0,11,0,2],
 "class_legendary_explorer_core_1_1_misc_1_1_case_insensitive_concurrent_dictionary.html":[1,0,0,12,1],
 "class_legendary_explorer_core_1_1_misc_1_1_case_insensitive_concurrent_dictionary.html":[0,5,1,12,1],
@@ -248,6 +249,5 @@ var NAVTREEINDEX26 =
 "class_legendary_explorer_core_1_1_misc_1_1_observable_collection_extended.html#a1079befa82fa7954700207626ac8f01d":[1,0,0,12,10,14],
 "class_legendary_explorer_core_1_1_misc_1_1_observable_collection_extended.html#a1079befa82fa7954700207626ac8f01d":[0,5,1,12,10,14],
 "class_legendary_explorer_core_1_1_misc_1_1_observable_collection_extended.html#a1f2c4f931d1f55ecc0f76aff5d7a2f72":[1,0,0,12,10,10],
-"class_legendary_explorer_core_1_1_misc_1_1_observable_collection_extended.html#a1f2c4f931d1f55ecc0f76aff5d7a2f72":[0,5,1,12,10,10],
-"class_legendary_explorer_core_1_1_misc_1_1_observable_collection_extended.html#a342a5f8c7bb10cb54b1a113f28e2bf26":[1,0,0,12,10,0]
+"class_legendary_explorer_core_1_1_misc_1_1_observable_collection_extended.html#a1f2c4f931d1f55ecc0f76aff5d7a2f72":[0,5,1,12,10,10]
 };

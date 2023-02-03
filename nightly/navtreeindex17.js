@@ -1,5 +1,6 @@
 var NAVTREEINDEX17 =
 {
+"class_legendary_explorer_core_1_1_gammtek_1_1_helpers_1_1_string_to_object_helper.html#a685a1d9d1d3410f149be86a1349d2259":[1,0,0,6,5,4,17],
 "class_legendary_explorer_core_1_1_gammtek_1_1_helpers_1_1_string_to_object_helper.html#a685a1d9d1d3410f149be86a1349d2259":[0,5,1,6,5,4,17],
 "class_legendary_explorer_core_1_1_gammtek_1_1_helpers_1_1_string_to_object_helper.html#a7b98e45794c4b6cc900fe901f1c05ca3":[1,0,0,6,5,4,12],
 "class_legendary_explorer_core_1_1_gammtek_1_1_helpers_1_1_string_to_object_helper.html#a7b98e45794c4b6cc900fe901f1c05ca3":[0,5,1,6,5,4,12],
@@ -248,6 +249,5 @@ var NAVTREEINDEX17 =
 "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_byte_order_converter.html#a550046923b76736e39cf180e3a0a6937":[0,5,1,6,6,8,41],
 "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_byte_order_converter.html#a550046923b76736e39cf180e3a0a6937":[1,0,0,6,6,8,41],
 "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_byte_order_converter.html#a5861bfaacea8cfeae8da3d2a04752a44":[0,5,1,6,6,8,19],
-"class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_byte_order_converter.html#a5861bfaacea8cfeae8da3d2a04752a44":[1,0,0,6,6,8,19],
-"class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_byte_order_converter.html#a5fb985d710651691cfd76d43ac88f7f1":[0,5,1,6,6,8,16]
+"class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_byte_order_converter.html#a5861bfaacea8cfeae8da3d2a04752a44":[1,0,0,6,6,8,19]
 };

@@ -1,5 +1,6 @@
 var NAVTREEINDEX15 =
 {
+"class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_int32_extensions.html#aeb5acd469fdf68488149d523957e7fcf":[1,0,0,6,4,10,3],
 "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_int32_extensions.html#aeb5acd469fdf68488149d523957e7fcf":[0,5,1,6,4,10,3],
 "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_int32_extensions.html#aef4b3922a5d3ff06640dcd0dff038218":[0,5,1,6,4,10,2],
 "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_int32_extensions.html#aef4b3922a5d3ff06640dcd0dff038218":[1,0,0,6,4,10,2],
@@ -248,6 +249,5 @@ var NAVTREEINDEX15 =
 "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_single_extensions.html#aa7ad325013d33b097e5798acd3f32a5e":[1,0,0,6,4,15,4],
 "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_single_extensions.html#aa7ad325013d33b097e5798acd3f32a5e":[0,5,1,6,4,15,4],
 "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_single_extensions.html#ab288c1259233e59d64e8a1830e4888ee":[0,5,1,6,4,15,6],
-"class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_single_extensions.html#ab288c1259233e59d64e8a1830e4888ee":[1,0,0,6,4,15,6],
-"class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_single_extensions.html#abef9a88420ebd96ccb821f82d1afb79a":[1,0,0,6,4,15,11]
+"class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_single_extensions.html#ab288c1259233e59d64e8a1830e4888ee":[1,0,0,6,4,15,6]
 };

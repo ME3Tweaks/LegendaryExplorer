@@ -1,5 +1,6 @@
 var NAVTREEINDEX16 =
 {
+"class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_single_extensions.html#abef9a88420ebd96ccb821f82d1afb79a":[1,0,0,6,4,15,11],
 "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_single_extensions.html#abef9a88420ebd96ccb821f82d1afb79a":[0,5,1,6,4,15,11],
 "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_single_extensions.html#ad8fd44f9afc6cec42e9a07252a347a99":[0,5,1,6,4,15,0],
 "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_single_extensions.html#ad8fd44f9afc6cec42e9a07252a347a99":[1,0,0,6,4,15,0],
@@ -248,6 +249,5 @@ var NAVTREEINDEX16 =
 "class_legendary_explorer_core_1_1_gammtek_1_1_helpers_1_1_string_to_object_helper.html#a5c4b1523331bb7e7156b5e3996f210d5":[0,5,1,6,5,4,21],
 "class_legendary_explorer_core_1_1_gammtek_1_1_helpers_1_1_string_to_object_helper.html#a5c4b1523331bb7e7156b5e3996f210d5":[1,0,0,6,5,4,21],
 "class_legendary_explorer_core_1_1_gammtek_1_1_helpers_1_1_string_to_object_helper.html#a5d71b0a473f52519ea4ec8757df199dc":[1,0,0,6,5,4,7],
-"class_legendary_explorer_core_1_1_gammtek_1_1_helpers_1_1_string_to_object_helper.html#a5d71b0a473f52519ea4ec8757df199dc":[0,5,1,6,5,4,7],
-"class_legendary_explorer_core_1_1_gammtek_1_1_helpers_1_1_string_to_object_helper.html#a685a1d9d1d3410f149be86a1349d2259":[1,0,0,6,5,4,17]
+"class_legendary_explorer_core_1_1_gammtek_1_1_helpers_1_1_string_to_object_helper.html#a5d71b0a473f52519ea4ec8757df199dc":[0,5,1,6,5,4,7]
 };

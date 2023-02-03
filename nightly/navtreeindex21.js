@@ -1,5 +1,6 @@
 var NAVTREEINDEX21 =
 {
+"class_legendary_explorer_core_1_1_gammtek_1_1_windows_1_1_sh_path.html#a0c5e3d635031d62782a7dff5bc528649":[0,5,1,6,9,1,16],
 "class_legendary_explorer_core_1_1_gammtek_1_1_windows_1_1_sh_path.html#a0c5e3d635031d62782a7dff5bc528649":[1,0,0,6,9,1,16],
 "class_legendary_explorer_core_1_1_gammtek_1_1_windows_1_1_sh_path.html#a10c3e2be10626f7e0a8141ca51a2242d":[0,5,1,6,9,1,4],
 "class_legendary_explorer_core_1_1_gammtek_1_1_windows_1_1_sh_path.html#a10c3e2be10626f7e0a8141ca51a2242d":[1,0,0,6,9,1,4],
@@ -248,6 +249,5 @@ var NAVTREEINDEX21 =
 "class_legendary_explorer_core_1_1_gammtek_1_1_windows_1_1_windows_api_1_1_shlwapi.html#af6813416b2090b7eda656b83e050a0d3":[1,0,0,6,9,2,3,21],
 "class_legendary_explorer_core_1_1_gammtek_1_1_windows_1_1_windows_api_1_1_shlwapi.html#af6813416b2090b7eda656b83e050a0d3":[0,5,1,6,9,2,3,21],
 "class_legendary_explorer_core_1_1_gammtek_1_1_windows_1_1_windows_api_1_1_user32.html":[0,5,1,6,9,2,4],
-"class_legendary_explorer_core_1_1_gammtek_1_1_windows_1_1_windows_api_1_1_user32.html":[1,0,0,6,9,2,4],
-"class_legendary_explorer_core_1_1_gammtek_1_1_windows_1_1_windows_api_1_1_user32.html#a249457bdd86245dc1dc12c84813b89a5":[0,5,1,6,9,2,4,0]
+"class_legendary_explorer_core_1_1_gammtek_1_1_windows_1_1_windows_api_1_1_user32.html":[1,0,0,6,9,2,4]
 };

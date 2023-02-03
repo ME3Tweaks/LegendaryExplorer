@@ -1,5 +1,6 @@
 var NAVTREEINDEX27 =
 {
+"class_legendary_explorer_core_1_1_misc_1_1_observable_collection_extended.html#a342a5f8c7bb10cb54b1a113f28e2bf26":[1,0,0,12,10,0],
 "class_legendary_explorer_core_1_1_misc_1_1_observable_collection_extended.html#a342a5f8c7bb10cb54b1a113f28e2bf26":[0,5,1,12,10,0],
 "class_legendary_explorer_core_1_1_misc_1_1_observable_collection_extended.html#a38fbf7c7f0fa226701e4ed3b96e2b1e6":[1,0,0,12,10,11],
 "class_legendary_explorer_core_1_1_misc_1_1_observable_collection_extended.html#a38fbf7c7f0fa226701e4ed3b96e2b1e6":[0,5,1,12,10,11],
@@ -57,8 +58,8 @@ var NAVTREEINDEX27 =
 "class_legendary_explorer_core_1_1_misc_1_1_ordered_multi_value_dictionary.html#aef07f394e7c905e3bf0a9e215f624b4e":[0,5,1,12,12,0],
 "class_legendary_explorer_core_1_1_misc_1_1_ordered_multi_value_dictionary.html#af8dabf90114d83d300259a3a521fc66c":[1,0,0,12,12,6],
 "class_legendary_explorer_core_1_1_misc_1_1_ordered_multi_value_dictionary.html#af8dabf90114d83d300259a3a521fc66c":[0,5,1,12,12,6],
-"class_legendary_explorer_core_1_1_misc_1_1_value_tuple_equality_comparer.html":[0,5,1,12,13],
 "class_legendary_explorer_core_1_1_misc_1_1_value_tuple_equality_comparer.html":[1,0,0,12,13],
+"class_legendary_explorer_core_1_1_misc_1_1_value_tuple_equality_comparer.html":[0,5,1,12,13],
 "class_legendary_explorer_core_1_1_misc_1_1_value_tuple_equality_comparer.html#a0701b73addf9e45594645af7f5ae34b2":[1,0,0,12,13,3],
 "class_legendary_explorer_core_1_1_misc_1_1_value_tuple_equality_comparer.html#a0701b73addf9e45594645af7f5ae34b2":[0,5,1,12,13,3],
 "class_legendary_explorer_core_1_1_misc_1_1_value_tuple_equality_comparer.html#a081ad6597423dc92521e4ed79bb23cfb":[0,5,1,12,13,4],
@@ -248,6 +249,5 @@ var NAVTREEINDEX27 =
 "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a21e33d04fdc15d4c2e1626c8f6ea5414":[1,0,0,13,0,9,3],
 "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a21e33d04fdc15d4c2e1626c8f6ea5414":[0,5,1,13,0,9,3],
 "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a429bec3b3aca2ac591a2bb8119c7e0fb":[1,0,0,13,0,9,5],
-"class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a429bec3b3aca2ac591a2bb8119c7e0fb":[0,5,1,13,0,9,5],
-"class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a489e134d5fb3424712352a1ae36a836e":[0,5,1,13,0,9,1]
+"class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a429bec3b3aca2ac591a2bb8119c7e0fb":[0,5,1,13,0,9,5]
 };

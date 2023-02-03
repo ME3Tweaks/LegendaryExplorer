@@ -1,5 +1,6 @@
 var NAVTREEINDEX35 =
 {
+"class_legendary_explorer_core_1_1_textures_1_1_studio_1_1_texture_map_memory_entry.html#a452584bfe833ba13234fe3de9cf5faf1":[0,5,1,18,1,3,7],
 "class_legendary_explorer_core_1_1_textures_1_1_studio_1_1_texture_map_memory_entry.html#a452584bfe833ba13234fe3de9cf5faf1":[1,0,0,18,1,3,7],
 "class_legendary_explorer_core_1_1_textures_1_1_studio_1_1_texture_map_memory_entry.html#a5e360c07aebca580b9880b371768aa30":[0,5,1,18,1,3,6],
 "class_legendary_explorer_core_1_1_textures_1_1_studio_1_1_texture_map_memory_entry.html#a5e360c07aebca580b9880b371768aa30":[1,0,0,18,1,3,6],
@@ -248,6 +249,5 @@ var NAVTREEINDEX35 =
 "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_anim_sequence.html#a59cc94aeac7d0e986eea80ab66a25e0f":[0,5,1,21,0,1,2],
 "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_anim_sequence.html#a59cc94aeac7d0e986eea80ab66a25e0f":[1,0,0,21,0,1,2],
 "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_anim_sequence.html#a9564b3a5a58d85a367217ced6eb5e9bb":[1,0,0,21,0,1,8],
-"class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_anim_sequence.html#a9564b3a5a58d85a367217ced6eb5e9bb":[0,5,1,21,0,1,8],
-"class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_anim_sequence.html#ab867ddd815e64e58199612cc1f082178":[0,5,1,21,0,1,6]
+"class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_anim_sequence.html#a9564b3a5a58d85a367217ced6eb5e9bb":[0,5,1,21,0,1,8]
 };

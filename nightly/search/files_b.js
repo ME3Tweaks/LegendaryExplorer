@@ -14,7 +14,7 @@ var searchData=
   ['leclog_2ecs_11',['LECLog.cs',['../_l_e_c_log_8cs.html',1,'']]],
   ['lecoalesced_2ecs_12',['LECoalesced.cs',['../_l_e_coalesced_8cs.html',1,'']]],
   ['ledirectory_2ecs_13',['LEDirectory.cs',['../_l_e_directory_8cs.html',1,'']]],
-  ['legendaryexplorercore_2eassemblyinfo_2ecs_14',['LegendaryExplorerCore.AssemblyInfo.cs',['../_win_azure_test_2net6_80_2_legendary_explorer_core_8_assembly_info_8cs.html',1,'(Global Namespace)'],['../x64_2_win_azure_release_2net6_80_2_legendary_explorer_core_8_assembly_info_8cs.html',1,'(Global Namespace)']]],
+  ['legendaryexplorercore_2eassemblyinfo_2ecs_14',['LegendaryExplorerCore.AssemblyInfo.cs',['../_win_azure_test_2net6_80_2_legendary_explorer_core_8_assembly_info_8cs.html',1,'(Global Namespace)'],['../x64_2_win_azure_release_2net6_80_2_legendary_explorer_core_8_assembly_info_8cs.html',1,'(Global Namespace)'],['../x64_2_win_azure_release_2net7_80_2_legendary_explorer_core_8_assembly_info_8cs.html',1,'(Global Namespace)']]],
   ['legendaryexplorercorelib_2ecs_15',['LegendaryExplorerCoreLib.cs',['../_legendary_explorer_core_lib_8cs.html',1,'']]],
   ['legendaryexplorercorelibsettings_2ecs_16',['LegendaryExplorerCoreLibSettings.cs',['../_legendary_explorer_core_lib_settings_8cs.html',1,'']]],
   ['legendaryexplorercoreutilities_2ecs_17',['LegendaryExplorerCoreUtilities.cs',['../_legendary_explorer_core_utilities_8cs.html',1,'']]],

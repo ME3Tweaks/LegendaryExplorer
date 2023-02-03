@@ -1,5 +1,6 @@
 var NAVTREEINDEX19 =
 {
+"class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_endian_reader.html#a61ef48c2ab82b29785f2e413eee74c0b":[0,5,1,6,6,14,5],
 "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_endian_reader.html#a61ef48c2ab82b29785f2e413eee74c0b":[1,0,0,6,6,14,5],
 "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_endian_reader.html#a65dc1ac0ecf9697840b52cf1753ef71c":[1,0,0,6,6,14,35],
 "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_endian_reader.html#a65dc1ac0ecf9697840b52cf1753ef71c":[0,5,1,6,6,14,35],
@@ -248,6 +249,5 @@ var NAVTREEINDEX19 =
 "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_mutable_byte.html#a696f81490ff27f616aca2e22f17f9718":[1,0,0,6,6,21,25],
 "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_mutable_byte.html#a696f81490ff27f616aca2e22f17f9718":[0,5,1,6,6,21,25],
 "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_mutable_byte.html#a6b1f6c711b6da85fa654c0db46a53fef":[1,0,0,6,6,21,39],
-"class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_mutable_byte.html#a6b1f6c711b6da85fa654c0db46a53fef":[0,5,1,6,6,21,39],
-"class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_mutable_byte.html#a7416ed4c01b7110c1093ea5e85b3ba82":[1,0,0,6,6,21,9]
+"class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_mutable_byte.html#a6b1f6c711b6da85fa654c0db46a53fef":[0,5,1,6,6,21,39]
 };
