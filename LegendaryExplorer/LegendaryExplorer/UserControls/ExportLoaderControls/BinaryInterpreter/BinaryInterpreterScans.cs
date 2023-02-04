@@ -5311,16 +5311,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
             return subnodes;
         }
-        private List<ITreeItem> StartObjectRedirectorScan(byte[] data, ref int binarystart)
+        private List<ITreeItem> StartObjectRedirectorScan(byte[] data, ref int binaryStart)
         {
             var subnodes = new List<ITreeItem>();
-
-            int redirnum = BitConverter.ToInt32(data, binarystart);
-            subnodes.Add(new BinInterpNode
-            {
-                Header = $"{binarystart:X4} Redirect references to this export to: {redirnum} {CurrentLoadedExport.FileRef.GetEntry(redirnum).InstancedFullPath}",
-                Name = "_" + binarystart
-            });
+            var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
+            bin.Skip(binaryStart);
+            subnodes.Add(MakeEntryNode(bin, "Redirect references to this export to"));
             return subnodes;
         }
 

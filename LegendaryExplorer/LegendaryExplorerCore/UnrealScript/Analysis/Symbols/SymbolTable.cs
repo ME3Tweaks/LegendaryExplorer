@@ -101,10 +101,15 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
 
             
             Class packageType = null;
-            if (game >= MEGame.ME3)
+            switch (game)
             {
-                packageType = new Class("Package", objectClass, objectClass, intrinsicClassFlags);
-                table.AddType(packageType);
+                case >= MEGame.ME3:
+                    packageType = new Class("Package", objectClass, objectClass, intrinsicClassFlags);
+                    table.AddType(packageType);
+                    break;
+                case MEGame.ME1:
+                    table.AddType(new Class("ObjectRedirector", objectClass, objectClass, intrinsicClassFlags));
+                    break;
             }
 
             //script type intrinsics

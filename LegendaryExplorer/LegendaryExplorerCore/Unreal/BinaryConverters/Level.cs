@@ -12,7 +12,7 @@ using UIndex = System.Int32;
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
     [DebuggerDisplay("CoverIndexPair | Index {CoverIndexIdx}, Slot {SlotIdx}")]
-    public class CoverIndexPair
+    public struct CoverIndexPair
     {
         /// <summary>
         /// The index into the CoverLinkRefs array on Level
@@ -399,7 +399,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             if (sc.IsLoading)
             {
-                val = new CoverIndexPair()
+                val = new CoverIndexPair
                 {
                     CoverIndexIdx = sc.ms.ReadUInt32(),
                     SlotIdx = sc.ms.ReadByte()
