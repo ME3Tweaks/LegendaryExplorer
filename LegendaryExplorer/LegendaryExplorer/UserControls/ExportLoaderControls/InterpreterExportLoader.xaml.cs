@@ -1501,8 +1501,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                 var level = ObjectBinary.From<Level>(export.FileRef.FindExport("TheWorld.PersistentLevel"));
                                 if (level.CoverIndexPairs.Count >= covRefIdx)
                                 {
-                                    var cover = level.CoverIndexPairs.ContainsKey(covRefIdx);
-                                    return $"Cover Reference?: {cover}, DynamicLinkInfoIndex: {dynamicLinkInfoIndex}";
+                                    var cover = level.CoverIndexPairs[covRefIdx];
+                                    return $"Cover Reference: {export.FileRef.GetUExport(level.CoverLinkRefs[(int)cover.CoverIndexIdx]).ObjectName.Instanced} slot {cover.SlotIdx}, DynamicLinkInfoIndex: {dynamicLinkInfoIndex}";
                                 }
 
                                 return $"INVALID COVREF {covRefIdx}";
@@ -1515,8 +1515,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                 var level = ObjectBinary.From<Level>(export.FileRef.FindExport("TheWorld.PersistentLevel"));
                                 if (level.CoverIndexPairs.Count >= covRefIdx)
                                 {
-                                    var cover = level.CoverIndexPairs.ContainsKey(covRefIdx);
-                                    return $"Cover Reference: {cover}, Exposure level: {exposedScale}";
+                                    var cover = level.CoverIndexPairs[covRefIdx];
+                                    return $"Cover Reference: {export.FileRef.GetUExport(level.CoverLinkRefs[(int)cover.CoverIndexIdx]).ObjectName.Instanced} slot {cover.SlotIdx}, ExposureScale: {exposedScale}";
                                 }
 
                                 return $"INVALID COVREF {covRefIdx}, Exposure level: {exposedScale}";

@@ -2517,7 +2517,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             //            Debug.WriteLine("Done");
 
             //// Generate BioP stuff
-            var destDir = @"B:\SteamLibrary\steamapps\common\Mass Effect Legendary Edition\Game\ME3\BioGame\DLC\DLC_MOD_SquadmateCheeseburger\CookedPCConsole";
+            var destDir = Path.Combine(LE3Directory.DLCPath, "DLC_MOD_SquadmateCheeseburger", "CookedPCConsole");
 
             //var bioP = Path.Combine(LE2Directory.CookedPCPath, "BioP_BchLmL.pcc");
             //var destBioP = Path.Combine(destDir, "BioP_BchLmL.pcc");
@@ -2560,7 +2560,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 "BioD_BchLml_102BeachFight.pcc",
                 "BioD_BchLml_201BeachPath.pcc",
                 "BioD_BchLml_202Village.pcc",
-
                 "BioD_BchLmL_301TemplePath.pcc",
                 "BioD_BchLmL_302MechFight.pcc",
                 "BioD_BchLmL_303TempleInterior.pcc",
@@ -2636,12 +2635,13 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                 EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.ReplaceSingularWithRelink, srcWorld, destPackage, destWorld, true, new RelinkerOptionsPackage() { PortImportsMemorySafe = true, IsCrossGame = true, TargetGameDonorDB = objectDB }, out _);
 
-
+                ConvertCover(srcPackage, destPackage);
 
                 destPackage.Save();
 
             }
 
+            Debug.WriteLine("Done with MScanner()");
             return;
 
             //var sfxGameME3 = MEPackageHandler.OpenMEPackage(Path.Combine(ME3Directory.CookedPCPath, @"SFXGame.pcc"));
@@ -2924,6 +2924,166 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             {
                 Debug.WriteLine($"DUPLICATE IFP: {duplicate.Key} in {duplicate.Value}");
             }
+        }
+
+        private static void ConvertCover(IMEPackage srcPackage, IMEPackage destPackage)
+        {
+            var levelDestExp = destPackage.FindExport("TheWorld.PersistentLevel");
+            var destLevel = ObjectBinary.From<Level>(levelDestExp);
+            var sourceLevel = ObjectBinary.From<Level>(srcPackage.FindExport("TheWorld.PersistentLevel"));
+
+            // Enumerate the CoverLink chain
+            if (destLevel.CoverListStart <= 0)
+                return; // Nothing
+
+            // Build the CoverLinkRefs list.
+            Dictionary<int, int> uindexToRefIdx = new Dictionary<int, int>(); // used to map UIndex -> position in the list
+            var currentCoverLink = destPackage.GetUExport(destLevel.CoverListStart);
+
+            while (currentCoverLink != null)
+            {
+                uindexToRefIdx[currentCoverLink.UIndex] = destLevel.CoverLinkRefs.Count; // Cache for lookup later
+                destLevel.CoverLinkRefs.Add(currentCoverLink.UIndex);
+
+                // Go to the next node
+                var ncl = currentCoverLink.GetProperty<ObjectProperty>("NextCoverLink");
+                if (ncl == null)
+                {
+                    currentCoverLink = null; // Nothing left to do
+                }
+                else
+                {
+                    currentCoverLink = destPackage.GetUExport(ncl.Value);
+                }
+            }
+
+            // Enumerate each cover and build the data
+            var sourceCoverLink = srcPackage.GetUExport(sourceLevel.CoverListStart);
+
+            Dictionary<string, uint> coverRefPairLookup = new Dictionary<string, uint>(); // "CoverLinkRefsIndex-SlotIdx" -> Index
+            while (sourceCoverLink != null)
+            {
+                var matchingDestCoverLink = destPackage.FindExport(sourceCoverLink.InstancedFullPath);
+
+                var sourceSlots = sourceCoverLink.GetProperty<ArrayProperty<StructProperty>>("Slots");
+                var destSlots = matchingDestCoverLink.GetProperty<ArrayProperty<StructProperty>>("Slots");
+
+                // This code is for LE2 -> LE3
+                if (sourceCoverLink.Game == MEGame.LE2)
+                {
+                    for (int i = 0; i < sourceSlots.Count; i++)
+                    {
+                        var sourceSlot = sourceSlots[i];
+                        var destSlot = destSlots[i];
+
+                        var sourceFireLinks = sourceSlot.GetProp<ArrayProperty<StructProperty>>("FireLinks");
+                        var destFireLinks = destSlot.GetProp<ArrayProperty<StructProperty>>("FireLinks");
+                        foreach (var sourceFireLink in sourceFireLinks)
+                        {
+                            var targetActor = sourceFireLink.GetProp<StructProperty>("TargetActor");
+                            var actor = targetActor.GetProp<ObjectProperty>("Actor");
+                            // Todo: Support cross-level refs via GUID
+                            var slotIdx = (uint)targetActor.GetProp<IntProperty>("SlotIdx").Value;
+
+                            uint packedCoverPairRefAndDynamicLinkInfo = 0;
+
+                            if (actor.Value != 0)
+                            {
+                                var actorExp = srcPackage.GetUExport(actor.Value);
+                                var destActorExp = destPackage.FindExport(actorExp.InstancedFullPath);
+
+                                var clrIdx =
+                                    destLevel.CoverLinkRefs.IndexOf(destActorExp.UIndex); // Index into CoverLinkRefs
+                                var lookupStr = $"{clrIdx}-{slotIdx}";
+
+
+                                if (!coverRefPairLookup.TryGetValue(lookupStr, out var covRefIdx))
+                                {
+                                    // Cache result for faster lookup
+                                    coverRefPairLookup[lookupStr] = (uint)destLevel.CoverIndexPairs.Count;
+                                    if (covRefIdx == 32)
+                                        Debugger.Break();
+                                    destLevel.CoverIndexPairs.Add(new CoverIndexPair()
+                                        { CoverIndexIdx = (uint)clrIdx, SlotIdx = (byte)slotIdx });
+                                }
+
+                                // Set the cover reference
+                                covRefIdx &= 0x0000FFFF;
+                                packedCoverPairRefAndDynamicLinkInfo &= ~(0x0000FFFFu);
+                                packedCoverPairRefAndDynamicLinkInfo |= covRefIdx;
+
+                                // Set the dynamic link info
+                                var dynamicLinkInfoIndex =
+                                    (uint)sourceFireLink.GetProp<ByteProperty>("DynamicLinkInfoIndex").Value;
+                                dynamicLinkInfoIndex &= 0xFFFF0000;
+                                packedCoverPairRefAndDynamicLinkInfo &= ~(0xFFFF0000);
+                                packedCoverPairRefAndDynamicLinkInfo |= (dynamicLinkInfoIndex << 16);
+                                //}
+
+                                // Convert the 'Items' to byte-packed Interactions
+                                ArrayProperty<ByteProperty> interactions =
+                                    new ArrayProperty<ByteProperty>("Interactions");
+                                foreach (var item in sourceFireLink.GetProp<ArrayProperty<StructProperty>>("Items"))
+                                {
+                                    var srcType = item.GetProp<EnumProperty>("SrcType");
+                                    var srcAction = item.GetProp<EnumProperty>("SrcAction");
+                                    var destType = item.GetProp<EnumProperty>("DestType");
+                                    var destAction = item.GetProp<EnumProperty>("DestAction");
+
+                                    byte packedByte = 0;
+
+                                    // Pack Source
+                                    if (srcType.Value == "CT_MidLevel") packedByte |= (1 << 0); // 0 = Standing
+                                    if (srcAction.Value == "CA_LeanLeft") packedByte |= (1 << 1);
+                                    else if (srcAction.Value == "CA_LeanRight") packedByte |= (1 << 2);
+                                    else if (srcAction.Value == "CA_LeanPopUp")
+                                        packedByte |= (1 << 3); // No bits set 1-3: CA_Default
+
+                                    // Pack Dest
+                                    if (destType.Value == "CT_MidLevel") packedByte |= (1 << 4); // 0 = Standing
+                                    if (destAction.Value == "CA_LeanLeft") packedByte |= (1 << 5);
+                                    else if (destAction.Value == "CA_LeanRight") packedByte |= (1 << 6);
+                                    else if (destAction.Value == "CA_LeanPopUp")
+                                        packedByte |= (1 << 7); // No bits set 1-3: CA_Default
+
+                                    interactions.Add(new ByteProperty(packedByte));
+                                }
+
+
+                                // Generate new struct
+                                PropertyCollection newFireLinkProps = new PropertyCollection();
+                                newFireLinkProps.Add(interactions);
+                                newFireLinkProps.Add(new IntProperty((int)packedCoverPairRefAndDynamicLinkInfo,
+                                    "PackedProperties_CoverPairRefAndDynamicInfo"));
+                                newFireLinkProps.Add(sourceFireLink.GetProp<BoolProperty>("bFallbackLink"));
+                                newFireLinkProps.Add(sourceFireLink.GetProp<BoolProperty>("bDynamicIndexInited"));
+
+                                destFireLinks.Add(new StructProperty("FireLink", newFireLinkProps, isImmutable: true));
+                            }
+                            else
+                            {
+                                Debug.WriteLine("CROSS-LEVEL FIRELINK FOUND - TODO");
+                            }
+                        }
+                    }
+
+                    matchingDestCoverLink.WriteProperty(destSlots);
+                }
+
+
+                // Go to the next node
+                var ncl = sourceCoverLink.GetProperty<ObjectProperty>("NextCoverLink");
+                if (ncl == null)
+                {
+                    sourceCoverLink = null; // Nothing left to do
+                }
+                else
+                {
+                    sourceCoverLink = srcPackage.GetUExport(ncl.Value);
+                }
+            }
+
+            levelDestExp.WriteBinary(destLevel);
         }
 
         private static void GenerateAllMemoryPathedObjects(MEGame game)

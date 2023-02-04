@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using LegendaryExplorerCore.Helpers;
@@ -10,6 +11,19 @@ using UIndex = System.Int32;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
+    [DebuggerDisplay("CoverIndexPair | Index {CoverIndexIdx}, Slot {SlotIdx}")]
+    public class CoverIndexPair
+    {
+        /// <summary>
+        /// The index into the CoverLinkRefs array on Level
+        /// </summary>
+        public uint CoverIndexIdx;
+
+        /// <summary>
+        /// The slot index of the cover
+        /// </summary>
+        public byte SlotIdx;
+    }
     public class Level : ObjectBinary
     {
         public UIndex Self;
@@ -38,7 +52,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public UIndex PylonListEnd;
         public OrderedMultiValueDictionary<Guid, int> CrossLevelCoverGuidRefs;
         public List<UIndex> CoverLinkRefs;
-        public OrderedMultiValueDictionary<int, byte> CoverIndexPairs;
+        public List<CoverIndexPair> CoverIndexPairs;
         public OrderedMultiValueDictionary<Guid, int> CrossLevelNavGuidRefs;
         public List<UIndex> NavRefs;
         public List<int> NavRefIndicies;
@@ -104,7 +118,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             {
                 sc.Serialize(ref CrossLevelCoverGuidRefs, SCExt.Serialize, SCExt.Serialize);
                 sc.Serialize(ref CoverLinkRefs, SCExt.Serialize);
-                sc.Serialize(ref CoverIndexPairs, SCExt.Serialize, SCExt.Serialize);
+                sc.Serialize(ref CoverIndexPairs, SCExt.Serialize);
                 sc.Serialize(ref CrossLevelNavGuidRefs, SCExt.Serialize, SCExt.Serialize);
                 sc.Serialize(ref NavRefs, SCExt.Serialize);
                 sc.Serialize(ref NavRefIndicies, SCExt.Serialize);
@@ -115,7 +129,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 PylonListEnd = 0;
                 CrossLevelCoverGuidRefs = new OrderedMultiValueDictionary<Guid, int>();
                 CoverLinkRefs = new List<UIndex>();
-                CoverIndexPairs = new OrderedMultiValueDictionary<int, byte>();
+                CoverIndexPairs = new List<CoverIndexPair>();
                 CrossLevelNavGuidRefs = new OrderedMultiValueDictionary<Guid, int>();
                 NavRefs = new List<UIndex>();
                 NavRefIndicies = new List<int>();
@@ -196,7 +210,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 PylonListEnd = 0,
                 CrossLevelCoverGuidRefs = new OrderedMultiValueDictionary<Guid, int>(),
                 CoverLinkRefs = new List<UIndex>(),
-                CoverIndexPairs = new OrderedMultiValueDictionary<int, byte>(),
+                CoverIndexPairs = new List<CoverIndexPair>(),
                 CrossLevelNavGuidRefs = new OrderedMultiValueDictionary<Guid, int>(),
                 NavRefs = new List<UIndex>(),
                 NavRefIndicies = new List<int>(),
@@ -316,6 +330,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref url.Port);
             sc.Serialize(ref url.Valid);
         }
+
         public static void Serialize(this SerializingContainer2 sc, ref StreamableTextureInstanceList texInstList)
         {
             if (sc.IsLoading)
@@ -325,6 +340,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
             sc.Serialize(ref texInstList.Instances, Serialize);
         }
+
         public static void Serialize(this SerializingContainer2 sc, ref StreamableTextureInstance texInst)
         {
             if (sc.IsLoading)
@@ -335,6 +351,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref texInst.BoundingSphere);
             sc.Serialize(ref texInst.TexelFactor);
         }
+
         public static void Serialize(this SerializingContainer2 sc, ref CachedPhysSMData smData)
         {
             if (sc.IsLoading)
@@ -345,6 +362,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref smData.Scale3D);
             sc.Serialize(ref smData.CachedDataIndex);
         }
+
         public static void Serialize(this SerializingContainer2 sc, ref KCachedConvexData convData)
         {
             if (sc.IsLoading)
@@ -354,14 +372,17 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
             sc.Serialize(ref convData.CachedConvexElements, Serialize);
         }
+
         public static void Serialize(this SerializingContainer2 sc, ref KCachedConvexDataElement convDataElem)
         {
             if (sc.IsLoading)
             {
                 convDataElem = new KCachedConvexDataElement();
             }
+
             sc.BulkSerialize(ref convDataElem.ConvexElementData, SCExt.Serialize, 1);
         }
+
         public static void Serialize(this SerializingContainer2 sc, ref KCachedPerTriData triData)
         {
             if (sc.IsLoading)
@@ -372,6 +393,23 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             int byteSize = 1;
             sc.Serialize(ref byteSize);
             sc.Serialize(ref triData.CachedPerTriData);
+        }
+
+        public static void Serialize(this SerializingContainer2 sc, ref CoverIndexPair val)
+        {
+            if (sc.IsLoading)
+            {
+                val = new CoverIndexPair()
+                {
+                    CoverIndexIdx = sc.ms.ReadUInt32(),
+                    SlotIdx = sc.ms.ReadByte()
+                };
+            }
+            else
+            {
+                sc.ms.Writer.WriteUInt32(val.CoverIndexIdx);
+                sc.ms.Writer.WriteByte(val.SlotIdx);
+            }
         }
     }
 }
