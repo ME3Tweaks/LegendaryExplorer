@@ -626,7 +626,7 @@ namespace LegendaryExplorerCore.Packages
                         }
                     }
 
-                    LECLTagData = leclv2Data != null ? JsonConvert.DeserializeObject<LECLData>(leclv2Data) : new LECLData();
+                    LECLTagData = (leclv2Data != null ? JsonConvert.DeserializeObject<LECLData>(leclv2Data) : new LECLData()) ?? new LECLData(); // This prevents invalid parsing of LECLTagData from causing package to be unable to save
                     LECLTagData.WasSavedWithMEM = taggedByMEM;
                     LECLTagData.WasSavedWithLEC = taggedByLEC;
                 }
