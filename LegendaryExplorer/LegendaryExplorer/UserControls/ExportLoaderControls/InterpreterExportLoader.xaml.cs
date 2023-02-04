@@ -1521,6 +1521,20 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
                                 return $"INVALID COVREF {covRefIdx}, Exposure level: {exposedScale}";
                             }
+                        case "DangerCoverPackedProperties":
+                        {
+                            var dangerCost = (value & 0xFFFF0000) >> 16;
+                            var navRefIdx = value & 0x0000FFFF;
+
+                            var level = ObjectBinary.From<Level>(export.FileRef.FindExport("TheWorld.PersistentLevel"));
+                            if (level.NavRefs.Count >= navRefIdx)
+                            {
+                                var navRef = level.NavRefs[navRefIdx];
+                                return $"Nav Reference: {export.FileRef.GetUExport(navRef).ObjectName.Instanced}, Danger cost: {dangerCost}";
+                            }
+
+                            return $"INVALID Nav {navRefIdx}, Danger cost: {dangerCost}";
+                        }
                     }
 
                     break;

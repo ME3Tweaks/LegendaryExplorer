@@ -179,6 +179,10 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                             }
 
                             var targetFuncExp = rop.CrossPackageMap[f] as ExportEntry;
+#if DEBUG
+                            // DEBUGGING
+                            var debugTargetEntry = rop.CrossPackageMap[f];
+#endif
                             var sourceInfo = UnrealScriptCompiler.DecompileExport(f, sourceFileLibs[f.FileRef]);
                             //    var targetFunc = ObjectBinary.From<UFunction>(targetFuncExp);
                             //    targetFunc.ScriptBytes = new byte[0]; // Zero out function
@@ -630,7 +634,10 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 if (crossImport != null)
                 {
                     if (!rop.CrossPackageMap.ContainsKey(importFullName))
+                    {
+                        // Debug.WriteLine($"Adding to cross map: {importFullName}");
                         rop.CrossPackageMap.Add(importFullName, crossImport); //add to mapping to speed up future relinks
+                    }
                     uIndex = crossImport.UIndex;
                     // Debug.WriteLine($"Relink hit: Dynamic CrossImport for {origvalue} {importingPCC.GetEntry(origvalue).InstancedFullPath} -> {uIndex}");
                     return null; // OK
