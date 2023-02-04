@@ -165,7 +165,7 @@ var hierarchy =
     [ "LegendaryExplorerCore.UDK.ConvertToUDK", "class_legendary_explorer_core_1_1_u_d_k_1_1_convert_to_u_d_k.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.ConvexHull", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_convex_hull.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.ConvexVolume", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_convex_volume.html", null ],
-    [ "LegendaryExplorerCore.Unreal.BinaryConverters.CoverIndexPair", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_cover_index_pair.html", null ],
+    [ "LegendaryExplorerCore.Unreal.BinaryConverters.CoverIndexPair", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_cover_index_pair.html", null ],
     [ "LegendaryExplorerCore.Coalesced.Crc32", "class_legendary_explorer_core_1_1_coalesced_1_1_crc32.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.WwiseStateManagement.CustomTransitionTime", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_state_management_1_1_custom_transition_time.html", null ],
     [ "LegendaryExplorerCore.Gammtek.Enum< TEnum >.DataBinding", "class_legendary_explorer_core_1_1_gammtek_1_1_enum_1_1_data_binding.html", null ],

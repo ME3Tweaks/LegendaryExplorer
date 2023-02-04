@@ -494,7 +494,7 @@ var annotated_dup =
           [ "ConvertExtensions", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_convert_extensions.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_convert_extensions" ],
           [ "ConvexHull", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_convex_hull.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_convex_hull" ],
           [ "ConvexVolume", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_convex_volume.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_convex_volume" ],
-          [ "CoverIndexPair", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_cover_index_pair.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_cover_index_pair" ],
+          [ "CoverIndexPair", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_cover_index_pair.html", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_cover_index_pair" ],
           [ "DecalComponent", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_decal_component.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_decal_component" ],
           [ "DecalVertex", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_decal_vertex.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_decal_vertex" ],
           [ "EntryGuidNumPair", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_entry_guid_num_pair.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_entry_guid_num_pair" ],
