@@ -68,7 +68,8 @@ var searchData=
   ['converttoudk_65',['ConvertToUDK',['../class_legendary_explorer_core_1_1_u_d_k_1_1_convert_to_u_d_k.html',1,'LegendaryExplorerCore::UDK']]],
   ['convexhull_66',['ConvexHull',['../class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_convex_hull.html',1,'LegendaryExplorerCore::Unreal::BinaryConverters']]],
   ['convexvolume_67',['ConvexVolume',['../class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_convex_volume.html',1,'LegendaryExplorerCore::Unreal::BinaryConverters']]],
-  ['crc32_68',['Crc32',['../class_legendary_explorer_core_1_1_coalesced_1_1_crc32.html',1,'LegendaryExplorerCore::Coalesced']]],
-  ['ctoolexception_69',['CToolException',['../class_legendary_explorer_core_1_1_coalesced_1_1_exceptions_1_1_c_tool_exception.html',1,'LegendaryExplorerCore::Coalesced::Exceptions']]],
-  ['customtransitiontime_70',['CustomTransitionTime',['../class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_state_management_1_1_custom_transition_time.html',1,'LegendaryExplorerCore::Unreal::BinaryConverters::WwiseStateManagement']]]
+  ['coverindexpair_68',['CoverIndexPair',['../class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_cover_index_pair.html',1,'LegendaryExplorerCore::Unreal::BinaryConverters']]],
+  ['crc32_69',['Crc32',['../class_legendary_explorer_core_1_1_coalesced_1_1_crc32.html',1,'LegendaryExplorerCore::Coalesced']]],
+  ['ctoolexception_70',['CToolException',['../class_legendary_explorer_core_1_1_coalesced_1_1_exceptions_1_1_c_tool_exception.html',1,'LegendaryExplorerCore::Coalesced::Exceptions']]],
+  ['customtransitiontime_71',['CustomTransitionTime',['../class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_state_management_1_1_custom_transition_time.html',1,'LegendaryExplorerCore::Unreal::BinaryConverters::WwiseStateManagement']]]
 ];

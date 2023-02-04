@@ -1,5 +1,13 @@
 var NAVTREEINDEX64 =
 {
+"class_legendary_explorer_core_1_1_unreal_script_1_1_utilities_1_1_object_reader.html#afce247a76f9f898b4675215b52a81e09":[1,0,0,22,6,2,4],
+"class_legendary_explorer_core_1_1_unreal_script_1_1_utilities_1_1_object_reader.html#afce247a76f9f898b4675215b52a81e09":[0,5,1,22,6,2,4],
+"class_name_only_bank_chunk.html":[1,0,15],
+"class_name_only_bank_chunk.html#a09011c106b5f33da4a87e81ffb3373fa":[1,0,15,0],
+"class_name_only_bank_chunk.html#aef971a9535b779c571cdf3a89eb56bd1":[1,0,15,1],
+"class_sample_info_bank_chunk.html":[1,0,16],
+"class_sample_info_bank_chunk.html#a4a6538218c83cfc911266eda17c6732b":[1,0,16,2],
+"class_sample_info_bank_chunk.html#a5e5056d7d0c3b5278bbc010a6ace06b1":[1,0,16,3],
 "class_sample_info_bank_chunk.html#a9e56e079c9bb1a3dee0f13cb4c4a0a8e":[1,0,16,5],
 "class_sample_info_bank_chunk.html#ab01b36a937be8f7f6f21a8f63335f121":[1,0,16,7],
 "class_sample_info_bank_chunk.html#ab40da200993f03f8712095a1f646674b":[1,0,16,4],
@@ -148,8 +156,8 @@ var NAVTREEINDEX64 =
 "dir_fc297f48b00bb058e25bce0d1d92428f.html":[2,0,0,0,12,0],
 "dir_fcbaed6291bc34708fd86da8b1325ec6.html":[2,0,0,0,6],
 "files.html":[2,0],
-"functions.html":[1,2,0],
 "functions.html":[1,2,0,0],
+"functions.html":[1,2,0],
 "functions_a.html":[1,2,0,1],
 "functions_b.html":[1,2,0,2],
 "functions_c.html":[1,2,0,3],
@@ -241,13 +249,5 @@ var NAVTREEINDEX64 =
 "functions_vars_l.html":[1,2,2,12],
 "functions_vars_m.html":[1,2,2,13],
 "functions_vars_n.html":[1,2,2,14],
-"functions_vars_o.html":[1,2,2,15],
-"functions_vars_p.html":[1,2,2,16],
-"functions_vars_q.html":[1,2,2,17],
-"functions_vars_r.html":[1,2,2,18],
-"functions_vars_s.html":[1,2,2,19],
-"functions_vars_t.html":[1,2,2,20],
-"functions_vars_u.html":[1,2,2,21],
-"functions_vars_v.html":[1,2,2,22],
-"functions_vars_w.html":[1,2,2,23]
+"functions_vars_o.html":[1,2,2,15]
 };

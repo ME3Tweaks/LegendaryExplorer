@@ -194,7 +194,7 @@ var NAVTREEINDEX1 =
 "_legendary_explorer_core_lib_settings_8cs.html":[2,0,0,0,25],
 "_legendary_explorer_core_utilities_8cs.html":[2,0,0,0,7,6],
 "_level_8cs.html":[2,0,0,0,22,0,32],
-"_level_8cs.html#a31ccc8e63558d15b93826f6ed881ead5":[2,0,0,0,22,0,32,9],
+"_level_8cs.html#a31ccc8e63558d15b93826f6ed881ead5":[2,0,0,0,22,0,32,10],
 "_lexer_8cs.html":[2,0,0,0,23,4,0],
 "_light_component_8cs.html":[2,0,0,0,22,0,33],
 "_line_error_8cs.html":[2,0,0,0,23,1,0,2],

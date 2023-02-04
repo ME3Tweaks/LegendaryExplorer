@@ -29,7 +29,7 @@ var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_level =
     [ "PylonListEnd", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_level.html#a13c8481f050e78584a290ec7afa5d33e", null ],
     [ "CrossLevelCoverGuidRefs", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_level.html#a85d1c2e8f3ef1274840f56084507f850", null ],
     [ "CoverLinkRefs", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_level.html#acd04ffbdbee5c1e301424dae11f8edb6", null ],
-    [ "CoverIndexPairs", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_level.html#af212286aafaf5cc56f7fc878a59e3fae", null ],
+    [ "CoverIndexPairs", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_level.html#a82184da3c4bbc3af1bdc72c8877db2d9", null ],
     [ "CrossLevelNavGuidRefs", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_level.html#a44562160f498594702e1be3aa627175b", null ],
     [ "NavRefs", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_level.html#a06f6ceea229ed7ee90f4d63afecbb68c", null ],
     [ "NavRefIndicies", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_level.html#a2c6884096933d69175c463328c7de6f5", null ],
