@@ -34,11 +34,14 @@ namespace LegendaryExplorerCore.Misc
 
         public bool Remove(TKey key)
         {
-            int idx = Keys().IndexOf(key);
-            if (idx >= 0)
+            if (Count > 0)
             {
-                RemoveAt(idx);
-                return true;
+                int idx = Keys().IndexOf(key);
+                if (idx >= 0)
+                {
+                    RemoveAt(idx);
+                    return true;
+                }
             }
 
             return false;

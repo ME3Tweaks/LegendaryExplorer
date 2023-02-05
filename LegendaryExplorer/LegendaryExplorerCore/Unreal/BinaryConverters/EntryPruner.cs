@@ -14,6 +14,11 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
     public static class EntryPruner
     {
+        /// <summary>
+        /// The list of arrayproperties on BioWorldInfo to enumerate and remove trashed items from
+        /// </summary>
+        private static readonly string[] BWIProperitesToCleanupOnTrash = new string[] { "ClientDestroyedActorContent" }; // Array cause we might add more as we encountered them
+
         public static void TrashEntriesAndDescendants(IEnumerable<IEntry> itemsToTrash)
         {
             if (!itemsToTrash.Any()) return;
@@ -47,6 +52,38 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 }
                 trashTopLevel = TrashEntry(entry, trashTopLevel, packageClass);
             }
+
+            // 02/04/2023: #353 Remove from ClientDestroyedActorContent and TextureToInstancesMap
+            var level = pcc.FindExport("TheWorld.PersistentLevel");
+            if (level != null)
+            {
+                var l = ObjectBinary.From<Level>(level);
+                var trashed = false;
+                foreach (var item in itemsToTrash)
+                {
+                    trashed |= l.TextureToInstancesMap.Remove(item.UIndex);
+                }
+
+                if (trashed)
+                {
+                    level.WriteBinary(l);
+                }
+
+                var bwi = pcc.GetUExport(l.Actors[0]); // 0 is always BioWorldInfo
+                var props = bwi.GetProperties();
+                var uindexes = itemsToTrash.Select(x => x.UIndex).ToList();
+                foreach (var propName in BWIProperitesToCleanupOnTrash)
+                {
+                    var array = props.GetProp<ArrayProperty<ObjectProperty>>(propName);
+                    if (array != null)
+                    {
+                        array.RemoveAll(x => x == null || uindexes.Contains(x.Value)); // Remove it
+                    }
+                }
+
+                bwi.WriteProperties(props);
+            }
+
             pcc.RemoveTrailingTrash();
         }
 
