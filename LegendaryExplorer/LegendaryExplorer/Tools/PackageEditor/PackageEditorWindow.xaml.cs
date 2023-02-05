@@ -1384,7 +1384,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     if (entryWithReferences is not null)
                     {
                         MessageBoxResult messageBoxResult = MessageBox.Show(this,
-                            $"#{entryWithReferences.UIndex} {entryWithReferences.InstancedFullPath} is referenced by other entries! (Use the \"{FindReferencesMenuText}\" option in the context menu to see the references.)" +
+                            $"#{entryWithReferences.UIndex} {entryWithReferences.InstancedFullPath} is referenced by other entries! Use the \"{FindReferencesMenuText}\" option in the context menu to see the references. " +
                             "These references will be broken if you trash it! Are you sure you want to proceed?",
                             "Trash warning", MessageBoxButton.YesNo);
                         if (messageBoxResult != MessageBoxResult.Yes)
