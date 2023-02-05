@@ -59,7 +59,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             {
                 var l = ObjectBinary.From<Level>(level);
                 var trashed = false;
-                foreach (var item in itemsToTrash)
+                foreach (var item in itemsToTrash.Where(x => x.IsTexture()))
                 {
                     trashed |= l.TextureToInstancesMap.Remove(item.UIndex);
                 }
