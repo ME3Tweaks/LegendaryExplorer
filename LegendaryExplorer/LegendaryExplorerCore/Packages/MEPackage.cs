@@ -474,8 +474,10 @@ namespace LegendaryExplorerCore.Packages
 
             packageReader.Position = savedPos; //restore position to chunk table
             Stream inStream = fs;
+            bool wasOriginallyCompressed = false; // Used to know if we should dispose the stream used for decompressed data
             if (IsCompressed && NumCompressedChunksAtLoad > 0)
             {
+                wasOriginallyCompressed = true;
                 inStream = CompressionHelper.DecompressPackage(packageReader, compressionFlagPosition, game: Game, platform: Platform,
                                                                canUseLazyDecompression: tablesInOrder && !platformNeedsResolved);
             }
@@ -636,7 +638,11 @@ namespace LegendaryExplorerCore.Packages
                 }
             }
 
-            packageReader.Dispose();
+            if (wasOriginallyCompressed)
+            {
+                // Do not dispose if the package was compressed as it will close the input stream
+                packageReader.Dispose();
+            }
 
 
             if (filePath != null)
