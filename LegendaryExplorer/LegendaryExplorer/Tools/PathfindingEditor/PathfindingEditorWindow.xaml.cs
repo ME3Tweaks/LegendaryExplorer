@@ -16,6 +16,7 @@ using DashStyle = System.Drawing.Drawing2D.DashStyle;
 using System.Threading.Tasks;
 using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.GameInterop;
+using LegendaryExplorer.GameInterop.InteropTargets;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Misc.AppSettings;
 using LegendaryExplorer.Packages;
@@ -709,7 +710,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
 #if DEBUG
                 //graphEditor.DebugEventHandlers();
 #endif
-                if (Pcc is not null)
+                if (Pcc is not null && GameController.GetInteropTargetForGame(Pcc.Game) is InteropTarget interopTarget)
                 {
                     GameController.GetInteropTargetForGame(Pcc.Game).GameReceiveMessage -= ReceivedGameMessage;
                 }
@@ -723,8 +724,9 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
             CombatZones.ClearEx();
             ActorGroup.ClearEx();
             GroupTag = "Tag";
-            if (Pcc != null)
+            if (Pcc != null && GameController.GetInteropTargetForGame(Pcc.Game) is InteropTarget interopTarget)
             {
+                // Remove existing handler in case game changes
                 GameController.GetInteropTargetForGame(Pcc.Game).GameReceiveMessage -= ReceivedGameMessage;
             }
 
@@ -781,8 +783,10 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                 Title = $"Pathfinding Editor - {fileName}";
                 StatusText = null; //Nothing to prepend.
                 PathfindingEditorWPF_ValidationPanel.SetLevel(PersistentLevelExport);
-                GameController.GetInteropTargetForGame(Pcc.Game).GameReceiveMessage += ReceivedGameMessage;
-
+                if (GameController.GetInteropTargetForGame(Pcc.Game) is InteropTarget interopTarget2)
+                {
+                    interopTarget2.GameReceiveMessage += ReceivedGameMessage;
+                }
             }
             else
             {
