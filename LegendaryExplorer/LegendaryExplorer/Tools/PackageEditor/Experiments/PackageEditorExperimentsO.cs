@@ -573,7 +573,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             string baldMorphName = game.IsGame3() ? "BioChar_CitHub.Faces.HMM_Deco_1" :
                 game.IsGame2() ? "BIOG_Hench_FAC.HMM.hench_wilson" : "BIOA_UNC_FAC.HMM.Plot.FRE32_BioticLeader";
 
-            MorphMaleHair(pew,"bald", baldPccPath, baldMorphName);
+            MorphMaleHair(pew, "bald", baldPccPath, baldMorphName);
         }
 
         /// <summary>
@@ -592,7 +592,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             string rollinMorphName = game.IsGame3() ? "BioChar_CitHub.Faces.cit_news_announcer" :
                 game.IsGame2() ? "BIOA_STA_FAC.HMM.Plot.rp107_keeler" : "BIOA_STA_FAC.HMM.Plot.rp107_keeler";
 
-            MorphMaleHair(pew,"rollins", rollinPccPath, rollinMorphName);
+            MorphMaleHair(pew, "rollins", rollinPccPath, rollinMorphName);
         }
 
         /// <summary>
@@ -1518,39 +1518,45 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             // Update the nExportIDs of the Entry list
             ArrayProperty<StructProperty> entryNodes = conversationProps.GetProp<ArrayProperty<StructProperty>>("m_EntryList");
-            foreach (StructProperty entryNode in entryNodes)
+            if (entryNodes != null)
             {
-                IntProperty oldNodeID = entryNode.GetProp<IntProperty>("nExportID");
-                if (oldNodeID == null) { continue; }
-
-                if (!remappedIDs.ContainsKey(oldNodeID.Value))
+                foreach (StructProperty entryNode in entryNodes)
                 {
-                    remappedIDs.Add(oldNodeID.Value, convNodeIDBase + count);
-                    count++;
-                }
+                    IntProperty oldNodeID = entryNode.GetProp<IntProperty>("nExportID");
+                    if (oldNodeID == null) { continue; }
 
-                PropertyCollection properties = entryNode.Properties;
-                IntProperty nExportID = new(remappedIDs[oldNodeID.Value], "nExportID");
-                properties.AddOrReplaceProp(nExportID);
-                entryNode.Properties = properties;
+                    if (!remappedIDs.ContainsKey(oldNodeID.Value))
+                    {
+                        remappedIDs.Add(oldNodeID.Value, convNodeIDBase + count);
+                        count++;
+                    }
+
+                    PropertyCollection properties = entryNode.Properties;
+                    IntProperty nExportID = new(remappedIDs[oldNodeID.Value], "nExportID");
+                    properties.AddOrReplaceProp(nExportID);
+                    entryNode.Properties = properties;
+                }
             }
 
             // Update the nExportIDs of the Reply list
             ArrayProperty<StructProperty> replyNodes = conversationProps.GetProp<ArrayProperty<StructProperty>>("m_ReplyList");
-            foreach (StructProperty replyNode in replyNodes)
+            if (replyNodes != null)
             {
-                IntProperty oldNodeID = replyNode.GetProp<IntProperty>("nExportID");
-                if (oldNodeID == null) { continue; }
-                if (!remappedIDs.ContainsKey(oldNodeID.Value))
+                foreach (StructProperty replyNode in replyNodes)
                 {
-                    remappedIDs.Add(oldNodeID.Value, convNodeIDBase + count);
-                    count++;
-                }
+                    IntProperty oldNodeID = replyNode.GetProp<IntProperty>("nExportID");
+                    if (oldNodeID == null) { continue; }
+                    if (!remappedIDs.ContainsKey(oldNodeID.Value))
+                    {
+                        remappedIDs.Add(oldNodeID.Value, convNodeIDBase + count);
+                        count++;
+                    }
 
-                PropertyCollection properties = replyNode.Properties;
-                IntProperty nExportID = new(remappedIDs[oldNodeID.Value], "nExportID");
-                properties.AddOrReplaceProp(nExportID);
-                replyNode.Properties = properties;
+                    PropertyCollection properties = replyNode.Properties;
+                    IntProperty nExportID = new(remappedIDs[oldNodeID.Value], "nExportID");
+                    properties.AddOrReplaceProp(nExportID);
+                    replyNode.Properties = properties;
+                }
             }
 
             bioConversation.WriteProperties(conversationProps);
