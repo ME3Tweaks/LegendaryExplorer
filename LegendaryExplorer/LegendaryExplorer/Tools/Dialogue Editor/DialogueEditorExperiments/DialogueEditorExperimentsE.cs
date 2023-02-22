@@ -5,6 +5,7 @@ using LegendaryExplorerCore.Kismet;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal;
+using LegendaryExplorerCore.Unreal.BinaryConverters;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -17,79 +18,87 @@ namespace LegendaryExplorer.DialogueEditor.DialogueEditorExperiments
     class DialogueEditorExperimentsE
     {
         #region Update Native Node String Ref
-        // Changes the node's lineref and the parts of the FXA, WwiseStream, and referencing VOs that include it so it doesn't break
+        /// <summary>
+        /// Change the node's lineref and the parts of the FXA, WwiseStream, and WwwiseEvents
+        /// that include it so it doesn't break
+        /// </summary>
+        /// <param name="dew">Current DE window.</param>
         public static void UpdateNativeNodeStringRef(DialogueEditorWindow dew)
         {
             DialogueNodeExtended selectedDialogueNode = dew.SelectedDialogueNode;
 
-            if (dew.Pcc != null && selectedDialogueNode != null)
+            if (dew.Pcc == null || selectedDialogueNode == null) { return; }
+
+            // Need to check if currStringRef exists
+            string currStringRef = selectedDialogueNode.LineStrRef.ToString();
+            if (string.IsNullOrEmpty(currStringRef))
             {
-                // Need to check if currStringRef exists
-                var currStringRef = selectedDialogueNode.LineStrRef.ToString();
-                if (string.IsNullOrEmpty(currStringRef))
-                {
-                    MessageBox.Show("The selected node does not have a Line String Ref, which is required in order to programatically replace the required elements.", "Warning", MessageBoxButton.OK);
-                    return;
-                }
+                MessageBox.Show("The selected node does not have a Line String Ref, which is required in order to programatically replace the required elements.", "Warning", MessageBoxButton.OK);
+                return;
+            }
 
-                var newStringRef = promptForRef("New line string ref:", "Not a valid line string ref.");
-                if (string.IsNullOrEmpty(newStringRef))
-                {
-                    return;
-                }
+            string newStringRef = promptForRef("New line string ref:", "Not a valid line string ref.");
+            if (string.IsNullOrEmpty(newStringRef))
+            {
+                return;
+            }
 
-                if (currStringRef == newStringRef)
-                {
-                    MessageBox.Show("New StringRef matches the existing one.", "Warning", MessageBoxButton.OK);
-                    return;
-                }
+            if (currStringRef == newStringRef)
+            {
+                MessageBox.Show("New StringRef matches the existing one.", "Warning", MessageBoxButton.OK);
+                return;
+            }
 
-                updateFaceFX(dew.FaceFXAnimSetEditorControl_M, currStringRef, newStringRef);
-                updateFaceFX(dew.FaceFXAnimSetEditorControl_F, currStringRef, newStringRef);
+            IMEPackage pcc = dew.Pcc;
+            FaceFXAnimSetEditorControl femaleFXA = dew.FaceFXAnimSetEditorControl_F;
+            FaceFXAnimSetEditorControl maleFXA = dew.FaceFXAnimSetEditorControl_M;
 
-                updateWwiseStream(selectedDialogueNode.WwiseStream_Male, currStringRef, newStringRef);
-                updateWwiseStream(selectedDialogueNode.WwiseStream_Female, currStringRef, newStringRef);
+            ExportEntry femaleEvent = GetWwiseEvent(pcc, femaleFXA);
+            ExportEntry maleEvent = GetWwiseEvent(pcc, maleFXA);
+            ExportEntry femaleStream = GetWwiseStream(pcc, femaleEvent, currStringRef, "_f_");
+            ExportEntry maleStream = GetWwiseStream(pcc, maleEvent, currStringRef, "_m_");
 
-                var pcc = dew.Pcc;
-                updateVOReferences(pcc, selectedDialogueNode.WwiseStream_Male, currStringRef, newStringRef);
-                updateVOReferences(pcc, selectedDialogueNode.WwiseStream_Female, currStringRef, newStringRef);
+            UpdateWwiseEvent(pcc, femaleEvent, currStringRef, newStringRef);
+            UpdateWwiseEvent(pcc, maleEvent, currStringRef, newStringRef);
 
-                int intRef;
-                int.TryParse(newStringRef, out intRef);
+            UpdateWwiseStream(femaleStream, currStringRef, newStringRef);
+            UpdateWwiseStream(maleStream, currStringRef, newStringRef);
+
+            UpdateFaceFX(femaleFXA, currStringRef, newStringRef);
+            UpdateFaceFX(maleFXA, currStringRef, newStringRef);
+
+            if (int.TryParse(newStringRef, out int intRef))
+            {
                 selectedDialogueNode.LineStrRef = intRef;
-
-                MessageBox.Show($"The node now points to {newStringRef}.", "Success", MessageBoxButton.OK);
             }
+
+            MessageBox.Show($"The node now points to {newStringRef}.", "Success", MessageBoxButton.OK);
         }
 
-        private static void updateVOReferences(IMEPackage pcc, ExportEntry wwiseStream, string oldRef, string newRef)
+        /// <summary>
+        /// Update the name of the WwiseEvents referencing an input WwiseStream.
+        /// </summary>
+        /// <param name="pcc">Pcc to operate on.</param>
+        /// <param name="wwiseEvent">WwiseStream to use to find the WwiseEvents.</param>
+        /// <param name="oldRef">Part of the name to replace.</param>
+        /// <param name="newRef">String to replace with.</param>
+        private static void UpdateWwiseEvent(IMEPackage pcc, ExportEntry wwiseEvent, string oldRef, string newRef)
         {
-            if (wwiseStream == null)
-            {
-                return;
-            }
+            if (wwiseEvent == null) { return; }
 
-            var entry = pcc.GetEntry(wwiseStream.UIndex);
-
-            var references = entry.GetEntriesThatReferenceThisOne();
-            foreach (KeyValuePair<IEntry, List<string>> reference in references)
-            {
-                if (reference.Key.ClassName != "WwiseEvent")
-                {
-                    continue;
-                }
-                ExportEntry refEntry = (ExportEntry)pcc.GetEntry(reference.Key.UIndex);
-                refEntry.ObjectNameString = refEntry.ObjectNameString.Replace(oldRef, newRef);
-            }
-
+            wwiseEvent.ObjectNameString = wwiseEvent.ObjectNameString.Replace(oldRef, newRef);
         }
 
-        private static void updateWwiseStream(ExportEntry wwiseStream, string oldRef, string newRef)
+        /// <summary>
+        /// Update the name of the given WwiseStream.
+        /// </summary>
+        /// <param name="wwiseStream">WwiseStream to update.</param>
+        /// <param name="wwiseEvent">WwiseStream to use to find the WwiseStreams.</param>
+        /// <param name="oldRef">Part of the name to replace.</param>
+        /// <param name="newRef">String to replace with.</param>
+        private static void UpdateWwiseStream(ExportEntry wwiseStream, string oldRef, string newRef)
         {
-            if (wwiseStream is null)
-            {
-                return;
-            }
+            if (wwiseStream == null) { return; }
 
             // Pads the string refs so they have the required minimum length
             newRef = newRef.PadLeft(8, '0');
@@ -98,15 +107,18 @@ namespace LegendaryExplorer.DialogueEditor.DialogueEditorExperiments
             wwiseStream.ObjectNameString = wwiseStream.ObjectNameString.Replace(oldRef, newRef);
         }
 
-        private static void updateFaceFX(FaceFXAnimSetEditorControl fxa, string oldRef, string newRef)
+        /// <summary>
+        /// Update the path, ID, and name of a given FXA.
+        /// </summary>
+        /// <param name="fxa">FXA to update.</param>
+        /// <param name="oldRef">Part of the name to replace.</param>
+        /// <param name="newRef">String to replace with.</param>
+        private static void UpdateFaceFX(FaceFXAnimSetEditorControl fxa, string oldRef, string newRef)
         {
-            if (fxa.SelectedLine == null || fxa == null)
-            {
-                return;
-            }
+            if (fxa.SelectedLine == null || fxa == null) { return; }
 
-            var FaceFX = fxa.FaceFX;
-            var SelectedLine = fxa.SelectedLine;
+            FaceFXAnimSetEditorControl.IFaceFXBinary FaceFX = fxa.FaceFX;
+            FaceFXLine SelectedLine = fxa.SelectedLine;
 
             if (SelectedLine.Path != null)
             {
@@ -116,6 +128,7 @@ namespace LegendaryExplorer.DialogueEditor.DialogueEditorExperiments
             {
                 SelectedLine.ID = newRef;
             }
+
             // Change FaceFX name
             if (SelectedLine.NameAsString != null)
             {
@@ -134,6 +147,87 @@ namespace LegendaryExplorer.DialogueEditor.DialogueEditorExperiments
             }
 
             fxa.SaveChanges();
+        }
+
+        /// <summary>
+        /// Get the WwiseEvent listed in the Path of a given FXA, if it exists.
+        /// </summary>
+        /// <param name="pcc">Pcc to operate on.</param>
+        /// <param name="fxa">FXA to get the path from.</param>
+        /// <returns>WwiseEvent if found, null otherwise.</returns>
+        private static ExportEntry GetWwiseEvent(IMEPackage pcc, FaceFXAnimSetEditorControl fxa)
+        {
+            if (pcc == null || fxa.SelectedLine == null || fxa == null) { return null; }
+
+            FaceFXLine SelectedLine = fxa.SelectedLine;
+
+            if (SelectedLine.Path == null) { return null; }
+
+            return pcc.FindExport(SelectedLine.Path);
+        }
+
+        /// <summary>
+        /// Get the WwiseStream referenced in the WwiseEvent that contains the stringRef and the suffic.
+        /// </summary>
+        /// <param name="pcc">Pcc to operate on.</param>
+        /// <param name="wwiseEvent">WwiseEvent that references ther WwiseStream.</param>
+        /// <param name="stringRef">StringRef to search for.</param>
+        /// <param name="suffix">_m_ or _f_.</param>
+        /// <returns>WwiseStream that matches the criteria, if any.</returns>
+        private static ExportEntry GetWwiseStream(IMEPackage pcc, ExportEntry wwiseEvent, string stringRef, string suffix)
+        {
+            if (pcc == null || (pcc.Game is MEGame.ME1) || wwiseEvent == null) { return null; }
+
+            if (!pcc.Game.IsGame1())
+            {
+                if (pcc.Game is MEGame.LE2)
+                {
+                    ArrayProperty<StructProperty> references = wwiseEvent.GetProperty<ArrayProperty<StructProperty>>("References");
+                    if ((references == null) || (references.Count == 0)) { return null; }
+                    StructProperty relationships = references[0].GetProp<StructProperty>("Relationships");
+                    if (relationships == null) { return null; }
+                    ArrayProperty<ObjectProperty> streams = relationships.GetProp<ArrayProperty<ObjectProperty>>("Streams");
+                    if ((streams == null) || (streams.Count == 0)) { return null; }
+
+                    foreach (ObjectProperty streamRef in streams)
+                    {
+                        if (streamRef.Value == 0) { continue; }
+
+                        ExportEntry wwiseStream = pcc.GetUExport(streamRef.Value);
+                        if (wwiseStream == null) { continue; }
+
+                        // Check that it contains the gender and the ref
+                        if (wwiseStream.ObjectName.Name.Contains(stringRef, System.StringComparison.OrdinalIgnoreCase)
+                            && wwiseStream.ObjectName.Name.Contains(suffix, System.StringComparison.OrdinalIgnoreCase))
+                        {
+                            return wwiseStream;
+                        }
+                    }
+                }
+                else
+                {
+                    WwiseEvent wwiseEventBin = wwiseEvent.GetBinaryData<WwiseEvent>();
+                    foreach (WwiseEvent.WwiseEventLink link in wwiseEventBin.Links)
+                    {
+                        foreach (int stream in link.WwiseStreams)
+                        {
+                            if (stream == 0) { continue; }
+
+                            ExportEntry wwiseStream = pcc.GetUExport(stream);
+                            if (wwiseStream == null) { continue; }
+
+                            // Check that it contains the gender and the ref
+                            if (wwiseStream.ObjectName.Name.Contains(stringRef, System.StringComparison.OrdinalIgnoreCase)
+                                && wwiseStream.ObjectName.Name.Contains(suffix, System.StringComparison.OrdinalIgnoreCase))
+                            {
+                                return wwiseStream;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return null;
         }
 
         private static string promptForRef(string msg, string err)
