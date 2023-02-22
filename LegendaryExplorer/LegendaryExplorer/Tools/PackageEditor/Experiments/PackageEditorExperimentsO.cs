@@ -1111,13 +1111,13 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             int convNodeIDBase = promptForInt("New ConvNodeID base range:", "Not a valid base. It must be positive integer", -1, "New NodeID range");
             if (convNodeIDBase == -1) { return; }
 
-            bool setNewWwiseBankID = false;
+            bool updateAudioIDs = false;
             if (!pew.Pcc.Game.IsGame1())
             {
-                setNewWwiseBankID = MessageBoxResult.Yes == MessageBox.Show(
-                "Change the WwiseBank ID?\nIn general it's safe and better to do so, but there may be edge cases" +
-                "where doing so may overwrite parts of the WwiseBank binary that are not the ID.",
-                "Set new bank ID", MessageBoxButton.YesNo);
+                updateAudioIDs = MessageBoxResult.Yes == MessageBox.Show(
+                "Update the IDs of the WwiseBank, WwiseEvents, and WwiseStreams?\nIn general it's safe and better to do so, but there may be edge cases" +
+                "where doing so may overwrite parts of the WwiseBank binary that are not the IDs.",
+                "Update audio IDs", MessageBoxButton.YesNo);
             }
 
             bool bringTrash = MessageBoxResult.No == MessageBox.Show(
@@ -1133,12 +1133,12 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             conversation.LoadConversation(TLKManagerWPF.GlobalFindStrRefbyID, true);
 
             // Rename the conversation, its package, the WwiseBank, the FXAs, VOs and WwiseEvents
-            RenameConversation(pew.Pcc, bioConversation, conversation, newName, setNewWwiseBankID);
+            RenameConversation(pew.Pcc, bioConversation, conversation, newName, updateAudioIDs);
 
             // Change the conversations ResRefID an the ConvNodes IDs
             ChangeConvoIDandConvNodeIDs(bioConversation, (ExportEntry)conversation.Sequence, newConvResRefID, convNodeIDBase);
 
-            // Clean the sequence of unneeded objects and keep only Conversation INterpGroups and VOElements InterpTracks
+            // Clean the sequence of unneeded objects and keep only Conversation InterpGroups and VOElements InterpTracks
             // We'll trash unnecessary InterpTracks, InterpGroups and no longer used objects. It's necessary so users of the experiment
             // can clone the package of a conversation instead of the BioConversation directly.
             List<string> disconnectedConvNodes = CleanSequence(pew.Pcc, (ExportEntry)conversation.Sequence, true, bringTrash, true);
@@ -1201,10 +1201,10 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         /// This experiment DOES NOT update the varLinks.
         /// </summary>
         /// <param name="pcc">Pcc to operate on.</param>
-        /// <param name="sequence">If called, the sequence to clean.</param>
-        /// <param name="trashItems">If called, whether to trash unused groups and tracks.</param>
-        /// <param name="bringTrash">If called, whether to keep all objects that point to conversation classes, or only essential ones.</param>
-        /// <param name="cleanGroups">If called, whether to clean InterpGroups and InterpTracks.</param>
+        /// <param name="sequence">Sequence to clean.</param>
+        /// <param name="trashItems">Whether to trash unused groups and tracks.</param>
+        /// <param name="bringTrash">Whether to keep all objects that point to conversation classes, or only essential ones.</param>
+        /// <param name="cleanGroups">Whether to clean InterpGroups and InterpTracks.</param>
         /// <returns>List of ConvNodes that may no longer connect to Interps.</returns>
         public static List<string> CleanSequence(IMEPackage pcc, ExportEntry sequence, bool trashItems, bool bringTrash, bool cleanGroups)
         {
@@ -1369,8 +1369,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         /// This experiment DOES NOT update the varLinks.
         /// </summary>
         /// <param name="pcc">Pcc to operate on.</param>
-        /// <param name="sequence">If called, the sequence to clean.</param>
-        /// <param name="trashItems">If not called, whether to trash unused groups and tracks.</param>
+        /// <param name="sequence">Sequence to clean.</param>
         public static List<IEntry> CleanSequenceInterpDatas(IMEPackage pcc, ExportEntry sequence)
         {
             List<IEntry> itemsToTrash = new();
@@ -1441,6 +1440,10 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             return itemsToTrash;
         }
 
+        /// <summary>
+        /// Wrapper for ChangeConvoIDandConvNodeIDs, so it can used as a full experiment on its own.
+        /// </summary>
+        /// <param name="pew">Current PE instance.</param>
         public static void ChangeConvoIDandConvNodeIDsExperiment(PackageEditorWindow pew)
         {
             if (pew.Pcc == null || pew.SelectedItem?.Entry == null) { return; }
@@ -1480,10 +1483,10 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         /// <summary>
         /// Changes the conversation's ResRefID and its ConvNodes' ID.
         /// </summary>
-        /// <param name="bioConversation">If called, the conversation to edit.</param>
-        /// <param name="sequence">If called, the conversation's sequence.</param>
-        /// <param name="newConvResRefID">If called, the newConvResRefID to set.</param>
-        /// <param name="convNodeIDBase">If called, the convNodeIDBase to use.</param>
+        /// <param name="bioConversation">Conversation to edit.</param>
+        /// <param name="sequence">Conversation's sequence.</param>
+        /// <param name="newConvResRefID">newConvResRefID to set.</param>
+        /// <param name="convNodeIDBase">convNodeIDBase to use.</param>
         public static void ChangeConvoIDandConvNodeIDs(ExportEntry bioConversation, ExportEntry sequence, int newConvResRefID, int convNodeIDBase)
         {
             PropertyCollection conversationProps = bioConversation.GetProperties();
@@ -1582,21 +1585,21 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 return;
             }
 
-            string newName = PromptDialog.Prompt(null, "New WwiseBank name:", "New name");
+            string newName = PromptDialog.Prompt(null, "New conversation name:", "New name");
             // Check that the new name is not empty, no longe than 255, and doesn't contain white-spaces or symbols aside from _ or -
             if (string.IsNullOrEmpty(newName) || newName.Length > 240 || newName.Any(c => char.IsWhiteSpace(c) || (!(c is '_' or '-') && !char.IsLetterOrDigit(c))))
             {
-                ShowError("Invalid name. It must not be empty, be longer than 240 characters, or contain whitespaces or symbols aside from '-' and '_'");
+                ShowError("Invalid new name. It must not be empty, be longer than 240 characters, or contain whitespaces or symbols aside from '-' and '_'");
                 return;
             }
 
-            bool updateID = true;
+            bool updateAudioIDs = false;
             if (!pew.Pcc.Game.IsGame1())
             {
-                updateID = MessageBoxResult.Yes == MessageBox.Show(
-                    "Change the WwiseBank ID?\nIn general it's safe and better to do so, but there may be edge cases" +
-                    "where doing so may overwrite parts of the WwiseBank binary that are not the ID.",
-                    "Set new bank ID", MessageBoxButton.YesNo);
+                updateAudioIDs = MessageBoxResult.Yes == MessageBox.Show(
+                "Change the IDs of the WwiseBank, WwiseEvents, and WwiseStreams?\nIn general it's safe and better to do so, but there may be edge cases" +
+                "where doing so may overwrite parts of the WwiseBank binary that are not the IDs.",
+                "Update audio IDs", MessageBoxButton.YesNo);
             }
 
             ExportEntry bioConversation = (ExportEntry)pew.SelectedItem.Entry;
@@ -1606,7 +1609,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             ConversationExtended conversation = new(bioConversation);
             conversation.LoadConversation(TLKManagerWPF.GlobalFindStrRefbyID, true);
 
-            RenameConversation(pew.Pcc, bioConversation, conversation, newName, updateID);
+            RenameConversation(pew.Pcc, bioConversation, conversation, newName, updateAudioIDs);
 
             MessageBox.Show("Conversation renamed successfully.", "Success", MessageBoxButton.OK);
         }
@@ -1615,11 +1618,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         /// Rename a conversation, changing the WwiseBank name and FXAs and related elements too.
         /// </summary>
         /// <param name="pcc">Pcc to operate on.</param>
-        /// <param name="bioConversation">If called, the bioConversation entry to edit.</param>
-        /// <param name="conversation">If called, the loaded conversation edit.</param>
-        /// <param name="newName">If called, the new name.</param>
-        /// <param name="updateID">If called, Whether to update the ID.</param>
-        public static void RenameConversation(IMEPackage pcc, ExportEntry bioConversation, ConversationExtended conversation, string newName, bool updateID)
+        /// <param name="bioConversation">BioConversation entry to edit.</param>
+        /// <param name="conversation">Loaded conversation edit.</param>
+        /// <param name="newName">New name.</param>
+        /// <param name="updateAudioIDs">Whether to update the IDs of Bank, Events, and Streams.</param>
+        public static void RenameConversation(IMEPackage pcc, ExportEntry bioConversation, ConversationExtended conversation, string newName, bool updateAudioIDs)
         {
             string oldBioConversationName = bioConversation.ObjectName;
             string oldName;
@@ -1646,15 +1649,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
             else
             {
-                string oldWwiseBankName = conversation.WwiseBank.ObjectName;
-                oldName = GetCommonPrefix(oldWwiseBankName, oldBioConversationName);
-                string newWwiseBankName = oldWwiseBankName.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
-
-                // Must happen before renaming the wwiseBank since it reads the old bank's name
-                RenameWwiseBank(conversation.WwiseBank, newWwiseBankName, updateID);
-                conversation.WwiseBank.ObjectName = newWwiseBankName;
+                oldName = GetCommonPrefix(conversation.WwiseBank.ObjectName, bioConversation.ObjectName);
+                RenameAudio(pcc, conversation.WwiseBank, bioConversation, newName, updateAudioIDs);
             }
 
+            // Rename bioConversation after the audio, since it needs the old name
             string newBioConversationName = oldBioConversationName.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
             bioConversation.ObjectName = newBioConversationName;
 
@@ -1685,18 +1684,13 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     link.ObjectName = link.ObjectName.Name.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
                 }
             }
-
-            // Must be run after everything else has been renamed due to the need to update FXA paths.
-            List<ExportEntry> fxas = GetFXAs(pcc, bioConversation);
-            RenameFXAs(pcc, bioConversation, fxas, oldName, newName);
-            RenameWwiseStreams(pcc, GetWwiseStreams(pcc, GetWwiseEvents(pcc, fxas)), oldName, newName);
         }
 
         /// <summary>
-        /// Wrapper for RenameWwiseBank so it can used as a full experiment on its own.
+        /// Wrapper for RenameAudio so it can used as a full experiment on its own.
         /// </summary>
         /// <param name="pew">Current PE instance.</param>
-        public static void RenameWwiseBankExperiment(PackageEditorWindow pew)
+        public static void RenameAudioExperiment(PackageEditorWindow pew)
         {
             if (pew.Pcc == null || pew.SelectedItem?.Entry == null) { return; }
 
@@ -1706,98 +1700,97 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 return;
             }
 
-            if (pew.SelectedItem.Entry.ClassName is not "WwiseBank")
+            if (pew.SelectedItem.Entry.ClassName is not "BioConversation")
             {
-                ShowError("Selected export is not a WwiseBank");
+                ShowError("Selected export is not a BioConversation");
                 return;
             }
 
-            ExportEntry wwiseBankEntry = (ExportEntry)pew.SelectedItem.Entry;
+            bool updateAudioIDs = false;
+            if (!pew.Pcc.Game.IsGame1())
+            {
+                updateAudioIDs = MessageBoxResult.Yes == MessageBox.Show(
+                "Change the IDs of the WwiseBank, WwiseEvents, and WwiseStreams?\nIn general it's safe and better to do so, but there may be edge cases" +
+                "where doing so may overwrite parts of the WwiseBank binary that are not the IDs.",
+                "Update audio IDs", MessageBoxButton.YesNo);
+            }
 
-            string newWwiseBankName = PromptDialog.Prompt(null, "New WwiseBank name:", "New name");
+            string newName = PromptDialog.Prompt(null, "New common name:", "New name");
             // Check that the new name is not empty, no longe than 255, and doesn't contain white-spaces or symbols aside from _ or -
-            if (string.IsNullOrEmpty(newWwiseBankName) || newWwiseBankName.Length > 240 || newWwiseBankName.Any(c => char.IsWhiteSpace(c) || (!(c is '_' or '-') && !char.IsLetterOrDigit(c))))
+            if (string.IsNullOrEmpty(newName) || newName.Length > 240 || newName.Any(c => char.IsWhiteSpace(c) || (!(c is '_' or '-') && !char.IsLetterOrDigit(c))))
             {
-                ShowError("Invalid name. It must not be empty, be longer than 240 characters, or contain whitespaces or symbols aside from '-' and '_'");
+                ShowError("Invalid new name. It must not be empty, be longer than 240 characters, or contain whitespaces or symbols aside from '-' and '_'");
                 return;
             }
 
-            RenameWwiseBank(wwiseBankEntry, newWwiseBankName, true);
+            ExportEntry bioConversation = (ExportEntry)pew.SelectedItem.Entry;
 
-            MessageBox.Show($"WwiseBank's name and ID updated successfully.", "Success", MessageBoxButton.OK);
+            // Load the conversation. We use ConversationExtended since it aggregates most of the elements we'll need to
+            // operate on. Is it overkill? Yes. Does it get the job done more cleanly and safely? yes.
+            ConversationExtended conversation = new(bioConversation);
+            conversation.LoadConversation(TLKManagerWPF.GlobalFindStrRefbyID, true);
+
+            ExportEntry wwiseBankEntry = conversation.WwiseBank;
+
+            RenameAudio(pew.Pcc, wwiseBankEntry, bioConversation, newName, updateAudioIDs);
+
+            MessageBox.Show($"Audio renamed successfully.", "Success", MessageBoxButton.OK);
         }
 
         /// <summary>
-        /// Changes a WwiseBank's name, and update its ID accordingly.
+        /// Changes the WwiseBank, WwiseEvents, and WwiseStreams's names, and update their IDs accordingly.
         /// </summary>
-        /// <param name="wwiseBankEntry">If called, the WwiseBank entry to edit.</param>
-        /// <param name="newWwiseBankName">If called, the new wwise bank name.</param>
-        /// <param name="updateID">Whether to update the ID. Useful when you want to be extra careful when calling it from
+        /// <param name="pcc">Pcc to operate on.</param>
+        /// <param name="wwiseBankEntry">WwiseBank entry to edit.</param>
+        /// <param name="bioConversation">Selected BioConversation.</param>
+        /// <param name="newName">New name for the elements.</param>
+        /// <param name="updateAudioIDs">Whether to update the IDs of Bank, Events, and Streams.</param>
         /// other experiments.</param>
-        public static void RenameWwiseBank(ExportEntry wwiseBankEntry, string newWwiseBankName, bool updateID)
+        public static void RenameAudio(IMEPackage pcc, ExportEntry wwiseBankEntry, ExportEntry bioConversation,
+            string newName, bool updateAudioIDs)
         {
-            if (updateID) { UpdateWwiseBankID(wwiseBankEntry, newWwiseBankName); }
+            string oldWwiseBankName = wwiseBankEntry.ObjectName;
+            string oldName = GetCommonPrefix(oldWwiseBankName, bioConversation.ObjectName);
+            string newWwiseBankName = oldWwiseBankName.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
+
+            List<ExportEntry> fxas = GetFXAs(pcc, bioConversation);
+            List<ExportEntry> wwiseEvents = GetWwiseEvents(pcc, fxas);
+            List<ExportEntry> wwiseStreams = GetWwiseStreams(pcc, wwiseEvents);
+
+            RenameWwiseEvents(pcc, wwiseEvents, newName);
+            RenameWwiseStreams(pcc, wwiseStreams, oldName, newName);
+
+            if (updateAudioIDs)
+            {
+                Dictionary<uint, uint> wwiseEventsIDs = UpdateIDs(wwiseEvents);
+                Dictionary<uint, uint> wwiseStreamsIDs = UpdateIDs(wwiseStreams);
+
+                UpdateAudioIDs(wwiseBankEntry, newWwiseBankName, wwiseEventsIDs, wwiseStreamsIDs);
+            }
+
             wwiseBankEntry.ObjectName = newWwiseBankName;
-        }
-
-        /// <summary>
-        /// Wrapper for UpdateWwiseBankID so it can used as a full experiment on its own.
-        /// </summary>
-        /// <param name="pew">Current PE instance.</param>
-        public static void UpdateWwiseBankIDExperiment(PackageEditorWindow pew)
-        {
-            if (pew.Pcc == null || pew.SelectedItem?.Entry == null) { return; }
-
-            if (pew.Pcc.Game.IsGame1())
-            {
-                ShowError("Not available for ME1/LE1");
-                return;
-            }
-
-            if (pew.SelectedItem.Entry.ClassName is not "WwiseBank")
-            {
-                ShowError("Selected export is not a WwiseBank");
-                return;
-            }
-
-            ExportEntry wwiseBankEntry = (ExportEntry)pew.SelectedItem.Entry;
-
-            string newWwiseBankName = PromptDialog.Prompt(null, "New WwiseBank name:", "New name");
-            // Check that the new name is not empty, no longe than 255, and doesn't contain white-spaces or symbols aside from _ or -
-            if (string.IsNullOrEmpty(newWwiseBankName) || newWwiseBankName.Length > 240 || newWwiseBankName.Any(c => char.IsWhiteSpace(c) || (!(c is '_' or '-') && !char.IsLetterOrDigit(c))))
-            {
-                ShowError("Invalid name. It must not be empty, be longer than 240 characters, or contain whitespaces or symbols aside from '-' and '_'");
-                return;
-            }
-
-            UpdateWwiseBankID(wwiseBankEntry, newWwiseBankName);
-            MessageBox.Show("WwiseBank's ID updated successfully.", "Success", MessageBoxButton.OK);
+            RenameFXAs(pcc, bioConversation, oldName, newName);
         }
 
         /// <summary>
         /// Update a WwiseBank's ID by hashing a new name and changing it in the binary data where appropriate.
         /// </summary>
-        /// <param name="wwiseBankEntry">If called, the WwiseBank entry to edit.</param>
-        /// <param name="newWwiseBankName">If called, the new wwise bank name.</param>
-        public static void UpdateWwiseBankID(ExportEntry wwiseBankEntry, string newWwiseBankName)
+        /// <param name="wwiseBankEntry">The WwiseBank entry to edit.</param>
+        /// <param name="newWwiseBankName">The new wwise bank name. Needed for ME3 ReferencedBanks.</param>
+        /// <param name="wwiseEventIDs">Dictionary<oldID, newID> The event IDs to update</param>
+        /// <param name="wwiseStreamIDs">Dictionary<oldID, newID> The stream IDs to update</param>
+        public static void UpdateAudioIDs(ExportEntry wwiseBankEntry, string newWwiseBankName,
+            Dictionary<uint, uint> wwiseEventIDs, Dictionary<uint, uint> wwiseStreamIDs)
         {
             string oldBankName = wwiseBankEntry.ObjectName;
-            PropertyCollection bankProps = wwiseBankEntry.GetProperties();
-            IntProperty bankIDProp = bankProps.GetProp<IntProperty>("Id");
 
-            // Get/Generate IDs and little endian hashes
-            uint oldBankID = unchecked((uint)bankIDProp.Value);
-            uint newBankID = CalculateFNV132Hash(newWwiseBankName);
-
-            // Update the ID property
-            bankIDProp.Value = unchecked((int)newBankID);
-            bankProps.AddOrReplaceProp(bankIDProp);
+            (uint oldBankID, uint newBankID) = UpdateID(wwiseBankEntry);
 
             WwiseBank wwiseBank = wwiseBankEntry.GetBinaryData<WwiseBank>();
             // Update the bank id
             wwiseBank.ID = newBankID;
 
-            // Update referenced banks kvp that reference the old name
+            // Update referenced banks kvp that reference the old bank name
             IEnumerable<KeyValuePair<uint, string>> updatedBanks = wwiseBank.ReferencedBanks
                 .Select(referencedBank =>
                 {
@@ -1806,79 +1799,64 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 });
             wwiseBank.ReferencedBanks = new OrderedMultiValueDictionary<uint, string>(updatedBanks);
 
-            // Update references to the old hash at the end of HIRC objects when they are found.
-            // This is mostly safe, since we know the reference appears at the end of the unparsed data,
-            // and we only replace it there.
-            byte[] oldID = BitConverter.GetBytes(oldBankID);
-            byte[] newID = BitConverter.GetBytes(newBankID);
+            // Update references to old wwiseEvents' hashes, which are the ID of Event HIRCs,
+            // update references to old wwiseStreams' hashes, which are in the unknown bytes of Sound HIRCs, 
+            // update references to old bank hash, which I'm certain is at the end of Event Action HIRCs,
+            // but we check in all of them just in case.
+            byte[] bankIDArr = BitConverter.GetBytes(oldBankID);
+            byte[] newBankIDArr = BitConverter.GetBytes(newBankID);
             foreach (WwiseBank.HIRCObject hirc in wwiseBank.HIRCObjects.Values())
             {
+                if (hirc.Type == HIRCType.Event) // References a WwiseEvent
+                {
+                    if (wwiseEventIDs.TryGetValue(hirc.ID, out uint newEventID))
+                    {
+                        hirc.ID = newEventID;
+                    }
+                }
+                else if (hirc.Type == HIRCType.SoundSXFSoundVoice) // References a WwiseStream
+                {
+                    // 4 bytes ID is located at the start after 5 bytes
+                    Span<byte> streamIDSpan = hirc.unparsed.AsSpan(5..9);
+                    uint streamIDUInt = BitConverter.ToUInt32(streamIDSpan);
+
+                    if (wwiseStreamIDs.TryGetValue(streamIDUInt, out uint newStreamIDUInt))
+                    {
+                        byte[] newStreamIDArr = BitConverter.GetBytes(newStreamIDUInt);
+                        newStreamIDArr.CopyTo(streamIDSpan);
+                    }
+                }
+
+                // Check for bank ID in all HIRCs, even though I'm almost certain it only appears
+                // in Event Actions
                 if (hirc.unparsed != null && hirc.unparsed.Length >= 4) // Only replace if not null and at least width of hash
                 {
-
-                    Span<byte> last4Bytes = hirc.unparsed.AsSpan(^4..);
-                    if (last4Bytes.SequenceEqual(oldID))
+                    Span<byte> bankIDSpan = hirc.unparsed.AsSpan(^4..);
+                    if (bankIDSpan.SequenceEqual(bankIDArr))
                     {
-                        newID.CopyTo(last4Bytes);
+                        newBankIDArr.CopyTo(bankIDSpan);
                     }
                 }
             }
 
-            wwiseBankEntry.WritePropertiesAndBinary(bankProps, wwiseBank);
+            wwiseBankEntry.WriteBinary(wwiseBank);
         }
 
         /// <summary>
-        /// Rename a list of WwiseEvents by addig a user defined prefix.
+        /// Rename a list of WwiseEvents by addig a prefix.
         /// </summary>
         /// <param name="pcc">Pcc to operate on.</param>
         /// <param name="wwiseEvents">WwiseEvents to rename.</param>
         /// <param name="prefix">Prefix to add to the names.</param>
         private static void RenameWwiseEvents(IMEPackage pcc, List<ExportEntry> wwiseEvents, string prefix)
         {
-            // Update streams
-            foreach (ExportEntry wwiseStream in wwiseEvents)
+            foreach (ExportEntry wwiseEvent in wwiseEvents)
             {
                 if (!pcc.Game.IsGame1())
                 {
-                    wwiseStream.ObjectName = wwiseStream.ObjectName.Name.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
-                    if (pcc.Game.IsGame2())
-                    {
-                        NameProperty bankName = wwiseStream.GetProperty<NameProperty>("BankName");
-                        if (bankName == null) { continue; }
-                        bankName.Value = bankName.Value.Name.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
-                        wwiseStream.WriteProperty(bankName);
-                    }
+                    wwiseEvent.ObjectName = $"{prefix}{wwiseEvent.ObjectName.Name}";
                 }
             }
-        }
-
-        /// <summary>
-        /// Update the IDs of a list of WwiseEvents with hashes of their names.
-        /// </summary>
-        /// <param name="wwiseEvents">WwiseEvents to update.</param>
-        /// <returns>KVP of old and new IDs. Used to update the WwiseBank references.</returns>
-        private static Dictionary<uint, uint> UpdateWwiseEventsIDs(List<ExportEntry> wwiseEvents)
-        {
-            Dictionary<uint, uint> oldAndNewIDs = new();
-            foreach (ExportEntry wwiseStream in wwiseStreams)
-            {
-                string name = wwiseStream.ObjectName.Name;
-
-                IntProperty IDProp = wwiseStream.GetProperty<IntProperty>("Id");
-                if (IDProp ==  null) { continue; }
-
-                // Get/Generate IDs and little endian hashes
-                uint oldID = unchecked((uint)IDProp.Value);
-                uint newID = CalculateFNV132Hash(name);
-
-                // Update the ID property
-                IDProp.Value = unchecked((int)newID);
-                wwiseStream.WriteProperty(IDProp);
-
-                oldAndNewIDs.Add(oldID, newID);
-            }
-
-            return oldAndNewIDs;
         }
 
         /// <summary>
@@ -1890,7 +1868,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         /// <param name="newName">New name to replace with.</param>
         private static void RenameWwiseStreams(IMEPackage pcc, List<ExportEntry> wwiseStreams, string oldName, string newName)
         {
-            // Update streams
             foreach (ExportEntry wwiseStream in wwiseStreams)
             {
                 if (!pcc.Game.IsGame1())
@@ -1908,32 +1885,57 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         }
 
         /// <summary>
-        /// Update the IDs of a list of WwiseStreams with hashes of their names.
+        /// Update the IDs of a list of ExportEntries with hashes of their names.
         /// </summary>
-        /// <param name="wwiseStreams">WwiseStreams to update.</param>
-        /// <returns>KVP of old and new IDs. Used to update the WwiseBank references.</returns>
-        private static Dictionary<uint, uint> UpdateWwiseStreamsIDs(List<ExportEntry> wwiseStreams)
+        /// <param name="entries">WwiseStreams to update.</param>
+        /// <returns>KVP of old and new IDs. Used to update references.</returns>
+        private static Dictionary<uint, uint> UpdateIDs(List<ExportEntry> entries)
         {
             Dictionary<uint, uint> oldAndNewIDs = new();
-            foreach (ExportEntry wwiseStream in wwiseStreams)
+            foreach (ExportEntry entry in entries)
             {
-                string name = wwiseStream.ObjectName.Name;
+                (uint oldID, uint newID) = UpdateID(entry);
 
-                IntProperty IDProp = wwiseStream.GetProperty<IntProperty>("Id");
-                if (IDProp ==  null) { continue; }
-
-                // Get/Generate IDs and little endian hashes
-                uint oldID = unchecked((uint)IDProp.Value);
-                uint newID = CalculateFNV132Hash(name);
-
-                // Update the ID property
-                IDProp.Value = unchecked((int)newID);
-                wwiseStream.WriteProperty(IDProp);
+                if (newID == 0) { continue; }
 
                 oldAndNewIDs.Add(oldID, newID);
             }
 
             return oldAndNewIDs;
+        }
+
+        /// <summary>
+        /// Update the ID of an ExportEntry with a hash of its name.
+        /// </summary>
+        /// <param name="entry">Entry to update.</param>
+        /// <returns>KVP of old and new ID. Used to update references.</returns>
+        private static (uint, uint) UpdateID(ExportEntry entry)
+        {
+            string name = entry.ObjectName.Name;
+
+            return UpdateID(entry, name);
+        }
+
+        /// <summary>
+        /// Update the ID of an ExportEntry with a hash of the provided name.
+        /// </summary>
+        /// <param name="entry">Entry to update.</param>
+        /// <param name="name">Name to use for hash.</param>
+        /// <returns>KVP of old and new ID. Used to update references.</returns>
+        private static (uint, uint) UpdateID(ExportEntry entry, string name)
+        {
+            IntProperty IDProp = entry.GetProperty<IntProperty>("Id");
+            if (IDProp == null) { return (0, 0); }
+
+            // Get/Generate IDs and little endian hashes
+            uint oldID = unchecked((uint)IDProp.Value);
+            uint newID = CalculateFNV132Hash(name);
+
+            // Update the ID property
+            IDProp.Value = unchecked((int)newID);
+            entry.WriteProperty(IDProp);
+
+            return (oldID, newID);
         }
 
         /// <summary>
@@ -2020,18 +2022,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
         }
 
-        private static void Driver(IMEPackage pcc, ExportEntry bioConversation)
-        {
-            // Step to rename stuff
-            List<ExportEntry> fxas = GetFXAs(pcc, bioConversation);
-            List<ExportEntry> wwiseEvents = GetWwiseEvents(pcc, fxas);
-            List<ExportEntry> wwiseStreams = GetWwiseStreams(pcc, wwiseEvents);
-
-            string test = "test";
-        }
-
         /// <summary>
-        /// Get a list containing all FXAs  in a BioConversation.
+        /// Get a list containing all FXAs in a BioConversation.
         /// </summary>
         /// <param name="pcc">Pcc to operate on.</param>
         /// <param name="bioConversation">Conversation to get FXAs from.</param>
