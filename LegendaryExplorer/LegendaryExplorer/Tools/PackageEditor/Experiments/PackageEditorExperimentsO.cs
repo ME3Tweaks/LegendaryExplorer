@@ -1650,12 +1650,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             else
             {
                 oldName = GetCommonPrefix(conversation.WwiseBank.ObjectName, bioConversation.ObjectName);
-                RenameAudio(pcc, conversation.WwiseBank, bioConversation, newName, updateAudioIDs);
             }
-
-            // Rename bioConversation after the audio, since it needs the old name
-            string newBioConversationName = oldBioConversationName.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
-            bioConversation.ObjectName = newBioConversationName;
 
             // Replace package's name
             if (bioConversation.idxLink != 0)
@@ -1684,6 +1679,15 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     link.ObjectName = link.ObjectName.Name.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
                 }
             }
+
+            if (!pcc.Game.IsGame1())
+            {
+                RenameAudio(pcc, conversation.WwiseBank, bioConversation, newName, updateAudioIDs);
+            }
+
+            // Rename bioConversation after the audio, since it needs the old name
+            string newBioConversationName = oldBioConversationName.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
+            bioConversation.ObjectName = newBioConversationName;
         }
 
         /// <summary>
@@ -1993,8 +1997,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 List<string> names = faceFXAnimSet.Names.Select(name => name == oldFxaName ? newFxaName : name).ToList();
                 faceFXAnimSet.Names = names;
 
-                // Set the paths with the new names and update the names of WwiseStreams
                 ArrayProperty<ObjectProperty> eventRefs = fxaExport.GetProperty<ArrayProperty<ObjectProperty>>("ReferencedSoundCues");
+                // Set the paths with the new names and update the names of WwiseStreams
                 if (eventRefs != null)
                 {
                     foreach (FaceFXLine line in faceFXAnimSet.Lines)
