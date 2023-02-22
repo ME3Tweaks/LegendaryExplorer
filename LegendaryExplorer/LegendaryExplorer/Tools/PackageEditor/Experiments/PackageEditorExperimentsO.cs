@@ -1686,6 +1686,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 }
             }
 
+            Driver(pcc, bioConversation);
             // Must be called after everything else has been renamed due to the need ot update FXA paths.
             RenameFXAsAndRelated(pcc, bioConversation, oldName, newName);
         }
@@ -1825,6 +1826,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             wwiseBankEntry.WritePropertiesAndBinary(bankProps, wwiseBank);
         }
 
+        private static Dictionary<int, int> RenameWwiseStreams()
+        {
+            return new();
+        }
+
         /// <summary>
         /// Rename a bioConversation's FXAs, WwiseStreams, and VOElements names.
         /// Not useful as a standalone experiment, since other semi-unrelated elements need to be renamed too.
@@ -1953,6 +1959,141 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                 fxaExport.WriteBinary(faceFXAnimSet);
             }
+        }
+
+        private static void Driver(IMEPackage pcc, ExportEntry bioConversation)
+        {
+            // Step to rename stuff
+            List<ExportEntry> fxas = GetFXAs(pcc, bioConversation);
+            List<ExportEntry> wwiseEvents = GetWwiseEvents(pcc, fxas);
+            List<ExportEntry> wwiseStreams = GetWwiseStreams(pcc, wwiseEvents);
+
+            string test = "test";
+        }
+
+        /// <summary>
+        /// Get a list containing all FXAs  in a BioConversation.
+        /// </summary>
+        /// <param name="pcc">Pcc to operate on.</param>
+        /// <param name="bioConversation">Conversation to get FXAs from.</param>
+        /// <returns>List containing found FXAs.</returns>
+        private static List<ExportEntry> GetFXAs(IMEPackage pcc, ExportEntry bioConversation)
+        {
+            List<ExportEntry> fxas = new();
+            List<ObjectProperty> fxaRefs = new();
+
+            ArrayProperty<ObjectProperty> maleFXAs = bioConversation.GetProperty<ArrayProperty<ObjectProperty>>("m_aMaleFaceSets");
+            if (maleFXAs != null) { fxaRefs.AddRange(maleFXAs); }
+            ArrayProperty<ObjectProperty> femaleFXAs = bioConversation.GetProperty<ArrayProperty<ObjectProperty>>("m_aFemaleFaceSets");
+            if (femaleFXAs != null) { fxaRefs.AddRange(femaleFXAs); }
+            ObjectProperty nonSpkrFxa = bioConversation.GetProperty<ObjectProperty>("m_pNonSpeakerFaceFXSet");
+            if (nonSpkrFxa != null) { fxaRefs.Add(nonSpkrFxa); }
+
+            foreach (ObjectProperty fxa in fxaRefs)
+            {
+                if (fxa.Value == 0) { continue; }
+
+                ExportEntry fxaExport = pcc.GetUExport(fxa.Value);
+                if (fxaExport == null) { continue; }
+
+                fxas.Add(fxaExport);
+            }
+
+            return fxas;
+        }
+
+        /// <summary>
+        /// Get a list of WwiseEvents referenced by a list of FXAs.
+        /// </summary>
+        /// <param name="pcc">Pcc to operate on.</param>
+        /// <param name="fxas">FXAs to get references from.</param>
+        /// <returns>List of WwiseEvents.</returns>
+        private static List<ExportEntry> GetWwiseEvents(IMEPackage pcc, List<ExportEntry> fxas)
+        {
+            if (pcc == null || (pcc.Game is MEGame.ME1)) { return null; }
+
+            // <UExport, ExportEntry>. Used to avoid duplicates.
+            Dictionary<int, ExportEntry> wwiseEvents = new();
+
+            foreach (ExportEntry fxa in fxas)
+            {
+                ArrayProperty<ObjectProperty> eventRefs = fxa.GetProperty<ArrayProperty<ObjectProperty>>("ReferencedSoundCues");
+
+                if (eventRefs != null)
+                {
+                    foreach (ObjectProperty eventRef in eventRefs)
+                    {
+                        if (eventRef.Value == 0 || wwiseEvents.ContainsKey(eventRef.Value)) { continue; }
+
+                        ExportEntry wwiseEvent = pcc.GetUExport(eventRef.Value);
+                        if (wwiseEvent == null) { continue; }
+
+                        wwiseEvents.Add(eventRef.Value, wwiseEvent);
+                    }
+                }
+            }
+            return wwiseEvents.Values.ToList();
+        }
+
+        /// <summary>
+        /// Get a list of WwiseStreams referenced by a list of WwiseEvents.
+        /// </summary>
+        /// <param name="pcc">Pcc to operate on.</param>
+        /// <param name="wwiseEvents">WwiseEvents to get references from.</param>
+        /// <returns>List of WwiseStreams.</returns>
+        private static List<ExportEntry> GetWwiseStreams(IMEPackage pcc, List<ExportEntry> wwiseEvents)
+        {
+            if (pcc == null || (pcc.Game is MEGame.ME1)) { return null; }
+
+            // <UExport, ExportEntry>. Used to avoid duplicates.
+            Dictionary<int, ExportEntry> wwiseStreams = new();
+
+            if (!pcc.Game.IsGame1())
+            {
+                if (pcc.Game is MEGame.LE2)
+                {
+                    foreach (ExportEntry wwiseEvent in wwiseEvents)
+                    {
+                        ArrayProperty<StructProperty> references = wwiseEvent.GetProperty<ArrayProperty<StructProperty>>("References");
+                        if ((references == null) || (references.Count == 0)) { continue; }
+                        StructProperty relationships = references[0].GetProp<StructProperty>("Relationships");
+                        if (relationships == null) { continue; }
+                        ArrayProperty<ObjectProperty> streams = relationships.GetProp<ArrayProperty<ObjectProperty>>("Streams");
+                        if ((streams == null) || (streams.Count == 0)) { continue; }
+
+                        foreach (ObjectProperty streamRef in streams)
+                        {
+                            if (streamRef.Value == 0 || wwiseStreams.ContainsKey(streamRef.Value)) { continue; }
+
+                            ExportEntry stream = pcc.GetUExport(streamRef.Value);
+                            if (stream == null) { continue; }
+
+                            wwiseStreams.Add(streamRef.Value, stream);
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (ExportEntry soundEvent in wwiseEvents)
+                    {
+                        WwiseEvent wwiseEventBin = soundEvent.GetBinaryData<WwiseEvent>();
+                        foreach (WwiseEvent.WwiseEventLink link in wwiseEventBin.Links)
+                        {
+                            foreach (int stream in link.WwiseStreams)
+                            {
+                                if (stream == 0 || wwiseStreams.ContainsKey(stream)) { continue; }
+
+                                ExportEntry wwiseStream = pcc.GetUExport(stream);
+                                if (wwiseStream == null) { continue; }
+
+                                wwiseStreams.Add(stream, wwiseStream);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return wwiseStreams.Values.ToList();
         }
 
         // HELPER FUNCTIONS
