@@ -1816,8 +1816,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 }
                 else if (hirc.Type == HIRCType.SoundSXFSoundVoice) // References a WwiseStream
                 {
-                    // 4 bytes ID is located at the start after 5 bytes
-                    Span<byte> streamIDSpan = hirc.unparsed.AsSpan(5..9);
+                    // 4 bytes ID is located at the start after 14 bytes
+                    Span<byte> streamIDSpan = hirc.unparsed.AsSpan(15..19);
                     uint streamIDUInt = BitConverter.ToUInt32(streamIDSpan);
 
                     if (wwiseStreamIDs.TryGetValue(streamIDUInt, out uint newStreamIDUInt))
