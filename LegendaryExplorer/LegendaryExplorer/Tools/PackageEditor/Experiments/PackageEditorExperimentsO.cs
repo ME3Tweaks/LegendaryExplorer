@@ -1843,20 +1843,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         {
             if (pcc == null || (pcc.Game is MEGame.ME1)) { return; }
 
-            List<ObjectProperty> fxas = new();
-            ArrayProperty<ObjectProperty> maleFXAs = bioConversation.GetProperty<ArrayProperty<ObjectProperty>>("m_aMaleFaceSets");
-            if (maleFXAs != null) { fxas.AddRange(maleFXAs); }
-            ArrayProperty<ObjectProperty> femaleFXAs = bioConversation.GetProperty<ArrayProperty<ObjectProperty>>("m_aFemaleFaceSets");
-            if (femaleFXAs != null) { fxas.AddRange(femaleFXAs); }
-            ObjectProperty nonSpkrFxa = bioConversation.GetProperty<ObjectProperty>("m_pNonSpeakerFaceFXSet");
-            if (nonSpkrFxa != null) { fxas.Add(nonSpkrFxa); }
+            List<ExportEntry> fxas = GetFXAs(pcc, bioConversation);
+            List<ExportEntry> wwiseStreams = GetWwiseStreams(pcc, GetWwiseEvents(pcc, fxas));
 
-            foreach (ObjectProperty fxa in fxas)
+            foreach (ExportEntry fxaExport in fxas)
             {
-                if (fxa.Value == 0) { continue; }
-
-                ExportEntry fxaExport = pcc.GetUExport(fxa.Value);
-
                 string oldFxaFullName = fxaExport.ObjectName; // May contain _M, _F, or _NonSpkr
                 string oldFxaName = oldFxaFullName; // Full name minus _M/_F, or including _NonSpkr
 
@@ -1903,61 +1894,26 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         if (soundEvent == null) { continue; }
 
                         line.Path = soundEvent.FullPath;
-
-                        if (!pcc.Game.IsGame1())
-                        {
-                            if (pcc.Game is MEGame.LE2)
-                            {
-                                ArrayProperty<StructProperty> references = soundEvent.GetProperty<ArrayProperty<StructProperty>>("References");
-                                if ((references == null) || (references.Count == 0)) { continue; }
-                                StructProperty relationships = references[0].GetProp<StructProperty>("Relationships");
-                                if (relationships == null) { continue; }
-                                ArrayProperty<ObjectProperty> streams = relationships.GetProp<ArrayProperty<ObjectProperty>>("Streams");
-                                if ((streams == null) || (streams.Count == 0)) { continue; }
-
-                                foreach (ObjectProperty streamRef in streams)
-                                {
-                                    ExportEntry stream = pcc.GetUExport(streamRef.Value);
-                                    if (stream == null) { continue; }
-
-                                    stream.ObjectName = stream.ObjectName.Name.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
-                                    NameProperty bankName = stream.GetProperty<NameProperty>("BankName");
-                                    if (bankName == null) { continue; }
-                                    bankName.Value = bankName.Value.Name.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
-                                    stream.WriteProperty(bankName);
-                                }
-                            }
-                            else
-                            {
-                                // Update the WwiseStreams
-                                WwiseEvent wwiseEventBin = soundEvent.GetBinaryData<WwiseEvent>();
-                                foreach (WwiseEvent.WwiseEventLink link in wwiseEventBin.Links)
-                                {
-                                    foreach (int stream in link.WwiseStreams)
-                                    {
-                                        if (stream == 0) { continue; }
-
-                                        ExportEntry wwiseStream = pcc.GetUExport(stream);
-
-                                        wwiseStream.ObjectName = wwiseStream.ObjectName.Name.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
-
-                                        // This is similar to the step for LE2, but the general way of getting to it is more similar
-                                        // to the LE3/ME3 way
-                                        if (pcc.Game is MEGame.ME2)
-                                        {
-                                            NameProperty bankName = wwiseStream.GetProperty<NameProperty>("BankName");
-                                            if (bankName == null) { continue; }
-                                            bankName.Value = bankName.Value.Name.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
-                                            wwiseStream.WriteProperty(bankName);
-                                        }
-                                    }
-                                }
-                            }
-                        }
                     }
                 }
 
                 fxaExport.WriteBinary(faceFXAnimSet);
+            }
+
+            // Update streams
+            foreach (ExportEntry wwiseStream in wwiseStreams)
+            {
+                if (!pcc.Game.IsGame1())
+                {
+                    wwiseStream.ObjectName = wwiseStream.ObjectName.Name.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
+                    if (pcc.Game.IsGame2())
+                    {
+                        NameProperty bankName = wwiseStream.GetProperty<NameProperty>("BankName");
+                        if (bankName == null) { continue; }
+                        bankName.Value = bankName.Value.Name.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
+                        wwiseStream.WriteProperty(bankName);
+                    }
+                }
             }
         }
 
