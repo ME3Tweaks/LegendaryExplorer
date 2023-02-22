@@ -1686,9 +1686,10 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 }
             }
 
-            Driver(pcc, bioConversation);
-            // Must be called after everything else has been renamed due to the need ot update FXA paths.
-            RenameFXAsAndRelated(pcc, bioConversation, oldName, newName);
+            // Must be run after everything else has been renamed due to the need to update FXA paths.
+            List<ExportEntry> fxas = GetFXAs(pcc, bioConversation);
+            RenameFXAs(pcc, bioConversation, fxas, oldName, newName);
+            RenameWwiseStreams(pcc, GetWwiseStreams(pcc, GetWwiseEvents(pcc, fxas)), oldName, newName);
         }
 
         /// <summary>
@@ -1786,7 +1787,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             // Get/Generate IDs and little endian hashes
             uint oldBankID = unchecked((uint)bankIDProp.Value);
-            uint newBankID = GetBankId(newWwiseBankName);
+            uint newBankID = CalculateFNV132Hash(newWwiseBankName);
 
             // Update the ID property
             bankIDProp.Value = unchecked((int)newBankID);
@@ -1826,25 +1827,143 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             wwiseBankEntry.WritePropertiesAndBinary(bankProps, wwiseBank);
         }
 
-        private static Dictionary<int, int> RenameWwiseStreams()
+        /// <summary>
+        /// Rename a list of WwiseEvents by addig a user defined prefix.
+        /// </summary>
+        /// <param name="pcc">Pcc to operate on.</param>
+        /// <param name="wwiseEvents">WwiseEvents to rename.</param>
+        /// <param name="prefix">Prefix to add to the names.</param>
+        private static void RenameWwiseEvents(IMEPackage pcc, List<ExportEntry> wwiseEvents, string prefix)
         {
-            return new();
+            // Update streams
+            foreach (ExportEntry wwiseStream in wwiseEvents)
+            {
+                if (!pcc.Game.IsGame1())
+                {
+                    wwiseStream.ObjectName = wwiseStream.ObjectName.Name.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
+                    if (pcc.Game.IsGame2())
+                    {
+                        NameProperty bankName = wwiseStream.GetProperty<NameProperty>("BankName");
+                        if (bankName == null) { continue; }
+                        bankName.Value = bankName.Value.Name.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
+                        wwiseStream.WriteProperty(bankName);
+                    }
+                }
+            }
         }
 
         /// <summary>
-        /// Rename a bioConversation's FXAs, WwiseStreams, and VOElements names.
+        /// Update the IDs of a list of WwiseEvents with hashes of their names.
+        /// </summary>
+        /// <param name="wwiseEvents">WwiseEvents to update.</param>
+        /// <returns>KVP of old and new IDs. Used to update the WwiseBank references.</returns>
+        private static Dictionary<uint, uint> UpdateWwiseEventsIDs(List<ExportEntry> wwiseEvents)
+        {
+            Dictionary<uint, uint> oldAndNewIDs = new();
+            foreach (ExportEntry wwiseStream in wwiseStreams)
+            {
+                string name = wwiseStream.ObjectName.Name;
+
+                IntProperty IDProp = wwiseStream.GetProperty<IntProperty>("Id");
+                if (IDProp ==  null) { continue; }
+
+                // Get/Generate IDs and little endian hashes
+                uint oldID = unchecked((uint)IDProp.Value);
+                uint newID = CalculateFNV132Hash(name);
+
+                // Update the ID property
+                IDProp.Value = unchecked((int)newID);
+                wwiseStream.WriteProperty(IDProp);
+
+                oldAndNewIDs.Add(oldID, newID);
+            }
+
+            return oldAndNewIDs;
+        }
+
+        /// <summary>
+        /// Rename a list of WwiseStreams.
+        /// </summary>
+        /// <param name="pcc">Pcc to operate on.</param>
+        /// <param name="wwiseStreams">WwiseStreams to rename.</param>
+        /// <param name="oldName">Old name to replace.</param>
+        /// <param name="newName">New name to replace with.</param>
+        private static void RenameWwiseStreams(IMEPackage pcc, List<ExportEntry> wwiseStreams, string oldName, string newName)
+        {
+            // Update streams
+            foreach (ExportEntry wwiseStream in wwiseStreams)
+            {
+                if (!pcc.Game.IsGame1())
+                {
+                    wwiseStream.ObjectName = wwiseStream.ObjectName.Name.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
+                    if (pcc.Game.IsGame2())
+                    {
+                        NameProperty bankName = wwiseStream.GetProperty<NameProperty>("BankName");
+                        if (bankName == null) { continue; }
+                        bankName.Value = bankName.Value.Name.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
+                        wwiseStream.WriteProperty(bankName);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Update the IDs of a list of WwiseStreams with hashes of their names.
+        /// </summary>
+        /// <param name="wwiseStreams">WwiseStreams to update.</param>
+        /// <returns>KVP of old and new IDs. Used to update the WwiseBank references.</returns>
+        private static Dictionary<uint, uint> UpdateWwiseStreamsIDs(List<ExportEntry> wwiseStreams)
+        {
+            Dictionary<uint, uint> oldAndNewIDs = new();
+            foreach (ExportEntry wwiseStream in wwiseStreams)
+            {
+                string name = wwiseStream.ObjectName.Name;
+
+                IntProperty IDProp = wwiseStream.GetProperty<IntProperty>("Id");
+                if (IDProp ==  null) { continue; }
+
+                // Get/Generate IDs and little endian hashes
+                uint oldID = unchecked((uint)IDProp.Value);
+                uint newID = CalculateFNV132Hash(name);
+
+                // Update the ID property
+                IDProp.Value = unchecked((int)newID);
+                wwiseStream.WriteProperty(IDProp);
+
+                oldAndNewIDs.Add(oldID, newID);
+            }
+
+            return oldAndNewIDs;
+        }
+
+        /// <summary>
+        /// Rename a bioConversation's FXAs.
         /// Not useful as a standalone experiment, since other semi-unrelated elements need to be renamed too.
         /// </summary>
         /// <param name="pcc">Pcc to operate on.</param>
         /// <param name="bioConversation">Conversation the elements belong to.</param>
         /// <param name="oldName">Old name to replace in the elements.</param>
         /// <param name="newName">New name to replace in the elements.</param>
-        private static void RenameFXAsAndRelated(IMEPackage pcc, ExportEntry bioConversation, string oldName, string newName)
+        private static void RenameFXAs(IMEPackage pcc, ExportEntry bioConversation, string oldName, string newName)
         {
             if (pcc == null || (pcc.Game is MEGame.ME1)) { return; }
 
             List<ExportEntry> fxas = GetFXAs(pcc, bioConversation);
-            List<ExportEntry> wwiseStreams = GetWwiseStreams(pcc, GetWwiseEvents(pcc, fxas));
+            RenameFXAs(pcc, bioConversation, fxas, oldName, newName);
+        }
+
+        /// <summary>
+        /// Rename a bioConversation's FXAs.
+        /// Not useful as a standalone experiment, since other semi-unrelated elements need to be renamed too.
+        /// </summary>
+        /// <param name="pcc">Pcc to operate on.</param>
+        /// <param name="bioConversation">Conversation the elements belong to.</param>
+        /// <param name="fxas">List of FXAs to rename.</param>
+        /// <param name="oldName">Old name to replace in the elements.</param>
+        /// <param name="newName">New name to replace in the elements.</param>
+        private static void RenameFXAs(IMEPackage pcc, ExportEntry bioConversation, List<ExportEntry> fxas, string oldName, string newName)
+        {
+            if (pcc == null || (pcc.Game is MEGame.ME1)) { return; }
 
             foreach (ExportEntry fxaExport in fxas)
             {
@@ -1898,22 +2017,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 }
 
                 fxaExport.WriteBinary(faceFXAnimSet);
-            }
-
-            // Update streams
-            foreach (ExportEntry wwiseStream in wwiseStreams)
-            {
-                if (!pcc.Game.IsGame1())
-                {
-                    wwiseStream.ObjectName = wwiseStream.ObjectName.Name.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
-                    if (pcc.Game.IsGame2())
-                    {
-                        NameProperty bankName = wwiseStream.GetProperty<NameProperty>("BankName");
-                        if (bankName == null) { continue; }
-                        bankName.Value = bankName.Value.Name.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
-                        wwiseStream.WriteProperty(bankName);
-                    }
-                }
             }
         }
 
@@ -2134,12 +2237,12 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         }
 
         /// <summary>
-        /// Generates a FNV132 hash of the given name.
+        /// Calculates the FNV132 hash of the given string.
         /// IMPORTANT: This may not be compeletely bug-free or may be missing a couple of details, but so far it works.
         /// </summary>
         /// <param name="name"></param>
         /// <returns>The decimal representation of the hash.</returns>
-        private static uint GetBankId(string name)
+        private static uint CalculateFNV132Hash(string name)
         {
             byte[] bytedName = Encoding.ASCII.GetBytes(name.ToLower()); // Wwise automatically lowecases the input
 
