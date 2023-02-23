@@ -1858,7 +1858,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             {
                 if (!pcc.Game.IsGame1())
                 {
-                    wwiseEvent.ObjectName = $"{prefix}{wwiseEvent.ObjectName.Name}";
+                    wwiseEvent.ObjectName = $"{wwiseEvent.ObjectName.Name}";
                 }
             }
         }
