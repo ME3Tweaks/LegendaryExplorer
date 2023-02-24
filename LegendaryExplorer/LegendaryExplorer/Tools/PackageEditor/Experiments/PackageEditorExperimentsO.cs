@@ -1821,7 +1821,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 else if (hirc.Type == HIRCType.SoundSXFSoundVoice) // References a WwiseStream
                 {
                     // 4 bytes ID is located at the start after 14 bytes
-                    Span<byte> streamIDSpan = hirc.unparsed.AsSpan(15..19);
+                    Span<byte> streamIDSpan = hirc.unparsed.AsSpan(5..9);
                     uint streamIDUInt = BitConverter.ToUInt32(streamIDSpan);
 
                     if (wwiseStreamIDs.TryGetValue(streamIDUInt, out uint newStreamIDUInt))
@@ -1858,7 +1858,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             {
                 if (!pcc.Game.IsGame1())
                 {
-                    wwiseEvent.ObjectName = $"{wwiseEvent.ObjectName.Name}";
+                    wwiseEvent.ObjectName = $"I{wwiseEvent.ObjectName.Name}";
                 }
             }
         }
