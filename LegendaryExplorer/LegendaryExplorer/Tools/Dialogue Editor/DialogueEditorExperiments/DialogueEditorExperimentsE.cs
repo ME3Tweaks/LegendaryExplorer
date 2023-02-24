@@ -29,6 +29,12 @@ namespace LegendaryExplorer.DialogueEditor.DialogueEditorExperiments
 
             if (dew.Pcc == null || selectedDialogueNode == null) { return; }
 
+            if (dew.Pcc.Game.IsGame1())
+            {
+                MessageBox.Show("Not available for Mass Effect 1.", "Warning", MessageBoxButton.OK);
+                return;
+            }
+
             // Need to check if currStringRef exists
             string currStringRef = selectedDialogueNode.LineStrRef.ToString();
             if (string.IsNullOrEmpty(currStringRef))
