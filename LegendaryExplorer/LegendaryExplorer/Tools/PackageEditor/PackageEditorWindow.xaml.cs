@@ -1439,7 +1439,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                             }
                             if (exp.HasComponentMap && exp.ComponentMap.Any(kvp => uIndexes.Contains(kvp.Value)))
                             {
-                                return pcc.GetEntry(exp.ComponentMap.Values().First(uIdx => uIndexes.Contains(uIdx)));
+                                return pcc.GetEntry(exp.ComponentMap.Values.First(uIdx => uIndexes.Contains(uIdx)));
                             }
 
                             //find stack references

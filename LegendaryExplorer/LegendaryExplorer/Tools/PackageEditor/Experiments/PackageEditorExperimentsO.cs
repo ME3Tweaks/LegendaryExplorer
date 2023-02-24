@@ -1793,17 +1793,20 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             IEnumerable<KeyValuePair<uint, string>> updatedBanks = wwiseBank.ReferencedBanks
                 .Select(referencedBank =>
                 {
-                    if (referencedBank.Value.Equals(oldBankName, StringComparison.OrdinalIgnoreCase)) { return new(newBankID, newWwiseBankName); }
-                    else { return referencedBank; }
+                    if (referencedBank.Value.Equals(oldBankName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return new KeyValuePair<uint, string>(newBankID, newWwiseBankName);
+                    }
+                    return referencedBank;
                 });
-            wwiseBank.ReferencedBanks = new OrderedMultiValueDictionary<uint, string>(updatedBanks);
+            wwiseBank.ReferencedBanks = new(updatedBanks);
 
             // Update references to the old hash at the end of HIRC objects when they are found.
             // This is mostly safe, since we know the reference appears at the end of the unparsed data,
             // and we only replace it there.
             byte[] oldID = BitConverter.GetBytes(oldBankID);
             byte[] newID = BitConverter.GetBytes(newBankID);
-            foreach (WwiseBank.HIRCObject hirc in wwiseBank.HIRCObjects.Values())
+            foreach (WwiseBank.HIRCObject hirc in wwiseBank.HIRCObjects.Values)
             {
                 if (hirc.unparsed != null && hirc.unparsed.Length >= 4) // Only replace if not null and at least width of hash
                 {

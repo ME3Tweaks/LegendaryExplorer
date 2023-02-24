@@ -367,12 +367,13 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         private void CommitBankToFile()
         {
             // byte[] dataBefore = CurrentLoadedWwisebank.Export.Data;
-            CurrentLoadedWwisebank.HIRCObjects.Clear();
+            CurrentLoadedWwisebank.HIRCObjects.Empty(HIRCObjects.Count);
             CurrentLoadedWwisebank.HIRCObjects.AddRange(HIRCObjects.Select(x => new KeyValuePair<uint, WwiseBank.HIRCObject>(x.ID, CreateHircObjectFromHex(x.Data))));
 
             // We must restore the original wem datas. In preloading entries, the length on the RIFF is the actual full length. But the data on disk is only like .1s long. 
             // wwise does some trickery to load the rest of the audio later but we don't have that kind of code so we interally adjust it for local playback
-            CurrentLoadedWwisebank.EmbeddedFiles.ReplaceAll(AllWems.Select(w => new KeyValuePair<uint, byte[]>(w.Id, w.HasBeenFixed ? w.OriginalWemData : w.WemData)));
+            CurrentLoadedWwisebank.EmbeddedFiles.Empty(AllWems.Count);
+            CurrentLoadedWwisebank.EmbeddedFiles.AddRange(AllWems.Select(w => new KeyValuePair<uint, byte[]>(w.Id, w.HasBeenFixed ? w.OriginalWemData : w.WemData)));
             CurrentLoadedExport.WriteBinary(CurrentLoadedWwisebank);
             foreach (var hircObject in HIRCObjects)
             {
@@ -501,7 +502,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     ExportInformationList.Add($"#{exportEntry.UIndex} {exportEntry.ClassName} : {exportEntry.ObjectName.Instanced} (Bank ID 0x{wb.ID:X8})");
 
                     HIRCObjects.Clear();
-                    HIRCObjects.AddRange(wb.HIRCObjects.Values().Select((ho, i) => new HIRCDisplayObject(i, ho, exportEntry.Game)));
+                    HIRCObjects.AddRange(wb.HIRCObjects.Values.Select((ho, i) => new HIRCDisplayObject(i, ho, exportEntry.Game)));
 
                     if (wb.EmbeddedFiles.Count > 0)
                     {
@@ -517,7 +518,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             string wemHeader = $"{(char)bytes[0]}{(char)bytes[1]}{(char)bytes[2]}{(char)bytes[3]}";
                             string wemName = $"{i}: Embedded WEM 0x{wemId}";
                             EmbeddedWEMFile wem = new EmbeddedWEMFile(bytes, wemName, exportEntry, id);
-                            if (wemHeader == "RIFF" || wemHeader == "RIFX")
+                            if (wemHeader is "RIFF" or "RIFX")
                             {
                                 ExportInformationList.Add(wem);
                             }
@@ -1473,7 +1474,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 wem.WemData = convertedStream.ToArray();
             }
-            CurrentLoadedWwisebank.EmbeddedFiles.ReplaceAll(AllWems.Select(w => new KeyValuePair<uint, byte[]>(w.Id, w.HasBeenFixed ? w.OriginalWemData : w.WemData)));
+            CurrentLoadedWwisebank.EmbeddedFiles.Empty(AllWems.Count);
+            CurrentLoadedWwisebank.EmbeddedFiles.AddRange(AllWems.Select(w => new KeyValuePair<uint, byte[]>(w.Id, w.HasBeenFixed ? w.OriginalWemData : w.WemData)));
             CurrentLoadedExport.WriteBinary(CurrentLoadedWwisebank);
             File.Delete(oggPath);
             UpdateAudioStream();

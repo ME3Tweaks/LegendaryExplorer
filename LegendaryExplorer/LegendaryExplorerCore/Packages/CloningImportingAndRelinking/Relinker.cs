@@ -12,6 +12,7 @@ using LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
+using LegendaryExplorerCore.Unreal.Collections;
 using LegendaryExplorerCore.UnrealScript;
 using LegendaryExplorerCore.UnrealScript.Compiling.Errors;
 
@@ -214,7 +215,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             // When porting to a game newer than ME2 might want to just strip this out. As I don't think that engine version uses this anymore
             if (relinkingExport.HasComponentMap && relinkingExport.ComponentMap.Count > 0)
             {
-                OrderedMultiValueDictionary<NameReference, int> newComponentMap = new OrderedMultiValueDictionary<NameReference, int>();
+                var newComponentMap = new UMultiMap<NameReference, int>();
                 foreach (var cmk in sourceExport.ComponentMap)
                 {
                     // This code makes a lot of assumptions, like how components are always directly below the current export
@@ -225,7 +226,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     var cachedMap = rop.CrossPackageMap;
                     rop.CrossPackageMap = new ListenableDictionary<IEntry, IEntry>();
                     EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, sourceExport.FileRef.GetUExport(cmk.Value + 1), relinkingExport.FileRef, relinkingExport, true, rop, out var newComponent);
-                    newComponentMap.Add(new KeyValuePair<NameReference, int>(cmk.Key, newComponent.UIndex - 1)); // TODO: Relink the 
+                    newComponentMap.Add(cmk.Key, newComponent.UIndex - 1); // TODO: Relink the 
 
                     foreach (var v in rop.CrossPackageMap)
                     {

@@ -6,11 +6,13 @@ using System.IO;
 using System.Linq;
 using LegendaryExplorerCore.DebugTools;
 using LegendaryExplorerCore.GameFilesystem;
+using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
+using LegendaryExplorerCore.Unreal.Collections;
 
 namespace LegendaryExplorerCore.Unreal.ObjectInfo
 {
@@ -568,9 +570,9 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
         private static readonly ConcurrentDictionary<string, PropertyCollection> DefaultStructValuesWithTransientsLE3 = new();
         private static readonly ConcurrentDictionary<string, PropertyCollection> DefaultStructValuesWithTransientsUDK = new();
 
-        public static OrderedMultiValueDictionary<NameReference, PropertyInfo> GetAllProperties(MEGame game, string typeName)
+        public static UMultiMap<NameReference, PropertyInfo> GetAllProperties(MEGame game, string typeName)
         {
-            var props = new OrderedMultiValueDictionary<NameReference, PropertyInfo>();
+            var props = new UMultiMap<NameReference, PropertyInfo>();
 
             ClassInfo info = GetClassOrStructInfo(game, typeName);
             while (info != null)

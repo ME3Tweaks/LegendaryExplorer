@@ -10,6 +10,7 @@ using LegendaryExplorerCore.Memory;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
+using LegendaryExplorerCore.Unreal.Collections;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
 using PropertyChanged;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
@@ -560,11 +561,11 @@ namespace LegendaryExplorerCore.Packages
 
         //me1 and me2 only
         private byte[] _componentMap;
-        public OrderedMultiValueDictionary<NameReference, int> ComponentMap
+        public UMultiMap<NameReference, int> ComponentMap
         {
             get
             {
-                var componentMap = new OrderedMultiValueDictionary<NameReference, int>();
+                var componentMap = new UMultiMap<NameReference, int>();
                 if (!HasComponentMap) return componentMap;
                 for (int i = 0; i < _componentMap.Length; i += 12)
                 {
@@ -588,11 +589,11 @@ namespace LegendaryExplorerCore.Packages
                     return;
                 }
                 var bin = new MemoryStream(value.Count * 12);
-                foreach ((NameReference name, int _uIndex) in value)
+                foreach ((NameReference name, int uIndex) in value)
                 {
                     bin.WriteInt32(_fileRef.FindNameOrAdd(name.Name));
                     bin.WriteInt32(name.Number);
-                    bin.WriteInt32(_uIndex); // 0-based index
+                    bin.WriteInt32(uIndex); // 0-based index
                 }
                 var newMap = bin.ToArray();
                 if (!newMap.AsSpan().SequenceEqual(_componentMap))

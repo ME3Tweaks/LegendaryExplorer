@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
-using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Unreal.Collections;
 using UIndex = System.Int32;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
@@ -18,7 +18,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public MeshBone[] RefSkeleton;
         public int SkeletalDepth;
         public StaticLODModel[] LODModels;
-        public OrderedMultiValueDictionary<NameReference, int> NameIndexMap;
+        public UMultiMap<NameReference, int> NameIndexMap; //TODO: Make this a UMap
         public PerPolyBoneCollisionData[] PerPolyBoneKDOPs;
         public string[] BoneBreakNames; //ME3 and UDK
         public UIndex[] ClothingAssets; //ME3 and UDK
@@ -77,7 +77,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 Materials = Array.Empty<UIndex>(),
                 RefSkeleton = Array.Empty<MeshBone>(),
                 LODModels = Array.Empty<StaticLODModel>(),
-                NameIndexMap = new OrderedMultiValueDictionary<NameReference, int>(),
+                NameIndexMap = new(),
                 PerPolyBoneKDOPs = Array.Empty<PerPolyBoneCollisionData>(),
                 BoneBreakNames = Array.Empty<string>(),
                 ClothingAssets = Array.Empty<UIndex>(),

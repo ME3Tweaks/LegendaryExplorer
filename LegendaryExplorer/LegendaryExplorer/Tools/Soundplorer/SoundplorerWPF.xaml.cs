@@ -28,6 +28,7 @@ using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Audio;
+using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Sound.ISACT;
 using AudioStreamHelper = LegendaryExplorer.UnrealExtensions.AudioStreamHelper;
@@ -1053,7 +1054,7 @@ namespace LegendaryExplorer.Tools.Soundplorer
                             AllWems.Add(wem);
                             i++;
                         }
-                        bank.EmbeddedFiles.Clear();
+                        bank.EmbeddedFiles.Empty(AllWems.Count);
                         bank.EmbeddedFiles.AddRange(AllWems.Select(wem => new KeyValuePair<uint, byte[]>(wem.Id, wem.HasBeenFixed ? wem.OriginalWemData : wem.WemData)));
                         ExportBank(spExport);
                     }

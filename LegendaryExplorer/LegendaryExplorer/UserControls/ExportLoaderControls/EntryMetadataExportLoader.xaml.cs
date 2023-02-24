@@ -213,7 +213,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
                 if (exportEntry.HasComponentMap)
                 {
-                    OrderedMultiValueDictionary<NameReference, int> componentMap = exportEntry.ComponentMap;
+                    var componentMap = exportEntry.ComponentMap;
                     string components = $"ComponentMap: 0x{40:X2} {componentMap.Count} items\n";
                     int pairOffset = 44;
                     foreach ((NameReference name, int uIndex) in componentMap)

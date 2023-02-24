@@ -1,14 +1,13 @@
-﻿using LegendaryExplorerCore.Misc;
-using LegendaryExplorerCore.Packages;
+﻿using LegendaryExplorerCore.Packages;
 using System.Drawing;
-using Microsoft.Toolkit.HighPerformance;
+using LegendaryExplorerCore.Unreal.Collections;
 using UIndex = System.Int32;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
     public class SoundCue : ObjectBinary
     {
-        public OrderedMultiValueDictionary<UIndex, Point> EditorData; //Worthless info, but it didn't get cooked out
+        public UMultiMap<UIndex, Point> EditorData; //Worthless info, but it didn't get cooked out //TODO: Replace with UMap
 
         protected override void Serialize(SerializingContainer2 sc)
         {
@@ -19,13 +18,13 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             return new()
             {
-                EditorData = new OrderedMultiValueDictionary<UIndex, Point>()
+                EditorData = new()
             };
         }
         
         public override void ForEachUIndex<TAction>(MEGame game, in TAction action)
         {
-            ForEachUIndexKeyInOrderedMultiValueDictionary(action, EditorData.AsSpan(), nameof(EditorData));
+            ForEachUIndexKeyInMultiMap(action, EditorData, nameof(EditorData));
         }
     }
 

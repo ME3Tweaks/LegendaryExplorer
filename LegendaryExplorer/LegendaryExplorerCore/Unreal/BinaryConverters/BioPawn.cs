@@ -1,16 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
-using Microsoft.Toolkit.HighPerformance;
+using LegendaryExplorerCore.Unreal.Collections;
 using UIndex = System.Int32;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
     public class BioPawn : ObjectBinary
     {
-        public OrderedMultiValueDictionary<NameReference, UIndex> AnimationMap;//? Speculative name
+        public UMultiMap<NameReference, UIndex> AnimationMap;//? Speculative name  //TODO: Make this a UMap
         protected override void Serialize(SerializingContainer2 sc)
         {
             sc.Serialize(ref AnimationMap, SCExt.Serialize, SCExt.Serialize);
@@ -20,7 +18,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             return new()
             {
-                AnimationMap = new OrderedMultiValueDictionary<NameReference, UIndex>()
+                AnimationMap = new()
             };
         }
 
@@ -28,25 +26,14 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             var names = new List<(NameReference, string)>();
 
-            names.AddRange(AnimationMap.Select((kvp, i) => (kvp.Key, $"AnimationMap[{i}]")));
+            names.AddRange(AnimationMap.Select((kvp, i) => (kvp.Key, $"{nameof(AnimationMap)}[{i}]")));
 
             return names;
         }
 
         public override void ForEachUIndex<TAction>(MEGame game, in TAction action)
         {
-            var span = AnimationMap.AsSpan();
-            for (int i = 0; i < span.Length; i++)
-            {
-                int value = span[i].Value;
-                int originalValue = value;
-                NameReference key = span[i].Key;
-                Unsafe.AsRef(action).Invoke(ref value, $"AnimationMap[{key.Instanced}]");
-                if (value != originalValue)
-                {
-                    span[i] = new KeyValuePair<NameReference, int>(key, value);
-                }
-            }
+            ForEachUIndexValueInMultiMap(action, AnimationMap, nameof(AnimationMap));
         }
     }
 }
