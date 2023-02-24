@@ -11,7 +11,7 @@ var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_skeletal_
     [ "RefSkeleton", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_skeletal_mesh.html#ab290b6dae32e0df201fdf7254f1f65f7", null ],
     [ "SkeletalDepth", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_skeletal_mesh.html#afd43255c84557ef58e5ff55bd79cafd2", null ],
     [ "LODModels", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_skeletal_mesh.html#ade9abe9ae77633fdcc5a9ddeff1293dc", null ],
-    [ "NameIndexMap", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_skeletal_mesh.html#ac3d98f1fc5dc4e77150f457e71252193", null ],
+    [ "NameIndexMap", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_skeletal_mesh.html#afb44782eb023cf46727caa297d235983", null ],
     [ "PerPolyBoneKDOPs", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_skeletal_mesh.html#a2e5b65d8de5dcd69cebb8e2de7d05e84", null ],
     [ "BoneBreakNames", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_skeletal_mesh.html#a3fbc5ba92feae5bc278e89682dd2a77f", null ],
     [ "ClothingAssets", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_skeletal_mesh.html#adaca8ab5bf07443882ba711b1e2c9a48", null ],

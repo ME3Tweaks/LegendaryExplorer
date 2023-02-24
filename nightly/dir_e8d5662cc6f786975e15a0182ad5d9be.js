@@ -2,6 +2,7 @@ var dir_e8d5662cc6f786975e15a0182ad5d9be =
 [
     [ "BinaryConverters", "dir_428f11b2f73a51931f1fac8e5f12b2f4.html", "dir_428f11b2f73a51931f1fac8e5f12b2f4" ],
     [ "Classes", "dir_cfb6f601df0abd029629df34544f520c.html", "dir_cfb6f601df0abd029629df34544f520c" ],
+    [ "Collections", "dir_143e92331d1c4a4bedeb0d42448cb8a0.html", "dir_143e92331d1c4a4bedeb0d42448cb8a0" ],
     [ "ObjectInfo", "dir_2b474a482c7daa4cef9435abcec4c493.html", "dir_2b474a482c7daa4cef9435abcec4c493" ],
     [ "ActorUtils.cs", "_actor_utils_8cs.html", "_actor_utils_8cs" ],
     [ "BitConverter.cs", "_bit_converter_8cs.html", "_bit_converter_8cs" ],

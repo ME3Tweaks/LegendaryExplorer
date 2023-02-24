@@ -6,7 +6,7 @@ var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_sta
     [ "SwitchPoint", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_state_management_1_1_switch_point.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_state_management_1_1_switch_point" ],
     [ "VolumeThreshold", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_state_management.html#a02d8c159dc28d76de298f7dac7401d64", null ],
     [ "MaxVoiceInstances", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_state_management.html#a8c01986a98998c067e0ed78042b1fb9b", null ],
-    [ "StateGroups", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_state_management.html#a8fdca4ef72debd0572e2b012cd41569e", null ],
-    [ "SwitchGroups", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_state_management.html#ad57a15595a5f10ae9efce36b1cabe62e", null ],
-    [ "GameParameterDefaultValues", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_state_management.html#a7f8b3413656428fd7c399c6c25a25eb7", null ]
+    [ "StateGroups", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_state_management.html#ab1ca21a0ae1c4f8c1f2023868fff8cd5", null ],
+    [ "SwitchGroups", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_state_management.html#ae9830a4ae85b2f6e457efc7ae8edfebe", null ],
+    [ "GameParameterDefaultValues", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_state_management.html#a26fa97be0e78dd176f0484f17444d082", null ]
 ];

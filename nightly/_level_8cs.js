@@ -1,7 +1,8 @@
 var _level_8cs =
 [
-    [ "LegendaryExplorerCore.Unreal.BinaryConverters.CoverIndexPair", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_cover_index_pair.html", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_cover_index_pair" ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.Level", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_level.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_level" ],
+    [ "LegendaryExplorerCore.Unreal.BinaryConverters.CoverIndexPair", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_cover_index_pair.html", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_cover_index_pair" ],
+    [ "LegendaryExplorerCore.Unreal.BinaryConverters.GuidIndexPair", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_guid_index_pair.html", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_guid_index_pair" ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.URL", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_r_l.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_r_l" ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.StreamableTextureInstanceList", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_streamable_texture_instance_list.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_streamable_texture_instance_list" ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.StreamableTextureInstance", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_streamable_texture_instance.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_streamable_texture_instance" ],

@@ -57,6 +57,7 @@ var namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters =
     [ "GenericObjectBinary", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_generic_object_binary.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_generic_object_binary" ],
     [ "GPUSkinVertex", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_g_p_u_skin_vertex.html", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_g_p_u_skin_vertex" ],
     [ "GuidCache", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_guid_cache.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_guid_cache" ],
+    [ "GuidIndexPair", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_guid_index_pair.html", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_guid_index_pair" ],
     [ "Influences", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_influences.html", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_influences" ],
     [ "InterpCurve", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_interp_curve.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_interp_curve" ],
     [ "InterpCurvePoint", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_interp_curve_point.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_interp_curve_point" ],

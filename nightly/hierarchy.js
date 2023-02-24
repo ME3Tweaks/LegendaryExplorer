@@ -242,6 +242,7 @@ var hierarchy =
     [ "LegendaryExplorerCore.Gammtek.Windows.WindowsApi.Gdi32", "class_legendary_explorer_core_1_1_gammtek_1_1_windows_1_1_windows_api_1_1_gdi32.html", null ],
     [ "LegendaryExplorerCore.Unreal.ObjectInfo.GlobalUnrealObjectInfo", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_global_unreal_object_info.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.GPUSkinVertex", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_g_p_u_skin_vertex.html", null ],
+    [ "LegendaryExplorerCore.Unreal.BinaryConverters.GuidIndexPair", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_guid_index_pair.html", null ],
     [ "LegendaryExplorerCore.Unreal.DLCPackage.HeaderStruct", "struct_legendary_explorer_core_1_1_unreal_1_1_d_l_c_package_1_1_header_struct.html", null ],
     [ "LegendaryExplorerCore.Gammtek.Collections.Generic.Heap< T >", "class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_heap.html", null ],
     [ "LegendaryExplorerCore.Gammtek.Collections.Generic.HeapHelper", "class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_heap_helper.html", null ],
@@ -405,7 +406,8 @@ var hierarchy =
       [ "LegendaryExplorerCore.Gammtek.Collections.ObjectModel.ObservableDictionary< TKey, TValue >", "class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_object_model_1_1_observable_dictionary.html", null ],
       [ "LegendaryExplorerCore.Gammtek.Dynamic.Collections.DynamicDictionary< TValue >", "class_legendary_explorer_core_1_1_gammtek_1_1_dynamic_1_1_collections_1_1_dynamic_dictionary.html", null ],
       [ "LegendaryExplorerCore.Misc.ListenableDictionary< TKey, TValue >", "class_legendary_explorer_core_1_1_misc_1_1_listenable_dictionary.html", null ],
-      [ "LegendaryExplorerCore.Misc.OrderedMultiValueDictionary< TKey, TValue >", "class_legendary_explorer_core_1_1_misc_1_1_ordered_multi_value_dictionary.html", null ]
+      [ "LegendaryExplorerCore.Misc.OrderedMultiValueDictionary< TKey, TValue >", "class_legendary_explorer_core_1_1_misc_1_1_ordered_multi_value_dictionary.html", null ],
+      [ "UMapBase< TKey, TValue, TKeyFuncs >", "class_u_map_base.html", null ]
     ] ],
     [ "IDisposable", null, [
       [ "LegendaryExplorerCore.DebugTools.DebugStopWatch", "class_legendary_explorer_core_1_1_debug_tools_1_1_debug_stop_watch.html", null ],
@@ -434,7 +436,14 @@ var hierarchy =
       ] ],
       [ "LegendaryExplorerCore.Unreal.BinaryConverters.TreeNode< T >", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_tree_node.html", null ],
       [ "LegendaryExplorerCore.Unreal.BinaryConverters.TreeNode< T >", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_tree_node.html", null ],
-      [ "LegendaryExplorerCore.UnrealScript.Parsing.TokenStream", "class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_token_stream.html", null ]
+      [ "LegendaryExplorerCore.UnrealScript.Parsing.TokenStream", "class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_token_stream.html", null ],
+      [ "USet< T, TKey, TKeyFuncs >", "class_u_set.html", null ]
+    ] ],
+    [ "IEnumerator", null, [
+      [ "IRefEnumerator< T >", "interface_i_ref_enumerator.html", [
+        [ "USparseArray< T >.SparseArrayEnumerator", "struct_u_sparse_array_1_1_sparse_array_enumerator.html", null ]
+      ] ],
+      [ "ValueList< T >.ItemsEnumerator", "struct_value_list_1_1_items_enumerator.html", null ]
     ] ],
     [ "IEquatable", null, [
       [ "LegendaryExplorerCore.Coalesced.CoalesceValue", "struct_legendary_explorer_core_1_1_coalesced_1_1_coalesce_value.html", null ],
@@ -477,11 +486,20 @@ var hierarchy =
         [ "LegendaryExplorerCore.Gammtek.Dynamic.SimpleHierarchyWrapper", "class_legendary_explorer_core_1_1_gammtek_1_1_dynamic_1_1_simple_hierarchy_wrapper.html", null ]
       ] ]
     ] ],
+    [ "IKeyFuncs< in T, TKey >", "interface_i_key_funcs.html", null ],
+    [ "IKeyFuncs< KeyValuePair< TKey, TValue >, TKey >", "interface_i_key_funcs.html", [
+      [ "MapKeyFuncs< TKey, TValue >", "struct_map_key_funcs.html", null ],
+      [ "MultiMapKeyFuncs< TKey, TValue >", "struct_multi_map_key_funcs.html", null ]
+    ] ],
+    [ "IKeyFuncs< T, T >", "interface_i_key_funcs.html", [
+      [ "DefaultKeyFuncs< T >", "struct_default_key_funcs.html", null ]
+    ] ],
     [ "IList", null, [
       [ "LegendaryExplorerCore.Coalesced.CoalesceProperty", "class_legendary_explorer_core_1_1_coalesced_1_1_coalesce_property.html", null ],
       [ "LegendaryExplorerCore.Unreal.ArrayProperty< T >", "class_legendary_explorer_core_1_1_unreal_1_1_array_property.html", null ]
     ] ],
     [ "LegendaryExplorerCore.Textures.Image", "class_legendary_explorer_core_1_1_textures_1_1_image.html", null ],
+    [ "LegendaryExplorerCore.Unreal.BinaryConverters.UClass.ImplementedInterface", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_class_1_1_implemented_interface.html", null ],
     [ "IndexEntry", "class_index_entry.html", null ],
     [ "IndexPage", "class_index_page.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.Influences", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_influences.html", null ],
@@ -860,35 +878,7 @@ var hierarchy =
       [ "LegendaryExplorerCore.UnrealScript.Language.Tree.PostOpDeclaration", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_post_op_declaration.html", null ],
       [ "LegendaryExplorerCore.UnrealScript.Language.Tree.PreOpDeclaration", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_pre_op_declaration.html", null ]
     ] ],
-    [ "LegendaryExplorerCore.Misc.OrderedMultiValueDictionary< Guid, int >", "class_legendary_explorer_core_1_1_misc_1_1_ordered_multi_value_dictionary.html", null ],
-    [ "LegendaryExplorerCore.Misc.OrderedMultiValueDictionary< Guid, LegendaryExplorerCore.Unreal.BinaryConverters.Shader >", "class_legendary_explorer_core_1_1_misc_1_1_ordered_multi_value_dictionary.html", null ],
-    [ "LegendaryExplorerCore.Misc.OrderedMultiValueDictionary< int, Bio2DACell >", "class_legendary_explorer_core_1_1_misc_1_1_ordered_multi_value_dictionary.html", null ],
-    [ "LegendaryExplorerCore.Misc.OrderedMultiValueDictionary< LegendaryExplorerCore.Unreal.BinaryConverters.StaticParameterSet, LegendaryExplorerCore.Unreal.BinaryConverters.MaterialShaderMap >", "class_legendary_explorer_core_1_1_misc_1_1_ordered_multi_value_dictionary.html", null ],
-    [ "LegendaryExplorerCore.Misc.OrderedMultiValueDictionary< LegendaryExplorerCore.Unreal.NameReference, Guid >", "class_legendary_explorer_core_1_1_misc_1_1_ordered_multi_value_dictionary.html", null ],
-    [ "LegendaryExplorerCore.Misc.OrderedMultiValueDictionary< LegendaryExplorerCore.Unreal.NameReference, int >", "class_legendary_explorer_core_1_1_misc_1_1_ordered_multi_value_dictionary.html", null ],
-    [ "LegendaryExplorerCore.Misc.OrderedMultiValueDictionary< LegendaryExplorerCore.Unreal.NameReference, LegendaryExplorerCore.Unreal.BinaryConverters.BioGestureRuntimeData.BioGestCharOverride >", "class_legendary_explorer_core_1_1_misc_1_1_ordered_multi_value_dictionary.html", null ],
-    [ "LegendaryExplorerCore.Misc.OrderedMultiValueDictionary< LegendaryExplorerCore.Unreal.NameReference, LegendaryExplorerCore.Unreal.BinaryConverters.BioGestureRuntimeData.BioMeshPropActionData >", "class_legendary_explorer_core_1_1_misc_1_1_ordered_multi_value_dictionary.html", null ],
-    [ "LegendaryExplorerCore.Misc.OrderedMultiValueDictionary< LegendaryExplorerCore.Unreal.NameReference, LegendaryExplorerCore.Unreal.BinaryConverters.BioGestureRuntimeData.BioMeshPropData >", "class_legendary_explorer_core_1_1_misc_1_1_ordered_multi_value_dictionary.html", null ],
-    [ "LegendaryExplorerCore.Misc.OrderedMultiValueDictionary< LegendaryExplorerCore.Unreal.NameReference, LegendaryExplorerCore.Unreal.BinaryConverters.BioTlkFileSet.BioTlkSet >", "class_legendary_explorer_core_1_1_misc_1_1_ordered_multi_value_dictionary.html", null ],
-    [ "LegendaryExplorerCore.Misc.OrderedMultiValueDictionary< LegendaryExplorerCore.Unreal.NameReference, LegendaryExplorerCore.Unreal.BinaryConverters.ShaderReference >", "class_legendary_explorer_core_1_1_misc_1_1_ordered_multi_value_dictionary.html", null ],
-    [ "LegendaryExplorerCore.Misc.OrderedMultiValueDictionary< LegendaryExplorerCore.Unreal.NameReference, LegendaryExplorerCore.Unreal.NameReference >", "class_legendary_explorer_core_1_1_misc_1_1_ordered_multi_value_dictionary.html", null ],
-    [ "LegendaryExplorerCore.Misc.OrderedMultiValueDictionary< LegendaryExplorerCore.Unreal.NameReference, LegendaryExplorerCore.Unreal.PropertyCollection >", "class_legendary_explorer_core_1_1_misc_1_1_ordered_multi_value_dictionary.html", null ],
-    [ "LegendaryExplorerCore.Misc.OrderedMultiValueDictionary< LegendaryExplorerCore.Unreal.NameReference, UIndex >", "class_legendary_explorer_core_1_1_misc_1_1_ordered_multi_value_dictionary.html", null ],
-    [ "LegendaryExplorerCore.Misc.OrderedMultiValueDictionary< LegendaryExplorerCore.Unreal.NameReference, uint >", "class_legendary_explorer_core_1_1_misc_1_1_ordered_multi_value_dictionary.html", null ],
     [ "LegendaryExplorerCore.Misc.OrderedMultiValueDictionary< NameReference, LegendaryExplorerCore.Packages.PropertyInfo >", "class_legendary_explorer_core_1_1_misc_1_1_ordered_multi_value_dictionary.html", null ],
-    [ "LegendaryExplorerCore.Misc.OrderedMultiValueDictionary< UIndex, bool >", "class_legendary_explorer_core_1_1_misc_1_1_ordered_multi_value_dictionary.html", null ],
-    [ "LegendaryExplorerCore.Misc.OrderedMultiValueDictionary< UIndex, int >", "class_legendary_explorer_core_1_1_misc_1_1_ordered_multi_value_dictionary.html", null ],
-    [ "LegendaryExplorerCore.Misc.OrderedMultiValueDictionary< UIndex, LegendaryExplorerCore.Unreal.BinaryConverters.CachedPhysSMData >", "class_legendary_explorer_core_1_1_misc_1_1_ordered_multi_value_dictionary.html", null ],
-    [ "LegendaryExplorerCore.Misc.OrderedMultiValueDictionary< UIndex, LegendaryExplorerCore.Unreal.BinaryConverters.StreamableTextureInstanceList >", "class_legendary_explorer_core_1_1_misc_1_1_ordered_multi_value_dictionary.html", null ],
-    [ "LegendaryExplorerCore.Misc.OrderedMultiValueDictionary< UIndex, Point >", "class_legendary_explorer_core_1_1_misc_1_1_ordered_multi_value_dictionary.html", null ],
-    [ "LegendaryExplorerCore.Misc.OrderedMultiValueDictionary< UIndex, UIndex >", "class_legendary_explorer_core_1_1_misc_1_1_ordered_multi_value_dictionary.html", null ],
-    [ "LegendaryExplorerCore.Misc.OrderedMultiValueDictionary< UIndex, uint >", "class_legendary_explorer_core_1_1_misc_1_1_ordered_multi_value_dictionary.html", null ],
-    [ "LegendaryExplorerCore.Misc.OrderedMultiValueDictionary< uint, byte[]>", "class_legendary_explorer_core_1_1_misc_1_1_ordered_multi_value_dictionary.html", null ],
-    [ "LegendaryExplorerCore.Misc.OrderedMultiValueDictionary< uint, float >", "class_legendary_explorer_core_1_1_misc_1_1_ordered_multi_value_dictionary.html", null ],
-    [ "LegendaryExplorerCore.Misc.OrderedMultiValueDictionary< uint, LegendaryExplorerCore.Unreal.BinaryConverters.WwiseBank.HIRCObject >", "class_legendary_explorer_core_1_1_misc_1_1_ordered_multi_value_dictionary.html", null ],
-    [ "LegendaryExplorerCore.Misc.OrderedMultiValueDictionary< uint, LegendaryExplorerCore.Unreal.BinaryConverters.WwiseStateManagement.StateGroup >", "class_legendary_explorer_core_1_1_misc_1_1_ordered_multi_value_dictionary.html", null ],
-    [ "LegendaryExplorerCore.Misc.OrderedMultiValueDictionary< uint, LegendaryExplorerCore.Unreal.BinaryConverters.WwiseStateManagement.SwitchGroup >", "class_legendary_explorer_core_1_1_misc_1_1_ordered_multi_value_dictionary.html", null ],
-    [ "LegendaryExplorerCore.Misc.OrderedMultiValueDictionary< uint, string >", "class_legendary_explorer_core_1_1_misc_1_1_ordered_multi_value_dictionary.html", null ],
     [ "LegendaryExplorerCore.Kismet.SeqTools.OutboundLink", "class_legendary_explorer_core_1_1_kismet_1_1_seq_tools_1_1_outbound_link.html", null ],
     [ "LegendaryExplorerCore.Packages.PackageSaver", "class_legendary_explorer_core_1_1_packages_1_1_package_saver.html", null ],
     [ "LegendaryExplorerCore.Packages.PackageUpdate", "struct_legendary_explorer_core_1_1_packages_1_1_package_update.html", null ],
@@ -960,6 +950,7 @@ var hierarchy =
       [ "LegendaryExplorerCore.PlotDatabase.Serialization.SerializedModPlotDatabase", "class_legendary_explorer_core_1_1_plot_database_1_1_serialization_1_1_serialized_mod_plot_database.html", null ]
     ] ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.SerializingContainer2", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_serializing_container2.html", null ],
+    [ "USet< T, TKey, TKeyFuncs >.SetElementId", "struct_u_set_1_1_set_element_id.html", null ],
     [ "LegendaryExplorerCore.Unreal.SFAREntryReader", "class_legendary_explorer_core_1_1_unreal_1_1_s_f_a_r_entry_reader.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.Shader", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shader.html", null ],
     [ "LegendaryExplorerCore.Shaders.ShaderCacheManipulator", "class_legendary_explorer_core_1_1_shaders_1_1_shader_cache_manipulator.html", null ],
@@ -1048,6 +1039,39 @@ var hierarchy =
     [ "LegendaryExplorerCore.Gammtek.Extensions.UInt32Extensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_u_int32_extensions.html", null ],
     [ "LegendaryExplorerCore.Gammtek.Extensions.UInt64Extensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_u_int64_extensions.html", null ],
     [ "LegendaryExplorerCore.Gammtek.Extensions.UIntPtrExtensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_u_int_ptr_extensions.html", null ],
+    [ "UMapBase< TKey, TValue, MapKeyFuncs< TKey, TValue > >", "class_u_map_base.html", [
+      [ "UMap< TKey, TValue >", "class_u_map.html", null ]
+    ] ],
+    [ "UMapBase< TKey, TValue, MultiMapKeyFuncs< TKey, TValue > >", "class_u_map_base.html", [
+      [ "UMultiMap< TKey, TValue >", "class_u_multi_map.html", null ]
+    ] ],
+    [ "UMultiMap< Guid, LegendaryExplorerCore.Unreal.BinaryConverters.Shader >", "class_u_multi_map.html", null ],
+    [ "UMultiMap< int, Bio2DACell >", "class_u_multi_map.html", null ],
+    [ "UMultiMap< LegendaryExplorerCore.Unreal.BinaryConverters.StaticParameterSet, LegendaryExplorerCore.Unreal.BinaryConverters.MaterialShaderMap >", "class_u_multi_map.html", null ],
+    [ "UMultiMap< LegendaryExplorerCore.Unreal.NameReference, Guid >", "class_u_multi_map.html", null ],
+    [ "UMultiMap< LegendaryExplorerCore.Unreal.NameReference, int >", "class_u_multi_map.html", null ],
+    [ "UMultiMap< LegendaryExplorerCore.Unreal.NameReference, LegendaryExplorerCore.Unreal.BinaryConverters.BioGestureRuntimeData.BioGestCharOverride >", "class_u_multi_map.html", null ],
+    [ "UMultiMap< LegendaryExplorerCore.Unreal.NameReference, LegendaryExplorerCore.Unreal.BinaryConverters.BioGestureRuntimeData.BioMeshPropActionData >", "class_u_multi_map.html", null ],
+    [ "UMultiMap< LegendaryExplorerCore.Unreal.NameReference, LegendaryExplorerCore.Unreal.BinaryConverters.BioGestureRuntimeData.BioMeshPropData >", "class_u_multi_map.html", null ],
+    [ "UMultiMap< LegendaryExplorerCore.Unreal.NameReference, LegendaryExplorerCore.Unreal.BinaryConverters.BioTlkFileSet.BioTlkSet >", "class_u_multi_map.html", null ],
+    [ "UMultiMap< LegendaryExplorerCore.Unreal.NameReference, LegendaryExplorerCore.Unreal.BinaryConverters.ShaderReference >", "class_u_multi_map.html", null ],
+    [ "UMultiMap< LegendaryExplorerCore.Unreal.NameReference, LegendaryExplorerCore.Unreal.NameReference >", "class_u_multi_map.html", null ],
+    [ "UMultiMap< LegendaryExplorerCore.Unreal.NameReference, LegendaryExplorerCore.Unreal.PropertyCollection >", "class_u_multi_map.html", null ],
+    [ "UMultiMap< LegendaryExplorerCore.Unreal.NameReference, UIndex >", "class_u_multi_map.html", null ],
+    [ "UMultiMap< LegendaryExplorerCore.Unreal.NameReference, uint >", "class_u_multi_map.html", null ],
+    [ "UMultiMap< UIndex, bool >", "class_u_multi_map.html", null ],
+    [ "UMultiMap< UIndex, int >", "class_u_multi_map.html", null ],
+    [ "UMultiMap< UIndex, LegendaryExplorerCore.Unreal.BinaryConverters.CachedPhysSMData >", "class_u_multi_map.html", null ],
+    [ "UMultiMap< UIndex, LegendaryExplorerCore.Unreal.BinaryConverters.StreamableTextureInstanceList >", "class_u_multi_map.html", null ],
+    [ "UMultiMap< UIndex, Point >", "class_u_multi_map.html", null ],
+    [ "UMultiMap< UIndex, UIndex >", "class_u_multi_map.html", null ],
+    [ "UMultiMap< UIndex, uint >", "class_u_multi_map.html", null ],
+    [ "UMultiMap< uint, byte[]>", "class_u_multi_map.html", null ],
+    [ "UMultiMap< uint, float >", "class_u_multi_map.html", null ],
+    [ "UMultiMap< uint, LegendaryExplorerCore.Unreal.BinaryConverters.WwiseBank.HIRCObject >", "class_u_multi_map.html", null ],
+    [ "UMultiMap< uint, LegendaryExplorerCore.Unreal.BinaryConverters.WwiseStateManagement.StateGroup >", "class_u_multi_map.html", null ],
+    [ "UMultiMap< uint, LegendaryExplorerCore.Unreal.BinaryConverters.WwiseStateManagement.SwitchGroup >", "class_u_multi_map.html", null ],
+    [ "UMultiMap< uint, string >", "class_u_multi_map.html", null ],
     [ "LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode.UnBytecodeOwner", "class_legendary_explorer_core_1_1_m_e1_1_1_unreal_1_1_unhood_bytecode_1_1_un_bytecode_owner.html", [
       [ "LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode.UnContainer", "class_legendary_explorer_core_1_1_m_e1_1_1_unreal_1_1_unhood_bytecode_1_1_un_container.html", [
         [ "LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode.UnClass", "class_legendary_explorer_core_1_1_m_e1_1_1_unreal_1_1_unhood_bytecode_1_1_un_class.html", null ]
@@ -1062,6 +1086,10 @@ var hierarchy =
     [ "LegendaryExplorerCore.Unreal.UPropertyExtensions", "class_legendary_explorer_core_1_1_unreal_1_1_u_property_extensions.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.URL", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_r_l.html", null ],
     [ "LegendaryExplorerCore.Gammtek.Windows.WindowsApi.User32", "class_legendary_explorer_core_1_1_gammtek_1_1_windows_1_1_windows_api_1_1_user32.html", null ],
+    [ "USet< KeyValuePair< TKey, TValue >, TKey, TKeyFuncs >", "class_u_set.html", null ],
+    [ "USet< T, T, DefaultKeyFuncs< T > >", "class_u_set.html", [
+      [ "USet< T, TKey, TKeyFuncs >", "class_u_set.html", null ]
+    ] ],
     [ "LegendaryExplorerCore.Misc.ValueTupleEqualityComparer", "class_legendary_explorer_core_1_1_misc_1_1_value_tuple_equality_comparer.html", null ],
     [ "LegendaryExplorerCore.UnrealScript.Language.Tree.VariableTypeExtensions", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_type_extensions.html", null ],
     [ "LegendaryExplorerCore.Gammtek.IO.VarInt", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_var_int.html", null ],

@@ -16,9 +16,9 @@ var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_ban
     [ "Unk2", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_bank.html#a267e1b0ae4035c4026151fff68d13862", null ],
     [ "Version", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_bank.html#ad8d7a27356db591f0995954489ad0b9b", null ],
     [ "ID", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_bank.html#aeea207913f14b17e28ef368978538000", null ],
-    [ "EmbeddedFiles", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_bank.html#a0955160d324526ac8d1e50f8407ff15a", null ],
-    [ "HIRCObjects", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_bank.html#a027e965bdd5cf599c0c11f47faccb868", null ],
-    [ "ReferencedBanks", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_bank.html#a9b6ee36af15d1a5180966b35121bf618", null ],
+    [ "EmbeddedFiles", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_bank.html#a317597878c8a0f8a0db9ae59b8dc2ca3", null ],
+    [ "HIRCObjects", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_bank.html#a5e02d66671a7d373224af6303ea2faf9", null ],
+    [ "ReferencedBanks", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_bank.html#a43e5a2c9fb20811e3d6bd2b2a35eaa1c", null ],
     [ "InitStateManagement", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_bank.html#a51f7044d0836413c0f8ff234aac5e293", null ],
     [ "Platform", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_bank.html#a313a5c48b82aca0fa7f832b58c65d11a", null ]
 ];
