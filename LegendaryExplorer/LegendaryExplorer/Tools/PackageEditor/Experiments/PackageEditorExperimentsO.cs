@@ -1776,6 +1776,60 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             RenameFXAs(pcc, bioConversation, oldName, newName);
         }
 
+        public static Dictionary<uint, uint> GatherIDs(ExportEntry wwiseBankEntry)
+        {
+            WwiseBank wwiseBank = wwiseBankEntry.GetBinaryData<WwiseBank>();
+            Dictionary<uint, uint> IDs = new();
+
+
+            foreach (WwiseBank.HIRCObject hirc in wwiseBank.HIRCObjects.Values())
+            {
+                switch (hirc.Type)
+                {
+                    case HIRCType.Settings:
+                        break;
+                    case HIRCType.SoundSXFSoundVoice:
+                        break;
+                    case HIRCType.EventAction:
+                        break;
+                    case HIRCType.Event:
+                        break;
+                    case HIRCType.RandomOrSequenceContainer:
+                        break;
+                    case HIRCType.SwitchContainer:
+                        break;
+                    case HIRCType.ActorMixer:
+                        break;
+                    case HIRCType.AudioBus:
+                        break;
+                    case HIRCType.BlendContainer:
+                        break;
+                    case HIRCType.MusicSegment:
+                        break;
+                    case HIRCType.MusicTrack:
+                        break;
+                    case HIRCType.MusicSwitchContainer:
+                        break;
+                    case HIRCType.MusicPlaylistContainer:
+                        break;
+                    case HIRCType.Attenuation:
+                        break;
+                    case HIRCType.DialogueEvent:
+                        break;
+                    case HIRCType.MotionBus:
+                        break;
+                    case HIRCType.MotionFX:
+                        break;
+                    case HIRCType.Effect:
+                        break;
+                    case HIRCType.AuxiliaryBus:
+                        break;
+                }
+            }
+
+            return new();
+        }
+
         /// <summary>
         /// Update a WwiseBank's ID by hashing a new name and changing it in the binary data where appropriate.
         /// </summary>
