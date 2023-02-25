@@ -374,7 +374,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 sc.ms.JumpTo(endPos);
             }
 
-            if (ReferencedBanks.Count > 0)
+            if (ReferencedBanks.IsNull() && ReferencedBanks.Count > 0)
             {
                 writer.WriteUInt32(stid);
                 var lengthPos = sc.ms.Position;
