@@ -23,7 +23,7 @@ public abstract class UMapBase<TKey, TValue, TKeyFuncs> : IDictionary<TKey, TVal
         Pairs = new (capacity);
     }
 
-    protected UMapBase(IEnumerable<KeyValuePair<TKey, TValue>> enumerable)
+    protected UMapBase(IEnumerable<KeyValuePair<TKey, TValue>> enumerable) : this()
     {
         foreach ((TKey key, TValue value) in enumerable)
         {
