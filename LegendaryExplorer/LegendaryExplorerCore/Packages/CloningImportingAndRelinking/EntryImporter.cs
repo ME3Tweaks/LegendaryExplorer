@@ -858,7 +858,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     exportToBuildImportFor = sourcePcc.FindExport(importFullNameInstanced.Substring($"{packageName}.".Length));
                 }
 
-                if ((exportToBuildImportFor.ExportFlags & UnrealFlags.EExportFlags.ForcedExport) == 0)
+                if (exportToBuildImportFor.IsForcedExport)
                 {
                     // NOT FORCED EXPORT - Look for entry nested under the proper path
                     properImportInstancedFullPath = $"{packageName}.{importFullNameInstanced}";
@@ -1125,10 +1125,10 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             InternalGetUserSafeToImportFromFiles(game).Clear();
         }
 
-        public static bool IsSafeToImportFrom(string path, IMEPackage localPackage)
+        public static bool IsSafeToImportFrom(string path, IMEPackage localPackage, bool useImportHints = true)
         {
             if (localPackage == null) return false;
-            if (localPackage.LECLTagData != null && localPackage.LECLTagData.ImportHintFiles?.Count > 0)
+            if (useImportHints && localPackage.LECLTagData != null && localPackage.LECLTagData.ImportHintFiles?.Count > 0)
             {
                 var fname = Path.GetFileName(path);
                 if (localPackage.LECLTagData.ImportHintFiles.Contains(fname, StringComparer.InvariantCultureIgnoreCase))
@@ -1405,7 +1405,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     var clippedExport = package.FindExport(forcedExportPath);
                     if (clippedExport != null)
                     {
-                        if ((clippedExport.ExportFlags & UnrealFlags.EExportFlags.ForcedExport) != 0)
+                        if (clippedExport.IsForcedExport)
                         {
                             return null; // This import should not resolve! ForcedExport cannot use the packagename as the root of the import.
                         }
@@ -1699,7 +1699,20 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 if (loadStream == null && rop.GenerateImportsForGlobalFiles && IsSafeToImportFrom(info.pccPath, pcc))
                 {
                     string package = Path.GetFileNameWithoutExtension(info.pccPath);
-                    return pcc.getEntryOrAddImport($"{package}.{className}");
+                    // 'instancedFullPath' is only populated when inventoried at runtime.
+                    if (info.forcedExport && info.instancedFullPath != null)
+                    {
+                        return pcc.getEntryOrAddImport(info.instancedFullPath); // It's a forced export
+                    }
+                    else if (info.instancedFullPath != null)
+                    {
+                        return pcc.getEntryOrAddImport($"{package}.{info.instancedFullPath}");
+                    }
+                    else
+                    {
+                        // The original code pre 02/27/2023
+                        return pcc.getEntryOrAddImport($"{package}.{className}");
+                    }
                 }
 
                 string fullPackagePath = Path.Combine(MEDirectories.GetBioGamePath(pcc.Game, gamePathOverride), info.pccPath);

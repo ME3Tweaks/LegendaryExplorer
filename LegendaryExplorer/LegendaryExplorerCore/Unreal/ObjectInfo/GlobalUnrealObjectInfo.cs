@@ -703,7 +703,11 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 isAbstract = uClass.ClassFlags.Has(UnrealFlags.EClassFlags.Abstract),
                 pccPath = pcc.FilePath.Contains("BioGame", StringComparison.InvariantCultureIgnoreCase)
                     ? pcc.FilePath[(pcc.FilePath.LastIndexOf("BIOGame", StringComparison.InvariantCultureIgnoreCase) + 8)..]
-                    : pcc.FilePath
+                    : pcc.FilePath,
+
+                // Populated only at runtime ---
+                forcedExport = uClass.Export.IsForcedExport,
+                instancedFullPath = uClass.Export.InstancedFullPath,
             };
 
             Dictionary<string, ClassInfo> classInfos = GetClasses(game);

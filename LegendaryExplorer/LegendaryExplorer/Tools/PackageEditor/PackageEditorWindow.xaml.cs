@@ -1014,7 +1014,8 @@ namespace LegendaryExplorer.Tools.PackageEditor
                         MEGame.ME2 => GameFileFilters.ME3ME2SaveFileFilter,
                         MEGame.ME3 => GameFileFilters.ME3ME2SaveFileFilter,
                         _ => GameFileFilters.LESaveFileFilter
-                    }
+                    },
+                    CustomPlaces = AppDirectories.GameCustomPlaces,
                 };
                 if (dlg.ShowDialog() == true)
                 {

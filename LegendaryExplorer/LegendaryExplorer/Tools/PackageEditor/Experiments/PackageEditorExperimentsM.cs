@@ -3264,7 +3264,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     if (e.InstancedFullPath.StartsWith("TheWorld"))
                         continue; // Do not do these
 
-                    if (e.ExportFlags.HasFlag(UnrealFlags.EExportFlags.ForcedExport))
+                    if (e.IsForcedExport)
                     {
                         objects.Add(e.FullPath);
                     }
