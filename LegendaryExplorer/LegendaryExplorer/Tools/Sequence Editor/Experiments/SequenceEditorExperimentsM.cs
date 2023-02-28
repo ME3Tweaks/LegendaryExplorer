@@ -1,14 +1,18 @@
-﻿using LegendaryExplorer.Misc;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using LegendaryExplorer.Misc;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Kismet;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
 using Microsoft.Win32;
-using System;
-using System.Diagnostics;
-using System.Linq;
 
 namespace LegendaryExplorer.Tools.Sequence_Editor.Experiments
 {
@@ -42,7 +46,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor.Experiments
                             Debug.WriteLine($"X: {x} for {seqObj.Export.InstancedFullPath}");
                             seqObj.Export.WriteProperty(new IntProperty((int)x, "ObjPosX"));
                         }
-                        if (knownY != null && knownY.Value == (int)Math.Round(y))
+                        if (knownY != null && knownY.Value != (int)Math.Round(y))
                         {
                             Debug.WriteLine($"Y: {y} for {seqObj.Export.InstancedFullPath}");
                             seqObj.Export.WriteProperty(new IntProperty((int)y, "ObjPosY"));
