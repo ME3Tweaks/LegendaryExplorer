@@ -817,6 +817,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     case "BioCreatureSoundSet":
                         subNodes.AddRange(StartBioCreatureSoundSetScan(data, ref binarystart));
                         break;
+                    case "BioGestureRulesData":
+                        subNodes.AddRange(StartBioGestureRulesDataScan(data, ref binarystart));
+                        break;
                     default:
                         if (!CurrentLoadedExport.HasStack)
                         {
