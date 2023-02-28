@@ -951,6 +951,9 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 Class = classEntry,
                 SuperClass = super
             };
+
+            // This is set after object initialization and looks at the parent.
+            exp.ExportFlags = exp.IsForcedExport ? EExportFlags.ForcedExport : 0;
             pcc.AddExport(exp);
             return exp;
         }

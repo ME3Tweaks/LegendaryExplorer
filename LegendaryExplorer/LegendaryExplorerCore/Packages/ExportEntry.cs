@@ -1042,6 +1042,19 @@ namespace LegendaryExplorerCore.Packages
             return clone;
         }
 
+        /// <summary>
+        /// If this object (or any parent) is marked ForcedExport
+        /// </summary>
+        public bool IsForcedExport
+        {
+            get
+            {
+                if ((ExportFlags & EExportFlags.ForcedExport) != 0) return true;
+                if (Parent is ExportEntry exp) return exp.IsForcedExport;
+                return false;
+            }
+        }
+
         IEntry IEntry.Clone(bool incrementIndex)
         {
             if (incrementIndex)
