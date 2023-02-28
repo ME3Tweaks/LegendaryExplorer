@@ -82,6 +82,7 @@ var class_legendary_explorer_core_1_1_packages_1_1_export_entry =
     [ "EntryHasPendingChanges", "class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#aed7fa6542e584dd978a22504235ad18a", null ],
     [ "TemplateOwnerClassIdx", "class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#a10c967c3f80b44ba0c79ae103411384d", null ],
     [ "NetIndex", "class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#a1be25bf0a8a373256d1daa6026ca1bf6", null ],
+    [ "IsForcedExport", "class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#a3611954b9a01b083963555ebb3d87b06", null ],
     [ "EntryModifiedChanged", "class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#a1848fc5bc61d4a769d7ecb4c17c983c9", null ],
     [ "PropertyChanged", "class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#a914b1791f9a500385e4f4ff6c0b933d5", null ]
 ];
