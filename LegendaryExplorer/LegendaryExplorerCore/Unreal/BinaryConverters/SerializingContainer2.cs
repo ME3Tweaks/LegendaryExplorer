@@ -8,6 +8,7 @@ using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Unreal.Collections;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
@@ -275,13 +276,15 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 serialize(sc, ref arr[i]);
             }
         }
-        public static void Serialize<TKey, TValue>(this SerializingContainer2 sc, ref OrderedMultiValueDictionary<TKey, TValue> dict, SerializeDelegate<TKey> serializeKey, SerializeDelegate<TValue> serializeValue)
+
+        //TODO: implement serialization support in UMapBase to make this more efficient
+        public static void Serialize<TKey, TValue>(this SerializingContainer2 sc, ref UMap<TKey, TValue> dict, SerializeDelegate<TKey> serializeKey, SerializeDelegate<TValue> serializeValue)
         {
             int count = dict?.Count ?? 0;
             sc.Serialize(ref count);
             if (sc.IsLoading)
             {
-                dict = new OrderedMultiValueDictionary<TKey, TValue>(count);
+                dict = new UMap<TKey, TValue>(count);
                 for (int i = 0; i < count; i++)
                 {
                     TKey key = default;
@@ -293,16 +296,45 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
             else
             {
-                for (int i = 0; i < count; i++)
+                foreach (var kvp in dict)
                 {
-                    var key = dict[i].Key;
+                    TKey key = kvp.Key;
                     serializeKey(sc, ref key);
-                    var value = dict[i].Value;
+                    TValue value = kvp.Value;
                     serializeValue(sc, ref value);
                 }
             }
-
         }
+
+        //TODO: implement serialization support in UMapBase to make this more efficient
+        public static void Serialize<TKey, TValue>(this SerializingContainer2 sc, ref UMultiMap<TKey, TValue> dict, SerializeDelegate<TKey> serializeKey, SerializeDelegate<TValue> serializeValue)
+        {
+            int count = dict?.Count ?? 0;
+            sc.Serialize(ref count);
+            if (sc.IsLoading)
+            {
+                dict = new UMultiMap<TKey, TValue>(count);
+                for (int i = 0; i < count; i++)
+                {
+                    TKey key = default;
+                    serializeKey(sc, ref key);
+                    TValue value = default;
+                    serializeValue(sc, ref value);
+                    dict.Add(key, value);
+                }
+            }
+            else
+            {
+                foreach (var kvp in dict)
+                {
+                    TKey key = kvp.Key;
+                    serializeKey(sc, ref key);
+                    TValue value = kvp.Value;
+                    serializeValue(sc, ref value);
+                }
+            }
+        }
+
         public static void BulkSerialize(this SerializingContainer2 sc, ref byte[] arr, SerializeDelegate<byte> serialize, int elementSize)
         {
             sc.Serialize(ref elementSize);

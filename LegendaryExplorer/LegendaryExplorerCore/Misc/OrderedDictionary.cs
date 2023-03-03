@@ -11,6 +11,7 @@ namespace LegendaryExplorerCore.Misc
     /// Embarrassingly bad implementation of a Dictionary where things are ordered like a list and there can be more than one value per key
     /// (It's just a List&lt;KeyValuePair&lt;TKey,TValue&gt;&gt;)
     /// </summary>
+    [Obsolete("Use UMultiMap instead.", false)]
     [JsonArray]
     public class OrderedMultiValueDictionary<TKey, TValue> : List<KeyValuePair<TKey, TValue>>, IDictionary<TKey, TValue>
     {

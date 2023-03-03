@@ -29,9 +29,9 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             // TODO: components
 
             var interfaces = new List<VariableType>();
-            foreach ((int interfaceUIndex, int _) in uClass.Interfaces)
+            foreach (var implementedInterface in uClass.Interfaces)
             {
-                interfaces.Add(new VariableType(pcc.GetEntry(interfaceUIndex)?.ObjectName.Instanced ?? "UNK_INTERFACE"));
+                interfaces.Add(new VariableType(pcc.GetEntry(implementedInterface.Class)?.ObjectName.Instanced ?? "UNK_INTERFACE"));
             }
 
             var Types = new List<VariableType>();
@@ -85,7 +85,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                         break;
                 }
             }
-            foreach (int uIndex in uClass.LocalFunctionMap.Values())
+            foreach (int uIndex in uClass.LocalFunctionMap.Values)
             {
                 if (pcc.GetEntry(uIndex) is ExportEntry funcExp && fileLib.GetCachedObjectBinary<UFunction>(funcExp, packageCache) is UFunction uFunction)
                 {

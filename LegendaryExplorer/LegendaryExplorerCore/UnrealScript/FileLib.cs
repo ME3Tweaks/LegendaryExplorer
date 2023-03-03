@@ -212,11 +212,22 @@ namespace LegendaryExplorerCore.UnrealScript
                 var gameFiles = MELoadedFiles.GetFilesLoadedInGame(Pcc.Game, gameRootOverride: gameRootPath);
                 string[] baseFileNames = BaseFileNames(Pcc.Game);
                 bool isBaseFile = false;
+
+                bool supportsPostLoad = true;
+                // Do not load files that appear after ours if we are part of the base file set (e.g. engine should not resolve startup)
                 if (baseFileNames.IndexOf(Path.GetFileName(Pcc.FilePath)) is var fileNameIdx and >= 0)
                 {
                     isBaseFile = true;
                     baseFileNames = baseFileNames.Slice(0, fileNameIdx);
+                    supportsPostLoad = false;
                 }
+
+                // Add LECLData for custom classes
+                if (supportsPostLoad && Pcc.LECLTagData != null)
+                {
+                    baseFileNames = baseFileNames.Concat(Pcc.LECLTagData.ImportHintFiles).ToArray();
+                }
+
                 foreach (string fileName in baseFileNames)
                 {
                     if (gameFiles.TryGetValue(fileName, out string path) && File.Exists(path))

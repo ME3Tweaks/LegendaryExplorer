@@ -1014,7 +1014,8 @@ namespace LegendaryExplorer.Tools.PackageEditor
                         MEGame.ME2 => GameFileFilters.ME3ME2SaveFileFilter,
                         MEGame.ME3 => GameFileFilters.ME3ME2SaveFileFilter,
                         _ => GameFileFilters.LESaveFileFilter
-                    }
+                    },
+                    CustomPlaces = AppDirectories.GameCustomPlaces,
                 };
                 if (dlg.ShowDialog() == true)
                 {
@@ -1439,7 +1440,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                             }
                             if (exp.HasComponentMap && exp.ComponentMap.Any(kvp => uIndexes.Contains(kvp.Value)))
                             {
-                                return pcc.GetEntry(exp.ComponentMap.Values().First(uIdx => uIndexes.Contains(uIdx)));
+                                return pcc.GetEntry(exp.ComponentMap.Values.First(uIdx => uIndexes.Contains(uIdx)));
                             }
 
                             //find stack references

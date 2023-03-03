@@ -40,6 +40,7 @@ using Piccolo.Event;
 using Piccolo.Nodes;
 using RectangleF = System.Drawing.RectangleF;
 using LegendaryExplorer.Tools.PackageEditor;
+using LegendaryExplorerCore.Unreal.Collections;
 
 namespace LegendaryExplorer.Tools.PathfindingEditor
 {
@@ -4764,7 +4765,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                 references.Clear();
 
                 //Clean up Cached PhysSM Data && Rebuild Data Store
-                var newPhysSMmap = new OrderedMultiValueDictionary<int, CachedPhysSMData>();
+                var newPhysSMmap = new UMultiMap<int, CachedPhysSMData>();
                 var newPhysSMstore = new List<KCachedConvexData>();
                 foreach (var r in level.CachedPhysSMDataMap)
                 {
@@ -4779,7 +4780,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                         var kvp = level.CachedPhysSMDataStore[oldidx];
                         map.CachedDataIndex = newPhysSMstore.Count;
                         newPhysSMstore.Add(level.CachedPhysSMDataStore[oldidx]);
-                        newPhysSMmap.Add(new KeyValuePair<int, CachedPhysSMData>(reference, map));
+                        newPhysSMmap.Add(reference, map);
                     }
                 }
                 level.CachedPhysSMDataMap = newPhysSMmap;
@@ -4787,7 +4788,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                 references.Clear();
 
                 //Clean up Cached PhysPerTri Data
-                var newPhysPerTrimap = new OrderedMultiValueDictionary<int, CachedPhysSMData>();
+                var newPhysPerTrimap = new UMultiMap<int, CachedPhysSMData>();
                 var newPhysPerTristore = new List<KCachedPerTriData>();
                 foreach (var s in level.CachedPhysPerTriSMDataMap)
                 {
@@ -4802,7 +4803,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                         var kvp = level.CachedPhysPerTriSMDataStore[oldidx];
                         map.CachedDataIndex = newPhysPerTristore.Count;
                         newPhysPerTristore.Add(level.CachedPhysPerTriSMDataStore[oldidx]);
-                        newPhysPerTrimap.Add(new KeyValuePair<int, CachedPhysSMData>(reference, map));
+                        newPhysPerTrimap.Add(reference, map);
                     }
                 }
                 level.CachedPhysPerTriSMDataMap = newPhysPerTrimap;

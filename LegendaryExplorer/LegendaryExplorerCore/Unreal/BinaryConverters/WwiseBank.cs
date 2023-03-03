@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using LegendaryExplorerCore.Gammtek.Extensions;
 using LegendaryExplorerCore.Gammtek.IO;
@@ -9,6 +8,7 @@ using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Memory;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Unreal.Collections;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
@@ -21,9 +21,9 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public uint Version; //If 0, this Bank is serialized empty. When creating a bank, make sure to set this!
         public uint ID;
 
-        public OrderedMultiValueDictionary<uint, byte[]> EmbeddedFiles = new();
-        public OrderedMultiValueDictionary<uint, HIRCObject> HIRCObjects = new();
-        public OrderedMultiValueDictionary<uint, string> ReferencedBanks = new();
+        public UMultiMap<uint, byte[]> EmbeddedFiles = new(); //TODO: Make this a UMap?
+        public UMultiMap<uint, HIRCObject> HIRCObjects = new(); //TODO: Make this a UMap?
+        public UMultiMap<uint, string> ReferencedBanks = new(); //TODO: Make this a UMap?
 
         public WwiseStateManagement InitStateManagement;//Only present in Init bank. ME3 version
         private byte[] ME2STMGFallback; //STMG chunk for ME2 isn't decoded yet
@@ -162,7 +162,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                                 MaxVoiceInstances = sc.ms.ReadUInt16()
                             };
                             int stateGroupCount = sc.ms.ReadInt32();
-                            InitStateManagement.StateGroups = new OrderedMultiValueDictionary<uint, WwiseStateManagement.StateGroup>();
+                            InitStateManagement.StateGroups = new();
                             for (int i = 0; i < stateGroupCount; i++)
                             {
                                 uint id = sc.ms.ReadUInt32();
@@ -186,7 +186,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                             }
 
                             int switchGroupCount = sc.ms.ReadInt32();
-                            InitStateManagement.SwitchGroups = new OrderedMultiValueDictionary<uint, WwiseStateManagement.SwitchGroup>();
+                            InitStateManagement.SwitchGroups = new();
                             for (int i = 0; i < switchGroupCount; i++)
                             {
                                 uint id = sc.ms.ReadUInt32();
@@ -210,7 +210,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                             }
 
                             int gameParamsCount = sc.ms.ReadInt32();
-                            InitStateManagement.GameParameterDefaultValues = new OrderedMultiValueDictionary<uint, float>();
+                            InitStateManagement.GameParameterDefaultValues = new();
                             for (int i = 0; i < gameParamsCount; i++)
                             {
                                 InitStateManagement.GameParameterDefaultValues.Add(sc.ms.ReadUInt32(), sc.ms.ReadFloat());
@@ -734,9 +734,9 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     {
         public float VolumeThreshold;
         public ushort MaxVoiceInstances;
-        public OrderedMultiValueDictionary<uint, StateGroup> StateGroups;
-        public OrderedMultiValueDictionary<uint, SwitchGroup> SwitchGroups;
-        public OrderedMultiValueDictionary<uint, float> GameParameterDefaultValues;
+        public UMultiMap<uint, StateGroup> StateGroups; //TODO: Make this a UMap?
+        public UMultiMap<uint, SwitchGroup> SwitchGroups; //TODO: Make this a UMap?
+        public UMultiMap<uint, float> GameParameterDefaultValues; //TODO: Make this a UMap?
 
         public class CustomTransitionTime
         {

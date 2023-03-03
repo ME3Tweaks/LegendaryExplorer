@@ -191,7 +191,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
             var binary = new Bio2DABinary
             {
                 ColumnNames = ColumnNames.Select(s => new NameReference(s)).ToList(),
-                Cells = new OrderedMultiValueDictionary<int, Bio2DACell>(),
+                Cells = new(),
                 Export = Export,
                 IsIndexed = IsIndexed
             };

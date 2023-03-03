@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using LegendaryExplorerCore.Helpers;
-using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
-using Microsoft.Toolkit.HighPerformance;
+using LegendaryExplorerCore.Unreal.Collections;
 using UIndex = System.Int32;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
@@ -91,7 +90,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             if (game != MEGame.UDK)
             {
                 names.AddRange(SM2StaticPermutationResource.GetNames(game));
-                names.AddRange(SM2StaticParameterSet.GetNames(game));
+                names.AddRange(SM2StaticParameterSet.GetNames(game, "ShaderModel2StaticParameterSet."));
             }
 
             return names;
@@ -121,7 +120,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         }
 
         public string[] CompileErrors;
-        public OrderedMultiValueDictionary<UIndex, int> TextureDependencyLengthMap;
+        public UMultiMap<UIndex, int> TextureDependencyLengthMap;  //TODO: Make this a UMap
         public int MaxTextureDependencyLength;
         public Guid ID;
         public uint NumUserTexCoords;
@@ -163,7 +162,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             return new()
             {
                 CompileErrors = Array.Empty<string>(),
-                TextureDependencyLengthMap = new OrderedMultiValueDictionary<UIndex, int>(),
+                TextureDependencyLengthMap = new (),
                 UniformExpressionTextures = Array.Empty<UIndex>(),
                 UniformPixelVectorExpressions = Array.Empty<MaterialUniformExpression>(),
                 UniformPixelScalarExpressions = Array.Empty<MaterialUniformExpression>(),
@@ -229,7 +228,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         }
         public virtual void ForEachUIndex<TAction>(MEGame game, in TAction action, string prefix) where TAction : struct, IUIndexAction
         {
-            ObjectBinary.ForEachUIndexKeyInOrderedMultiValueDictionary(action, TextureDependencyLengthMap.AsSpan(), nameof(TextureDependencyLengthMap));
+            ObjectBinary.ForEachUIndexKeyInMultiMap(action, TextureDependencyLengthMap, nameof(TextureDependencyLengthMap));
             if (game >= MEGame.ME3)
             {
                 ObjectBinary.ForEachUIndexInSpan(action, UniformExpressionTextures.AsSpan(), $"{prefix}{nameof(UniformExpressionTextures)}");
@@ -514,15 +513,15 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             };
         }
 
-        public List<(NameReference, string)> GetNames(MEGame game)
+        public List<(NameReference, string)> GetNames(MEGame game, string prefix = "")
         {
             var names = new List<(NameReference, string)>();
 
-            names.AddRange(StaticSwitchParameters.Select((param, i) => (param.ParameterName, $"{nameof(StaticSwitchParameters)}[{i}].ParameterName")));
-            names.AddRange(StaticComponentMaskParameters.Select((param, i) => (param.ParameterName, $"{nameof(StaticComponentMaskParameters)}[{i}].ParameterName")));
+            names.AddRange(StaticSwitchParameters.Select((param, i) => (param.ParameterName, $"{prefix}{nameof(StaticSwitchParameters)}[{i}].ParameterName")));
+            names.AddRange(StaticComponentMaskParameters.Select((param, i) => (param.ParameterName, $"{prefix}{nameof(StaticComponentMaskParameters)}[{i}].ParameterName")));
             if (game >= MEGame.ME3)
             {
-                names.AddRange(NormalParameters.Select((param, i) => (param.ParameterName, $"{nameof(NormalParameters)}[{i}].ParameterName")));
+                names.AddRange(NormalParameters.Select((param, i) => (param.ParameterName, $"{prefix}{nameof(NormalParameters)}[{i}].ParameterName")));
             }
 
             return names;

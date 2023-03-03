@@ -1,19 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using LegendaryExplorerCore.Helpers;
-using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal.Classes;
+using LegendaryExplorerCore.Unreal.Collections;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
     public class Bio2DABinary : ObjectBinary
     {
         public bool IsIndexed;
-        public OrderedMultiValueDictionary<int, Bio2DACell> Cells;
+        public UMultiMap<int, Bio2DACell> Cells; //TODO: Make this a UMap
         public List<NameReference> ColumnNames;
 
         protected override void Serialize(SerializingContainer2 sc)
@@ -27,7 +24,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             {
                 //If there are no cells, IsIndexed has to be true, since there is no way to differentiate between 
                 //a cell count of zero and the extra zero that is present when IsIndexed is true.
-                IsIndexed |= Cells.IsEmpty();
+                IsIndexed |= Cells.Count == 0;
             }
 
             if (IsIndexed)
@@ -38,7 +35,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             int cellIndex = 0;
             //If IsIndexed, the index needs to be read and written, so just use the normal Serialize for ints.
             //If it's not indexed, we don't need to write anything, but the Dictionary still needs to be populated with a value
-            sc.Serialize(ref Cells, IsIndexed ? SCExt.Serialize : (SerializingContainer2 sc2, ref int idx) => idx = cellIndex++, SCExt.Serialize);
+            sc.Serialize(ref Cells, IsIndexed ? SCExt.Serialize : (SerializingContainer2 _, ref int idx) => idx = cellIndex++, SCExt.Serialize);
             if (!IsIndexed)
             {
                 sc.SerializeConstInt(0);
@@ -73,7 +70,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             return new()
             {
-                Cells = new OrderedMultiValueDictionary<int, Bio2DACell>(),
+                Cells = new(),
                 ColumnNames = new List<NameReference>()
             };
         }

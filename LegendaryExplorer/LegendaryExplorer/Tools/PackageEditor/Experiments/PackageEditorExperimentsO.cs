@@ -1852,10 +1852,13 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             IEnumerable<KeyValuePair<uint, string>> updatedBanks = wwiseBank.ReferencedBanks
                 .Select(referencedBank =>
                 {
-                    if (referencedBank.Value.Equals(oldBankName, StringComparison.OrdinalIgnoreCase)) { return new(newBankID, newWwiseBankName); }
-                    else { return referencedBank; }
+                    if (referencedBank.Value.Equals(oldBankName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return new KeyValuePair<uint, string>(newBankID, newWwiseBankName);
+                    }
+                    return referencedBank;
                 });
-            wwiseBank.ReferencedBanks = new OrderedMultiValueDictionary<uint, string>(updatedBanks);
+            wwiseBank.ReferencedBanks = new(updatedBanks);
 
             // Update references to old wwiseEvents' hashes, which are the ID of Event HIRCs,
             // update references to old wwiseStreams' hashes, which are in the unknown bytes of Sound HIRCs, 

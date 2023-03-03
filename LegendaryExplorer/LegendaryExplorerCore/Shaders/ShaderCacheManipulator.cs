@@ -84,8 +84,8 @@ namespace LegendaryExplorerCore.Shaders
 
             var tempCache = new ShaderCache
             {
-                Shaders = new OrderedMultiValueDictionary<Guid, Shader>(),
-                MaterialShaderMaps = new OrderedMultiValueDictionary<StaticParameterSet, MaterialShaderMap>(),
+                Shaders = new (),
+                MaterialShaderMaps = new (),
                 ShaderTypeCRCMap = localCache.ShaderTypeCRCMap,
                 VertexFactoryTypeCRCMap = localCache.VertexFactoryTypeCRCMap
             };
@@ -101,16 +101,16 @@ namespace LegendaryExplorerCore.Shaders
 
             //get the guids for every shader referenced by the MaterialShaderMaps
             var shaderGuids = new HashSet<Guid>();
-            foreach (MaterialShaderMap materialShaderMap in tempCache.MaterialShaderMaps.Values())
+            foreach (MaterialShaderMap materialShaderMap in tempCache.MaterialShaderMaps.Values)
             {
-                foreach (ShaderReference shaderRef in materialShaderMap.Shaders.Values())
+                foreach ((_, ShaderReference shaderRef) in materialShaderMap.Shaders)
                 {
                     shaderGuids.Add(shaderRef.Id);
                 }
 
                 foreach (MeshShaderMap meshShaderMap in materialShaderMap.MeshShaderMaps)
                 {
-                    foreach (ShaderReference shaderRef in meshShaderMap.Shaders.Values())
+                    foreach ((_, ShaderReference shaderRef) in meshShaderMap.Shaders)
                     {
                         shaderGuids.Add(shaderRef.Id);
                     }

@@ -2364,7 +2364,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     var node = Pcc.Game is MEGame.UDK ? MakeEntryNode(bin, "Object") : MakeStringNode(bin, "Object");
                     node.IsExpanded = true;
                     int count = bin.ReadInt32();
-                    while (count --> 0)
+                    while (count-- > 0)
                     {
                         var metadataType = bin.ReadNameReference(Pcc);
                         node.Items.Add(MakeStringNode(bin, metadataType.Instanced));
@@ -2472,14 +2472,14 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
                 subnodes.Add(MakeInt32Node(bin, "BulkDataSizeOnDisk"));
                 subnodes.Add(MakeUInt32HexNode(bin, "BulkDataOffsetInFile"));
-                var rawDataNode = new BinInterpNode(bin.Position, count > 0 ? "RawData (Embedded Non-Streaming Audio)" : "RawData (None, Streaming Audio)") { Length = count, IsExpanded = true};
+                var rawDataNode = new BinInterpNode(bin.Position, count > 0 ? "RawData (Embedded Non-Streaming Audio)" : "RawData (None, Streaming Audio)") { Length = count, IsExpanded = true };
                 subnodes.Add(rawDataNode);
 
                 if (count > 0)
                 {
                     rawDataNode.Items.AddRange(ReadISACTPair(data, ref binarystart, (int)bin.Position));
                 }
-                bin.Skip(count); 
+                bin.Skip(count);
 
                 if (Pcc.Game.IsLEGame())
                 {
@@ -2564,7 +2564,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private ITreeItem MakeISACTBankNode(ISACTBank iSBBank, int binOffset)
         {
-            BinInterpNode bin = new BinInterpNode(iSBBank.BankRIFFPosition + binOffset, $"{iSBBank.BankType} Bank") { IsExpanded = true};
+            BinInterpNode bin = new BinInterpNode(iSBBank.BankRIFFPosition + binOffset, $"{iSBBank.BankType} Bank") { IsExpanded = true };
             foreach (var bc in iSBBank.BankChunks)
             {
                 MakeISACTBankChunkNode(bin, bc, binOffset);
@@ -7119,7 +7119,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         }
 
 
-        private static BinInterpNode MakeVectorNode(EndianReader bin, string name) {
+        private static BinInterpNode MakeVectorNode(EndianReader bin, string name)
+        {
             var node = new BinInterpNode(bin.Position, $"{name}: (X: {bin.ReadFloat()}, Y: {bin.ReadFloat()}, Z: {bin.ReadFloat()})") { Length = 12 };
             bin.Position -= 12;
             node.Items.Add(MakeFloatNode(bin, "X"));
@@ -8715,7 +8716,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 {
                     Header = $"{(pos - binarystart):X4} Flag (0 = local, 1 = external): {unk1}",
                     Name = "_" + pos,
-
                 });
                 pos += 4;
                 if (Pcc.Game is MEGame.ME3 or MEGame.LE3)
@@ -8832,6 +8832,52 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 subnodes.Add(new BinInterpNode() { Header = $"Error reading binary data: {ex}" });
             }
+            return subnodes;
+        }
+
+        private List<ITreeItem> StartBioGestureRulesDataScan(byte[] data, ref int binarystart)
+        {
+            var subnodes = new List<ITreeItem>();
+
+            if (binarystart >= data.Length)
+            {
+                return subnodes;
+            }
+
+            int pos = binarystart;
+            var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
+            bin.JumpTo(binarystart);
+            try
+            {
+                var count = bin.ReadInt32();
+                bin.Position -= 4; // Set back so the node can be made
+                subnodes.Add(MakeInt32Node(bin, "Count"));
+
+                for (int i = 0; i < count; i++)
+                {
+                    var node = new BinInterpNode(bin.Position, $"Rule {i}");
+                    subnodes.Add(node);
+
+                    node.Items.Add(MakeNameNode(bin, "Name"));
+
+                    var subcount = bin.ReadInt32();
+                    var subnode = new BinInterpNode(bin.Position - 4, $"Num somethings: {subcount}");
+                    node.Items.Add(subnode);
+
+                    for (int j = 0; j < subcount; j++)
+                    {
+                        // Read name, some integer
+                        subnode.Items.Add(MakeNameNode(bin, "SomeName"));
+                        subnode.Items.Add(MakeInt32Node(bin, "SomeNum"));
+                    }
+
+                }
+            }
+            catch (Exception e)
+            {
+
+            }
+
             return subnodes;
         }
 

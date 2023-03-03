@@ -2,13 +2,14 @@
 using System.Runtime.CompilerServices;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Unreal.Collections;
 using UIndex = System.Int32;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
     public class BioTlkFileSet : ObjectBinary
     {
-        public OrderedMultiValueDictionary<NameReference, BioTlkSet> TlkSets;
+        public UMultiMap<NameReference, BioTlkSet> TlkSets; //TODO: Make this a UMap
 
         protected override void Serialize(SerializingContainer2 sc)
         {
@@ -32,7 +33,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             return new()
             {
-                TlkSets = new OrderedMultiValueDictionary<NameReference, BioTlkSet>()
+                TlkSets = new ()
             };
         }
 

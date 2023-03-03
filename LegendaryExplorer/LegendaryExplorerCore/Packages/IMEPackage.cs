@@ -107,6 +107,12 @@ namespace LegendaryExplorerCore.Packages
         /// </summary>
         public bool forcedExport;
 
+        /// <summary>
+        /// The instanced full path of the object. This is not serialized; only populated when dynamically loading
+        /// </summary>
+        [JsonIgnore]
+        public string instancedFullPath;
+
         public bool TryGetPropInfo(NameReference name, MEGame game, out PropertyInfo propInfo) =>
             properties.TryGetValue(name, out propInfo) || (GlobalUnrealObjectInfo.GetClassOrStructInfo(game, baseClass)?.TryGetPropInfo(name, game, out propInfo) ?? false);
     }

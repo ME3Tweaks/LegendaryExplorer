@@ -7,6 +7,7 @@ using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
+using LegendaryExplorerCore.Unreal.Collections;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
@@ -189,7 +190,8 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 EntryPruner.TrashEntryAndDescendants(unusedField.Export);
             }
 
-            var compiledProperties = new OrderedMultiValueDictionary<string, UProperty>();
+            //UMap instead of a Dictionary, since UMap is guaranteed to enumerate in insertion order if nothing has been removed
+            var compiledProperties = new UMap<string, UProperty>();
             foreach (VariableDeclaration property in classAST.VariableDeclarations)
             {
                 if (existingProperties.Remove(property.Name, out UProperty uProperty) && !uProperty.Export.ClassName.CaseInsensitiveEquals(ByteCodeCompilerVisitor.PropertyTypeName(property.VarType)))
@@ -253,7 +255,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 completion();
             }
 
-            IEnumerable<UField> allChildren = compiledProperties.Values().Cast<UField>().Concat(compiledFunctions).Concat(compiledStates).Concat(compiledStructs).Concat(compiledEnums).Concat(compiledConsts);
+            IEnumerable<UField> allChildren = compiledProperties.Values.Cast<UField>().Concat(compiledFunctions).Concat(compiledStates).Concat(compiledStructs).Concat(compiledEnums).Concat(compiledConsts);
             if (childrenHaveBeenAdded || childrenHaveBeenTrashed)
             {
                 classObj.Children = 0;
@@ -296,7 +298,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     }
                     vfTablePropertyUIndex = vfTableProperty.Export.UIndex;
                 }
-                classObj.Interfaces.Add(CompilerUtils.ResolveClass(interfaceClass, pcc).UIndex, vfTablePropertyUIndex);
+                classObj.Interfaces.Add(new UClass.ImplementedInterface(CompilerUtils.ResolveClass(interfaceClass, pcc).UIndex, vfTablePropertyUIndex));
             }
 
             classObj.DLLBindName = "None";
@@ -949,6 +951,9 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 Class = classEntry,
                 SuperClass = super
             };
+
+            // This is set after object initialization and looks at the parent.
+            exp.ExportFlags = exp.IsForcedExport ? EExportFlags.ForcedExport : 0;
             pcc.AddExport(exp);
             return exp;
         }
