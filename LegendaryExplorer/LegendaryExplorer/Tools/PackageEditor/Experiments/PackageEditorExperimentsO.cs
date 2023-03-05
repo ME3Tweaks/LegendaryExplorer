@@ -1761,7 +1761,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             List<ExportEntry> wwiseEvents = GetWwiseEvents(pcc, fxas);
             List<ExportEntry> wwiseStreams = GetWwiseStreams(pcc, wwiseEvents);
 
-            RenameWwiseEvents(pcc, wwiseEvents, newName);
+            // RenameWwiseEvents(pcc, wwiseEvents, newName);
             RenameWwiseStreams(pcc, wwiseStreams, oldName, newName);
 
             if (updateAudioIDs)
@@ -1788,7 +1788,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         {
             string oldBankName = wwiseBankEntry.ObjectName;
 
-            (uint oldBankID, uint newBankID) = UpdateID(wwiseBankEntry);
+            (uint oldBankID, uint newBankID) = UpdateID(wwiseBankEntry, newWwiseBankName);
 
             WwiseBank wwiseBank = wwiseBankEntry.GetBinaryData<WwiseBank>();
             // Update the bank id
