@@ -79,17 +79,45 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 func.Flags &= ~EFunctionFlags.HasDefaults;
             }
 
-            //remove redundant return;
-            if (body.Statements.Count > 0 && body.Statements.Last() is ReturnStatement {Value: null})
+            if (func.ReturnType is null)
             {
-                body.Statements.RemoveAt(body.Statements.Count - 1);
+                //remove redundant return;
+                if (body.Statements.Count > 0 && body.Statements[^1] is ReturnStatement { Value: null })
+                {
+                    body.Statements.RemoveAt(body.Statements.Count - 1);
+                }
+            }
+            else
+            {
+                if (body.EndPos != body.StartPos && !DoesReturn(body))
+                {
+                    log.LogWarning($"Function '{func.Name}' might reach end without returning a value!", func.EndPos);
+                }
+
+                static bool DoesReturn(CodeBody cb)
+                {
+                    if (cb.Statements.Count == 0)
+                    {
+                        return false;
+                    }
+
+                    switch (cb.Statements[^1])
+                    {
+                        case ReturnStatement:
+                            return true;
+                        case IfStatement ifStatement:
+                            if (ifStatement.Else is null)
+                            {
+                                return false;
+                            }
+                            return DoesReturn(ifStatement.Then) && DoesReturn(ifStatement.Else);
+                        //todo: more thorough analysis. switch statements?
+                        default:
+                            return false;
+                    }
+                }
             }
 
-            if (body.EndPos != body.StartPos //check if this is a defined function
-                && func.ReturnType is not null && body.Statements.LastOrDefault() is not ReturnStatement)
-            {
-                log.LogWarning($"Function '{func.Name}' might reach end without returning a value!", func.EndPos);
-            }
 
             //parse default parameter values
             if (func.HasOptionalParms)
