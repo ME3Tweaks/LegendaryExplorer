@@ -1115,9 +1115,9 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             if (!pew.Pcc.Game.IsGame1())
             {
                 updateAudioIDs = MessageBoxResult.Yes == MessageBox.Show(
-                "Update the IDs of the WwiseBank, WwiseEvents, and WwiseStreams?\nIn general it's safe and better to do so, but there may be edge cases" +
+                "Update the IDs of the WwiseBank?\nIn general it's safe and better to do so, but there may be edge cases" +
                 "where doing so may overwrite parts of the WwiseBank binary that are not the IDs.",
-                "Update audio IDs", MessageBoxButton.YesNo);
+                "Update WwiseBank ID", MessageBoxButton.YesNo);
             }
 
             bool bringTrash = MessageBoxResult.No == MessageBox.Show(
@@ -1597,9 +1597,9 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             if (!pew.Pcc.Game.IsGame1())
             {
                 updateAudioIDs = MessageBoxResult.Yes == MessageBox.Show(
-                "Change the IDs of the WwiseBank, WwiseEvents, and WwiseStreams?\nIn general it's safe and better to do so, but there may be edge cases" +
+                "Update the IDs of the WwiseBank?\nIn general it's safe and better to do so, but there may be edge cases" +
                 "where doing so may overwrite parts of the WwiseBank binary that are not the IDs.",
-                "Update audio IDs", MessageBoxButton.YesNo);
+                "Update WwiseBank ID", MessageBoxButton.YesNo);
             }
 
             ExportEntry bioConversation = (ExportEntry)pew.SelectedItem.Entry;
@@ -1714,9 +1714,9 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             if (!pew.Pcc.Game.IsGame1())
             {
                 updateAudioIDs = MessageBoxResult.Yes == MessageBox.Show(
-                "Change the IDs of the WwiseBank, WwiseEvents, and WwiseStreams?\nIn general it's safe and better to do so, but there may be edge cases" +
+                "Update the IDs of the WwiseBank?\nIn general it's safe and better to do so, but there may be edge cases" +
                 "where doing so may overwrite parts of the WwiseBank binary that are not the IDs.",
-                "Update audio IDs", MessageBoxButton.YesNo);
+                "Update WwiseBank ID", MessageBoxButton.YesNo);
             }
 
             string newName = PromptDialog.Prompt(null, "New common name:", "New name");
@@ -1766,68 +1766,14 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             if (updateAudioIDs)
             {
-                Dictionary<uint, uint> wwiseEventsIDs = UpdateIDs(wwiseEvents);
-                Dictionary<uint, uint> wwiseStreamsIDs = UpdateIDs(wwiseStreams);
+                // Dictionary<uint, uint> wwiseEventsIDs = UpdateIDs(wwiseEvents);
+                // Dictionary<uint, uint> wwiseStreamsIDs = UpdateIDs(wwiseStreams);
 
-                UpdateAudioIDs(wwiseBankEntry, newWwiseBankName, wwiseEventsIDs, wwiseStreamsIDs);
+                UpdateAudioIDs(wwiseBankEntry, newWwiseBankName, null, null);
             }
 
             wwiseBankEntry.ObjectName = newWwiseBankName;
             RenameFXAs(pcc, bioConversation, oldName, newName);
-        }
-
-        public static Dictionary<uint, uint> GatherIDs(ExportEntry wwiseBankEntry)
-        {
-            WwiseBank wwiseBank = wwiseBankEntry.GetBinaryData<WwiseBank>();
-            Dictionary<uint, uint> IDs = new();
-
-
-            foreach (WwiseBank.HIRCObject hirc in wwiseBank.HIRCObjects.Values())
-            {
-                switch (hirc.Type)
-                {
-                    case HIRCType.Settings:
-                        break;
-                    case HIRCType.SoundSXFSoundVoice:
-                        break;
-                    case HIRCType.EventAction:
-                        break;
-                    case HIRCType.Event:
-                        break;
-                    case HIRCType.RandomOrSequenceContainer:
-                        break;
-                    case HIRCType.SwitchContainer:
-                        break;
-                    case HIRCType.ActorMixer:
-                        break;
-                    case HIRCType.AudioBus:
-                        break;
-                    case HIRCType.BlendContainer:
-                        break;
-                    case HIRCType.MusicSegment:
-                        break;
-                    case HIRCType.MusicTrack:
-                        break;
-                    case HIRCType.MusicSwitchContainer:
-                        break;
-                    case HIRCType.MusicPlaylistContainer:
-                        break;
-                    case HIRCType.Attenuation:
-                        break;
-                    case HIRCType.DialogueEvent:
-                        break;
-                    case HIRCType.MotionBus:
-                        break;
-                    case HIRCType.MotionFX:
-                        break;
-                    case HIRCType.Effect:
-                        break;
-                    case HIRCType.AuxiliaryBus:
-                        break;
-                }
-            }
-
-            return new();
         }
 
         /// <summary>
@@ -1860,33 +1806,33 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 });
             wwiseBank.ReferencedBanks = new(updatedBanks);
 
-            // Update references to old wwiseEvents' hashes, which are the ID of Event HIRCs,
-            // update references to old wwiseStreams' hashes, which are in the unknown bytes of Sound HIRCs, 
-            // update references to old bank hash, which I'm certain is at the end of Event Action HIRCs,
+            // DISABLED: Update references to old wwiseEvents' hashes, which are the ID of Event HIRCs.
+            // DISABLED: Update references to old wwiseStreams' hashes, which are in the unknown bytes of Sound HIRCs.
+            // Update references to old bank hash, which I'm certain is at the end of Event Action HIRCs,
             // but we check in all of them just in case.
             byte[] bankIDArr = BitConverter.GetBytes(oldBankID);
             byte[] newBankIDArr = BitConverter.GetBytes(newBankID);
-            foreach (WwiseBank.HIRCObject hirc in wwiseBank.HIRCObjects.Values())
+            foreach (WwiseBank.HIRCObject hirc in wwiseBank.HIRCObjects.Values)
             {
-                if (hirc.Type == HIRCType.Event) // References a WwiseEvent
-                {
-                    if (wwiseEventIDs.TryGetValue(hirc.ID, out uint newEventID))
-                    {
-                        hirc.ID = newEventID;
-                    }
-                }
-                else if (hirc.Type == HIRCType.SoundSXFSoundVoice) // References a WwiseStream
-                {
-                    // 4 bytes ID is located at the start after 14 bytes
-                    Span<byte> streamIDSpan = hirc.unparsed.AsSpan(5..9);
-                    uint streamIDUInt = BitConverter.ToUInt32(streamIDSpan);
+                //if (hirc.Type == HIRCType.Event) // References a WwiseEvent
+                //{
+                //    if (wwiseEventIDs.TryGetValue(hirc.ID, out uint newEventID))
+                //    {
+                //        hirc.ID = newEventID;
+                //    }
+                //}
+                //else if (hirc.Type == HIRCType.SoundSXFSoundVoice) // References a WwiseStream
+                //{
+                //    // 4 bytes ID is located at the start after 14 bytes
+                //    Span<byte> streamIDSpan = hirc.unparsed.AsSpan(5..9);
+                //    uint streamIDUInt = BitConverter.ToUInt32(streamIDSpan);
 
-                    if (wwiseStreamIDs.TryGetValue(streamIDUInt, out uint newStreamIDUInt))
-                    {
-                        byte[] newStreamIDArr = BitConverter.GetBytes(newStreamIDUInt);
-                        newStreamIDArr.CopyTo(streamIDSpan);
-                    }
-                }
+                //    if (wwiseStreamIDs.TryGetValue(streamIDUInt, out uint newStreamIDUInt))
+                //    {
+                //        byte[] newStreamIDArr = BitConverter.GetBytes(newStreamIDUInt);
+                //        newStreamIDArr.CopyTo(streamIDSpan);
+                //    }
+                //}
 
                 // Check for bank ID in all HIRCs, even though I'm almost certain it only appears
                 // in Event Actions
