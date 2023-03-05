@@ -40,6 +40,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                 if (Document is not null)
                 {
                     Document.TextChanged -= TextChanged;
+                    Document.UpdateStarted -= DocumentOnUpdateStarted;
                 }
 
                 if (foldingManager != null)
@@ -50,6 +51,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                 foldingManager = FoldingManager.Install(textEditor.TextArea);
                 foldingStrategy.UpdateFoldings(foldingManager, Document);
                 Document.TextChanged += TextChanged;
+                Document.UpdateStarted += DocumentOnUpdateStarted;
             });
         }
 
@@ -755,6 +757,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
         private FoldingManager foldingManager;
         private readonly BraceFoldingStrategy foldingStrategy = new();
         private readonly DefinitionLinkGenerator _definitionLinkGenerator;
+
+        private void DocumentOnUpdateStarted(object sender, EventArgs e)
+        {
+            _definitionLinkGenerator.Reset();
+        }
 
         #endregion
 

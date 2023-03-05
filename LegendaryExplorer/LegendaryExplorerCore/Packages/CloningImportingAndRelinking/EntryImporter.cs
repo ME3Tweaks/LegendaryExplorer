@@ -858,7 +858,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     exportToBuildImportFor = sourcePcc.FindExport(importFullNameInstanced.Substring($"{packageName}.".Length));
                 }
 
-                if (exportToBuildImportFor.IsForcedExport)
+                if (!exportToBuildImportFor.IsForcedExport)
                 {
                     // NOT FORCED EXPORT - Look for entry nested under the proper path
                     properImportInstancedFullPath = $"{packageName}.{importFullNameInstanced}";
