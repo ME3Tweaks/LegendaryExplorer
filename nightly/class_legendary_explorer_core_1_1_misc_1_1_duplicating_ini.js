@@ -9,6 +9,7 @@ var class_legendary_explorer_core_1_1_misc_1_1_duplicating_ini =
     [ "LoadIni", "class_legendary_explorer_core_1_1_misc_1_1_duplicating_ini.html#aaef3783266a795d2afa4e6086a194a1c", null ],
     [ "ParseIni", "class_legendary_explorer_core_1_1_misc_1_1_duplicating_ini.html#a2e1059982bd73c0fdd6401d1cf67b48f", null ],
     [ "ToString", "class_legendary_explorer_core_1_1_misc_1_1_duplicating_ini.html#a0fdf01374be785168219bc56583fbaa8", null ],
+    [ "ToString", "class_legendary_explorer_core_1_1_misc_1_1_duplicating_ini.html#ac7b217fbf872f3dfcab13da04d49b114", null ],
     [ "WriteToFile", "class_legendary_explorer_core_1_1_misc_1_1_duplicating_ini.html#a3ec9bde97d9b8d664b0e702d501360bf", null ],
     [ "WriteToFile", "class_legendary_explorer_core_1_1_misc_1_1_duplicating_ini.html#a4d081b952411fbfa864c55b397e58487", null ],
     [ "Sections", "class_legendary_explorer_core_1_1_misc_1_1_duplicating_ini.html#a0552ba8ef49c344d127bb5fdad1e8ddf", null ],
