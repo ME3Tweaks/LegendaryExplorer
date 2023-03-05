@@ -33,10 +33,12 @@ namespace LegendaryExplorerCore.DebugTools
 
         public static void Debug(string message)
         {
+#if DEBUG
             if (LogDebug)
             {
                 logger?.Debug($"{Prefix}{message}");
             }
+#endif
         }
     }
 }

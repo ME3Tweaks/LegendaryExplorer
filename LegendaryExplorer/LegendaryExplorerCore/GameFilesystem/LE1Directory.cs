@@ -154,9 +154,8 @@ namespace LegendaryExplorerCore.GameFilesystem
         /// <remarks>This list will include both the bink bypass and the original renamed bink dll</remarks>
         public static readonly ReadOnlyCollection<string> VanillaDlls = Array.AsReadOnly(new[]
         {
-            "bink2w64_original.dll", // We say this is vanilla since it will very commonly be present and should not be removed
             "amd_ags_x64.dll",
-            "bink2w64_original.dll",
+            "bink2w64_original.dll", // We say this is vanilla since it will very commonly be present and should not be removed
             "bink2w64.dll",
             "dbdata.dll",
             "ogg.dll",

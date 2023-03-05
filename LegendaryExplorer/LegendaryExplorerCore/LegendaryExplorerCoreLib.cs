@@ -110,10 +110,24 @@ namespace LegendaryExplorerCore
                 }
             }
             Parallel.ForEach(jsonLoaders, action => action(null));
-            if (!OodleHelper.EnsureOodleDll())
+
+            LECLog.Information(@"Loaded property databases");
+
+            try
             {
-                Debug.WriteLine("Oodle decompression library not available. Make sure game is installed!");
+                if (!OodleHelper.EnsureOodleDll())
+                {
+                    LECLog.Warning(
+                        "Oodle decompression library not available. Make sure a Legendary Edition game is installed if you need to operate on oodle-compressed data");
+                }
             }
+            catch (Exception e)
+            {
+                LECLog.Error($@"Error ensuring oodle dll: {e.Message}. {e.FlattenException()}");
+            }
+
+
+            LECLog.Information(@"LegendaryExplorerCore has initialized");
             initialized = true;
         }
 #if DEBUG
