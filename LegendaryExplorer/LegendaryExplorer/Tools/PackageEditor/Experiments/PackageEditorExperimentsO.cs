@@ -1132,6 +1132,15 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             ConversationExtended conversation = new(bioConversation);
             conversation.LoadConversation(TLKManagerWPF.GlobalFindStrRefbyID, true);
 
+            // Check that the conversation has a normal package structure. Otherwise it can lead to unexpected edge cases when trying to gather
+            // the different sound elements.
+            string structureCheckResult = CheckConversationStructure(pew.Pcc, bioConversation, conversation);
+            if (!string.IsNullOrEmpty(structureCheckResult))
+            {
+                ShowError(structureCheckResult);
+                return;
+            }
+
             // Rename the conversation, its package, the WwiseBank, the FXAs, VOs and WwiseEvents
             RenameConversation(pew.Pcc, bioConversation, conversation, newName, updateAudioIDs);
 
@@ -1608,6 +1617,15 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             // operate on. Is it overkill? Yes. Does it get the job done more cleanly and safely? yes.
             ConversationExtended conversation = new(bioConversation);
             conversation.LoadConversation(TLKManagerWPF.GlobalFindStrRefbyID, true);
+
+            // Check that the conversation has a normal package structure. Otherwise it can lead to unexpected edge cases when trying to gather
+            // the different sound elements.
+            string structureCheckResult = CheckConversationStructure(pew.Pcc, bioConversation, conversation);
+            if (!string.IsNullOrEmpty(structureCheckResult))
+            {
+                ShowError(structureCheckResult);
+                return;
+            }
 
             RenameConversation(pew.Pcc, bioConversation, conversation, newName, updateAudioIDs);
 
@@ -2152,6 +2170,44 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
 
             return wwiseStreams.Values.ToList();
+        }
+
+        /// <summary>
+        /// Check that the bioConversation follows the games' normal conversation structure.
+        /// It does not display error messages to the user, as that's handled by the experiment callers.
+        /// </summary>
+        /// <param name="pcc">Pcc to operate on.</param>
+        /// <param name="bioConversation">bioConversation to check.</param>
+        /// <param name="conversation">Conversation </param>
+        /// <returns>Error message resulting of the check, if one is found; empty string otherwise.</returns>
+        private static string CheckConversationStructure(IMEPackage pcc, ExportEntry bioConversation, ConversationExtended conversation = null)
+        {
+            if (bioConversation.ClassName != "BioConversation")
+            {
+                return "Selected export is not a BioConversation";
+            }
+
+            if (conversation == null)
+            {
+                conversation = new(bioConversation);
+                conversation.LoadConversation(TLKManagerWPF.GlobalFindStrRefbyID, true);
+            }
+
+            if (bioConversation.idxLink == 0 || !pcc.TryGetUExport(bioConversation.idxLink, out ExportEntry dLink) || dLink.ClassName != "Package")
+            {
+                return "BioConversation not children of a Package export. Make sure to keep the normal structure of the game's conversations.";
+            }
+
+            // ME1 and ME2 have the audio elements in a separate package.
+            if (pcc.Game.IsGame1() && (!pcc.TryGetUExport(conversation.Sequence.idxLink, out ExportEntry sLink) || sLink.ClassName != "Package"))
+            {
+                return "BioConversation's audio package not children of a Package export. Make sure to keep the normal structure of ME1's conversations.";
+            } else if (pcc.Game.IsGame2() && (!pcc.TryGetUExport(conversation.WwiseBank.idxLink, out ExportEntry wLink) || wLink.ClassName != "Package"))
+            {
+                return "BioConversation's audio package not children of a Package export. Make sure to keep the normal structure of ME2's conversations.";
+            }
+
+            return "";
         }
 
         // HELPER FUNCTIONS
