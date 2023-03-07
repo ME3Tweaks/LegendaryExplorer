@@ -1700,7 +1700,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             if (!pcc.Game.IsGame1())
             {
-                RenameAudio(pcc, conversation.WwiseBank, bioConversation, newName, updateAudioIDs);
+                RenameAudio(pcc, conversation.WwiseBank, bioConversation, newName, updateAudioIDs, conversation);
             }
 
             // Rename bioConversation after the audio, since it needs the old name
@@ -1754,7 +1754,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             ExportEntry wwiseBankEntry = conversation.WwiseBank;
 
-            RenameAudio(pew.Pcc, wwiseBankEntry, bioConversation, newName, updateAudioIDs);
+            RenameAudio(pew.Pcc, wwiseBankEntry, bioConversation, newName, updateAudioIDs, conversation);
 
             MessageBox.Show($"Audio renamed successfully.", "Success", MessageBoxButton.OK);
         }
@@ -1767,17 +1767,17 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         /// <param name="bioConversation">Selected BioConversation.</param>
         /// <param name="newName">New name for the elements.</param>
         /// <param name="updateAudioIDs">Whether to update the IDs of Bank, Events, and Streams.</param>
+        /// <param name="conversation">Loaded Conversation, to avoid copy/pasting some its code.</param>
         /// other experiments.</param>
         public static void RenameAudio(IMEPackage pcc, ExportEntry wwiseBankEntry, ExportEntry bioConversation,
-            string newName, bool updateAudioIDs)
+            string newName, bool updateAudioIDs, ConversationExtended conversation)
         {
             string oldWwiseBankName = wwiseBankEntry.ObjectName;
             string oldName = GetCommonPrefix(oldWwiseBankName, bioConversation.ObjectName);
             string newWwiseBankName = oldWwiseBankName.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
 
-            List<ExportEntry> fxas = GetFXAs(pcc, bioConversation);
-            List<ExportEntry> wwiseEvents = GetWwiseEvents(pcc, fxas);
-            List<ExportEntry> wwiseStreams = GetWwiseStreams(pcc, wwiseEvents);
+            List<ExportEntry> wwiseEvents = GetAudioExports(pcc, bioConversation, AudioClass.WwiseEvent, conversation);
+            List<ExportEntry> wwiseStreams = GetAudioExports(pcc, bioConversation, AudioClass.WwiseStream, conversation);
 
             // RenameWwiseEvents(pcc, wwiseEvents, newName);
             RenameWwiseStreams(pcc, wwiseStreams, oldName, newName);
@@ -2079,97 +2079,66 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         }
 
         /// <summary>
-        /// Get a list of WwiseEvents referenced by a list of FXAs.
+        /// Get a list of SoundCues, SoundNodeWaves, WwiseStreams, or WwiseEvents related to the given BioConversation.
+        /// Assumes that found IEntries are ExportEntries.
         /// </summary>
         /// <param name="pcc">Pcc to operate on.</param>
-        /// <param name="fxas">FXAs to get references from.</param>
-        /// <returns>List of WwiseEvents.</returns>
-        private static List<ExportEntry> GetWwiseEvents(IMEPackage pcc, List<ExportEntry> fxas)
+        /// <param name="bioConversation">BioConversation the exports are referenced by.</param>
+        /// <param name="targetClass">Class of exports to get.</param>
+        /// <param name="conversation">Loaded Conversation, to avoid copy/pasting some its code.</param>
+        /// <returns>List of ExportEntries of the given class.</returns>
+        private static List<ExportEntry> GetAudioExports(IMEPackage pcc, ExportEntry bioConversation, AudioClass targetClass, ConversationExtended conversation = null)
         {
-            if (pcc == null || (pcc.Game is MEGame.ME1)) { return null; }
+            if (pcc == null || bioConversation.ClassName != "BioConversation") { return null; }
 
-            // <UExport, ExportEntry>. Used to avoid duplicates.
-            Dictionary<int, ExportEntry> wwiseEvents = new();
-
-            foreach (ExportEntry fxa in fxas)
+            if (conversation == null)
             {
-                ArrayProperty<ObjectProperty> eventRefs = fxa.GetProperty<ArrayProperty<ObjectProperty>>("ReferencedSoundCues");
-
-                if (eventRefs != null)
-                {
-                    foreach (ObjectProperty eventRef in eventRefs)
-                    {
-                        if (eventRef.Value == 0 || wwiseEvents.ContainsKey(eventRef.Value)) { continue; }
-
-                        ExportEntry wwiseEvent = pcc.GetUExport(eventRef.Value);
-                        if (wwiseEvent == null) { continue; }
-
-                        wwiseEvents.Add(eventRef.Value, wwiseEvent);
-                    }
-                }
-            }
-            return wwiseEvents.Values.ToList();
-        }
-
-        /// <summary>
-        /// Get a list of WwiseStreams referenced by a list of WwiseEvents.
-        /// </summary>
-        /// <param name="pcc">Pcc to operate on.</param>
-        /// <param name="wwiseEvents">WwiseEvents to get references from.</param>
-        /// <returns>List of WwiseStreams.</returns>
-        private static List<ExportEntry> GetWwiseStreams(IMEPackage pcc, List<ExportEntry> wwiseEvents)
-        {
-            if (pcc == null || (pcc.Game is MEGame.ME1)) { return null; }
-
-            // <UExport, ExportEntry>. Used to avoid duplicates.
-            Dictionary<int, ExportEntry> wwiseStreams = new();
-
-            if (!pcc.Game.IsGame1())
-            {
-                if (pcc.Game is MEGame.LE2)
-                {
-                    foreach (ExportEntry wwiseEvent in wwiseEvents)
-                    {
-                        ArrayProperty<StructProperty> references = wwiseEvent.GetProperty<ArrayProperty<StructProperty>>("References");
-                        if ((references == null) || (references.Count == 0)) { continue; }
-                        StructProperty relationships = references[0].GetProp<StructProperty>("Relationships");
-                        if (relationships == null) { continue; }
-                        ArrayProperty<ObjectProperty> streams = relationships.GetProp<ArrayProperty<ObjectProperty>>("Streams");
-                        if ((streams == null) || (streams.Count == 0)) { continue; }
-
-                        foreach (ObjectProperty streamRef in streams)
-                        {
-                            if (streamRef.Value == 0 || wwiseStreams.ContainsKey(streamRef.Value)) { continue; }
-
-                            ExportEntry stream = pcc.GetUExport(streamRef.Value);
-                            if (stream == null) { continue; }
-
-                            wwiseStreams.Add(streamRef.Value, stream);
-                        }
-                    }
-                }
-                else
-                {
-                    foreach (ExportEntry soundEvent in wwiseEvents)
-                    {
-                        WwiseEvent wwiseEventBin = soundEvent.GetBinaryData<WwiseEvent>();
-                        foreach (WwiseEvent.WwiseEventLink link in wwiseEventBin.Links)
-                        {
-                            foreach (int stream in link.WwiseStreams)
-                            {
-                                if (stream == 0 || wwiseStreams.ContainsKey(stream)) { continue; }
-
-                                ExportEntry wwiseStream = pcc.GetUExport(stream);
-                                if (wwiseStream == null) { continue; }
-
-                                wwiseStreams.Add(stream, wwiseStream);
-                            }
-                        }
-                    }
-                }
+                conversation = new(bioConversation);
+                conversation.LoadConversation(TLKManagerWPF.GlobalFindStrRefbyID, true);
             }
 
-            return wwiseStreams.Values.ToList();
+            ExportEntry package;
+
+            // Try to get the parent package that contains the audio elements, which varies between games.
+            if (pcc.Game.IsGame1())
+            {
+                if (!pcc.TryGetUExport(conversation.Sequence.idxLink, out package)) { return null; }
+            } else if (pcc.Game.IsGame2())
+            {
+                if (!pcc.TryGetUExport(conversation.WwiseBank.idxLink, out package)) { return null; }
+            } else
+            {
+                if (!pcc.TryGetUExport(bioConversation.idxLink, out package)) { return null; }
+            }
+            
+            if (package != null && package.ClassName != "Package") { return new(); }
+
+            // Avoid trying to get exports that belong to a different game
+            if (pcc.Game.IsGame1())
+            {
+                if (targetClass is not (AudioClass.SoundCue or AudioClass.SoundNodeWave)) { return null; }
+            } else
+            {
+                if (targetClass is (AudioClass.SoundCue or AudioClass.SoundNodeWave)) { return null; }
+            }
+
+            switch (targetClass)
+            {
+                case AudioClass.SoundCue:
+                    return package.GetAllDescendants().Where(e => e.ClassName == "SoundCue")
+                        .Select(e => (ExportEntry)e).ToList();
+                case AudioClass.SoundNodeWave:
+                    return package.GetAllDescendants().Where(e => e.ClassName == "SoundNodeWave")
+                        .Select(e => (ExportEntry)e).ToList();
+                case AudioClass.WwiseStream:
+                    return package.GetAllDescendants().Where(e => e.ClassName == "WwiseStream")
+                        .Select(e => (ExportEntry)e).ToList();
+                case AudioClass.WwiseEvent:
+                    return package.GetAllDescendants().Where(e => e.ClassName == "WwiseEvent")
+                        .Select(e => (ExportEntry)e).ToList();
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -2177,8 +2146,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         /// It does not display error messages to the user, as that's handled by the experiment callers.
         /// </summary>
         /// <param name="pcc">Pcc to operate on.</param>
-        /// <param name="bioConversation">bioConversation to check.</param>
-        /// <param name="conversation">Conversation </param>
+        /// <param name="bioConversation">BioConversation to check.</param>
+        /// <param name="conversation">Loaded Conversation, to avoid copy/pasting some its code.</param>
         /// <returns>Error message resulting of the check, if one is found; empty string otherwise.</returns>
         private static string CheckConversationStructure(IMEPackage pcc, ExportEntry bioConversation, ConversationExtended conversation = null)
         {
@@ -2209,6 +2178,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             return "";
         }
+
+        /// <summary>
+        /// Indicates a class that is related to the audio elements of a BioConversation.
+        /// </summary>
+        private enum AudioClass { WwiseStream, WwiseEvent, SoundCue, SoundNodeWave }
 
         // HELPER FUNCTIONS
         #region Helper functions
