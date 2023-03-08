@@ -178,8 +178,8 @@
         <MenuItem Header="Clean Sequence" Click="CleanSequence_Click" ToolTip="Cleans a sequence of objects that are not ConvNode, Interp, InterpData, and ConvNodeEnd; and optionally, of non-Conversation InterpGroups and non-VOElements InterpTracks."/>
         <MenuItem Header="Clean Sequence's InterpDatas" Click="CleanSequenceInterpDatas_Click" ToolTip="Clean a sequence of non-Conversation InterpGroups and non-VOElements InterpTracks."/>
         <MenuItem Header="Change Conversation ID and ConvNodes' ID" Click="ChangeConvoIDandConvNodeIDs_Click" ToolTip="Change a conversation's ConvResRefID and give its ConvNodes a new ID range."/>
-        <MenuItem Header="Rename Conversation" Click="RenameConversation_Click" ToolTip="Rename a conversation, changing the WwiseBank name and FXAs and related elements too, and optionally, updating its WwiseBank ID."/>
-        <MenuItem Header="Rename Audio" Click="RenameAudio_Click" ToolTip="Renames the WwiseBank, WwiseEvents, and WwiseStreams, and optionally udpate the WwiseBank ID."/>
+        <MenuItem Header="Rename Conversation" Click="RenameConversation_Click" ToolTip="Rename a conversation, changing the name of all related elements, and optionally updating its WwiseBank ID, if not in ME1."/>
+        <MenuItem Header="Rename Audio" Click="RenameAudio_Click" ToolTip="Renames the exports related to the audio of the conversation, and optionally udpate the WwiseBank ID, if not in ME1."/>
     </MenuItem>
     <MenuItem Header="Object Database">
         <MenuItem Header="Build ME1 Object Database" Click="ChonkyDB_BuildME1GameDB"/>

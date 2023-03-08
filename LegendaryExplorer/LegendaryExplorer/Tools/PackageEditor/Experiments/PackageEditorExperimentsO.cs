@@ -5,7 +5,6 @@ using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Kismet;
 using LegendaryExplorerCore.Matinee;
-using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
@@ -1637,24 +1636,57 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         /// </summary>
         /// <param name="pcc">Pcc to operate on.</param>
         /// <param name="bioConversation">BioConversation entry to edit.</param>
-        /// <param name="conversation">Loaded conversation edit.</param>
+        /// <param name="conversation">Loaded conversation to edit.</param>
         /// <param name="newName">New name.</param>
         /// <param name="updateAudioIDs">Whether to update the IDs of Bank, Events, and Streams.</param>
         public static void RenameConversation(IMEPackage pcc, ExportEntry bioConversation, ConversationExtended conversation, string newName, bool updateAudioIDs)
         {
             string oldBioConversationName = bioConversation.ObjectName;
-            string oldName;
+            string oldName = GetOldName(pcc, bioConversation, conversation);
 
-            // Get the old name found in all pieces of the conversation by getting the union of the bioconversation
-            // and the wwise bank names, or tlk file set in ME1.
-            // Assumes that both begin the same, since that's the behavior in all vanilla occurences, and helps
-            // keep the logic simple.
+            RenamePackages(pcc, bioConversation, conversation, oldName, newName);
+
             if (pcc.Game.IsGame1())
             {
                 ObjectProperty m_oTlkFileSet = bioConversation.GetProperty<ObjectProperty>("m_oTlkFileSet");
-                if (m_oTlkFileSet != null && m_oTlkFileSet.Value != 0)
+                ExportEntry tlkFileSet = null;
+                if (m_oTlkFileSet != null && m_oTlkFileSet.Value != 0 && pcc.TryGetUExport(m_oTlkFileSet.Value, out tlkFileSet))
                 {
-                    ExportEntry tlkFileSet = pcc.GetUExport(m_oTlkFileSet.Value);
+                    tlkFileSet.ObjectNameString = tlkFileSet.ObjectNameString.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
+                }
+
+                RenameISACTAudio(pcc, bioConversation, tlkFileSet, oldName, newName, conversation);
+
+            }
+            else
+            {
+                RenameWwiseAudio(pcc, conversation.WwiseBank, bioConversation, oldName, newName, updateAudioIDs, conversation);
+            }
+
+            // Rename bioConversation after the audio, since it needs the old name
+            string newBioConversationName = oldBioConversationName.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
+            bioConversation.ObjectName = newBioConversationName;
+        }
+
+        /// <summary>
+        /// Get the old name found in all pieces of the conversation by getting the union of the bioconversation and the wwise bank names,
+        /// or tlk file set in ME1.
+        /// Assumes that both begin the same, since that's the behavior in all vanilla occurences, and helps keep the logic simple.
+        /// </summary>
+        /// <param name="pcc">Pcc to operate on.</param>
+        /// <param name="bioConversation">BioConversation to get the name from.</param>
+        /// <param name="conversation">Loaded Conversation, to avoid copy/pasting some its code.</param>
+        /// <returns>Old name found in the bioConversation.</returns>
+        private static string GetOldName(IMEPackage pcc, ExportEntry bioConversation, ConversationExtended conversation)
+        {
+            string oldBioConversationName = bioConversation.ObjectName;
+            string oldName;
+
+            if (pcc.Game.IsGame1())
+            {
+                ObjectProperty m_oTlkFileSet = bioConversation.GetProperty<ObjectProperty>("m_oTlkFileSet");
+                if (m_oTlkFileSet != null && pcc.TryGetUExport(m_oTlkFileSet.Value, out ExportEntry tlkFileSet))
+                {
                     // All Tlk file sets begin with TlkSet_, followed by the name they have in common with the package
                     oldName = GetCommonPrefix(tlkFileSet.ObjectName.Name[7..], oldBioConversationName);
                 }
@@ -1670,6 +1702,20 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 oldName = GetCommonPrefix(conversation.WwiseBank.ObjectName, bioConversation.ObjectName);
             }
 
+            return oldName;
+        }
+
+        /// <summary>
+        /// Rename the packages associated with the bioConversation.
+        /// </summary>
+        /// <param name="pcc">Pcc to operate on.</param>
+        /// <param name="bioConversation">BioConveration to get the packages from.</param>
+        /// <param name="conversation">Loaded Conversation, to avoid copy/pasting some its code.</param>
+        /// <param name="oldName">Old name to replace in packages.</param>
+        /// <param name="newName">Name to replace old name with.</param>
+        private static void RenamePackages(IMEPackage pcc, ExportEntry bioConversation, ConversationExtended conversation,
+            string oldName, string newName)
+        {
             // Replace package's name
             if (bioConversation.idxLink != 0)
             {
@@ -1679,6 +1725,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     link.ObjectName = link.ObjectName.Name.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
                 }
             }
+
             // Replace name of the sound, sequence, and FXA package, which is separate in ME1
             if (pcc.Game.IsGame1())
             {
@@ -1697,15 +1744,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     link.ObjectName = link.ObjectName.Name.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
                 }
             }
-
-            if (!pcc.Game.IsGame1())
-            {
-                RenameAudio(pcc, conversation.WwiseBank, bioConversation, newName, updateAudioIDs, conversation);
-            }
-
-            // Rename bioConversation after the audio, since it needs the old name
-            string newBioConversationName = oldBioConversationName.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
-            bioConversation.ObjectName = newBioConversationName;
         }
 
         /// <summary>
@@ -1715,12 +1753,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         public static void RenameAudioExperiment(PackageEditorWindow pew)
         {
             if (pew.Pcc == null || pew.SelectedItem?.Entry == null) { return; }
-
-            if (pew.Pcc.Game.IsGame1())
-            {
-                ShowError("Not available for ME1/LE1");
-                return;
-            }
 
             if (pew.SelectedItem.Entry.ClassName is not "BioConversation")
             {
@@ -1752,28 +1784,41 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             ConversationExtended conversation = new(bioConversation);
             conversation.LoadConversation(TLKManagerWPF.GlobalFindStrRefbyID, true);
 
-            ExportEntry wwiseBankEntry = conversation.WwiseBank;
+            string oldName = GetOldName(pew.Pcc, bioConversation, conversation);
 
-            RenameAudio(pew.Pcc, wwiseBankEntry, bioConversation, newName, updateAudioIDs, conversation);
+            if (pew.Pcc.Game.IsGame1())
+            {
+                ObjectProperty m_oTlkFileSet = bioConversation.GetProperty<ObjectProperty>("m_oTlkFileSet");
+                ExportEntry tlkFileSet = null;
+                if (m_oTlkFileSet != null)
+                {
+                    pew.Pcc.TryGetUExport(m_oTlkFileSet.Value, out tlkFileSet);
+                }
+                RenameISACTAudio(pew.Pcc, bioConversation, tlkFileSet, oldName, newName, conversation);
+
+            }
+            else
+            {
+                RenameWwiseAudio(pew.Pcc, conversation.WwiseBank, bioConversation, oldName, newName, updateAudioIDs, conversation);
+            }
 
             MessageBox.Show($"Audio renamed successfully.", "Success", MessageBoxButton.OK);
         }
 
         /// <summary>
-        /// Changes the WwiseBank, WwiseEvents, and WwiseStreams's names, and update their IDs accordingly.
+        /// Change the WwiseBank, WwiseEvents, and WwiseStreams' names, and update their IDs accordingly.
         /// </summary>
         /// <param name="pcc">Pcc to operate on.</param>
         /// <param name="wwiseBankEntry">WwiseBank entry to edit.</param>
         /// <param name="bioConversation">Selected BioConversation.</param>
+        /// <param name="oldName">Old name to replace.</param>
         /// <param name="newName">New name for the elements.</param>
         /// <param name="updateAudioIDs">Whether to update the IDs of Bank, Events, and Streams.</param>
         /// <param name="conversation">Loaded Conversation, to avoid copy/pasting some its code.</param>
-        /// other experiments.</param>
-        public static void RenameAudio(IMEPackage pcc, ExportEntry wwiseBankEntry, ExportEntry bioConversation,
-            string newName, bool updateAudioIDs, ConversationExtended conversation)
+        public static void RenameWwiseAudio(IMEPackage pcc, ExportEntry wwiseBankEntry, ExportEntry bioConversation,
+            string oldName, string newName, bool updateAudioIDs, ConversationExtended conversation)
         {
             string oldWwiseBankName = wwiseBankEntry.ObjectName;
-            string oldName = GetCommonPrefix(oldWwiseBankName, bioConversation.ObjectName);
             string newWwiseBankName = oldWwiseBankName.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
 
             List<ExportEntry> wwiseEvents = GetAudioExports(pcc, bioConversation, AudioClass.WwiseEvent, conversation);
@@ -1791,6 +1836,26 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
 
             wwiseBankEntry.ObjectName = newWwiseBankName;
+
+            RenameFXAs(pcc, bioConversation, oldName, newName);
+        }
+
+        /// <summary>
+        /// Rename the SoundCues, and SoundNodeWaves' names.
+        /// </summary>
+        /// <param name="pcc">Pcc to operate on.</param>
+        /// <param name="bioConversation">Selected BioConversation.</param>
+        /// <param name="tlkFileSet">TLK FileSet export.</param>
+        /// <param name="oldName">Old name to replace.</param>
+        /// <param name="newName">New name for the elements.</param>
+        /// <param name="conversation">Loaded Conversation, to avoid copy/pasting some its code.</param>
+        public static void RenameISACTAudio(IMEPackage pcc, ExportEntry bioConversation, ExportEntry tlkFileSet,
+            string oldName, string newName, ConversationExtended conversation)
+        {
+            List<ExportEntry> nodeWaves = GetAudioExports(pcc, bioConversation, AudioClass.SoundNodeWave, conversation);
+
+            RenameSoundNodeWaves(pcc, nodeWaves, oldName, newName);
+
             RenameFXAs(pcc, bioConversation, oldName, newName);
         }
 
@@ -1906,6 +1971,21 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         wwiseStream.WriteProperty(bankName);
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Rename a list of SoundNodeWaves.
+        /// </summary>
+        /// <param name="pcc">Pcc to operate on.</param>
+        /// <param name="nodeWaves">SoundNodeWaves to rename.</param>
+        /// <param name="oldName">Old name to replace.</param>
+        /// <param name="newName">New name to replace with.</param>
+        private static void RenameSoundNodeWaves(IMEPackage pcc, List<ExportEntry> nodeWaves, string oldName, string newName)
+        {
+            foreach (ExportEntry nodeWave in nodeWaves)
+            {
+                nodeWave.ObjectNameString = nodeWave.ObjectNameString.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
             }
         }
 
@@ -2103,21 +2183,24 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             if (pcc.Game.IsGame1())
             {
                 if (!pcc.TryGetUExport(conversation.Sequence.idxLink, out package)) { return null; }
-            } else if (pcc.Game.IsGame2())
+            }
+            else if (pcc.Game.IsGame2())
             {
                 if (!pcc.TryGetUExport(conversation.WwiseBank.idxLink, out package)) { return null; }
-            } else
+            }
+            else
             {
                 if (!pcc.TryGetUExport(bioConversation.idxLink, out package)) { return null; }
             }
-            
+
             if (package != null && package.ClassName != "Package") { return new(); }
 
             // Avoid trying to get exports that belong to a different game
             if (pcc.Game.IsGame1())
             {
                 if (targetClass is not (AudioClass.SoundCue or AudioClass.SoundNodeWave)) { return null; }
-            } else
+            }
+            else
             {
                 if (targetClass is (AudioClass.SoundCue or AudioClass.SoundNodeWave)) { return null; }
             }
@@ -2171,7 +2254,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             if (pcc.Game.IsGame1() && (!pcc.TryGetUExport(conversation.Sequence.idxLink, out ExportEntry sLink) || sLink.ClassName != "Package"))
             {
                 return "BioConversation's audio package not children of a Package export. Make sure to keep the normal structure of ME1's conversations.";
-            } else if (pcc.Game.IsGame2() && (!pcc.TryGetUExport(conversation.WwiseBank.idxLink, out ExportEntry wLink) || wLink.ClassName != "Package"))
+            }
+            else if (pcc.Game.IsGame2() && (!pcc.TryGetUExport(conversation.WwiseBank.idxLink, out ExportEntry wLink) || wLink.ClassName != "Package"))
             {
                 return "BioConversation's audio package not children of a Package export. Make sure to keep the normal structure of ME2's conversations.";
             }
