@@ -2,6 +2,7 @@
 using LegendaryExplorer.UserControls.ExportLoaderControls;
 using LegendaryExplorerCore.Dialogue;
 using LegendaryExplorerCore.Kismet;
+using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal;
@@ -29,12 +30,6 @@ namespace LegendaryExplorer.DialogueEditor.DialogueEditorExperiments
 
             if (dew.Pcc == null || selectedDialogueNode == null) { return; }
 
-            if (dew.Pcc.Game.IsGame1())
-            {
-                MessageBox.Show("Not available for Mass Effect 1.", "Warning", MessageBoxButton.OK);
-                return;
-            }
-
             // Need to check if currStringRef exists
             string currStringRef = selectedDialogueNode.LineStrRef.ToString();
             if (string.IsNullOrEmpty(currStringRef))
@@ -56,22 +51,49 @@ namespace LegendaryExplorer.DialogueEditor.DialogueEditorExperiments
             }
 
             IMEPackage pcc = dew.Pcc;
-            FaceFXAnimSetEditorControl femaleFXA = dew.FaceFXAnimSetEditorControl_F;
-            FaceFXAnimSetEditorControl maleFXA = dew.FaceFXAnimSetEditorControl_M;
 
-            ExportEntry femaleEvent = GetWwiseEvent(pcc, femaleFXA);
-            ExportEntry maleEvent = GetWwiseEvent(pcc, maleFXA);
-            ExportEntry femaleStream = GetWwiseStream(pcc, femaleEvent, currStringRef, "_f_");
-            ExportEntry maleStream = GetWwiseStream(pcc, maleEvent, currStringRef, "_m_");
+            FaceFXAnimSetEditorControl FXAControl_F = dew.FaceFXAnimSetEditorControl_F;
+            FaceFXAnimSetEditorControl FXAControl_M = dew.FaceFXAnimSetEditorControl_M;
 
-            UpdateWwiseEvent(pcc, femaleEvent, currStringRef, newStringRef);
-            UpdateWwiseEvent(pcc, maleEvent, currStringRef, newStringRef);
+            if (pcc.Game.IsGame1())
+            {
+                // Remove the _F from the femaleFXA name, as it appears without it for female FXA lines.
+                string femaleFXAName = selectedDialogueNode.FaceFX_Female[..^2];
 
-            UpdateWwiseStream(femaleStream, currStringRef, newStringRef);
-            UpdateWwiseStream(maleStream, currStringRef, newStringRef);
+                // Manually find the selected female line, as LEX doesn't load it into the SelectedLine of the
+                // FaceFXAnimSetEditorControl_F for ME1.
+                FaceFXLineEntry femaleLineEntry = GetSelectedLineEntry(femaleFXAName, FXAControl_F.Lines);
 
-            UpdateFaceFX(femaleFXA, currStringRef, newStringRef);
-            UpdateFaceFX(maleFXA, currStringRef, newStringRef);
+                ExportEntry femaleCue = GetSoundCue(pcc, femaleLineEntry.Line);
+                ExportEntry maleCue = GetSoundCue(pcc, FXAControl_M.SelectedLine);
+                ExportEntry femaleNodeWave = GetSoundNodeWave(pcc, femaleLineEntry);
+                ExportEntry maleNodeWave = GetSoundNodeWave(pcc, FXAControl_M.SelectedLineEntry);
+
+                UpdateME1SoundExport(femaleCue, currStringRef, newStringRef);
+                UpdateME1SoundExport(maleCue, currStringRef, newStringRef);
+                UpdateME1SoundExport(femaleNodeWave, currStringRef, newStringRef);
+                UpdateME1SoundExport(maleNodeWave, currStringRef, newStringRef);
+
+                UpdateFaceFX(FXAControl_F, currStringRef, newStringRef, femaleLineEntry.Line);
+                UpdateFaceFX(FXAControl_M, currStringRef, newStringRef);
+            }
+            else
+            {
+                ExportEntry femaleEvent = GetWwiseEvent(pcc, FXAControl_F.SelectedLine);
+                ExportEntry maleEvent = GetWwiseEvent(pcc, FXAControl_M.SelectedLine);
+                ExportEntry femaleStream = GetWwiseStream(pcc, femaleEvent, currStringRef, "_f_");
+                ExportEntry maleStream = GetWwiseStream(pcc, maleEvent, currStringRef, "_m_");
+
+                UpdateWwiseEvent(pcc, femaleEvent, currStringRef, newStringRef);
+                UpdateWwiseEvent(pcc, maleEvent, currStringRef, newStringRef);
+
+                UpdateWwiseStream(femaleStream, currStringRef, newStringRef);
+                UpdateWwiseStream(maleStream, currStringRef, newStringRef);
+
+                UpdateFaceFX(FXAControl_F, currStringRef, newStringRef);
+                UpdateFaceFX(FXAControl_M, currStringRef, newStringRef);
+            }
+
 
             if (int.TryParse(newStringRef, out int intRef))
             {
@@ -99,7 +121,6 @@ namespace LegendaryExplorer.DialogueEditor.DialogueEditorExperiments
         /// Update the name of the given WwiseStream.
         /// </summary>
         /// <param name="wwiseStream">WwiseStream to update.</param>
-        /// <param name="wwiseEvent">WwiseStream to use to find the WwiseStreams.</param>
         /// <param name="oldRef">Part of the name to replace.</param>
         /// <param name="newRef">String to replace with.</param>
         private static void UpdateWwiseStream(ExportEntry wwiseStream, string oldRef, string newRef)
@@ -114,17 +135,50 @@ namespace LegendaryExplorer.DialogueEditor.DialogueEditorExperiments
         }
 
         /// <summary>
+        /// Update the TLK reference of the SoundCue/SoundNodeWave.
+        /// </summary>
+        /// <param name="soundExp">SoundCue/SoundNodeWave to update.</param>
+        /// <param name="oldRef">Old TLK reference.</param>
+        /// <param name="newRef">New TLK reference.</param>
+        private static void UpdateME1SoundExport(ExportEntry soundExp, string oldRef, string newRef)
+        {
+            if (soundExp == null) { return; }
+
+            if (soundExp.ObjectName.Name.EndsWith("_M"))
+            {
+                string name = soundExp.ObjectName.Name.Replace(oldRef, newRef, System.StringComparison.OrdinalIgnoreCase);
+                soundExp.ObjectName = new NameReference(name, soundExp.ObjectName.Number);
+            }
+            else
+            {
+                soundExp.ObjectName = new NameReference(soundExp.ObjectName.Name, int.Parse(newRef) + 1);
+            }
+        }
+
+        /// <summary>
         /// Update the path, ID, and name of a given FXA.
         /// </summary>
-        /// <param name="fxa">FXA to update.</param>
+        /// <param name="FXAControl">FXA control containing the FXA to update.</param>
         /// <param name="oldRef">Part of the name to replace.</param>
         /// <param name="newRef">String to replace with.</param>
-        private static void UpdateFaceFX(FaceFXAnimSetEditorControl fxa, string oldRef, string newRef)
+        /// <param name="femaleLine">Manually provided female SelectedLine. Used for ME1.</param>
+        private static void UpdateFaceFX(FaceFXAnimSetEditorControl FXAControl, string oldRef, string newRef, FaceFXLine femaleLine = null)
         {
-            if (fxa.SelectedLine == null || fxa == null) { return; }
+            if (FXAControl == null) { return; }
 
-            FaceFXAnimSetEditorControl.IFaceFXBinary FaceFX = fxa.FaceFX;
-            FaceFXLine SelectedLine = fxa.SelectedLine;
+            FaceFXAnimSetEditorControl.IFaceFXBinary FaceFX = FXAControl.FaceFX;
+
+            FaceFXLine SelectedLine = null;
+            if (femaleLine != null)
+            {
+                SelectedLine = femaleLine;
+            }
+            else
+            {
+                SelectedLine = FXAControl.SelectedLine;
+            }
+
+            if (SelectedLine == null) { return; }
 
             if (SelectedLine.Path != null)
             {
@@ -132,7 +186,7 @@ namespace LegendaryExplorer.DialogueEditor.DialogueEditorExperiments
             }
             if (SelectedLine.ID != null)
             {
-                SelectedLine.ID = newRef;
+                SelectedLine.ID = SelectedLine.ID.Replace(oldRef, newRef);
             }
 
             // Change FaceFX name
@@ -152,24 +206,22 @@ namespace LegendaryExplorer.DialogueEditor.DialogueEditorExperiments
                 }
             }
 
-            fxa.SaveChanges();
+            FXAControl.SaveChanges();
         }
 
         /// <summary>
         /// Get the WwiseEvent listed in the Path of a given FXA, if it exists.
         /// </summary>
         /// <param name="pcc">Pcc to operate on.</param>
-        /// <param name="fxa">FXA to get the path from.</param>
+        /// <param name="selectedLine">Selected FXA line.</param>
         /// <returns>WwiseEvent if found, null otherwise.</returns>
-        private static ExportEntry GetWwiseEvent(IMEPackage pcc, FaceFXAnimSetEditorControl fxa)
+        private static ExportEntry GetWwiseEvent(IMEPackage pcc, FaceFXLine selectedLine)
         {
-            if (pcc == null || fxa.SelectedLine == null || fxa == null) { return null; }
+            if (pcc == null || selectedLine == null) { return null; }
 
-            FaceFXLine SelectedLine = fxa.SelectedLine;
+            if (string.IsNullOrEmpty(selectedLine.Path)) { return null; }
 
-            if (SelectedLine.Path == null) { return null; }
-
-            return pcc.FindExport(SelectedLine.Path);
+            return pcc.FindExport(selectedLine.Path);
         }
 
         /// <summary>
@@ -234,6 +286,82 @@ namespace LegendaryExplorer.DialogueEditor.DialogueEditorExperiments
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// Get the SoundCue listed in the Path of a given FXA, if it exists.
+        /// </summary>
+        /// <param name="pcc">Pcc to operate on.</param>
+        /// <param name="selectedLine">Selected FXA line.</param>
+        /// <returns>SoundCue if found, null otherwise.</returns>
+        private static ExportEntry GetSoundCue(IMEPackage pcc, FaceFXLine selectedLine)
+        {
+            if (pcc == null || selectedLine == null) { return null; }
+
+            if (string.IsNullOrEmpty(selectedLine.Path)) { return null; }
+
+            return pcc.FindExport(selectedLine.Path);
+        }
+
+        /// <summary>
+        /// Get the SoundNodeWave listed in the Path of a given FXA, if it exists.
+        /// </summary>
+        /// <param name="pcc">Pcc to operate on.</param>
+        /// <param name="selectedLineEntry">Selected FXA line entry.</param>
+        /// <returns>SoundNodeWave if found, null otherwise.</returns>
+        private static ExportEntry GetSoundNodeWave(IMEPackage pcc, FaceFXLineEntry selectedLineEntry)
+        {
+            if (pcc == null || selectedLineEntry == null) { return null; }
+
+            FaceFXLine selectedLine = selectedLineEntry.Line;
+
+            if (string.IsNullOrEmpty(selectedLine.ID)) { return null; }
+
+            // Manually determine if the line is male or female.
+            // Cannot use the IsMale property, as it seems to be true for both.
+            bool isMale = selectedLine.NameAsString.EndsWith("_M");
+            List<IEntry> references;
+
+            if (isMale)
+            {
+                references = pcc.FindUsagesOfName(selectedLine.ID)
+                    .Where(e => string.Equals(selectedLine.ID, e.Key.ObjectName.Instanced, System.StringComparison.OrdinalIgnoreCase)
+                          && e.Key.ObjectName.Instanced.EndsWith("_M"))
+                    .Select(e => e.Key).ToList();
+            }
+            else
+            {
+                // something:VO_1235 -> something:VO
+                string referenceName = selectedLine.ID.Replace($"_{selectedLineEntry.TLKID}", "");
+                references = pcc.FindUsagesOfName(referenceName)
+                    .Where(e => e.Key.ObjectName.Number == (selectedLineEntry.TLKID + 1))
+                    .Select(e => e.Key).ToList();
+            }
+
+            if (references == null || references.Count == 0) { return null; }
+
+            return (ExportEntry)references.First();
+        }
+
+        /// <summary>
+        /// Get the selectd line based on the FXA name. Used for ME1, as female lines are not automatically loaded
+        /// into the FaceFXAnimSetEditorControl.
+        /// </summary>
+        /// <param name="fxaName">Name of the line entry to find.</param>
+        /// <param name="fxaLines">FXA lines.</param>
+        /// <returns>Selected FaceFXLineEntry</returns>
+        private static FaceFXLineEntry GetSelectedLineEntry(string fxaName, ObservableCollectionExtended<FaceFXLineEntry> fxaLines)
+        {
+            if (fxaLines == null) { return null; }
+
+            List<FaceFXLineEntry> lines = fxaLines.Where(l =>
+            {
+                if (l == null || l.Line == null || string.IsNullOrEmpty(l.Line.NameAsString)) { return false; }
+                return string.Equals(l.Line.NameAsString, fxaName, System.StringComparison.OrdinalIgnoreCase);
+            }).ToList();
+            if (lines.Count == 0) { return null; }
+
+            return lines.First();
         }
 
         private static string promptForRef(string msg, string err)
