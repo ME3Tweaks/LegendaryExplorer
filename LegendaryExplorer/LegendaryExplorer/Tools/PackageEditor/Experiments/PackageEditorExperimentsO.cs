@@ -2112,7 +2112,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         }
                         else
                         {
-                            if (eventRefs[line.Index].Value == 0) { continue; }
+                            if (line.Index <= 0 || eventRefs[line.Index].Value <= 0) { continue; }
                             soundEvent = pcc.GetUExport(eventRefs[line.Index].Value);
                         }
 
