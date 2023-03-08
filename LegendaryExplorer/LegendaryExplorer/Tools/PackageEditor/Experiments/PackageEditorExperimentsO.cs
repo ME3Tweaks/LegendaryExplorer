@@ -1652,7 +1652,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 ExportEntry tlkFileSet = null;
                 if (m_oTlkFileSet != null && m_oTlkFileSet.Value != 0 && pcc.TryGetUExport(m_oTlkFileSet.Value, out tlkFileSet))
                 {
-                    tlkFileSet.ObjectNameString = tlkFileSet.ObjectNameString.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
+                    string name = tlkFileSet.ObjectName.Name.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
+                    tlkFileSet.ObjectName = new NameReference(name, tlkFileSet.ObjectName.Number);
                 }
 
                 RenameISACTAudio(pcc, bioConversation, tlkFileSet, oldName, newName, conversation);
@@ -1722,7 +1723,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 ExportEntry link = pcc.GetUExport(bioConversation.idxLink);
                 if (link.ClassName == "Package")
                 {
-                    link.ObjectName = link.ObjectName.Name.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
+                    string name = link.ObjectName.Name.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
+                    link.ObjectName = new NameReference(name, link.ObjectName.Number);
                 }
             }
 
@@ -1732,7 +1734,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 ExportEntry link = pcc.GetUExport(conversation.Sequence.idxLink);
                 if (link.ClassName == "Package")
                 {
-                    link.ObjectName = link.ObjectName.Name.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
+                    string name = link.ObjectName.Name.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
+                    link.ObjectName = new NameReference(name, link.ObjectName.Number);
                 }
             }
             // Replace name of the sounds package, which is separate in ME2
@@ -1741,7 +1744,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 ExportEntry link = pcc.GetUExport(conversation.WwiseBank.idxLink);
                 if (link.ClassName == "Package")
                 {
-                    link.ObjectName = link.ObjectName.Name.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
+                    string name = link.ObjectName.Name.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
+                    link.ObjectName = new NameReference(name, link.ObjectName.Number);
                 }
             }
         }
@@ -1783,6 +1787,15 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             // operate on. Is it overkill? Yes. Does it get the job done more cleanly and safely? yes.
             ConversationExtended conversation = new(bioConversation);
             conversation.LoadConversation(TLKManagerWPF.GlobalFindStrRefbyID, true);
+
+            // Check that the conversation has a normal package structure. Otherwise it can lead to unexpected edge cases when trying to gather
+            // the different sound elements.
+            string structureCheckResult = CheckConversationStructure(pew.Pcc, bioConversation, conversation);
+            if (!string.IsNullOrEmpty(structureCheckResult))
+            {
+                ShowError(structureCheckResult);
+                return;
+            }
 
             string oldName = GetOldName(pew.Pcc, bioConversation, conversation);
 
@@ -1944,7 +1957,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             {
                 if (!pcc.Game.IsGame1())
                 {
-                    wwiseEvent.ObjectName = $"I{wwiseEvent.ObjectName.Name}";
+                    wwiseEvent.ObjectName = new NameReference($"I{wwiseEvent.ObjectName.Name}", wwiseEvent.ObjectName.Number);
                 }
             }
         }
@@ -1962,7 +1975,9 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             {
                 if (!pcc.Game.IsGame1())
                 {
-                    wwiseStream.ObjectName = wwiseStream.ObjectName.Name.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
+                    string name = wwiseStream.ObjectName.Name.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
+                    wwiseStream.ObjectName = new NameReference(name, wwiseStream.ObjectName.Number);
+
                     if (pcc.Game.IsGame2())
                     {
                         NameProperty bankName = wwiseStream.GetProperty<NameProperty>("BankName");
@@ -1985,7 +2000,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         {
             foreach (ExportEntry nodeWave in nodeWaves)
             {
-                nodeWave.ObjectNameString = nodeWave.ObjectNameString.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
+                string name = nodeWave.ObjectName.Name.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
+                nodeWave.ObjectName = new NameReference(name, nodeWave.ObjectName.Number);
             }
         }
 
