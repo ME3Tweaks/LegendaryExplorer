@@ -2120,6 +2120,12 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 {
                     foreach (FaceFXLine line in faceFXAnimSet.Lines)
                     {
+                        // Update the ID for ME1
+                        if (pcc.Game.IsGame1())
+                        {
+                            line.ID = line.ID.Replace(oldName, newName);
+                        }
+
                         ExportEntry soundEvent;
                         if (pcc.Game is MEGame.ME2)
                         {
