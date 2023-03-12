@@ -2565,7 +2565,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             //    "BioD_BchLmL_303TempleInterior.pcc",
             //};
 
-            var sourcePersistentFiles = new[] {/* "BioP_BchLmL.pcc", "BioP_BlbGtl.pcc", "BioP_CitAsL.pcc", "BioP_CitHub.pcc", "BioP_EndGm2.pcc",*//* "BioP_HorCr1.pcc", "BioP_JunCvL.pcc", "BioP_KroPrL.pcc", "BioP_N7NorCrash.pcc"*/ /*"BioP_Exp1Lvl4.pcc", "BioP_ArvLvl5.pcc" */ "BioP_OmgHub.pcc", "BioP_SunTlA.pcc", "BioP_ProCer.pcc"  };
+            var sourcePersistentFiles = new[] {/* "BioP_BchLmL.pcc", "BioP_BlbGtl.pcc", "BioP_CitAsL.pcc", "BioP_CitHub.pcc", "BioP_EndGm2.pcc",*//* "BioP_HorCr1.pcc", "BioP_JunCvL.pcc", "BioP_KroPrL.pcc", "BioP_N7NorCrash.pcc"*/ /*"BioP_Exp1Lvl4.pcc", "BioP_ArvLvl5.pcc" */ "BioP_OmgHub.pcc", "BioP_SunTlA.pcc", "BioP_ProCer.pcc" };
 
             foreach (var sourceP in sourcePersistentFiles)
             {
@@ -2601,7 +2601,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     // PRE PORTING
                     var srcExtraRefs = srcWorld.ExtraReferencedObjects;
 
-                    srcWorld.ExtraReferencedObjects =srcExtraRefs.Where(x =>
+                    srcWorld.ExtraReferencedObjects = srcExtraRefs.Where(x =>
                     {
                         if (x == 0) return false;
                         var entry = srcPackage.GetEntry(x);
@@ -3860,6 +3860,31 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 lod.LightMap = new LightMap(); // This means no lightmap.
             }
             exp.WriteBinary(smc);
+        }
+
+        public static void FixFXAMemoryNames(PackageEditorWindow peWindow)
+        {
+            if (peWindow == null || peWindow.Pcc == null)
+                return;
+
+            foreach (var fxa in peWindow.Pcc.Exports.Where(x => x.ClassName == "FaceFXAnimSet"))
+            {
+                var fxaO = ObjectBinary.From<FaceFXAnimSet>(fxa);
+
+                if (fxa.ObjectName.Name.EndsWith("_F") || fxa.ObjectName.Name.EndsWith("_M"))
+                {
+                    // Gendered
+                    fxaO.Names[0] = fxa.ObjectName.Name[..^2]; // Cut off _F / _M
+                }
+                else
+                {
+                    // Non gendered
+                    fxaO.Names[0] = fxa.ObjectName.Name; // Exact name
+                }
+
+                fxa.WriteBinary(fxaO);
+
+            }
         }
     }
 }

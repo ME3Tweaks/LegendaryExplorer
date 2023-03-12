@@ -855,6 +855,12 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             PackageEditorExperimentsM.StripLightmap(GetPEWindow());
         }
 
+        private void FixFXAMemoryNames_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.FixFXAMemoryNames(GetPEWindow());
+        }
+
+
         #endregion
 
         // EXPERIMENTS: SIRCXYRTYX-----------------------------------------------------
