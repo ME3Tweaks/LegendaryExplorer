@@ -483,7 +483,7 @@ namespace LegendaryExplorerCore.UnrealScript
                     classes.Add(classOverride, "");
                 }
                 LECLog.Debug($"{fileName}: Finished parse.");
-                var validator = new ClassValidationVisitor(log, symbols, ValidationPass.ClassAndStructMembersAndFunctionParams);
+                var validator = new ClassValidationVisitor(log, symbols, ValidationPass.ClassRegistration);
                 foreach (ValidationPass validationPass in Enums.GetValues<ValidationPass>())
                 {
                     foreach ((Class cls, string scriptText) in classes)
