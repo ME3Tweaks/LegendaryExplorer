@@ -615,8 +615,20 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                                 }
                                 if (objType is Class classType && functionsAccesible)
                                 {
-                                    //todo: determine when iterators are valid. (will require an AST lookup)
-                                    completionData.AddRange(FunctionCompletion.GenerateCompletions(classType.Functions, currentClass));
+                                    bool allowIterators = false;
+                                    for (int i = currentTokenIdx - 1; i >= 0; i--)
+                                    {
+                                        if (tokensSpan[i].Type is TokenType.SemiColon or TokenType.LeftBracket or TokenType.RightBracket)
+                                        {
+                                            break;
+                                        }
+                                        if (tokensSpan[i].Value.CaseInsensitiveEquals("foreach"))
+                                        {
+                                            allowIterators = true;
+                                            break;
+                                        }
+                                    }
+                                    completionData.AddRange(FunctionCompletion.GenerateCompletions(classType.Functions, currentClass, iterators: allowIterators));
                                 }
                                 objType = objType.Parent as ObjectType;
                             } while (objType is not null);
@@ -624,6 +636,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                         }
                         case Enumeration enumType:
                             completionData.AddRange(enumType.Values.Select(v => new CompletionData(v.Name, $"{v.IntVal}")));
+                            break;
+                        case DynamicArrayType dynArrType:
+                            completionData.AddRange(ArrayFunctionCompletion.GenerateCompletions(Pcc.Game, dynArrType));
                             break;
                         case null:
                         {
@@ -651,7 +666,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                                     {
                                         do
                                         {
-                                            completionData.AddRange(FunctionCompletion.GenerateCompletions(cls.Functions, currentClass, true));
+                                            completionData.AddRange(FunctionCompletion.GenerateCompletions(cls.Functions, currentClass, staticsOnly: true));
                                                     cls = cls.Parent as Class;
                                         } while (cls is not null);
                                     }
