@@ -129,7 +129,7 @@ namespace LegendaryExplorerCore.Compression
             ZipFile.ExtractToDirectory(supportZip, @"C:\Users\Public", true);
             return true;
 #else
-            LECLog.Information($@"Attempting to source oodle dll from filesystem. Parameters for source: {nameof(storagePath)}: {storagePath}");
+            LECLog.Information($@"Attempting to source oodle dll from filesystem.");
             if (storagePath != null && Directory.Exists(storagePath))
             {
                 var fullStoragePath = Path.Combine(storagePath, CompressionHelper.OODLE_DLL_NAME);
@@ -153,8 +153,7 @@ namespace LegendaryExplorerCore.Compression
 
                 if (oodleGamePath != null && File.Exists(oodleGamePath))
                 {
-                    LECLog.Debug($@"Caching oodle dll: {oodleGamePath} -> {fullStoragePath}");
-
+                    LECLog.Information($@"Caching oodle dll: {oodleGamePath} -> {fullStoragePath}");
                     File.Copy(oodleGamePath, fullStoragePath, true);
                     LoadOodleDll(fullStoragePath);
                     return true;
@@ -163,8 +162,6 @@ namespace LegendaryExplorerCore.Compression
             else
             {
                 // check native search directories
-                LECLog.Debug($@"Enumerating native dll search directories");
-
                 var t = AppContext.GetData("NATIVE_DLL_SEARCH_DIRECTORIES");
                 if (t is string str && !string.IsNullOrWhiteSpace(str))
                 {
@@ -175,8 +172,6 @@ namespace LegendaryExplorerCore.Compression
                         string tpath = null;
                         try
                         {
-                            LECLog.Debug($@"Checking native search path {path}");
-
                             tpath = Path.Combine(path, CompressionHelper.OODLE_DLL_NAME);
                             if (File.Exists(tpath))
                             {
