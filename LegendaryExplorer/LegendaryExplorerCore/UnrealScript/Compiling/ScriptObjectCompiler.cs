@@ -94,7 +94,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             ExportEntry classExport;
             if (classObj is null)
             {
-                classExport = CreateNewExport(pcc, className, "Class", parent, UClass.Create(), superClass);
+                classExport = CreateNewExport(pcc, className, "Class", parent, UClass.Create(), superClass, useTrash: false);
                 classObj = classExport.GetBinaryData<UClass>();
             }
             else
@@ -929,13 +929,13 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             return (constMembers, enumMembers, structMembers, propMembers, funcMembers, stateMembers);
         }
 
-        private static ExportEntry CreateNewExport(IMEPackage pcc, NameReference name, string className, IEntry parent, UField binary = null, IEntry super = null)
+        private static ExportEntry CreateNewExport(IMEPackage pcc, NameReference name, string className, IEntry parent, UField binary = null, IEntry super = null, bool useTrash = true)
         {
 
             IEntry classEntry = className.CaseInsensitiveEquals("Class") ? null : EntryImporter.EnsureClassIsInFile(pcc, className, new RelinkerOptionsPackage());
 
             //reuse trash exports
-            if (pcc.TryGetTrash(out ExportEntry trashExport))
+            if (useTrash && pcc.TryGetTrash(out ExportEntry trashExport))
             {
                 trashExport.ObjectName = name;
                 trashExport.Class = classEntry;

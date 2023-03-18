@@ -921,10 +921,9 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
             return true;
         }
 
-        public bool GoDirectlyToStack(string lowestScope)
+        public bool GoDirectlyToStack(string lowestScope, bool createScopesIfNeccesary = false)
         {
             string scope = lowestScope;
-            // TODO: 5 AM coding.. REVISIT THIS!
             if (!string.Equals(CurrentScopeName, OBJECT, StringComparison.OrdinalIgnoreCase))
                 throw new InvalidOperationException("Tried to go a scopestack while not at the top level scope!");
             if (string.Equals(scope, OBJECT, StringComparison.OrdinalIgnoreCase))
@@ -938,8 +937,10 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
             }
             for (int n = 1; n < scopes.Length; n++) // Start after "Object."
             {
-                if (!Cache.ContainsKey($"{CurrentScopeName}.{scopes[n]}"))
-                    return false; // this should not happen? possibly load classes from ppc on demand?
+                if (!createScopesIfNeccesary && !Cache.ContainsKey($"{CurrentScopeName}.{scopes[n]}"))
+                {
+                    throw new InvalidOperationException($"Could not go to scope \"{lowestScope}\" because scope \"{CurrentScopeName}.{scopes[n]}\" does not exist! Please file a detailed bug report if you see this.");
+                }
                 PushScope(scopes[n]);
             }
 

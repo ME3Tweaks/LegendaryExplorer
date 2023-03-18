@@ -15,6 +15,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 {
     internal enum ValidationPass
     {
+        ClassRegistration,
         TypesAndFunctionNamesAndStateNames,
         ClassAndStructMembersAndFunctionParams,
         BodyPass
@@ -31,7 +32,9 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
         public static void RunAllPasses(ASTNode node, MessageLog log, SymbolTable symbols)
         {
-            var validator = new ClassValidationVisitor(log, symbols, ValidationPass.TypesAndFunctionNamesAndStateNames);
+            var validator = new ClassValidationVisitor(log, symbols, ValidationPass.ClassRegistration);
+            node.AcceptVisitor(validator);
+            validator.Pass = ValidationPass.TypesAndFunctionNamesAndStateNames;
             node.AcceptVisitor(validator);
             validator.Pass = ValidationPass.ClassAndStructMembersAndFunctionParams;
             node.AcceptVisitor(validator);
@@ -58,7 +61,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         {
             switch (Pass)
             {
-                case ValidationPass.TypesAndFunctionNamesAndStateNames:
+                case ValidationPass.ClassRegistration:
                 {
                     // TODO: allow duplicate names as long as its in different packages!
                     if (node.Name != "Object")//validating Object is a special case, as it is the base class for all classes
@@ -127,11 +130,16 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                         {
                             return Error($"A native class cannot inherit from a non-native class!", node.StartPos);
                         }
-                        Symbols.GoDirectlyToStack(((Class)node.Parent).GetInheritanceString());
+                    }
+                    return Success;
+                }
+                case ValidationPass.TypesAndFunctionNamesAndStateNames:
+                {
+                    if (node.Name != "Object")//validating Object is a special case, as it is the base class for all classes
+                    {
+                        Symbols.GoDirectlyToStack(((Class)node.Parent).GetInheritanceString(), createScopesIfNeccesary: true);
                         Symbols.PushScope(node.Name);
                     }
-
-
 
                     //register all the types this class declares
                     foreach (VariableType type in node.TypeDeclarations)

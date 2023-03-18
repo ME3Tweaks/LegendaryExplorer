@@ -1939,6 +1939,8 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             if (Consume(TokenType.RightSqrBracket) is {} endTok)
             {
                 expr = new ArraySymbolRef(expr, arrIndex, expr.StartPos, endTok.EndPos);
+                //marking the ] as being of the array element type so that autocomplete will work
+                Tokens.AddDefinitionLink(expr.ResolveType(), endTok);
             }
             else
             {
@@ -2106,6 +2108,12 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     }
 
                     if (!Matches(TokenType.RightParenth)) throw ParseError("Expected ')'!", CurrentPosition);
+
+                    if (func.ReturnType is not null)
+                    {
+                        //hack to make autocomplete work
+                        Tokens.AddDefinitionLink(func.ReturnType, PrevToken);
+                    }
 
                     if (isDelegateCall)
                     {
@@ -2754,6 +2762,8 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             {
                 throw ParseError("Expected ')' at end of cast expression!", CurrentPosition);
             }
+            //marking the ) as being of the cast type so that autocomplete will work
+            Tokens.AddDefinitionLink(destType, PrevToken);
 
             var exprType = expr.ResolveType();
             if (destType.Equals(exprType))

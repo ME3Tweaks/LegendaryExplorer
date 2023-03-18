@@ -58,15 +58,10 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             var defaultsExportObjectName = new NameReference($"Default__{classExport.ObjectNameString}", classExport.indexValue);
             if (defaultsExport is null)
             {
-                if (pcc.TryGetTrash(out defaultsExport))
-                {
-                    defaultsExport.Parent = classExport.Parent;
-                }
-                else
-                {
-                    defaultsExport = new ExportEntry(pcc, classExport.Parent, defaultsExportObjectName);
-                    pcc.AddExport(defaultsExport);
-                }
+                //do not reuse trash for new defaults export
+
+                defaultsExport = new ExportEntry(pcc, classExport.Parent, defaultsExportObjectName);
+                pcc.AddExport(defaultsExport);
             }
             var cls = (Class)defaultsAST.Outer;
 
