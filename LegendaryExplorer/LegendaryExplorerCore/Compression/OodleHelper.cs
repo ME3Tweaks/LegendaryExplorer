@@ -36,9 +36,6 @@ namespace LegendaryExplorerCore.Compression
 
 
         [DllImport("kernel32.dll")]
-        static extern bool LoadLibraryW(string hModule);
-
-        [DllImport("kernel32.dll")]
         static extern bool GetModuleHandleExA(int dwFlags, string ModuleName, ref IntPtr phModule);
         [DllImport("kernel32.dll")]
         static extern bool FreeLibrary(IntPtr hModule);
@@ -56,8 +53,8 @@ namespace LegendaryExplorerCore.Compression
             // Not sure there is a point to unloading dll since it will likely need to be used again later
             if (!dllLoaded)
             {
-                LECLog.Information($@"Loading oodle library from {dllPath}");
-                LoadLibraryW(dllPath);
+                LECLog.Information($@"Loading oodle library into memory from {dllPath}");
+                NativeLibrary.Load(dllPath);
                 dllLoaded = true;
             }
         }
