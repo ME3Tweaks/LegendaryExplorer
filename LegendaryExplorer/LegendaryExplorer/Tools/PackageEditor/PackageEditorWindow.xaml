@@ -239,6 +239,7 @@
                     <MenuItem Header="Check for duplicate indexes" ToolTip="Tries to find duplicate indexes in this file" Command="{Binding CheckForDuplicateIndexesCommand}"/>
                     <MenuItem Header="Check for bad references" ToolTip="Checks imports and exports for references out of bounds of tables" Command="{Binding CheckForInvalidObjectPropertiesCommand}"/>
                     <MenuItem Header="Check for broken Materials" ToolTip="Checks to see if all Materials, and all MaterialInstances that have a StaticPermutationResource, have a corresponding entry in either the local or global shader cache" Command="{Binding CheckForBrokenMaterialsCommand}"/>
+                    <MenuItem Header="Check for Unrealscript errors" ToolTip="Checks all Classes for errors" Command="{Binding CheckForScriptErrorsCommand}"/>
                     <MenuItem Header="Resolve imports*" ToolTip="Attempts to resolve the imports and show the source of them in the treeview" Command="{Binding ResolveImportsTreeViewCommand}"/>
                     <MenuItem Header="Enable experiments (Warning: dangerous)" ToolTip="Enables experiments used by toolset developers. These features are not tested, not supported, and can easily break the toolset and/or games without warning" IsChecked="{Binding ShowExperiments}" IsCheckable="True" StaysOpenOnClick="True"/>
                 </MenuItem>

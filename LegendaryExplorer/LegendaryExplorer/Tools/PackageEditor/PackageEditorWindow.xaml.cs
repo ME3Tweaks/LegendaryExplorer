@@ -43,6 +43,7 @@ using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using LegendaryExplorerCore.Audio;
 using System.IO.Packaging;
+using LegendaryExplorerCore.UnrealScript.Language.Tree;
 
 namespace LegendaryExplorer.Tools.PackageEditor
 {
@@ -193,6 +194,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
         public ICommand CheckForDuplicateIndexesCommand { get; set; }
         public ICommand CheckForInvalidObjectPropertiesCommand { get; set; }
         public ICommand CheckForBrokenMaterialsCommand { get; set; }
+        public ICommand CheckForScriptErrorsCommand { get; set; }
         public ICommand EditNameCommand { get; set; }
         public ICommand AddNameCommand { get; set; }
         public ICommand CopyNameCommand { get; set; }
@@ -254,6 +256,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
             CheckForDuplicateIndexesCommand = new GenericCommand(CheckForDuplicateIndexes, PackageIsLoaded);
             CheckForInvalidObjectPropertiesCommand = new GenericCommand(CheckForBadObjectPropertyReferences, PackageIsLoaded);
             CheckForBrokenMaterialsCommand = new GenericCommand(CheckForBrokenMaterials, IsLoadedPackageME);
+            CheckForScriptErrorsCommand = new GenericCommand(CheckForScriptErrors, IsLoadedPackageME);
             EditNameCommand = new GenericCommand(EditName, NameIsSelected);
             AddNameCommand = new RelayCommand(AddName, CanAddName);
             CopyNameCommand = new GenericCommand(CopyName, NameIsSelected);
@@ -308,6 +311,71 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
             CreateClassCommand = new GenericCommand(CreateClass, IsLoadedPackageME);
             CreatePackageExportCommand = new GenericCommand(CreatePackageExport, IsLoadedPackageME);
+        }
+
+        private void CheckForScriptErrors()
+        {
+            if (Pcc is null)
+            {
+                return;
+            }
+            BusyText = "Checking for Script errors...";
+            IsBusy = true;
+            Task.Run(() =>
+            {
+                var errors = new List<EntryStringPair>();
+
+                var fileLib = new FileLib(Pcc);
+                using var packageCache = new PackageCache();
+                if (fileLib.Initialize(packageCache))
+                {
+                    foreach (ExportEntry export in Pcc.Exports.Where(exp => exp.IsClass))
+                    {
+                        try
+                        {
+                            (_, string source) = UnrealScriptCompiler.DecompileExport(export, fileLib, packageCache);
+                            var log = new MessageLog();
+
+                            var (ast, _) = UnrealScriptCompiler.CompileOutlineAST(source, "Class", log, Pcc.Game);
+                            if (!log.HasErrors)
+                            {
+                                UnrealScriptCompiler.CompileNewClassAST(Pcc, (Class)ast, log, fileLib, out bool vfTableChanged);
+                                if (vfTableChanged)
+                                {
+                                    log.LogError("Virtual function table needs to be updated!");
+                                }
+                            }
+                            if (log.HasErrors)
+                            {
+                                errors.Add(new EntryStringPair(export, $"#{export.UIndex,-9}\t{export.InstancedFullPath}:\n{string.Join('\n', log.AllErrors)}"));
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            errors.Add(new EntryStringPair(export, $"{export.UIndex,-9}\t{export.InstancedFullPath}: EXCEPTION while checking for errors\n{e.FlattenException()}"));
+                        }
+                    }
+                }
+                else
+                {
+                    errors.Add(new EntryStringPair($"FileLib failed to initialize! Errors: \n{string.Join('\n', fileLib.InitializationLog.Errors)}"));
+                }
+                return errors;
+            }).ContinueWithOnUIThread(prevTask =>
+            {
+                IsBusy = false;
+                if (prevTask.Result.IsEmpty())
+                {
+                    MessageBox.Show(this, "No Script Errors found!");
+                }
+                else
+                {
+                    new ListDialog(prevTask.Result, "Script errors", "", this)
+                    {
+                        DoubleClickEntryHandler = entryDoubleClick
+                    }.Show();
+                }
+            });
         }
 
         private void OpenOtherVersion()
