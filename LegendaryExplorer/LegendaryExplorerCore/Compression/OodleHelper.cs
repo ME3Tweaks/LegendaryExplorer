@@ -156,58 +156,56 @@ namespace LegendaryExplorerCore.Compression
                     return true;
                 }
             }
-            else
+
+            // check native search directories
+            var t = AppContext.GetData("NATIVE_DLL_SEARCH_DIRECTORIES");
+            if (t is string str && !string.IsNullOrWhiteSpace(str))
             {
-                // check native search directories
-                var t = AppContext.GetData("NATIVE_DLL_SEARCH_DIRECTORIES");
-                if (t is string str && !string.IsNullOrWhiteSpace(str))
+                var paths = str.Split(';');
+                foreach (var path in paths)
                 {
-                    var paths = str.Split(';');
-                    foreach (var path in paths)
+                    if (string.IsNullOrWhiteSpace(path)) continue;
+                    string tpath = null;
+                    try
                     {
-                        if (string.IsNullOrWhiteSpace(path)) continue;
-                        string tpath = null;
-                        try
+                        tpath = Path.Combine(path, CompressionHelper.OODLE_DLL_NAME);
+                        if (File.Exists(tpath))
                         {
-                            tpath = Path.Combine(path, CompressionHelper.OODLE_DLL_NAME);
-                            if (File.Exists(tpath))
-                            {
-                                LoadOodleDll(tpath);
-                                return true;
-                            }
-                        }
-                        catch (Exception e)
-                        {
-                            LECLog.Warning($@"Error looking up native search directory {tpath}: {e.Message}, skipping");
-                        }
-                    }
-
-                    //possible that someone might have deleted one or two of the LE games to save disk space
-                    string anLEExecutableFolder = LE1Directory.ExecutableFolder ?? LE2Directory.ExecutableFolder ?? LE3Directory.ExecutableFolder;
-                    if (anLEExecutableFolder is not null)
-                    {
-                        string oodPath = Path.Combine(anLEExecutableFolder, CompressionHelper.OODLE_DLL_NAME);
-                        if (File.Exists(oodPath) && paths.Length > 0)
-                        {
-
-                            // Todo: FIX: CANNOT RUN IN TEST MODE
-                            // Access denied to directory
-                            try
-                            {
-                                string destPath = Path.Combine(paths.First(), CompressionHelper.OODLE_DLL_NAME);
-                                LECLog.Information($@"Caching oodle dll: {oodPath} -> {destPath}");
-                                File.Copy(oodPath, destPath, true);
-                                LoadOodleDll(destPath);
-                            }
-                            catch (UnauthorizedAccessException e)
-                            {
-                                // I guess just try to load it... might lock the folder :(
-                                LECLog.Error($@"Could not copy Oodle dll to native dll directory, loading directly out of game dir instead: {oodPath}");
-                                LoadOodleDll(oodPath);
-                            }
-
+                            LoadOodleDll(tpath);
                             return true;
                         }
+                    }
+                    catch (Exception e)
+                    {
+                        LECLog.Warning($@"Error looking up native search directory {tpath}: {e.Message}, skipping");
+                    }
+                }
+
+                //possible that someone might have deleted one or two of the LE games to save disk space
+                string anLEExecutableFolder = LE1Directory.ExecutableFolder ?? LE2Directory.ExecutableFolder ?? LE3Directory.ExecutableFolder;
+                if (anLEExecutableFolder is not null)
+                {
+                    string oodPath = Path.Combine(anLEExecutableFolder, CompressionHelper.OODLE_DLL_NAME);
+                    if (File.Exists(oodPath) && paths.Length > 0)
+                    {
+
+                        // Todo: FIX: CANNOT RUN IN TEST MODE
+                        // Access denied to directory
+                        try
+                        {
+                            string destPath = storagePath != null ? Path.Combine(storagePath, CompressionHelper.OODLE_DLL_NAME) : Path.Combine(paths.First(), CompressionHelper.OODLE_DLL_NAME);
+                            LECLog.Information($@"Caching oodle dll: {oodPath} -> {destPath}");
+                            File.Copy(oodPath, destPath, true);
+                            LoadOodleDll(destPath);
+                        }
+                        catch (UnauthorizedAccessException e)
+                        {
+                            // I guess just try to load it... might lock the folder :(
+                            LECLog.Error($@"Could not copy Oodle dll to native dll directory, loading directly out of game dir instead: {oodPath}");
+                            LoadOodleDll(oodPath);
+                        }
+
+                        return true;
                     }
                 }
             }
