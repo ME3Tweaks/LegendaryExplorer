@@ -1,8 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace LegendaryExplorerCore.Coalesced
 {
+    [DebuggerDisplay("CoalesceProperty '{Name}'")]
     public class CoalesceProperty : IList<CoalesceValue>
     {
         public const int DefaultValueType = 2;

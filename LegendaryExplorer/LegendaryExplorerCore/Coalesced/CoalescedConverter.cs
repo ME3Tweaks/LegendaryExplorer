@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -647,7 +648,7 @@ namespace LegendaryExplorerCore.Coalesced
         /// <param name="inputStream">The input stream to read from</param>
         /// <param name="name">The name of the coalesced file - this is written to the manifest file and will be the name the file reserializes to (in tools such as M3)</param>
         /// <returns></returns>
-        public static Dictionary<string, DuplicatingIni> DecompileLE1LE2ToMemory(Stream inputStream, string name)
+        public static CaseInsensitiveDictionary<DuplicatingIni> DecompileLE1LE2ToMemory(Stream inputStream, string name)
         {
             return LECoalescedConverter.UnpackToMemory(inputStream, name).Files;
         }
@@ -665,6 +666,25 @@ namespace LegendaryExplorerCore.Coalesced
             cb.WriteToStream(ms);
             ms.Position = 0;
             return ms;
+        }
+
+        /// <summary>
+        /// Decompiles the coalesced file (specified by the stream) to CoalescedAsset objects
+        /// </summary>
+        /// <param name="coalescedData">The data of the Coalesced</param>
+        /// <param name="name">The name of the coalesced file - this is written to the manifest file data</param>
+        /// <returns></returns>
+        public static CaseInsensitiveDictionary<CoalesceAsset> DecompileLE1LE2ToAssets(Stream coalescedData, string name)
+        {
+            var decompiled = DecompileLE1LE2ToMemory(coalescedData, name);
+            var assets = new CaseInsensitiveDictionary<CoalesceAsset>();
+
+            foreach (var decomp in decompiled)
+            {
+                assets[decomp.Key] = ConfigFileProxy.ParseIni(decomp.Value.ToString()); // Technically this is extra work as we parsed from data -> DuplicatingIni -> string data -> Coalesced asset. This may be able to be improved by directly loading from data, but that would require a lot of API changes
+            }
+
+            return assets;
         }
     }
 }

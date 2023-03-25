@@ -100,7 +100,7 @@ namespace LegendaryExplorerCore.Coalesced
     public class LECoalescedBundle
     {
         public string Name { get; private set; }
-        public Dictionary<string, DuplicatingIni> Files { get; } = new();
+        public CaseInsensitiveDictionary<DuplicatingIni> Files { get; } = new();
 
         public LECoalescedBundle(string name)
         {
