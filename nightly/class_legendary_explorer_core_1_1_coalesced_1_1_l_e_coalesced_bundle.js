@@ -8,5 +8,5 @@ var class_legendary_explorer_core_1_1_coalesced_1_1_l_e_coalesced_bundle =
     [ "WriteToFile", "class_legendary_explorer_core_1_1_coalesced_1_1_l_e_coalesced_bundle.html#a0add9afc198a2fb5f9e816ea0907cf0a", null ],
     [ "WriteToStream", "class_legendary_explorer_core_1_1_coalesced_1_1_l_e_coalesced_bundle.html#afb07d10091fc427c47b563228c0f9816", null ],
     [ "Name", "class_legendary_explorer_core_1_1_coalesced_1_1_l_e_coalesced_bundle.html#a6ad0f040747b0e44ba95472eb86a3458", null ],
-    [ "Files", "class_legendary_explorer_core_1_1_coalesced_1_1_l_e_coalesced_bundle.html#a2490170ccdd722523890d2debab17f2b", null ]
+    [ "Files", "class_legendary_explorer_core_1_1_coalesced_1_1_l_e_coalesced_bundle.html#a801f57ed16dae2b047a2dbade8b2415f", null ]
 ];

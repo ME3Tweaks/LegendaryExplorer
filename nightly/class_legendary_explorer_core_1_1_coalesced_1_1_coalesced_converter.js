@@ -7,8 +7,9 @@ var class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter =
     [ "CompileFromMemory", "class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#aee8b566beda07d82a9fc826b4d8a6842", null ],
     [ "ConvertToBin", "class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#acf1b912e49c59a9a547b55aba8c2c9c5", null ],
     [ "IsGame3Coalesced", "class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#a6f2ac4ed00e3539a6e02bfab94bcbfed", null ],
-    [ "DecompileLE1LE2ToMemory", "class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#a0e96d2b0f4d68b94b8709cefc0c5ac78", null ],
+    [ "DecompileLE1LE2ToMemory", "class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#ad0ee821ad03fab5a103b1bfef1ad1b5a", null ],
     [ "CompileLE1LE2FromMemory", "class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#adef9f4ddfaa2b809e6bddff3b7151e01", null ],
+    [ "DecompileLE1LE2ToAssets", "class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#a14072a42fab0f0c92158c5d6822f5900", null ],
     [ "CoalescedMagicNumber", "class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#a2666e01a187841c834544f6d40dbfdc1", null ],
     [ "ProperNames", "class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#a2a8c146b4be2b27198df86e4ce438934", null ],
     [ "SpecialCharacters", "class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#ae13049de13de54370fde607f3b52d004", null ]
