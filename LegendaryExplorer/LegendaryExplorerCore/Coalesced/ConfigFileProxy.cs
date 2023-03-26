@@ -67,7 +67,7 @@ namespace LegendaryExplorerCore.Coalesced
                     }
                     else
                     {
-                        Debug.WriteLine($"ConfigFileProxy: Skipping line {trimmed}");
+                        // Debug.WriteLine($"ConfigFileProxy: Skipping line {trimmed}");
                     }
                 }
             }
