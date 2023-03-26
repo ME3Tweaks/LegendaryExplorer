@@ -113,7 +113,8 @@ namespace LegendaryExplorerCore.Coalesced
             if (key[0] == '+') return CoalesceParseAction.AddUnique; // AddUnique 3 (enum 1)
             if (key[0] == '!') return CoalesceParseAction.RemoveProperty; // Clear 1 
             if (key[0] == '-') return CoalesceParseAction.Remove; // Subtract 4
-            return CoalesceParseAction.Add; // ME2 does not have a 'New' (.). Maybe it does but it's not used.
+            if (key[0] == '.') return CoalesceParseAction.New; // New 0 // THIS IS NOT USED IN ME2 - THIS IS ONLY USED FOR M3CD FILES BY ME3TWEAKS CORE
+            return CoalesceParseAction.Add;
         }
 
         /// <summary>
@@ -127,7 +128,7 @@ namespace LegendaryExplorerCore.Coalesced
             if (action == CoalesceParseAction.AddUnique) return "+"; // Unique (3)
             if (action == CoalesceParseAction.RemoveProperty) return "!"; // Clear (1)
             if (action == CoalesceParseAction.Remove) return "-"; // Subtract 4
-            return ""; // Add (2) has no prefix 
+            return ""; // Add (2) has no prefix, Type 0 New does not exist in ME2
         }
     }
 }

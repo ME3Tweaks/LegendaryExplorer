@@ -120,9 +120,9 @@ namespace LegendaryExplorerCore.GameFilesystem
         /// Gets all the enabled DLC in a game along with the mount value.
         /// </summary>
         /// <returns>Dictionary of DLC folder name to mount priority</returns>
-        public static Dictionary<string, int> GetDLCNamesWithMounts(MEGame game)
+        public static Dictionary<string, int> GetDLCNamesWithMounts(MEGame game, string gameDirectoryOverride = null)
         {
-            var dlcs = GetEnabledDLCFolders(game);
+            var dlcs = GetEnabledDLCFolders(game, gameDirectoryOverride);
             var mountlist = new Dictionary<string, int>();
             foreach (var d in dlcs)
             {
@@ -130,6 +130,18 @@ namespace LegendaryExplorerCore.GameFilesystem
                 mountlist.Add(Path.GetFileName(d), m);
             }
             return mountlist;
+        }
+
+        /// <summary>
+        /// Gets the list of enabled DLC in load order, that is lowest-to-highest mount priority. This does not factor in SFAR packed DLCs from ME3.
+        /// </summary>
+        /// <param name="game">The game to enumerate DLC for</param>
+        /// <param name="gameDirectoryOverride">The directory of the game. If null, the default path will be used</param>
+        /// <returns></returns>
+        public static List<string> GetDLCNamesInMountOrder(MEGame game, string gameDirectoryOverride = null)
+        {
+            var list = GetDLCNamesWithMounts(game, gameDirectoryOverride);
+            return list.OrderBy(x => x.Value).Select(x => x.Key).ToList();
         }
     }
 }
