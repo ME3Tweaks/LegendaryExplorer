@@ -126,9 +126,12 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a371b9f25fb4771959ba2e8d52f8943ba"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_loaded_d_l_c.html#a371b9f25fb4771959ba2e8d52f8943ba">GetDLCNameFromDir</a> (string dlcDirectory)</td></tr>
 <tr class="memdesc:a371b9f25fb4771959ba2e8d52f8943ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Removes the "DLC_" prefix from a DLC folder path   <a href="class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_loaded_d_l_c.html#a371b9f25fb4771959ba2e8d52f8943ba">More...</a><br /></td></tr>
 <tr class="separator:a371b9f25fb4771959ba2e8d52f8943ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afba4e7b5bca1424034a879db84edbdac"><td class="memItemLeft" align="right" valign="top">static Dictionary&lt; string, int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_loaded_d_l_c.html#afba4e7b5bca1424034a879db84edbdac">GetDLCNamesWithMounts</a> (<a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game)</td></tr>
-<tr class="memdesc:afba4e7b5bca1424034a879db84edbdac"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets all the enabled DLC in a game along with the mount value.   <a href="class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_loaded_d_l_c.html#afba4e7b5bca1424034a879db84edbdac">More...</a><br /></td></tr>
-<tr class="separator:afba4e7b5bca1424034a879db84edbdac"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a40fc37b30a12b6f9f5c2286b6ea80a95"><td class="memItemLeft" align="right" valign="top">static Dictionary&lt; string, int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_loaded_d_l_c.html#a40fc37b30a12b6f9f5c2286b6ea80a95">GetDLCNamesWithMounts</a> (<a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game, string gameDirectoryOverride=null)</td></tr>
+<tr class="memdesc:a40fc37b30a12b6f9f5c2286b6ea80a95"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets all the enabled DLC in a game along with the mount value.   <a href="class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_loaded_d_l_c.html#a40fc37b30a12b6f9f5c2286b6ea80a95">More...</a><br /></td></tr>
+<tr class="separator:a40fc37b30a12b6f9f5c2286b6ea80a95"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a52ec93912fed8fe7e57e580e154fde16"><td class="memItemLeft" align="right" valign="top">static List&lt; string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_loaded_d_l_c.html#a52ec93912fed8fe7e57e580e154fde16">GetDLCNamesInMountOrder</a> (<a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game, string gameDirectoryOverride=null)</td></tr>
+<tr class="memdesc:a52ec93912fed8fe7e57e580e154fde16"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the list of enabled DLC in load order, that is lowest-to-highest mount priority. This does not factor in SFAR packed DLCs from ME3.   <a href="class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_loaded_d_l_c.html#a52ec93912fed8fe7e57e580e154fde16">More...</a><br /></td></tr>
+<tr class="separator:a52ec93912fed8fe7e57e580e154fde16"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Static methods to get information on DLC installed in a game  </p>
@@ -447,8 +450,8 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="afba4e7b5bca1424034a879db84edbdac" name="afba4e7b5bca1424034a879db84edbdac"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afba4e7b5bca1424034a879db84edbdac">&#9670;&#160;</a></span>GetDLCNamesWithMounts()</h2>
+<a id="a40fc37b30a12b6f9f5c2286b6ea80a95" name="a40fc37b30a12b6f9f5c2286b6ea80a95"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a40fc37b30a12b6f9f5c2286b6ea80a95">&#9670;&#160;</a></span>GetDLCNamesWithMounts()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -460,8 +463,18 @@ Static Public Member Functions</h2></td></tr>
           <td class="memname">static Dictionary&lt; string, int &gt; LegendaryExplorerCore.GameFilesystem.MELoadedDLC.GetDLCNamesWithMounts </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a>&#160;</td>
-          <td class="paramname"><em>game</em></td><td>)</td>
+          <td class="paramname"><em>game</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>gameDirectoryOverride</em> = <code>null</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -473,6 +486,52 @@ Static Public Member Functions</h2></td></tr>
 
 <p>Gets all the enabled DLC in a game along with the mount value.  </p>
 <dl class="section return"><dt>Returns</dt><dd>Dictionary of DLC folder name to mount priority</dd></dl>
+
+</div>
+</div>
+<a id="a52ec93912fed8fe7e57e580e154fde16" name="a52ec93912fed8fe7e57e580e154fde16"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a52ec93912fed8fe7e57e580e154fde16">&#9670;&#160;</a></span>GetDLCNamesInMountOrder()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static List&lt; string &gt; LegendaryExplorerCore.GameFilesystem.MELoadedDLC.GetDLCNamesInMountOrder </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a>&#160;</td>
+          <td class="paramname"><em>game</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>gameDirectoryOverride</em> = <code>null</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Gets the list of enabled DLC in load order, that is lowest-to-highest mount priority. This does not factor in SFAR packed DLCs from ME3.  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">game</td><td>The game to enumerate DLC for</td></tr>
+    <tr><td class="paramname">gameDirectoryOverride</td><td>The directory of the game. If null, the default path will be used</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
 
 </div>
 </div>

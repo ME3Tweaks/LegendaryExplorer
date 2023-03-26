@@ -7,5 +7,6 @@ var class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_loaded_d_l_c =
     [ "IsOfficialDLC", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_loaded_d_l_c.html#a39a89f42e4addef2bb24b21f3d68e989", null ],
     [ "GetMountPriority", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_loaded_d_l_c.html#a951c12604de171e120807a6ff53ec4c4", null ],
     [ "GetDLCNameFromDir", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_loaded_d_l_c.html#a371b9f25fb4771959ba2e8d52f8943ba", null ],
-    [ "GetDLCNamesWithMounts", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_loaded_d_l_c.html#afba4e7b5bca1424034a879db84edbdac", null ]
+    [ "GetDLCNamesWithMounts", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_loaded_d_l_c.html#a40fc37b30a12b6f9f5c2286b6ea80a95", null ],
+    [ "GetDLCNamesInMountOrder", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_loaded_d_l_c.html#a52ec93912fed8fe7e57e580e154fde16", null ]
 ];
