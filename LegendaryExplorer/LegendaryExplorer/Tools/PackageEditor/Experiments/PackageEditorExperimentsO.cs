@@ -1140,8 +1140,13 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 return;
             }
 
-            // Rename the conversation, its package, the WwiseBank, the FXAs, VOs and WwiseEvents
-            RenameConversation(pew.Pcc, bioConversation, conversation, newName, updateAudioIDs);
+            // Rename the conversation, its package, the FXAs, and the related audio elements
+            string conversationResult = RenameConversation(pew.Pcc, bioConversation, conversation, newName, updateAudioIDs);
+            if (!string.IsNullOrEmpty(conversationResult))
+            {
+                ShowError(conversationResult);
+                return;
+            }
 
             // Change the conversations ResRefID an the ConvNodes IDs
             ChangeConvoIDandConvNodeIDs(bioConversation, (ExportEntry)conversation.Sequence, newConvResRefID, convNodeIDBase);
@@ -1626,7 +1631,12 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 return;
             }
 
-            RenameConversation(pew.Pcc, bioConversation, conversation, newName, updateAudioIDs);
+            string conversationResult = RenameConversation(pew.Pcc, bioConversation, conversation, newName, updateAudioIDs);
+            if (!string.IsNullOrEmpty(conversationResult))
+            {
+                ShowError(conversationResult);
+                return;
+            }
 
             MessageBox.Show("Conversation renamed successfully.", "Success", MessageBoxButton.OK);
         }
@@ -1639,10 +1649,18 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         /// <param name="conversation">Loaded conversation to edit.</param>
         /// <param name="newName">New name.</param>
         /// <param name="updateAudioIDs">Whether to update the IDs of Bank, Events, and Streams.</param>
-        public static void RenameConversation(IMEPackage pcc, ExportEntry bioConversation, ConversationExtended conversation, string newName, bool updateAudioIDs)
+        /// <returns>Empty string if no errors, otherwise an error message to display to the user.</returns>
+        public static string RenameConversation(IMEPackage pcc, ExportEntry bioConversation, ConversationExtended conversation, string newName, bool updateAudioIDs)
         {
             string oldBioConversationName = bioConversation.ObjectName;
             string oldName = GetOldName(pcc, bioConversation, conversation);
+
+            if (string.IsNullOrEmpty(oldName))
+            {
+                string nameSource = pcc.Game.IsGame1() ? "TlkSet" : "WwiseBank";
+                return $"A common name could not be found between the conversation name and the {nameSource} name.\n" +
+                    $"Make sure that the elements related to the conversation follow the conventional naming scheme for the game.";
+            }
 
             RenamePackages(pcc, bioConversation, conversation, oldName, newName);
 
@@ -1667,6 +1685,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             // Rename bioConversation after the audio, since it needs the old name
             string newBioConversationName = oldBioConversationName.Replace(oldName, newName, StringComparison.OrdinalIgnoreCase);
             bioConversation.ObjectName = newBioConversationName;
+
+            return "";
         }
 
         /// <summary>
