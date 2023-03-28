@@ -1952,6 +1952,36 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
         }
 
+        /// <summary>
+        /// Wrapper for UpdateAmbPerfClass so it can used as a full experiment on its own.
+        /// </summary>
+        /// <param name="pew">Current PE window.</param>
+        public static void UpdateAmbPerfClassExperiment(PackageEditorWindow pew)
+        {
+
+        }
+
+        /// <summary>
+        /// Batch update WepPropClass, PropName, and PropResource props of an AmbPerfs in a selected Package.
+        /// </summary>
+        /// <param name="pew">Current PE window.</param>
+        public static void BatchUpdateAmbPerfClass(PackageEditorWindow pew)
+        {
+
+        }
+
+        /// <summary>
+        /// Update WepPropClass, PropName, and PropResource props of an AmbPerf.
+        /// </summary>
+        /// <param name="pcc">Pcc to operate on.</param>
+        /// <param name="propResource">Weapon class export entry, from which all the needed information is derived.</param>
+        /// <param name="propName">Prop class name minus the SFXWeapon_ part. Passed when used in a batch.</param>
+        /// <param name="propClass">Prop class instantiated named. Passed when used in a batch.</param>
+        public static void UpdateAmbPerfClass(MEPackage pcc, ExportEntry propResource, string propClass = "", string propName = "")
+        {
+
+        }
+
         // HELPER FUNCTIONS
         #region Helper functions
         /// <summary>

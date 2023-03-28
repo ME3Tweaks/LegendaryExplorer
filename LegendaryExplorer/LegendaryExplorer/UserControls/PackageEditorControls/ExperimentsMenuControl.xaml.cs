@@ -1465,6 +1465,16 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         {
             PackageEditorExperimentsO.UpdateWwiseBankIDExperiment(GetPEWindow());
         }
+
+        private void UpdateAmbPerfClass_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.UpdateAmbPerfClassExperiment(GetPEWindow());
+        }
+
+        private void BatchUpdateAmbPerfClass_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.BatchUpdateAmbPerfClass(GetPEWindow());
+        }
         #endregion
 
         // EXPERIMENTS: CHONKY DB---------------------------------------------------------
