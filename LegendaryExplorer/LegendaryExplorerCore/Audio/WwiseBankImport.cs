@@ -158,7 +158,7 @@ namespace LegendaryExplorerCore.Audio
                     p.Add(new IntProperty((int)eventInfo.Id, "Id"));
 
 
-                    p.Add(new FloatProperty(9, "Duration")); // TODO: FIGURE THIS OUT!!! THIS IS A PLACEHOLDER
+                    p.Add(new FloatProperty(20, "DurationSeconds")); // TODO: FIGURE THIS OUT!!! THIS IS A PLACEHOLDER
 
                     // Todo: Write the WwiseStreams
                 }
