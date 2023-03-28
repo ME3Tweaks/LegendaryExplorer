@@ -1958,15 +1958,56 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         /// <param name="pew">Current PE window.</param>
         public static void UpdateAmbPerfClassExperiment(PackageEditorWindow pew)
         {
+            if (pew.Pcc == null || pew.SelectedItem?.Entry == null) { return; }
 
+            if (pew.SelectedItem.Entry.ClassName is not "SFXAmbPerfGameData")
+            {
+                ShowError("Selected export is not an SFXAmbPerfGameData");
+                return;
+            }
+
+            int propResourceID = promptForInt("PropResource export number:", "Not a valid export number. It must be positive integer", -1, "PropResouce export number");
+            if (propResourceID == -1) { return; }
+            if (!pew.Pcc.TryGetUExport(propResourceID, out ExportEntry propResource))
+            {
+                ShowError("Could not find the export number.");
+                return;
+            }
+            if (propResource.ClassName != "Class")
+            {
+                ShowError("Provided export is not a class.");
+                return;
+            }
+
+            UpdateAmbPerfClass(pew.Pcc, (ExportEntry) pew.SelectedItem.Entry, propResource);
         }
 
         /// <summary>
         /// Batch update WepPropClass, PropName, and PropResource props of an AmbPerfs in a selected Package.
         /// </summary>
         /// <param name="pew">Current PE window.</param>
-        public static void BatchUpdateAmbPerfClass(PackageEditorWindow pew)
+        public static void BatchUpdateAmbPerfClassExperiment(PackageEditorWindow pew)
         {
+            if (pew.Pcc == null || pew.SelectedItem?.Entry == null) { return; }
+
+            if (pew.SelectedItem.Entry.ClassName is not "Package")
+            {
+                ShowError("Selected export is not an Package");
+                return;
+            }
+
+            int propResourceID = promptForInt("PropResource export number:", "Not a valid export number. It must be positive integer", -1, "PropResouce export number");
+            if (propResourceID == -1) { return; }
+            if (!pew.Pcc.TryGetUExport(propResourceID, out ExportEntry propResource))
+            {
+                ShowError("Could not find the export number.");
+                return;
+            }
+            if (propResource.ClassName != "Class")
+            {
+                ShowError("Provided export is not a class.");
+                return;
+            }
 
         }
 
@@ -1974,10 +2015,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         /// Update WepPropClass, PropName, and PropResource props of an AmbPerf.
         /// </summary>
         /// <param name="pcc">Pcc to operate on.</param>
+        /// <param name="ambPerfGameData">Export to update.</param>
         /// <param name="propResource">Weapon class export entry, from which all the needed information is derived.</param>
         /// <param name="propName">Prop class name minus the SFXWeapon_ part. Passed when used in a batch.</param>
         /// <param name="propClass">Prop class instantiated named. Passed when used in a batch.</param>
-        public static void UpdateAmbPerfClass(MEPackage pcc, ExportEntry propResource, string propClass = "", string propName = "")
+        public static void UpdateAmbPerfClass(IMEPackage pcc, ExportEntry ambPerfGameData, ExportEntry propResource, string propClass = "", string propName = "")
         {
 
         }
