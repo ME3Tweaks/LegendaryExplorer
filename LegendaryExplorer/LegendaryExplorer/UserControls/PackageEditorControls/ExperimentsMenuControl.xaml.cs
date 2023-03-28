@@ -1473,7 +1473,7 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
 
         private void BatchUpdateAmbPerfClass_Click(object sender, RoutedEventArgs e)
         {
-            PackageEditorExperimentsO.BatchUpdateAmbPerfClass(GetPEWindow());
+            PackageEditorExperimentsO.BatchUpdateAmbPerfClassExperiment(GetPEWindow());
         }
         #endregion
 

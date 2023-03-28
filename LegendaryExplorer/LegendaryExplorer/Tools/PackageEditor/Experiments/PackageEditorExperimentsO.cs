@@ -1980,6 +1980,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
 
             UpdateAmbPerfClass(pew.Pcc, (ExportEntry) pew.SelectedItem.Entry, propResource);
+
+            MessageBox.Show("Properties of SFXAmbPerfGameData updated successfully.", "Success", MessageBoxButton.OK);
         }
 
         /// <summary>
@@ -2009,6 +2011,18 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 return;
             }
 
+            string propClass = propResource.InstancedFullPath;
+            string propName = propResource.ObjectName.Name.Replace("SFXWeapon_", "", StringComparison.OrdinalIgnoreCase);
+
+            pew.SelectedItem.Entry.GetAllDescendants().ForEach(entry =>
+            {
+                if (entry.ClassName == "SFXAmbPerfGameData")
+                {
+                    UpdateAmbPerfClass(pew.Pcc, (ExportEntry)entry, propResource, propClass, propName);
+                }
+            });
+
+            MessageBox.Show("Properties of children SFXAmbPerfGameDatas updated successfully.", "Success", MessageBoxButton.OK);
         }
 
         /// <summary>
@@ -2017,11 +2031,27 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         /// <param name="pcc">Pcc to operate on.</param>
         /// <param name="ambPerfGameData">Export to update.</param>
         /// <param name="propResource">Weapon class export entry, from which all the needed information is derived.</param>
-        /// <param name="propName">Prop class name minus the SFXWeapon_ part. Passed when used in a batch.</param>
         /// <param name="propClass">Prop class instantiated named. Passed when used in a batch.</param>
+        /// <param name="propName">Prop class name minus the SFXWeapon_ part. Passed when used in a batch.</param>
         public static void UpdateAmbPerfClass(IMEPackage pcc, ExportEntry ambPerfGameData, ExportEntry propResource, string propClass = "", string propName = "")
         {
+            if (string.IsNullOrEmpty(propClass))
+            {
+                propClass = propResource.InstancedFullPath;
+            }
 
+            if (string.IsNullOrEmpty(propName))
+            {
+                propName = propResource.ObjectName.Name.Replace("SFXWeapon_", "", StringComparison.OrdinalIgnoreCase);
+            }
+
+            PropertyCollection props = ambPerfGameData.GetProperties();
+
+            props.AddOrReplaceProp(new StrProperty(propClass, "m_sWepPropClass"));
+            props.AddOrReplaceProp(new NameProperty(propName, "m_nmPropName"));
+            props.AddOrReplaceProp(new ObjectProperty(propResource, "m_pPropResource"));
+
+            ambPerfGameData.WriteProperties(props);
         }
 
         // HELPER FUNCTIONS
