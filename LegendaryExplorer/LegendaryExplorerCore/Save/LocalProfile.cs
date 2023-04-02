@@ -126,13 +126,14 @@ namespace LegendaryExplorerCore.Save
 
                 // Read ID
                 var idType = profileReader.ReadByte();
+#if AZURE
                 if (idType != 1 && idType != 2)
                 {
-#if !AZURE
                     // This will be 0x1 INT
                     throw new Exception($@"Profile ID is not marked as type INT or INT64 at position 0x{(profileReader.Position - 1):X8}! Value: {idType}");
+            }
 #endif
-                }
+
                 setting.Id = profileReader.ReadInt32();
 
                 // Read Value
@@ -166,7 +167,7 @@ namespace LegendaryExplorerCore.Save
                         break;
                     default:
                         Debug.WriteLine($"ERROR: Invalid type encountered at 0x{(profileReader.Position - 1):X8}");
-#if !AZURE
+#if AZURE
                         throw new Exception($@"LocalProfile encounted invalid type: {setting.DataType}");
 #endif
                         break;
@@ -189,16 +190,13 @@ namespace LegendaryExplorerCore.Save
             }
 
             // Verify checksum
-            // Tring to figure out which one of these works...
+            // Trying to figure out which one of these works...
             var expectedSHA = BitConverter.ToString(checksum).Replace(@"-", "").ToLowerInvariant();
-            var testStream = new MemoryStream();
-            testStream.WriteZeros(0x14);
-            testStream.WriteFromBuffer(compressedProfileData);
-            testStream.Position = 0;
-            var verifySha3 = BitConverter.ToString(SHA1.Create().ComputeHash(testStream)).Replace(@"-", "").ToLowerInvariant();
 
-            var verifySha = BitConverter.ToString(SHA1.Create().ComputeHash(decompressedData)).Replace(@"-", "").ToLowerInvariant();
-            var verifySha2 = BitConverter.ToString(SHA1.Create().ComputeHash(compressedProfileData)).Replace(@"-", "").ToLowerInvariant();
+            reader.Position = 0x14; // Read the compressed original data for verification. This includes decompressed size header on compressed data.
+            var verifySha = BitConverter.ToString(SHA1.Create().ComputeHash(reader.BaseStream)).Replace(@"-", "").ToLowerInvariant();
+
+
             if (verifySha != expectedSHA)
             {
                 throw new Exception("The SHA for this local profile did not verify, the file is likely corrupted");
