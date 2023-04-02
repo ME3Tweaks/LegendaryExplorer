@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using LegendaryExplorerCore.Compression;
@@ -24,7 +25,7 @@ namespace LegendaryExplorerCore.Save
         {
             NONE,
             INT,
-            INT64, // This is actually INT32 it seems
+            INT64, // Serialized as 32bit, in memory treated as 64bit. No idea why
             DOUBLE,
             STRING,
             FLOAT,
@@ -88,7 +89,12 @@ namespace LegendaryExplorerCore.Save
             // 1. Decompress data
             var checksum = reader.ReadToBuffer(0x14); // 20 bytes
             var decompressedSize = reader.ReadInt32();
-            var remainingData = reader.ReadToBuffer((int)reader.Length - 0x24);
+            var compressedProfileData = reader.ReadToBuffer((int)reader.Length - 0x18); // offset 24
+
+            if (reader.Position != reader.Length)
+            {
+                throw new Exception(@"Failed to read to end of profile file!");
+            }
 
             if (game.IsLEGame())
             {
@@ -98,7 +104,10 @@ namespace LegendaryExplorerCore.Save
             byte[] decompressedData = new byte[decompressedSize];
             if (game.IsLEGame())
             {
-                OodleHelper.Decompress(remainingData, decompressedData);
+                if (OodleHelper.Decompress(compressedProfileData, decompressedData) != decompressedSize)
+                {
+                    throw new Exception(@"Decompression of profile data did not yield correct amount of bytes");
+                }
             }
             else
             {
@@ -107,45 +116,65 @@ namespace LegendaryExplorerCore.Save
 
             // 2. Deserialize
             var profileStream = new MemoryStream(decompressedData);
+            profileStream.WriteToFile(@"B:\UserProfile\Documents\BioWare\Mass Effect Legendary Edition\Save\ME3\Local_Profile_decompressed.bin");
             var profileReader = new EndianReader(profileStream) { Endian = Endian.Big };
 
             var numSettings = profileReader.ReadInt32();
             for (int i = 0; i < numSettings; i++)
             {
                 ProfileSetting setting = new ProfileSetting();
+
+                // Read ID
+                var idType = profileReader.ReadByte();
+                if (idType != 1 && idType != 2)
+                {
+#if !AZURE
+                    // This will be 0x1 INT
+                    throw new Exception($@"Profile ID is not marked as type INT or INT64 at position 0x{(profileReader.Position - 1):X8}! Value: {idType}");
+#endif
+                }
                 setting.Id = profileReader.ReadInt32();
-                setting.DataType = (ProfileSetting.EProfileSettingType)stream.ReadByte();
+
+                // Read Value
+                setting.DataType = (ProfileSetting.EProfileSettingType)profileReader.ReadByte();
                 switch (setting.DataType)
                 {
                     case ProfileSetting.EProfileSettingType.NONE:
                         break;
                     case ProfileSetting.EProfileSettingType.INT:
                     case ProfileSetting.EProfileSettingType.INT64: // This seems to be 32bit still
-                        setting.Data = stream.ReadInt32();
+                        setting.Data = profileReader.ReadInt32();
                         break;
                     case ProfileSetting.EProfileSettingType.DOUBLE:
-                        setting.Data = stream.ReadDouble();
+                        setting.Data = profileReader.ReadDouble();
                         break;
                     case ProfileSetting.EProfileSettingType.STRING:
-                        setting.Data = stream.ReadUnrealString();
+                        setting.Data = profileReader.ReadUnrealString();
                         break;
                     case ProfileSetting.EProfileSettingType.FLOAT:
-                        setting.Data = stream.ReadFloat();
+                        setting.Data = profileReader.ReadFloat();
                         break;
                     case ProfileSetting.EProfileSettingType.BLOB:
-                        var blobSize = stream.ReadInt32();
-                        setting.Data = stream.ReadToBuffer(blobSize);
+                        var blobSize = profileReader.ReadInt32();
+                        setting.Data = profileReader.ReadToBuffer(blobSize);
                         break;
                     case ProfileSetting.EProfileSettingType.DATETIME:
                         // Output is formatted as follows:
                         // Printf("%08X%08X",Val1, Val2);
                         // Not really sure what that means here....
-                        setting.Data = new Tuple<int, int>(stream.ReadInt32(), stream.ReadInt32());
+                        setting.Data = new Tuple<int, int>(profileReader.ReadInt32(), profileReader.ReadInt32());
                         break;
                     default:
-                        Debug.WriteLine($"ERROR: BAD TYPE");
+                        Debug.WriteLine($"ERROR: Invalid type encountered at 0x{(profileReader.Position - 1):X8}");
+#if !AZURE
+                        throw new Exception($@"LocalProfile encounted invalid type: {setting.DataType}");
+#endif
                         break;
                 }
+
+                // Read Empty value
+                profileReader.ReadByte(); // Will be 0x0 EMPTY
+                Debug.WriteLine($@"Setting {setting.Id} VALUE: {setting.Data}");
 
                 if (setting.Id == 26)
                 {
@@ -157,6 +186,22 @@ namespace LegendaryExplorerCore.Save
                 {
                     ProfileSettings[setting.Id] = setting;
                 }
+            }
+
+            // Verify checksum
+            // Tring to figure out which one of these works...
+            var expectedSHA = BitConverter.ToString(checksum).Replace(@"-", "").ToLowerInvariant();
+            var testStream = new MemoryStream();
+            testStream.WriteZeros(0x14);
+            testStream.WriteFromBuffer(compressedProfileData);
+            testStream.Position = 0;
+            var verifySha3 = BitConverter.ToString(SHA1.Create().ComputeHash(testStream)).Replace(@"-", "").ToLowerInvariant();
+
+            var verifySha = BitConverter.ToString(SHA1.Create().ComputeHash(decompressedData)).Replace(@"-", "").ToLowerInvariant();
+            var verifySha2 = BitConverter.ToString(SHA1.Create().ComputeHash(compressedProfileData)).Replace(@"-", "").ToLowerInvariant();
+            if (verifySha != expectedSHA)
+            {
+                throw new Exception("The SHA for this local profile did not verify, the file is likely corrupted");
             }
 #if AZURE
             // For testing
