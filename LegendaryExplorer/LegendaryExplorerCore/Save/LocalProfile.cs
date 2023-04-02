@@ -88,7 +88,7 @@ namespace LegendaryExplorerCore.Save
             // 1. Decompress data
             var checksum = reader.ReadToBuffer(0x14); // 20 bytes
             var decompressedSize = reader.ReadInt32();
-            var remainingData = reader.ReadToBuffer((int)reader.Length - 0x24);
+            var remainingData = reader.ReadToBuffer((int)reader.Length - 0x18); // offset 24
 
             if (game.IsLEGame())
             {
