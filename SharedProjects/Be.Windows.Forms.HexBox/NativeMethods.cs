@@ -4,20 +4,24 @@ using System.Runtime.InteropServices;
 
 namespace Be.Windows.Forms
 {
-	internal static class NativeMethods
+	internal static partial class NativeMethods
 	{
 		// Caret definitions
-		[DllImport("user32.dll", SetLastError=true)]
-		public static extern bool CreateCaret(IntPtr hWnd, IntPtr hBitmap, int nWidth, int nHeight);
+		[LibraryImport("user32.dll", SetLastError=true)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		public static partial bool CreateCaret(IntPtr hWnd, IntPtr hBitmap, int nWidth, int nHeight);
 
-		[DllImport("user32.dll", SetLastError=true)]
-		public static extern bool ShowCaret(IntPtr hWnd);
+		[LibraryImport("user32.dll", SetLastError=true)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		public static partial bool ShowCaret(IntPtr hWnd);
 
-		[DllImport("user32.dll", SetLastError=true)]
-		public static extern bool DestroyCaret();
+		[LibraryImport("user32.dll", SetLastError=true)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		public static partial bool DestroyCaret();
 
-		[DllImport("user32.dll", SetLastError=true)]
-		public static extern bool SetCaretPos(int X, int Y);
+		[LibraryImport("user32.dll", SetLastError = true)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		public static partial bool SetCaretPos(int X, int Y);
 
 		// Key definitions
 		public const int WM_KEYDOWN = 0x100;

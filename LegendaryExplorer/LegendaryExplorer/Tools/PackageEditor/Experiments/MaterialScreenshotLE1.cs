@@ -11,6 +11,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using LegendaryExplorer.GameInterop;
+using LegendaryExplorer.Libraries;
 using LegendaryExplorer.Tools.AssetDatabase;
 using LegendaryExplorer.Tools.PackageEditor;
 using LegendaryExplorer.Tools.PathfindingEditor;
@@ -29,20 +30,14 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
     /// </summary>
     class MaterialScreenshotLE1
     {
-        [DllImport("user32.dll")]
-        private static extern IntPtr FindWindow(string className, string windowName);
-
-        [DllImport("user32.dll")]
-        private static extern int GetWindowRect(IntPtr hwnd, out Rectangle rect);
-
         private Rectangle GetWindowCoordinates()
         {
             string className = "MassEffect1";
             string windowName = "Mass Effect";
 
             Rectangle rect;
-            IntPtr hwnd = FindWindow(className, windowName);
-            GetWindowRect(hwnd, out rect);
+            IntPtr hwnd = WindowsAPI.FindWindow(className, windowName);
+            WindowsAPI.GetWindowRect(hwnd, out rect);
             return rect;
         }
 

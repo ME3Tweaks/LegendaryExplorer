@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Interop;
+using LegendaryExplorer.Libraries;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
@@ -56,7 +57,7 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
             const uint VirtualMemoryRead = 0x10;
             const uint VirtualMemoryWrite = 0x20;
 
-            MEHandle = OpenProcess(VirtualMemoryOperation | VirtualMemoryRead | VirtualMemoryWrite, false, (uint)meProcess.Id);
+            MEHandle = WindowsAPI.OpenProcess(VirtualMemoryOperation | VirtualMemoryRead | VirtualMemoryWrite, false, (uint)meProcess.Id);
 
         }
 
@@ -405,7 +406,7 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
             var byteSpan = new Span<byte>(&value, sizeof(T));
             fixed (byte* tPtr = byteSpan)
             {
-                if (!WriteProcessMemory(MEHandle, address, tPtr, (ulong)sizeof(T), out _))
+                if (!WindowsAPI.WriteProcessMemory(MEHandle, address, tPtr, (ulong)sizeof(T), out _))
                 {
                     throw new AccessViolationException();
                 }
@@ -453,7 +454,7 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
             Encoding.Unicode.GetBytes(charSpan, bytes);
             fixed (byte* bytePtr = bytes)
             {
-                if (!WriteProcessMemory(MEHandle, address, bytePtr, (ulong)bytes.Length, out _))
+                if (!WindowsAPI.WriteProcessMemory(MEHandle, address, bytePtr, (ulong)bytes.Length, out _))
                 {
                     throw new AccessViolationException();
                 }
@@ -501,7 +502,7 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
         {
             fixed (byte* bytePtr = bytes)
             {
-                if (!ReadProcessMemory(MEHandle, address, bytePtr, (ulong)bytes.Length, out _))
+                if (!WindowsAPI.ReadProcessMemory(MEHandle, address, bytePtr, (ulong)bytes.Length, out _))
                 {
                     throw new AccessViolationException();
                 }
@@ -510,7 +511,7 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
 
         private void ReleaseUnmanagedResources()
         {
-            CloseHandle(MEHandle);
+            WindowsAPI.CloseHandle(MEHandle);
         }
 
         public void Dispose()
@@ -527,31 +528,5 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
         {
             ReleaseUnmanagedResources();
         }
-
-        [DllImport("kernel32.dll")]
-        private static extern unsafe bool ReadProcessMemory(
-            IntPtr hProcess,
-            IntPtr lpBaseAddress,
-            void* lpBuffer,
-            ulong dwSize,
-            out IntPtr lpNumberOfBytesRead); 
-
-        [DllImport("kernel32.dll")]
-        private static extern unsafe bool WriteProcessMemory(
-            IntPtr hProcess,
-            IntPtr lpBaseAddress,
-            void* lpBuffer,
-            ulong nSize,
-            out IntPtr lpNumberOfBytesWritten);
-
-        [DllImport("kernel32.dll")]
-        private static extern IntPtr OpenProcess(
-            uint processAccess,
-            bool bInheritHandle,
-            uint processId
-        );
-
-        [DllImport("kernel32.dll")]
-        private static extern bool CloseHandle(IntPtr hObject);
     }
 }
