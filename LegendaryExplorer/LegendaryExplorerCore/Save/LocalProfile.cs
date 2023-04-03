@@ -67,7 +67,9 @@ namespace LegendaryExplorerCore.Save
         public void Serialize(EndianWriter ew)
         {
             ew.WriteByte((byte)IdType);
-            switch (IdType)
+            ew.WriteInt32(Id);
+            ew.WriteByte((byte)DataType);
+            switch (DataType)
             {
                 case EProfileSettingType.INT:
                 case EProfileSettingType.INT64:
@@ -77,7 +79,8 @@ namespace LegendaryExplorerCore.Save
                     ew.WriteDouble(DataAsDouble);
                     break;
                 case EProfileSettingType.STRING:
-                    ew.WriteUnrealString(DataAsString, MEGame.LE3); // LE all use same method.
+                    ew.WriteInt32(DataAsString.Length);
+                    ew.WriteStringLatin1(DataAsString); // Not sure if profile names support unicode
                     break;
                 case EProfileSettingType.FLOAT:
                     ew.WriteFloat(DataAsFloat);
@@ -92,6 +95,61 @@ namespace LegendaryExplorerCore.Save
                     break;
             }
             ew.WriteByte(0); // EMPTY
+        }
+
+        public void Deserialize(EndianReader profileReader)
+        {
+            // Read ID
+            IdType = (ProfileSetting.EProfileSettingType)profileReader.ReadByte();
+#if AZURE
+                if (IdType != ProfileSetting.EProfileSettingType.INT && IdType != ProfileSetting.EProfileSettingType.INT64)
+                {
+                    // This will be 0x1 INT
+                    throw new Exception($@"Profile ID is not marked as type INT or INT64 at position 0x{(profileReader.Position - 1):X8}! Value: {IdType}");
+                }
+#endif
+
+            Id = profileReader.ReadInt32();
+
+            // Read Value
+            DataType = (ProfileSetting.EProfileSettingType)profileReader.ReadByte();
+            switch (DataType)
+            {
+                case ProfileSetting.EProfileSettingType.NONE:
+                    break;
+                case ProfileSetting.EProfileSettingType.INT:
+                case ProfileSetting.EProfileSettingType.INT64: // This seems to be 32bit still
+                    Data = profileReader.ReadInt32();
+                    break;
+                case ProfileSetting.EProfileSettingType.DOUBLE:
+                    Data = profileReader.ReadDouble();
+                    break;
+                case ProfileSetting.EProfileSettingType.STRING:
+                    Data = profileReader.ReadUnrealString();
+                    break;
+                case ProfileSetting.EProfileSettingType.FLOAT:
+                    Data = profileReader.ReadFloat();
+                    break;
+                case ProfileSetting.EProfileSettingType.BLOB:
+                    var blobSize = profileReader.ReadInt32();
+                    Data = profileReader.ReadToBuffer(blobSize);
+                    break;
+                case ProfileSetting.EProfileSettingType.DATETIME:
+                    // Output is formatted as follows:
+                    // Printf("%08X%08X",Val1, Val2);
+                    // Not really sure what that means here....
+                    Data = new Tuple<int, int>(profileReader.ReadInt32(), profileReader.ReadInt32());
+                    break;
+                default:
+                    Debug.WriteLine($"ERROR: Invalid type encountered at 0x{(profileReader.Position - 1):X8}");
+#if AZURE
+                        throw new Exception($@"LocalProfile encounted invalid type: {DataType}");
+#endif
+                    break;
+            }
+
+            // Read Empty value
+            profileReader.ReadByte(); // Will be 0x0 EMPTY
         }
     }
 
@@ -156,72 +214,24 @@ namespace LegendaryExplorerCore.Save
                 // Handle other games here
             }
 
-            // 2. Deserialize
+            // 2. Deserialize settings
             var profileStream = new MemoryStream(decompressedData);
+            profileStream.WriteToFile(@"B:\UserProfile\Documents\BioWare\Mass Effect Legendary Edition\Save\ME3\Local_PRofile_decompressed.bin");
             var profileReader = new EndianReader(profileStream) { Endian = Endian.Big };
 
             var numSettings = profileReader.ReadInt32();
             for (int i = 0; i < numSettings; i++)
             {
                 ProfileSetting setting = new ProfileSetting();
+                setting.Deserialize(profileReader);
 
-                // Read ID
-                setting.IdType = (ProfileSetting.EProfileSettingType)profileReader.ReadByte();
-#if AZURE
-                if (setting.IdType != ProfileSetting.EProfileSettingType.INT && setting.IdType != ProfileSetting.EProfileSettingType.INT64)
-                {
-                    // This will be 0x1 INT
-                    throw new Exception($@"Profile ID is not marked as type INT or INT64 at position 0x{(profileReader.Position - 1):X8}! Value: {setting.IdType}");
-                }
-#endif
-
-                setting.Id = profileReader.ReadInt32();
-
-                // Read Value
-                setting.DataType = (ProfileSetting.EProfileSettingType)profileReader.ReadByte();
-                switch (setting.DataType)
-                {
-                    case ProfileSetting.EProfileSettingType.NONE:
-                        break;
-                    case ProfileSetting.EProfileSettingType.INT:
-                    case ProfileSetting.EProfileSettingType.INT64: // This seems to be 32bit still
-                        setting.Data = profileReader.ReadInt32();
-                        break;
-                    case ProfileSetting.EProfileSettingType.DOUBLE:
-                        setting.Data = profileReader.ReadDouble();
-                        break;
-                    case ProfileSetting.EProfileSettingType.STRING:
-                        setting.Data = profileReader.ReadUnrealString();
-                        break;
-                    case ProfileSetting.EProfileSettingType.FLOAT:
-                        setting.Data = profileReader.ReadFloat();
-                        break;
-                    case ProfileSetting.EProfileSettingType.BLOB:
-                        var blobSize = profileReader.ReadInt32();
-                        setting.Data = profileReader.ReadToBuffer(blobSize);
-                        break;
-                    case ProfileSetting.EProfileSettingType.DATETIME:
-                        // Output is formatted as follows:
-                        // Printf("%08X%08X",Val1, Val2);
-                        // Not really sure what that means here....
-                        setting.Data = new Tuple<int, int>(profileReader.ReadInt32(), profileReader.ReadInt32());
-                        break;
-                    default:
-                        Debug.WriteLine($"ERROR: Invalid type encountered at 0x{(profileReader.Position - 1):X8}");
-#if AZURE
-                        throw new Exception($@"LocalProfile encounted invalid type: {setting.DataType}");
-#endif
-                        break;
-                }
-
-                // Read Empty value
-                profileReader.ReadByte(); // Will be 0x0 EMPTY
                 Debug.WriteLine($@"Setting {setting.Id} VALUE: {setting.Data}");
 
-                if (setting.Id == 26)
+                if (setting.Id == (int)ELE3ProfileSetting.Setting_ProfileVersionNum)
                 {
-                    // Test LE1, LE2
-                    // LE3 uses this to determine version number it seems
+                    // The version of the settings format
+                    // LE3 = 50 ?
+                    // LE2 = 24 ?
                     Version = setting.DataAsInt;
                 }
                 else
@@ -230,7 +240,7 @@ namespace LegendaryExplorerCore.Save
                 }
             }
 
-            // Verify checksum
+            // 3. Verify checksum
             var expectedSHA = BitConverter.ToString(checksum).Replace(@"-", "").ToLowerInvariant();
             reader.Position = 0x14; // Read the compressed original data for verification. This includes decompressed size header on compressed data.
             var verifySha = BitConverter.ToString(SHA1.Create().ComputeHash(reader.BaseStream)).Replace(@"-", "").ToLowerInvariant();
@@ -258,13 +268,19 @@ namespace LegendaryExplorerCore.Save
             {
                 if (profileSetting.Value.Id == (byte)ELE3ProfileSetting.Setting_ProfileVersionNum)
                     continue;
-
                 profileSetting.Value.Serialize(ew);
             }
 
             // Write version at the end.
-            ProfileSettings[(int)ELE3ProfileSetting.Setting_ProfileVersionNum].Serialize(ew);
+            new ProfileSetting()
+            {
+                IdType = ProfileSetting.EProfileSettingType.INT64,
+                Id = (int)ELE3ProfileSetting.Setting_ProfileVersionNum,
+                DataType = ProfileSetting.EProfileSettingType.INT,
+                Data = Version
+            }.Serialize(ew);
 
+            (ew.BaseStream as MemoryStream).WriteToFile(@"B:\UserProfile\Documents\BioWare\Mass Effect Legendary Edition\Save\ME3\reserialized_uncomp.bin");
             // Compress the data
             var compressedData = OodleHelper.Compress(ew.ToArray());
 
