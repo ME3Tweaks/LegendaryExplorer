@@ -116,7 +116,6 @@ namespace LegendaryExplorerCore.Save
 
             // 2. Deserialize
             var profileStream = new MemoryStream(decompressedData);
-            profileStream.WriteToFile(@"B:\UserProfile\Documents\BioWare\Mass Effect Legendary Edition\Save\ME3\Local_Profile_decompressed.bin");
             var profileReader = new EndianReader(profileStream) { Endian = Endian.Big };
 
             var numSettings = profileReader.ReadInt32();
