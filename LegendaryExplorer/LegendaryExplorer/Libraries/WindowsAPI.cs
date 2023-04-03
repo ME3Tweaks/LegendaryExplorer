@@ -10,12 +10,13 @@ namespace LegendaryExplorer.Libraries
 {
     internal static unsafe partial class WindowsAPI
     {
-        [LibraryImport("user32.dll")]
+
+        [LibraryImport("user32.dll", EntryPoint = "SendMessageW")]
+        public static partial long SendMessage(IntPtr hWnd, uint msg, nint wParam, long lParam);
+
+        [LibraryImport("user32.dll", EntryPoint = "PostMessageW")]
         [return: MarshalAs(UnmanagedType.Bool)]
-        public static partial bool SendMessage(IntPtr hWnd, uint Msg, int wParam, int lParam);
-        [LibraryImport("user32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        public static partial bool PostMessage(IntPtr hWnd, uint Msg, int wParam, int lParam);
+        public static partial bool PostMessage(IntPtr hWnd, uint msg, nint wParam, long lParam);
 
         [LibraryImport("user32.dll")]
         public static partial IntPtr GetForegroundWindow();
@@ -32,10 +33,7 @@ namespace LegendaryExplorer.Libraries
         [return: MarshalAs(UnmanagedType.Bool)]
         public static partial bool ShowWindowAsync(IntPtr hWnd, int cmdShow);
 
-        [LibraryImport("user32.dll")]
-        public static partial int SendMessage(IntPtr hWnd, int Msg, IntPtr wParam, int lParam);
-
-        [LibraryImport("user32.dll", StringMarshalling = StringMarshalling.Utf16)]
+        [LibraryImport("user32.dll", StringMarshalling = StringMarshalling.Utf16, EntryPoint = "FindWindowW")]
         public static partial IntPtr FindWindow(string className, string windowName);
 
         [LibraryImport("user32.dll")]
@@ -50,7 +48,7 @@ namespace LegendaryExplorer.Libraries
         public static partial IntPtr AddFontMemResourceEx(IntPtr pbFont, uint cbFont, IntPtr pdv, in uint pcFonts);
 
 
-        [LibraryImport("kernel32.dll", StringMarshalling = StringMarshalling.Utf16)]
+        [LibraryImport("kernel32.dll", StringMarshalling = StringMarshalling.Utf16, EntryPoint = "GetModuleHandleW")]
         public static partial IntPtr GetModuleHandle(string lpModuleName);
 
         [LibraryImport("kernel32.dll")]
