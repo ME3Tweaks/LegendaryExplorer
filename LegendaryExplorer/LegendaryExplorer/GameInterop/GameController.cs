@@ -128,7 +128,7 @@ namespace LegendaryExplorer.GameInterop
 
         internal static bool SendTOCMessage(IntPtr hWnd, uint Msg)
         {
-            return WindowsAPI.SendMessage(hWnd, Msg, 0, 0);
+            return WindowsAPI.SendMessage(hWnd, Msg, 0, 0) != 0;
         }
 
         static readonly Dictionary<char, Keys> characterMapping = new()
