@@ -386,6 +386,11 @@ var annotated_dup =
         [ "ModPlotContainer", "class_legendary_explorer_core_1_1_plot_database_1_1_mod_plot_container.html", "class_legendary_explorer_core_1_1_plot_database_1_1_mod_plot_container" ],
         [ "PlotDatabases", "class_legendary_explorer_core_1_1_plot_database_1_1_plot_databases.html", "class_legendary_explorer_core_1_1_plot_database_1_1_plot_databases" ]
       ] ],
+      [ "Save", "namespace_legendary_explorer_core_1_1_save.html", [
+        [ "LocalProfile", "class_legendary_explorer_core_1_1_save_1_1_local_profile.html", "class_legendary_explorer_core_1_1_save_1_1_local_profile" ],
+        [ "LocalProfileLE1", "class_legendary_explorer_core_1_1_save_1_1_local_profile_l_e1.html", null ],
+        [ "ProfileSetting", "class_legendary_explorer_core_1_1_save_1_1_profile_setting.html", "class_legendary_explorer_core_1_1_save_1_1_profile_setting" ]
+      ] ],
       [ "Shaders", "namespace_legendary_explorer_core_1_1_shaders.html", [
         [ "ConstantInfo", "class_legendary_explorer_core_1_1_shaders_1_1_constant_info.html", "class_legendary_explorer_core_1_1_shaders_1_1_constant_info" ],
         [ "ParameterDeclaration", "class_legendary_explorer_core_1_1_shaders_1_1_parameter_declaration.html", "class_legendary_explorer_core_1_1_shaders_1_1_parameter_declaration" ],

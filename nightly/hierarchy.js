@@ -675,6 +675,8 @@ var hierarchy =
     [ "LegendaryExplorerCore.Misc.ListenableDictionary< LegendaryExplorerCore.Packages.IEntry, LegendaryExplorerCore.Packages.IEntry >", "class_legendary_explorer_core_1_1_misc_1_1_listenable_dictionary.html", null ],
     [ "LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic.ListExtensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_collections_1_1_generic_1_1_list_extensions.html", null ],
     [ "LegendaryExplorerCore.Helpers.ListInitHelper", "class_legendary_explorer_core_1_1_helpers_1_1_list_init_helper.html", null ],
+    [ "LegendaryExplorerCore.Save.LocalProfile", "class_legendary_explorer_core_1_1_save_1_1_local_profile.html", null ],
+    [ "LegendaryExplorerCore.Save.LocalProfileLE1", "class_legendary_explorer_core_1_1_save_1_1_local_profile_l_e1.html", null ],
     [ "LegendaryExplorerCore.UnrealScript.Compiling.Errors.LogMessage", "class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_errors_1_1_log_message.html", [
       [ "LegendaryExplorerCore.UnrealScript.Compiling.Errors.Error", "class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_errors_1_1_error.html", [
         [ "LegendaryExplorerCore.UnrealScript.Compiling.Errors.ExternalError", "class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_errors_1_1_external_error.html", null ]
@@ -899,6 +901,7 @@ var hierarchy =
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.PositionVertexBuffer", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_position_vertex_buffer.html", null ],
     [ "LegendaryExplorerCore.Gammtek.Collections.Generic.PriorityQueue< T >", "class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_priority_queue.html", null ],
     [ "LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode.ProblemRegistry", "class_legendary_explorer_core_1_1_m_e1_1_1_unreal_1_1_unhood_bytecode_1_1_problem_registry.html", null ],
+    [ "LegendaryExplorerCore.Save.ProfileSetting", "class_legendary_explorer_core_1_1_save_1_1_profile_setting.html", null ],
     [ "LegendaryExplorerCore.Unreal.Property", "class_legendary_explorer_core_1_1_unreal_1_1_property.html", [
       [ "LegendaryExplorerCore.Unreal.ArrayPropertyBase", "class_legendary_explorer_core_1_1_unreal_1_1_array_property_base.html", null ],
       [ "LegendaryExplorerCore.Unreal.BioMask4Property", "class_legendary_explorer_core_1_1_unreal_1_1_bio_mask4_property.html", null ],

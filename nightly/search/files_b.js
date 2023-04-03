@@ -26,7 +26,8 @@ var searchData=
   ['linewarning_2ecs_23',['LineWarning.cs',['../_line_warning_8cs.html',1,'']]],
   ['listenabledictionary_2ecs_24',['ListenableDictionary.cs',['../_listenable_dictionary_8cs.html',1,'']]],
   ['listextensions_2ecs_25',['ListExtensions.cs',['../_list_extensions_8cs.html',1,'']]],
-  ['logmessage_2ecs_26',['LogMessage.cs',['../_log_message_8cs.html',1,'']]],
-  ['lzo2helper_2ecs_27',['LZO2Helper.cs',['../_l_z_o2_helper_8cs.html',1,'']]],
-  ['lzxhelper_2ecs_28',['LZXHelper.cs',['../_l_z_x_helper_8cs.html',1,'']]]
+  ['localprofile_2ecs_26',['LocalProfile.cs',['../_local_profile_8cs.html',1,'']]],
+  ['logmessage_2ecs_27',['LogMessage.cs',['../_log_message_8cs.html',1,'']]],
+  ['lzo2helper_2ecs_28',['LZO2Helper.cs',['../_l_z_o2_helper_8cs.html',1,'']]],
+  ['lzxhelper_2ecs_29',['LZXHelper.cs',['../_l_z_x_helper_8cs.html',1,'']]]
 ];

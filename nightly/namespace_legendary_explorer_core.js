@@ -15,6 +15,7 @@ var namespace_legendary_explorer_core =
     [ "Misc", "namespace_legendary_explorer_core_1_1_misc.html", "namespace_legendary_explorer_core_1_1_misc" ],
     [ "Packages", "namespace_legendary_explorer_core_1_1_packages.html", "namespace_legendary_explorer_core_1_1_packages" ],
     [ "PlotDatabase", "namespace_legendary_explorer_core_1_1_plot_database.html", "namespace_legendary_explorer_core_1_1_plot_database" ],
+    [ "Save", "namespace_legendary_explorer_core_1_1_save.html", "namespace_legendary_explorer_core_1_1_save" ],
     [ "Shaders", "namespace_legendary_explorer_core_1_1_shaders.html", "namespace_legendary_explorer_core_1_1_shaders" ],
     [ "SharpDX", "namespace_legendary_explorer_core_1_1_sharp_d_x.html", "namespace_legendary_explorer_core_1_1_sharp_d_x" ],
     [ "Sound", "namespace_legendary_explorer_core_1_1_sound.html", "namespace_legendary_explorer_core_1_1_sound" ],
