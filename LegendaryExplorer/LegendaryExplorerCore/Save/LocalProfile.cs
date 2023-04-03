@@ -14,7 +14,9 @@ using PropertyChanged;
 
 namespace LegendaryExplorerCore.Save
 {
-
+    /// <summary>
+    /// Defines a profile setting for LE2/LE3 Local_Profile/GamerProfile
+    /// </summary>
     [AddINotifyPropertyChangedInterface]
     public class ProfileSetting
     {
@@ -34,14 +36,19 @@ namespace LegendaryExplorerCore.Save
         }
 
         /// <summary>
+        /// The data type for the profile - may be 32bit or 64bit
+        /// </summary>
+        public EProfileSettingType IdType { get; set; }
+
+        /// <summary>
+        /// The SFXProfileSettings Id. This is not stored as an enum because we want to be able to add additional values that may not exist in the enum currently
+        /// </summary>
+        public int Id { get; set; }
+
+        /// <summary>
         /// The type of data the <see cref="Data"/> object holds.
         /// </summary>
         public EProfileSettingType DataType { get; set; }
-
-        /// <summary>
-        /// The SFXProfileSettings Id
-        /// </summary>
-        public int Id { get; set; }
 
         /// <summary>
         /// The data value of the setting
@@ -56,8 +63,42 @@ namespace LegendaryExplorerCore.Save
         public float DataAsFloat => (float)Data;
         public byte[] DataAsBlob => (byte[])Data;
         public Tuple<int, int> DataAsDateTime => (Tuple<int, int>)Data;
+
+        public void Serialize(EndianWriter ew)
+        {
+            ew.WriteByte((byte)IdType);
+            switch (IdType)
+            {
+                case EProfileSettingType.INT:
+                case EProfileSettingType.INT64:
+                    ew.WriteInt32(DataAsInt);
+                    break;
+                case EProfileSettingType.DOUBLE:
+                    ew.WriteDouble(DataAsDouble);
+                    break;
+                case EProfileSettingType.STRING:
+                    ew.WriteUnrealString(DataAsString, MEGame.LE3); // LE all use same method.
+                    break;
+                case EProfileSettingType.FLOAT:
+                    ew.WriteFloat(DataAsFloat);
+                    break;
+                case EProfileSettingType.BLOB:
+                    ew.WriteInt32(DataAsBlob.Length);
+                    ew.Write(DataAsBlob);
+                    break;
+                case EProfileSettingType.DATETIME:
+                    ew.WriteInt32(DataAsDateTime.Item1);
+                    ew.WriteInt32(DataAsDateTime.Item2);
+                    break;
+            }
+            ew.WriteByte(0); // EMPTY
+        }
     }
 
+    public class LocalProfileLE1
+    {
+
+    }
 
     /// <summary>
     /// Serializer and deserializer for Local_Profile files
@@ -70,12 +111,13 @@ namespace LegendaryExplorerCore.Save
             return new LocalProfile(fs, game);
         }
 
-        public Dictionary<int, object> ProfileSettings = new(100); // ME3 uses 100 keys so it's likely we'll hit that much normally
+        public Dictionary<int, ProfileSetting> ProfileSettings = new(100); // ME3 uses 100 keys so it's likely we'll hit that much normally
 
         /// <summary>
         /// The version number of the profile settings file
         /// </summary>
         public int Version { get; set; }
+
         /// <summary>
         /// Deserializes a Local_Profile file from a stream
         /// </summary>
@@ -124,13 +166,13 @@ namespace LegendaryExplorerCore.Save
                 ProfileSetting setting = new ProfileSetting();
 
                 // Read ID
-                var idType = profileReader.ReadByte();
+                setting.IdType = (ProfileSetting.EProfileSettingType)profileReader.ReadByte();
 #if AZURE
-                if (idType != 1 && idType != 2)
+                if (setting.IdType != ProfileSetting.EProfileSettingType.INT && setting.IdType != ProfileSetting.EProfileSettingType.INT64)
                 {
                     // This will be 0x1 INT
-                    throw new Exception($@"Profile ID is not marked as type INT or INT64 at position 0x{(profileReader.Position - 1):X8}! Value: {idType}");
-            }
+                    throw new Exception($@"Profile ID is not marked as type INT or INT64 at position 0x{(profileReader.Position - 1):X8}! Value: {setting.IdType}");
+                }
 #endif
 
                 setting.Id = profileReader.ReadInt32();
@@ -189,12 +231,9 @@ namespace LegendaryExplorerCore.Save
             }
 
             // Verify checksum
-            // Trying to figure out which one of these works...
             var expectedSHA = BitConverter.ToString(checksum).Replace(@"-", "").ToLowerInvariant();
-
             reader.Position = 0x14; // Read the compressed original data for verification. This includes decompressed size header on compressed data.
             var verifySha = BitConverter.ToString(SHA1.Create().ComputeHash(reader.BaseStream)).Replace(@"-", "").ToLowerInvariant();
-
 
             if (verifySha != expectedSHA)
             {
@@ -208,5 +247,177 @@ namespace LegendaryExplorerCore.Save
             }
 #endif
         }
+
+        public MemoryStream Serialize()
+        {
+            // Prepare the compressed data
+            using MemoryStream ms = new MemoryStream();
+            EndianWriter ew = new EndianWriter(ms) { Endian = Endian.Big };
+            ew.WriteInt32(ProfileSettings.Count + 1); // +1 for VERSION
+            foreach (var profileSetting in ProfileSettings)
+            {
+                if (profileSetting.Value.Id == (byte)ELE3ProfileSetting.Setting_ProfileVersionNum)
+                    continue;
+
+                profileSetting.Value.Serialize(ew);
+            }
+
+            // Write version at the end.
+            ProfileSettings[(int)ELE3ProfileSetting.Setting_ProfileVersionNum].Serialize(ew);
+
+            // Compress the data
+            var compressedData = OodleHelper.Compress(ew.ToArray());
+
+            // Prepare the uncompressed data
+            MemoryStream finalStream = new MemoryStream();
+            EndianWriter finalEw = new EndianWriter(finalStream) { Endian = Endian.Big };
+            finalEw.WriteZeros(0x14); // SHA placeholder
+            finalEw.WriteInt32(compressedData.Length);
+            finalEw.Write(compressedData);
+
+            // Generate SHA1 checksum
+            finalStream.Position = 0x14; // SHA ends here
+            var shaBytes = SHA1.Create().ComputeHash(finalStream);
+            finalStream.Position = 0;
+            finalStream.Write(shaBytes);
+
+            return finalStream;
+        }
+
+
+
+
+        // Enums
+        /// <summary>
+        /// Setting IDs for LE3, possibly LE2?
+        /// </summary>
+        public enum ELE3ProfileSetting
+        {
+            Setting_Unknown = 0,
+            Setting_ControllerVibration = 1,
+            Setting_YInversion = 2,
+            Setting_GamerCred = 3,
+            Setting_GamerRep = 4,
+            Setting_VoiceMuted = 5,
+            Setting_VoiceThruSpeakers = 6,
+            Setting_VoiceVolume = 7,
+            Setting_GamerPictureKey = 8,
+            Setting_GamerMotto = 9,
+            Setting_GamerTitlesPlayed = 10,
+            Setting_GamerAchievementsEarned = 11,
+            Setting_GameDifficulty = 12,
+            Setting_ControllerSensitivity = 13,
+            Setting_PreferredColor1 = 14,
+            Setting_PreferredColor2 = 15,
+            Setting_AutoAim = 16,
+            Setting_AutoCenter = 17,
+            Setting_MovementControl = 18,
+            Setting_RaceTransmission = 19,
+            Setting_RaceCameraLocation = 20,
+            Setting_RaceBrakeControl = 21,
+            Setting_RaceAcceleratorControl = 22,
+            Setting_GameCredEarned = 23,
+            Setting_GameAchievementsEarned = 24,
+            Setting_EndLiveIds = 25,
+            Setting_ProfileVersionNum = 26,
+            Setting_ProfileSaveCount = 27,
+            Setting_StickConfiguration = 28,
+            Setting_TriggerConfiguration = 29,
+            Setting_Subtitles = 30,
+            Setting_AimAssist = 31,
+            Setting_Difficulty = 32,
+            Setting_InitialGameDifficulty = 33,
+            Setting_AutoLevel = 34,
+            Setting_SquadPowers = 35,
+            Setting_AutoSave = 36,
+            Setting_MusicVolume = 37,
+            Setting_FXVolume = 38,
+            Setting_DialogVolume = 39,
+            Setting_MotionBlur = 40,
+            Setting_FilmGrain = 41,
+            Setting_SelectedDeviceID = 42,
+            Setting_CurrentCareer = 43,
+            Setting_DaysSinceRegistration = 44,
+            Setting_AutoLogin = 45,
+            Setting_LoginInfo = 46,
+            Setting_PersonaID = 47,
+            Setting_NucleusRefused = 48,
+            Setting_NucleusSuccessful = 49,
+            Setting_CerberusRefused = 50,
+            Setting_Achievement_FieldA = 51,
+            Setting_Achievement_FieldB = 52,
+            Setting_Achievement_FieldC = 53,
+            Setting_TelemetryCollectionEnabled = 54,
+            Setting_KeyBindings = 55,
+            Setting_DisplayGamma = 56,
+            Setting_CurrentSaveGame = 57,
+            Setting_HideCinematicHelmet = 58,
+            Setting_ActionIconUIHints = 59,
+            Setting_AmbientOcclusion = 60,
+            Setting_NumGameCompletions = 61,
+            Setting_ShowHints = 62,
+            Setting_MorinthNotSamara = 63,
+            Setting_MaxWeaponUpgradeCount = 64,
+            Setting_LastFinishedCareer = 65,
+            Setting_SwapTriggersShoulders = 66,
+            Setting_PS3_RedeemedProductCode = 67,
+            Setting_LastSelectedPawn = 68,
+            Setting_ShowScoreIndicators = 69,
+            Setting_Accomplishment_FieldA = 70,
+            Setting_Accomplishment_FieldB = 71,
+            Setting_Accomplishment_FieldC = 72,
+            Setting_Accomplishment_FieldD = 73,
+            Setting_Accomplishment_FieldE = 74,
+            Setting_Accomplishment_FieldF = 75,
+            Setting_Accomplishment_FieldG = 76,
+            Setting_Accomplishment_FieldH = 77,
+            Setting_NumSalvageFound = 78,
+            Setting_SPLevel = 79,
+            Setting_NumKills = 80,
+            Setting_NumMeleeKills = 81,
+            Setting_NumShieldsOverloaded = 82,
+            Setting_NumEnemiesFlying = 83,
+            Setting_NumEnemiesOnFire = 84,
+            Setting_CachedDisconnectError = 85,
+            Setting_CachedDisconnectFromState = 86,
+            Setting_CachedDisconnectToState = 87,
+            Setting_CachedDisconnectSessionId = 88,
+            Setting_Language_VO = 89,
+            Setting_Language_Text = 90,
+            Setting_Language_Speech = 91,
+            Setting_MPAutoLevel = 92,
+            Setting_GalaxyAtWarLevel = 93,
+            Setting_N7Rating_LocalUser = 94,
+            Setting_N7Rating_FriendBlob = 95,
+            Setting_AutoReplyMode = 96,
+            Setting_BonusPower = 97,
+            Setting_NumGuardianHeadKilled = 98,
+            Setting_MPCreateNewMatchPrivacySetting = 99,
+            Setting_MPCreateNewMatchMapName = 100,
+            Setting_MPCreateNewMatchEnemyType = 101,
+            Setting_MPCreateNewMatchDifficulty = 102,
+            Setting_HenchmenHelmetOption = 103,
+            Setting_AudioDynamicRange = 104,
+            Setting_NumPowerCombos = 105,
+            Setting_SPMaps = 106,
+            Setting_SPMapsCount = 107,
+            Setting_NumArmorBought = 108,
+            Setting_WeaponLevel = 109,
+            Setting_SPMapsInsane = 110,
+            Setting_SPMapsInsaneCount = 111,
+            Setting_PowerLevel = 112,
+            Setting_MPQuickMatchMapName = 113,
+            Setting_MPQuickMatchEnemyType = 114,
+            Setting_MPQuickMatchDifficulty = 115,
+            Setting_KinectTutorialPromptViewed = 116,
+            Setting_ChallengePoints_FriendBlob_LastSeen = 117,
+            Setting_ChallengePoints_LocalUser_LastSeen = 118,
+            Setting_HDREnabled = 119,
+            Setting_HDRBrightness = 120,
+            Setting_HDRContrast = 121,
+            Setting_DynamicResolution = 122,
+            Setting_AntiAliasing = 123,
+            Setting_DynamicShadows = 124,
+        };
     }
 }
