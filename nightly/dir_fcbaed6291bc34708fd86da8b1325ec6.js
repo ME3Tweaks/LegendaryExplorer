@@ -9,7 +9,6 @@ var dir_fcbaed6291bc34708fd86da8b1325ec6 =
     [ "IO", "dir_b67164f93e9e65eff1cfb348f2408a5e.html", "dir_b67164f93e9e65eff1cfb348f2408a5e" ],
     [ "Paths", "dir_107f128884cb822e6d413128683e0594.html", "dir_107f128884cb822e6d413128683e0594" ],
     [ "Text", "dir_24af5fe44ef0343453ea189458d3ff0d.html", "dir_24af5fe44ef0343453ea189458d3ff0d" ],
-    [ "Windows", "dir_d390fea7657e5965f69422d5cd532f7b.html", "dir_d390fea7657e5965f69422d5cd532f7b" ],
     [ "Annotations.cs", "_annotations_8cs.html", null ],
     [ "Argument.cs", "_argument_8cs.html", "_argument_8cs" ],
     [ "Argument.Expression.cs", "_argument_8_expression_8cs.html", "_argument_8_expression_8cs" ],

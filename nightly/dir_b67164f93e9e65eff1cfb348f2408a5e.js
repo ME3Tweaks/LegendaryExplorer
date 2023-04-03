@@ -12,7 +12,6 @@ var dir_b67164f93e9e65eff1cfb348f2408a5e =
     [ "ByteOrder.cs", "_byte_order_8cs.html", "_byte_order_8cs" ],
     [ "ByteOrderConverter.cs", "_byte_order_converter_8cs.html", "_byte_order_converter_8cs" ],
     [ "ConduitPath.cs", "_conduit_path_8cs.html", "_conduit_path_8cs" ],
-    [ "ConsoleManager.cs", "_console_manager_8cs.html", "_console_manager_8cs" ],
     [ "DataReader.cs", "_data_reader_8cs.html", "_data_reader_8cs" ],
     [ "DataWriter.cs", "_data_writer_8cs.html", "_data_writer_8cs" ],
     [ "Endian.cs", "_endian_8cs.html", "_endian_8cs" ],

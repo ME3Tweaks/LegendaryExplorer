@@ -177,7 +177,6 @@ var annotated_dup =
           [ "BufferAcquisitionException", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_buffer_acquisition_exception.html", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_buffer_acquisition_exception" ],
           [ "ByteOrderConverter", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_byte_order_converter.html", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_byte_order_converter" ],
           [ "ConduitPath", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_conduit_path.html", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_conduit_path" ],
-          [ "ConsoleManager", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_console_manager.html", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_console_manager" ],
           [ "DataReader", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_data_reader.html", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_data_reader" ],
           [ "DataWriter", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_data_writer.html", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_data_writer" ],
           [ "Endian", "struct_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_endian.html", "struct_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_endian" ],
@@ -222,11 +221,6 @@ var annotated_dup =
             [ "RegexMatcher", "class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_string_matching_1_1_regex_matcher.html", "class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_string_matching_1_1_regex_matcher" ],
             [ "WildcardMatcher", "class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_string_matching_1_1_wildcard_matcher.html", "class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_string_matching_1_1_wildcard_matcher" ]
           ] ]
-        ] ],
-        [ "Windows", "namespace_legendary_explorer_core_1_1_gammtek_1_1_windows.html", [
-          [ "ShMisc", "class_legendary_explorer_core_1_1_gammtek_1_1_windows_1_1_sh_misc.html", "class_legendary_explorer_core_1_1_gammtek_1_1_windows_1_1_sh_misc" ],
-          [ "ShPath", "class_legendary_explorer_core_1_1_gammtek_1_1_windows_1_1_sh_path.html", "class_legendary_explorer_core_1_1_gammtek_1_1_windows_1_1_sh_path" ],
-          [ "WindowsApi", "class_legendary_explorer_core_1_1_gammtek_1_1_windows_1_1_windows_api.html", "class_legendary_explorer_core_1_1_gammtek_1_1_windows_1_1_windows_api" ]
         ] ],
         [ "Argument", "class_legendary_explorer_core_1_1_gammtek_1_1_argument.html", "class_legendary_explorer_core_1_1_gammtek_1_1_argument" ],
         [ "CMath", "class_legendary_explorer_core_1_1_gammtek_1_1_c_math.html", "class_legendary_explorer_core_1_1_gammtek_1_1_c_math" ],

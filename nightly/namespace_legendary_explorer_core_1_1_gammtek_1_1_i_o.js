@@ -10,7 +10,6 @@ var namespace_legendary_explorer_core_1_1_gammtek_1_1_i_o =
     [ "BufferAcquisitionException", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_buffer_acquisition_exception.html", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_buffer_acquisition_exception" ],
     [ "ByteOrderConverter", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_byte_order_converter.html", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_byte_order_converter" ],
     [ "ConduitPath", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_conduit_path.html", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_conduit_path" ],
-    [ "ConsoleManager", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_console_manager.html", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_console_manager" ],
     [ "DataReader", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_data_reader.html", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_data_reader" ],
     [ "DataWriter", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_data_writer.html", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_data_writer" ],
     [ "Endian", "struct_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_endian.html", "struct_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_endian" ],

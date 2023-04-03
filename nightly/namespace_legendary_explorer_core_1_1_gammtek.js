@@ -9,7 +9,6 @@ var namespace_legendary_explorer_core_1_1_gammtek =
     [ "IO", "namespace_legendary_explorer_core_1_1_gammtek_1_1_i_o.html", "namespace_legendary_explorer_core_1_1_gammtek_1_1_i_o" ],
     [ "Paths", "namespace_legendary_explorer_core_1_1_gammtek_1_1_paths.html", "namespace_legendary_explorer_core_1_1_gammtek_1_1_paths" ],
     [ "Text", "namespace_legendary_explorer_core_1_1_gammtek_1_1_text.html", "namespace_legendary_explorer_core_1_1_gammtek_1_1_text" ],
-    [ "Windows", "namespace_legendary_explorer_core_1_1_gammtek_1_1_windows.html", "namespace_legendary_explorer_core_1_1_gammtek_1_1_windows" ],
     [ "Argument", "class_legendary_explorer_core_1_1_gammtek_1_1_argument.html", "class_legendary_explorer_core_1_1_gammtek_1_1_argument" ],
     [ "CMath", "class_legendary_explorer_core_1_1_gammtek_1_1_c_math.html", "class_legendary_explorer_core_1_1_gammtek_1_1_c_math" ],
     [ "Enum", "class_legendary_explorer_core_1_1_gammtek_1_1_enum.html", "class_legendary_explorer_core_1_1_gammtek_1_1_enum" ],

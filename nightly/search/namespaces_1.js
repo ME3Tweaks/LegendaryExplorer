@@ -69,7 +69,6 @@ var searchData=
   ['util_66',['Util',['../namespace_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_util.html',1,'LegendaryExplorerCore::UnrealScript::Language']]],
   ['utilities_67',['Utilities',['../namespace_legendary_explorer_core_1_1_unreal_script_1_1_utilities.html',1,'LegendaryExplorerCore::UnrealScript']]],
   ['visitors_68',['Visitors',['../namespace_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_visitors.html',1,'LegendaryExplorerCore::UnrealScript::Analysis']]],
-  ['windows_69',['Windows',['../namespace_legendary_explorer_core_1_1_gammtek_1_1_windows.html',1,'LegendaryExplorerCore::Gammtek']]],
-  ['wwise_70',['Wwise',['../namespace_legendary_explorer_core_1_1_sound_1_1_wwise.html',1,'LegendaryExplorerCore::Sound']]],
-  ['xml_71',['Xml',['../namespace_legendary_explorer_core_1_1_coalesced_1_1_xml.html',1,'LegendaryExplorerCore::Coalesced']]]
+  ['wwise_69',['Wwise',['../namespace_legendary_explorer_core_1_1_sound_1_1_wwise.html',1,'LegendaryExplorerCore::Sound']]],
+  ['xml_70',['Xml',['../namespace_legendary_explorer_core_1_1_coalesced_1_1_xml.html',1,'LegendaryExplorerCore::Coalesced']]]
 ];
