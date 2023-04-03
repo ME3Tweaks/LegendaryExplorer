@@ -27,12 +27,10 @@ namespace LegendaryExplorerCore.Tests
             {
                 // Do not use package caching in tests
                 Debug.WriteLine($"Opening profile file {profileFile}");
-
                 var expectedGame = GlobalTest.GetExpectedGame(profileFile);
                 var originalBytes = File.ReadAllBytes(profileFile);
                 LocalProfile lp = LocalProfile.DeserializeLocalProfile(profileFile, expectedGame);
                 var reserialized = lp.Serialize();
-                reserialized.WriteToFile(@"B:\UserProfile\Documents\BioWare\Mass Effect Legendary Edition\Save\ME3\Reserialized_Comp.bin");
                 var reserializedBytes = reserialized.ToArray();
 
                 Assert.IsTrue(originalBytes.SequenceEqual(reserializedBytes));

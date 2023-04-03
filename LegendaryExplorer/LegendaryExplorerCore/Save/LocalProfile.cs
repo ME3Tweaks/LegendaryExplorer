@@ -216,7 +216,6 @@ namespace LegendaryExplorerCore.Save
 
             // 2. Deserialize settings
             var profileStream = new MemoryStream(decompressedData);
-            profileStream.WriteToFile(@"B:\UserProfile\Documents\BioWare\Mass Effect Legendary Edition\Save\ME3\Local_PRofile_decompressed.bin");
             var profileReader = new EndianReader(profileStream) { Endian = Endian.Big };
 
             var numSettings = profileReader.ReadInt32();
@@ -225,7 +224,7 @@ namespace LegendaryExplorerCore.Save
                 ProfileSetting setting = new ProfileSetting();
                 setting.Deserialize(profileReader);
 
-                Debug.WriteLine($@"Setting {setting.Id} VALUE: {setting.Data}");
+                //Debug.WriteLine($@"Setting {setting.Id} VALUE: {setting.Data}");
 
                 if (setting.Id == (int)ELE3ProfileSetting.Setting_ProfileVersionNum)
                 {
@@ -280,7 +279,6 @@ namespace LegendaryExplorerCore.Save
                 Data = Version
             }.Serialize(ew);
 
-            (ew.BaseStream as MemoryStream).WriteToFile(@"B:\UserProfile\Documents\BioWare\Mass Effect Legendary Edition\Save\ME3\reserialized_uncomp.bin");
             // Compress the data
             var compressedData = OodleHelper.Compress(ew.ToArray());
 
@@ -288,7 +286,7 @@ namespace LegendaryExplorerCore.Save
             MemoryStream finalStream = new MemoryStream();
             EndianWriter finalEw = new EndianWriter(finalStream) { Endian = Endian.Big };
             finalEw.WriteZeros(0x14); // SHA placeholder
-            finalEw.WriteInt32(compressedData.Length);
+            finalEw.WriteInt32((int)ew.BaseStream.Length);
             finalEw.Write(compressedData);
 
             // Generate SHA1 checksum
