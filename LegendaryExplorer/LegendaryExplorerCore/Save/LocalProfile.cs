@@ -204,7 +204,7 @@ namespace LegendaryExplorerCore.Save
             // For testing
             if (profileReader.Position != profileReader.Length)
             {
-                throw new Exception($"Deserialization of Local_Profile failed. We read to 0x{profileReader.Position:X8} but data ends at 0x{profileReader.Length:X8}")
+                throw new Exception($"Deserialization of Local_Profile failed. We read to 0x{profileReader.Position:X8} but data ends at 0x{profileReader.Length:X8}");
             }
 #endif
         }
