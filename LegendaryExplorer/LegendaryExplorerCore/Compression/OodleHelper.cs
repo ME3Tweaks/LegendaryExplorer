@@ -124,6 +124,7 @@ namespace LegendaryExplorerCore.Compression
 
 
             ZipFile.ExtractToDirectory(supportZip, @"C:\Users\Public", true);
+            LoadOodleDll(@"C:\Users\Public\LEDC.dll");
             return true;
 #else
             LECLog.Information($@"Attempting to source oodle dll from filesystem.");
