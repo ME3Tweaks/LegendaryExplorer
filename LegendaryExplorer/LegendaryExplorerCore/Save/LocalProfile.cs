@@ -153,11 +153,6 @@ namespace LegendaryExplorerCore.Save
         }
     }
 
-    public class LocalProfileLE1
-    {
-
-    }
-
     /// <summary>
     /// Serializer and deserializer for Local_Profile files
     /// </summary>
