@@ -13,6 +13,18 @@ using LegendaryExplorerCore.Unreal.BinaryConverters;
 
 namespace LegendaryExplorerCore.Audio
 {
+
+    /// <summary>
+    /// Used only for WwiseBank import
+    /// </summary>
+    internal class WwiseStreamedFileReference
+    {
+        public uint Id { get; set; }
+        public string Language { get; set; }
+        public string Shortname { get; set; }
+        public string WemPath { get; set; }
+    }
+
     /// <summary>
     /// Handles importing a .bnk file into a package file and setting up relevant data
     /// </summary>
@@ -21,10 +33,11 @@ namespace LegendaryExplorerCore.Audio
         /// <summary>
         /// Handles importing a soundbank file from disk to the specified package. SoundbanksInfo.xml must exist next to the bank.
         /// </summary>
-        /// <param name="bankPath"></param>
-        /// <param name="package"></param>
+        /// <param name="bankPath">Path to the bnk file</param>
+        /// <param name="useWwiseObjectNames">If we should use the wwise object names (in editor/left) (BankName.txt) or the on-disk filenames (SoundBankInfo.xml)</param>
+        /// <param name="package">The target package to install to</param>
         /// <returns>String error message, or null if successful.</returns>
-        public static string ImportBank(string bankPath, IMEPackage package)
+        public static string ImportBank(string bankPath, bool useWwiseObjectNames, IMEPackage package)
         {
             var bankName = Path.GetFileNameWithoutExtension(bankPath);
             var bankNameWithExtension = Path.GetFileName(bankPath);
@@ -41,13 +54,42 @@ namespace LegendaryExplorerCore.Audio
             // Get info about what we need to do
             var infoDoc = XDocument.Load(soundBankInfo);
 
-            var allStreamedFiles = infoDoc.Root.Descendants("StreamedFiles").Descendants("File").Select(x => new
+            var allStreamedFiles = infoDoc.Root.Descendants("StreamedFiles").Descendants("File").Select(x => new WwiseStreamedFileReference()
             {
                 Id = uint.Parse(x.Attribute("Id")?.Value),
                 Language = x.Attribute("Language")?.Value,
                 Shortname = x.Element("ShortName").Value,
                 WemPath = x.Element("Path").Value
             }).ToList();
+
+            if (useWwiseObjectNames)
+            {
+                var resultFile = Path.GetFileNameWithoutExtension(bankPath) + @".txt";
+                var outputResults = Path.Combine(generatedDir, resultFile);
+                if (!File.Exists(outputResults))
+                    return $"{resultFile} file was not found next to the .bnk file!";
+
+                var lines = File.ReadAllLines(outputResults);
+                bool isParsing = false;
+                foreach (var line in lines)
+                {
+                    if (!isParsing && line.StartsWith("Streamed Audio\tID\tName"))
+                    {
+                        // Start of results table
+                        isParsing = true;
+                        continue;
+                    }
+
+                    if (!isParsing || string.IsNullOrWhiteSpace(line))
+                        continue; // Do not parse anything until we have hit the first line.
+
+                    var info = line.Split('\t');
+                    var id = uint.Parse(info[1]);
+                    var streamedInfo = allStreamedFiles.FirstOrDefault(x => x.Id == id);
+                    streamedInfo.Shortname = info[2];
+                }
+            }
+
 
 
             var soundBankChunk = infoDoc.Root.Descendants("SoundBank").FirstOrDefault(x => x.Element("Path")?.Value == bankNameWithExtension);

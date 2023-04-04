@@ -2473,7 +2473,12 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             OpenFileDialog ofd = new OpenFileDialog() { Filter = "WwiseBank files|*.bnk", Title = "Select generated soundbank" };
             if (ofd.ShowDialog() == true)
             {
-                WwiseBankImport.ImportBank(ofd.FileName, pe.Pcc);
+                var askResult = Xceed.Wpf.Toolkit.MessageBox.Show(pe, "Are your streamed Wwise audio samples named correctly in the editor? If not, the filenames of the wav files when imported will be used.",
+                       "Choose export names", MessageBoxButton.YesNoCancel, MessageBoxImage.Question,
+                       MessageBoxResult.Cancel);
+                if (askResult == MessageBoxResult.Cancel)
+                    return;
+                WwiseBankImport.ImportBank(ofd.FileName, askResult == MessageBoxResult.Yes, pe.Pcc);
             }
         }
 
