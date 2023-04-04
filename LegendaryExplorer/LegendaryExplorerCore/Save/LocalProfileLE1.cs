@@ -5,10 +5,13 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
+using LegendaryExplorerCore.Coalesced;
 using LegendaryExplorerCore.Gammtek.Extensions.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
+using SixLabors.ImageSharp.PixelFormats;
 
 namespace LegendaryExplorerCore.Save
 {
@@ -35,7 +38,7 @@ namespace LegendaryExplorerCore.Save
         /// <summary>
         /// The CRC that was read when the file was deserialized. This is not used in serialization.
         /// </summary>
-        public int CRC { get; set; }
+        public uint CRC { get; set; }
 
 
         public MemoryStream Serialize()
@@ -47,52 +50,10 @@ namespace LegendaryExplorerCore.Save
             ms.Write(Keybinds);
 
             // Write the CRC
-            ms.WriteUInt32(CalculateCRC(ms.ToArray()));
-
+            ms.WriteUInt32(Crc32.Compute(ms.ToArray())); // Use CRC method for coalesced. It seems to work
             return ms;
         }
 
-        #region CRC hashing
-        private static uint CalculateCRC(byte[] data)
-        {
-            initCRCTable();
-
-            uint hash = 0;
-            for (var i = 0; i < data.Length; ++i)
-            {
-                byte sByte = data[i];
-                hash = ((hash >> 8) & 0x00FFFFFF) ^ crcTable[(hash ^ ((byte)sByte)) & 0x000000FF]; // ASCII
-                hash = ((hash >> 8) & 0x00FFFFFF) ^ crcTable[(hash) & 0x000000FF]; // This is for unicode as each character is two bytes.
-            }
-            return hash;
-        }
-
-        private static uint[] crcTable;
-
-        /// <summary>
-        /// Polynomial for our CRCs
-        /// </summary>
-        private const uint CRC_POLYNOMIAL = 0x04C11DB7;
-
-        /// <summary>
-        /// Initializes the CRC table which is used for calculating a hash
-        /// </summary>
-        private static void initCRCTable()
-        {
-            if (crcTable != null) return;
-            crcTable = new uint[256];
-            // Table has 256 entries.
-            for (uint idx = 0; idx < 256; idx++)
-            {
-                // Generate CRCs based on the polynomial
-                for (uint crc = idx << 24, bitIdx = 8; bitIdx != 0; bitIdx--)
-                {
-                    crc = ((crc & 0x80000000) == 0x80000000) ? (crc << 1) ^ CRC_POLYNOMIAL : crc << 1;
-                    crcTable[idx] = crc;
-                }
-            }
-        }
-        #endregion
 
         public static LocalProfileLE1 DeserializeLocalProfile(string filePath)
         {
@@ -116,7 +77,7 @@ namespace LegendaryExplorerCore.Save
             Keybinds = stream.ReadToBuffer(stream.ReadInt32());
 
             // Read checksum (CRC)
-            CRC = stream.ReadInt32();
+            CRC = stream.ReadUInt32();
         }
 
     }
@@ -170,54 +131,28 @@ namespace LegendaryExplorerCore.Save
         public static GamerProfileSaveRecord Deserialize(Stream stream)
         {
             GamerProfileSaveRecord gpsr = new GamerProfileSaveRecord();
-            Debug.WriteLine($"Deserializing bools at 0x{stream.Position:X8}");
             DeserializeArray(stream, x => gpsr.BoolVariables.Add(ProfileBoolSaveRecord.Deserialize(x)));
-            Debug.WriteLine($"Deserializing ints at 0x{stream.Position:X8}");
             DeserializeArray(stream, x => gpsr.IntVariables.Add(ProfileIntSaveRecord.Deserialize(x)));
-            Debug.WriteLine($"Deserializing floats at 0x{stream.Position:X8}");
             DeserializeArray(stream, x => gpsr.FloatVariables.Add(ProfileFloatSaveRecord.Deserialize(x)));
-            Debug.WriteLine($"Deserializing PlotManagerAchievementSaveRecord at 0x{stream.Position:X8}");
             DeserializeArray(stream, x => gpsr.PlotManagerAchievementMaps.Add(PlotManagerAchievementSaveRecord.Deserialize(x)));
-
-            Debug.WriteLine($"Deserializing LastUsedPlaythroughID at 0x{stream.Position:X8}");
             gpsr.LastUsedPlaythroughID = stream.ReadInt32();
-            Debug.WriteLine($"Deserializing ProfilePlaythroughSaveRecord at 0x{stream.Position:X8}");
             DeserializeArray(stream, x => gpsr.Playthroughs.Add(ProfilePlaythroughSaveRecord.Deserialize(x)));
-
             gpsr.LowestPlaythroughDamageTaken = stream.ReadFloat();
             gpsr.MostMoneyAccumulated = stream.ReadInt32();
             gpsr.MostPlaythroughPlayerKills = stream.ReadInt32();
             gpsr.LowestPlaythroughPlayerDeaths = stream.ReadInt32();
             gpsr.FastestPlaythroughTime = stream.ReadFloat();
-
-            Debug.WriteLine($"Deserializing RewardStats at 0x{stream.Position:X8}");
             DeserializeArray(stream, x => gpsr.RewardStats.Add(ProfileRewardSaveRecord.Deserialize(x)));
-            Debug.WriteLine($"Deserializing AchievementStates at 0x{stream.Position:X8}");
             DeserializeArray(stream, x => gpsr.AchievementStates.Add(x.ReadInt32()));
-            Debug.WriteLine($"Deserializing UnlockedBonusTalents at 0x{stream.Position:X8}");
             DeserializeArray(stream, x => gpsr.UnlockedBonusTalents.Add(BonusTalentSaveRecord.Deserialize(x)));
-            Debug.WriteLine($"Deserializing PassiveBonusTalents at 0x{stream.Position:X8}");
             DeserializeArray(stream, x => gpsr.PassiveBonusTalents.Add(BonusTalentSaveRecord.Deserialize(x)));
-
-            Debug.WriteLine($"Deserializing IntStats at 0x{stream.Position:X8}");
             DeserializeArray(stream, x => gpsr.IntStats.Add(x.ReadInt32()));
-
-            Debug.WriteLine($"Deserializing FloatStats at 0x{stream.Position:X8}");
             DeserializeArray(stream, x => gpsr.FloatStats.Add(x.ReadFloat()));
-
-            Debug.WriteLine($"Deserializing CharacterProfiles at 0x{stream.Position:X8}");
             DeserializeArray(stream, x => gpsr.CharacterProfiles.Add(CharacterProfileSaveRecord.Deserialize(x)));
-
-            Debug.WriteLine($"Deserializing GameOptions at 0x{stream.Position:X8}");
             gpsr.GameOptions = GameOptionsSaveRecord.Deserialize(stream);
-
-            Debug.WriteLine($"Deserializing LastPlayedCharacterID at 0x{stream.Position:X8}");
             gpsr.LastPlayedCharacterID = stream.ReadUnrealString();
-
-            Debug.WriteLine($"Deserializing LastSaveGame at 0x{stream.Position:X8}");
             gpsr.LastSaveGame = stream.ReadUnrealString();
 
-            Debug.WriteLine($"Currently at 0x{stream.Position:X8}");
             return gpsr;
         }
 
@@ -305,8 +240,8 @@ namespace LegendaryExplorerCore.Save
             SerializeArray(stream, FloatStats);
             SerializeArray(stream, CharacterProfiles.ToList<SaveRecordSerializable>());
             GameOptions.Serialize(stream);
-            stream.WriteUnrealStringLatin1(LastPlayedCharacterID); // Check for unicode. I have seen this as unicode.
-            stream.WriteUnrealStringLatin1(LastSaveGame);
+            stream.WriteUnrealString(LastPlayedCharacterID, MEGame.LE1);
+            stream.WriteUnrealString(LastSaveGame, MEGame.LE1);
         }
     }
 

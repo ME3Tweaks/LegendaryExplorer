@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using LegendaryExplorerCore.Coalesced;
 using LegendaryExplorerCore.DebugTools;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
@@ -35,15 +36,14 @@ namespace LegendaryExplorerCore.Tests
                     var reserialized = lp.Serialize();
                     var reserializedBytes = reserialized.ToArray();
 
-                    Assert.IsTrue(originalBytes.SequenceEqual(reserializedBytes));
+                    Assert.IsTrue(originalBytes.SequenceEqual(reserializedBytes), $"{nameof(LocalProfile)} {profileFile} failed to reserialize identically!");
                 }
                 else if (expectedGame is MEGame.LE1)
                 {
                     var lp = LocalProfileLE1.DeserializeLocalProfile(profileFile);
                     var reserialized = lp.Serialize();
-                    // reserialized.WriteToFile(Path.Combine(Directory.GetParent(profileFile).FullName, "reserialized.bin"));
                     var reserializedBytes = reserialized.ToArray();
-                    // Assert.IsTrue(originalBytes.SequenceEqual(reserializedBytes)); // WIP: Figure this out
+                    Assert.IsTrue(originalBytes.SequenceEqual(reserializedBytes), $"{nameof(LocalProfileLE1)} {profileFile} failed to reserialize identically!");
                 }
             }
         }
