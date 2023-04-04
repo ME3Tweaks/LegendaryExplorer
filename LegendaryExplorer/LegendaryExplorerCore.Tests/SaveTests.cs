@@ -47,15 +47,5 @@ namespace LegendaryExplorerCore.Tests
                 }
             }
         }
-
-        // [TestMethod]
-        public void ResumeTest()
-        {
-            GlobalTest.Init();
-            var localProf = LocalProfile.DeserializeLocalProfile(LE3Directory.LocalProfilePath, MEGame.LE3);
-            localProf.ProfileSettings[(int)LocalProfile.ELE3ProfileSetting.Setting_CurrentSaveGame].Data = 2;
-            localProf.ProfileSettings[(int)LocalProfile.ELE3ProfileSetting.Setting_CurrentCareer].Data = "Jane_31_Soldier_200122_4a61af6";
-            localProf.Serialize().WriteToFile(LE3Directory.LocalProfilePath);
-        }
     }
 }
