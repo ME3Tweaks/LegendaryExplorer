@@ -6,5 +6,5 @@ var class_legendary_explorer_core_1_1_save_1_1_local_profile_l_e1 =
     [ "SaveGameVersion", "class_legendary_explorer_core_1_1_save_1_1_local_profile_l_e1.html#afb9364c0a059315c814d62c2136ed88a", null ],
     [ "GamerProfile", "class_legendary_explorer_core_1_1_save_1_1_local_profile_l_e1.html#a1e7a174677949a79eb1fe3dfb1e7de8c", null ],
     [ "Keybinds", "class_legendary_explorer_core_1_1_save_1_1_local_profile_l_e1.html#a1a1ede3316b58ff02af78691de44db9a", null ],
-    [ "CRC", "class_legendary_explorer_core_1_1_save_1_1_local_profile_l_e1.html#a1c8125182f2c5024e137892d2aa03ad7", null ]
+    [ "CRC", "class_legendary_explorer_core_1_1_save_1_1_local_profile_l_e1.html#a355b73057da176331fa04977427aa8ff", null ]
 ];
