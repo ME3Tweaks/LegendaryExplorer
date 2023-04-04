@@ -105,15 +105,15 @@ $(document).ready(function(){initNavTree('class_legendary_explorer_core_1_1_audi
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a8f33842a81cea47204ebe9d6f986751f"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_audio_1_1_wwise_bank_import.html#a8f33842a81cea47204ebe9d6f986751f">ImportBank</a> (string bankPath, <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> package)</td></tr>
-<tr class="memdesc:a8f33842a81cea47204ebe9d6f986751f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handles importing a soundbank file from disk to the specified package. SoundbanksInfo.xml must exist next to the bank.   <a href="class_legendary_explorer_core_1_1_audio_1_1_wwise_bank_import.html#a8f33842a81cea47204ebe9d6f986751f">More...</a><br /></td></tr>
-<tr class="separator:a8f33842a81cea47204ebe9d6f986751f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab688223a4da9e35bc32caf5094a4d03c"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_audio_1_1_wwise_bank_import.html#ab688223a4da9e35bc32caf5094a4d03c">ImportBank</a> (string bankPath, bool useWwiseObjectNames, <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> package)</td></tr>
+<tr class="memdesc:ab688223a4da9e35bc32caf5094a4d03c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handles importing a soundbank file from disk to the specified package. SoundbanksInfo.xml must exist next to the bank.   <a href="class_legendary_explorer_core_1_1_audio_1_1_wwise_bank_import.html#ab688223a4da9e35bc32caf5094a4d03c">More...</a><br /></td></tr>
+<tr class="separator:ab688223a4da9e35bc32caf5094a4d03c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Handles importing a .bnk file into a package file and setting up relevant data  </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="a8f33842a81cea47204ebe9d6f986751f" name="a8f33842a81cea47204ebe9d6f986751f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8f33842a81cea47204ebe9d6f986751f">&#9670;&#160;</a></span>ImportBank()</h2>
+<a id="ab688223a4da9e35bc32caf5094a4d03c" name="ab688223a4da9e35bc32caf5094a4d03c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab688223a4da9e35bc32caf5094a4d03c">&#9670;&#160;</a></span>ImportBank()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -126,6 +126,12 @@ Static Public Member Functions</h2></td></tr>
           <td>(</td>
           <td class="paramtype">string&#160;</td>
           <td class="paramname"><em>bankPath</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>useWwiseObjectNames</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -149,8 +155,9 @@ Static Public Member Functions</h2></td></tr>
 <p>Handles importing a soundbank file from disk to the specified package. SoundbanksInfo.xml must exist next to the bank.  </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">bankPath</td><td></td></tr>
-    <tr><td class="paramname">package</td><td></td></tr>
+    <tr><td class="paramname">bankPath</td><td>Path to the bnk file</td></tr>
+    <tr><td class="paramname">useWwiseObjectNames</td><td>If we should use the wwise object names (in editor/left) (BankName.txt) or the on-disk filenames (SoundBankInfo.xml)</td></tr>
+    <tr><td class="paramname">package</td><td>The target package to install to</td></tr>
   </table>
   </dd>
 </dl>
