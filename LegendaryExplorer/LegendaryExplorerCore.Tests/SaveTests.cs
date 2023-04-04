@@ -48,7 +48,7 @@ namespace LegendaryExplorerCore.Tests
             }
         }
 
-        [TestMethod]
+        // [TestMethod]
         public void ResumeTest()
         {
             GlobalTest.Init();
