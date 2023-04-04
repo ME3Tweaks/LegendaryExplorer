@@ -14,7 +14,7 @@ var searchData=
   ['leclog_2ecs_11',['LECLog.cs',['../_l_e_c_log_8cs.html',1,'']]],
   ['lecoalesced_2ecs_12',['LECoalesced.cs',['../_l_e_coalesced_8cs.html',1,'']]],
   ['ledirectory_2ecs_13',['LEDirectory.cs',['../_l_e_directory_8cs.html',1,'']]],
-  ['legendaryexplorercore_2eassemblyinfo_2ecs_14',['LegendaryExplorerCore.AssemblyInfo.cs',['../_win_azure_test_2net6_80_2_legendary_explorer_core_8_assembly_info_8cs.html',1,'(Global Namespace)'],['../x64_2_win_azure_release_2net6_80_2_legendary_explorer_core_8_assembly_info_8cs.html',1,'(Global Namespace)'],['../x64_2_win_azure_release_2net7_80_2_legendary_explorer_core_8_assembly_info_8cs.html',1,'(Global Namespace)']]],
+  ['legendaryexplorercore_2eassemblyinfo_2ecs_14',['LegendaryExplorerCore.AssemblyInfo.cs',['../x64_2_win_azure_release_2net7_80_2_legendary_explorer_core_8_assembly_info_8cs.html',1,'(Global Namespace)'],['../x64_2_win_azure_release_2net6_80_2_legendary_explorer_core_8_assembly_info_8cs.html',1,'(Global Namespace)'],['../_win_azure_test_2net6_80_2_legendary_explorer_core_8_assembly_info_8cs.html',1,'(Global Namespace)']]],
   ['legendaryexplorercorelib_2ecs_15',['LegendaryExplorerCoreLib.cs',['../_legendary_explorer_core_lib_8cs.html',1,'']]],
   ['legendaryexplorercorelibsettings_2ecs_16',['LegendaryExplorerCoreLibSettings.cs',['../_legendary_explorer_core_lib_settings_8cs.html',1,'']]],
   ['legendaryexplorercoreutilities_2ecs_17',['LegendaryExplorerCoreUtilities.cs',['../_legendary_explorer_core_utilities_8cs.html',1,'']]],
@@ -27,7 +27,8 @@ var searchData=
   ['listenabledictionary_2ecs_24',['ListenableDictionary.cs',['../_listenable_dictionary_8cs.html',1,'']]],
   ['listextensions_2ecs_25',['ListExtensions.cs',['../_list_extensions_8cs.html',1,'']]],
   ['localprofile_2ecs_26',['LocalProfile.cs',['../_local_profile_8cs.html',1,'']]],
-  ['logmessage_2ecs_27',['LogMessage.cs',['../_log_message_8cs.html',1,'']]],
-  ['lzo2helper_2ecs_28',['LZO2Helper.cs',['../_l_z_o2_helper_8cs.html',1,'']]],
-  ['lzxhelper_2ecs_29',['LZXHelper.cs',['../_l_z_x_helper_8cs.html',1,'']]]
+  ['localprofilele1_2ecs_27',['LocalProfileLE1.cs',['../_local_profile_l_e1_8cs.html',1,'']]],
+  ['logmessage_2ecs_28',['LogMessage.cs',['../_log_message_8cs.html',1,'']]],
+  ['lzo2helper_2ecs_29',['LZO2Helper.cs',['../_l_z_o2_helper_8cs.html',1,'']]],
+  ['lzxhelper_2ecs_30',['LZXHelper.cs',['../_l_z_x_helper_8cs.html',1,'']]]
 ];

@@ -1,5 +1,6 @@
 var NAVTREEINDEX5 =
 {
+"_namespace_8cs.html":[2,0,0,0,1,15],
 "_new_operator_8cs.html":[2,0,0,0,24,3,1,44],
 "_node_8cs.html":[2,0,0,0,1,0,2],
 "_node_type_8cs.html":[2,0,0,0,6,3,6],
@@ -248,6 +249,5 @@ var NAVTREEINDEX5 =
 "class_bank_chunk.html":[1,0,1],
 "class_bank_chunk.html#a1115cbb4874e9a939f176c99cd17fca2":[1,0,1,4],
 "class_bank_chunk.html#a15d3a716a005820cb814eb7a889cdb73":[1,0,1,10],
-"class_bank_chunk.html#a1982b479ef067cdad54404080bbde181":[1,0,1,6],
-"class_bank_chunk.html#a5d0a7f4eb677133544c05fe994ccfb66":[1,0,1,2]
+"class_bank_chunk.html#a1982b479ef067cdad54404080bbde181":[1,0,1,6]
 };
