@@ -182,6 +182,7 @@
         <MenuItem Header="Rename Conversation" Click="RenameConversation_Click" ToolTip="Rename a conversation, changing the WwiseBank name and FXAs and related elements too, and optionally, updating its WwiseBank ID."/>
         <MenuItem Header="Rename WwiseBank" Click="RenameWwiseBank_Click" ToolTip="Rename a WwiseBank, and optionally udate its ID."/>
         <MenuItem Header="Update WwiseBank's ID" Click="UpdateWwiseBankID_Click" ToolTip="Udate a WwiseBank's ID."/>
+        <MenuItem Header="Add all PathNodes to BioSquadCombat" Click="AddPathNodes_Click" ToolTip="Adds all the PathNodes in the package to the selected BioSquadCombat's AssignedPathNodes array."/>
     </MenuItem>
     <MenuItem Header="Object Database">
         <MenuItem Header="Build ME1 Object Database" Click="ChonkyDB_BuildME1GameDB"/>
