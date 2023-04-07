@@ -58,7 +58,7 @@ namespace LegendaryExplorerCore.GameFilesystem
                 return ME1Directory.OfficialDLC.Contains(dlcName) || File.Exists(Path.Combine(dir, "AutoLoad.ini"));
             }
             else if (game == MEGame.LE1) return dlcName.StartsWith("DLC_MOD") && File.Exists(Path.Combine(dir, "AutoLoad.ini"));
-            return dlcName.StartsWith("DLC_") && File.Exists(GetMountDLCFromDLCDir(dir, game));
+            return (dlcName.StartsWith("DLC_") || game == MEGame.ME2) && File.Exists(GetMountDLCFromDLCDir(dir, game));
         }
 
         /// <summary>
