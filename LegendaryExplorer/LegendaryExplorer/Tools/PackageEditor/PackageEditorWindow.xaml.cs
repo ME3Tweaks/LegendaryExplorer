@@ -238,6 +238,8 @@ namespace LegendaryExplorer.Tools.PackageEditor
         public ICommand CalculateExportMD5Command { get; set; }
         public ICommand CreateClassCommand { get; set; }
         public ICommand CreatePackageExportCommand { get; set; }
+        public ICommand DeleteEntryCommand { get; set; }
+
 
         private void LoadCommands()
         {
@@ -311,6 +313,14 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
             CreateClassCommand = new GenericCommand(CreateClass, IsLoadedPackageME);
             CreatePackageExportCommand = new GenericCommand(CreatePackageExport, IsLoadedPackageME);
+
+            DeleteEntryCommand = new GenericCommand(DeleteEntry, EntryIsSelected);
+        }
+
+        private void DeleteEntry()
+        {
+
+            TrashEntryAndChildren();
         }
 
         private void CheckForScriptErrors()
@@ -1434,6 +1444,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
                 BusyText = "Performing reference check...";
                 IsBusy = true;
+                var positionInBranch = selected.Parent.Sublinks.IndexOf(selected);
                 Task.Run(() =>
                 {
 
@@ -1461,9 +1472,21 @@ namespace LegendaryExplorer.Tools.PackageEditor
                             return;
                         }
                     }
-                    int parentEntry = selected.Entry.Parent?.UIndex ?? 0;
 
-                    if (!GoToNumber(parentEntry))
+                    int newSelection = selected.Entry.Parent?.UIndex ?? 0; // The parent
+                    if (positionInBranch > 0)
+                    {
+                        if (selected.Parent.Sublinks.Count > positionInBranch + 1) // Node has not been removed yet from the entry tree so we have to check +1
+                        {
+                            newSelection = selected.Parent.Sublinks[positionInBranch + 1].UIndex; // Go to the item that will be shifted into our position
+                        }
+                        else if (positionInBranch > 0) // go to the previous item
+                        {
+                            newSelection = selected.Parent.Sublinks[positionInBranch - 1].UIndex; // Go to the item that is was before our item
+                        }
+                    }
+
+                    if (!GoToNumber(newSelection))
                     {
                         AllTreeViewNodesX[0].IsProgramaticallySelecting = true;
                         SelectedItem = AllTreeViewNodesX[0];
