@@ -83,7 +83,7 @@ namespace LegendaryExplorerCore.Coalesced
 						{
 							if (!TryGetValue(otherName, out property))
 							{
-								property = new CoalesceProperty();
+								property = new CoalesceProperty(otherName);
 								Add(otherName, property);
 							}
 
@@ -96,7 +96,7 @@ namespace LegendaryExplorerCore.Coalesced
 						{
 							if (!TryGetValue(otherName, out property))
 							{
-								property = new CoalesceProperty();
+								property = new CoalesceProperty(otherName);
 								Add(otherName, property);
 							}
 
@@ -109,7 +109,7 @@ namespace LegendaryExplorerCore.Coalesced
 						{
 							if (!TryGetValue(otherName, out property))
 							{
-								property = new CoalesceProperty();
+								property = new CoalesceProperty(otherName);
 								Add(otherName, property);
 							}
 
@@ -122,7 +122,7 @@ namespace LegendaryExplorerCore.Coalesced
 						{
 							if (!TryGetValue(otherName, out property))
 							{
-								property = new CoalesceProperty();
+								property = new CoalesceProperty(otherName);
 								Add(otherName, property);
 							}
 
@@ -134,7 +134,7 @@ namespace LegendaryExplorerCore.Coalesced
 						{
 							if (!TryGetValue(otherName, out property))
 							{
-								property = new CoalesceProperty();
+								property = new CoalesceProperty(otherName);
 								Add(otherName, property);
 							}
 
@@ -149,7 +149,7 @@ namespace LegendaryExplorerCore.Coalesced
 						{
 							if (!TryGetValue(otherName, out property))
 							{
-								property = new CoalesceProperty();
+								property = new CoalesceProperty(otherName);
 								Add(otherName, property);
 							}
 

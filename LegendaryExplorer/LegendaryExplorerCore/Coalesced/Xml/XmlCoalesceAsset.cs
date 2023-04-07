@@ -303,7 +303,7 @@ namespace LegendaryExplorerCore.Coalesced.Xml
 
 					if (!currentSection.TryGetValue(currentProperty.Name, out CoalesceProperty property))
 					{
-						property = new CoalesceProperty();
+						property = new CoalesceProperty(currentProperty.Name);
 						currentSection.Add(currentProperty.Name, property);
 					}
 
