@@ -248,7 +248,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public override void UnloadExport()
         {
             CurrentLoadedExport = null;
-            CurrentJPEXExportedFilepath = null;
         }
 
         public override void PopOut()
