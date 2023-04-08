@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
+using LegendaryExplorerCore.Misc;
 
 namespace LegendaryExplorerCore.Coalesced
 {
@@ -12,7 +13,7 @@ namespace LegendaryExplorerCore.Coalesced
 
 		public CoalesceSection(string name = null, IDictionary<string, CoalesceProperty> properties = null)
 		{
-			_properties = properties ?? new Dictionary<string, CoalesceProperty>();
+			_properties = properties ?? new CaseInsensitiveDictionary<CoalesceProperty>();
 			Name = name ?? string.Empty;
 		}
 
