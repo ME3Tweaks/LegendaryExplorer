@@ -11,6 +11,7 @@ using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
+using LegendaryExplorerCore.Unreal.Classes;
 using Microsoft.Win32;
 using Path = System.IO.Path;
 
@@ -87,6 +88,18 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {("gfxfonts", "fonts/gfxfontlib"), "SFXGUI_Fonts.pcc"}
         };
 
+        /// <summary>
+        /// Assets commonly referenced by swf files
+        /// </summary>
+        private static readonly Dictionary<(string, string), string> LE2SharedAssets = new Dictionary<(string infilename, string outfilename), string>
+        {
+            {("PC_SharedAssets","PC_SharedAssets"), "Startup_INT.pcc"},
+            {("Xbox_ControllerIcons","Xbox_ControllerIcons"), "Startup_INT.pcc"},
+            {("BioMassFont", "BioMassFont"), "Startup_INT.pcc"},
+            {("AeroLightFont", "AeroLightFont"), "Startup_INT.pcc"},
+            {("AeroLightFont_glyphs", "AeroLightFont_glyphs"), "Startup_INT.pcc"}
+        };
+
         private void extractSwf(ExportEntry export, string destination)
         {
             Debug.WriteLine($"Extracting {export.InstancedFullPath} to {destination}");
@@ -104,10 +117,16 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 Dictionary<(string infile, string outfile), string> sharedAssets = null;
                 switch (CurrentLoadedExport.Game)
                 {
+                    case MEGame.LE3:
                     case MEGame.ME3:
-                        sharedAssets = ME3SharedAssets;
+                        break;
+                    case MEGame.LE2:
+                        sharedAssets = LE2SharedAssets;
                         break;
                 }
+
+                var storagePath = Path.Combine(Path.GetTempPath(), CurrentLoadedExport.FullPath);
+
                 //if game is not installed this will probably fail
                 var loadedFiles = MELoadedFiles.GetAllFiles(CurrentLoadedExport.Game).ToList();
 
@@ -124,7 +143,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             if (export != null)
                             {
                                 // Extract asset to same path as our destination SWF
-                                var outfile = Path.Combine(Path.GetTempPath(), asset.Key.outfile + ".swf");
+                                var outfile = Path.Combine(storagePath, asset.Key.outfile + ".swf");
                                 Directory.CreateDirectory(Path.GetDirectoryName(outfile)); //some items must be in subfolder
                                 extractSwf(export, outfile);
                             }
@@ -132,8 +151,22 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     }
                 }
 
-                string writeoutPath = Path.Combine(Path.GetTempPath(), CurrentLoadedExport.FullPath + ".swf");
+                Directory.CreateDirectory(storagePath);
+                string writeoutPath = Path.Combine(storagePath, CurrentLoadedExport.FullPath + ".gfx");
                 extractSwf(CurrentLoadedExport, writeoutPath);
+
+                // Texture refereences
+                var references = CurrentLoadedExport.GetProperty<ArrayProperty<ObjectProperty>>(@"References");
+                foreach (var reference in references)
+                {
+                    var refExp = CurrentLoadedExport.FileRef.GetEntry(reference.Value) as ExportEntry;
+                    if (refExp == null || !refExp.IsTexture())
+                        continue; // import or not a texture?
+
+                    // Extract texture TGA
+                    var tex = new Texture2D(refExp);
+                    tex.ExportToFile(Path.Combine(storagePath, refExp.ObjectName.Instanced + ".tga"));
+                }
 
                 var process = new Process
                 {
