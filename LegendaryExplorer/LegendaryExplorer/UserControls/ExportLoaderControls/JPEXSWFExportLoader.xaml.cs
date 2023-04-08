@@ -96,6 +96,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {("PC_SharedAssets","PC_SharedAssets"), "Startup_INT.pcc"},
             {("Xbox_ControllerIcons","Xbox_ControllerIcons"), "Startup_INT.pcc"},
             {("BioMassFont", "BioMassFont"), "Startup_INT.pcc"},
+            {("BioMassFont_glyphs", "BioMassFont_glyphs"), "Startup_INT.pcc"},
             {("AeroLightFont", "AeroLightFont"), "Startup_INT.pcc"},
             {("AeroLightFont_glyphs", "AeroLightFont_glyphs"), "Startup_INT.pcc"}
         };
@@ -119,6 +120,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 {
                     case MEGame.LE3:
                     case MEGame.ME3:
+                        sharedAssets = ME3SharedAssets;
                         break;
                     case MEGame.LE2:
                         sharedAssets = LE2SharedAssets;
