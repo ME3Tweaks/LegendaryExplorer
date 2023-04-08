@@ -39,7 +39,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public bool JPEXNotInstalled => !JPEXIsInstalled;
 
         private string JPEXExecutableLocation;
-        private string CurrentJPEXExportedFilepath;
 
         public JPEXExternalExportLoader() : base("JPEX External Launcher")
         {
@@ -76,7 +75,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             ImportJPEXSavedFileCommand = new GenericCommand(ImportJPEXFile, JPEXExportFileExists);
         }
 
-        private bool JPEXExportFileExists() => CurrentLoadedExport != null && File.Exists(Path.Combine(Path.GetTempPath(), CurrentLoadedExport.FullPath + ".swf"));
+        private string GetSWFExportPath() => Path.Combine(Path.GetTempPath(), CurrentLoadedExport.InstancedFullPath, CurrentLoadedExport.InstancedFullPath + ".gfx");
+
+        private bool JPEXExportFileExists() => CurrentLoadedExport != null && File.Exists(GetSWFExportPath());
 
         /// <summary>
         /// Assets commonly referenced by swf files
@@ -93,6 +94,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         /// </summary>
         private static readonly Dictionary<(string, string), string> LE2SharedAssets = new Dictionary<(string infilename, string outfilename), string>
         {
+            {("mainController","mainController"), "Startup_INT.pcc"},
             {("PC_SharedAssets","PC_SharedAssets"), "Startup_INT.pcc"},
             {("Xbox_ControllerIcons","Xbox_ControllerIcons"), "Startup_INT.pcc"},
             {("BioMassFont", "BioMassFont"), "Startup_INT.pcc"},
@@ -127,7 +129,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         break;
                 }
 
-                var storagePath = Path.Combine(Path.GetTempPath(), CurrentLoadedExport.FullPath);
+                var storagePath = Directory.GetParent(GetSWFExportPath()).FullName;
 
                 //if game is not installed this will probably fail
                 var loadedFiles = MELoadedFiles.GetAllFiles(CurrentLoadedExport.Game).ToList();
@@ -179,7 +181,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     }
                 };
                 process.Start();
-                CurrentJPEXExportedFilepath = writeoutPath;
             }
             catch (Exception ex)
             {
@@ -190,9 +191,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void ImportJPEXFile()
         {
-            if (CurrentJPEXExportedFilepath != null)
+            if (File.Exists(GetSWFExportPath()))
             {
-                byte[] bytes = File.ReadAllBytes(CurrentJPEXExportedFilepath);
+                byte[] bytes = File.ReadAllBytes(GetSWFExportPath());
                 var props = CurrentLoadedExport.GetProperties();
 
                 string dataPropName = CurrentLoadedExport.ClassName == "GFxMovieInfo" ? "RawData" : "Data";
@@ -207,17 +208,17 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     StrProperty sourceFilePath = props.GetProp<StrProperty>(sourceFilePropName);
                     if (sourceFilePath == null)
                     {
-                        sourceFilePath = new StrProperty(Path.GetFileName(CurrentJPEXExportedFilepath), sourceFilePropName);
+                        sourceFilePath = new StrProperty(Path.GetFileName(GetSWFExportPath()), sourceFilePropName);
                         props.Add(sourceFilePath);
                     }
 
-                    sourceFilePath.Value = Path.GetFileName(CurrentJPEXExportedFilepath);
+                    sourceFilePath.Value = Path.GetFileName(GetSWFExportPath());
                 }
 
                 if (CurrentLoadedExport.FileRef.Game.IsGame1())
                 {
                     StrProperty sourceFileTimestamp = props.GetProp<StrProperty>("SourceFileTimestamp");
-                    sourceFileTimestamp = File.GetLastWriteTime(CurrentJPEXExportedFilepath).ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+                    sourceFileTimestamp = File.GetLastWriteTime(GetSWFExportPath()).ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
                 }
 
                 CurrentLoadedExport.WriteProperties(props);
