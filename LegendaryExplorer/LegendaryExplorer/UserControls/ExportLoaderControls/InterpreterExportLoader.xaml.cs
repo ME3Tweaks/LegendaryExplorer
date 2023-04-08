@@ -1399,7 +1399,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     else if (sp.StructType is "SettingsPropertyPropertyMetaData")
                     {
                         parsedValue =
-                            $"ID: {sp.GetProp<IntProperty>("Id").Value}, Name: {sp.GetProp<NameProperty>("Name").Value.Instanced} | {sp.GetProp<EnumProperty>(@"MappingType")}";
+                            $"ID: {sp.GetProp<IntProperty>("Id").Value}, Name: {sp.GetProp<NameProperty>("Name").Value.Instanced} | {sp.GetProp<EnumProperty>(@"MappingType").Value.Instanced}";
                     }
                     else
                     {
