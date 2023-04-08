@@ -28,6 +28,31 @@ namespace LegendaryExplorer.Tools.InterpEditor.InterpExperiments
 
         // EXPERIMENTS: EXKYWOR------------------------------------------------------------
         #region Exkywor's experiments
+        private void InsertTrackMoveKey_Click(object sender, RoutedEventArgs e)
+        {
+            InterpEditorExperimentsE.InsertTrackMoveKeyExperiment(GetIEWindow());
+        }
+        private void DeleteTrackMoveKey_Click(object sender, RoutedEventArgs e)
+        {
+            InterpEditorExperimentsE.DeleteTrackMoveKey(GetIEWindow());
+        }
+        private void InsertDOFKey_Click(object sender, RoutedEventArgs e)
+        {
+            InterpEditorExperimentsE.InsertDOFKey(GetIEWindow());
+        }
+        private void DeleteDOFKey_Click(object sender, RoutedEventArgs e)
+        {
+            InterpEditorExperimentsE.DeleteDOFKey(GetIEWindow());
+        }
+        private void InsertGestureKey_Click(object sender, RoutedEventArgs e)
+        {
+            InterpEditorExperimentsE.InsertGestureKey(GetIEWindow());
+        }
+        private void DeleteGestureKey_Click(object sender, RoutedEventArgs e)
+        {
+            InterpEditorExperimentsE.DeleteGestureKey(GetIEWindow());
+        }
+
         private void AddPresetDirectorGroup_Click(object sender, RoutedEventArgs e)
         {
             InterpEditorExperimentsE.AddPresetGroup("Director", GetIEWindow());
@@ -36,6 +61,10 @@ namespace LegendaryExplorer.Tools.InterpEditor.InterpExperiments
         private void AddPresetCameraGroup_Click(object sender, RoutedEventArgs e)
         {
             InterpEditorExperimentsE.AddPresetGroup("Camera", GetIEWindow());
+        }
+        private void AddPresetCameraGroupWithKeys_Click(object sender, RoutedEventArgs e)
+        {
+            InterpEditorExperimentsE.AddPresetCameraWithKeys(GetIEWindow());
         }
 
         private void AddPresetActorGroup_Click(object sender, RoutedEventArgs e)
@@ -52,6 +81,11 @@ namespace LegendaryExplorer.Tools.InterpEditor.InterpExperiments
         {
             InterpEditorExperimentsE.AddPresetTrack("Gesture2", GetIEWindow());
         }
+
+        private void SetStartingPose_Click(object sender, RoutedEventArgs e)
+        {
+            InterpEditorExperimentsE.SetStartingPose(GetIEWindow());
+        } 
         #endregion
 
         // EXPERIMENTS: HenBagle------------------------------------------------------------
