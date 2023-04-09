@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using LegendaryExplorerCore.Misc;
 
 namespace LegendaryExplorerCore.Coalesced
 {
+	[DebuggerDisplay("CoalesceSection {Name} with {_properties.Count} unique property names")]
 	public class CoalesceSection : IDictionary<string, CoalesceProperty>
 	{
 		private readonly IDictionary<string, CoalesceProperty> _properties;
