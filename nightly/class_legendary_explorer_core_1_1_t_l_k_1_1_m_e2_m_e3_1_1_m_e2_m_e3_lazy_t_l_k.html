@@ -123,9 +123,9 @@ Public Member Functions</h2></td></tr>
 </dl>
   <a href="class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_lazy_t_l_k.html#a6963845a09a0a14e46e834fd9b43bd72">More...</a><br /></td></tr>
 <tr class="separator:a6963845a09a0a14e46e834fd9b43bd72"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a11d3241d1960e295e0ee1d155bca0512"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_lazy_t_l_k.html#a11d3241d1960e295e0ee1d155bca0512">FindDataById</a> (int strRefID, bool withFileName=false)</td></tr>
-<tr class="memdesc:a11d3241d1960e295e0ee1d155bca0512"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the string corresponding to the <em>strRefID</em>  (wrapped in quotes), if it exists in this file. If it does not, returns <code>"No Data"</code>   <a href="class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_lazy_t_l_k.html#a11d3241d1960e295e0ee1d155bca0512">More...</a><br /></td></tr>
-<tr class="separator:a11d3241d1960e295e0ee1d155bca0512"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a124900abe2dc28b387bfeefd2a301911"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_lazy_t_l_k.html#a124900abe2dc28b387bfeefd2a301911">FindDataById</a> (int strRefID, bool withFileName=false, bool returnNullIfNotFound=false, bool noQuotes=false)</td></tr>
+<tr class="memdesc:a124900abe2dc28b387bfeefd2a301911"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the string corresponding to the <em>strRefID</em>  (wrapped in quotes if <em>noQuotes</em>  is not set), if it exists in this file. If it does not, returns <code>"No Data"</code>, or null if <em>returnNullIfNotFound</em>  is true.   <a href="class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_lazy_t_l_k.html#a124900abe2dc28b387bfeefd2a301911">More...</a><br /></td></tr>
+<tr class="separator:a124900abe2dc28b387bfeefd2a301911"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base.html">LegendaryExplorerCore.TLK.ME2ME3.ME2ME3TLKBase</a></td></tr>
 <tr class="memitem:a919809ed17d335b2ccd886f61ed4eb22 inherit pub_methods_class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base.html#a919809ed17d335b2ccd886f61ed4eb22">LoadTlkData</a> (string filePath)</td></tr>
 <tr class="memdesc:a919809ed17d335b2ccd886f61ed4eb22 inherit pub_methods_class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads <a class="el" href="namespace_legendary_explorer_core_1_1_t_l_k.html">TLK</a> data from a .tlk file   <a href="class_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base.html#a919809ed17d335b2ccd886f61ed4eb22">More...</a><br /></td></tr>
@@ -200,8 +200,8 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a id="a11d3241d1960e295e0ee1d155bca0512" name="a11d3241d1960e295e0ee1d155bca0512"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a11d3241d1960e295e0ee1d155bca0512">&#9670;&#160;</a></span>FindDataById()</h2>
+<a id="a124900abe2dc28b387bfeefd2a301911" name="a124900abe2dc28b387bfeefd2a301911"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a124900abe2dc28b387bfeefd2a301911">&#9670;&#160;</a></span>FindDataById()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -219,7 +219,19 @@ Additional Inherited Members</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>withFileName</em> = <code>false</code>&#160;</td>
+          <td class="paramname"><em>withFileName</em> = <code>false</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>returnNullIfNotFound</em> = <code>false</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>noQuotes</em> = <code>false</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -234,7 +246,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Gets the string corresponding to the <em>strRefID</em>  (wrapped in quotes), if it exists in this file. If it does not, returns <code>"No Data"</code>  </p>
+<p>Gets the string corresponding to the <em>strRefID</em>  (wrapped in quotes if <em>noQuotes</em>  is not set), if it exists in this file. If it does not, returns <code>"No Data"</code>, or null if <em>returnNullIfNotFound</em>  is true.  </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">strRefID</td><td></td></tr>
