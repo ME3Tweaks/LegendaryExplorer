@@ -23,5 +23,6 @@ var class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_directories =
     [ "ReloadGamePaths", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_directories.html#ab390e9a2e1b19c2d28f42b928929509a", null ],
     [ "SaveSettings", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_directories.html#afe5fa394497566be4b0a6809ba14f1c4", null ],
     [ "EnumerateGameFiles", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_directories.html#a439141456a97e8e3b0d933f08db7fba8", null ],
-    [ "EnumerateGameFiles", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_directories.html#a0df17743a54364c6500069593d6590fb", null ]
+    [ "EnumerateGameFiles", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_directories.html#a0df17743a54364c6500069593d6590fb", null ],
+    [ "GetProfileSave", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_directories.html#acfe24f3bd40c7e099064c42bef327683", null ]
 ];
