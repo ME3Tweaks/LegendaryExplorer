@@ -10,11 +10,11 @@ using System.Threading.Tasks;
 
 namespace LegendaryExplorer.Audio
 {
-    internal class ISACTHelperExtended
+    internal partial class ISACTHelperExtended
     {
 
-        [DllImport(@"ISACTTools.dll")]
-        private static extern int CreateIPSOgg(byte[] wavedata, uint waveDataLen, byte[] dstBuf, uint dstLen, float quality);
+        [LibraryImport(@"ISACTTools.dll")]
+        private static partial int CreateIPSOgg(byte[] wavedata, uint waveDataLen, byte[] dstBuf, uint dstLen, float quality);
 
         // Encodes a .wav file to .ogg
         public static byte[] ConvertWaveToOgg(byte[] wavData, float quality)

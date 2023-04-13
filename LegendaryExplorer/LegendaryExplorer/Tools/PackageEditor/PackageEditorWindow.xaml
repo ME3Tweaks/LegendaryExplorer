@@ -108,6 +108,7 @@
         <KeyBinding Key="Left" Modifiers="Alt" Command="{Binding TabLeftCommand}"/>
         <KeyBinding Key="P" Modifiers="Ctrl" Command="{Binding PopoutCurrentViewCommand}"/>
         <KeyBinding Key="A" Modifiers="Ctrl+Shift" Command="{Binding AddNameCommand}"/>
+        <KeyBinding Key="Delete" Command="{Binding DeleteEntryCommand}"/>
     </Window.InputBindings>
     <xctk:BusyIndicator IsBusy="{Binding Path=IsBusy}" BusyContent="{Binding BusyText}">
         <DockPanel>

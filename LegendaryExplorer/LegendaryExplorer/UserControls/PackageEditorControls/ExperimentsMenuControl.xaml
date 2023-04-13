@@ -181,7 +181,6 @@
         <MenuItem Header="Change Conversation ID and ConvNodes' ID" Click="ChangeConvoIDandConvNodeIDs_Click" ToolTip="Change a conversation's ConvResRefID and give its ConvNodes a new ID range."/>
         <MenuItem Header="Rename Conversation" Click="RenameConversation_Click" ToolTip="Rename a conversation, changing the WwiseBank name and FXAs and related elements too, and optionally, updating its WwiseBank ID."/>
         <MenuItem Header="Rename WwiseBank" Click="RenameWwiseBank_Click" ToolTip="Rename a WwiseBank, and optionally udate its ID."/>
-        <MenuItem Header="Update WwiseBank's ID" Click="UpdateWwiseBankID_Click" ToolTip="Udate a WwiseBank's ID."/>
         <MenuItem Header="Update class properties of AmbPerfGameData" Click="UpdateAmbPerfClass_Click" ToolTip="Update WepPropClass, PropName, and PropResource props of an AmbPerf."/>
         <MenuItem Header="Batch update class properties of AmbPerfGameDatas" Click="BatchUpdateAmbPerfClass_Click" ToolTip="Batch update WepPropClass, PropName, and PropResource props of an AmbPerfs in a selected Package."/>
     </MenuItem>

@@ -161,6 +161,16 @@ namespace LegendaryExplorerCore.GameFilesystem
         public static string BioWareDocumentsPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), @"BioWare", @"Mass Effect 2");
 
         /// <summary>
+        /// Path to the folder where career profiles are stored in the user config directory.
+        /// </summary>
+        public static string SaveFolderPath => Path.Combine(LEDirectory.BioWareDocumentsPath, @"Save");
+
+        /// <summary>
+        /// Path to the persistent storage file in the user config directory.
+        /// </summary>
+        public static string LocalProfilePath => Path.Combine(SaveFolderPath, @"..", @"BIOGame", @"Profile", @"Player1.prf");
+
+        /// <summary>
         /// Gets the path to the LOD configuration file for ME2
         /// </summary>
         public static string LODConfigFile => Path.Combine(BioWareDocumentsPath, @"BIOGame", @"Config", @"GamerSettings.ini");

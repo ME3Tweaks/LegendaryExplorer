@@ -70,6 +70,11 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         public bool PortExportsAsImportsWhenPossible { get; set; }
 
         /// <summary>
+        /// When using certain porting options, and the item being ported is a package, setting this to false will only port the package, not the children of it
+        /// </summary>
+        public bool ImportChildrenOfPackages { get; set; } = true;
+
+        /// <summary>
         /// Invoked when an error occurs during porting. Can be null.
         /// </summary>
         public Action<string> ErrorOccurredCallback;

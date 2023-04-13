@@ -514,5 +514,19 @@ namespace LegendaryExplorerCore.GameFilesystem
 
             return files.Where(t => predicate(t)).ToList();
         }
+
+        public static string GetProfileSave(MEGame game)
+        {
+            return game switch
+            {
+                MEGame.ME1 => ME1Directory.LocalProfilePath,
+                MEGame.ME2 => ME2Directory.LocalProfilePath,
+                MEGame.ME3 => ME3Directory.LocalProfilePath,
+                MEGame.LE1 => LE1Directory.LocalProfilePath,
+                MEGame.LE2 => LE2Directory.LocalProfilePath,
+                MEGame.LE3 => LE3Directory.LocalProfilePath,
+                _ => throw new ArgumentOutOfRangeException(nameof(game), game, null),
+            };
+        }
     }
 }

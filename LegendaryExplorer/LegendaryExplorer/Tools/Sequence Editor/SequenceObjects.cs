@@ -6,6 +6,7 @@ using System.Drawing.Text;
 using System.Linq;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
+using LegendaryExplorer.Libraries;
 using LegendaryExplorer.Misc.AppSettings;
 using LegendaryExplorer.Resources;
 using LegendaryExplorer.Tools.Sequence_Editor;
@@ -1800,9 +1801,6 @@ namespace LegendaryExplorer.Tools.SequenceObjects
 
     public sealed class SText : PText
     {
-        [DllImport("gdi32.dll")]
-        private static extern IntPtr AddFontMemResourceEx(IntPtr pbFont, uint cbFont, IntPtr pdv, [In] ref uint pcFonts);
-
         private readonly Brush black = new SolidBrush(Color.Black);
 
         private readonly bool ShadowRendering;
@@ -1837,7 +1835,7 @@ namespace LegendaryExplorer.Tools.SequenceObjects
             Marshal.Copy(fontData, 0, fontPtr, fontData.Length);
             Fontcollection.AddMemoryFont(fontPtr, fontData.Length);
             uint tmp = 0;
-            AddFontMemResourceEx(fontPtr, (uint)fontData.Length, IntPtr.Zero, ref tmp);
+            WindowsAPI.AddFontMemResourceEx(fontPtr, (uint)fontData.Length, IntPtr.Zero, tmp);
             Marshal.FreeCoTaskMem(fontPtr);
             KismetFont = new Font(Fontcollection.Families[0], 6, GraphicsUnit.Pixel);
         }

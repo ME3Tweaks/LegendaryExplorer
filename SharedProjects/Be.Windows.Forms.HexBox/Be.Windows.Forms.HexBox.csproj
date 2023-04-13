@@ -35,6 +35,7 @@
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
     <DebugSymbols>true</DebugSymbols>
     <Configurations>WinDebug;WinRelease;WinAzureRelease;WinAzureTest</Configurations>
+	  <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   
 
@@ -54,8 +55,7 @@
   <!-- Nightly release from Azure-->
   <PropertyGroup Condition="'$(Configuration)'=='WinAzureRelease'">
     <DebugType>embedded</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	  <PlatformTarget>x64</PlatformTarget>
 	<Optimize>true</Optimize>
     <DefineConstants>WINDOWS;NIGHTLY</DefineConstants>
   </PropertyGroup>
@@ -64,7 +64,6 @@
   <PropertyGroup Condition="'$(Configuration)'=='WinAzureTest'">
     <DebugType>embedded</DebugType>
     <PlatformTarget>x64</PlatformTarget>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DefineConstants>WINDOWS;AZURE</DefineConstants>
   </PropertyGroup>
   

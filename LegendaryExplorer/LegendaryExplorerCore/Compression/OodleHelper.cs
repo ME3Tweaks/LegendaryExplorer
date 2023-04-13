@@ -34,13 +34,6 @@ namespace LegendaryExplorerCore.Compression
         [DllImport(CompressionHelper.OODLE_DLL_NAME)]
         private static extern long OodleLZ_GetCompressedBufferSizeNeeded(byte format, long bufferSize);
 
-
-        [DllImport("kernel32.dll")]
-        static extern bool GetModuleHandleExA(int dwFlags, string ModuleName, ref IntPtr phModule);
-        [DllImport("kernel32.dll")]
-        static extern bool FreeLibrary(IntPtr hModule);
-
-
         private static bool dllLoaded;
         /// <summary>
         /// Loads the oodle dll into memory. It should not load out of game dir or it will lock the game directory in use, which
@@ -124,6 +117,7 @@ namespace LegendaryExplorerCore.Compression
 
 
             ZipFile.ExtractToDirectory(supportZip, @"C:\Users\Public", true);
+            LoadOodleDll(@"C:\Users\Public\LEDC.dll");
             return true;
 #else
             LECLog.Information($@"Attempting to source oodle dll from filesystem.");
