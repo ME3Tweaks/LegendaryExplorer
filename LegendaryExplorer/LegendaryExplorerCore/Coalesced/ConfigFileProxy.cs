@@ -59,8 +59,7 @@ namespace LegendaryExplorerCore.Coalesced
                         string key = trimmed.Substring(0, separator).Trim();
                         string value = trimmed.Substring(separator + 1).Trim();
                         var type = GetIniDataType(key);
-                        if (type != CoalesceParseAction.Add && type != CoalesceParseAction.None)
-                            key = key.Substring(1); // Chop off first
+                        key = StripType(key);
                         CoalesceProperty prop = new CoalesceProperty(key);
                         prop.Add(new CoalesceValue(value, type));
                         currentConfigSection.AddEntry(prop);
@@ -73,6 +72,21 @@ namespace LegendaryExplorerCore.Coalesced
             }
 
             return cfp;
+        }
+
+        /// <summary>
+        /// Strips off the type prefix on this value - that is, the first character if it matches a type we support parsing.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        private static string StripType(string key)
+        {
+            if (key[0] == '+') return key.Substring(1);
+            if (key[0] == '!') return key.Substring(1);
+            if (key[0] == '-') return key.Substring(1);
+            if (key[0] == '.') return key.Substring(1);
+            if (key[0] == '>') return key.Substring(1);
+            return key;
         }
 
         /// <summary>
@@ -113,7 +127,10 @@ namespace LegendaryExplorerCore.Coalesced
             if (key[0] == '+') return CoalesceParseAction.AddUnique; // AddUnique 3 (enum 1)
             if (key[0] == '!') return CoalesceParseAction.RemoveProperty; // Clear 1 
             if (key[0] == '-') return CoalesceParseAction.Remove; // Subtract 4
-            if (key[0] == '.') return CoalesceParseAction.New; // New 0 // THIS IS NOT USED IN ME2 - THIS IS ONLY USED FOR M3CD FILES BY ME3TWEAKS CORE
+            if (key[0] == '.') return CoalesceParseAction.Add; // UE3 documentation specifies . = Add but with duplicates (Type 2)
+            if (key[0] == '>') return CoalesceParseAction.New; // MODDING SPECIFIC SYMBOL: This was added in Game 3 -> Clear and assign a single value
+
+            // If unspecified, we treat it as just add.
             return CoalesceParseAction.Add;
         }
 
@@ -128,6 +145,7 @@ namespace LegendaryExplorerCore.Coalesced
             if (action == CoalesceParseAction.AddUnique) return "+"; // Unique (3)
             if (action == CoalesceParseAction.RemoveProperty) return "!"; // Clear (1)
             if (action == CoalesceParseAction.Remove) return "-"; // Subtract 4
+            // if (action == CoalesceParseAction.Add) return "."; // It seems like blank or . means add for Game 2.
             return ""; // Add (2) has no prefix, Type 0 New does not exist in ME2
         }
     }
