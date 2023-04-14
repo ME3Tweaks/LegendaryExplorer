@@ -5045,28 +5045,19 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
         /// </summary>
         private void AddAllPathnodesToBioSquadCombat()
         {
-            if (Pcc == null || ActiveNodes_ListBox?.SelectedItem == null) { return; }
+            if (Pcc == null || ActiveNodes_ListBox?.SelectedItem is not ExportEntry bioSquadCombat) { return; }
 
-            ExportEntry bioSquadCombat = ActiveNodes_ListBox?.SelectedItem as ExportEntry;
-
-            if (bioSquadCombat == null || bioSquadCombat.ClassName is not "BioSquadCombat")
+            if (bioSquadCombat.ClassName != "BioSquadCombat")
             {
                 MessageBox.Show("Selected export is not a BioSquadCombat", "Warning", MessageBoxButton.OK);
                 return;
             }
 
-            IEnumerable<IEntry> pathNodes = Pcc.Exports.Where(exp => exp.ClassName == "PathNode");
-            int nodeCount = pathNodes.Count();
-
-            if (nodeCount == 0)
-            {
-                MessageBox.Show("No PathNodes were found on the file", "Warning", MessageBoxButton.OK);
-                return;
-            }
-
             ArrayProperty<StructProperty> m_aoAssignedPathNodes = new("m_aoAssignedPathNodes");
-            foreach (IEntry entry in pathNodes)
+            foreach (IEntry entry in Pcc.Exports)
             {
+                if (entry.ClassName != "PathNode") { continue; } // Faster than filtering and then doing something
+
                 PropertyCollection props = new()
                 {
                     new ObjectProperty(entry.UIndex, "oPoint"),
@@ -5075,9 +5066,16 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                 m_aoAssignedPathNodes.Add(new StructProperty("LockedPoint", props, "LockedPoint", false));
             }
 
+            int assignedCount = m_aoAssignedPathNodes.Count;
+            if (assignedCount == 0)
+            {
+                MessageBox.Show("No PathNodes were found on the file", "Warning", MessageBoxButton.OK);
+                return;
+            }
+
             bioSquadCombat.WriteProperty(m_aoAssignedPathNodes);
 
-            string message = (nodeCount == 1) ? "one path node" : $"{nodeCount} path nodes";
+            string message = (assignedCount == 1) ? "one path node" : $"{assignedCount} path nodes";
             MessageBox.Show($"Added {message}.", "Success", MessageBoxButton.OK);
         }
 
