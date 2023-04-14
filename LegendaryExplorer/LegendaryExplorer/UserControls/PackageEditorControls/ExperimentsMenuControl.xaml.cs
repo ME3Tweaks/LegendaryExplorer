@@ -1465,11 +1465,6 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         {
             PackageEditorExperimentsO.UpdateWwiseBankIDExperiment(GetPEWindow());
         }
-
-        private void AddPathNodes_Click(object sender, RoutedEventArgs e)
-        {
-            PackageEditorExperimentsO.AddPathNodes(GetPEWindow());
-        }
         #endregion
 
         // EXPERIMENTS: CHONKY DB---------------------------------------------------------

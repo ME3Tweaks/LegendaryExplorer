@@ -305,6 +305,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
         public ICommand LoadGroupCommand { get; set; }
         public ICommand SaveGroupCommand { get; set; }
         public ICommand ShowTriggerCylindersCommand { get; set; }
+        public ICommand AddAllPathnodesToBioSquadCombatCommand { get; set; }
 
         private void LoadCommands()
         {
@@ -361,6 +362,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
             LoadGroupCommand = new GenericCommand(LoadActorGroup, PackageIsLoaded);
             SaveGroupCommand = new GenericCommand(SaveActorGroup, () => !ActorGroup.IsEmpty());
             OpenOtherVersionCommand = new GenericCommand(OpenOtherVersion, () => Pcc != null && Pcc.Game.IsMEGame());
+            AddAllPathnodesToBioSquadCombatCommand = new GenericCommand(AddAllPathnodesToBioSquadCombat);
         }
 
         private bool IsSplineActorSelected() => ActiveNodes_ListBox.SelectedItem is ExportEntry exp && exp.IsA("SplineActor");
@@ -5036,6 +5038,47 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                 }
                 pe.Show();
             }
+        }
+
+        /// <summary>
+        /// Adds all the PathNodes in the package to the selected BioSquadCombat's AssignedPathNodes array.
+        /// </summary>
+        private void AddAllPathnodesToBioSquadCombat()
+        {
+            if (Pcc == null || ActiveNodes_ListBox?.SelectedItem == null) { return; }
+
+            ExportEntry bioSquadCombat = ActiveNodes_ListBox?.SelectedItem as ExportEntry;
+
+            if (bioSquadCombat == null || bioSquadCombat.ClassName is not "BioSquadCombat")
+            {
+                MessageBox.Show("Selected export is not a BioSquadCombat", "Warning", MessageBoxButton.OK);
+                return;
+            }
+
+            IEnumerable<IEntry> pathNodes = Pcc.Exports.Where(exp => exp.ClassName == "PathNode");
+            int nodeCount = pathNodes.Count();
+
+            if (nodeCount == 0)
+            {
+                MessageBox.Show("No PathNodes were found on the file", "Warning", MessageBoxButton.OK);
+                return;
+            }
+
+            ArrayProperty<StructProperty> m_aoAssignedPathNodes = new("m_aoAssignedPathNodes");
+            foreach (IEntry entry in pathNodes)
+            {
+                PropertyCollection props = new()
+                {
+                    new ObjectProperty(entry.UIndex, "oPoint"),
+                    new ObjectProperty(0, "oLockedBy")
+                };
+                m_aoAssignedPathNodes.Add(new StructProperty("LockedPoint", props, "LockedPoint", false));
+            }
+
+            bioSquadCombat.WriteProperty(m_aoAssignedPathNodes);
+
+            string message = (nodeCount == 1) ? "one path node" : $"{nodeCount} path nodes";
+            MessageBox.Show($"Added {message}.", "Success", MessageBoxButton.OK);
         }
 
         #region Busy

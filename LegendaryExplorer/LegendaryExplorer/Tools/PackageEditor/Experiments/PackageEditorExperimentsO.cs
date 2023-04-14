@@ -1952,48 +1952,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
         }
 
-        /// <summary>
-        /// Adds all the PathNodes in the package to the selected BioSquadCombat's AssignedPathNodes array.
-        /// </summary>
-        /// <param name="pew">Current PE instance.</param>
-        public static void AddPathNodes(PackageEditorWindow pew)
-        {
-            if (pew.Pcc == null || pew.SelectedItem?.Entry == null) { return; }
-
-            if (pew.SelectedItem.Entry.ClassName is not "BioSquadCombat")
-            {
-                ShowError("Selected export is not a BioSquadCombat");
-                return;
-            }
-
-            ExportEntry bioSquadCombat = (ExportEntry)pew.SelectedItem.Entry;
-
-            IEnumerable<IEntry> pathNodes = pew.Pcc.Exports.Where(exp => exp.ClassName == "PathNode");
-            int nodeCount = pathNodes.Count();
-
-            if (nodeCount == 0)
-            {
-                ShowError("No PathNodes were found on the file");
-                return;
-            }
-
-            ArrayProperty<StructProperty> m_aoAssignedPathNodes = new("m_aoAssignedPathNodes");
-            foreach (IEntry entry in pathNodes)
-            {
-                PropertyCollection props = new()
-                {
-                    new ObjectProperty(entry.UIndex, "oPoint"),
-                    new ObjectProperty(0, "oLockedBy")
-                };
-                m_aoAssignedPathNodes.Add(new StructProperty("LockedPoint", props, "LockedPoint", false));
-            }
-
-            bioSquadCombat.WriteProperty(m_aoAssignedPathNodes);
-
-            string message = (nodeCount == 1) ? "one path node" : $"{nodeCount} path nodes";
-            MessageBox.Show($"Added {message}.", "Success", MessageBoxButton.OK);
-        }
-
         // HELPER FUNCTIONS
         #region Helper functions
         /// <summary>
