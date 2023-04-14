@@ -40,22 +40,30 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
             Nodes = new HuffmanNode[Header.treeNodeCount];
             for (int i = 0; i < Header.treeNodeCount; i++)
                 Nodes[i] = new HuffmanNode(r);
-            
+
             Bits = new TLKBitArray(r.BaseStream, Header.dataLen);
             r.Close();
         }
 
         /// <summary>
-        /// Gets the string corresponding to the <paramref name="strRefID"/> (wrapped in quotes), if it exists in this file. If it does not, returns <c>"No Data"</c>
+        /// Gets the string corresponding to the <paramref name="strRefID"/> (wrapped in quotes if <paramref name="noQuotes"/> is not set), if it exists in this file. If it does not, returns <c>"No Data"</c>, or null if <paramref name="returnNullIfNotFound"/> is true.
         /// </summary>
         /// <param name="strRefID"></param>
         /// <param name="withFileName">Optional: Should the filename be appended to the returned string</param>
         /// <returns></returns>
-        public string FindDataById(int strRefID, bool withFileName = false)
+        public string FindDataById(int strRefID, bool withFileName = false, bool returnNullIfNotFound = false, bool noQuotes = false)
         {
             if (LazyStringRefs.TryGetValue(strRefID, out int bitOffset) && bitOffset >= 0)
             {
-                var retdata = "\"" + GetString(ref bitOffset, _builder ??= new StringBuilder(), Bits, Nodes) + "\"";
+                string retdata = null;
+                if (noQuotes)
+                {
+                    retdata = GetString(ref bitOffset, _builder ??= new StringBuilder(), Bits, Nodes);
+                }
+                else
+                {
+                    retdata = "\"" + GetString(ref bitOffset, _builder ??= new StringBuilder(), Bits, Nodes) + "\"";
+                }
                 if (withFileName)
                 {
                     retdata += " (" + FileName + ")";
@@ -63,7 +71,7 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
                 return retdata;
             }
 
-            return "No Data";
+            return returnNullIfNotFound ? null : "No Data";
         }
     }
 }

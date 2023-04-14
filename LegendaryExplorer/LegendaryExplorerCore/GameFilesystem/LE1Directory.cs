@@ -180,9 +180,9 @@ namespace LegendaryExplorerCore.GameFilesystem
         public static string SaveFolderPath => Path.Combine(LEDirectory.BioWareDocumentsPath, @"Save", @"ME1");
 
         /// <summary>
-        /// Path to the 'Local_Profile' file in the user config directory.
+        /// Path to the persistent storage file in the user config directory.
         /// </summary>
-        public static string LocalProfilePath => Path.Combine(SaveFolderPath, @"Local_Profile");
+        public static string LocalProfilePath => Path.Combine(SaveFolderPath, @"PROFILE", @"GamerProfile.pcsav");
 
         /// <summary>
         /// Gets the path to the LOD configuration file for LE1

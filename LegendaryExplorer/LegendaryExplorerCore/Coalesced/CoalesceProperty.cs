@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 
@@ -12,10 +13,12 @@ namespace LegendaryExplorerCore.Coalesced
 
         private readonly IList<CoalesceValue> _values;
 
-        public CoalesceProperty(string name = null, IList<CoalesceValue> values = null)
+        public CoalesceProperty(string name, IList<CoalesceValue> values = null)
         {
+            if (name == null)
+                throw new Exception(@"Cannot have a null-named Coalesce property!");
             _values = values ?? new List<CoalesceValue>();
-            Name = name ?? "CoalesceProperty";
+            Name = name;
         }
 
         public CoalesceProperty(string name, CoalesceValue value)

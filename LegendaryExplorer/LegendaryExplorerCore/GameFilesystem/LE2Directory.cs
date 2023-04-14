@@ -162,7 +162,7 @@ namespace LegendaryExplorerCore.GameFilesystem
         /// <summary>
         /// Path to the 'Local_Profile' file in the user config directory.
         /// </summary>
-        public static string LocalProfilePath => Path.Combine(SaveFolderPath, @"Local_Profile");
+        public static string LocalProfilePath => Path.Combine(SaveFolderPath, @"GamerProfile");
 
         /// <summary>
         /// Gets the path to the LOD configuration file for LE2

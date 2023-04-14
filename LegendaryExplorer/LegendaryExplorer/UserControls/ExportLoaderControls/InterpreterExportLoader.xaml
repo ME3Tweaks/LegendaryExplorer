@@ -274,6 +274,8 @@
                 </controls:StretchingTreeView.ItemContainerStyle>
                 <controls:StretchingTreeView.ContextMenu>
                     <ContextMenu>
+                        <MenuItem Header="Copy property" ToolTip="Copies the property, which can then be pasted (using the paste button) into another export in the same package" Command="{Binding CopyPropertyCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
+                        <MenuItem Header="Paste property" ToolTip="Pastes the currently copied property" Command="{Binding PastePropertyCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
                         <MenuItem Header="Copy parsed value" ToolTip="Copies the parsed value to the clipboard" Command="{Binding CopyValueCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
 
                         <MenuItem Header="Sort children properties alphabetically" ToolTip="Sorts properties alphabetically. This is a cosmetic only change." Command="{Binding SortChildrenCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>

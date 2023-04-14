@@ -60,6 +60,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         /// </summary>
         public GenericCommand NavigateToEntryCommandInternal { get; set; }
 
+        public GenericCommand CopyPropertyCommand { get; set; }
+
+        public GenericCommand PastePropertyCommand { get; set; }
+
         public RelayCommand NavigateToEntryCommand
         {
             get => (RelayCommand)GetValue(NavigateToEntryCallbackProperty);
@@ -131,6 +135,17 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         private bool isLoadingNewData;
         private int ForcedRescanOffset;
         private bool ArrayElementJustAdded;
+
+
+        /// <summary>
+        /// Reference to the package that the property we copied from is from
+        /// </summary>
+        private WeakReference<IMEPackage> CopiedPropertyPackage { get; } = new WeakReference<IMEPackage>(null); // Default to null but ensure weak reference is generated.
+
+        /// <summary>
+        /// The currently copied property.
+        /// </summary>
+        private static Property CopiedProperty { get; set; }
 
         public InterpreterExportLoader() : base("Properties")
         {
@@ -263,6 +278,58 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             CopyValueCommand = new GenericCommand(CopyPropertyValue, CanCopyPropertyValue);
             CopyPropNameCommand = new GenericCommand(CopyPropertyName, CanCopyPropertyName);
             CopyUnrealScriptPropValueCommand = new GenericCommand(CopyUnrealScriptPropValue, CanCopyUnrealScriptPropValue);
+
+            CopyPropertyCommand = new GenericCommand(CopyProperty, CanCopyProperty);
+            PastePropertyCommand = new GenericCommand(PasteProperty, CanPasteProperty);
+        }
+
+        private void CopyProperty()
+        {
+            if (Interpreter_TreeView?.SelectedItem is UPropertyTreeViewEntry tvi && tvi.Parent != null && tvi.Parent.Property == null && tvi.Property is not NoneProperty)
+            {
+                CopiedProperty = tvi.Property;
+                CopiedPropertyPackage.SetTarget(CurrentLoadedExport.FileRef);
+            }
+        }
+
+        private void PasteProperty()
+        {
+            if (!CopiedPropertyPackage.TryGetTarget(out var package)) return;
+            if (CopiedProperty == null) return;
+            if (CurrentLoadedExport == null) return;
+            if (package != CurrentLoadedExport.FileRef) return;
+
+            // Check existing prop name
+            var existingProp = CurrentLoadedExport.GetProperties().FirstOrDefault(x => x.Name.Instanced == CopiedProperty.Name.Instanced);
+
+            if (existingProp != null)
+            {
+                var overwrite = MessageBox.Show(Window.GetWindow(this), $"This export already has a property named {existingProp.Name}. Do you want to overwrite it?", "Ovewrite warning", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) == MessageBoxResult.Yes;
+                if (!overwrite) return; // Abort
+            }
+
+
+            // Write the property.
+            CurrentLoadedExport.WriteProperty(CopiedProperty);
+        }
+
+        private bool CanPasteProperty()
+        {
+            return CurrentLoadedExport != null && CopiedPropertyPackage != null
+                                               && CopiedPropertyPackage.TryGetTarget(out var package)
+                                               && package == CurrentLoadedExport.FileRef
+                                               && CurrentLoadedExport.ClassName != @"Function"
+                                               && CurrentLoadedExport.ClassName != @"Class"; // We should probably make it so you can only do it if we know it supports that property, but this is a POC
+        }
+
+        private bool CanCopyProperty()
+        {
+            if (CurrentLoadedExport != null && Interpreter_TreeView?.SelectedItem is UPropertyTreeViewEntry tvi)
+            {
+                if (tvi.Property is NoneProperty) return false; // You cannot copy NoneProperties
+                return tvi.Parent != null && tvi.Parent.Property == null; // Parent has no property, which means this is a root node
+            }
+            return false;
         }
 
         private void CopyUnrealScriptPropValue()
@@ -1399,7 +1466,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     else if (sp.StructType is "SettingsPropertyPropertyMetaData")
                     {
                         parsedValue =
-                            $"ID: {sp.GetProp<IntProperty>("Id").Value}, Name: {sp.GetProp<NameProperty>("Name").Value.Instanced}";
+                            $"ID: {sp.GetProp<IntProperty>("Id").Value}, Name: {sp.GetProp<NameProperty>("Name").Value.Instanced} | {sp.GetProp<EnumProperty>(@"MappingType").Value.Instanced}";
                     }
                     else
                     {
