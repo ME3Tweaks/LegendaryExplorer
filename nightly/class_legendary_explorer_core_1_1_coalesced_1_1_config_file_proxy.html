@@ -111,9 +111,18 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a34a59c77117f9fee71a93434e537fd47"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesce_asset.html">CoalesceAsset</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_coalesced_1_1_config_file_proxy.html#a34a59c77117f9fee71a93434e537fd47">ParseIni</a> (string iniText)</td></tr>
 <tr class="memdesc:a34a59c77117f9fee71a93434e537fd47"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parses a game 2 - style ini file into a <a class="el" href="class_legendary_explorer_core_1_1_coalesced_1_1_config_file_proxy.html" title="Loads a text-based ini file as a CoalesceAsset for single API editing.">ConfigFileProxy</a> (ini file with prefixes)   <a href="class_legendary_explorer_core_1_1_coalesced_1_1_config_file_proxy.html#a34a59c77117f9fee71a93434e537fd47">More...</a><br /></td></tr>
 <tr class="separator:a34a59c77117f9fee71a93434e537fd47"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a609ae0f084947e582947c3931079e328"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_coalesced_1_1_config_file_proxy.html#a609ae0f084947e582947c3931079e328">StripType</a> (string key)</td></tr>
+<tr class="memdesc:a609ae0f084947e582947c3931079e328"><td class="mdescLeft">&#160;</td><td class="mdescRight">Strips off the type prefix on this value - that is, the first character if it matches a type we support parsing.   <a href="class_legendary_explorer_core_1_1_coalesced_1_1_config_file_proxy.html#a609ae0f084947e582947c3931079e328">More...</a><br /></td></tr>
+<tr class="separator:a609ae0f084947e582947c3931079e328"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab04e56ff9cf125b7c9769d01ad2a65f8"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_coalesced_1_1_config_file_proxy.html#ab04e56ff9cf125b7c9769d01ad2a65f8">IsTyped</a> (string key)</td></tr>
+<tr class="memdesc:ab04e56ff9cf125b7c9769d01ad2a65f8"><td class="mdescLeft">&#160;</td><td class="mdescRight">If the key starts with a parse action typing. Includes the M3 specific &gt; type 0.   <a href="class_legendary_explorer_core_1_1_coalesced_1_1_config_file_proxy.html#ab04e56ff9cf125b7c9769d01ad2a65f8">More...</a><br /></td></tr>
+<tr class="separator:ab04e56ff9cf125b7c9769d01ad2a65f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0f938609b7278b3729cde26643207012"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_coalesced_1_1_config_file_proxy.html#a0f938609b7278b3729cde26643207012">GetGame2IniText</a> (this <a class="el" href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesce_asset.html">CoalesceAsset</a> asset)</td></tr>
 <tr class="memdesc:a0f938609b7278b3729cde26643207012"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts this <a class="el" href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesce_asset.html">CoalesceAsset</a> to a Game2-style ini   <a href="class_legendary_explorer_core_1_1_coalesced_1_1_config_file_proxy.html#a0f938609b7278b3729cde26643207012">More...</a><br /></td></tr>
 <tr class="separator:a0f938609b7278b3729cde26643207012"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af363301a50d59e47e2c50c078b048c97"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="namespace_legendary_explorer_core_1_1_coalesced.html#abe59b8809f45b7c71569b1c0f10668a5">CoalesceParseAction</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_coalesced_1_1_config_file_proxy.html#af363301a50d59e47e2c50c078b048c97">GetIniDataType</a> (string key)</td></tr>
+<tr class="memdesc:af363301a50d59e47e2c50c078b048c97"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the data type of an ini based on the key of a key value pair   <a href="class_legendary_explorer_core_1_1_coalesced_1_1_config_file_proxy.html#af363301a50d59e47e2c50c078b048c97">More...</a><br /></td></tr>
+<tr class="separator:af363301a50d59e47e2c50c078b048c97"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Loads a text-based ini file as a <a class="el" href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesce_asset.html">CoalesceAsset</a> for single API editing.  </p>
@@ -188,6 +197,76 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="a609ae0f084947e582947c3931079e328" name="a609ae0f084947e582947c3931079e328"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a609ae0f084947e582947c3931079e328">&#9670;&#160;</a></span>StripType()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static string LegendaryExplorerCore.Coalesced.ConfigFileProxy.StripType </td>
+          <td>(</td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>key</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Strips off the type prefix on this value - that is, the first character if it matches a type we support parsing.  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">key</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+</div>
+</div>
+<a id="ab04e56ff9cf125b7c9769d01ad2a65f8" name="ab04e56ff9cf125b7c9769d01ad2a65f8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab04e56ff9cf125b7c9769d01ad2a65f8">&#9670;&#160;</a></span>IsTyped()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static bool LegendaryExplorerCore.Coalesced.ConfigFileProxy.IsTyped </td>
+          <td>(</td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>key</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>If the key starts with a parse action typing. Includes the M3 specific &gt; type 0.  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">key</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+</div>
+</div>
 <a id="a0f938609b7278b3729cde26643207012" name="a0f938609b7278b3729cde26643207012"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a0f938609b7278b3729cde26643207012">&#9670;&#160;</a></span>GetGame2IniText()</h2>
 
@@ -214,6 +293,41 @@ Static Public Member Functions</h2></td></tr>
 
 <p>Converts this <a class="el" href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesce_asset.html">CoalesceAsset</a> to a Game2-style ini  </p>
 <dl class="section return"><dt>Returns</dt><dd>string of ini</dd></dl>
+
+</div>
+</div>
+<a id="af363301a50d59e47e2c50c078b048c97" name="af363301a50d59e47e2c50c078b048c97"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af363301a50d59e47e2c50c078b048c97">&#9670;&#160;</a></span>GetIniDataType()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="namespace_legendary_explorer_core_1_1_coalesced.html#abe59b8809f45b7c71569b1c0f10668a5">CoalesceParseAction</a> LegendaryExplorerCore.Coalesced.ConfigFileProxy.GetIniDataType </td>
+          <td>(</td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>key</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Gets the data type of an ini based on the key of a key value pair  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">key</td><td>The key. Must be at least one character long.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The parse action typing, add by default.</dd></dl>
 
 </div>
 </div>
