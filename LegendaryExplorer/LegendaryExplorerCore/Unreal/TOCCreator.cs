@@ -337,7 +337,7 @@ namespace LegendaryExplorerCore.Unreal
 
                     // Check fill rate. We must have over 75% fill rate or we will lower the hash table size by 25% and try again (down to 50% of file table size)
                     var emptyHashBucketsCount = hashBuckets.Count(x => x.TOCEntries.Count == 0);
-                    Debug.WriteLine($@"Hash fill rate: {100 - (emptyHashBucketsCount * 100.0f / hashTableSize)}%");
+                    // Debug.WriteLine($@"Hash fill rate: {100 - (emptyHashBucketsCount * 100.0f / hashTableSize)}%");
                     if (emptyHashBucketsCount > hashTableSize / 4)
                     {
                         // Resize the table and generate it all again.
