@@ -79,7 +79,7 @@ namespace LegendaryExplorerCore.Coalesced
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        private static string StripType(string key)
+        public static string StripType(string key)
         {
             if (key[0] == '+') return key.Substring(1);
             if (key[0] == '!') return key.Substring(1);
@@ -87,6 +87,22 @@ namespace LegendaryExplorerCore.Coalesced
             if (key[0] == '.') return key.Substring(1);
             if (key[0] == '>') return key.Substring(1);
             return key;
+        }
+
+        /// <summary>
+        /// If the key starts with a parse action typing. Includes the M3 specific > type 0.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public static bool IsTyped(string key)
+        {
+            if (string.IsNullOrEmpty(key) || key.Length < 1) return false;
+            if (key[0] == '+') return true;
+            if (key[0] == '!') return true;
+            if (key[0] == '-') return true;
+            if (key[0] == '.') return true;
+            if (key[0] == '>') return true;
+            return false;
         }
 
         /// <summary>
@@ -120,9 +136,9 @@ namespace LegendaryExplorerCore.Coalesced
         /// <summary>
         /// Gets the data type of an ini based on the key of a key value pair
         /// </summary>
-        /// <param name="key"></param>
-        /// <returns></returns>
-        private static CoalesceParseAction GetIniDataType(string key)
+        /// <param name="key">The key. Must be at least one character long.</param>
+        /// <returns>The parse action typing, add by default.</returns>
+        public static CoalesceParseAction GetIniDataType(string key)
         {
             if (key[0] == '+') return CoalesceParseAction.AddUnique; // AddUnique 3 (enum 1)
             if (key[0] == '!') return CoalesceParseAction.RemoveProperty; // Clear 1 
@@ -145,7 +161,7 @@ namespace LegendaryExplorerCore.Coalesced
             if (action == CoalesceParseAction.AddUnique) return "+"; // Unique (3)
             if (action == CoalesceParseAction.RemoveProperty) return "!"; // Clear (1)
             if (action == CoalesceParseAction.Remove) return "-"; // Subtract 4
-            // if (action == CoalesceParseAction.Add) return "."; // It seems like blank or . means add for Game 2.
+                                                                  // if (action == CoalesceParseAction.Add) return ">"; // M3 specific - we don't put it here as this is not supported in game 2
             return ""; // Add (2) has no prefix, Type 0 New does not exist in ME2
         }
     }
