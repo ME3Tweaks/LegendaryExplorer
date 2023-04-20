@@ -1,4 +1,20 @@
-﻿using System;
+﻿using ClosedXML.Excel;
+using LegendaryExplorer.Dialogs;
+using LegendaryExplorer.Misc;
+using LegendaryExplorer.SharedUI;
+using LegendaryExplorer.Tools.TlkManagerNS;
+using LegendaryExplorer.UserControls.SharedToolControls;
+using LegendaryExplorer.UserControls.SharedToolControls.Curves;
+using LegendaryExplorerCore.Gammtek.Extensions;
+using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Misc;
+using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Unreal;
+using LegendaryExplorerCore.Unreal.BinaryConverters;
+using Microsoft.Win32;
+using Microsoft.WindowsAPICodePack.Dialogs;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -8,23 +24,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Xml.Linq;
-using ClosedXML.Excel;
-using LegendaryExplorer.Misc;
-using LegendaryExplorer.Dialogs;
-using LegendaryExplorer.SharedUI;
-using LegendaryExplorer.UserControls.SharedToolControls.Curves;
-using LegendaryExplorer.Tools.TlkManagerNS;
-using LegendaryExplorer.UserControls.SharedToolControls;
-using LegendaryExplorerCore.Helpers;
-using LegendaryExplorerCore.Packages;
-using LegendaryExplorerCore.Misc;
-using LegendaryExplorerCore.Unreal.BinaryConverters;
-using Microsoft.Win32;
-using Microsoft.WindowsAPICodePack.Dialogs;
-using Newtonsoft.Json;
 using Point = System.Windows.Point;
-using LegendaryExplorerCore.Unreal;
-using LegendaryExplorerCore.Gammtek.Extensions;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls
 {
@@ -530,6 +530,30 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             ReferenceAnimation = SelectedAnimation;
         }
 
+        private void AddAnimation_Click(object sender, RoutedEventArgs e)
+        {
+            string name = PromptDialog.Prompt(null, "New animation name");
+
+            if (string.IsNullOrEmpty(name))
+            {
+                MessageBox.Show("No a valid animation name", "Error", MessageBoxButton.OK);
+                return;
+            }
+
+            Animation animation = new()
+            {
+                Name = name,
+                Points = new()
+            };
+
+            Animations.Add(animation);
+            SelectedLine.AnimationNames.Add(FaceFX.Names.FindOrAdd(animation.Name));
+
+            // This writes the animations back to the export, which basically clones the data properly
+            SaveChanges();
+            UpdateAnimListBox();
+        }
+
         private void CloneAnimation_Click(object sender, RoutedEventArgs e)
         {
             Animations.Add(SelectedAnimation);
@@ -565,6 +589,108 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             SaveChanges();
         }
 
+        private void AddLine_Click(object sender, RoutedEventArgs e)
+        {
+            bool isNonSpkr = CurrentLoadedExport.ObjectName.Name.Contains("NonSpkr");
+            string id = "";
+            IEntry audio = null;
+
+            // Get the line name
+            string name = PromptDialog.Prompt(null, "New line name");
+            if (string.IsNullOrEmpty(name))
+            {
+                MessageBox.Show("Not a valid line name.", "Error", MessageBoxButton.OK);
+                return;
+            }
+
+            // PREPARE THE REQUIRED ELEMENTS
+            if (!isNonSpkr)
+            {
+                // Get the SoundCue or WwiseEvent export
+                string prompt = PromptDialog.Prompt(null, $"Export number of the {(Pcc.Game.IsGame1() ? "SoundCue" : "WwiseEvent")} to reference:", "Audio reference");
+                if (string.IsNullOrEmpty(prompt) || !int.TryParse(prompt, out int intPrompt) || intPrompt < 1 || !Pcc.TryGetEntry(intPrompt, out audio))
+                {
+                    MessageBox.Show("Invalid export number.", "Error", MessageBoxButton.OK);
+                    return;
+                }
+
+                // Get the SoundNodeWave for ME1/LE1, as it uses a different convention for the line ID
+                if (Pcc.Game.IsGame1())
+                {
+                    string nodeWavePrompt = PromptDialog.Prompt(null, $"Export number of the SoundNodeWave that references the SoundCue:", "SoundNodeWave reference");
+                    if (string.IsNullOrEmpty(nodeWavePrompt) || !int.TryParse(nodeWavePrompt, out int expNum) || expNum < 1 || !Pcc.TryGetEntry(expNum, out IEntry soundNodeWave))
+                    {
+                        MessageBox.Show("Invalid export number.", "Error", MessageBoxButton.OK);
+                        return;
+                    }
+
+                    id = soundNodeWave.ObjectName.Name;
+                }
+                else
+                {
+                    // Extract the StrRefID
+                    id = name.Replace("FXA_", "", StringComparison.CurrentCultureIgnoreCase)
+                        .Replace("_M", "", StringComparison.CurrentCultureIgnoreCase)
+                        .Replace("_F", "", StringComparison.CurrentCultureIgnoreCase);
+                }
+            }
+
+            int nameIdx = FaceFX.Names.FindIndex(l => string.Equals(l, name, StringComparison.CurrentCultureIgnoreCase));
+
+            // CREATE THE LINE
+            FaceFXLine line;
+            if (!isNonSpkr)
+            {
+                line = new()
+                {
+                    NameIndex = nameIdx < 0 ? FaceFX.Names.Count : nameIdx,
+                    NameAsString = name,
+                    AnimationNames = new(),
+                    Points = new(),
+                    NumKeys = new(),
+                    FadeInTime = 0.16F,
+                    FadeOutTime = 0.22F,
+                    Path = audio.InstancedFullPath,
+                    ID = id,
+                    Index = FaceFX.Lines.Count
+                };
+            }
+            else
+            {
+                line = new()
+                {
+                    NameIndex = nameIdx < 0 ? FaceFX.Names.Count : nameIdx,
+                    NameAsString = name,
+                    AnimationNames = new(),
+                    Points = new(),
+                    NumKeys = new(),
+                    FadeInTime = 0.16F,
+                    FadeOutTime = 0.22F,
+                    Index = -1
+                };
+            }
+            FaceFXLineEntry entry = new(line);
+
+            // CREATE ELEMENTS REQUIRING THE LINE
+            if (!isNonSpkr)
+            {
+                ArrayProperty<ObjectProperty> referencedSoundCues = CurrentLoadedExport.GetProperty<ArrayProperty<ObjectProperty>>("ReferencedSoundCues")
+                    ?? new ArrayProperty<ObjectProperty>("ReferencedSoundCues");
+                referencedSoundCues.Add(new ObjectProperty(audio.UIndex));
+                CurrentLoadedExport.WriteProperty(referencedSoundCues);
+
+                if (int.TryParse(entry.Line.ID, out int tlkID))
+                {
+                    entry.TLKString = TLKManagerWPF.GlobalFindStrRefbyID(tlkID, Pcc);
+                }
+            }
+
+            if (nameIdx < 0) { FaceFX.Names.Add(line.NameAsString); }
+            FaceFX.Lines.Add(line);
+            Lines.Add(entry);
+            SaveChanges();
+        }
+
         private void CloneLine_Click(object sender, RoutedEventArgs e)
         {
             // HenBagle: We don't need to do anything with names here because we're cloning within the same file
@@ -578,6 +704,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
             Lines.Add(newEntry);
         }
+
         private void SortLines_Click(object sender, RoutedEventArgs e)
         {
             // Sort lines by TLKID (as per Bioware)
@@ -595,7 +722,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             foreach (var line in Lines)
             {
                 var wwiseevent = Pcc.GetEntry(eventRefs[line.Line.Index].Value);
-                if(wwiseevent != null)
+                if (wwiseevent != null)
                 {
                     line.Line.Path = wwiseevent.FullPath;
                 }
@@ -607,12 +734,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             TreeNodes.ClearEx();
 
             TreeNodes.Add(new FaceFXEditorTreeNode() { Header = $"Name : 0x{d.NameIndex:X8} \"{animSet.Names[d.NameIndex].Trim()}\"", DoubleClickAction = NameDoubleClick });
-            TreeNodes.Add(new FaceFXEditorTreeNode() { Header = $"FadeInTime : {d.FadeInTime}", DoubleClickAction = FadeInDoubleClick});
-            TreeNodes.Add(new FaceFXEditorTreeNode() { Header = $"FadeOutTime : {d.FadeOutTime}", DoubleClickAction = FadeOutDoubleClick});
-            TreeNodes.Add(new FaceFXEditorTreeNode() { Header = $"Path : {d.Path}", DoubleClickAction = PathDoubleClick});
-            TreeNodes.Add(new FaceFXEditorTreeNode() { Header = $"ID : {d.ID}", DoubleClickAction = IDDoubleClick});
-            TreeNodes.Add(new FaceFXEditorTreeNode() { Header = $"Index : {d.Index} (0x{d.Index:X8})", DoubleClickAction = IndexDoubleClick});
-            TreeNodes.Add(new FaceFXEditorTreeNode() { Header = $"Class : {(animSet.Binary is FaceFXAnimSet ? "FaceFXAnimSet" : "FaceFXAsset")}", DoubleClickAction = null});
+            TreeNodes.Add(new FaceFXEditorTreeNode() { Header = $"FadeInTime : {d.FadeInTime}", DoubleClickAction = FadeInDoubleClick });
+            TreeNodes.Add(new FaceFXEditorTreeNode() { Header = $"FadeOutTime : {d.FadeOutTime}", DoubleClickAction = FadeOutDoubleClick });
+            TreeNodes.Add(new FaceFXEditorTreeNode() { Header = $"Path : {d.Path}", DoubleClickAction = PathDoubleClick });
+            TreeNodes.Add(new FaceFXEditorTreeNode() { Header = $"ID : {d.ID}", DoubleClickAction = IDDoubleClick });
+            TreeNodes.Add(new FaceFXEditorTreeNode() { Header = $"Index : {d.Index} (0x{d.Index:X8})", DoubleClickAction = IndexDoubleClick });
+            TreeNodes.Add(new FaceFXEditorTreeNode() { Header = $"Class : {(animSet.Binary is FaceFXAnimSet ? "FaceFXAnimSet" : "FaceFXAsset")}", DoubleClickAction = null });
         }
 
         private void IndexDoubleClick()
@@ -998,7 +1125,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     }
                 }
                 SelectedAnimation.Points.Clear();
-                foreach(CurvePoint point in newCurvePoints)
+                foreach (CurvePoint point in newCurvePoints)
                 {
                     SelectedAnimation.Points.AddLast(point);
                 }
