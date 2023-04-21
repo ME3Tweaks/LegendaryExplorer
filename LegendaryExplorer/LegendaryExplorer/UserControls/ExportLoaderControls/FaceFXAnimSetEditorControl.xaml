@@ -40,6 +40,11 @@
             <ListBox x:Name="linesListBox" ItemsSource="{Binding Lines}" SelectedItem="{Binding SelectedLineEntry}"
                  AllowDrop="True" PreviewMouseLeftButtonDown="linesListBox_PreviewMouseLeftButtonDown" MouseMove="linesListBox_MouseMove"
                  DragEnter="linesListBox_DragEnter" Drop="linesListBox_Drop" HorizontalContentAlignment="Stretch" PreviewMouseRightButtonDown="linesListBox_PreviewMouseRightButtonDown">
+                <ListBox.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Add Line" Click="AddLine_Click"/>
+                    </ContextMenu>
+                </ListBox.ContextMenu>
                 <ListBox.ItemTemplate>
                     <DataTemplate DataType="{x:Type exportLoaderControls:FaceFXLineEntry}">
                         <StackPanel>
@@ -59,7 +64,6 @@
                                     <MenuItem Header="Clone" Click="CloneLine_Click"/>
                                     <MenuItem Header="Delete Line" Click="DeleteLine_Click"/>
                                     <MenuItem Header="Sort Lines by StrRef" Click="SortLines_Click"/>
-                                    <MenuItem Header="Add Animation" Click="AddAnimation_Click"/>
                                     <MenuItem Header="Set All Paths" Click="SetPaths_Click"/>
                                 </ContextMenu>
                             </StackPanel.ContextMenu>
@@ -101,6 +105,11 @@
                      AllowDrop="True" PreviewMouseLeftButtonDown="animationListBox_PreviewMouseLeftButtonDown" MouseMove="animationListBox_MouseMove"
                      DragEnter="animationListBox_DragEnter" Drop="animationListBox_Drop" HorizontalContentAlignment="Stretch"
                      HorizontalAlignment="Stretch" SelectedItem="{Binding SelectedAnimation}">
+            <ListBox.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Add Animation" Click="AddAnimation_Click"/>
+                </ContextMenu>
+            </ListBox.ContextMenu>
             <ListBox.ItemTemplate>
                 <DataTemplate DataType="{x:Type exportLoaderControls:Animation}">
                     <TextBlock Text="{Binding Name}" Margin="0 0 5 0">

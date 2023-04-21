@@ -532,6 +532,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void AddAnimation_Click(object sender, RoutedEventArgs e)
         {
+            if (SelectedLine == null) { return; }
+
             string name = PromptDialog.Prompt(null, "New animation name");
 
             if (string.IsNullOrEmpty(name))
@@ -591,6 +593,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void AddLine_Click(object sender, RoutedEventArgs e)
         {
+            if (CurrentLoadedExport == null) { return; }
+
             bool isNonSpkr = CurrentLoadedExport.ObjectName.Name.Contains("NonSpkr");
             string id = "";
             IEntry audio = null;
@@ -666,6 +670,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     NumKeys = new(),
                     FadeInTime = 0.16F,
                     FadeOutTime = 0.22F,
+                    Path = "",
+                    ID = "",
                     Index = -1
                 };
             }
