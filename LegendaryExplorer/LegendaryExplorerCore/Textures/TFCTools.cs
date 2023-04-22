@@ -61,8 +61,6 @@ namespace LegendaryExplorerCore.Textures
                     var tex = ObjectBinary.From<UTexture2D>(exp);
 
                     // First 6 mips are always locally stored
-                    bool writeTFCProp = false;
-
                     if (tex.Mips.Count > 6)
                     {
                         var externalMips = tex.Mips.Take(Math.Abs(6 - tex.Mips.Count)).ToList();
