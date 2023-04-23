@@ -53,6 +53,7 @@
                             <TextBlock Text="{Binding LengthAsString}" VerticalAlignment="Center" Foreground="Gray"/>
                             <StackPanel.ContextMenu>
                                 <ContextMenu x:Name="lineContextMenu">
+                                    <MenuItem Header="Add Line" Click="AddLine_Click"/>
                                     <MenuItem Header="Delete Section of line" Click="DelLineSec_Click"/>
                                     <MenuItem Header="Import Section of line" Click="ImpLineSec_Click"/>
                                     <MenuItem Header="Export Section of line" Click="ExpLineSec_Click"/>
@@ -60,7 +61,6 @@
                                     <MenuItem Header="Clear all 'm__' lip sync keys" Click="ClearLipSyncKeys_Click"/>
                                     <MenuItem Header="Clear all Animations" Click="ClearAnimations_Click"/>
                                     <MenuItem Header="Import tracks from XML" Click="ImportTracksFromXML_Click"/>
-                                    <MenuItem Header="Add Line" Click="AddLine_Click"/>
                                     <MenuItem Header="Clone" Click="CloneLine_Click"/>
                                     <MenuItem Header="Delete Line" Click="DeleteLine_Click"/>
                                     <MenuItem Header="Sort Lines by StrRef" Click="SortLines_Click"/>
@@ -116,10 +116,10 @@
                     <TextBlock Text="{Binding Name}" Margin="0 0 5 0">
                         <TextBlock.ContextMenu>
                             <ContextMenu>
+                                <MenuItem Header="Add Animation" Click="AddAnimation_Click"/>
                                 <MenuItem Header="Delete" Click="DeleteAnim_Click"/>
                                 <MenuItem Header="Delete All Keys" Click="DeleteAnimKeys_Click"/>
                                 <MenuItem Header="Set As Reference Curve" Click="SelectForCompare_Click"/>
-                                <MenuItem Header="Add Animation" Click="AddAnimation_Click"/>
                                 <MenuItem Header="Clone" Click="CloneAnimation_Click"/>
                                 <MenuItem Header="Change Name" Click="ChangeAnimName_Click"></MenuItem>
                                 <MenuItem Header="Replace All Animations" Click="ReplaceAnimations_Click"/>
