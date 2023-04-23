@@ -584,6 +584,58 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             SaveChanges();
         }
 
+        private void ReplaceAnimations_Click(object sender, RoutedEventArgs e)
+        {
+            if (SelectedLine == null) { return; }
+
+            string extID = PromptDialog.Prompt(null, "Line ID to copy the animations from:");
+
+            FaceFXLineEntry extLineEntry = Lines.FirstOrDefault(l => l.Line.ID.CaseInsensitiveEquals(extID));
+            if (string.IsNullOrEmpty(extID) || extLineEntry == null)
+            {
+                MessageBox.Show("The Line ID doesn't exist in the loaded FaceFX set", "Error", MessageBoxButton.OK);
+                return;
+            }
+
+            string filter = ((MenuItem)sender).CommandParameter as string;
+
+            // Save animations if required, otherwise make a new list
+            List<Animation> animations = !string.IsNullOrEmpty(filter) ? Animations.Where(a => a.Name.StartsWith(filter)).ToList() : new();
+            Animations.Clear();
+            Animations.AddRange(animations); // Add back any saved animations
+
+            // Add the external animations
+            List<CurvePoint> extPoints = extLineEntry.Points.Select(p => new CurvePoint(p.time, p.weight, p.inTangent, p.leaveTangent)).ToList();
+            for (int i = 0, pos = 0; i < extLineEntry.Line.AnimationNames.Count; i++)
+            {
+                int animLength = extLineEntry.Line.NumKeys[i];
+                string animName = FaceFX.Names[extLineEntry.Line.AnimationNames[i]];
+
+                // If a filter is passed, skip animations that contain the filter
+                if (!string.IsNullOrEmpty(filter))
+                {
+                    if (animName.StartsWith(filter))
+                    {
+                        pos += animLength;
+                        continue;
+                    }
+                }
+
+                Animations.Add(new Animation
+                {
+                    Name = animName,
+                    Points = new LinkedList<CurvePoint>(extPoints.Skip(pos).Take(animLength))
+                }); ;
+
+                SelectedLine.AnimationNames.Add(extLineEntry.Line.AnimationNames[i]);
+
+                pos += animLength;
+            }
+
+            SaveChanges();
+            UpdateAnimListBox();
+        }
+
         private void DeleteLine_Click(object sender, RoutedEventArgs e)
         {
             FaceFX.Lines.Remove(SelectedLine);

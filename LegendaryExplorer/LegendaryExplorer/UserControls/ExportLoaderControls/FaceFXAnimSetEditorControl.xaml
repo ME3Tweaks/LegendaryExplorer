@@ -108,6 +108,7 @@
             <ListBox.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="Add Animation" Click="AddAnimation_Click"/>
+                    <MenuItem Header="Replace All Animations" Click="ReplaceAnimations_Click"/>
                 </ContextMenu>
             </ListBox.ContextMenu>
             <ListBox.ItemTemplate>
@@ -121,6 +122,8 @@
                                 <MenuItem Header="Add Animation" Click="AddAnimation_Click"/>
                                 <MenuItem Header="Clone" Click="CloneAnimation_Click"/>
                                 <MenuItem Header="Change Name" Click="ChangeAnimName_Click"></MenuItem>
+                                <MenuItem Header="Replace All Animations" Click="ReplaceAnimations_Click"/>
+                                <MenuItem Header="Replace All Animations Except Lipsync" Click="ReplaceAnimations_Click" CommandParameter="m_"/>
                                 <MenuItem Header="Export Curve to Excel" Click="ExportToExcel_Click">
                                     <MenuItem.Icon>
                                         <Image Source="/Resources/Images/excel.png" Width="16" Height="16" Margin="0,0,2,0"/>
