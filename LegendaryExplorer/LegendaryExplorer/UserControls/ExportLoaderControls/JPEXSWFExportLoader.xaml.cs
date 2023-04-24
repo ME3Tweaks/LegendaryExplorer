@@ -161,15 +161,18 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
                 // Texture refereences
                 var references = CurrentLoadedExport.GetProperty<ArrayProperty<ObjectProperty>>(@"References");
-                foreach (var reference in references)
+                if (references is not null)
                 {
-                    var refExp = CurrentLoadedExport.FileRef.GetEntry(reference.Value) as ExportEntry;
-                    if (refExp == null || !refExp.IsTexture())
-                        continue; // import or not a texture?
+                    foreach (var reference in references)
+                    {
+                        var refExp = CurrentLoadedExport.FileRef.GetEntry(reference.Value) as ExportEntry;
+                        if (refExp == null || !refExp.IsTexture())
+                            continue; // import or not a texture?
 
-                    // Extract texture TGA
-                    var tex = new Texture2D(refExp);
-                    tex.ExportToFile(Path.Combine(storagePath, refExp.ObjectName.Instanced + ".tga"));
+                        // Extract texture TGA
+                        var tex = new Texture2D(refExp);
+                        tex.ExportToFile(Path.Combine(storagePath, refExp.ObjectName.Instanced + ".tga"));
+                    }
                 }
 
                 var process = new Process
