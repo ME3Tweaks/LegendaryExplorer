@@ -221,7 +221,7 @@ namespace LegendaryExplorerCore.Save
 
                 //Debug.WriteLine($@"Setting {setting.Id} VALUE: {setting.Data}");
 
-                if (setting.Id == (int)ELE3ProfileSetting.Setting_ProfileVersionNum)
+                if (setting.Id == (int)ELE3ProfileSetting.Setting_ProfileVersionNum) // 26, same in LE2
                 {
                     // The version of the settings format
                     // LE3 = 50 ?
@@ -230,7 +230,7 @@ namespace LegendaryExplorerCore.Save
                 }
                 else
                 {
-                    ProfileSettings[setting.Id] = setting;
+                    ProfileSettings[(int)setting.Id] = setting;
                 }
             }
 
@@ -260,7 +260,7 @@ namespace LegendaryExplorerCore.Save
             ew.WriteInt32(ProfileSettings.Count + 1); // +1 for VERSION
             foreach (var profileSetting in ProfileSettings)
             {
-                if (profileSetting.Value.Id == (byte)ELE3ProfileSetting.Setting_ProfileVersionNum)
+                if (profileSetting.Value.Id == (byte)ELE3ProfileSetting.Setting_ProfileVersionNum) // Same as LE2, 26
                     continue;
                 profileSetting.Value.Serialize(ew);
             }
@@ -297,8 +297,95 @@ namespace LegendaryExplorerCore.Save
 
 
         // Enums
+
+        public enum ELE2ProfileSetting
+        {
+            Setting_Unknown = 0,
+            Setting_ControllerVibration = 1,
+            Setting_YInversion = 2,
+            Setting_GamerCred = 3,
+            Setting_GamerRep = 4,
+            Setting_VoiceMuted = 5,
+            Setting_VoiceThruSpeakers = 6,
+            Setting_VoiceVolume = 7,
+            Setting_GamerPictureKey = 8,
+            Setting_GamerMotto = 9,
+            Setting_GamerTitlesPlayed = 10,
+            Setting_GamerAchievementsEarned = 11,
+            Setting_GameDifficulty = 12,
+            Setting_ControllerSensitivity = 13,
+            Setting_PreferredColor1 = 14,
+            Setting_PreferredColor2 = 15,
+            Setting_AutoAim = 16,
+            Setting_AutoCenter = 17,
+            Setting_MovementControl = 18,
+            Setting_RaceTransmission = 19,
+            Setting_RaceCameraLocation = 20,
+            Setting_RaceBrakeControl = 21,
+            Setting_RaceAcceleratorControl = 22,
+            Setting_GameCredEarned = 23,
+            Setting_GameAchievementsEarned = 24,
+            Setting_EndLiveIds = 25,
+            Setting_ProfileVersionNum = 26,
+            Setting_ProfileSaveCount = 27,
+            Setting_StickConfiguration = 28,
+            Setting_TriggerConfiguration = 29,
+            Setting_Subtitles = 30,
+            Setting_AimAssist = 31,
+            Setting_Difficulty = 32,
+            Setting_AutoLevel = 33,
+            Setting_SquadPowers = 34,
+            Setting_AutoSave = 35,
+            Setting_MusicVolume = 36,
+            Setting_FXVolume = 37,
+            Setting_DialogVolume = 38,
+            Setting_MotionBlur = 39,
+            Setting_FilmGrain = 40,
+            Setting_SelectedDeviceID = 41,
+            Setting_CurrentCareer = 42,
+            Setting_DaysSinceRegistration = 43,
+            Setting_AutoLogin = 44,
+            Setting_LoginInfo = 45,
+            Setting_PersonaID = 46,
+            Setting_NucleusRefused = 47,
+            Setting_NucleusSuccessful = 48,
+            Setting_CerberusRefused = 49,
+            Setting_Achievement_FieldA = 50,
+            Setting_Achievement_FieldB = 51,
+            Setting_Achievement_FieldC = 52,
+            Setting_TelemetryCollectionEnabled = 53,
+            Setting_KeyBindings = 54,
+            Setting_DisplayGamma = 55,
+            Setting_CurrentSaveGame = 56,
+            Setting_VerticalSync = 57,
+            Setting_AntiAliasing = 58,
+            Setting_NumHeadshots = 59,
+            Setting_NumPowerCombos = 60,
+            Setting_NumScreams = 61,
+            Setting_NumShieldsDisrupted = 62,
+            Setting_NumBarriersWarped = 63,
+            Setting_NumArmourIncinerated = 64,
+            Setting_NumN7MissionsCompleted = 65,
+            Setting_NumCodex = 66,
+            Setting_ShowHints = 67,
+            Setting_NumTrainingVidsWatched = 68,
+            Setting_WatchedVid1 = 69,
+            Setting_WatchedVid2 = 70,
+            Setting_WatchedVid3 = 71,
+            Setting_MorinthNotSamara = 72,
+            Setting_MaxWeaponUpgradeCount = 73,
+            Setting_LastFinishedCareer = 74,
+            Setting_SwapTriggersShoulders = 75,
+            Setting_PS3_RedeemedProductCode = 76,
+            Setting_HDREnabled = 77,
+            Setting_HDRBrightness = 78,
+            Setting_HDRContrast = 79,
+            Setting_DynamicResolution = 80,
+            Setting_AmbientOcclusion = 81,
+        }
+
         /// <summary>
-        /// Setting IDs for LE3, possibly LE2?
+        /// Setting IDs for LE3
         /// </summary>
         public enum ELE3ProfileSetting
         {
