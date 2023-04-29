@@ -1,20 +1,4 @@
-﻿using Microsoft.Win32;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Drawing;
-using System.IO;
-using System.IO.Pipes;
-using System.Linq;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Threading;
-using System.Numerics;
-using DashStyle = System.Drawing.Drawing2D.DashStyle;
-using System.Threading.Tasks;
-using LegendaryExplorer.Dialogs;
+﻿using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.GameInterop;
 using LegendaryExplorer.GameInterop.InteropTargets;
 using LegendaryExplorer.Misc;
@@ -28,19 +12,32 @@ using LegendaryExplorer.UserControls.ExportLoaderControls;
 using LegendaryExplorer.UserControls.SharedToolControls;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
+using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
-using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Unreal.Collections;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
+using Microsoft.Win32;
 using Piccolo;
 using Piccolo.Event;
-using Piccolo.Nodes;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Numerics;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Threading;
+using DashStyle = System.Drawing.Drawing2D.DashStyle;
 using RectangleF = System.Drawing.RectangleF;
-using LegendaryExplorer.Tools.PackageEditor;
-using LegendaryExplorerCore.Unreal.Collections;
 
 namespace LegendaryExplorer.Tools.PathfindingEditor
 {
@@ -305,6 +302,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
         public ICommand LoadGroupCommand { get; set; }
         public ICommand SaveGroupCommand { get; set; }
         public ICommand ShowTriggerCylindersCommand { get; set; }
+        public ICommand AddAllPathnodesToBioSquadCombatCommand { get; set; }
 
         private void LoadCommands()
         {
@@ -361,6 +359,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
             LoadGroupCommand = new GenericCommand(LoadActorGroup, PackageIsLoaded);
             SaveGroupCommand = new GenericCommand(SaveActorGroup, () => !ActorGroup.IsEmpty());
             OpenOtherVersionCommand = new GenericCommand(OpenOtherVersion, () => Pcc != null && Pcc.Game.IsMEGame());
+            AddAllPathnodesToBioSquadCombatCommand = new GenericCommand(AddAllPathnodesToBioSquadCombat);
         }
 
         private bool IsSplineActorSelected() => ActiveNodes_ListBox.SelectedItem is ExportEntry exp && exp.IsA("SplineActor");
@@ -3701,45 +3700,45 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                 switch (exp.ObjectName.Name)
                 {
                     case "StaticMeshCollectionActor":
+                    {
+                        var smca = exp.GetBinaryData<StaticMeshCollectionActor>();
+                        foreach (int uIndex in smca.Components)
                         {
-                            var smca = exp.GetBinaryData<StaticMeshCollectionActor>();
-                            foreach (int uIndex in smca.Components)
+                            if (exp.FileRef.TryGetUExport(uIndex, out ExportEntry smComponent))
                             {
-                                if (exp.FileRef.TryGetUExport(uIndex, out ExportEntry smComponent))
-                                {
-                                    InvertScalingOnExport(smComponent, "Scale3D");
-                                }
+                                InvertScalingOnExport(smComponent, "Scale3D");
                             }
-
-                            for (int i = 0; i < smca.LocalToWorldTransforms.Count; i++)
-                            {
-                                Matrix4x4 m = smca.LocalToWorldTransforms[i];
-                                m.Translation *= -1;
-                                smca.LocalToWorldTransforms[i] = m;
-                            }
-                            exp.WriteBinary(smca);
-                            break;
                         }
+
+                        for (int i = 0; i < smca.LocalToWorldTransforms.Count; i++)
+                        {
+                            Matrix4x4 m = smca.LocalToWorldTransforms[i];
+                            m.Translation *= -1;
+                            smca.LocalToWorldTransforms[i] = m;
+                        }
+                        exp.WriteBinary(smca);
+                        break;
+                    }
                     default:
+                    {
+                        var props = exp.GetProperties();
+                        StructProperty locationProp = props.GetProp<StructProperty>("location");
+                        if (locationProp != null)
                         {
-                            var props = exp.GetProperties();
-                            StructProperty locationProp = props.GetProp<StructProperty>("location");
-                            if (locationProp != null)
-                            {
-                                FloatProperty xProp = locationProp.Properties.GetProp<FloatProperty>("X");
-                                FloatProperty yProp = locationProp.Properties.GetProp<FloatProperty>("Y");
-                                FloatProperty zProp = locationProp.Properties.GetProp<FloatProperty>("Z");
-                                Debug.WriteLine($"{exp.UIndex} {exp.ObjectName.Instanced} Flipping {xProp.Value},{yProp.Value},{zProp.Value}");
+                            FloatProperty xProp = locationProp.Properties.GetProp<FloatProperty>("X");
+                            FloatProperty yProp = locationProp.Properties.GetProp<FloatProperty>("Y");
+                            FloatProperty zProp = locationProp.Properties.GetProp<FloatProperty>("Z");
+                            Debug.WriteLine($"{exp.UIndex} {exp.ObjectName.Instanced} Flipping {xProp.Value},{yProp.Value},{zProp.Value}");
 
-                                xProp.Value *= -1;
-                                yProp.Value *= -1;
-                                zProp.Value *= -1;
+                            xProp.Value *= -1;
+                            yProp.Value *= -1;
+                            zProp.Value *= -1;
 
-                                exp.WriteProperty(locationProp);
-                                InvertScalingOnExport(exp, "DrawScale3D");
-                            }
-                            break;
+                            exp.WriteProperty(locationProp);
+                            InvertScalingOnExport(exp, "DrawScale3D");
                         }
+                        break;
+                    }
                 }
             }
             MessageBox.Show("Items flipped.", "Flipping complete");
@@ -5036,6 +5035,45 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                 }
                 pe.Show();
             }
+        }
+
+        /// <summary>
+        /// Adds all the PathNodes in the package to the selected BioSquadCombat's AssignedPathNodes array.
+        /// </summary>
+        private void AddAllPathnodesToBioSquadCombat()
+        {
+            if (Pcc == null || ActiveNodes_ListBox?.SelectedItem is not ExportEntry bioSquadCombat) { return; }
+
+            if (bioSquadCombat.ClassName != "BioSquadCombat")
+            {
+                MessageBox.Show("Selected export is not a BioSquadCombat", "Warning", MessageBoxButton.OK);
+                return;
+            }
+
+            ArrayProperty<StructProperty> m_aoAssignedPathNodes = new("m_aoAssignedPathNodes");
+            foreach (IEntry entry in Pcc.Exports)
+            {
+                if (entry.ClassName != "PathNode") { continue; } // Faster than filtering and then doing something
+
+                PropertyCollection props = new()
+                {
+                    new ObjectProperty(entry.UIndex, "oPoint"),
+                    new ObjectProperty(0, "oLockedBy")
+                };
+                m_aoAssignedPathNodes.Add(new StructProperty("LockedPoint", props, "LockedPoint", false));
+            }
+
+            int assignedCount = m_aoAssignedPathNodes.Count;
+            if (assignedCount == 0)
+            {
+                MessageBox.Show("No PathNodes were found on the file", "Warning", MessageBoxButton.OK);
+                return;
+            }
+
+            bioSquadCombat.WriteProperty(m_aoAssignedPathNodes);
+
+            string message = (assignedCount == 1) ? "one path node" : $"{assignedCount} path nodes";
+            MessageBox.Show($"Added {message}.", "Success", MessageBoxButton.OK);
         }
 
         #region Busy
