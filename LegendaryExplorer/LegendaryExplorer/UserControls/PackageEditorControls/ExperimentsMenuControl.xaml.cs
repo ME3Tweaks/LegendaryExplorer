@@ -1460,6 +1460,16 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         {
             PackageEditorExperimentsO.RenameAudioExperiment(GetPEWindow());
         }
+
+        private void UpdateAmbPerfClass_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.UpdateAmbPerfClassExperiment(GetPEWindow());
+        }
+
+        private void BatchUpdateAmbPerfClass_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.BatchUpdateAmbPerfClassExperiment(GetPEWindow());
+        }
         #endregion
 
         // EXPERIMENTS: CHONKY DB---------------------------------------------------------

@@ -2169,7 +2169,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
         }
 
-        /// <summary>
         /// Get a list containing all FXAs in a BioConversation.
         /// </summary>
         /// <param name="pcc">Pcc to operate on.</param>
@@ -2304,14 +2303,116 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             return "";
         }
+       
+        /// <summary>
+        /// Wrapper for UpdateAmbPerfClass so it can used as a full experiment on its own.
+        /// </summary>
+        /// <param name="pew">Current PE window.</param>
+        public static void UpdateAmbPerfClassExperiment(PackageEditorWindow pew)
+        {
+            if (pew.Pcc == null || pew.SelectedItem?.Entry == null) { return; }
 
+            if (pew.SelectedItem.Entry.ClassName is not "SFXAmbPerfGameData")
+            {
+                ShowError("Selected export is not an SFXAmbPerfGameData");
+                return;
+            }
+
+            int propResourceID = promptForInt("PropResource export number:", "Not a valid export number. It must be positive integer", -1, "PropResouce export number");
+            if (propResourceID == -1) { return; }
+            if (!pew.Pcc.TryGetUExport(propResourceID, out ExportEntry propResource))
+            {
+                ShowError("Could not find the export number.");
+                return;
+            }
+            if (propResource.ClassName != "Class")
+            {
+                ShowError("Provided export is not a class.");
+                return;
+            }
+
+            UpdateAmbPerfClass(pew.Pcc, (ExportEntry) pew.SelectedItem.Entry, propResource);
+
+            MessageBox.Show("Properties of SFXAmbPerfGameData updated successfully.", "Success", MessageBoxButton.OK);
+        }
+
+        /// <summary>
+        /// Batch update WepPropClass, PropName, and PropResource props of an AmbPerfs in a selected Package.
+        /// </summary>
+        /// <param name="pew">Current PE window.</param>
+        public static void BatchUpdateAmbPerfClassExperiment(PackageEditorWindow pew)
+        {
+            if (pew.Pcc == null || pew.SelectedItem?.Entry == null) { return; }
+
+            if (pew.SelectedItem.Entry.ClassName is not "Package")
+            {
+                ShowError("Selected export is not an Package");
+                return;
+            }
+
+            int propResourceID = promptForInt("PropResource export number:", "Not a valid export number. It must be positive integer", -1, "PropResouce export number");
+            if (propResourceID == -1) { return; }
+            if (!pew.Pcc.TryGetUExport(propResourceID, out ExportEntry propResource))
+            {
+                ShowError("Could not find the export number.");
+                return;
+            }
+            if (propResource.ClassName != "Class")
+            {
+                ShowError("Provided export is not a class.");
+                return;
+            }
+
+            string propClass = propResource.InstancedFullPath;
+            string propName = propResource.ObjectName.Name.Replace("SFXWeapon_", "", StringComparison.OrdinalIgnoreCase);
+
+            pew.SelectedItem.Entry.GetAllDescendants().ForEach(entry =>
+            {
+                if (entry.ClassName == "SFXAmbPerfGameData")
+                {
+                    UpdateAmbPerfClass(pew.Pcc, (ExportEntry)entry, propResource, propClass, propName);
+                }
+            });
+
+            MessageBox.Show("Properties of children SFXAmbPerfGameDatas updated successfully.", "Success", MessageBoxButton.OK);
+        }
+
+        /// <summary>
+        /// Update WepPropClass, PropName, and PropResource props of an AmbPerf.
+        /// </summary>
+        /// <param name="pcc">Pcc to operate on.</param>
+        /// <param name="ambPerfGameData">Export to update.</param>
+        /// <param name="propResource">Weapon class export entry, from which all the needed information is derived.</param>
+        /// <param name="propClass">Prop class instantiated named. Passed when used in a batch.</param>
+        /// <param name="propName">Prop class name minus the SFXWeapon_ part. Passed when used in a batch.</param>
+        public static void UpdateAmbPerfClass(IMEPackage pcc, ExportEntry ambPerfGameData, ExportEntry propResource, string propClass = "", string propName = "")
+        {
+            if (string.IsNullOrEmpty(propClass))
+            {
+                propClass = propResource.InstancedFullPath;
+            }
+
+            if (string.IsNullOrEmpty(propName))
+            {
+                propName = propResource.ObjectName.Name.Replace("SFXWeapon_", "", StringComparison.OrdinalIgnoreCase);
+            }
+
+            PropertyCollection props = ambPerfGameData.GetProperties();
+
+            props.AddOrReplaceProp(new StrProperty(propClass, "m_sWepPropClass"));
+            props.AddOrReplaceProp(new NameProperty(propName, "m_nmPropName"));
+            props.AddOrReplaceProp(new ObjectProperty(propResource, "m_pPropResource"));
+
+            ambPerfGameData.WriteProperties(props);
+        }
+
+        // HELPER FUNCTIONS
+        #region Helper functions
         /// <summary>
         /// Indicates a class that is related to the audio elements of a BioConversation.
         /// </summary>
         private enum AudioClass { WwiseStream, WwiseEvent, SoundCue, SoundNodeWave }
-
-        // HELPER FUNCTIONS
-        #region Helper functions
+        
         /// <summary>
         /// Checks if a dest position is within a given distance of the origin.
         /// </summary>
