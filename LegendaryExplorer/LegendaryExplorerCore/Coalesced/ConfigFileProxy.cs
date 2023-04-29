@@ -43,8 +43,13 @@ namespace LegendaryExplorerCore.Coalesced
                 {
                     //New section
                     var header = trimmed.Trim('[', ']');
-                    currentConfigSection = new CoalesceSection(header);
-                    cfp.Sections.Add(header, currentConfigSection);
+                    if (!cfp.Sections.TryGetValue(header, out currentConfigSection))
+                    {
+                        // Some config files in the wild seem to have duplicate section names for some reason
+                        // This detects that case and uses the existing one instead
+                        currentConfigSection = new CoalesceSection(header);
+                        cfp.Sections.Add(header, currentConfigSection);
+                    }
                 }
                 else if (currentConfigSection == null)
                 {
