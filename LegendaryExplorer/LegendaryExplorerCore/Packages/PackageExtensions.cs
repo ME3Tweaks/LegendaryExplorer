@@ -569,6 +569,19 @@ namespace LegendaryExplorerCore.Packages
             props.AddOrReplaceProp(prop);
             export.WritePropertiesAndBinary(props, binary);
         }
+
+        public static bool IsInDefaultsTree(this ExportEntry export)
+        {
+            while (export is not null)
+            {
+                if (export.IsDefaultObject)
+                {
+                    return true;
+                }
+                export = export.Parent as ExportEntry;
+            }
+            return false;
+        }
     }
 
     public static class IEntryExtensions

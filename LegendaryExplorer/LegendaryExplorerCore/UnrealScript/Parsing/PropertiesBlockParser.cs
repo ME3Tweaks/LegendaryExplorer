@@ -19,6 +19,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
         private readonly Stack<Class> SubObjectClasses;
         private readonly IMEPackage Pcc;
         private readonly bool IsStructDefaults;
+        private readonly bool IsInDefaultsTree;
         private readonly ObjectType Outer;
         private bool InSubOject;
 
@@ -32,20 +33,20 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             var defaults = s.DefaultProperties;
             if (defaults.Tokens is not null)
             {
-                Parse(defaults, pcc, symbols, log);
+                Parse(defaults, pcc, symbols, log, false);
             }
             symbols.PopScope();
         }
 
-        public static void Parse(DefaultPropertiesBlock propsBlock, IMEPackage pcc, SymbolTable symbols, MessageLog log)
+        public static void Parse(DefaultPropertiesBlock propsBlock, IMEPackage pcc, SymbolTable symbols, MessageLog log, bool isInDefaultsTree)
         {
-            var parser = new PropertiesBlockParser(propsBlock, pcc, symbols, log);
+            var parser = new PropertiesBlockParser(propsBlock, pcc, symbols, log, isInDefaultsTree);
             var statements = parser.Parse(false);
 
             propsBlock.Statements = statements;
         }
 
-        private PropertiesBlockParser(DefaultPropertiesBlock propsBlock, IMEPackage pcc, SymbolTable symbols, MessageLog log)
+        private PropertiesBlockParser(DefaultPropertiesBlock propsBlock, IMEPackage pcc, SymbolTable symbols, MessageLog log, bool isInDefaultsTree)
         {
             Symbols = symbols;
             Log = log;
@@ -53,6 +54,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             Pcc = pcc;
             Outer = (ObjectType)propsBlock.Outer;
             IsStructDefaults = Outer is Struct;
+            IsInDefaultsTree = isInDefaultsTree;
 
             SubObjectClasses = new Stack<Class>();
             ExpressionScopes = new Stack<ObjectType>();
@@ -97,6 +99,10 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 if (IsStructDefaults)
                 {
                     throw ParseError($"SubObjects are not allowed in {STRUCTDEFAULTPROPERTIES}!", CurrentPosition);
+                }
+                if (!IsInDefaultsTree)
+                {
+                    TypeError("SubObjects are only allowed in Default objects", CurrentPosition);
                 }
                 return ParseSubobjectDeclaration();
             }

@@ -58,7 +58,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             var defaultsExportObjectName = new NameReference($"Default__{classExport.ObjectNameString}", classExport.indexValue);
             if (defaultsExport is null)
             {
-                //do not reuse trash for new defaults export
+                //do not reuse trash for new defaults export. This is to ensure the defaults ends up right after the new class in the tree view
 
                 defaultsExport = new ExportEntry(pcc, classExport.Parent, defaultsExportObjectName);
                 pcc.AddExport(defaultsExport);
@@ -97,9 +97,23 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             defaultsExport.WriteProperties(props);
         }
 
+        public static void CompilePropertiesForNormalObject(DefaultPropertiesBlock defaultsAST, ExportEntry export, PackageCache packageCache = null, string gameRootOverride = null)
+        {
+            IMEPackage pcc = export.FileRef;
+
+            var compiler = new ScriptPropertiesCompiler(pcc, packageCache)
+            {
+                Default__Export = export
+            };
+
+            var props = compiler.ConvertStatementsToPropertyCollection(defaultsAST.Statements, export, null);
+            
+            export.WriteProperties(props);
+        }
+
         private PropertyCollection ConvertStatementsToPropertyCollection(List<Statement> statements, ExportEntry export, Dictionary<NameReference, ExportEntry> subObjectDict)
         {
-            var existingSubObjects = export.GetChildren<ExportEntry>().ToList();
+            List<ExportEntry> existingSubObjects = subObjectDict is null ? null : export.GetChildren<ExportEntry>().ToList();
             var props = new PropertyCollection();
             var subObjectsToFinish = new List<(Subobject, ExportEntry, int)>();
             foreach (Statement statement in statements)
@@ -107,6 +121,10 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 switch (statement)
                 {
                     case Subobject subObj:
+                        if (subObjectDict is null)
+                        {
+                            throw new Exception("Subobjects not permitted!");
+                        }
                         var subObjName = NameReference.FromInstancedString(subObj.NameDeclaration.Name);
                         existingSubObjects.TryRemove(exp => exp.ObjectName == subObjName, out ExportEntry existingSubObject);
                         int netIndex = existingSubObject?.NetIndex ?? 0;
@@ -122,16 +140,19 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                         throw new Exception($"Unexpected statement type: {statement.GetType().Name}");
                 }
             }
-            //Default__ objects and struct defaults serialize transients, but subobjects dont 
-            ShouldStripTransients = true;
-            foreach ((Subobject subobject, ExportEntry subExport, int netIndex) in subObjectsToFinish)
+            if (subObjectDict is not null)
             {
-                WriteSubObjectData(subobject, subExport, netIndex, subObjectDict);
-            }
+                //Default__ objects and struct defaults serialize transients, but subobjects dont 
+                ShouldStripTransients = true;
+                foreach ((Subobject subobject, ExportEntry subExport, int netIndex) in subObjectsToFinish)
+                {
+                    WriteSubObjectData(subobject, subExport, netIndex, subObjectDict);
+                }
 
-            if (existingSubObjects.Any())
-            {
-                EntryPruner.TrashEntriesAndDescendants(existingSubObjects);
+                if (existingSubObjects.Any())
+                {
+                    EntryPruner.TrashEntriesAndDescendants(existingSubObjects);
+                }
             }
             return props;
         }
