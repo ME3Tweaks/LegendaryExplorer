@@ -103,6 +103,21 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {("AeroLightFont_glyphs", "AeroLightFont_glyphs"), "Startup_INT.pcc"}
         };
 
+        /// <summary>
+        /// Assets commonly referenced by swf files
+        /// </summary>
+        private static readonly Dictionary<(string, string), string> LE1SharedAssets = new Dictionary<(string infilename, string outfilename), string>
+        {
+            {("mainController","mainController"), "Startup_INT.pcc"},
+            {("PC_SharedAssets","PC_SharedAssets"), "Startup_INT.pcc"},
+            {("XBox_ControllerIcons","XBox_ControllerIcons"), "Startup_INT.pcc"},
+            {("BioMassFont", "BioMassFont"), "Startup_INT.pcc"},
+            {("BioMassFont_glyphs", "BioMassFont_glyphs"), "Startup_INT.pcc"},
+            {("AeroLightFont", "AeroLightFont"), "Startup_INT.pcc"},
+            {("AeroLightFont_glyphs", "AeroLightFont_glyphs"), "Startup_INT.pcc"},
+            // {("gfxfonts", "fonts/gfxfontlib"), "SFXGUI_Fonts.pcc"}
+        };
+
         private void extractSwf(ExportEntry export, string destination)
         {
             Debug.WriteLine($"Extracting {export.InstancedFullPath} to {destination}");
@@ -120,6 +135,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 Dictionary<(string infile, string outfile), string> sharedAssets = null;
                 switch (CurrentLoadedExport.Game)
                 {
+                    case MEGame.LE1:
+                        sharedAssets = LE1SharedAssets;
+                        break;
                     case MEGame.LE3:
                     case MEGame.ME3:
                         sharedAssets = ME3SharedAssets;
