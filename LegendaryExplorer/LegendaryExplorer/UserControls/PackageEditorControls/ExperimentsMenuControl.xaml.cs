@@ -1456,14 +1456,19 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             PackageEditorExperimentsO.RenameConversationExperiment(GetPEWindow());
         }
 
-        private void RenameWwiseBank_Click(object sender, RoutedEventArgs e)
+        private void RenameAudio_Click(object sender, RoutedEventArgs e)
         {
-            PackageEditorExperimentsO.RenameWwiseBankExperiment(GetPEWindow());
+            PackageEditorExperimentsO.RenameAudioExperiment(GetPEWindow());
         }
 
-        private void UpdateWwiseBankID_Click(object sender, RoutedEventArgs e)
+        private void UpdateAmbPerfClass_Click(object sender, RoutedEventArgs e)
         {
-            PackageEditorExperimentsO.UpdateWwiseBankIDExperiment(GetPEWindow());
+            PackageEditorExperimentsO.UpdateAmbPerfClassExperiment(GetPEWindow());
+        }
+
+        private void BatchUpdateAmbPerfClass_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.BatchUpdateAmbPerfClassExperiment(GetPEWindow());
         }
         #endregion
 

@@ -214,9 +214,28 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
                     table.AddSymbol(clientClassVarDecl.Name, clientClassVarDecl);
                 }
             table.PopScope();
-            var staticMeshType = new Class("StaticMesh", objectClass, objectClass, intrinsicClassFlags | EClassFlags.SafeReplace | EClassFlags.CollapseCategories);
+            var staticMeshType = new Class("StaticMesh", objectClass, objectClass, intrinsicClassFlags | EClassFlags.SafeReplace | EClassFlags.CollapseCategories)
+            {
+                VariableDeclarations =
+                {
+                    new VariableDeclaration(BoolType, default, "UseSimpleRigidBodyCollision"),
+                    new VariableDeclaration(BoolType, default, "UseSimpleLineCollision"),
+                    new VariableDeclaration(BoolType, default, "UseSimpleBoxCollision"),
+                    new VariableDeclaration(BoolType, default, "bUsedForInstancing"),
+                    new VariableDeclaration(BoolType, default, "ForceDoubleSidedShadowVolumes"),
+                    new VariableDeclaration(BoolType, default, "UseFullPrecisionUVs"),
+                    //"BodySetup" added in the AddType function
+                    new VariableDeclaration(FloatType, default, "LODDistanceRatio"),
+                    new VariableDeclaration(IntType, default, "LightMapCoordinateIndex"),
+                    new VariableDeclaration(IntType, default, "LightMapResolution"),
+                }
+            };
             table.AddType(staticMeshType);
             table.PushScope(staticMeshType.Name);
+                foreach (VariableDeclaration stmVarDecl in staticMeshType.VariableDeclarations)
+                {
+                    table.AddSymbol(stmVarDecl.Name, stmVarDecl);
+                }
                 var fracturedStaticMeshType = new Class("FracturedStaticMesh", staticMeshType, objectClass, intrinsicClassFlags | EClassFlags.SafeReplace | EClassFlags.CollapseCategories)
                 {
                     VariableDeclarations =
@@ -270,9 +289,21 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
             var levelBase = new Class("LevelBase", objectClass, objectClass, intrinsicClassFlags | EClassFlags.Abstract);
             table.AddType(levelBase);
             table.PushScope(levelBase.Name);
-                var levelType = new Class("Level", levelBase, objectClass, intrinsicClassFlags);
+                var levelType = new Class("Level", levelBase, objectClass, intrinsicClassFlags)
+                {
+                    VariableDeclarations =
+                    {
+                        new VariableDeclaration(FloatType, default, "LightmapTotalSize"),
+                        new VariableDeclaration(FloatType, default, "ShadowmapTotalSize"),
+                    }
+                };
                 table.AddType(levelType);
-                table.PushScope(levelType.Name); table.PopScope();
+                table.PushScope(levelType.Name); 
+                    foreach (VariableDeclaration levelVarDecl in levelType.VariableDeclarations)
+                    {
+                        table.AddSymbol(levelVarDecl.Name, levelVarDecl);
+                    }
+                table.PopScope();
                 var pendingLevel = new Class("PendingLevel", levelBase, objectClass, intrinsicClassFlags | EClassFlags.Abstract);
                 table.AddType(pendingLevel);
                 table.PushScope(pendingLevel.Name); table.PopScope();
@@ -287,7 +318,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
             table.AddType(polysType);
             table.PushScope(polysType.Name); table.PopScope();
 
-            //NetConnection and ChildConnection are also intrinsic, but are added in the AddType function because they subclass the non-instrinsic class 'Player'
+            //NetConnection, ChildConnection, LightMapTexture2D, and CodecMovieBink are also intrinsic, but are added in the AddType function because they subclass the non-instrinsic class 'Player'
             #endregion
 
             return table;
@@ -877,6 +908,31 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
                         netConType.VariableDeclarations.Add(new VariableDeclaration(new DynamicArrayType(childConType), default, "Children"));
                         AddSymbol("Children", netConType.VariableDeclarations[0]);
                     PopScope();
+                    break;
+                }
+                case "Texture2D":
+                {
+                    var objClass = TypeDict[OBJECT];
+                    var lightmapTexture2DType = new Class("LightMapTexture2D", node, objClass, EClassFlags.Intrinsic | EClassFlags.Config) { ConfigName = "Engine" };
+                    AddType(lightmapTexture2DType);
+                    PushScope(lightmapTexture2DType.Name);
+                    PopScope();
+                    break;
+                }
+                case "RB_BodySetup":
+                {
+                    PushScope("StaticMesh");
+                        var bodySetup = new VariableDeclaration(node, default, "BodySetup");
+                        ((Class)TypeDict["StaticMesh"]).VariableDeclarations.Add(bodySetup);
+                        AddSymbol(bodySetup.Name, bodySetup);
+                    PopScope();
+                    break;
+                }
+                case "CodecMovie":
+                {
+                    var codecBinkType = new Class("CodecMovieBink", node, TypeDict[OBJECT], EClassFlags.Intrinsic | EClassFlags.Transient);
+                    AddType(codecBinkType);
+                    PushScope(codecBinkType.Name); PopScope();
                     break;
                 }
             }

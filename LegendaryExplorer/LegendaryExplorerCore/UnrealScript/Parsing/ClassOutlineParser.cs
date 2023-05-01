@@ -24,17 +24,40 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
         public ASTNode ParseDocument(string parseUnit)
         {
-            return parseUnit switch
+            switch (parseUnit)
             {
-                "Class" => TryParseClass(),
-                "Function" => TryParseFunction(),
-                "State" => ParseState(),
-                "ScriptStruct" => ParseStruct(),
-                "Enum" => ParseEnum(),
-                "Const" => ParseConstant(),
-                _ when parseUnit.EndsWith("Property") => ParseVarDecl(),
-                _ => ParseDefaultProperties()
-            };
+                case "Class":
+                    return TryParseClass();
+                case "Function":
+                    return TryParseFunction();
+                case "State":
+                    return ParseState();
+                case "ScriptStruct":
+                    return ParseStruct();
+                case "Enum":
+                    return ParseEnum();
+                case "Const":
+                    return ParseConstant();
+                case "IntProperty":
+                case "BoolProperty":
+                case "FloatProperty":
+                case "NameProperty":
+                case "StrProperty":
+                case "StringRefProperty":
+                case "ByteProperty":
+                case "ObjectProperty":
+                case "ComponentProperty":
+                case "InterfaceProperty":
+                case "ArrayProperty":
+                case "StructProperty":
+                case "BioMask4Property":
+                case "MapProperty":
+                case "ClassProperty":
+                case "DelegateProperty":
+                    return ParseVarDecl();
+                default:
+                    return ParseDefaultProperties();
+            }
         }
 
         public ASTNode ParseDocument()

@@ -351,6 +351,14 @@ namespace LegendaryExplorerCore.Packages
                 RebuildLookupTable();
             }
             EntryLookupTable.TryGetValue(instancedname, out var matchingEntry);
+            if (matchingEntry is ExportEntry)
+            {
+                // We want import version
+                // Some files like LE2 Engine.pcc have imports and exports for same named thing
+                // for some reason
+                // Look manually for object
+                return Imports.FirstOrDefault(x => x.InstancedFullPath == instancedname);
+            }
             return matchingEntry as ImportEntry;
         }
 
@@ -361,6 +369,15 @@ namespace LegendaryExplorerCore.Packages
                 RebuildLookupTable();
             }
             EntryLookupTable.TryGetValue(instancedname, out var matchingEntry);
+            if (matchingEntry is ImportEntry)
+            {
+                // We want export version
+                // Some files like LE2 Engine.pcc have imports and exports for same named thing
+                // for some reason
+                // Look manually for object
+                return Exports.FirstOrDefault(x => x.InstancedFullPath == instancedname);
+            }
+
             return matchingEntry as ExportEntry;
         }
 

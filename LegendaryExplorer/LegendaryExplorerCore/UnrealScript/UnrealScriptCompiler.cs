@@ -79,7 +79,7 @@ namespace LegendaryExplorerCore.UnrealScript
                     return null;
                 }
                 node.Outer = exportClass;
-                PropertiesBlockParser.Parse(node, containingExport.FileRef, symbolTable, log);
+                PropertiesBlockParser.Parse(node, containingExport.FileRef, symbolTable, log, containingExport.IsInDefaultsTree());
                 if (log.HasErrors)
                 {
                     log.LogError("Parse failed!");
@@ -106,45 +106,27 @@ namespace LegendaryExplorerCore.UnrealScript
             {
                 throw new InvalidOperationException("FileLib can only be used with exports from the same file it was created for.");
             }
-            ASTNode astNode;
-            switch (export.ClassName)
+            ASTNode astNode = export.ClassName switch
             {
-                case "Class":
-                    astNode = ScriptObjectToASTConverter.ConvertClass(export.GetBinaryData<UClass>(packageCache), true, lib, packageCache);
-                    break;
-                case "Function":
-                    astNode = ScriptObjectToASTConverter.ConvertFunction(export.GetBinaryData<UFunction>(packageCache), lib, packageCache: packageCache);
-                    break;
-                case "State":
-                    astNode = ScriptObjectToASTConverter.ConvertState(export.GetBinaryData<UState>(packageCache), lib, packageCache: packageCache);
-                    break;
-                case "Enum":
-                    astNode = ScriptObjectToASTConverter.ConvertEnum(export.GetBinaryData<UEnum>(packageCache));
-                    break;
-                case "ScriptStruct":
-                    astNode = ScriptObjectToASTConverter.ConvertStruct(export.GetBinaryData<UScriptStruct>(packageCache), lib, packageCache);
-                    break;
-                default:
-                    if (export.ClassName.EndsWith("Property") && ObjectBinary.From(export, packageCache) is UProperty uProp)
-                    {
-                        astNode = ScriptObjectToASTConverter.ConvertVariable(uProp, lib, packageCache);
-                    }
-                    else
-                    {
-                        astNode = ScriptObjectToASTConverter.ConvertDefaultProperties(export, lib, packageCache);
-                    }
-                    break;
-            }
+                "Class" => ScriptObjectToASTConverter.ConvertClass(export.GetBinaryData<UClass>(packageCache), true, lib, packageCache),
+                "Function" => ScriptObjectToASTConverter.ConvertFunction(export.GetBinaryData<UFunction>(packageCache), lib, packageCache: packageCache),
+                "State" => ScriptObjectToASTConverter.ConvertState(export.GetBinaryData<UState>(packageCache), lib, packageCache: packageCache),
+                "Enum" => ScriptObjectToASTConverter.ConvertEnum(export.GetBinaryData<UEnum>(packageCache)),
+                "ScriptStruct" => ScriptObjectToASTConverter.ConvertStruct(export.GetBinaryData<UScriptStruct>(packageCache), lib, packageCache),
+                "Const" => ScriptObjectToASTConverter.ConvertConst(export.GetBinaryData<UConst>(packageCache)),
+                _ when export.ClassName.EndsWith("Property") && ObjectBinary.From(export, packageCache) is UProperty uProp => ScriptObjectToASTConverter.ConvertVariable(uProp, lib, packageCache),
+                _ => ScriptObjectToASTConverter.ConvertExportProperties(export, lib, packageCache)
+            };
             return astNode;
         }
 
-        public static (ASTNode ast, TokenStream tokens) CompileOutlineAST(string script, string type, MessageLog log, MEGame game, bool isDefaultObject = false)
+        public static (ASTNode ast, TokenStream tokens) CompileOutlineAST(string script, string type, MessageLog log, MEGame game)
         {
             var tokens = Lexer.Lex(script, log);
             var parser = new ClassOutlineParser(tokens, game, log);
             try
             {
-                ASTNode ast = isDefaultObject ? parser.ParseDefaultProperties() : parser.ParseDocument(type);
+                ASTNode ast = parser.ParseDocument(type);
                 if (ast is null)
                 {
                     log.LogError("Parse failed!");
@@ -577,7 +559,7 @@ namespace LegendaryExplorerCore.UnrealScript
                 throw new InvalidOperationException("FileLib can only be used with exports from the same file it was created for.");
             }
             var log = new MessageLog();
-            (ASTNode astNode, _) = CompileOutlineAST(scriptText, export.ClassName, log, export.Game, true);
+            (ASTNode astNode, _) = CompileOutlineAST(scriptText, export.ClassName, log, export.Game);
             if (!log.HasErrors)
             {
                 if (astNode is not DefaultPropertiesBlock propBlock)
@@ -590,15 +572,10 @@ namespace LegendaryExplorerCore.UnrealScript
                     log.LogError("FileLib not initialized!");
                     return (null, log);
                 }
-                if (export.Class is not ExportEntry { IsClass: true } classExport)
-                {
-                    log.LogError(export.InstancedFullPath + " does not have a Class Export!");
-                    return (null, log);
-                }
 
                 try
                 {
-                    astNode = CompileDefaultPropertiesAST(classExport, propBlock, log, lib);
+                    astNode = CompileDefaultPropertiesAST(propBlock, log, lib, export);
                     if (astNode is null || log.HasErrors)
                     {
                         log.LogError("Parse failed!");
@@ -617,7 +594,19 @@ namespace LegendaryExplorerCore.UnrealScript
                 }
                 try
                 {
-                    ScriptPropertiesCompiler.CompileDefault__Object(propBlock, classExport, ref export, packageCache, gameRootOverride: gameRootOverride);
+                    if (export.IsDefaultObject)
+                    {
+                        if (export.Class is not ExportEntry { IsClass: true } classExport)
+                        {
+                            log.LogError(export.InstancedFullPath + " does not have a Class Export!");
+                            return (null, log);
+                        }
+                        ScriptPropertiesCompiler.CompileDefault__Object(propBlock, classExport, ref export, packageCache, gameRootOverride: gameRootOverride);
+                    }
+                    else
+                    {
+                        ScriptPropertiesCompiler.CompilePropertiesForNormalObject(propBlock, export, packageCache, gameRootOverride);
+                    }
                     log.LogMessage("Compiled!");
                     return (astNode, log);
                 }
@@ -675,7 +664,7 @@ namespace LegendaryExplorerCore.UnrealScript
             {
                 CodeBodyParser.ParseState(state, pcc.Game, symbols, log);
             }
-            PropertiesBlockParser.Parse(cls.DefaultProperties, pcc, symbols, log);
+            PropertiesBlockParser.Parse(cls.DefaultProperties, pcc, symbols, log, true);
 
             //calculate the virtual function table
             if (pcc.Game.IsGame3())
@@ -938,9 +927,9 @@ namespace LegendaryExplorerCore.UnrealScript
             return null;
         }
 
-        public static DefaultPropertiesBlock CompileDefaultPropertiesAST(ExportEntry classExport, DefaultPropertiesBlock propBlock, MessageLog log, FileLib lib)
+        public static DefaultPropertiesBlock CompileDefaultPropertiesAST(DefaultPropertiesBlock propBlock, MessageLog log, FileLib lib, ExportEntry export)
         {
-            if (!ReferenceEquals(lib.Pcc, classExport.FileRef))
+            if (!ReferenceEquals(lib.Pcc, export.FileRef))
             {
                 throw new InvalidOperationException("FileLib can only be used with exports from the same file it was created for.");
             }
@@ -948,7 +937,7 @@ namespace LegendaryExplorerCore.UnrealScript
             symbols.RevertToObjectStack();
 
 
-            if (classExport.IsClass && symbols.TryGetType(classExport.ObjectName.Instanced, out Class propsClass))
+            if (symbols.TryGetType(export.ClassName, out Class propsClass))
             {
                 if (!propsClass.Name.CaseInsensitiveEquals("Object"))
                 {
@@ -959,11 +948,12 @@ namespace LegendaryExplorerCore.UnrealScript
                 propsClass.DefaultProperties = propBlock;
                 propBlock.Outer = propsClass;
 
-                PropertiesBlockParser.Parse(propBlock, classExport.FileRef, symbols, log);
+                PropertiesBlockParser.Parse(propBlock, export.FileRef, symbols, log, export.IsInDefaultsTree());
 
                 return propBlock;
             }
 
+            log.LogError($"Class '{export.ClassName}' not found in symbol table.");
             return null;
         }
     }

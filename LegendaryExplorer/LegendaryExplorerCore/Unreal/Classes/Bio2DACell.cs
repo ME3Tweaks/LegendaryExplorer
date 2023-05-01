@@ -77,6 +77,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
             Type = Bio2DADataType.TYPE_FLOAT;
         }
 
+        // This is not called due to [DoNotNotify] on NameValue
         private void OnNameValueChanged()
         {
             Type = Bio2DADataType.TYPE_NAME;

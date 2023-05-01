@@ -76,8 +76,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
         }
 
         public override bool CanParse(ExportEntry exportEntry) =>
-            (exportEntry.FileRef.Platform == MEPackage.GamePlatform.PC || exportEntry.Game.IsLEGame()) // LE games all should have identical bytecode, but we do not support it (but some users might try anyways)
-            && (exportEntry.ClassName switch
+            (exportEntry.FileRef.Platform == MEPackage.GamePlatform.PC || exportEntry.Game.IsLEGame())
+            /*&& (exportEntry.ClassName switch
             {
                 "Class" => true,
                 "State" => true,
@@ -85,7 +85,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                 "Enum" => true,
                 "ScriptStruct" => true,
                 _ => false
-            } || exportEntry.IsDefaultObject);
+            } || exportEntry.IsDefaultObject)*/;
 
         public override void LoadExport(ExportEntry export)
         {
@@ -351,53 +351,55 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
             string scriptText = ScriptText;
             if (scriptText != null && CurrentLoadedExport != null)
             {
-                if (CurrentLoadedExport.IsDefaultObject)
+                if (!CurrentLoadedExport.IsDefaultObject && CurrentLoadedExport.IsInDefaultsTree())
                 {
-                    (_, MessageLog log) =  UnrealScriptCompiler.CompileDefaultProperties(CurrentLoadedExport, scriptText, CurrentFileLib);
-                    OutputListBox.ItemsSource = log?.Content;
+                    OutputListBox.ItemsSource = new[] { "Cannot compile properties of a subobject. You can edit the properties in the subobject declaration in the Default__ object this is descended from." };
+                    return;
                 }
-                else
+                MessageLog log;
+                switch (CurrentLoadedExport.ClassName)
                 {
-                    switch (CurrentLoadedExport.ClassName)
-                    {
-                        case "Class":
-                            {
-                                (_, MessageLog log) = UnrealScriptCompiler.CompileClass(Pcc, scriptText, CurrentFileLib, CurrentLoadedExport, CurrentLoadedExport.Parent);
-                                OutputListBox.ItemsSource = log?.Content;
-                                break;
-                            }
-                        case "Function":
-                        {
-                            (_, MessageLog log) = UnrealScriptCompiler.CompileFunction(CurrentLoadedExport, scriptText, CurrentFileLib);
-                            OutputListBox.ItemsSource = log?.Content;
-                            break;
-                        }
-                        case "State":
-                        {
-                            (_, MessageLog log) = UnrealScriptCompiler.CompileState(CurrentLoadedExport, scriptText, CurrentFileLib);
-                            OutputListBox.ItemsSource = log?.Content;
-                            break;
-                        }
-                        case "ScriptStruct":
-                        {
-                            (_, MessageLog log) = UnrealScriptCompiler.CompileStruct(CurrentLoadedExport, scriptText, CurrentFileLib);
-                            OutputListBox.ItemsSource = log?.Content;
-                            break;
-                        }
-                        case "Enum":
-                        {
-                            (_, MessageLog log) = UnrealScriptCompiler.CompileEnum(CurrentLoadedExport, scriptText, CurrentFileLib);
-                            OutputListBox.ItemsSource = log?.Content;
-                            break;
-                        }
-                        default:
-                            OutputListBox.ItemsSource = new[]
-                            {
-                                $"{CurrentLoadedExport.ClassName} compilation is not supported."
-                            };
-                            break;
-                    }
+                    case "Class":
+                        (_, log) = UnrealScriptCompiler.CompileClass(Pcc, scriptText, CurrentFileLib, CurrentLoadedExport, CurrentLoadedExport.Parent);
+                        break;
+                    case "Function":
+                        (_, log) = UnrealScriptCompiler.CompileFunction(CurrentLoadedExport, scriptText, CurrentFileLib);
+                        break;
+                    case "State":
+                        (_, log) = UnrealScriptCompiler.CompileState(CurrentLoadedExport, scriptText, CurrentFileLib);
+                        break;
+                    case "ScriptStruct":
+                        (_, log) = UnrealScriptCompiler.CompileStruct(CurrentLoadedExport, scriptText, CurrentFileLib);
+                        break;
+                    case "Enum":
+                        (_, log) = UnrealScriptCompiler.CompileEnum(CurrentLoadedExport, scriptText, CurrentFileLib);
+                        break;
+                    case "Const":
+                        OutputListBox.ItemsSource = new[] { "Cannot compile const declarations" };
+                        return;
+                    case "IntProperty":
+                    case "BoolProperty":
+                    case "FloatProperty":
+                    case "NameProperty":
+                    case "StrProperty":
+                    case "StringRefProperty":
+                    case "ByteProperty":
+                    case "ObjectProperty":
+                    case "ComponentProperty":
+                    case "InterfaceProperty":
+                    case "ArrayProperty":
+                    case "StructProperty":
+                    case "BioMask4Property":
+                    case "MapProperty":
+                    case "ClassProperty":
+                    case "DelegateProperty":
+                        OutputListBox.ItemsSource = new[] { "Cannot individually compile property declarations. You can edit them as part of the class." };
+                        return;
+                    default:
+                        (_, log) = UnrealScriptCompiler.CompileDefaultProperties(CurrentLoadedExport, scriptText, CurrentFileLib);
+                        break;
                 }
+                OutputListBox.ItemsSource = log?.Content;
             }
         }
 
@@ -422,7 +424,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                         return;
                     }
                     _definitionLinkGenerator.Reset();
-                    if (FullyInitialized)
+                    if (FullyInitialized && !(CurrentLoadedExport.IsClass && CurrentLoadedExport.ObjectNameString is "Object"))
                     {
                         var codeBuilder = new CodeBuilderVisitor<PlainTextCodeFormatter>();
                         ast.AcceptVisitor(codeBuilder);
@@ -453,7 +455,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
             Parse(ScriptText);
         }
 
-        ASTNode AST;
+        private ASTNode AST;
 
         private void Parse(string source)
         {
@@ -461,7 +463,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
             var log = new MessageLog();
             try
             {
-                (AST, TokenStream tokens) = UnrealScriptCompiler.CompileOutlineAST(source, CurrentLoadedExport.ClassName, log, Pcc.Game, CurrentLoadedExport.IsDefaultObject);
+                (AST, TokenStream tokens) = UnrealScriptCompiler.CompileOutlineAST(source, CurrentLoadedExport.ClassName, log, Pcc.Game);
 
                 if (AST != null && !log.HasErrors && FullyInitialized)
                 {
@@ -490,8 +492,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                         case VariableDeclaration varDecl when CurrentLoadedExport.Parent is ExportEntry varParent:
                             AST = UnrealScriptCompiler.CompileNewVarDeclAST(varParent, varDecl, log, CurrentFileLib);
                             break;
-                        case DefaultPropertiesBlock propertiesBlock when CurrentLoadedExport.Class is ExportEntry classExport:
-                            AST = UnrealScriptCompiler.CompileDefaultPropertiesAST(classExport, propertiesBlock, log, CurrentFileLib);
+                        case Const cnst:
+                            //no additional processing needed for consts
+                            break;
+                        case DefaultPropertiesBlock propertiesBlock:
+                            AST = UnrealScriptCompiler.CompileDefaultPropertiesAST(propertiesBlock, log, CurrentFileLib, CurrentLoadedExport);
                             break;
                         default:
                             return;
@@ -713,7 +718,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
             if (scriptText != null)
             {
                 var log = new MessageLog();
-                (ASTNode ast, _) = UnrealScriptCompiler.CompileOutlineAST(scriptText, CurrentLoadedExport.ClassName, log, Pcc.Game, CurrentLoadedExport.IsDefaultObject);
+                (ASTNode ast, _) = UnrealScriptCompiler.CompileOutlineAST(scriptText, CurrentLoadedExport.ClassName, log, Pcc.Game);
 
                 if (ast != null && !log.HasErrors)
                 {
@@ -721,10 +726,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                     {
                         if (ast is DefaultPropertiesBlock propBlock)
                         {
-                            if (CurrentLoadedExport.Class is ExportEntry classExport)
-                            {
-                                ast = UnrealScriptCompiler.CompileDefaultPropertiesAST(classExport, propBlock, log, CurrentFileLib);
-                            }
+                            ast = UnrealScriptCompiler.CompileDefaultPropertiesAST(propBlock, log, CurrentFileLib, CurrentLoadedExport);
                         }
                         else if (ast is Class cls)
                         {

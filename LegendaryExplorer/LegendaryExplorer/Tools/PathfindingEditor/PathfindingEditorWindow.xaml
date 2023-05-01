@@ -210,6 +210,7 @@
                     <MenuItem Header="Show Experimental Level Tools" IsCheckable="True"
                               IsChecked="{Binding ShowArtTools}" />
                     <MenuItem Header="Remove all spotlights from level" Command="{Binding RemoveAllSpotlightsCommand}" />
+                    <MenuItem Header="Add all PathNodes to BioSquadCombat" Command="{Binding AddAllPathnodesToBioSquadCombatCommand}"  ToolTip="Adds all the PathNodes in the package to the selected BioSquadCombat's AssignedPathNodes array."/>
                 </MenuItem>
             </Menu>
             <StatusBar Height="23" DockPanel.Dock="Bottom">
