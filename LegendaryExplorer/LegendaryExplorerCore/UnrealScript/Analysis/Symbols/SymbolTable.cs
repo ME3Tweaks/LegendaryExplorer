@@ -294,6 +294,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
                     VariableDeclarations =
                     {
                         new VariableDeclaration(FloatType, default, "LightmapTotalSize"),
+                        new VariableDeclaration(FloatType, default, "ShadowmapTotalSize"),
                     }
                 };
                 table.AddType(levelType);
@@ -317,15 +318,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
             table.AddType(polysType);
             table.PushScope(polysType.Name); table.PopScope();
 
-            var codecType = new Class("CodecMovie", objectClass, objectClass, intrinsicClassFlags);
-            table.AddType(codecType);
-            table.PushScope(codecType.Name);
-                var codecBinkType = new Class("CodecMovieBink", objectClass, objectClass, intrinsicClassFlags);
-                table.AddType(codecBinkType);
-                table.PushScope(codecBinkType.Name); table.PopScope();
-            table.PopScope();
-
-            //NetConnection and ChildConnection are also intrinsic, but are added in the AddType function because they subclass the non-instrinsic class 'Player'
+            //NetConnection, ChildConnection, LightMapTexture2D, and CodecMovieBink are also intrinsic, but are added in the AddType function because they subclass the non-instrinsic class 'Player'
             #endregion
 
             return table;
@@ -933,6 +926,13 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
                         ((Class)TypeDict["StaticMesh"]).VariableDeclarations.Add(bodySetup);
                         AddSymbol(bodySetup.Name, bodySetup);
                     PopScope();
+                    break;
+                }
+                case "CodecMovie":
+                {
+                    var codecBinkType = new Class("CodecMovieBink", node, TypeDict[OBJECT], EClassFlags.Intrinsic | EClassFlags.Transient);
+                    AddType(codecBinkType);
+                    PushScope(codecBinkType.Name); PopScope();
                     break;
                 }
             }

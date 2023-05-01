@@ -1661,7 +1661,7 @@ import java.util.*;"
                         }
                         else
                         {
-                            //interestingExports.Add(new EntryStringPair($"{pcc.FilePath} failed to compile!"));
+                            interestingExports.Add(new EntryStringPair($"{pcc.FilePath} failed to compile!"));
                             return;
                         }
 
