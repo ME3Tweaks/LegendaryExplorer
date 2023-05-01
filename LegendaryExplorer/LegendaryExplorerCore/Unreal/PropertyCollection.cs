@@ -1038,12 +1038,12 @@ namespace LegendaryExplorerCore.Unreal
     {
         ///<inheritdoc/>
         public override PropertyType PropType => PropertyType.FloatProperty;
-        private readonly int _originalData; //This is used because -0 and 0 have different byte patterns, and to reserialize the same, we must write back the correct one.
 
         private float _value;
         /// <summary>
         /// The float this property contains
         /// </summary>
+        [DoNotNotify] //we're doing it manually
         public float Value
         {
             get => _value;
@@ -1067,51 +1067,25 @@ namespace LegendaryExplorerCore.Unreal
         /// <param name="name">Optional: The property name. This should only be null when it's in an <see cref="ArrayProperty{T}"/></param>
         public FloatProperty(float value, NameReference? name = null) : base(name)
         {
-            _originalData = BitConverter.SingleToInt32Bits(value);
             Value = value;
         }
 
         internal FloatProperty(EndianReader stream, NameReference? name = null) : base(name)
         {
             ValueOffset = (int)stream.Position;
-            _originalData = stream.ReadInt32();
-            Value = BitConverter.Int32BitsToSingle(_originalData);
+            Value = stream.ReadFloat();
         }
 
         ///<inheritdoc/>
         public override void WriteTo(EndianWriter writer, IMEPackage pcc, bool valueOnly = false)
         {
-            // Check for NEGATIVE ZERO. Yes that is a thing.
-            // Some values in ME games seem to be -0 (00 00 00 80)
-            // CLR makes -0 = 0 so we must check the backing bytes
-            // or we will re-serialize this wrong. This check only
-            // matters when the value has not changed from the original.
-
-            // ReSharper disable once CompareOfFloatsByEqualityOperator
-            bool isNegativeZero = Value == 0 && BitConverter.Int32BitsToSingle(_originalData) == Value && _originalData != 0;
             if (!valueOnly)
             {
-                if (isNegativeZero)
-                {
-                    writer.WritePropHeader(pcc, Name, PropertyType.FloatProperty, 4, StaticArrayIndex);
-                    writer.Write(_originalData);
-                }
-                else
-                {
-                    writer.WriteFloatProperty(pcc, Name, Value, StaticArrayIndex);
-                }
+                writer.WriteFloatProperty(pcc, Name, Value, StaticArrayIndex);
             }
             else
             {
-                // Negative zero. We must use exact check
-                if (isNegativeZero)
-                {
-                    writer.Write(_originalData);
-                }
-                else
-                {
-                    writer.WriteFloat(Value);
-                }
+                writer.WriteFloat(Value);
             }
         }
 
