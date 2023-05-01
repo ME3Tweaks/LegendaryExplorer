@@ -581,6 +581,25 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                    new KeyValuePair<NameReference, PropertyInfo>("ArrowMaterialInstance", new PropertyInfo(PropertyType.ObjectProperty, "MaterialInstanceConstant"))
                 }
             };
+            //Kinkojiro - New Class - not in resources as has Mail gui. Let me know if anyone wants.
+            classes["SFXSeqAct_MailGUI_Sorted"] = new ClassInfo
+            {
+                baseClass = "BioSequenceLatentAction",
+                //pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                //exportIndex = 0, not in LE3Resources.pcc
+                properties =
+                {
+                    new KeyValuePair<NameReference, PropertyInfo>("Honorifics", new PropertyInfo(PropertyType.ArrayProperty, "StrProperty")),
+                    new KeyValuePair<NameReference, PropertyInfo>("m_bSortMail", new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("m_MailGUIResource", new PropertyInfo(PropertyType.ObjectProperty, "GFXMovieInfo")),
+                    new KeyValuePair<NameReference, PropertyInfo>("MailDataClass", new PropertyInfo(PropertyType.ObjectProperty, "SFXGUIData_Mail")),
+                }
+            };
+            sequenceObjects["SFXSeqAct_MailGUI_Sorted"] = new SequenceObjectInfo
+            {
+                ObjInstanceVersion = 3,
+                inputLinks = new List<string> { "Send Mail", "Open UI" }    
+            };
 
             ME3UnrealObjectInfo.AddIntrinsicClasses(classes, MEGame.LE3);
 
