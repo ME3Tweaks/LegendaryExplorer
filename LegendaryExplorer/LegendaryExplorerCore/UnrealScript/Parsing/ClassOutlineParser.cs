@@ -92,7 +92,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 if (cnst is null) throw ParseError($"Malformed {CONST} declaration!", CurrentPosition);
                 return cnst;
             }
-            if (CurrentIs(DEFAULTPROPERTIES))
+            if (CurrentIs(DEFAULTPROPERTIES, "properties"))
             {
                 DefaultPropertiesBlock propsBlock = ParseDefaultProperties();
                 if (propsBlock is null)
@@ -801,7 +801,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
         public DefaultPropertiesBlock ParseDefaultProperties()
         {
-            if (!Matches(DEFAULTPROPERTIES, EF.Keyword)) return null;
+            if (!Matches(DEFAULTPROPERTIES, EF.Keyword) || !Matches("properties", EF.Keyword)) return null;
 
             if (!ParseScopeSpan(false, out int bodyStart, out int bodyEnd, out List<ScriptToken> scopeTokens))
             {

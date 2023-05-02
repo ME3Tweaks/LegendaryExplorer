@@ -739,7 +739,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         public bool VisitNode(DefaultPropertiesBlock node)
         {
             bool isStructDefaults = node.Outer is Struct;
-            Write(isStructDefaults ? STRUCTDEFAULTPROPERTIES : DEFAULTPROPERTIES, EF.Keyword);
+            Write(isStructDefaults ? STRUCTDEFAULTPROPERTIES : node.IsNormalExport ? "properties" : DEFAULTPROPERTIES, EF.Keyword);
             Write("{");
             NestingLevel++;
             foreach (Statement s in node.Statements)

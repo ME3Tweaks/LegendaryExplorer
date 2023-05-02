@@ -564,7 +564,10 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
         {
             bool isInDefaultTree = export.IsInDefaultsTree();
 
-            return new DefaultPropertiesBlock(GetStatements(export));
+            return new DefaultPropertiesBlock(GetStatements(export))
+            {
+                IsNormalExport = !isInDefaultTree
+            };
 
             List<Statement> GetStatements(ExportEntry exportEntry)
             {
