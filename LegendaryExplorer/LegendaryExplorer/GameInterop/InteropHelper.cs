@@ -129,10 +129,13 @@ namespace LegendaryExplorer.GameInterop
                 var binkVersionInfo = FileVersionInfo.GetVersionInfo(binkPath);
                 var binkProductName = binkVersionInfo.ProductName ?? "";
 
-                return File.Exists(binkPath) && File.Exists(originalBinkPath)
-                                             && target.OriginalBinkMD5 == CalculateMD5(originalBinkPath)
-                                             && binkProductName.StartsWith("LEBinkProxy", StringComparison.CurrentCultureIgnoreCase)
-                                             && binkVersionInfo.ProductMajorPart >= 2;
+                if (!File.Exists(binkPath) || !File.Exists(originalBinkPath)) return false;
+                var hash = CalculateMD5(originalBinkPath);
+
+                // This extra hash is enhanced 2022.05 bink version (Mod Manager 8.1 installs this)
+                return (target.OriginalBinkMD5 == hash || @"31d1d74866061bf66baad1cc4db3c19e" == hash)
+                       && binkProductName.StartsWith("LEBinkProxy", StringComparison.CurrentCultureIgnoreCase)
+                       && binkVersionInfo.ProductMajorPart >= 2;
             }
             return false;
         }
