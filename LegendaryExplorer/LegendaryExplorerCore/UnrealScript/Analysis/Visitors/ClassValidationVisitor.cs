@@ -797,6 +797,14 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                     //if the return type is > 64 bytes, it can't be allocated on the stack.
                     node.RetValNeedsDestruction = node.ReturnValueDeclaration.Flags.Has(EPropertyFlags.NeedCtorLink) || node.ReturnType.Size(Symbols.Game) > 64;
                 }
+
+                if (node.Flags.Has(EFunctionFlags.Delegate))
+                {
+                    if (containingClass.VariableDeclarations.Find(varDecl => varDecl.VarType is DelegateType delType && delType.DefaultFunction == node && varDecl.Name == $"__{node.Name}__Delegate") is null)
+                    {
+                        return Error($"Delegate functions must have a corresponding property! Expected a declaration of the form 'var delegate<{node.Name}> __{node.Name}__Delegate;'", node.StartPos, node.EndPos);
+                    }
+                }
             }
             return Success;
         }

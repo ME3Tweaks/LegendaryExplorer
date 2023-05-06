@@ -801,7 +801,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
         public DefaultPropertiesBlock ParseDefaultProperties()
         {
-            if (!Matches(DEFAULTPROPERTIES, EF.Keyword) || !Matches("properties", EF.Keyword)) return null;
+            if (!Matches(DEFAULTPROPERTIES, EF.Keyword) && !Matches("properties", EF.Keyword)) return null;
 
             if (!ParseScopeSpan(false, out int bodyStart, out int bodyEnd, out List<ScriptToken> scopeTokens))
             {
