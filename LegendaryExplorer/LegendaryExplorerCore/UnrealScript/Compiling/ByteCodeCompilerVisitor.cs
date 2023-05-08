@@ -946,12 +946,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             {
                 WriteOpCode(OpCodes.BoolVariable);
             }
-            if (varDecl.VarType is DelegateType delType)
-            {
-                WriteOpCode(OpCodes.DelegateProperty);
-                WriteName(delType.DefaultFunction.Name);
-            }
-            else if (varDecl.Outer is Function)
+            if (varDecl.Outer is Function)
             {
                 if (varDecl.Flags.Has(EPropertyFlags.OutParm))
                 {
@@ -1336,9 +1331,16 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
         {
             if (node.IsDelegateNone)
             {
-                WriteOpCode(OpCodes.DelegateProperty);
-                WriteName("None");
-                WriteObjectRef(null);
+                if (useInstanceDelegate)
+                {
+                    WriteOpCode(OpCodes.EmptyDelegate);
+                }
+                else
+                {
+                    WriteOpCode(OpCodes.DelegateProperty);
+                    WriteName("None");
+                    WriteObjectRef(null);
+                }
             }
             else
             {
