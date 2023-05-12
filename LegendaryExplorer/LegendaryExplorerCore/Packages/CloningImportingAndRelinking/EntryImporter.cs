@@ -155,7 +155,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
             //Port Shaders
             //var portingCache = ShaderCacheManipulator.GetLocalShadersForMaterials(sourceExports); // CrossGen Disabled
-            var portingCache = ShaderCacheManipulator.GetLocalShadersForMaterials(rop.CrossPackageMap.Keys.OfType<ExportEntry>().ToList());
+            var portingCache = ShaderCacheManipulator.GetLocalShadersForMaterials(rop.CrossPackageMap.Keys.OfType<ExportEntry>().ToList(), rop.GamePathOverride);
             if (portingCache is not null)
             {
                 if (destPcc.Game != sourcePcc.Game)

@@ -75,6 +75,11 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         public bool ImportChildrenOfPackages { get; set; } = true;
 
         /// <summary>
+        /// The path to the root of the game for this relinker option - this is only used if you are overriding the default path of the game, so this is used mostly with ME3Tweaks Mod Manager
+        /// </summary>
+        public string GamePathOverride { get; set; }
+
+        /// <summary>
         /// Invoked when an error occurs during porting. Can be null.
         /// </summary>
         public Action<string> ErrorOccurredCallback;
