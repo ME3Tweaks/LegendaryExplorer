@@ -1,8 +1,8 @@
 var class_legendary_explorer_core_1_1_shaders_1_1_shader_cache_manipulator =
 [
-    [ "CompactSeekFreeShaderCaches", "class_legendary_explorer_core_1_1_shaders_1_1_shader_cache_manipulator.html#a8ef9722ce2423b06f30bc0c2ac5a18c1", null ],
-    [ "GetLocalShadersForMaterials", "class_legendary_explorer_core_1_1_shaders_1_1_shader_cache_manipulator.html#ae32932c4818ad78148f0d51ff0cc92bd", null ],
+    [ "CompactSeekFreeShaderCaches", "class_legendary_explorer_core_1_1_shaders_1_1_shader_cache_manipulator.html#a19a7171e5532528470960da47e7601d9", null ],
+    [ "GetLocalShadersForMaterials", "class_legendary_explorer_core_1_1_shaders_1_1_shader_cache_manipulator.html#aab10b82d914396069ecf9102ece4fb0f", null ],
     [ "GetLocalShaders", "class_legendary_explorer_core_1_1_shaders_1_1_shader_cache_manipulator.html#aec366d0e43d02fd9844885d89a8ddf4a", null ],
     [ "AddShadersToFile", "class_legendary_explorer_core_1_1_shaders_1_1_shader_cache_manipulator.html#aa26b2c04b84ea1aecef479c10980a561", null ],
-    [ "GetBrokenMaterials", "class_legendary_explorer_core_1_1_shaders_1_1_shader_cache_manipulator.html#ad3d3d10979fc913b56125df8e4d950de", null ]
+    [ "GetBrokenMaterials", "class_legendary_explorer_core_1_1_shaders_1_1_shader_cache_manipulator.html#a5a17a09610595137749ce899b1ca6fd7", null ]
 ];
