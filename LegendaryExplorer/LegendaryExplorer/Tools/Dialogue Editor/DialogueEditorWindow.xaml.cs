@@ -87,12 +87,8 @@ namespace LegendaryExplorer.DialogueEditor
             get => _SelectedSpeaker;
             set => SetProperty(ref _SelectedSpeaker, value);
         }
-        private Dictionary<string, int> _SelectedStarts = new();
-        public Dictionary<string, int> SelectedStarts
-        {
-            get => _SelectedStarts;
-            set => SetProperty(ref _SelectedStarts, value);
-        }
+        private readonly Dictionary<string, int> SelectedStarts = new();
+
         private int forcedSelectStart = -1;
         private string _SelectedScript = "None";
         public string SelectedScript
@@ -2225,6 +2221,7 @@ namespace LegendaryExplorer.DialogueEditor
             {
                 SelectedStarts.Add(AddOrdinal(s.Key + 1), s.Value);
             }
+            Start_ListBox.ItemsSource = SelectedStarts;
             if (forcedSelectStart > -1)
             {
                 Start_ListBox.SelectedIndex = forcedSelectStart;
