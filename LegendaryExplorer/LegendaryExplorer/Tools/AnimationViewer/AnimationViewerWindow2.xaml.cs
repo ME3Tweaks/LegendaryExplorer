@@ -708,16 +708,16 @@ namespace LegendaryExplorer.Tools.AnimationViewer
             if (noUpdate) return;
 
             var rot = new Rotator(((float)Pitch).DegreesToUnrealRotationUnits(), ((float)Yaw).DegreesToUnrealRotationUnits(), 0).GetDirectionalVector();
-            GameTarget.ExecuteConsoleCommands(VarCmd(rot.X, FloatVarIndexes.XRotComponent),
-                                                     VarCmd(rot.Y, FloatVarIndexes.YRotComponent),
-                                                     VarCmd(rot.Z, FloatVarIndexes.ZRotComponent),
-                                                     "ce SetActorRotation");
+            GameTarget.ModernExecuteConsoleCommand(VarCmd(rot.X, FloatVarIndexes.XRotComponent));
+            GameTarget.ModernExecuteConsoleCommand(VarCmd(rot.Y, FloatVarIndexes.YRotComponent));
+            GameTarget.ModernExecuteConsoleCommand(VarCmd(rot.Z, FloatVarIndexes.ZRotComponent));
+            GameTarget.ModernExecuteConsoleCommand("ce SetActorRotation");
         }
 
         private void UpdateOffset()
         {
             if (noUpdate) return;
-            GameTarget.ExecuteConsoleCommands(VarCmd(RemoveOffset, BoolVarIndexes.RemoveOffset));
+            GameTarget.ModernExecuteConsoleCommand(VarCmd(RemoveOffset, BoolVarIndexes.RemoveOffset));
             LoadAnimation(SelectedAnimation);
         }
 
@@ -923,11 +923,11 @@ namespace LegendaryExplorer.Tools.AnimationViewer
                 {
                     if (value)
                     {
-                        GameTarget.ExecuteConsoleCommands("ce StartCameraFollow");
+                        GameTarget.ModernExecuteConsoleCommand("ce StartCameraFollow");
                     }
                     else
                     {
-                        GameTarget.ExecuteConsoleCommands("ce StopCameraFollow");
+                        GameTarget.ModernExecuteConsoleCommand("ce StopCameraFollow");
                     }
                 }
             }
@@ -940,10 +940,10 @@ namespace LegendaryExplorer.Tools.AnimationViewer
             if (noUpdate) return;
 
             var rot = new Rotator(((float)CamPitch).DegreesToUnrealRotationUnits(), ((float)CamYaw).DegreesToUnrealRotationUnits(), 0).GetDirectionalVector();
-            GameTarget.ExecuteConsoleCommands(VarCmd(rot.X, FloatVarIndexes.CamXRotComponent),
-                                                     VarCmd(rot.Y, FloatVarIndexes.CamYRotComponent),
-                                                     VarCmd(rot.Z, FloatVarIndexes.CamZRotComponent),
-                                                     "ce SetCameraRotation");
+            GameTarget.ModernExecuteConsoleCommand(VarCmd(rot.X, FloatVarIndexes.CamXRotComponent));
+            GameTarget.ModernExecuteConsoleCommand(VarCmd(rot.Y, FloatVarIndexes.CamYRotComponent));
+            GameTarget.ModernExecuteConsoleCommand(VarCmd(rot.Z, FloatVarIndexes.CamZRotComponent));
+            GameTarget.ModernExecuteConsoleCommand("ce SetCameraRotation");
         }
 
         private void ResetCamRotation_Click(object sender, RoutedEventArgs e)
@@ -966,7 +966,8 @@ namespace LegendaryExplorer.Tools.AnimationViewer
             {
                 if (SetProperty(ref _selectedSquadMember, value) && !noUpdate)
                 {
-                    GameTarget.ExecuteConsoleCommands(VarCmd((int)value, IntVarIndexes.SquadMember), "ce LoadNewHench");
+                    GameTarget.ModernExecuteConsoleCommand(VarCmd((int)value, IntVarIndexes.SquadMember));
+                    GameTarget.ModernExecuteConsoleCommand("ce LoadNewHench");
                 }
             }
         }

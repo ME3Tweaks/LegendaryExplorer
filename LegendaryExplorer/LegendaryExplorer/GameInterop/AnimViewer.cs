@@ -116,7 +116,7 @@ namespace LegendaryExplorer.GameInterop
                 else
                 {
                     // ME3 
-                    interopTarget.ExecuteConsoleCommands($"at {tempMapName}");
+                    interopTarget.ME3ExecuteConsoleCommands($"at {tempMapName}");
                 }
                 return;
             }

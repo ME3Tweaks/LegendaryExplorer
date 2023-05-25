@@ -897,14 +897,14 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         {
             playbackState = PlaybackState.Playing;
             PlayPauseIcon = EFontAwesomeIcon.Solid_Pause;
-            GameTarget.ExecuteConsoleCommands("ce playcam");
+            GameTarget.ModernExecuteConsoleCommand("ce playcam");
         }
 
         private void pauseCam()
         {
             playbackState = PlaybackState.Paused;
             PlayPauseIcon = EFontAwesomeIcon.Solid_Play;
-            GameTarget.ExecuteConsoleCommands("ce pausecam");
+            GameTarget.ModernExecuteConsoleCommand("ce pausecam");
         }
 
         private bool _shouldLoop;
@@ -916,7 +916,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             {
                 if (SetProperty(ref _shouldLoop, value) && !noUpdate)
                 {
-                    GameTarget.ExecuteConsoleCommands(_shouldLoop ? "ce loopcam" : "ce noloopcam");
+                    GameTarget.ModernExecuteConsoleCommand(_shouldLoop ? "ce loopcam" : "ce noloopcam");
                 }
             }
         }
@@ -926,7 +926,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             if (noUpdate) return;
             playbackState = PlaybackState.Stopped;
             PlayPauseIcon = EFontAwesomeIcon.Solid_Play;
-            GameTarget.ExecuteConsoleCommands("ce stopcam");
+            GameTarget.ModernExecuteConsoleCommand("ce stopcam");
         }
 
         private void SaveCamPath(object sender, RoutedEventArgs e)
@@ -935,7 +935,8 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             camPathPackage.GetUExport(CamPath_LoopGateIDX).WriteProperty(new BoolProperty(ShouldLoop, "bOpen"));
             camPathPackage.Save();
             LiveEditHelper.PadCamPathFile(Game);
-            GameTarget.ExecuteConsoleCommands("ce stopcam", "ce LoadCamPath");
+            GameTarget.ModernExecuteConsoleCommand("ce stopcam");
+            GameTarget.ModernExecuteConsoleCommand("ce LoadCamPath");
             playbackState = PlaybackState.Stopped;
             PlayPauseIcon = EFontAwesomeIcon.Solid_Play;
         }

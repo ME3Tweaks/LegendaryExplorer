@@ -4997,6 +4997,29 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                 MessageBox.Show("You must load a package first, which determines which game this feature will be used on.");
                 return;
             }
+            if (!InteropHelper.IsASILoaderInstalled(Pcc.Game))
+            {
+                if (MessageBoxResult.Yes == MessageBox.Show(this, $"The latest asi loader for {Pcc.Game} is not installed! You must install it and restart the game for this feature to work." +
+                                                                  $" Would you like to install the asi loader now?", "ASI loader not installed!", MessageBoxButton.YesNo))
+                {
+                    InteropHelper.OpenASILoaderDownload(Pcc.Game);
+                }
+                return;
+            }
+            if (!InteropHelper.IsInteropASIInstalled(Pcc.Game))
+            {
+                if (MessageBoxResult.Yes == MessageBox.Show(this, $"The latest interop asi for {Pcc.Game} is not installed! You must install it and restart the game for this feature to work." +
+                                                                  $" Would you like to install the asi now?", "Interop ASI not installed!", MessageBoxButton.YesNo))
+                {
+                    InteropHelper.OpenInteropASIDownload(Pcc.Game);
+                }
+                return;
+            }
+            if (InteropHelper.IsGameClosed(Pcc.Game))
+            {
+                MessageBox.Show(this, $"{Pcc.Game} must be running for this feature to have an effect!");
+                return;
+            }
             Task.Run(() =>
             {
                 if (!gpsActive)
