@@ -6,12 +6,14 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
+using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Folding;
 using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.Tools.PackageEditor;
+using LegendaryExplorer.Tools.TlkManagerNS;
 using LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
@@ -879,5 +881,40 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
             });
         }
 
+        private readonly ToolTip _hoverToolTip = new();
+
+        private void TextEditor_OnMouseHover(object sender, MouseEventArgs e)
+        {
+            var position = textEditor.GetPositionFromPoint(e.GetPosition(textEditor));
+            if (textEditor.Document is not null && position is TextViewPosition pos)
+            {
+                TokenStream tokens = _definitionLinkGenerator.Tokens;
+                int currentTokenIdx = tokens.GetIndexOfTokenAtOffset(textEditor.Document.GetOffset(pos.Location));
+                ReadOnlySpan<ScriptToken> tokensSpan = tokens.TokensSpan;
+                if (currentTokenIdx < 0 || currentTokenIdx >= tokensSpan.Length)
+                {
+                    return;
+                }
+                ScriptToken currentToken = tokensSpan[currentTokenIdx];
+
+                if (currentToken.Type is TokenType.StringRefLiteral)
+                {
+                    //Value does not include the $ for some reason? 
+                    if (int.TryParse(currentToken.Value, out int strRef))
+                    {
+                        _hoverToolTip.Content = TLKManagerWPF.GlobalFindStrRefbyID(strRef, Pcc) ?? "No Data";
+
+                        _hoverToolTip.PlacementTarget = this; // required for property inheritance
+                        _hoverToolTip.IsOpen = true;
+                        e.Handled = true;
+                    }
+                }
+            }
+        }
+
+        private void TextEditor_OnMouseHoverStopped(object sender, MouseEventArgs e)
+        {
+            _hoverToolTip.IsOpen = false;
+        }
     }
 }
