@@ -188,6 +188,11 @@ namespace LegendaryExplorerCore.GameFilesystem
 
             return loadedFiles;
         }
+
+        public static bool TryGetHighestMountedFile(IMEPackage pcc, out string filePath) => TryGetHighestMountedFile(pcc.Game, Path.GetFileName(pcc.FilePath), out filePath);
+
+        public static bool TryGetHighestMountedFile(MEGame game, string fileName, out string filePath) => GetFilesLoadedInGame(game, true).TryGetValue(fileName ?? "", out filePath);
+
         #endregion
 
         private static List<string> cachedME1TargetFiles;

@@ -538,7 +538,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
             if (string.IsNullOrEmpty(name))
             {
-                MessageBox.Show("No a valid animation name", "Error", MessageBoxButton.OK);
+                MessageBox.Show("Not a valid animation name", "Error", MessageBoxButton.OK);
                 return;
             }
 

@@ -180,6 +180,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
         public ICommand ForceReloadPackageCommand { get; set; }
         public ICommand ComparePackagesCommand { get; set; }
         public ICommand OpenOtherVersionCommand { get; set; }
+        public ICommand OpenHighestMountedCommand { get; set; }
         public ICommand CompareToUnmoddedCommand { get; set; }
         public ICommand ExportAllDataCommand { get; set; }
         public ICommand ExportBinaryDataCommand { get; set; }
@@ -305,6 +306,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
             RestoreExportCommand = new GenericCommand(RestoreExportData, ExportIsSelected);
             OpenOtherVersionCommand = new GenericCommand(OpenOtherVersion, IsLoadedPackageME);
+            OpenHighestMountedCommand = new GenericCommand(OpenHighestMountedVersion, IsLoadedPackageME);
 
             ForceReloadPackageCommand = new GenericCommand(() => ExperimentsMenu.ForceReloadPackageWithoutSharing(), () => ShowExperiments && ExperimentsMenu.CanForceReload());
 
@@ -400,6 +402,31 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 TryGetSelectedEntry(out var entry);
                 PackageEditorWindow pe = new PackageEditorWindow();
                 pe.LoadPackage(otherGen, goToEntry: entry?.InstancedFullPath);
+                pe.Show();
+            }
+        }
+
+        private void OpenHighestMountedVersion()
+        {
+            if (MEDirectories.GetBioGamePath(Pcc.Game) is null)
+            {
+                MessageBox.Show($"No {Pcc.Game} installation detected!");
+                return;
+            }
+            string fileName = Path.GetFileName(Pcc.FilePath);
+            if (!MELoadedFiles.TryGetHighestMountedFile(Pcc.Game, fileName, out string filePath))
+            {
+                MessageBox.Show($"No file named '{fileName}' was found in the {Pcc.Game} installation.");
+            }
+            else if (Path.GetFullPath(filePath) == Path.GetFullPath(Pcc.FilePath))
+            {
+                MessageBox.Show($"This is the highest mounted version of {fileName} in your {Pcc.Game} installation.");
+            }
+            else
+            {
+                TryGetSelectedEntry(out var entry);
+                var pe = new PackageEditorWindow();
+                pe.LoadFile(filePath, goToEntry: entry?.InstancedFullPath);
                 pe.Show();
             }
         }
