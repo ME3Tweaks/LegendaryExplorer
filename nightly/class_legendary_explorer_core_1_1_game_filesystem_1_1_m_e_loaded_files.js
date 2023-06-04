@@ -2,6 +2,8 @@ var class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_loaded_files =
 [
     [ "InvalidateCaches", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_loaded_files.html#af4b6cb5a75eacc744f0ad9c722bd88f5", null ],
     [ "GetFilesLoadedInGame", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_loaded_files.html#abe16721ace0c1d18c1d961657f7868a7", null ],
+    [ "TryGetHighestMountedFile", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_loaded_files.html#a1dcefccfb34423e71734218589eaac07", null ],
+    [ "TryGetHighestMountedFile", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_loaded_files.html#a5eeaa0c2c325f89e931052ec414a7d56", null ],
     [ "GetAllGameFiles", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_loaded_files.html#a08f5cbe2dcddce173f8d23b44271519e", null ],
     [ "GetDLCFiles", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_loaded_files.html#abbc023fd453e05b4793fb87119c992a6", null ],
     [ "GetAllFiles", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_loaded_files.html#a9a31c38c9574488fa4128dadbadd25ed", null ],
