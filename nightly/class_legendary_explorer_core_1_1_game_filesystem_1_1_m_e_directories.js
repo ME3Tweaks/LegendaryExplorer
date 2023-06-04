@@ -20,6 +20,8 @@ var class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_directories =
     [ "IsInBasegame", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_directories.html#a0c3077702f7a90f58986deea757bdf07", null ],
     [ "IsInOfficialDLC", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_directories.html#a92d9a11c31efcc904a4f9d2ba1653cf1", null ],
     [ "IsInOfficialDLC", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_directories.html#a0c8d77bf132b36db26b3e875488a69fe", null ],
+    [ "GetLocationDescriptor", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_directories.html#a5e7e3464fc76829215cea39d10ba109b", null ],
+    [ "GetLocationDescriptor", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_directories.html#a1fdbc2932422050e4bd61b65c1a45744", null ],
     [ "ReloadGamePaths", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_directories.html#ab390e9a2e1b19c2d28f42b928929509a", null ],
     [ "SaveSettings", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_directories.html#afe5fa394497566be4b0a6809ba14f1c4", null ],
     [ "EnumerateGameFiles", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_directories.html#a439141456a97e8e3b0d933f08db7fba8", null ],

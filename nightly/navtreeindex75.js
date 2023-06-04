@@ -1,5 +1,9 @@
 var NAVTREEINDEX75 =
 {
+"struct_map_key_funcs.html#a4d49db21ee6d7c15025df5dd6971656e":[1,0,18,1],
+"struct_map_key_funcs.html#a881e7fae94e93a28efc4d180c9d5e9cf":[1,0,18,2],
+"struct_map_key_funcs.html#a948f7431506e2868199c157a8b4a2e23":[1,0,18,0],
+"struct_multi_map_key_funcs.html":[1,0,19],
 "struct_multi_map_key_funcs.html#a0551d1837604b7f0b69da1d1f17593ff":[1,0,19,1],
 "struct_multi_map_key_funcs.html#a485e19357781f4deba797313d0157f31":[1,0,19,3],
 "struct_multi_map_key_funcs.html#a49973387a961e40e651e4974b4371a8e":[1,0,19,2],
