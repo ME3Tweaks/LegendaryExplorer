@@ -2979,7 +2979,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     goToIndex = Pcc.FindEntry(goToEntry)?.UIndex ?? 0;
                 }
 
-                postloadPackage(Path.GetFileName(packageFilePath), packageFilePath, goToIndex);
+                postloadPackage(packageFilePath, goToIndex);
                 if (File.Exists(packageFilePath))
                 {
                     RecentsController.AddRecent(packageFilePath, false, Pcc?.Game);
@@ -3008,7 +3008,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 {
                     goToIndex = Pcc.FindEntry(goToEntry)?.UIndex ?? 0;
                 }
-                postloadPackage(Path.GetFileName(s), s, goToIndex);
+                postloadPackage(s, goToIndex);
 
                 RecentsController.AddRecent(s, false, Pcc?.Game);
                 RecentsController.SaveRecentList(true);
@@ -3026,19 +3026,30 @@ namespace LegendaryExplorer.Tools.PackageEditor
         /// <summary>
         /// Call once the MEPackage has been loaded and set
         /// </summary>
-        /// <param name="uiname"></param>
-        /// <param name="goToIndex"></param>
-        private void postloadPackage(string shortname, string fullname, int goToIndex = 0)
+        private void postloadPackage(string filePath, int goToIndex = 0)
         {
             RefreshView();
             InitStuff();
-            StatusBar_LeftMostText.Text = shortname;
-            Title = $"Package Editor - {fullname}";
+            string statusBarText = GetStatusBarText(filePath, Pcc.Game);
+            StatusBar_LeftMostText.Text = statusBarText;
+            Title = $"Package Editor - {filePath}";
             InterpreterTab_Interpreter.UnloadExport();
 
             QueuedGotoNumber = goToIndex;
 
             InitializeTreeView();
+        }
+
+        private static string GetStatusBarText(string filePath, MEGame game)
+        {
+            string fileName = Path.GetFileName(filePath);
+            string notHighestMountedWarning = "";
+            if (MELoadedFiles.TryGetHighestMountedFile(game, fileName, out string highestMountedPath) && Path.GetFullPath(filePath) != highestMountedPath)
+            {
+                notHighestMountedWarning = "NOT HIGHEST MOUNTED VERSION";
+            }
+            string statusBarText = $"{fileName}  ( {MEDirectories.GetLocationDescriptor(filePath, game)} )  {notHighestMountedWarning}";
+            return statusBarText;
         }
 
         /// <summary>
@@ -4577,7 +4588,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 {
                     goToIndex = Pcc.FindEntry(goToEntry)?.UIndex ?? 0;
                 }
-                postloadPackage(Path.GetFileName(associatedFilePath), associatedFilePath, goToIndex);
+                postloadPackage(associatedFilePath, goToIndex);
 
                 // Loading from stream is not supported for saving or direct loading.
                 // RecentsController.AddRecent(s, false, Pcc?.Game);

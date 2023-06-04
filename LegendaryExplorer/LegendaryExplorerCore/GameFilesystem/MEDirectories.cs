@@ -407,6 +407,37 @@ namespace LegendaryExplorerCore.GameFilesystem
         }
 
         /// <summary>
+        /// Gets a short description of where the file is located (Basegame, DLC name, or Not in installation). Does not specify game
+        /// </summary>
+        public static string GetLocationDescriptor(IMEPackage pcc, string gameRootOverride = null) => GetLocationDescriptor(pcc.FilePath, pcc.Game, gameRootOverride);
+
+        /// <summary>
+        /// Gets a short description of where the file is located (Basegame, DLC name, or Not in installation). Does not specify game
+        /// </summary>
+        public static string GetLocationDescriptor(string filePath, MEGame game, string gameRootOverride = null)
+        {
+            if (filePath is not null && game.IsMEGame() && (GetDefaultGamePath(game) is not null || gameRootOverride is not null))
+            {
+                filePath = Path.GetFullPath(filePath);
+                if (filePath.StartsWith(GetCookedPath(game, gameRootOverride)))
+                {
+                    return "Basegame";
+                }
+                string dlcPath = GetDLCPath(game, gameRootOverride);
+                if (filePath.StartsWith(dlcPath))
+                {
+                    string relativePath = Path.GetRelativePath(dlcPath, filePath);
+                    int dirSepIndex = relativePath.AsSpan().IndexOfAny(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+                    if (dirSepIndex > 0)
+                    {
+                        return relativePath[..dirSepIndex];
+                    }
+                }
+            }
+            return "Not in installation";
+        }
+
+        /// <summary>
         /// Refreshes the default game path for all games
         /// </summary>
         /// <param name="forceUseRegistry">If true, all paths will attempt to be loaded from registry. If false, existing path settings may be used.</param>
