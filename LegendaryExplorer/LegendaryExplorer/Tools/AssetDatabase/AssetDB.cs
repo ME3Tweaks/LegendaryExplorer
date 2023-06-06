@@ -167,41 +167,44 @@ namespace LegendaryExplorer.Tools.AssetDatabase
 
         public int DefinitionFile { get; set; }
 
-        public int Definition_UID { get; set; }
+        public int DefinitionUIndex { get; set; }
 
         public string SuperClass { get; set; }
 
         public bool IsModOnly { get; set; }
 
-        public Dictionary<string, PropertyRecord> PropertyRecords { get; set; } = new();
+        public PropertyRecord[] PropertyRecords { get; set; }
 
-        [IgnoredMember] public IEnumerable<IAssetUsage> AssetUsages => Usages;
-        public List<ClassUsage> Usages { get; set; } = new();
+        [IgnoredMember] public IEnumerable<IAssetUsage> AssetUsages => (IEnumerable<IAssetUsage>)Usages.AsEnumerable();
+        public ClassUsage[] Usages { get; set; }
 
-        public ClassRecord(string Class, int definitionFile, int Definition_UID, string SuperClass)
+        public ClassRecord(string @class, int definitionFile, int definitionUIndex, string superClass, PropertyRecord[] propertyRecords, ClassUsage[] usages)
         {
-            this.Class = Class;
+            this.Class = @class;
             this.DefinitionFile = definitionFile;
-            this.Definition_UID = Definition_UID;
-            this.SuperClass = SuperClass;
+            this.DefinitionUIndex = definitionUIndex;
+            this.SuperClass = superClass;
+            this.PropertyRecords = propertyRecords;
+            this.Usages = usages;
         }
 
         public ClassRecord()
         {
             DefinitionFile = -1;
+            PropertyRecords = Array.Empty<PropertyRecord>();
+            Usages = Array.Empty<ClassUsage>();
         }
     }
-    public sealed record PropertyRecord(string Property, string Type) { public PropertyRecord() : this(default, default) { } }
+    public readonly record struct PropertyRecord(string Property, string Type) { public PropertyRecord() : this(default, default) { } }
 
 
-    public class ClassUsage : IAssetUsage
+    public struct ClassUsage : IAssetUsage
     {
 
         public int FileKey { get; init; }
 
         //There are millions of ClassUsage instances in a typical db, so bitpacking here can result in major memory savings (>100mb on a lightly modded LE3).
-        //UIndex is stored as a 30 bit integer which is still way more bits than are necccesary for any possible file.
-        //Attempting to pack FileKey as well would be pointless, since the object is 64bit aligned. This is the smallest we can make it.
+        //UIndex is stored as a 30 bit integer which is still way more bits than are neccesary for any possible file.
         [IgnoredMember]
         private uint _data;
         private const uint ISDEFAULT_MASK = (uint)1 << 31;
@@ -248,12 +251,17 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         public ClassUsage(int fileKey, int uIndex, bool isDefault, bool isMod)
         {
             FileKey = fileKey;
+            _data = default;
             UIndex = uIndex;
             IsDefault = isDefault;
             IsMod = isMod;
         }
+
         public ClassUsage()
-        { }
+        {
+            FileKey = default;
+            _data = default;
+        }
     }
 
     public class MaterialRecord : IAssetRecord

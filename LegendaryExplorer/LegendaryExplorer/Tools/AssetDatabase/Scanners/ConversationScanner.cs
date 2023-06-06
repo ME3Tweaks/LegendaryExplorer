@@ -16,7 +16,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Scanners
         public override void ScanExport(ExportScanInfo e, ConcurrentAssetDB db, AssetDBScanOptions options)
         {
             if (e.IsDefault) return;
-            if (options.ScanLines && e.ClassName == "BioConversation" && !db.GeneratedConvo.ContainsKey(e.Export.ObjectName.Instanced))
+            if (e.ClassName == "BioConversation" && !db.GeneratedConvo.ContainsKey(e.Export.ObjectName.Instanced))
             {
                 bool IsAmbient = true;
 

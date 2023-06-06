@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 using LegendaryExplorer.Tools.AssetDatabase.Filters;
 
@@ -12,7 +13,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         /// <summary>
         /// Dictionary that stores generated classes
         /// </summary>
-        public ConcurrentDictionary<string, ClassRecord> GeneratedClasses = new();
+        public ConcurrentDictionary<string, ScanTimeClassRecord> GeneratedClasses = new();
         /// <summary>
         /// Dictionary that stores generated Animations
         /// </summary>
@@ -109,7 +110,12 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         public AssetDB CollateDataBase()
         {
             var pdb = new AssetDB();
-            pdb.ClassRecords.AddRange(GeneratedClasses.Values.OrderBy(x => x.Class));
+            pdb.ClassRecords.Capacity = GeneratedClasses.Count;
+            foreach (ScanTimeClassRecord cr in GeneratedClasses.Values.OrderBy(x => x.Class))
+            {
+                pdb.ClassRecords.Add(new ClassRecord(cr.Class, cr.DefinitionFile, cr.DefinitionUIndex, cr.SuperClass, cr.PropertyRecords.Values.ToArray(), cr.Usages.ToArray()));
+            }
+
             pdb.Conversations.AddRange(GeneratedConvo.Values);
 
             var animsSorted = GeneratedAnims.Values.OrderBy(x => x.AnimSequence).ToList();
@@ -177,6 +183,36 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             pdb.MaterialBoolSpecs.AddRange(matFiltersSorted);
 
             return pdb;
+        }
+
+        public class ScanTimeClassRecord
+        {
+            public string Class;
+
+            public readonly int DefinitionFile;
+
+            public readonly int DefinitionUIndex;
+
+            public readonly string SuperClass;
+
+            public bool IsModOnly;
+
+            public readonly Dictionary<string, PropertyRecord> PropertyRecords = new();
+            public readonly List<ClassUsage> Usages = new();
+
+            public ScanTimeClassRecord(string @class, int definitionFile, int definitionUIndex, string superClass)
+            {
+                this.Class = @class;
+                this.DefinitionFile = definitionFile;
+                this.DefinitionUIndex = definitionUIndex;
+                this.SuperClass = superClass;
+            }
+
+            public ScanTimeClassRecord()
+            {
+                //mark this as a stub, to be replaced once the class definition is found
+                DefinitionFile = -1;
+            }
         }
     }
 }

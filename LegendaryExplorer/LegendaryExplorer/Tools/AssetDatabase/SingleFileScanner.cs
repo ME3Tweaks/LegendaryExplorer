@@ -17,7 +17,7 @@ using LegendaryExplorerCore.UnrealScript;
 
 namespace LegendaryExplorer.Tools.AssetDatabase
 {
-    public sealed record AssetDBScanOptions (bool ScanCRC, bool ScanLines, bool ScanPlotUsages, MELocalization Localization = MELocalization.INT);
+    public sealed record AssetDBScanOptions (bool ScanCRC, MELocalization Localization = MELocalization.INT);
 
     /// <summary>
     /// Caches info about the export being scanned, containing expensive calls such as GetProperties, IsDefault, etc
@@ -153,7 +153,8 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                     }
                     catch (Exception e) //when (!App.IsDebug)
                     {
-                        MessageBox.Show($"Error while scanning {export.FileRef.FilePath} #{export.UIndex} {export.InstancedFullPath}\n\n{e.FlattenException()}");
+                        Application.Current.Dispatcher.Invoke(() => 
+                            MessageBox.Show($"Error while scanning {export.FileRef.FilePath} #{export.UIndex} {export.InstancedFullPath}\n\n{e.FlattenException()}"));
                     }
                 }
             }
