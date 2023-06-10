@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using DocumentFormat.OpenXml.Drawing;
 using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.Misc;
 using LegendaryExplorerCore.GameFilesystem;
@@ -22,6 +23,7 @@ using LegendaryExplorerCore.Unreal.ObjectInfo;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Newtonsoft.Json;
+using Path = System.IO.Path;
 
 namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 {
@@ -1034,6 +1036,122 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         }
                     }
                 }
+            }
+        }
+
+        public static void ShiftInterpTrackMovesInPackageWithRotation(IMEPackage package, Func<ExportEntry, bool> predicate)
+        {
+            try
+            {
+                var originX = float.Parse(PromptDialog.Prompt(null, "Enter X origin", "Origin X", "0", true));
+                var originY = float.Parse(PromptDialog.Prompt(null, "Enter Y origin", "Origin Y", "0", true));
+                var originZ = float.Parse(PromptDialog.Prompt(null, "Enter Z origin", "Origin Z", "0", true));
+                var originYaw = float.Parse(PromptDialog.Prompt(null, "Enter Yaw origin", "Origin Yaw", "0", true));
+                var targetX = float.Parse(PromptDialog.Prompt(null, "Enter X target", "Target X", "0", true));
+                var targetY = float.Parse(PromptDialog.Prompt(null, "Enter Y target", "Target Y", "0", true));
+                var targetZ = float.Parse(PromptDialog.Prompt(null, "Enter Z target", "Target Z", "0", true));
+                var targetYaw = float.Parse(PromptDialog.Prompt(null, "Enter Yaw target", "Target Yaw", "0", true));
+                foreach (var exp in package.Exports.Where(x => x.ClassName == "InterpTrackMove"))
+                {
+                    if (predicate == null || predicate.Invoke(exp))
+                    {
+
+
+                        var interpTrackMove = exp;
+                        var props = interpTrackMove.GetProperties();
+                        var posTrack = props.GetProp<StructProperty>("PosTrack");
+                        var points = posTrack.GetProp<ArrayProperty<StructProperty>>("Points");
+                        var eulerTrack = props.GetProp<StructProperty>("EulerTrack");
+                        var eulerPoints = eulerTrack.GetProp<ArrayProperty<StructProperty>>("Points");
+
+                        for (int n = 0; n < points.Count; n++)
+                        {
+                            //Get start positions
+                            var outval = points[n].GetProp<StructProperty>("OutVal");
+                            var startX = outval.GetProp<FloatProperty>("X").Value;
+                            var startY = outval.GetProp<FloatProperty>("Y").Value;
+                            var startZ = outval.GetProp<FloatProperty>("Z").Value;
+                            var outYaw = eulerPoints[n].GetProp<StructProperty>("OutVal");
+                            var startYaw = outYaw.GetProp<FloatProperty>("Z").Value;
+
+                            var oldRelativeX = startX - originX;
+                            var oldRelativeY = startY - originY;
+                            var oldRelativeZ = startZ - originZ;
+                            float rotateYawRadians = MathF.PI * ((targetYaw - originYaw) / 180); //Convert to radians
+                            float sinCalcYaw = MathF.Sin(rotateYawRadians);
+                            float cosCalcYaw = MathF.Cos(rotateYawRadians);
+
+                            //Get new rotation x' = x cos θ − y sin θ
+                            //y' = x sin θ + y cos θ
+                            float newRelativeX = oldRelativeX * cosCalcYaw - oldRelativeY * sinCalcYaw;
+                            float newRelativeY = oldRelativeX * sinCalcYaw + oldRelativeY * cosCalcYaw;
+
+                            float newX = targetX + newRelativeX;
+                            float newY = targetY + newRelativeY;
+                            float newZ = targetZ + startZ - originZ;
+                            float newYaw = startYaw + targetYaw - originYaw;
+
+                            //write new location
+                            outval.GetProp<FloatProperty>("X").Value = newX;
+                            outval.GetProp<FloatProperty>("Y").Value = newY;
+                            outval.GetProp<FloatProperty>("Z").Value = newZ;
+                            outYaw.GetProp<FloatProperty>("Z").Value = newYaw;
+                        }
+                        interpTrackMove.WriteProperties(props);
+                    }
+                }
+            }
+            catch
+            {
+                return; //handle escape on blocks
+            }
+        }
+
+        public static void MakeInterpTrackMovesStageRelative(IMEPackage package, Func<ExportEntry, bool> predicate)
+        {
+            try
+            {
+                var stageX = float.Parse(PromptDialog.Prompt(null, "Enter Stage X", "Stage X", "0", true));
+                var stageY = float.Parse(PromptDialog.Prompt(null, "Enter Stage Y", "Stage Y", "0", true));
+                var stageZ = float.Parse(PromptDialog.Prompt(null, "Enter Stage Z", "Stage Z", "0", true));
+                var stageYaw = float.Parse(PromptDialog.Prompt(null, "Enter Stage Yaw in Degrees", "Stage Yaw", "0", true));
+                foreach (var exp in package.Exports.Where(x => x.ClassName == "InterpTrackMove"))
+                {
+                    if (predicate == null || predicate.Invoke(exp))
+                    {
+                        var interpTrackMove = exp;
+                        var props = interpTrackMove.GetProperties();
+                        var posTrack = props.GetProp<StructProperty>("PosTrack");
+                        var points = posTrack.GetProp<ArrayProperty<StructProperty>>("Points");
+                        var eulerTrack = props.GetProp<StructProperty>("EulerTrack");
+                        var eulerPoints = eulerTrack.GetProp<ArrayProperty<StructProperty>>("Points");
+
+                        for (int n = 0; n < points.Count; n++)
+                        {
+                            //Get start positions
+                            var outval = points[n].GetProp<StructProperty>("OutVal");
+                            var startX = outval.GetProp<FloatProperty>("X").Value;
+                            var startY = outval.GetProp<FloatProperty>("Y").Value;
+                            var startZ = outval.GetProp<FloatProperty>("Z").Value;
+                            var outRot = eulerPoints[n].GetProp<StructProperty>("OutVal");
+                            var startYaw = outRot.GetProp<FloatProperty>("Z").Value;
+
+                            //write relative location
+                            outval.GetProp<FloatProperty>("X").Value = stageX - startX;
+                            outval.GetProp<FloatProperty>("Y").Value = stageY - startY;
+                            outval.GetProp<FloatProperty>("Z").Value = startZ - stageZ;
+                            outRot.GetProp<FloatProperty>("Z").Value = startYaw - stageYaw; 
+                        }
+                        var f = new EnumProperty("EInterpTrackMoveFrame", exp.FileRef.Game, "MoveFrame");
+                        f.Value = "IMF_AnchorObject";
+                        props.AddOrReplaceProp(f);
+                        interpTrackMove.WriteProperties(props);
+                    }
+                }
+            }
+            catch
+            {
+                return; //handle escape on blocks
             }
         }
     }

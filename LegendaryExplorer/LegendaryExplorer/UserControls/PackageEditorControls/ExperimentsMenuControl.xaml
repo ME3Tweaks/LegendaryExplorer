@@ -150,6 +150,8 @@
         <MenuItem Header="Parse Map Names" Click="ParseMapNamesToObjects"/>
         <MenuItem Header="Destroyer" Click="BlowMeUp"/>
         <MenuItem Header="Trash Compactor" Click="RunTrashCompactor"/>
+        <MenuItem Header="Move Scene" Click="ShiftInterpTrackMovePackageWideScene"/>
+        <MenuItem Header="Anchor Moves" Click="MakeInterpTrackMovesIntoAnchors"/>
     </MenuItem>
     <MenuItem Header="HenBagle's stuff that saved five minutes once">
         <MenuItem Header="Build ME1/LE1 SuperTlk File" Click="BuildME1SuperTLK_Clicked"/>

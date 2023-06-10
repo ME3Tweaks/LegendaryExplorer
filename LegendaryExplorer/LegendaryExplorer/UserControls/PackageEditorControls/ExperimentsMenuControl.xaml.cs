@@ -1315,7 +1315,32 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         {
             PackageEditorExperimentsK.ParseMapNames(GetPEWindow());
         }
-
+        private void ShiftInterpTrackMovePackageWideScene(object sender, RoutedEventArgs e)
+        {
+            var pccLoaded = GetPEWindow().Pcc != null;
+            if (pccLoaded)
+            {
+                PackageEditorExperimentsK.ShiftInterpTrackMovesInPackageWithRotation(GetPEWindow().Pcc, x =>
+                {
+                    var prop = x.GetProperty<EnumProperty>("MoveFrame");
+                    if (prop == null || prop.Value != "IMF_AnchorObject") return true;
+                    return false; // IMF_AnchorObject
+                });
+            }
+        }
+        private void MakeInterpTrackMovesIntoAnchors(object sender, RoutedEventArgs e)
+        {
+            var pccLoaded = GetPEWindow().Pcc != null;
+            if (pccLoaded)
+            {
+                PackageEditorExperimentsK.MakeInterpTrackMovesStageRelative(GetPEWindow().Pcc, x =>
+                {
+                    var prop = x.GetProperty<EnumProperty>("MoveFrame");
+                    if (prop == null || prop.Value != "IMF_AnchorObject") return true;
+                    return false; // IMF_AnchorObject
+                });
+            }
+        }
 
         #endregion
 
