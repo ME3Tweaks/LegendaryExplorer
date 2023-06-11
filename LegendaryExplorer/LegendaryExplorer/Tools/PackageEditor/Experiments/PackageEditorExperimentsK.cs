@@ -1100,6 +1100,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         interpTrackMove.WriteProperties(props);
                     }
                 }
+                MessageBox.Show("All InterpTrackMoves shifted.", "Complete", MessageBoxButton.OK);
             }
             catch
             {
@@ -1111,10 +1112,10 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         {
             try
             {
-                var stageX = float.Parse(PromptDialog.Prompt(null, "Enter Stage X", "Stage X", "0", true));
-                var stageY = float.Parse(PromptDialog.Prompt(null, "Enter Stage Y", "Stage Y", "0", true));
-                var stageZ = float.Parse(PromptDialog.Prompt(null, "Enter Stage Z", "Stage Z", "0", true));
-                var stageYaw = float.Parse(PromptDialog.Prompt(null, "Enter Stage Yaw in Degrees", "Stage Yaw", "0", true));
+                var stageX = float.Parse(PromptDialog.Prompt(null, "Enter Anchor X Location", "Anchor X", "0", true));
+                var stageY = float.Parse(PromptDialog.Prompt(null, "Enter Anchor Y Location", "Anchor Y", "0", true));
+                var stageZ = float.Parse(PromptDialog.Prompt(null, "Enter Anchor Z Location", "Anchor Z", "0", true));
+                var stageYaw = float.Parse(PromptDialog.Prompt(null, "Enter Anchor Yaw in Degrees", "Anchor Yaw", "0", true));
                 foreach (var exp in package.Exports.Where(x => x.ClassName == "InterpTrackMove"))
                 {
                     if (predicate == null || predicate.Invoke(exp))
@@ -1148,6 +1149,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         interpTrackMove.WriteProperties(props);
                     }
                 }
+
+                MessageBox.Show("All InterpTrackMoves are now relative to that location.", "Complete", MessageBoxButton.OK);
             }
             catch
             {
