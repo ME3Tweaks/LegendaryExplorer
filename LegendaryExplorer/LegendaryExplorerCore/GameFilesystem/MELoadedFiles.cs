@@ -62,8 +62,8 @@ namespace LegendaryExplorerCore.GameFilesystem
                         bool useCached = true;
                         if (!forceUseCached)
                         {
-                            useCached &= !includeTFCs || !cachedME2LoadedFiles.Keys.Any(x => x.EndsWith(".tfc"));
-                            useCached &= !includeAFCs || !cachedME2LoadedFiles.Keys.Any(x => x.EndsWith(".afc"));
+                            useCached &= !includeTFCs || cachedME2LoadedFiles.Keys.Any(x => x.EndsWith(".tfc"));
+                            useCached &= !includeAFCs || cachedME2LoadedFiles.Keys.Any(x => x.EndsWith(".afc"));
                         }
 
                         if (useCached) return cachedME2LoadedFiles;
@@ -74,8 +74,8 @@ namespace LegendaryExplorerCore.GameFilesystem
                         bool useCached = true;
                         if (!forceUseCached)
                         {
-                            useCached &= !includeTFCs || !cachedME3LoadedFiles.Keys.Any(x => x.EndsWith(".tfc"));
-                            useCached &= !includeAFCs || !cachedME3LoadedFiles.Keys.Any(x => x.EndsWith(".afc"));
+                            useCached &= !includeTFCs || cachedME3LoadedFiles.Keys.Any(x => x.EndsWith(".tfc"));
+                            useCached &= !includeAFCs || cachedME3LoadedFiles.Keys.Any(x => x.EndsWith(".afc"));
                         }
                         if (useCached) return cachedME3LoadedFiles;
                         break;
@@ -85,7 +85,7 @@ namespace LegendaryExplorerCore.GameFilesystem
                         bool useCached = true;
                         if (!forceUseCached)
                         {
-                            useCached &= !includeTFCs || !cachedLE1LoadedFiles.Keys.Any(x => x.EndsWith(".tfc"));
+                            useCached &= !includeTFCs || cachedLE1LoadedFiles.Keys.Any(x => x.EndsWith(".tfc"));
                         }
                         if (useCached) return cachedLE1LoadedFiles;
                         break;
@@ -95,8 +95,8 @@ namespace LegendaryExplorerCore.GameFilesystem
                         bool useCached = true;
                         if (!forceUseCached)
                         {
-                            useCached &= !includeTFCs || !cachedLE2LoadedFiles.Keys.Any(x => x.EndsWith(".tfc"));
-                            useCached &= !includeAFCs || !cachedLE2LoadedFiles.Keys.Any(x => x.EndsWith(".afc"));
+                            useCached &= !includeTFCs || cachedLE2LoadedFiles.Keys.Any(x => x.EndsWith(".tfc"));
+                            useCached &= !includeAFCs || cachedLE2LoadedFiles.Keys.Any(x => x.EndsWith(".afc"));
                         }
                         if (useCached) return cachedLE2LoadedFiles;
                         break;
@@ -106,8 +106,8 @@ namespace LegendaryExplorerCore.GameFilesystem
                         bool useCached = true;
                         if (!forceUseCached)
                         {
-                            useCached &= !includeTFCs || !cachedLE3LoadedFiles.Keys.Any(x => x.EndsWith(".tfc"));
-                            useCached &= !includeAFCs || !cachedLE3LoadedFiles.Keys.Any(x => x.EndsWith(".afc"));
+                            useCached &= !includeTFCs || cachedLE3LoadedFiles.Keys.Any(x => x.EndsWith(".tfc"));
+                            useCached &= !includeAFCs || cachedLE3LoadedFiles.Keys.Any(x => x.EndsWith(".afc"));
                         }
                         if (useCached) return cachedLE3LoadedFiles;
                         break;
@@ -117,8 +117,8 @@ namespace LegendaryExplorerCore.GameFilesystem
                         bool useCached = true;
                         if (!forceUseCached)
                         {
-                            useCached &= !includeTFCs || !cachedUDKLoadedFiles.Keys.Any(x => x.EndsWith(".tfc"));
-                            useCached &= !includeAFCs || !cachedUDKLoadedFiles.Keys.Any(x => x.EndsWith(".afc"));
+                            useCached &= !includeTFCs || cachedUDKLoadedFiles.Keys.Any(x => x.EndsWith(".tfc"));
+                            useCached &= !includeAFCs || cachedUDKLoadedFiles.Keys.Any(x => x.EndsWith(".afc"));
                         }
                         if (useCached) return cachedUDKLoadedFiles;
                         break;
