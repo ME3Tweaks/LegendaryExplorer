@@ -177,6 +177,7 @@
                         <MenuItem Header="Update Sequence Interps' Variable Links" Click="UpdateSequenceVarLinks_Clicked" ToolTip="Updated the variable links of all interps in the selected sequence."/>
                         <MenuItem Header="Add Dialogue Wheel Camera" Click="AddDialogueWheelCam_Clicked" ToolTip="Adds an Interp and an InterpData template to control a dialogue wheel camera"/>
                         <MenuItem Header="Add Dialogue Wheel Director" Click="AddDialogueWheelDir_Clicked" ToolTip="Adds an Interp and an InterpData template to control the camera during a dialogue wheel"/>
+                        <MenuItem Header="Anchor All Interps to Selection" Click="AddAnchorToInterps_Clicked" ToolTip="Adds a link from all Interps without an anchor to the selected SeqVar_Object."/>
                     </MenuItem>
                 </MenuItem>
             </Menu>

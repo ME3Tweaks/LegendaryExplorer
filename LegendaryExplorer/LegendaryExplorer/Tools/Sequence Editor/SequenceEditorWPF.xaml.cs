@@ -2754,6 +2754,11 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             SequenceEditorExperimentsE.AddDialogueWheelTemplate(GetSEWindow(), true);
         }
 
+        private void AddAnchorToInterps_Clicked(object sender, RoutedEventArgs e)
+        {
+            SequenceEditorExperimentsK.UpdateAllInterpAnchorsVarLinks(GetSEWindow());
+        }
+
         public SequenceEditorWPF GetSEWindow()
         {
             if (GetWindow(this) is SequenceEditorWPF sew) { return sew; }
