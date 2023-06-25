@@ -931,7 +931,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     WriteName(func.Name);
                     if (Game >= MEGame.ME3)
                     {
-                        WriteObjectRef(func.Flags.Has(EFunctionFlags.Delegate) ? ResolveFunction(func) : null);
+                        WriteObjectRef(func.Flags.Has(EFunctionFlags.Delegate) ? ResolveDelegateProperty(func) : null);
                     }
                     return true;
             }
@@ -1025,7 +1025,6 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
         {
             WriteOpCode(OpCodes.Conditional);
             Emit(node.Condition);
-            useInstanceDelegate = true;
             using (WriteSkipPlaceholder())
             {
                 Emit(node.TrueExpression);
@@ -1035,8 +1034,6 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             {
                 Emit(node.FalseExpression);
             }
-
-            useInstanceDelegate = false;
 
             return true;
         }
@@ -1332,7 +1329,23 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         public bool VisitNode(NoneLiteral node)
         {
-            WriteOpCode(node.IsDelegateNone ? OpCodes.EmptyDelegate : OpCodes.NoObject);
+            if (node.IsDelegateNone)
+            {
+                if (useInstanceDelegate)
+                {
+                    WriteOpCode(OpCodes.EmptyDelegate);
+                }
+                else
+                {
+                    WriteOpCode(OpCodes.DelegateProperty);
+                    WriteName("None");
+                    WriteObjectRef(null);
+                }
+            }
+            else
+            {
+                WriteOpCode(OpCodes.NoObject);
+            }
             return true;
         }
 
@@ -1432,6 +1445,8 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
         private IEntry ResolveStruct(Struct s) => Pcc.getEntryOrAddImport($"{ResolveSymbol(s.Outer).InstancedFullPath}.{s.Name}", "ScriptStruct");
 
         private IEntry ResolveFunction(Function f) => Pcc.getEntryOrAddImport($"{ResolveSymbol(f.Outer).InstancedFullPath}.{f.Name}", "Function");
+
+        private IEntry ResolveDelegateProperty(Function f) => Pcc.getEntryOrAddImport($"{ResolveSymbol(f.Outer).InstancedFullPath}.__{f.Name}__Delegate", "DelegateProperty");
 
         private IEntry ResolveReturnValue(Function f) => f.ReturnType is null ? null : Pcc.getEntryOrAddImport($"{ResolveFunction(f).InstancedFullPath}.ReturnValue", PropertyTypeName(f.ReturnType));
 

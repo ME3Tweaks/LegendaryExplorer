@@ -25,7 +25,6 @@ using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.Classes;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
-using SlavaGu.ConsoleAppLauncher;
 using Settings = LegendaryExplorer.Misc.AppSettings.Settings;
 
 namespace LegendaryExplorer.Tools.TFCCompactor
@@ -120,9 +119,9 @@ namespace LegendaryExplorer.Tools.TFCCompactor
 
         private string BaseFolder;
 
-        public ObservableCollectionExtended<GameWrapper> GameList { get; } = new ObservableCollectionExtended<GameWrapper>();
-        public ObservableCollectionExtended<string> CustomDLCFolderList { get; } = new ObservableCollectionExtended<string>();
-        public ObservableCollectionExtended<TFCSelector> TextureCachesToPullFromList { get; } = new ObservableCollectionExtended<TFCSelector>();
+        public ObservableCollectionExtended<GameWrapper> GameList { get; } = new();
+        public ObservableCollectionExtended<string> CustomDLCFolderList { get; } = new();
+        public ObservableCollectionExtended<TFCSelector> TextureCachesToPullFromList { get; } = new();
 
         public ICommand CompactTFCCommand { get; set; }
         public ICommand ScanCommand { get; set; }
@@ -1023,7 +1022,7 @@ namespace LegendaryExplorer.Tools.TFCCompactor
                 Enabled = selected; //if not selected by deafult then then is disabled.
             }
 
-            public string TFCName { get; set; }
+            public string TFCName { get; }
             public bool Selected { get; set; }
             public bool Enabled { get; set; }
 
@@ -1043,6 +1042,11 @@ namespace LegendaryExplorer.Tools.TFCCompactor
                     return t.TFCName == TFCName;
                 }
                 return false;
+            }
+
+            public override int GetHashCode()
+            {
+                return TFCName.GetHashCode();
             }
         }
 

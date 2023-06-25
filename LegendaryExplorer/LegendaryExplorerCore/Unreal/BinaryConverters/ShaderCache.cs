@@ -1,22 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Shaders;
+using LegendaryExplorerCore.Unreal.Collections;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
     public class ShaderCache : ObjectBinary
     {
-        public OrderedMultiValueDictionary<NameReference, uint> ShaderTypeCRCMap;
-        public OrderedMultiValueDictionary<Guid, Shader> Shaders;
-        public OrderedMultiValueDictionary<NameReference, uint> VertexFactoryTypeCRCMap;
-        public OrderedMultiValueDictionary<StaticParameterSet, MaterialShaderMap> MaterialShaderMaps;
+        public UMultiMap<NameReference, uint> ShaderTypeCRCMap; //TODO: Make this a UMap
+        public UMultiMap<Guid, Shader> Shaders; //TODO: Make this a UMap
+        public UMultiMap<NameReference, uint> VertexFactoryTypeCRCMap; //TODO: Make this a UMap
+        public UMultiMap<StaticParameterSet, MaterialShaderMap> MaterialShaderMaps; //TODO: Make this a UMap
 
         protected override void Serialize(SerializingContainer2 sc)
         {
@@ -42,7 +40,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             if (sc.IsLoading)
             {
                 int shaderCount = sc.ms.ReadInt32();
-                Shaders = new OrderedMultiValueDictionary<Guid, Shader>(shaderCount);
+                Shaders = new(shaderCount);
                 for (int i = 0; i < shaderCount; i++)
                 {
                     Shader shader = null;
@@ -76,10 +74,10 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             return new()
             {
-                ShaderTypeCRCMap = new OrderedMultiValueDictionary<NameReference, uint>(),
-                Shaders = new OrderedMultiValueDictionary<Guid, Shader>(),
-                VertexFactoryTypeCRCMap = new OrderedMultiValueDictionary<NameReference, uint>(),
-                MaterialShaderMaps = new OrderedMultiValueDictionary<StaticParameterSet, MaterialShaderMap>()
+                ShaderTypeCRCMap = new (),
+                Shaders = new (),
+                VertexFactoryTypeCRCMap = new (),
+                MaterialShaderMaps = new ()
             };
         }
 
@@ -88,14 +86,16 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             var names = base.GetNames(game);
 
             names.AddRange(ShaderTypeCRCMap.Select((kvp, i) => (kvp.Key, $"ShaderTypeCRCMap[{i}]")));
-            for (int i = 0; i < Shaders.Count; i++)
+            int i = 0;
+            foreach ((_, Shader shader) in Shaders)
             {
-                (_, Shader shader) = Shaders[i];
+
                 names.Add(shader.ShaderType, $"Shaders[{i}].ShaderType");
                 if (shader.VertexFactoryType.HasValue)
                 {
                     names.Add(shader.VertexFactoryType.Value, $"Shaders[{i}].VertexFactoryType");
                 }
+                i++;
             }
             names.AddRange(VertexFactoryTypeCRCMap.Select((kvp, i) => (kvp.Key, $"VertexFactoryTypeCRCMap[{i}]")));
 
@@ -103,6 +103,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             foreach ((StaticParameterSet key, MaterialShaderMap msm) in MaterialShaderMaps)
             {
                 names.AddRange(msm.GetNames(game).Select(tuple => (tuple.Item1, $"MaterialShaderMaps[{j}].{tuple.Item2}")));
+                names.AddRange(key.GetNames(game, $"MaterialShaderMaps[{j}]."));
                 ++j;
             }
 
@@ -154,7 +155,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     public class MaterialShaderMap
     {
         //usually empty! Shaders are in MeshShaderMaps
-        public OrderedMultiValueDictionary<NameReference, ShaderReference> Shaders;
+        public UMultiMap<NameReference, ShaderReference> Shaders; //TODO: Make this a UMap
         public MeshShaderMap[] MeshShaderMaps;
         public Guid ID;
         public string FriendlyName;
@@ -228,7 +229,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
     public class MeshShaderMap
     {
-        public OrderedMultiValueDictionary<NameReference, ShaderReference> Shaders;
+        public UMultiMap<NameReference, ShaderReference> Shaders; //TODO: Make this a UMap
         public NameReference VertexFactoryType;
         public uint unk;//ME1
     }

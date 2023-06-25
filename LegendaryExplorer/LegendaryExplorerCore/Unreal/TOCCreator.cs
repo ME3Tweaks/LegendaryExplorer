@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
@@ -71,7 +73,7 @@ namespace LegendaryExplorerCore.Unreal
                             res.AddRange(GetFiles(Path.Combine(baseFolder, f.Name, "Packages", "ISACT"), isLE2LE3));
                     }
                 }
-            }   
+            }
 
             return res;
         }
@@ -128,45 +130,50 @@ namespace LegendaryExplorerCore.Unreal
 
             var tocFolders = GetTOCableFoldersForGame(game, gameRootOverride);
 
-            foreach (var dir in tocFolders)
+            var numDone = 0;
+            Parallel.ForEach(tocFolders, tocTarget =>
             {
-                string sfar = Path.Combine(dir, game.CookedDirName(), "Default.sfar");
+                string sfar = Path.Combine(tocTarget, game.CookedDirName(), "Default.sfar");
 
                 //This is a sfar - code ported from M3
-                if (dir.EndsWith(".sfar") || (File.Exists(sfar) && new FileInfo(sfar).Length != 32)) //endswith .sfar is for TESTPATCH as it doesn't follow other naming system
+                var fi = new FileInfo(sfar);
+                if (tocTarget.EndsWith(".sfar") ||
+                    (fi.Exists && fi.Length != 32)) //endswith .sfar is for TESTPATCH as it doesn't follow other naming system
                 {
-                    var sfarToToc = dir;
-                    if (File.Exists(sfar)) sfarToToc = sfar;
+                    var sfarToToc = tocTarget;
+                    if (fi.Exists) sfarToToc = sfar; // Testpatch will fail file existence test as it is not named Default.sfar
 
                     DLCPackage dlc = new DLCPackage(sfarToToc);
                     var tocResult = dlc.UpdateTOCbin();
                     if (tocResult is DLCPackage.DLCTOCUpdateResult.RESULT_ERROR_NO_ENTRIES)
                     {
-                        var tocFileLocation = Path.Combine(dir, "PCConsoleTOC.bin");
-                        CreateDLCTOCForDirectory(dir, game).WriteToFile(tocFileLocation);
+                        var tocFileLocation = Path.Combine(tocTarget, "PCConsoleTOC.bin");
+                        CreateDLCTOCForDirectory(tocTarget, game).WriteToFile(tocFileLocation);
                     }
                 }
                 // This is an unpacked folder - either BioGame or a DLC Folder
                 else
                 {
-                    var tocFileLocation = Path.Combine(dir, "PCConsoleTOC.bin");
-                    if (dir == MEDirectories.GetBioGamePath(game, gameRootOverride))
+                    var tocFileLocation = Path.Combine(tocTarget, "PCConsoleTOC.bin");
+                    if (tocTarget == MEDirectories.GetBioGamePath(game, gameRootOverride))
                     {
-                        CreateBasegameTOCForDirectory(dir, game).WriteToFile(tocFileLocation);
+                        CreateBasegameTOCForDirectory(tocTarget, game).WriteToFile(tocFileLocation);
                     }
                     else
                     {
-                        CreateDLCTOCForDirectory(dir, game).WriteToFile(tocFileLocation);
+                        CreateDLCTOCForDirectory(tocTarget, game).WriteToFile(tocFileLocation);
                     }
+                    Debug.WriteLine($"TOC'd: {tocFileLocation}");
                     //Debug.WriteLine($"{tocFileLocation}-------------------------");
                     //TOCBinFile tbf = new TOCBinFile(tocFileLocation);
                     //tbf.DumpTOC();
                 }
-                var percent = (float)tocFolders.IndexOf(dir) / tocFolders.Count;
-                percentDoneCallback?.Invoke((int)(percent * 100.0));
-            }
-        }
 
+                Interlocked.Increment(ref numDone);
+                percentDoneCallback?.Invoke((int)(numDone * 100.0 / tocFolders.Count));
+            });
+            Debug.WriteLine("Done.");
+        }
 
         /// <summary>
         /// Creates the binary for a TOC file for a specified directory root
@@ -274,7 +281,7 @@ namespace LegendaryExplorerCore.Unreal
                 foreach (var file in files)
                 {
                     var name = new FileInfo(file).Name.ToUpper();
-                    if(!outFiles.ContainsKey(name)) outFiles.Add(name, file);
+                    if (!outFiles.ContainsKey(name)) outFiles.Add(name, file);
                 }
             }
 
@@ -282,7 +289,7 @@ namespace LegendaryExplorerCore.Unreal
             foreach (var file in basegameFiles)
             {
                 var name = new FileInfo(file).Name.ToUpper();
-                if(!outFiles.ContainsKey(name)) outFiles.Add(name, file);
+                if (!outFiles.ContainsKey(name)) outFiles.Add(name, file);
             }
 
             return outFiles.Values.ToList();
@@ -330,7 +337,7 @@ namespace LegendaryExplorerCore.Unreal
 
                     // Check fill rate. We must have over 75% fill rate or we will lower the hash table size by 25% and try again (down to 50% of file table size)
                     var emptyHashBucketsCount = hashBuckets.Count(x => x.TOCEntries.Count == 0);
-                    Debug.WriteLine($@"Hash fill rate: {100 - (emptyHashBucketsCount * 100.0f / hashTableSize)}%");
+                    // Debug.WriteLine($@"Hash fill rate: {100 - (emptyHashBucketsCount * 100.0f / hashTableSize)}%");
                     if (emptyHashBucketsCount > hashTableSize / 4)
                     {
                         // Resize the table and generate it all again.
@@ -356,7 +363,7 @@ namespace LegendaryExplorerCore.Unreal
 
 
                 tbf.HashBuckets = hashBuckets;
-                Debug.WriteLine($@"Hash table stats: File count: {tbf.HashBuckets.Sum(x=>x.TOCEntries.Count)} Bucket count: {tbf.HashBuckets.Count}");
+                Debug.WriteLine($@"Hash table stats: File count: {tbf.HashBuckets.Sum(x => x.TOCEntries.Count)} Bucket count: {tbf.HashBuckets.Count}");
 
                 return tbf.Save();
             }

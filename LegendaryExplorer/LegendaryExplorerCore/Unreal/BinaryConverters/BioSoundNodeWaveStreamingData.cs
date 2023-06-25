@@ -3,30 +3,55 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LegendaryExplorerCore.Sound.ISACT;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
     public class BioSoundNodeWaveStreamingData : ObjectBinary
     {
-        public byte[] EmbeddedICB;
-        public byte[] EmbeddedISB;
+        public ISACTBankPair BankPair;
 
         protected override void Serialize(SerializingContainer2 sc)
         {
-            int totalLength = sc.IsSaving ? 4 + EmbeddedICB.Length + EmbeddedISB.Length : 0;
-            sc.Serialize(ref totalLength);
-            int ISBOffset = sc.IsSaving ? 4 + EmbeddedICB.Length : 0;
-            sc.Serialize(ref ISBOffset);
-            sc.Serialize(ref EmbeddedICB, ISBOffset - 4);
-            sc.Serialize(ref EmbeddedISB, totalLength - ISBOffset);
+            int dataSize = 0;
+            sc.Serialize(ref dataSize);
+            long startPos = sc.ms.Position;
+            int isbOffset = 0;
+            sc.Serialize(ref isbOffset);
+            if (sc.IsLoading)
+            {
+                BankPair = new ISACTBankPair();
+                BankPair.ICBBank = new ISACTBank(sc.ms.BaseStream);
+                if (BankPair.ICBBank.BankType is not ISACTBankType.ICB)
+                {
+                    throw new Exception($"Expected first bank to be an ICB, not a {BankPair.ICBBank.BankType}");
+                }
+                BankPair.ISBBank = new ISACTBank(sc.ms.BaseStream);
+                if (BankPair.ISBBank.BankType is not ISACTBankType.ISB)
+                {
+                    throw new Exception($"Expected second bank to be an ISB, not an {BankPair.ICBBank.BankType}");
+                }
+            }
+            else
+            {
+                BankPair.ICBBank.Write(sc.ms.BaseStream);
+                isbOffset = (int)(sc.ms.Position - startPos);
+                BankPair.ISBBank.Write(sc.ms.BaseStream);
+                dataSize = (int)(sc.ms.Position - startPos);
+                long endPos = sc.ms.Position;
+                sc.ms.JumpTo(startPos - 4);
+                sc.Serialize(ref dataSize);
+                sc.Serialize(ref isbOffset);
+                sc.ms.JumpTo(endPos);
+            }
         }
+
 
         public static BioSoundNodeWaveStreamingData Create()
         {
+            //Is there a way to create an empty ISACTBankPair in a way that makes any sense?
             return new()
             {
-                EmbeddedICB = Array.Empty<byte>(),
-                EmbeddedISB = Array.Empty<byte>()
             };
         }
     }

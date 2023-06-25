@@ -20,6 +20,7 @@ namespace LegendaryExplorer.Misc
             LegendaryExplorerCoreLibSettings.Instance.ME2Directory = Settings.Global_ME2Directory;
             LegendaryExplorerCoreLibSettings.Instance.ME3Directory = Settings.Global_ME3Directory;
             LegendaryExplorerCoreLibSettings.Instance.LEDirectory = Settings.Global_LEDirectory;
+            LegendaryExplorerCoreLibSettings.Instance.UDKCustomDirectory = Settings.Global_UDKCustomDirectory;
 
             Settings.StaticPropertyChanged += LEXSettingChanged;
             LegendaryExplorerCoreLibSettings.Instance.PropertyChanged += CoreLibSettingChanged;
@@ -51,6 +52,10 @@ namespace LegendaryExplorer.Misc
                     LegendaryExplorerCoreLibSettings.Instance.LEDirectory = Settings.Global_LEDirectory;
                     OodleHelper.EnsureOodleDll();
                     break;
+                case nameof(Settings.Global_UDKCustomDirectory):
+                    LegendaryExplorerCoreLibSettings.Instance.UDKCustomDirectory = Settings.Global_UDKCustomDirectory;
+                    OodleHelper.EnsureOodleDll();
+                    break;
             }
         }
 
@@ -79,6 +84,9 @@ namespace LegendaryExplorer.Misc
                 case nameof(LegendaryExplorerCoreLibSettings.Instance.LEDirectory):
                     Settings.Global_LEDirectory = LegendaryExplorerCoreLibSettings.Instance.LEDirectory;
                     OodleHelper.EnsureOodleDll();
+                    break;
+                case nameof(LegendaryExplorerCoreLibSettings.Instance.UDKCustomDirectory):
+                    Settings.Global_UDKCustomDirectory = LegendaryExplorerCoreLibSettings.Instance.UDKCustomDirectory;
                     break;
                 default:
                     return;

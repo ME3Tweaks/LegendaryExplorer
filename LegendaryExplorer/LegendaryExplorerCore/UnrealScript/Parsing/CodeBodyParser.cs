@@ -79,17 +79,45 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 func.Flags &= ~EFunctionFlags.HasDefaults;
             }
 
-            //remove redundant return;
-            if (body.Statements.Count > 0 && body.Statements.Last() is ReturnStatement {Value: null})
+            if (func.ReturnType is null)
             {
-                body.Statements.RemoveAt(body.Statements.Count - 1);
+                //remove redundant return;
+                if (body.Statements.Count > 0 && body.Statements[^1] is ReturnStatement { Value: null })
+                {
+                    body.Statements.RemoveAt(body.Statements.Count - 1);
+                }
+            }
+            else
+            {
+                if (body.EndPos != body.StartPos && !DoesReturn(body))
+                {
+                    log.LogWarning($"Function '{func.Name}' might reach end without returning a value!", func.EndPos);
+                }
+
+                static bool DoesReturn(CodeBody cb)
+                {
+                    if (cb.Statements.Count == 0)
+                    {
+                        return false;
+                    }
+
+                    switch (cb.Statements[^1])
+                    {
+                        case ReturnStatement:
+                            return true;
+                        case IfStatement ifStatement:
+                            if (ifStatement.Else is null)
+                            {
+                                return false;
+                            }
+                            return DoesReturn(ifStatement.Then) && DoesReturn(ifStatement.Else);
+                        //todo: more thorough analysis. switch statements?
+                        default:
+                            return false;
+                    }
+                }
             }
 
-            if (body.EndPos != body.StartPos //check if this is a defined function
-                && func.ReturnType is not null && body.Statements.LastOrDefault() is not ReturnStatement)
-            {
-                log.LogWarning($"Function '{func.Name}' might reach end without returning a value!", func.EndPos);
-            }
 
             //parse default parameter values
             if (func.HasOptionalParms)
@@ -114,7 +142,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     VariableType valueType = parsed.ResolveType();
                     if (!bodyParser.TypeCompatible(param.VarType, valueType, parsed.StartPos))
                     {
-                        paramParser.TypeError($"Could not assign value of type '{valueType.FullTypeName()}' to variable of type '{param.VarType.FullTypeName()}'!", unparsedBody);
+                        paramParser.TypeError($"Could not assign value of type '{valueType.DisplayName()}' to variable of type '{param.VarType.DisplayName()}'!", unparsedBody);
                     }
                     AddConversion(param.VarType, ref parsed);
                     param.DefaultParameter = parsed;
@@ -334,6 +362,10 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 }
                 catch (ParseException)
                 {
+                    while (ExpressionScopes.Count > 1)
+                    {
+                        ExpressionScopes.Pop();
+                    }
                     if (!Synchronize())
                     {
                         return null;
@@ -476,7 +508,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 VariableType exprType = expr.ResolveType();
                 if (!TypeCompatible(exprType, value.ResolveType(), value.StartPos))
                 {
-                    TypeError($"Cannot assign a value of type '{value.ResolveType().FullTypeName() ?? "None"}' to a variable of type '{exprType.FullTypeName()}'.", assign);
+                    TypeError($"Cannot assign a value of type '{value.ResolveType().DisplayName() ?? "None"}' to a variable of type '{exprType.DisplayName()}'.", assign);
                 }
                 AddConversion(exprType, ref value);
 
@@ -516,7 +548,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             VariableType type = ParseTypeRef();
             if (type == null) throw ParseError($"Expected variable type after '{LOCAL}'!", CurrentPosition);
             type.Outer = Body;
-            if (!Symbols.TryResolveType(ref type)) TypeError($"The type '{type.FullTypeName()}' does not exist in the current scope!", type);
+            if (!Symbols.TryResolveType(ref type)) TypeError($"The type '{type.DisplayName()}' does not exist in the current scope!", type);
             if (type is Enumeration)
             {
                 PrevToken.SyntaxType = EF.Enum;
@@ -628,7 +660,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             }
             else if (!TypeCompatible(func.ReturnType, type, value.StartPos))
             {
-                TypeError($"Cannot return a value of type '{type.FullTypeName()}', function should return '{func.ReturnType.FullTypeName()}'.", token);
+                TypeError($"Cannot return a value of type '{type.DisplayName()}', function should return '{func.ReturnType.DisplayName()}'.", token);
             }
             else
             {
@@ -1177,7 +1209,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                         }
                         expr = new DelegateComparison(isEqualEqual, lhs, rhs, lhs.StartPos, rhs.EndPos);
                     }
-                    else if (isComparison && lType is Struct typeStruct && rType.PropertyType == EPropertyType.Struct)
+                    else if (isComparison && lType is Struct typeStruct && rType?.PropertyType == EPropertyType.Struct)
                     {
                         if (lType == rType)
                         {
@@ -1199,13 +1231,13 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     }
                     else
                     {
-                        ParseError($"No valid operator found for '{lType.FullTypeName()}' '{opType}' '{rType.FullTypeName()}'!", opToken);
+                        ParseError($"No valid operator found for '{lType.DisplayName()}' '{opType}' '{rType.DisplayName()}'!", opToken);
                         expr = new ErrorExpression(lhs.StartPos, rhs.EndPos, Tokens.GetTokensInRange(lhs.StartPos, rhs.EndPos).ToArray());
                     }
                 }
                 else if (matches > 1)
                 {
-                    ParseError($"Ambiguous operator overload! {matches} equally valid possibilites for '{lType.FullTypeName()}' '{opType}' '{rType.FullTypeName()}'!", opToken);
+                    ParseError($"Ambiguous operator overload! {matches} equally valid possibilites for '{lType.DisplayName()}' '{opType}' '{rType.DisplayName()}'!", opToken);
                     expr = new ErrorExpression(lhs.StartPos, rhs.EndPos, Tokens.GetTokensInRange(lhs.StartPos, rhs.EndPos).ToArray());
                 }
                 else
@@ -1506,6 +1538,10 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     bool isStaticAccess = false;
                     if (Matches(CONST, EF.Keyword))
                     {
+                        if (lhsType is not ClassType || lhs is not ObjectLiteral)
+                        {
+                            throw ParseError($"'{CONST} can only be used after a class literal'!", CurrentPosition);
+                        }
                         if (!Matches(TokenType.Dot))
                         {
                             throw ParseError($"Expected '.' after '{CONST}'!", CurrentPosition);
@@ -1554,11 +1590,24 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                         specificScope += $".{lhsType.Name}";
                     }
 
-                    if (lhsType is ClassType && !isStaticAccess && !CurrentIs(DEFAULT))
+                    if (lhsType is ClassType && !isConst && !isStaticAccess && !CurrentIs(DEFAULT))
                     {
                         specificScope = "Object.Field.Struct.State.Class";
                     }
                     bool isStructMemberExpression = lhsType is Struct;
+                    
+                    if (CurrentIs(DEFAULT))
+                    {
+                        switch (lhsType)
+                        {
+                            case Class:
+                                Tokens.AddDefinitionLink(lhsType, CurrentToken);
+                                break;
+                            case ClassType classType:
+                                Tokens.AddDefinitionLink(classType.ClassLimiter, CurrentToken);
+                                break;
+                        }
+                    }
 
                     ExpressionScopes.Push((specificScope, isStructMemberExpression));
 
@@ -1576,7 +1625,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     {
                         if (rhs is not SymbolReference {Node: Const})
                         {
-                            TypeError("Expected property after 'const.' to be a Const!", rhs);
+                            TypeError("Expected member after 'const.' to be a Const!", rhs);
                         }
                     }
 
@@ -1763,7 +1812,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
                 if (!correctType)
                 {
-                    TypeError($"Expected 'comparefunction' argument to '{SORT}' to be a delegate that takes two parameters of type '{elementType.FullTypeName()}' and returns an int!", comparefunctionArg);
+                    TypeError($"Expected 'comparefunction' argument to '{SORT}' to be a delegate that takes two parameters of type '{elementType.DisplayName()}' and returns an int!", comparefunctionArg);
                 }
                 
                 ExpectRightParen();
@@ -1808,7 +1857,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 {
                     if (expectedType is not DelegateType) //seems wrong, but required to parse bioware classes, so...
                     {
-                        TypeError($"Expected '{argumentName}' argument to '{functionName}' to evaluate to '{expectedType.FullTypeName()}'!", arg);
+                        TypeError($"Expected '{argumentName}' argument to '{functionName}' to evaluate to '{expectedType.DisplayName()}'!", arg);
                     }
                 }
                 AddConversion(expectedType, ref arg);
@@ -1890,6 +1939,8 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             if (Consume(TokenType.RightSqrBracket) is {} endTok)
             {
                 expr = new ArraySymbolRef(expr, arrIndex, expr.StartPos, endTok.EndPos);
+                //marking the ] as being of the array element type so that autocomplete will work
+                Tokens.AddDefinitionLink(expr.ResolveType(), endTok);
             }
             else
             {
@@ -1960,13 +2011,13 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                             {
                                 break;
                             }
-                            throw ParseError($"Expected an argument of type '{p.VarType.FullTypeName()}'!", paramStartPos);
+                            throw ParseError($"Expected an argument of type '{p.VarType.DisplayName()}'!", paramStartPos);
                         }
 
                         VariableType argType = currentArg.ResolveType();
                         if (!TypeCompatible(p.VarType, argType, currentArg.StartPos, p.Flags.Has(EPropertyFlags.CoerceParm)))
                         {
-                            TypeError($"Expected an argument of type '{p.VarType.FullTypeName()}'!", currentArg);
+                            TypeError($"Expected an argument of type '{p.VarType.DisplayName()}'!", currentArg);
                         }
 
                         AddConversion(p.VarType, ref currentArg);
@@ -2023,7 +2074,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                                 }
                                 else
                                 {
-                                    TypeError($"Expected an argument of type '{p.VarType.FullTypeName()}'! Arguments given to an out parameter must be the exact same type.", currentArg);
+                                    TypeError($"Expected an argument of type '{p.VarType.DisplayName()}'! Arguments given to an out parameter must be the exact same type.", currentArg);
                                 }
                             }
                         }
@@ -2057,6 +2108,12 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     }
 
                     if (!Matches(TokenType.RightParenth)) throw ParseError("Expected ')'!", CurrentPosition);
+
+                    if (func.ReturnType is not null)
+                    {
+                        //hack to make autocomplete work
+                        Tokens.AddDefinitionLink(func.ReturnType, PrevToken);
+                    }
 
                     if (isDelegateCall)
                     {
@@ -2114,7 +2171,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     //documentation says this shouldn't be allowed, but bioware code does this in ME2
                     !(valueArg.ResolveType() is Class argClass && dynArrType.ElementType is Class dynArrClass && dynArrClass.SameAsOrSubClassOf(argClass))))
                 {
-                    string elementType = dynArrType.ElementType.FullTypeName();
+                    string elementType = dynArrType.ElementType.DisplayName();
                     TypeError($"Iterator variable for an '{ARRAY}<{elementType}>' must be of type '{elementType}'", expr);
                 }
                 if (valueArg is not SymbolReference)
@@ -2252,6 +2309,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
                 if (Matches(GLOBAL, EF.Keyword))
                 {
+                    Tokens.AddDefinitionLink(Self, PrevToken);
                     if (!Matches(TokenType.Dot))
                     {
                         throw ParseError($"Expected '.' after '{GLOBAL}'!", CurrentPosition);
@@ -2293,6 +2351,10 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             bool isDefaultRef = false;
             if (Matches(DEFAULT, EF.Keyword))
             {
+                if (NotInContext)
+                {
+                    Tokens.AddDefinitionLink(Self, PrevToken);
+                }
                 if (!Matches(TokenType.Dot))
                 {
                     throw ParseError($"Expected '.' after '{DEFAULT}'!", CurrentPosition);
@@ -2377,111 +2439,132 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 Function { Outer: State s2 } => s2,
                 _ => null
             };
-            if (Matches(TokenType.LeftParenth))
+            try
             {
-                if (Consume(TokenType.Word) is {} className)
+                if (Matches(TokenType.LeftParenth))
                 {
-                    className.SyntaxType = EF.TypeName;
-                    if (!Symbols.TryGetType(className.Value, out VariableType vartype))
+                    if (Consume(TokenType.Word) is {} className)
                     {
-                        throw ParseError($"No class named '{className.Value}' found!", className);
+                        className.SyntaxType = EF.TypeName;
+                        if (!Symbols.TryGetType(className.Value, out VariableType vartype))
+                        {
+                            throw ParseError($"No class named '{className.Value}' found!", className);
+                        }
+
+                        if (vartype is not Class super)
+                        {
+                            throw ParseError($"'{vartype.DisplayName()}' is not a class!", className);
+                        }
+
+                        Tokens.AddDefinitionLink(super, className);
+                        superSpecifier = super;
+                        superClass = super;
+                        if (Self == superClass)
+                        {
+                            LogWarning($"'Super({superClass.Name}).' does nothing, this function is already in '{superClass.Name}'. Use an unqualified 'Super.' instead.");
+                        }
+                        if (!Self.SameAsOrSubClassOf(superClass))
+                        {
+                            TypeError($"'{superClass.Name}' is not a superclass of '{Self.Name}'!", className);
+                        }
+                    }
+                    else
+                    {
+                        throw ParseError("Expected superclass specifier after '('!", CurrentPosition);
                     }
 
-                    if (vartype is not Class super)
+                    if (!Matches(TokenType.RightParenth))
                     {
-                        throw ParseError($"'{vartype.FullTypeName()}' is not a class!", className);
+                        throw ParseError("Expected ')' after superclass specifier!", CurrentPosition);
                     }
-
-                    Tokens.AddDefinitionLink(super, className);
-                    superSpecifier = super;
-                    superClass = super;
-                    if (!Self.SameAsOrSubClassOf(superClass))
+                    if (state?.Parent != null)
                     {
-                        TypeError($"'{superClass.Name}' is not a superclass of '{Self.Name}'!", className);
+                        state = state.Parent;
                     }
                 }
                 else
                 {
-                    throw ParseError("Expected superclass specifier after '('!", CurrentPosition);
+                    if (state?.Parent != null)
+                    {
+                        superClass = Self;
+                        state = state.Parent;
+                    }
+                    else if (state is not null)
+                    {
+                        state = null;
+                        superClass = Self;
+                    }
+                    else
+                    {
+                        state = null;
+                        superClass = Self.Parent as Class ?? throw ParseError($"Can't use '{SUPER}' in a class with no parent!", PrevToken);
+                    }
                 }
 
-                if (!Matches(TokenType.RightParenth))
+                if (!Matches(TokenType.Dot) || !Matches(TokenType.Word))
                 {
-                    throw ParseError("Expected ')' after superclass specifier!", CurrentPosition);
+                    throw ParseError($"Expected function name after '{SUPER}'!", CurrentPosition);
                 }
-                if (state?.Parent != null)
+
+                ScriptToken functionName = PrevToken;
+                functionName.SyntaxType = EF.Function;
+                string specificScope;
+                //try to find function in parent states
+                while (state != null)
                 {
+                    var stateClass = (Class)state.Outer;
+                    if (stateClass != superClass && stateClass.SameAsOrSubClassOf(superClass))
+                    {
+                        //Walk up the state inheritance chain until we get to one that is in the specified superclass (or an ancestor)
+                        state = state.Parent;
+                        continue;
+                    }
+                    specificScope = $"{stateClass.GetInheritanceString()}.{state.Name}";
+                    if (Symbols.TryGetSymbolInScopeStack(functionName.Value, out ASTNode funcNode, specificScope) && funcNode is Function)
+                    {
+                        Tokens.AddDefinitionLink(funcNode, functionName);
+                        Tokens.AddDefinitionLink(funcNode.Outer, superToken);
+                        return new SymbolReference(funcNode, functionName.Value, functionName.StartPos, functionName.EndPos)
+                        {
+                            IsSuper = true
+                        };
+                    }
+
                     state = state.Parent;
                 }
-            }
-            else
-            {
-                if (state?.Parent != null)
+
+                specificScope = superClass.GetInheritanceString();
+                if (!Symbols.TryGetSymbolInScopeStack(functionName.Value, out ASTNode symbol, specificScope))
                 {
-                    superClass = Self;
-                    state = state.Parent;
+                    throw ParseError($"No function named '{functionName.Value}' found in a superclass!", functionName);
+                }
+
+                if (symbol is Function func)
+                {
+                    CheckAccesibility(func);
                 }
                 else
                 {
-                    state = null;
-                    superClass = Self.Parent as Class ?? throw ParseError($"Can't use '{SUPER}' in a class with no parent!", PrevToken);
+                    TypeError($"Expected function name after '{SUPER}'!", functionName);
                 }
-            }
 
-            if (!Matches(TokenType.Dot) || !Matches(TokenType.Word))
-            {
-                throw ParseError($"Expected function name after '{SUPER}'!", CurrentPosition);
-            }
-
-            ScriptToken functionName = PrevToken;
-            functionName.SyntaxType = EF.Function;
-            string specificScope;
-            //try to find function in parent states
-            while (state != null)
-            {
-                var stateClass = (Class)state.Outer;
-                if (stateClass != superClass && stateClass.SameAsOrSubClassOf(superClass))
+                Tokens.AddDefinitionLink(symbol, functionName);
+                Tokens.AddDefinitionLink(symbol.Outer, superToken);
+                return new SymbolReference(symbol, functionName.Value, functionName.StartPos, functionName.EndPos)
                 {
-                    //Walk up the state inheritance chain until we get to one that is in the specified superclass (or an ancestor)
-                    state = state.Parent;
-                    continue;
-                }
-                specificScope = $"{stateClass.GetInheritanceString()}.{state.Name}";
-                if (Symbols.TryGetSymbolInScopeStack(functionName.Value, out ASTNode funcNode, specificScope) && funcNode is Function)
+                    IsSuper = true,
+                    SuperSpecifier = superSpecifier
+                };
+            }
+            catch
+            {
+                //make sure there's a definition link even for incomplete super expressions. This enables code completion.
+                if (Self.Parent is Class super)
                 {
-                    Tokens.AddDefinitionLink(funcNode, functionName);
-                    Tokens.AddDefinitionLink(funcNode.Outer, superToken);
-                    return new SymbolReference(funcNode, functionName.Value, functionName.StartPos, functionName.EndPos)
-                    {
-                        IsSuper = true
-                    };
+                    Tokens.AddDefinitionLink(super, superToken);
                 }
-
-                state = state.Parent;
+                throw;
             }
-
-            specificScope = superClass.GetInheritanceString();
-            if (!Symbols.TryGetSymbolInScopeStack(functionName.Value, out ASTNode symbol, specificScope))
-            {
-                throw ParseError($"No function named '{functionName.Value}' found in a superclass!", functionName);
-            }
-
-            if (symbol is Function func)
-            {
-                CheckAccesibility(func);
-            }
-            else
-            {
-                TypeError($"Expected function name after '{SUPER}'!", functionName);
-            }
-
-            Tokens.AddDefinitionLink(symbol, functionName);
-            Tokens.AddDefinitionLink(symbol.Outer, superToken);
-            return new SymbolReference(symbol, functionName.Value, functionName.StartPos, functionName.EndPos)
-            {
-                IsSuper = true,
-                SuperSpecifier = superSpecifier
-            };
         }
 
         private Expression ParseNew()
@@ -2616,9 +2699,22 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     token.SyntaxType = SymbolTable.IsPrimitive(destType) ? EF.Keyword : EF.TypeName;
                     return ParsePrimitiveOrDynamicCast(token, destType);
                 }
-                //TODO: better error message
-                TypeError($"{specificScope} has no member named '{token.Value}'!", token);
-                symbol = new VariableType("ERROR");
+                else if (!isDefaultRef && Symbols.TryGetType(token.Value, out destType) && destType is Const cnst)
+                {
+                    Tokens.AddDefinitionLink(destType, token);
+                    symbol = cnst;
+                }
+                else
+                {
+                    //TODO: better error message
+                    TypeError($"{specificScope} has no member named '{token.Value}'!", token);
+                    symbol = new VariableType("ERROR");
+                }
+            }
+
+            if (isDefaultRef && symbol.Outer is Function)
+            {
+                TypeError($"{(symbol is FunctionParameter ? "Parameters" : "Local variables")} do not have default values!", token);
             }
 
             if (isStructScope && symbol.Outer is not Struct)
@@ -2666,6 +2762,8 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             {
                 throw ParseError("Expected ')' at end of cast expression!", CurrentPosition);
             }
+            //marking the ) as being of the cast type so that autocomplete will work
+            Tokens.AddDefinitionLink(destType, PrevToken);
 
             var exprType = expr.ResolveType();
             if (destType.Equals(exprType))
@@ -2698,7 +2796,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             ECast cast = CastHelper.GetConversion(destType, exprType);
             if (cast == ECast.Max)
             {
-                TypeError($"Cannot cast from '{exprType.FullTypeName()}' to '{destType.FullTypeName()}'!", castToken.StartPos, CurrentPosition);
+                TypeError($"Cannot cast from '{exprType.DisplayName()}' to '{destType.DisplayName()}'!", castToken.StartPos, CurrentPosition);
             }
 
             return new PrimitiveCast(CastHelper.PureCastType(cast), destType, expr, castToken.StartPos, CurrentPosition);

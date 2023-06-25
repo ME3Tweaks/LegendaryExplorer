@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -76,7 +77,6 @@ namespace LegendaryExplorerCore.Coalesced
             var fileMapping = new CaseInsensitiveDictionary<string>();
             var coal = new CoalescedFileXml();
             coal.Deserialize(inputStream);
-
             XDocument xDoc;
             XElement rootElement;
 
@@ -491,12 +491,12 @@ namespace LegendaryExplorerCore.Coalesced
                 var entry =
                     new FileEntry(asset.Source)
                     {
-                        Sections = new Dictionary<string, Dictionary<string, List<PropertyValue>>>()
+                        Sections = new CaseInsensitiveDictionary<CaseInsensitiveDictionary<List<PropertyValue>>>()
                     };
 
                 foreach (var section in asset.Sections)
                 {
-                    var eSection = new Dictionary<string, List<PropertyValue>>();
+                    var eSection = new CaseInsensitiveDictionary<List<PropertyValue>>();
 
                     foreach (var property in section.Value)
                     {
@@ -519,10 +519,10 @@ namespace LegendaryExplorerCore.Coalesced
                             eProperty.Add(new PropertyValue(value.ValueType, valueValue));
                         }
 
-                        eSection.Add(property.Key, eProperty);
+                        eSection.Add(property.Key.ToLower(), eProperty);
                     }
 
-                    entry.Sections.Add(section.Key, eSection);
+                    entry.Sections.Add(section.Key.ToLower(), eSection);
                 }
 
                 coal.Files.Add(entry);
@@ -570,12 +570,12 @@ namespace LegendaryExplorerCore.Coalesced
                 var entry =
                     new FileEntry(asset.Source)
                     {
-                        Sections = new Dictionary<string, Dictionary<string, List<PropertyValue>>>()
+                        Sections = new CaseInsensitiveDictionary<CaseInsensitiveDictionary<List<PropertyValue>>>()
                     };
 
                 foreach (var section in asset.Sections)
                 {
-                    var eSection = new Dictionary<string, List<PropertyValue>>();
+                    var eSection = new CaseInsensitiveDictionary<List<PropertyValue>>();
 
                     foreach (var property in section.Value)
                     {
@@ -598,10 +598,10 @@ namespace LegendaryExplorerCore.Coalesced
                             eProperty.Add(new PropertyValue(value.ValueType, valueValue));
                         }
 
-                        eSection.Add(property.Key, eProperty);
+                        eSection.Add(property.Key.ToLower(), eProperty);
                     }
 
-                    entry.Sections.Add(section.Key, eSection);
+                    entry.Sections.Add(section.Key.ToLower(), eSection);
                 }
 
                 coal.Files.Add(entry);
@@ -647,7 +647,7 @@ namespace LegendaryExplorerCore.Coalesced
         /// <param name="inputStream">The input stream to read from</param>
         /// <param name="name">The name of the coalesced file - this is written to the manifest file and will be the name the file reserializes to (in tools such as M3)</param>
         /// <returns></returns>
-        public static Dictionary<string, DuplicatingIni> DecompileLE1LE2ToMemory(Stream inputStream, string name)
+        public static CaseInsensitiveDictionary<DuplicatingIni> DecompileLE1LE2ToMemory(Stream inputStream, string name)
         {
             return LECoalescedConverter.UnpackToMemory(inputStream, name).Files;
         }
@@ -665,6 +665,70 @@ namespace LegendaryExplorerCore.Coalesced
             cb.WriteToStream(ms);
             ms.Position = 0;
             return ms;
+        }
+
+        /// <summary>
+        /// Decompiles the coalesced file (specified by the stream) to CoalescedAsset objects
+        /// </summary>
+        /// <param name="coalescedData">The data of the Coalesced</param>
+        /// <param name="name">The name of the coalesced file - this is written to the manifest file data</param>
+        /// <returns></returns>
+        public static CaseInsensitiveDictionary<CoalesceAsset> DecompileLE1LE2ToAssets(Stream coalescedData, string name, bool stripExtensions = false)
+        {
+            var decompiled = DecompileLE1LE2ToMemory(coalescedData, name);
+            var assets = new CaseInsensitiveDictionary<CoalesceAsset>();
+
+            foreach (var decomp in decompiled)
+            {
+                if (stripExtensions)
+                {
+                    assets[Path.GetFileNameWithoutExtension(decomp.Key)] = ConfigFileProxy.ParseIni(decomp.Value.ToString()); // Technically this is extra work as we parsed from data -> DuplicatingIni -> string data -> Coalesced asset. This may be able to be improved by directly loading from data, but that would require a lot of API changes
+                }
+                else
+                {
+                    assets[decomp.Key] = ConfigFileProxy.ParseIni(decomp.Value.ToString()); // Technically this is extra work as we parsed from data -> DuplicatingIni -> string data -> Coalesced asset. This may be able to be improved by directly loading from data, but that would require a lot of API changes
+                }
+            }
+
+            return assets;
+        }
+
+        /// <summary>
+        /// Decompiles the ME3/LE3 coalesced file to CoalescedAsset objects
+        /// </summary>
+        /// <param name="coalescedData">The data of the Coalesced</param>
+        /// <param name="name">The name of the coalesced file - this is written to the manifest file data</param>
+        /// <returns></returns>
+        public static CaseInsensitiveDictionary<CoalesceAsset> DecompileGame3ToAssets(string filePath, bool stripExtensions = false)
+        {
+            using var f = File.OpenRead(filePath);
+            return DecompileGame3ToAssets(f, Path.GetFileName(filePath), stripExtensions: stripExtensions);
+        }
+
+        /// <summary>
+        /// Decompiles the ME3/LE3 coalesced file (specified by the stream) to CoalescedAsset objects
+        /// </summary>
+        /// <param name="coalescedData">The data of the Coalesced</param>
+        /// <param name="name">The name of the coalesced file - this is written to the manifest file data</param>
+        /// <returns></returns>
+        public static CaseInsensitiveDictionary<CoalesceAsset> DecompileGame3ToAssets(Stream coalescedData, string name, bool stripExtensions = false)
+        {
+            var decompiled = DecompileGame3ToMemory(coalescedData);
+            var assets = new CaseInsensitiveDictionary<CoalesceAsset>();
+
+            foreach (var decomp in decompiled)
+            {
+                if (stripExtensions)
+                {
+                    assets[Path.GetFileNameWithoutExtension(decomp.Key)] = XmlCoalesceAsset.LoadFromMemory(decomp.Value);
+                }
+                else
+                {
+                    assets[decomp.Key] = XmlCoalesceAsset.LoadFromMemory(decomp.Value);
+                }
+            }
+
+            return assets;
         }
     }
 }

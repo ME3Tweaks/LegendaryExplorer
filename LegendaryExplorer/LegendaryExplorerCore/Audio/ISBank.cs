@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using LegendaryExplorerCore.Gammtek.IO;
@@ -6,25 +7,28 @@ using LegendaryExplorerCore.Helpers;
 
 namespace LegendaryExplorerCore.Audio
 {
-    public class ISBank
+    [Obsolete("Use ISACTBankPair instead")]
+    public class ISBank_DEPRECATED
     {
+        private int TestISBOffset;
         private string Filepath;
-        public List<ISBankEntry> BankEntries = new List<ISBankEntry>();
-        public ISBank(string isbPath)
+        public List<ISBank_DEPRECATED> BankEntries = new List<ISBank_DEPRECATED>();
+        public ISBank_DEPRECATED(string isbPath)
         {
             Filepath = isbPath;
             ParseBank(new EndianReader(new MemoryStream(File.ReadAllBytes(isbPath))), false);
         }
 
-        public ISBank(byte[] binData)
+        public ISBank_DEPRECATED(byte[] binData)
         {
             MemoryStream ms = new MemoryStream(binData);
-            ms.Skip(4);
+            TestISBOffset = ms.ReadInt32();
             ParseBank(new EndianReader(ms), true);
         }
 
         private void ParseBank(EndianReader ms, bool isEmbedded)
         {
+            /*
             int numEntriesWithData = 1;
             //long dataStartPosition = ms.Position;
             //string shouldBeRiff = ms.ReadString(4, false);
@@ -61,13 +65,13 @@ namespace LegendaryExplorerCore.Audio
             ////todo change to this
             ////  while AudioFile.Position <> BundleReader.OffsetsArray[FileNo] + BundleReader.FileSizesArray[FileNo] do
             uint chunksize = 0;
-            ISBankEntry isbEntry = null;
+            ISBank_DEPRECATED isbEntry = null;
             while (ms.BaseStream.Position < ms.BaseStream.Length)
             {
                 chunksize = 0; //reset
                 var chunkStartPos = ms.BaseStream.Position;
                 string blockName = ms.ReadEndianASCIIString(4);
-                Debug.WriteLine(blockName + " at " + (ms.Position - 4).ToString("X8"));
+                //Debug.WriteLine($"{(ms.Position - 4).ToString("X8")}: {blockName}");
                 switch (blockName)
                 {
                     case "LIST":
@@ -77,6 +81,7 @@ namespace LegendaryExplorerCore.Audio
                         if (dataType == "fldr")
                         {
                             // Folder for organization. We are just going to skip this. Might parse in future if it's useful
+                            ms.Seek(-4, SeekOrigin.Current); // Seek back since there will be a subheader here.
                             continue;
                         }
 
@@ -97,7 +102,7 @@ namespace LegendaryExplorerCore.Audio
                                     BankEntries.Add(isbEntry);
                                 }
 
-                                isbEntry = new ISBankEntry();
+                                isbEntry = new ISBank_DEPRECATED();
                             }
                         }
                         else
@@ -170,10 +175,15 @@ namespace LegendaryExplorerCore.Audio
                             var riffSize = ms.ReadUInt32(); //size of isfbtitl chunk
                             var riffType = ms.ReadEndianASCIIString(4); //type of ISB riff
                             var riffType2 = ms.ReadEndianASCIIString(4); //type of ISB riff
+
+                            //Debug.WriteLine($"Riff type is {riffType}");
+
                             if (riffType != "isbf" && riffType2 == "titl")
                             {
                                 //its an icbftitl, which never has data.
-                                ms.Seek(riffSize - 8, SeekOrigin.Current); //skip it
+                                //Debug.WriteLine($"Skipping non isbf type");
+                                ms.Seek(TestISBOffset, SeekOrigin.Begin);
+                                //ms.Seek(riffSize - 8, SeekOrigin.Current); //skip it
                                 continue; //skip
                             }
 
@@ -230,7 +240,7 @@ namespace LegendaryExplorerCore.Audio
             if (isbEntry?.DataAsStored != null)
             {
                 BankEntries.Add(isbEntry);
-            }
+            }*/
         }
     }
 }

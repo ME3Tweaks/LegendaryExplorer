@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LegendaryExplorerCore.Audio;
+using LegendaryExplorerCore.Sound.ISACT;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace LegendaryExplorerCore.Tests
@@ -22,16 +23,10 @@ namespace LegendaryExplorerCore.Tests
 
             foreach (var isbPath in isbs)
             {
+                using var fs = File.OpenRead(isbPath);
                 var expectedCount = getExpectedData(isbPath);
-                var isb = new ISBank(isbPath);
-                Assert.AreEqual(expectedCount, isb.BankEntries.Count);
-
-                // Have code from other methods execute just to make sure they don't throw exceptions.
-                foreach (var isEntry in isb.BankEntries)
-                {
-                    var _ = isEntry.DisplayString;
-                    isEntry.GetLength();
-                }
+                var isb = new ISACTBank(fs);
+                Assert.AreEqual(expectedCount, isb.GetAllBankChunks().Count(x=>x is DataBankChunk));
             }
         }
 

@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LegendaryExplorer.Misc;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Kismet;
 using LegendaryExplorerCore.Packages;
@@ -31,18 +32,25 @@ namespace LegendaryExplorer.Tools.Sequence_Editor.Experiments
                     var y = seqObj.OffsetY;
                     var knownX = seqObj.Export.GetProperty<IntProperty>("ObjPosX")?.Value;
                     var knownY = seqObj.Export.GetProperty<IntProperty>("ObjPosY")?.Value;
-                    if (knownX != null && knownY != null)
+
+                    if (knownX == null && knownY == null)
                     {
-                        if (knownX.Value == (int)Math.Round(x) && knownY.Value == (int)Math.Round(y))
-                        {
-                            Debug.WriteLine("YAY");
-                        }
+                        Debug.WriteLine($"X: {x} Y: {y} for {seqObj.Export.InstancedFullPath}");
+                        seqObj.Export.WriteProperty(new IntProperty((int)x, "ObjPosX"));
+                        seqObj.Export.WriteProperty(new IntProperty((int)y, "ObjPosY"));
                     }
                     else
                     {
-                        Debug.WriteLine($"X: {y} Y: {x} for {seqObj.Export.InstancedFullPath}");
-                        seqObj.Export.WriteProperty(new IntProperty((int)x, "ObjPosX"));
-                        seqObj.Export.WriteProperty(new IntProperty((int)y, "ObjPosY"));
+                        if (knownX != null && knownX.Value != (int)Math.Round(x))
+                        {
+                            Debug.WriteLine($"X: {x} for {seqObj.Export.InstancedFullPath}");
+                            seqObj.Export.WriteProperty(new IntProperty((int)x, "ObjPosX"));
+                        }
+                        if (knownY != null && knownY.Value != (int)Math.Round(y))
+                        {
+                            Debug.WriteLine($"Y: {y} for {seqObj.Export.InstancedFullPath}");
+                            seqObj.Export.WriteProperty(new IntProperty((int)y, "ObjPosY"));
+                        }
                     }
                 }
             }
@@ -90,10 +98,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor.Experiments
 
         public static void LoadCustomClasses(SequenceEditorWPF seqEd)
         {
-            OpenFileDialog ofd = new OpenFileDialog()
-            {
-                Filter = GameFileFilters.OpenFileFilter
-            };
+            OpenFileDialog ofd = AppDirectories.GetOpenPackageDialog();
             bool reload = false;
             var result = ofd.ShowDialog();
             if (result.HasValue && result.Value)

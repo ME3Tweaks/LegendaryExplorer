@@ -21,7 +21,6 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using System.Windows.Input;
 using System.Text;
-using System.Security.Permissions;
 using System.Security;
 using Xceed.Wpf.Toolkit.Primitives;
 using System.Diagnostics;
@@ -1189,7 +1188,6 @@ namespace Xceed.Wpf.Toolkit
 
       try
       {
-        new UIPermission( UIPermissionClipboard.AllClipboard ).Demand();
         Clipboard.SetText( sb.ToString() );
       }
       catch( SecurityException )

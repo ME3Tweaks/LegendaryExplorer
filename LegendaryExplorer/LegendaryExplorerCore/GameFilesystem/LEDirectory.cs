@@ -49,7 +49,7 @@ namespace LegendaryExplorerCore.GameFilesystem
             if (steamKey != null)
             {
                 string directory = (string) steamKey.GetValue(@"InstallLocation");
-                if (directory != null)
+                if (!string.IsNullOrWhiteSpace(directory) && Directory.Exists(directory))
                 {
                     LegendaryExplorerCoreLibSettings.Instance.LEDirectory = directory;
                     return true;

@@ -33,11 +33,11 @@
                     <ColumnDefinition Width="70"/>
                     <ColumnDefinition Width="1*"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock FontSize="10" Text="{Binding Type}" VerticalAlignment="Center" Foreground="Gray"/>
-                <TextBlock Grid.Column="1"  Text="{Binding Property}" />
+                <TextBlock FontSize="10" Text="{Binding Type, Mode=OneTime}" VerticalAlignment="Center" Foreground="Gray"/>
+                <TextBlock Grid.Column="1"  Text="{Binding Property, Mode=OneTime}" />
             </Grid>
         </DataTemplate>
-        <CollectionViewSource x:Key="PropertyContentView" Source="{Binding SelectedItem.PropertyRecords.Values, ElementName=lstbx_Classes}">
+        <CollectionViewSource x:Key="PropertyContentView" Source="{Binding SelectedItem.PropertyRecords, ElementName=lstbx_Classes, Mode=OneWay}">
             <CollectionViewSource.SortDescriptions>
                 <componentModel:SortDescription PropertyName="Property" Direction="Ascending"/>
             </CollectionViewSource.SortDescriptions>
@@ -173,8 +173,6 @@
                         <MenuItem Header="Re-save Database without empty lines" Name="menu_SaveXEmptyLines" Command="{Binding SaveDBCommand}" ToolTip="This will save the Database without the lines with no TLK reference." IsEnabled="False"/>
                         <Separator/>
                         <MenuItem Name="menu_checkCRC" Header="Compile Texture CRCs" Command="{Binding SetCRCCommand}" IsChecked="False" ToolTip="Add CRC generation during scan. Will significantly increase scan time."/>
-                        <MenuItem Name="menu_checkConv" Header="Compile BioConversations" IsChecked="{Binding ParseConvos, Mode=TwoWay}" IsCheckable="True" StaysOpenOnClick="True" ToolTip="Add conversation and line parsing. Will significantly increase scan time, and database loading."/>
-                        <MenuItem Name="menu_checkPlotUsages" Header="Compile Plot Usages" IsChecked="{Binding ParsePlotUsages, Mode=TwoWay}" IsCheckable="True" StaysOpenOnClick="True" ToolTip="Includes plot variable usages in database. Will significantly increase scan time, and database loading."/>
                         <MenuItem Header="Scan Localization" ItemsSource="{Binding AvailableLocalizations}">
                             <MenuItem.ItemContainerStyle>
                                 <Style TargetType="{x:Type MenuItem}">
@@ -318,20 +316,20 @@
                                     <RowDefinition Height="*"/>
                                 </Grid.RowDefinitions>
                                 <TextBlock Text="Class Records" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" Grid.Row="0" ToolTip="Unreal classes"/>
-                                <controls:ListBoxScroll x:Name="lstbx_Classes"  MinWidth="300" ItemsSource="{Binding Path=CurrentDataBase.ClassRecords}" Grid.Row="1"
+                                <controls:ListBoxScroll x:Name="lstbx_Classes"  MinWidth="300" ItemsSource="{Binding Path=CurrentDataBase.ClassRecords, Mode=OneWay}" Grid.Row="1"
                                                         SelectedItem="{Binding SelectedClass}">
                                     <controls:ListBoxScroll.ItemTemplate>
                                         <DataTemplate>
                                             <StackPanel Orientation="Horizontal">
-                                                <TextBlock Text="{Binding Class}" />
+                                                <TextBlock Text="{Binding Class, Mode=OneTime}" />
                                                 <TextBlock FontSize="10" Text=" (" VerticalAlignment="Center" Visibility="{x:Static global:App.IsDebugVisibility}"/>
-                                                <TextBlock FontSize="10" Text="{Binding Path=Usages.Count}" VerticalAlignment="Center" Visibility="{x:Static global:App.IsDebugVisibility}"/>
+                                                <TextBlock FontSize="10" Text="{Binding Path=Usages.Length, Mode=OneTime}" VerticalAlignment="Center" Visibility="{x:Static global:App.IsDebugVisibility}"/>
                                                 <TextBlock FontSize="10" Text=" , " VerticalAlignment="Center" Visibility="{x:Static global:App.IsDebugVisibility}"/>
-                                                <TextBlock FontSize="10" Text="{Binding Path=SuperClass}" VerticalAlignment="Center" Visibility="{x:Static global:App.IsDebugVisibility}"/>
+                                                <TextBlock FontSize="10" Text="{Binding Path=SuperClass, Mode=OneTime}" VerticalAlignment="Center" Visibility="{x:Static global:App.IsDebugVisibility}"/>
                                                 <TextBlock FontSize="10" Text=" , " VerticalAlignment="Center" Visibility="{x:Static global:App.IsDebugVisibility}"/>
-                                                <TextBlock FontSize="10" Text="{Binding Path=DefinitionFile}" VerticalAlignment="Center" Visibility="{x:Static global:App.IsDebugVisibility}"/>
+                                                <TextBlock FontSize="10" Text="{Binding Path=DefinitionFile, Mode=OneTime}" VerticalAlignment="Center" Visibility="{x:Static global:App.IsDebugVisibility}"/>
                                                 <TextBlock FontSize="10" Text=" #" VerticalAlignment="Center" Visibility="{x:Static global:App.IsDebugVisibility}"/>
-                                                <TextBlock FontSize="10" Text="{Binding Path=Definition_UID}" VerticalAlignment="Center" Visibility="{x:Static global:App.IsDebugVisibility}"/>
+                                                <TextBlock FontSize="10" Text="{Binding Path=DefinitionUIndex, Mode=OneTime}" VerticalAlignment="Center" Visibility="{x:Static global:App.IsDebugVisibility}"/>
                                                 <TextBlock FontSize="10" Text=")" VerticalAlignment="Center" Visibility="{x:Static global:App.IsDebugVisibility}"/>
                                             </StackPanel>
                                         </DataTemplate>
@@ -339,7 +337,7 @@
                                     <controls:ListBoxScroll.ItemContainerStyle>
                                         <Style TargetType="ListBoxItem">
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Path=IsModOnly}" Value="True">
+                                                <DataTrigger Binding="{Binding Path=IsModOnly, Mode=OneTime}" Value="True">
                                                     <Setter Property="Foreground" Value="IndianRed"/>
                                                     <Setter Property="TextElement.ToolTip" Value="Mod - this class is only used by Mods"/>
                                                 </DataTrigger>
@@ -381,15 +379,15 @@
                                     <CheckBox x:Name="allClassInstancesCheckBox" Content="Show multiple per file" IsChecked="{Binding ShowAllClassUsages}" 
                                               Margin="5, 2, 0, 0" VerticalContentAlignment="Center"/>
                                 </StackPanel>
-                                <controls:ListBoxScroll x:Name="lstbx_Usages" MinWidth="200" ItemsSource="{Binding SelectedClassUsages}" Grid.Row="1" >
+                                <controls:ListBoxScroll x:Name="lstbx_Usages" MinWidth="200" ItemsSource="{Binding SelectedClassUsages, Mode=OneWay}" Grid.Row="1" >
                                     <controls:ListBoxScroll.ItemTemplate>
                                         <DataTemplate>
                                             <TextBlock>
                                                 <TextBlock.Text>
                                                     <MultiBinding Converter="{StaticResource FileIndexToNameConverter}">
-                                                        <Binding Path="FileKey"/>
-                                                        <Binding Path="FileListExtended" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}"/>
-                                                        <Binding Path="UIndex"/>
+                                                        <Binding Path="FileKey" Mode="OneTime"/>
+                                                        <Binding Path="FileListExtended" Mode="OneWay" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}"/>
+                                                        <Binding Path="UIndex" Mode="OneTime"/>
                                                     </MultiBinding>
                                                 </TextBlock.Text>
                                             </TextBlock>
@@ -398,11 +396,11 @@
                                     <controls:ListBoxScroll.ItemContainerStyle>
                                         <Style TargetType="ListBoxItem">
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Path=IsDefault}" Value="True">
+                                                <DataTrigger Binding="{Binding Path=IsDefault, Mode=OneTime}" Value="True">
                                                     <Setter Property="TextElement.FontWeight" Value="Bold"/>
                                                     <Setter Property="TextElement.ToolTip" Value="Default value"/>
                                                 </DataTrigger>
-                                                <DataTrigger Binding="{Binding Path=IsMod}" Value="True">
+                                                <DataTrigger Binding="{Binding Path=IsMod, Mode=OneTime}" Value="True">
                                                     <Setter Property="TextElement.Foreground" Value="IndianRed"/>
                                                     <Setter Property="TextElement.ToolTip" Value="Is Mod File"/>
                                                 </DataTrigger>
@@ -978,7 +976,7 @@
                         </Grid>
                     </TabItem>
                     <!-- Lines -->
-                    <TabItem Header="Lines" TabIndex="8" Visibility="{Binding Path=ParseConvos, Converter={StaticResource BoolToVisibilityConverter}}">
+                    <TabItem Header="Lines" TabIndex="8">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="30"/>
@@ -1064,7 +1062,7 @@
                         </Grid>
                     </TabItem>
                     <!-- Plot-->
-                    <TabItem Header="Plot Elements" TabIndex="9" Visibility="{Binding Path=ParsePlotUsages, Converter={StaticResource BoolToVisibilityConverter}}">
+                    <TabItem Header="Plot Elements" TabIndex="9">
                         <DockPanel>
                             <TabControl x:Name="tabCtrl_plotUsage" SelectionChanged="PETabControl_SelectionChanged">
                                 <TabItem Header="Bools" TabIndex="1">

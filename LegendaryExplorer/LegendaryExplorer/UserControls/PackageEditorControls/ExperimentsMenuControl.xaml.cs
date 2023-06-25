@@ -195,6 +195,33 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             });
         }
 
+        private void BuildUDKObjectInfo_Clicked(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrEmpty(UDKDirectory.DefaultGamePath))
+            {
+                MessageBox.Show(GetPEWindow(), "Specify a UDK path in the settings first.");
+                return;
+            }
+            var pew = GetPEWindow();
+            pew.BusyText = "Building UDK Object Info";
+            pew.IsBusy = true;
+
+            void setProgress(int done, int total)
+            {
+                Application.Current.Dispatcher.InvokeAsync(() => { pew.BusyText = $"Building UDK Object Info [{done}/{total}]"; });
+            }
+
+            Task.Run(() =>
+            {
+                UDKUnrealObjectInfo.generateInfo(Path.Combine(AppDirectories.ExecFolder, "UDKObjectInfo.json"), true, setProgress);
+            }).ContinueWithOnUIThread(x =>
+            {
+                pew.IsBusy = false;
+                pew.RestoreAndBringToFront();
+                MessageBox.Show(GetPEWindow(), "Done");
+            });
+        }
+
         private void BuildAllObjectInfoLE_Clicked(object sender, RoutedEventArgs e)
         {
             var pew = GetPEWindow();
@@ -380,7 +407,12 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             new CustomFilesManagerWindow().Show();
         }
 
-        private async void MakeVTestDonor_Click(object sender, RoutedEventArgs e)
+        private void ImportWwiseBankTest_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.ImportBankTest(GetPEWindow());
+        }
+
+        private void MakeVTestDonor_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.ConvertMaterialToVtestDonor(GetPEWindow());
         }
@@ -394,7 +426,7 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             PackageEditorExperimentsM.OrganizeParticleSystems(GetPEWindow());
         }
 
-        private async void ConvertSLCALightToNonSLCA(object sender, RoutedEventArgs e)
+        private void ConvertSLCALightToNonSLCA(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.ConvertSLCALightToNonSLCA(GetPEWindow());
         }
@@ -419,6 +451,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             PackageEditorExperimentsM.FindBadReference(GetPEWindow());
         }
 
+        private void MaterializeModel_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.MaterializeModel(GetPEWindow());
+        }
+
         private void MScanner_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.MScanner(GetPEWindow());
@@ -434,29 +471,39 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             PackageEditorExperimentsM.TestCrossGenClassPorting(GetPEWindow());
         }
 
-        private async void CheckNeverStream_Click(object sender, RoutedEventArgs e)
+        private void CheckNeverStream_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.CheckNeverstream(GetPEWindow());
         }
 
-        private async void GenerateMaterialInstanceConstant_Click(object sender, RoutedEventArgs e)
+        private void GenerateMaterialInstanceConstant_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.GenerateMaterialInstanceConstantFromMaterial(GetPEWindow());
         }
 
-        private async void PrintTextureFormats_Click(object sender, RoutedEventArgs e)
+        private void PrintTextureFormats_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.ShowTextureFormats(GetPEWindow());
         }
 
-        private async void MapMaterialIDs_Click(object sender, RoutedEventArgs e)
+        private void MapMaterialIDs_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.MapMaterialIDs(GetPEWindow());
         }
 
-        private async void ForceVignetteOff_Click(object sender, RoutedEventArgs e)
+        private void WwiseBankToProject_Click(object sender, RoutedEventArgs e)
         {
-            PackageEditorExperimentsM.OverrideVignettes(GetPEWindow());
+            PackageEditorExperimentsM.ConvertWwiseBankToProject(GetPEWindow());
+        }
+
+        private void CoalesceBioActorTypesLE1_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.CoalesceBioActorTypes(GetPEWindow());
+        }
+
+        private void ForceVignetteOff_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.CoalesceBioActorTypes(GetPEWindow());
         }
 
         private void RebuildSelectedMaterialExpressions(object sender, RoutedEventArgs e)
@@ -649,11 +696,6 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             });
         }
 
-        private void CompactInFile_Click(object sender, RoutedEventArgs e)
-        {
-            PackageEditorExperimentsM.CompactFileViaExternalFile(GetPEWindow().Pcc);
-        }
-
         private void ResetPackageTextures_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.ResetTexturesInFile(GetPEWindow().Pcc, GetPEWindow());
@@ -709,6 +751,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         private void ExtractPackageTextures_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.DumpPackageTextures(GetPEWindow().Pcc, GetPEWindow());
+        }
+
+        private void FindExternalizableTextures_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.FindExternalizableTextures(GetPEWindow());
         }
 
         private void ValidateNavpointChain_Clicked(object sender, RoutedEventArgs e)
@@ -769,7 +816,21 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             var pccLoaded = GetPEWindow().Pcc != null;
             if (pccLoaded)
             {
-                PackageEditorExperimentsM.ShiftInterpTrackMovesInPackage(GetPEWindow().Pcc);
+                PackageEditorExperimentsM.ShiftInterpTrackMovesInPackage(GetPEWindow().Pcc, null);
+            }
+        }
+
+        private void ShiftInterpTrackMovePackageWideNoAnchor(object sender, RoutedEventArgs e)
+        {
+            var pccLoaded = GetPEWindow().Pcc != null;
+            if (pccLoaded)
+            {
+                PackageEditorExperimentsM.ShiftInterpTrackMovesInPackage(GetPEWindow().Pcc, x =>
+                {
+                    var prop = x.GetProperty<EnumProperty>("MoveFrame");
+                    if (prop == null || prop.Value != "IMF_AnchorObject") return true;
+                    return false; // IMF_AnchorObject
+                });
             }
         }
 
@@ -788,11 +849,28 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             PackageEditorExperimentsM.RandomizeTerrain(GetPEWindow().Pcc);
         }
 
+        private void StripLightmap_Click(object sender, RoutedEventArgs e)
+        {
+            if (GetPEWindow().Pcc == null) return;
+            PackageEditorExperimentsM.StripLightmap(GetPEWindow());
+        }
+
+        private void FixFXAMemoryNames_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.FixFXAMemoryNames(GetPEWindow());
+        }
+
+
         #endregion
 
         // EXPERIMENTS: SIRCXYRTYX-----------------------------------------------------
 
         #region SirCxyrtyx's Experiments
+
+        private void GenerateGhidraStructInsertionScript(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsS.GenerateGhidraStructInsertionScript(GetPEWindow());
+        }
 
         private void CalculateProbeFuncs_OnClick(object sender, RoutedEventArgs e)
         {
@@ -1237,7 +1315,32 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         {
             PackageEditorExperimentsK.ParseMapNames(GetPEWindow());
         }
-
+        private void ShiftInterpTrackMovePackageWideScene(object sender, RoutedEventArgs e)
+        {
+            var pccLoaded = GetPEWindow().Pcc != null;
+            if (pccLoaded)
+            {
+                PackageEditorExperimentsK.ShiftInterpTrackMovesInPackageWithRotation(GetPEWindow().Pcc, x =>
+                {
+                    var prop = x.GetProperty<EnumProperty>("MoveFrame");
+                    if (prop == null || prop.Value != "IMF_AnchorObject") return true;
+                    return false; // IMF_AnchorObject
+                });
+            }
+        }
+        private void MakeInterpTrackMovesIntoAnchors(object sender, RoutedEventArgs e)
+        {
+            var pccLoaded = GetPEWindow().Pcc != null;
+            if (pccLoaded)
+            {
+                PackageEditorExperimentsK.MakeInterpTrackMovesStageRelative(GetPEWindow().Pcc, x =>
+                {
+                    var prop = x.GetProperty<EnumProperty>("MoveFrame");
+                    if (prop == null || prop.Value != "IMF_AnchorObject") return true;
+                    return false; // IMF_AnchorObject
+                });
+            }
+        }
 
         #endregion
 
@@ -1333,6 +1436,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             PackageEditorExperimentsO.Baldinator(GetPEWindow());
         }
 
+        private void Rollinator_Click(object sender, RoutedEventArgs a)
+        {
+            PackageEditorExperimentsO.Rollinator(GetPEWindow());
+        }
+
         private void CopyProperty_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsO.CopyProperty(GetPEWindow());
@@ -1347,9 +1455,50 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         {
             PackageEditorExperimentsO.SMRefRemover(GetPEWindow());
         }
+
+        private void CleanConvoDonor_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.CleanConvoDonor(GetPEWindow());
+        }
+
+        private void CleanSequence_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.CleanSequenceExperiment(GetPEWindow());
+        }
+
+        private void CleanSequenceInterpDatas_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.CleanSequenceInterpDatasExperiment(GetPEWindow());
+        }
+
+        private void ChangeConvoIDandConvNodeIDs_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.ChangeConvoIDandConvNodeIDsExperiment(GetPEWindow());
+        }
+
+        private void RenameConversation_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.RenameConversationExperiment(GetPEWindow());
+        }
+
+        private void RenameAudio_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.RenameAudioExperiment(GetPEWindow());
+        }
+
+        private void UpdateAmbPerfClass_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.UpdateAmbPerfClassExperiment(GetPEWindow());
+        }
+
+        private void BatchUpdateAmbPerfClass_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.BatchUpdateAmbPerfClassExperiment(GetPEWindow());
+        }
         #endregion
 
         // EXPERIMENTS: CHONKY DB---------------------------------------------------------
+        #region Object Database
         // This is for cross-game porting
         private void ChonkyDB_BuildLE1GameDB(object sender, RoutedEventArgs e)
         {
@@ -1380,7 +1529,7 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         {
             PackageEditorExperimentsM.BuildAllObjectsGameDB(MEGame.ME3, GetPEWindow());
         }
-
+        #endregion
 
         // PLEASE MOVE YOUR EXPERIMENT HANDLER INTO YOUR SECTION ABOVE
     }

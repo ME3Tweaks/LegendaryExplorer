@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using DocumentFormat.OpenXml.Drawing;
 using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.Misc;
 using LegendaryExplorerCore.GameFilesystem;
@@ -17,10 +18,12 @@ using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
+using LegendaryExplorerCore.Unreal.Collections;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Newtonsoft.Json;
+using Path = System.IO.Path;
 
 namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 {
@@ -624,7 +627,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 references.Clear();
 
                 //Clean up Cached PhysSM Data && Rebuild Data Store
-                var newPhysSMmap = new OrderedMultiValueDictionary<int, CachedPhysSMData>();
+                var newPhysSMmap = new UMultiMap<int, CachedPhysSMData>();
                 var newPhysSMstore = new List<KCachedConvexData>();
                 foreach (var r in level.CachedPhysSMDataMap)
                 {
@@ -639,7 +642,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         var kvp = level.CachedPhysSMDataStore[oldidx];
                         map.CachedDataIndex = newPhysSMstore.Count;
                         newPhysSMstore.Add(level.CachedPhysSMDataStore[oldidx]);
-                        newPhysSMmap.Add(new KeyValuePair<int, CachedPhysSMData>(reference, map));
+                        newPhysSMmap.Add(reference, map);
                     }
                 }
                 level.CachedPhysSMDataMap = newPhysSMmap;
@@ -647,7 +650,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 references.Clear();
 
                 //Clean up Cached PhysPerTri Data
-                var newPhysPerTrimap = new OrderedMultiValueDictionary<int, CachedPhysSMData>();
+                var newPhysPerTrimap = new UMultiMap<int, CachedPhysSMData>();
                 var newPhysPerTristore = new List<KCachedPerTriData>();
                 foreach (var s in level.CachedPhysPerTriSMDataMap)
                 {
@@ -662,7 +665,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         var kvp = level.CachedPhysPerTriSMDataStore[oldidx];
                         map.CachedDataIndex = newPhysPerTristore.Count;
                         newPhysPerTristore.Add(level.CachedPhysPerTriSMDataStore[oldidx]);
-                        newPhysPerTrimap.Add(new KeyValuePair<int, CachedPhysSMData>(reference, map));
+                        newPhysPerTrimap.Add(reference, map);
                     }
                 }
                 level.CachedPhysPerTriSMDataMap = newPhysPerTrimap;
@@ -679,16 +682,16 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     level.NavListEnd = 0;
                 }
                 var newNavArray = new List<int>();
-                newNavArray.AddRange(level.NavPoints);
+                newNavArray.AddRange(level.NavRefs);
 
-                for (int n = 0; n < level.NavPoints.Count; n++)
+                for (int n = 0; n < level.NavRefs.Count; n++)
                 {
                     if (norefsList.Contains(newNavArray[n]))
                     {
                         newNavArray[n] = 0;
                     }
                 }
-                level.NavPoints = newNavArray;
+                level.NavRefs = newNavArray;
 
                 //Clean up Coverlink Lists => pare down guid2byte? table [Just null unwanted refs]
                 if (norefsList.Contains(level.CoverListStart))
@@ -700,15 +703,15 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     level.CoverListEnd = 0;
                 }
                 var newCLArray = new List<int>();
-                newCLArray.AddRange(level.CoverLinks);
-                for (int l = 0; l < level.CoverLinks.Count;l++)
+                newCLArray.AddRange(level.CoverLinkRefs);
+                for (int l = 0; l < level.CoverLinkRefs.Count;l++)
                 {
                     if (norefsList.Contains(newCLArray[l]))
                     {
                         newCLArray[l] = 0;
                     }
                 }
-                level.CoverLinks = newCLArray;
+                level.CoverLinkRefs = newCLArray;
 
 
                 if (pcc.Game.IsGame3())
@@ -725,7 +728,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 }
 
                 //Cross Level Actors
-                level.CoverLinks = newCLArray;
+                level.CoverLinkRefs = newCLArray;
                 var newXLArray = new List<int>();
                 newXLArray.AddRange(level.CrossLevelActors);
                 foreach (int xlvlactor in level.CrossLevelActors)
@@ -738,12 +741,12 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 level.CrossLevelActors = newXLArray;
 
                 //Clean up int lists if empty of NAV points
-                if (level.NavPoints.IsEmpty() && level.CoverLinks.IsEmpty() && level.CrossLevelActors.IsEmpty() && (!pcc.Game.IsGame3() || level.PylonListStart == 0))
+                if (level.NavRefs.IsEmpty() && level.CoverLinkRefs.IsEmpty() && level.CrossLevelActors.IsEmpty() && (!pcc.Game.IsGame3() || level.PylonListStart == 0))
                 {
-                    level.guidToIntMap.Clear();
-                    level.guidToIntMap2.Clear();
-                    level.intToByteMap.Clear();
-                    level.numbers.Clear();
+                    level.CrossLevelCoverGuidRefs.Clear();
+                    level.CoverIndexPairs.Clear();
+                    level.CoverIndexPairs.Clear();
+                    level.NavRefIndicies.Clear();
                 }
 
                 levelExport.WriteBinary(level);
@@ -947,8 +950,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             var mainshaderpcc = maincachefile.Exports.FirstOrDefault(x => x.ClassName == "ShaderCache");
             var mainshader = mainshaderpcc.GetBinaryData<ShaderCache>();
 
-            var newTypeCRC = new OrderedMultiValueDictionary<NameReference, uint>();
-            var newVertexFact = new OrderedMultiValueDictionary<NameReference, uint>();
+            var newTypeCRC = new UMap<NameReference, uint>();
+            var newVertexFact = new UMap<NameReference, uint>();
 
             foreach (var kvp in tgtshader.VertexFactoryTypeCRCMap)
             {
@@ -1033,6 +1036,125 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         }
                     }
                 }
+            }
+        }
+
+        public static void ShiftInterpTrackMovesInPackageWithRotation(IMEPackage package, Func<ExportEntry, bool> predicate)
+        {
+            try
+            {
+                var originX = float.Parse(PromptDialog.Prompt(null, "Enter X origin", "Origin X", "0", true));
+                var originY = float.Parse(PromptDialog.Prompt(null, "Enter Y origin", "Origin Y", "0", true));
+                var originZ = float.Parse(PromptDialog.Prompt(null, "Enter Z origin", "Origin Z", "0", true));
+                var originYaw = float.Parse(PromptDialog.Prompt(null, "Enter Yaw origin", "Origin Yaw", "0", true));
+                var targetX = float.Parse(PromptDialog.Prompt(null, "Enter X target", "Target X", "0", true));
+                var targetY = float.Parse(PromptDialog.Prompt(null, "Enter Y target", "Target Y", "0", true));
+                var targetZ = float.Parse(PromptDialog.Prompt(null, "Enter Z target", "Target Z", "0", true));
+                var targetYaw = float.Parse(PromptDialog.Prompt(null, "Enter Yaw target", "Target Yaw", "0", true));
+                foreach (var exp in package.Exports.Where(x => x.ClassName == "InterpTrackMove"))
+                {
+                    if (predicate == null || predicate.Invoke(exp))
+                    {
+
+
+                        var interpTrackMove = exp;
+                        var props = interpTrackMove.GetProperties();
+                        var posTrack = props.GetProp<StructProperty>("PosTrack");
+                        var points = posTrack.GetProp<ArrayProperty<StructProperty>>("Points");
+                        var eulerTrack = props.GetProp<StructProperty>("EulerTrack");
+                        var eulerPoints = eulerTrack.GetProp<ArrayProperty<StructProperty>>("Points");
+
+                        for (int n = 0; n < points.Count; n++)
+                        {
+                            //Get start positions
+                            var outval = points[n].GetProp<StructProperty>("OutVal");
+                            var startX = outval.GetProp<FloatProperty>("X").Value;
+                            var startY = outval.GetProp<FloatProperty>("Y").Value;
+                            var startZ = outval.GetProp<FloatProperty>("Z").Value;
+                            var outYaw = eulerPoints[n].GetProp<StructProperty>("OutVal");
+                            var startYaw = outYaw.GetProp<FloatProperty>("Z").Value;
+
+                            var oldRelativeX = startX - originX;
+                            var oldRelativeY = startY - originY;
+                            var oldRelativeZ = startZ - originZ;
+                            float rotateYawRadians = MathF.PI * ((targetYaw - originYaw) / 180); //Convert to radians
+                            float sinCalcYaw = MathF.Sin(rotateYawRadians);
+                            float cosCalcYaw = MathF.Cos(rotateYawRadians);
+
+                            //Get new rotation x' = x cos θ − y sin θ
+                            //y' = x sin θ + y cos θ
+                            float newRelativeX = oldRelativeX * cosCalcYaw - oldRelativeY * sinCalcYaw;
+                            float newRelativeY = oldRelativeX * sinCalcYaw + oldRelativeY * cosCalcYaw;
+
+                            float newX = targetX + newRelativeX;
+                            float newY = targetY + newRelativeY;
+                            float newZ = targetZ + startZ - originZ;
+                            float newYaw = startYaw + targetYaw - originYaw;
+
+                            //write new location
+                            outval.GetProp<FloatProperty>("X").Value = newX;
+                            outval.GetProp<FloatProperty>("Y").Value = newY;
+                            outval.GetProp<FloatProperty>("Z").Value = newZ;
+                            outYaw.GetProp<FloatProperty>("Z").Value = newYaw;
+                        }
+                        interpTrackMove.WriteProperties(props);
+                    }
+                }
+                MessageBox.Show("All InterpTrackMoves shifted.", "Complete", MessageBoxButton.OK);
+            }
+            catch
+            {
+                return; //handle escape on blocks
+            }
+        }
+
+        public static void MakeInterpTrackMovesStageRelative(IMEPackage package, Func<ExportEntry, bool> predicate)
+        {
+            try
+            {
+                var stageX = float.Parse(PromptDialog.Prompt(null, "Enter Anchor X Location", "Anchor X", "0", true));
+                var stageY = float.Parse(PromptDialog.Prompt(null, "Enter Anchor Y Location", "Anchor Y", "0", true));
+                var stageZ = float.Parse(PromptDialog.Prompt(null, "Enter Anchor Z Location", "Anchor Z", "0", true));
+                var stageYaw = float.Parse(PromptDialog.Prompt(null, "Enter Anchor Yaw in Degrees", "Anchor Yaw", "0", true));
+                foreach (var exp in package.Exports.Where(x => x.ClassName == "InterpTrackMove"))
+                {
+                    if (predicate == null || predicate.Invoke(exp))
+                    {
+                        var interpTrackMove = exp;
+                        var props = interpTrackMove.GetProperties();
+                        var posTrack = props.GetProp<StructProperty>("PosTrack");
+                        var points = posTrack.GetProp<ArrayProperty<StructProperty>>("Points");
+                        var eulerTrack = props.GetProp<StructProperty>("EulerTrack");
+                        var eulerPoints = eulerTrack.GetProp<ArrayProperty<StructProperty>>("Points");
+
+                        for (int n = 0; n < points.Count; n++)
+                        {
+                            //Get start positions
+                            var outval = points[n].GetProp<StructProperty>("OutVal");
+                            var startX = outval.GetProp<FloatProperty>("X").Value;
+                            var startY = outval.GetProp<FloatProperty>("Y").Value;
+                            var startZ = outval.GetProp<FloatProperty>("Z").Value;
+                            var outRot = eulerPoints[n].GetProp<StructProperty>("OutVal");
+                            var startYaw = outRot.GetProp<FloatProperty>("Z").Value;
+
+                            //write relative location
+                            outval.GetProp<FloatProperty>("X").Value = stageX - startX;
+                            outval.GetProp<FloatProperty>("Y").Value = stageY - startY;
+                            outval.GetProp<FloatProperty>("Z").Value = startZ - stageZ;
+                            outRot.GetProp<FloatProperty>("Z").Value = startYaw - stageYaw; 
+                        }
+                        var f = new EnumProperty("EInterpTrackMoveFrame", exp.FileRef.Game, "MoveFrame");
+                        f.Value = "IMF_AnchorObject";
+                        props.AddOrReplaceProp(f);
+                        interpTrackMove.WriteProperties(props);
+                    }
+                }
+
+                MessageBox.Show("All InterpTrackMoves are now relative to that location.", "Complete", MessageBoxButton.OK);
+            }
+            catch
+            {
+                return; //handle escape on blocks
             }
         }
     }

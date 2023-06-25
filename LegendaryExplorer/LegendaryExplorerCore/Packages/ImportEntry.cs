@@ -4,9 +4,11 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Xml.Linq;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Unreal;
+using LegendaryExplorerCore.Unreal.ObjectInfo;
 using PropertyChanged;
 
 namespace LegendaryExplorerCore.Packages
@@ -17,6 +19,11 @@ namespace LegendaryExplorerCore.Packages
     {
         public MEGame Game => FileRef.Game;
 
+        /// <summary>
+        /// Generates an import by serializing it from the specified package file and data stream.
+        /// </summary>
+        /// <param name="pccFile"></param>
+        /// <param name="importData"></param>
         public ImportEntry(IMEPackage pccFile, EndianReader importData)
         {
             HeaderOffset = importData.Position;
@@ -28,9 +35,61 @@ namespace LegendaryExplorerCore.Packages
             }
         }
 
+        /// <summary>
+        /// Creates an import that would represent the specified export if it was to be placed in the specified fakeDestPackage.
+        /// </summary>
+        /// <param name="sourceExport">Export to convert. The link in the dest package must exist or be the root.</param>
+        /// <param name="fakeDestPackage">Package to associate this object with. The import is not installed to the import table.</param>
+        public ImportEntry(ExportEntry sourceExport, int parentIdx, IMEPackage fakeDestPackage)
+        {
+            FileRef = fakeDestPackage;
+            idxLink = parentIdx;
+            ClassName = sourceExport.ClassName;
+            ObjectName = sourceExport.ObjectName;
+            var classInfo = GlobalUnrealObjectInfo.GetClassOrStructInfo(fakeDestPackage.Game, sourceExport.ClassName);
+            if (classInfo != null)
+            {
+                PackageFile = Path.GetFileNameWithoutExtension(classInfo.pccPath).UpperFirst();
+            }
+            else
+            {
+                PackageFile = @"Core"; // ?? This could be engine, sfxgame...
+            }
+        }
+
+        /// <summary>
+        /// Creates an empty import associated with the specified package file.
+        /// </summary>
+        /// <param name="pccFile"></param>
         public ImportEntry(IMEPackage pccFile)
         {
             FileRef = pccFile;
+        }
+
+        /// <summary>
+        /// Generates a new ImportEntry based on the provided import entry, but associated with the listed package. This is useful for testing imports in other packages.
+        /// </summary>
+        /// <param name="pccFile">Package to associate with</param>
+        /// <param name="clone">Import to read data out of</param>
+        public ImportEntry(IMEPackage pccFile, ImportEntry clone)
+        {
+            FileRef = pccFile;
+            if (clone.idxLink != 0)
+            {
+                var link = pccFile.FindEntry(clone.ParentInstancedFullPath);
+                //if (link == null)
+                //    Debugger.Break(); // We are generating an import that is not the same as the original!!
+
+                idxLink = link?.UIndex ?? 0;
+            }
+            else
+            {
+                idxLink = 0; // root level like SFXGame
+            }
+            
+            ObjectName = clone.ObjectName;
+            PackageFile = clone.PackageFile;
+            ClassName = clone.ClassName;
         }
 
         public ImportEntry(IMEPackage pccFile, IEntry parent, NameReference name) : this(pccFile, parent?.UIndex ?? 0, name) { }
@@ -84,7 +143,7 @@ namespace LegendaryExplorerCore.Packages
             get => GenerateHeader();
             set => SetHeaderValuesFromByteArray(value);
         }
-        
+
         public void SetHeaderValuesFromByteArray(byte[] value)
         {
             if (value is null)

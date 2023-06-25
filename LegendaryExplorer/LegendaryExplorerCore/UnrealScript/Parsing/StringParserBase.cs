@@ -74,6 +74,19 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             Log.LogError(msg, start, end);
         }
 
+        protected void LogWarning(string msg, ScriptToken token)
+        {
+            token.SyntaxType = EF.ERROR;
+            LogWarning(msg, token.StartPos, token.EndPos);
+        }
+
+        protected void LogWarning(string msg, ASTNode node) => LogWarning(msg, node.StartPos, node.EndPos);
+
+        protected void LogWarning(string msg, int start = -1, int end = -1)
+        {
+            Log.LogWarning(msg, start, end);
+        }
+
         public VariableIdentifier ParseVariableName()
         {
             VariableIdentifier var = ParseVariableIdentifier();

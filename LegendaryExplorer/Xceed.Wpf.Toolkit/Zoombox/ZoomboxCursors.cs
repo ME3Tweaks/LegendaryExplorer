@@ -15,8 +15,6 @@
   ***********************************************************************************/
 
 using System.Reflection;
-using System.Security;
-using System.Security.Permissions;
 using System.Windows.Input;
 using Xceed.Wpf.Toolkit.Core.Utilities;
 
@@ -30,13 +28,12 @@ namespace Xceed.Wpf.Toolkit.Zoombox
     {
       try
       {
-        new EnvironmentPermission( PermissionState.Unrestricted ).Demand();
         _zoom = new Cursor( ResourceHelper.LoadResourceStream( Assembly.GetExecutingAssembly(), "Zoombox/Resources/Zoom.cur" ) );
         _zoomRelative = new Cursor( ResourceHelper.LoadResourceStream( Assembly.GetExecutingAssembly(), "Zoombox/Resources/ZoomRelative.cur" ) );
       }
-      catch( SecurityException )
+      catch
       {
-        // partial trust, so just use default cursors
+        // just use default cursors
       }
     }
 

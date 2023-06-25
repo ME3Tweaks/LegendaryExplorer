@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using LegendaryExplorerCore.Gammtek.Extensions;
 using LegendaryExplorerCore.Gammtek.IO;
@@ -9,6 +8,7 @@ using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Memory;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Unreal.Collections;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
@@ -21,9 +21,9 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public uint Version; //If 0, this Bank is serialized empty. When creating a bank, make sure to set this!
         public uint ID;
 
-        public OrderedMultiValueDictionary<uint, byte[]> EmbeddedFiles = new();
-        public OrderedMultiValueDictionary<uint, HIRCObject> HIRCObjects = new();
-        public OrderedMultiValueDictionary<uint, string> ReferencedBanks = new();
+        public UMultiMap<uint, byte[]> EmbeddedFiles = new(); //TODO: Make this a UMap?
+        public UMultiMap<uint, HIRCObject> HIRCObjects = new(); //TODO: Make this a UMap?
+        public UMultiMap<uint, string> ReferencedBanks = new(); //TODO: Make this a UMap?
 
         public WwiseStateManagement InitStateManagement;//Only present in Init bank. ME3 version
         private byte[] ME2STMGFallback; //STMG chunk for ME2 isn't decoded yet
@@ -162,7 +162,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                                 MaxVoiceInstances = sc.ms.ReadUInt16()
                             };
                             int stateGroupCount = sc.ms.ReadInt32();
-                            InitStateManagement.StateGroups = new OrderedMultiValueDictionary<uint, WwiseStateManagement.StateGroup>();
+                            InitStateManagement.StateGroups = new();
                             for (int i = 0; i < stateGroupCount; i++)
                             {
                                 uint id = sc.ms.ReadUInt32();
@@ -186,7 +186,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                             }
 
                             int switchGroupCount = sc.ms.ReadInt32();
-                            InitStateManagement.SwitchGroups = new OrderedMultiValueDictionary<uint, WwiseStateManagement.SwitchGroup>();
+                            InitStateManagement.SwitchGroups = new();
                             for (int i = 0; i < switchGroupCount; i++)
                             {
                                 uint id = sc.ms.ReadUInt32();
@@ -210,7 +210,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                             }
 
                             int gameParamsCount = sc.ms.ReadInt32();
-                            InitStateManagement.GameParameterDefaultValues = new OrderedMultiValueDictionary<uint, float>();
+                            InitStateManagement.GameParameterDefaultValues = new();
                             for (int i = 0; i < gameParamsCount; i++)
                             {
                                 InitStateManagement.GameParameterDefaultValues.Add(sc.ms.ReadUInt32(), sc.ms.ReadFloat());
@@ -425,12 +425,38 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
         #endregion
 
+        /// <summary>
+        /// Utility method: Writes the raw bytes of a bank to an export's binary.
+        /// </summary>
+        /// <param name="bankData"></param>
+        /// <param name="exp"></param>
+        public static void WriteBankRaw(byte[] bankData, ExportEntry exp)
+        {
+            MemoryStream outStream = new MemoryStream((exp.Game == MEGame.LE2 ? 24 : 16) + bankData.Length); // This must exist or GetBuffer() will return the wrong size.
+
+            if (exp.Game == MEGame.LE2)
+            {
+                // Write Bulk Data header
+                outStream.WriteInt32(0x1); // Unknown
+                outStream.WriteInt32(0x1); // Unknown
+            }
+
+            // Write Bulk Data header
+            outStream.WriteInt32(0); // Local
+            outStream.WriteInt32((int)bankData.Length); // Compressed size
+            outStream.WriteInt32((int)bankData.Length); // Decompressed size
+            outStream.WriteInt32(0); // Data offset - this is not external so this is not used
+
+            outStream.Write(bankData);
+            exp.WriteBinary(outStream.GetBuffer());
+        }
+
         public class HIRCObject
         {
             public HIRCType Type;
             public uint ID;
             public virtual int DataLength(MEGame game) => unparsed.Length + 4;
-            protected byte[] unparsed;
+            public byte[] unparsed;
 
             public static HIRCObject Create(SerializingContainer2 sc)
             {
@@ -708,9 +734,9 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     {
         public float VolumeThreshold;
         public ushort MaxVoiceInstances;
-        public OrderedMultiValueDictionary<uint, StateGroup> StateGroups;
-        public OrderedMultiValueDictionary<uint, SwitchGroup> SwitchGroups;
-        public OrderedMultiValueDictionary<uint, float> GameParameterDefaultValues;
+        public UMultiMap<uint, StateGroup> StateGroups; //TODO: Make this a UMap?
+        public UMultiMap<uint, SwitchGroup> SwitchGroups; //TODO: Make this a UMap?
+        public UMultiMap<uint, float> GameParameterDefaultValues; //TODO: Make this a UMap?
 
         public class CustomTransitionTime
         {

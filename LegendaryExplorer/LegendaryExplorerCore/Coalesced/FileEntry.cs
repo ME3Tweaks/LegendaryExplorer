@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using LegendaryExplorerCore.Misc;
+using System.Collections.Generic;
 
 namespace LegendaryExplorerCore.Coalesced
 {
@@ -7,12 +8,12 @@ namespace LegendaryExplorerCore.Coalesced
 		public FileEntry(string name = "")
 		{
 			Name = name ?? "";
-			Sections = new Dictionary<string, Dictionary<string, List<PropertyValue>>>();
+			Sections = new CaseInsensitiveDictionary<CaseInsensitiveDictionary<List<PropertyValue>>>();
 		}
 
 		public string Name { get; set; }
 
-		public Dictionary<string, Dictionary<string, List<PropertyValue>>> Sections { get; set; }
+		public CaseInsensitiveDictionary<CaseInsensitiveDictionary<List<PropertyValue>>> Sections { get; set; }
 	}
 
 	public struct PropertyValue

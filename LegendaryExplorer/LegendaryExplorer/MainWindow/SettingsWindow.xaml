@@ -8,7 +8,7 @@
         xmlns:settings="clr-namespace:LegendaryExplorer.Misc.AppSettings"
         d:DataContext="{Binding RelativeSource={RelativeSource Self}}"
         mc:Ignorable="d"
-        Title="Legendary Explorer Settings" Height="450" Width="450">
+        Title="Legendary Explorer Settings" Height="450" Width="550">
     <DockPanel>
         <TextBlock DockPanel.Dock="Top"  Padding="5" Margin="0,0,0,3"  Background="LightGray" TextWrapping="Wrap" Text="Global settings for all tools. Settings will auto-update and auto-save on selection."/>
 
@@ -31,31 +31,38 @@
                                       IsChecked="{Binding Path=(settings:Settings.Global_Analytics_Enabled)}"/>
                             <TextBlock>Enable Analytics</TextBlock>
                         </StackPanel>
-                        <TextBlock Margin="5,5,0,0">Mass Effect 1 Directory:</TextBlock>
+                        <TextBlock Margin="5,5,0,0">Mass Effect 1 (Original Trilogy) Directory:</TextBlock>
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,5" Tag="Global_ME1Directory">
-                            <TextBox Width="250" x:Name="Global_ME1Directory" Margin="5,0,0,0" TextChanged="Setting_OnTextChanged"
+                            <TextBox Width="450" x:Name="Global_ME1Directory" Margin="5,0,0,0" TextChanged="Setting_OnTextChanged"
                                        Text="{Binding Path=(settings:Settings.Global_ME1Directory)}"/>
                             <Button Click="DirectoryBrowse_Click" 
                             Margin="5,0" Tag="">Browse</Button>
                                                 </StackPanel>
-                        <TextBlock Margin="5,5,0,0">Mass Effect 2 Directory:</TextBlock>
+                        <TextBlock Margin="5,5,0,0">Mass Effect 2 (Original Trilogy) Directory:</TextBlock>
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,5" Tag="Global_ME2Directory">
-                            <TextBox Width="250" x:Name="Global_ME2Directory" Margin="5,0,0,0" TextChanged="Setting_OnTextChanged"
+                            <TextBox Width="450" x:Name="Global_ME2Directory" Margin="5,0,0,0" TextChanged="Setting_OnTextChanged"
                                        Text="{Binding Path=(settings:Settings.Global_ME2Directory)}"/>
                             <Button Click="DirectoryBrowse_Click" 
                             Margin="5,0" Tag="">Browse</Button>
                                                 </StackPanel>
-                        <TextBlock Margin="5,5,0,0">Mass Effect 3 Directory:</TextBlock>
+                        <TextBlock Margin="5,5,0,0">Mass Effect 3 (Original Trilogy) Directory:</TextBlock>
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,5" Tag="Global_ME3Directory">
-                            <TextBox Width="250" x:Name="Global_ME3Directory" Margin="5,0,0,0" TextChanged="Setting_OnTextChanged"
+                            <TextBox Width="450" x:Name="Global_ME3Directory" Margin="5,0,0,0" TextChanged="Setting_OnTextChanged"
                                        Text="{Binding Path=(settings:Settings.Global_ME3Directory)}"/>
                             <Button Click="DirectoryBrowse_Click" 
                             Margin="5,0" Tag="">Browse</Button>
                                                 </StackPanel>
                         <TextBlock Margin="5,5,0,0">Mass Effect Legendary Edition Directory:</TextBlock>
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,5" Tag="Global_LEDirectory">
-                            <TextBox Width="250" x:Name="Global_LEDirectory" Margin="5,0,0,0" TextChanged="Setting_OnTextChanged"
+                            <TextBox Width="450" x:Name="Global_LEDirectory" Margin="5,0,0,0" TextChanged="Setting_OnTextChanged"
                                        Text="{Binding Path=(settings:Settings.Global_LEDirectory)}"/>
+                            <Button Click="DirectoryBrowse_Click" 
+                            Margin="5,0" Tag="">Browse</Button>
+                                                </StackPanel>
+                        <TextBlock Margin="5,5,0,0">UDKGame (2015) Directory:</TextBlock>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,5" Tag="Global_UDKCustomDirectory">
+                            <TextBox Width="450" x:Name="Global_UDKCustomDirectory" Margin="5,0,0,0" TextChanged="Setting_OnTextChanged"
+                                       Text="{Binding Path=(settings:Settings.Global_UDKCustomDirectory)}"/>
                             <Button Click="DirectoryBrowse_Click" 
                             Margin="5,0" Tag="">Browse</Button>
                                                 </StackPanel>
@@ -157,17 +164,17 @@
                         </StackPanel>
                         <TextBlock Margin="5,5,0,0">WwiseCLI.exe v3773 Path:</TextBlock>
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,5" Tag="Wwise_3773Path">
-                            <TextBox Width="250" x:Name="Wwise_3773Path" Margin="5,0,0,0" TextChanged="Setting_OnTextChanged"
+                            <TextBox Width="450" x:Name="Wwise_3773Path" Margin="5,0,0,0" TextChanged="Setting_OnTextChanged"
                                        Text="{Binding Path=(settings:Settings.Wwise_3773Path)}"/>
                             <Button Click="FileBrowse_Click" 
-                            Margin="5,0" Tag=".exe">Browse</Button>
+                            Margin="5,0" Tag="*.exe">Browse</Button>
                                                 </StackPanel>
                         <TextBlock Margin="5,5,0,0">WwiseCLI.exe v7110 Path:</TextBlock>
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,5" Tag="Wwise_7110Path">
-                            <TextBox Width="250" x:Name="Wwise_7110Path" Margin="5,0,0,0" TextChanged="Setting_OnTextChanged"
+                            <TextBox Width="450" x:Name="Wwise_7110Path" Margin="5,0,0,0" TextChanged="Setting_OnTextChanged"
                                        Text="{Binding Path=(settings:Settings.Wwise_7110Path)}"/>
                             <Button Click="FileBrowse_Click" 
-                            Margin="5,0" Tag=".exe">Browse</Button>
+                            Margin="5,0" Tag="*.exe">Browse</Button>
                                                 </StackPanel>
                                       </StackPanel>
             </TabItem>

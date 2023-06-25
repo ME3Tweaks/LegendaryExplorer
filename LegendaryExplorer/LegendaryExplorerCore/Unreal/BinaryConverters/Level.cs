@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using LegendaryExplorerCore.Helpers;
-using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Unreal.Collections;
 using Microsoft.Toolkit.HighPerformance;
 using UIndex = System.Int32;
 
@@ -18,17 +19,17 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public UIndex Model;
         public UIndex[] ModelComponents;
         public UIndex[] GameSequences;
-        public OrderedMultiValueDictionary<UIndex, StreamableTextureInstanceList> TextureToInstancesMap;
-        public OrderedMultiValueDictionary<UIndex, uint> MeshComponentsWithDynamiclighting;//UDK
+        public UMultiMap<UIndex, StreamableTextureInstanceList> TextureToInstancesMap; //TODO: Make this a UMap
+        public UMultiMap<UIndex, uint> MeshComponentsWithDynamiclighting;//UDK  //TODO: Make this a UMap
         public byte[] ApexMesh;//ME3 only
         public byte[] CachedPhysBSPData; //BulkSerialized
-        public OrderedMultiValueDictionary<UIndex, CachedPhysSMData> CachedPhysSMDataMap;
+        public UMultiMap<UIndex, CachedPhysSMData> CachedPhysSMDataMap;
         public List<KCachedConvexData> CachedPhysSMDataStore;
-        public OrderedMultiValueDictionary<UIndex, CachedPhysSMData> CachedPhysPerTriSMDataMap;
+        public UMultiMap<UIndex, CachedPhysSMData> CachedPhysPerTriSMDataMap;
         public List<KCachedPerTriData> CachedPhysPerTriSMDataStore;
         public int CachedPhysBSPDataVersion;
         public int CachedPhysSMDataVersion;
-        public OrderedMultiValueDictionary<UIndex, bool> ForceStreamTextures;
+        public UMultiMap<UIndex, bool> ForceStreamTextures;  //TODO: Make this a UMap
         public UIndex NavListStart;
         public UIndex NavListEnd;
         public UIndex CoverListStart;
@@ -36,12 +37,12 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         //if ME3
         public UIndex PylonListStart;
         public UIndex PylonListEnd;
-        public OrderedMultiValueDictionary<Guid, int> guidToIntMap;
-        public List<UIndex> CoverLinks;
-        public OrderedMultiValueDictionary<int, byte> intToByteMap;
-        public OrderedMultiValueDictionary<Guid, int> guidToIntMap2;
-        public List<UIndex> NavPoints;
-        public List<int> numbers;
+        public List<GuidIndexPair> CrossLevelCoverGuidRefs;
+        public List<UIndex> CoverLinkRefs;
+        public List<CoverIndexPair> CoverIndexPairs;
+        public List<GuidIndexPair> CrossLevelNavGuidRefs;
+        public List<UIndex> NavRefs;
+        public List<int> NavRefIndicies;
         //endif
         public List<UIndex> CrossLevelActors;
         public UIndex ArtPlaceable1;//ME1
@@ -62,7 +63,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
             else
             {
-                MeshComponentsWithDynamiclighting = new OrderedMultiValueDictionary<UIndex, uint>();
+                MeshComponentsWithDynamiclighting = new ();
             }
             if (sc.Game >= MEGame.ME3)
             {
@@ -100,25 +101,25 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 sc.Serialize(ref PylonListStart);
                 sc.Serialize(ref PylonListEnd);
             }
-            if (sc.Game.IsGame3())
+            if (sc.Game.IsGame3()) // Gated by licensee version
             {
-                sc.Serialize(ref guidToIntMap, SCExt.Serialize, SCExt.Serialize);
-                sc.Serialize(ref CoverLinks, SCExt.Serialize);
-                sc.Serialize(ref intToByteMap, SCExt.Serialize, SCExt.Serialize);
-                sc.Serialize(ref guidToIntMap2, SCExt.Serialize, SCExt.Serialize);
-                sc.Serialize(ref NavPoints, SCExt.Serialize);
-                sc.Serialize(ref numbers, SCExt.Serialize);
+                sc.Serialize(ref CrossLevelCoverGuidRefs, SCExt.Serialize);
+                sc.Serialize(ref CoverLinkRefs, SCExt.Serialize);
+                sc.Serialize(ref CoverIndexPairs, SCExt.Serialize);
+                sc.Serialize(ref CrossLevelNavGuidRefs, SCExt.Serialize);
+                sc.Serialize(ref NavRefs, SCExt.Serialize);
+                sc.Serialize(ref NavRefIndicies, SCExt.Serialize);
             }
             else if (sc.IsLoading)
             {
                 PylonListStart = 0;
                 PylonListEnd = 0;
-                guidToIntMap = new OrderedMultiValueDictionary<Guid, int>();
-                CoverLinks = new List<UIndex>();
-                intToByteMap = new OrderedMultiValueDictionary<int, byte>();
-                guidToIntMap2 = new OrderedMultiValueDictionary<Guid, int>();
-                NavPoints = new List<UIndex>();
-                numbers = new List<int>();
+                CrossLevelCoverGuidRefs = new List<GuidIndexPair>();
+                CoverLinkRefs = new List<UIndex>();
+                CoverIndexPairs = new List<CoverIndexPair>();
+                CrossLevelNavGuidRefs = new List<GuidIndexPair>();
+                NavRefs = new List<UIndex>();
+                NavRefIndicies = new List<int>();
             }
             sc.Serialize(ref CrossLevelActors, SCExt.Serialize);
             if (sc.Game == MEGame.UDK)
@@ -179,27 +180,27 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 Model = 0,
                 ModelComponents = Array.Empty<UIndex>(),
                 GameSequences = Array.Empty<UIndex>(),
-                TextureToInstancesMap = new OrderedMultiValueDictionary<UIndex, StreamableTextureInstanceList>(),
-                MeshComponentsWithDynamiclighting = new OrderedMultiValueDictionary<UIndex, uint>(),
+                TextureToInstancesMap = new(),
+                MeshComponentsWithDynamiclighting = new(),
                 ApexMesh = Array.Empty<byte>(),
                 CachedPhysBSPData = Array.Empty<byte>(),
-                CachedPhysSMDataMap = new OrderedMultiValueDictionary<UIndex, CachedPhysSMData>(),
+                CachedPhysSMDataMap = new UMultiMap<UIndex, CachedPhysSMData>(),
                 CachedPhysSMDataStore = new List<KCachedConvexData>(),
-                CachedPhysPerTriSMDataMap = new OrderedMultiValueDictionary<UIndex, CachedPhysSMData>(),
+                CachedPhysPerTriSMDataMap = new UMultiMap<UIndex, CachedPhysSMData>(),
                 CachedPhysPerTriSMDataStore = new List<KCachedPerTriData>(),
-                ForceStreamTextures = new OrderedMultiValueDictionary<UIndex, bool>(),
+                ForceStreamTextures = new(),
                 NavListStart = 0,
                 NavListEnd = 0,
                 CoverListStart = 0,
                 CoverListEnd = 0,
                 PylonListStart = 0,
                 PylonListEnd = 0,
-                guidToIntMap = new OrderedMultiValueDictionary<Guid, int>(),
-                CoverLinks = new List<UIndex>(),
-                intToByteMap = new OrderedMultiValueDictionary<int, byte>(),
-                guidToIntMap2 = new OrderedMultiValueDictionary<Guid, int>(),
-                NavPoints = new List<UIndex>(),
-                numbers = new List<int>(),
+                CrossLevelCoverGuidRefs = new List<GuidIndexPair>(),
+                CoverLinkRefs = new List<UIndex>(),
+                CoverIndexPairs = new List<CoverIndexPair>(),
+                CrossLevelNavGuidRefs = new List<GuidIndexPair>(),
+                NavRefs = new List<UIndex>(),
+                NavRefIndicies = new List<int>(),
                 CrossLevelActors = new List<UIndex>(),
                 ArtPlaceable1 = 0,
                 ArtPlaceable2 = 0
@@ -224,14 +225,14 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             a.Invoke(ref Model, nameof(Model));
             ForEachUIndexInSpan(action, ModelComponents.AsSpan(), nameof(ModelComponents));
             ForEachUIndexInSpan(action, GameSequences.AsSpan(), nameof(GameSequences));
-            ForEachUIndexKeyInOrderedMultiValueDictionary(action, TextureToInstancesMap.AsSpan(), nameof(TextureToInstancesMap));
+            ForEachUIndexKeyInMultiMap(action, TextureToInstancesMap, nameof(TextureToInstancesMap));
             if (game is MEGame.UDK)
             {
-                ForEachUIndexKeyInOrderedMultiValueDictionary(action, MeshComponentsWithDynamiclighting.AsSpan(), nameof(MeshComponentsWithDynamiclighting));
+                ForEachUIndexKeyInMultiMap(action, MeshComponentsWithDynamiclighting, nameof(MeshComponentsWithDynamiclighting));
             }
-            ForEachUIndexKeyInOrderedMultiValueDictionary(action, CachedPhysSMDataMap.AsSpan(), nameof(CachedPhysSMDataMap));
-            ForEachUIndexKeyInOrderedMultiValueDictionary(action, CachedPhysPerTriSMDataMap.AsSpan(), nameof(CachedPhysPerTriSMDataMap));
-            ForEachUIndexKeyInOrderedMultiValueDictionary(action, ForceStreamTextures.AsSpan(), nameof(ForceStreamTextures));
+            ForEachUIndexKeyInMultiMap(action, CachedPhysSMDataMap, nameof(CachedPhysSMDataMap));
+            ForEachUIndexKeyInMultiMap(action, CachedPhysPerTriSMDataMap, nameof(CachedPhysPerTriSMDataMap));
+            ForEachUIndexKeyInMultiMap(action, ForceStreamTextures, nameof(ForceStreamTextures));
             a.Invoke(ref NavListStart, nameof(NavListStart));
             a.Invoke(ref NavListEnd, nameof(NavListEnd));
             a.Invoke(ref CoverListStart, nameof(CoverListStart));
@@ -243,8 +244,8 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
             if (game.IsGame3())
             {
-                ForEachUIndexInSpan(action, CoverLinks.AsSpan(), nameof(CoverLinks));
-                ForEachUIndexInSpan(action, NavPoints.AsSpan(), nameof(NavPoints));
+                ForEachUIndexInSpan(action, CoverLinkRefs.AsSpan(), nameof(CoverLinkRefs));
+                ForEachUIndexInSpan(action, NavRefs.AsSpan(), nameof(NavRefs));
             }
             ForEachUIndexInSpan(action, CrossLevelActors.AsSpan(), nameof(CrossLevelActors));
             if (game.IsGame1())
@@ -254,6 +255,26 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
 
         }
+    }
+
+    [DebuggerDisplay("CoverIndexPair | Index {CoverIndexIdx}, Slot {SlotIdx}")]
+    public struct CoverIndexPair
+    {
+        /// <summary>
+        /// The index into the CoverLinkRefs array on Level
+        /// </summary>
+        public uint CoverIndexIdx;
+
+        /// <summary>
+        /// The slot index of the cover
+        /// </summary>
+        public byte SlotIdx;
+    }
+
+    public struct GuidIndexPair
+    {
+        public Guid Guid;
+        public int CoverIndexIdx;
     }
 
     public class URL
@@ -312,10 +333,11 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref url.Host);
             sc.Serialize(ref url.Map);
             sc.Serialize(ref url.Portal);
-            sc.Serialize(ref url.Op, SCExt.Serialize);
+            sc.Serialize(ref url.Op, Serialize);
             sc.Serialize(ref url.Port);
             sc.Serialize(ref url.Valid);
         }
+
         public static void Serialize(this SerializingContainer2 sc, ref StreamableTextureInstanceList texInstList)
         {
             if (sc.IsLoading)
@@ -325,6 +347,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
             sc.Serialize(ref texInstList.Instances, Serialize);
         }
+
         public static void Serialize(this SerializingContainer2 sc, ref StreamableTextureInstance texInst)
         {
             if (sc.IsLoading)
@@ -335,6 +358,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref texInst.BoundingSphere);
             sc.Serialize(ref texInst.TexelFactor);
         }
+
         public static void Serialize(this SerializingContainer2 sc, ref CachedPhysSMData smData)
         {
             if (sc.IsLoading)
@@ -345,6 +369,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref smData.Scale3D);
             sc.Serialize(ref smData.CachedDataIndex);
         }
+
         public static void Serialize(this SerializingContainer2 sc, ref KCachedConvexData convData)
         {
             if (sc.IsLoading)
@@ -354,14 +379,17 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
             sc.Serialize(ref convData.CachedConvexElements, Serialize);
         }
+
         public static void Serialize(this SerializingContainer2 sc, ref KCachedConvexDataElement convDataElem)
         {
             if (sc.IsLoading)
             {
                 convDataElem = new KCachedConvexDataElement();
             }
-            sc.BulkSerialize(ref convDataElem.ConvexElementData, SCExt.Serialize, 1);
+
+            sc.BulkSerialize(ref convDataElem.ConvexElementData, Serialize, 1);
         }
+
         public static void Serialize(this SerializingContainer2 sc, ref KCachedPerTriData triData)
         {
             if (sc.IsLoading)
@@ -372,6 +400,18 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             int byteSize = 1;
             sc.Serialize(ref byteSize);
             sc.Serialize(ref triData.CachedPerTriData);
+        }
+
+        public static void Serialize(this SerializingContainer2 sc, ref CoverIndexPair val)
+        {
+            sc.Serialize(ref val.CoverIndexIdx);
+            sc.Serialize(ref val.SlotIdx);
+        }
+
+        public static void Serialize(this SerializingContainer2 sc, ref GuidIndexPair val)
+        {
+            sc.Serialize(ref val.Guid);
+            sc.Serialize(ref val.CoverIndexIdx);
         }
     }
 }

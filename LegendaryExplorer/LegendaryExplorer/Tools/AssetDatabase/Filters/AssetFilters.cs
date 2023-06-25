@@ -150,7 +150,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
                 if (t.StartsWith("prop:"))
                 {
                     var propName = t.Substring(5);
-                    matches |= cr.PropertyRecords.Any(kvp => kvp.Key.ToLower().Contains(propName));
+                    matches |= cr.PropertyRecords.Any(propRecord => propRecord.Property.ToLower().Contains(propName));
                 }
             }
             matches |= cr.Class.ToLower().Contains(text);

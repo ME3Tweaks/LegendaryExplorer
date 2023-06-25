@@ -21,7 +21,7 @@ namespace LegendaryExplorerCore.Textures.Studio
     /// </summary>
     [AddINotifyPropertyChangedInterface]
     [DebuggerDisplay("TextureMapMemoryEntry {Children.Count} children, {Instances.Count} instances, TFC name {TFCName}")]
-    public class TextureMapMemoryEntry
+    public partial class TextureMapMemoryEntry
     {
         /// <summary>
         /// Parses a Texture object
@@ -306,6 +306,8 @@ namespace LegendaryExplorerCore.Textures.Studio
                 }
             }
 
+            UIndex = exportEntry.UIndex; // This is so texture can be located in package by tooling
+
             // This needs some optimization once it's working
             var t2d = new Texture2D(exportEntry);
             bool canCache = t2d.GetTopMip().storageType != StorageTypes.empty && crcCache != null;
@@ -325,6 +327,7 @@ namespace LegendaryExplorerCore.Textures.Studio
             catch (Exception)
             {
                 // CRC could not be calculated
+                
             }
         }
 
@@ -343,7 +346,7 @@ namespace LegendaryExplorerCore.Textures.Studio
         public string RelativePackagePath { get; set; }
 
         /// <summary>
-        /// UIndex of the export for the package. This is only used in the vanilla precomputed map
+        /// UIndex of the export for the package
         /// </summary>
         public int UIndex { get; set; }
 
@@ -497,7 +500,7 @@ namespace LegendaryExplorerCore.Textures.Studio
                     vanillaMap = MEMTextureMap.LoadTextureMap(game);
                 }
 
-                var textures = package.Exports.Where(x => !x.IsDefaultObject && x.IsTexture());
+                var textures = package.Exports.Where(x => x.IsDataLoaded());
                 foreach (var t in textures)
                 {
                     if (cts.IsCancellationRequested) break;

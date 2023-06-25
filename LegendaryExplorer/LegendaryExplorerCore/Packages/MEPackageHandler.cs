@@ -229,7 +229,7 @@ namespace LegendaryExplorerCore.Packages
         /// <returns></returns>
         public static IMEPackage UnsafePartialLoad(string pathToFile, Func<ExportEntry, bool> exportPredicate)
         {
-            // Debug.WriteLine($"Partially loading package {pathToFile}");
+            //Debug.WriteLine($"Partially loading package {pathToFile}");
             using var fs = new FileStream(pathToFile, FileMode.Open, FileAccess.Read);
             return LoadPackage(fs, pathToFile, false, false, exportPredicate);
         }
@@ -275,7 +275,14 @@ namespace LegendaryExplorerCore.Packages
             bool fullyCompressed = false;
 
             var er = new EndianReader(stream);
-            if (stream.ReadUInt32() == UnrealPackageFile.packageTagBigEndian) er.Endian = Endian.Big;
+            var packageTag = stream.ReadUInt32();
+            if (packageTag == UnrealPackageFile.packageTagBigEndian) er.Endian = Endian.Big;
+            if (packageTag == MEPackage.ME1SavePackageTag)
+            {
+                stream.ReadUInt32(); // Should be 1
+                stream.Seek(stream.ReadUInt32(), SeekOrigin.Begin);
+                packageTag = stream.ReadUInt32(); // Read the actual package tag
+            }
 
             // This is stored as integer by cooker as it is flipped by size word in big endian
             uint versionLicenseePacked = er.ReadUInt32();
@@ -316,16 +323,13 @@ namespace LegendaryExplorerCore.Packages
                 version == MEPackage.LE1UnrealVersion && licenseVersion == MEPackage.LE1LicenseeVersion ||
                 version == MEPackage.LE2UnrealVersion && licenseVersion == MEPackage.LE2LicenseeVersion ||
                 version == MEPackage.LE3UnrealVersion && licenseVersion == MEPackage.LE3LicenseeVersion
-
-
-
                 )
             {
                 stream.Position -= 8; //reset to start
                 pkg = MEStreamConstructorDelegate(stream, filePath, quickLoad, dataLoadPredicate);
                 MemoryAnalyzer.AddTrackedMemoryItem($"MEPackage {Path.GetFileName(filePath)}", new WeakReference(pkg));
             }
-            else if (version is UDKPackage.UDKUnrealVersion2015 or UDKPackage.UDKUnrealVersion2014 or UDKPackage.UDKUnrealVersion2011 && licenseVersion == 0)
+            else if (version is UDKPackage.UDKUnrealVersion2015 or UDKPackage.UDKUnrealVersion2014 or UDKPackage.UDKUnrealVersion2011 or UDKPackage.UDKUnrealVersion2010_09 && licenseVersion == 0)
             {
                 //UDK
                 stream.Position -= 8; //reset to start
@@ -368,6 +372,30 @@ namespace LegendaryExplorerCore.Packages
         }
 
         /// <summary>
+        /// Creates, saves, then loads the package from disk.
+        /// </summary>
+        /// <param name="path">Where to save the package</param>
+        /// <param name="game">What game the package is for</param>
+        public static IMEPackage CreateAndLoadPackage(string path, MEGame game)
+        {
+            switch (game)
+            {
+                case MEGame.UDK:
+                    UDKConstructorDelegate(path).Save();
+                    break;
+                case MEGame.LELauncher:
+                    throw new ArgumentException("Cannot create a package for LELauncher, it doesn't use packages");
+                case MEGame.Unknown:
+                    throw new ArgumentException("Cannot create a package file for an Unknown game!", nameof(game));
+                default:
+                    MEBlankPackageCreatorDelegate(path, game).Save();
+                    break;
+            }
+
+            return MEPackageHandler.OpenMEPackage(path);
+        }
+
+        /// <summary>
         /// Generates a new empty level package file.
         /// </summary>
         /// <param name="outpath">Where to save the package</param>
@@ -386,24 +414,31 @@ namespace LegendaryExplorerCore.Packages
         /// <returns>MemoryStream of generated package file</returns>
         public static MemoryStream CreateEmptyLevelStream(string levelPackageName, MEGame game)
         {
-            if (!game.IsOTGame() && !game.IsLEGame())
-                throw new Exception(@"Cannot create a level for a game that is not ME1/2/3 or LE1/2/3");
+            if (!game.IsOTGame() && !game.IsLEGame() && game is not MEGame.UDK)
+            {
+                throw new Exception(@"Cannot create a level for a game that is not ME1/2/3, LE1/2/3, or UDK");
+            }
 
-            var emptyLevelName = $"{game}EmptyLevel";
-            var packageStream = LegendaryExplorerCoreUtilities.LoadEmbeddedFile($@"Packages.EmptyLevels.{emptyLevelName}.{(game == MEGame.ME1 ? ".SFM" : "pcc")}");
-            using var pcc = MEPackageHandler.OpenMEPackageFromStream(packageStream);
+            string emptyLevelName = $"{game}EmptyLevel";
+            MemoryStream packageStream = LegendaryExplorerCoreUtilities.LoadEmbeddedFile($@"Packages.EmptyLevels.{emptyLevelName}.{game switch
+            {
+                MEGame.ME1 => "SFM",
+                MEGame.UDK => "udk",
+                _ => "pcc"
+            }}");
+            using IMEPackage pcc = OpenMEPackageFromStream(packageStream);
             for (int i = 0; i < pcc.Names.Count; i++)
             {
                 string name = pcc.Names[i];
                 if (name.Equals(emptyLevelName))
                 {
-                    var newName = name.Replace(emptyLevelName, levelPackageName);
+                    string newName = name.Replace(emptyLevelName, levelPackageName);
                     pcc.replaceName(i, newName);
                 }
             }
 
             var packguid = Guid.NewGuid();
-            var packageExport = pcc.GetUExport(game switch
+            ExportEntry packageExport = pcc.GetUExport(game switch
             {
                 MEGame.LE1 => 4,
                 MEGame.LE3 => 6,
@@ -412,7 +447,7 @@ namespace LegendaryExplorerCore.Packages
             });
             packageExport.PackageGUID = packguid;
             pcc.PackageGuid = packguid;
-            var ms = pcc.SaveToStream(game.IsLEGame());
+            MemoryStream ms = pcc.SaveToStream(game.IsLEGame());
             ms.Position = 0; // Set position to beginning so users of this can open package immediately.
             return ms;
         }

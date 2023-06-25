@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -12,7 +13,7 @@ namespace LegendaryExplorer.Dialogs
     /// </summary>
     public partial class InputComboBoxDialog : NotifyPropertyChangedWindowBase
     {
-        private InputComboBoxDialog(Control owner, string promptText, string titleText, IEnumerable<object> items, string defaultValue = "", bool topMost = false)
+        private InputComboBoxDialog(Control owner, string promptText, string titleText, IEnumerable items, string defaultValue = "", bool topMost = false)
         {
             DirectionsText = promptText;
             Topmost = topMost;
@@ -52,7 +53,7 @@ namespace LegendaryExplorer.Dialogs
         //    EntrySelector_ComboBox.Focus();
         //}
 
-        public static string GetValue(Control owner, string promptText, string titleText, IEnumerable<object> items, string defaultValue = "", bool topMost = false)
+        public static string GetValue(Control owner, string promptText, string titleText, IEnumerable items, string defaultValue = "", bool topMost = false)
         {
             var dlg = new InputComboBoxDialog(owner, promptText, titleText, items, defaultValue, topMost);
             return dlg.ShowDialog() == true ? dlg.ChosenItem.ToString() : "";

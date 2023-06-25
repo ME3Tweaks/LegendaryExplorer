@@ -504,7 +504,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                             if (referencedEntry.ClassName == @"Class")
                             {
                                 // Inherits
-                                if (!GlobalUnrealObjectInfo.IsA(referencedEntry.ObjectName.Name, propInfo.Reference, referencedEntry.Game, customClassInfos, (entry as ExportEntry)?.SuperClassName))
+                                if (!GlobalUnrealObjectInfo.InheritsFrom(referencedEntry, propInfo.Reference, customClassInfos /*, (entry as ExportEntry)?.SuperClassName) */))
                                 {
                                     if (op.Name.Name != null)
                                     {

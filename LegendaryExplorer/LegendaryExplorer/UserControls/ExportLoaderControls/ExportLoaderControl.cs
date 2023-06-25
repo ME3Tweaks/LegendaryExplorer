@@ -12,6 +12,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
     /// </summary>
     public abstract class ExportLoaderControl : NotifyPropertyChangedControlBase, IDisposable
     {
+        /// <summary>
+        /// If this ExportLoaderControl has been popped out to its own standalone window
+        /// </summary>
+        public bool IsPoppedOut { get; set; }
+
         protected ExportLoaderControl(string memoryTrackerName)
         {
             MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended($"[EL] {memoryTrackerName}", new WeakReference(this)));

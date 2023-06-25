@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using LegendaryExplorerCore.Misc;
 
 namespace LegendaryExplorerCore.Coalesced
 {
@@ -10,7 +11,7 @@ namespace LegendaryExplorerCore.Coalesced
 
 		public CoalesceSections(IDictionary<string, CoalesceSection> sections = null)
 		{
-			_sections = sections ?? new Dictionary<string, CoalesceSection>();
+			_sections = sections ?? new CaseInsensitiveDictionary<CoalesceSection>();
 		}
 
 		public int Count

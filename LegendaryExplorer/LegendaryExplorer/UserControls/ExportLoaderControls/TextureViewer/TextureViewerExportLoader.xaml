@@ -71,30 +71,21 @@
 
                 <!--<ComboBox Grid.Row="1" Grid.Column="3" Width="200" VerticalContentAlignment="Center" Margin="3" ItemsSource="{Binding AvailableTFCNames}"  ToolTip="Changing the texture cache requires changing the texture" Name="TextureCacheComboBox" Visibility="{Binding CurrentLoadedExport, Converter={StaticResource EntryGameMatchVisibilityConverter}, ConverterParameter=ME1_Not}" IsEnabled="{Binding ViewerModeOnly, Converter={StaticResource InverseBooleanConverter}}"/>-->
                 <xctk:DropDownButton Content="View options" Grid.Row="0" Grid.Column="1" Margin="0,3">
-<xctk:DropDownButton.DropDownContent>
-    <scene3D:SceneControlOptionsControl/>
-</xctk:DropDownButton.DropDownContent>
-                    </xctk:DropDownButton>
+                    <xctk:DropDownButton.DropDownContent>
+                        <scene3D:SceneControlOptionsControl/>
+                    </xctk:DropDownButton.DropDownContent>
+                </xctk:DropDownButton>
                 <!--<CheckBox Grid.Row="2" Grid.Column="1" Content="Alpha as black" IsChecked="{Binding SetAlphaToBlack}" VerticalContentAlignment="Center" Margin="3"/>-->
             </Grid>
             <StackPanel DockPanel.Dock="Bottom" HorizontalAlignment="Center" Orientation="Horizontal" Margin="10">
                 <StackPanel Orientation="Horizontal">
                 </StackPanel>
             </StackPanel>
-
-            <!-- BETA BRANCH -->
-            <!--             
-            <DockPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                <TextBlock Name="TextureStatus_TextBlock" Text="{Binding CannotShowTextureText, FallbackValue=Select a mip}" Visibility="{Binding CannotShowTextureTextVisibility}" TextAlignment="Center"/>
-                <Image Name="TextureImage" Stretch="{Binding ImageStretchOption}" RenderOptions.BitmapScalingMode="HighQuality"/>
-            </DockPanel> -->
-
-            <!-- DIRECT X BRANCH -->
             <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                 <TextBlock Name="TextureStatus_TextBlock" Text="{Binding CannotShowTextureText, FallbackValue=Select a mip}" Visibility="{Binding CannotShowTextureTextVisibility}" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 <!--<Button Name="TFCSelect_Button" Margin="10,0,0,0" Content="Select TFC"/>-->
                 <!--<Image Name="TextureImage" Stretch="{Binding ImageStretchOption}" RenderOptions.BitmapScalingMode="NearestNeighbor"/>-->
-                <scene3D:SceneRenderControl x:Name="PreviewRenderer" DataContext="{Binding}" />
+                <scene3D:SceneRenderControl x:Name="PreviewRenderer" DataContext="{Binding}" Background="Aqua"/>
             </Grid>
         </DockPanel>
     </DockPanel>

@@ -100,7 +100,7 @@ namespace LegendaryExplorerCore.Coalesced
     public class LECoalescedBundle
     {
         public string Name { get; private set; }
-        public Dictionary<string, DuplicatingIni> Files { get; } = new();
+        public CaseInsensitiveDictionary<DuplicatingIni> Files { get; } = new();
 
         public LECoalescedBundle(string name)
         {
@@ -315,7 +315,6 @@ namespace LegendaryExplorerCore.Coalesced
         public void WriteToStream(Stream ms)
         {
             var writer = new BinaryWriter(ms);
-
             writer.Write(Files.Count);
             foreach (var file in Files)
             {
@@ -346,14 +345,18 @@ namespace LegendaryExplorerCore.Coalesced
             var extension = Path.GetExtension(filename).ToLower();
             switch (extension)
             {
-                case ".ini":
-                    return $@"..\..\BIOGame\Config\{filename}";
                 case ".int":
                 case ".ita":
                 case ".deu":
                 case ".pol":
                 case ".fra":
                     return $@"..\..\Localization\{extension.Substring(1).ToUpper()}\{filename}";
+                case ".ini":
+                    return $@"..\..\BIOGame\Config\{filename}";
+                case "" when CoalescedConverter.ProperNames.Contains(filename, StringComparer.InvariantCultureIgnoreCase): // No extension, may have been stripped
+                    return $@"..\..\BIOGame\Config\{filename}.ini";
+                case "":
+                    return $@"..\..\BIOGame\Config\{filename}.int"; // It's one of those localization files. Just set it to int. These are never used anyways.
             }
             throw new Exception($"Filename '{filename}' has invalid file extension for LE1/LE2 Coalesced filename");
         }

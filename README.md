@@ -32,3 +32,6 @@ Want to build the toolset yourself? [Read the guide on how to do so, it's very e
 
 ## License
 LegendaryExplorer is licensed under GPLv3.
+
+## Crawlable Wiki
+For the purposes of getting search engines to crawl the wiki, here's a link to the (not for humans) [crawlable wiki](https://github-wiki-see.page/m/ME3Tweaks/LegendaryExplorer/wiki).

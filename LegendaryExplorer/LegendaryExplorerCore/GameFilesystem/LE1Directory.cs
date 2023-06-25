@@ -154,9 +154,8 @@ namespace LegendaryExplorerCore.GameFilesystem
         /// <remarks>This list will include both the bink bypass and the original renamed bink dll</remarks>
         public static readonly ReadOnlyCollection<string> VanillaDlls = Array.AsReadOnly(new[]
         {
-            "bink2w64_original.dll", // We say this is vanilla since it will very commonly be present and should not be removed
             "amd_ags_x64.dll",
-            "bink2w64_original.dll",
+            "bink2w64_original.dll", // We say this is vanilla since it will very commonly be present and should not be removed
             "bink2w64.dll",
             "dbdata.dll",
             "ogg.dll",
@@ -174,6 +173,16 @@ namespace LegendaryExplorerCore.GameFilesystem
         /// </summary>
         /// <remarks>This is the same folder for all LE games</remarks>
         public static string BioWareDocumentsPath => LEDirectory.BioWareDocumentsPath;
+
+        /// <summary>
+        /// Path to the folder where career profiles are stored in the user config directory.
+        /// </summary>
+        public static string SaveFolderPath => Path.Combine(LEDirectory.BioWareDocumentsPath, @"Save", @"ME1");
+
+        /// <summary>
+        /// Path to the persistent storage file in the user config directory.
+        /// </summary>
+        public static string LocalProfilePath => Path.Combine(SaveFolderPath, @"PROFILE", @"GamerProfile.pcsav");
 
         /// <summary>
         /// Gets the path to the LOD configuration file for LE1

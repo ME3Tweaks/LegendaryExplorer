@@ -15,6 +15,7 @@ namespace LegendaryExplorerCore.Gammtek.Extensions
             if (game == MEGame.LE1) return 4;
             if (game == MEGame.LE2) return 5;
             if (game == MEGame.LE3) return 6;
+            if (game == MEGame.LELauncher) return 7; // ME3Tweaks Mod Manager uses this to denote LELauncher game
             return 0;
         }
 

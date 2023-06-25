@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Unreal.Collections;
 using Microsoft.Toolkit.HighPerformance;
 using UIndex = System.Int32;
 
@@ -15,8 +15,8 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public UIndex OuterClass;
         public NameReference ClassConfigName;
         public NameReference[] unkNameList1; //ME1, ME2. Categories?
-        public OrderedMultiValueDictionary<NameReference, UIndex> ComponentNameToDefaultObjectMap;
-        public OrderedMultiValueDictionary<UIndex, UIndex> Interfaces;
+        public UMultiMap<NameReference, UIndex> ComponentNameToDefaultObjectMap; //TODO: Make this a UMap
+        public List<ImplementedInterface> Interfaces;
         public NameReference DLLBindName;//ME3, LE. Always None?
         public uint unk2; //ME3, LE. ForceScriptOrder?
         public uint le2ps3me2Unknown; //ME2, PS3 only and LE2
@@ -40,11 +40,27 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 sc.Serialize(ref unkNameList1, SCExt.Serialize);
             }
             sc.Serialize(ref ComponentNameToDefaultObjectMap, SCExt.Serialize, SCExt.Serialize);
-            sc.Serialize(ref Interfaces, SCExt.Serialize, SCExt.Serialize);
+            sc.Serialize(ref Interfaces, SCExt.Serialize);
+            if (sc.Game is MEGame.UDK)
+            {
+                NameReference[] dummyArray = Array.Empty<NameReference>();
+                sc.Serialize(ref dummyArray, SCExt.Serialize);
+                sc.Serialize(ref dummyArray, SCExt.Serialize);
+                sc.Serialize(ref dummyArray, SCExt.Serialize);
+                sc.Serialize(ref dummyArray, SCExt.Serialize);
+                bool dummyBool = false;
+                sc.Serialize(ref dummyBool);
+                sc.Serialize(ref dummyArray, SCExt.Serialize);
+                string dummyString = "";
+                sc.Serialize(ref dummyString);
+            }
             if (sc.Game >= MEGame.ME3 || sc.Pcc.Platform == MEPackage.GamePlatform.PS3)
             {
                 sc.Serialize(ref DLLBindName);
-                sc.Serialize(ref unk2);
+                if (sc.Game is not MEGame.UDK)
+                {
+                    sc.Serialize(ref unk2);
+                }
             }
             else
             {
@@ -62,7 +78,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 sc.Serialize(ref le2ps3me2Unknown);
             }
             sc.Serialize(ref Defaults);
-            if (sc.Game is MEGame.ME3 or MEGame.UDK or MEGame.LE3)
+            if (sc.Game.IsGame3())
             {
                 sc.Serialize(ref VirtualFunctionTable, SCExt.Serialize);
             }
@@ -74,11 +90,11 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             {
                 ScriptBytes = Array.Empty<byte>(),
                 IgnoreMask = (UnrealFlags.EProbeFunctions)ulong.MaxValue,
-                LocalFunctionMap = new OrderedMultiValueDictionary<NameReference, UIndex>(),
+                LocalFunctionMap = new(),
                 ClassConfigName = "None",
                 unkNameList1 = Array.Empty<NameReference>(),
-                ComponentNameToDefaultObjectMap = new OrderedMultiValueDictionary<NameReference, UIndex>(),
-                Interfaces = new OrderedMultiValueDictionary<UIndex, UIndex>(),
+                ComponentNameToDefaultObjectMap = new(),
+                Interfaces = new(),
                 DLLBindName = "None",
                 unkNameList2 = Array.Empty<NameReference>(),
                 VirtualFunctionTable = Array.Empty<UIndex>()
@@ -112,37 +128,18 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             base.ForEachUIndex(game, in action);
             Unsafe.AsRef(action).Invoke(ref OuterClass, nameof(OuterClass));
 
-            var span = ComponentNameToDefaultObjectMap.AsSpan();
-            for (int i = 0; i < span.Length; i++)
-            {
-                int value = span[i].Value;
-                int originalValue = value;
-                NameReference key = span[i].Key;
-                Unsafe.AsRef(action).Invoke(ref value, $"ComponentNameToDefaultObjectMap[{key.Instanced}]");
-                if (value != originalValue)
-                {
-                    span[i] = new KeyValuePair<NameReference, int>(key, value);
-                }
-            }
+            ForEachUIndexValueInMultiMap(action, ComponentNameToDefaultObjectMap, nameof(ComponentNameToDefaultObjectMap));
 
-            var span2 = Interfaces.AsSpan();
-            for (int i = 0; i < span2.Length; i++)
+            Span<ImplementedInterface> interfacesSpan = Interfaces.AsSpan();
+            for (int i = 0; i < interfacesSpan.Length; i++)
             {
-                UIndex value = span2[i].Value;
-                UIndex originalValue = value;
-                UIndex key = span2[i].Key;
-                UIndex originalKey = key;
-                Unsafe.AsRef(action).Invoke(ref key, $"Interfaces[{i}]");
-                Unsafe.AsRef(action).Invoke(ref value, $"Interfaces[{i}]");
-                if (value != originalValue || key != originalKey)
-                {
-                    span2[i] = new KeyValuePair<UIndex, UIndex>(key, value);
-                }
+                Unsafe.AsRef(action).Invoke(ref interfacesSpan[i].Class, $"{nameof(Interfaces)}[{i}].{nameof(ImplementedInterface.Class)}");
+                Unsafe.AsRef(action).Invoke(ref interfacesSpan[i].PointerProperty, $"{nameof(Interfaces)}[{i}].{nameof(ImplementedInterface.PointerProperty)}");
             }
 
 
             Unsafe.AsRef(action).Invoke(ref Defaults, nameof(Defaults));
-            if (game is MEGame.UDK or MEGame.ME3 or MEGame.LE3)
+            if (game is MEGame.ME3 or MEGame.LE3)
             {
                 ForEachUIndexInSpan(action, VirtualFunctionTable.AsSpan(), nameof(VirtualFunctionTable));
             }
@@ -162,7 +159,19 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 }
             }
         }
+        public struct ImplementedInterface
+        {
+            public UIndex Class;
+            public UIndex PointerProperty;
+
+            public ImplementedInterface(UIndex @class, UIndex pointerProperty)
+            {
+                Class = @class;
+                PointerProperty = pointerProperty;
+            }
+        }
     }
+
 
     public static partial class SCExt
     {
@@ -176,6 +185,12 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             {
                 sc.ms.Writer.WriteUInt32((uint)flags);
             }
+        }
+
+        public static void Serialize(this SerializingContainer2 sc, ref UClass.ImplementedInterface implementedInterface)
+        {
+            sc.Serialize(ref implementedInterface.Class);
+            sc.Serialize(ref implementedInterface.PointerProperty);
         }
     }
 }

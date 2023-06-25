@@ -14,6 +14,7 @@ namespace LegendaryExplorerCore.GameFilesystem
     public static class MELoadedFiles
     {
         private static readonly string[] ME1FilePatterns = { "*.u", "*.upk", "*.sfm" };
+        private static readonly string[] UDKFilePatterns = { "*.u", "*.upk", "*.udk" };
         private const string ME23LEFilePattern = "*.pcc";
         private static readonly string[] ME23LEFilePatternIncludeTFC = { "*.pcc", "*.tfc" };
 
@@ -24,8 +25,8 @@ namespace LegendaryExplorerCore.GameFilesystem
         /// </summary>
         public static void InvalidateCaches()
         {
-            cachedME1LoadedFiles = cachedME2LoadedFiles = cachedME3LoadedFiles = cachedLE1LoadedFiles = cachedLE2LoadedFiles = cachedLE3LoadedFiles = null;
-            cachedME1TargetFiles = cachedME2TargetFiles = cachedME3TargetFiles = cachedLE1TargetFiles = cachedLE2TargetFiles = cachedLE3TargetFiles = null;
+            cachedME1LoadedFiles = cachedME2LoadedFiles = cachedME3LoadedFiles = cachedLE1LoadedFiles = cachedLE2LoadedFiles = cachedLE3LoadedFiles = cachedUDKLoadedFiles = null;
+            cachedME1TargetFiles = cachedME2TargetFiles = cachedME3TargetFiles = cachedLE1TargetFiles = cachedLE2TargetFiles = cachedLE3TargetFiles = cachedUDKTargetFiles = null;
         }
 
         #region LoadedFiles
@@ -35,6 +36,7 @@ namespace LegendaryExplorerCore.GameFilesystem
         private static CaseInsensitiveDictionary<string> cachedLE1LoadedFiles;
         private static CaseInsensitiveDictionary<string> cachedLE2LoadedFiles;
         private static CaseInsensitiveDictionary<string> cachedLE3LoadedFiles;
+        private static CaseInsensitiveDictionary<string> cachedUDKLoadedFiles;
 
         /// <summary>
         /// Gets a dictionary of all loaded files in the given game. Key is the filename, value is file path. This data may be cached; to reload it, set the forceReload flag to true
@@ -51,72 +53,97 @@ namespace LegendaryExplorerCore.GameFilesystem
             //Override: Do not use cached items
             if (!forceReload && gameRootOverride == null)
             {
-                if (game == MEGame.ME1 && cachedME1LoadedFiles != null) return cachedME1LoadedFiles;
-                if (game == MEGame.ME2 && cachedME2LoadedFiles != null)
+                switch (game)
                 {
-                    bool useCached = true;
-                    if (!forceUseCached)
+                    case MEGame.ME1 when cachedME1LoadedFiles != null:
+                        return cachedME1LoadedFiles;
+                    case MEGame.ME2 when cachedME2LoadedFiles != null:
                     {
-                        useCached &= !includeTFCs || !cachedME2LoadedFiles.Keys.Any(x => x.EndsWith(".tfc"));
-                        useCached &= !includeAFCs || !cachedME2LoadedFiles.Keys.Any(x => x.EndsWith(".afc"));
-                    }
+                        bool useCached = true;
+                        if (!forceUseCached)
+                        {
+                            useCached &= !includeTFCs || cachedME2LoadedFiles.Keys.Any(x => x.EndsWith(".tfc"));
+                            useCached &= !includeAFCs || cachedME2LoadedFiles.Keys.Any(x => x.EndsWith(".afc"));
+                        }
 
-                    if (useCached) return cachedME2LoadedFiles;
-                }
-                if (game == MEGame.ME3 && cachedME3LoadedFiles != null)
-                {
-                    bool useCached = true;
-                    if (!forceUseCached)
-                    {
-                        useCached &= !includeTFCs || !cachedME3LoadedFiles.Keys.Any(x => x.EndsWith(".tfc"));
-                        useCached &= !includeAFCs || !cachedME3LoadedFiles.Keys.Any(x => x.EndsWith(".afc"));
+                        if (useCached) return cachedME2LoadedFiles;
+                        break;
                     }
-                    if (useCached) return cachedME3LoadedFiles;
-                }
-                if (game == MEGame.LE1 && cachedLE1LoadedFiles != null)
-                {
-                    bool useCached = true;
-                    if (!forceUseCached)
+                    case MEGame.ME3 when cachedME3LoadedFiles != null:
                     {
-                        useCached &= !includeTFCs || !cachedLE1LoadedFiles.Keys.Any(x => x.EndsWith(".tfc"));
+                        bool useCached = true;
+                        if (!forceUseCached)
+                        {
+                            useCached &= !includeTFCs || cachedME3LoadedFiles.Keys.Any(x => x.EndsWith(".tfc"));
+                            useCached &= !includeAFCs || cachedME3LoadedFiles.Keys.Any(x => x.EndsWith(".afc"));
+                        }
+                        if (useCached) return cachedME3LoadedFiles;
+                        break;
                     }
-                    if (useCached) return cachedLE1LoadedFiles;
-                }
-                if (game == MEGame.LE2 && cachedLE2LoadedFiles != null)
-                {
-                    bool useCached = true;
-                    if (!forceUseCached)
+                    case MEGame.LE1 when cachedLE1LoadedFiles != null:
                     {
-                        useCached &= !includeTFCs || !cachedLE2LoadedFiles.Keys.Any(x => x.EndsWith(".tfc"));
-                        useCached &= !includeAFCs || !cachedLE2LoadedFiles.Keys.Any(x => x.EndsWith(".afc"));
+                        bool useCached = true;
+                        if (!forceUseCached)
+                        {
+                            useCached &= !includeTFCs || cachedLE1LoadedFiles.Keys.Any(x => x.EndsWith(".tfc"));
+                        }
+                        if (useCached) return cachedLE1LoadedFiles;
+                        break;
                     }
-                    if (useCached) return cachedLE2LoadedFiles;
-                }
-                if (game == MEGame.LE3 && cachedLE3LoadedFiles != null)
-                {
-                    bool useCached = true;
-                    if (!forceUseCached)
+                    case MEGame.LE2 when cachedLE2LoadedFiles != null:
                     {
-                        useCached &= !includeTFCs || !cachedLE3LoadedFiles.Keys.Any(x => x.EndsWith(".tfc"));
-                        useCached &= !includeAFCs || !cachedLE3LoadedFiles.Keys.Any(x => x.EndsWith(".afc"));
+                        bool useCached = true;
+                        if (!forceUseCached)
+                        {
+                            useCached &= !includeTFCs || cachedLE2LoadedFiles.Keys.Any(x => x.EndsWith(".tfc"));
+                            useCached &= !includeAFCs || cachedLE2LoadedFiles.Keys.Any(x => x.EndsWith(".afc"));
+                        }
+                        if (useCached) return cachedLE2LoadedFiles;
+                        break;
                     }
-                    if (useCached) return cachedLE3LoadedFiles;
+                    case MEGame.LE3 when cachedLE3LoadedFiles != null:
+                    {
+                        bool useCached = true;
+                        if (!forceUseCached)
+                        {
+                            useCached &= !includeTFCs || cachedLE3LoadedFiles.Keys.Any(x => x.EndsWith(".tfc"));
+                            useCached &= !includeAFCs || cachedLE3LoadedFiles.Keys.Any(x => x.EndsWith(".afc"));
+                        }
+                        if (useCached) return cachedLE3LoadedFiles;
+                        break;
+                    }
+                    case MEGame.UDK when cachedUDKLoadedFiles is not null:
+                    {
+                        bool useCached = true;
+                        if (!forceUseCached)
+                        {
+                            useCached &= !includeTFCs || cachedUDKLoadedFiles.Keys.Any(x => x.EndsWith(".tfc"));
+                            useCached &= !includeAFCs || cachedUDKLoadedFiles.Keys.Any(x => x.EndsWith(".afc"));
+                        }
+                        if (useCached) return cachedUDKLoadedFiles;
+                        break;
+                    }
                 }
             }
 
             //make dictionary from basegame files
             var loadedFiles = new CaseInsensitiveDictionary<string>();
-            if (game == MEGame.UDK)
-            {
-                return loadedFiles;
-            }
 
             var bgPath = MEDirectories.GetBioGamePath(game, gameRootOverride);
             if (bgPath != null)
             {
-                foreach (string directory in MELoadedDLC.GetEnabledDLCFolders(game, gameRootOverride)
-                             .OrderBy(dir => MELoadedDLC.GetMountPriority(dir, game))
-                             .Prepend(bgPath))
+                IEnumerable<string> directories;
+                if (game is MEGame.UDK)
+                {
+                    directories = new[] { UDKDirectory.GetScriptPath(gameRootOverride), bgPath };
+                }
+                else
+                {
+                    directories = MELoadedDLC.GetEnabledDLCFolders(game, gameRootOverride)
+                        .OrderBy(dir => MELoadedDLC.GetMountPriority(dir, game))
+                        .Prepend(bgPath);
+                }
+                foreach (string directory in directories)
                 {
                     foreach (string filePath in GetCookedFiles(game, directory, includeTFCs, includeAFCs))
                     {
@@ -132,17 +159,40 @@ namespace LegendaryExplorerCore.GameFilesystem
 
             if (gameRootOverride == null)
             {
-                // Cache results
-                if (game == MEGame.ME1) cachedME1LoadedFiles = loadedFiles;
-                else if (game == MEGame.ME2) cachedME2LoadedFiles = loadedFiles;
-                else if (game == MEGame.ME3) cachedME3LoadedFiles = loadedFiles;
-                else if (game == MEGame.LE1) cachedLE1LoadedFiles = loadedFiles;
-                else if (game == MEGame.LE2) cachedLE2LoadedFiles = loadedFiles;
-                else if (game == MEGame.LE3) cachedLE3LoadedFiles = loadedFiles;
+                switch (game)
+                {
+                    // Cache results
+                    case MEGame.ME1:
+                        cachedME1LoadedFiles = loadedFiles;
+                        break;
+                    case MEGame.ME2:
+                        cachedME2LoadedFiles = loadedFiles;
+                        break;
+                    case MEGame.ME3:
+                        cachedME3LoadedFiles = loadedFiles;
+                        break;
+                    case MEGame.LE1:
+                        cachedLE1LoadedFiles = loadedFiles;
+                        break;
+                    case MEGame.LE2:
+                        cachedLE2LoadedFiles = loadedFiles;
+                        break;
+                    case MEGame.LE3:
+                        cachedLE3LoadedFiles = loadedFiles;
+                        break;
+                    case MEGame.UDK:
+                        cachedUDKLoadedFiles = loadedFiles;
+                        break;
+                }
             }
 
             return loadedFiles;
         }
+
+        public static bool TryGetHighestMountedFile(IMEPackage pcc, out string filePath) => TryGetHighestMountedFile(pcc.Game, Path.GetFileName(pcc.FilePath), out filePath);
+
+        public static bool TryGetHighestMountedFile(MEGame game, string fileName, out string filePath) => GetFilesLoadedInGame(game, true).TryGetValue(fileName ?? "", out filePath);
+
         #endregion
 
         private static List<string> cachedME1TargetFiles;
@@ -151,6 +201,7 @@ namespace LegendaryExplorerCore.GameFilesystem
         private static List<string> cachedLE1TargetFiles;
         private static List<string> cachedLE2TargetFiles;
         private static List<string> cachedLE3TargetFiles;
+        private static List<string> cachedUDKTargetFiles;
 
         /// <summary>
         /// Gets a list of all loaded files in the given game.
@@ -174,16 +225,26 @@ namespace LegendaryExplorerCore.GameFilesystem
                 if (game == MEGame.LE1 && cachedLE1TargetFiles != null) return cachedLE1TargetFiles;
                 if (game == MEGame.LE2 && cachedLE2TargetFiles != null) return cachedLE2TargetFiles;
                 if (game == MEGame.LE3 && cachedLE3TargetFiles != null) return cachedLE3TargetFiles;
+                if (game == MEGame.UDK && cachedUDKTargetFiles != null) return cachedUDKTargetFiles;
             }
 
             //make dictionary from basegame files
             if (MEDirectories.GetDefaultGamePath(game) == null)
                 return new List<string>(); // Game path not set!
 
-            var loadedFiles = new List<string>(2000);
-            foreach (string directory in MELoadedDLC.GetEnabledDLCFolders(game, gamePath)
-                         .OrderBy(dir => MELoadedDLC.GetMountPriority(dir, game))
-                         .Prepend(MEDirectories.GetBioGamePath(game, gamePath)))
+            var loadedFiles = new List<string>(2000); IEnumerable<string> directories;
+            string bgPath = MEDirectories.GetBioGamePath(game, gamePath);
+            if (game is MEGame.UDK)
+            {
+                directories = new[] { UDKDirectory.GetScriptPath(gamePath), bgPath };
+            }
+            else
+            {
+                directories = MELoadedDLC.GetEnabledDLCFolders(game, gamePath)
+                    .OrderBy(dir => MELoadedDLC.GetMountPriority(dir, game))
+                    .Prepend(bgPath);
+            }
+            foreach (string directory in directories)
             {
                 foreach (string filePath in GetCookedFiles(game, directory, includeTFC))
                 {
@@ -198,6 +259,7 @@ namespace LegendaryExplorerCore.GameFilesystem
             if (game == MEGame.LE1) cachedLE1TargetFiles = loadedFiles;
             if (game == MEGame.LE2) cachedLE2TargetFiles = loadedFiles;
             if (game == MEGame.LE3) cachedLE3TargetFiles = loadedFiles;
+            if (game == MEGame.UDK) cachedUDKTargetFiles = loadedFiles;
 
             return loadedFiles;
         }
@@ -240,8 +302,8 @@ namespace LegendaryExplorerCore.GameFilesystem
                 Debug.WriteLine($"Cannot get list of all files for game that cannot be found! Game: {game}. Returning empty list");
                 return new List<string>();
             }
-            return MELoadedDLC.GetEnabledDLCFolders(game).Prepend(path)
-                .SelectMany(directory => GetCookedFiles(game, directory, includeTFCs, includeAFCs, additionalExtensions));
+            IEnumerable<string> directories = game is MEGame.UDK ? new[] { UDKDirectory.ScriptPath, path } : MELoadedDLC.GetEnabledDLCFolders(game).Prepend(path);
+            return directories.SelectMany(directory => GetCookedFiles(game, directory, includeTFCs, includeAFCs, additionalExtensions));
         }
 
         /// <summary>
@@ -262,8 +324,8 @@ namespace LegendaryExplorerCore.GameFilesystem
                 Debug.WriteLine($"Cannot get list of official files for game that cannot be found! Game: {game}. Returning empty list");
                 return new List<string>();
             }
-            return MELoadedDLC.GetOfficialDLCFolders(game).Prepend(path)
-                .SelectMany(directory => GetCookedFiles(game, directory, includeTFCs, includeAFCs, additionalExtensions));
+            IEnumerable<string> directories = game is MEGame.UDK ? new[] { UDKDirectory.ScriptPath } : MELoadedDLC.GetOfficialDLCFolders(game).Prepend(path);
+            return directories.SelectMany(directory => GetCookedFiles(game, directory, includeTFCs, includeAFCs, additionalExtensions));
         }
 
         /// <summary>
@@ -284,7 +346,10 @@ namespace LegendaryExplorerCore.GameFilesystem
                 if (additionalExtensions != null)
                     patterns.AddRange(additionalExtensions);
                 return patterns.SelectMany(pattern => Directory.EnumerateFiles(Path.Combine(directory, game.CookedDirName()), pattern, SearchOption.AllDirectories));
-
+            }
+            if (game is MEGame.UDK)
+            {
+                return UDKFilePatterns.SelectMany(pattern => Directory.EnumerateFiles(directory, pattern, SearchOption.AllDirectories));
             }
 
             List<string> extensions = new List<string>();

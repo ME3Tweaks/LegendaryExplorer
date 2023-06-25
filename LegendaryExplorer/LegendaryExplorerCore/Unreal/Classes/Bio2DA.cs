@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
@@ -13,9 +12,9 @@ namespace LegendaryExplorerCore.Unreal.Classes
 {
     public class Bio2DA : INotifyPropertyChanged
     {
-        public bool IsIndexed = false;
-        private List<string> _rowNames;
-        private List<string> _columnNames;
+        public bool IsIndexed;
+        private readonly List<string> _rowNames;
+        private readonly List<string> _columnNames;
 
         /// <summary>
         /// The cell data for this 2DA. Indexing with integers will access this like an array, accessing with strings will access using the row and column names. Cells are mapped via [Row, Column].
@@ -35,7 +34,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
         /// <summary>
         /// Replaces _ with __ to avoid AccessKeys when rendering. This list is not updated when a row name changes in RowNames or a row is added.
         /// </summary>
-        public List<string> RowNamesUI { get; private set; }
+        public List<string> RowNamesUI { get; }
 
 
         public int RowCount => RowNames?.Count ?? 0;
@@ -68,6 +67,11 @@ namespace LegendaryExplorerCore.Unreal.Classes
         /// </summary>
         public ExportEntry Export;
 
+        /// <summary>
+        /// Constructs a Bio2DA object from the specified export
+        /// </summary>
+        /// <param name="export"></param>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         public Bio2DA(ExportEntry export) : this()
         {
             //Console.WriteLine("Loading " + export.ObjectName);
@@ -144,10 +148,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
             {
                 for (int col = 0; col < ColumnCount; col++)
                 {
-                    if (this[row, col] == null)
-                    {
-                        this[row, col] = new Bio2DACell() { package = export.FileRef };
-                    }
+                    this[row, col] ??= new Bio2DACell { package = export.FileRef };
                 }
             }
 
@@ -190,7 +191,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
             var binary = new Bio2DABinary
             {
                 ColumnNames = ColumnNames.Select(s => new NameReference(s)).ToList(),
-                Cells = new OrderedMultiValueDictionary<int, Bio2DACell>(),
+                Cells = new(),
                 Export = Export,
                 IsIndexed = IsIndexed
             };
@@ -231,6 +232,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
             else
             {
                 export.RemoveProperty("m_sRowLabel"); // No rows.
+                export.RemoveProperty("m_lstRowNumbers"); // No rows.
                 export.WriteBinary(binary);
             }
 
@@ -261,12 +263,12 @@ namespace LegendaryExplorerCore.Unreal.Classes
         /// <summary>
         /// Maps column names to their indices for faster lookups
         /// </summary>
-        private CaseInsensitiveDictionary<int> mappedColumnNames;
+        private readonly CaseInsensitiveDictionary<int> mappedColumnNames;
 
         /// <summary>
         /// Maps row names to their indices for faster lookups. For Bio2DA, lookups directly use the string value. For Bio2DANumberedRows, a .ToString() is run first on the lookup value so we don't have to maintain a different dictionary.
         /// </summary>
-        private CaseInsensitiveDictionary<int> mappedRowNames;
+        private readonly CaseInsensitiveDictionary<int> mappedRowNames;
 
         /// <summary>
         /// Adds a new row of the specified name to the table. If using Bio2DANumberedRows, pass a string version of an int. If a row already exists with this name, the index for that row is returned instead. Upon adding a new row, new TYPE_NULL cells are added
@@ -275,7 +277,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
         /// <returns></returns>
         public int AddRow(string rowName)
         {
-            if (mappedRowNames.TryGetValue(rowName, out var existing))
+            if (mappedRowNames.TryGetValue(rowName, out int existing))
             {
                 return existing;
             }
@@ -294,11 +296,11 @@ namespace LegendaryExplorerCore.Unreal.Classes
         /// <summary>
         /// Adds a new column of the specified name to the table. If a column already exists with this name, the index for that column is returned instead. Upon adding a new column, new TYPE_NULL cells are added.
         /// </summary>
-        /// <param name="rowName"></param>
+        /// <param name="columnName"></param>
         /// <returns></returns>
         public int AddColumn(string columnName)
         {
-            if (mappedColumnNames.TryGetValue(columnName, out var existing))
+            if (mappedColumnNames.TryGetValue(columnName, out int existing))
             {
                 return existing;
             }
@@ -344,7 +346,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
                 // New row. Populate all columns in this row
                 for (int i = 0; i < ColumnCount; i++)
                 {
-                    Cells[newRowCount - 1, i] = new Bio2DACell() { package = Export?.FileRef }; // -1 as it's 0 indexed
+                    Cells[newRowCount - 1, i] = new Bio2DACell { package = Export?.FileRef }; // -1 as it's 0 indexed
                 }
             }
             else
@@ -352,9 +354,17 @@ namespace LegendaryExplorerCore.Unreal.Classes
                 // New Column. Populate all rows for this column
                 for (int i = 0; i < RowCount; i++)
                 {
-                    Cells[i, newColCount - 1] = new Bio2DACell() { package = Export?.FileRef }; ; // -1 as it's 0 indexed
+                    Cells[i, newColCount - 1] = new Bio2DACell { package = Export?.FileRef }; ; // -1 as it's 0 indexed
                 }
             }
+        }
+
+        /// <summary>
+        /// Removes all rows from this 2DA table
+        /// </summary>
+        public void ClearRows()
+        {
+            _rowNames.Clear();
         }
 
         /// <summary>
@@ -363,14 +373,12 @@ namespace LegendaryExplorerCore.Unreal.Classes
         /// <param name="rowindex"></param>
         /// <param name="colindex"></param>
         /// <returns></returns>
+        [SuppressPropertyChangedWarnings]
         public Bio2DACell this[int rowindex, int colindex]
         {
             get => Cells[rowindex, colindex];
-            set
-            {
-                // set the item for this index. value will be of type Bio2DACell.
-                Cells[rowindex, colindex] = value;
-            }
+            // set the item for this index. value will be of type Bio2DACell.
+            set => Cells[rowindex, colindex] = value;
         }
 
         /// <summary>
@@ -379,11 +387,12 @@ namespace LegendaryExplorerCore.Unreal.Classes
         /// <param name="rowname">Row name (case insensitive)</param>
         /// <param name="colindex"></param>
         /// <returns></returns>
+        [SuppressPropertyChangedWarnings]
         public Bio2DACell this[string rowname, int colindex]
         {
             get
             {
-                if (mappedRowNames.TryGetValue(rowname, out var rowIndex))
+                if (mappedRowNames.TryGetValue(rowname, out int rowIndex))
                 {
                     return Cells[rowIndex, colindex];
                 }
@@ -393,7 +402,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
             set
             {
                 // set the item for this index. value will be of type Bio2DACell.
-                if (mappedRowNames.TryGetValue(rowname, out var rowIndex))
+                if (mappedRowNames.TryGetValue(rowname, out int rowIndex))
                 {
                     Cells[rowIndex, colindex] = value;
                 }
@@ -410,11 +419,12 @@ namespace LegendaryExplorerCore.Unreal.Classes
         /// <param name="rowindex"></param>
         /// <param name="columnname">Column name (case insenitive)</param>
         /// <returns></returns>
+        [SuppressPropertyChangedWarnings]
         public Bio2DACell this[int rowindex, string columnname]
         {
             get
             {
-                if (mappedColumnNames.TryGetValue(columnname, out var colindex))
+                if (mappedColumnNames.TryGetValue(columnname, out int colindex))
                 {
                     return Cells[rowindex, colindex];
                 }
@@ -424,7 +434,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
             set
             {
                 // set the item for this index. value will be of type Bio2DACell.
-                if (mappedColumnNames.TryGetValue(columnname, out var colindex))
+                if (mappedColumnNames.TryGetValue(columnname, out int colindex))
                 {
                     Cells[rowindex, colindex] = value;
                 }
@@ -441,13 +451,14 @@ namespace LegendaryExplorerCore.Unreal.Classes
         /// <param name="rowname">Row name (case insensitive). For Bio2DANumberedRows, pass the value of the row name as a string.</param>
         /// <param name="columnname">Column name (case insenitive)</param>
         /// <returns></returns>
+        [SuppressPropertyChangedWarnings]
         public Bio2DACell this[string rowname, string columnname]
         {
             get
             {
-                if (mappedColumnNames.TryGetValue(columnname, out var colindex))
+                if (mappedColumnNames.TryGetValue(columnname, out int colindex))
                 {
-                    if (mappedRowNames.TryGetValue(rowname, out var rowindex))
+                    if (mappedRowNames.TryGetValue(rowname, out int rowindex))
                     {
                         return Cells[rowindex, colindex];
                     }
@@ -458,9 +469,9 @@ namespace LegendaryExplorerCore.Unreal.Classes
             set
             {
                 // set the item for this index. value will be of type Bio2DACell.
-                if (mappedColumnNames.TryGetValue(columnname, out var colindex))
+                if (mappedColumnNames.TryGetValue(columnname, out int colindex))
                 {
-                    if (mappedRowNames.TryGetValue(rowname, out var rowindex))
+                    if (mappedRowNames.TryGetValue(rowname, out int rowindex))
                     {
                         Cells[rowindex, colindex] = value;
                     }

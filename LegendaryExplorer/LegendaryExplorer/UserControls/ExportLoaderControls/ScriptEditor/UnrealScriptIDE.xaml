@@ -31,7 +31,8 @@
             </Grid.RowDefinitions>
             <ide:UnrealScriptTextEditor x:Name="textEditor" Document="{Binding Document}" SyntaxHighlighting="Unrealscript"
                                         Background="#1E1E1E" Foreground="#DBDBDB" LineNumbersForeground ="#2B90AE"
-                                        FontFamily="Consolas" ShowLineNumbers="True" ContextMenuOpening="TextEditor_OnContextMenuOpening" ContextMenuClosing="TextEditor_OnContextMenuClosing">
+                                        FontFamily="Consolas" ShowLineNumbers="True" ContextMenuOpening="TextEditor_OnContextMenuOpening" ContextMenuClosing="TextEditor_OnContextMenuClosing"
+                                        MouseHover="TextEditor_OnMouseHover" MouseHoverStopped="TextEditor_OnMouseHoverStopped">
                 <avalonedit:TextEditor.ContextMenu>
                     <ContextMenu>
                         <MenuItem Command="Find"/>
@@ -44,6 +45,7 @@
                         <MenuItem Command="Paste"/>
                         <Separator/>
                         <MenuItem Header="Find Usages In File" Command="{Binding FindUsagesInFileCommand}"/>
+                        <MenuItem Header="Go To Definition" Command="{Binding GoToDefinitionCommand}" InputGestureText="Ctrl+Click"/>
                     </ContextMenu>
                 </avalonedit:TextEditor.ContextMenu>
                 <avalonedit:TextEditor.Resources>

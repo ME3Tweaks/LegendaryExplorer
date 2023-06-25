@@ -23,7 +23,7 @@ using BioMorphFace = LegendaryExplorerCore.Unreal.Classes.BioMorphFace;
 
 namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 {
-    static internal class PackageEditorExperimentsH
+    internal static partial class PackageEditorExperimentsH
     {
         /// <summary>
         /// Collects all TLK exports from the entire ME1 game and exports them into a single GlobalTLK file
@@ -189,8 +189,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             });
         }
 
-        [DllImport(@"C:\Program Files (x86)\Audiokinetic\Wwise 2019.1.6.7110\SDK\x64_vc140\Release\bin\AkSoundEngineDLL.dll")]
-        public static extern uint GetIDFromString(string str);
+        [LibraryImport(@"C:\Program Files (x86)\Audiokinetic\Wwise 2019.1.6.7110\SDK\x64_vc140\Release\bin\AkSoundEngineDLL.dll", StringMarshalling = StringMarshalling.Utf8)]
+        private static partial uint GetIDFromString(string str);
 
         public static void GenerateWwiseId(PackageEditorWindow pew)
         {
@@ -264,7 +264,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         {
             if (pew.TryGetSelectedExport(out var export) && export.ClassName == "BioMorphFace")
             {
-                if (UModelHelper.GetLocalUModelVersion() < UModelHelper.SupportedUModelBuildNum)
+                if (UModelHelper.GetLocalUModelVersionAsync().Result < UModelHelper.SupportedUModelBuildNum)
                 {
                     MessageBox.Show("UModel not installed or incorrect version!");
                     return;

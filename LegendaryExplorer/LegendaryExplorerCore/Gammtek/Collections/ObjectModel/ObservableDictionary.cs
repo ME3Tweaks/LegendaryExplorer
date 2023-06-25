@@ -9,18 +9,18 @@ using PropertyChanged;
 
 namespace LegendaryExplorerCore.Gammtek.Collections.ObjectModel
 {
+	[DoNotNotify]
 	public class ObservableDictionary<TKey, TValue> :
 		IDictionary<TKey, TValue>,
 		ICollection<KeyValuePair<TKey, TValue>>,
 		IEnumerable<KeyValuePair<TKey, TValue>>,
 		IDictionary,
 		ICollection,
-		IEnumerable,
 		INotifyCollectionChanged,
 		INotifyPropertyChanged
 	{
-		protected KeyedDictionaryEntryCollection<TKey> KeyedEntryCollection;
-		private readonly Dictionary<TKey, TValue> _dictionaryCache = new Dictionary<TKey, TValue>();
+		protected readonly KeyedDictionaryEntryCollection<TKey> KeyedEntryCollection;
+		private readonly Dictionary<TKey, TValue> _dictionaryCache = new();
 
         private int _countCache;
 		private int _dictionaryCacheVersion;
@@ -35,9 +35,9 @@ namespace LegendaryExplorerCore.Gammtek.Collections.ObjectModel
 		{
 			KeyedEntryCollection = new KeyedDictionaryEntryCollection<TKey>();
 
-			foreach (var entry in dictionary)
+			foreach ((TKey key, TValue value) in dictionary)
 			{
-				DoAddEntry(entry.Key, entry.Value);
+				DoAddEntry(key, value);
 			}
 		}
 
@@ -50,94 +50,55 @@ namespace LegendaryExplorerCore.Gammtek.Collections.ObjectModel
 		{
 			KeyedEntryCollection = new KeyedDictionaryEntryCollection<TKey>(comparer);
 
-			foreach (var entry in dictionary)
+			foreach ((TKey key, TValue value) in dictionary)
 			{
-				DoAddEntry(entry.Key, entry.Value);
+				DoAddEntry(key, value);
 			}
 		}
 
-		protected virtual event NotifyCollectionChangedEventHandler CollectionChanged;
+		protected event NotifyCollectionChangedEventHandler CollectionChanged;
 
-		protected virtual event PropertyChangedEventHandler PropertyChanged;
+		protected event PropertyChangedEventHandler PropertyChanged;
 
 		event NotifyCollectionChangedEventHandler INotifyCollectionChanged.CollectionChanged
 		{
-			add { CollectionChanged += value; }
-			remove { CollectionChanged -= value; }
-		}
+			add => CollectionChanged += value;
+            remove => CollectionChanged -= value;
+        }
 
 		event PropertyChangedEventHandler INotifyPropertyChanged.PropertyChanged
 		{
-			add { PropertyChanged += value; }
-			remove { PropertyChanged -= value; }
-		}
+			add => PropertyChanged += value;
+            remove => PropertyChanged -= value;
+        }
 
-		public IEqualityComparer<TKey> Comparer
-		{
-			get { return KeyedEntryCollection.Comparer; }
-		}
+		public IEqualityComparer<TKey> Comparer => KeyedEntryCollection.Comparer;
 
-		public int Count
-		{
-			get { return KeyedEntryCollection.Count; }
-		}
+        public int Count => KeyedEntryCollection.Count;
 
-		public Dictionary<TKey, TValue>.KeyCollection Keys
-		{
-			get { return TrueDictionary.Keys; }
-		}
+        public Dictionary<TKey, TValue>.KeyCollection Keys => TrueDictionary.Keys;
 
-		public Dictionary<TKey, TValue>.ValueCollection Values
-		{
-			get { return TrueDictionary.Values; }
-		}
+        public Dictionary<TKey, TValue>.ValueCollection Values => TrueDictionary.Values;
 
-		int ICollection<KeyValuePair<TKey, TValue>>.Count
-		{
-			get { return KeyedEntryCollection.Count; }
-		}
+        int ICollection<KeyValuePair<TKey, TValue>>.Count => KeyedEntryCollection.Count;
 
-		int ICollection.Count
-		{
-			get { return KeyedEntryCollection.Count; }
-		}
+        int ICollection.Count => KeyedEntryCollection.Count;
 
-		bool IDictionary.IsFixedSize
-		{
-			get { return false; }
-		}
+        bool IDictionary.IsFixedSize => false;
 
-		bool IDictionary.IsReadOnly
-		{
-			get { return false; }
-		}
+        bool IDictionary.IsReadOnly => false;
 
-		bool ICollection<KeyValuePair<TKey, TValue>>.IsReadOnly
-		{
-			get { return false; }
-		}
+        bool ICollection<KeyValuePair<TKey, TValue>>.IsReadOnly => false;
 
-		bool ICollection.IsSynchronized
-		{
-			get { return ((ICollection) KeyedEntryCollection).IsSynchronized; }
-		}
+        bool ICollection.IsSynchronized => ((ICollection) KeyedEntryCollection).IsSynchronized;
 
-		ICollection<TKey> IDictionary<TKey, TValue>.Keys
-		{
-			get { return Keys; }
-		}
+        ICollection<TKey> IDictionary<TKey, TValue>.Keys => Keys;
 
-		ICollection IDictionary.Keys
-		{
-			get { return Keys; }
-		}
+        ICollection IDictionary.Keys => Keys;
 
-		object ICollection.SyncRoot
-		{
-			get { return ((ICollection) KeyedEntryCollection).SyncRoot; }
-		}
+        object ICollection.SyncRoot => ((ICollection) KeyedEntryCollection).SyncRoot;
 
-		private Dictionary<TKey, TValue> TrueDictionary
+        private Dictionary<TKey, TValue> TrueDictionary
 		{
 			get
 			{
@@ -154,17 +115,11 @@ namespace LegendaryExplorerCore.Gammtek.Collections.ObjectModel
 			}
 		}
 
-		ICollection<TValue> IDictionary<TKey, TValue>.Values
-		{
-			get { return Values; }
-		}
+		ICollection<TValue> IDictionary<TKey, TValue>.Values => Values;
 
-		ICollection IDictionary.Values
-		{
-			get { return Values; }
-		}
+        ICollection IDictionary.Values => Values;
 
-		//public TValue this[TKey key]
+        //public TValue this[TKey key]
 		//{
 		//	get { return (TValue) KeyedEntryCollection[key].Value; }
 		//	set
@@ -176,15 +131,15 @@ namespace LegendaryExplorerCore.Gammtek.Collections.ObjectModel
 
 		TValue IDictionary<TKey, TValue>.this[TKey key]
 		{
-			get { return (TValue) KeyedEntryCollection[key].Value; }
-			set { DoSetEntry(key, value); }
-		}
+			get => (TValue) KeyedEntryCollection[key].Value;
+            set => DoSetEntry(key, value);
+        }
 
 		object IDictionary.this[object key]
 		{
-			get { return KeyedEntryCollection[(TKey) key].Value; }
-			set { DoSetEntry((TKey) key, (TValue) value); }
-		}
+			get => KeyedEntryCollection[(TKey) key].Value;
+            set => DoSetEntry((TKey) key, (TValue) value);
+        }
 
 		public void Add(TKey key, TValue value)
 		{
@@ -206,7 +161,7 @@ namespace LegendaryExplorerCore.Gammtek.Collections.ObjectModel
 			return TrueDictionary.ContainsValue(value);
 		}
 
-		public IEnumerator GetEnumerator()
+		public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
 		{
 			return new Enumerator<TKey, TValue>(this, false);
 		}
@@ -218,7 +173,7 @@ namespace LegendaryExplorerCore.Gammtek.Collections.ObjectModel
 
 		public bool TryGetValue(TKey key, out TValue value)
 		{
-			var result = KeyedEntryCollection.Contains(key);
+			bool result = KeyedEntryCollection.Contains(key);
 			value = result ? (TValue) KeyedEntryCollection[key].Value : default(TValue);
 			return result;
 		}
@@ -244,7 +199,7 @@ namespace LegendaryExplorerCore.Gammtek.Collections.ObjectModel
 		protected int GetIndexAndEntryForKey(TKey key, out DictionaryEntry entry)
 		{
 			entry = new DictionaryEntry();
-			var index = -1;
+			int index = -1;
 			if (KeyedEntryCollection.Contains(key))
 			{
 				entry = KeyedEntryCollection[key];
@@ -252,23 +207,16 @@ namespace LegendaryExplorerCore.Gammtek.Collections.ObjectModel
 			}
 			return index;
 		}
-
-        [SuppressPropertyChangedWarnings]
+		
 		protected virtual void OnCollectionChanged(NotifyCollectionChangedEventArgs args)
-		{
-			if (CollectionChanged != null)
-			{
-				CollectionChanged(this, args);
-			}
-		}
+        {
+            CollectionChanged?.Invoke(this, args);
+        }
 
 		protected virtual void OnPropertyChanged(string name)
-		{
-			if (PropertyChanged != null)
-			{
-				PropertyChanged(this, new PropertyChangedEventArgs(name));
-			}
-		}
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
 
 		protected virtual bool RemoveEntry(TKey key)
 		{
@@ -278,17 +226,16 @@ namespace LegendaryExplorerCore.Gammtek.Collections.ObjectModel
 
 		protected virtual bool SetEntry(TKey key, TValue value)
 		{
-			var keyExists = KeyedEntryCollection.Contains(key);
+			bool keyExists = KeyedEntryCollection.Contains(key);
 
-			// if identical key/value pair already exists, nothing to do
-			if (keyExists && value.Equals((TValue) KeyedEntryCollection[key].Value))
-			{
-				return false;
-			}
-
-			// otherwise, remove the existing entry
 			if (keyExists)
-			{
+            {
+                // if identical key/value pair already exists, nothing to do
+                if (value.Equals((TValue) KeyedEntryCollection[key].Value))
+                {
+                    return false;
+                }
+			    // otherwise, remove the existing entry
 				KeyedEntryCollection.Remove(key);
 			}
 
@@ -304,8 +251,7 @@ namespace LegendaryExplorerCore.Gammtek.Collections.ObjectModel
 			{
 				_version++;
 
-				DictionaryEntry entry;
-				var index = GetIndexAndEntryForKey(key, out entry);
+                int index = GetIndexAndEntryForKey(key, out DictionaryEntry entry);
 				FireEntryAddedNotifications(entry, index);
 			}
 		}
@@ -321,10 +267,9 @@ namespace LegendaryExplorerCore.Gammtek.Collections.ObjectModel
 
 		private bool DoRemoveEntry(TKey key)
 		{
-			DictionaryEntry entry;
-			var index = GetIndexAndEntryForKey(key, out entry);
+            int index = GetIndexAndEntryForKey(key, out DictionaryEntry entry);
 
-			var result = RemoveEntry(key);
+			bool result = RemoveEntry(key);
 			if (result)
 			{
 				_version++;
@@ -339,8 +284,7 @@ namespace LegendaryExplorerCore.Gammtek.Collections.ObjectModel
 
 		private void DoSetEntry(TKey key, TValue value)
 		{
-			DictionaryEntry entry;
-			var index = GetIndexAndEntryForKey(key, out entry);
+            int index = GetIndexAndEntryForKey(key, out DictionaryEntry entry);
 
 			if (SetEntry(key, value))
 			{
@@ -400,10 +344,10 @@ namespace LegendaryExplorerCore.Gammtek.Collections.ObjectModel
 			if (Count != _countCache)
 			{
 				_countCache = Count;
-				OnPropertyChanged("Count");
+				OnPropertyChanged(nameof(Count));
 				OnPropertyChanged("Item[]");
-				OnPropertyChanged("Keys");
-				OnPropertyChanged("Values");
+				OnPropertyChanged(nameof(Keys));
+				OnPropertyChanged(nameof(Values));
 			}
 		}
 
@@ -426,11 +370,6 @@ namespace LegendaryExplorerCore.Gammtek.Collections.ObjectModel
 			DoAddEntry(kvp.Key, kvp.Value);
 		}
 
-		void ICollection<KeyValuePair<TKey, TValue>>.Clear()
-		{
-			DoClearEntries();
-		}
-
 		bool ICollection<KeyValuePair<TKey, TValue>>.Contains(KeyValuePair<TKey, TValue> kvp)
 		{
 			return KeyedEntryCollection.Contains(kvp.Key);
@@ -444,14 +383,14 @@ namespace LegendaryExplorerCore.Gammtek.Collections.ObjectModel
 			}
 			if ((index < 0) || (index > array.Length))
 			{
-				throw new ArgumentOutOfRangeException("CopyTo() failed:  index parameter was outside the bounds of the supplied array");
+				throw new ArgumentOutOfRangeException(nameof(index), "CopyTo() failed:  index parameter was outside the bounds of the supplied array");
 			}
 			if ((array.Length - index) < KeyedEntryCollection.Count)
 			{
 				throw new ArgumentException("CopyTo() failed:  supplied array was too small");
 			}
 
-			foreach (var entry in KeyedEntryCollection)
+			foreach (DictionaryEntry entry in KeyedEntryCollection)
 			{
 				array[index++] = new KeyValuePair<TKey, TValue>((TKey) entry.Key, (TValue) entry.Value);
 			}
@@ -465,11 +404,6 @@ namespace LegendaryExplorerCore.Gammtek.Collections.ObjectModel
 		void IDictionary.Add(object key, object value)
 		{
 			DoAddEntry((TKey) key, (TValue) value);
-		}
-
-		void IDictionary.Clear()
-		{
-			DoClearEntries();
 		}
 
 		bool IDictionary.Contains(object key)
@@ -487,38 +421,13 @@ namespace LegendaryExplorerCore.Gammtek.Collections.ObjectModel
 			DoRemoveEntry((TKey) key);
 		}
 
-		void IDictionary<TKey, TValue>.Add(TKey key, TValue value)
-		{
-			DoAddEntry(key, value);
-		}
-
-		bool IDictionary<TKey, TValue>.ContainsKey(TKey key)
-		{
-			return KeyedEntryCollection.Contains(key);
-		}
-
-		bool IDictionary<TKey, TValue>.Remove(TKey key)
-		{
-			return DoRemoveEntry(key);
-		}
-
-		bool IDictionary<TKey, TValue>.TryGetValue(TKey key, out TValue value)
-		{
-			return TryGetValue(key, out value);
-		}
-
 		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return GetEnumerator();
 		}
 
-		IEnumerator<KeyValuePair<TKey, TValue>> IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator()
-		{
-			return new Enumerator<TKey, TValue>(this, false);
-		}
-		
 		[StructLayout(LayoutKind.Sequential)]
-		public struct Enumerator<TKey1, TValue1> : IEnumerator<KeyValuePair<TKey1, TValue1>>, IDictionaryEnumerator
+        private struct Enumerator<TKey1, TValue1> : IEnumerator<KeyValuePair<TKey1, TValue1>>, IDictionaryEnumerator
 		{
 			internal Enumerator(ObservableDictionary<TKey1, TValue1> dictionary, bool isDictionaryEntryEnumerator)
 			{
@@ -559,16 +468,15 @@ namespace LegendaryExplorerCore.Gammtek.Collections.ObjectModel
 			}
 
 			private void ValidateCurrent()
-			{
-				if (_index == -1)
-				{
-					throw new InvalidOperationException("The enumerator has not been started.");
-				}
-				if (_index == -2)
-				{
-					throw new InvalidOperationException("The enumerator has reached the end of the collection.");
-				}
-			}
+            {
+                switch (_index)
+                {
+                    case -1:
+                        throw new InvalidOperationException("The enumerator has not been started.");
+                    case -2:
+                        throw new InvalidOperationException("The enumerator has reached the end of the collection.");
+                }
+            }
 
 			private void ValidateVersion()
 			{

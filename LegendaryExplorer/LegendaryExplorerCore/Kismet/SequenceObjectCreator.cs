@@ -251,10 +251,10 @@ namespace LegendaryExplorerCore.Kismet
                                 importPCC = MEPackageHandler.OpenMEPackageFromStream(loadStream);
                             }
                             ExportEntry classExport = importPCC.GetUExport(classInfo.exportIndex);
-                            UClass classBin = ObjectBinary.From<UClass>(classExport);
+                            var classBin = ObjectBinary.From<UClass>(classExport);
                             ExportEntry classDefaults = importPCC.GetUExport(classBin.Defaults);
 
-                            RelinkerOptionsPackage rop = new RelinkerOptionsPackage() { Cache = pc ?? new PackageCache() };
+                            var rop = new RelinkerOptionsPackage { Cache = pc ?? new PackageCache() };
 
                             foreach (var prop in classDefaults.GetProperties())
                             {
@@ -359,9 +359,27 @@ namespace LegendaryExplorerCore.Kismet
                 {
                     defaults.Remove(inputLinks);
                 }
+
+                // 08/30/2022 Add useful defaults for editor - Mgamerz
+                // edited default to None as that is in every package and should be default if there is no named event to reference. - KK
+                switch (info.ClassName)
+                {
+                    case "SeqEvent_Console":
+                        defaults.Add(new NameProperty("None", "ConsoleEventName"));
+                        break;
+                    case "SeqEvent_RemoteEvent":
+                    case "SeqAct_ActivateRemoteEvent":
+                        defaults.Add(new NameProperty("None", "EventName"));
+                        break;
+                    case "BioSeqAct_PMExecuteTransition":
+                    case "BioSeqAct_PMCheckState":
+                    case "BioSeqAct_PMCheckConditional":
+                        defaults.Add(new IntProperty(0, "m_nIndex"));
+                        break;
+                }
             }
 
-            int objInstanceVersion = GlobalUnrealObjectInfo.getSequenceObjectInfo(game, info.ClassName)?.ObjInstanceVersion ?? 1;
+            int objInstanceVersion = GlobalUnrealObjectInfo.GetSequenceObjectInfo(game, info.ClassName)?.ObjInstanceVersion ?? 1;
             defaults.Add(new IntProperty(objInstanceVersion, "ObjInstanceVersion"));
 
             return defaults;

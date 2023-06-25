@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
-using Microsoft.Toolkit.HighPerformance;
+using LegendaryExplorerCore.Unreal.Collections;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
 using UIndex = System.Int32;
 
@@ -16,12 +14,25 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public EProbeFunctions IgnoreMask;
         public ushort LabelTableOffset;
         public EStateFlags StateFlags;
-        public OrderedMultiValueDictionary<NameReference, UIndex> LocalFunctionMap;
+        public UMultiMap<NameReference, UIndex> LocalFunctionMap; //TODO: Make this a UMap
         protected override void Serialize(SerializingContainer2 sc)
         {
             base.Serialize(sc);
-            sc.Serialize(ref ProbeMask);
-            sc.Serialize(ref IgnoreMask);
+            if (sc.Game is MEGame.UDK)
+            {
+                uint temp = (uint)ProbeMask;
+                sc.Serialize(ref temp);
+                if (sc.IsLoading)
+                {
+                    ProbeMask = (EProbeFunctions)temp; //this is going to be garbage...
+                    IgnoreMask = (EProbeFunctions)ulong.MaxValue;
+                }
+            }
+            else
+            {
+                sc.Serialize(ref ProbeMask);
+                sc.Serialize(ref IgnoreMask);
+            }
             sc.Serialize(ref LabelTableOffset);
             sc.Serialize(ref StateFlags);
             sc.Serialize(ref LocalFunctionMap, SCExt.Serialize, SCExt.Serialize);
@@ -33,7 +44,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             {
                 ScriptBytes = Array.Empty<byte>(),
                 IgnoreMask = (EProbeFunctions)ulong.MaxValue,
-                LocalFunctionMap = new OrderedMultiValueDictionary<NameReference, UIndex>()
+                LocalFunctionMap = new ()
             };
         }
         
@@ -49,18 +60,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public override void ForEachUIndex<TAction>(MEGame game, in TAction action)
         {
             base.ForEachUIndex(game, in action);
-            var span = LocalFunctionMap.AsSpan();
-            for (int i = 0; i < span.Length; i++)
-            {
-                int value = span[i].Value;
-                int originalValue = value;
-                NameReference key = span[i].Key;
-                Unsafe.AsRef(action).Invoke(ref value, $"LocalFunctionMap[{key.Instanced}]");
-                if (value != originalValue)
-                {
-                    span[i] = new KeyValuePair<NameReference, int>(key, value);
-                }
-            }
+            ForEachUIndexValueInMultiMap(action, LocalFunctionMap, nameof(LocalFunctionMap));
         }
     }
 

@@ -87,12 +87,8 @@ namespace LegendaryExplorer.DialogueEditor
             get => _SelectedSpeaker;
             set => SetProperty(ref _SelectedSpeaker, value);
         }
-        private Dictionary<string, int> _SelectedStarts = new();
-        public Dictionary<string, int> SelectedStarts
-        {
-            get => _SelectedStarts;
-            set => SetProperty(ref _SelectedStarts, value);
-        }
+        private readonly Dictionary<string, int> SelectedStarts = new();
+
         private int forcedSelectStart = -1;
         private string _SelectedScript = "None";
         public string SelectedScript
@@ -517,7 +513,7 @@ namespace LegendaryExplorer.DialogueEditor
         }
         private void OpenPackage()
         {
-            OpenFileDialog d = new() { Filter = GameFileFilters.OpenFileFilter };
+            OpenFileDialog d = AppDirectories.GetOpenPackageDialog();
             if (d.ShowDialog() == true)
             {
                 try
@@ -732,8 +728,6 @@ namespace LegendaryExplorer.DialogueEditor
             {
                 var nodeprop = node.NodeProp;
                 node.Listener = nodeprop.GetProp<IntProperty>("nListenerIndex");  //ME3//ME2//ME1
-                node.IsDefaultAction = false;
-                node.IsMajorDecision = false;
                 if (node.IsReply)
                 {
                     node.IsSkippable = false; //ME3/
@@ -753,14 +747,22 @@ namespace LegendaryExplorer.DialogueEditor
                 node.IsNonTextLine = nodeprop.GetProp<BoolProperty>("bNonTextLine");
                 node.IgnoreBodyGesture = nodeprop.GetProp<BoolProperty>("bIgnoreBodyGestures");
                 node.GUIStyle = Enums.Parse<EConvGUIStyles>(nodeprop.GetProp<EnumProperty>("eGUIStyle").Value.Name);
+                bool isNotGame3Reply = true;
                 if (Pcc.Game.IsGame3())
                 {
                     node.HideSubtitle = nodeprop.GetProp<BoolProperty>("bAlwaysHideSubtitle");
                     if (node.IsReply)
                     {
+                        isNotGame3Reply = false;
                         node.IsDefaultAction = nodeprop.GetProp<BoolProperty>("bIsDefaultAction");
                         node.IsMajorDecision = nodeprop.GetProp<BoolProperty>("bIsMajorDecision");
                     }
+                }
+                if (isNotGame3Reply)
+                {
+                    //cannot set these unconditionally earlier, since the propertychanged event will alter the nodeProp, overwriting the real value!
+                    node.IsDefaultAction = false;
+                    node.IsMajorDecision = false;
                 }
 
                 var lengthprop = node.Interpdata?.GetProperty<FloatProperty>("InterpLength");

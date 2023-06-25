@@ -29,7 +29,6 @@ using System.Numerics;
 using LegendaryExplorer.UserControls.ExportLoaderControls.TextureViewer;
 using LegendaryExplorer.UserControls.Interfaces;
 using LegendaryExplorerCore.Gammtek;
-using SlavaGu.ConsoleAppLauncher;
 using SkeletalMesh = LegendaryExplorerCore.Unreal.BinaryConverters.SkeletalMesh;
 using Color = LegendaryExplorerCore.SharpDX.Color;
 
@@ -809,6 +808,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         };
 
                         LODPicker.ClearEx();
+                        //clearing the LODPicker will set CurrentLOD to -1
+                        //if it is -1, meshes will not render.
+                        CurrentLOD = 0;
 
                         // We can't call graphics methods until the render control has been loaded by WPF - only then will it have initialized D3D.
                         if (this.MeshContext.IsReady)

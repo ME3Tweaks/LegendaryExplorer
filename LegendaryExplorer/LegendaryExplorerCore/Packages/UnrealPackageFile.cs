@@ -16,6 +16,51 @@ using LegendaryExplorerCore.Unreal.BinaryConverters;
 
 namespace LegendaryExplorerCore.Packages
 {
+    [Flags]
+    public enum PackageChange
+    {
+        Export = 0x1,
+        Import = 0x2,
+        Name = 0x4,
+        Add = 0x8,
+        Remove = 0x10,
+        Data = 0x20,
+        Header = 0x40,
+        Entry = 0x80,
+        EntryAdd = Entry | Add,
+        EntryRemove = Entry | Remove,
+        EntryHeader = Entry | Header,
+        ExportData = Export | Data | Entry,
+        ExportHeader = Export | EntryHeader,
+        ImportHeader = Import | EntryHeader,
+        ExportAdd = Export | EntryAdd,
+        ImportAdd = Import | EntryAdd,
+        ExportRemove = Export | EntryRemove,
+        ImportRemove = Import | EntryRemove,
+        NameAdd = Name | Add,
+        NameRemove = Name | Remove,
+        NameEdit = Name | Data
+    }
+
+    [DebuggerDisplay("PackageUpdate | {Change} on index {Index}")]
+    public readonly struct PackageUpdate
+    {
+        /// <summary>
+        /// Details on what piece of data has changed
+        /// </summary>
+        public readonly PackageChange Change;
+        /// <summary>
+        /// index of what item has changed. Meaning depends on value of Change
+        /// </summary>
+        public readonly int Index;
+
+        public PackageUpdate(PackageChange change, int index)
+        {
+            this.Change = change;
+            this.Index = index;
+        }
+    }
+
     public abstract partial class UnrealPackageFile : INotifyPropertyChanged
     {
         public const uint packageTagLittleEndian = 0x9E2A83C1; //Default, PC
@@ -306,6 +351,14 @@ namespace LegendaryExplorerCore.Packages
                 RebuildLookupTable();
             }
             EntryLookupTable.TryGetValue(instancedname, out var matchingEntry);
+            if (matchingEntry is ExportEntry)
+            {
+                // We want import version
+                // Some files like LE2 Engine.pcc have imports and exports for same named thing
+                // for some reason
+                // Look manually for object
+                return Imports.FirstOrDefault(x => x.InstancedFullPath == instancedname);
+            }
             return matchingEntry as ImportEntry;
         }
 
@@ -316,6 +369,15 @@ namespace LegendaryExplorerCore.Packages
                 RebuildLookupTable();
             }
             EntryLookupTable.TryGetValue(instancedname, out var matchingEntry);
+            if (matchingEntry is ImportEntry)
+            {
+                // We want export version
+                // Some files like LE2 Engine.pcc have imports and exports for same named thing
+                // for some reason
+                // Look manually for object
+                return Exports.FirstOrDefault(x => x.InstancedFullPath == instancedname);
+            }
+
             return matchingEntry as ExportEntry;
         }
 
@@ -343,7 +405,7 @@ namespace LegendaryExplorerCore.Packages
         /// </summary>
         /// <param name="uindex"></param>
         /// <returns></returns>
-        public bool IsImport(int uindex) => uindex < 0 && -uindex <= imports.Count;
+        public bool IsImport(int uindex) => uindex < 0 && uindex >= -imports.Count;
 
         /// <summary>
         /// Adds an import to the tree. This method is used to add new imports.
@@ -657,7 +719,7 @@ namespace LegendaryExplorerCore.Packages
         /// <summary>
         /// Reads local TLK exports. Only use in Game 1 packages.
         /// </summary>
-        /// <param name="lang"></param>
+        /// <param name="language"></param>
         /// <returns></returns>
         public List<ME1TalkFile> ReadLocalTLKs(string language = null)
         {

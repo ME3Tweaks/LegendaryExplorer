@@ -25,9 +25,9 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Scanners
                 //since a static lambda is allocated once, then cached
                 lock (db.ClassLocks.GetOrAdd(e.ClassName, static _ => new object()))
                 {
-                    if (!db.GeneratedClasses.TryGetValue(e.ClassName, out ClassRecord classRecord))
+                    if (!db.GeneratedClasses.TryGetValue(e.ClassName, out ConcurrentAssetDB.ScanTimeClassRecord classRecord))
                     {
-                        classRecord = new ClassRecord { Class = e.ClassName, IsModOnly = e.IsMod };
+                        classRecord = new ConcurrentAssetDB.ScanTimeClassRecord { Class = e.ClassName, IsModOnly = e.IsMod };
                         db.GeneratedClasses[e.ClassName] = classRecord;
                     }
                     classRecord.Usages.Add(classUsage);
@@ -42,7 +42,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Scanners
                      */
                     while (pos + 8 < data.Length)
                     {
-                        string propName = pcc.GetNameEntry(MemoryMarshal.Read<int>(data.Slice(pos)));
+                        string propName = pcc.GetNameEntry(MemoryMarshal.Read<int>(data[pos..]));
                         pos += 4;
                         if (propName == "")
                         {
@@ -53,16 +53,16 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Scanners
                         {
                             break;
                         }
-                        int num = MemoryMarshal.Read<int>(data.Slice(pos));
+                        int num = MemoryMarshal.Read<int>(data[pos..]);
                         pos += 4;
                         if (pos + 12 >= data.Length)
                         {
                             //broken properties
                             break;
                         }
-                        string propType = pcc.GetNameEntry(MemoryMarshal.Read<int>(data.Slice(pos)));
+                        string propType = pcc.GetNameEntry(MemoryMarshal.Read<int>(data[pos..]));
                         pos += 8;
-                        int size = MemoryMarshal.Read<int>(data.Slice(pos));
+                        int size = MemoryMarshal.Read<int>(data[pos..]);
                         pos += 8 + size;
                         switch (propType)
                         {
@@ -89,13 +89,13 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Scanners
             }
             else
             {
-                var newClassRecord = new ClassRecord(e.Export.ObjectName, e.FileKey, e.Export.UIndex, e.Export.SuperClassName) { IsModOnly = e.IsMod };
+                var newClassRecord = new ConcurrentAssetDB.ScanTimeClassRecord(e.Export.ObjectName, e.FileKey, e.Export.UIndex, e.Export.SuperClassName) { IsModOnly = e.IsMod };
                 var classUsage = new ClassUsage(e.FileKey, e.Export.UIndex, false, e.IsMod);
                 var objectNameInstanced = e.ObjectNameInstanced;
 
                 lock (db.ClassLocks.GetOrAdd(objectNameInstanced, new object()))
                 {
-                    if (db.GeneratedClasses.TryGetValue(objectNameInstanced, out ClassRecord oldVal))
+                    if (db.GeneratedClasses.TryGetValue(objectNameInstanced, out ConcurrentAssetDB.ScanTimeClassRecord oldVal))
                     {
                         if (oldVal.DefinitionFile < 0) //fake classrecord, created when a usage was found
                         {

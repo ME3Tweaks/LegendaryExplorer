@@ -5,6 +5,7 @@ using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Memory;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Unreal.Collections;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
@@ -507,19 +508,47 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         }
 
         #region ForEachUIndex Helper methods
-        internal static void ForEachUIndexKeyInOrderedMultiValueDictionary<TAction, TValue>(in TAction action, Span<KeyValuePair<int, TValue>> span, string name) where TAction : struct, IUIndexAction
+        internal static void ForEachUIndexKeyInMultiMap<TAction, TValue>(in TAction action, UMultiMap<int, TValue> multiMap, string name) where TAction : struct, IUIndexAction
         {
-            for (int i = 0; i < span.Length; i++)
+            var refEnumerator = multiMap.DangerousGetRefEnumerator();
+            int i = 0;
+            bool isUpdated = false;
+            while (refEnumerator.MoveNext())
             {
-                int key = span[i].Key;
+                ref KeyValuePair<int, TValue> kvp = ref refEnumerator.CurrentRef;
+                int key = kvp.Key;
                 int originalValue = key;
                 Unsafe.AsRef(action).Invoke(ref key, $"{name}[{i}]");
                 if (key != originalValue)
                 {
-                    span[i] = new(key, span[i].Value);
+                    isUpdated = true;
+                    kvp = new KeyValuePair<int, TValue>(key, kvp.Value);
                 }
+                ++i;
+            }
+            if (isUpdated)
+            {
+                multiMap.Rehash();
             }
         }
+        internal static void ForEachUIndexValueInMultiMap<TAction, TKey>(in TAction action, UMultiMap<TKey, int> multiMap, string name) where TAction : struct, IUIndexAction
+        {
+            var refEnumerator = multiMap.DangerousGetRefEnumerator();
+            int i = 0;
+            while (refEnumerator.MoveNext())
+            {
+                ref var kvp = ref refEnumerator.CurrentRef;
+                int value = kvp.Value;
+                int originalValue = value;
+                Unsafe.AsRef(action).Invoke(ref value, $"{name}[{i}]");
+                if (value != originalValue)
+                {
+                    kvp = new (kvp.Key, value);
+                }
+                ++i;
+            }
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static void ForEachUIndexInSpan<TAction>(in TAction action, Span<int> span, string name) where TAction : struct, IUIndexAction
         {

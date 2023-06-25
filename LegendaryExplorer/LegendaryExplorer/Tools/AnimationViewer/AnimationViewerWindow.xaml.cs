@@ -85,7 +85,7 @@ namespace LegendaryExplorer.Tools.AnimationViewer
                 FileListExtended.Add((fileName, db.ContentDir[dirIndex]));
             }
             Animations.AddRange(db.Animations.Where(a => a.IsAmbPerf == false));
-            
+
         }
 
         private void AnimationExplorerWPF_Loaded(object sender, RoutedEventArgs e)
@@ -152,7 +152,7 @@ namespace LegendaryExplorer.Tools.AnimationViewer
             else if (msg.StartsWith("AnimViewer string AnimLoaded"))
             {
                 Vector3 pos = defaultPosition;
-                if (msg.IndexOf("vector") is int idx && idx > 0 && 
+                if (msg.IndexOf("vector") is int idx && idx > 0 &&
                     msg.Substring(idx + 7).Split(' ') is string[] strings && strings.Length == 3)
                 {
                     var floats = new float[3];
@@ -368,11 +368,8 @@ namespace LegendaryExplorer.Tools.AnimationViewer
             });
             Task.Run(() =>
             {
-                string animViewerBaseFilePath = Path.Combine(AppDirectories.ExecFolder, "ME3AnimViewer.pcc");
-
-                using IMEPackage animViewerBase = MEPackageHandler.OpenMEPackage(animViewerBaseFilePath);
-                AnimViewer.SetUpAnimStreamFile(null, 0, "AAAME3EXPAVS1"); //placeholder for tocing
-                AnimViewer.OpenFileInME3(animViewerBase, true, false);
+                AnimViewer.SetUpAnimStreamFile(MEGame.ME3, null, 0, "AAAME3EXPAVS1"); //placeholder for tocing
+                AnimViewer.OpenMapInGame(MEGame.ME3, true, false);
                 BusyText = "Launching Mass Effect 3...";
             });
         }
@@ -400,14 +397,14 @@ namespace LegendaryExplorer.Tools.AnimationViewer
                 }
                 Task.Run(() =>
                 {
-                    AnimViewer.SetUpAnimStreamFile(filePath, animUIndex, "AAAME3EXPAVS1");
-                    GameTarget.ExecuteConsoleCommands("ce LoadAnim1");
+                    AnimViewer.SetUpAnimStreamFile(MEGame.ME3, filePath, animUIndex, "AAAME3EXPAVS1");
+                    GameTarget.ME3ExecuteConsoleCommands("ce LoadAnim1");
                 });
             }
         }
 
         #region Position/Rotation
-        private static readonly Vector3 defaultPosition = new (0f, 0f, 85f);
+        private static readonly Vector3 defaultPosition = new(0f, 0f, 85f);
 
         private int _xPos = (int)defaultPosition.X;
         public int XPos
@@ -491,9 +488,9 @@ namespace LegendaryExplorer.Tools.AnimationViewer
         private void UpdateLocation()
         {
             if (noUpdate) return;
-            GameTarget.ExecuteConsoleCommands(VarCmd(XPos, FloatVarIndexes.XPos),
+            GameTarget.ME3ExecuteConsoleCommands(VarCmd(XPos, FloatVarIndexes.XPos),
                                                      VarCmd(YPos, FloatVarIndexes.YPos),
-                                                     VarCmd(ZPos, FloatVarIndexes.ZPos), 
+                                                     VarCmd(ZPos, FloatVarIndexes.ZPos),
                                                      "ce SetActorLocation");
         }
 
@@ -502,7 +499,7 @@ namespace LegendaryExplorer.Tools.AnimationViewer
             if (noUpdate) return;
 
             var rot = new Rotator(((float)Pitch).DegreesToUnrealRotationUnits(), ((float)Yaw).DegreesToUnrealRotationUnits(), 0).GetDirectionalVector();
-            GameTarget.ExecuteConsoleCommands(VarCmd(rot.X, FloatVarIndexes.XRotComponent),
+            GameTarget.ME3ExecuteConsoleCommands(VarCmd(rot.X, FloatVarIndexes.XRotComponent),
                                                      VarCmd(rot.Y, FloatVarIndexes.YRotComponent),
                                                      VarCmd(rot.Z, FloatVarIndexes.ZRotComponent),
                                                      "ce SetActorRotation");
@@ -511,7 +508,7 @@ namespace LegendaryExplorer.Tools.AnimationViewer
         private void UpdateOffset()
         {
             if (noUpdate) return;
-            GameTarget.ExecuteConsoleCommands(VarCmd(RemoveOffset, BoolVarIndexes.RemoveOffset));
+            GameTarget.ME3ExecuteConsoleCommands(VarCmd(RemoveOffset, BoolVarIndexes.RemoveOffset));
             LoadAnimation(SelectedAnimation);
         }
 
@@ -578,11 +575,11 @@ namespace LegendaryExplorer.Tools.AnimationViewer
                 //    break;
                 case ECameraState.Fixed when prevCameraState == ECameraState.Free:
                 case ECameraState.Free:
-                    GameTarget.ExecuteConsoleCommands("toggledebugcamera");
+                    GameTarget.ME3ExecuteConsoleCommands("toggledebugcamera");
                     break;
-                //case ECameraState.Shepard when prevCameraState != ECameraState.Shepard:
-                //    LoadAnimation(SelectedAnimation, true);
-                //    break;
+                    //case ECameraState.Shepard when prevCameraState != ECameraState.Shepard:
+                    //    LoadAnimation(SelectedAnimation, true);
+                    //    break;
             }
         }
 
@@ -615,13 +612,13 @@ namespace LegendaryExplorer.Tools.AnimationViewer
                 case PlaybackState.Playing:
                     playbackState = PlaybackState.Paused;
                     PlayPauseIcon = EFontAwesomeIcon.Solid_Play;
-                    GameTarget.ExecuteConsoleCommands("ce PauseAnimation");
+                    GameTarget.ME3ExecuteConsoleCommands("ce PauseAnimation");
                     break;
                 case PlaybackState.Stopped:
                 case PlaybackState.Paused:
                     playbackState = PlaybackState.Playing;
                     PlayPauseIcon = EFontAwesomeIcon.Solid_Pause;
-                    GameTarget.ExecuteConsoleCommands("ce PlayAnimation");
+                    GameTarget.ME3ExecuteConsoleCommands("ce PlayAnimation");
                     break;
             }
         }
@@ -632,7 +629,7 @@ namespace LegendaryExplorer.Tools.AnimationViewer
             if (noUpdate) return;
             playbackState = PlaybackState.Stopped;
             PlayPauseIcon = EFontAwesomeIcon.Solid_Play;
-            GameTarget.ExecuteConsoleCommands("ce StopAnimation");
+            GameTarget.ME3ExecuteConsoleCommands("ce StopAnimation");
         }
 
         private double _playRate = 1.0;
@@ -645,7 +642,7 @@ namespace LegendaryExplorer.Tools.AnimationViewer
                 if (SetProperty(ref _playRate, value))
                 {
                     if (noUpdate) return;
-                    GameTarget.ExecuteConsoleCommands(VarCmd((float)value, FloatVarIndexes.PlayRate));
+                    GameTarget.ME3ExecuteConsoleCommands(VarCmd((float)value, FloatVarIndexes.PlayRate));
                 }
             }
         }
@@ -695,11 +692,11 @@ namespace LegendaryExplorer.Tools.AnimationViewer
                 {
                     if (value)
                     {
-                        GameTarget.ExecuteConsoleCommands("ce StartCameraFollow");
+                        GameTarget.ME3ExecuteConsoleCommands("ce StartCameraFollow");
                     }
                     else
                     {
-                        GameTarget.ExecuteConsoleCommands("ce StopCameraFollow");
+                        GameTarget.ME3ExecuteConsoleCommands("ce StopCameraFollow");
                     }
                 }
             }
@@ -712,7 +709,7 @@ namespace LegendaryExplorer.Tools.AnimationViewer
             if (noUpdate) return;
 
             var rot = new Rotator(((float)CamPitch).DegreesToUnrealRotationUnits(), ((float)CamYaw).DegreesToUnrealRotationUnits(), 0).GetDirectionalVector();
-            GameTarget.ExecuteConsoleCommands(VarCmd(rot.X, FloatVarIndexes.CamXRotComponent),
+            GameTarget.ME3ExecuteConsoleCommands(VarCmd(rot.X, FloatVarIndexes.CamXRotComponent),
                                                      VarCmd(rot.Y, FloatVarIndexes.CamYRotComponent),
                                                      VarCmd(rot.Z, FloatVarIndexes.CamZRotComponent),
                                                      "ce SetCameraRotation");
@@ -738,7 +735,7 @@ namespace LegendaryExplorer.Tools.AnimationViewer
             {
                 if (SetProperty(ref _selectedSquadMember, value) && !noUpdate)
                 {
-                    GameTarget.ExecuteConsoleCommands(VarCmd((int)value, IntVarIndexes.SquadMember), "ce LoadNewHench");
+                    GameTarget.ME3ExecuteConsoleCommands(VarCmd((int)value, IntVarIndexes.SquadMember), "ce LoadNewHench");
                 }
             }
         }

@@ -2,7 +2,6 @@
 using System.IO;
 using System.Windows.Input;
 using LegendaryExplorer.Misc.AppSettings;
-using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Packages;
 using Microsoft.Win32;
 
@@ -13,10 +12,11 @@ namespace LegendaryExplorer.GameInterop.InteropTargets
         public override MEGame Game => MEGame.LE2;
         public override bool CanExecuteConsoleCommands => true;
         public override bool CanUpdateTOC => false;
-        public override string InteropASIName => throw new NotImplementedException();
+        public override bool CanUseLLE => true;
 
-        public override string InteropASIDownloadLink => throw new NotImplementedException();
-        public override string InteropASIMD5 => throw new NotImplementedException();
+        public override string InteropASIDownloadLink => 
+            "https://github.com/ME3Tweaks/LE2-ASI-Plugins/releases/tag/LE2LEXInterop-v6";
+        public override string InteropASIMD5 => "51844745233e526fb9dd4e41968bbaf6";
         public override string BinkBypassMD5 { get; }
         public override string OriginalBinkMD5 => "1f00452ad61a944556399e2ad5292b35";
 

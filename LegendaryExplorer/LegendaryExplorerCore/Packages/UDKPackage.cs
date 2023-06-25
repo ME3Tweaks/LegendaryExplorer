@@ -10,6 +10,7 @@ using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.TLK.ME1;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.Classes;
+using Newtonsoft.Json.Linq;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
 
 namespace LegendaryExplorerCore.Packages
@@ -19,6 +20,7 @@ namespace LegendaryExplorerCore.Packages
         public const int UDKUnrealVersion2015 = 868; // 2015, the primary one
         public const int UDKUnrealVersion2014 = 867; // 2014, some really old ME3 mods ship these files
         public const int UDKUnrealVersion2011 = 812; // 2011, similar in age to ME3 // UDK 7797
+        public const int UDKUnrealVersion2010_09 = 765; 
         public const int UDKLicenseeVersion = 0; // 2015
 
 
@@ -32,6 +34,12 @@ namespace LegendaryExplorerCore.Packages
         /// </summary>
         public Dictionary<string, object> CustomMetadata { get; set; } = new(0);
 
+
+        /// <summary>
+        /// This property is never used as UDK packages do not save LECLData
+        /// </summary>
+        public LECLData LECLTagData { get; }
+
         public byte[] getHeader()
         {
             using var ms = MemoryManager.GetMemoryStream();
@@ -39,7 +47,7 @@ namespace LegendaryExplorerCore.Packages
             return ms.ToArray();
         }
 
-        public bool CanReconstruct => true;
+        public bool CanSave => unrealVersion == UDKUnrealVersion2015;
 
         List<ME1TalkFile> IMEPackage.LocalTalkFiles => throw new NotImplementedException(); //not supported on this package type
 
@@ -52,6 +60,8 @@ namespace LegendaryExplorerCore.Packages
             set => IsModified = value;
         }
 
+        public bool IsMemoryPackage { get; set; }
+
         #region HeaderMisc
         private class Thumbnail
         {
@@ -62,7 +72,8 @@ namespace LegendaryExplorerCore.Packages
             public int Height;
             public byte[] Data;
         }
-        private string folderName;
+        private readonly ushort unrealVersion;
+        private readonly string folderName;
         private int importExportGuidsOffset;
         private int importGuidsCount;
         private int exportGuidsCount;
@@ -70,10 +81,10 @@ namespace LegendaryExplorerCore.Packages
         private int Gen0ExportCount;
         private int Gen0NameCount;
         private int Gen0NetworkedObjectCount;
-        private int engineVersion;
+        private readonly int engineVersion;
         private int cookedContentVersion;
         private uint packageSource;
-        private List<Thumbnail> ThumbnailTable = new List<Thumbnail>();
+        private readonly List<Thumbnail> ThumbnailTable = new();
         #endregion
 
         private static bool _isBlankPackageCreatorRegistered;
@@ -114,6 +125,7 @@ namespace LegendaryExplorerCore.Packages
             imports = new List<ImportEntry>();
             exports = new List<ExportEntry>();
             folderName = "None";
+            unrealVersion = UDKUnrealVersion2015;
             engineVersion = 12791;
             //reasonable defaults?
             Flags = EPackageFlags.AllowDownload | EPackageFlags.NoExportsData;
@@ -133,7 +145,7 @@ namespace LegendaryExplorerCore.Packages
             {
                 throw new FormatException("Not an Unreal package!");
             }
-            ushort unrealVersion = fs.ReadUInt16();
+            unrealVersion = fs.ReadUInt16();
             ushort licenseeVersion = fs.ReadUInt16();
             FullHeaderSize = fs.ReadInt32();
             int foldernameStrLen = fs.ReadInt32();
@@ -321,14 +333,14 @@ namespace LegendaryExplorerCore.Packages
                 if (export.IsTexture())
                 {
                     var tex = new Texture2D(export);
-                    var mip = tex.GetTopMip();
+                    Texture2DMipInfo mip = tex.Mips.FirstOrDefault(mip => mip.height <= 256) ?? tex.GetTopMip();
                     ThumbnailTable.Add(new Thumbnail
                     {
                         ClassName = export.ClassName,
                         PathName = export.InstancedFullPath,
                         Width = mip.width,
                         Height = mip.height,
-                        Data = tex.GetPNG(tex.GetTopMip())
+                        Data = tex.GetPNG(mip)
                     });
                 }
             }

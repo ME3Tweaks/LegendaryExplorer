@@ -351,5 +351,30 @@ namespace LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic
 				yield return element;
 			}
 		}
+
+        /// <summary>
+        /// Splits the sequence into two lists. Elements that pass the predicate go into the first list, everything else goes into the second.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="source"></param>
+        /// <param name="firstListPredicate"></param>
+        /// <returns></returns>
+        public static (List<T>, List<T>) Split<T>(this IEnumerable<T> source, Func<T, bool> firstListPredicate)
+        {
+            var a = new List<T>();
+			var b = new List<T>();
+            foreach (T element in source)
+            {
+                if (firstListPredicate(element))
+                {
+                    a.Add(element);
+                }
+                else
+                {
+                    b.Add(element);
+                }
+            }
+            return (a, b);
+        }
 	}
 }

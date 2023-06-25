@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Memory;
@@ -24,14 +27,95 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 return ConvertTexture2D(export, newGame);
             }
 
-            if (From(export) is ObjectBinary objbin)
+            var from = From(export);
+            if (from is ObjectBinary objbin)
             {
                 if (objbin is AnimSequence animSeq)
                 {
                     animSeq.UpdateProps(newProps, newGame);
                 }
+
+
+                // IDK if this works as internal busses have changed identifiers.
+                // You likely would need to correct bus IDs internally for this to properly work.
+                // Todo: LE3 -> LE2
+                else if (objbin is WwiseEvent we && export.Game is MEGame.LE2 or MEGame.LE3 && newGame is /*MEGame.LE2 or*/ MEGame.LE3 && export.Game != newGame)
+                {
+                    // We can't convert ME2 -> ME3, only LE versions work
+
+                    // LE2: Properties
+                    // LE3: Binary
+
+                    if (export.Game == MEGame.LE2)
+                    {
+                        var refs = export.GetProperty<ArrayProperty<StructProperty>>(@"References");
+                        if (refs != null && refs.Count == 1)
+                        {
+                            var relationships = refs[0].GetProp<StructProperty>(@"Relationships");
+                            var streams = relationships.GetProp<ArrayProperty<ObjectProperty>>(@"Streams");
+                            relationships.Properties.Remove(streams); // Remove the property, does not exist in LE3.
+
+                            we.Links = new List<WwiseEvent.WwiseEventLink>();
+                            we.Links.Add(new WwiseEvent.WwiseEventLink() { WwiseStreams = streams.Properties.Select(x => x.Value).ToList() });
+                            newProps.Add(relationships);
+                        }
+                    }
+
+                    //if (export.Game == MEGame.LE3)
+                    //{
+                    //    // LE3
+                    //    newProps.Add(new StructProperty("WwiseRelationships", false,
+                    //        new ObjectProperty(bankExport, "Bank"))
+                    //    { Name = "Relationships" });
+                    //    p.Add(new IntProperty((int)eventInfo.Id, "Id"));
+
+
+                    //    p.Add(new FloatProperty(9, "Duration")); // TODO: FIGURE THIS OUT!!! THIS IS A PLACEHOLDER
+
+                    //    // Todo: Write the WwiseStreams
+                    //}
+                    //else
+                    //{
+                    //    // LE2
+
+                    //    var references = new ArrayProperty<StructProperty>("References");
+                    //    var platProps = new PropertyCollection();
+
+                    //    var platSpecificProps = new PropertyCollection();
+                    //    platSpecificProps.Add(new ArrayProperty<ObjectProperty>(streamExports.Select(x => new ObjectProperty(x.UIndex)), "Streams"));
+                    //    platSpecificProps.Add(new ObjectProperty(bankExport, "Bank"));
+                    //    platProps.Add(new StructProperty("WwiseRelationships", platSpecificProps, "Relationships"));
+                    //    platProps.Add(new IntProperty(1, "Platform"));
+                    //    var platRef = new StructProperty("WwisePlatformRelationships", platProps);
+                    //    references.Add(platRef);
+                    //    p.Add(references);
+                    //}
+
+                    //WwiseEvent we = new WwiseEvent();
+                    //we.WwiseEventID = eventInfo.Id;
+                    //we.Links = new List<WwiseEvent.WwiseEventLink>();
+
+                    //// LE3 puts this in binary instead of properties
+                    //if (package.Game == MEGame.LE3)
+                    //{
+                    //    we.Links.Add(new WwiseEvent.WwiseEventLink()
+                    //    { WwiseStreams = streamExports.Select(x => x.UIndex).ToList() });
+                    //}
+                    //else
+                    //{
+                    //    // LE2
+                    //    we.WwiseEventID = eventInfo.Id; // ID is stored here
+                    //}
+
+
+
+                    //}
+                }
                 return objbin;
             }
+
+
+
 
             switch (export.ClassName)
             {
@@ -185,13 +269,13 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                         }
                         break;
                     case StorageTypes.empty:
-                        texture = new byte[0];
+                        texture = Array.Empty<byte>();
                         break;
                     default:
                         if (export.Game != newGame)
                         {
                             storageType &= (StorageTypes)~StorageFlags.externalFile;
-                            texture = Texture2D.GetTextureData(mips[i], export.Game, export.Game != MEGame.UDK ? MEDirectories.GetDefaultGamePath(export.Game) : null,false); //copy in external textures
+                            texture = Texture2D.GetTextureData(mips[i], export.Game, export.Game != MEGame.UDK ? MEDirectories.GetDefaultGamePath(export.Game) : null, false); //copy in external textures
                             if (storageType != StorageTypes.pccUnc)
                             {
                                 texture = TextureCompression.ConvertTextureCompression(texture, uncompressedSize, ref storageType, newGame, true); // Convert the storage type to work with the listed game

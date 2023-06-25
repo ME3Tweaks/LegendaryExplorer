@@ -124,5 +124,21 @@ namespace LegendaryExplorerCore.Packages
             MEGame.LELauncher => throw new Exception($"{game} does not support CookedDirName()"),
             _ => "CookedPCConsole"
         };
+
+        /// <summary>
+        /// Gets the standard file extension for a package for the specified PC game
+        /// </summary>
+        /// <param name="game">The game to check</param>
+        /// <param name="isMapFile">ME1 ONLY: If this is a map file like BIOA_STA00</param>
+        /// <param name="isScriptFile">ME1 ONLY: If this is a script file like BIOC_Base</param>
+        /// <returns>File extension including the dot</returns>
+        public static string PCPackageFileExtension(this MEGame game, bool isMapFile = false, bool isScriptFile = false) => game switch
+        {
+            MEGame.ME1 when isMapFile => ".sfm",
+            MEGame.ME1 when isScriptFile => ".u",
+            MEGame.ME1 => ".upk",
+            MEGame.LELauncher => throw new Exception($"{game} does not support PCPackageFileExtension()"),
+            _ => ".pcc"
+        };
     }
 }

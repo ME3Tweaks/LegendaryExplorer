@@ -67,52 +67,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 }
             }
         }
-
-        public static SequenceObjectInfo getSequenceObjectInfo(string className)
-        {
-            return SequenceObjects.TryGetValue(className, out SequenceObjectInfo seqInfo) ? seqInfo : null;
-        }
-
-        public static List<string> getSequenceObjectInfoInputLinks(string className)
-        {
-            if (SequenceObjects.TryGetValue(className, out SequenceObjectInfo seqInfo))
-            {
-                if (seqInfo.inputLinks != null)
-                {
-                    return SequenceObjects[className].inputLinks;
-                }
-                if (Classes.TryGetValue(className, out ClassInfo info) && info.baseClass != "Object" && info.baseClass != "Class")
-                {
-                    return getSequenceObjectInfoInputLinks(info.baseClass);
-                }
-            }
-            return null;
-        }
-
-        public static string getEnumTypefromProp(string className, NameReference propName, ClassInfo nonVanillaClassInfo = null)
-        {
-            PropertyInfo p = getPropertyInfo(className, propName, nonVanillaClassInfo: nonVanillaClassInfo);
-            if (p == null)
-            {
-                p = getPropertyInfo(className, propName, true, nonVanillaClassInfo);
-            }
-            return p?.Reference;
-        }
-
-        public static List<NameReference> getEnumValues(string enumName, bool includeNone = false)
-        {
-            if (Enums.ContainsKey(enumName))
-            {
-                var values = new List<NameReference>(Enums[enumName]);
-                if (includeNone)
-                {
-                    values.Insert(0, "None");
-                }
-                return values;
-            }
-            return null;
-        }
-
+        
         public static PropertyInfo getPropertyInfo(string className, NameReference propName, bool inStruct = false, ClassInfo nonVanillaClassInfo = null, bool reSearch = true, ExportEntry containingExport = null)
         {
             if (className.StartsWith("Default__", StringComparison.OrdinalIgnoreCase))
@@ -126,15 +81,17 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 info = nonVanillaClassInfo;
                 infoExists = true;
             }
-
+            
             // 07/18/2022 - If during property lookup we are passed a class 
             // that we don't know about, generate and use it, since it will also have superclass info
             // For example looking at a custom subclass in Interpreter, this code will resolve the ???'s
+            // //09/23/2022 - Fixed Classes[] = assignment using the class name rather than the containing name. This would make future
+            // lookups wrong.
             // - Mgamerz
             if (!infoExists && !inStruct && containingExport != null && containingExport.IsDefaultObject && containingExport.Class is ExportEntry classExp)
             {
                 info = generateClassInfo(classExp, false);
-                Classes[className] = info;
+                Classes[containingExport.ClassName] = info;
                 infoExists = true;
             }
 
@@ -197,66 +154,6 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
         }
 
         internal static readonly ConcurrentDictionary<string, PropertyCollection> defaultStructValuesLE3 = new();
-
-        public static Property getDefaultProperty(NameReference propName, PropertyInfo propInfo, PackageCache packageCache, bool stripTransients = true, bool isImmutable = false)
-        {
-            switch (propInfo.Type)
-            {
-                case PropertyType.IntProperty:
-                    return new IntProperty(0, propName);
-                case PropertyType.FloatProperty:
-                    return new FloatProperty(0f, propName);
-                case PropertyType.DelegateProperty:
-                    return new DelegateProperty("None", 0);
-                case PropertyType.ObjectProperty:
-                    return new ObjectProperty(0, propName);
-                case PropertyType.NameProperty:
-                    return new NameProperty("None", propName);
-                case PropertyType.BoolProperty:
-                    return new BoolProperty(false, propName);
-                case PropertyType.ByteProperty when propInfo.IsEnumProp():
-                    return new EnumProperty(propInfo.Reference, MEGame.LE3, propName);
-                case PropertyType.ByteProperty:
-                    return new ByteProperty(0, propName);
-                case PropertyType.StrProperty:
-                    return new StrProperty("", propName);
-                case PropertyType.StringRefProperty:
-                    return new StringRefProperty(propName);
-                case PropertyType.BioMask4Property:
-                    return new BioMask4Property(0, propName);
-                case PropertyType.ArrayProperty:
-                    switch (GlobalUnrealObjectInfo.GetArrayType(MEGame.LE3, propInfo))
-                    {
-                        case ArrayType.Object:
-                            return new ArrayProperty<ObjectProperty>(propName);
-                        case ArrayType.Name:
-                            return new ArrayProperty<NameProperty>(propName);
-                        case ArrayType.Enum:
-                            return new ArrayProperty<EnumProperty>(propName);
-                        case ArrayType.Struct:
-                            return new ArrayProperty<StructProperty>(propName);
-                        case ArrayType.Bool:
-                            return new ArrayProperty<BoolProperty>(propName);
-                        case ArrayType.String:
-                            return new ArrayProperty<StrProperty>(propName);
-                        case ArrayType.Float:
-                            return new ArrayProperty<FloatProperty>(propName);
-                        case ArrayType.Int:
-                            return new ArrayProperty<IntProperty>(propName);
-                        case ArrayType.Byte:
-                            return new ImmutableByteArrayProperty(propName);
-                        default:
-                            return null;
-                    }
-                case PropertyType.StructProperty:
-                    isImmutable = isImmutable || GlobalUnrealObjectInfo.IsImmutable(propInfo.Reference, MEGame.LE3);
-                    return new StructProperty(propInfo.Reference, GlobalUnrealObjectInfo.getDefaultStructValue(MEGame.LE3, propInfo.Reference, stripTransients, packageCache), propName, isImmutable);
-                case PropertyType.None:
-                case PropertyType.Unknown:
-                default:
-                    return null;
-            }
-        }
 
         #region Generating
         //call this method to regenerate LE3ObjectInfo.json
@@ -638,8 +535,10 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 properties =
                 {
                     new KeyValuePair<NameReference, PropertyInfo>("InvasionCondition", new PropertyInfo(PropertyType.IntProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("PlanetPreviewCondition", new PropertyInfo(PropertyType.IntProperty)),
                     new KeyValuePair<NameReference, PropertyInfo>("PreInvasionDescription", new PropertyInfo(PropertyType.StringRefProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("m_bDestroyedbyReapers", new PropertyInfo(PropertyType.BoolProperty))
+                    new KeyValuePair<NameReference, PropertyInfo>("m_bDestroyedbyReapers", new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("m_bNoPlanetScan", new PropertyInfo(PropertyType.BoolProperty))
                 }
             };
             classes["SFXGalaxyMapShipAppearance"] = new ClassInfo
@@ -681,6 +580,25 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
 
                    new KeyValuePair<NameReference, PropertyInfo>("ArrowMaterialInstance", new PropertyInfo(PropertyType.ObjectProperty, "MaterialInstanceConstant"))
                 }
+            };
+            //Kinkojiro - New Class - not in resources as has Mail gui. Let me know if anyone wants.
+            classes["SFXSeqAct_MailGUI_Sorted"] = new ClassInfo
+            {
+                baseClass = "BioSequenceLatentAction",
+                //pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                //exportIndex = 0, not in LE3Resources.pcc
+                properties =
+                {
+                    new KeyValuePair<NameReference, PropertyInfo>("Honorifics", new PropertyInfo(PropertyType.ArrayProperty, "StrProperty")),
+                    new KeyValuePair<NameReference, PropertyInfo>("m_bSortMail", new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("m_MailGUIResource", new PropertyInfo(PropertyType.ObjectProperty, "GFXMovieInfo")),
+                    new KeyValuePair<NameReference, PropertyInfo>("MailDataClass", new PropertyInfo(PropertyType.ObjectProperty, "SFXGUIData_Mail")),
+                }
+            };
+            sequenceObjects["SFXSeqAct_MailGUI_Sorted"] = new SequenceObjectInfo
+            {
+                ObjInstanceVersion = 3,
+                inputLinks = new List<string> { "Send Mail", "Open UI" }    
             };
 
             ME3UnrealObjectInfo.AddIntrinsicClasses(classes, MEGame.LE3);

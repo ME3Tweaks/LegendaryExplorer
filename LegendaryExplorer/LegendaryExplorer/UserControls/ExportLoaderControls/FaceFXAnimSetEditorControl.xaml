@@ -40,6 +40,11 @@
             <ListBox x:Name="linesListBox" ItemsSource="{Binding Lines}" SelectedItem="{Binding SelectedLineEntry}"
                  AllowDrop="True" PreviewMouseLeftButtonDown="linesListBox_PreviewMouseLeftButtonDown" MouseMove="linesListBox_MouseMove"
                  DragEnter="linesListBox_DragEnter" Drop="linesListBox_Drop" HorizontalContentAlignment="Stretch" PreviewMouseRightButtonDown="linesListBox_PreviewMouseRightButtonDown">
+                <ListBox.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Add Line" Click="AddLine_Click"/>
+                    </ContextMenu>
+                </ListBox.ContextMenu>
                 <ListBox.ItemTemplate>
                     <DataTemplate DataType="{x:Type exportLoaderControls:FaceFXLineEntry}">
                         <StackPanel>
@@ -48,6 +53,7 @@
                             <TextBlock Text="{Binding LengthAsString}" VerticalAlignment="Center" Foreground="Gray"/>
                             <StackPanel.ContextMenu>
                                 <ContextMenu x:Name="lineContextMenu">
+                                    <MenuItem Header="Add Line" Click="AddLine_Click"/>
                                     <MenuItem Header="Delete Section of line" Click="DelLineSec_Click"/>
                                     <MenuItem Header="Import Section of line" Click="ImpLineSec_Click"/>
                                     <MenuItem Header="Export Section of line" Click="ExpLineSec_Click"/>
@@ -99,16 +105,25 @@
                      AllowDrop="True" PreviewMouseLeftButtonDown="animationListBox_PreviewMouseLeftButtonDown" MouseMove="animationListBox_MouseMove"
                      DragEnter="animationListBox_DragEnter" Drop="animationListBox_Drop" HorizontalContentAlignment="Stretch"
                      HorizontalAlignment="Stretch" SelectedItem="{Binding SelectedAnimation}">
+            <ListBox.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Add Animation" Click="AddAnimation_Click"/>
+                    <MenuItem Header="Replace All Animations" Click="ReplaceAnimations_Click"/>
+                </ContextMenu>
+            </ListBox.ContextMenu>
             <ListBox.ItemTemplate>
                 <DataTemplate DataType="{x:Type exportLoaderControls:Animation}">
                     <TextBlock Text="{Binding Name}" Margin="0 0 5 0">
                         <TextBlock.ContextMenu>
                             <ContextMenu>
+                                <MenuItem Header="Add Animation" Click="AddAnimation_Click"/>
                                 <MenuItem Header="Delete" Click="DeleteAnim_Click"/>
                                 <MenuItem Header="Delete All Keys" Click="DeleteAnimKeys_Click"/>
                                 <MenuItem Header="Set As Reference Curve" Click="SelectForCompare_Click"/>
                                 <MenuItem Header="Clone" Click="CloneAnimation_Click"/>
                                 <MenuItem Header="Change Name" Click="ChangeAnimName_Click"></MenuItem>
+                                <MenuItem Header="Replace All Animations" Click="ReplaceAnimations_Click"/>
+                                <MenuItem Header="Replace All Animations Except Lipsync" Click="ReplaceAnimations_Click" CommandParameter="m_"/>
                                 <MenuItem Header="Export Curve to Excel" Click="ExportToExcel_Click">
                                     <MenuItem.Icon>
                                         <Image Source="/Resources/Images/excel.png" Width="16" Height="16" Margin="0,0,2,0"/>

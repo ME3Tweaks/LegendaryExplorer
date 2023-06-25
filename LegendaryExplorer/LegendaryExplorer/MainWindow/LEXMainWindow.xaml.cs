@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -20,6 +21,7 @@ using LegendaryExplorer.Tools.PackageEditor;
 using LegendaryExplorer.UnrealExtensions;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Misc.AppSettings;
+using LegendaryExplorer.Startup;
 using LegendaryExplorerCore;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
@@ -79,6 +81,7 @@ namespace LegendaryExplorer.MainWindow
                 AllowsTransparency = false;
                 Show();
                 splashScreen.Close();
+                DependencyCheck.CheckDependencies(this);
             }
             else
             {
@@ -88,7 +91,11 @@ namespace LegendaryExplorer.MainWindow
                 var sb = new Storyboard();
                 sb.AddDoubleAnimation(1, 300, this, nameof(Opacity));
                 sb.AddDoubleAnimation(0, 300, splashScreen, nameof(Opacity));
-                sb.Completed += (_, _) => splashScreen.Close();
+                sb.Completed += (_, _) =>
+                {
+                    splashScreen.Close();
+                    DependencyCheck.CheckDependencies(this);
+                };
                 sb.Begin();
             }
         }

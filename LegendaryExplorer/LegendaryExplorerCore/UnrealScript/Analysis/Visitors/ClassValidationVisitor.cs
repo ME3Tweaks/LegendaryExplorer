@@ -15,6 +15,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 {
     internal enum ValidationPass
     {
+        ClassRegistration,
         TypesAndFunctionNamesAndStateNames,
         ClassAndStructMembersAndFunctionParams,
         BodyPass
@@ -31,7 +32,9 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
         public static void RunAllPasses(ASTNode node, MessageLog log, SymbolTable symbols)
         {
-            var validator = new ClassValidationVisitor(log, symbols, ValidationPass.TypesAndFunctionNamesAndStateNames);
+            var validator = new ClassValidationVisitor(log, symbols, ValidationPass.ClassRegistration);
+            node.AcceptVisitor(validator);
+            validator.Pass = ValidationPass.TypesAndFunctionNamesAndStateNames;
             node.AcceptVisitor(validator);
             validator.Pass = ValidationPass.ClassAndStructMembersAndFunctionParams;
             node.AcceptVisitor(validator);
@@ -58,7 +61,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         {
             switch (Pass)
             {
-                case ValidationPass.TypesAndFunctionNamesAndStateNames:
+                case ValidationPass.ClassRegistration:
                 {
                     // TODO: allow duplicate names as long as its in different packages!
                     if (node.Name != "Object")//validating Object is a special case, as it is the base class for all classes
@@ -71,7 +74,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
                         if (Symbols.TryGetType(node.Parent.Name, out Class parentClass))
                         {
-                            Log.Tokens?.AddDefinitionLink(parentClass, node.Parent.StartPos, node.Parent.Length);
+                            Log.Tokens?.AddDefinitionLink(parentClass, node.Parent.StartPos, node.Parent.TextLength);
                             node.Parent = parentClass;
 
                             if (parentClass == node)
@@ -89,7 +92,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                         {
                             if (Symbols.TryGetType(node._outerClass.Name, out Class outerClass))
                             {
-                                Log.Tokens?.AddDefinitionLink(outerClass, node._outerClass.StartPos, node._outerClass.Length);
+                                Log.Tokens?.AddDefinitionLink(outerClass, node._outerClass.StartPos, node._outerClass.TextLength);
                                 node._outerClass = outerClass;
                             }
                             else
@@ -103,7 +106,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                             VariableType interfaceStub = node.Interfaces[i];
                             if (Symbols.TryGetType(interfaceStub.Name, out Class @interface))
                             {
-                                Log.Tokens?.AddDefinitionLink(@interface, interfaceStub.StartPos, interfaceStub.Length);
+                                Log.Tokens?.AddDefinitionLink(@interface, interfaceStub.StartPos, interfaceStub.TextLength);
 
                                 if (!node.IsNative && @interface.IsNative)
                                 {
@@ -127,11 +130,16 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                         {
                             return Error($"A native class cannot inherit from a non-native class!", node.StartPos);
                         }
-                        Symbols.GoDirectlyToStack(((Class)node.Parent).GetInheritanceString());
+                    }
+                    return Success;
+                }
+                case ValidationPass.TypesAndFunctionNamesAndStateNames:
+                {
+                    if (node.Name != "Object")//validating Object is a special case, as it is the base class for all classes
+                    {
+                        Symbols.GoDirectlyToStack(((Class)node.Parent).GetInheritanceString(), createScopesIfNeccesary: true);
                         Symbols.PushScope(node.Name);
                     }
-
-
 
                     //register all the types this class declares
                     foreach (VariableType type in node.TypeDeclarations)
@@ -337,9 +345,9 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                         var typeStub = node.VarType;
                         if (!Symbols.TryResolveType(ref node.VarType))
                         {
-                            return Error($"No type named '{node.VarType.FullTypeName()}' exists!", node.VarType.StartPos, node.VarType.EndPos);
+                            return Error($"No type named '{node.VarType.DisplayName()}' exists!", node.VarType.StartPos, node.VarType.EndPos);
                         }
-                        Log.Tokens?.AddDefinitionLink(node.VarType, typeStub.StartPos, typeStub.Length);
+                        Log.Tokens?.AddDefinitionLink(node.VarType, typeStub.StartPos, typeStub.TextLength);
                     }
 
                     if (Symbols.SymbolExistsInCurrentScope(node.Name))
@@ -483,7 +491,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                     if (node.Outer is ObjectType containingObject && containingObject.LookupStruct(node.Parent.Name) is Struct parentStruct
                         || Symbols.TryGetType(node.Parent.Name, out parentStruct))
                     {
-                        Log.Tokens?.AddDefinitionLink(parentStruct, node.Parent.StartPos, node.Parent.Length);
+                        Log.Tokens?.AddDefinitionLink(parentStruct, node.Parent.StartPos, node.Parent.TextLength);
                         node.Parent = parentStruct;
                         parentScope = $"{NodeUtils.GetContainingClass(node.Parent).GetInheritanceString()}.{node.Parent.Name}";
                     }
@@ -612,7 +620,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                     //Consts do not have to be globally unique, but they do have to be unique within a scope
                     if (((ObjectType)node.Outer).TypeDeclarations.Any(decl => decl != node && decl.Name.CaseInsensitiveEquals(node.Name)))
                     {
-                        return Error($"A type named '{node.FullTypeName()}' already exists in this {node.Outer.GetType().Name.ToLower()}!", node.StartPos, node.EndPos);
+                        return Error($"A type named '{node.DisplayName()}' already exists in this {node.Outer.GetType().Name.ToLower()}!", node.StartPos, node.EndPos);
                     }
                 }
 
@@ -661,7 +669,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                     return Error("Error in function parameters.", node.StartPos, node.EndPos);
 
 
-                if (node.FriendlyName is not null //true in ME1, ME2, LE1, and LE2
+                if (node.FriendlyName is not null //true in ME1, ME2, LE1, LE2, and UDK
                  && node.IsOperator)
                 {
                     TokenType operatorType = OperatorHelper.FriendlyNameToTokenType(node.FriendlyName);
@@ -788,6 +796,14 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 {
                     //if the return type is > 64 bytes, it can't be allocated on the stack.
                     node.RetValNeedsDestruction = node.ReturnValueDeclaration.Flags.Has(EPropertyFlags.NeedCtorLink) || node.ReturnType.Size(Symbols.Game) > 64;
+                }
+
+                if (node.Flags.Has(EFunctionFlags.Delegate))
+                {
+                    if (containingClass.VariableDeclarations.Find(varDecl => varDecl.VarType is DelegateType delType && delType.DefaultFunction == node && varDecl.Name == $"__{node.Name}__Delegate") is null)
+                    {
+                        return Error($"Delegate functions must have a corresponding property! Expected a declaration of the form 'var delegate<{node.Name}> __{node.Name}__Delegate;'", node.StartPos, node.EndPos);
+                    }
                 }
             }
             return Success;

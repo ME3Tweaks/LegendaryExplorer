@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Unreal.Collections;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
     public class GuidCache : ObjectBinary
     {
-        public OrderedMultiValueDictionary<NameReference, Guid> PackageGuidMap;
+        public UMultiMap<NameReference, Guid> PackageGuidMap; //TODO: Make this a UMap
 
         protected override void Serialize(SerializingContainer2 sc)
         {
@@ -19,7 +19,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             return new()
             {
-                PackageGuidMap = new OrderedMultiValueDictionary<NameReference, Guid>()
+                PackageGuidMap = new()
             };
         }
 

@@ -71,7 +71,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 
     public static class VariableTypeExtensions
     {
-        public static string FullTypeName(this VariableType type)
+        public static string DisplayName(this VariableType type)
         {
             if (type is null)
             {

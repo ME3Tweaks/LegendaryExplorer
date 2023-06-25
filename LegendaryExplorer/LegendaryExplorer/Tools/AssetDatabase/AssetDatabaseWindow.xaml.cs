@@ -43,7 +43,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
     public partial class AssetDatabaseWindow : TrackingNotifyPropertyChangedWindowBase
     {
         #region Declarations
-        public const string dbCurrentBuild = "7.2"; //If changes are made that invalidate old databases edit this.
+        public const string dbCurrentBuild = "8.0"; //If changes are made that invalidate old databases edit this.
         private int previousView { get; set; }
         private int _currentView;
         public int currentView { get => _currentView; set { previousView = _currentView; SetProperty(ref _currentView, value); } }
@@ -124,11 +124,6 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         private ConcurrentAssetDB GeneratedDB = new();
 
         /// <summary>
-        /// Items show in the list that are currently being processed
-        /// </summary>
-        public ObservableCollectionExtended<SingleFileScanner> CurrentDumpingItems { get; set; } = new();
-
-        /// <summary>
         /// All items in the queue
         /// </summary>
         private List<SingleFileScanner> AllDumpingItems;
@@ -177,10 +172,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         private IMEPackage audioPcc;
         private GridViewColumnHeader _lastHeaderClicked = null;
         private ListSortDirection _lastDirection = ListSortDirection.Ascending;
-        private bool _parseConvos;
-        public bool ParseConvos { get => _parseConvos; set => SetProperty(ref _parseConvos, value); }
-        private bool _parsePlotUsages;
-        public bool ParsePlotUsages { get => _parsePlotUsages; set => SetProperty(ref _parsePlotUsages, value); }
+
         private BlockingCollection<ConvoLine> _linequeue = new();
         private Tuple<string, string, int, string, bool> _currentConvo = new(null, null, -1, null, false); //ConvoName, FileName, export, contentdir, isAmbient
         public Tuple<string, string, int, string, bool> CurrentConvo { get => _currentConvo; set => SetProperty(ref _currentConvo, value); }
@@ -401,7 +393,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                             estream.CopyTo(ms);
                         }
                         ms.Position = 0;
-                        return JsonFileParse(ms, cancel);
+                        return DeserializeDB(ms, cancel);
                     }
                     //Wrong build - send dummy pdb back and ask user to refresh
                     AssetDB pdb = new();
@@ -424,12 +416,12 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             }
             return null;
         }
-        private static AssetDB JsonFileParse(Stream ms, CancellationToken ct)
+        private static AssetDB DeserializeDB(MemoryStream ms, CancellationToken ct)
         {
 
             try
             {
-                var readData = BinaryConverter.Deserialize<AssetDB>(ms);
+                var readData = BinaryConverter.Deserialize<AssetDB>(ms.GetBuffer().AsSpan(0, (int)ms.Length));
                 if (ct.IsCancellationRequested)
                 {
                     Console.WriteLine("Cancelled ParseDB");
@@ -452,10 +444,6 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             IsBusy = true;
             CurrentOverallOperationText = "Database saving...";
 
-            if (!ParseConvos && !CurrentGame.IsGame1())
-            {
-                CurrentDataBase.Lines.Clear();
-            }
 
             await using (var fileStream = new FileStream(CurrentDBPath, FileMode.Create))
             {
@@ -533,15 +521,15 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                 if (spkrs.All(s => s != line.Speaker))
                     spkrs.Add(line.Speaker);
             }
-            var emptylines = CurrentDataBase.Lines.Where(l => l.Line == "No Data").ToList();
-            foreach (var line in emptylines)
-            {
-                CurrentDataBase.Lines.Remove(line);
-            }
+
+            int lineCountWithEmptyLines = CurrentDataBase.Lines.Count;
+            CurrentDataBase.Lines.RemoveAll(l => l.Line == "No Data");
+            int numEmptyLines = lineCountWithEmptyLines - CurrentDataBase.Lines.Count;
+
             GeneratedDB.GeneratedLines.Clear();
             spkrs.Sort();
             SpeakerList.AddRange(spkrs);
-            if (!emptylines.IsEmpty())
+            if (numEmptyLines > 0)
             {
                 menu_SaveXEmptyLines.IsEnabled = true;
             }
@@ -551,7 +539,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                 MessageBox.Show("Line list is empty! Make sure you have TLKs loaded in TLK Manager.");
             }
 #if DEBUG
-            System.Diagnostics.Debug.WriteLine($"ADB: {emptylines.Count} empty lines");
+            System.Diagnostics.Debug.WriteLine($"ADB: {numEmptyLines} empty lines");
             System.Diagnostics.Debug.WriteLine("Line worker done");
 #endif
         }
@@ -707,26 +695,18 @@ namespace LegendaryExplorer.Tools.AssetDatabase
 
                         Localization = CurrentDataBase.Localization;
                         AssetFilters.MaterialFilter.LoadFromDatabase(CurrentDataBase);
-                        ParseConvos = !CurrentDataBase.Lines.IsEmpty();
-                        ParsePlotUsages = CurrentDataBase.PlotUsages.Any();
                         IsBusy = false;
                         CurrentOverallOperationText = $"Database generated {CurrentDataBase.GenerationDate} Classes: {CurrentDataBase.ClassRecords.Count} " +
                                                       $"Animations: {CurrentDataBase.Animations.Count} Materials: {CurrentDataBase.Materials.Count} Meshes: {CurrentDataBase.Meshes.Count} " +
-                                                      $"Particles: { CurrentDataBase.Particles.Count} Textures: { CurrentDataBase.Textures.Count} Elements: { CurrentDataBase.GUIElements.Count}";
-                        if (ParseConvos)
-                        {
-                            CurrentOverallOperationText = CurrentOverallOperationText + $" Lines: { CurrentDataBase.Lines.Count}";
-                        }
+                                                      $"Particles: { CurrentDataBase.Particles.Count} Textures: { CurrentDataBase.Textures.Count} Elements: { CurrentDataBase.GUIElements.Count}" +
+                                                      $" Lines: {CurrentDataBase.Lines.Count}";
 #if DEBUG
                         var end = DateTime.UtcNow;
                         double length = (end - start).TotalMilliseconds;
                         CurrentOverallOperationText = $"{CurrentOverallOperationText} LoadTime: {length}ms";
 #endif
 
-                        if (ParseConvos)
-                        {
-                            GetConvoLinesBackground();
-                        }
+                        GetConvoLinesBackground();
                     }
                 });
 
@@ -927,7 +907,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         {
             var cr = (ClassRecord)lstbx_Classes.SelectedItem;
             var sourcepkg = cr.DefinitionFile;
-            var sourceexp = cr.Definition_UID;
+            var sourceexp = cr.DefinitionUIndex;
 
             if (sourcepkg < 0)
             {
@@ -1114,7 +1094,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                 }
                 else if (record.BaseUsage.Context is PlotUsageContext.CndFile)
                 {
-                    // TODO
+                    OpenInToolkit("CndEd", GetFilePath(usagepkg, contentdir), usageUID);
                 }
             }
         }
@@ -2102,22 +2082,18 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             {
                 if (x.DumpCanceled)
                 {
-                    //OverallProgressValue++;
                     return;
                 }
-                Application.Current.Dispatcher.Invoke(() => CurrentDumpingItems.Add(x));
-                x.DumpPackageFile(game, GeneratedDB); // What to do on each item
-                Application.Current.Dispatcher.Invoke(() =>
+                x.DumpPackageFile(game, GeneratedDB);
+                Application.Current.Dispatcher.InvokeAsync(() =>
                 {
                     BusyText = $"Scanned {OverallProgressValue}/{OverallProgressMaximum} files\n\n{GeneratedDB.GetProgressString()}";
                     OverallProgressValue++; //Concurrency 
-                    CurrentDumpingItems.Remove(x);
                 });
             }, new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = Math.Clamp(Environment.ProcessorCount, 1, 4) });
 
             AllDumpingItems = new List<SingleFileScanner>();
-            CurrentDumpingItems.ClearEx();
-            var scanOptions = new AssetDBScanOptions(scanCRC, ParseConvos, ParsePlotUsages, CurrentDataBase.Localization);
+            var scanOptions = new AssetDBScanOptions(scanCRC, CurrentDataBase.Localization);
             foreach (var fkey in fileKeys)
             {
                 var threadtask = new SingleFileScanner(fkey.Item2, fkey.Item1, scanOptions);
@@ -2174,6 +2150,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             CommandManager.InvalidateRequerySuggested();
 
             AssetDB pdb = await Task.Run(GeneratedDB.CollateDataBase);
+            GeneratedDB.Clear();
             //Add and sort Classes
             CurrentDataBase.AddRecords(pdb);
 
@@ -2187,7 +2164,6 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                 FileListExtended.Add(new(fileName, cd, mount));
             }
 
-            GeneratedDB.Clear();
             AssetFilters.MaterialFilter.LoadFromDatabase(CurrentDataBase);
             Settings.AssetDBGame = CurrentDataBase.Game.ToString();
             isProcessing = false;
@@ -2198,14 +2174,11 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             var elapsed = DateTime.Now - beginTime;
             MessageBox.Show(this, $"{CurrentGame} Database generated in {elapsed:mm\\:ss}");
             MemoryAnalyzer.ForceFullGC(true);
-            if (!CurrentGame.IsGame1() && ParseConvos)
+            if (!CurrentGame.IsGame1())
             {
                 GetConvoLinesBackground();
             }
-            if (ParsePlotUsages)
-            {
-                CurrentDataBase.PlotUsages.LoadPlotPaths(game);
-            }
+            CurrentDataBase.PlotUsages.LoadPlotPaths(game);
         }
 
         private void CancelDump(object obj)

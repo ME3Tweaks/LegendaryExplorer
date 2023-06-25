@@ -1,6 +1,9 @@
 ﻿using NAudio.Wave;
 using System;
 using System.IO;
+using LegendaryExplorerCore.Audio;
+using NAudio.Vorbis;
+using NVorbis;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls
 {
@@ -13,7 +16,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         public PlaybackStopTypes PlaybackStopType { get; set; }
 
-        public WaveFileReader _audioFileReader { get; set; }
+        public WaveStream _audioFileReader { get; set; }
         private WaveOutEvent _output;
 
         public event Action PlaybackResumed;
@@ -33,9 +36,17 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
             else
             {
+                if (audioBuffer is OggWaveStream)
+                {
+                    _audioFileReader = new VorbisWaveReader(audioBuffer);
+                }
+                else
+                {
+                    _audioFileReader = new WaveFileReader(audioBuffer);
+
+                }
                 //for debugging
                 //audioBuffer.WriteToFile(@"C:\users\Mgamerz\desktop\out.wav");
-                _audioFileReader = new WaveFileReader(audioBuffer);
                 waveChannel = new WaveChannel32(_audioFileReader);
                 waveChannel.PadWithZeroes = false;
                 _output.Init(waveChannel);

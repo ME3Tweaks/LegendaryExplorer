@@ -1,21 +1,6 @@
-﻿using Microsoft.Win32;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Drawing;
-using System.IO;
-using System.IO.Pipes;
-using System.Linq;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Threading;
-using System.Numerics;
-using DashStyle = System.Drawing.Drawing2D.DashStyle;
-using System.Threading.Tasks;
-using LegendaryExplorer.Dialogs;
+﻿using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.GameInterop;
+using LegendaryExplorer.GameInterop.InteropTargets;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Misc.AppSettings;
 using LegendaryExplorer.Packages;
@@ -27,16 +12,31 @@ using LegendaryExplorer.UserControls.ExportLoaderControls;
 using LegendaryExplorer.UserControls.SharedToolControls;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
+using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
-using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Unreal.Collections;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
+using Microsoft.Win32;
 using Piccolo;
 using Piccolo.Event;
-using Piccolo.Nodes;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Numerics;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Threading;
+using DashStyle = System.Drawing.Drawing2D.DashStyle;
 using RectangleF = System.Drawing.RectangleF;
 
 namespace LegendaryExplorer.Tools.PathfindingEditor
@@ -120,6 +120,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
         public readonly PathingZoomController zoomController;
 
         private string FileQueuedForLoad;
+        private IMEPackage PackageQueuedForLoad;
         private ExportEntry ExportQueuedForFocus;
         public ObservableCollectionExtended<ExportEntry> ActiveNodes { get; } = new();
         public ObservableCollectionExtended<ExportEntry> ActiveOverlayNodes { get; } = new();
@@ -258,7 +259,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
         public ICommand OpenCommand { get; set; }
         public ICommand SaveCommand { get; set; }
         public ICommand SaveAsCommand { get; set; }
-
+        public ICommand OpenOtherVersionCommand { get; set; }
         public ICommand TogglePathfindingCommand { get; set; }
         public ICommand ToggleEverythingElseCommand { get; set; }
         public ICommand ToggleActorsCommand { get; set; }
@@ -301,6 +302,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
         public ICommand LoadGroupCommand { get; set; }
         public ICommand SaveGroupCommand { get; set; }
         public ICommand ShowTriggerCylindersCommand { get; set; }
+        public ICommand AddAllPathnodesToBioSquadCombatCommand { get; set; }
 
         private void LoadCommands()
         {
@@ -356,6 +358,8 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
             RemoveFromGroupBoxCommand = new RelayCommand(RemoveFromGroup);
             LoadGroupCommand = new GenericCommand(LoadActorGroup, PackageIsLoaded);
             SaveGroupCommand = new GenericCommand(SaveActorGroup, () => !ActorGroup.IsEmpty());
+            OpenOtherVersionCommand = new GenericCommand(OpenOtherVersion, () => Pcc != null && Pcc.Game.IsMEGame());
+            AddAllPathnodesToBioSquadCombatCommand = new GenericCommand(AddAllPathnodesToBioSquadCombat);
         }
 
         private bool IsSplineActorSelected() => ActiveNodes_ListBox.SelectedItem is ExportEntry exp && exp.IsA("SplineActor");
@@ -566,7 +570,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
             graphEditor = (PathingGraphEditor)GraphHost.Child;
             graphEditor.BackColor = GraphEditorBackColor;
             AllowRefresh = true;
-            RecentsController.InitRecentControl(Toolname, Recents_MenuItem, LoadFile);
+            RecentsController.InitRecentControl(Toolname, Recents_MenuItem, x => LoadFile(x));
             zoomController = new PathingZoomController(graphEditor);
             PathEdUtils.LoadClassesDB();
             List<PathfindingDB_ExportType> types = PathEdUtils.ExportClassDB.Where(x => x.pathnode).ToList();
@@ -593,8 +597,9 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
 
         private void ReceivedGameMessage(string obj)
         {
-            if (PlayerGPSObject != null && (DateTime.Now - LastGPSUpdate) > TimeSpan.FromSeconds(1))
+            if (PlayerGPSObject != null && (DateTime.Now - LastGPSUpdate) > TimeSpan.FromSeconds(1) && obj.StartsWith("PATHFINDING_GPS "))
             {
+                obj = obj.Substring(16); // Remove prefix.
                 //LastGPSUpdate = DateTime.Now;
                 if (obj.StartsWith("PLAYERLOC="))
                 {
@@ -625,6 +630,11 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
             FileQueuedForLoad = fileName;
         }
 
+        public PathfindingEditorWindow(IMEPackage package) : this()
+        {
+            PackageQueuedForLoad = package;
+        }
+
         public PathfindingEditorWindow(ExportEntry export) : this()
         {
             FileQueuedForLoad = export.FileRef.FilePath;
@@ -633,13 +643,22 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
 
         private void PathfindingEditorWPF_Loaded(object sender, RoutedEventArgs e)
         {
-            if (FileQueuedForLoad != null)
+            if (FileQueuedForLoad != null || PackageQueuedForLoad != null)
             {
                 Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action(() =>
                 {
                     //Wait for all children to finish loading
-                    LoadFile(FileQueuedForLoad);
-                    FileQueuedForLoad = null;
+                    if (FileQueuedForLoad != null)
+                    {
+                        LoadFile(FileQueuedForLoad);
+                        FileQueuedForLoad = null;
+                    }
+                    else if (PackageQueuedForLoad != null)
+                    {
+                        LoadFile(PackageQueuedForLoad.FilePath, () => RegisterPackage(PackageQueuedForLoad));
+                        PackageQueuedForLoad = null;
+                    }
+
                     if (ExportQueuedForFocus != null && ExportQueuedForFocus.ClassName != "Level")
                     {
                         if (pathfindingNodeClasses.Contains(ExportQueuedForFocus.ClassName)) { ShowPathfindingNodesLayer = true; }
@@ -691,13 +710,13 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
 #if DEBUG
                 //graphEditor.DebugEventHandlers();
 #endif
-                if (Pcc is not null)
+                if (Pcc is not null && GameController.GetInteropTargetForGame(Pcc.Game) is InteropTarget interopTarget)
                 {
                     GameController.GetInteropTargetForGame(Pcc.Game).GameReceiveMessage -= ReceivedGameMessage;
                 }
             }
         }
-        private void LoadFile(string fileName)
+        private void LoadFile(string fileName, Action loadPackageDelegate = null)
         {
             CurrentFile = null;
             ActiveNodes.ClearEx();
@@ -705,15 +724,25 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
             CombatZones.ClearEx();
             ActorGroup.ClearEx();
             GroupTag = "Tag";
-            if (Pcc != null)
+            if (Pcc != null && GameController.GetInteropTargetForGame(Pcc.Game) is InteropTarget interopTarget)
             {
+                // Remove existing handler in case game changes
                 GameController.GetInteropTargetForGame(Pcc.Game).GameReceiveMessage -= ReceivedGameMessage;
             }
 
             StatusText = $"Loading {Path.GetFileName(fileName)}";
             Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
 
-            LoadMEPackage(fileName);
+            // Hack: Just use our delegate to register package so we don't have to split all of this out into pre and post load
+            if (loadPackageDelegate != null)
+            {
+                loadPackageDelegate();
+            }
+            else
+            {
+                // Default behavior
+                LoadMEPackage(fileName);
+            }
             PersistentLevelExport = Pcc.Exports.FirstOrDefault(x => x.ClassName == "Level" && x.ObjectName == "PersistentLevel");
             if (PersistentLevelExport == null)
             {
@@ -740,8 +769,8 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                 {
                     ChangingSelectionByGraphClick = true;
                     ActiveNodes_ListBox.SelectedIndex = 0;
-                    var panToRectangle = new RectangleF(graphcenter, new SizeF(200, 200));
-                    graphEditor.Camera.AnimateViewToCenterBounds(panToRectangle, false, 1000);
+                    var panToRectangle = new RectangleF(graphcenter, new SizeF(2000, 2000));
+                    graphEditor.Camera.AnimateViewToCenterBounds(panToRectangle, true, 1000);
                     ChangingSelectionByGraphClick = false;
                 }
                 else
@@ -754,8 +783,10 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                 Title = $"Pathfinding Editor - {fileName}";
                 StatusText = null; //Nothing to prepend.
                 PathfindingEditorWPF_ValidationPanel.SetLevel(PersistentLevelExport);
-                GameController.GetInteropTargetForGame(Pcc.Game).GameReceiveMessage += ReceivedGameMessage;
-
+                if (GameController.GetInteropTargetForGame(Pcc.Game) is InteropTarget interopTarget2)
+                {
+                    interopTarget2.GameReceiveMessage += ReceivedGameMessage;
+                }
             }
             else
             {
@@ -769,6 +800,16 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
             }), DispatcherPriority.ContextIdle, null);
         }
 
+        /// <summary>
+        /// Opens an existing package object.
+        /// </summary>
+        /// <param name="package"></param>
+        public void LoadPackage(IMEPackage package)
+        {
+            // This is a hack so we don't have to do preload/load/postload
+            LoadFile(package.FilePath, () => RegisterPackage(package));
+        }
+
         private async void SavePackage()
         {
             await Pcc.SaveAsync();
@@ -776,7 +817,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
 
         private void OpenPackage()
         {
-            var d = new OpenFileDialog { Filter = GameFileFilters.OpenFileFilter };
+            var d = AppDirectories.GetOpenPackageDialog();
             if (d.ShowDialog() == true)
             {
 #if !DEBUG
@@ -3544,7 +3585,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
         #region Experiments
         private void LoadOverlay()
         {
-            var d = new OpenFileDialog { Filter = GameFileFilters.OpenFileFilter };
+            var d = AppDirectories.GetOpenPackageDialog();
             if (d.ShowDialog() == true)
             {
 #if !DEBUG
@@ -3582,7 +3623,8 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
         {
             var d = new OpenFileDialog
             {
-                Filter = "Point Logger ASI file output (txt)|*txt"
+                Filter = "Point Logger ASI file output (txt)|*txt",
+                CustomPlaces = AppDirectories.GameCustomPlaces
             };
             if (d.ShowDialog() == true)
             {
@@ -3658,45 +3700,45 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                 switch (exp.ObjectName.Name)
                 {
                     case "StaticMeshCollectionActor":
+                    {
+                        var smca = exp.GetBinaryData<StaticMeshCollectionActor>();
+                        foreach (int uIndex in smca.Components)
                         {
-                            var smca = exp.GetBinaryData<StaticMeshCollectionActor>();
-                            foreach (int uIndex in smca.Components)
+                            if (exp.FileRef.TryGetUExport(uIndex, out ExportEntry smComponent))
                             {
-                                if (exp.FileRef.TryGetUExport(uIndex, out ExportEntry smComponent))
-                                {
-                                    InvertScalingOnExport(smComponent, "Scale3D");
-                                }
+                                InvertScalingOnExport(smComponent, "Scale3D");
                             }
-
-                            for (int i = 0; i < smca.LocalToWorldTransforms.Count; i++)
-                            {
-                                Matrix4x4 m = smca.LocalToWorldTransforms[i];
-                                m.Translation *= -1;
-                                smca.LocalToWorldTransforms[i] = m;
-                            }
-                            exp.WriteBinary(smca);
-                            break;
                         }
+
+                        for (int i = 0; i < smca.LocalToWorldTransforms.Count; i++)
+                        {
+                            Matrix4x4 m = smca.LocalToWorldTransforms[i];
+                            m.Translation *= -1;
+                            smca.LocalToWorldTransforms[i] = m;
+                        }
+                        exp.WriteBinary(smca);
+                        break;
+                    }
                     default:
+                    {
+                        var props = exp.GetProperties();
+                        StructProperty locationProp = props.GetProp<StructProperty>("location");
+                        if (locationProp != null)
                         {
-                            var props = exp.GetProperties();
-                            StructProperty locationProp = props.GetProp<StructProperty>("location");
-                            if (locationProp != null)
-                            {
-                                FloatProperty xProp = locationProp.Properties.GetProp<FloatProperty>("X");
-                                FloatProperty yProp = locationProp.Properties.GetProp<FloatProperty>("Y");
-                                FloatProperty zProp = locationProp.Properties.GetProp<FloatProperty>("Z");
-                                Debug.WriteLine($"{exp.UIndex} {exp.ObjectName.Instanced} Flipping {xProp.Value},{yProp.Value},{zProp.Value}");
+                            FloatProperty xProp = locationProp.Properties.GetProp<FloatProperty>("X");
+                            FloatProperty yProp = locationProp.Properties.GetProp<FloatProperty>("Y");
+                            FloatProperty zProp = locationProp.Properties.GetProp<FloatProperty>("Z");
+                            Debug.WriteLine($"{exp.UIndex} {exp.ObjectName.Instanced} Flipping {xProp.Value},{yProp.Value},{zProp.Value}");
 
-                                xProp.Value *= -1;
-                                yProp.Value *= -1;
-                                zProp.Value *= -1;
+                            xProp.Value *= -1;
+                            yProp.Value *= -1;
+                            zProp.Value *= -1;
 
-                                exp.WriteProperty(locationProp);
-                                InvertScalingOnExport(exp, "DrawScale3D");
-                            }
-                            break;
+                            exp.WriteProperty(locationProp);
+                            InvertScalingOnExport(exp, "DrawScale3D");
                         }
+                        break;
+                    }
                 }
             }
             MessageBox.Show("Items flipped.", "Flipping complete");
@@ -4437,31 +4479,28 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
 
         private void ShiftActorGroup(Vector3 shifts)
         {
-            foreach (var actor in ActorGroup)
-            {
-                if (actor.ClassName.Contains("CollectionActor"))
-                {
+            (List<ExportEntry> collectionActors, List<ExportEntry> otherActors) = ActorGroup.Split(actor => actor.ClassName.Contains("CollectionActor"));
 
-                    if (ObjectBinary.From(actor) is StaticCollectionActor sca &&
-                        actor.GetProperty<ArrayProperty<ObjectProperty>>(sca.ComponentPropName) is { } components && sca.LocalToWorldTransforms.Count >= components.Count)
+            foreach (ExportEntry actor in collectionActors)
+            {
+                if (ObjectBinary.From(actor) is StaticCollectionActor sca
+                    && actor.GetProperty<ArrayProperty<ObjectProperty>>(sca.ComponentPropName) is { } components
+                    && sca.LocalToWorldTransforms.Count >= components.Count)
+                {
+                    for (int index = 0; index < components.Count; index++)
                     {
 
-                        for (int index = 0; index < components.Count; index++)
-                        {
+                        ((float posX, float posY, float posZ), Vector3 scale, Rotator rotation) = sca.LocalToWorldTransforms[index].UnrealDecompose();
 
-                            ((float posX, float posY, float posZ), (float scaleX, float scaleY, float scaleZ), (int uuPitch, int uuYaw, int uuRoll)) = sca.LocalToWorldTransforms[index].UnrealDecompose();
-
-
-                            var newm = ActorUtils.ComposeLocalToWorld(new Vector3(posX + shifts.X, posY + shifts.Y, posZ + shifts.Z),
-                                      new Rotator(uuPitch, uuYaw, uuRoll),
-                                      new Vector3(scaleX, scaleY, scaleZ));
-                            sca.LocalToWorldTransforms[index] = newm;
-                        }
-                        actor.WriteBinary(sca);
+                        Matrix4x4 newm = ActorUtils.ComposeLocalToWorld(new Vector3(posX + shifts.X, posY + shifts.Y, posZ + shifts.Z), rotation, scale);
+                        sca.LocalToWorldTransforms[index] = newm;
                     }
-
+                    actor.WriteBinary(sca);
                 }
-                else if (actor.HasStack)
+            }
+            foreach (ExportEntry actor in otherActors)
+            {
+                if (actor.HasStack)
                 {
                     var locationprop = actor.GetProperty<StructProperty>("location");
                     if (locationprop is { IsImmutable: true })
@@ -4480,31 +4519,33 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                         actor.WriteProperty(locationprop);
                     }
                 }
-                else //is component without entire SMAC
+                //is component without entire SCA
+                else if (actor.HasParent && actor.Parent.ClassName.Contains("CollectionActor") && actor.Parent is ExportEntry actorCollection)
                 {
-                    if (actor.HasParent && actor.Parent.ClassName.Contains("CollectionActor") && actor.Parent is ExportEntry actorCollection)
+                    if (collectionActors.Contains(actorCollection))
                     {
-                        var collectionitems = PathEdUtils.GetCollectionItems(actorCollection);
-                        var location = PathEdUtils.GetLocation(actor);
-                        float x = ((float)location.X) + shifts.X;
-                        float y = ((float)location.Y) + shifts.Y;
-                        float z = ((float)location.Z) + shifts.Z;
-                        PathEdUtils.SetCollectionActorLocation(actor, x, y, z, collectionitems, actorCollection);
+                        //we've already shifted all the components of this collection
+                        continue;
                     }
+                    if (StaticCollectionActor.TryGetStaticCollectionActorAndIndex(actor, out StaticCollectionActor sca, out int index))
+                    {
+                        (Vector3 translation, Vector3 scale, Rotator rotation) = sca.GetDecomposedTransformationForIndex(index);
 
+                        sca.UpdateTransformationForIndex(index, translation + shifts, scale, rotation);
+                        sca.Export.WriteBinary(sca);
+                    }
                 }
             }
         }
 
         private void CommitLevelRotation()
         {
-            var centrePivot = GetGroupCenter();
-            var rotateyawdegrees = (float)lvlRotationYaw.Value;
-            var rotatepitchdegrees = (float)lvlRotationPitch.Value;
-            var rotateyaw = Math.PI * (rotateyawdegrees / 180); //Convert to radians
-            var rotatepitch = Math.PI * (rotatepitchdegrees / 180); //Convert to radians
-            double sinCalcYaw = Math.Sin(rotateyaw);
-            double cosCalcYaw = Math.Cos(rotateyaw);
+            float rotateYawDegrees = lvlRotationYaw.Value.GetValueOrDefault();
+            float rotatePitchDegrees = lvlRotationPitch.Value.GetValueOrDefault();
+            float rotateYawRadians = MathF.PI * (rotateYawDegrees / 180); //Convert to radians
+            float rotatePitchRadians = MathF.PI * (rotatePitchDegrees / 180); //Convert to radians
+            float sinCalcYaw = MathF.Sin(rotateYawRadians);
+            float cosCalcYaw = MathF.Cos(rotateYawRadians);
 
             if (lvlRotationYaw.Value == 0)
             {
@@ -4513,126 +4554,148 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
 
             if (ActorGroup.IsEmpty())
             {
-                var agdlg = MessageBox.Show("Adding all actors in the level to the actor group.", "Experimental Tools", MessageBoxButton.OKCancel);
+                MessageBoxResult agdlg = MessageBox.Show("Adding all actors in the level to the actor group.", "Experimental Tools", MessageBoxButton.OKCancel);
                 if (agdlg == MessageBoxResult.Cancel)
                     return;
                 AddAllActorsToGroup();
             }
-            var chkdlg = MessageBox.Show($"WARNING: Confirm you wish to rotate the entire actor group?\n" +
-                $"\nHorizontal Yaw: {rotateyawdegrees} degrees\n\nThis is an experimental tool. Make backups.", "Pathfinding Editor", MessageBoxButton.OKCancel);
+            MessageBoxResult chkdlg = MessageBox.Show($"WARNING: Confirm you wish to rotate the entire actor group?\n" +
+                                                      $"\nHorizontal Yaw: {rotateYawDegrees} degrees\n\nThis is an experimental tool. Make backups.", "Pathfinding Editor", MessageBoxButton.OKCancel);
             if (chkdlg == MessageBoxResult.Cancel)
                 return;
 
-            foreach (var actor in ActorGroup)
+            Vector3 centrePivot = GetGroupCenter();
+
+            (List<ExportEntry> collectionActors, List<ExportEntry> otherActors) = ActorGroup.Split(actor => actor.ClassName.Contains("CollectionActor"));
+
+            foreach (ExportEntry actor in collectionActors)
+            {
+                if (ObjectBinary.From(actor) is StaticCollectionActor sca
+                    && actor.GetProperty<ArrayProperty<ObjectProperty>>(sca.ComponentPropName) is { } components
+                    && sca.LocalToWorldTransforms.Count >= components.Count)
+                {
+
+                    for (int index = 0; index < components.Count; index++)
+                    {
+
+                        ((float posX, float posY, float posZ), Vector3 scale, (int uuPitch, int uuYaw, int uuRoll)) = sca.LocalToWorldTransforms[index].UnrealDecompose();
+
+                        float calcX = posX * cosCalcYaw - posY * sinCalcYaw;
+                        float calcY = posX * sinCalcYaw + posY * cosCalcYaw;
+
+                        int newYaw = uuYaw + rotateYawDegrees.DegreesToUnrealRotationUnits();
+
+                        Matrix4x4 newm = ActorUtils.ComposeLocalToWorld(new Vector3(calcX, calcY, posZ),
+                            new Rotator(uuPitch, newYaw, uuRoll),
+                            scale);
+                        sca.LocalToWorldTransforms[index] = newm;
+                    }
+                    actor.WriteBinary(sca);
+                }
+            }
+
+            foreach (ExportEntry actor in otherActors)
             {
                 if (actor == null || actor.ClassName == "BioWorldInfo")
                     continue;
 
-                if (actor.ClassName.Contains("CollectionActor"))
+                if (actor.HasStack)
                 {
-                    if (ObjectBinary.From(actor) is StaticCollectionActor sca &&
-                        actor.GetProperty<ArrayProperty<ObjectProperty>>(sca.ComponentPropName) is { } components && sca.LocalToWorldTransforms.Count >= components.Count)
-                    {
-
-                        for (int index = 0; index < components.Count; index++)
-                        {
-
-                            ((float posX, float posY, float posZ), (float scaleX, float scaleY, float scaleZ), (int uuPitch, int uuYaw, int uuRoll)) = sca.LocalToWorldTransforms[index].UnrealDecompose();
-
-                            var calcX = (double)posX * cosCalcYaw - (double)posY * sinCalcYaw;
-                            var calcY = (double)posX * sinCalcYaw + (double)posY * cosCalcYaw;
-
-                            var newYaw = uuYaw + ((float)rotateyawdegrees).DegreesToUnrealRotationUnits();
-
-                            Matrix4x4 newm = ActorUtils.ComposeLocalToWorld(new Vector3((float)calcX, (float)calcY, posZ),
-                                      new Rotator(uuPitch, newYaw, uuRoll),
-                                      new Vector3(scaleX, scaleY, scaleZ));
-                            sca.LocalToWorldTransforms[index] = newm;
-                        }
-                        actor.WriteBinary(sca);
-                    }
-
-                }
-                else if (actor.HasStack)
-                {
-                    float oldx = 0;
-                    float oldy = 0;
-                    float oldz = 0;
-
-                    float oldYaw = 0;
-                    float oldPitch = 0;
-                    float oldRoll = 0;
-
                     //Get existing props
                     StructProperty locationprop = actor.GetProperty<StructProperty>("location") ?? new StructProperty("location", true);
 
-                    oldx = locationprop.GetProp<FloatProperty>("X").Value;
-                    oldy = locationprop.GetProp<FloatProperty>("Y").Value;
-                    oldz = locationprop.GetProp<FloatProperty>("Z").Value;
+                    float oldX = locationprop.GetProp<FloatProperty>("X").Value;
+                    float oldY = locationprop.GetProp<FloatProperty>("Y").Value;
+                    float oldZ = locationprop.GetProp<FloatProperty>("Z").Value;
 
                     StructProperty rotationprop = actor.GetProperty<StructProperty>("Rotation") ?? CommonStructs.RotatorProp(new Rotator(0, 0, 0));
 
-                    (oldPitch, oldYaw, oldRoll) = CommonStructs.GetRotator(rotationprop);
+                    (int oldPitch, int oldYaw, int oldRoll) = CommonStructs.GetRotator(rotationprop);
 
                     //Get new rotation x' = x cos θ − y sin θ
                     //y' = x sin θ + y cos θ
+                    float newX = oldX * cosCalcYaw - oldY * sinCalcYaw;
+                    float newY = oldX * sinCalcYaw + oldY * cosCalcYaw;
 
-                    var calcX = (double)oldx * cosCalcYaw - (double)oldy * sinCalcYaw;
-                    var calcY = (double)oldx * sinCalcYaw + (double)oldy * cosCalcYaw;
+                    int newYaw = oldYaw + rotateYawDegrees.DegreesToUnrealRotationUnits();
 
                     //Write props
-                    var newx = (float)calcX;
-                    var newy = (float)calcY;
-                    var newYaw = (int)oldYaw + ((float)rotateyawdegrees).DegreesToUnrealRotationUnits();
-
-                    locationprop.Properties.AddOrReplaceProp(new FloatProperty(newx, "X"));
-                    locationprop.Properties.AddOrReplaceProp(new FloatProperty(newy, "Y"));
-                    locationprop.Properties.AddOrReplaceProp(new FloatProperty(oldz, "Z")); //as purely 2d rotation
+                    locationprop.Properties.AddOrReplaceProp(new FloatProperty(newX, "X"));
+                    locationprop.Properties.AddOrReplaceProp(new FloatProperty(newY, "Y"));
+                    locationprop.Properties.AddOrReplaceProp(new FloatProperty(oldZ, "Z")); //as purely 2d rotation
                     actor.WriteProperty(locationprop);
 
-                    var newRot = new Rotator((int)oldPitch, newYaw, (int)oldRoll);
+                    var newRot = new Rotator(oldPitch, newYaw, oldRoll);
                     rotationprop = CommonStructs.RotatorProp(newRot, "Rotation");
                     actor.WriteProperty(rotationprop);
                 }
+                //is component without entire SCA
+                else if (actor.HasParent && actor.Parent.ClassName.Contains("CollectionActor") && actor.Parent is ExportEntry actorCollection)
+                {
+                    if (collectionActors.Contains(actorCollection))
+                    {
+                        //we've already shifted all the components of this collection
+                        continue;
+                    }
+                    if (StaticCollectionActor.TryGetStaticCollectionActorAndIndex(actor, out StaticCollectionActor sca, out int index))
+                    {
+                        ((float oldX, float oldY, float oldZ), Vector3 scale, (int oldPitch, int oldYaw, int oldRoll)) = sca.GetDecomposedTransformationForIndex(index);
+
+                        float newX = oldX * cosCalcYaw - oldY * sinCalcYaw;
+                        float newY = oldX * sinCalcYaw + oldY * cosCalcYaw;
+
+                        int newYaw = oldYaw + rotateYawDegrees.DegreesToUnrealRotationUnits();
+
+                        sca.UpdateTransformationForIndex(index, new Vector3(newX, newY, oldZ), scale, new Rotator(oldPitch, newYaw, oldRoll));
+                        sca.Export.WriteBinary(sca);
+                    }
+                }
             }
 
-            var newCenterPivot = GetGroupCenter();
-            var shiftback = centrePivot - newCenterPivot;
+            Vector3 newCenterPivot = GetGroupCenter();
+            Vector3 shiftback = centrePivot - newCenterPivot;
             ShiftActorGroup(shiftback);
             MessageBox.Show("Done");
         }
+
         private Vector3 GetGroupCenter()
         {
+            if (ActorGroup.IsEmpty())
+            {
+                return Vector3.Zero;
+            }
             float groupX = 0;
             float groupY = 0;
             float groupZ = 0;
             int actorcount = 0;
-            foreach (var actor in ActorGroup)
+
+            (List<ExportEntry> collectionActors, List<ExportEntry> otherActors) = ActorGroup.Split(actor => actor.ClassName.Contains("CollectionActor"));
+
+            foreach (ExportEntry actor in collectionActors)
+            {
+                if (ObjectBinary.From(actor) is StaticCollectionActor sca &&
+                    actor.GetProperty<ArrayProperty<ObjectProperty>>(sca.ComponentPropName) is { } components && sca.LocalToWorldTransforms.Count >= components.Count)
+                {
+
+                    for (int index = 0; index < components.Count; index++)
+                    {
+
+                        ((float posX, float posY, float posZ), Vector3 _, Rotator _) = sca.LocalToWorldTransforms[index].UnrealDecompose();
+
+                        groupX += posX;
+                        groupY += posY;
+                        groupZ += posZ;
+                        actorcount++;
+                    }
+                }
+            }
+
+            foreach (var actor in otherActors)
             {
                 if (actor == null || actor.ClassName == "BioWorldInfo")
                     continue;
 
-                if (actor.ClassName.Contains("CollectionActor"))
-                {
-
-                    if (ObjectBinary.From(actor) is StaticCollectionActor sca &&
-                        actor.GetProperty<ArrayProperty<ObjectProperty>>(sca.ComponentPropName) is { } components && sca.LocalToWorldTransforms.Count >= components.Count)
-                    {
-
-                        for (int index = 0; index < components.Count; index++)
-                        {
-
-                            ((float posX, float posY, float posZ), (float scaleX, float scaleY, float scaleZ), (int uuPitch, int uuYaw, int uuRoll)) = sca.LocalToWorldTransforms[index].UnrealDecompose();
-
-                            groupX += posX;
-                            groupY += posY;
-                            groupZ += posZ;
-                            actorcount++;
-                        }
-                    }
-
-                }
-                else
+                if (actor.HasStack)
                 {
                     var locationprop = actor.GetProperty<StructProperty>("location");
                     if (locationprop is { IsImmutable: true })
@@ -4644,6 +4707,24 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                         groupX += oldx;
                         groupY += oldy;
                         groupZ += oldz;
+                        actorcount++;
+                    }
+                }
+                //is component without entire SCA
+                else if (actor.HasParent && actor.Parent.ClassName.Contains("CollectionActor") && actor.Parent is ExportEntry actorCollection)
+                {
+                    if (collectionActors.Contains(actorCollection))
+                    {
+                        //we've already shifted all the components of this collection
+                        continue;
+                    }
+                    if (StaticCollectionActor.TryGetStaticCollectionActorAndIndex(actor, out StaticCollectionActor sca, out int index))
+                    {
+                        ((float x, float y, float z), Vector3 _, Rotator _) = sca.GetDecomposedTransformationForIndex(index);
+
+                        groupX += x;
+                        groupY += y;
+                        groupZ += z;
                         actorcount++;
                     }
                 }
@@ -4683,7 +4764,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                 references.Clear();
 
                 //Clean up Cached PhysSM Data && Rebuild Data Store
-                var newPhysSMmap = new OrderedMultiValueDictionary<int, CachedPhysSMData>();
+                var newPhysSMmap = new UMultiMap<int, CachedPhysSMData>();
                 var newPhysSMstore = new List<KCachedConvexData>();
                 foreach (var r in level.CachedPhysSMDataMap)
                 {
@@ -4698,7 +4779,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                         var kvp = level.CachedPhysSMDataStore[oldidx];
                         map.CachedDataIndex = newPhysSMstore.Count;
                         newPhysSMstore.Add(level.CachedPhysSMDataStore[oldidx]);
-                        newPhysSMmap.Add(new KeyValuePair<int, CachedPhysSMData>(reference, map));
+                        newPhysSMmap.Add(reference, map);
                     }
                 }
                 level.CachedPhysSMDataMap = newPhysSMmap;
@@ -4706,7 +4787,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                 references.Clear();
 
                 //Clean up Cached PhysPerTri Data
-                var newPhysPerTrimap = new OrderedMultiValueDictionary<int, CachedPhysSMData>();
+                var newPhysPerTrimap = new UMultiMap<int, CachedPhysSMData>();
                 var newPhysPerTristore = new List<KCachedPerTriData>();
                 foreach (var s in level.CachedPhysPerTriSMDataMap)
                 {
@@ -4721,7 +4802,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                         var kvp = level.CachedPhysPerTriSMDataStore[oldidx];
                         map.CachedDataIndex = newPhysPerTristore.Count;
                         newPhysPerTristore.Add(level.CachedPhysPerTriSMDataStore[oldidx]);
-                        newPhysPerTrimap.Add(new KeyValuePair<int, CachedPhysSMData>(reference, map));
+                        newPhysPerTrimap.Add(reference, map);
                     }
                 }
                 level.CachedPhysPerTriSMDataMap = newPhysPerTrimap;
@@ -4739,16 +4820,16 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                     level.NavListEnd = 0;
                 }
                 var newNavArray = new List<int>();
-                newNavArray.AddRange(level.NavPoints);
+                newNavArray.AddRange(level.NavRefs);
 
-                for (int n = 0; n < level.NavPoints.Count; n++)
+                for (int n = 0; n < level.NavRefs.Count; n++)
                 {
                     if (norefsList.Contains(newNavArray[n]))
                     {
                         newNavArray[n] = 0;
                     }
                 }
-                level.NavPoints = newNavArray;
+                level.NavRefs = newNavArray;
 
                 //Clean up Coverlink Lists => pare down guid2byte? table [Just null unwanted refs]
                 if (norefsList.Contains(level.CoverListStart))
@@ -4760,15 +4841,15 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                     level.CoverListEnd = 0;
                 }
                 var newCLArray = new List<int>();
-                newCLArray.AddRange(level.CoverLinks);
-                for (int l = 0; l < level.CoverLinks.Count; l++)
+                newCLArray.AddRange(level.CoverLinkRefs);
+                for (int l = 0; l < level.CoverLinkRefs.Count; l++)
                 {
                     if (norefsList.Contains(newCLArray[l]))
                     {
                         newCLArray[l] = 0;
                     }
                 }
-                level.CoverLinks = newCLArray;
+                level.CoverLinkRefs = newCLArray;
 
                 if (Pcc.Game.IsGame3())
                 {
@@ -4784,7 +4865,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                 }
 
                 //Cross Level Actors
-                level.CoverLinks = newCLArray;
+                level.CoverLinkRefs = newCLArray;
                 var newXLArray = new List<int>();
                 newXLArray.AddRange(level.CrossLevelActors);
                 foreach (int xlvlactor in level.CrossLevelActors)
@@ -4797,12 +4878,12 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                 level.CrossLevelActors = newXLArray;
 
                 //Clean up int lists if empty of NAV points
-                if (level.NavPoints.IsEmpty() && level.CoverLinks.IsEmpty() && level.CrossLevelActors.IsEmpty() && (!Pcc.Game.IsGame3() || level.PylonListStart == 0))
+                if (level.NavRefs.IsEmpty() && level.CoverLinkRefs.IsEmpty() && level.CrossLevelActors.IsEmpty() && (!Pcc.Game.IsGame3() || level.PylonListStart == 0))
                 {
-                    level.guidToIntMap.Clear();
-                    level.guidToIntMap2.Clear();
-                    level.intToByteMap.Clear();
-                    level.numbers.Clear();
+                    level.CrossLevelCoverGuidRefs.Clear();
+                    level.CoverIndexPairs.Clear();
+                    level.CoverIndexPairs.Clear();
+                    level.NavRefIndicies.Clear();
                 }
 
                 levelExport.WriteBinary(level);
@@ -4911,6 +4992,34 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
         private bool gpsActive;
         private void ConnectGPS_Clicked(object sender, RoutedEventArgs e)
         {
+            if (Pcc == null)
+            {
+                MessageBox.Show("You must load a package first, which determines which game this feature will be used on.");
+                return;
+            }
+            if (!InteropHelper.IsASILoaderInstalled(Pcc.Game))
+            {
+                if (MessageBoxResult.Yes == MessageBox.Show(this, $"The latest asi loader for {Pcc.Game} is not installed! You must install it and restart the game for this feature to work." +
+                                                                  $" Would you like to install the asi loader now?", "ASI loader not installed!", MessageBoxButton.YesNo))
+                {
+                    InteropHelper.OpenASILoaderDownload(Pcc.Game);
+                }
+                return;
+            }
+            if (!InteropHelper.IsInteropASIInstalled(Pcc.Game))
+            {
+                if (MessageBoxResult.Yes == MessageBox.Show(this, $"The latest interop asi for {Pcc.Game} is not installed! You must install it and restart the game for this feature to work." +
+                                                                  $" Would you like to install the asi now?", "Interop ASI not installed!", MessageBoxButton.YesNo))
+                {
+                    InteropHelper.OpenInteropASIDownload(Pcc.Game);
+                }
+                return;
+            }
+            if (InteropHelper.IsGameClosed(Pcc.Game))
+            {
+                MessageBox.Show(this, $"{Pcc.Game} must be running for this feature to have an effect!");
+                return;
+            }
             Task.Run(() =>
             {
                 if (!gpsActive)
@@ -4930,6 +5039,64 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                     gpsActive = false;
                 }
             });
+        }
+
+        private void OpenOtherVersion()
+        {
+            var result = CrossGenHelpers.FetchOppositeGenPackage(Pcc, out var otherGen);
+            if (result != null)
+            {
+                MessageBox.Show(result);
+            }
+            else
+            {
+                var nodeEntry = (ExportEntry)ActiveNodes_ListBox.SelectedItem;
+                PathfindingEditorWindow pe = new PathfindingEditorWindow(otherGen);
+                if (nodeEntry != null)
+                {
+                    pe.ExportQueuedForFocus = otherGen.FindExport(nodeEntry.InstancedFullPath);
+                }
+                pe.Show();
+            }
+        }
+
+        /// <summary>
+        /// Adds all the PathNodes in the package to the selected BioSquadCombat's AssignedPathNodes array.
+        /// </summary>
+        private void AddAllPathnodesToBioSquadCombat()
+        {
+            if (Pcc == null || ActiveNodes_ListBox?.SelectedItem is not ExportEntry bioSquadCombat) { return; }
+
+            if (bioSquadCombat.ClassName != "BioSquadCombat")
+            {
+                MessageBox.Show("Selected export is not a BioSquadCombat", "Warning", MessageBoxButton.OK);
+                return;
+            }
+
+            ArrayProperty<StructProperty> m_aoAssignedPathNodes = new("m_aoAssignedPathNodes");
+            foreach (IEntry entry in Pcc.Exports)
+            {
+                if (entry.ClassName != "PathNode") { continue; } // Faster than filtering and then doing something
+
+                PropertyCollection props = new()
+                {
+                    new ObjectProperty(entry.UIndex, "oPoint"),
+                    new ObjectProperty(0, "oLockedBy")
+                };
+                m_aoAssignedPathNodes.Add(new StructProperty("LockedPoint", props, "LockedPoint", false));
+            }
+
+            int assignedCount = m_aoAssignedPathNodes.Count;
+            if (assignedCount == 0)
+            {
+                MessageBox.Show("No PathNodes were found on the file", "Warning", MessageBoxButton.OK);
+                return;
+            }
+
+            bioSquadCombat.WriteProperty(m_aoAssignedPathNodes);
+
+            string message = (assignedCount == 1) ? "one path node" : $"{assignedCount} path nodes";
+            MessageBox.Show($"Added {message}.", "Success", MessageBoxButton.OK);
         }
 
         #region Busy

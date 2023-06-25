@@ -235,7 +235,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     }
                     Task.Run(() => EntryImporter.ResolveImport(import)).ContinueWithOnUIThread(prevTask =>
                     {
-                        if(HostingControl is not null) HostingControl.IsBusy = false;
+                        if (HostingControl is not null) HostingControl.IsBusy = false;
                         if (prevTask.Result is ExportEntry res)
                         {
                             var pwpf = new PackageEditorWindow();
@@ -265,7 +265,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private static bool IsObjectNodeType(object nodeobj)
         {
-            if (nodeobj is BinInterpNode {Tag: NodeType type})
+            if (nodeobj is BinInterpNode { Tag: NodeType type })
             {
                 if (type == NodeType.ArrayLeafObject) return true;
                 if (type == NodeType.ObjectProperty) return true;
@@ -378,6 +378,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             "Terrain",
             "TerrainComponent",
             "TerrainWeightMapTexture",
+            "TextBuffer",
             "Texture2D",
             "TextureFlipBook",
             "TextureMovie",
@@ -395,14 +396,14 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             //    || exportEntry.TemplateOwnerClassIdx >= 0;
 
             // crossgen 9/24/2021
-            return exportEntry.HasStack || exportEntry.TemplateOwnerClassIdx >= 0 || exportEntry.propsEnd() < exportEntry.DataSize;
+            return !exportEntry.IsDefaultObject && (exportEntry.HasStack || exportEntry.TemplateOwnerClassIdx >= 0 || exportEntry.propsEnd() < exportEntry.DataSize);
         }
 
         public override void PopOut()
         {
             if (CurrentLoadedExport != null)
             {
-                ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new BinaryInterpreterWPF(), CurrentLoadedExport)
+                ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new BinaryInterpreterWPF() { AlwaysLoadRegardlessOfSize = true }, CurrentLoadedExport)
                 {
                     Title = $"Binary Interpreter - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.InstancedFullPath} - {CurrentLoadedExport.FileRef.FilePath}"
                 };
@@ -620,6 +621,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     case "MetaData":
                         subNodes.AddRange(StartMetaDataScan(data, ref binarystart));
                         break;
+                    case "TextBuffer":
+                        subNodes.AddRange(StartTextBufferScan(data, binarystart));
+                        break;
                     case "WwiseStream":
                         subNodes.AddRange(Scan_WwiseStream(data));
                         break;
@@ -813,6 +817,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     case "BioCreatureSoundSet":
                         subNodes.AddRange(StartBioCreatureSoundSetScan(data, ref binarystart));
                         break;
+                    case "BioGestureRulesData":
+                        subNodes.AddRange(StartBioGestureRulesDataScan(data, ref binarystart));
+                        break;
                     default:
                         if (!CurrentLoadedExport.HasStack)
                         {
@@ -848,7 +855,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 {
                     if (o is BinInterpNode b)
                     {
-                        b.Finalize();
+                        b.RemoveNullNodes();
                         b.Parent = topLevelTree;
                     }
                 }
@@ -876,6 +883,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     {
                         if (AttemptSelectPreviousEntry(b.Items))
                         {
+                            o.IsExpanded = true;
                             return true;
                         }
                     }
@@ -944,18 +952,14 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             switch (BinaryInterpreter_TreeView.SelectedItem)
             {
                 case BinInterpNode bitve:
-                    int dataOffset = 0;
-                    if (bitve.Name is string offsetStr && offsetStr.StartsWith("_"))
+                    int dataOffset = bitve.GetOffset();
+                    if (dataOffset > 0)
                     {
-                        offsetStr = offsetStr.Substring(1); //remove _
-                        if (int.TryParse(offsetStr, out dataOffset))
+                        BinaryInterpreter_Hexbox.SelectionStart = dataOffset;
+                        BinaryInterpreter_Hexbox.SelectionLength = 1;
+                        if (bitve.Length > 0)
                         {
-                            BinaryInterpreter_Hexbox.SelectionStart = dataOffset;
-                            BinaryInterpreter_Hexbox.SelectionLength = 1;
-                            if (bitve.Length > 0)
-                            {
-                                BinaryInterpreter_Hexbox.Highlight(dataOffset, bitve.Length);
-                            }
+                            BinaryInterpreter_Hexbox.Highlight(dataOffset, bitve.Length);
                         }
                     }
                     switch (bitve.Tag)
@@ -1381,7 +1385,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             BinaryInterpreterWPF i = (BinaryInterpreterWPF)obj;
             if ((bool)e.NewValue)
             {
-                i.hexBoxContainer.Visibility = i.HexProps_GridSplitter.Visibility = i.ToggleHexboxWidth_Button.Visibility = Visibility.Collapsed;
+                i.hexBoxContainer.Visibility = i.HexProps_GridSplitter.Visibility = i.ToggleHexboxWidth_Button.Visibility = i.SaveHexChange_Button.Visibility = Visibility.Collapsed;
                 i.HexboxColumn_GridSplitter_ColumnDefinition.Width = new GridLength(0);
                 i.HexboxColumnDefinition.MinWidth = 0;
                 i.HexboxColumnDefinition.MaxWidth = 0;
@@ -1389,7 +1393,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
             else
             {
-                i.hexBoxContainer.Visibility = i.HexProps_GridSplitter.Visibility = i.ToggleHexboxWidth_Button.Visibility = Visibility.Visible;
+                i.hexBoxContainer.Visibility = i.HexProps_GridSplitter.Visibility = i.ToggleHexboxWidth_Button.Visibility = i.SaveHexChange_Button.Visibility = Visibility.Visible;
                 i.HexboxColumnDefinition.Width = new GridLength(i.HexBoxMinWidth);
                 i.HexboxColumn_GridSplitter_ColumnDefinition.Width = new GridLength(1);
                 i.HexboxColumnDefinition.bind(ColumnDefinition.MinWidthProperty, i, nameof(HexBoxMinWidth));

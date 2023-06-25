@@ -45,9 +45,6 @@ namespace LegendaryExplorerCore.Packages
         /// <param name="diskIOSyncLock">Object that can be used to force a lock on write operations, which can be used to prevent concurrent operations on the same package file. If null, a lock is not used.</param>
         public static void Save(this IMEPackage package, string savePath = null, bool? compress = null, bool includeAdditionalPackagesToCook = true, bool includeDependencyTable = true, object diskIOSyncLock = null)
         {
-//#if !DEBUG && !AZURE && !M3TEST
-//            throw new Exception("Cannot save packages with LEX at this time");
-//#endif
             if (package == null)
             {
                 return;
@@ -65,7 +62,7 @@ namespace LegendaryExplorerCore.Packages
                 compressPackage = package.Game.IsLEGame();
             }
 
-            if (package.FilePath is null && savePath == null)
+            if ((package.IsMemoryPackage || package.FilePath == null) && savePath == null)
             {
                 throw new InvalidOperationException("Cannot save a temporary memory-based package! You must pass a save path to save a memory package.");
             }
@@ -97,9 +94,6 @@ namespace LegendaryExplorerCore.Packages
         /// <param name="diskIOSyncLock">Object that can be used to force a lock on write operations, which can be used to prevent concurrent operations on the same package file. If null, a lock is not used.</param>
         public static async Task SaveAsync(this IMEPackage package, string savePath = null, bool? compress = null, bool includeAdditionalPackagesToCook = true, bool includeDependencyTable = true, object diskIOSyncLock = null)
         {
-//#if !DEBUG && !AZURE
-//            throw new Exception("Cannot save packages with LEX at this time");
-//#endif
             try
             {
                 foreach (IPackageUser packageUser in package.Users)
@@ -174,11 +168,13 @@ namespace LegendaryExplorerCore.Packages
                 else
                 {
                     PackageSaveFailedCallback?.Invoke($"Cannot save ME1 packages with externally referenced textures. Please make an issue on github: {LegendaryExplorerCoreLib.BugReportURL}");
+                    return;
                 }
             }
             catch (Exception ex) when (!LegendaryExplorerCoreLib.IsDebug)
             {
                 PackageSaveFailedCallback?.Invoke($"Error saving {pcc.FilePath}:\n{ex.FlattenException()}");
+                return;
             }
 
             if (originalLength > 0)
@@ -194,6 +190,11 @@ namespace LegendaryExplorerCore.Packages
 
         private static void UDKSave(UDKPackage pcc, string path, object diskIOSyncLock = null)
         {
+            if (!pcc.CanSave)
+            {
+                PackageSaveFailedCallback?.Invoke("Cannot save UDK packages that do not come from the February 2015 version of UDK.");
+                return;
+            }
             bool isSaveAs = path != null && path != pcc.FilePath;
             try
             {

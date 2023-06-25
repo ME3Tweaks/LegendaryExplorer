@@ -4,15 +4,17 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Threading.Tasks;
 using LegendaryExplorerCore.Compression;
+using LegendaryExplorerCore.DebugTools;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Memory;
 using LegendaryExplorerCore.Misc;
-using LegendaryExplorerCore.TLK.ME1;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
+using Newtonsoft.Json;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
 #if AZURE
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -20,53 +22,28 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace LegendaryExplorerCore.Packages
 {
-    [Flags]
-    public enum PackageChange
-    {
-        Export = 0x1,
-        Import = 0x2,
-        Name = 0x4,
-        Add = 0x8,
-        Remove = 0x10,
-        Data = 0x20,
-        Header = 0x40,
-        Entry = 0x80,
-        EntryAdd = Entry | Add,
-        EntryRemove = Entry | Remove,
-        EntryHeader = Entry | Header,
-        ExportData = Export | Data | Entry,
-        ExportHeader = Export | EntryHeader,
-        ImportHeader = Import | EntryHeader,
-        ExportAdd = Export | EntryAdd,
-        ImportAdd = Import | EntryAdd,
-        ExportRemove = Export | EntryRemove,
-        ImportRemove = Import | EntryRemove,
-        NameAdd = Name | Add,
-        NameRemove = Name | Remove,
-        NameEdit = Name | Data
-    }
-
-    [DebuggerDisplay("PackageUpdate | {Change} on index {Index}")]
-    public readonly struct PackageUpdate
-    {
-        /// <summary>
-        /// Details on what piece of data has changed
-        /// </summary>
-        public readonly PackageChange Change;
-        /// <summary>
-        /// index of what item has changed. Meaning depends on value of Change
-        /// </summary>
-        public readonly int Index;
-
-        public PackageUpdate(PackageChange change, int index)
-        {
-            this.Change = change;
-            this.Index = index;
-        }
-    }
-
     public sealed class MEPackage : UnrealPackageFile, IMEPackage, IDisposable
     {
+        /// <summary>
+        /// MEM writes this to every single package file it modifies
+        /// </summary>
+        private const string MEMPackageTag = "ThisIsMEMEndOfFileMarker"; //TODO NET 7: make this a utf8 literal
+        private const int MEMPackageTagLength = 24;
+
+        /// <summary>
+        /// LEC-saved LE packages will always end in this, assuming MEM did not save later
+        /// </summary>
+        private const string LECPackageTag = "LECL"; //TODO NET 7: make this a utf8 literal
+        private const int LECPackageTagLength = 4;
+        private const int LECPackageTag_Version_EmptyData = 1;
+        private const int LECPackageTag_Version_JSON = 2;
+
+
+        /// <summary>
+        /// Player.sav in ME1 save files starts with this and needs to be scrolled forward to find actual start of package
+        /// </summary>
+        public const uint ME1SavePackageTag = 0x484D4752; // 'RGMH'
+
         public const ushort ME1UnrealVersion = 491;
         public const ushort ME1LicenseeVersion = 1008;
         public const ushort ME1XboxUnrealVersion = 391;
@@ -116,6 +93,8 @@ namespace LegendaryExplorerCore.Packages
             set => IsModified = value;
         }
 
+        public bool IsMemoryPackage { get; set; }
+
         public Endian Endian { get; }
         public MEGame Game { get; private set; } //can only be ME1, ME2, ME3, LE1, LE2, LE3. UDK is a separate class
         public GamePlatform Platform { get; private set; }
@@ -132,9 +111,14 @@ namespace LegendaryExplorerCore.Packages
         public MELocalization Localization { get; } = MELocalization.None;
 
         /// <summary>
-        /// Custom user-defined metadata to associate with this package object. This data has no effect on saving or loading, it is only for library user convenience.
+        /// Custom user-defined metadata to associate with this package object. This data has no effect on saving or loading, it is only for library user convenience. This data is NOT serialized to disk!
         /// </summary>
         public Dictionary<string, object> CustomMetadata { get; set; } = new(0);
+
+        /// <summary>
+        /// Metadata that is serialized to the end of the package file and contains useful information for tooling
+        /// </summary>
+        public LECLData LECLTagData { get; }
 
         public byte[] getHeader()
         {
@@ -212,6 +196,7 @@ namespace LegendaryExplorerCore.Packages
             //reasonable defaults?
             Flags = EPackageFlags.Cooked | EPackageFlags.AllowDownload | EPackageFlags.DisallowLazyLoading | EPackageFlags.RequireImportsAlreadyLoaded;
             EntryLookupTable = new CaseInsensitiveDictionary<IEntry>();
+            LECLTagData = new LECLData();
         }
 
         /// <summary>
@@ -489,8 +474,10 @@ namespace LegendaryExplorerCore.Packages
 
             packageReader.Position = savedPos; //restore position to chunk table
             Stream inStream = fs;
+            bool wasOriginallyCompressed = false; // Used to know if we should dispose the stream used for decompressed data
             if (IsCompressed && NumCompressedChunksAtLoad > 0)
             {
+                wasOriginallyCompressed = true;
                 inStream = CompressionHelper.DecompressPackage(packageReader, compressionFlagPosition, game: Game, platform: Platform,
                                                                canUseLazyDecompression: tablesInOrder && !platformNeedsResolved);
             }
@@ -600,7 +587,62 @@ namespace LegendaryExplorerCore.Packages
                 export.Data = data;
             }
 
-            packageReader.Dispose();
+            if (Game.IsLEGame())
+            {
+                //read from the original stream here, as this data is not part of the compressed data and will always be little endian
+                try
+                {
+                    // Find MEM tag to see if it exists since it will append to ours (LEC will not save with a MEM tag)
+
+                    bool taggedByMEM = false;
+                    bool taggedByLEC = false;
+                    string leclv2Data = null;
+                    if (fs.Position != fs.Length) //optimize for the case where it's not tagged
+                    {
+                        long tagOffsetFromEnd = -LECPackageTagLength; 
+                        fs.Seek(-MEMPackageTagLength, SeekOrigin.End);
+                        if (fs.ReadStringASCII(MEMPackageTagLength) == MEMPackageTag)
+                        {
+                            taggedByMEM = true;
+                            tagOffsetFromEnd -= MEMPackageTagLength;
+                            LECLTagData = new LECLData { WasSavedWithMEM = true };
+                        }
+
+                        fs.Seek(tagOffsetFromEnd, SeekOrigin.End);
+                        if (fs.ReadStringASCII(LECPackageTagLength) == LECPackageTag)
+                        {
+                            taggedByLEC = true;
+
+                            // Read <LECL Data>
+                            fs.Seek(-(LECPackageTagLength + sizeof(int)), SeekOrigin.Current); //seek to payload length
+                            int payloadLength = fs.ReadInt32();
+
+                            //Read version
+                            fs.Seek(-(sizeof(int) + payloadLength), SeekOrigin.Current); // Seek to version
+                            int leclVersion = fs.ReadInt32();
+
+                            if (leclVersion >= LECPackageTag_Version_JSON)
+                            {
+                                leclv2Data = fs.ReadStringUtf8(payloadLength - 4);
+                            }
+                        }
+                    }
+
+                    LECLTagData = (leclv2Data != null ? JsonConvert.DeserializeObject<LECLData>(leclv2Data) : new LECLData()) ?? new LECLData(); // This prevents invalid parsing of LECLTagData from causing package to be unable to save
+                    LECLTagData.WasSavedWithMEM = taggedByMEM;
+                    LECLTagData.WasSavedWithLEC = taggedByLEC;
+                }
+                catch (Exception e)
+                {
+                    LECLog.Error($"Error reading LECLDataTag on package: {e.Message}. The data will not be deserialized.");
+                }
+            }
+
+            if (wasOriginallyCompressed)
+            {
+                // Do not dispose if the package was compressed as it will close the input stream
+                packageReader.Dispose();
+            }
 
 
             if (filePath != null)
@@ -790,7 +832,7 @@ namespace LegendaryExplorerCore.Packages
 
             if (mePackage.Game.IsLEGame())
             {
-                WriteLegendaryExplorerCoreTag(ms);
+                WriteLegendaryExplorerCoreTag(ms, mePackage);
             }
 
             ms.JumpTo(0);
@@ -899,7 +941,8 @@ namespace LegendaryExplorerCore.Packages
                 package.FullHeaderSize = package.ImportExportGuidsOffset = offset + dependencyTableSize;
 
                 //calculate chunks
-                var chunks = new List<CompressionHelper.Chunk>();
+                int numChunksRoughGuess = (int)BitOperations.RoundUpToPowerOf2((uint)(totalSize / CompressionHelper.MAX_CHUNK_SIZE + 1));
+                var chunks = new List<CompressionHelper.Chunk>(numChunksRoughGuess);
                 var compressionType = package.Game switch
                 {
                     MEGame.ME3 => CompressionType.Zlib,
@@ -913,8 +956,7 @@ namespace LegendaryExplorerCore.Packages
                 var chunk = new CompressionHelper.Chunk
                 {
                     uncompressedSize = package.FullHeaderSize - package.NameOffset,
-                    uncompressedOffset = package.NameOffset,
-                    blocks = new List<CompressionHelper.Block>()
+                    uncompressedOffset = package.NameOffset
                 };
                 int actualMaxChunkSize = chunk.uncompressedSize;
                 //Export data chunks
@@ -936,8 +978,7 @@ namespace LegendaryExplorerCore.Packages
                         chunk = new CompressionHelper.Chunk
                         {
                             uncompressedSize = exportDataSize,
-                            uncompressedOffset = e.DataOffset,
-                            blocks = new List<CompressionHelper.Block>()
+                            uncompressedOffset = e.DataOffset
                         };
                     }
                     else
@@ -958,28 +999,37 @@ namespace LegendaryExplorerCore.Packages
                 //write tables to first chunk
                 using (var ms = new MemoryStream(uncompressedData))
                 {
-                    foreach (string name in package.names)
+                    switch (package.Game)
                     {
-                        switch (package.Game)
-                        {
-                            case MEGame.ME1:
+                        case MEGame.ME1:
+                            foreach (string name in package.names)
+                            {
                                 ms.WriteUnrealStringLatin1(name);
                                 ms.WriteInt32(0);
                                 ms.WriteInt32(458768);
-                                break;
-                            case MEGame.ME2:
+                            }
+                            break;
+                        case MEGame.ME2:
+                            foreach (string name in package.names)
+                            {
                                 ms.WriteUnrealStringLatin1(name);
                                 ms.WriteInt32(-14);
-                                break;
-                            case MEGame.ME3:
-                            case MEGame.LE3:
+                            }
+                            break;
+                        case MEGame.ME3:
+                        case MEGame.LE3:
+                            foreach (string name in package.names)
+                            {
                                 ms.WriteUnrealStringUnicode(name);
-                                break;
-                            case MEGame.LE1:
-                            case MEGame.LE2:
+                            }
+                            break;
+                        case MEGame.LE1:
+                        case MEGame.LE2:
+                            foreach (string name in package.names)
+                            {
                                 ms.WriteUnrealStringLatin1(name);
-                                break;
-                        }
+                            }
+                            break;
                     }
 
                     // sanity check
@@ -1024,7 +1074,7 @@ namespace LegendaryExplorerCore.Packages
                     int dataSizeRemainingToCompress = chunk.uncompressedSize;
                     int chunkUncompressedEndOffset = chunk.uncompressedOffset + chunk.uncompressedSize;
                     int numBlocksInChunk = (int)Math.Ceiling(chunk.uncompressedSize * 1.0 / maxBlockSize);
-
+                    chunk.blocks = new CompressionHelper.Block[numBlocksInChunk];
                     // skip chunk header and blocks table - filled later
                     compressedStream.Seek(CompressionHelper.SIZE_OF_CHUNK_HEADER + CompressionHelper.SIZE_OF_CHUNK_BLOCK_HEADER * numBlocksInChunk, SeekOrigin.Current);
 
@@ -1049,31 +1099,35 @@ namespace LegendaryExplorerCore.Packages
                         var block = new CompressionHelper.Block();
                         block.uncompressedsize = Math.Min(maxBlockSize, dataSizeRemainingToCompress);
                         dataSizeRemainingToCompress -= block.uncompressedsize;
-                        block.uncompressedData = uncompressedData.AsMemory(positionInChunkData, block.uncompressedsize);
+                        block.uncompressedData = new ArraySegment<byte>(uncompressedData, positionInChunkData, block.uncompressedsize);
                         block.compressedData = rentedOutputArrays[b];
-                        chunk.blocks.Add(block);
+                        chunk.blocks[b] = block;
 
                         positionInChunkData += block.uncompressedsize;
                     }
-
-                    //Compress blocks
-                    Parallel.ForEach(chunk.blocks, block =>
+                    switch (compressionType)
                     {
-                        block.compressedsize = compressionType switch
-                        {
-                            CompressionType.LZO => LZO2.Compress(block.uncompressedData.Span, block.compressedData),
-                            CompressionType.Zlib => Zlib.Compress(block.uncompressedData.Span, block.compressedData),
-                            CompressionType.OodleLeviathan => OodleHelper.Compress(block.uncompressedData.Span, block.compressedData),
-                            _ => throw new Exception("Internal error: Unsupported compression type for compressing blocks: " + compressionType)
-                        };
-                        if (block.compressedsize == 0)
-                            throw new Exception("Internal error: Block compression failed! Compressor returned no bytes");
-                    });
+                        case CompressionType.LZO:
+                            Parallel.ForEach(chunk.blocks, static block => block.compressedsize = LZO2.Compress(block.uncompressedData, block.compressedData));
+                            break;
+                        case CompressionType.Zlib:
+                            Parallel.ForEach(chunk.blocks, static block => block.compressedsize = Zlib.Compress(block.uncompressedData, block.compressedData));
+                            break;
+                        case CompressionType.OodleLeviathan:
+                            Parallel.ForEach(chunk.blocks, static block => block.compressedsize = OodleHelper.Compress(block.uncompressedData, block.compressedData));
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException("Internal error: Unsupported compression type for compressing blocks: " + compressionType);
+                    }
 
                     //Write compressed data to stream 
                     for (int b = 0; b < numBlocksInChunk; b++)
                     {
                         var block = chunk.blocks[b];
+                        if (block.compressedsize == 0)
+                        {
+                            throw new Exception("Internal error: Block compression failed! Compressor returned no bytes");
+                        }
                         compressedStream.Write(block.compressedData, 0, block.compressedsize);
                         chunk.compressedSize += block.compressedsize;
                     }
@@ -1088,7 +1142,7 @@ namespace LegendaryExplorerCore.Packages
 
                 if (package.Game.IsLEGame())
                 {
-                    WriteLegendaryExplorerCoreTag(compressedStream);
+                    WriteLegendaryExplorerCoreTag(compressedStream, package);
                 }
 
                 //Update each chunk header with new information
@@ -1130,11 +1184,43 @@ namespace LegendaryExplorerCore.Packages
             }
         }
 
-        private static void WriteLegendaryExplorerCoreTag(MemoryStream ms)
+        private static void WriteLegendaryExplorerCoreTag(MemoryStream ms, IMEPackage package)
         {
-            ms.WriteInt32(1); //version. for if we want to append more data in the future 
-            ms.WriteInt32(4); //size of preceding data. (just the version for now)
-            ms.WriteStringASCII("LECL");
+            if (package is not MEPackage mep) return; // Do not write on non ME packages.
+            if (!mep.Game.IsLEGame()) return; // Do not write on non-LE even if this is somehow called.
+
+            var pos = ms.Position;
+
+            // BASIC TAG FORMAT:
+            // <data of package to the end>
+            // INT: LECL TAG VERSION
+            // <LECL DATA>
+            // INT: LECL DATA size in bytes + 4
+            // ASCII 'LECL'
+
+            // DOCUMENT VERSIONS HERE
+
+            // 1: INITIAL VERSION
+            // Contains no LECL DATA.
+
+            // 2: Import 'Hinting' 08/21/2022
+            // Contains data for hinting to LEC what files contain imports, which will
+            // automatically add them to the list of files that can be imported from
+
+            if (package.LECLTagData != null && package.LECLTagData.HasAnyData())
+            {
+                ms.WriteInt32(LECPackageTag_Version_JSON); // The current version
+                var data = JsonConvert.SerializeObject(package.LECLTagData, Formatting.None, 
+                    new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore }); // This makes it not serialize default values, like false bools
+                ms.WriteStringUtf8(data);
+            }
+            else
+            {
+                ms.WriteInt32(LECPackageTag_Version_EmptyData); // Blank data version. Version 1 will not attempt to read data.
+            }
+
+            ms.WriteInt32((int)(ms.Position - pos)); // Size of the LECL data & version tag in bytes
+            ms.WriteStringASCII(LECPackageTag);
         }
 
         //Must not change export's DataSize!
@@ -1172,7 +1258,7 @@ namespace LegendaryExplorerCore.Packages
                             e.WriteBinary(ObjectBinary.From(e));
                             break;
                         case "ShaderCache":
-                            UpdateShaderCacheOffsets(e, oldDataOffset);
+                            e.UpdateShaderCacheOffsets(oldDataOffset);
                             break;
                     }
                 }
@@ -1184,74 +1270,6 @@ namespace LegendaryExplorerCore.Packages
             return compress
                 ? saveCompressed(this, true, includeAdditionalPackagesToCook, includeDependencyTable)
                 : saveUncompressed(this, true, includeAdditionalPackagesToCook, includeDependencyTable);
-        }
-
-        //TODO: edit memory in-place somehow? This currently requires an allocation and a copy of the sizeable shadercache export, and must happen on save for nearly every LE file
-        private static void UpdateShaderCacheOffsets(ExportEntry export, int oldDataOffset)
-        {
-            int newDataOffset = export.DataOffset;
-
-            MEGame game = export.Game;
-            var binData = new MemoryStream(export.Data, 0, export.DataSize, true, true);
-            binData.Seek(export.propsEnd() + 1, SeekOrigin.Begin);
-
-            int nameList1Count = binData.ReadInt32();
-            binData.Seek(nameList1Count * 12, SeekOrigin.Current);
-
-            if (game is MEGame.ME3 || game.IsLEGame())
-            {
-                int namelist2Count = binData.ReadInt32();//namelist2
-                binData.Seek(namelist2Count * 12, SeekOrigin.Current);
-            }
-
-            if (game is MEGame.ME1)
-            {
-                int vertexFactoryMapCount = binData.ReadInt32();
-                binData.Seek(vertexFactoryMapCount * 12, SeekOrigin.Current);
-            }
-
-            int shaderCount = binData.ReadInt32();
-            for (int i = 0; i < shaderCount; i++)
-            {
-                binData.Seek(24, SeekOrigin.Current);
-                int nextShaderOffset = binData.ReadInt32() - oldDataOffset;
-                binData.Seek(-4, SeekOrigin.Current);
-                binData.WriteInt32(nextShaderOffset + newDataOffset);
-                binData.Seek(nextShaderOffset, SeekOrigin.Begin);
-            }
-
-            if (game is not MEGame.ME1)
-            {
-                int vertexFactoryMapCount = binData.ReadInt32();
-                binData.Seek(vertexFactoryMapCount * 12, SeekOrigin.Current);
-            }
-
-            int materialShaderMapCount = binData.ReadInt32();
-            for (int i = 0; i < materialShaderMapCount; i++)
-            {
-                binData.Seek(16, SeekOrigin.Current);
-
-                int switchParamCount = binData.ReadInt32();
-                binData.Seek(switchParamCount * 32, SeekOrigin.Current);
-
-                int componentMaskParamCount = binData.ReadInt32();
-                binData.Seek(componentMaskParamCount * 44, SeekOrigin.Current);
-
-                if (game is MEGame.ME3 || game.IsLEGame())
-                {
-                    int normalParams = binData.ReadInt32();
-                    binData.Seek(normalParams * 29, SeekOrigin.Current);
-
-                    binData.Seek(8, SeekOrigin.Current);
-                }
-
-                int nextMaterialShaderMapOffset = binData.ReadInt32() - oldDataOffset;
-                binData.Seek(-4, SeekOrigin.Current);
-                binData.WriteInt32(nextMaterialShaderMapOffset + newDataOffset);
-                binData.Seek(nextMaterialShaderMapOffset, SeekOrigin.Begin);
-            }
-
-            export.Data = binData.GetBuffer();
         }
 
         private void WriteHeader(Stream ms, CompressionType compressionType = CompressionType.None, List<CompressionHelper.Chunk> chunks = null, bool includeAdditionalPackageToCook = true)
@@ -1420,7 +1438,7 @@ namespace LegendaryExplorerCore.Packages
                     ms.WriteInt32(chunk.compressedOffset);
                     if (chunk.blocks != null)
                     {
-                        var chunksize = chunk.compressedSize + CompressionHelper.SIZE_OF_CHUNK_HEADER + CompressionHelper.SIZE_OF_CHUNK_BLOCK_HEADER * chunk.blocks.Count;
+                        var chunksize = chunk.compressedSize + CompressionHelper.SIZE_OF_CHUNK_HEADER + CompressionHelper.SIZE_OF_CHUNK_BLOCK_HEADER * chunk.blocks.Length;
                         //Debug.WriteLine($"Writing chunk table chunk {i} size: {chunksize}");
                         ms.WriteInt32(chunksize); //Size of compressed data + chunk header + block header * number of blocks in the chunk
                     }

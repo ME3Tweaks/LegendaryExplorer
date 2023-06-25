@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Unreal.Collections;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
     public class BioDynamicAnimSet : ObjectBinary
     {
-        public OrderedMultiValueDictionary<NameReference, int> SequenceNamesToUnkMap;
+        public UMultiMap<NameReference, int> SequenceNamesToUnkMap;
         protected override void Serialize(SerializingContainer2 sc)
         {
             sc.Serialize(ref SequenceNamesToUnkMap, SCExt.Serialize, SCExt.Serialize);
@@ -17,7 +17,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             return new()
             {
-                SequenceNamesToUnkMap = new OrderedMultiValueDictionary<NameReference, int>()
+                SequenceNamesToUnkMap = new ()
             };
         }
 

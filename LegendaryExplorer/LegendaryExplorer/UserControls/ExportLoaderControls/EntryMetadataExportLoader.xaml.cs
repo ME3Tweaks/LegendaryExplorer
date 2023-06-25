@@ -213,7 +213,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
                 if (exportEntry.HasComponentMap)
                 {
-                    OrderedMultiValueDictionary<NameReference, int> componentMap = exportEntry.ComponentMap;
+                    var componentMap = exportEntry.ComponentMap;
                     string components = $"ComponentMap: 0x{40:X2} {componentMap.Count} items\n";
                     int pairOffset = 44;
                     foreach ((NameReference name, int uIndex) in componentMap)
@@ -265,7 +265,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             OriginalHeader = header;
             headerByteProvider.ReplaceBytes(header);
             HexChanged = false;
-            Header_Hexbox.Refresh();
+            Header_Hexbox?.Refresh();
             OnPropertyChanged(nameof(ObjectIndexOffsetText));
             loadingNewData = false;
         }
@@ -357,7 +357,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             CurrentLoadedEntry = importEntry;
             OriginalHeader = CurrentLoadedEntry.GenerateHeader();
             headerByteProvider.ReplaceBytes(OriginalHeader);
-            Header_Hexbox.Refresh();
+            Header_Hexbox?.Refresh();
             HexChanged = false;
             OnPropertyChanged(nameof(ObjectIndexOffsetText));
             loadingNewData = false;
@@ -477,7 +477,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 }
 
                 headerByteProvider.WriteBytes(HEADER_OFFSET_EXP_IDXCLASS, BitConverter.GetBytes(unrealIndex));
-                Header_Hexbox.Refresh();
+                Header_Hexbox?.Refresh();
             }
         }
 
@@ -503,7 +503,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     return;
                 }
                 headerByteProvider.WriteBytes(CurrentLoadedEntry is ExportEntry ? HEADER_OFFSET_EXP_IDXLINK : HEADER_OFFSET_IMP_IDXLINK, BitConverter.GetBytes(unrealIndex));
-                Header_Hexbox.Refresh();
+                Header_Hexbox?.Refresh();
             }
         }
 
@@ -530,7 +530,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 }
 
                 headerByteProvider.WriteBytes(HEADER_OFFSET_EXP_IDXSUPERCLASS, BitConverter.GetBytes(unrealIndex));
-                Header_Hexbox.Refresh();
+                Header_Hexbox?.Refresh();
             }
         }
 
@@ -542,7 +542,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 if (selectedNameIndex >= 0)
                 {
                     headerByteProvider.WriteBytes(CurrentLoadedEntry is ExportEntry ? HEADER_OFFSET_EXP_IDXOBJECTNAME : HEADER_OFFSET_IMP_IDXOBJECTNAME, BitConverter.GetBytes(selectedNameIndex));
-                    Header_Hexbox.Refresh();
+                    Header_Hexbox?.Refresh();
                 }
             }
         }
@@ -554,7 +554,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 if (int.TryParse(InfoTab_ObjectnameIndex_TextBox.Text, out int x))
                 {
                     headerByteProvider.WriteBytes(CurrentLoadedEntry is ExportEntry ? HEADER_OFFSET_EXP_INDEXVALUE : HEADER_OFFSET_IMP_IDXOBJECTNAME + 4, BitConverter.GetBytes(x));
-                    Header_Hexbox.Refresh();
+                    Header_Hexbox?.Refresh();
                 }
             }
         }
@@ -582,7 +582,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 }
 
                 headerByteProvider.WriteBytes(HEADER_OFFSET_EXP_IDXARCHETYPE, BitConverter.GetBytes(unrealIndex));
-                Header_Hexbox.Refresh();
+                Header_Hexbox?.Refresh();
             }
         }
 
@@ -592,7 +592,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 int selectedNameIndex = InfoTab_PackageFile_ComboBox.SelectedIndex;
                 headerByteProvider.WriteBytes(HEADER_OFFSET_IMP_IDXPACKAGEFILE, BitConverter.GetBytes(selectedNameIndex));
-                Header_Hexbox.Refresh();
+                Header_Hexbox?.Refresh();
             }
         }
 
@@ -602,7 +602,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 var selectedNameIndex = InfoTab_ImpClass_ComboBox.SelectedIndex;
                 headerByteProvider.WriteBytes(HEADER_OFFSET_IMP_IDXCLASSNAME, BitConverter.GetBytes(selectedNameIndex));
-                Header_Hexbox.Refresh();
+                Header_Hexbox?.Refresh();
             }
         }
 
@@ -685,7 +685,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 }
                 //Debug.WriteLine(newFlags);
                 headerByteProvider.WriteBytes(HEADER_OFFSET_EXP_OBJECTFLAGS, BitConverter.GetBytes((ulong)newFlags));
-                Header_Hexbox.Refresh();
+                Header_Hexbox?.Refresh();
             }
         }
 
@@ -708,7 +708,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 }
                 //Debug.WriteLine(newFlags);
                 headerByteProvider.WriteBytes(_exportFlagsOffset, BitConverter.GetBytes((uint)newFlags));
-                Header_Hexbox.Refresh();
+                Header_Hexbox?.Refresh();
             }
         }
 

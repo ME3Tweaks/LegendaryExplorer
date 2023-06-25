@@ -1,4 +1,32 @@
-﻿using Newtonsoft.Json;
+﻿using Gammtek.Conduit.MassEffect3.SFXGame.StateEventMap;
+using LegendaryExplorer.Dialogs;
+using LegendaryExplorer.Misc;
+using LegendaryExplorer.Misc.AppSettings;
+using LegendaryExplorer.Packages;
+using LegendaryExplorer.SharedUI;
+using LegendaryExplorer.SharedUI.Bases;
+using LegendaryExplorer.SharedUI.Interfaces;
+using LegendaryExplorer.SharedUI.PeregrineTreeView;
+using LegendaryExplorer.Tools.PathfindingEditor;
+using LegendaryExplorer.Tools.PlotEditor;
+using LegendaryExplorer.Tools.Sequence_Editor.Experiments;
+using LegendaryExplorer.Tools.SequenceObjects;
+using LegendaryExplorer.UserControls.SharedToolControls;
+using LegendaryExplorerCore.GameFilesystem;
+using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
+using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Kismet;
+using LegendaryExplorerCore.Misc;
+using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
+using LegendaryExplorerCore.Unreal;
+using LegendaryExplorerCore.Unreal.BinaryConverters;
+using LegendaryExplorerCore.Unreal.ObjectInfo;
+using Microsoft.WindowsAPICodePack.Dialogs;
+using Newtonsoft.Json;
+using Piccolo;
+using Piccolo.Event;
+using Piccolo.Nodes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -12,38 +40,11 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Threading;
 using Color = System.Drawing.Color;
+using Image = System.Drawing.Image;
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
-using System.Windows.Threading;
-using Gammtek.Conduit.MassEffect3.SFXGame.StateEventMap;
-using LegendaryExplorer.Dialogs;
-using LegendaryExplorer.Misc;
-using LegendaryExplorer.Misc.AppSettings;
-using LegendaryExplorer.Packages;
-using LegendaryExplorer.SharedUI;
-using LegendaryExplorer.SharedUI.Bases;
-using LegendaryExplorer.SharedUI.Interfaces;
-using LegendaryExplorer.SharedUI.PeregrineTreeView;
-using LegendaryExplorer.Tools.PlotEditor;
-using LegendaryExplorer.Tools.Sequence_Editor.Experiments;
-using LegendaryExplorer.Tools.SequenceObjects;
-using LegendaryExplorer.UserControls.SharedToolControls;
-using LegendaryExplorerCore.GameFilesystem;
-using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
-using LegendaryExplorerCore.Packages;
-using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
-using LegendaryExplorerCore.Unreal;
-using LegendaryExplorerCore.Unreal.BinaryConverters;
-using Microsoft.WindowsAPICodePack.Dialogs;
-using Image = System.Drawing.Image;
-using LegendaryExplorerCore.Helpers;
-using LegendaryExplorerCore.Kismet;
-using LegendaryExplorerCore.Misc;
-using LegendaryExplorerCore.Unreal.ObjectInfo;
-using Piccolo;
-using Piccolo.Event;
-using Piccolo.Nodes;
 
 namespace LegendaryExplorer.Tools.Sequence_Editor
 {
@@ -100,7 +101,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             StatusText = "Select package file to load";
             InitializeComponent();
 
-            RecentsController.InitRecentControl(Toolname, Recents_MenuItem, LoadFile);
+            RecentsController.InitRecentControl(Toolname, Recents_MenuItem, x => LoadFile(x));
 
             graphEditor = (SequenceGraphEditor)GraphHost.Child;
             graphEditor.BackColor = GraphEditorBackColor;
@@ -135,6 +136,11 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             ExportQueuedForFocusing = export;
         }
 
+        public SequenceEditorWPF(IMEPackage package) : this()
+        {
+            PackageQueuedForLoad = package;
+        }
+
         public ICommand OpenCommand { get; set; }
         public ICommand SaveCommand { get; set; }
         public ICommand SaveAsCommand { get; set; }
@@ -150,8 +156,9 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
         public ICommand KismetLogCurrentSequenceCommand { get; set; }
         public ICommand SearchCommand { get; set; }
         public ICommand ForceReloadPackageCommand { get; set; }
-
         public ICommand ResetFavoritesCommand { get; set; }
+        public ICommand OpenOtherVersionCommand { get; set; }
+
         private void LoadCommands()
         {
             ForceReloadPackageCommand = new GenericCommand(ForceReloadPackageWithoutSharing, CanForceReload);
@@ -169,6 +176,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             SearchCommand = new GenericCommand(SearchDialogue, () => CurrentObjects.Any);
             UseSavedViewsCommand = new GenericCommand(ToggleSavedViews, () => Pcc != null && Pcc is { Game: MEGame.ME1 } || Pcc.Game.IsLEGame());
             ResetFavoritesCommand = new GenericCommand(ResetFavorites, () => Pcc != null);
+            OpenOtherVersionCommand = new GenericCommand(OpenOtherVersion, () => Pcc != null && Pcc.Game.IsMEGame());
         }
 
         private void ToggleSavedViews()
@@ -285,7 +293,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
 
             IEntry classEntry;
             if (Pcc.Exports.Any(exp => exp.ObjectName == info.ClassName) || Pcc.Imports.Any(imp => imp.ObjectName == info.ClassName) ||
-                GlobalUnrealObjectInfo.GetClassOrStructInfo(Pcc.Game, info.ClassName) is { } classInfo && EntryImporter.IsSafeToImportFrom(classInfo.pccPath, Pcc.Game))
+                GlobalUnrealObjectInfo.GetClassOrStructInfo(Pcc.Game, info.ClassName) is { } classInfo && EntryImporter.IsSafeToImportFrom(classInfo.pccPath, Pcc.Game, Pcc.FilePath))
             {
                 var rop = new RelinkerOptionsPackage();
                 classEntry = EntryImporter.EnsureClassIsInFile(Pcc, info.ClassName, rop);
@@ -308,8 +316,9 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 MessageBox.Show(this, $"Could not import {info.ClassName}'s class definition! It may be defined in a DLC you don't have.");
                 return;
             }
-
-            var newSeqObj = new ExportEntry(Pcc, SelectedSequence, Pcc.GetNextIndexedName(info.ClassName), properties: SequenceObjectCreator.GetSequenceObjectDefaults(Pcc, info))
+            var packageCache = new PackageCache { AlwaysOpenFromDisk = false };
+            packageCache.InsertIntoCache(Pcc);
+            var newSeqObj = new ExportEntry(Pcc, SelectedSequence, Pcc.GetNextIndexedName(info.ClassName), properties: SequenceObjectCreator.GetSequenceObjectDefaults(Pcc, info, packageCache))
             {
                 Class = classEntry,
             };
@@ -456,7 +465,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
 
         private void OpenPackage()
         {
-            var d = new OpenFileDialog { Filter = GameFileFilters.OpenFileFilter };
+            var d = AppDirectories.GetOpenPackageDialog();
             if (d.ShowDialog() == true)
             {
                 try
@@ -617,18 +626,28 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             }
         }
 
-        public void LoadFile(string fileName, int uIndex)
+        public void LoadFile(string fileName, int uIndex, Action loadPackageDelegate = null)
         {
-            LoadFile(fileName);
+            LoadFile(fileName, loadPackageDelegate);
             GoToExport(uIndex);
         }
 
-        public void LoadFile(string fileName)
+        public void LoadFile(string fileName, Action loadPackageDelegate = null)
         {
             try
             {
                 preloadPackage(fileName, 0); // We don't show the size so don't bother
-                LoadMEPackage(fileName);
+                if (loadPackageDelegate != null)
+                {
+                    // Used for loading packages from memory from another tool
+                    loadPackageDelegate.Invoke();
+                }
+                else
+                {
+                    // Used for loading package from disk (even in shared interop already).
+                    LoadMEPackage(fileName);
+                }
+
                 CurrentFile = Path.GetFileName(fileName);
 
                 // Streams don't work for recents
@@ -1275,10 +1294,16 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                     break;
                 }
             }
+
+            if (updatedExports.Any(uIdx => Pcc.GetEntry(uIdx) is ExportEntry { IsClass: true }))
+            {
+                RefreshToolboxItems();
+            }
         }
 
         private readonly Dictionary<int, PointF> customSaveData = new();
         private bool panToSelection = true;
+        private IMEPackage PackageQueuedForLoad;
         private string FileQueuedForLoad;
         private ExportEntry ExportQueuedForFocusing;
         private bool AllowWindowRefocus = true;
@@ -2273,13 +2298,21 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
 
         private void SequenceEditorWPF_Loaded(object sender, RoutedEventArgs e)
         {
-            if (FileQueuedForLoad != null)
+            if (FileQueuedForLoad != null || PackageQueuedForLoad != null)
             {
                 Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action(() =>
                 {
                     //Wait for all children to finish loading
-                    LoadFile(FileQueuedForLoad);
-                    FileQueuedForLoad = null;
+                    if (FileQueuedForLoad != null)
+                    {
+                        LoadFile(FileQueuedForLoad);
+                        FileQueuedForLoad = null;
+                    }
+                    else if (PackageQueuedForLoad != null)
+                    {
+                        LoadFile(PackageQueuedForLoad.FilePath, () => RegisterPackage(PackageQueuedForLoad));
+                        PackageQueuedForLoad = null;
+                    }
 
                     if (ExportQueuedForFocusing != null)
                     {
@@ -2671,6 +2704,26 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             }
         }
 
+        private void OpenOtherVersion()
+        {
+            var result = CrossGenHelpers.FetchOppositeGenPackage(Pcc, out var otherGen);
+            if (result != null)
+            {
+                MessageBox.Show(result);
+            }
+            else
+            {
+                var nodeEntry = SelectedObjects.FirstOrDefault();
+                SequenceEditorWPF seqEd = new SequenceEditorWPF(otherGen);
+                if (nodeEntry != null && nodeEntry.Export != null)
+                {
+                    seqEd.ExportQueuedForFocusing = otherGen.FindExport(nodeEntry.Export.InstancedFullPath);
+                }
+                seqEd.Show();
+            }
+        }
+
+
         private void LoadCustomClasses_Clicked(object sender, RoutedEventArgs e)
         {
             SequenceEditorExperimentsM.LoadCustomClasses(this);
@@ -2679,6 +2732,37 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
         private void CommitObjectPositions_Clicked(object sender, RoutedEventArgs e)
         {
             SequenceEditorExperimentsM.CommitSequenceObjectPositions(this);
+        }
+
+        private void UpdateSelVarLinks_Clicked(object sender, RoutedEventArgs e)
+        {
+            SequenceEditorExperimentsE.UpdateSequenceVarLinks(GetSEWindow(), true);
+        }
+
+        private void UpdateSequenceVarLinks_Clicked(object sender, RoutedEventArgs e)
+        {
+            SequenceEditorExperimentsE.UpdateSequenceVarLinks(GetSEWindow());
+        }
+
+        private void AddDialogueWheelCam_Clicked(object sender, RoutedEventArgs e)
+        {
+            SequenceEditorExperimentsE.AddDialogueWheelTemplate(GetSEWindow());
+        }
+
+        private void AddDialogueWheelDir_Clicked(object sender, RoutedEventArgs e)
+        {
+            SequenceEditorExperimentsE.AddDialogueWheelTemplate(GetSEWindow(), true);
+        }
+
+        private void AddAnchorToInterps_Clicked(object sender, RoutedEventArgs e)
+        {
+            SequenceEditorExperimentsK.UpdateAllInterpAnchorsVarLinks(GetSEWindow());
+        }
+
+        public SequenceEditorWPF GetSEWindow()
+        {
+            if (GetWindow(this) is SequenceEditorWPF sew) { return sew; }
+            return null;
         }
 
         public string Toolname => "SequenceEditor";

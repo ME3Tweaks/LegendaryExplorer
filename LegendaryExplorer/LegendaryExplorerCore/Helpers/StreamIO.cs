@@ -21,6 +21,7 @@
  */
 
 using System;
+using System.Buffers;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -35,18 +36,22 @@ namespace LegendaryExplorerCore.Helpers
 
         public static MemoryStream ReadToMemoryStream(this Stream stream, long size)
         {
-            var memory = MemoryManager.GetMemoryStream((int)size);
+            MemoryStream memory = MemoryManager.GetMemoryStream((int)size);
 
-            var left = size;
-            var data = new byte[4096];
+            long left = size;
+            byte[] data = ArrayPool<byte>.Shared.Rent((int)Math.Min(size, 4096));
             while (left > 0)
             {
-                var block = (int)(Math.Min(left, 4096));
-                stream.Read(data, 0, block);
+                int block = (int)Math.Min(left, 4096);
+                block = stream.Read(data, 0, block);
+                if (block is 0)
+                {
+                    ThrowEndOfStreamException();
+                }
                 memory.Write(data, 0, block);
                 left -= block;
             }
-
+            ArrayPool<byte>.Shared.Return(data);
             memory.Seek(0, SeekOrigin.Begin);
             return memory;
         }
@@ -200,26 +205,31 @@ namespace LegendaryExplorerCore.Helpers
 
         public static void WriteStringLatin1(this Stream stream, string str)
         {
-            byte[] buffer = Encoding.Latin1.GetBytes(str);
-            stream.Write(buffer, 0, buffer.Length);
+            Span<byte> stackSpan = stackalloc byte[128];
+            int byteCount = Encoding.Latin1.GetByteCount(str);
+            Span<byte> buffer = byteCount > stackSpan.Length ? new byte[byteCount] : stackSpan[..byteCount];
+            Encoding.Latin1.GetBytes(str, buffer);
+            stream.Write(buffer);
         }
 
         public static void WriteStringLatin1Null(this Stream stream, string str)
         {
-            stream.WriteStringLatin1(str);
-            stream.WriteByte(0);
+            Span<byte> stackSpan = stackalloc byte[128];
+            int byteCount = Encoding.Latin1.GetByteCount(str) + 1;
+            Span<byte> buffer = byteCount > stackSpan.Length ? new byte[byteCount] : stackSpan[..byteCount];
+            Encoding.Latin1.GetBytes(str, buffer);
+            buffer[^1] = 0;
+            stream.Write(buffer);
         }
 
         public static void WriteStringLatin1(this EndianWriter stream, string str)
         {
-            byte[] buffer = Encoding.Latin1.GetBytes(str);
-            stream.Write(buffer, 0, buffer.Length);
+            stream.BaseStream.WriteStringLatin1(str);
         }
 
         public static void WriteStringLatin1Null(this EndianWriter stream, string str)
         {
-            stream.WriteStringLatin1(str);
-            stream.WriteByte(0);
+            stream.BaseStream.WriteStringLatin1Null(str);
         }
 
         public static void WriteStringUtf8WithLength(this Stream stream, string str)
@@ -233,6 +243,20 @@ namespace LegendaryExplorerCore.Helpers
         {
             Span<byte> buffer = stackalloc byte[256];
             int length = stream.ReadInt32();
+            buffer = length > buffer.Length ? new byte[length] : buffer[..length];
+            stream.ReadToSpan(buffer);
+            return Encoding.UTF8.GetString(buffer);
+        }
+
+        public static void WriteStringUtf8(this Stream stream, string str)
+        {
+            byte[] buff = Encoding.UTF8.GetBytes(str);
+            stream.Write(buff, 0, buff.Length);
+        }
+
+        public static string ReadStringUtf8(this Stream stream, int length)
+        {
+            Span<byte> buffer = stackalloc byte[256];
             buffer = length > buffer.Length ? new byte[length] : buffer[..length];
             stream.ReadToSpan(buffer);
             return Encoding.UTF8.GetString(buffer);
@@ -292,28 +316,32 @@ namespace LegendaryExplorerCore.Helpers
 
         public static void WriteStringUnicode(this Stream stream, string str)
         {
-            byte[] buffer = Encoding.Unicode.GetBytes(str);
-            stream.Write(buffer, 0, buffer.Length);
+            Span<byte> stackSpan = stackalloc byte[256];
+            int byteCount = Encoding.Unicode.GetByteCount(str);
+            Span<byte> buffer = byteCount > stackSpan.Length ? new byte[byteCount] : stackSpan[..byteCount];
+            Encoding.Unicode.GetBytes(str, buffer);
+            stream.Write(buffer);
         }
 
         public static void WriteStringUnicodeNull(this Stream stream, string str)
         {
-            stream.WriteStringUnicode(str);
-            stream.WriteByte(0);
-            stream.WriteByte(0);
+            Span<byte> stackSpan = stackalloc byte[256];
+            int byteCount = Encoding.Unicode.GetByteCount(str) + 2;
+            Span<byte> buffer = byteCount > stackSpan.Length ? new byte[byteCount] : stackSpan[..byteCount];
+            Encoding.Unicode.GetBytes(str, buffer);
+            buffer[^2] = 0;
+            buffer[^1] = 0;
+            stream.Write(buffer);
         }
 
         public static void WriteStringUnicode(this EndianWriter stream, string str)
         {
-            byte[] buffer = Encoding.Unicode.GetBytes(str);
-            stream.Write(buffer, 0, buffer.Length);
+            stream.BaseStream.WriteStringUnicode(str);
         }
 
         public static void WriteStringUnicodeNull(this EndianWriter stream, string str)
         {
-            stream.WriteStringUnicode(str);
-            stream.WriteByte(0);
-            stream.WriteByte(0);
+            stream.BaseStream.WriteStringUnicodeNull(str);
         }
 
         public static ulong ReadUInt64(this Stream stream)

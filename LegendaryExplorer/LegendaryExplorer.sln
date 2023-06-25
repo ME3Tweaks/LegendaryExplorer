@@ -34,13 +34,16 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LegendaryExplorer.Tests", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WaveFormRendererLib", "WaveFormRendererLib\WaveFormRendererLib.csproj", "{42899445-4768-4C24-A83A-E76CF39DBE7B}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WwiseTools_DotNet6", "submodules\WwiseTools\WwiseTools_DotNet6\WwiseTools_DotNet6.csproj", "{BF251A45-7189-4E2C-AA08-0308F0E309A7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WwiseParserLib", "submodules\WwiseParser\WwiseParserLib\WwiseParserLib.csproj", "{DA7BCC8E-034B-4AA6-BBB4-BAA6CB4F6FB2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		LinuxDebug|x64 = LinuxDebug|x64
 		LinuxRelease|x64 = LinuxRelease|x64
 		MacDebug|x64 = MacDebug|x64
 		MacRelease|x64 = MacRelease|x64
-		Profile|x64 = Profile|x64
 		WinAzureRelease|x64 = WinAzureRelease|x64
 		WinAzureTest|x64 = WinAzureTest|x64
 		WinDebug|x64 = WinDebug|x64
@@ -57,8 +60,6 @@ Global
 		{90722DA5-6E21-4FA5-B625-B832686A10D3}.MacDebug|x64.Build.0 = WinDebug|x64
 		{90722DA5-6E21-4FA5-B625-B832686A10D3}.MacRelease|x64.ActiveCfg = WinDebug|x64
 		{90722DA5-6E21-4FA5-B625-B832686A10D3}.MacRelease|x64.Build.0 = WinDebug|x64
-		{90722DA5-6E21-4FA5-B625-B832686A10D3}.Profile|x64.ActiveCfg = WinRelease|x64
-		{90722DA5-6E21-4FA5-B625-B832686A10D3}.Profile|x64.Build.0 = WinRelease|x64
 		{90722DA5-6E21-4FA5-B625-B832686A10D3}.WinAzureRelease|x64.ActiveCfg = WinAzureRelease|x64
 		{90722DA5-6E21-4FA5-B625-B832686A10D3}.WinAzureRelease|x64.Build.0 = WinAzureRelease|x64
 		{90722DA5-6E21-4FA5-B625-B832686A10D3}.WinAzureTest|x64.ActiveCfg = WinAzureTest|x64
@@ -79,8 +80,6 @@ Global
 		{259B8658-3EA1-4C9B-BF6E-EF315768BD3E}.MacDebug|x64.Build.0 = MacDebug|x64
 		{259B8658-3EA1-4C9B-BF6E-EF315768BD3E}.MacRelease|x64.ActiveCfg = MacRelease|x64
 		{259B8658-3EA1-4C9B-BF6E-EF315768BD3E}.MacRelease|x64.Build.0 = MacRelease|x64
-		{259B8658-3EA1-4C9B-BF6E-EF315768BD3E}.Profile|x64.ActiveCfg = WPFRelease|x64
-		{259B8658-3EA1-4C9B-BF6E-EF315768BD3E}.Profile|x64.Build.0 = WPFRelease|x64
 		{259B8658-3EA1-4C9B-BF6E-EF315768BD3E}.WinAzureRelease|x64.ActiveCfg = WinAzureRelease|x64
 		{259B8658-3EA1-4C9B-BF6E-EF315768BD3E}.WinAzureRelease|x64.Build.0 = WinAzureRelease|x64
 		{259B8658-3EA1-4C9B-BF6E-EF315768BD3E}.WinAzureTest|x64.ActiveCfg = WinAzureTest|x64
@@ -101,8 +100,6 @@ Global
 		{39A2FA47-5227-46EA-A7EE-D7666DA6021A}.MacDebug|x64.Build.0 = WinDebug|x64
 		{39A2FA47-5227-46EA-A7EE-D7666DA6021A}.MacRelease|x64.ActiveCfg = WinDebug|x64
 		{39A2FA47-5227-46EA-A7EE-D7666DA6021A}.MacRelease|x64.Build.0 = WinDebug|x64
-		{39A2FA47-5227-46EA-A7EE-D7666DA6021A}.Profile|x64.ActiveCfg = WinRelease|x64
-		{39A2FA47-5227-46EA-A7EE-D7666DA6021A}.Profile|x64.Build.0 = WinRelease|x64
 		{39A2FA47-5227-46EA-A7EE-D7666DA6021A}.WinAzureRelease|x64.ActiveCfg = WinAzureRelease|x64
 		{39A2FA47-5227-46EA-A7EE-D7666DA6021A}.WinAzureRelease|x64.Build.0 = WinAzureRelease|x64
 		{39A2FA47-5227-46EA-A7EE-D7666DA6021A}.WinAzureTest|x64.ActiveCfg = WinAzureTest|x64
@@ -123,8 +120,6 @@ Global
 		{DEF62ED6-781B-40F9-841B-93151806712C}.MacDebug|x64.Build.0 = WinDebug|x64
 		{DEF62ED6-781B-40F9-841B-93151806712C}.MacRelease|x64.ActiveCfg = WinDebug|x64
 		{DEF62ED6-781B-40F9-841B-93151806712C}.MacRelease|x64.Build.0 = WinDebug|x64
-		{DEF62ED6-781B-40F9-841B-93151806712C}.Profile|x64.ActiveCfg = WinRelease|x64
-		{DEF62ED6-781B-40F9-841B-93151806712C}.Profile|x64.Build.0 = WinRelease|x64
 		{DEF62ED6-781B-40F9-841B-93151806712C}.WinAzureRelease|x64.ActiveCfg = WinAzureRelease|x64
 		{DEF62ED6-781B-40F9-841B-93151806712C}.WinAzureRelease|x64.Build.0 = WinAzureRelease|x64
 		{DEF62ED6-781B-40F9-841B-93151806712C}.WinAzureTest|x64.ActiveCfg = WinAzureTest|x64
@@ -145,8 +140,6 @@ Global
 		{6879519E-198F-40D5-9CCB-F108DA1609A1}.MacDebug|x64.Build.0 = WinDebug|x64
 		{6879519E-198F-40D5-9CCB-F108DA1609A1}.MacRelease|x64.ActiveCfg = WinDebug|x64
 		{6879519E-198F-40D5-9CCB-F108DA1609A1}.MacRelease|x64.Build.0 = WinDebug|x64
-		{6879519E-198F-40D5-9CCB-F108DA1609A1}.Profile|x64.ActiveCfg = WinRelease|x64
-		{6879519E-198F-40D5-9CCB-F108DA1609A1}.Profile|x64.Build.0 = WinRelease|x64
 		{6879519E-198F-40D5-9CCB-F108DA1609A1}.WinAzureRelease|x64.ActiveCfg = WinAzureRelease|x64
 		{6879519E-198F-40D5-9CCB-F108DA1609A1}.WinAzureRelease|x64.Build.0 = WinAzureRelease|x64
 		{6879519E-198F-40D5-9CCB-F108DA1609A1}.WinAzureTest|x64.ActiveCfg = WinAzureTest|x64
@@ -167,8 +160,6 @@ Global
 		{8B3E290F-A415-46EA-B8E3-708DE9620ABD}.MacDebug|x64.Build.0 = WinDebug|x64
 		{8B3E290F-A415-46EA-B8E3-708DE9620ABD}.MacRelease|x64.ActiveCfg = WinDebug|x64
 		{8B3E290F-A415-46EA-B8E3-708DE9620ABD}.MacRelease|x64.Build.0 = WinDebug|x64
-		{8B3E290F-A415-46EA-B8E3-708DE9620ABD}.Profile|x64.ActiveCfg = WinRelease|x64
-		{8B3E290F-A415-46EA-B8E3-708DE9620ABD}.Profile|x64.Build.0 = WinRelease|x64
 		{8B3E290F-A415-46EA-B8E3-708DE9620ABD}.WinAzureRelease|x64.ActiveCfg = WinAzureRelease|x64
 		{8B3E290F-A415-46EA-B8E3-708DE9620ABD}.WinAzureRelease|x64.Build.0 = WinAzureRelease|x64
 		{8B3E290F-A415-46EA-B8E3-708DE9620ABD}.WinAzureTest|x64.ActiveCfg = WinAzureTest|x64
@@ -189,8 +180,6 @@ Global
 		{06E31FB6-17D2-477D-81D1-5EB4A908E88B}.MacDebug|x64.Build.0 = WinDebug|x64
 		{06E31FB6-17D2-477D-81D1-5EB4A908E88B}.MacRelease|x64.ActiveCfg = WinDebug|x64
 		{06E31FB6-17D2-477D-81D1-5EB4A908E88B}.MacRelease|x64.Build.0 = WinDebug|x64
-		{06E31FB6-17D2-477D-81D1-5EB4A908E88B}.Profile|x64.ActiveCfg = WinRelease|x64
-		{06E31FB6-17D2-477D-81D1-5EB4A908E88B}.Profile|x64.Build.0 = WinRelease|x64
 		{06E31FB6-17D2-477D-81D1-5EB4A908E88B}.WinAzureRelease|x64.ActiveCfg = WinAzureRelease|x64
 		{06E31FB6-17D2-477D-81D1-5EB4A908E88B}.WinAzureTest|x64.ActiveCfg = WinAzureTest|x64
 		{06E31FB6-17D2-477D-81D1-5EB4A908E88B}.WinAzureTest|x64.Build.0 = WinAzureTest|x64
@@ -205,7 +194,6 @@ Global
 		{371B9FA9-4C90-4AC6-A123-ACED756D6C77}.LinuxRelease|x64.ActiveCfg = WinRelease|x64
 		{371B9FA9-4C90-4AC6-A123-ACED756D6C77}.MacDebug|x64.ActiveCfg = WinDebug|x64
 		{371B9FA9-4C90-4AC6-A123-ACED756D6C77}.MacRelease|x64.ActiveCfg = WinRelease|x64
-		{371B9FA9-4C90-4AC6-A123-ACED756D6C77}.Profile|x64.ActiveCfg = WinDebug|x64
 		{371B9FA9-4C90-4AC6-A123-ACED756D6C77}.WinAzureRelease|x64.ActiveCfg = WinAzureRelease|x64
 		{371B9FA9-4C90-4AC6-A123-ACED756D6C77}.WinAzureRelease|x64.Build.0 = WinAzureRelease|x64
 		{371B9FA9-4C90-4AC6-A123-ACED756D6C77}.WinAzureTest|x64.ActiveCfg = WinDebug|x64
@@ -221,7 +209,6 @@ Global
 		{BE144A0B-A717-4E0C-8D5D-D596B1D5BB71}.LinuxRelease|x64.ActiveCfg = Release|x64
 		{BE144A0B-A717-4E0C-8D5D-D596B1D5BB71}.MacDebug|x64.ActiveCfg = Debug|x64
 		{BE144A0B-A717-4E0C-8D5D-D596B1D5BB71}.MacRelease|x64.ActiveCfg = Release|x64
-		{BE144A0B-A717-4E0C-8D5D-D596B1D5BB71}.Profile|x64.ActiveCfg = Debug|x64
 		{BE144A0B-A717-4E0C-8D5D-D596B1D5BB71}.WinAzureRelease|x64.ActiveCfg = Release|x64
 		{BE144A0B-A717-4E0C-8D5D-D596B1D5BB71}.WinAzureTest|x64.ActiveCfg = Debug|x64
 		{BE144A0B-A717-4E0C-8D5D-D596B1D5BB71}.WinDebug|x64.ActiveCfg = Debug|x64
@@ -233,7 +220,6 @@ Global
 		{42899445-4768-4C24-A83A-E76CF39DBE7B}.LinuxRelease|x64.ActiveCfg = Release|x64
 		{42899445-4768-4C24-A83A-E76CF39DBE7B}.MacDebug|x64.ActiveCfg = Debug|x64
 		{42899445-4768-4C24-A83A-E76CF39DBE7B}.MacRelease|x64.ActiveCfg = Release|x64
-		{42899445-4768-4C24-A83A-E76CF39DBE7B}.Profile|x64.ActiveCfg = Debug|x64
 		{42899445-4768-4C24-A83A-E76CF39DBE7B}.WinAzureRelease|x64.ActiveCfg = Release|x64
 		{42899445-4768-4C24-A83A-E76CF39DBE7B}.WinAzureRelease|x64.Build.0 = Release|x64
 		{42899445-4768-4C24-A83A-E76CF39DBE7B}.WinAzureTest|x64.ActiveCfg = Debug|x64
@@ -243,6 +229,47 @@ Global
 		{42899445-4768-4C24-A83A-E76CF39DBE7B}.WinRelease|x64.Build.0 = Release|x64
 		{42899445-4768-4C24-A83A-E76CF39DBE7B}.WPFDebug|x64.ActiveCfg = Debug|x64
 		{42899445-4768-4C24-A83A-E76CF39DBE7B}.WPFRelease|x64.ActiveCfg = Release|x64
+		{42899445-4768-4C24-A83A-E76CF39DBE7B}.WPFRelease|x64.Build.0 = Release|x64
+		{BF251A45-7189-4E2C-AA08-0308F0E309A7}.LinuxDebug|x64.ActiveCfg = Debug|Any CPU
+		{BF251A45-7189-4E2C-AA08-0308F0E309A7}.LinuxDebug|x64.Build.0 = Debug|Any CPU
+		{BF251A45-7189-4E2C-AA08-0308F0E309A7}.LinuxRelease|x64.ActiveCfg = Release|Any CPU
+		{BF251A45-7189-4E2C-AA08-0308F0E309A7}.LinuxRelease|x64.Build.0 = Release|Any CPU
+		{BF251A45-7189-4E2C-AA08-0308F0E309A7}.MacDebug|x64.ActiveCfg = Debug|Any CPU
+		{BF251A45-7189-4E2C-AA08-0308F0E309A7}.MacDebug|x64.Build.0 = Debug|Any CPU
+		{BF251A45-7189-4E2C-AA08-0308F0E309A7}.MacRelease|x64.ActiveCfg = Release|Any CPU
+		{BF251A45-7189-4E2C-AA08-0308F0E309A7}.MacRelease|x64.Build.0 = Release|Any CPU
+		{BF251A45-7189-4E2C-AA08-0308F0E309A7}.WinAzureRelease|x64.ActiveCfg = Release|x64
+		{BF251A45-7189-4E2C-AA08-0308F0E309A7}.WinAzureRelease|x64.Build.0 = Release|x64
+		{BF251A45-7189-4E2C-AA08-0308F0E309A7}.WinAzureTest|x64.ActiveCfg = Debug|Any CPU
+		{BF251A45-7189-4E2C-AA08-0308F0E309A7}.WinAzureTest|x64.Build.0 = Debug|Any CPU
+		{BF251A45-7189-4E2C-AA08-0308F0E309A7}.WinDebug|x64.ActiveCfg = Debug|x64
+		{BF251A45-7189-4E2C-AA08-0308F0E309A7}.WinDebug|x64.Build.0 = Debug|x64
+		{BF251A45-7189-4E2C-AA08-0308F0E309A7}.WinRelease|x64.ActiveCfg = Release|x64
+		{BF251A45-7189-4E2C-AA08-0308F0E309A7}.WinRelease|x64.Build.0 = Release|x64
+		{BF251A45-7189-4E2C-AA08-0308F0E309A7}.WPFDebug|x64.ActiveCfg = Debug|Any CPU
+		{BF251A45-7189-4E2C-AA08-0308F0E309A7}.WPFDebug|x64.Build.0 = Debug|Any CPU
+		{BF251A45-7189-4E2C-AA08-0308F0E309A7}.WPFRelease|x64.ActiveCfg = Release|x64
+		{BF251A45-7189-4E2C-AA08-0308F0E309A7}.WPFRelease|x64.Build.0 = Release|x64
+		{DA7BCC8E-034B-4AA6-BBB4-BAA6CB4F6FB2}.LinuxDebug|x64.ActiveCfg = Debug|Any CPU
+		{DA7BCC8E-034B-4AA6-BBB4-BAA6CB4F6FB2}.LinuxDebug|x64.Build.0 = Debug|Any CPU
+		{DA7BCC8E-034B-4AA6-BBB4-BAA6CB4F6FB2}.LinuxRelease|x64.ActiveCfg = Release|Any CPU
+		{DA7BCC8E-034B-4AA6-BBB4-BAA6CB4F6FB2}.LinuxRelease|x64.Build.0 = Release|Any CPU
+		{DA7BCC8E-034B-4AA6-BBB4-BAA6CB4F6FB2}.MacDebug|x64.ActiveCfg = Debug|Any CPU
+		{DA7BCC8E-034B-4AA6-BBB4-BAA6CB4F6FB2}.MacDebug|x64.Build.0 = Debug|Any CPU
+		{DA7BCC8E-034B-4AA6-BBB4-BAA6CB4F6FB2}.MacRelease|x64.ActiveCfg = Release|Any CPU
+		{DA7BCC8E-034B-4AA6-BBB4-BAA6CB4F6FB2}.MacRelease|x64.Build.0 = Release|Any CPU
+		{DA7BCC8E-034B-4AA6-BBB4-BAA6CB4F6FB2}.WinAzureRelease|x64.ActiveCfg = Release|x64
+		{DA7BCC8E-034B-4AA6-BBB4-BAA6CB4F6FB2}.WinAzureRelease|x64.Build.0 = Release|x64
+		{DA7BCC8E-034B-4AA6-BBB4-BAA6CB4F6FB2}.WinAzureTest|x64.ActiveCfg = Debug|Any CPU
+		{DA7BCC8E-034B-4AA6-BBB4-BAA6CB4F6FB2}.WinAzureTest|x64.Build.0 = Debug|Any CPU
+		{DA7BCC8E-034B-4AA6-BBB4-BAA6CB4F6FB2}.WinDebug|x64.ActiveCfg = Debug|x64
+		{DA7BCC8E-034B-4AA6-BBB4-BAA6CB4F6FB2}.WinDebug|x64.Build.0 = Debug|x64
+		{DA7BCC8E-034B-4AA6-BBB4-BAA6CB4F6FB2}.WinRelease|x64.ActiveCfg = Release|x64
+		{DA7BCC8E-034B-4AA6-BBB4-BAA6CB4F6FB2}.WinRelease|x64.Build.0 = Release|x64
+		{DA7BCC8E-034B-4AA6-BBB4-BAA6CB4F6FB2}.WPFDebug|x64.ActiveCfg = Debug|Any CPU
+		{DA7BCC8E-034B-4AA6-BBB4-BAA6CB4F6FB2}.WPFDebug|x64.Build.0 = Debug|Any CPU
+		{DA7BCC8E-034B-4AA6-BBB4-BAA6CB4F6FB2}.WPFRelease|x64.ActiveCfg = Release|x64
+		{DA7BCC8E-034B-4AA6-BBB4-BAA6CB4F6FB2}.WPFRelease|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

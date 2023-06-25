@@ -593,9 +593,10 @@ namespace LegendaryExplorer.Tools.DialogueDumper
         public void DumpPackageFile(MEGame GameBeingDumped, DialogueDumperWindow dumper)
         {
             string fileName = ShortFileName.ToUpper();
+            dumper.CurrentOverallOperationText = $"Dumping Packages.... {dumper.OverallProgressValue}/{dumper.OverallProgressMaximum}";
+
             if (dumper.shouldDoDebugOutput)
             {
-                dumper.CurrentOverallOperationText = $"Dumping Packages.... {dumper.OverallProgressValue}/{dumper.OverallProgressMaximum} { dumper._xlqueue.Count }";
                 var excelout = new List<string> { "DEBUG", "IN PROCESS", fileName };
                 dumper._xlqueue.Add(excelout);
             }
@@ -609,7 +610,7 @@ namespace LegendaryExplorer.Tools.DialogueDumper
                 CheckConv = true;
                 CheckActor = true;
             }
-            else if (GameBeingDumped.IsGame1() && fileLoc == _selectedLocalization && !fileName.EndsWith(@"LAY") && !fileName.EndsWith(@"SND") && !fileName.EndsWith(@"_T") && !fileName.StartsWith(@"BIOG") && !fileName.StartsWith(@"BIOC"))
+            else if (GameBeingDumped.IsGame1() && (fileLoc == MELocalization.None || fileLoc == _selectedLocalization) && !fileName.EndsWith(@"LAY") && !fileName.EndsWith(@"SND") && !fileName.EndsWith(@"_T") && !fileName.StartsWith(@"BIOG") && !fileName.StartsWith(@"BIOC"))
             {
                 CheckConv = true; //Filter ME1 remove file types that never have convos. Levels only.
                 CheckActor = true;
@@ -961,14 +962,14 @@ namespace LegendaryExplorer.Tools.DialogueDumper
                             if (className == "AnimSequence")
                             {
                                 string animname = exp.ObjectName.Instanced;
-                                string animpackage = exp.Parent.ObjectName.Instanced;
+                                string animpackage = exp.Parent?.ObjectName.Instanced ?? exp.FileRef.FileNameNoExtension; // ME1 has lots of root stuff.
                                 var seqName = exp.GetProperty<NameProperty>("SequenceName");
                                 float length = exp.GetProperty<FloatProperty>("SequenceLength");
                                 dumper._xlqueue.Add(new List<string>
-                                {
-                                    "Animations", animname, animpackage, seqName.ToString(), length.ToString(),
-                                    fileName, GameBeingDumped.ToString()
-                                });
+                                    {
+                                        "Animations", animname, animpackage, seqName.ToString(), length.ToString(),
+                                        fileName, GameBeingDumped.ToString()
+                                    });
                             }
                         }
                     }

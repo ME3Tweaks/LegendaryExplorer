@@ -155,6 +155,16 @@ namespace LegendaryExplorerCore.GameFilesystem
         public static string BioWareDocumentsPath => LEDirectory.BioWareDocumentsPath;
 
         /// <summary>
+        /// Path to the folder where career profiles are stored in the user config directory.
+        /// </summary>
+        public static string SaveFolderPath => Path.Combine(LEDirectory.BioWareDocumentsPath, @"Save", @"ME2");
+
+        /// <summary>
+        /// Path to the 'Local_Profile' file in the user config directory.
+        /// </summary>
+        public static string LocalProfilePath => Path.Combine(SaveFolderPath, @"GamerProfile");
+
+        /// <summary>
         /// Gets the path to the LOD configuration file for LE2
         /// </summary>
         /// <param name="gamePathRootOverride">Optional: override game path root</param>

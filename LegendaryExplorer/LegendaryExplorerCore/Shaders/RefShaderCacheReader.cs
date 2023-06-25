@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using LegendaryExplorerCore.DebugTools;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
@@ -17,7 +18,18 @@ namespace LegendaryExplorerCore.Shaders
     public static class RefShaderCacheReader
     {
         public static string GlobalShaderFileName(MEGame game) => game.IsLEGame() ? "RefShaderCache-PC-D3D-SM5.upk" : "RefShaderCache-PC-D3D-SM3.upk";
-        private static string shaderfilePath(MEGame game) => Path.Combine(MEDirectories.GetCookedPath(game), GlobalShaderFileName(game));
+
+        private static string shaderfilePath(MEGame game, string gamePathOverride = null)
+        {
+            var cookedPath = MEDirectories.GetCookedPath(game, gamePathOverride);
+            if (cookedPath == null)
+            {
+                LECLog.Error(@"Cannot determine game path - cannot lookup shader file path");
+                return null; // We cannot find the game!
+            }
+            return Path.Combine(cookedPath, GlobalShaderFileName(game));
+
+        }
 
         private static Dictionary<Guid, int> ME3ShaderOffsets;
         private static Dictionary<Guid, int> ME2ShaderOffsets;
@@ -51,7 +63,7 @@ namespace LegendaryExplorerCore.Shaders
         private static long LE2RefShaderCacheSize = 1035352391;
         private static long LE1RefShaderCacheSize = 731880291;
 
-        private static int MaterialShaderMapsOffset(MEGame game)
+        private static int MaterialShaderMapsOffset(MEGame game, string gamePathOverride)
         {
             if (game.IsLEGame())
             {
@@ -62,10 +74,16 @@ namespace LegendaryExplorerCore.Shaders
                     MEGame.LE1 => LE1RefShaderCacheSize,
                     _ => 0
                 };
-                var actualsize = new FileInfo(shaderfilePath(game)).Length;
+                var shaderPath = shaderfilePath(game, gamePathOverride);
+                if (shaderPath == null)
+                {
+                    // Shader file could not be found
+                    return 0;
+                }
+                var actualsize = new FileInfo(shaderPath).Length;
                 if (expectedSize != actualsize)
                 {
-                    GetMaterialShaderMap(game, null);
+                    GetMaterialShaderMap(game, null, gamePathOverride = null);
                     switch (game)
                     {
                         case MEGame.LE3:
@@ -164,13 +182,13 @@ namespace LegendaryExplorerCore.Shaders
             }
         }
 
-        public static MaterialShaderMap GetMaterialShaderMap(MEGame game, StaticParameterSet staticParameterSet)
+        public static MaterialShaderMap GetMaterialShaderMap(MEGame game, StaticParameterSet staticParameterSet, string gamePathOverride = null)
         {
             string filePath = shaderfilePath(game);
             if (File.Exists(filePath))
             {
                 using FileStream fs = File.OpenRead(filePath);
-                using IMEPackage shaderCachePackage = MEPackageHandler.OpenMEPackageFromStream(fs, quickLoad:true);
+                using IMEPackage shaderCachePackage = MEPackageHandler.OpenMEPackageFromStream(fs, quickLoad: true);
                 ReadNames(fs, shaderCachePackage);
 
                 int offsetOfShaderCacheOffset = shaderCachePackage.ExportOffset + 36;
@@ -181,7 +199,7 @@ namespace LegendaryExplorerCore.Shaders
                 }
 
                 var sc = new SerializingContainer2(fs, shaderCachePackage, true);
-                sc.ms.JumpTo(MaterialShaderMapsOffset(game));
+                sc.ms.JumpTo(MaterialShaderMapsOffset(game, gamePathOverride));
 
                 int count = fs.ReadInt32();
                 for (int i = 0; i < count; i++)
@@ -237,7 +255,7 @@ namespace LegendaryExplorerCore.Shaders
             return null;
         }
 
-        public static void RemoveStaticParameterSetsThatAreInTheGlobalCache(HashSet<StaticParameterSet> paramSets, MEGame game)
+        public static void RemoveStaticParameterSetsThatAreInTheGlobalCache(HashSet<StaticParameterSet> paramSets, MEGame game, string gamePathOverride = null)
         {
             string filePath = shaderfilePath(game);
             if (File.Exists(filePath))
@@ -247,7 +265,7 @@ namespace LegendaryExplorerCore.Shaders
                 using IMEPackage shaderCachePackage = MEPackageHandler.OpenMEPackageFromStream(fs, quickLoad: true);
                 ReadNames(fs, shaderCachePackage);
                 var sc = new SerializingContainer2(fs, shaderCachePackage, true);
-                sc.ms.JumpTo(MaterialShaderMapsOffset(game));
+                sc.ms.JumpTo(MaterialShaderMapsOffset(game, gamePathOverride));
 
                 int count = fs.ReadInt32();
                 for (int i = 0; i < count && paramSets.Count > 0; i++)

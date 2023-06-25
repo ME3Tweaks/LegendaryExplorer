@@ -60,7 +60,6 @@ namespace LegendaryExplorerCore.Misc.ME3Tweaks
         /// <returns>True if request was made, false otherwise</returns>
         public static bool RequestASIInstallation(MEGame game, int ASIid, int version = 0)
         {
-            throw new Exception(@"NOT FULLY IMPLEMENTED YET");
             return InternalRequestModManagerTask($"--installasi {ASIid} --game {game}");
         }
 

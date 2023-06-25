@@ -47,7 +47,7 @@
 
 
             <MenuItem Header="Open in Package Editor" Click="OpenInPackageEditor_Clicked" />
-            <MenuItem Header="Open class definition in Package Editor" Click="OpenClassDefinitionInPackageEditor_Clicked" Visibility="{x:Static global:App.IsDebugVisibility}" />
+            <MenuItem Header="Open class definition in Package Editor" Click="OpenClassDefinitionInPackageEditor_Clicked"/>
             <MenuItem Header="Open Referenced Object in Package Editor" Click="OpenReferencedObjectInPackageEditor_Clicked" Name="openRefInPackEdMenuItem"/>
             <MenuItem Header="Open in Interp Editor" Click="OpenInInterpViewer_Clicked" Name="interpViewerMenuItem"/>
             <MenuItem Header="Open in Dialogue Editor" Click="OpenInDialogueEditor_Clicked" Name="dialogueEditorMenuItem"/>
@@ -99,6 +99,8 @@
                 </MenuItem>
 
                 <MenuItem Header="Tools" Padding="4">
+                    <MenuItem Header="Open other generation version of file (OT &lt;-&gt; LE)" ToolTip="Opens the opposite generation's version of this file, if it exists." Command="{Binding OpenOtherVersionCommand}" sharedUi:Bindings.VisibilityToEnabled="True"/>
+                    <Separator/>
                     <MenuItem Header="Goto #" Command="{Binding GotoCommand}" InputGestureText="Ctrl+G" />
                     <MenuItem Header="Add Object" Click="AddObject_Clicked"
                                 ToolTip="Add existing Sequence Object to this Sequence"
@@ -170,6 +172,13 @@
                               ToolTip="Reads an input package and parses the information required for them to be viewed correctly in Sequence Editor. Only works for this session" />
                     <MenuItem Header="Commit object positions to objects" Click="CommitObjectPositions_Clicked"
                               ToolTip="Writes the node positions of all nodes to the properties for ObjPosX and ObjPosY" />
+					<MenuItem Header="Exkywor's buttons for lazy people">
+                        <MenuItem Header="Update Selected Interps' Variable Links" Click="UpdateSelVarLinks_Clicked" ToolTip="Updated the variable links of the selected interps in the sequence."/>
+                        <MenuItem Header="Update Sequence Interps' Variable Links" Click="UpdateSequenceVarLinks_Clicked" ToolTip="Updated the variable links of all interps in the selected sequence."/>
+                        <MenuItem Header="Add Dialogue Wheel Camera" Click="AddDialogueWheelCam_Clicked" ToolTip="Adds an Interp and an InterpData template to control a dialogue wheel camera"/>
+                        <MenuItem Header="Add Dialogue Wheel Director" Click="AddDialogueWheelDir_Clicked" ToolTip="Adds an Interp and an InterpData template to control the camera during a dialogue wheel"/>
+                        <MenuItem Header="Anchor All Interps to Selection" Click="AddAnchorToInterps_Clicked" ToolTip="Adds a link from all Interps without an anchor to the selected SeqVar_Object."/>
+                    </MenuItem>
                 </MenuItem>
             </Menu>
             <StatusBar Height="23" DockPanel.Dock="Bottom">

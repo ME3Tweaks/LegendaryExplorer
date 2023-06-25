@@ -11,6 +11,7 @@ using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
+using LegendaryExplorerCore.Unreal.Classes;
 using Microsoft.Win32;
 using Path = System.IO.Path;
 
@@ -38,7 +39,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public bool JPEXNotInstalled => !JPEXIsInstalled;
 
         private string JPEXExecutableLocation;
-        private string CurrentJPEXExportedFilepath;
 
         public JPEXExternalExportLoader() : base("JPEX External Launcher")
         {
@@ -75,7 +75,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             ImportJPEXSavedFileCommand = new GenericCommand(ImportJPEXFile, JPEXExportFileExists);
         }
 
-        private bool JPEXExportFileExists() => CurrentLoadedExport != null && File.Exists(Path.Combine(Path.GetTempPath(), CurrentLoadedExport.FullPath + ".swf"));
+        private string GetSWFExportPath() => Path.Combine(Path.GetTempPath(), CurrentLoadedExport.InstancedFullPath, CurrentLoadedExport.InstancedFullPath + ".gfx");
+
+        private bool JPEXExportFileExists() => CurrentLoadedExport != null && File.Exists(GetSWFExportPath());
 
         /// <summary>
         /// Assets commonly referenced by swf files
@@ -85,6 +87,35 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {("PC_SharedAssets","PC_SharedAssets"), "Startup.pcc"},
             {("Xbox_ControllerIcons","Xbox_ControllerIcons"), "Startup.pcc"},
             {("gfxfonts", "fonts/gfxfontlib"), "SFXGUI_Fonts.pcc"}
+        };
+
+        /// <summary>
+        /// Assets commonly referenced by swf files
+        /// </summary>
+        private static readonly Dictionary<(string, string), string> LE2SharedAssets = new Dictionary<(string infilename, string outfilename), string>
+        {
+            {("mainController","mainController"), "Startup_INT.pcc"},
+            {("PC_SharedAssets","PC_SharedAssets"), "Startup_INT.pcc"},
+            {("Xbox_ControllerIcons","Xbox_ControllerIcons"), "Startup_INT.pcc"},
+            {("BioMassFont", "BioMassFont"), "Startup_INT.pcc"},
+            {("BioMassFont_glyphs", "BioMassFont_glyphs"), "Startup_INT.pcc"},
+            {("AeroLightFont", "AeroLightFont"), "Startup_INT.pcc"},
+            {("AeroLightFont_glyphs", "AeroLightFont_glyphs"), "Startup_INT.pcc"}
+        };
+
+        /// <summary>
+        /// Assets commonly referenced by swf files
+        /// </summary>
+        private static readonly Dictionary<(string, string), string> LE1SharedAssets = new Dictionary<(string infilename, string outfilename), string>
+        {
+            {("mainController","mainController"), "Startup_INT.pcc"},
+            {("PC_SharedAssets","PC_SharedAssets"), "Startup_INT.pcc"},
+            {("XBox_ControllerIcons","XBox_ControllerIcons"), "Startup_INT.pcc"},
+            {("BioMassFont", "BioMassFont"), "Startup_INT.pcc"},
+            {("BioMassFont_glyphs", "BioMassFont_glyphs"), "Startup_INT.pcc"},
+            {("AeroLightFont", "AeroLightFont"), "Startup_INT.pcc"},
+            {("AeroLightFont_glyphs", "AeroLightFont_glyphs"), "Startup_INT.pcc"},
+            // {("gfxfonts", "fonts/gfxfontlib"), "SFXGUI_Fonts.pcc"}
         };
 
         private void extractSwf(ExportEntry export, string destination)
@@ -104,10 +135,20 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 Dictionary<(string infile, string outfile), string> sharedAssets = null;
                 switch (CurrentLoadedExport.Game)
                 {
+                    case MEGame.LE1:
+                        sharedAssets = LE1SharedAssets;
+                        break;
+                    case MEGame.LE3:
                     case MEGame.ME3:
                         sharedAssets = ME3SharedAssets;
                         break;
+                    case MEGame.LE2:
+                        sharedAssets = LE2SharedAssets;
+                        break;
                 }
+
+                var storagePath = Directory.GetParent(GetSWFExportPath()).FullName;
+
                 //if game is not installed this will probably fail
                 var loadedFiles = MELoadedFiles.GetAllFiles(CurrentLoadedExport.Game).ToList();
 
@@ -124,7 +165,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             if (export != null)
                             {
                                 // Extract asset to same path as our destination SWF
-                                var outfile = Path.Combine(Path.GetTempPath(), asset.Key.outfile + ".swf");
+                                var outfile = Path.Combine(storagePath, asset.Key.outfile + ".swf");
                                 Directory.CreateDirectory(Path.GetDirectoryName(outfile)); //some items must be in subfolder
                                 extractSwf(export, outfile);
                             }
@@ -132,8 +173,25 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     }
                 }
 
-                string writeoutPath = Path.Combine(Path.GetTempPath(), CurrentLoadedExport.FullPath + ".swf");
+                Directory.CreateDirectory(storagePath);
+                string writeoutPath = Path.Combine(storagePath, CurrentLoadedExport.FullPath + ".gfx");
                 extractSwf(CurrentLoadedExport, writeoutPath);
+
+                // Texture refereences
+                var references = CurrentLoadedExport.GetProperty<ArrayProperty<ObjectProperty>>(@"References");
+                if (references is not null)
+                {
+                    foreach (var reference in references)
+                    {
+                        var refExp = CurrentLoadedExport.FileRef.GetEntry(reference.Value) as ExportEntry;
+                        if (refExp == null || !refExp.IsTexture())
+                            continue; // import or not a texture?
+
+                        // Extract texture TGA
+                        var tex = new Texture2D(refExp);
+                        tex.ExportToFile(Path.Combine(storagePath, refExp.ObjectName.Instanced + ".tga"));
+                    }
+                }
 
                 var process = new Process
                 {
@@ -144,7 +202,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     }
                 };
                 process.Start();
-                CurrentJPEXExportedFilepath = writeoutPath;
             }
             catch (Exception ex)
             {
@@ -155,9 +212,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void ImportJPEXFile()
         {
-            if (CurrentJPEXExportedFilepath != null)
+            if (File.Exists(GetSWFExportPath()))
             {
-                byte[] bytes = File.ReadAllBytes(CurrentJPEXExportedFilepath);
+                byte[] bytes = File.ReadAllBytes(GetSWFExportPath());
                 var props = CurrentLoadedExport.GetProperties();
 
                 string dataPropName = CurrentLoadedExport.ClassName == "GFxMovieInfo" ? "RawData" : "Data";
@@ -172,17 +229,17 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     StrProperty sourceFilePath = props.GetProp<StrProperty>(sourceFilePropName);
                     if (sourceFilePath == null)
                     {
-                        sourceFilePath = new StrProperty(Path.GetFileName(CurrentJPEXExportedFilepath), sourceFilePropName);
+                        sourceFilePath = new StrProperty(Path.GetFileName(GetSWFExportPath()), sourceFilePropName);
                         props.Add(sourceFilePath);
                     }
 
-                    sourceFilePath.Value = Path.GetFileName(CurrentJPEXExportedFilepath);
+                    sourceFilePath.Value = Path.GetFileName(GetSWFExportPath());
                 }
 
                 if (CurrentLoadedExport.FileRef.Game.IsGame1())
                 {
                     StrProperty sourceFileTimestamp = props.GetProp<StrProperty>("SourceFileTimestamp");
-                    sourceFileTimestamp = File.GetLastWriteTime(CurrentJPEXExportedFilepath).ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+                    sourceFileTimestamp = File.GetLastWriteTime(GetSWFExportPath()).ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
                 }
 
                 CurrentLoadedExport.WriteProperties(props);
@@ -212,7 +269,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public override void UnloadExport()
         {
             CurrentLoadedExport = null;
-            CurrentJPEXExportedFilepath = null;
         }
 
         public override void PopOut()

@@ -77,6 +77,7 @@ namespace LegendaryExplorerCore.Misc
         public static DuplicatingIni ParseIni(string iniText)
         {
             DuplicatingIni di = new DuplicatingIni();
+
             var splits = iniText.Split('\n');
             Section currentSection = null;
             foreach (var line in splits)
@@ -111,6 +112,11 @@ namespace LegendaryExplorerCore.Misc
         /// <returns></returns>
         public override string ToString()
         {
+            return ToString(true);
+        }
+
+        public string ToString(bool sectionsSpacedByNewline)
+        {
             StringBuilder sb = new StringBuilder();
             bool isFirst = true;
             foreach (var section in Sections)
@@ -123,7 +129,7 @@ namespace LegendaryExplorerCore.Misc
                 {
                     isFirst = false;
                 }
-                else
+                else if (sectionsSpacedByNewline)
                 {
                     sb.Append("\n");
                 }

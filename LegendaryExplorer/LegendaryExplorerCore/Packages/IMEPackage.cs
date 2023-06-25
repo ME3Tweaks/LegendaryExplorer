@@ -107,6 +107,12 @@ namespace LegendaryExplorerCore.Packages
         /// </summary>
         public bool forcedExport;
 
+        /// <summary>
+        /// The instanced full path of the object. This is not serialized; only populated when dynamically loading
+        /// </summary>
+        [JsonIgnore]
+        public string instancedFullPath;
+
         public bool TryGetPropInfo(NameReference name, MEGame game, out PropertyInfo propInfo) =>
             properties.TryGetValue(name, out propInfo) || (GlobalUnrealObjectInfo.GetClassOrStructInfo(game, baseClass)?.TryGetPropInfo(name, game, out propInfo) ?? false);
     }
@@ -139,9 +145,14 @@ namespace LegendaryExplorerCore.Packages
         long FileSize { get; }
 
         /// <summary>
-        /// Custom user-defined metadata to associate with this package object. This data has no effect on saving or loading, it is only for library user convenience.
+        /// Custom user-defined metadata to associate with this package object. This data has no effect on saving or loading, it is only for library user convenience. This is not serialized!
         /// </summary>
         public Dictionary<string, object> CustomMetadata { get; set; }
+
+        /// <summary>
+        /// Data read from the LECL tag (LE only)
+        /// </summary>
+        public LECLData LECLTagData { get; }
 
         //reading
         bool IsUExport(int index);
@@ -299,5 +310,10 @@ namespace LegendaryExplorerCore.Packages
         void InvalidateLookupTable();
 
         public EntryTree Tree { get; }
+
+        /// <summary>
+        /// If this package was opened from a non-disk source and doesn't have a true filepath (e.g. from SFAR - won't have single file it resided in on disk)
+        /// </summary>
+        bool IsMemoryPackage { get; set; }
     }
 }
