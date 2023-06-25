@@ -29,7 +29,7 @@ namespace LegendaryExplorerCore.Packages
         /// The last access order. Packages at the bottom are the last accessed, the ones at the top are first.
         /// This is only for dropping packages if the count is not 0.
         /// </summary>
-        public readonly Dictionary<string, DateTime> LastAccessMap = new();
+        public readonly CaseInsensitiveConcurrentDictionary<DateTime> LastAccessMap = new();
 
         public PackageCache() { }
 
@@ -155,7 +155,7 @@ namespace LegendaryExplorerCore.Packages
             if (Cache.Remove(packagePath, out var package))
             {
                 Debug.WriteLine($"Package Cache {guid} dropping package: {packagePath}");
-                LastAccessMap.Remove(packagePath);
+                LastAccessMap.TryRemove(packagePath, out _);
             }
         }
 
@@ -195,7 +195,7 @@ namespace LegendaryExplorerCore.Packages
                 {
                     Cache[key].Dispose();
                     Cache.Remove(key, out _);
-                    LastAccessMap.Remove(key);
+                    LastAccessMap.TryRemove(key, out _);
                 }
             }
 

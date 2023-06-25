@@ -1329,6 +1329,9 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
                 package ??= lookupCache != null ? lookupCache.GetCachedPackage(packagePath, openPackageMethod: openPackageMethod) : openPackageMethod(packagePath);
 
+                if (package == null)
+                    Debugger.Break();
+
                 var packName = Path.GetFileNameWithoutExtension(packagePath);
                 var packageParts = entryFullPath.Split('.').ToList();
 
