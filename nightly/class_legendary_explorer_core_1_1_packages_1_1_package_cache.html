@@ -162,9 +162,9 @@ Public Attributes</h2></td></tr>
 <tr class="memitem:a5c6a5b140e8c446e1975bf90fa5b616d"><td class="memItemLeft" align="right" valign="top">readonly object&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a5c6a5b140e8c446e1975bf90fa5b616d">syncObj</a> = new()</td></tr>
 <tr class="memdesc:a5c6a5b140e8c446e1975bf90fa5b616d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Object used for synchronizing for threads   <a href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a5c6a5b140e8c446e1975bf90fa5b616d">More...</a><br /></td></tr>
 <tr class="separator:a5c6a5b140e8c446e1975bf90fa5b616d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2760aff4cb286033ce6b830fcb48d825"><td class="memItemLeft" align="right" valign="top">readonly Dictionary&lt; string, DateTime &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a2760aff4cb286033ce6b830fcb48d825">LastAccessMap</a> = new()</td></tr>
-<tr class="memdesc:a2760aff4cb286033ce6b830fcb48d825"><td class="mdescLeft">&#160;</td><td class="mdescRight">The last access order. <a class="el" href="namespace_legendary_explorer_core_1_1_packages.html">Packages</a> at the bottom are the last accessed, the ones at the top are first. This is only for dropping packages if the count is not 0.   <a href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a2760aff4cb286033ce6b830fcb48d825">More...</a><br /></td></tr>
-<tr class="separator:a2760aff4cb286033ce6b830fcb48d825"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a93e4e7bdf6a95a7edeceee998bff38ea"><td class="memItemLeft" align="right" valign="top">readonly <a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_case_insensitive_concurrent_dictionary.html">CaseInsensitiveConcurrentDictionary</a>&lt; DateTime &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a93e4e7bdf6a95a7edeceee998bff38ea">LastAccessMap</a> = new()</td></tr>
+<tr class="memdesc:a93e4e7bdf6a95a7edeceee998bff38ea"><td class="mdescLeft">&#160;</td><td class="mdescRight">The last access order. <a class="el" href="namespace_legendary_explorer_core_1_1_packages.html">Packages</a> at the bottom are the last accessed, the ones at the top are first. This is only for dropping packages if the count is not 0.   <a href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a93e4e7bdf6a95a7edeceee998bff38ea">More...</a><br /></td></tr>
+<tr class="separator:a93e4e7bdf6a95a7edeceee998bff38ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af26df9e7295ef9ab0253012bdcdb53c3"><td class="memItemLeft" align="right" valign="top">readonly List&lt; string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#af26df9e7295ef9ab0253012bdcdb53c3">ResidentPackages</a> = new()</td></tr>
 <tr class="memdesc:af26df9e7295ef9ab0253012bdcdb53c3"><td class="mdescLeft">&#160;</td><td class="mdescRight">The list of packages that will not be dropped from last access staleness   <a href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#af26df9e7295ef9ab0253012bdcdb53c3">More...</a><br /></td></tr>
 <tr class="separator:af26df9e7295ef9ab0253012bdcdb53c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -717,14 +717,14 @@ Properties</h2></td></tr>
 
 </div>
 </div>
-<a id="a2760aff4cb286033ce6b830fcb48d825" name="a2760aff4cb286033ce6b830fcb48d825"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2760aff4cb286033ce6b830fcb48d825">&#9670;&#160;</a></span>LastAccessMap</h2>
+<a id="a93e4e7bdf6a95a7edeceee998bff38ea" name="a93e4e7bdf6a95a7edeceee998bff38ea"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a93e4e7bdf6a95a7edeceee998bff38ea">&#9670;&#160;</a></span>LastAccessMap</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">readonly Dictionary&lt;string, DateTime&gt; LegendaryExplorerCore.Packages.PackageCache.LastAccessMap = new()</td>
+          <td class="memname">readonly <a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_case_insensitive_concurrent_dictionary.html">CaseInsensitiveConcurrentDictionary</a>&lt;DateTime&gt; LegendaryExplorerCore.Packages.PackageCache.LastAccessMap = new()</td>
         </tr>
       </table>
 </div><div class="memdoc">

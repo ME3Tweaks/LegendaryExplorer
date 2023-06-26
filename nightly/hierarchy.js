@@ -113,6 +113,7 @@ var hierarchy =
     [ "LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode.CachedNativeFunctionInfo", "class_legendary_explorer_core_1_1_m_e1_1_1_unreal_1_1_unhood_bytecode_1_1_cached_native_function_info.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.CachedPhysSMData", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_cached_phys_s_m_data.html", null ],
     [ "LegendaryExplorerCore.Gammtek.TypeSwitch.CaseInfo", "class_legendary_explorer_core_1_1_gammtek_1_1_type_switch_1_1_case_info.html", null ],
+    [ "LegendaryExplorerCore.Misc.CaseInsensitiveConcurrentDictionary< DateTime >", "class_legendary_explorer_core_1_1_misc_1_1_case_insensitive_concurrent_dictionary.html", null ],
     [ "LegendaryExplorerCore.Misc.CaseInsensitiveDictionary< ASTNode >", "class_legendary_explorer_core_1_1_misc_1_1_case_insensitive_dictionary.html", [
       [ "LegendaryExplorerCore.UnrealScript.Analysis.Symbols.ASTNodeDict", "class_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_symbols_1_1_a_s_t_node_dict.html", null ]
     ] ],
