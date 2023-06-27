@@ -239,6 +239,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
         public ICommand CalculateExportMD5Command { get; set; }
         public ICommand CreateClassCommand { get; set; }
         public ICommand CreatePackageExportCommand { get; set; }
+        public ICommand CreateObjectReferencerCommand { get; set; }
         public ICommand DeleteEntryCommand { get; set; }
 
 
@@ -315,8 +316,33 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
             CreateClassCommand = new GenericCommand(CreateClass, IsLoadedPackageME);
             CreatePackageExportCommand = new GenericCommand(CreatePackageExport, IsLoadedPackageME);
-
+            CreateObjectReferencerCommand = new GenericCommand(CreateObjectReferencer, IsLoadedPackageME);
             DeleteEntryCommand = new GenericCommand(DeleteEntry, EntryIsSelected);
+        }
+
+        private void CreateObjectReferencer()
+        {
+            if (Pcc.Flags.HasFlag(UnrealFlags.EPackageFlags.Map))
+            {
+                MessageBox.Show(@"Map packages do not use ObjectReferencer; to keep objects in memory, add root objects to ExtraReferencedObjects in TheWorld's binary.");
+                return;
+            }
+
+            var objRef = Pcc.Exports.FirstOrDefault(x => x.ClassName == "ObjectReferencer" && !x.IsDefaultObject);
+            if (objRef != null)
+            {
+                GoToEntry(objRef.InstancedFullPath);
+                return;
+            }
+
+            // This part ported from Mass Effect 2 Randomizer POackag
+            var rop = new RelinkerOptionsPackage() { Cache = new PackageCache() };
+            var referencer = new ExportEntry(Pcc, 0, Pcc.GetNextIndexedName("ObjectReferencer"), properties: new PropertyCollection() { new ArrayProperty<ObjectProperty>("ReferencedObjects") })
+            {
+                Class = EntryImporter.EnsureClassIsInFile(Pcc, "ObjectReferencer", rop)
+            };
+            Pcc.AddExport(referencer);
+            GoToEntry(referencer.InstancedFullPath);
         }
 
         private void DeleteEntry()
