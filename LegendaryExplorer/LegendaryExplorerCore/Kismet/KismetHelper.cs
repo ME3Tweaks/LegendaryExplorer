@@ -41,7 +41,7 @@ namespace LegendaryExplorerCore.Kismet
 
         /// <summary>
         /// Creates a new output link from one sequence object to another,
-        /// does not overwrite or add to any existing output link.
+        /// does not overwrite or add to any existing output link. If the destExport is null, only a new output link is made, no connection is created.
         /// </summary>
         /// <param name="source">Source sequence export</param>
         /// <param name="outLinkDescription">Description of new link</param>
@@ -50,12 +50,18 @@ namespace LegendaryExplorerCore.Kismet
         public static void CreateNewOutputLink(ExportEntry source, string outLinkDescription, ExportEntry destExport,
             int inputIndex = 0)
         {
-            if (source.GetProperty<ArrayProperty<StructProperty>>("OutputLinks") is { } outLinksProp)
+            PropertyCollection opOutputLinkProperties = null;
+            ArrayProperty<StructProperty> outLinksProp =
+                source.GetProperty<ArrayProperty<StructProperty>>("OutputLinks") ??
+                new ArrayProperty<StructProperty>("OutputLinks");
+            if (destExport != null)
             {
-                var inputLink = new StructProperty("SeqOpOutputInputLink", false, new ObjectProperty(destExport, "LinkedOp"),
+                // Create new input and output
+                var inputLink = new StructProperty("SeqOpOutputInputLink", false,
+                    new ObjectProperty(destExport, "LinkedOp"),
                     new IntProperty(inputIndex, "InputLinkIdx"));
 
-                var opOutputLinkProperties = new PropertyCollection
+                opOutputLinkProperties = new PropertyCollection
                 {
                     new StrProperty(outLinkDescription, "LinkDesc"),
                     new BoolProperty(false, "bHasImpulse"),
@@ -63,14 +69,28 @@ namespace LegendaryExplorerCore.Kismet
                     new NameProperty("None", "LinkAction"),
                     new ObjectProperty(0, "LinkedOp"),
                     new FloatProperty(0, "ActivateDelay"),
-                    new ArrayProperty<StructProperty>(new List<StructProperty>() {inputLink}, "Links")
+                    new ArrayProperty<StructProperty>(new List<StructProperty>() { inputLink }, "Links")
                 };
-
-                outLinksProp.Add(new StructProperty("SeqOpOutputLink", opOutputLinkProperties));
-
-
-                source.WriteProperty(outLinksProp);
             }
+            else
+            {
+                // Just create a new output with no links
+                opOutputLinkProperties = new PropertyCollection
+                {
+                    new StrProperty(outLinkDescription, "LinkDesc"),
+                    new BoolProperty(false, "bHasImpulse"),
+                    new BoolProperty(false, "bDisabled"),
+                    new NameProperty("None", "LinkAction"),
+                    new ObjectProperty(0, "LinkedOp"),
+                    new FloatProperty(0, "ActivateDelay"),
+                    new ArrayProperty<StructProperty>(new List<StructProperty>(), "Links")
+                };
+            }
+
+            outLinksProp.Add(new StructProperty("SeqOpOutputLink", opOutputLinkProperties));
+
+
+            source.WriteProperty(outLinksProp);
         }
 
         /// <summary>
@@ -329,7 +349,7 @@ namespace LegendaryExplorerCore.Kismet
         /// <param name="comment">Object comment</param>
         public static void SetComment(ExportEntry export, string comment)
         {
-            SetComment(export, new List<string>() {comment});
+            SetComment(export, new List<string>() { comment });
         }
 
     }
