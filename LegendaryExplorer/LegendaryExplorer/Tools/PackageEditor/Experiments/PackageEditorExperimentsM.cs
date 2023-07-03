@@ -2006,6 +2006,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 {
                     foreach (var expressionOP in expressions)
                     {
+                        if (expressionOP.Value <= 0)
+                            continue; // It's null
                         var expression = expressionOP.ResolveToEntry(pe.Pcc) as ExportEntry;
                         switch (expression.ClassName)
                         {
