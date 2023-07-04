@@ -170,6 +170,8 @@
                               ToolTip="Converts the m_aObjComment's on SeqAct_Log's into a String var that is attached to it, so it can be logged by the SeqAct logger ASI" />
                     <MenuItem Header="Load custom sequence objects from package" Click="LoadCustomClasses_Clicked"
                               ToolTip="Reads an input package and parses the information required for them to be viewed correctly in Sequence Editor. Only works for this session" />
+                    <MenuItem Header="Load custom sequence objects from current package" Click="LoadCustomClassesFromCurentPackage_Clicked"
+                              ToolTip="Reads classes in the current package and adds any custom sequence objects to the toolbox" />
                     <MenuItem Header="Commit object positions to objects" Click="CommitObjectPositions_Clicked"
                               ToolTip="Writes the node positions of all nodes to the properties for ObjPosX and ObjPosY" />
 					<MenuItem Header="Exkywor's buttons for lazy people">

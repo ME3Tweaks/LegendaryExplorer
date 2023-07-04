@@ -2726,7 +2726,12 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
 
         private void LoadCustomClasses_Clicked(object sender, RoutedEventArgs e)
         {
-            SequenceEditorExperimentsM.LoadCustomClasses(this);
+            SequenceEditorExperimentsM.LoadCustomClassesFromFile(this);
+        }
+
+        private void LoadCustomClassesFromCurentPackage_Clicked(object sender, RoutedEventArgs e)
+        {
+            SequenceEditorExperimentsM.LoadCustomClassesFromCurrentPackage(this);
         }
 
         private void CommitObjectPositions_Clicked(object sender, RoutedEventArgs e)
