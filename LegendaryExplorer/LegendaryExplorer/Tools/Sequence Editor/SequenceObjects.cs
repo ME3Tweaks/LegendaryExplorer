@@ -264,6 +264,33 @@ namespace LegendaryExplorer.Tools.SequenceObjects
                             res += "\n";
                         }
                         break;
+                    case "BioSeqAct_PMCheckConditional":
+                        {
+                            var index = properties.GetProp<IntProperty>("m_nIndex");
+                            if (index != null)
+                            {
+                                var label = PlotDatabases.FindPlotConditionalByID(index.Value, export.Game)?.Path;
+                                if (label != null)
+                                {
+                                    res += label + "\n";
+                                }
+                            }
+                        }
+                        break;
+                    case "BioSeqAct_PMExecuteConsequence":
+                    case "BioSeqAct_PMExecuteTransition":
+                        {
+                            var index = properties.GetProp<IntProperty>("m_nIndex");
+                            if (index != null)
+                            {
+                                var label = PlotDatabases.FindPlotTransitionByID(index.Value, export.Game)?.Path;
+                                if (label != null)
+                                {
+                                    res += label + "\n";
+                                }
+                            }
+                        }
+                        break;
                 }
             }
             return res;
@@ -467,7 +494,7 @@ namespace LegendaryExplorer.Tools.SequenceObjects
                                         if (entry == null) return unknownValue;
                                         if (entry is ExportEntry objValueExport && objValueExport.GetProperty<NameProperty>("Tag") is NameProperty tagProp && tagProp.Value != objValueExport.ObjectName)
                                         {
-                                            return $"#{entry.UIndex}\n{entry.ObjectName.Instanced}\n{ tagProp.Value}";
+                                            return $"#{entry.UIndex}\n{entry.ObjectName.Instanced}\n{tagProp.Value}";
                                         }
                                         return $"#{entry.UIndex}\n{entry.ObjectName.Instanced}";
                                     }
@@ -1826,7 +1853,7 @@ namespace LegendaryExplorer.Tools.SequenceObjects
             GlobalScale = scale;
             ShadowRendering = shadows;
         }
-        
+
         static SText()
         {
             Fontcollection = new PrivateFontCollection();
