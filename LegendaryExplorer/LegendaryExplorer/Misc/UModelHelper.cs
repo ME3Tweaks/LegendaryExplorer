@@ -12,12 +12,13 @@ using LegendaryExplorerCore.Packages;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using CliWrap;
 using DocumentFormat.OpenXml.Drawing.Charts;
+using LegendaryExplorerCore.Unreal.Classes;
 
 namespace LegendaryExplorer.Misc
 {
     public static class UModelHelper
     {
-        public const int SupportedUModelBuildNum = 1555;
+        public const int SupportedUModelBuildNum = 1589;
         public static async Task<int> GetLocalUModelVersionAsync()
         {
             int version = 0;
@@ -93,19 +94,46 @@ namespace LegendaryExplorer.Misc
                         export.ClassName
                     };
 
+                    // This doesn't properly quote things technically. It's just for review.
+                    Debug.WriteLine($"Executing process: {umodel} {string.Join(" ", args)}");
+
                     // Maybe make this method return a callback to set the logs?
                     var result = await Cli.Wrap(umodel)
                         .WithArguments(args)
                         .WithValidation(CommandResultValidation.None)
                         .WithStandardOutputPipe(PipeTarget.ToDelegate((line) => Debug.WriteLine(line)))
                         .ExecuteAsync();
-                    
+
                     if (result.ExitCode != 0)
                     {
-                        Debug.WriteLine($"Error determining umodel version: result code was {result.ExitCode}");
+                        Debug.WriteLine($"Error running umodel: result code was {result.ExitCode}");
                         return; // There was an error. Maybe we should communicate this to the user somehow.
                     }
-                    
+
+                    // 07/04/2023: Search the Texture2D folder and try to export larger resolution versions since
+                    // UModel seems unable to handle TFC mips - it's probably how we are calling it, not doing game
+                    // scan
+
+                    var t2dF = Path.Combine(dlg.FileName, export.FileRef.FileNameNoExtension, "Texture2D");
+                    if (Directory.Exists(t2dF))
+                    {
+                        var textureFiles = Directory.GetFiles(t2dF, "*.tga", SearchOption.TopDirectoryOnly);
+                        foreach (var textureFile in textureFiles)
+                        {
+                            var textureName = Path.GetFileNameWithoutExtension(textureFile);
+                            var possibleTextures = export.FileRef.Exports.Where(x => x.IsTexture() && x.ObjectName == textureName).ToList();
+                            if (possibleTextures.Count == 1)
+                            {
+                                var t2d = new Texture2D(possibleTextures[0]);
+                                if (t2d.Mips.Any(x => !x.IsPackageStored))
+                                {
+                                    // We need to extract textures
+                                    t2d.ExportToFile(textureFile);
+                                }
+                            }
+                        }
+                    }
+
                     Process.Start("explorer", dlg.FileName);
                 };
                 bw.RunWorkerAsync();
