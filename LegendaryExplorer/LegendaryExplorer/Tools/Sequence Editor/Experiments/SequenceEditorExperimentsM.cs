@@ -96,7 +96,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor.Experiments
             }
         }
 
-        public static void LoadCustomClasses(SequenceEditorWPF seqEd)
+        public static void LoadCustomClassesFromFile(SequenceEditorWPF seqEd)
         {
             OpenFileDialog ofd = AppDirectories.GetOpenPackageDialog();
             bool reload = false;
@@ -104,21 +104,41 @@ namespace LegendaryExplorer.Tools.Sequence_Editor.Experiments
             if (result.HasValue && result.Value)
             {
                 using var p = MEPackageHandler.OpenMEPackage(ofd.FileName, forceLoadFromDisk: true);
-                foreach (var e in p.Exports.Where(x => x.IsClass && x.InheritsFrom("SequenceObject")))
-                {
-                    var classInfo = GlobalUnrealObjectInfo.generateClassInfo(e);
-                    var defaults = p.GetUExport(ObjectBinary.From<UClass>(e).Defaults);
-                    Debug.WriteLine($@"Inventorying {e.InstancedFullPath}");
-                    GlobalUnrealObjectInfo.GenerateSequenceObjectInfoForClassDefaults(defaults);
-                    GlobalUnrealObjectInfo.InstallCustomClassInfo(e.ObjectName, classInfo, e.Game);
-                    reload = true;
-                }
+                reload = LoadCustomClassesFromPackage(p);
             }
 
             if (reload)
             {
                 seqEd.RefreshToolboxItems();
             }
+        }
+
+        public static void LoadCustomClassesFromCurrentPackage(SequenceEditorWPF seqEd)
+        {
+            if (seqEd.Pcc == null)
+                return;
+
+            if (LoadCustomClassesFromPackage(seqEd.Pcc))
+            {
+                seqEd.RefreshToolboxItems();
+            }
+        }
+
+
+        private static bool LoadCustomClassesFromPackage(IMEPackage p)
+        {
+            var reload = false;
+            foreach (var e in p.Exports.Where(x => x.IsClass && x.InheritsFrom("SequenceObject")))
+            {
+                var classInfo = GlobalUnrealObjectInfo.generateClassInfo(e);
+                var defaults = p.GetUExport(ObjectBinary.From<UClass>(e).Defaults);
+                Debug.WriteLine($@"Inventorying {e.InstancedFullPath}");
+                GlobalUnrealObjectInfo.GenerateSequenceObjectInfoForClassDefaults(defaults);
+                GlobalUnrealObjectInfo.InstallCustomClassInfo(e.ObjectName, classInfo, e.Game);
+                reload = true;
+            }
+
+            return reload;
         }
 
         public static void ConvertSeqAct_Log_objComments(IMEPackage package, PackageCache cache = null)
