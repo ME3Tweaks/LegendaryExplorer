@@ -346,7 +346,10 @@
                     </ListBox.ItemsPanel>
 
                 </controls:ListBoxScroll>
-                <TreeView x:Name="LeftSide_TreeView" Grid.Column="0" Grid.Row="1" FontFamily="Consolas" Visibility="Collapsed" dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding}" ItemsSource="{Binding AllTreeViewNodesX}" FocusManager.IsFocusScope="True" VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
+                <TreeView x:Name="LeftSide_TreeView" Grid.Column="0" Grid.Row="1" FontFamily="Consolas" 
+                          Visibility="Collapsed" dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" 
+                          dd:DragDrop.DropHandler="{Binding}" ItemsSource="{Binding AllTreeViewNodesX}" 
+                          FocusManager.IsFocusScope="True" VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
                     <TreeView.Resources>
                         <HierarchicalDataTemplate DataType="{x:Type SharedUI:TreeViewEntry}" ItemsSource="{Binding Sublinks}">
                             <Border ContextMenu="{StaticResource EntryContextMenu}" Background="Transparent"  Padding="{Binding Path=(SharedUI:TouchComfySettings.TreeViewMargin)}">

@@ -8,14 +8,17 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms.Integration;
+using Dark.Net;
 using FontAwesome5;
 using FontAwesome5.Extensions;
 using LegendaryExplorer.Dialogs.Splash;
 using LegendaryExplorer.GameInterop;
+using LegendaryExplorer.Libraries;
 using LegendaryExplorer.MainWindow;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Misc.AppSettings;
 using LegendaryExplorer.SharedUI.PeregrineTreeView;
+using LegendaryExplorer.Themes;
 using LegendaryExplorer.Tools.CustomFilesManager;
 using LegendaryExplorerCore;
 using LegendaryExplorerCore.DebugTools;
@@ -40,6 +43,9 @@ namespace LegendaryExplorer.Startup
         /// </summary>
         public static void Startup(App app)
         {
+            DarkNet.Instance.SetCurrentProcessTheme(Theme.Auto);
+            ThemesController.SetTheme(WindowsAPI.ShouldSystemUseDarkMode() ? ThemeType.Dark : ThemeType.Light);
+
             LEXSplashScreen = new DPIAwareSplashScreen();
             LEXSplashScreen.Show();
             Arguments = new Queue<string[]>();

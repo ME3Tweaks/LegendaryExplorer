@@ -3082,8 +3082,6 @@
         </Style.Triggers>
     </Style>
 
-    <Style TargetType="{x:Type controls:StretchingTreeView}" BasedOn="{StaticResource {x:Type TreeView}}"/>
-
     <Style x:Key="TreeViewItemFocusVisual">
         <Setter Property="Control.Template">
             <Setter.Value>
@@ -3228,4 +3226,9 @@
             </Trigger>
         </Style.Triggers>
     </Style>
+
+    <!-- LEX Specific Controls go here -->
+    <Style TargetType="{x:Type controls:StretchingTreeView}" BasedOn="{StaticResource {x:Type TreeView}}"/>
+    <Style TargetType="{x:Type controls:ListBoxScroll}" BasedOn="{StaticResource {x:Type ListBox}}"/>
+
 </ResourceDictionary>

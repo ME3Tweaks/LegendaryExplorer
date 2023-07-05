@@ -1,44 +1,76 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Media;
+using System.Runtime.InteropServices;
+using Be.Windows.Forms;
+using LegendaryExplorer.Libraries;
 
-namespace REghZy.Themes {
-    public static class ThemesController {
+namespace LegendaryExplorer.Themes
+{
+    public static class ThemesController
+    {
         public static ThemeType CurrentTheme { get; set; }
 
-        private static ResourceDictionary ThemeDictionary {
+        private static ResourceDictionary ThemeDictionary
+        {
             get => Application.Current.Resources.MergedDictionaries[0];
             set => Application.Current.Resources.MergedDictionaries[0] = value;
         }
 
-        private static ResourceDictionary ControlColours {
+        private static ResourceDictionary ControlColours
+        {
             get => Application.Current.Resources.MergedDictionaries[1];
             set => Application.Current.Resources.MergedDictionaries[1] = value;
         }
 
-        private static ResourceDictionary Controls {
+        private static ResourceDictionary Controls
+        {
             get => Application.Current.Resources.MergedDictionaries[2];
             set => Application.Current.Resources.MergedDictionaries[2] = value;
         }
 
-        public static void SetTheme(ThemeType theme) {
+        public static void SetTheme(ThemeType theme)
+        {
             string themeName = theme.GetName();
             CurrentTheme = theme;
-            if (string.IsNullOrEmpty(themeName)) {
+            if (string.IsNullOrEmpty(themeName))
+            {
                 return;
             }
 
             ThemeDictionary = new ResourceDictionary() { Source = new Uri($"Themes/{themeName}.xaml", UriKind.Relative) };
             ControlColours = new ResourceDictionary() { Source = new Uri("Themes/ControlColours.xaml", UriKind.Relative) };
             Controls = new ResourceDictionary() { Source = new Uri("Themes/Controls.xaml", UriKind.Relative) };
-        }
 
-        public static object GetResource(object key) {
+
+            SetLEXTheme();
+        }
+        
+
+        public static object GetResource(object key)
+        {
             return ThemeDictionary[key];
         }
 
-        public static SolidColorBrush GetBrush(string name) {
+        public static SolidColorBrush GetBrush(string name)
+        {
             return GetResource(name) is SolidColorBrush brush ? brush : new SolidColorBrush(Colors.White);
+        }
+
+        // LEX SPECIFIC CODE
+
+        private static void SetLEXTheme()
+        {
+            if (CurrentTheme == ThemeType.Light)
+            {
+                // Light
+                HexBox.SetColors(System.Drawing.Color.White, System.Drawing.Color.Black);
+            }
+            else
+            {
+                // Dark 
+                HexBox.SetColors(System.Drawing.Color.MidnightBlue, System.Drawing.Color.White);
+            }
         }
     }
 }

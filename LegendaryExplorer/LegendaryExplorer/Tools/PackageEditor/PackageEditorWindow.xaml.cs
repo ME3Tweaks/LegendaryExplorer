@@ -44,6 +44,7 @@ using Microsoft.WindowsAPICodePack.Dialogs;
 using LegendaryExplorerCore.Audio;
 using System.IO.Packaging;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
+using Dark.Net;
 
 namespace LegendaryExplorer.Tools.PackageEditor
 {
@@ -2949,6 +2950,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
             LoadCommands();
 
             InitializeComponent();
+            DarkNet.Instance.SetWindowThemeWpf(this, Theme.Auto);
             DataContext = this;
             ((FrameworkElement)Resources["EntryContextMenu"]).DataContext = this;
 

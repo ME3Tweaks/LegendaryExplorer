@@ -10,6 +10,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Themes/SoftDark.xaml"/>
+                <ResourceDictionary Source="/Themes/ControlColours.xaml"/>
                 <ResourceDictionary Source="/Themes/Controls.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 

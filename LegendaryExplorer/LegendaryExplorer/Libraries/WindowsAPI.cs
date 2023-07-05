@@ -80,5 +80,10 @@ namespace LegendaryExplorer.Libraries
         [LibraryImport("kernel32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static partial bool CloseHandle(IntPtr hObject);
+
+        
+        [LibraryImport("UXTheme.dll", SetLastError = true, EntryPoint = "#138")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static partial bool ShouldSystemUseDarkMode();
     }
 }

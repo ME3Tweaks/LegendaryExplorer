@@ -1,7 +1,6 @@
-﻿namespace REghZy.Themes {
+﻿namespace LegendaryExplorer.Themes {
     public enum ThemeType {
         Dark,
-        Red,
         Light,
     }
 
@@ -9,11 +8,9 @@
         public static string GetName(this ThemeType type) {
             switch (type) {
                 case ThemeType.Light:
-                    return "Dark_DarkBackLightBorder";
+                    // return "Light"; // Doesn't currently exist
                 case ThemeType.Dark:
-                    return "Dark_DarkBackDarkBorder";
-                case ThemeType.Red:
-                    return "RedBlackTheme";
+                    return "SoftDark";
                 default:
                     return null;
             }
