@@ -218,7 +218,7 @@ namespace LegendaryExplorerCore.Kismet
         /// <param name="node">Node to find outbound connections to</param>
         /// <param name="sequenceElements">Sequence objects to search for connections</param>
         /// <returns>List of any sequence objects that link to this node</returns>
-        public static List<ExportEntry> FindOutboundConnectionsToNode(ExportEntry node, IEnumerable<ExportEntry> sequenceElements)
+        public static List<ExportEntry> FindOutboundConnectionsToNode(ExportEntry node, IEnumerable<ExportEntry> sequenceElements, List<int> linkIdxsToMatchOn = null, List<string> filteredInputNames = null)
         {
             List<ExportEntry> referencingNodes = new List<ExportEntry>();
 
@@ -226,9 +226,37 @@ namespace LegendaryExplorerCore.Kismet
             {
                 if (seqObj == node) continue; // Skip node pointing to itself
                 var linkSet = GetOutboundLinksOfNode(seqObj);
-                if (linkSet.Any(x => x.Any(y => y.LinkedOp != null && y.LinkedOp.UIndex == node.UIndex)))
+                var matchingLinks = linkSet.Where(x => x.Any(y => y.LinkedOp != null && y.LinkedOp.UIndex == node.UIndex)).ToList();
+                if (filteredInputNames == null && linkIdxsToMatchOn == null)
                 {
                     referencingNodes.Add(seqObj);
+                    continue;
+                }
+
+                // Check if the name matches the filters
+                // Determine if it comes in on our named input idx
+                if (filteredInputNames != null)
+                {
+                    // Build the list of allowed input idxs
+                    // This is not that reliable, as the inputs will be defined on the class, not the instance
+                    // oops
+                    var linkInputNamesArray = node.GetProperty<ArrayProperty<StructProperty>>("InputLinks");
+                    linkIdxsToMatchOn = new List<int>();
+                    for (int i = 0; i < linkInputNamesArray.Count; i++)
+                    {
+                        if (filteredInputNames.Contains(linkInputNamesArray[i].GetProp<NameProperty>("LinkDesc").Value.Instanced))
+                        {
+                            // Match on this input idx
+                            linkIdxsToMatchOn.Add(i);
+                        }
+                    }
+                }
+
+                if (matchingLinks.Any(x => x.Any(y => linkIdxsToMatchOn.Contains(y.InputLinkIdx))))
+                {
+                    // We have an input on a filtered input we want
+                    referencingNodes.Add(seqObj);
+                    continue; // Here just in case code is added later
                 }
             }
 
