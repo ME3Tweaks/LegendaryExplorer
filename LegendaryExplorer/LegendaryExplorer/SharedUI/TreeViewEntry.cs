@@ -16,6 +16,7 @@ using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.PlotDatabase;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
+using REghZy.Themes;
 
 namespace LegendaryExplorer.SharedUI
 {
@@ -530,8 +531,18 @@ namespace LegendaryExplorer.SharedUI
             }
         }
 
+        private static SolidColorBrush _importEntryBrush;
+        private static SolidColorBrush _exportEntryBrush;
         private static SolidColorBrush ImportEntryBrush => SystemColors.GrayTextBrush;
-        private static SolidColorBrush ExportEntryBrush => SystemColors.ControlTextBrush;
+        private static SolidColorBrush ExportEntryBrush
+        {
+            get
+            {
+                if (_exportEntryBrush != null) return _exportEntryBrush;
+                _exportEntryBrush = ThemesController.GetBrush(@"AREghZyBrush.Foreground.Static");
+                return _exportEntryBrush;
+            }
+        }
 
         public override string ToString()
         {

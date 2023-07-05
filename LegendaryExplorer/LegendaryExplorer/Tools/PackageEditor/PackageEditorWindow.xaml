@@ -28,7 +28,8 @@
         AllowDrop="True"
         PreviewMouseUp="Window_MouseUp"
         Closing="PackageEditorWPF_Closing"
-        d:DataContext="{Binding RelativeSource={RelativeSource Self}}">
+        d:DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        Style="{DynamicResource CustomWindowStyle}">
     <Window.Resources>
         <ItemsPanelTemplate x:Key="VSP">
             <VirtualizingStackPanel/>
