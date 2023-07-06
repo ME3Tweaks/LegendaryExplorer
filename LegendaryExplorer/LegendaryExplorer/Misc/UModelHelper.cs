@@ -104,6 +104,20 @@ namespace LegendaryExplorer.Misc
                             export.ClassName
                         };
 
+                        // TEMP WORKAROUND UNTIL UMODEL IS FIXED
+                        if (meshFormat == "psk")
+                        {
+                            args = new List<string>
+                            {
+                                "-export",
+                                // $"-{meshFormat}",
+                                $"-out=\"{dlg.FileName}\"",
+                                export.FileRef.FilePath,
+                                export.ObjectNameString,
+                                export.ClassName
+                            };
+                        }
+
                         // This doesn't properly quote things technically. It's just for review.
                         Debug.WriteLine($"Executing process: {umodel} {string.Join(" ", args)}");
 
