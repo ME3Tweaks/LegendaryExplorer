@@ -65,8 +65,9 @@
                 <Button Grid.Row="1" Grid.Column="2" Content="Import from File" Command="{Binding ReplaceFromPNGCommand}" Padding="5,2" Margin="3" />
                 <TextBlock Grid.Row="0" Grid.Column="3" Text="{Binding TextureCacheName, StringFormat='Texture Cache: {0}'}" VerticalAlignment="Center" Margin="3,6" Visibility="{Binding CurrentLoadedExport, Converter={StaticResource EntryGameMatchVisibilityConverter}, ConverterParameter=ME1_Not}"/>
                 <TextBox Grid.Row="1" Grid.Column="3" Text="{Binding TextureCRC, StringFormat='CRC: 0x{0:X8}', FallbackValue=CRC: 0x00000000}" 
-                         VerticalAlignment="Center" Margin="3,6" Background="Transparent" BorderThickness="0" IsReadOnly="True" TextWrapping="Wrap"
-                         MouseDown="CRC_MouseDown" ToolTip="Double click to copy CRC" />
+                         VerticalAlignment="Center" Margin="3,6" Background="Transparent" BorderThickness="0" TextWrapping="Wrap"
+                         MouseDown="CRC_MouseDown" ToolTip="Double click to copy CRC" 
+                         Foreground="{DynamicResource AREghZyBrush.Foreground.Static}"/>
 
 
                 <!--<ComboBox Grid.Row="1" Grid.Column="3" Width="200" VerticalContentAlignment="Center" Margin="3" ItemsSource="{Binding AvailableTFCNames}"  ToolTip="Changing the texture cache requires changing the texture" Name="TextureCacheComboBox" Visibility="{Binding CurrentLoadedExport, Converter={StaticResource EntryGameMatchVisibilityConverter}, ConverterParameter=ME1_Not}" IsEnabled="{Binding ViewerModeOnly, Converter={StaticResource InverseBooleanConverter}}"/>-->

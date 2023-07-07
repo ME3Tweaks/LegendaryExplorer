@@ -15,7 +15,8 @@
         mc:Ignorable="d"
         Icon="pack://application:,,,/Tools/Icons/16x16/LiveLevelEditor_Icon_16.ico"
         d:DataContext="{Binding RelativeSource={RelativeSource Self}}"
-        Title="LiveLevelEditor" SizeToContent="WidthAndHeight" Closing="LiveLevelEditor_OnClosing">
+        Title="LiveLevelEditor" SizeToContent="WidthAndHeight" Closing="LiveLevelEditor_OnClosing"
+        Style="{StaticResource CustomWindowStyle}">
     <Window.Resources>
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <converters:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter"/>

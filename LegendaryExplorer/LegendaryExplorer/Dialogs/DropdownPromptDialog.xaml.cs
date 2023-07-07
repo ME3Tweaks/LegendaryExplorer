@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
+using Dark.Net;
 using LegendaryExplorer.Misc;
 using LegendaryExplorerCore.Misc;
 
@@ -16,6 +17,7 @@ namespace LegendaryExplorer.Dialogs
         {
             Owner = owner;
             InitializeComponent();
+            DarkNet.Instance.SetWindowThemeWpf(this, Theme.Auto);
             txtInfo.Text = question;
             Title = title;
             Selection_Combobox.Watermark = watermark;

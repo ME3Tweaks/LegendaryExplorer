@@ -8,7 +8,8 @@
         xmlns:settings="clr-namespace:LegendaryExplorer.Misc.AppSettings"
         d:DataContext="{Binding RelativeSource={RelativeSource Self}}"
         mc:Ignorable="d"
-        Title="Legendary Explorer Settings" Height="450" Width="550">
+        Title="Legendary Explorer Settings" Height="450" Width="550"
+        Style="{StaticResource CustomWindowStyle}">
     <DockPanel>
         <TextBlock DockPanel.Dock="Top"  Padding="5" Margin="0,0,0,3"  Background="LightGray" TextWrapping="Wrap" Text="Global settings for all tools. Settings will auto-update and auto-save on selection."/>
 

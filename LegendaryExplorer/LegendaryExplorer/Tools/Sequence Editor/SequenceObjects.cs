@@ -9,6 +9,7 @@ using System.Runtime.InteropServices;
 using LegendaryExplorer.Libraries;
 using LegendaryExplorer.Misc.AppSettings;
 using LegendaryExplorer.Resources;
+using LegendaryExplorer.Themes;
 using LegendaryExplorer.Tools.Sequence_Editor;
 using LegendaryExplorer.Tools.TlkManagerNS;
 using LegendaryExplorerCore.Gammtek.Extensions;
@@ -48,7 +49,7 @@ namespace LegendaryExplorer.Tools.SequenceObjects
     [DebuggerDisplay("SObj | #{UIndex}: {export.ObjectName.Instanced}")]
     public abstract class SObj : PNode, IDisposable
     {
-        private static readonly Color CommentColor = Color.FromArgb(74, 63, 190);
+        private static readonly Color CommentColor = ThemesController.CurrentTheme == ThemeType.Dark ? Color.FromArgb(164,157,235) : Color.FromArgb(74, 63, 190);
         private static readonly Color IntColor = Color.FromArgb(34, 218, 218);//cyan
         private static readonly Color FloatColor = Color.FromArgb(23, 23, 213);//blue
         private static readonly Color BoolColor = Color.FromArgb(215, 37, 33); //red
@@ -308,7 +309,7 @@ namespace LegendaryExplorer.Tools.SequenceObjects
                 VarTypes.String => StringColor,
                 VarTypes.Vector => VectorColor,
                 VarTypes.Rotator => RotatorColor,
-                _ => Color.Black
+                _ => ThemesController.CurrentTheme == ThemeType.Dark ? Color.LightGray : Color.Black
             };
         }
 
@@ -660,7 +661,7 @@ namespace LegendaryExplorer.Tools.SequenceObjects
             }
             PPath titleBox = MakeTitleBox(export.ObjectName.Instanced);
             var shape = PPath.CreateRectangle(0, -titleBox.Height, w, h + titleBox.Height);
-            OutlinePen = new Pen(Color.Black);
+            OutlinePen = new Pen(ThemesController.CurrentTheme == ThemeType.Dark ? Color.White : Color.Black); 
             shape.Pen = OutlinePen;
             shape.Brush = new SolidBrush(Color.Transparent);
             shape.Pickable = false;
@@ -706,7 +707,7 @@ namespace LegendaryExplorer.Tools.SequenceObjects
                                                                 .Union(Varlinks.SelectMany(l => l.Edges))
                                                                 .Union(EventLinks.SelectMany(l => l.Edges));
 
-        protected static readonly Brush OutputBrush = new SolidBrush(Color.Black);
+        protected static readonly Brush OutputBrush = new SolidBrush(ThemesController.CurrentTheme == ThemeType.Dark ? Color.White : Color.Black);
 
         public struct OutputLink
         {
@@ -776,6 +777,10 @@ namespace LegendaryExplorer.Tools.SequenceObjects
                         {
                             PPath p1 = outLink.Node;
                             var edge = new ActionEdge();
+                            if (ThemesController.CurrentTheme == ThemeType.Dark)
+                            {
+                                edge.Pen = new Pen(Color.White);
+                            }
                             p1.Tag ??= new List<ActionEdge>();
                             ((List<ActionEdge>)p1.Tag).Add(edge);
                             destAction.InputEdges.Add(edge);
@@ -1555,7 +1560,7 @@ namespace LegendaryExplorer.Tools.SequenceObjects
 
         public override void Layout(float x, float y)
         {
-            OutlinePen = new Pen(Color.Black);
+            OutlinePen = new Pen(ThemesController.CurrentTheme == ThemeType.Dark ? Color.White : Color.Black);
             string s = export.ObjectName.Instanced;
             s = s.Replace("BioSeqAct_", "").Replace("SFXSeqAct_", "")
                  .Replace("SeqAct_", "").Replace("SeqCond_", "");

@@ -12,7 +12,8 @@
         MinHeight="200"
         Title="Add Property" Height="400" Width="650"
         FocusManager.FocusedElement="{Binding ElementName=SearchBox}"
-        DataContext="{Binding RelativeSource={RelativeSource Self}}">
+        DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        Style="{StaticResource CustomWindowStyle}">
     <Grid Margin="5">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*" MinWidth="150" />

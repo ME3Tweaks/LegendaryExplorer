@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Dark.Net;
 using LegendaryExplorer.Misc;
 
 namespace LegendaryExplorer.SharedUI.Controls
@@ -19,6 +20,7 @@ namespace LegendaryExplorer.SharedUI.Controls
             DataContext = this;
             LoadCommands();
             InitializeComponent();
+            DarkNet.Instance.SetWindowThemeWpf(this, Theme.Auto);
             if (owner != null)
             {
                 Owner = owner as Window ?? GetWindow(owner);

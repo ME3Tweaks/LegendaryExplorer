@@ -12,7 +12,8 @@
         Width="720"
         MaxWidth="720"
         MinWidth="720"
-        DataContext="{Binding RelativeSource={RelativeSource Self}}">
+        DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        Style="{StaticResource CustomWindowStyle}">
     <Window.Resources>
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
     </Window.Resources>

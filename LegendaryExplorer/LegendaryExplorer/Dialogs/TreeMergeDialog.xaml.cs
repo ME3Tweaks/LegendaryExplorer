@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using Dark.Net;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.Tools.PackageEditor;
@@ -77,7 +78,7 @@ namespace LegendaryExplorer.Dialogs
 
             LoadCommands();
             InitializeComponent();
-
+            DarkNet.Instance.SetWindowThemeWpf(this, Theme.Auto);
             //            if (sourceEntry.Game != targetGame
             //#if DEBUG
             //                && (sourceEntry.Game != MEGame.ME3 || !targetGame.IsLEGame())

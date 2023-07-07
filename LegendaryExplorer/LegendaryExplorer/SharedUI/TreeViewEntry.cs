@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Media;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Misc.AppSettings;
+using LegendaryExplorer.Themes;
 using LegendaryExplorer.Tools.TlkManagerNS;
 using LegendaryExplorer.UserControls.ExportLoaderControls;
 using LegendaryExplorerCore.Gammtek.IO;
@@ -539,7 +540,7 @@ namespace LegendaryExplorer.SharedUI
             get
             {
                 if (_exportEntryBrush != null) return _exportEntryBrush;
-                _exportEntryBrush = ThemesController.GetBrush(@"AREghZyBrush.Foreground.Static");
+                _exportEntryBrush = ThemesController.GetBrush(@"AREghZyBrush.Foreground.Static"); // This should probs be a constant
                 return _exportEntryBrush;
             }
         }

@@ -4,6 +4,7 @@ using System.IO;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
+using Dark.Net;
 using DocumentFormat.OpenXml.Drawing;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Misc.AppSettings;
@@ -11,6 +12,7 @@ using LegendaryExplorerCore;
 using LegendaryExplorerCore.GameFilesystem;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Path = System.IO.Path;
+using Theme = Dark.Net.Theme;
 
 namespace LegendaryExplorer.MainWindow
 {
@@ -22,6 +24,7 @@ namespace LegendaryExplorer.MainWindow
         public SettingsWindow()
         {
             InitializeComponent();
+            DarkNet.Instance.SetWindowThemeWpf(this, Theme.Auto);
         }
 
         /// <summary>

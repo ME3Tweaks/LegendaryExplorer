@@ -8,7 +8,8 @@
          MinWidth="300"
          MinHeight="100"
          WindowStyle="SingleBorderWindow"
-         ResizeMode="CanMinimize">
+         ResizeMode="CanMinimize"
+         Style="{StaticResource CustomWindowStyle}">
     <StackPanel Margin="5">
         <TextBlock Name="txtInfo" Margin="5" TextWrapping="Wrap"/>
         <xctk:WatermarkComboBox Name="Selection_Combobox"

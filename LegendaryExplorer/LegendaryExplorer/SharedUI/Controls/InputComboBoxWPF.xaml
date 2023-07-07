@@ -7,7 +7,8 @@
         mc:Ignorable="d"
         WindowStartupLocation="CenterOwner"
         WindowStyle="ToolWindow"
-        Title="Legendary Explorer" SizeToContent="Height" Width="500">
+        Title="Legendary Explorer" SizeToContent="Height" Width="500"
+        Style="{StaticResource CustomWindowStyle}">
     <StackPanel Margin="5" HorizontalAlignment="Stretch">
         <StackPanel.Resources>
             <ItemsPanelTemplate x:Key="VSP">

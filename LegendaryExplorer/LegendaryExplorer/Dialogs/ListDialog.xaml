@@ -10,7 +10,8 @@
         xmlns:converters1="clr-namespace:LegendaryExplorer.SharedUI.Converters"
         mc:Ignorable="d"
         WindowStartupLocation="CenterOwner"
-        Title="List Dialog" Width="640" Height="480">
+        Title="List Dialog" Width="640" Height="480"
+        Style="{StaticResource CustomWindowStyle}">
     <Window.Resources>
         <converters1:IntMatchesToVisibilityConverter x:Key="IntMatchesToVisibilityConverter"/>
     </Window.Resources>

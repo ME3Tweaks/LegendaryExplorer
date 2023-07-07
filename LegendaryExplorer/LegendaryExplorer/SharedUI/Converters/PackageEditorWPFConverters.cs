@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
 using LegendaryExplorer.Misc.AppSettings;
+using LegendaryExplorer.Themes;
 using LegendaryExplorer.Tools.PackageEditor;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Packages;
@@ -88,14 +89,22 @@ namespace LegendaryExplorer.SharedUI.Converters
                         return "/Tools/PackageEditor/ExportIcons/icon_swf.png";
                     case "Texture2D":
                         return "/Tools/PackageEditor/ExportIcons/icon_texture2d.png";
-                    case "WwiseStream":
+                    case "WwiseStream" when ThemesController.CurrentTheme == ThemeType.Light:
                         return "/Tools/PackageEditor/ExportIcons/icon_sound.png";
-                    case "BioTlkFile":
+                    case "WwiseStream" when ThemesController.CurrentTheme == ThemeType.Dark:
+                        return "/Tools/PackageEditor/ExportIcons/icon_sound_darktheme.png";
+                    case "BioTlkFile" when ThemesController.CurrentTheme == ThemeType.Light:
                         return "/Tools/PackageEditor/ExportIcons/icon_tlkfile.png";
-                    case "World":
+                    case "BioTlkFile" when ThemesController.CurrentTheme == ThemeType.Dark:
+                        return "/Tools/PackageEditor/ExportIcons/icon_tlkfile_darktheme.png";
+                    case "World" when ThemesController.CurrentTheme == ThemeType.Light:
                         return "/Tools/PackageEditor/ExportIcons/icon_world.png";
-                    case "Function":
+                    case "World" when ThemesController.CurrentTheme == ThemeType.Dark:
+                        return "/Tools/PackageEditor/ExportIcons/icon_world_darktheme.png";
+                    case "Function" when ThemesController.CurrentTheme == ThemeType.Light:
                         return "/Tools/PackageEditor/ExportIcons/icon_function.png";
+                    case "Function" when ThemesController.CurrentTheme == ThemeType.Dark:
+                        return "/Tools/PackageEditor/ExportIcons/icon_function_darktheme.png";
                     case "Class":
                         return "/Tools/PackageEditor/ExportIcons/icon_class.png";
                     case "TextureCube":

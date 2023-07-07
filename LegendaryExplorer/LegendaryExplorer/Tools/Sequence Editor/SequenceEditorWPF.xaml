@@ -24,7 +24,8 @@
         Icon="pack://application:,,,/Tools/Icons/16x16/SequenceEditor_Icon_16.ico"
         Loaded="SequenceEditorWPF_Loaded"
         Closing="SequenceEditorWPF_Closing"
-        Title="Sequence Editor" Height="750" Width="1300" MinWidth="900" MinHeight="200">
+        Title="Sequence Editor" Height="750" Width="1300" MinWidth="900" MinHeight="200"
+        Style="{StaticResource CustomWindowStyle}">
     <Window.Resources>
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <converters:NullEnabledConverter x:Key="NullEnabledConverter"/>

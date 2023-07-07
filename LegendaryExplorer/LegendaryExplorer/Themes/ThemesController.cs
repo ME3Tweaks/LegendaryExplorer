@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Drawing;
 using System.Windows;
 using System.Windows.Media;
 using System.Runtime.InteropServices;
 using Be.Windows.Forms;
 using LegendaryExplorer.Libraries;
+using Color = System.Drawing.Color;
 
 namespace LegendaryExplorer.Themes
 {
@@ -45,7 +47,7 @@ namespace LegendaryExplorer.Themes
 
             SetLEXTheme();
         }
-        
+
 
         public static object GetResource(object key)
         {
@@ -69,7 +71,7 @@ namespace LegendaryExplorer.Themes
             else
             {
                 // Dark 
-                HexBox.SetColors(System.Drawing.Color.MidnightBlue, System.Drawing.Color.White);
+                HexBox.SetColors(Color.FromArgb(255, 28, 28, 28), System.Drawing.Color.White);
             }
         }
     }

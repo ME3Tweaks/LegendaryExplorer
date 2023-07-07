@@ -41,6 +41,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
+using Dark.Net;
+using LegendaryExplorer.Themes;
 using Color = System.Drawing.Color;
 using Image = System.Drawing.Image;
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
@@ -100,7 +102,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             DataContext = this;
             StatusText = "Select package file to load";
             InitializeComponent();
-
+            DarkNet.Instance.SetWindowThemeWpf(this, Theme.Auto);
             RecentsController.InitRecentControl(Toolname, Recents_MenuItem, x => LoadFile(x));
 
             graphEditor = (SequenceGraphEditor)GraphHost.Child;
@@ -1307,7 +1309,18 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
         private string FileQueuedForLoad;
         private ExportEntry ExportQueuedForFocusing;
         private bool AllowWindowRefocus = true;
-        private static readonly Color GraphEditorBackColor = Color.FromArgb(167, 167, 167);
+        private static Color GraphEditorBackColor
+        {
+            get
+            {
+                if (ThemesController.CurrentTheme == ThemeType.Dark)
+                {
+                    return Color.FromArgb(67, 67, 67);
+                }
+                // "Light" theme
+                return Color.FromArgb(167, 167, 167);
+            }
+        }
 
         private void saveView(bool toFile = true)
         {

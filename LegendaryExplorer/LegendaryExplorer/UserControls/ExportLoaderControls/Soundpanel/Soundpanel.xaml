@@ -78,10 +78,10 @@
                     <Button Content="Export" ToolTip="Export audio to Wave file" VerticalContentAlignment="Center" VerticalAlignment="Center" Margin="0,8,5,0" Command="{Binding ExportAudioCommand}"/>
                 </StackPanel>
                 <Button Grid.Column="3" ToolTip="Start or pause playback" Command="{Binding StartPlaybackCommand}">
-                    <fa:ImageAwesome Icon="{Binding PlayPauseIcon}" Height="24" Width="24"/>
+                    <fa:ImageAwesome Icon="{Binding PlayPauseIcon}" Height="24" Width="24" Foreground="{DynamicResource AREghZyBrush.Foreground.Static}"/>
                 </Button>
                 <Button Grid.Column="5" ToolTip="Stop playback" Command="{Binding StopPlaybackCommand}">
-                    <fa:ImageAwesome Icon="Solid_Stop" Height="24" Width="24"/>
+                    <fa:ImageAwesome Icon="Solid_Stop" Height="24" Width="24" Foreground="{DynamicResource AREghZyBrush.Foreground.Static}"/>
                 </Button>
 
                 <StackPanel Grid.Column="6" Grid.Row="1" Margin="5,0,0,0" VerticalAlignment="Center">
@@ -101,7 +101,7 @@
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </Slider>
-                        <fa:ImageAwesome Icon="Solid_VolumeUp" Height="16" Width="16"/>
+                        <fa:ImageAwesome Icon="Solid_VolumeUp" Height="16" Width="16" Foreground="{DynamicResource AREghZyBrush.Foreground.Static}"/>
                     </StackPanel>
                 </StackPanel>
             </Grid>

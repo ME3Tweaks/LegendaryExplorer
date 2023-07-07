@@ -6,7 +6,8 @@
     MinWidth="300"
     MinHeight="100"
     WindowStyle="SingleBorderWindow"
-    ResizeMode="CanMinimize">
+    ResizeMode="CanMinimize"
+    Style="{StaticResource CustomWindowStyle}">
     <StackPanel Margin="5">
         <TextBlock Name="txtQuestion" Margin="5" TextWrapping="Wrap"/>
         <TextBox Name="txtResponse" Margin="5"/>
