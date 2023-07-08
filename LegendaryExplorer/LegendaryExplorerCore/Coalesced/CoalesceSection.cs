@@ -224,7 +224,7 @@ namespace LegendaryExplorerCore.Coalesced
 		}
 
 		/// <summary>
-		/// Adds a value to a property. This method can only add one at a time.
+		/// Adds a value to a property if the property doesn't contain exist with the specified value
 		/// </summary>
 		/// <param name="value"></param>
         public void AddEntryIfUnique(CoalesceProperty value)

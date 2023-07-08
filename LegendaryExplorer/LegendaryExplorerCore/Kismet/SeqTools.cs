@@ -227,7 +227,7 @@ namespace LegendaryExplorerCore.Kismet
                 if (seqObj == node) continue; // Skip node pointing to itself
                 var linkSet = GetOutboundLinksOfNode(seqObj);
                 var matchingLinks = linkSet.Where(x => x.Any(y => y.LinkedOp != null && y.LinkedOp.UIndex == node.UIndex)).ToList();
-                if (filteredInputNames == null && linkIdxsToMatchOn == null)
+                if (filteredInputNames == null && linkIdxsToMatchOn == null && matchingLinks.Any())
                 {
                     referencingNodes.Add(seqObj);
                     continue;
