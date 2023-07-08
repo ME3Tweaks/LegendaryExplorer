@@ -269,19 +269,37 @@ namespace LegendaryExplorer.Tools.Meshplorer
 
                             if (newMesh.RefSkeleton.Length != originalMesh.RefSkeleton.Length)
                             {
-                                MessageBox.Show(this, "Cannot replace a SkeletalMesh with one that has a different number of bones!");
-                                return;
+                                if (!lodOnly)
+                                {
+                                    var msgBoxResult = MessageBox.Show(this, "This SkeletalMesh has a different number of bones than the one you are replacing! " +
+                                                                             "This may cause animations to no longer work for this mesh. " +
+                                                                             "Are you SURE you want to continue?", "Bone count differs!", MessageBoxButton.YesNoCancel);
+                                    if (msgBoxResult != MessageBoxResult.Yes)
+                                    {
+                                        return;
+                                    }
+                                }
+                                else
+                                {
+                                    MessageBox.Show(this, "Cannot replace a SkeletalMesh LOD with one that has a different number of bones!");
+                                    return;
+                                }
                             }
 
                             if (newMesh.RotOrigin.Pitch != originalMesh.RotOrigin.Pitch ||
                                 newMesh.RotOrigin.Yaw != originalMesh.RotOrigin.Yaw ||
                                 newMesh.RotOrigin.Roll != originalMesh.RotOrigin.Roll)
                             {
-                                MessageBox.Show("The rotation origin of this mesh has changed. The original value is:" +
+                                var messageBoxResult = MessageBox.Show(this, "The rotation origin of this mesh has changed. The original value is:" +
                                                 $"\nPitch {originalMesh.RotOrigin.Roll}, Yaw {originalMesh.RotOrigin.Yaw}, Roll {originalMesh.RotOrigin.Roll}\n" +
                                                 "The new value is:\n" +
                                                 $"Pitch {newMesh.RotOrigin.Roll}, Yaw {newMesh.RotOrigin.Yaw}, Roll {newMesh.RotOrigin.Roll}\n" +
-                                                "These values may need to be adjusted to be accurate.");
+                                                "Would you like to preserve the original value?", "Rotation origin changed", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+                                if (messageBoxResult == MessageBoxResult.Yes)
+                                {
+                                    newMesh.RotOrigin = originalMesh.RotOrigin;
+                                }
                             }
 
 
