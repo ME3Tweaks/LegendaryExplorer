@@ -978,5 +978,49 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             var classes = GetClasses(game) ?? throw new ArgumentOutOfRangeException($"{nameof(InstallCustomClassInfo)}() does not accept game {game}");
             classes[className] = info;
         }
+
+        public static string GetExpectedClassTypeForObjectProperty(ExportEntry entry, ObjectProperty op, string containingClassOrStructName)
+        {
+            var referencedEntry = op.ResolveToEntry(entry.FileRef);
+            //if (referencedEntry.FullPath.Equals(@"SFXGame.BioDeprecated", StringComparison.InvariantCulture)) return; //This will appear as wrong even though it's technically not
+            //if (entry.FileRef.Game == MEGame.ME2)
+            //{
+            //    if (op.Name == "m_oAreaMap" && referencedEntry.ClassName == @"BioSWF") return; //This will appear as wrong even though it's technically not (deprecated leftover)
+            //    if (op.Name == "AIController" && referencedEntry.ObjectName.Name.StartsWith("BioAI_")) return; //These are all deprecated. A few things use them still but the inheritance is wrong
+            //    if (op.Name == "TrackingSound" && entry.ClassName == "SFXSeqAct_SecurityCam" && referencedEntry.ClassName == "WwiseEvent") return; // Appears to be incorrect in vanilla. Don't report it as an issue
+            //}
+
+            var propInfo = GlobalUnrealObjectInfo.GetPropertyInfo(entry.Game, op.Name, containingClassOrStructName, containingExport: entry as ExportEntry);
+            var customClassInfos = new Dictionary<string, ClassInfo>();
+
+            if (referencedEntry != null && referencedEntry.ClassName == @"Class" && op.Value > 0)
+            {
+
+                // Make sure we have info about this class.
+                var lookupEnt = referencedEntry as ExportEntry;
+                while (lookupEnt != null && lookupEnt.IsClass && !GlobalUnrealObjectInfo.GetClasses(entry.FileRef.Game).ContainsKey(lookupEnt.ObjectName))
+                {
+                    // Needs dynamically generated
+                    var cc = GlobalUnrealObjectInfo.generateClassInfo(lookupEnt);
+                    customClassInfos[lookupEnt.ObjectName] = cc;
+                    lookupEnt = lookupEnt.Parent as ExportEntry;
+                }
+
+                // If we did not pull it previously, we should try again with our custom info.
+                if (propInfo == null && customClassInfos.Any())
+                {
+                    propInfo = GlobalUnrealObjectInfo.GetPropertyInfo(entry.Game, op.Name,
+                        containingClassOrStructName, customClassInfos[referencedEntry.ObjectName],
+                        containingExport: entry as ExportEntry);
+                }
+            }
+
+            if (propInfo != null && propInfo.Reference != null)
+            {
+                return propInfo.Reference;
+            }
+
+            return null; // We don't know
+        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -29,6 +30,7 @@ using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
 using LegendaryExplorerCore.UnrealScript;
+using static LegendaryExplorer.UserControls.ExportLoaderControls.EntryMetadataExportLoader;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls
 {
@@ -153,6 +155,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             InitializeComponent();
             Settings.StaticPropertyChanged += SettingChanged;
             EditorSetElements.Add(Value_TextBox); //str, strref, int, float, obj
+#if DEBUG
+            EditorSetElements.Add(Value_ObjectComboBox); // Object selector
+#endif
             EditorSetElements.Add(Value_ComboBox); //bool, name
             EditorSetElements.Add(NameIndexPrefix_TextBlock); //nameindex
             EditorSetElements.Add(NameIndex_TextBox); //nameindex
@@ -1838,10 +1843,16 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         }
                         break;
                     case ObjectProperty op:
+#if DEBUG
+                        UpdateObjectComboBoxOptions(op, newSelectedItem);
+                        Value_ObjectComboBox.SelectedItem = op.Value == 0 ? ZeroUIndexClassEntry.Instance : op.ResolveToEntry(CurrentLoadedExport.FileRef);
+                        SupportedEditorSetElements.Add(Value_ObjectComboBox);
+#else
                         Value_TextBox.Text = op.Value.ToString();
                         UpdateParsedEditorValue(newSelectedItem);
                         SupportedEditorSetElements.Add(Value_TextBox);
                         SupportedEditorSetElements.Add(ParsedValue_TextBlock);
+#endif
                         break;
                     case DelegateProperty dp:
                         TextSearch.SetTextPath(Value_ComboBox, "Name");
@@ -1920,6 +1931,97 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
             }
         }
+
+        /// <summary>
+        /// Updates the object combobox based on the property
+        /// </summary>
+        /// <param name="op"></param>
+        /// <param name="uPropertyTreeViewEntry"></param>
+        private void UpdateObjectComboBoxOptions(ObjectProperty op, UPropertyTreeViewEntry uPropertyTreeViewEntry)
+        {
+            // Find if this is contained in a struct; we use that for property type parsing, 
+            // otherwise just use the class itself
+            string containingClassOrStructName = CurrentLoadedExport.ClassName; // Default
+            var parentProperty = uPropertyTreeViewEntry.Parent;
+            while (parentProperty != null && parentProperty.Property != null)
+            {
+                if (parentProperty.Property is StructProperty sp)
+                {
+                    containingClassOrStructName = sp.StructType;
+                    break;
+                }
+
+                parentProperty = parentProperty.Parent;
+            }
+
+            var expectedType = GlobalUnrealObjectInfo.GetExpectedClassTypeForObjectProperty(CurrentLoadedExport, op, containingClassOrStructName);
+            Value_ObjectComboBox.ItemsSource = MakeAllEntriesList(expectedType);
+        }
+
+        private List<object> MakeAllEntriesList(string onlyOfType = null)
+        {
+            var allEntriesNew = new List<object>();
+            ImportEntry imp = null;
+
+            #region Imports
+
+            for (int i = CurrentLoadedExport.FileRef.Imports.Count - 1; i >= 0; i--)
+            {
+                imp = CurrentLoadedExport.FileRef.Imports[i];
+                if (onlyOfType != null)
+                {
+                    if (imp.IsClass)
+                    {
+                        if (imp.InheritsFrom(onlyOfType))
+                        {
+                            allEntriesNew.Add(imp);
+                            continue;
+                        }
+                    }
+                    else if (imp.IsA(onlyOfType))
+                    {
+                        allEntriesNew.Add(imp);
+                        continue;
+                    }
+                }
+                else
+                {
+                    allEntriesNew.Add(imp);
+                }
+            }
+
+            #endregion
+            allEntriesNew.Add(ZeroUIndexClassEntry.Instance);
+
+            #region Exports
+            foreach (ExportEntry exp in CurrentLoadedExport.FileRef.Exports)
+            {
+                if (onlyOfType != null)
+                {
+                    if (exp.IsClass)
+                    {
+                        if (exp.InheritsFrom(onlyOfType))
+                        {
+                            allEntriesNew.Add(exp);
+                            continue;
+                        }
+                    }
+                    else if (exp.IsA(onlyOfType))
+                    {
+                        allEntriesNew.Add(exp);
+                        continue;
+                    }
+                }
+                else
+                {
+                    allEntriesNew.Add(exp);
+                }
+            }
+            #endregion
+            return allEntriesNew;
+        }
+
+
 
         private void UpdateParsedEditorValue(UPropertyTreeViewEntry treeViewEntry = null)
         {
@@ -2350,11 +2452,24 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         break;
                     case ObjectProperty op:
                         {
+#if DEBUG
+                            if (Value_ObjectComboBox.SelectedItem is IEntry ie)
+                            {
+                                op.Value = ie.UIndex;
+                                updated = true;
+                            }
+                            else if (Value_ObjectComboBox.SelectedItem is ZeroUIndexClassEntry)
+                            {
+                                op.Value = 0;
+                                updated = true;
+                            }
+#else
                             if (int.TryParse(Value_TextBox.Text, out int o) && o != op.Value && (Pcc.IsEntry(o) || o == 0))
                             {
                                 op.Value = o;
                                 updated = true;
                             }
+#endif
                         }
                         break;
                     case EnumProperty ep:

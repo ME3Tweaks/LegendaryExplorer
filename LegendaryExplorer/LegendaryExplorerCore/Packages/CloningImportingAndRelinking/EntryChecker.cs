@@ -497,7 +497,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     if (propInfo != null && propInfo.Reference != null)
                     {
                         // We can't resolve if an object inherits from a class object that's only defined in native.
-                        // This is only possible if the refernce is an import and it's importing native class object.
+                        // This is only possible if the reference is an import and it's importing native class object.
                         // Like Engine.CodecBinkMovie
                         if (!referencedEntry.IsAKnownNativeClass())
                         {

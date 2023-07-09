@@ -18,6 +18,7 @@
              xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:controls="clr-namespace:LegendaryExplorer.SharedUI.Controls"
              xmlns:peregrineTreeView="clr-namespace:LegendaryExplorer.SharedUI.PeregrineTreeView"
+             xmlns:packages="clr-namespace:LegendaryExplorerCore.Packages;assembly=LegendaryExplorerCore"
              DataContext="{Binding RelativeSource={RelativeSource Self}}"
              d:DesignWidth="800"
              d:DesignHeight="500">
@@ -28,6 +29,20 @@
         <Converters:NullOrEmptyStringVisibilityConverter x:Key="NullOrEmptyStringVisibilityConverter"/>
         <Converters:ColorCodeConverter x:Key="ColorCodeConverter"/>
         <Converters:UnsavedChangesForegroundConverter x:Key="UnsavedChangesForegroundConverter"/>
+
+        <!-- Should these be shared at a higher level? (also used by metadata editor) -->
+        <DataTemplate DataType="{x:Type packages:ImportEntry}">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding Path=UIndex, Mode=OneTime}" Foreground="Gray"/>
+                <TextBlock Text="{Binding Path=InstancedFullPath, Mode=OneTime}" Margin="5,0,0,0" Foreground="Gray"/>
+            </StackPanel>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type packages:ExportEntry}">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding Path=UIndex, Mode=OneTime}" Foreground="Gray"/>
+                <TextBlock Margin="5,0,0,0" Text="{Binding InstancedFullPath}"/>
+            </StackPanel>
+        </DataTemplate>
     </UserControl.Resources>
     <DockPanel Name="InterpreterWPF_DockPanel">
         <ToolBar ToolBarTray.IsLocked="True" DockPanel.Dock="Top">
@@ -61,6 +76,16 @@
             </Button>
             <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}"/>
             <TextBox Width="80" Name="Value_TextBox" VerticalAlignment="Center" ToolTip="Value for this property" KeyDown="ValueTextBox_KeyDown" TextChanged="Value_TextBox_TextChanged" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}" Margin="0" Style="{StaticResource {x:Type TextBox}}"/>
+            <ComboBox Name="Value_ObjectComboBox"
+                      MinWidth="80" VerticalAlignment="Center" ToolTip="Value for this property" 
+                      Style="{StaticResource {x:Type ComboBox}}" 
+                      IsTextSearchEnabled="True">
+                <ComboBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <VirtualizingStackPanel />
+                    </ItemsPanelTemplate>
+                </ComboBox.ItemsPanel>
+            </ComboBox>
             <ComboBox Name="Value_ComboBox" MinWidth="80" VerticalAlignment="Center" ToolTip="Value for this property" Style="{StaticResource {x:Type ComboBox}}" IsTextSearchEnabled="True">
                 <ComboBox.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -79,6 +104,7 @@
                             <TextBlock Text="{Binding Path=Instanced}" Margin="5,0,0,0"/>
                         </StackPanel>
                     </DataTemplate>
+
                 </ComboBox.Resources>
             </ComboBox>
             <TextBlock Text="Index:" Name="NameIndexPrefix_TextBlock" VerticalAlignment="Center" Margin="5,0,2,0"/>
