@@ -155,9 +155,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             InitializeComponent();
             Settings.StaticPropertyChanged += SettingChanged;
             EditorSetElements.Add(Value_TextBox); //str, strref, int, float, obj
-#if DEBUG
             EditorSetElements.Add(Value_ObjectComboBox); // Object selector
-#endif
             EditorSetElements.Add(Value_ComboBox); //bool, name
             EditorSetElements.Add(NameIndexPrefix_TextBlock); //nameindex
             EditorSetElements.Add(NameIndex_TextBox); //nameindex
