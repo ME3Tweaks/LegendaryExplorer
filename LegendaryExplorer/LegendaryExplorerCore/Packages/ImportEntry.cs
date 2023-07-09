@@ -86,7 +86,7 @@ namespace LegendaryExplorerCore.Packages
             {
                 idxLink = 0; // root level like SFXGame
             }
-            
+
             ObjectName = clone.ObjectName;
             PackageFile = clone.PackageFile;
             ClassName = clone.ClassName;
@@ -218,6 +218,11 @@ namespace LegendaryExplorerCore.Packages
             {
                 if (_header.PackageFileNameIndex != value)
                 {
+                    if (HeaderOffset != 0 && value == FileRef.findName("None"))
+                    {
+                        throw new Exception("Cannot set PackageFile to none");
+                    }
+
                     _header.PackageFileNameIndex = value;
                     HeaderChanged = true;
                 }

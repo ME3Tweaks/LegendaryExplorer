@@ -14,6 +14,7 @@
     xmlns:exportLoaderControls="clr-namespace:LegendaryExplorer.UserControls.ExportLoaderControls"
     xmlns:sharedUi="clr-namespace:LegendaryExplorer.SharedUI"
     xmlns:converters="clr-namespace:LegendaryExplorer.SharedUI.Converters"
+    DataContext="{Binding RelativeSource={RelativeSource Self}}"
     d:DesignHeight="730" d:DesignWidth="800">
     <exportLoaderControls:ExportLoaderControl.Resources>
         <system:Int32 x:Key="InfoTab_TopMargins">24</system:Int32>
@@ -133,7 +134,7 @@
                   ItemsPanel="{StaticResource VSP}" GotFocus="InfoTab_Class_ComboBox_GotFocus" 
                   SelectionChanged="Info_ClassComboBox_SelectionChanged" IsTextSearchEnabled="True" TextSearch.TextPath="UIndex" 
                   ToolTip="Class for this entry&#10;Type a UIndex value to automatically select it"
-                  ItemsSource="{Binding AllEntriesList, Mode=OneTime}"/>
+                  ItemsSource="{Binding AllClassesList, Mode=OneTime}"/>
         
         <ComboBox Name="InfoTab_ImpClass_ComboBox" VerticalAlignment="Center" Grid.Row="4" Grid.Column="1" 
                   ItemsSource="{Binding NamesList, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Mode=OneTime}" 
@@ -147,7 +148,7 @@
                   SelectionChanged="Info_SuperClassComboBox_SelectionChanged"
                   IsTextSearchEnabled="True" TextSearch.TextPath="UIndex"
                   ToolTip="Superclass for this entry&#10;Type a UIndex value to automatically select it"
-                  ItemsSource="{Binding AllEntriesList, Mode=OneTime}"/>
+                  ItemsSource="{Binding AllClassesList, Mode=OneTime}"/>
 
         <ComboBox Name="InfoTab_PackageLink_ComboBox" VerticalAlignment="Center" Grid.Row="6" Grid.Column="1" 
                   ItemsPanel="{StaticResource VSP}" GotFocus="InfoTab_PackageLink_ComboBox_GotFocus" 
