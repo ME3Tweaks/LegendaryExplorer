@@ -277,6 +277,19 @@ namespace LegendaryExplorer.Tools.SequenceObjects
                             }
                         }
                         break;
+                    case "BioSeqAct_PMCheckState":
+                    {
+                        var index = properties.GetProp<IntProperty>("m_nIndex");
+                        if (index != null)
+                        {
+                            var label = PlotDatabases.FindPlotBoolByID(index.Value, export.Game)?.Path;
+                            if (label != null)
+                            {
+                                res += label + "\n";
+                            }
+                        }
+                    }
+                        break;
                     case "BioSeqAct_PMExecuteConsequence":
                     case "BioSeqAct_PMExecuteTransition":
                         {
