@@ -165,6 +165,16 @@ namespace LegendaryExplorer.Tools.InterpEditor
             {
                 return new BioInterpTrack(trackExport);
             }
+            else if (trackExport.IsA("BioEvtSysTrackSwitchCamera") && trackExport.Game == MEGame.ME1)
+            {
+                // Unsure if we should parse extra data out of this
+                return new BioInterpTrack(trackExport);
+            }
+            else if (trackExport.IsA("BioEvtSysTrackSetFacing") && trackExport.Game == MEGame.ME1)
+            {
+                // Unsure if we should parse extra data out of this
+                return new BioInterpTrack(trackExport);
+            }
             else
             {
                 throw new FormatException($"Unknown Track Type: {trackExport.ClassName}");
