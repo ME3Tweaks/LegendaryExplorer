@@ -1548,17 +1548,15 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                         }
                         isConst = true;
                     }
-                    else if (Matches(STATIC, EF.Keyword))
+                    else if (CurrentIs(STATIC) && lhsType?.PropertyType == EPropertyType.Object)
                     {
+                        CurrentToken.SyntaxType = EF.Keyword;
+                        Tokens.Advance();
                         if (!Matches(TokenType.Dot))
                         {
                             throw ParseError($"Expected '.' after '{STATIC}'!", CurrentPosition);
                         }
                         isStaticAccess = true;
-                        if (lhsType?.PropertyType != EPropertyType.Object)
-                        {
-                            throw ParseError($"'{STATIC}' can only be used with class or object references!", lhs.EndPos, CurrentPosition);
-                        }
                     }
 
                     if (lhsType is not ClassType && !isStaticAccess && !CompositeTypes.Contains(lhsType?.NodeType ?? ASTNodeType.INVALID))

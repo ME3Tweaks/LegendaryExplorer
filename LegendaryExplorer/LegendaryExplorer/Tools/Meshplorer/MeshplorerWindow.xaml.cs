@@ -273,7 +273,7 @@ namespace LegendaryExplorer.Tools.Meshplorer
                                 {
                                     var msgBoxResult = MessageBox.Show(this, "This SkeletalMesh has a different number of bones than the one you are replacing! " +
                                                                              "This may cause animations to no longer work for this mesh. " +
-                                                                             "Are you SURE you want to continue?", "Bone count differs!", MessageBoxButton.YesNoCancel);
+                                                                             "Are you SURE you want to continue?", "Bone count differs!", MessageBoxButton.YesNoCancel, MessageBoxImage.Warning);
                                     if (msgBoxResult != MessageBoxResult.Yes)
                                     {
                                         return;
