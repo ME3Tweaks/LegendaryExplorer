@@ -213,8 +213,15 @@ namespace LegendaryExplorer.MainWindow
         /// </summary>
         public static bool IsAllowedToClose;
 
+        /// <summary>
+        /// If the main window is allowed to close - if a window is kept open this is set to false, which suppresses this window from also closing
+        /// </summary>
+        private static bool IsCloseCommandExecuting;
+
+
         private void CloseCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
+            IsCloseCommandExecuting = true;
             IsAllowedToClose = true; // Reset - subwindows will handle this
             foreach (var w in Application.Current.Windows.OfType<Window>())
             {
@@ -225,10 +232,16 @@ namespace LegendaryExplorer.MainWindow
 
             // Try closing ourself
             SystemCommands.CloseWindow(this);
+            IsCloseCommandExecuting = false;
         }
 
         private void MainWindow_Closing(object sender, CancelEventArgs e)
         {
+            if (!IsCloseCommandExecuting)
+            {
+                // Closed via middle click in taskbar
+                CloseCommand_Executed(null, null);
+            }
             e.Cancel = !IsAllowedToClose;
         }
 
