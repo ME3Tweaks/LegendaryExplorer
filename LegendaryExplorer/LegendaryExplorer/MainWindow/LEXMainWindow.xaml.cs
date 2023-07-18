@@ -208,11 +208,30 @@ namespace LegendaryExplorer.MainWindow
             e.CanExecute = true;
         }
 
+        /// <summary>
+        /// If the main window is allowed to close - if a window is kept open this is set to false, which suppresses this window from also closing
+        /// </summary>
+        public static bool IsAllowedToClose;
+
         private void CloseCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
+            IsAllowedToClose = true; // Reset - subwindows will handle this
+            foreach (var w in Application.Current.Windows.OfType<Window>())
+            {
+                if (w == this)
+                    continue; // We don't check on ourself
+                w.Close();
+            }
+
+            // Try closing ourself
             SystemCommands.CloseWindow(this);
         }
-        
+
+        private void MainWindow_Closing(object sender, CancelEventArgs e)
+        {
+            e.Cancel = !IsAllowedToClose;
+        }
+
         private void MinimizeCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             SystemCommands.MinimizeWindow(this);
