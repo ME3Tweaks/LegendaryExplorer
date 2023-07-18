@@ -171,6 +171,9 @@ namespace LegendaryExplorer.Tools.SequenceObjects
                         }
 
                         break;
+                    case "SeqEvent_Touch":
+                    case "BioSeqEvt_OnAttacked":
+                    case "BioSeqEvt_OnCastAt":
                     case "SeqEvent_Death":
                         var originator = properties.GetProp<ObjectProperty>("Originator");
                         if (originator != null && originator.Value != 0)
