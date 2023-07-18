@@ -43,6 +43,7 @@ using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using LegendaryExplorerCore.Audio;
 using System.IO.Packaging;
+using LegendaryExplorer.Packages;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
 
 namespace LegendaryExplorer.Tools.PackageEditor
@@ -246,8 +247,8 @@ namespace LegendaryExplorer.Tools.PackageEditor
         private void LoadCommands()
         {
             CalculateExportMD5Command = new GenericCommand(CalculateExportMD5, ExportIsSelected);
-            CompareToUnmoddedCommand = new GenericCommand(CompareUnmodded, CanCompareToUnmodded);
-            ComparePackagesCommand = new GenericCommand(ComparePackages, PackageIsLoaded);
+            CompareToUnmoddedCommand = new GenericCommand(() => SharedPackageTools.ComparePackageToUnmodded(this, entryDoubleClickToTreeview), () => SharedPackageTools.CanCompareToUnmodded(this));
+            ComparePackagesCommand = new GenericCommand(()=>SharedPackageTools.ComparePackageToAnother(this, entryDoubleClickToTreeview), PackageIsLoaded);
             ExportAllDataCommand = new GenericCommand(ExportAllData, ExportIsSelected);
             ExportBinaryDataCommand = new GenericCommand(ExportBinaryData, ExportIsSelected);
             ImportAllDataCommand = new GenericCommand(ImportAllData, ExportIsSelected);
@@ -609,7 +610,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
             {
                 BusyText = "Finding unmodded candidates...";
                 IsBusy = true;
-                return GetUnmoddedCandidatesForPackage();
+                return SharedPackageTools.GetUnmoddedCandidatesForPackage(this);
             }).ContinueWithOnUIThread(foundCandidates =>
             {
                 IsBusy = false;
@@ -2717,225 +2718,6 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
         private bool PackageIsLoaded() => Pcc != null;
 
-        private void ComparePackages()
-        {
-            if (Pcc != null)
-            {
-                string extension = Path.GetExtension(Pcc.FilePath);
-                OpenFileDialog d = new OpenFileDialog { Filter = "*" + extension + "|*" + extension, Title = "Select package file to compare against", CustomPlaces = AppDirectories.GameCustomPlaces };
-                if (d.ShowDialog() == true)
-                {
-                    if (Pcc.FilePath == d.FileName)
-                    {
-                        MessageBox.Show("You selected the same file as the one already open.");
-                        return;
-                    }
-
-                    CompareToPackageWrapper(diskPath: d.FileName);
-                }
-            }
-        }
-
-        private void CompareToPackageWrapper(IMEPackage package = null, string diskPath = null, Stream packageStream = null)
-        {
-            Task.Run(() =>
-                    {
-                        BusyText = "Comparing packages...";
-                        IsBusy = true;
-                        try
-                        {
-                            if (package != null) return (object)Pcc.CompareToPackage(package);
-                            if (diskPath != null) return (object)Pcc.CompareToPackage(diskPath);
-                            if (packageStream != null) return (object)Pcc.CompareToPackage(packageStream);
-                            return "CompareToPackageWrapper() requires at least one parameter be set!";
-                        }
-                        catch (Exception e)
-                        {
-                            return e.Message;
-                        }
-                    }).ContinueWithOnUIThread(result =>
-                    {
-                        IsBusy = false;
-                        if (result.Result is string errorMessage)
-                        {
-                            MessageBox.Show(errorMessage, "Error comparing packages");
-                        }
-                        else if (result.Result is List<EntryStringPair> results)
-                        {
-                            if (Enumerable.Any(results))
-                            {
-                                ListDialog ld = new ListDialog(results, "Changed exports/imports/names between files",
-                                        "The following exports, imports, and names are different between the files.", this)
-                                { DoubleClickEntryHandler = entryDoubleClick };
-                                ld.Show();
-                            }
-                            else
-                            {
-                                MessageBox.Show("No changes between names/imports/exports were found between the files.", "Packages seem identical");
-                            }
-                        }
-                    });
-        }
-
-        private bool CanCompareToUnmodded() => PackageIsLoaded() && Pcc.Game != MEGame.UDK && (!(Pcc.IsInBasegame() || Pcc.IsInOfficialDLC()) || ME3TweaksBackups.GetGameBackupPath(Pcc.Game) != null);
-
-        private void CompareUnmodded()
-        {
-            if (!Pcc.Game.IsLEGame() && !Pcc.Game.IsOTGame())
-            {
-                MessageBox.Show(this, "Can only compare packages from the Original Trilogy or Legendary Edition.", "Can't compare", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
-            Task.Run(() =>
-            {
-                BusyText = "Finding unmodded candidates...";
-                IsBusy = true;
-                return GetUnmoddedCandidatesForPackage();
-            }).ContinueWithOnUIThread(foundCandidates =>
-           {
-               IsBusy = false;
-               if (!foundCandidates.Result.Any())
-               {
-                   MessageBox.Show(this, "Cannot find any candidates for this file!");
-                   return;
-               }
-
-               var choices = foundCandidates.Result.DiskFiles.ToList(); //make new list
-               choices.AddRange(foundCandidates.Result.SFARPackageStreams.Select(x => x.Key));
-
-               var choice = InputComboBoxDialog.GetValue(this, "Choose file to compare to:", "Unmodified file comparison", choices, choices.Last());
-               if (string.IsNullOrEmpty(choice))
-               {
-                   return;
-               }
-
-               if (foundCandidates.Result.DiskFiles.Contains(choice))
-               {
-                   CompareToPackageWrapper(diskPath: choice);
-               }
-               else if (foundCandidates.Result.SFARPackageStreams.TryGetValue(choice, out var packageStream))
-               {
-                   CompareToPackageWrapper(packageStream: packageStream);
-               }
-               else
-               {
-                   MessageBox.Show("Selected candidate not found in the lists! This is a bug", "OH NO");
-               }
-           });
-        }
-
-        internal UnmoddedCandidatesLookup GetUnmoddedCandidatesForPackage()
-        {
-            string lookupFilename = Path.GetFileName(Pcc.FilePath);
-            string dlcPath = MEDirectories.GetDLCPath(Pcc.Game);
-            string backupPath = ME3TweaksBackups.GetGameBackupPath(Pcc.Game);
-            var unmoddedCandidates = new UnmoddedCandidatesLookup();
-
-            // Lookup unmodded ON DISK files
-            List<string> unModdedFileLookup(string filename)
-            {
-                List<string> inGameCandidates = MEDirectories.OfficialDLC(Pcc.Game)
-                    .Select(dlcName => Path.Combine(dlcPath, dlcName))
-                    .Prepend(MEDirectories.GetCookedPath(Pcc.Game))
-                    .Where(Directory.Exists)
-                    .Select(cookedPath =>
-                        Directory.EnumerateFiles(cookedPath, "*", SearchOption.AllDirectories)
-                            .FirstOrDefault(path => Path.GetFileName(path) == filename))
-                    .NonNull().ToList();
-
-                if (backupPath != null)
-                {
-                    var backupDlcPath = MEDirectories.GetDLCPath(Pcc.Game, backupPath);
-                    inGameCandidates.AddRange(MEDirectories.OfficialDLC(Pcc.Game)
-                        .Select(dlcName => Path.Combine(backupDlcPath, dlcName))
-                        .Prepend(MEDirectories.GetCookedPath(Pcc.Game, backupPath))
-                        .Where(Directory.Exists)
-                        .Select(cookedPath =>
-                            Directory.EnumerateFiles(cookedPath, "*", SearchOption.AllDirectories)
-                                .FirstOrDefault(path => Path.GetFileName(path) == filename))
-                        .NonNull());
-
-                    if (Pcc.Game == MEGame.ME3)
-                    {
-                        // Check TESTPATCH
-
-                    }
-                }
-
-                return inGameCandidates;
-            }
-
-            unmoddedCandidates.DiskFiles.AddRange(unModdedFileLookup(lookupFilename));
-            if (unmoddedCandidates.DiskFiles.IsEmpty())
-            {
-                //Try to lookup using info in this file
-                var packages = Pcc.Exports.Where(x => x.ClassName == "Package" && x.idxLink == 0).ToList();
-                foreach (var p in packages)
-                {
-                    if ((p.PackageFlags & UnrealFlags.EPackageFlags.Cooked) != 0)
-                    {
-                        //try this one
-                        var objName = p.ObjectName;
-                        if (p.indexValue > 0) objName += $"_{p.indexValue - 1}"; //Some ME3 map files are indexed
-                        var cookedPackageName = objName + (Pcc.Game == MEGame.ME1 ? ".sfm" : ".pcc");
-                        unmoddedCandidates.DiskFiles.ReplaceAll(unModdedFileLookup(cookedPackageName)); //ME1 could be upk/u too I guess, but I think only sfm have packages cooked into them
-                        break;
-                    }
-                }
-            }
-
-            //if (filecandidates.Any())
-            //{
-            //    // Use em'
-            //    string filePath = InputComboBoxWPF.GetValue(this, "Choose file to compare to:",
-            //        "Unmodified file comparison", filecandidates, filecandidates.Last());
-
-            //    if (string.IsNullOrEmpty(filePath))
-            //    {
-            //        return null;
-            //    }
-
-            //    ComparePackage(filePath);
-            //    return true;
-            //}
-
-            if (Pcc.Game == MEGame.ME3 && backupPath != null)
-            {
-                var backupDlcPath = Path.Combine(backupPath, "BIOGame", "DLC");
-                if (Directory.Exists(dlcPath))
-                {
-                    var sfars = Directory.GetFiles(backupDlcPath, "*.sfar", SearchOption.AllDirectories).ToList();
-
-                    var testPatch = Path.Combine(backupPath, "BIOGame", "Patches", "PCConsole", "Patch_001.sfar");
-                    if (File.Exists(testPatch))
-                    {
-                        sfars.Add(testPatch);
-                    }
-
-                    foreach (var sfar in sfars)
-                    {
-                        DLCPackage dlc = new DLCPackage(sfar);
-                        // Todo: Port in M3's better SFAR lookup code
-                        var sfarIndex = dlc.FindFileEntry(Path.GetFileName(lookupFilename));
-                        if (sfarIndex >= 0)
-                        {
-                            var uiName = Path.GetFileName(sfar) == "Patch_001.sfar" ? "TestPatch" : Directory.GetParent(sfar).Parent.Name;
-                            unmoddedCandidates.SFARPackageStreams[$"{uiName} SFAR"] = dlc.DecompressEntry(sfarIndex);
-                        }
-                    }
-                }
-            }
-
-            return unmoddedCandidates;
-        }
-
-        internal class UnmoddedCandidatesLookup
-        {
-            public List<string> DiskFiles = new();
-            public Dictionary<string, Stream> SFARPackageStreams = new();
-            public bool Any() => Enumerable.Any(DiskFiles) || Enumerable.Any(SFARPackageStreams);
-        }
 
 
 
