@@ -1244,6 +1244,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     {
                         parsedValue = $"({sp.Properties.GetProp<NameProperty>("VirtualChunkName")?.Value})";
                     }
+                    else if (sp.StructType == "SFXVocalizationRole")
+                    {
+                        parsedValue = $"({sp.Properties.GetProp<ArrayProperty<StructProperty>>("Roles")?.Count ?? 0} roles)";
+                    }
                     else if (sp.StructType == "TimelineEffect")
                     {
                         EnumProperty typeProp = sp.Properties.GetProp<EnumProperty>("Type");
