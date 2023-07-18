@@ -1020,6 +1020,11 @@ namespace LegendaryExplorerCore.Packages
             Data = m.ToArray();
         }
 
+        /// <summary>
+        /// Clones this export. If you don't supply a new index, it will remain the same - ENSURE YOU CHANGE IT OR YOU'LL WASTE TIME DEBUGGING THE GAME!!
+        /// </summary>
+        /// <param name="newIndex"></param>
+        /// <returns></returns>
         public ExportEntry Clone(int newIndex = -1)
         {
             var clone = (ExportEntry)MemberwiseClone();
