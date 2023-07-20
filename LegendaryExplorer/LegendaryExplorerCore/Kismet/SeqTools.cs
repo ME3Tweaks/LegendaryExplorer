@@ -252,7 +252,7 @@ namespace LegendaryExplorerCore.Kismet
                     }
                 }
 
-                if (matchingLinks.Any(x => x.Any(y => linkIdxsToMatchOn.Contains(y.InputLinkIdx))))
+                if (matchingLinks.Any(x => x.Any(y => y.LinkedOp == node && linkIdxsToMatchOn.Contains(y.InputLinkIdx))))
                 {
                     // We have an input on a filtered input we want
                     referencingNodes.Add(seqObj);
