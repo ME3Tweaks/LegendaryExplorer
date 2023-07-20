@@ -979,8 +979,49 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             classes[className] = info;
         }
 
-        public static string GetExpectedClassTypeForObjectProperty(ExportEntry entry, ObjectProperty op, string containingClassOrStructName)
+        public static string GetExpectedClassTypeForObjectProperty(ExportEntry entry, ObjectProperty op, string containingClassOrStructName, Property parentProperty)
         {
+
+            if (parentProperty is ArrayProperty<ObjectProperty> apop)
+            {
+                // Try to get the type of object array
+                // This code doesn't work for nested structs as the containing class is different
+                PropertyInfo p = GlobalUnrealObjectInfo.GetPropertyInfo(entry.FileRef.Game, parentProperty.Name, entry.ClassName, containingExport: entry);
+                if (p != null)
+                {
+                    return p.Reference;
+                }
+            }
+            else
+            {
+                // Object Property
+                string propType = op.InternalPropType.ToString();
+                if (op.Name.Name != null)
+                {
+                    string container = entry.ClassName;
+                    if (parentProperty is StructProperty psp)
+                    {
+                        container = psp.StructType;
+                    }
+
+                    var type = GlobalUnrealObjectInfo.GetPropertyInfo(entry.Game, op.Name, container,
+                        containingExport: entry);
+                    if (type != null)
+                    {
+                        return type.Reference;
+                    }
+                }
+                else
+                {
+                    return propType;
+                }
+            }
+
+            return null; // We don't know
+
+
+
+            /*
             var referencedEntry = op.ResolveToEntry(entry.FileRef);
             //if (referencedEntry.FullPath.Equals(@"SFXGame.BioDeprecated", StringComparison.InvariantCulture)) return; //This will appear as wrong even though it's technically not
             //if (entry.FileRef.Game == MEGame.ME2)
@@ -990,7 +1031,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             //    if (op.Name == "TrackingSound" && entry.ClassName == "SFXSeqAct_SecurityCam" && referencedEntry.ClassName == "WwiseEvent") return; // Appears to be incorrect in vanilla. Don't report it as an issue
             //}
 
-            var propInfo = GlobalUnrealObjectInfo.GetPropertyInfo(entry.Game, op.Name, containingClassOrStructName, containingExport: entry as ExportEntry);
+            var propInfo = GlobalUnrealObjectInfo.GetPropertyInfo(entry.Game, op.Name.Instanced ?? parentPropertyName, containingClassOrStructName, containingExport: entry as ExportEntry);
             var customClassInfos = new Dictionary<string, ClassInfo>();
 
             if (referencedEntry != null && referencedEntry.ClassName == @"Class" && op.Value > 0)
@@ -1021,6 +1062,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             }
 
             return null; // We don't know
+            */
         }
     }
 }
