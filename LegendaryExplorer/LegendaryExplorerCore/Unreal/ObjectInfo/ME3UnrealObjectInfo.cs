@@ -571,8 +571,20 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
 
         public static void AddIntrinsicClasses(Dictionary<string, ClassInfo> classes, MEGame game)
         {
-            string corePath = game is MEGame.UDK ? @"Script\Core.u" : game <= MEGame.ME2 ? @"CookedPC\Core.pcc" : @"CookedPCConsole\Core.pcc";
-            string enginePath = game is MEGame.UDK ? @"Script\Engine.u" : game <= MEGame.ME2 ? @"CookedPC\Engine.pcc" : @"CookedPCConsole\Engine.pcc";
+            string corePath = game switch
+            {
+                MEGame.UDK => @"Script\Core.u",
+                MEGame.ME1 => @"CookedPC\Core.u",
+                MEGame.ME2 => @"CookedPC\Core.pcc",
+                _ => @"CookedPCConsole\Core.pcc"
+            };
+            string enginePath = game switch
+            {
+                MEGame.UDK => @"Script\Engine.u",
+                MEGame.ME1 => @"CookedPC\Engine.u",
+                MEGame.ME2 => @"CookedPC\Engine.pcc",
+                _ => @"CookedPCConsole\Engine.pcc"
+            };
            
             if (game >= MEGame.ME3)
             {

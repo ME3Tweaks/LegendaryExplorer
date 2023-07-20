@@ -741,14 +741,14 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             {
                 baseClass = "Texture2D",
                 exportIndex = 0,
-                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName
+                pccPath = @"CookedPCConsole\Engine.pcc",
             };
 
             Classes["StaticMesh"] = new ClassInfo
             {
                 baseClass = "Object",
                 exportIndex = 0,
-                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                pccPath = @"CookedPCConsole\Engine.pcc",
                 properties =
                 {
                     new KeyValuePair<NameReference, PropertyInfo>("BodySetup", new PropertyInfo(PropertyType.ObjectProperty, "RB_BodySetup")),

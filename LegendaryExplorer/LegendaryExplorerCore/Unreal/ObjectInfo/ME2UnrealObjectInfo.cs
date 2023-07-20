@@ -335,6 +335,31 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
 
 
             ME3UnrealObjectInfo.AddIntrinsicClasses(classes, MEGame.ME2);
+
+            classes["LightMapTexture2D"] = new ClassInfo
+            {
+                baseClass = "Texture2D",
+                pccPath = @"CookedPC\Engine.pcc"
+            };
+
+            classes["StaticMesh"] = new ClassInfo
+            {
+                baseClass = "Object",
+                pccPath = @"CookedPC\Engine.pcc",
+                properties =
+                {
+                    new KeyValuePair<NameReference, PropertyInfo>("UseSimpleRigidBodyCollision", new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("UseSimpleLineCollision", new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("UseSimpleBoxCollision", new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("bUsedForInstancing", new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("ForceDoubleSidedShadowVolumes", new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("UseFullPrecisionUVs", new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("BodySetup", new PropertyInfo(PropertyType.ObjectProperty, "RB_BodySetup")),
+                    new KeyValuePair<NameReference, PropertyInfo>("LODDistanceRatio", new PropertyInfo(PropertyType.FloatProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("LightMapCoordinateIndex", new PropertyInfo(PropertyType.IntProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("LightMapResolution", new PropertyInfo(PropertyType.IntProperty)),
+                }
+            };
         }
 
         public static ClassInfo generateClassInfo(ExportEntry export, bool isStruct = false)

@@ -241,14 +241,14 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             {
                 baseClass = "Texture2D",
                 exportIndex = 0,
-                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName
+                pccPath = @"CookedPC\Engine.u",
             };
 
             Classes["StaticMesh"] = new ClassInfo
             {
                 baseClass = "Object",
                 exportIndex = 0,
-                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                pccPath = @"CookedPC\Engine.u",
                 properties =
                 {
                     new KeyValuePair<NameReference, PropertyInfo>("UseSimpleRigidBodyCollision", new PropertyInfo(PropertyType.BoolProperty)),

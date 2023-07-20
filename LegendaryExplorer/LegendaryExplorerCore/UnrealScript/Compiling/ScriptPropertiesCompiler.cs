@@ -264,7 +264,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             }
             switch (type)
             {
-                case ClassType classType:
+                case ClassType:
                     prop = new ObjectProperty(literal is NoneLiteral ? null : CompilerUtils.ResolveClass((Class)((ClassType)((ObjectLiteral)literal).Class).ClassLimiter, Pcc), propName);
                     break;
                 case Class cls:
@@ -272,6 +272,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     {
                         NoneLiteral => null,
                         SymbolReference {Node: Subobject subobject} => subObjectDict?[NameReference.FromInstancedString(subobject.NameDeclaration.Name)],
+                        ObjectLiteral {Class: ClassType {ClassLimiter: Class @class}} => CompilerUtils.ResolveClass(@class, Pcc),
                         _ => Pcc.FindEntry(((ObjectLiteral)literal).Name.Value)
                     };
 

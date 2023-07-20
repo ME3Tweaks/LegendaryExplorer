@@ -273,7 +273,26 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             {
                 baseClass = "Texture2D",
                 exportIndex = 0,
-                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName
+                pccPath = @"CookedPCConsole\Engine.pcc",
+            };
+
+            Classes["StaticMesh"] = new ClassInfo
+            {
+                baseClass = "Object",
+                exportIndex = 0,
+                pccPath = @"CookedPCConsole\Engine.pcc",
+                properties =
+                {
+                    new KeyValuePair<NameReference, PropertyInfo>("BodySetup", new PropertyInfo(PropertyType.ObjectProperty, "RB_BodySetup")),
+                    new KeyValuePair<NameReference, PropertyInfo>("bUsedForInstancing", new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("ForceDoubleSidedShadowVolumes", new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("UseFullPrecisionUVs", new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("LightMapCoordinateIndex", new PropertyInfo(PropertyType.IntProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("LightMapResolution", new PropertyInfo(PropertyType.IntProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("UseSimpleboxCollision", new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("UseSimpleLineCollision", new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("UseSimpleRigidBodyCollision", new PropertyInfo(PropertyType.BoolProperty)),
+                }
             };
         }
 

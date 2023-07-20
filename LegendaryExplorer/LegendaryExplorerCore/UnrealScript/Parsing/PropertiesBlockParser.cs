@@ -451,7 +451,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                         VariableType valueClass;
                         if (literal is ObjectLiteral objectLiteral)
                         {
-                            if (Pcc.FindEntry(objectLiteral.Name.Value) is not IEntry)
+                            if (objectLiteral.Class is not ClassType && Pcc.FindEntry(objectLiteral.Name.Value) is not IEntry)
                             {
                                 TypeError($"Could not find '{objectLiteral.Name.Value}' in this file!");
                             }
