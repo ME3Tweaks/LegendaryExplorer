@@ -656,13 +656,13 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 {
                     param.Outer = node;
                     Success &= param.AcceptVisitor(this);
-                }
 
-                //foreach (VariableDeclaration local in node.Locals)
-                //{
-                //    local.Outer = node;
-                //    Success &= local.AcceptVisitor(this);
-                //}
+                    if (Symbols.SymbolExistsInParentScopes(param.Name))
+                    {
+                        Log.LogWarning($"A symbol named '{param.Name}' exists in a parent scope. Are you sure you want to shadow it?", param.StartPos, param.EndPos);
+                    }
+                }
+                
                 Symbols.PopScope();
 
                 if (Success == false)
