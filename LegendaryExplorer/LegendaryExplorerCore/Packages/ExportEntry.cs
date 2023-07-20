@@ -490,6 +490,7 @@ namespace LegendaryExplorerCore.Packages
                     }
                     _commonHeaderFields._idxLink = value;
                     HeaderChanged = true;
+                    _fileRef.IsModified = true;
                     _fileRef.InvalidateLookupTable();
                 }
             }
@@ -806,7 +807,7 @@ namespace LegendaryExplorerCore.Packages
                 {
                     _entryHasPendingChanges = value;
                     PropertyChanged?.Invoke(this, EmptyPropertyChangedEventArgs);
-
+                    _fileRef.IsModified |= value; // This is kind of a safeguard in the event other code missed stuff
                     EntryModifiedChanged?.Invoke(this, EventArgs.Empty);
                 }
             }

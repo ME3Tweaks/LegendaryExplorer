@@ -25,6 +25,7 @@ using LegendaryExplorer.Startup;
 using LegendaryExplorerCore;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
+using System.Diagnostics;
 
 namespace LegendaryExplorer.MainWindow
 {
@@ -45,8 +46,8 @@ namespace LegendaryExplorer.MainWindow
             DataContext = this;
 
             //Check that at least one game path is set. If none are, show the initial dialog.
-            if (!Settings.MainWindow_CompletedInitialSetup || 
-                (ME1Directory.DefaultGamePath == null && ME2Directory.DefaultGamePath == null && 
+            if (!Settings.MainWindow_CompletedInitialSetup ||
+                (ME1Directory.DefaultGamePath == null && ME2Directory.DefaultGamePath == null &&
                  ME3Directory.DefaultGamePath == null && LegendaryExplorerCoreLibSettings.Instance.LEDirectory == null))
             {
                 new InitialSetup().ShowDialog();
@@ -102,7 +103,7 @@ namespace LegendaryExplorer.MainWindow
 
         private void ToolSet_FavoritesChanged(object sender, EventArgs e)
         {
-            if(favoritesButton.IsChecked ?? false)
+            if (favoritesButton.IsChecked ?? false)
             {
                 SetToolListFromFavorites();
             }
@@ -217,32 +218,45 @@ namespace LegendaryExplorer.MainWindow
         /// If the main window is allowed to close - if a window is kept open this is set to false, which suppresses this window from also closing
         /// </summary>
         private static bool IsCloseCommandExecuting;
+        private static bool IsMainWindowTryingToClose;
 
 
         private void CloseCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
+            Close(); // Attempt to close the main window. This will trigger closing logic that can be aborted.
+        }
+
+        private void CloseSubWindows()
+        {
+            // CLOSES SUBWINDOWS
+            Debug.WriteLine("CloseCommandExecuted");
             IsCloseCommandExecuting = true;
             IsAllowedToClose = true; // Reset - subwindows will handle this
-            foreach (var w in Application.Current.Windows.OfType<Window>())
+            foreach (var w in Application.Current.Windows.OfType<Window>().ToList())
             {
                 if (w == this)
                     continue; // We don't check on ourself
                 w.Close();
             }
 
-            // Try closing ourself
-            SystemCommands.CloseWindow(this);
             IsCloseCommandExecuting = false;
         }
 
         private void MainWindow_Closing(object sender, CancelEventArgs e)
         {
+            Debug.WriteLine("MainWindowClosing");
+
             if (!IsCloseCommandExecuting)
             {
+                Debug.WriteLine("MainWindowClosingREALS");
                 // Closed via middle click in taskbar
-                CloseCommand_Executed(null, null);
+                CloseSubWindows();
             }
+            
             e.Cancel = !IsAllowedToClose;
+            IsMainWindowTryingToClose = false;
+            Debug.WriteLine("MainWindowClosingEND " + !IsAllowedToClose);
+
         }
 
         private void MinimizeCommand_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -260,6 +274,11 @@ namespace LegendaryExplorer.MainWindow
                 }
                 this.DragMove();
             }
+        }
+
+        private void MainWindow_Closing(object sender, ExecutedRoutedEventArgs e)
+        {
+
         }
     }
 }
