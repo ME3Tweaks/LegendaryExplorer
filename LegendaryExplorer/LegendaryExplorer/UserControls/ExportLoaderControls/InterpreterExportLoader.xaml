@@ -79,7 +79,7 @@
             <ComboBox Name="Value_ObjectComboBox"
                       MinWidth="80" VerticalAlignment="Center" ToolTip="Value for this property" 
                       Style="{StaticResource {x:Type ComboBox}}" 
-                      IsTextSearchEnabled="True">
+                      IsTextSearchEnabled="True" TextSearch.TextPath="UIndex" >
                 <ComboBox.ItemsPanel>
                     <ItemsPanelTemplate>
                         <VirtualizingStackPanel />

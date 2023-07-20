@@ -14,6 +14,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.Misc;
+using LegendaryExplorer.Packages;
 using LegendaryExplorer.Tools.AssetDatabase;
 using LegendaryExplorer.Tools.PathfindingEditor;
 using LegendaryExplorer.Tools.Sequence_Editor;
@@ -419,7 +420,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             {
                 pewpf.BusyText = "Finding unmodded candidates...";
                 pewpf.IsBusy = true;
-                return pewpf.GetUnmoddedCandidatesForPackage();
+                return SharedPackageTools.GetUnmoddedCandidatesForPackage(pewpf);
             }).ContinueWithOnUIThread(foundCandidates =>
             {
                 pewpf.IsBusy = false;
@@ -1542,7 +1543,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             {
                 pewpf.BusyText = "Finding unmodded candidates...";
                 pewpf.IsBusy = true;
-                return pewpf.GetUnmoddedCandidatesForPackage();
+                return SharedPackageTools.GetUnmoddedCandidatesForPackage(pewpf);
             }).ContinueWithOnUIThread(foundCandidates =>
             {
                 pewpf.IsBusy = false;

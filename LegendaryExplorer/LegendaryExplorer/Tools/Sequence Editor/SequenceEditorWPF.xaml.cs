@@ -158,6 +158,8 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
         public ICommand ForceReloadPackageCommand { get; set; }
         public ICommand ResetFavoritesCommand { get; set; }
         public ICommand OpenOtherVersionCommand { get; set; }
+        public ICommand ComparePackagesCommand { get; set; }
+        public ICommand CompareToUnmoddedCommand { get; set; }
 
         private void LoadCommands()
         {
@@ -177,6 +179,16 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             UseSavedViewsCommand = new GenericCommand(ToggleSavedViews, () => Pcc != null && Pcc is { Game: MEGame.ME1 } || Pcc.Game.IsLEGame());
             ResetFavoritesCommand = new GenericCommand(ResetFavorites, () => Pcc != null);
             OpenOtherVersionCommand = new GenericCommand(OpenOtherVersion, () => Pcc != null && Pcc.Game.IsMEGame());
+            CompareToUnmoddedCommand = new GenericCommand(() => SharedPackageTools.ComparePackageToUnmodded(this, entryDoubleClick), () => SharedPackageTools.CanCompareToUnmodded(this));
+            ComparePackagesCommand = new GenericCommand(() => SharedPackageTools.ComparePackageToAnother(this, entryDoubleClick), PackageIsLoaded);
+        }
+
+        private void entryDoubleClick(EntryStringPair clickedItem)
+        {
+            if (clickedItem?.Entry != null && clickedItem.Entry.UIndex != 0)
+            {
+                GoToExport(clickedItem.Entry.UIndex);
+            }
         }
 
         private void ToggleSavedViews()
@@ -1908,35 +1920,35 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             return exp;
         }
 
-        static void cloneSequence(ExportEntry exp)
+        static void cloneSequence(ExportEntry sequence)
         {
-            IMEPackage pcc = exp.FileRef;
-            if (exp.ClassName == "Sequence")
+            IMEPackage pcc = sequence.FileRef;
+            if (sequence.ClassName == "Sequence")
             {
                 //sequence names need to be unique I think?
-                exp.ObjectName = pcc.GetNextIndexedName(exp.ObjectName.Name);
+                sequence.ObjectName = pcc.GetNextIndexedName(sequence.ObjectName.Name);
 
-                var seqObjs = exp.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
+                var seqObjs = sequence.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
                 if (seqObjs == null || seqObjs.Count == 0)
                 {
                     return;
                 }
 
                 //store original list of sequence objects;
-                List<int> oldObjects = seqObjs.Select(x => x.Value).ToList();
+                List<int> oldObjectUindices = seqObjs.Select(x => x.Value).ToList();
 
                 //clear original sequence objects
                 seqObjs.Clear();
-                exp.WriteProperty(seqObjs);
+                sequence.WriteProperty(seqObjs);
 
                 //clone all children
-                foreach (var obj in oldObjects)
+                foreach (var obj in oldObjectUindices)
                 {
-                    cloneObject(pcc.GetUExport(obj), exp, false, false);
+                    cloneObject(pcc.GetUExport(obj), sequence, false, false);
                 }
 
                 //re-point children's links to new objects
-                seqObjs = exp.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
+                seqObjs = sequence.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
                 foreach (var seqObj in seqObjs)
                 {
                     ExportEntry obj = pcc.GetUExport(seqObj.Value);
@@ -1950,7 +1962,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                             foreach (var link in links)
                             {
                                 var linkedOp = link.GetProp<ObjectProperty>("LinkedOp");
-                                linkedOp.Value = seqObjs[oldObjects.IndexOf(linkedOp.Value)].Value;
+                                linkedOp.Value = seqObjs[oldObjectUindices.IndexOf(linkedOp.Value)].Value;
                             }
                         }
                     }
@@ -1963,7 +1975,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                             var links = varLinkStruct.GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables");
                             foreach (var link in links)
                             {
-                                link.Value = seqObjs[oldObjects.IndexOf(link.Value)].Value;
+                                link.Value = seqObjs[oldObjectUindices.IndexOf(link.Value)].Value;
                             }
                         }
                     }
@@ -1976,7 +1988,16 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                             var links = eventLinkStruct.GetProp<ArrayProperty<ObjectProperty>>("LinkedEvents");
                             foreach (var link in links)
                             {
-                                link.Value = seqObjs[oldObjects.IndexOf(link.Value)].Value;
+                                var idx = oldObjectUindices.IndexOf(link.Value);
+                                if (idx >= 0)
+                                {
+                                    link.Value = seqObjs[idx].Value;
+                                }
+                                else
+                                {
+                                    // Uh oh
+                                    Debugger.Break();
+                                }
                             }
                         }
                     }
@@ -1987,7 +2008,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 //re-point sequence links to new objects
                 int oldObj;
                 int newObj;
-                var propCollection = exp.GetProperties();
+                var propCollection = sequence.GetProperties();
                 var inputLinksProp = propCollection.GetProp<ArrayProperty<StructProperty>>("InputLinks");
                 if (inputLinksProp != null)
                 {
@@ -1997,7 +2018,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                         oldObj = linkedOp.Value;
                         if (oldObj != 0)
                         {
-                            newObj = seqObjs[oldObjects.IndexOf(oldObj)].Value;
+                            newObj = seqObjs[oldObjectUindices.IndexOf(oldObj)].Value;
                             linkedOp.Value = newObj;
 
                             NameProperty linkAction = inLinkStruct.GetProp<NameProperty>("LinkAction");
@@ -2015,7 +2036,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                         oldObj = linkedOp.Value;
                         if (oldObj != 0)
                         {
-                            newObj = seqObjs[oldObjects.IndexOf(oldObj)].Value;
+                            newObj = seqObjs[oldObjectUindices.IndexOf(oldObj)].Value;
                             linkedOp.Value = newObj;
 
                             NameProperty linkAction = outLinkStruct.GetProp<NameProperty>("LinkAction");
@@ -2024,23 +2045,23 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                     }
                 }
 
-                exp.WriteProperties(propCollection);
+                sequence.WriteProperties(propCollection);
             }
-            else if (exp.ClassName == "SequenceReference")
+            else if (sequence.ClassName == "SequenceReference")
             {
                 //set OSequenceReference to new sequence
-                var oSeqRefProp = exp.GetProperty<ObjectProperty>("oSequenceReference");
+                var oSeqRefProp = sequence.GetProperty<ObjectProperty>("oSequenceReference");
                 if (oSeqRefProp == null || oSeqRefProp.Value == 0)
                 {
                     return;
                 }
 
                 int oldSeqIndex = oSeqRefProp.Value;
-                oSeqRefProp.Value = exp.UIndex + 1;
-                exp.WriteProperty(oSeqRefProp);
+                oSeqRefProp.Value = sequence.UIndex + 1;
+                sequence.WriteProperty(oSeqRefProp);
 
                 //clone sequence
-                ExportEntry newSequence = cloneObject(pcc.GetUExport(oldSeqIndex), exp, false);
+                ExportEntry newSequence = cloneObject(pcc.GetUExport(oldSeqIndex), sequence, false);
                 //set SequenceReference's linked name indices
                 var inputIndices = new List<int>();
                 var outputIndices = new List<int>();
@@ -2064,7 +2085,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                     }
                 }
 
-                props = exp.GetProperties();
+                props = sequence.GetProperties();
                 inLinksProp = props.GetProp<ArrayProperty<StructProperty>>("InputLinks");
                 if (inLinksProp != null)
                 {
@@ -2085,7 +2106,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                     }
                 }
 
-                exp.WriteProperties(props);
+                sequence.WriteProperties(props);
             }
         }
 

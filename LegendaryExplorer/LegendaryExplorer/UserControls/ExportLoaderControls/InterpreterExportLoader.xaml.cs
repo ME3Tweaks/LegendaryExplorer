@@ -1244,6 +1244,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     {
                         parsedValue = $"({sp.Properties.GetProp<NameProperty>("VirtualChunkName")?.Value})";
                     }
+                    else if (sp.StructType == "SFXVocalizationRole")
+                    {
+                        parsedValue = $"({sp.Properties.GetProp<ArrayProperty<StructProperty>>("Roles")?.Count ?? 0} roles)";
+                    }
                     else if (sp.StructType == "TimelineEffect")
                     {
                         EnumProperty typeProp = sp.Properties.GetProp<EnumProperty>("Type");
@@ -1917,16 +1921,15 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         UpdateParsedEditorValue(newSelectedItem);
                         break;
                 }
+            }
 
-                Set_Button.Visibility = SupportedEditorSetElements.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
+            
+            Set_Button.Visibility = SupportedEditorSetElements.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
 
-                //Hide the non-used controls
-                foreach (FrameworkElement fe in EditorSetElements)
-                {
-                    fe.Visibility = SupportedEditorSetElements.Contains(fe) ? Visibility.Visible : Visibility.Collapsed;
-                }
-                //EditorSet_Separator.Visibility = SupportedEditorSetElements.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
-
+            //Hide the non-used controls
+            foreach (FrameworkElement fe in EditorSetElements)
+            {
+                fe.Visibility = SupportedEditorSetElements.Contains(fe) ? Visibility.Visible : Visibility.Collapsed;
             }
         }
 
@@ -1948,11 +1951,15 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     containingClassOrStructName = sp.StructType;
                     break;
                 }
+                else if (parentProperty.Property is ArrayPropertyBase apb)
+                {
+                    containingClassOrStructName = apb.Reference;
+                }
 
                 parentProperty = parentProperty.Parent;
             }
 
-            var expectedType = GlobalUnrealObjectInfo.GetExpectedClassTypeForObjectProperty(CurrentLoadedExport, op, containingClassOrStructName);
+            var expectedType = GlobalUnrealObjectInfo.GetExpectedClassTypeForObjectProperty(CurrentLoadedExport, op, containingClassOrStructName, uPropertyTreeViewEntry.Parent?.Property);
             Value_ObjectComboBox.ItemsSource = MakeAllEntriesList(expectedType);
         }
 
