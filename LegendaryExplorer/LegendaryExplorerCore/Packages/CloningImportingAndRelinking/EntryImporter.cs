@@ -1044,6 +1044,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             // These files are safe to import from if the file doing the import is post-save (e.g. it is not a seekfree or startup file)
 
             // Add DLC startup files here?
+            "Startup_METR_Patch01_INT.pcc"
         };
 
         private static readonly string[] le3FilesSafeToImportFrom =
@@ -1318,7 +1319,10 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         public static ExportEntry ResolveImport(ImportEntry entry, PackageCache globalCache, PackageCache lookupCache, string localization = "INT", bool unsafeLoad = false, IEnumerable<string> localDirFiles = null, string gameRootOverride = null)
         {
             var entryFullPath = entry.InstancedFullPath;
-
+            if (entry.ObjectName == "HMM_EYE_MASTER_OVRD_MAT")
+            {
+                Debugger.Break();
+            }
             CaseInsensitiveDictionary<string> gameFiles = MELoadedFiles.GetFilesLoadedInGame(entry.Game, forceUseCached: true, gameRootOverride: gameRootOverride);
 
             var filesToCheck = GetPossibleImportFiles(entry, localization);
