@@ -268,7 +268,7 @@ namespace LegendaryExplorer.UnrealExtensions
                 {
                     using var extIsb = File.OpenRead(fullIsbPath);
                     extIsb.Seek((long)bankEntry.SampleOffset, SeekOrigin.Begin);
-                    sampleData = extIsb.ReadToBuffer(bankEntry.SampleInfo.ByteLength);
+                    sampleData = extIsb.ReadToBuffer(bankEntry.CompressionInfo.TotalSize);
                 }
             }
 
