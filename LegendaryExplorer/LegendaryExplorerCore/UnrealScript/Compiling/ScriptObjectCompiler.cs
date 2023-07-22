@@ -113,6 +113,10 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             if (classAST.Parent is Class parentClass)
             {
                 classObj.ClassFlags |= parentClass.Flags & EClassFlags.Inherit;
+                if (classObj.ClassFlags.Has(EClassFlags.Config) && classAST.ConfigName.CaseInsensitiveEquals("None"))
+                {
+                    classObj.ClassConfigName = NameReference.FromInstancedString(parentClass.ConfigName);
+                }
             }
 
             //calculate probemask
