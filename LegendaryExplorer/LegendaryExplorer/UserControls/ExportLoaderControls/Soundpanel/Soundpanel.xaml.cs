@@ -1053,8 +1053,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     case EmbeddedWEMFile _:
                         return true;
                 }
-
-                return true;
             }
 
             return false;
