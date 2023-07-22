@@ -67,7 +67,7 @@ namespace LegendaryExplorerCore.Sound.ISACT
         // Todo: Eventually split to own classes and replace existing ISBank class
 
         /// <summary>
-        /// Input data must start with the integer that matches the data to follow size
+        /// Input data must start after the integer that matches the data to follow size
         /// </summary>
         /// <param name="binRawData"></param>
         /// <returns></returns>
@@ -409,11 +409,16 @@ namespace LegendaryExplorerCore.Sound.ISACT
     public class ISACTListBankChunk : BankChunk
     {
         /// <summary>
+        /// The name of this chunk
+        /// </summary>
+        public const string FixedChunkTitle = "LIST";
+
+        /// <summary>
         /// Map of the children for easy access
         /// </summary>
         private Dictionary<string, BankChunk> BankSubChunkMap = new();
 
-        public string ObjectType; // What this LIST object is
+        public string ObjectType; // What this LIST object is, - samp, etc
 
         // Quick accessors
         /// <summary>
@@ -424,7 +429,34 @@ namespace LegendaryExplorerCore.Sound.ISACT
         /// <summary>
         /// Sample information such as length
         /// </summary>
-        public SampleInfoBankChunk SampleInfo => BankSubChunkMap["sinf"] as SampleInfoBankChunk;
+        public SampleInfoBankChunk SampleInfo
+        {
+            get
+            {
+                if (BankSubChunkMap.TryGetValue("sinf", out var sinf) && sinf is SampleInfoBankChunk sinfC)
+                {
+                    return sinfC;
+                }
+
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Gets the sample offset into the external ISB. Returns null if not found
+        /// </summary>
+        public uint? SampleOffset
+        {
+            get
+            {
+                if (BankSubChunkMap.TryGetValue(SampleOffsetBankChunk.FixedChunkTitle, out var soff) && soff is SampleOffsetBankChunk soffC)
+                {
+                    return soffC.SampleOffset;
+                }
+
+                return null;
+            }
+        }
 
         /// <summary>
         /// The title of the object
@@ -464,11 +496,11 @@ namespace LegendaryExplorerCore.Sound.ISACT
             Parent = parent;
             ChunkDataStartOffset = inStream.Position;
 
-            ChunkName = "LIST";
+            ChunkName = FixedChunkTitle;
             var startPos = inStream.Position;
             var endPos = chunkLen + startPos - 4; // The length of LIST for some reason is +4.
 
-            ObjectType = inStream.ReadStringASCII(4);
+            ObjectType = inStream.ReadStringASCII(4); // LIST
 
             while (inStream.Position < endPos)
             {
@@ -511,7 +543,7 @@ namespace LegendaryExplorerCore.Sound.ISACT
 
         public override string ToChunkDisplay()
         {
-            return $"{ChunkName} Object ({SubChunks.Count} subitems)";
+            return $"{ChunkName} {ObjectType} Object ({SubChunks.Count} subitems)";
         }
 
         /// <summary>
@@ -538,7 +570,7 @@ namespace LegendaryExplorerCore.Sound.ISACT
             // writer.Endian = FileEndianness;
             writer.WriteStringLatin1("RIFF");
             writer.Write(0); //Placeholder for length
-            writer.WriteStringLatin1("isbf"); 
+            writer.WriteStringLatin1("isbf");
             writer.WriteStringLatin1("LIST");
             var listsizepos = writer.BaseStream.Position;
             writer.Write(0); //list size placeholder
@@ -853,6 +885,8 @@ public class SampleInfoBankChunk : BankChunk
 /// </summary>
 public class SampleOffsetBankChunk : BankChunk
 {
+    public const string FixedChunkTitle = @"soff";
+
     public uint SampleOffset { get; set; }
 
     public SampleOffsetBankChunk(Stream inStream, BankChunk parent) : this()
@@ -1248,13 +1282,13 @@ public class SoundEventInfoBankChunk : BankChunk
     }
 }
 
-class IndexPage
+public class IndexPage
 {
     public uint EntryCount { get; set; }
-    public IndexEntry[] IndexEntry;
+    public IndexEntry[] IndexEntries;
 }
 
-class IndexEntry
+public class IndexEntry
 {
     public string Title { get; set; }
     /// <summary>
@@ -1272,7 +1306,7 @@ public class ContentIndexBankChunk : BankChunk
     /// The defined name of this chunk.
     /// </summary>
     public static readonly string FixedChunkTitle = "ctdx";
-    private List<IndexPage> IndexPages;
+    public List<IndexPage> IndexPages;
     public ContentIndexBankChunk(int dataSize, Stream inStream, BankChunk parent)
     {
         Parent = parent;
@@ -1285,7 +1319,7 @@ public class ContentIndexBankChunk : BankChunk
             IndexPages ??= new List<IndexPage>();
             IndexPage Page = new IndexPage();
             var pageEntryCount = inStream.ReadInt32();
-            Page.IndexEntry = new IndexEntry[pageEntryCount];
+            Page.IndexEntries = new IndexEntry[pageEntryCount];
             for (int i = 0; i < pageEntryCount; i++)
             {
                 var entry = new IndexEntry();
@@ -1294,7 +1328,7 @@ public class ContentIndexBankChunk : BankChunk
                 entry.padding = inStream.ReadToBuffer(endPos - inStream.Position); // For reserialization
                 entry.ObjectType = inStream.ReadStringASCII(4); // This is an ascii string.
                 entry.ObjectIndex = inStream.ReadUInt32();
-                Page.IndexEntry[i] = entry;
+                Page.IndexEntries[i] = entry;
             }
             IndexPages.Add(Page);
 
@@ -1315,8 +1349,8 @@ public class ContentIndexBankChunk : BankChunk
 
         foreach (var p in IndexPages)
         {
-            outStream.WriteInt32(p.IndexEntry.Length);
-            foreach (var entry in p.IndexEntry)
+            outStream.WriteInt32(p.IndexEntries.Length);
+            foreach (var entry in p.IndexEntries)
             {
                 var endPos = outStream.Position + 0x100;
                 outStream.WriteStringUnicodeNull(entry.Title);
@@ -1351,8 +1385,8 @@ public class ContentIndexBankChunk : BankChunk
         var str = $"{ChunkName}: Content Index ({IndexPages?.Count ?? 0} index pages)";
         foreach (var ip in IndexPages)
         {
-            str += $"\n\tIndex Page ({ip.IndexEntry.Length} indexes)";
-            foreach (var ie in ip.IndexEntry)
+            str += $"\n\tIndex Page ({ip.IndexEntries.Length} indexes)";
+            foreach (var ie in ip.IndexEntries)
             {
                 str += $"\n\t\tIndex Entry {ie.Title}, type {ie.ObjectType}, index {ie.ObjectIndex}";
             }
