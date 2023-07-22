@@ -148,7 +148,7 @@
                   SelectionChanged="Info_SuperClassComboBox_SelectionChanged"
                   IsTextSearchEnabled="True" TextSearch.TextPath="UIndex"
                   ToolTip="Superclass for this entry&#10;Type a UIndex value to automatically select it"
-                  ItemsSource="{Binding AllClassesList, Mode=OneTime}"/>
+                  ItemsSource="{Binding AllSuperClassesList, Mode=OneTime}"/>
 
         <ComboBox Name="InfoTab_PackageLink_ComboBox" VerticalAlignment="Center" Grid.Row="6" Grid.Column="1" 
                   ItemsPanel="{StaticResource VSP}" GotFocus="InfoTab_PackageLink_ComboBox_GotFocus" 

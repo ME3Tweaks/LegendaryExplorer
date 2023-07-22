@@ -51,6 +51,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         public ObservableCollectionExtended<object> AllEntriesList { get; } = new();
         public ObservableCollectionExtended<object> AllClassesList { get; } = new();
+        /// <summary>
+        /// Functions can list other functions as superclass so you cannot only display a list of classes
+        /// </summary>
+        public ObservableCollectionExtended<object> AllSuperClassesList { get; } = new();
         public int CurrentObjectNameIndex { get; private set; }
 
         private HexBox Header_Hexbox;
@@ -139,6 +143,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             if (pcc is null)
             {
                 AllEntriesList.ClearEx();
+                AllClassesList.ClearEx();
                 return;
             }
             var allEntriesNew = new List<object>();
@@ -163,6 +168,55 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
             AllEntriesList.ReplaceAll(allEntriesNew);
             AllClassesList.ReplaceAll(allClassesNew);
+        }
+
+        private void RefreshSuperclassOptions(ExportEntry export)
+        {
+            var allSuperclassesNew = new List<object>();
+            if (export != null && export.ClassName is "Class" or "State" or "Function") // Others cannot use SuperClass
+            {
+                var isClass = export.ClassName == "Class";
+                var isState = export.ClassName == "State";
+                var isFunc = export.ClassName == "Function";
+                
+                var pcc = export.FileRef;
+                for (int i = pcc.Imports.Count - 1; i >= 0; i--)
+                {
+                    if (pcc.Imports[i].IsClass && isClass)
+                    {
+                        allSuperclassesNew.Add(pcc.Imports[i]);
+                    }
+                    if (pcc.Imports[i].ClassName == "State" && isState)
+                    {
+                        allSuperclassesNew.Add(pcc.Imports[i]);
+                    }
+                    if (pcc.Imports[i].ClassName == "Function" && isFunc)
+                    {
+                        allSuperclassesNew.Add(pcc.Imports[i]);
+                    }
+                }
+
+                allSuperclassesNew.Add(ZeroUIndexClassEntry.Instance);
+                foreach (ExportEntry exp in pcc.Exports)
+                {
+                    if (exp.IsClass && isClass)
+                    {
+                        allSuperclassesNew.Add(exp);
+                    }
+
+                    if (exp.ClassName is "State" && isState)
+                    {
+                        allSuperclassesNew.Add(exp);
+                    }
+
+                    if (exp.ClassName is "Function" && isFunc)
+                    {
+                        allSuperclassesNew.Add(exp);
+                    }
+                }
+            }
+
+            AllSuperClassesList.ReplaceAll(allSuperclassesNew);
         }
 
         public override void PopOut()
@@ -301,6 +355,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
                 if (exportEntry.HasSuperClass)
                 {
+                    RefreshSuperclassOptions(exportEntry);
                     InfoTab_Superclass_ComboBox.SelectedItem = exportEntry.SuperClass;
                 }
                 else
