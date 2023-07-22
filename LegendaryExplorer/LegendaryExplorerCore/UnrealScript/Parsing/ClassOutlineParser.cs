@@ -188,7 +188,11 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                         throw ParseError("Config specifier is missing name of config file!", CurrentPosition);
                     }
 
-                    configName = Tokens.Prev().Value;
+                    configName = PrevToken.Value;
+                    if (configName.CaseInsensitiveEquals("None"))
+                    {
+                        TypeError($"Config name cannot be '{configName}'!", PrevToken);
+                    }
                     if (Consume(TokenType.RightParenth) is null)
                     {
                         throw ParseError("Expected ')' after config file name!", CurrentPosition);
