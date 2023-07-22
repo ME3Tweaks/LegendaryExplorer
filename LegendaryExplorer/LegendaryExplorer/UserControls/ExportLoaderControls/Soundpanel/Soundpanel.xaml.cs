@@ -562,6 +562,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
                 if (exportEntry.ClassName == "SoundNodeWave")
                 {
+                    CurrentLoadedExport = exportEntry;
+
                     ExportInformationList.Add($"#{exportEntry.UIndex} {exportEntry.ClassName} : {exportEntry.ObjectName.Instanced}");
                     var soundNodeWave = exportEntry.GetBinaryData<SoundNodeWave>();
                     if (soundNodeWave.RawData.Length > 0)
@@ -578,10 +580,86 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     }
                     else
                     {
-                        ExportInformationList.Add("This export contains no embedded audio");
-                    }
+                        var bsd = exportEntry.GetProperty<ObjectProperty>("BioStreamingData");
+                        if (bsd == null)
+                        {
+                            ExportInformationList.Add("This export contains no embedded audio");
+                            return;
+                        }
 
-                    CurrentLoadedExport = exportEntry;
+                        // Imports are very unreliable here and will be slow to load
+                        if (bsd.ResolveToEntry(exportEntry.FileRef) is ExportEntry streamingData)
+                        {
+                            // Remove the ISB: prefix
+                            var indexEntryName = exportEntry.ObjectName.Instanced.Substring(exportEntry.ObjectName.Instanced.IndexOf(":") + 1);
+                            ISACTBankPair ibp = ISACTHelper.GetPairedBanks(streamingData.GetBinaryData().Skip(4).ToArray());
+                            IndexEntry foundICBInfo = null;
+                            if (ibp.ICBBank.GetAllBankChunks().FirstOrDefault(x => x.ChunkName == ContentIndexBankChunk.FixedChunkTitle) is ContentIndexBankChunk contentIndex)
+                            {
+                                // Find info about sample in ICB so we can get entry in ISB
+                                foreach (var p in contentIndex.IndexPages)
+                                {
+                                    if (foundICBInfo != null)
+                                        break;
+                                    foreach (var indexEntry in p.IndexEntries)
+                                    {
+                                        if (indexEntry.Title == indexEntryName)
+                                        {
+                                            foundICBInfo = indexEntry;
+                                            break;
+                                        }
+                                    }
+                                }
+
+                                if (foundICBInfo == null)
+                                {
+                                    ExportInformationList.Add("Could not find information about this sound in the streaming data ICB");
+                                    return;
+                                }
+                            }
+
+
+                            ISACTListBankChunk referencedSampChunk = null;
+                            var sampChunks = ibp.ISBBank.GetAllBankChunks().OfType<ISACTListBankChunk>().Where(x => x.ObjectType == "samp").ToList();
+                            foreach (var sampChunk in sampChunks)
+                            {
+                                var indexChunk = sampChunk.SubChunks.Find(x => x is IntBankChunk intC && intC.ChunkName == "indx") as IntBankChunk;
+                                if (indexChunk == null)
+                                {
+                                    continue; // This shouldn't happen
+                                }
+
+                                if (indexChunk.Value == foundICBInfo.ObjectIndex)
+                                {
+                                    // found!
+                                    referencedSampChunk = sampChunk;
+                                    break;
+                                }
+                            }
+
+                            if (referencedSampChunk == null)
+                            {
+                                ExportInformationList.Add($"Could not find samp resource index {foundICBInfo.ObjectIndex} in streaming ISB referenced by ICB");
+                                return;
+                            }
+
+                            if (referencedSampChunk.SampleOffset != null)
+                            {
+                                ExportInformationList.Add(referencedSampChunk);
+                                ExportInfoListBox.SelectedItem = referencedSampChunk; // Select it so playback is easier to start
+
+                            }
+                            else
+                            {
+                                ExportInformationList.Add("The ISB data for this entry does not list an external ISB offset for some reason");
+                            }
+                        }
+                        else
+                        {
+                            ExportInformationList.Add("Audio data can only load in the toolset if the streaming data is an export");
+                        }
+
+                    }
                 }
             }
             catch (Exception e)
@@ -754,7 +832,17 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 {
                     if (ExportInfoListBox.SelectedItem is ISACTListBankChunk bankEntry)
                     {
-                        return AudioStreamHelper.GetWaveStreamFromISBEntry(bankEntry);
+                        string isbName = null;
+                        try
+                        {
+                            // This is to prevent error if malformed names
+                            isbName = localCurrentExport.ObjectName.Instanced.Substring(0, localCurrentExport.ObjectName.Instanced.IndexOf(":"));
+                        }
+                        catch
+                        {
+
+                        }
+                        return AudioStreamHelper.GetWaveStreamFromISBEntry(bankEntry, isbName: isbName, game: localCurrentExport.Game);
                     }
                 }
                 else if (forcedWemFile != null || (localCurrentExport?.ClassName == "WwiseBank"))
@@ -965,6 +1053,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     case EmbeddedWEMFile _:
                         return true;
                 }
+
+                return true;
             }
 
             return false;
@@ -1178,7 +1268,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             MessageBox.Show("An error occurred converting the audio to .wav.", "Error converting", MessageBoxButton.OK, MessageBoxImage.Error);
                             return;
                         }
-                        
+
                         waveStream.Seek(0, SeekOrigin.Begin);
                         using (FileStream fs = new FileStream(d.FileName, FileMode.OpenOrCreate))
                         {

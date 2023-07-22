@@ -2,10 +2,13 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using LegendaryExplorer.Misc;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Audio;
+using LegendaryExplorerCore.GameFilesystem;
+using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Sound.ISACT;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 
@@ -248,16 +251,38 @@ namespace LegendaryExplorer.UnrealExtensions
         /// Gets a playable stream of data from the ISB Entry. The result may be a <see cref="OggWaveStream"/>, which is the Ogg file - this may need converted for use!
         /// </summary>
         /// <param name="bankEntry">ISBankEntry to get stream from</param>
+        /// <param name="game">What game this entry is for - is used for external ISB lookup</param>
         /// <returns></returns>
-        public static MemoryStream GetWaveStreamFromISBEntry(ISACTListBankChunk bankEntry, bool forceReturnWaveData = false)
+        public static MemoryStream GetWaveStreamFromISBEntry(ISACTListBankChunk bankEntry, bool forceReturnWaveData = false, string isbName = null, MEGame game = MEGame.Unknown)
         {
             //string outPath = Path.Combine(path, currentFileName);
             MemoryStream waveStream;
+            byte[] sampleData = bankEntry.SampleData;
+            if (sampleData == null && bankEntry.SampleOffset != null && isbName != null && game != MEGame.Unknown && MEDirectories.GetDefaultGamePath(game) != null)
+            {
+                // We have to fetch from external ISB
+                var fullIsbName = isbName + ".isb";
+                var isbs = Directory.EnumerateFiles(MEDirectories.GetDefaultGamePath(game), "*.isb", SearchOption.AllDirectories);
+                var fullIsbPath = isbs.FirstOrDefault(x => Path.GetFileName(x).CaseInsensitiveEquals(fullIsbName));
+                if (fullIsbPath != null)
+                {
+                    using var extIsb = File.OpenRead(fullIsbPath);
+                    extIsb.Seek((long)bankEntry.SampleOffset, SeekOrigin.Begin);
+                    sampleData = extIsb.ReadToBuffer(bankEntry.SampleInfo.ByteLength);
+                }
+            }
+
+            if (sampleData == null)
+            {
+                Debug.WriteLine("Sample data could not be loaded");
+                return null;
+            }
+
             switch (bankEntry.CompressionInfo.CurrentFormat)
             {
                 case CompressionInfoBankChunk.ISACTCompressionFormat.PCM:
                     {
-                        var ms = new MemoryStream(bankEntry.SampleData);
+                        var ms = new MemoryStream(sampleData);
                         var raw = new RawSourceWaveStream(ms,
                             new WaveFormat((int)bankEntry.SampleInfo.SamplesPerSecond, bankEntry.SampleInfo.BitsPerSample,
                                 bankEntry.ChannelCount));
@@ -275,23 +300,17 @@ namespace LegendaryExplorer.UnrealExtensions
                 case CompressionInfoBankChunk.ISACTCompressionFormat.OGGVORBIS when forceReturnWaveData:
                     //Xbox IMA, XMA, Sony MSF (PS3)
                     //Use VGM Stream
-                    if (bankEntry.SampleData != null)
-                    {
-                        byte[] fakeData = bankEntry.GenerateFakeSampleISB();
-                        var tempPath = GetATempSoundPath() + ".isb";
-                        File.WriteAllBytes(tempPath, fakeData);
-                        return ConvertRIFFToWaveVGMStream(tempPath);
-                    }
-
-                    // We have no sample data!
-                    return null;
+                    byte[] fakeData = bankEntry.GenerateFakeSampleISB();
+                    var tempPath = GetATempSoundPath() + ".isb";
+                    File.WriteAllBytes(tempPath, fakeData);
+                    return ConvertRIFFToWaveVGMStream(tempPath);
 
                 // This code is played directly
-                
+
                 case CompressionInfoBankChunk.ISACTCompressionFormat.OGGVORBIS:
                     {
                         // Return custom stream - player will see custom class
-                        var ms = new OggWaveStream(bankEntry.SampleData);
+                        var ms = new OggWaveStream(sampleData);
                         return ms;
                     }
                 default:
