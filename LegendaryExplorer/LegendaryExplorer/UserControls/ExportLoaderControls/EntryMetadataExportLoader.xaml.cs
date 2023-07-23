@@ -215,6 +215,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     }
                 }
             }
+            else
+            {
+                allSuperclassesNew.Add(ZeroUIndexClassEntry.Instance);
+            }
 
             AllSuperClassesList.ReplaceAll(allSuperclassesNew);
         }
