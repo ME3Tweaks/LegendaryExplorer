@@ -1845,16 +1845,17 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         }
                         break;
                     case ObjectProperty op:
-#if DEBUG
                         UpdateObjectComboBoxOptions(op, newSelectedItem);
                         Value_ObjectComboBox.SelectedItem = op.Value == 0 ? ZeroUIndexClassEntry.Instance : op.ResolveToEntry(CurrentLoadedExport.FileRef);
                         SupportedEditorSetElements.Add(Value_ObjectComboBox);
-#else
+
+                        // This is old implementation: Switched over in nightly 07/23/2023
+                        /*
                         Value_TextBox.Text = op.Value.ToString();
                         UpdateParsedEditorValue(newSelectedItem);
                         SupportedEditorSetElements.Add(Value_TextBox);
                         SupportedEditorSetElements.Add(ParsedValue_TextBlock);
-#endif
+                        */
                         break;
                     case DelegateProperty dp:
                         TextSearch.SetTextPath(Value_ComboBox, "Name");
@@ -1923,7 +1924,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 }
             }
 
-            
+
             Set_Button.Visibility = SupportedEditorSetElements.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
 
             //Hide the non-used controls
@@ -2457,7 +2458,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         break;
                     case ObjectProperty op:
                         {
-#if DEBUG
                             if (Value_ObjectComboBox.SelectedItem is IEntry ie)
                             {
                                 op.Value = ie.UIndex;
@@ -2468,13 +2468,15 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                 op.Value = 0;
                                 updated = true;
                             }
-#else
-                            if (int.TryParse(Value_TextBox.Text, out int o) && o != op.Value && (Pcc.IsEntry(o) || o == 0))
-                            {
-                                op.Value = o;
-                                updated = true;
-                            }
-#endif
+                            // This is old implementation; switched over 07/23/2023
+                            /*
+                                                        if (int.TryParse(Value_TextBox.Text, out int o) && o != op.Value && (Pcc.IsEntry(o) || o == 0))
+                                                        {
+                                                            op.Value = o;
+                                                            updated = true;
+                                                        }
+                             */
+
                         }
                         break;
                     case EnumProperty ep:
