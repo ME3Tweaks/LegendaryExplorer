@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.Misc;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Kismet;
@@ -54,6 +55,47 @@ namespace LegendaryExplorer.Tools.Sequence_Editor.Experiments
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Installs a sequence from a package to another package
+        /// </summary>
+        /// <param name="seqEd"></param>
+        /// <returns></returns>
+        public static ExportEntry InstallSequencePrefab(SequenceEditorWPF seqEd)
+        {
+            OpenFileDialog ofd = AppDirectories.GetOpenPackageDialog();
+            bool reload = false;
+            var result = ofd.ShowDialog();
+            if (result.HasValue && result.Value)
+            {
+                // Open package and have user select sequence to import
+                using var p = MEPackageHandler.OpenMEPackage(ofd.FileName, forceLoadFromDisk: true); // Force load from disk as we will be making changes to remove sequence parent refs
+                var sequenceToImport = EntrySelector.GetEntry<ExportEntry>(seqEd, p, "Select a sequence to import and add to this sequence.", x => x.ClassName == "Sequence");
+                if (sequenceToImport == null)
+                {
+                    return null;
+                }
+
+                // Prevents bringing additional stuff over
+                sequenceToImport.idxLink = 0;
+                sequenceToImport.RemoveProperty("ParentSequence");
+
+
+                var parentSequence = seqEd.SelectedSequence ?? seqEd.Pcc.FindExport("TheWorld.PersistentLevel.Main_Sequence");
+                EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, sequenceToImport, seqEd.Pcc, parentSequence, true, new RelinkerOptionsPackage(), out var newUiSeq);
+                var expCount = seqEd.Pcc.Exports.Count(x => x.InstancedFullPath == newUiSeq.InstancedFullPath);
+                if (expCount > 1)
+                {
+                    // update the index
+                    newUiSeq.ObjectName = seqEd.Pcc.GetNextIndexedName(sequenceToImport.ObjectName.Name);
+                }
+
+                KismetHelper.AddObjectToSequence(newUiSeq as ExportEntry, parentSequence);
+                return newUiSeq as ExportEntry;
+            }
+
+            return null;
         }
 
         /// <summary>

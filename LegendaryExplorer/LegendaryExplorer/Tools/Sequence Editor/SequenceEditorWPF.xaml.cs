@@ -2791,6 +2791,11 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             return null;
         }
 
+        private void ImportSequenceFromAnotherPackage_Clicked(object sender, RoutedEventArgs e)
+        {
+            SequenceEditorExperimentsM.InstallSequencePrefab(GetSEWindow());
+        }
+
         public string Toolname => "SequenceEditor";
     }
     static class SequenceEditorExtensions

@@ -176,7 +176,9 @@
                               ToolTip="Reads classes in the current package and adds any custom sequence objects to the toolbox" />
                     <MenuItem Header="Commit object positions to objects" Click="CommitObjectPositions_Clicked"
                               ToolTip="Writes the node positions of all nodes to the properties for ObjPosX and ObjPosY" />
-					<MenuItem Header="Exkywor's buttons for lazy people">
+                    <MenuItem Header="Import sequence from another package" Click="ImportSequenceFromAnotherPackage_Clicked"
+                              ToolTip="Opens a dialog that lets you choose a package file with premade sequences that you can add to the current sequence" />
+                    <MenuItem Header="Exkywor's buttons for lazy people">
                         <MenuItem Header="Update Selected Interps' Variable Links" Click="UpdateSelVarLinks_Clicked" ToolTip="Updated the variable links of the selected interps in the sequence."/>
                         <MenuItem Header="Update Sequence Interps' Variable Links" Click="UpdateSequenceVarLinks_Clicked" ToolTip="Updated the variable links of all interps in the selected sequence."/>
                         <MenuItem Header="Add Dialogue Wheel Camera" Click="AddDialogueWheelCam_Clicked" ToolTip="Adds an Interp and an InterpData template to control a dialogue wheel camera"/>
