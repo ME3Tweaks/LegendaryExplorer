@@ -386,19 +386,22 @@
                                 <TabItem.Header>
                                     <TextBlock Text="Favorites" ToolTip="Shift-click on a sequence class to add or remove from favorites."/>
                                 </TabItem.Header>
-                                <controls:ToolBox x:Name="favoritesToolBox" />
+                                <controls:ClassToolBox x:Name="favoritesToolBox" />
                             </TabItem>
                             <TabItem Header="Events">
-                                <controls:ToolBox x:Name="eventsToolBox" />
+                                <controls:ClassToolBox x:Name="eventsToolBox" />
                             </TabItem>
                             <TabItem Header="Actions">
-                                <controls:ToolBox x:Name="actionsToolBox" />
+                                <controls:ClassToolBox x:Name="actionsToolBox" />
                             </TabItem>
                             <TabItem Header="Conditions">
-                                <controls:ToolBox x:Name="conditionsToolBox" />
+                                <controls:ClassToolBox x:Name="conditionsToolBox" />
                             </TabItem>
                             <TabItem Header="Variables">
-                                <controls:ToolBox x:Name="variablesToolBox" />
+                                <controls:ClassToolBox x:Name="variablesToolBox" />
+                            </TabItem>
+                            <TabItem Header="Custom sequences" Visibility="{x:Static global:App.IsDebugVisibility}">
+                                <controls:GenericToolBox x:Name="customSequencesToolBox" />
                             </TabItem>
                         </TabControl>
                     </Expander>

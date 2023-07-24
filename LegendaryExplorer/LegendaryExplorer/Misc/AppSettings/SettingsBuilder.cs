@@ -311,7 +311,7 @@ namespace LegendaryExplorer.Misc.AppSettings
             set => SetProperty(ref _customstartupfiles, value);
         }
         private static List<string> _customclassdirectories = new List<string>(); 
-        public static List<string> CustomClassDirectories {
+        public static List<string> CustomAssetDirectories {
             get => _customclassdirectories; 
             set => SetProperty(ref _customclassdirectories, value);
         }
@@ -438,7 +438,7 @@ namespace LegendaryExplorer.Misc.AppSettings
             Global_TLK_Language = TryGetSetting(settingsJson, "global_tlk_language", "INT");
             Global_TLK_IsMale = TryGetSetting(settingsJson, "global_tlk_ismale", true);
             CustomStartupFiles = TryGetSetting(settingsJson, "customstartupfiles", new List<string>());
-            CustomClassDirectories = TryGetSetting(settingsJson, "customclassdirectories", new List<string>());
+            CustomAssetDirectories = TryGetSetting(settingsJson, "customclassdirectories", new List<string>());
 
             // Settings Bridge Init
             LegendaryExplorerCoreLibSettings.Instance.ParseUnknownArrayTypesAsObject = Global_PropertyParsing_ParseUnknownArrayTypeAsObject;
@@ -518,7 +518,7 @@ namespace LegendaryExplorer.Misc.AppSettings
                     settingsJson["global_tlk_language"] = Global_TLK_Language.ToString();
                     settingsJson["global_tlk_ismale"] = Global_TLK_IsMale.ToString();
                     settingsJson["customstartupfiles"] = CustomStartupFiles;
-                    settingsJson["customclassdirectories"] = CustomClassDirectories;
+                    settingsJson["customclassdirectories"] = CustomAssetDirectories;
 
             var settingsText = JsonConvert.SerializeObject(settingsJson, Formatting.Indented);
             try

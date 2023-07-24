@@ -226,8 +226,11 @@
 		<Compile Update="SharedUI\Controls\SearchBox.xaml.cs">
 			<DependentUpon>SearchBox.xaml</DependentUpon>
 		</Compile>
-		<Compile Update="SharedUI\Controls\ToolBox.xaml.cs">
-			<DependentUpon>ToolBox.xaml</DependentUpon>
+		<Compile Update="SharedUI\Controls\ToolBox - Copy - Copy.xaml.cs">
+		  <DependentUpon>GenericToolBox.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="SharedUI\Controls\ClassToolBox.xaml.cs">
+			<DependentUpon>ClassToolBox.xaml</DependentUpon>
 		</Compile>
 		<Compile Update="Tools\AssetDatabase\AssetDatabaseWindow.xaml.cs">
 			<DependentUpon>AssetDatabaseWindow.xaml</DependentUpon>
@@ -344,7 +347,7 @@
 		<Page Update="SharedUI\Controls\SearchBox.xaml">
 			<SubType>Designer</SubType>
 		</Page>
-		<Page Update="SharedUI\Controls\ToolBox.xaml">
+		<Page Update="SharedUI\Controls\ClassToolBox.xaml">
 			<SubType>Designer</SubType>
 		</Page>
 		<Page Update="ToolsetDev\FileHexViewer.xaml">

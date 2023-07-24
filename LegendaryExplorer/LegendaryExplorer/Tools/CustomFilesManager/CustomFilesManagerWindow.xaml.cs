@@ -55,6 +55,40 @@ namespace LegendaryExplorer.Tools.CustomFilesManager
         }
     }
 
+    /// <summary>
+    /// Describes an object in a package file
+    /// </summary>
+    public class CustomAsset
+    {
+        public CustomAsset() {}
+
+        public CustomAsset(ExportEntry exp)
+        {
+            PackageFilePath = exp.FileRef.FilePath;
+            InstancedFullPath = exp.InstancedFullPath;
+        }
+
+        public string PackageFilePath { get; set; }
+        public string InstancedFullPath { get; set; }
+
+        public override string ToString()
+        {
+            // Return object name
+            return InstancedFullPath.Substring(InstancedFullPath.LastIndexOf(".") + 1);
+        }
+    }
+
+
+    /// <summary>
+    /// Holds references to custom asset types for use in various tools - will be inventoried on app boot
+    /// </summary>
+    public static class CustomAssets
+    {
+        public static Dictionary<MEGame, ObservableCollectionExtended<CustomAsset>> CustomSequences { get; } = new();
+
+        // Add more here
+    }
+
 
     /// <summary>
     /// Interaction logic for SafeToImportFromEditorWindow.xaml
@@ -93,7 +127,7 @@ namespace LegendaryExplorer.Tools.CustomFilesManager
         {
             LoadCommands();
 
-            CustomClassDirectories.ReplaceAll(Settings.CustomClassDirectories);
+            CustomClassDirectories.ReplaceAll(Settings.CustomAssetDirectories);
 
             foreach (var sf in Settings.CustomStartupFiles)
             {
@@ -114,8 +148,8 @@ namespace LegendaryExplorer.Tools.CustomFilesManager
             AddStartupFileCommand = new GenericCommand(AddStartupFile, () => true);
 
             // Column 1
-            RemoveCustomDirectoryCommand = new GenericCommand(RemoveCustomClassDirectory, () => true);
-            AddCustomDirectoryCommand = new GenericCommand(AddCustomClassDirectory, () => true);
+            RemoveCustomDirectoryCommand = new GenericCommand(RemoveCustomAssetDirectory, () => true);
+            AddCustomDirectoryCommand = new GenericCommand(AddCustomAssetDirectory, () => true);
         }
 
         #region STARTUP FILES
@@ -151,7 +185,7 @@ namespace LegendaryExplorer.Tools.CustomFilesManager
         #endregion
 
         #region CUSTOM CLASSES
-        private void AddCustomClassDirectory()
+        private void AddCustomAssetDirectory()
         {
             CommonOpenFileDialog ofd = new CommonOpenFileDialog();
             ofd.IsFolderPicker = true;
@@ -164,20 +198,20 @@ namespace LegendaryExplorer.Tools.CustomFilesManager
                     CustomClassDirectories.Add(ofd.FileName);
 
                     // Persist the setting for next boot
-                    Settings.CustomClassDirectories = CustomClassDirectories.ToList();
+                    Settings.CustomAssetDirectories = CustomClassDirectories.ToList();
                     Settings.Save();
                 }
             }
         }
 
 
-        private void RemoveCustomClassDirectory()
+        private void RemoveCustomAssetDirectory()
         {
             var selected = SelectedCustomClassDirectory;
             CustomClassDirectories.Remove(selected);
 
             // Persist the setting for next boot
-            Settings.CustomClassDirectories = CustomClassDirectories.ToList();
+            Settings.CustomAssetDirectories = CustomClassDirectories.ToList();
             Settings.Save();
         }
         #endregion
@@ -195,9 +229,19 @@ namespace LegendaryExplorer.Tools.CustomFilesManager
         /// <summary>
         /// Inven
         /// </summary>
-        internal static void InventoryCustomClassDirectories()
+        internal static void InventoryCustomAssetDirectories()
         {
-            foreach (var dir in Settings.CustomClassDirectories)
+            // Initialize
+            CustomAssets.CustomSequences[MEGame.ME1] = new();
+            CustomAssets.CustomSequences[MEGame.ME2] = new();
+            CustomAssets.CustomSequences[MEGame.ME3] = new();
+            CustomAssets.CustomSequences[MEGame.LE1] = new();
+            CustomAssets.CustomSequences[MEGame.LE2] = new();
+            CustomAssets.CustomSequences[MEGame.LE3] = new();
+
+
+            // Inventory
+            foreach (var dir in Settings.CustomAssetDirectories)
             {
                 try
                 {
@@ -212,6 +256,7 @@ namespace LegendaryExplorer.Tools.CustomFilesManager
                                 if (p.Platform != MEPackage.GamePlatform.PC || (!p.Game.IsOTGame() && !p.Game.IsLEGame()))
                                     continue; // Do not inventory
 
+                                // Inventory classes
                                 foreach (var e in p.Exports.Where(x => x.IsClass))
                                 {
                                     if (GlobalUnrealObjectInfo.GetClasses(p.Game).ContainsKey(e.ObjectName.Name))
@@ -226,6 +271,17 @@ namespace LegendaryExplorer.Tools.CustomFilesManager
                                         var defaults = p.GetUExport(ObjectBinary.From<UClass>(e).Defaults);
                                         GlobalUnrealObjectInfo.GenerateSequenceObjectInfoForClassDefaults(defaults);
                                     }
+                                }
+
+                                // Inventory top level sequences
+                                var custSequences = CustomAssets.CustomSequences[p.Game];
+                                foreach (var e in p.Exports.Where(x => x.idxLink == 0 && x.ClassName == "Sequence"))
+                                {
+                                    if (custSequences.Any(x => x.InstancedFullPath == e.InstancedFullPath))
+                                        continue; // This custom sequence is already inventoried
+
+                                    Debug.WriteLine($@"Adding custom sequence {e.InstancedFullPath}");
+                                    CustomAssets.CustomSequences[p.Game].Add(new CustomAsset(e));
                                 }
                             }
                             catch (Exception ie)

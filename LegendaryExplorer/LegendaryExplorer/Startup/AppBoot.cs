@@ -111,7 +111,7 @@ namespace LegendaryExplorer.Startup
                 }
 
                 // 08/13/2022 - Custom Class Inventory
-                CustomFilesManagerWindow.InventoryCustomClassDirectories();
+                CustomFilesManagerWindow.InventoryCustomAssetDirectories();
 
                 // 08/13/2022 - Custom Startup Files
                 CustomFilesManagerWindow.InstallCustomStartupFiles();

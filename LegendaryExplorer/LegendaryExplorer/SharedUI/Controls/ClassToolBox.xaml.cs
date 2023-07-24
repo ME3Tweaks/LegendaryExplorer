@@ -10,9 +10,9 @@ using LegendaryExplorerCore.Misc;
 namespace LegendaryExplorer.SharedUI.Controls
 {
     /// <summary>
-    /// Interaction logic for ToolBox.xaml
+    /// UI toolbox for selecting a uclass
     /// </summary>
-    public partial class ToolBox : NotifyPropertyChangedControlBase
+    public partial class ClassToolBox : NotifyPropertyChangedControlBase
     {
 
         public ObservableCollectionExtended<ClassInfo> Classes { get; set; } = new();
@@ -28,7 +28,7 @@ namespace LegendaryExplorer.SharedUI.Controls
         public Action<ClassInfo> DoubleClickCallback;
         public Action<ClassInfo> ShiftClickCallback;
 
-        public ToolBox()
+        public ClassToolBox()
         {
             DataContext = this;
             InitializeComponent();

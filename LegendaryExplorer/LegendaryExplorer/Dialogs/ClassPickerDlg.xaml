@@ -13,7 +13,7 @@
             <RowDefinition/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <controls:ToolBox x:Name="ClassToolBox" Grid.Row="0"/>
+        <controls:ClassToolBox x:Name="ClassToolBox" Grid.Row="0"/>
         <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,10">
             <Button Content="Add"  Width="40" Command="{Binding OKCommand}"/>
             <Button Content="Cancel" Padding="5,3" Margin="5,0" Click="CancelButton_Click"/>

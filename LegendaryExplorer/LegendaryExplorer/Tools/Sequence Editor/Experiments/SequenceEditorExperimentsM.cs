@@ -77,25 +77,52 @@ namespace LegendaryExplorer.Tools.Sequence_Editor.Experiments
                     return null;
                 }
 
-                // Prevents bringing additional stuff over
-                sequenceToImport.idxLink = 0;
-                sequenceToImport.RemoveProperty("ParentSequence");
-
-
                 var parentSequence = seqEd.SelectedSequence ?? seqEd.Pcc.FindExport("TheWorld.PersistentLevel.Main_Sequence");
-                EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, sequenceToImport, seqEd.Pcc, parentSequence, true, new RelinkerOptionsPackage(), out var newUiSeq);
-                var expCount = seqEd.Pcc.Exports.Count(x => x.InstancedFullPath == newUiSeq.InstancedFullPath);
-                if (expCount > 1)
-                {
-                    // update the index
-                    newUiSeq.ObjectName = seqEd.Pcc.GetNextIndexedName(sequenceToImport.ObjectName.Name);
-                }
-
-                KismetHelper.AddObjectToSequence(newUiSeq as ExportEntry, parentSequence);
-                return newUiSeq as ExportEntry;
+                return InstallSequencePrefab(sequenceToImport, parentSequence);
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// Copies a sequence from one package to another
+        /// </summary>
+        /// <param name="sequenceToImport"></param>
+        /// <param name="targetParentSequence"></param>
+        /// <returns></returns>
+        public static ExportEntry InstallSequencePrefab(ExportEntry sequenceToImport, ExportEntry targetParentSequence)
+        {
+            // Prevents bringing additional stuff over
+
+            var sourceIdxLink = sequenceToImport.idxLink;
+            var parentSeqProp = sequenceToImport.GetProperty<ObjectProperty>("ParentSequence");
+
+            sequenceToImport.idxLink = 0;
+            sequenceToImport.RemoveProperty("ParentSequence");
+
+
+            EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, sequenceToImport,
+                targetParentSequence.FileRef, targetParentSequence, true, new RelinkerOptionsPackage(),
+                out var newUiSeq);
+            var expCount =
+                targetParentSequence.FileRef.Exports.Count(x => x.InstancedFullPath == newUiSeq.InstancedFullPath);
+            if (expCount > 1)
+            {
+                // update the index
+                newUiSeq.ObjectName = targetParentSequence.FileRef.GetNextIndexedName(sequenceToImport.ObjectName.Name);
+            }
+
+            KismetHelper.AddObjectToSequence(newUiSeq as ExportEntry, targetParentSequence);
+
+            // Restore the data so we don't technically 'modify' the source
+            // This will mark that export as modified technically.
+            sequenceToImport.idxLink = sourceIdxLink;
+            if (parentSeqProp != null)
+            {
+                sequenceToImport.WriteProperty(parentSeqProp);
+            }
+
+            return newUiSeq as ExportEntry;
         }
 
         /// <summary>

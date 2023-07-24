@@ -41,6 +41,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
+using LegendaryExplorer.Tools.CustomFilesManager;
 using Color = System.Drawing.Color;
 using Image = System.Drawing.Image;
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
@@ -117,17 +118,35 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             actionsToolBox.DoubleClickCallback = CreateNewObject;
             conditionsToolBox.DoubleClickCallback = CreateNewObject;
             variablesToolBox.DoubleClickCallback = CreateNewObject;
+            customSequencesToolBox.DoubleClickCallback = CreateCustomSequence;
 
             favoritesToolBox.ShiftClickCallback = RemoveFavorite;
             eventsToolBox.ShiftClickCallback = SetFavorite;
             actionsToolBox.ShiftClickCallback = SetFavorite;
             conditionsToolBox.ShiftClickCallback = SetFavorite;
             variablesToolBox.ShiftClickCallback = SetFavorite;
-
+            // Custom sequences are not ClassInfo so they cannot be set as a favorite
 
             AutoSaveView_MenuItem.IsChecked = Settings.SequenceEditor_AutoSaveViewV2;
             ShowOutputNumbers_MenuItem.IsChecked = Settings.SequenceEditor_ShowOutputNumbers;
             SObj.OutputNumbers = ShowOutputNumbers_MenuItem.IsChecked;
+        }
+
+        private void CreateCustomSequence(object obj)
+        {
+            var customInfo = customSequencesToolBox.SelectedItem as CustomAsset;
+            if (customInfo == null || !File.Exists(customInfo.PackageFilePath) || SelectedSequence == null)
+                return;
+
+            using var p = MEPackageHandler.OpenMEPackage(customInfo.PackageFilePath);
+            var sourceExp = p.FindExport(customInfo.InstancedFullPath);
+            if (sourceExp == null)
+            {
+                MessageBox.Show($"Cannot find export '{customInfo.InstancedFullPath}' in package file '{customInfo.PackageFilePath}'.");
+                return;
+            }
+
+            SequenceEditorExperimentsM.InstallSequencePrefab(sourceExp, SelectedSequence);
         }
 
         public SequenceEditorWPF(ExportEntry export) : this()
@@ -533,7 +552,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 Title = $"Sequence Editor - {filePath}";
                 StatusText = null; //no status
 
-                RefreshToolboxItems();
+                RefreshToolboxItems(true);
             }
             catch (Exception ex) when (!App.IsDebug)
             {
@@ -547,7 +566,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
         /// <summary>
         /// Reloads the toolbox data
         /// </summary>
-        public void RefreshToolboxItems()
+        public void RefreshToolboxItems(bool includeCustomSequences = false)
         {
             if (Pcc != null)
             {
@@ -561,6 +580,12 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 conditionsToolBox.Classes.AddRange(SequenceObjectCreator.GetSequenceConditions(Pcc.Game).OrderBy(info => info.ClassName));
                 variablesToolBox.Classes.ClearEx();
                 variablesToolBox.Classes.AddRange(SequenceObjectCreator.GetSequenceVariables(Pcc.Game).OrderBy(info => info.ClassName));
+
+                if (includeCustomSequences)
+                {
+                    customSequencesToolBox.Items.ClearEx();
+                    customSequencesToolBox.Items.AddRange(CustomAssets.CustomSequences[Pcc.Game]);
+                }
             }
         }
 
