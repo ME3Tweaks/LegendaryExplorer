@@ -343,6 +343,16 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
         private void ScrollTo(int start, int length)
         {
             textEditor.Focus();
+            int textLength = textEditor.Document.TextLength;
+            if (start >= textLength)
+            {
+                start = textLength;
+                length = 0;
+            }
+            else if (start + length > textLength)
+            {
+                length = textLength - start;
+            }
             textEditor.Select(start, length);
             var location = textEditor.Document.GetLocation(start);
             textEditor.ScrollTo(location.Line, location.Column);
