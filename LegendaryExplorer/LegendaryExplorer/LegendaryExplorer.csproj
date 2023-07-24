@@ -12,7 +12,7 @@
 		<RunPostBuildEvent>Always</RunPostBuildEvent>
 		<PreserveCompilationContext>false</PreserveCompilationContext>
 		<ValidateExecutableReferencesMatchSelfContained>false</ValidateExecutableReferencesMatchSelfContained>
-		<Version>6.3.0.0</Version>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='WinDebug'">
@@ -42,10 +42,8 @@
 		<DefineConstants>WINDOWS;AZURE</DefineConstants>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WinDebug|x64'">
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WinRelease|x64'">
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
 
 	<ItemGroup>
