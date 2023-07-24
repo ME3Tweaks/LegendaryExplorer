@@ -2006,7 +2006,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 {
                     if (exp.IsClass)
                     {
-                        if (exp.InheritsFrom(onlyOfType))
+                        if (onlyOfType == @"Class" || exp.InheritsFrom(onlyOfType))
                         {
                             allEntriesNew.Add(exp);
                             continue;
