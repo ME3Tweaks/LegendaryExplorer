@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -112,7 +113,15 @@ namespace LegendaryExplorer.Tools.Sequence_Editor.Experiments
                 newUiSeq.ObjectName = targetParentSequence.FileRef.GetNextIndexedName(sequenceToImport.ObjectName.Name);
             }
 
-            KismetHelper.AddObjectToSequence(newUiSeq as ExportEntry, targetParentSequence);
+            var installedSequence = newUiSeq as ExportEntry;
+
+            // These properties are not used by game and are only for developer reference;
+            // They are useful to track where a sequence came from and when it was installed, in the event that you
+            // change the backing prefab and need to know when this was installed
+            installedSequence.WriteProperty(new StrProperty(sequenceToImport.FileRef.FileNameNoExtension ?? "(null)", "ModSourcePackageName"));
+            installedSequence.WriteProperty(new StrProperty(DateTime.Now.ToString(CultureInfo.InvariantCulture), "PrefabInstallTime"));
+
+            KismetHelper.AddObjectToSequence(installedSequence, targetParentSequence);
 
             // Restore the data so we don't technically 'modify' the source
             // This will mark that export as modified technically.
