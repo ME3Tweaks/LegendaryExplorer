@@ -357,9 +357,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     InfoTab_Class_ComboBox.SelectedItem = exportEntry.Class; //make positive
                 }
 
+                RefreshSuperclassOptions(exportEntry);
                 if (exportEntry.HasSuperClass)
                 {
-                    RefreshSuperclassOptions(exportEntry);
                     InfoTab_Superclass_ComboBox.SelectedItem = exportEntry.SuperClass;
                 }
                 else
