@@ -79,7 +79,8 @@
             <ComboBox Name="Value_ObjectComboBox"
                       MinWidth="80" VerticalAlignment="Center" ToolTip="Value for this property" 
                       Style="{StaticResource {x:Type ComboBox}}" 
-                      IsTextSearchEnabled="True" TextSearch.TextPath="UIndex" >
+                      IsTextSearchEnabled="True" TextSearch.TextPath="UIndex" 
+                      KeyDown="ValueTextBox_KeyDown">
                 <ComboBox.ItemsPanel>
                     <ItemsPanelTemplate>
                         <VirtualizingStackPanel />
