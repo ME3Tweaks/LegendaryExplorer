@@ -2,6 +2,7 @@
 using LegendaryExplorerCore.UnrealScript.Analysis.Symbols;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
 using LegendaryExplorerCore.UnrealScript.Utilities;
+using Microsoft.Toolkit.HighPerformance;
 
 namespace LegendaryExplorerCore.UnrealScript.Language.Util
 {
@@ -88,6 +89,26 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Util
                 || a is null && b is DelegateType || a is DelegateType && b is null 
                 || a is Enumeration && b == SymbolTable.ByteType || a == SymbolTable.ByteType && b is Enumeration
                 || (a?.PropertyType is EPropertyType.Vector or EPropertyType.Rotator) && a.PropertyType == b.PropertyType;
+        }
+
+        public static Function LookupFunction(this Class @class, string funcName, bool lookInParents = true)
+        {
+            while (true)
+            {
+                foreach (Function func in @class.Functions.AsSpan())
+                {
+                    if (string.Equals(func.Name, funcName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return func;
+                    }
+                }
+                if (lookInParents && @class.Parent is Class parentClass)
+                {
+                    @class = parentClass;
+                    continue;
+                }
+                return null;
+            }
         }
     }
 }

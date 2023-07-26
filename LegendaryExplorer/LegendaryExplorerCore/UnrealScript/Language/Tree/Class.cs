@@ -166,21 +166,5 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
             }
             return null;
         }
-
-        public Function LookupFunction(string funcName, bool lookInParents = true)
-        {
-            foreach (Function func in Functions)
-            {
-                if (func.Name.CaseInsensitiveEquals(funcName))
-                {
-                    return func;
-                }
-            }
-            if (lookInParents)
-            {
-                return (Parent as Class)?.LookupFunction(funcName);
-            }
-            return null;
-        }
     }
 }

@@ -198,9 +198,9 @@
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
                 <StackPanel Orientation="Vertical">
-                    <Button Content="Decompile" Click="Decompile_OnClick" />
-                    <Button Content="Compile to AST" Click="CompileAST_OnClick" Visibility="{x:Static global:App.IsDebugVisibility}" IsEnabled="{Binding FullyInitialized}"/>
-                    <Button Content="Compile" Click="Compile_OnClick" IsEnabled="{Binding FullyInitialized}"/>
+                    <Button Content="Decompile" Click="Decompile_OnClick" Visibility="Collapsed"/>
+                    <Button Content="Compile to AST" Click="CompileAST_OnClick" Visibility="Collapsed" IsEnabled="{Binding FullyInitialized}"/>
+                    <Button Content="Compile" Click="Compile_OnClick" IsEnabled="{Binding FullyInitialized}" Padding="10"/>
                 </StackPanel>
                 <ListBox Grid.Column="1" Name="OutputListBox" SelectionChanged="outputListBox_SelectionChanged" HorizontalContentAlignment="Left" >
                     <ListBox.Resources>
