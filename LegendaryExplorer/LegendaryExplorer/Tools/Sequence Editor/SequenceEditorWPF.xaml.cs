@@ -2383,19 +2383,19 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             }
         }
 
-        private void GoToExport(ExportEntry export, bool selectSequences = true)
+        private void GoToExport(ExportEntry expToNavigateTo, bool selectSequences = true)
         {
             foreach (ExportEntry exp in SequenceExports)
             {
                 // Are we trying to select a sequence?
-                if (selectSequences && export == exp)
+                if (selectSequences && expToNavigateTo == exp)
                 {
-                    if (export.ClassName == "SequenceReference")
+                    if (expToNavigateTo.ClassName == "SequenceReference")
                     {
                         var sequenceprop = exp.GetProperty<ObjectProperty>("oSequenceReference");
                         if (sequenceprop != null)
                         {
-                            export = Pcc.GetUExport(sequenceprop.Value);
+                            expToNavigateTo = Pcc.GetUExport(sequenceprop.Value);
                         }
                         else
                         {
@@ -2403,7 +2403,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                         }
                     }
 
-                    SelectedItem = TreeViewRootNodes.SelectMany(node => node.FlattenTree()).First(node => node.UIndex == export.UIndex);
+                    SelectedItem = TreeViewRootNodes.SelectMany(node => node.FlattenTree()).First(node => node.UIndex == expToNavigateTo.UIndex);
                     break;
                 }
 
@@ -2424,11 +2424,12 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
 
                 // Enumerate the objects in the sequence to see if what we are looking for is in this sequence
                 var seqObjs = sequence.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
-                if (seqObjs != null && seqObjs.Any(objProp => objProp.Value == export.UIndex))
+                if (seqObjs != null && seqObjs.Any(objProp => objProp.Value == expToNavigateTo.UIndex))
                 {
                     //This is our sequence
-                    SelectedItem = TreeViewRootNodes.SelectMany(node => node.FlattenTree()).First(node => node.UIndex == sequence.UIndex);
-                    CurrentObjects_ListBox.SelectedItem = CurrentObjects.FirstOrDefault(x => x.Export == export);
+                    var nodes = TreeViewRootNodes.SelectMany(node => node.FlattenTree()).ToList(); // This is to debug selection failures
+                    SelectedItem = nodes.First(node => node.UIndex == sequence.UIndex);
+                    CurrentObjects_ListBox.SelectedItem = CurrentObjects.FirstOrDefault(x => x.Export == expToNavigateTo);
                     break;
                 }
             }
@@ -2599,7 +2600,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
         {
             if (CurrentObjects_ListBox.SelectedItem is SAction sAction && (sAction.Export.ClassName is "SequenceReference" or "Sequence"))
             {
-                GoToExport(sAction.Export); // GoToExport should probably go to the export, not the data in it
+                GoToExport(sAction.Export, true); // GoToExport should probably go to the export, not the data in it
             }
         }
 
