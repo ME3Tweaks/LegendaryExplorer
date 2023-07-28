@@ -554,7 +554,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 kismetLogParser.ExportFound = (filePath, uIndex) =>
                 {
                     if (Pcc == null || Pcc.FilePath != filePath) LoadFile(filePath);
-                    GoToExport(Pcc.GetUExport(uIndex), false);
+                    GoToExport(Pcc.GetUExport(uIndex));
                 };
             }
             else
@@ -2528,50 +2528,28 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             }
         }
 
-        private void GoToExport(int UIndex, bool selectSequences = true)
+        private void GoToExport(int UIndex)
         {
             if (Pcc != null)
             {
                 ExportEntry exp = Pcc.GetUExport(UIndex);
                 if (exp != null)
                 {
-                    GoToExport(exp, selectSequences);
+                    GoToExport(exp);
                 }
             }
         }
 
-        private void GoToExport(ExportEntry expToNavigateTo, bool selectSequences = true)
+        private void GoToExport(ExportEntry expToNavigateTo)
         {
-            foreach (ExportEntry exp in SequenceExports)
+            if (expToNavigateTo.ClassName is "SequenceReference" or "Sequence")
             {
-                // Are we trying to select a sequence?
-                if (selectSequences && expToNavigateTo == exp)
+                if (expToNavigateTo.ClassName == "SequenceReference")
                 {
-                    if (expToNavigateTo.ClassName == "SequenceReference")
-                    {
-                        var sequenceprop = exp.GetProperty<ObjectProperty>("oSequenceReference");
-                        if (sequenceprop != null)
-                        {
-                            expToNavigateTo = Pcc.GetUExport(sequenceprop.Value);
-                        }
-                        else
-                        {
-                            return;
-                        }
-                    }
-
-                    SelectedItem = TreeViewRootNodes.SelectMany(node => node.FlattenTree()).First(node => node.UIndex == expToNavigateTo.UIndex);
-                    break;
-                }
-
-                // Get the export for the sequence we will look for objects in
-                ExportEntry sequence = exp;
-                if (sequence.ClassName == "SequenceReference")
-                {
-                    var sequenceprop = sequence.GetProperty<ObjectProperty>("oSequenceReference");
+                    var sequenceprop = expToNavigateTo.GetProperty<ObjectProperty>("oSequenceReference");
                     if (sequenceprop != null)
                     {
-                        sequence = Pcc.GetUExport(sequenceprop.Value);
+                        expToNavigateTo = Pcc.GetUExport(sequenceprop.Value);
                     }
                     else
                     {
@@ -2579,15 +2557,43 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                     }
                 }
 
-                // Enumerate the objects in the sequence to see if what we are looking for is in this sequence
-                var seqObjs = sequence.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
-                if (seqObjs != null && seqObjs.Any(objProp => objProp.Value == exp.UIndex))
+                SelectedItem = TreeViewRootNodes.SelectMany(node => node.FlattenTree()).First(node => node.UIndex == expToNavigateTo.UIndex);
+                return;
+            }
+            else
+            {
+                // Find which sequence contains this object
+                foreach (ExportEntry exp in SequenceExports)
                 {
-                    //This is our sequence
-                    var nodes = TreeViewRootNodes.SelectMany(node => node.FlattenTree()).ToList(); // This is to debug selection failures
-                    SelectedItem = nodes.First(node => node.UIndex == sequence.UIndex);
-                    CurrentObjects_ListBox.SelectedItem = CurrentObjects.FirstOrDefault(x => x.Export == expToNavigateTo);
-                    break;
+
+
+                    // Get the export for the sequence we will look for objects in
+                    ExportEntry sequence = exp;
+                    if (sequence.ClassName == "SequenceReference")
+                    {
+                        var sequenceprop = sequence.GetProperty<ObjectProperty>("oSequenceReference");
+                        if (sequenceprop != null)
+                        {
+                            sequence = Pcc.GetUExport(sequenceprop.Value);
+                        }
+                        else
+                        {
+                            return;
+                        }
+                    }
+
+                    // Enumerate the objects in the sequence to see if what we are looking for is in this sequence
+                    var seqObjs = sequence.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
+                    if (seqObjs != null && seqObjs.Any(objProp => objProp.Value == expToNavigateTo.UIndex))
+                    {
+                        //This is our sequence
+                        var nodes = TreeViewRootNodes.SelectMany(node => node.FlattenTree())
+                            .ToList(); // This is to debug selection failures
+                        SelectedItem = nodes.First(node => node.UIndex == sequence.UIndex);
+                        CurrentObjects_ListBox.SelectedItem =
+                            CurrentObjects.FirstOrDefault(x => x.Export == expToNavigateTo);
+                        break;
+                    }
                 }
             }
         }
@@ -2757,7 +2763,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
         {
             if (CurrentObjects_ListBox.SelectedItem is SAction sAction && (sAction.Export.ClassName is "SequenceReference" or "Sequence"))
             {
-                GoToExport(sAction.Export, true); // GoToExport should probably go to the export, not the data in it
+                GoToExport(sAction.Export);
             }
         }
 
