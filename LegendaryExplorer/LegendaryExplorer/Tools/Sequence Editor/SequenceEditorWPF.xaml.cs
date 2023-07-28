@@ -179,6 +179,9 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
         public ICommand OpenOtherVersionCommand { get; set; }
         public ICommand ComparePackagesCommand { get; set; }
         public ICommand CompareToUnmoddedCommand { get; set; }
+        public ICommand DesignerCreateInputCommand { get; set; }
+        public ICommand DesignerCreateOutputCommand { get; set; }
+        public ICommand DesignerCreateExternCommand { get; set; }
 
         private void LoadCommands()
         {
@@ -195,11 +198,165 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             CheckSequenceSetsCommand = new GenericCommand(() => SequenceEditorExperimentsM.CheckSequenceSets(this), () => CurrentObjects.Any);
             ConvertSeqActLogCommentCommand = new GenericCommand(() => SequenceEditorExperimentsM.ConvertSeqAct_Log_objComments(Pcc), () => SequenceExports.Any);
             SearchCommand = new GenericCommand(SearchDialogue, () => CurrentObjects.Any);
-            UseSavedViewsCommand = new GenericCommand(ToggleSavedViews, () => Pcc != null && Pcc is { Game: MEGame.ME1 } || Pcc.Game.IsLEGame());
+            UseSavedViewsCommand = new GenericCommand(ToggleSavedViews, () => Pcc != null && (Pcc is { Game: MEGame.ME1 } || Pcc.Game.IsLEGame()));
             ResetFavoritesCommand = new GenericCommand(ResetFavorites, () => Pcc != null);
             OpenOtherVersionCommand = new GenericCommand(OpenOtherVersion, () => Pcc != null && Pcc.Game.IsMEGame());
             CompareToUnmoddedCommand = new GenericCommand(() => SharedPackageTools.ComparePackageToUnmodded(this, entryDoubleClick), () => SharedPackageTools.CanCompareToUnmodded(this));
             ComparePackagesCommand = new GenericCommand(() => SharedPackageTools.ComparePackageToAnother(this, entryDoubleClick), PackageIsLoaded);
+
+            DesignerCreateExternCommand = new GenericCommand(CreateExtern, () => SelectedSequence != null);
+            DesignerCreateInputCommand = new GenericCommand(CreateInput, () => SelectedSequence != null);
+            DesignerCreateOutputCommand = new GenericCommand(CreateOutput, () => SelectedSequence != null);
+        }
+
+        private void CreateOutput()
+        {
+            var outputLabel = PromptDialog.Prompt(this, "Enter an output label for this sequence.", "Enter label", "Out", true);
+            if (string.IsNullOrWhiteSpace(outputLabel))
+                return;
+
+            // Create an add activation to sequence
+            var finished = SequenceObjectCreator.CreateSequenceObject(Pcc, "SeqAct_FinishSequence");
+            finished.WriteProperty(new StrProperty(outputLabel, "OutputLabel"));
+            finished.idxLink = SelectedSequence.UIndex;
+            // Reindex if necessary
+            var expCount = Pcc.Exports.Count(x => x.InstancedFullPath == finished.InstancedFullPath);
+            if (expCount > 1)
+            {
+                // update the index
+                finished.ObjectName = Pcc.GetNextIndexedName(finished.ObjectName.Name);
+            }
+            KismetHelper.AddObjectToSequence(finished, SelectedSequence);
+
+            // Add output link to sequence
+            var outputLinks = SelectedSequence.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
+            if (outputLinks == null)
+            {
+                outputLinks = new ArrayProperty<StructProperty>("OutputLinks");
+            }
+
+            // Add struct
+            PropertyInfo p = GlobalUnrealObjectInfo.GetPropertyInfo(Pcc.Game, "OutputLinks", "Sequence");
+            if (p == null)
+            {
+                Debugger.Break();
+            }
+
+            if (p != null)
+            {
+                string typeName = p.Reference;
+                PropertyCollection props = GlobalUnrealObjectInfo.getDefaultStructValue(Pcc.Game, typeName, true);
+                props.AddOrReplaceProp(new NameProperty(finished.ObjectName, "LinkAction"));
+                props.AddOrReplaceProp(new StrProperty(outputLabel, "LinkDesc"));
+                props.AddOrReplaceProp(new ObjectProperty(finished, "LinkedOp"));
+                outputLinks.Add(new StructProperty(typeName, props, isImmutable: false));
+            }
+
+            SelectedSequence.WriteProperty(outputLinks);
+        }
+
+        private void CreateInput()
+        {
+            var inputLabel = PromptDialog.Prompt(this, "Enter an input label for this activation.", "Enter label", "In", true);
+            if (string.IsNullOrWhiteSpace(inputLabel))
+                return;
+
+            // Create an add activation to sequence
+            var activation = SequenceObjectCreator.CreateSequenceObject(Pcc, "SeqEvent_SequenceActivated");
+            activation.idxLink = SelectedSequence.UIndex;
+            // Reindex if necessary
+            var expCount = Pcc.Exports.Count(x => x.InstancedFullPath == activation.InstancedFullPath);
+            if (expCount > 1)
+            {
+                // update the index
+                activation.ObjectName = Pcc.GetNextIndexedName(activation.ObjectName.Name);
+            }
+            KismetHelper.AddObjectToSequence(activation, SelectedSequence);
+
+            // Add input link to sequence
+            var inputLinks = SelectedSequence.GetProperty<ArrayProperty<StructProperty>>("InputLinks");
+            if (inputLinks == null)
+            {
+                inputLinks = new ArrayProperty<StructProperty>("InputLinks");
+            }
+
+            // Add struct
+            PropertyInfo p = GlobalUnrealObjectInfo.GetPropertyInfo(Pcc.Game, "InputLinks", "Sequence");
+            if (p == null)
+            {
+                Debugger.Break();
+            }
+
+            if (p != null)
+            {
+                string typeName = p.Reference;
+                PropertyCollection props = GlobalUnrealObjectInfo.getDefaultStructValue(Pcc.Game, typeName, true);
+                props.AddOrReplaceProp(new NameProperty(activation.ObjectName, "LinkAction"));
+                props.AddOrReplaceProp(new StrProperty(inputLabel, "LinkDesc"));
+                props.AddOrReplaceProp(new ObjectProperty(activation, "LinkedOp"));
+                inputLinks.Add(new StructProperty(typeName, props, isImmutable: false));
+            }
+
+            SelectedSequence.WriteProperty(inputLinks);
+        }
+
+        private void CreateExtern()
+        {
+            var externName = PromptDialog.Prompt(this, "Enter an variable label for this external variable.", "Enter label", "", true);
+            if (string.IsNullOrWhiteSpace(externName))
+                return;
+
+            var classOptions = GlobalUnrealObjectInfo.GetClasses(Pcc.Game).Values.Where(x => x.IsA("SequenceVariable", Pcc.Game)).Select(x => x.ClassName).OrderBy(x => x).ToList();
+            var externDataType = InputComboBoxDialog.GetValue(this, "Select datatype for this external variable.", "Select datatype",
+                            classOptions);
+
+            if (string.IsNullOrWhiteSpace(externDataType))
+            {
+                return;
+            }
+
+
+            // Create a new extern
+            var externalVar = SequenceObjectCreator.CreateSequenceObject(Pcc, "SeqVar_External");
+            externalVar.idxLink = SelectedSequence.UIndex;
+
+            var expectedDataTypeClass = EntryImporter.EnsureClassIsInFile(Pcc, externDataType, new RelinkerOptionsPackage());
+            externalVar.WriteProperty(new StrProperty(externName, "VariableLabel"));
+            externalVar.WriteProperty(new ObjectProperty(expectedDataTypeClass, "ExpectedType"));
+            // Reindex if necessary
+            var expCount = Pcc.Exports.Count(x => x.InstancedFullPath == externalVar.InstancedFullPath);
+            if (expCount > 1)
+            {
+                // update the index
+                externalVar.ObjectName = Pcc.GetNextIndexedName(externalVar.ObjectName.Name);
+            }
+            KismetHelper.AddObjectToSequence(externalVar, SelectedSequence);
+
+            // Add input link to sequence
+            var variableLinks = SelectedSequence.GetProperty<ArrayProperty<StructProperty>>("VariableLinks");
+            if (variableLinks == null)
+            {
+                variableLinks = new ArrayProperty<StructProperty>("VariableLinks");
+            }
+
+            // Add struct to VariableLinks
+            PropertyInfo p = GlobalUnrealObjectInfo.GetPropertyInfo(Pcc.Game, "VariableLinks", "Sequence");
+            if (p == null)
+            {
+                Debugger.Break();
+            }
+
+            if (p != null)
+            {
+                string typeName = p.Reference;
+                PropertyCollection props = GlobalUnrealObjectInfo.getDefaultStructValue(Pcc.Game, typeName, true);
+                props.AddOrReplaceProp(new NameProperty(externalVar.ObjectName, "LinkVar"));
+                props.AddOrReplaceProp(new StrProperty(externName, "LinkDesc"));
+                props.AddOrReplaceProp(new ObjectProperty(expectedDataTypeClass, "ExpectedType"));
+                variableLinks.Add(new StructProperty(typeName, props, isImmutable: false));
+            }
+
+            SelectedSequence.WriteProperty(variableLinks);
         }
 
         private void entryDoubleClick(EntryStringPair clickedItem)
@@ -2424,7 +2581,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
 
                 // Enumerate the objects in the sequence to see if what we are looking for is in this sequence
                 var seqObjs = sequence.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
-                if (seqObjs != null && seqObjs.Any(objProp => objProp.Value == expToNavigateTo.UIndex))
+                if (seqObjs != null && seqObjs.Any(objProp => objProp.Value == exp.UIndex))
                 {
                     //This is our sequence
                     var nodes = TreeViewRootNodes.SelectMany(node => node.FlattenTree()).ToList(); // This is to debug selection failures

@@ -162,6 +162,16 @@
                     <MenuItem Header="Use saved views" Command="{Binding UseSavedViewsCommand}"
                               ToolTip="Use saved user layouts for sequences as it was viewed in Sequence Editor. Turning this off will use the BioWare layout. Only works on ME1 and Legendary Edition games." />
                 </MenuItem>
+                <MenuItem Header="Designer" Padding="4">
+                    <MenuItem Header="Create new activation input" Command="{Binding DesignerCreateInputCommand}"
+                              ToolTip="Adds a new SequenceActivated event and adds the logic to use it to the sequence" />
+                    <MenuItem Header="Create new finished output" Command="{Binding DesignerCreateOutputCommand}"
+                              ToolTip="Adds a new FinishedSequence event and adds the logic to use it to the sequence" />
+
+                    <Separator/>
+                    <MenuItem Header="Create new external variable" Command="{Binding DesignerCreateExternCommand}"
+                              ToolTip="Adds a new SequenceActivated event and adds the logic to use it to the sequence" />
+                </MenuItem>
                 <MenuItem Header="Experiments" Padding="4">
                     <MenuItem Header="Force reload package*" Command="{Binding ForceReloadPackageCommand}" sharedUi:Bindings.VisibilityToEnabled="True" InputGestureText="Ctrl+Shift+R" ToolTip="Forcibly reloads this package file, if it was loaded from disk.&#10;This operation will drop this package out of the package sharing system across tools, be careful as edits will not sync across tools!"/>
                     <MenuItem Header="Scan folder for sequence object loops" Command="{Binding ScanFolderForLoopsCommand}"
