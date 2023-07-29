@@ -921,7 +921,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
 
         private TreeViewEntry FindSequences(ExportEntry rootSeq, bool wantFullName = false)
         {
-            string seqName = wantFullName ? $"{rootSeq.ParentInstancedFullPath}." : "";
+            string seqName = (wantFullName && !string.IsNullOrWhiteSpace(rootSeq.ParentFullPath)) ? $"{rootSeq.ParentInstancedFullPath}." : "";
             if (rootSeq.GetProperty<StrProperty>("ObjName") is StrProperty objName)
             {
                 seqName += objName;
