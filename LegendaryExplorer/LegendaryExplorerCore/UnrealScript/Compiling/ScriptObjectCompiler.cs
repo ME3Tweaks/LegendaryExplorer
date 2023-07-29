@@ -698,12 +698,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                         break;
                     case UDelegateProperty uDelegateProperty:
                         uDelegateProperty.Function = CompilerUtils.ResolveFunction(((DelegateType)varType).DefaultFunction, pcc).UIndex;
-                        string parentClassName = parent.ClassName;
-                        if (parentClassName.CaseInsensitiveEquals("ArrayProperty"))
-                        {
-                            parentClassName = parent.Parent.ClassName;
-                        }
-                        uDelegateProperty.Delegate = parentClassName.CaseInsensitiveEquals("Function") || parentClassName.CaseInsensitiveEquals("ScriptStruct") ? uDelegateProperty.Function : 0;
+                        uDelegateProperty.Delegate = varDeclAST.Name.EndsWith("__Delegate") ? 0 : uDelegateProperty.Function;
                         break;
                     case UMapProperty uMapProperty:
                         uMapProperty.KeyType = 0;
