@@ -546,9 +546,6 @@ namespace LegendaryExplorer.Tools.PackageEditor
             }
         }
 
-        private bool IsLoadedPackageME() => Pcc != null && Pcc.Game.IsMEGame();
-
-
         private void ResolveImportsTreeView()
         {
             if (Enumerable.Any(AllTreeViewNodesX))
@@ -2838,26 +2835,13 @@ namespace LegendaryExplorer.Tools.PackageEditor
         {
             RefreshView();
             InitStuff();
-            string statusBarText = GetStatusBarText(filePath, Pcc.Game);
-            StatusBar_LeftMostText.Text = statusBarText;
+            StatusBar_LeftMostText.Text = GetStatusBarText();
             Title = $"Package Editor - {filePath}";
             InterpreterTab_Interpreter.UnloadExport();
 
             QueuedGotoNumber = goToIndex;
 
             InitializeTreeView();
-        }
-
-        private static string GetStatusBarText(string filePath, MEGame game)
-        {
-            string fileName = Path.GetFileName(filePath);
-            string notHighestMountedWarning = "";
-            if (MELoadedFiles.TryGetHighestMountedFile(game, fileName, out string highestMountedPath) && Path.GetFullPath(filePath) != highestMountedPath)
-            {
-                notHighestMountedWarning = "NOT HIGHEST MOUNTED VERSION";
-            }
-            string statusBarText = $"{fileName}  ( {MEDirectories.GetLocationDescriptor(filePath, game)} )  {notHighestMountedWarning}";
-            return statusBarText;
         }
 
         /// <summary>

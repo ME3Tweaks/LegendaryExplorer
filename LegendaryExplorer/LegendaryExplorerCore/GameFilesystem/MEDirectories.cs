@@ -409,19 +409,21 @@ namespace LegendaryExplorerCore.GameFilesystem
         /// <summary>
         /// Gets a short description of where the file is located (Basegame, DLC name, or Not in installation). Does not specify game
         /// </summary>
-        public static string GetLocationDescriptor(IMEPackage pcc, string gameRootOverride = null) => GetLocationDescriptor(pcc.FilePath, pcc.Game, gameRootOverride);
+        public static bool GetLocationDescriptor(IMEPackage pcc, out string descriptor, string gameRootOverride = null) => GetLocationDescriptor(pcc.FilePath, pcc.Game, out descriptor, gameRootOverride);
 
         /// <summary>
         /// Gets a short description of where the file is located (Basegame, DLC name, or Not in installation). Does not specify game
         /// </summary>
-        public static string GetLocationDescriptor(string filePath, MEGame game, string gameRootOverride = null)
+        public static bool GetLocationDescriptor(string filePath, MEGame game, out string descriptor, string gameRootOverride = null)
         {
+            descriptor = "Not in installation";
             if (filePath is not null && game.IsMEGame() && (GetDefaultGamePath(game) is not null || gameRootOverride is not null))
             {
                 filePath = Path.GetFullPath(filePath);
                 if (filePath.StartsWith(GetCookedPath(game, gameRootOverride)))
                 {
-                    return "Basegame";
+                    descriptor = "Basegame";
+                    return true;
                 }
                 string dlcPath = GetDLCPath(game, gameRootOverride);
                 if (filePath.StartsWith(dlcPath))
@@ -430,11 +432,13 @@ namespace LegendaryExplorerCore.GameFilesystem
                     int dirSepIndex = relativePath.AsSpan().IndexOfAny(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
                     if (dirSepIndex > 0)
                     {
-                        return relativePath[..dirSepIndex];
+                        descriptor = relativePath[..dirSepIndex];
+                        return true;
                     }
                 }
             }
-            return "Not in installation";
+
+            return false;
         }
 
         /// <summary>

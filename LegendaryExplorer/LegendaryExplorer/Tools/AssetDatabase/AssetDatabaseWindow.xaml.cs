@@ -978,7 +978,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                     SeqEd.Show();
                     if (uindex != 0)
                     {
-                        SeqEd.LoadFile(filePath, uindex);
+                        SeqEd.LoadFileAndGoTo(filePath, uindex);
                     }
                     else
                     {

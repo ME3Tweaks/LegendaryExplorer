@@ -46,6 +46,7 @@ using Color = System.Drawing.Color;
 using Image = System.Drawing.Image;
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
+using LegendaryExplorer.Tools.PackageEditor;
 
 namespace LegendaryExplorer.Tools.Sequence_Editor
 {
@@ -182,7 +183,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
         public ICommand DesignerCreateInputCommand { get; set; }
         public ICommand DesignerCreateOutputCommand { get; set; }
         public ICommand DesignerCreateExternCommand { get; set; }
-
+        public ICommand OpenHighestMountedCommand { get; set; }
         private void LoadCommands()
         {
             ForceReloadPackageCommand = new GenericCommand(ForceReloadPackageWithoutSharing, CanForceReload);
@@ -203,6 +204,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             OpenOtherVersionCommand = new GenericCommand(OpenOtherVersion, () => Pcc != null && Pcc.Game.IsMEGame());
             CompareToUnmoddedCommand = new GenericCommand(() => SharedPackageTools.ComparePackageToUnmodded(this, entryDoubleClick), () => SharedPackageTools.CanCompareToUnmodded(this));
             ComparePackagesCommand = new GenericCommand(() => SharedPackageTools.ComparePackageToAnother(this, entryDoubleClick), PackageIsLoaded);
+            OpenHighestMountedCommand = new GenericCommand(OpenHighestMountedVersion, IsLoadedPackageME);
 
             DesignerCreateExternCommand = new GenericCommand(CreateExtern, () => SelectedSequence != null);
             DesignerCreateInputCommand = new GenericCommand(CreateInput, () => SelectedSequence != null);
@@ -554,7 +556,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 kismetLogParser.ExportFound = (filePath, uIndex) =>
                 {
                     if (Pcc == null || Pcc.FilePath != filePath) LoadFile(filePath);
-                    GoToExport(Pcc.GetUExport(uIndex));
+                    GoToExport(Pcc.GetUExport(uIndex), goIntoSequences: false);
                 };
             }
             else
@@ -605,7 +607,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
         public string StatusText
         {
             get => _statusText;
-            set => SetProperty(ref _statusText, $"{CurrentFile} {value}");
+            set => SetProperty(ref _statusText, value);
         }
 
         private TreeViewEntry _selectedItem;
@@ -698,8 +700,8 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 if (TreeViewRootNodes.IsEmpty())
                 {
                     UnLoadMEPackage();
-                    MessageBox.Show(this, "This file does not contain any Sequences!");
-                    StatusText = "Select a package file to load";
+                    MessageBox.Show(this, "This file does not contain any sequences!");
+                    StatusText = "Select package file to load";
                     return;
                 }
 
@@ -707,7 +709,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 graphEditor.edgeLayer.RemoveAllChildren();
 
                 Title = $"Sequence Editor - {filePath}";
-                StatusText = null; //no status
+                StatusText = GetStatusBarText();
 
                 RefreshToolboxItems(true);
             }
@@ -717,6 +719,31 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 Title = "Sequence Editor";
                 CurrentFile = null;
                 UnLoadMEPackage();
+            }
+        }
+
+        private void OpenHighestMountedVersion()
+        {
+            if (MEDirectories.GetBioGamePath(Pcc.Game) is null)
+            {
+                MessageBox.Show($"No {Pcc.Game} installation detected!");
+                return;
+            }
+            string fileName = Path.GetFileName(Pcc.FilePath);
+            if (!MELoadedFiles.TryGetHighestMountedFile(Pcc.Game, fileName, out string filePath))
+            {
+                MessageBox.Show($"No file named '{fileName}' was found in the {Pcc.Game} installation.");
+            }
+            else if (Path.GetFullPath(filePath) == Path.GetFullPath(Pcc.FilePath))
+            {
+                MessageBox.Show($"This is the highest mounted version of {fileName} in your {Pcc.Game} installation.");
+            }
+            else
+            {
+                var entry = SelectedItem?.Entry ?? SelectedSequence;
+                var pe = new SequenceEditorWPF();
+                pe.LoadFileAndGoTo(filePath, goToEntry: entry?.InstancedFullPath);
+                pe.Show();
             }
         }
 
@@ -820,12 +847,28 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             }
         }
 
-        public void LoadFile(string fileName, int uIndex, Action loadPackageDelegate = null)
+        public void LoadFileAndGoTo(string fileName, int uIndex = 0, string goToEntry = null, Action loadPackageDelegate = null)
         {
             LoadFile(fileName, loadPackageDelegate);
-            GoToExport(uIndex);
+            if (uIndex > 0)
+            {
+                GoToExport(uIndex);
+            }
+            else if (goToEntry != null)
+            {
+                var exp = Pcc.FindExport(goToEntry);
+                if (exp != null)
+                {
+                    GoToExport(exp);
+                }
+            }
         }
 
+        /// <summary>
+        /// Loads a package file into the editor for use
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <param name="loadPackageDelegate">Delegate that can be used to set the Pcc object on this object instead of the default from-disk loader</param>
         public void LoadFile(string fileName, Action loadPackageDelegate = null)
         {
             try
@@ -834,6 +877,8 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 if (loadPackageDelegate != null)
                 {
                     // Used for loading packages from memory from another tool
+                    // This is useful for dev where you have a window open for a package that no longer exists
+                    // e.g. when building mods via c# and the folder is constantly being deleted
                     loadPackageDelegate.Invoke();
                 }
                 else
@@ -2501,7 +2546,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
 
         private void SequenceEditorWPF_Loaded(object sender, RoutedEventArgs e)
         {
-            if (FileQueuedForLoad != null || PackageQueuedForLoad != null)
+            if (FileQueuedForLoad != null || PackageQueuedForLoad != null || ExportQueuedForFocusing != null)
             {
                 Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action(() =>
                 {
@@ -2535,14 +2580,21 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 ExportEntry exp = Pcc.GetUExport(UIndex);
                 if (exp != null)
                 {
-                    GoToExport(exp);
+                    if (!IsLoaded)
+                    {
+                        ExportQueuedForFocusing = exp;
+                    }
+                    else
+                    {
+                        GoToExport(exp);
+                    }
                 }
             }
         }
 
-        private void GoToExport(ExportEntry expToNavigateTo)
+        private void GoToExport(ExportEntry expToNavigateTo, bool goIntoSequences = true)
         {
-            if (expToNavigateTo.ClassName is "SequenceReference" or "Sequence")
+            if (goIntoSequences && expToNavigateTo.ClassName is "SequenceReference" or "Sequence")
             {
                 if (expToNavigateTo.ClassName == "SequenceReference")
                 {
@@ -2983,6 +3035,14 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
         private void ImportSequenceFromAnotherPackage_Clicked(object sender, RoutedEventArgs e)
         {
             SequenceEditorExperimentsM.InstallSequencePrefab(GetSEWindow());
+        }
+
+        private void CopyInstancedFullPath_Clicked(object sender, RoutedEventArgs e)
+        {
+            if (CurrentObjects_ListBox.SelectedItem is SObj obj)
+            {
+                Clipboard.SetText(obj.Export.InstancedFullPath);
+            }
         }
 
         public string Toolname => "SequenceEditor";

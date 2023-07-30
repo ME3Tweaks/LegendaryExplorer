@@ -100,6 +100,7 @@
 
                 <MenuItem Header="Tools" Padding="4">
                     <MenuItem Header="Open other generation version of file (OT &lt;-&gt; LE)" ToolTip="Opens the opposite generation's version of this file, if it exists." Command="{Binding OpenOtherVersionCommand}" sharedUi:Bindings.VisibilityToEnabled="True"/>
+                    <MenuItem Header="Open version of file with highest mount priority" ToolTip="Opens the version of this file that will actually be loaded by the game." Command="{Binding OpenHighestMountedCommand}" sharedUi:Bindings.VisibilityToEnabled="True"/>
                     <MenuItem Header="Compare with another package" ToolTip="Compare another version of this package to see what exports and imports have changed" Command="{Binding ComparePackagesCommand}"/>
                     <MenuItem Header="Compare with unmodded" ToolTip="Compare with the (hopefully) unmodded version of this package to see what exports and imports have changed" Command="{Binding CompareToUnmoddedCommand}"/>
                     <Separator/>
