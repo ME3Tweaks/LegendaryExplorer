@@ -176,7 +176,7 @@ namespace LegendaryExplorerCore.Kismet
             {
                 return new StructProperty("SeqOpOutputInputLink", false,
                     new ObjectProperty(LinkedOp.UIndex, "LinkedOp"),
-                    new IntProperty(InputLinkIdx, "InputLInkIdx"),
+                    new IntProperty(InputLinkIdx, "InputLinkIdx"),
                     new NoneProperty());
             }
 
@@ -476,5 +476,24 @@ namespace LegendaryExplorerCore.Kismet
             }
         }
 #endif
+        /// <summary>
+        /// Gets a list of Outlink LinkDesc names, in order.
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        public static List<string> GetOutlinkNames(ExportEntry node)
+        {
+            var outlinkNames = new List<string>();
+            var outlinksProp = node.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
+            if (outlinksProp != null)
+            {
+                foreach (var ol in outlinksProp)
+                {
+                    outlinkNames.Add(ol.GetProp<StrProperty>("LinkDesc"));
+                }
+
+            }
+            return outlinkNames;
+        }
     }
 }
