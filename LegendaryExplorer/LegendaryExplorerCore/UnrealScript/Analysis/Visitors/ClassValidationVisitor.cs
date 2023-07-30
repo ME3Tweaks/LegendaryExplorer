@@ -800,9 +800,9 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
                 if (node.Flags.Has(EFunctionFlags.Delegate))
                 {
-                    if (containingClass.VariableDeclarations.Find(varDecl => varDecl.VarType is DelegateType delType && delType.DefaultFunction == node && varDecl.Name == $"__{node.Name}__Delegate") is null)
+                    if (containingClass.VariableDeclarations.Find(varDecl => varDecl.VarType is DelegateType delType && varDecl.Name == $"__{node.Name}__Delegate" && delType.DefaultFunction.Name == node.Name) is null)
                     {
-                        return Error($"Delegate functions must have a corresponding property! Expected a declaration of the form 'var delegate<{node.Name}> __{node.Name}__Delegate;'", node.StartPos, node.EndPos);
+                        return Error($"Delegate functions must have a corresponding property! Expected this declaration: 'var delegate<{node.Name}> __{node.Name}__Delegate;' (2 _ on each side)", node.StartPos, node.EndPos);
                     }
                 }
             }
