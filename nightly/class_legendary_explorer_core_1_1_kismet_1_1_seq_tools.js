@@ -17,5 +17,6 @@ var class_legendary_explorer_core_1_1_kismet_1_1_seq_tools =
     [ "WriteVariableLinksToProperties", "class_legendary_explorer_core_1_1_kismet_1_1_seq_tools.html#ab9ddeed6dbf66bc4edfd384532776fa3", null ],
     [ "GetParentSequence", "class_legendary_explorer_core_1_1_kismet_1_1_seq_tools.html#a88fa5cc0d00ec0f652fcf6e554f9b7d2", null ],
     [ "WriteOriginator", "class_legendary_explorer_core_1_1_kismet_1_1_seq_tools.html#a9bb9c0a8f97a0ffee67f1661d98d3ef2", null ],
-    [ "WriteObjValue", "class_legendary_explorer_core_1_1_kismet_1_1_seq_tools.html#a167ddadf7be296860ebe2abb000e150c", null ]
+    [ "WriteObjValue", "class_legendary_explorer_core_1_1_kismet_1_1_seq_tools.html#a167ddadf7be296860ebe2abb000e150c", null ],
+    [ "GetOutlinkNames", "class_legendary_explorer_core_1_1_kismet_1_1_seq_tools.html#ad502d181cc006cf12a77cf71dd9aa121", null ]
 ];
