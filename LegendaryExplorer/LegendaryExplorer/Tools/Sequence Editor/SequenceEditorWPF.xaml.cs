@@ -1833,6 +1833,19 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                     }
                 }
 
+                if (contextMenu.GetChild("extractSequenceMenuItem") is MenuItem extractSequenceMenuItem)
+                {
+
+                    if (obj is SAction sAction && sAction.Export != null && (sAction.Export.ClassName is "SequenceReference" or "Sequence"))
+                    {
+                        extractSequenceMenuItem.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        extractSequenceMenuItem.Visibility = Visibility.Collapsed;
+                    }
+                }
+
                 if (contextMenu.GetChild("seqLogAddItemMenuItem") is MenuItem seqLogAddItemMenuItem)
                 {
 
@@ -2601,7 +2614,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                     var sequenceprop = expToNavigateTo.GetProperty<ObjectProperty>("oSequenceReference");
                     if (sequenceprop != null)
                     {
-                        expToNavigateTo = Pcc.GetUExport(sequenceprop.Value);
+                        expToNavigateTo = Pcc?.GetUExport(sequenceprop.Value);
                     }
                     else
                     {
@@ -2609,7 +2622,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                     }
                 }
 
-                SelectedItem = TreeViewRootNodes.SelectMany(node => node.FlattenTree()).First(node => node.UIndex == expToNavigateTo.UIndex);
+                SelectedItem = TreeViewRootNodes.SelectMany(node => node.FlattenTree()).FirstOrDefault(node => node.UIndex == expToNavigateTo.UIndex);
                 return;
             }
             else
@@ -3042,6 +3055,41 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             if (CurrentObjects_ListBox.SelectedItem is SObj obj)
             {
                 Clipboard.SetText(obj.Export.InstancedFullPath);
+            }
+        }
+
+        private void ExtractSequence_Clicked(object sender, RoutedEventArgs e)
+        {
+            if (CurrentObjects_ListBox.SelectedItem is SAction sAction && (sAction.Export.ClassName is "SequenceReference" or "Sequence"))
+            {
+                var seqExp = sAction.Export;
+
+                // We're going to have to modify the package to get this to work, unfortunately...
+
+                // Remove object reference
+                var props = seqExp.GetProperties();
+                seqExp.RemoveProperty("ParentSequence");
+                KismetHelper.RemoveAllLinks(seqExp);
+                var originalIdxLink = seqExp.idxLink;
+
+                // Set to root
+                seqExp.idxLink = 0;
+
+                SharedPackageTools.ExtractEntryToNewPackage(seqExp, x =>
+                {
+                    if (x)
+                    {
+                        SetBusy();
+                    }
+                    else
+                    {
+                        // Restore
+                        seqExp.WriteProperties(props);
+                        seqExp.idxLink = originalIdxLink;
+                        EndBusy();
+                    }
+                }, x => BusyText = x, entryDoubleClick, this);
+
             }
         }
 

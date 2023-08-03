@@ -2522,6 +2522,29 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
         public static void MScanner(PackageEditorWindow pe)
         {
+            var interpTrackMove = pe.Pcc.GetUExport(6498);
+            {
+                // This moves an interptrackmove to end at 0,0,0 by shifiting it all - which makes it so you can do relativetoinitial instead of world
+                var posTrack = interpTrackMove.GetProperty<StructProperty>("PosTrack");
+                var points = posTrack.GetProp<ArrayProperty<StructProperty>>("Points");
+                var lastPoint = points.Last();
+                var lastOut = lastPoint.GetProp<StructProperty>("OutVal");
+
+                var offsetX = -(lastOut.GetProp<FloatProperty>("X"));
+                var offsetY = -(lastOut.GetProp<FloatProperty>("Y"));
+                var offsetZ = -(lastOut.GetProp<FloatProperty>("Z"));
+
+                foreach (var p in points)
+                {
+                    var outVal = p.GetProp<StructProperty>("OutVal");
+                    outVal.GetProp<FloatProperty>("X").Value = outVal.GetProp<FloatProperty>("X").Value + offsetX;
+                    outVal.GetProp<FloatProperty>("Y").Value = outVal.GetProp<FloatProperty>("Y").Value + offsetY;
+                    outVal.GetProp<FloatProperty>("Z").Value = outVal.GetProp<FloatProperty>("Z").Value + offsetZ;
+                }
+
+                interpTrackMove.WriteProperty(posTrack);
+            }
+            return;
             //            Debug.WriteLine("Done");
 
             //// Generate BioP stuff
