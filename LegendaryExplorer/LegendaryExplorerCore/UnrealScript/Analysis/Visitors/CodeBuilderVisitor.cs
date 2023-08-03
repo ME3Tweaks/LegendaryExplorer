@@ -19,7 +19,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         None = 0,
         Keyword,
         Specifier,
-        TypeName,
+        Class,
         String,
         Name,
         Number,
@@ -29,7 +29,8 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         Function,
         State,
         Label,
-        Operator
+        Operator,
+        Struct
     }
 
     public class CodeBuilderVisitor<TFormatter, TOutput> : IASTVisitor where TFormatter : class, ICodeFormatter<TOutput>, new()
@@ -86,21 +87,21 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         {
             Write(CLASS, EF.Keyword);
             Space();
-            Append(node.Name, EF.TypeName);
+            Append(node.Name, EF.Class);
 
             if (node.Parent != null && !node.Parent.Name.Equals("Object", StringComparison.OrdinalIgnoreCase))
             {
                 Space();
                 Append(EXTENDS, EF.Keyword);
                 Space();
-                Append(node.Parent.Name, EF.TypeName);
+                Append(node.Parent.Name, EF.Class);
             }
             if (node.OuterClass != null && !node.OuterClass.Name.Equals("Object", StringComparison.OrdinalIgnoreCase))
             {
                 Space();
                 Append(WITHIN, EF.Keyword);
                 Space();
-                Append(node.OuterClass.Name, EF.TypeName);
+                Append(node.OuterClass.Name, EF.Class);
             }
 
             NestingLevel++;
@@ -109,7 +110,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             {
                 Write("implements", EF.Keyword);
                 Append("(");
-                Join(node.Interfaces.Select(i => i.Name).ToList(), ", ", EF.TypeName);
+                Join(node.Interfaces.Select(i => i.Name).ToList(), ", ", EF.Class);
                 Append(")");
             }
 
@@ -280,7 +281,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             Space();
             if (node.Outer is ObjectType outer)
             {
-                Append(outer.Name, EF.TypeName);
+                Append(outer.Name, outer is Struct ? EF.Struct : EF.Class);
                 Append(".");
             }
             Append(node.Name);
@@ -311,10 +312,12 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 case PrimitiveType:
                     Append(node.Name, EF.Keyword);
                     break;
-                case Class:
                 case Struct:
+                    Append(node.Name, EF.Struct);
+                    break;
+                case Class:
                 default:
-                    Append(node.Name, EF.TypeName);
+                    Append(node.Name, EF.Class);
                     break;
             }
         }
@@ -353,7 +356,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         {
             Append(CLASS, EF.Keyword);
             Append("<");
-            Append(node.ClassLimiter.Name, EF.TypeName);
+            Append(node.ClassLimiter.Name, EF.Class);
             Append(">");
             return true;
         }
@@ -404,13 +407,13 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 Space();
             }
 
-            Append(node.Name, EF.TypeName);
+            Append(node.Name, EF.Struct);
             Space();
             if (node.Parent != null)
             {
                 Append(EXTENDS, EF.Keyword);
                 Space();
-                Append(node.Parent.Name, EF.TypeName);
+                Append(node.Parent.Name, EF.Struct);
                 Space();
             }
 
@@ -760,7 +763,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             Space();
             Append("Class", EF.Keyword);
             Append("=", EF.Operator);
-            Append(node.Class.Name, EF.TypeName);
+            Append(node.Class.Name, EF.Class);
             Space();
             Append("Name", EF.Keyword);
             Append("=", EF.Operator);
@@ -1291,7 +1294,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 if (node.Function.SuperSpecifier is {} superSpecifier)
                 {
                     Append("(");
-                    Append(superSpecifier.Name, EF.TypeName);
+                    Append(superSpecifier.Name, EF.Class);
                     Append(")");
                 }
                 Append(".", EF.Operator);
@@ -1570,7 +1573,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
         public bool VisitNode(ObjectLiteral node)
         {
-            Append(node.Class.Name, EF.TypeName);
+            Append(node.Class.Name, EF.Class);
             node.Name.AcceptVisitor(this);
             return true;
         }
@@ -2213,7 +2216,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                     break;
                 case EF.Keyword:
                 case EF.Specifier:
-                case EF.TypeName:
+                case EF.Class:
                 case EF.String:
                 case EF.Name:
                 case EF.Number:
@@ -2224,6 +2227,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 case EF.State:
                 case EF.Label:
                 case EF.Operator:
+                case EF.Struct:
                 default:
                     Span(text, formatType);
                     break;

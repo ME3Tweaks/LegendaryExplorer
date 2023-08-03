@@ -549,14 +549,31 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             if (type == null) throw ParseError($"Expected variable type after '{LOCAL}'!", CurrentPosition);
             type.Outer = Body;
             if (!Symbols.TryResolveType(ref type)) TypeError($"The type '{type.DisplayName()}' does not exist in the current scope!", type);
-            if (type is Enumeration)
+            if (type is Struct)
+            {
+                PrevToken.SyntaxType = EF.Struct;
+                Tokens.AddDefinitionLink(type, PrevToken);
+            }
+            else if (type is Enumeration)
             {
                 PrevToken.SyntaxType = EF.Enum;
                 Tokens.AddDefinitionLink(type, PrevToken);
             }
             else if (PrevToken.Type == TokenType.RightArrow)
             {
-                Tokens.AddDefinitionLink(type, Tokens.Prev(2));
+                ScriptToken innerTypeToken = Tokens.Prev(2);
+                if (type is DynamicArrayType arrayType)
+                {
+                    if (arrayType.ElementType is Struct)
+                    {
+                        innerTypeToken.SyntaxType = EF.Struct;
+                    }
+                    else if (arrayType.ElementType is Enumeration)
+                    {
+                        innerTypeToken.SyntaxType = EF.Enum;
+                    }
+                }
+                Tokens.AddDefinitionLink(type, innerTypeToken);
             }
             else
             {
@@ -2135,7 +2152,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     if (token.StartPos.Equals(expr.StartPos) && token.EndPos.Equals(expr.EndPos))
                     {
                         typeToken = token;
-                        typeToken.SyntaxType = EF.TypeName;
+                        typeToken.SyntaxType = destType is Struct ? EF.Struct : EF.Class;
                         Tokens.AddDefinitionLink(destType, typeToken);
                     }
                 }
@@ -2227,7 +2244,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
                     if (Symbols.TryGetType(limiter.Value, out VariableType destType) && destType is Class limiterType)
                     {
-                        limiter.SyntaxType = EF.TypeName;
+                        limiter.SyntaxType = EF.Class;
                         Tokens.AddDefinitionLink(limiterType, limiter);
                         if (!Matches(TokenType.LeftParenth))
                         {
@@ -2443,11 +2460,11 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 {
                     if (Consume(TokenType.Word) is {} className)
                     {
-                        className.SyntaxType = EF.TypeName;
                         if (!Symbols.TryGetType(className.Value, out VariableType vartype))
                         {
                             throw ParseError($"No class named '{className.Value}' found!", className);
                         }
+                        className.SyntaxType = EF.Class;
 
                         if (vartype is not Class super)
                         {
@@ -2694,7 +2711,9 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                         throw ParseError("Expected '(' after typename in cast expression!", CurrentPosition);
                     }
 
-                    token.SyntaxType = SymbolTable.IsPrimitive(destType) ? EF.Keyword : EF.TypeName;
+                    token.SyntaxType = SymbolTable.IsPrimitive(destType) ? EF.Keyword :
+                                                      destType is Struct ? EF.Struct :
+                                                                           EF.Class;
                     return ParsePrimitiveOrDynamicCast(token, destType);
                 }
                 else if (!isDefaultRef && Symbols.TryGetType(token.Value, out destType) && destType is Const cnst)
