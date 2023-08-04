@@ -275,7 +275,7 @@ namespace LegendaryExplorer.Tools.CustomFilesManager
 
                                 // Inventory top level sequences
                                 var custSequences = CustomAssets.CustomSequences[p.Game];
-                                foreach (var e in p.Exports.Where(x => x.idxLink == 0 && x.ClassName == "Sequence"))
+                                foreach (var e in p.Exports.Where(x => x.idxLink == 0 && x.ClassName is "Sequence" or "SequenceReference"))
                                 {
                                     if (custSequences.Any(x => x.InstancedFullPath == e.InstancedFullPath))
                                         continue; // This custom sequence is already inventoried

@@ -197,7 +197,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     throw ParseError("Expected class name!", CurrentPosition);
                 }
 
-                classNameToken.SyntaxType = EF.TypeName;
+                classNameToken.SyntaxType = EF.Class;
 
                 if (Consume(TokenType.RightArrow) is null)
                 {
@@ -212,7 +212,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 return null;
             }
 
-            type.SyntaxType = type.Value is INT or FLOAT or BOOL or BYTE or BIOMASK4 or STRING or STRINGREF or NAME ? EF.Keyword : EF.TypeName;
+            type.SyntaxType = type.Value is INT or FLOAT or BOOL or BYTE or BIOMASK4 or STRING or STRINGREF or NAME ? EF.Keyword : EF.Class;
             return new VariableType(type.Value, type.StartPos, type.EndPos);
         }
 
@@ -534,7 +534,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
         protected ObjectLiteral ParseObjectLiteral(ScriptToken className, ScriptToken objName, bool noActors = true)
         {
-            className.SyntaxType = EF.TypeName;
+            className.SyntaxType = EF.Class;
             bool isClassLiteral = className.Value.CaseInsensitiveEquals(CLASS);
 
             var classType = new VariableType((isClassLiteral ? objName : className).Value);

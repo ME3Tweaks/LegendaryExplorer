@@ -1978,7 +1978,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 {
                     if (imp.IsClass)
                     {
-                        if (imp.ClassName == @"Class" || imp.InheritsFrom(onlyOfType))
+                        if ((onlyOfType == @"Class" && imp.ClassName == @"Class") || imp.ClassName == onlyOfType || imp.InheritsFrom(onlyOfType))
                         {
                             allEntriesNew.Add(imp);
                             continue;

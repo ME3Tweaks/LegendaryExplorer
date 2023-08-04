@@ -168,7 +168,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             {
                 throw ParseError("Expected name of class!", CurrentPosition);
             }
-            classNameToken.SyntaxType = EF.TypeName;
+            classNameToken.SyntaxType = EF.Class;
 
             if (!Symbols.TryGetType(classNameToken.Value, out Class objectClass))
             {

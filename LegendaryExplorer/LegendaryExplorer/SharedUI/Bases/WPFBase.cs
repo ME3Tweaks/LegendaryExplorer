@@ -9,6 +9,7 @@ using LegendaryExplorer.MainWindow;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.SharedUI.Interfaces;
 using LegendaryExplorer.ToolsetDev.MemoryAnalyzer;
+using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using Microsoft.AppCenter.Analytics;
@@ -151,6 +152,33 @@ namespace LegendaryExplorer.SharedUI.Bases
             {
                 EndBusy();
             }
+        }
+
+        /// <summary>
+        /// If the loaded package is an ME-game package (not UDK or other game)
+        /// </summary>
+        /// <returns></returns>
+        public bool IsLoadedPackageME() => Pcc != null && Pcc.Game.IsMEGame();
+
+
+        /// <summary>
+        /// Gets status bar text that displays the filename, the installation location, and if it is the highest mounted version of the file
+        /// </summary>
+        /// <returns></returns>
+        public string GetStatusBarText()
+        {
+            if (Pcc == null || Pcc.FilePath == null) // FilePath will be null if loaded from stream and not passed a name
+                return null;
+            string fileName = Path.GetFileName(Pcc.FilePath);
+            string notHighestMountedWarning = "";
+            var isInInstallation = MEDirectories.GetLocationDescriptor(Pcc.FilePath, Pcc.Game, out var descriptor);
+
+            if (isInInstallation && MELoadedFiles.TryGetHighestMountedFile(Pcc.Game, fileName, out string highestMountedPath) && Path.GetFullPath(Pcc.FilePath) != highestMountedPath)
+            {
+                notHighestMountedWarning = "NOT HIGHEST MOUNTED VERSION";
+            }
+            string statusBarText = $"{fileName}  ( {descriptor} )  {notHighestMountedWarning}";
+            return statusBarText;
         }
 
         #region Busy variables

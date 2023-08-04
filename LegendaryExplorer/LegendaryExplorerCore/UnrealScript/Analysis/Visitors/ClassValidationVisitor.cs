@@ -347,7 +347,50 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                         {
                             return Error($"No type named '{node.VarType.DisplayName()}' exists!", node.VarType.StartPos, node.VarType.EndPos);
                         }
-                        Log.Tokens?.AddDefinitionLink(node.VarType, typeStub.StartPos, typeStub.TextLength);
+
+                        //Tokens will only be set when parsing source code, not when linking up a decompiled AST
+                        if (Log.Tokens is not null)
+                        {
+                            Log.Tokens.AddDefinitionLink(node.VarType, typeStub.StartPos, typeStub.TextLength);
+                            //disgusting hack...
+                            switch (node.VarType)
+                            {
+                                case Struct or Enumeration:
+                                {
+                                    int idx = Log.Tokens.GetIndexOfTokenAtOffset(typeStub.StartPos);
+                                    if (idx >= 0)
+                                    {
+                                        ScriptToken typeNameToken = Log.Tokens.TokensSpan[idx];
+                                        if (node.VarType is Struct)
+                                        {
+                                            typeNameToken.SyntaxType = EF.Struct;
+                                        }
+                                        else if (node.VarType is Enumeration)
+                                        {
+                                            typeNameToken.SyntaxType = EF.Enum;
+                                        }
+                                    }
+                                    break;
+                                }
+                                case DynamicArrayType { ElementType: Struct or Enumeration} dynArrType:
+                                {
+                                    int idx = Log.Tokens.GetIndexOfTokenAtOffset(typeStub.StartPos) + 2;
+                                    if (idx >= 0)
+                                    {
+                                        ScriptToken typeNameToken = Log.Tokens.TokensSpan[idx];
+                                        if (dynArrType.ElementType is Struct)
+                                        {
+                                            typeNameToken.SyntaxType = EF.Struct;
+                                        }
+                                        else if (dynArrType.ElementType is Enumeration)
+                                        {
+                                            typeNameToken.SyntaxType = EF.Enum;
+                                        }
+                                    }
+                                    break;
+                                }
+                            }
+                        }
                     }
 
                     if (Symbols.SymbolExistsInCurrentScope(node.Name))

@@ -8,14 +8,17 @@ using System.Windows;
 using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.SharedUI.Bases;
+using LegendaryExplorer.Tools.PackageEditor;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Misc.ME3Tweaks;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal;
 using Microsoft.Win32;
+using Xceed.Wpf.Toolkit.Primitives;
 
 namespace LegendaryExplorer.Packages
 {
@@ -263,5 +266,82 @@ namespace LegendaryExplorer.Packages
             public bool Any() => Enumerable.Any(DiskFiles) || Enumerable.Any(SFARPackageStreams);
         }
 
+        /// <summary>
+        /// Logic for Package Editor's 'Extract to file' - for sharing with other tools
+        /// </summary>
+        /// <param name="export"></param>
+        /// <param name="setBusy"></param>
+        /// <param name="setBusyText"></param>
+        /// <param name="entryDoubleClick"></param>
+        /// <param name="window"></param>
+        public static void ExtractEntryToNewPackage(ExportEntry export, Action<bool> setBusy = null, Action<string> setBusyText = null, Action<EntryStringPair> entryDoubleClick = null, Window window = null)
+        {
+            // This method is useful if you need to extract a portable asset easily
+            // It's very slow
+            string fileFilter;
+            switch (export.Game)
+            {
+                case MEGame.ME1:
+                    fileFilter = GameFileFilters.ME1SaveFileFilter;
+                    break;
+                case MEGame.ME2:
+                case MEGame.ME3:
+                    fileFilter = GameFileFilters.ME3ME2SaveFileFilter;
+                    break;
+                default:
+                    string extension = Path.GetExtension(export.FileRef.FilePath);
+                    fileFilter = $"*{extension}|*{extension}";
+                    break;
+            }
+
+            var d = new SaveFileDialog { Filter = fileFilter };
+            if (d.ShowDialog() == true)
+            {
+                Func<List<EntryStringPair>> PortFunc = () => EntryExporter.ExportExportToFile(export, d.FileName, out _);
+                if (File.Exists(d.FileName))
+                {
+                    var portIntoExistingRes = MessageBox.Show(window, $"Export the selected export ({export.InstancedFullPath}) into the selected file ({d.FileName})? Or port into a new file, overwriting it?\n\nPress Yes to port into the existing file.\nPress No to port as a new file\nPress cancel to abort", "Port into new or existing file?", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
+                    if (portIntoExistingRes == MessageBoxResult.Yes)
+                    {
+                        PortFunc = () =>
+                        {
+                            using var package = MEPackageHandler.OpenMEPackage(d.FileName);
+                            var results = EntryExporter.ExportExportToPackage(export, package, out _);
+                            package.Save();
+                            return results;
+                        };
+                    }
+                    else if (portIntoExistingRes == MessageBoxResult.Cancel)
+                    {
+                        return;
+                    } // No condition changes nothing
+                }
+                Task.Run(() => PortFunc.Invoke())
+                    .ContinueWithOnUIThread(results =>
+                        {
+                            setBusy?.Invoke(false);
+                            var result = results.Result;
+                            if (result.Any())
+                            {
+                                MessageBox.Show("Extraction completed with issues.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                                var ld = new ListDialog(result, "Extraction issues", "The following issues were detected while extracting to a new file", window);
+                                ld.DoubleClickEntryHandler = entryDoubleClick;
+                                ld.Show();
+                            }
+                            else
+                            {
+                                MessageBox.Show("Extracted into a new package.");
+                                var nwpf = new PackageEditorWindow();
+                                nwpf.LoadFile(d.FileName);
+                                nwpf.Show();
+                                nwpf.Activate();
+                            }
+
+                        }
+                    );
+                setBusyText?.Invoke("Exporting to new package");
+                setBusy?.Invoke(true);
+            }
+        }
     }
 }

@@ -124,9 +124,9 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
             var name = Consume(TokenType.Word);
             if (name == null) throw ParseError("Expected class name!");
-            name.SyntaxType = EF.TypeName;
+            name.SyntaxType = EF.Class;
 
-            var parentClass = ParseTheExtendsSpecifier() ?? new VariableType("Object");
+            var parentClass = ParseTheExtendsSpecifier(EF.Class) ?? new VariableType("Object");
 
             var outerClass = ParseTheWithinSpecifier() ?? new VariableType("Object");
 
@@ -219,7 +219,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
                     while (Consume(TokenType.Word) is ScriptToken interfaceName)
                     {
-                        interfaceName.SyntaxType = EF.TypeName;
+                        interfaceName.SyntaxType = EF.Class;
                         interfaces.Add(new VariableType(interfaceName.Value, interfaceName.StartPos, interfaceName.EndPos));
                         if (Consume(TokenType.Comma) is null)
                         {
@@ -479,9 +479,9 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
             var name = Consume(TokenType.Word);
             if (name == null) throw ParseError("Expected struct name!", CurrentPosition);
-            name.SyntaxType = EF.TypeName;
+            name.SyntaxType = EF.Struct;
 
-            var parent = ParseTheExtendsSpecifier();
+            var parent = ParseTheExtendsSpecifier(EF.Struct);
 
             if (Consume(TokenType.LeftBracket) == null) throw ParseError("Expected '{'!", CurrentPosition);
 
@@ -740,7 +740,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             if (name == null) throw ParseError("Expected state name!", CurrentPosition);
             name.SyntaxType = EF.State;
 
-            var parent = ParseTheExtendsSpecifier(true);
+            var parent = ParseTheExtendsSpecifier(EF.State);
 
             if (Consume(TokenType.LeftBracket) == null) throw ParseError("Expected '{'!", CurrentPosition);
 
@@ -891,7 +891,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             return funcParam;
         }
 
-        private VariableType ParseTheExtendsSpecifier(bool state = false)
+        private VariableType ParseTheExtendsSpecifier(EF syntaxType)
         {
             if (!Matches(EXTENDS, EF.Keyword)) return null;
             var parentName = Consume(TokenType.Word);
@@ -900,7 +900,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 throw ParseError($"Expected parent name after '{EXTENDS}'!", CurrentPosition);
             }
 
-            parentName.SyntaxType = state ? EF.State : EF.TypeName;
+            parentName.SyntaxType = syntaxType;
 
             return new VariableType(parentName.Value, parentName.StartPos, parentName.EndPos);
         }
@@ -914,7 +914,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 throw ParseError($"Expected outer class name after '{WITHIN}'!", CurrentPosition);
             }
 
-            outerName.SyntaxType = EF.TypeName;
+            outerName.SyntaxType = EF.Class;
 
             return new VariableType(outerName.Value, outerName.StartPos, outerName.EndPos);
         }

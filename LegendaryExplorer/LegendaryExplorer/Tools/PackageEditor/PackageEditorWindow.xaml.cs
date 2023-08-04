@@ -248,7 +248,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
         {
             CalculateExportMD5Command = new GenericCommand(CalculateExportMD5, ExportIsSelected);
             CompareToUnmoddedCommand = new GenericCommand(() => SharedPackageTools.ComparePackageToUnmodded(this, entryDoubleClickToTreeview), () => SharedPackageTools.CanCompareToUnmodded(this));
-            ComparePackagesCommand = new GenericCommand(()=>SharedPackageTools.ComparePackageToAnother(this, entryDoubleClickToTreeview), PackageIsLoaded);
+            ComparePackagesCommand = new GenericCommand(() => SharedPackageTools.ComparePackageToAnother(this, entryDoubleClickToTreeview), PackageIsLoaded);
             ExportAllDataCommand = new GenericCommand(ExportAllData, ExportIsSelected);
             ExportBinaryDataCommand = new GenericCommand(ExportBinaryData, ExportIsSelected);
             ImportAllDataCommand = new GenericCommand(ImportAllData, ExportIsSelected);
@@ -546,9 +546,6 @@ namespace LegendaryExplorer.Tools.PackageEditor
             }
         }
 
-        private bool IsLoadedPackageME() => Pcc != null && Pcc.Game.IsMEGame();
-
-
         private void ResolveImportsTreeView()
         {
             if (Enumerable.Any(AllTreeViewNodesX))
@@ -640,71 +637,9 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
         private void ExtractEntryToNewPackage()
         {
-            // This method is useful if you need to extract a portable asset easily
-            // It's very slow
-            string fileFilter;
-            switch (Pcc.Game)
+            if (SelectedItem.Entry is ExportEntry exp)
             {
-                case MEGame.ME1:
-                    fileFilter = GameFileFilters.ME1SaveFileFilter;
-                    break;
-                case MEGame.ME2:
-                case MEGame.ME3:
-                    fileFilter = GameFileFilters.ME3ME2SaveFileFilter;
-                    break;
-                default:
-                    string extension = Path.GetExtension(Pcc.FilePath);
-                    fileFilter = $"*{extension}|*{extension}";
-                    break;
-            }
-
-            var d = new SaveFileDialog { Filter = fileFilter };
-            if (d.ShowDialog() == true)
-            {
-                Func<List<EntryStringPair>> PortFunc = () => EntryExporter.ExportExportToFile(SelectedItem.Entry as ExportEntry, d.FileName, out _);
-                if (File.Exists(d.FileName))
-                {
-                    var portIntoExistingRes = MessageBox.Show(this, $"Export the selected export ({SelectedItem.Entry.InstancedFullPath}) into the selected file ({d.FileName})? Or port into a new file, overwriting it?\n\nPress Yes to port into the existing file.\nPress No to port as a new file\nPress cancel to abort", "Port into new or existing file?", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
-                    if (portIntoExistingRes == MessageBoxResult.Yes)
-                    {
-                        PortFunc = () =>
-                        {
-                            using var package = MEPackageHandler.OpenMEPackage(d.FileName);
-                            var results = EntryExporter.ExportExportToPackage(SelectedItem.Entry as ExportEntry, package, out _);
-                            package.Save();
-                            return results;
-                        };
-                    }
-                    else if (portIntoExistingRes == MessageBoxResult.Cancel)
-                    {
-                        return;
-                    } // No condition changes nothing
-                }
-                Task.Run(() => PortFunc.Invoke())
-                    .ContinueWithOnUIThread(results =>
-                        {
-                            IsBusy = false;
-                            var result = results.Result;
-                            if (result.Any())
-                            {
-                                MessageBox.Show("Extraction completed with issues.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
-                                var ld = new ListDialog(result, "Extraction issues", "The following issues were detected while extracting to a new file", this);
-                                ld.DoubleClickEntryHandler = entryDoubleClick;
-                                ld.Show();
-                            }
-                            else
-                            {
-                                MessageBox.Show("Extracted into a new package.");
-                                var nwpf = new PackageEditorWindow();
-                                nwpf.LoadFile(d.FileName);
-                                nwpf.Show();
-                                nwpf.Activate();
-                            }
-                        }
-                    );
-                BusyText = "Exporting to new package";
-                IsBusy = true;
-
+                SharedPackageTools.ExtractEntryToNewPackage(exp, x => IsBusy = x, x => BusyText = x,GetEntryDoubleClickAction(), this);
             }
         }
 
@@ -2838,26 +2773,13 @@ namespace LegendaryExplorer.Tools.PackageEditor
         {
             RefreshView();
             InitStuff();
-            string statusBarText = GetStatusBarText(filePath, Pcc.Game);
-            StatusBar_LeftMostText.Text = statusBarText;
+            StatusBar_LeftMostText.Text = GetStatusBarText();
             Title = $"Package Editor - {filePath}";
             InterpreterTab_Interpreter.UnloadExport();
 
             QueuedGotoNumber = goToIndex;
 
             InitializeTreeView();
-        }
-
-        private static string GetStatusBarText(string filePath, MEGame game)
-        {
-            string fileName = Path.GetFileName(filePath);
-            string notHighestMountedWarning = "";
-            if (MELoadedFiles.TryGetHighestMountedFile(game, fileName, out string highestMountedPath) && Path.GetFullPath(filePath) != highestMountedPath)
-            {
-                notHighestMountedWarning = "NOT HIGHEST MOUNTED VERSION";
-            }
-            string statusBarText = $"{fileName}  ( {MEDirectories.GetLocationDescriptor(filePath, game)} )  {notHighestMountedWarning}";
-            return statusBarText;
         }
 
         /// <summary>

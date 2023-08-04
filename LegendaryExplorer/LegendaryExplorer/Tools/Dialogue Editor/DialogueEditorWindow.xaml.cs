@@ -3366,7 +3366,7 @@ namespace LegendaryExplorer.DialogueEditor
                         seqEditor.Show();
                         if (uIndex != 0)
                         {
-                            seqEditor.LoadFile(filePath, uIndex);
+                            seqEditor.LoadFileAndGoTo(filePath, uIndex);
                         }
                         else seqEditor.LoadFile(filePath);
                     }

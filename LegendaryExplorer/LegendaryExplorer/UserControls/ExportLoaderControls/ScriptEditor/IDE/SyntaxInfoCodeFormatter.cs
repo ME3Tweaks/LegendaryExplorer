@@ -78,7 +78,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
         {
             [EF.Keyword] = new HighlightingColor { Name = nameof(EF.Keyword), Foreground = new SimpleHighlightingBrush(Color.FromRgb(0x56, 0x9b, 0xbf)) },
             [EF.Specifier] = new HighlightingColor { Name = nameof(EF.Specifier), Foreground = new SimpleHighlightingBrush(Color.FromRgb(0x56, 0x9b, 0xbf)) },
-            [EF.TypeName] = new HighlightingColor { Name = nameof(EF.TypeName), Foreground = new SimpleHighlightingBrush(Color.FromRgb(0x4e, 0xc8, 0xaf)) },
+            [EF.Class] = new HighlightingColor { Name = nameof(EF.Class), Foreground = new SimpleHighlightingBrush(Color.FromRgb(0x4e, 0xc8, 0xaf)) },
             [EF.String] = new HighlightingColor { Name = nameof(EF.String), Foreground = new SimpleHighlightingBrush(Color.FromRgb(0xd5, 0x9c, 0x7c)) },
             [EF.Name] = new HighlightingColor { Name = nameof(EF.Name), Foreground = new SimpleHighlightingBrush(Color.FromRgb(0xd5, 0x9c, 0x7c)) },
             [EF.Number] = new HighlightingColor { Name = nameof(EF.Number), Foreground = new SimpleHighlightingBrush(Color.FromRgb(0xb1, 0xcd, 0xa7)) },
@@ -90,6 +90,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
             [EF.Function] = new HighlightingColor { Name = nameof(EF.Function), Foreground = new SimpleHighlightingBrush(Color.FromRgb(0xDB, 0xDB, 0xDB)) },
             [EF.State] = new HighlightingColor { Name = nameof(EF.State), Foreground = new SimpleHighlightingBrush(Color.FromRgb(0xDB, 0xDB, 0xDB)) },
             [EF.Label] = new HighlightingColor { Name = nameof(EF.Label), Foreground = new SimpleHighlightingBrush(Color.FromRgb(0xDB, 0xDB, 0xDB)) },
+            [EF.Struct] = new HighlightingColor { Name = nameof(EF.Class), Foreground = new SimpleHighlightingBrush(Color.FromRgb(0x86, 0xC6, 0x91)) },
         };
 
         public string Name => "Unrealscript-Dark";
