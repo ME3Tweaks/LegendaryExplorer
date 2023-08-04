@@ -4,7 +4,7 @@ var class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper =
     [ "CreateNewOutputLink", "class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a88dc78f242e2e66a9563d2d18338835a", null ],
     [ "CreateVariableLink", "class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a0ed65724ff5fc309909aaaea3b28d081", null ],
     [ "CreateEventLink", "class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a52e5835e63aede6f59b98f44d83b2d5c", null ],
-    [ "RemoveOutputLinks", "class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a6e4ede028ec767e85b2b0023c36f59ca", null ],
+    [ "RemoveOutputLinks", "class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#ae20ca5c3df47e41317d2c9996ce2ce3e", null ],
     [ "RemoveVariableLinks", "class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a5901a821f889936ee53fd25627e2378a", null ],
     [ "RemoveEventLinks", "class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#aa175dd33e5f4a9f0f153e952144f7876", null ],
     [ "RemoveAllLinks", "class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a1248b2d365c66ac4c634928b918dac14", null ],
