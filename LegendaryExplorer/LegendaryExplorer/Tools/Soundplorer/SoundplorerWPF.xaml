@@ -114,16 +114,21 @@
                             audio from all three games.
                             <LineBreak/>
                             <LineBreak/>
-                            Audio replacement information:
+                            Audio replacement tools:
                             <Italic>
                             <LineBreak/>
-                            ME1 and LE1: No authoring tools (ISACT) are available
+                             ME1: Not supported by toolset
                             <LineBreak/>
                             ME2: The correct version of Wwise is not available (ME2 predates public Wwise)
                             <LineBreak/>
                             ME3: Requires 
                             <Hyperlink NavigateUri="https://1drv.ms/u/s!AorirBfl09VNrC9eh-_sOj_eqLIa?e=8lzC4j" Foreground="#FF182574" misc:HyperlinkExtensions.IsExternal="True">
                                 <Run Text="the 64 bit version of Wwise 2010.3.3 (Build 3773)"/>
+                            </Hyperlink>
+                            <LineBreak/>
+                            LE1: Generating new streaming audio requires external use of 
+                            <Hyperlink NavigateUri="https://1drv.ms/u/s!AorirBfl09VNwVpaGRsKk_wke2UW?e=Dwz2KZ" Foreground="#FF182574" misc:HyperlinkExtensions.IsExternal="True">
+                                <Run Text="ISACT 1.64"/>
                             </Hyperlink>
                             <LineBreak/>
                             LE2 and LE3: Requires 
