@@ -1650,6 +1650,12 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
             ClassInfo info = GlobalUnrealObjectInfo.GetClassOrStructInfo(pcc.Game, className);
 
+            if (info is null)
+            {
+                rop.RelinkReport.Add(new EntryStringPair($"Could not locate class: '{className}'"));
+                return null;
+            }
+
             //backup some package state so we can undo changes if something goes wrong
             int exportCount = pcc.ExportCount;
             int importCount = pcc.ImportCount;

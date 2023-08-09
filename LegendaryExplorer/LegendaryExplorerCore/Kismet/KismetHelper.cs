@@ -142,9 +142,17 @@ namespace LegendaryExplorerCore.Kismet
         /// This leaves all link slots intact, it just removes the actual links to other sequence objects.
         /// </summary>
         /// <param name="export">Sequence object to remove links from</param>
-        public static void RemoveOutputLinks(ExportEntry export)
+        /// <param name="replaceWithBlank">Use if you want to ensure no output links are available even from superclass</param>
+        public static void RemoveOutputLinks(ExportEntry export, bool replaceWithBlank = false)
         {
-            RemoveAllLinks(export, true, false, false);
+            if (replaceWithBlank)
+            {
+                export.WriteProperty(new ArrayProperty<StructProperty>("OutputLinks"));
+            }
+            else
+            {
+                RemoveAllLinks(export, true, false, false);
+            }
         }
 
         /// <summary>
