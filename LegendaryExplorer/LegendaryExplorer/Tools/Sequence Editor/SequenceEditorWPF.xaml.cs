@@ -1231,10 +1231,14 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 {
                     graphEditor.addNode(obj);
                 }
+                
+                List<SAction> actions = CurrentObjects.OfType<SAction>().ToList();
+                List<SVar> vars = CurrentObjects.OfType<SVar>().ToList();
+                List<SEvent> events = CurrentObjects.OfType<SEvent>().ToList();
 
                 foreach (SObj obj in CurrentObjects)
                 {
-                    obj.CreateConnections(CurrentObjects);
+                    obj.CreateConnections(actions, vars, events);
                 }
 
                 foreach (SObj obj in CurrentObjects)
@@ -1244,7 +1248,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                         obj.Layout(savedInfo.X, savedInfo.Y);
                         continue;
                     }
-                    if (Pcc.Game == MEGame.ME1 || Pcc.Game == MEGame.UDK || Pcc.Game.IsLEGame())
+                    if (Pcc.Game is MEGame.ME1 or MEGame.UDK || Pcc.Game.IsLEGame())
                     {
                         var props = obj.Export.GetProperties();
                         IntProperty xPos = props.GetProp<IntProperty>("ObjPosX");
