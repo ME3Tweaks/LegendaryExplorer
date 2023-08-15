@@ -456,6 +456,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             PackageEditorExperimentsM.MaterializeModel(GetPEWindow());
         }
 
+        private void LE2ConvertToSFXPawn_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.LE2ConvertBioPawnToSFXPawn(GetPEWindow());
+        }
+
         private void MScanner_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.MScanner(GetPEWindow());
