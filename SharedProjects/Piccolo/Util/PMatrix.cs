@@ -38,11 +38,11 @@ using System.Runtime.InteropServices;
 using System.Text;
 
 namespace Piccolo.Util {
-	/// <summary>
-	/// <b>PMatrix</b> is a wrapper around a <see cref="System.Drawing.Drawing2D.Matrix">
-	/// System.Drawing.Drawing2D.Matrix</see> that includes several convenience methods.  
-	/// </summary>
-	public sealed class PMatrix : ICloneable {
+    /// <summary>
+    /// <b>PMatrix</b> is a wrapper around a <see cref="Matrix3x2">
+    /// System.Numerics.Matrix3x2</see> that includes several convenience methods.  
+    /// </summary>
+    public sealed class PMatrix : ICloneable {
 		#region Fields
 		private Matrix3x2 matrix;
 		#endregion
@@ -82,9 +82,9 @@ namespace Piccolo.Util {
 
 		/// <summary>
 		/// Constructs a new PMatrix initialized to the values in the given
-		/// <see cref="System.Drawing.Drawing2D.Matrix">Matrix</see>.
+		/// <see cref="Matrix3x2">Matrix</see>.
 		/// </summary>
-		/// <param name="matrix">A <see cref="System.Drawing.Drawing2D.Matrix">Matrix</see>
+		/// <param name="matrix">A <see cref="Matrix3x2">Matrix</see>
 		/// to use when initializing this <see cref="PMatrix"/>
 		/// </param>
 		public PMatrix(Matrix3x2 matrix) {

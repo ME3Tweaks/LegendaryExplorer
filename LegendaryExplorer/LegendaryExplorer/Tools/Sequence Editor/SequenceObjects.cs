@@ -92,14 +92,13 @@ namespace LegendaryExplorer.Tools.SequenceObjects
             comment = new SText(GetComment(), CommentColor, false)
             {
                 Pickable = false,
-                X = 0
             };
             comment.Y = 0 - comment.Height;
             AddChild(comment);
             Pickable = true;
         }
 
-        public virtual void CreateConnections(IList<SObj> objects) { }
+        public virtual void CreateConnections(List<SAction> actions, List<SVar> vars, List<SEvent> events) { }
         public virtual void Layout(float x, float y) => SetOffset(x, y);
 
         public virtual IEnumerable<SeqEdEdge> Edges => Enumerable.Empty<SeqEdEdge>();
@@ -107,7 +106,8 @@ namespace LegendaryExplorer.Tools.SequenceObjects
         private string GetComment()
         {
             string res = "";
-            var comments = export.GetProperty<ArrayProperty<StrProperty>>("m_aObjComment");
+            PropertyCollection properties = export.GetProperties();
+            var comments = properties.GetProp<ArrayProperty<StrProperty>>("m_aObjComment");
             if (comments != null)
             {
                 foreach (StrProperty s in comments)
@@ -121,7 +121,6 @@ namespace LegendaryExplorer.Tools.SequenceObjects
                 //Parse and show relevant info so user doesn't have to dig info file to find
 
                 //I am sure there is a more efficient way to do this we will want to move to if we expand this feature
-                PropertyCollection properties = export.GetProperties();
                 switch (export.ClassName)
                 {
                     case "BioSeqAct_ScalarMathUnit":
@@ -378,6 +377,7 @@ namespace LegendaryExplorer.Tools.SequenceObjects
         public SVar(ExportEntry entry, SequenceGraphEditor grapheditor)
             : base(entry, grapheditor)
         {
+            PropertyCollection properties = export.GetProperties();
             string s = export.ObjectName;
             s = s.Replace("BioSeqVar_", "");
             s = s.Replace("SFXSeqVar_", "");
@@ -385,48 +385,42 @@ namespace LegendaryExplorer.Tools.SequenceObjects
             Type = GetVarType(s);
             const float w = RADIUS * 2;
             const float h = RADIUS * 2;
-            shape = PPath.CreateEllipse(0, 0, w, h);
             OutlinePen = new Pen(GetColor(Type));
-            shape.Pen = OutlinePen;
+            shape = PPath.CreateEllipse(0, 0, w, h, OutlinePen);
             shape.Brush = NodeBrush;
             shape.Pickable = false;
             AddChild(shape);
-            Bounds = new RectangleF(0, 0, w, h);
-            val = new SText(GetValue().Truncate(Settings.SequenceEditor_MaxVarStringLength, true))
+            SetBounds(0, 0, w, h);
+            val = new SText(GetValue(properties).Truncate(Settings.SequenceEditor_MaxVarStringLength, true))
             {
                 Pickable = false,
                 TextAlignment = StringAlignment.Center
             };
-            val.X = w / 2 - val.Width / 2;
-            val.Y = h / 2 - val.Height / 2;
+            val.SetBounds(
+                w / 2 - val.Width / 2,
+                h / 2 - val.Height / 2,
+                val.Width, 
+                val.Height);
             AddChild(val);
-            PropertyCollection props = export.GetProperties();
-            foreach (Property prop in props)
+            if (properties.GetProp<NameProperty>("VarName") is {} nameProp)
             {
-                if ((prop.Name == "VarName" || prop.Name == "varName")
-                    && prop is NameProperty nameProp)
+                var varName = new SText(nameProp.Value.Instanced, Color.Red, false)
                 {
-                    var VarName = new SText(nameProp.Value.Instanced, Color.Red, false)
-                    {
-                        Pickable = false,
-                        TextAlignment = StringAlignment.Center,
-                        Y = h
-                    };
-                    VarName.X = w / 2 - VarName.Width / 2;
-                    AddChild(VarName);
-                    break;
-                }
+                    Pickable = false,
+                    TextAlignment = StringAlignment.Center,
+                };
+                varName.SetBounds(w / 2 - varName.Width / 2, h, varName.Width, varName.Height);
+                AddChild(varName);
             }
             MouseEnter += OnMouseEnter;
             MouseLeave += OnMouseLeave;
         }
 
-        private string GetValue()
+        private string GetValue(PropertyCollection props)
         {
             const string unknownValue = "???";
             try
             {
-                PropertyCollection props = export.GetProperties();
                 switch (Type)
                 {
                     case VarTypes.Int:
@@ -675,9 +669,8 @@ namespace LegendaryExplorer.Tools.SequenceObjects
                 }
             }
             PPath titleBox = MakeTitleBox(export.ObjectName.Instanced);
-            var shape = PPath.CreateRectangle(0, -titleBox.Height, w, h + titleBox.Height);
             OutlinePen = new Pen(Color.Black);
-            shape.Pen = OutlinePen;
+            var shape = PPath.CreateRectangle(0, -titleBox.Height, w, h + titleBox.Height, OutlinePen);
             shape.Brush = new SolidBrush(Color.Transparent);
             shape.Pickable = false;
             AddChild(shape);
@@ -697,17 +690,14 @@ namespace LegendaryExplorer.Tools.SequenceObjects
         private PPath MakeTitleBox(string s)
         {
             s = $"#{UIndex} : {s}";
-            var title = new SText(s, TitleColor)
+            var title = new SText(s, TitleColor, y: 3)
             {
                 TextAlignment = StringAlignment.Center,
                 ConstrainWidthToTextWidth = false,
-                X = 0,
-                Y = 3,
                 Pickable = false
             };
             title.Width += 20;
-            var titleBox = PPath.CreateRectangle(0, 0, title.Width, title.Height + 5);
-            titleBox.Pen = OutlinePen;
+            var titleBox = PPath.CreateRectangle(0, 0, title.Width, title.Height + 5, OutlinePen);
             titleBox.Brush = TitleBoxBrush;
             titleBox.AddChild(title);
             titleBox.Pickable = false;
@@ -770,7 +760,7 @@ namespace LegendaryExplorer.Tools.SequenceObjects
         private readonly EventDragHandler eventDragHandler;
         private static readonly PointF[] DownwardTrianglePoly = { new(-4, 0), new(4, 0), new(0, 10) };
         protected static PPath CreateActionLinkBox() => PPath.CreateRectangle(0, -4, 10, 8);
-        private static PPath CreateVarLinkBox() => PPath.CreateRectangle(-4, 0, 8, 10);
+        private static PPath CreateVarLinkBox(Pen pen) => PPath.CreateRectangle(-4, 0, 8, 10, pen);
 
         protected SBox(ExportEntry entry, SequenceGraphEditor grapheditor)
             : base(entry, grapheditor)
@@ -780,13 +770,13 @@ namespace LegendaryExplorer.Tools.SequenceObjects
             eventDragHandler = new EventDragHandler(grapheditor, this);
         }
 
-        public override void CreateConnections(IList<SObj> objects)
+        public override void CreateConnections(List<SAction> actions, List<SVar> vars, List<SEvent> events)
         {
             foreach (OutputLink outLink in Outlinks)
             {
                 for (int j = 0; j < outLink.Links.Count; j++)
                 {
-                    foreach (SAction destAction in objects.OfType<SAction>())
+                    foreach (SAction destAction in actions)
                     {
                         if (destAction.UIndex == outLink.Links[j])
                         {
@@ -809,14 +799,16 @@ namespace LegendaryExplorer.Tools.SequenceObjects
             {
                 foreach (int link in varLink.Links)
                 {
-                    foreach (SVar destVar in objects.OfType<SVar>())
+                    foreach (SVar destVar in vars)
                     {
                         if (destVar.UIndex == link)
                         {
                             PPath p1 = varLink.Node;
                             var edge = new VarEdge();
                             if (destVar.ChildrenCount > 1)
+                            {
                                 edge.Pen = ((PPath)destVar[1]).Pen;
+                            }
                             p1.Tag ??= new List<VarEdge>();
                             ((List<VarEdge>)p1.Tag).Add(edge);
                             destVar.Connections.Add(edge);
@@ -833,7 +825,7 @@ namespace LegendaryExplorer.Tools.SequenceObjects
             {
                 foreach (int link in eventLink.Links)
                 {
-                    foreach (SEvent destEvent in objects.OfType<SEvent>())
+                    foreach (SEvent destEvent in events)
                     {
                         if (destEvent.UIndex == link)
                         {
@@ -859,12 +851,10 @@ namespace LegendaryExplorer.Tools.SequenceObjects
         protected float GetTitleBox(string s, float w)
         {
             s = $"#{UIndex} : {s}";
-            var title = new SText(s, TitleColor)
+            var title = new SText(s, TitleColor, y: 3)
             {
                 TextAlignment = StringAlignment.Center,
                 ConstrainWidthToTextWidth = false,
-                X = 0,
-                Y = 3,
                 Pickable = false
             };
             if (title.Width + 20 > w)
@@ -872,17 +862,16 @@ namespace LegendaryExplorer.Tools.SequenceObjects
                 w = title.Width + 20;
             }
             title.Width = w;
-            TitleBox = PPath.CreateRectangle(0, 0, w, title.Height + 5);
-            TitleBox.Pen = OutlinePen;
+            TitleBox = PPath.CreateRectangle(0, 0, w, title.Height + 5, OutlinePen);
             TitleBox.Brush = TitleBoxBrush;
             TitleBox.AddChild(title);
             TitleBox.Pickable = false;
             return w;
         }
 
-        protected void GetVarLinks()
+        protected void GetVarLinks(PropertyCollection properties)
         {
-            var varLinksProp = export.GetProperty<ArrayProperty<StructProperty>>("VariableLinks");
+            var varLinksProp = properties.GetProp<ArrayProperty<StructProperty>>("VariableLinks");
             if (varLinksProp != null)
             {
                 foreach (StructProperty prop in varLinksProp)
@@ -912,23 +901,21 @@ namespace LegendaryExplorer.Tools.SequenceObjects
                             l.Links.Add(objProp.Value);
                         }
                         PPath dragger;
+                        var varPen = new Pen(GetColor(l.Type));
                         if (props.GetProp<BoolProperty>("bWriteable").Value)
                         {
-                            l.Node = PPath.CreatePolygon(DownwardTrianglePoly);
-                            dragger = PPath.CreatePolygon(DownwardTrianglePoly);
+                            l.Node = PPath.CreatePolygon(DownwardTrianglePoly, varPen);
+                            dragger = PPath.CreatePolygon(DownwardTrianglePoly, varPen);
                         }
                         else
                         {
-                            l.Node = CreateVarLinkBox();
-                            dragger = CreateVarLinkBox();
+                            l.Node = CreateVarLinkBox(varPen);
+                            dragger = CreateVarLinkBox(varPen);
                         }
                         l.Node.Brush = new SolidBrush(GetColor(l.Type));
-                        l.Node.Pen = new Pen(GetColor(l.Type));
                         l.Node.Pickable = false;
                         dragger.Brush = MostlyTransparentBrush;
-                        dragger.Pen = l.Node.Pen;
-                        dragger.X = l.Node.X;
-                        dragger.Y = l.Node.Y;
+                        dragger.SetBounds(l.Node.X, l.Node.Y, dragger.Width, dragger.Height);
                         dragger.AddInputEventListener(varDragHandler);
                         l.Node.AddChild(dragger);
                         Varlinks.Add(l);
@@ -937,9 +924,9 @@ namespace LegendaryExplorer.Tools.SequenceObjects
             }
         }
 
-        protected void GetEventLinks()
+        protected void GetEventLinks(PropertyCollection properties)
         {
-            var eventLinksProp = export.GetProperty<ArrayProperty<StructProperty>>("EventLinks");
+            var eventLinksProp = properties.GetProp<ArrayProperty<StructProperty>>("EventLinks");
             if (eventLinksProp != null)
             {
                 foreach (StructProperty prop in eventLinksProp)
@@ -948,25 +935,23 @@ namespace LegendaryExplorer.Tools.SequenceObjects
                     var linkedEvents = props.GetProp<ArrayProperty<ObjectProperty>>("LinkedEvents");
                     if (linkedEvents != null)
                     {
+                        var eventPen = new Pen(EventColor);
                         var l = new EventLink
                         {
                             Links = new List<int>(),
                             Edges = new List<EventEdge>(),
                             Desc = props.GetProp<StrProperty>("LinkDesc"),
-                            Node = CreateVarLinkBox()
+                            Node = CreateVarLinkBox(eventPen)
                         };
                         l.Node.Brush = new SolidBrush(EventColor);
-                        l.Node.Pen = new Pen(EventColor);
                         l.Node.Pickable = false;
                         foreach (ObjectProperty objProp in linkedEvents)
                         {
                             l.Links.Add(objProp.Value);
                         }
-                        PPath dragger = CreateVarLinkBox();
+                        PPath dragger = CreateVarLinkBox(eventPen);
                         dragger.Brush = MostlyTransparentBrush;
-                        dragger.Pen = l.Node.Pen;
-                        dragger.X = l.Node.X;
-                        dragger.Y = l.Node.Y;
+                        dragger.SetBounds(l.Node.X, l.Node.Y, dragger.Width, dragger.Height);
                         dragger.AddInputEventListener(eventDragHandler);
                         l.Node.AddChild(dragger);
                         EventLinks.Add(l);
@@ -975,9 +960,9 @@ namespace LegendaryExplorer.Tools.SequenceObjects
             }
         }
 
-        protected void GetOutputLinks()
+        protected void GetOutputLinks(PropertyCollection properties)
         {
-            var outLinksProp = export.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
+            var outLinksProp = properties.GetProp<ArrayProperty<StructProperty>>("OutputLinks");
             if (outLinksProp != null)
             {
                 foreach (StructProperty prop in outLinksProp)
@@ -1003,8 +988,7 @@ namespace LegendaryExplorer.Tools.SequenceObjects
                         l.Node.Pickable = false;
                         PPath dragger = CreateActionLinkBox();
                         dragger.Brush = MostlyTransparentBrush;
-                        dragger.X = l.Node.X;
-                        dragger.Y = l.Node.Y;
+                        dragger.SetBounds(l.Node.X, l.Node.Y, dragger.Width, dragger.Height);
                         dragger.AddInputEventListener(outputDragHandler);
                         l.Node.AddChild(dragger);
                         Outlinks.Add(l);
@@ -1397,15 +1381,14 @@ namespace LegendaryExplorer.Tools.SequenceObjects
             float starty = 0;
             float w = 15;
             float midW = 0;
-            VarLinkBox = new PPath();
-            GetVarLinks();
+            VarLinkBox = new PPath(OutlinePen);
+            PropertyCollection props = export.GetProperties();
+            GetVarLinks(props);
             foreach (VarLink varLink in Varlinks)
             {
                 string d = string.Join(",", varLink.Links.Select(l => $"#{l}"));
-                var t2 = new SText(d + "\n" + varLink.Desc)
+                var t2 = new SText(d + "\n" + varLink.Desc, x: w)
                 {
-                    X = w,
-                    Y = 0,
                     Pickable = false
                 };
                 w += t2.Width + 20;
@@ -1416,10 +1399,9 @@ namespace LegendaryExplorer.Tools.SequenceObjects
             if (Varlinks.Count != 0)
                 VarLinkBox.AddRectangle(0, 0, w, VarLinkBox[0].Height);
             VarLinkBox.Pickable = false;
-            VarLinkBox.Pen = OutlinePen;
             VarLinkBox.Brush = NodeBrush;
-            GetOutputLinks();
-            OutLinkBox = new PPath();
+            GetOutputLinks(props);
+            OutLinkBox = new PPath(OutlinePen);
             for (int i = 0; i < Outlinks.Count; i++)
             {
                 string linkDesc = Outlinks[i].Desc;
@@ -1427,23 +1409,22 @@ namespace LegendaryExplorer.Tools.SequenceObjects
                 {
                     linkDesc += $": {string.Join(",", Outlinks[i].Links.Select(l => $"#{l}"))}";
                 }
-                var t2 = new SText(linkDesc);
+                var t2 = new SText(linkDesc)
+                {
+                    Pickable = false
+                };
                 if (t2.Width + 10 > midW) midW = t2.Width + 10;
                 //t2.TextAlignment = StringAlignment.Far;
                 //t2.ConstrainWidthToTextWidth = false;
-                t2.X = 0 - t2.Width;
-                t2.Y = starty + 3;
+                t2.SetBounds(0 - t2.Width, starty + 3, t2.Width, t2.Height);
                 starty += t2.Height + 6;
-                t2.Pickable = false;
                 Outlinks[i].Node.TranslateBy(0, t2.Y + t2.Height / 2);
                 t2.AddChild(Outlinks[i].Node);
                 OutLinkBox.AddChild(t2);
             }
             OutLinkBox.AddPolygon(new[] { new PointF(0, 0), new PointF(0, starty), new PointF(-0.5f * midW, starty + 30), new PointF(0 - midW, starty), new PointF(0 - midW, 0), new PointF(midW / -2, -30) });
             OutLinkBox.Pickable = false;
-            OutLinkBox.Pen = OutlinePen;
             OutLinkBox.Brush = NodeBrush;
-            PropertyCollection props = export.GetProperties();
             foreach (Property prop in props)
             {
                 if (prop.Name.Name.Contains("EventName") || prop.Name == "sScriptName")
@@ -1543,9 +1524,10 @@ namespace LegendaryExplorer.Tools.SequenceObjects
         public SAction(ExportEntry entry, SequenceGraphEditor grapheditor)
             : base(entry, grapheditor)
         {
-            GetVarLinks();
-            GetEventLinks();
-            GetOutputLinks();
+            PropertyCollection properties = export.GetProperties();
+            GetVarLinks(properties);
+            GetEventLinks(properties);
+            GetOutputLinks(properties);
         }
 
         private bool _isSelected;
@@ -1571,6 +1553,7 @@ namespace LegendaryExplorer.Tools.SequenceObjects
 
         public override void Layout(float x, float y)
         {
+            PropertyCollection properties = export.GetProperties();
             OutlinePen = new Pen(Color.Black);
             string s = export.ObjectName.Instanced;
             s = s.Replace("BioSeqAct_", "").Replace("SFXSeqAct_", "")
@@ -1581,10 +1564,8 @@ namespace LegendaryExplorer.Tools.SequenceObjects
             for (int i = 0; i < Varlinks.Count; i++)
             {
                 string d = string.Join(",", Varlinks[i].Links.Select(l => $"#{l}"));
-                var t2 = new SText($"{d}\n{Varlinks[i].Desc}")
+                var t2 = new SText($"{d}\n{Varlinks[i].Desc}", x: w)
                 {
-                    X = w,
-                    Y = 0,
                     Pickable = false
                 };
                 w += t2.Width + 20;
@@ -1595,10 +1576,8 @@ namespace LegendaryExplorer.Tools.SequenceObjects
             for (int i = 0; i < EventLinks.Count; i++)
             {
                 string d = string.Join(",", EventLinks[i].Links.Select(l => $"#{l}"));
-                var t2 = new SText($"{d}\n{EventLinks[i].Desc}")
+                var t2 = new SText($"{d}\n{EventLinks[i].Desc}", x: w)
                 {
-                    X = w,
-                    Y = 0,
                     Pickable = false
                 };
                 w += t2.Width + 20;
@@ -1621,8 +1600,7 @@ namespace LegendaryExplorer.Tools.SequenceObjects
                 }
                 var t2 = new SText(linkDesc);
                 if (t2.Width + 10 > outW) outW = t2.Width + 10;
-                t2.X = 0 - t2.Width;
-                t2.Y = starty;
+                t2.SetBounds(0 - t2.Width, starty, t2.Width, t2.Height);
                 starty += t2.Height;
                 t2.Pickable = false;
                 Outlinks[i].Node.TranslateBy(0, t2.Y + t2.Height / 2);
@@ -1631,26 +1609,24 @@ namespace LegendaryExplorer.Tools.SequenceObjects
             }
             OutLinkBox.Pickable = false;
             inputLinkBox = new PNode();
-            GetInputLinks();
+            GetInputLinks(properties);
             float inW = 0;
             float inY = 8;
             for (int i = 0; i < InLinks.Count; i++)
             {
-                var t2 = new SText(InLinks[i].Desc);
+                var t2 = new SText(InLinks[i].Desc, x: 3, y: inY);
                 if (t2.Width > inW) inW = t2.Width;
-                t2.X = 3;
-                t2.Y = inY;
                 inY += t2.Height;
                 t2.Pickable = false;
-                InLinks[i].Node.X = -10;
-                InLinks[i].Node.Y = t2.Y + t2.Height / 2 - 5;
-                t2.AddChild(InLinks[i].Node);
+                PPath inLinkNode = InLinks[i].Node;
+                inLinkNode.SetBounds(-10, t2.Y + t2.Height / 2 - 5, inLinkNode.Width, inLinkNode.Height);
+                t2.AddChild(inLinkNode);
                 inputLinkBox.AddChild(t2);
             }
             inputLinkBox.Pickable = false;
             if (inY > starty) starty = inY;
             if (inW + outW + 10 > w) w = inW + outW + 10;
-            foreach (var prop in export.GetProperties())
+            foreach (var prop in properties)
             {
                 switch (prop)
                 {
@@ -1683,17 +1659,15 @@ namespace LegendaryExplorer.Tools.SequenceObjects
                 w = tW;
                 TitleBox.Width = w;
             }
-            TitleBox.X = 0;
-            TitleBox.Y = 0;
+            TitleBox.SetBounds(0, 0, TitleBox.Width, TitleBox.Height);
             float h = TitleBox.Height + 2;
             inputLinkBox.TranslateBy(0, h);
             OutLinkBox.TranslateBy(w, h);
             h += starty + 8;
             VarLinkBox.TranslateBy(VarLinkBox.Width < w ? (w - VarLinkBox.Width) / 2 : 0, h);
             h += VarLinkBox.Height;
-            box = PPath.CreateRectangle(0, TitleBox.Height + 2, w, h - (TitleBox.Height + 2));
+            box = PPath.CreateRectangle(0, TitleBox.Height + 2, w, h - (TitleBox.Height + 2), OutlinePen);
             box.Brush = NodeBrush;
-            box.Pen = OutlinePen;
             box.Pickable = false;
             this.Bounds = new RectangleF(0, 0, w, h);
             this.AddChild(box);
@@ -1704,13 +1678,13 @@ namespace LegendaryExplorer.Tools.SequenceObjects
             SetOffset(x, y);
         }
 
-        private void GetInputLinks()
+        private void GetInputLinks(PropertyCollection properties)
         {
             InLinks = new List<InputLink>();
-            var inputLinksProp = export.GetProperty<ArrayProperty<StructProperty>>("InputLinks");
+            var inputLinksProp = properties.GetProp<ArrayProperty<StructProperty>>("InputLinks");
             if (export.ClassName == "SequenceReference")
             {
-                var oSequenceReference = export.GetProperty<ObjectProperty>("oSequenceReference");
+                var oSequenceReference = properties.GetProp<ObjectProperty>("oSequenceReference");
                 if (oSequenceReference != null)
                 {
                     int referencedIndex = oSequenceReference.Value;
@@ -1851,21 +1825,18 @@ namespace LegendaryExplorer.Tools.SequenceObjects
         // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private static readonly PrivateFontCollection Fontcollection;
         private static readonly Font KismetFont;
+        private static readonly float KismetFontSizeInPoints;
 
-        public SText(string s, bool shadows = true, float scale = 1)
-            : base(s)
+        public SText(string s, bool shadows = true, float scale = 1, float x = 0, float y = 0)
+            : base(s, new SolidBrush(Color.FromArgb(255, 255, 255)), KismetFont, KismetFontSizeInPoints, x, y)
         {
-            TextBrush = new SolidBrush(Color.FromArgb(255, 255, 255));
-            Font = KismetFont;
             GlobalScale = scale;
             ShadowRendering = shadows;
         }
 
-        public SText(string s, Color c, bool shadows = true, float scale = 1)
-            : base(s)
+        public SText(string s, Color c, bool shadows = true, float scale = 1, float x = 0, float y = 0)
+            : base(s, new SolidBrush(c), KismetFont, KismetFontSizeInPoints, x, y)
         {
-            TextBrush = new SolidBrush(c);
-            Font = KismetFont;
             GlobalScale = scale;
             ShadowRendering = shadows;
         }
@@ -1877,10 +1848,10 @@ namespace LegendaryExplorer.Tools.SequenceObjects
             IntPtr fontPtr = Marshal.AllocCoTaskMem(fontData.Length);
             Marshal.Copy(fontData, 0, fontPtr, fontData.Length);
             Fontcollection.AddMemoryFont(fontPtr, fontData.Length);
-            uint tmp = 0;
-            WindowsAPI.AddFontMemResourceEx(fontPtr, (uint)fontData.Length, IntPtr.Zero, tmp);
+            WindowsAPI.AddFontMemResourceEx(fontPtr, (uint)fontData.Length, 0, 0);
             Marshal.FreeCoTaskMem(fontPtr);
             KismetFont = new Font(Fontcollection.Families[0], 6, GraphicsUnit.Pixel);
+            KismetFontSizeInPoints = KismetFont.SizeInPoints;
         }
 
         protected override void Paint(PPaintContext paintContext)

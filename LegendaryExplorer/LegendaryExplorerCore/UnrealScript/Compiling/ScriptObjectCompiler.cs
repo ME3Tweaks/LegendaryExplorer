@@ -103,6 +103,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 classExport.ObjectName = className;
                 classExport.SuperClass = superClass;
             }
+            classExport.ObjectFlags = EObjectFlags.Public | EObjectFlags.LoadForClient | EObjectFlags.LoadForServer | EObjectFlags.LoadForEdit | EObjectFlags.Standalone;
             classObj.SuperClass = superClass?.UIndex ?? 0;
             classObj.IgnoreMask = (EProbeFunctions)ulong.MaxValue;
             classObj.LabelTableOffset = ushort.MaxValue;

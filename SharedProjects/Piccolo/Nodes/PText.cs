@@ -114,6 +114,17 @@ namespace Piccolo.Nodes {
 		public PText(string aText) : this() {
 			Text = aText;
 		}
+
+        //specialized constructor to avoid recomputing the bounds when setting textbrush, font, x, and y.
+        //also can avoid the very expensize Font.SizeInPoints call
+        protected PText(string text, Brush brush, Font textFont, float fontSizeInPoints, float x, float y)
+        {
+            textBrush = brush;
+            font = textFont;
+            FontSizeInPoints = fontSizeInPoints;
+            bounds = new RectangleF(x, y, 0, 0);
+            Text = text;
+        }
 		#endregion
 
 		#region Basic
@@ -197,7 +208,7 @@ namespace Piccolo.Nodes {
 		/// The text will be broken up into multiple lines based on the size of the text
 		/// and the bounds width of this node.
 		/// </remarks>
-		public virtual string Text {
+		public string Text {
 			get => text;
             set {
 				string old = text;
@@ -318,8 +329,9 @@ namespace Piccolo.Nodes {
 				float textWidth;
 				float textHeight;
 				if (ConstrainWidthToTextWidth) {
-					textWidth = GRAPHICS.MeasureString(Text, Font).Width;
-					textHeight = GRAPHICS.MeasureString(Text, Font).Height;
+                    SizeF stringSize = GRAPHICS.MeasureString(Text, Font);
+                    textWidth = stringSize.Width;
+					textHeight = stringSize.Height;
 				}
 				else {
 					textWidth = Width;

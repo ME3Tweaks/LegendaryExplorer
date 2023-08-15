@@ -1034,9 +1034,9 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             SelectedSequence = seqExport;
             SetupJSON(SelectedSequence);
             var selectedExports = SelectedObjects.Select(o => o.Export).ToList();
-            Properties_InterpreterWPF.LoadExport(seqExport);
             if (fromFile)
             {
+                Properties_InterpreterWPF.LoadExport(seqExport);
                 if (UseSavedViews && File.Exists(JSONpath))
                 {
                     SavedView = JsonConvert.DeserializeObject<SavedViewData>(File.ReadAllText(JSONpath));
@@ -1231,10 +1231,14 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 {
                     graphEditor.addNode(obj);
                 }
+                
+                List<SAction> actions = CurrentObjects.OfType<SAction>().ToList();
+                List<SVar> vars = CurrentObjects.OfType<SVar>().ToList();
+                List<SEvent> events = CurrentObjects.OfType<SEvent>().ToList();
 
                 foreach (SObj obj in CurrentObjects)
                 {
-                    obj.CreateConnections(CurrentObjects);
+                    obj.CreateConnections(actions, vars, events);
                 }
 
                 foreach (SObj obj in CurrentObjects)
@@ -1244,7 +1248,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                         obj.Layout(savedInfo.X, savedInfo.Y);
                         continue;
                     }
-                    if (Pcc.Game == MEGame.ME1 || Pcc.Game == MEGame.UDK || Pcc.Game.IsLEGame())
+                    if (Pcc.Game is MEGame.ME1 or MEGame.UDK || Pcc.Game.IsLEGame())
                     {
                         var props = obj.Export.GetProperties();
                         IntProperty xPos = props.GetProp<IntProperty>("ObjPosX");
@@ -1525,9 +1529,9 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 RefreshView();
             }
 
-            foreach (var i in updatedExports)
+            foreach (var updatedExportUIndex in updatedExports)
             {
-                if (Pcc.IsUExport(i) && Pcc.GetUExport(i).IsSequence())
+                if (Pcc.TryGetUExport(updatedExportUIndex, out ExportEntry updatedExport) && updatedExport.IsSequence() && updatedExport != SelectedSequence)
                 {
                     LoadSequences();
                     break;
@@ -2148,6 +2152,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 ExportEntry clonedExport = cloneObject(obj.Export, SelectedSequence);
                 customSaveData[clonedExport.UIndex] = new PointF(graphEditor.Camera.ViewCenterX, graphEditor.Camera.ViewCenterY);
             }
+            (FindResource("nodeContextMenu") as ContextMenu).IsOpen = false;
         }
 
         static ExportEntry cloneObject(ExportEntry old, ExportEntry sequence, bool topLevel = true, bool incrementIndex = true)
