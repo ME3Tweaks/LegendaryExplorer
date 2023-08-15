@@ -385,9 +385,8 @@ namespace LegendaryExplorer.Tools.SequenceObjects
             Type = GetVarType(s);
             const float w = RADIUS * 2;
             const float h = RADIUS * 2;
-            shape = PPath.CreateEllipse(0, 0, w, h);
             OutlinePen = new Pen(GetColor(Type));
-            shape.Pen = OutlinePen;
+            shape = PPath.CreateEllipse(0, 0, w, h, OutlinePen);
             shape.Brush = NodeBrush;
             shape.Pickable = false;
             AddChild(shape);
@@ -670,9 +669,8 @@ namespace LegendaryExplorer.Tools.SequenceObjects
                 }
             }
             PPath titleBox = MakeTitleBox(export.ObjectName.Instanced);
-            var shape = PPath.CreateRectangle(0, -titleBox.Height, w, h + titleBox.Height);
             OutlinePen = new Pen(Color.Black);
-            shape.Pen = OutlinePen;
+            var shape = PPath.CreateRectangle(0, -titleBox.Height, w, h + titleBox.Height, OutlinePen);
             shape.Brush = new SolidBrush(Color.Transparent);
             shape.Pickable = false;
             AddChild(shape);
@@ -699,8 +697,7 @@ namespace LegendaryExplorer.Tools.SequenceObjects
                 Pickable = false
             };
             title.Width += 20;
-            var titleBox = PPath.CreateRectangle(0, 0, title.Width, title.Height + 5);
-            titleBox.Pen = OutlinePen;
+            var titleBox = PPath.CreateRectangle(0, 0, title.Width, title.Height + 5, OutlinePen);
             titleBox.Brush = TitleBoxBrush;
             titleBox.AddChild(title);
             titleBox.Pickable = false;
@@ -763,7 +760,7 @@ namespace LegendaryExplorer.Tools.SequenceObjects
         private readonly EventDragHandler eventDragHandler;
         private static readonly PointF[] DownwardTrianglePoly = { new(-4, 0), new(4, 0), new(0, 10) };
         protected static PPath CreateActionLinkBox() => PPath.CreateRectangle(0, -4, 10, 8);
-        private static PPath CreateVarLinkBox() => PPath.CreateRectangle(-4, 0, 8, 10);
+        private static PPath CreateVarLinkBox(Pen pen) => PPath.CreateRectangle(-4, 0, 8, 10, pen);
 
         protected SBox(ExportEntry entry, SequenceGraphEditor grapheditor)
             : base(entry, grapheditor)
@@ -809,7 +806,9 @@ namespace LegendaryExplorer.Tools.SequenceObjects
                             PPath p1 = varLink.Node;
                             var edge = new VarEdge();
                             if (destVar.ChildrenCount > 1)
+                            {
                                 edge.Pen = ((PPath)destVar[1]).Pen;
+                            }
                             p1.Tag ??= new List<VarEdge>();
                             ((List<VarEdge>)p1.Tag).Add(edge);
                             destVar.Connections.Add(edge);
@@ -863,8 +862,7 @@ namespace LegendaryExplorer.Tools.SequenceObjects
                 w = title.Width + 20;
             }
             title.Width = w;
-            TitleBox = PPath.CreateRectangle(0, 0, w, title.Height + 5);
-            TitleBox.Pen = OutlinePen;
+            TitleBox = PPath.CreateRectangle(0, 0, w, title.Height + 5, OutlinePen);
             TitleBox.Brush = TitleBoxBrush;
             TitleBox.AddChild(title);
             TitleBox.Pickable = false;
@@ -903,23 +901,21 @@ namespace LegendaryExplorer.Tools.SequenceObjects
                             l.Links.Add(objProp.Value);
                         }
                         PPath dragger;
+                        var varPen = new Pen(GetColor(l.Type));
                         if (props.GetProp<BoolProperty>("bWriteable").Value)
                         {
-                            l.Node = PPath.CreatePolygon(DownwardTrianglePoly);
-                            dragger = PPath.CreatePolygon(DownwardTrianglePoly);
+                            l.Node = PPath.CreatePolygon(DownwardTrianglePoly, varPen);
+                            dragger = PPath.CreatePolygon(DownwardTrianglePoly, varPen);
                         }
                         else
                         {
-                            l.Node = CreateVarLinkBox();
-                            dragger = CreateVarLinkBox();
+                            l.Node = CreateVarLinkBox(varPen);
+                            dragger = CreateVarLinkBox(varPen);
                         }
                         l.Node.Brush = new SolidBrush(GetColor(l.Type));
-                        l.Node.Pen = new Pen(GetColor(l.Type));
                         l.Node.Pickable = false;
                         dragger.Brush = MostlyTransparentBrush;
-                        dragger.Pen = l.Node.Pen;
-                        dragger.X = l.Node.X;
-                        dragger.Y = l.Node.Y;
+                        dragger.SetBounds(l.Node.X, l.Node.Y, dragger.Width, dragger.Height);
                         dragger.AddInputEventListener(varDragHandler);
                         l.Node.AddChild(dragger);
                         Varlinks.Add(l);
@@ -939,25 +935,23 @@ namespace LegendaryExplorer.Tools.SequenceObjects
                     var linkedEvents = props.GetProp<ArrayProperty<ObjectProperty>>("LinkedEvents");
                     if (linkedEvents != null)
                     {
+                        var eventPen = new Pen(EventColor);
                         var l = new EventLink
                         {
                             Links = new List<int>(),
                             Edges = new List<EventEdge>(),
                             Desc = props.GetProp<StrProperty>("LinkDesc"),
-                            Node = CreateVarLinkBox()
+                            Node = CreateVarLinkBox(eventPen)
                         };
                         l.Node.Brush = new SolidBrush(EventColor);
-                        l.Node.Pen = new Pen(EventColor);
                         l.Node.Pickable = false;
                         foreach (ObjectProperty objProp in linkedEvents)
                         {
                             l.Links.Add(objProp.Value);
                         }
-                        PPath dragger = CreateVarLinkBox();
+                        PPath dragger = CreateVarLinkBox(eventPen);
                         dragger.Brush = MostlyTransparentBrush;
-                        dragger.Pen = l.Node.Pen;
-                        dragger.X = l.Node.X;
-                        dragger.Y = l.Node.Y;
+                        dragger.SetBounds(l.Node.X, l.Node.Y, dragger.Width, dragger.Height);
                         dragger.AddInputEventListener(eventDragHandler);
                         l.Node.AddChild(dragger);
                         EventLinks.Add(l);
@@ -994,8 +988,7 @@ namespace LegendaryExplorer.Tools.SequenceObjects
                         l.Node.Pickable = false;
                         PPath dragger = CreateActionLinkBox();
                         dragger.Brush = MostlyTransparentBrush;
-                        dragger.X = l.Node.X;
-                        dragger.Y = l.Node.Y;
+                        dragger.SetBounds(l.Node.X, l.Node.Y, dragger.Width, dragger.Height);
                         dragger.AddInputEventListener(outputDragHandler);
                         l.Node.AddChild(dragger);
                         Outlinks.Add(l);
@@ -1388,7 +1381,7 @@ namespace LegendaryExplorer.Tools.SequenceObjects
             float starty = 0;
             float w = 15;
             float midW = 0;
-            VarLinkBox = new PPath();
+            VarLinkBox = new PPath(OutlinePen);
             PropertyCollection props = export.GetProperties();
             GetVarLinks(props);
             foreach (VarLink varLink in Varlinks)
@@ -1406,10 +1399,9 @@ namespace LegendaryExplorer.Tools.SequenceObjects
             if (Varlinks.Count != 0)
                 VarLinkBox.AddRectangle(0, 0, w, VarLinkBox[0].Height);
             VarLinkBox.Pickable = false;
-            VarLinkBox.Pen = OutlinePen;
             VarLinkBox.Brush = NodeBrush;
             GetOutputLinks(props);
-            OutLinkBox = new PPath();
+            OutLinkBox = new PPath(OutlinePen);
             for (int i = 0; i < Outlinks.Count; i++)
             {
                 string linkDesc = Outlinks[i].Desc;
@@ -1432,7 +1424,6 @@ namespace LegendaryExplorer.Tools.SequenceObjects
             }
             OutLinkBox.AddPolygon(new[] { new PointF(0, 0), new PointF(0, starty), new PointF(-0.5f * midW, starty + 30), new PointF(0 - midW, starty), new PointF(0 - midW, 0), new PointF(midW / -2, -30) });
             OutLinkBox.Pickable = false;
-            OutLinkBox.Pen = OutlinePen;
             OutLinkBox.Brush = NodeBrush;
             foreach (Property prop in props)
             {
@@ -1627,9 +1618,9 @@ namespace LegendaryExplorer.Tools.SequenceObjects
                 if (t2.Width > inW) inW = t2.Width;
                 inY += t2.Height;
                 t2.Pickable = false;
-                InLinks[i].Node.X = -10;
-                InLinks[i].Node.Y = t2.Y + t2.Height / 2 - 5;
-                t2.AddChild(InLinks[i].Node);
+                PPath inLinkNode = InLinks[i].Node;
+                inLinkNode.SetBounds(-10, t2.Y + t2.Height / 2 - 5, inLinkNode.Width, inLinkNode.Height);
+                t2.AddChild(inLinkNode);
                 inputLinkBox.AddChild(t2);
             }
             inputLinkBox.Pickable = false;
@@ -1675,9 +1666,8 @@ namespace LegendaryExplorer.Tools.SequenceObjects
             h += starty + 8;
             VarLinkBox.TranslateBy(VarLinkBox.Width < w ? (w - VarLinkBox.Width) / 2 : 0, h);
             h += VarLinkBox.Height;
-            box = PPath.CreateRectangle(0, TitleBox.Height + 2, w, h - (TitleBox.Height + 2));
+            box = PPath.CreateRectangle(0, TitleBox.Height + 2, w, h - (TitleBox.Height + 2), OutlinePen);
             box.Brush = NodeBrush;
-            box.Pen = OutlinePen;
             box.Pickable = false;
             this.Bounds = new RectangleF(0, 0, w, h);
             this.AddChild(box);

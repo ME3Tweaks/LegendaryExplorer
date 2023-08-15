@@ -329,8 +329,9 @@ namespace Piccolo.Nodes {
 				float textWidth;
 				float textHeight;
 				if (ConstrainWidthToTextWidth) {
-					textWidth = GRAPHICS.MeasureString(Text, Font).Width;
-					textHeight = GRAPHICS.MeasureString(Text, Font).Height;
+                    SizeF stringSize = GRAPHICS.MeasureString(Text, Font);
+                    textWidth = stringSize.Width;
+					textHeight = stringSize.Height;
 				}
 				else {
 					textWidth = Width;

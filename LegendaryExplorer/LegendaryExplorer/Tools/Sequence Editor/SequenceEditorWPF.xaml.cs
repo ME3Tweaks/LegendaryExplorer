@@ -1529,9 +1529,9 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 RefreshView();
             }
 
-            foreach (var i in updatedExports)
+            foreach (var updatedExportUIndex in updatedExports)
             {
-                if (Pcc.IsUExport(i) && Pcc.GetUExport(i).IsSequence())
+                if (Pcc.TryGetUExport(updatedExportUIndex, out ExportEntry updatedExport) && updatedExport.IsSequence() && updatedExport != SelectedSequence)
                 {
                     LoadSequences();
                     break;
@@ -2152,6 +2152,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 ExportEntry clonedExport = cloneObject(obj.Export, SelectedSequence);
                 customSaveData[clonedExport.UIndex] = new PointF(graphEditor.Camera.ViewCenterX, graphEditor.Camera.ViewCenterY);
             }
+            (FindResource("nodeContextMenu") as ContextMenu).IsOpen = false;
         }
 
         static ExportEntry cloneObject(ExportEntry old, ExportEntry sequence, bool topLevel = true, bool incrementIndex = true)
