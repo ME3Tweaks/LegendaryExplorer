@@ -1034,9 +1034,9 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             SelectedSequence = seqExport;
             SetupJSON(SelectedSequence);
             var selectedExports = SelectedObjects.Select(o => o.Export).ToList();
-            Properties_InterpreterWPF.LoadExport(seqExport);
             if (fromFile)
             {
+                Properties_InterpreterWPF.LoadExport(seqExport);
                 if (UseSavedViews && File.Exists(JSONpath))
                 {
                     SavedView = JsonConvert.DeserializeObject<SavedViewData>(File.ReadAllText(JSONpath));
