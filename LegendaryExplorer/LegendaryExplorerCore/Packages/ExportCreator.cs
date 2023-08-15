@@ -9,7 +9,7 @@ namespace LegendaryExplorerCore.Packages
     public static class ExportCreator
     {
         /// <summary>
-        /// Creates a package export. The default implementation does not use zero index (it will start at 1). Usages should be investigate to see if this is ever useful, I don't think it is
+        /// Creates a package export.
         /// </summary>
         /// <param name="pcc"></param>
         /// <param name="packageName"></param>
