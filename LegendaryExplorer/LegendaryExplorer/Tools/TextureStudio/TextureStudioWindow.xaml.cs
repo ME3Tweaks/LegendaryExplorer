@@ -235,7 +235,8 @@ namespace LegendaryExplorer.Tools.TextureStudio
             var selectDDS = new OpenFileDialog
             {
                 Title = "Select texture file",
-                Filter = "Texture (DDS PNG BMP TGA)|*.dds;*.png;*.bmp;*.tga"
+                Filter = "Texture (DDS PNG BMP TGA)|*.dds;*.png;*.bmp;*.tga",
+                CustomPlaces = AppDirectories.GameCustomPlaces
             };
             var result = selectDDS.ShowDialog();
             if (result.HasValue && result.Value)

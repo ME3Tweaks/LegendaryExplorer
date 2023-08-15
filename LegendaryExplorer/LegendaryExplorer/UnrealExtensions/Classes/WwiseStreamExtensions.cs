@@ -1,10 +1,11 @@
 ﻿using System.Diagnostics;
 using System.IO;
-using System.Windows.Forms;
+using LegendaryExplorer.Misc;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
+using Microsoft.Win32;
 
 namespace LegendaryExplorer.UnrealExtensions.Classes
 {
@@ -34,9 +35,12 @@ namespace LegendaryExplorer.UnrealExtensions.Classes
                     ws.ImportWwiseOgg(pathtoafc + ws.Filename + ".afc", stream);
                 else
                 {
-                    OpenFileDialog d = new OpenFileDialog();
+                    OpenFileDialog d = new OpenFileDialog()
+                    {
+                        CustomPlaces = AppDirectories.GameCustomPlaces
+                    };
                     d.Filter = ws.Filename + ".afc|" + ws.Filename + ".afc";
-                    if (d.ShowDialog() == DialogResult.OK)
+                    if (d.ShowDialog() == true)
                         ws.ImportWwiseOgg(d.FileName, stream);
                 }
 
@@ -58,7 +62,7 @@ namespace LegendaryExplorer.UnrealExtensions.Classes
             {
                 OpenFileDialog d = new OpenFileDialog();
                 d.Filter = ws.Filename + ".afc|" + ws.Filename + ".afc";
-                if (d.ShowDialog() == DialogResult.OK)
+                if (d.ShowDialog() == true)
                     ws.ImportWwiseOgg(d.FileName, stream);
             }
         }

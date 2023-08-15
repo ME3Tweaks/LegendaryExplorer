@@ -1131,7 +1131,8 @@ namespace LegendaryExplorer.Tools.PlotDatabase
             OpenFileDialog oDlg = new OpenFileDialog
             {
                 Filter = "Excel Files (*.xlsx)|*.xlsx",
-                Title = "Import Excel table"
+                Title = "Import Excel table",
+                CustomPlaces = AppDirectories.GameCustomPlaces
             };
 
             if (oDlg.ShowDialog() != true)

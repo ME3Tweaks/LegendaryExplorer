@@ -14,6 +14,7 @@ using System.Windows.Threading;
 using FontAwesome5;
 using LegendaryExplorer.Audio;
 using LegendaryExplorer.Dialogs;
+using LegendaryExplorer.Misc;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Bases;
 using LegendaryExplorer.SharedUI.Interfaces;
@@ -93,7 +94,11 @@ namespace LegendaryExplorer.Tools.Soundplorer
 
         private void OpenCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            OpenFileDialog d = new() { Filter = "All supported files|*.pcc;*.u;*.sfm;*.upk;*.isb;*.afc;*.xxx|Package files|*.pcc;*.u;*.sfm;*.upk;*.xxx|ISACT Sound Bank files|*.isb|Audio File Cache (AFC)|*.afc" };
+            OpenFileDialog d = new()
+            {
+                Filter = "All supported files|*.pcc;*.u;*.sfm;*.upk;*.isb;*.afc;*.xxx|Package files|*.pcc;*.u;*.sfm;*.upk;*.xxx|ISACT Sound Bank files|*.isb|Audio File Cache (AFC)|*.afc",
+                CustomPlaces = AppDirectories.GameCustomPlaces
+            };
             bool? result = d.ShowDialog();
             if (result.HasValue && result.Value)
             {

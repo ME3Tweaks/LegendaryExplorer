@@ -2607,6 +2607,13 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
 
         private void GoToExport(ExportEntry expToNavigateTo, bool goIntoSequences = true)
         {
+            if (!IsLoaded)
+            {
+                // Do not try to navigate if UI has not finished loading
+                ExportQueuedForFocusing = expToNavigateTo;
+                return;
+            }
+
             if (goIntoSequences && expToNavigateTo.ClassName is "SequenceReference" or "Sequence")
             {
                 if (expToNavigateTo.ClassName == "SequenceReference")
