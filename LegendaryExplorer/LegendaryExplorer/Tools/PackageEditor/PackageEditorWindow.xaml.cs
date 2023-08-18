@@ -3875,28 +3875,8 @@ namespace LegendaryExplorer.Tools.PackageEditor
             //    start = n + 1;
 
 
-            string searchTerm = Search_TextBox.Text.ToLower();
-
-            /*if (CurrentView == View.Names)
-            {
-                for (int i = start; i < pcc.Names.Count; i++)
-                    if (Pcc.getNameEntry(i).ToLower().Contains(searchTerm))
-                    {
-                        listBox1.SelectedIndex = i;
-                        break;
-                    }
-            }
-            if (CurrentView == View.Imports)
-            {
-                IReadOnlyList<ImportEntry> imports = pcc.Imports;
-                for (int i = start; i < imports.Count; i++)
-                    if (imports[i].ObjectName.ToLower().Contains(searchTerm))
-                    {
-                        listBox1.SelectedIndex = i;
-                        break;
-                    }
-            }
-            */
+            string searchTerm = Search_TextBox.Text.Trim();
+            
             void LoopFunc(ref int integer, int count)
             {
                 if (reverseSearch)
@@ -3927,7 +3907,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     numSearched < Pcc.Names.Count;
                     LoopFunc(ref i, Pcc.NameCount), numSearched++)
                 {
-                    if (Pcc.Names[i].ToLower().Contains(searchTerm))
+                    if (Pcc.Names[i].Contains(searchTerm, StringComparison.InvariantCultureIgnoreCase))
                     {
                         LeftSide_ListView.SelectedIndex = i;
                         break;
@@ -3943,7 +3923,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     numSearched < Pcc.Imports.Count;
                     LoopFunc(ref i, Pcc.ImportCount), numSearched++)
                 {
-                    if (Pcc.Imports[i].ObjectName.Name.ToLower().Contains(searchTerm))
+                    if (Pcc.Imports[i].ObjectName.Name.Contains(searchTerm, StringComparison.InvariantCultureIgnoreCase))
                     {
                         LeftSide_ListView.SelectedIndex = i;
                         break;
@@ -3964,7 +3944,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     numSearched < Pcc.Exports.Count;
                     LoopFunc(ref i, Pcc.ExportCount), numSearched++)
                 {
-                    if (Pcc.Exports[i].ObjectName.Name.ToLower().Contains(searchTerm))
+                    if (Pcc.Exports[i].ObjectName.Name.Contains(searchTerm, StringComparison.InvariantCultureIgnoreCase))
                     {
                         LeftSide_ListView.SelectedIndex = i;
                         break;
@@ -3998,7 +3978,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                         continue;
                     }
 
-                    if (node.Entry.ObjectName.Instanced.ToLower().Contains(searchTerm))
+                    if (node.Entry.ObjectName.Instanced.Contains(searchTerm, StringComparison.InvariantCultureIgnoreCase))
                     {
                         node.IsProgramaticallySelecting = true;
                         SelectedItem = node;

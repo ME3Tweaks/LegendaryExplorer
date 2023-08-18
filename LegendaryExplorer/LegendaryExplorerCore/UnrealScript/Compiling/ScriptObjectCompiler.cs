@@ -96,6 +96,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             {
                 classExport = CreateNewExport(pcc, className, "Class", parent, UClass.Create(), superClass, useTrash: false);
                 classObj = classExport.GetBinaryData<UClass>();
+                classExport.ObjectFlags = EObjectFlags.Public | EObjectFlags.LoadForClient | EObjectFlags.LoadForServer | EObjectFlags.LoadForEdit | EObjectFlags.Standalone;
             }
             else
             {
@@ -103,7 +104,6 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 classExport.ObjectName = className;
                 classExport.SuperClass = superClass;
             }
-            classExport.ObjectFlags = EObjectFlags.Public | EObjectFlags.LoadForClient | EObjectFlags.LoadForServer | EObjectFlags.LoadForEdit | EObjectFlags.Standalone;
             classObj.SuperClass = superClass?.UIndex ?? 0;
             classObj.IgnoreMask = (EProbeFunctions)ulong.MaxValue;
             classObj.LabelTableOffset = ushort.MaxValue;
@@ -118,6 +118,10 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 {
                     classObj.ClassConfigName = NameReference.FromInstancedString(parentClass.ConfigName);
                 }
+            }
+            if (classObj.ClassFlags.Has(EClassFlags.Native))
+            {
+                classExport.ObjectFlags |= EObjectFlags.Native;
             }
 
             //calculate probemask
