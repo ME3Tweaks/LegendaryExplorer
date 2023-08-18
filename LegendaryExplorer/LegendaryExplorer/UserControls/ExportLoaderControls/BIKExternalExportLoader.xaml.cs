@@ -634,7 +634,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 //FileName = "Select a bik file",
                 Title = "Import Bik movie file",
-                Filter = "Bik Movie Files (*.bik)|*.bik"
+                Filter = "Bik Movie Files (*.bik)|*.bik",
+                CustomPlaces = AppDirectories.GameCustomPlaces
             };
 
             if (dlg.ShowDialog() == true && File.Exists(dlg.FileName))
@@ -895,7 +896,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     {
                         FileName = "Select a TFC file",
                         Title = "Import TFC cache for movie files",
-                        Filter = "TextureFileCache (*.tfc)|*.tfc"
+                        Filter = "TextureFileCache (*.tfc)|*.tfc",
+                        CustomPlaces = AppDirectories.GameCustomPlaces
                     };
 
                     if (adddlg.ShowDialog() ?? false)

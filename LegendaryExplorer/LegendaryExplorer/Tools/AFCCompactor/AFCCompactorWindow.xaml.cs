@@ -455,7 +455,7 @@ namespace LegendaryExplorer.Tools.AFCCompactorWindow
                 IsFolderPicker = true
             };
 
-            if (dlg.ShowDialog(this) == CommonFileDialogResult.Ok)
+                if (dlg.ShowDialog(this) == CommonFileDialogResult.Ok)
             {
                 string[] pccFiles = Directory.GetFiles(dlg.FileName, "*.pcc", SearchOption.AllDirectories);
                 string[] mountFiles = Directory.GetFiles(dlg.FileName, "*.dlc", SearchOption.AllDirectories);

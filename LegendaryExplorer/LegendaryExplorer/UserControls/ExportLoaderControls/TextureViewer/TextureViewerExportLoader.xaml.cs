@@ -32,6 +32,7 @@ using Microsoft.Win32;
 using Image = LegendaryExplorerCore.Textures.Image;
 using LegendaryExplorerCore.Helpers;
 using SharpDX.Direct3D11;
+using LegendaryExplorer.Misc;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls
 {
@@ -307,10 +308,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 Title = "Select texture file",
 #if WINDOWS
-                Filter = "All supported types|*.png;*.dds;*.tga|PNG files (*.png)|*.png|DDS files (*.dds)|*.dds|TGA files (*.tga)|*.tga"
+                Filter = "All supported types|*.png;*.dds;*.tga|PNG files (*.png)|*.png|DDS files (*.dds)|*.dds|TGA files (*.tga)|*.tga",
 #else
-                Filter = "Texture (DDS PNG BMP TGA)|*.dds;*.png;*.bmp;*.tga"
+                Filter = "Texture (DDS PNG BMP TGA)|*.dds;*.png;*.bmp;*.tga",
 #endif
+                CustomPlaces = AppDirectories.GameCustomPlaces
             };
             var result = selectDDS.ShowDialog();
             if (result.HasValue && result.Value)

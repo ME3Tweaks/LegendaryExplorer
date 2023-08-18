@@ -1987,7 +1987,8 @@ namespace LegendaryExplorer.Tools.PackageEditor
                                 {
                                     Title = "Replace SWF",
                                     FileName = exp.FullPath + ".swf",
-                                    Filter = $"*{extension};*.gfx|*{extension};*.gfx"
+                                    Filter = $"*{extension};*.gfx|*{extension};*.gfx",
+                                    CustomPlaces = AppDirectories.GameCustomPlaces
                                 };
                                 if (d.ShowDialog() == true)
                                 {
@@ -2037,7 +2038,8 @@ namespace LegendaryExplorer.Tools.PackageEditor
                             {
                                 Title = "Replace TLK from exported XML (ME1 Only)",
                                 FileName = exp.FullPath + ".xml",
-                                Filter = $"*{extension}|*{extension}"
+                                Filter = $"*{extension}|*{extension}",
+                                CustomPlaces = AppDirectories.GameCustomPlaces
                             };
                             if (d.ShowDialog() == true)
                             {
@@ -2056,7 +2058,8 @@ namespace LegendaryExplorer.Tools.PackageEditor
                             {
                                 Title = "Select the ICB file (ISB should be same name next to it)",
                                 Filter = $"ISACT Content Bank (*.icb)|*{extension}",
-                                CheckFileExists = true
+                                CheckFileExists = true,
+                                CustomPlaces = AppDirectories.GameCustomPlaces
                             };
                             if (d.ShowDialog() == false)
                                 return;
@@ -2081,7 +2084,8 @@ namespace LegendaryExplorer.Tools.PackageEditor
                             var d = new OpenFileDialog
                             {
                                 Title = "Select stripped ICB",
-                                Filter = $"*{extension}|*{extension}"
+                                Filter = $"*{extension}|*{extension}",
+                                CustomPlaces = AppDirectories.GameCustomPlaces
                             };
                             if (d.ShowDialog() == false)
                                 return;
@@ -2090,7 +2094,8 @@ namespace LegendaryExplorer.Tools.PackageEditor
                             var d2 = new OpenFileDialog
                             {
                                 Title = "Select stripped ISB",
-                                Filter = $"*{extension}|*{extension}"
+                                Filter = $"*{extension}|*{extension}",
+                                CustomPlaces = AppDirectories.GameCustomPlaces
                             };
                             if (d2.ShowDialog() == false)
                                 return;
@@ -2113,7 +2118,8 @@ namespace LegendaryExplorer.Tools.PackageEditor
                             var d = new OpenFileDialog
                             {
                                 Title = "Select FaceFX Asset",
-                                Filter = $"*{extension}|*{extension}"
+                                Filter = $"*{extension}|*{extension}",
+                                CustomPlaces = AppDirectories.GameCustomPlaces
                             };
                             if (d.ShowDialog() == true)
                             {
@@ -2131,7 +2137,8 @@ namespace LegendaryExplorer.Tools.PackageEditor
                             var wdiag = new OpenFileDialog
                             {
                                 Title = "Select WwiseBank file",
-                                Filter = $"*{extension}|*{extension}"
+                                Filter = $"*{extension}|*{extension}",
+                                CustomPlaces = AppDirectories.GameCustomPlaces
                             };
                             if (wdiag.ShowDialog() == true)
                             {
@@ -2598,7 +2605,8 @@ namespace LegendaryExplorer.Tools.PackageEditor
             OpenFileDialog d = new OpenFileDialog
             {
                 Filter = "*.bin|*.bin",
-                FileName = export.ObjectName.Instanced + ".bin"
+                FileName = export.ObjectName.Instanced + ".bin",
+                CustomPlaces = AppDirectories.GameCustomPlaces
             };
             if (d.ShowDialog() == true)
             {

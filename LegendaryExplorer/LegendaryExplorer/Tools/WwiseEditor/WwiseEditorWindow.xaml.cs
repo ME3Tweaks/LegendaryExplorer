@@ -169,7 +169,11 @@ namespace LegendaryExplorer.Tools.WwiseEditor
 
         private void OpenFile()
         {
-            OpenFileDialog d = new (){ Filter = GameFileFilters.ME3ME2SaveFileFilter };
+            OpenFileDialog d = new ()
+            {
+                Filter = GameFileFilters.ME3ME2SaveFileFilter,
+                CustomPlaces = AppDirectories.GameCustomPlaces
+            };
             if (d.ShowDialog() == true)
             {
 #if !DEBUG

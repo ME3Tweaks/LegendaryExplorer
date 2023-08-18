@@ -28,7 +28,8 @@ public partial class PSAViewerWindow : NotifyPropertyChangedWindowBase
     {
         var d = new OpenFileDialog
         {
-            Filter = "*.psa|*.psa"
+            Filter = "*.psa|*.psa",
+            CustomPlaces = AppDirectories.GameCustomPlaces
         };
         if (d.ShowDialog() == true)
         {

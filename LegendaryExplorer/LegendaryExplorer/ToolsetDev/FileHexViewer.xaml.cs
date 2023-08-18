@@ -56,7 +56,10 @@ namespace LegendaryExplorer.ToolsetDev
 
         private void OpenFile_Click(object sender, RoutedEventArgs e)
         {
-            var d = new OpenFileDialog();
+            var d = new OpenFileDialog()
+            {
+                CustomPlaces = AppDirectories.GameCustomPlaces
+            };
             if (d.ShowDialog() == true)
             {
                 LoadFile(d.FileName);

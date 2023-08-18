@@ -925,7 +925,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             var ofd = new OpenFileDialog
             {
                 Filter = "*.json|*.json",
-                CheckFileExists = true
+                CheckFileExists = true,
+                CustomPlaces = AppDirectories.GameCustomPlaces
             };
             if (ofd.ShowDialog() == true)
             {
@@ -1102,7 +1103,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             var oDlg = new OpenFileDialog //Load Excel
             {
                 Filter = "Excel Files (*.xlsx)|*.xlsx",
-                Title = "Import Excel table"
+                Title = "Import Excel table",
+                CustomPlaces = AppDirectories.GameCustomPlaces
             };
 
             if (oDlg.ShowDialog() != true)
@@ -1350,7 +1352,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             var ofd = new OpenFileDialog
             {
                 Filter = "*.xml|*.xml",
-                CheckFileExists = true
+                CheckFileExists = true,
+                CustomPlaces = AppDirectories.GameCustomPlaces
             };
             if (ofd.ShowDialog() == true)
             {

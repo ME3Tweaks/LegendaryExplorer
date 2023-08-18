@@ -2473,7 +2473,12 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         {
             if (pe.Pcc == null)
                 return;
-            OpenFileDialog ofd = new OpenFileDialog() { Filter = "WwiseBank files|*.bnk", Title = "Select generated soundbank" };
+            OpenFileDialog ofd = new OpenFileDialog()
+            {
+                Filter = "WwiseBank files|*.bnk",
+                Title = "Select generated soundbank",
+                CustomPlaces = AppDirectories.GameCustomPlaces
+            };
             if (ofd.ShowDialog() == true)
             {
                 var askResult = Xceed.Wpf.Toolkit.MessageBox.Show(pe, "Are your streamed Wwise audio samples named correctly in the editor? If not, the filenames of the wav files when imported will be used.",
@@ -2517,6 +2522,147 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 }
 
                 exp2.WriteBinary(model);
+            }
+        }
+
+        /// <summary>
+        /// Converts an instance of a BioPawn to a class SFXPawn that can be spawned directly with BioPawnType
+        /// </summary>
+        /// <param name="pe"></param>
+        public static void LE2ConvertBioPawnToSFXPawn(PackageEditorWindow pe)
+        {
+            if (pe.Pcc == null)
+                return;
+
+            if (!pe.TryGetSelectedExport(out var bioPawnExport) && bioPawnExport.ClassName == "BioPawn" && bioPawnExport.InstancedFullPath.StartsWith("TheWorld.PersistentLevel."))
+            {
+                return;
+            }
+
+            var pcc = pe.Pcc;
+            var merGamePawns = pcc.FindExport("MERGamePawns");
+            if (merGamePawns == null)
+            {
+                merGamePawns = ExportCreator.CreatePackageExport(pcc, "MERGamePawns");
+            }
+
+            var tag = bioPawnExport.GetProperty<NameProperty>("Tag");
+            FileLib lib = new FileLib(pcc);
+            lib.Initialize();
+            var exportName = $"SFXPawn_{tag.Value.Instanced}";
+            var classIFP = $"MERGamePawns.{exportName}";
+
+            var bodyMesh = bioPawnExport.GetProperty<ObjectProperty>("Mesh").ResolveToEntry(pcc) as ExportEntry;
+            var mdl = bodyMesh.GetProperty<ObjectProperty>("SkeletalMesh").ResolveToEntry(pcc);
+            var bodyMeshIFP = mdl.InstancedFullPath;
+            var bodyMaterials = bodyMesh.GetProperty<ArrayProperty<ObjectProperty>>("Materials");
+
+            var headMesh = bioPawnExport.GetProperty<ObjectProperty>("HeadMesh").ResolveToEntry(pcc) as ExportEntry;
+            var hmdl = headMesh.GetProperty<ObjectProperty>("SkeletalMesh").ResolveToEntry(pcc);
+            var headMeshIFP = hmdl.InstancedFullPath;
+            //var headMaterials = headMesh.GetProperty<ArrayProperty<ObjectProperty>>("Materials");
+
+            var actorType = bioPawnExport.GetProperty<ObjectProperty>("ActorType").ResolveToEntry(pcc) as IEntry;
+            var actorTypeIFP = actorType.InstancedFullPath;
+
+            var classText = $@"Class {exportName} extends SFXPawn
+    placeable
+    config(Game);
+
+//class default properties can be edited in the Properties tab for the class's Default__ object.
+defaultproperties
+{{
+        Begin Template Class=BioPawnBehavior Name=Behavior
+        Begin Template Class=BioInterface_Appearance_Pawn Name=PawnApperInterface
+            Begin Template Class=Bio_Appr_Character_Settings Name=oSettings
+                Begin Template Class=Bio_Appr_Character_Body_Settings Name=oBodySettings
+                    Begin Template Class=Bio_Appr_Character_HeadGear_Settings Name=oHeadGearSettings
+                    End Template
+                    m_oHeadGearSettings = oHeadGearSettings
+                End Template
+                Begin Template Class=Bio_Appr_Character_Head_Settings Name=oHeadSettings
+                    Begin Template Class=Bio_Appr_Character_Hair_Settings Name=oHairSettings
+                    End Template
+                    m_oHairSettings = oHairSettings
+                End Template
+                m_oBodySettings = oBodySettings
+                m_oHeadSettings = oHeadSettings
+            End Template
+            Begin Template Class=BioMaterialOverride Name=s_pDefaultMaterialParameters
+            End Template
+            m_oSettings = oSettings
+            m_pMaterialParameters = s_pDefaultMaterialParameters
+        End Template
+        Begin Template Class=BioAttributesPawn Name=AttributesPawn
+        End Template
+        Begin Template Class=BioPawnCameraShakeInterface Name=CameraShakeInterface
+        End Template
+        m_PawnAttributes = AttributesPawn
+        m_oAppearanceType = PawnApperInterface
+        m_cameraShakeInterface = CameraShakeInterface
+    End Template
+    Begin Template Class=BioDynamicLightEnvironmentComponent Name=BioLightEnvComponent0
+    End Template
+    Begin Template Class=BioGestureAnimSetMgr Name=oAnimSetMgr
+    End Template
+    Begin Template Class=CylinderComponent Name=CollisionCylinder
+        ReplacementPrimitive = None
+    End Template
+    Begin Template Class=ForceFeedbackWaveform Name=FootstepShakeFF0
+    End Template
+    Begin Template Class=SFXModule_Damage Name=DmgMod0
+    End Template
+    Begin Template Class=SFXModule_GameEffectManager Name=GEMod0
+    End Template
+    Begin Template Class=SFXModule_Radar Name=RadarModule
+    End Template
+    Begin Template Class=SkeletalMeshComponent Name=HeadMesh0
+        SkeletalMesh = SkeletalMesh'{headMeshIFP}'
+        ParentAnimComponent = BioPawnSkeletalMeshComponent
+        ShadowParent = BioPawnSkeletalMeshComponent
+        ReplacementPrimitive = None
+        LightEnvironment = BioLightEnvComponent0
+    End Template
+    Begin Template Class=SkeletalMeshComponent Name=BioPawnSkeletalMeshComponent
+        SkeletalMesh = SkeletalMesh'{bodyMeshIFP}'
+        ReplacementPrimitive = None
+        LightEnvironment = BioLightEnvComponent0
+    End Template
+    Begin Template Class=SFXPowerManager Name=PowerMgr
+    End Template
+    FootstepForceFeedback = FootstepShakeFF0
+    HeadMesh = HeadMesh0
+    LightEnvironment = BioLightEnvComponent0
+    m_pAnimSetMgr = oAnimSetMgr
+    PowerManager = PowerMgr
+    Mesh = BioPawnSkeletalMeshComponent
+    CylinderComponent = CollisionCylinder
+    Components = (CollisionCylinder, None, BioLightEnvComponent0, BioPawnSkeletalMeshComponent, HeadMesh0)
+    Modules = (DmgMod0, GEMod0, RadarModule)
+    CollisionComponent = CollisionCylinder
+    oBioComponent = Behavior
+    ActorType = BioPawnType'{actorTypeIFP}'
+}}";
+
+            UnrealScriptCompiler.CompileClass(pcc, classText, lib, parent: merGamePawns);
+            var classExport = pcc.FindExport(classIFP);
+
+            var newMats = new ArrayProperty<ObjectProperty>("Materials");
+            var skelMeshComp = pcc.FindExport(pcc.GetUExport(ObjectBinary.From<UClass>(classExport).Defaults).InstancedFullPath + ".BioPawnSkeletalMeshComponent");
+            if (bodyMaterials != null)
+            {
+                foreach (var bm in bodyMaterials)
+                {
+                    var bodyMatExp = bm.ResolveToEntry(pcc);
+                    var clone = EntryCloner.CloneEntry(bodyMatExp);
+                    clone.idxLink = skelMeshComp.UIndex;
+                    newMats.Add(new ObjectProperty(clone));
+                }
+            }
+
+            if (newMats.Any())
+            {
+                skelMeshComp.WriteProperty(newMats);
             }
         }
 
@@ -3352,7 +3498,12 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 return;
             }
 
-            OpenFileDialog d = new OpenFileDialog { Title = "Select UDK file with terrain", Filter = "*.udk|*.udk" };
+            OpenFileDialog d = new OpenFileDialog
+            {
+                Title = "Select UDK file with terrain",
+                Filter = "*.udk|*.udk",
+                CustomPlaces = AppDirectories.GameCustomPlaces
+            };
             if (d.ShowDialog() == true)
             {
                 using var udkP = MEPackageHandler.OpenUDKPackage(d.FileName);
@@ -3428,7 +3579,12 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         public static void ExpertTerrainDataToUDK(PackageEditorWindow pe)
         {
             {
-                OpenFileDialog d = new OpenFileDialog { Title = "Select UDK file to export to (MUST HAVE TERRAIN ALREADY)", Filter = "*.udk|*.udk" };
+                OpenFileDialog d = new OpenFileDialog
+                {
+                    Title = "Select UDK file to export to (MUST HAVE TERRAIN ALREADY)",
+                    Filter = "*.udk|*.udk",
+                    CustomPlaces = AppDirectories.GameCustomPlaces
+                };
                 if (d.ShowDialog() != true)
                     return;
                 var udkDestFile = d.FileName;
