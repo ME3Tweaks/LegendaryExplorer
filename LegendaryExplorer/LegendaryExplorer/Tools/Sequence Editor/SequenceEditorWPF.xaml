@@ -308,7 +308,7 @@
                             </Hyperlink>
                         </TextBlock>
                     </StackPanel>
-                    <sharedToolControls:RecentsControl x:Name="RecentsController" Grid.Column="3" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}"/>
+                    <sharedToolControls:RecentsControl x:Name="RecentsController" Grid.Column="3" Visibility="{Binding Pcc, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type bases:WPFBase}},Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}"/>
                     <TreeView x:Name="Sequences_TreeView" Grid.Row="0" Grid.Column="0" FontFamily="Consolas"
                                 Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}"
                                 ItemsSource="{Binding TreeViewRootNodes}" 
