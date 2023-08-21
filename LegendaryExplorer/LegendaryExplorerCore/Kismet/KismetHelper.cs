@@ -261,8 +261,12 @@ namespace LegendaryExplorerCore.Kismet
             if (sequenceExport.ClassName is not "SequenceReference")
             {
                 ArrayProperty<ObjectProperty> seqObjs = sequenceExport.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects") ?? new ArrayProperty<ObjectProperty>("SequenceObjects");
-                seqObjs.Add(new ObjectProperty(newObject));
-                sequenceExport.WriteProperty(seqObjs);
+                // Only add if not already in the list
+                if (seqObjs.All(x => x.Value != newObject.UIndex))
+                {
+                    seqObjs.Add(new ObjectProperty(newObject));
+                    sequenceExport.WriteProperty(seqObjs);
+                }
             }
 
             PropertyCollection newObjectProps = newObject.GetProperties();
@@ -291,8 +295,12 @@ namespace LegendaryExplorerCore.Kismet
                 ArrayProperty<ObjectProperty> seqObjs = sequenceExport.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects") ?? new ArrayProperty<ObjectProperty>("SequenceObjects");
                 foreach (var export in exports)
                 {
-                    // Should this check it's not already in the sequence?
-                    seqObjs.Add(new ObjectProperty(export));
+                    // Only add if not already in the list
+                    if (seqObjs.All(x => x.Value != export.UIndex))
+                    {
+                        seqObjs.Add(new ObjectProperty(export));
+                        sequenceExport.WriteProperty(seqObjs);
+                    }
                 }
                 sequenceExport.WriteProperty(seqObjs);
             }
