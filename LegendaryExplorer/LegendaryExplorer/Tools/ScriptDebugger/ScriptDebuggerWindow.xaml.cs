@@ -19,6 +19,7 @@ using LegendaryExplorerCore.Gammtek.Extensions;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
+using LegendaryExplorerCore.Misc.ME3Tweaks;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
@@ -32,11 +33,11 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
     public partial class ScriptDebuggerWindow : TrackingNotifyPropertyChangedWindowBase
     {
         //MUST BE UPDATED WHEN A NEW VERSION OF THE ASI IS RELEASED!
-        private string debuggerASIName => Game switch
+        public string debuggerASIName => Game switch
         {
-            MEGame.LE1 => "LE1UnrealscriptDebugger-v2.0.asi",
-            MEGame.LE2 => "LE2UnrealscriptDebugger-v2.0.asi",
-            MEGame.LE3 => "UnrealscriptDebugger.asi",
+            MEGame.LE1 => "LE1ScriptDebugger-v2.asi", // In M3
+            MEGame.LE2 => "LE2ScriptDebugger-v2.asi", // In M3
+            MEGame.LE3 => "UnrealscriptDebugger.asi", 
             _ => throw new ArgumentOutOfRangeException(nameof(Game))
         };
         private void GetDebuggerASI()
@@ -44,10 +45,10 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
             switch (Game)
             {
                 case MEGame.LE1:
-                    HyperlinkExtensions.OpenURL("https://github.com/ME3Tweaks/LE1-ASI-Plugins/releases/tag/LE1UnrealScriptDebugger-v2.0");
+                    ModManagerIntegration.RequestASIInstallation(MEGame.LE1, ASIModIDs.LE1_SCRIPT_DEBUGGER, 2);
                     break;
                 case MEGame.LE2:
-                    HyperlinkExtensions.OpenURL("https://github.com/ME3Tweaks/LE2-ASI-Plugins/releases/tag/LE2UnrealscriptDebugger-v2.0");
+                    ModManagerIntegration.RequestASIInstallation(MEGame.LE2, ASIModIDs.LE2_SCRIPT_DEBUGGER, 2);
                     break;
                 case MEGame.LE3:
                     throw new NotImplementedException();
