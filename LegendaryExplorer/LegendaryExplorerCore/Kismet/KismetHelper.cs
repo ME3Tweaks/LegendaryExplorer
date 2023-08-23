@@ -368,5 +368,26 @@ namespace LegendaryExplorerCore.Kismet
             SetComment(export, new List<string>() { comment });
         }
 
+        /// <summary>
+        /// Removes variable links that have no defined values. Can be dangerous if the class is not designed to lookup by name (will break Idx based classes)
+        /// </summary>
+        /// <param name="export"></param>
+        public static void TrimVariableLinks(ExportEntry source)
+        {
+            if (source.GetProperty<ArrayProperty<StructProperty>>("VariableLinks") is { } varLinksProp)
+            {
+                for(int i = varLinksProp.Count - 1; i >0; i--)
+                {
+                    var prop = varLinksProp[i];
+                    if (prop.GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables").Count == 0)
+                    {
+                        // Trim
+                        varLinksProp.RemoveAt(i);
+                    }
+                }
+                source.WriteProperty(varLinksProp);
+            }
+        }
+
     }
 }

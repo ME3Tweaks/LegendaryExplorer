@@ -1231,7 +1231,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 {
                     graphEditor.addNode(obj);
                 }
-                
+
                 List<SAction> actions = CurrentObjects.OfType<SAction>().ToList();
                 List<SVar> vars = CurrentObjects.OfType<SVar>().ToList();
                 List<SEvent> events = CurrentObjects.OfType<SEvent>().ToList();
@@ -1841,7 +1841,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
 
                 if (contextMenu.GetChild("extractSequenceMenuItem") is MenuItem extractSequenceMenuItem)
                 {
-
+#if DEBUG
                     if (obj is SAction sAction && sAction.Export != null && (sAction.Export.ClassName is "SequenceReference" or "Sequence"))
                     {
                         extractSequenceMenuItem.Visibility = Visibility.Visible;
@@ -1850,6 +1850,21 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                     {
                         extractSequenceMenuItem.Visibility = Visibility.Collapsed;
                     }
+#endif
+                }
+
+                if (contextMenu.GetChild("trimSequenceVariablesMenuItem") is MenuItem trimVariableLinksMenuItem)
+                {
+#if DEBUG
+                    if (obj.Export != null && (obj is SAction sAction || obj is SEvent))
+                    {
+                        trimVariableLinksMenuItem.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        trimVariableLinksMenuItem.Visibility = Visibility.Collapsed;
+                    }
+#endif
                 }
 
                 if (contextMenu.GetChild("seqLogAddItemMenuItem") is MenuItem seqLogAddItemMenuItem)
@@ -3103,6 +3118,14 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                     }
                 }, x => BusyText = x, entryDoubleClick, this);
 
+            }
+        }
+
+        private void TrimVariableLinks_Clicked(object sender, RoutedEventArgs e)
+        {
+            if (CurrentObjects_ListBox.SelectedItem is SObj sAction && sAction.Export != null)
+            {
+                KismetHelper.TrimVariableLinks(sAction.Export);
             }
         }
 
