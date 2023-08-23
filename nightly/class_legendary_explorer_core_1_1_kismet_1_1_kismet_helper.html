@@ -153,6 +153,9 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a2285539ddaf104adb50342db6dd2f295"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a2285539ddaf104adb50342db6dd2f295">SetComment</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> export, string comment)</td></tr>
 <tr class="memdesc:a2285539ddaf104adb50342db6dd2f295"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the m_aObjComment for a sequence object   <a href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a2285539ddaf104adb50342db6dd2f295">More...</a><br /></td></tr>
 <tr class="separator:a2285539ddaf104adb50342db6dd2f295"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acd2d2370f412e54a4292ab7898b8f968"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#acd2d2370f412e54a4292ab7898b8f968">TrimVariableLinks</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> source)</td></tr>
+<tr class="memdesc:acd2d2370f412e54a4292ab7898b8f968"><td class="mdescLeft">&#160;</td><td class="mdescRight">Removes variable links that have no defined values. Can be dangerous if the class is not designed to lookup by name (will break Idx based classes)   <a href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#acd2d2370f412e54a4292ab7898b8f968">More...</a><br /></td></tr>
+<tr class="separator:acd2d2370f412e54a4292ab7898b8f968"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Static methods to perform common sequence editing operations  </p>
@@ -875,6 +878,40 @@ Static Public Member Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramname">export</td><td>Sequence object to set comments for</td></tr>
     <tr><td class="paramname">comment</td><td>Object comment</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="acd2d2370f412e54a4292ab7898b8f968" name="acd2d2370f412e54a4292ab7898b8f968"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acd2d2370f412e54a4292ab7898b8f968">&#9670;&#160;</a></span>TrimVariableLinks()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void LegendaryExplorerCore.Kismet.KismetHelper.TrimVariableLinks </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td>
+          <td class="paramname"><em>source</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Removes variable links that have no defined values. Can be dangerous if the class is not designed to lookup by name (will break Idx based classes)  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">export</td><td></td></tr>
   </table>
   </dd>
 </dl>
