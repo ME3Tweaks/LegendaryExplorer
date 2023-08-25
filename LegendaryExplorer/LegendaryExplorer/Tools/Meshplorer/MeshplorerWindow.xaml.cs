@@ -253,7 +253,11 @@ namespace LegendaryExplorer.Tools.Meshplorer
 
         private void ReplaceFromUDK(bool lodOnly)
         {
-            var d = new OpenFileDialog { Filter = GameFileFilters.UDKFileFilter, Title = "Select UDK package file" };
+            var d = new OpenFileDialog
+            {
+                Filter = GameFileFilters.UDKFileFilter, Title = "Select UDK package file",
+                CustomPlaces = AppDirectories.GameCustomPlaces
+            };
             if (d.ShowDialog() == true)
             {
                 try
@@ -434,7 +438,11 @@ namespace LegendaryExplorer.Tools.Meshplorer
 
         private void ImportFromUDK()
         {
-            var d = new OpenFileDialog { Filter = GameFileFilters.UDKFileFilter, Title = "Select UDK package file" };
+            var d = new OpenFileDialog
+            {
+                Filter = GameFileFilters.UDKFileFilter, Title = "Select UDK package file",
+                CustomPlaces = AppDirectories.GameCustomPlaces
+            };
             if (d.ShowDialog() == true)
             {
                 try

@@ -96,6 +96,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             {
                 classExport = CreateNewExport(pcc, className, "Class", parent, UClass.Create(), superClass, useTrash: false);
                 classObj = classExport.GetBinaryData<UClass>();
+                classExport.ObjectFlags = EObjectFlags.Public | EObjectFlags.LoadForClient | EObjectFlags.LoadForServer | EObjectFlags.LoadForEdit | EObjectFlags.Standalone;
             }
             else
             {
@@ -117,6 +118,10 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 {
                     classObj.ClassConfigName = NameReference.FromInstancedString(parentClass.ConfigName);
                 }
+            }
+            if (classObj.ClassFlags.Has(EClassFlags.Native))
+            {
+                classExport.ObjectFlags |= EObjectFlags.Native;
             }
 
             //calculate probemask

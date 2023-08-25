@@ -33,7 +33,8 @@
         <converters:GameTypeConverter x:Key="GameTypeConverter"/>
         <ContextMenu x:Key="nodeContextMenu" Closed="ContextMenu_Closed">
             <MenuItem Header="Goto sequence" Name="sequenceRefGotoMenuItem" Click="GotoSequenceReference_Clicked" />
-            <MenuItem Header="Extract sequence" Name="extractSequenceMenuItem" Click="ExtractSequence_Clicked" Visibility="{x:Static global:App.IsDebugVisibility}" />
+            <MenuItem Header="Extract sequence (EXPERIMENTAL)" Name="extractSequenceMenuItem" Click="ExtractSequence_Clicked" Visibility="{x:Static global:App.IsDebugVisibility}" />
+            <MenuItem Header="Trim unused variable links (EXPERIMENTAL)" Name="trimUnusedVariableLinksMenuItem" Click="TrimVariableLinks_Clicked" Visibility="{x:Static global:App.IsDebugVisibility}" />
             <MenuItem Header="Copy InstancedFullPath" Name="copyInstancedFullPathMenuItem" Click="CopyInstancedFullPath_Clicked" Visibility="{x:Static global:App.IsDebugVisibility}" />
 
             <!-- SeqAct_Log Right Click -->
@@ -308,7 +309,7 @@
                             </Hyperlink>
                         </TextBlock>
                     </StackPanel>
-                    <sharedToolControls:RecentsControl x:Name="RecentsController" Grid.Column="3" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}"/>
+                    <sharedToolControls:RecentsControl x:Name="RecentsController" Grid.Column="3" Visibility="{Binding Pcc, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type bases:WPFBase}},Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}"/>
                     <TreeView x:Name="Sequences_TreeView" Grid.Row="0" Grid.Column="0" FontFamily="Consolas"
                                 Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}"
                                 ItemsSource="{Binding TreeViewRootNodes}" 

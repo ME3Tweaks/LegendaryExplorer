@@ -4166,7 +4166,8 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                 Filter = $"*.txt|*.txt",
                 InitialDirectory = PathfindingEditorDataFolder,
                 FileName = $"{Pcc.Game}_{pccname}_group",
-                AddExtension = true
+                AddExtension = true,
+                CustomPlaces = AppDirectories.GameCustomPlaces
 
             };
             if (d.ShowDialog() == true)

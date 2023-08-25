@@ -66,8 +66,17 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
                         varType = staticArrayType.ElementType;
                         continue;
                     case DynamicArrayType dynamicArrayType:
-                        return dynamicArrayType.ElementType is Struct or ObjectType && dynamicArrayType.ElementPropertyFlags.Has(UnrealFlags.EPropertyFlags.NeedCtorLink);
-                    case Struct:
+                        varType = dynamicArrayType.ElementType;
+                        continue;
+                    case Struct strct:
+                        foreach (VariableDeclaration structVarDecl in strct.VariableDeclarations)
+                        {
+                            if (structVarDecl.IsOrHasInstancedObjectProperty())
+                            {
+                                return true;
+                            }
+                        }
+                        return false;
                     case ObjectType:
                         return Flags.Has(UnrealFlags.EPropertyFlags.NeedCtorLink);
                     default:

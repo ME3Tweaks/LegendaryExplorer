@@ -261,8 +261,12 @@ namespace LegendaryExplorerCore.Kismet
             if (sequenceExport.ClassName is not "SequenceReference")
             {
                 ArrayProperty<ObjectProperty> seqObjs = sequenceExport.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects") ?? new ArrayProperty<ObjectProperty>("SequenceObjects");
-                seqObjs.Add(new ObjectProperty(newObject));
-                sequenceExport.WriteProperty(seqObjs);
+                // Only add if not already in the list
+                if (seqObjs.All(x => x.Value != newObject.UIndex))
+                {
+                    seqObjs.Add(new ObjectProperty(newObject));
+                    sequenceExport.WriteProperty(seqObjs);
+                }
             }
 
             PropertyCollection newObjectProps = newObject.GetProperties();
@@ -291,8 +295,12 @@ namespace LegendaryExplorerCore.Kismet
                 ArrayProperty<ObjectProperty> seqObjs = sequenceExport.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects") ?? new ArrayProperty<ObjectProperty>("SequenceObjects");
                 foreach (var export in exports)
                 {
-                    // Should this check it's not already in the sequence?
-                    seqObjs.Add(new ObjectProperty(export));
+                    // Only add if not already in the list
+                    if (seqObjs.All(x => x.Value != export.UIndex))
+                    {
+                        seqObjs.Add(new ObjectProperty(export));
+                        sequenceExport.WriteProperty(seqObjs);
+                    }
                 }
                 sequenceExport.WriteProperty(seqObjs);
             }
@@ -358,6 +366,27 @@ namespace LegendaryExplorerCore.Kismet
         public static void SetComment(ExportEntry export, string comment)
         {
             SetComment(export, new List<string>() { comment });
+        }
+
+        /// <summary>
+        /// Removes variable links that have no defined values. Can be dangerous if the class is not designed to lookup by name (will break Idx based classes)
+        /// </summary>
+        /// <param name="export"></param>
+        public static void TrimVariableLinks(ExportEntry source)
+        {
+            if (source.GetProperty<ArrayProperty<StructProperty>>("VariableLinks") is { } varLinksProp)
+            {
+                for(int i = varLinksProp.Count - 1; i >0; i--)
+                {
+                    var prop = varLinksProp[i];
+                    if (prop.GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables").Count == 0)
+                    {
+                        // Trim
+                        varLinksProp.RemoveAt(i);
+                    }
+                }
+                source.WriteProperty(varLinksProp);
+            }
         }
 
     }

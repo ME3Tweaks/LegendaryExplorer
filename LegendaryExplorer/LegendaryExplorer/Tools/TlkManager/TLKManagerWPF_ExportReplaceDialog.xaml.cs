@@ -3,6 +3,7 @@ using Microsoft.Win32;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Input;
+using LegendaryExplorer.Misc;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Bases;
 using LegendaryExplorer.SharedUI.Interfaces;
@@ -208,7 +209,8 @@ namespace LegendaryExplorer.Tools.TlkManagerNS
                     var openFileDialog = new OpenFileDialog
                     {
                         Multiselect = false,
-                        Filter = "XML Files (*.xml)|*.xml"
+                        Filter = "XML Files (*.xml)|*.xml",
+                        CustomPlaces = AppDirectories.GameCustomPlaces
                     };
 
                     if (openFileDialog.ShowDialog() == true)

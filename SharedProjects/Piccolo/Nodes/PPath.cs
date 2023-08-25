@@ -154,6 +154,14 @@ namespace Piccolo.Nodes
             pen = DEFAULT_PEN;
             path = new GraphicsPath();
         }
+        /// <summary>
+        /// Constructs a new PPath with an empty path and a Pen.
+        /// </summary>
+        public PPath(Pen _pen)
+        {
+            pen = _pen;
+            path = new GraphicsPath();
+        }
 
         /// <summary>
         /// Constructs a new PPath wrapping the given
@@ -252,6 +260,23 @@ namespace Piccolo.Nodes
         }
 
         /// <summary>
+        /// Creates a new PPath with the shape of the rectangle specified by the given dimensions.
+        /// </summary>
+        /// <param name="x">The x-coordinate of the top left corner of the rectangle.</param>
+        /// <param name="y">The y-coordinate of the top left corner of the rectangle.</param>
+        /// <param name="width">The width of the rectangle.</param>
+        /// <param name="height">The height of the rectangle.</param>
+        /// <param name="pen">The <see cref="System.Drawing.Pen"/> to use.</param>
+        /// <returns>The new PPath node.</returns>
+        public static PPath CreateRectangle(float x, float y, float width, float height, Pen pen)
+        {
+            PPath result = new PPath(pen);
+            result.AddRectangle(x, y, width, height);
+            result.Brush = Brushes.White;
+            return result;
+        }
+
+        /// <summary>
         /// Creates a new PPath with the shape of the ellipse specified by the given dimensions.
         /// </summary>
         /// <param name="x">
@@ -272,6 +297,27 @@ namespace Piccolo.Nodes
         }
 
         /// <summary>
+        /// Creates a new PPath with the shape of the ellipse specified by the given dimensions.
+        /// </summary>
+        /// <param name="x">
+        /// The x-coordinate of the top left corner of the bounding box of the ellipse.
+        /// </param>
+        /// <param name="y">
+        /// The y-coordinate of the top left corner of the bounding box of the ellipse.
+        /// </param>
+        /// <param name="width">The width of the ellipse.</param>
+        /// <param name="height">The height of the ellipse.</param>
+        /// <param name="pen">The <see cref="System.Drawing.Pen"/> to use.</param>
+        /// <returns>The new PPath node.</returns>
+        public static PPath CreateEllipse(float x, float y, float width, float height, Pen pen)
+        {
+            PPath result = new PPath(pen);
+            result.AddEllipse(x, y, width, height);
+            result.Brush = Brushes.White;
+            return result;
+        }
+
+        /// <summary>
         /// Creates a new PPath with the shape of the polygon specified by the given dimension.
         /// </summary>
         /// <param name="points">The points in the desired polygon.</param>
@@ -279,6 +325,20 @@ namespace Piccolo.Nodes
         public static PPath CreatePolygon(PointF[] points)
         {
             PPath result = new PPath();
+            result.AddPolygon(points);
+            result.Brush = Brushes.White;
+            return result;
+        }
+
+        /// <summary>
+        /// Creates a new PPath with the shape of the polygon specified by the given dimension.
+        /// </summary>
+        /// <param name="points">The points in the desired polygon.</param>
+        /// <param name="pen">The <see cref="System.Drawing.Pen"/> to use.</param>
+        /// <returns>The new PPath node.</returns>
+        public static PPath CreatePolygon(PointF[] points, Pen pen)
+        {
+            PPath result = new PPath(pen);
             result.AddPolygon(points);
             result.Brush = Brushes.White;
             return result;

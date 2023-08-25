@@ -5,7 +5,6 @@ using LegendaryExplorerCore.Gammtek.Extensions;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
-using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.UnrealScript.Analysis.Symbols;
@@ -1045,7 +1044,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 if (prim.Cast == ECast.ObjectToInterface)
                 {
                     WriteOpCode(OpCodes.InterfaceCast);
-                    WriteObjectRef(ResolveClass((Class)node.CastType));
+                    WriteObjectRef(CompilerUtils.ResolveClass((Class)node.CastType, Pcc));
                 }
                 else
                 {
@@ -1056,12 +1055,12 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             else if (node.CastType is ClassType clsType)
             {
                 WriteOpCode(OpCodes.Metacast);
-                WriteObjectRef(ResolveClass((Class)clsType.ClassLimiter));
+                WriteObjectRef(CompilerUtils.ResolveClass((Class)clsType.ClassLimiter, Pcc));
             }
             else
             {
                 WriteOpCode(OpCodes.DynamicCast);
-                WriteObjectRef(ResolveClass((Class)node.CastType));
+                WriteObjectRef(CompilerUtils.ResolveClass((Class)node.CastType, Pcc));
             }
             Emit(node.CastTarget);
             return true;
@@ -1289,7 +1288,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             WriteOpCode(OpCodes.ObjectConst);
             if (node.Class is ClassType clsType)
             {
-                WriteObjectRef(ResolveClass((Class)clsType.ClassLimiter));
+                WriteObjectRef(CompilerUtils.ResolveClass((Class)clsType.ClassLimiter, Pcc));
             }
             else
             {
@@ -1425,7 +1424,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             }
             resolvedEntry = node switch
             {
-                Class cls => ResolveClass(cls),
+                Class cls => CompilerUtils.ResolveClass(cls, Pcc),
                 Struct strct => ResolveStruct(strct),
                 State state => ResolveState(state),
                 Function func => ResolveFunction(func),
@@ -1451,17 +1450,6 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
         private IEntry ResolveReturnValue(Function f) => f.ReturnType is null ? null : Pcc.getEntryOrAddImport($"{ResolveFunction(f).InstancedFullPath}.ReturnValue", PropertyTypeName(f.ReturnType));
 
         private IEntry ResolveState(State s) => Pcc.getEntryOrAddImport($"{ResolveSymbol(s.Outer).InstancedFullPath}.{s.Name}", "State");
-
-        private IEntry ResolveClass(Class c)
-        {
-            var rop = new RelinkerOptionsPackage { ImportExportDependencies = true };
-            var entry = EntryImporter.EnsureClassIsInFile(Pcc, c.Name, rop);
-            if (rop.RelinkReport.Any())
-            {
-                throw new Exception($"Unable to resolve class '{c.Name}'! There were relinker errors: {string.Join("\n\t", rop.RelinkReport.Select(pair => pair.Message))}");
-            }
-            return entry;
-        }
 
         private IEntry ResolveObject(string instancedFullPath) => Pcc.Exports.FirstOrDefault(exp => exp.InstancedFullPath == instancedFullPath) ??
                                                                   (IEntry)Pcc.Imports.FirstOrDefault(imp => imp.InstancedFullPath == instancedFullPath);

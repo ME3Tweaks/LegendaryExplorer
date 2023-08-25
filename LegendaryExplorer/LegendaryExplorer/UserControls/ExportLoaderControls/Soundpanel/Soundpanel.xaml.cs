@@ -1403,7 +1403,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             if (replacementTarget == null)
                 return;
 
-            OpenFileDialog d = new OpenFileDialog { Title = "Select new .wav file", Filter = "Wave PCM|*.wav" };
+            OpenFileDialog d = new OpenFileDialog
+            {
+                Title = "Select new .wav file", Filter = "Wave PCM|*.wav",
+                CustomPlaces = AppDirectories.GameCustomPlaces
+            };
             bool? res = d.ShowDialog();
             if (!res.HasValue || !res.Value)
             {
@@ -1489,7 +1493,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 {
                     var correctPaths = WwiseCliHandler.CheckWwisePathForGame(CurrentLoadedExport.FileRef.Game);
                     if (!correctPaths) return;
-                    OpenFileDialog d = new OpenFileDialog { Filter = "Wave PCM|*.wav" };
+                    OpenFileDialog d = new OpenFileDialog
+                    {
+                        Filter = "Wave PCM|*.wav",
+                        CustomPlaces = AppDirectories.GameCustomPlaces
+                    };
                     bool? res = d.ShowDialog();
                     if (res.HasValue && res.Value)
                     {
@@ -1528,7 +1536,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             if (oggPath == null)
             {
-                OpenFileDialog d = new OpenFileDialog { Filter = Pcc.Game is MEGame.ME3 ? "Wwise Encoded Ogg|*.ogg" : "Wwise Wem File|*.wem" };
+                OpenFileDialog d = new OpenFileDialog
+                {
+                    Filter = Pcc.Game is MEGame.ME3 ? "Wwise Encoded Ogg|*.ogg" : "Wwise Wem File|*.wem",
+                    CustomPlaces = AppDirectories.GameCustomPlaces
+                };
                 bool? res = d.ShowDialog();
                 if (res.HasValue && res.Value)
                 {
@@ -1575,7 +1587,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             if (sourceFile == null)
             {
                 var correctPaths = WwiseCliHandler.CheckWwisePathForGame(Pcc.Game);
-                OpenFileDialog d = new OpenFileDialog { Filter = "Wave PCM|*.wav" };
+                OpenFileDialog d = new OpenFileDialog
+                {
+                    Filter = "Wave PCM|*.wav",
+                    CustomPlaces = AppDirectories.GameCustomPlaces
+                };
                 if (correctPaths && d.ShowDialog() == true)
                 {
                     sourceFile = d.FileName;
@@ -1635,7 +1651,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 WwiseStream w = exportToWorkOn.GetBinaryData<WwiseStream>();
                 if (filePath == null)
                 {
-                    OpenFileDialog d = new OpenFileDialog { Filter = Pcc.Game is MEGame.ME3 ? "Wwise Encoded Ogg|*.ogg" : "Wwise Wem File|*.wem" };
+                    OpenFileDialog d = new OpenFileDialog
+                    {
+                        Filter = Pcc.Game is MEGame.ME3 ? "Wwise Encoded Ogg|*.ogg" : "Wwise Wem File|*.wem",
+                        CustomPlaces = AppDirectories.GameCustomPlaces
+                    };
                     bool? res = d.ShowDialog();
                     if (res.HasValue && res.Value)
                     {

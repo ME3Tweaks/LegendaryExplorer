@@ -1034,9 +1034,9 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             SelectedSequence = seqExport;
             SetupJSON(SelectedSequence);
             var selectedExports = SelectedObjects.Select(o => o.Export).ToList();
-            Properties_InterpreterWPF.LoadExport(seqExport);
             if (fromFile)
             {
+                Properties_InterpreterWPF.LoadExport(seqExport);
                 if (UseSavedViews && File.Exists(JSONpath))
                 {
                     SavedView = JsonConvert.DeserializeObject<SavedViewData>(File.ReadAllText(JSONpath));
@@ -1232,9 +1232,13 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                     graphEditor.addNode(obj);
                 }
 
+                List<SAction> actions = CurrentObjects.OfType<SAction>().ToList();
+                List<SVar> vars = CurrentObjects.OfType<SVar>().ToList();
+                List<SEvent> events = CurrentObjects.OfType<SEvent>().ToList();
+
                 foreach (SObj obj in CurrentObjects)
                 {
-                    obj.CreateConnections(CurrentObjects);
+                    obj.CreateConnections(actions, vars, events);
                 }
 
                 foreach (SObj obj in CurrentObjects)
@@ -1244,7 +1248,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                         obj.Layout(savedInfo.X, savedInfo.Y);
                         continue;
                     }
-                    if (Pcc.Game == MEGame.ME1 || Pcc.Game == MEGame.UDK || Pcc.Game.IsLEGame())
+                    if (Pcc.Game is MEGame.ME1 or MEGame.UDK || Pcc.Game.IsLEGame())
                     {
                         var props = obj.Export.GetProperties();
                         IntProperty xPos = props.GetProp<IntProperty>("ObjPosX");
@@ -1517,22 +1521,24 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
 
                 RefreshView();
                 LoadSequences();
-                return;
             }
-
-            if (updatedExports.Intersect(CurrentObjects.Select(obj => obj.UIndex)).Any())
+            else
             {
-                RefreshView();
-            }
-
-            foreach (var i in updatedExports)
-            {
-                if (Pcc.IsUExport(i) && Pcc.GetUExport(i).IsSequence())
+                if (updatedExports.Intersect(CurrentObjects.Select(obj => obj.UIndex)).Any())
                 {
-                    LoadSequences();
-                    break;
+                    RefreshView();
+                }
+
+                foreach (var updatedExportUIndex in updatedExports)
+                {
+                    if (Pcc.TryGetUExport(updatedExportUIndex, out ExportEntry updatedExport) && updatedExport.IsSequence() && updatedExport != SelectedSequence)
+                    {
+                        LoadSequences();
+                        break;
+                    }
                 }
             }
+
 
             if (updatedExports.Any(uIdx => Pcc.GetEntry(uIdx) is ExportEntry { IsClass: true }))
             {
@@ -1835,7 +1841,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
 
                 if (contextMenu.GetChild("extractSequenceMenuItem") is MenuItem extractSequenceMenuItem)
                 {
-
+#if DEBUG
                     if (obj is SAction sAction && sAction.Export != null && (sAction.Export.ClassName is "SequenceReference" or "Sequence"))
                     {
                         extractSequenceMenuItem.Visibility = Visibility.Visible;
@@ -1844,6 +1850,21 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                     {
                         extractSequenceMenuItem.Visibility = Visibility.Collapsed;
                     }
+#endif
+                }
+
+                if (contextMenu.GetChild("trimSequenceVariablesMenuItem") is MenuItem trimVariableLinksMenuItem)
+                {
+#if DEBUG
+                    if (obj.Export != null && (obj is SAction sAction || obj is SEvent))
+                    {
+                        trimVariableLinksMenuItem.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        trimVariableLinksMenuItem.Visibility = Visibility.Collapsed;
+                    }
+#endif
                 }
 
                 if (contextMenu.GetChild("seqLogAddItemMenuItem") is MenuItem seqLogAddItemMenuItem)
@@ -2609,9 +2630,11 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
         {
             if (!IsLoaded)
             {
+                // Do not try to navigate if UI has not finished loading
                 ExportQueuedForFocusing = expToNavigateTo;
                 return;
             }
+
             if (goIntoSequences && expToNavigateTo.ClassName is "SequenceReference" or "Sequence")
             {
                 if (expToNavigateTo.ClassName == "SequenceReference")
@@ -3095,6 +3118,14 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                     }
                 }, x => BusyText = x, entryDoubleClick, this);
 
+            }
+        }
+
+        private void TrimVariableLinks_Clicked(object sender, RoutedEventArgs e)
+        {
+            if (CurrentObjects_ListBox.SelectedItem is SObj sAction && sAction.Export != null)
+            {
+                KismetHelper.TrimVariableLinks(sAction.Export);
             }
         }
 

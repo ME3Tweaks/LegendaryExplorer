@@ -301,7 +301,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             var oDlg = new OpenFileDialog //Load Excel
             {
                 Filter = "Excel Files (*.xlsx)|*.xlsx",
-                Title = "Import Excel table"
+                Title = "Import Excel table",
+                CustomPlaces = AppDirectories.GameCustomPlaces
             };
 
             if (oDlg.ShowDialog() != true)
