@@ -1352,6 +1352,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         private bool CanReplaceAudio(object obj)
         {
             if (CurrentLoadedExport == null) return false;
+            if (CurrentLoadedExport.IsDefaultObject) return false;
             if (CurrentLoadedExport.ClassName == "WwiseStream")
             {
                 return CurrentLoadedExport.FileRef.Game is MEGame.ME3 or MEGame.LE2 or MEGame.LE3;
