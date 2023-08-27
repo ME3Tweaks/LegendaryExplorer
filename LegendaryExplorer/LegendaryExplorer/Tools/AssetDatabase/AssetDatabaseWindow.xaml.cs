@@ -459,7 +459,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             CurrentOverallOperationText = $"Database saved.";
             IsBusy = false;
             await Task.Delay(3000);
-            CurrentOverallOperationText = $"Database generated {CurrentDataBase.GenerationDate} Classes: {CurrentDataBase.ClassRecords.Count} Animations: {CurrentDataBase.Animations.Count} Materials: {CurrentDataBase.Materials.Count} Meshes: {CurrentDataBase.Meshes.Count} Particles: { CurrentDataBase.Particles.Count} Textures: { CurrentDataBase.Textures.Count} Elements: { CurrentDataBase.GUIElements.Count}";
+            CurrentOverallOperationText = $"Database generated {CurrentDataBase.GenerationDate} Classes: {CurrentDataBase.ClassRecords.Count} Animations: {CurrentDataBase.Animations.Count} Materials: {CurrentDataBase.Materials.Count} Meshes: {CurrentDataBase.Meshes.Count} Particles: {CurrentDataBase.Particles.Count} Textures: {CurrentDataBase.Textures.Count} Elements: {CurrentDataBase.GUIElements.Count}";
         }
         public void ClearDataBase()
         {
@@ -698,7 +698,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                         IsBusy = false;
                         CurrentOverallOperationText = $"Database generated {CurrentDataBase.GenerationDate} Classes: {CurrentDataBase.ClassRecords.Count} " +
                                                       $"Animations: {CurrentDataBase.Animations.Count} Materials: {CurrentDataBase.Materials.Count} Meshes: {CurrentDataBase.Meshes.Count} " +
-                                                      $"Particles: { CurrentDataBase.Particles.Count} Textures: { CurrentDataBase.Textures.Count} Elements: { CurrentDataBase.GUIElements.Count}" +
+                                                      $"Particles: {CurrentDataBase.Particles.Count} Textures: {CurrentDataBase.Textures.Count} Elements: {CurrentDataBase.GUIElements.Count}" +
                                                       $" Lines: {CurrentDataBase.Lines.Count}";
 #if DEBUG
                         var end = DateTime.UtcNow;
@@ -1668,7 +1668,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         }
         private void SetFilters(object obj)
         {
-            if(!AssetFilters.ToggleFilter(obj))
+            if (!AssetFilters.ToggleFilter(obj))
             {
                 var param = obj as string;
                 switch (param)
@@ -2174,10 +2174,8 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             var elapsed = DateTime.Now - beginTime;
             MessageBox.Show(this, $"{CurrentGame} Database generated in {elapsed:mm\\:ss}");
             MemoryAnalyzer.ForceFullGC(true);
-            if (!CurrentGame.IsGame1())
-            {
-                GetConvoLinesBackground();
-            }
+            // 08/27/2023 - Removed !IsGame1() check on GetConvoLinesBackground()
+            GetConvoLinesBackground();
             CurrentDataBase.PlotUsages.LoadPlotPaths(game);
         }
 
@@ -2219,7 +2217,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             {
                 text = string.Join("\n", ge.Usages.Select(x => FileListExtended[x.FileKey]?.FileName).Distinct());
             }
-            
+
             if (text != null)
             {
                 try
