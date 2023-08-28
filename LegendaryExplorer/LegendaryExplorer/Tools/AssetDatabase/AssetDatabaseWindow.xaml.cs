@@ -2234,7 +2234,10 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             var elapsed = DateTime.Now - beginTime;
             MessageBox.Show(this, $"{CurrentGame} Database generated in {elapsed:mm\\:ss}");
             MemoryAnalyzer.ForceFullGC(true);
-            GetConvoLinesBackground();
+            if (!CurrentGame.IsGame1())
+            {
+                GetConvoLinesBackground();
+            }
             CurrentDataBase.PlotUsages.LoadPlotPaths(game);
         }
 
