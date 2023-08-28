@@ -4431,20 +4431,16 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                 }
             }
 
-            if (brightnesscorrectionfactor < 0)
-            {
-                brightnesscorrectionfactor = 1 + brightnesscorrectionfactor;
-                newred *= brightnesscorrectionfactor * (1 + (AdjustRed / 100));
-                newgreen *= brightnesscorrectionfactor * (1 + (AdjustGreen / 100));
-                newblue *= brightnesscorrectionfactor * (1 + (AdjustBlue / 100));
-            }
-            else
-            {
-                newred = (255 - newred) * brightnesscorrectionfactor * (1 + (AdjustRed / 100)) + newred;
-                newgreen = (255 - newgreen) * brightnesscorrectionfactor * (1 + (AdjustGreen / 100)) + newgreen;
-                newblue = (255 - newblue) * brightnesscorrectionfactor * (1 + (AdjustBlue / 100)) + newblue;
-            }
-
+            brightnesscorrectionfactor = 1 + brightnesscorrectionfactor;
+            newred = brightnesscorrectionfactor * (1 + AdjustRed) * newred;
+            newgreen = brightnesscorrectionfactor * (1 + AdjustGreen) * newgreen;
+            newblue = brightnesscorrectionfactor * (1 + AdjustBlue) * newgreen;
+            if (newred > 255)
+                newred = 255;
+            if (newgreen > 255)
+                newgreen = 255;
+            if (newblue > 255)
+                newblue = 255;
             var vector = new Vector4(newred / 255, newgreen / 255, newblue / 255, oldalpha / 255);
             var newColor = new LegendaryExplorerCore.SharpDX.Color(vector);
             return newColor;

@@ -735,7 +735,10 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                         Localization = CurrentDataBase.Localization;
                         AssetFilters.MaterialFilter.LoadFromDatabase(CurrentDataBase);
                         IsBusy = false;
-                        CurrentOverallOperationText = $"Database generated {CurrentDataBase.GenerationDate} Classes: {CurrentDataBase.ClassRecords.Count} " + $"Animations: {CurrentDataBase.Animations.Count} Materials: {CurrentDataBase.Materials.Count} Meshes: {CurrentDataBase.Meshes.Count} " + $"Particles: {CurrentDataBase.Particles.Count} Textures: {CurrentDataBase.Textures.Count} Elements: {CurrentDataBase.GUIElements.Count}" + $" Lines: {CurrentDataBase.Lines.Count}";
+                        CurrentOverallOperationText = $"Database generated {CurrentDataBase.GenerationDate} Classes: {CurrentDataBase.ClassRecords.Count} " +
+                                                      $"Animations: {CurrentDataBase.Animations.Count} Materials: {CurrentDataBase.Materials.Count} Meshes: {CurrentDataBase.Meshes.Count} " +
+                                                      $"Particles: {CurrentDataBase.Particles.Count} Textures: {CurrentDataBase.Textures.Count} Elements: {CurrentDataBase.GUIElements.Count} " +
+                                                      $"Lines: {CurrentDataBase.Lines.Count}";
 #if DEBUG
                         var end = DateTime.UtcNow;
                         double length = (end - start).TotalMilliseconds;
@@ -2234,10 +2237,8 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             var elapsed = DateTime.Now - beginTime;
             MessageBox.Show(this, $"{CurrentGame} Database generated in {elapsed:mm\\:ss}");
             MemoryAnalyzer.ForceFullGC(true);
-            if (!CurrentGame.IsGame1())
-            {
-                GetConvoLinesBackground();
-            }
+            // 08/27/2023 - Removed !IsGame1() check on GetConvoLinesBackground()
+            GetConvoLinesBackground();
             CurrentDataBase.PlotUsages.LoadPlotPaths(game);
         }
 
