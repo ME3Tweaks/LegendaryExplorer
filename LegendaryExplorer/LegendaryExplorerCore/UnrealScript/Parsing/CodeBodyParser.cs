@@ -516,11 +516,15 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 {
                     if (decl.IsConst)
                     {
-                        TypeError("Cannot assign to a 'const' variable.", expr);
+                        Log.LogWarning("Assigning to a 'const' variable! Other code may not account for it changing.", expr.StartPos, expr.EndPos);
                     }
                     else if (ReferenceEquals(decl, SelfDeclaration))
                     {
                         TypeError($"{SELF} is immutable! You cannot assign a different value to it.", expr);
+                    }
+                    if (expr is DefaultReference && !decl.Flags.Has(EPropertyFlags.Config))
+                    {
+                        Log.LogWarning("Changing the default value of a non-config property may cause errors", expr.StartPos, expr.EndPos);
                     }
                 }
 
