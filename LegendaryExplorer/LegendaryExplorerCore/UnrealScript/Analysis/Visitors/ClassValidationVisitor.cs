@@ -401,39 +401,44 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 }
 
                 VariableType nodeVarType = (node.VarType as StaticArrayType)?.ElementType ?? node.VarType;
-                if (nodeVarType is DelegateType ||
-                    !node.Flags.Has(EPropertyFlags.Native) && nodeVarType is DynamicArrayType or { PropertyType: EPropertyType.String })
+                if (node.Outer is not Function)
                 {
-                    node.Flags |= EPropertyFlags.NeedCtorLink;
+                    if (nodeVarType is DelegateType ||
+                        !node.Flags.Has(EPropertyFlags.Native) && nodeVarType is DynamicArrayType or { PropertyType: EPropertyType.String })
+                    {
+                        node.Flags |= EPropertyFlags.NeedCtorLink;
+                    }
                 }
             }
             else if (Pass is ValidationPass.BodyPass)
             {
-                //should component flag be set when this is a function parameter?
-                switch ((node.VarType as StaticArrayType)?.ElementType ?? node.VarType)
+                if (node.Outer is not Function)
                 {
-                    case DynamicArrayType {ElementType: VariableType elType} dynArrType:
-                        if (elType is Class {NeedsComponentFlag: true})
-                        {
-                            dynArrType.ElementPropertyFlags |= EPropertyFlags.Component;
-                            node.Flags |= EPropertyFlags.Component;
-                        }
-                        else if (elType is DelegateType ||
-                                 !node.Flags.Has(EPropertyFlags.Native) && (elType.PropertyType is EPropertyType.String ||
+                    switch ((node.VarType as StaticArrayType)?.ElementType ?? node.VarType)
+                    {
+                        case DynamicArrayType { ElementType: VariableType elType } dynArrType:
+                            if (elType is Class { NeedsComponentFlag: true })
+                            {
+                                dynArrType.ElementPropertyFlags |= EPropertyFlags.Component;
+                                node.Flags |= EPropertyFlags.Component;
+                            }
+                            else if (elType is DelegateType ||
+                                     !node.Flags.Has(EPropertyFlags.Native) && (elType.PropertyType is EPropertyType.String ||
                                                                                 elType is Struct elStruct && StructNeedsCtorLink(elStruct, new Stack<Struct> { elStruct })))
-                        {
-                            dynArrType.ElementPropertyFlags |= EPropertyFlags.NeedCtorLink;
-                        }
-                        break;
-                    case Class {NeedsComponentFlag: true}:
-                        node.Flags |= EPropertyFlags.Component;
-                        break;
-                    case Struct strct:
-                        if (!node.Flags.Has(EPropertyFlags.Native) && StructNeedsCtorLink(strct, new Stack<Struct> { strct }))
-                        {
-                            node.Flags |= EPropertyFlags.NeedCtorLink;
-                        }
-                        break;
+                            {
+                                dynArrType.ElementPropertyFlags |= EPropertyFlags.NeedCtorLink;
+                            }
+                            break;
+                        case Class { NeedsComponentFlag: true }:
+                            node.Flags |= EPropertyFlags.Component;
+                            break;
+                        case Struct strct:
+                            if (!node.Flags.Has(EPropertyFlags.Native) && StructNeedsCtorLink(strct, new Stack<Struct> { strct }))
+                            {
+                                node.Flags |= EPropertyFlags.NeedCtorLink;
+                            }
+                            break;
+                    }
                 }
 
                 bool StructNeedsCtorLink(Struct s1, Stack<Struct> stack)

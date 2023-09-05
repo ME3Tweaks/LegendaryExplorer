@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Buffers.Binary;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -7,7 +6,6 @@ using System.Runtime.InteropServices;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Memory;
-using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.Collections;
@@ -838,7 +836,9 @@ namespace LegendaryExplorerCore.Packages
                 propStartPos = GetPropertyStart();
             var stream = new MemoryStream(_data, false);
             stream.Seek(propStartPos, SeekOrigin.Current);
-            return PropertyCollection.ReadProps(this, stream, ClassName, includeNoneProperties, true, parsingClass, packageCache);
+            var props = PropertyCollection.ReadProps(this, stream, ClassName, includeNoneProperties, true, parsingClass, packageCache);
+            propsEndOffset = props.EndOffset;
+            return props;
         }
 
         public void WriteProperties(PropertyCollection props)
@@ -956,7 +956,76 @@ namespace LegendaryExplorerCore.Packages
         /// <returns></returns>
         public int propsEnd()
         {
-            propsEndOffset ??= GetProperties(true, true).EndOffset;
+            if (propsEndOffset is null)
+            {
+                if (IsClass)
+                {
+                    propsEndOffset = 4;
+                }
+                else if (!FileRef.Endian.IsNative)
+                {
+                    propsEndOffset = GetProperties(true, true).EndOffset;
+                }
+                else
+                {
+                    //This is much faster than actually reading the properties and allocating a full PropertyCollection
+                    bool modernEngineVersion = Game >= MEGame.ME3 || FileRef.Platform == MEPackage.GamePlatform.PS3;
+                    int pos = GetPropertyStart();
+                    var data = DataReadOnly;
+                    while (pos + 8 <= data.Length)
+                    {
+                        string propName = FileRef.GetNameEntry(MemoryMarshal.Read<int>(data[pos..]));
+                        pos += 8;
+                        if (propName == "")
+                        {
+#if DEBUG
+                            if (Debugger.IsAttached)
+                            {
+                                Debugger.Break();
+                            }
+#endif
+                            //broken properties
+                            break;
+                        }
+                        if (propName == "None")
+                        {
+                            break;
+                        }
+                        if (pos + 12 >= data.Length)
+                        {
+#if DEBUG
+                            if (Debugger.IsAttached)
+                            {
+                                Debugger.Break();
+                            }
+#endif
+                            //broken properties
+                            break;
+                        }
+                        string propType = FileRef.GetNameEntry(MemoryMarshal.Read<int>(data[pos..]));
+                        pos += 8;
+                        int size = MemoryMarshal.Read<int>(data[pos..]);
+                        pos += 8 + size;
+                        switch (propType)
+                        {
+                            case "StructProperty":
+                                pos += 8;
+                                break;
+                            case "BoolProperty":
+                                pos += modernEngineVersion ? 1 : 4;
+                                break;
+                            case "ByteProperty":
+                                if (modernEngineVersion)
+                                {
+                                    pos += 8;
+                                }
+                                break;
+                        }
+                    }
+                    propsEndOffset = pos;
+                }
+            }
+            
             if (propsEndOffset.Value < 4) throw new Exception("Props end is less than 4!");
             return propsEndOffset.Value;
         }
