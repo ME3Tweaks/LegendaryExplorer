@@ -376,7 +376,7 @@ namespace LegendaryExplorerCore.Kismet
         {
             if (source.GetProperty<ArrayProperty<StructProperty>>("VariableLinks") is { } varLinksProp)
             {
-                for(int i = varLinksProp.Count - 1; i >0; i--)
+                for (int i = varLinksProp.Count - 1; i >= 0; i--)
                 {
                     var prop = varLinksProp[i];
                     if (prop.GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables").Count == 0)

@@ -93,11 +93,14 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Util
 
         public static Function LookupFunction(this Class @class, string funcName, bool lookInParents = true)
         {
+            int firstCharLower = funcName[0] | 0x20;
             while (true)
             {
                 foreach (Function func in @class.Functions.AsSpan())
                 {
-                    if (string.Equals(func.Name, funcName, StringComparison.OrdinalIgnoreCase))
+                    string name = func.Name;
+                    //will almost always be false, so we want to fail fast 
+                    if ((name[0] | 0x20) == firstCharLower && string.Equals(name, funcName, StringComparison.OrdinalIgnoreCase))
                     {
                         return func;
                     }

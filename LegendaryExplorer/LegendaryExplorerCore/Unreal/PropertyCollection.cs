@@ -128,9 +128,9 @@ namespace LegendaryExplorerCore.Unreal
         {
             entry ??= export;
             var stream = new EndianReader(rawStream) { Endian = export.FileRef.Endian };
-
+#if !DEBUG
             long startPosition = stream.Position;//used in the non-DEBUG block at the end of this method!
-
+#endif
             var props = new PropertyCollection();
             IMEPackage pcc = export.FileRef;
             try
@@ -308,7 +308,7 @@ namespace LegendaryExplorerCore.Unreal
             if (props.Count > 0)
             {
                 //error reading props.
-                if (props[^1].PropType != PropertyType.None && requireNoneAtEnd)
+                if (requireNoneAtEnd && props[^1].PropType != PropertyType.None)
                 {
                     if (entry != null)
                     {
@@ -324,7 +324,7 @@ namespace LegendaryExplorerCore.Unreal
 #endif
                 }
                 //remove None Property
-                if (props[^1].PropType == PropertyType.None && !includeNoneProperty)
+                if (!includeNoneProperty && props[^1].PropType == PropertyType.None)
                 {
                     props.RemoveAt(props.Count - 1);
                 }
