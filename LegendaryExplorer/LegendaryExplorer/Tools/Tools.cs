@@ -204,7 +204,7 @@ namespace LegendaryExplorer
                 category2 = "Utilities",
                 description = "IN DEVELOPMENT: (LE ONLY) Animation Viewer 2 allows you to preview any animation in the Legendary Edition versions of the games."
             });
-
+#endif
             set.Add(new Tool
             {
                 name = "Class Hierarchy Viewer",
@@ -224,7 +224,6 @@ namespace LegendaryExplorer
                 category = "Utilities",
                 description = "Class Hierarchy Viewer shows you how classes and properties inherit from each other, and where some override."
             });
-#endif
             set.Add(new Tool
             {
                 name = "Live Level Editor",
