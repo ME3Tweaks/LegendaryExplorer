@@ -1649,6 +1649,10 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                         fc.IsCalledOnInterface = true;
                     }
 
+                    if (isStructMemberExpression && rhs is DelegateCall)
+                    {
+                        TypeError("Cannot call delegate properties on a struct!", rhs);
+                    }
 
                     switch (rhs)
                     {
