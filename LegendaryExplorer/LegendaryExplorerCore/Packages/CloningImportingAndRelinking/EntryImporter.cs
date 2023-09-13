@@ -1319,11 +1319,11 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         public static ExportEntry ResolveImport(ImportEntry entry, PackageCache globalCache, PackageCache lookupCache, string localization = "INT", bool unsafeLoad = false, IEnumerable<string> localDirFiles = null, string gameRootOverride = null)
         {
             var entryFullPath = entry.InstancedFullPath;
-            if (entry.ObjectName == "HMM_EYE_MASTER_OVRD_MAT")
-            {
+            //if (entry.ObjectName == "HMM_EYE_MASTER_OVRD_MAT")
+            //{
                 
-                // Debugger.Break();
-            }
+            //    // Debugger.Break();
+            //}
             CaseInsensitiveDictionary<string> gameFiles = MELoadedFiles.GetFilesLoadedInGame(entry.Game, forceUseCached: true, gameRootOverride: gameRootOverride);
 
             var filesToCheck = GetPossibleImportFiles(entry, localization);
