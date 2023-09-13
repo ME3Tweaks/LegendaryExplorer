@@ -1321,7 +1321,8 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             var entryFullPath = entry.InstancedFullPath;
             if (entry.ObjectName == "HMM_EYE_MASTER_OVRD_MAT")
             {
-                Debugger.Break();
+                
+                // Debugger.Break();
             }
             CaseInsensitiveDictionary<string> gameFiles = MELoadedFiles.GetFilesLoadedInGame(entry.Game, forceUseCached: true, gameRootOverride: gameRootOverride);
 
