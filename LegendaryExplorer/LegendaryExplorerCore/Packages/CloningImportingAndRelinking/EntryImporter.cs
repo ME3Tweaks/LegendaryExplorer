@@ -1326,7 +1326,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             //}
             CaseInsensitiveDictionary<string> gameFiles = MELoadedFiles.GetFilesLoadedInGame(entry.Game, forceUseCached: true, gameRootOverride: gameRootOverride);
 
-            var filesToCheck = GetPossibleImportFiles(entry, localization);
+            var filesToCheck = GetPossibleImportFiles(entry, localization, gameRootOverride: gameRootOverride);
 
             string containingDirectory = null;
 
@@ -1430,9 +1430,9 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// </summary>
         /// <param name="entry">Import entry to check</param>
         /// <returns>List of filenames of POSSIBLE associated sources, they may not exist</returns>
-        public static List<string> GetPossibleImportFiles(ImportEntry entry, string localization = @"INT")
+        public static List<string> GetPossibleImportFiles(ImportEntry entry, string localization = @"INT", string gameRootOverride = null)
         {
-            return GetPossibleImportFiles(entry.FileRef, entry, localization);
+            return GetPossibleImportFiles(entry.FileRef, entry, localization, gameRootOverride);
         }
 
         /// <summary>
@@ -1442,10 +1442,10 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// <param name="entry">The import being checked - this can be null if you only want package-file possibilities</param>
         /// <param name="localization">Localization to return files for</param>
         /// <returns>List of filenames of potential files imported from - this does not include filepaths and not all files will be guaranteed to exist</returns>
-        public static List<string> GetPossibleImportFiles(IMEPackage package, ImportEntry entry, string localization = @"INT")
+        public static List<string> GetPossibleImportFiles(IMEPackage package, ImportEntry entry, string localization = @"INT", string gameRootOverride = null)
         {
 
-            var gameFiles = MELoadedFiles.GetFilesLoadedInGame(package.Game, forceUseCached: true);
+            var gameFiles = MELoadedFiles.GetFilesLoadedInGame(package.Game, forceUseCached: true, gameRootOverride: gameRootOverride);
 
             List<string> filesToCheck = new List<string>();
 

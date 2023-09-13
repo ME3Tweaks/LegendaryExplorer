@@ -5,6 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using LegendaryExplorer.Libraries;
 using LegendaryExplorer.MainWindow;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.SharedUI.Interfaces;
@@ -47,17 +48,18 @@ namespace LegendaryExplorer.SharedUI.Bases
 
         private void WPFBase_Closing(object sender, CancelEventArgs e)
         {
-            if (pcc is { IsModified: true } && pcc.Users.Count == 1 &&
-                MessageBoxResult.No == MessageBox.Show(this, $"{Path.GetFileName(pcc.FilePath)} has unsaved changes. Do you really want to close {Title}?", "Unsaved changes", MessageBoxButton.YesNo, MessageBoxImage.Warning))
+            if (pcc is { IsModified: true } && pcc.Users.Count == 1)
             {
-                LEXMainWindow.IsAllowedToClose = false; // Do not let main window close at this time
-                e.Cancel = true;
+                this.RestoreAndBringToFront();
+                if (MessageBoxResult.No == MessageBox.Show(this, $"{Path.GetFileName(pcc.FilePath)} has unsaved changes. Do you really want to close {Title}?", "Unsaved changes", MessageBoxButton.YesNo, MessageBoxImage.Warning))
+                {
+                    LEXMainWindow.IsAllowedToClose = false; // Do not let main window close at this time
+                    e.Cancel = true;
+                    return;
+                }
             }
-            else
-            {
-                DataContext = null; //Remove all binding sources
-                Closing -= WPFBase_Closing;
-            }
+            DataContext = null; //Remove all binding sources
+            Closing -= WPFBase_Closing;
         }
 
         /// <summary>
