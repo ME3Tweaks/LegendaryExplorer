@@ -534,7 +534,7 @@ namespace LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode
                     return ReadNext();
 
                 case ME1OpCodes.EX_EatReturnValue:
-                    _reader.ReadInt32();
+                    ReadEntryRef(out _);
                     return ReadNext();
 
                 case ME1OpCodes.EX_Nothing:
