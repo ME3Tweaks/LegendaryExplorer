@@ -109,36 +109,18 @@
 
   <ItemGroup>
     <!-- WINDOWS -->
-    <ContentWithTargetPath Include="Libraries\Windows\CompressionWrappers.dll" Condition="$(Configuration.StartsWith('Win'))">
+    <ContentWithTargetPath Include="Libraries\Windows\CompressionWrappers.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <TargetPath>CompressionWrappers.dll</TargetPath>
     </ContentWithTargetPath>
-    <ContentWithTargetPath Include="Libraries\Windows\TexConverter.dll" Condition="$(Configuration.StartsWith('Win'))">
+    <ContentWithTargetPath Include="Libraries\Windows\TexConverter.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <TargetPath>TexConverter.dll</TargetPath>
     </ContentWithTargetPath>
-    <ContentWithTargetPath Include="Libraries\Windows\ISACTTools.dll" Condition="$(Configuration.StartsWith('Win'))">
+    <ContentWithTargetPath Include="Libraries\Windows\ISACTTools.dll">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	    <TargetPath>ISACTTools.dll</TargetPath>
     </ContentWithTargetPath>
-    <!-- For ALOT Installer, also can't figure out way to make this work in multicondition above-->
-    <ContentWithTargetPath Include="Libraries\Windows\CompressionWrappers.dll" Condition="$(Configuration.StartsWith('WPF'))">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <TargetPath>CompressionWrappers.dll</TargetPath>
-    </ContentWithTargetPath>
-    <ContentWithTargetPath Include="Libraries\Windows\TexConverter.dll" Condition="$(Configuration.StartsWith('WPF'))">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <TargetPath>TexConverter.dll</TargetPath>
-    </ContentWithTargetPath>
-
-    <!-- LINUX -->
-    <ContentWithTargetPath Include="Libraries\Linux\libCompressionWrappers.so" Condition="$(Configuration.StartsWith('Linux'))">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <TargetPath>libCompressionWrappers.so</TargetPath>
-    </ContentWithTargetPath>
-    <!--<Content Include="Libraries\Mac\CompressionWrappers.dylib" Condition=" '$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::OSX)))' ">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>-->
   </ItemGroup>
 
   <ItemGroup>
