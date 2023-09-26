@@ -346,27 +346,32 @@ namespace LegendaryExplorerCore.Packages
 
         public IEntry FindEntry(string instancedname)
         {
+            IEntry matchingEntry;
             // START CRITICAL SECTION ---------------------------------
-            Monitor.Enter(_findEntrySyncObj);
-            if (lookupTableNeedsToBeRegenerated)
+            lock (_findEntrySyncObj)
             {
-                RebuildLookupTable();
+                if (lookupTableNeedsToBeRegenerated)
+                {
+                    RebuildLookupTable();
+                }
+                EntryLookupTable.TryGetValue(instancedname, out matchingEntry);
             }
-            EntryLookupTable.TryGetValue(instancedname, out var matchingEntry);
-            Monitor.Exit(_findEntrySyncObj);
             // END CRITICAL SECTION ------------------------------------
             return matchingEntry;
         }
+
         public ImportEntry FindImport(string instancedname)
         {
+            IEntry matchingEntry;
             // START CRITICAL SECTION ---------------------------------
-            Monitor.Enter(_findEntrySyncObj);
-            if (lookupTableNeedsToBeRegenerated)
+            lock (_findEntrySyncObj)
             {
-                RebuildLookupTable();
+                if (lookupTableNeedsToBeRegenerated)
+                {
+                    RebuildLookupTable();
+                }
+                EntryLookupTable.TryGetValue(instancedname, out matchingEntry);
             }
-            EntryLookupTable.TryGetValue(instancedname, out var matchingEntry);
-            Monitor.Exit(_findEntrySyncObj);
             // END CRITICAL SECTION ------------------------------------
 
             if (matchingEntry is ExportEntry)
@@ -382,14 +387,16 @@ namespace LegendaryExplorerCore.Packages
 
         public ExportEntry FindExport(string instancedname)
         {
+            IEntry matchingEntry;
             // START CRITICAL SECTION ---------------------------------
-            Monitor.Enter(_findEntrySyncObj);
-            if (lookupTableNeedsToBeRegenerated)
+            lock (_findEntrySyncObj)
             {
-                RebuildLookupTable();
+                if (lookupTableNeedsToBeRegenerated)
+                {
+                    RebuildLookupTable();
+                }
+                EntryLookupTable.TryGetValue(instancedname, out matchingEntry);
             }
-            EntryLookupTable.TryGetValue(instancedname, out var matchingEntry);
-            Monitor.Exit(_findEntrySyncObj);
             // END CRITICAL SECTION ------------------------------------
 
             if (matchingEntry is ImportEntry)
