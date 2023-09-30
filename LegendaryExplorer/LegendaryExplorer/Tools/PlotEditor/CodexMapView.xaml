@@ -23,7 +23,7 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
-        
+
         <Style x:Name="CodexStringTextboxStyle" TargetType="{x:Type TextBox}">
             <Style.Triggers>
                 <Trigger Property="IsReadOnly" Value="True">
@@ -40,7 +40,7 @@
 				<Grid>
 					<!-- Grid Definitions -->
 					<Grid.ColumnDefinitions>
-                        <ColumnDefinition MinWidth="100" Width="150" />
+                        <ColumnDefinition MinWidth="100" Width="300" />
                         <ColumnDefinition Width="5" />
                         <ColumnDefinition Width="*" />
 					</Grid.ColumnDefinitions>
@@ -100,7 +100,7 @@
 						<Grid.ColumnDefinitions>
 							<ColumnDefinition Width="Auto" />
 							<ColumnDefinition Width="Auto" />
-                            <ColumnDefinition MaxWidth="350" Width="*"/>
+                            <ColumnDefinition MaxWidth="650" Width="*"/>
 						</Grid.ColumnDefinitions>
 						<Grid.RowDefinitions>
 							<!--<RowDefinition Height="Auto" />-->
@@ -172,7 +172,7 @@
 				<Grid>
 					<!-- Grid Definitions -->
 					<Grid.ColumnDefinitions>
-                        <ColumnDefinition MinWidth="100" Width="150"  />
+                        <ColumnDefinition MinWidth="100" Width="300"  />
                         <ColumnDefinition Width="5" />
                         <ColumnDefinition Width="*" />
 					</Grid.ColumnDefinitions>
@@ -232,7 +232,7 @@
 						<Grid.ColumnDefinitions>
 							<ColumnDefinition Width="Auto" />
 							<ColumnDefinition Width="Auto" />
-                            <ColumnDefinition MaxWidth="350" Width="*"/>
+                            <ColumnDefinition MaxWidth="650" Width="*"/>
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="35" />

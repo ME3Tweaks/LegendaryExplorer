@@ -32,7 +32,7 @@
 	<!-- Content -->
 	<Grid>
 		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="150" />
+			<ColumnDefinition Width="400" />
             <ColumnDefinition Width="5" />
 			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
@@ -245,7 +245,7 @@
 								Text="{Binding Path=GlobalBool, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
 								HorizontalAlignment="Left" Margin="5,5" Minimum="0" VerticalAlignment="Center" Width="150" />
 
-                                <TextBlock Grid.Column="2" Grid.Row="0" TextAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Padding="3,0">
+                                <TextBlock Grid.Column="2" Grid.Row="0" TextAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Padding="3,0" MaxWidth="400">
                                     <TextBlock.Text>
                                         <MultiBinding Converter="{StaticResource PlotPathConverter}" ConverterParameter="bool">
                                             <Binding Path="DataContext.package.Game" ElementName="SelectedStateEventElementContent"/>

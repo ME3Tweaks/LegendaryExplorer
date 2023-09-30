@@ -47,7 +47,7 @@
 					</Grid.RowDefinitions>
 
 					<!-- Grid Content -->
-					<ListBox x:Name="QuestsListBox" Grid.Column="0" Grid.Row="0" Width="150" Style="{DynamicResource ListBoxStyle}"
+					<ListBox x:Name="QuestsListBox" Grid.Column="0" Grid.Row="0" Width="200" Style="{DynamicResource ListBoxStyle}"
 						ItemsSource="{Binding Quests, NotifyOnTargetUpdated=True}" SelectedItem="{Binding SelectedQuest, Mode=TwoWay}">
                         <ListBox.ItemTemplate>
                             <!--<DataTemplate DataType="{x:Type questMap:BioQuest}">-->
@@ -143,7 +143,7 @@
 											<ColumnDefinition Width="*" />
 											<ColumnDefinition Width="5" />
 											<ColumnDefinition Width="*" />
-										</Grid.ColumnDefinitions>
+										</Grid.ColumnDefinitions>	
 										<Grid.RowDefinitions>
 											<RowDefinition Height="Auto" />
 										</Grid.RowDefinitions>
@@ -159,7 +159,7 @@
 										<Grid.ColumnDefinitions>
 											<ColumnDefinition Width="Auto" />
 											<ColumnDefinition Width="Auto" />
-                                            <ColumnDefinition MaxWidth="350" Width="*" />
+                                            <ColumnDefinition MaxWidth="600" Width="*" />
 										</Grid.ColumnDefinitions>
 										<Grid.RowDefinitions>
 											<RowDefinition Height="Auto" />
