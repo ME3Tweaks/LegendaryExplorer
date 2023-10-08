@@ -4,7 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Threading;
 using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.CodeCompletion;
@@ -713,15 +715,17 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                 }
                 //case TokenType.Word when currentToken.Value.Length == 1 && completionWindow is null:
                 //{
-
+                    
                 //    break;
                 //}
             }
 
-            ASTNode GetDefinitionFromToken(ScriptToken prevToken)
-            {
-                return _definitionLinkGenerator.GetDefinitionFromOffset(prevToken.StartPos);
-            }
+            
+        }
+
+        private ASTNode GetDefinitionFromToken(ScriptToken token)
+        {
+            return _definitionLinkGenerator.GetDefinitionFromOffset(token.StartPos);
         }
 
         private void CompileAST_OnClick(object sender, RoutedEventArgs e)
@@ -912,15 +916,50 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                     //Value does not include the $ for some reason? 
                     if (int.TryParse(currentToken.Value, out int strRef))
                     {
-                        _hoverToolTip.Content = TLKManagerWPF.GlobalFindStrRefbyID(strRef, Pcc) ?? "No Data";
-
-                        _hoverToolTip.PlacementTarget = this; // required for property inheritance
-                        _hoverToolTip.IsOpen = true;
+                        SetStringTooltip(TLKManagerWPF.GlobalFindStrRefbyID(strRef, Pcc) ?? "No Data");
                         e.Handled = true;
                     }
                 }
+                else if (GetDefinitionFromToken(currentToken) is ASTNode node)
+                {
+                    switch (node)
+                    {
+                        case Function func:
+                            SetInlinesTooltip(XamlCodeBuilder.GetFunctionSignature(func));
+                            e.Handled = true;
+                            break;
+                        case VariableDeclaration varDecl:
+                            SetInlinesTooltip(XamlCodeBuilder.GetVariableDeclarationSignature(varDecl));
+                            e.Handled = true;
+                            break;
+                    }
+                }
+            }
+
+            void SetInlinesTooltip(IEnumerable<Inline> inlines)
+            {
+                var textBlock = new TextBlock();
+                textBlock.Inlines.AddRange(inlines);
+                SetTooltip(textBlock);
+            }
+
+            void SetStringTooltip(string text)
+            {
+                SetInlinesTooltip(new Inline[] { new Run(text) { Foreground = SyntaxInfo.ColorBrushes[EF.None] } });
+            }
+
+            void SetTooltip(TextBlock content)
+            {
+
+                content.Background = ToolTipBackgroundBrush;
+                _hoverToolTip.Content = content;
+                _hoverToolTip.Background = ToolTipBackgroundBrush;
+                _hoverToolTip.PlacementTarget = this; // required for property inheritance
+                _hoverToolTip.IsOpen = true;
             }
         }
+
+        private static readonly SolidColorBrush ToolTipBackgroundBrush = new(Color.FromRgb(56, 56, 56));
 
         private void TextEditor_OnMouseHoverStopped(object sender, MouseEventArgs e)
         {

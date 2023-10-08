@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Media;
 using ICSharpCode.AvalonEdit.Highlighting;
@@ -74,27 +75,39 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
             CommentSpans = commentSpans ?? new Dictionary<int, SyntaxSpan>();
         }
 
-        public static readonly Dictionary<EF, HighlightingColor> Colors = new()
+        private static readonly Dictionary<EF, Color> Colors = new()
         {
-            [EF.Keyword] = new HighlightingColor { Name = nameof(EF.Keyword), Foreground = new SimpleHighlightingBrush(Color.FromRgb(0x56, 0x9b, 0xbf)) },
-            [EF.Specifier] = new HighlightingColor { Name = nameof(EF.Specifier), Foreground = new SimpleHighlightingBrush(Color.FromRgb(0x56, 0x9b, 0xbf)) },
-            [EF.Class] = new HighlightingColor { Name = nameof(EF.Class), Foreground = new SimpleHighlightingBrush(Color.FromRgb(0x4e, 0xc8, 0xaf)) },
-            [EF.String] = new HighlightingColor { Name = nameof(EF.String), Foreground = new SimpleHighlightingBrush(Color.FromRgb(0xd5, 0x9c, 0x7c)) },
-            [EF.Name] = new HighlightingColor { Name = nameof(EF.Name), Foreground = new SimpleHighlightingBrush(Color.FromRgb(0xd5, 0x9c, 0x7c)) },
-            [EF.Number] = new HighlightingColor { Name = nameof(EF.Number), Foreground = new SimpleHighlightingBrush(Color.FromRgb(0xb1, 0xcd, 0xa7)) },
-            [EF.Enum] = new HighlightingColor { Name = nameof(EF.Enum), Foreground = new SimpleHighlightingBrush(Color.FromRgb(0xb7, 0xdc, 0xa2)) },
-            [EF.Comment] = new HighlightingColor { Name = nameof(EF.Comment), Foreground = new SimpleHighlightingBrush(Color.FromRgb(0x57, 0xa5, 0x4a)) },
-            [EF.ERROR] = new HighlightingColor { Name = nameof(EF.ERROR), Foreground = new SimpleHighlightingBrush(Color.FromRgb(0xff, 0x0, 0x0)) },
-            [EF.Operator] = new HighlightingColor { Name = nameof(EF.Operator), Foreground = new SimpleHighlightingBrush(Color.FromRgb(0xB3, 0xB3, 0xB3)) },
-            [EF.None] = new HighlightingColor { Name = nameof(EF.None), Foreground = new SimpleHighlightingBrush(Color.FromRgb(0xDB, 0xDB, 0xDB)) },
-            [EF.Function] = new HighlightingColor { Name = nameof(EF.Function), Foreground = new SimpleHighlightingBrush(Color.FromRgb(0xDB, 0xDB, 0xDB)) },
-            [EF.State] = new HighlightingColor { Name = nameof(EF.State), Foreground = new SimpleHighlightingBrush(Color.FromRgb(0xDB, 0xDB, 0xDB)) },
-            [EF.Label] = new HighlightingColor { Name = nameof(EF.Label), Foreground = new SimpleHighlightingBrush(Color.FromRgb(0xDB, 0xDB, 0xDB)) },
-            [EF.Struct] = new HighlightingColor { Name = nameof(EF.Class), Foreground = new SimpleHighlightingBrush(Color.FromRgb(0x86, 0xC6, 0x91)) },
+            [EF.Keyword] = Color.FromRgb(0x56, 0x9b, 0xbf),
+            [EF.Specifier] = Color.FromRgb(0x56, 0x9b, 0xbf),
+            [EF.Class] = Color.FromRgb(0x4e, 0xc8, 0xaf),
+            [EF.String] = Color.FromRgb(0xd5, 0x9c, 0x7c),
+            [EF.Name] = Color.FromRgb(0xd5, 0x9c, 0x7c),
+            [EF.Number] = Color.FromRgb(0xb1, 0xcd, 0xa7),
+            [EF.Enum] = Color.FromRgb(0xb7, 0xdc, 0xa2),
+            [EF.Comment] = Color.FromRgb(0x57, 0xa5, 0x4a),
+            [EF.ERROR] = Color.FromRgb(0xff, 0x0, 0x0),
+            [EF.Operator] = Color.FromRgb(0xB3, 0xB3, 0xB3),
+            [EF.None] = Color.FromRgb(0xDB, 0xDB, 0xDB),
+            [EF.Function] = Color.FromRgb(0xDB, 0xDB, 0xDB),
+            [EF.State] = Color.FromRgb(0xDB, 0xDB, 0xDB),
+            [EF.Label] = Color.FromRgb(0xDB, 0xDB, 0xDB),
+            [EF.Struct] = Color.FromRgb(0x86, 0xC6, 0x91),
         };
 
+        static SyntaxInfo()
+        {
+            foreach (EF value in Enum.GetValues<EF>())
+            {
+                HighlightingColors[value] = new HighlightingColor { Name = value.ToString(), Foreground = new SimpleHighlightingBrush(Colors[value]) };
+                ColorBrushes[value] = new SolidColorBrush(Colors[value]);
+            }
+        }
+
+        public static readonly Dictionary<EF, HighlightingColor> HighlightingColors = new ();
+        public static readonly Dictionary<EF, SolidColorBrush> ColorBrushes = new();
+
         public string Name => "Unrealscript-Dark";
-        public IEnumerable<HighlightingColor> NamedHighlightingColors => Colors.Values;
+        public IEnumerable<HighlightingColor> NamedHighlightingColors => HighlightingColors.Values;
         public HighlightingColor GetNamedColor(string name) => NamedHighlightingColors.FirstOrDefault(hc => hc.Name == name);
         public IDictionary<string, string> Properties => null;
         public HighlightingRuleSet MainRuleSet => null;

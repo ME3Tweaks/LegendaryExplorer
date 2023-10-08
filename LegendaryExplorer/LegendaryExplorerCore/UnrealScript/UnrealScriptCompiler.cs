@@ -50,7 +50,7 @@ namespace LegendaryExplorerCore.UnrealScript
         public static string GetPropertyLiteralValue(Property prop, ExportEntry containingExport, FileLib lib)
         {
             Expression literal = ScriptObjectToASTConverter.ConvertToLiteralValue(prop, containingExport, lib);
-            return CodeBuilderVisitor.ConvertToText(literal);
+            return CodeBuilderVisitor.GetOutput(literal);
         }
 
         [CanBeNull]
