@@ -66,7 +66,7 @@ namespace LegendaryExplorerCore.UnrealScript
             {
                 var fauxDefaultProperties = $"{DEFAULTPROPERTIES}{{{propName}={valueliteral}}}";
                 TokenStream tokens = Lexer.Lex(fauxDefaultProperties, log);
-                if (log.HasErrors)
+                if (log.HasLexErrors)
                 {
                     log.LogError("Lexing failed!");
                     return null;
@@ -175,7 +175,7 @@ namespace LegendaryExplorerCore.UnrealScript
                 return log;
             }
             (ASTNode classAST, _) = CompileOutlineAST(classSource, "Class", log, pcc.Game);
-            if (log.HasErrors || classAST is not Class cls)
+            if (log.HasErrors || log.HasLexErrors || classAST is not Class cls)
             {
                 log.LogError($"Failed to parse class {classExport.InstancedFullPath}");
                 return log;
@@ -291,6 +291,10 @@ namespace LegendaryExplorerCore.UnrealScript
                     log.LogError($"Parse failed! Exception: {exception}");
                     return (astNode, log);
                 }
+                if (log.HasErrors || log.HasLexErrors)
+                {
+                    return (astNode, log);
+                }
                 try
                 {
                     ScriptObjectCompiler.Compile(astNode, pcc, parent, export?.GetBinaryData<UClass>(), packageCache, gameRootOverride: lib.GameRootPath);
@@ -347,6 +351,10 @@ namespace LegendaryExplorerCore.UnrealScript
 
                     if (astNode is Function funcFullAST)
                     {
+                        if (log.HasErrors || log.HasLexErrors)
+                        {
+                            return (astNode, log);
+                        }
                         try
                         {
                             ScriptObjectCompiler.Compile(funcFullAST, export.FileRef, parent, export.GetBinaryData<UFunction>(), gameRootOverride: lib.GameRootPath);
@@ -410,6 +418,10 @@ namespace LegendaryExplorerCore.UnrealScript
                     log.LogError($"Parse failed! Exception: {exception}");
                     return (astNode, log);
                 }
+                if (log.HasErrors || log.HasLexErrors)
+                {
+                    return (astNode, log);
+                }
                 try
                 {
                     ScriptObjectCompiler.Compile(astNode, export.FileRef, parent, export.GetBinaryData<UState>(), gameRootOverride: lib.GameRootPath);
@@ -469,6 +481,10 @@ namespace LegendaryExplorerCore.UnrealScript
                 catch (Exception exception)
                 {
                     log.LogError($"Parse failed! Exception: {exception}");
+                    return (astNode, log);
+                }
+                if (log.HasErrors || log.HasLexErrors)
+                {
                     return (astNode, log);
                 }
                 try
@@ -536,6 +552,10 @@ namespace LegendaryExplorerCore.UnrealScript
                     log.LogError($"Parse failed! Exception: {exception}");
                     return (astNode, log);
                 }
+                if (log.HasErrors || log.HasLexErrors)
+                {
+                    return (astNode, log);
+                }
                 try
                 {
                     ScriptObjectCompiler.Compile(astNode, export.FileRef, parent, export.GetBinaryData<UScriptStruct>(), packageCache, gameRootOverride: lib.GameRootPath);
@@ -590,6 +610,10 @@ namespace LegendaryExplorerCore.UnrealScript
                 catch (Exception exception)
                 {
                     log.LogError($"Parse failed! Exception: {exception}");
+                    return (astNode, log);
+                }
+                if (log.HasErrors || log.HasLexErrors)
+                {
                     return (astNode, log);
                 }
                 try

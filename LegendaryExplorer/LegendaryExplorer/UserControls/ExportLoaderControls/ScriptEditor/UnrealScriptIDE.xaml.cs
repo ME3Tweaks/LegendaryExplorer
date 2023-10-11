@@ -11,12 +11,14 @@ using System.Windows.Threading;
 using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Document;
+using ICSharpCode.AvalonEdit.Editing;
 using ICSharpCode.AvalonEdit.Folding;
 using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.Tools.PackageEditor;
 using LegendaryExplorer.Tools.TlkManagerNS;
 using LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE;
+using LegendaryExplorerCore.Gammtek.Extensions;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
@@ -72,6 +74,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
             BusyText = "Initializing Script Compiler";
 
             textEditor.TextArea.TextEntered += TextAreaOnTextEntered;
+            textEditor.TextArea.TextEntering += TextAreaOnTextEntering;
             _definitionLinkGenerator = new DefinitionLinkGenerator(ScrollTo);
             textEditor.TextArea.TextView.ElementGenerators.Add(_definitionLinkGenerator);
 
@@ -170,6 +173,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                 Document.TextChanged -= TextChanged;
             }
             textEditor.TextArea.TextEntered -= TextAreaOnTextEntered;
+            textEditor.TextArea.TextEntering -= TextAreaOnTextEntering;
         }
 
 
@@ -603,114 +607,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
             {
                 case TokenType.Dot when currentTokenIdx > 0:
                 {
-                    var completionData = new List<ICompletionData>();
-                    Class currentClass = NodeUtils.GetContainingClass(AST);
-                    ScriptToken prevToken = tokensSpan[currentTokenIdx - 1];
-                    ASTNode definitionOfPrevSymbol = GetDefinitionFromToken(prevToken);
-                    definitionOfPrevSymbol = definitionOfPrevSymbol switch
-                    {
-                        VariableDeclaration decl => decl.VarType,
-                        _ => definitionOfPrevSymbol
-                    };
-                    switch (definitionOfPrevSymbol)
-                    {
-                        case ObjectType objType:
-                        {
-                            if (prevToken.Type is TokenType.NameLiteral)
-                            {
-                                //this is a class literal
-                                completionData.Add(new KeywordCompletion("static"));
-                                completionData.Add(new KeywordCompletion("const"));
-                                completionData.Add(new KeywordCompletion("default"));
-                                break;
-                            }
-                            bool varsAccesible = !prevToken.Value.CaseInsensitiveEquals(Keywords.SUPER) && !prevToken.Value.CaseInsensitiveEquals(Keywords.GLOBAL);
-                            bool functionsAccesible = !prevToken.Value.CaseInsensitiveEquals(Keywords.DEFAULT);
-                            do
-                            {
-                                if (varsAccesible)
-                                {
-                                    completionData.AddRange(VariableCompletion.GenerateCompletions(objType.VariableDeclarations));
-                                }
-                                if (objType is Class classType && functionsAccesible)
-                                {
-                                    bool allowIterators = false;
-                                    for (int i = currentTokenIdx - 1; i >= 0; i--)
-                                    {
-                                        if (tokensSpan[i].Type is TokenType.SemiColon or TokenType.LeftBracket or TokenType.RightBracket)
-                                        {
-                                            break;
-                                        }
-                                        if (tokensSpan[i].Value.CaseInsensitiveEquals("foreach"))
-                                        {
-                                            allowIterators = true;
-                                            break;
-                                        }
-                                    }
-                                    completionData.AddRange(FunctionCompletion.GenerateCompletions(classType.Functions, currentClass, iterators: allowIterators));
-                                }
-                                objType = objType.Parent as ObjectType;
-                            } while (objType is not null);
-                            break;
-                        }
-                        case Enumeration enumType:
-                            completionData.AddRange(enumType.Values.Select(v => new CompletionData(v.Name, $"{v.IntVal}")));
-                            break;
-                        case DynamicArrayType dynArrType:
-                            completionData.AddRange(ArrayFunctionCompletion.GenerateCompletions(Pcc.Game, dynArrType));
-                            break;
-                        case null:
-                        {
-                            if (prevToken.Value.CaseInsensitiveEquals(Keywords.CONST))
-                            {
-                                if (currentTokenIdx > 3)
-                                {
-                                    ScriptToken classNameToken = tokensSpan[currentTokenIdx - 3];
-                                    if (classNameToken.Type is TokenType.NameLiteral && GetDefinitionFromToken(classNameToken) is Class cls)
-                                    {
-                                        do
-                                        {
-                                            completionData.AddRange(cls.TypeDeclarations.OfType<Const>().Select(c => new CompletionData(c.Name, $"{c.Literal?.ResolveType().DisplayName()} {c.Value}")));
-                                            cls = cls.Parent as Class;
-                                        } while (cls is not null);
-                                    }
-                                }
-                            }
-                            else if (prevToken.Value.CaseInsensitiveEquals(Keywords.STATIC))
-                            {
-                                if (currentTokenIdx > 3)
-                                {
-                                    ScriptToken classNameToken = tokensSpan[currentTokenIdx - 3];
-                                    if (classNameToken.Type is TokenType.NameLiteral && GetDefinitionFromToken(classNameToken) is Class cls)
-                                    {
-                                        do
-                                        {
-                                            completionData.AddRange(FunctionCompletion.GenerateCompletions(cls.Functions, currentClass, staticsOnly: true));
-                                                    cls = cls.Parent as Class;
-                                        } while (cls is not null);
-                                    }
-                                }
-                            }
-                            break;
-                        }
-                    }
-                    if (completionData.Count > 0)
-                    {
-                        completionWindow = new CompletionWindow(textEditor.TextArea)
-                        {
-                            SizeToContent = SizeToContent.WidthAndHeight
-                        };
-                        IList<ICompletionData> data = completionWindow.CompletionList.CompletionData;
-                        foreach (ICompletionData completion in completionData)
-                        {
-                            data.Add(completion);
-                        }
-                        completionWindow.Show();
-                        completionWindow.Closed += delegate
-                        {
-                            completionWindow = null;
-                        };
-                    }
+                    DisplayCompletions(tokensSpan, currentTokenIdx);
                     break;
                 }
                 //case TokenType.Word when currentToken.Value.Length == 1 && completionWindow is null:
@@ -721,6 +618,115 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
             }
 
             
+        }
+
+        private void DisplayCompletions(ReadOnlySpan<ScriptToken> tokens, int currentTokenIdx)
+        {
+            var completionData = new List<ICompletionData>();
+            Class currentClass = NodeUtils.GetContainingClass(AST);
+            ScriptToken prevToken = tokens[currentTokenIdx - 1];
+            ASTNode definitionOfPrevSymbol = GetDefinitionFromToken(prevToken);
+            definitionOfPrevSymbol = definitionOfPrevSymbol switch
+            {
+                VariableDeclaration decl => decl.VarType,
+                _ => definitionOfPrevSymbol
+            };
+            switch (definitionOfPrevSymbol)
+            {
+                case ObjectType objType:
+                {
+                    if (prevToken.Type is TokenType.NameLiteral)
+                    {
+                        //this is a class literal
+                        completionData.Add(new KeywordCompletion("static"));
+                        completionData.Add(new KeywordCompletion("const"));
+                        completionData.Add(new KeywordCompletion("default"));
+                        break;
+                    }
+                    bool varsAccesible = !prevToken.Value.CaseInsensitiveEquals(Keywords.SUPER) && !prevToken.Value.CaseInsensitiveEquals(Keywords.GLOBAL);
+                    bool functionsAccesible = !prevToken.Value.CaseInsensitiveEquals(Keywords.DEFAULT);
+                    do
+                    {
+                        if (varsAccesible)
+                        {
+                            completionData.AddRange(VariableCompletion.GenerateCompletions(objType.VariableDeclarations));
+                        }
+                        if (objType is Class classType && functionsAccesible)
+                        {
+                            bool allowIterators = false;
+                            for (int i = currentTokenIdx - 1; i >= 0; i--)
+                            {
+                                if (tokens[i].Type is TokenType.SemiColon or TokenType.LeftBracket or TokenType.RightBracket)
+                                {
+                                    break;
+                                }
+                                if (tokens[i].Value.CaseInsensitiveEquals("foreach"))
+                                {
+                                    allowIterators = true;
+                                    break;
+                                }
+                            }
+                            completionData.AddRange(FunctionCompletion.GenerateCompletions(classType.Functions, currentClass, iterators: allowIterators));
+                        }
+                        objType = objType.Parent as ObjectType;
+                    } while (objType is not null);
+                    break;
+                }
+                case Enumeration enumType:
+                    completionData.AddRange(enumType.Values.Select(v => new CompletionData(v.Name, $"{v.IntVal}")));
+                    break;
+                case DynamicArrayType dynArrType:
+                    completionData.AddRange(ArrayFunctionCompletion.GenerateCompletions(Pcc.Game, dynArrType));
+                    break;
+                case null:
+                {
+                    if (prevToken.Value.CaseInsensitiveEquals(Keywords.CONST))
+                    {
+                        if (currentTokenIdx > 3)
+                        {
+                            ScriptToken classNameToken = tokens[currentTokenIdx - 3];
+                            if (classNameToken.Type is TokenType.NameLiteral && GetDefinitionFromToken(classNameToken) is Class cls)
+                            {
+                                do
+                                {
+                                    completionData.AddRange(cls.TypeDeclarations.OfType<Const>().Select(c => new CompletionData(c.Name, $"{c.Literal?.ResolveType().DisplayName()} {c.Value}")));
+                                    cls = cls.Parent as Class;
+                                } while (cls is not null);
+                            }
+                        }
+                    }
+                    else if (prevToken.Value.CaseInsensitiveEquals(Keywords.STATIC))
+                    {
+                        if (currentTokenIdx > 3)
+                        {
+                            ScriptToken classNameToken = tokens[currentTokenIdx - 3];
+                            if (classNameToken.Type is TokenType.NameLiteral && GetDefinitionFromToken(classNameToken) is Class cls)
+                            {
+                                do
+                                {
+                                    completionData.AddRange(FunctionCompletion.GenerateCompletions(cls.Functions, currentClass, staticsOnly: true));
+                                    cls = cls.Parent as Class;
+                                } while (cls is not null);
+                            }
+                        }
+                    }
+                    break;
+                }
+            }
+            if (completionData.Count > 0)
+            {
+                completionWindow = new CompletionWindow(textEditor.TextArea)
+                {
+                    SizeToContent = SizeToContent.WidthAndHeight
+                };
+                IList<ICompletionData> data = completionWindow.CompletionList.CompletionData;
+                foreach (ICompletionData completion in completionData)
+                {
+                    data.Add(completion);
+                }
+                completionWindow.Show();
+                completionWindow.Closed += delegate { completionWindow = null; };
+            }
         }
 
         private ASTNode GetDefinitionFromToken(ScriptToken token)
@@ -964,6 +970,95 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
         private void TextEditor_OnMouseHoverStopped(object sender, MouseEventArgs e)
         {
             _hoverToolTip.IsOpen = false;
+        }
+
+        private void TextAreaOnTextEntering(object sender, TextCompositionEventArgs e)
+        {
+            TextArea textArea = textEditor.TextArea;
+            int caretOffset = textArea.Caret.Offset;
+            TokenStream tokens = _definitionLinkGenerator.Tokens;
+            int currentTokenIdx = tokens.GetIndexOfTokenAtOffset(caretOffset);
+            ScriptToken currentToken = currentTokenIdx >= 0 ? tokens.TokensSpan[currentTokenIdx] : null;
+            
+            switch (e.Text)
+            {
+                case "\"":
+                    if (currentToken?.Type is TokenType.StringLiteral)
+                    {
+                        if (caretOffset + 1 == currentToken.EndPos && currentToken.Length != currentToken.Value.Length + 1)
+                        {
+                            //"overwrite" the existing " at the end of the string
+                            textArea.Caret.Offset = caretOffset + 1;
+                            e.Handled = true;
+                        }
+                    }
+                    else if (currentTokenIdx < 0)
+                    {
+                        int prevTokenIdx = ~currentTokenIdx - 1;
+                        var prevToken = tokens.TokensSpan[prevTokenIdx];
+                        if (prevToken.Type is TokenType.StringLiteral && caretOffset == prevToken.EndPos)
+                        {
+                            //end of an unterminated string literal. inserting a single " is what we want
+                            return;
+                        }
+                        //not in a token, so insert two " and put the caret between them
+                        textArea.PerformTextInput("\"\"");
+                        textArea.Caret.Offset = caretOffset + 1;
+                        e.Handled = true;
+                    }
+                    break;
+                case "'":
+                    if (currentToken?.Type is TokenType.NameLiteral)
+                    {
+                        if (caretOffset + 1 == currentToken.EndPos && currentToken.Length != currentToken.Value.Length + 1)
+                        {
+                            //"overwrite" the existing ' at the end of the name
+                            textArea.Caret.Offset = caretOffset + 1;
+                            e.Handled = true;
+                        }
+                    }
+                    else if (currentTokenIdx < 0)
+                    {
+                        int prevTokenIdx = ~currentTokenIdx - 1;
+                        var prevToken = tokens.TokensSpan[prevTokenIdx];
+                        if (prevToken.Type is TokenType.NameLiteral && caretOffset == prevToken.EndPos)
+                        {
+                            //end of an unterminated name literal. inserting a single ' is what we want
+                            return;
+                        }
+                        //not in a token, so insert two ' and put the caret between them
+                        textArea.PerformTextInput("''");
+                        textArea.Caret.Offset = caretOffset + 1;
+                        e.Handled = true;
+                    }
+                    break;
+                case "{":
+                    if (currentTokenIdx < 0)
+                    {
+                        textArea.PerformTextInput("{}");
+                        textArea.Caret.Offset = caretOffset + 1;
+                        e.Handled = true;
+                    }
+                    break;
+                case "\n":
+                    if (currentToken?.Type is TokenType.RightBracket)
+                    {
+                        if (currentTokenIdx > 0 && tokens.TokensSpan[currentTokenIdx - 1] is {Type: TokenType.LeftBracket} prevToken)
+                        {
+                            string inBetweenText = Document.GetText(prevToken.EndPos, currentToken.StartPos - prevToken.EndPos);
+                            if (!inBetweenText.Contains('\n'))
+                            {
+                                string lineText = Document.GetText(Document.GetLineByOffset(caretOffset));
+                                var indentation = lineText.AsSpan()[..lineText.CountLeadingWhitespace()];
+                                textArea.Selection = Selection.Create(textArea, prevToken.StartPos, currentToken.EndPos);
+                                textArea.PerformTextInput($"\n{indentation}{{\n{indentation}    \n{indentation}}}");
+                                textArea.Caret.Offset -= indentation.Length + 2;
+                                e.Handled = true;
+                            }
+                        }
+                    }
+                    break;
+            }
         }
     }
 }

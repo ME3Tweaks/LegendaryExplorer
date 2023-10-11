@@ -354,18 +354,18 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             {
                 try
                 {
-                    if (CurrentIs(LOCAL))
+                    Statement statement = CurrentIs(LOCAL) ? ParseLocalVarDecl() : ParseStatement();
+                    if (statement is not null)
                     {
-                        return ParseLocalVarDecl();
+                        return statement;
                     }
-                    return ParseStatement();
+                    if (CurrentIs(TokenType.RightBracket) || !Synchronize())
+                    {
+                        return null;
+                    }
                 }
                 catch (ParseException)
                 {
-                    while (ExpressionScopes.Count > 1)
-                    {
-                        ExpressionScopes.Pop();
-                    }
                     if (!Synchronize())
                     {
                         return null;
@@ -378,8 +378,12 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
         //returns false if it gets to the end of a block or file without finding one
         private bool Synchronize()
         {
+            while (ExpressionScopes.Count > 1)
+            {
+                ExpressionScopes.Pop();
+            }
             Tokens.Advance();
-            while (!Tokens.AtEnd() && !CurrentIs(TokenType.LeftBracket))
+            while (!Tokens.AtEnd() && !CurrentIs(TokenType.RightBracket))
             {
                 if (PrevToken.Type == TokenType.SemiColon)// || CurrentToken.StartPos.Line > PrevToken.EndPos.Line)
                 {

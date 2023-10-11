@@ -26,7 +26,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
             if (!ForceNoNewLines)
             {
                 FinishRun();
-
+                if (Inlines.Count > 0)
+                {
+                    Inlines.Add(new LineBreak());
+                }
                 CurrentRun = new string(' ', ForcedAlignment + NestingLevel * 4);
                 lineDisplayLength = ForcedAlignment;
             }

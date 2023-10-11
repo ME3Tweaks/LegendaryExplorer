@@ -397,7 +397,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 }
                 else
                 {
-                    errors.Add(new EntryStringPair($"FileLib failed to initialize! Errors: \n{string.Join('\n', fileLib.InitializationLog.Errors)}"));
+                    errors.Add(new EntryStringPair($"FileLib failed to initialize! Errors: \n{string.Join('\n', fileLib.InitializationLog.AllErrors)}"));
                 }
                 return errors;
             }).ContinueWithOnUIThread(prevTask =>
