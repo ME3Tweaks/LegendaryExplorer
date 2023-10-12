@@ -23,5 +23,6 @@ var class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_string_extensio
     [ "Truncate", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_string_extensions.html#aaea06a23459800b23655aa283bd195a7", null ],
     [ "TruncCenter", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_string_extensions.html#a96e539939729ba6ce919f4d25a605596", null ],
     [ "WordWrap", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_string_extensions.html#a1128da7fc1c99ce19c539e129f0d164a", null ],
-    [ "WrapLines", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_string_extensions.html#aac3bd12942b74e66889998adb418a7f6", null ]
+    [ "WrapLines", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_string_extensions.html#aac3bd12942b74e66889998adb418a7f6", null ],
+    [ "CountLeadingWhitespace", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_string_extensions.html#adad2a4f2459c218b5ec61302e2aec8c2", null ]
 ];

@@ -1,5 +1,6 @@
 var NAVTREEINDEX5 =
 {
+"_name_reference_8cs.html":[2,0,0,0,23,13],
 "_namespace_8cs.html":[2,0,0,0,1,15],
 "_new_operator_8cs.html":[2,0,0,0,24,3,1,44],
 "_node_8cs.html":[2,0,0,0,1,0,2],
@@ -48,7 +49,7 @@ var NAVTREEINDEX5 =
 "_plot_transition_8cs.html":[2,0,0,0,15,1,5],
 "_polys_8cs.html":[2,0,0,0,23,0,41],
 "_polys_8cs.html#a31ccc8e63558d15b93826f6ed881ead5":[2,0,0,0,23,0,41,4],
-"_positioned_message_8cs.html":[2,0,0,0,24,1,0,6],
+"_positioned_message_8cs.html":[2,0,0,0,24,1,0,7],
 "_post_op_declaration_8cs.html":[2,0,0,0,24,3,1,49],
 "_post_op_reference_8cs.html":[2,0,0,0,24,3,1,50],
 "_pre_op_declaration_8cs.html":[2,0,0,0,24,3,1,51],
@@ -223,7 +224,7 @@ var NAVTREEINDEX5 =
 "_vector_literal_8cs.html":[2,0,0,0,24,3,1,75],
 "_verbose_format_info_8cs.html":[2,0,0,0,6,8,0,10],
 "_verbose_format_info_base_8cs.html":[2,0,0,0,6,8,0,11],
-"_warning_8cs.html":[2,0,0,0,24,1,0,7],
+"_warning_8cs.html":[2,0,0,0,24,1,0,8],
 "_weak_collection_8cs.html":[2,0,0,0,6,0,2,2],
 "_while_loop_8cs.html":[2,0,0,0,24,3,1,76],
 "_wildcard_matcher_8cs.html":[2,0,0,0,6,8,1,5],
@@ -248,6 +249,5 @@ var NAVTREEINDEX5 =
 "annotated.html":[1,0],
 "class_bank_chunk.html":[1,0,1],
 "class_bank_chunk.html#a1115cbb4874e9a939f176c99cd17fca2":[1,0,1,4],
-"class_bank_chunk.html#a15d3a716a005820cb814eb7a889cdb73":[1,0,1,10],
-"class_bank_chunk.html#a1982b479ef067cdad54404080bbde181":[1,0,1,6]
+"class_bank_chunk.html#a15d3a716a005820cb814eb7a889cdb73":[1,0,1,10]
 };

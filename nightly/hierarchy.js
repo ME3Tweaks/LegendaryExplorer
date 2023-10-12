@@ -680,7 +680,9 @@ var hierarchy =
         [ "LegendaryExplorerCore.UnrealScript.Compiling.Errors.ExternalError", "class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_errors_1_1_external_error.html", null ]
       ] ],
       [ "LegendaryExplorerCore.UnrealScript.Compiling.Errors.PositionedMessage", "class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_errors_1_1_positioned_message.html", [
-        [ "LegendaryExplorerCore.UnrealScript.Compiling.Errors.LineError", "class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_errors_1_1_line_error.html", null ],
+        [ "LegendaryExplorerCore.UnrealScript.Compiling.Errors.LineError", "class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_errors_1_1_line_error.html", [
+          [ "LegendaryExplorerCore.UnrealScript.Compiling.Errors.LexError", "class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_errors_1_1_lex_error.html", null ]
+        ] ],
         [ "LegendaryExplorerCore.UnrealScript.Compiling.Errors.LineWarning", "class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_errors_1_1_line_warning.html", null ]
       ] ],
       [ "LegendaryExplorerCore.UnrealScript.Compiling.Errors.Warning", "class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_errors_1_1_warning.html", null ]

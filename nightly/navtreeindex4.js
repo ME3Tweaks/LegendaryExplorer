@@ -1,5 +1,6 @@
 var NAVTREEINDEX4 =
 {
+"_m_e3_enums_8cs.html#ab3b81588098a00282e6f40ac28809fa9":[2,0,0,0,23,12,577],
 "_m_e3_enums_8cs.html#ab3dafb68c4291f7ba6524d3830f470ec":[2,0,0,0,23,12,351],
 "_m_e3_enums_8cs.html#ab3efc58c4385d8663ac316d0f4fe5c65":[2,0,0,0,23,12,574],
 "_m_e3_enums_8cs.html#ab46b3a7111832859313bc60279b3c29e":[2,0,0,0,23,12,709],
@@ -234,7 +235,7 @@ var NAVTREEINDEX4 =
 "_memory_analyzer_object_8cs.html":[2,0,0,0,12,6],
 "_memory_manager_8cs.html":[2,0,0,0,11,0],
 "_memory_tributary_8cs.html":[2,0,0,0,6,6,20],
-"_message_log_8cs.html":[2,0,0,0,24,1,0,5],
+"_message_log_8cs.html":[2,0,0,0,24,1,0,6],
 "_mod_manager_integration_8cs.html":[2,0,0,0,12,0,2],
 "_mod_plot_container_8cs.html":[2,0,0,0,15,3],
 "_mod_plot_database_8cs.html":[2,0,0,0,15,0,1],
@@ -248,6 +249,5 @@ var NAVTREEINDEX4 =
 "_mount_file_8cs.html#aa23133fea72a60ea6401786fd5a6381b":[2,0,0,0,5,10,2],
 "_multi_stream_8cs.html":[2,0,0,0,6,6,21],
 "_mutable_byte_8cs.html":[2,0,0,0,6,6,22],
-"_name_literal_8cs.html":[2,0,0,0,24,3,1,43],
-"_name_reference_8cs.html":[2,0,0,0,23,13]
+"_name_literal_8cs.html":[2,0,0,0,24,3,1,43]
 };
