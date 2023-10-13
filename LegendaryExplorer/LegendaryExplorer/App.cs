@@ -1,19 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Reactive.Concurrency;
-using System.Reactive.Linq;
-using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 using LegendaryExplorer.Dialogs;
-using LegendaryExplorer.Dialogs.Splash;
 using LegendaryExplorer.Startup;
 
 namespace LegendaryExplorer
@@ -23,6 +12,19 @@ namespace LegendaryExplorer
     /// </summary>
     public partial class App : Application
     {
+        /// <summary>
+        /// Application Entry Point.
+        /// </summary>
+        [STAThread]
+        public static void Main()
+        {
+            DPIAwareSplashScreen.Show();
+
+            var app = new App();
+            app.Startup += app.Application_Startup;
+            app.Run();
+        }
+
         #region Application-wide variables
         public static Visibility IsDebugVisibility => IsDebug ? Visibility.Visible : Visibility.Collapsed;
 
@@ -34,17 +36,15 @@ namespace LegendaryExplorer
 
         public static int CoreCount;
 
-        public static DateTime BuildDateTime = new(App.CompileTime, DateTimeKind.Utc);
+        public static readonly DateTime BuildDateTime = new(CompileTime, DateTimeKind.Utc);
 
         public static App Instance;
 
         #endregion
 
-
         // PLEASE KEEP GENERAL CODE NOT IN APP CLASS
         // (Only required overrides should be here)
         // BOOT CODE SHOULD BE IN APPBOOT.CS
-
         private void Application_Startup(object sender, StartupEventArgs e)
         {
             // Handle command line arguments that may be used for updater (if implemented) here, which must not be limited by the single instance
@@ -52,7 +52,7 @@ namespace LegendaryExplorer
 
             // Boot single instance
             var singleInstance = new SingleInstance.SingleInstance("LegendaryExplorer");
-            Current.Exit += (o, args) => singleInstance.Dispose();
+            Current.Exit += (_, _) => singleInstance.Dispose();
 
             if(singleInstance.IsFirstInstance)
             {
@@ -75,7 +75,7 @@ namespace LegendaryExplorer
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e">Exception to process</param>
-        internal void OnDispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        internal static void OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
             var eh = new ExceptionHandlerDialog(e.Exception);
             Window wpfActiveWindow = Current.Windows.OfType<Window>().SingleOrDefault(x => x.IsActive);
@@ -94,7 +94,7 @@ namespace LegendaryExplorer
             e.Handled = eh.Handled;
         }
 
-        public void OnInstanceInvoked(string[] args)
+        private static void OnInstanceInvoked(string[] args)
         {
             AppBoot.HandleDuplicateInstanceArgs(args);
         }

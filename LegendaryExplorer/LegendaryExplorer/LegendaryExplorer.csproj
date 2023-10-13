@@ -2,7 +2,7 @@
 	<PropertyGroup>
 		<OutputType>WinExe</OutputType>
 		<TargetFramework>net7.0-windows</TargetFramework>
-		<LangVersion>10.0</LangVersion>
+		<LangVersion>11.0</LangVersion>
 		<UseWPF>true</UseWPF>
 		<UseWindowsForms>true</UseWindowsForms>
 		<Platforms>x64</Platforms>
@@ -67,6 +67,7 @@
 		<Page Remove="Resources\FileAssocIcons\**" />
 		<Page Remove="Tools\PlotEditor\SFXGame\biodefine\**" />
 		<Page Remove="UserControls\SharedToolControls\DirectX\**" />
+		<None Remove="Resources\Images\LEX_Splash_Nightly.png" />
 		<None Remove="Tools\PackageEditor\ExportIcons\icon_texturecube.png" />
 		<None Remove="Tools\PlotDatabase\PlotTypeIcons\icon_bool.png" />
 		<None Remove="Tools\PlotDatabase\PlotTypeIcons\icon_cnd.png" />
@@ -94,6 +95,8 @@
 		<Resource Include="Resources\Fonts\BIOMASS2-LIGHT.ttf" />
 		<Resource Include="Resources\Fonts\BIOMASS2-BOLD.ttf" />
 		<Resource Include="Resources\Images\bink.jpg" />
+		<EmbeddedResource Include="Resources\Images\LEX_Splash.png" />
+		<EmbeddedResource Include="Resources\Images\LEX_Splash_Nightly.png" />
 		<Resource Include="Tools\PlotDatabase\PlotTypeIcons\icon_float.png" />
 		<Resource Include="Tools\PlotDatabase\PlotTypeIcons\icon_cnd.png" />
 		<Resource Include="Tools\PlotDatabase\PlotTypeIcons\icon_int.png" />
@@ -144,6 +147,7 @@
 		<PackageReference Include="SharpDX.DXGI" Version="4.2.0" />
 		<PackageReference Include="System.CommandLine" Version="2.0.0-beta1.20071.2" />
 		<PackageReference Include="System.Drawing.Common" Version="7.0.0" />
+		<PackageReference Include="TerraFX.Interop.Windows" Version="10.0.22621.2" />
 		<PackageReference Include="VideoLAN.LibVLC.Windows" Version="3.0.18" />
 	</ItemGroup>
 
@@ -182,6 +186,9 @@
 	<ItemGroup Condition="'$(Configuration)'!='WinAzureRelease' And '$(Configuration)'!='WinAzureTest'">
 		<Resource Remove="Resources\Images\Legendary_Explorer_Graphic2_Nightly.png" />
 		<Resource Remove="Resources\Images\LEX_Splash_Nightly.png" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Resource Remove="Resources\Images\LEX_Splash.png" />
 	</ItemGroup>
 
 	<ItemGroup>

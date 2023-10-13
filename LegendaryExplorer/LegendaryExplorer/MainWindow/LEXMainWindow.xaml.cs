@@ -74,30 +74,15 @@ namespace LegendaryExplorer.MainWindow
             Task.Run(TLKLoader.LoadSavedTlkList);
         }
 
-        public void TransitionFromSplashToMainWindow(Window splashScreen)
+        public void TransitionFromSplashToMainWindow()
         {
-            if (Settings.MainWindow_DisableTransparencyAndAnimations)
             {
                 Opacity = 1;
                 AllowsTransparency = false;
                 Show();
-                splashScreen.Close();
+                DPIAwareSplashScreen.DestroySplashScreen();
                 DependencyCheck.CheckDependencies(this);
-            }
-            else
-            {
-                Show();
-                splashScreen.SetForegroundWindow();
-
-                var sb = new Storyboard();
-                sb.AddDoubleAnimation(1, 300, this, nameof(Opacity));
-                sb.AddDoubleAnimation(0, 300, splashScreen, nameof(Opacity));
-                sb.Completed += (_, _) =>
-                {
-                    splashScreen.Close();
-                    DependencyCheck.CheckDependencies(this);
-                };
-                sb.Begin();
+                return;
             }
         }
 
