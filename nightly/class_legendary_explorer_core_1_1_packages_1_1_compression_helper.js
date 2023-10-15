@@ -6,6 +6,7 @@ var class_legendary_explorer_core_1_1_packages_1_1_compression_helper =
     [ "DecompressFullyCompressedPackage", "class_legendary_explorer_core_1_1_packages_1_1_compression_helper.html#ae44f599a6c89e5999a56e31a4e3ef772", null ],
     [ "DecompressPackage", "class_legendary_explorer_core_1_1_packages_1_1_compression_helper.html#aaa682c131e72dca4fbf938c7057f32c5", null ],
     [ "OODLE_DLL_NAME", "class_legendary_explorer_core_1_1_packages_1_1_compression_helper.html#a1aa1ccee2ae6a94251375ad8ab52a26a", null ],
+    [ "COMPRESSION_WRAPPER_NAME", "class_legendary_explorer_core_1_1_packages_1_1_compression_helper.html#a5af7790cd16cb71c3a2c0a9e1511118a", null ],
     [ "MAX_CHUNK_SIZE", "class_legendary_explorer_core_1_1_packages_1_1_compression_helper.html#a89d614e23957dfe0a968d47b4d1b36bc", null ],
     [ "MAX_BLOCK_SIZE_OT", "class_legendary_explorer_core_1_1_packages_1_1_compression_helper.html#ab7e5b3dc7814ecdec49602011c9205b6", null ],
     [ "MAX_BLOCK_SIZE_LE", "class_legendary_explorer_core_1_1_packages_1_1_compression_helper.html#a6cc54b8764c60fab11087343dca96898", null ],
