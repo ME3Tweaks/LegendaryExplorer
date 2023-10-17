@@ -213,12 +213,11 @@ namespace LegendaryExplorer.GameInterop
             }
         }
 
-        public static void OpenConsoleExtensionDownload()
+        public static void OpenME3ConsoleExtensionDownload()
         {
             HyperlinkExtensions.OpenURL("https://github.com/ME3Tweaks/ME3-ASI-Plugins/releases/tag/v1.0-ConsoleExtension");
         }
 
-        // public static void OpenInteropASIDownload(MEGame game) => HyperlinkExtensions.OpenURL(GameController.GetInteropTargetForGame(game).InteropASIDownloadLink);
         public static void OpenInteropASIDownload(MEGame game)
         {
             // Allow if the build number is 127 or higher (ME3Tweaks Mod Manager 8.0.1 Beta)
@@ -242,10 +241,7 @@ namespace LegendaryExplorer.GameInterop
 
             if (!requestedInstall)
             {
-                if (game.IsLEGame())
-                {
-                    HyperlinkExtensions.OpenURL(GameController.GetInteropTargetForGame(game).InteropASIDownloadLink);
-                }
+                HyperlinkExtensions.OpenURL(GameController.GetInteropTargetForGame(game).InteropASIDownloadLink);
             }
         }
 
