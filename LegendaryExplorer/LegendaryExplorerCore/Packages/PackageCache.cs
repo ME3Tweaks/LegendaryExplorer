@@ -248,9 +248,9 @@ namespace LegendaryExplorerCore.Packages
         }
 
         /// <summary>
-        /// Enumerates the list of files and returns the first one that is arleady present in the cache, or null if none of the files are currently in the cache.
+        /// Enumerates the list of files and returns the first one that is already present in the cache, or null if none of the files are currently in the cache.
         /// </summary>
-        /// <param name="canddiates"></param>
+        /// <param name="packageNames">List of package names to test, in order, if they're in the cache</param>
         /// <returns></returns>
         public virtual IMEPackage GetFirstCachedPackage(IEnumerable<string> packageNames)
         {
