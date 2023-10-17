@@ -141,6 +141,10 @@
 		<PackageReference Include="System.Drawing.Common" Version="7.0.0" />
 		<PackageReference Include="TerraFX.Interop.Windows" Version="10.0.22621.2" />
 		<PackageReference Include="VideoLAN.LibVLC.Windows" Version="3.0.18" />
+		<PackageReference Include="NuGet.CommandLine" Version="6.6.1"> <!-- This is needed for trimming during build -->
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -521,19 +525,34 @@
 
 	<ItemGroup>
 		<!--These are for encoding ogg - used by ISACTHelper.dll -->
-		<ContentWithTargetPath Include="Libraries\ogg.dll" Condition="$(Configuration.StartsWith('Win'))">
+		<ContentWithTargetPath Include="Libraries\ogg.dll">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<TargetPath>ogg.dll</TargetPath>
 		</ContentWithTargetPath>
-		<ContentWithTargetPath Include="Libraries\vorbis.dll" Condition="$(Configuration.StartsWith('Win'))">
+		<ContentWithTargetPath Include="Libraries\vorbis.dll">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<TargetPath>vorbis.dll</TargetPath>
 		</ContentWithTargetPath>
-		<ContentWithTargetPath Include="Libraries\vorbisenc.dll" Condition="$(Configuration.StartsWith('Win'))">
+		<ContentWithTargetPath Include="Libraries\vorbisenc.dll">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<TargetPath>vorbisenc.dll</TargetPath>
 		</ContentWithTargetPath>
 	</ItemGroup>
+
+	<PropertyGroup>
+		<!-- Trimming variables -->
+		<CurrentRuntime>$(TargetFramework.Replace('-windows', ''))</CurrentRuntime>
+		<CurrentRuntimeVersion>$(BundledNETCoreAppPackageVersion)</CurrentRuntimeVersion>
+		<CurrentRID>$(NETCoreSdkRuntimeIdentifier)</CurrentRID>
+		<SDKRoot>$(NetCoreRoot)sdk\$(NETCoreSdkVersion)</SDKRoot>
+		<illink>$(SDKRoot)\Sdks\Microsoft.NET.ILLink.Tasks\tools\$(CurrentRuntime)\illink.dll</illink>
+		<NugetSourceRoot>$(UserProfile)\.nuget\packages</NugetSourceRoot>
+		<NETCoreAppPackageName>Microsoft.NETCore.App.Runtime.$(CurrentRID)</NETCoreAppPackageName>
+		<NETCoreAppDir>$(NugetSourceRoot)\$(NETCoreAppPackageName)\$(CurrentRuntimeVersion)\runtimes\$(CurrentRID)\lib\$(CurrentRuntime)</NETCoreAppDir>
+		<WindowsDesktopPackageName>Microsoft.WindowsDesktop.App.Runtime.$(CurrentRID)</WindowsDesktopPackageName>
+		<WindowsDesktopAppDir>$(NugetSourceRoot)\$(WindowsDesktopPackageName)\$(CurrentRuntimeVersion)\runtimes\$(CurrentRID)\lib\$(CurrentRuntime)</WindowsDesktopAppDir>
+		<ILLinkFolderName>trimmed</ILLinkFolderName>
+	</PropertyGroup>
 
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
 		<Message Importance="high" Text="PublishDir=$(PublishDir)" />
@@ -542,6 +561,19 @@
 		<!-- Not 100% working. Seems like sqlite has same post build in parallel somehow? -->
 		<!-- Used for stable deployments script -->
 		<!--<Exec Command="powershell -ExecutionPolicy Bypass -File &quot;Build\PostBuildCleanup.ps1&quot; &quot;$(TargetDir) &quot;" />-->
+
+		<!-- TRIMMING. Currently only trims TerraFX.Interop.Windows. (17mb -> 33kb) Could be expanded in future-->
+		<!-- All errors are ignored because NuGet reports that it doesn't support the package type after installing it. Also, if the trim step fails, the program will still work... No need to make it a blocker.  -->
+		<!-- 1st Step: Install the .NET packages that are required for trimming -->
+		<Exec Condition="'$(Configuration)' == 'WinAzureRelease' And !Exists('$(NETCoreAppDir)')" Command="$(PkgNuGet_CommandLine)\tools\NuGet.exe install $(NETCoreAppPackageName) -Version $(CurrentRuntimeVersion) -OutputDirectory $(NugetSourceRoot)" IgnoreExitCode="true" IgnoreStandardErrorWarningFormat="true" />
+		<Exec Condition="'$(Configuration)' == 'WinAzureRelease' And !Exists('$(WindowsDesktopAppDir)')" Command="$(PkgNuGet_CommandLine)\tools\NuGet.exe install $(WindowsDesktopPackageName) -Version $(CurrentRuntimeVersion) -OutputDirectory $(NugetSourceRoot)" IgnoreExitCode="true" IgnoreStandardErrorWarningFormat="true" />
+		<!-- 2nd Step: Trimming with ILLink -->
+		<Exec Condition="'$(Configuration)' == 'WinAzureRelease'" Command="dotnet exec &quot;$(illink)&quot; -a &quot;$(TargetPath)&quot; all --trim-mode copy --action copy --action link &quot;TerraFX.Interop.Windows&quot;  -d $(TargetDir) -d $(NETCoreAppDir) -d $(WindowsDesktopAppDir) --skip-unresolved -out &quot;$(TargetDir)$(ILLinkFolderName)&quot;" 
+		      IgnoreExitCode="true" IgnoreStandardErrorWarningFormat="true" />
+		<!-- 3rd Step: Copy trimmed dll to the output directory -->
+		<Exec Condition="'$(Configuration)' == 'WinAzureRelease'" Command="xcopy /f /e /y &quot;$(TargetDir)$(ILLinkFolderName)\TerraFX.Interop.Windows.dll&quot; &quot;$(OutDir)\&quot;" IgnoreExitCode="true" IgnoreStandardErrorWarningFormat="true" />
+		<!-- 4th Step: Delete the ILLink output directory -->
+		<RemoveDir Condition="'$(Configuration)' == 'WinAzureRelease'" Directories="$(TargetDir)$(ILLinkFolderName)\" />
 	</Target>
 	<Target Name="PostPublish" AfterTargets="Publish">
 		<Message Importance="high" Text="Copying exec to publish directory $(PublishDir)exec" />
