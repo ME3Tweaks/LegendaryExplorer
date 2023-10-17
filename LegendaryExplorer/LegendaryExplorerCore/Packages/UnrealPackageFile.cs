@@ -322,11 +322,13 @@ namespace LegendaryExplorerCore.Packages
             if (!lookupTableNeedsToBeRegenerated)
             {
                 // CROSSGEN-V: CHECK BEFORE ADDING TO MAKE SURE WE DON'T GOOF IT UP
+#if DEBUG
                 if (EntryLookupTable.TryGetValue(exportEntry.InstancedFullPath, out _))
                 {
-                    Debug.WriteLine($"ENTRY LOOKUP TABLE ALREADY HAS ITEM BEING ADDED!!! ITEM: {exportEntry.InstancedFullPath}");
+                    // Debug.WriteLine($"ENTRY LOOKUP TABLE ALREADY HAS ITEM BEING ADDED!!! ITEM: {exportEntry.InstancedFullPath}");
                     //Debugger.Break(); // This already exists!
                 }
+#endifs
                 // END CROSSGEN-V
                 EntryLookupTable[exportEntry.InstancedFullPath] = exportEntry;
                 _tree.Add(exportEntry);
