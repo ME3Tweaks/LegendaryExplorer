@@ -23,13 +23,7 @@ namespace LegendaryExplorerCore.Packages
         public const string OODLE_DLL_NAME = @"oo2core_8_win64.dll";
 #endif
 
-#if WINDOWS
         public const string COMPRESSION_WRAPPER_NAME = "CompressionWrappers.dll";
-#elif MACOS
-        public const string COMPRESSION_WRAPPER_NAME = "IDK";
-#elif LINUX
-        public const string COMPRESSION_WRAPPER_NAME = "libCompressionWrappers.so";
-#endif
 
         /// <summary>
         /// Maximum size of a compressed chunk. This is not relevant for the table chunk or if an export is larger than the max chunk size

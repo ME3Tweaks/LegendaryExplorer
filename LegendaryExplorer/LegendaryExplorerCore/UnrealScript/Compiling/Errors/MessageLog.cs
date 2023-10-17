@@ -9,24 +9,14 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling.Errors
     {
         public bool HasErrors { get; private set; }
 
+        public bool HasLexErrors { get; private set; }
+
         public Class CurrentClass;
 
         public Class Filter; 
 
         private readonly List<LogMessage> content;
         public IReadOnlyList<LogMessage> Content => content.AsReadOnly();
-
-        public IReadOnlyList<LogMessage> Messages => content.Where(m => m.GetType() == typeof(LogMessage)).ToList();
-
-        public IReadOnlyList<LogMessage> PositionedMessages => content.Where(m => m.GetType() == typeof(PositionedMessage)).ToList();
-
-        public IReadOnlyList<LogMessage> Errors => content.Where(m => m is Error).ToList();
-
-        public IReadOnlyList<LogMessage> LineErrors => content.Where(m => m is LineError).ToList();
-
-        public IReadOnlyList<LogMessage> Warnings => content.Where(m => m is Warning).ToList();
-
-        public IReadOnlyList<LogMessage> LineWarnings => content.Where(m => m is LineWarning).ToList();
 
         public IReadOnlyList<LogMessage> AllErrors => content.Where(m => m is Error or LineError).ToList();
         public IReadOnlyList<LogMessage> AllWarnings => content.Where(m => m is Warning or LineWarning).ToList();
@@ -91,6 +81,13 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling.Errors
             }
             int line = LineLookup?.GetLineFromCharIndex(start) ?? -1;
             content.Add(new LineError(msg, start, end, line));
+        }
+
+        public void LogLexError(string msg, int start, int end = -1)
+        {
+            HasLexErrors = true;
+            int line = LineLookup?.GetLineFromCharIndex(start) ?? -1;
+            content.Add(new LexError(msg, start, end, line));
         }
 
         public void LogWarning(string msg)

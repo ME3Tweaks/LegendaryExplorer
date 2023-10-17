@@ -13,7 +13,7 @@
 		<AssemblyName>NAudio.WaveFormRenderer</AssemblyName>
 		<GenerateDocumentationFile Condition=" '$(Configuration)' == 'Release' ">true</GenerateDocumentationFile>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		<LangVersion>10.0</LangVersion>
+		<LangVersion>latest</LangVersion>
 		<Optimize>true</Optimize>
 		<Platforms>x64</Platforms>
 	</PropertyGroup>

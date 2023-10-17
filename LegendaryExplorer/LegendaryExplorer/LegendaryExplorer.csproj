@@ -2,7 +2,7 @@
 	<PropertyGroup>
 		<OutputType>WinExe</OutputType>
 		<TargetFramework>net7.0-windows</TargetFramework>
-		<LangVersion>10.0</LangVersion>
+		<LangVersion>latest</LangVersion>
 		<UseWPF>true</UseWPF>
 		<UseWindowsForms>true</UseWindowsForms>
 		<Platforms>x64</Platforms>
@@ -32,19 +32,13 @@
 	<PropertyGroup Condition="'$(Configuration)'=='WinAzureRelease'">
 		<DebugType>embedded</DebugType>
 		<Optimize>true</Optimize>
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<DefineConstants>WINDOWS;NIGHTLY</DefineConstants>
 	</PropertyGroup>
 
 	<!-- Azure flags allow special code to make tests work on azure since game won't exist there. It should never be used locally -->
 	<PropertyGroup Condition="'$(Configuration)'=='WinAzureTest'">
 		<DebugType>embedded</DebugType>
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<DefineConstants>WINDOWS;AZURE</DefineConstants>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WinDebug|x64'">
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WinRelease|x64'">
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -67,6 +61,7 @@
 		<Page Remove="Resources\FileAssocIcons\**" />
 		<Page Remove="Tools\PlotEditor\SFXGame\biodefine\**" />
 		<Page Remove="UserControls\SharedToolControls\DirectX\**" />
+		<None Remove="Resources\Images\LEX_Splash_Nightly.png" />
 		<None Remove="Tools\PackageEditor\ExportIcons\icon_texturecube.png" />
 		<None Remove="Tools\PlotDatabase\PlotTypeIcons\icon_bool.png" />
 		<None Remove="Tools\PlotDatabase\PlotTypeIcons\icon_cnd.png" />
@@ -144,6 +139,7 @@
 		<PackageReference Include="SharpDX.DXGI" Version="4.2.0" />
 		<PackageReference Include="System.CommandLine" Version="2.0.0-beta1.20071.2" />
 		<PackageReference Include="System.Drawing.Common" Version="7.0.0" />
+		<PackageReference Include="TerraFX.Interop.Windows" Version="10.0.22621.2" />
 		<PackageReference Include="VideoLAN.LibVLC.Windows" Version="3.0.18" />
 	</ItemGroup>
 
@@ -177,11 +173,15 @@
 	<!--The following reduces executable size by not including the other build's images.-->
 	<ItemGroup Condition="'$(Configuration)'=='WinAzureRelease' Or '$(Configuration)'=='WinAzureTest'">
 		<Resource Remove="Resources\Images\Legendary_Explorer_Graphic2.png" />
-		<Resource Remove="Resources\Images\LEX_Splash.png" />
+		<EmbeddedResource Include="Resources\Images\LEX_Splash_Nightly.png" />
 	</ItemGroup>
 	<ItemGroup Condition="'$(Configuration)'!='WinAzureRelease' And '$(Configuration)'!='WinAzureTest'">
 		<Resource Remove="Resources\Images\Legendary_Explorer_Graphic2_Nightly.png" />
-		<Resource Remove="Resources\Images\LEX_Splash_Nightly.png" />
+		<EmbeddedResource Include="Resources\Images\LEX_Splash.png" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Resource Remove="Resources\Images\LEX_Splash.png" />
+	  <Resource Remove="Resources\Images\LEX_Splash_Nightly.png" />
 	</ItemGroup>
 
 	<ItemGroup>

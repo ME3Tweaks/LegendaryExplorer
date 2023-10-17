@@ -574,7 +574,10 @@ namespace LegendaryExplorer.DialogueEditor
                 Level = Path.GetFileName(Pcc.FilePath);
                 if (Pcc.Game.IsGame1())
                 {
-                    Level = $"{Level.Remove(Level.Length - 4)}_LOC_INT{Path.GetExtension(Pcc.FilePath)}";
+                    if (Pcc.Localization == MELocalization.None)
+                    {
+                        Level = $"{Level.Remove(Level.Length - 4)}_LOC_INT{Path.GetExtension(Pcc.FilePath)}";
+                    }
                 }
                 else
                 {
@@ -721,7 +724,7 @@ namespace LegendaryExplorer.DialogueEditor
                 SelectedSpeakerList.Add(spkr);
             }
         }
-        
+
         private void ParseNodeData(DialogueNodeExtended node)
         {
             try
@@ -786,7 +789,7 @@ namespace LegendaryExplorer.DialogueEditor
                 throw new Exception("DiagNodeParse Failed.", e);
             }
         }
-        
+
         public int ParseActorsNames(ConversationExtended conv, string tag)
         {
             if (Pcc.Game.IsGame1())
@@ -3384,7 +3387,7 @@ namespace LegendaryExplorer.DialogueEditor
                 graphEditor.Camera.AnimateViewToCenterBounds(tgt.GlobalFullBounds, false, 100);
                 graphEditor.Refresh();
             }
-            else if(suppressErrorMessageBox == false)
+            else if (suppressErrorMessageBox == false)
             {
                 MessageBox.Show($"\"{searchtext}\" not found");
             }

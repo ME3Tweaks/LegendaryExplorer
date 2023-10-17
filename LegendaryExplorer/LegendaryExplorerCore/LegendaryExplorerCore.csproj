@@ -9,24 +9,24 @@
 
   <PropertyGroup>
     <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
-    <LangVersion>10.0</LangVersion>
+    <LangVersion>latest</LangVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Platforms>x64</Platforms>
-    <Configurations>WinDebug;WinRelease;LinuxDebug;LinuxRelease;MacDebug;MacRelease;WPFDebug;WPFRelease;WinAzureRelease;WinAzureTest</Configurations>
+    <PlatformTarget>x64</PlatformTarget>
+    <Configurations>WinDebug;WinRelease;WinAzureRelease;WinAzureTest</Configurations>
   </PropertyGroup>
 
 	<PropertyGroup Condition="'$(TF_BUILD)' == 'true'">
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)'=='WinDebug' or '$(Configuration)'=='WPFDebug'">
+  <PropertyGroup Condition="'$(Configuration)'=='WinDebug'">
     <DebugType>pdbonly</DebugType>
     <DebugSymbols>true</DebugSymbols>
-    <PlatformTarget>x64</PlatformTarget>
     <DefineConstants>TRACE;DEBUG;WINDOWS</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)'=='WinRelease' or '$(Configuration)'=='WPFRelease'">
+  <PropertyGroup Condition="'$(Configuration)'=='WinRelease'">
     <DebugType>embedded</DebugType>
     <DebugSymbols>true</DebugSymbols>
 	  <!-- If the Optimize flag is enabled, you should be aware that running it with the debugger attached disables optimizations!
@@ -36,7 +36,6 @@
 		   
 		   -->
 	<Optimize>true</Optimize>
-    <PlatformTarget>x64</PlatformTarget>
     <DefineConstants>WINDOWS</DefineConstants>
   </PropertyGroup>
 
@@ -45,8 +44,6 @@
     <DebugType>embedded</DebugType>
     <DebugSymbols>true</DebugSymbols>
 	<Optimize>true</Optimize>
-    <PlatformTarget>x64</PlatformTarget>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DefineConstants>WINDOWS;NIGHTLY</DefineConstants>
   </PropertyGroup>
 
@@ -54,37 +51,7 @@
   <PropertyGroup Condition="'$(Configuration)'=='WinAzureTest'">
     <DebugType>embedded</DebugType>
     <DebugSymbols>true</DebugSymbols>
-    <PlatformTarget>x64</PlatformTarget>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DefineConstants>WINDOWS;AZURE</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)'=='LinuxDebug'">
-    <DebugType>embedded</DebugType>
-    <DebugSymbols>true</DebugSymbols>
-    <PlatformTarget>x64</PlatformTarget>
-    <DefineConstants>TRACE;DEBUG;LINUX</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)'=='LinuxRelease'">
-    <DebugType>embedded</DebugType>
-    <DebugSymbols>true</DebugSymbols>
-    <PlatformTarget>x64</PlatformTarget>
-    <DefineConstants>LINUX</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)'=='MacDebug'">
-    <DebugType>embedded</DebugType>
-    <DebugSymbols>true</DebugSymbols>
-    <PlatformTarget>x64</PlatformTarget>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DefineConstants>TRACE;DEBUG;MAC</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)'=='MacRelease'">
-    <DebugType>embedded</DebugType>
-    <DebugSymbols>true</DebugSymbols>
-    <PlatformTarget>x64</PlatformTarget>
-    <DefineConstants>MAC</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>

@@ -61,14 +61,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
 
         public string Text => _text ??= function.Name;
 
-        public object Description => _description ??= GetSignature();
-
-        private string GetSignature()
-        {
-            var builder = new CodeBuilderVisitor();
-            builder.AppendReturnTypeAndParameters(function);
-            return builder.GetOutput();
-        }
+        public object Description => _description ??= CodeBuilderVisitor.GetFunctionSignature(function);
 
         public object Content => Text;
 

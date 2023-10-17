@@ -2,7 +2,7 @@
   <PropertyGroup>
     <OutputType>Library</OutputType>
     <TargetFrameworks>net7.0-windows</TargetFrameworks>
-	<langversion>10.0</langversion>
+	<langversion>latest</langversion>
     <UseWPF>true</UseWPF>
     <Authors>DotNetProjects</Authors>
     <PackageId>DotNetProjects.Extended.Wpf.Toolkit</PackageId>
@@ -12,6 +12,7 @@
     <RootNamespace>Xceed.Wpf.Toolkit</RootNamespace>
     <Platforms>x64</Platforms>
     <Configurations>WinDebug;WinRelease;WinAzureRelease;WinAzureTest</Configurations>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='WinDebug'">
@@ -32,7 +33,6 @@
     <DebugType>embedded</DebugType>
     <DebugSymbols>true</DebugSymbols>
 	<Optimize>true</Optimize>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DefineConstants>WINDOWS;NIGHTLY</DefineConstants>
   </PropertyGroup>
 
@@ -40,7 +40,6 @@
   <PropertyGroup Condition="'$(Configuration)'=='WinAzureTest'">
     <DebugType>embedded</DebugType>
     <DebugSymbols>true</DebugSymbols>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DefineConstants>WINDOWS;AZURE</DefineConstants>
   </PropertyGroup>
 

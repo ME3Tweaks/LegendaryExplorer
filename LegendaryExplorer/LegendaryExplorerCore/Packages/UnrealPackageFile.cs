@@ -81,9 +81,14 @@ namespace LegendaryExplorerCore.Packages
         public Guid PackageGuid { get; set; }
 
         /// <summary>
-        /// For concurrency
+        /// For concurrency when rebuilding the lookup table
         /// </summary>
         private object _packageSyncObj = new object();
+
+        /// <summary>
+        /// For concurrency when accessing FindExport/Import/Entry, and the table needs regenerated. This prevents multi-threading use from searching a currently rebuilding lookup table
+        /// </summary>
+        private object _findEntrySyncObj = new object();
 
         public bool IsCompressed => Flags.Has(UnrealFlags.EPackageFlags.Compressed);
 
@@ -343,20 +348,34 @@ namespace LegendaryExplorerCore.Packages
 
         public IEntry FindEntry(string instancedname)
         {
-            if (lookupTableNeedsToBeRegenerated)
+            IEntry matchingEntry;
+            // START CRITICAL SECTION ---------------------------------
+            lock (_findEntrySyncObj)
             {
-                RebuildLookupTable();
+                if (lookupTableNeedsToBeRegenerated)
+                {
+                    RebuildLookupTable();
+                }
+                EntryLookupTable.TryGetValue(instancedname, out matchingEntry);
             }
-            EntryLookupTable.TryGetValue(instancedname, out var matchingEntry);
+            // END CRITICAL SECTION ------------------------------------
             return matchingEntry;
         }
+
         public ImportEntry FindImport(string instancedname)
         {
-            if (lookupTableNeedsToBeRegenerated)
+            IEntry matchingEntry;
+            // START CRITICAL SECTION ---------------------------------
+            lock (_findEntrySyncObj)
             {
-                RebuildLookupTable();
+                if (lookupTableNeedsToBeRegenerated)
+                {
+                    RebuildLookupTable();
+                }
+                EntryLookupTable.TryGetValue(instancedname, out matchingEntry);
             }
-            EntryLookupTable.TryGetValue(instancedname, out var matchingEntry);
+            // END CRITICAL SECTION ------------------------------------
+
             if (matchingEntry is ExportEntry)
             {
                 // We want import version
@@ -370,11 +389,18 @@ namespace LegendaryExplorerCore.Packages
 
         public ExportEntry FindExport(string instancedname)
         {
-            if (lookupTableNeedsToBeRegenerated)
+            IEntry matchingEntry;
+            // START CRITICAL SECTION ---------------------------------
+            lock (_findEntrySyncObj)
             {
-                RebuildLookupTable();
+                if (lookupTableNeedsToBeRegenerated)
+                {
+                    RebuildLookupTable();
+                }
+                EntryLookupTable.TryGetValue(instancedname, out matchingEntry);
             }
-            EntryLookupTable.TryGetValue(instancedname, out var matchingEntry);
+            // END CRITICAL SECTION ------------------------------------
+
             if (matchingEntry is ImportEntry)
             {
                 // We want export version
@@ -436,7 +462,7 @@ namespace LegendaryExplorerCore.Packages
             {
                 if (EntryLookupTable.TryGetValue(importEntry.InstancedFullPath, out _))
                 {
-                    Debug.WriteLine($"ENTRY LOOKUP TABLE ALREADY HAS ITEM BEING ADDED!!! ITEM: {importEntry.InstancedFullPath}");
+                    // Debug.WriteLine($"ENTRY LOOKUP TABLE ALREADY HAS ITEM BEING ADDED!!! ITEM: {importEntry.InstancedFullPath}");
                     //Debugger.Break(); // This already exists!
                 }
                 EntryLookupTable[importEntry.InstancedFullPath] = importEntry;
@@ -456,7 +482,6 @@ namespace LegendaryExplorerCore.Packages
         /// </summary>
         public void RebuildLookupTable()
         {
-
             // This needs locked or multithreaded use might corrupt the lookup table
             // We don't want it to be the concurrent version since we don't want the lookup table being modified
             // in multiple locations at the same time

@@ -295,7 +295,7 @@ namespace LegendaryExplorerCore.Kismet
         /// <returns>List of referenced sequence elements</returns>
         public static List<IEntry> GetAllSequenceElements(ExportEntry export)
         {
-            if (export.ClassName == "Sequence")
+            if (export.ClassName is "Sequence" or "PrefabSequence")
             {
                 var seqObjs = export.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
                 if (seqObjs != null)
