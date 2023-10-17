@@ -333,7 +333,7 @@ namespace LegendaryExplorerCore.Packages
                     // Debug.WriteLine($"ENTRY LOOKUP TABLE ALREADY HAS ITEM BEING ADDED!!! ITEM: {exportEntry.InstancedFullPath}");
                     //Debugger.Break(); // This already exists!
                 }
-#endifs
+#endif
                 // END CROSSGEN-V
                 EntryLookupTable[exportEntry.InstancedFullPath] = exportEntry;
                 _tree.Add(exportEntry);
