@@ -1320,6 +1320,22 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             editableValue = $"BaseSliders - {linkName.Value}";
                         }
                     }
+                    else if (sp.StructType == "Category")
+                    {
+                        var linkName = sp.Properties.GetProp<StrProperty>("m_sCatName");
+                        if (linkName != null)
+                        {
+                            editableValue = $"Category - {linkName.Value}";
+                        }
+                    }
+                    else if (sp.StructType == "Slider")
+                    {
+                        var linkName = sp.Properties.GetProp<StrProperty>("m_sName");
+                        if (linkName != null)
+                        {
+                            editableValue = $"Slider - {linkName.Value}";
+                        }
+                    }
                     else if (sp.StructType == "TextureParameterValue")
                     {
                         var parmName = sp.GetProp<NameProperty>("ParameterName");
