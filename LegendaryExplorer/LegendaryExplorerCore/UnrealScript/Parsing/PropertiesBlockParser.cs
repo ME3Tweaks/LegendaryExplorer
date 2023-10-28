@@ -485,7 +485,14 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                         }
                         else if (targetClassLimiter.ClassLimiter != literalClassType.ClassLimiter && !((Class)literalClassType.ClassLimiter).SameAsOrSubClassOf(targetClassLimiter.ClassLimiter.Name))
                         {
-                            TypeError($"Cannot assign a value of type '{literalClassType.DisplayName()}' to a variable of type '{targetClassLimiter.DisplayName()}'.", literal);
+                            if (literalClassType.ClassLimiter.Name is "BioDeprecated")
+                            {
+                                LogWarning("Use of BioDeprecated! If this is pre-existing it's probably fine, but do not write new code like this.");
+                            }
+                            else
+                            {
+                                TypeError($"Cannot assign a value of type '{literalClassType.DisplayName()}' to a variable of type '{targetClassLimiter.DisplayName()}'.", literal);
+                            }
                         }
                     }
 
