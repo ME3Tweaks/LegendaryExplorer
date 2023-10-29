@@ -107,6 +107,7 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memdesc:a3c40cf2f46354f9f3b1ca09d6bd5ef54"><td class="mdescLeft">&#160;</td><td class="mdescRight">Attempts to relink unreal property data and object pointers in binary when cross porting an export. Access the results from the <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html" title="Specifies options used for relinking, as well as containing objects that can be passed through the en...">RelinkerOptionsPackage</a>'s RelinkReport property.   <a href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker.html#a3c40cf2f46354f9f3b1ca09d6bd5ef54">More...</a><br /></td></tr>
 <tr class="separator:a3c40cf2f46354f9f3b1ca09d6bd5ef54"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aef815b6f7029a0b68aa048a127df5a98"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker.html#aef815b6f7029a0b68aa048a127df5a98">Relink</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> sourceExport, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> relinkingExport, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html">RelinkerOptionsPackage</a> rop)</td></tr>
+<tr class="memdesc:aef815b6f7029a0b68aa048a127df5a98"><td class="mdescLeft">&#160;</td><td class="mdescRight">Relinks an export to a new export, likely in another package.   <a href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker.html#aef815b6f7029a0b68aa048a127df5a98">More...</a><br /></td></tr>
 <tr class="separator:aef815b6f7029a0b68aa048a127df5a98"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
@@ -177,6 +178,16 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Relinks an export to a new export, likely in another package.  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sourceExport</td><td>The source export that was ported, containing the original data</td></tr>
+    <tr><td class="paramname">relinkingExport</td><td>The export that will be updated with new references</td></tr>
+    <tr><td class="paramname">rop</td><td>Option package for relinking</td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
