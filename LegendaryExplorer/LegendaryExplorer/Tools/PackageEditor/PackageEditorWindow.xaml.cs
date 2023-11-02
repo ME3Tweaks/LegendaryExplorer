@@ -494,11 +494,23 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
                 if (existingPackages.Count is 0)
                 {
-                    MessageBox.Show(this, "Classes must be children of a Package export. Add one to the file first.");
+                    MessageBox.Show(this, "Classes must be child of a Package export. Add one to the file first.");
                     return;
                 }
+
+                IEntry defaultParent = null;
+                if (TryGetSelectedExport(out var currentExport) && (currentExport.Parent == null && currentExport.ClassName == "Package" ) || (currentExport.Parent != null && currentExport.Parent.ClassName == "Package"))
+                {
+                    // This will match both cases given the if statement.
+                    defaultParent = currentExport.Parent ?? currentExport;
+                }
+                else
+                {
+                    defaultParent = Pcc.Exports.FirstOrDefault(exp => exp.IsClass)?.Parent;
+                }
+
                 parent = EntrySelector.GetEntry<ExportEntry>(this, Pcc, "Pick a Package export your class should be a child of.",
-                    exp => existingPackages.Contains(exp), Pcc.Exports.FirstOrDefault(exp => exp.IsClass)?.Parent);
+                    exp => existingPackages.Contains(exp), defaultParent);
                 if (parent is null)
                 {
                     return;

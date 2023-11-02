@@ -85,6 +85,16 @@
                 </StackPanel>
             </StackPanel>
         </GroupBox>
+        <GroupBox Header="Actor Visibility" Margin="5,0,5,5" BorderThickness="2" >
+            <StackPanel Orientation="Vertical">
+                <StackPanel Orientation="Horizontal">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text=" Hidden:  " VerticalAlignment="Center" />
+                        <CheckBox IsChecked="{Binding Hidden}"/>
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+        </GroupBox>
         <GroupBox Header="Actor DrawScale" Margin="5,0,5,5" BorderThickness="2" >
             <StackPanel Orientation="Vertical">
                 <StackPanel Orientation="Horizontal">

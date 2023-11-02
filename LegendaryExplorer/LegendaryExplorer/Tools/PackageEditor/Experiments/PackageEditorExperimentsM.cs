@@ -2712,6 +2712,8 @@ defaultproperties
                     {
                         ClassName = exp2.ClassName,
                         PackageFile = "Core", // Do a better lookup for this - it's possible to find where class of class is stored.
+                                              // This works for LEX merges (import finds existing export in package)
+                                              // but will not work in game if it gets turned into an actual import for use
                     };
                     exp2.FileRef.AddImport((ImportEntry)convertedItem);
 
