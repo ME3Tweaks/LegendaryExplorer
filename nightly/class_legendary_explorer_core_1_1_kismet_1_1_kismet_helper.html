@@ -156,6 +156,12 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:acd2d2370f412e54a4292ab7898b8f968"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#acd2d2370f412e54a4292ab7898b8f968">TrimVariableLinks</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> source)</td></tr>
 <tr class="memdesc:acd2d2370f412e54a4292ab7898b8f968"><td class="mdescLeft">&#160;</td><td class="mdescRight">Removes variable links that have no defined values. Can be dangerous if the class is not designed to lookup by name (will break Idx based classes)   <a href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#acd2d2370f412e54a4292ab7898b8f968">More...</a><br /></td></tr>
 <tr class="separator:acd2d2370f412e54a4292ab7898b8f968"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3392d1c420beb7bc914157e180a5399c"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a3392d1c420beb7bc914157e180a5399c">CloneObject</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> itemToClone, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> sequence=null, bool topLevel=true, bool incrementIndex=true)</td></tr>
+<tr class="memdesc:a3392d1c420beb7bc914157e180a5399c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clones a sequence object and places it into the given sequence.   <a href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a3392d1c420beb7bc914157e180a5399c">More...</a><br /></td></tr>
+<tr class="separator:a3392d1c420beb7bc914157e180a5399c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2e751ce658788eb8c2889c8ebfc8ea55"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a2e751ce658788eb8c2889c8ebfc8ea55">CloneSequence</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> sequence)</td></tr>
+<tr class="memdesc:a2e751ce658788eb8c2889c8ebfc8ea55"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clones an entire <a class="el" href="namespace_legendary_explorer_core_1_1_kismet.html" title="Tools for creating and modifying Kismet sequences">Kismet</a> sequence   <a href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a2e751ce658788eb8c2889c8ebfc8ea55">More...</a><br /></td></tr>
+<tr class="separator:a2e751ce658788eb8c2889c8ebfc8ea55"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Static methods to perform common sequence editing operations  </p>
@@ -912,6 +918,100 @@ Static Public Member Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">export</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a3392d1c420beb7bc914157e180a5399c" name="a3392d1c420beb7bc914157e180a5399c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3392d1c420beb7bc914157e180a5399c">&#9670;&#160;</a></span>CloneObject()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> LegendaryExplorerCore.Kismet.KismetHelper.CloneObject </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td>
+          <td class="paramname"><em>itemToClone</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td>
+          <td class="paramname"><em>sequence</em> = <code>null</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>topLevel</em> = <code>true</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>incrementIndex</em> = <code>true</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Clones a sequence object and places it into the given sequence.  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">itemToClone</td><td></td></tr>
+    <tr><td class="paramname">sequence</td><td></td></tr>
+    <tr><td class="paramname">topLevel</td><td></td></tr>
+    <tr><td class="paramname">incrementIndex</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+</div>
+</div>
+<a id="a2e751ce658788eb8c2889c8ebfc8ea55" name="a2e751ce658788eb8c2889c8ebfc8ea55"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2e751ce658788eb8c2889c8ebfc8ea55">&#9670;&#160;</a></span>CloneSequence()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void LegendaryExplorerCore.Kismet.KismetHelper.CloneSequence </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td>
+          <td class="paramname"><em>sequence</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Clones an entire <a class="el" href="namespace_legendary_explorer_core_1_1_kismet.html" title="Tools for creating and modifying Kismet sequences">Kismet</a> sequence  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sequence</td><td></td></tr>
   </table>
   </dd>
 </dl>
