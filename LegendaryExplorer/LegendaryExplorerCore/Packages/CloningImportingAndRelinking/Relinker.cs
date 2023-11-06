@@ -217,6 +217,12 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             }
         }
 
+        /// <summary>
+        /// Relinks an export to a new export, likely in another package.
+        /// </summary>
+        /// <param name="sourceExport">The source export that was ported, containing the original data</param>
+        /// <param name="relinkingExport">The export that will be updated with new references</param>
+        /// <param name="rop">Option package for relinking</param>
         public static void Relink(ExportEntry sourceExport, ExportEntry relinkingExport, RelinkerOptionsPackage rop)
         {
             IMEPackage sourcePcc = sourceExport.FileRef;

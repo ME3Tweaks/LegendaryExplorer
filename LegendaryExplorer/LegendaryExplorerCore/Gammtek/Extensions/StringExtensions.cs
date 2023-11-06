@@ -270,5 +270,14 @@ namespace LegendaryExplorerCore.Gammtek.Extensions
 
             return lines;
         }
+
+        public static int CountLeadingWhitespace(this string text)
+        {
+            int i = 0;
+            for (; i < text.Length && char.IsWhiteSpace(text[i]); i++)
+            {
+            }
+            return i;
+        }
     }
 }

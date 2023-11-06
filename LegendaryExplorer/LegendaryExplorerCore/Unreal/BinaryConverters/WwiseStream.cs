@@ -59,7 +59,19 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref DataOffset);
             if (IsPCCStored)
             {
-                sc.Serialize(ref EmbeddedData, DataSize);
+                if (DataSize > 0)
+                {
+                    sc.Serialize(ref EmbeddedData, DataSize);
+                }
+                else
+                {
+                    // Some unused audio (such as female shepard tali romance in LE2) has blank external audio with no filename
+                    // There is nothing to write back here - it is loading only
+                    if (sc.IsLoading)
+                    {
+                        EmbeddedData = Array.Empty<byte>();
+                    }
+                }
             }
         }
 

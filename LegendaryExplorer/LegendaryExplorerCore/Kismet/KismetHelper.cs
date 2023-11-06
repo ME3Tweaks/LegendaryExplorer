@@ -3,6 +3,8 @@ using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
 using System.Collections.Generic;
 using System.Linq;
+using System.Diagnostics;
+using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 
 namespace LegendaryExplorerCore.Kismet
 {
@@ -389,5 +391,217 @@ namespace LegendaryExplorerCore.Kismet
             }
         }
 
+        /// <summary>
+        /// Clones a sequence object and places it into the given sequence.
+        /// </summary>
+        /// <param name="itemToClone"></param>
+        /// <param name="sequence"></param>
+        /// <param name="topLevel"></param>
+        /// <param name="incrementIndex"></param>
+        /// <returns></returns>
+        public static ExportEntry CloneObject(ExportEntry itemToClone, ExportEntry sequence = null, bool topLevel = true, bool incrementIndex = true, bool cloneChildren = false)
+        {
+            //SeqVar_External needs to have the same index to work properly
+            ExportEntry exp = cloneChildren ? EntryCloner.CloneTree(itemToClone) : EntryCloner.CloneEntry(itemToClone, incrementIndex: incrementIndex && itemToClone.ClassName != "SeqVar_External");
+            KismetHelper.AddObjectToSequence(exp, sequence ?? SeqTools.GetParentSequence(itemToClone), topLevel);
+            CloneSequence(exp);
+            return exp;
+        }
+
+        /// <summary>
+        /// Clones an entire Kismet sequence
+        /// </summary>
+        /// <param name="sequence"></param>
+        public static void CloneSequence(ExportEntry sequence)
+        {
+            IMEPackage pcc = sequence.FileRef;
+            if (sequence.ClassName == "Sequence")
+            {
+                //sequence names need to be unique I think?
+                sequence.ObjectName = pcc.GetNextIndexedName(sequence.ObjectName.Name);
+
+                var seqObjs = sequence.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
+                if (seqObjs == null || seqObjs.Count == 0)
+                {
+                    return;
+                }
+
+                //store original list of sequence objects;
+                List<int> oldObjectUindices = seqObjs.Select(x => x.Value).ToList();
+
+                //clear original sequence objects
+                seqObjs.Clear();
+                sequence.WriteProperty(seqObjs);
+
+                //clone all children
+                foreach (var obj in oldObjectUindices)
+                {
+                    CloneObject(pcc.GetUExport(obj), sequence, false, false);
+                }
+
+                //re-point children's links to new objects
+                seqObjs = sequence.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
+                foreach (var seqObj in seqObjs)
+                {
+                    ExportEntry obj = pcc.GetUExport(seqObj.Value);
+                    var props = obj.GetProperties();
+                    var outLinksProp = props.GetProp<ArrayProperty<StructProperty>>("OutputLinks");
+                    if (outLinksProp != null)
+                    {
+                        foreach (var outLinkStruct in outLinksProp)
+                        {
+                            var links = outLinkStruct.GetProp<ArrayProperty<StructProperty>>("Links");
+                            foreach (var link in links)
+                            {
+                                var linkedOp = link.GetProp<ObjectProperty>("LinkedOp");
+                                linkedOp.Value = seqObjs[oldObjectUindices.IndexOf(linkedOp.Value)].Value;
+                            }
+                        }
+                    }
+
+                    var varLinksProp = props.GetProp<ArrayProperty<StructProperty>>("VariableLinks");
+                    if (varLinksProp != null)
+                    {
+                        foreach (var varLinkStruct in varLinksProp)
+                        {
+                            var links = varLinkStruct.GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables");
+                            foreach (var link in links)
+                            {
+                                link.Value = seqObjs[oldObjectUindices.IndexOf(link.Value)].Value;
+                            }
+                        }
+                    }
+
+                    var eventLinksProp = props.GetProp<ArrayProperty<StructProperty>>("EventLinks");
+                    if (eventLinksProp != null)
+                    {
+                        foreach (var eventLinkStruct in eventLinksProp)
+                        {
+                            var links = eventLinkStruct.GetProp<ArrayProperty<ObjectProperty>>("LinkedEvents");
+                            foreach (var link in links)
+                            {
+                                var idx = oldObjectUindices.IndexOf(link.Value);
+                                if (idx >= 0)
+                                {
+                                    link.Value = seqObjs[idx].Value;
+                                }
+                                else
+                                {
+                                    // Uh oh
+                                    Debugger.Break();
+                                }
+                            }
+                        }
+                    }
+
+                    obj.WriteProperties(props);
+                }
+
+                //re-point sequence links to new objects
+                int oldObj;
+                int newObj;
+                var propCollection = sequence.GetProperties();
+                var inputLinksProp = propCollection.GetProp<ArrayProperty<StructProperty>>("InputLinks");
+                if (inputLinksProp != null)
+                {
+                    foreach (var inLinkStruct in inputLinksProp)
+                    {
+                        var linkedOp = inLinkStruct.GetProp<ObjectProperty>("LinkedOp");
+                        oldObj = linkedOp.Value;
+                        if (oldObj != 0)
+                        {
+                            newObj = seqObjs[oldObjectUindices.IndexOf(oldObj)].Value;
+                            linkedOp.Value = newObj;
+
+                            NameProperty linkAction = inLinkStruct.GetProp<NameProperty>("LinkAction");
+                            linkAction.Value =
+                                new NameReference(linkAction.Value.Name, pcc.GetUExport(newObj).indexValue);
+                        }
+                    }
+                }
+
+                var outputLinksProp = propCollection.GetProp<ArrayProperty<StructProperty>>("OutputLinks");
+                if (outputLinksProp != null)
+                {
+                    foreach (var outLinkStruct in outputLinksProp)
+                    {
+                        var linkedOp = outLinkStruct.GetProp<ObjectProperty>("LinkedOp");
+                        oldObj = linkedOp.Value;
+                        if (oldObj != 0)
+                        {
+                            newObj = seqObjs[oldObjectUindices.IndexOf(oldObj)].Value;
+                            linkedOp.Value = newObj;
+
+                            NameProperty linkAction = outLinkStruct.GetProp<NameProperty>("LinkAction");
+                            linkAction.Value =
+                                new NameReference(linkAction.Value.Name, pcc.GetUExport(newObj).indexValue);
+                        }
+                    }
+                }
+
+                sequence.WriteProperties(propCollection);
+            }
+            else if (sequence.ClassName == "SequenceReference")
+            {
+                //set OSequenceReference to new sequence
+                var oSeqRefProp = sequence.GetProperty<ObjectProperty>("oSequenceReference");
+                if (oSeqRefProp == null || oSeqRefProp.Value == 0)
+                {
+                    return;
+                }
+
+                int oldSeqIndex = oSeqRefProp.Value;
+                oSeqRefProp.Value = sequence.UIndex + 1;
+                sequence.WriteProperty(oSeqRefProp);
+
+                //clone sequence
+                ExportEntry newSequence = CloneObject(pcc.GetUExport(oldSeqIndex), sequence, false);
+                //set SequenceReference's linked name indices
+                var inputIndices = new List<int>();
+                var outputIndices = new List<int>();
+
+                var props = newSequence.GetProperties();
+                var inLinksProp = props.GetProp<ArrayProperty<StructProperty>>("InputLinks");
+                if (inLinksProp != null)
+                {
+                    foreach (var inLink in inLinksProp)
+                    {
+                        inputIndices.Add(inLink.GetProp<NameProperty>("LinkAction").Value.Number);
+                    }
+                }
+
+                var outLinksProp = props.GetProp<ArrayProperty<StructProperty>>("OutputLinks");
+                if (outLinksProp != null)
+                {
+                    foreach (var outLinks in outLinksProp)
+                    {
+                        outputIndices.Add(outLinks.GetProp<NameProperty>("LinkAction").Value.Number);
+                    }
+                }
+
+                props = sequence.GetProperties();
+                inLinksProp = props.GetProp<ArrayProperty<StructProperty>>("InputLinks");
+                if (inLinksProp != null)
+                {
+                    for (int i = 0; i < inLinksProp.Count; i++)
+                    {
+                        NameProperty linkAction = inLinksProp[i].GetProp<NameProperty>("LinkAction");
+                        linkAction.Value = new NameReference(linkAction.Value.Name, inputIndices[i]);
+                    }
+                }
+
+                outLinksProp = props.GetProp<ArrayProperty<StructProperty>>("OutputLinks");
+                if (outLinksProp != null)
+                {
+                    for (int i = 0; i < outLinksProp.Count; i++)
+                    {
+                        NameProperty linkAction = outLinksProp[i].GetProp<NameProperty>("LinkAction");
+                        linkAction.Value = new NameReference(linkAction.Value.Name, outputIndices[i]);
+                    }
+                }
+
+                sequence.WriteProperties(props);
+            }
+        }
     }
 }

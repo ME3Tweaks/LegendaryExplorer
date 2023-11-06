@@ -354,18 +354,18 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             {
                 try
                 {
-                    if (CurrentIs(LOCAL))
+                    Statement statement = CurrentIs(LOCAL) ? ParseLocalVarDecl() : ParseStatement();
+                    if (statement is not null)
                     {
-                        return ParseLocalVarDecl();
+                        return statement;
                     }
-                    return ParseStatement();
+                    if (CurrentIs(TokenType.RightBracket) || !Synchronize())
+                    {
+                        return null;
+                    }
                 }
                 catch (ParseException)
                 {
-                    while (ExpressionScopes.Count > 1)
-                    {
-                        ExpressionScopes.Pop();
-                    }
                     if (!Synchronize())
                     {
                         return null;
@@ -378,8 +378,12 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
         //returns false if it gets to the end of a block or file without finding one
         private bool Synchronize()
         {
+            while (ExpressionScopes.Count > 1)
+            {
+                ExpressionScopes.Pop();
+            }
             Tokens.Advance();
-            while (!Tokens.AtEnd() && !CurrentIs(TokenType.LeftBracket))
+            while (!Tokens.AtEnd() && !CurrentIs(TokenType.RightBracket))
             {
                 if (PrevToken.Type == TokenType.SemiColon)// || CurrentToken.StartPos.Line > PrevToken.EndPos.Line)
                 {
@@ -516,11 +520,15 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 {
                     if (decl.IsConst)
                     {
-                        TypeError("Cannot assign to a 'const' variable.", expr);
+                        Log.LogWarning("Assigning to a 'const' variable! Other code may not account for it changing.", expr.StartPos, expr.EndPos);
                     }
                     else if (ReferenceEquals(decl, SelfDeclaration))
                     {
                         TypeError($"{SELF} is immutable! You cannot assign a different value to it.", expr);
+                    }
+                    if (expr is DefaultReference && !decl.Flags.Has(EPropertyFlags.Config))
+                    {
+                        Log.LogWarning("Changing the default value of a non-config property may cause errors", expr.StartPos, expr.EndPos);
                     }
                 }
 

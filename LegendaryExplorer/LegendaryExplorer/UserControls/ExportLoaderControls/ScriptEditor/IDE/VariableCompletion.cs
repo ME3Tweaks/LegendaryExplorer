@@ -42,14 +42,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
 
         public string Text => _text ??= varDecl.Name;
 
-        public object Description => _description ??= GetSignature();
-
-        private string GetSignature()
-        {
-            var builder = new CodeBuilderVisitor();
-            builder.AppendVariableTypeAndScopeAndName(varDecl);
-            return builder.GetOutput();
-        }
+        public object Description => _description ??= CodeBuilderVisitor.GetVariableDeclarationSignature(varDecl);
 
         public object Content => Text;
 

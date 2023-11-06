@@ -1,9 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
   <PropertyGroup>
     <TargetFrameworks>net7.0-windows</TargetFrameworks>
-    <LangVersion>10.0</LangVersion>
+    <LangVersion>latest</LangVersion>
     <ProjectType>Local</ProjectType>
     <Platforms>x64</Platforms>
+    <PlatformTarget>x64</PlatformTarget>
     <AssemblyKeyContainerName>
     </AssemblyKeyContainerName>
     <AssemblyOriginatorKeyFile>HexBox.snk</AssemblyOriginatorKeyFile>
@@ -41,13 +42,11 @@
 
   <PropertyGroup Condition="'$(Configuration)'=='WinDebug'">
     <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
     <DefineConstants>TRACE;DEBUG;WINDOWS</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='WinRelease'">
     <DebugType>embedded</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
 	<Optimize>true</Optimize>
     <DefineConstants>WINDOWS</DefineConstants>
   </PropertyGroup>
@@ -55,7 +54,6 @@
   <!-- Nightly release from Azure-->
   <PropertyGroup Condition="'$(Configuration)'=='WinAzureRelease'">
     <DebugType>embedded</DebugType>
-	  <PlatformTarget>x64</PlatformTarget>
 	<Optimize>true</Optimize>
     <DefineConstants>WINDOWS;NIGHTLY</DefineConstants>
   </PropertyGroup>
@@ -63,7 +61,6 @@
   <!-- Azure flags allow special code to make tests work on azure since game won't exist there. It should never be used locally -->
   <PropertyGroup Condition="'$(Configuration)'=='WinAzureTest'">
     <DebugType>embedded</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
     <DefineConstants>WINDOWS;AZURE</DefineConstants>
   </PropertyGroup>
   

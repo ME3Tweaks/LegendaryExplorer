@@ -44,7 +44,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         //This is useful for end user when they want to view things in a list for example, but all of the items are of the 
         //same type and are not distinguishable without changing to another export, wasting a lot of time.
         //values are the class of object value being parsed
-        public static readonly string[] ExportToStringConverters = { "LevelStreamingKismet", "StaticMeshComponent", "ParticleSystemComponent", "DecalComponent", "LensFlareComponent", "AnimNodeSequence" };
+        public static readonly string[] ExportToStringConverters = { "LevelStreamingKismet", "StaticMeshComponent", "ParticleSystemComponent", "DecalComponent", "LensFlareComponent", "AnimNodeSequence", "BioAnimNodeSequence" };
         public static readonly string[] IntToStringConverters = { "WwiseEvent", "WwiseBank", "WwiseStream", "BioSeqAct_PMExecuteTransition", "BioSeqAct_PMExecuteConsequence", "BioSeqAct_PMCheckState", "BioSeqAct_PMCheckConditional", "BioSeqVar_StoryManagerInt",
                                                                 "BioSeqVar_StoryManagerFloat", "BioSeqVar_StoryManagerBool", "BioSeqVar_StoryManagerStateId", "SFXSceneShopNodePlotCheck", "BioWorldInfo", "CoverLink" };
         public ObservableCollectionExtended<IndexedName> ParentNameList { get; private set; }
@@ -1320,6 +1320,22 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             editableValue = $"BaseSliders - {linkName.Value}";
                         }
                     }
+                    else if (sp.StructType == "Category")
+                    {
+                        var linkName = sp.Properties.GetProp<StrProperty>("m_sCatName");
+                        if (linkName != null)
+                        {
+                            editableValue = $"Category - {linkName.Value}";
+                        }
+                    }
+                    else if (sp.StructType == "Slider")
+                    {
+                        var linkName = sp.Properties.GetProp<StrProperty>("m_sName");
+                        if (linkName != null)
+                        {
+                            editableValue = $"Slider - {linkName.Value}";
+                        }
+                    }
                     else if (sp.StructType == "TextureParameterValue")
                     {
                         var parmName = sp.GetProp<NameProperty>("ParameterName");
@@ -1731,6 +1747,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     }
                     break;
                 case "AnimNodeSequence":
+                case "BioAnimNodeSequence":
                     {
                         NameProperty prop = exportEntry.GetProperty<NameProperty>("AnimSeqName");
                         return $"({prop?.Value.Instanced ?? "No Name"})";

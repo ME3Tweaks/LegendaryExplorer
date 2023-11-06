@@ -1,18 +1,19 @@
 <Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
   <PropertyGroup>
     <TargetFrameworks>net7.0-windows</TargetFrameworks>
-    <LangVersion>10.0</LangVersion>
+    <LangVersion>latest</LangVersion>
     <OutputType>Library</OutputType>
     <UseWindowsForms>true</UseWindowsForms>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
     <Platforms>x64</Platforms>
+    <PlatformTarget>x64</PlatformTarget>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Configurations>WinDebug;WinRelease;WinAzureRelease;WinAzureTest</Configurations>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='WinDebug'">
     <DebugType>pdbonly</DebugType>
     <DebugSymbols>true</DebugSymbols>
-    <PlatformTarget>x64</PlatformTarget>
     <DefineConstants>TRACE;DEBUG;WINDOWS</DefineConstants>
   </PropertyGroup>
 
@@ -20,7 +21,6 @@
     <DebugType>embedded</DebugType>
     <DebugSymbols>true</DebugSymbols>
 	<Optimize>true</Optimize>
-    <PlatformTarget>x64</PlatformTarget>
     <DefineConstants>WINDOWS</DefineConstants>
   </PropertyGroup>
 
@@ -29,8 +29,6 @@
     <DebugType>embedded</DebugType>
     <DebugSymbols>true</DebugSymbols>
 	<Optimize>true</Optimize>
-    <PlatformTarget>x64</PlatformTarget>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DefineConstants>WINDOWS;NIGHTLY</DefineConstants>
   </PropertyGroup>
 
@@ -38,8 +36,6 @@
   <PropertyGroup Condition="'$(Configuration)'=='WinAzureTest'">
     <DebugType>embedded</DebugType>
     <DebugSymbols>true</DebugSymbols>
-    <PlatformTarget>x64</PlatformTarget>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DefineConstants>WINDOWS;AZURE</DefineConstants>
   </PropertyGroup>
   <ItemGroup>

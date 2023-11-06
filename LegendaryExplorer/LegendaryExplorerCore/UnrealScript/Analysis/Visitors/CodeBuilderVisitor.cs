@@ -35,7 +35,28 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
     public class CodeBuilderVisitor<TFormatter, TOutput> : IASTVisitor where TFormatter : class, ICodeFormatter<TOutput>, new()
     {
-        public readonly TFormatter Formatter = new();
+        public static TOutput GetOutput(ASTNode node)
+        {
+            var builder = new CodeBuilderVisitor<TFormatter, TOutput>();
+            node.AcceptVisitor(builder);
+            return builder.GetOutput();
+        }
+
+        public static TOutput GetFunctionSignature(Function func)
+        {
+            var builder = new CodeBuilderVisitor<TFormatter, TOutput>();
+            builder.AppendReturnTypeAndParameters(func);
+            return builder.GetOutput();
+        }
+        public static TOutput GetVariableDeclarationSignature(VariableDeclaration varDecl)
+        {
+            var builder = new CodeBuilderVisitor<TFormatter, TOutput>();
+            builder.AppendVariableTypeAndScopeAndName(varDecl);
+            return builder.GetOutput();
+        }
+
+
+        protected readonly TFormatter Formatter = new();
         private readonly Stack<int> ExpressionPrescedence = new(new []{NOPRESCEDENCE});
 
         private const int NOPRESCEDENCE = int.MaxValue;
@@ -2075,14 +2096,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
     { }
 
     public class CodeBuilderVisitor : CodeBuilderVisitor<PlainTextCodeFormatter>
-    {
-        public static string ConvertToText(ASTNode node)
-        {
-            var builder = new CodeBuilderVisitor();
-            node.AcceptVisitor(builder);
-            return builder.GetOutput();
-        }
-    }
+    { }
 
     public interface ICodeFormatter<out TOutput>
     {

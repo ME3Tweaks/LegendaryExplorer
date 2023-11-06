@@ -2666,9 +2666,9 @@ defaultproperties
             }
         }
 
-        public static void MScanner(PackageEditorWindow pe)
+        public static void MakeInterpTrackMoveEndAtZero(PackageEditorWindow pe)
         {
-            var interpTrackMove = pe.Pcc.GetUExport(6498);
+            if (pe.TryGetSelectedExport(out var interpTrackMove) && interpTrackMove.ClassName == "InterpTrackMove")
             {
                 // This moves an interptrackmove to end at 0,0,0 by shifiting it all - which makes it so you can do relativetoinitial instead of world
                 var posTrack = interpTrackMove.GetProperty<StructProperty>("PosTrack");
@@ -2691,6 +2691,168 @@ defaultproperties
                 interpTrackMove.WriteProperty(posTrack);
             }
             return;
+        }
+
+        internal class MatContainer
+        {
+            public string MatIFP { get; set; }
+            public List<string> MatVectors { get; } = new List<string>();
+            public List<string> MatScalars { get; } = new List<string>();
+        }
+
+        public static void MScanner(PackageEditorWindow pe)
+        {
+            if (pe.TryGetSelectedExport(out var exp2))
+            {
+                var referencingEntries = exp2.GetEntriesThatReferenceThisOne();
+                if (referencingEntries.Any())
+                {
+                    // Create a temporary import
+                    var convertedItem = new ImportEntry(exp2.FileRef, exp2.Parent, new NameReference(exp2.ObjectName.Name + "_TMP", exp2.ObjectName.Number))
+                    {
+                        ClassName = exp2.ClassName,
+                        PackageFile = "Core", // Do a better lookup for this - it's possible to find where class of class is stored.
+                                              // This works for LEX merges (import finds existing export in package)
+                                              // but will not work in game if it gets turned into an actual import for use
+                    };
+                    exp2.FileRef.AddImport((ImportEntry)convertedItem);
+
+                    foreach (var f in referencingEntries)
+                    {
+                        // Make a new map for every iteration since this technically could add some items... somehow...
+                        var objectMap = new ListenableDictionary<IEntry, IEntry>();
+                        objectMap.Add(exp2, convertedItem); // Convert references to import
+                        objectMap.Add(f.Key, f.Key); // Force this to relink on itself.
+                        RelinkerOptionsPackage rop = new RelinkerOptionsPackage()
+                        {
+                            CrossPackageMap = objectMap
+                        };
+                        Relinker.RelinkAll(rop);
+                    }
+
+                    // Cleanup temporary stuff
+                    convertedItem.ObjectName = exp2.ObjectName;
+                    EntryPruner.TrashEntries(exp2.FileRef, new[] { exp2 });
+                }
+
+            }
+
+            return;
+            //if (pe.TryGetSelectedExport(out var exp2))
+            //{
+            //    var targets = exp2.GetProperty<ArrayProperty<ObjectProperty>>("Targets");
+            //    foreach (var t in targets.Select(x => x.ResolveToEntry(pe.Pcc) as ExportEntry))
+            //    {
+            //        var bin = ObjectBinary.From<MorphTarget>(t);
+            //        if (bin.BoneOffsets.Length > 0)
+            //        {
+            //            for (int i = 0; i < bin.BoneOffsets.Length; i++)
+            //            {
+            //                bin.BoneOffsets[i].Offset.X *= 10;
+            //                bin.BoneOffsets[i].Offset.Y *= 10;
+            //                bin.BoneOffsets[i].Offset.Z *= 10;
+            //            }
+            //            t.WriteBinary(bin);
+            //        }
+            //    }
+            //}
+            //return;
+            var merEyes =
+                "B:\\UserProfile\\source\\repos\\ME2Randomizer\\Randomizer\\Randomizers\\Game2\\Assets\\Binary\\Packages\\LE2\\Always_MEREyes\\BIOG_MEREyes.pcc";
+            using var merEyesP = MEPackageHandler.OpenMEPackage(merEyes);
+            foreach (var v in merEyesP.Exports)
+            {
+                v.ExportFlags = v.ExportFlags & ~UnrealFlags.EExportFlags.ForcedExport;
+            }
+            merEyesP.Save();
+            return;
+            if (pe.TryGetSelectedExport(out var matInst))
+            {
+                var tpv = matInst.GetProperty<ArrayProperty<StructProperty>>("TextureParameterValues");
+                if (tpv == null) return;
+                foreach (var v in tpv)
+                {
+                    var parm = v.GetProp<NameProperty>("ParameterName").Value.Name;
+                    ExportEntry valueExp;
+                    var value = v.GetProp<ObjectProperty>("ParameterValue").ResolveToEntry(pe.Pcc);
+                    if (value is ImportEntry ie)
+                    {
+                        valueExp = EntryImporter.ResolveImport(ie, null, null);
+                    }
+                    else
+                    {
+                        valueExp = value as ExportEntry;
+                    }
+
+                    var packageParent = merEyesP.FindExport(matInst.ObjectName) ?? ExportCreator.CreatePackageExport(merEyesP, matInst.ObjectName);
+                    if (parm.Contains("EYE_Iris_Norm"))
+                    {
+                        valueExp.ObjectName = "EYE_Iris_Norm";
+                    }
+                    else if (parm.Contains("EYE_Mask"))
+                    {
+                        valueExp.ObjectName = "EYE_Mask";
+
+                    }
+                    else if (parm.Contains("EYE_Diff"))
+                    {
+                        valueExp.ObjectName = "EYE_Diff";
+
+                    }
+                    else if (parm.Contains("EYE_Lens_Norm"))
+                    {
+                        valueExp.ObjectName = "EYE_Lens_Norm";
+                    }
+                    else
+                    {
+                        Debugger.Break();
+                    }
+
+                    EntryImporter.ImportAndRelinkEntries(PortingOption.AddSingularAsChild, valueExp, packageParent.FileRef, packageParent, true, new RelinkerOptionsPackage(), out var _);
+                }
+                merEyesP.Save();
+            }
+
+            return;
+
+            CaseInsensitiveDictionary<MatContainer> map = new CaseInsensitiveDictionary<MatContainer>();
+            foreach (var f in MELoadedFiles.GetFilesLoadedInGame(MEGame.LE2))
+            {
+                using var pack = MEPackageHandler.UnsafePartialLoad(f.Value, x => x.ClassName is "Material" || x.Parent?.ClassName == "Material");
+                foreach (var c in pack.Exports.Where(x => x.ClassName == "Material"))
+                {
+                    if (map.ContainsKey(c.InstancedFullPath))
+                        continue;
+
+                    var container = new MatContainer() { MatIFP = c.InstancedFullPath };
+                    var expressions = c.GetProperty<ArrayProperty<ObjectProperty>>("Expressions");
+                    if (expressions == null) continue;
+                    foreach (var expr in expressions.Select(x => x.ResolveToEntry(pack)).OfType<ExportEntry>())
+                    {
+                        var parmName = expr.GetProperty<NameProperty>("ParameterName");
+                        if (parmName == null)
+                        {
+                            continue;
+                        }
+                        if (expr.ClassName == "MaterialExpressionVectorParameter")
+                        {
+                            container.MatVectors.Add(parmName.Value);
+                        }
+                        else if (expr.ClassName == "MaterialExpressionScalarParameter")
+                        {
+                            container.MatScalars.Add(parmName.Value);
+                        }
+                    }
+
+                    map[c.InstancedFullPath] = container;
+                }
+            }
+
+            var text = JsonConvert.SerializeObject(map.Values, Formatting.Indented);
+            File.WriteAllText(@"C:\users\public\LE2MatInfo.txt", text);
+
+            return;
+
             //            Debug.WriteLine("Done");
 
             //// Generate BioP stuff
@@ -3468,6 +3630,8 @@ defaultproperties
                 foreach (var emitter in emitters.Select(x => x.ResolveToEntry(pe.Pcc)).OfType<ExportEntry>())
                 {
                     var lodLevels = emitter.GetProperty<ArrayProperty<ObjectProperty>>("LODLevels");
+                    if (lodLevels == null)
+                        continue; // bCookedOut
                     foreach (var lodLevel in lodLevels.Select(x => x.ResolveToEntry(pe.Pcc)).OfType<ExportEntry>())
                     {
                         lodLevel.idxLink = emitter.UIndex;

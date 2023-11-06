@@ -394,6 +394,13 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
                 noUpdate = false;
                 EndBusy();
             }
+            else if (verb == "HIDDEN" && command.Length == 3)
+            {
+                noUpdate = true;
+                Hidden = command[2] == "1";
+                noUpdate = false;
+                EndBusy();
+            }
         }
 
 
@@ -774,6 +781,19 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             }
         }
 
+        private bool _hidden;
+        public bool Hidden
+        {
+            get => _hidden;
+            set
+            {
+                if (SetProperty(ref _hidden, value))
+                {
+                    UpdateHidden();
+                }
+            }
+        }
+
 
         private float _xScale = 1;
         public float XScale
@@ -848,7 +868,14 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             if (noUpdate) return;
             InteropHelper.SendMessageToGame($"LLE_SET_ACTOR_DRAWSCALE3D {XScale} {YScale} {ZScale}", Game);
         }
-        
+
+        private void UpdateHidden()
+        {
+            if (noUpdate) return;
+            InteropHelper.SendMessageToGame($"LLE_SET_ACTOR_HIDDEN {Hidden.ToString().ToLower()}", Game);
+
+        }
+
         #endregion
 
         #region CamPath

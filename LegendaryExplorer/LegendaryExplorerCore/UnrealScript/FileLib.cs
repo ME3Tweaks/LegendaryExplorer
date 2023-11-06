@@ -123,7 +123,7 @@ namespace LegendaryExplorerCore.UnrealScript
         /// <param name="gameRootPath">Optional: Use a custom path to look up core files.</param>
         /// <param name="canUseBinaryCache">Optional: Cache <see cref="ObjectBinary"/>s during initialization. Defaults to <c>true</c>.
         /// Caching speeds up initialization and any decompilation operations using this <see cref="FileLib"/>, at the cost of greater memory usage.</param>
-        /// <returns>A <see cref="bool"/> indicating whether initialization was succesful. This value will also be in <see cref="IsInitialized"/>.</returns>
+        /// <returns>A <see cref="bool"/> indicating whether initialization was successful. This value will also be in <see cref="IsInitialized"/>.</returns>
         public bool Initialize(PackageCache packageCache = null, string gameRootPath = null, bool canUseBinaryCache = true)
         {
             if (IsInitialized) return true;
@@ -306,6 +306,13 @@ namespace LegendaryExplorerCore.UnrealScript
                 }
             }
         }
+
+#if DEBUG
+        /// <summary>
+        /// This is used in the debugger to see if this object is the same as another filelib
+        /// </summary>
+        public Guid ObjectGuid = Guid.NewGuid();
+#endif
 
         /// <summary>
         /// Re-Initializes the <see cref="FileLib"/> to reflect changes made to the <see cref="IMEPackage"/> since Initialization.

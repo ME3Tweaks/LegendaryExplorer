@@ -18,7 +18,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
         public ASTHighlighter(TextDocument document, SyntaxInfo syntaxInfo)
         {
             SyntaxInfo = syntaxInfo ?? throw new ArgumentNullException(nameof(syntaxInfo));
-            DefaultTextColor = SyntaxInfo.Colors[EF.None];
+            DefaultTextColor = SyntaxInfo.HighlightingColors[EF.None];
             Document = document ?? throw new ArgumentNullException(nameof(document));
             document.VerifyAccess();
             //weakLineTracker = WeakLineTracker.Register(document, this);
@@ -69,7 +69,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
                 {
                     Offset = syntaxSpan.Offset,
                     Length = syntaxSpan.Length,
-                    Color = SyntaxInfo.Colors[syntaxSpan.FormatType]
+                    Color = SyntaxInfo.HighlightingColors[syntaxSpan.FormatType]
                 });
             }
 
@@ -80,7 +80,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
                 {
                     Offset = commentSpan.Offset,
                     Length = commentSpan.Length,
-                    Color = SyntaxInfo.Colors[commentSpan.FormatType]
+                    Color = SyntaxInfo.HighlightingColors[commentSpan.FormatType]
                 });
             }
 

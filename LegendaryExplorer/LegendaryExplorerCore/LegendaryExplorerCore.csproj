@@ -9,24 +9,24 @@
 
   <PropertyGroup>
     <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
-    <LangVersion>10.0</LangVersion>
+    <LangVersion>latest</LangVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Platforms>x64</Platforms>
-    <Configurations>WinDebug;WinRelease;LinuxDebug;LinuxRelease;MacDebug;MacRelease;WPFDebug;WPFRelease;WinAzureRelease;WinAzureTest</Configurations>
+    <PlatformTarget>x64</PlatformTarget>
+    <Configurations>WinDebug;WinRelease;WinAzureRelease;WinAzureTest</Configurations>
   </PropertyGroup>
 
 	<PropertyGroup Condition="'$(TF_BUILD)' == 'true'">
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)'=='WinDebug' or '$(Configuration)'=='WPFDebug'">
+  <PropertyGroup Condition="'$(Configuration)'=='WinDebug'">
     <DebugType>pdbonly</DebugType>
     <DebugSymbols>true</DebugSymbols>
-    <PlatformTarget>x64</PlatformTarget>
     <DefineConstants>TRACE;DEBUG;WINDOWS</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)'=='WinRelease' or '$(Configuration)'=='WPFRelease'">
+  <PropertyGroup Condition="'$(Configuration)'=='WinRelease'">
     <DebugType>embedded</DebugType>
     <DebugSymbols>true</DebugSymbols>
 	  <!-- If the Optimize flag is enabled, you should be aware that running it with the debugger attached disables optimizations!
@@ -36,7 +36,6 @@
 		   
 		   -->
 	<Optimize>true</Optimize>
-    <PlatformTarget>x64</PlatformTarget>
     <DefineConstants>WINDOWS</DefineConstants>
   </PropertyGroup>
 
@@ -45,8 +44,6 @@
     <DebugType>embedded</DebugType>
     <DebugSymbols>true</DebugSymbols>
 	<Optimize>true</Optimize>
-    <PlatformTarget>x64</PlatformTarget>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DefineConstants>WINDOWS;NIGHTLY</DefineConstants>
   </PropertyGroup>
 
@@ -54,37 +51,7 @@
   <PropertyGroup Condition="'$(Configuration)'=='WinAzureTest'">
     <DebugType>embedded</DebugType>
     <DebugSymbols>true</DebugSymbols>
-    <PlatformTarget>x64</PlatformTarget>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DefineConstants>WINDOWS;AZURE</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)'=='LinuxDebug'">
-    <DebugType>embedded</DebugType>
-    <DebugSymbols>true</DebugSymbols>
-    <PlatformTarget>x64</PlatformTarget>
-    <DefineConstants>TRACE;DEBUG;LINUX</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)'=='LinuxRelease'">
-    <DebugType>embedded</DebugType>
-    <DebugSymbols>true</DebugSymbols>
-    <PlatformTarget>x64</PlatformTarget>
-    <DefineConstants>LINUX</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)'=='MacDebug'">
-    <DebugType>embedded</DebugType>
-    <DebugSymbols>true</DebugSymbols>
-    <PlatformTarget>x64</PlatformTarget>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DefineConstants>TRACE;DEBUG;MAC</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)'=='MacRelease'">
-    <DebugType>embedded</DebugType>
-    <DebugSymbols>true</DebugSymbols>
-    <PlatformTarget>x64</PlatformTarget>
-    <DefineConstants>MAC</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
@@ -109,36 +76,18 @@
 
   <ItemGroup>
     <!-- WINDOWS -->
-    <ContentWithTargetPath Include="Libraries\Windows\CompressionWrappers.dll" Condition="$(Configuration.StartsWith('Win'))">
+    <ContentWithTargetPath Include="Libraries\Windows\CompressionWrappers.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <TargetPath>CompressionWrappers.dll</TargetPath>
     </ContentWithTargetPath>
-    <ContentWithTargetPath Include="Libraries\Windows\TexConverter.dll" Condition="$(Configuration.StartsWith('Win'))">
+    <ContentWithTargetPath Include="Libraries\Windows\TexConverter.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <TargetPath>TexConverter.dll</TargetPath>
     </ContentWithTargetPath>
-    <ContentWithTargetPath Include="Libraries\Windows\ISACTTools.dll" Condition="$(Configuration.StartsWith('Win'))">
+    <ContentWithTargetPath Include="Libraries\Windows\ISACTTools.dll">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	    <TargetPath>ISACTTools.dll</TargetPath>
     </ContentWithTargetPath>
-    <!-- For ALOT Installer, also can't figure out way to make this work in multicondition above-->
-    <ContentWithTargetPath Include="Libraries\Windows\CompressionWrappers.dll" Condition="$(Configuration.StartsWith('WPF'))">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <TargetPath>CompressionWrappers.dll</TargetPath>
-    </ContentWithTargetPath>
-    <ContentWithTargetPath Include="Libraries\Windows\TexConverter.dll" Condition="$(Configuration.StartsWith('WPF'))">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <TargetPath>TexConverter.dll</TargetPath>
-    </ContentWithTargetPath>
-
-    <!-- LINUX -->
-    <ContentWithTargetPath Include="Libraries\Linux\libCompressionWrappers.so" Condition="$(Configuration.StartsWith('Linux'))">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <TargetPath>libCompressionWrappers.so</TargetPath>
-    </ContentWithTargetPath>
-    <!--<Content Include="Libraries\Mac\CompressionWrappers.dylib" Condition=" '$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::OSX)))' ">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>-->
   </ItemGroup>
 
   <ItemGroup>
@@ -151,7 +100,7 @@
     <PackageReference Include="NAudio.Vorbis" Version="1.5.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="PropertyChanged.Fody" Version="4.1.0" PrivateAssets="All" />
-    <PackageReference Include="Serilog" Version="2.12.0" />
+    <PackageReference Include="Serilog" Version="3.0.1" />
     <PackageReference Include="SixLabors.ImageSharp" Version="2.1.4" />
     <PackageReference Include="System.Buffers" Version="4.5.1" />
     <PackageReference Include="System.Drawing.Common" Version="7.0.0" />
