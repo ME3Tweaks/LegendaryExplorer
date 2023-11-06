@@ -1394,8 +1394,8 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                 {
                     continue;
                 }
-                textPcc = MEPackageHandler.OpenMEPackage(filePath); // maybe use unsafe load?
-                //textPcc = MEPackageHandler.UnsafePartialLoad(filePath, x=>x.UIndex == selecteditem.Usages[0].UIndex); // maybe use unsafe load?
+                //textPcc = MEPackageHandler.UnsafePartialLoad(filePath, x=>x.UIndex); // maybe use unsafe load?
+                textPcc = MEPackageHandler.UnsafePartialLoad(filePath, x=>x.UIndex == selecteditem.Usages[0].UIndex); // maybe use unsafe load?
                 var uexpIdx = selecteditem.Usages[0].UIndex;
                 if (uexpIdx <= textPcc.ExportCount)
                 {
