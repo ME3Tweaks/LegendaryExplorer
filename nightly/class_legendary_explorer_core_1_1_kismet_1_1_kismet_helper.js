@@ -17,6 +17,6 @@ var class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper =
     [ "GetComment", "class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a7c0999b10eb310c9ec0830c7ebf0bab6", null ],
     [ "SetComment", "class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a2285539ddaf104adb50342db6dd2f295", null ],
     [ "TrimVariableLinks", "class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#acd2d2370f412e54a4292ab7898b8f968", null ],
-    [ "CloneObject", "class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a3392d1c420beb7bc914157e180a5399c", null ],
+    [ "CloneObject", "class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a21f2a545fa1d771dd9265905c15a6995", null ],
     [ "CloneSequence", "class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a2e751ce658788eb8c2889c8ebfc8ea55", null ]
 ];
