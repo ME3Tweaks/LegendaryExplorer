@@ -280,17 +280,17 @@ namespace LegendaryExplorer.Tools.SequenceObjects
                         }
                         break;
                     case "BioSeqAct_PMCheckState":
-                    {
-                        var index = properties.GetProp<IntProperty>("m_nIndex");
-                        if (index != null)
                         {
-                            var label = PlotDatabases.FindPlotBoolByID(index.Value, export.Game)?.Path;
-                            if (label != null)
+                            var index = properties.GetProp<IntProperty>("m_nIndex");
+                            if (index != null)
                             {
-                                res += label + "\n";
+                                var label = PlotDatabases.FindPlotBoolByID(index.Value, export.Game)?.Path;
+                                if (label != null)
+                                {
+                                    res += label + "\n";
+                                }
                             }
                         }
-                    }
                         break;
                     case "BioSeqAct_PMExecuteConsequence":
                     case "BioSeqAct_PMExecuteTransition":
@@ -303,6 +303,15 @@ namespace LegendaryExplorer.Tools.SequenceObjects
                                 {
                                     res += label + "\n";
                                 }
+                            }
+                        }
+                        break;
+                    case "SeqAct_WwisePostEvent":
+                        {
+                            var wwise = properties.GetProp<ObjectProperty>("WwiseObject");
+                            if (wwise != null && wwise.ResolveToEntry(export.FileRef) is IEntry ientry)
+                            {
+                                res += ientry.InstancedFullPath + "\n";
                             }
                         }
                         break;
@@ -399,10 +408,10 @@ namespace LegendaryExplorer.Tools.SequenceObjects
             val.SetBounds(
                 w / 2 - val.Width / 2,
                 h / 2 - val.Height / 2,
-                val.Width, 
+                val.Width,
                 val.Height);
             AddChild(val);
-            if (properties.GetProp<NameProperty>("VarName") is {} nameProp)
+            if (properties.GetProp<NameProperty>("VarName") is { } nameProp)
             {
                 var varName = new SText(nameProp.Value.Instanced, Color.Red, false)
                 {
