@@ -399,11 +399,10 @@ namespace LegendaryExplorerCore.Kismet
         /// <param name="topLevel"></param>
         /// <param name="incrementIndex"></param>
         /// <returns></returns>
-        public static ExportEntry CloneObject(ExportEntry itemToClone, ExportEntry sequence = null, bool topLevel = true, bool incrementIndex = true)
+        public static ExportEntry CloneObject(ExportEntry itemToClone, ExportEntry sequence = null, bool topLevel = true, bool incrementIndex = true, bool cloneChildren = false)
         {
             //SeqVar_External needs to have the same index to work properly
-            ExportEntry exp = EntryCloner.CloneEntry(itemToClone, incrementIndex: incrementIndex && itemToClone.ClassName != "SeqVar_External");
-
+            ExportEntry exp = cloneChildren ? EntryCloner.CloneTree(itemToClone) : EntryCloner.CloneEntry(itemToClone, incrementIndex: incrementIndex && itemToClone.ClassName != "SeqVar_External");
             KismetHelper.AddObjectToSequence(exp, sequence ?? SeqTools.GetParentSequence(itemToClone), topLevel);
             CloneSequence(exp);
             return exp;
