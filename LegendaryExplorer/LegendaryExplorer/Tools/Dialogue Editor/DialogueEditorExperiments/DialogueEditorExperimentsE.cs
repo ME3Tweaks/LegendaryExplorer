@@ -419,17 +419,17 @@ namespace LegendaryExplorer.DialogueEditor.DialogueEditorExperiments
                 ExportEntry oldInterp = (ExportEntry)interpDataReferences.First().Key;
 
                 // Get the/a ConvNode linked to the Interp
-                ExportEntry oldConvNode = SeqTools.FindOutboundConnectionsToNode(oldInterp, SeqTools.GetAllSequenceElements(oldInterp).OfType<ExportEntry>())
+                ExportEntry oldConvNode = KismetHelper.FindOutputConnectionsToNode(oldInterp, KismetHelper.GetAllSequenceElements(oldInterp).OfType<ExportEntry>())
                     .FirstOrDefault(entry => entry.ClassName == "BioSeqEvt_ConvNode");
 
                 // Get the/a EndCurrentConvNode that the Interp outputs to
-                ExportEntry oldEndNode = SeqTools.GetOutboundLinksOfNode(oldInterp).Select(outboundLink =>
+                ExportEntry oldEndNode = KismetHelper.GetOutputLinksOfNode(oldInterp).Select(outboundLink =>
                 {
-                    IEnumerable<SeqTools.OutboundLink> links = outboundLink.Where(link => link.LinkedOp.ClassName == "BioSeqAct_EndCurrentConvNode");
+                    IEnumerable<OutputLink> links = outboundLink.Where(link => link.LinkedOp.ClassName == "BioSeqAct_EndCurrentConvNode");
                     if (links.Any()) { return (ExportEntry)links.First().LinkedOp; } else { return null; }
                 }).ToList().FirstOrDefault();
 
-                ExportEntry sequence = SeqTools.GetParentSequence(oldInterpData);
+                ExportEntry sequence = KismetHelper.GetParentSequence(oldInterpData);
 
                 // Clone the Intero and Interpdata objects
                 ExportEntry newInterp = cloneObject(oldInterp, sequence);
@@ -452,8 +452,8 @@ namespace LegendaryExplorer.DialogueEditor.DialogueEditorExperiments
                 }
 
                 // Save existing varLinks, minus the Data one
-                List<SeqTools.VarLinkInfo> varLinks = SeqTools.GetVariableLinksOfNode(oldInterp);
-                foreach (SeqTools.VarLinkInfo link in varLinks)
+                List<VarLinkInfo> varLinks = KismetHelper.GetVariableLinksOfNode(oldInterp);
+                foreach (VarLinkInfo link in varLinks)
                 {
                     if (link.LinkDesc == "Data") { link.LinkedNodes = new(); }
                 }

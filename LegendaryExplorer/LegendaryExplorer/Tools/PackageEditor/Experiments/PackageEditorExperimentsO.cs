@@ -1265,7 +1265,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     // Check if the object links to a valid class.
                     // We do this regardless of bringTrash in order to know whether a valid convNode may be
                     // an orphan.
-                    List<List<SeqTools.OutboundLink>> outboundLinks = SeqTools.GetOutboundLinksOfNode(seqObj);
+                    List<List<OutputLink>> outboundLinks = KismetHelper.GetOutputLinksOfNode(seqObj);
                     // Link is valid if it has outbound links, and at least 1 one is linked to 1 valid class
                     bool linksToValid = (outboundLinks.Count > 0) && outboundLinks
                         .Any(outboundLink => outboundLink
@@ -1321,11 +1321,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 foreach (ExportEntry seqObj in filteredObjs)
                 {
                     // Keep only outbound links to valid classes
-                    List<List<SeqTools.OutboundLink>> outboundLinks = SeqTools.GetOutboundLinksOfNode(seqObj);
+                    List<List<OutputLink>> outboundLinks = KismetHelper.GetOutputLinksOfNode(seqObj);
                     if (outboundLinks.Count > 0)
                     {
-                        List<List<SeqTools.OutboundLink>> filteredOutboundLinks = new();
-                        foreach (List<SeqTools.OutboundLink> outboundLink in outboundLinks)
+                        List<List<OutputLink>> filteredOutboundLinks = new();
+                        foreach (List<OutputLink> outboundLink in outboundLinks)
                         {
                             // Add to filteredOutboundLinks the elements of this outbound link that connect to a valid class
                             filteredOutboundLinks.Add(outboundLink
@@ -1333,7 +1333,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                                     link == null || validClasses.Contains(link.LinkedOp.ClassName, StringComparer.OrdinalIgnoreCase)
                                 ).ToList());
                         }
-                        SeqTools.WriteOutboundLinksToNode(seqObj, filteredOutboundLinks);
+                        KismetHelper.WriteOutputLinksToNode(seqObj, filteredOutboundLinks);
                     }
                 }
             }
@@ -1387,7 +1387,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         {
             List<IEntry> itemsToTrash = new();
 
-            List<IEntry> interpDatas = new(SeqTools.GetAllSequenceElements(sequence)
+            List<IEntry> interpDatas = new(KismetHelper.GetAllSequenceElements(sequence)
                 .Where(el => el.ClassName == "InterpData"));
 
             // Keep only InterpGroups named "Conversation" and only the BioEvtSysTrackVOElements InterpTracks
@@ -1510,7 +1510,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             // Update the convNodes nodeId and convResRefId
             int count = 0;
-            List<IEntry> convNodes = new(SeqTools.GetAllSequenceElements(sequence)
+            List<IEntry> convNodes = new(KismetHelper.GetAllSequenceElements(sequence)
                 .Where(el => el.ClassName == "BioSeqEvt_ConvNode"));
 
             Dictionary<int, int> remappedIDs = new(); // Save references of old id for update of entry and reply lists

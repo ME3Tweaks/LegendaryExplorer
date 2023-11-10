@@ -1810,7 +1810,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                             int linkConnection = i;
                             temp.Click += (o, args) =>
                             {
-                                SeqTools.SkipSequenceElement(obj.Export, outboundLinkIdx: linkConnection);
+                                KismetHelper.SkipSequenceElement(obj.Export, outboundLinkIdx: linkConnection);
                             };
                             skipObjMenuItem.Items.Add(temp);
                         }
@@ -2806,10 +2806,10 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                     var newSeqObj = LEXSequenceObjectCreator.CreateSequenceObject(Pcc, "SeqVar_String");
                     newSeqObj.WriteProperty(new StrProperty(result, "StrValue"));
                     KismetHelper.AddObjectToSequence(newSeqObj, SelectedSequence);
-                    var varLinks = SeqTools.GetVariableLinksOfNode(sAction.Export);
+                    var varLinks = KismetHelper.GetVariableLinksOfNode(sAction.Export);
                     var stringVarLink = varLinks.First(x => x.LinkDesc == "String");
                     stringVarLink.LinkedNodes.Add(newSeqObj);
-                    SeqTools.WriteVariableLinksToNode(sAction.Export, varLinks);
+                    KismetHelper.WriteVariableLinksToNode(sAction.Export, varLinks);
                 }
             }
         }
@@ -2833,12 +2833,12 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                     // Attach the user string SeqVar and the selected item to the log.
 
                     // String
-                    var varLinks = SeqTools.GetVariableLinksOfNode(seqLogObj);
+                    var varLinks = KismetHelper.GetVariableLinksOfNode(seqLogObj);
                     var stringVarLink = varLinks.First(x => x.LinkDesc == "String");
                     stringVarLink.LinkedNodes.Add(newSeqObj);
 
 
-                    SeqTools.VarLinkInfo linkToAttachTo = null;
+                    VarLinkInfo linkToAttachTo = null;
                     if (sVar.Export.IsA("SeqVar_String"))
                     {
                         linkToAttachTo = varLinks.First(x => x.LinkDesc == "String");
@@ -2888,7 +2888,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                     }
 
                     // Write the links
-                    SeqTools.WriteVariableLinksToNode(seqLogObj, varLinks);
+                    KismetHelper.WriteVariableLinksToNode(seqLogObj, varLinks);
                 }
             }
         }
@@ -3088,7 +3088,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
 
 
                     var sw = sAction.Export;
-                    var currentIdx = SeqTools.GetOutboundLinksOfNode(sw).Count;
+                    var currentIdx = KismetHelper.GetOutputLinksOfNode(sw).Count;
                     for (int i = 0; i < howManyToAdd; i++)
                     {
                         KismetHelper.CreateNewOutputLink(sw, $"Link {++currentIdx}", null);
