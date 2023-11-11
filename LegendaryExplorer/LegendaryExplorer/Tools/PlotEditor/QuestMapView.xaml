@@ -7,10 +7,12 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:plotEditor="clr-namespace:LegendaryExplorer.Tools.PlotEditor"
     xmlns:misc="clr-namespace:LegendaryExplorer.Misc"
+	xmlns:converters="clr-namespace:LegendaryExplorer.SharedUI.Converters"
     mc:Ignorable="d"
 	DataContext="{Binding RelativeSource={RelativeSource Self}}"
 	d:DesignHeight="600" d:DesignWidth="800">
 	<UserControl.Resources>
+		<converters:NullVisibilityConverter x:Key="NullVisibilityConverter"/>
 		<Style TargetType="{x:Type ListBox}" x:Key="ListBoxStyle">
 			<Style.Triggers>
 				<Trigger Property="HasItems" Value="True">
@@ -52,15 +54,17 @@
                         <ListBox.ItemTemplate>
                             <!--<DataTemplate DataType="{x:Type questMap:BioQuest}">-->
                             <DataTemplate>
-                                <TextBlock Text="{Binding Key, StringFormat='Quest \{0\}'}" Width="125">
-                                    <TextBlock.ContextMenu>
+	                            <StackPanel>
+									<TextBlock Text="{Binding Key, StringFormat='Quest \{0\}'}" Width="125"/>
+									<TextBlock Text="{Binding Value.QuestName}" TextWrapping="Wrap" FontSize="10" Visibility="{Binding Value.QuestName, Converter={StaticResource NullVisibilityConverter}}"/>
+									<StackPanel.ContextMenu>
                                         <ContextMenu>
                                             <MenuItem Header="Change Id" Click="ChangeQuestId_Click" />
                                             <MenuItem Header="Copy" Click="CopyQuest_Click"/>
                                             <MenuItem Header="Remove" Click="RemoveQuest_Click"/>
                                         </ContextMenu>
-                                    </TextBlock.ContextMenu>
-                                </TextBlock>
+                                    </StackPanel.ContextMenu>
+		                        </StackPanel>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>

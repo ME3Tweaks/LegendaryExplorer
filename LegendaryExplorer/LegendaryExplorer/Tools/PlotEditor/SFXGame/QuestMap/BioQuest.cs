@@ -15,8 +15,6 @@ namespace Gammtek.Conduit.MassEffect3.SFXGame.QuestMap
 		/// </summary>
 		public const bool DefaultIsMission = false;
 
-		public int QuestNameTlkId => _goals.FirstOrDefault()?.Name ?? default;
-
 		private IList<BioQuestGoal> _goals;
 		private bool _isMission;
 		private IList<BioQuestPlotItem> _plotItems;
@@ -83,7 +81,16 @@ namespace Gammtek.Conduit.MassEffect3.SFXGame.QuestMap
 			get { return _tasks; }
 			set { SetProperty(ref _tasks, value); }
 		}
+		
+		private string _questName;
 
+		public string QuestName
+		{
+			get => _questName;
+			set => SetProperty(ref _questName, value);
+		}
+
+		public int QuestNameTlkId => _goals.FirstOrDefault()?.Name ?? default;
 		public override string ToString() { return "BioQuest"; }
 	}
 }

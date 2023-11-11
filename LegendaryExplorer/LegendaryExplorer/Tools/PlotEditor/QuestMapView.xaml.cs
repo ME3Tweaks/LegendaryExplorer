@@ -26,7 +26,7 @@ namespace LegendaryExplorer.Tools.PlotEditor
             MoveQuestGoalUpCommand = new GenericCommand(MoveQuestGoalUp, CanMoveQuestGoalUp);
             MoveQuestGoalDownCommand = new GenericCommand(MoveQuestGoalDown, CanMoveQuestGoalDown);
 			InitializeComponent();
-            SetFromQuestMap(new BioQuestMap());
+            SetFromQuestMap(new BioQuestMap(), MEGame.Unknown);
         }
 
         private ObservableCollection<KeyValuePair<int, BioQuest>> _quests;
@@ -540,7 +540,8 @@ namespace LegendaryExplorer.Tools.PlotEditor
 
                 var questMap = BinaryBioQuestMap.Load(stream);
 
-                SetFromQuestMap(questMap);
+                SetFromQuestMap(questMap, pcc.Game);
+                
             }
         }
 
@@ -691,7 +692,7 @@ namespace LegendaryExplorer.Tools.PlotEditor
             SelectedQuestTask.PlotItemIndices.RemoveAt(index);
         }
 
-        protected void SetFromQuestMap(BioQuestMap questMap)
+        protected void SetFromQuestMap(BioQuestMap questMap, MEGame game)
         {
             if (questMap == null)
             {
@@ -708,6 +709,11 @@ namespace LegendaryExplorer.Tools.PlotEditor
                 quest.Value.Goals = InitCollection(quest.Value.Goals);
                 quest.Value.PlotItems = InitCollection(quest.Value.PlotItems);
                 quest.Value.Tasks = InitCollection(quest.Value.Tasks);
+                var name = GlobalFindStrRefbyID(quest.Value.QuestNameTlkId, game);
+                if(name != "No Data")
+                {
+                    quest.Value.QuestName = name;
+                }
 
                 foreach (var questTask in quest.Value.Tasks)
                 {
