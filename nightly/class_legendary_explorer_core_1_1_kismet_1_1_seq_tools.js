@@ -1,13 +1,11 @@
 var class_legendary_explorer_core_1_1_kismet_1_1_seq_tools =
 [
-    [ "OutboundLink", "class_legendary_explorer_core_1_1_kismet_1_1_seq_tools_1_1_outbound_link.html", "class_legendary_explorer_core_1_1_kismet_1_1_seq_tools_1_1_outbound_link" ],
-    [ "VarLinkInfo", "class_legendary_explorer_core_1_1_kismet_1_1_seq_tools_1_1_var_link_info.html", "class_legendary_explorer_core_1_1_kismet_1_1_seq_tools_1_1_var_link_info" ],
     [ "ChangeOutlink", "class_legendary_explorer_core_1_1_kismet_1_1_seq_tools.html#af60bf5fba52dc42c7ee4bad44ca53e33", null ],
     [ "ChangeOutlink", "class_legendary_explorer_core_1_1_kismet_1_1_seq_tools.html#aca8734478dcb0a04ac6c4b42e049313d", null ],
     [ "SkipSequenceElement", "class_legendary_explorer_core_1_1_kismet_1_1_seq_tools.html#ad4d0f22b04909f4c91a6e73eb584af10", null ],
-    [ "GetOutboundLinksOfNode", "class_legendary_explorer_core_1_1_kismet_1_1_seq_tools.html#ab67cce39e13dc699e1347b4e2d40e9fc", null ],
-    [ "WriteOutboundLinksToNode", "class_legendary_explorer_core_1_1_kismet_1_1_seq_tools.html#af27935d46802c81f569d2a8017cd7d27", null ],
-    [ "WriteOutboundLinksToProperties", "class_legendary_explorer_core_1_1_kismet_1_1_seq_tools.html#a14f501d9d70fc8543959450549f56e5d", null ],
+    [ "GetOutboundLinksOfNode", "class_legendary_explorer_core_1_1_kismet_1_1_seq_tools.html#a31e8ec789e305b2e42ed7ae2ec89e8f5", null ],
+    [ "WriteOutboundLinksToNode", "class_legendary_explorer_core_1_1_kismet_1_1_seq_tools.html#a7294645e5bc35ae7b342c808af725835", null ],
+    [ "WriteOutboundLinksToProperties", "class_legendary_explorer_core_1_1_kismet_1_1_seq_tools.html#ab4dddc98806d350f841116335bce38a0", null ],
     [ "FindOutboundConnectionsToNode", "class_legendary_explorer_core_1_1_kismet_1_1_seq_tools.html#ac8573c9e175847e51c366c844d863ad6", null ],
     [ "FindVariableConnectionsToNode", "class_legendary_explorer_core_1_1_kismet_1_1_seq_tools.html#a14f6c4b81cbd518d5f6c8f6bd9fcdafe", null ],
     [ "GetAllSequenceElements", "class_legendary_explorer_core_1_1_kismet_1_1_seq_tools.html#a9ee7f0829878dd898c9962367cbcef85", null ],

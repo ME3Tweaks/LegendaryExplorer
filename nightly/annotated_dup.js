@@ -917,6 +917,7 @@ var annotated_dup =
     [ "MapKeyFuncs", "struct_map_key_funcs.html", "struct_map_key_funcs" ],
     [ "MultiMapKeyFuncs", "struct_multi_map_key_funcs.html", "struct_multi_map_key_funcs" ],
     [ "NameOnlyBankChunk", "class_name_only_bank_chunk.html", "class_name_only_bank_chunk" ],
+    [ "OutputLink", "class_output_link.html", "class_output_link" ],
     [ "SampleInfoBankChunk", "class_sample_info_bank_chunk.html", "class_sample_info_bank_chunk" ],
     [ "SampleOffsetBankChunk", "class_sample_offset_bank_chunk.html", "class_sample_offset_bank_chunk" ],
     [ "SoundConeBankChunk", "class_sound_cone_bank_chunk.html", "class_sound_cone_bank_chunk" ],
@@ -926,5 +927,6 @@ var annotated_dup =
     [ "UMap", "class_u_map.html", "class_u_map" ],
     [ "UMapBase", "class_u_map_base.html", "class_u_map_base" ],
     [ "UMultiMap", "class_u_multi_map.html", "class_u_multi_map" ],
-    [ "USet", "class_u_set.html", "class_u_set" ]
+    [ "USet", "class_u_set.html", "class_u_set" ],
+    [ "VarLinkInfo", "class_var_link_info.html", "class_var_link_info" ]
 ];

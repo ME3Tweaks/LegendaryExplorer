@@ -7,7 +7,8 @@ var searchData=
   ['variablepathresolvingstatus_2ecs_4',['VariablePathResolvingStatus.cs',['../_variable_path_resolving_status_8cs.html',1,'']]],
   ['variabletype_2ecs_5',['VariableType.cs',['../_variable_type_8cs.html',1,'']]],
   ['varint_2ecs_6',['VarInt.cs',['../_var_int_8cs.html',1,'']]],
-  ['vectorliteral_2ecs_7',['VectorLiteral.cs',['../_vector_literal_8cs.html',1,'']]],
-  ['verboseformatinfo_2ecs_8',['VerboseFormatInfo.cs',['../_verbose_format_info_8cs.html',1,'']]],
-  ['verboseformatinfobase_2ecs_9',['VerboseFormatInfoBase.cs',['../_verbose_format_info_base_8cs.html',1,'']]]
+  ['varlinkinfo_2ecs_7',['VarLinkInfo.cs',['../_var_link_info_8cs.html',1,'']]],
+  ['vectorliteral_2ecs_8',['VectorLiteral.cs',['../_vector_literal_8cs.html',1,'']]],
+  ['verboseformatinfo_2ecs_9',['VerboseFormatInfo.cs',['../_verbose_format_info_8cs.html',1,'']]],
+  ['verboseformatinfobase_2ecs_10',['VerboseFormatInfoBase.cs',['../_verbose_format_info_base_8cs.html',1,'']]]
 ];
