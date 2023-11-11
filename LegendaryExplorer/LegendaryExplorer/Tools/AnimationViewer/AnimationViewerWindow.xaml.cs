@@ -484,6 +484,9 @@ namespace LegendaryExplorer.Tools.AnimationViewer
             }
         }
 
+        /// <summary>
+        /// Prevents updates to the game
+        /// </summary>
         private bool noUpdate;
         private void UpdateLocation()
         {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -29,6 +30,7 @@ using LegendaryExplorer.Misc;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using Newtonsoft.Json;
+using SharpDX.Direct2D1.Effects;
 
 namespace LegendaryExplorer.Tools.LiveLevelEditor
 {
@@ -60,7 +62,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
                 }
             }
         }
-        
+
         public bool CamPathReadyToView => _readyToView && Game is MEGame.ME3;
 
         public MEGame Game { get; }
@@ -162,7 +164,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
 
         private void WriteActorValues()
         {
-            if (MELoadedFiles.GetFilesLoadedInGame(Game).TryGetValue(SelectedActor.FileName, out string filePath) 
+            if (MELoadedFiles.GetFilesLoadedInGame(Game).TryGetValue(SelectedActor.FileName, out string filePath)
                 && WPFBase.GetExistingToolInstance(filePath, out PackageEditorWindow packEd))
             {
                 IMEPackage pcc = packEd.Pcc;
@@ -242,7 +244,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
 
         private bool IsSelectedPackageOpenInPackEd()
         {
-            return listBoxPackages.SelectedItem is KeyValuePair<string, ObservableCollectionExtended<ActorEntryLE>> kvp 
+            return listBoxPackages.SelectedItem is KeyValuePair<string, ObservableCollectionExtended<ActorEntryLE>> kvp
                    && MELoadedFiles.GetFilesLoadedInGame(Game).TryGetValue(kvp.Key, out string filePath)
                    && WPFBase.IsOpenInExisting<PackageEditorWindow>(filePath);
         }
@@ -300,7 +302,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             }
         }
 
-        private bool CanLoadLiveEditor() => gameInstalledReq.IsFullfilled && asiLoaderInstalledReq.IsFullfilled && interopASIInstalledReq.IsFullfilled 
+        private bool CanLoadLiveEditor() => gameInstalledReq.IsFullfilled && asiLoaderInstalledReq.IsFullfilled && interopASIInstalledReq.IsFullfilled
                                             && GameController.IsGameOpen(Game);
 
         private void LoadLiveEditor()
@@ -320,8 +322,24 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             if (command[0] == "PATHFINDING_GPS" && command[1].StartsWith("PLAYERLOC="))
             {
                 string[] pos = command[1][10..].Split(',');
-                PlayerPosition = new Vector3(float.Parse(pos[0]), float.Parse(pos[1]), float.Parse(pos[2]));
+                if (!float.TryParse(pos[0], CultureInfo.InvariantCulture, out float x))
+                {
+                    // Some sort of logging here...?
+                    return;
+                }
+                if (!float.TryParse(pos[1], CultureInfo.InvariantCulture, out float y))
+                {
+                    // Some sort of logging here...?
+                    return;
+                }
+                if (!float.TryParse(pos[2], CultureInfo.InvariantCulture, out float z))
+                {
+                    // Some sort of logging here...?
+                    return;
+                }
+                PlayerPosition = new Vector3(x, y, z);
             }
+
             if (command[0] != "LIVELEVELEDITOR")
                 return; // Not for us
 
@@ -367,16 +385,26 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             else if (verb == "ACTORLOC" && command.Length == 5)
             {
                 noUpdate = true;
-                XPos = (int)float.Parse(command[2]);
-                YPos = (int)float.Parse(command[3]);
-                ZPos = (int)float.Parse(command[4]);
+                if (float.TryParse(command[2], CultureInfo.InvariantCulture, out var xPosf))
+                {
+                    XPos = (int)xPosf;
+                }
+                if (float.TryParse(command[3], CultureInfo.InvariantCulture, out var yPosf))
+                {
+                    YPos = (int)yPosf;
+                }
+                if (float.TryParse(command[4], CultureInfo.InvariantCulture, out var zPosf))
+                {
+                    ZPos = (int)zPosf;
+                }
+
                 noUpdate = false;
                 EndBusy();
             }
             else if (verb == "ACTORROT" && command.Length == 5)
             {
                 var rot = new Rotator(int.Parse(command[2]), int.Parse(command[3]), int.Parse(command[4]));
-                
+
                 noUpdate = true;
                 Yaw = (int)rot.Yaw.UnrealRotationUnitsToDegrees();
                 Pitch = (int)rot.Pitch.UnrealRotationUnitsToDegrees();
@@ -387,10 +415,24 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             else if (verb == "ACTORSCALE" && command.Length == 6)
             {
                 noUpdate = true;
-                Scale = float.Parse(command[2]);
-                XScale = float.Parse(command[3]);
-                YScale = float.Parse(command[4]);
-                ZScale = float.Parse(command[5]);
+
+                if (float.TryParse(command[2], CultureInfo.InvariantCulture, out var fScale))
+                {
+                    Scale = fScale;
+                }
+                if (float.TryParse(command[3], CultureInfo.InvariantCulture, out var fXScale))
+                {
+                    XScale = fXScale;
+                }
+                if (float.TryParse(command[4], CultureInfo.InvariantCulture, out var fYScale))
+                {
+                    YScale = fYScale;
+                }
+                if (float.TryParse(command[5], CultureInfo.InvariantCulture, out var fZScale))
+                {
+                    ZScale = fZScale;
+                }
+
                 noUpdate = false;
                 EndBusy();
             }
@@ -547,7 +589,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         {
             var ae = (ActorEntryLE)obj;
             string text = actorFilterSearchBox.Text;
-            return  ae.ActorName.Contains(text, StringComparison.OrdinalIgnoreCase)
+            return ae.ActorName.Contains(text, StringComparison.OrdinalIgnoreCase)
                    || ae.Tag is not null && ae.Tag.Contains(text, StringComparison.OrdinalIgnoreCase)
                    || ae.ComponentName is not null && ae.ComponentName.Contains(text, StringComparison.OrdinalIgnoreCase);
         }
@@ -612,7 +654,8 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         public bool ShowTraceToActor
         {
             get => _showTraceToActor;
-            set {
+            set
+            {
                 if (SetProperty(ref _showTraceToActor, value))
                 {
                     InteropHelper.SendMessageToGame(_showTraceToActor ? "LLE_SHOW_TRACE" : "LLE_HIDE_TRACE", Game);
@@ -624,7 +667,8 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         public bool PauseOnFocusLoss
         {
             get => _pauseOnFocusLoss;
-            set {
+            set
+            {
                 if (SetProperty(ref _pauseOnFocusLoss, value))
                 {
                     InteropHelper.SendMessageToGame(_pauseOnFocusLoss ? "ANIMV_ALLOW_WINDOW_PAUSE" : "ANIMV_DISALLOW_WINDOW_PAUSE", Game);
@@ -636,7 +680,8 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         public Color TraceColor
         {
             get => _traceColor;
-            set {
+            set
+            {
                 if (SetProperty(ref _traceColor, value))
                 {
                     InteropHelper.SendMessageToGame($"LLE_TRACE_COLOR {MathF.Pow(_traceColor.R / 255f, 2.2f)} {MathF.Pow(_traceColor.G / 255f, 2.2f)} {MathF.Pow(_traceColor.B / 255f, 2.2f)}", Game);
@@ -648,7 +693,8 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         public float TraceWidth
         {
             get => _traceWidth;
-            set {
+            set
+            {
                 if (SetProperty(ref _traceWidth, value))
                 {
                     InteropHelper.SendMessageToGame($"LLE_TRACE_WIDTH {_traceWidth}", Game);
@@ -841,6 +887,9 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             set => SetProperty(ref _scaleIncrement, value);
         }
 
+        /// <summary>
+        /// Suppresses udates to the game
+        /// </summary>
         private bool noUpdate;
         private void UpdateLocation()
         {
