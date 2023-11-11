@@ -15,6 +15,8 @@ namespace Gammtek.Conduit.MassEffect3.SFXGame.QuestMap
 		/// </summary>
 		public const bool DefaultIsMission = false;
 
+		public int QuestNameTlkId => _goals.FirstOrDefault()?.Name ?? default;
+
 		private IList<BioQuestGoal> _goals;
 		private bool _isMission;
 		private IList<BioQuestPlotItem> _plotItems;
