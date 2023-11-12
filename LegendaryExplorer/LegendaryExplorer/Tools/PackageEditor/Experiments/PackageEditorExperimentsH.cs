@@ -260,11 +260,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             toc.DumpTOCToTxtFile(outputFile);
         }
 
-        public static void ExportMorphFace(PackageEditorWindow pew)
+        public static async void ExportMorphFace(PackageEditorWindow pew)
         {
             if (pew.TryGetSelectedExport(out var export) && export.ClassName == "BioMorphFace")
             {
-                if (UModelHelper.GetLocalUModelVersionAsync().Result < UModelHelper.SupportedUModelBuildNum)
+                if (await UModelHelper.GetLocalUModelVersionAsync() < UModelHelper.SupportedUModelBuildNum)
                 {
                     MessageBox.Show("UModel not installed or incorrect version!");
                     return;
@@ -309,7 +309,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 }).ContinueWithOnUIThread(x =>
                 {
                     // Export the cloned headmesh
-                    if (x != null)
+                    if (x.Result != null)
                     {
                         MessageBox.Show($"Couldn't export via umodel: {x.Result}");
                     }
