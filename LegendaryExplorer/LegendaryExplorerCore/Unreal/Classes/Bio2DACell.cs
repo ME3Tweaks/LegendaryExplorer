@@ -13,7 +13,6 @@ namespace LegendaryExplorerCore.Unreal.Classes
         /// </summary>
         public IMEPackage package { get; init; }
 
-
         // Fody weaves setters for these below
         [AlsoNotifyFor(nameof(DisplayableValue))]
         public int IntValue { get; set; }
@@ -39,6 +38,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
                 {
                     _nameValue = value;
                 }
+                Type = Bio2DADataType.TYPE_NAME;
             }
         }
 
@@ -47,6 +47,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
             get
             {
                 if (package == null)
+                    // Should this throw an exception?
                     return 0;
                 var result = package.findName(NameValue);
                 if (result < 0)
@@ -56,6 +57,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
             set
             {
                 if (package == null)
+                    // Should this throw an exception?
                     return; // Do nothing.
                 NameValue = package.GetNameEntry(value);
             }
