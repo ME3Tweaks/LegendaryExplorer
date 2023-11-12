@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Windows.Input;
 using System.IO;
 using System.Linq;
 using Gammtek.Conduit.MassEffect3.SFXGame.QuestMap;
 using LegendaryExplorer.Misc;
+using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.Tools.PlotEditor;
 using LegendaryExplorerCore.Gammtek;
 using LegendaryExplorerCore.Packages;
@@ -19,8 +21,12 @@ namespace LegendaryExplorer.Tools.PlotEditor
     {
 		public QuestMapView()
 		{
+            MoveQuestTaskUpCommand = new GenericCommand(MoveQuestTaskUp, CanMoveQuestTaskUp);
+            MoveQuestTaskDownCommand = new GenericCommand(MoveQuestTaskDown, CanMoveQuestTaskDown);
+            MoveQuestGoalUpCommand = new GenericCommand(MoveQuestGoalUp, CanMoveQuestGoalUp);
+            MoveQuestGoalDownCommand = new GenericCommand(MoveQuestGoalDown, CanMoveQuestGoalDown);
 			InitializeComponent();
-            SetFromQuestMap(new BioQuestMap());
+            SetFromQuestMap(new BioQuestMap(), MEGame.Unknown);
         }
 
         private ObservableCollection<KeyValuePair<int, BioQuest>> _quests;
@@ -28,6 +34,11 @@ namespace LegendaryExplorer.Tools.PlotEditor
         private BioQuestGoal _selectedQuestGoal;
         private BioQuestPlotItem _selectedQuestPlotItem;
         private BioQuestTask _selectedQuestTask;
+        
+        public ICommand MoveQuestTaskUpCommand { get; set; }
+        public ICommand MoveQuestTaskDownCommand { get; set; }
+        public ICommand MoveQuestGoalUpCommand { get; set; }
+        public ICommand MoveQuestGoalDownCommand { get; set; }
 
         public bool CanAddQuestGoal
         {
@@ -107,7 +118,7 @@ namespace LegendaryExplorer.Tools.PlotEditor
             }
         }
 
-        public bool CanRemoveQuestTask
+        private bool CanRemoveQuestTask
         {
             get
             {
@@ -118,6 +129,102 @@ namespace LegendaryExplorer.Tools.PlotEditor
 
                 return SelectedQuestTask != null;
             }
+        }
+
+        private bool CanMoveQuestTaskUp()
+        {
+            if (SelectedQuest.Value?.Tasks == null || !SelectedQuest.Value.Tasks.Any())
+            {
+                return false;
+            }
+            return SelectedQuest.Value?.Tasks.IndexOf(SelectedQuestTask) > 0;
+        }
+
+        private void MoveQuestTaskUp()
+        {
+            var tasks = SelectedQuest.Value?.Tasks;
+            if (tasks is null) return;
+            var currentTaskIndex = tasks.IndexOf(SelectedQuestTask);
+            var taskIndexToSwap = currentTaskIndex - 1;
+            var taskToSwap = tasks[taskIndexToSwap];
+            tasks[taskIndexToSwap] = SelectedQuestTask;
+            tasks[currentTaskIndex] = taskToSwap;
+            SelectedQuestTask = tasks[taskIndexToSwap];
+            OnPropertyChanged(nameof(SelectedQuest.Value.Tasks));
+            OnPropertyChanged(nameof(SelectedQuestTask));
+        }
+        
+        private void MoveQuestTaskDown()
+        {
+            var tasks = SelectedQuest.Value?.Tasks;
+            if (tasks is null) return;
+            var currentTaskIndex = tasks.IndexOf(SelectedQuestTask);
+            var taskIndexToSwap = currentTaskIndex + 1;
+            var taskToSwap = tasks[taskIndexToSwap];
+            tasks[taskIndexToSwap] = SelectedQuestTask;
+            tasks[currentTaskIndex] = taskToSwap;
+            SelectedQuestTask = tasks[taskIndexToSwap];
+            OnPropertyChanged(nameof(SelectedQuest.Value.Tasks));
+            OnPropertyChanged(nameof(SelectedQuestTask));
+        }
+
+        public bool CanMoveQuestTaskDown()
+        {
+            if (SelectedQuest.Value?.Tasks == null || !SelectedQuest.Value.Tasks.Any())
+            {
+                return false;
+            }
+
+            var taskLength = SelectedQuest.Value?.Tasks.Count ?? 0;
+            return SelectedQuest.Value?.Tasks.IndexOf(SelectedQuestTask) + 1 < taskLength;
+        }
+
+        private bool CanMoveQuestGoalUp()
+        {
+            if (SelectedQuest.Value?.Goals == null || !SelectedQuest.Value.Goals.Any())
+            {
+                return false;
+            }
+            return SelectedQuest.Value?.Goals.IndexOf(SelectedQuestGoal) > 0;
+        }
+
+        private void MoveQuestGoalUp()
+        {
+            var goals = SelectedQuest.Value?.Goals;
+            if (goals is null) return;
+            var currentGoalIndex = goals.IndexOf(SelectedQuestGoal);
+            var goalIndexToSwap = currentGoalIndex - 1;
+            var goalToSwap = goals[goalIndexToSwap];
+            goals[goalIndexToSwap] = SelectedQuestGoal;
+            goals[currentGoalIndex] = goalToSwap;
+            SelectedQuestGoal = goals[goalIndexToSwap];
+            OnPropertyChanged(nameof(SelectedQuest.Value.Goals));
+            OnPropertyChanged(nameof(SelectedQuestGoal));
+        }
+
+        private void MoveQuestGoalDown()
+        {
+            var goals = SelectedQuest.Value?.Goals;
+            if (goals is null) return;
+            var currentGoalIndex = goals.IndexOf(SelectedQuestGoal);
+            var goalIndexToSwap = currentGoalIndex + 1;
+            var goalToSwap = goals[goalIndexToSwap];
+            goals[goalIndexToSwap] = SelectedQuestGoal;
+            goals[currentGoalIndex] = goalToSwap;
+            SelectedQuestGoal = goals[goalIndexToSwap];
+            OnPropertyChanged(nameof(SelectedQuest.Value.Goals));
+            OnPropertyChanged(nameof(SelectedQuestGoal));
+        }
+
+        public bool CanMoveQuestGoalDown()
+        {
+            if (SelectedQuest.Value?.Goals == null || !SelectedQuest.Value.Goals.Any())
+            {
+                return false;
+            }
+
+            var taskLength = SelectedQuest.Value?.Goals.Count ?? 0;
+            return SelectedQuest.Value?.Goals.IndexOf(SelectedQuestGoal) + 1 < taskLength;
         }
 
         public ObservableCollection<KeyValuePair<int, BioQuest>> Quests
@@ -146,6 +253,8 @@ namespace LegendaryExplorer.Tools.PlotEditor
                 OnPropertyChanged(nameof(CanRemoveQuestGoal));
                 OnPropertyChanged(nameof(CanRemoveQuestPlotItem));
                 OnPropertyChanged(nameof(CanRemoveQuestTask));
+                OnPropertyChanged(nameof(CanRemoveQuestTask));
+                OnPropertyChanged(nameof(CanMoveQuestTaskDown));
             }
         }
 
@@ -177,6 +286,7 @@ namespace LegendaryExplorer.Tools.PlotEditor
                 SetProperty(ref _selectedQuestTask, value);
                 OnPropertyChanged(nameof(SelectedQuestTask));
                 OnPropertyChanged(nameof(CanRemoveQuestTask));
+                OnPropertyChanged(nameof(CanMoveQuestTaskDown));
             }
         }
 
@@ -430,7 +540,8 @@ namespace LegendaryExplorer.Tools.PlotEditor
 
                 var questMap = BinaryBioQuestMap.Load(stream);
 
-                SetFromQuestMap(questMap);
+                SetFromQuestMap(questMap, pcc.Game);
+                
             }
         }
 
@@ -581,7 +692,7 @@ namespace LegendaryExplorer.Tools.PlotEditor
             SelectedQuestTask.PlotItemIndices.RemoveAt(index);
         }
 
-        protected void SetFromQuestMap(BioQuestMap questMap)
+        protected void SetFromQuestMap(BioQuestMap questMap, MEGame game)
         {
             if (questMap == null)
             {
@@ -598,6 +709,11 @@ namespace LegendaryExplorer.Tools.PlotEditor
                 quest.Value.Goals = InitCollection(quest.Value.Goals);
                 quest.Value.PlotItems = InitCollection(quest.Value.PlotItems);
                 quest.Value.Tasks = InitCollection(quest.Value.Tasks);
+                var name = GlobalFindStrRefbyID(quest.Value.QuestNameTlkId, game);
+                if(name != "No Data")
+                {
+                    quest.Value.QuestName = name;
+                }
 
                 foreach (var questTask in quest.Value.Tasks)
                 {

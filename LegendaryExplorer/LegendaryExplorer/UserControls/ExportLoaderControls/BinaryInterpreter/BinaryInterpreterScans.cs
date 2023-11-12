@@ -3220,19 +3220,20 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     offset += 4;
                     QuestNode.Items.Add(QuestIDs);
 
-                    int Unknown1 = BitConverter.ToInt32(data, offset); //Unknown1
+                    int instanceVersion = BitConverter.ToInt32(data, offset); //Unknown1
                     QuestIDs.Items.Add(new BinInterpNode
                     {
-                        Header = $"0x{offset:X5} Unknown: {Unknown1} ",
+                        Header = $"0x{offset:X5} InstanceVersion: {instanceVersion} ",
                         Name = "_" + offset,
                         Tag = NodeType.StructLeafInt
                     });
                     offset += 4;
 
-                    int Unknown2 = BitConverter.ToInt32(data, offset); //Unknown2
+                    int isMission = BitConverter.ToInt32(data, offset); //Unknown2
+                    bool isMissionB = isMission == 1;
                     QuestIDs.Items.Add(new BinInterpNode
                     {
-                        Header = $"0x{offset:X5} Unknown: {Unknown2} ",
+                        Header = $"0x{offset:X5} IsMission: {isMission} {isMissionB} ",
                         Name = "_" + offset,
                         Tag = NodeType.StructLeafInt
                     });
