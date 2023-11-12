@@ -97,18 +97,13 @@
 						</Grid.RowDefinitions>
 
 						<!-- Selected Quest Properties -->
-						<Grid>
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="Auto" />
-								<ColumnDefinition Width="*" />
-							</Grid.ColumnDefinitions>
-							<Grid.RowDefinitions>
-								<RowDefinition Height="Auto" />
-							</Grid.RowDefinitions>
-
-							<Label Grid.ColumnSpan="2"
-								Content="Quest Properties:" />
-						</Grid>
+						<StackPanel Orientation="Vertical">
+							<Label Content="Quest Properties:" FontSize="13"/>
+							<StackPanel Orientation="Horizontal">
+								<Label Content="Is Mission:"/>
+								<CheckBox VerticalAlignment="Center" IsChecked="{Binding SelectedQuest.Value.IsMission}"/>
+							</StackPanel>
+						</StackPanel>
 
 						<TabControl Grid.Column="0" Grid.Row="1" Margin="0,5,0,0">
 							<!-- Quest Goals -->
