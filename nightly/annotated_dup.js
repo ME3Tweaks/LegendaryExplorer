@@ -64,6 +64,8 @@ var annotated_dup =
         [ "StageDirection", "class_legendary_explorer_core_1_1_dialogue_1_1_stage_direction.html", "class_legendary_explorer_core_1_1_dialogue_1_1_stage_direction" ]
       ] ],
       [ "GameFilesystem", "namespace_legendary_explorer_core_1_1_game_filesystem.html", [
+        [ "AutoloadArmor", "class_legendary_explorer_core_1_1_game_filesystem_1_1_autoload_armor.html", "class_legendary_explorer_core_1_1_game_filesystem_1_1_autoload_armor" ],
+        [ "AutoloadIni", "class_legendary_explorer_core_1_1_game_filesystem_1_1_autoload_ini.html", "class_legendary_explorer_core_1_1_game_filesystem_1_1_autoload_ini" ],
         [ "LE1Directory", "class_legendary_explorer_core_1_1_game_filesystem_1_1_l_e1_directory.html", "class_legendary_explorer_core_1_1_game_filesystem_1_1_l_e1_directory" ],
         [ "LE2Directory", "class_legendary_explorer_core_1_1_game_filesystem_1_1_l_e2_directory.html", "class_legendary_explorer_core_1_1_game_filesystem_1_1_l_e2_directory" ],
         [ "LE3Directory", "class_legendary_explorer_core_1_1_game_filesystem_1_1_l_e3_directory.html", "class_legendary_explorer_core_1_1_game_filesystem_1_1_l_e3_directory" ],

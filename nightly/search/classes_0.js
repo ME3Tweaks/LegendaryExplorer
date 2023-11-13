@@ -15,5 +15,7 @@ var searchData=
   ['assignstatement_12',['AssignStatement',['../class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_assign_statement.html',1,'LegendaryExplorerCore::UnrealScript::Language::Tree']]],
   ['astnode_13',['ASTNode',['../class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_a_s_t_node.html',1,'LegendaryExplorerCore::UnrealScript::Language::Tree']]],
   ['astnodedict_14',['ASTNodeDict',['../class_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_symbols_1_1_a_s_t_node_dict.html',1,'LegendaryExplorerCore::UnrealScript::Analysis::Symbols']]],
-  ['audioinfo_15',['AudioInfo',['../class_legendary_explorer_core_1_1_audio_1_1_audio_info.html',1,'LegendaryExplorerCore::Audio']]]
+  ['audioinfo_15',['AudioInfo',['../class_legendary_explorer_core_1_1_audio_1_1_audio_info.html',1,'LegendaryExplorerCore::Audio']]],
+  ['autoloadarmor_16',['AutoloadArmor',['../class_legendary_explorer_core_1_1_game_filesystem_1_1_autoload_armor.html',1,'LegendaryExplorerCore::GameFilesystem']]],
+  ['autoloadini_17',['AutoloadIni',['../class_legendary_explorer_core_1_1_game_filesystem_1_1_autoload_ini.html',1,'LegendaryExplorerCore::GameFilesystem']]]
 ];

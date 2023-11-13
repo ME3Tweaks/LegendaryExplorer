@@ -18,6 +18,8 @@ var NAVTREEINDEX0 =
 "_assign_statement_8cs.html":[2,0,0,0,24,3,1,2],
 "_audio_2_n_s_doc_8cs.html":[2,0,0,0,0,4],
 "_audio_info_8cs.html":[2,0,0,0,0,1],
+"_autoload_ini_8cs.html":[2,0,0,0,5,0],
+"_autoload_ini_8cs.html#afd1e9b0acff5be90d3a6f7fdce1b3924":[2,0,0,0,5,0,2],
 "_basegame_plot_database_8cs.html":[2,0,0,0,15,0,0],
 "_binary_converters_2_bio_morph_face_8cs.html":[2,0,0,0,23,0,10],
 "_binary_converters_2_skeletal_mesh_8cs.html":[2,0,0,0,23,0,48],
@@ -247,7 +249,5 @@ var NAVTREEINDEX0 =
 "_continue_statement_8cs.html":[2,0,0,0,24,3,1,14],
 "_conversation_extended_8cs.html":[2,0,0,0,4,0],
 "_convert_extensions_8cs.html":[2,0,0,0,23,0,20],
-"_convert_extensions_8cs.html#add5aeb4d12283fa0452cb03a86feb9a3":[2,0,0,0,23,0,20,1],
-"_crc32_8cs.html":[2,0,0,0,1,12],
-"_d_l_c_package2_8cs.html":[2,0,0,0,23,10]
+"_convert_extensions_8cs.html#add5aeb4d12283fa0452cb03a86feb9a3":[2,0,0,0,23,0,20,1]
 };

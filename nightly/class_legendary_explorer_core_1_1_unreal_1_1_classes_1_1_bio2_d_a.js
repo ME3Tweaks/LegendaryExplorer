@@ -2,10 +2,12 @@ var class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio2_d_a =
 [
     [ "Bio2DA", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio2_d_a.html#a6ce4e6c04a55f716b0a90bfab445bad9", null ],
     [ "Bio2DA", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio2_d_a.html#ac6155e9a8a5589e9c56706d18eb8458b", null ],
+    [ "MergeInto", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio2_d_a.html#a9003021581f497b46988295631bc5012", null ],
     [ "MarkAsUnmodified", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio2_d_a.html#afffa9629565ed8ae7128da3dbc5699b8", null ],
-    [ "Write2DAToExport", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio2_d_a.html#aae8314f4f9270e4dfa77b3f886f20463", null ],
+    [ "Write2DAToExport", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio2_d_a.html#aa089234d9ad38c981019dc905d6e0e4e", null ],
     [ "GetColumnIndexByName", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio2_d_a.html#a7510453f069c14c495d933e7ea2b49c6", null ],
     [ "GetRowIndexByName", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio2_d_a.html#a5c054fbc9aba7bfd34f565d7d891d550", null ],
+    [ "TryGetRowIndexByName", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio2_d_a.html#a566277ab0c1893187ec2ad170b1372c7", null ],
     [ "AddRow", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio2_d_a.html#a00a6a5fae0036978765055e5e60387c3", null ],
     [ "AddColumn", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio2_d_a.html#a49c32aab99f82f83fb6f3f215b52260a", null ],
     [ "ClearRows", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio2_d_a.html#a453561d5939ff73e9d74bca1e5b075cb", null ],
