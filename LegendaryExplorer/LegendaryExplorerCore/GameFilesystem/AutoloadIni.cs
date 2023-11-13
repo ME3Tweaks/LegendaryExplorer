@@ -171,7 +171,7 @@ namespace LegendaryExplorerCore.GameFilesystem
             // 2DA
             while ((entry = section.GetValue($"2DA{keyIndex++}")?.Value) != null)
             {
-                GlobalTalkTables.Add(entry);
+                Bio2DAs.Add(entry);
             }
 
             // GlobalTalkTables
