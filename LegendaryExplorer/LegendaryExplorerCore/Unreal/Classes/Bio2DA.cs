@@ -74,6 +74,11 @@ namespace LegendaryExplorerCore.Unreal.Classes
         /// <exception cref="Exception"></exception>
         public void MergeInto(Bio2DA destination2DA)
         {
+            if (ReferenceEquals(this, destination2DA))
+            {
+                throw new Exception("Cannot merge 2DA into itself!");
+            }
+
             if (RowCount == 0)
                 return; // Nothing to merge
             if (ColumnCount != destination2DA.ColumnCount)

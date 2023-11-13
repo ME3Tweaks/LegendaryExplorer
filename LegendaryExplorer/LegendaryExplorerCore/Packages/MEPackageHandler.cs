@@ -593,7 +593,7 @@ namespace LegendaryExplorerCore.Packages
         public static DisposableCollection<IMEPackage> OpenMEPackages(IEnumerable<string> filePaths) => new(filePaths.Select(filePath => OpenMEPackage(filePath)));
 
         /// <summary>
-        /// Creates a new package and disk, and then opens and returns it.
+        /// Creates a new package on disk, and then opens and returns it.
         /// </summary>
         /// <param name="packagePath">Path to package file to create</param>
         /// <param name="game">What game the package is for</param>
