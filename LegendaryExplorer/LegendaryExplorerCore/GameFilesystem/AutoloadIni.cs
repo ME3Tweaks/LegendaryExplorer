@@ -183,7 +183,7 @@ namespace LegendaryExplorerCore.GameFilesystem
 
             // GlobalPackage
             keyIndex = 1;
-            while ((entry = section.GetValue($"GlobalPackage{keyIndex}")?.Value) != null)
+            while ((entry = section.GetValue($"GlobalPackage{keyIndex++}")?.Value) != null)
             {
                 GlobalPackages.Add(entry);
             }
