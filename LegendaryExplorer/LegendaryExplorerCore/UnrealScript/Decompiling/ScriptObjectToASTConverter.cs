@@ -41,9 +41,15 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
 
             var replicatedProperties = new Dictionary<ushort, List<string>>();
 
+            var loopcheckerSet = new HashSet<int>();
+
             var nextItem = uClass.Children;
             while (pcc.TryGetUExport(nextItem, out ExportEntry nextChild))
             {
+                if (!loopcheckerSet.Add(nextItem))
+                {
+                    throw new Exception($"Loop detected in compilation chain of #{uClassExport.UIndex} {uClassExport.InstancedFullPath}");
+                }
                 var objBin = fileLib.GetCachedObjectBinary(nextChild, packageCache);
                 switch (objBin)
                 {
@@ -168,11 +174,16 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             {
                 parent = new State(parentState.ObjectName.Instanced, null, default, null, null, null, -1, -1);
             }
+            var loopcheckerSet = new HashSet<int>();
 
             var funcs = new List<Function>();
             var nextItem = obj.Children;
             while (obj.Export.FileRef.TryGetUExport(nextItem, out ExportEntry nextChild))
             {
+                if (!loopcheckerSet.Add(nextItem))
+                {
+                    throw new Exception($"Loop detected in compilation chain of #{obj.Export.UIndex} {obj.Export.InstancedFullPath}");
+                }
                 var objBin = fileLib.GetCachedObjectBinary(nextChild, packageCache);
                 if (objBin is not UFunction uFunction)
                 {
@@ -199,9 +210,14 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             var types = new List<VariableType>();
             var nextItem = obj.Children;
 
+            var loopcheckerSet = new HashSet<int>();
             IMEPackage pcc = obj.Export.FileRef;
             while (pcc.TryGetUExport(nextItem, out ExportEntry nextChild))
             {
+                if (!loopcheckerSet.Add(nextItem))
+                {
+                    throw new Exception($"Loop detected in compilation chain of #{obj.Export.UIndex} {obj.Export.InstancedFullPath}");
+                }
                 var objBin = fileLib.GetCachedObjectBinary(nextChild, packageCache);
                 switch (objBin)
                 {
@@ -498,12 +514,17 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             }
             VariableDeclaration returnVal = null;
             var nextItem = obj.Children;
+            var loopcheckerSet = new HashSet<int>();
 
             var parameters = new List<FunctionParameter>();
             var locals = new List<VariableDeclaration>();
             IMEPackage pcc = obj.Export.FileRef;
             while (pcc.TryGetUExport(nextItem, out ExportEntry nextChild))
             {
+                if (!loopcheckerSet.Add(nextItem))
+                {
+                    throw new Exception($"Loop detected in compilation chain of #{obj.Export.UIndex} {obj.Export.InstancedFullPath}");
+                }
                 var objBin = fileLib.GetCachedObjectBinary(nextChild, packageCache);
                 switch (objBin)
                 {
