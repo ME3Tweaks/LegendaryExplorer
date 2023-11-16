@@ -407,24 +407,6 @@ namespace LegendaryExplorerCore.Textures
             return ARGBtoRGB(convertRawToARGB(src, ref w, ref h, format), w, h);
         }
 
-        //TODO: remove this method, as it doesn't really belong here, and forces a dependency on the System.Drawing nuget package.
-        //this is used only by M3, and should be moved there.
-        [SupportedOSPlatform("windows")]
-        public static Bitmap convertRawToBitmapARGB(byte[] src, int w, int h, PixelFormat format, bool clearAlpha = true)
-        {
-            byte[] tmpData = convertRawToARGB(src, ref w, ref h, format, clearAlpha);
-            var bitmap = new Bitmap(w, h, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-            BitmapData bitmapData = bitmap.LockBits(new System.Drawing.Rectangle(0, 0, w, h), ImageLockMode.ReadWrite, bitmap.PixelFormat);
-            Marshal.Copy(tmpData, 0, bitmapData.Scan0, tmpData.Length);
-            bitmap.UnlockBits(bitmapData);
-            return bitmap;
-        }
-
-        //public Bitmap getBitmapARGB()
-        //{
-        //    return convertRawToBitmapARGB(mipMaps[0].data, mipMaps[0].width, mipMaps[0].height, pixelFormat);
-        //}
-
         private static void clearAlphaFromARGB(byte[] src, int w, int h)
         {
             for (int i = 0; i < w * h; i++)
