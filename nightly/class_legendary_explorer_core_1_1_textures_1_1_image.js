@@ -11,7 +11,6 @@ var class_legendary_explorer_core_1_1_textures_1_1_image =
     [ "ToArray", "class_legendary_explorer_core_1_1_textures_1_1_image.html#aaded3832e7599947764fc55759191d8a", null ],
     [ "convertRawToARGB", "class_legendary_explorer_core_1_1_textures_1_1_image.html#a660b11920b58eee5b4346e0682beb624", null ],
     [ "convertRawToRGB", "class_legendary_explorer_core_1_1_textures_1_1_image.html#a50c61c3d7d53154a832699766eef0c26", null ],
-    [ "convertRawToBitmapARGB", "class_legendary_explorer_core_1_1_textures_1_1_image.html#a8c4c41aafa978b82c5c603d5b0b0051f", null ],
     [ "convertToPng", "class_legendary_explorer_core_1_1_textures_1_1_image.html#a42e172cbba64cb1d607813f428ec0dc8", null ],
     [ "correctMips", "class_legendary_explorer_core_1_1_textures_1_1_image.html#a26ec3fe1cd6f81960a4ef997f83c7299", null ],
     [ "getPixelFormatType", "class_legendary_explorer_core_1_1_textures_1_1_image.html#a3dbc6fd99648be2acb0eb5cb405887e8", null ],
