@@ -15,6 +15,8 @@ var class_legendary_explorer_core_1_1_packages_1_1_package_cache =
     [ "CacheContains", "class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#af00843a5ccb1ce819bf462ad65268296", null ],
     [ "DropPackageFromCache", "class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a370c5438b5e1c612e3e20562166f3547", null ],
     [ "GetFirstCachedPackage", "class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a0c88f6933ccc30cccf86dbf22112dca8", null ],
+    [ "GetPackages", "class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#aa25db7fd470c9405f9dd24a915d6863e", null ],
+    [ "GetPackageList", "class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a591dc148aa57fca948c03261774e697b", null ],
     [ "guid", "class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a979a16005572513084c0ae5dc72d6d65", null ],
     [ "syncObj", "class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a5c6a5b140e8c446e1975bf90fa5b616d", null ],
     [ "LastAccessMap", "class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a93e4e7bdf6a95a7edeceee998bff38ea", null ],

@@ -162,6 +162,7 @@ var NAVTREEINDEX5 =
 "_tex_converter_8cs.html":[2,0,0,0,20,7],
 "_text_builder_8cs.html":[2,0,0,0,10,0,0,4],
 "_texture2_d_8cs.html":[2,0,0,0,23,1,6],
+"_texture2_d_8cs.html#aace610f795944b5957b2e8538ee25ace":[2,0,0,0,23,1,6,2],
 "_texture_c_r_c_8cs.html":[2,0,0,0,20,8],
 "_texture_compression_8cs.html":[2,0,0,0,23,20],
 "_texture_compression_8cs.html#a935c337350885551f2a7e6d262b57a6b":[2,0,0,0,23,20,3],
@@ -248,6 +249,5 @@ var NAVTREEINDEX5 =
 "_xml_coalesce_asset_8cs.html":[2,0,0,0,1,1,1],
 "_xml_coalesce_file_8cs.html":[2,0,0,0,1,1,2],
 "_zig_zag_converter_8cs.html":[2,0,0,0,6,6,0,1],
-"_zlib_block_8cs.html":[2,0,0,0,20,2,0],
-"_zlib_helper_8cs.html":[2,0,0,0,2,4]
+"_zlib_block_8cs.html":[2,0,0,0,20,2,0]
 };

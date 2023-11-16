@@ -111,9 +111,9 @@ Inheritance diagram for LegendaryExplorerCore.Unreal.Classes.Bio2DA:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a9003021581f497b46988295631bc5012"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio2_d_a.html#a9003021581f497b46988295631bc5012">MergeInto</a> (<a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio2_d_a.html">Bio2DA</a> destination2DA)</td></tr>
-<tr class="memdesc:a9003021581f497b46988295631bc5012"><td class="mdescLeft">&#160;</td><td class="mdescRight">Merges this 2DA table's data into the specified one, overwriting any same-name/indexed rows in the destination with data from ours.   <a href="class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio2_d_a.html#a9003021581f497b46988295631bc5012">More...</a><br /></td></tr>
-<tr class="separator:a9003021581f497b46988295631bc5012"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3966470d7c798da4954c4de8f52b30d7"><td class="memItemLeft" align="right" valign="top">List&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio2_d_a.html#a3966470d7c798da4954c4de8f52b30d7">MergeInto</a> (<a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio2_d_a.html">Bio2DA</a> destination2DA, bool addMissingRows=true)</td></tr>
+<tr class="memdesc:a3966470d7c798da4954c4de8f52b30d7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Merges this 2DA table's data into the specified one, overwriting any same-name/indexed rows in the destination with data from ours. Returns a list of row indexes from THIS 2DA that were merged into the destination 2DA.   <a href="class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio2_d_a.html#a3966470d7c798da4954c4de8f52b30d7">More...</a><br /></td></tr>
+<tr class="separator:a3966470d7c798da4954c4de8f52b30d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6ce4e6c04a55f716b0a90bfab445bad9"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio2_d_a.html#a6ce4e6c04a55f716b0a90bfab445bad9">Bio2DA</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> export)</td></tr>
 <tr class="memdesc:a6ce4e6c04a55f716b0a90bfab445bad9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio2_d_a.html">Bio2DA</a> object from the specified export   <a href="class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio2_d_a.html#a6ce4e6c04a55f716b0a90bfab445bad9">More...</a><br /></td></tr>
 <tr class="separator:a6ce4e6c04a55f716b0a90bfab445bad9"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -257,8 +257,8 @@ Events</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a9003021581f497b46988295631bc5012" name="a9003021581f497b46988295631bc5012"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9003021581f497b46988295631bc5012">&#9670;&#160;</a></span>MergeInto()</h2>
+<a id="a3966470d7c798da4954c4de8f52b30d7" name="a3966470d7c798da4954c4de8f52b30d7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3966470d7c798da4954c4de8f52b30d7">&#9670;&#160;</a></span>MergeInto()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -267,11 +267,21 @@ Events</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void LegendaryExplorerCore.Unreal.Classes.Bio2DA.MergeInto </td>
+          <td class="memname">List&lt; int &gt; LegendaryExplorerCore.Unreal.Classes.Bio2DA.MergeInto </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio2_d_a.html">Bio2DA</a>&#160;</td>
-          <td class="paramname"><em>destination2DA</em></td><td>)</td>
+          <td class="paramname"><em>destination2DA</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>addMissingRows</em> = <code>true</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -281,7 +291,7 @@ Events</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Merges this 2DA table's data into the specified one, overwriting any same-name/indexed rows in the destination with data from ours.  </p>
+<p>Merges this 2DA table's data into the specified one, overwriting any same-name/indexed rows in the destination with data from ours. Returns a list of row indexes from THIS 2DA that were merged into the destination 2DA.  </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">destination2DA</td><td></td></tr>
@@ -469,7 +479,7 @@ Events</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>The row index created, or found if existing</dd></dl>
 
 </div>
 </div>
