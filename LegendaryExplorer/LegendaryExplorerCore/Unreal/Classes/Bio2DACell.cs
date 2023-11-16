@@ -15,10 +15,10 @@ namespace LegendaryExplorerCore.Unreal.Classes
 
         // Fody weaves setters for these below
         [AlsoNotifyFor(nameof(DisplayableValue))]
-        public int IntValue { get; set; }
+        public int IntValue { get; set; } = int.MinValue; // 11/13/2023 - Change to min value as default value is 0, which may yield no change of type when assigned
 
         [AlsoNotifyFor(nameof(DisplayableValue))]
-        public float FloatValue { get; set; }
+        public float FloatValue { get; set; } = float.MinValue; // 11/13/2023 - Change to min value as default value is 0, which may yield no change of type when assigned
 
         private NameReference _nameValue;
         

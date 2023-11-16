@@ -68,11 +68,11 @@ namespace LegendaryExplorerCore.Unreal.Classes
         public ExportEntry Export;
 
         /// <summary>
-        /// Merges this 2DA table's data into the specified one, overwriting any same-name/indexed rows in the destination with data from ours.
+        /// Merges this 2DA table's data into the specified one, overwriting any same-name/indexed rows in the destination with data from ours. Returns a list of row indexes from THIS 2DA that were merged into the destination 2DA.
         /// </summary>
         /// <param name="destination2DA"></param>
         /// <exception cref="Exception"></exception>
-        public void MergeInto(Bio2DA destination2DA)
+        public List<int> MergeInto(Bio2DA destination2DA, bool addMissingRows = true)
         {
             if (ReferenceEquals(this, destination2DA))
             {
@@ -80,7 +80,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
             }
 
             if (RowCount == 0)
-                return; // Nothing to merge
+                return new List<int>(0); // Nothing to merge
             if (ColumnCount != destination2DA.ColumnCount)
             {
                 if (destination2DA.RowCount > 0 || destination2DA.ColumnCount > 0)
@@ -99,11 +99,25 @@ namespace LegendaryExplorerCore.Unreal.Classes
             }
 
             // Merge rows
+            List<int> mergedRows = new List<int>();
             for (int localRowIdx = 0; localRowIdx < RowCount; localRowIdx++)
             {
                 var rowName = RowNames[localRowIdx];
-                var rowIdx = destination2DA.AddRow(rowName);
-                Debug.WriteLine($"Writing {rowIdx}----------------------------");
+                int destRowIdx;
+                if (!addMissingRows)
+                {
+                    if (!destination2DA.TryGetRowIndexByName(rowName, out destRowIdx))
+                    {
+                        continue;
+                    }
+                }
+                else
+                {
+                    destRowIdx = destination2DA.AddRow(rowName);
+                }
+                
+                mergedRows.Add(localRowIdx); // Mark this row as being merged
+                Debug.WriteLine($"Writing {destRowIdx}----------------------------");
                 foreach (var colName in ColumnNames)
                 {
                     // Debug.WriteLine($"Writing {rowIdx},{colName}");
@@ -112,16 +126,16 @@ namespace LegendaryExplorerCore.Unreal.Classes
                     switch (localCell.Type)
                     {
                         case Bio2DACell.Bio2DADataType.TYPE_FLOAT:
-                            destination2DA[rowIdx, colName].FloatValue = localCell.FloatValue;
+                            destination2DA[destRowIdx, colName].FloatValue = localCell.FloatValue;
                             break;
                         case Bio2DACell.Bio2DADataType.TYPE_INT:
-                            destination2DA[rowIdx, colName].IntValue = localCell.IntValue;
+                            destination2DA[destRowIdx, colName].IntValue = localCell.IntValue;
                             break;
                         case Bio2DACell.Bio2DADataType.TYPE_NAME:
-                            destination2DA[rowIdx, colName].NameValue = localCell.NameValue;
+                            destination2DA[destRowIdx, colName].NameValue = localCell.NameValue;
                             break;
                         case Bio2DACell.Bio2DADataType.TYPE_NULL:
-                            destination2DA[rowIdx, colName].Type = Bio2DACell.Bio2DADataType.TYPE_NULL;
+                            destination2DA[destRowIdx, colName].Type = Bio2DACell.Bio2DADataType.TYPE_NULL;
                             break;
                         default:
                             Debugger.Break();
@@ -129,6 +143,8 @@ namespace LegendaryExplorerCore.Unreal.Classes
                     }
                 }
             }
+
+            return mergedRows;
         }
 
         /// <summary>
@@ -346,7 +362,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
         /// Adds a new row of the specified name to the table. If using Bio2DANumberedRows, pass a string version of an int. If a row already exists with this name, the index for that row is returned instead. Upon adding a new row, new TYPE_NULL cells are added
         /// </summary>
         /// <param name="rowName"></param>
-        /// <returns></returns>
+        /// <returns>The row index created, or found if existing</returns>
         public int AddRow(string rowName)
         {
             if (mappedRowNames.TryGetValue(rowName, out int existing))
