@@ -1,5 +1,7 @@
 var NAVTREEINDEX65 =
 {
+"class_u_set.html#ae4259cd14a1047a14cd799bd8b8ff1f4":[1,0,31,17],
+"class_u_set.html#af205e9585a8dbc3d96a781c05963517b":[1,0,31,7],
 "class_u_set.html#af3ce83035baf1059847afa5016dae366":[1,0,31,12],
 "class_u_set.html#afafeee41086bfc6049e613e3b5fb2937":[1,0,31,11],
 "class_var_link_info.html":[1,0,32],
@@ -109,8 +111,8 @@ var NAVTREEINDEX65 =
 "dir_fc297f48b00bb058e25bce0d1d92428f.html":[2,0,0,0,12,0],
 "dir_fcbaed6291bc34708fd86da8b1325ec6.html":[2,0,0,0,6],
 "files.html":[2,0],
-"functions.html":[1,2,0,0],
 "functions.html":[1,2,0],
+"functions.html":[1,2,0,0],
 "functions_a.html":[1,2,0,1],
 "functions_b.html":[1,2,0,2],
 "functions_c.html":[1,2,0,3],
@@ -186,8 +188,8 @@ var NAVTREEINDEX65 =
 "functions_t.html":[1,2,0,20],
 "functions_u.html":[1,2,0,21],
 "functions_v.html":[1,2,0,22],
-"functions_vars.html":[1,2,2],
 "functions_vars.html":[1,2,2,0],
+"functions_vars.html":[1,2,2],
 "functions_vars_a.html":[1,2,2,1],
 "functions_vars_b.html":[1,2,2,2],
 "functions_vars_c.html":[1,2,2,3],
@@ -239,15 +241,13 @@ var NAVTREEINDEX65 =
 "interface_i_ref_enumerator.html#a93627ebac3b926321b06985fc555c9fb":[1,0,15,0],
 "interface_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_i_priority_queue.html":[1,0,0,6,0,0,6],
 "interface_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_i_priority_queue.html":[0,5,1,6,0,0,6],
-"interface_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_i_priority_queue.html#a02dcfce775ff447cfd03f494e8c7e086":[1,0,0,6,0,0,6,8],
 "interface_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_i_priority_queue.html#a02dcfce775ff447cfd03f494e8c7e086":[0,5,1,6,0,0,6,8],
-"interface_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_i_priority_queue.html#a10f057e3c281101f5c91958cc69441fe":[0,5,1,6,0,0,6,1],
+"interface_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_i_priority_queue.html#a02dcfce775ff447cfd03f494e8c7e086":[1,0,0,6,0,0,6,8],
 "interface_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_i_priority_queue.html#a10f057e3c281101f5c91958cc69441fe":[1,0,0,6,0,0,6,1],
-"interface_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_i_priority_queue.html#a1d67a017ef87f8aa8b9fad25855c885c":[0,5,1,6,0,0,6,3],
+"interface_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_i_priority_queue.html#a10f057e3c281101f5c91958cc69441fe":[0,5,1,6,0,0,6,1],
 "interface_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_i_priority_queue.html#a1d67a017ef87f8aa8b9fad25855c885c":[1,0,0,6,0,0,6,3],
+"interface_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_i_priority_queue.html#a1d67a017ef87f8aa8b9fad25855c885c":[0,5,1,6,0,0,6,3],
 "interface_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_i_priority_queue.html#a2e2843eae304f0715bf5c47dea21ae32":[1,0,0,6,0,0,6,5],
 "interface_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_i_priority_queue.html#a2e2843eae304f0715bf5c47dea21ae32":[0,5,1,6,0,0,6,5],
-"interface_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_i_priority_queue.html#a5b1bc81c68ac79205da3c348eab70768":[1,0,0,6,0,0,6,4],
-"interface_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_i_priority_queue.html#a5b1bc81c68ac79205da3c348eab70768":[0,5,1,6,0,0,6,4],
-"interface_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_i_priority_queue.html#a8f5ab6ed18781a57bf79fd9c96490002":[0,5,1,6,0,0,6,7]
+"interface_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_i_priority_queue.html#a5b1bc81c68ac79205da3c348eab70768":[1,0,0,6,0,0,6,4]
 };

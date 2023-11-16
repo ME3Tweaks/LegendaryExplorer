@@ -123,6 +123,9 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:af363301a50d59e47e2c50c078b048c97"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="namespace_legendary_explorer_core_1_1_coalesced.html#abe59b8809f45b7c71569b1c0f10668a5">CoalesceParseAction</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_coalesced_1_1_config_file_proxy.html#af363301a50d59e47e2c50c078b048c97">GetIniDataType</a> (string key)</td></tr>
 <tr class="memdesc:af363301a50d59e47e2c50c078b048c97"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the data type of an ini based on the key of a key value pair   <a href="class_legendary_explorer_core_1_1_coalesced_1_1_config_file_proxy.html#af363301a50d59e47e2c50c078b048c97">More...</a><br /></td></tr>
 <tr class="separator:af363301a50d59e47e2c50c078b048c97"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a87a9bbabd8c7004eaa16d29dc7308d14"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_coalesced_1_1_config_file_proxy.html#a87a9bbabd8c7004eaa16d29dc7308d14">GetGame2IniDataPrefix</a> (<a class="el" href="namespace_legendary_explorer_core_1_1_coalesced.html#abe59b8809f45b7c71569b1c0f10668a5">CoalesceParseAction</a> action)</td></tr>
+<tr class="memdesc:a87a9bbabd8c7004eaa16d29dc7308d14"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the data type of an ini based on the key of a key value pair   <a href="class_legendary_explorer_core_1_1_coalesced_1_1_config_file_proxy.html#a87a9bbabd8c7004eaa16d29dc7308d14">More...</a><br /></td></tr>
+<tr class="separator:a87a9bbabd8c7004eaa16d29dc7308d14"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Loads a text-based ini file as a <a class="el" href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesce_asset.html">CoalesceAsset</a> for single API editing.  </p>
@@ -328,6 +331,41 @@ Static Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The parse action typing, add by default.</dd></dl>
+
+</div>
+</div>
+<a id="a87a9bbabd8c7004eaa16d29dc7308d14" name="a87a9bbabd8c7004eaa16d29dc7308d14"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a87a9bbabd8c7004eaa16d29dc7308d14">&#9670;&#160;</a></span>GetGame2IniDataPrefix()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static string LegendaryExplorerCore.Coalesced.ConfigFileProxy.GetGame2IniDataPrefix </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespace_legendary_explorer_core_1_1_coalesced.html#abe59b8809f45b7c71569b1c0f10668a5">CoalesceParseAction</a>&#160;</td>
+          <td class="paramname"><em>action</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Gets the data type of an ini based on the key of a key value pair  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">action</td><td>Action to convert</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>At max, a single character string. Will be empty if it is an add operation.</dd></dl>
 
 </div>
 </div>
