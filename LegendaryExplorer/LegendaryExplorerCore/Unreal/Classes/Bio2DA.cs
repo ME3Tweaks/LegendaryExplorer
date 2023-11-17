@@ -115,7 +115,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
                 {
                     destRowIdx = destination2DA.AddRow(rowName);
                 }
-                
+
                 mergedRows.Add(localRowIdx); // Mark this row as being merged
                 Debug.WriteLine($"Writing {destRowIdx}----------------------------");
                 foreach (var colName in ColumnNames)
@@ -578,5 +578,10 @@ namespace LegendaryExplorerCore.Unreal.Classes
         #endregion
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        public bool TryGetColumnIndexByName(string colname, out int colIndex)
+        {
+            return mappedColumnNames.TryGetValue(colname, out colIndex);
+        }
     }
 }

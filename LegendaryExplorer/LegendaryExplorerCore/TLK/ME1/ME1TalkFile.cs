@@ -15,6 +15,7 @@ namespace LegendaryExplorerCore.TLK.ME1
     /// <summary>
     /// Represents the tlk embedded in a BioTalkFile export, which is used in ME1/LE1. For ME2/ME3/LE2/LE3TLK, use <see cref="ME2ME3TalkFile"/>.
     /// </summary>
+    [DebuggerDisplay("ME1TalkFile - StringRefs: {StringRefs.Count} - Modified: {IsModified} - Package: {FilePath}")]
     public class ME1TalkFile : IEquatable<ME1TalkFile>, ITalkFile
     {
         /// <summary>
