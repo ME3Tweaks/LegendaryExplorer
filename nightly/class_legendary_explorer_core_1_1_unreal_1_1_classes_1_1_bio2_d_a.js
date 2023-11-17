@@ -11,6 +11,7 @@ var class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio2_d_a =
     [ "AddRow", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio2_d_a.html#a00a6a5fae0036978765055e5e60387c3", null ],
     [ "AddColumn", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio2_d_a.html#a49c32aab99f82f83fb6f3f215b52260a", null ],
     [ "ClearRows", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio2_d_a.html#a453561d5939ff73e9d74bca1e5b075cb", null ],
+    [ "TryGetColumnIndexByName", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio2_d_a.html#a205296616dcfa8837025b729391035d4", null ],
     [ "IsIndexed", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio2_d_a.html#afed7f9e12745ad5127eba976f6c2ede3", null ],
     [ "Export", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio2_d_a.html#a53ecef86facd8cc6ff3fc9a122617ae1", null ],
     [ "Cells", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio2_d_a.html#acc54e4bf6cfa75ef06e52df0a33a25b9", null ],

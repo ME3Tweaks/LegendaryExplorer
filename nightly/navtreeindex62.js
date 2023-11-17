@@ -1,5 +1,7 @@
 var NAVTREEINDEX62 =
 {
+"class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_rotator_literal.html#a60706343890c2fb958ab3fd0b46b420a":[1,0,0,23,3,0,70,5],
+"class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_rotator_literal.html#a69ee356ea64cb5654e4c77bd40cca186":[0,5,1,23,3,1,70,2],
 "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_rotator_literal.html#a69ee356ea64cb5654e4c77bd40cca186":[1,0,0,23,3,0,70,2],
 "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_rotator_literal.html#a76b23dfb9cb3e30597a422b6a0ef96a1":[0,5,1,23,3,1,70,0],
 "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_rotator_literal.html#a76b23dfb9cb3e30597a422b6a0ef96a1":[1,0,0,23,3,0,70,0],
@@ -247,7 +249,5 @@ var NAVTREEINDEX62 =
 "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_declaration.html#af50b5bb6207f97a166abcd7f5ac38e2a":[0,5,1,23,3,1,84,4],
 "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_declaration.html#af5518e8395a6927eeb1250aac14c325f":[0,5,1,23,3,1,84,9],
 "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_declaration.html#af5518e8395a6927eeb1250aac14c325f":[1,0,0,23,3,0,84,9],
-"class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_identifier.html":[1,0,0,23,3,0,85],
-"class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_identifier.html":[0,5,1,23,3,1,85],
-"class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_identifier.html#a395eebc44db1d12fa608967dfab08eb1":[1,0,0,23,3,0,85,3]
+"class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_identifier.html":[1,0,0,23,3,0,85]
 };
