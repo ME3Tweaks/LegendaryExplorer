@@ -94,6 +94,7 @@ $(document).ready(function(){initNavTree('class_legendary_explorer_core_1_1_unre
 
 <div class="header">
   <div class="summary">
+<a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="#pub-static-attribs">Static Public Attributes</a> &#124;
 <a href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler-members.html">List of all members</a>  </div>
@@ -101,6 +102,13 @@ $(document).ready(function(){initNavTree('class_legendary_explorer_core_1_1_unre
 </div><!--header-->
 <div class="contents">
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public Member Functions</h2></td></tr>
+<tr class="memitem:a52d7ddc7d31927630c0bbf8422094fc2"><td class="memItemLeft" align="right" valign="top">record&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#a52d7ddc7d31927630c0bbf8422094fc2">LooseClass</a> (string ClassName, string Source)</td></tr>
+<tr class="separator:a52d7ddc7d31927630c0bbf8422094fc2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0def63971d09a6d7cf93a13517b52e82"><td class="memItemLeft" align="right" valign="top">record&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#a0def63971d09a6d7cf93a13517b52e82">LooseClassPackage</a> (string PackageName, List&lt; <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#a52d7ddc7d31927630c0bbf8422094fc2">LooseClass</a> &gt; Classes)</td></tr>
+<tr class="separator:a0def63971d09a6d7cf93a13517b52e82"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:aa937532e62bad6fbd398695bdc0a267a"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_a_s_t_node.html">ASTNode</a> string text&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#aa937532e62bad6fbd398695bdc0a267a">DecompileExport</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> export, <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html">FileLib</a> lib, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a> packageCache=null)</td></tr>
@@ -141,6 +149,8 @@ Static Public Member Functions</h2></td></tr>
 <tr class="separator:a4c42a248b68b0d79548bd3d7643ded01"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acd7bef2e635fdad255423135a891e34a"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_default_properties_block.html">DefaultPropertiesBlock</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#acd7bef2e635fdad255423135a891e34a">CompileDefaultPropertiesAST</a> (<a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_default_properties_block.html">DefaultPropertiesBlock</a> propBlock, <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_errors_1_1_message_log.html">MessageLog</a> log, <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html">FileLib</a> lib, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> export)</td></tr>
 <tr class="separator:acd7bef2e635fdad255423135a891e34a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ace64af90e631708e77d0cc4db4f71ee4"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_errors_1_1_message_log.html">MessageLog</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#ace64af90e631708e77d0cc4db4f71ee4">CompileLooseClasses</a> (<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> targetPcc, List&lt; <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#a0def63971d09a6d7cf93a13517b52e82">LooseClassPackage</a> &gt; looseClasses, Func&lt; <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a>, string, <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a> &gt; missingObjectResolver, string gameRootPath=null)</td></tr>
+<tr class="separator:ace64af90e631708e77d0cc4db4f71ee4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-attribs" name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
@@ -1060,6 +1070,118 @@ Static Public Attributes</h2></td></tr>
           <td></td>
           <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td>
           <td class="paramname"><em>export</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a52d7ddc7d31927630c0bbf8422094fc2" name="a52d7ddc7d31927630c0bbf8422094fc2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a52d7ddc7d31927630c0bbf8422094fc2">&#9670;&#160;</a></span>LooseClass()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">record LegendaryExplorerCore.UnrealScript.UnrealScriptCompiler.LooseClass </td>
+          <td>(</td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>ClassName</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>Source</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a0def63971d09a6d7cf93a13517b52e82" name="a0def63971d09a6d7cf93a13517b52e82"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0def63971d09a6d7cf93a13517b52e82">&#9670;&#160;</a></span>LooseClassPackage()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">record LegendaryExplorerCore.UnrealScript.UnrealScriptCompiler.LooseClassPackage </td>
+          <td>(</td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>PackageName</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">List&lt; <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#a52d7ddc7d31927630c0bbf8422094fc2">LooseClass</a> &gt;&#160;</td>
+          <td class="paramname"><em>Classes</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ace64af90e631708e77d0cc4db4f71ee4" name="ace64af90e631708e77d0cc4db4f71ee4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ace64af90e631708e77d0cc4db4f71ee4">&#9670;&#160;</a></span>CompileLooseClasses()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_errors_1_1_message_log.html">MessageLog</a> LegendaryExplorerCore.UnrealScript.UnrealScriptCompiler.CompileLooseClasses </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a>&#160;</td>
+          <td class="paramname"><em>targetPcc</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">List&lt; <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#a0def63971d09a6d7cf93a13517b52e82">LooseClassPackage</a> &gt;&#160;</td>
+          <td class="paramname"><em>looseClasses</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Func&lt; <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a>, string, <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a> &gt;&#160;</td>
+          <td class="paramname"><em>missingObjectResolver</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>gameRootPath</em> = <code>null</code>&#160;</td>
         </tr>
         <tr>
           <td></td>

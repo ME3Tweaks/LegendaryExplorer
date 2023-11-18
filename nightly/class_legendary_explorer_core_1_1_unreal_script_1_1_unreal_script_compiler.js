@@ -19,6 +19,9 @@ var class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler =
     [ "CompileNewVarDeclAST", "class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#aaf6be1d8c54aee1ed1e2a5533b14a111", null ],
     [ "CompileNewStructAST", "class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#a4c42a248b68b0d79548bd3d7643ded01", null ],
     [ "CompileDefaultPropertiesAST", "class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#acd7bef2e635fdad255423135a891e34a", null ],
+    [ "LooseClass", "class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#a52d7ddc7d31927630c0bbf8422094fc2", null ],
+    [ "LooseClassPackage", "class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#a0def63971d09a6d7cf93a13517b52e82", null ],
+    [ "CompileLooseClasses", "class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#ace64af90e631708e77d0cc4db4f71ee4", null ],
     [ "node", "class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#a33d073a6a28a1bdff026712d4636ac1e", null ],
     [ "ast", "class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#a91c3a3cd48d8f09fc62e71233eb86740", null ],
     [ "astNode", "class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#a7af807fb2356cc4d778da946ae5d7154", null ]

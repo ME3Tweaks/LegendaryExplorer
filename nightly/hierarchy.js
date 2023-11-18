@@ -107,9 +107,7 @@ var hierarchy =
       [ "LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode.StopToken", "class_legendary_explorer_core_1_1_m_e1_1_1_unreal_1_1_unhood_bytecode_1_1_stop_token.html", null ],
       [ "LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode.SwitchToken", "class_legendary_explorer_core_1_1_m_e1_1_1_unreal_1_1_unhood_bytecode_1_1_switch_token.html", null ]
     ] ],
-    [ "LegendaryExplorerCore.UnrealScript.Compiling.BytecodeWriter", "class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_bytecode_writer.html", [
-      [ "LegendaryExplorerCore.UnrealScript.Compiling.ByteCodeCompilerVisitor", "class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_byte_code_compiler_visitor.html", null ]
-    ] ],
+    [ "LegendaryExplorerCore.UnrealScript.Compiling.BytecodeWriter", "class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_bytecode_writer.html", null ],
     [ "LegendaryExplorerCore.Gammtek.Extensions.ByteExtensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_byte_extensions.html", null ],
     [ "LegendaryExplorerCore.Gammtek.IO.ByteOrderConverter", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_byte_order_converter.html", null ],
     [ "LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode.CachedNativeFunctionInfo", "class_legendary_explorer_core_1_1_m_e1_1_1_unreal_1_1_unhood_bytecode_1_1_cached_native_function_info.html", null ],
@@ -359,8 +357,7 @@ var hierarchy =
       ] ]
     ] ],
     [ "LegendaryExplorerCore.UnrealScript.Analysis.Visitors.IASTVisitor", "interface_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_visitors_1_1_i_a_s_t_visitor.html", [
-      [ "LegendaryExplorerCore.UnrealScript.Analysis.Visitors.CodeBuilderVisitor< TFormatter >", "class_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_visitors_1_1_code_builder_visitor.html", null ],
-      [ "LegendaryExplorerCore.UnrealScript.Compiling.ByteCodeCompilerVisitor", "class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_byte_code_compiler_visitor.html", null ]
+      [ "LegendaryExplorerCore.UnrealScript.Analysis.Visitors.CodeBuilderVisitor< TFormatter >", "class_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_visitors_1_1_code_builder_visitor.html", null ]
     ] ],
     [ "LegendaryExplorerCore.Gammtek.IO.IBufferManager", "interface_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_i_buffer_manager.html", null ],
     [ "ICloneable", null, [
@@ -957,6 +954,7 @@ var hierarchy =
     ] ],
     [ "LegendaryExplorerCore.Gammtek.Extensions.SByteExtensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_s_byte_extensions.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.SCExt", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_s_c_ext.html", null ],
+    [ "LegendaryExplorerCore.UnrealScript.Compiling.ScriptObjectCompiler", "class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_script_object_compiler.html", null ],
     [ "LegendaryExplorerCore.UnrealScript.Compiling.ScriptPropertiesCompiler", "class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_script_properties_compiler.html", null ],
     [ "LegendaryExplorerCore.UnrealScript.Lexing.ScriptToken", "class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_script_token.html", null ],
     [ "LegendaryExplorerCore.Misc.DuplicatingIni.Section", "class_legendary_explorer_core_1_1_misc_1_1_duplicating_ini_1_1_section.html", null ],

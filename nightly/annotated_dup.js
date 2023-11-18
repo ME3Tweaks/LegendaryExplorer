@@ -770,9 +770,9 @@ var annotated_dup =
             [ "PositionedMessage", "class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_errors_1_1_positioned_message.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_errors_1_1_positioned_message" ],
             [ "Warning", "class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_errors_1_1_warning.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_errors_1_1_warning" ]
           ] ],
-          [ "ByteCodeCompilerVisitor", "class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_byte_code_compiler_visitor.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_byte_code_compiler_visitor" ],
           [ "BytecodeWriter", "class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_bytecode_writer.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_bytecode_writer" ],
           [ "CompilerUtils", "class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_compiler_utils.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_compiler_utils" ],
+          [ "ScriptObjectCompiler", "class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_script_object_compiler.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_script_object_compiler" ],
           [ "ScriptPropertiesCompiler", "class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_script_properties_compiler.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_script_properties_compiler" ]
         ] ],
         [ "Decompiling", "namespace_legendary_explorer_core_1_1_unreal_script_1_1_decompiling.html", [

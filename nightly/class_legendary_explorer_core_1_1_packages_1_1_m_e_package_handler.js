@@ -11,6 +11,7 @@ var class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler =
     [ "QuickOpenMEPackage", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#ac007f1091e08996f7dc161007d78e69b", null ],
     [ "CreateAndSavePackage", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#ae9a59f95e465ec9327224ebf04f44f58", null ],
     [ "CreateAndLoadPackage", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#aca987fbab3733a0794051f4ef8da0063", null ],
+    [ "CreateAndOpenPackage", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#a70980eb595e1524364210a29a35159a1", null ],
     [ "CreateEmptyLevel", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#a2631b772bd54bd50bd7293e3e01bc5e1", null ],
     [ "CreateEmptyLevelStream", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#a80dd00b7bc5e18307072aaf8fabe2b64", null ],
     [ "OpenUDKPackage", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#a2d5307b4bd191a289ca6cf828f88648a", null ],
@@ -24,7 +25,6 @@ var class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler =
     [ "PrintOpenPackages", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#abb178b5944951ac1259b53a4b82dbf0a", null ],
     [ "TryGetPackageFromCache", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#a9a3610d045c65fe4e1b84ed74f8a67ad", null ],
     [ "OpenMEPackages", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#a1098084e34b864edf29c0bd34bb83c71", null ],
-    [ "CreateAndOpenPackage", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#a70980eb595e1524364210a29a35159a1", null ],
     [ "GlobalSharedCacheEnabled", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#a25504fe78951f44b245fa7332e567d67", null ],
     [ "PackagesInTools", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#ab4d1206ace15e447b15edc2d7e95cb5c", null ]
 ];
