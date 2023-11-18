@@ -674,6 +674,13 @@ namespace LegendaryExplorerCore.UnrealScript
             {
                 return null;
             }
+            CompileNewClassASTInternal(pcc, cls, log, symbols, existingClass, ref vfTableChanged);
+
+            return cls;
+        }
+
+        private static void CompileNewClassASTInternal(IMEPackage pcc, Class cls, MessageLog log, SymbolTable symbols, Class existingClass, ref bool vfTableChanged, Func<IMEPackage, string, IEntry> missingObjectResolver = null)
+        {
             symbols.RevertToObjectStack();
             symbols.GoDirectlyToStack(cls.GetScope());
             foreach (Struct childStruct in cls.TypeDeclarations.OfType<Struct>())
@@ -688,7 +695,7 @@ namespace LegendaryExplorerCore.UnrealScript
             {
                 CodeBodyParser.ParseState(state, pcc.Game, symbols, log);
             }
-            PropertiesBlockParser.Parse(cls.DefaultProperties, pcc, symbols, log, true);
+            PropertiesBlockParser.Parse(cls.DefaultProperties, pcc, symbols, log, true, missingObjectResolver);
 
             //calculate the virtual function table
             if (pcc.Game.IsGame3())
@@ -696,6 +703,28 @@ namespace LegendaryExplorerCore.UnrealScript
                 var virtualFuncs = cls.Functions.Where(func => func.ShouldBeInVTable).ToList();
                 var funcDict = virtualFuncs.ToDictionary(func => func.Name);
                 List<string> parentVirtualFuncNames = ((Class)cls.Parent).VirtualFunctionNames;
+                if (parentVirtualFuncNames is null)
+                {
+                    parentVirtualFuncNames = GetParentVirtualFuncs((Class)cls.Parent);
+
+                    static List<string> GetParentVirtualFuncs(Class curClass)
+                    {
+                        var funcs = new List<string>();
+                        if (curClass is null)
+                        {
+                            return funcs;
+                        }
+                        funcs.AddRange(GetParentVirtualFuncs(curClass.Parent as Class));
+                        foreach (string funcName in curClass.Functions.Where(func => func.ShouldBeInVTable).Select(func => func.Name))
+                        {
+                            if (!funcs.Contains(funcName, StringComparer.OrdinalIgnoreCase))
+                            {
+                                funcs.Add(funcName);
+                            }
+                        }
+                        return funcs;
+                    }
+                }
                 var overrides = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
                 foreach (string funcName in parentVirtualFuncNames)
                 {
@@ -712,7 +741,7 @@ namespace LegendaryExplorerCore.UnrealScript
                     cls.VirtualFunctionNames.AddRange(virtualFuncs.Select(func => func.Name));
                 }
 
-                if (existingClass is not null)
+                if (existingClass?.VirtualFunctionNames is not null)
                 {
                     var existingNames = new HashSet<string>(existingClass.VirtualFunctionNames, StringComparer.OrdinalIgnoreCase);
                     if (existingNames.SetEquals(cls.VirtualFunctionNames))
@@ -744,8 +773,6 @@ namespace LegendaryExplorerCore.UnrealScript
 
                 cls.VirtualFunctionTable = cls.VirtualFunctionNames.Select(funcName => cls.LookupFunction(funcName) ?? throw new Exception($"'{funcName}' not found on class!")).ToList();
             }
-
-            return cls;
         }
 
         public static Function CompileNewFunctionBodyAST(ExportEntry parentExport, Function func, MessageLog log, FileLib lib)
@@ -979,6 +1006,107 @@ namespace LegendaryExplorerCore.UnrealScript
 
             log.LogError($"Class '{export.ClassName}' not found in symbol table.");
             return null;
+        }
+
+        public record LooseClass(string ClassName, string Source)
+        {
+            internal Class ClassAST;
+            internal MessageLog Log;
+        }
+
+        public record LooseClassPackage(string PackageName, List<LooseClass> Classes);
+
+        public static MessageLog CompileLooseClasses(IMEPackage targetPcc, List<LooseClassPackage> looseClasses, Func<IMEPackage, string, IEntry> missingObjectResolver, string gameRootPath = null)
+        {
+            using var packageCache = new PackageCache();
+            using var fileLib = new FileLib(targetPcc);
+
+            var classASTs = new List<Class>();
+            foreach (LooseClass looseClass in looseClasses.SelectMany(lcp => lcp.Classes))
+            {
+                var log = new MessageLog();
+                (ASTNode node, _) = CompileOutlineAST(looseClass.Source, "Class", log, targetPcc.Game);
+                if (node is not Class cls)
+                {
+                    log.LogError($"'{looseClass.ClassName}' does not contain a parseable class.");
+                    return log;
+                }
+                if (log.HasErrors || log.HasLexErrors)
+                {
+                    log.LogError($"'{looseClass.ClassName}' had parse errors");
+                    return log;
+                }
+                classASTs.Add(cls);
+                looseClass.ClassAST = cls;
+                looseClass.Log = log;
+            }
+
+            if (!fileLib.InternalInitialize(packageCache, gameRootPath, additionalClasses: classASTs))
+            {
+                fileLib.InitializationLog.LogError("Could not initialize FileLib.");
+                return fileLib.InitializationLog;
+            }
+
+            var completions = new List<(UClass uClass, Action action)>();
+            foreach (LooseClassPackage looseClassPackage in looseClasses)
+            {
+                ExportEntry classPackage = targetPcc.FindExport(looseClassPackage.PackageName);
+                if (classPackage is not null && classPackage.ClassName is not "Package")
+                {
+                    var log = new MessageLog();
+                    log.LogError($"Could not create package '{looseClassPackage.PackageName}', as an existing non-package top-level export of the same name exists.");
+                    return log;
+                }
+                classPackage ??= ExportCreator.CreatePackageExport(targetPcc, looseClassPackage.PackageName);
+
+                bool vfTableChanged = false;
+                SymbolTable symbols = fileLib.ReadonlySymbolTable; //this sign can't stop me because I can't read!
+                foreach (LooseClass looseClass in looseClassPackage.Classes)
+                {
+                    MessageLog log = looseClass.Log;
+                    Class cls = looseClass.ClassAST;
+                    
+                    try
+                    {
+                        CompileNewClassASTInternal(targetPcc, cls, log, symbols, null, ref vfTableChanged, missingObjectResolver);
+                        if (log.HasErrors)
+                        {
+                            log.LogError($"'{looseClass.ClassName}' had parse errors");
+                            return log;
+                        }
+                        UClass uClass = null;
+                        Action completionAction = ScriptObjectCompiler.CreateClassStub(cls, targetPcc, classPackage, ref uClass, packageCache, fileLib.GameRootPath);
+                        completions.Add(uClass, completionAction);
+                    }
+                    catch (ParseException)
+                    {
+                        log.LogError($"'{looseClass.ClassName}' had parse errors");
+                        return log;
+                    }
+                    catch (Exception exception)
+                    {
+                        log.LogError($"Exception while compiling '{looseClass.ClassName}': {exception}");
+                        return log;
+                    }
+                }
+
+                foreach ((UClass uClass, Action action) in completions)
+                {
+                    try
+                    {
+                        action();
+                        uClass.Export.WriteBinary(uClass);
+                    }
+                    catch (Exception e)
+                    {
+                        var log = new MessageLog();
+                        log.LogError($"Exception while compiling '{uClass.Export.ObjectName}': {e}");
+                        return log;
+                    }
+                }
+            }
+
+            return new MessageLog();
         }
     }
 }

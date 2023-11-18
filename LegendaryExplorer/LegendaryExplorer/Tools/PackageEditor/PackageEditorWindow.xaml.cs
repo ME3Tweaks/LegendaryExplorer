@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -499,7 +500,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 }
 
                 IEntry defaultParent = null;
-                if (TryGetSelectedExport(out var currentExport) && (currentExport.Parent == null && currentExport.ClassName == "Package" ) || (currentExport.Parent != null && currentExport.Parent.ClassName == "Package"))
+                if (TryGetSelectedExport(out var currentExport) && (currentExport.Parent is null && currentExport.ClassName == "Package"  || currentExport.Parent is { ClassName: "Package" }))
                 {
                     // This will match both cases given the if statement.
                     defaultParent = currentExport.Parent ?? currentExport;
@@ -3056,7 +3057,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
             return false;
         }
 
-        internal bool TryGetSelectedExport(out ExportEntry export)
+        internal bool TryGetSelectedExport([NotNullWhen(true)] out ExportEntry? export)
         {
             if (GetSelected(out int uIndex) && Pcc.IsUExport(uIndex))
             {
@@ -3068,7 +3069,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
             return false;
         }
 
-        private bool TryGetSelectedImport(out ImportEntry import)
+        private bool TryGetSelectedImport([NotNullWhen(true)] out ImportEntry? import)
         {
             if (GetSelected(out int uIndex) && Pcc.IsImport(uIndex))
             {

@@ -1158,6 +1158,14 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         {
             PackageEditorExperimentsS.PortShadowMaps(GetPEWindow());
         }
+        private void CompileLooseClassFolder_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsS.CompileLooseClassFolder(GetPEWindow());
+        }
+        private void DumpClassSource_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsS.DumpClassSource(GetPEWindow());
+        }
 
         #endregion
 
