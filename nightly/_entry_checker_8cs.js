@@ -1,6 +1,5 @@
 var _entry_checker_8cs =
 [
     [ "LegendaryExplorerCore.Packages.CloningImportingAndRelinking.ReferenceCheckPackage", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_reference_check_package.html", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_reference_check_package" ],
-    [ "LegendaryExplorerCore.Packages.CloningImportingAndRelinking.ME3XL", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_m_e3_x_l.html", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_m_e3_x_l" ],
     [ "LegendaryExplorerCore.Packages.CloningImportingAndRelinking.EntryChecker", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_checker.html", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_checker" ]
 ];

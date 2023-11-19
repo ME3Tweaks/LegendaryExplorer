@@ -1,5 +1,6 @@
 var namespace_legendary_explorer_core_1_1_coalesced =
 [
+    [ "Config", "namespace_legendary_explorer_core_1_1_coalesced_1_1_config.html", "namespace_legendary_explorer_core_1_1_coalesced_1_1_config" ],
     [ "Exceptions", "namespace_legendary_explorer_core_1_1_coalesced_1_1_exceptions.html", "namespace_legendary_explorer_core_1_1_coalesced_1_1_exceptions" ],
     [ "Huffman", "namespace_legendary_explorer_core_1_1_coalesced_1_1_huffman.html", "namespace_legendary_explorer_core_1_1_coalesced_1_1_huffman" ],
     [ "Xml", "namespace_legendary_explorer_core_1_1_coalesced_1_1_xml.html", "namespace_legendary_explorer_core_1_1_coalesced_1_1_xml" ],

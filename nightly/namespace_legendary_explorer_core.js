@@ -9,6 +9,7 @@ var namespace_legendary_explorer_core =
     [ "Gammtek", "namespace_legendary_explorer_core_1_1_gammtek.html", "namespace_legendary_explorer_core_1_1_gammtek" ],
     [ "Helpers", "namespace_legendary_explorer_core_1_1_helpers.html", "namespace_legendary_explorer_core_1_1_helpers" ],
     [ "Kismet", "namespace_legendary_explorer_core_1_1_kismet.html", "namespace_legendary_explorer_core_1_1_kismet" ],
+    [ "Localization", "namespace_legendary_explorer_core_1_1_localization.html", "namespace_legendary_explorer_core_1_1_localization" ],
     [ "Matinee", "namespace_legendary_explorer_core_1_1_matinee.html", "namespace_legendary_explorer_core_1_1_matinee" ],
     [ "ME1", "namespace_legendary_explorer_core_1_1_m_e1.html", "namespace_legendary_explorer_core_1_1_m_e1" ],
     [ "Memory", "namespace_legendary_explorer_core_1_1_memory.html", "namespace_legendary_explorer_core_1_1_memory" ],

@@ -11,6 +11,11 @@ var annotated_dup =
         [ "WwiseVersions", "class_legendary_explorer_core_1_1_audio_1_1_wwise_versions.html", "class_legendary_explorer_core_1_1_audio_1_1_wwise_versions" ]
       ] ],
       [ "Coalesced", "namespace_legendary_explorer_core_1_1_coalesced.html", [
+        [ "Config", "namespace_legendary_explorer_core_1_1_coalesced_1_1_config.html", [
+          [ "ConfigAssetBundle", "class_legendary_explorer_core_1_1_coalesced_1_1_config_1_1_config_asset_bundle.html", "class_legendary_explorer_core_1_1_coalesced_1_1_config_1_1_config_asset_bundle" ],
+          [ "ConfigMerge", "class_legendary_explorer_core_1_1_coalesced_1_1_config_1_1_config_merge.html", "class_legendary_explorer_core_1_1_coalesced_1_1_config_1_1_config_merge" ],
+          [ "ConfigTools", "class_legendary_explorer_core_1_1_coalesced_1_1_config_1_1_config_tools.html", "class_legendary_explorer_core_1_1_coalesced_1_1_config_1_1_config_tools" ]
+        ] ],
         [ "Exceptions", "namespace_legendary_explorer_core_1_1_coalesced_1_1_exceptions.html", [
           [ "CBundleException", "class_legendary_explorer_core_1_1_coalesced_1_1_exceptions_1_1_c_bundle_exception.html", "class_legendary_explorer_core_1_1_coalesced_1_1_exceptions_1_1_c_bundle_exception" ],
           [ "CToolException", "class_legendary_explorer_core_1_1_coalesced_1_1_exceptions_1_1_c_tool_exception.html", "class_legendary_explorer_core_1_1_coalesced_1_1_exceptions_1_1_c_tool_exception" ]
@@ -258,6 +263,9 @@ var annotated_dup =
         [ "SeqTools", "class_legendary_explorer_core_1_1_kismet_1_1_seq_tools.html", "class_legendary_explorer_core_1_1_kismet_1_1_seq_tools" ],
         [ "SequenceObjectCreator", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator" ]
       ] ],
+      [ "Localization", "namespace_legendary_explorer_core_1_1_localization.html", [
+        [ "LECLocalizationShim", "class_legendary_explorer_core_1_1_localization_1_1_l_e_c_localization_shim.html", "class_legendary_explorer_core_1_1_localization_1_1_l_e_c_localization_shim" ]
+      ] ],
       [ "Matinee", "namespace_legendary_explorer_core_1_1_matinee.html", [
         [ "MatineeHelper", "class_legendary_explorer_core_1_1_matinee_1_1_matinee_helper.html", "class_legendary_explorer_core_1_1_matinee_1_1_matinee_helper" ]
       ] ],
@@ -328,7 +336,6 @@ var annotated_dup =
           [ "EntryCloner", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_cloner.html", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_cloner" ],
           [ "EntryExporter", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_exporter.html", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_exporter" ],
           [ "EntryImporter", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer" ],
-          [ "ME3XL", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_m_e3_x_l.html", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_m_e3_x_l" ],
           [ "ObjectInstanceDB", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_object_instance_d_b.html", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_object_instance_d_b" ],
           [ "PortingOptions", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_porting_options.html", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_porting_options" ],
           [ "ReferenceCheckPackage", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_reference_check_package.html", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_reference_check_package" ],
