@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -391,23 +392,21 @@ namespace LegendaryExplorerCore.Packages
         /// </summary>
         /// <param name="path">Where to save the package</param>
         /// <param name="game">What game the package is for</param>
-        public static IMEPackage CreateAndLoadPackage(string path, MEGame game)
-        {
-            switch (game)
-            {
-                case MEGame.UDK:
-                    UDKConstructorDelegate(path).Save();
-                    break;
-                case MEGame.LELauncher:
-                    throw new ArgumentException("Cannot create a package for LELauncher, it doesn't use packages");
-                case MEGame.Unknown:
-                    throw new ArgumentException("Cannot create a package file for an Unknown game!", nameof(game));
-                default:
-                    MEBlankPackageCreatorDelegate(path, game).Save();
-                    break;
-            }
+        [Obsolete("Use CreateAndOpenPackage instead", true)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public static IMEPackage CreateAndLoadPackage(string path, MEGame game) => CreateAndOpenPackage(path, game);
 
-            return MEPackageHandler.OpenMEPackage(path);
+        /// <summary>
+        /// Creates a new package on disk, and then opens and returns it.
+        /// </summary>
+        /// <param name="packagePath">Path to package file to create</param>
+        /// <param name="game">What game the package is for</param>
+        /// <param name="forceLoadFromDisk">If package should use the sharing system (false) or not (true)</param>
+        /// <returns></returns>
+        public static IMEPackage CreateAndOpenPackage(string packagePath, MEGame game, bool forceLoadFromDisk = false)
+        {
+            CreateAndSavePackage(packagePath, game);
+            return OpenMEPackage(packagePath, forceLoadFromDisk: forceLoadFromDisk);
         }
 
         /// <summary>
@@ -606,19 +605,6 @@ namespace LegendaryExplorerCore.Packages
 
         //useful for scanning operations, where a common set of packages are going to be referenced repeatedly
         public static DisposableCollection<IMEPackage> OpenMEPackages(IEnumerable<string> filePaths) => new(filePaths.Select(filePath => OpenMEPackage(filePath)));
-
-        /// <summary>
-        /// Creates a new package and disk, and then opens and returns it.
-        /// </summary>
-        /// <param name="packagePath">Path to package file to create</param>
-        /// <param name="game">What game the package is for</param>
-        /// <param name="forceLoadFromDisk">If package should use the sharing system (false) or not (true)</param>
-        /// <returns></returns>
-        public static IMEPackage CreateAndOpenPackage(string packagePath, MEGame game, bool forceLoadFromDisk = false)
-        {
-            CreateAndSavePackage(packagePath, game);
-            return MEPackageHandler.OpenMEPackage(packagePath, forceLoadFromDisk: forceLoadFromDisk);
-        }
     }
 
     public class DisposableCollection<T> : List<T>, IDisposable where T : IDisposable

@@ -162,7 +162,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                 // Load global files into the cache to speed this process up.
                 globalCache.InsertIntoCache(MEPackageHandler.OpenMEPackages(EntryImporter.FilesSafeToImportFrom(MEGame.LE1).Select(x => Path.Combine(MEDirectories.GetCookedPath(MEGame.LE1), x))));
-                using var actorTypesPackage = MEPackageHandler.CreateAndLoadPackage(Path.Combine(MEDirectories.GetCookedPath(MEGame.LE1), "LE1ActorTypes.pcc"), MEGame.LE1);
+                using var actorTypesPackage = MEPackageHandler.CreateAndOpenPackage(Path.Combine(MEDirectories.GetCookedPath(MEGame.LE1), "LE1ActorTypes.pcc"), MEGame.LE1);
                 pewpf.BusyText = "Coalescing actor types...";
                 pewpf.IsBusy = true;
                 var allFiles = MELoadedFiles.GetOfficialFiles(MEGame.LE1).Where(x => Path.GetExtension(x) == ".pcc").ToList();

@@ -254,36 +254,31 @@ namespace LegendaryExplorerCore.Textures
                         break;
                     }
                 case ImageFormat.PNG:
-                case ImageFormat.JPEG:
                     {
-                        IImageDecoder decoder = format == ImageFormat.PNG
-                            ? new PngDecoder()
-                            : new JpegDecoder();
-
-                        var image = decoder.Decode<Rgba32>(Configuration.Default, stream, CancellationToken.None);
-
+                        var image = PngDecoder.Instance.Decode<Rgba32>(new DecoderOptions(), stream);
                         if (!BitOperations.IsPow2(image.Width) || !BitOperations.IsPow2(image.Height))
                             throw new TextureSizeNotPowerOf2Exception();
 
-                        //image.Get
-                        //using (var ms = new MemoryStream())
-                        //{
-                        //    image.Save(ms, TPixelFo)
-                        //}
-                        //    image.Save(new MemoryStream());
-                        //FormatConvertedBitmap srcBitmap = new FormatConvertedBitmap();
-                        //srcBitmap.BeginInit();
-                        //srcBitmap.Source = decoder;
-                        //srcBitmap.DestinationFormat = SixLabors.ImageSharp.PixelFormats.Bgra32;
-                        //srcBitmap.EndInit();
-
-                        //var pixels = new byte[srcBitmap.PixelWidth * srcBitmap.PixelHeight * 4];
-                        //decoder.CopyPixels(pixels, srcBitmap.PixelWidth * 4, 0);
-
-                        var pixels = SLImageToRawBytes(image);
-
+                        byte[] pixels = SLImageToRawBytes<Rgba32>(image);
                         pixelFormat = PixelFormat.ARGB;
-                        var mipmap = new MipMap(pixels, image.Width, image.Height, PixelFormat.ARGB);
+
+                        var mipmap = new MipMap(pixels, image.Width, image.Height, pixelFormat);
+                        mipMaps.Add(mipmap);
+                    }
+                    break;
+                case ImageFormat.JPEG:
+                    {
+                        // NOTE: This could also be RGB24! IDK how you are supposed to know which one to use
+                        var image = JpegDecoder.Instance.Decode<Bgr24>(new DecoderOptions(), stream);
+                        if (!BitOperations.IsPow2(image.Width) || !BitOperations.IsPow2(image.Height))
+                            throw new TextureSizeNotPowerOf2Exception();
+
+                        byte[] pixels = null;
+                        // JPG does not have alpha channel
+                        pixels = SLImageToRawBytes(image);
+                        pixelFormat = PixelFormat.RGB;
+
+                        var mipmap = new MipMap(pixels, image.Width, image.Height, pixelFormat);
                         mipMaps.Add(mipmap);
                         break;
                     }
@@ -295,7 +290,7 @@ namespace LegendaryExplorerCore.Textures
         public static byte[] ToArray(SixLabors.ImageSharp.Image image, IImageFormat imageFormat)
         {
             using var memoryStream = new MemoryStream();
-            var imageEncoder = image.GetConfiguration().ImageFormatsManager.FindEncoder(imageFormat);
+            var imageEncoder = image.GetConfiguration().ImageFormatsManager.GetEncoder(imageFormat);
             image.Save(memoryStream, imageEncoder);
             return memoryStream.ToArray();
         }
@@ -397,7 +392,7 @@ namespace LegendaryExplorerCore.Textures
         /// </summary>
         /// <param name="image"></param>
         /// <returns></returns>
-        private static byte[] SLImageToRawBytes(Image<Rgba32> image)
+        private static byte[] SLImageToRawBytes<TPixel>(Image<TPixel> image) where TPixel : unmanaged, IPixel<TPixel>
         {
             return MemoryMarshal.AsBytes(image.GetPixelMemoryGroup().ToArray()[0].Span).ToArray();
         }
@@ -406,24 +401,6 @@ namespace LegendaryExplorerCore.Textures
         {
             return ARGBtoRGB(convertRawToARGB(src, ref w, ref h, format), w, h);
         }
-
-        //TODO: remove this method, as it doesn't really belong here, and forces a dependency on the System.Drawing nuget package.
-        //this is used only by M3, and should be moved there.
-        [SupportedOSPlatform("windows")]
-        public static Bitmap convertRawToBitmapARGB(byte[] src, int w, int h, PixelFormat format, bool clearAlpha = true)
-        {
-            byte[] tmpData = convertRawToARGB(src, ref w, ref h, format, clearAlpha);
-            var bitmap = new Bitmap(w, h, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-            BitmapData bitmapData = bitmap.LockBits(new System.Drawing.Rectangle(0, 0, w, h), ImageLockMode.ReadWrite, bitmap.PixelFormat);
-            Marshal.Copy(tmpData, 0, bitmapData.Scan0, tmpData.Length);
-            bitmap.UnlockBits(bitmapData);
-            return bitmap;
-        }
-
-        //public Bitmap getBitmapARGB()
-        //{
-        //    return convertRawToBitmapARGB(mipMaps[0].data, mipMaps[0].width, mipMaps[0].height, pixelFormat);
-        //}
 
         private static void clearAlphaFromARGB(byte[] src, int w, int h)
         {

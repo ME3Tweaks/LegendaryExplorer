@@ -124,7 +124,10 @@ namespace LegendaryExplorerCore.UnrealScript
         /// <param name="canUseBinaryCache">Optional: Cache <see cref="ObjectBinary"/>s during initialization. Defaults to <c>true</c>.
         /// Caching speeds up initialization and any decompilation operations using this <see cref="FileLib"/>, at the cost of greater memory usage.</param>
         /// <returns>A <see cref="bool"/> indicating whether initialization was successful. This value will also be in <see cref="IsInitialized"/>.</returns>
-        public bool Initialize(PackageCache packageCache = null, string gameRootPath = null, bool canUseBinaryCache = true)
+        public bool Initialize(PackageCache packageCache = null, string gameRootPath = null, bool canUseBinaryCache = true) => InternalInitialize(packageCache, gameRootPath, canUseBinaryCache, null);
+
+        //if additionalClasses is passed to this method, the FileLib cannot be used normally! It should only be used for compiling those classes 
+        internal bool InternalInitialize(PackageCache packageCache = null, string gameRootPath = null, bool canUseBinaryCache = true, IEnumerable<Class> additionalClasses = null)
         {
             if (IsInitialized) return true;
 
@@ -136,7 +139,7 @@ namespace LegendaryExplorerCore.UnrealScript
                     return true;
                 }
 
-                if (InternalInitialize(packageCache, gameRootPath, canUseBinaryCache))
+                if (PrivateInitialize(packageCache, gameRootPath, canUseBinaryCache, additionalClasses))
                 {
                     HadInitializationError = false;
                     _isInitialized = true;
@@ -193,7 +196,7 @@ namespace LegendaryExplorerCore.UnrealScript
         public static void FreeLibs() { }
 
         //only use from within _initializationLock!
-        private bool InternalInitialize(PackageCache packageCache, string gameRootPath = null, bool canUseCache = true)
+        private bool PrivateInitialize(PackageCache packageCache, string gameRootPath = null, bool canUseCache = true, IEnumerable<Class> additionalClasses = null)
         {
             bool packageCacheIsLocal = false;
             try
@@ -292,7 +295,7 @@ namespace LegendaryExplorerCore.UnrealScript
                 }
                 _symbols = _baseSymbols?.Clone();
                 _cacheEnabled = canUseCache;
-                return ResolveAllClassesInPackage(Pcc, ref _symbols, InitializationLog, packageCache);
+                return ResolveAllClassesInPackage(Pcc, ref _symbols, InitializationLog, packageCache, additionalClasses: additionalClasses);
             }
             catch when (!LegendaryExplorerCoreLib.IsDebug)
             {
@@ -400,7 +403,7 @@ namespace LegendaryExplorerCore.UnrealScript
             }
         }
 
-        private bool ResolveAllClassesInPackage(IMEPackage pcc, ref SymbolTable symbols, MessageLog log, PackageCache packageCache = null, Class classOverride = null)
+        private bool ResolveAllClassesInPackage(IMEPackage pcc, ref SymbolTable symbols, MessageLog log, PackageCache packageCache = null, Class classOverride = null, IEnumerable<Class> additionalClasses = null)
         {
             objBinCache.Clear();
             var realPcc = Pcc;
@@ -488,6 +491,18 @@ namespace LegendaryExplorerCore.UnrealScript
                         return false;
                     }
                     classes.Add(classOverride, "");
+                }
+                if (additionalClasses is not null)
+                {
+                    foreach (Class additionalClass in additionalClasses)
+                    {
+                        //should loose classes override?
+                        if (!symbols.AddType(additionalClass))
+                        {
+                            continue; //class already defined
+                        }
+                        classes.Add(additionalClass, "");
+                    }
                 }
                 LECLog.Debug($"{fileName}: Finished parse.");
                 var validator = new ClassValidationVisitor(log, symbols, ValidationPass.ClassRegistration);

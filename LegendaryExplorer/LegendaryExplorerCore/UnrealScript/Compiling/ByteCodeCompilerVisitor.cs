@@ -18,7 +18,7 @@ using static LegendaryExplorerCore.Unreal.UnrealFlags;
 
 namespace LegendaryExplorerCore.UnrealScript.Compiling
 {
-    public class ByteCodeCompilerVisitor : BytecodeWriter, IASTVisitor
+    internal class ByteCodeCompilerVisitor : BytecodeWriter, IASTVisitor
     {
         private readonly UStruct Target;
         private IContainsByteCode CompilationUnit;
@@ -33,6 +33,8 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
         private SkipPlaceholder iteratorCallSkip;
 
         private readonly Dictionary<Label, List<JumpPlaceholder>> LabelJumps = new();
+
+        private Func<IMEPackage, string, IEntry> MissingObjectResolver;
 
         [Flags]
         private enum NestType
@@ -85,9 +87,12 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             ContainingClass = containingClass;
         }
 
-        public static void Compile(Function func, UFunction target)
+        public static void Compile(Function func, UFunction target, Func<IMEPackage, string, IEntry> missingObjectResolver = null)
         {
-            var bytecodeCompiler = new ByteCodeCompilerVisitor(target);
+            var bytecodeCompiler = new ByteCodeCompilerVisitor(target)
+            {
+                MissingObjectResolver = missingObjectResolver
+            };
             bytecodeCompiler.Compile(func);
         }
 
@@ -189,9 +194,12 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
         }
 
 
-        public static void Compile(State state, UState target)
+        public static void Compile(State state, UState target, Func<IMEPackage, string, IEntry> missingObjectResolver = null)
         {
-            var bytecodeCompiler = new ByteCodeCompilerVisitor(target);
+            var bytecodeCompiler = new ByteCodeCompilerVisitor(target)
+            {
+                MissingObjectResolver = missingObjectResolver
+            };
             bytecodeCompiler.Compile(state);
         }
 
@@ -1292,7 +1300,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             }
             else
             {
-                IEntry entry = ResolveObject($"{ContainingClass.InstancedFullPath}.{node.Name.Value}") ?? ResolveObject(node.Name.Value);
+                IEntry entry = ResolveObject($"{ContainingClass.InstancedFullPath}.{node.Name.Value}") ?? ResolveObject(node.Name.Value) ?? MissingObjectResolver?.Invoke(Pcc, node.Name.Value);
                 if (entry is null)
                 {
                     throw new Exception($"Line {CompilationUnit.Tokens.LineLookup.GetLineFromCharIndex(node.StartPos)}: Could not find '{node.Name.Value}' in {Pcc.FilePath}!");
@@ -1451,8 +1459,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         private IEntry ResolveState(State s) => Pcc.getEntryOrAddImport($"{ResolveSymbol(s.Outer).InstancedFullPath}.{s.Name}", "State");
 
-        private IEntry ResolveObject(string instancedFullPath) => Pcc.Exports.FirstOrDefault(exp => exp.InstancedFullPath == instancedFullPath) ??
-                                                                  (IEntry)Pcc.Imports.FirstOrDefault(imp => imp.InstancedFullPath == instancedFullPath);
+        private IEntry ResolveObject(string instancedFullPath) => Pcc.FindEntry(instancedFullPath);
 
         public static string PropertyTypeName(VariableType type) =>
             type switch

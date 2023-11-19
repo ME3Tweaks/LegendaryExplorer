@@ -535,9 +535,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 return new AssignStatement(expr, value, expr.StartPos, value.EndPos);
             }
 
-            if (expr is FunctionCall or DelegateCall or PostOpReference or CompositeSymbolRef {InnerSymbol: FunctionCall or DelegateCall} 
-                || expr is PreOpReference preOp && preOp.Operator.HasOutParams || expr is InOpReference inOp && inOp.Operator.HasOutParams 
-                || expr is DynArrayOperation and not DynArrayLength)
+            if (ExpressionHasEffect(expr))
             {
             }
             else
@@ -546,6 +544,14 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             }
 
             return new ExpressionOnlyStatement(expr, expr.StartPos, expr.EndPos);
+
+            static bool ExpressionHasEffect(Expression expression)
+            {
+                return expression is FunctionCall or DelegateCall or PostOpReference or CompositeSymbolRef {InnerSymbol: FunctionCall or DelegateCall} 
+                       || expression is PreOpReference preOp && preOp.Operator.HasOutParams || expression is InOpReference inOp && inOp.Operator.HasOutParams 
+                       || expression is DynArrayOperation and not DynArrayLength
+                       || expression is ConditionalExpression ternary && ExpressionHasEffect(ternary.TrueExpression) && ExpressionHasEffect(ternary.FalseExpression);
+            }
         }
 
         private VariableDeclaration ParseLocalVarDecl()
@@ -1102,25 +1108,31 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 Expression falseExpr = Ternary();
                 VariableType trueType = trueExpr.ResolveType();
                 VariableType falseType = falseExpr.ResolveType();
-                if (trueType == SymbolTable.IntType && falseExpr is IntegerLiteral falseIntLit)
+                if (falseExpr is IntegerLiteral falseIntLit)
                 {
-                    falseIntLit.NumType = INT;
-                    falseType = falseIntLit.ResolveType();
+                    if (trueType == SymbolTable.IntType)
+                    {
+                        falseIntLit.NumType = INT;
+                        falseType = falseIntLit.ResolveType();
+                    }
+                    else if (trueType == SymbolTable.ByteType || trueType is Enumeration)
+                    {
+                        falseIntLit.NumType = BYTE;
+                        falseType = falseIntLit.ResolveType();
+                    }
                 }
-                else if (falseType == SymbolTable.IntType && trueExpr is IntegerLiteral trueIntLit)
+                else if (trueExpr is IntegerLiteral trueIntLit)
                 {
-                    trueIntLit.NumType = INT;
-                    trueType = trueIntLit.ResolveType();
-                }
-                else if (trueType == SymbolTable.ByteType && falseExpr is IntegerLiteral falseByteLit)
-                {
-                    falseByteLit.NumType = BYTE;
-                    falseType = falseByteLit.ResolveType();
-                }
-                else if (falseType == SymbolTable.ByteType && trueExpr is IntegerLiteral trueByteLit)
-                {
-                    trueByteLit.NumType = BYTE;
-                    trueType = trueByteLit.ResolveType();
+                    if (falseType == SymbolTable.IntType)
+                    {
+                        trueIntLit.NumType = INT;
+                        trueType = trueIntLit.ResolveType();
+                    }
+                    else if (falseType == SymbolTable.ByteType || falseType is Enumeration)
+                    {
+                        trueIntLit.NumType = BYTE;
+                        trueType = trueIntLit.ResolveType();
+                    }
                 }
 
                 if (NodeUtils.TypeEqual(trueType, falseType))

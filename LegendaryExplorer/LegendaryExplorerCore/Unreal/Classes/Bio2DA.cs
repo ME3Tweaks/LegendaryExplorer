@@ -68,6 +68,86 @@ namespace LegendaryExplorerCore.Unreal.Classes
         public ExportEntry Export;
 
         /// <summary>
+        /// Merges this 2DA table's data into the specified one, overwriting any same-name/indexed rows in the destination with data from ours. Returns a list of row indexes from THIS 2DA that were merged into the destination 2DA.
+        /// </summary>
+        /// <param name="destination2DA"></param>
+        /// <exception cref="Exception"></exception>
+        public List<int> MergeInto(Bio2DA destination2DA, bool addMissingRows = true)
+        {
+            if (ReferenceEquals(this, destination2DA))
+            {
+                throw new Exception("Cannot merge 2DA into itself!");
+            }
+
+            if (RowCount == 0)
+                return new List<int>(0); // Nothing to merge
+            if (ColumnCount != destination2DA.ColumnCount)
+            {
+                if (destination2DA.RowCount > 0 || destination2DA.ColumnCount > 0)
+                {
+                    // Allow merging if nothing is the same.
+                    throw new Exception("Cannot merge 2DAs: Column counts are not the same");
+                }
+
+                // Initializing from empty - merging existing 2DA into empty 2DA
+
+                // Populate columns
+                foreach (var v in ColumnNames)
+                {
+                    destination2DA.AddColumn(v);
+                }
+            }
+
+            // Merge rows
+            List<int> mergedRows = new List<int>();
+            for (int localRowIdx = 0; localRowIdx < RowCount; localRowIdx++)
+            {
+                var rowName = RowNames[localRowIdx];
+                int destRowIdx;
+                if (!addMissingRows)
+                {
+                    if (!destination2DA.TryGetRowIndexByName(rowName, out destRowIdx))
+                    {
+                        continue;
+                    }
+                }
+                else
+                {
+                    destRowIdx = destination2DA.AddRow(rowName);
+                }
+
+                mergedRows.Add(localRowIdx); // Mark this row as being merged
+                Debug.WriteLine($"Writing {destRowIdx}----------------------------");
+                foreach (var colName in ColumnNames)
+                {
+                    // Debug.WriteLine($"Writing {rowIdx},{colName}");
+
+                    var localCell = this[localRowIdx, colName];
+                    switch (localCell.Type)
+                    {
+                        case Bio2DACell.Bio2DADataType.TYPE_FLOAT:
+                            destination2DA[destRowIdx, colName].FloatValue = localCell.FloatValue;
+                            break;
+                        case Bio2DACell.Bio2DADataType.TYPE_INT:
+                            destination2DA[destRowIdx, colName].IntValue = localCell.IntValue;
+                            break;
+                        case Bio2DACell.Bio2DADataType.TYPE_NAME:
+                            destination2DA[destRowIdx, colName].NameValue = localCell.NameValue;
+                            break;
+                        case Bio2DACell.Bio2DADataType.TYPE_NULL:
+                            destination2DA[destRowIdx, colName].Type = Bio2DACell.Bio2DADataType.TYPE_NULL;
+                            break;
+                        default:
+                            Debugger.Break();
+                            break;
+                    }
+                }
+            }
+
+            return mergedRows;
+        }
+
+        /// <summary>
         /// Constructs a Bio2DA object from the specified export
         /// </summary>
         /// <param name="export"></param>
@@ -166,6 +246,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
             mappedRowNames = new CaseInsensitiveDictionary<int>();
             mappedColumnNames = new CaseInsensitiveDictionary<int>();
             RowNamesUI = new List<string>();
+            Cells = new Bio2DACell[0, 0]; // Changed to initialize variable 11/12/2023 for LE1R merge code
         }
 
         /// <summary>
@@ -186,7 +267,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
             }
         }
 
-        public void Write2DAToExport(ExportEntry export = null)
+        public void Write2DAToExport(ExportEntry exportToWriteTo = null)
         {
             var binary = new Bio2DABinary
             {
@@ -201,6 +282,8 @@ namespace LegendaryExplorerCore.Unreal.Classes
                 for (int colindex = 0; colindex < ColumnCount; colindex++)
                 {
                     Bio2DACell cell = Cells[rowindex, colindex];
+                    //if (cell == null || cell.Type == Bio2DACell.Bio2DADataType.TYPE_NULL)
+                    //    Debugger.Break();
                     if (cell != null && cell.Type != Bio2DACell.Bio2DADataType.TYPE_NULL)
                     {
                         int index = (rowindex * ColumnCount) + colindex;
@@ -217,23 +300,23 @@ namespace LegendaryExplorerCore.Unreal.Classes
             }
 
             // This is so newly minted 2DA can be installed into an export.
-            export ??= Export;
+            exportToWriteTo ??= Export; // 11/12/2023 fix backwards assignment - LE1R
 
             if (RowNames.Count > 0)
             {
-                Property rowsProp = Export.ClassName switch
+                Property rowsProp = exportToWriteTo.ClassName switch // 11/12/2023 fix writing to wrong export (used this object's Export not passed in) - LE1R
                 {
                     "Bio2DA" => new ArrayProperty<NameProperty>(RowNames.Select(n => new NameProperty(n)), "m_sRowLabel"),
                     "Bio2DANumberedRows" => new ArrayProperty<IntProperty>(RowNames.Select(n => new IntProperty(int.Parse(n))), "m_lstRowNumbers"),
                     _ => throw new ArgumentOutOfRangeException()
                 };
-                export.WritePropertyAndBinary(rowsProp, binary);
+                exportToWriteTo.WritePropertyAndBinary(rowsProp, binary);
             }
             else
             {
-                export.RemoveProperty("m_sRowLabel"); // No rows.
-                export.RemoveProperty("m_lstRowNumbers"); // No rows.
-                export.WriteBinary(binary);
+                exportToWriteTo.RemoveProperty("m_sRowLabel"); // No rows.
+                exportToWriteTo.RemoveProperty("m_lstRowNumbers"); // No rows.
+                exportToWriteTo.WriteBinary(binary);
             }
 
         }
@@ -258,6 +341,11 @@ namespace LegendaryExplorerCore.Unreal.Classes
             return mappedRowNames[rowname];
         }
 
+        public bool TryGetRowIndexByName(string rowname, out int rowIndex)
+        {
+            return mappedRowNames.TryGetValue(rowname, out rowIndex);
+        }
+
         #region Setters / Accessors
 
         /// <summary>
@@ -274,7 +362,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
         /// Adds a new row of the specified name to the table. If using Bio2DANumberedRows, pass a string version of an int. If a row already exists with this name, the index for that row is returned instead. Upon adding a new row, new TYPE_NULL cells are added
         /// </summary>
         /// <param name="rowName"></param>
-        /// <returns></returns>
+        /// <returns>The row index created, or found if existing</returns>
         public int AddRow(string rowName)
         {
             if (mappedRowNames.TryGetValue(rowName, out int existing))
@@ -490,5 +578,10 @@ namespace LegendaryExplorerCore.Unreal.Classes
         #endregion
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        public bool TryGetColumnIndexByName(string colname, out int colIndex)
+        {
+            return mappedColumnNames.TryGetValue(colname, out colIndex);
+        }
     }
 }

@@ -31,14 +31,12 @@ namespace LegendaryExplorerCore.DebugTools
             logger?.Error($"{Prefix}{message}");
         }
 
-        public static void Debug(string message)
+        public static void Debug(string message, bool shouldLog = true)
         {
-#if DEBUG
-            if (LogDebug)
+            if (shouldLog && LogDebug)
             {
                 logger?.Debug($"{Prefix}{message}");
             }
-#endif
         }
     }
 }

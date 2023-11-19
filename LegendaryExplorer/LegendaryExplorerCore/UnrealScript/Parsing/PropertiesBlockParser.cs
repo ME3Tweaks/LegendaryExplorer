@@ -21,6 +21,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
         private readonly bool IsStructDefaults;
         private readonly bool IsInDefaultsTree;
         private readonly ObjectType Outer;
+        private Func<IMEPackage, string, IEntry> MissingObjectResolver;
         private bool InSubOject;
 
         public static void ParseStructDefaults(Struct s, IMEPackage pcc, SymbolTable symbols, MessageLog log)
@@ -38,9 +39,12 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             symbols.PopScope();
         }
 
-        public static void Parse(DefaultPropertiesBlock propsBlock, IMEPackage pcc, SymbolTable symbols, MessageLog log, bool isInDefaultsTree)
+        public static void Parse(DefaultPropertiesBlock propsBlock, IMEPackage pcc, SymbolTable symbols, MessageLog log, bool isInDefaultsTree, Func<IMEPackage, string, IEntry> missingObjectResolver = null)
         {
-            var parser = new PropertiesBlockParser(propsBlock, pcc, symbols, log, isInDefaultsTree);
+            var parser = new PropertiesBlockParser(propsBlock, pcc, symbols, log, isInDefaultsTree)
+            {
+                MissingObjectResolver = missingObjectResolver
+            };
             var statements = parser.Parse(false);
 
             propsBlock.Statements = statements;
@@ -451,9 +455,12 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                         VariableType valueClass;
                         if (literal is ObjectLiteral objectLiteral)
                         {
-                            if (objectLiteral.Class is not ClassType && Pcc.FindEntry(objectLiteral.Name.Value) is not IEntry)
+                            if (objectLiteral.Class is not ClassType && Pcc.FindEntry(objectLiteral.Name.Value) is null)
                             {
-                                TypeError($"Could not find '{objectLiteral.Name.Value}' in this file!");
+                                if (MissingObjectResolver?.Invoke(Pcc, objectLiteral.Name.Value) is null)
+                                {
+                                    TypeError($"Could not find '{objectLiteral.Name.Value}' in this file!");
+                                }
                             }
                             valueClass = objectLiteral.Class;
                         }
