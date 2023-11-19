@@ -231,7 +231,22 @@ namespace LegendaryExplorerCore.Packages
         {
             //Debug.WriteLine($"Partially loading package {pathToFile}");
             using var fs = new FileStream(pathToFile, FileMode.Open, FileAccess.Read);
-            return LoadPackage(fs, pathToFile, false, false, exportPredicate);
+            return UnsafePartialLoadFromStream(fs, pathToFile, exportPredicate);
+        }
+
+        /// <summary>
+        /// Partially opens an ME package file from the stream. Name, Export, and Import tables will be fully read, but export data will only be loaded for <see cref="ExportEntry"/>s that match <paramref name="exportPredicate"/>.
+        /// Attempting to access the Data for any other <see cref="ExportEntry"/> will cause a <see cref="NullReferenceException"/>. Use with caution in performance critical situations only!
+        /// The file does not participate in package sharing.
+        /// </summary>
+        /// <param name="packageStream">Stream to load data from</param>
+        /// <param name="packagePath">Path or name of the package file. Used for associating with the package.</param>
+        /// <param name="exportPredicate">Delegate to determine which export data to load</param>
+        /// <returns></returns>
+        public static IMEPackage UnsafePartialLoadFromStream(Stream packageStream, string packagePath, Func<ExportEntry, bool> exportPredicate)
+        {
+            //Debug.WriteLine($"Partially loading package {pathToFile}");
+            return LoadPackage(packageStream, packagePath, false, false, exportPredicate);
         }
 
         /// <summary>
