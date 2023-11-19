@@ -1008,7 +1008,7 @@ namespace LegendaryExplorerCore.UnrealScript
             return null;
         }
 
-        public record LooseClass(string ClassName, string Source)
+        public record LooseClass(string ClassName, string Source, string SourceFilePath = null)
         {
             internal Class ClassAST;
             internal MessageLog Log;
