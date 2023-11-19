@@ -4050,8 +4050,19 @@ defaultproperties
                 //return;
                 pe.SetBusy("Building Object IFP DB");
                 var allPackages = MELoadedFiles.GetFilesLoadedInGame(game).Values.ToList();
+                if (game == MEGame.ME3)
+                {
+                    allPackages.AddRange(Directory.GetFiles(ME3Directory.DLCPath, "*.sfar", SearchOption.AllDirectories));
+                }
+                int fullCount = allPackages.Count;
 
-                var objectDB = ObjectInstanceDB.Create(game, allPackages, numDone => pe.BusyText = $"Indexed [{++numDone}/{allPackages.Count}] files");
+                void addMoreItems(int count)
+                {
+                    fullCount += count;
+                }
+
+
+                var objectDB = ObjectInstanceDB.Create(game, allPackages, numDone => pe.BusyText = $"Indexed [{numDone}/{fullCount}] files", addMoreItems);
 
                 // Compile the database
                 pe.BusyText = "Compiling database";
