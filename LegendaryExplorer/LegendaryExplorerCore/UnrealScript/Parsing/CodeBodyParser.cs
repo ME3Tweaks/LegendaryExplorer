@@ -535,9 +535,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 return new AssignStatement(expr, value, expr.StartPos, value.EndPos);
             }
 
-            if (expr is FunctionCall or DelegateCall or PostOpReference or CompositeSymbolRef {InnerSymbol: FunctionCall or DelegateCall} 
-                || expr is PreOpReference preOp && preOp.Operator.HasOutParams || expr is InOpReference inOp && inOp.Operator.HasOutParams 
-                || expr is DynArrayOperation and not DynArrayLength)
+            if (ExpressionHasEffect(expr))
             {
             }
             else
@@ -546,6 +544,14 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             }
 
             return new ExpressionOnlyStatement(expr, expr.StartPos, expr.EndPos);
+
+            static bool ExpressionHasEffect(Expression expression)
+            {
+                return expression is FunctionCall or DelegateCall or PostOpReference or CompositeSymbolRef {InnerSymbol: FunctionCall or DelegateCall} 
+                       || expression is PreOpReference preOp && preOp.Operator.HasOutParams || expression is InOpReference inOp && inOp.Operator.HasOutParams 
+                       || expression is DynArrayOperation and not DynArrayLength
+                       || expression is ConditionalExpression ternary && ExpressionHasEffect(ternary.TrueExpression) && ExpressionHasEffect(ternary.FalseExpression);
+            }
         }
 
         private VariableDeclaration ParseLocalVarDecl()
