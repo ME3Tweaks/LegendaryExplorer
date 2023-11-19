@@ -45,6 +45,7 @@ using Microsoft.WindowsAPICodePack.Dialogs;
 using LegendaryExplorerCore.Audio;
 using System.IO.Packaging;
 using LegendaryExplorer.Packages;
+using LegendaryExplorerCore.Localization;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
 
 namespace LegendaryExplorer.Tools.PackageEditor
@@ -2327,7 +2328,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
             }
 
             ReferenceCheckPackage rcp = new ReferenceCheckPackage();
-            EntryChecker.CheckReferences(rcp, Pcc, EntryChecker.NonLocalizedStringConverter);
+            EntryChecker.CheckReferences(rcp, Pcc, LECLocalizationShim.NonLocalizedStringConverter);
 
             if (rcp.GetSignificantIssues().Any())
             {
