@@ -1108,25 +1108,31 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 Expression falseExpr = Ternary();
                 VariableType trueType = trueExpr.ResolveType();
                 VariableType falseType = falseExpr.ResolveType();
-                if (trueType == SymbolTable.IntType && falseExpr is IntegerLiteral falseIntLit)
+                if (falseExpr is IntegerLiteral falseIntLit)
                 {
-                    falseIntLit.NumType = INT;
-                    falseType = falseIntLit.ResolveType();
+                    if (trueType == SymbolTable.IntType)
+                    {
+                        falseIntLit.NumType = INT;
+                        falseType = falseIntLit.ResolveType();
+                    }
+                    else if (trueType == SymbolTable.ByteType || trueType is Enumeration)
+                    {
+                        falseIntLit.NumType = BYTE;
+                        falseType = falseIntLit.ResolveType();
+                    }
                 }
-                else if (falseType == SymbolTable.IntType && trueExpr is IntegerLiteral trueIntLit)
+                else if (trueExpr is IntegerLiteral trueIntLit)
                 {
-                    trueIntLit.NumType = INT;
-                    trueType = trueIntLit.ResolveType();
-                }
-                else if (trueType == SymbolTable.ByteType && falseExpr is IntegerLiteral falseByteLit)
-                {
-                    falseByteLit.NumType = BYTE;
-                    falseType = falseByteLit.ResolveType();
-                }
-                else if (falseType == SymbolTable.ByteType && trueExpr is IntegerLiteral trueByteLit)
-                {
-                    trueByteLit.NumType = BYTE;
-                    trueType = trueByteLit.ResolveType();
+                    if (falseType == SymbolTable.IntType)
+                    {
+                        trueIntLit.NumType = INT;
+                        trueType = trueIntLit.ResolveType();
+                    }
+                    else if (falseType == SymbolTable.ByteType || falseType is Enumeration)
+                    {
+                        trueIntLit.NumType = BYTE;
+                        trueType = trueIntLit.ResolveType();
+                    }
                 }
 
                 if (NodeUtils.TypeEqual(trueType, falseType))
