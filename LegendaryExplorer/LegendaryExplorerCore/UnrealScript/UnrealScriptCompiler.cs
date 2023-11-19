@@ -714,6 +714,10 @@ namespace LegendaryExplorerCore.UnrealScript
                         {
                             return funcs;
                         }
+                        if (curClass.VirtualFunctionNames is not null)
+                        {
+                            return curClass.VirtualFunctionNames;
+                        }
                         funcs.AddRange(GetParentVirtualFuncs(curClass.Parent as Class));
                         foreach (string funcName in curClass.Functions.Where(func => func.ShouldBeInVTable).Select(func => func.Name))
                         {
