@@ -1103,7 +1103,11 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// <param name="safeToImportFromFile">The path to the safe file to use when adding an import</param>
         public static bool AddUserSafeToImportFromFile(MEGame game, string safeToImportFromFile)
         {
-            return InternalGetUserSafeToImportFromFiles(game).Add(safeToImportFromFile);
+            if (!InternalGetUserSafeToImportFromFiles(game).Contains(safeToImportFromFile))
+            {
+                return InternalGetUserSafeToImportFromFiles(game).Add(safeToImportFromFile);
+            }
+            return false;
         }
 
         /// <summary>
@@ -1321,7 +1325,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             var entryFullPath = entry.InstancedFullPath;
             //if (entry.ObjectName == "HMM_EYE_MASTER_OVRD_MAT")
             //{
-                
+
             //    // Debugger.Break();
             //}
             CaseInsensitiveDictionary<string> gameFiles = MELoadedFiles.GetFilesLoadedInGame(entry.Game, forceUseCached: true, gameRootOverride: gameRootOverride);
