@@ -1093,20 +1093,20 @@ namespace LegendaryExplorerCore.UnrealScript
                         return log;
                     }
                 }
+            }
 
-                foreach ((UClass uClass, Action action) in completions)
+            foreach ((UClass uClass, Action action) in completions)
+            {
+                try
                 {
-                    try
-                    {
-                        action();
-                        uClass.Export.WriteBinary(uClass);
-                    }
-                    catch (Exception e)
-                    {
-                        var log = new MessageLog();
-                        log.LogError($"Exception while compiling '{uClass.Export.ObjectName}': {e}");
-                        return log;
-                    }
+                    action();
+                    uClass.Export.WriteBinary(uClass);
+                }
+                catch (Exception e)
+                {
+                    var log = new MessageLog();
+                    log.LogError($"Exception while compiling '{uClass.Export.ObjectName}': {e}");
+                    return log;
                 }
             }
 
