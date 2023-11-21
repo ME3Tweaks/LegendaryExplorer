@@ -1020,7 +1020,7 @@ namespace LegendaryExplorerCore.UnrealScript
 
         public record LooseClassPackage(string PackageName, List<LooseClass> Classes);
 
-        public static MessageLog CompileLooseClasses(IMEPackage targetPcc, List<LooseClassPackage> looseClasses, Func<IMEPackage, string, IEntry> missingObjectResolver, string gameRootPath = null)
+        public static MessageLog CompileLooseClasses(IMEPackage targetPcc, List<LooseClassPackage> looseClasses, Func<IMEPackage, string, IEntry> missingObjectResolver, string gameRootPath = null, PackageCache cache = null)
         {
             using var packageCache = new PackageCache();
             using var fileLib = new FileLib(targetPcc);
@@ -1061,7 +1061,7 @@ namespace LegendaryExplorerCore.UnrealScript
                     log.LogError($"Could not create package '{looseClassPackage.PackageName}', as an existing non-package top-level export of the same name exists.");
                     return log;
                 }
-                classPackage ??= ExportCreator.CreatePackageExport(targetPcc, looseClassPackage.PackageName);
+                classPackage ??= ExportCreator.CreatePackageExport(targetPcc, looseClassPackage.PackageName, cache: cache);
 
                 bool vfTableChanged = false;
                 SymbolTable symbols = fileLib.ReadonlySymbolTable; //this sign can't stop me because I can't read!
