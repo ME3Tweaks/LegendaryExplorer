@@ -52,7 +52,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             if (newEntry == null)
             {
 
-                var relinkResults2 = EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, sourceExport, targetPackage, lParent, true, new RelinkerOptionsPackage() { ImportExportDependencies = true }, out newEntry);
+                var relinkResults2 = EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, sourceExport, targetPackage, lParent, true, new RelinkerOptionsPackage() { ImportExportDependencies = true, Cache = pc }, out newEntry);
                 issues.AddRange(relinkResults2);
             }
 
@@ -74,11 +74,11 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// <param name="newEntry"></param>
         /// <param name="compress"></param>
         /// <param name="globalCache"></param>
-        /// <param name="pc"></param>
+        /// <param name="packageCache"></param>
         /// <returns></returns>
-        public static List<EntryStringPair> ExportExportToPackage(ExportEntry sourceExport, IMEPackage targetPackage, out IEntry newEntry, PackageCache globalCache = null, PackageCache pc = null)
+        public static List<EntryStringPair> ExportExportToPackage(ExportEntry sourceExport, IMEPackage targetPackage, out IEntry newEntry, PackageCache globalCache = null, PackageCache packageCache = null)
         {
-            var exp = ExportExportToPackageInternal(sourceExport, targetPackage, out var nEntry, globalCache, pc);
+            var exp = ExportExportToPackageInternal(sourceExport, targetPackage, out var nEntry, globalCache, packageCache);
             newEntry = nEntry;
             return exp;
         }

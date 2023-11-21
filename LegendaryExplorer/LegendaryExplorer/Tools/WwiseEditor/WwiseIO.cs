@@ -75,7 +75,7 @@ namespace LegendaryExplorer.Tools.WwiseEditor
                     var addeSound = await WwiseUtility.Instance.ImportSoundAsync(wavFile);
 
                     // Add to soundbank
-                    await WwiseUtility.Instance.AddSoundBankInclusionAsync(soundbank, new SoundBankInclusion() {Object = addeSound});
+                    await WwiseUtility.Instance.AddSoundBankInclusionAsync(soundbank, new SoundBankInclusion() { Object = addeSound });
                 }
             }
 
@@ -95,7 +95,7 @@ namespace LegendaryExplorer.Tools.WwiseEditor
 
             await WwiseUtility.Instance.SaveWwiseProjectAsync();
 
-            // await WwiseUtility.Instance.SetAutomationMode(false);
+            //await WwiseUtility.Instance.SetAutomationMode(false);
             //var info = await WwiseUtility.Instance.LoadWwiseProjectAsync(projFile, false); // do not save current
             //Debug.WriteLine(info);
         }

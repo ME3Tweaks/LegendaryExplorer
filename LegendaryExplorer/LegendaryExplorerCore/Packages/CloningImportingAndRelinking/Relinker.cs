@@ -89,7 +89,8 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// </summary>
         public RelinkerOptionsPackage()
         {
-            Cache = new PackageCache();
+            // Commented out 11/20/2023 - might break crossgen
+            // Cache = new PackageCache();
         }
 
         /// <summary>
@@ -97,7 +98,8 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// </summary>
         public RelinkerOptionsPackage(PackageCache cache)
         {
-            Cache = cache;
+            // 11/20/2023: Initialize an empty package cache
+            Cache = cache ?? new PackageCache();
         }
     }
 

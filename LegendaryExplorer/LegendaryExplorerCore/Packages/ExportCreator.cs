@@ -16,9 +16,9 @@ namespace LegendaryExplorerCore.Packages
         /// <param name="parent"></param>
         /// <param name="relinkResultsAvailable"></param>
         /// <returns></returns>
-        public static ExportEntry CreatePackageExport(IMEPackage pcc, NameReference packageName, IEntry parent = null, Action<List<EntryStringPair>> relinkResultsAvailable = null)
+        public static ExportEntry CreatePackageExport(IMEPackage pcc, NameReference packageName, IEntry parent = null, Action<List<EntryStringPair>> relinkResultsAvailable = null, PackageCache cache = null)
         {
-            var rop = new RelinkerOptionsPackage { ImportExportDependencies = true };
+            var rop = new RelinkerOptionsPackage { ImportExportDependencies = true, Cache = cache};
             var exp = new ExportEntry(pcc, parent, packageName)
             {
                 Class = EntryImporter.EnsureClassIsInFile(pcc, "Package", rop)
