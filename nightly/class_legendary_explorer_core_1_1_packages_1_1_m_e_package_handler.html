@@ -122,6 +122,9 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a47e5b996712d47dcdb5aae972b86a36d"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#a47e5b996712d47dcdb5aae972b86a36d">UnsafePartialLoad</a> (string pathToFile, Func&lt; <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>, bool &gt; exportPredicate)</td></tr>
 <tr class="memdesc:a47e5b996712d47dcdb5aae972b86a36d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Partially opens an ME package file. Name, Export, and Import tables will be fully read, but export data will only be loaded for <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>s that match <em>exportPredicate</em> . Attempting to access the Data for any other <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> will cause a NullReferenceException. Use with caution in performance critical situations only! The file is loaded from disk, and does not participate in package sharing.   <a href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#a47e5b996712d47dcdb5aae972b86a36d">More...</a><br /></td></tr>
 <tr class="separator:a47e5b996712d47dcdb5aae972b86a36d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa32e497ac217165c4b0686ef7c061acd"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#aa32e497ac217165c4b0686ef7c061acd">UnsafePartialLoadFromStream</a> (Stream packageStream, string packagePath, Func&lt; <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>, bool &gt; exportPredicate)</td></tr>
+<tr class="memdesc:aa32e497ac217165c4b0686ef7c061acd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Partially opens an ME package file from the stream. Name, Export, and Import tables will be fully read, but export data will only be loaded for <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>s that match <em>exportPredicate</em> . Attempting to access the Data for any other <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> will cause a NullReferenceException. Use with caution in performance critical situations only! The file does not participate in package sharing.   <a href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#aa32e497ac217165c4b0686ef7c061acd">More...</a><br /></td></tr>
+<tr class="separator:aa32e497ac217165c4b0686ef7c061acd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a840441fef52dc11709093e33b2cda89d"><td class="memItemLeft" align="right" valign="top">static MemoryStream&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#a840441fef52dc11709093e33b2cda89d">ReadAllFileBytesIntoMemoryStream</a> (string filePath)</td></tr>
 <tr class="memdesc:a840441fef52dc11709093e33b2cda89d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Essentially just  <a href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#a840441fef52dc11709093e33b2cda89d">More...</a><br /></td></tr>
 <tr class="separator:a840441fef52dc11709093e33b2cda89d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -472,6 +475,59 @@ Static Public Attributes</h2></td></tr>
   <table class="params">
     <tr><td class="paramname">pathToFile</td><td></td></tr>
     <tr><td class="paramname">exportPredicate</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+</div>
+</div>
+<a id="aa32e497ac217165c4b0686ef7c061acd" name="aa32e497ac217165c4b0686ef7c061acd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa32e497ac217165c4b0686ef7c061acd">&#9670;&#160;</a></span>UnsafePartialLoadFromStream()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> LegendaryExplorerCore.Packages.MEPackageHandler.UnsafePartialLoadFromStream </td>
+          <td>(</td>
+          <td class="paramtype">Stream&#160;</td>
+          <td class="paramname"><em>packageStream</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>packagePath</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Func&lt; <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>, bool &gt;&#160;</td>
+          <td class="paramname"><em>exportPredicate</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Partially opens an ME package file from the stream. Name, Export, and Import tables will be fully read, but export data will only be loaded for <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>s that match <em>exportPredicate</em> . Attempting to access the Data for any other <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> will cause a NullReferenceException. Use with caution in performance critical situations only! The file does not participate in package sharing.  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">packageStream</td><td>Stream to load data from</td></tr>
+    <tr><td class="paramname">packagePath</td><td>Path or name of the package file. Used for associating with the package.</td></tr>
+    <tr><td class="paramname">exportPredicate</td><td>Delegate to determine which export data to load</td></tr>
   </table>
   </dd>
 </dl>

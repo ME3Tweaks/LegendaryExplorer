@@ -7,6 +7,7 @@ var class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler =
     [ "OpenMEPackage", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#aa16f945ad6f0dc436798cd62400f2ccc", null ],
     [ "OpenMEPackage", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#a4244a5bcd64521a8433b547445761c7f", null ],
     [ "UnsafePartialLoad", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#a47e5b996712d47dcdb5aae972b86a36d", null ],
+    [ "UnsafePartialLoadFromStream", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#aa32e497ac217165c4b0686ef7c061acd", null ],
     [ "ReadAllFileBytesIntoMemoryStream", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#a840441fef52dc11709093e33b2cda89d", null ],
     [ "QuickOpenMEPackage", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#ac007f1091e08996f7dc161007d78e69b", null ],
     [ "CreateAndSavePackage", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#ae9a59f95e465ec9327224ebf04f44f58", null ],

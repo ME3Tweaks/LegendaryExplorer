@@ -111,6 +111,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a58ed204c5cfd6aaed32a67c4b18bd411"><td class="memItemLeft" align="right" valign="top">List&lt; string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_object_instance_d_b.html#a58ed204c5cfd6aaed32a67c4b18bd411">GetFilesContainingObject</a> (string ifp, <a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#aefbc0ecf962a8819f213240cc7553d90">MELocalization</a> localization=MELocalization.None)</td></tr>
 <tr class="memdesc:a58ed204c5cfd6aaed32a67c4b18bd411"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a list of relative package file paths (to the game root) that contain the specified <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> with the same InstancedFullPath. Returns null if the specified IFP is not in the database, indicating an object of that name does not exist in the game.   <a href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_object_instance_d_b.html#a58ed204c5cfd6aaed32a67c4b18bd411">More...</a><br /></td></tr>
 <tr class="separator:a58ed204c5cfd6aaed32a67c4b18bd411"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acf776b58766b4dfd5fee805bba4abfb4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_object_instance_d_b.html#acf776b58766b4dfd5fee805bba4abfb4">AddFileToDB</a> (<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> package, string filePath, bool insertAtStart=true)</td></tr>
+<tr class="memdesc:acf776b58766b4dfd5fee805bba4abfb4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds objects to the db from the given package.   <a href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_object_instance_d_b.html#acf776b58766b4dfd5fee805bba4abfb4">More...</a><br /></td></tr>
+<tr class="separator:acf776b58766b4dfd5fee805bba4abfb4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a49002d542bee562b2b74021f12d4fa39"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_object_instance_d_b.html#a49002d542bee562b2b74021f12d4fa39">AddFileToDB</a> (string filePath, bool insertAtStart=true)</td></tr>
 <tr class="memdesc:a49002d542bee562b2b74021f12d4fa39"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds objects in file to db   <a href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_object_instance_d_b.html#a49002d542bee562b2b74021f12d4fa39">More...</a><br /></td></tr>
 <tr class="separator:a49002d542bee562b2b74021f12d4fa39"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -119,8 +122,8 @@ Public Member Functions</h2></td></tr>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a696941b51a09af0ed569dc6dc8ac4ebc"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_object_instance_d_b.html">ObjectInstanceDB</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_object_instance_d_b.html#a696941b51a09af0ed569dc6dc8ac4ebc">Deserialize</a> (<a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game, Stream inStream)</td></tr>
 <tr class="separator:a696941b51a09af0ed569dc6dc8ac4ebc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a694b4c6777e76f71dea210313c83f0ea"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_object_instance_d_b.html">ObjectInstanceDB</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_object_instance_d_b.html#a694b4c6777e76f71dea210313c83f0ea">Create</a> (<a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game, List&lt; string &gt; files, Action&lt; int &gt; progressReporter=null)</td></tr>
-<tr class="separator:a694b4c6777e76f71dea210313c83f0ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acdbf22eaefdad7431153f4d80e8439f3"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_object_instance_d_b.html">ObjectInstanceDB</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_object_instance_d_b.html#acdbf22eaefdad7431153f4d80e8439f3">Create</a> (<a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game, List&lt; string &gt; files, Action&lt; int &gt; numDoneReporter=null, Action&lt; int &gt; addExtraFiles=null)</td></tr>
+<tr class="separator:acdbf22eaefdad7431153f4d80e8439f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Database class for mapping objects from an export in one game to the same one in another game  </p>
@@ -233,8 +236,8 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a694b4c6777e76f71dea210313c83f0ea" name="a694b4c6777e76f71dea210313c83f0ea"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a694b4c6777e76f71dea210313c83f0ea">&#9670;&#160;</a></span>Create()</h2>
+<a id="acdbf22eaefdad7431153f4d80e8439f3" name="acdbf22eaefdad7431153f4d80e8439f3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acdbf22eaefdad7431153f4d80e8439f3">&#9670;&#160;</a></span>Create()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -258,7 +261,13 @@ Static Public Member Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">Action&lt; int &gt;&#160;</td>
-          <td class="paramname"><em>progressReporter</em> = <code>null</code>&#160;</td>
+          <td class="paramname"><em>numDoneReporter</em> = <code>null</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Action&lt; int &gt;&#160;</td>
+          <td class="paramname"><em>addExtraFiles</em> = <code>null</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -275,8 +284,60 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="acf776b58766b4dfd5fee805bba4abfb4" name="acf776b58766b4dfd5fee805bba4abfb4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acf776b58766b4dfd5fee805bba4abfb4">&#9670;&#160;</a></span>AddFileToDB() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void LegendaryExplorerCore.Packages.CloningImportingAndRelinking.ObjectInstanceDB.AddFileToDB </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a>&#160;</td>
+          <td class="paramname"><em>package</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>filePath</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>insertAtStart</em> = <code>true</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Adds objects to the db from the given package.  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">package</td><td>Package object to inventory</td></tr>
+    <tr><td class="paramname">filePath</td><td>Path to package file on disk</td></tr>
+    <tr><td class="paramname">insertAtStart</td><td>If true, add new instances of objects to the start of a list, so they will be preferred.</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a49002d542bee562b2b74021f12d4fa39" name="a49002d542bee562b2b74021f12d4fa39"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a49002d542bee562b2b74021f12d4fa39">&#9670;&#160;</a></span>AddFileToDB()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a49002d542bee562b2b74021f12d4fa39">&#9670;&#160;</a></span>AddFileToDB() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -312,7 +373,7 @@ Static Public Member Functions</h2></td></tr>
 <p>Adds objects in file to db  </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">filePath</td><td></td></tr>
+    <tr><td class="paramname">filePath</td><td>Path to package file on disk</td></tr>
     <tr><td class="paramname">insertAtStart</td><td>If true, add new instances of objects to the start of a list, so they will be preferred.</td></tr>
   </table>
   </dd>
