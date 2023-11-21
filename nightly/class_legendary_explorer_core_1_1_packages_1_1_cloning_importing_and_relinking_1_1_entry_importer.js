@@ -31,5 +31,6 @@ var class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinki
     [ "EnsureClassIsInFile", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#aed5747fe34549c3e75da3dd7ce8d50a9", null ],
     [ "GetAllReferencesOfExport", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#aefec59169d0ae2b1b2a08af444a8177b", null ],
     [ "TryResolveImport", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#ac361ebf5fc5bd2ece30f3730815f3f0d", null ],
+    [ "ConvertExportToImport", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#a54ddafd63c9a266a691a0fc38e8c2f41", null ],
     [ "NonDonorItems", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#aefb476f2d99c053eb6d6b9acbf15c91c", null ]
 ];

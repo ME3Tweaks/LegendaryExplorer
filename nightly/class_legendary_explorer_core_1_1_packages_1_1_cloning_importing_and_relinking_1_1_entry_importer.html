@@ -188,6 +188,9 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:ac361ebf5fc5bd2ece30f3730815f3f0d"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#ac361ebf5fc5bd2ece30f3730815f3f0d">TryResolveImport</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_import_entry.html">ImportEntry</a> importEntry, out <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> export, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a> globalCache=null, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a> localCache=null, string localization=@&quot;INT&quot;, bool unsafeLoad=false, IEnumerable&lt; string &gt; localDirFiles=null)</td></tr>
 <tr class="memdesc:ac361ebf5fc5bd2ece30f3730815f3f0d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Attempts to resolve the specified import and returns true or false if it did.   <a href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#ac361ebf5fc5bd2ece30f3730815f3f0d">More...</a><br /></td></tr>
 <tr class="separator:ac361ebf5fc5bd2ece30f3730815f3f0d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a54ddafd63c9a266a691a0fc38e8c2f41"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_import_entry.html">ImportEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#a54ddafd63c9a266a691a0fc38e8c2f41">ConvertExportToImport</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> export, string forcedPackageFile=null)</td></tr>
+<tr class="memdesc:a54ddafd63c9a266a691a0fc38e8c2f41"><td class="mdescLeft">&#160;</td><td class="mdescRight">Experimental: Converts an export to an import. Only use if you really know what you're doing!   <a href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#a54ddafd63c9a266a691a0fc38e8c2f41">More...</a><br /></td></tr>
+<tr class="separator:a54ddafd63c9a266a691a0fc38e8c2f41"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-attribs" name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
@@ -1712,6 +1715,51 @@ Static Public Attributes</h2></td></tr>
     <tr><td class="paramname">localization</td><td></td></tr>
     <tr><td class="paramname">unsafeLoad</td><td></td></tr>
     <tr><td class="paramname">localDirFiles</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+</div>
+</div>
+<a id="a54ddafd63c9a266a691a0fc38e8c2f41" name="a54ddafd63c9a266a691a0fc38e8c2f41"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a54ddafd63c9a266a691a0fc38e8c2f41">&#9670;&#160;</a></span>ConvertExportToImport()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_import_entry.html">ImportEntry</a> LegendaryExplorerCore.Packages.CloningImportingAndRelinking.EntryImporter.ConvertExportToImport </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td>
+          <td class="paramname"><em>export</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>forcedPackageFile</em> = <code>null</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Experimental: Converts an export to an import. Only use if you really know what you're doing!  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">export</td><td></td></tr>
   </table>
   </dd>
 </dl>
