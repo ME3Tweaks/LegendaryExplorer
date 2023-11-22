@@ -46,14 +46,25 @@ namespace LegendaryExplorerCore.Packages
             idxLink = parentIdx;
             ClassName = sourceExport.ClassName;
             ObjectName = sourceExport.ObjectName;
-            var classInfo = GlobalUnrealObjectInfo.GetClassOrStructInfo(fakeDestPackage.Game, sourceExport.ClassName);
+            PackageFile = GetPackageFile(fakeDestPackage.Game, ClassName);
+        }
+
+        /// <summary>
+        /// Looks up the class info for the given class and returns which package file should contain it. Use this for the PackageFile attribute on ImportEntries.
+        /// </summary>
+        /// <param name="game"></param>
+        /// <param name="className"></param>
+        /// <returns></returns>
+        public static string GetPackageFile(MEGame game, string className)
+        {
+            var classInfo = GlobalUnrealObjectInfo.GetClassOrStructInfo(game, className);
             if (classInfo != null)
             {
-                PackageFile = Path.GetFileNameWithoutExtension(classInfo.pccPath).UpperFirst();
+                return Path.GetFileNameWithoutExtension(classInfo.pccPath).UpperFirst();
             }
             else
             {
-                PackageFile = @"Core"; // ?? This could be engine, sfxgame...
+                return @"Core"; // ?? This could be engine, sfxgame...
             }
         }
 

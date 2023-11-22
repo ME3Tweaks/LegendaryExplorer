@@ -41,7 +41,7 @@ namespace LegendaryExplorerCore.UnrealScript
             }
             catch (Exception e) when (!LegendaryExplorerCoreLib.IsDebug)
             {
-                return (null, $"Error occured while decompiling {export.InstancedFullPath}:\n\n{e.FlattenException()}");
+                return (null, $"Error occurred while decompiling {export.InstancedFullPath}:\n\n{e.FlattenException()}");
             }
 
             return (null, $"Could not decompile {export.InstancedFullPath}");

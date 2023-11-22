@@ -191,7 +191,13 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                                 // Todo: Other renamed packages like BIOG_Strategic"AI" -> SFXStratgic"AI"
                             }
 
-                            var targetFuncExp = rop.CrossPackageMap[f] as ExportEntry;
+                            var targetFuncEntry = rop.CrossPackageMap[f];
+                            if (targetFuncEntry is ImportEntry)
+                            {
+                                continue; // This was converted to an import and does not need recompiled
+                            }
+
+                            var targetFuncExp = targetFuncEntry as ExportEntry;
 #if DEBUG
                             // DEBUGGING
                             var debugTargetEntry = rop.CrossPackageMap[f];

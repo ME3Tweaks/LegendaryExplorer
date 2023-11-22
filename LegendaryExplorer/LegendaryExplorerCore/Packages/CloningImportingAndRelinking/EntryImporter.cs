@@ -545,6 +545,9 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     if (classValue is null && rop.ImportExportDependencies)
                     {
                         IEntry classParent = GetOrAddCrossImportOrPackage(sourceClassExport.ParentFullPath, sourceExport.FileRef, destPackage, rop);
+
+                        // Todo: Support ImportExportsAsImports
+
                         classValue = ImportExport(destPackage, sourceClassExport, classParent?.UIndex ?? 0, rop);
                     }
                     break;
@@ -564,12 +567,31 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         superclass = GenerateEntryForGlobalFileExport(sourceSuperClassExport.InstancedFullPath, sourceExport.FileRef, destPackage, rop);
                         break;
                     }
-                    superclass = destPackage.FindExport(sourceSuperClassExport.InstancedFullPath);
+                    superclass = destPackage.FindEntry(sourceSuperClassExport.InstancedFullPath);
                     if (superclass is null && rop.ImportExportDependencies)
                     {
-                        IEntry superClassParent = GetOrAddCrossImportOrPackage(sourceSuperClassExport.ParentFullPath, sourceExport.FileRef, destPackage, rop);
-                        superclass = ImportExport(destPackage, sourceSuperClassExport, superClassParent?.UIndex ?? 0, rop);
+                        IEntry superClassParent = GetOrAddCrossImportOrPackage(sourceSuperClassExport.ParentFullPath,
+                            sourceExport.FileRef, destPackage, rop);
+
+                        if (rop.PortExportsAsImportsWhenPossible)
+                        {
+                            // Try convert to import
+                            var testImport = new ImportEntry(sourceExport, superClassParent?.UIndex ?? 0, destPackage);
+                            if (EntryImporter.TryResolveImport(testImport, out var resolved, localCache: rop.Cache))
+                            {
+                                destPackage.AddImport(testImport);
+                                superclass = testImport;
+                                Debug.WriteLine($"Redirected importable export {superclass.InstancedFullPath} to import from {resolved.FileRef.FilePath}");
+                            }
+                        }
+
+                        if (superclass == null)
+                        {
+                            // Port as export
+                            superclass = ImportExport(destPackage, sourceSuperClassExport, superClassParent?.UIndex ?? 0, rop);
+                        }
                     }
+
                     break;
             }
 
@@ -586,12 +608,30 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         archetype = GenerateEntryForGlobalFileExport(sourceArchetypeExport.InstancedFullPath, sourceExport.FileRef, destPackage, rop);
                         break;
                     }
-                    archetype = destPackage.FindExport(sourceArchetypeExport.InstancedFullPath);
+                    archetype = destPackage.FindEntry(sourceArchetypeExport.InstancedFullPath);
                     if (archetype is null && rop.ImportExportDependencies)
                     {
-                        IEntry archetypeParent = GetOrAddCrossImportOrPackage(sourceArchetypeExport.ParentInstancedFullPath, sourceExport.FileRef, destPackage, rop);
-                        archetype = ImportExport(destPackage, sourceArchetypeExport, archetypeParent?.UIndex ?? 0, rop);
+                        IEntry archetypeParent = GetOrAddCrossImportOrPackage(
+                            sourceArchetypeExport.ParentInstancedFullPath, sourceExport.FileRef, destPackage, rop);
+
+                        if (rop.PortExportsAsImportsWhenPossible)
+                        {
+                            // Try convert to import
+                            var testImport = new ImportEntry(sourceArchetypeExport, archetypeParent?.UIndex ?? 0, destPackage);
+                            if (EntryImporter.TryResolveImport(testImport, out var resolved, localCache: rop.Cache))
+                            {
+                                destPackage.AddImport(testImport);
+                                archetype = testImport;
+                                Debug.WriteLine($"Redirected importable export {sourceArchetypeExport.InstancedFullPath} to import from {resolved.FileRef.FilePath}");
+                            }
+                        }
+
+                        if (archetype == null)
+                        {
+                            archetype = ImportExport(destPackage, sourceArchetypeExport, archetypeParent?.UIndex ?? 0, rop);
+                        }
                     }
+
                     break;
             }
 
@@ -1988,7 +2028,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// <returns></returns>
         public static ImportEntry ConvertExportToImport(ExportEntry export, string forcedPackageFile = null)
         {
-            string packageFile = "Core";
+            string packageFile = ImportEntry.GetPackageFile(export.Game, export.ClassName);
             if (forcedPackageFile == null && GlobalUnrealObjectInfo.GetClasses(export.Game).TryGetValue(export.ClassName, out var classInfo))
             {
                 // PackageFile on an import is the package file that contains the class of the class
@@ -2001,9 +2041,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             var convertedItem = new ImportEntry(export.FileRef, export.Parent, new NameReference(export.ObjectName.Name + "_TMP", export.ObjectName.Number))
             {
                 ClassName = export.ClassName,
-                PackageFile = forcedPackageFile ?? packageFile, // Do a better lookup for this - it's possible to find where class of class is stored.
-                // This works for LEX merges (import finds existing export in package)
-                // but will not work in game if it gets turned into an actual import for use
+                PackageFile = forcedPackageFile ?? packageFile,
             };
             export.FileRef.AddImport((ImportEntry)convertedItem);
 
