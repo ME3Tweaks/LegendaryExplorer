@@ -37,7 +37,7 @@ namespace LegendaryExplorerCore.Audio
         /// <param name="useWwiseObjectNames">If we should use the wwise object names (in editor/left) (BankName.txt) or the on-disk filenames (SoundBankInfo.xml)</param>
         /// <param name="package">The target package to install to</param>
         /// <returns>String error message, or null if successful.</returns>
-        public static string ImportBank(string bankPath, bool useWwiseObjectNames, IMEPackage package)
+        public static string ImportBank(string bankPath, bool useWwiseObjectNames, IMEPackage package, string wwiseLanguage = null)
         {
             var bankName = Path.GetFileNameWithoutExtension(bankPath);
             var bankNameWithExtension = Path.GetFileName(bankPath);
@@ -48,7 +48,12 @@ namespace LegendaryExplorerCore.Audio
             var generatedDir = Directory.GetParent(bankPath).FullName;
             var soundBankInfo = Path.Combine(generatedDir, "SoundbanksInfo.xml");
             if (!File.Exists(soundBankInfo))
-                return "SoundbanksInfo.xml file was not found next to the .bnk file!";
+            {
+                // Try parent. This may be localized
+                soundBankInfo = Path.Combine(Directory.GetParent(soundBankInfo).Parent.FullName, "SoundbanksInfo.xml");
+                if (!File.Exists(soundBankInfo))
+                    return "SoundbanksInfo.xml file was not found next to the .bnk file or in the directory above it (localized)!";
+            }
 
 
             // Get info about what we need to do
@@ -91,8 +96,8 @@ namespace LegendaryExplorerCore.Audio
             }
 
 
-
-            var soundBankChunk = infoDoc.Root.Descendants("SoundBank").FirstOrDefault(x => x.Element("Path")?.Value == bankNameWithExtension);
+            var xmlBankPath = wwiseLanguage == null ? bankNameWithExtension : $"{wwiseLanguage}\\{bankNameWithExtension}";
+            var soundBankChunk = infoDoc.Root.Descendants("SoundBank").FirstOrDefault(x => x.Element("Path")?.Value == xmlBankPath);
 
             var eventInfos = soundBankChunk.Element("IncludedEvents").Descendants("Event").Select(x => new
             {
