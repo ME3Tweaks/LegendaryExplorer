@@ -198,6 +198,24 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         }
 
         /// <summary>
+        /// Removes all entries associated with a specific package
+        /// </summary>
+        /// <param name="package"></param>
+        public void RemoveFileFromDB(IMEPackage package)
+        {
+            var fileIndex = FilePaths.IndexOf(package.FilePath);
+            foreach (ExportEntry exp in package.Exports)
+            {
+                if (ExportMap.TryGetValue(exp.InstancedFullPath, out List<int> records))
+                {
+                    records.Remove(fileIndex);
+                }
+            }
+
+            FilePaths.RemoveAt(fileIndex);
+        }
+
+        /// <summary>
         /// Adds objects in file to db 
         /// </summary>
         /// <param name="filePath">Path to package file on disk</param>
