@@ -327,7 +327,7 @@ namespace LegendaryExplorerCore.Textures.Studio
             catch (Exception)
             {
                 // CRC could not be calculated
-                
+
             }
         }
 
@@ -483,17 +483,17 @@ namespace LegendaryExplorerCore.Textures.Studio
                 var filename = Path.GetFileName(p);
                 progressDelegate?.Invoke($@"Scanning {filename}", numDone, packageFiles.Count);
 
-                if (cts.IsCancellationRequested) 
+                if (cts.IsCancellationRequested)
                     break;
                 //using var package = MEPackageHandler.OpenMEPackage(p);
-                using var package = MEPackageHandler.UnsafePartialLoad(p, x=> !x.IsDefaultObject && x.IsTexture());
+                using var package = MEPackageHandler.UnsafePartialLoad(p, x => !x.IsDefaultObject && x.IsTexture());
 
                 if (game != MEGame.Unknown && game != package.Game)
                 {
                     // This workspace has files from multiple games!
                     throw new Exception("A directory being scanned cannot have packages from different games in it");
                 }
-                
+
                 if (vanillaMap is null)
                 {
                     game = package.Game;
@@ -534,7 +534,7 @@ namespace LegendaryExplorerCore.Textures.Studio
                     {
                         // Some textures are not the same across the same entry!
                         // This will lead to weird engine behavior as memory is dumped and newly loaded data is different
-                        Debug.WriteLine(@"UNMATCHED CRCSSSSSSSSSSSSSSSSSSSSSSSSSSS");
+                        Debug.WriteLine($@"UNMATCHED CRCSs for texture {t.ObjectName}");
                         SetUnmatchedCRC(t, true);
                     }
                     else

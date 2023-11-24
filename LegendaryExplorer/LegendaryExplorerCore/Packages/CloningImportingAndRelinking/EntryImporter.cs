@@ -528,6 +528,9 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             ObjectBinary binaryData = ExportBinaryConverter.ConvertPostPropBinary(sourceExport, destPackage.Game, props);
 
             //Set class.
+
+            if (sourceExport.ObjectName == @"Default__BioStartLocationMP")
+                Debugger.Break();
             IEntry classValue = null;
             switch (sourceExport.Class)
             {
@@ -545,7 +548,24 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     if (classValue is null && rop.ImportExportDependencies)
                     {
                         IEntry classParent = GetOrAddCrossImportOrPackage(sourceClassExport.ParentFullPath, sourceExport.FileRef, destPackage, rop);
-                        classValue = ImportExport(destPackage, sourceClassExport, classParent?.UIndex ?? 0, rop);
+
+                        // Todo: Support ImportExportsAsImports
+                        if (rop.PortExportsAsImportsWhenPossible)
+                        {
+                            // Try convert to import
+                            var testImport = new ImportEntry(sourceClassExport, classParent?.UIndex ?? 0, destPackage);
+                            if (EntryImporter.TryResolveImport(testImport, out var resolved, localCache: rop.Cache))
+                            {
+                                destPackage.AddImport(testImport);
+                                classValue = testImport;
+                                Debug.WriteLine($"Redirected importable export {classValue.InstancedFullPath} to import from {resolved.FileRef.FilePath}");
+                            }
+                        }
+
+                        if (classValue == null)
+                        {
+                            classValue = ImportExport(destPackage, sourceClassExport, classParent?.UIndex ?? 0, rop);
+                        }
                     }
                     break;
             }
@@ -564,12 +584,31 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         superclass = GenerateEntryForGlobalFileExport(sourceSuperClassExport.InstancedFullPath, sourceExport.FileRef, destPackage, rop);
                         break;
                     }
-                    superclass = destPackage.FindExport(sourceSuperClassExport.InstancedFullPath);
+                    superclass = destPackage.FindEntry(sourceSuperClassExport.InstancedFullPath);
                     if (superclass is null && rop.ImportExportDependencies)
                     {
-                        IEntry superClassParent = GetOrAddCrossImportOrPackage(sourceSuperClassExport.ParentFullPath, sourceExport.FileRef, destPackage, rop);
-                        superclass = ImportExport(destPackage, sourceSuperClassExport, superClassParent?.UIndex ?? 0, rop);
+                        IEntry superClassParent = GetOrAddCrossImportOrPackage(sourceSuperClassExport.ParentFullPath,
+                            sourceExport.FileRef, destPackage, rop);
+
+                        if (rop.PortExportsAsImportsWhenPossible)
+                        {
+                            // Try convert to import
+                            var testImport = new ImportEntry(sourceSuperClassExport, superClassParent?.UIndex ?? 0, destPackage);
+                            if (EntryImporter.TryResolveImport(testImport, out var resolved, localCache: rop.Cache))
+                            {
+                                destPackage.AddImport(testImport);
+                                superclass = testImport;
+                                Debug.WriteLine($"Redirected importable export {superclass.InstancedFullPath} to import from {resolved.FileRef.FilePath}");
+                            }
+                        }
+
+                        if (superclass == null)
+                        {
+                            // Port as export
+                            superclass = ImportExport(destPackage, sourceSuperClassExport, superClassParent?.UIndex ?? 0, rop);
+                        }
                     }
+
                     break;
             }
 
@@ -586,12 +625,30 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         archetype = GenerateEntryForGlobalFileExport(sourceArchetypeExport.InstancedFullPath, sourceExport.FileRef, destPackage, rop);
                         break;
                     }
-                    archetype = destPackage.FindExport(sourceArchetypeExport.InstancedFullPath);
+                    archetype = destPackage.FindEntry(sourceArchetypeExport.InstancedFullPath);
                     if (archetype is null && rop.ImportExportDependencies)
                     {
-                        IEntry archetypeParent = GetOrAddCrossImportOrPackage(sourceArchetypeExport.ParentInstancedFullPath, sourceExport.FileRef, destPackage, rop);
-                        archetype = ImportExport(destPackage, sourceArchetypeExport, archetypeParent?.UIndex ?? 0, rop);
+                        IEntry archetypeParent = GetOrAddCrossImportOrPackage(
+                            sourceArchetypeExport.ParentInstancedFullPath, sourceExport.FileRef, destPackage, rop);
+
+                        if (rop.PortExportsAsImportsWhenPossible)
+                        {
+                            // Try convert to import
+                            var testImport = new ImportEntry(sourceArchetypeExport, archetypeParent?.UIndex ?? 0, destPackage);
+                            if (EntryImporter.TryResolveImport(testImport, out var resolved, localCache: rop.Cache))
+                            {
+                                destPackage.AddImport(testImport);
+                                archetype = testImport;
+                                Debug.WriteLine($"Redirected importable export {sourceArchetypeExport.InstancedFullPath} to import from {resolved.FileRef.FilePath}");
+                            }
+                        }
+
+                        if (archetype == null)
+                        {
+                            archetype = ImportExport(destPackage, sourceArchetypeExport, archetypeParent?.UIndex ?? 0, rop);
+                        }
                     }
+
                     break;
             }
 
@@ -815,8 +872,21 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 }
             }
 
+
             if (sourceEntry is ExportEntry foundMatchingExport)
             {
+                // Try convert to import in destination package if user chose option
+                if (rop.PortExportsAsImportsWhenPossible)
+                {
+                    // Try convert to import
+                    var testImport = new ImportEntry(foundMatchingExport, parent?.UIndex ?? 0, destinationPCC);
+                    if (EntryImporter.TryResolveImport(testImport, out var resolved, localCache: rop.Cache))
+                    {
+                        destinationPCC.AddImport(testImport);
+                        Debug.WriteLine($"Redirected importable export {importFullNameInstanced} to import from {resolved.FileRef.FilePath}");
+                        return testImport;
+                    }
+                }
 
                 if (rop.ImportExportDependencies || foundMatchingExport.ClassName == "Package")
                 {
@@ -1103,7 +1173,11 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// <param name="safeToImportFromFile">The path to the safe file to use when adding an import</param>
         public static bool AddUserSafeToImportFromFile(MEGame game, string safeToImportFromFile)
         {
-            return InternalGetUserSafeToImportFromFiles(game).Add(safeToImportFromFile);
+            if (!InternalGetUserSafeToImportFromFiles(game).Contains(safeToImportFromFile))
+            {
+                return InternalGetUserSafeToImportFromFiles(game).Add(safeToImportFromFile);
+            }
+            return false;
         }
 
         /// <summary>
@@ -1321,7 +1395,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             var entryFullPath = entry.InstancedFullPath;
             //if (entry.ObjectName == "HMM_EYE_MASTER_OVRD_MAT")
             //{
-                
+
             //    // Debugger.Break();
             //}
             CaseInsensitiveDictionary<string> gameFiles = MELoadedFiles.GetFilesLoadedInGame(entry.Game, forceUseCached: true, gameRootOverride: gameRootOverride);
@@ -1975,6 +2049,52 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         {
             export = ResolveImport(importEntry, globalCache, localCache, localization, unsafeLoad, localDirFiles);
             return export != null;
+        }
+
+        /// <summary>
+        /// Experimental: Converts an export to an import. Only use if you really know what you're doing!
+        /// </summary>
+        /// <param name="export"></param>
+        /// <returns></returns>
+        public static ImportEntry ConvertExportToImport(ExportEntry export, string forcedPackageFile = null)
+        {
+            string packageFile = ImportEntry.GetPackageFile(export.Game, export.ClassName);
+            if (forcedPackageFile == null && GlobalUnrealObjectInfo.GetClasses(export.Game).TryGetValue(export.ClassName, out var classInfo))
+            {
+                // PackageFile on an import is the package file that contains the class of the class
+                // E.g.
+                // Texture_Shepard is of type 'Texture2D'
+                // An import of this would have PackageFile 'Engine'
+                // Because the class of Texture_Shepard is Texture2D and Texture2D is defined in Engine.
+                // Now, how do we find that?
+            }
+            var convertedItem = new ImportEntry(export.FileRef, export.Parent, new NameReference(export.ObjectName.Name + "_TMP", export.ObjectName.Number))
+            {
+                ClassName = export.ClassName,
+                PackageFile = forcedPackageFile ?? packageFile,
+            };
+            export.FileRef.AddImport((ImportEntry)convertedItem);
+
+            // Update all references
+            var referencingEntries = export.GetEntriesThatReferenceThisOne();
+            foreach (var f in referencingEntries)
+            {
+                // Make a new map for every iteration since this technically could add some items... somehow...
+                var objectMap = new ListenableDictionary<IEntry, IEntry>();
+                objectMap.Add(export, convertedItem); // Convert references to import
+                objectMap.Add(f.Key, f.Key); // Force this to relink on itself.
+                RelinkerOptionsPackage rop = new RelinkerOptionsPackage()
+                {
+                    CrossPackageMap = objectMap
+                };
+                Relinker.RelinkAll(rop);
+            }
+
+            // Cleanup temporary stuff
+            convertedItem.ObjectName = export.ObjectName;
+            EntryPruner.TrashEntries(export.FileRef, new[] { export });
+
+            return convertedItem;
         }
     }
 }

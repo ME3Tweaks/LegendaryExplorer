@@ -5,6 +5,7 @@
     <Company>ME3Tweaks</Company>
     <Authors>ME3Tweaks</Authors>
     <Version>6.3.0.0</Version>
+    <EnableSourceControlManagerQueries>true</EnableSourceControlManagerQueries>
   </PropertyGroup>
 
   <PropertyGroup>
