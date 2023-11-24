@@ -528,6 +528,9 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             ObjectBinary binaryData = ExportBinaryConverter.ConvertPostPropBinary(sourceExport, destPackage.Game, props);
 
             //Set class.
+
+            if (sourceExport.ObjectName == @"Default__BioStartLocationMP")
+                Debugger.Break();
             IEntry classValue = null;
             switch (sourceExport.Class)
             {
@@ -547,8 +550,22 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         IEntry classParent = GetOrAddCrossImportOrPackage(sourceClassExport.ParentFullPath, sourceExport.FileRef, destPackage, rop);
 
                         // Todo: Support ImportExportsAsImports
+                        if (rop.PortExportsAsImportsWhenPossible)
+                        {
+                            // Try convert to import
+                            var testImport = new ImportEntry(sourceClassExport, classParent?.UIndex ?? 0, destPackage);
+                            if (EntryImporter.TryResolveImport(testImport, out var resolved, localCache: rop.Cache))
+                            {
+                                destPackage.AddImport(testImport);
+                                classValue = testImport;
+                                Debug.WriteLine($"Redirected importable export {classValue.InstancedFullPath} to import from {resolved.FileRef.FilePath}");
+                            }
+                        }
 
-                        classValue = ImportExport(destPackage, sourceClassExport, classParent?.UIndex ?? 0, rop);
+                        if (classValue == null)
+                        {
+                            classValue = ImportExport(destPackage, sourceClassExport, classParent?.UIndex ?? 0, rop);
+                        }
                     }
                     break;
             }
@@ -576,7 +593,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         if (rop.PortExportsAsImportsWhenPossible)
                         {
                             // Try convert to import
-                            var testImport = new ImportEntry(sourceExport, superClassParent?.UIndex ?? 0, destPackage);
+                            var testImport = new ImportEntry(sourceSuperClassExport, superClassParent?.UIndex ?? 0, destPackage);
                             if (EntryImporter.TryResolveImport(testImport, out var resolved, localCache: rop.Cache))
                             {
                                 destPackage.AddImport(testImport);
@@ -855,8 +872,21 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 }
             }
 
+
             if (sourceEntry is ExportEntry foundMatchingExport)
             {
+                // Try convert to import in destination package if user chose option
+                if (rop.PortExportsAsImportsWhenPossible)
+                {
+                    // Try convert to import
+                    var testImport = new ImportEntry(foundMatchingExport, parent?.UIndex ?? 0, destinationPCC);
+                    if (EntryImporter.TryResolveImport(testImport, out var resolved, localCache: rop.Cache))
+                    {
+                        destinationPCC.AddImport(testImport);
+                        Debug.WriteLine($"Redirected importable export {importFullNameInstanced} to import from {resolved.FileRef.FilePath}");
+                        return testImport;
+                    }
+                }
 
                 if (rop.ImportExportDependencies || foundMatchingExport.ClassName == "Package")
                 {
