@@ -576,7 +576,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         {
                             //if (originalInstancedFullPath.Contains("EngineMaterials"))
                             //    Debugger.Break();
-                            Debug.WriteLine($@"Redirecting relink of import {originalInstancedFullPath} to pull export from {newSourcePackage.FilePath} instead");
+                            // Debug.WriteLine($@"Redirecting relink of import {originalInstancedFullPath} to pull export from {newSourcePackage.FilePath} instead");
 
                             // Have to kind of hack it to work
                             var newSourceUIndex = newSourcePackage.FindExport(importingPCC.GetEntry(uIndex).InstancedFullPath).UIndex;
@@ -633,7 +633,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         {
                             // Todo: We probably need to support porting in from things like BIOG files due to ForcedExport.
                             ExportEntry importedExport = EntryImporter.ImportExport(relinkingExport.FileRef, resolvedSource, testImport.Parent?.UIndex ?? 0, rop);
-                            Debug.WriteLine($@"Memory safe porting: Redirected import {importedExport.InstancedFullPath} to export from {resolvedSource.FileRef.FileNameNoExtension}");
+                            // Debug.WriteLine($@"Memory safe porting: Redirected import {importedExport.InstancedFullPath} to export from {resolvedSource.FileRef.FileNameNoExtension}");
 
                             if (!rop.CrossPackageMap.ContainsKey(importFullName))
                                 rop.CrossPackageMap.Add(importFullName, importedExport); //add to mapping to speed up future relinks
@@ -819,7 +819,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         {
                             relinkingExport.FileRef.AddImport(testImport);
                             uIndex = testImport.UIndex;
-                            Debug.WriteLine($"Redirected importable export {relinkingExport.InstancedFullPath} to import from {resolved.FileRef.FilePath}");
+                            // Debug.WriteLine($"Redirected importable export {relinkingExport.InstancedFullPath} to import from {resolved.FileRef.FilePath}");
                             return null;
                         }
                     }

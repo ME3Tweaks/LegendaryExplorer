@@ -320,13 +320,13 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         public static ExportEntry ImportExport(IMEPackage destPackage, ExportEntry sourceExport, int link, RelinkerOptionsPackage rop)
         {
             //Debug.WriteLine($"Importing {sourceExport.InstancedFullPath}");
-            //if (sourceExport.InstancedFullPath == "TheWorld.PersistentLevel.Model_0")
+            //if (sourceExport.InstancedFullPath == "BioVFX_Z_TEXTURES.Generic.Biotic_Current_2")
             //    Debugger.Break();
             // CROSSGEN - WILL NEED HEAVY REWORK IF THIS IS TO BE MERGED TO BETA
             // Cause there's a lot of things that seem to have to be manually accounted for
             // To do cross game porting you MUST have a cache object on the ROP
             // or it'll take ages!
-            if (rop.TargetGameDonorDB != null && sourceExport.indexValue == 0 && rop.Cache != null && CanDonateClassType(sourceExport.ClassName) && !sourceExport.InstancedFullPath.StartsWith("TheWorld.")) // Actors cannot be donors
+            if (rop.TargetGameDonorDB != null && (sourceExport.indexValue == 0 || sourceExport.Game.ToOppositeGeneration() == destPackage.Game) && rop.Cache != null && CanDonateClassType(sourceExport.ClassName) && !sourceExport.InstancedFullPath.StartsWith("TheWorld.")) // Actors cannot be donors
             {
                 // Port in donor instead
                 var ifp = sourceExport.InstancedFullPath;
@@ -375,7 +375,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                                 //Debug.WriteLine($"Rejecting donor file {Path.GetFileName(df)}, localization doesn't match source {sourceExport.FileRef.Localization}");
                                 continue;
                             }
-                            Debug.WriteLine($"Accepting donor file {Path.GetFileName(df)}, localization matches");
+                            // Debug.WriteLine($"Accepting donor file {Path.GetFileName(df)}, localization matches");
                         }
 
                         string dfp = df;
@@ -558,7 +558,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                             {
                                 destPackage.AddImport(testImport);
                                 classValue = testImport;
-                                Debug.WriteLine($"Redirected importable export {classValue.InstancedFullPath} to import from {resolved.FileRef.FilePath}");
+                                // Debug.WriteLine($"Redirected importable export {classValue.InstancedFullPath} to import from {resolved.FileRef.FilePath}");
                             }
                         }
 
@@ -598,7 +598,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                             {
                                 destPackage.AddImport(testImport);
                                 superclass = testImport;
-                                Debug.WriteLine($"Redirected importable export {superclass.InstancedFullPath} to import from {resolved.FileRef.FilePath}");
+                                // Debug.WriteLine($"Redirected importable export {superclass.InstancedFullPath} to import from {resolved.FileRef.FilePath}");
                             }
                         }
 
@@ -639,7 +639,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                             {
                                 destPackage.AddImport(testImport);
                                 archetype = testImport;
-                                Debug.WriteLine($"Redirected importable export {sourceArchetypeExport.InstancedFullPath} to import from {resolved.FileRef.FilePath}");
+                                // Debug.WriteLine($"Redirected importable export {sourceArchetypeExport.InstancedFullPath} to import from {resolved.FileRef.FilePath}");
                             }
                         }
 
@@ -883,7 +883,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     if (EntryImporter.TryResolveImport(testImport, out var resolved, localCache: rop.Cache))
                     {
                         destinationPCC.AddImport(testImport);
-                        Debug.WriteLine($"Redirected importable export {importFullNameInstanced} to import from {resolved.FileRef.FilePath}");
+                        // Debug.WriteLine($"Redirected importable export {importFullNameInstanced} to import from {resolved.FileRef.FilePath}");
                         return testImport;
                     }
                 }
