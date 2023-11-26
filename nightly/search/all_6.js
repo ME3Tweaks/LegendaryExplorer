@@ -759,7 +759,7 @@ var searchData=
   ['exportentry_2ecs_756',['ExportEntry.cs',['../_export_entry_8cs.html',1,'']]],
   ['exportentryextensions_757',['ExportEntryExtensions',['../class_legendary_explorer_core_1_1_packages_1_1_export_entry_extensions.html',1,'LegendaryExplorerCore::Packages']]],
   ['exportexporttofile_758',['ExportExportToFile',['../class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_exporter.html#a5b684d9d2f8857778f9eba4f59210c09',1,'LegendaryExplorerCore::Packages::CloningImportingAndRelinking::EntryExporter']]],
-  ['exportexporttopackage_759',['ExportExportToPackage',['../class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_exporter.html#ae2927e42a77864afd24b6f2a4c3f230f',1,'LegendaryExplorerCore::Packages::CloningImportingAndRelinking::EntryExporter']]],
+  ['exportexporttopackage_759',['ExportExportToPackage',['../class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_exporter.html#aea98c625ef82d2100e4c157c80c81081',1,'LegendaryExplorerCore::Packages::CloningImportingAndRelinking::EntryExporter']]],
   ['exportflags_760',['ExportFlags',['../class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#a1c0da2de0fb4240f01bea3496217b396',1,'LegendaryExplorerCore::Packages::ExportEntry']]],
   ['exportid_761',['ExportID',['../class_legendary_explorer_core_1_1_dialogue_1_1_dialogue_node_extended.html#a8f516f13ebb5992c5b871b2ac022f186',1,'LegendaryExplorerCore::Dialogue::DialogueNodeExtended']]],
   ['exportindex_762',['exportIndex',['../class_legendary_explorer_core_1_1_packages_1_1_class_info.html#aa48dedcb85d645a1abd958a3d2225a56',1,'LegendaryExplorerCore::Packages::ClassInfo']]],
