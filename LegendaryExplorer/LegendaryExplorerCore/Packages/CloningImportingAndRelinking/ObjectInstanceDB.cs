@@ -160,7 +160,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             if (package.FilePath.StartsWith(defaultGamePath))
             {
                 // Store relative path
-                FilePaths.Add(package.FilePath.Substring(defaultGamePath.Length + 1));
+                FilePaths.Add(package.FilePath.Substring(defaultGamePath.Trim('\\','/').Length + 1));
             }
             else
             {
