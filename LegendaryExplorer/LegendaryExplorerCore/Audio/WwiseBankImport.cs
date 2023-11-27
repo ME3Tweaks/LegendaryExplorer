@@ -37,7 +37,13 @@ namespace LegendaryExplorerCore.Audio
         /// <param name="useWwiseObjectNames">If we should use the wwise object names (in editor/left) (BankName.txt) or the on-disk filenames (SoundBankInfo.xml)</param>
         /// <param name="package">The target package to install to</param>
         /// <returns>String error message, or null if successful.</returns>
-        public static string ImportBank(string bankPath, bool useWwiseObjectNames, IMEPackage package, string wwiseLanguage = null)
+        public static string ImportBank(string bankPath,
+            bool useWwiseObjectNames,
+            IMEPackage package,
+            string wwiseLanguage = null,
+            XDocument preloadedInfoDoc = null,
+            string bankPackageName = null,
+            string bankStreamingAudioPackageName = null)
         {
             var bankName = Path.GetFileNameWithoutExtension(bankPath);
             var bankNameWithExtension = Path.GetFileName(bankPath);
@@ -46,18 +52,21 @@ namespace LegendaryExplorerCore.Audio
 
             // Preprocessing
             var generatedDir = Directory.GetParent(bankPath).FullName;
-            var soundBankInfo = Path.Combine(generatedDir, "SoundbanksInfo.xml");
-            if (!File.Exists(soundBankInfo))
+            string soundBankInfoXmlPath = null;
+            if (preloadedInfoDoc == null)
             {
-                // Try parent. This may be localized
-                soundBankInfo = Path.Combine(Directory.GetParent(soundBankInfo).Parent.FullName, "SoundbanksInfo.xml");
-                if (!File.Exists(soundBankInfo))
-                    return "SoundbanksInfo.xml file was not found next to the .bnk file or in the directory above it (localized)!";
+                soundBankInfoXmlPath = Path.Combine(generatedDir, "SoundbanksInfo.xml");
+                if (!File.Exists(soundBankInfoXmlPath))
+                {
+                    // Try parent. This may be localized
+                    soundBankInfoXmlPath = Path.Combine(Directory.GetParent(soundBankInfoXmlPath).Parent.FullName, "SoundbanksInfo.xml");
+                    if (!File.Exists(soundBankInfoXmlPath))
+                        return "SoundbanksInfo.xml file was not found next to the .bnk file or in the directory above it (localized)!";
+                }
             }
 
-
             // Get info about what we need to do
-            var infoDoc = XDocument.Load(soundBankInfo);
+            var infoDoc = preloadedInfoDoc ?? XDocument.Load(soundBankInfoXmlPath);
 
             var allStreamedFiles = infoDoc.Root.Descendants("StreamedFiles").Descendants("File").Select(x => new WwiseStreamedFileReference()
             {
@@ -95,10 +104,10 @@ namespace LegendaryExplorerCore.Audio
                 }
             }
 
-
-            var xmlBankPath = wwiseLanguage == null ? bankNameWithExtension : $"{wwiseLanguage}\\{bankNameWithExtension}";
+            var xmlBankPath = wwiseLanguage is null or "SFX" ? bankNameWithExtension : $"{wwiseLanguage}\\{bankNameWithExtension}";
             var soundBankChunk = infoDoc.Root.Descendants("SoundBank").FirstOrDefault(x => x.Element("Path")?.Value == xmlBankPath);
 
+            var localization = GetMELocalizationFromWwiseLocalization(soundBankChunk.Attribute("Language").Value);
             var eventInfos = soundBankChunk.Element("IncludedEvents").Descendants("Event").Select(x => new
             {
                 Id = uint.Parse(x.Attribute("Id")?.Value),
@@ -110,14 +119,14 @@ namespace LegendaryExplorerCore.Audio
             var referencedStreamingAudio = referencedStreamingAudioIds != null ? allStreamedFiles.Where(x => referencedStreamingAudioIds.Contains(x.Id)) : null;
 
             // Import the bank export 
-            var parentPackage = package.FindEntry(bankName);
+            var parentPackage = package.FindEntry(bankPackageName ?? bankName);
             if (parentPackage == null)
             {
                 // Create container
-                parentPackage = ExportCreator.CreatePackageExport(package, bankName);
+                parentPackage = ExportCreator.CreatePackageExport(package, bankPackageName ?? bankName);
             }
 
-            ExportEntry bankExport = package.FindExport($"{bankName}.{bankName}");
+            ExportEntry bankExport = package.FindExport($"{bankPackageName ?? bankName}.{bankName}");
             if (bankExport == null)
             {
                 bankExport = ExportCreator.CreateExport(package, bankName, "WwiseBank", parentPackage, indexed: false);
@@ -129,36 +138,49 @@ namespace LegendaryExplorerCore.Audio
             WwiseBank.WriteBankRaw(File.ReadAllBytes(bankPath), bankExport);
 
             // Prepare the AFC
-            var afcPath = Path.Combine(Directory.GetParent(package.FilePath).FullName, $"{bankName}.afc"); // Will need changed if localized!
-            using var afcStream = File.Create(afcPath);
+            var afcPath = Path.Combine(Directory.GetParent(package.FilePath).FullName, $"{bankName}"); // Will need changed if localized!
+            if (localization != MELocalization.None)
+            {
+                bankExport.WriteProperty(new BoolProperty(true, "IsLocalised")); // ME3/LE3. Unsure of LE2
+                afcPath += $"_{localization.ToString().ToLower()}";
+            }
 
+            afcPath += ".afc";
+            using var afcStream = File.Create(afcPath);
 
             // Import the streams
             List<ExportEntry> streamExports = new List<ExportEntry>();
             if (referencedStreamingAudio != null)
             {
+                if (bankStreamingAudioPackageName != null)
+                {
+                    parentPackage = package.FindExport($"{bankExport.Parent.InstancedFullPath}.{bankStreamingAudioPackageName}");
+                    if (parentPackage == null)
+                    {
+                        parentPackage = ExportCreator.CreatePackageExport(package, bankStreamingAudioPackageName, bankExport.Parent);
+                    }
+                }
                 foreach (var streamInfo in referencedStreamingAudio)
                 {
                     var exportName = GetExportNameFromShortname(streamInfo.Shortname);
-                    var streamExport = package.FindExport($"{bankName}.{exportName}");
+                    var streamExport = package.FindExport($"{parentPackage.InstancedFullPath}.{exportName}");
                     if (streamExport == null)
                     {
-                        streamExport = ExportCreator.CreateExport(package, exportName, "WwiseStream", parentPackage,
-                            indexed: false);
+                        streamExport = ExportCreator.CreateExport(package, exportName, "WwiseStream", parentPackage, indexed: false);
                     }
 
                     PropertyCollection p = new PropertyCollection();
                     if (package.Game == MEGame.LE3)
                     {
                         // LE3
-                        p.Add(new NameProperty(bankName, "Filename"));
+                        p.Add(new NameProperty(Path.GetFileNameWithoutExtension(afcPath), "Filename"));
                         p.Add(new IntProperty((int)streamInfo.Id, "Id"));
                     }
                     else
                     {
                         // LE2
-                        p.Add(new NameProperty(bankName, "Filename"));
-                        p.Add(new NameProperty(bankName, "BankName"));
+                        p.Add(new NameProperty(Path.GetFileNameWithoutExtension(afcPath), "Filename"));
+                        p.Add(new NameProperty(Path.GetFileNameWithoutExtension(afcPath), "BankName"));
                         p.Add(new IntProperty((int)streamInfo.Id, "Id"));
                     }
 
@@ -187,6 +209,9 @@ namespace LegendaryExplorerCore.Audio
             }
 
             // Import the events
+            // Events go next to the bank. Reset it again.
+            parentPackage = package.FindEntry(bankPackageName ?? bankName);
+
             foreach (var eventInfo in eventInfos)
             {
                 var eventExport = package.FindExport($"{bankName}.{eventInfo.Name}");
@@ -246,6 +271,28 @@ namespace LegendaryExplorerCore.Audio
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// Gets the MELocalization from the Wwise Localization used by standard templates. If you don't use a standard template, oh well!
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static MELocalization GetMELocalizationFromWwiseLocalization(string value)
+        {
+            switch (value)
+            {
+                case "English(US)":
+                    return MELocalization.INT;
+                case "French(FR)":
+                    return MELocalization.FRA;
+                case "German(DE)":
+                    return MELocalization.DEU;
+                case "Italian(IT)":
+                    return MELocalization.ITA;
+                default:
+                    return MELocalization.None;
+            }
         }
 
         private static string GetExportNameFromShortname(string shortname)
