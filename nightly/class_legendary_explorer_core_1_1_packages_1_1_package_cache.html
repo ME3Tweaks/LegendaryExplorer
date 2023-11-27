@@ -119,6 +119,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a617c1d1af05bbc53574994380d9cb6ae"><td class="mdescLeft">&#160;</td><td class="mdescRight">Thread-safe package cache fetch. Can be passed to various methods to help expedite operations by preventing package reopening. If <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#accede661db51e02040eaaa098b787005" title="When the PackageCache opens a package, should it always load from disk, or should it acquire one from...">AlwaysOpenFromDisk</a> is true, then packages opened with this method will not use the global <a class="el" href="namespace_legendary_explorer_core.html">LegendaryExplorerCore</a> caching system and will always load from disk if not in this local cache.   <a href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a617c1d1af05bbc53574994380d9cb6ae">More...</a><br /></td></tr>
 <tr class="separator:a617c1d1af05bbc53574994380d9cb6ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a432bd598b11b1e4c3331935e880ea55f"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a432bd598b11b1e4c3331935e880ea55f">InsertIntoCache</a> (<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> package)</td></tr>
+<tr class="memdesc:a432bd598b11b1e4c3331935e880ea55f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Inserts a package into the the cache, based on its file path.   <a href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a432bd598b11b1e4c3331935e880ea55f">More...</a><br /></td></tr>
 <tr class="separator:a432bd598b11b1e4c3331935e880ea55f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab996486be0787fb8dca18529c6f82cb1"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#ab996486be0787fb8dca18529c6f82cb1">AddResidentPackage</a> (<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> package)</td></tr>
 <tr class="memdesc:ab996486be0787fb8dca18529c6f82cb1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Makes the specified package, if in the cache, not drop when the cache is full. If the cache is uncapped, this does nothing.   <a href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#ab996486be0787fb8dca18529c6f82cb1">More...</a><br /></td></tr>
@@ -290,6 +291,14 @@ Properties</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Inserts a package into the the cache, based on its file path.  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">package</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
