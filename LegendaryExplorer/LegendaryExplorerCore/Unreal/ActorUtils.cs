@@ -117,5 +117,11 @@ namespace LegendaryExplorerCore.Unreal
                               0f, -sr, -cr, 0f,
                               0f, 0f, 0f, 1f);
         }
+
+        public static Vector3 GetActorTotalScale(PropertyCollection props)
+        {
+            var drawScale3DProp = props.GetProp<StructProperty>("DrawScale3D");
+            return (props.GetProp<FloatProperty>("DrawScale") ?? 1f) * (drawScale3DProp is null ? Vector3.One : CommonStructs.GetVector3(drawScale3DProp));
+        }
     }
 }

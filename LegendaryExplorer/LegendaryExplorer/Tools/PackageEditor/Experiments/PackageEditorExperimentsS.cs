@@ -2922,5 +2922,19 @@ import java.util.*;"
                 MessageBox.Show(prevTask.Result);
             });
         }
+
+        public static void RegenCachedPhysBrushData(PackageEditorWindow pew)
+        {
+            var pcc = pew.Pcc;
+            if (pcc is null || !pcc.Game.IsLEGame() || !pew.TryGetSelectedExport(out ExportEntry brushComponentExport) || brushComponentExport.ClassName != "BrushComponent")
+            {
+                MessageBox.Show(pew, "Must have a BrushComponent selected in an LE pcc.");
+                return;
+            }
+            var bin = brushComponentExport.GetBinaryData<BrushComponent>();
+            bin.RegenCachedPhysBrushData();
+            brushComponentExport.WriteBinary(bin);
+            MessageBox.Show(pew, "Regenerated!");
+        }
     }
 }
