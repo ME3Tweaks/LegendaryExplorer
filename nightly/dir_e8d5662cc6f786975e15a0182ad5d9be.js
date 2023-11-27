@@ -4,6 +4,7 @@ var dir_e8d5662cc6f786975e15a0182ad5d9be =
     [ "Classes", "dir_cfb6f601df0abd029629df34544f520c.html", "dir_cfb6f601df0abd029629df34544f520c" ],
     [ "Collections", "dir_143e92331d1c4a4bedeb0d42448cb8a0.html", "dir_143e92331d1c4a4bedeb0d42448cb8a0" ],
     [ "ObjectInfo", "dir_2b474a482c7daa4cef9435abcec4c493.html", "dir_2b474a482c7daa4cef9435abcec4c493" ],
+    [ "PhysX", "dir_6b970479c2f083849f0bf098ec974ed0.html", "dir_6b970479c2f083849f0bf098ec974ed0" ],
     [ "ActorUtils.cs", "_actor_utils_8cs.html", "_actor_utils_8cs" ],
     [ "BitConverter.cs", "_bit_converter_8cs.html", "_bit_converter_8cs" ],
     [ "Bytecode.cs", "_bytecode_8cs.html", "_bytecode_8cs" ],

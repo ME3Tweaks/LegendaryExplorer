@@ -709,6 +709,9 @@ var annotated_dup =
           [ "ObjectInfoLoader", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_object_info_loader.html", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_object_info_loader" ],
           [ "SequenceObjectInfo", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_sequence_object_info.html", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_sequence_object_info" ]
         ] ],
+        [ "PhysX", "namespace_legendary_explorer_core_1_1_unreal_1_1_phys_x.html", [
+          [ "PhysXCooker", "class_legendary_explorer_core_1_1_unreal_1_1_phys_x_1_1_phys_x_cooker.html", "class_legendary_explorer_core_1_1_unreal_1_1_phys_x_1_1_phys_x_cooker" ]
+        ] ],
         [ "ActorUtils", "class_legendary_explorer_core_1_1_unreal_1_1_actor_utils.html", "class_legendary_explorer_core_1_1_unreal_1_1_actor_utils" ],
         [ "ArrayProperty", "class_legendary_explorer_core_1_1_unreal_1_1_array_property.html", "class_legendary_explorer_core_1_1_unreal_1_1_array_property" ],
         [ "ArrayPropertyBase", "class_legendary_explorer_core_1_1_unreal_1_1_array_property_base.html", "class_legendary_explorer_core_1_1_unreal_1_1_array_property_base" ],

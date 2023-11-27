@@ -421,6 +421,7 @@ var hierarchy =
       ] ],
       [ "LegendaryExplorerCore.Packages.MEPackage", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html", null ],
       [ "LegendaryExplorerCore.Packages.PackageCache", "class_legendary_explorer_core_1_1_packages_1_1_package_cache.html", null ],
+      [ "LegendaryExplorerCore.Unreal.PhysX.PhysXCooker", "class_legendary_explorer_core_1_1_unreal_1_1_phys_x_1_1_phys_x_cooker.html", null ],
       [ "LegendaryExplorerCore.UnrealScript.Compiling.BytecodeWriter.SkipPlaceholder", "class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_bytecode_writer_1_1_skip_placeholder.html", null ],
       [ "LegendaryExplorerCore.UnrealScript.FileLib", "class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html", null ]
     ] ],

@@ -3,6 +3,7 @@ var namespace_legendary_explorer_core_1_1_unreal =
     [ "BinaryConverters", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters" ],
     [ "Classes", "namespace_legendary_explorer_core_1_1_unreal_1_1_classes.html", "namespace_legendary_explorer_core_1_1_unreal_1_1_classes" ],
     [ "ObjectInfo", "namespace_legendary_explorer_core_1_1_unreal_1_1_object_info.html", "namespace_legendary_explorer_core_1_1_unreal_1_1_object_info" ],
+    [ "PhysX", "namespace_legendary_explorer_core_1_1_unreal_1_1_phys_x.html", "namespace_legendary_explorer_core_1_1_unreal_1_1_phys_x" ],
     [ "ActorUtils", "class_legendary_explorer_core_1_1_unreal_1_1_actor_utils.html", "class_legendary_explorer_core_1_1_unreal_1_1_actor_utils" ],
     [ "ArrayProperty", "class_legendary_explorer_core_1_1_unreal_1_1_array_property.html", "class_legendary_explorer_core_1_1_unreal_1_1_array_property" ],
     [ "ArrayPropertyBase", "class_legendary_explorer_core_1_1_unreal_1_1_array_property_base.html", "class_legendary_explorer_core_1_1_unreal_1_1_array_property_base" ],
