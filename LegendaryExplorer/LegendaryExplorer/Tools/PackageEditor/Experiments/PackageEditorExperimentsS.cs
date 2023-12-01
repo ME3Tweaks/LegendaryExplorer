@@ -2837,7 +2837,7 @@ import java.util.*;"
                     new("CompiledClasses", classes)
                 };
 
-                MessageLog log = UnrealScriptCompiler.CompileLooseClasses(pcc, looseClassPackages, MissingObjectResolver);
+                MessageLog log = UnrealScriptCompiler.CompileLooseClasses(pcc, looseClassPackages, MissingObjectResolver, vtableDonorGetter: VTableDonorGetter);
 
                 if (log.HasErrors)
                 {
@@ -2856,6 +2856,29 @@ import java.util.*;"
                         export = ExportCreator.CreatePackageExport(pcc, NameReference.FromInstancedString(name), export);
                     }
                     return export;
+                }
+
+                //terrible function, there are better ways of implementing it.
+                List<string> VTableDonorGetter(string className)
+                {
+                    var classInfo = GlobalUnrealObjectInfo.GetClassOrStructInfo(game, className);
+                    if (classInfo is not null)
+                    {
+                        string path = Path.Combine(MEDirectories.GetBioGamePath(game), classInfo.pccPath);
+                        if (File.Exists(path))
+                        {
+                            IMEPackage partialLoad = MEPackageHandler.UnsafePartialLoad(path, exp => exp.IsClass && exp.ObjectName == className);
+                            foreach (ExportEntry export in partialLoad.Exports)
+                            {
+                                if (export.IsClass && export.ObjectName == className)
+                                {
+                                    var obj = export.GetBinaryData<UClass>();
+                                    return obj.VirtualFunctionTable.Select(uIdx => partialLoad.GetEntry(uIdx).ObjectName.Name).ToList();
+                                }
+                            }
+                        }
+                    }
+                    return null;
                 }
             }).ContinueWithOnUIThread(prevTask =>
             {
