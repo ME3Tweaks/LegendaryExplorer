@@ -1,5 +1,7 @@
 var NAVTREEINDEX69 =
 {
+"namespace_legendary_explorer_core_1_1_matinee.html":[0,5,1,10],
+"namespace_legendary_explorer_core_1_1_memory.html":[0,5,1,12],
 "namespace_legendary_explorer_core_1_1_misc.html":[0,5,1,13],
 "namespace_legendary_explorer_core_1_1_misc.html#a60e9d63f39b2ffee21a6f1cb2421aa99":[0,5,1,13,14],
 "namespace_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks.html":[0,5,1,13,0],
@@ -247,7 +249,5 @@ var NAVTREEINDEX69 =
 "namespace_legendary_explorer_core_1_1_unreal.html#a46088b5e72b1b937a5bfda137aadfc5e":[0,5,1,23,417],
 "namespace_legendary_explorer_core_1_1_unreal.html#a46500dbb7066f4b0f4a053c3a7e7865c":[0,5,1,23,474],
 "namespace_legendary_explorer_core_1_1_unreal.html#a46546758913d76552d0df289c63fe336":[0,5,1,23,341],
-"namespace_legendary_explorer_core_1_1_unreal.html#a4657fb945cf3ffcf26208f7ff07c98fb":[0,5,1,23,495],
-"namespace_legendary_explorer_core_1_1_unreal.html#a4665da73baf7ec1d3e21ba447324f4fd":[0,5,1,23,280],
-"namespace_legendary_explorer_core_1_1_unreal.html#a466f3cc780912366e91e28b1fa75ac0b":[0,5,1,23,765]
+"namespace_legendary_explorer_core_1_1_unreal.html#a4657fb945cf3ffcf26208f7ff07c98fb":[0,5,1,23,495]
 };
