@@ -679,7 +679,8 @@ namespace LegendaryExplorerCore.UnrealScript
             return cls;
         }
 
-        private static void CompileNewClassASTInternal(IMEPackage pcc, Class cls, MessageLog log, SymbolTable symbols, Class existingClass, ref bool vfTableChanged, Func<IMEPackage, string, IEntry> missingObjectResolver = null)
+        private static void CompileNewClassASTInternal(IMEPackage pcc, Class cls, MessageLog log, SymbolTable symbols, Class existingClass, ref bool vfTableChanged, 
+            Func<IMEPackage, string, IEntry> missingObjectResolver = null, List<string> vtableDonor = null)
         {
             symbols.RevertToObjectStack();
             symbols.GoDirectlyToStack(cls.GetScope());
@@ -702,7 +703,8 @@ namespace LegendaryExplorerCore.UnrealScript
             {
                 var virtualFuncs = cls.Functions.Where(func => func.ShouldBeInVTable).ToList();
                 var funcDict = virtualFuncs.ToDictionary(func => func.Name);
-                List<string> parentVirtualFuncNames = ((Class)cls.Parent).VirtualFunctionNames;
+
+                List<string> parentVirtualFuncNames = vtableDonor ?? ((Class)cls.Parent).VirtualFunctionNames;
                 if (parentVirtualFuncNames is null)
                 {
                     parentVirtualFuncNames = GetParentVirtualFuncs((Class)cls.Parent);
@@ -1020,7 +1022,8 @@ namespace LegendaryExplorerCore.UnrealScript
 
         public record LooseClassPackage(string PackageName, List<LooseClass> Classes);
 
-        public static MessageLog CompileLooseClasses(IMEPackage targetPcc, List<LooseClassPackage> looseClasses, Func<IMEPackage, string, IEntry> missingObjectResolver, string gameRootPath = null, PackageCache cache = null)
+        public static MessageLog CompileLooseClasses(IMEPackage targetPcc, List<LooseClassPackage> looseClasses, Func<IMEPackage, string, IEntry> missingObjectResolver, 
+            string gameRootPath = null, PackageCache cache = null, Func<string, List<string>> vtableDonorGetter = null)
         {
             using var packageCache = new PackageCache();
             using var fileLib = new FileLib(targetPcc);
@@ -1072,7 +1075,7 @@ namespace LegendaryExplorerCore.UnrealScript
                     
                     try
                     {
-                        CompileNewClassASTInternal(targetPcc, cls, log, symbols, null, ref vfTableChanged, missingObjectResolver);
+                        CompileNewClassASTInternal(targetPcc, cls, log, symbols, null, ref vfTableChanged, missingObjectResolver, vtableDonorGetter?.Invoke(cls.Name));
                         if (log.HasErrors)
                         {
                             log.LogError($"'{looseClass.ClassName}' had parse errors");

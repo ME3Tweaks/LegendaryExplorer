@@ -1166,6 +1166,10 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         {
             PackageEditorExperimentsS.DumpClassSource(GetPEWindow());
         }
+        private void RegenCachedPhysBrushData_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsS.RegenCachedPhysBrushData(GetPEWindow());
+        }
 
         #endregion
 
