@@ -326,7 +326,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             // Cause there's a lot of things that seem to have to be manually accounted for
             // To do cross game porting you MUST have a cache object on the ROP
             // or it'll take ages!
-            if (rop.TargetGameDonorDB != null && (sourceExport.indexValue == 0 || sourceExport.Game.ToOppositeGeneration() == destPackage.Game) && rop.Cache != null && CanDonateClassType(sourceExport.ClassName) && !sourceExport.InstancedFullPath.StartsWith("TheWorld.")) // Actors cannot be donors
+            if (rop.TargetGameDonorDB != null && (sourceExport.indexValue == 0 || sourceExport.Game.ToOppositeGeneration() == destPackage.Game) && rop.Cache != null && CanDonateObject(sourceExport) && !sourceExport.InstancedFullPath.StartsWith("TheWorld.")) // Actors cannot be donors
             {
                 // Port in donor instead
                 var ifp = sourceExport.InstancedFullPath;
@@ -718,15 +718,23 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             }
         }
 
-        private static bool CanDonateClassType(string sourceExportClassName)
+        private static bool CanDonateObject(ExportEntry export)
         {
-            switch (sourceExportClassName)
+            // These classes cannot be donated across games.
+            switch (export.ClassName)
             {
                 case "Package":
                 case "Brush":
                 case "Model":
                     return false;
             }
+
+            // Lightmaps should not be donated
+            if (export.IsA("LightMapTexture2D"))
+            {
+                return false;
+            }
+
             return true;
 
         }
@@ -2058,7 +2066,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// <returns></returns>
         public static ImportEntry ConvertExportToImport(ExportEntry export, string forcedPackageFile = null)
         {
-            string packageFile = ImportEntry.GetPackageFile(export.Game, export.ClassName);
+            string packageFile = ImportEntry.GetPackageFile(export);
             if (forcedPackageFile == null && GlobalUnrealObjectInfo.GetClasses(export.Game).TryGetValue(export.ClassName, out var classInfo))
             {
                 // PackageFile on an import is the package file that contains the class of the class
