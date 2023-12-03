@@ -95,7 +95,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             };
 
             var props = compiler.ConvertStatementsToPropertyCollection(defaultsAST.Statements, defaultsExport, new Dictionary<NameReference, ExportEntry>());
-            
+
             defaultsExport.WriteProperties(props);
         }
 
@@ -109,7 +109,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             };
 
             var props = compiler.ConvertStatementsToPropertyCollection(defaultsAST.Statements, export, null);
-            
+
             export.WriteProperties(props);
         }
 
@@ -204,10 +204,18 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 //sometimes the archetype is a subobject of the Default__ for a parent suboject's class.
                 if (parent != Default__Export)
                 {
-                    var archetypeRoot = parent;
+                    ExportEntry archetypeRoot = parent;
                     while (archetypeRoot.Archetype is not null)
                     {
-                        archetypeRoot = (ExportEntry)archetypeRoot.Parent;
+                        if (archetypeRoot.Archetype is ImportEntry aimp)
+                        {
+                            archetypeRoot = EntryImporter.ResolveImport(aimp, packageCache, null, "INT", gameRootOverride: gamePathOverride);
+                            // If we can't resolve import.... ?
+                        }
+                        else
+                        {
+                            archetypeRoot = (ExportEntry)archetypeRoot.Archetype;
+                        }
                     }
                     subPath = subObjPath[(archetypeRoot.InstancedFullPath.Length + 1)..];
                     IEntry classDefaultObject = GetClassDefaultObject(archetypeRoot.Class);
@@ -241,12 +249,12 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         private Property ConvertToProperty(AssignStatement assignStatement, Dictionary<NameReference, ExportEntry> subObjectDict = null)
         {
-            var nameRef = (SymbolReference) assignStatement.Target;
+            var nameRef = (SymbolReference)assignStatement.Target;
             int staticArrayIndex = 0;
             if (nameRef is ArraySymbolRef staticArrayRef)
             {
-                staticArrayIndex = ((IntegerLiteral) staticArrayRef.Index).Value;
-                nameRef = (SymbolReference) staticArrayRef.Array;
+                staticArrayIndex = ((IntegerLiteral)staticArrayRef.Index).Value;
+                nameRef = (SymbolReference)staticArrayRef.Array;
             }
 
             var type = nameRef.ResolveType();
@@ -313,7 +321,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                             literal = csf.InnerSymbol;
                         }
 
-                        funcName = NameReference.FromInstancedString(((SymbolReference) literal).Name);
+                        funcName = NameReference.FromInstancedString(((SymbolReference)literal).Name);
                     }
                     prop = new DelegateProperty(funcName, objUIndex, propName);
                     break;
@@ -373,7 +381,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     }
                     else
                     {
-                        value = NameReference.FromInstancedString(((EnumValue) ((SymbolReference) literal).Node).Name);
+                        value = NameReference.FromInstancedString(((EnumValue)((SymbolReference)literal).Node).Name);
                     }
                     prop = new EnumProperty(value, NameReference.FromInstancedString(enumeration.Name), Pcc.Game, propName);
                     break;
@@ -390,25 +398,25 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     switch (type.PropertyType)
                     {
                         case EPropertyType.Byte:
-                            prop = new ByteProperty((byte) ((IntegerLiteral) literal).Value, propName);
+                            prop = new ByteProperty((byte)((IntegerLiteral)literal).Value, propName);
                             break;
                         case EPropertyType.Int:
-                            prop = new IntProperty(((IntegerLiteral) literal).Value, propName);
+                            prop = new IntProperty(((IntegerLiteral)literal).Value, propName);
                             break;
                         case EPropertyType.Bool:
-                            prop = new BoolProperty(((BooleanLiteral) literal).Value, propName);
+                            prop = new BoolProperty(((BooleanLiteral)literal).Value, propName);
                             break;
                         case EPropertyType.Float:
-                            prop = new FloatProperty(((FloatLiteral) literal).Value, propName);
+                            prop = new FloatProperty(((FloatLiteral)literal).Value, propName);
                             break;
                         case EPropertyType.Name:
-                            prop = new NameProperty(NameReference.FromInstancedString(((NameLiteral) literal).Value), propName);
+                            prop = new NameProperty(NameReference.FromInstancedString(((NameLiteral)literal).Value), propName);
                             break;
                         case EPropertyType.String:
-                            prop = new StrProperty(((StringLiteral) literal).Value, propName);
+                            prop = new StrProperty(((StringLiteral)literal).Value, propName);
                             break;
                         case EPropertyType.StringRef:
-                            prop = new StringRefProperty(((StringRefLiteral) literal).Value, propName);
+                            prop = new StringRefProperty(((StringRefLiteral)literal).Value, propName);
                             break;
                         default:
                             throw new ArgumentOutOfRangeException();
@@ -424,16 +432,16 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
         {
             PropertyCollection props = ConvertStatementsToPropertyCollection(subObject.Statements, subExport, new(parentSubObjectDict));
             var binary = ObjectBinary.Create(subExport.ClassName, subExport.Game, props);
-            
+
             //this code should probably be somewhere else, perhaps integrated into ObjectBinary.Create somehow?
-            if (binary is BioDynamicAnimSet dynAnimSet && props.GetProp<ArrayProperty<ObjectProperty>>("Sequences") is {} sequences)
+            if (binary is BioDynamicAnimSet dynAnimSet && props.GetProp<ArrayProperty<ObjectProperty>>("Sequences") is { } sequences)
             {
                 var setName = props.GetProp<NameProperty>("m_nmOrigSetName");
                 foreach (ObjectProperty objProp in sequences)
                 {
                     switch (objProp.ResolveToEntry(Pcc))
                     {
-                        case ExportEntry exportEntry when exportEntry.GetProperty<NameProperty>("SequenceName") is {} seqNameProperty:
+                        case ExportEntry exportEntry when exportEntry.GetProperty<NameProperty>("SequenceName") is { } seqNameProperty:
                             dynAnimSet.SequenceNamesToUnkMap.Add(seqNameProperty.Value, 1);
                             break;
                         case IEntry entry:

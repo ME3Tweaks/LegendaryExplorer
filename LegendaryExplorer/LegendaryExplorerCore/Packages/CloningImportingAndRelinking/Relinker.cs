@@ -207,7 +207,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                             //    targetFunc.ScriptBytes = new byte[0]; // Zero out function
                             //    targetFuncExp.WriteBinary(targetFunc);
 
-                            Debug.WriteLine($"Recompiling function after cross game porting: {targetFuncExp.InstancedFullPath}");
+                            // Debug.WriteLine($"Recompiling function after cross game porting: {targetFuncExp.InstancedFullPath}");
                             (_, MessageLog log) = UnrealScriptCompiler.CompileFunction(targetFuncExp, sourceInfo.text, destFL);
                             if (log.AllErrors.Any())
                             {
