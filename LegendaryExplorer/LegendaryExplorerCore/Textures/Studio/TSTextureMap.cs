@@ -139,7 +139,7 @@ namespace LegendaryExplorerCore.Textures.Studio
         public TextureMapMemoryEntry(IEntry iEntry)
         {
             IsTexture = iEntry.IsTexture();
-            ObjectName = iEntry.ObjectName;
+            ObjectName = iEntry.ObjectName.Instanced;
         }
 
         /// <summary>
