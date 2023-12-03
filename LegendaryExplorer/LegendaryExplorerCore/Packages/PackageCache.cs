@@ -91,6 +91,10 @@ namespace LegendaryExplorerCore.Packages
             return null; //Package could not be found
         }
 
+        /// <summary>
+        /// Inserts a package into the the cache, based on its file path.
+        /// </summary>
+        /// <param name="package"></param>
         public virtual void InsertIntoCache(IMEPackage package)
         {
             Cache[package.FilePath] = package;

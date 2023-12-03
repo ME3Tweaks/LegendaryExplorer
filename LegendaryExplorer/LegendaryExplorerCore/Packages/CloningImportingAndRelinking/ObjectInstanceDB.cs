@@ -160,7 +160,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             if (package.FilePath.StartsWith(defaultGamePath))
             {
                 // Store relative path
-                FilePaths.Add(package.FilePath.Substring(defaultGamePath.Length + 1));
+                FilePaths.Add(package.FilePath.Substring(defaultGamePath.Trim('\\','/').Length + 1));
             }
             else
             {
@@ -195,6 +195,24 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     records.Add(filePathIndex);
                 }
             }
+        }
+
+        /// <summary>
+        /// Removes all entries associated with a specific package
+        /// </summary>
+        /// <param name="package"></param>
+        public void RemoveFileFromDB(IMEPackage package)
+        {
+            var fileIndex = FilePaths.IndexOf(package.FilePath);
+            foreach (ExportEntry exp in package.Exports)
+            {
+                if (ExportMap.TryGetValue(exp.InstancedFullPath, out List<int> records))
+                {
+                    records.Remove(fileIndex);
+                }
+            }
+
+            FilePaths.RemoveAt(fileIndex);
         }
 
         /// <summary>
