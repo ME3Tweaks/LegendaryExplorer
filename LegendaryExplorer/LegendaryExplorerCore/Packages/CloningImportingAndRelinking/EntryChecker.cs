@@ -443,6 +443,12 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 {
                     item.AddSignificantIssue(localizationDelegate(LECLocalizationShim.string_interp_warningDelegatePropertyIsOutsideOfExportTable, prefix, dp.Name.Name), entry);
                 }
+            } else if (property is NameProperty np)
+            {
+                if (np.Value.Name == "") // Failed to resolve
+                {
+                    item.AddSignificantIssue(localizationDelegate(LECLocalizationShim.string_interp_invalidNameIndexonNameProperty, prefix, property.Name.Instanced), entry);
+                }
             }
         }
 
