@@ -647,6 +647,11 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 baseClass = "Object",
                 pccPath = enginePath
             };
+            classes["GuidCache"] = new ClassInfo
+            {
+                baseClass = "Object",
+                pccPath = enginePath
+            };
 
             void AddCore(string className, string baseClass)
             {
