@@ -20,7 +20,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
         public List<Texture2DMipInfo> Mips { get; }
         public readonly bool NeverStream;
         public readonly ExportEntry Export;
-        public string TextureFormat { get; init; }
+        public string TextureFormat { get; set; }
         public Guid TextureGuid;
 
         // Callback for when there's an exception. Used by M3 to localize the error. Defaults to an int version since ME3Explorer is INT only
