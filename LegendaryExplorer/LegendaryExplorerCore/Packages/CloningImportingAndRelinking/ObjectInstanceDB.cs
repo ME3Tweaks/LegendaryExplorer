@@ -208,11 +208,17 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             {
                 if (ExportMap.TryGetValue(exp.InstancedFullPath, out List<int> records))
                 {
-                    records.Remove(fileIndex);
+                    records.RemoveAt(records.IndexOf(fileIndex));
+                    if (records.Count == 0)
+                    {
+                        // Removed from DB entirely
+                        ExportMap.Remove(exp.InstancedFullPath);
+                    }
                 }
             }
 
-            FilePaths.RemoveAt(fileIndex);
+            // Removing it would offset indices for later added files. We have to store null instead.
+            FilePaths[fileIndex] = null;
         }
 
         /// <summary>
