@@ -554,7 +554,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         {
                             // Try convert to import
                             var testImport = new ImportEntry(sourceClassExport, classParent?.UIndex ?? 0, destPackage);
-                            if (EntryImporter.TryResolveImport(testImport, out var resolved, localCache: rop.Cache))
+                            if (EntryImporter.TryResolveImport(testImport, out var resolved, localCache: rop.Cache, fileResolver: rop.CustomImportFileResolver))
                             {
                                 destPackage.AddImport(testImport);
                                 classValue = testImport;
@@ -594,7 +594,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         {
                             // Try convert to import
                             var testImport = new ImportEntry(sourceSuperClassExport, superClassParent?.UIndex ?? 0, destPackage);
-                            if (EntryImporter.TryResolveImport(testImport, out var resolved, localCache: rop.Cache))
+                            if (EntryImporter.TryResolveImport(testImport, out var resolved, localCache: rop.Cache, fileResolver: rop.CustomImportFileResolver))
                             {
                                 destPackage.AddImport(testImport);
                                 superclass = testImport;
@@ -635,7 +635,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         {
                             // Try convert to import
                             var testImport = new ImportEntry(sourceArchetypeExport, archetypeParent?.UIndex ?? 0, destPackage);
-                            if (EntryImporter.TryResolveImport(testImport, out var resolved, localCache: rop.Cache))
+                            if (EntryImporter.TryResolveImport(testImport, out var resolved, localCache: rop.Cache, fileResolver: rop.CustomImportFileResolver))
                             {
                                 destPackage.AddImport(testImport);
                                 archetype = testImport;
@@ -1367,7 +1367,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// <param name="localization">Three letter localization code, all upper case. Defaults to INT.</param>
         /// <param name="fileResolver">Custom filename to package resolver. Useful if you are resolving imports outside of the game directory.</param>
         /// <returns>The resolved export, or null if the referenced import could not be found</returns>
-        public static ExportEntry ResolveImport(ImportEntry entry, PackageCache localCache = null, string localization = "INT", Func<string, IMEPackage> fileResolver = null)
+        public static ExportEntry ResolveImport(ImportEntry entry, PackageCache localCache = null, string localization = "INT", Func<string, PackageCache, IMEPackage> fileResolver = null)
         {
             return ResolveImport(entry, null, localCache, localization, fileResolver: fileResolver);
         }
@@ -1399,7 +1399,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// <param name="unsafeLoad">If we are only testing for existence; use unsafe partial load. DO NOT USE THE RESULTING VALUE IF YOU SET THIS TO TRUE</param>
         /// <param name="gameRootOverride">The root path of the game. If null, the default path will be used</param>
         /// <returns></returns>
-        public static ExportEntry ResolveImport(ImportEntry entry, PackageCache globalCache, PackageCache lookupCache, string localization = "INT", bool unsafeLoad = false, IEnumerable<string> localDirFiles = null, string gameRootOverride = null, Func<string, IMEPackage> fileResolver = null)
+        public static ExportEntry ResolveImport(ImportEntry entry, PackageCache globalCache, PackageCache lookupCache, string localization = "INT", bool unsafeLoad = false, IEnumerable<string> localDirFiles = null, string gameRootOverride = null, Func<string, PackageCache, IMEPackage> fileResolver = null)
         {
             var entryFullPath = entry.InstancedFullPath;
             //if (entry.ObjectName == "HMM_EYE_MASTER_OVRD_MAT")
@@ -1419,7 +1419,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 // Allow custom resolver for imports so you can force which
                 // package will be inspected. This allows you to resolve
                 // package lookups outside of game
-                var customResolvedPackage = fileResolver?.Invoke(fileName);
+                var customResolvedPackage = fileResolver?.Invoke(fileName, lookupCache);
                 if (customResolvedPackage != null)
                 {
                     var export = FindExportInPackage(customResolvedPackage, fileName, entryFullPath);
@@ -2080,9 +2080,9 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// <param name="unsafeLoad"></param>
         /// <param name="localDirFiles"></param>
         /// <returns></returns>
-        public static bool TryResolveImport(ImportEntry importEntry, out ExportEntry export, PackageCache globalCache = null, PackageCache localCache = null, string localization = @"INT", bool unsafeLoad = false, IEnumerable<string> localDirFiles = null)
+        public static bool TryResolveImport(ImportEntry importEntry, out ExportEntry export, PackageCache globalCache = null, PackageCache localCache = null, string localization = @"INT", bool unsafeLoad = false, IEnumerable<string> localDirFiles = null, Func<string, PackageCache, IMEPackage> fileResolver = null)
         {
-            export = ResolveImport(importEntry, globalCache, localCache, localization, unsafeLoad, localDirFiles);
+            export = ResolveImport(importEntry, globalCache, localCache, localization, unsafeLoad, localDirFiles, fileResolver: fileResolver);
             return export != null;
         }
 

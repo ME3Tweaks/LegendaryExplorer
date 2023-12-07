@@ -79,6 +79,8 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// </summary>
         public string GamePathOverride { get; set; }
 
+        public Func<string, PackageCache, IMEPackage> CustomImportFileResolver { get; set; }
+
         /// <summary>
         /// Invoked when an error occurs during porting. Can be null.
         /// </summary>
@@ -161,7 +163,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         if (!sourceFileLibs.ContainsKey(funcToRelink.FileRef))
                         {
                             var sourceLib = new FileLib(funcToRelink.FileRef);
-                            sourceOK &= sourceLib.Initialize(rop.Cache);
+                            sourceOK &= sourceLib.Initialize(rop.Cache); // Do not use custom resolver on source files.
                             if (!sourceOK)
                             {
                                 rop.RelinkReport.Add(new EntryStringPair(funcToRelink, $"{funcToRelink.UIndex} {funcToRelink.InstancedFullPath} function relinking failed. Could not initialize the FileLib! This will likely be unusable. {string.Join("\n", sourceLib.InitializationLog.AllErrors.Select(x => x.Message))}"));
@@ -173,11 +175,10 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
                     var destPcc = rop.CrossPackageMap[functionsToRelink[0]].FileRef;
                     FileLib destFL = new FileLib(destPcc);
-                    var destOK = destFL.Initialize(rop.Cache);
+                    var destOK = destFL.Initialize(rop.Cache, customFileResolver: rop.CustomImportFileResolver);
 
                     if (sourceOK && destOK)
                     {
-
                         foreach (var f in functionsToRelink)
                         {
                             // crossgen debug
@@ -623,12 +624,12 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         }
                     }
                     ImportEntry testImport = new ImportEntry(relinkingExport.FileRef, importFullName);
-                    var resolved = EntryImporter.ResolveImport(testImport, rop.Cache);
+                    var resolved = EntryImporter.ResolveImport(testImport, rop.Cache, fileResolver: rop.CustomImportFileResolver);
                     if (resolved == null)
                     {
                         // We failed to resolve the import in the destination
                         Debug.WriteLine($@"Failed to resolve import in destination package: {testImport.InstancedFullPath}. Attempting to port export instead");
-                        var resolvedSource = EntryImporter.ResolveImport(importFullName, rop.Cache);
+                        var resolvedSource = EntryImporter.ResolveImport(importFullName, rop.Cache); // Do not use custom resolver
                         if (resolvedSource != null)
                         {
                             // Todo: We probably need to support porting in from things like BIOG files due to ForcedExport.
@@ -815,7 +816,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     {
                         // Try convert to import
                         var testImport = new ImportEntry(sourceExport, parent?.UIndex ?? 0, relinkingExport.FileRef);
-                        if (EntryImporter.TryResolveImport(testImport, out var resolved, localCache: rop.Cache))
+                        if (EntryImporter.TryResolveImport(testImport, out var resolved, localCache: rop.Cache, fileResolver: rop.CustomImportFileResolver))
                         {
                             relinkingExport.FileRef.AddImport(testImport);
                             uIndex = testImport.UIndex;

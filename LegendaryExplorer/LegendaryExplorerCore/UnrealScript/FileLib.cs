@@ -106,14 +106,14 @@ namespace LegendaryExplorerCore.UnrealScript
         /// </summary>
         /// <returns>A Task that represents the asynchronous initialization operation and wraps a <see cref="bool"/> indicating whether initialization was succesful.</returns>
         /// <inheritdoc cref="Initialize"/>
-        public async Task<bool> InitializeAsync(PackageCache packageCache = null, string gameRootPath = null, bool canUseBinaryCache = true)
+        public async Task<bool> InitializeAsync(PackageCache packageCache = null, string gameRootPath = null, bool canUseBinaryCache = true, Func<string, PackageCache, IMEPackage> customFileResolver = null)
         {
             if (IsInitialized)
             {
                 return true;
             }
 
-            return await Task.Run(() => Initialize(packageCache, gameRootPath, canUseBinaryCache));
+            return await Task.Run(() => Initialize(packageCache, gameRootPath, canUseBinaryCache, customFileResolver));
         }
 
         /// <summary>
@@ -124,10 +124,10 @@ namespace LegendaryExplorerCore.UnrealScript
         /// <param name="canUseBinaryCache">Optional: Cache <see cref="ObjectBinary"/>s during initialization. Defaults to <c>true</c>.
         /// Caching speeds up initialization and any decompilation operations using this <see cref="FileLib"/>, at the cost of greater memory usage.</param>
         /// <returns>A <see cref="bool"/> indicating whether initialization was successful. This value will also be in <see cref="IsInitialized"/>.</returns>
-        public bool Initialize(PackageCache packageCache = null, string gameRootPath = null, bool canUseBinaryCache = true) => InternalInitialize(packageCache, gameRootPath, canUseBinaryCache, null);
+        public bool Initialize(PackageCache packageCache = null, string gameRootPath = null, bool canUseBinaryCache = true, Func<string, PackageCache, IMEPackage> customFileResolver = null) => InternalInitialize(packageCache, gameRootPath, canUseBinaryCache, null, customFileResolver);
 
         //if additionalClasses is passed to this method, the FileLib cannot be used normally! It should only be used for compiling those classes 
-        internal bool InternalInitialize(PackageCache packageCache = null, string gameRootPath = null, bool canUseBinaryCache = true, IEnumerable<Class> additionalClasses = null)
+        internal bool InternalInitialize(PackageCache packageCache = null, string gameRootPath = null, bool canUseBinaryCache = true, IEnumerable<Class> additionalClasses = null, Func<string, PackageCache, IMEPackage> customFileResolver = null)
         {
             if (IsInitialized) return true;
 
@@ -139,7 +139,7 @@ namespace LegendaryExplorerCore.UnrealScript
                     return true;
                 }
 
-                if (PrivateInitialize(packageCache, gameRootPath, canUseBinaryCache, additionalClasses))
+                if (PrivateInitialize(packageCache, gameRootPath, canUseBinaryCache, additionalClasses, customFileResolver))
                 {
                     HadInitializationError = false;
                     _isInitialized = true;
@@ -196,7 +196,7 @@ namespace LegendaryExplorerCore.UnrealScript
         public static void FreeLibs() { }
 
         //only use from within _initializationLock!
-        private bool PrivateInitialize(PackageCache packageCache, string gameRootPath = null, bool canUseCache = true, IEnumerable<Class> additionalClasses = null)
+        private bool PrivateInitialize(PackageCache packageCache, string gameRootPath = null, bool canUseCache = true, IEnumerable<Class> additionalClasses = null, Func<string, PackageCache, IMEPackage> customFileResolver = null)
         {
             bool packageCacheIsLocal = false;
             try
@@ -233,7 +233,15 @@ namespace LegendaryExplorerCore.UnrealScript
 
                 foreach (string fileName in baseFileNames)
                 {
-                    if (gameFiles.TryGetValue(fileName, out string path) && File.Exists(path))
+                    if (customFileResolver != null && customFileResolver.Invoke(fileName, packageCache) != null)
+                    {
+                        // Custom resolution, given a cache, will be relatively fast on a second invocation
+                        if (!ResolveAllClassesInPackage(customFileResolver.Invoke(fileName, packageCache), ref _baseSymbols, InitializationLog, packageCache))
+                        {
+                            return false;
+                        }
+                    }
+                    else if (gameFiles.TryGetValue(fileName, out var path) && File.Exists(path))
                     {
                         IMEPackage pcc = packageCache.GetCachedPackage(path, true);
                         if (!ResolveAllClassesInPackage(pcc, ref _baseSymbols, InitializationLog, packageCache))
@@ -253,30 +261,30 @@ namespace LegendaryExplorerCore.UnrealScript
                     switch (Pcc.Game)
                     {
                         case MEGame.ME3:
-                        {
-                            associatedFiles.Remove("BIOP_MP_COMMON.pcc");
-                            if (Pcc.FindEntry("SFXGameMPContent") is { ClassName: "Package" } mpContentPackage && mpContentPackage.GetChildren<ImportEntry>().Any())
                             {
-                                associatedFiles.Add("BIOP_MP_COMMON.pcc");
+                                associatedFiles.Remove("BIOP_MP_COMMON.pcc");
+                                if (Pcc.FindEntry("SFXGameMPContent") is { ClassName: "Package" } mpContentPackage && mpContentPackage.GetChildren<ImportEntry>().Any())
+                                {
+                                    associatedFiles.Add("BIOP_MP_COMMON.pcc");
+                                }
+                                if (Pcc.FindEntry("SFXGameContentDLC_CON_MP2") is { ClassName: "Package" })
+                                {
+                                    associatedFiles.Add("Startup_DLC_CON_MP2_INT.pcc");
+                                }
+                                if (Pcc.FindEntry("SFXGameContentDLC_CON_MP3") is { ClassName: "Package" })
+                                {
+                                    associatedFiles.Add("Startup_DLC_CON_MP3_INT.pcc");
+                                }
+                                if (Pcc.FindEntry("SFXGameContentDLC_CON_MP4") is { ClassName: "Package" })
+                                {
+                                    associatedFiles.Add("Startup_DLC_CON_MP4_INT.pcc");
+                                }
+                                if (Pcc.FindEntry("SFXGameContentDLC_CON_MP5") is { ClassName: "Package" })
+                                {
+                                    associatedFiles.Add("Startup_DLC_CON_MP5_INT.pcc");
+                                }
+                                break;
                             }
-                            if (Pcc.FindEntry("SFXGameContentDLC_CON_MP2") is { ClassName: "Package" })
-                            {
-                                associatedFiles.Add("Startup_DLC_CON_MP2_INT.pcc");
-                            }
-                            if (Pcc.FindEntry("SFXGameContentDLC_CON_MP3") is { ClassName: "Package" })
-                            {
-                                associatedFiles.Add("Startup_DLC_CON_MP3_INT.pcc");
-                            }
-                            if (Pcc.FindEntry("SFXGameContentDLC_CON_MP4") is { ClassName: "Package" })
-                            {
-                                associatedFiles.Add("Startup_DLC_CON_MP4_INT.pcc");
-                            }
-                            if (Pcc.FindEntry("SFXGameContentDLC_CON_MP5") is { ClassName: "Package" })
-                            {
-                                associatedFiles.Add("Startup_DLC_CON_MP5_INT.pcc");
-                            }
-                            break;
-                        }
                         case MEGame.ME2 when Pcc.FindImport("IpDrv") is not null:
                             associatedFiles.Add("IpDrv.pcc");
                             break;
