@@ -2777,7 +2777,7 @@ defaultproperties
                     var value = v.GetProp<ObjectProperty>("ParameterValue").ResolveToEntry(pe.Pcc);
                     if (value is ImportEntry ie)
                     {
-                        valueExp = EntryImporter.ResolveImport(ie, null, null);
+                        valueExp = EntryImporter.ResolveImport(ie);
                     }
                     else
                     {
