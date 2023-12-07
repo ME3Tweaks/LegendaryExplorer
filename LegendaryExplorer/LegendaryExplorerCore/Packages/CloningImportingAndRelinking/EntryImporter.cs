@@ -529,8 +529,8 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
             //Set class.
 
-            if (sourceExport.ObjectName == @"Default__BioStartLocationMP")
-                Debugger.Break();
+            //if (sourceExport.ObjectName == @"SFXPower_EMPGrenade")
+            //    Debugger.Break();
             IEntry classValue = null;
             switch (sourceExport.Class)
             {
@@ -1365,10 +1365,11 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// <param name="entry">The import to resolve</param>
         /// <param name="localCache">Package cache if you wish to keep packages held open, for example if you're resolving many imports</param>
         /// <param name="localization">Three letter localization code, all upper case. Defaults to INT.</param>
+        /// <param name="fileResolver">Custom filename to package resolver. Useful if you are resolving imports outside of the game directory.</param>
         /// <returns>The resolved export, or null if the referenced import could not be found</returns>
-        public static ExportEntry ResolveImport(ImportEntry entry, PackageCache localCache = null, string localization = "INT")
+        public static ExportEntry ResolveImport(ImportEntry entry, PackageCache localCache = null, string localization = "INT", Func<string, IMEPackage> fileResolver = null)
         {
-            return ResolveImport(entry, null, localCache, localization);
+            return ResolveImport(entry, null, localCache, localization, fileResolver: fileResolver);
         }
 
         /// <summary>
@@ -1398,7 +1399,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// <param name="unsafeLoad">If we are only testing for existence; use unsafe partial load. DO NOT USE THE RESULTING VALUE IF YOU SET THIS TO TRUE</param>
         /// <param name="gameRootOverride">The root path of the game. If null, the default path will be used</param>
         /// <returns></returns>
-        public static ExportEntry ResolveImport(ImportEntry entry, PackageCache globalCache, PackageCache lookupCache, string localization = "INT", bool unsafeLoad = false, IEnumerable<string> localDirFiles = null, string gameRootOverride = null)
+        public static ExportEntry ResolveImport(ImportEntry entry, PackageCache globalCache, PackageCache lookupCache, string localization = "INT", bool unsafeLoad = false, IEnumerable<string> localDirFiles = null, string gameRootOverride = null, Func<string, IMEPackage> fileResolver = null)
         {
             var entryFullPath = entry.InstancedFullPath;
             //if (entry.ObjectName == "HMM_EYE_MASTER_OVRD_MAT")
@@ -1414,6 +1415,20 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
             foreach (var fileName in filesToCheck)
             {
+                // 12/07/2023 - Mgamerz
+                // Allow custom resolver for imports so you can force which
+                // package will be inspected. This allows you to resolve
+                // package lookups outside of game
+                var customResolvedPackage = fileResolver?.Invoke(fileName);
+                if (customResolvedPackage != null)
+                {
+                    var export = FindExportInPackage(customResolvedPackage, fileName, entryFullPath);
+                    if (export != null)
+                    {
+                        return export;
+                    }
+                }
+
                 if (gameFiles.TryGetValue(fileName, out var fullgamepath))
                 {
                     var export = containsImportedExport(fullgamepath);
@@ -1471,39 +1486,51 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 if (package == null)
                     Debugger.Break();
 
-                var packName = Path.GetFileNameWithoutExtension(packagePath);
-                var packageParts = entryFullPath.Split('.').ToList();
-
-                // Coded a bit weird for optimization on allocations
-                string forcedExportPath = null;
-                if (packageParts.Count > 1 && packName == packageParts[0]) // Remove 'SFXGame' from 'SFXGame.BioSeqAct...'
-                {
-                    packageParts.RemoveAt(0);
-                    forcedExportPath = string.Join(".", packageParts);
-                }
-                else if (packName == packageParts[0])
-                {
-                    //it's literally the file itself (an imported package like SFXGame)
-                    return package.Exports.FirstOrDefault(x => x.idxLink == 0); //this will be at top of the tree
-                }
-
-                if (forcedExportPath != null)
-                {
-                    // We will try both with stripped header and non-stripped
-                    // ForcedExport does not use package name as root (e.g. does not use 'SFXGame')
-                    // Non-ForcedExport are native to the package (e.g. does use 'SFXGame')
-                    var clippedExport = package.FindExport(forcedExportPath);
-                    if (clippedExport != null)
-                    {
-                        if (clippedExport.IsForcedExport)
-                        {
-                            return null; // This import should not resolve! ForcedExport cannot use the packagename as the root of the import.
-                        }
-                        return clippedExport; // The export is not marked ForcedExport so this is fine to resolve
-                    }
-                }
-                return package.FindExport(entryFullPath);
+                return FindExportInPackage(package, packagePath, entryFullPath);
             }
+        }
+
+        /// <summary>
+        /// Finds an export in a package based on its full path. This can change depending on if it's forced export or not.
+        /// </summary>
+        /// <param name="package"></param>
+        /// <param name="packagePath"></param>
+        /// <param name="entryFullPath"></param>
+        /// <returns></returns>
+        private static ExportEntry FindExportInPackage(IMEPackage package, string packagePath, string entryFullPath)
+        {
+            var packName = Path.GetFileNameWithoutExtension(packagePath);
+            var packageParts = entryFullPath.Split('.').ToList();
+
+            // Coded a bit weird for optimization on allocations
+            string forcedExportPath = null;
+            if (packageParts.Count > 1 && packName == packageParts[0]) // Remove 'SFXGame' from 'SFXGame.BioSeqAct...'
+            {
+                packageParts.RemoveAt(0);
+                forcedExportPath = string.Join(".", packageParts);
+            }
+            else if (packName == packageParts[0])
+            {
+                //it's literally the file itself (an imported package like SFXGame)
+                return package.Exports.FirstOrDefault(x => x.idxLink == 0); //this will be at top of the tree
+            }
+
+            if (forcedExportPath != null)
+            {
+                // We will try both with stripped header and non-stripped
+                // ForcedExport does not use package name as root (e.g. does not use 'SFXGame')
+                // Non-ForcedExport are native to the package (e.g. does use 'SFXGame')
+                var clippedExport = package.FindExport(forcedExportPath);
+                if (clippedExport != null)
+                {
+                    if (clippedExport.IsForcedExport)
+                    {
+                        return null; // This import should not resolve! ForcedExport cannot use the packagename as the root of the import.
+                    }
+                    return clippedExport; // The export is not marked ForcedExport so this is fine to resolve
+                }
+            }
+            return package.FindExport(entryFullPath);
         }
 
         /// <summary>
