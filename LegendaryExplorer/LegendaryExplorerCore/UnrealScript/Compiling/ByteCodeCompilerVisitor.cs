@@ -895,7 +895,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             }
             else
             {
-                if (node.IsClassContext || hasInnerContext || Game is MEGame.LE1)
+                if (node.IsClassContext || hasInnerContext || Game.IsLEGame())
                 {
                     skip.End();
                 }
