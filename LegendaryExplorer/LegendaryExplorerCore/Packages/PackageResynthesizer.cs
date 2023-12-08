@@ -16,7 +16,7 @@ namespace LegendaryExplorerCore.Packages
         public static void ResynthesizePackage(IMEPackage package)
         {
             var packTempName = Path.Combine(Directory.GetParent(package.FilePath).FullName, Path.GetFileNameWithoutExtension(package.FilePath) + "_TMP.pcc");
-            var newPackage = MEPackageHandler.CreateAndOpenPackage(packTempName, package.Game);
+            using var newPackage = MEPackageHandler.CreateAndOpenPackage(packTempName, package.Game);
 
             // I considered using EntryTree but it doesn't seem very suited for reordering. 
             // Too confusing for me <_>
