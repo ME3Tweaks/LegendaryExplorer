@@ -41,10 +41,6 @@ namespace LegendaryExplorerCore.Packages
             IEntry newEntry = null;
             if (ordering.Entry != null)
             {
-                if (ordering.Entry.ObjectName == "SFXCameraMode_AsariRollLateral")
-                {
-                    // Debugger.Break();
-                }
                 if (isStubbing)
                 {
                     if (ordering.Entry is ImportEntry oImp)

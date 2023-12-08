@@ -4248,5 +4248,10 @@ defaultproperties
 
             }
         }
+
+        public static void ResynthesizePackage(PackageEditorWindow peWindow)
+        {
+            PackageResynthesizer.ResynthesizePackage(peWindow.Pcc);
+        }
     }
 }
