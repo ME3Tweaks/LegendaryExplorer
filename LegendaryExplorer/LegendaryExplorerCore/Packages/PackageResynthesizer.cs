@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
+using LegendaryExplorerCore.Unreal.ObjectInfo;
 
 namespace LegendaryExplorerCore.Packages
 {
@@ -45,16 +47,26 @@ namespace LegendaryExplorerCore.Packages
                 newPackage.FindNameOrAdd(name);
             }
 
-            // Step 2: Create imports and stub out exports
+            // Step 2: Ensure all classes and structs have their info in the class and struct DB
+            // Inventory classes
+            foreach (var e in package.Exports.Where(x => x.IsClass))
+            {
+                if (GlobalUnrealObjectInfo.GetClasses(package.Game).ContainsKey(e.ObjectName.Name))
+                    continue; // This class is already inventoried
+
+                Debug.WriteLine($@"Generating class info for {e.InstancedFullPath}");
+                GlobalUnrealObjectInfo.generateClassInfo(e);
+            }
+
+            // Step 3: Create imports and stub out exports
             var ordering = new EntryOrdering(null, package);
             PortOrdering(ordering, newPackage, null, ESynthesisMode.Synth_Stubbing);
             PortOrdering(ordering, newPackage, null, ESynthesisMode.Synth_Resolving);
-            newPackage.Save();
             PortOrdering(ordering, newPackage, null, ESynthesisMode.Synth_Transferring);
             return newPackage;
         }
 
-        private static void PortOrdering(EntryOrdering ordering, IMEPackage newPackage, IEntry parent, ESynthesisMode mode)
+        private static void PortOrdering(EntryOrdering ordering, IMEPackage newPackage, IEntry parent, ESynthesisMode mode, List<ImportEntry> importsToConvert = null)
         {
             IEntry newEntry = null;
             if (ordering.Entry != null)
@@ -63,13 +75,20 @@ namespace LegendaryExplorerCore.Packages
                 {
                     if (ordering.Entry is ImportEntry oImp)
                     {
-                        ImportEntry imp = new ImportEntry(newPackage, parent, ordering.Entry.ObjectName)
+                        if (ordering.ConvertToExport)
                         {
-                            PackageFile = oImp.PackageFile,
-                            ClassName = oImp.ClassName
-                        };
-                        newPackage.AddImport(imp);
-                        newEntry = imp;
+                            newEntry = ExportCreator.CreatePackageExport(newPackage, ordering.Entry.ObjectName, parent);
+                        }
+                        else
+                        {
+                            ImportEntry imp = new ImportEntry(newPackage, parent, ordering.Entry.ObjectName)
+                            {
+                                PackageFile = oImp.PackageFile,
+                                ClassName = oImp.ClassName
+                            };
+                            newPackage.AddImport(imp);
+                            newEntry = imp;
+                        }
                     }
                     else if (ordering.Entry is ExportEntry)
                     {
@@ -138,6 +157,73 @@ namespace LegendaryExplorerCore.Packages
                 return true;
             return false;
         }
+    }
+
+    /// <summary>
+    /// Describes a set of imports and exports in order
+    /// </summary>
+    internal class EntryOrdering
+    {
+        /// <summary>
+        /// The entry this ordering represents. If null, this is the root
+        /// </summary>
+        public IEntry Entry { get; set; }
+
+        /// <summary>
+        /// If this entry (an import), upon porting, should be converted to export instead
+        /// </summary>
+        public bool ConvertToExport { get; set; }
+
+        public List<EntryOrdering> Children { get; }
+
+        public EntryOrdering(IEntry entry, IMEPackage package)
+        {
+            if (entry == null && package == null)
+                throw new Exception("Bad setup for children ordering");
+
+            Entry = entry;
+            ConvertToExport = entry is ImportEntry && HasExportChildren(entry);
+            package ??= entry.FileRef;
+            var exports = package.Exports.Where(x => x.Parent == entry).ToList();
+            var imports = package.Imports.Where(x => x.Parent == entry).ToList();
+
+            exports.Sort(new EntrySorter());
+            imports.Sort(new EntrySorter());
+
+            // yeah this is gross.
+            var temp = imports.OfType<IEntry>().ToList();
+            OrderClasses(temp);
+            imports = temp.OfType<ImportEntry>().ToList();
+
+
+            Children = new List<EntryOrdering>();
+
+            // Imports first so they port over first
+            var impChildren = new List<EntryOrdering>();
+            var conversions = new List<EntryOrdering>();
+
+            foreach (var imp in imports)
+            {
+                var ordering = new EntryOrdering(imp, package);
+                if (ordering.ConvertToExport)
+                    conversions.Add(ordering); // Will be converted to an export instead
+                else
+                    impChildren.Add(ordering);
+            }
+
+            var expChildren = new List<EntryOrdering>();
+            var expEntries = exports.Concat(conversions.Select(x => x.Entry)).ToList();
+            expEntries.Sort(new EntrySorter());
+            OrderClasses(expEntries);
+
+            foreach (var exp in expEntries)
+            {
+                expChildren.Add(new EntryOrdering(exp, package));
+            }
+
+            Children.AddRange(impChildren);
+            Children.AddRange(expChildren);
+        }
 
         /// <summary>
         /// Used to determine if a package export can be an import vs an export. Export children indicate the package export should be an export for consistency.
@@ -156,81 +242,32 @@ namespace LegendaryExplorerCore.Packages
 
             return false; // No children of us is an export
         }
-    }
 
-    /// <summary>
-    /// Describes a set of imports and exports in order
-    /// </summary>
-    internal class EntryOrdering
-    {
-        /// <summary>
-        /// The entry this ordering represents. If null, this is the root
-        /// </summary>
-        public IEntry Entry { get; set; }
-
-        public List<EntryOrdering> Children { get; }
-
-        public EntryOrdering(IEntry entry, IMEPackage package)
+        private void OrderClasses(List<IEntry> entries)
         {
-            if (entry == null && package == null)
-                throw new Exception("Bad setup for children ordering");
-
-            Entry = entry;
-            package ??= entry.FileRef;
-            var exports = package.Exports.Where(x => x.Parent == entry).ToList();
-            var imports = package.Imports.Where(x => x.Parent == entry).ToList();
-
-            exports.Sort(new EntrySorter());
-            imports.Sort(new EntrySorter());
-
-            OrderClasses(exports);
-            OrderClasses(imports);
-
-            Children = new List<EntryOrdering>();
-
-            // Imports first so they port over first
-            foreach (var imp in imports)
-            {
-                Children.Add(new EntryOrdering(imp, package));
-            }
-            foreach (var exp in exports)
-            {
-                Children.Add(new EntryOrdering(exp, package));
-            }
-        }
-
-        private void OrderClasses(List<ExportEntry> exports)
-        {
-            var classes = exports.Where(x => x.IsClass).ToList(); // Must use .ToList() to prevent concurrent modification
+            var classes = entries.Where(x => x.IsClass).ToList(); // Must use .ToList() to prevent concurrent modification
             foreach (var cls in classes)
             {
-                var clsDefaultsUIndex = ObjectBinary.From<UClass>(cls).Defaults;
-                if (clsDefaultsUIndex < 0)
+                if (cls is ExportEntry exp)
                 {
-                    // It's an import
+                    var clsDefaultsUIndex = ObjectBinary.From<UClass>(exp).Defaults;
+
+                    var classDefaults = cls.FileRef.GetEntry(clsDefaultsUIndex);
+                    entries.Remove(classDefaults);
+                    var newIdx = entries.IndexOf(cls) + 1;
+                    entries.Insert(newIdx, classDefaults);
                 }
                 else
                 {
-                    var classDefaults = cls.FileRef.GetUExport(clsDefaultsUIndex);
-                    exports.Remove(classDefaults);
-                    var newIdx = exports.IndexOf(cls) + 1;
-                    exports.Insert(newIdx, classDefaults);
-                }
-            }
-        }
-
-        private void OrderClasses(List<ImportEntry> imports)
-        {
-            var classes = imports.Where(x => x.IsClass).ToList(); // Must use .ToList() to prevent concurrent modification
-            foreach (var cls in classes)
-            {
-                var defaultName = $"Default__{cls.ObjectName.Instanced}";
-                var defImport = imports.FirstOrDefault(x => x.ObjectName.Instanced == defaultName);
-                if (defImport != null)
-                {
-                    imports.Remove(defImport);
-                    var newIdx = imports.IndexOf(cls) + 1;
-                    imports.Insert(newIdx, defImport);
+                    // It's an import
+                    var defaultName = $"Default__{cls.ObjectName.Instanced}";
+                    var defImport = entries.FirstOrDefault(x => x.ObjectName.Instanced == defaultName);
+                    if (defImport != null)
+                    {
+                        entries.Remove(defImport);
+                        var newIdx = entries.IndexOf(cls) + 1;
+                        entries.Insert(newIdx, defImport);
+                    }
                 }
             }
         }
@@ -287,30 +324,61 @@ namespace LegendaryExplorerCore.Packages
 
         public int Compare(IEntry? x, IEntry? y)
         {
-            if (x is ExportEntry exp1 && y is ExportEntry exp2)
             {
-                var score1 = SpecialOrderExport(exp1);
-                var score2 = SpecialOrderExport(exp2);
+                if (x is ExportEntry exp1 && y is ExportEntry exp2)
+                {
+                    var score1 = SpecialOrderExport(exp1);
+                    var score2 = SpecialOrderExport(exp2);
 
-                if (score1 != score2)
-                    return score1.CompareTo(score2); // One of the items has a special ordering value assigned to it
+                    if (score1 != score2)
+                        return score1.CompareTo(score2); // One of the items has a special ordering value assigned to it
 
-                // No special ordering
-                return String.Compare(exp1.ObjectName.Instanced, exp2.ObjectName.Instanced, StringComparison.InvariantCultureIgnoreCase);
+                    // No special ordering
+                    return String.Compare(exp1.ObjectName.Instanced, exp2.ObjectName.Instanced,
+                        StringComparison.InvariantCultureIgnoreCase);
+                }
+
+                if (x is ImportEntry imp1 && y is ImportEntry imp2)
+                {
+                    var score1 = SpecialOrderImport(imp1);
+                    var score2 = SpecialOrderImport(imp2);
+
+                    if (score1 != score2)
+                        return score1.CompareTo(score2); // One of the items has a special ordering value assigned to it
+
+                    // No special ordering
+                    return String.Compare(imp1.ObjectName.Instanced, imp2.ObjectName.Instanced,
+                        StringComparison.InvariantCultureIgnoreCase);
+                }
             }
-
-            if (x is ImportEntry imp1 && y is ImportEntry imp2)
             {
-                var score1 = SpecialOrderImport(imp1);
-                var score2 = SpecialOrderImport(imp2);
+                if (x is ImportEntry imp1 && y is ExportEntry exp2)
+                {
+                    var score1 = SpecialOrderImport(imp1);
+                    var score2 = SpecialOrderExport(exp2);
 
-                if (score1 != score2)
-                    return score1.CompareTo(score2); // One of the items has a special ordering value assigned to it
+                    if (score1 != score2)
+                        return score1.CompareTo(score2); // One of the items has a special ordering value assigned to it
 
-                // No special ordering
-                return String.Compare(imp1.ObjectName.Instanced, imp2.ObjectName.Instanced, StringComparison.InvariantCultureIgnoreCase);
+                    // No special ordering
+                    return String.Compare(imp1.ObjectName.Instanced, exp2.ObjectName.Instanced,
+                        StringComparison.InvariantCultureIgnoreCase);
+                }
             }
+            {
+                if (x is ExportEntry exp1 && y is ImportEntry imp2)
+                {
+                    var score1 = SpecialOrderExport(exp1);
+                    var score2 = SpecialOrderImport(imp2);
 
+                    if (score1 != score2)
+                        return score1.CompareTo(score2); // One of the items has a special ordering value assigned to it
+
+                    // No special ordering
+                    return String.Compare(exp1.ObjectName.Instanced, imp2.ObjectName.Instanced,
+                        StringComparison.InvariantCultureIgnoreCase);
+                }
+            }
             return 0;
         }
     }

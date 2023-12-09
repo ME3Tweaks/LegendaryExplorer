@@ -4251,7 +4251,14 @@ defaultproperties
 
         public static void ResynthesizePackage(PackageEditorWindow peWindow)
         {
-            PackageResynthesizer.ResynthesizePackage(peWindow.Pcc);
+            var result = MessageBox.Show("WARNING: This will save the package to disk and may break it!! Continue?",
+                            "Destructive operation", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                var p = PackageResynthesizer.ResynthesizePackage(peWindow.Pcc);
+                p.Save();
+            }
         }
     }
 }
