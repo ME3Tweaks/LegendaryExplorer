@@ -371,7 +371,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         // Like Engine.CodecBinkMovie
                         if (!referencedEntry.IsAKnownNativeClass())
                         {
-                            if (referencedEntry.ClassName == @"Class")
+                            if (referencedEntry.ClassName == @"Class" && propInfo.Reference != @"Class")
                             {
                                 // Inherits
                                 if (!referencedEntry.InheritsFrom(propInfo.Reference, customClassInfos /*, (entry as ExportEntry)?.SuperClassName) */))
