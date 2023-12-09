@@ -1908,7 +1908,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 var langFilter = PromptDialog.Prompt(pewpf,
                     "Enter the language suffix to filter, or blank to dump INT. For example, PLPC, DE, FR.",
                     "Enter language filter", "", true);
-
+                if (string.IsNullOrWhiteSpace(langFilter)) langFilter = null;
                 Task.Run(() =>
                 {
                     pewpf.BusyText = "Dumping TLKs...";
@@ -1921,7 +1921,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         //    continue;
                         pewpf.BusyText = $"Dumping TLKs [{++numDone}/{allPackages.Count}]";
                         using var package = MEPackageHandler.OpenMEPackage(f.Value);
-                        foreach (var v in package.LocalTalkFiles)
+                        foreach (var v in ((MEPackage)package).ReadLocalTLKs(langFilter, getAllGenders: true))
                         {
                             if (!string.IsNullOrWhiteSpace(langFilter) && !v.Name.EndsWith($"_{langFilter}"))
                             {
