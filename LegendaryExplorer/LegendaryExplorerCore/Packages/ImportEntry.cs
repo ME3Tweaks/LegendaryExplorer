@@ -3,6 +3,7 @@ using System.Buffers.Binary;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Xml.Linq;
 using LegendaryExplorerCore.Gammtek.IO;
@@ -46,15 +47,46 @@ namespace LegendaryExplorerCore.Packages
             idxLink = parentIdx;
             ClassName = sourceExport.ClassName;
             ObjectName = sourceExport.ObjectName;
-            var classInfo = GlobalUnrealObjectInfo.GetClassOrStructInfo(fakeDestPackage.Game, sourceExport.ClassName);
+            PackageFile = GetPackageFile(sourceExport); // may want to use sourceExport as this may not have yet been attached to package 
+        }
+
+        /// <summary>
+        /// Looks up the class info for the given class and returns which package file should contain it. Use this for the PackageFile attribute on ImportEntries.
+        /// </summary>
+        /// <param name="game"></param>
+        /// <param name="className"></param>
+        /// <returns></returns>
+        public static string GetPackageFile(MEGame game, string className)
+        {
+            var classInfo = GlobalUnrealObjectInfo.GetClassOrStructInfo(game, className);
             if (classInfo != null)
             {
-                PackageFile = Path.GetFileNameWithoutExtension(classInfo.pccPath).UpperFirst();
+                return Path.GetFileNameWithoutExtension(classInfo.pccPath).UpperFirst();
             }
             else
             {
-                PackageFile = @"Core"; // ?? This could be engine, sfxgame...
+                return @"Core"; // ?? This could be engine, sfxgame...
             }
+        }
+
+        /// <summary>
+        /// Looks up the class info for the given class and returns which package file should contain it. Use this for the PackageFile attribute on ImportEntries.
+        /// </summary>
+        /// <param name="game"></param>
+        /// <param name="className"></param>
+        /// <returns></returns>
+        public static string GetPackageFile(ExportEntry entry)
+        {
+            var entryClass = entry.Class;
+            if (entryClass == null)
+                return @"Core"; // Class is defined in Core
+            if (entryClass.HasParent)
+            {
+                // ForcedExport parent? Take the first forced export?
+                return entryClass.InstancedFullPath.Split(".").First();
+            }
+            
+            return GetPackageFile(entry.Game, entry.ClassName);
         }
 
         /// <summary>

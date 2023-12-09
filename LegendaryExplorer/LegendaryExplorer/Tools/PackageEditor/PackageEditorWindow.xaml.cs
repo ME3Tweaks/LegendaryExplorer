@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -44,6 +45,7 @@ using Microsoft.WindowsAPICodePack.Dialogs;
 using LegendaryExplorerCore.Audio;
 using System.IO.Packaging;
 using LegendaryExplorer.Packages;
+using LegendaryExplorerCore.Localization;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
 
 namespace LegendaryExplorer.Tools.PackageEditor
@@ -499,7 +501,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 }
 
                 IEntry defaultParent = null;
-                if (TryGetSelectedExport(out var currentExport) && (currentExport.Parent == null && currentExport.ClassName == "Package" ) || (currentExport.Parent != null && currentExport.Parent.ClassName == "Package"))
+                if (TryGetSelectedExport(out var currentExport) && (currentExport.Parent is null && currentExport.ClassName == "Package" || currentExport.Parent is { ClassName: "Package" }))
                 {
                     // This will match both cases given the if statement.
                     defaultParent = currentExport.Parent ?? currentExport;
@@ -651,7 +653,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
         {
             if (SelectedItem.Entry is ExportEntry exp)
             {
-                SharedPackageTools.ExtractEntryToNewPackage(exp, x => IsBusy = x, x => BusyText = x,GetEntryDoubleClickAction(), this);
+                SharedPackageTools.ExtractEntryToNewPackage(exp, x => IsBusy = x, x => BusyText = x, GetEntryDoubleClickAction(), this);
             }
         }
 
@@ -1780,6 +1782,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     case "BioSoundNodeWaveStreamingData":
                     case "FaceFXAsset":
                     case "WwiseBank":
+                    case "BrushComponent":
                         return true;
                 }
             }
@@ -1836,6 +1839,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                             {
                                 MessageBox.Show("Error reading/saving SWF data:\n\n" + ex.FlattenException());
                             }
+
                             break;
                         }
                     case "BioTlkFile":
@@ -1853,6 +1857,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                                 exportingTalk.SaveToXML(d.FileName);
                                 MessageBox.Show("Done");
                             }
+
                             break;
                         }
                     case "SoundNodeWave":
@@ -1927,14 +1932,21 @@ namespace LegendaryExplorer.Tools.PackageEditor
                                 var icbBank = bsnwsd.BankPair.ICBBank;
                                 var icbName = icbBank.BankChunks.OfType<TitleBankChunk>().FirstOrDefault();
 
-                                using var fs = new FileStream(Path.Combine(outDir, Path.GetFileNameWithoutExtension(icbName.Value) + ".icb"), FileMode.Create);
+                                using var fs =
+                                    new FileStream(
+                                        Path.Combine(outDir, Path.GetFileNameWithoutExtension(icbName.Value) + ".icb"),
+                                        FileMode.Create);
                                 bsnwsd.BankPair.ICBBank.Write(fs);
                                 // ISB
-                                using var fs2 = new FileStream(Path.Combine(outDir, Path.GetFileNameWithoutExtension(icbName.Value) + ".isb"), FileMode.Create);
+                                using var fs2 =
+                                    new FileStream(
+                                        Path.Combine(outDir, Path.GetFileNameWithoutExtension(icbName.Value) + ".isb"),
+                                        FileMode.Create);
                                 bsnwsd.BankPair.ISBBank.Write(fs2);
 
                                 MessageBox.Show("Done");
                             }
+
                             break;
                         }
                     case "FaceFXAsset":
@@ -1957,26 +1969,53 @@ namespace LegendaryExplorer.Tools.PackageEditor
                             break;
                         }
                     case "WwiseBank":
-                        var wdiag = new SaveFileDialog
                         {
-                            Title = "WwiseBank file",
-                            FileName = exp.FullPath + ".bnk",
-                            Filter = "*.bnk|*.bnk"
-                        };
-                        if (wdiag.ShowDialog() == true)
+                            var wdiag = new SaveFileDialog
+                            {
+                                Title = "WwiseBank file",
+                                FileName = exp.FullPath + ".bnk",
+                                Filter = "*.bnk|*.bnk"
+                            };
+                            if (wdiag.ShowDialog() == true)
+                            {
+                                var data = new MemoryStream(exp.GetBinaryData());
+                                if (exp.Game.IsGame3())
+                                {
+                                    data.Skip(0x10);
+                                }
+                                else if (exp.Game.IsGame2())
+                                {
+                                    data.Skip(0x18);
+                                }
+
+                                using FileStream fs = new FileStream(wdiag.FileName, FileMode.Create);
+                                data.CopyToEx(fs, (int)data.Length - 0x10);
+                                MessageBox.Show("Done");
+                            }
+                        }
+                        break;
+                    case "BrushComponent":
                         {
-                            var data = new MemoryStream(exp.GetBinaryData());
-                            if (exp.Game.IsGame3())
+                            var cachedConv = ObjectBinary.From<BrushComponent>(exp);
+                            if (cachedConv.CachedPhysBrushData == null ||
+                                cachedConv.CachedPhysBrushData.CachedConvexElements == null ||
+                                cachedConv.CachedPhysBrushData.CachedConvexElements.Length == 0)
                             {
-                                data.Skip(0x10);
+                                MessageBox.Show("This BrushComponent doesn't have a cached convex hull");
+                                break;
                             }
-                            else if (exp.Game.IsGame2())
+
+                            var saveDiag = new SaveFileDialog
                             {
-                                data.Skip(0x18);
+                                Title = "Cached Convex Hull Data",
+                                FileName = exp.InstancedFullPath + ".phys",
+                                Filter = "*.phys|*.phys"
+                            };
+                            if (saveDiag.ShowDialog() == true)
+                            {
+                                File.WriteAllBytes(saveDiag.FileName, cachedConv.CachedPhysBrushData.CachedConvexElements[0].ConvexElementData);
+                                MessageBox.Show("Done");
                             }
-                            using FileStream fs = new FileStream(wdiag.FileName, FileMode.Create);
-                            data.CopyToEx(fs, (int)data.Length - 0x10);
-                            MessageBox.Show("Done");
                         }
                         break;
                 }
@@ -2166,6 +2205,26 @@ namespace LegendaryExplorer.Tools.PackageEditor
                             }
                             break;
                         }
+                    case "BrushComponent":
+                        {
+                            string extension = Path.GetExtension(".phys");
+                            var wdiag = new OpenFileDialog
+                            {
+                                Title = "Select LEX exported Phys file",
+                                Filter = $"*{extension}|*{extension}",
+                                CustomPlaces = AppDirectories.GameCustomPlaces
+                            };
+                            if (wdiag.ShowDialog() == true)
+                            {
+                                var brush = BrushComponent.Create();
+                                brush.CachedPhysBrushData.CachedConvexElements = new KCachedConvexDataElement[]
+                                {
+                                    new KCachedConvexDataElement() { ConvexElementData = File.ReadAllBytes(wdiag.FileName) }
+                                };
+                                exp.WriteBinary(brush);
+                            }
+                            break;
+                        }
                 }
             }
         }
@@ -2326,7 +2385,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
             }
 
             ReferenceCheckPackage rcp = new ReferenceCheckPackage();
-            EntryChecker.CheckReferences(rcp, Pcc, EntryChecker.NonLocalizedStringConverter);
+            EntryChecker.CheckReferences(rcp, Pcc, LECLocalizationShim.NonLocalizedStringConverter);
 
             if (rcp.GetSignificantIssues().Any())
             {
@@ -3056,7 +3115,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
             return false;
         }
 
-        internal bool TryGetSelectedExport(out ExportEntry export)
+        internal bool TryGetSelectedExport([NotNullWhen(true)] out ExportEntry? export)
         {
             if (GetSelected(out int uIndex) && Pcc.IsUExport(uIndex))
             {
@@ -3068,7 +3127,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
             return false;
         }
 
-        private bool TryGetSelectedImport(out ImportEntry import)
+        private bool TryGetSelectedImport([NotNullWhen(true)] out ImportEntry? import)
         {
             if (GetSelected(out int uIndex) && Pcc.IsImport(uIndex))
             {
@@ -3896,7 +3955,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
 
             string searchTerm = Search_TextBox.Text.Trim();
-            
+
             void LoopFunc(ref int integer, int count)
             {
                 if (reverseSearch)

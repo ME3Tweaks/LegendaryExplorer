@@ -21,6 +21,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
         private bool ShouldStripTransients;
         private readonly PackageCache packageCache;
         private bool IsStructDefaults;
+        private Func<IMEPackage, string, IEntry> MissingObjectResolver;
 
         private ScriptPropertiesCompiler(IMEPackage pcc, PackageCache packageCache = null)
         {
@@ -52,7 +53,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             return props;
         }
 
-        public static void CompileDefault__Object(DefaultPropertiesBlock defaultsAST, ExportEntry classExport, ref ExportEntry defaultsExport, PackageCache packageCache = null, string gameRootOverride = null)
+        public static void CompileDefault__Object(DefaultPropertiesBlock defaultsAST, ExportEntry classExport, ref ExportEntry defaultsExport, PackageCache packageCache = null, string gameRootOverride = null, Func<IMEPackage, string, IEntry> missingObjectResolver = null)
         {
             IMEPackage pcc = classExport.FileRef;
             var defaultsExportObjectName = new NameReference($"Default__{classExport.ObjectNameString}", classExport.indexValue);
@@ -67,7 +68,8 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
             var compiler = new ScriptPropertiesCompiler(pcc, packageCache)
             {
-                Default__Export = defaultsExport
+                Default__Export = defaultsExport,
+                MissingObjectResolver = missingObjectResolver
             };
 
             defaultsExport.SuperClass = null;
@@ -268,13 +270,28 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     prop = new ObjectProperty(literal is NoneLiteral ? null : CompilerUtils.ResolveClass((Class)((ClassType)((ObjectLiteral)literal).Class).ClassLimiter, Pcc), propName);
                     break;
                 case Class cls:
-                    IEntry entry = literal switch
+                    IEntry entry;
+                    switch (literal)
                     {
-                        NoneLiteral => null,
-                        SymbolReference {Node: Subobject subobject} => subObjectDict?[NameReference.FromInstancedString(subobject.NameDeclaration.Name)],
-                        ObjectLiteral {Class: ClassType {ClassLimiter: Class @class}} => CompilerUtils.ResolveClass(@class, Pcc),
-                        _ => Pcc.FindEntry(((ObjectLiteral)literal).Name.Value)
-                    };
+                        case NoneLiteral:
+                            entry = null;
+                            break;
+                        case SymbolReference { Node: Subobject subobject }:
+                            entry = subObjectDict?[NameReference.FromInstancedString(subobject.NameDeclaration.Name)];
+                            break;
+                        case ObjectLiteral objectLiteral:
+                            if (objectLiteral.Class is ClassType { ClassLimiter: Class @class })
+                            {
+                                entry = CompilerUtils.ResolveClass(@class, Pcc);
+                            }
+                            else
+                            {
+                                entry = Pcc.FindEntry(objectLiteral.Name.Value) ?? MissingObjectResolver?.Invoke(Pcc, objectLiteral.Name.Value);
+                            }
+                            break;
+                        default:
+                            throw new Exception($"Unrecognized literal type: {literal.GetType().FullName}");
+                    }
 
                     prop = new ObjectProperty(entry, propName)
                     {

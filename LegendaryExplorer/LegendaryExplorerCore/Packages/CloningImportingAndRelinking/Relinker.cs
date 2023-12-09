@@ -89,7 +89,8 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// </summary>
         public RelinkerOptionsPackage()
         {
-            Cache = new PackageCache();
+            // Commented out 11/20/2023 - might break crossgen
+            // Cache = new PackageCache();
         }
 
         /// <summary>
@@ -97,7 +98,8 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// </summary>
         public RelinkerOptionsPackage(PackageCache cache)
         {
-            Cache = cache;
+            // 11/20/2023: Initialize an empty package cache
+            Cache = cache ?? new PackageCache();
         }
     }
 
@@ -189,7 +191,13 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                                 // Todo: Other renamed packages like BIOG_Strategic"AI" -> SFXStratgic"AI"
                             }
 
-                            var targetFuncExp = rop.CrossPackageMap[f] as ExportEntry;
+                            var targetFuncEntry = rop.CrossPackageMap[f];
+                            if (targetFuncEntry is ImportEntry)
+                            {
+                                continue; // This was converted to an import and does not need recompiled
+                            }
+
+                            var targetFuncExp = targetFuncEntry as ExportEntry;
 #if DEBUG
                             // DEBUGGING
                             var debugTargetEntry = rop.CrossPackageMap[f];
@@ -568,7 +576,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         {
                             //if (originalInstancedFullPath.Contains("EngineMaterials"))
                             //    Debugger.Break();
-                            Debug.WriteLine($@"Redirecting relink of import {originalInstancedFullPath} to pull export from {newSourcePackage.FilePath} instead");
+                            // Debug.WriteLine($@"Redirecting relink of import {originalInstancedFullPath} to pull export from {newSourcePackage.FilePath} instead");
 
                             // Have to kind of hack it to work
                             var newSourceUIndex = newSourcePackage.FindExport(importingPCC.GetEntry(uIndex).InstancedFullPath).UIndex;
@@ -625,7 +633,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         {
                             // Todo: We probably need to support porting in from things like BIOG files due to ForcedExport.
                             ExportEntry importedExport = EntryImporter.ImportExport(relinkingExport.FileRef, resolvedSource, testImport.Parent?.UIndex ?? 0, rop);
-                            Debug.WriteLine($@"Memory safe porting: Redirected import {importedExport.InstancedFullPath} to export from {resolvedSource.FileRef.FileNameNoExtension}");
+                            // Debug.WriteLine($@"Memory safe porting: Redirected import {importedExport.InstancedFullPath} to export from {resolvedSource.FileRef.FileNameNoExtension}");
 
                             if (!rop.CrossPackageMap.ContainsKey(importFullName))
                                 rop.CrossPackageMap.Add(importFullName, importedExport); //add to mapping to speed up future relinks
@@ -811,7 +819,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         {
                             relinkingExport.FileRef.AddImport(testImport);
                             uIndex = testImport.UIndex;
-                            Debug.WriteLine($"Redirected importable export {relinkingExport.InstancedFullPath} to import from {resolved.FileRef.FilePath}");
+                            // Debug.WriteLine($"Redirected importable export {relinkingExport.InstancedFullPath} to import from {resolved.FileRef.FilePath}");
                             return null;
                         }
                     }

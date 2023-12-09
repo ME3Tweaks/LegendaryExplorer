@@ -28,9 +28,12 @@ using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.Classes;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
 using LegendaryExplorerCore.UnrealScript;
+using LegendaryExplorerCore.UnrealScript.Compiling;
 using LegendaryExplorerCore.UnrealScript.Compiling.Errors;
 using LegendaryExplorerCore.UnrealScript.Decompiling;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
+using LegendaryExplorerCore.UnrealScript.Parsing;
+using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Newtonsoft.Json;
 using SharpDX.D3DCompiler;
@@ -2781,6 +2784,180 @@ import java.util.*;"
                 };
                 dlg.Show();
             }
+        }
+
+        public static void CompileLooseClassFolder(PackageEditorWindow pew)
+        {
+            var folderPicker = new CommonOpenFileDialog
+            {
+                IsFolderPicker = true,
+                EnsurePathExists = true,
+                Title = "Select folder with .uc files"
+            };
+            if (folderPicker.ShowDialog(pew) is not CommonFileDialogResult.Ok) return;
+            string classFolder = folderPicker.FileName;
+
+            string gameString = InputComboBoxDialog.GetValue(pew, "Choose a game to compile for:",
+                "Create new package file", new[] { "LE3", "LE2", "LE1", "ME3", "ME2", "ME1", "UDK" }, "LE3");
+            if (!Enum.TryParse(gameString, out MEGame game)) return;
+
+            var dlg = new SaveFileDialog
+            {
+                Filter = game switch
+                {
+                    MEGame.UDK => GameFileFilters.UDKFileFilter,
+                    MEGame.ME1 => GameFileFilters.ME1SaveFileFilter,
+                    MEGame.ME2 => GameFileFilters.ME3ME2SaveFileFilter,
+                    MEGame.ME3 => GameFileFilters.ME3ME2SaveFileFilter,
+                    _ => GameFileFilters.LESaveFileFilter
+                },
+                CustomPlaces = AppDirectories.GameCustomPlaces,
+                InitialDirectory = classFolder
+            };
+            if (dlg.ShowDialog() != true) return;
+            string packagePath = dlg.FileName;
+
+            pew.SetBusy("Compiling loose classes");
+            Task.Run(() =>
+            {
+                var classes = new List<UnrealScriptCompiler.LooseClass>();
+                foreach (string ucFilePath in Directory.EnumerateFiles(classFolder, "*.uc", SearchOption.AllDirectories))
+                {
+                    string source = File.ReadAllText(ucFilePath);
+                    //files must be named Classname.uc
+                    classes.Add(new UnrealScriptCompiler.LooseClass(Path.GetFileNameWithoutExtension(ucFilePath), source));
+                }
+
+                using IMEPackage pcc = MEPackageHandler.CreateAndOpenPackage(packagePath, game);
+
+                //in real use, you would want a way to associate classes with the right packages (e.g. SFXGameContent).
+                //Perhaps this could be encoded in the directory structure of the loose files?
+                var looseClassPackages = new List<UnrealScriptCompiler.LooseClassPackage>
+                {
+                    new("CompiledClasses", classes)
+                };
+
+                MessageLog log = UnrealScriptCompiler.CompileLooseClasses(pcc, looseClassPackages, MissingObjectResolver, vtableDonorGetter: VTableDonorGetter);
+
+                if (log.HasErrors)
+                {
+                    return (object)log;
+                }
+
+                pcc.Save();
+                return packagePath;
+
+                //a real resolver might want to pull in donors, or at least keep track of which exports had been stubbed
+                static IEntry MissingObjectResolver(IMEPackage pcc, string instancedPath)
+                {
+                    ExportEntry export = null;
+                    foreach (string name in instancedPath.Split('.'))
+                    {
+                        export = ExportCreator.CreatePackageExport(pcc, NameReference.FromInstancedString(name), export);
+                    }
+                    return export;
+                }
+
+                //terrible function, there are better ways of implementing it.
+                List<string> VTableDonorGetter(string className)
+                {
+                    var classInfo = GlobalUnrealObjectInfo.GetClassOrStructInfo(game, className);
+                    if (classInfo is not null)
+                    {
+                        string path = Path.Combine(MEDirectories.GetBioGamePath(game), classInfo.pccPath);
+                        if (File.Exists(path))
+                        {
+                            IMEPackage partialLoad = MEPackageHandler.UnsafePartialLoad(path, exp => exp.IsClass && exp.ObjectName == className);
+                            foreach (ExportEntry export in partialLoad.Exports)
+                            {
+                                if (export.IsClass && export.ObjectName == className)
+                                {
+                                    var obj = export.GetBinaryData<UClass>();
+                                    return obj.VirtualFunctionTable.Select(uIdx => partialLoad.GetEntry(uIdx).ObjectName.Name).ToList();
+                                }
+                            }
+                        }
+                    }
+                    return null;
+                }
+            }).ContinueWithOnUIThread(prevTask =>
+            {
+                pew.EndBusy();
+                switch (prevTask.Result)
+                {
+                    case MessageLog log:
+                        new ListDialog(log.AllErrors.Select(msg => msg.ToString()), "Errors occured while compiling loose classes", "", pew).Show();
+                        break;
+                    case string path:
+                        pew.LoadFile(path);
+                        break;
+                }
+            });
+        }
+
+        public static void DumpClassSource(PackageEditorWindow pew)
+        {
+            var pcc = pew.Pcc;
+            if (pcc is null)
+            {
+                return;
+            }
+
+            var folderPicker = new CommonOpenFileDialog
+            {
+                IsFolderPicker = true,
+                EnsurePathExists = true,
+                Title = "Select folder to dump .uc files"
+            };
+            if (folderPicker.ShowDialog(pew) is not CommonFileDialogResult.Ok) return;
+            string folderPath = folderPicker.FileName;
+            pew.SetBusy("Dumping source code");
+            Task.Run(() =>
+            {
+                var fileLib = new FileLib(pcc);
+                if (!fileLib.Initialize())
+                {
+                    return "Failed to initialize FileLib";
+                }
+                int numFiles = 0;
+                foreach (ExportEntry classExport in pew.Pcc.Exports.Where(exp => exp.IsClass))
+                {
+                    try
+                    {
+                        (ASTNode ast, string script) = UnrealScriptCompiler.DecompileExport(classExport, fileLib);
+                        var cls = (Class)ast;
+                        if (!cls.IsFullyDefined)
+                        {
+                            continue;
+                        }
+                        File.WriteAllText(Path.Combine(folderPath, $"{cls.Name}.uc"), script);
+                        numFiles++;
+                    }
+                    catch (Exception exception)
+                    {
+                        return exception.FlattenException();
+                    }
+                }
+                return $"Dumped {numFiles} files.";
+            }).ContinueWithOnUIThread(prevTask =>
+            {
+                pew.EndBusy();
+                MessageBox.Show(prevTask.Result);
+            });
+        }
+
+        public static void RegenCachedPhysBrushData(PackageEditorWindow pew)
+        {
+            var pcc = pew.Pcc;
+            if (pcc is null || !pcc.Game.IsLEGame() || !pew.TryGetSelectedExport(out ExportEntry brushComponentExport) || brushComponentExport.ClassName != "BrushComponent")
+            {
+                MessageBox.Show(pew, "Must have a BrushComponent selected in an LE pcc.");
+                return;
+            }
+            var bin = brushComponentExport.GetBinaryData<BrushComponent>();
+            bin.RegenCachedPhysBrushData();
+            brushComponentExport.WriteBinary(bin);
+            MessageBox.Show(pew, "Regenerated!");
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -10,6 +11,7 @@ using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Textures;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
+using Image = LegendaryExplorerCore.Textures.Image;
 
 namespace LegendaryExplorerCore.Unreal.Classes
 {
@@ -215,7 +217,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
         {
             return GetTextureData(game, mipToLoad.Mip, mipToLoad.storageType, decompress, mipToLoad.uncompressedSize, mipToLoad.compressedSize, mipToLoad.externalOffset, mipToLoad.TextureCacheName, gamePathToUse, additionalTFCs, mipToLoad.Export?.FileRef.FilePath);
         }
-        
+
         /// <summary>
         /// Gets texture data from the given data.
         /// </summary>
@@ -233,7 +235,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
         /// <exception cref="FileNotFoundException"></exception>
-        public static byte[] GetTextureData(MEGame game, byte[] mipData, StorageTypes storageType, bool decompress, int uncompressedSize, int compressedSize, int externalOffset, string textureCacheName,string gamePathToUse = null, List<string> additionalTFCs = null, string packagePathForLocalLookup = null)
+        public static byte[] GetTextureData(MEGame game, byte[] mipData, StorageTypes storageType, bool decompress, int uncompressedSize, int compressedSize, int externalOffset, string textureCacheName, string gamePathToUse = null, List<string> additionalTFCs = null, string packagePathForLocalLookup = null)
         {
 
             bool dataLoaded = false;
@@ -380,6 +382,38 @@ namespace LegendaryExplorerCore.Unreal.Classes
                 return TextureCRC.Compute(data, 0, data.Length / 2);
             }
             return TextureCRC.Compute(data);
+        }
+
+        /// <summary>
+        /// Generates the data for a single blank (black) mip of the given size.
+        /// </summary>
+        /// <param name="sizeX"></param>
+        /// <param name="sizeY"></param>
+        /// <param name="format"></param>
+        /// <returns></returns>
+        public static byte[] CreateBlankTextureMip(int sizeX, int sizeY, PixelFormat format)
+        {
+            // Generates blank texture data in the given format
+            var blank = new Image(new byte[sizeX * sizeY], Image.ImageFormat.BMP);
+            blank.correctMips(format); // Generate the mip data
+            return blank.mipMaps[0].data;
+        }
+
+        /// <summary>
+        /// Generates the data for a single mip from the given data and type.
+        /// </summary>
+        /// <param name="inputData"></param>
+        /// <param name="dataFormat"></param>
+        /// <param name="sizeX"></param>
+        /// <param name="sizeY"></param>
+        /// <param name="destFormat"></param>
+        /// <returns></returns>
+        public static byte[] CreateSingleMip(byte[] inputData, Image.ImageFormat dataFormat, PixelFormat destFormat)
+        {
+            // Generates blank texture data in the given format
+            var blank = new Image(inputData, dataFormat);
+            blank.correctMips(destFormat); // Generate the mip data
+            return blank.mipMaps[0].data;
         }
 
         /// <summary>

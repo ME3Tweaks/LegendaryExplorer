@@ -90,11 +90,15 @@ namespace LegendaryExplorerCore.TLK.ME1
         /// <param name="savePackage">Optional: Should the file the export is is be saved to disk</param>
         public void SerializeTalkfileToExport(ExportEntry export, bool savePackage = false)
         {
+            // Sort data so it's in proper order
+            _inputData = _inputData.OrderBy(x => x.CalculatedID).ToList();
+
             /* converts Huffmann Tree to binary form */
             byte[] treeBuffer = ConvertHuffmanTreeToBuffer();
 
             var encodedStrings = new List<EncodedString>();
             int i = 0;
+            
             foreach (var entry in _inputData)
             {
                 if (entry.Flags == 0)

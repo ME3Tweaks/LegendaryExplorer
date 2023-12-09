@@ -414,7 +414,7 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
 
         private void MakeVTestDonor_Click(object sender, RoutedEventArgs e)
         {
-            PackageEditorExperimentsM.ConvertMaterialToVtestDonor(GetPEWindow());
+            PackageEditorExperimentsM.ConvertMaterialToDonor(GetPEWindow());
         }
         private void RunMaterialInstanceScreenshot_Click(object sender, RoutedEventArgs e)
         {
@@ -864,7 +864,10 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         {
             PackageEditorExperimentsM.FixFXAMemoryNames(GetPEWindow());
         }
-
+        private void ConvertExportToImport_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.ConvertExportToImport(GetPEWindow());
+        }
 
         #endregion
 
@@ -1157,6 +1160,18 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         private void PortShadowMaps_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsS.PortShadowMaps(GetPEWindow());
+        }
+        private void CompileLooseClassFolder_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsS.CompileLooseClassFolder(GetPEWindow());
+        }
+        private void DumpClassSource_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsS.DumpClassSource(GetPEWindow());
+        }
+        private void RegenCachedPhysBrushData_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsS.RegenCachedPhysBrushData(GetPEWindow());
         }
 
         #endregion

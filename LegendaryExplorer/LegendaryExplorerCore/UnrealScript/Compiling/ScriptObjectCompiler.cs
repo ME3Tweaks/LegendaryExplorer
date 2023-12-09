@@ -14,7 +14,7 @@ using static LegendaryExplorerCore.Unreal.UnrealFlags;
 
 namespace LegendaryExplorerCore.UnrealScript.Compiling
 {
-    internal static class ScriptObjectCompiler
+    public static class ScriptObjectCompiler
     {
         public static void Compile(ASTNode node, IMEPackage pcc, IEntry parent, UField existingObject = null, PackageCache packageCache = null, string gameRootOverride = null)
         {
@@ -89,25 +89,30 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         private static void CompileClass(Class classAST, IMEPackage pcc, IEntry parent, ref UClass classObj, PackageCache packageCache = null, string gameRootOverride = null)
         {
+            var finishClassCompilation = CreateClassStub(classAST, pcc, parent, ref classObj, packageCache, gameRootOverride);
+
+            finishClassCompilation();
+        }
+
+        public static Action CreateClassStub(Class classAST, IMEPackage pcc, IEntry parent, ref UClass refClassObj, PackageCache packageCache = null, string gameRootOverride = null, Func<IMEPackage, string, IEntry> missingObjectResolver = null)
+        {
             var className = NameReference.FromInstancedString(classAST.Name);
-            IEntry superClass = classAST.Parent is Class super ? CompilerUtils.ResolveClass(super, pcc) : null;
             ExportEntry classExport;
-            if (classObj is null)
+            if (refClassObj is null)
             {
-                classExport = CreateNewExport(pcc, className, "Class", parent, UClass.Create(), superClass, useTrash: false);
-                classObj = classExport.GetBinaryData<UClass>();
+                classExport = CreateNewExport(pcc, className, "Class", parent, UClass.Create(), useTrash: false);
+                refClassObj = classExport.GetBinaryData<UClass>();
                 classExport.ObjectFlags = EObjectFlags.Public | EObjectFlags.LoadForClient | EObjectFlags.LoadForServer | EObjectFlags.LoadForEdit | EObjectFlags.Standalone;
             }
             else
             {
-                classExport = classObj.Export;
+                classExport = refClassObj.Export;
                 classExport.ObjectName = className;
-                classExport.SuperClass = superClass;
             }
-            classObj.SuperClass = superClass?.UIndex ?? 0;
+            UClass classObj = refClassObj;
+
             classObj.IgnoreMask = (EProbeFunctions)ulong.MaxValue;
             classObj.LabelTableOffset = ushort.MaxValue;
-            classObj.OuterClass = classAST.OuterClass is Class outerClass ? CompilerUtils.ResolveClass(outerClass, pcc).UIndex : 0;
             classObj.ClassConfigName = NameReference.FromInstancedString(classAST.ConfigName);
 
             classObj.ClassFlags = classAST.Flags;
@@ -229,7 +234,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             {
                 existingFunctions.Remove(function.Name, out UFunction uFunction);
                 childrenHaveBeenAdded |= uFunction is null;
-                completions.Add(CreateFunctionStub(function, classExport, ref uFunction));
+                completions.Add(CreateFunctionStub(function, classExport, ref uFunction, missingObjectResolver));
                 compiledFunctions.Add(uFunction);
                 classObj.LocalFunctionMap.Add(uFunction.Export.ObjectName, uFunction.Export.UIndex);
             }
@@ -244,7 +249,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             {
                 existingStates.Remove(state.Name, out UState uState);
                 childrenHaveBeenAdded |= uState is null;
-                completions.Add(CreateStateStub(state, classExport, ref uState));
+                completions.Add(CreateStateStub(state, classExport, ref uState, missingObjectResolver));
                 compiledStates.Add(uState);
             }
             foreach (UState unusedField in existingStates.Values)
@@ -253,80 +258,100 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 EntryPruner.TrashEntryAndDescendants(unusedField.Export);
             }
 
-            if (pcc.Game.IsGame3())
+            //make defaults stub
+            if (classObj.Defaults is 0)
             {
-                classObj.VirtualFunctionTable = classAST.VirtualFunctionTable.Select(func => CompilerUtils.ResolveFunction(func, pcc).UIndex).ToArray();
+                var defaultsExportObjectName = new NameReference($"Default__{classExport.ObjectNameString}", classExport.indexValue);
+                //do not reuse trash for new defaults export. This is to ensure the defaults ends up right after the new class in the tree view
+                var defaultsExport = new ExportEntry(pcc, classExport.Parent, defaultsExportObjectName);
+                pcc.AddExport(defaultsExport);
+                classObj.Defaults = defaultsExport.UIndex;
             }
 
-            //finish compiling all the stubs
-            foreach (Action completion in completions)
-            {
-                completion();
-            }
+            return FinishClassCompilation;
 
-            IEnumerable<UField> allChildren = compiledProperties.Values.Cast<UField>().Concat(compiledFunctions).Concat(compiledStates).Concat(compiledStructs).Concat(compiledEnums).Concat(compiledConsts);
-            if (childrenHaveBeenAdded || childrenHaveBeenTrashed)
+            void FinishClassCompilation()
             {
-                classObj.Children = 0;
-                UField prev = null;
-                foreach (UField current in allChildren)
+                IEntry superClass = classAST.Parent is Class super ? CompilerUtils.ResolveClass(super, pcc) : null;
+                classExport.SuperClass = superClass;
+                classObj.SuperClass = superClass?.UIndex ?? 0;
+                classObj.OuterClass = classAST.OuterClass is Class outerClass ? CompilerUtils.ResolveClass(outerClass, pcc).UIndex : 0;
+
+                if (pcc.Game.IsGame3())
                 {
-                    AdvanceField(ref prev, current, classObj);
+                    classObj.VirtualFunctionTable = classAST.VirtualFunctionTable.Select(func => CompilerUtils.ResolveFunction(func, pcc).UIndex).ToArray();
                 }
-                if (prev is not null)
+
+                //finish compiling all the stubs
+                foreach (Action completion in completions)
                 {
-                    prev.Next = 0;
-                    prev.Export.WriteBinary(prev);
+                    completion();
                 }
-            }
-            else
-            {
-                foreach (UField field in allChildren)
+
+                IEnumerable<UField> allChildren = compiledProperties.Values.Cast<UField>().Concat(compiledFunctions).Concat(compiledStates).Concat(compiledStructs).Concat(compiledEnums).Concat(compiledConsts);
+                if (childrenHaveBeenAdded || childrenHaveBeenTrashed)
                 {
-                    field.Export.WriteBinary(field);
-                }
-            }
-
-            //todo: figure out what these are. Might be able to get away with not touching them. Existing classes will retain their values, and custom ones will be 0/empty
-            //classObj.unk2
-            //classObj.le2ps3me2Unknown
-            //I think these two are editor information. Categories of properties to automatically hide/expand?
-            //classObj.unkNameList1
-            //classObj.unkNameList2
-
-
-            classObj.Interfaces.Clear();
-            foreach (Class interfaceClass in classAST.Interfaces.OfType<Class>())
-            {
-                var vfTablePropertyUIndex = 0;
-                if (interfaceClass.IsNative)
-                {
-                    if (!compiledProperties.TryGetValue($"VfTable_I{interfaceClass.Name}", out UProperty vfTableProperty))
+                    classObj.Children = 0;
+                    UField prev = null;
+                    foreach (UField current in allChildren)
                     {
-                        throw new Exception($"Missing VfTable_I{interfaceClass.Name} property for native interface '{interfaceClass.Name}' in class '{className}'");
+                        AdvanceField(ref prev, current, classObj);
                     }
-                    vfTablePropertyUIndex = vfTableProperty.Export.UIndex;
+                    if (prev is not null)
+                    {
+                        prev.Next = 0;
+                        prev.Export.WriteBinary(prev);
+                    }
                 }
-                classObj.Interfaces.Add(new UClass.ImplementedInterface(CompilerUtils.ResolveClass(interfaceClass, pcc).UIndex, vfTablePropertyUIndex));
+                else
+                {
+                    foreach (UField field in allChildren)
+                    {
+                        field.Export.WriteBinary(field);
+                    }
+                }
+
+                //todo: figure out what these are. Might be able to get away with not touching them. Existing classes will retain their values, and custom ones will be 0/empty
+                //classObj.unk2
+                //classObj.le2ps3me2Unknown
+                //I think these two are editor information. Categories of properties to automatically hide/expand?
+                //classObj.unkNameList1
+                //classObj.unkNameList2
+
+
+                classObj.Interfaces.Clear();
+                foreach (Class interfaceClass in classAST.Interfaces.OfType<Class>())
+                {
+                    var vfTablePropertyUIndex = 0;
+                    if (interfaceClass.IsNative)
+                    {
+                        if (!compiledProperties.TryGetValue($"VfTable_I{interfaceClass.Name}", out UProperty vfTableProperty))
+                        {
+                            throw new Exception($"Missing VfTable_I{interfaceClass.Name} property for native interface '{interfaceClass.Name}' in class '{className}'");
+                        }
+                        vfTablePropertyUIndex = vfTableProperty.Export.UIndex;
+                    }
+                    classObj.Interfaces.Add(new UClass.ImplementedInterface(CompilerUtils.ResolveClass(interfaceClass, pcc).UIndex, vfTablePropertyUIndex));
+                }
+
+                classObj.DLLBindName = "None";
+
+                var defaultsExport = pcc.GetEntry(classObj.Defaults) as ExportEntry;
+                ScriptPropertiesCompiler.CompileDefault__Object(classAST.DefaultProperties, classExport, ref defaultsExport, packageCache, gameRootOverride, missingObjectResolver);
+                classObj.Defaults = defaultsExport.UIndex;
+
+                //classObj.ComponentNameToDefaultObjectMap.Clear();
+                //foreach (Subobject subobject in classAST.DefaultProperties.Statements.OfType<Subobject>())
+                //{
+                //    if (subobject.Class.IsComponent)
+                //    {
+                //        var componentName = NameReference.FromInstancedString(subobject.NameDeclaration.Name);
+                //        classObj.ComponentNameToDefaultObjectMap.Add(componentName, pcc.FindExport($"{defaultsExport.InstancedFullPath}.{componentName}"));
+                //    }
+                //}
+
+                GlobalUnrealObjectInfo.AddOrReplaceClassInDB(classObj);
             }
-
-            classObj.DLLBindName = "None";
-
-            var defaultsExport = pcc.GetEntry(classObj.Defaults) as ExportEntry;
-            ScriptPropertiesCompiler.CompileDefault__Object(classAST.DefaultProperties, classExport, ref defaultsExport, packageCache, gameRootOverride: gameRootOverride);
-            classObj.Defaults = defaultsExport.UIndex;
-
-            //classObj.ComponentNameToDefaultObjectMap.Clear();
-            //foreach (Subobject subobject in classAST.DefaultProperties.Statements.OfType<Subobject>())
-            //{
-            //    if (subobject.Class.IsComponent)
-            //    {
-            //        var componentName = NameReference.FromInstancedString(subobject.NameDeclaration.Name);
-            //        classObj.ComponentNameToDefaultObjectMap.Add(componentName, pcc.FindExport($"{defaultsExport.InstancedFullPath}.{componentName}"));
-            //    }
-            //}
-
-            GlobalUnrealObjectInfo.AddOrReplaceClassInDB(classObj);
         }
 
         private static void CompileState(State stateAST, IEntry parent, ref UState stateObj)
@@ -336,7 +361,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             finishStateCompilation();
         }
 
-        private static Action CreateStateStub(State stateAST, IEntry parent, ref UState refStateObj)
+        private static Action CreateStateStub(State stateAST, IEntry parent, ref UState refStateObj, Func<IMEPackage, string, IEntry> missingObjectResolver = null)
         {
             var stateName = NameReference.FromInstancedString(stateAST.Name);
             ExportEntry stateExport;
@@ -382,7 +407,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             foreach (Function member in stateAST.Functions)
             {
                 existingFuncs.Remove(member.Name, out UFunction childFunc);
-                functionCompletions.Add(CreateFunctionStub(member, stateObj.Export, ref childFunc));
+                functionCompletions.Add(CreateFunctionStub(member, stateObj.Export, ref childFunc, missingObjectResolver));
                 functions.Add(childFunc);
                 stateObj.LocalFunctionMap.Add(childFunc.Export.ObjectName, childFunc.Export.UIndex);
             }
@@ -420,7 +445,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     prevFunc.Export.WriteBinary(prevFunc);
                 }
 
-                ByteCodeCompilerVisitor.Compile(stateAST, stateObj);
+                ByteCodeCompilerVisitor.Compile(stateAST, stateObj, missingObjectResolver);
             }
         }
 
@@ -431,28 +456,20 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             finishFunctionCompilation();
         }
 
-        private static Action CreateFunctionStub(Function funcAST, IEntry parent, ref UFunction refFuncObj)
+        private static Action CreateFunctionStub(Function funcAST, IEntry parent, ref UFunction refFuncObj, Func<IMEPackage, string, IEntry> missingObjectResolver = null)
         {
-            IEntry super = null;
-            if (funcAST.SuperFunction is not null)
-            {
-                super = CompilerUtils.ResolveFunction(funcAST.SuperFunction, parent.FileRef);
-            }
 
             var functionName = NameReference.FromInstancedString(funcAST.Name);
             ExportEntry funcExport;
+
             if (refFuncObj is null)
             {
-                funcExport = CreateNewExport(parent.FileRef, functionName, "Function", parent, new UFunction { ScriptBytes = Array.Empty<byte>(), FriendlyName = functionName }, super);
+                funcExport = CreateNewExport(parent.FileRef, functionName, "Function", parent, new UFunction { ScriptBytes = Array.Empty<byte>(), FriendlyName = functionName });
                 refFuncObj = funcExport.GetBinaryData<UFunction>();
             }
             else
             {
                 funcExport = refFuncObj.Export;
-                if (funcExport.SuperClass != super)
-                {
-                    funcExport.SuperClass = super;
-                }
                 if (funcExport.ObjectName != functionName)
                 {
                     funcExport.ObjectName = functionName;
@@ -464,7 +481,6 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             funcObj.FunctionFlags = funcAST.Flags;
             funcObj.NativeIndex = (ushort)funcAST.NativeIndex;
             funcObj.OperatorPrecedence = funcAST.OperatorPrecedence;
-            funcObj.SuperClass = super?.UIndex ?? 0;
 
             var newMembers = new List<VariableDeclaration>();
             newMembers.AddRange(funcAST.Parameters);
@@ -506,6 +522,16 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
             void FinishFunctionCompilation()
             {
+                IEntry super = null;
+                if (funcAST.SuperFunction is not null)
+                {
+                    super = CompilerUtils.ResolveFunction(funcAST.SuperFunction, parent.FileRef);
+                }
+                if (funcExport.SuperClass != super)
+                {
+                    funcExport.SuperClass = super;
+                }
+                funcObj.SuperClass = super?.UIndex ?? 0;
 
                 UField prevProp = null;
 
@@ -525,7 +551,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     prevProp.Export.WriteBinary(prevProp);
                 }
 
-                ByteCodeCompilerVisitor.Compile(funcAST, funcObj);
+                ByteCodeCompilerVisitor.Compile(funcAST, funcObj, missingObjectResolver);
             }
         }
 
@@ -770,8 +796,6 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         private static void CompileEnum(Enumeration enumAST, IEntry parent, ref UEnum enumObj)
         {
-            IMEPackage pcc = parent.FileRef;
-
             var enumName = NameReference.FromInstancedString(enumAST.Name);
             ExportEntry enumExport;
             if (enumObj is null)

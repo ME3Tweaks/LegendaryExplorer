@@ -7212,6 +7212,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 node.Header += " " + matName;
             }
 #endif
+
+            node.Tag = NodeType.Guid;
             return node;
         }
 

@@ -893,6 +893,15 @@ namespace LegendaryExplorerCore.Packages
                         start += 8; //TemplateName
                         break;
                     }
+
+                    // 11/21/2023 - if parent is import also check if it is a default object
+                    // This is technically a hack. The right way to do this would be to resolve
+                    // the import but that would be slow.
+                    if (parent is ImportEntry && parent.ObjectName.Name.StartsWith("Default__"))
+                    {
+                        start += 8; // TemplateName
+                        break;
+                    }
                     parent = parent.Parent;
                 }
             }

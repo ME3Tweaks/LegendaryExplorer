@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -90,6 +91,10 @@ namespace LegendaryExplorerCore.Packages
             return null; //Package could not be found
         }
 
+        /// <summary>
+        /// Inserts a package into the the cache, based on its file path.
+        /// </summary>
+        /// <param name="package"></param>
         public virtual void InsertIntoCache(IMEPackage package)
         {
             Cache[package.FilePath] = package;
@@ -261,6 +266,21 @@ namespace LegendaryExplorerCore.Packages
             }
 
             return null;
+        }
+
+
+        public virtual IReadOnlyCollection<IMEPackage> GetPackages()
+        {
+            return new ReadOnlyCollection<IMEPackage>(Cache.Values.ToList());
+        }
+
+        /// <summary>
+        /// Gets the list of packages in this cache - the list is a copy
+        /// </summary>
+        /// <returns></returns>
+        public virtual List<IMEPackage> GetPackageList()
+        {
+            return Cache.Values.ToList();
         }
     }
 }

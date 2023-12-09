@@ -160,6 +160,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public ICommand CopyOffsetCommand { get; set; }
         public ICommand OpenInPackageEditorCommand { get; set; }
         public ICommand FindDefinitionOfImportCommand { get; set; }
+        public ICommand CopyGuidCommand { get; set; }
 
         private void LoadCommands()
         {
@@ -167,6 +168,19 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             NavigateToEntryCommandInternal = new GenericCommand(FireNavigateCallback, CanFireNavigateCallback);
             OpenInPackageEditorCommand = new GenericCommand(OpenInPackageEditor, IsSelectedItemAnObjectRef);
             FindDefinitionOfImportCommand = new GenericCommand(FindDefinitionOfImport, IsSelectedItemAnImportObjectRef);
+            CopyGuidCommand = new GenericCommand(CopyGuid, IsSelectedItemAGuid);
+        }
+
+        private void CopyGuid()
+        {
+            if (BinaryInterpreter_TreeView.SelectedItem is BinInterpNode b)
+            {
+                // How to use DataReadOnly here?
+                var stream = new EndianReader(new MemoryStream(CurrentLoadedExport.Data));
+                stream.Seek(b.GetPos(), SeekOrigin.Begin);
+                var g = stream.ReadGuid();
+                Clipboard.SetText(g.ToString().Replace(" ",""));
+            }
         }
 
         private bool IsSelectedItemAnObjectRef()
@@ -177,6 +191,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         private bool IsSelectedItemAnImportObjectRef()
         {
             return BinaryInterpreter_TreeView.SelectedItem is BinInterpNode b && IsImportObjectNodeType(b);
+        }
+
+        private bool IsSelectedItemAGuid()
+        {
+            return BinaryInterpreter_TreeView.SelectedItem is BinInterpNode b && b.Tag is NodeType nt && nt == NodeType.Guid;
         }
 
         private void FireNavigateCallback()
@@ -483,6 +502,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             StructLeafArray,
             StructLeafEnum,
             StructLeafStruct,
+
+            // For right clicking things.
+            Guid,
 
             Root,
         }
@@ -1194,16 +1216,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             switch (BinaryInterpreter_TreeView.SelectedItem)
             {
                 case BinInterpNode bitve:
-                    int dataOffset = 0;
-                    if (bitve.Name is string offsetStr && offsetStr.StartsWith("_"))
-                    {
-                        offsetStr = offsetStr.Substring(1); //remove _
-                        if (int.TryParse(offsetStr, out dataOffset))
-                        {
-                            BinaryInterpreter_Hexbox.SelectionStart = dataOffset;
-                            BinaryInterpreter_Hexbox.SelectionLength = 1;
-                        }
-                    }
+                    var dataOffset = (int)bitve.GetPos();
                     bool parsedValueSucceeded = int.TryParse(Value_TextBox.Text, out int parsedValue);
                     bool parsedFloatSucceeded = float.TryParse(Value_TextBox.Text, out float parsedFloatValue);
 

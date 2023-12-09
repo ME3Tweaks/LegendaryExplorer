@@ -180,6 +180,11 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         /// <returns></returns>
         public static PropertyCollection RemoveIncompatibleProperties(IMEPackage sourcePcc, PropertyCollection props, string typeName, MEGame newGame, ref bool removedProperties)
         {
+            if (GlobalUnrealObjectInfo.GetClassOrStructInfo(newGame, typeName) == null)
+            {
+                // We cannot determine properties of this class in target game. The class will probably be ported over.
+                return props;
+            }
             var infoProps = GlobalUnrealObjectInfo.GetAllProperties(newGame, typeName);
             var newProps = new PropertyCollection();
             foreach (Property prop in props)

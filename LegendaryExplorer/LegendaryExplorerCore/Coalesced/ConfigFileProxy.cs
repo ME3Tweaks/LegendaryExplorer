@@ -160,7 +160,7 @@ namespace LegendaryExplorerCore.Coalesced
         /// </summary>
         /// <param name="action">Action to convert</param>
         /// <returns>At max, a single character string. Will be empty if it is an add operation.</returns>
-        private static string GetGame2IniDataPrefix(CoalesceParseAction action)
+        public static string GetGame2IniDataPrefix(CoalesceParseAction action)
         {
             // ME2 does not have a 'New' (.). Maybe it does but it's not used.
             if (action == CoalesceParseAction.AddUnique) return "+"; // Unique (3)

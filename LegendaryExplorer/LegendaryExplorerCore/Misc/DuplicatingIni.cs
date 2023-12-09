@@ -45,11 +45,21 @@ namespace LegendaryExplorerCore.Misc
             return section?.GetValue(key);
         }
 
+        /// <summary>
+        /// Returns the first section with the given case-insensitive name.
+        /// </summary>
+        /// <param name="sectionname"></param>
+        /// <returns></returns>
         public Section GetSection(string sectionname)
         {
             return Sections.FirstOrDefault(x => x.Header.Equals(sectionname, StringComparison.InvariantCultureIgnoreCase));
         }
 
+        /// <summary>
+        /// Gets the first section with the given case-sensitive name, or returns a newly added blank one if it does not exist.
+        /// </summary>
+        /// <param name="sectionname"></param>
+        /// <returns></returns>
         public Section GetOrAddSection(string sectionname)
         {
             var s = GetSection(sectionname);

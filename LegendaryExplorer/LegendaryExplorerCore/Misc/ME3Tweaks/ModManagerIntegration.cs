@@ -42,6 +42,21 @@ namespace LegendaryExplorerCore.Misc.ME3Tweaks
         }
 
         /// <summary>
+        /// Fetches the donor output path from the last run ME3Tweaks tool that supports it.
+        /// </summary>
+        /// <returns>Path to last run session executable if found; null otherwise</returns>
+        public static string GetDonorOutputPath()
+        {
+            var donorOutputPath = Registry.GetValue(@"HKEY_CURRENT_USER\SOFTWARE\ME3Tweaks", "DonorOutputPath", null);
+            if (donorOutputPath is string str && Directory.Exists(str))
+            {
+                return str;
+            }
+
+            return null; // not found
+        }
+
+        /// <summary>
         /// Instructs Mod Manager to install the Bink ASI loader to the specified game root path (GameTarget)
         /// </summary>
         /// <param name="game">Game to request installation for. In Mod Manager, this will select the default game target (which is what LEC uses, unless the user specifies otherwise)</param>

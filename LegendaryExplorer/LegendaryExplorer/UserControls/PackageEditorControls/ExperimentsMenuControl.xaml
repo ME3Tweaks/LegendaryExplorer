@@ -39,7 +39,7 @@
         <MenuItem Header="Re-Inventory game resources file" ToolTip="Generates the code for custom classes in the resources zip. Check the code for which game" Click="ReInventoryCustomClasses_Click"/>
     </MenuItem>
     <MenuItem Header="Mgamerz's Programming Circus">
-        <MenuItem Header="MScanner" Click="MScanner_Click"/>
+        <MenuItem Header="EXPERIMENTAL: Convert export to import" Click="ConvertExportToImport_Click"/>
 
         <MenuItem Header="LE2: Convert selected BioPawn to SFXPawn class with assets" Click="LE2ConvertToSFXPawn_Click" Visibility="{x:Static global:App.IsDebugVisibility}"/>
         <MenuItem Header="Test WwiseSDK on WwiseBank" Click="WwiseBankToProject_Click"/>
@@ -135,6 +135,9 @@
         <MenuItem Header="Calculate Probe Functions" Click="CalculateProbeFuncs_OnClick"/>
         <MenuItem Header="Port ShadowMaps for BioA_CitSam_800Finalroom.pcc" Click="PortShadowMaps_Click"/>
         <MenuItem Header="Generate Ghidra Struct insertion script" Click="GenerateGhidraStructInsertionScript"/>
+        <MenuItem Header="Compile loose class folder" Click="CompileLooseClassFolder_Click"/>
+        <MenuItem Header="Dump Class source code" Click="DumpClassSource_Click"/>
+        <MenuItem Header="Regenerate BrushComponent's CachedPhysBrush Data from AggGeom" Click="RegenCachedPhysBrushData_Click"/>
     </MenuItem>
     <MenuItem Header="Kinkojiro's 101 ways to cause an aneurysm">
         <MenuItem Header="Transfer game level's art to a different game (ME2 -> ME3 Only)" Click="TransferLevelBetweenGames"/>
