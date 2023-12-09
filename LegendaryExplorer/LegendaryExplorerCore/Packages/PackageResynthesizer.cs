@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 
@@ -9,6 +10,22 @@ namespace LegendaryExplorerCore.Packages
 {
     public static class PackageResynthesizer
     {
+        private enum ESynthesisMode
+        {
+            /// <summary>
+            /// Stubbing out exports
+            /// </summary>
+            Synth_Stubbing,
+            /// <summary>
+            /// Resolving classes
+            /// </summary>
+            Synth_Resolving,
+            /// <summary>
+            /// Transferring data
+            /// </summary>
+            Synth_Transferring,
+        }
+
         /// <summary>
         /// Reconstructs a package file in a more sensible layout.
         /// </summary>
@@ -17,7 +34,9 @@ namespace LegendaryExplorerCore.Packages
         {
             var packTempName = Path.Combine(Directory.GetParent(package.FilePath).FullName, Path.GetFileNameWithoutExtension(package.FilePath) + "_TMP.pcc");
             using var newPackage = MEPackageHandler.CreateAndOpenPackage(packTempName, package.Game);
-
+            (newPackage as MEPackage).setFlags((package as MEPackage).Flags);
+            (newPackage as MEPackage).AdditionalPackagesToCook.ReplaceAll((package as MEPackage).AdditionalPackagesToCook);
+            package.LECLTagData.Copy(package.LECLTagData);
             // I considered using EntryTree but it doesn't seem very suited for reordering. 
             // Too confusing for me <_>
 
@@ -29,19 +48,20 @@ namespace LegendaryExplorerCore.Packages
 
             // Step 2: Create imports and stub out exports
             var ordering = new EntryOrdering(null, package);
-            PortOrdering(ordering, newPackage, null, true);
-
-            PortOrdering(ordering, newPackage, null, false);
+            PortOrdering(ordering, newPackage, null, ESynthesisMode.Synth_Stubbing);
+            PortOrdering(ordering, newPackage, null, ESynthesisMode.Synth_Resolving);
+            newPackage.Save();
+            PortOrdering(ordering, newPackage, null, ESynthesisMode.Synth_Transferring);
 
             newPackage.Save();
         }
 
-        private static void PortOrdering(EntryOrdering ordering, IMEPackage newPackage, IEntry parent, bool isStubbing)
+        private static void PortOrdering(EntryOrdering ordering, IMEPackage newPackage, IEntry parent, ESynthesisMode mode)
         {
             IEntry newEntry = null;
             if (ordering.Entry != null)
             {
-                if (isStubbing)
+                if (mode == ESynthesisMode.Synth_Stubbing)
                 {
                     if (ordering.Entry is ImportEntry oImp)
                     {
@@ -58,33 +78,66 @@ namespace LegendaryExplorerCore.Packages
                         newEntry = ExportCreator.CreatePackageExport(newPackage, ordering.Entry.ObjectName, parent);
                     }
                 }
-                else if (ordering.Entry is ExportEntry oExp)
+                else if (mode == ESynthesisMode.Synth_Resolving)
                 {
-                    var destExp = newPackage.FindExport(ordering.Entry.InstancedFullPath);
-
-                    // Update class
-                    if (oExp.Class != null) // Class is not class
+                    // Transfer classes
+                    if (ordering.Entry is ExportEntry oExp && IsClassSubObj(oExp))
                     {
-                        destExp.Class = destExp.FileRef.FindEntry(oExp.Class.InstancedFullPath);
+                        var destExp = newPackage.FindExport(ordering.Entry.InstancedFullPath);
+                        // Update class
+                        if (oExp.Class != null) // Class is not class
+                        {
+                            destExp.Class = destExp.FileRef.FindEntry(oExp.Class.InstancedFullPath);
+                        }
+                        else
+                        {
+                            destExp.Class = null; // Change from Package to Class
+                        }
+                        EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.ReplaceSingular,
+                            ordering.Entry,
+                            newPackage, destExp, true, new RelinkerOptionsPackage(), out _);
                     }
-                    else
+                }
+                else if (mode == ESynthesisMode.Synth_Transferring)
+                {
+                    // Don't filter out class
+                    if (ordering.Entry is ExportEntry oExp)
                     {
-                        destExp.Class = null; // Change from Package to Class
+                        var destExp = newPackage.FindExport(ordering.Entry.InstancedFullPath);
+
+                        // Update class
+                        if (oExp.Class != null) // Class is not class
+                        {
+                            destExp.Class = destExp.FileRef.FindEntry(oExp.Class.InstancedFullPath);
+                        }
+                        else
+                        {
+                            destExp.Class = null; // Change from Package to Class
+                        }
+
+                        destExp.ObjectFlags = oExp.ObjectFlags;
+
+                        // Update data
+                        EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.ReplaceSingular,
+                            ordering.Entry,
+                            newPackage, destExp, true, new RelinkerOptionsPackage(), out _);
                     }
-
-                    destExp.ObjectFlags = oExp.ObjectFlags;
-
-                    // Update data
-                    EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.ReplaceSingularWithRelink, ordering.Entry,
-                        newPackage, destExp, true, new RelinkerOptionsPackage(), out _);
-
                 }
             }
 
             foreach (var o in ordering.Children)
             {
-                PortOrdering(o, newPackage, newEntry, isStubbing);
+                PortOrdering(o, newPackage, newEntry, mode);
             }
+        }
+
+        private static bool IsClassSubObj(ExportEntry oExp)
+        {
+            if (oExp.ClassName is "Class" or "Function" or "State")
+                return true;
+            if (oExp.Parent != null && oExp.Parent.ClassName is "Class" or "Function" or "State")
+                return true;
+            return false;
         }
 
         /// <summary>
