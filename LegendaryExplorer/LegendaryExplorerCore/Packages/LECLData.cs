@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
+using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 
 namespace LegendaryExplorerCore.Packages
 {
@@ -53,6 +54,19 @@ namespace LegendaryExplorerCore.Packages
             if (IsPostLoadFile) return true;
 
             return false;
+        }
+
+        /// <summary>
+        /// Copies the data from one LECLTagData to this one.
+        /// </summary>
+        /// <param name="other"></param>
+        /// <exception cref="System.NotImplementedException"></exception>
+        public void Copy(LECLData other)
+        {
+            ImportHintFiles.ReplaceAll(other.ImportHintFiles);
+            IsPostLoadFile = other.IsPostLoadFile;
+            WasSavedWithLEC = other.WasSavedWithLEC;
+            WasSavedWithMEM = other.WasSavedWithMEM;
         }
     }
 }
