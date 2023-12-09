@@ -198,9 +198,9 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a6f0a8cd6c323eee014e16b2b2bc8f877"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abccf27f4c3e07eb0a7380b7d54140017"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#abccf27f4c3e07eb0a7380b7d54140017">RemoveTrailingTrash</a> ()</td></tr>
 <tr class="separator:abccf27f4c3e07eb0a7380b7d54140017"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a20a07b662b173c9ce7be7f8d20d230dd"><td class="memItemLeft" align="right" valign="top">List&lt; <a class="el" href="class_legendary_explorer_core_1_1_t_l_k_1_1_m_e1_1_1_m_e1_talk_file.html">ME1TalkFile</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#a20a07b662b173c9ce7be7f8d20d230dd">ReadLocalTLKs</a> (string language=null)</td></tr>
-<tr class="memdesc:a20a07b662b173c9ce7be7f8d20d230dd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads local <a class="el" href="namespace_legendary_explorer_core_1_1_t_l_k.html">TLK</a> exports. Only use in Game 1 packages.   <a href="class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#a20a07b662b173c9ce7be7f8d20d230dd">More...</a><br /></td></tr>
-<tr class="separator:a20a07b662b173c9ce7be7f8d20d230dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa46bcb6b3f942ef9e4afb585e671fa5c"><td class="memItemLeft" align="right" valign="top">List&lt; <a class="el" href="class_legendary_explorer_core_1_1_t_l_k_1_1_m_e1_1_1_m_e1_talk_file.html">ME1TalkFile</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#aa46bcb6b3f942ef9e4afb585e671fa5c">ReadLocalTLKs</a> (string language=null, bool getAllGenders=false)</td></tr>
+<tr class="memdesc:aa46bcb6b3f942ef9e4afb585e671fa5c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads local <a class="el" href="namespace_legendary_explorer_core_1_1_t_l_k.html">TLK</a> exports. Only use in Game 1 packages.   <a href="class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#aa46bcb6b3f942ef9e4afb585e671fa5c">More...</a><br /></td></tr>
+<tr class="separator:aa46bcb6b3f942ef9e4afb585e671fa5c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac224108f4ad754ad10ee7d83e3c676e5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#ac224108f4ad754ad10ee7d83e3c676e5">RegisterTool</a> (<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_package_user.html">IPackageUser</a> user)</td></tr>
 <tr class="separator:ac224108f4ad754ad10ee7d83e3c676e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5c946511ceccff98a5ab16e381e29d3f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#a5c946511ceccff98a5ab16e381e29d3f">Release</a> (<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_package_user.html">IPackageUser</a> user=null)</td></tr>
@@ -1402,8 +1402,8 @@ Events</h2></td></tr>
 
 </div>
 </div>
-<a id="a20a07b662b173c9ce7be7f8d20d230dd" name="a20a07b662b173c9ce7be7f8d20d230dd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a20a07b662b173c9ce7be7f8d20d230dd">&#9670;&#160;</a></span>ReadLocalTLKs()</h2>
+<a id="aa46bcb6b3f942ef9e4afb585e671fa5c" name="aa46bcb6b3f942ef9e4afb585e671fa5c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa46bcb6b3f942ef9e4afb585e671fa5c">&#9670;&#160;</a></span>ReadLocalTLKs()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1415,8 +1415,18 @@ Events</h2></td></tr>
           <td class="memname">List&lt; <a class="el" href="class_legendary_explorer_core_1_1_t_l_k_1_1_m_e1_1_1_m_e1_talk_file.html">ME1TalkFile</a> &gt; LegendaryExplorerCore.Packages.UnrealPackageFile.ReadLocalTLKs </td>
           <td>(</td>
           <td class="paramtype">string&#160;</td>
-          <td class="paramname"><em>language</em> = <code>null</code></td><td>)</td>
+          <td class="paramname"><em>language</em> = <code>null</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>getAllGenders</em> = <code>false</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
   </td>

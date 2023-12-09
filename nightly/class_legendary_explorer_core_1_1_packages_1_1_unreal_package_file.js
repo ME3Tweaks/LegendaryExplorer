@@ -38,7 +38,7 @@ var class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file =
     [ "TryGetEntry", "class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#a6f0a8cd6c323eee014e16b2b2bc8f877", null ],
     [ "RemoveTrailingTrash", "class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#abccf27f4c3e07eb0a7380b7d54140017", null ],
     [ "AfterSave", "class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#a5475243fdcd45c4409faa37dd409b480", null ],
-    [ "ReadLocalTLKs", "class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#a20a07b662b173c9ce7be7f8d20d230dd", null ],
+    [ "ReadLocalTLKs", "class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#aa46bcb6b3f942ef9e4afb585e671fa5c", null ],
     [ "RegisterTool", "class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#ac224108f4ad754ad10ee7d83e3c676e5", null ],
     [ "Release", "class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#a5c946511ceccff98a5ab16e381e29d3f", null ],
     [ "MEPackageEventHandler", "class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#adb4e1a9d15834b58292687192cf0dc16", null ],
