@@ -1504,5 +1504,14 @@ namespace LegendaryExplorerCore.Packages
         {
             Platform = newPlatform;
         }
+
+        /// <summary>
+        /// Sets the package flags for this MEPackage. DO NOT USE THIS UNLESS YOU ABSOLUTELY KNOW WHAT YOU ARE DOING.
+        /// </summary>
+        /// <param name="newFlags">Flags to set</param>
+        internal void setFlags(EPackageFlags newFlags)
+        {
+            Flags = newFlags;
+        }
     }
 }
