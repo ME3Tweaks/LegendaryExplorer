@@ -410,6 +410,38 @@ namespace LegendaryExplorerCore.Packages
         }
 
         /// <summary>
+        /// Initializes an empty package file object, not saving it to disk.
+        /// </summary>
+        /// <param name="path">The associated filepath - internal methods use this to do things such as import lookups.</param>
+        /// <param name="game">The game the package is for</param>
+        /// <returns>Blank IMEPackage object</returns>
+        /// <exception cref="ArgumentException">Invalid game package</exception>
+        public static IMEPackage CreateEmptyPackage(string path, MEGame game)
+        {
+            switch (game)
+            {
+                case MEGame.UDK:
+                    {
+                        using var p = UDKConstructorDelegate(path); // This might make it in disk?
+                        var memStream = p.SaveToStream(false);
+                        memStream.Position = 0;
+                        return OpenMEPackageFromStream(memStream, path);
+                    }
+                case MEGame.LELauncher:
+                    throw new ArgumentException("Cannot create a package for LELauncher, it doesn't use packages");
+                case MEGame.Unknown:
+                    throw new ArgumentException("Cannot create a package file for an Unknown game!", nameof(game));
+                default:
+                    {
+                        using var p = MEBlankPackageCreatorDelegate(path, game);
+                        var memStream = p.SaveToStream(false);
+                        memStream.Position = 0;
+                        return OpenMEPackageFromStream(memStream, path);
+                    }
+            }
+        }
+
+        /// <summary>
         /// Generates a new empty level package file.
         /// </summary>
         /// <param name="outpath">Where to save the package</param>

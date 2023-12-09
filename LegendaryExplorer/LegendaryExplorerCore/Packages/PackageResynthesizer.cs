@@ -30,10 +30,9 @@ namespace LegendaryExplorerCore.Packages
         /// Reconstructs a package file in a more sensible layout.
         /// </summary>
         /// <param name="package"></param>
-        public static void ResynthesizePackage(IMEPackage package)
+        public static IMEPackage ResynthesizePackage(IMEPackage package)
         {
-            var packTempName = Path.Combine(Directory.GetParent(package.FilePath).FullName, Path.GetFileNameWithoutExtension(package.FilePath) + "_TMP.pcc");
-            using var newPackage = MEPackageHandler.CreateAndOpenPackage(packTempName, package.Game);
+            var newPackage = MEPackageHandler.CreateEmptyPackage(package.FilePath, package.Game);
             (newPackage as MEPackage).setFlags((package as MEPackage).Flags);
             (newPackage as MEPackage).AdditionalPackagesToCook.ReplaceAll((package as MEPackage).AdditionalPackagesToCook);
             package.LECLTagData.Copy(package.LECLTagData);
@@ -52,8 +51,7 @@ namespace LegendaryExplorerCore.Packages
             PortOrdering(ordering, newPackage, null, ESynthesisMode.Synth_Resolving);
             newPackage.Save();
             PortOrdering(ordering, newPackage, null, ESynthesisMode.Synth_Transferring);
-
-            newPackage.Save();
+            return newPackage;
         }
 
         private static void PortOrdering(EntryOrdering ordering, IMEPackage newPackage, IEntry parent, ESynthesisMode mode)
@@ -93,6 +91,7 @@ namespace LegendaryExplorerCore.Packages
                         {
                             destExp.Class = null; // Change from Package to Class
                         }
+
                         EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.ReplaceSingular,
                             ordering.Entry,
                             newPackage, destExp, true, new RelinkerOptionsPackage(), out _);
