@@ -213,34 +213,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                                 .Select(tup => tup.position).ToList();
                 int calculatedLength = diskSize + 4 * objRefPositions.Count;
                 DiskToMemPosMap = func.DiskToMemPosMap;
-                //DiskToMemPosMap = new int[diskSize];
-                //int iDisk = 0;
-                //int iMem = 0;
-                //foreach (int objRefPosition in objRefPositions)
-                //{
-                //    while (iDisk < objRefPosition + 4)
-                //    {
-                //        DiskToMemPosMap[iDisk] = iMem;
-                //        iDisk++;
-                //        iMem++;
-                //    }
-                //    iMem += 4;
-                //}
-                //while (iDisk < diskSize)
-                //{
-                //    DiskToMemPosMap[iDisk] = iMem;
-                //    iDisk++;
-                //    iMem++;
-                //}
-
-                //foreach (Token t in DecompiledScriptBlocks.OfType<Token>())
-                //{
-                //    var diskPos = t.pos - 32;
-                //    if (diskPos >= 0 && diskPos < DiskToMemPosMap.Length)
-                //    {
-                //        t.memPos = DiskToMemPosMap[diskPos];
-                //    }
-                //}
 
 
                 DecompiledScriptBoxTitle = $"Decompiled Script (calculated memory size: {calculatedLength} 0x{calculatedLength:X})";
@@ -484,7 +456,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         }
 
                         int diskPos = start - 32;
-                        if (Pcc.Game == MEGame.ME3 && diskPos >= 0 && diskPos < DiskToMemPosMap.Length)
+                        if (Pcc.Game >= MEGame.ME3 && diskPos >= 0 && diskPos < DiskToMemPosMap.Length)
                         {
                             s += $" | MemoryPos=0x{DiskToMemPosMap[diskPos]:X4}";
                         }

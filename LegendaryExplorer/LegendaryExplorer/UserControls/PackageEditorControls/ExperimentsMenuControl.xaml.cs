@@ -419,7 +419,7 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
 
         private void MakeVTestDonor_Click(object sender, RoutedEventArgs e)
         {
-            PackageEditorExperimentsM.ConvertMaterialToVtestDonor(GetPEWindow());
+            PackageEditorExperimentsM.ConvertMaterialToDonor(GetPEWindow());
         }
         private void RunMaterialInstanceScreenshot_Click(object sender, RoutedEventArgs e)
         {
@@ -869,7 +869,10 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         {
             PackageEditorExperimentsM.FixFXAMemoryNames(GetPEWindow());
         }
-
+        private void ConvertExportToImport_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.ConvertExportToImport(GetPEWindow());
+        }
 
         #endregion
 

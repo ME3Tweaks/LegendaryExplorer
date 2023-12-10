@@ -40,6 +40,7 @@ using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Newtonsoft.Json;
 using LegendaryExplorerCore.Misc;
+using LegendaryExplorerCore.Misc.ME3Tweaks;
 using LegendaryExplorerCore.Textures;
 using LegendaryExplorerCore.UnrealScript;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
@@ -1908,7 +1909,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 var langFilter = PromptDialog.Prompt(pewpf,
                     "Enter the language suffix to filter, or blank to dump INT. For example, PLPC, DE, FR.",
                     "Enter language filter", "", true);
-
+                if (string.IsNullOrWhiteSpace(langFilter)) langFilter = null;
                 Task.Run(() =>
                 {
                     pewpf.BusyText = "Dumping TLKs...";
@@ -1921,7 +1922,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         //    continue;
                         pewpf.BusyText = $"Dumping TLKs [{++numDone}/{allPackages.Count}]";
                         using var package = MEPackageHandler.OpenMEPackage(f.Value);
-                        foreach (var v in package.LocalTalkFiles)
+                        foreach (var v in ((MEPackage)package).ReadLocalTLKs(langFilter, getAllGenders: true))
                         {
                             if (!string.IsNullOrWhiteSpace(langFilter) && !v.Name.EndsWith($"_{langFilter}"))
                             {
@@ -1939,15 +1940,15 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         }
 
         // For making testing materials faster
-        public static void ConvertMaterialToVtestDonor(PackageEditorWindow pe)
+        public static void ConvertMaterialToDonor(PackageEditorWindow pe)
         {
             if (pe.Pcc != null && pe.TryGetSelectedExport(out var exp) && (exp.ClassName == "Material" || exp.ClassName == "MaterialInstanceConstant"))
             {
-                var donorFullName = PromptDialog.Prompt(pe, "Enter instanced full path of donor this is for", "VTest Donor");
+                var donorFullName = PromptDialog.Prompt(pe, "Enter instanced full path of donor this is for", "Material Donor");
                 if (string.IsNullOrEmpty(donorFullName))
                     return;
-                var donorPath = Path.Combine(PAEMPaths.VTest_DonorsDir, $"{donorFullName}.pcc");
-                MEPackageHandler.CreateAndSavePackage(donorPath, MEGame.LE3);
+                var donorPath = Path.Combine(ModManagerIntegration.GetDonorOutputPath(), $"{donorFullName}.pcc");
+                MEPackageHandler.CreateAndSavePackage(donorPath, pe.Pcc.Game);
                 using var donorPackage = MEPackageHandler.OpenMEPackage(donorPath);
 
                 var parts = donorFullName.Split('.');
@@ -1968,12 +1969,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     }
                 }
                 donorPackage.Save();
-
-                // VTest was moved to the CrossGenV repository
-                //if (MessageBox.Show(pe, "Run VTest?", "", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) == MessageBoxResult.Yes)
-                //{
-                //    VTestExperiment.VTest(pe);
-                //}
             }
         }
 
@@ -2698,6 +2693,22 @@ defaultproperties
             public string MatIFP { get; set; }
             public List<string> MatVectors { get; } = new List<string>();
             public List<string> MatScalars { get; } = new List<string>();
+        }
+
+        public static void ConvertExportToImport(PackageEditorWindow pe)
+        {
+            if (pe.TryGetSelectedExport(out var exp2))
+            {
+                var import = new ImportEntry(exp2, exp2.Parent?.UIndex ?? 0, exp2.FileRef);
+                if (EntryImporter.ResolveImport(import) != null)
+                {
+                    EntryImporter.ConvertExportToImport(exp2);
+                }
+                else
+                {
+                    MessageBox.Show($"Could not resolve import: {exp2.InstancedFullPath}.\nFix your setup and try again.\nOr maybe this is just importable?\nOr maybe the code is just bugged.");
+                }
+            }
         }
 
         public static void MScanner(PackageEditorWindow pe)

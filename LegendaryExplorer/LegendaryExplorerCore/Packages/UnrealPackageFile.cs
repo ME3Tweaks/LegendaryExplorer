@@ -752,7 +752,7 @@ namespace LegendaryExplorerCore.Packages
         /// </summary>
         /// <param name="language"></param>
         /// <returns></returns>
-        public List<ME1TalkFile> ReadLocalTLKs(string language = null)
+        public List<ME1TalkFile> ReadLocalTLKs(string language = null, bool getAllGenders = false)
         {
             var tlks = new List<ME1TalkFile>();
             var langToMatch = language ?? LegendaryExplorerCoreLibSettings.Instance.TLKDefaultLanguage;
@@ -767,7 +767,15 @@ namespace LegendaryExplorerCore.Packages
                     {
                         if (!addedLoad && langToMatch.Equals(lang, StringComparison.InvariantCultureIgnoreCase))
                         {
-                            exportsToLoad.Add(GetUExport(LegendaryExplorerCoreLibSettings.Instance.TLKGenderIsMale ? bioTlkSet.Male : bioTlkSet.Female));
+                            if (getAllGenders)
+                            {
+                                exportsToLoad.Add(GetUExport(bioTlkSet.Male));
+                                exportsToLoad.Add(GetUExport(bioTlkSet.Female));
+                            }
+                            else
+                            {
+                                exportsToLoad.Add(GetUExport(LegendaryExplorerCoreLibSettings.Instance.TLKGenderIsMale ? bioTlkSet.Male : bioTlkSet.Female));
+                            }
                             addedLoad = true;
                         }
                         processedExports.Add(bioTlkSet.Male);

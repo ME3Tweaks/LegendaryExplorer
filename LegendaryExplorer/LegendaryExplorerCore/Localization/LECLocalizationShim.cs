@@ -92,6 +92,9 @@ namespace LegendaryExplorerCore.Localization
                     return string.Format("{0} DelegateProperty {1} is outside of export table", parms);
                 case string_interp_XDoesNotSupportGameY:
                     return string.Format("{0} does not support game {1}", parms);
+                case string_interp_invalidNameIndexonNameProperty:
+                    return string.Format("{0} Invalid name table index for NameProperty value on property {1}", parms);
+
             }
 
             return $"ERROR! STRING KEY NOT IN LOCALIZATION TABLE: {key}";
@@ -133,5 +136,6 @@ namespace LegendaryExplorerCore.Localization
         internal const string string_interp_warningDelegatePropertyIsOutsideOfExportTable = "string_interp_warningDelegatePropertyIsOutsideOfExportTable";
 
         internal const string string_interp_XDoesNotSupportGameY = "string_interp_XDoesNotSupportGameY";
+        internal const string string_interp_invalidNameIndexonNameProperty = "string_interp_invalidNameIndexonNameProperty";
     }
 }
