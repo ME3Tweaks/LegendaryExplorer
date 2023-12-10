@@ -49,12 +49,16 @@ namespace LegendaryExplorerCore.Packages
 
             // Step 2: Ensure all classes and structs have their info in the class and struct DB
             // Inventory classes
-            foreach (var e in package.Exports.Where(x => x.IsClass))
+            foreach (var e in package.Exports.Where(x => x.IsClass || x.ClassName == "ScriptStruct"))
             {
-                if (GlobalUnrealObjectInfo.GetClasses(package.Game).ContainsKey(e.ObjectName.Name))
+                if (e.IsClass && GlobalUnrealObjectInfo.GetClasses(package.Game).ContainsKey(e.ObjectName.Instanced))
                     continue; // This class is already inventoried
 
-                Debug.WriteLine($@"Generating class info for {e.InstancedFullPath}");
+                if (GlobalUnrealObjectInfo.GetStructs(package.Game).ContainsKey(e.ObjectName.Instanced))
+                    continue; // This struct is already inventoried
+
+
+                Debug.WriteLine($@"Generating class info for {e.ClassName} {e.InstancedFullPath}");
                 GlobalUnrealObjectInfo.generateClassInfo(e);
             }
 
