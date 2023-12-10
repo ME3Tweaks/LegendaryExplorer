@@ -122,7 +122,27 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 if (sourceEntry is ExportEntry sourceExport)
                 {
                     //importing an export (check if it exists first, if it does, just link to it)
-                    newEntry = destPcc.FindExport(sourceEntry.InstancedFullPath) ?? ImportExport(destPcc, sourceExport, link, rop);
+                    newEntry = destPcc.FindEntry(sourceEntry.InstancedFullPath); // 12/09/2023 - Change from FindExport to FindEntry
+                    if (newEntry == null)
+                    {
+                        // 12/09/2023 - Add ability to convert directly to import
+                        if (rop.PortExportsAsImportsWhenPossible)
+                        {
+                            // Try convert to import
+                            var testImport = new ImportEntry(sourceExport, link, destPcc);
+                            if (EntryImporter.TryResolveImport(testImport, out var resolved, localCache: rop.Cache, fileResolver: rop.CustomImportFileResolver))
+                            {
+                                destPcc.AddImport(testImport);
+                                newEntry = testImport;
+                                // Debug.WriteLine($"Redirected importable export {superclass.InstancedFullPath} to import from {resolved.FileRef.FilePath}");
+                            }
+                        }
+
+                        if (newEntry == null)
+                        {
+                            newEntry = ImportExport(destPcc, sourceExport, link, rop);
+                        }
+                    }
                 }
                 else
                 {
@@ -1427,6 +1447,9 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     {
                         return export;
                     }
+
+                    // Custom resolver didn't find it in it's package. Do not use the default.
+                    continue;
                 }
 
                 if (gameFiles.TryGetValue(fileName, out var fullgamepath))
@@ -1481,7 +1504,8 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     package = globalCache.GetCachedPackage(packagePath, false);
                 }
 
-                package ??= lookupCache != null ? lookupCache.GetCachedPackage(packagePath, openPackageMethod: openPackageMethod) : openPackageMethod(packagePath);
+                var cacheToUse = lookupCache ?? globalCache;
+                package ??= cacheToUse != null ? cacheToUse.GetCachedPackage(packagePath, openPackageMethod: openPackageMethod) : openPackageMethod(packagePath);
 
                 if (package == null)
                     Debugger.Break();
