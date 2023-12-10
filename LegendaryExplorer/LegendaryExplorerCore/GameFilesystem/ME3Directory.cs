@@ -166,7 +166,7 @@ namespace LegendaryExplorerCore.GameFilesystem
         /// <summary>
         /// Path to the folder where career profiles are stored in the user config directory.
         /// </summary>
-        public static string SaveFolderPath => Path.Combine(LEDirectory.BioWareDocumentsPath, @"Save");
+        public static string SaveFolderPath => Path.Combine(ME3Directory.BioWareDocumentsPath, @"Save");
 
         /// <summary>
         /// Path to the persistent storage file in the user config directory.

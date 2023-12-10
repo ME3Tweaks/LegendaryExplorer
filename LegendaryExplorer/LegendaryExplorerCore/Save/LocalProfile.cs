@@ -207,6 +207,10 @@ namespace LegendaryExplorerCore.Save
             else
             {
                 // Handle other games here
+                if (Zlib.Decompress(compressedProfileData, decompressedData) != decompressedSize)
+                {
+                    throw new Exception(@"Decompression of profile data did not yield correct amount of bytes");
+                }
             }
 
             // 2. Deserialize settings
