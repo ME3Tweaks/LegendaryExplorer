@@ -257,8 +257,10 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                         case DelegateProperty delegateProperty:
                             //script related, so just delete it.
                             // ?? Could this be automatically converted these days?
-                            removedProperties = true;
-                            Debug.WriteLine($"Trimmed property {prop.Name} from {typeName}");
+                            // 12/09/2023: Change to just port the property as this code was ancient
+                            //removedProperties = true;
+                            //Debug.WriteLine($"Trimmed property {prop.Name} from {typeName}");
+                            newProps.Add(delegateProperty);
                             break;
                         case EnumProperty enumProperty:
                             if (GlobalUnrealObjectInfo.GetEnumValues(newGame, enumProperty.EnumType) is List<NameReference> values)
