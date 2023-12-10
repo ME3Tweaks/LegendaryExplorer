@@ -56,7 +56,11 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         public static IEntry ResolveClass(Class c, IMEPackage pcc)
         {
-            var rop = new RelinkerOptionsPackage { ImportExportDependencies = true }; // Might need to disable cache here depending on if that is desirable
+            // 12/09/2023 - Port exports as imports when possible
+            // This will significantly slow performance but we don't have a ROP
+            // to configure it... this will need
+            // addressed before merge to Beta
+            var rop = new RelinkerOptionsPackage { ImportExportDependencies = true, PortExportsAsImportsWhenPossible = true}; // Might need to disable cache here depending on if that is desirable
             if (!GlobalUnrealObjectInfo.GetClasses(pcc.Game).ContainsKey(c.Name) && c.FilePath is not null)
             {
                 if (c.FilePath == pcc.FilePath)
