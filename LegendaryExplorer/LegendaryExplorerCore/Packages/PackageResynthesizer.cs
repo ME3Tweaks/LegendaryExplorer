@@ -37,7 +37,7 @@ namespace LegendaryExplorerCore.Packages
             var newPackage = MEPackageHandler.CreateEmptyPackage(package.FilePath, package.Game);
             (newPackage as MEPackage).setFlags((package as MEPackage).Flags);
             (newPackage as MEPackage).AdditionalPackagesToCook.ReplaceAll((package as MEPackage).AdditionalPackagesToCook);
-            package.LECLTagData.Copy(package.LECLTagData);
+            newPackage.LECLTagData.Copy(package.LECLTagData);
             // I considered using EntryTree but it doesn't seem very suited for reordering. 
             // Too confusing for me <_>
 
@@ -127,7 +127,7 @@ namespace LegendaryExplorerCore.Packages
                     {
                         var destExp = newPackage.FindExport(ordering.Entry.InstancedFullPath);
 
-                        // Update class
+                        // Update class, archetype, superclass
                         if (oExp.Class != null) // Class is not class
                         {
                             destExp.Class = destExp.FileRef.FindEntry(oExp.Class.InstancedFullPath);
@@ -137,7 +137,21 @@ namespace LegendaryExplorerCore.Packages
                             destExp.Class = null; // Change from Package to Class
                         }
 
+                        // Superclass
+                        if (oExp.SuperClass != null) // SuperClass is not null
+                        {
+                            destExp.SuperClass = destExp.FileRef.FindEntry(oExp.SuperClass.InstancedFullPath);
+                        }
+
+                        // Archetype
+                        if (oExp.Archetype != null) // Archetype is not null
+                        {
+                            destExp.Archetype = destExp.FileRef.FindEntry(oExp.Archetype.InstancedFullPath);
+                        }
+
                         destExp.ObjectFlags = oExp.ObjectFlags;
+                        destExp.ExportFlags = oExp.ExportFlags;
+
 
                         // Update data
                         EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.ReplaceSingular,
