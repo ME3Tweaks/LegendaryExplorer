@@ -401,7 +401,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 }
 
                 VariableType nodeVarType = (node.VarType as StaticArrayType)?.ElementType ?? node.VarType;
-                if (node.Outer is not Function)
+                //if (node.Outer is not Function)
                 {
                     if (nodeVarType is DelegateType ||
                         !node.Flags.Has(EPropertyFlags.Native) && nodeVarType is DynamicArrayType or { PropertyType: EPropertyType.String })
@@ -412,7 +412,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             }
             else if (Pass is ValidationPass.BodyPass)
             {
-                if (node.Outer is not Function)
+                //if (node.Outer is not Function) Not sure why I added this in the first place? But it's definitely wrong
                 {
                     switch ((node.VarType as StaticArrayType)?.ElementType ?? node.VarType)
                     {
