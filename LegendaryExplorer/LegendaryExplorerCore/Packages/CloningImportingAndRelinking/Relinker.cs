@@ -634,9 +634,9 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     var resolved = EntryImporter.ResolveImport(testImport, rop.Cache, fileResolver: rop.DestinationCustomImportFileResolver);
                     if (resolved == null)
                     {
-                        // We failed to resolve the import in the destination
+                        // We failed to resolve the import in the destination. Does it resolve in the source?
                         Debug.WriteLine($@"Failed to resolve import in destination package: {testImport.InstancedFullPath}. Attempting to port export instead");
-                        var resolvedSource = EntryImporter.ResolveImport(importFullName, rop.Cache); // Do not use custom resolver
+                        var resolvedSource = EntryImporter.ResolveImport(importFullName, rop.Cache, fileResolver: rop.SourceCustomImportFileResolver);
                         if (resolvedSource != null)
                         {
                             // Todo: We probably need to support porting in from things like BIOG files due to ForcedExport.

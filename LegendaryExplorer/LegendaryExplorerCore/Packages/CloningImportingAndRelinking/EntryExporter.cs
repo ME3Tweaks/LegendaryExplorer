@@ -12,7 +12,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 {
     public class EntryExporter
     {
-        private static List<EntryStringPair> ExportExportToPackageInternal(ExportEntry sourceExport, IMEPackage targetPackage, out IEntry portedEntry, PackageCache globalCache = null, PackageCache pc = null, ObjectInstanceDB targetDb = null)
+        private static List<EntryStringPair> ExportExportToPackageInternal(ExportEntry sourceExport, IMEPackage targetPackage, out IEntry portedEntry, PackageCache globalCache = null, PackageCache pc = null, RelinkerOptionsPackage customROP = null)
         {
             List<EntryStringPair> issues = new List<EntryStringPair>();
 
@@ -35,7 +35,8 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     // port it in
                     //Debug.WriteLine($"Porting in: {mapping.Key.InstancedFullPath}");
                     var parent = PortParents(mapping.Value, targetPackage);
-                    var relinkResults1 = EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, mapping.Value, targetPackage, parent, true, new RelinkerOptionsPackage() { ImportExportDependencies = true, Cache = pc, TargetGameDonorDB = targetDb }, out _);
+                    var relinkResults1 = EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, mapping.Value, targetPackage, parent, true, 
+                        customROP ?? new RelinkerOptionsPackage() { ImportExportDependencies = true, Cache = pc }, out _);
                     issues.AddRange(relinkResults1);
                 }
                 else
@@ -52,7 +53,12 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             if (newEntry == null)
             {
 
-                var relinkResults2 = EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, sourceExport, targetPackage, lParent, true, new RelinkerOptionsPackage() { ImportExportDependencies = true, Cache = pc, TargetGameDonorDB = targetDb }, out newEntry);
+                var relinkResults2 = EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, sourceExport, targetPackage, lParent, true,
+                    customROP ?? new RelinkerOptionsPackage()
+                    {
+                        ImportExportDependencies = true,
+                        Cache = pc,
+                    }, out newEntry);
                 issues.AddRange(relinkResults2);
             }
 
@@ -76,9 +82,9 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// <param name="globalCache"></param>
         /// <param name="packageCache"></param>
         /// <returns></returns>
-        public static List<EntryStringPair> ExportExportToPackage(ExportEntry sourceExport, IMEPackage targetPackage, out IEntry newEntry, PackageCache globalCache = null, PackageCache packageCache = null, ObjectInstanceDB targetDb = null)
+        public static List<EntryStringPair> ExportExportToPackage(ExportEntry sourceExport, IMEPackage targetPackage, out IEntry newEntry, PackageCache globalCache = null, PackageCache packageCache = null, RelinkerOptionsPackage customROP = null)
         {
-            var exp = ExportExportToPackageInternal(sourceExport, targetPackage, out var nEntry, globalCache, packageCache, targetDb);
+            var exp = ExportExportToPackageInternal(sourceExport, targetPackage, out var nEntry, globalCache, packageCache, customROP);
             newEntry = nEntry;
             return exp;
         }
