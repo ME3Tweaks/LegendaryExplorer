@@ -118,7 +118,7 @@ namespace LegendaryExplorerCore.Packages
         /// <summary>
         /// Metadata that is serialized to the end of the package file and contains useful information for tooling
         /// </summary>
-        public LECLData LECLTagData { get; }
+        public LECLData LECLTagData { get; } = new LECLData();
 
         public byte[] getHeader()
         {

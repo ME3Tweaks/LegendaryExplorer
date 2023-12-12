@@ -79,7 +79,15 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// </summary>
         public string GamePathOverride { get; set; }
 
-        public Func<string, PackageCache, IMEPackage> CustomImportFileResolver { get; set; }
+        /// <summary>
+        /// Custom resolver that can be used to help find imports in the destination package
+        /// </summary>
+        public Func<string, PackageCache, IMEPackage> DestinationCustomImportFileResolver { get; set; }
+
+        /// <summary>
+        /// Custom resolver that can be used to help find imports in the source package
+        /// </summary>
+        public Func<string, PackageCache, IMEPackage> SourceCustomImportFileResolver { get; set; }
 
         /// <summary>
         /// Invoked when an error occurs during porting. Can be null.
@@ -163,7 +171,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         if (!sourceFileLibs.ContainsKey(funcToRelink.FileRef))
                         {
                             var sourceLib = new FileLib(funcToRelink.FileRef);
-                            sourceOK &= sourceLib.Initialize(rop.Cache); // Do not use custom resolver on source files.
+                            sourceOK &= sourceLib.Initialize(rop.Cache, customFileResolver: rop.SourceCustomImportFileResolver);
                             if (!sourceOK)
                             {
                                 rop.RelinkReport.Add(new EntryStringPair(funcToRelink, $"{funcToRelink.UIndex} {funcToRelink.InstancedFullPath} function relinking failed. Could not initialize the FileLib! This will likely be unusable. {string.Join("\n", sourceLib.InitializationLog.AllErrors.Select(x => x.Message))}"));
@@ -175,7 +183,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
                     var destPcc = rop.CrossPackageMap[functionsToRelink[0]].FileRef;
                     FileLib destFL = new FileLib(destPcc);
-                    var destOK = destFL.Initialize(rop.Cache, customFileResolver: rop.CustomImportFileResolver);
+                    var destOK = destFL.Initialize(rop.Cache, customFileResolver: rop.DestinationCustomImportFileResolver);
 
                     if (sourceOK && destOK)
                     {
@@ -235,7 +243,6 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         public static void Relink(ExportEntry sourceExport, ExportEntry relinkingExport, RelinkerOptionsPackage rop)
         {
             IMEPackage sourcePcc = sourceExport.FileRef;
-
             // Relink header (component map)
             // When porting to a game newer than ME2 might want to just strip this out. As I don't think that engine version uses this anymore
             if (relinkingExport.HasComponentMap && relinkingExport.ComponentMap.Count > 0)
@@ -624,7 +631,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         }
                     }
                     ImportEntry testImport = new ImportEntry(relinkingExport.FileRef, importFullName);
-                    var resolved = EntryImporter.ResolveImport(testImport, rop.Cache, fileResolver: rop.CustomImportFileResolver);
+                    var resolved = EntryImporter.ResolveImport(testImport, rop.Cache, fileResolver: rop.DestinationCustomImportFileResolver);
                     if (resolved == null)
                     {
                         // We failed to resolve the import in the destination
@@ -816,7 +823,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     {
                         // Try convert to import
                         var testImport = new ImportEntry(sourceExport, parent?.UIndex ?? 0, relinkingExport.FileRef);
-                        if (EntryImporter.TryResolveImport(testImport, out var resolved, localCache: rop.Cache, fileResolver: rop.CustomImportFileResolver))
+                        if (EntryImporter.TryResolveImport(testImport, out var resolved, localCache: rop.Cache, fileResolver: rop.DestinationCustomImportFileResolver))
                         {
                             relinkingExport.FileRef.AddImport(testImport);
                             uIndex = testImport.UIndex;

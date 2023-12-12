@@ -130,7 +130,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         {
                             // Try convert to import
                             var testImport = new ImportEntry(sourceExport, link, destPcc);
-                            if (EntryImporter.TryResolveImport(testImport, out var resolved, localCache: rop.Cache, fileResolver: rop.CustomImportFileResolver))
+                            if (EntryImporter.TryResolveImport(testImport, out var resolved, localCache: rop.Cache, fileResolver: rop.DestinationCustomImportFileResolver))
                             {
                                 destPcc.AddImport(testImport);
                                 newEntry = testImport;
@@ -574,7 +574,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         {
                             // Try convert to import
                             var testImport = new ImportEntry(sourceClassExport, classParent?.UIndex ?? 0, destPackage);
-                            if (EntryImporter.TryResolveImport(testImport, out var resolved, localCache: rop.Cache, fileResolver: rop.CustomImportFileResolver))
+                            if (EntryImporter.TryResolveImport(testImport, out var resolved, localCache: rop.Cache, fileResolver: rop.DestinationCustomImportFileResolver))
                             {
                                 destPackage.AddImport(testImport);
                                 classValue = testImport;
@@ -614,7 +614,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         {
                             // Try convert to import
                             var testImport = new ImportEntry(sourceSuperClassExport, superClassParent?.UIndex ?? 0, destPackage);
-                            if (EntryImporter.TryResolveImport(testImport, out var resolved, localCache: rop.Cache, fileResolver: rop.CustomImportFileResolver))
+                            if (EntryImporter.TryResolveImport(testImport, out var resolved, localCache: rop.Cache, fileResolver: rop.DestinationCustomImportFileResolver))
                             {
                                 destPackage.AddImport(testImport);
                                 superclass = testImport;
@@ -655,7 +655,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         {
                             // Try convert to import
                             var testImport = new ImportEntry(sourceArchetypeExport, archetypeParent?.UIndex ?? 0, destPackage);
-                            if (EntryImporter.TryResolveImport(testImport, out var resolved, localCache: rop.Cache, fileResolver: rop.CustomImportFileResolver))
+                            if (EntryImporter.TryResolveImport(testImport, out var resolved, localCache: rop.Cache, fileResolver: rop.DestinationCustomImportFileResolver))
                             {
                                 destPackage.AddImport(testImport);
                                 archetype = testImport;
@@ -908,7 +908,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 {
                     // Try convert to import
                     var testImport = new ImportEntry(foundMatchingExport, parent?.UIndex ?? 0, destinationPCC);
-                    if (EntryImporter.TryResolveImport(testImport, out var resolved, localCache: rop.Cache))
+                    if (EntryImporter.TryResolveImport(testImport, out var resolved, localCache: rop.Cache, fileResolver: rop.DestinationCustomImportFileResolver))
                     {
                         destinationPCC.AddImport(testImport);
                         // Debug.WriteLine($"Redirected importable export {importFullNameInstanced} to import from {resolved.FileRef.FilePath}");
@@ -1291,6 +1291,9 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             else if (game.IsGame2() || game.IsGame3())
             {
                 // DO NOT ADD BIOG
+                if (postLoadTest.StartsWith("BIOP_MP")) // 12/11/2023 - LE3R - Do not allow usage of BIO_COMMON as it breaks MP power porting when using MP Common package
+                    return false; // These should not use the BIO_COMMON package in accordance with CommonPackage system
+
                 if (postLoadTest.StartsWith("BioA_", StringComparison.InvariantCultureIgnoreCase) ||
                     postLoadTest.StartsWith("BioD_", StringComparison.InvariantCultureIgnoreCase) ||
                     postLoadTest.StartsWith("BioS_", StringComparison.InvariantCultureIgnoreCase) ||
@@ -1636,13 +1639,27 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             }
 
             // Add post-load files if we determine our local file is a post-load
-            if (package.FilePath != null && (package.LECLTagData != null && package.LECLTagData.IsPostLoadFile) || IsPostLoadFile(package.FilePath, package.Game))
+            if (package.FilePath != null)
             {
-                foreach (var fileName in FilesSafeToImportFromPostLoad(package.Game))
+                bool isPostLoad;
+                if (package.LECLTagData != null && package.LECLTagData.IsPostLoadFile.HasValue)
                 {
-                    if (gameFiles.TryGetValue(fileName, out var efPath))
+                    // Take LECL Data version
+                    isPostLoad = package.LECLTagData.IsPostLoadFile.Value;
+                }
+                else
+                {
+                    isPostLoad = IsPostLoadFile(package.FilePath, package.Game);
+                }
+
+                if (isPostLoad)
+                {
+                    foreach (var fileName in FilesSafeToImportFromPostLoad(package.Game))
                     {
-                        filesToCheck.Add(Path.GetFileName(efPath));
+                        if (gameFiles.TryGetValue(fileName, out var efPath))
+                        {
+                            filesToCheck.Add(Path.GetFileName(efPath));
+                        }
                     }
                 }
             }
