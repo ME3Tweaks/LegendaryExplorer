@@ -2123,6 +2123,12 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// <returns></returns>
         public static bool TryResolveImport(ImportEntry importEntry, out ExportEntry export, PackageCache globalCache = null, PackageCache localCache = null, string localization = @"INT", bool unsafeLoad = false, IEnumerable<string> localDirFiles = null, Func<string, PackageCache, IMEPackage> fileResolver = null)
         {
+            if (importEntry.InstancedFullPath.StartsWith("TheWorld."))
+            {
+                // Do not resolve anything under the world as an import, ever
+                export = null;
+                return false;
+            }
             export = ResolveImport(importEntry, globalCache, localCache, localization, unsafeLoad, localDirFiles, fileResolver: fileResolver);
             return export != null;
         }
