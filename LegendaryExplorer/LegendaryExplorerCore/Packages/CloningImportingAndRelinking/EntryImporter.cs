@@ -2123,6 +2123,13 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// <returns></returns>
         public static bool TryResolveImport(ImportEntry importEntry, out ExportEntry export, PackageCache globalCache = null, PackageCache localCache = null, string localization = @"INT", bool unsafeLoad = false, IEnumerable<string> localDirFiles = null, Func<string, PackageCache, IMEPackage> fileResolver = null)
         {
+            if (importEntry.idxLink == 0 && importEntry.ClassName != "Package")
+            {
+                // Unless it's a root package you cannot import root level objects 
+                // as they would be rooted in a different package
+                export = null;
+                return false;
+            }
             if (importEntry.InstancedFullPath.StartsWith("TheWorld."))
             {
                 // Do not resolve anything under the world as an import, ever
