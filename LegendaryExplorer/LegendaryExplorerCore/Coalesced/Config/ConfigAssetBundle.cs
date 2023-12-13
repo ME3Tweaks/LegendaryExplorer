@@ -144,7 +144,7 @@ namespace LegendaryExplorerCore.Coalesced.Config
                         SearchOption.TopDirectoryOnly)
                     .Where(x => Path.GetFileName(x).StartsWith(ConfigMerge.CONFIG_MERGE_PREFIX))
                     .ToList(); // Find CoalescedMerge-*.m3cd files
-                
+
                 foreach (var m3cd in m3cds)
                 {
                     LECLog.Information($@"Merging M3 Config Delta {m3cd} in {dlcFolderName}");
@@ -189,7 +189,11 @@ namespace LegendaryExplorerCore.Coalesced.Config
 
             if (createIfNotFound)
             {
-                Assets[asset] = new CoalesceAsset($@"{asset}.ini"); // Even game 3 uses .ini, I think...
+                Assets[asset] = new CoalesceAsset($@"{asset}.ini")
+                {
+                    // Source is required or game 3 compiler will not serialize it
+                    Source = $@"..\..\biogame\config\{asset.ToLower()}.ini"
+                }; // Even game 3 uses .ini, I think...
                 return Assets[asset];
             }
 
@@ -230,7 +234,7 @@ namespace LegendaryExplorerCore.Coalesced.Config
         /// <summary>
         /// Commits this bundle to the same folder it was loaded from
         /// </summary>
-        public void CommitDLCAssets(string outPath = null)
+        public void CommitDLCAssets(string outPath = null, string dlcName = null)
         {
             if (Game.IsGame2())
             {
@@ -243,7 +247,7 @@ namespace LegendaryExplorerCore.Coalesced.Config
             }
             else if (Game.IsGame3())
             {
-                var coalFile = Path.Combine(outPath ?? CookedDir, $@"Default_{DLCFolderName}.bin");
+                var coalFile = Path.Combine(outPath ?? CookedDir, $@"Default_{(dlcName ?? DLCFolderName)}.bin");
                 CommitAssets(coalFile);
                 HasChanges = false;
 
