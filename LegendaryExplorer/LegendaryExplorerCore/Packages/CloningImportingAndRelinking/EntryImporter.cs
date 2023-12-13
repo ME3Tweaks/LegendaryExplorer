@@ -573,8 +573,15 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         if (rop.PortExportsAsImportsWhenPossible)
                         {
                             // Try convert to import
+
                             var testImport = new ImportEntry(sourceClassExport, classParent?.UIndex ?? 0, destPackage);
-                            if (EntryImporter.TryResolveImport(testImport, out var resolved, localCache: rop.Cache, fileResolver: rop.DestinationCustomImportFileResolver))
+                            var existingImport = destPackage.FindImport(testImport.InstancedFullPath);
+                            if (existingImport != null)
+                            {
+                                // Do not add a duplicate. Use the existing import
+                                classValue = existingImport;
+                            }
+                            if (classValue == null && EntryImporter.TryResolveImport(testImport, out var resolved, localCache: rop.Cache, fileResolver: rop.DestinationCustomImportFileResolver))
                             {
                                 destPackage.AddImport(testImport);
                                 classValue = testImport;
@@ -614,7 +621,13 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         {
                             // Try convert to import
                             var testImport = new ImportEntry(sourceSuperClassExport, superClassParent?.UIndex ?? 0, destPackage);
-                            if (EntryImporter.TryResolveImport(testImport, out var resolved, localCache: rop.Cache, fileResolver: rop.DestinationCustomImportFileResolver))
+                            var existingImport = destPackage.FindImport(testImport.InstancedFullPath);
+                            if (existingImport != null)
+                            {
+                                // Do not add a duplicate. Use the existing import
+                                superclass = existingImport;
+                            }
+                            if (superclass == null && EntryImporter.TryResolveImport(testImport, out var resolved, localCache: rop.Cache, fileResolver: rop.DestinationCustomImportFileResolver))
                             {
                                 destPackage.AddImport(testImport);
                                 superclass = testImport;
@@ -655,7 +668,13 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         {
                             // Try convert to import
                             var testImport = new ImportEntry(sourceArchetypeExport, archetypeParent?.UIndex ?? 0, destPackage);
-                            if (EntryImporter.TryResolveImport(testImport, out var resolved, localCache: rop.Cache, fileResolver: rop.DestinationCustomImportFileResolver))
+                            var existingImport = destPackage.FindImport(testImport.InstancedFullPath);
+                            if (existingImport != null)
+                            {
+                                // Do not add a duplicate. Use the existing import
+                                archetype = existingImport;
+                            }
+                            if (archetype == null && EntryImporter.TryResolveImport(testImport, out var resolved, localCache: rop.Cache, fileResolver: rop.DestinationCustomImportFileResolver))
                             {
                                 destPackage.AddImport(testImport);
                                 archetype = testImport;
@@ -908,6 +927,13 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 {
                     // Try convert to import
                     var testImport = new ImportEntry(foundMatchingExport, parent?.UIndex ?? 0, destinationPCC);
+                    var existingImport = destinationPCC.FindImport(testImport.InstancedFullPath);
+                    if (existingImport != null)
+                    {
+                        // Do not add a duplicate. Use the existing import
+                        return existingImport;
+                    }
+
                     if (EntryImporter.TryResolveImport(testImport, out var resolved, localCache: rop.Cache, fileResolver: rop.DestinationCustomImportFileResolver))
                     {
                         destinationPCC.AddImport(testImport);
