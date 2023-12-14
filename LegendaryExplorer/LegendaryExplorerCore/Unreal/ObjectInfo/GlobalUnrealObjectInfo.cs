@@ -303,25 +303,32 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 if (export.IsClass)
                 {
                     ClassInfo currentInfo = generateClassInfo(export, packageCache: packageCache);
-                    if (currentInfo.ClassName != export.ObjectName.Instanced)
+                    if (currentInfo != null) // If during relink we find invalid data - this could occur
                     {
-                        // generateClassInfo will return parent info if it was also not in DB
-                        // We must re-fetch data now that it was added
-                        currentInfo = generateClassInfo(export, packageCache: packageCache);
+                        if (currentInfo.ClassName != export.ObjectName.Instanced)
+                        {
+                            // generateClassInfo will return parent info if it was also not in DB
+                            // We must re-fetch data now that it was added
+                            currentInfo = generateClassInfo(export, packageCache: packageCache);
+                        }
+
+                        p = GetPropertyInfo(game, propName, className, currentInfo, export, packageCache);
                     }
-                    p = GetPropertyInfo(game, propName, className, currentInfo, export, packageCache);
                 }
                 else if (export.ClassName == "ScriptStruct")
                 {
                     ClassInfo currentInfo = generateClassInfo(export, packageCache: packageCache, isStruct: true);
-                    if (currentInfo.ClassName != export.ObjectName.Instanced)
+                    if (currentInfo != null) // If during relink we find invalid data - this could occur
                     {
-                        // generateClassInfo will return parent info if it was also not in DB
-                        // We must re-fetch data now that it was added
-                        currentInfo = generateClassInfo(export, packageCache: packageCache, isStruct: true);
-                    }
+                        if (currentInfo.ClassName != export.ObjectName.Instanced)
+                        {
+                            // generateClassInfo will return parent info if it was also not in DB
+                            // We must re-fetch data now that it was added
+                            currentInfo = generateClassInfo(export, packageCache: packageCache, isStruct: true);
+                        }
 
-                    p = GetPropertyInfo(game, propName, className, currentInfo, export, packageCache);
+                        p = GetPropertyInfo(game, propName, className, currentInfo, export, packageCache);
+                    }
                 }
             }
             if (p is null)

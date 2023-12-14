@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using LegendaryExplorerCore.Gammtek.Extensions;
 using LegendaryExplorerCore.Helpers;
@@ -540,13 +541,62 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
         public bool VisitNode(ExpressionOnlyStatement node)
         {
 
-            if (GetAffector(node.Value) is { RetValNeedsDestruction: true } func)
+            if (NeedsToEatReturnValue(node.Value, out IEntry returnProp))
             {
                 WriteOpCode(OpCodes.EatReturnValue);
-                WriteObjectRef(ResolveReturnValue(func));
+                WriteObjectRef(returnProp);
             }
             Emit(node.Value);
             return true;
+        }
+
+        private bool NeedsToEatReturnValue(Expression expr, [NotNullWhen(true)] out IEntry returnProp)
+        {
+            while (expr is CompositeSymbolRef csr)
+            {
+                expr = csr.InnerSymbol;
+            }
+            if (expr is DynArraySort dynArrayOp)
+            {
+                expr = dynArrayOp.DynArrayExpression;
+                while (expr is CompositeSymbolRef csr)
+                {
+                    expr = csr.InnerSymbol;
+                }
+                if (GetAffector(expr) is Function func)
+                {
+                    if (func.RetValNeedsDestruction)
+                    {
+                        returnProp = Pcc.getEntryOrAddImport($"{ResolveReturnValue(func).InstancedFullPath}.ReturnValue", PropertyTypeName(((DynamicArrayType)func.ReturnType).ElementType));
+                        return true;
+                    }
+                    returnProp = null;
+                    return false;
+                }
+                if (expr is SymbolReference { Node: VariableDeclaration varDecl})
+                {
+                    if (varDecl.Flags.Has(EPropertyFlags.NeedCtorLink) || varDecl.VarType.Size(Game) > 64)
+                    {
+                        returnProp = Pcc.getEntryOrAddImport($"{ResolveProperty(varDecl).InstancedFullPath}.{varDecl.Name}", PropertyTypeName(((DynamicArrayType)varDecl.VarType).ElementType));
+                        return true;
+                    }
+                }
+                throw new Exception($"Line {CompilationUnit.Tokens.LineLookup.GetLineFromCharIndex(expr.StartPos)}: Cannot resolve property for dynamic array sort! Please report this error to LEX devs.");
+            }
+            else if (expr switch
+                {
+                    DelegateCall delegateCall => delegateCall.DefaultFunction,
+                    FunctionCall functionCall => (Function)functionCall.Function.Node,
+                    InOpReference inOpReference => inOpReference.Operator.Implementer,
+                    PreOpReference preOpReference => preOpReference.Operator.Implementer,
+                    _ => null
+                } is { RetValNeedsDestruction: true } func)
+            {
+                returnProp = ResolveReturnValue(func);
+                return true;
+            }
+            returnProp = null;
+            return false;
         }
 
         public bool VisitNode(ReplicationStatement node)

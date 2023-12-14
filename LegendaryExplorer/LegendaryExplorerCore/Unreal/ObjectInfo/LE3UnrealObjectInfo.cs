@@ -67,7 +67,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 }
             }
         }
-        
+
         public static PropertyInfo getPropertyInfo(string className, NameReference propName, bool inStruct = false, ClassInfo nonVanillaClassInfo = null, bool reSearch = true, ExportEntry containingExport = null)
         {
             if (className.StartsWith("Default__", StringComparison.OrdinalIgnoreCase))
@@ -81,7 +81,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 info = nonVanillaClassInfo;
                 infoExists = true;
             }
-            
+
             // 07/18/2022 - If during property lookup we are passed a class 
             // that we don't know about, generate and use it, since it will also have superclass info
             // For example looking at a custom subclass in Interpreter, this code will resolve the ???'s
@@ -598,7 +598,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             sequenceObjects["SFXSeqAct_MailGUI_Sorted"] = new SequenceObjectInfo
             {
                 ObjInstanceVersion = 3,
-                inputLinks = new List<string> { "Send Mail", "Open UI" }    
+                inputLinks = new List<string> { "Send Mail", "Open UI" }
             };
 
             ME3UnrealObjectInfo.AddIntrinsicClasses(classes, MEGame.LE3);
@@ -694,6 +694,14 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             int nextExport = EndianReader.ToInt32(export.DataReadOnly, isStruct ? 0x14 : 0xC, export.FileRef.Endian);
             while (nextExport > 0)
             {
+                // 12/11/2023 - return null if invalid data
+                // This can occur if we are in a relinking state.
+                // This code is not foolprool, it just prevents out of bound access
+                if (!pcc.IsUExport(nextExport))
+                {
+                    Debug.WriteLine($"GenerateClassInfo INVALID INFO DETECTED: {nextExport} is out of bounds");
+                    return null;
+                }
                 var entry = pcc.GetUExport(nextExport);
                 //Debug.WriteLine($"GenerateClassInfo parsing child {nextExport} {entry.InstancedFullPath}");
                 if (entry.ClassName != "ScriptStruct" && entry.ClassName != "Enum"
@@ -708,7 +716,16 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                         }
                     }
                 }
-                nextExport = EndianReader.ToInt32(entry.DataReadOnly, 0x10, export.FileRef.Endian);
+
+                if (entry.DataSize >= 0x14)
+                {
+                    nextExport = EndianReader.ToInt32(entry.DataReadOnly, 0x10, export.FileRef.Endian);
+                }
+                else
+                {
+                    Debug.WriteLine($"GenerateClassInfo INVALID INFO DETECTED: {entry.InstancedFullPath} is not a valid export for a class or struct member");
+                    return null;
+                }
             }
             return info;
         }
