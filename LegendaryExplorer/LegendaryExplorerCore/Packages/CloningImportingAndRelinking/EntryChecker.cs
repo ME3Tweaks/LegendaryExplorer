@@ -321,7 +321,10 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
                     }
                 }
-                else if (entry.ClassName == "Package" && (entry.FileRef.GetEntry(op.Value)?.ObjectName.ToString() == @"Trash" || entry.FileRef.GetEntry(op.Value)?.ObjectName.ToString() == UnrealPackageFile.TrashPackageName))
+                else if (op.Value != 0 && entry.FileRef.GetEntry(op.Value).ClassName == "Package" &&
+                         (entry.FileRef.GetEntry(op.Value)?.ObjectName.ToString() == @"Trash" ||
+                          entry.FileRef.GetEntry(op.Value)?.ObjectName.ToString() ==
+                          UnrealPackageFile.TrashPackageName))
                 {
                     item.AddSignificantIssue(localizationDelegate(LECLocalizationShim.string_interp_nested_warningTrashedExportReference, prefix, op.Value), entry);
                     validRef = false;
