@@ -33,8 +33,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             ASTNodeType.SwitchStatement,
             ASTNodeType.CaseStatement,
             ASTNodeType.DefaultStatement,
-            ASTNodeType.StateLabel,
-            ASTNodeType.ReplicationStatement
+            ASTNodeType.StateLabel
         };
 
         public static readonly List<ASTNodeType> CompositeTypes = new()

@@ -184,6 +184,15 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             symbols.PopScope();
         }
 
+        public static void ParseReplicationBlock(Class cls, MEGame game, SymbolTable symbols, MessageLog log)
+        {
+            symbols.RevertToObjectStack();
+            symbols.GoDirectlyToStack(cls.GetScope());
+            TokenStream tokenStream = cls.ReplicationBlock.Tokens;
+            var repBlockParser = new CodeBodyParser(tokenStream, game, cls.ReplicationBlock, symbols, cls, log);
+            repBlockParser.ParseReplicationBlock();
+        }
+
         private CodeBodyParser(TokenStream tokens, MEGame game, CodeBody body, SymbolTable symbols, ASTNode containingNode, MessageLog log = null)
         {
             Game = game;
@@ -207,6 +216,101 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
             LabelNests = new Stack<List<Label>>();
             LabelNests.Push(new List<Label>());
+        }
+
+        private void ParseReplicationBlock()
+        {
+            if (Equals(Body.StartPos, Body.EndPos))
+            {
+                Body.Statements = new List<Statement>();
+                return;
+            }
+            do
+            {
+                if (Tokens.CurrentItem.StartPos.Equals(Body.StartPos))
+                    break;
+                Tokens.Advance();
+            } while (!Tokens.AtEnd());
+            if (Tokens.AtEnd())
+                throw ParseError("Could not find the code body for the current node, please contact the maintainers of this compiler!");
+
+            var statements = new List<Statement>();
+            var replicatedVariables = new HashSet<string>();
+            do
+            {
+                ScriptToken ifToken = Consume(IF);
+                if (ifToken == null) break;
+                ifToken.SyntaxType = EF.Keyword;
+
+                if (Consume(TokenType.LeftParenth) == null) throw ParseError($"Expected '(' after '{IF}'!", CurrentPosition);
+
+                Expression condition = ParseExpression() ?? throw ParseError($"Expected an expression as the {IF} condition!", CurrentPosition);
+
+                VariableType conditionType = condition.ResolveType();
+                if (conditionType != SymbolTable.BoolType)
+                {
+                    TypeError("Expected a boolean result from the condition!", condition);
+                }
+
+                if (Consume(TokenType.RightParenth) == null) throw ParseError($"Expected ')' after {IF} condition!", CurrentPosition);
+                if (Matches(TokenType.LeftBracket))
+                {
+                    throw ParseError("If statements in replication blocks do not use brackets.", PrevToken);
+                }
+
+                if (Consume(TokenType.Word) is not ScriptToken varToken)
+                {
+                    throw ParseError("Expected a variable name after the condition statement!", CurrentPosition);
+                }
+
+                var symbols = new List<SymbolReference>();
+
+                while (true)
+                {
+                    if (Self.LookupVariable(varToken.Value) is VariableDeclaration varDecl)
+                    {
+                        if (varDecl.Outer != Self)
+                        {
+                            TypeError("Cannot define a replication condition for a member in a parent class!", varToken);
+                        }
+                        if (!replicatedVariables.Add(varDecl.Name))
+                        {
+                            TypeError($"A replication condition for '{varDecl.Name}' has already been defined!", varToken);
+                        }
+                        if (varDecl.VarType is DynamicArrayType)
+                        {
+                            TypeError("Dynamic arrays cannot be replicated!", varToken);
+                        }
+                        varDecl.Flags |= EPropertyFlags.Net;
+                        symbols.Add(NewSymbolReference(varDecl, varToken, false));
+                    }
+                    else
+                    {
+                        TypeError($"{Self.Name} has no member named '{varToken.Value}'!", varToken);
+                        symbols.Add(NewSymbolReference(new VariableType("Error"), varToken, false));
+                    }
+                    if (Matches(TokenType.SemiColon))
+                    {
+                        break;
+                    }
+                    if (!Matches(TokenType.Comma))
+                    {
+                        throw ParseError("Expected either a ';' or a ',' after the variable name!", CurrentPosition);
+                    }
+                    varToken = Consume(TokenType.Word);
+                    if (varToken is null)
+                    {
+                        throw ParseError("Expected a variable name after the ','", CurrentPosition);
+                    }
+                }
+                
+                statements.Add(new ReplicationStatement(condition, symbols, ifToken.StartPos, PrevToken.EndPos));
+            } while (!Tokens.AtEnd());
+            if (Tokens.CurrentItem.Type != TokenType.EOF && !Tokens.CurrentItem.StartPos.Equals(Body.EndPos))
+            {
+                ParseError("Could not parse a valid statement, even though the current code body has supposedly not ended yet.", CurrentPosition);
+            }
+            Body.Statements = statements;
         }
 
         private CodeBody ParseBody()
@@ -2010,7 +2114,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 {
                     if (func.Flags.Has(EFunctionFlags.Latent))
                     {
-                        if (Node is Function)
+                        if (Node is not State)
                         {
                             TypeError($"Can only call Latent functions from {STATE} code!", funcRef);
                         }

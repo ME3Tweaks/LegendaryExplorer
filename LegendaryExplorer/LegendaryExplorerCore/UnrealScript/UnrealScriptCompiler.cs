@@ -696,6 +696,7 @@ namespace LegendaryExplorerCore.UnrealScript
             {
                 CodeBodyParser.ParseState(state, pcc.Game, symbols, log);
             }
+            CodeBodyParser.ParseReplicationBlock(cls, pcc.Game, symbols, log);
             PropertiesBlockParser.Parse(cls.DefaultProperties, pcc, symbols, log, true, missingObjectResolver);
 
             //calculate the virtual function table
