@@ -981,6 +981,8 @@ namespace LegendaryExplorer.Tools.AssetDatabase
 
         private void OpenInToolkit(string tool, string filePath, int uindex = 0, int strRef = 0)
         {
+            if (filePath == null)
+                return; // Do nothing.
             switch (tool)
             {
                 case "Meshplorer":
@@ -1064,6 +1066,8 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         /// <param name="usage"></param>
         private void OpenInPlotEditor(string filePath, PlotUsage usage)
         {
+            if (filePath == null)
+                return;
             var plotEditor = new PlotEditor.PlotEditorWindow();
             plotEditor.Show();
             plotEditor.LoadFile(filePath);
