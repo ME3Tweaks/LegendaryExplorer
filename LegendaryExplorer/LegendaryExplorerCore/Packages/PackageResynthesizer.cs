@@ -202,8 +202,8 @@ namespace LegendaryExplorerCore.Packages
             Entry = entry;
             ConvertToExport = entry is ImportEntry && HasExportChildren(entry);
             package ??= entry.FileRef;
-            var exports = package.Exports.Where(x => x.Parent == entry).ToList();
-            var imports = package.Imports.Where(x => x.Parent == entry).ToList();
+            var exports = package.Exports.Where(x => x.Parent == entry && !x.IsTrash()).ToList();
+            var imports = package.Imports.Where(x => x.Parent == entry && !x.IsTrash()).ToList();
 
             exports.Sort(new EntrySorter());
             imports.Sort(new EntrySorter());
@@ -212,7 +212,6 @@ namespace LegendaryExplorerCore.Packages
             var temp = imports.OfType<IEntry>().ToList();
             OrderClasses(temp);
             imports = temp.OfType<ImportEntry>().ToList();
-
 
             Children = new List<EntryOrdering>();
 
