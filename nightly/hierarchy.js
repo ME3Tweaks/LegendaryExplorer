@@ -478,6 +478,7 @@ var hierarchy =
       [ "LegendaryExplorerCore.UnrealScript.Language.Tree.VariableDeclaration", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_declaration.html", null ],
       [ "LegendaryExplorerCore.UnrealScript.Language.Tree.VariableType", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_type.html", null ],
       [ "LegendaryExplorerCore.UnrealScript.Language.Util.IContainsByteCode", "interface_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_util_1_1_i_contains_byte_code.html", [
+        [ "LegendaryExplorerCore.UnrealScript.Language.Tree.Class", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_class.html", null ],
         [ "LegendaryExplorerCore.UnrealScript.Language.Tree.Function", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function.html", null ],
         [ "LegendaryExplorerCore.UnrealScript.Language.Tree.State", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_state.html", null ]
       ] ]

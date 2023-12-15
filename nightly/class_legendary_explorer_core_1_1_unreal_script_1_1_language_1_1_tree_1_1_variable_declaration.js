@@ -9,6 +9,7 @@ var class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_va
     [ "VarType", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_declaration.html#a95b66fa6fb7d8aaa484cfe7a0ce94dbb", null ],
     [ "Category", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_declaration.html#a805108de6a69e246c53b99778131da58", null ],
     [ "ArrayLength", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_declaration.html#a8ec17c13fd36103975ca9ad0cd534293", null ],
+    [ "ReplicationOffset", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_declaration.html#a117c76a7af9d6973c8cbb7cacd36c127", null ],
     [ "Name", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_declaration.html#af5518e8395a6927eeb1250aac14c325f", null ],
     [ "IsStaticArray", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_declaration.html#a48d3a9ace69c4920ba9845ebf5e1ce18", null ],
     [ "IsTransient", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_declaration.html#a3319c0dcc123f125e866fda0753539f5", null ],
