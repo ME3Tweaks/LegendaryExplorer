@@ -16,6 +16,8 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 
         public int ArrayLength;
 
+        public ushort ReplicationOffset = 0;
+
         public bool IsStaticArray => ArrayLength > 1;
 
         public bool IsTransient => Flags.Has(UnrealFlags.EPropertyFlags.Transient);

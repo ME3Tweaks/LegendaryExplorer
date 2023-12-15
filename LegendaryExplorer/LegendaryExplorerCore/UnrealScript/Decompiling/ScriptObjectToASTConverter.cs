@@ -105,14 +105,13 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 }
             }
 
-            var ast = new Class(uClassExport.ObjectName.Instanced, parent, outer, uClass.ClassFlags, interfaces, Types, Vars, Funcs, States, defaultProperties)
+            var ast = new Class(uClassExport.ObjectName.Instanced, parent, outer, uClass.ClassFlags, interfaces, Types, Vars, Funcs, States, defaultProperties, replicationBlock)
             {
                 ConfigName = uClass.ClassConfigName,
                 Package = uClassExport.Parent is null ? Path.GetFileNameWithoutExtension(pcc.FilePath) : uClassExport.ParentInstancedFullPath,
                 IsFullyDefined = nextItem == 0 && propEntry is ExportEntry,
                 FilePath = pcc.FilePath,
-                UIndex = uClassExport.UIndex,
-                ReplicationBlock = replicationBlock
+                UIndex = uClassExport.UIndex
             };
             // Ugly quick fix:
             foreach (var member in Types)

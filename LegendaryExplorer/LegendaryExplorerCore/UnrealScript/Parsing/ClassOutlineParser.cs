@@ -259,6 +259,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             var funcs = new List<Function>();
             var states = new List<State>();
             DefaultPropertiesBlock defaultPropertiesBlock = null;
+            CodeBody replicationBlock = null;
             while (!Tokens.AtEnd())
             {
                 if (CurrentIs(VAR))
@@ -291,12 +292,12 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     //optional
                     Matches(TokenType.SemiColon);
                 }
-                else if (Matches(REPLICATION, EF.Keyword))
+                else if (CurrentIs(REPLICATION))
                 {
-                    //just skip the replication block for now. Not sure its worth compiling
-                    if (!ParseScopeSpan(false, out _, out _, out List<ScriptToken> _))
+                    replicationBlock = ParseReplicationBlock();
+                    if (replicationBlock is null)
                     {
-                        throw ParseError("Malformed replication block!", CurrentPosition);
+                        throw ParseError($"Malformed {REPLICATION} block!", CurrentPosition);
                     }
                 }
                 else if (CurrentIs(DEFAULTPROPERTIES))
@@ -322,12 +323,16 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     throw ParseError($"Unexpected token in {CLASS}: {CurrentToken.Value}", CurrentToken);
                 }
             }
+            replicationBlock ??= new CodeBody(new List<Statement>(), PrevToken.EndPos, CurrentToken.StartPos)
+            {
+                Tokens = new TokenStream(new List<ScriptToken>(), Tokens)
+            };
             defaultPropertiesBlock ??= new DefaultPropertiesBlock(new List<Statement>(), PrevToken.EndPos, CurrentToken.StartPos)
             {
                 Tokens = new TokenStream(new List<ScriptToken>(), Tokens)
             };
 
-            var @class = new Class(name.Value, parentClass, outerClass, flags, interfaces, types, variables, funcs, states, defaultPropertiesBlock, startPos, CurrentToken.StartPos)
+            var @class = new Class(name.Value, parentClass, outerClass, flags, interfaces, types, variables, funcs, states, defaultPropertiesBlock, replicationBlock, startPos, CurrentToken.StartPos)
             {
                 ConfigName = configName
             };
@@ -813,6 +818,21 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             }
 
             return new DefaultPropertiesBlock(new List<Statement>(), bodyStart, bodyEnd)
+            {
+                Tokens = new TokenStream(scopeTokens, Tokens)
+            };
+        }
+
+        private CodeBody ParseReplicationBlock()
+        {
+            if (!Matches(REPLICATION, EF.Keyword)) return null;
+
+            if (!ParseScopeSpan(false, out int bodyStart, out int bodyEnd, out List<ScriptToken> scopeTokens))
+            {
+                throw ParseError("Malformed replication body!", CurrentPosition);
+            }
+
+            return new CodeBody(new List<Statement>(), bodyStart, bodyEnd)
             {
                 Tokens = new TokenStream(scopeTokens, Tokens)
             };

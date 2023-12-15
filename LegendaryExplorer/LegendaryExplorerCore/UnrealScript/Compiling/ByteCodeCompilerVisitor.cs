@@ -251,6 +251,28 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             }
         }
 
+        public static void Compile(Class cls, UClass target, Func<IMEPackage, string, IEntry> missingObjectResolver = null)
+        {
+            var bytecodeCompiler = new ByteCodeCompilerVisitor(target)
+            {
+                MissingObjectResolver = missingObjectResolver
+            };
+            bytecodeCompiler.Compile(cls);
+        }
+
+        private void Compile(Class cls)
+        {
+            if (Target is not UClass)
+            {
+                throw new Exception("Cannot compile a replication block to a non-class");
+            }
+            CompilationUnit = cls;
+
+            Emit(cls.ReplicationBlock);
+            WriteOpCode(OpCodes.EndOfScript);
+            Target.ScriptBytecodeSize = GetMemLength();
+            Target.ScriptBytes = GetByteCode();
+        }
 
         public bool VisitNode(CodeBody node)
         {
@@ -601,7 +623,16 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         public bool VisitNode(ReplicationStatement node)
         {
-            throw new NotImplementedException();
+            foreach (SymbolReference varRef in node.ReplicatedVariables)
+            {
+                if (varRef.Node is not VariableDeclaration varDecl)
+                {
+                    throw new Exception($"Line {CompilationUnit.Tokens.LineLookup.GetLineFromCharIndex(varRef.StartPos)}: '{varRef.Name}' was not resolved to a variable! Please report this error to LEX devs.");
+                }
+                varDecl.ReplicationOffset = Position;
+            }
+            Emit(node.Condition);
+            return true;
         }
 
         public bool VisitNode(ErrorStatement node)
