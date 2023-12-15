@@ -157,14 +157,9 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             }
             classObj.StateFlags = hasAutoState ? EStateFlags.None : EStateFlags.Auto;
 
-            //leave these untouched to preserve existing replication blocks, since compilation of those is not yet supported
-            //classObj.ScriptBytecodeSize = 0;
-            //classObj.ScriptBytes = Array.Empty<byte>();
-
             (CaseInsensitiveDictionary<UConst> existingConsts, CaseInsensitiveDictionary<UEnum> existingEnums, CaseInsensitiveDictionary<UScriptStruct> existingStructs,
                 CaseInsensitiveDictionary<UProperty> existingProperties, CaseInsensitiveDictionary<UFunction> existingFunctions, CaseInsensitiveDictionary<UState> existingStates)
                 = GetClassMembers(classObj);
-
 
             //Stub out all the child exports, and trash existing ones that don't get re-used
 
@@ -280,6 +275,17 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 if (pcc.Game.IsGame3())
                 {
                     classObj.VirtualFunctionTable = classAST.VirtualFunctionTable.Select(func => CompilerUtils.ResolveFunction(func, pcc).UIndex).ToArray();
+                }
+
+                if (classAST.ReplicationBlock.Statements.Count is 0)
+                {
+                    classObj.ScriptBytecodeSize = 0;
+                    classObj.ScriptBytes = Array.Empty<byte>();
+                }
+                else
+                {
+                    //must occur before the property stubs finish compiling so that replication offsets can be set
+                    ByteCodeCompilerVisitor.Compile(classAST, classObj, missingObjectResolver);
                 }
 
                 //finish compiling all the stubs
@@ -718,6 +724,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
             void FinishPropertyCompilation()
             {
+                propObj.ReplicationOffset = varDeclAST.ReplicationOffset;
                 switch (propObj)
                 {
                     case UByteProperty uByteProperty:

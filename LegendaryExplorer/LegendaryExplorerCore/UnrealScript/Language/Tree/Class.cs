@@ -4,13 +4,14 @@ using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
 using LegendaryExplorerCore.UnrealScript.Language.Util;
+using LegendaryExplorerCore.UnrealScript.Parsing;
 using LegendaryExplorerCore.UnrealScript.Utilities;
 
 namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 {
 
     [DebuggerDisplay("Class | {Name}")]
-    public sealed class Class : ObjectType, IContainsFunctions
+    public sealed class Class : ObjectType, IContainsFunctions, IContainsByteCode
     {
         public string Package;
         public VariableType _outerClass;
@@ -22,7 +23,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
         public List<Function> Functions { get; }
         public List<State> States { get; }
 
-        public CodeBody ReplicationBlock;
+        public CodeBody ReplicationBlock { get; private set; }
         public override DefaultPropertiesBlock DefaultProperties { get; set; }
 
         public List<string> VirtualFunctionNames;
@@ -45,13 +46,14 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
         public bool IsFullyDefined = true;
 
         public Class(string name, VariableType parent, VariableType outer, UnrealFlags.EClassFlags flags,
-                     List<VariableType> interfaces = null,
-                     List<VariableType> types = null,
-                     List<VariableDeclaration> vars = null,
-                     List<Function> funcs = null,
-                     List<State> states = null,
-                     DefaultPropertiesBlock defaultProperties = null,
-                     int start = -1, int end = -1)
+            List<VariableType> interfaces = null,
+            List<VariableType> types = null,
+            List<VariableDeclaration> vars = null,
+            List<Function> funcs = null,
+            List<State> states = null,
+            DefaultPropertiesBlock defaultProperties = null,
+            CodeBody replicationBlock = null,
+            int start = -1, int end = -1)
             : base(name, start, end, EPropertyType.Object)
         {
             Parent = parent;
@@ -63,6 +65,8 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
             Functions = funcs ?? new List<Function>();
             States = states ?? new List<State>();
             DefaultProperties = defaultProperties ?? new DefaultPropertiesBlock();
+            ReplicationBlock = replicationBlock ?? new CodeBody();
+            ReplicationBlock.Outer = this;
             Type = ASTNodeType.Class;
 
             foreach (ASTNode node in ChildNodes)
@@ -166,5 +170,13 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
             }
             return null;
         }
+
+        CodeBody IContainsByteCode.Body
+        {
+            get => ReplicationBlock;
+            set => ReplicationBlock = value;
+        }
+
+        TokenStream IContainsByteCode.Tokens => ReplicationBlock.Tokens;
     }
 }

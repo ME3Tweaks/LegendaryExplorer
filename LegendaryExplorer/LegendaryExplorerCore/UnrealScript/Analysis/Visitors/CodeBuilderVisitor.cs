@@ -1088,8 +1088,6 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 node.ReplicatedVariables[i].AcceptVisitor(this);
             }
             NestingLevel--;
-            Append(";");
-            Write();
             return true;
         }
 
