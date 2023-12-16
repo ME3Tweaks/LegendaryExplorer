@@ -247,11 +247,6 @@ namespace LegendaryExplorerCore.Textures
                                 else
                                 {
                                     Debug.WriteLine($@"Copying texture data to TFC: {entry.InstancedFullPath}, mip {i}, offset: {outStream.Position:X8}");
-                                    // DEBUG --
-                                    var decompressed = new byte[mipInfo.UncompressedSize];
-                                    TextureCompression.DecompressTexture(decompressed, inStream, mipInfo.StorageType, mipInfo.UncompressedSize, mipInfo.CompressedSize);
-                                    // 
-
                                     inStream.CopyToEx(outStream, mipInfo.CompressedSize);
                                     destTFCInfo.MipCompressedSizeMap[i] = mipInfo.CompressedSize;
                                 }
@@ -348,15 +343,13 @@ namespace LegendaryExplorerCore.Textures
 
                     if (package.IsModified)
                     {
-                        package.Save(Path.Combine(infoPackage.StagingPath, Path.GetFileName(package.FilePath)));
+                        package.Save();
                     }
                 }
             }
 
             var dlcFolderDir = Directory.GetFileSystemEntries(infoPackage.BaseCompactionPath, infoPackage.DLCName, SearchOption.AllDirectories).FirstOrDefault();
-            if (dlcFolderDir == null && Path.GetFileName(infoPackage.BaseCompactionPath) == infoPackage.DLCName)
-                dlcFolderDir = infoPackage.BaseCompactionPath;
-            if (dlcFolderDir == null)
+            if (dlcFolderDir == null || Path.GetFileName(infoPackage.BaseCompactionPath) == infoPackage.DLCName)
                 dlcFolderDir = infoPackage.BaseCompactionPath;
             if (dlcFolderDir != null)
             {
