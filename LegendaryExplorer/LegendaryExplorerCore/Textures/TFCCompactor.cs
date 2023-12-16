@@ -225,10 +225,10 @@ namespace LegendaryExplorerCore.Textures
                             var destTFCInfo = compactor.GetOutTFC(diskSize); // Get TFC to write to
                             var destTFCPath = Path.Combine(infoPackage.StagingPath, $"{destTFCInfo.TFCName}.tfc");
                             using var outStream = File.Open(destTFCPath, FileMode.Append, FileAccess.Write);
-                            
+
                             for (int i = 0; i < texInfo.CompressedMipInfos.Count; i++)
                             {
-                                using var inStream = File.OpenRead(gameFiles[$"{texInfo.TFCName}.tfc"]); 
+                                using var inStream = File.OpenRead(gameFiles[$"{texInfo.TFCName}.tfc"]);
                                 var mipInfo = texInfo.CompressedMipInfos[i];
                                 destTFCInfo.MipOffsetMap[i] = (int)outStream.Position;
                                 inStream.Seek(mipInfo.Offset, SeekOrigin.Begin);
@@ -246,6 +246,12 @@ namespace LegendaryExplorerCore.Textures
                                 }
                                 else
                                 {
+                                    Debug.WriteLine($@"Copying texture data to TFC: {entry.InstancedFullPath}, mip {i}, offset: {outStream.Position:X8}");
+                                    // DEBUG --
+                                    var decompressed = new byte[mipInfo.UncompressedSize];
+                                    TextureCompression.DecompressTexture(decompressed, inStream, mipInfo.StorageType, mipInfo.UncompressedSize, mipInfo.CompressedSize);
+                                    // 
+
                                     inStream.CopyToEx(outStream, mipInfo.CompressedSize);
                                     destTFCInfo.MipCompressedSizeMap[i] = mipInfo.CompressedSize;
                                 }
@@ -347,7 +353,6 @@ namespace LegendaryExplorerCore.Textures
                 }
             }
 
-            return;
             var dlcFolderDir = Directory.GetFileSystemEntries(infoPackage.BaseCompactionPath, infoPackage.DLCName, SearchOption.AllDirectories).FirstOrDefault();
             if (dlcFolderDir == null && Path.GetFileName(infoPackage.BaseCompactionPath) == infoPackage.DLCName)
                 dlcFolderDir = infoPackage.BaseCompactionPath;
