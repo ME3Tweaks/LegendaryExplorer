@@ -342,21 +342,34 @@ namespace LegendaryExplorerCore.Textures
             var dlcFolderDir = Directory.GetFileSystemEntries(infoPackage.BaseCompactionPath, infoPackage.DLCName, SearchOption.AllDirectories).FirstOrDefault();
             if (dlcFolderDir == null && Path.GetFileName(infoPackage.BaseCompactionPath) == infoPackage.DLCName)
                 dlcFolderDir = infoPackage.BaseCompactionPath;
+            if (dlcFolderDir == null)
+                dlcFolderDir = infoPackage.BaseCompactionPath;
             if (dlcFolderDir != null)
             {
+                string destPath = null;
+                if (Path.GetFileName(dlcFolderDir) == infoPackage.Game.CookedDirName())
+                {
+                    destPath = dlcFolderDir;
+                }
+                else
+                {
+                    destPath = Path.Combine(dlcFolderDir, infoPackage.Game.CookedDirName());
+                }
+
                 // Delete all existing TFCs
-                var tfcsToDelete = Directory.GetFileSystemEntries(dlcFolderDir, "*.tfc", SearchOption.AllDirectories);
+                var tfcsToDelete = Directory.GetFileSystemEntries(dlcFolderDir, "*.tfc", SearchOption.AllDirectories)
+                    .Where(x => !x.StartsWith(infoPackage.StagingPath));
                 foreach (var tfc in tfcsToDelete)
                 {
                     File.Delete(tfc);
                 }
 
-                var destPath = Path.Combine(dlcFolderDir, infoPackage.Game.CookedDirName());
                 foreach (var tfc in compactor.GetAllTFCs())
                 {
                     var tfcSource = Path.Combine(infoPackage.StagingPath, $"{tfc.TFCName}.tfc");
                     File.Move(tfcSource, Path.Combine(destPath, Path.GetFileName(tfcSource)));
                 }
+
 
                 if (compactor.infoPackage.UseIndexing)
                 {
