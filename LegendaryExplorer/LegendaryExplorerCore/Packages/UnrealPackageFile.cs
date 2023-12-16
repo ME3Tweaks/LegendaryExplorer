@@ -346,7 +346,7 @@ namespace LegendaryExplorerCore.Packages
             //PropertyChanged?.Invoke(this, new PropertyChangedEventArgs((nameof(ExportCount));
         }
 
-        public IEntry FindEntry(string instancedname)
+        public IEntry FindEntry(string instancedname, string className = null)
         {
             IEntry matchingEntry;
             // START CRITICAL SECTION ---------------------------------
@@ -357,12 +357,17 @@ namespace LegendaryExplorerCore.Packages
                     RebuildLookupTable();
                 }
                 EntryLookupTable.TryGetValue(instancedname, out matchingEntry);
+                if (className != null && matchingEntry != null && !matchingEntry.ClassName.CaseInsensitiveEquals(className))
+                {
+                    // Possible duplicate object in package with different class was found. BioWare has a few of these
+                    return null;
+                }
             }
             // END CRITICAL SECTION ------------------------------------
             return matchingEntry;
         }
 
-        public ImportEntry FindImport(string instancedname)
+        public ImportEntry FindImport(string instancedname, string className = null)
         {
             IEntry matchingEntry;
             // START CRITICAL SECTION ---------------------------------
@@ -382,12 +387,22 @@ namespace LegendaryExplorerCore.Packages
                 // Some files like LE2 Engine.pcc have imports and exports for same named thing
                 // for some reason
                 // Look manually for object
+                if (className != null)
+                {
+                    return Imports.FirstOrDefault(x => x.InstancedFullPath == instancedname && x.ClassName == className);
+                }
                 return Imports.FirstOrDefault(x => x.InstancedFullPath == instancedname);
+            }
+
+            if (className != null && matchingEntry != null && !matchingEntry.ClassName.CaseInsensitiveEquals(className))
+            {
+                // Possible duplicate object in package with different class was found. BioWare has a few of these
+                return null;
             }
             return matchingEntry as ImportEntry;
         }
 
-        public ExportEntry FindExport(string instancedname)
+        public ExportEntry FindExport(string instancedname, string className = null)
         {
             IEntry matchingEntry;
             // START CRITICAL SECTION ---------------------------------
@@ -407,9 +422,17 @@ namespace LegendaryExplorerCore.Packages
                 // Some files like LE2 Engine.pcc have imports and exports for same named thing
                 // for some reason
                 // Look manually for object
+                if (className != null)
+                {
+                    return Exports.FirstOrDefault(x => x.InstancedFullPath == instancedname && x.ClassName == className);
+                }
                 return Exports.FirstOrDefault(x => x.InstancedFullPath == instancedname);
             }
-
+            if (className != null && matchingEntry != null && !matchingEntry.ClassName.CaseInsensitiveEquals(className))
+            {
+                // Possible duplicate object in package with different class was found. BioWare has a few of these
+                return null;
+            }
             return matchingEntry as ExportEntry;
         }
 

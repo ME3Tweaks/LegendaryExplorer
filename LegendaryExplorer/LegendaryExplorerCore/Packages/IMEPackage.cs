@@ -290,20 +290,23 @@ namespace LegendaryExplorerCore.Packages
         /// Looks for an export with the same instanced name.
         /// </summary>
         /// <param name="instancedname"></param>
+        /// <param name="className">Optional class name that has to match. If an object is found with a different class, it will return null instead.</param>
         /// <returns></returns>
-        ExportEntry FindExport(string instancedname);
+        ExportEntry FindExport(string instancedname, string className = null);
         /// <summary>
         /// Looks for an import with the same instanced name.
         /// </summary>
         /// <param name="instancedname"></param>
+        /// <param name="className">Optional class name that has to match. If an object is found with a different class, it will return null instead.</param>
         /// <returns></returns>
-        ImportEntry FindImport(string instancedname);
+        ImportEntry FindImport(string instancedname, string className = null);
         /// <summary>
         /// Looks for an entry (imports first, then exports) with the same instanced name.
         /// </summary>
-        /// <param name="instancedname"></param>
+        /// <param name="instancedname">The instanced full path to find</param>
+        /// <param name="className">Optional class name that has to match. If an object is found with a different class, it will return null instead.</param>
         /// <returns></returns>
-        IEntry FindEntry(string instancedname);
+        IEntry FindEntry(string instancedname, string className = null);
         /// <summary>
         /// Invalidates the entry lookup table, causing it to be rebuilt next time FindEntry, FindExport, or FindImport is called.
         /// </summary>
