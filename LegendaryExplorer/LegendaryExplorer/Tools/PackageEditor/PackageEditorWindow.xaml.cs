@@ -3754,6 +3754,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 var rop = new RelinkerOptionsPackage
                 {
                     IsCrossGame = sourceEntry.Game != targetItem.Game && sourceEntry.Game != MEGame.UDK,
+                    Cache = new PackageCache(),
                     TargetGameDonorDB = objectDB,
                     ImportExportDependencies = portingOption.PortingOptionChosen is EntryImporter.PortingOption.CloneAllDependencies
                         or EntryImporter.PortingOption.ReplaceSingularWithRelink,
