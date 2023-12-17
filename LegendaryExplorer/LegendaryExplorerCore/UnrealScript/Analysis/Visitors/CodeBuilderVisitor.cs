@@ -35,23 +35,23 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
     public class CodeBuilderVisitor<TFormatter, TOutput> : IASTVisitor where TFormatter : class, ICodeFormatter<TOutput>, new()
     {
-        public static TOutput GetOutput(ASTNode node, UnrealScriptOptionsPackage usop)
+        public static TOutput GetOutput(ASTNode node)
         {
             var builder = new CodeBuilderVisitor<TFormatter, TOutput>();
-            node.AcceptVisitor(builder, usop);
+            node.AcceptVisitor(builder);
             return builder.GetOutput();
         }
 
-        public static TOutput GetFunctionSignature(Function func, UnrealScriptOptionsPackage usop)
+        public static TOutput GetFunctionSignature(Function func)
         {
             var builder = new CodeBuilderVisitor<TFormatter, TOutput>();
-            builder.AppendReturnTypeAndParameters(func, usop);
+            builder.AppendReturnTypeAndParameters(func);
             return builder.GetOutput();
         }
-        public static TOutput GetVariableDeclarationSignature(VariableDeclaration varDecl, UnrealScriptOptionsPackage usop)
+        public static TOutput GetVariableDeclarationSignature(VariableDeclaration varDecl)
         {
             var builder = new CodeBuilderVisitor<TFormatter, TOutput>();
-            builder.AppendVariableTypeAndScopeAndName(varDecl, usop);
+            builder.AppendVariableTypeAndScopeAndName(varDecl);
             return builder.GetOutput();
         }
 
@@ -104,7 +104,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
         private void ForceAlignment() => Formatter.ForceAlignment();
 
-        public bool VisitNode(Class node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(Class node)
         {
             Write(CLASS, EF.Keyword);
             Space();
@@ -208,7 +208,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 Write();
                 Write("// Types", EF.Comment);
                 foreach (VariableType type in node.TypeDeclarations)
-                    type.AcceptVisitor(this, usop);
+                    type.AcceptVisitor(this);
             }
 
             if (node.VariableDeclarations.Count > 0)
@@ -216,7 +216,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 Write();
                 Write("// Variables", EF.Comment);
                 foreach (VariableDeclaration decl in node.VariableDeclarations)
-                    decl.AcceptVisitor(this, usop);
+                    decl.AcceptVisitor(this);
             }
 
             if (node.Functions.Count > 0)
@@ -224,7 +224,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 Write();
                 Write("// Functions", EF.Comment);
                 foreach (Function func in node.Functions)
-                    func.AcceptVisitor(this, usop);
+                    func.AcceptVisitor(this);
             }
 
             if (node.States.Count > 0)
@@ -232,7 +232,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 Write();
                 Write("// States", EF.Comment);
                 foreach (State state in node.States)
-                    state.AcceptVisitor(this, usop);
+                    state.AcceptVisitor(this);
             }
 
             if (node.ReplicationBlock?.Statements.Count > 0)
@@ -245,20 +245,20 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 Write(REPLICATION, EF.Keyword);
                 Write("{");
                 NestingLevel++;
-                node.ReplicationBlock.AcceptVisitor(this, usop);
+                node.ReplicationBlock.AcceptVisitor(this);
                 NestingLevel--;
                 Write("}");
             }
 
             Write();
             Write("//class default properties can be edited in the Properties tab for the class's Default__ object.", EF.Comment);
-            node.DefaultProperties?.AcceptVisitor(this, usop);
+            node.DefaultProperties?.AcceptVisitor(this);
 
             return true;
         }
 
 
-        public bool VisitNode(VariableDeclaration node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(VariableDeclaration node)
         {
             //node.Outer can be null if we have decompiled a single var and nothing else
             //It only makes sense to have done that for a class field
@@ -277,15 +277,15 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
             Space();
             WritePropertyFlags(node.Flags);
-            AppendTypeNameAndName(node, usop);
+            AppendTypeNameAndName(node);
             Append(";");
 
             return true;
         }
 
-        private void AppendTypeNameAndName(VariableDeclaration node, UnrealScriptOptionsPackage usop)
+        private void AppendTypeNameAndName(VariableDeclaration node)
         {
-            AppendTypeName(node.VarType, usop);
+            AppendTypeName(node.VarType);
             Space();
             Append(node.Name);
             if (node.IsStaticArray)
@@ -296,9 +296,9 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             }
         }
 
-        public void AppendVariableTypeAndScopeAndName(VariableDeclaration node, UnrealScriptOptionsPackage usop)
+        public void AppendVariableTypeAndScopeAndName(VariableDeclaration node)
         {
-            AppendTypeName(node.VarType, usop);
+            AppendTypeName(node.VarType);
             Space();
             if (node.Outer is ObjectType outer)
             {
@@ -314,7 +314,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             }
         }
 
-        public void AppendTypeName(VariableType node, UnrealScriptOptionsPackage usop)
+        public void AppendTypeName(VariableType node)
         {
             switch (node)
             {
@@ -322,7 +322,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 case DynamicArrayType:
                 case DelegateType:
                 case ClassType:
-                    node.AcceptVisitor(this, usop);
+                    node.AcceptVisitor(this);
                     break;
                 case Enumeration:
                     Append(node.Name, EF.Enum);
@@ -343,28 +343,28 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             }
         }
 
-        public bool VisitNode(VariableType node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(VariableType node)
         {
             Append(node.Name);
             return true;
         }
 
-        public bool VisitNode(StaticArrayType node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(StaticArrayType node)
         {
-            AppendTypeName(node.ElementType, usop);
+            AppendTypeName(node.ElementType);
             return true;
         }
 
-        public bool VisitNode(DynamicArrayType node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(DynamicArrayType node)
         {
             Append(ARRAY, EF.Keyword);
             Append("<");
-            AppendTypeName(node.ElementType, usop);
+            AppendTypeName(node.ElementType);
             Append(">");
             return true;
         }
 
-        public bool VisitNode(DelegateType node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(DelegateType node)
         {
             Append(DELEGATE, EF.Keyword);
             Append("<");
@@ -373,7 +373,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             return true;
         }
 
-        public bool VisitNode(ClassType node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(ClassType node)
         {
             Append(CLASS, EF.Keyword);
             Append("<");
@@ -382,7 +382,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             return true;
         }
 
-        public bool VisitNode(Struct node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(Struct node)
         {
             // struct [specifiers] structname [extends parentstruct] { \n contents \n };
             Write(STRUCT, EF.Keyword);
@@ -443,16 +443,16 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
             foreach (VariableType typeDeclaration in node.TypeDeclarations)
             {
-                typeDeclaration.AcceptVisitor(this, usop);
+                typeDeclaration.AcceptVisitor(this);
             }
 
             foreach (VariableDeclaration member in node.VariableDeclarations)
-                member.AcceptVisitor(this, usop);
+                member.AcceptVisitor(this);
 
             if (node.DefaultProperties.Statements.Any())
             {
                 Write();
-                node.DefaultProperties.AcceptVisitor(this, usop);
+                node.DefaultProperties.AcceptVisitor(this);
             }
 
             NestingLevel--;
@@ -461,7 +461,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             return true;
         }
 
-        public bool VisitNode(Enumeration node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(Enumeration node)
         {
             // enum enumname { \n contents \n };
             Write(ENUM, EF.Keyword);
@@ -481,13 +481,13 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             return true;
         }
 
-        public bool VisitNode(EnumValue node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(EnumValue node)
         {
             Append(node.Name);
             return true;
         }
 
-        public bool VisitNode(Const node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(Const node)
         {
             Write(CONST, EF.Keyword);
             Space();
@@ -501,7 +501,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             return true;
         }
 
-        public bool VisitNode(Function node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(Function node)
         {
             // [specifiers] function [returntype] functionname ( [parameter declarations] ) body_or_semicolon
             Write();
@@ -601,7 +601,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
             Append(FUNCTION, EF.Keyword);
             Space();
-            AppendReturnTypeAndParameters(node, usop);
+            AppendReturnTypeAndParameters(node);
 
             if (flags.Has(EFunctionFlags.Defined) && node.Body.Statements != null)
             {
@@ -613,10 +613,10 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 if (node.Locals.Any())
                 {
                     foreach (VariableDeclaration v in node.Locals)
-                        v.AcceptVisitor(this, usop);
+                        v.AcceptVisitor(this);
                     Write();
                 }
-                node.Body.AcceptVisitor(this, usop);
+                node.Body.AcceptVisitor(this);
                 NestingLevel--;
                 Write("}");
 
@@ -631,7 +631,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             return true;
         }
 
-        public void AppendReturnTypeAndParameters(Function node, UnrealScriptOptionsPackage usop)
+        public void AppendReturnTypeAndParameters(Function node)
         {
             if (node.ReturnType != null)
             {
@@ -640,42 +640,42 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                     Append("coerce", EF.Specifier);
                     Space();
                 }
-                AppendTypeName(node.ReturnType, usop);
+                AppendTypeName(node.ReturnType);
                 Space();
             }
             Append(node.Name, EF.Function);
             Append("(");
             if (node.Parameters.Any())
             {
-                node.Parameters[0].AcceptVisitor(this, usop);
+                node.Parameters[0].AcceptVisitor(this);
                 for (int i = 1; i < node.Parameters.Count; i++)
                 {
                     Append(",");
                     Space();
-                    node.Parameters[i].AcceptVisitor(this, usop);
+                    node.Parameters[i].AcceptVisitor(this);
                 }
             }
 
             Append(")");
         }
 
-        public bool VisitNode(FunctionParameter node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(FunctionParameter node)
         {
             // [specifiers] parametertype parametername[[staticarraysize]]
             WritePropertyFlags(node.Flags);
-            AppendTypeNameAndName(node, usop);
+            AppendTypeNameAndName(node);
             if (node.DefaultParameter != null)
             {
                 Space();
                 Append("=", EF.Operator);
                 Space();
-                node.DefaultParameter.AcceptVisitor(this, usop);
+                node.DefaultParameter.AcceptVisitor(this);
             }
 
             return true;
         }
 
-        public bool VisitNode(State node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(State node)
         {
             // [specifiers] state statename [extends parentstruct] { \n contents \n };
             Write();
@@ -730,13 +730,13 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
             Write("// State Functions", EF.Comment);
             foreach (Function func in node.Functions)
-                func.AcceptVisitor(this, usop);
+                func.AcceptVisitor(this);
 
             Write();
             Write("// State code", EF.Comment);
             if (node.Body.Statements.Count != 0)
             {
-                node.Body.AcceptVisitor(this, usop);
+                node.Body.AcceptVisitor(this);
             }
 
             NestingLevel--;
@@ -747,11 +747,11 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             return true;
         }
 
-        public bool VisitNode(CodeBody node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(CodeBody node)
         {
             foreach (Statement s in node.Statements)
             {
-                if (s.AcceptVisitor(this, usop) && !StringParserBase.SemiColonExceptions.Contains(s.Type))
+                if (s.AcceptVisitor(this) && !StringParserBase.SemiColonExceptions.Contains(s.Type))
                 {
                     Append(";");
                 }
@@ -760,7 +760,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             return true;
         }
 
-        public bool VisitNode(DefaultPropertiesBlock node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(DefaultPropertiesBlock node)
         {
             bool isStructDefaults = node.Outer is Struct;
             Write(isStructDefaults ? STRUCTDEFAULTPROPERTIES : node.IsNormalExport ? "properties" : DEFAULTPROPERTIES, EF.Keyword);
@@ -768,7 +768,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             NestingLevel++;
             foreach (Statement s in node.Statements)
             {
-                s.AcceptVisitor(this, usop);
+                s.AcceptVisitor(this);
             }
             NestingLevel--;
             Write("}");
@@ -776,7 +776,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             return true;
         }
 
-        public bool VisitNode(Subobject node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(Subobject node)
         {
             Write("Begin", EF.Keyword);
             Space();
@@ -793,7 +793,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             NestingLevel++;
             foreach (Statement s in node.Statements)
             {
-                s.AcceptVisitor(this, usop);
+                s.AcceptVisitor(this);
             }
             NestingLevel--;
             Write("End", EF.Keyword);
@@ -802,7 +802,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             return true;
         }
 
-        public bool VisitNode(DoUntilLoop node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(DoUntilLoop node)
         {
             // do { /n contents /n } until(condition);
             Write(DO, EF.Keyword);
@@ -810,7 +810,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             Append("{");
             NestingLevel++;
 
-            node.Body.AcceptVisitor(this, usop);
+            node.Body.AcceptVisitor(this);
             NestingLevel--;
 
             Write("}");
@@ -818,102 +818,102 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             Append(UNTIL, EF.Keyword);
             Space();
             Append("(");
-            node.Condition.AcceptVisitor(this, usop);
+            node.Condition.AcceptVisitor(this);
             Append(")");
 
             return true;
         }
 
-        public bool VisitNode(ForLoop node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(ForLoop node)
         {
             // for (initstatement; loopcondition; updatestatement) { /n contents /n }
             Write(FOR, EF.Keyword);
             Space();
             Append("(");
             ForceNoNewLines = true;
-            node.Init?.AcceptVisitor(this, usop);
+            node.Init?.AcceptVisitor(this);
             Append(";");
             Space();
-            node.Condition?.AcceptVisitor(this, usop);
+            node.Condition?.AcceptVisitor(this);
             Append(";");
             Space();
-            node.Update?.AcceptVisitor(this, usop);
+            node.Update?.AcceptVisitor(this);
             Append(")");
             ForceNoNewLines = false;
             Write("{");
 
             NestingLevel++;
-            node.Body.AcceptVisitor(this, usop);
+            node.Body.AcceptVisitor(this);
             NestingLevel--;
             Write("}");
 
             return true;
         }
 
-        public bool VisitNode(ForEachLoop node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(ForEachLoop node)
         {
             // foreach IteratorFunction(parameters) { /n contents /n }
             Write(FOREACH, EF.Keyword);
             Space();
-            node.IteratorCall.AcceptVisitor(this, usop);
+            node.IteratorCall.AcceptVisitor(this);
             Write("{");
 
             NestingLevel++;
-            node.Body.AcceptVisitor(this, usop);
+            node.Body.AcceptVisitor(this);
             NestingLevel--;
             Write("}");
 
             return true;
         }
 
-        public bool VisitNode(WhileLoop node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(WhileLoop node)
         {
             // while (condition) { /n contents /n }
             Write(WHILE, EF.Keyword);
             Space();
             Append("(");
-            node.Condition.AcceptVisitor(this, usop);
+            node.Condition.AcceptVisitor(this);
             Append(")");
             Write("{");
 
             NestingLevel++;
-            node.Body.AcceptVisitor(this, usop);
+            node.Body.AcceptVisitor(this);
             NestingLevel--;
             Write("}");
 
             return true;
         }
 
-        public bool VisitNode(SwitchStatement node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(SwitchStatement node)
         {
             // switch (expression) { /n contents /n }
             Write(SWITCH, EF.Keyword);
             Space();
             Append("(");
-            node.Expression.AcceptVisitor(this, usop);
+            node.Expression.AcceptVisitor(this);
             Append(")");
             Write("{");
 
             NestingLevel += 2;  // double-indent, only case/default are single-indented
-            node.Body.AcceptVisitor(this, usop);
+            node.Body.AcceptVisitor(this);
             NestingLevel -= 2;
             Write("}");
             return true;
         }
 
-        public bool VisitNode(CaseStatement node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(CaseStatement node)
         {
             // case expression:
             NestingLevel--; // de-indent this line only
             Write(CASE, EF.Keyword);
             Space();
-            node.Value.AcceptVisitor(this, usop);
+            node.Value.AcceptVisitor(this);
             Append(":");
             NestingLevel++;
             return true;
         }
 
-        public bool VisitNode(DefaultCaseStatement node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(DefaultCaseStatement node)
         {
             // default:
             NestingLevel--; // de-indent this line only
@@ -923,61 +923,61 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             return true;
         }
 
-        public bool VisitNode(AssignStatement node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(AssignStatement node)
         {
             // reference = expression;
             Write();
-            node.Target.AcceptVisitor(this, usop);
+            node.Target.AcceptVisitor(this);
             Space();
             Append("=", EF.Operator);
             Space();
-            node.Value.AcceptVisitor(this, usop);
+            node.Value.AcceptVisitor(this);
 
             return true;
         }
 
-        public bool VisitNode(AssertStatement node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(AssertStatement node)
         {
             // assert(condition)
             Write(ASSERT, EF.Keyword);
             Append("(");
-            node.Condition.AcceptVisitor(this, usop);
+            node.Condition.AcceptVisitor(this);
             Append(")");
 
             return true;
         }
 
-        public bool VisitNode(BreakStatement node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(BreakStatement node)
         {
             // break;
             Write(BREAK, EF.Keyword);
             return true;
         }
 
-        public bool VisitNode(ContinueStatement node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(ContinueStatement node)
         {
             // continue;
             Write(CONTINUE, EF.Keyword);
             return true;
         }
 
-        public bool VisitNode(StopStatement node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(StopStatement node)
         {
             // stop;
             Write(STOP, EF.Keyword);
             return true;
         }
 
-        public bool VisitNode(StateGoto node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(StateGoto node)
         {
             // goto expression;
             Write(GOTO, EF.Keyword);
             Space();
-            node.LabelExpression.AcceptVisitor(this, usop);
+            node.LabelExpression.AcceptVisitor(this);
             return true;
         }
 
-        public bool VisitNode(Goto node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(Goto node)
         {
             // goto labelName;
             Write(GOTO, EF.Keyword);
@@ -986,41 +986,41 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             return true;
         }
 
-        public bool VisitNode(ReturnStatement node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(ReturnStatement node)
         {
             // return expression;
             Write(RETURN, EF.Keyword);
             if (node.Value != null)
             {
                 Space();
-                node.Value.AcceptVisitor(this, usop);
+                node.Value.AcceptVisitor(this);
             }
 
             return true;
         }
 
-        public bool VisitNode(ReturnNothingStatement node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(ReturnNothingStatement node)
         {
             //an implementation detail. no textual representation
             return false;
         }
 
-        public bool VisitNode(ExpressionOnlyStatement node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(ExpressionOnlyStatement node)
         {
             // expression;
             Write();
-            node.Value.AcceptVisitor(this, usop);
+            node.Value.AcceptVisitor(this);
             return true;
         }
 
-        public bool VisitNode(ErrorStatement node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(ErrorStatement node)
         {
             // expression;
             Write();
             if (node.InnerStatement != null)
             {
                 ForcedFormatType = EF.ERROR;
-                node.InnerStatement.AcceptVisitor(this, usop);
+                node.InnerStatement.AcceptVisitor(this);
                 ForcedFormatType = null;
             }
             else if (node.ErrorTokens != null)
@@ -1039,12 +1039,12 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             return true;
         }
 
-        public bool VisitNode(ErrorExpression node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(ErrorExpression node)
         {
             if (node.InnerExpression != null)
             {
                 ForcedFormatType = EF.ERROR;
-                node.InnerExpression.AcceptVisitor(this, usop);
+                node.InnerExpression.AcceptVisitor(this);
                 ForcedFormatType = null;
             }
             else if (node.ErrorTokens != null)
@@ -1063,19 +1063,19 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             return true;
         }
 
-        public bool VisitNode(IfStatement node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(IfStatement node)
         {
             // if (condition) { /n contents /n } [else...]
-            VisitIf(node, usop);
+            VisitIf(node);
             return true;
         }
 
-        public bool VisitNode(ReplicationStatement node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(ReplicationStatement node)
         {
             Write(IF, EF.Keyword);
             Space();
             Append("(");
-            node.Condition.AcceptVisitor(this, usop);
+            node.Condition.AcceptVisitor(this);
             Append(")");
             NestingLevel++;
             Write();
@@ -1085,13 +1085,13 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 {
                     Append(", ");
                 }
-                node.ReplicatedVariables[i].AcceptVisitor(this, usop);
+                node.ReplicatedVariables[i].AcceptVisitor(this);
             }
             NestingLevel--;
             return true;
         }
 
-        private void VisitIf(IfStatement node, UnrealScriptOptionsPackage usop, bool ifElse = false)
+        private void VisitIf(IfStatement node, bool ifElse = false)
         {
             bool invalidBlock = !ForceComment && node.Condition is SymbolReference { Name: __IN_EDITOR };
             if (invalidBlock)
@@ -1104,12 +1104,12 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             Append(IF, EF.Keyword);
             Space();
             Append("(");
-            node.Condition.AcceptVisitor(this, usop);
+            node.Condition.AcceptVisitor(this);
             Append(")");
             Write("{");
 
             NestingLevel++;
-            node.Then.AcceptVisitor(this, usop);
+            node.Then.AcceptVisitor(this);
             NestingLevel--;
             Write("}");
 
@@ -1123,13 +1123,13 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 if (node.Else.Statements.Count == 1 && node.Else.Statements[0] is IfStatement)
                 {
                     Space();
-                    VisitIf(node.Else.Statements[0] as IfStatement, usop, !invalidBlock);
+                    VisitIf(node.Else.Statements[0] as IfStatement, !invalidBlock);
                 }
                 else
                 {
                     Write("{");
                     NestingLevel++;
-                    node.Else.AcceptVisitor(this, usop);
+                    node.Else.AcceptVisitor(this);
                     NestingLevel--;
                     Write("}");
                 }
@@ -1140,7 +1140,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             }
         }
 
-        public bool VisitNode(ConditionalExpression node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(ConditionalExpression node)
         {
             const int ternaryPrecedence = NOPRESCEDENCE - 1;
             // condition ? then : else
@@ -1148,15 +1148,15 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             ExpressionPrescedence.Push(ternaryPrecedence);
 
             if (scopeNeeded) Append("(");
-            node.Condition.AcceptVisitor(this, usop);
+            node.Condition.AcceptVisitor(this);
             Space();
             Append("?", EF.Operator);
             Space();
-            node.TrueExpression.AcceptVisitor(this, usop);
+            node.TrueExpression.AcceptVisitor(this);
             Space();
             Append(":", EF.Operator);
             Space();
-            node.FalseExpression.AcceptVisitor(this, usop);
+            node.FalseExpression.AcceptVisitor(this);
             if (scopeNeeded) Append(")");
 
             ExpressionPrescedence.Pop();
@@ -1164,7 +1164,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             return true;
         }
 
-        public bool VisitNode(InOpReference node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(InOpReference node)
         {
             // [(] expression operatorkeyword expression [)]
             bool scopeNeeded = node.Operator.Precedence >= ExpressionPrescedence.Peek();
@@ -1173,22 +1173,22 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             if (scopeNeeded) Append("(");
             if (node.Operator.OperatorType is TokenType.AtSign or TokenType.DollarSign && node.LeftOperand is PrimitiveCast { CastType.Name: "string" } lpc)
             {
-                lpc.CastTarget.AcceptVisitor(this, usop);
+                lpc.CastTarget.AcceptVisitor(this);
             }
             else
             {
-                node.LeftOperand.AcceptVisitor(this, usop);
+                node.LeftOperand.AcceptVisitor(this);
             }
             Space();
             Append(OperatorHelper.OperatorTypeToString(node.Operator.OperatorType), EF.Operator);
             Space();
             if (node.Operator.OperatorType is TokenType.AtSign or TokenType.DollarSign or TokenType.StrConcAssSpace or TokenType.StrConcatAssign && node.RightOperand is PrimitiveCast { CastType.Name: "string" } rpc)
             {
-                rpc.CastTarget.AcceptVisitor(this, usop);
+                rpc.CastTarget.AcceptVisitor(this);
             }
             else
             {
-                node.RightOperand.AcceptVisitor(this, usop);
+                node.RightOperand.AcceptVisitor(this);
             }
             if (scopeNeeded) Append(")");
 
@@ -1196,29 +1196,29 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             return true;
         }
 
-        public bool VisitNode(PreOpReference node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(PreOpReference node)
         {
             ExpressionPrescedence.Push(1);
             // operatorkeywordExpression
             Append(OperatorHelper.OperatorTypeToString(node.Operator.OperatorType), EF.Operator);
-            node.Operand.AcceptVisitor(this, usop);
+            node.Operand.AcceptVisitor(this);
 
             ExpressionPrescedence.Pop();
             return true;
         }
 
-        public bool VisitNode(PostOpReference node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(PostOpReference node)
         {
             ExpressionPrescedence.Push(NOPRESCEDENCE);
             // ExpressionOperatorkeyword
-            node.Operand.AcceptVisitor(this, usop);
+            node.Operand.AcceptVisitor(this);
             Append(OperatorHelper.OperatorTypeToString(node.Operator.OperatorType), EF.Operator);
 
             ExpressionPrescedence.Pop();
             return true;
         }
 
-        public bool VisitNode(StructComparison node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(StructComparison node)
         {
             // [(] expression operatorkeyword expression [)]
             bool scopeNeeded = node.Precedence > ExpressionPrescedence.Peek();
@@ -1226,11 +1226,11 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
             if (scopeNeeded)
                 Append("(");
-            node.LeftOperand.AcceptVisitor(this, usop);
+            node.LeftOperand.AcceptVisitor(this);
             Space();
             Append(node.IsEqual ? "==" : "!=", EF.Operator);
             Space();
-            node.RightOperand.AcceptVisitor(this, usop);
+            node.RightOperand.AcceptVisitor(this);
             if (scopeNeeded)
                 Append(")");
 
@@ -1238,7 +1238,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             return true;
         }
 
-        public bool VisitNode(DelegateComparison node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(DelegateComparison node)
         {
             // [(] expression operatorkeyword expression [)]
             bool scopeNeeded = node.Precedence > ExpressionPrescedence.Peek();
@@ -1246,11 +1246,11 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
             if (scopeNeeded)
                 Append("(");
-            node.LeftOperand.AcceptVisitor(this, usop);
+            node.LeftOperand.AcceptVisitor(this);
             Space();
             Append(node.IsEqual ? "==" : "!=", EF.Operator);
             Space();
-            node.RightOperand.AcceptVisitor(this, usop);
+            node.RightOperand.AcceptVisitor(this);
             if (scopeNeeded)
                 Append(")");
 
@@ -1258,7 +1258,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             return true;
         }
 
-        public bool VisitNode(NewOperator node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(NewOperator node)
         {
             // new [( [outer [, name [, flags]]] )] class [( template )]
             ExpressionPrescedence.Push(NOPRESCEDENCE);
@@ -1268,29 +1268,29 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             if (node.OuterObject != null)
             {
                 Append("(");
-                node.OuterObject.AcceptVisitor(this, usop);
+                node.OuterObject.AcceptVisitor(this);
                 if (node.ObjectName != null)
                 {
                     Append(",");
                     Space();
-                    node.ObjectName.AcceptVisitor(this, usop);
+                    node.ObjectName.AcceptVisitor(this);
                     if (node.Flags != null)
                     {
                         Append(",");
                         Space();
-                        node.Flags.AcceptVisitor(this, usop);
+                        node.Flags.AcceptVisitor(this);
                     }
                 }
                 Append(") ");
             }
 
-            node.ObjectClass.AcceptVisitor(this, usop);
+            node.ObjectClass.AcceptVisitor(this);
 
             if (node.Template != null)
             {
                 Space();
                 Append("(");
-                node.Template.AcceptVisitor(this, usop);
+                node.Template.AcceptVisitor(this);
                 Append(")");
             }
 
@@ -1298,7 +1298,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             return true;
         }
 
-        public bool VisitNode(FunctionCall node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(FunctionCall node)
         {
             ExpressionPrescedence.Push(NOPRESCEDENCE);
             // functionName( parameter1, parameter2.. )
@@ -1323,7 +1323,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             int countOfNonNullArgs = node.Arguments.FindLastIndex(arg => arg is not null) + 1;
             for (int i = 0; i < countOfNonNullArgs; i++)
             {
-                node.Arguments[i]?.AcceptVisitor(this, usop);
+                node.Arguments[i]?.AcceptVisitor(this);
                 if (i < countOfNonNullArgs - 1)
                 {
                     Append(",");
@@ -1337,7 +1337,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             return true;
         }
 
-        public bool VisitNode(DelegateCall node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(DelegateCall node)
         {
             ExpressionPrescedence.Push(NOPRESCEDENCE);
             // functionName( parameter1, parameter2.. )
@@ -1345,7 +1345,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             Append("(");
             for (int i = 0; i < node.Arguments.Count; i++)
             {
-                node.Arguments[i]?.AcceptVisitor(this, usop);
+                node.Arguments[i]?.AcceptVisitor(this);
                 if (i < node.Arguments.Count - 1)
                 {
                     Append(",");
@@ -1359,31 +1359,31 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             return true;
         }
 
-        public bool VisitNode(CastExpression node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(CastExpression node)
         {
             // type(expr)
 
-            AppendTypeName(node.CastType, usop);
+            AppendTypeName(node.CastType);
             Append("(");
-            node.CastTarget.AcceptVisitor(this, usop);
+            node.CastTarget.AcceptVisitor(this);
             Append(")");
             return true;
         }
 
-        public bool VisitNode(ArraySymbolRef node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(ArraySymbolRef node)
         {
             ExpressionPrescedence.Push(NOPRESCEDENCE);
             // symbolname[expression]
-            node.Array.AcceptVisitor(this, usop);
+            node.Array.AcceptVisitor(this);
             Append("[");
-            node.Index.AcceptVisitor(this, usop);
+            node.Index.AcceptVisitor(this);
             Append("]");
 
             ExpressionPrescedence.Pop();
             return true;
         }
 
-        public bool VisitNode(CompositeSymbolRef node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(CompositeSymbolRef node)
         {
             // outersymbol.innersymbol
             bool needsParentheses = node.OuterSymbol is InOpReference or PreOpReference or PostOpReference or NewOperator;
@@ -1391,7 +1391,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             {
                 Append("(");
             }
-            node.OuterSymbol.AcceptVisitor(this, usop);
+            node.OuterSymbol.AcceptVisitor(this);
             if (needsParentheses)
             {
                 Append(")");
@@ -1402,11 +1402,11 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 Append(STATIC, EF.Keyword);
             }
             Append(".", EF.Operator);
-            node.InnerSymbol.AcceptVisitor(this, usop);
+            node.InnerSymbol.AcceptVisitor(this);
             return true;
         }
 
-        public bool VisitNode(SymbolReference node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(SymbolReference node)
         {
             if (node.Node is EnumValue ev)
             {
@@ -1419,7 +1419,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             return true;
         }
 
-        public bool VisitNode(DefaultReference node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(DefaultReference node)
         {
             // symbolname
             Append(DEFAULT, EF.Keyword);
@@ -1428,161 +1428,161 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             return true;
         }
 
-        public bool VisitNode(DynArrayLength node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(DynArrayLength node)
         {
-            node.DynArrayExpression.AcceptVisitor(this, usop);
+            node.DynArrayExpression.AcceptVisitor(this);
             Append(".", EF.Operator);
             Append(LENGTH);
             return true;
         }
 
-        public bool VisitNode(DynArrayAdd node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(DynArrayAdd node)
         {
-            node.DynArrayExpression.AcceptVisitor(this, usop);
+            node.DynArrayExpression.AcceptVisitor(this);
             Append(".", EF.Operator);
             Append(ADD, EF.Function);
             Append("(");
-            node.CountArg.AcceptVisitor(this, usop);
+            node.CountArg.AcceptVisitor(this);
             Append(")");
             return true;
         }
 
-        public bool VisitNode(DynArrayAddItem node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(DynArrayAddItem node)
         {
-            node.DynArrayExpression.AcceptVisitor(this, usop);
+            node.DynArrayExpression.AcceptVisitor(this);
             Append(".", EF.Operator);
             Append(ADDITEM, EF.Function);
             Append("(");
-            node.ValueArg.AcceptVisitor(this, usop);
+            node.ValueArg.AcceptVisitor(this);
             Append(")");
             return true;
         }
 
-        public bool VisitNode(DynArrayInsert node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(DynArrayInsert node)
         {
-            node.DynArrayExpression.AcceptVisitor(this, usop);
+            node.DynArrayExpression.AcceptVisitor(this);
             Append(".", EF.Operator);
             Append(INSERT, EF.Function);
             Append("(");
-            node.IndexArg.AcceptVisitor(this, usop);
+            node.IndexArg.AcceptVisitor(this);
             Append(",");
             Space();
-            node.CountArg.AcceptVisitor(this, usop);
+            node.CountArg.AcceptVisitor(this);
             Append(")");
             return true;
         }
 
-        public bool VisitNode(DynArrayInsertItem node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(DynArrayInsertItem node)
         {
-            node.DynArrayExpression.AcceptVisitor(this, usop);
+            node.DynArrayExpression.AcceptVisitor(this);
             Append(".", EF.Operator);
             Append(INSERTITEM, EF.Function);
             Append("(");
-            node.IndexArg.AcceptVisitor(this, usop);
+            node.IndexArg.AcceptVisitor(this);
             Append(",");
             Space();
-            node.ValueArg.AcceptVisitor(this, usop);
+            node.ValueArg.AcceptVisitor(this);
             Append(")");
             return true;
         }
 
-        public bool VisitNode(DynArrayRemove node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(DynArrayRemove node)
         {
-            node.DynArrayExpression.AcceptVisitor(this, usop);
+            node.DynArrayExpression.AcceptVisitor(this);
             Append(".", EF.Operator);
             Append(REMOVE, EF.Function);
             Append("(");
-            node.IndexArg.AcceptVisitor(this, usop);
+            node.IndexArg.AcceptVisitor(this);
             Append(",");
             Space();
-            node.CountArg.AcceptVisitor(this, usop);
+            node.CountArg.AcceptVisitor(this);
             Append(")");
             return true;
         }
 
-        public bool VisitNode(DynArrayRemoveItem node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(DynArrayRemoveItem node)
         {
-            node.DynArrayExpression.AcceptVisitor(this, usop);
+            node.DynArrayExpression.AcceptVisitor(this);
             Append(".", EF.Operator);
             Append(REMOVEITEM, EF.Function);
             Append("(");
-            node.ValueArg.AcceptVisitor(this, usop);
+            node.ValueArg.AcceptVisitor(this);
             Append(")");
             return true;
         }
 
-        public bool VisitNode(DynArrayFind node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(DynArrayFind node)
         {
-            node.DynArrayExpression.AcceptVisitor(this, usop);
+            node.DynArrayExpression.AcceptVisitor(this);
             Append(".", EF.Operator);
             Append(FIND, EF.Function);
             Append("(");
-            node.ValueArg.AcceptVisitor(this, usop);
+            node.ValueArg.AcceptVisitor(this);
             Append(")");
             return true;
         }
 
-        public bool VisitNode(DynArrayFindStructMember node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(DynArrayFindStructMember node)
         {
-            node.DynArrayExpression.AcceptVisitor(this, usop);
+            node.DynArrayExpression.AcceptVisitor(this);
             Append(".", EF.Operator);
             Append(FIND, EF.Function);
             Append("(");
-            node.MemberNameArg.AcceptVisitor(this, usop);
+            node.MemberNameArg.AcceptVisitor(this);
             Append(",");
             Space();
-            node.ValueArg.AcceptVisitor(this, usop);
+            node.ValueArg.AcceptVisitor(this);
             Append(")");
             return true;
         }
 
-        public bool VisitNode(DynArraySort node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(DynArraySort node)
         {
-            node.DynArrayExpression.AcceptVisitor(this, usop);
+            node.DynArrayExpression.AcceptVisitor(this);
             Append(".", EF.Operator);
             Append(SORT, EF.Function);
             Append("(");
-            node.CompareFuncArg.AcceptVisitor(this, usop);
+            node.CompareFuncArg.AcceptVisitor(this);
             Append(")");
             return true;
         }
 
-        public bool VisitNode(DynArrayIterator node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(DynArrayIterator node)
         {
-            node.DynArrayExpression.AcceptVisitor(this, usop);
+            node.DynArrayExpression.AcceptVisitor(this);
             Append("(");
-            node.ValueArg.AcceptVisitor(this, usop);
+            node.ValueArg.AcceptVisitor(this);
             if (node.IndexArg != null)
             {
                 Append(",");
                 Space();
-                node.IndexArg.AcceptVisitor(this, usop);
+                node.IndexArg.AcceptVisitor(this);
             }
             Append(")");
             return true;
         }
 
-        public bool VisitNode(BooleanLiteral node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(BooleanLiteral node)
         {
             // true|false
             Append(node.Value ? TRUE : FALSE, EF.Keyword);
             return true;
         }
 
-        public bool VisitNode(FloatLiteral node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(FloatLiteral node)
         {
             Append(FormatFloat(node.Value), EF.Number); //TODO: seperate out the minus?
             return true;
         }
 
-        public bool VisitNode(IntegerLiteral node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(IntegerLiteral node)
         {
             // integervalue
             Append($"{node.Value}", EF.Number);
             return true;
         }
 
-        public bool VisitNode(NameLiteral node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(NameLiteral node)
         {
             //commented version is unrealscript compliant, but harder to parse
             //Append(node.Outer is StructLiteral ? "\"{EncodeName(node.Value)}\"" : "'{EncodeName(node.Value)}'");
@@ -1590,20 +1590,20 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             return true;
         }
 
-        public bool VisitNode(ObjectLiteral node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(ObjectLiteral node)
         {
             Append(node.Class.Name, EF.Class);
-            node.Name.AcceptVisitor(this, usop);
+            node.Name.AcceptVisitor(this);
             return true;
         }
 
-        public bool VisitNode(NoneLiteral node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(NoneLiteral node)
         {
             Append(NONE, EF.Keyword);
             return true;
         }
 
-        public bool VisitNode(VectorLiteral node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(VectorLiteral node)
         {
             Append(VECT, EF.Keyword);
             Append("(");
@@ -1618,7 +1618,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             return true;
         }
 
-        public bool VisitNode(RotatorLiteral node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(RotatorLiteral node)
         {
             Append(ROT, EF.Keyword);
             Append("(");
@@ -1646,19 +1646,19 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             }
         }
 
-        public bool VisitNode(StringLiteral node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(StringLiteral node)
         {
             // "string"
             Append($"\"{EncodeString(node.Value)}\"", EF.String);
             return true;
         }
 
-        public bool VisitNode(StringRefLiteral node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(StringRefLiteral node)
         {
             Append($"${node.Value}", EF.Number);
             return true;
         }
-        public bool VisitNode(StructLiteral node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(StructLiteral node)
         {
             bool multiLine = !ForceNoNewLines && (node.Statements.Count > 5 || node.Statements.Any(stmnt => stmnt.Value is StructLiteral or DynamicArrayLiteral));
 
@@ -1681,7 +1681,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                     Append(",");
                     Space();
                 }
-                node.Statements[i].AcceptVisitor(this, usop);
+                node.Statements[i].AcceptVisitor(this);
             }
 
             if (multiLine)
@@ -1698,7 +1698,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             return true;
         }
 
-        public bool VisitNode(DynamicArrayLiteral node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(DynamicArrayLiteral node)
         {
             bool multiLine = !ForceNoNewLines && (node.Values.Any(expr => expr is StructLiteral) || node.Values.Count > 7);
 
@@ -1724,7 +1724,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                         Write();
                     }
                 }
-                node.Values[i].AcceptVisitor(this, usop);
+                node.Values[i].AcceptVisitor(this);
             }
             if (multiLine)
             {
@@ -1740,7 +1740,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             return true;
         }
 
-        public bool VisitNode(Label node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(Label node)
         {
             // Label
             var temp = NestingLevel;
@@ -2085,7 +2085,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
         #region Unused
 
-        public bool VisitNode(VariableIdentifier node, UnrealScriptOptionsPackage usop)
+        public bool VisitNode(VariableIdentifier node)
         { throw new NotImplementedException(); }
 
         #endregion

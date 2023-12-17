@@ -8,9 +8,9 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
         public BreakStatement(int start = -1, int end = -1) 
             : base(ASTNodeType.BreakStatement, start, end) { }
 
-        public override bool AcceptVisitor(IASTVisitor visitor, UnrealScriptOptionsPackage usop)
+        public override bool AcceptVisitor(IASTVisitor visitor)
         {
-            return visitor.VisitNode(this, usop);
+            return visitor.VisitNode(this);
         }
     }
 }

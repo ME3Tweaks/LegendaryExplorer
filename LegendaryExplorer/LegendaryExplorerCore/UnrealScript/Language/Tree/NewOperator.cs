@@ -31,9 +31,9 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
             return ((ClassType)ObjectClass.ResolveType()).ClassLimiter;
         }
 
-        public override bool AcceptVisitor(IASTVisitor visitor, UnrealScriptOptionsPackage usop)
+        public override bool AcceptVisitor(IASTVisitor visitor)
         {
-            return visitor.VisitNode(this, usop);
+            return visitor.VisitNode(this);
         }
 
         public override IEnumerable<ASTNode> ChildNodes
