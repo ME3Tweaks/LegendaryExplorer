@@ -93,7 +93,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
             EndPos = end;
         }
 
-        public abstract bool AcceptVisitor(IASTVisitor visitor);
+        public abstract bool AcceptVisitor(IASTVisitor visitor, UnrealScriptOptionsPackage usop);
         public virtual IEnumerable<ASTNode> ChildNodes => Enumerable.Empty<ASTNode>();
     }
 }

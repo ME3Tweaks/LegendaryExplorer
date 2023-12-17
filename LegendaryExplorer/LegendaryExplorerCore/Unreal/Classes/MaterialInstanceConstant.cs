@@ -57,7 +57,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
                     else
                     {
                         ImportEntry ie = export.FileRef.GetImport(baseProp.Value);
-                        var externalEntry = EntryImporter.ResolveImport(ie, null, assetCache);
+                        var externalEntry = EntryImporter.ResolveImport(ie, assetCache);
                         if (externalEntry != null)
                         {
                             ReadMaterial(externalEntry);
@@ -105,7 +105,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
                     else
                     {
                         ImportEntry ie = export.FileRef.GetImport(parentObjProp.Value);
-                        var externalEntry = EntryImporter.ResolveImport(ie, null, assetCache); 
+                        var externalEntry = EntryImporter.ResolveImport(ie, assetCache); 
                         if (externalEntry != null)
                         {
                             ReadMaterial(externalEntry);

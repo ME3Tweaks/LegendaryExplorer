@@ -8,9 +8,9 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
         public DefaultCaseStatement(int start, int end)
             : base(ASTNodeType.DefaultStatement, start, end) { }
 
-        public override bool AcceptVisitor(IASTVisitor visitor)
+        public override bool AcceptVisitor(IASTVisitor visitor, UnrealScriptOptionsPackage usop)
         {
-            return visitor.VisitNode(this);
+            return visitor.VisitNode(this, usop);
         }
     }
 }
