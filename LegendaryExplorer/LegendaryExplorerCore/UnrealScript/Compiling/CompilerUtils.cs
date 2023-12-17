@@ -37,41 +37,41 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             return false;
         }
 
-        public static IEntry ResolveSymbol(ASTNode node, IMEPackage pcc) =>
+        public static IEntry ResolveSymbol(ASTNode node, IMEPackage pcc, UnrealScriptOptionsPackage usop) =>
             node switch
             {
-                Class cls => ResolveClass(cls, pcc),
-                Struct strct => ResolveStruct(strct, pcc),
-                State state => ResolveState(state, pcc),
-                Function func => ResolveFunction(func, pcc),
-                Enumeration @enum => ResolveEnum(@enum, pcc),
-                StaticArrayType statArr => ResolveSymbol(statArr.ElementType, pcc),
+                Class cls => ResolveClass(cls, pcc, usop),
+                Struct strct => ResolveStruct(strct, pcc, usop),
+                State state => ResolveState(state, pcc, usop),
+                Function func => ResolveFunction(func, pcc, usop),
+                Enumeration @enum => ResolveEnum(@enum, pcc, usop),
+                StaticArrayType statArr => ResolveSymbol(statArr.ElementType, pcc, usop),
                 _ => throw new ArgumentOutOfRangeException(nameof(node))
             };
 
-        public static IEntry ResolveEnum(Enumeration e, IMEPackage pcc) => pcc.getEntryOrAddImport($"{ResolveSymbol(e.Outer, pcc).InstancedFullPath}.{e.Name}", "Enum");
-        public static IEntry ResolveStruct(Struct s, IMEPackage pcc) => pcc.getEntryOrAddImport($"{ResolveSymbol(s.Outer, pcc).InstancedFullPath}.{s.Name}", "ScriptStruct");
-        public static IEntry ResolveFunction(Function f, IMEPackage pcc) => pcc.getEntryOrAddImport($"{ResolveSymbol(f.Outer, pcc).InstancedFullPath}.{f.Name}", "Function");
-        public static IEntry ResolveState(State s, IMEPackage pcc) => pcc.getEntryOrAddImport($"{ResolveSymbol(s.Outer, pcc).InstancedFullPath}.{s.Name}", "State");
+        public static IEntry ResolveEnum(Enumeration e, IMEPackage pcc, UnrealScriptOptionsPackage usop) => pcc.getEntryOrAddImport($"{ResolveSymbol(e.Outer, pcc, usop).InstancedFullPath}.{e.Name}", "Enum");
+        public static IEntry ResolveStruct(Struct s, IMEPackage pcc, UnrealScriptOptionsPackage usop) => pcc.getEntryOrAddImport($"{ResolveSymbol(s.Outer, pcc, usop).InstancedFullPath}.{s.Name}", "ScriptStruct");
+        public static IEntry ResolveFunction(Function f, IMEPackage pcc, UnrealScriptOptionsPackage usop) => pcc.getEntryOrAddImport($"{ResolveSymbol(f.Outer, pcc, usop).InstancedFullPath}.{f.Name}", "Function");
+        public static IEntry ResolveState(State s, IMEPackage pcc, UnrealScriptOptionsPackage usop) => pcc.getEntryOrAddImport($"{ResolveSymbol(s.Outer, pcc, usop).InstancedFullPath}.{s.Name}", "State");
 
-        public static IEntry ResolveClass(Class c, IMEPackage pcc)
+        public static IEntry ResolveClass(Class c, IMEPackage pcc, UnrealScriptOptionsPackage usop)
         {
             // 12/09/2023 - Port exports as imports when possible
             // This will significantly slow performance but we don't have a ROP
             // to configure it... this will need
             // addressed before merge to Beta
-            var rop = new RelinkerOptionsPackage { ImportExportDependencies = true, PortExportsAsImportsWhenPossible = true}; // Might need to disable cache here depending on if that is desirable
+            var rop = new RelinkerOptionsPackage { ImportExportDependencies = true, PortExportsAsImportsWhenPossible = true, Cache = usop.Cache }; // Might need to disable cache here depending on if that is desirable
             if (!GlobalUnrealObjectInfo.GetClasses(pcc.Game).ContainsKey(c.Name) && c.FilePath is not null)
             {
                 if (c.FilePath == pcc.FilePath)
                 {
                     // It's part of the current package - e.g. we're adding a new class in porting
-                    GlobalUnrealObjectInfo.generateClassInfo(pcc.GetUExport(c.UIndex));
+                    GlobalUnrealObjectInfo.generateClassInfo(pcc.GetUExport(c.UIndex), packageCache: usop.Cache);
                 }
                 else
                 {
                     using IMEPackage classPcc = MEPackageHandler.OpenMEPackage(c.FilePath);
-                    GlobalUnrealObjectInfo.generateClassInfo(classPcc.GetUExport(c.UIndex));
+                    GlobalUnrealObjectInfo.generateClassInfo(classPcc.GetUExport(c.UIndex), packageCache: usop.Cache);
                 }
             }
             var entry = EntryImporter.EnsureClassIsInFile(pcc, c.Name, rop);

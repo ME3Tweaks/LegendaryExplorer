@@ -9,7 +9,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
         protected Statement(ASTNodeType type,int start, int end) 
             : base(type, start, end) { }
 
-        public override bool AcceptVisitor(IASTVisitor visitor)
+        public override bool AcceptVisitor(IASTVisitor visitor, UnrealScriptOptionsPackage usop)
         {
             throw new NotImplementedException();
         }

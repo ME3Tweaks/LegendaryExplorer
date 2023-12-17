@@ -12,11 +12,11 @@ namespace LegendaryExplorerCore.UnrealScript
 {
     public static class UnrealScriptLookup
     {
-        public static List<EntryStringPair> FindUsagesInFile(Function searchFunc, FileLib lib)
+        public static List<EntryStringPair> FindUsagesInFile(Function searchFunc, FileLib lib, UnrealScriptOptionsPackage usop)
         {
             var results = new List<EntryStringPair>();
 
-            lib.ReInitializeFile();
+            lib.ReInitializeFile(usop);
             SymbolTable symbols = lib.GetSymbolTable();
 
             symbols.RevertToObjectStack();
@@ -39,7 +39,7 @@ namespace LegendaryExplorerCore.UnrealScript
                         if (objType is Class cls)
                         {
                             FindInFuncs(cls.Functions, cls.Name);
-                            FindInBytecode(searchFunc, cls, cls.Name, lib, symbols, results);
+                            FindInBytecode(searchFunc, cls, cls.Name, lib, symbols, results, usop);
 
                             foreach (State state in cls.States)
                             {
@@ -47,7 +47,7 @@ namespace LegendaryExplorerCore.UnrealScript
 
                                 FindInFuncs(state.Functions, stateScope);
 
-                                FindInBytecode(searchFunc, state, stateScope, lib, symbols, results);
+                                FindInBytecode(searchFunc, state, stateScope, lib, symbols, results, usop);
                             }
                         }
                     }
@@ -79,15 +79,15 @@ namespace LegendaryExplorerCore.UnrealScript
                         results.Add(new EntryStringPair(new LEXOpenable(pcc, func.UIndex), $"#{func.UIndex} Default function of delegate return type: '{funcScope}'"));
                     }
 
-                    FindInBytecode(searchFunc, func, funcScope, lib, symbols, results);
+                    FindInBytecode(searchFunc, func, funcScope, lib, symbols, results, usop);
                 }
             }
         }
-        public static List<EntryStringPair> FindUsagesInFile(VariableDeclaration searchDecl, FileLib lib)
+        public static List<EntryStringPair> FindUsagesInFile(VariableDeclaration searchDecl, FileLib lib, UnrealScriptOptionsPackage usop)
         {
             var results = new List<EntryStringPair>();
 
-            lib.ReInitializeFile();
+            lib.ReInitializeFile(usop);
             SymbolTable symbols = lib.GetSymbolTable();
 
             symbols.RevertToObjectStack();
@@ -106,7 +106,7 @@ namespace LegendaryExplorerCore.UnrealScript
                     if (type is Class cls)
                     {
                         FindInFuncs(cls.Functions, cls.Name);
-                        FindInBytecode(searchDecl, cls, cls.Name, lib, symbols, results);
+                        FindInBytecode(searchDecl, cls, cls.Name, lib, symbols, results, usop);
 
                         foreach (State state in cls.States)
                         {
@@ -114,7 +114,7 @@ namespace LegendaryExplorerCore.UnrealScript
 
                             FindInFuncs(state.Functions, stateScope);
 
-                            FindInBytecode(searchDecl, state, stateScope, lib, symbols, results);
+                            FindInBytecode(searchDecl, state, stateScope, lib, symbols, results, usop);
                         }
                     }
                 }
@@ -128,7 +128,7 @@ namespace LegendaryExplorerCore.UnrealScript
                 {
                     string funcScope = $"{outerScope}.{clsFunc.Name}";
 
-                    FindInBytecode(searchDecl, clsFunc, funcScope, lib, symbols, results);
+                    FindInBytecode(searchDecl, clsFunc, funcScope, lib, symbols, results, usop);
                 }
             }
 
@@ -141,11 +141,11 @@ namespace LegendaryExplorerCore.UnrealScript
                 };
         }
 
-        public static List<EntryStringPair> FindUsagesInFile(VariableType searchType, FileLib lib)
+        public static List<EntryStringPair> FindUsagesInFile(VariableType searchType, FileLib lib, UnrealScriptOptionsPackage usop)
         {
             var results = new List<EntryStringPair>();
 
-            lib.ReInitializeFile();
+            lib.ReInitializeFile(usop);
             SymbolTable symbols = lib.GetSymbolTable();
 
             symbols.RevertToObjectStack();
@@ -186,7 +186,7 @@ namespace LegendaryExplorerCore.UnrealScript
                                 }
                             }
 
-                            FindInBytecode(searchType, cls, cls.Name, lib, symbols, results);
+                            FindInBytecode(searchType, cls, cls.Name, lib, symbols, results, usop);
                             FindInFuncs(cls.Functions, cls.Name);
 
                             foreach (State state in cls.States)
@@ -195,7 +195,7 @@ namespace LegendaryExplorerCore.UnrealScript
 
                                 FindInFuncs(state.Functions, stateScope);
 
-                                FindInBytecode(searchType, state, stateScope, lib, symbols, results);
+                                FindInBytecode(searchType, state, stateScope, lib, symbols, results, usop);
                             }
                         }
                     }
@@ -239,12 +239,12 @@ namespace LegendaryExplorerCore.UnrealScript
                         results.Add(new EntryStringPair(new LEXOpenable(pcc, func.UIndex), $"#{func.UIndex} Return type of: '{funcScope}'"));
                     }
 
-                    FindInBytecode(searchType, func, funcScope, lib, symbols, results);
+                    FindInBytecode(searchType, func, funcScope, lib, symbols, results, usop);
                 }
             }
         }
 
-        private static void FindInBytecode(ASTNode search, IContainsByteCode containsBytecode, string scope, FileLib lib, SymbolTable symbols, List<EntryStringPair> results)
+        private static void FindInBytecode(ASTNode search, IContainsByteCode containsBytecode, string scope, FileLib lib, SymbolTable symbols, List<EntryStringPair> results, UnrealScriptOptionsPackage usop)
         {
             string kind = containsBytecode switch
             {
@@ -254,7 +254,7 @@ namespace LegendaryExplorerCore.UnrealScript
             };
             IMEPackage pcc = lib.Pcc;
             ExportEntry export = pcc.GetUExport(containsBytecode.UIndex);
-            (_, string script) = UnrealScriptCompiler.DecompileExport(export, lib);
+            (_, string script) = UnrealScriptCompiler.DecompileExport(export, lib, usop);
             var log = new MessageLog();
             (ASTNode ast, TokenStream tokens) = UnrealScriptCompiler.CompileOutlineAST(script, kind, log, pcc.Game);
             if (log.HasErrors)
@@ -283,13 +283,13 @@ namespace LegendaryExplorerCore.UnrealScript
                 switch (containsBytecode)
                 {
                     case Function function:
-                        CodeBodyParser.ParseFunction(function, pcc.Game, symbols, log);
+                        CodeBodyParser.ParseFunction(function, pcc.Game, symbols, log, usop);
                         break;
                     case State state:
-                        CodeBodyParser.ParseState(state, pcc.Game, symbols, log, false);
+                        CodeBodyParser.ParseState(state, pcc.Game, symbols, usop, log, false);
                         break;
                     case Class cls:
-                        CodeBodyParser.ParseReplicationBlock(cls, pcc.Game, symbols, log);
+                        CodeBodyParser.ParseReplicationBlock(cls, pcc.Game, symbols, log, usop);
                         break;
                 }
             }

@@ -16,9 +16,9 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
             DefaultFunction = defaultFunction;
         }
 
-        public override bool AcceptVisitor(IASTVisitor visitor)
+        public override bool AcceptVisitor(IASTVisitor visitor, UnrealScriptOptionsPackage usop)
         {
-            return visitor.VisitNode(this);
+            return visitor.VisitNode(this, usop);
         }
 
         public bool Equals(DelegateType other)
