@@ -27,9 +27,9 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
             return SymbolTable.IntType;
         }
 
-        public override bool AcceptVisitor(IASTVisitor visitor, UnrealScriptOptionsPackage usop)
+        public override bool AcceptVisitor(IASTVisitor visitor)
         {
-            return visitor.VisitNode(this, usop);
+            return visitor.VisitNode(this);
         }
     }
     public class DynArrayAdd : DynArrayOperation
@@ -41,9 +41,9 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
             CountArg = countArg;
         }
 
-        public override bool AcceptVisitor(IASTVisitor visitor, UnrealScriptOptionsPackage usop)
+        public override bool AcceptVisitor(IASTVisitor visitor)
         {
-            return visitor.VisitNode(this, usop);
+            return visitor.VisitNode(this);
         }
 
         public override VariableType ResolveType()
@@ -60,9 +60,9 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
             ValueArg = valueArg;
         }
 
-        public override bool AcceptVisitor(IASTVisitor visitor, UnrealScriptOptionsPackage usop)
+        public override bool AcceptVisitor(IASTVisitor visitor)
         {
-            return visitor.VisitNode(this, usop);
+            return visitor.VisitNode(this);
         }
 
         public override VariableType ResolveType()
@@ -81,9 +81,9 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
             CountArg = countArg;
         }
 
-        public override bool AcceptVisitor(IASTVisitor visitor, UnrealScriptOptionsPackage usop)
+        public override bool AcceptVisitor(IASTVisitor visitor)
         {
-            return visitor.VisitNode(this, usop);
+            return visitor.VisitNode(this);
         }
     }
     public class DynArrayInsertItem : DynArrayOperation
@@ -102,9 +102,9 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
             return SymbolTable.IntType;
         }
 
-        public override bool AcceptVisitor(IASTVisitor visitor, UnrealScriptOptionsPackage usop)
+        public override bool AcceptVisitor(IASTVisitor visitor)
         {
-            return visitor.VisitNode(this, usop);
+            return visitor.VisitNode(this);
         }
     }
     public class DynArrayRemove : DynArrayOperation
@@ -118,9 +118,9 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
             CountArg = countArg;
         }
 
-        public override bool AcceptVisitor(IASTVisitor visitor, UnrealScriptOptionsPackage usop)
+        public override bool AcceptVisitor(IASTVisitor visitor)
         {
-            return visitor.VisitNode(this, usop);
+            return visitor.VisitNode(this);
         }
     }
     public class DynArrayRemoveItem : DynArrayOperation
@@ -132,9 +132,9 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
             ValueArg = valueArg;
         }
 
-        public override bool AcceptVisitor(IASTVisitor visitor, UnrealScriptOptionsPackage usop)
+        public override bool AcceptVisitor(IASTVisitor visitor)
         {
-            return visitor.VisitNode(this, usop);
+            return visitor.VisitNode(this);
         }
 
         public override VariableType ResolveType()
@@ -156,9 +156,9 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
             return SymbolTable.IntType;
         }
 
-        public override bool AcceptVisitor(IASTVisitor visitor, UnrealScriptOptionsPackage usop)
+        public override bool AcceptVisitor(IASTVisitor visitor)
         {
-            return visitor.VisitNode(this, usop);
+            return visitor.VisitNode(this);
         }
     }
     public class DynArrayFindStructMember : DynArrayOperation
@@ -178,9 +178,9 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
             return SymbolTable.IntType;
         }
 
-        public override bool AcceptVisitor(IASTVisitor visitor, UnrealScriptOptionsPackage usop)
+        public override bool AcceptVisitor(IASTVisitor visitor)
         {
-            return visitor.VisitNode(this, usop);
+            return visitor.VisitNode(this);
         }
     }
     public class DynArraySort : DynArrayOperation
@@ -197,9 +197,9 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
             return ((DynamicArrayType)DynArrayExpression.ResolveType()).ElementType;
         }
 
-        public override bool AcceptVisitor(IASTVisitor visitor, UnrealScriptOptionsPackage usop)
+        public override bool AcceptVisitor(IASTVisitor visitor)
         {
-            return visitor.VisitNode(this, usop);
+            return visitor.VisitNode(this);
         }
     }
 
@@ -214,9 +214,9 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
             IndexArg = indexArg;
         }
 
-        public override bool AcceptVisitor(IASTVisitor visitor, UnrealScriptOptionsPackage usop)
+        public override bool AcceptVisitor(IASTVisitor visitor)
         {
-            return visitor.VisitNode(this, usop);
+            return visitor.VisitNode(this);
         }
     }
 }

@@ -2,6 +2,6 @@
 {
     interface IAcceptASTVisitor
     {
-        bool AcceptVisitor(IASTVisitor visitor, UnrealScriptOptionsPackage usop);
+        bool AcceptVisitor(IASTVisitor visitor);
     }
 }

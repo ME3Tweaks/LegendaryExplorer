@@ -35,7 +35,7 @@ namespace LegendaryExplorerCore.UnrealScript
                 if (astNode != null)
                 {
                     var codeBuilder = new CodeBuilderVisitor();
-                    astNode.AcceptVisitor(codeBuilder, usop);
+                    astNode.AcceptVisitor(codeBuilder);
                     return (astNode, codeBuilder.GetOutput());
                 }
             }
@@ -50,7 +50,7 @@ namespace LegendaryExplorerCore.UnrealScript
         public static string GetPropertyLiteralValue(Property prop, ExportEntry containingExport, FileLib lib, UnrealScriptOptionsPackage usop)
         {
             Expression literal = ScriptObjectToASTConverter.ConvertToLiteralValue(prop, containingExport, lib);
-            return CodeBuilderVisitor.GetOutput(literal, usop);
+            return CodeBuilderVisitor.GetOutput(literal);
         }
 
         [CanBeNull]
@@ -830,10 +830,10 @@ namespace LegendaryExplorerCore.UnrealScript
             }
 
             func.Outer = (ASTNode)stateOrClass;
-            var validator = new ClassValidationVisitor(log, symbols, ValidationPass.ClassAndStructMembersAndFunctionParams);
-            validator.VisitNode(func, usop);
+            var validator = new ClassValidationVisitor(log, symbols, ValidationPass.ClassAndStructMembersAndFunctionParams, usop);
+            validator.VisitNode(func);
             validator.Pass = ValidationPass.BodyPass;
-            validator.VisitNode(func, usop);
+            validator.VisitNode(func);
 
             CodeBodyParser.ParseFunction(func, parentExport.Game, symbols, log, usop);
             return func;

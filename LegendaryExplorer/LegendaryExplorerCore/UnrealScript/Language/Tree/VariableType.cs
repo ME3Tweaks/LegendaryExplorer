@@ -41,9 +41,9 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
             PropertyType = propType;
         }
 
-        public override bool AcceptVisitor(IASTVisitor visitor, UnrealScriptOptionsPackage usop)
+        public override bool AcceptVisitor(IASTVisitor visitor)
         {
-            return visitor.VisitNode(this, usop);
+            return visitor.VisitNode(this);
         }
         public override IEnumerable<ASTNode> ChildNodes
         {
@@ -71,14 +71,14 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 
     public static class VariableTypeExtensions
     {
-        public static string DisplayName(this VariableType type, UnrealScriptOptionsPackage usop)
+        public static string DisplayName(this VariableType type)
         {
             if (type is null)
             {
                 return "None";
             }
             var builder = new CodeBuilderVisitor();
-            builder.AppendTypeName(type, usop);
+            builder.AppendTypeName(type);
             string fullTypeName = builder.GetOutput();
             if (type is StaticArrayType staticArrayType)
             {

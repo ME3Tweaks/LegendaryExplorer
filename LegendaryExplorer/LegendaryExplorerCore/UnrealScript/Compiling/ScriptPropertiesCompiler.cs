@@ -21,8 +21,11 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
         private bool ShouldStripTransients;
         private bool IsStructDefaults;
 
+        private readonly UnrealScriptOptionsPackage usop;
+
         private ScriptPropertiesCompiler(IMEPackage pcc, UnrealScriptOptionsPackage usop)
         {
+            this.usop = usop;
             Pcc = pcc;
         }
 
@@ -35,7 +38,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
             foreach (Statement statement in structAST.DefaultProperties.Statements)
             {
-                props.AddOrReplaceProp(compiler.ConvertToProperty((AssignStatement)statement, usop));
+                props.AddOrReplaceProp(compiler.ConvertToProperty((AssignStatement)statement));
             }
         }
 
@@ -45,7 +48,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             var props = new PropertyCollection();
             foreach (Statement statement in block.Statements)
             {
-                props.AddOrReplaceProp(compiler.ConvertToProperty((AssignStatement)statement, usop));
+                props.AddOrReplaceProp(compiler.ConvertToProperty((AssignStatement)statement));
             }
             return props;
         }
@@ -81,7 +84,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 defaultsExportObjectFlags |= EObjectFlags.LocalizedResource;
             }
             defaultsExport.ObjectFlags = defaultsExportObjectFlags;
-            defaultsExport.Archetype = classExport.SuperClass is not null ? compiler.GetClassDefaultObject(classExport.SuperClass, usop) : null;
+            defaultsExport.Archetype = classExport.SuperClass is not null ? compiler.GetClassDefaultObject(classExport.SuperClass) : null;
 
             compiler.Default__Archetype = defaultsExport.Archetype switch
             {
@@ -90,7 +93,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 _ => null
             };
 
-            var props = compiler.ConvertStatementsToPropertyCollection(defaultsAST.Statements, defaultsExport, new Dictionary<NameReference, ExportEntry>(), usop);
+            var props = compiler.ConvertStatementsToPropertyCollection(defaultsAST.Statements, defaultsExport, new Dictionary<NameReference, ExportEntry>());
 
             defaultsExport.WriteProperties(props);
         }
@@ -104,12 +107,12 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 Default__Export = export
             };
 
-            var props = compiler.ConvertStatementsToPropertyCollection(defaultsAST.Statements, export, null, usop);
+            var props = compiler.ConvertStatementsToPropertyCollection(defaultsAST.Statements, export, null);
 
             export.WriteProperties(props);
         }
 
-        private PropertyCollection ConvertStatementsToPropertyCollection(List<Statement> statements, ExportEntry export, Dictionary<NameReference, ExportEntry> subObjectDict, UnrealScriptOptionsPackage usop)
+        private PropertyCollection ConvertStatementsToPropertyCollection(List<Statement> statements, ExportEntry export, Dictionary<NameReference, ExportEntry> subObjectDict)
         {
             List<ExportEntry> existingSubObjects = subObjectDict is null ? null : export.GetChildren<ExportEntry>().ToList();
             var props = new PropertyCollection();
@@ -126,12 +129,12 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                         var subObjName = NameReference.FromInstancedString(subObj.NameDeclaration.Name);
                         existingSubObjects.TryRemove(exp => exp.ObjectName == subObjName, out ExportEntry existingSubObject);
                         int netIndex = existingSubObject?.NetIndex ?? 0;
-                        CreateSubObject(subObj, export, ref existingSubObject, usop);
+                        CreateSubObject(subObj, export, ref existingSubObject);
                         subObjectDict[subObjName] = existingSubObject;
                         subObjectsToFinish.Add(subObj, existingSubObject, netIndex);
                         break;
                     case AssignStatement assignStatement:
-                        Property prop = ConvertToProperty(assignStatement, usop, subObjectDict);
+                        Property prop = ConvertToProperty(assignStatement, subObjectDict);
                         props.AddOrReplaceProp(prop);
                         break;
                     default:
@@ -144,7 +147,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 ShouldStripTransients = true;
                 foreach ((Subobject subobject, ExportEntry subExport, int netIndex) in subObjectsToFinish)
                 {
-                    WriteSubObjectData(subobject, subExport, netIndex, subObjectDict, usop);
+                    WriteSubObjectData(subobject, subExport, netIndex, subObjectDict);
                 }
 
                 if (existingSubObjects.Any())
@@ -155,7 +158,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             return props;
         }
 
-        private void CreateSubObject(Subobject subObject, ExportEntry parent, ref ExportEntry subExport, UnrealScriptOptionsPackage usop)
+        private void CreateSubObject(Subobject subObject, ExportEntry parent, ref ExportEntry subExport)
         {
             var objName = NameReference.FromInstancedString(subObject.NameDeclaration.Name);
             IEntry classEntry = EntryImporter.EnsureClassIsInFile(Pcc, subObject.Class.Name, new RelinkerOptionsPackage(), usop?.GamePathOverride);
@@ -214,7 +217,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                         }
                     }
                     subPath = subObjPath[(archetypeRoot.InstancedFullPath.Length + 1)..];
-                    IEntry classDefaultObject = GetClassDefaultObject(archetypeRoot.Class, usop);
+                    IEntry classDefaultObject = GetClassDefaultObject(archetypeRoot.Class);
                     var baseDefault = classDefaultObject switch
                     {
                         ExportEntry exp => exp,
@@ -243,7 +246,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             subExport.Archetype = null;
         }
 
-        private Property ConvertToProperty(AssignStatement assignStatement, UnrealScriptOptionsPackage usop, Dictionary<NameReference, ExportEntry> subObjectDict = null)
+        private Property ConvertToProperty(AssignStatement assignStatement, Dictionary<NameReference, ExportEntry> subObjectDict = null)
         {
             var nameRef = (SymbolReference)assignStatement.Target;
             int staticArrayIndex = 0;
@@ -256,12 +259,12 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             var type = nameRef.ResolveType();
             var literal = assignStatement.Value;
             var propName = NameReference.FromInstancedString(nameRef.Name);
-            Property prop = MakeProperty(propName, type, literal, usop, subObjectDict);
+            Property prop = MakeProperty(propName, type, literal, subObjectDict);
             prop.StaticArrayIndex = staticArrayIndex;
             return prop;
         }
 
-        private Property MakeProperty(NameReference propName, VariableType type, Expression literal, UnrealScriptOptionsPackage usop, Dictionary<NameReference, ExportEntry> subObjectDict = null)
+        private Property MakeProperty(NameReference propName, VariableType type, Expression literal, Dictionary<NameReference, ExportEntry> subObjectDict = null)
         {
             Property prop;
             if (type is StaticArrayType sat)
@@ -313,7 +316,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     {
                         if (literal is CompositeSymbolRef csf)
                         {
-                            objUIndex = GetClassDefaultObject(CompilerUtils.ResolveClass((Class)((ClassType)((ObjectLiteral)csf.OuterSymbol).Class).ClassLimiter, Pcc, usop), usop).UIndex;
+                            objUIndex = GetClassDefaultObject(CompilerUtils.ResolveClass((Class)((ClassType)((ObjectLiteral)csf.OuterSymbol).Class).ClassLimiter, Pcc, usop)).UIndex;
                             literal = csf.InnerSymbol;
                         }
 
@@ -323,7 +326,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     break;
                 case DynamicArrayType dynamicArrayType:
                     VariableType elementType = dynamicArrayType.ElementType;
-                    var properties = ((DynamicArrayLiteral)literal).Values.Select(lit => MakeProperty(null, elementType, lit, usop, subObjectDict));
+                    var properties = ((DynamicArrayLiteral)literal).Values.Select(lit => MakeProperty(null, elementType, lit, subObjectDict));
                     switch (elementType)
                     {
                         case ClassType:
@@ -386,7 +389,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     var structProps = (IsStructDefaults || @struct.IsAtomic) ? @struct.GetDefaultPropertyCollection(Pcc, usop, ShouldStripTransients) : new PropertyCollection();
                     foreach (AssignStatement statement in ((StructLiteral)literal).Statements)
                     {
-                        structProps.AddOrReplaceProp(ConvertToProperty(statement, usop, subObjectDict));
+                        structProps.AddOrReplaceProp(ConvertToProperty(statement, subObjectDict));
                     }
                     prop = new StructProperty(@struct.Name, structProps, propName, @struct.IsImmutable);
                     break;
@@ -424,9 +427,9 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             return prop;
         }
 
-        private void WriteSubObjectData(Subobject subObject, ExportEntry subExport, int netIndex, Dictionary<NameReference, ExportEntry> parentSubObjectDict, UnrealScriptOptionsPackage usop)
+        private void WriteSubObjectData(Subobject subObject, ExportEntry subExport, int netIndex, Dictionary<NameReference, ExportEntry> parentSubObjectDict)
         {
-            PropertyCollection props = ConvertStatementsToPropertyCollection(subObject.Statements, subExport, new(parentSubObjectDict), usop);
+            PropertyCollection props = ConvertStatementsToPropertyCollection(subObject.Statements, subExport, new(parentSubObjectDict));
             var binary = ObjectBinary.Create(subExport.ClassName, subExport.Game, props);
 
             //this code should probably be somewhere else, perhaps integrated into ObjectBinary.Create somehow?
@@ -481,7 +484,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             }
         }
 
-        private IEntry GetClassDefaultObject(IEntry classEntry, UnrealScriptOptionsPackage usop)
+        private IEntry GetClassDefaultObject(IEntry classEntry)
         {
             if (classEntry is ExportEntry export)
             {
