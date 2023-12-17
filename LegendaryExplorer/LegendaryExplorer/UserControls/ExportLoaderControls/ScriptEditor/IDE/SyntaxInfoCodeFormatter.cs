@@ -94,6 +94,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
             [EF.Struct] = Color.FromRgb(0x86, 0xC6, 0x91),
         };
 
+        public static SyntaxInfo None { get; } = new();
+
         static SyntaxInfo()
         {
             foreach (EF value in Enum.GetValues<EF>())
