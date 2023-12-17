@@ -774,7 +774,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 instancedFullPath = $"{Path.GetFileNameWithoutExtension(sourceFilePath)}.{instancedFullPath}";
             }
 
-            IEntry existingEntry = relinkingExport.FileRef.FindEntry(instancedFullPath);
+            IEntry existingEntry = relinkingExport.FileRef.FindEntry(instancedFullPath, sourceExport.ClassName);
 
             if (existingEntry != null)
             {
