@@ -21,7 +21,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
         private readonly bool IsStructDefaults;
         private readonly bool IsInDefaultsTree;
         private readonly ObjectType Outer;
-        private readonly UnrealScriptOptionsPackage usop;
+        //private Func<IMEPackage, string, IEntry> MissingObjectResolver;
         private bool InSubOject;
 
         public static void ParseStructDefaults(Struct s, IMEPackage pcc, SymbolTable symbols, MessageLog log, UnrealScriptOptionsPackage usop)
@@ -41,15 +41,14 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
         public static void Parse(DefaultPropertiesBlock propsBlock, IMEPackage pcc, SymbolTable symbols, MessageLog log, bool isInDefaultsTree, UnrealScriptOptionsPackage usop)
         {
-            var parser = new PropertiesBlockParser(propsBlock, pcc, symbols, log, isInDefaultsTree, usop);
-            var statements = parser.Parse(false);
+            var parser = new PropertiesBlockParser(propsBlock, pcc, symbols, log, isInDefaultsTree);
+            var statements = parser.Parse(usop, false);
 
             propsBlock.Statements = statements;
         }
 
-        private PropertiesBlockParser(DefaultPropertiesBlock propsBlock, IMEPackage pcc, SymbolTable symbols, MessageLog log, bool isInDefaultsTree, UnrealScriptOptionsPackage usop)
+        private PropertiesBlockParser(DefaultPropertiesBlock propsBlock, IMEPackage pcc, SymbolTable symbols, MessageLog log, bool isInDefaultsTree)
         {
-            this.usop = usop;
             Symbols = symbols;
             Log = log;
             Tokens = propsBlock.Tokens;
@@ -63,7 +62,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             ExpressionScopes.Push(Outer);
         }
 
-        private List<Statement> Parse(bool requireBrackets = true)
+        private List<Statement> Parse(UnrealScriptOptionsPackage usop, bool requireBrackets = true)
         {
             if (requireBrackets && Consume(TokenType.LeftBracket) == null) throw ParseError("Expected '{'!", CurrentPosition);
 
@@ -72,7 +71,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             Symbols.PushScope("DefaultProperties");
             try
             {
-                var current = ParseTopLevelStatement();
+                var current = ParseTopLevelStatement(usop);
                 while (current != null)
                 {
                     if (current is Subobject subObj)
@@ -80,10 +79,10 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                         subObjects.Add(subObj);
                     }
                     statements.Add(current);
-                    current = ParseTopLevelStatement();
+                    current = ParseTopLevelStatement(usop);
                 }
                 InSubOject = true;
-                ParseSubObjectBodys(subObjects);
+                ParseSubObjectBodys(subObjects, usop);
             }
             finally
             {
@@ -94,7 +93,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             return statements;
         }
 
-        private Statement ParseTopLevelStatement()
+        private Statement ParseTopLevelStatement(UnrealScriptOptionsPackage usop)
         {
             if (CurrentIs("BEGIN") && (NextIs("Object") || NextIs("Template")))
             {
@@ -109,9 +108,9 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 return ParseSubobjectDeclaration();
             }
 
-            return ParseNonStructAssignment();
+            return ParseNonStructAssignment(usop);
         }
-        private void ParseSubObjectBodys(List<Subobject> subObjects)
+        private void ParseSubObjectBodys(List<Subobject> subObjects, UnrealScriptOptionsPackage usop)
         {
             foreach (Subobject currentSubObj in subObjects)
             {
@@ -125,7 +124,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 Tokens = currentSubObj.Tokens;
                 try
                 {
-                    var current = ParseTopLevelStatement();
+                    var current = ParseTopLevelStatement(usop);
                     while (current != null)
                     {
                         if (current is Subobject subObj)
@@ -133,9 +132,9 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                             subSubObjects.Add(subObj);
                         }
                         statements.Add(current);
-                        current = ParseTopLevelStatement();
+                        current = ParseTopLevelStatement(usop);
                     }
-                    ParseSubObjectBodys(subSubObjects);
+                    ParseSubObjectBodys(subSubObjects, usop);
                 }
                 finally
                 {
@@ -234,13 +233,13 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             return subObj;
         }
 
-        private AssignStatement ParseNonStructAssignment()
+        private AssignStatement ParseNonStructAssignment(UnrealScriptOptionsPackage usop)
         {
             if (CurrentIs(TokenType.RightBracket, TokenType.EOF))
             {
                 return null;
             }
-            var statement = ParseAssignment(false);
+            var statement = ParseAssignment(false, usop);
             if (statement is null)
             {
                 return null;
@@ -250,7 +249,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             return statement;
         }
 
-        private AssignStatement ParseAssignment(bool inStruct)
+        private AssignStatement ParseAssignment(bool inStruct, UnrealScriptOptionsPackage usop)
         {
             if (Consume(TokenType.Word) is ScriptToken propName)
             {
@@ -297,7 +296,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 }
                 if (Matches(TokenType.Assign, EF.Operator))
                 {
-                    Expression literal = ParseValue(targetType);
+                    Expression literal = ParseValue(targetType, usop);
                     return new AssignStatement(target, literal, propName.StartPos, literal.EndPos);
                 }
 
@@ -307,29 +306,29 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             throw ParseError("Expected name of property!", CurrentPosition);
         }
 
-        private Expression ParseValue(VariableType targetType)
+        private Expression ParseValue(VariableType targetType, UnrealScriptOptionsPackage usop)
         {
             Expression literal;
             if (Matches(TokenType.LeftBracket))
             {
                 if (targetType is not Struct targetStruct)
                 {
-                    throw ParseError($"A '{{' is used to start a struct. Expected a {targetType.DisplayName()} literal!", CurrentPosition);
+                    throw ParseError($"A '{{' is used to start a struct. Expected a {targetType.DisplayName(usop)} literal!", CurrentPosition);
                 }
-                literal = FinishStructLiteral(targetStruct);
+                literal = FinishStructLiteral(targetStruct, usop);
             }
             else if (Matches(TokenType.LeftParenth))
             {
                 switch (targetType)
                 {
                     case DynamicArrayType dynamicArrayType:
-                        literal = FinishDynamicArrayLiteral(dynamicArrayType);
+                        literal = FinishDynamicArrayLiteral(dynamicArrayType, usop);
                         break;
                     case Struct:
                         ParseError("Use '{' for struct literals, not '('.", CurrentPosition);
                         goto default;
                     default:
-                        throw ParseError($"A '(' is used to start a dynamic array literal. Expected a {targetType.DisplayName()} literal!", CurrentPosition);
+                        throw ParseError($"A '(' is used to start a dynamic array literal. Expected a {targetType.DisplayName(usop)} literal!", CurrentPosition);
                 }
             }
             else
@@ -383,11 +382,11 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 }
             }
 
-            VerifyLiteral(targetType, ref literal);
+            VerifyLiteral(targetType, ref literal, usop);
             return literal;
         }
 
-        private StructLiteral FinishStructLiteral(Struct targetStruct)
+        private StructLiteral FinishStructLiteral(Struct targetStruct, UnrealScriptOptionsPackage usop)
         {
             ScriptToken openingBracket = PrevToken;
             var statements = new List<AssignStatement>();
@@ -397,11 +396,11 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 ExpressionScopes.Push(targetStruct);
                 try
                 {
-                    var statement = ParseAssignment(true);
+                    var statement = ParseAssignment(true, usop);
                     statements.Add(statement);
                     while (Matches(TokenType.Comma))
                     {
-                        statement = ParseAssignment(true);
+                        statement = ParseAssignment(true, usop);
                         statements.Add(statement);
                     }
                     if (!Matches(TokenType.RightBracket))
@@ -418,7 +417,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             return new StructLiteral(targetStruct, statements, PrevToken.StartPos, PrevToken.EndPos);
         }
 
-        private DynamicArrayLiteral FinishDynamicArrayLiteral(DynamicArrayType arrayType)
+        private DynamicArrayLiteral FinishDynamicArrayLiteral(DynamicArrayType arrayType, UnrealScriptOptionsPackage usop)
         {
             ScriptToken openingParen = PrevToken;
             var values = new List<Expression>();
@@ -426,11 +425,11 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             if (!Matches(TokenType.RightParenth))
             {
                 var targetType = arrayType.ElementType;
-                var value = ParseValue(targetType);
+                var value = ParseValue(targetType, usop);
                 values.Add(value);
                 while (Matches(TokenType.Comma))
                 {
-                    value = ParseValue(targetType);
+                    value = ParseValue(targetType, usop);
                     values.Add(value);
                 }
 
@@ -443,7 +442,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             return new DynamicArrayLiteral(arrayType, values, openingParen.StartPos, PrevToken.EndPos);
         }
 
-        private void VerifyLiteral(VariableType targetType, ref Expression literal)
+        private void VerifyLiteral(VariableType targetType, ref Expression literal, UnrealScriptOptionsPackage usop)
         {
             switch (targetType)
             {
@@ -496,7 +495,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                             }
                             else
                             {
-                                TypeError($"Cannot assign a value of type '{literalClassType.DisplayName()}' to a variable of type '{targetClassLimiter.DisplayName()}'.", literal);
+                                TypeError($"Cannot assign a value of type '{literalClassType.DisplayName(usop)}' to a variable of type '{targetClassLimiter.DisplayName(usop)}'.", literal);
                             }
                         }
                     }

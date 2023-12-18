@@ -15,9 +15,9 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
             Name = name;
         }
 
-        public override bool AcceptVisitor(IASTVisitor visitor)
+        public override bool AcceptVisitor(IASTVisitor visitor, UnrealScriptOptionsPackage usop)
         {
-            return visitor.VisitNode(this);
+            return visitor.VisitNode(this, usop);
         }
     }
 }

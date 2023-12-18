@@ -20,9 +20,9 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
             ErrorTokens = tokens;
         }
 
-        public override bool AcceptVisitor(IASTVisitor visitor)
+        public override bool AcceptVisitor(IASTVisitor visitor, UnrealScriptOptionsPackage usop)
         {
-            return visitor.VisitNode(this);
+            return visitor.VisitNode(this, usop);
         }
     }
 
@@ -51,9 +51,9 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
             return InnerExpression?.ResolveType();
         }
 
-        public override bool AcceptVisitor(IASTVisitor visitor)
+        public override bool AcceptVisitor(IASTVisitor visitor, UnrealScriptOptionsPackage usop)
         {
-            return visitor.VisitNode(this);
+            return visitor.VisitNode(this, usop);
         }
     }
 }

@@ -35,7 +35,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         private readonly Dictionary<Label, List<JumpPlaceholder>> LabelJumps = new();
 
-        private readonly UnrealScriptOptionsPackage USOP;
+        // private Func<IMEPackage, string, IEntry> MissingObjectResolver;
 
         [Flags]
         private enum NestType
@@ -76,10 +76,9 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         private readonly Stack<NestedContextFlag> InContext = new() { null };
 
-        private ByteCodeCompilerVisitor(UStruct target, UnrealScriptOptionsPackage usop) : base(target.Export.FileRef)
+        private ByteCodeCompilerVisitor(UStruct target) : base(target.Export.FileRef)
         {
             Target = target;
-            this.USOP = usop;
             IEntry containingClass = Target.Export;
             while (containingClass.ClassName != "Class")
             {
@@ -91,11 +90,14 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         public static void Compile(Function func, UFunction target, UnrealScriptOptionsPackage usop)
         {
-            var bytecodeCompiler = new ByteCodeCompilerVisitor(target, usop);
-            bytecodeCompiler.Compile(func);
+            var bytecodeCompiler = new ByteCodeCompilerVisitor(target)
+            {
+                // MissingObjectResolver = usop.MissingObjectResolver
+            };
+            bytecodeCompiler.Compile(func, usop);
         }
 
-        private void Compile(Function func)
+        private void Compile(Function func, UnrealScriptOptionsPackage usop)
         {
             if (Target is UFunction uFunction)
             {
@@ -137,7 +139,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
                         using (WriteSkipPlaceholder())
                         {
-                            Emit(AddConversion(parameter.VarType, expr));
+                            Emit(AddConversion(parameter.VarType, expr), usop);
                             WriteOpCode(OpCodes.EndParmValue);
                         }
                     }
@@ -153,13 +155,13 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     foreach (FunctionParameter functionParameter in func.Parameters)
                     {
                         WriteOpCode(OpCodes.NativeParm);
-                        WriteObjectRef(ResolveSymbol(functionParameter));
+                        WriteObjectRef(ResolveSymbol(functionParameter, usop));
                     }
                     WriteOpCode(OpCodes.Nothing);
                 }
                 else
                 {
-                    Emit(func.Body);
+                    Emit(func.Body, usop);
 
                     WriteOpCode(OpCodes.Return);
                     if (returnValue != null)
@@ -193,19 +195,22 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
         }
 
 
-        public static void Compile(State state, UState target, UnrealScriptOptionsPackage usop)
+        public static void Compile(State state, UState target, UnrealScriptOptionsPackage uosp)
         {
-            var bytecodeCompiler = new ByteCodeCompilerVisitor(target, usop);
-            bytecodeCompiler.Compile(state);
+            var bytecodeCompiler = new ByteCodeCompilerVisitor(target)
+            {
+                // MissingObjectResolver = missingObjectResolver
+            };
+            bytecodeCompiler.Compile(state, uosp);
         }
 
-        private void Compile(State state)
+        private void Compile(State state, UnrealScriptOptionsPackage usop)
         {
             if (Target is UState uState)
             {
                 CompilationUnit = state;
                 uState.LabelTableOffset = ushort.MaxValue;
-                Emit(state.Body);
+                Emit(state.Body, usop);
 
                 WriteOpCode(OpCodes.Stop);
 
@@ -246,13 +251,16 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             }
         }
 
-        public static void Compile(Class cls, UClass target, UnrealScriptOptionsPackage usop)
+        public static void Compile(Class cls, UClass target, UnrealScriptOptionsPackage uosp)
         {
-            var bytecodeCompiler = new ByteCodeCompilerVisitor(target, usop);
-            bytecodeCompiler.Compile(cls);
+            var bytecodeCompiler = new ByteCodeCompilerVisitor(target)
+            {
+                // MissingObjectResolver = missingObjectResolver
+            };
+            bytecodeCompiler.Compile(cls, uosp);
         }
 
-        private void Compile(Class cls)
+        private void Compile(Class cls, UnrealScriptOptionsPackage usop)
         {
             if (Target is not UClass)
             {
@@ -260,45 +268,45 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             }
             CompilationUnit = cls;
 
-            Emit(cls.ReplicationBlock);
+            Emit(cls.ReplicationBlock, usop);
             WriteOpCode(OpCodes.EndOfScript);
             Target.ScriptBytecodeSize = GetMemLength();
             Target.ScriptBytes = GetByteCode();
         }
 
-        public bool VisitNode(CodeBody node)
+        public bool VisitNode(CodeBody node, UnrealScriptOptionsPackage usop)
         {
             foreach (Statement statement in node.Statements)
             {
-                Emit(statement);
+                Emit(statement, usop);
             }
             return true;
         }
 
-        public bool VisitNode(DoUntilLoop node)
+        public bool VisitNode(DoUntilLoop node, UnrealScriptOptionsPackage usop)
         {
             var loopStartPos = Position;
             Nests.Push(new Nest(NestType.DoUntil));
-            Emit(node.Body);
+            Emit(node.Body, usop);
             Nest nest = Nests.Pop();
             nest.SetPositionFor(JumpType.Continue);
             WriteOpCode(OpCodes.JumpIfNot);
             WriteUShort(loopStartPos);
-            Emit(node.Condition);
+            Emit(node.Condition, usop);
             nest.SetPositionFor(JumpType.Break);
             return true;
         }
 
-        public bool VisitNode(ForLoop node)
+        public bool VisitNode(ForLoop node, UnrealScriptOptionsPackage usop)
         {
-            node.Init?.AcceptVisitor(this);
+            node.Init?.AcceptVisitor(this, usop);
             var loopStartPos = Position;
-            JumpPlaceholder endJump = EmitConditionalJump(node.Condition);
+            JumpPlaceholder endJump = EmitConditionalJump(node.Condition, usop);
             Nests.Push(new Nest(NestType.For));
-            Emit(node.Body);
+            Emit(node.Body, usop);
             Nest nest = Nests.Pop();
             nest.SetPositionFor(JumpType.Continue);
-            node.Update?.AcceptVisitor(this);
+            node.Update?.AcceptVisitor(this, usop);
             WriteOpCode(OpCodes.Jump);
             WriteUShort(loopStartPos);
             endJump.End();
@@ -306,7 +314,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             return true;
         }
 
-        public bool VisitNode(ForEachLoop node)
+        public bool VisitNode(ForEachLoop node, UnrealScriptOptionsPackage usop)
         {
             if (node.IteratorCall is DynArrayIterator or CompositeSymbolRef { InnerSymbol: DynArrayIterator })
             {
@@ -318,12 +326,12 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             }
 
             inIteratorCall = true;
-            Emit(node.IteratorCall);
+            Emit(node.IteratorCall, usop);
             inIteratorCall = false;
             var loopSkip = iteratorCallSkip;
             var endJump = WriteJumpPlaceholder(JumpType.Break);
             Nests.Push(new Nest(NestType.ForEach));
-            Emit(node.Body);
+            Emit(node.Body, usop);
             Nest nest = Nests.Pop();
             WriteOpCode(OpCodes.IteratorNext);
             endJump.End();
@@ -341,12 +349,12 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             return true;
         }
 
-        public bool VisitNode(WhileLoop node)
+        public bool VisitNode(WhileLoop node, UnrealScriptOptionsPackage usop)
         {
             var loopStartPos = Position;
-            JumpPlaceholder endJump = EmitConditionalJump(node.Condition);
+            JumpPlaceholder endJump = EmitConditionalJump(node.Condition, usop);
             Nests.Push(new Nest(NestType.While));
-            Emit(node.Body);
+            Emit(node.Body, usop);
             Nest nest = Nests.Pop();
             nest.SetPositionFor(JumpType.Continue);
             WriteOpCode(OpCodes.Jump);
@@ -356,30 +364,30 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             return true;
         }
 
-        public bool VisitNode(SwitchStatement node)
+        public bool VisitNode(SwitchStatement node, UnrealScriptOptionsPackage usop)
         {
             WriteOpCode(OpCodes.Switch);
-            EmitVariableSize(node.Expression);
-            Emit(node.Expression);
+            EmitVariableSize(node.Expression, usop);
+            Emit(node.Expression, usop);
             Nests.Push(new Nest(NestType.Switch) { SwitchType = node.Expression.ResolveType() });
-            Emit(node.Body);
+            Emit(node.Body, usop);
             Nest nest = Nests.Pop();
             nest.CaseJumpPlaceholder?.End();
             nest.SetPositionFor(JumpType.Break);
             return true;
         }
 
-        public bool VisitNode(CaseStatement node)
+        public bool VisitNode(CaseStatement node, UnrealScriptOptionsPackage usop)
         {
             Nest nest = Nests.Peek();
             nest.CaseJumpPlaceholder?.End();
             WriteOpCode(OpCodes.Case);
             nest.CaseJumpPlaceholder = WriteJumpPlaceholder(JumpType.Case);
-            Emit(AddConversion(nest.SwitchType, node.Value));
+            Emit(AddConversion(nest.SwitchType, node.Value), usop);
             return true;
         }
 
-        public bool VisitNode(DefaultCaseStatement node)
+        public bool VisitNode(DefaultCaseStatement node, UnrealScriptOptionsPackage usop)
         {
             Nest nest = Nests.Peek();
             nest.CaseJumpPlaceholder?.End();
@@ -389,7 +397,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             return true;
         }
 
-        public bool VisitNode(AssignStatement node)
+        public bool VisitNode(AssignStatement node, UnrealScriptOptionsPackage usop)
         {
             VariableType targetType = node.Target.ResolveType();
             if (targetType == SymbolTable.BoolType)
@@ -406,13 +414,13 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             }
 
             inAssignTarget = true;
-            Emit(node.Target);
+            Emit(node.Target, usop);
             inAssignTarget = false;
-            Emit(AddConversion(targetType, node.Value));
+            Emit(AddConversion(targetType, node.Value), usop);
             return true;
         }
 
-        public bool VisitNode(AssertStatement node)
+        public bool VisitNode(AssertStatement node, UnrealScriptOptionsPackage usop)
         {
             WriteOpCode(OpCodes.Assert);
             //why you would have a source file longer than 65,535 lines I truly do not know
@@ -422,18 +430,18 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 WriteUShort((ushort)CompilationUnit.Tokens.LineLookup.GetLineFromCharIndex(node.StartPos));
             }
             WriteByte(0);//bool debug mode - true: crash, false: log warning
-            Emit(node.Condition);
+            Emit(node.Condition, usop);
             return true;
         }
 
-        public bool VisitNode(BreakStatement node)
+        public bool VisitNode(BreakStatement node, UnrealScriptOptionsPackage usop)
         {
             WriteOpCode(OpCodes.Jump);
             Nests.Peek().Add(WriteJumpPlaceholder(JumpType.Break));
             return true;
         }
 
-        public bool VisitNode(ContinueStatement node)
+        public bool VisitNode(ContinueStatement node, UnrealScriptOptionsPackage usop)
         {
             Nest nest = Nests.First(n => n.Type.Has(NestType.Loop));
             if (nest.Type == NestType.ForEach)
@@ -451,17 +459,17 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             return true;
         }
 
-        public bool VisitNode(IfStatement node)
+        public bool VisitNode(IfStatement node, UnrealScriptOptionsPackage usop)
         {
-            JumpPlaceholder jumpToElse = EmitConditionalJump(node.Condition);
-            Emit(node.Then);
+            JumpPlaceholder jumpToElse = EmitConditionalJump(node.Condition, usop);
+            Emit(node.Then, usop);
             JumpPlaceholder jumpPastElse = null;
             if (node.Else?.Statements.Any() == true)
             {
                 WriteOpCode(OpCodes.Jump);
                 jumpPastElse = WriteJumpPlaceholder();
                 jumpToElse.End();
-                Emit(node.Else);
+                Emit(node.Else, usop);
             }
             else
             {
@@ -471,7 +479,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             return true;
         }
 
-        private JumpPlaceholder EmitConditionalJump(Expression condition)
+        private JumpPlaceholder EmitConditionalJump(Expression condition, UnrealScriptOptionsPackage usop)
         {
             JumpPlaceholder jump;
             if (Game.IsGame3() && condition is InOpReference inOp && inOp.LeftOperand.ResolveType()?.PropertyType == EPropertyType.Object
@@ -480,7 +488,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             {
                 var symRef = (SymbolReference)inOp.LeftOperand;
                 WriteOpCode(symRef.Node.Outer is Function ? OpCodes.OptIfLocal : OpCodes.OptIfInstance);
-                WriteObjectRef(ResolveSymbol(symRef.Node));
+                WriteObjectRef(ResolveSymbol(symRef.Node, usop));
                 WriteByte((byte)(inOp.Operator.OperatorType is TokenType.NotEquals ? 1 : 0));
                 jump = WriteJumpPlaceholder(JumpType.Conditional);
             }
@@ -489,14 +497,14 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             {
                 var symRef = (SymbolReference)preOp.Operand;
                 WriteOpCode(symRef.Node.Outer is Function ? OpCodes.OptIfLocal : OpCodes.OptIfInstance);
-                WriteObjectRef(ResolveSymbol(symRef.Node));
+                WriteObjectRef(ResolveSymbol(symRef.Node, usop));
                 WriteByte(0);
                 jump = WriteJumpPlaceholder(JumpType.Conditional);
             }
             else if (Game.IsGame3() && condition is SymbolReference sr && sr.GetType() == typeof(SymbolReference) && sr.ResolveType() == SymbolTable.BoolType)
             {
                 WriteOpCode(sr.Node.Outer is Function ? OpCodes.OptIfLocal : OpCodes.OptIfInstance);
-                WriteObjectRef(ResolveSymbol(sr.Node));
+                WriteObjectRef(ResolveSymbol(sr.Node, usop));
                 WriteByte(1);
                 jump = WriteJumpPlaceholder(JumpType.Conditional);
             }
@@ -504,13 +512,13 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             {
                 WriteOpCode(OpCodes.JumpIfNot);
                 jump = WriteJumpPlaceholder(JumpType.Conditional);
-                Emit(condition);
+                Emit(condition, usop);
             }
 
             return jump;
         }
 
-        public bool VisitNode(ReturnStatement node)
+        public bool VisitNode(ReturnStatement node, UnrealScriptOptionsPackage usop)
         {
             foreach (Nest nest in Nests)
             {
@@ -526,44 +534,44 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             }
             else
             {
-                Emit(AddConversion(((Function)CompilationUnit).ReturnType, node.Value));
+                Emit(AddConversion(((Function)CompilationUnit).ReturnType, node.Value), usop);
             }
 
             return true;
         }
 
-        public bool VisitNode(StopStatement node)
+        public bool VisitNode(StopStatement node, UnrealScriptOptionsPackage usop)
         {
             WriteOpCode(OpCodes.Stop);
             return true;
         }
 
-        public bool VisitNode(StateGoto node)
+        public bool VisitNode(StateGoto node, UnrealScriptOptionsPackage usop)
         {
             WriteOpCode(OpCodes.GotoLabel);
-            Emit(node.LabelExpression);
+            Emit(node.LabelExpression, usop);
             return true;
         }
 
-        public bool VisitNode(Goto node)
+        public bool VisitNode(Goto node, UnrealScriptOptionsPackage usop)
         {
             WriteOpCode(OpCodes.Jump);
             LabelJumps.AddToListAt(node.Label, WriteJumpPlaceholder());
             return true;
         }
 
-        public bool VisitNode(ExpressionOnlyStatement node)
+        public bool VisitNode(ExpressionOnlyStatement node, UnrealScriptOptionsPackage usop)
         {
-            if (NeedsToEatReturnValue(node.Value, out IEntry returnProp))
+            if (NeedsToEatReturnValue(node.Value, out IEntry returnProp, usop))
             {
                 WriteOpCode(OpCodes.EatReturnValue);
                 WriteObjectRef(returnProp);
             }
-            Emit(node.Value);
+            Emit(node.Value, usop);
             return true;
         }
 
-        private bool NeedsToEatReturnValue(Expression expr, [NotNullWhen(true)] out IEntry returnProp)
+        private bool NeedsToEatReturnValue(Expression expr, [NotNullWhen(true)] out IEntry returnProp, UnrealScriptOptionsPackage usop)
         {
             while (expr is CompositeSymbolRef csr)
             {
@@ -580,7 +588,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 {
                     if (func.RetValNeedsDestruction)
                     {
-                        returnProp = Pcc.getEntryOrAddImport($"{ResolveReturnValue(func).InstancedFullPath}.ReturnValue", PropertyTypeName(((DynamicArrayType)func.ReturnType).ElementType));
+                        returnProp = Pcc.getEntryOrAddImport($"{ResolveReturnValue(func, usop).InstancedFullPath}.ReturnValue", PropertyTypeName(((DynamicArrayType)func.ReturnType).ElementType));
                         return true;
                     }
                     returnProp = null;
@@ -590,7 +598,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 {
                     if (varDecl.Flags.Has(EPropertyFlags.NeedCtorLink) || varDecl.VarType.Size(Game) > 64)
                     {
-                        returnProp = Pcc.getEntryOrAddImport($"{ResolveProperty(varDecl).InstancedFullPath}.{varDecl.Name}", PropertyTypeName(((DynamicArrayType)varDecl.VarType).ElementType));
+                        returnProp = Pcc.getEntryOrAddImport($"{ResolveProperty(varDecl, usop).InstancedFullPath}.{varDecl.Name}", PropertyTypeName(((DynamicArrayType)varDecl.VarType).ElementType));
                         return true;
                     }
                 }
@@ -605,14 +613,14 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 _ => null
             } is { RetValNeedsDestruction: true } func)
             {
-                returnProp = ResolveReturnValue(func);
+                returnProp = ResolveReturnValue(func, usop);
                 return true;
             }
             returnProp = null;
             return false;
         }
 
-        public bool VisitNode(ReplicationStatement node)
+        public bool VisitNode(ReplicationStatement node, UnrealScriptOptionsPackage usop)
         {
             foreach (SymbolReference varRef in node.ReplicatedVariables)
             {
@@ -622,17 +630,17 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 }
                 varDecl.ReplicationOffset = Position;
             }
-            Emit(node.Condition);
+            Emit(node.Condition, usop);
             return true;
         }
 
-        public bool VisitNode(ErrorStatement node)
+        public bool VisitNode(ErrorStatement node, UnrealScriptOptionsPackage usop)
         {
             //an ast with errors should never be passed to the compiler
             throw new Exception($"Line {CompilationUnit.Tokens.LineLookup.GetLineFromCharIndex(node.StartPos)}: Cannot compile an error!");
         }
 
-        public bool VisitNode(ErrorExpression node)
+        public bool VisitNode(ErrorExpression node, UnrealScriptOptionsPackage usop)
         {
             //an ast with errors should never be passed to the compiler
             throw new Exception($"Line {CompilationUnit.Tokens.LineLookup.GetLineFromCharIndex(node.StartPos)}: Cannot compile an error!");
@@ -649,11 +657,11 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 _ => null
             };
 
-        public bool VisitNode(DynArrayIterator node)
+        public bool VisitNode(DynArrayIterator node, UnrealScriptOptionsPackage usop)
         {
-            Emit(node.DynArrayExpression);
+            Emit(node.DynArrayExpression, usop);
             InContext.Push(null);
-            Emit(node.ValueArg);
+            Emit(node.ValueArg, usop);
             if (node.IndexArg is null)
             {
                 WriteByte(0);
@@ -662,14 +670,14 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             else
             {
                 WriteByte(1);
-                Emit(node.IndexArg);
+                Emit(node.IndexArg, usop);
             }
             InContext.Pop();
 
             return true;
         }
 
-        public bool VisitNode(InOpReference node)
+        public bool VisitNode(InOpReference node, UnrealScriptOptionsPackage usop)
         {
             InOpDeclaration op = node.Operator;
             if (op.NativeIndex > 0)
@@ -679,7 +687,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             else
             {
                 WriteOpCode(OpCodes.FinalFunction);
-                WriteObjectRef(ResolveFunction(op.Implementer));
+                WriteObjectRef(ResolveFunction(op.Implementer, usop));
             }
 
             VariableType lType = node.Operator.LeftOperand.VarType;
@@ -693,7 +701,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             {
                 inAssignTarget = true;
             }
-            Emit(AddConversion(lType, node.LeftOperand));
+            Emit(AddConversion(lType, node.LeftOperand), usop);
             inAssignTarget = false;
             SkipPlaceholder skip = null;
             if (op.RightOperand.Flags.Has(EPropertyFlags.SkipParm))
@@ -702,39 +710,39 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 skip = WriteSkipPlaceholder();
             }
 
-            Emit(AddConversion(rType, node.RightOperand));
+            Emit(AddConversion(rType, node.RightOperand), usop);
             WriteOpCode(OpCodes.EndFunctionParms);
             skip?.End();
             return true;
 
         }
 
-        public bool VisitNode(PreOpReference node)
+        public bool VisitNode(PreOpReference node, UnrealScriptOptionsPackage usop)
         {
             WriteNativeOpCode(node.Operator.NativeIndex);
-            Emit(node.Operand);
+            Emit(node.Operand, usop);
             WriteOpCode(OpCodes.EndFunctionParms);
             return true;
         }
 
-        public bool VisitNode(PostOpReference node)
+        public bool VisitNode(PostOpReference node, UnrealScriptOptionsPackage usop)
         {
             WriteNativeOpCode(node.Operator.NativeIndex);
-            Emit(node.Operand);
+            Emit(node.Operand, usop);
             WriteOpCode(OpCodes.EndFunctionParms);
             return true;
         }
 
-        public bool VisitNode(StructComparison node)
+        public bool VisitNode(StructComparison node, UnrealScriptOptionsPackage usop)
         {
             WriteOpCode(node.IsEqual ? OpCodes.StructCmpEq : OpCodes.StructCmpNe);
-            WriteObjectRef(ResolveStruct(node.Struct));
-            Emit(node.LeftOperand);
-            Emit(node.RightOperand);
+            WriteObjectRef(ResolveStruct(node.Struct, usop));
+            Emit(node.LeftOperand, usop);
+            Emit(node.RightOperand, usop);
             return true;
         }
 
-        public bool VisitNode(DelegateComparison node)
+        public bool VisitNode(DelegateComparison node, UnrealScriptOptionsPackage usop)
         {
             useInstanceDelegate = true;
             WriteOpCode(node.RightOperand.ResolveType() is DelegateType { IsFunction: true }
@@ -744,14 +752,14 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                             : node.IsEqual
                                 ? OpCodes.EqualEqual_DelDel
                                 : OpCodes.NotEqual_DelDel);
-            Emit(node.LeftOperand);
-            Emit(node.RightOperand);
+            Emit(node.LeftOperand, usop);
+            Emit(node.RightOperand, usop);
             WriteOpCode(OpCodes.EndFunctionParms);
             useInstanceDelegate = false;
             return true;
         }
 
-        public bool VisitNode(NewOperator node)
+        public bool VisitNode(NewOperator node, UnrealScriptOptionsPackage usop)
         {
             WriteOpCode(OpCodes.New);
             if (node.OuterObject is null)
@@ -760,7 +768,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             }
             else
             {
-                Emit(node.OuterObject);
+                Emit(node.OuterObject, usop);
             }
             if (node.ObjectName is null)
             {
@@ -768,7 +776,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             }
             else
             {
-                Emit(node.ObjectName);
+                Emit(node.ObjectName, usop);
             }
             if (node.Flags is null)
             {
@@ -776,7 +784,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             }
             else
             {
-                Emit(node.Flags);
+                Emit(node.Flags, usop);
             }
             if (node.ObjectClass is null)
             {
@@ -784,7 +792,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             }
             else
             {
-                Emit(node.ObjectClass);
+                Emit(node.ObjectClass, usop);
             }
 
             if (node.Template is null)
@@ -793,12 +801,12 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             }
             else
             {
-                Emit(node.Template);
+                Emit(node.Template, usop);
             }
             return true;
         }
 
-        public bool VisitNode(FunctionCall node)
+        public bool VisitNode(FunctionCall node, UnrealScriptOptionsPackage usop)
         {
             var func = (Function)node.Function.Node;
             if (func.NativeIndex > 0)
@@ -813,7 +821,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             else if (func.Flags.Has(EFunctionFlags.Final) || node.Function.IsSuper)
             {
                 WriteOpCode(OpCodes.FinalFunction);
-                WriteObjectRef(ResolveFunction(func));
+                WriteObjectRef(ResolveFunction(func, usop));
             }
             else if (!Game.IsGame3() || node.IsCalledOnInterface || func.Outer is State)
             {
@@ -834,12 +842,12 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 }
             }
             InContext.Push(null);
-            CompileArguments(node.Arguments, func.Parameters);
+            CompileArguments(node.Arguments, func.Parameters, usop);
             InContext.Pop();
             return true;
         }
 
-        public bool VisitNode(DelegateCall node)
+        public bool VisitNode(DelegateCall node, UnrealScriptOptionsPackage usop)
         {
             WriteOpCode(OpCodes.DelegateFunction);
             var varDecl = (VariableDeclaration)node.DelegateReference.Node;
@@ -851,15 +859,15 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             {
                 WriteByte(0);
             }
-            WriteObjectRef(ResolveSymbol(varDecl));
+            WriteObjectRef(ResolveSymbol(varDecl, usop));
             WriteName(node.DefaultFunction.Name);
             InContext.Push(null);
-            CompileArguments(node.Arguments, node.DefaultFunction.Parameters);
+            CompileArguments(node.Arguments, node.DefaultFunction.Parameters, usop);
             InContext.Pop();
             return true;
         }
 
-        private void CompileArguments(List<Expression> args, List<FunctionParameter> funcParams)
+        private void CompileArguments(List<Expression> args, List<FunctionParameter> funcParams, UnrealScriptOptionsPackage usop)
         {
             for (int i = 0; i < args.Count; i++)
             {
@@ -875,7 +883,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     {
                         inAssignTarget = true;
                     }
-                    Emit(AddConversion(funcParam.VarType, arg));
+                    Emit(AddConversion(funcParam.VarType, arg), usop);
                     inAssignTarget = false;
                 }
             }
@@ -883,17 +891,17 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             WriteOpCode(OpCodes.EndFunctionParms);
         }
 
-        public bool VisitNode(ArraySymbolRef node)
+        public bool VisitNode(ArraySymbolRef node, UnrealScriptOptionsPackage usop)
         {
             WriteOpCode(node.IsDynamic ? OpCodes.DynArrayElement : OpCodes.ArrayElement);
             InContext.Push(null);
-            Emit(node.Index);
+            Emit(node.Index, usop);
             InContext.Pop();
-            Emit(node.Array);
+            Emit(node.Array, usop);
             return true;
         }
 
-        public bool VisitNode(CompositeSymbolRef node)
+        public bool VisitNode(CompositeSymbolRef node, UnrealScriptOptionsPackage usop)
         {
             bool forEachJump = inIteratorCall;
             inIteratorCall = false;
@@ -905,8 +913,8 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     WriteOpCode(OpCodes.BoolVariable);
                 }
                 WriteOpCode(OpCodes.StructMember);
-                WriteObjectRef(ResolveSymbol(node.Node));
-                WriteObjectRef(ResolveStruct((Struct)node.OuterSymbol.ResolveType()));
+                WriteObjectRef(ResolveSymbol(node.Node, usop));
+                WriteObjectRef(ResolveStruct((Struct)node.OuterSymbol.ResolveType(), usop));
 
                 switch (node.OuterSymbol)
                 {
@@ -936,7 +944,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 {
                     WriteByte(0);
                 }
-                Emit(node.OuterSymbol);
+                Emit(node.OuterSymbol, usop);
                 return true;
             }
 
@@ -952,14 +960,14 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             }
 
             InContext.Push(new NestedContextFlag());
-            Emit(node.OuterSymbol);
+            Emit(node.OuterSymbol, usop);
             bool hasInnerContext = InContext.Pop().HasNestedContext;
             SkipPlaceholder skip = WriteSkipPlaceholder();
-            EmitVariableSize(innerSymbol);
+            EmitVariableSize(innerSymbol, usop);
 
             skip.ResetStart();
 
-            Emit(innerSymbol);
+            Emit(innerSymbol, usop);
             if (forEachJump)
             {
                 //todo: not correct
@@ -993,7 +1001,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             }
         }
 
-        public bool VisitNode(SymbolReference node)
+        public bool VisitNode(SymbolReference node, UnrealScriptOptionsPackage usop)
         {
             switch (node.Node)
             {
@@ -1010,7 +1018,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     WriteName(func.Name);
                     if (Game >= MEGame.ME3)
                     {
-                        WriteObjectRef(func.Flags.Has(EFunctionFlags.Delegate) ? ResolveDelegateProperty(func) : null);
+                        WriteObjectRef(func.Flags.Has(EFunctionFlags.Delegate) ? ResolveDelegateProperty(func, usop) : null);
                     }
                     return true;
             }
@@ -1085,46 +1093,46 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     }
                 }
             }
-            WriteObjectRef(ResolveSymbol(varDecl));
+            WriteObjectRef(ResolveSymbol(varDecl, usop));
             return true;
         }
 
-        public bool VisitNode(DefaultReference node)
+        public bool VisitNode(DefaultReference node, UnrealScriptOptionsPackage usop)
         {
             if (node.Node is VariableDeclaration decl && decl.VarType == SymbolTable.BoolType)
             {
                 WriteOpCode(OpCodes.BoolVariable);
             }
             WriteOpCode(OpCodes.DefaultVariable);
-            WriteObjectRef(ResolveSymbol(node.Node));
+            WriteObjectRef(ResolveSymbol(node.Node, usop));
             return true;
         }
 
-        public bool VisitNode(ConditionalExpression node)
+        public bool VisitNode(ConditionalExpression node, UnrealScriptOptionsPackage usop)
         {
             WriteOpCode(OpCodes.Conditional);
-            Emit(node.Condition);
+            Emit(node.Condition, usop);
             using (WriteSkipPlaceholder())
             {
-                Emit(node.TrueExpression);
+                Emit(node.TrueExpression, usop);
             }
 
             using (WriteSkipPlaceholder())
             {
-                Emit(node.FalseExpression);
+                Emit(node.FalseExpression, usop);
             }
 
             return true;
         }
 
-        public bool VisitNode(CastExpression node)
+        public bool VisitNode(CastExpression node, UnrealScriptOptionsPackage usop)
         {
             if (node is PrimitiveCast prim)
             {
                 if (prim.Cast == ECast.ObjectToInterface)
                 {
                     WriteOpCode(OpCodes.InterfaceCast);
-                    WriteObjectRef(CompilerUtils.ResolveClass((Class)node.CastType, Pcc, USOP));
+                    WriteObjectRef(CompilerUtils.ResolveClass((Class)node.CastType, Pcc, usop));
                 }
                 else
                 {
@@ -1135,30 +1143,30 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             else if (node.CastType is ClassType clsType)
             {
                 WriteOpCode(OpCodes.Metacast);
-                WriteObjectRef(CompilerUtils.ResolveClass((Class)clsType.ClassLimiter, Pcc, USOP));
+                WriteObjectRef(CompilerUtils.ResolveClass((Class)clsType.ClassLimiter, Pcc, usop));
             }
             else
             {
                 WriteOpCode(OpCodes.DynamicCast);
-                WriteObjectRef(CompilerUtils.ResolveClass((Class)node.CastType, Pcc, USOP));
+                WriteObjectRef(CompilerUtils.ResolveClass((Class)node.CastType, Pcc, usop));
             }
-            Emit(node.CastTarget);
+            Emit(node.CastTarget, usop);
             return true;
         }
 
 
-        public bool VisitNode(DynArrayLength node)
+        public bool VisitNode(DynArrayLength node, UnrealScriptOptionsPackage usop)
         {
             WriteOpCode(OpCodes.DynArrayLength);
-            Emit(node.DynArrayExpression);
+            Emit(node.DynArrayExpression, usop);
             return true;
         }
 
-        public bool VisitNode(DynArrayAdd node)
+        public bool VisitNode(DynArrayAdd node, UnrealScriptOptionsPackage usop)
         {
             WriteOpCode(OpCodes.DynArrayAdd);
-            Emit(node.DynArrayExpression);
-            Emit(AddConversion(SymbolTable.IntType, node.CountArg));
+            Emit(node.DynArrayExpression, usop);
+            Emit(AddConversion(SymbolTable.IntType, node.CountArg), usop);
             if (Game >= MEGame.ME3)
             {
                 WriteOpCode(OpCodes.EndFunctionParms);
@@ -1166,17 +1174,17 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             return true;
         }
 
-        public bool VisitNode(DynArrayAddItem node)
+        public bool VisitNode(DynArrayAddItem node, UnrealScriptOptionsPackage usop)
         {
             WriteOpCode(OpCodes.DynArrayAddItem);
-            Emit(node.DynArrayExpression);
+            Emit(node.DynArrayExpression, usop);
             SkipPlaceholder placeholder = null;
             if (Game >= MEGame.ME2)
             {
                 placeholder = WriteSkipPlaceholder();
             }
             DynamicArrayType dynArrType = (DynamicArrayType)node.DynArrayExpression.ResolveType();
-            Emit(AddConversion(dynArrType.ElementType, node.ValueArg));
+            Emit(AddConversion(dynArrType.ElementType, node.ValueArg), usop);
             if (Game >= MEGame.ME3)
             {
                 WriteOpCode(OpCodes.EndFunctionParms);
@@ -1186,12 +1194,12 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             return true;
         }
 
-        public bool VisitNode(DynArrayInsert node)
+        public bool VisitNode(DynArrayInsert node, UnrealScriptOptionsPackage usop)
         {
             WriteOpCode(OpCodes.DynArrayInsert);
-            Emit(node.DynArrayExpression);
-            Emit(AddConversion(SymbolTable.IntType, node.IndexArg));
-            Emit(AddConversion(SymbolTable.IntType, node.CountArg));
+            Emit(node.DynArrayExpression, usop);
+            Emit(AddConversion(SymbolTable.IntType, node.IndexArg), usop);
+            Emit(AddConversion(SymbolTable.IntType, node.CountArg), usop);
             if (Game >= MEGame.ME3)
             {
                 WriteOpCode(OpCodes.EndFunctionParms);
@@ -1199,15 +1207,15 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             return true;
         }
 
-        public bool VisitNode(DynArrayInsertItem node)
+        public bool VisitNode(DynArrayInsertItem node, UnrealScriptOptionsPackage usop)
         {
             WriteOpCode(OpCodes.DynArrayInsertItem);
-            Emit(node.DynArrayExpression);
+            Emit(node.DynArrayExpression, usop);
             using (WriteSkipPlaceholder())
             {
                 DynamicArrayType dynArrType = (DynamicArrayType)node.DynArrayExpression.ResolveType();
-                Emit(AddConversion(SymbolTable.IntType, node.IndexArg));
-                Emit(AddConversion(dynArrType.ElementType, node.ValueArg));
+                Emit(AddConversion(SymbolTable.IntType, node.IndexArg), usop);
+                Emit(AddConversion(dynArrType.ElementType, node.ValueArg), usop);
                 if (Game >= MEGame.ME3)
                 {
                     WriteOpCode(OpCodes.EndFunctionParms);
@@ -1216,12 +1224,12 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             return true;
         }
 
-        public bool VisitNode(DynArrayRemove node)
+        public bool VisitNode(DynArrayRemove node, UnrealScriptOptionsPackage usop)
         {
             WriteOpCode(OpCodes.DynArrayRemove);
-            Emit(node.DynArrayExpression);
-            Emit(AddConversion(SymbolTable.IntType, node.IndexArg));
-            Emit(AddConversion(SymbolTable.IntType, node.CountArg));
+            Emit(node.DynArrayExpression, usop);
+            Emit(AddConversion(SymbolTable.IntType, node.IndexArg), usop);
+            Emit(AddConversion(SymbolTable.IntType, node.CountArg), usop);
             if (Game >= MEGame.ME3)
             {
                 WriteOpCode(OpCodes.EndFunctionParms);
@@ -1229,17 +1237,17 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             return true;
         }
 
-        public bool VisitNode(DynArrayRemoveItem node)
+        public bool VisitNode(DynArrayRemoveItem node, UnrealScriptOptionsPackage usop)
         {
             WriteOpCode(OpCodes.DynArrayRemoveItem);
-            Emit(node.DynArrayExpression);
+            Emit(node.DynArrayExpression, usop);
             SkipPlaceholder placeholder = null;
             if (Game >= MEGame.ME2)
             {
                 placeholder = WriteSkipPlaceholder();
             }
             DynamicArrayType dynArrType = (DynamicArrayType)node.DynArrayExpression.ResolveType();
-            Emit(AddConversion(dynArrType.ElementType, node.ValueArg));
+            Emit(AddConversion(dynArrType.ElementType, node.ValueArg), usop);
             if (Game >= MEGame.ME3)
             {
                 WriteOpCode(OpCodes.EndFunctionParms);
@@ -1248,14 +1256,14 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             return true;
         }
 
-        public bool VisitNode(DynArrayFind node)
+        public bool VisitNode(DynArrayFind node, UnrealScriptOptionsPackage usop)
         {
             WriteOpCode(OpCodes.DynArrayFind);
-            Emit(node.DynArrayExpression);
+            Emit(node.DynArrayExpression, usop);
             using (WriteSkipPlaceholder())
             {
                 DynamicArrayType dynArrType = (DynamicArrayType)node.DynArrayExpression.ResolveType();
-                Emit(AddConversion(dynArrType.ElementType, node.ValueArg));
+                Emit(AddConversion(dynArrType.ElementType, node.ValueArg), usop);
                 if (Game >= MEGame.ME3)
                 {
                     WriteOpCode(OpCodes.EndFunctionParms);
@@ -1264,14 +1272,14 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             return true;
         }
 
-        public bool VisitNode(DynArrayFindStructMember node)
+        public bool VisitNode(DynArrayFindStructMember node, UnrealScriptOptionsPackage usop)
         {
             WriteOpCode(OpCodes.DynArrayFindStruct);
-            Emit(node.DynArrayExpression);
+            Emit(node.DynArrayExpression, usop);
             using (WriteSkipPlaceholder())
             {
-                Emit(node.MemberNameArg);
-                Emit(AddConversion(node.MemberType, node.ValueArg));
+                Emit(node.MemberNameArg, usop);
+                Emit(AddConversion(node.MemberType, node.ValueArg), usop);
                 if (Game >= MEGame.ME3)
                 {
                     WriteOpCode(OpCodes.EndFunctionParms);
@@ -1280,39 +1288,39 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             return true;
         }
 
-        public bool VisitNode(DynArraySort node)
+        public bool VisitNode(DynArraySort node, UnrealScriptOptionsPackage usop)
         {
             WriteOpCode(OpCodes.DynArraySort);
-            Emit(node.DynArrayExpression);
+            Emit(node.DynArrayExpression, usop);
             using (WriteSkipPlaceholder())
             {
-                Emit(node.CompareFuncArg);
+                Emit(node.CompareFuncArg, usop);
                 WriteOpCode(OpCodes.EndFunctionParms);
             }
             return true;
         }
 
 
-        public bool VisitNode(Label node)
+        public bool VisitNode(Label node, UnrealScriptOptionsPackage usop)
         {
             node.StartOffset = Position;
             return true;
         }
 
-        public bool VisitNode(BooleanLiteral node)
+        public bool VisitNode(BooleanLiteral node, UnrealScriptOptionsPackage usop)
         {
             WriteOpCode(node.Value ? OpCodes.True : OpCodes.False);
             return true;
         }
 
-        public bool VisitNode(FloatLiteral node)
+        public bool VisitNode(FloatLiteral node, UnrealScriptOptionsPackage usop)
         {
             WriteOpCode(OpCodes.FloatConst);
             WriteFloat(node.Value);
             return true;
         }
 
-        public bool VisitNode(IntegerLiteral node)
+        public bool VisitNode(IntegerLiteral node, UnrealScriptOptionsPackage usop)
         {
             int i = node.Value;
             if (node.NumType != Keywords.INT && i is >= 0 and < 265)
@@ -1341,14 +1349,14 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             return true;
         }
 
-        public bool VisitNode(NameLiteral node)
+        public bool VisitNode(NameLiteral node, UnrealScriptOptionsPackage usop)
         {
             WriteOpCode(OpCodes.NameConst);
             WriteName(node.Value);
             return true;
         }
 
-        public bool VisitNode(StringLiteral node)
+        public bool VisitNode(StringLiteral node, UnrealScriptOptionsPackage usop)
         {
             WriteOpCode(OpCodes.StringConst);
             WriteBytes(node.Value.Select(c => (byte)c).ToArray());
@@ -1356,23 +1364,23 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             return true;
         }
 
-        public bool VisitNode(StringRefLiteral node)
+        public bool VisitNode(StringRefLiteral node, UnrealScriptOptionsPackage usop)
         {
             WriteOpCode(OpCodes.StringRefConst);
             WriteInt(node.Value);
             return true;
         }
 
-        public bool VisitNode(ObjectLiteral node)
+        public bool VisitNode(ObjectLiteral node, UnrealScriptOptionsPackage usop)
         {
             WriteOpCode(OpCodes.ObjectConst);
             if (node.Class is ClassType clsType)
             {
-                WriteObjectRef(CompilerUtils.ResolveClass((Class)clsType.ClassLimiter, Pcc, USOP));
+                WriteObjectRef(CompilerUtils.ResolveClass((Class)clsType.ClassLimiter, Pcc, usop));
             }
             else
             {
-                IEntry entry = ResolveObject($"{ContainingClass.InstancedFullPath}.{node.Name.Value}") ?? ResolveObject(node.Name.Value) ?? USOP.MissingObjectResolver?.Invoke(Pcc, node.Name.Value);
+                IEntry entry = ResolveObject($"{ContainingClass.InstancedFullPath}.{node.Name.Value}") ?? ResolveObject(node.Name.Value) ?? usop.MissingObjectResolver?.Invoke(Pcc, node.Name.Value);
                 if (entry is null)
                 {
                     throw new Exception($"Line {CompilationUnit.Tokens.LineLookup.GetLineFromCharIndex(node.StartPos)}: Could not find '{node.Name.Value}' in {Pcc.FilePath}!");
@@ -1388,7 +1396,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             return true;
         }
 
-        public bool VisitNode(VectorLiteral node)
+        public bool VisitNode(VectorLiteral node, UnrealScriptOptionsPackage usop)
         {
             WriteOpCode(OpCodes.VectorConst);
             WriteFloat(node.X);
@@ -1397,7 +1405,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             return true;
         }
 
-        public bool VisitNode(RotatorLiteral node)
+        public bool VisitNode(RotatorLiteral node, UnrealScriptOptionsPackage usop)
         {
             WriteOpCode(OpCodes.RotationConst);
             WriteInt(node.Pitch);
@@ -1406,7 +1414,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             return true;
         }
 
-        public bool VisitNode(NoneLiteral node)
+        public bool VisitNode(NoneLiteral node, UnrealScriptOptionsPackage usop)
         {
             if (node.IsDelegateNone)
             {
@@ -1489,7 +1497,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         private readonly Dictionary<ASTNode, IEntry> resolveSymbolCache = new();
 
-        private IEntry ResolveSymbol(ASTNode node)
+        private IEntry ResolveSymbol(ASTNode node, UnrealScriptOptionsPackage usop)
         {
             switch (node)
             {
@@ -1504,32 +1512,32 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             }
             resolvedEntry = node switch
             {
-                Class cls => CompilerUtils.ResolveClass(cls, Pcc, USOP),
-                Struct strct => ResolveStruct(strct),
-                State state => ResolveState(state),
-                Function func => ResolveFunction(func),
-                VariableDeclaration field => ResolveProperty(field),
-                SymbolReference symRef => ResolveSymbol(symRef.Node),
+                Class cls => CompilerUtils.ResolveClass(cls, Pcc, usop),
+                Struct strct => ResolveStruct(strct, usop),
+                State state => ResolveState(state, usop),
+                Function func => ResolveFunction(func, usop),
+                VariableDeclaration field => ResolveProperty(field, usop),
+                SymbolReference symRef => ResolveSymbol(symRef.Node, usop),
                 _ => throw new ArgumentOutOfRangeException(nameof(node))
             };
             resolveSymbolCache[node] = resolvedEntry;
             return resolvedEntry;
         }
 
-        private IEntry ResolveProperty(VariableDeclaration decl)
+        private IEntry ResolveProperty(VariableDeclaration decl, UnrealScriptOptionsPackage usop)
         {
-            return Pcc.getEntryOrAddImport($"{ResolveSymbol(decl.Outer).InstancedFullPath}.{decl.Name}", PropertyTypeName(decl.VarType));
+            return Pcc.getEntryOrAddImport($"{ResolveSymbol(decl.Outer, usop).InstancedFullPath}.{decl.Name}", PropertyTypeName(decl.VarType));
         }
 
-        private IEntry ResolveStruct(Struct s) => Pcc.getEntryOrAddImport($"{ResolveSymbol(s.Outer).InstancedFullPath}.{s.Name}", "ScriptStruct");
+        private IEntry ResolveStruct(Struct s, UnrealScriptOptionsPackage usop) => Pcc.getEntryOrAddImport($"{ResolveSymbol(s.Outer, usop).InstancedFullPath}.{s.Name}", "ScriptStruct");
 
-        private IEntry ResolveFunction(Function f) => Pcc.getEntryOrAddImport($"{ResolveSymbol(f.Outer).InstancedFullPath}.{f.Name}", "Function");
+        private IEntry ResolveFunction(Function f, UnrealScriptOptionsPackage usop) => Pcc.getEntryOrAddImport($"{ResolveSymbol(f.Outer, usop).InstancedFullPath}.{f.Name}", "Function");
 
-        private IEntry ResolveDelegateProperty(Function f) => Pcc.getEntryOrAddImport($"{ResolveSymbol(f.Outer).InstancedFullPath}.__{f.Name}__Delegate", "DelegateProperty");
+        private IEntry ResolveDelegateProperty(Function f, UnrealScriptOptionsPackage usop) => Pcc.getEntryOrAddImport($"{ResolveSymbol(f.Outer, usop).InstancedFullPath}.__{f.Name}__Delegate", "DelegateProperty");
 
-        private IEntry ResolveReturnValue(Function f) => f.ReturnType is null ? null : Pcc.getEntryOrAddImport($"{ResolveFunction(f).InstancedFullPath}.ReturnValue", PropertyTypeName(f.ReturnType));
+        private IEntry ResolveReturnValue(Function f, UnrealScriptOptionsPackage usop) => f.ReturnType is null ? null : Pcc.getEntryOrAddImport($"{ResolveFunction(f, usop).InstancedFullPath}.ReturnValue", PropertyTypeName(f.ReturnType));
 
-        private IEntry ResolveState(State s) => Pcc.getEntryOrAddImport($"{ResolveSymbol(s.Outer).InstancedFullPath}.{s.Name}", "State");
+        private IEntry ResolveState(State s, UnrealScriptOptionsPackage usop) => Pcc.getEntryOrAddImport($"{ResolveSymbol(s.Outer, usop).InstancedFullPath}.{s.Name}", "State");
 
         private IEntry ResolveObject(string instancedFullPath) => Pcc.FindEntry(instancedFullPath);
 
@@ -1556,12 +1564,12 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 _ => throw new ArgumentOutOfRangeException(nameof(type), type, "")
             };
 
-        private void Emit(ASTNode node)
+        private void Emit(ASTNode node, UnrealScriptOptionsPackage usop)
         {
-            node.AcceptVisitor(this);
+            node.AcceptVisitor(this, usop);
         }
 
-        private void EmitVariableSize(Expression expr)
+        private void EmitVariableSize(Expression expr, UnrealScriptOptionsPackage usop)
         {
             if (Game <= MEGame.ME2)
             {
@@ -1579,7 +1587,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             {
                 if (Game >= MEGame.ME3)
                 {
-                    WriteObjectRef(ResolveReturnValue(f));
+                    WriteObjectRef(ResolveReturnValue(f, usop));
                 }
 
                 WriteByte(0);
@@ -1612,7 +1620,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             {
                 if (Game >= MEGame.ME3)
                 {
-                    WriteObjectRef(expr is DynArraySort or not DynArrayOperation ? ResolveSymbol(expr) : null);
+                    WriteObjectRef(expr is DynArraySort or not DynArrayOperation ? ResolveSymbol(expr, usop) : null);
                 }
                 switch (expr)
                 {
@@ -1628,102 +1636,102 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         #region Not Bytecode
 
-        public bool VisitNode(VariableType node)
+        public bool VisitNode(VariableType node, UnrealScriptOptionsPackage usop)
         {
             throw new InvalidOperationException();
         }
 
-        public bool VisitNode(StaticArrayType node)
+        public bool VisitNode(StaticArrayType node, UnrealScriptOptionsPackage usop)
         {
             throw new InvalidOperationException();
         }
 
-        public bool VisitNode(DynamicArrayType node)
+        public bool VisitNode(DynamicArrayType node, UnrealScriptOptionsPackage usop)
         {
             throw new InvalidOperationException();
         }
 
-        public bool VisitNode(DelegateType node)
+        public bool VisitNode(DelegateType node, UnrealScriptOptionsPackage usop)
         {
             throw new InvalidOperationException();
         }
 
-        public bool VisitNode(ClassType node)
+        public bool VisitNode(ClassType node, UnrealScriptOptionsPackage usop)
         {
             throw new InvalidOperationException();
         }
 
-        public bool VisitNode(EnumValue node)
+        public bool VisitNode(EnumValue node, UnrealScriptOptionsPackage usop)
         {
             throw new InvalidOperationException();
         }
 
-        public bool VisitNode(ReturnNothingStatement node)
+        public bool VisitNode(ReturnNothingStatement node, UnrealScriptOptionsPackage usop)
         {
             throw new InvalidOperationException();
         }
 
-        public bool VisitNode(Class node)
+        public bool VisitNode(Class node, UnrealScriptOptionsPackage usop)
         {
             throw new InvalidOperationException();
         }
 
-        public bool VisitNode(Struct node)
+        public bool VisitNode(Struct node, UnrealScriptOptionsPackage usop)
         {
             throw new InvalidOperationException();
         }
 
-        public bool VisitNode(Enumeration node)
+        public bool VisitNode(Enumeration node, UnrealScriptOptionsPackage usop)
         {
             throw new InvalidOperationException();
         }
 
-        public bool VisitNode(Const node)
+        public bool VisitNode(Const node, UnrealScriptOptionsPackage usop)
         {
             throw new InvalidOperationException();
         }
 
-        public bool VisitNode(Function node)
+        public bool VisitNode(Function node, UnrealScriptOptionsPackage usop)
         {
             throw new InvalidOperationException();
         }
 
-        public bool VisitNode(State node)
+        public bool VisitNode(State node, UnrealScriptOptionsPackage usop)
         {
             throw new InvalidOperationException();
         }
 
-        public bool VisitNode(VariableDeclaration node)
+        public bool VisitNode(VariableDeclaration node, UnrealScriptOptionsPackage usop)
         {
             throw new InvalidOperationException();
         }
 
-        public bool VisitNode(FunctionParameter node)
+        public bool VisitNode(FunctionParameter node, UnrealScriptOptionsPackage usop)
         {
             throw new InvalidOperationException();
         }
 
-        public bool VisitNode(DefaultPropertiesBlock node)
+        public bool VisitNode(DefaultPropertiesBlock node, UnrealScriptOptionsPackage usop)
         {
             throw new InvalidOperationException();
         }
 
-        public bool VisitNode(Subobject node)
+        public bool VisitNode(Subobject node, UnrealScriptOptionsPackage usop)
         {
             throw new InvalidOperationException();
         }
 
-        public bool VisitNode(VariableIdentifier node)
+        public bool VisitNode(VariableIdentifier node, UnrealScriptOptionsPackage usop)
         {
             throw new InvalidOperationException();
         }
 
-        public bool VisitNode(StructLiteral node)
+        public bool VisitNode(StructLiteral node, UnrealScriptOptionsPackage usop)
         {
             throw new InvalidOperationException();
         }
 
-        public bool VisitNode(DynamicArrayLiteral node)
+        public bool VisitNode(DynamicArrayLiteral node, UnrealScriptOptionsPackage usop)
         {
             throw new InvalidOperationException();
         }

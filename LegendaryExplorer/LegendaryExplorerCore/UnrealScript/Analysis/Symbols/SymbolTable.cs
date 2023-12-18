@@ -571,7 +571,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
             {
                 foreach (Class cls in intrinsicClasses)
                 {
-                    cls.AcceptVisitor(new ClassValidationVisitor(null, this, validationPass, usop));
+                    cls.AcceptVisitor(new ClassValidationVisitor(null, this, validationPass), usop);
                 }
             }
         }

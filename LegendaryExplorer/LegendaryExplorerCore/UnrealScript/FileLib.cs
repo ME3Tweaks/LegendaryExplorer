@@ -313,7 +313,6 @@ namespace LegendaryExplorerCore.UnrealScript
                 if (packageCacheIsLocal)
                 {
                     usop.Cache.Dispose();
-                    usop.Cache = null;
                 }
             }
         }
@@ -513,7 +512,7 @@ namespace LegendaryExplorerCore.UnrealScript
                     }
                 }
                 LECLog.Debug($"{fileName}: Finished parse.");
-                var validator = new ClassValidationVisitor(log, symbols, ValidationPass.ClassRegistration, usop);
+                var validator = new ClassValidationVisitor(log, symbols, ValidationPass.ClassRegistration);
                 foreach (ValidationPass validationPass in Enums.GetValues<ValidationPass>())
                 {
                     foreach ((Class cls, string scriptText) in classes)
@@ -522,7 +521,7 @@ namespace LegendaryExplorerCore.UnrealScript
                         try
                         {
                             validator.Pass = validationPass;
-                            cls.AcceptVisitor(validator);
+                            cls.AcceptVisitor(validator, usop);
                             if (log.HasErrors)
                             {
                                 DisplayError(scriptText, log.ToString());
