@@ -151,7 +151,9 @@ namespace LegendaryExplorerCore.Packages
 
                         destExp.ObjectFlags = oExp.ObjectFlags;
                         destExp.ExportFlags = oExp.ExportFlags;
-
+                        destExp.PackageFlags = oExp.PackageFlags;
+                        destExp.GenerationNetObjectCount = oExp.GenerationNetObjectCount;
+                        destExp.PackageGUID = oExp.PackageGUID;
 
                         // Update data
                         EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.ReplaceSingular,
