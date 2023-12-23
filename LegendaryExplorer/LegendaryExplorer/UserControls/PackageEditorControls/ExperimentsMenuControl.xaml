@@ -158,6 +158,7 @@
         <MenuItem Header="Trash Compactor" Click="RunTrashCompactor"/>
         <MenuItem Header="Move Scene" Click="ShiftInterpTrackMovePackageWideScene"/>
         <MenuItem Header="Anchor Moves" Click="MakeInterpTrackMovesIntoAnchors"/>
+        <MenuItem Header="Bulk Replace TLK refs" Click="ReplaceAllTlkRefs"/>
     </MenuItem>
     <MenuItem Header="HenBagle's stuff that saved five minutes once">
         <MenuItem Header="Build ME1/LE1 SuperTlk File" Click="BuildME1SuperTLK_Clicked"/>

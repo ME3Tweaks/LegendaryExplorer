@@ -1367,6 +1367,15 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             }
         }
 
+        private void ReplaceAllTlkRefs(object sender, RoutedEventArgs e)
+        {
+            var pccLoaded = GetPEWindow().Pcc != null;
+            if (pccLoaded)
+            {
+                PackageEditorExperimentsK.ReplaceTLKRefs(GetPEWindow(),GetPEWindow().Pcc);
+            }
+        }
+
         #endregion
 
         // EXPERIMENTS: HENBAGLE ------------------------------------------------------------
