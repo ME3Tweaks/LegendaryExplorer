@@ -117,7 +117,7 @@ namespace LegendaryExplorerCore.Packages
 
                         EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.ReplaceSingular,
                             ordering.Entry,
-                            newPackage, destExp, true, new RelinkerOptionsPackage(), out _);
+                            newPackage, destExp, true, new RelinkerOptionsPackage() { RelinkAllowDifferingClassesInRelink = true }, out _);
                     }
                 }
                 else if (mode == ESynthesisMode.Synth_Transferring)
@@ -158,7 +158,7 @@ namespace LegendaryExplorerCore.Packages
                         // Update data
                         EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.ReplaceSingular,
                             ordering.Entry,
-                            newPackage, destExp, true, new RelinkerOptionsPackage(), out _);
+                            newPackage, destExp, true, new RelinkerOptionsPackage() { RelinkAllowDifferingClassesInRelink = true }, out _);
                     }
                 }
             }

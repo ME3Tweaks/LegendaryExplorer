@@ -90,6 +90,14 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         public Func<string, PackageCache, IMEPackage> SourceCustomImportFileResolver { get; set; }
 
         /// <summary>
+        /// Allows different classnames to exist when relinking and an object is looked up. <br/>
+        /// This can happen in vanilla bioware files (e.g. material and texture with same IFP). <br/>
+        /// Package resynthesis uses this so relink re-uses existing data
+        /// Typically you want this to be false unless you know what you're doing.
+        /// </summary>
+        public bool RelinkAllowDifferingClassesInRelink { get; set; }
+
+        /// <summary>
         /// Invoked when an error occurs during porting. Can be null.
         /// </summary>
         public Action<string> ErrorOccurredCallback;
@@ -165,9 +173,10 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 {
                     UnrealScriptOptionsPackage usopSource = new UnrealScriptOptionsPackage()
                     {
-                        Cache = new PackageCache(), // Cross game source will use its own cache
-                        CustomFileResolver = rop.SourceCustomImportFileResolver, // Confirm this is the correct resolver to use. I think it is, since it's source...
+                        Cache = TieredPackageCache.GetGlobalPackageCache(rop.CrossPackageMap.First().Key.Game).ChainNewCache(), // Cross game source will use its own cache
+                        CustomFileResolver = rop.SourceCustomImportFileResolver,
                     };
+
                     UnrealScriptOptionsPackage usopDest = new UnrealScriptOptionsPackage()
                     {
                         Cache = rop.Cache,
@@ -187,7 +196,10 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         if (!sourceFileLibs.ContainsKey(funcToRelink.FileRef))
                         {
                             var sourceLib = new FileLib(funcToRelink.FileRef);
-                            sourceOK &= sourceLib.Initialize(usopSource);
+                            // We use different USOP objects depending on what game we are initializing the FileLib for. If a
+                            // class is donated from the target game we use the dest one. If there is no donor, it might be coming cross
+                            // game and we want to use the source game instead.
+                            sourceOK &= sourceLib.Initialize(funcToRelink.FileRef.Game == rop.CrossPackageMap.First().Key.Game ? usopSource : usopDest);
                             if (!sourceOK)
                             {
                                 rop.RelinkReport.Add(new EntryStringPair(funcToRelink, $"{funcToRelink.UIndex} {funcToRelink.InstancedFullPath} function relinking failed. Could not initialize the FileLib! This will likely be unusable. {string.Join("\n", sourceLib.InitializationLog.AllErrors.Select(x => x.Message))}"));
@@ -227,7 +239,6 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                             // DEBUGGING
                             var debugTargetEntry = rop.CrossPackageMap[f];
 #endif
-
 
                             var sourceInfo = UnrealScriptCompiler.DecompileExport(f, sourceFileLibs[f.FileRef], usopSource);
                             //    var targetFunc = ObjectBinary.From<UFunction>(targetFuncExp);
@@ -546,7 +557,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     if (canddiates == null || !canddiates.Any())
                     {
                         // Ruh Roh
-                        Debug.WriteLine($@"No candidates for export substitution of an unsafe import: {originalInstancedFullPath}, we will port this as an import, but it may not work!");
+                        // Debug.WriteLine($@"No candidates for export substitution of an unsafe import: {originalInstancedFullPath}, we will port this as an import, but it may not work!");
                     }
                     else
                     {
@@ -793,7 +804,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 instancedFullPath = $"{Path.GetFileNameWithoutExtension(sourceFilePath)}.{instancedFullPath}";
             }
 
-            IEntry existingEntry = relinkingExport.FileRef.FindEntry(instancedFullPath, sourceExport.ClassName);
+            IEntry existingEntry = relinkingExport.FileRef.FindEntry(instancedFullPath, rop.RelinkAllowDifferingClassesInRelink ? null : sourceExport.ClassName);
 
             if (existingEntry != null)
             {
