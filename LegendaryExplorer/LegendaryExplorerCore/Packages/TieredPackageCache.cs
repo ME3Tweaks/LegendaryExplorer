@@ -155,6 +155,10 @@ public class TieredPackageCache : PackageCache
                     if (package == null)
                     {
                         package = MEPackageHandler.OpenMEPackage(packagePath, forceLoadFromDisk: AlwaysOpenFromDisk);
+                        if (!IsCacheForGame(package.Game))
+                        {
+                            Debug.WriteLine($"TieredPackageCache WARNING: LOADING PACKAGE FOR A DIFFERENT GAME INTO THIS CACHE! File: {packagePath}");
+                        }
                     }
 
                     InsertIntoCache(package);
@@ -166,6 +170,18 @@ public class TieredPackageCache : PackageCache
         }
 
         return null; //Package could not be found
+    }
+
+    private bool IsCacheForGame(MEGame game)
+    {
+        if (Game == null)
+        {
+            if (ParentCache != null)
+                return ParentCache.IsCacheForGame(game);
+            return true; // We don't care. No parent, no game set.
+        }
+
+        return Game == game;
     }
 
     public override void InsertIntoCache(IMEPackage package)
