@@ -1403,8 +1403,10 @@ import java.util.*;"
             void ScanScripts2(string filePath)
             {
                 using IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath);
+                UnrealScriptOptionsPackage usop = new UnrealScriptOptionsPackage();
+
                 var fileLib = new FileLib(pcc);
-                if (fileLib.Initialize())
+                if (fileLib.Initialize(usop))
                 {
                     foreach (ExportEntry exp in pcc.Exports.Reverse().Where(exp => exp.ClassName == "Function" && exp.Parent.ClassName == "Class" && !exp.GetBinaryData<UFunction>().FunctionFlags.Has(EFunctionFlags.Native)))
                     {
@@ -1414,16 +1416,16 @@ import java.util.*;"
                         }
                         try
                         {
+
                             var originalData = exp.Data;
-                            (_, string originalScript) = UnrealScriptCompiler.DecompileExport(exp, fileLib);
-                            (ASTNode ast, MessageLog log) = UnrealScriptCompiler.CompileFunction(exp, originalScript, fileLib);
+                            (_, string originalScript) = UnrealScriptCompiler.DecompileExport(exp, fileLib, usop);
+                            (ASTNode ast, MessageLog log) = UnrealScriptCompiler.CompileFunction(exp, originalScript, fileLib, usop);
                             if (log.HasErrors)
                             {
                                 interestingExports.Add(exp);
                                 continue;
                             }
-
-                            if (!fileLib.ReInitializeFile())
+                            if (!fileLib.ReInitializeFile(usop))
                             {
                                 interestingExports.Add(new EntryStringPair(exp, $"{pcc.FilePath} failed to re-initialize after compiling {$"#{exp.UIndex}",-9}"));
                                 return;
@@ -1453,9 +1455,10 @@ import java.util.*;"
 
             void RecompileAllFunctions(string filePath)
             {
+                UnrealScriptOptionsPackage usop = new UnrealScriptOptionsPackage();
                 using IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath);
                 var fileLib = new FileLib(pcc);
-                if (fileLib.Initialize())
+                if (fileLib.Initialize(usop))
                 {
                     foreach (ExportEntry exp in pcc.Exports.Where(exp => exp.ClassName == "Function"))
                     {
@@ -1469,13 +1472,13 @@ import java.util.*;"
                         try
                         {
                             //var originalData = exp.Data;
-                            (_, string originalScript) = UnrealScriptCompiler.DecompileExport(exp, fileLib);
-                            (ASTNode ast, MessageLog log) = UnrealScriptCompiler.CompileFunction(exp, originalScript, fileLib);
+                            (_, string originalScript) = UnrealScriptCompiler.DecompileExport(exp, fileLib, usop);
+                            (ASTNode ast, MessageLog log) = UnrealScriptCompiler.CompileFunction(exp, originalScript, fileLib, usop);
                             if (ast == null || log.HasErrors)
                             {
                                 interestingExports.Add(exp);
                             }
-                            if (!fileLib.ReInitializeFile())
+                            if (!fileLib.ReInitializeFile(usop))
                             {
                                 interestingExports.Add(new EntryStringPair(exp, $"{pcc.FilePath} failed to re-initialize after compiling {$"#{exp.UIndex}",-9}"));
                                 return;
@@ -1511,11 +1514,13 @@ import java.util.*;"
                     foundClasses.Add(instancedFullPath);
                     try
                     {
-                        if (fileLib.Initialize())
+                        UnrealScriptOptionsPackage usop = new UnrealScriptOptionsPackage();
+
+                        if (fileLib.Initialize(usop))
                         {
                             var originalData = exp.Data;
-                            (_, string originalScript) = UnrealScriptCompiler.DecompileExport(exp, fileLib);
-                            (ASTNode ast, MessageLog log) = UnrealScriptCompiler.CompileState(exp, originalScript, fileLib);
+                            (_, string originalScript) = UnrealScriptCompiler.DecompileExport(exp, fileLib, usop);
+                            (ASTNode ast, MessageLog log) = UnrealScriptCompiler.CompileState(exp, originalScript, fileLib, usop);
                             if (ast == null || log.HasErrors)
                             {
                                 interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {filePath}\nCompilation failed!"));
@@ -1525,7 +1530,7 @@ import java.util.*;"
                                 comparisonDict[$"{exp.UIndex} {exp.FileRef.FilePath}"] = (originalData, exp.Data);
                                 interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {filePath}\nRecompilation does not match!"));
                             }
-                            if (!fileLib.ReInitializeFile())
+                            if (!fileLib.ReInitializeFile(usop))
                             {
                                 interestingExports.Add(new EntryStringPair(exp, $"{pcc.FilePath} failed to re-initialize after compiling {$"#{exp.UIndex}",-9}"));
                                 return;
@@ -1563,17 +1568,18 @@ import java.util.*;"
                     foundClasses.Add(instancedFullPath);
                     try
                     {
-                        if (fileLib.Initialize())
+                        UnrealScriptOptionsPackage usop = new UnrealScriptOptionsPackage() { Cache = packageCache };
+                        if (fileLib.Initialize(usop))
                         {
-                            (_, string script) = UnrealScriptCompiler.DecompileExport(exp, fileLib);
-                            (ASTNode ast, MessageLog log) = UnrealScriptCompiler.CompileDefaultProperties(exp, script, fileLib, packageCache);
+                            (_, string script) = UnrealScriptCompiler.DecompileExport(exp, fileLib, usop);
+                            (ASTNode ast, MessageLog log) = UnrealScriptCompiler.CompileDefaultProperties(exp, script, fileLib, usop);
                             if (ast is not DefaultPropertiesBlock || log.HasErrors)
                             {
                                 interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {pcc.FilePath}\nfailed to parse defaults!"));
                                 return;
                             }
 
-                            if (!fileLib.ReInitializeFile())
+                            if (!fileLib.ReInitializeFile(usop))
                             {
                                 interestingExports.Add(new EntryStringPair(exp, $"{pcc.FilePath} failed to re-initialize after compiling {$"#{exp.UIndex}",-9}"));
                                 return;
@@ -1640,18 +1646,19 @@ import java.util.*;"
                     }
                     try
                     {
-                        if (fileLib.Initialize())
+                        UnrealScriptOptionsPackage usop = new UnrealScriptOptionsPackage() { Cache = packageCache };
+                        if (fileLib.Initialize(usop))
                         {
                             var originalBytes = exp.Data;
-                            (_, string script) = UnrealScriptCompiler.DecompileExport(exp, fileLib);
-                            (ASTNode ast, MessageLog log) = UnrealScriptCompiler.CompileDefaultProperties(exp, script, fileLib, packageCache);
+                            (_, string script) = UnrealScriptCompiler.DecompileExport(exp, fileLib, usop);
+                            (ASTNode ast, MessageLog log) = UnrealScriptCompiler.CompileDefaultProperties(exp, script, fileLib, usop);
                             if (ast is not DefaultPropertiesBlock || log.HasErrors)
                             {
                                 interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {pcc.FilePath}\nfailed to parse properties!"));
                                 return;
                             }
 
-                            if (!fileLib.ReInitializeFile())
+                            if (!fileLib.ReInitializeFile(usop))
                             {
                                 interestingExports.Add(new EntryStringPair(exp, $"{pcc.FilePath} failed to re-initialize after compiling {$"#{exp.UIndex}",-9}"));
                                 return;
@@ -1701,17 +1708,19 @@ import java.util.*;"
                         }
                         try
                         {
-                            if (fileLib.Initialize())
+                            UnrealScriptOptionsPackage usop = new UnrealScriptOptionsPackage() { Cache = packageCache };
+
+                            if (fileLib.Initialize(usop))
                             {
-                                (_, string script) = UnrealScriptCompiler.DecompileExport(exp, fileLib);
-                                (ASTNode ast, MessageLog log) = UnrealScriptCompiler.CompileStruct(exp, script, fileLib, packageCache);
+                                (_, string script) = UnrealScriptCompiler.DecompileExport(exp, fileLib, usop);
+                                (ASTNode ast, MessageLog log) = UnrealScriptCompiler.CompileStruct(exp, script, fileLib, usop);
                                 if (ast is not Struct || log.HasErrors)
                                 {
                                     interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {pcc.FilePath}\nfailed to parse defaults!"));
                                     return;
                                 }
 
-                                if (!fileLib.ReInitializeFile())
+                                if (!fileLib.ReInitializeFile(usop))
                                 {
                                     interestingExports.Add(new EntryStringPair(exp, $"{pcc.FilePath} failed to re-initialize after compiling {$"#{exp.UIndex}",-9}"));
                                     return;
@@ -1756,17 +1765,19 @@ import java.util.*;"
                         foundClasses.Add(instancedFullPath);
                         try
                         {
-                            if (fileLib.Initialize())
+                            UnrealScriptOptionsPackage usop = new UnrealScriptOptionsPackage() { Cache = packageCache };
+
+                            if (fileLib.Initialize(usop))
                             {
-                                (_, string script) = UnrealScriptCompiler.DecompileExport(exp, fileLib);
-                                (ASTNode ast, MessageLog log) = UnrealScriptCompiler.CompileEnum(exp, script, fileLib, packageCache);
+                                (_, string script) = UnrealScriptCompiler.DecompileExport(exp, fileLib, usop);
+                                (ASTNode ast, MessageLog log) = UnrealScriptCompiler.CompileEnum(exp, script, fileLib, usop);
                                 if (ast is not Enumeration || log.HasErrors)
                                 {
                                     interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {pcc.FilePath}\nfailed to parse defaults!"));
                                     return;
                                 }
 
-                                if (!fileLib.ReInitializeFile())
+                                if (!fileLib.ReInitializeFile(usop))
                                 {
                                     interestingExports.Add(new EntryStringPair(exp, $"{pcc.FilePath} failed to re-initialize after compiling {$"#{exp.UIndex}",-9}"));
                                     return;
@@ -1810,9 +1821,10 @@ import java.util.*;"
 
                         try
                         {
-                            if (fileLib.Initialize(packageCache))
+                            UnrealScriptOptionsPackage usop = new UnrealScriptOptionsPackage() { Cache = packageCache };
+                            if (fileLib.Initialize(usop))
                             {
-                                (ASTNode ast, string script) = UnrealScriptCompiler.DecompileExport(exp, fileLib, packageCache);
+                                (ASTNode ast, string script) = UnrealScriptCompiler.DecompileExport(exp, fileLib, usop);
                                 if (!((Class)ast).IsFullyDefined)
                                 {
                                     continue;
@@ -1826,7 +1838,7 @@ import java.util.*;"
                                     return;
                                 }
 
-                                UnrealScriptCompiler.CompileNewClassAST(pcc, classAST, log, fileLib, out bool vfTableChanged);
+                                UnrealScriptCompiler.CompileNewClassAST(pcc, classAST, log, fileLib, out bool vfTableChanged, usop);
                                 if (log.HasErrors)
                                 {
                                     interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {pcc.FilePath}\nfailed to parse class!"));
@@ -1895,7 +1907,7 @@ import java.util.*;"
                 {
                     try
                     {
-                        if (EntryImporter.ResolveImport(import) is ExportEntry exp)
+                        if (EntryImporter.ResolveImport(import, new PackageCache()) is ExportEntry exp)
                         {
                             extraInfo.Add(Path.GetFileName(exp.FileRef.FilePath));
                         }
@@ -2706,7 +2718,9 @@ import java.util.*;"
             {
                 var exportsWithDecompilationErrors = new List<EntryStringPair>();
                 var fileLib = new FileLib(pew.Pcc);
-                if (!fileLib.Initialize())
+                UnrealScriptOptionsPackage usop = new UnrealScriptOptionsPackage() { Cache = new PackageCache() };
+
+                if (!fileLib.Initialize(usop))
                 {
                     exportsWithDecompilationErrors.Add(new EntryStringPair("Filelib failed to initialize!"));
                 }
@@ -2717,13 +2731,13 @@ import java.util.*;"
                     {
                         try
                         {
-                            (_, string script) = UnrealScriptCompiler.DecompileExport(export, fileLib);
-                            (ASTNode ast, MessageLog log) = UnrealScriptCompiler.CompileStruct(export, script, fileLib);
+                            (_, string script) = UnrealScriptCompiler.DecompileExport(export, fileLib, usop);
+                            (ASTNode ast, MessageLog log) = UnrealScriptCompiler.CompileStruct(export, script, fileLib, usop);
                             if (ast is not Struct s || log.HasErrors)
                             {
                                 throw new Exception();
                             }
-                            if (!fileLib.ReInitializeFile())
+                            if (!fileLib.ReInitializeFile(usop))
                             {
                                 exportsWithDecompilationErrors.Add(new EntryStringPair(export, $"{pew.Pcc.FilePath} failed to re-initialize after compiling {$"#{export.UIndex}",-9}"));
                                 return;
@@ -2837,7 +2851,12 @@ import java.util.*;"
                     new("CompiledClasses", classes)
                 };
 
-                MessageLog log = UnrealScriptCompiler.CompileLooseClasses(pcc, looseClassPackages, MissingObjectResolver, vtableDonorGetter: VTableDonorGetter);
+                UnrealScriptOptionsPackage usop = new UnrealScriptOptionsPackage()
+                {
+                    MissingObjectResolver = MissingObjectResolver,
+                    GetVTableFromDonor = VTableDonorGetter
+                };
+                MessageLog log = UnrealScriptCompiler.CompileLooseClasses(pcc, looseClassPackages, usop);
 
                 if (log.HasErrors)
                 {
@@ -2914,8 +2933,9 @@ import java.util.*;"
             pew.SetBusy("Dumping source code");
             Task.Run(() =>
             {
+                UnrealScriptOptionsPackage usop = new UnrealScriptOptionsPackage();
                 var fileLib = new FileLib(pcc);
-                if (!fileLib.Initialize())
+                if (!fileLib.Initialize(usop))
                 {
                     return "Failed to initialize FileLib";
                 }
@@ -2924,7 +2944,7 @@ import java.util.*;"
                 {
                     try
                     {
-                        (ASTNode ast, string script) = UnrealScriptCompiler.DecompileExport(classExport, fileLib);
+                        (ASTNode ast, string script) = UnrealScriptCompiler.DecompileExport(classExport, fileLib, usop);
                         var cls = (Class)ast;
                         if (!cls.IsFullyDefined)
                         {
