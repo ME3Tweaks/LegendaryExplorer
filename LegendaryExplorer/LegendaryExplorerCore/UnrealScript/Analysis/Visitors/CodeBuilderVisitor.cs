@@ -57,7 +57,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
 
         protected readonly TFormatter Formatter = new();
-        private readonly Stack<int> ExpressionPrescedence = new(new []{NOPRESCEDENCE});
+        private readonly Stack<int> ExpressionPrescedence = new(new[] { NOPRESCEDENCE });
 
         private const int NOPRESCEDENCE = int.MaxValue;
 
@@ -757,7 +757,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 }
             }
 
-            return true; 
+            return true;
         }
 
         public bool VisitNode(DefaultPropertiesBlock node)
@@ -803,7 +803,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         }
 
         public bool VisitNode(DoUntilLoop node)
-        { 
+        {
             // do { /n contents /n } until(condition);
             Write(DO, EF.Keyword);
             Space();
@@ -1310,7 +1310,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             else if (node.Function.IsSuper)
             {
                 Append(SUPER, EF.Keyword);
-                if (node.Function.SuperSpecifier is {} superSpecifier)
+                if (node.Function.SuperSpecifier is { } superSpecifier)
                 {
                     Append("(");
                     Append(superSpecifier.Name, EF.Class);
