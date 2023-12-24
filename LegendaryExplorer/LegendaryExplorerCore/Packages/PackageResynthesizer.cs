@@ -117,7 +117,7 @@ namespace LegendaryExplorerCore.Packages
 
                         EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.ReplaceSingular,
                             ordering.Entry,
-                            newPackage, destExp, true, new RelinkerOptionsPackage(), out _);
+                            newPackage, destExp, true, new RelinkerOptionsPackage() { RelinkAllowDifferingClassesInRelink = true }, out _);
                     }
                 }
                 else if (mode == ESynthesisMode.Synth_Transferring)
@@ -151,12 +151,14 @@ namespace LegendaryExplorerCore.Packages
 
                         destExp.ObjectFlags = oExp.ObjectFlags;
                         destExp.ExportFlags = oExp.ExportFlags;
-
+                        destExp.PackageFlags = oExp.PackageFlags;
+                        destExp.GenerationNetObjectCount = oExp.GenerationNetObjectCount;
+                        destExp.PackageGUID = oExp.PackageGUID;
 
                         // Update data
                         EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.ReplaceSingular,
                             ordering.Entry,
-                            newPackage, destExp, true, new RelinkerOptionsPackage(), out _);
+                            newPackage, destExp, true, new RelinkerOptionsPackage() { RelinkAllowDifferingClassesInRelink = true }, out _);
                     }
                 }
             }
