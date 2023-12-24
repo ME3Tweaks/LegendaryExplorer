@@ -341,9 +341,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 if (Interpreter_TreeView?.SelectedItem is UPropertyTreeViewEntry { Property: ArrayPropertyBase prop })
                 {
+                    UnrealScriptOptionsPackage usop = new UnrealScriptOptionsPackage();
                     var lib = new FileLib(Pcc);
-                    lib.Initialize();//not going to check for failure since we're just decompiling
-                    string value = UnrealScriptCompiler.GetPropertyLiteralValue(prop, CurrentLoadedExport, lib);
+                    lib.Initialize(usop);//not going to check for failure since we're just decompiling
+                    string value = UnrealScriptCompiler.GetPropertyLiteralValue(prop, CurrentLoadedExport, lib, usop);
                     Clipboard.SetText(value);
                 }
                 //clear that chonky FileLib out of memory
