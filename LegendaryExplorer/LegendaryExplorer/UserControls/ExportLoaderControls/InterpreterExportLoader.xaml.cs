@@ -404,7 +404,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             if (CurrentLoadedExport != null && SelectedItem?.Property is ObjectProperty op && CurrentLoadedExport.FileRef.IsImport(op.Value))
             {
-                var export = EntryImporter.ResolveImport(CurrentLoadedExport.FileRef.GetImport(op.Value));
+                var export = EntryImporter.ResolveImport(CurrentLoadedExport.FileRef.GetImport(op.Value), new PackageCache());
                 if (export != null)
                 {
                     var p = new PackageEditorWindow();

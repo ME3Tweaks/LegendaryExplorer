@@ -118,7 +118,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
 
                     if (textureEntry is ImportEntry import)
                     {
-                        var extAsset = EntryImporter.ResolveImport(import, null, assetCache);
+                        var extAsset = EntryImporter.ResolveImport(import, assetCache);
                         if (extAsset != null)
                         {
                             Textures.Add(textureEntry.FullPath, texcache.LoadTexture(extAsset));
@@ -535,7 +535,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
                     {
                         // The material instance is an import!
                         ImportEntry matImport = m.Export.FileRef.GetImport(materialUIndex);
-                        var externalAsset = EntryImporter.ResolveImport(matImport, null, assetCache);
+                        var externalAsset = EntryImporter.ResolveImport(matImport, assetCache);
                         if (externalAsset != null)
                         {
                             mat = new MaterialInstanceConstant(externalAsset);

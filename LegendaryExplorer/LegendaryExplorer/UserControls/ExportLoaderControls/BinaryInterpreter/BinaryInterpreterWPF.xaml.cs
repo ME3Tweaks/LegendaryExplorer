@@ -252,7 +252,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         HostingControl.IsBusy = true;
                         HostingControl.BusyText = "Attempting to find source of import...";
                     }
-                    Task.Run(() => EntryImporter.ResolveImport(import)).ContinueWithOnUIThread(prevTask =>
+                    Task.Run(() => EntryImporter.ResolveImport(import, new PackageCache())).ContinueWithOnUIThread(prevTask =>
                     {
                         if (HostingControl is not null) HostingControl.IsBusy = false;
                         if (prevTask.Result is ExportEntry res)

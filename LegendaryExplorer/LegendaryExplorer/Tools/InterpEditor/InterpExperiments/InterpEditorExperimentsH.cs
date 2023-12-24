@@ -104,7 +104,7 @@ namespace LegendaryExplorer.Tools.InterpEditor.InterpExperiments
                 IEntry conversationEntry = track.Export.FileRef.GetEntry(conversationUindex);
                 if (conversationEntry is ImportEntry convImport)
                 {
-                    conversationEntry = EntryImporter.ResolveImport(convImport);
+                    conversationEntry = EntryImporter.ResolveImport(convImport, new PackageCache());
                 }
                 if (conversationEntry is null || conversationEntry is not ExportEntry convExport) return null;
 
