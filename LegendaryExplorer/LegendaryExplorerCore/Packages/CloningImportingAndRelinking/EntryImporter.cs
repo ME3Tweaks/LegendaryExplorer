@@ -1435,6 +1435,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         public static ExportEntry ResolveImport(ImportEntry entry, PackageCache cache, string localization = "INT", bool unsafeLoad = false, IEnumerable<string> localDirFiles = null, string gameRootOverride = null, Func<string, PackageCache, IMEPackage> fileResolver = null)
         {
             var entryFullPath = entry.InstancedFullPath;
+            cache ??= new PackageCache();
             //if (entry.ObjectName == "HMM_EYE_MASTER_OVRD_MAT")
             //{
 
