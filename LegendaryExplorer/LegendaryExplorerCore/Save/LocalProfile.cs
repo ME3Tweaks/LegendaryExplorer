@@ -18,6 +18,8 @@ namespace LegendaryExplorerCore.Save
     /// Defines a profile setting for LE2/LE3 Local_Profile/GamerProfile
     /// </summary>
     [AddINotifyPropertyChangedInterface]
+    [DebuggerDisplay("ProfileSetting {Id} = {Data}")]
+
     public class ProfileSetting
     {
         /// <summary>
@@ -64,7 +66,7 @@ namespace LegendaryExplorerCore.Save
         public byte[] DataAsBlob => (byte[])Data;
         public Tuple<int, int> DataAsDateTime => (Tuple<int, int>)Data;
 
-        public void Serialize(EndianWriter ew)
+        public void Serialize(EndianWriter ew, bool useUnicodeStrings = false)
         {
             ew.WriteByte((byte)IdType);
             ew.WriteInt32(Id);
@@ -79,8 +81,15 @@ namespace LegendaryExplorerCore.Save
                     ew.WriteDouble(DataAsDouble);
                     break;
                 case EProfileSettingType.STRING:
-                    ew.WriteInt32(DataAsString.Length);
-                    ew.WriteStringLatin1(DataAsString); // Not sure if profile names support unicode
+                    if (useUnicodeStrings)
+                    {
+                        ew.WriteUnrealStringUnicode(DataAsString);
+                    }
+                    else
+                    {
+                        ew.WriteInt32(DataAsString.Length);
+                        ew.WriteStringLatin1(DataAsString); // Not sure if profile names support unicode
+                    }
                     break;
                 case EProfileSettingType.FLOAT:
                     ew.WriteFloat(DataAsFloat);
@@ -156,15 +165,31 @@ namespace LegendaryExplorerCore.Save
     /// <summary>
     /// Serializer and deserializer for Local_Profile files
     /// </summary>
+    [DebuggerDisplay("LocalProfile with {ProfileSettings.Count} settings")]
     public class LocalProfile
     {
-        public static LocalProfile DeserializeLocalProfile(string filePath, MEGame game)
+        public static LocalProfile DeserializeLocalProfile(string filePath, MEGame game, bool isCompressed = true, bool usesVersionSetting = true, bool useUnicodeStrings = false)
         {
             using var fs = File.OpenRead(filePath);
-            return new LocalProfile(fs, game);
+            return new LocalProfile(fs, game, isCompressed, usesVersionSetting, useUnicodeStrings);
         }
 
         public Dictionary<int, ProfileSetting> ProfileSettings = new(100); // ME3 uses 100 keys so it's likely we'll hit that much normally
+
+        /// <summary>
+        /// If this profile object uses a setting value to store the version information
+        /// </summary>
+        public bool UsesVersionSetting { get; set; }
+
+        /// <summary>
+        /// If this profile object uses compression and SHA verification
+        /// </summary>
+        public bool UsesCompression { get; set; }
+
+        /// <summary>
+        /// If this profile object should serialize strings in unicode
+        /// </summary>
+        public bool UsesUnicodeStrings { get; set; }
 
         /// <summary>
         /// The version number of the profile settings file
@@ -176,41 +201,54 @@ namespace LegendaryExplorerCore.Save
         /// </summary>
         /// <param name="stream">Stream to deserialize</param>
         /// <param name="game">Game the stream is for</param>
-        private LocalProfile(Stream stream, MEGame game)
+        private LocalProfile(Stream stream, MEGame game, bool isCompressed = true, bool hasVersionSetting = true, bool useUnicodeStrings = false)
         {
+            UsesCompression = isCompressed;
+            UsesVersionSetting = hasVersionSetting;
+            UsesUnicodeStrings = useUnicodeStrings;
 
-            var reader = new EndianReader(stream) { Endian = Endian.Big }; // LE3 uses big endian
-
-            // 1. Decompress data
-            var checksum = reader.ReadToBuffer(0x14); // 20 bytes
-            var decompressedSize = reader.ReadInt32();
-            var compressedProfileData = reader.ReadToBuffer((int)reader.Length - 0x18); // offset 24
-
-            if (reader.Position != reader.Length)
+            byte[] decompressedData = null;
+            EndianReader reader = null; //isCompressed only
+            byte[] checksum = null; //isCompressed only
+            if (UsesCompression)
             {
-                throw new Exception(@"Failed to read to end of profile file!");
-            }
+                reader = new EndianReader(stream) { Endian = Endian.Big }; // LE3 uses big endian
 
-            if (game.IsLEGame())
-            {
-                OodleHelper.EnsureOodleDll();
-            }
+                // 1. Decompress data
+                checksum = reader.ReadToBuffer(0x14); // 20 bytes
+                var decompressedSize = reader.ReadInt32();
+                var compressedProfileData = reader.ReadToBuffer((int)reader.Length - 0x18); // offset 24
 
-            byte[] decompressedData = new byte[decompressedSize];
-            if (game.IsLEGame())
-            {
-                if (OodleHelper.Decompress(compressedProfileData, decompressedData) != decompressedSize)
+                if (reader.Position != reader.Length)
                 {
-                    throw new Exception(@"Decompression of profile data did not yield correct amount of bytes");
+                    throw new Exception(@"Failed to read to end of profile file!");
+                }
+
+                if (game.IsLEGame())
+                {
+                    OodleHelper.EnsureOodleDll();
+                }
+
+                decompressedData = new byte[decompressedSize];
+                if (game.IsLEGame())
+                {
+                    if (OodleHelper.Decompress(compressedProfileData, decompressedData) != decompressedSize)
+                    {
+                        throw new Exception(@"Decompression of profile data did not yield correct amount of bytes");
+                    }
+                }
+                else
+                {
+                    // Handle other games here
+                    if (Zlib.Decompress(compressedProfileData, decompressedData) != decompressedSize)
+                    {
+                        throw new Exception(@"Decompression of profile data did not yield correct amount of bytes");
+                    }
                 }
             }
             else
             {
-                // Handle other games here
-                if (Zlib.Decompress(compressedProfileData, decompressedData) != decompressedSize)
-                {
-                    throw new Exception(@"Decompression of profile data did not yield correct amount of bytes");
-                }
+                decompressedData = stream.ReadFully();
             }
 
             // 2. Deserialize settings
@@ -225,7 +263,7 @@ namespace LegendaryExplorerCore.Save
 
                 //Debug.WriteLine($@"Setting {setting.Id} VALUE: {setting.Data}");
 
-                if (setting.Id == (int)ELE3ProfileSetting.Setting_ProfileVersionNum) // 26, same in LE2
+                if (UsesVersionSetting && setting.Id == (int)ELE3ProfileSetting.Setting_ProfileVersionNum) // 26, same in LE2
                 {
                     // The version of the settings format
                     // LE3 = 50 ?
@@ -238,14 +276,17 @@ namespace LegendaryExplorerCore.Save
                 }
             }
 
-            // 3. Verify checksum
-            var expectedSHA = BitConverter.ToString(checksum).Replace(@"-", "").ToLowerInvariant();
-            reader.Position = 0x14; // Read the compressed original data for verification. This includes decompressed size header on compressed data.
-            var verifySha = BitConverter.ToString(SHA1.Create().ComputeHash(reader.BaseStream)).Replace(@"-", "").ToLowerInvariant();
-
-            if (verifySha != expectedSHA)
+            if (UsesCompression)
             {
-                throw new Exception("The SHA for this local profile did not verify, the file is likely corrupted");
+                // 3. Verify checksum
+                var expectedSHA = BitConverter.ToString(checksum).Replace(@"-", "").ToLowerInvariant();
+                reader.Position = 0x14; // Read the compressed original data for verification. This includes decompressed size header on compressed data.
+                var verifySha = BitConverter.ToString(SHA1.Create().ComputeHash(reader.BaseStream)).Replace(@"-", "").ToLowerInvariant();
+
+                if (verifySha != expectedSHA)
+                {
+                    throw new Exception("The SHA for this local profile did not verify, the file is likely corrupted");
+                }
             }
 #if AZURE
             // For testing
@@ -261,40 +302,55 @@ namespace LegendaryExplorerCore.Save
             // Prepare the compressed data
             using MemoryStream ms = new MemoryStream();
             EndianWriter ew = new EndianWriter(ms) { Endian = Endian.Big };
-            ew.WriteInt32(ProfileSettings.Count + 1); // +1 for VERSION
-            foreach (var profileSetting in ProfileSettings)
+            var count = ProfileSettings.Count;
+            if (UsesVersionSetting)
+                count++;
+            ew.WriteInt32(count); // +1 for VERSION
+            foreach (var profileSetting in ProfileSettings.Values.OrderBy(x => x.Id)) // 12/22/2023 - Write settings in-order
             {
-                if (profileSetting.Value.Id == (byte)ELE3ProfileSetting.Setting_ProfileVersionNum) // Same as LE2, 26
+                if (UsesVersionSetting && profileSetting.Id == (byte)ELE3ProfileSetting.Setting_ProfileVersionNum) // Same as LE2, 26
                     continue;
-                profileSetting.Value.Serialize(ew);
+                profileSetting.Serialize(ew, UsesUnicodeStrings);
             }
 
             // Write version at the end.
-            new ProfileSetting()
+            if (UsesVersionSetting)
             {
-                IdType = ProfileSetting.EProfileSettingType.INT64,
-                Id = (int)ELE3ProfileSetting.Setting_ProfileVersionNum,
-                DataType = ProfileSetting.EProfileSettingType.INT,
-                Data = Version
-            }.Serialize(ew);
+                new ProfileSetting()
+                {
+                    IdType = ProfileSetting.EProfileSettingType.INT64,
+                    Id = (int)ELE3ProfileSetting.Setting_ProfileVersionNum,
+                    DataType = ProfileSetting.EProfileSettingType.INT,
+                    Data = Version
+                }.Serialize(ew, UsesUnicodeStrings);
+            }
 
-            // Compress the data
-            var compressedData = OodleHelper.Compress(ew.ToArray());
+            if (UsesCompression)
+            {
+                // Compress the data
+                var compressedData = OodleHelper.Compress(ew.ToArray());
 
-            // Prepare the uncompressed data
-            MemoryStream finalStream = new MemoryStream();
-            EndianWriter finalEw = new EndianWriter(finalStream) { Endian = Endian.Big };
-            finalEw.WriteZeros(0x14); // SHA placeholder
-            finalEw.WriteInt32((int)ew.BaseStream.Length);
-            finalEw.Write(compressedData);
+                // Prepare the uncompressed data
+                MemoryStream finalStream = new MemoryStream();
+                EndianWriter finalEw = new EndianWriter(finalStream) { Endian = Endian.Big };
+                finalEw.WriteZeros(0x14); // SHA placeholder
+                finalEw.WriteInt32((int)ew.BaseStream.Length);
+                finalEw.Write(compressedData);
 
-            // Generate SHA1 checksum
-            finalStream.Position = 0x14; // SHA ends here
-            var shaBytes = SHA1.Create().ComputeHash(finalStream);
-            finalStream.Position = 0;
-            finalStream.Write(shaBytes);
+                // Generate SHA1 checksum
+                finalStream.Position = 0x14; // SHA ends here
+                var shaBytes = SHA1.Create().ComputeHash(finalStream);
+                finalStream.Position = 0;
+                finalStream.Write(shaBytes);
+                return finalStream;
+            }
 
-            return finalStream;
+            // Return the uncompressed version
+            MemoryStream uncompStream = new MemoryStream();
+            ew.BaseStream.Position = 0;
+            ew.BaseStream.CopyTo(uncompStream);
+            uncompStream.Position = 0;
+            return uncompStream;
         }
 
 
@@ -519,5 +575,67 @@ namespace LegendaryExplorerCore.Save
             Setting_AntiAliasing = 123,
             Setting_DynamicShadows = 124,
         };
+
+        public void SetProfileSettingById(int id, object data)
+        {
+            if (ProfileSettings.TryGetValue(id, out var existing))
+            {
+                existing.Data = data;
+            }
+            else
+            {
+                ProfileSettings[id] = new ProfileSetting()
+                {
+                    IdType = ProfileSetting.EProfileSettingType.INT64,
+                    Id = id,
+                    DataType = GetDataType(data),
+                    Data = Version
+                };
+            }
+        }
+
+        /// <summary>
+        /// Gets the data type for a profile to store this type of data. Defaults to INT.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        private ProfileSetting.EProfileSettingType GetDataType(object data)
+        {
+            if (data is null)
+            {
+                return ProfileSetting.EProfileSettingType.NONE;
+            }
+            if (data is DateTime)
+            {
+                return ProfileSetting.EProfileSettingType.DATETIME;
+            }
+            if (data is double)
+            {
+                return ProfileSetting.EProfileSettingType.DOUBLE;
+            }
+            if (data is float)
+            {
+                return ProfileSetting.EProfileSettingType.FLOAT;
+            }
+            if (data is string)
+            {
+                return ProfileSetting.EProfileSettingType.STRING;
+            }
+            if (data is byte[])
+            {
+                return ProfileSetting.EProfileSettingType.BLOB;
+            }
+            if (data is long)
+            {
+                return ProfileSetting.EProfileSettingType.INT64;
+            }
+
+            if (data is int)
+            {
+                return ProfileSetting.EProfileSettingType.INT;
+            }
+
+            throw new Exception($"Unsupported data type for {data} object");
+        }
     }
 }
