@@ -54,19 +54,23 @@ namespace LegendaryExplorerCore.Tests
 
             var sw = Stopwatch.StartNew();
             var testLib = new FileLib(testPackage);
-            PackageCache packageCache = usePackageCache ? new PackageCache() : null;
-            bool fileLibInitialized = testLib.Initialize(packageCache);
+            UnrealScriptOptionsPackage usop = new UnrealScriptOptionsPackage()
+            {
+                Cache = usePackageCache ? new PackageCache() : null,
+            };
+
+            bool fileLibInitialized = testLib.Initialize(usop);
             Assert.IsTrue(fileLibInitialized, $"{testPackage.Game} Script failed to compile {shortName} class definitions! Errors:\n{string.Join('\n', testLib.InitializationLog.Content)}");
             sw.Stop();
             Debug.WriteLine($"With {(usePackageCache ? "packagecache" : "globalcache")} took {sw.ElapsedMilliseconds}ms to initialize lib");
 
             foreach (ExportEntry export in testPackage.Exports.Where(exp => exp.IsClass))
             {
-                (ASTNode astNode, string text) = UnrealScriptCompiler.DecompileExport(export, testLib, packageCache);
+                (ASTNode astNode, string text) = UnrealScriptCompiler.DecompileExport(export, testLib, usop);
 
                 Assert.IsInstanceOfType(astNode, typeof(Class), $"#{export.UIndex} {export.InstancedFullPath} in {shortName} did not decompile!");
 
-                /* SirCxyrtyx: Disabling recompilation tests because succesfull re-compilation of all functions will never happen
+                /* SirCxyrtyx: Disabling recompilation tests because successful re-compilation of all functions will never happen
                  * For re-compilation testing to be useful, it will need to be targeted
                  */
                 //(_, MessageLog log) = UnrealScriptCompiler.CompileFunction(funcExport, text, testLib);
@@ -76,7 +80,7 @@ namespace LegendaryExplorerCore.Tests
                 //    Assert.Fail($"#{funcExport.UIndex} {funcExport.InstancedFullPath} in {shortName} did not recompile!");
                 //}
             }
-            packageCache?.Dispose();
+            usop.Cache?.Dispose();
             MEPackageHandler.GlobalSharedCacheEnabled = globalSharedCacheEnabled;
         }
     }
