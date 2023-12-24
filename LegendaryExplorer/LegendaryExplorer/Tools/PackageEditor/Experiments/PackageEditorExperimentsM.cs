@@ -708,7 +708,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     }
                     else
                     {
-                        matchingExport = EntryImporter.ResolveImport(ie);
+                        matchingExport = EntryImporter.ResolveImport(ie, new PackageCache());
 
                         if (matchingExport == null)
                         {
@@ -1500,7 +1500,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 if (GlobalUnrealObjectInfo.IsAKnownNativeClass(import))
                     continue; // Native is always loaded iirc
                 //Debug.WriteLine($@"Resolving {import.FullPath}");
-                var export = EntryImporter.ResolveImport(import, globalCache, pc);
+                var export = EntryImporter.ResolveImport(import, globalCache);
                 if (export != null)
                 {
 
@@ -2447,7 +2447,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             using var masterFile = MEPackageHandler.OpenMEPackage(@"C:\Users\Mgamerz\Desktop\LE2Powers.pcc");
 
             PackageCache globalCache = new PackageCache();
-            PackageCache localCache = new PackageCache();
 
             var allPowers = new List<string>();
             foreach (var f in MELoadedFiles.GetFilesLoadedInGame(MEGame.LE2, true))
@@ -2455,7 +2454,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 using var p = MEPackageHandler.OpenMEPackage(f.Value);
                 foreach (var powerExp in p.Exports.Where(x => x.InheritsFrom("SFXPower") && !allPowers.Contains(x.InstancedFullPath)))
                 {
-                    EntryExporter.ExportExportToPackage(powerExp, masterFile, out var newEntry, globalCache, localCache);
+                    EntryExporter.ExportExportToPackage(powerExp, masterFile, out var newEntry, globalCache);
                     allPowers.Add(powerExp.InstancedFullPath);
                 }
             }
@@ -2546,7 +2545,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             var tag = bioPawnExport.GetProperty<NameProperty>("Tag");
             FileLib lib = new FileLib(pcc);
-            lib.Initialize();
+            lib.Initialize(new UnrealScriptOptionsPackage());
             var exportName = $"SFXPawn_{tag.Value.Instanced}";
             var classIFP = $"MERGamePawns.{exportName}";
 
@@ -2642,7 +2641,7 @@ defaultproperties
     ActorType = BioPawnType'{actorTypeIFP}'
 }}";
 
-            UnrealScriptCompiler.CompileClass(pcc, classText, lib, parent: merGamePawns);
+            UnrealScriptCompiler.CompileClass(pcc, classText, lib, new UnrealScriptOptionsPackage(), parent: merGamePawns);
             var classExport = pcc.FindExport(classIFP);
 
             var newMats = new ArrayProperty<ObjectProperty>("Materials");
@@ -2700,10 +2699,11 @@ defaultproperties
 
         public static void ConvertExportToImport(PackageEditorWindow pe)
         {
+            PackageCache cache = new PackageCache();
             if (pe.TryGetSelectedExport(out var exp2))
             {
                 var import = new ImportEntry(exp2, exp2.Parent?.UIndex ?? 0, exp2.FileRef);
-                if (EntryImporter.ResolveImport(import) != null)
+                if (EntryImporter.ResolveImport(import, cache) != null)
                 {
                     EntryImporter.ConvertExportToImport(exp2);
                 }
@@ -2791,7 +2791,7 @@ defaultproperties
                     var value = v.GetProp<ObjectProperty>("ParameterValue").ResolveToEntry(pe.Pcc);
                     if (value is ImportEntry ie)
                     {
-                        valueExp = EntryImporter.ResolveImport(ie);
+                        valueExp = EntryImporter.ResolveImport(ie, new PackageCache());
                     }
                     else
                     {
