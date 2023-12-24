@@ -8394,7 +8394,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         {
                             if (Pcc.GetEntry(bin.Skip(-4).ReadInt32()) is ExportEntry matExport)
                             {
-                                foreach (IEntry texture in new MaterialInstanceConstant(matExport).Textures)
+                                foreach (IEntry texture in new MaterialInstanceConstant(matExport, resolveImports: false).Textures)
                                 {
                                     matNode.Items.Add(new BinInterpNode($"#{texture.UIndex} {matExport.FileRef.GetEntryString(texture.UIndex)}"));
                                 }
