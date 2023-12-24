@@ -367,20 +367,21 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 var errors = new List<EntryStringPair>();
 
                 var fileLib = new FileLib(Pcc);
+                UnrealScriptOptionsPackage usop = new UnrealScriptOptionsPackage() { Cache = new PackageCache() };
                 using var packageCache = new PackageCache();
-                if (fileLib.Initialize(packageCache))
+                if (fileLib.Initialize(usop))
                 {
                     foreach (ExportEntry export in Pcc.Exports.Where(exp => exp.IsClass))
                     {
                         try
                         {
-                            (_, string source) = UnrealScriptCompiler.DecompileExport(export, fileLib, packageCache);
+                            (_, string source) = UnrealScriptCompiler.DecompileExport(export, fileLib, usop);
                             var log = new MessageLog();
 
                             var (ast, _) = UnrealScriptCompiler.CompileOutlineAST(source, "Class", log, Pcc.Game);
                             if (!log.HasErrors)
                             {
-                                UnrealScriptCompiler.CompileNewClassAST(Pcc, (Class)ast, log, fileLib, out bool vfTableChanged);
+                                UnrealScriptCompiler.CompileNewClassAST(Pcc, (Class)ast, log, fileLib, out bool vfTableChanged, usop);
                                 if (vfTableChanged)
                                 {
                                     log.LogError("Virtual function table needs to be updated!");
@@ -530,14 +531,15 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 return;
             }
 
+            UnrealScriptOptionsPackage usop = new UnrealScriptOptionsPackage();
             var fileLib = new FileLib(Pcc);
-            if (!fileLib.Initialize())
+            if (!fileLib.Initialize(usop))
             {
                 var dlg = new ListDialog(fileLib.InitializationLog.AllErrors.Select(msg => msg.ToString()), "Script Error", "Could not build script database for this file!", this);
                 dlg.Show();
                 return;
             }
-            (_, MessageLog log) = UnrealScriptCompiler.CompileClass(Pcc, $"class {className};", fileLib, parent: parent);
+            (_, MessageLog log) = UnrealScriptCompiler.CompileClass(Pcc, $"class {className};", fileLib, usop, parent: parent);
             if (log.HasErrors)
             {
                 var dlg = new ListDialog(log.AllErrors.Select(msg => msg.ToString()), "Script Error", "Could not create class!", this);
@@ -581,7 +583,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                         }
                         else
                         {
-                            var resolvedExp = EntryImporter.ResolveImport(impTV.Entry as ImportEntry, null, cache);
+                            var resolvedExp = EntryImporter.ResolveImport(impTV.Entry as ImportEntry, cache);
                             if (resolvedExp == null)
                             {
                                 unresolvableImports.Add(new EntryStringPair(impTV.Entry, $"Unresolvable import: {impTV.Entry.InstancedFullPath}"));
@@ -699,7 +701,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
             {
                 BusyText = "Attempting to find source of import...";
                 IsBusy = true;
-                Task.Run(() => EntryImporter.ResolveImport(curImport)).ContinueWithOnUIThread(prevTask =>
+                Task.Run(() => EntryImporter.ResolveImport(curImport, new PackageCache())).ContinueWithOnUIThread(prevTask =>
                 {
                     IsBusy = false;
                     if (prevTask.Result is ExportEntry res)
