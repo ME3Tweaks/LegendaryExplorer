@@ -48,6 +48,7 @@ namespace LegendaryExplorerCore.Audio
             var bankName = Path.GetFileNameWithoutExtension(bankPath);
             var bankNameWithExtension = Path.GetFileName(bankPath);
 
+
             // TODO: Check if bank exists as an import - we can't import in this scenario!
 
             // Preprocessing
@@ -104,14 +105,15 @@ namespace LegendaryExplorerCore.Audio
                 }
             }
 
-            var xmlBankPath = wwiseLanguage is null or "SFX" ? bankNameWithExtension : $"{wwiseLanguage}\\{bankNameWithExtension}";
-            var soundBankChunk = infoDoc.Root.Descendants("SoundBank").FirstOrDefault(x => x.Element("Path")?.Value == xmlBankPath);
+            var soundBankChunk = infoDoc.Root.Descendants("SoundBank").FirstOrDefault(b => b.Element("ShortName").Value == bankName);
 
             var localization = GetMELocalizationFromWwiseLocalization(soundBankChunk.Attribute("Language").Value);
             var eventInfos = soundBankChunk.Element("IncludedEvents").Descendants("Event").Select(x => new
             {
                 Id = uint.Parse(x.Attribute("Id")?.Value),
-                Name = x.Attribute("Name")?.Value
+                Name = x.Attribute("Name")?.Value,
+                MinDur = x.Attribute("DurationMin")?.Value,
+                MaxDur = x.Attribute("DurationMax")?.Value
             }).ToList();
 
             var referencedStreamingAudioIds = soundBankChunk.Element("ReferencedStreamedFiles")?.Descendants("File")
@@ -150,6 +152,7 @@ namespace LegendaryExplorerCore.Audio
 
             // Import the streams
             List<ExportEntry> streamExports = new List<ExportEntry>();
+            
             if (referencedStreamingAudio != null)
             {
                 if (bankStreamingAudioPackageName != null)
@@ -158,6 +161,13 @@ namespace LegendaryExplorerCore.Audio
                     if (parentPackage == null)
                     {
                         parentPackage = ExportCreator.CreatePackageExport(package, bankStreamingAudioPackageName, bankExport.Parent);
+                    }
+                }
+                else
+                {
+                    if (localization != MELocalization.None)
+                    {
+                        parentPackage = ExportCreator.CreatePackageExport(package, localization.ToString(), bankExport.Parent);
                     }
                 }
                 foreach (var streamInfo in referencedStreamingAudio)
@@ -228,11 +238,12 @@ namespace LegendaryExplorerCore.Audio
                         new ObjectProperty(bankExport, "Bank"))
                     { Name = "Relationships" });
                     p.Add(new IntProperty((int)eventInfo.Id, "Id"));
+                    if(float.TryParse(eventInfo.MaxDur,out float maxDur) && float.TryParse(eventInfo.MinDur, out float minDur))
+                    {
+                        var duration = (maxDur + minDur) / 2;
+                        p.Add(new FloatProperty(duration, "DurationSeconds")); //for duration wwise project must be set to export them - project settings -> soundbanks -> estimated duration
+                    }
 
-
-                    p.Add(new FloatProperty(20, "DurationSeconds")); // TODO: FIGURE THIS OUT!!! THIS IS A PLACEHOLDER
-
-                    // Todo: Write the WwiseStreams
                 }
                 else
                 {
@@ -258,8 +269,41 @@ namespace LegendaryExplorerCore.Audio
                 // LE3 puts this in binary instead of properties
                 if (package.Game == MEGame.LE3)
                 {
-                    we.Links.Add(new WwiseEvent.WwiseEventLink()
-                    { WwiseStreams = streamExports.Select(x => x.UIndex).ToList() });
+
+                    //Only want the binary associated to the Event. For dialogue event must conform to VO_123456_m_Play format.
+                    var evtLink = new WwiseEvent.WwiseEventLink();
+                    evtLink.WwiseStreams = new List<int>();
+                    string tlkref = eventInfo.Name.Replace("VO_","").Replace("_Play", "").Replace("_m", "").Replace("_f", "");
+                    bool isFem = eventInfo.Name.Replace("VO_", "").Replace("_Play", "").Replace(tlkref, "") == "_f";
+                    if (isFem) //Female might be femshep so points to _f_ audio.
+                    {
+                        foreach (var wStream in streamExports)
+                        {
+                            if (wStream.ObjectNameString.Contains(tlkref) && wStream.ObjectNameString.Contains("_f_"))
+                            {
+                                evtLink.WwiseStreams.Add(wStream.UIndex);
+                                break;
+                            }
+                        }
+                    }
+                    if(evtLink.WwiseStreams.IsEmpty()) //No audio then is not femshep so point to _m_
+                    {
+                        foreach (var wStream in streamExports)
+                        {
+                            if (wStream.ObjectNameString.Contains(tlkref) && wStream.ObjectNameString.Contains("_m_"))
+                            {
+                                evtLink.WwiseStreams.Add(wStream.UIndex);
+                                break;
+                            }
+                        }
+                    }
+                    if (evtLink.WwiseStreams.IsEmpty()) //Otherwise this isn't dialogue.
+                    {
+                        we.Links.Add(new WwiseEvent.WwiseEventLink()
+                        { WwiseStreams = streamExports.Select(x => x.UIndex).ToList() });
+                    }
+                    we.Links.Add(evtLink);
+
                 }
                 else
                 {
