@@ -279,7 +279,7 @@ namespace LegendaryExplorerCore.Audio
                     {
                         foreach (var wStream in streamExports)
                         {
-                            if (wStream.ObjectNameString.Contains(tlkref) && wStream.ObjectNameString.Contains("_f_"))
+                            if (wStream.ObjectNameString.Contains(tlkref) && (wStream.ObjectNameString.Contains("_f_") || wStream.ObjectNameString.EndsWith("_f")))
                             {
                                 evtLink.WwiseStreams.Add(wStream.UIndex);
                                 break;
@@ -290,7 +290,7 @@ namespace LegendaryExplorerCore.Audio
                     {
                         foreach (var wStream in streamExports)
                         {
-                            if (wStream.ObjectNameString.Contains(tlkref) && wStream.ObjectNameString.Contains("_m_"))
+                            if (wStream.ObjectNameString.Contains(tlkref) && (wStream.ObjectNameString.Contains("_m_") || wStream.ObjectNameString.EndsWith("_m")))
                             {
                                 evtLink.WwiseStreams.Add(wStream.UIndex);
                                 break;
