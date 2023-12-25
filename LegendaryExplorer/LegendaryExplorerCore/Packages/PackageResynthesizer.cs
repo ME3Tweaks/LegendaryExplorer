@@ -12,6 +12,7 @@ namespace LegendaryExplorerCore.Packages
 {
     public static class PackageResynthesizer
     {
+        private const string RESYNTH_TEMP_NAME = "PortingTEMP_RESYNTH_LEC";
         private enum ESynthesisMode
         {
             /// <summary>
@@ -31,7 +32,7 @@ namespace LegendaryExplorerCore.Packages
         /// <summary>
         /// Reconstructs a package file in a more sensible layout.
         /// </summary>
-        /// <param name="package"></param>
+        /// <param name="package">Package file to reconstruct</param>
         public static IMEPackage ResynthesizePackage(IMEPackage package)
         {
             var newPackage = MEPackageHandler.CreateEmptyPackage(package.FilePath, package.Game);
@@ -41,9 +42,34 @@ namespace LegendaryExplorerCore.Packages
             // I considered using EntryTree but it doesn't seem very suited for reordering. 
             // Too confusing for me <_>
 
+            // Step 0: Convert imports to exports where necessary.
+            foreach (var entry in package.Imports.Where(x => x.ClassName == "Package" && EntryOrdering.HasExportChildren(x)).ToList())
+            {
+                var import = EntryImporter.ResolveImport(entry, null); // Should we cache here?
+                if (import != null)
+                {
+                    var origName = entry.ObjectName;
+                    entry.ObjectName = RESYNTH_TEMP_NAME; // Rename so we can safely re-import.
+
+                    EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.AddSingularAsChild, import, package, entry.Parent, true,
+                        new RelinkerOptionsPackage(), out var newEntry);
+                    if (newEntry is ImportEntry)
+                    {
+                        Debugger.Break(); // This should not be an import...
+                    }
+                    foreach (var obj in entry.GetChildren())
+                    {
+                        obj.Parent = newEntry;
+                    }
+                    EntryPruner.TrashEntryAndDescendants(entry); // Get rid of the original before we port
+                }
+            }
+
             // Step 1: Port names
             foreach (var name in package.Names.OrderBy(x => x))
             {
+                if (name == RESYNTH_TEMP_NAME)
+                    continue; // Don't add this name.
                 newPackage.FindNameOrAdd(name);
             }
 
@@ -90,8 +116,14 @@ namespace LegendaryExplorerCore.Packages
                                 PackageFile = oImp.PackageFile,
                                 ClassName = oImp.ClassName
                             };
-                            newPackage.AddImport(imp);
-                            newEntry = imp;
+                            // Core and Core.Package will probably already be added
+                            // We don't want to re-add them so we see if they exist first
+                            newEntry = newPackage.FindEntry(imp.InstancedFullPath);
+                            if (newEntry == null)
+                            {
+                                newPackage.AddImport(imp);
+                                newEntry = imp;
+                            }
                         }
                     }
                     else if (ordering.Entry is ExportEntry)
@@ -202,7 +234,9 @@ namespace LegendaryExplorerCore.Packages
                 throw new Exception("Bad setup for children ordering");
 
             Entry = entry;
-            ConvertToExport = entry is ImportEntry && HasExportChildren(entry);
+            // This might no longer be necessary
+            //ConvertToExport = entry is ImportEntry ientry && HasExportChildren(ientry);
+            
             package ??= entry.FileRef;
             var exports = package.Exports.Where(x => x.Parent == entry && !x.IsTrash()).ToList();
             var imports = package.Imports.Where(x => x.Parent == entry && !x.IsTrash()).ToList();
@@ -249,7 +283,7 @@ namespace LegendaryExplorerCore.Packages
         /// </summary>
         /// <param name="entry"></param>
         /// <returns></returns>
-        private static bool HasExportChildren(IEntry entry)
+        internal static bool HasExportChildren(IEntry entry)
         {
             if (entry.FileRef.Exports.Any(x => x.Parent == entry))
                 return true;
