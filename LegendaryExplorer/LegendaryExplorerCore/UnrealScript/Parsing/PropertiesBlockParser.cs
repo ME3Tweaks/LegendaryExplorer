@@ -21,37 +21,35 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
         private readonly bool IsStructDefaults;
         private readonly bool IsInDefaultsTree;
         private readonly ObjectType Outer;
-        private Func<IMEPackage, string, IEntry> MissingObjectResolver;
+        private readonly UnrealScriptOptionsPackage usop;
         private bool InSubOject;
 
-        public static void ParseStructDefaults(Struct s, IMEPackage pcc, SymbolTable symbols, MessageLog log)
+        public static void ParseStructDefaults(Struct s, IMEPackage pcc, SymbolTable symbols, MessageLog log, UnrealScriptOptionsPackage usop)
         {
             symbols.PushScope(s.Name);
             foreach (Struct innerStruct in s.TypeDeclarations.OfType<Struct>())
             {
-                ParseStructDefaults(innerStruct, pcc, symbols, log);
+                ParseStructDefaults(innerStruct, pcc, symbols, log, usop);
             }
             var defaults = s.DefaultProperties;
             if (defaults.Tokens is not null)
             {
-                Parse(defaults, pcc, symbols, log, false);
+                Parse(defaults, pcc, symbols, log, false, usop);
             }
             symbols.PopScope();
         }
 
-        public static void Parse(DefaultPropertiesBlock propsBlock, IMEPackage pcc, SymbolTable symbols, MessageLog log, bool isInDefaultsTree, Func<IMEPackage, string, IEntry> missingObjectResolver = null)
+        public static void Parse(DefaultPropertiesBlock propsBlock, IMEPackage pcc, SymbolTable symbols, MessageLog log, bool isInDefaultsTree, UnrealScriptOptionsPackage usop)
         {
-            var parser = new PropertiesBlockParser(propsBlock, pcc, symbols, log, isInDefaultsTree)
-            {
-                MissingObjectResolver = missingObjectResolver
-            };
+            var parser = new PropertiesBlockParser(propsBlock, pcc, symbols, log, isInDefaultsTree, usop);
             var statements = parser.Parse(false);
 
             propsBlock.Statements = statements;
         }
 
-        private PropertiesBlockParser(DefaultPropertiesBlock propsBlock, IMEPackage pcc, SymbolTable symbols, MessageLog log, bool isInDefaultsTree)
+        private PropertiesBlockParser(DefaultPropertiesBlock propsBlock, IMEPackage pcc, SymbolTable symbols, MessageLog log, bool isInDefaultsTree, UnrealScriptOptionsPackage usop)
         {
+            this.usop = usop;
             Symbols = symbols;
             Log = log;
             Tokens = propsBlock.Tokens;
@@ -115,7 +113,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
         }
         private void ParseSubObjectBodys(List<Subobject> subObjects)
         {
-            foreach(Subobject currentSubObj in subObjects)
+            foreach (Subobject currentSubObj in subObjects)
             {
                 var subSubObjects = new List<Subobject>();
                 var statements = currentSubObj.Statements;
@@ -160,7 +158,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             Tokens.Advance();
             bool isTemplate = objOrTemplateToken.Value.CaseInsensitiveEquals("Template");
 
-            if (Consume("Class") is not {} classKeywordToken || Consume(TokenType.Assign) is not {} classAssignToken)
+            if (Consume("Class") is not { } classKeywordToken || Consume(TokenType.Assign) is not { } classAssignToken)
             {
                 throw ParseError($"Expected 'Class=' after 'Begin {objOrTemplateToken.Value}'!", CurrentPosition);
             }
@@ -184,7 +182,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 TypeError($"A '{objectClass.Name}' must be declared within a '{outerClass.Name}', not a '{SubObjectClasses.Peek().Name}'!", classNameToken);
             }
 
-            if (Consume("Name") is not {} nameKeywordToken || Consume(TokenType.Assign) is not {} nameAssignToken)
+            if (Consume("Name") is not { } nameKeywordToken || Consume(TokenType.Assign) is not { } nameAssignToken)
             {
                 throw ParseError("Expected 'Name=' after Class reference!", CurrentPosition);
             }
@@ -257,7 +255,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             if (Consume(TokenType.Word) is ScriptToken propName)
             {
                 SymbolReference target = ParsePropName(propName, inStruct);
-                if (InSubOject && target.Node is VariableDeclaration {IsTransient: true})
+                if (InSubOject && target.Node is VariableDeclaration { IsTransient: true })
                 {
                     TypeError("Cannot assign to a transient property in a SubObject!", propName);
                 }
@@ -269,7 +267,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     {
                         throw ParseError("Expected an integer index!", expression?.StartPos ?? CurrentPosition, expression?.EndPos ?? -1);
                     }
-                    
+
                     if (targetType is not StaticArrayType arrType)
                     {
                         TypeError("Cannot index a property that is not a static array!", intLit);
@@ -287,7 +285,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                         targetType = arrType.ElementType;
                     }
 
-                    if (Consume(TokenType.RightSqrBracket) is not {} closeBracket)
+                    if (Consume(TokenType.RightSqrBracket) is not { } closeBracket)
                     {
                         throw ParseError("Expected a ']'!", CurrentPosition);
                     }
@@ -372,7 +370,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                         else
                         {
                             literal = ParseBasicRef(token);
-                            if (literal is SymbolReference {Node: Const cnst})
+                            if (literal is SymbolReference { Node: Const cnst })
                             {
                                 literal = cnst.Literal;
                             }
@@ -457,14 +455,14 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                         {
                             if (objectLiteral.Class is not ClassType && Pcc.FindEntry(objectLiteral.Name.Value) is null)
                             {
-                                if (MissingObjectResolver?.Invoke(Pcc, objectLiteral.Name.Value) is null)
+                                if (usop.MissingObjectResolver?.Invoke(Pcc, objectLiteral.Name.Value) is null)
                                 {
                                     TypeError($"Could not find '{objectLiteral.Name.Value}' in this file!");
                                 }
                             }
                             valueClass = objectLiteral.Class;
                         }
-                        else if (literal is SymbolReference {Node: Subobject {Class: Class subObjClass}})
+                        else if (literal is SymbolReference { Node: Subobject { Class: Class subObjClass } })
                         {
                             valueClass = subObjClass;
                         }
@@ -486,7 +484,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 case ClassType targetClassLimiter:
                     if (literal is not NoneLiteral)
                     {
-                        if (literal is not ObjectLiteral {Class: ClassType literalClassType})
+                        if (literal is not ObjectLiteral { Class: ClassType literalClassType })
                         {
                             TypeError($"Expected a class literal!", literal);
                         }
@@ -507,9 +505,9 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 case DelegateType delegateType:
                     if (literal is not NoneLiteral)
                     {
-                        if (literal is not SymbolReference {Node: Function func})
+                        if (literal is not SymbolReference { Node: Function func })
                         {
-                            if (literal is ObjectLiteral {Class: ClassType {ClassLimiter: Class containingclass}} && Matches(TokenType.Dot) && Consume(TokenType.Word) is ScriptToken funcNameToken 
+                            if (literal is ObjectLiteral { Class: ClassType { ClassLimiter: Class containingclass } } && Matches(TokenType.Dot) && Consume(TokenType.Word) is ScriptToken funcNameToken
                                 && Symbols.TryGetSymbolInScopeStack(funcNameToken.Value, out func, containingclass.GetScope()))
                             {
                                 literal = new CompositeSymbolRef(literal, NewSymbolReference(func, funcNameToken, false), true, literal.StartPos, funcNameToken.EndPos);
@@ -535,11 +533,11 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 case Enumeration enumeration:
                     if (literal is not NoneLiteral)
                     {
-                        if (literal is not SymbolReference {Node: EnumValue enumVal})
+                        if (literal is not SymbolReference { Node: EnumValue enumVal })
                         {
                             var prevToken = PrevToken;
                             //this handles the case where a property has the same name as the Enumeration, and reparses it as an enumvalue
-                            if (Symbols.TryGetType(prevToken.Value, out Enumeration enum2) && enum2 == enumeration 
+                            if (Symbols.TryGetType(prevToken.Value, out Enumeration enum2) && enum2 == enumeration
                                                                                            && Matches(TokenType.Dot) && Consume(TokenType.Word) is ScriptToken enumValueToken)
                             {
                                 prevToken.SyntaxType = EF.Enum;
@@ -684,7 +682,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 TypeError($"{specificScope} has no member named '{token.Value}'!", token);
                 symbol = new VariableType("ERROR");
             }
-            
+
             return NewSymbolReference(symbol, token, false);
         }
     }

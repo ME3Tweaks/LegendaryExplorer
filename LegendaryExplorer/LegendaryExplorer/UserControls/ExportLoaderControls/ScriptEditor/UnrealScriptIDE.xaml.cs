@@ -100,6 +100,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
             {
                 UnloadExport();
             }
+
+            UnrealScriptOptionsPackage usop = new UnrealScriptOptionsPackage();
             CurrentLoadedExport = export;
             if (Pcc != CurrentFileLib?.Pcc)
             {
@@ -111,7 +113,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                 CurrentFileLib.InitializationStatusChange += CurrentFileLibOnInitialized;
                 if (IsVisible)
                 {
-                    CurrentFileLib?.InitializeAsync();
+                    CurrentFileLib?.InitializeAsync(usop);
                 }
             }
             else if (CurrentFileLib?.IsInitialized == true)
@@ -125,7 +127,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                 BusyText = "Recompiling local classes";
                 if (IsVisible)
                 {
-                    CurrentFileLib?.InitializeAsync();
+                    CurrentFileLib?.InitializeAsync(usop);
                 }
             }
             if (!IsBusy)
@@ -314,7 +316,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                 FullyInitialized = false;
                 if (IsVisible)
                 {
-                    CurrentFileLib?.InitializeAsync();
+                    CurrentFileLib?.InitializeAsync(new UnrealScriptOptionsPackage());
                 }
             }
         }
@@ -328,7 +330,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                     progressBarTimer.Start();
                 }
 
-                CurrentFileLib?.InitializeAsync();
+                CurrentFileLib?.InitializeAsync(new UnrealScriptOptionsPackage());
             }
             else
             {
@@ -375,22 +377,23 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                     return;
                 }
                 MessageLog log;
+                UnrealScriptOptionsPackage usop = new UnrealScriptOptionsPackage();
                 switch (CurrentLoadedExport.ClassName)
                 {
                     case "Class":
-                        (_, log) = UnrealScriptCompiler.CompileClass(Pcc, scriptText, CurrentFileLib, CurrentLoadedExport, CurrentLoadedExport.Parent);
+                        (_, log) = UnrealScriptCompiler.CompileClass(Pcc, scriptText, CurrentFileLib, usop, CurrentLoadedExport, CurrentLoadedExport.Parent);
                         break;
                     case "Function":
-                        (_, log) = UnrealScriptCompiler.CompileFunction(CurrentLoadedExport, scriptText, CurrentFileLib);
+                        (_, log) = UnrealScriptCompiler.CompileFunction(CurrentLoadedExport, scriptText, CurrentFileLib, usop);
                         break;
                     case "State":
-                        (_, log) = UnrealScriptCompiler.CompileState(CurrentLoadedExport, scriptText, CurrentFileLib);
+                        (_, log) = UnrealScriptCompiler.CompileState(CurrentLoadedExport, scriptText, CurrentFileLib, usop);
                         break;
                     case "ScriptStruct":
-                        (_, log) = UnrealScriptCompiler.CompileStruct(CurrentLoadedExport, scriptText, CurrentFileLib);
+                        (_, log) = UnrealScriptCompiler.CompileStruct(CurrentLoadedExport, scriptText, CurrentFileLib, usop);
                         break;
                     case "Enum":
-                        (_, log) = UnrealScriptCompiler.CompileEnum(CurrentLoadedExport, scriptText, CurrentFileLib);
+                        (_, log) = UnrealScriptCompiler.CompileEnum(CurrentLoadedExport, scriptText, CurrentFileLib, usop);
                         break;
                     case "Const":
                         OutputListBox.ItemsSource = new[] { "Cannot compile const declarations" };
@@ -414,7 +417,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                         OutputListBox.ItemsSource = new[] { "Cannot individually compile property declarations. You can edit them as part of the class." };
                         return;
                     default:
-                        (_, log) = UnrealScriptCompiler.CompileDefaultProperties(CurrentLoadedExport, scriptText, CurrentFileLib);
+                        (_, log) = UnrealScriptCompiler.CompileDefaultProperties(CurrentLoadedExport, scriptText, CurrentFileLib, usop);
                         break;
                 }
                 OutputListBox.ItemsSource = log?.Content;
@@ -485,36 +488,37 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
 
                 if (AST != null && !log.HasErrors && FullyInitialized)
                 {
+                    UnrealScriptOptionsPackage usop = new UnrealScriptOptionsPackage();
                     log.Tokens = tokens;
                     switch (AST)
                     {
                         case Class cls:
-                            AST = UnrealScriptCompiler.CompileNewClassAST(Pcc, cls, log, CurrentFileLib, out bool vfTableChanged);
+                            AST = UnrealScriptCompiler.CompileNewClassAST(Pcc, cls, log, CurrentFileLib, out bool vfTableChanged, usop);
                             if (vfTableChanged)
                             {
                                 log.LogWarning("Compiling will cause Virtual Function Table to change! All classes that depend on this one will need recompilation to work properly!");
                             }
                             break;
                         case Function func when CurrentLoadedExport.Parent is ExportEntry funcParent:
-                            AST = UnrealScriptCompiler.CompileNewFunctionBodyAST(funcParent, func, log, CurrentFileLib);
+                            AST = UnrealScriptCompiler.CompileNewFunctionBodyAST(funcParent, func, log, CurrentFileLib, usop);
                             break;
                         case State state when CurrentLoadedExport.Parent is ExportEntry stateParent:
-                            AST = UnrealScriptCompiler.CompileNewStateBodyAST(stateParent, state, log, CurrentFileLib);
+                            AST = UnrealScriptCompiler.CompileNewStateBodyAST(stateParent, state, log, CurrentFileLib, usop);
                             break;
                         case Struct strct when CurrentLoadedExport.Parent is ExportEntry structParent:
-                            AST = UnrealScriptCompiler.CompileNewStructAST(structParent, strct, log, CurrentFileLib);
+                            AST = UnrealScriptCompiler.CompileNewStructAST(structParent, strct, log, CurrentFileLib, usop);
                             break;
                         case Enumeration enumeration when CurrentLoadedExport.Parent is ExportEntry enumParent:
-                            AST = UnrealScriptCompiler.CompileNewEnumAST(enumParent, enumeration, log, CurrentFileLib);
+                            AST = UnrealScriptCompiler.CompileNewEnumAST(enumParent, enumeration, log, CurrentFileLib, usop);
                             break;
                         case VariableDeclaration varDecl when CurrentLoadedExport.Parent is ExportEntry varParent:
-                            AST = UnrealScriptCompiler.CompileNewVarDeclAST(varParent, varDecl, log, CurrentFileLib);
+                            AST = UnrealScriptCompiler.CompileNewVarDeclAST(varParent, varDecl, log, CurrentFileLib, usop);
                             break;
                         case Const cnst:
                             //no additional processing needed for consts
                             break;
                         case DefaultPropertiesBlock propertiesBlock:
-                            AST = UnrealScriptCompiler.CompileDefaultPropertiesAST(propertiesBlock, log, CurrentFileLib, CurrentLoadedExport);
+                            AST = UnrealScriptCompiler.CompileDefaultPropertiesAST(propertiesBlock, log, CurrentFileLib, CurrentLoadedExport, usop);
                             break;
                         default:
                             return;
@@ -746,13 +750,14 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                 {
                     if (FullyInitialized)
                     {
+                        UnrealScriptOptionsPackage usop = new UnrealScriptOptionsPackage();
                         if (ast is DefaultPropertiesBlock propBlock)
                         {
-                            ast = UnrealScriptCompiler.CompileDefaultPropertiesAST(propBlock, log, CurrentFileLib, CurrentLoadedExport);
+                            ast = UnrealScriptCompiler.CompileDefaultPropertiesAST(propBlock, log, CurrentFileLib, CurrentLoadedExport, usop);
                         }
                         else if (ast is Class cls)
                         {
-                            ast = UnrealScriptCompiler.CompileNewClassAST(Pcc, cls, log, CurrentFileLib, out bool vfTableChanged);
+                            ast = UnrealScriptCompiler.CompileNewClassAST(Pcc, cls, log, CurrentFileLib, out bool vfTableChanged, usop);
                             if (vfTableChanged)
                             {
                                 log.LogWarning("Virtual function table changed!");
@@ -762,11 +767,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                         {
                             ast = ast switch
                             {
-                                Function func => UnrealScriptCompiler.CompileNewFunctionBodyAST(parentExport, func, log, CurrentFileLib),
-                                State state => UnrealScriptCompiler.CompileNewStateBodyAST(parentExport, state, log, CurrentFileLib),
-                                Struct strct => UnrealScriptCompiler.CompileNewStructAST(parentExport, strct, log, CurrentFileLib),
-                                Enumeration enumeration => UnrealScriptCompiler.CompileNewEnumAST(parentExport, enumeration, log, CurrentFileLib),
-                                VariableDeclaration varDecl => UnrealScriptCompiler.CompileNewVarDeclAST(parentExport, varDecl, log, CurrentFileLib),
+                                Function func => UnrealScriptCompiler.CompileNewFunctionBodyAST(parentExport, func, log, CurrentFileLib, usop),
+                                State state => UnrealScriptCompiler.CompileNewStateBodyAST(parentExport, state, log, CurrentFileLib, usop),
+                                Struct strct => UnrealScriptCompiler.CompileNewStructAST(parentExport, strct, log, CurrentFileLib, usop),
+                                Enumeration enumeration => UnrealScriptCompiler.CompileNewEnumAST(parentExport, enumeration, log, CurrentFileLib, usop),
+                                VariableDeclaration varDecl => UnrealScriptCompiler.CompileNewVarDeclAST(parentExport, varDecl, log, CurrentFileLib, usop),
                                 _ => ast
                             };
                         }
@@ -856,14 +861,15 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
             {
                 try
                 {
+                    UnrealScriptOptionsPackage usop = new UnrealScriptOptionsPackage();
                     switch (definitonNode)
                     {
                         case Function func:
-                            return UnrealScriptLookup.FindUsagesInFile(func, CurrentFileLib);
+                            return UnrealScriptLookup.FindUsagesInFile(func, CurrentFileLib, usop);
                         case VariableDeclaration varDecl:
-                            return UnrealScriptLookup.FindUsagesInFile(varDecl, CurrentFileLib);
+                            return UnrealScriptLookup.FindUsagesInFile(varDecl, CurrentFileLib, usop);
                         case VariableType varType:
-                            return UnrealScriptLookup.FindUsagesInFile(varType, CurrentFileLib);
+                            return UnrealScriptLookup.FindUsagesInFile(varType, CurrentFileLib, usop);
                         case EnumValue enumValue:
                             break;
                     }

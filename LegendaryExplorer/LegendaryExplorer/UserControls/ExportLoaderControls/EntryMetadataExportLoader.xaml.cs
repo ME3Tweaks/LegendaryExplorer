@@ -942,7 +942,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 }
                 else if (entry is ImportEntry imp)
                 {
-                    if (EntryImporter.ResolveImport(imp) is ExportEntry resolved)
+                    if (EntryImporter.ResolveImport(imp, new PackageCache()) is ExportEntry resolved)
                     {
                         var p = new PackageEditorWindow();
                         p.Show();

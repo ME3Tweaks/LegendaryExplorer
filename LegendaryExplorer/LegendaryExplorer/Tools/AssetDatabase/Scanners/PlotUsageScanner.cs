@@ -254,7 +254,8 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Scanners
                         // Cache FileLib between function exports
                         if (e.FileLib is null) e.FileLib = new FileLib(e.Export.FileRef);
 
-                        var (node, text) = UnrealScriptCompiler.DecompileExport(e.Export, e.FileLib);
+                        UnrealScriptOptionsPackage usop = new UnrealScriptOptionsPackage();
+                            var (node, text) = UnrealScriptCompiler.DecompileExport(e.Export, e.FileLib, usop);
                         var spltFunc = text.Split(' ', '.', '(', ')');
                         for(int i = 0; i < spltFunc.Length; i++)
                         {

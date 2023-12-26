@@ -24,6 +24,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
         private readonly CodeBody Body;
         private readonly Class Self;
         private readonly MEGame Game;
+        private readonly UnrealScriptOptionsPackage USOP;
 
         private readonly CaseInsensitiveDictionary<Label> Labels = new();
 
@@ -47,13 +48,13 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
         private readonly List<Statement> gotoStatements = new();
         private readonly VariableDeclaration SelfDeclaration;
 
-        public static void ParseFunction(Function func, MEGame game, SymbolTable symbols, MessageLog log)
+        public static void ParseFunction(Function func, MEGame game, SymbolTable symbols, MessageLog log, UnrealScriptOptionsPackage usop)
         {
             symbols.PushScope(func.Name);
 
             var tokenStream = func.Body.Tokens;
 
-            var bodyParser = new CodeBodyParser(tokenStream, game, func.Body, symbols, func, log);
+            var bodyParser = new CodeBodyParser(tokenStream, game, func.Body, symbols, func, log, usop);
 
             var body = bodyParser.ParseBody();
 
@@ -61,13 +62,13 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             if (func.Locals.Any())
             {
                 bool isNotInState = func.Outer is not State;
-                var validator = new ClassValidationVisitor(log, symbols, ValidationPass.ClassAndStructMembersAndFunctionParams);
-                var validator2 = new ClassValidationVisitor(log, symbols, ValidationPass.BodyPass);
+                var validator = new ClassValidationVisitor(log, symbols, ValidationPass.ClassAndStructMembersAndFunctionParams, usop);
+                var validator2 = new ClassValidationVisitor(log, symbols, ValidationPass.BodyPass, usop);
                 foreach (VariableDeclaration local in func.Locals)
                 {
                     validator.VisitVarDecl(local, false);
                     validator2.VisitVarDecl(local, false);
-                    hasStructDefaults |= ((local.VarType as StaticArrayType)?.ElementType ?? local.VarType) is Struct s && (game.IsGame3()  ? s.DefaultProperties.Statements.Any() : isNotInState);
+                    hasStructDefaults |= ((local.VarType as StaticArrayType)?.ElementType ?? local.VarType) is Struct s && (game.IsGame3() ? s.DefaultProperties.Statements.Any() : isNotInState);
                 }
             }
             if (hasStructDefaults)
@@ -132,7 +133,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
                     var paramTokenStream = unparsedBody.Tokens;
 
-                    var paramParser = new CodeBodyParser(paramTokenStream, game, unparsedBody, symbols, func, log);
+                    var paramParser = new CodeBodyParser(paramTokenStream, game, unparsedBody, symbols, func, log, usop);
                     var parsed = paramParser.ParseExpression();
                     if (parsed is null)
                     {
@@ -154,12 +155,12 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             symbols.PopScope();
         }
 
-        public static void ParseState(State state, MEGame game, SymbolTable symbols, MessageLog log = null, bool parseFunctions = true)
+        public static void ParseState(State state, MEGame game, SymbolTable symbols, UnrealScriptOptionsPackage usop, MessageLog log = null, bool parseFunctions = true)
         {
             symbols.PushScope(state.Name);
 
             var tokenStream = state.Body.Tokens;
-            var bodyParser = new CodeBodyParser(tokenStream, game, state.Body, symbols, state, log);
+            var bodyParser = new CodeBodyParser(tokenStream, game, state.Body, symbols, state, log, usop);
 
             var body = bodyParser.ParseBody();
 
@@ -177,24 +178,25 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             {
                 foreach (Function stateFunction in state.Functions)
                 {
-                    ParseFunction(stateFunction, game, symbols, log);
+                    ParseFunction(stateFunction, game, symbols, log, usop);
                 }
             }
 
             symbols.PopScope();
         }
 
-        public static void ParseReplicationBlock(Class cls, MEGame game, SymbolTable symbols, MessageLog log)
+        public static void ParseReplicationBlock(Class cls, MEGame game, SymbolTable symbols, MessageLog log, UnrealScriptOptionsPackage usop)
         {
             symbols.RevertToObjectStack();
             symbols.GoDirectlyToStack(cls.GetScope());
             TokenStream tokenStream = cls.ReplicationBlock.Tokens;
-            var repBlockParser = new CodeBodyParser(tokenStream, game, cls.ReplicationBlock, symbols, cls, log);
+            var repBlockParser = new CodeBodyParser(tokenStream, game, cls.ReplicationBlock, symbols, cls, log, usop);
             repBlockParser.ParseReplicationBlock();
         }
 
-        private CodeBodyParser(TokenStream tokens, MEGame game, CodeBody body, SymbolTable symbols, ASTNode containingNode, MessageLog log = null)
+        private CodeBodyParser(TokenStream tokens, MEGame game, CodeBody body, SymbolTable symbols, ASTNode containingNode, MessageLog log, UnrealScriptOptionsPackage usop)
         {
+            this.USOP = usop;
             Game = game;
             Log = log ?? new MessageLog();
             Symbols = symbols;
@@ -303,7 +305,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                         throw ParseError("Expected a variable name after the ','", CurrentPosition);
                     }
                 }
-                
+
                 statements.Add(new ReplicationStatement(condition, symbols, ifToken.StartPos, PrevToken.EndPos));
             } while (!Tokens.AtEnd());
             if (Tokens.CurrentItem.Type != TokenType.EOF && !Tokens.CurrentItem.StartPos.Equals(Body.EndPos))
@@ -344,20 +346,20 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             {
                 switch (stmnt)
                 {
-                    case Goto {ContainingForEach: null} g:
-                    {
-                        if (labels.FirstOrDefault(l => l.Name.CaseInsensitiveEquals(g.LabelName)) is Label label)
+                    case Goto { ContainingForEach: null } g:
                         {
-                            g.Label = label;
-                        }
-                        else
-                        {
-                            ParseError($"Could not find label '{g.LabelName}'! (gotos cannot jump out of or into a foreach)", g);
-                        }
+                            if (labels.FirstOrDefault(l => l.Name.CaseInsensitiveEquals(g.LabelName)) is Label label)
+                            {
+                                g.Label = label;
+                            }
+                            else
+                            {
+                                ParseError($"Could not find label '{g.LabelName}'! (gotos cannot jump out of or into a foreach)", g);
+                            }
 
-                        break;
-                    }
-                    case StateGoto {LabelExpression: NameLiteral nameLiteral} sg when labels.FirstOrDefault(l => l.Name.CaseInsensitiveEquals(nameLiteral.Value)) is null:
+                            break;
+                        }
+                    case StateGoto { LabelExpression: NameLiteral nameLiteral } sg when labels.FirstOrDefault(l => l.Name.CaseInsensitiveEquals(nameLiteral.Value)) is null:
                         ParseError($"Could not find label '{nameLiteral.Value}'! (gotos cannot jump out of or into a foreach)", sg);
                         break;
                 }
@@ -620,7 +622,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 }
                 AddConversion(exprType, ref value);
 
-                if (expr is SymbolReference { Node: VariableDeclaration decl})
+                if (expr is SymbolReference { Node: VariableDeclaration decl })
                 {
                     if (decl.IsConst)
                     {
@@ -651,8 +653,8 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
             static bool ExpressionHasEffect(Expression expression)
             {
-                return expression is FunctionCall or DelegateCall or PostOpReference or CompositeSymbolRef {InnerSymbol: FunctionCall or DelegateCall} 
-                       || expression is PreOpReference preOp && preOp.Operator.HasOutParams || expression is InOpReference inOp && inOp.Operator.HasOutParams 
+                return expression is FunctionCall or DelegateCall or PostOpReference or CompositeSymbolRef { InnerSymbol: FunctionCall or DelegateCall }
+                       || expression is PreOpReference preOp && preOp.Operator.HasOutParams || expression is InOpReference inOp && inOp.Operator.HasOutParams
                        || expression is DynArrayOperation and not DynArrayLength
                        || expression is ConditionalExpression ternary && ExpressionHasEffect(ternary.TrueExpression) && ExpressionHasEffect(ternary.FalseExpression);
             }
@@ -942,7 +944,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             FunctionCall fc = iterator switch
             {
                 FunctionCall call => call,
-                CompositeSymbolRef {InnerSymbol: FunctionCall cfc} => cfc,
+                CompositeSymbolRef { InnerSymbol: FunctionCall cfc } => cfc,
                 _ => null
             };
             if (fc != null)
@@ -963,7 +965,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             {
                 throw ParseError("Expected an iterator expression after '{FOREACH}'!", CurrentPosition);
             }
-            else if (iterator is not DynArrayIterator && iterator is not CompositeSymbolRef {InnerSymbol: DynArrayIterator})
+            else if (iterator is not DynArrayIterator && iterator is not CompositeSymbolRef { InnerSymbol: DynArrayIterator })
             {
                 TypeError($"Expected an iterator function call or dynamic array iterator after '{FOREACH}'!", iterator);
             }
@@ -987,7 +989,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 for (; gotoStatementsIdx < gotoStatements.Count; gotoStatementsIdx++)
                 {
                     var stmnt = gotoStatements[gotoStatementsIdx];
-                    if (stmnt is Goto {ContainingForEach: null} g)
+                    if (stmnt is Goto { ContainingForEach: null } g)
                     {
                         g.ContainingForEach = forEach;
                         if (labels.FirstOrDefault(l => l.Name.CaseInsensitiveEquals(g.LabelName)) is Label label)
@@ -1336,8 +1338,8 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     //Handle built-in comparison operators for delegates and structs
                     bool isEqualEqual = opType is TokenType.Equals;
                     bool isComparison = isEqualEqual || opType is TokenType.NotEquals;
-                    if (isComparison && (lType is DelegateType && rType is DelegateType 
-                                      || lType is DelegateType && rType is null 
+                    if (isComparison && (lType is DelegateType && rType is DelegateType
+                                      || lType is DelegateType && rType is null
                                       || rType is DelegateType && lType is null))
                     {
                         if (lhs is NoneLiteral noneLit)
@@ -1383,8 +1385,8 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 }
                 else
                 {
-                    
-                    if (bestMatch.LeftOperand.VarType is Class {IsInterface: true} c)
+
+                    if (bestMatch.LeftOperand.VarType is Class { IsInterface: true } c)
                     {
                         VariableType varType = lhs.ResolveType() ?? rhs.ResolveType() ?? c;
                         AddConversion(varType, ref lhs);
@@ -1395,7 +1397,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                         AddConversion(bestMatch.LeftOperand.VarType, ref lhs);
                         AddConversion(bestMatch.RightOperand.VarType, ref rhs);
                     }
-                    
+
                     expr = new InOpReference(bestMatch, lhs, rhs, lhs.StartPos, rhs.EndPos);
                 }
             }
@@ -1544,7 +1546,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 return null;
             }
 
-            if (Consume(TokenType.Increment, TokenType.Decrement) is {} postFixToken)
+            if (Consume(TokenType.Increment, TokenType.Decrement) is { } postFixToken)
             {
                 postFixToken.SyntaxType = EF.Operator;
                 if (expr is DynArrayLength)
@@ -1633,7 +1635,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             Expression result = InnerCompositeRef();
 
             //if this is a reference to a constant, we need to replace it with the constant's value
-            if (result is SymbolReference {Node: Const c})
+            if (result is SymbolReference { Node: Const c })
             {
                 result = c.Literal;
             }
@@ -1658,7 +1660,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     {
                         TypeError("Cannot call an instance delegate from a static function!", lhs);
                     }
-                    else if (lhs is not DefaultReference && lhs is SymbolReference { Node: VariableDeclaration { Outer: Class}})
+                    else if (lhs is not DefaultReference && lhs is SymbolReference { Node: VariableDeclaration { Outer: Class } })
                     {
                         TypeError("Cannot access an instance variable from a static function!", lhs);
                     }
@@ -1734,7 +1736,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                         specificScope = "Object.Field.Struct.State.Class";
                     }
                     bool isStructMemberExpression = lhsType is Struct;
-                    
+
                     if (CurrentIs(DEFAULT))
                     {
                         switch (lhsType)
@@ -1753,7 +1755,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     Expression rhs = CallOrAccess(isStaticAccess);
 
                     ExpressionScopes.Pop();
-                    
+
                     if (rhs is null)
                     {
                         throw ParseError("Expected a valid member name to follow the dot!", CurrentPosition);
@@ -1762,7 +1764,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
                     if (isConst)
                     {
-                        if (rhs is not SymbolReference {Node: Const})
+                        if (rhs is not SymbolReference { Node: Const })
                         {
                             TypeError("Expected member after 'const.' to be a Const!", rhs);
                         }
@@ -1781,55 +1783,55 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     switch (rhs)
                     {
                         case ArraySymbolRef asr:
-                        {
-                            bool isClassContext = lhsType is ClassType && (isStaticAccess || asr.Array is DefaultReference);
-                            var csf = new CompositeSymbolRef(lhs, asr.Array, isClassContext, lhs.StartPos, asr.Array.EndPos)
                             {
-                                IsStructMemberExpression = isStructMemberExpression
-                            };
-                            asr.StartPos = csf.StartPos;
-                            asr.Array = csf;
-                            lhs = asr;
-                            break;
-                        }
+                                bool isClassContext = lhsType is ClassType && (isStaticAccess || asr.Array is DefaultReference);
+                                var csf = new CompositeSymbolRef(lhs, asr.Array, isClassContext, lhs.StartPos, asr.Array.EndPos)
+                                {
+                                    IsStructMemberExpression = isStructMemberExpression
+                                };
+                                asr.StartPos = csf.StartPos;
+                                asr.Array = csf;
+                                lhs = asr;
+                                break;
+                            }
                         case DynArrayIterator dai:
-                        {
-                            bool isClassContext = lhsType is ClassType && (isStaticAccess || dai.DynArrayExpression is DefaultReference);
-                            var csf = new CompositeSymbolRef(lhs, dai.DynArrayExpression, isClassContext, lhs.StartPos, dai.DynArrayExpression.EndPos)
                             {
-                                IsStructMemberExpression = isStructMemberExpression
-                            };
-                            dai.StartPos = csf.StartPos;
-                            dai.DynArrayExpression = csf;
-                            lhs = dai;
-                            break;
-                        }
+                                bool isClassContext = lhsType is ClassType && (isStaticAccess || dai.DynArrayExpression is DefaultReference);
+                                var csf = new CompositeSymbolRef(lhs, dai.DynArrayExpression, isClassContext, lhs.StartPos, dai.DynArrayExpression.EndPos)
+                                {
+                                    IsStructMemberExpression = isStructMemberExpression
+                                };
+                                dai.StartPos = csf.StartPos;
+                                dai.DynArrayExpression = csf;
+                                lhs = dai;
+                                break;
+                            }
                         case DynArrayLength dal:
-                        {
-                            bool isClassContext = lhsType is ClassType && (isStaticAccess || dal.DynArrayExpression is DefaultReference);
-                            var csf = new CompositeSymbolRef(lhs, dal.DynArrayExpression, isClassContext, lhs.StartPos, dal.DynArrayExpression.EndPos)
                             {
-                                IsStructMemberExpression = isStructMemberExpression
-                            };
-                            dal.StartPos = csf.StartPos;
-                            dal.DynArrayExpression = csf;
-                            lhs = dal;
-                            break;
-                        }
-                        case SymbolReference {Node: EnumValue ev} sr:
+                                bool isClassContext = lhsType is ClassType && (isStaticAccess || dal.DynArrayExpression is DefaultReference);
+                                var csf = new CompositeSymbolRef(lhs, dal.DynArrayExpression, isClassContext, lhs.StartPos, dal.DynArrayExpression.EndPos)
+                                {
+                                    IsStructMemberExpression = isStructMemberExpression
+                                };
+                                dal.StartPos = csf.StartPos;
+                                dal.DynArrayExpression = csf;
+                                lhs = dal;
+                                break;
+                            }
+                        case SymbolReference { Node: EnumValue ev } sr:
                             lhs = NewSymbolReference(ev, new ScriptToken(TokenType.Word, sr.Name, sr.StartPos, sr.EndPos), false);
                             break;
                         default:
-                        {
-                            bool isClassContext = lhsType is ClassType && (isStaticAccess || rhs is DefaultReference);
-                            lhs = new CompositeSymbolRef(lhs, rhs, isClassContext, lhs.StartPos, rhs.EndPos)
                             {
-                                IsStructMemberExpression = isStructMemberExpression
-                            };
-                            break;
-                        }
+                                bool isClassContext = lhsType is ClassType && (isStaticAccess || rhs is DefaultReference);
+                                lhs = new CompositeSymbolRef(lhs, rhs, isClassContext, lhs.StartPos, rhs.EndPos)
+                                {
+                                    IsStructMemberExpression = isStructMemberExpression
+                                };
+                                break;
+                            }
                     }
-                    
+
                 }
 
                 return lhs;
@@ -1957,7 +1959,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 {
                     TypeError($"Expected 'comparefunction' argument to '{SORT}' to be a delegate that takes two parameters of type '{elementType.DisplayName()}' and returns an int!", comparefunctionArg);
                 }
-                
+
                 ExpectRightParen();
                 return new DynArraySort(dynArrayRef, comparefunctionArg, dynArrayRef.StartPos, PrevToken.EndPos);
             }
@@ -2018,7 +2020,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
             if (isStaticAccess)
             {
-                if (expr is not SymbolReference {Node: Function { IsStatic: true } })
+                if (expr is not SymbolReference { Node: Function { IsStatic: true } })
                 {
                     TypeError("'static.' can only be used for calling a function with the 'static' modifier!", expr);
                 }
@@ -2079,7 +2081,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 TypeError("Array index must be or evaluate to an integer!", arrIndex);
             }
 
-            if (Consume(TokenType.RightSqrBracket) is {} endTok)
+            if (Consume(TokenType.RightSqrBracket) is { } endTok)
             {
                 expr = new ArraySymbolRef(expr, arrIndex, expr.StartPos, endTok.EndPos);
                 //marking the ] as being of the array element type so that autocomplete will work
@@ -2105,7 +2107,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     case Function fn:
                         func = fn;
                         break;
-                    case VariableDeclaration {VarType: DelegateType delType}:
+                    case VariableDeclaration { VarType: DelegateType delType }:
                         isDelegateCall = true;
                         func = delType.DefaultFunction;
                         break;
@@ -2187,7 +2189,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                                 case SymbolReference symRef:
                                     CheckIfConst(symRef);
                                     break;
-                                case ConditionalExpression { TrueExpression: SymbolReference trueSymRef, FalseExpression: SymbolReference falseSymRef}:
+                                case ConditionalExpression { TrueExpression: SymbolReference trueSymRef, FalseExpression: SymbolReference falseSymRef }:
                                     CheckIfConst(trueSymRef);
                                     CheckIfConst(falseSymRef);
                                     break;
@@ -2196,8 +2198,8 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                                     break;
                             }
 
-                            if (currentArg is ArraySymbolRef {IsDynamic: true} 
-                                || currentArg is ConditionalExpression cndExp && (cndExp.TrueExpression is ArraySymbolRef { IsDynamic: true } || cndExp.FalseExpression is ArraySymbolRef { IsDynamic: true}))
+                            if (currentArg is ArraySymbolRef { IsDynamic: true }
+                                || currentArg is ConditionalExpression cndExp && (cndExp.TrueExpression is ArraySymbolRef { IsDynamic: true } || cndExp.FalseExpression is ArraySymbolRef { IsDynamic: true }))
                             {
                                 Log.LogWarning("Argument given to an out parameter should not be a dynamic array element!\n" +
                                                "Modification of the parameter inside the function will NOT modify the array.", currentArg.StartPos, currentArg.EndPos);
@@ -2211,7 +2213,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                             }
                             if (!(parmType is Enumeration && currentArg is IntegerLiteral) && !NodeUtils.TypeEqual(parmType, argType))
                             {
-                                if (parmType is DynamicArrayType {ElementType: Class classA} && argType is DynamicArrayType {ElementType: Class classB} && classA.SameAsOrSubClassOf(classB))
+                                if (parmType is DynamicArrayType { ElementType: Class classA } && argType is DynamicArrayType { ElementType: Class classB } && classA.SameAsOrSubClassOf(classB))
                                 {
                                     Log.LogWarning($"Array types mismatch, but '{classA.Name}' is a subclass of '{classB.Name}' so this might work. Google 'Array Covariance' for why this is dangerous.", currentArg.StartPos, currentArg.EndPos);
                                 }
@@ -2464,7 +2466,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                         isState = true;
                         ExpressionScopes.Push((Self.GetInheritanceString(), false));
                     }
-                
+
                     if (!Matches(TokenType.Word))
                     {
                         throw ParseError($"Expected function name after '{GLOBAL}'!", CurrentPosition);
@@ -2586,7 +2588,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             {
                 if (Matches(TokenType.LeftParenth))
                 {
-                    if (Consume(TokenType.Word) is {} className)
+                    if (Consume(TokenType.Word) is { } className)
                     {
                         if (!Symbols.TryGetType(className.Value, out VariableType vartype))
                         {
@@ -2822,7 +2824,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     if (destType is Enumeration enm && Matches(TokenType.Dot))
                     {
                         token.SyntaxType = EF.Enum;
-                        if (Consume(TokenType.Word) is {} enumValName 
+                        if (Consume(TokenType.Word) is { } enumValName
                          && enm.Values.FirstOrDefault(val => val.Name.CaseInsensitiveEquals(enumValName.Value)) is EnumValue enumValue)
                         {
                             Tokens.AddDefinitionLink(enm, enumValName);
@@ -2867,7 +2869,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 TypeError($"{specificScope} has no member named '{token.Value}'!", token);
                 symbol = new VariableType("ERROR");
             }
-            
+
             if (symbol is Function func)
             {
                 CheckAccesibility(func);
@@ -2948,7 +2950,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
         }
 
         #endregion
-        
+
         private static bool IsLValue(Expression expr)
         {
             //TODO: is this correct?

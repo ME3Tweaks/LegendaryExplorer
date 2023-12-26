@@ -51,7 +51,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
                     defaultPropCollectionNeedsFixing = true;
                 }
             }
-            
+
             foreach (ASTNode node in ChildNodes)
             {
                 node.Outer = this;
@@ -206,15 +206,15 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 
         private PropertyCollection DefaultPropertyCollection;
         private bool defaultPropCollectionNeedsFixing;
-        public PropertyCollection GetDefaultPropertyCollection(IMEPackage pcc, bool stripTransients = false, PackageCache packageCache = null)
+        public PropertyCollection GetDefaultPropertyCollection(IMEPackage pcc, UnrealScriptOptionsPackage usop, bool stripTransients = false)
         {
             if (DefaultPropertyCollection is null)
             {
-                DefaultPropertyCollection = WriteDefaultsOntoProps(MakeBaseProps(pcc, packageCache), pcc, packageCache);
+                DefaultPropertyCollection = WriteDefaultsOntoProps(MakeBaseProps(pcc, usop), pcc, usop);
             }
             else if (defaultPropCollectionNeedsFixing)
             {
-                var props = MakeBaseProps(pcc, packageCache);
+                var props = MakeBaseProps(pcc, usop);
                 foreach (Property property in DefaultPropertyCollection)
                 {
                     props.AddOrReplaceProp(property);
@@ -223,19 +223,19 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
                 defaultPropCollectionNeedsFixing = false;
             }
 
-            return stripTransients ? StripTransients(pcc, packageCache) : DefaultPropertyCollection.DeepClone();
+            return stripTransients ? StripTransients(pcc, usop) : DefaultPropertyCollection.DeepClone();
         }
 
-        private PropertyCollection WriteDefaultsOntoProps(PropertyCollection props, IMEPackage pcc, PackageCache packageCache)
+        private PropertyCollection WriteDefaultsOntoProps(PropertyCollection props, IMEPackage pcc, UnrealScriptOptionsPackage usop)
         {
             if (DefaultProperties?.Statements is not null && DefaultProperties.Statements.Any())
             {
-                ScriptPropertiesCompiler.CompileStructDefaults(this, props, pcc, packageCache);
+                ScriptPropertiesCompiler.CompileStructDefaults(this, props, pcc, usop);
             }
             return props;
         }
 
-        public PropertyCollection MakeBaseProps(IMEPackage pcc, PackageCache packageCache, bool useStructDefaultsForStructProperties = true)
+        public PropertyCollection MakeBaseProps(IMEPackage pcc, UnrealScriptOptionsPackage usop, bool useStructDefaultsForStructProperties = true)
         {
             var props = new PropertyCollection();
             foreach (VariableDeclaration varDeclAST in VariableDeclarations)
@@ -316,7 +316,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
                             break;
                         case Struct structType:
                             prop = new StructProperty(NameReference.FromInstancedString(structType.Name),
-                                useStructDefaultsForStructProperties ? structType.GetDefaultPropertyCollection(pcc, false, packageCache) : structType.MakeBaseProps(pcc, packageCache, useStructDefaultsForStructProperties),
+                                useStructDefaultsForStructProperties ? structType.GetDefaultPropertyCollection(pcc, usop, false) : structType.MakeBaseProps(pcc, usop, useStructDefaultsForStructProperties),
                                 propName, structType.IsImmutable);
                             break;
                         default:
@@ -354,7 +354,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
             }
             if (Parent is Struct parentStruct)
             {
-                foreach (Property property in parentStruct.GetDefaultPropertyCollection(pcc, false, packageCache))
+                foreach (Property property in parentStruct.GetDefaultPropertyCollection(pcc, usop, false))
                 {
                     props.Add(property);
                 }
@@ -362,7 +362,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
             return props;
         }
 
-        private PropertyCollection StripTransients(IMEPackage pcc, PackageCache packageCache)
+        private PropertyCollection StripTransients(IMEPackage pcc, UnrealScriptOptionsPackage usop)
         {
             var props = new PropertyCollection();
             foreach ((VariableDeclaration varDecl, Property prop) in VariableDeclarations.Where(varDecl => !varDecl.Flags.Has(EPropertyFlags.Native)).Zip(DefaultPropertyCollection))
@@ -374,7 +374,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
                 if (prop is StructProperty structProp)
                 {
                     var strct = (Struct)varDecl.VarType;
-                    props.Add(new StructProperty(structProp.StructType, strct.GetDefaultPropertyCollection(pcc, true, packageCache), structProp.Name, strct.IsImmutable));
+                    props.Add(new StructProperty(structProp.StructType, strct.GetDefaultPropertyCollection(pcc, usop, true), structProp.Name, strct.IsImmutable));
                 }
                 else
                 {
@@ -384,7 +384,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
             return props;
         }
 
-        public bool IsNativeCompatibleWith(Struct other, MEGame game)
+        public bool IsNativeCompatibleWith(Struct other, MEGame game, UnrealScriptOptionsPackage usop)
         {
             if (VariableDeclarations.Count != other.VariableDeclarations.Count)
             {
@@ -392,7 +392,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
             }
             foreach ((VariableDeclaration ours, VariableDeclaration theirs) in VariableDeclarations.Zip(other.VariableDeclarations))
             {
-                if (ours.Name != theirs.Name 
+                if (ours.Name != theirs.Name
                     || !string.Equals(ours.VarType.Name, theirs.VarType.Name, StringComparison.OrdinalIgnoreCase)
                     || ours.ArrayLength != theirs.ArrayLength)
                 {
@@ -405,7 +405,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
             }
             foreach ((VariableType ours, VariableType theirs) in TypeDeclarations.Zip(other.TypeDeclarations))
             {
-                if (!((Struct)ours).IsNativeCompatibleWith((Struct)theirs, game))
+                if (!((Struct)ours).IsNativeCompatibleWith((Struct)theirs, game, usop))
                 {
                     return false;
                 }

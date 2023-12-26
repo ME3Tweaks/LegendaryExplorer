@@ -19,19 +19,19 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
         private ExportEntry Default__Export;
         private ExportEntry Default__Archetype;
         private bool ShouldStripTransients;
-        private readonly PackageCache packageCache;
         private bool IsStructDefaults;
-        private Func<IMEPackage, string, IEntry> MissingObjectResolver;
 
-        private ScriptPropertiesCompiler(IMEPackage pcc, PackageCache packageCache = null)
+        private readonly UnrealScriptOptionsPackage usop;
+
+        private ScriptPropertiesCompiler(IMEPackage pcc, UnrealScriptOptionsPackage usop)
         {
-            this.packageCache = packageCache;
+            this.usop = usop;
             Pcc = pcc;
         }
 
-        public static void CompileStructDefaults(Struct structAST, PropertyCollection props, IMEPackage pcc, PackageCache packageCache = null)
+        public static void CompileStructDefaults(Struct structAST, PropertyCollection props, IMEPackage pcc, UnrealScriptOptionsPackage usop)
         {
-            var compiler = new ScriptPropertiesCompiler(pcc, packageCache)
+            var compiler = new ScriptPropertiesCompiler(pcc, usop)
             {
                 IsStructDefaults = true
             };
@@ -42,9 +42,9 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             }
         }
 
-        public static PropertyCollection CompileProps(DefaultPropertiesBlock block, IMEPackage pcc, PackageCache packageCache = null)
+        public static PropertyCollection CompileProps(DefaultPropertiesBlock block, IMEPackage pcc, UnrealScriptOptionsPackage usop)
         {
-            var compiler = new ScriptPropertiesCompiler(pcc, packageCache) { ShouldStripTransients = true };
+            var compiler = new ScriptPropertiesCompiler(pcc, usop) { ShouldStripTransients = true };
             var props = new PropertyCollection();
             foreach (Statement statement in block.Statements)
             {
@@ -53,7 +53,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             return props;
         }
 
-        public static void CompileDefault__Object(DefaultPropertiesBlock defaultsAST, ExportEntry classExport, ref ExportEntry defaultsExport, PackageCache packageCache = null, string gameRootOverride = null, Func<IMEPackage, string, IEntry> missingObjectResolver = null)
+        public static void CompileDefault__Object(DefaultPropertiesBlock defaultsAST, ExportEntry classExport, ref ExportEntry defaultsExport, UnrealScriptOptionsPackage usop)
         {
             IMEPackage pcc = classExport.FileRef;
             var defaultsExportObjectName = new NameReference($"Default__{classExport.ObjectNameString}", classExport.indexValue);
@@ -66,10 +66,9 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             }
             var cls = (Class)defaultsAST.Outer;
 
-            var compiler = new ScriptPropertiesCompiler(pcc, packageCache)
+            var compiler = new ScriptPropertiesCompiler(pcc, usop)
             {
                 Default__Export = defaultsExport,
-                MissingObjectResolver = missingObjectResolver
             };
 
             defaultsExport.SuperClass = null;
@@ -89,7 +88,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
             compiler.Default__Archetype = defaultsExport.Archetype switch
             {
-                ImportEntry defaultArchetypeImport => EntryImporter.ResolveImport(defaultArchetypeImport, packageCache, null, "INT", gameRootOverride: gameRootOverride),
+                ImportEntry defaultArchetypeImport => EntryImporter.ResolveImport(defaultArchetypeImport, usop?.Cache, "INT", gameRootOverride: usop?.GamePathOverride, fileResolver: usop?.CustomFileResolver),
                 ExportEntry defaultArchetypeExport => defaultArchetypeExport,
                 _ => null
             };
@@ -99,11 +98,11 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             defaultsExport.WriteProperties(props);
         }
 
-        public static void CompilePropertiesForNormalObject(DefaultPropertiesBlock defaultsAST, ExportEntry export, PackageCache packageCache = null, string gameRootOverride = null)
+        public static void CompilePropertiesForNormalObject(DefaultPropertiesBlock defaultsAST, ExportEntry export, UnrealScriptOptionsPackage usop)
         {
             IMEPackage pcc = export.FileRef;
 
-            var compiler = new ScriptPropertiesCompiler(pcc, packageCache)
+            var compiler = new ScriptPropertiesCompiler(pcc, usop)
             {
                 Default__Export = export
             };
@@ -159,10 +158,10 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             return props;
         }
 
-        private void CreateSubObject(Subobject subObject, ExportEntry parent, ref ExportEntry subExport, string gamePathOverride = null)
+        private void CreateSubObject(Subobject subObject, ExportEntry parent, ref ExportEntry subExport)
         {
             var objName = NameReference.FromInstancedString(subObject.NameDeclaration.Name);
-            IEntry classEntry = EntryImporter.EnsureClassIsInFile(Pcc, subObject.Class.Name, new RelinkerOptionsPackage(), gamePathOverride);
+            IEntry classEntry = EntryImporter.EnsureClassIsInFile(Pcc, subObject.Class.Name, new RelinkerOptionsPackage(), usop?.GamePathOverride);
             if (subExport is null)
             {
                 if (Pcc.TryGetTrash(out subExport))
@@ -209,7 +208,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     {
                         if (archetypeRoot.Archetype is ImportEntry aimp)
                         {
-                            archetypeRoot = EntryImporter.ResolveImport(aimp, packageCache, null, "INT", gameRootOverride: gamePathOverride);
+                            archetypeRoot = EntryImporter.ResolveImport(aimp, usop.Cache, "INT", gameRootOverride: usop?.GamePathOverride);
                             // If we can't resolve import.... ?
                         }
                         else
@@ -222,7 +221,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     var baseDefault = classDefaultObject switch
                     {
                         ExportEntry exp => exp,
-                        ImportEntry imp => EntryImporter.ResolveImport(imp, packageCache, null, "INT", gameRootOverride: gamePathOverride),
+                        ImportEntry imp => EntryImporter.ResolveImport(imp, usop.Cache, "INT", gameRootOverride: usop?.GamePathOverride),
                         _ => null
                     };
                     if (baseDefault is not null)
@@ -275,7 +274,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             switch (type)
             {
                 case ClassType:
-                    prop = new ObjectProperty(literal is NoneLiteral ? null : CompilerUtils.ResolveClass((Class)((ClassType)((ObjectLiteral)literal).Class).ClassLimiter, Pcc), propName);
+                    prop = new ObjectProperty(literal is NoneLiteral ? null : CompilerUtils.ResolveClass((Class)((ClassType)((ObjectLiteral)literal).Class).ClassLimiter, Pcc, usop), propName);
                     break;
                 case Class cls:
                     IEntry entry;
@@ -290,11 +289,11 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                         case ObjectLiteral objectLiteral:
                             if (objectLiteral.Class is ClassType { ClassLimiter: Class @class })
                             {
-                                entry = CompilerUtils.ResolveClass(@class, Pcc);
+                                entry = CompilerUtils.ResolveClass(@class, Pcc, usop);
                             }
                             else
                             {
-                                entry = Pcc.FindEntry(objectLiteral.Name.Value) ?? MissingObjectResolver?.Invoke(Pcc, objectLiteral.Name.Value);
+                                entry = Pcc.FindEntry(objectLiteral.Name.Value) ?? usop?.MissingObjectResolver?.Invoke(Pcc, objectLiteral.Name.Value);
                             }
                             break;
                         default:
@@ -317,7 +316,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     {
                         if (literal is CompositeSymbolRef csf)
                         {
-                            objUIndex = GetClassDefaultObject(CompilerUtils.ResolveClass((Class)((ClassType)((ObjectLiteral)csf.OuterSymbol).Class).ClassLimiter, Pcc)).UIndex;
+                            objUIndex = GetClassDefaultObject(CompilerUtils.ResolveClass((Class)((ClassType)((ObjectLiteral)csf.OuterSymbol).Class).ClassLimiter, Pcc, usop)).UIndex;
                             literal = csf.InnerSymbol;
                         }
 
@@ -387,7 +386,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     break;
                 case Struct @struct:
                     //todo: Spec says that unspecified properties on a struct value should be inherited from base class's default for that property
-                    var structProps = (IsStructDefaults || @struct.IsAtomic) ? @struct.GetDefaultPropertyCollection(Pcc, ShouldStripTransients, packageCache) : new PropertyCollection();
+                    var structProps = (IsStructDefaults || @struct.IsAtomic) ? @struct.GetDefaultPropertyCollection(Pcc, usop, ShouldStripTransients) : new PropertyCollection();
                     foreach (AssignStatement statement in ((StructLiteral)literal).Statements)
                     {
                         structProps.AddOrReplaceProp(ConvertToProperty(statement, subObjectDict));
@@ -489,7 +488,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
         {
             if (classEntry is ExportEntry export)
             {
-                var classObj = export.GetBinaryData<UClass>(packageCache);
+                var classObj = export.GetBinaryData<UClass>(usop.Cache);
                 return Pcc.GetEntry(classObj.Defaults);
             }
             string parentPath = classEntry.ParentInstancedFullPath;

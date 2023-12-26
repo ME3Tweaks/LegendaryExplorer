@@ -22,7 +22,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 return Array.Empty<byte>();
             }
 
-            if (export.IsTexture())
+            if (export.IsTexture() && export.Game != newGame) // 12/24/2023 - Do not try to convert textures if the game isn't changing. It might try to internalize things that don't need to be
             {
                 return ConvertTexture2D(export, newGame);
             }
@@ -351,7 +351,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 int lightMapFlags = 0;
                 if (export.Game >= MEGame.ME3)
                 {
-                    lightMapFlags = bin.ReadInt32();
+                    lightMapFlags = bin.ReadInt32(); // 12/24/2023 Why is this reading??? This is throwing some exceptions reading EOF as it's meant for write not read - Mgamerz
                 }
                 if (newGame >= MEGame.ME3)
                 {

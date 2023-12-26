@@ -2470,7 +2470,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                             return;
                         }
                     }
-                    else if (EntryImporter.ResolveImport(convImport) is ExportEntry fauxExport)
+                    else if (EntryImporter.ResolveImport(convImport, new PackageCache()) is ExportEntry fauxExport)
                     {
                         using var convFile = MEPackageHandler.OpenMEPackage(fauxExport.FileRef.FilePath);
                         var convExport = convFile.GetUExport(fauxExport.UIndex);
@@ -2927,7 +2927,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 string className = objClass.ClassName;
                 if (objClass is ImportEntry imp)
                 {
-                    objClass = EntryImporter.ResolveImport(imp);
+                    objClass = EntryImporter.ResolveImport(imp, new PackageCache());
                 }
 
                 if (objClass != null)
