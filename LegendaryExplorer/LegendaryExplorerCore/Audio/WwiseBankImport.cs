@@ -167,7 +167,15 @@ namespace LegendaryExplorerCore.Audio
                 {
                     if (localization != MELocalization.None)
                     {
-                        parentPackage = ExportCreator.CreatePackageExport(package, localization.ToString(), bankExport.Parent);
+                        var localpath = package.FindExport($"{bankExport.Parent.InstancedFullPath}.{localization.ToString()}", "Package");
+                        if(localpath == null)
+                        {
+                            parentPackage = ExportCreator.CreatePackageExport(package, localization.ToString(), bankExport.Parent);
+                        }
+                        else
+                        {
+                            parentPackage = localpath;
+                        }
                     }
                 }
                 foreach (var streamInfo in referencedStreamingAudio)
