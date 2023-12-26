@@ -33,7 +33,7 @@ namespace LegendaryExplorerCore.Packages
         /// Reconstructs a package file in a more sensible layout.
         /// </summary>
         /// <param name="package">Package file to reconstruct</param>
-        public static IMEPackage ResynthesizePackage(IMEPackage package)
+        public static IMEPackage ResynthesizePackage(IMEPackage package, PackageCache cache)
         {
             var newPackage = MEPackageHandler.CreateEmptyPackage(package.FilePath, package.Game);
             (newPackage as MEPackage).setFlags((package as MEPackage).Flags);
@@ -45,7 +45,7 @@ namespace LegendaryExplorerCore.Packages
             // Step 0: Convert imports to exports where necessary.
             foreach (var entry in package.Imports.Where(x => x.ClassName == "Package" && EntryOrdering.HasExportChildren(x)).ToList())
             {
-                var import = EntryImporter.ResolveImport(entry, null); // Should we cache here?
+                var import = EntryImporter.ResolveImport(entry, cache); // Should we cache here?
                 if (import != null)
                 {
                     var origName = entry.ObjectName;
@@ -236,7 +236,7 @@ namespace LegendaryExplorerCore.Packages
             Entry = entry;
             // This might no longer be necessary
             //ConvertToExport = entry is ImportEntry ientry && HasExportChildren(ientry);
-            
+
             package ??= entry.FileRef;
             var exports = package.Exports.Where(x => x.Parent == entry && !x.IsTrash()).ToList();
             var imports = package.Imports.Where(x => x.Parent == entry && !x.IsTrash()).ToList();
