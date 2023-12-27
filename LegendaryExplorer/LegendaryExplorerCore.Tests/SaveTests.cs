@@ -33,9 +33,8 @@ namespace LegendaryExplorerCore.Tests
                 if (expectedGame is MEGame.LE2 or MEGame.LE3)
                 {
                     LocalProfile lp = LocalProfile.DeserializeLocalProfile(profileFile, expectedGame);
-                    var reserialized = lp.Serialize();
+                    var reserialized = lp.Serialize(false); // In-order makes this fail
                     var reserializedBytes = reserialized.ToArray();
-
                     Assert.IsTrue(originalBytes.SequenceEqual(reserializedBytes), $"{nameof(LocalProfile)} {profileFile} failed to reserialize identically!");
                 }
                 else if (expectedGame is MEGame.LE1)

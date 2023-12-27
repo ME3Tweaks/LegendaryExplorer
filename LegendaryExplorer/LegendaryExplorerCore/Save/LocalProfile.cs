@@ -81,14 +81,14 @@ namespace LegendaryExplorerCore.Save
                     ew.WriteDouble(DataAsDouble);
                     break;
                 case EProfileSettingType.STRING:
-                    if (useUnicodeStrings)
+                    if (DataAsString.IsLatin1())
                     {
-                        ew.WriteUnrealStringUnicode(DataAsString);
+                        ew.WriteInt32(DataAsString.Length);
+                        ew.WriteStringLatin1(DataAsString);
                     }
                     else
                     {
-                        ew.WriteInt32(DataAsString.Length);
-                        ew.WriteStringLatin1(DataAsString); // Not sure if profile names support unicode
+                        ew.WriteUnrealStringUnicode(DataAsString);
                     }
                     break;
                 case EProfileSettingType.FLOAT:
@@ -168,10 +168,10 @@ namespace LegendaryExplorerCore.Save
     [DebuggerDisplay("LocalProfile with {ProfileSettings.Count} settings")]
     public class LocalProfile
     {
-        public static LocalProfile DeserializeLocalProfile(string filePath, MEGame game, bool isCompressed = true, bool usesVersionSetting = true, bool useUnicodeStrings = false)
+        public static LocalProfile DeserializeLocalProfile(string filePath, MEGame game, bool isCompressed = true, bool usesVersionSetting = true)
         {
             using var fs = File.OpenRead(filePath);
-            return new LocalProfile(fs, game, isCompressed, usesVersionSetting, useUnicodeStrings);
+            return new LocalProfile(fs, game, isCompressed, usesVersionSetting);
         }
 
         public Dictionary<int, ProfileSetting> ProfileSettings = new(100); // ME3 uses 100 keys so it's likely we'll hit that much normally
@@ -186,10 +186,6 @@ namespace LegendaryExplorerCore.Save
         /// </summary>
         public bool UsesCompression { get; set; }
 
-        /// <summary>
-        /// If this profile object should serialize strings in unicode
-        /// </summary>
-        public bool UsesUnicodeStrings { get; set; }
 
         /// <summary>
         /// The version number of the profile settings file
@@ -201,11 +197,13 @@ namespace LegendaryExplorerCore.Save
         /// </summary>
         /// <param name="stream">Stream to deserialize</param>
         /// <param name="game">Game the stream is for</param>
-        private LocalProfile(Stream stream, MEGame game, bool isCompressed = true, bool hasVersionSetting = true, bool useUnicodeStrings = false)
+        /// <param name="isCompressed">If this profile is compressed</param>
+        /// <param name="hasVersionSetting">If this profile uses a setting to denote its version</param>
+        /// <param name="useUnicodeStrings">If strings should be read as unicode, latin1 or determined on first read</param>
+        private LocalProfile(Stream stream, MEGame game, bool isCompressed = true, bool hasVersionSetting = true)
         {
             UsesCompression = isCompressed;
             UsesVersionSetting = hasVersionSetting;
-            UsesUnicodeStrings = useUnicodeStrings;
 
             byte[] decompressedData = null;
             EndianReader reader = null; //isCompressed only
@@ -297,7 +295,7 @@ namespace LegendaryExplorerCore.Save
 #endif
         }
 
-        public MemoryStream Serialize()
+        public MemoryStream Serialize(bool inOrder = false)
         {
             // Prepare the compressed data
             using MemoryStream ms = new MemoryStream();
@@ -306,11 +304,14 @@ namespace LegendaryExplorerCore.Save
             if (UsesVersionSetting)
                 count++;
             ew.WriteInt32(count); // +1 for VERSION
-            foreach (var profileSetting in ProfileSettings.Values.OrderBy(x => x.Id)) // 12/22/2023 - Write settings in-order
+
+            // 12/22/2023 - Support writing settings in-order
+            var vals = inOrder ? ProfileSettings.Values.OrderBy(x => x.Id).ToList() : ProfileSettings.Values.ToList();
+            foreach (var profileSetting in vals)
             {
                 if (UsesVersionSetting && profileSetting.Id == (byte)ELE3ProfileSetting.Setting_ProfileVersionNum) // Same as LE2, 26
                     continue;
-                profileSetting.Serialize(ew, UsesUnicodeStrings);
+                profileSetting.Serialize(ew);
             }
 
             // Write version at the end.
@@ -322,7 +323,7 @@ namespace LegendaryExplorerCore.Save
                     Id = (int)ELE3ProfileSetting.Setting_ProfileVersionNum,
                     DataType = ProfileSetting.EProfileSettingType.INT,
                     Data = Version
-                }.Serialize(ew, UsesUnicodeStrings);
+                }.Serialize(ew);
             }
 
             if (UsesCompression)
