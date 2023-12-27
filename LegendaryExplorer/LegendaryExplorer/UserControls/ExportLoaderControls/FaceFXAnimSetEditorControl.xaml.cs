@@ -252,6 +252,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 var wwiseEventSearchName = $"VO_{selectedLine.TLKID:D6}_{(selectedLine.IsMale ? "m" : "f")}";
                 var wwiseStreamSearchName = $"{selectedLine.TLKID:D8}";
                 var wwiseStreamSearchNameGendered = $"{wwiseStreamSearchName}_{(selectedLine.IsMale ? "m" : "f")}";
+                var wwiseStreamSearchNamewithUnderscores = $"_{selectedLine.TLKID}_";
+                var wwiseStreamSearchNamewithUnderscoresGendered = $"{wwiseStreamSearchNamewithUnderscores}{(selectedLine.IsMale ? "m" : "f")}";
                 var wwiseEventExp = CurrentLoadedExport.FileRef.Exports.FirstOrDefault(x => x.ClassName == "WwiseEvent" && x.ObjectName.Name.Contains(wwiseEventSearchName, StringComparison.InvariantCultureIgnoreCase));
                 if (wwiseEventExp != null)
                 {
@@ -268,11 +270,18 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             possible = possibleExports.FirstOrDefault(x => x.ObjectName.Name.Contains(wwiseStreamSearchNameGendered, StringComparison.InvariantCultureIgnoreCase));
                             if (possible != null) return possible;
 
+                            //First fallback to lines without leading 00 and underscores as brackets
+                            possible = possibleExports.FirstOrDefault(x => x.ObjectName.Name.Contains(wwiseStreamSearchNamewithUnderscoresGendered, StringComparison.InvariantCultureIgnoreCase));
+                            if (possible != null) return possible;
+
                             // Fallback to non-gendered search. Sometimes if line has same thing (e.g. nonplayer line) it'll just use male version as there's only one gender
                             // Should only be one version for this TLK...
                             possible = possibleExports.FirstOrDefault(x => x.ObjectName.Name.Contains(wwiseStreamSearchName, StringComparison.InvariantCultureIgnoreCase));
-                            if (possible != null)
-                                return possible;
+                            if (possible != null) return possible;
+
+                            possible = possibleExports.FirstOrDefault(x => x.ObjectName.Name.Contains(wwiseStreamSearchNamewithUnderscores, StringComparison.InvariantCultureIgnoreCase));
+                            if (possible != null) return possible;
+
                         }
                     }
                     else
@@ -284,11 +293,18 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         possible = possibleExports.FirstOrDefault(x => x.ObjectName.Name.Contains(wwiseStreamSearchNameGendered, StringComparison.InvariantCultureIgnoreCase));
                         if (possible != null) return possible;
 
+                        //First fallback to lines without leading 00 and underscores as brackets
+                        possible = possibleExports.FirstOrDefault(x => x.ObjectName.Name.Contains(wwiseStreamSearchNamewithUnderscoresGendered, StringComparison.InvariantCultureIgnoreCase));
+                        if (possible != null) return possible;
+
                         // Fallback to non-gendered search. Sometimes if line has same thing (e.g. nonplayer line) it'll just use male version as there's only one gender
                         // Should only be one version for this TLK...
                         possible = possibleExports.FirstOrDefault(x => x.ObjectName.Name.Contains(wwiseStreamSearchName, StringComparison.InvariantCultureIgnoreCase));
                         if (possible != null)
                             return possible;
+
+                        possible = possibleExports.FirstOrDefault(x => x.ObjectName.Name.Contains(wwiseStreamSearchNamewithUnderscores, StringComparison.InvariantCultureIgnoreCase));
+                        if (possible != null) return possible;
                     }
                 }
             }
