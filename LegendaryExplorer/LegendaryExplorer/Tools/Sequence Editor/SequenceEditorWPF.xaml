@@ -198,7 +198,10 @@
                         <MenuItem Header="Update Sequence Interps' Variable Links" Click="UpdateSequenceVarLinks_Clicked" ToolTip="Updated the variable links of all interps in the selected sequence."/>
                         <MenuItem Header="Add Dialogue Wheel Camera" Click="AddDialogueWheelCam_Clicked" ToolTip="Adds an Interp and an InterpData template to control a dialogue wheel camera"/>
                         <MenuItem Header="Add Dialogue Wheel Director" Click="AddDialogueWheelDir_Clicked" ToolTip="Adds an Interp and an InterpData template to control the camera during a dialogue wheel"/>
+                    </MenuItem>
+                    <MenuItem Header="Kinkojiro's buttons for industrious people">
                         <MenuItem Header="Anchor All Interps to Selection" Click="AddAnchorToInterps_Clicked" ToolTip="Adds a link from all Interps without an anchor to the selected SeqVar_Object."/>
+                        <MenuItem Header="Convert SeqVar_Object to FindByTag" Click="ConvertToFindByTag_Clicked" ToolTip="Convert selected SeqVar_Object to FindByTag."/>
                     </MenuItem>
                 </MenuItem>
             </Menu>
