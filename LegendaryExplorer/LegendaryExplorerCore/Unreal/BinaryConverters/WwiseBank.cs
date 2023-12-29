@@ -12,14 +12,102 @@ using LegendaryExplorerCore.Unreal.Collections;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
+    /// <summary>
+    /// Basic BulkData WwiseBank class. If you need the ability to parse the contents, use <see cref="WwiseBankParsed"/> instead.
+    /// </summary>
     public class WwiseBank : ObjectBinary
     {
-        public uint Unk1;//ME2
-        public uint Unk2;//ME2
+        public uint Unk1; //Game2
+        public uint Unk2; //Game2
+        public byte[] BnkFile; // Raw Bank file
 
+        protected override void Serialize(SerializingContainer2 sc)
+        {
+            if (!sc.Game.IsGame2() && !sc.Game.IsGame3())
+            {
+                throw new Exception($"WwiseBank is not a valid class for {sc.Game}!");
+            }
+
+            if (sc.Game.IsGame2())
+            {
+                sc.Serialize(ref Unk1);
+                sc.Serialize(ref Unk2);
+                if (Unk1 == 0 && Unk2 == 0)
+                {
+                    return; //not sure what's going on here
+                }
+            }
+
+            sc.SerializeBulkData(ref BnkFile);
+        }
+
+        public static WwiseBank Create()
+        {
+            return new()
+            {
+                BnkFile = Array.Empty<byte>()
+            };
+        }
+
+        /// <summary>
+        /// Utility method: Writes the raw bytes of a bank to an export's binary.
+        /// </summary>
+        /// <param name="bankData"></param>
+        /// <param name="exp"></param>
+        public static void WriteBankRaw(byte[] bankData, ExportEntry exp)
+        {
+            MemoryStream outStream = new MemoryStream((exp.Game == MEGame.LE2 ? 24 : 16) + bankData.Length); // This must exist or GetBuffer() will return the wrong size.
+
+            if (exp.Game == MEGame.LE2)
+            {
+                // Write Bulk Data header
+                outStream.WriteInt32(0x1); // Unknown
+                outStream.WriteInt32(0x1); // Unknown
+            }
+
+            // Write Bulk Data header
+            outStream.WriteInt32(0); // Local
+            outStream.WriteInt32((int)bankData.Length); // Compressed size
+            outStream.WriteInt32((int)bankData.Length); // Decompressed size
+            outStream.WriteInt32(0); // Data offset - this is not external so this is not used
+
+            outStream.Write(bankData);
+            exp.WriteBinary(outStream.GetBuffer());
+        }
+    }
+
+
+    //sc.SerializeConstInt(0); //BulkDataFlags
+        //var dataSizePos = sc.ms.Position; //come back to write size at the end
+        //int dataSize = 0;
+        //sc.Serialize(ref dataSize);
+        //sc.Serialize(ref dataSize);
+        //FileOffset = sc.SerializeFileOffset();
+        //if (sc.IsLoading)
+        //{
+        //    BnkFile = new byte[dataSize];
+        //}
+
+        //if (sc.IsLoading && dataSize == 0 || sc.IsSaving && Version == 0)
+        //{
+        //    return;
+        //}
+
+        //if (sc.IsLoading)
+        //{
+        //    sc.ms.Read(BnkFile, dataSize);
+        //}
+        //else
+        //{
+        //    sc.SerializeBulkData();
+        //}
+    
+
+    public class WwiseBankParsed : WwiseBank
+    {
         private uint[] bkhdUnks;
-        public uint Version; //If 0, this Bank is serialized empty. When creating a bank, make sure to set this!
         public uint ID;
+        public uint Version;
 
         public UMultiMap<uint, byte[]> EmbeddedFiles = new(); //TODO: Make this a UMap?
         public UMultiMap<uint, HIRCObject> HIRCObjects = new(); //TODO: Make this a UMap?
@@ -47,29 +135,9 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
         protected override void Serialize(SerializingContainer2 sc)
         {
-            if (sc.Game != MEGame.ME3 && sc.Game != MEGame.ME2 && sc.Game != MEGame.LE3 && sc.Game != MEGame.LE2)
-            {
-                throw new Exception($"WwiseBank is not a valid class for {sc.Game}!");
-            }
-            if (sc.Game.IsGame2())
-            {
-                sc.Serialize(ref Unk1);
-                sc.Serialize(ref Unk2);
-                if (Unk1 == 0 && Unk2 == 0)
-                {
-                    return; //not sure what's going on here
-                }
-            }
-            sc.SerializeConstInt(0);//BulkDataFlags
-            var dataSizePos = sc.ms.Position; //come back to write size at the end
-            int dataSize = 0;
-            sc.Serialize(ref dataSize);
-            sc.Serialize(ref dataSize);
-            sc.SerializeFileOffset();
-            if (sc.IsLoading && dataSize == 0 || sc.IsSaving && Version == 0)
-            {
-                return;
-            }
+            base.Serialize(sc);
+
+            sc.ms.Position -= BnkFile.Length; // Reset back to BnkFile offset for parsing.
 
             if (sc.IsLoading)
             {
@@ -94,6 +162,8 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 sc.Serialize(ref bkhdUnks[i]);
             }
 
+            // Old weird code.
+            /*
             if (Version is 38 || //strangely formatted Wwisebank, unused maybe? We're going to ignore it.
                 sc.Game is MEGame.LE2 && Version is 44) //temporary hack. Todo: WwiseBank parsing should be refactored to parse based on Version, not game
             {
@@ -105,12 +175,13 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 }
                 else
                 {
-                    sc.ms.Writer.WriteFromBuffer(ME2STMGFallback);
-                    var endPos = sc.ms.Position;
-                    sc.ms.JumpTo(dataSizePos);
-                    sc.ms.Writer.WriteInt32((int)(endPos - dataSizePos - 12));
-                    sc.ms.Writer.WriteInt32((int)(endPos - dataSizePos - 12));
-                    sc.ms.JumpTo(endPos);
+                    // Commented out
+                    //sc.ms.Writer.WriteFromBuffer(ME2STMGFallback);
+                    //var endPos = sc.ms.Position;
+                    //sc.ms.JumpTo(dataSizePos);
+                    //sc.ms.Writer.WriteInt32((int)(endPos - dataSizePos - 12));
+                    //sc.ms.Writer.WriteInt32((int)(endPos - dataSizePos - 12));
+                    //sc.ms.JumpTo(endPos);
                 }
             }
             else
@@ -121,23 +192,17 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 }
                 else
                 {
-                    WriteChunks(sc);
-                    var endPos = sc.ms.Position;
-                    sc.ms.JumpTo(dataSizePos);
-                    sc.ms.Writer.WriteInt32((int)(endPos - dataSizePos - 12));
-                    sc.ms.Writer.WriteInt32((int)(endPos - dataSizePos - 12));
-                    sc.ms.JumpTo(endPos);
+                    // Commented out
+                    //WriteChunks(sc);
+                    //var endPos = sc.ms.Position;
+                    //sc.ms.JumpTo(dataSizePos);
+                    //sc.ms.Writer.WriteInt32((int)(endPos - dataSizePos - 12));
+                    //sc.ms.Writer.WriteInt32((int)(endPos - dataSizePos - 12));
+                    //sc.ms.JumpTo(endPos);
                 }
-            }
+            }*/
         }
 
-        public static WwiseBank Create()
-        {
-            return new()
-            {
-                bkhdUnks = Array.Empty<uint>()
-            };
-        }
 
         private void ReadChunks(SerializingContainer2 sc)
         {
@@ -424,32 +489,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         }
 
         #endregion
-
-        /// <summary>
-        /// Utility method: Writes the raw bytes of a bank to an export's binary.
-        /// </summary>
-        /// <param name="bankData"></param>
-        /// <param name="exp"></param>
-        public static void WriteBankRaw(byte[] bankData, ExportEntry exp)
-        {
-            MemoryStream outStream = new MemoryStream((exp.Game == MEGame.LE2 ? 24 : 16) + bankData.Length); // This must exist or GetBuffer() will return the wrong size.
-
-            if (exp.Game == MEGame.LE2)
-            {
-                // Write Bulk Data header
-                outStream.WriteInt32(0x1); // Unknown
-                outStream.WriteInt32(0x1); // Unknown
-            }
-
-            // Write Bulk Data header
-            outStream.WriteInt32(0); // Local
-            outStream.WriteInt32((int)bankData.Length); // Compressed size
-            outStream.WriteInt32((int)bankData.Length); // Decompressed size
-            outStream.WriteInt32(0); // Data offset - this is not external so this is not used
-
-            outStream.Write(bankData);
-            exp.WriteBinary(outStream.GetBuffer());
-        }
 
         public class HIRCObject
         {

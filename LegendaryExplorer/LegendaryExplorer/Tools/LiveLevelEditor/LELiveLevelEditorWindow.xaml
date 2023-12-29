@@ -115,6 +115,50 @@
                         </Grid>
                     </Grid>
                 </TabItem>
+                <TabItem Name="materialtab" Header="Material" Visibility="{Binding MaterialInstanceActorSelected, Converter={StaticResource BoolToVisibilityConverter}}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Grid.Row="0">
+                            <TextBlock Text="The material list will automatically stay up to date as levels are loaded and unloaded, but you can force reload if necessary."
+                                Margin="15,5,15,5" TextWrapping="Wrap" TextAlignment="Center"/>
+                            <Button Margin="15,0,15,6" Content="Manually Regenerate Materials List"
+                                Command="{Binding RegenMaterialsListCommand}" />
+                        </StackPanel>
+                        <Grid Grid.Row="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="5" />
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="5"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <controls:ListBoxScroll x:Name="listBoxMaterials" ItemsSource="{Binding MaterialsDict}" DisplayMemberPath="Key" SelectedValuePath="Value" ContextMenu="{StaticResource packagesContextMenu}" Grid.Row="0" Grid.RowSpan="3"/>
+                            <Border BorderBrush="LightSlateGray" BorderThickness="0.65" Grid.Row="0" Grid.Column="2" >
+                                <DockPanel>
+                                    <controls:SearchBox x:Name="materialFilterSearchBox" DockPanel.Dock="Top" WatermarkText="Filter Loaded Materials" TextChanged="MaterialFilterSearchBox_OnTextChanged"/>
+                                    <controls:ListBoxScroll
+                    ItemsSource="{Binding SelectedValue, ElementName=listBoxPackages}"
+                    DisplayMemberPath="DisplayText" SelectedItem="{Binding SelectedActor}"
+                    ContextMenu="{StaticResource actorsContextMenu}"
+                    sharedUi:Filter.By="{Binding ActorFilter}" />
+                                </DockPanel>
+                            </Border>
+                            <!--<editorPanels:LLEActorEditorPanel x:Name="ActorEditorPanel" Grid.Row="2" Grid.Column="2"/>-->
+
+                            <!--<editorPanels:LLELightEditorPanel x:Name="LightEditorPanel" Grid.Row="3" Grid.Column="2"/>-->
+
+                        </Grid>
+                    </Grid>
+
+                </TabItem>
                 <!--<TabItem Name="optionsTab" Header="Controls/Options" Visibility="{Binding ReadyToView, Converter={StaticResource BoolToVisibilityConverter}}">
                 </TabItem>-->
                 <TabItem Name="camPathTab" Header="Create Camera Path" Visibility="{Binding CamPathReadyToView, Converter={StaticResource BoolToVisibilityConverter}}">

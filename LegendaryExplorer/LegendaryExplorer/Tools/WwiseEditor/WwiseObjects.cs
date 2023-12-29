@@ -59,7 +59,7 @@ namespace LegendaryExplorer.Tools.WwiseEditor
         //public float Height { get { return shape.Height; } }
         public virtual bool IsSelected { get; set; }
 
-        protected WwiseBank.HIRCObject hircObject;
+        protected WwiseBankParsed.HIRCObject hircObject;
         protected Pen outlinePen;
         protected SText comment;
 
@@ -67,7 +67,7 @@ namespace LegendaryExplorer.Tools.WwiseEditor
 
         public string Comment => comment.Text;
 
-        protected WwiseHircObjNode(WwiseBank.HIRCObject hircObj, WwiseGraphEditor grapheditor)
+        protected WwiseHircObjNode(WwiseBankParsed.HIRCObject hircObj, WwiseGraphEditor grapheditor)
         {
             hircObject = hircObj;
             g = grapheditor;
@@ -349,9 +349,9 @@ namespace LegendaryExplorer.Tools.WwiseEditor
 
     public sealed class WEvent : WwiseHircObjNode
     {
-        public WwiseBank.Event Event => (WwiseBank.Event)hircObject;
+        public WwiseBankParsed.Event Event => (WwiseBankParsed.Event)hircObject;
 
-        public WEvent(WwiseBank.Event hircEvent, float x, float y, WwiseGraphEditor grapheditor)
+        public WEvent(WwiseBankParsed.Event hircEvent, float x, float y, WwiseGraphEditor grapheditor)
             : base(hircEvent, grapheditor)
         {
             outlinePen = new Pen(EventColor);
@@ -498,7 +498,7 @@ namespace LegendaryExplorer.Tools.WwiseEditor
 
         protected InputDragHandler inputDragHandler = new ();
 
-        public WGeneric(WwiseBank.HIRCObject hircO, float x, float y, WwiseGraphEditor grapheditor)
+        public WGeneric(WwiseBankParsed.HIRCObject hircO, float x, float y, WwiseGraphEditor grapheditor)
             : base(hircO, grapheditor)
         {
             originalX = x;
@@ -677,9 +677,9 @@ namespace LegendaryExplorer.Tools.WwiseEditor
 
     public sealed class WEventAction : WGeneric
     {
-        public WwiseBank.EventAction  EventAction => (WwiseBank.EventAction)hircObject;
+        public WwiseBankParsed.EventAction  EventAction => (WwiseBankParsed.EventAction)hircObject;
 
-        public WEventAction(WwiseBank.EventAction evtAct, float x, float y, WwiseGraphEditor grapheditor) : base(evtAct, x, y, grapheditor)
+        public WEventAction(WwiseBankParsed.EventAction evtAct, float x, float y, WwiseGraphEditor grapheditor) : base(evtAct, x, y, grapheditor)
         {
             GetLinks();
         }
@@ -715,9 +715,9 @@ namespace LegendaryExplorer.Tools.WwiseEditor
 
     public sealed class WSoundSFXVoice : WGeneric
     {
-        public WwiseBank.SoundSFXVoice SoundSFXVoice => (WwiseBank.SoundSFXVoice)hircObject;
+        public WwiseBankParsed.SoundSFXVoice SoundSFXVoice => (WwiseBankParsed.SoundSFXVoice)hircObject;
 
-        public WSoundSFXVoice(WwiseBank.SoundSFXVoice ssfxv, float x, float y, WwiseGraphEditor grapheditor) : base(ssfxv, x, y, grapheditor)
+        public WSoundSFXVoice(WwiseBankParsed.SoundSFXVoice ssfxv, float x, float y, WwiseGraphEditor grapheditor) : base(ssfxv, x, y, grapheditor)
         {
             GetLinks();
         }

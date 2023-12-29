@@ -132,7 +132,7 @@ namespace LegendaryExplorer.Tools.WwiseEditor
             }
         }
 
-        private WwiseBank CurrentWwiseBank;
+        private WwiseBankParsed CurrentWwiseBank;
 
         public ICommand OpenCommand { get; set; }
         public ICommand SaveCommand { get; set; }
@@ -261,7 +261,7 @@ namespace LegendaryExplorer.Tools.WwiseEditor
             graphEditor.Enabled = false;
             graphEditor.UseWaitCursor = true;
 
-            CurrentWwiseBank = export.GetBinaryData<WwiseBank>();
+            CurrentWwiseBank = export.GetBinaryData<WwiseBankParsed>();
             SetupJSON(export);
             Properties_InterpreterWPF.LoadExport(export);
             binaryInterpreter.LoadExport(export);
@@ -307,16 +307,16 @@ namespace LegendaryExplorer.Tools.WwiseEditor
             }
         }
 
-        private void GetObjects(WwiseBank bank)
+        private void GetObjects(WwiseBankParsed bank)
         {
             var newObjs = new List<WwiseHircObjNode>();
-            foreach ((uint id, WwiseBank.HIRCObject hircObject) in CurrentWwiseBank.HIRCObjects)
+            foreach ((uint id, WwiseBankParsed.HIRCObject hircObject) in CurrentWwiseBank.HIRCObjects)
             {
                 newObjs.Add(hircObject switch
                 {
-                    WwiseBank.Event evt => new WEvent(evt, 0, 0, graphEditor),
-                    WwiseBank.EventAction evtAct => new WEventAction(evtAct, 0, 0, graphEditor),
-                    WwiseBank.SoundSFXVoice sfxvoice => new WSoundSFXVoice(sfxvoice, 0, 0, graphEditor),
+                    WwiseBankParsed.Event evt => new WEvent(evt, 0, 0, graphEditor),
+                    WwiseBankParsed.EventAction evtAct => new WEventAction(evtAct, 0, 0, graphEditor),
+                    WwiseBankParsed.SoundSFXVoice sfxvoice => new WSoundSFXVoice(sfxvoice, 0, 0, graphEditor),
                     _ => new WGeneric(hircObject, 0, 0, graphEditor)
                 });
             }

@@ -1906,7 +1906,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             (uint oldBankID, uint newBankID) = UpdateID(wwiseBankEntry, newWwiseBankName);
 
-            WwiseBank wwiseBank = wwiseBankEntry.GetBinaryData<WwiseBank>();
+            var wwiseBank = wwiseBankEntry.GetBinaryData<WwiseBankParsed>();
             // Update the bank id
             wwiseBank.ID = newBankID;
 
@@ -1928,7 +1928,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             // but we check in all of them just in case.
             byte[] bankIDArr = BitConverter.GetBytes(oldBankID);
             byte[] newBankIDArr = BitConverter.GetBytes(newBankID);
-            foreach (WwiseBank.HIRCObject hirc in wwiseBank.HIRCObjects.Values)
+            foreach (WwiseBankParsed.HIRCObject hirc in wwiseBank.HIRCObjects.Values)
             {
                 //if (hirc.Type == HIRCType.Event) // References a WwiseEvent
                 //{

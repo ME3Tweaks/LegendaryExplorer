@@ -5681,15 +5681,15 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     case HIRCType.EventAction:
                         {
 
-                            node.Items.Add(new BinInterpNode(bin.Position, $"Scope: {(WwiseBank.EventActionScope)bin.ReadByte()}", NodeType.StructLeafByte) { Length = 1 });
-                            WwiseBank.EventActionType actType;
-                            node.Items.Add(new BinInterpNode(bin.Position, $"Action Type: {actType = (WwiseBank.EventActionType)bin.ReadByte()}", NodeType.StructLeafByte) { Length = 1 });
+                            node.Items.Add(new BinInterpNode(bin.Position, $"Scope: {(WwiseBankParsed.EventActionScope)bin.ReadByte()}", NodeType.StructLeafByte) { Length = 1 });
+                            WwiseBankParsed.EventActionType actType;
+                            node.Items.Add(new BinInterpNode(bin.Position, $"Action Type: {actType = (WwiseBankParsed.EventActionType)bin.ReadByte()}", NodeType.StructLeafByte) { Length = 1 });
                             if (Pcc.Game.IsOTGame())
                                 node.Items.Add(MakeUInt16Node(bin, "Unknown1"));
                             node.Items.Add(MakeUInt32HexNode(bin, "Referenced Object ID"));
                             switch (actType)
                             {
-                                case WwiseBank.EventActionType.Play:
+                                case WwiseBankParsed.EventActionType.Play:
                                     node.Items.Add(MakeUInt32Node(bin, "Delay (ms)"));
                                     node.Items.Add(MakeInt32Node(bin, "Delay Randomization Range lower bound (ms)"));
                                     node.Items.Add(MakeInt32Node(bin, "Delay Randomization Range upper bound (ms)"));
@@ -5699,7 +5699,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                     node.Items.Add(MakeInt32Node(bin, "Fade-in Randomization Range upper bound (ms)"));
                                     node.Items.Add(MakeByteNode(bin, "Fade-in curve Shape"));
                                     break;
-                                case WwiseBank.EventActionType.Stop:
+                                case WwiseBankParsed.EventActionType.Stop:
                                     node.Items.Add(MakeUInt32Node(bin, "Delay (ms)"));
                                     node.Items.Add(MakeInt32Node(bin, "Delay Randomization Range lower bound (ms)"));
                                     node.Items.Add(MakeInt32Node(bin, "Delay Randomization Range upper bound (ms)"));
@@ -5709,7 +5709,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                     node.Items.Add(MakeInt32Node(bin, "Fade-out Randomization Range upper bound (ms)"));
                                     node.Items.Add(MakeByteNode(bin, "Fade-out curve Shape"));
                                     break;
-                                case WwiseBank.EventActionType.Play_LE:
+                                case WwiseBankParsed.EventActionType.Play_LE:
                                     node.Items.Add(MakeByteNode(bin, "Unknown1"));
                                     bool playHasFadeIn;
                                     node.Items.Add(new BinInterpNode(bin.Position, $"Has Fade In: {playHasFadeIn = (bool)bin.ReadBoolByte()}", NodeType.StructLeafByte) { Length = 1 });
@@ -5726,10 +5726,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                         node.Items.Add(MakeUInt32Node(bin, "MinOffset"));
                                         node.Items.Add(MakeUInt32Node(bin, "MaxOffset"));
                                     }
-                                    node.Items.Add(new BinInterpNode(bin.Position, $"Fade-out curve Shape: {(WwiseBank.EventActionFadeCurve)bin.ReadByte()}", NodeType.StructLeafByte) { Length = 1 });
+                                    node.Items.Add(new BinInterpNode(bin.Position, $"Fade-out curve Shape: {(WwiseBankParsed.EventActionFadeCurve)bin.ReadByte()}", NodeType.StructLeafByte) { Length = 1 });
                                     node.Items.Add(MakeUInt32HexNode(bin, "Bank ID"));
                                     break;
-                                case WwiseBank.EventActionType.Stop_LE:
+                                case WwiseBankParsed.EventActionType.Stop_LE:
                                     node.Items.Add(MakeByteNode(bin, "Unknown1"));
                                     bool stopHasFadeOut;
                                     node.Items.Add(new BinInterpNode(bin.Position, $"Has Fade In: {stopHasFadeOut = (bool)bin.ReadBoolByte()}", NodeType.StructLeafByte) { Length = 1 });
@@ -5739,14 +5739,14 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                         node.Items.Add(MakeUInt32Node(bin, "Fade-in (ms)"));
                                     }
                                     node.Items.Add(MakeByteNode(bin, "Unknown2"));
-                                    node.Items.Add(new BinInterpNode(bin.Position, $"Fade-out curve Shape: {(WwiseBank.EventActionFadeCurve)bin.ReadByte()}", NodeType.StructLeafByte) { Length = 1 });
+                                    node.Items.Add(new BinInterpNode(bin.Position, $"Fade-out curve Shape: {(WwiseBankParsed.EventActionFadeCurve)bin.ReadByte()}", NodeType.StructLeafByte) { Length = 1 });
                                     node.Items.Add(MakeByteNode(bin, "Unknown3"));
                                     node.Items.Add(MakeByteNode(bin, "Unknown4"));
                                     break;
-                                case WwiseBank.EventActionType.SetLPF_LE:
-                                case WwiseBank.EventActionType.SetVolume_LE:
-                                case WwiseBank.EventActionType.ResetLPF_LE:
-                                case WwiseBank.EventActionType.ResetVolume_LE:
+                                case WwiseBankParsed.EventActionType.SetLPF_LE:
+                                case WwiseBankParsed.EventActionType.SetVolume_LE:
+                                case WwiseBankParsed.EventActionType.ResetLPF_LE:
+                                case WwiseBankParsed.EventActionType.ResetVolume_LE:
                                     node.Items.Add(MakeByteNode(bin, "Unknown1"));
                                     bool HasFade;
                                     node.Items.Add(new BinInterpNode(bin.Position, $"Has Fade In: {HasFade = (bool)bin.ReadBoolByte()}", NodeType.StructLeafByte) { Length = 1 });
@@ -5756,7 +5756,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                         node.Items.Add(MakeUInt32Node(bin, "Fade-in (ms)"));
                                     }
                                     node.Items.Add(MakeByteNode(bin, "Unknown2"));
-                                    node.Items.Add(new BinInterpNode(bin.Position, $"Fade-out curve Shape: {(WwiseBank.EventActionFadeCurve)bin.ReadByte()}", NodeType.StructLeafByte) { Length = 1 });
+                                    node.Items.Add(new BinInterpNode(bin.Position, $"Fade-out curve Shape: {(WwiseBankParsed.EventActionFadeCurve)bin.ReadByte()}", NodeType.StructLeafByte) { Length = 1 });
                                     node.Items.Add(MakeByteNode(bin, "Unknown3"));
                                     node.Items.Add(MakeFloatNode(bin, "Unknown float A"));
                                     node.Items.Add(MakeInt32Node(bin, "Unknown int/float B"));

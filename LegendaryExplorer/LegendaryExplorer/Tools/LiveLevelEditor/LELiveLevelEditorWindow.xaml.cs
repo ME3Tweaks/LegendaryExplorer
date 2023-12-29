@@ -63,10 +63,15 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             }
         }
 
+        /// <summary>
+        /// This is a weak check. But we don't have way to access class
+        /// </summary>
+        public bool MaterialInstanceActorSelected => SelectedActor != null && SelectedActor.ActorName.Contains("MaterialInstanceActor");
         public bool CamPathReadyToView => _readyToView && Game is MEGame.ME3;
 
         public MEGame Game { get; }
         public InteropTarget GameTarget { get; }
+        public ObservableCollectionExtended<string> LoadedMaterials { get; } = new();
 
         public LELiveLevelEditorWindow(MEGame game) : base("LE Live Level Editor", true)
         {
@@ -135,6 +140,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         public Requirement.RequirementCommand PackEdWindowOpenCommand { get; set; }
         public ICommand WriteActorValuesCommand { get; set; }
         public ICommand SnapToPlayerPositionCommand { get; set; }
+        public ICommand SetMaterialCommand { get; set; }
 
         private void LoadCommands()
         {
@@ -148,6 +154,14 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             PackEdWindowOpenCommand = new Requirement.RequirementCommand(IsSelectedPackageOpenInPackEd, OpenPackage);
             WriteActorValuesCommand = new GenericCommand(WriteActorValues, IsSelectedPackageOpenInPackEd);
             SnapToPlayerPositionCommand = new GenericCommand(SetSelectedActorToPlayerPosition);
+            SetMaterialCommand = new GenericCommand(SetMaterial);
+        }
+
+        private void SetMaterial()
+        {
+
+            if (noUpdate) return;
+            InteropHelper.SendMessageToGame($"LLE_UPDATE_ACTOR_MATERIAL {XPos} {YPos} {ZPos}", Game);
         }
 
         private void SetSelectedActorToPlayerPosition()
@@ -252,6 +266,11 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         private void RegenActorList()
         {
             InteropHelper.SendMessageToGame("LLE_TEST_ACTIVE", Game);
+        }
+
+        private void RegenMaterialsList()
+        {
+            InteropHelper.SendMessageToGame("LLE_GET_LOADED_MATERIALS", Game);
         }
 
         private bool CanOpenInPackEd() => SelectedActor != null;
@@ -377,6 +396,10 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
                     }
                     RegenActorList();
                 }
+            }
+            else if (verb == "LOADEDMATERIAL")
+            {
+                LoadedMaterials.Add(command[3]);
             }
             else if (verb == "ACTORSELECTED")
             {
@@ -1101,6 +1124,11 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         }
 
         #endregion
+
+        private void MaterialFilterSearchBox_OnTextChanged(SearchBox sender, string newText)
+        {
+
+        }
     }
 
     public class ActorEntryLE

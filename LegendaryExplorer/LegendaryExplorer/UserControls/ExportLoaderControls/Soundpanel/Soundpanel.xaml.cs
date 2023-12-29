@@ -68,7 +68,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         public ISACTListBankChunk CurrentLoadedISACTEntry { get; private set; }
         public AFCFileEntry CurrentLoadedAFCFileEntry { get; private set; }
-        public WwiseBank CurrentLoadedWwisebank { get; private set; }
+        public WwiseBankParsed CurrentLoadedWwisebank { get; private set; }
 
         /// <summary>
         /// The cached stream source is used to determine if we should unload the current vorbis stream
@@ -361,7 +361,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             // byte[] dataBefore = CurrentLoadedWwisebank.Export.Data;
             CurrentLoadedWwisebank.HIRCObjects.Empty(HIRCObjects.Count);
-            CurrentLoadedWwisebank.HIRCObjects.AddRange(HIRCObjects.Select(x => new KeyValuePair<uint, WwiseBank.HIRCObject>(x.ID, CreateHircObjectFromHex(x.Data))));
+            CurrentLoadedWwisebank.HIRCObjects.AddRange(HIRCObjects.Select(x => new KeyValuePair<uint, WwiseBankParsed.HIRCObject>(x.ID, CreateHircObjectFromHex(x.Data))));
 
             // We must restore the original wem datas. In preloading entries, the length on the RIFF is the actual full length. But the data on disk is only like .1s long. 
             // wwise does some trickery to load the rest of the audio later but we don't have that kind of code so we interally adjust it for local playback
@@ -491,7 +491,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
                 if (exportEntry.ClassName == "WwiseBank")
                 {
-                    WwiseBank wb = CurrentLoadedWwisebank = exportEntry.GetBinaryData<WwiseBank>();
+                    var wb = CurrentLoadedWwisebank = exportEntry.GetBinaryData<WwiseBankParsed>();
                     ExportInformationList.Add($"#{exportEntry.UIndex} {exportEntry.ClassName} : {exportEntry.ObjectName.Instanced} (Bank ID 0x{wb.ID:X8})");
 
                     HIRCObjects.Clear();
@@ -1757,9 +1757,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
         }
 
-        private WwiseBank.HIRCObject CreateHircObjectFromHex(byte[] bytes)
+        private WwiseBankParsed.HIRCObject CreateHircObjectFromHex(byte[] bytes)
         {
-            return WwiseBank.HIRCObject.Create(new SerializingContainer2(new MemoryStream(bytes), Pcc, true));
+            return WwiseBankParsed.HIRCObject.Create(new SerializingContainer2(new MemoryStream(bytes), Pcc, true));
         }
 
         private bool CanSearchHIRCHex()
@@ -2046,7 +2046,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             if (HIRC_ListBox.SelectedItem is HIRCDisplayObject h)
             {
-                WwiseBank.HIRCObject clone = CreateHircObjectFromHex(h.Data).Clone();
+                WwiseBankParsed.HIRCObject clone = CreateHircObjectFromHex(h.Data).Clone();
                 HIRCObjects.Add(new HIRCDisplayObject(HIRCObjects.Count, clone, Pcc.Game)
                 {
                     DataChanged = true
