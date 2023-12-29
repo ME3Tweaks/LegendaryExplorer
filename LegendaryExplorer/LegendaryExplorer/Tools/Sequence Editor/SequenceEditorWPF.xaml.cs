@@ -3008,6 +3008,11 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             SequenceEditorExperimentsK.UpdateAllInterpAnchorsVarLinks(GetSEWindow());
         }
 
+        private void ConvertToFindByTag_Clicked(object sender, RoutedEventArgs e)
+        {
+            SequenceEditorExperimentsK.convertSeqVarObjToObjByTag(GetSEWindow());
+        }
+
         public SequenceEditorWPF GetSEWindow()
         {
             if (GetWindow(this) is SequenceEditorWPF sew)
