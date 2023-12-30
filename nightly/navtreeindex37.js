@@ -1,5 +1,6 @@
 var NAVTREEINDEX37 =
 {
+"class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_codex_page.html#a8f323c35edc08e8f73d4aaebf530509d":[1,0,0,23,0,6,7],
 "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_codex_page.html#a8f323c35edc08e8f73d4aaebf530509d":[0,5,1,23,0,6,7],
 "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_codex_page.html#a910cdc3e727e857b597fe0f68c72756b":[1,0,0,23,0,6,3],
 "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_codex_page.html#a910cdc3e727e857b597fe0f68c72756b":[0,5,1,23,0,6,3],
@@ -248,6 +249,5 @@ var NAVTREEINDEX37 =
 "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_quest_progression_map.html#a6657edf1f1cddbb71fad5f5918c8477c":[0,5,1,23,0,17,0],
 "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_quest_progression_map.html#a6657edf1f1cddbb71fad5f5918c8477c":[1,0,0,23,0,17,0],
 "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_quest_progression_map.html#aac449c606c852dacea329ed0c9e5fa61":[0,5,1,23,0,17,1],
-"class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_quest_progression_map.html#aac449c606c852dacea329ed0c9e5fa61":[1,0,0,23,0,17,1],
-"class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_sound_node_wave_streaming_data.html":[0,5,1,23,0,18]
+"class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_quest_progression_map.html#aac449c606c852dacea329ed0c9e5fa61":[1,0,0,23,0,17,1]
 };

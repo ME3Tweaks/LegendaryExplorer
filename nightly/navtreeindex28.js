@@ -1,5 +1,6 @@
 var NAVTREEINDEX28 =
 {
+"class_legendary_explorer_core_1_1_packages_1_1_entry_tree.html#a651460692e3189a580e5c793030b0306":[0,5,1,14,4,3],
 "class_legendary_explorer_core_1_1_packages_1_1_entry_tree.html#a651460692e3189a580e5c793030b0306":[1,0,0,14,4,3],
 "class_legendary_explorer_core_1_1_packages_1_1_entry_tree.html#a6d547c8865b00996fd4b95e47f99a13b":[1,0,0,14,4,7],
 "class_legendary_explorer_core_1_1_packages_1_1_entry_tree.html#a6d547c8865b00996fd4b95e47f99a13b":[0,5,1,14,4,7],
@@ -248,6 +249,5 @@ var NAVTREEINDEX28 =
 "class_legendary_explorer_core_1_1_packages_1_1_import_entry.html#a2749114a838e470051db85d6248c8359":[0,5,1,14,11,0],
 "class_legendary_explorer_core_1_1_packages_1_1_import_entry.html#a2749114a838e470051db85d6248c8359":[1,0,0,14,11,0],
 "class_legendary_explorer_core_1_1_packages_1_1_import_entry.html#a298ae91e606583d55b3d292248da0195":[0,5,1,14,11,10],
-"class_legendary_explorer_core_1_1_packages_1_1_import_entry.html#a298ae91e606583d55b3d292248da0195":[1,0,0,14,11,10],
-"class_legendary_explorer_core_1_1_packages_1_1_import_entry.html#a323b9177e7e8a87d94e9cc87ee2f818a":[1,0,0,14,11,37]
+"class_legendary_explorer_core_1_1_packages_1_1_import_entry.html#a298ae91e606583d55b3d292248da0195":[1,0,0,14,11,10]
 };

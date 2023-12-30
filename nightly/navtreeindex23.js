@@ -1,5 +1,6 @@
 var NAVTREEINDEX23 =
 {
+"class_legendary_explorer_core_1_1_helpers_1_1_stream_helpers.html#ad3fb015d73766e134e69478a52b02c79":[0,5,1,7,14,41],
 "class_legendary_explorer_core_1_1_helpers_1_1_stream_helpers.html#ad3fb015d73766e134e69478a52b02c79":[1,0,0,7,14,41],
 "class_legendary_explorer_core_1_1_helpers_1_1_stream_helpers.html#ad492f7cefa9da66b6c710b103f2bd2dc":[0,5,1,7,14,38],
 "class_legendary_explorer_core_1_1_helpers_1_1_stream_helpers.html#ad492f7cefa9da66b6c710b103f2bd2dc":[1,0,0,7,14,38],
@@ -248,6 +249,5 @@ var NAVTREEINDEX23 =
 "class_legendary_explorer_core_1_1_legendary_explorer_core_lib_settings.html":[0,5,1,26],
 "class_legendary_explorer_core_1_1_legendary_explorer_core_lib_settings.html":[1,0,0,26],
 "class_legendary_explorer_core_1_1_legendary_explorer_core_lib_settings.html#a3b5c8ffd795526ed844d66ab7ed099c4":[0,5,1,26,5],
-"class_legendary_explorer_core_1_1_legendary_explorer_core_lib_settings.html#a3b5c8ffd795526ed844d66ab7ed099c4":[1,0,0,26,5],
-"class_legendary_explorer_core_1_1_legendary_explorer_core_lib_settings.html#a3bb11e36850049eceab6587f2ad9a296":[0,5,1,26,7]
+"class_legendary_explorer_core_1_1_legendary_explorer_core_lib_settings.html#a3b5c8ffd795526ed844d66ab7ed099c4":[1,0,0,26,5]
 };

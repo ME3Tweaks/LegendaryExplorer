@@ -1,5 +1,6 @@
 var NAVTREEINDEX32 =
 {
+"class_legendary_explorer_core_1_1_plot_database_1_1_plot_elements_1_1_plot_element_type_extensions.html#a90b144d37003ecb31ccb176750718eb3":[0,5,1,15,1,3,0],
 "class_legendary_explorer_core_1_1_plot_database_1_1_plot_elements_1_1_plot_element_type_extensions.html#a90b144d37003ecb31ccb176750718eb3":[1,0,0,15,1,3,0],
 "class_legendary_explorer_core_1_1_plot_database_1_1_plot_elements_1_1_plot_mod_element.html":[0,5,1,15,1,4],
 "class_legendary_explorer_core_1_1_plot_database_1_1_plot_elements_1_1_plot_mod_element.html":[1,0,0,15,1,4],
@@ -248,6 +249,5 @@ var NAVTREEINDEX32 =
 "class_legendary_explorer_core_1_1_save_1_1_profile_float_save_record.html#afb073e918c15349b921c8b67dadbfa6a":[1,0,0,16,9,0],
 "class_legendary_explorer_core_1_1_save_1_1_profile_float_save_record.html#afb073e918c15349b921c8b67dadbfa6a":[0,5,1,16,9,0],
 "class_legendary_explorer_core_1_1_save_1_1_profile_int_save_record.html":[1,0,0,16,10],
-"class_legendary_explorer_core_1_1_save_1_1_profile_int_save_record.html":[0,5,1,16,10],
-"class_legendary_explorer_core_1_1_save_1_1_profile_int_save_record.html#aa709bbdb22497f7e434dfa3728157331":[1,0,0,16,10,0]
+"class_legendary_explorer_core_1_1_save_1_1_profile_int_save_record.html":[0,5,1,16,10]
 };

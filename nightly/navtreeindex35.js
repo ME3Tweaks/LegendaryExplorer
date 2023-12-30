@@ -1,5 +1,6 @@
 var NAVTREEINDEX35 =
 {
+"class_legendary_explorer_core_1_1_t_l_k_1_1_m_e3_talk_files.html#aa5c8e0980f4b212b0f91b4d71cfa7439":[0,5,1,21,8,2],
 "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e3_talk_files.html#aa5c8e0980f4b212b0f91b4d71cfa7439":[1,0,0,21,8,2],
 "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e3_talk_files.html#ab4b30c8d37b5ea21da30578b0f03737e":[0,5,1,21,8,0],
 "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e3_talk_files.html#ab4b30c8d37b5ea21da30578b0f03737e":[1,0,0,21,8,0],
@@ -248,6 +249,5 @@ var NAVTREEINDEX35 =
 "class_legendary_explorer_core_1_1_textures_1_1_studio_1_1_texture_map_package_entry.html#a97e3ec227ad66f4fa2baef7b6c42b750":[0,5,1,20,1,4,3],
 "class_legendary_explorer_core_1_1_textures_1_1_studio_1_1_texture_map_package_entry.html#a97e3ec227ad66f4fa2baef7b6c42b750":[1,0,0,20,1,4,3],
 "class_legendary_explorer_core_1_1_textures_1_1_studio_1_1_texture_map_package_entry.html#aa33c4c67a55cd65eb7c7a2cde990c2e7":[1,0,0,20,1,4,5],
-"class_legendary_explorer_core_1_1_textures_1_1_studio_1_1_texture_map_package_entry.html#aa33c4c67a55cd65eb7c7a2cde990c2e7":[0,5,1,20,1,4,5],
-"class_legendary_explorer_core_1_1_textures_1_1_studio_1_1_texture_map_package_entry.html#ae3dba5e9c908740cb39470143fa05ffe":[1,0,0,20,1,4,0]
+"class_legendary_explorer_core_1_1_textures_1_1_studio_1_1_texture_map_package_entry.html#aa33c4c67a55cd65eb7c7a2cde990c2e7":[0,5,1,20,1,4,5]
 };

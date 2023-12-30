@@ -1,5 +1,6 @@
 var NAVTREEINDEX31 =
 {
+"class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#aa971e44e28884fb44e6a61b52edf9b8e":[1,0,0,14,25,1],
 "class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#aa971e44e28884fb44e6a61b52edf9b8e":[0,5,1,14,25,1],
 "class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#aafce81723cd9128588c8ae10dbfddeef":[0,5,1,14,25,51],
 "class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#aafce81723cd9128588c8ae10dbfddeef":[1,0,0,14,25,51],
@@ -248,6 +249,5 @@ var NAVTREEINDEX31 =
 "class_legendary_explorer_core_1_1_plot_database_1_1_plot_elements_1_1_plot_element.html#ad02fb3257e63fa80253343e418366b9a":[0,5,1,15,1,2,1],
 "class_legendary_explorer_core_1_1_plot_database_1_1_plot_elements_1_1_plot_element.html#ad02fb3257e63fa80253343e418366b9a":[1,0,0,15,1,2,1],
 "class_legendary_explorer_core_1_1_plot_database_1_1_plot_elements_1_1_plot_element_type_extensions.html":[0,5,1,15,1,3],
-"class_legendary_explorer_core_1_1_plot_database_1_1_plot_elements_1_1_plot_element_type_extensions.html":[1,0,0,15,1,3],
-"class_legendary_explorer_core_1_1_plot_database_1_1_plot_elements_1_1_plot_element_type_extensions.html#a90b144d37003ecb31ccb176750718eb3":[0,5,1,15,1,3,0]
+"class_legendary_explorer_core_1_1_plot_database_1_1_plot_elements_1_1_plot_element_type_extensions.html":[1,0,0,15,1,3]
 };
