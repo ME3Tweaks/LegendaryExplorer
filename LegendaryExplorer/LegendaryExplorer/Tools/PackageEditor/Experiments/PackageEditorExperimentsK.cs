@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using DocumentFormat.OpenXml.Drawing;
 using DocumentFormat.OpenXml.ExtendedProperties;
+using DocumentFormat.OpenXml.Presentation;
 using DocumentFormat.OpenXml.Wordprocessing;
 using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.Misc;
@@ -1141,9 +1142,21 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                             var outRot = eulerPoints[n].GetProp<StructProperty>("OutVal");
                             var startYaw = outRot.GetProp<FloatProperty>("Z").Value;
 
+                            var oldRelativeX = startX - stageX;
+                            var oldRelativeY = startY - stageY;
+                            var oldRelativeZ = startZ - stageZ;
+                            float rotateYawRadians = MathF.PI * ((stageYaw - 180) / 180); //Convert to radians
+                            float sinCalcYaw = MathF.Sin(rotateYawRadians);
+                            float cosCalcYaw = MathF.Cos(rotateYawRadians);
+
+                            //Get new rotation x' = x cos θ − y sin θ
+                            //y' = x sin θ + y cos θ
+                            float newRelativeX = oldRelativeX * cosCalcYaw - oldRelativeY * sinCalcYaw;
+                            float newRelativeY = oldRelativeX * sinCalcYaw + oldRelativeY * cosCalcYaw;
+
                             //write relative location
-                            outval.GetProp<FloatProperty>("X").Value = stageX - startX;
-                            outval.GetProp<FloatProperty>("Y").Value = stageY - startY;
+                            outval.GetProp<FloatProperty>("X").Value = newRelativeX;
+                            outval.GetProp<FloatProperty>("Y").Value = newRelativeY;
                             outval.GetProp<FloatProperty>("Z").Value = startZ - stageZ;
                             outRot.GetProp<FloatProperty>("Z").Value = startYaw - stageYaw; 
                         }

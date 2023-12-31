@@ -197,7 +197,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor.Experiments
             }
             //check if tag is unique
             var pl = sew.Pcc.Exports.FirstOrDefault(x => x.ClassName == "Level" && x.ObjectName == "PersistentLevel");
-            if (tag.Value == actor.ClassName || pl == null)
+            if (tag.Value.Instanced == actor.ClassName || pl == null)
             {
                 ShowError("Referenced actor does not have a unique tag.");
                 return;
