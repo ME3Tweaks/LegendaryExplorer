@@ -16,9 +16,18 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
     /// </summary>
     public class ObjectInstanceDB
     {
+        /// <summary>
+        /// Game this DB is for
+        /// </summary>
         private readonly MEGame Game;
 
+        /// <summary>
+        /// List of FilePaths
+        /// </summary>
         private readonly List<string> FilePaths;
+        /// <summary>
+        /// Map of Instanced Full Paths to the files that contain them (indexes into FilePaths)
+        /// </summary>
 
         private readonly CaseInsensitiveDictionary<List<int>> ExportMap;
 
@@ -232,6 +241,19 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             // Load tables only to increase performance.
             using IMEPackage package = MEPackageHandler.UnsafePartialLoad(filePath, _ => false);
             AddFileToDB(package, filePath, insertAtStart);
+        }
+
+        /// <summary>
+        /// Gets a list of all unique object paths in this database. This returns an enumerator.
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<string> GetAllObjectPaths(bool alphabetical)
+        {
+            if (alphabetical)
+            {
+                return ExportMap.Keys.OrderBy(x => x);
+            }
+            return ExportMap.Keys;
         }
     }
 }

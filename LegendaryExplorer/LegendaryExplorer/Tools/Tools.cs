@@ -204,6 +204,22 @@ namespace LegendaryExplorer
                 category2 = "Utilities",
                 description = "IN DEVELOPMENT: (LE ONLY) Animation Viewer 2 allows you to preview any animation in the Legendary Edition versions of the games."
             });
+
+            set.Add(new Tool
+            {
+                name = "Object Instance Database Viewer",
+                type = typeof(Tools.ObjectInstanceViewer.ObjectInstanceDBViewerWindow),
+                icon = Application.Current.FindResource("iconObjectDBViewer") as ImageSource,
+                open = () =>
+                {
+                    var gameStr = InputComboBoxWPF.GetValue(null, "Choose game you want to use Object Instance Database Viewer with.", "Game selector",
+                        new[] { "LE1", "LE2", "LE3", "ME1", "ME2", "ME3" }, "LE3");
+                    (new Tools.ObjectInstanceViewer.ObjectInstanceDBViewerWindow(Enum.Parse<MEGame>(gameStr))).Show();
+                },
+                tags = new List<string> { "utility", "database" },
+                category = "Utilities",
+                description = "Tool to locate objects in files by name using the Object Instance Databse (ObjectInstanceDB) system."
+            });
 #endif
             set.Add(new Tool
             {
