@@ -46,6 +46,7 @@ using LegendaryExplorerCore.UnrealScript;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
 using Function = LegendaryExplorerCore.Unreal.Classes.Function;
 using static LegendaryExplorerCore.Packages.CloningImportingAndRelinking.EntryImporter;
+using LegendaryExplorer.Tools.LiveLevelEditor;
 
 //using ImageMagick;
 
@@ -4273,6 +4274,15 @@ defaultproperties
                 var p = PackageResynthesizer.ResynthesizePackage(peWindow.Pcc, new PackageCache());
                 p.Save();
             }
+        }
+
+        public static void ShowMaterialEditor()
+        {
+            void test(MemoryStream ms, string ifp)
+            {
+
+            }
+            new MaterialEditor(MEGame.LE3, test).Show();
         }
     }
 }

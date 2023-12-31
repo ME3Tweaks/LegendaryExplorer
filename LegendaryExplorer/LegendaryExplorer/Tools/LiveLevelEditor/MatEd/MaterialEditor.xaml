@@ -1,0 +1,40 @@
+﻿<bases:TrackingNotifyPropertyChangedWindowBase x:Class="LegendaryExplorer.Tools.LiveLevelEditor.MaterialEditor"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LegendaryExplorer.Tools.LiveLevelEditor"
+        xmlns:bases="clr-namespace:LegendaryExplorer.SharedUI.Bases"
+        xmlns:dd="urn:gong-wpf-dragdrop"
+        mc:Ignorable="d"
+        AllowDrop="True"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        Title="MaterialEditor" Height="450" Width="800"
+        dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding}">
+
+    <DockPanel Margin="3">
+        <GroupBox DockPanel.Dock="Top" Header="Info">
+            <DockPanel>
+                <TextBlock Text="{Binding MaterialExport.InstancedFullPath, StringFormat='Current loaded material: {0}'}">
+                    
+                </TextBlock>
+                <!--<Button Content="Load different material"/>-->
+            </DockPanel>
+        </GroupBox>
+        <GroupBox DockPanel.Dock="Top" Header="Material Uniform Textures">
+            <ItemsControl ItemsSource="{Binding UniformTextures}">
+            </ItemsControl>
+        </GroupBox>
+        <GroupBox Header="Operations" DockPanel.Dock="Bottom">
+            <DockPanel>
+                <CheckBox IsChecked="{Binding AutoUpdate}" Content="Auto preview on changes"/>
+                <Button Content="Preview on Mesh"/>
+            </DockPanel>
+        </GroupBox>
+        <GroupBox Header="Material Expressions">
+            <ItemsControl ItemsSource="{Binding Expressions}">
+            </ItemsControl>
+        </GroupBox>
+
+    </DockPanel>
+</bases:TrackingNotifyPropertyChangedWindowBase>

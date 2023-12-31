@@ -12,6 +12,7 @@ using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.Tools.CustomFilesManager;
+using LegendaryExplorer.Tools.LiveLevelEditor;
 using LegendaryExplorer.Tools.PackageEditor;
 using LegendaryExplorer.Tools.PackageEditor.Experiments;
 using LegendaryExplorerCore.GameFilesystem;
@@ -405,6 +406,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         private void LEXCustomFilesManager_Click(object sender, RoutedEventArgs e)
         {
             new CustomFilesManagerWindow().Show();
+        }
+
+        private void MaterialEditorTest_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.ShowMaterialEditor();
         }
 
         private void ResynthesizePackage_Click(object sender, RoutedEventArgs e)
