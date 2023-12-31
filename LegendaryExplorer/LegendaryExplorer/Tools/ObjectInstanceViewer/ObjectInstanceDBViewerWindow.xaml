@@ -7,10 +7,14 @@
                                  xmlns:misc="clr-namespace:LegendaryExplorer.Misc"
                                  xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
                                  xmlns:sharedToolControls="clr-namespace:LegendaryExplorer.UserControls.SharedToolControls"
+                                 xmlns:sharedUi="clr-namespace:LegendaryExplorer.SharedUI"
                                  mc:Ignorable="d"
                                  DataContext="{Binding RelativeSource={RelativeSource Self}}"
                                  Loaded="WindowLoaded"
                                  Title="ObjectInstanceDB Viewer" Height="450" Width="800">
+    <Window.Resources>
+        <sharedUi:BindingProxy x:Key="bindingProxy" Data="{Binding}"/>
+    </Window.Resources>
     <xctk:BusyIndicator IsBusy="{Binding Path=IsBusy}" BusyContent="{Binding BusyText}">
         <DockPanel>
             <!--<Menu DockPanel.Dock="Top">
@@ -30,7 +34,30 @@
             <DockPanel >
                 <xctk:WatermarkTextBox DockPanel.Dock="Top" Text="{Binding SearchTerm, UpdateSourceTrigger=PropertyChanged}" Watermark="Type to filter"/>
                 <ListBox DockPanel.Dock="Right" MinWidth="300"  ItemsSource="{Binding Instances}"
-                         SelectedItem="{Binding SelectedFileInstance}"/>
+                         SelectedItem="{Binding SelectedFileInstance}">
+                    <ListBox.Resources>
+                        <ContextMenu x:Key="MyMenu">
+                            <MenuItem Header="Open in Package Editor"
+                                      Command="{Binding Source={StaticResource bindingProxy}, Path=Data.OpenInPackageEditorCommand}" CommandParameter="{Binding}"/>
+                            <!--<MenuItem Header="Replace AnimSequence from PSA"
+              Command="{Binding Source={StaticResource bindingProxy}, Path=Data.ReplaceFromPSACommand}"
+              sharedUi:Bindings.VisibilityToEnabled="True" />
+        <MenuItem Header="Replace AnimSequence from UDK"
+              Command="{Binding Source={StaticResource bindingProxy}, Path=Data.ReplaceFromUDKCommand}"
+              sharedUi:Bindings.VisibilityToEnabled="True" />
+        <MenuItem Header="Export AnimSequence to PSA"
+              Command="{Binding Source={StaticResource bindingProxy}, Path=Data.ExportAnimSeqToPSACommand}"
+              sharedUi:Bindings.VisibilityToEnabled="True" />
+        <MenuItem Header="Export AnimSet to PSA"
+              Command="{Binding Source={StaticResource bindingProxy}, Path=Data.ExportAnimSetToPSACommand}"
+              sharedUi:Bindings.VisibilityToEnabled="True" />-->
+                        </ContextMenu>
+                        <Style TargetType="{x:Type ListBoxItem}">
+                            <Setter Property="ContextMenu" Value="{StaticResource MyMenu}" />
+                            <Setter Property="Padding" Value="0" />
+                        </Style>
+                    </ListBox.Resources>
+                </ListBox>
 
                 <ListBox ItemsSource="{Binding AllInstancedFullPathsView}"
                          SelectedItem="{Binding SelectedObject}"/>

@@ -1,11 +1,16 @@
 ﻿using System;
 using System.ComponentModel;
+using System.ComponentModel.Composition.Primitives;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
+using System.Windows.Input;
 using LegendaryExplorer.Misc;
+using LegendaryExplorer.SharedUI;
+using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
@@ -72,24 +77,53 @@ namespace LegendaryExplorer.Tools.ObjectInstanceViewer
 
         private string _selectedFileInstance;
         public string SelectedFileInstance { get => _selectedFileInstance; set => SetProperty(ref _selectedFileInstance, value); }
-
-
-
+        public ICommand OpenInPackageEditorCommand { get; set; }
         public MEGame Game { get; init; }
 
         #endregion
 
         private ObjectInstanceDB ObjectDB;
-
         public ObservableCollectionExtended<string> Instances { get; } = new();
         private ObservableCollectionExtended<string> _allInstancedFullPaths { get; } = new();
         public ICollectionView AllInstancedFullPathsView => CollectionViewSource.GetDefaultView(_allInstancedFullPaths);
-
         public ObjectInstanceDBViewerWindow(MEGame game)
         {
             Game = game;
+            LoadCommands();
             InitializeComponent();
             AllInstancedFullPathsView.Filter = FilterObjects;
+        }
+
+        private void LoadCommands()
+        {
+            OpenInPackageEditorCommand = new RelayCommand(OpenInPE, CanOpen);
+        }
+
+        private bool CanOpen(object obj)
+        {
+            if (obj is string str)
+            {
+                var gameDir = MEDirectories.GetDefaultGamePath(Game);
+                if (gameDir == null || !Directory.Exists(gameDir))
+                    return false; // No can do
+                var fPath = Path.Combine(gameDir, str);
+                return File.Exists(fPath);
+            }
+
+            return false;
+        }
+
+        private void OpenInPE(object obj)
+        {
+            if (obj is string str)
+            {
+                var gameDir = MEDirectories.GetDefaultGamePath(Game);
+                var fPath = Path.Combine(gameDir, str);
+                var p = new PackageEditor.PackageEditorWindow();
+                p.Show();
+                p.LoadFile(fPath, goToEntry: SelectedObject);
+                p.Activate(); //bring to front
+            }
         }
 
         private bool FilterObjects(object obj)
