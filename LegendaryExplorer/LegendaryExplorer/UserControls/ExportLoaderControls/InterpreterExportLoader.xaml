@@ -315,6 +315,7 @@
                         <MenuItem Header="Array sorting: By descending parsed value" ToolTip="Sorts an array property by its parsed value, in descending order." Command="{Binding SortParsedArrayDescendingCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
                         <MenuItem Header="Array sorting: By ascending value" ToolTip="Sorts an array property by its value, in ascending order." Command="{Binding SortValueArrayAscendingCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
                         <MenuItem Header="Array sorting: By descending value" ToolTip="Sorts an array property by its value, in descending order." Command="{Binding SortValueArrayDescendingCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
+                        <MenuItem Header="Array sorting: Reverse" ToolTip="Reverses current array sorting." Command="{Binding ReverseSortArrayPropertyCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
                         <MenuItem Header="Clear Array" ToolTip="Removes all values from the array." Command="{Binding ClearArrayCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
 
                         <MenuItem Header="View referenced object in pop out Properties window" ToolTip="Opens a new Properties window displaying the referenced object value" Command="{Binding PopoutInterpreterForObjectValueCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>

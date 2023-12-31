@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 using Be.Windows.Forms;
+using DocumentFormat.OpenXml.CustomProperties;
 using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Misc.AppSettings;
@@ -235,6 +236,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public ICommand SortParsedArrayDescendingCommand { get; set; } //obj, name only
         public ICommand SortValueArrayAscendingCommand { get; set; }
         public ICommand SortValueArrayDescendingCommand { get; set; }
+        public ICommand ReverseSortArrayPropertyCommand { get; set; }
         public ICommand PopoutInterpreterForObjectValueCommand { get; set; }
         public ICommand MoveArrayElementUpCommand { get; set; }
         public ICommand MoveArrayElementDownCommand { get; set; }
@@ -263,6 +265,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             SortParsedArrayDescendingCommand = new GenericCommand(SortParsedArrayDescending, CanSortArrayPropByParsedValue);
             SortValueArrayAscendingCommand = new GenericCommand(SortValueArrayAscending, CanSortArrayPropByValue);
             SortValueArrayDescendingCommand = new GenericCommand(SortValueArrayDescending, CanSortArrayPropByValue);
+            ReverseSortArrayPropertyCommand = new GenericCommand(ReverseSortArrayProperty, ArrayPropertyIsSelected);
             ClearArrayCommand = new GenericCommand(ClearArray, CanClearArray);
             PopoutInterpreterForObjectValueCommand = new GenericCommand(PopoutInterpreterForObj, ObjectPropertyExportIsSelected);
             OpenInMeshplorerCommand = new GenericCommand(OpenReferenceInMeshplorer, CanOpenInMeshplorer);
@@ -559,6 +562,37 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
         }
 
+        private void ReverseSortArrayProperty()
+        {
+            if (SelectedItem?.Property != null)
+            {
+                switch (SelectedItem.Property)
+                {
+                    case ArrayProperty<ObjectProperty> aop:
+                        aop.Values = aop.Reverse().ToList();
+                        break;
+                    case ArrayProperty<NameProperty> anp:
+                        anp.Values = anp.Reverse().ToList();
+                        break;
+                    case ArrayProperty<IntProperty> aip:
+                        aip.Values = aip.Reverse().ToList();
+                        break;
+                    case ArrayProperty<BoolProperty> abp:
+                        abp.Values = abp.Reverse().ToList();
+                        break;
+                    case ArrayProperty<FloatProperty> afp:
+                        afp.Values = afp.Reverse().ToList();
+                        break;
+                    case ArrayProperty<StringRefProperty> asrp:
+                        asrp.Values = asrp.Reverse().ToList();
+                        break;
+                    case ArrayProperty<StructProperty> astp:
+                        astp.Values = astp.Reverse().ToList();
+                        break;
+                }
+                CurrentLoadedExport.WriteProperties(CurrentLoadedProperties);
+            }
+        }
         private void SortArrayPropertyValue(Property property, bool ascending)
         {
             switch (property)
