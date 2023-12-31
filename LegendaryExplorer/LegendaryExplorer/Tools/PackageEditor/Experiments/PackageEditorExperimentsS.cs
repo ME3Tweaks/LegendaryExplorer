@@ -78,6 +78,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
         public record GhidraProperty(string Name, string TypeName, int Offset, int ElementSize, GhidraTypeKind TypeKind = GhidraTypeKind.Normal, int NumElements = 1, int BitOffset = 0);
         public record GhidraStruct(string Name, int Size, string Super, List<GhidraProperty> Properties);
+        public record GhidraEnum(string Name, List<string> Values);
 
         public static async void GenerateGhidraStructInsertionScript(PackageEditorWindow pewpf)
         {
@@ -372,6 +373,124 @@ import java.util.*;"
             finally
             {
                 pewpf.IsBusy = false;
+            }
+        }
+
+        public static async void GenerateGhidraEnumInsertionScript(PackageEditorWindow pewpf)
+        {
+            pewpf.IsBusy = true;
+            pewpf.BusyText = "Generating Ghidra Enum Scripts";
+
+            try
+            {
+                foreach (MEGame game in new[] { MEGame.LE1, MEGame.LE2, MEGame.LE3 })
+                {
+                    if (!GameController.TryGetMEProcess(game, out Process meProcess)) continue;
+                    var enumDict = new Dictionary<string, GhidraEnum>();
+                    //this must be created on the main thread!
+                    var debugger = new DebuggerInterface(game, meProcess);
+                    try
+                    {
+                        await debugger.WaitForAttach();
+                        await debugger.WaitForBreak();
+
+                        foreach (NObject nObject in debugger.IterateGObjects())
+                        {
+                            if (nObject is NClass nClass && nClass.ClassFlags.Has(EClassFlags.Native))
+                            {
+                                for (NField child = nClass.FirstChild; child is not null; child = child.Next)
+                                {
+                                    if (child is NEnum nEnum)
+                                    {
+                                        string enumName = nEnum.Name.Instanced;
+                                        if (!enumDict.ContainsKey(enumName))
+                                        {
+                                            enumDict.Add(enumName, new GhidraEnum(enumName, nEnum.Names.Select(fName => debugger.GetNameReference(fName).Instanced).ToList()));
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    finally
+                    {
+                        debugger.Detach();
+                        debugger.Dispose();
+                    }
+
+                    await using var fileStream = new FileStream(Path.Combine(AppDirectories.ExecFolder, $"{game}ImportEnums.java"), FileMode.Create);
+                    //await using var textWriter = new StreamWriter(fileStream);
+                    //await textWriter.WriteAsync(JsonConvert.SerializeObject(structDict, Formatting.Indented));
+                    //continue;
+                    using var writer = new CodeWriter(fileStream);
+                    writer.WriteLine(
+                        $@"//Imports {game} enum definitions
+//@author SirCxyrtyx
+//@category Data Types
+//@keybinding 
+//@menupath 
+//@toolbar 
+
+import ghidra.app.script.GhidraScript;
+import ghidra.program.model.util.*;
+import ghidra.program.model.reloc.*;
+import ghidra.program.model.data.*;
+import ghidra.program.model.block.*;
+import ghidra.program.model.symbol.*;
+import ghidra.program.model.scalar.*;
+import ghidra.program.model.mem.*;
+import ghidra.program.model.listing.*;
+import ghidra.program.model.lang.*;
+import ghidra.program.model.pcode.*;
+import ghidra.program.model.address.*;
+import java.util.*;"
+                    );
+                    GhidraEnum[][] chunks = enumDict.Values.Chunk(100).ToArray();
+                    writer.WriteBlock($"public class {game}ImportEnums extends GhidraScript", () =>
+                    {
+                        writer.WriteLine();
+                        writer.WriteLine("private static final String CATEGORY = \"/SDK_Test\";");
+                        writer.WriteLine();
+                        writer.WriteLine("//Can be either DataTypeConflictHandler.REPLACE_HANDLER or DataTypeConflictHandler.KEEP_HANDLER");
+                        writer.WriteLine("private static final DataTypeConflictHandler CONFLICT_HANDLER = DataTypeConflictHandler.REPLACE_HANDLER;");
+                        writer.WriteLine();
+                        writer.WriteBlock("public void run() throws Exception", () =>
+                        {
+                            writer.WriteLine("DataTypeManager typeMan = currentProgram.getDataTypeManager();");
+                            writer.WriteLine("var structDict = new HashMap<String, DataType>();");
+                            writer.WriteLine("var categoryPath = new CategoryPath(CATEGORY);");
+                            writer.WriteLine();
+                            writer.WriteLine();
+                            writer.WriteLine("//This is chunked because java has a limit on how large methods can be");
+                            for (int i = 0; i < chunks.Length; i++)
+                            {
+                                writer.WriteLine($"createEnums{i}(typeMan, categoryPath);");
+                            }
+                        });
+                        for (int i = 0; i < chunks.Length; i++)
+                        {
+                            GhidraEnum[] chunk = chunks[i];
+                            writer.WriteBlock($"private void createEnums{i}(DataTypeManager typeMan, CategoryPath categoryPath) throws Exception", () =>
+                            {
+                                writer.WriteLine("EnumDataType enumDef;");
+                                foreach (GhidraEnum ghidraEnum in chunk)
+                                {
+                                    writer.WriteLine($"enumDef = new EnumDataType(categoryPath, \"{ghidraEnum.Name}\", 1, typeMan);");
+                                    for (int j = 0; j < ghidraEnum.Values.Count; j++)
+                                    {
+                                        writer.WriteLine($"enumDef.add(\"{ghidraEnum.Values[j]}\", {j});");
+                                    }
+                                    writer.WriteLine("typeMan.addDataType(enumDef, CONFLICT_HANDLER);");
+                                }
+                            });
+                        }
+                    });
+                }
+            }
+            finally
+            {
+                pewpf.IsBusy = false;
+                MessageBox.Show("Done!");
             }
         }
 
