@@ -1,18 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using LegendaryExplorer.Misc;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
@@ -36,7 +28,7 @@ namespace LegendaryExplorer.Tools.ObjectInstanceViewer
         private string _statusText = "Loading";
         public string StatusText { get => _statusText; set => SetProperty(ref _statusText, value); }
 
-        private string _searchTerm = "Loading";
+        private string _searchTerm;
         public string SearchTerm
         {
             get => _searchTerm;
@@ -49,12 +41,47 @@ namespace LegendaryExplorer.Tools.ObjectInstanceViewer
             }
         }
 
+        private string _selectedObject;
+        public string SelectedObject
+        {
+            get => _selectedObject;
+            set
+            {
+                if (SetProperty(ref _selectedObject, value))
+                {
+                    if (string.IsNullOrWhiteSpace(value))
+                    {
+                        Instances.ClearEx();
+                    }
+                    else if (ObjectDB != null)
+                    {
+                        var instances = ObjectDB.GetFilesContainingObject(value);
+                        if (instances != null)
+                        {
+                            Instances.ReplaceAll(instances);
+                        }
+                        else
+                        {
+                            // Not found
+                            Instances.ClearEx();
+                        }
+                    }
+                }
+            }
+        }
+
+        private string _selectedFileInstance;
+        public string SelectedFileInstance { get => _selectedFileInstance; set => SetProperty(ref _selectedFileInstance, value); }
+
+
+
         public MEGame Game { get; init; }
 
         #endregion
 
         private ObjectInstanceDB ObjectDB;
 
+        public ObservableCollectionExtended<string> Instances { get; } = new();
         private ObservableCollectionExtended<string> _allInstancedFullPaths { get; } = new();
         public ICollectionView AllInstancedFullPathsView => CollectionViewSource.GetDefaultView(_allInstancedFullPaths);
 

@@ -10,7 +10,7 @@
                                  mc:Ignorable="d"
                                  DataContext="{Binding RelativeSource={RelativeSource Self}}"
                                  Loaded="WindowLoaded"
-                                 Title="ObjectInstanceDBViewerWindow" Height="450" Width="800">
+                                 Title="ObjectInstanceDB Viewer" Height="450" Width="800">
     <xctk:BusyIndicator IsBusy="{Binding Path=IsBusy}" BusyContent="{Binding BusyText}">
         <DockPanel>
             <!--<Menu DockPanel.Dock="Top">
@@ -29,7 +29,11 @@
             </StatusBar>
             <DockPanel >
                 <xctk:WatermarkTextBox DockPanel.Dock="Top" Text="{Binding SearchTerm, UpdateSourceTrigger=PropertyChanged}" Watermark="Type to filter"/>
-                <ListBox ItemsSource="{Binding AllInstancedFullPathsView}"/>
+                <ListBox DockPanel.Dock="Right" MinWidth="300"  ItemsSource="{Binding Instances}"
+                         SelectedItem="{Binding SelectedFileInstance}"/>
+
+                <ListBox ItemsSource="{Binding AllInstancedFullPathsView}"
+                         SelectedItem="{Binding SelectedObject}"/>
             </DockPanel>
         </DockPanel>
     </xctk:BusyIndicator>
