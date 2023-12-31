@@ -16,6 +16,7 @@ using LegendaryExplorerCore.UnrealScript.Language.Tree;
 using LegendaryExplorerCore.UnrealScript.Language.Util;
 using LegendaryExplorerCore.UnrealScript.Lexing;
 using LegendaryExplorerCore.UnrealScript.Parsing;
+using Microsoft.Toolkit.HighPerformance;
 using static LegendaryExplorerCore.UnrealScript.Utilities.Keywords;
 
 namespace LegendaryExplorerCore.UnrealScript
@@ -751,8 +752,11 @@ namespace LegendaryExplorerCore.UnrealScript
                 if (existingClass?.VirtualFunctionNames is not null)
                 {
                     var existingNames = new HashSet<string>(existingClass.VirtualFunctionNames, StringComparer.OrdinalIgnoreCase);
-                    if (existingNames.SetEquals(cls.VirtualFunctionNames))
+                    if (existingNames.SetEquals(cls.VirtualFunctionNames) 
+                        //check if the ordering matches the parent where they overlap. If not, existing ordering is broken
+                        && parentVirtualFuncNames.AsSpan().SequenceEqual(existingClass.VirtualFunctionNames.AsSpan()[..parentVirtualFuncNames.Count], StringComparer.OrdinalIgnoreCase))
                     {
+
                         //same functions, so preserve the ordering 
                         cls.VirtualFunctionNames = existingClass.VirtualFunctionNames;
 
@@ -773,7 +777,6 @@ namespace LegendaryExplorerCore.UnrealScript
                     }
                     else
                     {
-                        existingNames.ExceptWith(cls.VirtualFunctionNames);
                         vfTableChanged = true;
                     }
                 }
