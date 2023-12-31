@@ -115,11 +115,12 @@
                         </Grid>
                     </Grid>
                 </TabItem>
-                <TabItem Name="materialtab" Header="Material" Visibility="{Binding MaterialInstanceActorSelected, Converter={StaticResource BoolToVisibilityConverter}}">
+                <TabItem Name="materialtab" Header="Material" Visibility="{Binding StaticMeshComponentSelected, Converter={StaticResource BoolToVisibilityConverter}}">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition/>
+                            <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <StackPanel Grid.Row="0">
@@ -140,21 +141,23 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
-                            <controls:ListBoxScroll x:Name="listBoxMaterials" ItemsSource="{Binding MaterialsDict}" DisplayMemberPath="Key" SelectedValuePath="Value" ContextMenu="{StaticResource packagesContextMenu}" Grid.Row="0" Grid.RowSpan="3"/>
                             <Border BorderBrush="LightSlateGray" BorderThickness="0.65" Grid.Row="0" Grid.Column="2" >
                                 <DockPanel>
                                     <controls:SearchBox x:Name="materialFilterSearchBox" DockPanel.Dock="Top" WatermarkText="Filter Loaded Materials" TextChanged="MaterialFilterSearchBox_OnTextChanged"/>
                                     <controls:ListBoxScroll
-                    ItemsSource="{Binding SelectedValue, ElementName=listBoxPackages}"
-                    DisplayMemberPath="DisplayText" SelectedItem="{Binding SelectedActor}"
-                    ContextMenu="{StaticResource actorsContextMenu}"
-                    sharedUi:Filter.By="{Binding ActorFilter}" />
+                                        ItemsSource="{Binding LoadedMaterials}"
+                                        SelectedItem="{Binding SelectedMaterial}"
+                                        ContextMenu="{StaticResource actorsContextMenu}"
+                                        sharedUi:Filter.By="{Binding MaterialFilter}" />
                                 </DockPanel>
                             </Border>
                             <!--<editorPanels:LLEActorEditorPanel x:Name="ActorEditorPanel" Grid.Row="2" Grid.Column="2"/>-->
 
                             <!--<editorPanels:LLELightEditorPanel x:Name="LightEditorPanel" Grid.Row="3" Grid.Column="2"/>-->
-
+                            <DockPanel Grid.Column="2" Grid.Row="2">
+                                <xctk:IntegerUpDown Value="{Binding MaterialIndex}" Padding="10,0"/>
+                                <Button Content="Set material" Command="{Binding SetMaterialCommand}"/>
+                            </DockPanel>
                         </Grid>
                     </Grid>
 

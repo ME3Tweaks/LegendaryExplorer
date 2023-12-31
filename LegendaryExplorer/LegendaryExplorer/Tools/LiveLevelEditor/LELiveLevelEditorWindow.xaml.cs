@@ -66,12 +66,31 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         /// <summary>
         /// This is a weak check. But we don't have way to access class
         /// </summary>
-        public bool MaterialInstanceActorSelected => SelectedActor != null && SelectedActor.ActorName.Contains("MaterialInstanceActor");
+        private bool _staticMeshComponentSelected;
+
+        public bool StaticMeshComponentSelected
+        {
+            get => _readyToView;
+            set
+            {
+                if (SetProperty(ref _staticMeshComponentSelected, value))
+                {
+                    // OnPropertyChanged(nameof(StaticMeshComponentSelected));
+                }
+            }
+        }
+
         public bool CamPathReadyToView => _readyToView && Game is MEGame.ME3;
 
         public MEGame Game { get; }
         public InteropTarget GameTarget { get; }
         public ObservableCollectionExtended<string> LoadedMaterials { get; } = new();
+
+        private int _materialIndex;
+        public int MaterialIndex { get => _materialIndex; set => SetProperty(ref _materialIndex, value); }
+
+        private string _selectedMaterial;
+        public string SelectedMaterial { get => _selectedMaterial; set => SetProperty(ref _selectedMaterial, value); }
 
         public LELiveLevelEditorWindow(MEGame game) : base("LE Live Level Editor", true)
         {
@@ -137,6 +156,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         public ICommand OpenPackageCommand { get; set; }
         public ICommand OpenActorInPackEdCommand { get; set; }
         public ICommand RegenActorListCommand { get; set; }
+        public ICommand RegenMaterialsListCommand { get; set; }
         public Requirement.RequirementCommand PackEdWindowOpenCommand { get; set; }
         public ICommand WriteActorValuesCommand { get; set; }
         public ICommand SnapToPlayerPositionCommand { get; set; }
@@ -151,6 +171,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             OpenPackageCommand = new GenericCommand(OpenPackage, CanOpenPackage);
             OpenActorInPackEdCommand = new GenericCommand(OpenActorInPackEd, CanOpenInPackEd);
             RegenActorListCommand = new GenericCommand(RegenActorList);
+            RegenMaterialsListCommand = new GenericCommand(RegenMaterialsList);
             PackEdWindowOpenCommand = new Requirement.RequirementCommand(IsSelectedPackageOpenInPackEd, OpenPackage);
             WriteActorValuesCommand = new GenericCommand(WriteActorValues, IsSelectedPackageOpenInPackEd);
             SnapToPlayerPositionCommand = new GenericCommand(SetSelectedActorToPlayerPosition);
@@ -159,9 +180,8 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
 
         private void SetMaterial()
         {
-
             if (noUpdate) return;
-            InteropHelper.SendMessageToGame($"LLE_UPDATE_ACTOR_MATERIAL {XPos} {YPos} {ZPos}", Game);
+            InteropHelper.SendMessageToGame($"LLE_SET_MATERIAL {MaterialIndex} {SelectedMaterial}", Game);
         }
 
         private void SetSelectedActorToPlayerPosition()
@@ -270,6 +290,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
 
         private void RegenMaterialsList()
         {
+            LoadedMaterials.ClearEx();
             InteropHelper.SendMessageToGame("LLE_GET_LOADED_MATERIALS", Game);
         }
 
@@ -399,7 +420,14 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             }
             else if (verb == "LOADEDMATERIAL")
             {
-                LoadedMaterials.Add(command[3]);
+                try
+                {
+                    LoadedMaterials.Add(command[2]);
+                }
+                catch (Exception ex)
+                {
+                    // Do nothing.
+                }
             }
             else if (verb == "ACTORSELECTED")
             {
@@ -587,6 +615,8 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
                     SetBusy($"Selecting {value.ActorName}", () => { });
                     string message = $"LLE_SELECT_ACTOR {Path.GetFileNameWithoutExtension(value.FileName)} {value.ActorName} {_selectedActor.ComponentIdx}";
                     InteropHelper.SendMessageToGame(message, Game);
+
+                    StaticMeshComponentSelected = _selectedActor?.ComponentName != null;
                 }
             }
         }
@@ -603,9 +633,26 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             }
         }
 
+        private Predicate<object> _materialFilter;
+        public Predicate<object> MaterialFilter
+        {
+            get => _materialFilter;
+            set
+            {
+                //this should always trigger, even if the new value is the same
+                _actorFilter = value;
+                OnPropertyChanged();
+            }
+        }
+
         private void ActorFilterSearchBox_OnTextChanged(SearchBox sender, string newtext)
         {
             ActorFilter = string.IsNullOrWhiteSpace(newtext) ? null : IsActorMatch;
+        }
+
+        private void MaterialFilterSearchBox_OnTextChanged(SearchBox sender, string newtext)
+        {
+            MaterialFilter = string.IsNullOrWhiteSpace(newtext) ? null : IsMaterialMatch;
         }
 
         private bool IsActorMatch(object obj)
@@ -616,6 +663,14 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
                    || ae.Tag is not null && ae.Tag.Contains(text, StringComparison.OrdinalIgnoreCase)
                    || ae.ComponentName is not null && ae.ComponentName.Contains(text, StringComparison.OrdinalIgnoreCase);
         }
+
+        private bool IsMaterialMatch(object obj)
+        {
+            var ae = (string)obj;
+            string text = materialFilterSearchBox.Text;
+            return ae.Contains(text, StringComparison.OrdinalIgnoreCase);
+        }
+
 
         #endregion
 
@@ -1124,11 +1179,6 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         }
 
         #endregion
-
-        private void MaterialFilterSearchBox_OnTextChanged(SearchBox sender, string newText)
-        {
-
-        }
     }
 
     public class ActorEntryLE
