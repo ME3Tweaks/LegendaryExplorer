@@ -4278,7 +4278,7 @@ defaultproperties
 
         public static void ShowMaterialEditor()
         {
-            void test(MemoryStream ms, string ifp)
+            void test(IMEPackage ms, string ifp)
             {
 
             }
