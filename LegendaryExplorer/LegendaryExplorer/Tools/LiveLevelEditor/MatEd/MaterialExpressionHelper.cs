@@ -148,12 +148,12 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor.MatEd
 
     public class TextureParameter : ExpressionParameter
     {
-        public static List<TextureParameter> GetTextureParameters(ExportEntry export, bool returnNullOnNotFound = false)
+        public static List<TextureParameter> GetTextureParameters(ExportEntry export, bool returnNullOnNotFound = false, Func<TextureParameter> objectGenerator = null)
         {
             var textures = export.GetProperty<ArrayProperty<StructProperty>>("TextureParameterValues");
             if (textures == null)
                 return returnNullOnNotFound ? null : new List<TextureParameter>();
-            return textures?.Select(FromStruct).ToList();
+            return textures?.Select(x => FromStruct(x, objectGenerator)).ToList();
         }
 
         public static void WriteScalarParameters(ExportEntry export, List<TextureParameter> parameters, string paramName = "TextureParameterValues")
@@ -163,15 +163,14 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor.MatEd
             export.WriteProperty(arr);
         }
 
-        public static TextureParameter FromStruct(StructProperty sp)
+        public static TextureParameter FromStruct(StructProperty sp, Func<TextureParameter> objectGenerator = null)
         {
-            return new TextureParameter
-            {
-                Property = sp,
-                ParameterName = sp.GetProp<NameProperty>("ParameterName")?.Value,
-                ParameterValue = sp.GetProp<ObjectProperty>("ParameterValue").Value,
-                ExpressionGUID = sp.GetProp<StructProperty>("ExpressionGUID"),
-            };
+            TextureParameter tp = objectGenerator?.Invoke() ?? new TextureParameter();
+            tp.Property = sp;
+            tp.ParameterName = sp.GetProp<NameProperty>("ParameterName")?.Value;
+            tp.ParameterValue = sp.GetProp<ObjectProperty>("ParameterValue").Value;
+            tp.ExpressionGUID = sp.GetProp<StructProperty>("ExpressionGUID");
+            return tp;
         }
 
         public StructProperty ToStruct()

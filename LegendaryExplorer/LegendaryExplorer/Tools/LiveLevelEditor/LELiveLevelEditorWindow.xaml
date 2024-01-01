@@ -124,7 +124,7 @@
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <StackPanel Grid.Row="0">
-                            <TextBlock Text="The material list will automatically stay up to date as levels are loaded and unloaded, but you can force reload if necessary."
+                            <TextBlock Text="The material list shows all "
                                 Margin="15,5,15,5" TextWrapping="Wrap" TextAlignment="Center"/>
                             <Button Margin="15,0,15,6" Content="Manually Regenerate Materials List"
                                 Command="{Binding RegenMaterialsListCommand}" />
@@ -156,6 +156,7 @@
                             <!--<editorPanels:LLELightEditorPanel x:Name="LightEditorPanel" Grid.Row="3" Grid.Column="2"/>-->
                             <DockPanel Grid.Column="2" Grid.Row="2">
                                 <xctk:IntegerUpDown Value="{Binding MaterialIndex}" Padding="10,0"/>
+                                <Button Content="Set custom material" Padding="4,2"  Command="{Binding SetCustomMaterialCommand}"/>
                                 <Button Content="Set material" Command="{Binding SetMaterialCommand}"/>
                             </DockPanel>
                         </Grid>

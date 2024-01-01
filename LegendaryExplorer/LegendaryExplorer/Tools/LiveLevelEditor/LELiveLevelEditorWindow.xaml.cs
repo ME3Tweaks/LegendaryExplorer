@@ -161,6 +161,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         public ICommand WriteActorValuesCommand { get; set; }
         public ICommand SnapToPlayerPositionCommand { get; set; }
         public ICommand SetMaterialCommand { get; set; }
+        public ICommand SetCustomMaterialCommand { get; set; }
 
         private void LoadCommands()
         {
@@ -176,6 +177,22 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             WriteActorValuesCommand = new GenericCommand(WriteActorValues, IsSelectedPackageOpenInPackEd);
             SnapToPlayerPositionCommand = new GenericCommand(SetSelectedActorToPlayerPosition);
             SetMaterialCommand = new GenericCommand(SetMaterial);
+            SetCustomMaterialCommand = new GenericCommand(SetCustomMaterial);
+        }
+
+        private void LoadCustomMaterial(IMEPackage incomingPackage, string materialIFP)
+        {
+            InteropHelper.SendFileToGame(incomingPackage); // Send package into game for loading
+            InteropHelper.SendMessageToGame($"LOADPACKAGE {incomingPackage.FileNameNoExtension}", Game);
+            InteropHelper.SendMessageToGame($"LLE_SET_MATERIAL {MaterialIndex} {materialIFP}", Game);
+
+        }
+
+        private void SetCustomMaterial()
+        {
+            // Todo: More strict checks.
+            MaterialEditor me = new MaterialEditor(Game, LoadCustomMaterial);
+            me.Show();
         }
 
         private void SetMaterial()
