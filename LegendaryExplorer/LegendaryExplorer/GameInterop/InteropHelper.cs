@@ -169,7 +169,12 @@ namespace LegendaryExplorer.GameInterop
             // is installed (this won't handle different builds/versions like mod manager but it's better
             // than not doing any check at all)
             // - Mgamerz
-
+#if DEBUG
+            // If you're developing the LEX Interop ASI you can 
+            // force it to think it's installed and ignore the MD5 check.
+            if (game == MEGame.LE3)
+                return true; // DEV ONLY
+#endif
             string asiDir = GetAsiDir(game);
             string asiMD5 = GameController.GetInteropTargetForGame(game).InteropASIMD5;
             return IsASIInstalled(asiMD5, asiDir);

@@ -9,13 +9,13 @@
         xmlns:matEd="clr-namespace:LegendaryExplorer.Tools.LiveLevelEditor.MatEd"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         mc:Ignorable="d"
+        Loaded="MaterialEditor_OnLoaded"
         AllowDrop="True"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         Title="MaterialEditor" Height="450" Width="800"
         dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding}">
     <Window.Resources>
-        <!-- These are all chosen in codebehind as they can be shared around (they might not actually be shared after dev though) -->
-        <DataTemplate x:Key="matEdUniformTextureTemplate">
+        <DataTemplate DataType="{x:Type local:MatEdTexture}" > 
             <GroupBox Header="Texture">
                 <DockPanel>
                     <Image DockPanel.Dock="Left" Width="64" Height="64" Source="{Binding LoadedBitMap}"/>
@@ -26,7 +26,7 @@
             </GroupBox>
         </DataTemplate>
         <!-- Parameters -->
-        <DataTemplate x:Key="matEdTextureTemplate">
+        <DataTemplate DataType="{x:Type local:TextureParameterMatEd}">
             <DockPanel>
                 <Image DockPanel.Dock="Left" Width="64" Height="64" Source="{Binding LoadedBitMap}"/>
                 <StackPanel>
@@ -36,26 +36,25 @@
                 </StackPanel>
             </DockPanel>
         </DataTemplate>
-        <DataTemplate x:Key="matEdScalarTemplate">
+        <DataTemplate DataType="{x:Type matEd:ScalarParameter}">
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="{Binding ParameterName, StringFormat='{}{0} - Scalar'}" Width="200"/>
-                <xctk:SingleUpDown Value="{Binding ParameterValue}"/>
+                <xctk:SingleUpDown Value="{Binding ParameterValue}" ValueChanged="Scalar_Changed"/>
             </StackPanel>
         </DataTemplate>
-        <DataTemplate x:Key="matEdVectorTemplate">
+        <DataTemplate DataType="{x:Type matEd:VectorParameter}">
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="{Binding ParameterName, StringFormat='{}{0} - Vector'}" Width="200"/>
                 <TextBlock Text="R:" Margin="5,0,2,0" VerticalAlignment="Center"/>
-                <xctk:SingleUpDown Value="{Binding ParameterValue.R}"/>
+                <xctk:SingleUpDown Value="{Binding ParameterValue.W}" ValueChanged="VectorR_Changed"/>
                 <TextBlock Text="G:" Margin="5,0,2,0" VerticalAlignment="Center"/>
-                <xctk:SingleUpDown Value="{Binding ParameterValue.G}"/>
+                <xctk:SingleUpDown Value="{Binding ParameterValue.X}" ValueChanged="VectorG_Changed"/>
                 <TextBlock Text="B:" Margin="5,0,2,0" VerticalAlignment="Center"/>
-                <xctk:SingleUpDown Value="{Binding ParameterValue.B}"/>
+                <xctk:SingleUpDown Value="{Binding ParameterValue.Y}" ValueChanged="VectorB_Changed"/>
                 <TextBlock Text="A:" Margin="5,0,2,0" VerticalAlignment="Center"/>
-                <xctk:SingleUpDown Value="{Binding ParameterValue.A}"/>
+                <xctk:SingleUpDown Value="{Binding ParameterValue.Z}" ValueChanged="VectorA_Changed"/>
             </StackPanel>
         </DataTemplate>
-        <local:MatEdTextureTemplateSelector x:Key="MatEdTemplateSelector"/>
     </Window.Resources>
     <xctk:BusyIndicator BusyContent="{Binding BusyText}" IsBusy="{Binding IsBusy}">
         <DockPanel Margin="3">
@@ -69,17 +68,18 @@
             </GroupBox>
             <GroupBox Header="Operations" DockPanel.Dock="Bottom">
                 <DockPanel>
-                    <CheckBox IsChecked="{Binding AutoUpdate}" Content="Auto preview on changes" VerticalAlignment="Center" Margin="5,0"/>
-                    <Button Content="Preview on Mesh" HorizontalAlignment="Right" Padding="20,5" Command="{Binding PreviewOnMeshCommand}"/>
+                    <CheckBox DockPanel.Dock ="Left" IsChecked="{Binding AutoUpdate}" Content="Auto preview on changes" VerticalAlignment="Center" Margin="5,0"/>
+                    <Button DockPanel.Dock="Right" Content="Preview on Mesh" HorizontalAlignment="Right" Padding="20,5" Command="{Binding PreviewOnMeshCommand}"/>
+                    <Button Content="Save material package" HorizontalAlignment="Right" Padding="10,5" Margin="5,0"  Command="{Binding SaveMaterialPackageCommand}"/>
                 </DockPanel>
             </GroupBox>
             <ScrollViewer>
                 <StackPanel>
                     <GroupBox DockPanel.Dock="Top" Header="Material Uniform Textures">
-                        <ItemsControl ItemsSource="{Binding UniformTextures}" ItemTemplateSelector="{StaticResource MatEdTemplateSelector}"/>
+                        <ItemsControl ItemsSource="{Binding UniformTextures}"/>
                     </GroupBox>
                     <GroupBox Header="Material Expressions">
-                        <ItemsControl ItemsSource="{Binding Expressions}" ItemTemplateSelector="{StaticResource MatEdTemplateSelector}">
+                        <ItemsControl ItemsSource="{Binding Expressions}">
                         </ItemsControl>
                     </GroupBox>
                 </StackPanel>

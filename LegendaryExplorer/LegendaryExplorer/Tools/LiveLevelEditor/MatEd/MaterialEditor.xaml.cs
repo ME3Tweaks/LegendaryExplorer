@@ -49,6 +49,18 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         /// </summary>
         private readonly Action<IMEPackage, string> LoadMaterialInGameDelegate;
 
+        /// <summary>
+        /// Invoked to update a scalar parameter
+        /// </summary>
+        private readonly Action<ScalarParameter> SendScalarUpdate;
+
+        /// <summary>
+        /// Invoked to update a vector parameter
+        /// </summary>
+        private readonly Action<VectorParameter> SendVectorUpdate;
+
+        // If data is being loaded into the editor
+        private bool IsLoadingData;
 
         private ExportEntry _materialExport;
         public ExportEntry MaterialExport
@@ -56,10 +68,12 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             get => _materialExport;
             set
             {
+                IsLoadingData = true;
                 SetProperty(ref _materialExport, value);
                 UniformTextures.ClearEx();
                 Expressions.ClearEx();
                 LoadMaterialData();
+                IsLoadingData = false; // Texture loading can occur on background but it won't have any editor effects
             }
         }
 
@@ -198,10 +212,14 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         public ObservableCollectionExtended<MatEdTexture> UniformTextures { get; } = new();
         public ObservableCollectionExtended<ExpressionParameter> Expressions { get; } = new();
         public ICommand PreviewOnMeshCommand { get; set; }
-        public MaterialEditor(MEGame game, Action<IMEPackage, string> loadMaterialDelegate) : base("Material Editor LLE", true)
+        public ICommand SaveMaterialPackageCommand { get; set; }
+
+        public MaterialEditor(MEGame game, Action<IMEPackage, string> loadMaterialDelegate, Action<ScalarParameter> updateScalarDelegate, Action<VectorParameter> updateVectorDelegate) : base("Material Editor LLE", true)
         {
             Game = game;
             LoadMaterialInGameDelegate = loadMaterialDelegate;
+            SendScalarUpdate = updateScalarDelegate;
+            SendVectorUpdate = updateVectorDelegate;
             LoadCommands();
             InitializeComponent();
         }
@@ -209,6 +227,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         private void LoadCommands()
         {
             PreviewOnMeshCommand = new GenericCommand(SendToGame);
+            SaveMaterialPackageCommand = new GenericCommand(SaveMaterialPackage, () => MaterialExport != null);
         }
 
         public void LoadMaterialIntoEditor(ExportEntry otherMat)
@@ -240,6 +259,17 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             LoadMaterialInGameDelegate(newP, matExp.InstancedFullPath);
         }
 
+        public async void SaveMaterialPackage()
+        {
+            string extension = ".pcc";
+            var fileFilter = $"*{extension}|*{extension}";
+            var d = new SaveFileDialog { Filter = fileFilter };
+            if (d.ShowDialog() == true)
+            {
+                await MaterialExport.FileRef.SaveAsync(d.FileName);
+                MessageBox.Show("Done");
+            }
+        }
 
         /// <summary>
         /// Drag over handler
@@ -318,6 +348,65 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         public bool IsBusy { get => _isBusy; set => SetProperty(ref _isBusy, value); }
         private string _busyText;
         public string BusyText { get => _busyText; set => SetProperty(ref _busyText, value); }
+
+        /// <summary>
+        /// Material to immediately load when window opens
+        /// </summary>
+        public ExportEntry PreloadMaterial { get; set; }
+
+        private void VectorR_Changed(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            if (IsLoadingData) return;
+            if (sender is FrameworkElement fe && fe.DataContext is VectorParameter vp)
+            {
+                SendVectorUpdate(vp);
+            }
+        }
+
+        private void VectorG_Changed(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            if (IsLoadingData) return;
+            if (sender is FrameworkElement fe && fe.DataContext is VectorParameter vp)
+            {
+                SendVectorUpdate(vp);
+            }
+        }
+
+        private void VectorB_Changed(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            if (IsLoadingData) return;
+            if (sender is FrameworkElement fe && fe.DataContext is VectorParameter vp)
+            {
+                SendVectorUpdate(vp);
+            }
+        }
+
+        private void VectorA_Changed(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            if (IsLoadingData) return;
+            if (sender is FrameworkElement fe && fe.DataContext is VectorParameter vp)
+            {
+                SendVectorUpdate(vp);
+            }
+        }
+        
+        private void Scalar_Changed(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            if (IsLoadingData) return;
+            if (sender is FrameworkElement fe && fe.DataContext is ScalarParameter sp)
+            {
+                SendScalarUpdate(sp);
+            }
+        }
+
+        private void MaterialEditor_OnLoaded(object sender, RoutedEventArgs e)
+        {
+            if (PreloadMaterial != null)
+            {
+                LoadMaterialIntoEditor(PreloadMaterial);
+                PreloadMaterial = null;
+            }
+        }
     }
 
     public class MatEdTexture : NotifyPropertyChangedBase, IMatEdTexture
@@ -541,20 +630,20 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         #endregion
     }
 
-    public class MatEdTextureTemplateSelector : DataTemplateSelector
-    {
-        public override DataTemplate SelectTemplate(object item, DependencyObject container)
-        {
-            if (item is MatEdTexture) // Material version
-                return (DataTemplate)((FrameworkElement)container).FindResource("matEdUniformTextureTemplate"); // Do not change this string as it is used in xaml too
-            if (item is TextureParameterMatEd) // Expression version
-                return (DataTemplate)((FrameworkElement)container).FindResource("matEdTextureTemplate"); // Do not change this string as it is used in xaml too
-            if (item is ScalarParameter)
-                return (DataTemplate)((FrameworkElement)container).FindResource("matEdScalarTemplate"); // Do not change this string as it is used in xaml too
-            if (item is VectorParameter)
-                return (DataTemplate)((FrameworkElement)container).FindResource("matEdVectorTemplate"); // Do not change this string as it is used in xaml too
+    //public class MatEdTextureTemplateSelector : DataTemplateSelector
+    //{
+    //    public override DataTemplate SelectTemplate(object item, DependencyObject container)
+    //    {
+    //        if (item is MatEdTexture) // Material version
+    //            return (DataTemplate)((FrameworkElement)container).FindResource("matEdUniformTextureTemplate"); // Do not change this string as it is used in xaml too
+    //        if (item is TextureParameterMatEd) // Expression version
+    //            return (DataTemplate)((FrameworkElement)container).FindResource("matEdTextureTemplate"); // Do not change this string as it is used in xaml too
+    //        if (item is ScalarParameter)
+    //            return (DataTemplate)((FrameworkElement)container).FindResource("matEdScalarTemplate"); // Do not change this string as it is used in xaml too
+    //        if (item is VectorParameter)
+    //            return (DataTemplate)((FrameworkElement)container).FindResource("matEdVectorTemplate"); // Do not change this string as it is used in xaml too
 
-            return base.SelectTemplate(item, container);
-        }
-    }
+    //        return base.SelectTemplate(item, container);
+    //    }
+    //}
 }
