@@ -34,6 +34,7 @@ using LegendaryExplorerCore.Unreal.ObjectInfo;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using Newtonsoft.Json;
 using SharpDX.Direct2D1.Effects;
+using System.Threading.Tasks;
 
 namespace LegendaryExplorer.Tools.LiveLevelEditor
 {
@@ -191,23 +192,31 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         private void LoadCustomMaterial(IMEPackage incomingPackage, string materialIFP)
         {
             InteropHelper.SendFileToGame(incomingPackage); // Send package into game for loading
-            Thread.Sleep(1000);
-            InteropHelper.SendMessageToGame($"LOADPACKAGE {incomingPackage.FileNameNoExtension}.pcc", Game);
-            Thread.Sleep(1000);
-            InteropHelper.SendMessageToGame($"LLE_SET_MATERIAL {MaterialIndex} {materialIFP}", Game);
-
+            Task.Run(() =>
+            {
+                Thread.Sleep(1000);
+            }).ContinueWithOnUIThread(x =>
+            {
+                InteropHelper.SendMessageToGame($"LOADPACKAGE {incomingPackage.FileNameNoExtension}.pcc", Game);
+            }).ContinueWith(x =>
+            {
+                Thread.Sleep(1000);
+            }).ContinueWithOnUIThread(x =>
+            {
+                InteropHelper.SendMessageToGame($"LLE_SET_MATERIAL {MaterialIndex} {materialIFP}", Game);
+            });
         }
 
         private void UpdateScalarParameter(ScalarParameter obj)
         {
             // Floats sent to game must use localization-specific strings as they will be interpreted by the current locale
-            InteropHelper.SendMessageToGame($"LLE_SET_MATEXPR_SCALAR {MaterialIndex} {obj.ParameterValue} {obj.ParameterValue}", Game);
+            InteropHelper.SendMessageToGame($"LLE_SET_MATEXPR_SCALAR {MaterialIndex} {obj.ParameterName} {obj.ParameterValue}", Game);
         }
 
         private void UpdateVectorParameter(VectorParameter obj)
         {
             // Floats sent to game must use localization-specific strings as they will be interpreted by the current locale
-            InteropHelper.SendMessageToGame($"LLE_SET_MATEXPR_VECTOR {MaterialIndex} {obj.ParameterValue} {obj.ParameterValue.W} {obj.ParameterValue.X} {obj.ParameterValue.Y} {obj.ParameterValue.Z}", Game);
+            InteropHelper.SendMessageToGame($"LLE_SET_MATEXPR_VECTOR {MaterialIndex} {obj.ParameterName} {obj.ParameterValue.W} {obj.ParameterValue.X} {obj.ParameterValue.Y} {obj.ParameterValue.Z}", Game);
         }
 
         private void SetCustomMaterial()
@@ -615,11 +624,24 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             public JsonActorObj[] Actors { get; set; }
         }
 
+        private class JsonComponentObj
+        {
+            /// <summary>
+            /// Name of the SMCA
+            /// </summary>
+            public string SMCAName { get; set; }
+
+            /// <summary>
+            /// IFP of the StaticMesh
+            /// </summary>
+            public string SMCAMesh { get; set; }
+        }
+
         private class JsonActorObj
         {
             public string Name { get; set; }
             public string Tag { get; set; }
-            public string[] Components { get; set; }
+            public JsonComponentObj[] Components { get; set; }
         }
 
         /// <summary>
@@ -663,13 +685,14 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
                     }
                     for (int i = 0; i < jsonActorObj.Components.Length; i++)
                     {
-                        if (jsonActorObj.Components[i] is string componentName)
+                        if (jsonActorObj.Components[i] is JsonComponentObj component)
                         {
                             var actor = new ActorEntryLE
                             {
                                 FileName = mapName,
                                 ActorName = jsonActorObj.Name,
-                                ComponentName = componentName,
+                                ComponentName = component.SMCAName,
+                                Mesh = component.SMCAMesh,
                                 ComponentIdx = i
                             };
                             ActorDict.AddToListAt(mapName, actor);
@@ -1269,6 +1292,10 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             {
                 if (ComponentName is not null)
                 {
+                    if (Mesh != null)
+                    {
+                        return $"{ActorName}:{ComponentName} ({Mesh})";
+                    }
                     return $"{ActorName}:{ComponentName}";
                 }
                 if (Tag is not null)
@@ -1283,6 +1310,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         public string Tag;
         public string ActorName;
         public string ComponentName;
+        public string Mesh;
         public int ComponentIdx = -1;
 
         public string PathInLevel => ComponentName is null ? ActorName : $"{ActorName}.{ComponentName}";
