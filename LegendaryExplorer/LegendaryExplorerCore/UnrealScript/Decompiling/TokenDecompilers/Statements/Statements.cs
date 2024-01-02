@@ -329,7 +329,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
         private Statement DecompileCase()
         {
             PopByte();
-            var offs = ReadUInt16(); // MemOff
+            ushort offs = ReadUInt16(); // MemOff
             Statement statement;
 
             if (offs == (ushort)0xFFFF)
@@ -342,7 +342,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 if (expr == null)
                     return null; //ERROR ?
 
-                statement = new CaseStatement(expr, -1, -1);
+                statement = new CaseStatement(expr, -1, -1) { LocationOfNextCase = offs};
             }
 
             StatementLocations.Add(StartPositions.Pop(), statement);
