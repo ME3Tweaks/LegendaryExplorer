@@ -1,5 +1,7 @@
 var NAVTREEINDEX69 =
 {
+"namespace_legendary_explorer_core_1_1_kismet.html":[0,5,1,8],
+"namespace_legendary_explorer_core_1_1_localization.html":[0,5,1,9],
 "namespace_legendary_explorer_core_1_1_m_e1.html":[0,5,1,11],
 "namespace_legendary_explorer_core_1_1_m_e1_1_1_unreal.html":[0,5,1,11,0],
 "namespace_legendary_explorer_core_1_1_m_e1_1_1_unreal_1_1_unhood_bytecode.html":[0,5,1,11,0,0],
@@ -247,7 +249,5 @@ var NAVTREEINDEX69 =
 "namespace_legendary_explorer_core_1_1_unreal.html#a44bc3aa47b8772d986d41430d6b66c99":[0,5,1,23,613],
 "namespace_legendary_explorer_core_1_1_unreal.html#a456722b2ded882838e5cfc4589056e5e":[0,5,1,23,440],
 "namespace_legendary_explorer_core_1_1_unreal.html#a45691e463839224046c998bd752c9674":[0,5,1,23,158],
-"namespace_legendary_explorer_core_1_1_unreal.html#a45b6c6f2ca557cc13490026955e36c17":[0,5,1,23,762],
-"namespace_legendary_explorer_core_1_1_unreal.html#a45c8d46285bb78c99d46109800ef1f86":[0,5,1,23,635],
-"namespace_legendary_explorer_core_1_1_unreal.html#a46088b5e72b1b937a5bfda137aadfc5e":[0,5,1,23,417]
+"namespace_legendary_explorer_core_1_1_unreal.html#a45b6c6f2ca557cc13490026955e36c17":[0,5,1,23,762]
 };
