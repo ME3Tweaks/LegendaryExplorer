@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -8,6 +9,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 using System.Numerics;
+using System.Threading;
 using FontAwesome5;
 using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.SharedUI;
@@ -27,6 +29,7 @@ using InterpCurveFloat = LegendaryExplorerCore.Unreal.BinaryConverters.InterpCur
 using LegendaryExplorer.Tools.PackageEditor;
 using System.Windows.Media;
 using LegendaryExplorer.Misc;
+using LegendaryExplorer.Tools.LiveLevelEditor.MatEd;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using Newtonsoft.Json;
@@ -85,6 +88,11 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         public MEGame Game { get; }
         public InteropTarget GameTarget { get; }
         public ObservableCollectionExtended<string> LoadedMaterials { get; } = new();
+
+        /// <summary>
+        /// The IFPs of the current selected component.
+        /// </summary>
+        public ObservableCollectionExtended<string> CurrentComponentMaterials { get; } = new();
 
         private int _materialIndex;
         public int MaterialIndex { get => _materialIndex; set => SetProperty(ref _materialIndex, value); }
@@ -183,15 +191,55 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         private void LoadCustomMaterial(IMEPackage incomingPackage, string materialIFP)
         {
             InteropHelper.SendFileToGame(incomingPackage); // Send package into game for loading
-            InteropHelper.SendMessageToGame($"LOADPACKAGE {incomingPackage.FileNameNoExtension}", Game);
+            Thread.Sleep(1000);
+            InteropHelper.SendMessageToGame($"LOADPACKAGE {incomingPackage.FileNameNoExtension}.pcc", Game);
+            Thread.Sleep(1000);
             InteropHelper.SendMessageToGame($"LLE_SET_MATERIAL {MaterialIndex} {materialIFP}", Game);
 
         }
 
+        private void UpdateScalarParameter(ScalarParameter obj)
+        {
+            // Floats sent to game must use localization-specific strings as they will be interpreted by the current locale
+            InteropHelper.SendMessageToGame($"LLE_SET_MATEXPR_SCALAR {MaterialIndex} {obj.ParameterValue} {obj.ParameterValue}", Game);
+        }
+
+        private void UpdateVectorParameter(VectorParameter obj)
+        {
+            // Floats sent to game must use localization-specific strings as they will be interpreted by the current locale
+            InteropHelper.SendMessageToGame($"LLE_SET_MATEXPR_VECTOR {MaterialIndex} {obj.ParameterValue} {obj.ParameterValue.W} {obj.ParameterValue.X} {obj.ParameterValue.Y} {obj.ParameterValue.Z}", Game);
+        }
+
         private void SetCustomMaterial()
         {
-            // Todo: More strict checks.
-            MaterialEditor me = new MaterialEditor(Game, LoadCustomMaterial);
+            InteropHelper.SendMessageToGame("LLE_GET_COMPONENT_MATERIALS", Game);
+            // Will callback to CallbackSetCustomMaterial();
+        }
+
+        private void CallbackSetCustomMaterial()
+        {
+            ExportEntry preloadMaterial = null;
+            if (CurrentComponentMaterials.Count > MaterialIndex)
+            {
+                var material = CurrentComponentMaterials[MaterialIndex];
+                // Now, we have to find this object somehow...
+                foreach (var f in ActorDict.Keys)
+                {
+                    // Search the loaded level list. That's probably the closest/fastest.
+                    if (MELoadedFiles.GetFilesLoadedInGame(Game).TryGetValue(f, out var path))
+                    {
+                        var package = MEPackageHandler.UnsafePartialLoad(path, x => false);
+                        if (package.FindExport(material) != null)
+                        {
+                            using var autocloseP = MEPackageHandler.OpenMEPackage(path);
+                            preloadMaterial = autocloseP.FindExport(material);
+                            break;
+                        }
+                    }
+                }
+            }
+            MaterialEditor me = new MaterialEditor(Game, LoadCustomMaterial, UpdateScalarParameter, UpdateVectorParameter);
+            me.PreloadMaterial = preloadMaterial;
             me.Show();
         }
 
@@ -400,7 +448,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             if (command[0] != "LIVELEVELEDITOR")
                 return; // Not for us
 
-            //Debug.WriteLine($"LLE Command: {msg}");
+            Debug.WriteLine($"LLE Command: {msg}");
             var verb = command[1]; // Message Info
             // "READY" is done on first initialize and will automatically 
             if (verb == "READY") // We polled game, and found LLE is available
@@ -511,6 +559,20 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
                 noUpdate = false;
                 EndBusy();
             }
+            else if (verb == "COMPONENTMATERIALS")
+            {
+                try
+                {
+                    var json = string.Join(' ', command.Skip(2));
+                    var materials = JsonConvert.DeserializeObject<List<string>>(json);
+                    CurrentComponentMaterials.ReplaceAll(materials);
+                    CallbackSetCustomMaterial();
+                }
+                catch (Exception ex)
+                {
+                    // Do nothing.
+                }
+            }
         }
 
 
@@ -545,6 +607,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         #region Actor Selection and Display
 
         public ObservableDictionary<string, ObservableCollectionExtended<ActorEntryLE>> ActorDict { get; } = new();
+
 
         private class JsonMapObj
         {
