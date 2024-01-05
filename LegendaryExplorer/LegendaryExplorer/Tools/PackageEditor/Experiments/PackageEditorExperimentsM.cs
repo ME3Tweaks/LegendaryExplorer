@@ -47,6 +47,7 @@ using LegendaryExplorerCore.UnrealScript.Language.Tree;
 using Function = LegendaryExplorerCore.Unreal.Classes.Function;
 using static LegendaryExplorerCore.Packages.CloningImportingAndRelinking.EntryImporter;
 using LegendaryExplorer.Tools.LiveLevelEditor;
+using LegendaryExplorer.Tools.LiveLevelEditor.MatEd;
 
 //using ImageMagick;
 
