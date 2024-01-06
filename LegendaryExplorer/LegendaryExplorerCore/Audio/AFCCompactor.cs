@@ -32,6 +32,8 @@ namespace LegendaryExplorerCore.Audio
             public readonly List<string> BasegameAFCFiles = new();
             /// <summary>AFCs that reside in official DLC. This includes SFAR files.</summary>
             public List<string> OfficialDLCAFCFiles = new();
+            /// <summary>AFCs that reside in the basegame</summary>
+            public List<string> ModAFCFiles = new();
 
             /// <summary>Mapping of DLC folder name to a list of AFCs in that SFAR</summary>
             public readonly CaseInsensitiveDictionary<List<string>> SFARAFCsMap = new();
@@ -61,7 +63,18 @@ namespace LegendaryExplorerCore.Audio
                 {
                     debugOut?.Invoke($@" >> Found AFC in DLC directory {oafc}");
                 }
-
+                inventory.OfficialDLCAFCFiles = MELoadedDLC.GetOfficialDLCFolders(game).SelectMany(x => Directory.GetFiles(x, "*.afc", SearchOption.AllDirectories)).ToList();
+                foreach (var oafc in inventory.OfficialDLCAFCFiles)
+                {
+                    debugOut?.Invoke($@" >> Found AFC in DLC directory {oafc}");
+                }
+                // Find mods e.g. LE3Patch
+                inventory.ModAFCFiles = MELoadedDLC.GetDLCNamesInMountOrder(game).Where(d => d.StartsWith("dlc_mod_", StringComparison.InvariantCultureIgnoreCase))
+                    .SelectMany(x => Directory.GetFiles(Path.Combine(MEDirectories.GetDLCPath(game), x), "*.afc", SearchOption.AllDirectories)).ToList();
+                foreach (var mafc in inventory.ModAFCFiles)
+                {
+                    debugOut?.Invoke($@" >> Found AFC in Mod directory {mafc}");
+                }
                 // ME3: Inspect SFARs for AFCs
                 if (game == MEGame.ME3 && Directory.Exists(ME3Directory.DLCPath))
                 {
@@ -179,6 +192,7 @@ namespace LegendaryExplorerCore.Audio
 
                             bool isBasegame = false;
                             bool isOfficialDLC = false;
+                            bool isModDLC = false;
                             var afcFile = afcInventory.LocalFolderAFCFiles.FirstOrDefault(x => Path.GetFileNameWithoutExtension(x).Equals(afcNameProp.Value, StringComparison.InvariantCultureIgnoreCase));
 
                             bool logged = false;
@@ -211,7 +225,21 @@ namespace LegendaryExplorerCore.Audio
                                 debugOut?.Invoke($@" >>>> AFC found in official DLC: {afcFile}");
                                 logged = true;
                             }
+                            
+#if DEBUG
+                            if (afcFile == null)
+                            {
+                                // Try to find other MOD version - not to be generally used.
+                                afcFile = afcInventory.ModAFCFiles.FirstOrDefault(x => Path.GetFileNameWithoutExtension(x).Equals(afcNameProp.Value, StringComparison.InvariantCultureIgnoreCase));
+                                isModDLC = afcFile != null;
+                            }
+                            if (afcFile != null && !logged)
+                            {
+                                debugOut?.Invoke($@" >>>> AFC found in a modded DLC: {afcFile}");
+                                logged = true;
+                            }
 
+#endif
                             string afcName = afcNameProp.ToString().ToLower();
                             int audioSize = EndianReader.ToInt32(exp.DataReadOnly, exp.DataSize - 8, exp.FileRef.Endian);
                             int audioOffset = EndianReader.ToInt32(exp.DataReadOnly, exp.DataSize - 4, exp.FileRef.Endian);

@@ -374,7 +374,14 @@ namespace LegendaryExplorer.Tools.AFCCompactorWindow
         {
             if (afcName.Contains("dlc_", StringComparison.InvariantCultureIgnoreCase))
             {
-                return afcName.Substring(0, afcName.LastIndexOf('_'));
+                //need to account for indexed afcs dlccname_3_SFX/_2_Int/or just dlcname_Int.
+                string afcNameExType = afcName.Substring(0, afcName.LastIndexOf('_'));
+
+                if (afcNameExType.LastIndexOf('_') == (afcNameExType.Length - 2) && int.TryParse(afcNameExType.Substring(afcNameExType.Length - 1,1),out int n))
+                {
+                    return afcNameExType.Substring(0, afcNameExType.LastIndexOf('_'));
+                }
+                return afcNameExType ;
             }
             return null;
         }

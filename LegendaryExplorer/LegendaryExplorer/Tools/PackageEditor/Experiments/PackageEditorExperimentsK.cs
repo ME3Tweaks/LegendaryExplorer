@@ -862,6 +862,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             var seekfreeClasses = new List<string>
             {
                 "BioConversation",
+                "Class",
                 "FaceFXAnimSet",
                 "Material",
                 "MaterialInstanceConstant",
