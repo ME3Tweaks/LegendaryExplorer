@@ -276,6 +276,11 @@ namespace LegendaryExplorerCore.Audio
                                         debugOut?.Invoke($"!!! Vanilla sizes map doesn't include file being checked: {afcName}");
                                     }
                                 }
+                                else if(isModDLC)
+                                {
+                                    isModified = false;
+                                    source = "Alternative Mod Dependency";
+                                }
                                 else
                                 {
                                     isModified = true;
