@@ -53,6 +53,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                 {
                     FoldingManager.Uninstall(foldingManager);
                 }
+                _definitionLinkGenerator.Reset();
+                textEditor.SyntaxHighlighting = SyntaxInfo.None;
                 Document = new TextDocument(value);
                 foldingManager = FoldingManager.Install(textEditor.TextArea);
                 foldingStrategy.UpdateFoldings(foldingManager, Document);
@@ -554,7 +556,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
             List<int> lineLookup = tokens.LineLookup.Lines;
             if (!tokens.Any() || lineLookup.Count <= 0)
             {
-                textEditor.SyntaxHighlighting = new SyntaxInfo();
+                textEditor.SyntaxHighlighting = SyntaxInfo.None;
                 return;
             }
             var lineToIndex = new List<int>(lineLookup.Count);

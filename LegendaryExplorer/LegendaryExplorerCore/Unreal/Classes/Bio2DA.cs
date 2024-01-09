@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using LegendaryExplorerCore.DebugTools;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
@@ -10,6 +11,25 @@ using PropertyChanged;
 
 namespace LegendaryExplorerCore.Unreal.Classes
 {
+    public enum Bio2DAMergeResult
+    {
+        /// <summary>
+        /// The result is unknown
+        /// </summary>
+        Unknown,
+        /// <summary>
+        /// 2DA attempted to merge into itself
+        /// </summary>
+        ERROR_MergeIntoSelf,
+        /// <summary>
+        /// The destination table had columns already and the incoming table's columnset was different
+        /// </summary>
+        ERROR_DifferingColumnCount,
+        /// <summary>
+        /// Merge was successful
+        /// </summary>
+        OK
+    }
     public class Bio2DA : INotifyPropertyChanged
     {
         public bool IsIndexed;
@@ -71,22 +91,30 @@ namespace LegendaryExplorerCore.Unreal.Classes
         /// Merges this 2DA table's data into the specified one, overwriting any same-name/indexed rows in the destination with data from ours. Returns a list of row indexes from THIS 2DA that were merged into the destination 2DA.
         /// </summary>
         /// <param name="destination2DA"></param>
-        /// <exception cref="Exception"></exception>
-        public List<int> MergeInto(Bio2DA destination2DA, bool addMissingRows = true)
+        /// <exception cref="Exception">Any errors that occur </exception>
+        public List<int> MergeInto(Bio2DA destination2DA, out Bio2DAMergeResult result, bool addMissingRows = true)
         {
             if (ReferenceEquals(this, destination2DA))
             {
-                throw new Exception("Cannot merge 2DA into itself!");
+                LECLog.Error("Cannot merge 2DA into itself!");
+                result = Bio2DAMergeResult.ERROR_MergeIntoSelf;
+                return null;
             }
 
             if (RowCount == 0)
+            {
+                result = Bio2DAMergeResult.OK;
                 return new List<int>(0); // Nothing to merge
+            }
+
             if (ColumnCount != destination2DA.ColumnCount)
             {
                 if (destination2DA.RowCount > 0 || destination2DA.ColumnCount > 0)
                 {
-                    // Allow merging if nothing is the same.
-                    throw new Exception("Cannot merge 2DAs: Column counts are not the same");
+                    // If destination is not empty, do not use it
+                    LECLog.Error("Cannot merge 2DAs: Column counts are not the same");
+                    result = Bio2DAMergeResult.ERROR_DifferingColumnCount;
+                    return null;
                 }
 
                 // Initializing from empty - merging existing 2DA into empty 2DA
@@ -144,6 +172,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
                 }
             }
 
+            result = Bio2DAMergeResult.OK;
             return mergedRows;
         }
 

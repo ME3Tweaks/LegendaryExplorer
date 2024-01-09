@@ -2472,11 +2472,12 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                         throw ParseError($"Expected function name after '{GLOBAL}'!", CurrentPosition);
                     }
 
-                    PrevToken.SyntaxType = EF.Function;
-                    var basicRef = ParseBasicRefOrCast(PrevToken) as SymbolReference;
+                    ScriptToken funcName = PrevToken;
+                    funcName.SyntaxType = EF.Function;
+                    var basicRef = ParseBasicRefOrCast(funcName) as SymbolReference;
                     if (basicRef?.Node is Function func)
                     {
-                        CheckAccesibility(func);
+                        CheckAccesibility(func, funcName);
                     }
                     else
                     {
@@ -2686,7 +2687,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
                 if (symbol is Function func)
                 {
-                    CheckAccesibility(func);
+                    CheckAccesibility(func, functionName);
                 }
                 else
                 {
@@ -2872,12 +2873,12 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
             if (symbol is Function func)
             {
-                CheckAccesibility(func);
+                CheckAccesibility(func, token);
             }
             return NewSymbolReference(symbol, token, isDefaultRef);
         }
 
-        private void CheckAccesibility(Function func)
+        private void CheckAccesibility(Function func, ScriptToken token)
         {
             if (func.Flags.Has(EFunctionFlags.Private) || func.Flags.Has(EFunctionFlags.Protected))
             {
@@ -2886,11 +2887,11 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 {
                     if (func.Flags.Has(EFunctionFlags.Private))
                     {
-                        TypeError($"'{func.Name}' is a private function in '{symbolClass.Name}'! You cannot call it from another class.");
+                        LogWarning($"'{func.Name}' is a private function in '{symbolClass.Name}'! You should not call it from another class.", token);
                     }
                     else if (!Self.SameAsOrSubClassOf(symbolClass.Name))
                     {
-                        TypeError($"'{func.Name}' is a protected function in '{symbolClass.Name}'! You can only call it from a subclass.");
+                        LogWarning($"'{func.Name}' is a protected function in '{symbolClass.Name}'! You should only call it from a subclass.", token);
                     }
                 }
             }
