@@ -118,12 +118,18 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             classObj.ClassFlags = classAST.Flags;
             if (classAST.Parent is Class parentClass)
             {
-                classObj.ClassFlags |= parentClass.Flags & EClassFlags.Inherit;
-                if (classObj.ClassFlags.Has(EClassFlags.Config) && classAST.ConfigName.CaseInsensitiveEquals("None"))
+                //loop in case we are compiling multiple classes at once and our direct parent has not inherited flags yet
+                do
                 {
-                    classObj.ClassConfigName = NameReference.FromInstancedString(parentClass.ConfigName);
-                }
+                    classObj.ClassFlags |= parentClass.Flags & EClassFlags.Inherit;
+                    if (classObj.ClassFlags.Has(EClassFlags.Config) && classObj.ClassConfigName.Name.CaseInsensitiveEquals("None"))
+                    {
+                        classObj.ClassConfigName = NameReference.FromInstancedString(parentClass.ConfigName);
+                    }
+                    parentClass = parentClass.Parent as Class;
+                } while (parentClass is not null);
             }
+
             if (classObj.ClassFlags.Has(EClassFlags.Native))
             {
                 classExport.ObjectFlags |= EObjectFlags.Native;
