@@ -1167,7 +1167,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         public bool VisitNode(InOpReference node)
         {
             // [(] expression operatorkeyword expression [)]
-            bool scopeNeeded = node.Operator.Precedence >= ExpressionPrescedence.Peek();
+            bool scopeNeeded = node.Operator.Precedence > ExpressionPrescedence.Peek();
             ExpressionPrescedence.Push(node.Operator.Precedence);
 
             if (scopeNeeded) Append("(");

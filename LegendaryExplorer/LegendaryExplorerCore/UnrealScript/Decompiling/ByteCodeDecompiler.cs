@@ -474,8 +474,27 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 {
                     defaultCaseStatements.Push(cur);
                     int breakIdx = i - 1;
+                    bool prevStatementWasCase = true;
+                    ushort casePos = curPos;
                     while (breakIdx >= 0 && (statements[breakIdx] is not UnconditionalJump uj || uj.JumpLoc <= curPos))
                     {
+                        Statement curStatement = statements[breakIdx];
+                        if (prevStatementWasCase && curStatement is SwitchStatement)
+                        {
+                            //reached the start of the switch statement this defaultcase belongs to.
+                            //no break was found.
+                            breakIdx = -1;
+                            break;
+                        }
+                        if (curStatement is CaseStatement cs && cs.LocationOfNextCase == casePos)
+                        {
+                            casePos = positions[curStatement];
+                            prevStatementWasCase = true;
+                        }
+                        else
+                        {
+                            prevStatementWasCase = false;
+                        }
                         --breakIdx;
                     }
 
