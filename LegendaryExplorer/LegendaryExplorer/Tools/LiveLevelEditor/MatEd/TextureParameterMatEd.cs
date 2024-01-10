@@ -131,6 +131,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor.MatEd
                 }).ContinueWithOnUIThread(x =>
                 {
                     // IsBusy = false;
+                    IsDefaultParameter = false; // Mark modified
                     PackageCache cache = new PackageCache();
                     MatEditorTextureLoader.InitTexture(this, TextureExp.FileRef, ParameterValue, cache);
                 });
