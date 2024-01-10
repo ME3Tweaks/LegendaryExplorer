@@ -273,7 +273,7 @@ namespace LegendaryExplorer
                 open = () =>
                 {
                     var gameStr = InputComboBoxWPF.GetValue(null, "Choose game you want to use Script Debugger with.", "Script Debugger game selector",
-                        new[] { "LE1", "LE2" }, "LE2");
+                        new[] { "LE1", "LE2", "LE3" }, "LE3");
 
                     if (Enum.TryParse(gameStr, out MEGame game))
                     {
