@@ -46,8 +46,10 @@ namespace LegendaryExplorer.UnrealExtensions.Classes
 
                 // Update the AFC name - it might be changing
                 if (forcedAFCBaseName != null)
+                {
                     ws.Export.WriteProperty(new NameProperty(forcedAFCBaseName, "Filename")); // Update the filename
-
+                    ws.Filename = forcedAFCBaseName;
+                }
             }
             else if (forcedAFCBaseName != null)
             {
@@ -56,7 +58,7 @@ namespace LegendaryExplorer.UnrealExtensions.Classes
                 var savePath = Path.Combine(Directory.GetParent(ws.Export.FileRef.FilePath).FullName, forcedAFCBaseName+".afc");
                 ws.ImportWwiseOgg(savePath, stream);
                 ws.Export.WriteProperty(new NameProperty(forcedAFCBaseName, "Filename")); // Update the filename
-
+                ws.Filename = forcedAFCBaseName;
             }
             else
             {
