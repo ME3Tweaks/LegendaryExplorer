@@ -171,6 +171,7 @@ namespace Gammtek.Conduit.MassEffect3.SFXGame.CodexMap
                     int unknown = ReadInt32();
                     if (unknown == 0) // This is only in LE
                     {
+                        page.IsLE1 = true;
                         page.Section = ReadInt32();
                         int strLength = ReadInt32();
                         page.CodexSoundString = new string(ReadChars(strLength));
@@ -244,20 +245,31 @@ namespace Gammtek.Conduit.MassEffect3.SFXGame.CodexMap
                 }
                 else if (page.InstanceVersion == 3)
                 {
-                    Write(page.Section);
-                    if (page.Section == 0) // LE1 Codex Page
+                    if (page.IsLE1)
                     {
-                        int Length = page.CodexSoundString.Length;
-                        Write(Length);
-                        Write(page.CodexSoundString.ToCharArray(), 0, Length);
+                        Write(0);
+                        Write(page.Section);
+                        int length = page.CodexSoundString?.Length ?? 0;
+                        Write(length);
+                        if (!string.IsNullOrEmpty(page.CodexSoundString))
+                        {
+                            Write(page.CodexSoundString.ToCharArray(), 0, length);
+                        }
+                    }
+                    else
+                    {
+                        Write(page.Section);
                     }
                 }
                 else if (page.InstanceVersion == 2)
                 {
                     Write(page.Section);
-                    int Length = page.CodexSoundString.Length;
-                    Write(Length);
-                    Write(page.CodexSoundString.ToCharArray(), 0, Length);
+                    int length = page.CodexSoundString?.Length ?? 0;
+                    Write(length);
+                    if (!string.IsNullOrEmpty(page.CodexSoundString))
+                    {
+                        Write(page.CodexSoundString.ToCharArray(), 0, length);
+                    }
                 }
                 else
                 {

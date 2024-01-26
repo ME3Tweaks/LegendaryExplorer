@@ -18,6 +18,14 @@
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
     </ItemGroup>
+    
+    <ItemGroup>
+        <Folder Include="TestData\*" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="TestData\**" CopyToOutputDirectory="PreserveNewest" />
+    </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\LegendaryExplorerCore\LegendaryExplorerCore.csproj" />

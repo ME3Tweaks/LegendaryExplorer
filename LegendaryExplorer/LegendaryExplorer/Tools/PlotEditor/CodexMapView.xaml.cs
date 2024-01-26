@@ -135,7 +135,11 @@ namespace LegendaryExplorer.Tools.PlotEditor
             }
 
             var codexPagePair = new KeyValuePair<int, BioCodexPage>(id, codexPage ?? new BioCodexPage());
-
+            if (package.Game == MEGame.LE1)
+            {
+                codexPagePair.Value.IsLE1 = true;
+            }
+            
             CodexPages.Add(codexPagePair);
 
             SelectedCodexPage = codexPagePair;
