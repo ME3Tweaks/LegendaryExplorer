@@ -197,6 +197,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor.MatEd
                         {
                             // If this expression is not being overridden
                             var param = TextureParameterMatEd.FromExpression(expr);
+                            param.EditingPackage = MaterialExport.FileRef;
                             param.LoadData(expr.FileRef, cache); // Initialize texture data
                             parameterList.Add(param);
                         }

@@ -12,6 +12,7 @@ using LegendaryExplorer.Misc;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Textures;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.Classes;
@@ -44,6 +45,11 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor.MatEd
         public ImportEntry TextureImp { get; set; }
 
         public ICommand ReplaceTextureCommand { get; set; }
+
+        /// <summary>
+        /// Package reference to the package that replacements should be put into
+        /// </summary>
+        public IMEPackage EditingPackage { get; set; }
 
         /// <summary>
         ///  If this parameter is from the BaseMaterial expressions list.
@@ -124,6 +130,13 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor.MatEd
                     {
                         MessageBox.Show("Cannot replace texture: Aspect ratios must be the same.");
                         return null;
+                    }
+
+                    if (TextureExp.FileRef != EditingPackage)
+                    {
+                        // Needs moved to editing package
+                        EntryExporter.ExportExportToPackage(TextureExp, EditingPackage, out var newExp); // Maybe use cache here
+                        TextureExp = newExp as ExportEntry; // Todo: Consider renaming to avoid memory collisions on saved package
                     }
 
                     var texture = new Texture2D(TextureExp);
