@@ -1,6 +1,7 @@
 var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_shader_map =
 [
     [ "GetNames", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_shader_map.html#a37ecc6adc3e0d8b3611856158bb41e07", null ],
+    [ "DeepCopyWithNewGuidsInto", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_shader_map.html#afa4b94c12563388fa03fc7423fbda45e", null ],
     [ "Shaders", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_shader_map.html#a6cc7185fd6040892c311186ab0927864", null ],
     [ "MeshShaderMaps", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_shader_map.html#ac9292127ccf1443413f9fe97abb7ed8e", null ],
     [ "ID", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_shader_map.html#aba887d2638441c4d591d1c198eb825e1", null ],

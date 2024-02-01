@@ -1,5 +1,6 @@
 var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shader =
 [
+    [ "Clone", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shader.html#a75c0c4812e086a4cb2c818272578b081", null ],
     [ "ShaderType", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shader.html#aae30a5b6d078bc4f4ae152e5ee7ec75b", null ],
     [ "Guid", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shader.html#aca40ea2f2bcd76ea969d5e537b5c5111", null ],
     [ "Frequency", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shader.html#afba300cbc51d3e27759de7add4c7f280", null ],
