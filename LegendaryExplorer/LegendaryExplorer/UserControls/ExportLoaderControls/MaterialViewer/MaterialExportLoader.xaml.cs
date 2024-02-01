@@ -15,6 +15,7 @@ using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Shaders;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
+using LegendaryExplorerCore.Unreal.Collections;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
 using SharpDX;
 using SharpDX.D3DCompiler;
@@ -249,13 +250,27 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 if (msmFromGlobalCache != null && CurrentLoadedExport is not null)
                 {
                     Dictionary<Guid, Guid> shaderGuidMap = msmFromGlobalCache.DeepCopyWithNewGuidsInto(seekFreeShaderCache, out newMatGuid);
-                    Shader[] shaders = RefShaderCacheReader.GetShaders(Pcc.Game, shaderGuidMap.Keys);// ?? throw new Exception("Unable to retrieve shaders from RefShaderCache");
+                    Shader[] shaders = RefShaderCacheReader.GetShaders(Pcc.Game, shaderGuidMap.Keys, 
+                        out UMultiMap<NameReference, uint> shaderTypeCRCMap, out UMultiMap<NameReference, uint> vertexFactoryTypeCRCMap);
+                    if (shaders is null)
+                    {
+                        throw new Exception("Unable to retrieve shaders from RefShaderCache");
+                    }
                     foreach (Shader oldShader in shaders)
                     {
                         Shader newShader = oldShader.Clone();
                         newShader.Guid = shaderGuidMap[oldShader.Guid];
                         seekFreeShaderCache.Shaders.Add(newShader.Guid, newShader);
                     }
+                    foreach ((NameReference key, uint value) in shaderTypeCRCMap)
+                    {
+                        seekFreeShaderCache.ShaderTypeCRCMap.TryAddUnique(key, value);
+                    }
+                    foreach ((NameReference key, uint value) in vertexFactoryTypeCRCMap)
+                    {
+                        seekFreeShaderCache.VertexFactoryTypeCRCMap.TryAddUnique(key, value);
+                    }
+                    seekFreeShaderCacheExport.WriteBinary(seekFreeShaderCache);
                     return newMatGuid;
                 }
                 throw new Exception("Material Shader Map has dissapeared!");
