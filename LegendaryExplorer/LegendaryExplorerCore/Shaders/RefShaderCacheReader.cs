@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using JetBrains.Annotations;
 using LegendaryExplorerCore.DebugTools;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
@@ -19,7 +20,7 @@ namespace LegendaryExplorerCore.Shaders
     {
         public static string GlobalShaderFileName(MEGame game) => game.IsLEGame() ? "RefShaderCache-PC-D3D-SM5.upk" : "RefShaderCache-PC-D3D-SM3.upk";
 
-        private static string shaderfilePath(MEGame game, string gamePathOverride = null)
+        public static string ShaderFilePath(MEGame game, string gamePathOverride = null)
         {
             var cookedPath = MEDirectories.GetCookedPath(game, gamePathOverride);
             if (cookedPath == null)
@@ -74,7 +75,7 @@ namespace LegendaryExplorerCore.Shaders
                     MEGame.LE1 => LE1RefShaderCacheSize,
                     _ => 0
                 };
-                var shaderPath = shaderfilePath(game, gamePathOverride);
+                var shaderPath = ShaderFilePath(game, gamePathOverride);
                 if (shaderPath == null)
                 {
                     // Shader file could not be found
@@ -83,7 +84,7 @@ namespace LegendaryExplorerCore.Shaders
                 var actualsize = new FileInfo(shaderPath).Length;
                 if (expectedSize != actualsize)
                 {
-                    GetMaterialShaderMap(game, null, gamePathOverride = null);
+                    GetMaterialShaderMap(game, null, out _, gamePathOverride = null);
                     switch (game)
                     {
                         case MEGame.LE3:
@@ -110,9 +111,9 @@ namespace LegendaryExplorerCore.Shaders
             };
         }
 
-        private static void populateOffsets(MEGame game, int offsetOfShaderCacheOffset)
+        private static void PopulateOffsets(MEGame game, int offsetOfShaderCacheOffset)
         {
-            string filePath = shaderfilePath(game);
+            string filePath = ShaderFilePath(game);
             if (File.Exists(filePath))
             {
                 Dictionary<Guid, int> offsetDict = game switch
@@ -182,9 +183,10 @@ namespace LegendaryExplorerCore.Shaders
             }
         }
 
-        public static MaterialShaderMap GetMaterialShaderMap(MEGame game, StaticParameterSet staticParameterSet, string gamePathOverride = null)
+        public static MaterialShaderMap GetMaterialShaderMap(MEGame game, StaticParameterSet staticParameterSet, out int fileOffset, string gamePathOverride = null)
         {
-            string filePath = shaderfilePath(game);
+            fileOffset = -1;
+            string filePath = ShaderFilePath(game);
             if (File.Exists(filePath))
             {
                 using FileStream fs = File.OpenRead(filePath);
@@ -192,7 +194,7 @@ namespace LegendaryExplorerCore.Shaders
                 ReadNames(fs, shaderCachePackage);
 
                 int offsetOfShaderCacheOffset = shaderCachePackage.ExportOffset + 36;
-                populateOffsets(game, offsetOfShaderCacheOffset);
+                PopulateOffsets(game, offsetOfShaderCacheOffset);
                 if (staticParameterSet is null)
                 {
                     return null;
@@ -208,6 +210,7 @@ namespace LegendaryExplorerCore.Shaders
                     sc.Serialize(ref sps);
                     if (sps == staticParameterSet)
                     {
+                        fileOffset = sc.FileOffset;
                         MaterialShaderMap msm = null;
                         sc.Serialize(ref msm);
                         return msm;
@@ -231,7 +234,7 @@ namespace LegendaryExplorerCore.Shaders
             var offsets = ShaderOffsets(game);
             if (offsets != null && offsets.TryGetValue(shaderGuid, out int offset))
             {
-                using FileStream fs = File.OpenRead(shaderfilePath(game));
+                using FileStream fs = File.OpenRead(ShaderFilePath(game));
                 fs.JumpTo(offset);
                 int size = fs.ReadInt32();
                 ShaderReader.DisassembleShader(fs.ReadToBuffer(size), out string disassembly);
@@ -246,7 +249,7 @@ namespace LegendaryExplorerCore.Shaders
             var offsets = ShaderOffsets(game);
             if (offsets != null && offsets.TryGetValue(shaderGuid, out int offset))
             {
-                using FileStream fs = File.OpenRead(shaderfilePath(game));
+                using FileStream fs = File.OpenRead(ShaderFilePath(game));
                 fs.JumpTo(offset);
                 int size = fs.ReadInt32();
                 return fs.ReadToBuffer(size);
@@ -257,7 +260,7 @@ namespace LegendaryExplorerCore.Shaders
 
         public static void RemoveStaticParameterSetsThatAreInTheGlobalCache(HashSet<StaticParameterSet> paramSets, MEGame game, string gamePathOverride = null)
         {
-            string filePath = shaderfilePath(game);
+            string filePath = ShaderFilePath(game);
             if (File.Exists(filePath))
             {
                 using FileStream fs = File.OpenRead(filePath);
@@ -303,6 +306,36 @@ namespace LegendaryExplorerCore.Shaders
             }
 
             shaderCachePackage.restoreNames(names);
+        }
+
+        [CanBeNull]
+        public static Shader[] GetShaders(MEGame game, ICollection<Guid> shaderGuids)
+        {
+            string filePath = ShaderFilePath(game);
+            if (File.Exists(filePath))
+            {
+                using FileStream fs = File.OpenRead(filePath);
+                //read just the header of the package, then read the name list
+                using IMEPackage shaderCachePackage = MEPackageHandler.OpenMEPackageFromStream(fs, quickLoad: true);
+                ReadNames(fs, shaderCachePackage);
+                var sc = new SerializingContainer2(fs, shaderCachePackage, true);
+                Dictionary<Guid, int> offsets = ShaderOffsets(game); //0x1E
+
+                var shaders = new Shader[shaderGuids.Count];
+
+                int i = 0;
+                foreach (Guid shaderGuid in shaderGuids)
+                {
+                    if (!offsets.TryGetValue(shaderGuid, out int offset))
+                    {
+                        return null;
+                    }
+                    sc.ms.JumpTo(offset - 0x1E); //offset is to the bytecode, not the start of the shader structure.
+                    sc.Serialize(ref shaders[i++]);
+                }
+                return shaders;
+            }
+            return null;
         }
     }
 }

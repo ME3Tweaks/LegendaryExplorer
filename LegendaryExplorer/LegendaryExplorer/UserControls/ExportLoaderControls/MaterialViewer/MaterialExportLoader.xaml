@@ -8,6 +8,7 @@
         xmlns:fa5="http://schemas.fontawesome.com/icons/"
         xmlns:exportLoaderControls="clr-namespace:LegendaryExplorer.UserControls.ExportLoaderControls"
         xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:sharedUi="clr-namespace:LegendaryExplorer.SharedUI"
         mc:Ignorable="d" 
         Background="{x:Static SystemColors.WindowBrush}"
         d:DesignHeight="450" d:DesignWidth="800"
@@ -18,7 +19,10 @@
                 <Button Name="LoadShaders_Button" Content="Load Dissasembled Shaders" HorizontalAlignment="Center" Margin="5" Padding="20" Click="LoadShaders_Button_Click"/>
             </StackPanel>
             <DockPanel Name="LoadedContent_Panel">
-                <TextBlock DockPanel.Dock="Top" Text="{Binding TopInfoText}" />
+                <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+                    <TextBlock Text="{Binding TopInfoText}" />
+                    <Button Name="createShadersCopy_Button" Content="Create Unique Copy of Shaders" Command="{Binding CreateShadersCopyCommand, Mode=OneTime}" sharedUi:Bindings.VisibilityToEnabled="True"/>
+                </StackPanel>
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition />
