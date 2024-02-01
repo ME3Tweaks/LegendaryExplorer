@@ -116,8 +116,8 @@ Static Public Member Functions</h2></td></tr>
 <tr class="separator:a3d5d56c80298a93e54715a1e6d7fa90c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af1398aafaac8412de8210c5513dca5db"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_shaders_1_1_ref_shader_cache_reader.html#af1398aafaac8412de8210c5513dca5db">RemoveStaticParameterSetsThatAreInTheGlobalCache</a> (HashSet&lt; <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_static_parameter_set.html">StaticParameterSet</a> &gt; paramSets, <a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game, string gamePathOverride=null)</td></tr>
 <tr class="separator:af1398aafaac8412de8210c5513dca5db"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2e797746e079522f1e467f2e14df7f31"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shader.html">Shader</a>[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_shaders_1_1_ref_shader_cache_reader.html#a2e797746e079522f1e467f2e14df7f31">GetShaders</a> (<a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game, ICollection&lt; <a class="el" href="_convert_extensions_8cs.html#add5aeb4d12283fa0452cb03a86feb9a3">Guid</a> &gt; shaderGuids)</td></tr>
-<tr class="separator:a2e797746e079522f1e467f2e14df7f31"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a116d11b22d76b64e808728f58aa16a55"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shader.html">Shader</a>[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_shaders_1_1_ref_shader_cache_reader.html#a116d11b22d76b64e808728f58aa16a55">GetShaders</a> (<a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game, ICollection&lt; <a class="el" href="_convert_extensions_8cs.html#add5aeb4d12283fa0452cb03a86feb9a3">Guid</a> &gt; shaderGuids, out <a class="el" href="class_u_multi_map.html">UMultiMap</a>&lt; <a class="el" href="struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html">NameReference</a>, uint &gt; shaderTypeCRCMap, out <a class="el" href="class_u_multi_map.html">UMultiMap</a>&lt; <a class="el" href="struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html">NameReference</a>, uint &gt; vertexFactoryTypeCRCMap)</td></tr>
+<tr class="separator:a116d11b22d76b64e808728f58aa16a55"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
 <a id="a94e0598c20c49d520fb60cd6ca024787" name="a94e0598c20c49d520fb60cd6ca024787"></a>
@@ -370,8 +370,8 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a2e797746e079522f1e467f2e14df7f31" name="a2e797746e079522f1e467f2e14df7f31"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2e797746e079522f1e467f2e14df7f31">&#9670;&#160;</a></span>GetShaders()</h2>
+<a id="a116d11b22d76b64e808728f58aa16a55" name="a116d11b22d76b64e808728f58aa16a55"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a116d11b22d76b64e808728f58aa16a55">&#9670;&#160;</a></span>GetShaders()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -389,7 +389,19 @@ Static Public Member Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">ICollection&lt; <a class="el" href="_convert_extensions_8cs.html#add5aeb4d12283fa0452cb03a86feb9a3">Guid</a> &gt;&#160;</td>
-          <td class="paramname"><em>shaderGuids</em>&#160;</td>
+          <td class="paramname"><em>shaderGuids</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">out <a class="el" href="class_u_multi_map.html">UMultiMap</a>&lt; <a class="el" href="struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html">NameReference</a>, uint &gt;&#160;</td>
+          <td class="paramname"><em>shaderTypeCRCMap</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">out <a class="el" href="class_u_multi_map.html">UMultiMap</a>&lt; <a class="el" href="struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html">NameReference</a>, uint &gt;&#160;</td>
+          <td class="paramname"><em>vertexFactoryTypeCRCMap</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
