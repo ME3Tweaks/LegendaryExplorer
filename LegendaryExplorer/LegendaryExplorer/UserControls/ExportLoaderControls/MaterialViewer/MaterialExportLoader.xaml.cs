@@ -235,7 +235,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 {
                     seekFreeShaderCacheExport = new ExportEntry(Pcc, 0, "SeekFreeShaderCache", BitConverter.GetBytes(-1), binary: ShaderCache.Create())
                     {
-                        Class = Pcc.getEntryOrAddImport("Engine.ShaderCache"),
+                        Class = Pcc.GetEntryOrAddImport("Engine.ShaderCache", "Class"),
                         ObjectFlags = UnrealFlags.EObjectFlags.LoadForClient | UnrealFlags.EObjectFlags.LoadForEdit | UnrealFlags.EObjectFlags.LoadForServer | UnrealFlags.EObjectFlags.Standalone
                     };
                     Pcc.AddExport(seekFreeShaderCacheExport);

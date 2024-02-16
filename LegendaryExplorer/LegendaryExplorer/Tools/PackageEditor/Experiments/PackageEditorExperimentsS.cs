@@ -2370,7 +2370,7 @@ import java.util.*;"
 
                     using IMEPackage persistentUDK = MEPackageHandler.OpenUDKPackage(persistentPath);
                     IEntry levStreamingClass =
-                        persistentUDK.getEntryOrAddImport("Engine.LevelStreamingAlwaysLoaded");
+                        persistentUDK.GetEntryOrAddImport("Engine.LevelStreamingAlwaysLoaded", "Class");
                     IEntry theWorld = persistentUDK.Exports.First(exp => exp.ClassName == "World");
                     int i = 1;
                     int firstLevStream = persistentUDK.ExportCount;

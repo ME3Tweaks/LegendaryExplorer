@@ -589,7 +589,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 {
                     if (func.RetValNeedsDestruction)
                     {
-                        returnProp = Pcc.getEntryOrAddImport($"{ResolveReturnValue(func).InstancedFullPath}.ReturnValue", PropertyTypeName(((DynamicArrayType)func.ReturnType).ElementType));
+                        returnProp = Pcc.GetEntryOrAddImport($"{ResolveReturnValue(func).InstancedFullPath}.ReturnValue", PropertyTypeName(((DynamicArrayType)func.ReturnType).ElementType));
                         return true;
                     }
                     returnProp = null;
@@ -599,7 +599,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 {
                     if (varDecl.Flags.Has(EPropertyFlags.NeedCtorLink) || varDecl.VarType.Size(Game) > 64)
                     {
-                        returnProp = Pcc.getEntryOrAddImport($"{ResolveProperty(varDecl).InstancedFullPath}.{varDecl.Name}", PropertyTypeName(((DynamicArrayType)varDecl.VarType).ElementType));
+                        returnProp = Pcc.GetEntryOrAddImport($"{ResolveProperty(varDecl).InstancedFullPath}.{varDecl.Name}", PropertyTypeName(((DynamicArrayType)varDecl.VarType).ElementType));
                         return true;
                     }
                 }
@@ -1527,18 +1527,18 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         private IEntry ResolveProperty(VariableDeclaration decl)
         {
-            return Pcc.getEntryOrAddImport($"{ResolveSymbol(decl.Outer).InstancedFullPath}.{decl.Name}", PropertyTypeName(decl.VarType));
+            return Pcc.GetEntryOrAddImport($"{ResolveSymbol(decl.Outer).InstancedFullPath}.{decl.Name}", PropertyTypeName(decl.VarType));
         }
 
-        private IEntry ResolveStruct(Struct s) => Pcc.getEntryOrAddImport($"{ResolveSymbol(s.Outer).InstancedFullPath}.{s.Name}", "ScriptStruct");
+        private IEntry ResolveStruct(Struct s) => Pcc.GetEntryOrAddImport($"{ResolveSymbol(s.Outer).InstancedFullPath}.{s.Name}", "ScriptStruct");
 
-        private IEntry ResolveFunction(Function f) => Pcc.getEntryOrAddImport($"{ResolveSymbol(f.Outer).InstancedFullPath}.{f.Name}", "Function");
+        private IEntry ResolveFunction(Function f) => Pcc.GetEntryOrAddImport($"{ResolveSymbol(f.Outer).InstancedFullPath}.{f.Name}", "Function");
 
-        private IEntry ResolveDelegateProperty(Function f) => Pcc.getEntryOrAddImport($"{ResolveSymbol(f.Outer).InstancedFullPath}.__{f.Name}__Delegate", "DelegateProperty");
+        private IEntry ResolveDelegateProperty(Function f) => Pcc.GetEntryOrAddImport($"{ResolveSymbol(f.Outer).InstancedFullPath}.__{f.Name}__Delegate", "DelegateProperty");
 
-        private IEntry ResolveReturnValue(Function f) => f.ReturnType is null ? null : Pcc.getEntryOrAddImport($"{ResolveFunction(f).InstancedFullPath}.ReturnValue", PropertyTypeName(f.ReturnType));
+        private IEntry ResolveReturnValue(Function f) => f.ReturnType is null ? null : Pcc.GetEntryOrAddImport($"{ResolveFunction(f).InstancedFullPath}.ReturnValue", PropertyTypeName(f.ReturnType));
 
-        private IEntry ResolveState(State s) => Pcc.getEntryOrAddImport($"{ResolveSymbol(s.Outer).InstancedFullPath}.{s.Name}", "State");
+        private IEntry ResolveState(State s) => Pcc.GetEntryOrAddImport($"{ResolveSymbol(s.Outer).InstancedFullPath}.{s.Name}", "State");
 
         private IEntry ResolveObject(string instancedFullPath) => Pcc.FindEntry(instancedFullPath);
 
