@@ -721,7 +721,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 };
                 if (classExport is not null)
                 {
-                    return AddOrReplaceClassInDB(classExport.GetBinaryData<UClass>());
+                    AddOrReplaceClassInDB(classExport.GetBinaryData<UClass>());
                 }
             }
 
