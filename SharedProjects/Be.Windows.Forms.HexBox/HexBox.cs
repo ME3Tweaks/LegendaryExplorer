@@ -2182,24 +2182,37 @@ namespace Be.Windows.Forms
             // put bytes into buffer
             byte[] buffer = GetCopyData();
 
-            DataObject da = new DataObject();
-
-            // set string buffer clipbard data
-            string sBuffer = "";
+            // set string buffer clipboard data
+            string sBuffer;
             if (_keyInterpreter == _ki)
             {
-                for (int i = 0; i < buffer.Length; i++)
+                //selection is in hex section
+                sBuffer = string.Create(buffer.Length * 2, buffer, static (span, bytes) =>
                 {
-                    sBuffer += buffer[i].ToString("X2");
-                }
+                    //contrary to appearances, this array is static, not allocated every time (true of all arrays of primitives assigned to ReadOnlySpans)
+                    ReadOnlySpan<char> hexChars = new []{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+                    ref readonly char hexCharsRef = ref hexChars.GetPinnableReference();
+                    //Unsafe.Add instead of indexer is to avoid bounds checking 
+                    for (int i = 0, j = 0; i < bytes.Length; i++)
+                    {
+                        byte value = bytes[i];
+                        int digit = value >> 4;
+                        span[j++] = Unsafe.Add(ref Unsafe.AsRef(hexCharsRef), digit);
+                        digit = value & 0xF;
+                        span[j++] = Unsafe.Add(ref Unsafe.AsRef(hexCharsRef), digit);
+                    }
+                });
             }
             else
             {
-                sBuffer = System.Text.Encoding.ASCII.GetString(buffer, 0, buffer.Length);
+                //selection is in ascii section
+                sBuffer = Encoding.ASCII.GetString(buffer, 0, buffer.Length);
             }
 
+            var da = new DataObject();
+
             //set memorystream (BinaryData) clipboard data
-            System.IO.MemoryStream ms = new System.IO.MemoryStream(buffer, 0, buffer.Length, false, true);
+            var ms = new System.IO.MemoryStream(buffer, 0, buffer.Length, false, true);
             da.SetData(binarydataCopyFormatString, ms);
 
             da.SetData(typeof(string), sBuffer);

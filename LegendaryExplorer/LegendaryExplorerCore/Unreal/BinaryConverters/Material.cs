@@ -507,9 +507,9 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             return new StaticParameterSet
             {
                 BaseMaterialId = guid,
-                StaticSwitchParameters = new StaticSwitchParameter[0],
-                StaticComponentMaskParameters = new StaticComponentMaskParameter[0],
-                NormalParameters = new NormalParameter[0]
+                StaticSwitchParameters = Array.Empty<StaticSwitchParameter>(),
+                StaticComponentMaskParameters = Array.Empty<StaticComponentMaskParameter>(),
+                NormalParameters = Array.Empty<NormalParameter>()
             };
         }
 
@@ -662,7 +662,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             var names = new List<(NameReference, string)>();
             names.Add((A.ExpressionType, $"{ExpressionType}.A.ExpressionType"));
             names.AddRange(A.GetNames(game));
-            names.Add((B.ExpressionType, $"{ExpressionType}.A.ExpressionType"));
+            names.Add((B.ExpressionType, $"{ExpressionType}.B.ExpressionType"));
             names.AddRange(B.GetNames(game));
             return names;
         }

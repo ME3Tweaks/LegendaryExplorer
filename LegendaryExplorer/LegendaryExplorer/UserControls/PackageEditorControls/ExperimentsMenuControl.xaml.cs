@@ -954,7 +954,7 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
                         CommonStructs.Vector3Prop(x, y, z, "location")
                     })
                     {
-                        Class = tempPcc.getEntryOrAddImport("Engine.PlayerStart")
+                        Class = tempPcc.GetEntryOrAddImport("Engine.PlayerStart", "Class")
                     };
                     tempPcc.AddExport(playerStart);
                     level.Actors.Add(playerStart.UIndex);

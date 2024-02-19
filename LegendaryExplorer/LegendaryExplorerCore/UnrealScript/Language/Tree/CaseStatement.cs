@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
-using LegendaryExplorerCore.UnrealScript.Utilities;
 
 namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 {
@@ -25,5 +24,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
                 yield return Value;
             }
         }
+
+        public ushort LocationOfNextCase; //only used during decomp
     }
 }
