@@ -59,14 +59,21 @@ namespace LegendaryExplorerCore.Packages
         }
 
         /// <summary>
-        /// Finds existing <see cref="ExportEntry"/> or <see cref="ImportEntry"/> in <paramref name="pcc"/> with 
+        /// Finds existing <see cref="ExportEntry"/> or <see cref="ImportEntry"/> in <paramref name="pcc"/>.
         /// </summary>
         /// <param name="pcc"></param>
         /// <param name="instancedFullPath">The ifp of the object to find or add as an import. </param>
         /// <param name="className">Found entry must be of this class. (Will disambiguate when two entries of different classes have the same ifp.)
         /// Also used in creation of <see cref="ImportEntry"/> if neccesary.</param>
         /// <param name="packageFile">Used in creation of <see cref="ImportEntry"/> if neccesary. Should be the packagefile the class is defined in. </param>
-        /// <remarks>if neccessary, will fill in parents as Package Imports (if the import you need has non-Package parents, don't use this method)</remarks>
+        /// <remarks>if neccessary, will fill in parents as Package Imports (if the import you need has non-Package parents, ensure they exist first)
+        /// <code>
+        /// //Without the first two lines, the class and function entries would get created as Package Imports if they did not exist.
+        /// pcc.GetEntryOrAddImport("Engine.Actor", "Class");
+        /// pcc.GetEntryOrAddImport("Engine.Actor.SpecialHandling", "Function");
+        /// IEntry entry = pcc.GetEntryOrAddImport("Engine.Actor.SpecialHandling.ReturnValue", "ObjectProperty");
+        /// </code>
+        /// </remarks>
         /// <returns></returns>
         public static IEntry GetEntryOrAddImport(this IMEPackage pcc, string instancedFullPath, string className, string packageFile = "Core")
         {
@@ -101,11 +108,11 @@ namespace LegendaryExplorerCore.Packages
 
             string[] pathParts = instancedFullPath.Split('.');
 
-            IEntry parent = pcc.GetEntryOrAddImport(string.Join(".", pathParts[..^1]), "Package");
+            IEntry parent = pcc.GetEntryOrAddImport(string.Join(".", pathParts[..^1]), null);
 
             var import = new ImportEntry(pcc, parent, NameReference.FromInstancedString(pathParts.Last()))
             {
-                ClassName = className ?? "Class",
+                ClassName = className ?? "Package",
                 PackageFile = packageFile
             };
             pcc.AddImport(import);
