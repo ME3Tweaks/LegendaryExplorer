@@ -110,7 +110,7 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:ab9af674bedfab7d786a8f1352a7f8566"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package_extensions.html#ab9af674bedfab7d786a8f1352a7f8566">getEntryOrAddImport</a> (this <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> pcc, string instancedFullPath, string className=&quot;Class&quot;, string packageFile=&quot;Core&quot;)</td></tr>
 <tr class="separator:ab9af674bedfab7d786a8f1352a7f8566"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aad7242ae1200fb3271fc252a72cfe9de"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package_extensions.html#aad7242ae1200fb3271fc252a72cfe9de">GetEntryOrAddImport</a> (this <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> pcc, string instancedFullPath, string className, string packageFile=&quot;Core&quot;)</td></tr>
-<tr class="memdesc:aad7242ae1200fb3271fc252a72cfe9de"><td class="mdescLeft">&#160;</td><td class="mdescRight">Finds existing <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> or <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_import_entry.html">ImportEntry</a> in <em>pcc</em>  with   <a href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package_extensions.html#aad7242ae1200fb3271fc252a72cfe9de">More...</a><br /></td></tr>
+<tr class="memdesc:aad7242ae1200fb3271fc252a72cfe9de"><td class="mdescLeft">&#160;</td><td class="mdescRight">Finds existing <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> or <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_import_entry.html">ImportEntry</a> in <em>pcc</em> .   <a href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package_extensions.html#aad7242ae1200fb3271fc252a72cfe9de">More...</a><br /></td></tr>
 <tr class="separator:aad7242ae1200fb3271fc252a72cfe9de"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5559825ba47970baec3db47afcc9d79b"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package_extensions.html#a5559825ba47970baec3db47afcc9d79b">AddToLevelActorsIfNotThere</a> (this <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> pcc, params <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>[] actors)</td></tr>
 <tr class="separator:a5559825ba47970baec3db47afcc9d79b"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -290,7 +290,7 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Finds existing <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> or <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_import_entry.html">ImportEntry</a> in <em>pcc</em>  with  </p>
+<p>Finds existing <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> or <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_import_entry.html">ImportEntry</a> in <em>pcc</em> .  </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">pcc</td><td></td></tr>
@@ -300,8 +300,12 @@ Static Public Member Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<p >if neccessary, will fill in parents as Package Imports (if the import you need has non-Package parents, don't use this method)</p>
-<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+<p >if neccessary, will fill in parents as Package Imports (if the import you need has non-Package parents, ensure they exist first) </p><div class="fragment"><div class="line"><span class="comment">//Without the first two lines, the class and function entries would get created as Package Imports if they did not exist.</span></div>
+<div class="line">pcc.GetEntryOrAddImport(<span class="stringliteral">&quot;Engine.Actor&quot;</span>, <span class="stringliteral">&quot;Class&quot;</span>);</div>
+<div class="line">pcc.GetEntryOrAddImport(<span class="stringliteral">&quot;Engine.Actor.SpecialHandling&quot;</span>, <span class="stringliteral">&quot;Function&quot;</span>);</div>
+<div class="line"><a class="code hl_interface" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a> entry = pcc.GetEntryOrAddImport(<span class="stringliteral">&quot;Engine.Actor.SpecialHandling.ReturnValue&quot;</span>, <span class="stringliteral">&quot;ObjectProperty&quot;</span>);</div>
+<div class="ttc" id="ainterface_legendary_explorer_core_1_1_packages_1_1_i_entry_html"><div class="ttname"><a href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">LegendaryExplorerCore.Packages.IEntry</a></div><div class="ttdef"><b>Definition:</b> IEntry.cs:7</div></div>
+</div><!-- fragment --> <dl class="section return"><dt>Returns</dt><dd></dd></dl>
 
 </div>
 </div>
