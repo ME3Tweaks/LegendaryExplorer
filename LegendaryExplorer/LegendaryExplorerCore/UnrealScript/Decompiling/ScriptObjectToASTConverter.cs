@@ -710,6 +710,10 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                         if (objRef == 0)
                             return new NoneLiteral();
                         var objEntry = pcc.GetEntry(objRef);
+                        if (objEntry is null)
+                        {
+                            return new SymbolReference(null, $"__INVALID_UINDEX: {objRef}");
+                        }
                         if (objEntry is ExportEntry objExp && usingSubObjects && objExp.InstancedFullPath.StartsWith(export.InstancedFullPath, StringComparison.OrdinalIgnoreCase))
                         {
                             //subObject reference
