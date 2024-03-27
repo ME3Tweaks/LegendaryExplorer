@@ -786,7 +786,10 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                                     type = PropertyType.ByteProperty;
                                     reference = pcc.getObjectName(uByteProperty.Enum);
                                     break;
-                                //case UClassProperty:
+                                case UClassProperty uClassProperty:
+                                    type = PropertyType.ObjectProperty;
+                                    reference = pcc.getObjectName(uClassProperty.ClassRef);
+                                    break;
                                 //case UComponentProperty:
                                 //case UInterfaceProperty:
                                 case UObjectProperty uObjectProperty:
