@@ -524,6 +524,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             byte[] data = CurrentLoadedExport.Data;
             var db = new ReadOptimizedByteProvider(data);
             BinaryInterpreter_Hexbox.ByteProvider = db;
+            hb1_SelectionChanged(BinaryInterpreter_Hexbox, EventArgs.Empty);//reassigning the ByteProvider won't trigger this, leaving old info in statusbar
             int binarystart = 0;
             if (CurrentLoadedExport.ClassName != "Class")
             {
