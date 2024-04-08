@@ -4,9 +4,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using LegendaryExplorerCore.GameFilesystem;
-using LegendaryExplorerCore.Gammtek.Collections.ObjectModel;
-using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
-using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode;
 using LegendaryExplorerCore.Misc;
@@ -23,6 +20,14 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
     /// </summary>
     public class RelinkerOptionsPackage
     {
+
+#if DEBUG
+        /// <summary>
+        /// Used to denote a unique version of this object in the debugger
+        /// </summary>
+        public Guid aDebuggingGuid = Guid.NewGuid();
+#endif
+
         /// <summary>
         /// The mapping of source package entries to target package entries. Items in this dictionary will be relinked, and the dictionary will be populated as relinking occurs. Supply your own if you're doing a targeted relink, or let the relinker automatically build this
         /// </summary>
@@ -118,9 +123,6 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             //Since we only enumerate exports and append imports to this list we will not need to worry about recursive links
             //I am sure this won't come back to be a pain for me.
 
-            // Used for quick mapping lookups. We have to be able to listen to it
-            //var listenableCrossPackageMap = new ListenableDictionary<IEntry, IEntry>(rop.CrossPackageMap);
-
             // Used to perform a full relink. Items will be added to this list so they can be processed at the end
             var mappingList = rop.CrossPackageMap.ToList();
 
@@ -129,7 +131,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 if (args.Type == DictChangeType.AddItem)
                 {
                     mappingList.Add(new KeyValuePair<IEntry, IEntry>(args.Key, args.Value));
-                    //Debug.WriteLine($"Adding relink mapping {args.Key.ObjectName} {args.Key.UIndex} -> {args.Value.UIndex}");
+                    //Debug.WriteLine($"ROP {rop.aDebuggingGuid} -  Adding relink mapping {args.Key.ObjectName} {args.Key.UIndex} -> {args.Value.UIndex}");
                 }
             };
             //can't be a foreach since we might append things to the list
@@ -242,22 +244,9 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 var newComponentMap = new UMultiMap<NameReference, int>();
                 foreach (var cmk in sourceExport.ComponentMap)
                 {
-                    // This code makes a lot of assumptions, like how components are always directly below the current export
-                    var nameIndex = relinkingExport.FileRef.FindNameOrAdd(cmk.Key.Name);
-
-                    // We can't call this method with our existing cross package map or it will have infinite recursion
-                    // so we cache our map and merge the results 
-                    var cachedMap = rop.CrossPackageMap;
-                    rop.CrossPackageMap = new ListenableDictionary<IEntry, IEntry>();
-                    EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, sourceExport.FileRef.GetUExport(cmk.Value + 1), relinkingExport.FileRef, relinkingExport, true, rop, out var newComponent);
+                    // 04/07/2024 - Remove temp cross package mapping and have this call skip its internal relink step since this call is already in a relink - Mgamerz
+                    EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, sourceExport.FileRef.GetUExport(cmk.Value + 1), relinkingExport.FileRef, relinkingExport, false, rop, out var newComponent);
                     newComponentMap.Add(cmk.Key, newComponent.UIndex - 1); // TODO: Relink the 
-
-                    foreach (var v in rop.CrossPackageMap)
-                    {
-                        cachedMap[v.Key] = v.Value;
-                    }
-
-                    rop.CrossPackageMap = cachedMap;
                 }
                 relinkingExport.ComponentMap = newComponentMap;
             }
@@ -420,6 +409,8 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
             public void Invoke(ref int uIndex, string propName)
             {
+                if (uIndex == 6488)
+                    Debugger.Break();
                 var result = relinkUIndex(ImportingPcc, RelinkingExport, ref uIndex, $"(Binary Property: {propName})", "", Rop);
                 if (result != null)
                 {
