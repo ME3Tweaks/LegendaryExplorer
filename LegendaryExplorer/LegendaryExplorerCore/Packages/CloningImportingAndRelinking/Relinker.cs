@@ -409,8 +409,6 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
             public void Invoke(ref int uIndex, string propName)
             {
-                if (uIndex == 6488)
-                    Debugger.Break();
                 var result = relinkUIndex(ImportingPcc, RelinkingExport, ref uIndex, $"(Binary Property: {propName})", "", Rop);
                 if (result != null)
                 {

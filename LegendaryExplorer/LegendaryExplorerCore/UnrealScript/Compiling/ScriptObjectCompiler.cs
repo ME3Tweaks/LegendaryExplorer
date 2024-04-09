@@ -402,7 +402,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             {
                 foreach (Function stateFunc in curState.Functions)
                 {
-                    if (Enum.TryParse(stateFunc.Name, true, out EProbeFunctions enumVal))
+                    if (stateFunc.IsDefined && Enum.TryParse(stateFunc.Name, true, out EProbeFunctions enumVal))
                     {
                         stateObj.ProbeMask |= enumVal;
                     }
