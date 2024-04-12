@@ -125,6 +125,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         /// </summary>
         public abstract string Toolname { get; }
 
+        /// <summary>
+        /// Forcibly hides the recents control
+        /// </summary>
+        public bool ForceHideRecents { get; set; }
+
         //internal abstract void RecentFile_click(object sender, RoutedEventArgs e);
 
         internal abstract bool CanLoadFileExtension(string extension);
