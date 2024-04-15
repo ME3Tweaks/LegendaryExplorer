@@ -9,6 +9,7 @@ using System.Linq;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
+using LegendaryExplorerCore.Unreal;
 
 namespace LegendaryExplorerCore.Packages
 {
@@ -441,14 +442,21 @@ namespace LegendaryExplorerCore.Packages
                 _ => "pcc"
             }}");
             using IMEPackage pcc = OpenMEPackageFromStream(packageStream);
+            var indexedLevelName = NameReference.FromInstancedString(levelPackageName);
             for (int i = 0; i < pcc.Names.Count; i++)
             {
                 string name = pcc.Names[i];
                 if (name.Equals(emptyLevelName))
                 {
-                    string newName = name.Replace(emptyLevelName, levelPackageName);
+                    string newName = name.Replace(emptyLevelName, indexedLevelName.Name);
                     pcc.replaceName(i, newName);
                 }
+            }
+
+            // 01/12/2024 - Indexed level name is assigned properly
+            if (indexedLevelName.Number > 0)
+            {
+                pcc.FindExport(indexedLevelName.Name).ObjectName = indexedLevelName;
             }
 
             var packguid = Guid.NewGuid();
