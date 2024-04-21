@@ -965,7 +965,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             string packageName = sourcePcc.FileNameNoExtension;
             if (string.IsNullOrEmpty(importFullNameInstanced)) // If passing in an empty string, we're generating an import for the package file itself
             {
-                return destinationPCC.getEntryOrAddImport(packageName, "Package");
+                return destinationPCC.GetEntryOrAddImport(packageName, "Package");
             }
 
             string properImportInstancedFullPath = importFullNameInstanced;
@@ -1853,7 +1853,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         string packageName = export.ParentName;
                         if (IsSafeToImportFrom($"{packageName}.pcc", MEGame.ME3, pcc.FilePath))
                         {
-                            return pcc.getEntryOrAddImport($"{packageName}.{className}");
+                            return pcc.GetEntryOrAddImport($"{packageName}.{className}", "Class");
                         }
                         else
                         {
@@ -1872,16 +1872,16 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     // 'instancedFullPath' is only populated when inventoried at runtime.
                     if (info.forcedExport && info.instancedFullPath != null)
                     {
-                        return pcc.getEntryOrAddImport(info.instancedFullPath); // It's a forced export
+                        return pcc.GetEntryOrAddImport(info.instancedFullPath, "Class"); // It's a forced export
                     }
                     else if (info.instancedFullPath != null)
                     {
-                        return pcc.getEntryOrAddImport($"{package}.{info.instancedFullPath}");
+                        return pcc.GetEntryOrAddImport($"{package}.{info.instancedFullPath}", "Class");
                     }
                     else
                     {
                         // The original code pre 02/27/2023
-                        return pcc.getEntryOrAddImport($"{package}.{className}");
+                        return pcc.GetEntryOrAddImport($"{package}.{className}", "Class");
                     }
                 }
 

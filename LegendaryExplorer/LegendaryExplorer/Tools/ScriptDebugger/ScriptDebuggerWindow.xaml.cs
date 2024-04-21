@@ -37,7 +37,7 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
         {
             MEGame.LE1 => "LE1ScriptDebugger-v2.asi", // In M3
             MEGame.LE2 => "LE2ScriptDebugger-v2.asi", // In M3
-            MEGame.LE3 => "UnrealscriptDebugger.asi", 
+            MEGame.LE3 => "LE3ScriptDebugger-v2.asi", 
             _ => throw new ArgumentOutOfRangeException(nameof(Game))
         };
         private void GetDebuggerASI()
@@ -51,7 +51,8 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
                     ModManagerIntegration.RequestASIInstallation(MEGame.LE2, ASIModIDs.LE2_SCRIPT_DEBUGGER, 2);
                     break;
                 case MEGame.LE3:
-                    throw new NotImplementedException();
+                    HyperlinkExtensions.OpenURL("https://github.com/ME3Tweaks/LE3-ASI-Plugins/releases/tag/LE3UnrealScriptDebugger-v2.0");
+                    break;
             }
 
         }

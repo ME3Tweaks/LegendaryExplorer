@@ -486,7 +486,7 @@ namespace LegendaryExplorer.Tools.Meshplorer
             if (CurrentExport.ClassName == "SkeletalMesh")
             {
                 StaticMesh stm = CurrentExport.GetBinaryData<SkeletalMesh>().ConvertToME3LEStaticMesh();
-                CurrentExport.Class = Pcc.getEntryOrAddImport("Engine.StaticMesh");
+                CurrentExport.Class = Pcc.GetEntryOrAddImport("Engine.StaticMesh", "Class");
                 CurrentExport.WritePropertiesAndBinary(new PropertyCollection
                 {
                     new BoolProperty(true, "UseSimpleBoxCollision"),

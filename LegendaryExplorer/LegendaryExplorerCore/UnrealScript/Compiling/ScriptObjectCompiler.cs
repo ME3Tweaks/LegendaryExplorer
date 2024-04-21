@@ -401,7 +401,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             {
                 foreach (Function stateFunc in curState.Functions)
                 {
-                    if (Enum.TryParse(stateFunc.Name, true, out EProbeFunctions enumVal))
+                    if (stateFunc.IsDefined && Enum.TryParse(stateFunc.Name, true, out EProbeFunctions enumVal))
                     {
                         stateObj.ProbeMask |= enumVal;
                     }
@@ -733,7 +733,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                         uByteProperty.Enum = varType is Enumeration ? CompilerUtils.ResolveSymbol(varType, pcc, usop2).UIndex : 0;
                         break;
                     case UClassProperty uClassProperty:
-                        uClassProperty.ObjectRef = pcc.getEntryOrAddImport("Core.Class").UIndex;
+                        uClassProperty.ObjectRef = pcc.GetEntryOrAddImport("Core.Class", "Class").UIndex;
                         uClassProperty.ClassRef = CompilerUtils.ResolveSymbol(((ClassType)varType).ClassLimiter, pcc, usop2).UIndex;
                         break;
                     case UDelegateProperty uDelegateProperty:

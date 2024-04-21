@@ -42,7 +42,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public static void TrashEntries(IMEPackage pcc, IEnumerable<IEntry> itemsToTrash)
         {
             ExportEntry trashTopLevel = pcc.FindExport(UnrealPackageFile.TrashPackageName);
-            IEntry packageClass = pcc.getEntryOrAddImport("Core.Package");
+            IEntry packageClass = pcc.GetEntryOrAddImport("Core.Package", "Class");
 
             foreach (IEntry entry in itemsToTrash)
             {

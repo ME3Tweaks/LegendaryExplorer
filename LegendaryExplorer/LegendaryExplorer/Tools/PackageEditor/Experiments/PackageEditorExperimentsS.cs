@@ -1226,42 +1226,44 @@ import java.util.*;"
                 foreach (MEGame game in new[] { MEGame.LE3, MEGame.LE2, MEGame.LE1, /*MEGame.ME3, MEGame.ME2, MEGame.ME1*/ })
                 {
                     //preload base files for faster scanning
-                    using DisposableCollection<IMEPackage> baseFiles = MEPackageHandler.OpenMEPackages(EntryImporter.FilesSafeToImportFrom(game)
-                        .Select(f => Path.Combine(MEDirectories.GetCookedPath(game), f)));
-                    using var packageCache = new PackageCache();
-                    packageCache.InsertIntoCache(baseFiles);
-                    if (game == MEGame.ME3)
+                    using (DisposableCollection<IMEPackage> baseFiles = MEPackageHandler.OpenMEPackages(EntryImporter.FilesSafeToImportFrom(game)
+                               .Select(f => Path.Combine(MEDirectories.GetCookedPath(game), f))))
+                    using (var packageCache = new PackageCache())
                     {
-                        baseFiles.Add(MEPackageHandler.OpenMEPackage(Path.Combine(ME3Directory.CookedPCPath, "BIOP_MP_COMMON.pcc")));
-                    }
-
-                    foreach (string filePath in EnumerateOfficialFiles(game))
-                    {
-                        //ScanShaderCache(filePath);
-                        //ScanMaterials(filePath);
-                        //ScanStaticMeshComponents(filePath);
-                        //ScanLightComponents(filePath);
-                        //ScanLevel(filePath);
-                        //if (findClass(filePath, "ShaderCache", true)) break;
-                        //findClassesWithBinary(filePath);
-                        //ScanScripts2(filePath);
-                        //RecompileAllFunctions(filePath);
-                        //RecompileAllStates(filePath);
-                        //RecompileAllDefaults(filePath, packageCache);
-                        RecompileAllPropsOfNonScriptExports(filePath, packageCache);
-                        //RecompileAllStructs(filePath, packageCache);
-                        //RecompileAllEnums(filePath, packageCache);
-                        //RecompileAllClasses(filePath, packageCache);
-                        if (interestingExports.Any())
+                        packageCache.InsertIntoCache(baseFiles);
+                        if (game == MEGame.ME3)
                         {
-                            return;
+                            baseFiles.Add(MEPackageHandler.OpenMEPackage(Path.Combine(ME3Directory.CookedPCPath, "BIOP_MP_COMMON.pcc")));
+                        }
+
+                        foreach (string filePath in EnumerateOfficialFiles(game))
+                        {
+                            //ScanShaderCache(filePath);
+                            //ScanMaterials(filePath);
+                            //ScanStaticMeshComponents(filePath);
+                            //ScanLightComponents(filePath);
+                            //ScanLevel(filePath);
+                            //if (findClass(filePath, "ShaderCache", true)) break;
+                            //findClassesWithBinary(filePath);
+                            //ScanScripts2(filePath);
+                            //RecompileAllFunctions(filePath);
+                            //RecompileAllStates(filePath);
+                            //RecompileAllDefaults(filePath, packageCache);
+                            //RecompileAllPropsOfNonScriptExports(filePath, packageCache);
+                            //RecompileAllStructs(filePath, packageCache);
+                            //RecompileAllEnums(filePath, packageCache);
+                            RecompileAllClasses(filePath, packageCache);
+                            //if (interestingExports.Any())
+                            //{
+                            //    return;
+                            //}
                         }
                     }
+                    //the base files will have been in memory for so long at this point that they take a looong time to clear out automatically, so force it.
+                    MemoryAnalyzer.ForceFullGC();
                 }
             }).ContinueWithOnUIThread(prevTask =>
             {
-                //the base files will have been in memory for so long at this point that they take a looong time to clear out automatically, so force it.
-                MemoryAnalyzer.ForceFullGC();
                 pewpf.IsBusy = false;
                 if (extraInfo.Count > 0)
                 {
@@ -1950,13 +1952,15 @@ import java.util.*;"
                                 }
                                 foundClasses.Add(instancedFullPath);
                                 var log = new MessageLog();
-                                (ast, _) = UnrealScriptCompiler.CompileOutlineAST(script, "Class", log, pcc.Game);
-                                if (ast is not Class classAST || log.HasErrors)
-                                {
-                                    interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {pcc.FilePath}\nfailed to parse class!"));
-                                    return;
-                                }
+                                //(ast, _) = UnrealScriptCompiler.CompileOutlineAST(script, "Class", log, pcc.Game);
+                                //if (ast is not Class classAST || log.HasErrors)
+                                //{
+                                //    interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {pcc.FilePath}\nfailed to parse class!"));
+                                //    return;
+                                //}
 
+                                //UnrealScriptCompiler.CompileNewClassAST(pcc, classAST, log, fileLib, out bool vfTableChanged);
+                                //if (log.HasErrors)
                                 UnrealScriptCompiler.CompileNewClassAST(pcc, classAST, log, fileLib, out bool vfTableChanged, usop);
                                 if (log.HasErrors)
                                 {
@@ -1975,12 +1979,24 @@ import java.util.*;"
                                 //    interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {pcc.FilePath}\nfailed to parse class!"));
                                 //    return;
                                 //}
-
-                                //if (!fileLib.ReInitializeFile())
+                                //if (vfTableChanged)
                                 //{
-                                //    interestingExports.Add(new EntryStringPair(exp, $"{pcc.FilePath} failed to re-initialize after compiling {$"#{exp.UIndex}",-9}"));
+                                //    interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {pcc.FilePath}\nVTableChanged!"));
                                 //    return;
                                 //}
+
+                                (ast, log) = UnrealScriptCompiler.CompileClass(pcc, script, fileLib, exp, exp.Parent, packageCache);
+                                if (ast is not Class || log.HasErrors)
+                                {
+                                    interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {pcc.FilePath}\nfailed to parse class!"));
+                                    //return;
+                                }
+
+                                if (!fileLib.ReInitializeFile())
+                                {
+                                    interestingExports.Add(new EntryStringPair(exp, $"{pcc.FilePath} failed to re-initialize after compiling {$"#{exp.UIndex}",-9}"));
+                                    return;
+                                }
                                 //if (exp.EntryHasPendingChanges )//|| exp.GetAllDescendants().Any(entry => entry.EntryHasPendingChanges))
                                 //{
                                 //    interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {filePath}\nRecompilation does not match!"));
@@ -2382,7 +2398,7 @@ import java.util.*;"
 
                     using IMEPackage persistentUDK = MEPackageHandler.OpenUDKPackage(persistentPath);
                     IEntry levStreamingClass =
-                        persistentUDK.getEntryOrAddImport("Engine.LevelStreamingAlwaysLoaded");
+                        persistentUDK.GetEntryOrAddImport("Engine.LevelStreamingAlwaysLoaded", "Class");
                     IEntry theWorld = persistentUDK.Exports.First(exp => exp.ClassName == "World");
                     int i = 1;
                     int firstLevStream = persistentUDK.ExportCount;

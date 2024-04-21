@@ -1057,6 +1057,10 @@ namespace LegendaryExplorer.Tools.PackageEditor
         private async void SaveFile()
         {
             await Pcc.SaveAsync();
+            if (GetSelected(out _))
+            {
+                Preview(true);
+            }
         }
 
         private void OpenFile()
