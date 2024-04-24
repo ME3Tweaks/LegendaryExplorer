@@ -716,6 +716,11 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     prop.Value /= 1000;
                 }
             }
+
+            if (sourceExport.Game.IsGame3() != destPackage.Game.IsGame3() && sourceExport.IsA("Actor") && props.GetProp<StructProperty>("location") is { } locationProp)
+            {
+                locationProp.Name = destPackage.Game.IsGame3() ? "location" : "Location";
+            }
         }
 
         private static bool CanDonateObject(ExportEntry export)
