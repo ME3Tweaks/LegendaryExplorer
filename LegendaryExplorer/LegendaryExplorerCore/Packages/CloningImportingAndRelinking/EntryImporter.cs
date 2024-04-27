@@ -1160,7 +1160,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
         private static readonly string[] le2FilesSafeToImportFrom =
         {
-            "Core.pcc", "Engine.pcc", "GFxUI.pcc", "WwiseAudio.pcc", "SFXOnlineFoundation.pcc", "PlotManagerMap.pcc", "SFXGame.pcc", "Startup_INT.pcc"
+            "Core.pcc", "Engine.pcc", "IPDrv.pcc", "GFxUI.pcc", "WwiseAudio.pcc", "SFXOnlineFoundation.pcc", "PlotManagerMap.pcc", "SFXGame.pcc", "Startup_INT.pcc"
         };
 
         private static readonly string[] le2FilesSafeToImportFromPostLoad =
@@ -1175,7 +1175,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         {
             //Class libary: These files contain ME3's standard library of classes, structs, enums... Also a few assets
             // Note: You must use MELoadedFiles for Startup.pcc as it exists in METR Patch and is not used by game! (and is also wrong file)
-            "Core.pcc", "Engine.pcc", "Startup.pcc", "GameFramework.pcc", "GFxUI.pcc", "WwiseAudio.pcc", "SFXOnlineFoundation.pcc", "SFXGame.pcc",
+            "Core.pcc", "Engine.pcc", "GameFramework.pcc", "IPDrv.pcc", "GFxUI.pcc", "WwiseAudio.pcc", "SFXOnlineFoundation.pcc", "SFXGame.pcc", "Startup.pcc",
         };
 
         private static readonly string[] le3FilesSafeToImportFromPostLoad =
