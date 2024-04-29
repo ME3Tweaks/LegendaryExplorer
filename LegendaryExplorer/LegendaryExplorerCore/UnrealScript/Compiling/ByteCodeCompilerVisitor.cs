@@ -913,13 +913,13 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     //struct is being accessed through an rvalue
                     case FunctionCall:
                     case DelegateCall:
-                    //case ArraySymbolRef: doesn't seem to count as an rvalue for dynamic arrays. does it for static arrays?
                     case CompositeSymbolRef csr when ContainsFunctionCall(csr):
                     case VectorLiteral:
                     case RotatorLiteral:
                     case InOpReference:
                     case PreOpReference:
                     case PostOpReference:
+                    case PrimitiveCast:
                         WriteByte(1);
                         break;
                     default:
