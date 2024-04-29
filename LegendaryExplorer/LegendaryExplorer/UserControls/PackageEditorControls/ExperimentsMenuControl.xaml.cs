@@ -472,6 +472,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             PackageEditorExperimentsM.LE2ConvertBioPawnToSFXPawn(GetPEWindow());
         }
 
+        private void GigaSDKGen_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.GenerateGigaChungusClassFileForSDKGen(GetPEWindow());
+        }
+
         private void MScanner_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.MScanner(GetPEWindow());

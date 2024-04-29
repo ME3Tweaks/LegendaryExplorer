@@ -2478,7 +2478,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             if (ofd.ShowDialog() == true)
             {
                 var askResult = Xceed.Wpf.Toolkit.MessageBox.Show(pe, "Are you using this for a dialogue import? If using this for a dialogue bank the streamed audio and events must be named correctly in the editor. \n" +
-                       "Each audio must contain the tlk reference e.g. '123546' plus a gendered reference with '_f_' if the line is spoken by femshep, else '_m_'.\n"+
+                       "Each audio must contain the tlk reference e.g. '123546' plus a gendered reference with '_f_' if the line is spoken by femshep, else '_m_'.\n" +
                        "Each event must be named in the format VO_123456_m_Play where 123456 is the tlk ref and the gender is determined by the m/f.\n" +
                        "To set durations turn them on in wwise (Project Settings -> Soundbanks -> Estimated Duration).",
                        "Dialogue Bank Import", MessageBoxButton.YesNoCancel, MessageBoxImage.Question,
@@ -2716,8 +2716,160 @@ defaultproperties
             }
         }
 
+        private static Dictionary<string, IMEPackage> TestPatchPackageMap = null;
+        public static ExportEntry GetTestPatchClass(string className)
+        {
+            // Used to fetch Testpatch versions of ME3 classes
+            if (TestPatchPackageMap == null)
+            {
+                var sfarPath = Path.Combine(ME3Directory.BioGamePath, @"Patches", @"PCConsole", @"Patch_001.sfar");
+                var sfar = new DLCPackage(sfarPath);
+                TestPatchPackageMap = new(sfar.Files.Count);
+
+                foreach (var fe in sfar.Files)
+                {
+                    if (fe.isActualFile && fe.FileName.RepresentsPackageFilePath())
+                    {
+                        var package = MEPackageHandler.OpenMEPackageFromStream(sfar.DecompressEntry(fe), fe.FileName);
+                        var inventoryClass = package.Exports.FirstOrDefault(x => x.IsClass);
+                        if (inventoryClass != null)
+                        {
+                            // Some TP things are not classes like GuidCache so they are filtered out here
+                            TestPatchPackageMap[inventoryClass.ObjectName] = package;
+                        }
+                    }
+                }
+            }
+
+            if (TestPatchPackageMap.TryGetValue(className, out var tpClass))
+            {
+                return tpClass.Exports.FirstOrDefault(x => x.IsClass && x.ObjectName == className);
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Creates a startup file containing all classes outside of basegame-only and startup files, to feed into SDK gen
+        /// </summary>
+        /// <param name="pe"></param>
+        public static void GenerateGigaChungusClassFileForSDKGen(PackageEditorWindow pe)
+        {
+            pe.BusyText = "Creating SDKGen startup";
+            pe.IsBusy = true;
+
+            Task.Run(() =>
+            {
+                var game = MEGame.LE3; // Which game we are generating for.
+
+                var outP = MEPackageHandler.CreateAndOpenPackage(@"C:\Users\Public\Startup_MOD_Giga_INT.pcc", game);
+                var gameRoot = ME3TweaksBackups.GetGameBackupPath(game); // Use backup. This ensures we are not working on a modified game
+
+                // We could use Asset DB. But I am lazy and don't want to figure out how to lookup things in Asset DB code.
+                // Iterate over all files, skipping startup files and basegame-only ones. If it has a class, pull it in.
+
+                PackageCache cache = new PackageCache(); // Maybe make chained cache
+                var files = MELoadedFiles.GetFilesLoadedInGame(game, gameRootOverride: gameRoot);
+                foreach (var f in files)
+                {
+                    if (EntryImporter.IsSafeToImportFrom(f.Key, game, null))
+                    {
+                        continue; // File can be imported from. We do not check postload.
+                    }
+
+                    if (f.Key.Contains("Startup", StringComparison.OrdinalIgnoreCase))
+                        continue; // Do not check any startup files either
+
+                    if (f.Key.Contains("SFXTest", StringComparison.OrdinalIgnoreCase))
+                        continue; // Do not check any startup files either
+
+                    if (f.Key.Contains("EngineTest", StringComparison.OrdinalIgnoreCase))
+                        continue; // Do not check any startup files either
+
+                    Debug.WriteLine($"File: {f.Key}");
+                    using var pack = MEPackageHandler.OpenMEPackage(f.Value);
+                    foreach (var exp in pack.Exports.Where(x => x.IsClass))
+                    {
+                        if (outP.FindExport(exp.InstancedFullPath) == null)
+                        {
+                            // Needs ported
+                            Debug.WriteLine($"  Porting {exp.InstancedFullPath}");
+                            var res = EntryExporter.ExportExportToPackage(exp, outP, out var outClass, cache);
+                            if (res.Any())
+                            {
+                                // Debugger.Break();
+                            }
+                        }
+                    }
+
+                }
+
+
+                // Done.
+                outP.Save();
+                pe.IsBusy = false;
+            });
+        }
+
         public static void MScanner(PackageEditorWindow pe)
         {
+            var packages = new[] { "Engine.pcc", "SFXGame.pcc", "SFXOnlineFoundation.pcc" };
+            foreach (var f in packages)
+            {
+                PackageCache otPC = new PackageCache();
+                PackageCache otLE = new PackageCache();
+                var packageO = MEPackageHandler.OpenMEPackage(Path.Combine(ME3Directory.CookedPCPath, f));
+                var packageL = MEPackageHandler.OpenMEPackage(Path.Combine(LE3Directory.CookedPCPath, f));
+
+                var outdir = Directory.CreateDirectory(@"C:\users\mgame\filecomp").FullName;
+                var outdirO = Directory.CreateDirectory(Path.Combine(outdir, "ME3")).FullName;
+                var outdirL = Directory.CreateDirectory(Path.Combine(outdir, "LE3")).FullName;
+
+                UnrealScriptOptionsPackage usopOT = new UnrealScriptOptionsPackage()
+                {
+                    Cache = otPC,
+                };
+                UnrealScriptOptionsPackage usopLE = new UnrealScriptOptionsPackage()
+                {
+                    Cache = otLE,
+                };
+                var flOT = new FileLib(packageO);
+                var flLE = new FileLib(packageL);
+                flOT.Initialize(usopOT);
+                flLE.Initialize(usopLE);
+
+                foreach (var cls in packageL.Exports.Where(x => x.IsClass))
+                {
+                    Debug.WriteLine($"Decompiling {cls.ObjectName}");
+                    // LE
+                    var outFilePathLE = Path.Combine(outdirL, cls.ObjectName + ".uc");
+                    (_, string functionTextLE) = UnrealScriptCompiler.DecompileExport(cls, flLE, usopLE);
+                    File.WriteAllText(outFilePathLE, functionTextLE);
+
+                    // OT
+                    FileLib flOTToUse = flOT;
+                    ExportEntry me3Class = packageO.FindExport(cls.InstancedFullPath);
+                    var testPatchVer = GetTestPatchClass(cls.ObjectName);
+                    if (testPatchVer != null)
+                    {
+                        me3Class = testPatchVer;
+                        flOTToUse = new FileLib(me3Class.FileRef);
+                        flOTToUse.Initialize(usopOT);
+                    }
+
+                    if (me3Class != null)
+                    {
+                        var outFilePathOT = Path.Combine(outdirO, me3Class.ObjectName + ".uc");
+                        (_, string functionTextOT) = UnrealScriptCompiler.DecompileExport(me3Class, flOTToUse, usopOT);
+                        File.WriteAllText(outFilePathOT, functionTextOT);
+                    }
+                }
+            }
+
+
+
+            /*
+            // Convert to import
             if (pe.TryGetSelectedExport(out var exp2))
             {
                 var referencingEntries = exp2.GetEntriesThatReferenceThisOne();
@@ -2750,8 +2902,7 @@ defaultproperties
                     convertedItem.ObjectName = exp2.ObjectName;
                     EntryPruner.TrashEntries(exp2.FileRef, new[] { exp2 });
                 }
-
-            }
+            }*/
 
             return;
             //if (pe.TryGetSelectedExport(out var exp2))
@@ -4283,7 +4434,7 @@ defaultproperties
             {
 
             }
-            new MaterialEditor(MEGame.LE3, test, parameter => {}, parameter => {}).Show();
+            new MaterialEditor(MEGame.LE3, test, parameter => { }, parameter => { }).Show();
         }
     }
 }
