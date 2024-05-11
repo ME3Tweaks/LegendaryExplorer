@@ -97,7 +97,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor.Experiments
             }
 
             ExportEntry anchorObject = sew.Pcc.GetUExport(sew.SelectedObjects[0].UIndex);
-            if(anchorObject == null || (anchorObject.ClassName != "SeqVar_Object" && anchorObject.ClassName != "BioSeqVar_ObjectFindByTag")) 
+            if (anchorObject == null || (anchorObject.ClassName != "SeqVar_Object" && anchorObject.ClassName != "BioSeqVar_ObjectFindByTag"))
             {
                 ShowError("Selected anchor is not valid.");
                 return;
@@ -204,26 +204,26 @@ namespace LegendaryExplorer.Tools.Sequence_Editor.Experiments
             }
             LegendaryExplorerCore.Unreal.BinaryConverters.Level levelBin = pl.GetBinaryData<LegendaryExplorerCore.Unreal.BinaryConverters.Level>();
             var uIndices = levelBin.Actors.Where(uIndex => sew.Pcc.IsUExport(uIndex)).ToList();
-            foreach(var uidx in uIndices)
+            foreach (var uidx in uIndices)
+            {
+                var a = sew.Pcc.GetUExport(uidx);
+                if (a == null)
+                    continue;
+                var atag = actor.GetProperty<NameProperty>("Tag");
+                if (atag == null)
+                    continue;
+                if (atag == tag)
                 {
-                    var a = sew.Pcc.GetUExport(uidx);
-                    if (a == null)
-                        continue;
-                    var atag = actor.GetProperty<NameProperty>("Tag");
-                    if (atag == null)
-                        continue;
-                    if(atag == tag)
-                    {
-                        ShowError("Referenced actor does not have a unique tag.");
-                        return;
-                    }
+                    ShowError("Referenced actor does not have a unique tag.");
+                    return;
                 }
+            }
 
             seqvarobj.ObjectName = "BioSeqVar_ObjectFindByTag";
-            seqvarobj.Class = sew.Pcc.getEntryOrAddImport("SFXGame.BioSeqVar_ObjectFindByTag");
+            seqvarobj.Class = sew.Pcc.GetEntryOrAddImport("SFXGame.BioSeqVar_ObjectFindByTag", "BioSeqVar_ObjectFindByTag");
             seqvarobj.indexValue = maxTag + 1;
             var varprops = seqvarobj.GetProperties();
-            
+
             varprops.Remove(actorRef);
             varprops.Add(new NameProperty(tag.Value, "m_sObjectTagToFind"));
             seqvarobj.WriteProperties(varprops);

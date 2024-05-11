@@ -197,7 +197,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 {
                     subExport.Archetype = ReferenceEquals(Default__Archetype.FileRef, Pcc)
                         ? subObjArchetype
-                        : Pcc.getEntryOrAddImport($"{Default__Export.Archetype.InstancedFullPath}.{subPath}", classEntry.ObjectName.Instanced, classEntry.ParentName);
+                        : Pcc.GetEntryOrAddImport($"{Default__Export.Archetype.InstancedFullPath}.{subPath}", classEntry.ObjectName.Instanced, classEntry.ParentName);
                     return;
                 }
                 //sometimes the archetype is a subobject of the Default__ for a parent suboject's class.
@@ -236,7 +236,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                         {
                             subExport.Archetype = ReferenceEquals(baseDefault.FileRef, Pcc)
                                 ? subObjArchetype
-                                : Pcc.getEntryOrAddImport($"{classDefaultObject.InstancedFullPath}.{subPath}", classEntry.ObjectName.Instanced, classEntry.ParentName);
+                                : Pcc.GetEntryOrAddImport($"{classDefaultObject.InstancedFullPath}.{subPath}", classEntry.ObjectName.Instanced, classEntry.ParentName);
                             return;
                         }
                     }
@@ -492,7 +492,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 return Pcc.GetEntry(classObj.Defaults);
             }
             string parentPath = classEntry.ParentInstancedFullPath;
-            return Pcc.getEntryOrAddImport($"{parentPath}.Default__{classEntry.ObjectName.Instanced}", classEntry.ObjectName.Instanced, classEntry.ParentName);
+            return Pcc.GetEntryOrAddImport($"{parentPath}.Default__{classEntry.ObjectName.Instanced}", classEntry.ObjectName.Instanced, classEntry.ParentName);
         }
     }
 }

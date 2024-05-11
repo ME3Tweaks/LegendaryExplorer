@@ -150,6 +150,23 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             return info = ShaderReader.DisassembleShader(ShaderByteCode, out dissassembly);
         }
+
+        public Shader Clone()
+        {
+            var newShader = new Shader
+            {
+                ShaderType = ShaderType,
+                Guid = Guid,
+                Frequency = Frequency,
+                ShaderByteCode = ShaderByteCode.ArrayClone(),
+                ParameterMapCRC = ParameterMapCRC,
+                InstructionCount = InstructionCount,
+                unkBytesPreName = unkBytesPreName?.ArrayClone(),
+                VertexFactoryType = VertexFactoryType,
+                unkBytes = unkBytes.ArrayClone()
+            };
+            return newShader;
+        }
     }
 
     public class MaterialShaderMap
@@ -218,6 +235,65 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
 
             return names;
+        }
+
+        /// <summary>
+        /// Copies into ShaderCache, with new GUIDs for self and all shaders
+        /// </summary>
+        /// <param name="shaderCache"></param>
+        /// <param name="newMsmGuid"></param>
+        /// <returns>Map of shader guids belonging to the original MSM, to the new guids they correspond to</returns>
+        public Dictionary<Guid, Guid> DeepCopyWithNewGuidsInto(ShaderCache shaderCache, out Guid newMsmGuid)
+        {
+            var newMSM = new MaterialShaderMap();
+
+            newMsmGuid = Guid.NewGuid();
+            newMSM.ID = newMsmGuid;
+            newMSM.FriendlyName = FriendlyName;
+
+            //no deep copying needed for these
+            newMSM.UniformPixelVectorExpressions = UniformPixelVectorExpressions;
+            newMSM.UniformPixelScalarExpressions = UniformPixelScalarExpressions;
+            newMSM.Uniform2DTextureExpressions = Uniform2DTextureExpressions;
+            newMSM.UniformCubeTextureExpressions = UniformCubeTextureExpressions;
+            newMSM.UniformVertexVectorExpressions = UniformVertexVectorExpressions;
+            newMSM.UniformVertexScalarExpressions = UniformVertexScalarExpressions;
+
+            newMSM.StaticParameters = StaticParameters;
+            newMSM.StaticParameters.BaseMaterialId = newMsmGuid;
+
+            var guidMap = new Dictionary<Guid, Guid>();
+
+            //Shaders
+            newMSM.Shaders = new UMultiMap<NameReference, ShaderReference>(Shaders.Count);
+            CopyShaderRefs(Shaders, newMSM.Shaders);
+
+            newMSM.MeshShaderMaps = new MeshShaderMap[MeshShaderMaps.Length];
+            for (int i = 0; i < MeshShaderMaps.Length; i++)
+            {
+                var meshShaderMap = newMSM.MeshShaderMaps[i] = new MeshShaderMap();
+                meshShaderMap.VertexFactoryType = MeshShaderMaps[i].VertexFactoryType;
+                meshShaderMap.unk = MeshShaderMaps[i].unk;
+                meshShaderMap.Shaders = new UMultiMap<NameReference, ShaderReference>(MeshShaderMaps[i].Shaders.Count);
+                CopyShaderRefs(MeshShaderMaps[i].Shaders, meshShaderMap.Shaders);
+            }
+            
+            shaderCache.MaterialShaderMaps.Add(newMSM.StaticParameters, newMSM);
+
+            return guidMap;
+
+            void CopyShaderRefs(UMultiMap<NameReference, ShaderReference> source, UMultiMap<NameReference, ShaderReference> dest)
+            {
+                foreach ((NameReference type, ShaderReference shaderReference) in source)
+                {
+                    var newShaderGuid = Guid.NewGuid();
+                    if (!guidMap.TryAdd(shaderReference.Id, newShaderGuid))
+                    {
+                        newShaderGuid = shaderReference.Id;
+                    }
+                    dest.Add(type, new ShaderReference{Id = newShaderGuid, ShaderType = shaderReference.ShaderType});
+                }
+            }
         }
     }
 

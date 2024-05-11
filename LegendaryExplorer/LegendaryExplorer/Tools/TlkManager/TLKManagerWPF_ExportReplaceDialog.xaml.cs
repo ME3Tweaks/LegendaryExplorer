@@ -83,9 +83,9 @@ namespace LegendaryExplorer.Tools.TlkManagerNS
                 //TODO: Need to find a way for the export loader to register usage of the pcc.
                 IMEPackage pcc = MEPackageHandler.OpenMEPackage(tlk.tlkPath);
                 var export = pcc.GetUExport(tlk.exportNumber);
-                var elhw = new ExportLoaderHostedWindow(new TLKEditorExportLoader(), export)
+                var elhw = new ExportLoaderHostedWindow(new TLKEditorExportLoader() { ForceHideRecents = true }, export)
                 {
-                    Title = $"TLK Editor - {export.UIndex} {export.InstancedFullPath} - {export.FileRef.FilePath}"
+                    Title = $"TLK Editor - {export.UIndex} {export.InstancedFullPath} - {export.FileRef.FilePath}",
                 };
                 elhw.Show();
             }
@@ -94,7 +94,7 @@ namespace LegendaryExplorer.Tools.TlkManagerNS
         private bool CanEditTLK(object obj)
         {
             //Current code checks if it is ME1 as currently only ME1 TLK can be loaded into an export loader for ME1TLKEditor.
-            return TLKList.SelectedItems.Count == 1 && TLKList.SelectedItem is LoadedTLK {embedded: true};
+            return TLKList.SelectedItems.Count == 1 && TLKList.SelectedItem is LoadedTLK { embedded: true };
         }
 
         private void ExportTLK(object obj)

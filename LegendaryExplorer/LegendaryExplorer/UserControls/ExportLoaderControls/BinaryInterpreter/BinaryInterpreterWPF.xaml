@@ -34,10 +34,22 @@
             <ToolBar DockPanel.Dock="Top" ToolBarTray.IsLocked="True">
                 <Button Name="SaveHexChange_Button" Content="Save Hex Changes" Click="BinaryInterpreter_SaveHexChanges_Click" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}"/>
                 <TextBlock Text="Changes not yet saved" VerticalAlignment="Center" Foreground="Red" Visibility="Collapsed"/>
-                <Button Name="ToggleHexboxWidth_Button" Content="Toggle Hexbox Width" Click="BinaryInterpreter_ToggleHexboxWidth_Click"/>
+                <Button Name="ToggleHexboxWidth_Button" ToolTip="Toggle Hexbox Width" Click="BinaryInterpreter_ToggleHexboxWidth_Click">
+                    <fa:ImageAwesome Icon="Solid_Microchip" Height="16" Width="16" Foreground="CornflowerBlue"/>
+                </Button>
                 <Separator Name="EditorSet_Separator_LeftsideArray" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
-                <Button Name="AddArrayElement_Button" ToolTip="Add a new element to the selected array" Content="Add Array Element" Click="AddArrayElement_Button_Click" VerticalAlignment="Center"/>
-                <Button Name="RemoveArrayElement_Button" ToolTip="Remove the selected element from the array" Content="Remove Array Element" Click="RemoveArrayElement_Button_Click" VerticalAlignment="Center"/>
+                <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
+                <Label IsEnabled="False">Array:</Label>
+                <Button Name="AddArrayElement_Button" ToolTip="Add a new element to the selected array"
+                        Click="AddArrayElement_Button_Click" 
+                        VerticalAlignment="Center">
+                    <fa:FontAwesome Icon="Solid_Plus"/>
+                </Button>
+                <Button Name="RemoveArrayElement_Button" ToolTip="Remove the selected element from the array"
+                        Click="RemoveArrayElement_Button_Click" 
+                        VerticalAlignment="Center">
+                    <fa:FontAwesome Icon="Solid_Minus"/>
+                </Button>
                 <Separator Name="EditorSet_Separator" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
                 <TextBox Width="140" Margin="5,0,0,0" Name="Value_TextBox" VerticalAlignment="Center" ToolTip="Value for this property" KeyDown="ValueTextBox_KeyDown" TextChanged="Value_TextBox_TextChanged" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}" Style="{StaticResource {x:Type TextBox}}"/>
                 <ComboBox Margin="5,0,0,0" Name="Value_ComboBox" MinWidth="80" VerticalAlignment="Center" ToolTip="Value for this property" Style="{StaticResource {x:Type ComboBox}}" IsTextSearchEnabled="True">

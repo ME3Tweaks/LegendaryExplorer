@@ -10,6 +10,7 @@ using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
+using LegendaryExplorerCore.Unreal.ObjectInfo;
 using LegendaryExplorerCore.UnrealScript.Analysis.Symbols;
 using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
 using LegendaryExplorerCore.UnrealScript.Compiling.Errors;
@@ -440,7 +441,14 @@ namespace LegendaryExplorerCore.UnrealScript
                         }
                         else
                         {
-                            cls = ScriptObjectToASTConverter.ConvertClass(GetCachedObjectBinary<UClass>(export, usop), false, this, usop);
+                            var uClass = GetCachedObjectBinary<UClass>(export, usop);
+                            cls = ScriptObjectToASTConverter.ConvertClass(uClass, false, this, usop);
+
+                            //don't do this if we're just adding a new class to the db
+                            if (classOverride is null)
+                            {
+                                GlobalUnrealObjectInfo.AddOrReplaceClassInDB(uClass, usop?.Cache);
+                            }
                         }
                         log.CurrentClass = cls;
                         if (!cls.IsFullyDefined)
