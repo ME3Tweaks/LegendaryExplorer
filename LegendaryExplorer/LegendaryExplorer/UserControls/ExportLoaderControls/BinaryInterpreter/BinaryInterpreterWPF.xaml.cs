@@ -179,7 +179,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 var stream = new EndianReader(new MemoryStream(CurrentLoadedExport.Data));
                 stream.Seek(b.GetPos(), SeekOrigin.Begin);
                 var g = stream.ReadGuid();
-                Clipboard.SetText(g.ToString().Replace(" ",""));
+                Clipboard.SetText(g.ToString().Replace(" ", ""));
             }
         }
 
@@ -415,7 +415,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             //    || exportEntry.TemplateOwnerClassIdx >= 0;
 
             // crossgen 9/24/2021
-            return !exportEntry.IsDefaultObject && (exportEntry.HasStack || exportEntry.TemplateOwnerClassIdx >= 0 || exportEntry.propsEnd() < exportEntry.DataSize);
+            // 05/14/2024 - More research into what first few bytes before properties are
+            return exportEntry.HasStack || exportEntry.TemplateOwnerClassIdx >= 0 || exportEntry.GetPropertyStart() >= 4 || exportEntry.propsEnd() < exportEntry.DataSize;
         }
 
         public override void PopOut()
@@ -584,10 +585,13 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 bool isGenericScan = false;
                 bool appendGenericScan = false;
 
+                int netIndexOffset = 0;
                 if (CurrentLoadedExport.HasStack)
                 {
-                    subNodes.AddRange(StartStackScan(data));
+                    subNodes.AddRange(StartStackScan(data, out netIndexOffset));
                 }
+
+
 
                 //pre-property binary
                 switch (CurrentLoadedExport.ClassName)
@@ -602,6 +606,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 {
                     int n = EndianReader.ToInt32(data, toci, CurrentLoadedExport.FileRef.Endian);
                     subNodes.Add(new BinInterpNode(toci, $"TemplateOwnerClass: #{n} {CurrentLoadedExport.FileRef.GetEntryString(n)}", NodeType.StructLeafObject) { Length = 4 });
+                }
+                else
+                {
+                    int netIndex = EndianReader.ToInt32(data, netIndexOffset, CurrentLoadedExport.FileRef.Endian);
+                    subNodes.Add(new BinInterpNode(netIndexOffset, $"NetIndex: {netIndex}", NodeType.StructLeafInt) { Length = 4 });
                 }
 
                 string className = CurrentLoadedExport.ClassName;
@@ -976,7 +985,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 case BinInterpNode bitve:
                     int dataOffset = bitve.GetOffset();
-                    if (dataOffset > 0)
+                    if (dataOffset >= 0)
                     {
                         BinaryInterpreter_Hexbox.SelectionStart = dataOffset;
                         BinaryInterpreter_Hexbox.SelectionLength = 1;

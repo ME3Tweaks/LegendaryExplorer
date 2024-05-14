@@ -2305,8 +2305,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             return subnodes;
         }
 
-        private List<ITreeItem> StartStackScan(byte[] data)
+        private List<ITreeItem> StartStackScan(byte[] data, out int endPos)
         {
+            endPos = 0;
             var subnodes = new List<ITreeItem>();
             try
             {
@@ -2343,6 +2344,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         })
                     }
                 });
+                endPos = (int) bin.Position;
             }
             catch (Exception ex)
             {
@@ -8570,9 +8572,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             try
             {
                 var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
-
-                subnodes.Add(MakeInt32Node(bin, "Unreal Unique Index"));
-
                 if (bin.Length == binarystart)
                     return subnodes; // no binary data
 
@@ -8586,8 +8585,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     bin.Skip(thumbnailSize);
                 }
 
-                int numMipMaps = bin.ReadInt32();
-                subnodes.Add(new BinInterpNode(bin.Position - 4, $"Num MipMaps: {numMipMaps}"));
+                subnodes.Add(MakeInt32Node(bin, "NumMipMaps", out var numMipMaps));
                 for (int l = 0; l < numMipMaps; l++)
                 {
                     var mipMapNode = new BinInterpNode

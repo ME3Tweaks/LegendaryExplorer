@@ -65,7 +65,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 }
             }
 
-            return 0;
+            return -1;
         }
 
         /// <summary>
