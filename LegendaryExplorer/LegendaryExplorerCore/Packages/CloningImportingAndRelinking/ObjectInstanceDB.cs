@@ -8,6 +8,7 @@ using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Unreal;
 using Microsoft.Toolkit.HighPerformance;
+using static System.Net.WebRequestMethods;
 
 namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 {
@@ -29,9 +30,9 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// Map of Instanced Full Paths to the files that contain them (indexes into FilePaths)
         /// </summary>
 
-        private readonly CaseInsensitiveDictionary<List<int>> ExportMap;
+        private readonly CaseInsensitiveDictionary<ObjectInstanceInfo> ExportMap;
 
-        private ObjectInstanceDB(MEGame game, List<string> filePaths, CaseInsensitiveDictionary<List<int>> exportMap)
+        private ObjectInstanceDB(MEGame game, List<string> filePaths, CaseInsensitiveDictionary<ObjectInstanceInfo> exportMap)
         {
             Game = game;
             FilePaths = filePaths;
@@ -39,7 +40,9 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         }
 
         private const uint MAGIC = 0x1552D027;
-        private const uint CURRENT_VERSION = 1;
+
+        // V2 05/14/2024 - Add NetIndex
+        private const uint CURRENT_VERSION = 2;
 
         public void Serialize(Stream outStream)
         {
@@ -53,11 +56,12 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             }
 
             outStream.WriteInt32(ExportMap.Count);
-            foreach ((string ifp, List<int> files) in ExportMap)
+            foreach ((string ifp, ObjectInstanceInfo oii) in ExportMap)
             {
                 outStream.WriteStringUtf8WithLength(ifp);
-                outStream.WriteInt32(files.Count);
-                outStream.Write(files.AsSpan().AsBytes());
+                outStream.WriteInt32(oii.NetIndex); // V2
+                outStream.WriteInt32(oii.Files.Count);
+                outStream.Write(oii.Files.AsSpan().AsBytes());
             }
         }
 
@@ -79,14 +83,37 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         }
 
                         int exportMapCount = inStream.ReadInt32();
-                        var exportMap = new CaseInsensitiveDictionary<List<int>>(exportMapCount);
+                        var exportMap = new CaseInsensitiveDictionary<ObjectInstanceInfo>(exportMapCount);
                         for (int i = 0; i < exportMapCount; i++)
                         {
                             string key = inStream.ReadStringUtf8WithLength();
                             int filesCount = inStream.ReadInt32();
                             int[] files = new int[filesCount];
                             inStream.ReadToSpan(files.AsSpan().AsBytes());
-                            exportMap.Add(key, new List<int>(files));
+                            exportMap.Add(key, new ObjectInstanceInfo(new List<int>(files), 0)); // V1 uses NetIndex 0 for everything.
+                        }
+                        return new ObjectInstanceDB(game, filePaths, exportMap);
+                    }
+                case 2:
+                    {
+                        int filePathsCount = inStream.ReadInt32();
+                        var filePaths = new List<string>(filePathsCount);
+                        for (int i = 0; i < filePathsCount; i++)
+                        {
+                            filePaths.Add(inStream.ReadStringUtf8WithLength());
+                        }
+
+                        int exportMapCount = inStream.ReadInt32();
+                        var exportMap = new CaseInsensitiveDictionary<ObjectInstanceInfo>(exportMapCount);
+                        for (int i = 0; i < exportMapCount; i++)
+                        {
+                            string key = inStream.ReadStringUtf8WithLength();
+                            int netIndex = inStream.ReadInt32();
+
+                            int filesCount = inStream.ReadInt32();
+                            int[] files = new int[filesCount];
+                            inStream.ReadToSpan(files.AsSpan().AsBytes());
+                            exportMap.Add(key, new ObjectInstanceInfo(new List<int>(files), netIndex));
                         }
                         return new ObjectInstanceDB(game, filePaths, exportMap);
                     }
@@ -104,9 +131,9 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// <returns></returns>
         public List<string> GetFilesContainingObject(string ifp, MELocalization localization = MELocalization.None)
         {
-            if (ExportMap.TryGetValue(ifp, out List<int> files))
+            if (ExportMap.TryGetValue(ifp, out ObjectInstanceInfo info))
             {
-                return files.Select(x => FilePaths[x]).Where(x => localization == MELocalization.None || x.GetUnrealLocalization() == localization).ToList();
+                return info.Files.Select(x => FilePaths[x]).Where(x => localization == MELocalization.None || x.GetUnrealLocalization() == localization).ToList();
             }
 
             return null;
@@ -114,7 +141,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
         public static ObjectInstanceDB Create(MEGame game, List<string> files, Action<int> numDoneReporter = null, Action<int> addExtraFiles = null)
         {
-            var objectDB = new ObjectInstanceDB(game, new List<string>(files.Count), new CaseInsensitiveDictionary<List<int>>());
+            var objectDB = new ObjectInstanceDB(game, new List<string>(files.Count), new CaseInsensitiveDictionary<ObjectInstanceInfo>());
             int numDone = 0;
             for (int i = 0; i < files.Count; i++)
             {
@@ -169,7 +196,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             if (package.FilePath.StartsWith(defaultGamePath))
             {
                 // Store relative path
-                FilePaths.Add(package.FilePath.Substring(defaultGamePath.Trim('\\','/').Length + 1));
+                FilePaths.Add(package.FilePath.Substring(defaultGamePath.Trim('\\', '/').Length + 1));
             }
             else
             {
@@ -189,19 +216,19 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     continue;
 
                 // Index it
-                if (!ExportMap.TryGetValue(ifp, out List<int> records))
+                if (!ExportMap.TryGetValue(ifp, out ObjectInstanceInfo records))
                 {
-                    records = new List<int>();
+                    records = new ObjectInstanceInfo(new List<int>(), exp.NetIndex);
                     ExportMap.Add(ifp, records);
                 }
 
                 if (insertAtStart)
                 {
-                    records.Insert(0, filePathIndex);
+                    records.Files.Insert(0, filePathIndex);
                 }
                 else
                 {
-                    records.Add(filePathIndex);
+                    records.Files.Add(filePathIndex);
                 }
             }
         }
@@ -215,10 +242,10 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             var fileIndex = FilePaths.IndexOf(package.FilePath);
             foreach (ExportEntry exp in package.Exports)
             {
-                if (ExportMap.TryGetValue(exp.InstancedFullPath, out List<int> records))
+                if (ExportMap.TryGetValue(exp.InstancedFullPath, out ObjectInstanceInfo records))
                 {
-                    records.RemoveAt(records.IndexOf(fileIndex));
-                    if (records.Count == 0)
+                    records.Files.RemoveAt(records.Files.IndexOf(fileIndex));
+                    if (records.Files.Count == 0)
                     {
                         // Removed from DB entirely
                         ExportMap.Remove(exp.InstancedFullPath);
@@ -238,8 +265,8 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         //keep public; is used by external tools
         public void AddFileToDB(string filePath, bool insertAtStart = true)
         {
-            // Load tables only to increase performance.
-            using IMEPackage package = MEPackageHandler.UnsafePartialLoad(filePath, _ => false);
+            // Must load data to access NetIndex.
+            using IMEPackage package = MEPackageHandler.OpenMEPackage(filePath);
             AddFileToDB(package, filePath, insertAtStart);
         }
 
@@ -254,6 +281,18 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 return ExportMap.Keys.OrderBy(x => x);
             }
             return ExportMap.Keys;
+        }
+    }
+
+    public class ObjectInstanceInfo
+    {
+        public List<int> Files;
+        public int NetIndex;
+
+        public ObjectInstanceInfo(List<int> files, int netIndex)
+        {
+            Files = files;
+            NetIndex = netIndex;
         }
     }
 }
