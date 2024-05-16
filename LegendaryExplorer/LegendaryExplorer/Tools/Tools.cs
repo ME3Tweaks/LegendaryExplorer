@@ -180,7 +180,7 @@ namespace LegendaryExplorer
             set.Add(new Tool
             {
                 name = "Animation Viewer 2",
-                type = typeof(Tools.AnimationViewer.AnimationViewerWindow2),
+                type = typeof(Tools.AnimationViewer.LEAnimationViewerWindow),
                 icon = Application.Current.FindResource("iconAnimViewer") as ImageSource,
                 open = () =>
                 {
@@ -189,13 +189,13 @@ namespace LegendaryExplorer
 
                     if (Enum.TryParse(gameStr, out MEGame game))
                     {
-                        if (Tools.AnimationViewer.AnimationViewerWindow2.Instance(game) is { } instance)
+                        if (Tools.AnimationViewer.LEAnimationViewerWindow.Instance(game) is { } instance)
                         {
                             instance.RestoreAndBringToFront();
                         }
                         else
                         {
-                            (new Tools.AnimationViewer.AnimationViewerWindow2(game)).Show();
+                            (new Tools.AnimationViewer.LEAnimationViewerWindow(game)).Show();
                         }
                     }
                 },

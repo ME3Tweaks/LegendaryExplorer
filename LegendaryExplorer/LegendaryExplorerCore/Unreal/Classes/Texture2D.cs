@@ -1034,6 +1034,29 @@ namespace LegendaryExplorerCore.Unreal.Classes
             image.correctMips(dstFormat);
             return image;
         }
+
+        /// <summary>
+        /// Gets a mip with the same both dimensions, or the same of one or the other. If no dimensions match the top mip is returned.
+        /// </summary>
+        /// <param name="w"></param>
+        /// <param name="h"></param>
+        /// <returns></returns>
+        public Texture2DMipInfo GetMipWithDimension(int w, int h)
+        {
+            foreach (var mip in Mips)
+            {
+                if (mip.width == w && mip.height == h)
+                    return mip;
+
+                if (mip.width == w)
+                    return mip;
+
+                if (mip.height == h)
+                    return mip;
+            }
+
+            return GetTopMip();
+        }
     }
 
     [DebuggerDisplay(@"Texture2DMipInfo for {Export.ObjectName.Instanced} | {width}x{height} | {storageType}")]

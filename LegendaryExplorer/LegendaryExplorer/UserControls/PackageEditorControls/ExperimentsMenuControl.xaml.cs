@@ -12,6 +12,7 @@ using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.Tools.CustomFilesManager;
+using LegendaryExplorer.Tools.LiveLevelEditor;
 using LegendaryExplorer.Tools.PackageEditor;
 using LegendaryExplorer.Tools.PackageEditor.Experiments;
 using LegendaryExplorerCore.GameFilesystem;
@@ -407,6 +408,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             new CustomFilesManagerWindow().Show();
         }
 
+        private void MaterialEditorTest_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.ShowMaterialEditor();
+        }
+
         private void ResynthesizePackage_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.ResynthesizePackage(GetPEWindow());
@@ -464,6 +470,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         private void LE2ConvertToSFXPawn_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.LE2ConvertBioPawnToSFXPawn(GetPEWindow());
+        }
+
+        private void GigaSDKGen_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.GenerateGigaChungusClassFileForSDKGen(GetPEWindow());
         }
 
         private void MScanner_Click(object sender, RoutedEventArgs e)

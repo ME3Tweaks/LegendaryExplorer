@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -8,6 +9,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 using System.Numerics;
+using System.Threading;
 using FontAwesome5;
 using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.SharedUI;
@@ -27,10 +29,12 @@ using InterpCurveFloat = LegendaryExplorerCore.Unreal.BinaryConverters.InterpCur
 using LegendaryExplorer.Tools.PackageEditor;
 using System.Windows.Media;
 using LegendaryExplorer.Misc;
+using LegendaryExplorer.Tools.LiveLevelEditor.MatEd;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using Newtonsoft.Json;
 using SharpDX.Direct2D1.Effects;
+using System.Threading.Tasks;
 
 namespace LegendaryExplorer.Tools.LiveLevelEditor
 {
@@ -66,12 +70,36 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         /// <summary>
         /// This is a weak check. But we don't have way to access class
         /// </summary>
-        public bool MaterialInstanceActorSelected => SelectedActor != null && SelectedActor.ActorName.Contains("MaterialInstanceActor");
+        private bool _staticMeshComponentSelected;
+
+        public bool StaticMeshComponentSelected
+        {
+            get => _readyToView;
+            set
+            {
+                if (SetProperty(ref _staticMeshComponentSelected, value))
+                {
+                    // OnPropertyChanged(nameof(StaticMeshComponentSelected));
+                }
+            }
+        }
+
         public bool CamPathReadyToView => _readyToView && Game is MEGame.ME3;
 
         public MEGame Game { get; }
         public InteropTarget GameTarget { get; }
         public ObservableCollectionExtended<string> LoadedMaterials { get; } = new();
+
+        /// <summary>
+        /// The IFPs of the current selected component.
+        /// </summary>
+        public ObservableCollectionExtended<string> CurrentComponentMaterials { get; } = new();
+
+        private int _materialIndex;
+        public int MaterialIndex { get => _materialIndex; set => SetProperty(ref _materialIndex, value); }
+
+        private string _selectedMaterial;
+        public string SelectedMaterial { get => _selectedMaterial; set => SetProperty(ref _selectedMaterial, value); }
 
         public LELiveLevelEditorWindow(MEGame game) : base("LE Live Level Editor", true)
         {
@@ -137,10 +165,12 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         public ICommand OpenPackageCommand { get; set; }
         public ICommand OpenActorInPackEdCommand { get; set; }
         public ICommand RegenActorListCommand { get; set; }
+        public ICommand RegenMaterialsListCommand { get; set; }
         public Requirement.RequirementCommand PackEdWindowOpenCommand { get; set; }
         public ICommand WriteActorValuesCommand { get; set; }
         public ICommand SnapToPlayerPositionCommand { get; set; }
         public ICommand SetMaterialCommand { get; set; }
+        public ICommand SetCustomMaterialCommand { get; set; }
 
         private void LoadCommands()
         {
@@ -151,17 +181,81 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             OpenPackageCommand = new GenericCommand(OpenPackage, CanOpenPackage);
             OpenActorInPackEdCommand = new GenericCommand(OpenActorInPackEd, CanOpenInPackEd);
             RegenActorListCommand = new GenericCommand(RegenActorList);
+            RegenMaterialsListCommand = new GenericCommand(RegenMaterialsList);
             PackEdWindowOpenCommand = new Requirement.RequirementCommand(IsSelectedPackageOpenInPackEd, OpenPackage);
             WriteActorValuesCommand = new GenericCommand(WriteActorValues, IsSelectedPackageOpenInPackEd);
             SnapToPlayerPositionCommand = new GenericCommand(SetSelectedActorToPlayerPosition);
             SetMaterialCommand = new GenericCommand(SetMaterial);
+            SetCustomMaterialCommand = new GenericCommand(SetCustomMaterial);
+        }
+
+        private void LoadCustomMaterial(IMEPackage incomingPackage, string materialIFP)
+        {
+            InteropHelper.SendFileToGame(incomingPackage); // Send package into game for loading
+            Task.Run(() =>
+            {
+                Thread.Sleep(1000);
+            }).ContinueWithOnUIThread(x =>
+            {
+                InteropHelper.SendMessageToGame($"LOADPACKAGE {incomingPackage.FileNameNoExtension}.pcc", Game);
+            }).ContinueWith(x =>
+            {
+                Thread.Sleep(1000);
+            }).ContinueWithOnUIThread(x =>
+            {
+                InteropHelper.SendMessageToGame($"LLE_SET_MATERIAL {MaterialIndex} {materialIFP}", Game);
+            });
+        }
+
+        private void UpdateScalarParameter(ScalarParameter obj)
+        {
+            // Floats sent to game must use localization-specific strings as they will be interpreted by the current locale
+            InteropHelper.SendMessageToGame($"LLE_SET_MATEXPR_SCALAR {MaterialIndex} {obj.ParameterName} {obj.ParameterValue}", Game);
+        }
+
+        private void UpdateVectorParameter(VectorParameter obj)
+        {
+            // Floats sent to game must use localization-specific strings as they will be interpreted by the current locale
+            InteropHelper.SendMessageToGame($"LLE_SET_MATEXPR_VECTOR {MaterialIndex} {obj.ParameterName} {obj.ParameterValue.W} {obj.ParameterValue.X} {obj.ParameterValue.Y} {obj.ParameterValue.Z}", Game);
+        }
+
+        private void SetCustomMaterial()
+        {
+            InteropHelper.SendMessageToGame("LLE_GET_COMPONENT_MATERIALS", Game);
+            // Will callback to CallbackSetCustomMaterial();
+        }
+
+        private void CallbackSetCustomMaterial()
+        {
+            ExportEntry preloadMaterial = null;
+            if (CurrentComponentMaterials.Count > MaterialIndex)
+            {
+                var material = CurrentComponentMaterials[MaterialIndex];
+                // Now, we have to find this object somehow...
+                foreach (var f in ActorDict.Keys)
+                {
+                    // Search the loaded level list. That's probably the closest/fastest.
+                    if (MELoadedFiles.GetFilesLoadedInGame(Game).TryGetValue(f, out var path))
+                    {
+                        var package = MEPackageHandler.UnsafePartialLoad(path, x => false);
+                        if (package.FindExport(material) != null)
+                        {
+                            using var autocloseP = MEPackageHandler.OpenMEPackage(path);
+                            preloadMaterial = autocloseP.FindExport(material);
+                            break;
+                        }
+                    }
+                }
+            }
+            MaterialEditor me = new MaterialEditor(Game, LoadCustomMaterial, UpdateScalarParameter, UpdateVectorParameter);
+            me.PreloadMaterial = preloadMaterial;
+            me.Show();
         }
 
         private void SetMaterial()
         {
-
             if (noUpdate) return;
-            InteropHelper.SendMessageToGame($"LLE_UPDATE_ACTOR_MATERIAL {XPos} {YPos} {ZPos}", Game);
+            InteropHelper.SendMessageToGame($"LLE_SET_MATERIAL {MaterialIndex} {SelectedMaterial}", Game);
         }
 
         private void SetSelectedActorToPlayerPosition()
@@ -270,6 +364,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
 
         private void RegenMaterialsList()
         {
+            LoadedMaterials.ClearEx();
             InteropHelper.SendMessageToGame("LLE_GET_LOADED_MATERIALS", Game);
         }
 
@@ -362,7 +457,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             if (command[0] != "LIVELEVELEDITOR")
                 return; // Not for us
 
-            //Debug.WriteLine($"LLE Command: {msg}");
+            Debug.WriteLine($"LLE Command: {msg}");
             var verb = command[1]; // Message Info
             // "READY" is done on first initialize and will automatically 
             if (verb == "READY") // We polled game, and found LLE is available
@@ -399,7 +494,14 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             }
             else if (verb == "LOADEDMATERIAL")
             {
-                LoadedMaterials.Add(command[3]);
+                try
+                {
+                    LoadedMaterials.Add(command[2]);
+                }
+                catch (Exception ex)
+                {
+                    // Do nothing.
+                }
             }
             else if (verb == "ACTORSELECTED")
             {
@@ -466,6 +568,20 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
                 noUpdate = false;
                 EndBusy();
             }
+            else if (verb == "COMPONENTMATERIALS")
+            {
+                try
+                {
+                    var json = string.Join(' ', command.Skip(2));
+                    var materials = JsonConvert.DeserializeObject<List<string>>(json);
+                    CurrentComponentMaterials.ReplaceAll(materials);
+                    CallbackSetCustomMaterial();
+                }
+                catch (Exception ex)
+                {
+                    // Do nothing.
+                }
+            }
         }
 
 
@@ -501,17 +617,31 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
 
         public ObservableDictionary<string, ObservableCollectionExtended<ActorEntryLE>> ActorDict { get; } = new();
 
+
         private class JsonMapObj
         {
             public string Name { get; set; }
             public JsonActorObj[] Actors { get; set; }
         }
 
+        private class JsonComponentObj
+        {
+            /// <summary>
+            /// Name of the SMCA
+            /// </summary>
+            public string SMCAName { get; set; }
+
+            /// <summary>
+            /// IFP of the StaticMesh
+            /// </summary>
+            public string SMCAMesh { get; set; }
+        }
+
         private class JsonActorObj
         {
             public string Name { get; set; }
             public string Tag { get; set; }
-            public string[] Components { get; set; }
+            public JsonComponentObj[] Components { get; set; }
         }
 
         /// <summary>
@@ -555,13 +685,14 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
                     }
                     for (int i = 0; i < jsonActorObj.Components.Length; i++)
                     {
-                        if (jsonActorObj.Components[i] is string componentName)
+                        if (jsonActorObj.Components[i] is JsonComponentObj component)
                         {
                             var actor = new ActorEntryLE
                             {
                                 FileName = mapName,
                                 ActorName = jsonActorObj.Name,
-                                ComponentName = componentName,
+                                ComponentName = component.SMCAName,
+                                Mesh = component.SMCAMesh,
                                 ComponentIdx = i
                             };
                             ActorDict.AddToListAt(mapName, actor);
@@ -587,6 +718,8 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
                     SetBusy($"Selecting {value.ActorName}", () => { });
                     string message = $"LLE_SELECT_ACTOR {Path.GetFileNameWithoutExtension(value.FileName)} {value.ActorName} {_selectedActor.ComponentIdx}";
                     InteropHelper.SendMessageToGame(message, Game);
+
+                    StaticMeshComponentSelected = _selectedActor?.ComponentName != null;
                 }
             }
         }
@@ -603,9 +736,26 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             }
         }
 
+        private Predicate<object> _materialFilter;
+        public Predicate<object> MaterialFilter
+        {
+            get => _materialFilter;
+            set
+            {
+                //this should always trigger, even if the new value is the same
+                _actorFilter = value;
+                OnPropertyChanged();
+            }
+        }
+
         private void ActorFilterSearchBox_OnTextChanged(SearchBox sender, string newtext)
         {
             ActorFilter = string.IsNullOrWhiteSpace(newtext) ? null : IsActorMatch;
+        }
+
+        private void MaterialFilterSearchBox_OnTextChanged(SearchBox sender, string newtext)
+        {
+            MaterialFilter = string.IsNullOrWhiteSpace(newtext) ? null : IsMaterialMatch;
         }
 
         private bool IsActorMatch(object obj)
@@ -616,6 +766,14 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
                    || ae.Tag is not null && ae.Tag.Contains(text, StringComparison.OrdinalIgnoreCase)
                    || ae.ComponentName is not null && ae.ComponentName.Contains(text, StringComparison.OrdinalIgnoreCase);
         }
+
+        private bool IsMaterialMatch(object obj)
+        {
+            var ae = (string)obj;
+            string text = materialFilterSearchBox.Text;
+            return ae.Contains(text, StringComparison.OrdinalIgnoreCase);
+        }
+
 
         #endregion
 
@@ -1124,11 +1282,6 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         }
 
         #endregion
-
-        private void MaterialFilterSearchBox_OnTextChanged(SearchBox sender, string newText)
-        {
-
-        }
     }
 
     public class ActorEntryLE
@@ -1139,6 +1292,10 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             {
                 if (ComponentName is not null)
                 {
+                    if (Mesh != null)
+                    {
+                        return $"{ActorName}:{ComponentName} ({Mesh})";
+                    }
                     return $"{ActorName}:{ComponentName}";
                 }
                 if (Tag is not null)
@@ -1153,6 +1310,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         public string Tag;
         public string ActorName;
         public string ComponentName;
+        public string Mesh;
         public int ComponentIdx = -1;
 
         public string PathInLevel => ComponentName is null ? ActorName : $"{ActorName}.{ComponentName}";

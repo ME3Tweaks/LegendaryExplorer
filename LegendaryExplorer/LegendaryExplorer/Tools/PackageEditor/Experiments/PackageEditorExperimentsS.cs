@@ -1991,14 +1991,14 @@ import java.util.*;"
                                 //    return;
                                 //}
 
-                                (ast, log) = UnrealScriptCompiler.CompileClass(pcc, script, fileLib, exp, exp.Parent, packageCache);
+                                (ast, log) = UnrealScriptCompiler.CompileClass(pcc, script, fileLib, usop, exp, exp.Parent);
                                 if (ast is not Class || log.HasErrors)
                                 {
                                     interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {pcc.FilePath}\nfailed to parse class!"));
                                     //return;
                                 }
 
-                                if (!fileLib.ReInitializeFile())
+                                if (!fileLib.ReInitializeFile(usop))
                                 {
                                     interestingExports.Add(new EntryStringPair(exp, $"{pcc.FilePath} failed to re-initialize after compiling {$"#{exp.UIndex}",-9}"));
                                     return;

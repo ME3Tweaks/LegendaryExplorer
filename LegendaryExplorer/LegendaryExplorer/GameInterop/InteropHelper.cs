@@ -5,6 +5,7 @@ using System.IO.Pipes;
 using System.Security.Cryptography;
 using System.Windows;
 using System.Windows.Input;
+using CommunityToolkit.Diagnostics;
 using LegendaryExplorer.GameInterop.InteropTargets;
 using LegendaryExplorer.Misc;
 using LegendaryExplorerCore.Misc.ME3Tweaks;
@@ -168,7 +169,12 @@ namespace LegendaryExplorer.GameInterop
             // is installed (this won't handle different builds/versions like mod manager but it's better
             // than not doing any check at all)
             // - Mgamerz
-
+#if DEBUG
+            // If you're developing the LEX Interop ASI you can 
+            // force it to think it's installed and ignore the MD5 check.
+            if (game == MEGame.LE3)
+                return true; // DEV ONLY
+#endif
             string asiDir = GetAsiDir(game);
             string asiMD5 = GameController.GetInteropTargetForGame(game).InteropASIMD5;
             return IsASIInstalled(asiMD5, asiDir);
@@ -265,18 +271,14 @@ namespace LegendaryExplorer.GameInterop
             return false;
         }
 
-
-        private static NamedPipeClientStream client;
-        // private StreamReader pipeReader; // Reading pipes is way more complicated
-        private static StreamWriter pipeWriter;
-
         /// <summary>
         /// Sends a message to a game via a pipe. The game must have the LEX Interop ASI installed that handles the command for it to do anything.
         /// </summary>
-        /// <param name="message"></param>
+        /// <param name="message">Must have fewer than 1024 characters</param>
         /// <param name="game"></param>
         public static void SendMessageToGame(string message, MEGame game)
         {
+            Guard.IsLessThan(message.Length, 1024);
             if (IsGameClosed(game))
             {
                 Debug.WriteLine($"{game} is not running! Cannot send command {message}");
@@ -284,18 +286,52 @@ namespace LegendaryExplorer.GameInterop
             }
 
             // We make new pipe and connect to game every command
-            client = new NamedPipeClientStream(".", $"LEX_{game}_COMM_PIPE", PipeDirection.Out);
+            using var client = new NamedPipeClientStream(".", $"LEX_{game}_COMM_PIPE", PipeDirection.Out);
             client.Connect(3000);
-            //pipeReader = new StreamReader(client);
-            pipeWriter = new StreamWriter(client);
+
+            var pipeWriter = new StreamWriter(client);
 
             // For debugging
             // Thread.Sleep(3000);
             Debug.WriteLine($"SendMessageToGame({game}): {message}");
-            pipeWriter.WriteLine(message); // Messages will end with \r\n when received in c++!
+            pipeWriter.Write(message);
+            pipeWriter.Write('\0');
+            pipeWriter.Write('\r'); //prevent old versions of the interop asi from OOB writes/reads
+            pipeWriter.Flush();
+        }
+
+        /// <summary>
+        /// Sends a file to a game via a pipe. This file will be loaded instead of an on-disk version (one time!)
+        /// The game must have the LEX Interop ASI installed that handles the command for it to do anything.
+        /// </summary>
+        public static void SendFileToGame(IMEPackage pcc, string fileNameOverride = null)
+        {
+            MEGame game = pcc.Game;
+            fileNameOverride ??= pcc.FileNameNoExtension;
+            if (IsGameClosed(game))
+            {
+                Debug.WriteLine($"{game} is not running! Cannot send file");
+                return;
+            }
+
+            MemoryStream savedFile = pcc.SaveToStream(false);
+            savedFile.Position = 0;
+
+            // We make new pipe and connect to game every command
+            using var client = new NamedPipeClientStream(".", $"LEX_{game}_COMM_PIPE", PipeDirection.Out);
+            client.Connect(3000);
+
+            var pipeWriter = new StreamWriter(client);
+            
+            pipeWriter.Write($"PRECACHE_FILE {fileNameOverride} {savedFile.Length}");
+            pipeWriter.Write('\0');
             pipeWriter.Flush();
 
-            client.Dispose();
+            //underlying array will almost certainly be bigger than the actual data.
+            //Slice it so we don't waste time and memory copying junk
+            ReadOnlySpan<byte> buffer = savedFile.GetBuffer().AsSpan()[..(int)savedFile.Length];
+            client.Write(buffer);
+            client.Flush();
         }
     }
 }
