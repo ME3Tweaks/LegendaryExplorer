@@ -220,7 +220,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor.Experiments
                 }
 
             seqvarobj.ObjectName = "BioSeqVar_ObjectFindByTag";
-            seqvarobj.Class = sew.Pcc.getEntryOrAddImport("SFXGame.BioSeqVar_ObjectFindByTag");
+            seqvarobj.Class = sew.Pcc.GetEntryOrAddImport("SFXGame.BioSeqVar_ObjectFindByTag", "BioSeqVar_ObjectFindByTag");
             seqvarobj.indexValue = maxTag + 1;
             var varprops = seqvarobj.GetProperties();
             

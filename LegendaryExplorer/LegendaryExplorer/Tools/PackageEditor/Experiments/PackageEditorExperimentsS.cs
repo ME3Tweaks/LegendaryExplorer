@@ -1194,6 +1194,10 @@ import java.util.*;"
         }
         public static void ScanStuff(PackageEditorWindow pewpf)
         {
+            // 05/16/2024 - This has not been compilable for some time, is being commented out - Mgamerz
+            throw new Exception("Experiment has been disabled");
+
+
             ////test pcc deserialization time
             //string pccPath = MELoadedFiles.GetFilesLoadedInGame(MEGame.LE3)["SFXGame.pcc"];
             //for (int i = 0; i < 200; i++)
@@ -1926,6 +1930,8 @@ import java.util.*;"
 
             void RecompileAllClasses(string filePath, PackageCache packageCache = null)
             {
+                // DOES NOT COMPILE!!
+                /*
                 using IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath);
                 var fileLib = new FileLib(pcc);
 
@@ -2021,6 +2027,7 @@ import java.util.*;"
                         }
                     }
                 }
+                */
             }
 
             bool resolveImports(string filePath)
@@ -2063,7 +2070,7 @@ import java.util.*;"
 
                 return false;
             }
-
+                
             #endregion
         }
 
