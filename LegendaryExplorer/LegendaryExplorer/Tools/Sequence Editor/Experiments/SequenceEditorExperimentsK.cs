@@ -1,21 +1,12 @@
-﻿
-using DocumentFormat.OpenXml.Wordprocessing;
-using LegendaryExplorer.Dialogs;
-using LegendaryExplorer.Tools.PackageEditor.Experiments;
+﻿using LegendaryExplorer.Dialogs;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Kismet;
-using LegendaryExplorerCore.Matinee;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
-using LegendaryExplorerCore.Unreal.ObjectInfo;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.Composition.Hosting;
 using System.Linq;
-using System.Net.Http.Headers;
 using System.Windows;
-using System.Windows.Forms;
-using static LegendaryExplorerCore.Kismet.SeqTools;
 
 namespace LegendaryExplorer.Tools.Sequence_Editor.Experiments
 {
@@ -111,7 +102,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor.Experiments
                 return;
             }
 
-            IEnumerable<ExportEntry> interps = GetAllSequenceElements(selectedSequence).Select(el => (ExportEntry)el);
+            IEnumerable<ExportEntry> interps = KismetHelper.GetAllSequenceElements(selectedSequence).Select(el => (ExportEntry)el);
 
             interps = interps.Where(export =>
             {
