@@ -284,10 +284,9 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         }
                     }
                 }
+                // Removing it would offset indices for later added files. We have to store null instead.
+                FilePaths[fileIndex] = null;
             }
-
-            // Removing it would offset indices for later added files. We have to store null instead.
-            FilePaths[fileIndex] = null;
         }
 
         /// <summary>
