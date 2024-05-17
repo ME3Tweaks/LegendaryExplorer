@@ -45,6 +45,9 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 }
             }
 
+            // Clear cross package map as the ROP will be used again. And you don't want to reuse that.
+            customROP?.CrossPackageMap.Clear();
+
             // Import the original item now
             var lParent = PortParents(sourceExport, targetPackage);
 
