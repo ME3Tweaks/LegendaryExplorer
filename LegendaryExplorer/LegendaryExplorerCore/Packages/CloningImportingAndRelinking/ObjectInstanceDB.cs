@@ -63,8 +63,6 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             outStream.WriteInt32(ExportMap.Count);
             foreach ((string ifp, ObjectInstanceInfo oii) in ExportMap)
             {
-                if (ifp == "BioVFX_Crt_Rockets")
-                    Debugger.Break();
                 outStream.WriteStringUtf8WithLength(ifp);
                 outStream.WriteInt32(oii.NetIndex); // V2
                 outStream.WriteInt32(oii.GenerationNetObjCount); // V2
