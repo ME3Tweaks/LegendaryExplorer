@@ -26,10 +26,15 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// List of FilePaths
         /// </summary>
         private readonly List<string> FilePaths;
+
+        /// <summary>
+        /// The version of this ObjectInstanceDB
+        /// </summary>
+        public int Version { get; init; }
+
         /// <summary>
         /// Map of Instanced Full Paths to the files that contain them (indexes into FilePaths)
         /// </summary>
-
         private readonly CaseInsensitiveDictionary<ObjectInstanceInfo> ExportMap;
 
         private ObjectInstanceDB(MEGame game, List<string> filePaths, CaseInsensitiveDictionary<ObjectInstanceInfo> exportMap)
@@ -58,6 +63,8 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             outStream.WriteInt32(ExportMap.Count);
             foreach ((string ifp, ObjectInstanceInfo oii) in ExportMap)
             {
+                if (ifp == "BioVFX_Crt_Rockets")
+                    Debugger.Break();
                 outStream.WriteStringUtf8WithLength(ifp);
                 outStream.WriteInt32(oii.NetIndex); // V2
                 outStream.WriteInt32(oii.GenerationNetObjCount); // V2
@@ -93,7 +100,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                             inStream.ReadToSpan(files.AsSpan().AsBytes());
                             exportMap.Add(key, new ObjectInstanceInfo(new List<int>(files))); // V1 uses NetIndex 0 for everything.
                         }
-                        return new ObjectInstanceDB(game, filePaths, exportMap);
+                        return new ObjectInstanceDB(game, filePaths, exportMap) { Version = 1 };
                     }
                 case 2:
                     {
@@ -116,13 +123,12 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                             int[] files = new int[filesCount];
                             inStream.ReadToSpan(files.AsSpan().AsBytes());
                             exportMap.Add(key, new ObjectInstanceInfo(new List<int>(files))
-
                             {
                                 NetIndex = netIndex,
                                 GenerationNetObjCount = generationNetObjsCount
                             });
                         }
-                        return new ObjectInstanceDB(game, filePaths, exportMap);
+                        return new ObjectInstanceDB(game, filePaths, exportMap) { Version = 2 };
                     }
                 case var unsupportedVersion:
                     throw new Exception($"{unsupportedVersion} is not a supported {nameof(ObjectInstanceDB)} version!");
@@ -200,7 +206,8 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// <param name="package">Package object to inventory</param>
         /// <param name="filePath">Path to package file on disk</param>
         /// <param name="insertAtStart">If true, add new instances of objects to the start of a list, so they will be preferred.</param>
-        public void AddFileToDB(IMEPackage package, string filePath, bool insertAtStart = true)
+        /// <param name="objectsToAddPrediate">Predicate to determine which objects to add to the database. If null, all objects will be added.</param>
+        public void AddFileToDB(IMEPackage package, string filePath, bool insertAtStart = true, Func<ExportEntry, bool> objectsToAddPrediate = null)
         {
             int filePathIndex = FilePaths.Count;
             if (package.Game != Game)
@@ -221,7 +228,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             }
 
             // Index objects
-            foreach (ExportEntry exp in package.Exports)
+            foreach (ExportEntry exp in package.Exports.Where(objectsToAddPrediate ?? AlwaysAdd))
             {
                 string ifp = exp.InstancedFullPath;
 
@@ -249,6 +256,11 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             }
         }
 
+        private bool AlwaysAdd(ExportEntry entry)
+        {
+            return true;
+        }
+
         /// <summary>
         /// Removes all entries associated with a specific package
         /// </summary>
@@ -256,15 +268,22 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         public void RemoveFileFromDB(IMEPackage package)
         {
             var fileIndex = FilePaths.IndexOf(package.FilePath);
-            foreach (ExportEntry exp in package.Exports)
+            if (fileIndex != -1)
             {
-                if (ExportMap.TryGetValue(exp.InstancedFullPath, out ObjectInstanceInfo records))
+                foreach (ExportEntry exp in package.Exports)
                 {
-                    records.Files.RemoveAt(records.Files.IndexOf(fileIndex));
-                    if (records.Files.Count == 0)
+                    if (ExportMap.TryGetValue(exp.InstancedFullPath, out ObjectInstanceInfo records))
                     {
-                        // Removed from DB entirely
-                        ExportMap.Remove(exp.InstancedFullPath);
+                        var fIndex = records.Files.IndexOf(fileIndex);
+                        if (fIndex != -1)
+                        {
+                            records.Files.RemoveAt(fIndex);
+                            if (records.Files.Count == 0)
+                            {
+                                // Removed from DB entirely
+                                ExportMap.Remove(exp.InstancedFullPath);
+                            }
+                        }
                     }
                 }
             }
