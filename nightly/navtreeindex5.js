@@ -1,5 +1,6 @@
 var NAVTREEINDEX5 =
 {
+"_model_component_8cs.html#a31ccc8e63558d15b93826f6ed881ead5":[2,0,0,0,24,0,36,3],
 "_morph_target_8cs.html":[2,0,0,0,24,0,37],
 "_mount_file_8cs.html":[2,0,0,0,5,11],
 "_mount_file_8cs.html#a43f479aacbaa9f3944b3581287be5f53":[2,0,0,0,5,11,3],
@@ -248,6 +249,5 @@ var NAVTREEINDEX5 =
 "_wwise_bank_8cs.html#a75ac72b3e7a21859ebd29065a6cd926b":[2,0,0,0,24,0,72,10],
 "_wwise_bank_import_8cs.html":[2,0,0,0,0,6],
 "_wwise_event_8cs.html":[2,0,0,0,24,0,73],
-"_wwise_event_8cs.html#a31ccc8e63558d15b93826f6ed881ead5":[2,0,0,0,24,0,73,3],
-"_wwise_helper_8cs.html":[2,0,0,0,20,1,0]
+"_wwise_event_8cs.html#a31ccc8e63558d15b93826f6ed881ead5":[2,0,0,0,24,0,73,3]
 };
