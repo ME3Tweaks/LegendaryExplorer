@@ -2690,7 +2690,7 @@ import java.util.*;"
                         using IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath);
                         foreach (ExportEntry export in pcc.Exports.Where(exp => exp.ClassName == "WwiseStream"))
                         {
-                            if (export.ObjectNameString.Split(',') is string[] { Length: > 1 } parts && parts[0] == "en-us" && parts[1] == tag)
+                            if (export.ObjectNameString.Split(',') is string[] { Length: > 1 } parts && parts[0] == "en_us" || parts[0] == "en-us" && parts[1] == tag)
                             {
                                 string fileName = Path.Combine(outFolder, $"{export.ObjectNameString}.wav");
                                 using var fs = new FileStream(fileName, FileMode.Create);
