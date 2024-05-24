@@ -16,6 +16,8 @@ using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Packages;
 using LegendaryExplorer.Tools.AssetDatabase;
+using LegendaryExplorer.Tools.PackageEditor;
+using LegendaryExplorer.Tools.PackageEditor.Experiments;
 using LegendaryExplorer.Tools.PathfindingEditor;
 using LegendaryExplorer.Tools.Sequence_Editor;
 using LegendaryExplorer.Tools.WwiseEditor;
@@ -2713,6 +2715,83 @@ defaultproperties
 
         public static void MScanner(PackageEditorWindow pe)
         {
+            var outPackage = MEPackageHandler.CreateAndOpenPackage(@"C:\Users\mgame\source\repos\ME3Tweaks\ME3TweaksModManager\submodules\ME3TweaksCore\ME3TweaksCore\ME3Tweaks\M3Merge\Bio2DATable\VanillaTables.pcc", MEGame.LE1);
+
+            foreach (var p in EntryImporter.FilesSafeToImportFrom(MEGame.LE1)
+                         .Concat(MELoadedFiles.GetFilesLoadedInGame(MEGame.LE1).Where(x => x.Key.StartsWith("BIOG_2DA") || x.Key == "EntryMenu.pcc").Select(x => x.Key)))
+            {
+                var fpath = Path.Combine(LE1Directory.CookedPCPath, p);
+                if (File.Exists(fpath))
+                {
+                    var package = MEPackageHandler.OpenMEPackage(fpath);
+                    foreach (var e in package.Exports.Where(x => !x.IsDefaultObject && x.IsA("Bio2DA")))
+                    {
+                        EntryExporter.ExportExportToPackage(e, outPackage, out _);
+                    }
+                }
+            }
+
+            outPackage.Save();
+            return;
+
+#if FALSE
+            var packages = new[] { "Engine.pcc", "SFXGame.pcc", "SFXOnlineFoundation.pcc" };
+            foreach (var f in packages)
+            {
+                PackageCache otPC = new PackageCache();
+                PackageCache otLE = new PackageCache();
+                var packageO = MEPackageHandler.OpenMEPackage(Path.Combine(ME3Directory.CookedPCPath, f));
+                var packageL = MEPackageHandler.OpenMEPackage(Path.Combine(LE3Directory.CookedPCPath, f));
+
+                var outdir = Directory.CreateDirectory(@"C:\users\mgame\filecomp").FullName;
+                var outdirO = Directory.CreateDirectory(Path.Combine(outdir, "ME3")).FullName;
+                var outdirL = Directory.CreateDirectory(Path.Combine(outdir, "LE3")).FullName;
+
+                UnrealScriptOptionsPackage usopOT = new UnrealScriptOptionsPackage()
+                {
+                    Cache = otPC,
+                };
+                UnrealScriptOptionsPackage usopLE = new UnrealScriptOptionsPackage()
+                {
+                    Cache = otLE,
+                };
+                var flOT = new FileLib(packageO);
+                var flLE = new FileLib(packageL);
+                flOT.Initialize(usopOT);
+                flLE.Initialize(usopLE);
+
+                foreach (var cls in packageL.Exports.Where(x => x.IsClass))
+                {
+                    Debug.WriteLine($"Decompiling {cls.ObjectName}");
+                    // LE
+                    var outFilePathLE = Path.Combine(outdirL, cls.ObjectName + ".uc");
+                    (_, string functionTextLE) = UnrealScriptCompiler.DecompileExport(cls, flLE, usopLE);
+                    File.WriteAllText(outFilePathLE, functionTextLE);
+
+                    // OT
+                    FileLib flOTToUse = flOT;
+                    ExportEntry me3Class = packageO.FindExport(cls.InstancedFullPath);
+                    var testPatchVer = GetTestPatchClass(cls.ObjectName);
+                    if (testPatchVer != null)
+                    {
+                        me3Class = testPatchVer;
+                        flOTToUse = new FileLib(me3Class.FileRef);
+                        flOTToUse.Initialize(usopOT);
+                    }
+
+                    if (me3Class != null)
+                    {
+                        var outFilePathOT = Path.Combine(outdirO, me3Class.ObjectName + ".uc");
+                        (_, string functionTextOT) = UnrealScriptCompiler.DecompileExport(me3Class, flOTToUse, usopOT);
+                        File.WriteAllText(outFilePathOT, functionTextOT);
+                    }
+                }
+            }
+
+
+
+            /*
+            // Convert to import
             if (pe.TryGetSelectedExport(out var exp2))
             {
                 var referencingEntries = exp2.GetEntriesThatReferenceThisOne();
@@ -3326,6 +3405,7 @@ defaultproperties
             {
                 Debug.WriteLine($"DUPLICATE IFP: {duplicate.Key} in {duplicate.Value}");
             }
+#endif
         }
 
         private static void ConvertCover(IMEPackage srcPackage, IMEPackage destPackage)
@@ -3972,8 +4052,8 @@ defaultproperties
 
             VTestExperiment.RebuildPersistentLevelChildren(destLevel, null);
             destPackage.Save();
-        }
-        */
+        }*/
+
         public static void TestCurrentPackageForUnknownBinary(PackageEditorWindow pe)
         {
             if (pe.Pcc == null)
