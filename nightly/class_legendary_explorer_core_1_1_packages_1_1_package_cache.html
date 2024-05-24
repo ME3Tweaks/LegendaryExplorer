@@ -129,6 +129,12 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a11c67b8090f2d21cee048a29012af993"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a49200db521aa26bc2ee8d9e10803bd2f"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a49200db521aa26bc2ee8d9e10803bd2f">CheckCacheFullness</a> ()</td></tr>
 <tr class="separator:a49200db521aa26bc2ee8d9e10803bd2f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a409602323eb4d7413ede5f626c90d45c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a409602323eb4d7413ede5f626c90d45c">IsResidentPackage</a> (<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> package)</td></tr>
+<tr class="memdesc:a409602323eb4d7413ede5f626c90d45c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns if this package is marked as a Resident Package. <a class="el" href="namespace_legendary_explorer_core_1_1_packages.html">Packages</a> without <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#a345fc1a76bdfde88845ab91014fc4e62">IMEPackage.FilePath</a> set will return false.   <a href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a409602323eb4d7413ede5f626c90d45c">More...</a><br /></td></tr>
+<tr class="separator:a409602323eb4d7413ede5f626c90d45c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a173c1a8cb693c55c9e29352bacf791f6"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a173c1a8cb693c55c9e29352bacf791f6">IsResidentPackage</a> (string packagePath)</td></tr>
+<tr class="memdesc:a173c1a8cb693c55c9e29352bacf791f6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns if this package path (case insensitive) is marked as a Resident Package.   <a href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a173c1a8cb693c55c9e29352bacf791f6">More...</a><br /></td></tr>
+<tr class="separator:a173c1a8cb693c55c9e29352bacf791f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2b3fe2751053bc588735de0646c7cb4f"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a2b3fe2751053bc588735de0646c7cb4f">ReleasePackage</a> (string packagePath)</td></tr>
 <tr class="memdesc:a2b3fe2751053bc588735de0646c7cb4f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Releases a package by it's filepath from the cache.   <a href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a2b3fe2751053bc588735de0646c7cb4f">More...</a><br /></td></tr>
 <tr class="separator:a2b3fe2751053bc588735de0646c7cb4f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -386,6 +392,76 @@ Properties</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="a409602323eb4d7413ede5f626c90d45c" name="a409602323eb4d7413ede5f626c90d45c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a409602323eb4d7413ede5f626c90d45c">&#9670;&#160;</a></span>IsResidentPackage() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool LegendaryExplorerCore.Packages.PackageCache.IsResidentPackage </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a>&#160;</td>
+          <td class="paramname"><em>package</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns if this package is marked as a Resident Package. <a class="el" href="namespace_legendary_explorer_core_1_1_packages.html">Packages</a> without <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#a345fc1a76bdfde88845ab91014fc4e62">IMEPackage.FilePath</a> set will return false.  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">package</td><td>Package object to check</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+</div>
+</div>
+<a id="a173c1a8cb693c55c9e29352bacf791f6" name="a173c1a8cb693c55c9e29352bacf791f6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a173c1a8cb693c55c9e29352bacf791f6">&#9670;&#160;</a></span>IsResidentPackage() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual bool LegendaryExplorerCore.Packages.PackageCache.IsResidentPackage </td>
+          <td>(</td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>packagePath</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns if this package path (case insensitive) is marked as a Resident Package.  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">packagePath</td><td>Path of the package file</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
 
 </div>
 </div>

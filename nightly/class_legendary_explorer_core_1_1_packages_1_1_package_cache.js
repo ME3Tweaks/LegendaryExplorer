@@ -6,6 +6,8 @@ var class_legendary_explorer_core_1_1_packages_1_1_package_cache =
     [ "AddResidentPackage", "class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#ab996486be0787fb8dca18529c6f82cb1", null ],
     [ "AddResidentPackage", "class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a11c67b8090f2d21cee048a29012af993", null ],
     [ "CheckCacheFullness", "class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a49200db521aa26bc2ee8d9e10803bd2f", null ],
+    [ "IsResidentPackage", "class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a409602323eb4d7413ede5f626c90d45c", null ],
+    [ "IsResidentPackage", "class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a173c1a8cb693c55c9e29352bacf791f6", null ],
     [ "ReleasePackage", "class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a2b3fe2751053bc588735de0646c7cb4f", null ],
     [ "InsertIntoCache", "class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a6247afdc049b855a5797adca66a4fa19", null ],
     [ "ReleasePackages", "class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a1499728de2eb75f4db345fffbc7f722b", null ],
