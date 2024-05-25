@@ -37,13 +37,24 @@ public abstract class UMapBase<TKey, TValue, TKeyFuncs> : IDictionary<TKey, TVal
     {
         get
         {
-            //hashset in case this is a multimap. TODO NET7: specialize on AllowDuplicateKeys
-            var keys = new HashSet<TKey>(Pairs.Count);
-            foreach ((TKey key, _) in Pairs)
+            if (TKeyFuncs.AllowDuplicateKeys)
             {
-                keys.Add(key);
+                var keys = new HashSet<TKey>(Pairs.Count);
+                foreach ((TKey key, _) in Pairs)
+                {
+                    keys.Add(key);
+                }
+                return keys;
             }
-            return keys;
+            else
+            {
+                var keys = new List<TKey>(Pairs.Count);
+                foreach ((TKey key, _) in Pairs)
+                {
+                    keys.Add(key);
+                }
+                return keys;
+            }
         }
     }
 
@@ -75,7 +86,7 @@ public abstract class UMapBase<TKey, TValue, TKeyFuncs> : IDictionary<TKey, TVal
 
     public void Add(TKey key, TValue value)
     {
-        if (Pairs.KeyFuncs.AllowDuplicateKeys)
+        if (TKeyFuncs.AllowDuplicateKeys)
         {
             Pairs.Add(new KeyValuePair<TKey, TValue>(key, value));
         }
@@ -163,22 +174,22 @@ public abstract class UMapBase<TKey, TValue, TKeyFuncs> : IDictionary<TKey, TVal
 
 public struct MapKeyFuncs<TKey, TValue> : IKeyFuncs<KeyValuePair<TKey, TValue>, TKey>
 {
-    public TKey GetKey(KeyValuePair<TKey, TValue> kvp) => kvp.Key;
+    public static TKey GetKey(KeyValuePair<TKey, TValue> kvp) => kvp.Key;
 
-    public bool Matches(TKey a, TKey b) => EqualityComparer<TKey>.Default.Equals(a, b);
+    public static bool Matches(TKey a, TKey b) => EqualityComparer<TKey>.Default.Equals(a, b);
 
-    public int GetKeyHash(TKey key) => key.GetHashCode();
-    public bool AllowDuplicateKeys => false;
+    public static int GetKeyHash(TKey key) => key.GetHashCode();
+    public static bool AllowDuplicateKeys => false;
 }
 
 public struct MultiMapKeyFuncs<TKey, TValue> : IKeyFuncs<KeyValuePair<TKey, TValue>, TKey>
 {
-    public TKey GetKey(KeyValuePair<TKey, TValue> kvp) => kvp.Key;
+    public static TKey GetKey(KeyValuePair<TKey, TValue> kvp) => kvp.Key;
 
-    public bool Matches(TKey a, TKey b) => EqualityComparer<TKey>.Default.Equals(a, b);
+    public static bool Matches(TKey a, TKey b) => EqualityComparer<TKey>.Default.Equals(a, b);
 
-    public int GetKeyHash(TKey key) => key.GetHashCode();
-    public bool AllowDuplicateKeys => true;
+    public static int GetKeyHash(TKey key) => key.GetHashCode();
+    public static bool AllowDuplicateKeys => true;
 }
 
 public class UMap<TKey, TValue> : UMapBase<TKey, TValue, MapKeyFuncs<TKey, TValue>>
