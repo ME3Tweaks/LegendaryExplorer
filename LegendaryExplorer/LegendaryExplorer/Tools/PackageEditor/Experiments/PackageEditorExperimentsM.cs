@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.ComponentModel.Composition.Primitives;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -10,27 +9,17 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Numerics;
-using System.Windows.Controls;
-using System.Windows.Input;
 using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Packages;
 using LegendaryExplorer.Tools.AssetDatabase;
-using LegendaryExplorer.Tools.PackageEditor;
-using LegendaryExplorer.Tools.PackageEditor.Experiments;
-using LegendaryExplorer.Tools.PathfindingEditor;
-using LegendaryExplorer.Tools.Sequence_Editor;
 using LegendaryExplorer.Tools.WwiseEditor;
-using LegendaryExplorer.UnrealExtensions.Classes;
 using LegendaryExplorerCore;
 using LegendaryExplorerCore.Audio;
-using LegendaryExplorerCore.DebugTools;
-using LegendaryExplorerCore.Dialogue;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
-using LegendaryExplorerCore.Kismet;
 using LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
@@ -45,9 +34,12 @@ using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Misc.ME3Tweaks;
 using LegendaryExplorerCore.Textures;
 using LegendaryExplorerCore.UnrealScript;
-using LegendaryExplorerCore.UnrealScript.Language.Tree;
 using Function = LegendaryExplorerCore.Unreal.Classes.Function;
-using static LegendaryExplorerCore.Packages.CloningImportingAndRelinking.EntryImporter;
+using DocumentFormat.OpenXml.Vml.Spreadsheet;
+using ICSharpCode.AvalonEdit;
+using LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE;
+using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
+using LegendaryExplorerCore.UnrealScript.Language.Tree;
 
 //using ImageMagick;
 
@@ -63,6 +55,67 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         {
             msLE1 = new MaterialScreenshotLE1();
             msLE1.StartWorkflow(pe);
+        }
+
+        public static void DumpUScriptFromPackage(PackageEditorWindow pe)
+        {
+            if (pe.Pcc == null)
+            {
+                MessageBox.Show("Must have package open first");
+                return;
+            }
+
+
+            var dlg = new CommonOpenFileDialog
+            {
+                IsFolderPicker = true,
+                EnsurePathExists = true,
+                Title = "Select output folder"
+            };
+            if (dlg.ShowDialog(pe) == CommonFileDialogResult.Ok)
+            {
+                var fileLib = new FileLib(pe.Pcc, true);
+                fileLib.Initialize();
+                foreach (var exp in pe.Pcc.Exports)
+                {
+                    string outputText = PEEM_DecompileUScript(exp, fileLib);
+                    var outPath = Path.Combine(dlg.FileName, exp.InstancedFullPath + ".uc");
+                    File.WriteAllText(outPath,outputText);
+                }
+            }
+
+            MessageBox.Show("Done");
+        }
+
+        private static string PEEM_DecompileUScript(ExportEntry exp, FileLib currentFileLib)
+        {
+            try
+            {
+                ASTNode ast = UnrealScriptCompiler.ExportToAstNode(exp, currentFileLib, null);
+                if (ast is null)
+                {
+                    return "Could not decompile!";
+                }
+                if (!(exp.IsClass && exp.ObjectNameString is "Object"))
+                {
+                    var codeBuilder = new CodeBuilderVisitor<PlainTextCodeFormatter>();
+                    ast.AcceptVisitor(codeBuilder);
+                    return codeBuilder.GetOutput();
+                }
+                else
+                {
+                    var codeBuilder = new CodeBuilderVisitor<SyntaxInfoCodeFormatter, (string, SyntaxInfo)>();
+                    ast.AcceptVisitor(codeBuilder);
+                    (string text, SyntaxInfo syntaxInfo) = codeBuilder.GetOutput();
+                    return text;
+                }
+
+
+            }
+            catch (Exception e) //when (!App.IsDebug)
+            {
+                return $"/*Error occurred while decompiling {exp?.InstancedFullPath}:\n\n{e.FlattenException()}*/";
+            }
         }
 
         public static void FindBadReference(PackageEditorWindow pe)
@@ -4338,6 +4391,11 @@ defaultproperties
                 fxa.WriteBinary(fxaO);
 
             }
+        }
+
+        public static void CompilePackageUScriptFromFolder(PackageEditorWindow window)
+        {
+            MessageBox.Show(window, "Sorry not implemented yet");
         }
     }
 }

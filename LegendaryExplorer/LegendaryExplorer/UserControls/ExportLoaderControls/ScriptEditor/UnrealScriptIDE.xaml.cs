@@ -465,7 +465,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                 }
                 catch (Exception e) //when (!App.IsDebug)
                 {
-                    ScriptText = $"/*Error occured while decompiling {CurrentLoadedExport?.InstancedFullPath}:\n\n{e.FlattenException()}*/";
+                    ScriptText = $"/*Error occurred while decompiling {CurrentLoadedExport?.InstancedFullPath}:\n\n{e.FlattenException()}*/";
                 }
             });
         }
