@@ -6437,7 +6437,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             try
             {
                 var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
-                subnodes.Add(MakeInt32Node(bin, "NetIndex"));
+                bin.SkipInt32(); // This is already done by normal scan
                 subnodes.AddRange(MakeUStateNodes(bin));
 
                 long classFlagsPos = bin.Position;
