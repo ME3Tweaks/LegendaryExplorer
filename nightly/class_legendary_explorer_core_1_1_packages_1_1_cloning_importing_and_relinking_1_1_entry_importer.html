@@ -194,7 +194,7 @@ Static Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-attribs" name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
-<tr class="memitem:aefb476f2d99c053eb6d6b9acbf15c91c"><td class="memItemLeft" align="right" valign="top">static List&lt; string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#aefb476f2d99c053eb6d6b9acbf15c91c">NonDonorItems</a> = new List&lt;string&gt;()</td></tr>
+<tr class="memitem:aefb476f2d99c053eb6d6b9acbf15c91c"><td class="memItemLeft" align="right" valign="top">static List&lt; string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#aefb476f2d99c053eb6d6b9acbf15c91c">NonDonorItems</a> = []</td></tr>
 <tr class="separator:aefb476f2d99c053eb6d6b9acbf15c91c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Enumeration Documentation</h2>
@@ -357,8 +357,7 @@ Static Public Attributes</h2></td></tr>
     <tr><td class="paramname">destPackage</td><td>Package to import to</td></tr>
     <tr><td class="paramname">sourceExport</td><td>Export object from the other package to import</td></tr>
     <tr><td class="paramname">link</td><td>Local parent node UIndex</td></tr>
-    <tr><td class="paramname">importExportDependencies</td><td>Whether to import exports that are referenced in header</td></tr>
-    <tr><td class="paramname">objectMapping</td><td></td></tr>
+    <tr><td class="paramname">rop</td><td>Options for relinking</td></tr>
   </table>
   </dd>
 </dl>
@@ -466,10 +465,8 @@ Static Public Attributes</h2></td></tr>
     <tr><td class="paramname">importFullNameInstanced</td><td>INSTANCED full path of an import from ImportingPCC</td></tr>
     <tr><td class="paramname">sourcePcc</td><td>PCC to import imports from</td></tr>
     <tr><td class="paramname">destinationPCC</td><td>PCC to add imports to</td></tr>
+    <tr><td class="paramname">rop</td><td>Options for relinking</td></tr>
     <tr><td class="paramname">forcedLink</td><td>force this as parent</td></tr>
-    <tr><td class="paramname">importNonPackageExportsToo</td><td></td></tr>
-    <tr><td class="paramname">objectMapping</td><td></td></tr>
-    <tr><td class="paramname">originalImportFullName</td><td>The original, uncorrected name that will exist in the source pcc</td></tr>
   </table>
   </dd>
 </dl>
@@ -535,7 +532,7 @@ Static Public Attributes</h2></td></tr>
     <tr><td class="paramname">importFullNameInstanced</td><td>GetFullPath() of an import from ImportingPCC</td></tr>
     <tr><td class="paramname">sourcePcc</td><td>PCC to import imports from</td></tr>
     <tr><td class="paramname">destinationPCC</td><td>PCC to add imports to</td></tr>
-    <tr><td class="paramname">objectMapping</td><td></td></tr>
+    <tr><td class="paramname">rop</td><td>Options for relinking</td></tr>
   </table>
   </dd>
 </dl>
@@ -1235,7 +1232,7 @@ Static Public Attributes</h2></td></tr>
     <tr><td class="paramname">globalCache</td><td></td></tr>
     <tr><td class="paramname">lookupCache</td><td></td></tr>
     <tr><td class="paramname">localization</td><td></td></tr>
-    <tr><td class="paramname">filesToCheck</td><td></td></tr>
+    <tr><td class="paramname">localDirFiles</td><td></td></tr>
   </table>
   </dd>
 </dl>
@@ -1315,6 +1312,7 @@ Static Public Attributes</h2></td></tr>
     <tr><td class="paramname">lookupCache</td><td>Package cache if you wish to keep packages held open, for example if you're resolving many imports</td></tr>
     <tr><td class="paramname">localization</td><td>Three letter localization code, all upper case. Defaults to INT.</td></tr>
     <tr><td class="paramname">unsafeLoad</td><td>If we are only testing for existence; use unsafe partial load. DO NOT USE THE RESULTING VALUE IF YOU SET THIS TO TRUE</td></tr>
+    <tr><td class="paramname">localDirFiles</td><td>Files in the local directory. These will be checked last</td></tr>
     <tr><td class="paramname">gameRootOverride</td><td>The root path of the game. If null, the default path will be used</td></tr>
   </table>
   </dd>
@@ -1778,7 +1776,7 @@ Static Public Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">List&lt;string&gt; LegendaryExplorerCore.Packages.CloningImportingAndRelinking.EntryImporter.NonDonorItems = new List&lt;string&gt;()</td>
+          <td class="memname">List&lt;string&gt; LegendaryExplorerCore.Packages.CloningImportingAndRelinking.EntryImporter.NonDonorItems = []</td>
         </tr>
       </table>
   </td>

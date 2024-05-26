@@ -10,7 +10,6 @@ var class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_reflection_1_1_
     [ "GetAssemblyEx", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_reflection_1_1_type_extensions.html#a62119f55d2cc9836bc339fb9dc14b1a4", null ],
     [ "GetAssemblyFullNameEx", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_reflection_1_1_type_extensions.html#ab4f56635d2e1d8f5dc64d246a2c5d585", null ],
     [ "HasBaseTypeEx", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_reflection_1_1_type_extensions.html#a4f2625bc75e5363c42172272f4a80847", null ],
-    [ "IsSerializableEx", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_reflection_1_1_type_extensions.html#a385cd09e6d2f7b6e86f28d2b28470930", null ],
     [ "IsPublicEx", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_reflection_1_1_type_extensions.html#a153b0dc88695525d104ec49d7c807f9f", null ],
     [ "IsNestedPublicEx", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_reflection_1_1_type_extensions.html#a591b1db10f9c4cdc1648c1011fd9233b", null ],
     [ "IsInterfaceEx", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_reflection_1_1_type_extensions.html#a118772fc325e13c11d7ac1d47083994d", null ],

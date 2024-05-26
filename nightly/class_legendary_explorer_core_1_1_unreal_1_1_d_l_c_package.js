@@ -25,8 +25,8 @@ var class_legendary_explorer_core_1_1_unreal_1_1_d_l_c_package =
     [ "FindFileEntry", "class_legendary_explorer_core_1_1_unreal_1_1_d_l_c_package.html#a6cde2847541822ccf6eb3bb637dee810", null ],
     [ "ReadFromEntry", "class_legendary_explorer_core_1_1_unreal_1_1_d_l_c_package.html#a3ebc697cfac9511dcb56a6fff5618701", null ],
     [ "FileName", "class_legendary_explorer_core_1_1_unreal_1_1_d_l_c_package.html#a4b39cbc8229ba37d2a99a33d82348a50", null ],
-    [ "TOCHash", "class_legendary_explorer_core_1_1_unreal_1_1_d_l_c_package.html#af87a902e63ee42156526d0946cfd43ed", null ],
     [ "Header", "class_legendary_explorer_core_1_1_unreal_1_1_d_l_c_package.html#af4d4e58b520784afa4ef8cabc87ec63e", null ],
+    [ "TOCHash", "class_legendary_explorer_core_1_1_unreal_1_1_d_l_c_package.html#a823baa387368335ffe3939c94ea5a4f1", null ],
     [ "Files", "class_legendary_explorer_core_1_1_unreal_1_1_d_l_c_package.html#a0531d70e557866e580162da033af7122", null ],
     [ "UncompressedSize", "class_legendary_explorer_core_1_1_unreal_1_1_d_l_c_package.html#a2de75794d0a824f4a6ff8af2389a518e", null ]
 ];
