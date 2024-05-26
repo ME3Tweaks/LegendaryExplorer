@@ -77,7 +77,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             {
                 var fileLib = new FileLib(pe.Pcc, true);
                 fileLib.Initialize(new UnrealScriptOptionsPackage());
-                foreach (var exp in pe.Pcc.Exports.Where(x=>!x.IsClass))
+                foreach (var exp in pe.Pcc.Exports.Where(x => !x.IsClass && x.ClassName != "State" && x.ClassName != "Function"))
                 {
                     string outputText = PEEM_DecompileUScript(exp, fileLib);
                     var outPath = Path.Combine(dlg.FileName, exp.InstancedFullPath + ".uc");
