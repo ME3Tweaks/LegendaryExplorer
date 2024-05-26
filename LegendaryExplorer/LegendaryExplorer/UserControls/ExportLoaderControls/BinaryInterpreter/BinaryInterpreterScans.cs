@@ -4985,35 +4985,49 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     }
                 }
 
+                // Unknown Table C First 4 bytes
+                // Theory 1: This could refer to a number of "unique" entries, it seems to be a number of entries in the table that have only 1 string reference to the combiner.
+                //           Subtracting: (entries in this table that have 2 or more strings) - (total amount of combiner entires) = seems to result in same number that exists in these first 4 bytes.
+                byte[] unkHeaderC = bin.ReadBytes(4);
                 var unkListC = new List<ITreeItem>();
-                subnodes.Add(new BinInterpNode(bin.Position - 4, $"Unknown Table C")
+                subnodes.Add(new BinInterpNode(bin.Position - 4, $"Unknown Table C - Combiner Mapping?")
                 {
                     Items = unkListC
                 });
 
                 for (int c = 0; c < combinerCount; c++)
                 {
+                    // Table begins with an unknown ID - this ID seems to be from some kind of global table as same entries with same names use same IDs across different FaceFX files
+                    //                                   (not 100% sure as only smallish sample of about 20 files was checked)
+                    int entryID = bin.ReadInt32();
+                    // Add tree item with entry ID as an idicator
                     var unkListCitems = new List<ITreeItem>();
-                    unkListC.Add(new BinInterpNode(bin.Position, $"{c}")
+                    unkListC.Add(new BinInterpNode(bin.Position - 4, $"{c}: {entryID}")
                     {
                         Items = unkListCitems
                     });
-                    int name;
-                    unkListCitems.Add(new BinInterpNode(bin.Position, $"Name?: {name = bin.ReadInt32()} {nameTable[name]}") { Length = 4 });
-                    unkListCitems.Add(MakeInt32Node(bin, "Unknown int"));
+                    unkListCitems.Add(new BinInterpNode(bin.Position - 4, $"Unknown int: {entryID}") { Length = 4 });
+                    // String count:
                     int stringCount = bin.ReadInt32();
                     unkListCitems.Add(new BinInterpNode(bin.Position - 4, $"String count: {stringCount}") { Length = 4 });
-                    unkListCitems.Add(new BinInterpNode(bin.Position, $"Unknown String: {bin.BaseStream.ReadStringLatin1(bin.ReadInt32())}"));
+                    // Combiner entry name:
+                    int stringLength = bin.ReadInt32();
+                    string stringText = bin.ReadEndianASCIIString(stringLength);
+                    unkListCitems.Add(new BinInterpNode(bin.Position - stringLength - 4, $"Combiner String: {stringText}") { Length = stringLength + 4 });
+                    // Combiner entry ID:
+                    int name = bin.ReadInt32();
+                    unkListCitems.Add(new BinInterpNode(bin.Position - 4, $"Combiner ID: {name} {combinerListNames[name]}") { Length = 4 });
+                    // Do the same for next strings if theres more than one.
                     for (int i = 1; i < stringCount; i++)
                     {
                         c++;
-                        unkListCitems.Add(MakeInt32Node(bin, "Unknown int"));
-                        unkListCitems.Add(new BinInterpNode(bin.Position, $"Unknown String: {bin.BaseStream.ReadStringLatin1(bin.ReadInt32())}"));
+                        stringLength = bin.ReadInt32();
+                        stringText = bin.ReadEndianASCIIString(stringLength);
+                        unkListCitems.Add(new BinInterpNode(bin.Position - stringLength - 4, $"Combiner String: {stringText}") { Length = stringLength + 4 });
+                        name = bin.ReadInt32();
+                        unkListCitems.Add(new BinInterpNode(bin.Position - 4, $"Combiner ID: {name} {combinerListNames[name]}") { Length = 4 });
                     }
-
                 }
-
-
 
                 if (game == MEGame.ME2)
                 {
@@ -5023,8 +5037,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     subnodes.Add(MakeInt32Node(bin, "Unknown"));
                     subnodes.Add(MakeInt32Node(bin, "Unknown"));
                 }
-
-                subnodes.Add(new BinInterpNode(bin.Position, $"unknown: {bin.ReadInt32()}"));
 
                 subnodes.Add(new BinInterpNode(bin.Position, $"Name: {nameTable[bin.ReadInt32()]}") { Length = 4 });
 

@@ -2687,8 +2687,38 @@ import java.util.*;"
         public static void DumpSound(PackageEditorWindow packEd)
         {
             if (InputComboBoxDialog.GetValue(packEd, "Choose game:", "Game to dump sound for", new[] { "ME3", "ME2", "LE3", "LE2" }, "LE3") is string gameStr &&
-                Enum.TryParse(gameStr, out MEGame game))
+                Enum.TryParse(gameStr, out MEGame game)
+                &&
+             InputComboBoxDialog.GetValue(packEd, "Choose language:", "Choose language", new[] { MELocalization.INT, MELocalization.FRA, MELocalization.DEU, MELocalization.ITA, MELocalization.POL }, MELocalization.INT.ToString()) is string loc &&
+                Enum.TryParse(loc, out MELocalization localization))
             {
+                var languagePrefixes = new List<string>();
+                switch (localization)
+                {
+                    case MELocalization.INT:
+                        languagePrefixes.Add("en_us");
+                        languagePrefixes.Add("en-us");
+                        break;
+                    case MELocalization.FRA:
+                        languagePrefixes.Add("fr_fr");
+                        languagePrefixes.Add("fr-fr");
+                        break;
+                    case MELocalization.DEU:
+                        languagePrefixes.Add("de_de");
+                        languagePrefixes.Add("de-de");
+                        break;
+                    case MELocalization.ITA:
+                        languagePrefixes.Add("it_it");
+                        languagePrefixes.Add("it-it");
+                        break;
+                    case MELocalization.POL:
+                        languagePrefixes.Add("pl-pl");
+                        // No ME3 loc
+                        break;
+                }
+
+
+
                 string tag = PromptDialog.Prompt(packEd, "Character tag:", defaultValue: "player_f", selectText: true);
                 if (string.IsNullOrWhiteSpace(tag))
                 {
@@ -2723,7 +2753,7 @@ import java.util.*;"
                         using IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath);
                         foreach (ExportEntry export in pcc.Exports.Where(exp => exp.ClassName == "WwiseStream"))
                         {
-                            if (export.ObjectNameString.Split(',') is string[] { Length: > 1 } parts && parts[0] == "en-us" && parts[1] == tag)
+                            if (export.ObjectNameString.Split(',') is string[] { Length: > 1 } parts && languagePrefixes.Contains(parts[0]) && parts[1] == tag)
                             {
                                 string fileName = Path.Combine(outFolder, $"{export.ObjectNameString}.wav");
                                 using var fs = new FileStream(fileName, FileMode.Create);

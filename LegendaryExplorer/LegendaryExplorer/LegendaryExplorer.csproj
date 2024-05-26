@@ -139,10 +139,10 @@
 		<PackageReference Include="SharpDX.Direct3D11" Version="4.2.0" />
 		<PackageReference Include="SharpDX.DXGI" Version="4.2.0" />
 		<PackageReference Include="System.CommandLine" Version="2.0.0-beta1.20071.2" />
-		<PackageReference Include="System.Drawing.Common" Version="7.0.0" />
+		<PackageReference Include="System.Drawing.Common" Version="8.0.5" />
 		<PackageReference Include="TerraFX.Interop.Windows" Version="10.0.22621.2" />
 		<PackageReference Include="VideoLAN.LibVLC.Windows" Version="3.0.18" />
-		<PackageReference Include="NuGet.CommandLine" Version="6.9.1"> <!-- This is needed for trimming during build -->
+		<PackageReference Include="NuGet.CommandLine" Version="6.10.0"> <!-- This is needed for trimming during build -->
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>

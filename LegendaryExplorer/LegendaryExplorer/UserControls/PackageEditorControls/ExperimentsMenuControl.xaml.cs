@@ -462,6 +462,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             PackageEditorExperimentsM.FindBadReference(GetPEWindow());
         }
 
+        private void DumpUScriptFromPackage_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.DumpUScriptFromPackage(GetPEWindow());
+        }
+
         private void MaterializeModel_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.MaterializeModel(GetPEWindow());
@@ -883,6 +888,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         private void ConvertExportToImport_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.ConvertExportToImport(GetPEWindow());
+        }
+
+        private void FromPackageUScriptFromFolder_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.CompilePackageUScriptFromFolder(GetPEWindow());
         }
 
         #endregion

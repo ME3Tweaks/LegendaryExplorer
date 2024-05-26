@@ -29,13 +29,13 @@ namespace LegendaryExplorerCore.Packages
         /// <summary>
         /// MEM writes this to every single package file it modifies
         /// </summary>
-        private const string MEMPackageTag = "ThisIsMEMEndOfFileMarker"; //TODO NET 7: make this a utf8 literal
+        private static ReadOnlySpan<byte> MEMPackageTag => "ThisIsMEMEndOfFileMarker"u8;
         private const int MEMPackageTagLength = 24;
 
         /// <summary>
         /// LEC-saved LE packages will always end in this, assuming MEM did not save later
         /// </summary>
-        private const string LECPackageTag = "LECL"; //TODO NET 7: make this a utf8 literal
+        private static ReadOnlySpan<byte> LECPackageTag => "LECL"u8;
         private const int LECPackageTagLength = 4;
         private const int LECPackageTag_Version_EmptyData = 1;
         private const int LECPackageTag_Version_JSON = 2;
@@ -603,7 +603,7 @@ namespace LegendaryExplorerCore.Packages
                     {
                         long tagOffsetFromEnd = -LECPackageTagLength; 
                         fs.Seek(-MEMPackageTagLength, SeekOrigin.End);
-                        if (fs.ReadStringASCII(MEMPackageTagLength) == MEMPackageTag)
+                        if (MEMPackageTag.SequenceEqual(fs.ReadToBuffer(MEMPackageTagLength)))
                         {
                             taggedByMEM = true;
                             tagOffsetFromEnd -= MEMPackageTagLength;
@@ -611,7 +611,7 @@ namespace LegendaryExplorerCore.Packages
                         }
 
                         fs.Seek(tagOffsetFromEnd, SeekOrigin.End);
-                        if (fs.ReadStringASCII(LECPackageTagLength) == LECPackageTag)
+                        if (LECPackageTag.SequenceEqual(fs.ReadToBuffer(LECPackageTagLength)))
                         {
                             taggedByLEC = true;
 
@@ -1222,7 +1222,7 @@ namespace LegendaryExplorerCore.Packages
             }
 
             ms.WriteInt32((int)(ms.Position - pos)); // Size of the LECL data & version tag in bytes
-            ms.WriteStringASCII(LECPackageTag);
+            ms.Write(LECPackageTag);
         }
 
         //Must not change export's DataSize!
