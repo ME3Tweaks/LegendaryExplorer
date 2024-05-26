@@ -29,7 +29,6 @@ namespace Xceed.Wpf.Toolkit.PropertyGrid
   {
   }
 
-
   public abstract class PropertyDefinitionBaseCollection<T> : DefinitionCollectionBase<T> where T : PropertyDefinitionBase
   {
     protected PropertyDefinitionBaseCollection()

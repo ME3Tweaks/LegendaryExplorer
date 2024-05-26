@@ -18,7 +18,6 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
 
         private DynArrayRemove DecompileDynArrayRemove()
         {
-
             PopByte();
             var arr = DecompileExpression();
             if (arr == null)
@@ -39,7 +38,6 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
 
         private DynArrayAdd DecompileDynArrayAdd()
         {
-
             PopByte();
             var arr = DecompileExpression();
             if (arr == null)
@@ -57,7 +55,6 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
 
         private DynArrayInsert DecompileDynArrayInsert()
         {
-
             PopByte();
             var arr = DecompileExpression();
             if (arr == null)
@@ -78,7 +75,6 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
 
         private DynArrayFindStructMember DecompileDynArrayFindStructMember()
         {
-
             PopByte();
             var arr = DecompileExpression();
             if (arr == null)
@@ -100,7 +96,6 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
 
         private DynArrayInsertItem DecompileDynArrayInsertItem()
         {
-
             PopByte();
             var arr = DecompileExpression();
             if (arr == null)
@@ -122,7 +117,6 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
 
         private DynArrayFind DecompileDynArrayFind()
         {
-
             PopByte();
             var arr = DecompileExpression();
             if (arr == null)
@@ -141,7 +135,6 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
 
         private DynArrayAddItem DecompileDynArrayAddItem()
         {
-
             PopByte();
             var arr = DecompileExpression();
             if (arr == null)
@@ -163,7 +156,6 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
 
         private DynArrayRemoveItem DecompileDynArrayRemoveItem()
         {
-
             PopByte();
             var arr = DecompileExpression();
             if (arr == null)
@@ -185,7 +177,6 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
 
         private DynArraySort DecompileDynArraySort()
         {
-
             PopByte();
             var arr = DecompileExpression();
             if (arr == null)

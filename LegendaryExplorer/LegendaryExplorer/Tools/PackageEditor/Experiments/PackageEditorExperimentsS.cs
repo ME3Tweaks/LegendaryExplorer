@@ -557,7 +557,6 @@ import java.util.*;"
                 levelExport.WriteBinary(levelBin);
                 levelExport.WriteProperty(otLevelExport.GetProperty<FloatProperty>("ShadowmapTotalSize"));
 
-
                 void PortShadowMap(ExportEntry otsmcExp, ExportEntry smcExp)
                 {
                     if (otsmcExp.GetProperty<ArrayProperty<StructProperty>>("IrrelevantLights") is { } irrelevantLightsProp)
@@ -1054,7 +1053,6 @@ import java.util.*;"
             });
         }
 
-
         public static void ScanPackageHeader(PackageEditorWindow pewpf)
         {
             pewpf.IsBusy = true;
@@ -1209,7 +1207,6 @@ import java.util.*;"
             var interestingExports = new List<EntryStringPair>();
             var foundClasses = new HashSet<string>(); //new HashSet<string>(BinaryInterpreterWPF.ParsableBinaryClasses);
             var foundProps = new Dictionary<string, string>();
-
 
             var unkOpcodes = new List<int>();//Enumerable.Range(0x5B, 8).ToList();
             unkOpcodes.Add(0);
@@ -1508,7 +1505,6 @@ import java.util.*;"
                                         }
                                     }
 
-
                                 }
                             }
                         }
@@ -1657,7 +1653,6 @@ import java.util.*;"
                             interestingExports.Add(new EntryStringPair($"{pcc.FilePath} failed to compile!"));
                             return;
                         }
-
                     }
                     catch (Exception exception)
                     {
@@ -1709,7 +1704,6 @@ import java.util.*;"
                             interestingExports.Add(new EntryStringPair($"{pcc.FilePath} failed to compile!"));
                             return;
                         }
-
                     }
                     catch (Exception exception)
                     {
@@ -1788,7 +1782,6 @@ import java.util.*;"
                             interestingExports.Add(new EntryStringPair($"{pcc.FilePath} failed to compile!"));
                             return;
                         }
-
                     }
                     catch (Exception exception)
                     {
@@ -2025,7 +2018,6 @@ import java.util.*;"
                             interestingExports.Add(import);
                             return true;
                         }
-
                     }
                     catch (Exception exception)
                     {
@@ -2313,7 +2305,6 @@ import java.util.*;"
                 }
 
                 return (null, 0);
-
             }).ContinueWithOnUIThread(prevTask =>
             {
                 pewpf.IsBusy = false;
@@ -2399,7 +2390,6 @@ import java.util.*;"
                         .WriteProperty(streamingLevelsProp);
                     persistentUDK.Save();
                 }
-
             }).ContinueWithOnUIThread(prevTask =>
             {
                 if (prevTask.IsFaulted)
@@ -2408,7 +2398,6 @@ import java.util.*;"
                 }
                 pewpf.IsBusy = false;
             });
-
         }
 
         public static void MakeME1TextureFileList(PackageEditorWindow pewpf)
@@ -2463,7 +2452,6 @@ import java.util.*;"
                 }
 
                 return textureFiles;
-
             }).ContinueWithOnUIThread(prevTask =>
             {
                 pewpf.IsBusy = false;
@@ -2684,8 +2672,6 @@ import java.util.*;"
                         break;
                 }
 
-
-
                 string tag = PromptDialog.Prompt(packEd, "Character tag:", defaultValue: "player_f", selectText: true);
                 if (string.IsNullOrWhiteSpace(tag))
                 {
@@ -2736,7 +2722,6 @@ import java.util.*;"
                     MessageBox.Show("Done");
                 });
             }
-
         }
 
         private record StringMEGamePair(string str, MEGame game);
@@ -2849,7 +2834,6 @@ import java.util.*;"
                 }
             });
         }
-
 
         public static void RecompileAll(PackageEditorWindow pew)
         {

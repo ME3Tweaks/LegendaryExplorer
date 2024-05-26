@@ -91,7 +91,6 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
         //Empty implementation
         public virtual void CreateConnections(List<PathfindingNodeMaster> Objects)
         {
-
         }
 
         protected int get3DBrushHeight()
@@ -332,7 +331,6 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
             {
                 return null;
             }
-
         }
         protected string GetComment()
         {

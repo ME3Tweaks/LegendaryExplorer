@@ -16,7 +16,6 @@ namespace LegendaryExplorer.Misc
     /// </summary>
     public class CrossGenHelpers
     {
-
         /// <summary>
         /// Fetches and opens a package from the other generation.
         /// </summary>

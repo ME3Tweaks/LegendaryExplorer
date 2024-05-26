@@ -151,7 +151,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
         }
 
-
         public bool MiniPlayerMode
         {
             get => (bool)GetValue(MiniPlayerModeProperty);
@@ -170,7 +169,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             if (d is Soundpanel sp)
             {
-
             }
         }
 
@@ -716,7 +714,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     if (riffTag == "RIFF") endian = Endian.Little;
                     if (riffTag == "RIFX") endian = Endian.Big;
 
-
                     ExportInformationList.Add("0x00 RIFF tag: " + riffTag);
                     ExportInformationList.Add("0x04 File size: " + EndianReader.ToInt32(headerbytes, 4, endian) + " bytes");
                     ExportInformationList.Add("0x08 WAVE tag: " + ascii.GetString(headerbytes, 8, 4));
@@ -751,9 +748,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
             catch
             {
-
             }
-
         }
 
         internal void UnloadAFCEntry()
@@ -776,7 +771,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
             catch
             {
-
             }
         }
 
@@ -830,7 +824,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         }
                         catch
                         {
-
                         }
                         return AudioStreamHelper.GetWaveStreamFromISBEntry(bankEntry, isbName: isbName, game: localCurrentExport.Game);
                     }
@@ -1010,7 +1003,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
         }
 
-
         public bool CanStartPlayback()
         {
             if (audioStream != null) return true; //looping
@@ -1059,7 +1051,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             UpdateSeekBarPos(null, null);
             if (_audioPlayer != null)
             {
-
                 _audioPlayer.PlaybackStopType = SoundpanelAudioPlayer.PlaybackStopTypes.PlaybackStoppedByUser;
                 _audioPlayer.Stop();
             }
@@ -1082,7 +1073,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 seekbarUpdateTimer.Stop();
                 if (_audioPlayer != null)
                 {
-
                     _audioPlayer.PlaybackStopType = SoundpanelAudioPlayer.PlaybackStopTypes.PlaybackSwitchedToNewFile;
                     _audioPlayer.Stop();
                 }
@@ -1309,7 +1299,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     MessageBox.Show("Done.");
                 }
             }
-
         }
 
         private bool CanExportAudio(object p)
@@ -1614,7 +1603,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 var conversion = await WwiseCliHandler.RunWwiseConversion(Pcc.Game, sourceFile, conversionSettings);
                 ReplaceAudioFromWwiseEncodedFile(conversion, forcedExport, conversionSettings?.UpdateReferencedEvents ?? false, conversionSettings?.DestinationAFCFile);
-
             }).ContinueWithOnUIThread((a) =>
             {
                 UpdateAudioStream();
@@ -2186,7 +2174,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             waveStream.Position = 0;
             var audioFileReader = new WaveFileReader(waveStream);
 
-
             // 1. Configure Providers
             MaxPeakProvider maxPeakProvider = new MaxPeakProvider();
             RmsPeakProvider rmsPeakProvider = new RmsPeakProvider(200); // e.g. 200
@@ -2221,8 +2208,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             PlayheadTime = position;
         }
     }
-
-
 
     public class ImportExportSoundEnabledConverter : IValueConverter
     {

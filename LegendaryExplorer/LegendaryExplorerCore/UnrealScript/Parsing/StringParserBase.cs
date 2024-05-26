@@ -280,7 +280,6 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
         public ScriptToken Consume(string str)
         {
-
             ScriptToken token = null;
             if (CurrentIs(str))
             {
@@ -291,7 +290,6 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
         }
 
         public ScriptToken Consume(params string[] strs) => strs.Select(Consume).NonNull().FirstOrDefault();
-
 
         protected bool TypeCompatible(VariableType dest, VariableType src, int errorPosition, bool coerce = false)
         {
@@ -596,7 +594,6 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             }
 
             return symRef;
-
         }
 
         public Expression ParseConstValue()

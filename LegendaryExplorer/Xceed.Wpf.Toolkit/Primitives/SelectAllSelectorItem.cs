@@ -14,7 +14,6 @@
 
   ***********************************************************************************/
 
-
 namespace Xceed.Wpf.Toolkit.Primitives
 {
   public class SelectAllSelectorItem : SelectorItem

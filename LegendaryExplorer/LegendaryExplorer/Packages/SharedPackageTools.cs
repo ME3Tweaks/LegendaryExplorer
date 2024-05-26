@@ -336,7 +336,6 @@ namespace LegendaryExplorer.Packages
                                 nwpf.Show();
                                 nwpf.Activate();
                             }
-
                         }
                     );
                 setBusyText?.Invoke("Exporting to new package");

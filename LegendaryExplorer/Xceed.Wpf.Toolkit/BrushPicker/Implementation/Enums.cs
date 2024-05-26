@@ -19,14 +19,12 @@ namespace ColorBox
         Decrease
     }
 
-
     internal enum ValidSpinDirections
     {
         None,
         Increase,
         Decrease
     }
-
 
     internal enum AllowedSpecialValues
     {
@@ -37,7 +35,6 @@ namespace ColorBox
         AnyInfinity = PositiveInfinity | NegativeInfinity,
         Any = NaN | AnyInfinity
     }
-
 
     internal enum BrushTypes
     {

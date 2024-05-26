@@ -374,7 +374,6 @@ namespace Piccolo.Util {
 		}
 		#endregion
 
-
         /// <summary>
         /// <b>PTuple</b> is used to associate a node with a matrix.
         /// </summary>
@@ -403,4 +402,3 @@ namespace Piccolo.Util {
         }
 	}
 }
-

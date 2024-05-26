@@ -838,6 +838,5 @@ namespace LegendaryExplorerCore.Textures
 
             return false;
         }
-
     }
 }

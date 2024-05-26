@@ -77,7 +77,6 @@ namespace LegendaryExplorerCore.Packages
             return package;
         }
 
-
         /// <summary>
         /// You should only use this if you know what you're doing! This will forcibly add a package to the open packages cache. Only used when package cache is enabled.
         /// </summary>
@@ -103,7 +102,6 @@ namespace LegendaryExplorerCore.Packages
                 Debug.WriteLine("Global Package Cache is disabled, cannot force packages into cache");
             }
         }
-
 
         /// <summary>
         /// Opens an already open package, registering it for use in a tool.
@@ -161,7 +159,6 @@ namespace LegendaryExplorerCore.Packages
                         using var fs = new FileStream(pathToFile, FileMode.Open, FileAccess.Read);
                         package = LoadPackage(fs, pathToFile, false, true);
                     }
-
                 }
                 else
                 {
@@ -206,8 +203,6 @@ namespace LegendaryExplorerCore.Packages
                     }
                 });
             }
-
-
 
             if (user != null)
             {
@@ -323,7 +318,6 @@ namespace LegendaryExplorerCore.Packages
                 version = (ushort)(versionLicenseePacked & 0xFFFF);
                 licenseVersion = (ushort)(versionLicenseePacked >> 16);
             }
-
 
             IMEPackage pkg;
             if (fullyCompressed ||
@@ -504,7 +498,6 @@ namespace LegendaryExplorerCore.Packages
             IMEPackage package = sender as IMEPackage;
             PackagesInTools.Remove(package);
             sender.NoLongerOpenInTools -= Package_noLongerOpenInTools;
-
         }
 
         public static IMEPackage OpenUDKPackage(string pathToFile, IPackageUser user = null, bool forceLoadFromDisk = false)

@@ -109,7 +109,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                                     {
                                         stringMapping[sref.StringID] = sref.Data;
                                     }
-
                                 }
                             }
                         }
@@ -143,18 +142,15 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         }
                     }
                     o.Save();
-
                 }
 
                 return total;
-
             }).ContinueWithOnUIThread(async (total) =>
             {
                 var actualTotal = await total;
                 pew.IsBusy = false;
                 pew.StatusBar_LeftMostText.Text = $"Wrote {actualTotal} lines to {outputFilePath}";
             });
-
         }
 
         public static void AssociateAllExtensions()
@@ -169,7 +165,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             pew.IsBusy = true;
             pew.BusyText = $"Creating audio size info for {game}";
 
-            CaseInsensitiveDictionary<long> audioSizes = new();
+            CaseInsensitiveDictionary<long> audioSizes = [];
 
             Task.Run(() =>
             {
@@ -185,7 +181,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 var outFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                     $"{game}-vanillaaudiosizes.json");
                 File.WriteAllText(outFile, JsonConvert.SerializeObject(audioSizes));
-
             });
         }
 
@@ -321,7 +316,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     }
                     pew.IsBusy = false;
                 });
-                
             }
             else
             {

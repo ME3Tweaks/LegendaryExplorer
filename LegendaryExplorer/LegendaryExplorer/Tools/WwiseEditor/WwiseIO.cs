@@ -88,7 +88,6 @@ namespace LegendaryExplorer.Tools.WwiseEditor
                 var evt = await WwiseUtility.Instance.CreateObjectAtPathAsync(ev.ObjectName.Name, WwiseObject.ObjectType.Event, "\\Events\\Default Work Unit");
                 var action = await WwiseUtility.Instance.CreateObjectAtPathAsync(ev.ObjectName.Name, WwiseObject.ObjectType.Event, "\\Events\\Default Work Unit");
 
-
                 //await WwiseUtility.Instance.SetObjectPropertyAsync(ev.ObjectName.Name, WwiseObject.ObjectType.Event, "\\Events\\Default Work Unit");
 
             }

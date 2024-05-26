@@ -178,7 +178,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
             textEditor.TextArea.TextEntering -= TextAreaOnTextEntering;
         }
 
-
         private void ExportLoaderControl_Loaded(object sender, RoutedEventArgs e)
         {
             var window = Window.GetWindow(this);
@@ -461,7 +460,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                         textEditor.SyntaxHighlighting = syntaxInfo;
                     }
 
-
                 }
                 catch (Exception e) //when (!App.IsDebug)
                 {
@@ -618,7 +616,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                 //    break;
                 //}
             }
-
             
         }
 
@@ -783,8 +780,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                 OutputListBox.ItemsSource = log.Content;
             }
         }
-
-
 
         #region AvalonEditor
 
@@ -958,7 +953,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
 
             void SetTooltip(TextBlock content)
             {
-
                 content.Background = ToolTipBackgroundBrush;
                 _hoverToolTip.Content = content;
                 _hoverToolTip.Background = ToolTipBackgroundBrush;

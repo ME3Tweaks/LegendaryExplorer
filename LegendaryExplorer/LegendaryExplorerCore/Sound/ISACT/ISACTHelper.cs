@@ -355,7 +355,6 @@ namespace LegendaryExplorerCore.Sound.ISACT
         public ISACTSyncStart SyncStart { get; set; }
         public int Multiple { get; set; }
 
-
         public SyncBankChunk(Stream inStream)
         {
             ChunkName = "sync";
@@ -538,7 +537,6 @@ namespace LegendaryExplorerCore.Sound.ISACT
 
             if ((len & 1L) != 0L)
                 outStream.WriteByte(0); // Even boundary
-
         }
 
         public override string ToChunkDisplay()
@@ -627,7 +625,6 @@ public class BankChunk
     /// </summary>
     public List<BankChunk> SubChunks = new List<BankChunk>(0);
 
-
     /// <summary>
     /// The offset in which this bank's data starts - + 8 after header & size. For name only this should not be used.
     /// </summary>
@@ -652,7 +649,6 @@ public class BankChunk
             inStream.ReadByte();
         }
     }
-
 
     public virtual void Write(Stream outStream)
     {
@@ -837,7 +833,6 @@ public class SampleInfoBankChunk : BankChunk
     /// </summary>
     public static readonly string FixedChunkTitle = "sinf";
 
-
     public int BufferOffset;
     public int TimeLength;
     public int SamplesPerSecond;
@@ -859,7 +854,6 @@ public class SampleInfoBankChunk : BankChunk
         BitsPerSample = inStream.ReadUInt16();
         Padding = inStream.ReadUInt16(); // Align 2 since struct size is 20 (align 4)
     }
-
 
     public override void Write(Stream outStream)
     {
@@ -1012,7 +1006,6 @@ public class IntBankChunk : BankChunk
                 HumanName = "Sample 3D Info (Buffer Index)";
                 break;
 
-
         }
     }
 
@@ -1055,7 +1048,6 @@ public class FloatBankChunk : BankChunk
             case "gbst":
                 HumanName = "Gain Boost";
                 break;
-
 
         }
     }
@@ -1297,7 +1289,6 @@ public class IndexEntry
     public byte[] padding;
     public string ObjectType { get; set; }
     public uint ObjectIndex { get; set; }
-
 }
 
 public class ContentIndexBankChunk : BankChunk
@@ -1478,7 +1469,6 @@ public class SoundEventSoundTracksFour : BankChunk
 
             st.Flags = inStream.ReadUInt32();
             SoundTracks.Add(st);
-
         }
     }
 

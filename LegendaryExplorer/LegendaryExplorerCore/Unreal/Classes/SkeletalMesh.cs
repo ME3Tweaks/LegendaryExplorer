@@ -182,7 +182,6 @@
 //                for (int i = 0; i < 4; i++)
 //                    InfluenceWeights[i] = Container + InfluenceWeights[i];
 
-
 //            }
 //        }
 
@@ -293,7 +292,6 @@
 //                    ////Debug.WriteLine("U is " + HalfToFloat(U) + " at " + (Container.GetPos() - 2).ToString("X6"));
 //                    VFullPrecision = Container + VFullPrecision;
 //                    ////Debug.WriteLine("V is " + HalfToFloat(V) + " at " + (Container.GetPos() - 2).ToString("X6"));
-
 
 //                    if (Container.isLoading)
 //                    {
@@ -588,7 +586,6 @@
 //                if (Container.isLoading)
 //                    VertexBufferGPUSkin = new VertexBufferGPUSkinStruct();
 //                //Debug.WriteLine("VertexGPUSkin at " + Container.GetPos().ToString("X6"));
-
 
 //                VertexBufferGPUSkin.Serialize(Container, export);
 //                //unk4

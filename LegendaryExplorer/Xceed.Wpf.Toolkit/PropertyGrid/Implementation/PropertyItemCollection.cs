@@ -206,6 +206,5 @@ namespace Xceed.Wpf.Toolkit.PropertyGrid
 
 
 
-
   }
 }

@@ -26,7 +26,6 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
     /// </summary>
     public partial class ValidationPanel : NotifyPropertyChangedControlBase
     {
-
         private const int MAX_DISTANCE_TOLERANCE = 5;
         private const float MAX_DIRECTION_TOLERANCE = .001f;
 
@@ -187,7 +186,6 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                         }
                     }
                 }
-
             }
             task?.Complete($"{numRecalculated} SplineComponent{(numRecalculated == 1 ? " was" : "s were")} recalculated");
         }
@@ -263,9 +261,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                         {
                             badSpecs.Add($"{reachSpecObj.Value} is incorrectly included in the path list.");
                         }
-
                     }
-
                 }
             }
             task?.Complete($"{numRecalculated} ReachSpec{(numRecalculated == 1 ? " was" : "s were")} recalculated");
@@ -273,7 +269,6 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
 
         private bool calculateReachSpec(ExportEntry reachSpecExport, ExportEntry startNodeExport = null)
         {
-
             //Get start and end exports.
             var properties = reachSpecExport.GetProperties();
             ObjectProperty start = properties.GetProp<ObjectProperty>("Start");
@@ -324,7 +319,6 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
             float dirY = (float)((destPoint.Y - startPoint.Y) / distance);
             float dirZ = (float)((destPoint.Z - startPoint.Z) / distance);
 
-
             //Get Original Values, for comparison.
             StructProperty specDirection = properties.GetProp<StructProperty>("Direction");
             if (specDirection == null) return false;
@@ -361,7 +355,6 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                 // Difference.
                 Debug.WriteLine("Diff Direction Y is > tolerance: " + diffY + ", should be " + dirY);
                 return true;
-
             }
             if (Math.Abs(diffZ) > MAX_DIRECTION_TOLERANCE)
             {
@@ -410,7 +403,6 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                 {
                     continue;
                 }
-
             }
 
             int nextNetIndex = 1;
@@ -545,7 +537,6 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                 task?.Complete("NavigationPoint chain not updated, no chain found");
             }
         }
-
 
         private void FindDuplicateGUIDs(ListBoxTask task = null)
         {

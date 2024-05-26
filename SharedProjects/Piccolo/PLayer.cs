@@ -121,7 +121,6 @@ namespace Piccolo
 					return 0;
 				}
 				return cameras.Count;
-
 			}
 		}
 

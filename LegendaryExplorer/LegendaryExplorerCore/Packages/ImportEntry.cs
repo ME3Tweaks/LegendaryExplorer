@@ -145,7 +145,7 @@ namespace LegendaryExplorerCore.Packages
             }
             if (value.Length != HeaderLength)
             {
-                throw new ArgumentException(nameof(value), $"Import header must be exactly {HeaderLength} bytes");
+                throw new ArgumentException($"Import header must be exactly {HeaderLength} bytes", nameof(value));
             }
             var existingHeader = GenerateHeader();
             if (existingHeader.AsSpan().SequenceEqual(value))
@@ -180,13 +180,13 @@ namespace LegendaryExplorerCore.Packages
             var buff = new byte[HeaderLength];
             if (FileRef.Endian.IsNative)
             {
-                MemoryMarshal.Write(buff, ref _header);
+                MemoryMarshal.Write(buff, in _header);
             }
             else
             {
                 var reversedHeader = _header;
                 reversedHeader.ReverseEndianness();
-                MemoryMarshal.Write(buff, ref _header);
+                MemoryMarshal.Write(buff, in _header);
             }
             return buff;
         }
@@ -280,7 +280,6 @@ namespace LegendaryExplorerCore.Packages
             }
         }
 
-
         public string ClassName
         {
             get => FileRef.Names[idxClassName];
@@ -326,7 +325,6 @@ namespace LegendaryExplorerCore.Packages
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HeaderChanged)));
             }
         }
-
 
         private bool _entryHasPendingChanges;
         public bool EntryHasPendingChanges
@@ -399,10 +397,9 @@ namespace LegendaryExplorerCore.Packages
         }
 
         /// <summary>
-        /// Looks up the class info for the given class and returns which package file should contain it. Use this for the PackageFile attribute on ImportEntries.
+        /// Looks up the class info for the given Export's class and returns which package file should contain it. Use this for the PackageFile attribute on ImportEntries.
         /// </summary>
-        /// <param name="game"></param>
-        /// <param name="className"></param>
+        /// <param name="entry"></param>
         /// <returns></returns>
         public static string GetPackageFile(ExportEntry entry)
         {

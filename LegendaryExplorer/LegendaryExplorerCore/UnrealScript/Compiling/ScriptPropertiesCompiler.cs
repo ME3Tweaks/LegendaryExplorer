@@ -234,7 +234,6 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                         }
                     }
                 }
-
             }
             subExport.Archetype = null;
         }
@@ -446,7 +445,6 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     }
                 }
             }
-
 
             if (subExport.ClassName is "DominantDirectionalLightComponent" or "DominantSpotLightComponent")
             {

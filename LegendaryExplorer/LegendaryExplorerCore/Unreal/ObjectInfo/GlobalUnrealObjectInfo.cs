@@ -37,7 +37,6 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 _ => false,
             };
 
-
         // do not remove as other projects outside of LEX use this method
         /// <summary>
         /// Tests if this entry inherits from another class. This should only be used on objects that have a class of 'Class'.
@@ -188,7 +187,6 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
 
         public static SequenceObjectInfo GetSequenceObjectInfo(MEGame game, string className)
         {
-
             return GetSequenceObjects(game).TryGetValue(className, out SequenceObjectInfo seqInfo) ? seqInfo : null;
         }
 
@@ -211,7 +209,6 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
         }
 
         public static bool IsValidEnum(MEGame game, string enumName) => GetEnums(game)?.ContainsKey(enumName) ?? false;
-
 
         /// <summary>
         /// Recursively gets class defaults, traveling up inheritance chain, but stopping at <paramref name="notIncludingClass"></paramref>
@@ -421,7 +418,6 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             }
             return p;
         }
-
 
         /// <summary>
         /// Gets the default values for a struct
@@ -913,7 +909,6 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             }
         }
 
-
         // Shared global methods for loading custom data
 
         /// <summary>
@@ -931,7 +926,6 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                     throw new ArgumentOutOfRangeException($"{nameof(GenerateSequenceObjectInfoForClassDefaults)}() does not accept export for game {exportEntry.Game}");
                 }
             }
-
 
             string className = exportEntry.ClassName;
             if (!infos.TryGetValue(className, out SequenceObjectInfo seqObjInfo))
@@ -984,7 +978,6 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
 
         public static string GetExpectedClassTypeForObjectProperty(ExportEntry entry, ObjectProperty op, string containingClassOrStructName, Property parentProperty)
         {
-
             if (parentProperty is ArrayProperty<ObjectProperty> apop)
             {
                 // Try to get the type of object array
@@ -1021,8 +1014,6 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             }
 
             return null; // We don't know
-
-
 
             /*
             var referencedEntry = op.ResolveToEntry(entry.FileRef);

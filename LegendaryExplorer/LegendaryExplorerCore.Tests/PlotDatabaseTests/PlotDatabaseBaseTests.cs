@@ -32,7 +32,6 @@ namespace LegendaryExplorerCore.Tests
             plotDb = pdb;
         }
 
-
         [TestMethod]
         public void TestElementAdd()
         {
@@ -89,7 +88,6 @@ namespace LegendaryExplorerCore.Tests
             Assert.IsTrue(b.Children.Count == 0);
             Assert.IsFalse(plotDb.Conditionals.ContainsValue(c));
             Assert.IsFalse(plotDb.Conditionals.ContainsValue(d));
-
         }
     }
 }

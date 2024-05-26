@@ -38,7 +38,6 @@ using System.Numerics;
 using System.Runtime.InteropServices;
 
 namespace Piccolo.Util {
-
 	#region Enums
 	/// <summary>
 	/// This enumeration is used by the <see cref="PPaintContext"/> class.  It represents the

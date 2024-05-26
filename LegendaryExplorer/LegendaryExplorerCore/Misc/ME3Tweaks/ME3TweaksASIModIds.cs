@@ -37,6 +37,5 @@ namespace LegendaryExplorerCore.Misc.ME3Tweaks
         public static readonly int LE3_AUTOTOC = 31;
         public static readonly int LE3_DEBUGLOGGER_DEV = 72;
         public static readonly int LE3_LEX_INTEROP = 80;
-
     }
 }

@@ -126,19 +126,18 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public override void ForEachUIndex<TAction>(MEGame game, in TAction action)
         {
             base.ForEachUIndex(game, in action);
-            Unsafe.AsRef(action).Invoke(ref OuterClass, nameof(OuterClass));
+            Unsafe.AsRef(in action).Invoke(ref OuterClass, nameof(OuterClass));
 
             ForEachUIndexValueInMultiMap(action, ComponentNameToDefaultObjectMap, nameof(ComponentNameToDefaultObjectMap));
 
             Span<ImplementedInterface> interfacesSpan = Interfaces.AsSpan();
             for (int i = 0; i < interfacesSpan.Length; i++)
             {
-                Unsafe.AsRef(action).Invoke(ref interfacesSpan[i].Class, $"{nameof(Interfaces)}[{i}].{nameof(ImplementedInterface.Class)}");
-                Unsafe.AsRef(action).Invoke(ref interfacesSpan[i].PointerProperty, $"{nameof(Interfaces)}[{i}].{nameof(ImplementedInterface.PointerProperty)}");
+                Unsafe.AsRef(in action).Invoke(ref interfacesSpan[i].Class, $"{nameof(Interfaces)}[{i}].{nameof(ImplementedInterface.Class)}");
+                Unsafe.AsRef(in action).Invoke(ref interfacesSpan[i].PointerProperty, $"{nameof(Interfaces)}[{i}].{nameof(ImplementedInterface.PointerProperty)}");
             }
 
-
-            Unsafe.AsRef(action).Invoke(ref Defaults, nameof(Defaults));
+            Unsafe.AsRef(in action).Invoke(ref Defaults, nameof(Defaults));
             if (game is MEGame.ME3 or MEGame.LE3)
             {
                 ForEachUIndexInSpan(action, VirtualFunctionTable.AsSpan(), nameof(VirtualFunctionTable));
@@ -171,7 +170,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
         }
     }
-
 
     public static partial class SCExt
     {

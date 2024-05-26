@@ -12,7 +12,6 @@ using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 
 namespace LegendaryExplorerCore.Coalesced.Config
 {
-
     /// <summary>
     /// Handler for a bundle of config assets
     /// </summary>
@@ -113,7 +112,6 @@ namespace LegendaryExplorerCore.Coalesced.Config
             {
                 var assetBundle = new ConfigAssetBundle(game, cookedDir, dlcFolderName);
                 return assetBundle.Assets != null ? assetBundle : null;
-
             }
             catch (Exception e)
             {
@@ -246,7 +244,6 @@ namespace LegendaryExplorerCore.Coalesced.Config
                 var coalFile = Path.Combine(outPath ?? CookedDir, $@"Default_{DLCFolderName}.bin");
                 CommitAssets(coalFile);
                 HasChanges = false;
-
             }
         }
 

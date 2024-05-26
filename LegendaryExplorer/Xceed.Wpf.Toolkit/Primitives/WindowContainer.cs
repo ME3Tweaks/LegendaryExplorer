@@ -41,7 +41,6 @@ namespace Xceed.Wpf.Toolkit.Primitives
       ModalBackgroundBrushProperty = DependencyProperty.Register( "ModalBackgroundBrush", typeof( Brush ), typeof( WindowContainer ), new UIPropertyMetadata( defaultModalBackgroundBrush, OnModalBackgroundBrushChanged ) );
     }
 
-
     public WindowContainer()
     {
       this.SizeChanged += new SizeChangedEventHandler( this.WindowContainer_SizeChanged );
@@ -175,10 +174,6 @@ namespace Xceed.Wpf.Toolkit.Primitives
     #endregion
 
     #region Event Handler
-
-
-
-
 
     private void Child_LeftChanged( object sender, EventArgs e )
     {
@@ -427,7 +422,6 @@ namespace Xceed.Wpf.Toolkit.Primitives
         }
 
         this.Background = this.ModalBackgroundBrush;
-
       }
       else
       {
@@ -440,12 +434,7 @@ namespace Xceed.Wpf.Toolkit.Primitives
       }
     }
 
-
-
-
-
     #endregion
   }
-
 
 }

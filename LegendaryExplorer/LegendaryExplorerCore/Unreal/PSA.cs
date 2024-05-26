@@ -237,7 +237,6 @@ namespace LegendaryExplorerCore.Unreal
                 animSeqs.Add(seq);
             }
 
-
             return animSeqs;
         }
 
@@ -255,7 +254,6 @@ namespace LegendaryExplorerCore.Unreal
             return psa;
         }
     }
-
 }
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters

@@ -35,7 +35,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     animSeq.UpdateProps(newProps, newGame);
                 }
 
-
                 // IDK if this works as internal busses have changed identifiers.
                 // You likely would need to correct bus IDs internally for this to properly work.
                 // Todo: LE3 -> LE2
@@ -68,7 +67,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     //        new ObjectProperty(bankExport, "Bank"))
                     //    { Name = "Relationships" });
                     //    p.Add(new IntProperty((int)eventInfo.Id, "Id"));
-
 
                     //    p.Add(new FloatProperty(9, "Duration")); // TODO: FIGURE THIS OUT!!! THIS IS A PLACEHOLDER
 
@@ -107,15 +105,10 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     //    we.WwiseEventID = eventInfo.Id; // ID is stored here
                     //}
 
-
-
                     //}
                 }
                 return objbin;
             }
-
-
-
 
             switch (export.ClassName)
             {
@@ -304,7 +297,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 os.WriteFromBuffer(texture);
                 os.WriteInt32(width);
                 os.WriteInt32(height);
-
             }
 
             long postMipPosition = os.Position;
@@ -362,5 +354,4 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             return os.ToArray();
         }
     }
-
 }

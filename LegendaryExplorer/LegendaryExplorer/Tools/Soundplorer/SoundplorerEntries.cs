@@ -259,8 +259,6 @@ namespace LegendaryExplorer.Tools.Soundplorer
                 }
             }
 
-
-
             if (Entry.SampleInfo != null)
             {
                 SubText = (Entry.SampleInfo.TimeLength / 1000.0f).ToString(@"mm\:ss\:fff");
@@ -371,7 +369,6 @@ namespace LegendaryExplorer.Tools.Soundplorer
                                 }
                             }
                         }
-
 
                         WwiseStream w = Export.GetBinaryData<WwiseStream>();
                         if (!w.IsPCCStored && w.GetPathToAFC() == "")

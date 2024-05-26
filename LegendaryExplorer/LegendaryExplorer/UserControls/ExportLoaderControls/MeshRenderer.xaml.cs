@@ -156,8 +156,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
         }
 
-
-
         private bool _showBlueChannel = true;
         public bool ShowBlueChannel
         {
@@ -175,8 +173,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 }
             }
         }
-
-
 
         private bool _showAlphaChannel = true;
         public bool ShowAlphaChannel
@@ -208,8 +204,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         }
         #endregion
 
-
-
         private ModelPreview Preview;
 
         /// <summary>
@@ -223,7 +217,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             if (Preview != null && Preview.LODs.Count > 0)
             {
-
                 if (CurrentLOD < 0) { CurrentLOD = 0; }
                 if (Solid && CurrentLOD < Preview.LODs.Count)
                 {
@@ -244,7 +237,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     MeshContext.DefaultEffect.PrepDraw(SceneViewer.Context.ImmediateContext);
                     MeshContext.DefaultEffect.RenderObject(SceneViewer.Context.ImmediateContext, ViewConstants, STMCollisionMesh, new SharpDX.Direct3D11.ShaderResourceView[] { null });
                 }
-
             }
         }
 
@@ -299,7 +291,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
         }
 
-
         private bool _busyProgressIndeterminate = true;
 
         public bool BusyProgressIndeterminate
@@ -330,7 +321,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             get => _busyProgressBarValue;
             set => SetProperty(ref _busyProgressBarValue, value);
         }
-
 
         #endregion
 
@@ -564,7 +554,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             {
                                 ExportEntry entry = meshFile.GetUExport(matIndex);
                                 AddMaterialBackgroundThreadTextures(pmd.texturePreviewMaterials, entry, assetCache);
-
                             }
                             else if (meshFile.IsImport(matIndex))
                             {
@@ -575,7 +564,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                 }
                                 else
                                 {
-
                                     Debug.WriteLine("Could not find import material from section.");
                                     Debug.WriteLine("Import material: " + meshFile.GetEntryString(matIndex));
                                 }
@@ -622,7 +610,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                 }
                                 else
                                 {
-
                                     Debug.WriteLine("Could not find import material from materials list.");
                                     Debug.WriteLine("Import material: " + package.GetEntryString(material));
                                 }
@@ -671,7 +658,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             {
                                 AddMaterialBackgroundThreadTextures(pmd.texturePreviewMaterials, matExp, assetCache);
                                 pmd.sections.Add(new ModelPreviewSection(matExp.ObjectName, 0, 3)); //???
-
                             }
                             else if (CurrentLoadedExport.FileRef.TryGetImport(element.Material, out var matImp))
                             {
@@ -683,7 +669,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                 }
                                 else
                                 {
-
                                     Debug.WriteLine("Could not find import material from section.");
                                     Debug.WriteLine("Import material: " + CurrentLoadedExport.FileRef.GetEntryString(element.Material));
                                 }
@@ -746,8 +731,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     return pmd;
                 };
             }
-
-
 
             if (loadMesh != null)
             {
@@ -822,9 +805,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             this.ViewportLoadAction = loadPreviewAction;
                         }
                     }
-
                 });
-
             }
         }
 
@@ -888,7 +869,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 busyText => BusyText = busyText
                 );
         }
-
 
         private WorldMesh GetMeshFromAggGeom(StructProperty aggGeom)
         {
@@ -967,7 +947,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private WorldMesh GetMeshFromModelComponent(ModelComponent mc)
         {
-
             var parentModel = ObjectBinary.From<Model>(mc.Export.FileRef.GetUExport(mc.Model));
             var vertices = new List<WorldVertex>();
 
@@ -1115,7 +1094,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
             else if (UseRadians)
             {
-
                 CameraPitch = MeshContext.Camera.Pitch;
                 CameraYaw = MeshContext.Camera.Yaw;
             }
@@ -1168,7 +1146,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 elhw.Show();
             }
         }
-
 
         public override void Dispose()
         {

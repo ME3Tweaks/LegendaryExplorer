@@ -26,7 +26,6 @@ using System.Collections.Generic;
 
 namespace LegendaryExplorerCore.Misc
 {
-
     public class ValueTupleEqualityComparer
     {
         /// <summary>
@@ -34,7 +33,6 @@ namespace LegendaryExplorerCore.Misc
         /// a tuple of 2 elements where each element of the tuple uses a
         /// user-supplied <see cref="IEqualityComparer{T}"/> instance.
         /// </summary>
-
         public static IEqualityComparer<(T1, T2)>
             Create<T1, T2>(
                 IEqualityComparer<T1> comparer1,
@@ -74,7 +72,6 @@ namespace LegendaryExplorerCore.Misc
         /// a tuple of 3 elements where each element of the tuple uses a
         /// user-supplied <see cref="IEqualityComparer{T}"/> instance.
         /// </summary>
-
         public static IEqualityComparer<(T1, T2, T3)>
             Create<T1, T2, T3>(
                 IEqualityComparer<T1> comparer1,
@@ -121,7 +118,6 @@ namespace LegendaryExplorerCore.Misc
         /// a tuple of 4 elements where each element of the tuple uses a
         /// user-supplied <see cref="IEqualityComparer{T}"/> instance.
         /// </summary>
-
         public static IEqualityComparer<(T1, T2, T3, T4)>
             Create<T1, T2, T3, T4>(
                 IEqualityComparer<T1> comparer1,
@@ -175,7 +171,6 @@ namespace LegendaryExplorerCore.Misc
         /// a tuple of 5 elements where each element of the tuple uses a
         /// user-supplied <see cref="IEqualityComparer{T}"/> instance.
         /// </summary>
-
         public static IEqualityComparer<(T1, T2, T3, T4, T5)>
             Create<T1, T2, T3, T4, T5>(
                 IEqualityComparer<T1> comparer1,
@@ -236,7 +231,6 @@ namespace LegendaryExplorerCore.Misc
         /// a tuple of 6 elements where each element of the tuple uses a
         /// user-supplied <see cref="IEqualityComparer{T}"/> instance.
         /// </summary>
-
         public static IEqualityComparer<(T1, T2, T3, T4, T5, T6)>
             Create<T1, T2, T3, T4, T5, T6>(
                 IEqualityComparer<T1> comparer1,
@@ -304,7 +298,6 @@ namespace LegendaryExplorerCore.Misc
         /// a tuple of 7 elements where each element of the tuple uses a
         /// user-supplied <see cref="IEqualityComparer{T}"/> instance.
         /// </summary>
-
         public static IEqualityComparer<(T1, T2, T3, T4, T5, T6, T7)>
             Create<T1, T2, T3, T4, T5, T6, T7>(
                 IEqualityComparer<T1> comparer1,
@@ -379,7 +372,6 @@ namespace LegendaryExplorerCore.Misc
         /// a tuple of 8 elements where each element of the tuple uses a
         /// user-supplied <see cref="IEqualityComparer{T}"/> instance.
         /// </summary>
-
         public static IEqualityComparer<(T1, T2, T3, T4, T5, T6, T7, T8)>
             Create<T1, T2, T3, T4, T5, T6, T7, T8>(
                 IEqualityComparer<T1> comparer1,

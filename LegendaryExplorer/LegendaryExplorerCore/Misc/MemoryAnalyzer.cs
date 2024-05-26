@@ -41,7 +41,6 @@ namespace LegendaryExplorerCore.Misc
             }
         }
 
-
         public static void Refresh()
         {
             TrackedMemoryObjects.Where(x => !x.IsAlive()).ForEach(x => x.RemainingLifetime--);

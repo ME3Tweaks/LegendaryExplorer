@@ -308,7 +308,6 @@ namespace Xceed.Wpf.Toolkit
       SetButtonUsage();
     }
 
-
     #endregion //Base Class Overrides
 
     #region Event Handlers

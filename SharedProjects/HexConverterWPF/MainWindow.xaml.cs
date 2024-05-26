@@ -160,7 +160,6 @@ namespace HexConverter
             DecInputTextBoxes = new List<TextBox>(new[] { Float_TextBox, Signed_TextBox, Unsigned_TextBox });
         }
 
-
         /// <summary>
         /// Converts Degrees to Unreal rotation units
         /// </summary>

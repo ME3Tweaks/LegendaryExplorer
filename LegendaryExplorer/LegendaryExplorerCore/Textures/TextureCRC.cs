@@ -94,16 +94,12 @@ namespace LegendaryExplorerCore.Textures
                     pu,
                     0x10);
 
-
                 var t2 = Pclmulqdq.CarrylessMultiply(
                     Sse2.And(t1.AsByte(), xor32).AsInt64(),
                     pu,
                     0x00);
 
-
                 crc = ~Sse41.Extract(Sse2.Xor(x, t2.AsByte()).AsUInt32(), 1);
-
-
 
                 if (endPtr - ptr > 0)
                 {

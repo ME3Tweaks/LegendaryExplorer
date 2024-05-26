@@ -216,7 +216,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             {
                 sc.Serialize(ref short1);
             }
-
         }
 
         public static void Serialize(this SerializingContainer2 sc, ref FaceFXControlPoint point)

@@ -55,7 +55,6 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             return builder.GetOutput();
         }
 
-
         protected readonly TFormatter Formatter = new();
         private readonly Stack<float> ExpressionPrescedence = new(new float[]{NOPRESCEDENCE});
 
@@ -134,7 +133,6 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 Join(node.Interfaces.Select(i => i.Name).ToList(), ", ", EF.Class);
                 Append(")");
             }
-
 
             EClassFlags flags = node.Flags;
             if (flags.Has(EClassFlags.Native))
@@ -256,7 +254,6 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
             return true;
         }
-
 
         public bool VisitNode(VariableDeclaration node)
         {

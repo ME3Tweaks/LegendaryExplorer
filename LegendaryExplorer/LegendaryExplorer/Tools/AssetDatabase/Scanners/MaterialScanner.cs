@@ -13,10 +13,8 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Scanners
 {
     class MaterialScanner : AssetScanner
     {
-
         public MaterialScanner() : base()
         {
-
         }
 
         public override void ScanExport(ExportScanInfo e, ConcurrentAssetDB db, AssetDBScanOptions options)

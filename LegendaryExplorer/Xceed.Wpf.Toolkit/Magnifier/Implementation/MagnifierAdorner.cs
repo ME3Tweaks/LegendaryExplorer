@@ -45,7 +45,6 @@ namespace Xceed.Wpf.Toolkit
       Unloaded += ( s, e ) => InputManager.Current.PostProcessInput -= OnProcessInput;
     }
 
-
     #endregion
 
     #region Private/Internal methods

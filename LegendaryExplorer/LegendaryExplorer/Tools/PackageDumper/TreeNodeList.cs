@@ -16,6 +16,5 @@ namespace LegendaryExplorer.Tools.PackageDumper
             node.Parent = this.containingnode;
             base.Add(node);
         }
-
     }
 }

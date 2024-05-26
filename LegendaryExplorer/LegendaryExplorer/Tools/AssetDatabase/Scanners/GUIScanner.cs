@@ -12,9 +12,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Scanners
     {
         public GUIScanner() : base()
         {
-
         }
-
 
         public override void ScanExport(ExportScanInfo e, ConcurrentAssetDB db, AssetDBScanOptions options)
         {

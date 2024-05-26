@@ -118,6 +118,5 @@ namespace LegendaryExplorer.Tests.Tools.AssetDatabase
             Assert.IsFalse(spec2.MatchesSpecification(noMatch));
             Assert.IsTrue(spec2.MatchesSpecification(noProp));
         }
-        
     }
 }

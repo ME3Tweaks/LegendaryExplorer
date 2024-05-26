@@ -42,7 +42,6 @@ namespace Xceed.Wpf.Toolkit.PropertyGrid
       _isSortedAlphabetically = isSortedAlphabetically;
     }
 
-
     #endregion
 
     #region Properties
@@ -82,10 +81,6 @@ namespace Xceed.Wpf.Toolkit.PropertyGrid
     private int _categoryOrder;
 
     #endregion //CategoryOrder
-
-
-
-
 
     #region PropertyOrder
 

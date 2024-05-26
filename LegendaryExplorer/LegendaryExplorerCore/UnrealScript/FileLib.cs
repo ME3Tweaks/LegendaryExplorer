@@ -623,7 +623,6 @@ namespace LegendaryExplorerCore.UnrealScript
             return ObjectBinary.From<T>(export, packageCache);
         }
 
-
         [Conditional("DEBUGSCRIPT")]
         private static void DisplayError(string scriptText, string logText)
         {

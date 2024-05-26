@@ -71,8 +71,6 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
         public static readonly DependencyProperty IsFolderRecentsProperty = DependencyProperty.Register(
             nameof(IsFolderRecents), typeof(bool), typeof(RecentsControl), new PropertyMetadata(false));
 
-
-
         public RecentsControl()
         {
             LoadCommands();
@@ -115,7 +113,6 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
                 string[] recents = File.ReadAllLines(RecentsAppDataFile);
                 SetRecents(recents.Select(RecentItem.FromRecentEntryString));
             }
-
         }
 
         /// <summary>

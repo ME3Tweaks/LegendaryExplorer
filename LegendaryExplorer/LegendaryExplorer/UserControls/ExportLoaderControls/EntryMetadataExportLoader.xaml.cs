@@ -40,7 +40,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private const int HEADER_OFFSET_EXP_UNKNOWN1 = 0x1C;
 
-
         private const int HEADER_OFFSET_IMP_IDXCLASSNAME = 0x8;
         private const int HEADER_OFFSET_IMP_IDXLINK = 0x10;
         private const int HEADER_OFFSET_IMP_IDXOBJECTNAME = 0x14;
@@ -514,7 +513,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             loadingNewData = false;
         }
 
-
         public override void UnloadExport()
         {
             UnloadEntry();
@@ -569,7 +567,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             if (!loadingNewData && InfoTab_PackageLink_ComboBox.SelectedIndex >= 0)
             {
-
                 var selectedImpExp = InfoTab_PackageLink_ComboBox.SelectedIndex;
                 var unrealIndex = selectedImpExp - CurrentLoadedEntry.FileRef.ImportCount; //get the actual UIndex
                 if (unrealIndex == CurrentLoadedEntry?.UIndex)
@@ -880,8 +877,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             AllEntriesList.Clear();
             _currentLoadedEntry = null;
         }
-
-
 
         /// <summary>
         /// This class is used when stuffing into the list. It makes "0" searchable by having the UIndex property.

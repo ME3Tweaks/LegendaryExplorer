@@ -30,7 +30,6 @@ namespace Xceed.Wpf.Toolkit.Core.Utilities
   /// </summary>
   internal class ValueChangeHelper : DependencyObject
   {
-
     #region Value Property
     /// <summary>
     /// This private property serves as the target of a binding that monitors the value of the binding

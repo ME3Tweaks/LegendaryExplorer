@@ -30,7 +30,6 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
         public TokenStream(List<ScriptToken> tokens, LineLookup lineLookup) : this(tokens)
         {
-
             LineLookup = lineLookup;
 
             DefinitionLinks = new();
@@ -59,7 +58,6 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
         }
 
         public ScriptToken CurrentItem => CurrentIndex >= Data.Count ? EndToken : Data[CurrentIndex];
-
 
         public List<ScriptToken> GetTokensInRange(int start, int end)
         {

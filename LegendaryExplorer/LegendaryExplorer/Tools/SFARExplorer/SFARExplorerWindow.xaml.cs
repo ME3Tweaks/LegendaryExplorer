@@ -44,7 +44,6 @@ namespace LegendaryExplorer.Tools.SFARExplorer
             LoadCommands();
             InitializeComponent();
             RecentsController.InitRecentControl(Toolname, Recents_MenuItem, fileName => LoadFile(fileName));
-
         }
 
         public GenericCommand LoadDLCCommand { get; set; }
@@ -156,8 +155,6 @@ namespace LegendaryExplorer.Tools.SFARExplorer
                 elhw.Activate();
             }
         }
-
-
 
         private bool CanLoadDLC()
         {

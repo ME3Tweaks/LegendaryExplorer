@@ -166,7 +166,6 @@ namespace LegendaryExplorerCore.Packages
         #region Names
         protected uint namesAdded;
 
-
         // Used to make name lookups quick when doing a contains operation as this method is called
         // quite often
         protected readonly CaseInsensitiveDictionary<int> nameLookupTable = new();
@@ -178,7 +177,6 @@ namespace LegendaryExplorerCore.Packages
         public bool IsName(int index) => index >= 0 && index < names.Count;
 
         public string GetNameEntry(int index) => IsName(index) ? names[index] : "";
-
 
         public int FindNameOrAdd(string name)
         {
@@ -340,7 +338,6 @@ namespace LegendaryExplorerCore.Packages
             }
 
             //Debug.WriteLine($@" >> Added export {exportEntry.InstancedFullPath}");
-
 
             UpdateTools(PackageChange.ExportAdd, exportEntry.UIndex);
             //PropertyChanged?.Invoke(this, new PropertyChangedEventArgs((nameof(ExportCount));
@@ -623,7 +620,6 @@ namespace LegendaryExplorerCore.Packages
                     break;
                 }
             }
-
 
             //remove imports
             for (int i = ImportCount - 1; i >= 0; i--)

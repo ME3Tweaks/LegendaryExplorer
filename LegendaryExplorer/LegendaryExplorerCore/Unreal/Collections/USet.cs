@@ -252,7 +252,6 @@ public class USet<T, TKey, TKeyFuncs> : IEnumerable<T> where TKeyFuncs : IKeyFun
 
     public bool Contains(TKey key) => FindId(key).IsValidId();
 
-
     public SetElementId FindId(TKey key)
     {
         if (HashSize > 0)

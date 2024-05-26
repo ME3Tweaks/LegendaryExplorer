@@ -336,25 +336,6 @@ namespace LegendaryExplorerCore.Gammtek.Extensions.Reflection
         }
 
         /// <summary>
-        ///     The is serializable ex.
-        /// </summary>
-        /// <param name="type">The type.</param>
-        /// <returns>The is serializable ex.</returns>
-        /// <exception cref="System.ArgumentNullException">The <paramref name="type" /> is <c>null</c>.</exception>
-        public static bool IsSerializableEx(this Type type)
-        {
-            Argument.IsNotNull(nameof(type), type);
-
-#if NETFX_CORE || PCL
-            return type.GetTypeInfo().IsSerializable;
-#elif NET
-			return type.IsSerializable;
-#else
-            return true;
-#endif
-        }
-
-        /// <summary>
         ///     The is public ex.
         /// </summary>
         /// <param name="type">The type.</param>
@@ -710,7 +691,7 @@ namespace LegendaryExplorerCore.Gammtek.Extensions.Reflection
 
             var instanceType = objectToCheck.GetType();
 
-            if (ConvertableDictionary.ContainsKey(type) && ConvertableDictionary[type].Contains(instanceType))
+            if (ConvertableDictionary.TryGetValue(type, out HashSet<Type> value) && value.Contains(instanceType))
             {
                 return true;
             }

@@ -81,7 +81,6 @@ namespace LegendaryExplorerCore.Tests
                     var uncompressedPS = originalLoadedPackage.SaveToStream(false);
                     var compressedPS = originalLoadedPackage.SaveToStream(true);
 
-
                     uncompressedPS.Position = compressedPS.Position = 0;
 
                     var reopenedUCP = MEPackageHandler.OpenMEPackageFromStream(uncompressedPS);
@@ -348,7 +347,6 @@ namespace LegendaryExplorerCore.Tests
                         {
                             //Function_TextBox.Text = "Parsing UnrealScript Functions for this game is not supported.";
                         }
-
                     }
                     //}
                 }
@@ -422,7 +420,6 @@ namespace LegendaryExplorerCore.Tests
                                 "A name was replaced, but the Names[] array accessor for the replaced name returned the wrong name!");
                         }
                     }
-
                 }
             }
         }
@@ -454,6 +451,5 @@ namespace LegendaryExplorerCore.Tests
             }
             Assert.AreEqual(2, numExportsLoaded);
         }
-
     }
 }

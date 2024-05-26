@@ -28,7 +28,6 @@ namespace Xceed.Wpf.Toolkit.PropertyGrid
 {
   public abstract class EditorDefinitionBase : PropertyDefinitionBase
   {
-
     internal EditorDefinitionBase() { }
 
     internal FrameworkElement GenerateEditingElementInternal( PropertyItemBase propertyItem ) 

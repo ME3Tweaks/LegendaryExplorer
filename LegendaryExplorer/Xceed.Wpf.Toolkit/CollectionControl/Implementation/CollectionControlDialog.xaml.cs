@@ -27,6 +27,7 @@ using System.Security;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using Xceed.Wpf.Toolkit.PropertyGrid;
+using System.Runtime.CompilerServices;
 
 namespace Xceed.Wpf.Toolkit
 {
@@ -217,7 +218,7 @@ namespace Xceed.Wpf.Toolkit
         // Initialized a new object with default values
         try
         {
-          result = FormatterServices.GetUninitializedObject( sourceType );
+          result = RuntimeHelpers.GetUninitializedObject( sourceType );
         }
         catch( Exception )
         {

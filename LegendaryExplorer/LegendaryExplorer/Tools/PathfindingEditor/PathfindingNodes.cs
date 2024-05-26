@@ -286,7 +286,6 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
             }
         }
 
-
         /// <summary>
         /// Class for storing Volumes information. THIS IS NOT A NODE TYPE.
         /// </summary>

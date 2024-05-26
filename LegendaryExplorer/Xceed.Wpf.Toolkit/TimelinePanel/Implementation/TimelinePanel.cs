@@ -393,7 +393,6 @@ namespace Xceed.Wpf.Toolkit
       return renderSize;
     }
 
-
     #endregion //Base Class Overrides
 
     #region Methods
@@ -510,7 +509,6 @@ namespace Xceed.Wpf.Toolkit
 
         if( Orientation == Orientation.Vertical )
         {
-
           //---------------------------------------------------------------------
           // 
           // Begin Layout Algorithm (Vertical Orientation)
@@ -646,7 +644,6 @@ namespace Xceed.Wpf.Toolkit
 
               if( overlappingElements.Count > 0 )
               {
-
                 bool foundGap = false;
 
                 // now, look for a gap (there is a good chance that there won't be one, but if there is 
@@ -687,7 +684,6 @@ namespace Xceed.Wpf.Toolkit
                       break;
                     }
                   }
-
                 }
 
                 // if we didn't find a gap, we need to make one by scooting the overlapping elements 
@@ -933,7 +929,6 @@ namespace Xceed.Wpf.Toolkit
 
               if( overlappingElements.Count > 0 )
               {
-
                 bool foundGap = false;
 
                 // now, look for a gap (there is a good chance that there won't be one, but if there is 
@@ -974,7 +969,6 @@ namespace Xceed.Wpf.Toolkit
                       break;
                     }
                   }
-
                 }
 
                 // if we didn't find a gap, we need to make one by scooting the overlapping elements 

@@ -14,7 +14,6 @@
 
   ***********************************************************************************/
 
-
 using System.Collections.Generic;
 using System.Windows.Controls;
 using System.Collections;
@@ -26,7 +25,6 @@ namespace Xceed.Wpf.Toolkit.PropertyGrid
 {
   internal interface IPropertyContainer
   {
-
 
 
 
@@ -52,6 +50,5 @@ namespace Xceed.Wpf.Toolkit.PropertyGrid
     FilterInfo FilterInfo { get; }
 
     bool? IsPropertyVisible( PropertyDescriptor pd );
-
   }
 }

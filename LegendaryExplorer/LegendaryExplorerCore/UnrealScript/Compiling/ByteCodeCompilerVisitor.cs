@@ -130,7 +130,6 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     }
                 }
 
-
                 foreach (FunctionParameter parameter in func.Parameters.Where(param => param.IsOptional))
                 {
                     if (parameter.DefaultParameter is Expression expr)
@@ -148,7 +147,6 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                         WriteOpCode(OpCodes.Nothing);
                     }
                 }
-
 
                 if (func.IsNative)
                 {
@@ -193,7 +191,6 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 throw new Exception("Cannot compile a function to a state!");
             }
         }
-
 
         public static void Compile(State state, UState target, Func<IMEPackage, string, IEntry> missingObjectResolver = null)
         {
@@ -562,7 +559,6 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         public bool VisitNode(ExpressionOnlyStatement node)
         {
-
             if (NeedsToEatReturnValue(node.Value, out IEntry returnProp))
             {
                 WriteOpCode(OpCodes.EatReturnValue);
@@ -715,7 +711,6 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             WriteOpCode(OpCodes.EndFunctionParms);
             skip?.End();
             return true;
-
         }
 
         public bool VisitNode(PreOpReference node)
@@ -1155,7 +1150,6 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             return true;
         }
 
-
         public bool VisitNode(DynArrayLength node)
         {
             WriteOpCode(OpCodes.DynArrayLength);
@@ -1301,7 +1295,6 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             return true;
         }
 
-
         public bool VisitNode(Label node)
         {
             node.StartOffset = Position;
@@ -1440,7 +1433,6 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
         //TODO: remove? alreaty done in parser. doing again should have no effect
         static Expression AddConversion(VariableType destType, Expression expr)
         {
-
             if (expr is NoneLiteral noneLit)
             {
                 if (destType.PropertyType == EPropertyType.Delegate)

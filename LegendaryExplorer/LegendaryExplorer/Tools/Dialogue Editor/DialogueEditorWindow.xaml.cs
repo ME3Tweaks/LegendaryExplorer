@@ -235,7 +235,6 @@ namespace LegendaryExplorer.DialogueEditor
             StatusText = "Select package file to load";
             SelectedSpeaker = new SpeakerExtended(-3, "None");
 
-
             InitializeComponent();
             RecentsController.InitRecentControl(Toolname, Recents_MenuItem, LoadFile);
 
@@ -590,7 +589,6 @@ namespace LegendaryExplorer.DialogueEditor
                 {
                     FFXAnimsets.Add(exp);
                 }
-
             }
             catch (Exception ex)
             {
@@ -601,7 +599,6 @@ namespace LegendaryExplorer.DialogueEditor
         }
         private void UnloadFile()
         {
-
             RightBarColumn.Width = new GridLength(0);
             SelectedConv = null;
             CurrentLoadedExport = null;
@@ -699,11 +696,9 @@ namespace LegendaryExplorer.DialogueEditor
             {
                 conv.DetailedParse();
             }
-
         }
         private void BackParser_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-
             BackParser.CancelAsync();
 #if DEBUG
             Debug.WriteLine("BackParse Done");
@@ -735,13 +730,11 @@ namespace LegendaryExplorer.DialogueEditor
                 {
                     node.IsSkippable = false; //ME3/
                     node.IsUnskippable = nodeprop.GetProp<BoolProperty>("bUnskippable");
-
                 }
                 else
                 {
                     node.IsSkippable = nodeprop.GetProp<BoolProperty>("bSkippable"); //ME3/
                     node.IsUnskippable = false;
-
                 }
                 node.ConditionalParam = nodeprop.GetProp<IntProperty>("nConditionalParam");
                 node.TransitionParam = nodeprop.GetProp<IntProperty>("nStateTransitionParam");
@@ -821,9 +814,7 @@ namespace LegendaryExplorer.DialogueEditor
         #region RecreateToFile
         public static void PushConvoToFile(ConversationExtended convo)
         {
-
             convo.Export.WriteProperties(convo.BioConvo);
-
         }
         public void PushLocalGraphChanges(DiagNode obj)
         {
@@ -842,14 +833,12 @@ namespace LegendaryExplorer.DialogueEditor
             {
                 ConvGraphEditor.UpdateEdge(edge);
             }
-
         }
 
         private void SaveSpeakersToProperties(IEnumerable<SpeakerExtended> speakerCollection)
         {
             try
             {
-
                 var m_aSpeakerList = new ArrayProperty<NameProperty>("m_aSpeakerList");
                 var m_SpeakerList = new ArrayProperty<StructProperty>("m_SpeakerList");
                 var m_aMaleFaceSets = new ArrayProperty<ObjectProperty>("m_aMaleFaceSets");
@@ -872,7 +861,6 @@ namespace LegendaryExplorer.DialogueEditor
                             }));
                         }
                     }
-
 
                     m_aMaleFaceSets.Add(new ObjectProperty(spkr.FaceFX_Male));
                     m_aFemaleFaceSets.Add(new ObjectProperty(spkr.FaceFX_Female));
@@ -899,7 +887,6 @@ namespace LegendaryExplorer.DialogueEditor
             catch (Exception e)
             {
                 MessageBox.Show($"Speaksave FAILED. {e}");
-
             }
         }
         public void RecreateNodesToProperties(ConversationExtended conv, bool pushtofile = true)
@@ -1030,9 +1017,6 @@ namespace LegendaryExplorer.DialogueEditor
                 }
             }
 
-
-
-
             if (updatedConvos.IsEmpty())
                 return;
 
@@ -1058,7 +1042,6 @@ namespace LegendaryExplorer.DialogueEditor
                 DialogueNode_SelectByIndex(-1);
             }
             NoUIRefresh = false;
-
         }
 
         public void NodePropertyChanged(object sender, PropertyChangedEventArgs e) //update handler for selecteddiagnode.
@@ -1078,8 +1061,6 @@ namespace LegendaryExplorer.DialogueEditor
             var node = SelectedDialogueNode;
             var prop = node.NodeProp;
             IsLocalUpdate = true;  //Full reparse of changed convo not needed.
-
-
 
             if (e.PropertyName == "LineStrRef" || e.PropertyName == "SpeakerIndex")
             {
@@ -1163,7 +1144,6 @@ namespace LegendaryExplorer.DialogueEditor
                 prop.Properties.AddOrReplaceProp(bAlwaysHideSubtitle);
             }
 
-
             if (!SelectedDialogueNode.IsReply)
             {
                 //Ignore replylist for now
@@ -1172,7 +1152,6 @@ namespace LegendaryExplorer.DialogueEditor
                 prop.Properties.AddOrReplaceProp(nSpeakerIndex);
                 var bSkippable = new BoolProperty(node.IsSkippable, "bSkippable");
                 prop.Properties.AddOrReplaceProp(bSkippable);
-
             }
             else
             {
@@ -1185,7 +1164,6 @@ namespace LegendaryExplorer.DialogueEditor
                     prop.Properties.AddOrReplaceProp(ReplyType);
                     needsRefresh = true;
                 }
-
 
                 if (Pcc.Game.IsGame3() && (e.PropertyName == "IsDefaultAction" || e.PropertyName == "IsMajorDecision"))
                 {
@@ -1200,7 +1178,6 @@ namespace LegendaryExplorer.DialogueEditor
 
             if (needsRefresh)
                 RefreshView();
-
         }
 
         #endregion Handling-updates
@@ -1209,7 +1186,6 @@ namespace LegendaryExplorer.DialogueEditor
 
         public void GenerateGraph()
         {
-
             if (File.Exists(JSONpath) && LayoutMode != 2)
             {
                 SavedPositions = JsonConvert.DeserializeObject<List<SaveData>>(File.ReadAllText(JSONpath));
@@ -1228,7 +1204,6 @@ namespace LegendaryExplorer.DialogueEditor
             StartPoDReplyNodes = 20;
             if (SelectedConv == null)
                 return;
-
 
             LoadDialogueObjects();
             Layout();
@@ -1398,7 +1373,6 @@ namespace LegendaryExplorer.DialogueEditor
                         layoutStarts.Remove(start);
                     }
 
-
                     if (layoutEntries.Count > 0)
                     {
                         DiagNodeEntry entry = layoutEntries.Dequeue();
@@ -1408,7 +1382,6 @@ namespace LegendaryExplorer.DialogueEditor
                             addheight = entry.Height;
                         }
                     }
-
 
                     if (layoutReplies.Count > 0)
                     {
@@ -1478,7 +1451,6 @@ namespace LegendaryExplorer.DialogueEditor
                             nextNode = null;
                             if (thisNode != null && !visitedNodes.Contains(thisNode.NodeUID))
                             {
-
                                 int r = 0;
                                 if (!thisNode.Node.IsReply)
                                 {
@@ -1487,8 +1459,6 @@ namespace LegendaryExplorer.DialogueEditor
                                         rowShift += maxobjHeight + 30 - ROW_SPACING;
                                     }
 
-
-
                                     if (maxEntryRow >= rowAt)
                                         rowAt = maxEntryRow + 1;
 
@@ -1496,7 +1466,6 @@ namespace LegendaryExplorer.DialogueEditor
                                     thisNode.SetOffset(COLUMN_SPACING, rowAt * ROW_SPACING + rowShift);
                                     maxEntryRow = rowAt;
                                     maxobjHeight = thisNode.Height;
-
                                 }
                                 else
                                 {
@@ -1575,7 +1544,6 @@ namespace LegendaryExplorer.DialogueEditor
         }
         private void AutoLayout_Waterfall()
         {
-
             foreach (DObj obj in CurrentObjects)
             {
                 obj.SetOffset(0, 0); //remove existing positioning
@@ -1685,7 +1653,6 @@ namespace LegendaryExplorer.DialogueEditor
                             }
                             else if (!BranchStack.IsEmpty())//PRIOR BRANCH IS DONE PULL nextNode from STACK of sub-branches
                             {
-
                                 (nextNode, columnAt) = BranchStack.Pop();
 
                                 if (visitedNodes.Contains(nextNode.NodeUID)) //if nextnode is already up, make sure stack is pulled again without moving down.
@@ -1837,7 +1804,6 @@ namespace LegendaryExplorer.DialogueEditor
                         break;
                 }
             }
-
         }
 
         private void ConversationList_SelectedItemChanged(object sender, SelectionChangedEventArgs e)
@@ -1895,10 +1861,8 @@ namespace LegendaryExplorer.DialogueEditor
                 {
                     ListenersList.Add(spkr);
                 }
-
             }
             graphEditor_PanTo();
-
         }
         private void Convo_NSFFX_DropDownClosed(object sender, EventArgs e)
         {
@@ -1989,7 +1953,6 @@ namespace LegendaryExplorer.DialogueEditor
         }
         private void ComboBox_Speaker_FFX_DropDownClosed(object sender, EventArgs e)
         {
-
             var ffxMaleNew = SelectedSpeaker.FaceFX_Male;
             var ffxMaleOld = SelectedConv.GetFaceFX(SelectedSpeaker.SpeakerID, true);
             var ffxFemaleNew = SelectedSpeaker.FaceFX_Female;
@@ -2006,13 +1969,10 @@ namespace LegendaryExplorer.DialogueEditor
                 return;
             }
 
-
-
             SelectedSpeakerList[SelectedSpeaker.SpeakerID + 2].FaceFX_Male = ffxMaleNew;
             SelectedSpeakerList[SelectedSpeaker.SpeakerID + 2].FaceFX_Female = ffxFemaleNew;
 
             SaveSpeakersToProperties(SelectedSpeakerList);
-
         }
         private void EnterName_Speaker_KeyUp(object sender, KeyEventArgs e)
         {
@@ -2066,7 +2026,6 @@ namespace LegendaryExplorer.DialogueEditor
                     return;
                 }
             }
-
 
             SelectedConv.Speakers.RemoveAt(deleteTarget);
             SelectedSpeakerList.RemoveAt(deleteTarget);
@@ -2358,7 +2317,6 @@ namespace LegendaryExplorer.DialogueEditor
             else
                 Node_Text_Cnd.Text = "Bool: ";
 
-
         }
         private void DialogueNode_OpenLinkEditor(object obj)
         {
@@ -2373,7 +2331,6 @@ namespace LegendaryExplorer.DialogueEditor
             {
                 RecreateNodesToProperties(SelectedConv);
             }
-
         }
         private void DialogueNode_Add(object obj)
         {
@@ -2559,7 +2516,6 @@ namespace LegendaryExplorer.DialogueEditor
                                 if (linkval > deleteID)
                                 {
                                     linkval -= 1;
-
                                 }
                                 var newip = new IntProperty(linkval, "nIndex");
                                 link.Properties.AddOrReplaceProp(newip);
@@ -2574,7 +2530,6 @@ namespace LegendaryExplorer.DialogueEditor
             }
             else
             {
-
                 foreach (var reply in SelectedConv.ReplyList)
                 {
                     var oldEntryLinksProp = reply.NodeProp.GetProp<ArrayProperty<IntProperty>>("EntryList");
@@ -2662,7 +2617,6 @@ namespace LegendaryExplorer.DialogueEditor
 
                 SelectedConv.StageDirections.Add(new StageDirection(strRef, GlobalFindStrRefbyID(strRef, Pcc), "Add direction"));
                 SaveStageDirectionsToProperties(SelectedConv);
-
             }
             else if (command == "Delete" && StageDirs_ListBox.SelectedIndex >= 0)
             {
@@ -2734,7 +2688,6 @@ namespace LegendaryExplorer.DialogueEditor
                 Start_ListBox.SelectedIndex = start.Order;
                 SetUIMode(3, false);
             }
-
         }
         private void graphEditor_Click(object sender, EventArgs e)
         {
@@ -2824,7 +2777,6 @@ namespace LegendaryExplorer.DialogueEditor
                 else if (e.Shift || e.Control)
                 {
                     panToSelection = false;
-
                 }
                 else if (!obj.IsSelected)
                 {
@@ -2838,16 +2790,13 @@ namespace LegendaryExplorer.DialogueEditor
             }
         }
 
-
         private void backMouseDown_Handler(object sender, PInputEventArgs e)
         {
             if (!(e.PickedNode is PCamera) || SelectedConv == null) return;
 
             if (e.Button == System.Windows.Forms.MouseButtons.Right)
             {
-
             }
-
         }
         private void back_MouseUp(object sender, PInputEventArgs e)
         {
@@ -2881,9 +2830,7 @@ namespace LegendaryExplorer.DialogueEditor
                     contextMenu.DataContext = this;
                     contextMenu.IsOpen = true;
                     graphEditor.DisableDragging();
-
                 }
-
             }
             else if (obj is DiagNodeReply dreply)
             {
@@ -3007,7 +2954,6 @@ namespace LegendaryExplorer.DialogueEditor
                 if (GotoBox.SelectedItem is DiagNode dnode)
                 {
                     DialogueNode_Selected(dnode);
-
                 }
                 if (GotoBox.SelectedItem is DObj o)
                 {
@@ -3121,7 +3067,6 @@ namespace LegendaryExplorer.DialogueEditor
         //TEMPORARY UNTIL NEW BUILD
         private void OpenInInterpViewer_Clicked(ExportEntry exportEntry)
         {
-
             var p = new InterpEditorWindow();
             p.Show();
             p.LoadFile(exportEntry.FileRef.FilePath);
@@ -3129,7 +3074,6 @@ namespace LegendaryExplorer.DialogueEditor
             {
                 p.SelectedInterpData = exportEntry;
             }
-
         }
 
         private void OpenInAction(object obj)
@@ -3427,7 +3371,6 @@ namespace LegendaryExplorer.DialogueEditor
             {
                 GotoBox.IsDropDownOpen = false;
             }
-
         }
         private static void LoadTLKManager()
         {
@@ -3542,7 +3485,6 @@ namespace LegendaryExplorer.DialogueEditor
                 }
                 RefreshView();
             }
-
         }
         private void ResetColorsToDefault()
         {
@@ -3687,10 +3629,6 @@ namespace LegendaryExplorer.DialogueEditor
             await Task.Delay(new TimeSpan(0, 0, 0, 0, delay));
             return true;
         }
-
-
-
-
 
         #endregion Helpers
 

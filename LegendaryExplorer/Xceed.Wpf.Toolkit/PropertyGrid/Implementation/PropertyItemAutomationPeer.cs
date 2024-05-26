@@ -44,7 +44,6 @@ namespace Xceed.Wpf.Toolkit.PropertyGrid
             throw new NotSupportedException();
         }
 
-
         string IValueProvider.Value
         {
             get

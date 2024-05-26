@@ -23,7 +23,6 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
     internal class ClassValidationVisitor : IASTVisitor
     {
-
         private readonly SymbolTable Symbols;
         private readonly MessageLog Log;
         private bool Success;
@@ -86,7 +85,6 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                         {
                             return Error($"No class named '{node.Parent.Name}' found!", node.Parent.StartPos, node.Parent.EndPos);
                         }
-
 
                         if (node._outerClass != null)
                         {
@@ -327,7 +325,6 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                     return Success;
             }
         }
-
 
         public bool VisitNode(VariableDeclaration node) => VisitVarDecl(node);
 
@@ -672,7 +669,6 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                     }
                 }
 
-
                 node.Declaration = node;
             }
 
@@ -715,7 +711,6 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
                 if (Success == false)
                     return Error("Error in function parameters.", node.StartPos, node.EndPos);
-
 
                 if (node.FriendlyName is not null //true in ME1, ME2, LE1, LE2, and UDK
                  && node.IsOperator)
@@ -827,7 +822,6 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 {
                     return Error("If a state function has the Net flag, it must override a class function", node.StartPos, node.EndPos);
                 }
-
 
                 if (node.ReturnValueDeclaration != null)
                 {

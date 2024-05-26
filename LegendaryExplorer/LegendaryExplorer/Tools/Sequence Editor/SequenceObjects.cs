@@ -73,7 +73,6 @@ namespace LegendaryExplorer.Tools.SequenceObjects
         protected SequenceGraphEditor g;
         public RectangleF PosAtDragStart;
 
-
         protected ExportEntry export;
         public ExportEntry Export => export;
         public int UIndex => export.UIndex;
@@ -1095,7 +1094,6 @@ namespace LegendaryExplorer.Tools.SequenceObjects
                 graphEditor.addEdge(edge);
                 base.OnStartDrag(sender, e);
                 draggingVarlink = true;
-
             }
 
             protected override void OnDrag(object sender, PInputEventArgs e)
@@ -1209,7 +1207,6 @@ namespace LegendaryExplorer.Tools.SequenceObjects
                 return;
             KismetHelper.CreateOutputLink(start.export, linkDesc, end.export, inputIndex);
         }
-
 
         private static void CreateVarlink(PNode p1, SVar end)
         {

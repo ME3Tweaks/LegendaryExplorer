@@ -68,7 +68,6 @@ namespace LegendaryExplorer.Tools.MountEditor
             set => SetProperty(ref _currentMountFileText, value);
         }
 
-
         public MountEditorWindow() : base("Mount Editor", true)
         {
             CurrentMountFileText = "No mount file loaded. Mouse over fields for descriptions of their values.";
@@ -103,7 +102,6 @@ namespace LegendaryExplorer.Tools.MountEditor
             {
                 LoadFile(m.FileName);
             }
-
         }
 
         public void LoadFile(string fileName)
@@ -313,7 +311,6 @@ namespace LegendaryExplorer.Tools.MountEditor
 
         private void MountOptionsComboBox_GotFocus(object sender, RoutedEventArgs e)
         {
-
         }
 
         private bool loadingNewData;

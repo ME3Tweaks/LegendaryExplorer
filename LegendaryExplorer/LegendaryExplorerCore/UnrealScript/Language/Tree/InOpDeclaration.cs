@@ -26,6 +26,5 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
                 && string.Equals(this.LeftOperand.VarType.Name, other.LeftOperand.VarType.Name, StringComparison.OrdinalIgnoreCase)
                 && string.Equals(this.RightOperand.VarType.Name, other.RightOperand.VarType.Name, StringComparison.OrdinalIgnoreCase);
         }
-
     }
 }

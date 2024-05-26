@@ -140,7 +140,6 @@ namespace LegendaryExplorer.Tools.Soundplorer
                     StatusBarIDText = Pcc.Game.ToString();
                 }
 
-
                 if (LoadedISBFile != null)
                 {
                     LoadISB();
@@ -363,7 +362,6 @@ namespace LegendaryExplorer.Tools.Soundplorer
                 }
             }
 
-
             backgroundScanner = new BackgroundWorker();
             backgroundScanner.DoWork += GetStreamTimes;
             backgroundScanner.RunWorkerCompleted += GetStreamTimes_Completed;
@@ -429,8 +427,6 @@ namespace LegendaryExplorer.Tools.Soundplorer
                 }
             }
 
-
-
             if (exportsRequiringReload.Any())
             {
                 SoundplorerExport spExport = (SoundplorerExport)SoundExports_ListBox.SelectedItem;
@@ -469,7 +465,6 @@ namespace LegendaryExplorer.Tools.Soundplorer
             {
                 soundPanel.UnloadAFCEntry();
             }
-
 
             if (isEntry != null) soundPanel.LoadISACTEntry(isEntry.Entry);
             if (spExport != null) soundPanel.LoadExport(spExport.Export);
@@ -622,7 +617,6 @@ namespace LegendaryExplorer.Tools.Soundplorer
                 MessageBox.Show("Done.");
             }
         }
-
 
         private void ExportWave(SoundplorerExport spExport, string outputLocation = null)
         {
@@ -846,7 +840,6 @@ namespace LegendaryExplorer.Tools.Soundplorer
                 // Note that you can have more than one file.
                 e.Data.GetData(DataFormats.FileDrop) is string[] files)
             {
-
                 // Assuming you have one file that you care about, pass it off to whatever
                 // handling code you have defined.
                 LoadFile(files[0]);
@@ -889,7 +882,6 @@ namespace LegendaryExplorer.Tools.Soundplorer
             
             string convertedFolder = await WwiseCliHandler.RunWwiseConversion(srod.ChosenSettings.TargetGame, dlg.FileName, srod.ChosenSettings);
             MessageBox.Show("Done. Converted files have been placed into:\n" + convertedFolder);
-
         }
 
         private void SetWwisePaths_Clicked(object sender, RoutedEventArgs e)
@@ -1067,10 +1059,8 @@ namespace LegendaryExplorer.Tools.Soundplorer
             }
         }
 
-
         private void ExtractISACTAsWave_Clicked(object sender, RoutedEventArgs e)
         {
-
         }
 
         private void SoundplorerWPF_OnLoaded(object sender, RoutedEventArgs e)
@@ -1102,5 +1092,4 @@ namespace LegendaryExplorer.Tools.Soundplorer
 
         public string Toolname => "Soundplorer";
     }
-
 }

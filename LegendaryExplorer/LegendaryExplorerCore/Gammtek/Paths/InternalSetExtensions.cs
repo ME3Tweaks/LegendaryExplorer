@@ -101,7 +101,6 @@ namespace LegendaryExplorerCore.Gammtek.Paths
 // Hashset operations!
 //
 
-
 #if NETSTANDARD
 		/// <summary>
 		///     Creates an hashset from a <i>IEnumerable&lt;T&gt;</i>.

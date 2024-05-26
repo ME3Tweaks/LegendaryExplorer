@@ -23,7 +23,6 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
         
         private readonly Dictionary<int, ScriptToken> Comments;
 
-
         private Lexer(string code, MessageLog log = null)
         {
             CurrentIndex = 0;
@@ -57,7 +56,6 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
         {
             uint tokenGuess = BitOperations.RoundUpToPowerOf2((uint)Text.Length / 20);
             var tokens = new List<ScriptToken>((int)Math.Min(tokenGuess, 2_097_152));
-
 
             Lines.Add(CurrentIndex);
 
@@ -500,7 +498,6 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
         }
 
         #endregion
-
 
         //adapted from .NET bcl IndexOf
         private static unsafe int SkipSpaces(string str, int startIndex)

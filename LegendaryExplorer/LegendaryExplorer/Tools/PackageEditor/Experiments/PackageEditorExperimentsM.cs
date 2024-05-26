@@ -35,8 +35,6 @@ using LegendaryExplorerCore.Misc.ME3Tweaks;
 using LegendaryExplorerCore.Textures;
 using LegendaryExplorerCore.UnrealScript;
 using Function = LegendaryExplorerCore.Unreal.Classes.Function;
-using DocumentFormat.OpenXml.Vml.Spreadsheet;
-using ICSharpCode.AvalonEdit;
 using LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE;
 using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
@@ -48,7 +46,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
     /// <summary>
     /// Class where Mgamerz can put debug/dev/experimental code
     /// </summary>
-    public class PackageEditorExperimentsM
+    public static class PackageEditorExperimentsM
     {
         private static MaterialScreenshotLE1 msLE1; // Don't fall out of scope
         public static void StartMatScreenshot(PackageEditorWindow pe)
@@ -64,7 +62,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 MessageBox.Show("Must have package open first");
                 return;
             }
-
 
             var dlg = new CommonOpenFileDialog
             {
@@ -109,7 +106,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     (string text, SyntaxInfo syntaxInfo) = codeBuilder.GetOutput();
                     return text;
                 }
-
 
             }
             catch (Exception e) //when (!App.IsDebug)
@@ -210,7 +206,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
         public static void CoalesceBioActorTypes(PackageEditorWindow pewpf)
         {
-
             Task.Run(() =>
             {
                 MEPackageHandler.GlobalSharedCacheEnabled = false;
@@ -232,7 +227,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     foreach (var f in pcc.Exports.Where(x => !x.IsDefaultObject && x.IsA("BioActorType")))
                     {
                         EntryExporter.ExportExportToPackage(f, actorTypesPackage, out var _, globalCache);
-
                     }
 
                     numDone++;
@@ -240,13 +234,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 }
                 actorTypesPackage.Save();
                 MEPackageHandler.GlobalSharedCacheEnabled = true;
-
             }).ContinueWithOnUIThread(foundCandidates => { pewpf.IsBusy = false; });
         }
 
         public static void EnumerateAllFunctions(PackageEditorWindow pewpf)
         {
-
             Task.Run(() =>
             {
                 pewpf.BusyText = "Enumerating functions...";
@@ -284,7 +276,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
         public static void ShaderCacheResearch(PackageEditorWindow pewpf)
         {
-            Dictionary<string, int> mapCount = new Dictionary<string, int>();
+            Dictionary<string, int> mapCount = [];
 
             bool ScanForNames(byte[] bytes, IMEPackage package)
             {
@@ -308,7 +300,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     }
 
                     mapCount[name] = count;
-                    result = name.StartsWith("F");
+                    result = name.StartsWith('F');
                 }
 
                 pos++;
@@ -563,7 +555,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
         }
 
-
         /// <summary>
         /// Builds a comparison of TESTPATCH functions against their original design. View the difference with WinMerge Folder View.
         /// By Mgamerz
@@ -771,7 +762,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         }
                     }
 
-
                     if (matchingExport != null)
                     {
                         //outs.Add(" >> Found original definition: " + matchingExport.ObjectName + " in " +
@@ -819,7 +809,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                             }
                         }
 
-
                     }
                     else
                     {
@@ -852,7 +841,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 "BioD_Cat004_100HangarBay",
                 "BioD_MPCron_SubMaster",
                 "BioSnd_MPCron"
-
             };
             Dictionary<int, List<string>> indices = new Dictionary<int, List<string>>();
             using var package = (MEPackage)MEPackageHandler.OpenMEPackage(pccPath);
@@ -1037,7 +1025,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     "fullfunctionsignatures.txt"), lines);
         }
 
-
         /// <summary>
         /// Extracts all NoramlizedAverateColors, tints them, and then reinstalls them to the export they came from
         /// </summary>
@@ -1135,10 +1122,9 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                             var potentialStream = Pcc.GetUExport(stream);
                             if (potentialStream.ObjectNameString.Contains(tlkref))
                             {
-                                if (potentialStream.ObjectNameString.ToLower().Contains("player"))
+                                if (potentialStream.ObjectNameString.Contains("player", StringComparison.OrdinalIgnoreCase))
                                 {
-                                    if (!potentialStream.ObjectNameString.ToLower()
-                                                                         .Contains("_" + genderref + "_"))
+                                    if (!potentialStream.ObjectNameString.Contains($"_{genderref}_", StringComparison.OrdinalIgnoreCase))
                                         continue;
                                 }
                                 wwstream = potentialStream;
@@ -1181,8 +1167,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             {
                 if (export.ClassName == "Function")
                 {
-
-                    BinaryReader reader = new EndianReader(new MemoryStream(export.Data)) { Endian = package.Endian };
+                    var reader = new EndianReader(new MemoryStream(export.Data)) { Endian = package.Endian };
                     reader.ReadBytes(12); // skip props
                     int super = reader.ReadInt32();
                     int nextItemInCompChain = reader.ReadInt32();
@@ -1301,7 +1286,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         {
                             if (export.ClassName == "Function")
                             {
-
                                 BinaryReader reader = new BinaryReader(new MemoryStream(export.Data));
                                 reader.ReadBytes(12);
                                 int super = reader.ReadInt32();
@@ -1417,7 +1401,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     }
                 }
 
-
                 string outstr = "";
                 foreach (KeyValuePair<string, List<string>> instancelist in newCachedInfo)
                 {
@@ -1463,7 +1446,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         }
                     }
                 }
-
 
                 string outstr = "";
                 foreach (KeyValuePair<string, List<string>> instancelist in newCachedInfo)
@@ -1524,7 +1506,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                             }
                             catch
                             {
-
                             }
 
                             long v = Interlocked.Increment(ref filesDone);
@@ -1558,7 +1539,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 var export = EntryImporter.ResolveImport(import, globalCache, pc);
                 if (export != null)
                 {
-
                 }
                 else
                 {
@@ -1885,7 +1865,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
 
 
-
         }
 
         public static void MakeAllGrenadesAndAmmoRespawn(PackageEditorWindow pew)
@@ -1988,7 +1967,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                                 $"{Path.GetFileNameWithoutExtension(f.Key)}.{package.GetEntry(v.UIndex).InstancedFullPath}.xml");
                             v.SaveToXML(outPath);
                         }
-
                     }
                 }).ContinueWithOnUIThread(x => { pewpf.IsBusy = false; });
             }
@@ -2069,7 +2047,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                                     if (paramValue == null)
                                     {
                                         spvP.Add(new FloatProperty(0, "ParameterValue"));
-
                                     }
                                     else
                                     {
@@ -2087,7 +2064,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                                     if (paramValue == null)
                                     {
                                         vectorParameters.Add(CommonStructs.Vector3Prop(0, 0, 0, "DefaultValue"));
-
                                     }
                                     else
                                     {
@@ -2204,9 +2180,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 foreach (var entry in entryList)
                 {
                     var entryReplyList = entry.GetProp<ArrayProperty<StructProperty>>("ReplyListNew");
-
                 }
-
 
                 convExp.WriteProperties(convProps);
             }
@@ -2294,7 +2268,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
         public static void ShowTextureFormats(PackageEditorWindow pe)
         {
-            List<string> texFormats = new List<string>();
+            List<string> texFormats = [];
             //foreach (var exp in pe.Pcc.Exports.Where(x => x.IsTexture()))
             //{
             //    var props = exp.GetProperties();
@@ -2346,7 +2320,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             });
         }
 
-
         public static void RebuildInternalResourceClassInformations(PackageEditorWindow pe)
         {
             MEGame game = MEGame.LE1;
@@ -2392,7 +2365,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     }
 
                     sb.AppendLine("\t\t\t\t}"); // stupid intellisense
-
                 }
 
                 sb.AppendLine("};");
@@ -2419,7 +2391,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 var slcaIndex = parent.Components.IndexOf(exp.UIndex);
 
                 var pl = pe.Pcc.FindExport("TheWorld.PersistentLevel");
-                var lightType = exp.ObjectName.Name.Substring(0, exp.ObjectName.Name.IndexOf("_"));
+                var lightType = exp.ObjectName.Name.Substring(0, exp.ObjectName.Name.IndexOf('_'));
                 var newExport = ExportCreator.CreateExport(pe.Pcc, lightType, lightType, pl);
 
                 var positioning = parent.LocalToWorldTransforms[slcaIndex].UnrealDecompose();
@@ -2490,7 +2462,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
         //            if (leColMax.X != portedColMax.X || leColMax.Y != portedColMax.Y || leColMax.Z != portedColMax.Z)
         //                Debug.WriteLine($"{i}-{j} MAX\t({leColMax.X}, {leColMax.Y}, {leColMax.Z}) | ({portedColMax.X}, {portedColMax.Y} ,{portedColMax.Z}) | DIFF [LE-PORTED]: ({leColMax.X - portedColMax.X}, {leColMax.Y - portedColMax.Y}, {leColMax.Z - portedColMax.Z})");
-
 
         //        }
         //    }
@@ -2591,10 +2562,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             var pcc = pe.Pcc;
             var merGamePawns = pcc.FindExport("MERGamePawns");
-            if (merGamePawns == null)
-            {
-                merGamePawns = ExportCreator.CreatePackageExport(pcc, "MERGamePawns");
-            }
+            merGamePawns ??= ExportCreator.CreatePackageExport(pcc, "MERGamePawns");
 
             var tag = bioPawnExport.GetProperty<NameProperty>("Tag");
             FileLib lib = new FileLib(pcc);
@@ -2733,9 +2701,9 @@ defaultproperties
                 foreach (var p in points)
                 {
                     var outVal = p.GetProp<StructProperty>("OutVal");
-                    outVal.GetProp<FloatProperty>("X").Value = outVal.GetProp<FloatProperty>("X").Value + offsetX;
-                    outVal.GetProp<FloatProperty>("Y").Value = outVal.GetProp<FloatProperty>("Y").Value + offsetY;
-                    outVal.GetProp<FloatProperty>("Z").Value = outVal.GetProp<FloatProperty>("Z").Value + offsetZ;
+                    outVal.GetProp<FloatProperty>("X").Value += offsetX;
+                    outVal.GetProp<FloatProperty>("Y").Value += offsetY;
+                    outVal.GetProp<FloatProperty>("Z").Value += offsetZ;
                 }
 
                 interpTrackMove.WriteProperty(posTrack);
@@ -3533,7 +3501,6 @@ defaultproperties
                                         destLevel.CoverLinkRefs.IndexOf(destActorExp.UIndex); // Index into CoverLinkRefs
                                     var lookupStr = $"{clrIdx}-{slotIdx}";
 
-
                                     if (!coverRefPairLookup.TryGetValue(lookupStr, out var covRefIdx))
                                     {
                                         // Cache result for faster lookup
@@ -3585,7 +3552,6 @@ defaultproperties
 
                                         interactions.Add(new ByteProperty(packedByte));
                                     }
-
 
                                     // Generate new struct
                                     PropertyCollection newFireLinkProps = new PropertyCollection();
@@ -3647,7 +3613,6 @@ defaultproperties
                                     packedExposureData &= ~(0xFFFF0000);
                                     packedExposureData |= (exposureScale << 16);
                                     //}
-
 
                                     // Generate new struct
 
@@ -3716,7 +3681,6 @@ defaultproperties
 
                     matchingDestCoverLink.WriteProperty(destSlots);
                 }
-
 
                 // Go to the next node
                 var ncl = sourceCoverLink.GetProperty<ObjectProperty>("NextCoverLink");
@@ -3930,7 +3894,6 @@ defaultproperties
                     udkCompBin.CollisionVertices = le1CompBin.CollisionVertices;
                     udkComp.WriteBinary(udkCompBin);
                 }
-
 
                 udkP.Save(udkDestFile);
             }
@@ -4205,7 +4168,6 @@ defaultproperties
                     fullCount += count;
                 }
 
-
                 var objectDB = ObjectInstanceDB.Create(game, allPackages, numDone => pe.BusyText = $"Indexed [{numDone}/{fullCount}] files", addMoreItems);
 
                 // Compile the database
@@ -4219,8 +4181,6 @@ defaultproperties
                 objectDB.Serialize(fs);
             }).ContinueWithOnUIThread(_ => { pe.EndBusy(); });
         }
-
-
 
         public static void PortSequenceObjectClassAcrossGame(PackageEditorWindow pe)
         {
@@ -4240,7 +4200,6 @@ defaultproperties
 
                 using var p = MEPackageHandler.OpenMEPackage(donorDest);
             }
-
         }
 
         public static void SearchObjectInfos(PackageEditorWindow pe)
@@ -4318,14 +4277,12 @@ defaultproperties
                     b.Show();
                 }
 
-
             }
         }
 
         /// <summary>
         /// Converts a WwiseBank to a basic Wwise project with events.
         /// </summary>
-        /// <param name="getPeWindow"></param>
         /// <exception cref="NotImplementedException"></exception>
         public static void ConvertWwiseBankToProject(PackageEditorWindow peWindow)
         {
@@ -4389,7 +4346,6 @@ defaultproperties
                 }
 
                 fxa.WriteBinary(fxaO);
-
             }
         }
 
