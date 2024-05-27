@@ -1642,25 +1642,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             });
         }
 
-        public static void TestLODBias(PackageEditorWindow pew)
-        {
-            string[] extensions = { ".pcc" };
-            FileInfo[] files = new DirectoryInfo(LE3Directory.CookedPCPath)
-                .EnumerateFiles("*", SearchOption.AllDirectories)
-                .Where(f => f.Name.Contains("Cat002") && extensions.Contains(f.Extension.ToLower()))
-                .ToArray();
-            foreach (var f in files)
-            {
-                var p = MEPackageHandler.OpenMEPackage(f.FullName, forceLoadFromDisk: true);
-                foreach (var tex in p.Exports.Where(x => x.ClassName == "Texture2D"))
-                {
-                    tex.WriteProperty(new IntProperty(-5, "InternalFormatLODBias"));
-                }
-
-                p.Save();
-            }
-        }
-
         public static void FindEmptyMips(PackageEditorWindow pew)
         {
             string[] extensions = { ".pcc" };

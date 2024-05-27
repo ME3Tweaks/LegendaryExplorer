@@ -550,12 +550,6 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         {
             PackageEditorExperimentsM.EnumerateAllFunctions(GetPEWindow());
         }
-
-        private void LODBiasTest_Clicked(object sender, RoutedEventArgs e)
-        {
-            PackageEditorExperimentsM.TestLODBias(GetPEWindow());
-        }
-
         private void ResolveAllGameImports_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.CheckAllGameImports(GetPEWindow().Pcc);
