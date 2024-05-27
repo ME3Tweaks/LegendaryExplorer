@@ -539,10 +539,6 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             PackageEditorExperimentsM.DumpAllLE1TLK(GetPEWindow());
         }
 
-        private void StartPackageBytecodeScan_Click(object sender, RoutedEventArgs e)
-        {
-            PackageEditorExperimentsM.EnumerateAllFunctions(GetPEWindow());
-        }
         private void ResolveAllGameImports_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.CheckAllGameImports(GetPEWindow().Pcc);
@@ -620,29 +616,15 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             pew.StatusBar_LeftMostText.Text = "Done";
         }
 
-        private void BuildME1NativeFunctionsInfo_Click(object sender, RoutedEventArgs e)
-        {
-            PackageEditorExperimentsM.BuildME1NativeFunctionsInfo();
-        }
-
         private void ListNetIndexes_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.ListNetIndexes(GetPEWindow());
         }
 
-        private void PrintNatives(object sender, RoutedEventArgs e)
-        {
-            PackageEditorExperimentsM.PrintAllNativeFuncsToDebug(GetPEWindow().Pcc);
-        }
 
         private void FindAllFilesWithSpecificName(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.FindNamedObject(GetPEWindow());
-        }
-
-        private void FindME12DATables_Click(object sender, RoutedEventArgs e)
-        {
-            PackageEditorExperimentsM.FindME1ME22DATables();
         }
 
         private void FindAllME3PowerCustomAction_Click(object sender, RoutedEventArgs e)
@@ -715,19 +697,9 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             Task.Run(() => PackageEditorExperimentsM.CheckAllGameImports(pew.Pcc)).ContinueWithOnUIThread(prevTask => { pew.IsBusy = false; });
         }
 
-        private void CreateTestPatchDelta_Click(object sender, RoutedEventArgs e)
-        {
-            PackageEditorExperimentsM.BuildTestPatchComparison();
-        }
-
         private void TintAllNormalizedAverageColor_Clicked(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.TintAllNormalizedAverageColors(GetPEWindow().Pcc);
-        }
-
-        private void DumpAllExecFunctionSignatures_Clicked(object sender, RoutedEventArgs e)
-        {
-            PackageEditorExperimentsM.DumpAllExecFunctionsFromGame();
         }
 
         private void RebuildLevelNetindexing_Clicked(object sender, RoutedEventArgs e)
@@ -782,11 +754,6 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             {
                 Debug.WriteLine($"{uIndex} {propName}");
             }
-        }
-
-        private void ShaderCacheResearch_Click(object sender, RoutedEventArgs e)
-        {
-            PackageEditorExperimentsM.ShaderCacheResearch(GetPEWindow());
         }
 
         private void PrintLoadedPackages_Clicked(object sender, RoutedEventArgs e)
